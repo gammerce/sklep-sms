@@ -880,7 +880,7 @@ if ($action == "charge_wallet") {
     }
 
     $db->query($db->prepare(
-        "DELETE FROM " . TABLE_PREFIX . "tariffs " .
+        "DELETE FROM `" . TABLE_PREFIX . "tariffs` " .
         "WHERE `tariff` = '%d' AND `predefined` = '%d'",
         array($_POST['tariff'], 0)
     ));
@@ -956,7 +956,7 @@ if ($action == "charge_wallet") {
     }
 
     $db->query($db->prepare(
-        "DELETE FROM " . TABLE_PREFIX . "pricelist " .
+        "DELETE FROM `" . TABLE_PREFIX . "pricelist` " .
         "WHERE `id` = '%d'",
         array($_POST['id'])
     ));
@@ -1005,7 +1005,7 @@ if ($action == "charge_wallet") {
     }
 
     $result = $db->query($db->prepare(
-        "DELETE FROM " . TABLE_PREFIX . "sms_codes " .
+        "DELETE FROM `" . TABLE_PREFIX . "sms_codes` " .
         "WHERE `id` = '%d'",
         array($_POST['id'])
     ));
@@ -1021,7 +1021,7 @@ if ($action == "charge_wallet") {
     }
 
     $db->query($db->prepare(
-        "DELETE FROM " . TABLE_PREFIX . "LOGS " .
+        "DELETE FROM `" . TABLE_PREFIX . "logs` " .
         "WHERE `id` = '%d'",
         array($_POST['id'])
     ));
@@ -1083,7 +1083,7 @@ if ($action == "charge_wallet") {
 
         // Pobieramy usługę z bazy
         $player_service = $db->fetch_array_assoc($db->query($db->prepare(
-            "SELECT * FROM " . TABLE_PREFIX . "players_services " .
+            "SELECT * FROM `" . TABLE_PREFIX . "players_services` " .
             "WHERE `id` = '%d'",
             array($_POST['id'])
         )));
@@ -1338,7 +1338,7 @@ if ($action == "charge_wallet") {
         }
 
         $result = $db->query($db->prepare(
-            "SELECT * FROM " . TABLE_PREFIX . "antispam_questions " .
+            "SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " .
             "WHERE `id` = '%d'",
             array($_POST['id'])
         ));
