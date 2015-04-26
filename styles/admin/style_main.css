@@ -1,0 +1,14 @@
+.bricks {
+    margin-top: 16px;
+}
+
+.brick_pa_main {
+    display: inline-block;
+    vertical-align: top;
+    min-width: 200px;
+    max-width: 40%;
+    min-height: 100px;
+    border: 1px solid;
+    font-size: 20px;
+    color: #000;
+}

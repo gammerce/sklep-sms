@@ -1,0 +1,5 @@
+2015-04-26 22:10: UPDATE `ss_services` SET `id` = 'vippro', `name` = 'VIP', `short_description` = '', `description` = '<strong>VIP</strong> to specjalne bonusy dla graczy, oraz sporo ułatwień podczas rozgrywki. Oferta konta VIP może się nieco różnić w zależności typu rozgrywki. Poniższa lista przedstawia bonusy, na poszczególnych serwerach.', `tag` = 'dni', `module` = '', `groups` = '', `order` = '1' WHERE `id` = 'vip2'
+
+2015-04-26 23:35: INSERT INTO ss_pricelist (service,tariff,amount,server) VALUES( 'vip', '25', '-1', '-1' )
+
+2015-04-26 23:36: INSERT INTO ss_pricelist (service,tariff,amount,server) VALUES( 'vip', '6', '-1', '-1' )

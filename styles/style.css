@@ -1,0 +1,262 @@
+body {
+    background-size: cover;
+    background: url('../images/3.2.0-dishonored.jpg') no-repeat fixed;
+}
+
+#content table {
+    font-size: 16px;
+    border-spacing: 15px;
+    color: #9C9292;
+}
+
+/* Table obejmujaca cala strone */
+.contentwraper {
+    width: 100%;
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+/* Nagłówek */
+.header_wraper_td table {
+    width: 100%;
+    padding-top: 20px;
+}
+
+.header_wraper_td table tr td {
+    vertical-align: bottom;
+}
+
+.wallet_status, .logged_info {
+    float: left;
+    margin-top: -1px;
+    padding: 15px 10px;
+    color: #FFF;
+    box-shadow: 1px 1px 1px black;
+    background-repeat: no-repeat !important;
+}
+
+.wallet_status {
+    padding-left: 55px;
+    background-image: url('../images/wallet.png') !important;
+    background-color: #d62226;
+    background-position: 10px center !important;
+    text-align: right;
+    font-weight: bold;
+}
+
+/* Informacje o koncie po zalogowaniu */
+.logged_info {
+    padding-left: 45px;
+    margin-right: 5px;
+    background-image: url('../images/user.png'), linear-gradient(45deg, rgba(131,131,131,1) 0%,rgba(140,140,140,1) 12%,rgba(149,149,149,1) 25%,rgba(109,109,109,1) 76%,rgba(98,98,98,1) 91%,rgba(92,92,92,1) 100%);
+    background-position: 0 center;
+}
+
+/* Środkowe okno zawierające główną treść strony (środek strony) */
+.content_title {
+    float: left;
+    padding: 10px;
+    /* background: rgba(0, 0, 0, 0.7); */
+    font-family: Georgia, serif;
+    color: #fff;
+    font-size: 20px;
+    border-radius: 15px 15px 0 0;
+    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.7);
+    margin: 0 0 -1.5px -2px;
+    background: linear-gradient(45deg, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0.1) 100%);
+}
+
+.content_td {
+    position: relative;
+    width: 55%;
+    min-width: 700px;
+    height: 500px;
+    background: rgba(0, 0, 0, 0.7);
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.7);
+}
+
+.content {
+    padding: 1em;
+    text-align: left;
+    color: #9C9292;
+    font-size: 15px;
+}
+
+/* Przyciski z usługami (lewa część strony) */
+.services_buttons_td {
+    vertical-align: top;
+    width: 200px;
+}
+
+.services_buttons {
+    margin: 0;
+    white-space: nowrap;
+    text-align: right;
+}
+
+.services_buttons ul {
+    text-align: right;
+}
+
+.services_buttons li a {
+    background-color: #d62226;
+    box-shadow: -4px 2px 11px 0 rgba(53, 53, 50, 0.61);
+}
+
+.services_buttons li:nth-child(2n) a {
+    background: #990000;
+}
+
+.services_buttons li a:hover {
+    color: #d62226;
+}
+
+/* Przyciski funkcji konta (prawa część strony) */
+.user_buttons_td {
+    vertical-align: bottom;
+    width: 200px;
+}
+
+.user_buttons {
+    margin: 0;
+    white-space: nowrap;
+    text-align: left;
+}
+
+.user_buttons ul {
+    text-align: left;
+}
+
+.user_buttons li a, #loginarea_roll_button, #register_redirect_button, #logout {
+    background-color: #6D9782;
+    box-shadow: 4px 3px 11px 0 rgba(53, 53, 50, 0.61);
+}
+
+.user_buttons li:nth-child(2n) a {
+    background-color: #3F3C41;
+}
+
+.user_buttons li a:hover, #loginarea_roll_button:hover, #logout:hover {
+    color: #6D9782;
+}
+
+/* Wspólne klasy dla przycisków po lewej i po prawej stronie */
+.services_buttons ul, .user_buttons ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.services_buttons li a, .user_buttons li a, #loginarea_roll_button, #register_redirect_button, #logout {
+    font-size: 20px;
+    color: white;
+    line-height: 45px;
+    font-family: ‘Courier New’, Courier, monospace;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.services_buttons li a:hover {
+    background: #FFF;
+}
+
+.user_buttons li a:hover, #loginarea_roll_button:hover, #register_redirect_button:hover, #logout:hover {
+    background: #F8FFE2;
+}
+
+/* Pole logowania */
+.loginarea {
+    overflow: hidden;
+}
+
+.loginarea table {
+    position: relative;
+    border-collapse: collapse;
+    margin-left: -220px;
+}
+
+.loginarea table tr .td1 {
+    vertical-align: middle;
+    width: 180px;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 0 20px;
+}
+
+/* Cegiełka z miejscem do wpisywania tekstu przy logowaniu */
+#form_login {
+    margin: 0;
+    color: black;
+    font-size: 14px;
+    font-family: Gill Sans MT, sans-serif;
+    font-weight: bolder;
+}
+
+#form_login input {
+    width: 100%;
+}
+
+#form_login .submit_wraper {
+    padding-top: 5px;
+}
+
+/* Przycisk do wysuwania formy logowania */
+#loginarea_roll_button, #register_redirect_button {
+    padding: 5px 15px;
+    text-align: center;
+    line-height: inherit;
+    font-size: 17px;
+}
+
+#loginarea_roll_button, #logout {
+    background-color: #5B9931;
+}
+
+#register_redirect_button {
+    display: inline-block;
+    /*background: linear-gradient(to right, rgba(134,146,146,1) 0%,rgba(114,118,140,1) 21%,rgba(97,101,121,1) 49%,rgba(116,124,140,1) 80%,rgba(134,146,146,1) 100%);*/
+    background: rgba(50, 50, 50, 1);
+    margin-bottom: 16px;
+}
+
+#register_redirect_button:hover {
+    color: #003366;
+}
+
+.pagination {
+    padding: 6px;
+    background-color: rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 10px #000;
+    text-align: center;
+}
+
+.pagination .current {
+    color: #F7D358;
+}
+
+#language_choice {
+    position: fixed;
+    right: 12px;
+    top: 6px;
+}
+
+#language_choice img {
+    max-height: 25px;
+    max-width: 40px;
+    filter: grayscale(100%);
+    -webkit-filter: grayscale(100%);
+}
+
+#language_choice img.current {
+    max-height: 28px;
+    max-width: 45px;
+    filter: grayscale(0%) !important;
+    -webkit-filter: grayscale(0%) !important;
+}
+
+#language_choice img:hover {
+    filter: grayscale(0%);
+    -webkit-filter: grayscale(0%);
+    cursor: pointer;
+}

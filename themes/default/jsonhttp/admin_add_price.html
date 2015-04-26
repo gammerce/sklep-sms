@@ -1,0 +1,47 @@
+<form id="form_add_price" class="action_box">
+    <div class="service_main_info">
+        Dodaj Cenę
+    </div>
+    <table>
+        <tr>
+            <td>USŁUGA</td>
+            <td>
+                <select name="service">
+                    <option value="0">Wybierz Usługę</option>
+                    {$services}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>SERWER</td>
+            <td>
+                <select name="server">
+                    <option value="0">Wybierz Serwer</option>
+                    <option value="-1">Wszystkie</option>
+                    {$servers}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>TARYFA</td>
+            <td>
+                <select name="tariff">
+                    <option value="0">Wybierz Taryfę</option>
+                    {$tariffs}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>ILOŚĆ</td>
+            <td><input type="text" name="amount" style="width: 100px;"/></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="line"></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="submit" value="Dodaj" style="width: 100%;"/>
+            </td>
+        </tr>
+    </table>
+</form>

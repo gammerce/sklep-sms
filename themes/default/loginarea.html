@@ -1,0 +1,22 @@
+<a href="index.php?pid=register">
+    <div id="register_redirect_button">{$lang['register_vert']}</div>
+</a>
+<table>
+    <tr>
+        <td class="td1">
+            <form id="form_login">
+                {$lang['username']}<br/>
+                <input type="text" name="username"/><br/>
+                {$lang['password']}<br/>
+                <input type="password" name="password"/><br/>
+                <a href="index.php?pid=forgotten_password">{$lang['forgot_password']}</a>
+
+                <div class="submit_wraper">
+                    <input type="submit" value="{$lang['log_in']}"/>
+                </div>
+                <input type="hidden" id="form_login_reload_content" value="1"/>
+            </form>
+        </td>
+        <td id="loginarea_roll_button">{$lang['login_vert']}</td>
+    </tr>
+</table>

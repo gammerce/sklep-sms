@@ -1,0 +1,48 @@
+<form id="form_edit_server" class="action_box">
+    <div class="service_main_info">
+        Edytuj Serwer
+    </div>
+    <table>
+        <tr>
+            <td>ID</td>
+            <td>{$server['id']}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="line"></td>
+        </tr>
+        <tr>
+            <td>NAZWA</td>
+            <td><input type="text" name="name" maxlength="64" value="{$server['name']}"/></td>
+        </tr>
+        <tr>
+            <td>IP</td>
+            <td><input type="text" name="ip" style="width: 120px" maxlength="16" value="{$server['ip']}"/></td>
+        </tr>
+        <tr>
+            <td>PORT</td>
+            <td><input type="text" name="port" style="width: 60px" maxlength="8" value="{$server['port']}"/></td>
+        </tr>
+        <tr>
+            <td>Serwis Płatności SMS</td>
+            <td>
+                <select name="sms_service">
+                    <option value="">Domyślnie</option>
+                    {$sms_services}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="line"></td>
+        </tr>
+        {$services}
+        <tr>
+            <td colspan="2" class="line"></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="hidden" name="id" value="{$server['id']}"/>
+                <input type="submit" value="Edytuj" style="width: 100%;"/>
+            </td>
+        </tr>
+    </table>
+</form>

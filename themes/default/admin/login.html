@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {$header}
+</head>
+<body>
+<div class="center">
+    <form id="form_admin_login" action="admin.php{$get_data}" method="POST">
+        <h2>Zaloguj się</h2>
+        {$warning}
+        <div class="label">Nazwa użytkownika:</div>
+        <div class="field">
+            <input type="text" name="username"/>
+        </div>
+        <br class="clear"/>
+
+        <div class="label">Hasło:</div>
+        <div class="field">
+            <input type="password" name="password"/>
+        </div>
+        <br class="clear"/>
+        <input type="submit" value="Zaloguj"/>
+        <br class="clear"/>
+    </form>
+</div>
+</body>
+</html>

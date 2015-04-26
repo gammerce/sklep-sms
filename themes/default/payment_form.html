@@ -1,0 +1,12 @@
+<link href="{$settings['shop_url_slash']}styles/style_payment.css?version={__VERSION__}" rel="stylesheet">
+<script type="text/javascript" src="{$settings['shop_url_slash']}jscripts/payment.js?version={__VERSION__}"></script>
+<div id="payment">
+    <fieldset class="order_details">
+        <legend><b>{$lang['order_details']}</b></legend>
+        {$order_details}
+    </fieldset>
+
+    <div class="center" style="margin-top: 100px; color: #DDD;">
+        {$payment_methods}
+    </div>
+</div>

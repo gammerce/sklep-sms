@@ -1,0 +1,116 @@
+<form id="form_purchase">
+    <table style="width: 100%;">
+        <tr>
+            <td style="width: 50%;">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td colspan="2" class="line"></td>
+                    </tr>
+                    </tbody>
+                    <tbody>
+                    <tr>
+                        <td>{$lang['choose_type']}</td>
+                        <td>
+                            <ul name="type">
+                                {$types}
+                            </ul>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tbody>
+                    <tr>
+                        <td colspan="2" class="line"></td>
+                    </tr>
+                    </tbody>
+                    <tbody id="type_nick">
+                    <tr>
+                        <td>{$lang['nick']}</td>
+                        <td><input type="text" name="nick" maxlength="32"/></td>
+                    </tr>
+                    </tbody>
+                    <tbody id="type_ip">
+                    <tr>
+                        <td>{$lang['ip']}</td>
+                        <td><input type="text" name="ip" value="{$user['ip']}" maxlength="16"/></td>
+                    </tr>
+                    </tbody>
+                    <tbody id="type_password">
+                    <tr>
+                        <td>{$lang['password']}</td>
+                        <td><input type="password" name="password" maxlength="32"/></td>
+                    </tr>
+                    <tr>
+                        <td>{$lang['password_repeat']}</td>
+                        <td><input type="password" name="password_repeat" maxlength="32"/></td>
+                    </tr>
+                    </tbody>
+                    <tbody id="type_sid">
+                    <tr>
+                        <td>{$lang['sid']}</td>
+                        <td><input type="text" name="sid" maxlength="32"/></td>
+                    </tr>
+                    </tbody>
+                    <tbody>
+                    <tr>
+                        <td>{$lang['email']}</td>
+                        <td><input type="text" name="email" value="{$user['email']}"/></td>
+                    </tr>
+                    </tbody>
+                    <tbody>
+                    <tr>
+                        <td colspan="2" class="line"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td style="width: 50%;">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td colspan="2" class="line"></td>
+                    </tr>
+                    </tbody>
+                    <tbody>
+                    <tr>
+                        <td>{$lang['server']}</td>
+                        <td>
+                            <select name="server">
+                                <option value="">{$lang['choose_server']}</option>
+                                {$servers}
+                            </select>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tbody>
+                    <tr>
+                        <td>{$lang['amount']}</td>
+                        <td>
+                            <select name="value">
+                                <option value="">{$lang['choose_amount']}</option>
+                            </select>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tbody>
+                    <tr>
+                        <td colspan="2" class="line"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div id="cost_wraper">
+                    <div>
+                        <b>{$lang['transfer_cost']}</b>: <span id="cost_transfer"></span> {$settings['currency']}<br/>
+                        <b>{$lang['sms_cost']}</b>: <span id="cost_sms"></span> {$settings['currency']}
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="purchase_button_wraper">
+        <input type="button" id="go_to_payment" value="{$lang['go_to_payment']}" class="purchase_button"/>
+    </div>
+
+    <input type="hidden" name="service" value="{$this->service['id']}"/>
+</form>

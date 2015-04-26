@@ -1,0 +1,55 @@
+<form id="form_edit_user" class="action_box">
+    <div class="service_main_info">
+        Edytuj Użytkownika
+    </div>
+    <table>
+        <tr>
+            <td>ID</td>
+            <td>{$row['uid']}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="line"></td>
+        </tr>
+        <tr>
+            <td>NAZWA UŻYTKOWNIKA</td>
+            <td><input type="text" name="username" maxlength="64" value="{$row['username']}"/></td>
+        </tr>
+        <tr>
+            <td>IMIĘ</td>
+            <td><input type="text" name="forename" maxlength="32" value="{$row['forename']}"/></td>
+        </tr>
+        <tr>
+            <td>NAZWISKO</td>
+            <td><input type="text" name="surname" maxlength="64" value="{$row['surname']}"/></td>
+        </tr>
+        <tr>
+            <td>E-MAIL</td>
+            <td><input type="text" name="email" maxlength="128" value="{$row['email']}"/></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="line"></td>
+        </tr>
+        <tr>
+            <td>GRUPY</td>
+            <td>
+                <select name="groups[]" multiple>
+                    {$groups}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>PORTFEL</td>
+            <td><input type="text" name="wallet" style="width: 60px" maxlength="32" value="{$row['wallet']}"/>&nbsp;{$settings['currency']}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="line"></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="hidden" name="uid" value="{$row['uid']}"/>
+                <input type="submit" value="Edytuj" style="width: 100%;"/>
+            </td>
+        </tr>
+    </table>
+</form>

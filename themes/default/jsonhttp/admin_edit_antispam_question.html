@@ -1,0 +1,30 @@
+<form id="form_edit_antispam_question" class="action_box">
+    <div class="service_main_info">
+        Edytuj pytanie anty-spamowe
+    </div>
+    <table>
+        <tr>
+            <td>
+                PYTANIE<br/>
+                <span class="hint">( dozwolony HTML )</span>
+            </td>
+            <td><textarea name="question" style="width: 300px" maxlength="128">{$row['question']}</textarea></td>
+        </tr>
+        <tr>
+            <td>
+                ODPOWIEDZI<br/>
+                <span class="hint">( oddzielone średnikiem ';' )</span>
+            </td>
+            <td><textarea name="answers" style="width: 300px" maxlength="128">{$row['answers']}</textarea></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="line"></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="hidden" name="id" value="{$row['id']}"/>
+                <input type="submit" value="Edytuj" style="width: 100%;"/>
+            </td>
+        </tr>
+    </table>
+</form>
