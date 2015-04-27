@@ -176,8 +176,18 @@ $settings['language'] = file_exists(SCRIPT_ROOT . "includes/languages/{$settings
 // Ładujemy bibliotekę językową
 $language->set_language($_SESSION['language'] ? $_SESSION['language'] : $settings['language']);
 
-$a_Tasks = json_decode(file_get_contents("http://license.sklep-sms.pl/license.php?action=login_web" . "&lid=" . urldecode($settings['license_login']) . "&lpa=" . urldecode($settings['license_password']) .
-    "&name=" . urlencode($settings['shop_url']) . "&version=" . VERSION), true);
+$curl = curl_init();
+curl_setopt_array($curl, array(
+    CURLOPT_RETURNTRANSFER => 1,
+    CURLOPT_URL => "http://license.sklep-sms.pl/license.php?action=login_web" . "&lid=" . urldecode($settings['license_login']) . "&lpa=" . urldecode($settings['license_password']) .
+        "&name=" . urlencode($settings['shop_url']) . "&version=" . VERSION,
+    CURLOPT_TIMEOUT => 5
+));
+$resp = curl_exec($curl);
+curl_close($curl);
+$a_Tasks = json_decode($resp, true);
+unset($curl);
+unset($resp);
 
 if (!isset($a_Tasks['text'])) {
     output_page($lang['verification_error']);
