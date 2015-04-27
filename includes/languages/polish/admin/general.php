@@ -35,10 +35,10 @@ $lang['logs'] = "Logi";
 $lang['update_web'] = "Aktualizacja strony WWW";
 $lang['update_servers'] = "Aktualizacja serwerów";
 
-$lang['amount_of_servers'] = "W sklepie dodanych jest <b>{1}</b> serwerów.";
-$lang['amount_of_users'] = "Dotychczas zarejestrowało się <b>{1}</b> użytkowników.";
-$lang['amount_of_bought_services'] = "Użytkownicy zakupili łączenie <b>{1}</b> usług.";
-$lang['amount_of_sent_smses'] = "W sumie klienci sklepu wysłali aż <b>{1}</b> SMSow.";
+$lang['amount_of_servers'] = "W sklepie dodanych jest <strong>{1}</strong> serwerów.";
+$lang['amount_of_users'] = "Dotychczas zarejestrowało się <strong>{1}</strong> użytkowników.";
+$lang['amount_of_bought_services'] = "Użytkownicy zakupili łączenie <strong>{1}</strong> usług.";
+$lang['amount_of_sent_smses'] = "W sumie klienci sklepu wysłali aż <strong>{1}</strong> SMSow.";
 
 $lang['add_antispam_question'] = "Dodaj pytanie antyspamowe";
 $lang['add_service'] = "Dodaj usługę";
@@ -51,8 +51,8 @@ $lang['add_sms_code'] = "Dodaj kod SMS";
 
 $lang['confirm_remove_server'] = "Na pewno chcesz usunąć serwer\n{0}?";
 
-$lang['service_added'] = "Usługa została prawidłowo dodana.<br />Ustaw teraz ceny usługi w zakładce <b>Cennik</b><br />
-		Natomiast w zakładce <b>Serwery</b> ustal na których serwerach będzie można tę usługę zakupić.<br />";
+$lang['service_added'] = "Usługa została prawidłowo dodana.<br />Ustaw teraz ceny usługi w zakładce <strong>Cennik</strong><br />
+		Natomiast w zakładce <strong>Serwery</strong> ustal na których serwerach będzie można tę usługę zakupić.<br />";
 
 $lang['privilages_names'] = array(
     "acp" => "Dostęp do ACP",

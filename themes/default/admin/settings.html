@@ -45,17 +45,17 @@
             </td>
         </tr>
         <tr>
-            <td>E-mail dla automatu</i></td>
+            <td>E-mail dla automatu</td>
             <td><input name="sender_email" type="text" value="{$settings['sender_email']}" style="width: 200px"
                        maxlength="256"/></td>
         </tr>
         <tr>
-            <td>Nazwa nadawcy e-maila</i></td>
+            <td>Nazwa nadawcy e-maila</td>
             <td><input name="sender_email_name" type="text" value="{$settings['sender_email_name']}"
                        style="width: 200px" maxlength="256"/></td>
         </tr>
         <tr>
-            <td>Podpis <i>( np. w e-mailach )</i></td>
+            <td>Podpis <em>( np. w e-mailach )</em></td>
             <td><textarea name="signature" type="textarea" style="width: 300px; height: 100px;" maxlength="256">{$settings['signature']}</textarea>
             </td>
         </tr>
@@ -79,10 +79,8 @@
             <td>Edytowanie usługi przez gracza</td>
             <td>
                 <select name="user_edit_service">
-                    <option value="1" {$user_edit_service[
-                    'yes']}>TAK</option>
-                    <option value="0" {$user_edit_service[
-                    'no']}>NIE</option>
+                    <option {$user_edit_service['yes']} value="1">TAK</option>
+                    <option value="0" {$user_edit_service['no']}>NIE</option>
                 </select>
             </td>
         </tr>
@@ -107,7 +105,7 @@
             </td>
         </tr>
         <tr>
-            <td>Usuwaj logi starsze niż <i>( 0 - nie usuwaj )</i></td>
+            <td>Usuwaj logi starsze niż <em>( 0 - nie usuwaj )</em></td>
             <td>
                 <input name="delete_logs" type="text" value="{$settings['delete_logs']}" maxlength="256"
                        style="width: 50px"/>
@@ -118,10 +116,8 @@
             <td>Cron przy każdym uruchomieniu strony</td>
             <td>
                 <select name="cron">
-                    <option value="1" {$cron[
-                    'yes']}>TAK</option>
-                    <option value="0" {$cron[
-                    'no']}>NIE</option>
+                    <option value="1" {$cron['yes']}>TAK</option>
+                    <option value="0" {$cron['no']}>NIE</option>
                 </select>
             </td>
         </tr>

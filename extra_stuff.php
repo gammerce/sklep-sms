@@ -35,5 +35,3 @@ switch ($action) {
         output_page($output);
     }
 }
-
-?>

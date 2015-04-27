@@ -56,8 +56,9 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             // Pobranie listy serwisów transakcyjnych
             $result = $db->query(
                 "SELECT id, name, sms, transfer " .
-                "FROM " . TABLE_PREFIX . "transaction_services"
+                "FROM `" . TABLE_PREFIX . "transaction_services`"
             );
+            $sms_services = $transfer_services = "";
             while ($row = $db->fetch_array_assoc($result)) {
                 if ($row['sms']) {
                     $sms_services .= create_dom_element("option", $row['name'], array(
@@ -77,6 +78,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
 
             // Pobieranie listy dostępnych szablonów
             $dirlist = scandir(SCRIPT_ROOT . "themes");
+            $themes_list = "";
             foreach ($dirlist as $dir_name) {
                 if ($dir_name[0] != '.' && is_dir(SCRIPT_ROOT . "themes/{$dir_name}")) {
                     $themes_list .= create_dom_element("option", $dir_name, array(
@@ -88,6 +90,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
 
             // Pobieranie listy dostępnych języków
             $dirlist = scandir(SCRIPT_ROOT . "includes/languages");
+            $languages_list = "";
             foreach ($dirlist as $dir_name) {
                 if ($dir_name[0] != '.' && is_dir(SCRIPT_ROOT . "includes/languages/{$dir_name}")) {
                     $languages_list .= create_dom_element("option", $lang['languages'][$dir_name], array(
@@ -111,12 +114,13 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             // Pobranie taryf
             $result = $db->query(
                 "SELECT SQL_CALC_FOUND_ROWS * " .
-                "FROM " . TABLE_PREFIX . "antispam_questions " .
+                "FROM `" . TABLE_PREFIX . "antispam_questions` " .
                 "LIMIT " . get_row_limit($G_PAGE)
             );
             $rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
             $i = 0;
+            $tbody = "";
             while ($row = $db->fetch_array_assoc($result)) {
                 $i += 1;
                 // Pobranie przycisku edycji oraz usuwania
@@ -144,9 +148,8 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             // Nie ma zadnych danych do wyswietlenia
-            if ($tbody == "") {
+            if (!strlen($tbody))
                 eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
-            }
 
             if (get_privilages("manage_antispam_questions")) {
                 // Pobranie przycisku dodającego taryfę
@@ -184,6 +187,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             $rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
             $i = 0;
+            $tbody = "";
             while ($row = $db->fetch_array_assoc($result)) {
                 $i += 1;
                 $row['sms'] = $row['sms'] ? "TAK" : "NIE";
@@ -201,9 +205,8 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             // Nie ma zadnych danych do wyswietlenia
-            if ($tbody == "") {
+            if (!strlen($tbody))
                 eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
-            }
 
             // Pobranie paginacji
             $pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $_GET);
@@ -225,6 +228,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
 
             // Pobranie listy serwisów transakcyjnych
             $i = 0;
+            $tbody = "";
             foreach ($heart->get_services() as $row) {
                 $i += 1;
                 $row['id'] = htmlspecialchars($row['id']);
@@ -252,9 +256,8 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             // Nie ma zadnych danych do wyswietlenia
-            if ($tbody == "") {
+            if (!strlen($tbody))
                 eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
-            }
 
             // Pobranie nagłówka tabeli
             eval("\$thead = \"" . get_template("admin/services_thead") . "\";");
@@ -279,6 +282,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             $i = 0;
+            $tbody = "";
             foreach ($heart->get_servers() as $row) {
                 $i += 1;
                 $row['name'] = htmlspecialchars($row['name']);
@@ -305,9 +309,8 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             // Nie ma zadnych danych do wyswietlenia
-            if ($tbody == "") {
+            if (!strlen($tbody))
                 eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
-            }
 
             // Pobranie nagłówka tabeli
             eval("\$thead = \"" . get_template("admin/servers_thead") . "\";");
@@ -333,6 +336,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             $i = 0;
+            $tbody = "";
             foreach ($heart->get_tariffs() as $tariff_data) {
                 $i += 1;
                 // Pobranie przycisku edycji oraz usuwania
@@ -357,9 +361,8 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             // Nie ma zadnych danych do wyswietlenia
-            if ($tbody == "") {
+            if (!strlen($tbody))
                 eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
-            }
 
             // Pobranie przycisku dodającego taryfę
             $button = array(
@@ -392,6 +395,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             $rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
             $i = 0;
+            $tbody = "";
             while ($row = $db->fetch_array_assoc($result)) {
                 $i += 1;
                 // Pobranie przycisku edycji oraz usuwania
@@ -419,9 +423,8 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             // Nie ma zadnych danych do wyswietlenia
-            if ($tbody == "") {
+            if (!strlen($tbody))
                 eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
-            }
 
             // Pobranie przycisku dodającego taryfę
             $button = array(
@@ -456,6 +459,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             $rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
             $i = 0;
+            $tbody = "";
             while ($row = $db->fetch_array_assoc($result)) {
                 $i += 1;
                 // Zabezpieczanie danych
@@ -481,9 +485,8 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             // Nie ma zadnych danych do wyswietlenia
-            if ($tbody == "") {
+            if (!strlen($tbody))
                 eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
-            }
 
             // Pobranie paginacji
             $pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $_GET);
@@ -509,22 +512,24 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             // Jezeli jest jakis where, to dodajemy WHERE
-            if ($where != "") $where = "WHERE {$where} ";
+            if (strlen($where))
+                $where = "WHERE {$where} ";
 
             $result = $db->query(
                 "SELECT SQL_CALC_FOUND_ROWS ps.id AS `id`, ps.uid AS `uid`, u.username AS `username`, srv.name AS `server`, s.id AS `service_id`, s.name AS `service`, " .
                 "ps.type AS `type`, ps.auth_data AS `auth_data`, ps.expire AS `expire` " .
-                "FROM " . TABLE_PREFIX . "players_services AS ps " .
-                "LEFT JOIN " . TABLE_PREFIX . "services AS s ON s.id = ps.service " .
-                "LEFT JOIN " . TABLE_PREFIX . "servers AS srv ON srv.id = ps.server " .
-                "LEFT JOIN " . TABLE_PREFIX . "users AS u ON u.uid = ps.uid " .
-                $where .
+                "FROM `" . TABLE_PREFIX . "players_services` AS ps " .
+                "LEFT JOIN `" . TABLE_PREFIX . "services` AS s ON s.id = ps.service " .
+                "LEFT JOIN `" . TABLE_PREFIX . "servers` AS srv ON srv.id = ps.server " .
+                "LEFT JOIN `" . TABLE_PREFIX . "users` AS u ON u.uid = ps.uid " .
+                "{$where}" .
                 "ORDER BY `id` DESC " .
                 "LIMIT " . get_row_limit($G_PAGE)
             );
             $rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
             $i = 0;
+            $tbody = "";
             while ($row = $db->fetch_array_assoc($result)) {
                 $i += 1;
                 // Zabezpieczanie danych
@@ -561,9 +566,8 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             // Nie ma zadnych danych do wyswietlenia
-            if ($tbody == "") {
+            if (!strlen($tbody))
                 eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
-            }
 
             // Pole wyszukiwania
             $search_text = htmlspecialchars($_GET['search']);
@@ -600,7 +604,8 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             // Jezeli jest jakis where, to dodajemy WHERE
-            if ($where != "") $where = "WHERE {$where} ";
+            if (strlen($where))
+                $where = "WHERE {$where} ";
 
             $result = $db->query(
                 "SELECT SQL_CALC_FOUND_ROWS * " .
@@ -611,6 +616,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             );
             $rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
+            $tbody = "";
             while ($row = $db->fetch_array_assoc($result)) {
                 //$row['platform'] = htmlspecialchars($row['platform']);
                 $row['auth_data'] = htmlspecialchars($row['auth_data']);
@@ -650,9 +656,8 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             // Nie ma zadnych danych do wyswietlenia
-            if ($tbody == "") {
+            if (!strlen($tbody))
                 eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
-            }
 
             // Pole wyszukiwania
             $search_text = htmlspecialchars($_GET['search']);
@@ -698,6 +703,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             );
             $rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
+            $tbody = "";
             while ($row = $db->fetch_array_assoc($result)) {
                 $row['free'] = $row['free'] ? "TAK" : "NIE";
                 $row['income'] = $row['income'] ? number_format($row['income'], 2) . " " . $settings['currency'] : "";
@@ -708,9 +714,8 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             // Nie ma zadnych danych do wyswietlenia
-            if ($tbody == "") {
+            if (!strlen($tbody))
                 eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
-            }
 
             // Pole wyszukiwania
             $search_text = htmlspecialchars($_GET['search']);
@@ -750,6 +755,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             $rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
             // Pobieramy dane
+            $tbody = "";
             while ($row = $db->fetch_array_assoc($result)) {
                 $row['income'] = $row['income'] ? number_format($row['income'], 2) . " " . $settings['currency'] : "";
 
@@ -763,9 +769,8 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             // Nie ma zadnych danych do wyswietlenia
-            if ($tbody == "") {
+            if (!strlen($tbody))
                 eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
-            }
 
             // Pole wyszukiwania
             $search_text = htmlspecialchars($_GET['search']);
@@ -793,6 +798,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             );
             $rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
+            $tbody = "";
             while ($row = $db->fetch_array_assoc($result)) {
                 $row['cost'] = $row['cost'] ? number_format($row['cost'], 2) . " " . $settings['currency'] : "";
 
@@ -806,9 +812,8 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             // Nie ma zadnych danych do wyswietlenia
-            if ($tbody == "") {
+            if (!strlen($tbody))
                 eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
-            }
 
             // Pobranie paginacji
             $pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $_GET);
@@ -832,6 +837,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             );
             $rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
+            $tbody = "";
             while ($row = $db->fetch_array_assoc($result)) {
                 // Podświetlenie konkretnej płatności
                 if ($_GET['highlight'] && $_GET['payid'] == $row['payment_id']) {
@@ -843,9 +849,8 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             // Nie ma zadnych danych do wyswietlenia
-            if ($tbody == "") {
+            if (!strlen($tbody))
                 eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
-            }
 
             // Pobranie paginacji
             $pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $_GET);
@@ -882,6 +887,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             $rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
             $i = 0;
+            $tbody = "";
             while ($row = $db->fetch_array_assoc($result)) {
                 $i += 1;
                 // Zabezpieczanie danych
@@ -921,7 +927,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             // Nie ma zadnych danych do wyswietlenia
-            if ($tbody == "") {
+            if (!strlen($tbody)) {
                 eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
             }
 
@@ -948,12 +954,13 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             $result = $db->query(
-                "SELECT SQL_CALC_FOUND_ROWS * FROM " . TABLE_PREFIX . "groups " .
+                "SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "groups` " .
                 "LIMIT " . get_row_limit($G_PAGE)
             );
             $rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
             $i = 0;
+            $tbody = "";
             while ($row = $db->fetch_array_assoc($result)) {
                 $i += 1;
 
@@ -979,9 +986,8 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             // Nie ma zadnych danych do wyswietlenia
-            if ($tbody == "") {
+            if (!strlen($tbody))
                 eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
-            }
 
             // Pobranie paginacji
             $pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $_GET);
@@ -1029,6 +1035,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             ));
 
             // Sumujemy dochód po dacie (z dokładnością do dnia) i po serwerze
+            $data = array();
             while ($row = $db->fetch_array_assoc($result)) {
                 $temp = explode(" ", $row['timestamp']);
 
@@ -1036,6 +1043,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             // Dodanie wyboru miesiąca
+            $months = "";
             for ($i = 1; $i <= 12; $i++) {
                 $months .= create_dom_element("option", $lang['months'][$i], array(
                     'value' => str_pad($i, 2, 0, STR_PAD_LEFT),
@@ -1044,6 +1052,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             // Dodanie wyboru roku
+            $years = "";
             for ($i = 2014; $i <= intval(date("Y")); $i++) {
                 $years .= create_dom_element("option", $i, array(
                     'value' => $i,
@@ -1127,6 +1136,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             $rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
             $i = 0;
+            $tbody = "";
             while ($row = $db->fetch_array_assoc($result)) {
                 $i += 1;
                 // Pobranie przycisku usuwania
@@ -1147,7 +1157,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             // Nie ma zadnych danych do wyswietlenia
-            if ($tbody == "") {
+            if (!strlen($tbody)) {
                 eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
             }
 
@@ -1183,7 +1193,8 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             // Jezeli jest jakis where, to dodajemy WHERE
-            if ($where != "") $where = "WHERE {$where} ";
+            if (strlen($where))
+                $where = "WHERE {$where} ";
 
             // Pobranie logów
             $result = $db->query(
@@ -1196,10 +1207,10 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             $rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
             $i = 0;
+            $tbody = "";
             while ($row = $db->fetch_array_assoc($result)) {
                 $i += 1;
                 // Pobranie przycisku usuwania
-                $button_delete = "";
                 if (get_privilages("manage_logs")) {
                     $button_delete = create_dom_element("img", "", array(
                         'id' => "delete_row_{$i}",
@@ -1207,6 +1218,8 @@ function get_content($element, $withenvelope = true, $separateclass = false)
                         'title' => "Usuń {$row['id']}"
                     ));
                 }
+                else
+                    $button_delete = "";
 
                 // Zabezpieczanie danych
                 $row['text'] = htmlspecialchars($row['text']);
@@ -1216,9 +1229,8 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             // Nie ma zadnych danych do wyswietlenia
-            if ($tbody == "") {
+            if (!strlen($tbody))
                 eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
-            }
 
             // Pole wyszukiwania
             $search_text = htmlspecialchars($_GET['search']);
@@ -1300,10 +1312,8 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             }
 
             $newest_versions = json_decode(trim(file_get_contents("http://www.sklep-sms.pl/version.php?action=get_newest&type=engines")), true);
-            //$versions = array();
-            //foreach($newest_versions as $engine => $version)
-            //    $versions[$engine] = json_decode(trim(file_get_contents("http://www.sklep-sms.pl/version.php?action=get_version&type={$engine}&version={$version}&encode=json")), true);
 
+            $version_blocks = "";
             foreach ($heart->get_servers() as $server) {
                 $engine = "engine_{$server['type']}";
                 // Mamy najnowszą wersję
@@ -1343,23 +1353,6 @@ function get_content($element, $withenvelope = true, $separateclass = false)
                 break;
             }
 
-            /*// Pobieramy dodatkowe informacje
-            foreach ($version->extra_info->children() as $value) {
-                $additional_info .= create_dom_element("li", $value);
-            }
-            if ($additional_info)
-                eval("\$additional_info = \"" . get_template("admin/update_additional_info") . "\";");
-
-            // Pobieramy listę plików do wymiany
-            foreach ($version->files->children() as $value) {
-                $files .= create_dom_element("li", $value);
-            }
-
-            // Pobieramy listę zmian
-            foreach ($version->changelog->children() as $value) {
-                $changelog .= create_dom_element("li", $value);
-            }*/
-
             // Pobranie wyglądu całej strony
             $title = $lang['update_servers'];
             eval("\$output = \"" . get_template("admin/update_server") . "\";");
@@ -1367,9 +1360,10 @@ function get_content($element, $withenvelope = true, $separateclass = false)
     }
 
     if ($withenvelope)
-        $output = "<div id=\"{$element}\" class=\"{$class}\">{$output}</div>";
+        $output = create_dom_element("div", $output, array(
+            'id' => $element,
+            'class' => if_isset($class, "")
+        ));
 
     return $separateclass ? array('content' => $output, 'class' => $class) : $output;
 }
-
-?>

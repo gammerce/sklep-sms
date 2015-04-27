@@ -25,25 +25,22 @@ class Language
         $this->language = $language;
 
         // Ładujemy ogólną bibliotekę językową
-        if (file_exists(SCRIPT_ROOT . "includes/languages/{$language}/{$language}.php")) {
+        if (file_exists(SCRIPT_ROOT . "includes/languages/{$language}/{$language}.php"))
             include SCRIPT_ROOT . "includes/languages/{$language}/{$language}.php";
-        }
 
         if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) { // Ładujemy bilioteki dla PA
             // Ładujemy wszystkie biblioteki językowe
             foreach (scandir(SCRIPT_ROOT . "includes/languages/{$language}/admin") as $file) {
                 if (substr($file, -4) == ".php")
-                    include_once SCRIPT_ROOT . "includes/languages/{$language}/admin/{$file}";
+                    include SCRIPT_ROOT . "includes/languages/{$language}/admin/{$file}";
             }
         } else {
             // Ładujemy wszystkie biblioteki językowe
             foreach (scandir(SCRIPT_ROOT . "includes/languages/{$language}") as $file) {
                 if (substr($file, -4) == ".php" && $file != "{$language}.php")
-                    include_once SCRIPT_ROOT . "includes/languages/{$language}/{$file}";
+                    include SCRIPT_ROOT . "includes/languages/{$language}/{$file}";
             }
         }
     }
 
 }
-
-?>

@@ -40,6 +40,7 @@ require_once SCRIPT_ROOT . "includes/class_language.php";
 $heart = new Heart();
 
 // Tworzymy obiekt języka
+$lang = array();
 $language = new Language();
 
 // Ustalenie funkcji obsługującej errory
@@ -181,7 +182,7 @@ curl_setopt_array($curl, array(
     CURLOPT_RETURNTRANSFER => 1,
     CURLOPT_URL => "http://license.sklep-sms.pl/license.php?action=login_web" . "&lid=" . urldecode($settings['license_login']) . "&lpa=" . urldecode($settings['license_password']) .
         "&name=" . urlencode($settings['shop_url']) . "&version=" . VERSION,
-    CURLOPT_TIMEOUT => 5
+    CURLOPT_TIMEOUT => 10
 ));
 $resp = curl_exec($curl);
 curl_close($curl);
@@ -224,5 +225,3 @@ define('TYPE_IP', 1 << 1);
 define('TYPE_SID', 1 << 2);
 
 $s_Flags = "abcdefghijklmnopqrstuyvwxz";
-
-?>

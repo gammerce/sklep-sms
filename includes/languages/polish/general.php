@@ -84,7 +84,7 @@ $lang['transfer_unverified'] = "Niestety, ale udało się zweryfikować poprawno
 
 $lang['contact_info'] = "Możesz się z nami skontaktować na jeden z poniższych sposobów.";
 
-$lang['restore_password_info'] = "W celu odzyskania hasła, podaj swój adres <b>adres e-mail</b> lub <b>nazwę użytkownika</b>.<br />
+$lang['restore_password_info'] = "W celu odzyskania hasła, podaj swój adres <strong>adres e-mail</strong> lub <strong>nazwę użytkownika</strong>.<br />
 W kolejnym etapie, zostanie do Ciebie wysłany e-mail z linkiem do zresetowania hasła.";
 
 $lang['must_be_logged_out'] = "Nie możesz przeglądać tej strony. Jesteś zalogowany/a.";

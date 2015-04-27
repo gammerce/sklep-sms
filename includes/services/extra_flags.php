@@ -102,7 +102,7 @@ class ServiceExtraFlagsSimple extends Service implements IServiceCreateNew
 
             // Sprawdzamy czy uprawnienia się dodały
             if (substr(sprintf('%o', fileperms($file)), -4) != "0777")
-                json_output("not_created", "Plik z opisem usługi nie został prawidłowo utworzony.<br />Prawdopodobnie folder <b>themes/{$settings['theme']}/services/</b> nie ma uprawnień do zapisu.", 0);
+                json_output("not_created", "Plik z opisem usługi nie został prawidłowo utworzony.<br />Prawdopodobnie folder <strong>themes/{$settings['theme']}/services/</strong> nie ma uprawnień do zapisu.", 0);
         }
 
         if ($data['action'] == "add_service")
@@ -371,7 +371,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
         $server = $heart->get_server($data['order']['server']);
         $data['order']['type_name'] = get_type_name2($data['order']['type']);
         if ($data['order']['password'])
-            $password = "<b>{$lang['password']}</b>: " . htmlspecialchars($data['order']['password']) . "<br />";
+            $password = "<strong>{$lang['password']}</strong>: " . htmlspecialchars($data['order']['password']) . "<br />";
         $data['order']['email'] = $data['order']['email'] ? htmlspecialchars($data['order']['email']) : $lang['none'];
         $data['order']['auth_data'] = htmlspecialchars($data['order']['auth_data']);
 
@@ -487,7 +487,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
         $data['extra_data'] = json_decode($data['extra_data'], true);
         $data['extra_data']['type_name'] = get_type_name2($data['extra_data']['type']);
         if ($data['extra_data']['password'] != "")
-            $password = "<b>{$lang['password']}</b>: " . htmlspecialchars($data['extra_data']['password']) . "<br />";
+            $password = "<strong>{$lang['password']}</strong>: " . htmlspecialchars($data['extra_data']['password']) . "<br />";
         $data['amount'] = $data['amount'] . " " . $this->service['tag'];
         $data['auth_data'] = htmlspecialchars($data['auth_data']);
         $data['extra_data']['password'] = htmlspecialchars($data['extra_data']['password']);

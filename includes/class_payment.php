@@ -57,7 +57,7 @@ class Payment
 
                 // Usuwamy kod z listy kodow do wykorzystania
                 $db->query($db->prepare(
-                    "DELETE FROM " . TABLE_PREFIX . "sms_codes " .
+                    "DELETE FROM `" . TABLE_PREFIX . "sms_codes` " .
                     "WHERE id='%d'",
                     array($db_code['id'])
                 ));
@@ -82,7 +82,7 @@ class Payment
         else if ($sms_return['status'] == "BAD_NUMBER" && isset($sms_return['tariff'])) {
             // Dodajemy kod do listy kodów do wykorzystania
             $db->query($db->prepare(
-                "INSERT INTO " . TABLE_PREFIX . "sms_codes " .
+                "INSERT INTO `" . TABLE_PREFIX . "sms_codes` " .
                 "SET `code` = '%s', `tariff` = '%d', `free` = '0'",
                 array($sms_code, $sms_return['tariff'])
             ));

@@ -54,5 +54,3 @@ eval("\$output = \"" . get_template("index") . "\";");
 
 // Wyświetlenie strony
 output_page($output);
-
-?>
