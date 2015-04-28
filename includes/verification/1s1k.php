@@ -27,7 +27,7 @@ class PaymentModule1s1k extends PaymentModule implements IPaymentSMS
 
     public function verify_sms($sms_code, $sms_number)
     {
-        $content = @file_get_contents("http://www.1shot1kill.pl/api?type=sms&key=" . urlencode($this->data['api']) . "&sms_code=" . urlencode($sms_code) . "&comment=");
+        $content = curl_get_contents("http://www.1shot1kill.pl/api?type=sms&key=" . urlencode($this->data['api']) . "&sms_code=" . urlencode($sms_code) . "&comment=");
         $return = json_decode($content, true);
 
         if (!is_array($return)) {

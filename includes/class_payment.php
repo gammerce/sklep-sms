@@ -48,7 +48,7 @@ class Payment
         // Jezeli weryfikacja smsa nie zwrocila, ze kod zostal prawidlowo zweryfikowany
         // ani, że sms został wysłany na błędny numer,
         // to sprawdzamy czy kod jest w bazie kodów do wykorzystania
-        if (!issset($sms_return) || !in_array($sms_return['status'], array("BAD_NUMBER", "OK"))) {
+        if (!isset($sms_return) || !in_array($sms_return['status'], array("BAD_NUMBER", "OK"))) {
             $result = $db->query($db->prepare(
                 "SELECT * FROM `" . TABLE_PREFIX . "sms_codes` " .
                 "WHERE `code` = '%s' AND `tariff` = '%d'",

@@ -57,7 +57,7 @@ class Database
     public function query($query)
     {
         $this->counter += 1;
-        //file_put_contents(SQL_LOG,file_get_contents(SQL_LOG)."\n".$query);
+        //file_put_contents(SQL_LOG, file_get_contents(SQL_LOG)."\n".$query);
         if ($this->query = @mysqli_query($this->link, $query)) {
             return $this->query;
         } else {
@@ -68,7 +68,7 @@ class Database
 
     public function multi_query($query)
     {
-        //file_put_contents(SQL_LOG,file_get_contents(SQL_LOG)."\n\n".$query);
+        //file_put_contents(SQL_LOG, file_get_contents(SQL_LOG)."\n\n".$query);
         if ($this->query = @mysqli_multi_query($this->link, $query)) {
             return $this->query;
         } else {

@@ -783,3 +783,20 @@ function searchWhere($search_ids, $search, &$where)
         $where .= "( {$search_where} )";
     }
 }
+
+/**
+ * @param $url - adres url
+ * @param int $timeout - po jakim czasie ma przerwać
+ */
+function curl_get_contents($url, $timeout=10) {
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+        CURLOPT_RETURNTRANSFER => 1,
+        CURLOPT_URL => $url,
+        CURLOPT_TIMEOUT => $timeout
+    ));
+    $resp = curl_exec($curl);
+    curl_close($curl);
+
+    return $resp;
+}

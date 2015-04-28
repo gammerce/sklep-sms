@@ -12,12 +12,12 @@ class PaymentModulePukawka extends PaymentModule implements IPaymentSMS
     {
         parent::__construct(); // Wywolujemy konstruktor klasy którą rozszerzamy
 
-        $this->stawki = json_decode(file_get_contents("https://admin.pukawka.pl/api/?keyapi=" . urlencode($this->data['api']) . "&type=sms_table"));
+        $this->stawki = json_decode(curl_get_contents("https://admin.pukawka.pl/api/?keyapi=" . urlencode($this->data['api']) . "&type=sms_table"));
     }
 
     public function verify_sms($sms_code, $sms_number)
     {
-        $get = file_get_contents("https://admin.pukawka.pl/api/?keyapi=" . urlencode($this->data['api']) . "&type=sms&code=" . urlencode($sms_code));
+        $get = curl_get_contents("https://admin.pukawka.pl/api/?keyapi=" . urlencode($this->data['api']) . "&type=sms&code=" . urlencode($sms_code));
 
         if ($get) {
             $get = json_decode($get);

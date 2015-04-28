@@ -99,9 +99,9 @@ if ($G_PID == "main_content") {
     }
 
     // Sprawdzanie wersji skryptu
-    $next_version = trim(file_get_contents("http://www.sklep-sms.pl/version.php?action=get_next&type=web&version=" . VERSION));
+    $next_version = trim(curl_get_contents("http://www.sklep-sms.pl/version.php?action=get_next&type=web&version=" . VERSION));
     if (strlen($next_version)) {
-        $newest_version = trim(file_get_contents("http://www.sklep-sms.pl/version.php?action=get_newest&type=web"));
+        $newest_version = trim(curl_get_contents("http://www.sklep-sms.pl/version.php?action=get_newest&type=web"));
         if (strlen($newest_version) && VERSION != $newest_version) {
             add_note(newsprintf($lang['update_available'], $newest_version), "positive");
         }
@@ -109,7 +109,7 @@ if ($G_PID == "main_content") {
 
     // Sprawdzanie wersji serwerów
     $amount = 0;
-    $newest_versions = json_decode(trim(file_get_contents("http://www.sklep-sms.pl/version.php?action=get_newest&type=engines")), true);
+    $newest_versions = json_decode(trim(curl_get_contents("http://www.sklep-sms.pl/version.php?action=get_newest&type=engines")), true);
     foreach ($heart->get_servers() as $server) {
         $engine = "engine_{$server['type']}";
         if (strlen($newest_versions[$engine]) && $server['version'] != $newest_versions[$engine])

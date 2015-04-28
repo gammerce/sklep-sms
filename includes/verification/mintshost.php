@@ -9,7 +9,7 @@ class PaymentModuleMintshost extends PaymentModule implements IPaymentSMS
 
     public function verify_sms($sms_code, $sms_number)
     {
-        $status = file_get_contents("http://mintshost.pl/sms.php?kod=" . urlencode($sms_code) . "&sms=" . urlencode($sms_number) . "&email=" . urlencode($this->data['email']));
+        $status = curl_get_contents("http://mintshost.pl/sms.php?kod=" . urlencode($sms_code) . "&sms=" . urlencode($sms_number) . "&email=" . urlencode($this->data['email']));
 
         if ($status == "0") {
             $output['status'] = "BAD_CODE";

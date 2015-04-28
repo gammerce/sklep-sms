@@ -1254,9 +1254,9 @@ function get_content($element, $withenvelope = true, $separateclass = false)
                 break;
             }
 
-            $newest_version = trim(file_get_contents("http://www.sklep-sms.pl/version.php?action=get_newest&type=web"));
+            $newest_version = trim(curl_get_contents("http://www.sklep-sms.pl/version.php?action=get_newest&type=web"));
             $version = simplexml_load_file("http://www.sklep-sms.pl/version.php?action=get_version&type=web&version={$newest_version}", 'SimpleXMLElement', LIBXML_NOCDATA);
-            $next_version = trim(file_get_contents("http://www.sklep-sms.pl/version.php?action=get_next&type=web&version=" . VERSION));
+            $next_version = trim(curl_get_contents("http://www.sklep-sms.pl/version.php?action=get_next&type=web&version=" . VERSION));
 
             // Mamy najnowszą wersję
             if (!strlen($newest_version) || !strlen($next_version) || VERSION == $newest_version) {
@@ -1311,7 +1311,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
                 break;
             }
 
-            $newest_versions = json_decode(trim(file_get_contents("http://www.sklep-sms.pl/version.php?action=get_newest&type=engines")), true);
+            $newest_versions = json_decode(trim(curl_get_contents("http://www.sklep-sms.pl/version.php?action=get_newest&type=engines")), true);
 
             $version_blocks = "";
             foreach ($heart->get_servers() as $server) {
@@ -1322,7 +1322,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
 
                 $name = htmlspecialchars($server['name']);
                 $current_version = $server['version'];
-                $next_version = trim(file_get_contents("http://www.sklep-sms.pl/version.php?action=get_next&type={$engine}&version={$server['version']}"));
+                $next_version = trim(curl_get_contents("http://www.sklep-sms.pl/version.php?action=get_next&type={$engine}&version={$server['version']}"));
                 $newest_version = $newest_versions[$engine];
 
                 // Nie ma kolejnej wersji

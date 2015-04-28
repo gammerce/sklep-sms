@@ -19,7 +19,7 @@ class PaymentModuleProfitsms extends PaymentModule implements IPaymentSMS
             $status = curl_exec($curl);
             curl_close($curl);
         } else {
-            $status = file_get_contents($url);
+            $status = curl_get_contents($url);
         }
         $raport = explode('|', $status);
         switch ($raport['0']) {
