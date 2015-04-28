@@ -1,8 +1,8 @@
 <?php
 
-$heart->register_payment_api("profitsms", "ModuleProfitsms");
+$heart->register_payment_api("profitsms", "PaymentModuleProfitsms");
 
-class ModuleProfitsms extends PaymentModule
+class PaymentModuleProfitsms extends PaymentModule implements IPaymentSMS
 {
 
     const SERVICE_ID = "profitsms";

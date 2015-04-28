@@ -1,14 +1,15 @@
 <?php
 
-$heart->register_payment_api("zabijaka", "ModuleZabijaka");
+$heart->register_payment_api("zabijaka", "PaymentModuleZabijaka");
 
-class ModuleZabijaka extends PaymentModule
+class PaymentModuleZabijaka extends PaymentModule implements IPaymentSMS
 {
 
     const SERVICE_ID = "zabijaka";
 
     public function verify_sms($sms_code, $sms_number)
     {
+
         $xml = simplexml_load_file("http://api.zabijaka.pl/1.1/" . urlencode($this->data['api']) . "/sms/" .
             get_sms_cost($sms_number) . "/" . urlencode($sms_code) . "/sms.xml/add");
 
@@ -24,5 +25,3 @@ class ModuleZabijaka extends PaymentModule
     }
 
 }
-
-?>

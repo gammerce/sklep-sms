@@ -1,8 +1,8 @@
 <?php
 
-$heart->register_payment_api("mintshost", "ModuleMintshost");
+$heart->register_payment_api("mintshost", "PaymentModuleMintshost");
 
-class ModuleMintshost extends PaymentModule
+class PaymentModuleMintshost extends PaymentModule implements IPaymentSMS
 {
 
     const SERVICE_ID = "mintshost";
@@ -20,10 +20,10 @@ class ModuleMintshost extends PaymentModule
         } else if ($status == "3") {
             $output['status'] = "BAD_DATA";
         }
+        else
+            $output['status'] = "ERROR";
 
         return $output;
     }
 
 }
-
-?>

@@ -52,6 +52,8 @@ $db->query("SET NAMES utf8");
 
 // Dodajemy klasy wszystkich modulow platnosci
 require_once SCRIPT_ROOT . "includes/verification/payment_module.php";
+require_once SCRIPT_ROOT . "includes/verification/payment_sms.php";
+require_once SCRIPT_ROOT . "includes/verification/payment_transfer.php";
 foreach (scandir(SCRIPT_ROOT . "includes/verification") as $file) {
     if (substr($file, -4) == ".php")
         require_once SCRIPT_ROOT . "includes/verification/{$file}";

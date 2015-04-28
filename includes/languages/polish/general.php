@@ -125,11 +125,9 @@ $lang['sms']['info']['no_connection'] = "Nie można się połączyć ze skryptem
 $lang['sms']['info']['bad_data'] = "Nie podano wszystkich potrzebnych danych w konfiguracji płatności.";
 $lang['sms']['info']['dunno'] = "Wystąpił nieznany błąd. Zgłoś błąd właścicielowi sklepu.";
 $lang['sms']['info']['no_sms_serve'] = "Dany serwis nie obsługuje płatności SMS. Zgłoś błąd właścicielowi sklepu.";
-$lang['sms']['info']['no_transfer_serve'] = "Dany serwis nie obsługuje płatności przelewem. Zgłoś błąd właścicielowi sklepu.";
-$lang['sms']['info']['no_sms_serve'] = "Dany serwis nie obsługuje płatności sms. Zgłoś błąd właścicielowi sklepu.";
+$lang['no_transfer_serve'] = "Dany serwis nie obsługuje płatności przelewem. Zgłoś błąd właścicielowi sklepu.";
+$lang['transfer_ok'] = "Przygotowanie płatności przebiegło pomyślnie.<br />Za chwilę nastąpi przekierowanie do serwisu transakcyjnego.";
 
 $lang['service_no_permission'] = "Nie masz uprawnień, aby móc korzystać z tej usługi.";
 
 $lang['value_must_be_ge_than'] = "Wartość musi być większa lub równa {1}.";
-
-?>

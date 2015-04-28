@@ -1,8 +1,8 @@
 <?php
 
-$heart->register_payment_api("pukawka", "ModulePukawka");
+$heart->register_payment_api("pukawka", "PaymentModulePukawka");
 
-class ModulePukawka extends PaymentModule
+class PaymentModulePukawka extends PaymentModule implements IPaymentSMS
 {
 
     const SERVICE_ID = "pukawka";
@@ -24,7 +24,7 @@ class ModulePukawka extends PaymentModule
 
             if (is_object($get)) {
                 if ($get->error) {
-                    echo $get->error;
+                    $output['text'] = $get->error;
                 } else {
                     if ($get->status == "ok") {
                         $kwota = str_replace(",", ".", $get->kwota);
@@ -57,5 +57,3 @@ class ModulePukawka extends PaymentModule
     }
 
 }
-
-?>

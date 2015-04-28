@@ -1,8 +1,8 @@
 <?php
 
-$heart->register_payment_api("cssetti", "ModuleCssetti");
+$heart->register_payment_api("cssetti", "PaymentModuleCssetti");
 
-class ModuleCssetti extends PaymentModule
+class PaymentModuleCssetti extends PaymentModule implements IPaymentSMS
 {
 
     const SERVICE_ID = "cssetti";
@@ -30,7 +30,7 @@ class ModuleCssetti extends PaymentModule
             else if ($shop[1] != floatval(get_sms_cost($sms_number))) {
                 $output['status'] = "BAD_NUMBER";
                 // Szukamy smsa z kwota rowna $shop[1]
-                foreach ($smses as $sms) {
+                foreach ($this->smses as $sms) {
                     if (floatval(get_sms_cost($sms['number'])) == $shop[1]) {
                         $output['tariff'] = $sms['tariff'];
                         break;
@@ -45,5 +45,3 @@ class ModuleCssetti extends PaymentModule
     }
 
 }
-
-?>

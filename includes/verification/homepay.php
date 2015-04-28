@@ -1,8 +1,8 @@
 <?php
 
-$heart->register_payment_api("homepay", "ModuleHomepay");
+$heart->register_payment_api("homepay", "PaymentModuleHomepay");
 
-class ModuleHomepay extends PaymentModule
+class PaymentModuleHomepay extends PaymentModule implements IPaymentSMS
 {
 
     const SERVICE_ID = "homepay";
@@ -29,5 +29,3 @@ class ModuleHomepay extends PaymentModule
     }
 
 }
-
-?>

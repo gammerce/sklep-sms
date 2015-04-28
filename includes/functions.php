@@ -290,9 +290,9 @@ function validate_payment($data)
         $sms_return = $payment->pay_sms($data['sms_code'], $data['tariff']);
         $payment_id = $sms_return['payment_id'];
 
-        if ($sms_return['sms_return'] != "OK") {
+        if ($sms_return['status'] != "OK") {
             return array(
-                'status' => "sms_error",
+                'status' => $sms_return['status'],
                 'text' => $sms_return['text'],
                 'positive' => false
             );
@@ -332,12 +332,7 @@ function validate_payment($data)
             'order' => $data['order']
         );
 
-        return array(
-            'status' => "transfer",
-            'text' => "Przygotowanie płatności przebiegło pomyślnie.<br />Za chwilę nastąpi przekierowanie do serwisu transakcyjnego.",
-            'positive' => true,
-            'data' => array('data' => $payment->pay_transfer($purchase_data)) // Przygotowuje dane płatności transferem
-        );
+        return $payment->pay_transfer($purchase_data);
     }
 }
 
