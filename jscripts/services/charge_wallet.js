@@ -1,3 +1,4 @@
+//TODO podczas logowania sie bedac na tej stronie, stopka nie jest ukryta
 jQuery(document).ready(function ($) {
     // Aby żadna opcja nie była zaznaczona w przypadku użycia "cofnij"
     $("#form_purchase [name=method]").prop('checked', false);

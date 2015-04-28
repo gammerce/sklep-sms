@@ -2,14 +2,10 @@
 
 $heart->register_service_module("charge_wallet", "Doładowanie Portfela", "ServiceChargeWallet", "ServiceChargeWalletSimple");
 
-class ServiceChargeWalletSimple extends Service
+class ServiceChargeWalletSimple extends Service implements IServiceMustBeLogged
 {
 
     const MODULE_ID = "charge_wallet";
-
-    public $info = array(
-        'must_be_logged' => true
-    );
 
 }
 
@@ -29,13 +25,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IServiceP
         $stylesheets[] = "<link href=\"{$settings['shop_url_slash']}styles/services/charge_wallet.css?version=" . VERSION . "\" rel=\"stylesheet\" />";
     }
 
-    public function get_form($form)
-    {
-        if ($form == "purchase_service")
-            return $this->form_purchase_service();
-    }
-
-    private function form_purchase_service()
+    public function form_purchase_service()
     {
         global $settings, $lang;
 
@@ -59,6 +49,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IServiceP
             }
             eval("\$sms_body = \"" . get_template("services/charge_wallet/sms_body") . "\";");
         }
+
         if ($settings['transfer_service']) {
             // Pobieramy opcję wyboru doładowania za pomocą przelewu
             eval("\$option_transfer = \"" . get_template("services/charge_wallet/option_transfer") . "\";");
@@ -78,7 +69,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IServiceP
         if (!is_logged()) {
             return array(
                 'status' => "not_logged_in",
-                'text' => "Coś tu nie gra, nie jesteś zalogowany/a oO",
+                'text' => $lang['you_arent_logged'],
                 'positive' => false
             );
         }
@@ -87,7 +78,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IServiceP
         if (!in_array($data['method'], array("sms", "transfer"))) {
             return array(
                 'status' => "wrong_method",
-                'text' => "Wybrano błędną metodę doładowania",
+                'text' => $lang['wrong_charge_method'],
                 'positive' => false
             );
         }
@@ -95,28 +86,24 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IServiceP
         $warnings = array();
 
         if ($data['method'] == "sms") {
-            if ($data['tariff'] == "") {
-                $warnings['tariff'] .= "Nie wybrano wysokości doładowania ( koszt SMSa ).<br />";
-            }
+            if ($data['tariff'] == "")
+                $warnings['tariff'] .= $lang['charge_amount_not_chosen']."<br />";
         } else if ($data['method'] == "transfer") {
             // Kwota doładowania
-            if ($warning = check_for_warnings("number", $data['transfer_amount'])) {
+            if ($warning = check_for_warnings("number", $data['transfer_amount']))
                 $warnings['transfer_amount'] = $warning;
-            }
-            if ($data['transfer_amount'] <= 1) {
-                $warnings['transfer_amount'] .= "Wartość doładowania musi być większa niż 1.00 {$settings['currency']}.<br />";
-            }
+            if ($data['transfer_amount'] <= 1)
+                $warnings['transfer_amount'] .= newsprintf($lang['charge_amount_too_low'], "1.00 ".$settings['currency'])."<br />";
         }
 
         // Jeżeli są jakieś błedy, to je zwróć
-        if (!empty($warnings)) {
+        if (!empty($warnings))
             return array(
                 'status' => "warnings",
                 'text' => $lang['form_wrong_filled'],
                 'positive' => false,
                 'data' => array('warnings' => $warnings)
             );
-        }
 
         // Zbieramy dane do jednego miejsca, aby potem je zwrócić
         $purchase_data = array(
@@ -215,5 +202,3 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IServiceP
     }
 
 }
-
-?>

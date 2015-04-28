@@ -68,6 +68,7 @@ require_once SCRIPT_ROOT . "includes/services/service_user_edit.php";
 require_once SCRIPT_ROOT . "includes/services/service_execute_action.php";
 require_once SCRIPT_ROOT . "includes/services/service_create_new.php";
 require_once SCRIPT_ROOT . "includes/services/service_take_over.php";
+require_once SCRIPT_ROOT . "includes/services/service_must_be_logged.php";
 foreach (scandir(SCRIPT_ROOT . "includes/services") as $file) {
     if (substr($file, -4) == ".php")
         require_once SCRIPT_ROOT . "includes/services/{$file}";

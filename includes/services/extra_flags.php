@@ -146,9 +146,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
     public function get_form($form, $data)
     {
-        if ($form == "purchase_service")
-            return $this->form_purchase_service();
-        else if ($form == "admin_add_user_service")
+        if ($form == "admin_add_user_service")
             return $this->form_admin_add_user_service();
         else if ($form == "admin_edit_user_service")
             return $this->form_admin_edit_user_service($data);
@@ -156,7 +154,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
             return $this->form_user_edit_user_service($data);
     }
 
-    private function form_purchase_service()
+    public function form_purchase_service()
     {
         global $heart, $lang, $settings, $user;
 
@@ -230,19 +228,19 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
         $warnings = array();
 
         // Serwer
-        if (!$data['order']['server']) {
-            $warnings['server'] .= "Musisz wybrać serwer na który chcesz wykupić daną usługę.<br />";
-        } else {
+        if (!strlen($data['order']['server']))
+            $warnings['server'] .= $lang['must_choose_server']."<br />";
+        else {
             // Sprawdzanie czy serwer o danym id istnieje w bazie
             $server = $heart->get_server($data['order']['server']);
             if (!$server[$this->service['id']]) {
-                $warnings['server'] .= "Coś jest nie tak, wybrany serwer nie istnieje w bazie lub danej usługi nie można wykupić na tym serwerze oO.<br />";
+                $warnings['server'] .= $lang['must_choose_correct_server']."<br />";
             }
         }
 
         // Wartość usługi
         if (!$data['tariff']) {
-            $warnings['value'] .= "Musisz wybrać ilość / okres trwania usługi.<br />";
+            $warnings['value'] .= $lang['must_choose_amount']."<br />";
         } else {
             // Wyszukiwanie usługi o konkretnej cenie
             $result = $db->query($db->prepare(
@@ -254,7 +252,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
             if (!$db->num_rows($result)) { // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
                 return array(
                     'status' => "no_option",
-                    'text' => "No kurczaki, nie możesz kupić tej usługi za taką kwotę.",
+                    'text' => $lang['service_not_affordable'],
                     'positive' => false
                 );
             } else {

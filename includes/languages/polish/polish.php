@@ -73,9 +73,10 @@ $lang['only_yes_no'] = "Pole może przyjąć tylko wartości: 'TAK' i 'NIE'";
 $lang['edited_user_service'] = "Prawidłowo wyedytowano usługę.";
 $lang['not_edited_user_service'] = "Nie udało się wyedytować usługi.";
 
+$lang['you_arent_logged'] = "Coś tu nie gra, nie jesteś zalogowany/a oO";
+$lang['you_arent_logged_or_no_perm'] = "Coś tu nie gra, nie jesteś zalogowany/a lub nie masz odpowiednich uprawnień oO";
+
 $lang['languages'] = array(
     'polish' => "Polski",
     'english' => "English"
 );
-
-?>

@@ -87,7 +87,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
 
                     // Sprawdzamy, czy usluga wymaga, by użytkownik był zalogowany
                     // Jeżeli wymaga, to to sprawdzamy
-                    if ($service_module->info['must_be_logged'] && !is_logged())
+                    if (class_has_interface($service_module, "IServiceMustBeLogged") && !is_logged())
                         $output = $lang['must_be_logged_in'];
                     // Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
                     else if (!$heart->user_can_use_service($user['uid'], $service_module->service))
@@ -105,10 +105,9 @@ function get_content($element, $withenvelope = true, $separateclass = false)
                         eval("\$output = \"" . get_template("services/short_description") . "\";");
 
                         // Dodajemy wyglad formularza zakupu
-                        if (($content_temp = $service_module->get_form("purchase_service")) !== FALSE) {
-                            $output .= $content_temp;
-                            unset($content_temp);
-                        } else // Nie ma formularza zakupu, to tak jakby strona nie istniała
+                        if (class_has_interface($service_module, "IServicePurchaseWeb"))
+                            $output .= $service_module->form_purchase_service();
+                        else // Nie ma formularza zakupu, to tak jakby strona nie istniała
                             $output = $lang['site_not_exists'];
                     }
                 }

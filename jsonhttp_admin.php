@@ -19,7 +19,7 @@ header("Pragma: no-cache");
 $data = array();
 if ($action == "charge_wallet") {
     if (!get_privilages("manage_users")) {
-        json_output("not_logged_in", "Coś tu nie gra, nie jesteś zalogowany/a lub nie masz uprawnień oO", 0);
+        json_output("not_logged_in", $lang['you_arent_logged_or_no_perm'], 0);
     }
 
     $uid = $_POST['uid'];
@@ -83,7 +83,7 @@ if ($action == "charge_wallet") {
     json_output("charged", "Prawidłowo doładowano konto użytkownika: {$user2['username']} kwotą: {$amount} {$settings['currency']}", 1);
 } else if ($action == "add_user_service") {
     if (!get_privilages("manage_player_services")) {
-        json_output("not_logged_in", "Coś tu nie gra, nie jesteś zalogowany/a lub nie masz uprawnień oO", 0);
+        json_output("not_logged_in", $lang['you_arent_logged_or_no_perm'], 0);
     }
 
     // Brak usługi
@@ -113,7 +113,7 @@ if ($action == "charge_wallet") {
     json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
 } else if ($action == "edit_user_service") {
     if (!get_privilages("manage_player_services")) {
-        json_output("not_logged_in", "Coś tu nie gra, nie jesteś zalogowany/a lub nie masz uprawnień oO", 0);
+        json_output("not_logged_in", $lang['you_arent_logged_or_no_perm'], 0);
     }
 
     // Brak usługi

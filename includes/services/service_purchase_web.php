@@ -4,6 +4,13 @@ interface IServicePurchaseWeb
 {
 
     /**
+     * Metoda powinna zwracać formularz zakupu w postaci stringa
+     *
+     * @return string   - Formularz zakupu
+     */
+    public function form_purchase_service();
+
+    /**
      * Metoda wywoływana, gdy użytkownik wprowadzi dane w formularzu zakupu
      * i trzeba sprawdzić, czy są one prawidłowe
      *
