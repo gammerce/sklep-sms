@@ -29,8 +29,8 @@ switch ($action) {
         $stylesheets[] = "{$settings['shop_url_slash']}styles/extra_stuff/long_desc.css?version=" . VERSION;
         $scripts = array_unique($scripts);
         $stylesheets = array_unique($stylesheets);
-        foreach($scripts as $key => $script) $scripts[$key] = "<script type=\"text/javascript\" src=\"$script\"></script>";
-        foreach($stylesheets as $key => $stylesheet) $stylesheets[$key] = "<link href=\"$stylesheet\" rel=\"stylesheet\" />";
+        foreach($scripts as $key => $script) $scripts[$key] = "<script type=\"text/javascript\" src=\"{$script}\"></script>";
+        foreach($stylesheets as $key => $stylesheet) $stylesheets[$key] = "<link href=\"{$stylesheet}\" rel=\"stylesheet\" />";
         $scripts = implode("\n", $scripts);
         $stylesheets = implode("\n", $stylesheets);
         eval("\$header = \"" . get_template("header") . "\";");
