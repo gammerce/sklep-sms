@@ -51,7 +51,7 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase
             // Sprawdzanie czy serwer o danym id istnieje w bazie
             $server = $heart->get_server($data['order']['server']);
             if (!$server[$this->service['id']])
-                $warnings['server'] .= $lang['must_choose_correct_server']."<br />";
+                $warnings['server'] .= $lang['chosen_incorrect_server']."<br />";
         }
 
         // Wartość usługi

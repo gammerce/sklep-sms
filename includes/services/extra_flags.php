@@ -137,11 +137,11 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
         $this->service['flags_hsafe'] = htmlspecialchars($this->service['flags']);
 
         // Dodajemy do strony skrypt js
-        $scripts[] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/services/extra_flags.js?version=" . VERSION . "\"></script>";
+        $scripts[] = "{$settings['shop_url_slash']}jscripts/services/extra_flags.js?version=" . VERSION;
         if ($G_PID == "take_over_service")
-            $scripts[] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/services/extra_flags_take_over.js?version=" . VERSION . "\"></script>";
+            $scripts[] = "{$settings['shop_url_slash']}jscripts/services/extra_flags_take_over.js?version=" . VERSION;
         // Dodajemy szablon css
-        $stylesheets[] = "<link href=\"{$settings['shop_url_slash']}styles/services/extra_flags.css?version=" . VERSION . "\" rel=\"stylesheet\" />";
+        $stylesheets[] = "{$settings['shop_url_slash']}styles/services/extra_flags.css?version=" . VERSION;
     }
 
     public function get_form($form, $data)
@@ -234,7 +234,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
             // Sprawdzanie czy serwer o danym id istnieje w bazie
             $server = $heart->get_server($data['order']['server']);
             if (!$server[$this->service['id']]) {
-                $warnings['server'] .= $lang['must_choose_correct_server']."<br />";
+                $warnings['server'] .= $lang['chosen_incorrect_server']."<br />";
             }
         }
 
@@ -263,9 +263,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
         // Typ usługi
         // Mogą być tylko 3 rodzaje typu
         if (!($data['order']['type'] & (TYPE_NICK | TYPE_IP | TYPE_SID))) {
-            $warnings['type'] .= "Musisz wybrać typ zakupu<br />";
+            $warnings['type'] .= $lang['must_choose_type']."<br />";
         } else if (!($this->service['types'] & $data['order']['type'])) {
-            $warnings['type'] .= "Wybrano niedozwolony typ zakupu.<br />";
+            $warnings['type'] .= $lang['chosen_incorrect_type']."<br />";
         } else if ($data['order']['type'] & (TYPE_NICK | TYPE_IP)) {
             // Nick
             if ($data['order']['type'] == TYPE_NICK) {
@@ -298,14 +298,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
                 $warnings['password'] = $warning;
             }
             if ($data['order']['password'] != $data['order']['passwordr']) {
-                $warnings['password_repeat'] .= "Podane hasła różnią się.<br />";
+                $warnings['password_repeat'] .= $lang['passwords_not_match']."<br />";
             }
 
             // Sprawdzanie czy istnieje już taka usługa
             if ($temp_password = $db->get_column($query, 'password')) {
                 // TODO: Usunąć md5 w przyszłości
                 if ($temp_password != $data['order']['password'] && $temp_password != md5($data['order']['password'])) {
-                    $warnings['password'] .= "Istnieje już usługa wykupiona na te dane (nick/ip) lecz posiada inne hasło.<br />";
+                    $warnings['password'] .= $lang['existing_service_has_different_password']."<br />";
                 }
             }
             unset($temp_password);
@@ -372,6 +372,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
             $password = "<strong>{$lang['password']}</strong>: " . htmlspecialchars($data['order']['password']) . "<br />";
         $data['order']['email'] = $data['order']['email'] ? htmlspecialchars($data['order']['email']) : $lang['none'];
         $data['order']['auth_data'] = htmlspecialchars($data['order']['auth_data']);
+        $amount = $data['order']['amount'] != -1 ? "{$data['order']['amount']} {$this->service['tag']}" : $lang['forever'];
 
         eval("\$output = \"" . get_template("services/extra_flags/order_details", 0, 1, 0) . "\";");
         return $output;
@@ -386,7 +387,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
         // Dodanie informacji o zakupie usługi
         return add_bought_service_info($data['user']['uid'], $data['user']['username'], $data['user']['ip'], $data['transaction']['method'],
             $data['transaction']['payment_id'], $this->service['id'], $data['order']['server'], $data['order']['amount'],  $data['order']['auth_data'],
-            $data['user']['email'], array('type' => $data['order']['type'], 'password' => $data['order']['password']), $data['order']['forever']);
+            $data['user']['email'], array('type' => $data['order']['type'], 'password' => $data['order']['password'])
+        );
     }
 
     private function add_player_flags($uid, $type, $auth_data, $password, $days, $server, $forever=false)
@@ -486,7 +488,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
         $data['extra_data']['type_name'] = get_type_name2($data['extra_data']['type']);
         if ($data['extra_data']['password'] != "")
             $password = "<strong>{$lang['password']}</strong>: " . htmlspecialchars($data['extra_data']['password']) . "<br />";
-        $data['amount'] = $data['amount'] . " " . $this->service['tag'];
+        $amount = $data['amount'] != -1 ? "{$data['amount']} {$this->service['tag']}" : $lang['forever'];
         $data['auth_data'] = htmlspecialchars($data['auth_data']);
         $data['extra_data']['password'] = htmlspecialchars($data['extra_data']['password']);
         $data['email'] = htmlspecialchars($data['email']);
@@ -504,16 +506,15 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
         if ($data['extra_data']['type'] & (TYPE_NICK | TYPE_IP))
             $setinfo = newsprintf($lang['type_setinfo'], htmlspecialchars($data['extra_data']['password']));
 
-        if ($action == "email") {
+        if ($action == "email")
             eval("\$output = \"" . get_template("services/extra_flags/purchase_info_web", false, true, false) . "\";");
-        } else if ($action == "web") {
+        else if ($action == "web")
             eval("\$output = \"" . get_template("services/extra_flags/purchase_info_web", false, true, false) . "\";");
-        } else if ($action == "payment_log") {
+        else if ($action == "payment_log")
             return array(
                 'text' => $output = newsprintf($lang['service_was_bought'], $this->service['name'], $server['name']),
                 'class' => "outcome"
             );
-        }
 
         return $output;
     }
@@ -571,8 +572,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
         eval("\$output['text'] = \"" . get_template("services/extra_flags/admin_add_user_service", 0, 1, 0) . "\";");
 
-        //$output['scripts'] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/services/extra_flags.js?version=" . VERSION . "\"></script>";
-        $output['scripts'] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/services/extra_flags_add_user_service.js?version=" . VERSION . "\"></script>";
+        $output['scripts'] = "{$settings['shop_url_slash']}jscripts/services/extra_flags_add_user_service.js?version=" . VERSION;
 
         return json_encode($output);
     }
@@ -897,8 +897,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
         unset($temp_server);
 
         // Dodajemy skrypty
-        $scripts[] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/services/extra_flags.js?version=" . VERSION . "\"></script>";
-        $scripts[] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/services/extra_flags_user_edit_service.js?version=" . VERSION . "\"></script>";
+        $scripts[] = "{$settings['shop_url_slash']}jscripts/services/extra_flags.js?version=" . VERSION;
+        $scripts[] = "{$settings['shop_url_slash']}jscripts/services/extra_flags_user_edit_service.js?version=" . VERSION;
 
         $module_id = $this::MODULE_ID;
         eval("\$output = \"" . get_template("services/extra_flags/my_service") . "\";");
@@ -1270,6 +1270,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
         while ($row = $db->fetch_array_assoc($result)) {
             $sms_cost = get_sms_cost($row['sms_number']) * $settings['vat'];
+            $amount = $row['amount'] != -1 ? "{$row['amount']} {$this->service['tag']}" : $lang['forever'];
             eval("\$values .= \"" . get_template("services/extra_flags/purchase_value", false, true, false) . "\";");
         }
 

@@ -20,9 +20,9 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IServiceP
         parent::__construct($service);
 
         // Dodajemy skrypt js
-        $scripts[] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/services/charge_wallet.js?version=" . VERSION . "\"></script>";
+        $scripts[] = "{$settings['shop_url_slash']}jscripts/services/charge_wallet.js?version=" . VERSION;
         // Dodajemy szablon css
-        $stylesheets[] = "<link href=\"{$settings['shop_url_slash']}styles/services/charge_wallet.css?version=" . VERSION . "\" rel=\"stylesheet\" />";
+        $stylesheets[] = "{$settings['shop_url_slash']}styles/services/charge_wallet.css?version=" . VERSION;
     }
 
     public function form_purchase_service()

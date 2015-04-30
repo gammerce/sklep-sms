@@ -30,8 +30,8 @@ function purchase_service(method) {
             action: "validate_payment_form",
             method: method,
             sms_code: $("#sms_code").val(),
-            purchase_data: purchase_data,
-            purchase_sign: purchase_sign
+            purchase_data: $("#payment [name=purchase_data]").val(),
+            purchase_sign: $("#payment [name=purchase_sign]").val()
         },
         complete: function () {
             loader.hide();
@@ -77,6 +77,9 @@ function purchase_service(method) {
                         value: value
                     }));
                 });
+
+                // Bez tego nie dziala pod firefoxem
+                $('body').append(form);
 
                 // Wysyłamy formularz zakupu
                 form.submit();

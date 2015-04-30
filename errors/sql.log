@@ -3,3 +3,5 @@
 2015-04-26 23:35: INSERT INTO ss_pricelist (service,tariff,amount,server) VALUES( 'vip', '25', '-1', '-1' )
 
 2015-04-26 23:36: INSERT INTO ss_pricelist (service,tariff,amount,server) VALUES( 'vip', '6', '-1', '-1' )
+
+2015-04-30 14:21: DELETE FROM `ss_players_services` WHERE `id` IN ()

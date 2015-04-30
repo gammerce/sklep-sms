@@ -10,6 +10,7 @@ $lang['none'] = "Brak";
 $lang['bought_date'] = "Data zakupu";
 $lang['no_data'] = "Brak danych";
 $lang['choose_option'] = "Wybierz opcję";
+$lang['forever'] = "Na zawsze";
 
 $lang['days'] = "dni";
 $lang['hours'] = "godzin";

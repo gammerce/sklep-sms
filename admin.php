@@ -8,7 +8,7 @@ require_once SCRIPT_ROOT . "includes/functions_admin_content.php";
 
 // Uzytkownik nie jest zalogowany
 if (!is_logged() || !$user['privilages']['acp']) {
-    $stylesheets[] = "<link href=\"{$settings['shop_url_slash']}styles/admin/style_login.css?version=" . VERSION . "\" rel=\"stylesheet\" />";
+    $stylesheets[] = "{$settings['shop_url_slash']}styles/admin/style_login.css?version=" . VERSION;
 
     if (isset($_SESSION['info'])) {
         if ($_SESSION['info'] == "wrong_data") {
@@ -22,8 +22,12 @@ if (!is_logged() || !$user['privilages']['acp']) {
     }
 
     // Pobranie headera
-    $scripts = implode("\n", array_unique($scripts));
-    $stylesheets = implode("\n", array_unique($stylesheets));
+    $scripts = array_unique($scripts);
+    $stylesheets = array_unique($stylesheets);
+    foreach($scripts as $key => $script) $scripts[$key] = "<script type=\"text/javascript\" src=\"$script\"></script>";
+    foreach($stylesheets as $key => $stylesheet) $stylesheets[$key] = "<link href=\"$stylesheet\" rel=\"stylesheet\" />";
+    $scripts = implode("\n", $scripts);
+    $stylesheets = implode("\n", $stylesheets);
     eval("\$header = \"" . get_template("admin/header") . "\";");
 
     $get_data = "";
@@ -42,42 +46,42 @@ if (!is_logged() || !$user['privilages']['acp']) {
 // Dodanie stylów oraz skryptów używanych na danej stronie
 switch ($G_PID) {
     case "main_content":
-        $stylesheets[] = "<link href=\"{$settings['shop_url_slash']}styles/admin/style_main.css?version=" . VERSION . "\" rel=\"stylesheet\" />";
+        $stylesheets[] = "{$settings['shop_url_slash']}styles/admin/style_main.css?version=" . VERSION;
     case "users":
-        $scripts[] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/admin/users.js?version=" . VERSION . "\"></script>";
+        $scripts[] = "{$settings['shop_url_slash']}jscripts/admin/users.js?version=" . VERSION;
         break;
     case "settings":
-        $scripts[] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/admin/settings.js?version=" . VERSION . "\"></script>";
+        $scripts[] = "{$settings['shop_url_slash']}jscripts/admin/settings.js?version=" . VERSION;
         break;
     case "groups":
-        $scripts[] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/admin/groups.js?version=" . VERSION . "\"></script>";
+        $scripts[] = "{$settings['shop_url_slash']}jscripts/admin/groups.js?version=" . VERSION;
         break;
     case "antispam_questions":
-        $scripts[] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/admin/antispam_questions.js?version=" . VERSION . "\"></script>";
+        $scripts[] = "{$settings['shop_url_slash']}jscripts/admin/antispam_questions.js?version=" . VERSION;
         break;
     case "transaction_services":
-        $scripts[] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/admin/transaction_services.js?version=" . VERSION . "\"></script>";
+        $scripts[] = "{$settings['shop_url_slash']}jscripts/admin/transaction_services.js?version=" . VERSION;
         break;
     case "services":
-        $scripts[] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/admin/services.js?version=" . VERSION . "\"></script>";
+        $scripts[] = "{$settings['shop_url_slash']}jscripts/admin/services.js?version=" . VERSION;
         break;
     case "servers":
-        $scripts[] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/admin/servers.js?version=" . VERSION . "\"></script>";
+        $scripts[] = "{$settings['shop_url_slash']}jscripts/admin/servers.js?version=" . VERSION;
         break;
     case "tariffs":
-        $scripts[] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/admin/tariffs.js?version=" . VERSION . "\"></script>";
+        $scripts[] = "{$settings['shop_url_slash']}jscripts/admin/tariffs.js?version=" . VERSION;
         break;
     case "pricelist":
-        $scripts[] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/admin/pricelist.js?version=" . VERSION . "\"></script>";
+        $scripts[] = "{$settings['shop_url_slash']}jscripts/admin/pricelist.js?version=" . VERSION;
         break;
     case "sms_codes":
-        $scripts[] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/admin/sms_codes.js?version=" . VERSION . "\"></script>";
+        $scripts[] = "{$settings['shop_url_slash']}jscripts/admin/sms_codes.js?version=" . VERSION;
         break;
     case "logs":
-        $scripts[] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/admin/logs.js?version=" . VERSION . "\"></script>";
+        $scripts[] = "{$settings['shop_url_slash']}jscripts/admin/logs.js?version=" . VERSION;
         break;
     case "players_services":
-        $scripts[] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/admin/players_services.js?version=" . VERSION . "\"></script>";
+        $scripts[] = "{$settings['shop_url_slash']}jscripts/admin/players_services.js?version=" . VERSION;
         break;
 }
 
@@ -199,8 +203,13 @@ if (get_privilages("view_logs")) {
 }
 
 // Pobranie headera
-$scripts = implode("\n", array_unique($scripts));
-$stylesheets = implode("\n", array_unique($stylesheets));
+$scripts = array_unique($scripts);
+$stylesheets = array_unique($stylesheets);
+foreach($scripts as $key => $script) $scripts[$key] = "<script type=\"text/javascript\" src=\"$script\"></script>";
+foreach($stylesheets as $key => $stylesheet) $stylesheets[$key] = "<link href=\"$stylesheet\" rel=\"stylesheet\" />";
+$scripts = implode("\n", $scripts);
+$stylesheets = implode("\n", $stylesheets);
+
 eval("\$header = \"" . get_template("admin/header") . "\";");
 
 // Pobranie ostatecznego szablonu

@@ -593,7 +593,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
             $title = $lang['players_services'];
             eval("\$output = \"" . get_template("admin/table_structure") . "\";");
 
-            $scripts[] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/services/extra_flags.js?version=" . VERSION . "\"></script>";
+            $scripts[] = "{$settings['shop_url_slash']}jscripts/services/extra_flags.js?version=" . VERSION;
 
             break;
 
@@ -621,12 +621,16 @@ function get_content($element, $withenvelope = true, $separateclass = false)
                 //$row['platform'] = htmlspecialchars($row['platform']);
                 $row['auth_data'] = htmlspecialchars($row['auth_data']);
                 $row['email'] = htmlspecialchars($row['email']);
+                $username = htmlspecialchars($row['username']);
 
                 // Pobranie danych o usłudze, która została kupiona
                 $service = $heart->get_service($row['service']);
 
                 // Pobranie danych o serwerze na ktorym zostala wykupiona usługa
                 $server = $heart->get_server($row['server']);
+
+                // Przerobienie ilosci
+                $amount = $row['amount'] != -1 ? "{$row['amount']} {$service['tag']}" : $lang['forever'];
 
                 // Rozkulbaczenie extra daty
                 $row['extra_data'] = json_decode($row['extra_data'], true);

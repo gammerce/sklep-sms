@@ -3,8 +3,6 @@ $(document).delegate("#form_purchase", "submit", function (e) {
     e.preventDefault();
 });
 
-var purchase_data, purchase_sign;
-
 $(document).delegate("#go_to_payment", "click", function () {
     if (loader.blocked)
         return;
@@ -32,12 +30,8 @@ $(document).delegate("#go_to_payment", "click", function () {
                 });
             }
             else if (jsonObj.return_id == "validated") {
-                purchase_data = jsonObj.data; // Tak musi byc, bo inaczej nie bedzie dzialac
-                purchase_sign = jsonObj.sign;
-                // Zmiana zawartosci okienka content na płatność za zakupy
-                fetch_data("payment_form", false, {data: purchase_data, sign: purchase_sign}, function (message) {
-                    $("#content").html(message);
-                });
+                // Przechodzimy do płatności
+                go_to_payment(jsonObj.data, jsonObj.sign);
             }
             else if (!jsonObj.return_id) {
                 show_info(lang['sth_went_wrong'], false);

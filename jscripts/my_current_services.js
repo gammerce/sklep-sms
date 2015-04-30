@@ -26,8 +26,6 @@ $(document).delegate("#my_current_services .edit_row", "click", function () {
     });
 });
 
-var purchase_data, purchase_sign;
-
 // Wyedytowanie usługi
 $(document).delegate("#my_current_services .row", "submit", function (e) {
     e.preventDefault();
@@ -71,12 +69,8 @@ $(document).delegate("#my_current_services .row", "submit", function (e) {
                 refresh_brick("content");
             }
             else if (jsonObj.return_id == "payment") {
-                purchase_data = jsonObj.data; // Tak musi byc, bo inaczej nie bedzie dzialac
-                purchase_sign = jsonObj.sign;
-                // Zmiana zawartosci okienka content na płatność za zakupy
-                fetch_data("payment_form", false, {data: purchase_data, sign: purchase_sign}, function (message) {
-                    $("#content").html(message);
-                });
+                // Przechodzimy do płatności
+                go_to_payment(jsonObj.data, jsonObj.sign);
             }
 
             // Wyświetlenie zwróconego info
