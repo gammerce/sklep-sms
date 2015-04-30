@@ -546,7 +546,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
     //
     private function form_admin_add_user_service()
     {
-        global $heart, $settings;
+        global $heart, $settings, $lang;
 
         // Pobieramy listę typów usługi, (1<<2) ostatni typ
         $types = "";
@@ -572,7 +572,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
         eval("\$output['text'] = \"" . get_template("services/extra_flags/admin_add_user_service", 0, 1, 0) . "\";");
 
-        $output['scripts'] = "{$settings['shop_url_slash']}jscripts/services/extra_flags_add_user_service.js?version=" . VERSION;
+        $output['scripts'] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/services/extra_flags_add_user_service.js?version=" . VERSION . "\"></script>";
 
         return json_encode($output);
     }
@@ -659,7 +659,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
     //
     private function form_admin_edit_user_service($player_service)
     {
-        global $heart, $settings;
+        global $heart, $settings, $lang;
 
         // Pobranie usług
         $services = "";

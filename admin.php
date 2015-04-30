@@ -24,8 +24,8 @@ if (!is_logged() || !$user['privilages']['acp']) {
     // Pobranie headera
     $scripts = array_unique($scripts);
     $stylesheets = array_unique($stylesheets);
-    foreach($scripts as $key => $script) $scripts[$key] = "<script type=\"text/javascript\" src=\"$script\"></script>";
-    foreach($stylesheets as $key => $stylesheet) $stylesheets[$key] = "<link href=\"$stylesheet\" rel=\"stylesheet\" />";
+    foreach($scripts as $key => $script) $scripts[$key] = "<script type=\"text/javascript\" src=\"{$script}\"></script>";
+    foreach($stylesheets as $key => $stylesheet) $stylesheets[$key] = "<link href=\"{$stylesheet}\" rel=\"stylesheet\" />";
     $scripts = implode("\n", $scripts);
     $stylesheets = implode("\n", $stylesheets);
     eval("\$header = \"" . get_template("admin/header") . "\";");
@@ -205,8 +205,8 @@ if (get_privilages("view_logs")) {
 // Pobranie headera
 $scripts = array_unique($scripts);
 $stylesheets = array_unique($stylesheets);
-foreach($scripts as $key => $script) $scripts[$key] = "<script type=\"text/javascript\" src=\"$script\"></script>";
-foreach($stylesheets as $key => $stylesheet) $stylesheets[$key] = "<link href=\"$stylesheet\" rel=\"stylesheet\" />";
+foreach($scripts as $key => $script) $scripts[$key] = "<script type=\"text/javascript\" src=\"{$script}\"></script>";
+foreach($stylesheets as $key => $stylesheet) $stylesheets[$key] = "<link href=\"{$stylesheet}\" rel=\"stylesheet\" />";
 $scripts = implode("\n", $scripts);
 $stylesheets = implode("\n", $stylesheets);
 
