@@ -200,7 +200,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
                 $services_options = "";
                 $services = $heart->get_services();
                 foreach($services as $service) {
-                    if( ( $service_module = $heart->get_service_module($service['id']) ) == NULL )
+                    if( ( $service_module = $heart->get_service_module($service['id']) ) === NULL )
                         continue;
 
                     // Moduł danej usługi nie zezwala na jej przejmowanie

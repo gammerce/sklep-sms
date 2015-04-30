@@ -826,13 +826,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
         }
     }
 
-    //
-    // Funkcja wywoływana przy usuwaniu usługi gracza
-    //
-    public function delete_player_service($player_service)
+    public function delete_player_service_post($player_service)
     {
-        global $db;
-
         // Odśwież flagi gracza
         $this->recalculate_player_flags($player_service['server'], $player_service['type'], $player_service['auth_data']);
     }

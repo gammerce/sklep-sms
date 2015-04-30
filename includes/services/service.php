@@ -53,7 +53,7 @@ abstract class Service
      * @param array $data Dane $_POST
      * @return string        Treść formularza
      */
-    public function get_form($form, $data)
+    public function get_form($form, $data=array())
     {
         return FALSE;
     }
@@ -109,8 +109,19 @@ abstract class Service
      * Metoda wywoływana przy usuwaniu usługi gracza.
      *
      * @param array $player_service Dane o usłudze z bazy danych
+     * @return boolean
      */
     public function delete_player_service($player_service)
+    {
+        return true;
+    }
+
+    /**
+     * Metoda wywoływana po usunięciu usługi gracza.
+     *
+     * @param array $player_service Dane o usłudze z bazy danych
+     */
+    public function delete_player_service_post($player_service)
     {
     }
 

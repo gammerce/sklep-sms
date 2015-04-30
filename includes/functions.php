@@ -460,21 +460,35 @@ function delete_players_old_services()
     // Pierwsze pobieramy te, które usuniemy
     // Potem je usuwamy, a następnie wywołujemy akcje na module
     $result = $db->query(
-        "SELECT `server`, `type`, `auth_data`, `service` " .
+        "SELECT `id`, `server`, `type`, `auth_data`, `service`, `expire`, UNIX_TIMESTAMP() as `now` " .
         "FROM `" . TABLE_PREFIX . "players_services` " .
         "WHERE `expire` < UNIX_TIMESTAMP() AND `expire` != '-1'"
     );
-    $db->query(
-        "DELETE FROM `" . TABLE_PREFIX . "players_services` " .
-        "WHERE `expire` < UNIX_TIMESTAMP() AND `expire` != '-1'"
-    );
+
+    $delete_ids = array();
+    $players_services = array();
     while ($row = $db->fetch_array_assoc($result)) {
         log_info("AUTOMAT: Usunięto wygasłą usługę gracza. Auth Data: {$row['auth_data']} " .
             "Serwer: {$row['server']} Usługa: {$row['service']} Typ: " . get_type_name($row['type']));
-        if (is_null($service_module = $heart->get_service_module($row['service'])))
+        if (($service_module = $heart->get_service_module($row['service'])) === NULL)
             continue;
 
-        $service_module->delete_player_service($row);
+        if( $service_module->delete_player_service($row) ) {
+            $delete_ids[] = $row['id'];
+            $players_services[] = $row;
+        }
+    }
+
+    // Usuwamy usugi ktre zwróciły true
+    $db->query($db->prepare(
+        "DELETE FROM `" . TABLE_PREFIX . "players_services` " .
+        "WHERE `id` IN (%s)",
+        array(implode(", ", $delete_ids))
+    ));
+
+    // Wywołujemy akcje po usunieciu
+    foreach($players_services as $player_service) {
+        $service_module->delete_player_service_post($player_service);
     }
 
     // Usunięcie przestarzałych flag graczy
@@ -787,6 +801,7 @@ function searchWhere($search_ids, $search, &$where)
 /**
  * @param $url - adres url
  * @param int $timeout - po jakim czasie ma przerwać
+ * @return string
  */
 function curl_get_contents($url, $timeout=10) {
     $curl = curl_init();

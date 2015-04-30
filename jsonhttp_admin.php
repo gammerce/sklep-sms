@@ -194,9 +194,8 @@ if ($action == "charge_wallet") {
     }
 
     $output = "";
-    if (!is_null($service_module = $heart->get_service_module($_POST['service']))) {
+    if (($service_module = $heart->get_service_module($_POST['service'])) !== NULL)
         $output = $service_module->get_form("admin_add_user_service");
-    }
 
     output_page($output, "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "add_antispam_question" || $action == "edit_antispam_question") {
