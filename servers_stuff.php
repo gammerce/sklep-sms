@@ -57,7 +57,7 @@ if ($action == "purchase_service") {
     if (isset($return_validation['data']['warnings'])) {
         $warnings = $extra_data = "";
         foreach ($return_validation['data']['warnings'] as $what => $text) {
-            $warnings .= "<b>{$what}</b><br />{$text}<br />";
+            $warnings .= "<strong>{$what}</strong><br />{$text}<br />";
         }
         if ($warnings != "")
             $extra_data .= "<warnings>{$warnings}</warnings>";
@@ -79,7 +79,7 @@ if ($action == "purchase_service") {
     if (isset($return_payment['data']['warnings'])) {
         $warnings = "";
         foreach ($return_payment['data']['warnings'] as $what => $text) {
-            $warnings .= "<b>{$what}</b><br />{$text}<br />";
+            $warnings .= "<strong>{$what}</strong><br />{$text}<br />";
         }
         if ($warnings != "")
             $extra_data .= "<warnings>{$warnings}</warnings>";
@@ -87,5 +87,3 @@ if ($action == "purchase_service") {
 
     xml_output($return_payment['status'], $return_payment['text'], $return_payment['positive'], $extra_data);
 }
-
-?>

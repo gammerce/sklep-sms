@@ -33,18 +33,22 @@ class Payment
         // Serwis płatności nie obsługuje płatności SMS
         if (!$this->payment_api->data['sms']) {
             return array(
-                'sms_return' => "NO_SMS_SERVE",
+                'status' => "NO_SMS_SERVE",
                 'text' => json_encode($this->payment_api->data)//$lang['sms']['info']['no_sms_serve']
             );
         }
 
-        $sms_number = $this->payment_api->smses[$tariff]['number'];
-        $sms_return = $this->payment_api->verify_sms($sms_code, $sms_number);
+        if (class_has_interface($this->payment_api, "IPaymentSMS")) {
+            $sms_number = $this->payment_api->smses[$tariff]['number'];
+            $sms_return = $this->payment_api->verify_sms($sms_code, $sms_number);
+        }
+        else // Nie przerywamy jeszcze, bo chcemy sprawdzic czy nie ma takiego SMSa do wykrozystania w bazie
+            $sms_return['status'] = "NO_SMS_SERVE";
 
         // Jezeli weryfikacja smsa nie zwrocila, ze kod zostal prawidlowo zweryfikowany
         // ani, że sms został wysłany na błędny numer,
         // to sprawdzamy czy kod jest w bazie kodów do wykorzystania
-        if (!in_array($sms_return['status'], array("BAD_NUMBER", "OK"))) {
+        if (!isset($sms_return) || !in_array($sms_return['status'], array("BAD_NUMBER", "OK"))) {
             $result = $db->query($db->prepare(
                 "SELECT * FROM `" . TABLE_PREFIX . "sms_codes` " .
                 "WHERE `code` = '%s' AND `tariff` = '%d'",
@@ -57,8 +61,8 @@ class Payment
 
                 // Usuwamy kod z listy kodow do wykorzystania
                 $db->query($db->prepare(
-                    "DELETE FROM " . TABLE_PREFIX . "sms_codes " .
-                    "WHERE id='%d'",
+                    "DELETE FROM `" . TABLE_PREFIX . "sms_codes` " .
+                    "WHERE `id` = '%d'",
                     array($db_code['id'])
                 ));
                 // Ustawienie wartości, jakby kod był prawidłowy
@@ -82,16 +86,15 @@ class Payment
         else if ($sms_return['status'] == "BAD_NUMBER" && isset($sms_return['tariff'])) {
             // Dodajemy kod do listy kodów do wykorzystania
             $db->query($db->prepare(
-                "INSERT INTO " . TABLE_PREFIX . "sms_codes " .
+                "INSERT INTO `" . TABLE_PREFIX . "sms_codes` " .
                 "SET `code` = '%s', `tariff` = '%d', `free` = '0'",
                 array($sms_code, $sms_return['tariff'])
             ));
 
             log_info(newsprintf($lang['add_code_to_reuse'], $sms_code, $sms_return['tariff'], $user['username'], $user['uid'], $user['ip'], $tariff));
-        } else {
+        } else if( $sms_return['status'] != "NO_SMS_SERVE" )
             log_info(newsprintf($lang['bad_sms_code_used'], $user['username'], $user['uid'], $user['ip'], $sms_code,
                 $this->payment_api->data['sms_text'], $sms_number, $sms_return['status']));
-        }
 
         switch ($sms_return['status']) {
             // Prawidłowy kod zwrotny
@@ -134,10 +137,10 @@ class Payment
                 $output['text'] = $lang['sms']['info']['no_sms_serve'];
                 break;
             default:
-                $output['text'] = $lang['sms']['info']['dunno'];
+                $output['text'] = if_isset($output['text'], $lang['sms']['info']['dunno']);
         }
 
-        $output['sms_return'] = $sms_return['status'];
+        $output['status'] = $sms_return['status'];
         return $output;
     }
 
@@ -148,17 +151,30 @@ class Payment
         // Serwis płatności nie obsługuje płatności przelewem
         if (!$this->payment_api->data['transfer']) {
             return array(
-                'sms_return' => "NO_TRANSFER_SERVE",
-                'text' => $lang['sms']['info']['no_transfer_serve']
+                'status' => "NO_TRANSFER_SERVE",
+                'text' => $lang['no_transfer_serve']
             );
         }
 
+        if (!class_has_interface($this->payment_api, "IPaymentTransfer"))
+            return array(
+                'status' => "NO_TRANSFER_SERVE",
+                'text' => $lang['no_transfer_serve']
+            );
+
+        // Dodajemy extra info
         $data['platform'] = $this->platform;
         $data['uid'] = $user['uid'];
         $data['ip'] = $user['ip'];
         $data['forename'] = $user['forename'];
         $data['surname'] = $user['surname'];
-        return $this->payment_api->prepare_transfer($data);
+
+        return array(
+            'status' => "transfer",
+            'text' => $lang['transfer_ok'],
+            'positive' => true,
+            'data' => array('data' => $this->payment_api->prepare_transfer($data)) // Przygotowuje dane płatności transferem
+        );
     }
 
     public function get_provision_by_tariff($tariff)

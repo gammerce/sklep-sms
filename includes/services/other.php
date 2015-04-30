@@ -45,20 +45,20 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase
 
         // Serwer
         $server = array();
-        if (!$data['order']['server']) {
-            $warnings['server'] .= "Musisz wybrać serwer na który chcesz wykupić daną usługę.<br />";
-        } else {
+        if (!strlen($data['order']['server']))
+            $warnings['server'] .= $lang['must_choose_server'] . "<br />";
+        else {
             // Sprawdzanie czy serwer o danym id istnieje w bazie
             $server = $heart->get_server($data['order']['server']);
             if (!$server[$this->service['id']])
-                $warnings['server'] .= "Coś jest nie tak, wybrany serwer nie istnieje w bazie lub danej usługi nie można wykupić na tym serwerze oO.<br />";
+                $warnings['server'] .= $lang['chosen_incorrect_server']."<br />";
         }
 
         // Wartość usługi
         $price = array();
-        if (!$data['tariff']) {
-            $warnings['value'] .= "Musisz wybrać ilość usługi.<br />";
-        } else {
+        if (!strlen($data['tariff']))
+            $warnings['value'] .= $lang['must_choose_amount']."<br />";
+        else {
             // Wyszukiwanie usługi o konkretnej cenie
             $result = $db->query($db->prepare(
                 "SELECT * FROM `" . TABLE_PREFIX . "pricelist` " .
@@ -69,7 +69,7 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase
             if (!$db->num_rows($result)) // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
                 return array(
                     'status' => "no_option",
-                    'text' => "No kurczaki, nie możesz kupić tej usługi za taką kwotę.",
+                    'text' => $lang['service_not_affordable'],
                     'positive' => false
                 );
 
@@ -124,7 +124,8 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase
         // Dodanie informacji o zakupie usługi
         return add_bought_service_info($data['user']['uid'], $data['user']['username'], $data['user']['ip'], $data['transaction']['method'],
             $data['transaction']['payment_id'], $this->service['id'], $data['order']['server'], $data['order']['amount'],
-            $data['order']['auth_data'], $data['user']['email']);
+            $data['order']['auth_data'], $data['user']['email']
+        );
     }
 
     //

@@ -14,5 +14,3 @@ $lang['mysqli']['query_error'] = "Could not query database!";
 $lang['mysqli']['no_query_num_rows'] = "Could not get number of rows because no query id was supplied!";
 $lang['mysqli']['no_query_fetch_array'] = "Could not fetch array because no query id was supplied!";
 $lang['mysqli']['no_query_fetch_array_assoc'] = "Could not fetch array assoc because no query id was supplied!";
-
-?>

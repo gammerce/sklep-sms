@@ -19,7 +19,7 @@ header("Pragma: no-cache");
 $data = array();
 if ($action == "charge_wallet") {
     if (!get_privilages("manage_users")) {
-        json_output("not_logged_in", "Coś tu nie gra, nie jesteś zalogowany/a lub nie masz uprawnień oO", 0);
+        json_output("not_logged_in", $lang['you_arent_logged_or_no_perm'], 0);
     }
 
     $uid = $_POST['uid'];
@@ -83,7 +83,7 @@ if ($action == "charge_wallet") {
     json_output("charged", "Prawidłowo doładowano konto użytkownika: {$user2['username']} kwotą: {$amount} {$settings['currency']}", 1);
 } else if ($action == "add_user_service") {
     if (!get_privilages("manage_player_services")) {
-        json_output("not_logged_in", "Coś tu nie gra, nie jesteś zalogowany/a lub nie masz uprawnień oO", 0);
+        json_output("not_logged_in", $lang['you_arent_logged_or_no_perm'], 0);
     }
 
     // Brak usługi
@@ -113,7 +113,7 @@ if ($action == "charge_wallet") {
     json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
 } else if ($action == "edit_user_service") {
     if (!get_privilages("manage_player_services")) {
-        json_output("not_logged_in", "Coś tu nie gra, nie jesteś zalogowany/a lub nie masz uprawnień oO", 0);
+        json_output("not_logged_in", $lang['you_arent_logged_or_no_perm'], 0);
     }
 
     // Brak usługi
@@ -158,7 +158,7 @@ if ($action == "charge_wallet") {
 
     // Pobieramy usługę z bazy
     $player_service = $db->fetch_array_assoc($db->query($db->prepare(
-        "SELECT * FROM " . TABLE_PREFIX . "players_services " .
+        "SELECT * FROM `" . TABLE_PREFIX . "players_services` " .
         "WHERE `id` = '%d'",
         array($_POST['id'])
     )));
@@ -169,7 +169,7 @@ if ($action == "charge_wallet") {
 
     // Usunięcie usługi gracza
     $db->query($db->prepare(
-        "DELETE FROM " . TABLE_PREFIX . "players_services " .
+        "DELETE FROM `" . TABLE_PREFIX . "players_services` " .
         "WHERE `id` = '%d'",
         array($player_service['id'])
     ));
@@ -194,9 +194,8 @@ if ($action == "charge_wallet") {
     }
 
     $output = "";
-    if (!is_null($service_module = $heart->get_service_module($_POST['service']))) {
+    if (($service_module = $heart->get_service_module($_POST['service'])) !== NULL)
         $output = $service_module->get_form("admin_add_user_service");
-    }
 
     output_page($output, "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "add_antispam_question" || $action == "edit_antispam_question") {
@@ -225,7 +224,7 @@ if ($action == "charge_wallet") {
 
     if ($action == "add_antispam_question") {
         $db->query($db->prepare(
-            "INSERT INTO " . TABLE_PREFIX . "antispam_questions ( question, answers ) " .
+            "INSERT INTO `" . TABLE_PREFIX . "antispam_questions` ( question, answers ) " .
             "VALUES ('%s','%s')",
             array($_POST['question'], $_POST['answers'])));
 
@@ -250,7 +249,7 @@ if ($action == "charge_wallet") {
     }
 
     $db->query($db->prepare(
-        "DELETE FROM " . TABLE_PREFIX . "antispam_questions " .
+        "DELETE FROM `" . TABLE_PREFIX . "antispam_questions` " .
         "WHERE `id` = '%d'",
         array($_POST['id'])
     ));
@@ -501,7 +500,7 @@ if ($action == "charge_wallet") {
         $db->query($db->prepare(
             "INSERT INTO `" . TABLE_PREFIX . "services` " .
             "SET `id`='%s', `name`='%s', `short_description`='%s', `description`='%s', `tag`='%s', " .
-            "`module`='%s', `groups`='%s', `order` = '%d'" . $module_data['query_set'],
+            "`module`='%s', `groups`='%s', `order` = '%d'{$module_data['query_set']}",
             array($_POST['id'], $_POST['name'], $_POST['short_description'], $_POST['description'], $_POST['tag'], $_POST['module'],
                 implode(";", $_POST['groups']), $_POST['order'])
         ));
@@ -653,7 +652,7 @@ if ($action == "charge_wallet") {
     }
 
     $db->query($db->prepare(
-        "DELETE FROM " . TABLE_PREFIX . "servers " .
+        "DELETE FROM `" . TABLE_PREFIX . "servers` " .
         "WHERE `id` = '%s'",
         array($_POST['id'])
     ));
@@ -742,7 +741,7 @@ if ($action == "charge_wallet") {
     }
 
     $db->query($db->prepare(
-        "DELETE FROM " . TABLE_PREFIX . "users " .
+        "DELETE FROM `" . TABLE_PREFIX . "users` " .
         "WHERE `uid` = '%d'",
         array($_POST['uid'])
     ));
@@ -797,7 +796,7 @@ if ($action == "charge_wallet") {
     }
 
     $db->query($db->prepare(
-        "DELETE FROM " . TABLE_PREFIX . "groups " .
+        "DELETE FROM `" . TABLE_PREFIX . "groups` " .
         "WHERE `id` = '%d'",
         array($_POST['id'])
     ));
@@ -1294,7 +1293,7 @@ if ($action == "charge_wallet") {
 
         if ($template == "admin_edit_group") {
             $result = $db->query($db->prepare(
-                "SELECT * FROM " . TABLE_PREFIX . "groups " .
+                "SELECT * FROM `" . TABLE_PREFIX . "groups` " .
                 "WHERE `id` = '%d'",
                 array($_POST['id'])
             ));

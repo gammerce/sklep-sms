@@ -40,6 +40,7 @@ require_once SCRIPT_ROOT . "includes/class_language.php";
 $heart = new Heart();
 
 // Tworzymy obiekt języka
+$lang = array();
 $language = new Language();
 
 // Ustalenie funkcji obsługującej errory
@@ -51,6 +52,8 @@ $db->query("SET NAMES utf8");
 
 // Dodajemy klasy wszystkich modulow platnosci
 require_once SCRIPT_ROOT . "includes/verification/payment_module.php";
+require_once SCRIPT_ROOT . "includes/verification/payment_sms.php";
+require_once SCRIPT_ROOT . "includes/verification/payment_transfer.php";
 foreach (scandir(SCRIPT_ROOT . "includes/verification") as $file) {
     if (substr($file, -4) == ".php")
         require_once SCRIPT_ROOT . "includes/verification/{$file}";
@@ -65,6 +68,7 @@ require_once SCRIPT_ROOT . "includes/services/service_user_edit.php";
 require_once SCRIPT_ROOT . "includes/services/service_execute_action.php";
 require_once SCRIPT_ROOT . "includes/services/service_create_new.php";
 require_once SCRIPT_ROOT . "includes/services/service_take_over.php";
+require_once SCRIPT_ROOT . "includes/services/service_must_be_logged.php";
 foreach (scandir(SCRIPT_ROOT . "includes/services") as $file) {
     if (substr($file, -4) == ".php")
         require_once SCRIPT_ROOT . "includes/services/{$file}";
@@ -137,6 +141,7 @@ if ($settings['shop_url']) {
 $settings['currency'] = htmlspecialchars($settings['currency']);
 $settings['transactions_query'] = "(SELECT bs.id AS `id`,
 bs.uid AS `uid`,
+u.username AS `username`,
 bs.payment AS `payment`,
 bs.payment_id AS `payment_id`,
 bs.service AS `service`,
@@ -145,10 +150,10 @@ bs.amount AS `amount`,
 bs.auth_data AS `auth_data`,
 bs.email AS `email`,
 bs.extra_data AS `extra_data`,
-CONCAT_WS('',pa.ip,ps.ip,pt.ip,pw.ip) AS `ip`,
-CONCAT_WS('',pa.platform,ps.platform,pt.platform,pw.platform) AS `platform`,
-CONCAT_WS('',ps.income,pt.income) AS `income`,
-CONCAT_WS('',ps.cost,pt.income,pw.cost) AS `cost`,
+CONCAT_WS('', pa.ip, ps.ip, pt.ip, pw.ip) AS `ip`,
+CONCAT_WS('', pa.platform, ps.platform, pt.platform, pw.platform) AS `platform`,
+CONCAT_WS('', ps.income, pt.income) AS `income`,
+CONCAT_WS('', ps.cost, pt.income, pw.cost) AS `cost`,
 pa.aid AS `aid`,
 ps.code AS `sms_code`,
 ps.text AS `sms_text`,
@@ -156,6 +161,7 @@ ps.number AS `sms_number`,
 IFNULL(ps.free,0) AS `free`,
 bs.timestamp AS `timestamp`
 FROM `" . TABLE_PREFIX . "bought_services` AS bs
+LEFT JOIN `" . TABLE_PREFIX . "users` AS u ON u.uid = bs.uid
 LEFT JOIN `" . TABLE_PREFIX . "payment_admin` AS pa ON bs.payment = 'admin' AND pa.id = bs.payment_id
 LEFT JOIN `" . TABLE_PREFIX . "payment_sms` AS ps ON bs.payment = 'sms' AND ps.id = bs.payment_id
 LEFT JOIN `" . TABLE_PREFIX . "payment_transfer` AS pt ON bs.payment = 'transfer' AND pt.id = bs.payment_id
@@ -176,18 +182,8 @@ $settings['language'] = file_exists(SCRIPT_ROOT . "includes/languages/{$settings
 // Ładujemy bibliotekę językową
 $language->set_language($_SESSION['language'] ? $_SESSION['language'] : $settings['language']);
 
-$curl = curl_init();
-curl_setopt_array($curl, array(
-    CURLOPT_RETURNTRANSFER => 1,
-    CURLOPT_URL => "http://license.sklep-sms.pl/license.php?action=login_web" . "&lid=" . urldecode($settings['license_login']) . "&lpa=" . urldecode($settings['license_password']) .
-        "&name=" . urlencode($settings['shop_url']) . "&version=" . VERSION,
-    CURLOPT_TIMEOUT => 5
-));
-$resp = curl_exec($curl);
-curl_close($curl);
-$a_Tasks = json_decode($resp, true);
-unset($curl);
-unset($resp);
+$a_Tasks = json_decode(curl_get_contents("http://license.sklep-sms.pl/license.php?action=login_web" . "&lid=" . urldecode($settings['license_login']) . "&lpa=" . urldecode($settings['license_password']) .
+    "&name=" . urlencode($settings['shop_url']) . "&version=" . VERSION), true);
 
 if (!isset($a_Tasks['text'])) {
     output_page($lang['verification_error']);
@@ -224,5 +220,3 @@ define('TYPE_IP', 1 << 1);
 define('TYPE_SID', 1 << 2);
 
 $s_Flags = "abcdefghijklmnopqrstuyvwxz";
-
-?>

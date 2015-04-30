@@ -108,6 +108,40 @@ function refresh_brick(bricks, admin, onSuccessFunction) {
     });
 }
 
+/**
+ * Funkcja przechodzi do strony płatności
+ *
+ * @param url
+ * @param data
+ * @param sign
+ */
+function go_to_payment(data, sign) {
+    var form = $('<form>', {
+        action: "index.php?pid=payment",
+        method: "POST"
+    });
+
+    // Dodajemy dane
+    form.append($('<input>', {
+        type: "hidden",
+        name: "data",
+        value: data
+    }));
+
+    // Dodajemy sign danych
+    form.append($('<input>', {
+        type: "hidden",
+        name: "sign",
+        value: sign
+    }));
+
+    // Bez tego nie dziala pod firefoxem
+    $('body').append(form);
+
+    // Wysyłamy formularz zakupu
+    form.submit();
+}
+
 // Logowanie
 $(document).delegate("#form_login", "submit", function (e) {
     e.preventDefault();

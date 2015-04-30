@@ -290,9 +290,9 @@ function validate_payment($data)
         $sms_return = $payment->pay_sms($data['sms_code'], $data['tariff']);
         $payment_id = $sms_return['payment_id'];
 
-        if ($sms_return['sms_return'] != "OK") {
+        if ($sms_return['status'] != "OK") {
             return array(
-                'status' => "sms_error",
+                'status' => $sms_return['status'],
                 'text' => $sms_return['text'],
                 'positive' => false
             );
@@ -332,12 +332,7 @@ function validate_payment($data)
             'order' => $data['order']
         );
 
-        return array(
-            'status' => "transfer",
-            'text' => "Przygotowanie płatności przebiegło pomyślnie.<br />Za chwilę nastąpi przekierowanie do serwisu transakcyjnego.",
-            'positive' => true,
-            'data' => array('data' => $payment->pay_transfer($purchase_data)) // Przygotowuje dane płatności transferem
-        );
+        return $payment->pay_transfer($purchase_data);
     }
 }
 
@@ -384,20 +379,20 @@ function pay_by_admin($user)
     return $db->last_id();
 }
 
-function add_bought_service_info($uid, $user_name, $ip, $method, $payment_id, $service, $server, $amount, $auth_data, $email, $extra_data, $forever=false)
+function add_bought_service_info($uid, $user_name, $ip, $method, $payment_id, $service, $server, $amount, $auth_data, $email, $extra_data)
 {
     global $heart, $db, $lang;
 
     // Dodajemy informacje o kupionej usludze do bazy danych
     $db->query($db->prepare(
         "INSERT INTO `" . TABLE_PREFIX . "bought_services` " .
-        "SET `uid`='%d', `payment`='%s', `payment_id`='%s', `service`='%s', " .
-        "`server`='%d', `amount`='%s', `auth_data`='%s', `email`='%s', `extra_data`='%s'",
-        array($uid, $method, $payment_id, $service, $server, $forever ? "Na zawsze" : $amount, $auth_data, $email, json_encode($extra_data))
+        "SET `uid` = '%d', `payment` = '%s', `payment_id` = '%s', `service` = '%s', " .
+        "`server` = '%d', `amount` = '%s', `auth_data` = '%s', `email` = '%s', `extra_data` = '%s'",
+        array($uid, $method, $payment_id, $service, $server, $amount, $auth_data, $email, json_encode($extra_data))
     ));
     $bougt_service_id = $db->last_id();
 
-    $ret = "brak";
+    $ret = $lang['none'];
     if ($email) {
         $message = purchase_info(array(
             'purchase_id' => $bougt_service_id,
@@ -415,6 +410,7 @@ function add_bought_service_info($uid, $user_name, $ip, $method, $payment_id, $s
     }
 
     $temp_server = $heart->get_server($server);
+    $amount = $amount != -1 ? "{$amount} {$service['tag']}" : $lang['forever'];
     log_info(newsprintf($lang['bought_service_info'], $service, $auth_data, $amount, $temp_server['name'], $payment_id, $ret, $user_name, $uid, $ip));
     unset($temp_server);
 
@@ -465,21 +461,36 @@ function delete_players_old_services()
     // Pierwsze pobieramy te, które usuniemy
     // Potem je usuwamy, a następnie wywołujemy akcje na module
     $result = $db->query(
-        "SELECT `server`, `type`, `auth_data`, `service` " .
+        "SELECT `id`, `server`, `type`, `auth_data`, `service`, `expire`, UNIX_TIMESTAMP() as `now` " .
         "FROM `" . TABLE_PREFIX . "players_services` " .
         "WHERE `expire` < UNIX_TIMESTAMP() AND `expire` != '-1'"
     );
-    $db->query(
-        "DELETE FROM `" . TABLE_PREFIX . "players_services` " .
-        "WHERE `expire` < UNIX_TIMESTAMP() AND `expire` != '-1'"
-    );
+
+    $delete_ids = array();
+    $players_services = array();
     while ($row = $db->fetch_array_assoc($result)) {
         log_info("AUTOMAT: Usunięto wygasłą usługę gracza. Auth Data: {$row['auth_data']} " .
             "Serwer: {$row['server']} Usługa: {$row['service']} Typ: " . get_type_name($row['type']));
-        if (is_null($service_module = $heart->get_service_module($row['service'])))
+        if (($service_module = $heart->get_service_module($row['service'])) === NULL)
             continue;
 
-        $service_module->delete_player_service($row);
+        if( $service_module->delete_player_service($row) ) {
+            $delete_ids[] = $row['id'];
+            $players_services[] = $row;
+        }
+    }
+
+    // Usuwamy usugi ktre zwróciły true
+    if( !empty($delete_ids))
+        $db->query($db->prepare(
+            "DELETE FROM `" . TABLE_PREFIX . "players_services` " .
+            "WHERE `id` IN (%s)",
+            array(implode(", ", $delete_ids))
+        ));
+
+    // Wywołujemy akcje po usunieciu
+    foreach($players_services as $player_service) {
+        $service_module->delete_player_service_post($player_service);
     }
 
     // Usunięcie przestarzałych flag graczy
@@ -787,4 +798,22 @@ function searchWhere($search_ids, $search, &$where)
 
         $where .= "( {$search_where} )";
     }
+}
+
+/**
+ * @param $url - adres url
+ * @param int $timeout - po jakim czasie ma przerwać
+ * @return string
+ */
+function curl_get_contents($url, $timeout=10) {
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+        CURLOPT_RETURNTRANSFER => 1,
+        CURLOPT_URL => $url,
+        CURLOPT_TIMEOUT => $timeout
+    ));
+    $resp = curl_exec($curl);
+    curl_close($curl);
+
+    return $resp;
 }

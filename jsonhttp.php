@@ -352,57 +352,6 @@ if ($action == "login") {
     }
 
     json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
-} else if ($action == "payment_form") {
-    // Sprawdzanie hashu danych przesłanych przez formularz
-    if (!isset($_POST['sign']) || $_POST['sign'] != md5($_POST['data'] . $settings['random_key'])) {
-        output_page($lang['wrong_sign'], "Content-type: text/plain; charset=\"UTF-8\"");
-    }
-
-    /** Odczytujemy dane, ich format powinien być taki jak poniżej
-     * @param array $data 'service',
-     *                        'order'
-     *                            ...
-     *                        'user',
-     *                            'uid',
-     *                            'email'
-     *                            ...
-     *                        'tariff',
-     *                        'cost_transfer'
-     *                        'no_sms'
-     *                        'no_transfer'
-     *                        'no_wallet'
-     */
-    $data = json_decode(base64_decode($_POST['data']), true);
-
-    $service_module = $heart->get_service_module($data['service']);
-    if ($service_module === NULL)
-        output_page($lang['module_is_bad'], "Content-type: text/plain; charset=\"UTF-8\"");
-
-    // Pobieramy szczegóły zamówienia
-    $order_details = $service_module->order_details($data);
-
-    // Pobieramy sposoby płatności
-    $payment_methods = "";
-    // Sprawdzamy, czy płatność za pomocą SMS jest możliwa
-    if ($settings['sms_service'] && isset($data['tariff']) && !$data['no_sms']) {
-        $payment_sms = new Payment($settings['sms_service']);
-        if (strlen($number = $payment_sms->get_number_by_tariff($data['tariff']))) {
-            $tariff['number'] = $number;
-            $tariff['cost'] = number_format(get_sms_cost($tariff['number']) * $settings['vat'], 2);
-            eval("\$payment_methods .= \"" . get_template("payment_method_sms") . "\";");
-        }
-    }
-
-    $cost_transfer = number_format($data['cost_transfer'], 2);
-    if ($settings['transfer_service'] && isset($data['cost_transfer']) && $data['cost_transfer'] > 1 && !$data['no_transfer']) {
-        eval("\$payment_methods .= \"" . get_template("payment_method_transfer") . "\";");
-    }
-    if (is_logged() && isset($data['cost_transfer']) && !$data['no_wallet']) {
-        eval("\$payment_methods .= \"" . get_template("payment_method_wallet") . "\";");
-    }
-
-    eval("\$output = \"" . get_template("payment_form") . "\";");
-    output_page($output, "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "validate_payment_form") {
     // Sprawdzanie hashu danych przesłanych przez formularz
     if (!isset($_POST['purchase_sign']) || $_POST['purchase_sign'] != md5($_POST['purchase_data'] . $settings['random_key']))

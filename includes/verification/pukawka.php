@@ -1,8 +1,8 @@
 <?php
 
-$heart->register_payment_api("pukawka", "ModulePukawka");
+$heart->register_payment_api("pukawka", "PaymentModulePukawka");
 
-class ModulePukawka extends PaymentModule
+class PaymentModulePukawka extends PaymentModule implements IPaymentSMS
 {
 
     const SERVICE_ID = "pukawka";
@@ -12,19 +12,19 @@ class ModulePukawka extends PaymentModule
     {
         parent::__construct(); // Wywolujemy konstruktor klasy którą rozszerzamy
 
-        $this->stawki = json_decode(file_get_contents("https://admin.pukawka.pl/api/?keyapi=" . urlencode($this->data['api']) . "&type=sms_table"));
+        $this->stawki = json_decode(curl_get_contents("https://admin.pukawka.pl/api/?keyapi=" . urlencode($this->data['api']) . "&type=sms_table"));
     }
 
     public function verify_sms($sms_code, $sms_number)
     {
-        $get = file_get_contents("https://admin.pukawka.pl/api/?keyapi=" . urlencode($this->data['api']) . "&type=sms&code=" . urlencode($sms_code));
+        $get = curl_get_contents("https://admin.pukawka.pl/api/?keyapi=" . urlencode($this->data['api']) . "&type=sms&code=" . urlencode($sms_code));
 
         if ($get) {
             $get = json_decode($get);
 
             if (is_object($get)) {
                 if ($get->error) {
-                    echo $get->error;
+                    $output['text'] = $get->error;
                 } else {
                     if ($get->status == "ok") {
                         $kwota = str_replace(",", ".", $get->kwota);
@@ -57,5 +57,3 @@ class ModulePukawka extends PaymentModule
     }
 
 }
-
-?>

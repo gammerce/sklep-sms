@@ -6,7 +6,7 @@ define("SCRIPT_NAME", "transfer_finalize");
 require_once "global.php";
 
 $result = $db->query($db->prepare(
-    "SELECT * FROM " . TABLE_PREFIX . "payment_transfer " .
+    "SELECT * FROM `" . TABLE_PREFIX . "payment_transfer` " .
     "WHERE `id` = '%d'",
     array($_POST['orderid'])
 ));
@@ -32,7 +32,7 @@ $payment = new Payment("cashbill");
 if ($payment->payment_api->check_sign($_POST, $payment->payment_api->data['key'], $_POST['sign']) && strtoupper($_POST['status']) == 'OK' && $_POST['service'] == $payment->payment_api->data['service']) {
     // Dodanie informacji do bazy danych
     $db->query($db->prepare(
-        "INSERT INTO " . TABLE_PREFIX . "payment_transfer " .
+        "INSERT INTO `" . TABLE_PREFIX . "payment_transfer` " .
         "SET `id` = '%s', `income` = '%.2f', `transfer_service` = '%s', `ip` = '%s', `platform` = '%s' ",
         array($_POST['orderid'], $_POST['amount'], $_POST['service'], $user['ip'], $user['platform'])
     ));
@@ -67,5 +67,3 @@ if ($payment->payment_api->check_sign($_POST, $payment->payment_api->data['key']
 }
 
 output_page("OK");
-
-?>

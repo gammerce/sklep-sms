@@ -1,8 +1,8 @@
 <?php
 
-$heart->register_payment_api("amxx", "ModuleAmxx");
+$heart->register_payment_api("amxx", "PaymentModuleAmxx");
 
-class ModuleAmxx extends PaymentModule
+class PaymentModuleAmxx extends PaymentModule implements IPaymentSMS
 {
 
     const SERVICE_ID = "amxx";
@@ -29,7 +29,7 @@ class ModuleAmxx extends PaymentModule
             else if ($shop[1] != floatval(get_sms_cost($sms_number))) {
                 $output['status'] = "BAD_NUMBER";
                 // Szukamy smsa z kwota rowna $shop[1]
-                foreach ($smses as $sms) {
+                foreach ($this->smses as $sms) {
                     if (floatval(get_sms_cost($sms['number'])) == $shop[1]) {
                         $output['tariff'] = $sms['tariff'];
                         break;
@@ -44,5 +44,3 @@ class ModuleAmxx extends PaymentModule
     }
 
 }
-
-?>

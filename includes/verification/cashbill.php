@@ -1,8 +1,8 @@
 <?php
 
-$heart->register_payment_api("cashbill", "ModuleCashbill");
+$heart->register_payment_api("cashbill", "PaymentModuleCashbill");
 
-class ModuleCashbill extends PaymentModule
+class PaymentModuleCashbill extends PaymentModule implements IPaymentSMS, IPaymentTransfer
 {
 
     const SERVICE_ID = "cashbill";
@@ -14,8 +14,8 @@ class ModuleCashbill extends PaymentModule
 
         if ($handle) {
             $status = fgets($handle, 8);
-            $czas_zycia = fgets($handle, 24);
-            $foo = fgets($handle, 96);
+            /*$czas_zycia = */fgets($handle, 24);
+            /*$foo = */fgets($handle, 96);
             $bramka = fgets($handle, 96);
             fclose($handle);
 
@@ -34,8 +34,6 @@ class ModuleCashbill extends PaymentModule
 
     public function prepare_transfer($data)
     {
-        global $settings;
-
         // Tworzenie userdata
         $userdata = base64_encode(json_encode($data));
 
@@ -55,10 +53,15 @@ class ModuleCashbill extends PaymentModule
         );
     }
 
-    //
-    // Funkcja sprawdzajaca poprawnosc sygnatury
-    // przy płatnościach za pomocą przelewu
-    //
+    /**
+     * Funkcja sprawdzajaca poprawnosc sygnatury
+     * przy płatnościach za pomocą przelewu
+     *
+     * @param $data - dane
+     * @param $key - klucz do hashowania
+     * @param $sign - hash danych
+     * @return bool
+     */
     public function check_sign($data, $key, $sign)
     {
         if (md5($data['service'] . $data['orderid'] . $data['amount'] . urldecode($data['userdata']) . $data['status'] . $key) == $sign) {
@@ -68,5 +71,3 @@ class ModuleCashbill extends PaymentModule
     }
 
 }
-
-?>

@@ -1,15 +1,15 @@
 <?php
 
-$heart->register_payment_api("mintshost", "ModuleMintshost");
+$heart->register_payment_api("mintshost", "PaymentModuleMintshost");
 
-class ModuleMintshost extends PaymentModule
+class PaymentModuleMintshost extends PaymentModule implements IPaymentSMS
 {
 
     const SERVICE_ID = "mintshost";
 
     public function verify_sms($sms_code, $sms_number)
     {
-        $status = file_get_contents("http://mintshost.pl/sms.php?kod=" . urlencode($sms_code) . "&sms=" . urlencode($sms_number) . "&email=" . urlencode($this->data['email']));
+        $status = curl_get_contents("http://mintshost.pl/sms.php?kod=" . urlencode($sms_code) . "&sms=" . urlencode($sms_number) . "&email=" . urlencode($this->data['email']));
 
         if ($status == "0") {
             $output['status'] = "BAD_CODE";
@@ -20,10 +20,10 @@ class ModuleMintshost extends PaymentModule
         } else if ($status == "3") {
             $output['status'] = "BAD_DATA";
         }
+        else
+            $output['status'] = "ERROR";
 
         return $output;
     }
 
 }
-
-?>

@@ -1,8 +1,8 @@
 <?php
 
-$heart->register_payment_api("profitsms", "ModuleProfitsms");
+$heart->register_payment_api("profitsms", "PaymentModuleProfitsms");
 
-class ModuleProfitsms extends PaymentModule
+class PaymentModuleProfitsms extends PaymentModule implements IPaymentSMS
 {
 
     const SERVICE_ID = "profitsms";
@@ -19,7 +19,7 @@ class ModuleProfitsms extends PaymentModule
             $status = curl_exec($curl);
             curl_close($curl);
         } else {
-            $status = file_get_contents($url);
+            $status = curl_get_contents($url);
         }
         $raport = explode('|', $status);
         switch ($raport['0']) {

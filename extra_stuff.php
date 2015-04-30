@@ -26,14 +26,16 @@ switch ($action) {
         if (!is_null($service_module))
             $output = $service_module->get_full_description();
 
-        $stylesheets[] = "<link href=\"{$settings['shop_url_slash']}styles/extra_stuff/long_desc.css?version=" . VERSION . "\" rel=\"stylesheet\" />";
-        $scripts = implode("\n", array_unique($scripts));
-        $stylesheets = implode("\n", array_unique($stylesheets));
+        $stylesheets[] = "{$settings['shop_url_slash']}styles/extra_stuff/long_desc.css?version=" . VERSION;
+        $scripts = array_unique($scripts);
+        $stylesheets = array_unique($stylesheets);
+        foreach($scripts as $key => $script) $scripts[$key] = "<script type=\"text/javascript\" src=\"$script\"></script>";
+        foreach($stylesheets as $key => $stylesheet) $stylesheets[$key] = "<link href=\"$stylesheet\" rel=\"stylesheet\" />";
+        $scripts = implode("\n", $scripts);
+        $stylesheets = implode("\n", $stylesheets);
         eval("\$header = \"" . get_template("header") . "\";");
 
         $output = create_dom_element("html", create_dom_element("head", $header) . create_dom_element("body", $output));
         output_page($output);
     }
 }
-
-?>
