@@ -34,6 +34,8 @@ class Database
             if (!mysqli_select_db($this->link, $this->name))
                 $this->exception("no_db_connection");
         } else {
+			$this->error = mysqli_connect_error();
+			$this->errno = mysqli_connect_errno();
             $this->exception("no_server_connection");
         }
     }
@@ -140,8 +142,10 @@ class Database
 
     private function exception($message_id, $query = "")
     {
-        $this->error = mysqli_error($this->link);
-        $this->errno = mysqli_errno($this->link);
+		if ($this->link) {
+			$this->error = mysqli_error($this->link);
+			$this->errno = mysqli_errno($this->link);
+		}
 
         $array['message_id'] = $message_id;
         $array['query'] = $query;
