@@ -1,85 +1,85 @@
 <table>
-    <tbody>
-    <tr>
-        <td>ID</td>
-        <td>{$player_service['id']}</td>
-    </tr>
-    <tr>
-        <td colspan="2" class="line"></td>
-    </tr>
-    <tr>
-        <td>ID użytkownika</td>
-        <td><input type="text" name="uid" style="width: 60px;" value="{$player_service['uid']}"/></td>
-    </tr>
-    <tr>
-        <td>Typ</td>
-        <td><select name="type">{$types}</select></td>
-    </tr>
-    </tbody>
-    <tbody id="type_nick">
-    <tr>
-        <td>Nick</td>
-        <td>
-            <input type="text" name="nick" maxlength="32" value="{$nick}"/>
-        </td>
-    </tr>
-    </tbody>
-    <tbody id="type_ip">
-    <tr>
-        <td>IP</td>
-        <td>
-            <input type="text" name="ip" maxlength="21" style="width: 100px;" value="{$ip}"/>
-        </td>
-    </tr>
-    </tbody>
-    <tbody id="type_sid">
-    <tr>
-        <td>SteamID</td>
-        <td>
-            <input type="text" name="sid" maxlength="32" value="{$sid}"/>
-        </td>
-    </tr>
-    </tbody>
-    <tbody id="type_password">
-    <tr>
-        <td>Hasło</td>
-        <td>
-            <input type="text" name="password" maxlength="32" placeholder="{$password}"/>
-        </td>
-    </tr>
-    </tbody>
-    <tbody>
-    <tr>
-        <td colspan="2" class="line"></td>
-    </tr>
-    <tr>
-        <td>Usługa</td>
-        <td>
-            <select name="service">
-                {$services}
-            </select>
-        </td>
-    </tr>
-    <tr>
-        <td>Serwer</td>
-        <td>
-            <select name="server">
-                {$servers}
-            </select>
-        </td>
-    </tr>
-    <tr>
-        <td>Wygasa</td>
-        <td>
-            <input type="text" name="expire" value="{$player_service['expire']}" {$disabled}/><br/>
-            <input type="checkbox" name="forever" {$checked}/>$lang['forever']
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            <input type="hidden" name="id" value="{$player_service['id']}"/>
-            <input type="submit" value="Edytuj" style="width: 100%;"/>
-        </td>
-    </tr>
-    </tbody>
+	<tbody>
+	<tr>
+		<td>ID</td>
+		<td>{$player_service['id']}</td>
+	</tr>
+	<tr>
+		<td colspan="2" class="line"></td>
+	</tr>
+	<tr>
+		<td>ID użytkownika</td>
+		<td><input type="text" name="uid" style="width: 60px;" value="{$player_service['uid']}"/></td>
+	</tr>
+	<tr>
+		<td>Typ</td>
+		<td><select name="type">{$types}</select></td>
+	</tr>
+	</tbody>
+	<tbody id="type_nick">
+	<tr>
+		<td>Nick</td>
+		<td>
+			<input type="text" name="nick" maxlength="32" value="{$nick}"/>
+		</td>
+	</tr>
+	</tbody>
+	<tbody id="type_ip">
+	<tr>
+		<td>IP</td>
+		<td>
+			<input type="text" name="ip" maxlength="21" style="width: 100px;" value="{$ip}"/>
+		</td>
+	</tr>
+	</tbody>
+	<tbody id="type_sid">
+	<tr>
+		<td>SteamID</td>
+		<td>
+			<input type="text" name="sid" maxlength="32" value="{$sid}"/>
+		</td>
+	</tr>
+	</tbody>
+	<tbody id="type_password">
+	<tr>
+		<td>Hasło</td>
+		<td>
+			<input type="text" name="password" maxlength="32" placeholder="{$password}"/>
+		</td>
+	</tr>
+	</tbody>
+	<tbody>
+	<tr>
+		<td colspan="2" class="line"></td>
+	</tr>
+	<tr>
+		<td>Usługa</td>
+		<td>
+			<select name="service">
+				{$services}
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td>Serwer</td>
+		<td>
+			<select name="server">
+				{$servers}
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td>Wygasa</td>
+		<td>
+			<input type="text" name="expire" value="{$player_service['expire']}" {$disabled}/><br/>
+			<input type="checkbox" name="forever" {$checked}/>{$lang['forever']}
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<input type="hidden" name="id" value="{$player_service['id']}"/>
+			<input type="submit" value="Edytuj" style="width: 100%;"/>
+		</td>
+	</tr>
+	</tbody>
 </table>

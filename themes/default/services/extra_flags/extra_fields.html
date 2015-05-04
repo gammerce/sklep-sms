@@ -1,24 +1,24 @@
 <tr>
-    <td>
-        WEB
-        <div class="hint">Czy ma być wyświetlane <br/>w sklepie internetowym.</div>
-    </td>
-    <td>
-        <select name="web">
-            <option value="0" {$web_sel_no}>NIE</option>
-            <option value="1" {$web_sel_yes}>TAK</option>
-        </select>
-    </td>
+	<td>
+		WEB
+		<div class="hint">Czy ma być wyświetlane <br/>w sklepie internetowym.</div>
+	</td>
+	<td>
+		<select name="web">
+			<option value="0" {$web_sel_no}>NIE</option>
+			<option value="1" {$web_sel_yes}>TAK</option>
+		</select>
+	</td>
 </tr>
 <tr>
-    <td>TYPY</td>
-    <td>
-        <select name="type[]" multiple>
-            {$types}
-        </select>
-    </td>
+	<td>TYPY</td>
+	<td>
+		<select name="type[]" multiple>
+			{$types}
+		</select>
+	</td>
 </tr>
 <tr>
-    <td>FLAGI</td>
-    <td><input type="text" name="flags" value="{$flags}" maxlength="25"/></td>
+	<td>FLAGI</td>
+	<td><input type="text" name="flags" value="{$flags}" maxlength="25"/></td>
 </tr>

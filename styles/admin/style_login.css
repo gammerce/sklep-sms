@@ -1,49 +1,49 @@
 body {
-    background-color: #F2F2F2;
+	background-color: #F2F2F2;
 }
 
 #form_admin_login {
-    /*width: 345px;*/
-    display: inline-block;
-    margin: 100px auto;
-    padding: 10px;
-    background-color: #DDD;
-    border: 1px solid #222;
-    box-shadow: 0 0 10px #000;
-    text-align: left;
+	/*width: 345px;*/
+	display: inline-block;
+	margin: 100px auto;
+	padding: 10px;
+	background-color: #DDD;
+	border: 1px solid #222;
+	box-shadow: 0 0 10px #000;
+	text-align: left;
 }
 
 h2 {
-    background-color: #333;
-    margin: -10px;
-    margin-bottom: 10px;
-    padding: 8px;
-    color: #FFF;
-    text-shadow: 1px 1px 1px #000;
+	background-color: #333;
+	margin: -10px;
+	margin-bottom: 10px;
+	padding: 8px;
+	color: #FFF;
+	text-shadow: 1px 1px 1px #000;
 }
 
 #form_admin_login .warning {
-    padding: 6px;
-    margin-bottom: 8px;
-    border: 2px solid #A51B1B;
-    color: #C81717;
-    font-weight: bold;
+	padding: 6px;
+	margin-bottom: 8px;
+	border: 2px solid #A51B1B;
+	color: #C81717;
+	font-weight: bold;
 }
 
 #form_admin_login .label {
-    width: 160px;
-    font-weight: bold;
+	width: 160px;
+	font-weight: bold;
 }
 
 #form_admin_login .field {
 }
 
 #form_admin_login .field, #form_admin_login .label {
-    float: left;
-    margin: 5px 0px;
+	float: left;
+	margin: 5px 0px;
 }
 
 #form_admin_login [type=submit] {
-    width: 100%;
-    margin-top: 10px;
+	width: 100%;
+	margin-top: 10px;
 }

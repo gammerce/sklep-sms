@@ -1,28 +1,28 @@
 <form id="form_edit_transaction_service" class="action_box">
-    <div class="service_main_info">
-        Edytuj Metodę Płatności
-    </div>
-    <table>
-        <tr>
-            <td>ID</td>
-            <td>{$transaction_service['id']}</td>
-        </tr>
-        <tr>
-            <td>NAZWA</td>
-            <td>{$transaction_service['name']}</td>
-        </tr>
-        <tr>
-            <td colspan="2" class="line"></td>
-        </tr>
-        {$data_values}
-        <tr>
-            <td colspan="2" class="line"></td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <input type="hidden" name="id" value="{$transaction_service['id']}"/>
-                <input type="submit" value="Zatwierdź" style="width: 100%;"/>
-            </td>
-        </tr>
-    </table>
+	<div class="service_main_info">
+		Edytuj Metodę Płatności
+	</div>
+	<table>
+		<tr>
+			<td>ID</td>
+			<td>{$transaction_service['id']}</td>
+		</tr>
+		<tr>
+			<td>NAZWA</td>
+			<td>{$transaction_service['name']}</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="line"></td>
+		</tr>
+		{$data_values}
+		<tr>
+			<td colspan="2" class="line"></td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<input type="hidden" name="id" value="{$transaction_service['id']}"/>
+				<input type="submit" value="Zatwierdź" style="width: 100%;"/>
+			</td>
+		</tr>
+	</table>
 </form>
