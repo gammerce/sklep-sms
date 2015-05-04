@@ -1,37 +1,37 @@
 .payment_type {
-    padding: 12px;
-    display: inline-block;
-    margin-right: 20px;
-    vertical-align: top;
+	padding: 12px;
+	display: inline-block;
+	margin-right: 20px;
+	vertical-align: top;
 
-    box-shadow: 0 0 10px;
+	box-shadow: 0 0 10px;
 }
 
 .payment_type.sms {
-    background: rgba(255, 0, 0, 0.4);
+	background: rgba(255, 0, 0, 0.4);
 }
 
 .payment_type.transfer {
-    background: rgba(0, 255, 0, 0.4);
+	background: rgba(0, 255, 0, 0.4);
 }
 
 .payment_type.wallet {
-    background: rgba(0, 0, 255, 0.4);
-    margin-right: 0;
+	background: rgba(0, 0, 255, 0.4);
+	margin-right: 0;
 }
 
 .payment_header {
-    margin-bottom: 12px;
-    color: #FFF;
-    text-shadow: 1px 1px 1px #000;
-    font-weight: bold;
-    text-transform: uppercase;
+	margin-bottom: 12px;
+	color: #FFF;
+	text-shadow: 1px 1px 1px #000;
+	font-weight: bold;
+	text-transform: uppercase;
 }
 
 #payment .order_details {
-    line-height: 1.3;
+	line-height: 1.3;
 }
 
 #sms_details {
-    display: none;
+	display: none;
 }

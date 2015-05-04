@@ -1,7 +1,7 @@
 <?php
 
 if (!defined("IN_SCRIPT")) {
-    die("Nie ma tu nic ciekawego.");
+	die("Nie ma tu nic ciekawego.");
 }
 
 //error_reporting(E_USER_ERROR);
@@ -10,11 +10,11 @@ ini_set("display_errors", 1);
 
 // Tworzenie / Wznawianie sesji
 if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
-    session_name("admin");
-    session_start();
+	session_name("admin");
+	session_start();
 } else {
-    session_name("user");
-    session_start();
+	session_name("user");
+	session_start();
 }
 
 $working_dir = dirname(__FILE__) ? dirname(__FILE__) : '.';
@@ -22,8 +22,8 @@ require_once "{$working_dir}/includes/init.php";
 
 // Przenieś do folderu install, jeżeli istnieje
 if (file_exists(SCRIPT_ROOT . "install")) {
-    header("Location: install");
-    exit;
+	header("Location: install");
+	exit;
 }
 
 $settings['date_format'] = "Y-m-d H:i";
@@ -55,8 +55,8 @@ require_once SCRIPT_ROOT . "includes/verification/payment_module.php";
 require_once SCRIPT_ROOT . "includes/verification/payment_sms.php";
 require_once SCRIPT_ROOT . "includes/verification/payment_transfer.php";
 foreach (scandir(SCRIPT_ROOT . "includes/verification") as $file) {
-    if (substr($file, -4) == ".php")
-        require_once SCRIPT_ROOT . "includes/verification/{$file}";
+	if (substr($file, -4) == ".php")
+		require_once SCRIPT_ROOT . "includes/verification/{$file}";
 }
 
 // Dodajemy klasy wszystkich usług
@@ -70,72 +70,72 @@ require_once SCRIPT_ROOT . "includes/services/service_create_new.php";
 require_once SCRIPT_ROOT . "includes/services/service_take_over.php";
 require_once SCRIPT_ROOT . "includes/services/service_must_be_logged.php";
 foreach (scandir(SCRIPT_ROOT . "includes/services") as $file) {
-    if (substr($file, -4) == ".php")
-        require_once SCRIPT_ROOT . "includes/services/{$file}";
+	if (substr($file, -4) == ".php")
+		require_once SCRIPT_ROOT . "includes/services/{$file}";
 }
 
 // Działania na sesji
 if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
-    // Logujemy się
-    if (isset($_POST['username']) && isset($_POST['password'])) {
-        $user = $heart->get_user("", $_POST['username'], $_POST['password']);
-        if ($user['uid']) {
-            if ($user['privilages']['acp'])
-                $_SESSION['uid'] = $user['uid'];
-            else
-                $_SESSION['info'] = "no_privilages";
-        } else
-            $_SESSION['info'] = "wrong_data";
-    } // Wylogowujemy
-    else if ($_GET['action'] == "logout") {
-        // Unset all of the session variables.
-        $_SESSION = array();
+	// Logujemy się
+	if (isset($_POST['username']) && isset($_POST['password'])) {
+		$user = $heart->get_user("", $_POST['username'], $_POST['password']);
+		if ($user['uid']) {
+			if ($user['privilages']['acp'])
+				$_SESSION['uid'] = $user['uid'];
+			else
+				$_SESSION['info'] = "no_privilages";
+		} else
+			$_SESSION['info'] = "wrong_data";
+	} // Wylogowujemy
+	else if ($_GET['action'] == "logout") {
+		// Unset all of the session variables.
+		$_SESSION = array();
 
-        // If it's desired to kill the session, also delete the session cookie.
-        // Note: This will destroy the session, and not just the session data!
-        if (ini_get("session.use_cookies")) {
-            $params = session_get_cookie_params();
-            setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
-        }
+		// If it's desired to kill the session, also delete the session cookie.
+		// Note: This will destroy the session, and not just the session data!
+		if (ini_get("session.use_cookies")) {
+			$params = session_get_cookie_params();
+			setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
+		}
 
-        // Finally, destroy the session.
-        session_destroy();
-    }
+		// Finally, destroy the session.
+		session_destroy();
+	}
 }
 
 // Pobieramy dane gracza, jeżeli jeszcze ich nie ma
 if (!isset($user))
-    $user = $heart->get_user($_SESSION['uid']);
+	$user = $heart->get_user($_SESSION['uid']);
 
 // Jeżeli jest zalogowany, ale w międzyczasie odebrano mu dostęp do PA
 if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin")) && is_logged() && !$user['privilages']['acp'])
-    $_SESSION['info'] = "no_privilages";
+	$_SESSION['info'] = "no_privilages";
 
 // Aktualizujemy aktywność użytkownika
 if (is_logged())
-    update_activity($_SESSION['uid']);
+	update_activity($_SESSION['uid']);
 
 $G_PID = isset($_GET['pid']) ? $_GET['pid'] : "main_content";
 $G_PAGE = isset($_GET['page']) && intval($_GET['page']) >= 1 ? intval($_GET['page']) : 1;
 
 // Jeżeli próbujemy wejść do PA i nie jesteśmy zalogowani, to zmień stronę
 if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
-    if (!is_logged())
-        $G_PID = "login";
+	if (!is_logged())
+		$G_PID = "login";
 }
 
 // Pobranie stałych
 $result = $db->query("SELECT * FROM `" . TABLE_PREFIX . "settings`");
 while ($row = $db->fetch_array_assoc($result)) {
-    $settings[$row['key']] = $row['value'];
+	$settings[$row['key']] = $row['value'];
 }
 
 // Poprawiamy adres URL sklepu
 if ($settings['shop_url']) {
-    if (strpos($settings['shop_url'], "http://") !== 0 && strpos($settings['shop_url'], "https://") !== 0)
-        $settings['shop_url'] = "http://" . $settings['shop_url'];
-    $settings['shop_url'] = rtrim($settings['shop_url'], "/");
-    $settings['shop_url_slash'] = $settings['shop_url'] . "/";
+	if (strpos($settings['shop_url'], "http://") !== 0 && strpos($settings['shop_url'], "https://") !== 0)
+		$settings['shop_url'] = "http://" . $settings['shop_url'];
+	$settings['shop_url'] = rtrim($settings['shop_url'], "/");
+	$settings['shop_url_slash'] = $settings['shop_url'] . "/";
 }
 
 $settings['currency'] = htmlspecialchars($settings['currency']);
@@ -169,7 +169,7 @@ LEFT JOIN `" . TABLE_PREFIX . "payment_wallet` AS pw ON bs.payment = 'wallet' AN
 
 // Ustawianie strefy
 if ($settings['timezone'])
-    date_default_timezone_set($settings['timezone']);
+	date_default_timezone_set($settings['timezone']);
 
 $settings['date_format'] = $settings['date_format'] ? $settings['date_format'] : "Y-m-d H:i";
 
@@ -183,36 +183,36 @@ $settings['language'] = file_exists(SCRIPT_ROOT . "includes/languages/{$settings
 $language->set_language($_SESSION['language'] ? $_SESSION['language'] : $settings['language']);
 
 $a_Tasks = json_decode(curl_get_contents("http://license.sklep-sms.pl/license.php?action=login_web" . "&lid=" . urldecode($settings['license_login']) . "&lpa=" . urldecode($settings['license_password']) .
-    "&name=" . urlencode($settings['shop_url']) . "&version=" . VERSION), true);
+	"&name=" . urlencode($settings['shop_url']) . "&version=" . VERSION), true);
 
 if (!isset($a_Tasks['text'])) {
-    output_page($lang['verification_error']);
+	output_page($lang['verification_error']);
 }
 
 if ($a_Tasks['expire']) {
-    if ($a_Tasks['expire'] == '-1')
-        $a_Tasks['expire'] = $lang['never'];
-    else
-        $a_Tasks['expire'] = date($settings['date_format'], $a_Tasks['expire']);
+	if ($a_Tasks['expire'] == '-1')
+		$a_Tasks['expire'] = $lang['never'];
+	else
+		$a_Tasks['expire'] = date($settings['date_format'], $a_Tasks['expire']);
 }
 
 if ($a_Tasks['text'] != "logged_in") {
-    if (get_privilages("manage_settings", $user)) {
-        $user['privilages'] = array(
-            "acp" => true,
-            "manage_settings" => true
-        );
-    }
+	if (get_privilages("manage_settings", $user)) {
+		$user['privilages'] = array(
+			"acp" => true,
+			"manage_settings" => true
+		);
+	}
 
-    if (SCRIPT_NAME == "index") {
-        output_page($a_Tasks['page']);
-    } else if (in_array(SCRIPT_NAME, array("jsonhttp", "servers_stuff", "extra_stuff")))
-        exit;
+	if (SCRIPT_NAME == "index") {
+		output_page($a_Tasks['page']);
+	} else if (in_array(SCRIPT_NAME, array("jsonhttp", "servers_stuff", "extra_stuff")))
+		exit;
 }
 
 // Cron co wizytę
 if ($settings['cron_each_visit'] && SCRIPT_NAME != "cron") {
-    include(SCRIPT_ROOT . "cron.php");
+	include(SCRIPT_ROOT . "cron.php");
 }
 
 define('TYPE_NICK', 1 << 0);

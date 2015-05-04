@@ -1,126 +1,126 @@
 var window_info = {
 
-    element: $(""),
-    exit: $(""),
+	element: $(""),
+	exit: $(""),
 
-    create: function (width, height, text) {
-        window_info.element = $("<div>", {
-            width: width,
-            height: height,
-            html: text,
-            class: "window_info centered"
-        }).hide();
+	create: function (width, height, text) {
+		window_info.element = $("<div>", {
+			width: width,
+			height: height,
+			html: text,
+			class: "window_info centered"
+		}).hide();
 
-        window_info.exit = $("<div>", {
-            class: "exit",
-            html: "X"
-        });
-        window_info.element.prepend(window_info.exit);
+		window_info.exit = $("<div>", {
+			class: "exit",
+			html: "X"
+		});
+		window_info.element.prepend(window_info.exit);
 
-        window_info.element.appendTo('body').slideDown('slow');
+		window_info.element.appendTo('body').slideDown('slow');
 
-        window_info.exit.click(function () {
-            window_info.remove();
-        });
-    },
+		window_info.exit.click(function () {
+			window_info.remove();
+		});
+	},
 
-    remove: function () {
-        window_info.element.slideUp('normal', function () {
-            $(this).remove();
-        });
-    }
+	remove: function () {
+		window_info.element.slideUp('normal', function () {
+			$(this).remove();
+		});
+	}
 
 };
 
 var loader = {
-    element: $(""),
-    show_task: 0,
-    blocked: false,
+	element: $(""),
+	show_task: 0,
+	blocked: false,
 
-    show: function () {
-        loader.blocked = true;
-        // Usuwamy poprzedni task pokazujacy ladowanie
-        if (loader.show_task) {
-            clearTimeout(loader.show_task);
-            loader.show_task = 0;
-        }
+	show: function () {
+		loader.blocked = true;
+		// Usuwamy poprzedni task pokazujacy ladowanie
+		if (loader.show_task) {
+			clearTimeout(loader.show_task);
+			loader.show_task = 0;
+		}
 
-        loader.show_task = setTimeout(function () {
-            loader.element = $("<div>", {
-                class: "loader"
-            }).hide();
+		loader.show_task = setTimeout(function () {
+			loader.element = $("<div>", {
+				class: "loader"
+			}).hide();
 
-            loader.element.prepend($("<img>", {
-                src: "images/ajax-loader.gif",
-                title: "Ładowanie...",
-                class: "centered"
-            }));
+			loader.element.prepend($("<img>", {
+				src: "images/ajax-loader.gif",
+				title: "Ładowanie...",
+				class: "centered"
+			}));
 
-            loader.element.appendTo('body').fadeIn('slow');
-            loader.show_task = 0;
-        }, 300);
-    },
+			loader.element.appendTo('body').fadeIn('slow');
+			loader.show_task = 0;
+		}, 300);
+	},
 
-    hide: function () {
-        loader.blocked = false;
-        if (loader.show_task) {
-            clearTimeout(loader.show_task);
-            loader.show_task = 0;
-        }
-        loader.element.remove();
-    }
+	hide: function () {
+		loader.blocked = false;
+		if (loader.show_task) {
+			clearTimeout(loader.show_task);
+			loader.show_task = 0;
+		}
+		loader.element.remove();
+	}
 };
 
 var action_box = {
-    element: $(""),
-    box: $(""),
-    exit: $(""),
+	element: $(""),
+	box: $(""),
+	exit: $(""),
 
-    create: function () {
+	create: function () {
 
-        action_box.element = $("<div>", {
-            class: "action_box_wraper"
-        }).hide();
+		action_box.element = $("<div>", {
+			class: "action_box_wraper"
+		}).hide();
 
-        action_box.box = $("<div>", {
-            class: "action_box_wraper2"
-        }).hide();
-        action_box.element.prepend(action_box.box);
+		action_box.box = $("<div>", {
+			class: "action_box_wraper2"
+		}).hide();
+		action_box.element.prepend(action_box.box);
 
-        action_box.element.appendTo('body');
+		action_box.element.appendTo('body');
 
-    },
+	},
 
-    show: function () {
+	show: function () {
 
-        action_box.exit = $("<div>", {
-            class: "exit",
-            html: "X"
-        });
-        action_box.box.children(".action_box").prepend(action_box.exit);
+		action_box.exit = $("<div>", {
+			class: "exit",
+			html: "X"
+		});
+		action_box.box.children(".action_box").prepend(action_box.exit);
 
-        // Łapiemy uchwyt od kliknięcia
-        action_box.exit.click(function () {
-            action_box.hide();
-        });
+		// Łapiemy uchwyt od kliknięcia
+		action_box.exit.click(function () {
+			action_box.hide();
+		});
 
-        // Jeżeli jest task loadera, to znaczy, że skrypt jeszcze czeka, na wyświetlenie ładowacza
-        // dlatego też ze wszystkich wchodzimy łagodnie
-        // w przeciwnym wypadku, łagodnie wchodzimy tylko z oknem akcji, a tło pokazujemy od razu
-        if (loader.show_task) {
-            action_box.box.show();
-            action_box.element.fadeIn();
-        }
-        else {
-            action_box.element.show();
-            action_box.box.fadeIn();
-        }
+		// Jeżeli jest task loadera, to znaczy, że skrypt jeszcze czeka, na wyświetlenie ładowacza
+		// dlatego też ze wszystkich wchodzimy łagodnie
+		// w przeciwnym wypadku, łagodnie wchodzimy tylko z oknem akcji, a tło pokazujemy od razu
+		if (loader.show_task) {
+			action_box.box.show();
+			action_box.element.fadeIn();
+		}
+		else {
+			action_box.element.show();
+			action_box.box.fadeIn();
+		}
 
-    },
+	},
 
-    hide: function () {
-        action_box.element.stop().fadeOut('slow', function () {
-            $(this).remove();
-        });
-    }
+	hide: function () {
+		action_box.element.stop().fadeOut('slow', function () {
+			$(this).remove();
+		});
+	}
 };

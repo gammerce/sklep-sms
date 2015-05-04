@@ -1,78 +1,78 @@
 <html>
 <head>
-    {$header}
+	{$header}
 </head>
 <body>
 <div class="header">
-    <table>
-        <tr>
-            <td style="width: 360px">
-                <a href="index.php">
-                    <img class="logo" src="http://sklep-sms.pl/images/logo_medium.png" alt="sklep-sms">
-                </a>
-            </td>
-            <td class="center">
-                {$lang['acp']} (&nbsp;v{__VERSION__}&nbsp;)
-                <div class="hint">{$lang['license_expires']}: {$a_Tasks['expire']}</div>
-            </td>
-            <td style="width: 360px; text-align: right;">
-                {$user['username']}
-                ( <a href="admin.php?action=logout">{$lang['logout']}</a> )
-            </td>
-        </tr>
-    </table>
+	<table>
+		<tr>
+			<td style="width: 360px">
+				<a href="index.php">
+					<img class="logo" src="http://sklep-sms.pl/images/logo_medium.png" alt="sklep-sms">
+				</a>
+			</td>
+			<td class="center">
+				{$lang['acp']} (&nbsp;v{__VERSION__}&nbsp;)
+				<div class="hint">{$lang['license_expires']}: {$a_Tasks['expire']}</div>
+			</td>
+			<td style="width: 360px; text-align: right;">
+				{$user['username']}
+				( <a href="admin.php?action=logout">{$lang['logout']}</a> )
+			</td>
+		</tr>
+	</table>
 </div>
 <div class="sidebar">
-    <h3>Główne</h3>
-    <ul>
-        <a href="admin.php?pid=main_content">
-            <li>&#8594; {$lang['main_page']}</li>
-        </a>
-        {$settings_link}
-        {$antispam_questions_link}
-        {$transaction_services_link}
-        {$services_link}
-        {$servers_link}
-        {$tariffs_link}
-        {$pricelist_link}
-    </ul>
-    <h3>Gracze</h3>
-    <ul>
-        {$players_services_link}
-        {$players_flags_link}
-    </ul>
-    <h3>Użytkownicy</h3>
-    <ul>
-        {$users_link}
-        {$groups_link}
-    </ul>
-    <h3>Dodatki</h3>
-    <ul>
-        {$income_link}
-        {$sms_codes_link}
-    </ul>
-    <h3>Logi</h3>
-    <ul>
-        <a href="admin.php?pid=bought_services">
-            <li>&#8594; {$lang['bought_services']}</li>
-        </a>
-        <a href="admin.php?pid=payment_sms">
-            <li>&#8594; {$lang['payment_sms']}</li>
-        </a>
-        <a href="admin.php?pid=payment_transfer">
-            <li>&#8594; {$lang['payment_transfer']}</li>
-        </a>
-        <a href="admin.php?pid=payment_wallet">
-            <li>&#8594; {$lang['payment_wallet']}</li>
-        </a>
-        <a href="admin.php?pid=payment_admin">
-            <li>&#8594; {$lang['payment_admin']}</li>
-        </a>
-        {$logs_link}
-    </ul>
+	<h3>Główne</h3>
+	<ul>
+		<a href="admin.php?pid=main_content">
+			<li>&#8594; {$lang['main_page']}</li>
+		</a>
+		{$settings_link}
+		{$antispam_questions_link}
+		{$transaction_services_link}
+		{$services_link}
+		{$servers_link}
+		{$tariffs_link}
+		{$pricelist_link}
+	</ul>
+	<h3>Gracze</h3>
+	<ul>
+		{$players_services_link}
+		{$players_flags_link}
+	</ul>
+	<h3>Użytkownicy</h3>
+	<ul>
+		{$users_link}
+		{$groups_link}
+	</ul>
+	<h3>Dodatki</h3>
+	<ul>
+		{$income_link}
+		{$sms_codes_link}
+	</ul>
+	<h3>Logi</h3>
+	<ul>
+		<a href="admin.php?pid=bought_services">
+			<li>&#8594; {$lang['bought_services']}</li>
+		</a>
+		<a href="admin.php?pid=payment_sms">
+			<li>&#8594; {$lang['payment_sms']}</li>
+		</a>
+		<a href="admin.php?pid=payment_transfer">
+			<li>&#8594; {$lang['payment_transfer']}</li>
+		</a>
+		<a href="admin.php?pid=payment_wallet">
+			<li>&#8594; {$lang['payment_wallet']}</li>
+		</a>
+		<a href="admin.php?pid=payment_admin">
+			<li>&#8594; {$lang['payment_admin']}</li>
+		</a>
+		{$logs_link}
+	</ul>
 </div>
 <div class="content">
-    {$content}
+	{$content}
 </div>
 </body>
 </html>

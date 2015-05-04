@@ -1,21 +1,21 @@
 <form id="form_charge_wallet" class="action_box">
-    <div class="service_main_info">
-        Doładowanie portfela
-    </div>
-    <table>
-        <tr>
-            <td>Nazwa Użytkownika</td>
-            <td>{$username}</td>
-        </tr>
-        <tr>
-            <td>Ilość</td>
-            <td><input type="text" name="amount" style="width: 60px;"/> {$settings['currency']}</td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <input type="hidden" name="uid" value="{$uid}"/>
-                <input type="submit" value="Doładuj" style="width: 100%;"/>
-            </td>
-        </tr>
-    </table>
+	<div class="service_main_info">
+		Doładowanie portfela
+	</div>
+	<table>
+		<tr>
+			<td>Nazwa Użytkownika</td>
+			<td>{$username}</td>
+		</tr>
+		<tr>
+			<td>Ilość</td>
+			<td><input type="text" name="amount" style="width: 60px;"/> {$settings['currency']}</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<input type="hidden" name="uid" value="{$uid}"/>
+				<input type="submit" value="Doładuj" style="width: 100%;"/>
+			</td>
+		</tr>
+	</table>
 </form>
