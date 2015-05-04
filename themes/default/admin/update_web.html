@@ -1,41 +1,41 @@
 <div class="title">{$title}</div>
 <div class="form_update">
-    <h4>Wersje</h4>
+	<h4>Wersje</h4>
 
-    <div class="info">
-        <strong>Najnowsza Wersja:</strong> {$newest_version}<br/><br/>
-        <table>
-            <tr>
-                <td><strong>Obecna Wersja</strong></td>
-                <td style="width: 5px;">&nbsp;</td>
-                <td>{__VERSION__}</td>
-            </tr>
-            <tr>
-                <td><strong>Kolejna Wersja</strong></td>
-                <td></td>
-                <td>{$next_version}</td>
-            </tr>
-        </table>
-    </div>
-    {$additional_info}
-    <h4>Jak zaktualizować</h4>
+	<div class="info">
+		<strong>Najnowsza Wersja:</strong> {$newest_version}<br/><br/>
+		<table>
+			<tr>
+				<td><strong>Obecna Wersja</strong></td>
+				<td style="width: 5px;">&nbsp;</td>
+				<td>{__VERSION__}</td>
+			</tr>
+			<tr>
+				<td><strong>Kolejna Wersja</strong></td>
+				<td></td>
+				<td>{$next_version}</td>
+			</tr>
+		</table>
+	</div>
+	{$additional_info}
+	<h4>Jak zaktualizować</h4>
 
-    <div class="info">
-        Mamy dwie możliwości. Pobieramy paczkę z najnowszą wersją skryptu w wersji FULL, albo aktualizujemy stopniowo, z
-        jednej wersji na drugą, za pomocą paczek w wersji UPDATE.
-        <ol>
-            <li>Pobieramy cały sklepik w najnowszej wersji: {$shop_files['newest_full']} lub tylko zmienione pliki
-                kolejnej wersji: {$shop_files['next_update']}
-            </li>
-            <li>Rozpakowywujemy archiwum, a następnie kopiujemy pliki na serwer z zachowaniem hierarchii katalogów.</li>
-        </ol>
-    </div>
-    <h4>Lista Zmian</h4>
-    <ul>
-        {$changelog}
-    </ul>
-    <h4>Aktualizowane Pliki</h4>
-    <ul>
-        {$files}
-    </ul>
+	<div class="info">
+		Mamy dwie możliwości. Pobieramy paczkę z najnowszą wersją skryptu w wersji FULL, albo aktualizujemy stopniowo, z
+		jednej wersji na drugą, za pomocą paczek w wersji UPDATE.
+		<ol>
+			<li>Pobieramy cały sklepik w najnowszej wersji: {$shop_files['newest_full']} lub tylko zmienione pliki
+				kolejnej wersji: {$shop_files['next_update']}
+			</li>
+			<li>Rozpakowywujemy archiwum, a następnie kopiujemy pliki na serwer z zachowaniem hierarchii katalogów.</li>
+		</ol>
+	</div>
+	<h4>Lista Zmian</h4>
+	<ul>
+		{$changelog}
+	</ul>
+	<h4>Aktualizowane Pliki</h4>
+	<ul>
+		{$files}
+	</ul>
 </div>

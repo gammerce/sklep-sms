@@ -1,45 +1,45 @@
 <form id="form_edit_price" class="action_box">
-    <div class="service_main_info">
-        Edytuj Cenę
-    </div>
-    <table>
-        <tr>
-            <td>USŁUGA</td>
-            <td>
-                <select name="service">
-                    {$services}
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>SERWER</td>
-            <td>
-                <select name="server">
-                    <option value="-1" {$all_servers}>Wszystkie</option>
-                    {$servers}
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>TARYFA</td>
-            <td>
-                <select name="tariff">
-                    {$tariffs}
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>ILOŚĆ</td>
-            <td><input type="text" name="amount" value="{$price['amount']}" style="width: 100px;"/></td>
-        </tr>
-        <tr>
-            <td colspan="2" class="line"></td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <input type="hidden" name="id" value="{$price['id']}"/>
-                <input type="submit" value="Edytuj" style="width: 100%;"/>
-            </td>
-        </tr>
-    </table>
+	<div class="service_main_info">
+		Edytuj Cenę
+	</div>
+	<table>
+		<tr>
+			<td>USŁUGA</td>
+			<td>
+				<select name="service">
+					{$services}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>SERWER</td>
+			<td>
+				<select name="server">
+					<option value="-1" {$all_servers}>Wszystkie</option>
+					{$servers}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>TARYFA</td>
+			<td>
+				<select name="tariff">
+					{$tariffs}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>ILOŚĆ</td>
+			<td><input type="text" name="amount" value="{$price['amount']}" style="width: 100px;"/></td>
+		</tr>
+		<tr>
+			<td colspan="2" class="line"></td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<input type="hidden" name="id" value="{$price['id']}"/>
+				<input type="submit" value="Edytuj" style="width: 100%;"/>
+			</td>
+		</tr>
+	</table>
 </form>
