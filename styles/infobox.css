@@ -1,33 +1,33 @@
 .infobox {
-    position: fixed;
-    z-index: 200;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 40%;
-    min-width: 400px;
-    margin: 15px auto;
-    padding: 10px;
-    border-radius: 10px;
-    border: 2px solid;
-    text-align: center;
+	position: fixed;
+	z-index: 200;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	width: 40%;
+	min-width: 400px;
+	margin: 15px auto;
+	padding: 10px;
+	border-radius: 10px;
+	border: 2px solid;
+	text-align: center;
 
-    color: rgb(255, 255, 255);
-    text-shadow: 1px 1px 1px #000;
-    word-wrap: break-word;
+	color: rgb(255, 255, 255);
+	text-shadow: 1px 1px 1px #000;
+	word-wrap: break-word;
 }
 
 .infobox:hover {
-    opacity: 0.5;
-    cursor: pointer;
+	opacity: 0.5;
+	cursor: pointer;
 }
 
 .infobox.negative {
-    border-color: rgb(255, 0, 0);
-    background: rgba(150, 9, 9, 0.6);
+	border-color: rgb(255, 0, 0);
+	background: rgba(150, 9, 9, 0.6);
 }
 
 .infobox.positive {
-    border-color: #B7FF00;
-    background: rgba(100, 180, 5, 0.6);
+	border-color: #B7FF00;
+	background: rgba(100, 180, 5, 0.6);
 }

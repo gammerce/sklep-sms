@@ -1,11 +1,11 @@
 #charge_sms, #charge_transfer {
-    display: none;
+	display: none;
 }
 
 #charge_table tfoot tr td {
-    text-align: center;
+	text-align: center;
 }
 
 [name=transfer_amount] {
-    display: inline-block;
+	display: inline-block;
 }

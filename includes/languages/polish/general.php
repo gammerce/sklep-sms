@@ -105,7 +105,7 @@ $lang['bought_service'] = "Zakup Usługi";
 $lang['charge_wallet'] = "Doładowanie Portfela";
 
 $lang['add_code_to_reuse'] = "Dodano kod do tabeli kodów do wykorzystania. Kod: {1} Taryfa: {2}." .
-    "Próba użycia go przez {3}({4})({5}) przy zakupie usługi o taryfie: {6}.";
+	"Próba użycia go przez {3}({4})({5}) przy zakupie usługi o taryfie: {6}.";
 $lang['bad_sms_code_used'] = "Transakcja SMS użytkownika: {1}({2})({3}) nie powiodła się. Użyto kodu zwrotnego: {4} Treść: {5} Numer: {6} Kod błędu: {7}";
 
 $lang['type_setinfo'] = "Wpisz w konsoli: setinfo _ss \"{1}\"";

@@ -1,57 +1,57 @@
 <tr>
-    <td>ID użytkownika</td>
-    <td><input type="text" name="uid" style="width: 60px;"/></td>
+	<td>ID użytkownika</td>
+	<td><input type="text" name="uid" style="width: 60px;"/></td>
 </tr>
 <tr>
-    <td>Typ</td>
-    <td><select name="type">{$types}</select></td>
+	<td>Typ</td>
+	<td><select name="type">{$types}</select></td>
 </tr>
 <tr id="type_nick">
-    <td>Nick</td>
-    <td>
-        <input type="text" name="nick" maxlength="32"/>
-    </td>
+	<td>Nick</td>
+	<td>
+		<input type="text" name="nick" maxlength="32"/>
+	</td>
 </tr>
 <tr id="type_ip">
-    <td>IP</td>
-    <td>
-        <input type="text" name="ip" maxlength="21" style="width: 100px;"/>
-    </td>
+	<td>IP</td>
+	<td>
+		<input type="text" name="ip" maxlength="21" style="width: 100px;"/>
+	</td>
 </tr>
 <tr id="type_sid">
-    <td>SteamID</td>
-    <td>
-        <input type="text" name="sid" maxlength="32"/>
-    </td>
+	<td>SteamID</td>
+	<td>
+		<input type="text" name="sid" maxlength="32"/>
+	</td>
 </tr>
 <tr id="type_password">
-    <td>Hasło</td>
-    <td>
-        <input type="text" name="password" maxlength="32"/>
-    </td>
+	<td>Hasło</td>
+	<td>
+		<input type="text" name="password" maxlength="32"/>
+	</td>
 </tr>
 <tr>
-    <td>E-mail</td>
-    <td>
-        <input type="text" name="email" maxlength="128"/>
-    </td>
+	<td>E-mail</td>
+	<td>
+		<input type="text" name="email" maxlength="128"/>
+	</td>
 </tr>
 <tr>
-    <td colspan="2" class="line"></td>
+	<td colspan="2" class="line"></td>
 </tr>
 <tr>
-    <td>Serwer</td>
-    <td>
-        <select name="server">
-            <option value="">Wybierz Serwer</option>
-            {$servers}
-        </select>
-    </td>
+	<td>Serwer</td>
+	<td>
+		<select name="server">
+			<option value="">Wybierz Serwer</option>
+			{$servers}
+		</select>
+	</td>
 </tr>
 <tr>
-    <td>Ilość Dni</td>
-    <td>
-        <input type="text" name="amount"/><br/>
-        <input type="checkbox" name="forever" />$lang['forever']
-    </td>
+	<td>Ilość Dni</td>
+	<td>
+		<input type="text" name="amount"/><br/>
+		<input type="checkbox" name="forever" />{$lang['forever']}
+	</td>
 </tr>
