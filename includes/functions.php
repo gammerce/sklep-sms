@@ -409,8 +409,9 @@ function add_bought_service_info($uid, $user_name, $ip, $method, $payment_id, $s
 			$ret = "wysłano";
 	}
 
+	$temp_service = $heart->get_service($service);
 	$temp_server = $heart->get_server($server);
-	$amount = $amount != -1 ? "{$amount} {$service['tag']}" : $lang['forever'];
+	$amount = $amount != -1 ? "{$amount} {$temp_service['tag']}" : $lang['forever'];
 	log_info(newsprintf($lang['bought_service_info'], $service, $auth_data, $amount, $temp_server['name'], $payment_id, $ret, $user_name, $uid, $ip));
 	unset($temp_server);
 
@@ -469,14 +470,14 @@ function delete_players_old_services()
 	$delete_ids = array();
 	$players_services = array();
 	while ($row = $db->fetch_array_assoc($result)) {
-		log_info("AUTOMAT: Usunięto wygasłą usługę gracza. Auth Data: {$row['auth_data']} " .
-			"Serwer: {$row['server']} Usługa: {$row['service']} Typ: " . get_type_name($row['type']));
 		if (($service_module = $heart->get_service_module($row['service'])) === NULL)
 			continue;
 
 		if( $service_module->delete_player_service($row) ) {
 			$delete_ids[] = $row['id'];
 			$players_services[] = $row;
+			log_info("AUTOMAT: Usunięto wygasłą usługę gracza. Auth Data: {$row['auth_data']} " .
+				"Serwer: {$row['server']} Usługa: {$row['service']} Typ: " . get_type_name($row['type']));
 		}
 	}
 

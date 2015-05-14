@@ -1,6 +1,6 @@
 body {
-	background-size: cover;
 	background: url('../images/3.2.0-dishonored.jpg') no-repeat fixed;
+    background-size: cover;
 }
 
 #content table {
