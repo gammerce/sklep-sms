@@ -17,5 +17,5 @@ if (!defined('SQL_LOG')) {
 }
 
 if (!defined('VERSION')) {
-	define('VERSION', "3.2.2");
+	define('VERSION', "3.2.3");
 }
