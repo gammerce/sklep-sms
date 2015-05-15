@@ -1,7 +1,5 @@
 <?php
 
-// TODO: http://microsms.pl/example1.php
-
 abstract class PaymentModule
 {
 

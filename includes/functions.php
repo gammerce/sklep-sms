@@ -173,7 +173,7 @@ function update_activity($uid)
 {
 	global $db;
 	$db->query($db->prepare(
-		"UPDATE " . TABLE_PREFIX . "users " .
+		"UPDATE `" . TABLE_PREFIX . "users` " .
 		"SET `lastactiv` = NOW(), `lastip` = '%s' " .
 		"WHERE `uid` = '%d'",
 		array(get_ip(), $uid)
@@ -184,8 +184,8 @@ function charge_wallet($uid, $amount)
 {
 	global $db;
 	$db->query($db->prepare(
-		"UPDATE " . TABLE_PREFIX . "users " .
-		"SET wallet=`wallet`+'%f' " .
+		"UPDATE `" . TABLE_PREFIX . "users` " .
+		"SET `wallet` = `wallet`+'%f' " .
 		"WHERE `uid` = '%d'",
 		array(number_format($amount, 2), $uid)
 	));

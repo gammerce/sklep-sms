@@ -83,8 +83,8 @@ if ($action == "login") {
 		$warnings['username'] = $warning;
 	}
 	$result = $db->query($db->prepare(
-		"SELECT uid " .
-		"FROM " . TABLE_PREFIX . "users " .
+		"SELECT `uid` " .
+		"FROM `" . TABLE_PREFIX . "users` " .
 		"WHERE username = '%s'",
 		array($username)
 	));
@@ -104,9 +104,9 @@ if ($action == "login") {
 		$warnings['email'] = $warning;
 	}
 	$result = $db->query($db->prepare(
-		"SELECT uid " .
-		"FROM " . TABLE_PREFIX . "users " .
-		"WHERE email = '%s'",
+		"SELECT `uid` " .
+		"FROM `" . TABLE_PREFIX . "users` " .
+		"WHERE `email` = '%s'",
 		array($email)
 	));
 	if ($db->num_rows($result)) {
@@ -119,8 +119,8 @@ if ($action == "login") {
 	// Pobranie z bazy pytania antyspamowego
 	$result = $db->query($db->prepare(
 		"SELECT * " .
-		"FROM " . TABLE_PREFIX . "antispam_questions " .
-		"WHERE id = '%d'",
+		"FROM `" . TABLE_PREFIX . "antispam_questions` " .
+		"WHERE `id` = '%d'",
 		array($as_id)
 	));
 	$antispam_question = $db->fetch_array_assoc($result);
@@ -131,7 +131,7 @@ if ($action == "login") {
 	// Pobranie nowego pytania antyspamowego
 	$result = $db->query(
 		"SELECT * " .
-		"FROM " . TABLE_PREFIX . "antispam_questions " .
+		"FROM `" . TABLE_PREFIX . "antispam_questions` " .
 		"ORDER BY RAND() " .
 		"LIMIT 1"
 	);
@@ -174,9 +174,9 @@ if ($action == "login") {
 			$warnings['username'] = $warning;
 		if ($username) {
 			$query = $db->prepare(
-				"SELECT uid " .
-				"FROM " . TABLE_PREFIX . "users " .
-				"WHERE username = '%s'",
+				"SELECT `uid` " .
+				"FROM `" . TABLE_PREFIX . "users` " .
+				"WHERE `username` = '%s'",
 				array($username));
 			$result = $db->query($query);
 			$row = $db->fetch_array_assoc($result);
@@ -191,9 +191,9 @@ if ($action == "login") {
 			$warnings['email'] = $warning;
 		if ($email) {
 			$query = $db->prepare(
-				"SELECT uid " .
-				"FROM " . TABLE_PREFIX . "users " .
-				"WHERE email = '%s'",
+				"SELECT `uid` " .
+				"FROM `" . TABLE_PREFIX . "users` " .
+				"WHERE `email` = '%s'",
 				array($email));
 			$result = $db->query($query);
 			$row = $db->fetch_array_assoc($result);
@@ -270,8 +270,7 @@ if ($action == "login") {
 	$salt = get_random_string(8);
 
 	$db->query($db->prepare(
-		"UPDATE " .
-		TABLE_PREFIX . "users " .
+		"UPDATE `" . TABLE_PREFIX . "users` " .
 		"SET password='%s', salt='%s', reset_password_key='' " .
 		"WHERE uid='%d'",
 		array(hash_password($pass, $salt), $salt, $uid)
@@ -312,8 +311,7 @@ if ($action == "login") {
 	$salt = get_random_string(8);
 
 	$db->query($db->prepare(
-		"UPDATE " .
-		TABLE_PREFIX . "users " .
+		"UPDATE `" . TABLE_PREFIX . "users` " .
 		"SET password='%s', salt='%s'" .
 		"WHERE uid='%d'",
 		array(hash_password($pass, $salt), $salt, $user['uid'])

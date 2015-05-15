@@ -35,6 +35,12 @@ function getnset_template(element, template, admin, data, onSuccessFunction) {
 		success: function (content) {
 			if (!(jsonObj = json_parse(content)))
 				return;
+
+            if (jsonObj.return_id = "no_access") {
+                alert(jsonObj.text);
+                location.reload();
+            }
+
 			element.html(jsonObj.template);
 			onSuccessFunction();
 		},
