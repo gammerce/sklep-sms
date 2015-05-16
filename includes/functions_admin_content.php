@@ -692,7 +692,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
 				//$row['class'] = "highlighted";
 			} // Wyszukujemy dane ktore spelniaja kryteria
 			else if (isset($_GET['search'])) {
-				searchWhere(array("t.payment_id", "t.sms_text", "t.sms_number"), urldecode($_GET['search']), $where);
+				searchWhere(array("t.payment_id", "t.sms_text", "t.sms_code", "t.sms_number"), urldecode($_GET['search']), $where);
 			}
 
 			// Jezeli jest jakis where, to dodajemy WHERE
