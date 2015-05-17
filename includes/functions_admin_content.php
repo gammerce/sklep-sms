@@ -181,7 +181,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
 			// Pobranie listy serwisów transakcyjnych
 			$result = $db->query(
 				"SELECT SQL_CALC_FOUND_ROWS * " .
-				"FROM " . TABLE_PREFIX . "transaction_services " .
+				"FROM `" . TABLE_PREFIX . "transaction_services` " .
 				"LIMIT " . get_row_limit($G_PAGE)
 			);
 			$rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
@@ -388,7 +388,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
 			// Pobranie cen
 			$result = $db->query(
 				"SELECT SQL_CALC_FOUND_ROWS * " .
-				"FROM " . TABLE_PREFIX . "pricelist " .
+				"FROM `" . TABLE_PREFIX . "pricelist` " .
 				"ORDER BY `service`, `server`, `tariff` " .
 				"LIMIT " . get_row_limit($G_PAGE)
 			);
@@ -692,7 +692,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
 				//$row['class'] = "highlighted";
 			} // Wyszukujemy dane ktore spelniaja kryteria
 			else if (isset($_GET['search'])) {
-				searchWhere(array("t.payment_id", "t.sms_text", "t.sms_number"), urldecode($_GET['search']), $where);
+				searchWhere(array("t.payment_id", "t.sms_text", "t.sms_code", "t.sms_number"), urldecode($_GET['search']), $where);
 			}
 
 			// Jezeli jest jakis where, to dodajemy WHERE
@@ -1133,7 +1133,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
 			// Pobranie kodów SMS
 			$result = $db->query(
 				"SELECT SQL_CALC_FOUND_ROWS * " .
-				"FROM " . TABLE_PREFIX . "sms_codes " .
+				"FROM `" . TABLE_PREFIX . "sms_codes` " .
 				"WHERE `free` = '1' " .
 				"LIMIT " . get_row_limit($G_PAGE)
 			);

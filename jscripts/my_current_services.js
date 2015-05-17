@@ -58,7 +58,6 @@ $(document).delegate("#my_current_services .row", "submit", function (e) {
 				});
 			}
 			else if (jsonObj.return_id == "edited") {
-				// TODO: Przemyśleć dlaczego jest tu komentarz
 				/*fetch_data("get_user_service_brick",false,{
 				 id: temp_this.data('row')
 				 },function(html) {

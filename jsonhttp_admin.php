@@ -19,7 +19,7 @@ header("Pragma: no-cache");
 $data = array();
 if ($action == "charge_wallet") {
 	if (!get_privilages("manage_users")) {
-		json_output("not_logged_in", $lang['you_arent_logged_or_no_perm'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	$uid = $_POST['uid'];
@@ -83,7 +83,7 @@ if ($action == "charge_wallet") {
 	json_output("charged", "Prawidłowo doładowano konto użytkownika: {$user2['username']} kwotą: {$amount} {$settings['currency']}", 1);
 } else if ($action == "add_user_service") {
 	if (!get_privilages("manage_player_services")) {
-		json_output("not_logged_in", $lang['you_arent_logged_or_no_perm'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	// Brak usługi
@@ -113,7 +113,7 @@ if ($action == "charge_wallet") {
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
 } else if ($action == "edit_user_service") {
 	if (!get_privilages("manage_player_services")) {
-		json_output("not_logged_in", $lang['you_arent_logged_or_no_perm'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	// Brak usługi
@@ -153,7 +153,7 @@ if ($action == "charge_wallet") {
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
 } else if ($action == "delete_player_service") {
 	if (!get_privilages("manage_player_services")) {
-		json_output("not_logged_in", $lang['no_access'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	// Pobieramy usługę z bazy
@@ -190,7 +190,7 @@ if ($action == "charge_wallet") {
 		json_output("not_deleted", "Usługa gracza nie została usunięta.", 0);
 } else if ($action == "get_add_user_service_form") {
 	if (!get_privilages("manage_player_services")) {
-		json_output("not_logged_in", $lang['no_access'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	$output = "";
@@ -200,7 +200,7 @@ if ($action == "charge_wallet") {
 	output_page($output, "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "add_antispam_question" || $action == "edit_antispam_question") {
 	if (!get_privilages("manage_antispam_questions")) {
-		json_output("not_logged_in", $lang['no_access'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	// Pytanie
@@ -231,7 +231,7 @@ if ($action == "charge_wallet") {
 		json_output("added", "Pytanie anty-spamowe zostało prawidłowo dodane.", 1);
 	} else if ($action == "edit_antispam_question") {
 		$db->query($db->prepare(
-			"UPDATE " . TABLE_PREFIX . "antispam_questions " .
+			"UPDATE `" . TABLE_PREFIX . "antispam_questions` " .
 			"SET `question` = '%s', `answers` = '%s' " .
 			"WHERE `id` = '%d'",
 			array($_POST['question'], $_POST['answers'], $_POST['id'])));
@@ -245,7 +245,7 @@ if ($action == "charge_wallet") {
 	}
 } else if ($action == "delete_antispam_question") {
 	if (!get_privilages("manage_antispam_questions")) {
-		json_output("not_logged_in", $lang['no_access'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	$db->query($db->prepare(
@@ -263,7 +263,7 @@ if ($action == "charge_wallet") {
 	}
 } else if ($action == "edit_settings") {
 	if (!get_privilages("manage_settings")) {
-		json_output("not_logged_in", $lang['no_access'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	$sms_service = $_POST['sms_service'];
@@ -288,7 +288,7 @@ if ($action == "charge_wallet") {
 	if ($sms_service != '0') {
 		$result = $db->query($db->prepare(
 			"SELECT id " .
-			"FROM " . TABLE_PREFIX . "transaction_services " .
+			"FROM `" . TABLE_PREFIX . "transaction_services` " .
 			"WHERE `id` = '%s' AND sms = '1'",
 			array($sms_service)
 		));
@@ -301,7 +301,7 @@ if ($action == "charge_wallet") {
 	if ($transfer_service != '0') {
 		$result = $db->query($db->prepare(
 			"SELECT id " .
-			"FROM " . TABLE_PREFIX . "transaction_services " .
+			"FROM `" . TABLE_PREFIX . "transaction_services` " .
 			"WHERE `id` = '%s' AND transfer = '1'",
 			array($transfer_service)
 		));
@@ -363,7 +363,7 @@ if ($action == "charge_wallet") {
 
 	// Edytuj ustawienia
 	$db->query($db->prepare(
-		"UPDATE " . TABLE_PREFIX . "settings " .
+		"UPDATE `" . TABLE_PREFIX . "settings` " .
 		"SET value = CASE `key` " .
 		"WHEN 'sms_service' THEN '%s' " .
 		"WHEN 'transfer_service' THEN '%s' " .
@@ -399,13 +399,13 @@ if ($action == "charge_wallet") {
 		json_output("not_edited", "Nie wyedytowano ustawień.", 0);
 } else if ($action == "edit_transaction_service") {
 	if (!get_privilages("manage_settings")) {
-		json_output("not_logged_in", $lang['no_access'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	// Pobieranie danych
 	$result = $db->query($db->prepare(
 		"SELECT data " .
-		"FROM " . TABLE_PREFIX . "transaction_services " .
+		"FROM `" . TABLE_PREFIX . "transaction_services` " .
 		"WHERE `id` = '%s'",
 		array($_POST['id'])
 	));
@@ -416,8 +416,8 @@ if ($action == "charge_wallet") {
 	}
 
 	$db->query($db->prepare(
-		"UPDATE " . TABLE_PREFIX . "transaction_services " .
-		"SET data = '%s' " .
+		"UPDATE `" . TABLE_PREFIX . "transaction_services` " .
+		"SET `data` = '%s' " .
 		"WHERE `id` = '%s'",
 		array(json_encode($arr), $_POST['id'])));
 
@@ -431,7 +431,7 @@ if ($action == "charge_wallet") {
 		json_output("not_edited", "Nie udało się wyedytować metody płatności.", 0);
 } else if ($action == "add_service" || $action == "edit_service") {
 	if (!get_privilages("manage_services")) {
-		json_output("not_logged_in", $lang['no_access'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	// ID
@@ -475,7 +475,7 @@ if ($action == "charge_wallet") {
 			$warnings['module'] = "Wybrano nieprawidłowy moduł.<br />";
 	}
 	else
-		$service_module = $heart->get_service_module($_POST['id2']); // TODO Zmienic na _s
+		$service_module = $heart->get_service_module($_POST['id2']); // TODO Zmienic na get_service_module_empty
 
 	// Przed błędami
 	if ($service_module !== NULL) {
@@ -526,7 +526,7 @@ if ($action == "charge_wallet") {
 	}
 } else if ($action == "delete_service") {
 	if (!get_privilages("manage_services")) {
-		json_output("not_logged_in", $lang['no_access'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	// Wywolujemy akcje przy uninstalacji
@@ -555,7 +555,7 @@ if ($action == "charge_wallet") {
 	} else json_output("not_deleted", "Usługa nie została usunięta.", 0);
 } else if ($action == "get_service_module_extra_fields") {
 	if (!get_privilages("manage_player_services")) {
-		json_output("not_logged_in", $lang['no_access'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	$output = "";
@@ -570,7 +570,7 @@ if ($action == "charge_wallet") {
 	output_page($output, "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "add_server" || $action == "edit_server") {
 	if (!get_privilages("manage_servers")) {
-		json_output("not_logged_in", $lang['no_access'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	// Nazwa
@@ -594,7 +594,7 @@ if ($action == "charge_wallet") {
 	if ($_POST['sms_service']) {
 		$result = $db->query($db->prepare(
 			"SELECT id " .
-			"FROM " . TABLE_PREFIX . "transaction_services " .
+			"FROM `" . TABLE_PREFIX . "transaction_services` " .
 			"WHERE `id` = '%s' AND sms = '1'",
 			array($_POST['sms_service'])
 		));
@@ -623,7 +623,7 @@ if ($action == "charge_wallet") {
 
 	if ($action == "add_server") {
 		$db->query($db->prepare(
-			"INSERT INTO " . TABLE_PREFIX . "servers " .
+			"INSERT INTO `" . TABLE_PREFIX . "servers` " .
 			"SET `name`='%s', `ip`='%s', `port`='%s', `sms_service`='%s'{$set}",
 			array($_POST['name'], $_POST['ip'], $_POST['port'], $_POST['sms_service'])));
 
@@ -632,9 +632,9 @@ if ($action == "charge_wallet") {
 		json_output("added", "Serwer został prawidłowo dodany.", 1);
 	} else if ($action == "edit_server") {
 		$db->query($db->prepare(
-			"UPDATE " . TABLE_PREFIX . "servers " .
-			"SET name='%s', ip='%s', port='%s', `sms_service`='%s'{$set} " .
-			"WHERE id='%s'",
+			"UPDATE `" . TABLE_PREFIX . "servers` " .
+			"SET `name` = '%s', `ip` = '%s', `port` = '%s', `sms_service` = '%s'{$set} " .
+			"WHERE `id` = '%s'",
 			array($_POST['name'], $_POST['ip'], $_POST['port'], $_POST['sms_service'], $_POST['id'])
 		));
 
@@ -648,7 +648,7 @@ if ($action == "charge_wallet") {
 	}
 } else if ($action == "delete_server") {
 	if (!get_privilages("manage_servers")) {
-		json_output("not_logged_in", $lang['no_access'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	$db->query($db->prepare(
@@ -664,7 +664,7 @@ if ($action == "charge_wallet") {
 	} else json_output("not_deleted", "Serwer nie został usunięty.", 0);
 } else if ($action == "edit_user") {
 	if (!get_privilages("manage_users")) {
-		json_output("not_logged_in", $lang['no_access'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	$user2 = $heart->get_user($_POST['uid']);
@@ -675,7 +675,7 @@ if ($action == "charge_wallet") {
 			$warnings['username'] = $warning;
 		$result = $db->query($db->prepare(
 			"SELECT `uid` " .
-			"FROM " . TABLE_PREFIX . "users " .
+			"FROM `" . TABLE_PREFIX . "users` " .
 			"WHERE username = '%s'",
 			array($_POST['username'])
 		));
@@ -690,7 +690,7 @@ if ($action == "charge_wallet") {
 			$warnings['email'] = $warning;
 		$result = $db->query($db->prepare(
 			"SELECT `uid` " .
-			"FROM " . TABLE_PREFIX . "users " .
+			"FROM `" . TABLE_PREFIX . "users` " .
 			"WHERE email = '%s'",
 			array($_POST['email'])
 		));
@@ -721,7 +721,7 @@ if ($action == "charge_wallet") {
 	}
 
 	$db->query($db->prepare(
-		"UPDATE " . TABLE_PREFIX . "users " .
+		"UPDATE `" . TABLE_PREFIX . "users` " .
 		"SET `username` = '%s', `forename` = '%s', `surname` = '%s', `email` = '%s', `groups` = '%s', `wallet` = '%f' " .
 		"WHERE `uid` = '%d'",
 		array($_POST['username'], $_POST['forename'], $_POST['surname'], $_POST['email'], implode(";", $_POST['groups']),
@@ -737,7 +737,7 @@ if ($action == "charge_wallet") {
 		json_output("not_edited", "Użytkownik nie został prawidłowo wyedytowany.", 0);
 } else if ($action == "delete_user") {
 	if (!get_privilages("manage_users")) {
-		json_output("not_logged_in", $lang['no_access'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	$db->query($db->prepare(
@@ -753,7 +753,7 @@ if ($action == "charge_wallet") {
 	} else json_output("not_deleted", "Użytkownik nie został usunięty.", 0);
 } else if ($action == "add_group" || $action == "edit_group") {
 	if (!get_privilages("manage_groups")) {
-		json_output("not_logged_in", $lang['no_access'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	$set = "";
@@ -766,7 +766,7 @@ if ($action == "charge_wallet") {
 
 	if ($action == "add_group") {
 		$db->query($db->prepare(
-			"INSERT INTO " . TABLE_PREFIX . "groups " .
+			"INSERT INTO `" . TABLE_PREFIX . "groups` " .
 			"SET `name` = '%s'{$set}",
 			array($_POST['name'])
 		));
@@ -776,7 +776,7 @@ if ($action == "charge_wallet") {
 		json_output("added", "Grupa została prawidłowo dodana.", 1);
 	} else if ($action == "edit_group") {
 		$db->query($db->prepare(
-			"UPDATE " . TABLE_PREFIX . "groups " .
+			"UPDATE `" . TABLE_PREFIX . "groups` " .
 			"SET `name` = '%s'{$set} " .
 			"WHERE `id` = '%d'",
 			array($_POST['name'], $_POST['id'])
@@ -792,7 +792,7 @@ if ($action == "charge_wallet") {
 	}
 } else if ($action == "delete_group") {
 	if (!get_privilages("manage_groups")) {
-		json_output("not_logged_in", $lang['no_access'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	$db->query($db->prepare(
@@ -808,7 +808,7 @@ if ($action == "charge_wallet") {
 	} else json_output("not_deleted", "Grupa nie została usunięta.", 0);
 } else if ($action == "add_tariff") {
 	if (!get_privilages("manage_settings")) {
-		json_output("not_logged_in", $lang['no_access'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	// Taryfa
@@ -845,7 +845,7 @@ if ($action == "charge_wallet") {
 	json_output("added", "Taryfa została prawidłowo dodana.", 1);
 } else if ($action == "edit_tariff") {
 	if (!get_privilages("manage_settings")) {
-		json_output("not_logged_in", $lang['no_access'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	// Prowizja
@@ -863,8 +863,8 @@ if ($action == "charge_wallet") {
 	}
 
 	$db->query($db->prepare(
-		"UPDATE " . TABLE_PREFIX . "tariffs " .
-		"SET provision = '%.2f' " .
+		"UPDATE `" . TABLE_PREFIX . "tariffs` " .
+		"SET `provision` = '%.2f' " .
 		"WHERE `tariff` = '%d'",
 		array($_POST['provision'], $_POST['tariff'])));
 
@@ -875,7 +875,7 @@ if ($action == "charge_wallet") {
 	} else json_output("not_edited", "Taryfa nie została wyedytowana.", 0);
 } else if ($action == "delete_tariff") {
 	if (!get_privilages("manage_settings")) {
-		json_output("not_logged_in", $lang['no_access'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	$db->query($db->prepare(
@@ -893,7 +893,7 @@ if ($action == "charge_wallet") {
 	}
 } else if ($action == "add_price" || $action == "edit_price") {
 	if (!get_privilages("manage_settings")) {
-		json_output("not_logged_in", $lang['no_access'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	// Usługa
@@ -938,9 +938,9 @@ if ($action == "charge_wallet") {
 		json_output("added", "Cena została prawidłowo dodana.", 1);
 	} else if ($action == "edit_price") {
 		$db->query($db->prepare(
-			"UPDATE " . TABLE_PREFIX . "pricelist " .
-			"SET service='%s', tariff='%d', amount='%d', server='%d' " .
-			"WHERE `id`='%d'",
+			"UPDATE `" . TABLE_PREFIX . "pricelist` " .
+			"SET `service` = '%s', `tariff` = '%d', `amount` = '%d', `server` = '%d' " .
+			"WHERE `id` = '%d'",
 			array($_POST['service'], $_POST['tariff'], $_POST['amount'], $_POST['server'], $_POST['id'])));
 
 		// Zwróć info o prawidłowej lub błędnej edycji
@@ -951,7 +951,7 @@ if ($action == "charge_wallet") {
 	}
 } else if ($action == "delete_price") {
 	if (!get_privilages("manage_settings")) {
-		json_output("not_logged_in", $lang['no_access'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	$db->query($db->prepare(
@@ -967,7 +967,7 @@ if ($action == "charge_wallet") {
 	} else json_output("not_deleted", "Cena nie została usunięta.", 0);
 } else if ($action == "add_sms_code") {
 	if (!get_privilages("manage_sms_codes")) {
-		json_output("not_logged_in", $lang['no_access'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	// Taryfa
@@ -1000,7 +1000,7 @@ if ($action == "charge_wallet") {
 	json_output("added", "Kod SMS został prawidłowo dodany.", 1);
 } else if ($action == "delete_sms_code") {
 	if (!get_privilages("manage_sms_codes")) {
-		json_output("not_logged_in", $lang['no_access'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	$result = $db->query($db->prepare(
@@ -1016,7 +1016,7 @@ if ($action == "charge_wallet") {
 	} else json_output("not_deleted", "Kod SMS nie został usunięty.", 0);
 } else if ($action == "delete_log") {
 	if (!get_privilages("manage_logs")) {
-		json_output("not_logged_in", $lang['no_access'], 0);
+		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 	}
 
 	$db->query($db->prepare(
@@ -1048,20 +1048,20 @@ if ($action == "charge_wallet") {
 
 	if ($template == "admin_charge_wallet") {
 		if (!get_privilages("manage_users")) {
-			exit;
+			json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 		}
 
 		$username = htmlspecialchars($_POST['username']);
 		$uid = htmlspecialchars($_POST['uid']);
 	} else if ($template == "admin_user_wallet") {
 		if (!get_privilages("manage_users")) {
-			exit;
+			json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 		}
 
 		$user2 = $heart->get_user($_POST['uid']);
 	} else if ($template == "admin_add_user_service") {
 		if (!get_privilages("manage_player_services")) {
-			exit;
+			json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 		}
 
 		// Pobranie usług
@@ -1077,7 +1077,7 @@ if ($action == "charge_wallet") {
 		}
 	} else if ($template == "admin_edit_user_service") {
 		if (!get_privilages("manage_player_services")) {
-			exit;
+			json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 		}
 
 		// Pobieramy usługę z bazy
@@ -1087,7 +1087,7 @@ if ($action == "charge_wallet") {
 			array($_POST['id'])
 		)));
 
-		if (!is_null($service_module = $heart->get_service_module($player_service['service']))) {
+		if (($service_module = $heart->get_service_module($player_service['service'])) !== NULL) {
 			$service_module_id = htmlspecialchars($service_module::MODULE_ID);
 			$form_data = $service_module->get_form("admin_edit_user_service", $player_service);
 		}
@@ -1096,15 +1096,16 @@ if ($action == "charge_wallet") {
 			$form_data = "Tej usługi nie da rady edytować.";
 	} else if ($template == "admin_edit_transaction_service") {
 		if (!get_privilages("manage_settings")) {
-			exit;
+			json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 		}
 
 		// Pobranie danych o metodzie płatności
 		$result = $db->query($db->prepare(
 			"SELECT * " .
-			"FROM " . TABLE_PREFIX . "transaction_services " .
+			"FROM `" . TABLE_PREFIX . "transaction_services` " .
 			"WHERE `id` = '%s'",
-			array($_POST['id'])));
+			array($_POST['id'])
+		));
 		$transaction_service = $db->fetch_array_assoc($result);
 
 		$transaction_service['id'] = htmlspecialchars($transaction_service['id']);
@@ -1126,14 +1127,14 @@ if ($action == "charge_wallet") {
 		}
 	} else if ($template == "admin_edit_tariff") {
 		if (!get_privilages("manage_settings")) {
-			exit;
+			json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 		}
 
 		$tariff = htmlspecialchars($_POST['tariff']);
 		$provision = number_format($heart->get_tariff_provision($_POST['tariff']), 2);
 	} else if ($template == "admin_add_price" || $template == "admin_edit_price") {
 		if (!get_privilages("manage_settings")) {
-			exit;
+			json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 		}
 
 		if ($template == "admin_edit_price") {
@@ -1173,7 +1174,7 @@ if ($action == "charge_wallet") {
 		}
 	} else if ($template == "admin_add_sms_code") {
 		if (!get_privilages("manage_sms_codes")) {
-			exit;
+			json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 		}
 
 		foreach ($heart->get_tariffs() as $tariff_data) {
@@ -1183,7 +1184,7 @@ if ($action == "charge_wallet") {
 		}
 	} else if ($template == "admin_add_service" || $template == "admin_edit_service") {
 		if (!get_privilages("manage_services")) {
-			exit;
+			json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 		}
 
 		if ($template == "admin_edit_service") {
@@ -1226,7 +1227,7 @@ if ($action == "charge_wallet") {
 		}
 	} else if ($template == "admin_add_server" || $template == "admin_edit_server") {
 		if (!get_privilages("manage_servers")) {
-			exit;
+			json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 		}
 
 		if ($template == "admin_edit_server") {
@@ -1238,7 +1239,7 @@ if ($action == "charge_wallet") {
 		// Pobranie listy serwisów transakcyjnych
 		$result = $db->query(
 			"SELECT id, name, sms " .
-			"FROM " . TABLE_PREFIX . "transaction_services"
+			"FROM `" . TABLE_PREFIX . "transaction_services`"
 		);
 		while ($row = $db->fetch_array_assoc($result)) {
 			if (!$row['sms'])
@@ -1273,7 +1274,7 @@ if ($action == "charge_wallet") {
 		}
 	} else if ($template == "admin_edit_user") {
 		if (!get_privilages("manage_users")) {
-			exit;
+			json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 		}
 
 		// Pobranie użytkownika
@@ -1288,7 +1289,7 @@ if ($action == "charge_wallet") {
 		}
 	} else if ($template == "admin_add_group" || $template == "admin_edit_group") {
 		if (!get_privilages("manage_groups")) {
-			exit;
+			json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 		}
 
 		if ($template == "admin_edit_group") {
@@ -1333,7 +1334,7 @@ if ($action == "charge_wallet") {
 		}
 	} else if ($template == "admin_edit_antispam_question") {
 		if (!get_privilages("manage_antispam_questions")) {
-			exit;
+			json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
 		}
 
 		$result = $db->query($db->prepare(
@@ -1353,5 +1354,3 @@ if ($action == "charge_wallet") {
 }
 
 json_output("script_error", "Błąd programistyczny.", 0);
-
-?>

@@ -158,5 +158,3 @@ abstract class Service
 	}
 
 }
-
-?>

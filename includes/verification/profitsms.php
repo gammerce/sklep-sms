@@ -38,5 +38,3 @@ class PaymentModuleProfitsms extends PaymentModule implements IPaymentSMS
 	}
 
 }
-
-?>

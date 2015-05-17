@@ -125,6 +125,10 @@ class Payment
 			case "SERVER_ERROR":
 				$output['text'] = $lang['sms']['info']['server_error'];
 				break;
+			// Blad konfiguracji uslugi
+			case "SERVICE_ERROR":
+				$output['text'] = $lang['sms']['info']['service_error'];
+				break;
 			// Błąd
 			case "ERROR":
 				$output['text'] = $lang['sms']['info']['error'];
@@ -229,5 +233,3 @@ class Payment
 	}
 
 }
-
-?>
