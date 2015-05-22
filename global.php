@@ -171,7 +171,7 @@ LEFT JOIN `" . TABLE_PREFIX . "payment_wallet` AS pw ON bs.payment = 'wallet' AN
 if ($settings['timezone'])
 	date_default_timezone_set($settings['timezone']);
 
-$settings['date_format'] = $settings['date_format'] ? $settings['date_format'] : "Y-m-d H:i";
+$settings['date_format'] = strlen($settings['date_format']) ? $settings['date_format'] : "Y-m-d H:i";
 
 // Sprawdzanie czy taki szablon istnieje, jak nie to ustaw defaultowy
 $settings['theme'] = file_exists(SCRIPT_ROOT . "themes/{$settings['theme']}") ? $settings['theme'] : "default";

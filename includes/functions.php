@@ -340,14 +340,16 @@ function pay_by_wallet($user, $cost)
 {
 	global $db;
 
+	// Zostawiamy tylko 2 cyfry po przecinku
+	$cost = intval($cost * 100) / 100;
+
 	// Sprawdzanie, czy jest wystarczająca ilość kasy w portfelu
-	if ($cost > $user['wallet']) {
+	if ($cost > $user['wallet'])
 		return array(
 			'status' => "no_money",
 			'text' => "Bida! Nie masz wystarczającej ilości kasy w portfelu. Doładuj portfel ;-)",
 			'positive' => false
 		);
-	}
 
 	// Ustawiamy miejsce, skad zostala wykonana platnosc
 	$platform_name = get_platform($user['platform']);
