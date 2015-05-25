@@ -345,7 +345,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
 		case "services_buttons":
 			$services = "";
 			foreach ($heart->get_services() as $service) {
-				if (is_null($service_module = $heart->get_service_module($service['id'])) || !$service_module->show_on_web())
+				if (($service_module = $heart->get_service_module($service['id'])) === NULL || !$service_module->show_on_web())
 					continue;
 
 				if (!$heart->user_can_use_service($user['uid'], $service))

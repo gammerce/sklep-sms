@@ -93,6 +93,7 @@ $lang['must_be_logged_in'] = "Nie możesz przeglądać tej strony. Nie jesteś z
 $lang['no_reset_key'] = "Nie podano kodu resetowania hasła.";
 $lang['wrong_reset_key'] = "Kod resetowania hasła jest błędny.<br />
 Skontaktuj się z administratorem serwisu w celu uzyskania dodatkowych informacji.";
+$lang['password_changed'] = "Hasło zostało prawidłowo zmienione.";
 
 $lang['wrong_id'] = "Błędne ID";
 $lang['site_not_exists'] = "Strona nie istnieje.";

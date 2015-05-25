@@ -5,7 +5,6 @@ define("SCRIPT_NAME", "extra_stuff");
 
 require_once "global.php";
 
-
 // Jezeli jest popup, to wyswietl info w nowym oknie
 if ($_GET['popup']) {
 	// Usuwamy napis popup z linku
@@ -23,7 +22,7 @@ switch ($action) {
 		$output = "";
 		$service_module = $heart->get_service_module($_GET['service']);
 
-		if (!is_null($service_module))
+		if ($service_module !== NULL)
 			$output = $service_module->get_full_description();
 
 		$stylesheets[] = "{$settings['shop_url_slash']}styles/extra_stuff/long_desc.css?version=" . VERSION;

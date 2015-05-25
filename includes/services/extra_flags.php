@@ -25,13 +25,13 @@ class ServiceExtraFlagsSimple extends Service implements IServiceCreateNew
 			$option_id = 1 << $i;
 			$types .= create_dom_element("option", get_type_name($option_id), array(
 				'value' => $option_id,
-				'selected' => !is_null($this->service) && $this->service['types'] & $option_id ? "selected" : ""
+				'selected' => $this->service !== NULL && $this->service['types'] & $option_id ? "selected" : ""
 			));
 		}
 
 		// Pobieramy flagi, jeżeli service nie jest puste
 		// czyli kiedy edytujemy, a nie dodajemy usługę
-		if (!is_null($this->service))
+		if ($this->service !== NULL)
 			$flags = $this->service['flags_hsafe'];
 
 		eval("\$output = \"" . get_template("services/extra_flags/extra_fields", 0, 1, 0) . "\";");
@@ -664,7 +664,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		// Pobranie usług
 		$services = "";
 		foreach ($heart->get_services() as $id => $row) {
-			if (is_null($service_module = $heart->get_service_module_s($row['module'])))
+			if (($service_module = $heart->get_service_module_s($row['module'])) === NULL)
 				continue;
 			// Usługę możemy zmienić tylko na taka, która korzysta z tego samego modułu.
 			// Inaczej to nie ma sensu, lepiej ją usunąć i dodać nową
@@ -811,7 +811,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 			if ($data['server'] == "")
 				$warnings['server'] .= "Musisz wybrać serwer na który chcesz dodać daną usługę.<br />";
 			// Wyszukiwanie serwera o danym id
-			else if (is_null($server = $heart->get_server($data['server'])))
+			else if (($server = $heart->get_server($data['server'])) === NULL)
 				$warnings['server'] .= "Brak serwera o takim ID. Coś tu ktoś namieszał.<br />";
 		}
 

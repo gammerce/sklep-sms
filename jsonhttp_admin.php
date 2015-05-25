@@ -177,7 +177,7 @@ if ($action == "charge_wallet") {
 
 	// Wywolujemy akcje przy usuwaniu
 	$service_module = $heart->get_service_module($player_service['service']);
-	if (!is_null($service_module)) {
+	if ($service_module !== NULL) {
 		$service_module->delete_player_service($player_service);
 	}
 

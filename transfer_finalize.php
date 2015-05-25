@@ -41,7 +41,7 @@ if ($payment->payment_api->check_sign($_POST, $payment->payment_api->data['key']
 	$service_module = $heart->get_service_module($transaction_data['service']);
 
 	// Dokonujemy zakupu usługi
-	if (!is_null($service_module)) {
+	if ($service_module !== NULL) {
 		$bought_service_id = $service_module->purchase(array(
 			'user' => array(
 				'uid' => $user['uid'],

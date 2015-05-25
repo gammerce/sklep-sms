@@ -203,7 +203,7 @@ function validate_payment($data)
 
 	// Tworzymy obiekt usługi którą kupujemy
 	$service_module = $heart->get_service_module($data['service']);
-	if (is_null($service_module)) {
+	if ($service_module === NULL) {
 		return array(
 			'status' => "wrong_module",
 			'text' => $lang['module_is_bad'],
@@ -672,8 +672,10 @@ function create_brick($text, $class = "", $alpha = 0.2)
 
 function get_platform($platform)
 {
-	if ($platform == "cs16") return "Counter-Strike v1.6";
-	else return $platform;
+	if ($platform == "engine_amxx") return "Serwer gry (AMXX)";
+	else if ($platform == "engine_sm") return "Serwer gry (SM)";
+
+	return $platform;
 }
 
 // Zwraca nazwę typu

@@ -61,7 +61,7 @@ class Heart
 	public function get_service_module($service_id)
 	{
 		// Brak usługi o takim ID
-		if (is_null($service = $this->get_service($service_id)))
+		if (($service = $this->get_service($service_id)) === NULL)
 			return NULL;
 
 		// Brak takiego modułu

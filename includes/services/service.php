@@ -130,7 +130,7 @@ abstract class Service
 	 */
 	public function show_on_web()
 	{
-		if (!is_null($this->service))
+		if ($this->service !== NULL)
 			return $this->service['data']['web'];
 
 		return false;

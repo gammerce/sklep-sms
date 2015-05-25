@@ -29,7 +29,7 @@ if ($action == "purchase_service") {
 	$output = "";
 	$service_module = $heart->get_service_module(urldecode($_GET['service']));
 
-	if (is_null($service_module))
+	if ($service_module === NULL)
 		xml_output("bad_module", $lang['module_is_bad'], 0);
 
 	// Sprawdzamy dane zakupu

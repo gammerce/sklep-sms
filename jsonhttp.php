@@ -320,10 +320,10 @@ if ($action == "login") {
 	// LOGING
 	log_info("Zmieniono hasło. ID użytkownika: {$user['uid']}.");
 
-	json_output("password_changed", "Hasło zostało prawidłowo zmienione.", 1);
+	json_output("password_changed", $lang['password_changed'], 1);
 } else if ($action == "validate_purchase_form") {
 	$service_module = $heart->get_service_module($_POST['service']);
-	if (is_null($service_module))
+	if ($service_module === NULL)
 		json_output("wrong_module", $lang['module_is_bad'], 0);
 
 	// Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
@@ -445,7 +445,7 @@ if ($action == "login") {
 	$button_edit = create_dom_element("img", "", array(
 		'class' => "edit_row",
 		'src' => "images/pencil.png",
-		'title' => "Edytuj",
+		'title' => $lang['edit'],
 		'style' => array(
 			'height' => '24px'
 		)
@@ -534,4 +534,4 @@ if ($action == "login") {
 	output_page(json_encode($data), "Content-type: text/plain; charset=\"UTF-8\"");
 }
 
-json_output("script_error", "Błąd programistyczny.", 0);
+json_output("script_error", "An error occured: no action.", 0);
