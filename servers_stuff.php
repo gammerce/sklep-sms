@@ -50,7 +50,7 @@ if ($action == "purchase_service") {
 	));
 
 	// Moduł nie posiada metody validate_purchase_data
-	if ($return_validation == FALSE)
+	if ($return_validation === FALSE)
 		xml_output("bad_module", $lang['module_is_bad'], 0);
 
 	// Są jakieś błędy przy sprawdzaniu danych

@@ -58,9 +58,8 @@ if ($action == "login") {
 	$_SESSION['language'] = escape_filename($_POST['language']);
 	exit;
 } else if ($action == "register") {
-	if (is_logged()) {
-		json_output("logged_in", $lang['not_logged'], 0);
-	}
+	if (is_logged())
+		json_output("logged_in", $lang['logged'], 0);
 
 	$username = trim($_POST['username']);
 	$password = $_POST['password'];
@@ -83,9 +82,8 @@ if ($action == "login") {
 		$warnings['username'] = $warning;
 	}
 	$result = $db->query($db->prepare(
-		"SELECT `uid` " .
-		"FROM `" . TABLE_PREFIX . "users` " .
-		"WHERE username = '%s'",
+		"SELECT `uid` FROM `" . TABLE_PREFIX . "users` " .
+		"WHERE `username` = '%s'",
 		array($username)
 	));
 	if ($db->num_rows($result)) {
@@ -104,8 +102,7 @@ if ($action == "login") {
 		$warnings['email'] = $warning;
 	}
 	$result = $db->query($db->prepare(
-		"SELECT `uid` " .
-		"FROM `" . TABLE_PREFIX . "users` " .
+		"SELECT `uid` FROM `" . TABLE_PREFIX . "users` " .
 		"WHERE `email` = '%s'",
 		array($email)
 	));
@@ -118,8 +115,7 @@ if ($action == "login") {
 
 	// Pobranie z bazy pytania antyspamowego
 	$result = $db->query($db->prepare(
-		"SELECT * " .
-		"FROM `" . TABLE_PREFIX . "antispam_questions` " .
+		"SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " .
 		"WHERE `id` = '%d'",
 		array($as_id)
 	));
@@ -130,8 +126,7 @@ if ($action == "login") {
 
 	// Pobranie nowego pytania antyspamowego
 	$result = $db->query(
-		"SELECT * " .
-		"FROM `" . TABLE_PREFIX . "antispam_questions` " .
+		"SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " .
 		"ORDER BY RAND() " .
 		"LIMIT 1"
 	);
@@ -151,8 +146,7 @@ if ($action == "login") {
 
 	$salt = get_random_string(8);
 	$db->query($db->prepare(
-		"INSERT " .
-		"INTO " . TABLE_PREFIX . "users (username, password, salt, email, forename, surname, regip) " .
+		"INSERT INTO `" . TABLE_PREFIX . "users` (`username`, `password`, `salt`, `email`, `forename`, `surname`, `regip`) " .
 		"VALUES ('%s','%s','%s','%s','%s','%s','%s')",
 		array($username, hash_password($password, $salt), $salt, $email, $forename, $surname, $user['ip'])
 	));
@@ -162,9 +156,8 @@ if ($action == "login") {
 
 	json_output("registered", "Konto zostało prawidłowo zarejestrowane. Za chwilę nastąpi automatyczne zalogowanie.", 1, $data);
 } else if ($action == "forgotten_password") {
-	if (is_logged()) {
-		json_output("logged_in", $lang['not_logged'], 0);
-	}
+	if (is_logged())
+		json_output("logged_in", $lang['logged'], 0);
 
 	$username = trim($_POST['username']);
 	$email = trim($_POST['email']);
@@ -172,39 +165,36 @@ if ($action == "login") {
 	if ($username || (!$username && !$email)) {
 		if ($warning = check_for_warnings("username", $username))
 			$warnings['username'] = $warning;
-		if ($username) {
-			$query = $db->prepare(
-				"SELECT `uid` " .
-				"FROM `" . TABLE_PREFIX . "users` " .
+		if (strlen($username)) {
+			$result = $db->query( $db->prepare(
+				"SELECT `uid` FROM `" . TABLE_PREFIX . "users` " .
 				"WHERE `username` = '%s'",
-				array($username));
-			$result = $db->query($query);
-			$row = $db->fetch_array_assoc($result);
-			if (empty($row)) {
+				array($username)
+			));
+
+			if (!$db->num_rows($result))
 				$warnings['username'] .= "Podana nazwa użytkownika nie jest przypisana do żadnego konta.<br />";
-			}
+			else
+				$row = $db->fetch_array_assoc($result);
 		}
 	}
 
-	if (!$username) {
+	if (!strlen($username)) {
 		if ($warning = check_for_warnings("email", $email))
 			$warnings['email'] = $warning;
-		if ($email) {
-			$query = $db->prepare(
-				"SELECT `uid` " .
-				"FROM `" . TABLE_PREFIX . "users` " .
+		if (strlen($email)) {
+			$result = $db->query( $db->prepare(
+				"SELECT `uid` FROM `" . TABLE_PREFIX . "users` " .
 				"WHERE `email` = '%s'",
-				array($email));
-			$result = $db->query($query);
-			$row = $db->fetch_array_assoc($result);
-			if (empty($row)) {
+				array($email)
+			));
+
+			if (!$db->num_rows($result))
 				$warnings['email'] .= "Podany e-mail nie jest przypisany do żadnego konta.<br />";
-			}
+			else
+				$row = $db->fetch_array_assoc($result);
 		}
 	}
-
-	// Pobranie danych użytkownika
-	$user2 = $heart->get_user($row['uid']);
 
 	// Błędy
 	if (!empty($warnings)) {
@@ -214,6 +204,9 @@ if ($action == "login") {
 		}
 		json_output("warnings", $lang['form_wrong_filled'], 0, $data);
 	}
+
+	// Pobranie danych użytkownika
+	$user2 = $heart->get_user($row['uid']);
 
 	$key = get_random_string(32);
 	$db->query($db->prepare(
@@ -237,9 +230,8 @@ if ($action == "login") {
 		json_output("sent", "E-mail wraz z linkiem do zresetowania hasła został wysłany na Twoją skrzynkę pocztową.", 1, $data);
 	}
 } else if ($action == "reset_password") {
-	if (is_logged()) {
-		json_output("logged_in", $lang['not_logged'], 0);
-	}
+	if (is_logged())
+		json_output("logged_in", $lang['logged'], 0);
 
 	$uid = $_POST['uid'];
 	$sign = $_POST['sign'];

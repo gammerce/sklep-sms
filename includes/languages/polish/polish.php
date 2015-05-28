@@ -64,6 +64,7 @@ $lang['ippass'] = "IP + Hasło";
 $lang['sid'] = "SteamID";
 
 $lang['not_logged'] = "Nie jesteś zalogowany/a";
+$lang['logged'] = "Jesteś zalogowany/a";
 $lang['dont_play_games'] = "Nie kombinuj...";
 $lang['service_cant_be_modified'] = "Tej usługi nie można edytować.";
 $lang['module_is_bad'] = "Moduł usługi został źle zaprogramowany.";
