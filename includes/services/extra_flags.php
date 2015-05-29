@@ -186,7 +186,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 	public function validate_purchase_form($data)
 	{
-		global $user, $settings;
+		global $user;
 
 		// Wyłuskujemy taryfę
 		$value = explode(';', $data['value']);
@@ -1262,14 +1262,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 			"SELECT sn.number AS `sms_number`, t.provision AS `provision`, t.tariff AS `tariff`, p.amount AS `amount` " .
 			"FROM `" . TABLE_PREFIX . "pricelist` AS p " .
 			"JOIN `" . TABLE_PREFIX . "tariffs` AS t ON t.tariff = p.tariff " .
-			"JOIN `" . TABLE_PREFIX . "sms_numbers` AS sn ON sn.tariff = p.tariff " .
-			"WHERE sn.service = '%s' AND p.service = '%s' AND ( p.server = '%d' OR p.server = '-1' ) " .
+			"LEFT JOIN `" . TABLE_PREFIX . "sms_numbers` AS sn ON sn.tariff = p.tariff AND sn.service = '%s' " .
+			"WHERE p.service = '%s' AND ( p.server = '%d' OR p.server = '-1' ) " .
 			"ORDER BY t.provision ASC",
 			array($settings['sms_service'], $this->service['id'], $server)
 		));
 
 		while ($row = $db->fetch_array_assoc($result)) {
-			$sms_cost = get_sms_cost($row['sms_number']) * $settings['vat'];
+			$sms_cost = strlen($row['sms_number']) ? get_sms_cost($row['sms_number']) * $settings['vat'] : 0;
 			$amount = $row['amount'] != -1 ? "{$row['amount']} {$this->service['tag']}" : $lang['forever'];
 			eval("\$values .= \"" . get_template("services/extra_flags/purchase_value", false, true, false) . "\";");
 		}

@@ -196,8 +196,8 @@ function get_content($element, $withenvelope = true, $separateclass = false)
 					$purchase_data = htmlspecialchars($_POST['data']);
 					$purchase_sign = htmlspecialchars($_POST['sign']);
 
-					$stylesheets[] = "{$settings['shop_url_slash']}styles/style_payment.css?version=" . VERSION;
-					$scripts[] = "{$settings['shop_url_slash']}jscripts/payment.js?version=" . VERSION;
+					$stylesheets[] = $settings['shop_url_slash'] . "styles/style_payment.css?version=" . VERSION;
+					$scripts[] = $settings['shop_url_slash'] . "jscripts/payment.js?version=" . VERSION;
 
 					break;
 

@@ -582,6 +582,21 @@ function log_info($string)
 }
 
 /**
+ * Przerabia tablice skryptów i styli w htmla
+ *
+ * @param $scripts
+ * @param $stylesheets
+ */
+function parse_scripts_styles(&$scripts, &$stylesheets) {
+	$scripts = array_unique($scripts);
+	$stylesheets = array_unique($stylesheets);
+	foreach($scripts as $key => $script) $scripts[$key] = "<script type=\"text/javascript\" src=\"{$script}\"></script>";
+	foreach($stylesheets as $key => $stylesheet) $stylesheets[$key] = "<link href=\"{$stylesheet}\" rel=\"stylesheet\" />";
+	$scripts = implode("\n", $scripts);
+	$stylesheets = implode("\n", $stylesheets);
+}
+
+/**
  * Sprawdza, czy dany obiekt implementuje odpowiedni interfejs
  *
  * @param $class
