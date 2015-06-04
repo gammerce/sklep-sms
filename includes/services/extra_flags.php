@@ -843,7 +843,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		$service_info = array();
 		for ($i = 0; $i < 3; $i++) {
 			$option_id = 1 << $i;
-			if ($this->service['types'] & $option_id && $option_id == $player_service['type']) { // Kiedy dana usługa wspiera dany typ, lub gdy wykupiona usługa ma ten typ
+			if ($this->service['types'] & $option_id || $option_id == $player_service['type']) { // Kiedy dana usługa wspiera dany typ, lub gdy wykupiona usługa ma ten typ
 				$service_info['types'] .= create_dom_element("option", get_type_name($option_id), array(
 					'value' => $option_id,
 					'selected' => $option_id == $player_service['type'] ? "selected" : ""
@@ -859,8 +859,6 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 					else
 						$service_info['player_ip'] = htmlspecialchars($player_service['auth_data']);
 				}
-
-				break;
 			}
 		}
 
