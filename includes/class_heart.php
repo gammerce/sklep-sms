@@ -12,11 +12,12 @@ class Heart
 	private $tariffs = array();
 	private $tariffs_fetched;
 
-	private $page = array();
 	public $page_title;
 
 	private $services_classes;
 	private $payment_api_classes;
+	private $pages_classes;
+	private $blocks_classes;
 
 	private $users;
 
@@ -31,6 +32,7 @@ class Heart
 		$this->groups_fetched = false;
 		$this->services_classes = array();
 		$this->payment_api_classes = array();
+		$this->pages_classes = array();
 		$this->users = array();
 		$this->groups = array();
 	}
@@ -42,7 +44,7 @@ class Heart
 	public function register_service_module($id, $name, $class, $classsimple)
 	{
 		if (isset($this->services_classes[$id]))
-			throw new Exception('There is already a service with such an id.');
+			throw new Exception('There is a service with such an id already.');
 
 		$this->services_classes[$id] = array(
 			'name' => $name,
@@ -83,10 +85,13 @@ class Heart
 		if (!isset($this->services_classes[$module_id]))
 			return NULL;
 
-		$className = $this->services_classes[$module_id]['classsimple'];
+		if (!isset($this->services_classes[$module_id]['classsimple']))
+			return NULL;
+
+		$classname = $this->services_classes[$module_id]['classsimple'];
 
 		// Jeszcze sprawdzamy, czy moduł został prawidłowo stworzony
-		return $className ? new $className() : NULL;
+		return new $classname();
 	}
 
 	public function get_service_module_name($module_id)
@@ -122,12 +127,95 @@ class Heart
 
 	public function register_payment_api($id, $class)
 	{
+		if (isset($this->payment_api_classes[$id]))
+			throw new Exception("There is a payment api with id: " . htmlspecialchars($id) . " already.");
+
 		$this->payment_api_classes[$id] = $class;
 	}
 
 	public function get_payment_api($id)
 	{
 		return isset($this->payment_api_classes[$id]) ? $this->payment_api_classes[$id] : NULL;
+	}
+
+	//
+	// Obsługa bloków
+	//
+
+	/**
+	 * Rejestruje blok
+	 *
+	 * @param string $block_id
+	 * @param string $class
+	 * @throws Exception
+	 */
+	public function register_block($block_id, $class)
+	{
+		if ($this->block_exists($block_id))
+			throw new Exception("There is a block with such an id: " . htmlspecialchars($block_id) . " already.");
+
+		$this->blocks_classes[$block_id] = $class;
+	}
+
+	/**
+	 * Sprawdza czy dany blok istnieje
+	 *
+	 * @param string $block_id
+	 * @return bool
+	 */
+	public function block_exists($block_id) {
+		return isset($this->blocks_classes[$block_id]);
+	}
+
+	/**
+	 * Zwraca obiekt bloku
+	 *
+	 * @param string $block_id
+	 * @return null|Block|BlockSimple
+	 */
+	public function get_block($block_id)
+	{
+		return $this->block_exists($block_id) ? $this->blocks_classes[$block_id]() : NULL;
+	}
+
+	//
+	// Obsługa stron
+	//
+
+	/**
+	 * Rejestruje strone
+	 *
+	 * @param string $page_id
+	 * @param string $class
+	 * @throws Exception
+	 */
+	public function register_page($page_id, $class)
+	{
+		if (isset($this->pages_classes[$page_id]))
+			throw new Exception("There is a page with such an id: " . htmlspecialchars($page_id) . " already.");
+
+		$this->pages_classes[$page_id] = $class;
+	}
+
+	/**
+	 * Sprawdza czy dana strona istnieje
+	 *
+	 * @param string $page_id
+	 * @return bool
+	 */
+	public function page_exists($page_id) {
+		return isset($this->pages_classes[$page_id]);
+	}
+
+	/**
+	 * Zwraca obiekt strony
+	 *
+	 * @param string $page_id
+	 * @return null|Page|PageSimple
+	 */
+	public function get_page($page_id)
+	{
+		return $this->page_exists($page_id) ? $this->pages_classes[$page_id]() : NULL;
 	}
 
 	//
@@ -391,44 +479,4 @@ class Heart
 
 		$this->groups_fetched = true;
 	}
-
-	//
-	// Informacje o stronie
-	//
-
-	public function get_page($id)
-	{
-		if (!isset($this->page[$id])) {
-			$this->fetch_page($id);
-		}
-
-		$this->page_title = isset($this->page[$id]) ? $this->page[$id]['title'] : $this->page['main_content']['title'];
-		return isset($this->page[$id]) ? $this->page[$id] : $this->page['main_content'];
-	}
-
-	private function fetch_page($id)
-	{
-		global $db;
-
-		// Pobieranie info o danej podstronie
-		$result = $db->query($db->prepare(
-			"SELECT * FROM `" . TABLE_PREFIX . "pages` " .
-			"WHERE `id` = '%s' OR `id` = 'main_content'",
-			array($id)
-		));
-
-		// Pobieramy strone
-		$row = $db->fetch_array_assoc($result);
-		// Jeżeli sa dwie strony, to sprawdzamy, czy nie pobralismy przypadkiem main_content
-		if ($db->num_rows($result) == 2) {
-			// Jesteśmy przy main_content, więc pobieramy jeszcze raz
-			if ($row['id'] != $id)
-				$row = $db->fetch_array_assoc($result);
-		}
-
-		// Przypisujemy pobraną stronę
-		$this->page[$row['id']] = $row;
-		$this->page['id_safe'] = htmlspecialchars($row['id']);
-	}
-
 }

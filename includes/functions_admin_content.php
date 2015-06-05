@@ -1317,7 +1317,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
 
 			$newest_versions = json_decode(trim(curl_get_contents("http://www.sklep-sms.pl/version.php?action=get_newest&type=engines")), true);
 
-			$version_blocks = "";
+			$version_bricks = "";
 			foreach ($heart->get_servers() as $server) {
 				$engine = "engine_{$server['type']}";
 				// Mamy najnowszą wersję
@@ -1334,7 +1334,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
 					continue;
 
 				// Pobieramy informacje o danym serwerze, jego obecnej wersji i nastepnej wersji
-				eval("\$version_blocks .= \"" . get_template("admin/update_version_block") . "\";");
+				eval("\$version_bricks .= \"" . get_template("admin/update_version_block") . "\";");
 
 				// Pobieramy plik kolejnej wersji update
 				$file_data['type'] = "update";
@@ -1352,7 +1352,7 @@ function get_content($element, $withenvelope = true, $separateclass = false)
 			}
 
 			// Brak aktualizacji
-			if (!strlen($version_blocks)) {
+			if (!strlen($version_bricks)) {
 				eval("\$output = \"" . get_template("admin/no_update") . "\";");
 				break;
 			}

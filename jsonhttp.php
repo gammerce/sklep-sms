@@ -359,9 +359,12 @@ if ($action == "login") {
 		$bricks = explode(";", $_POST['bricks']);
 
 	foreach ($bricks as $brick) {
-		$array = get_content($brick, false, true);
-		$data[$brick]['class'] = $array['class'];
-		$data[$brick]['content'] = $array['content'];
+		// Nie ma takiego bloku do odświeżenia
+		if(($block = $heart->get_block($brick)) === NULL)
+			continue;
+
+		$data[$brick]['class'] = $block->get_content_class();
+		$data[$brick]['content'] = $block->get_content($_GET, $_POST);
 	}
 
 	output_page(json_encode($data), "Content-type: text/plain; charset=\"UTF-8\"");

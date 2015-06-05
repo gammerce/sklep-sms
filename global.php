@@ -74,6 +74,30 @@ foreach (scandir(SCRIPT_ROOT . "includes/services") as $file) {
 		require_once SCRIPT_ROOT . "includes/services/{$file}";
 }
 
+// Dodajemy klasy wszystkich bloków
+require_once SCRIPT_ROOT . "includes/blocks/block.php";
+foreach (scandir(SCRIPT_ROOT . "includes/blocks") as $file) {
+	if (substr($file, -4) == ".php")
+		require_once SCRIPT_ROOT . "includes/blocks/{$file}";
+}
+
+// Dodajemy klasy wszystkich stron
+require_once SCRIPT_ROOT . "includes/pages/page.php";
+foreach (scandir(SCRIPT_ROOT . "includes/pages") as $file) {
+	if (substr($file, -4) == ".php")
+		require_once SCRIPT_ROOT . "includes/pages/{$file}";
+}
+
+// Pobieramy id strony oraz obecna numer strony
+$G_PID = isset($_GET['pid']) && $heart->page_exists($_GET['pid']) ? $_GET['pid'] : "main_content";
+$G_PAGE = isset($_GET['page']) && intval($_GET['page']) >= 1 ? intval($_GET['page']) : 1;
+
+// Jeżeli próbujemy wejść do PA i nie jesteśmy zalogowani, to zmień stronę
+if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
+	if (!is_logged())
+		$G_PID = "login";
+}
+
 // Działania na sesji
 if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
 	// Logujemy się
@@ -114,15 +138,6 @@ if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin")) && is_logged() && !$
 // Aktualizujemy aktywność użytkownika
 if (is_logged())
 	update_activity($_SESSION['uid']);
-
-$G_PID = isset($_GET['pid']) ? $_GET['pid'] : "main_content";
-$G_PAGE = isset($_GET['page']) && intval($_GET['page']) >= 1 ? intval($_GET['page']) : 1;
-
-// Jeżeli próbujemy wejść do PA i nie jesteśmy zalogowani, to zmień stronę
-if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
-	if (!is_logged())
-		$G_PID = "login";
-}
 
 // Pobranie stałych
 $result = $db->query("SELECT * FROM `" . TABLE_PREFIX . "settings`");

@@ -4,9 +4,9 @@
  * Pobranie szablonu.
  *
  * @param string $title Nazwa szablonu
- * @param boolean $install  Prawda, jeżeli pobieramy szablon instalacji.
- * @param boolean $eslashes  Prawda, jeżeli zawartość szablonu ma być "escaped".
- * @param boolean $htmlcomments Prawda, jeżeli chcemy dodać komentarze o szablonie.
+ * @param bool $install  Prawda, jeżeli pobieramy szablon instalacji.
+ * @param bool $eslashes  Prawda, jeżeli zawartość szablonu ma być "escaped".
+ * @param bool $htmlcomments Prawda, jeżeli chcemy dodać komentarze o szablonie.
  * @return string Szablon.
  */
 function get_template($title, $install = false, $eslashes = true, $htmlcomments = true)
@@ -32,7 +32,7 @@ function get_template($title, $install = false, $eslashes = true, $htmlcomments 
 		$template = str_replace("\\'", "'", addslashes($template));
 	}
 
-	$template = str_replace("{__VERSION__}", "\".VERSION.\"", $template);
+	$template = str_replace("{__VERSION__}", VERSION, $template);
 
 	return $template;
 }

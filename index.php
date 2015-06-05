@@ -6,9 +6,6 @@ define('SCRIPT_NAME', "index");
 require_once "global.php";
 require_once SCRIPT_ROOT . "includes/functions_content.php";
 
-// Pobieramy stronę
-$page = $heart->get_page($G_PID);
-
 // Dodanie stylów oraz skryptów uzywanych na danej stronie
 if ($G_PID == "register") {
 	$scripts[] = $settings['shop_url_slash'] . "jscripts/register.js?version=" . VERSION;
