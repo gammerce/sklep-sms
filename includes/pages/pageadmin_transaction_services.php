@@ -1,6 +1,6 @@
 <?php
 
-$heart->register_page("admin_transaction_services", "PageAdminTransactionServices");
+$heart->register_page("transaction_services", "PageAdminTransactionServices", "admin");
 
 class PageAdminTransactionServices extends PageAdmin {
 
@@ -12,13 +12,10 @@ class PageAdminTransactionServices extends PageAdmin {
 		$this->title = $lang['transaction_services'];
 
 		parent::__construct();
-
-		global $settings, $scripts;
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/transaction_services.js?version=" . VERSION;
 	}
 
 	protected function content($get, $post) {
-		global $db, $lang, $G_PAGE;
+		global $db, $lang, $G_PAGE, $settings, $scripts;
 
 		// Pobranie listy serwisów transakcyjnych
 		$result = $db->query(
@@ -57,6 +54,8 @@ class PageAdminTransactionServices extends PageAdmin {
 
 		// Pobranie nagłówka tabeli
 		eval("\$thead = \"" . get_template("admin/transaction_services_thead") . "\";");
+
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/transaction_services.js?version=" . VERSION;
 
 		// Pobranie struktury tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");

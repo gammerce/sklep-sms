@@ -1,6 +1,6 @@
 <?php
 
-$heart->register_page("admin_logs", "PageAdminLogs");
+$heart->register_page("logs", "PageAdminLogs", "admin");
 
 class PageAdminLogs extends PageAdmin {
 
@@ -12,13 +12,10 @@ class PageAdminLogs extends PageAdmin {
 		$this->title = $lang['logs'];
 
 		parent::__construct();
-
-		global $settings, $scripts;
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/logs.js?version=" . VERSION;
 	}
 
 	protected function content($get, $post) {
-		global $db, $lang, $G_PAGE;
+		global $db, $lang, $G_PAGE, $settings, $scripts;
 
 		// Wyszukujemy dane ktore spelniaja kryteria
 		if (isset($get['search']))
@@ -73,6 +70,8 @@ class PageAdminLogs extends PageAdmin {
 
 		// Pobranie nagłówka tabeli
 		eval("\$thead = \"" . get_template("admin/logs_thead") . "\";");
+
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/logs.js?version=" . VERSION;
 
 		// Pobranie wygladu całej tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");

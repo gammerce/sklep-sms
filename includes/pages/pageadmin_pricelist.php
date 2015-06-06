@@ -1,6 +1,6 @@
 <?php
 
-$heart->register_page("admin_price_list", "PageAdminPriceList");
+$heart->register_page("price_list", "PageAdminPriceList", "admin");
 
 class PageAdminPriceList extends PageAdmin {
 
@@ -12,13 +12,10 @@ class PageAdminPriceList extends PageAdmin {
 		$this->title = $lang['pricelist'];
 
 		parent::__construct();
-
-		global $settings, $scripts;
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/pricelist.js?version=" . VERSION;
 	}
 
 	protected function content($get, $post) {
-		global $heart, $db, $lang, $G_PAGE;
+		global $heart, $db, $lang, $G_PAGE, $settings, $scripts;
 
 		// Pobranie cen
 		$result = $db->query(
@@ -62,12 +59,12 @@ class PageAdminPriceList extends PageAdmin {
 		if (!strlen($tbody))
 			eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
 
-		// Pobranie przycisku dodającego taryfę
-		$button = array(
+		// Pobranie przycisku dodającego cenę
+		$buttons = create_dom_element("input", "", array(
 			'id' => "button_add_price",
+			'type' => "button",
 			'value' => $lang['add_price']
-		);
-		eval("\$buttons = \"" . get_template("admin/button") . "\";");
+		));
 
 		// Pobranie paginacji
 		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
@@ -76,6 +73,8 @@ class PageAdminPriceList extends PageAdmin {
 
 		// Pobranie nagłówka tabeli
 		eval("\$thead = \"" . get_template("admin/pricelist_thead") . "\";");
+
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/pricelist.js?version=" . VERSION;
 
 		// Pobranie struktury tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");

@@ -1,6 +1,6 @@
 <?php
 
-$heart->register_page("admin_services", "PageAdminServices");
+$heart->register_page("services", "PageAdminServices", "admin");
 
 class PageAdminServices extends PageAdmin {
 
@@ -12,13 +12,10 @@ class PageAdminServices extends PageAdmin {
 		$this->title = $lang['services'];
 
 		parent::__construct();
-
-		global $settings, $scripts;
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/services.js?version=" . VERSION;
 	}
 
 	protected function content($get, $post) {
-		global $heart, $lang;
+		global $heart, $lang, $settings, $scripts;
 
 		// Pobranie listy serwisów transakcyjnych
 		$i = 0;
@@ -56,14 +53,15 @@ class PageAdminServices extends PageAdmin {
 		// Pobranie nagłówka tabeli
 		eval("\$thead = \"" . get_template("admin/services_thead") . "\";");
 
-		if (get_privilages("manage_services")) {
-			// Pobranie przycisku dodającego taryfę
-			$button = array(
+		if (get_privilages("manage_services"))
+			// Pobranie przycisku dodającego usługę
+			$buttons = create_dom_element("input", "", array(
 				'id' => "button_add_service",
+				'type' => "button",
 				'value' => $lang['add_service']
-			);
-			eval("\$buttons = \"" . get_template("admin/button") . "\";");
-		}
+			));
+
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/services.js?version=" . VERSION;
 
 		// Pobranie struktury tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");

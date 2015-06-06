@@ -1,6 +1,6 @@
 <?php
 
-$heart->register_page("admin_payment_wallet", "PageAdminPaymentWallet");
+$heart->register_page("payment_wallet", "PageAdminPaymentWallet", "admin");
 
 class PageAdminPaymentWallet extends PageAdmin {
 

@@ -1,6 +1,6 @@
 <?php
 
-$heart->register_page("admin_players_flags", "PageAdminPlayersFlags");
+$heart->register_page("players_flags", "PageAdminPlayersFlags", "admin");
 
 class PageAdminPlayersFlags extends PageAdmin {
 

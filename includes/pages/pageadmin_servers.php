@@ -1,6 +1,6 @@
 <?php
 
-$heart->register_page("admin_servers", "PageAdminServers");
+$heart->register_page("servers", "PageAdminServers", "admin");
 
 class PageAdminServers extends PageAdmin {
 
@@ -12,13 +12,10 @@ class PageAdminServers extends PageAdmin {
 		$this->title = $lang['servers'];
 
 		parent::__construct();
-
-		global $settings, $scripts;
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/servers.js?version=" . VERSION;
 	}
 
 	protected function content($get, $post) {
-		global $heart, $lang;
+		global $heart, $lang, $settings, $scripts;
 
 		$i = 0;
 		$tbody = "";
@@ -54,14 +51,15 @@ class PageAdminServers extends PageAdmin {
 		// Pobranie nagłówka tabeli
 		eval("\$thead = \"" . get_template("admin/servers_thead") . "\";");
 
-		if (get_privilages("manage_servers")) {
-			// Pobranie przycisku dodającego taryfę
-			$button = array(
+		if (get_privilages("manage_servers"))
+			// Pobranie przycisku dodającego serwer
+			$buttons = create_dom_element("input", "", array(
 				'id' => "button_add_server",
+				'type' => "button",
 				'value' => $lang['add_server']
-			);
-			eval("\$buttons = \"" . get_template("admin/button") . "\";");
-		}
+			));
+
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/servers.js?version=" . VERSION;
 
 		// Pobranie struktury tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");

@@ -7,18 +7,9 @@ class PagePurchase extends Page
 
 	protected $title = "Zakup usługi";
 
-	function __construct()
-	{
-		parent::__construct();
-
-		global $settings, $scripts, $stylesheets;
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/purchase.js?version=" . VERSION;
-		$stylesheets[] = $settings['shop_url_slash'] . "styles/style_purchase.css?version=" . VERSION;
-	}
-
 	protected function content($get, $post)
 	{
-		global $heart, $user, $lang;
+		global $heart, $user, $lang, $settings, $scripts, $stylesheets;
 
 		if ($service_module = $heart->get_service_module($get['service']) === NULL)
 			return $lang['site_not_exists'];
@@ -41,14 +32,15 @@ class PagePurchase extends Page
 		if (strlen($service_module->get_full_description()))
 			eval("\$show_more = \"" . get_template("services/show_more") . "\";");
 
-		// Dodajemy wyglad formularza zakupu
-		if (class_has_interface($service_module, "IServicePurchaseWeb")) {
-			eval("\$output = \"" . get_template("services/short_description") . "\";"); // Dodajemy krótki opis
-			return $output . $service_module->form_purchase_service();
-		}
+				// Nie ma formularza zakupu, to tak jakby strona nie istniała
+		if (class_has_interface($service_module, "IServicePurchaseWeb"))
+			return $lang['site_not_exists'];
 
-		// Nie ma formularza zakupu, to tak jakby strona nie istniała
-		return $lang['site_not_exists'];
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/purchase.js?version=" . VERSION;
+		$stylesheets[] = $settings['shop_url_slash'] . "styles/style_purchase.css?version=" . VERSION;
+
+		eval("\$output = \"" . get_template("services/short_description") . "\";"); // Dodajemy krótki opis
+		return $output . $service_module->form_purchase_service();
 	}
 
 }

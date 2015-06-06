@@ -1,6 +1,6 @@
 <?php
 
-$heart->register_page("admin_groups", "PageAdminGroups");
+$heart->register_page("groups", "PageAdminGroups", "admin");
 
 class PageAdminGroups extends PageAdmin {
 
@@ -12,13 +12,10 @@ class PageAdminGroups extends PageAdmin {
 		$this->title = $lang['groups'];
 
 		parent::__construct();
-
-		global $settings, $scripts;
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/groups.js?version=" . VERSION;
 	}
 
 	protected function content($get, $post) {
-		global $db, $lang, $G_PAGE;
+		global $db, $lang, $G_PAGE, $settings, $scripts;
 
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "groups` " .
@@ -64,13 +61,15 @@ class PageAdminGroups extends PageAdmin {
 		// Pobranie nagłówka tabeli
 		eval("\$thead = \"" . get_template("admin/groups_thead") . "\";");
 
-		if (get_privilages("manage_groups")) {
-			// Pobranie przycisku dodającego taryfę
-			$button = array(
+		if (get_privilages("manage_groups"))
+			// Pobranie przycisku dodającego grupę
+			$buttons = create_dom_element("input", "", array(
 				'id' => "button_add_group",
-				'value' => $lang['add_group']);
-			eval("\$buttons = \"" . get_template("admin/button") . "\";");
-		}
+				'type' => "button",
+				'value' => $lang['add_group']
+			));
+
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/groups.js?version=" . VERSION;
 
 		// Pobranie struktury tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");

@@ -1,6 +1,6 @@
 <?php
 
-$heart->register_page("admin_payment_transfer", "PageAdminPaymentTransfer");
+$heart->register_page("payment_transfer", "PageAdminPaymentTransfer", "admin");
 
 class PageAdminPaymentTransfer extends PageAdmin {
 

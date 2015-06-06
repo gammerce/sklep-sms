@@ -8,17 +8,9 @@ class PageResetPassword extends Page
 	protected $require_login = -1;
 	protected $title = "Resetowanie hasła";
 
-	function __construct()
-	{
-		parent::__construct();
-
-		global $settings, $scripts;
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/modify_password.js?version=" . VERSION;
-	}
-
 	protected function content($get, $post)
 	{
-		global $db, $settings, $lang;
+		global $db, $settings, $lang, $scripts;
 
 		// Brak podanego kodu
 		if (!strlen($get['code']))
@@ -35,6 +27,8 @@ class PageResetPassword extends Page
 
 		$row = $db->fetch_array_assoc($result);
 		$sign = md5($row['uid'] . $settings['random_key']);
+
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/modify_password.js?version=" . VERSION;
 
 		eval("\$output = \"" . get_template("reset_password") . "\";");
 		return $output;

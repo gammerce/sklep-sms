@@ -187,35 +187,39 @@ class Heart
 	 *
 	 * @param string $page_id
 	 * @param string $class
+	 * @param string $type
 	 * @throws Exception
 	 */
-	public function register_page($page_id, $class)
+	public function register_page($page_id, $class, $type = "user")
 	{
-		if (isset($this->pages_classes[$page_id]))
+		if ($this->page_exists($page_id, $type))
 			throw new Exception("There is a page with such an id: " . htmlspecialchars($page_id) . " already.");
 
-		$this->pages_classes[$page_id] = $class;
+		$this->pages_classes[$type][$page_id] = $class;
 	}
 
 	/**
 	 * Sprawdza czy dana strona istnieje
 	 *
 	 * @param string $page_id
+	 * @param string $type
 	 * @return bool
 	 */
-	public function page_exists($page_id) {
-		return isset($this->pages_classes[$page_id]);
+	public function page_exists($page_id, $type = "user")
+	{
+		return isset($this->pages_classes[$type][$page_id]);
 	}
 
 	/**
 	 * Zwraca obiekt strony
 	 *
 	 * @param string $page_id
+	 * @param string $type
 	 * @return null|Page|PageSimple
 	 */
-	public function get_page($page_id)
+	public function get_page($page_id, $type = "user")
 	{
-		return $this->page_exists($page_id) ? $this->pages_classes[$page_id]() : NULL;
+		return $this->page_exists($page_id, $type) ? $this->pages_classes[$type][$page_id]() : NULL;
 	}
 
 	//

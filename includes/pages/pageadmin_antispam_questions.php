@@ -1,6 +1,6 @@
 <?php
 
-$heart->register_page("admin_antispam_questions", "PageAdminAntispamQuestions");
+$heart->register_page("antispam_questions", "PageAdminAntispamQuestions", "admin");
 
 class PageAdminAntispamQuestions extends PageAdmin {
 
@@ -12,13 +12,10 @@ class PageAdminAntispamQuestions extends PageAdmin {
 		$this->title = $lang['antispam_questions'];
 
 		parent::__construct();
-
-		global $settings, $scripts;
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/antispam_questions.js?version=" . VERSION;
 	}
 
 	protected function content($get, $post) {
-		global $db, $lang, $G_PAGE;
+		global $db, $lang, $G_PAGE, $settings, $scripts;
 
 		// Pobranie taryf
 		$result = $db->query(
@@ -60,14 +57,13 @@ class PageAdminAntispamQuestions extends PageAdmin {
 		if (!strlen($tbody))
 			eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
 
-		if (get_privilages("manage_antispam_questions")) {
-			// Pobranie przycisku dodającego taryfę
-			$button = array(
+		if (get_privilages("manage_antispam_questions"))
+			// Pobranie przycisku dodającego pytanie antyspamowe
+			$buttons = create_dom_element("input", "", array(
 				'id' => "button_add_antispam_question",
+				'type' => "button",
 				'value' => $lang['add_antispam_question']
-			);
-			eval("\$buttons = \"" . get_template("admin/button") . "\";");
-		}
+			));
 
 		// Pobranie paginacji
 		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
@@ -76,6 +72,8 @@ class PageAdminAntispamQuestions extends PageAdmin {
 
 		// Pobranie nagłówka tabeli
 		eval("\$thead = \"" . get_template("admin/antispam_questions_thead") . "\";");
+
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/antispam_questions.js?version=" . VERSION;
 
 		// Pobranie struktury tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");

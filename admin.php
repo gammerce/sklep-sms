@@ -37,7 +37,7 @@ if (!is_logged() || !$user['privilages']['acp']) {
 	output_page($output);
 }
 
-$content = get_content("content");
+$content = get_content("admincontent");
 
 // Pobranie przycisków do sidebaru
 if (get_privilages("view_player_flags")) {

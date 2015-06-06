@@ -8,18 +8,9 @@ class PageRegister extends Page
 	protected $require_login = -1;
 	protected $title = "Formularz rejestracyjny";
 
-	function __construct()
-	{
-		parent::__construct();
-
-		global $settings, $scripts, $stylesheets;
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/register.js?version=" . VERSION;
-		$stylesheets[] = $settings['shop_url_slash'] . "styles/style_register.css?version=" . VERSION;
-	}
-
 	protected function content($get, $post)
 	{
-		global $db, $settings, $lang;
+		global $db, $settings, $lang, $scripts, $stylesheets;
 
 		$antispam_question = $db->fetch_array_assoc($db->query(
 			"SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " .
@@ -28,6 +19,9 @@ class PageRegister extends Page
 		));
 
 		$sign = md5($antispam_question['id'] . $settings['random_key']);
+
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/register.js?version=" . VERSION;
+		$stylesheets[] = $settings['shop_url_slash'] . "styles/style_register.css?version=" . VERSION;
 
 		eval("\$output = \"" . get_template("register") . "\";");
 		return $output;

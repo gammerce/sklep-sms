@@ -1,6 +1,6 @@
 <?php
 
-$heart->register_page("admin_sms_codes", "PageAdminSmsCodes");
+$heart->register_page("sms_codes", "PageAdminSmsCodes", "admin");
 
 class PageAdminSmsCodes extends PageAdmin {
 
@@ -12,13 +12,10 @@ class PageAdminSmsCodes extends PageAdmin {
 		$this->title = $lang['sms_codes'];
 
 		parent::__construct();
-
-		global $settings, $scripts;
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/sms_codes.js?version=" . VERSION;
 	}
 
 	protected function content($get, $post) {
-		global $db, $lang, $G_PAGE;
+		global $db, $lang, $G_PAGE, $settings, $scripts;
 
 		// Pobranie kodów SMS
 		$result = $db->query(
@@ -54,14 +51,12 @@ class PageAdminSmsCodes extends PageAdmin {
 		if (!strlen($tbody))
 			eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
 
-		if (get_privilages("manage_sms_codes")) {
-			// Pobranie przycisku dodającego taryfę
-			$button = array(
+		if (get_privilages("manage_sms_codes"))
+			$buttons = create_dom_element("input", "", array(
 				'id' => "button_add_sms_code",
+				'type' => "button",
 				'value' => $lang['add_sms_code']
-			);
-			eval("\$buttons = \"" . get_template("admin/button") . "\";");
-		}
+			));
 
 		// Pobranie paginacji
 		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
@@ -70,6 +65,8 @@ class PageAdminSmsCodes extends PageAdmin {
 
 		// Pobranie nagłówka tabeli
 		eval("\$thead = \"" . get_template("admin/sms_codes_thead") . "\";");
+
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/sms_codes.js?version=" . VERSION;
 
 		// Pobranie wygladu całej tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");

@@ -61,10 +61,11 @@ class PagePayment extends Page
 		$purchase_data = htmlspecialchars($_POST['data']);
 		$purchase_sign = htmlspecialchars($_POST['sign']);
 
+		eval("\$output = \"" . get_template("payment_form") . "\";");
+
 		$stylesheets[] = $settings['shop_url_slash'] . "styles/style_payment.css?version=" . VERSION;
 		$scripts[] = $settings['shop_url_slash'] . "jscripts/payment.js?version=" . VERSION;
 
-		eval("\$output = \"" . get_template("payment_form") . "\";");
 		return $output;
 	}
 

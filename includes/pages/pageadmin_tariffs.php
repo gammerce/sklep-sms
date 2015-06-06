@@ -1,6 +1,6 @@
 <?php
 
-$heart->register_page("admin_tariffs", "PageAdminTariffs");
+$heart->register_page("tariffs", "PageAdminTariffs", "admin");
 
 class PageAdminTariffs extends PageAdmin {
 
@@ -12,13 +12,10 @@ class PageAdminTariffs extends PageAdmin {
 		$this->title = $lang['tariffs'];
 
 		parent::__construct();
-
-		global $settings, $scripts;
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/tariffs.js?version=" . VERSION;
 	}
 
 	protected function content($get, $post) {
-		global $heart, $lang;
+		global $heart, $lang, $settings, $scripts;
 
 		$i = 0;
 		$tbody = "";
@@ -50,14 +47,16 @@ class PageAdminTariffs extends PageAdmin {
 			eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
 
 		// Pobranie przycisku dodającego taryfę
-		$button = array(
+		$buttons = create_dom_element("input", "", array(
 			'id' => "button_add_tariff",
+			'type' => "button",
 			'value' => $lang['add_tariff']
-		);
-		eval("\$buttons = \"" . get_template("admin/button") . "\";");
+		));
 
 		// Pobranie nagłówka tabeli
 		eval("\$thead = \"" . get_template("admin/tariffs_thead") . "\";");
+
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/tariffs.js?version=" . VERSION;
 
 		// Pobranie struktury tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");

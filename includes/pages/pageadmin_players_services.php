@@ -1,6 +1,6 @@
 <?php
 
-$heart->register_page("admin_players_services", "PageAdminPlayersServices");
+$heart->register_page("players_services", "PageAdminPlayersServices", "admin");
 
 class PageAdminPlayersServices extends PageAdmin {
 
@@ -12,14 +12,10 @@ class PageAdminPlayersServices extends PageAdmin {
 		$this->title = $lang['players_services'];
 
 		parent::__construct();
-
-		global $settings, $scripts;
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/players_services.js?version=" . VERSION;
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/services/extra_flags.js?version=" . VERSION;
 	}
 
 	protected function content($get, $post) {
-		global $heart, $db, $settings, $lang, $G_PAGE;
+		global $heart, $db, $settings, $lang, $G_PAGE, $scripts;
 
 		// Wyszukujemy dane ktore spelniaja kryteria
 		if (isset($get['search']))
@@ -101,6 +97,9 @@ class PageAdminPlayersServices extends PageAdmin {
 
 		// Pobranie nagłówka tabeli
 		eval("\$thead = \"" . get_template("admin/players_services_thead") . "\";");
+
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/players_services.js?version=" . VERSION;
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/services/extra_flags.js?version=" . VERSION;
 
 		// Pobranie struktury tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");

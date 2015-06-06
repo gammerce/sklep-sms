@@ -376,6 +376,8 @@ function pay_by_wallet($user, $cost)
 	// Ustawiamy miejsce, skad zostala wykonana platnosc
 	$platform_name = get_platform($user['platform']);
 
+	//TODO: Zrobić aby do bazy zapisywało się engine_amxx jako platforma, a nie przerobiony już tekst
+
 	// Zabieramy kasę z portfela
 	charge_wallet($user['uid'], -$cost);
 

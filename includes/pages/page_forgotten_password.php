@@ -9,12 +9,11 @@ class PageForgottenPassword extends PageSimple
 	protected $require_login = -1;
 	protected $title = "Odzyskanie hasła";
 
-	function __construct()
-	{
-		parent::__construct();
-
+	protected function content($get, $post) {
 		global $settings, $scripts;
 		$scripts[] = $settings['shop_url_slash'] . "jscripts/modify_password.js?version=" . VERSION;
+
+		return parent::content($get, $post);
 	}
 
 }

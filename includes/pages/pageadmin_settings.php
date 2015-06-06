@@ -1,6 +1,6 @@
 <?php
 
-$heart->register_page("admin_settings", "PageAdminSettings");
+$heart->register_page("settings", "PageAdminSettings", "admin");
 
 class PageAdminSettings extends PageAdmin {
 
@@ -12,13 +12,10 @@ class PageAdminSettings extends PageAdmin {
 		$this->title = $lang['settings'];
 
 		parent::__construct();
-
-		global $settings, $scripts;
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/settings.js?version=" . VERSION;
 	}
 
 	protected function content($get, $post) {
-		global $db, $settings, $lang;
+		global $db, $settings, $lang, $scripts;
 
 		// Pobranie listy serwisów transakcyjnych
 		$result = $db->query(
@@ -60,6 +57,8 @@ class PageAdminSettings extends PageAdmin {
 					'value' => $dir_name,
 					'selected' => $dir_name == $settings['language'] ? "selected" : ""
 				));
+
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/settings.js?version=" . VERSION;
 
 		// Pobranie wyglądu strony
 		eval("\$output = \"" . get_template("admin/settings") . "\";");

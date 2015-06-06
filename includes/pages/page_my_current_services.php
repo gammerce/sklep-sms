@@ -8,18 +8,9 @@ class PageMyCurrentServices extends Page
 	protected $require_login = 1;
 	protected $title = "Moje obecne usługi";
 
-	function __construct()
-	{
-		parent::__construct();
-
-		global $settings, $scripts, $stylesheets;
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/my_current_services.js?version=" . VERSION;
-		$stylesheets[] = $settings['shop_url_slash'] . "styles/style_my_current_services.css?version=" . VERSION;
-	}
-
 	protected function content($get, $post)
 	{
-		global $heart, $db, $settings, $user, $lang, $G_PAGE;
+		global $heart, $db, $settings, $user, $lang, $G_PAGE, $scripts, $stylesheets;
 
 		$my_current_services = "";
 		$result = $db->query($db->prepare(
@@ -59,6 +50,10 @@ class PageMyCurrentServices extends Page
 		$pagination_class = strlen($pagination) ? "" : "display_none";
 
 		eval("\$output = \"" . get_template("my_current_services") . "\";");
+
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/my_current_services.js?version=" . VERSION;
+		$stylesheets[] = $settings['shop_url_slash'] . "styles/style_my_current_services.css?version=" . VERSION;
+
 		return $output;
 	}
 

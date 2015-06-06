@@ -8,18 +8,9 @@ class PageTakeOverService extends Page
 	protected $require_login = 1;
 	protected $title = "Przejmij usługę";
 
-	function __construct()
-	{
-		parent::__construct();
-
-		global $settings, $scripts, $stylesheets;
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/take_over_service.js?version=" . VERSION;
-		$stylesheets[] = $settings['shop_url_slash'] . "styles/take_over_service.css?version=" . VERSION;
-	}
-
 	protected function content($get, $post)
 	{
-		global $heart, $lang;
+		global $heart, $lang, $settings, $scripts, $stylesheets;
 
 		$services_options = "";
 		$services = $heart->get_services();
@@ -35,6 +26,9 @@ class PageTakeOverService extends Page
 				'value' => $service['id']
 			));
 		}
+
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/take_over_service.js?version=" . VERSION;
+		$stylesheets[] = $settings['shop_url_slash'] . "styles/take_over_service.css?version=" . VERSION;
 
 		eval("\$output = \"" . get_template("take_over_service") . "\";");
 		return $output;

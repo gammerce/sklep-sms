@@ -1,6 +1,6 @@
 <?php
 
-$heart->register_page("admin_income", "PageAdminIncome");
+$heart->register_page("income", "PageAdminIncome", "admin");
 
 class PageAdminIncome extends PageAdmin {
 

@@ -1,6 +1,6 @@
 <?php
 
-$heart->register_page("admin_users", "PageAdminUsers");
+$heart->register_page("users", "PageAdminUsers", "admin");
 
 class PageAdminUsers extends PageAdmin {
 
@@ -12,13 +12,10 @@ class PageAdminUsers extends PageAdmin {
 		$this->title = $lang['users'];
 
 		parent::__construct();
-
-		global $settings, $scripts;
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/users.js?version=" . VERSION;
 	}
 
 	protected function content($get, $post) {
-		global $heart, $db, $lang, $G_PAGE;
+		global $heart, $db, $lang, $G_PAGE, $settings, $scripts;
 
 		// Wyszukujemy dane ktore spelniaja kryteria
 		if (isset($get['search']))
@@ -91,6 +88,8 @@ class PageAdminUsers extends PageAdmin {
 
 		// Pobranie nagłówka tabeli
 		eval("\$thead = \"" . get_template("admin/users_thead") . "\";");
+
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/users.js?version=" . VERSION;
 
 		// Pobranie struktury tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");

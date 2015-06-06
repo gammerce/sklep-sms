@@ -524,9 +524,8 @@ if ($action == "charge_wallet") {
 			json_output("not_edited", "Usługa nie została wyedytowana.", 0);
 	}
 } else if ($action == "delete_service") {
-	if (!get_privilages("manage_services")) {
+	if (!get_privilages("manage_services"))
 		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
-	}
 
 	// Wywolujemy akcje przy uninstalacji
 	$service_module = $heart->get_service_module($_POST['id']);
@@ -551,11 +550,11 @@ if ($action == "charge_wallet") {
 	if ($affected) {
 		log_info("Admin {$user['username']}({$user['uid']}) usunął usługę. ID: {$_POST['id']}");
 		json_output("deleted", "Usługa została prawidłowo usunięta.", 1);
-	} else json_output("not_deleted", "Usługa nie została usunięta.", 0);
+	} else
+		json_output("not_deleted", "Usługa nie została usunięta.", 0);
 } else if ($action == "get_service_module_extra_fields") {
-	if (!get_privilages("manage_player_services")) {
+	if (!get_privilages("manage_player_services"))
 		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
-	}
 
 	$output = "";
 	// Pobieramy moduł obecnie edytowanej usługi, jeżeli powróciliśmy do pierwotnego modułu
@@ -1032,42 +1031,39 @@ if ($action == "charge_wallet") {
 		$bricks = explode(";", $_POST['bricks']);
 
 	foreach ($bricks as $brick) {
-		$array = get_content($brick, false, true);
-		$data[$brick]['class'] = $array['class'];
-		$data[$brick]['content'] = $array['content'];
+		// Nie ma takiego bloku do odświeżenia
+		if(($block = $heart->get_block($brick)) === NULL)
+			continue;
+
+		$data[$brick]['class'] = $block->get_content_class();
+		$data[$brick]['content'] = $block->get_content($_GET, $_POST);
 	}
 
 	output_page(json_encode($data), "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "get_template") {
 	$template = $_POST['template'];
 	// Zabezpieczanie wszystkich wartości post
-	foreach ($_POST as $key => $value) {
+	foreach ($_POST as $key => $value)
 		$_POST[$key] = htmlspecialchars($value);
-	}
 
 	if ($template == "admin_charge_wallet") {
-		if (!get_privilages("manage_users")) {
+		if (!get_privilages("manage_users"))
 			json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
-		}
 
 		$username = htmlspecialchars($_POST['username']);
 		$uid = htmlspecialchars($_POST['uid']);
 	} else if ($template == "admin_user_wallet") {
-		if (!get_privilages("manage_users")) {
+		if (!get_privilages("manage_users"))
 			json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
-		}
 
 		$user2 = $heart->get_user($_POST['uid']);
 	} else if ($template == "admin_add_user_service") {
-		if (!get_privilages("manage_player_services")) {
+		if (!get_privilages("manage_player_services"))
 			json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
-		}
 
 		// Pobranie usług
 		foreach ($heart->get_services() as $id => $row) {
-			if (($service_module = $heart->get_service_module($id)) === NULL
-				|| !class_has_interface($service_module, "IServiceAdminManageUserService")
-			)
+			if (($service_module = $heart->get_service_module($id)) === NULL || !class_has_interface($service_module, "IServiceAdminManageUserService"))
 				continue;
 
 			$services .= create_dom_element("option", $row['name'], array(

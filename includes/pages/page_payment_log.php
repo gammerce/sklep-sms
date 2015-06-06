@@ -8,17 +8,9 @@ class PagePaymentLog extends Page
 	protected $require_login = 1;
 	protected $title = "Historia płatności";
 
-	function __construct()
-	{
-		parent::__construct();
-
-		global $settings, $stylesheets;
-		$stylesheets[] = $settings['shop_url_slash'] . "styles/style_payment_log.css?version=" . VERSION;
-	}
-
 	protected function content($get, $post)
 	{
-		global $heart, $db, $settings, $user, $lang, $G_PAGE;
+		global $heart, $db, $settings, $user, $lang, $G_PAGE, $stylesheets;
 
 		$result = $db->query($db->prepare(
 			"SELECT SQL_CALC_FOUND_ROWS * FROM ({$settings['transactions_query']}) as t " .
@@ -60,6 +52,9 @@ class PagePaymentLog extends Page
 		$pagination_class = strlen($pagination) ? "" : "display_none";
 
 		eval("\$output = \"" . get_template("payment_log") . "\";");
+
+		$stylesheets[] = $settings['shop_url_slash'] . "styles/style_payment_log.css?version=" . VERSION;
+
 		return $output;
 	}
 

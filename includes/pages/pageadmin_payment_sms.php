@@ -1,6 +1,6 @@
 <?php
 
-$heart->register_page("admin_payment_sms", "PageAdminPaymentSms");
+$heart->register_page("payment_sms", "PageAdminPaymentSms", "admin");
 
 class PageAdminPaymentSms extends PageAdmin {
 
@@ -45,7 +45,7 @@ class PageAdminPaymentSms extends PageAdmin {
 
 		$tbody = "";
 		while ($row = $db->fetch_array_assoc($result)) {
-			$row['free'] = $row['free'] ? "TAK" : "NIE";
+			$row['free'] = $row['free'] ? strtoupper($lang['yes']) : strtoupper($lang['no']);
 			$row['income'] = $row['income'] ? number_format($row['income'], 2) . " " . $settings['currency'] : "";
 			$row['cost'] = $row['cost'] ? number_format($row['cost'], 2) . " " . $settings['currency'] : "";
 

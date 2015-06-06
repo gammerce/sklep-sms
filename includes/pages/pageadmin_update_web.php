@@ -1,6 +1,6 @@
 <?php
 
-$heart->register_page("admin_update_web", "PageAdminUpdateWeb");
+$heart->register_page("update_web", "PageAdminUpdateWeb", "admin");
 
 class PageAdminUpdateWeb extends PageAdmin {
 
