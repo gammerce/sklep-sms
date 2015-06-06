@@ -2,17 +2,21 @@
 
 $heart->register_block("user_buttons", "BlockUserButtons");
 
-class BlockUserButtons extends Block {
+class BlockUserButtons extends Block
+{
 
-	public function get_content_class() {
+	public function get_content_class()
+	{
 		return is_logged() ? "user_buttons" : "loginarea";
 	}
 
-	public function get_content_id() {
+	public function get_content_id()
+	{
 		return "user_buttons";
 	}
 
-	protected function content($get, $post) {
+	protected function content($get, $post)
+	{
 		global $lang;
 
 		if (is_logged()) {

@@ -8,7 +8,7 @@ $lang['license_expires'] = "Licencja wygasa";
 
 $lang['remove_install'] = "Usuń folder install !";
 $lang['update_available'] = "Dostępna jest aktualizacja skryptu do wersji {1}. Aby ją pobrać przejdź do strony <a href=\"admin.php?pid=update_web\">Aktualizacja strony WWW</a>";
-$lang['update_available_servers'] = "Dostępna jest aktualizacja dla {1}/{2} serwerów. Aby ją pobrać przejdź do strony <a href=\"admin.php?pid=update_server\">Aktualizacja Serwerów</a>";
+$lang['update_available_servers'] = "Dostępna jest aktualizacja dla {1}/{2} serwerów. Aby ją pobrać przejdź do strony <a href=\"admin.php?pid=update_servers\">Aktualizacja Serwerów</a>";
 $lang['license_error'] = "Licencja wygasła lub jest błędna. Przejdź do <a href=\"admin.php?pid=settings\">ustawień</a>, w celu wprowadzenia prawidłowych danych licencji.";
 $lang['license_soon_expire'] = "Licencja wygaśnie za: {1} Możesz ją przedłużyć już teraz: <a href=\"http://sklep-sms.pl/index.php?page=zakup\" target=\"_blank\">Przedłuż Licencję</a>";
 

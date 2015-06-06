@@ -2,12 +2,22 @@
 
 $heart->register_page("reset_password", "PageResetPassword");
 
-class PageResetPassword extends Page {
+class PageResetPassword extends Page
+{
 
 	protected $require_login = -1;
 	protected $title = "Resetowanie hasła";
 
-	protected function content($get, $post) {
+	function __construct()
+	{
+		parent::__construct();
+
+		global $settings, $scripts;
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/modify_password.js?version=" . VERSION;
+	}
+
+	protected function content($get, $post)
+	{
 		global $db, $settings, $lang;
 
 		// Brak podanego kodu

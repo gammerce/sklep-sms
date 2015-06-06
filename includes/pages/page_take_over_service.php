@@ -2,12 +2,23 @@
 
 $heart->register_page("take_over_service", "PageTakeOverService");
 
-class PageTakeOverService extends Page {
+class PageTakeOverService extends Page
+{
 
 	protected $require_login = 1;
 	protected $title = "Przejmij usługę";
 
-	protected function content($get, $post) {
+	function __construct()
+	{
+		parent::__construct();
+
+		global $settings, $scripts, $stylesheets;
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/take_over_service.js?version=" . VERSION;
+		$stylesheets[] = $settings['shop_url_slash'] . "styles/take_over_service.css?version=" . VERSION;
+	}
+
+	protected function content($get, $post)
+	{
 		global $heart, $lang;
 
 		$services_options = "";

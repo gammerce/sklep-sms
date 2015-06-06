@@ -24,6 +24,7 @@ $lang['months'] = array("", "Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "C
 $lang['verification_error'] = "Coś poszło nie tak podczas łączenia się z serwerem weryfikacyjnym.";
 
 $lang['acp'] = "Panel Admina";
+$lang['acp_short'] = "PA";
 $lang['no_privilages'] = "Nie masz dostępu do tego miejsca, więc tu nie zerkaj!";
 $lang['wrong_login_data'] = "Login i/lub hasło są nieprawidłowe.";
 

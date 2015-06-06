@@ -2,11 +2,22 @@
 
 $heart->register_page("purchase", "PagePurchase");
 
-class PagePurchase extends Page {
+class PagePurchase extends Page
+{
 
 	protected $title = "Zakup usługi";
 
-	protected function content($get, $post) {
+	function __construct()
+	{
+		parent::__construct();
+
+		global $settings, $scripts, $stylesheets;
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/purchase.js?version=" . VERSION;
+		$stylesheets[] = $settings['shop_url_slash'] . "styles/style_purchase.css?version=" . VERSION;
+	}
+
+	protected function content($get, $post)
+	{
 		global $heart, $user, $lang;
 
 		if ($service_module = $heart->get_service_module($get['service']) === NULL)

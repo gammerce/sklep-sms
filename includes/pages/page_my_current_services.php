@@ -2,12 +2,23 @@
 
 $heart->register_page("my_current_services", "PageMyCurrentServices");
 
-class PageMyCurrentServices extends Page {
+class PageMyCurrentServices extends Page
+{
 
 	protected $require_login = 1;
 	protected $title = "Moje obecne usługi";
 
-	protected function content($get, $post) {
+	function __construct()
+	{
+		parent::__construct();
+
+		global $settings, $scripts, $stylesheets;
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/my_current_services.js?version=" . VERSION;
+		$stylesheets[] = $settings['shop_url_slash'] . "styles/style_my_current_services.css?version=" . VERSION;
+	}
+
+	protected function content($get, $post)
+	{
 		global $heart, $db, $settings, $user, $lang, $G_PAGE;
 
 		$my_current_services = "";

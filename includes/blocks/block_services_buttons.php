@@ -2,17 +2,21 @@
 
 $heart->register_block("services_buttons", "BlockServicesButtons");
 
-class BlockServicesButtons extends Block {
+class BlockServicesButtons extends Block
+{
 
-	public function get_content_class() {
+	public function get_content_class()
+	{
 		return "services_buttons";
 	}
 
-	public function get_content_id() {
+	public function get_content_id()
+	{
 		return "services_buttons";
 	}
 
-	protected function content($get, $post) {
+	protected function content($get, $post)
+	{
 		global $heart, $user;
 
 		$services = "";

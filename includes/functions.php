@@ -49,6 +49,23 @@ function output_page($output, $header = "Content-type: text/html; charset=\"UTF-
 	exit;
 }
 
+/**
+ * Zwraca treść danego bloku
+ *
+ * @param string $element
+ * @param bool $withenvelope
+ * @return string
+ */
+function get_content($element, $withenvelope = true)
+{
+	global $heart;
+
+	if (($block = $heart->get_block($element)) === NULL)
+		return "";
+
+	return $withenvelope ? $block->get_content_enveloped($_GET, $_POST) : $block->get_content($_GET, $_POST);
+}
+
 function get_row_limit($page, $row_limit=0)
 {
 	global $settings;
@@ -148,22 +165,27 @@ function get_pagination($all, $current_page, $script, $get, $row_limit=0)
 }
 
 /* User functions */
+/**
+ * Sprawddza czy użytkownik jest zalogowany
+ *
+ * @return bool
+ */
 function is_logged()
 {
-	return $_SESSION['uid'];
+	return $_SESSION['uid'] ? true : false;
 }
 
 function get_privilages($which, $user = array())
 {
 	// Jeżeli nie podano użytkownika
-	if (empty($user)) {
+	if (empty($user))
 		global $user;
-	}
 
 	if (in_array($which, array("manage_settings", "view_groups", "manage_groups", "view_player_flags",
 		"view_player_services", "manage_player_services", "view_income", "view_users", "manage_users",
 		"view_sms_codes", "manage_sms_codes", "view_antispam_questions", "manage_antispam_questions",
-		"view_services", "manage_services", "view_servers", "manage_servers", "view_logs", "manage_logs", "update")))
+		"view_services", "manage_services", "view_servers", "manage_servers", "view_logs", "manage_logs", "update")
+	))
 		return $user['privilages'][$which] && $user['privilages']['acp'];
 
 	return $user['privilages'][$which];
@@ -432,15 +454,14 @@ function purchase_info($data)
 	global $heart, $db, $settings;
 
 	// Wyszukujemy po id zakupu
-	if (isset($data['purchase_id'])) {
+	if (isset($data['purchase_id']))
 		$where = $db->prepare("t.id = '%d'", array($data['purchase_id']));
-	} // Wyszukujemy po id płatności
-	else if (isset($data['payment']) && isset($data['payment_id'])) {
+	// Wyszukujemy po id płatności
+	else if (isset($data['payment']) && isset($data['payment_id']))
 		$where = $db->prepare(
 			"t.payment = '%s' AND t.payment_id = '%s'",
 			array($data['payment'], $data['payment_id'])
 		);
-	}
 	else
 		return "";
 
@@ -492,9 +513,8 @@ function delete_players_old_services()
 		));
 
 	// Wywołujemy akcje po usunieciu
-	foreach($players_services as $player_service) {
+	foreach($players_services as $player_service)
 		$service_module->delete_player_service_post($player_service);
-	}
 
 	// Usunięcie przestarzałych flag graczy
 	// Tak jakby co

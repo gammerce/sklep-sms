@@ -1,15 +1,12 @@
 <?php
 
-abstract class Page {
+abstract class Page
+{
 
-	/**
-	 * @var int 	-1 musi byc niezalogowany
-	 * 				0 obojetne
-	 * 				1 musi byc zalogowany
-	 */
-	protected $require_login = 0;
+	protected $title = "";
 
-	function __construct() {
+	function __construct()
+	{
 		global $heart;
 
 		$heart->page_title = $this->title;
@@ -22,15 +19,8 @@ abstract class Page {
 	 * @param array $post - dane post
 	 * @return string - zawartość do wyświetlenia
 	 */
-	public function get_content($get, $post) {
-		global $lang;
-
-		if ($this->require_login == 1 && !is_logged())
-			return $lang['must_be_logged_in'];
-
-		if ($this->require_login == -1 && is_logged())
-			return $lang['must_be_logged_out'];
-
+	public function get_content($get, $post)
+	{
 		return $this->content($get, $post);
 	}
 
@@ -45,14 +35,17 @@ abstract class Page {
 
 }
 
-abstract class PageSimple extends Page {
+abstract class PageSimple extends Page
+{
 
-	function __construct() {
-		if (!isset($this->template) )
+	function __construct()
+	{
+		if (!isset($this->template))
 			throw new Exception('Class ' . __CLASS__ . ' has to have field $template because it extends class PageSimple');
 	}
 
-	protected function content($get, $post) {
+	protected function content($get, $post)
+	{
 		global $lang;
 
 		eval("\$output = \"" . get_template($this->template) . "\";");

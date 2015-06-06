@@ -1,3 +1,0 @@
-2015-05-29 09:20: SELECT sn.number AS `sms_number`, t.provision AS `provision`, t.tariff AS `tariff`, p.amount AS `amount` FROM `ss_pricelist` AS p JOIN `ss_tariffs` AS t ON t.tariff = p.tariff WHERE p.service = 'cssetti' AND ( p.server = '0' OR p.server = '-1' ) ORDER BY t.provision ASC
-
-2015-05-29 09:20: SELECT sn.number AS `sms_number`, t.provision AS `provision`, t.tariff AS `tariff`, p.amount AS `amount` FROM `ss_pricelist` AS p JOIN `ss_tariffs` AS t ON t.tariff = p.tariff WHERE p.service = 'cssetti' AND ( p.server = '0' OR p.server = '-1' ) ORDER BY t.provision ASC

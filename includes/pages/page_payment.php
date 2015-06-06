@@ -2,11 +2,13 @@
 
 $heart->register_page("payment", "PagePayment");
 
-class PagePayment extends Page {
+class PagePayment extends Page
+{
 
 	protected $title = "Płatność";
 
-	protected function content($get, $post) {
+	protected function content($get, $post)
+	{
 		global $settings, $lang, $stylesheets, $scripts;
 
 		// Sprawdzanie hashu danych przesłanych przez formularz
@@ -17,17 +19,17 @@ class PagePayment extends Page {
 
 		/** Odczytujemy dane, ich format powinien być taki jak poniżej
 		 * @param array $data 'service',
-		 *						'order'
-		 *							...
-		 *						'user',
-		 *							'uid',
-		 *							'email'
-		 *							...
-		 *						'tariff',
-		 *						'cost_transfer'
-		 *						'no_sms'
-		 *						'no_transfer'
-		 *						'no_wallet'
+		 *                        'order'
+		 *                            ...
+		 *                        'user',
+		 *                            'uid',
+		 *                            'email'
+		 *                            ...
+		 *                        'tariff',
+		 *                        'cost_transfer'
+		 *                        'no_sms'
+		 *                        'no_transfer'
+		 *                        'no_wallet'
 		 */
 		$data = json_decode(base64_decode($post['data']), true);
 

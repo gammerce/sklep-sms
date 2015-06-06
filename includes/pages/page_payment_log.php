@@ -2,12 +2,22 @@
 
 $heart->register_page("payment_log", "PagePaymentLog");
 
-class PagePaymentLog extends Page {
+class PagePaymentLog extends Page
+{
 
 	protected $require_login = 1;
 	protected $title = "Historia płatności";
 
-	protected function content($get, $post) {
+	function __construct()
+	{
+		parent::__construct();
+
+		global $settings, $stylesheets;
+		$stylesheets[] = $settings['shop_url_slash'] . "styles/style_payment_log.css?version=" . VERSION;
+	}
+
+	protected function content($get, $post)
+	{
 		global $heart, $db, $settings, $user, $lang, $G_PAGE;
 
 		$result = $db->query($db->prepare(
@@ -28,8 +38,7 @@ class PagePaymentLog extends Page {
 				$log_info = $service_module->purchase_info("payment_log", $row);
 				$desc = $log_info['text'];
 				$class = $log_info['class'];
-			}
-			else {
+			} else {
 				$temp_service = $heart->get_service($row['service']);
 				$temp_server = $heart->get_server($row['server']);
 				$desc = newsprintf($lang['service_was_bought'], $temp_service['name'], $temp_server['name']);

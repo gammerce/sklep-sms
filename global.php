@@ -18,7 +18,7 @@ if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
 }
 
 $working_dir = dirname(__FILE__) ? dirname(__FILE__) : '.';
-require_once "{$working_dir}/includes/init.php";
+require_once $working_dir . "/includes/init.php";
 
 // Przenieś do folderu install, jeżeli istnieje
 if (file_exists(SCRIPT_ROOT . "install")) {
@@ -56,7 +56,7 @@ require_once SCRIPT_ROOT . "includes/verification/payment_sms.php";
 require_once SCRIPT_ROOT . "includes/verification/payment_transfer.php";
 foreach (scandir(SCRIPT_ROOT . "includes/verification") as $file) {
 	if (substr($file, -4) == ".php")
-		require_once SCRIPT_ROOT . "includes/verification/{$file}";
+		require_once SCRIPT_ROOT . "includes/verification/" . $file;
 }
 
 // Dodajemy klasy wszystkich usług
@@ -71,21 +71,22 @@ require_once SCRIPT_ROOT . "includes/services/service_take_over.php";
 require_once SCRIPT_ROOT . "includes/services/service_must_be_logged.php";
 foreach (scandir(SCRIPT_ROOT . "includes/services") as $file) {
 	if (substr($file, -4) == ".php")
-		require_once SCRIPT_ROOT . "includes/services/{$file}";
+		require_once SCRIPT_ROOT . "includes/services/" . $file;
 }
 
 // Dodajemy klasy wszystkich bloków
 require_once SCRIPT_ROOT . "includes/blocks/block.php";
 foreach (scandir(SCRIPT_ROOT . "includes/blocks") as $file) {
 	if (substr($file, -4) == ".php")
-		require_once SCRIPT_ROOT . "includes/blocks/{$file}";
+		require_once SCRIPT_ROOT . "includes/blocks/" . $file;
 }
 
 // Dodajemy klasy wszystkich stron
 require_once SCRIPT_ROOT . "includes/pages/page.php";
+require_once SCRIPT_ROOT . "includes/pages/pageadmin.php";
 foreach (scandir(SCRIPT_ROOT . "includes/pages") as $file) {
 	if (substr($file, -4) == ".php")
-		require_once SCRIPT_ROOT . "includes/pages/{$file}";
+		require_once SCRIPT_ROOT . "includes/pages/" . $file;
 }
 
 // Pobieramy id strony oraz obecna numer strony

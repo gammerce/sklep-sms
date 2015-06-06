@@ -4,7 +4,6 @@ define('IN_SCRIPT', "1");
 define('SCRIPT_NAME', "jsonhttp_admin");
 
 require_once "global.php";
-require_once SCRIPT_ROOT . "includes/functions_admin_content.php";
 require_once SCRIPT_ROOT . "includes/functions_jsonhttp.php";
 
 // Pobranie akcji

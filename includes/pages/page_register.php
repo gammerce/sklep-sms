@@ -2,12 +2,23 @@
 
 $heart->register_page("register", "PageRegister");
 
-class PageRegister extends Page {
+class PageRegister extends Page
+{
 
 	protected $require_login = -1;
 	protected $title = "Formularz rejestracyjny";
 
-	protected function content($get, $post) {
+	function __construct()
+	{
+		parent::__construct();
+
+		global $settings, $scripts, $stylesheets;
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/register.js?version=" . VERSION;
+		$stylesheets[] = $settings['shop_url_slash'] . "styles/style_register.css?version=" . VERSION;
+	}
+
+	protected function content($get, $post)
+	{
 		global $db, $settings, $lang;
 
 		$antispam_question = $db->fetch_array_assoc($db->query(

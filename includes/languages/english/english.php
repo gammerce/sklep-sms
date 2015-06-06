@@ -5,6 +5,7 @@ $lang['logout'] = "Log out";
 $lang['go'] = "Go";
 
 $lang['acp'] = "Admin Control Panel";
+$lang['acp_short'] = "ACP";
 
 $lang['months'] = array("", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
 

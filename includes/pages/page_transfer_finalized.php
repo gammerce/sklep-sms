@@ -2,11 +2,13 @@
 
 $heart->register_page("transfer_finalized", "PageTransferFinalized");
 
-class PageTransferFinalized extends Page {
+class PageTransferFinalized extends Page
+{
 
 	protected $title = "Transakcja sfinalizowana";
 
-	protected function content($get, $post) {
+	protected function content($get, $post)
+	{
 		global $settings, $lang;
 
 		$payment = new Payment($settings['transfer_service']);
