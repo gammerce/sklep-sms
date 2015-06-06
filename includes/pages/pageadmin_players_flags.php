@@ -5,6 +5,7 @@ $heart->register_page("admin_players_flags", "PageAdminPlayersFlags");
 class PageAdminPlayersFlags extends PageAdmin {
 
 	protected $privilage = "view_player_flags";
+	private $flags = "abcdefghijklmnopqrstuyvwxz";
 
 	function __construct()
 	{
@@ -15,7 +16,7 @@ class PageAdminPlayersFlags extends PageAdmin {
 	}
 
 	protected function content($get, $post) {
-		global $heart, $db, $settings, $lang, $G_PAGE, $s_Flags;
+		global $heart, $db, $settings, $lang, $G_PAGE;
 
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "players_flags` " .
@@ -32,13 +33,13 @@ class PageAdminPlayersFlags extends PageAdmin {
 			$row['auth_data'] = htmlspecialchars($row['auth_data']);
 
 			// Zamiana dat
-			for ($j = 0; $j < strlen($s_Flags); ++$j) {
-				if (!$row[$s_Flags[$j]])
-					$row[$s_Flags[$j]] = " ";
-				else if ($row[$s_Flags[$j]] == -1)
-					$row[$s_Flags[$j]] = $lang['never'];
+			for ($j = 0; $j < strlen($this->flags); ++$j) {
+				if (!$row[$this->flags[$j]])
+					$row[$this->lags[$j]] = " ";
+				else if ($row[$this->flags[$j]] == -1)
+					$row[$this->flags[$j]] = $lang['never'];
 				else
-					$row[$s_Flags[$j]] = date($settings['date_format'], $row[$s_Flags[$j]]);
+					$row[$this->flags[$j]] = date($settings['date_format'], $row[$this->flags[$j]]);
 			}
 
 			// Pobranie danych serwera

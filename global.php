@@ -1,8 +1,7 @@
 <?php
 
-if (!defined("IN_SCRIPT")) {
+if (!defined("IN_SCRIPT"))
 	die("Nie ma tu nic ciekawego.");
-}
 
 //error_reporting(E_USER_ERROR);
 error_reporting(E_ALL);
@@ -94,10 +93,8 @@ $G_PID = isset($_GET['pid']) && $heart->page_exists($_GET['pid']) ? $_GET['pid']
 $G_PAGE = isset($_GET['page']) && intval($_GET['page']) >= 1 ? intval($_GET['page']) : 1;
 
 // Jeżeli próbujemy wejść do PA i nie jesteśmy zalogowani, to zmień stronę
-if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
-	if (!is_logged())
-		$G_PID = "login";
-}
+if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin")) && !is_logged())
+	$G_PID = "login";
 
 // Działania na sesji
 if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
@@ -142,9 +139,8 @@ if (is_logged())
 
 // Pobranie stałych
 $result = $db->query("SELECT * FROM `" . TABLE_PREFIX . "settings`");
-while ($row = $db->fetch_array_assoc($result)) {
+while ($row = $db->fetch_array_assoc($result))
 	$settings[$row['key']] = $row['value'];
-}
 
 // Poprawiamy adres URL sklepu
 if ($settings['shop_url']) {
@@ -201,9 +197,9 @@ $language->set_language($_SESSION['language'] ? $_SESSION['language'] : $setting
 $a_Tasks = json_decode(curl_get_contents("http://license.sklep-sms.pl/license.php?action=login_web" . "&lid=" . urlencode($settings['license_login']) . "&lpa=" . urlencode($settings['license_password']) .
 	"&name=" . urlencode($settings['shop_url']) . "&version=" . VERSION), true);
 
-if (!isset($a_Tasks['text'])) {
+// Brak tekstu, wywalamy błąd
+if (!isset($a_Tasks['text']))
 	output_page($lang['verification_error']);
-}
 
 if ($a_Tasks['expire']) {
 	if ($a_Tasks['expire'] == '-1')
@@ -213,26 +209,22 @@ if ($a_Tasks['expire']) {
 }
 
 if ($a_Tasks['text'] != "logged_in") {
-	if (get_privilages("manage_settings", $user)) {
+	if (get_privilages("manage_settings", $user))
 		$user['privilages'] = array(
 			"acp" => true,
 			"manage_settings" => true
 		);
-	}
 
-	if (SCRIPT_NAME == "index") {
+	if (SCRIPT_NAME == "index")
 		output_page($a_Tasks['page']);
-	} else if (in_array(SCRIPT_NAME, array("jsonhttp", "servers_stuff", "extra_stuff")))
+	else if (in_array(SCRIPT_NAME, array("jsonhttp", "servers_stuff", "extra_stuff")))
 		exit;
 }
 
 // Cron co wizytę
-if ($settings['cron_each_visit'] && SCRIPT_NAME != "cron") {
+if ($settings['cron_each_visit'] && SCRIPT_NAME != "cron")
 	include(SCRIPT_ROOT . "cron.php");
-}
 
 define('TYPE_NICK', 1 << 0);
 define('TYPE_IP', 1 << 1);
 define('TYPE_SID', 1 << 2);
-
-$s_Flags = "abcdefghijklmnopqrstuyvwxz";
