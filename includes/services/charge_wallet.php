@@ -86,7 +86,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IServiceP
 		$warnings = array();
 
 		if ($data['method'] == "sms") {
-			if ($data['tariff'] == "")
+			if (!strlen($data['tariff']))
 				$warnings['tariff'] .= $lang['charge_amount_not_chosen']."<br />";
 		} else if ($data['method'] == "transfer") {
 			// Kwota doładowania

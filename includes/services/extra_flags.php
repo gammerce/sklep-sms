@@ -49,25 +49,23 @@ class ServiceExtraFlagsSimple extends Service implements IServiceCreateNew
 		}
 
 		// Flagi
-		if ($data['flags'] == "") {
+		if (!strlen($data['flags']))
 			$output['flags'] = "Nie wprowadzono ani jednej flagi.<br />";
-		} else if (strlen($data['flags']) > 25) {
+		else if (strlen($data['flags']) > 25)
 			$output['flags'] = "Wprowadzono zbyt dużo flag. Maksymalna ilość to 25.<br />";
-		} else if (implode('', array_unique(str_split($data['flags']))) != $data['flags']) {
+		else if (implode('', array_unique(str_split($data['flags']))) != $data['flags'])
 			$output['flags'] = "Niektóre flagi są wpisane więcej niż jeden raz.<br />";
-		}
 
 		// Typy
-		if (empty($data['type'])) {
+		if (empty($data['type']))
 			$output['type[]'] = "Nie wybrano żadnego typu.<br />";
-		}
+
 		// Sprawdzamy, czy typy są prawidłowe
-		foreach ($data['type'] as $type) {
+		foreach ($data['type'] as $type)
 			if (!($type & (TYPE_NICK | TYPE_IP | TYPE_SID))) {
 				$output['type[]'] .= "Wybrano błędny typ.<br />";
 				break;
 			}
-		}
 
 		return $output;
 	}
@@ -317,9 +315,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		}
 
 		// E-mail
-		if ($data['user']['platform'] != "cs16" && $warning = check_for_warnings("email", $data['user']['email']))
+		if ( strpos($data['user']['platform'], "engine") !== 0 && $warning = check_for_warnings("email", $data['user']['email']))
 			$warnings['email'] = $warning;
-
 
 		// Jeżeli są jakieś błedy, to je zwróć
 		if (!empty($warnings)) {
@@ -486,7 +483,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 		$data['extra_data'] = json_decode($data['extra_data'], true);
 		$data['extra_data']['type_name'] = get_type_name2($data['extra_data']['type']);
-		if ($data['extra_data']['password'] != "")
+		if (strlen($data['extra_data']['password']))
 			$password = "<strong>{$lang['password']}</strong>: " . htmlspecialchars($data['extra_data']['password']) . "<br />";
 		$amount = $data['amount'] != -1 ? "{$data['amount']} {$this->service['tag']}" : $lang['forever'];
 		$data['auth_data'] = htmlspecialchars($data['auth_data']);
@@ -601,11 +598,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		}
 
 		// E-mail
-		if ($data['email'] != "") {
-			if ($warning = check_for_warnings("email", $data['email'])) {
-				$warnings['email'] = $warning;
-			}
-		}
+		if (strlen($data['email']) && $warning = check_for_warnings("email", $data['email']))
+			$warnings['email'] = $warning;
 
 		// Sprawdzamy poprawność wprowadzonych danych
 		$verify_data = $this->verify_user_service_data($data, $warnings);
@@ -679,23 +673,19 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 		// Dodajemy typ uslugi, (1<<2) ostatni typ
 		$types = "";
-		for ($i = 0; $i < 3; $i++) {
-			$option_id = 1 << $i;
-			if ($this->service['types'] & $option_id) {
+		for ($i = 0, $option_id = 0; $i < 3; $option_id = 1 << ++$i)
+			if ($this->service['types'] & $option_id)
 				$types .= create_dom_element("option", get_type_name($option_id), array(
 					'value' => $option_id,
 					'selected' => $option_id == $player_service['type'] ? "selected" : ""
 				));
-			}
-		}
 
-		if ($player_service['type'] == TYPE_NICK) {
+		if ($player_service['type'] == TYPE_NICK)
 			$nick = htmlspecialchars($player_service['auth_data']);
-		} else if ($player_service['type'] == TYPE_IP) {
+		else if ($player_service['type'] == TYPE_IP)
 			$ip = htmlspecialchars($player_service['auth_data']);
-		} else if ($player_service['type'] == TYPE_SID) {
+		else if ($player_service['type'] == TYPE_SID)
 			$sid = htmlspecialchars($player_service['auth_data']);
-		}
 
 		// Pobranie serwerów
 		$servers = "";
@@ -711,7 +701,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		}
 
 		// Pobranie hasła
-		if ($player_service['password'] != "")
+		if (strlen($player_service['password']))
 			$password = "********";
 
 		// Zamiana daty
@@ -739,13 +729,11 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		$data['auth_data'] = $this->get_auth_data($data);
 
 		// Expire
-		if (!$data['forever'])
-			if (($data['expire'] = strtotime($data['expire'])) === false) {
-				$warnings['expire'] = "Błędny format daty.<br />";
-			}
+		if (!$data['forever'] && ($data['expire'] = strtotime($data['expire'])) === FALSE)
+			$warnings['expire'] = "Błędny format daty.<br />";
 
 		// Sprawdzamy, czy ustawiono hasło, gdy hasła nie ma w bazie i dana usługa wymaga hasła
-		if ($data['password'] == "" && $data['type'] & (TYPE_NICK | TYPE_IP) && !strlen($user_service['password']))
+		if (!strlen($data['password']) && $data['type'] & (TYPE_NICK | TYPE_IP) && !strlen($user_service['password']))
 			$warnings['password'] = $lang['field_empty'];
 
 		// Sprawdzamy poprawność wprowadzonych danych
@@ -775,23 +763,22 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 		// ID użytkownika
 		if ($data['uid']) {
-			if ($warning = check_for_warnings("uid", $data['uid'])) {
+			if ($warning = check_for_warnings("uid", $data['uid']))
 				$warnings['uid'] .= $warning;
-			} else {
+			else {
 				$user2 = $heart->get_user($data['uid']);
-				if (!isset($user2['uid'])) {
+				if (!isset($user2['uid']))
 					$warnings['uid'] .= "Podane ID użytkownika nie jest przypisane do żadnego konta.<br />";
-				}
 			}
 		}
 
 		// Typ usługi
 		// Mogą być tylko 3 rodzaje typu
-		if (!($data['type'] & (TYPE_NICK | TYPE_IP | TYPE_SID))) {
+		if (!($data['type'] & (TYPE_NICK | TYPE_IP | TYPE_SID)))
 			$warnings['type'] .= "Musisz wybrać typ usługi<br />";
-		} else if (!($this->service['types'] & $data['type'])) {
+		else if (!($this->service['types'] & $data['type']))
 			$warnings['type'] .= "Wybrano niedozwolony typ zakupu.<br />";
-		} else if ($data['type'] & (TYPE_NICK | TYPE_IP)) {
+		else if ($data['type'] & (TYPE_NICK | TYPE_IP)) {
 			// Nick
 			if ($data['type'] == TYPE_NICK && $warning = check_for_warnings("nick", $data['auth_data']))
 				$warnings['nick'] .= $warning;
@@ -800,7 +787,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 				$warnings['ip'] .= $warning;
 
 			// Hasło
-			if ($data['password'] != "" && $warning = check_for_warnings("password", $data['password']))
+			if (strlen($data['password']) && $warning = check_for_warnings("password", $data['password']))
 				$warnings['password'] .= $warning;
 		} // SteamID
 		else if ($warning = check_for_warnings("sid", $data['auth_data']))
@@ -808,7 +795,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 		// Server
 		if ($server) {
-			if ($data['server'] == "")
+			if (!strlen($data['server']))
 				$warnings['server'] .= "Musisz wybrać serwer na który chcesz dodać daną usługę.<br />";
 			// Wyszukiwanie serwera o danym id
 			else if (($server = $heart->get_server($data['server'])) === NULL)
@@ -816,14 +803,13 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		}
 
 		// Jeżeli są jakieś błedy, to je zwróć
-		if (!empty($warnings)) {
+		if (!empty($warnings))
 			return array(
 				'status' => "warnings",
 				'text' => $lang['form_wrong_filled'],
 				'positive' => false,
 				'data' => array('warnings' => $warnings)
 			);
-		}
 	}
 
 	public function delete_player_service_post($player_service)
@@ -841,29 +827,30 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 		// Dodajemy typ uslugi, (1<<2) ostatni typ
 		$service_info = array();
-		for ($i = 0; $i < 3; $i++) {
-			$option_id = 1 << $i;
-			if ($this->service['types'] & $option_id || $option_id == $player_service['type']) { // Kiedy dana usługa wspiera dany typ, lub gdy wykupiona usługa ma ten typ
-				$service_info['types'] .= create_dom_element("option", get_type_name($option_id), array(
-					'value' => $option_id,
-					'selected' => $option_id == $player_service['type'] ? "selected" : ""
-				));
+		for ($i = 0, $option_id = 0; $i < 3; $option_id = 1 << ++$i) {
+			// Kiedy dana usługa nie wspiera danego typu i wykupiona usługa nie ma tego typu
+			if (!($this->service['types'] & $option_id) && $option_id != $player_service['type'])
+				continue;
 
-				if ($option_id == $player_service['type']) {
-					if ($option_id == TYPE_NICK)
-						$service_info['player_nick'] = htmlspecialchars($player_service['auth_data']);
-					else if ($option_id == TYPE_IP)
-						$service_info['player_ip'] = htmlspecialchars($player_service['auth_data']);
-					else if ($option_id == TYPE_SID)
-						$service_info['player_sid'] = htmlspecialchars($player_service['auth_data']);
-					else
-						$service_info['player_ip'] = htmlspecialchars($player_service['auth_data']);
-				}
+			$service_info['types'] .= create_dom_element("option", get_type_name($option_id), array(
+				'value' => $option_id,
+				'selected' => $option_id == $player_service['type'] ? "selected" : ""
+			));
+
+			if ($option_id == $player_service['type']) {
+				if ($option_id == TYPE_NICK)
+					$service_info['player_nick'] = htmlspecialchars($player_service['auth_data']);
+				else if ($option_id == TYPE_IP)
+					$service_info['player_ip'] = htmlspecialchars($player_service['auth_data']);
+				else if ($option_id == TYPE_SID)
+					$service_info['player_sid'] = htmlspecialchars($player_service['auth_data']);
+				else
+					$service_info['player_ip'] = htmlspecialchars($player_service['auth_data']);
 			}
 		}
 
 		// Hasło
-		if ($player_service['password'] != "" && $player_service['password'] != md5(""))
+		if (strlen($player_service['password']) && $player_service['password'] != md5(""))
 			$service_info['password'] = "********";
 
 		// Serwer
@@ -912,7 +899,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		$data['auth_data'] = $this->get_auth_data($data);
 
 		// Sprawdzamy, czy ustawiono hasło, gdy hasła nie ma w bazie i dana usługa wymaga hasła
-		if ($data['password'] == "" && $data['type'] & (TYPE_NICK | TYPE_IP) && $user_service['password'] == "")
+		if (!strlen($data['password']) && $data['type'] & (TYPE_NICK | TYPE_IP) && !strlen($user_service['password']))
 			$warnings['password'] = $lang['field_empty'];
 
 		// Sprawdzamy poprawność wprowadzonych danych
@@ -945,7 +932,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		global $db, $lang;
 
 		// Dodanie hasła do zapytania
-		if ($data['password'] != "")
+		if (strlen($data['password']))
 			$set[] = $db->prepare("`password`='%s'", array($data['password']));
 
 		// Dodajemy uid do zapytania
@@ -1019,7 +1006,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 		// Ustaw jednakowe hasła
 		// żeby potem nie było problemów z różnymi hasłami
-		if ($data['password'] != "") {
+		if (strlen($data['password']))
 			$db->query($db->prepare(
 				"UPDATE `" . TABLE_PREFIX . "players_services` " .
 				"SET `password` = '%s' " .
@@ -1027,7 +1014,6 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 				array($data['password'], if_isset($data['server'], $user_service['server']), if_isset($data['type'], $user_service['type']),
 					if_isset($data['auth_data'], $user_service['auth_data']))
 			));
-		}
 
 		// Przelicz flagi tylko wtedy, gdy coś się zmieniło
 		if ($affected) {

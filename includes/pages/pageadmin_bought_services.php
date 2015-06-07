@@ -34,7 +34,6 @@ class PageAdminBoughtServices extends PageAdmin {
 
 		$tbody = "";
 		while ($row = $db->fetch_array_assoc($result)) {
-			//$row['platform'] = htmlspecialchars($row['platform']);
 			$row['auth_data'] = htmlspecialchars($row['auth_data']);
 			$row['email'] = htmlspecialchars($row['email']);
 			$username = htmlspecialchars($row['username']);
@@ -52,7 +51,7 @@ class PageAdminBoughtServices extends PageAdmin {
 			$row['extra_data'] = json_decode($row['extra_data'], true);
 			$extra_data = array();
 			foreach ($row['extra_data'] as $key => $value) {
-				if ($value == "")
+				if (!strlen($value))
 					continue;
 
 				$value = htmlspecialchars($value);

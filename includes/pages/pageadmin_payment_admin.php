@@ -27,9 +27,10 @@ class PageAdminPaymentAdmin extends PageAdmin {
 		$tbody = "";
 		while ($row = $db->fetch_array_assoc($result)) {
 			// Podświetlenie konkretnej płatności
-			if ($get['highlight'] && $get['payid'] == $row['payment_id']) {
+			if ($get['highlight'] && $get['payid'] == $row['payment_id'])
 				$row['class'] = "highlighted";
-			}
+
+			$row['platform'] = get_platform($row['platform']);
 
 			// Pobranie danych do tabeli
 			eval("\$tbody .= \"" . get_template("admin/payment_admin_trow") . "\";");

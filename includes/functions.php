@@ -96,11 +96,13 @@ function get_pagination($all, $current_page, $script, $get, $row_limit=0)
 
 	// Tworzymy stringa z danych get
 	foreach ($get as $key => $value) {
-		if ($get_string != "") $get_string .= "&";
+		if (strlen($get_string))
+			$get_string .= "&";
+		
 		$get_string .= urlencode($key) . "=" . urlencode($value);
 	}
-	if ($get_string != "")
-		$get_string = "?{$get_string}";
+	if (strlen($get_string))
+		$get_string = "?" . $get_string;
 
 	/*// Pierwsza strona
 	$output = create_dom_element("a",1,array(
@@ -139,10 +141,10 @@ function get_pagination($all, $current_page, $script, $get, $row_limit=0)
 		if ($i != 1 && $i != $pages_amount && ($i < $current_page - $lp || $i > $current_page + $lp)) {
 			if (!$dots) {
 				if ($i < $current_page - $lp)
-					$href = $script . $get_string . ($get_string != "" ? "&" : "?") .
+					$href = $script . $get_string . (strlen($get_string) ? "&" : "?") .
 						"page=" . round(((1 + $current_page - $lp) / 2));
 				else if ($i > $current_page + $lp)
-					$href = $script . $get_string . ($get_string != "" ? "&" : "?") .
+					$href = $script . $get_string . (strlen($get_string) ? "&" : "?") .
 						"page=" . round((($current_page + $lp + $pages_amount) / 2));
 
 				$output .= create_dom_element("a", "...", array(
@@ -154,7 +156,7 @@ function get_pagination($all, $current_page, $script, $get, $row_limit=0)
 		}
 
 		$output .= create_dom_element("a", $i, array(
-				'href' => $href = $script . $get_string . ($get_string != "" ? "&" : "?") .
+				'href' => $href = $script . $get_string . (strlen($get_string) ? "&" : "?") .
 					"page=" . $i,
 				'class' => $current_page == $i ? "current" : ""
 			)) . "&nbsp;";
@@ -373,11 +375,6 @@ function pay_by_wallet($user, $cost)
 			'positive' => false
 		);
 
-	// Ustawiamy miejsce, skad zostala wykonana platnosc
-	$platform_name = get_platform($user['platform']);
-
-	//TODO: Zrobić aby do bazy zapisywało się engine_amxx jako platforma, a nie przerobiony już tekst
-
 	// Zabieramy kasę z portfela
 	charge_wallet($user['uid'], -$cost);
 
@@ -385,7 +382,7 @@ function pay_by_wallet($user, $cost)
 	$db->query($db->prepare(
 		"INSERT INTO `" . TABLE_PREFIX . "payment_wallet` " .
 		"SET `cost` = '%.2f', `ip` = '%s', `platform` = '%s'",
-		array($cost, $user['ip'], $platform_name)
+		array($cost, $user['ip'], $user['platform'])
 	));
 
 	return $db->last_id();
@@ -644,7 +641,7 @@ function myErrorHandler($errno, $string, $errfile, $errline)
 
 			if ($array['query']) {
 				$text = date($settings['date_format']) . ": " . $array['query'];
-				if (!file_exists(SQL_LOG) || file_get_contents(SQL_LOG) == "") file_put_contents(SQL_LOG, $text);
+				if (!file_exists(SQL_LOG) || !strlen(file_get_contents(SQL_LOG))) file_put_contents(SQL_LOG, $text);
 				else file_put_contents(SQL_LOG, file_get_contents(SQL_LOG) . "\n\n" . $text);
 			}
 
@@ -667,7 +664,7 @@ function create_dom_element($name, $text = "", $data = array())
 {
 	$features = "";
 	foreach ($data as $key => $value) {
-		if (is_array($value) || $value == "")
+		if (is_array($value) || !strlen($value))
 			continue;
 
 		$features .= ($features ? " " : "") . $key . '="' . str_replace('"', '\"', $value) . '"';
@@ -675,7 +672,7 @@ function create_dom_element($name, $text = "", $data = array())
 
 	$style = "";
 	foreach ($data['style'] as $key => $value) {
-		if ($value == "")
+		if (!strlen($value))
 			continue;
 
 		$style .= ($style ? "; " : "") . "{$key}: {$value}";
@@ -830,13 +827,13 @@ function searchWhere($search_ids, $search, &$where)
 	$search_where = array();
 	$search_like = $db->escape('%' . implode('%', mb_str_split($search)) . '%');
 
-	foreach ($search_ids as $search_id) {
+	foreach ($search_ids as $search_id)
 		$search_where[] = "{$search_id} LIKE '{$search_like}'";
-	}
 
 	if (!empty($search_where)) {
 		$search_where = implode(" OR ", $search_where);
-		if ($where != "") $where .= " AND ";
+		if (strlen($where))
+			$where .= " AND ";
 
 		$where .= "( {$search_where} )";
 	}

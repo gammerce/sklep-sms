@@ -381,16 +381,21 @@ class Heart
 	// Użytkownicy
 	//
 
+	/**
+	 * @param $uid
+	 * @param string $login
+	 * @param string $password
+	 * @return array
+	 */
 	public function get_user($uid, $login = "", $password = "")
 	{
 		global $db;
 
 		// Wcześniej już pobraliśmy takiego użytkownika
-		if ($uid != "" && isset($this->users[$uid])) {
+		if ($uid && isset($this->users[$uid]))
 			return $this->users[$uid];
-		}
 
-		if ($uid != "" || ($login != "" && $password != "")) {
+		if ($uid || (strlen($login) && strlen($password))) {
 			$result = $db->query($db->prepare(
 				"SELECT * FROM `" . TABLE_PREFIX . "users` " .
 				"WHERE `uid` = '%d' OR ((username = '%s' OR email = '%s') AND PASSWORD = md5( CONCAT( md5('%s'), md5(salt) ) ))",
@@ -413,7 +418,8 @@ class Heart
 		foreach ($user['groups'] as $gid) {
 			$group = $this->get_group_privilages($gid);
 			foreach ($group as $priv => $value)
-				if ($value) $user['privilages'][$priv] = true;
+				if ($value)
+					$user['privilages'][$priv] = true;
 		}
 
 		$user['platform'] = htmlspecialchars($_SERVER['HTTP_USER_AGENT']);

@@ -100,7 +100,7 @@ if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin")) && !is_logged())
 if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
 	// Logujemy się
 	if (isset($_POST['username']) && isset($_POST['password'])) {
-		$user = $heart->get_user("", $_POST['username'], $_POST['password']);
+		$user = $heart->get_user(0, $_POST['username'], $_POST['password']);
 		if ($user['uid']) {
 			if ($user['privilages']['acp'])
 				$_SESSION['uid'] = $user['uid'];

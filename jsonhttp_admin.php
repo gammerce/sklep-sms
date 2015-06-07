@@ -86,7 +86,7 @@ if ($action == "charge_wallet") {
 	}
 
 	// Brak usługi
-	if ($_POST['service'] == "")
+	if (!strlen($_POST['service']))
 		json_output("no_service", "Nie wybrano usługi.", 0);
 
 	$service_module = $heart->get_service_module($_POST['service']);
@@ -116,7 +116,7 @@ if ($action == "charge_wallet") {
 	}
 
 	// Brak usługi
-	if ($_POST['service'] == "")
+	if (!strlen($_POST['service']))
 		json_output("no_service", "Nie wybrano usługi.", 0);
 
 	if (is_null($service_module = $heart->get_service_module($_POST['service'])))
@@ -1087,12 +1087,11 @@ if ($action == "charge_wallet") {
 			$form_data = $service_module->get_form("admin_edit_user_service", $player_service);
 		}
 
-		if (!isset($form_data) || $form_data === "")
+		if (!isset($form_data) || !strlen($form_data))
 			$form_data = "Tej usługi nie da rady edytować.";
 	} else if ($template == "admin_edit_transaction_service") {
-		if (!get_privilages("manage_settings")) {
+		if (!get_privilages("manage_settings"))
 			json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
-		}
 
 		// Pobranie danych o metodzie płatności
 		$result = $db->query($db->prepare(

@@ -29,9 +29,10 @@ class PageAdminPaymentWallet extends PageAdmin {
 			$row['cost'] = $row['cost'] ? number_format($row['cost'], 2) . " " . $settings['currency'] : "";
 
 			// Podświetlenie konkretnej płatności
-			if ($get['highlight'] && $get['payid'] == $row['payment_id']) {
+			if ($get['highlight'] && $get['payid'] == $row['payment_id'])
 				$row['class'] = "highlighted";
-			}
+
+			$row['platform'] = get_platform($row['platform']);
 
 			// Pobranie danych do tabeli
 			eval("\$tbody .= \"" . get_template("admin/payment_wallet_trow") . "\";");

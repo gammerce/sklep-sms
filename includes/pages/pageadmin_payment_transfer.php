@@ -44,6 +44,8 @@ class PageAdminPaymentTransfer extends PageAdmin {
 			if ($get['highlight'] && $get['payid'] == $row['payment_id'])
 				$row['class'] = "highlighted";
 
+			$row['platform'] = get_platform($row['platform']);
+
 			// Pobranie danych do tabeli
 			eval("\$tbody .= \"" . get_template("admin/payment_transfer_trow") . "\";");
 		}

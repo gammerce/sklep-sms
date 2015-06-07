@@ -48,6 +48,7 @@ class PageAdminPaymentSms extends PageAdmin {
 			$row['free'] = $row['free'] ? strtoupper($lang['yes']) : strtoupper($lang['no']);
 			$row['income'] = $row['income'] ? number_format($row['income'], 2) . " " . $settings['currency'] : "";
 			$row['cost'] = $row['cost'] ? number_format($row['cost'], 2) . " " . $settings['currency'] : "";
+			$row['platform'] = get_platform($row['platform']);
 
 			// Pobranie danych do tabeli
 			eval("\$tbody .= \"" . get_template("admin/payment_sms_trow") . "\";");

@@ -26,9 +26,8 @@ if (!is_logged() || !$user['privilages']['acp']) {
 
 	$get_data = "";
 	// Fromatujemy dane get
-	foreach ($_GET as $key => $value) {
-		$get_data .= ($get_data == "" ? '?' : '&') . "{$key}={$value}";
-	}
+	foreach ($_GET as $key => $value)
+		$get_data .= (!strlen($get_data) ? '?' : '&') . "{$key}={$value}";
 
 	// Pobranie szablonu logowania
 	eval("\$output = \"" . get_template("admin/login") . "\";");

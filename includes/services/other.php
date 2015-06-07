@@ -77,7 +77,7 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase
 		}
 
 		// E-mail
-		if ($data['user']['email'] != "" && $warning = check_for_warnings("email", $data['user']['email']))
+		if (strlen($data['user']['email']) && $warning = check_for_warnings("email", $data['user']['email']))
 			$warnings['email'] = $warning;
 
 		// Jeżeli są jakieś błedy, to je zwróć

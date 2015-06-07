@@ -56,10 +56,10 @@ if ($action == "purchase_service") {
 	// Są jakieś błędy przy sprawdzaniu danych
 	if (isset($return_validation['data']['warnings'])) {
 		$warnings = $extra_data = "";
-		foreach ($return_validation['data']['warnings'] as $what => $text) {
+		foreach ($return_validation['data']['warnings'] as $what => $text)
 			$warnings .= "<strong>{$what}</strong><br />{$text}<br />";
-		}
-		if ($warnings != "")
+
+		if (strlen($warnings))
 			$extra_data .= "<warnings>{$warnings}</warnings>";
 
 		xml_output($return_validation['status'], $return_validation['text'], $return_validation['positive'], $extra_data);
@@ -78,10 +78,10 @@ if ($action == "purchase_service") {
 
 	if (isset($return_payment['data']['warnings'])) {
 		$warnings = "";
-		foreach ($return_payment['data']['warnings'] as $what => $text) {
+		foreach ($return_payment['data']['warnings'] as $what => $text)
 			$warnings .= "<strong>{$what}</strong><br />{$text}<br />";
-		}
-		if ($warnings != "")
+
+		if (strlen($warnings))
 			$extra_data .= "<warnings>{$warnings}</warnings>";
 	}
 

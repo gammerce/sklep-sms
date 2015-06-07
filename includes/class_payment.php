@@ -14,8 +14,6 @@ class Payment
 		$this->service = $payment_service;
 		$this->platform = strlen($platform) ? $platform : $_SERVER['HTTP_USER_AGENT'];
 
-		$this->platform = get_platform($this->platform);
-
 		// Tworzymy obiekt obslugujacy stricte weryfikacje
 		$className = $heart->get_payment_api($this->service);
 		$this->payment_api = $className ? new $className() : NULL;

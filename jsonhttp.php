@@ -24,7 +24,7 @@ if ($action == "login") {
 		json_output("no_data", "No niestety, ale bez podania nazwy użytkownika oraz loginu, nie zalogujesz się.", 0);
 	}
 
-	$user = $heart->get_user("", $_POST['username'], $_POST['password']);
+	$user = $heart->get_user(0, $_POST['username'], $_POST['password']);
 	if ($user['uid']) {
 		$_SESSION['uid'] = $user['uid'];
 		update_activity($_SESSION['uid']);
