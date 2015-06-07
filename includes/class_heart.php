@@ -175,7 +175,7 @@ class Heart
 	 */
 	public function get_block($block_id)
 	{
-		return $this->block_exists($block_id) ? $this->blocks_classes[$block_id]() : NULL;
+		return $this->block_exists($block_id) ? new $this->blocks_classes[$block_id]() : NULL;
 	}
 
 	//
@@ -219,7 +219,11 @@ class Heart
 	 */
 	public function get_page($page_id, $type = "user")
 	{
-		return $this->page_exists($page_id, $type) ? $this->pages_classes[$type][$page_id]() : NULL;
+		if (!$this->page_exists($page_id, $type))
+			return NULL;
+
+		$classname = $this->pages_classes[$type][$page_id];
+		return new $classname();
 	}
 
 	//

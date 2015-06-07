@@ -20,7 +20,10 @@ class BlockWallet extends BlockSimple
 
 	public function get_content_enveloped($get, $post)
 	{
-		return create_dom_element("a", $this->get_content($get, $post), array(
+		if (($content = $this->get_content($get, $post)) === NULL)
+			return NULL;
+
+		return create_dom_element("a", $content, array(
 			'id' => $this->get_content_id(),
 			'class' => $this->get_content_class(),
 			'href' => "index.php?pid=payment_log"

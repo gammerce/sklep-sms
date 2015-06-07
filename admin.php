@@ -4,9 +4,11 @@ define('IN_SCRIPT', "1");
 define('SCRIPT_NAME', "admin");
 
 require_once "global.php";
+$G_PID = $heart->page_exists($G_PID, "admin") ? $G_PID : "main_content";
 
 // Uzytkownik nie jest zalogowany
 if ($G_PID == "login") {
+	$heart->page_title = "Login";
 	$stylesheets[] = "{$settings['shop_url_slash']}styles/admin/style_login.css?version=" . VERSION;
 
 	if (isset($_SESSION['info'])) {

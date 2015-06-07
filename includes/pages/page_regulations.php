@@ -1,11 +1,11 @@
 <?php
 
-$heart->register_page("regulations", "PageRegulation");
+$heart->register_page("regulations", "PageRegulations");
 
 class PageRegulations extends PageSimple
 {
 
-	protected $template = "regulations";
+	protected $template = "regulations_desc";
 	protected $title = "Regulamin";
 
 }

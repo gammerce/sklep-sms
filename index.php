@@ -4,6 +4,7 @@ define('IN_SCRIPT', "1");
 define('SCRIPT_NAME', "index");
 
 require_once "global.php";
+$G_PID = $heart->page_exists($G_PID) ? $G_PID : "main_content";
 
 // Pobranie miejsca logowania
 $logged_info = get_content("logged_info");

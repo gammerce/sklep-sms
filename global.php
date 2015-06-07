@@ -85,7 +85,7 @@ foreach (scandir(SCRIPT_ROOT . "includes/pages") as $file)
 		require_once SCRIPT_ROOT . "includes/pages/" . $file;
 
 // Pobieramy id strony oraz obecna numer strony
-$G_PID = isset($_GET['pid']) && $heart->page_exists($_GET['pid']) ? $_GET['pid'] : "main_content";
+$G_PID = isset($_GET['pid']) ? $_GET['pid'] : "main_content";
 $G_PAGE = isset($_GET['page']) && intval($_GET['page']) >= 1 ? intval($_GET['page']) : 1;
 
 // Logowanie się do panelu admina
