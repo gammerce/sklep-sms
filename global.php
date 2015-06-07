@@ -53,10 +53,9 @@ $db->query("SET NAMES utf8");
 require_once SCRIPT_ROOT . "includes/verification/payment_module.php";
 require_once SCRIPT_ROOT . "includes/verification/payment_sms.php";
 require_once SCRIPT_ROOT . "includes/verification/payment_transfer.php";
-foreach (scandir(SCRIPT_ROOT . "includes/verification") as $file) {
+foreach (scandir(SCRIPT_ROOT . "includes/verification") as $file)
 	if (substr($file, -4) == ".php")
 		require_once SCRIPT_ROOT . "includes/verification/" . $file;
-}
 
 // Dodajemy klasy wszystkich usług
 require_once SCRIPT_ROOT . "includes/services/service.php";
@@ -68,48 +67,40 @@ require_once SCRIPT_ROOT . "includes/services/service_execute_action.php";
 require_once SCRIPT_ROOT . "includes/services/service_create_new.php";
 require_once SCRIPT_ROOT . "includes/services/service_take_over.php";
 require_once SCRIPT_ROOT . "includes/services/service_must_be_logged.php";
-foreach (scandir(SCRIPT_ROOT . "includes/services") as $file) {
+foreach (scandir(SCRIPT_ROOT . "includes/services") as $file)
 	if (substr($file, -4) == ".php")
 		require_once SCRIPT_ROOT . "includes/services/" . $file;
-}
 
 // Dodajemy klasy wszystkich bloków
 require_once SCRIPT_ROOT . "includes/blocks/block.php";
-foreach (scandir(SCRIPT_ROOT . "includes/blocks") as $file) {
+foreach (scandir(SCRIPT_ROOT . "includes/blocks") as $file)
 	if (substr($file, -4) == ".php")
 		require_once SCRIPT_ROOT . "includes/blocks/" . $file;
-}
 
 // Dodajemy klasy wszystkich stron
 require_once SCRIPT_ROOT . "includes/pages/page.php";
 require_once SCRIPT_ROOT . "includes/pages/pageadmin.php";
-foreach (scandir(SCRIPT_ROOT . "includes/pages") as $file) {
+foreach (scandir(SCRIPT_ROOT . "includes/pages") as $file)
 	if (substr($file, -4) == ".php")
 		require_once SCRIPT_ROOT . "includes/pages/" . $file;
-}
 
 // Pobieramy id strony oraz obecna numer strony
 $G_PID = isset($_GET['pid']) && $heart->page_exists($_GET['pid']) ? $_GET['pid'] : "main_content";
 $G_PAGE = isset($_GET['page']) && intval($_GET['page']) >= 1 ? intval($_GET['page']) : 1;
 
-// Jeżeli próbujemy wejść do PA i nie jesteśmy zalogowani, to zmień stronę
-if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin")) && !is_logged())
-	$G_PID = "login";
-
-// Działania na sesji
+// Logowanie się do panelu admina
 if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
-	// Logujemy się
-	if (isset($_POST['username']) && isset($_POST['password'])) {
+	if (isset($_POST['username']) && isset($_POST['password'])) { // Logujemy się
 		$user = $heart->get_user(0, $_POST['username'], $_POST['password']);
-		if ($user['uid']) {
-			if ($user['privilages']['acp'])
-				$_SESSION['uid'] = $user['uid'];
-			else
-				$_SESSION['info'] = "no_privilages";
-		} else
+		if (is_logged() && get_privilages("acp"))
+			$_SESSION['uid'] = $user['uid'];
+		else {
 			$_SESSION['info'] = "wrong_data";
-	} // Wylogowujemy
-	else if ($_GET['action'] == "logout") {
+			$user = array();
+		}
+	}
+	// TODO: Przenieść logout do post zamiast get
+	else if ($_POST['action'] == "logout") { // Wylogowujemy
 		// Unset all of the session variables.
 		$_SESSION = array();
 
@@ -126,12 +117,19 @@ if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
 }
 
 // Pobieramy dane gracza, jeżeli jeszcze ich nie ma
-if (!isset($user))
+if (!isset($user) && isset($_SESSION['uid']))
 	$user = $heart->get_user($_SESSION['uid']);
 
-// Jeżeli jest zalogowany, ale w międzyczasie odebrano mu dostęp do PA
-if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin")) && is_logged() && !$user['privilages']['acp'])
-	$_SESSION['info'] = "no_privilages";
+// Jeżeli próbujemy wejść do PA i nie jesteśmy zalogowani, to zmień stronę
+if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin")) && (!is_logged() || !get_privilages("acp"))) {
+	$G_PID = "login";
+
+	// Jeżeli jest zalogowany, ale w międzyczasie odebrano mu dostęp do PA
+	if (is_logged()) {
+		$_SESSION['info'] = "no_privilages";
+		$user = array();
+	}
+}
 
 // Aktualizujemy aktywność użytkownika
 if (is_logged())

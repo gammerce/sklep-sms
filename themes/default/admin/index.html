@@ -17,7 +17,10 @@
 			</td>
 			<td style="width: 360px; text-align: right;">
 				{$user['username']}
-				( <a href="admin.php?action=logout">{$lang['logout']}</a> )
+				<form method="POST">
+                    <input type="hidden" name="action" value="logout" />
+                    <input type="submit" value="{$lang['logout']}" />
+                </form>
 			</td>
 		</tr>
 	</table>

@@ -6,7 +6,7 @@ define('SCRIPT_NAME', "admin");
 require_once "global.php";
 
 // Uzytkownik nie jest zalogowany
-if (!is_logged() || !$user['privilages']['acp']) {
+if ($G_PID == "login") {
 	$stylesheets[] = "{$settings['shop_url_slash']}styles/admin/style_login.css?version=" . VERSION;
 
 	if (isset($_SESSION['info'])) {

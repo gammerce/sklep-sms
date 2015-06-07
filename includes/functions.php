@@ -24,13 +24,11 @@ function get_template($title, $install = false, $eslashes = true, $htmlcomments 
 	} else
 		$template = file_get_contents(SCRIPT_ROOT . "install/templates/{$title}.html");
 
-	if ($htmlcomments) {
+	if ($htmlcomments)
 		$template = "<!-- start: " . htmlspecialchars($title) . " -->\n{$template}\n<!-- end: " . htmlspecialchars($title) . " -->";
-	}
 
-	if ($eslashes) {
+	if ($eslashes)
 		$template = str_replace("\\'", "'", addslashes($template));
-	}
 
 	$template = str_replace("{__VERSION__}", VERSION, $template);
 
@@ -98,7 +96,7 @@ function get_pagination($all, $current_page, $script, $get, $row_limit=0)
 	foreach ($get as $key => $value) {
 		if (strlen($get_string))
 			$get_string .= "&";
-		
+
 		$get_string .= urlencode($key) . "=" . urlencode($value);
 	}
 	if (strlen($get_string))
@@ -141,11 +139,9 @@ function get_pagination($all, $current_page, $script, $get, $row_limit=0)
 		if ($i != 1 && $i != $pages_amount && ($i < $current_page - $lp || $i > $current_page + $lp)) {
 			if (!$dots) {
 				if ($i < $current_page - $lp)
-					$href = $script . $get_string . (strlen($get_string) ? "&" : "?") .
-						"page=" . round(((1 + $current_page - $lp) / 2));
+					$href = $script . $get_string . (strlen($get_string) ? "&" : "?") . "page=" . round(((1 + $current_page - $lp) / 2));
 				else if ($i > $current_page + $lp)
-					$href = $script . $get_string . (strlen($get_string) ? "&" : "?") .
-						"page=" . round((($current_page + $lp + $pages_amount) / 2));
+					$href = $script . $get_string . (strlen($get_string) ? "&" : "?") . "page=" . round((($current_page + $lp + $pages_amount) / 2));
 
 				$output .= create_dom_element("a", "...", array(
 						'href' => $href
@@ -174,7 +170,8 @@ function get_pagination($all, $current_page, $script, $get, $row_limit=0)
  */
 function is_logged()
 {
-	return $_SESSION['uid'] ? true : false;
+	global $user;
+	return $user['uid'] ? true : false;
 }
 
 function get_privilages($which, $user = array())
@@ -227,13 +224,12 @@ function validate_payment($data)
 
 	// Tworzymy obiekt usługi którą kupujemy
 	$service_module = $heart->get_service_module($data['service']);
-	if ($service_module === NULL) {
+	if ($service_module === NULL)
 		return array(
 			'status' => "wrong_module",
 			'text' => $lang['module_is_bad'],
 			'positive' => false
 		);
-	}
 
 	// Tworzymy obiekt, który będzie nam obsługiwał proces płatności
 	if ($data['method'] == "sms") {
@@ -250,19 +246,19 @@ function validate_payment($data)
 		$data['cost_transfer'] = number_format($heart->get_tariff_provision($data['tariff']), 2);
 
 	// Metoda płatności
-	if (!in_array($data['method'], array("sms", "transfer", "wallet"))) {
+	if (!in_array($data['method'], array("sms", "transfer", "wallet")))
 		return array(
 			'status' => "wrong_method",
 			'text' => "Wybrano błędny sposób zapłaty.",
 			'positive' => false
 		);
-	} else if ($data['method'] == "wallet" && !is_logged()) {
+	else if ($data['method'] == "wallet" && !is_logged())
 		return array(
 			'status' => "wallet_not_logged",
 			'text' => "Nie można zapłacić portfelem, gdy nie jesteś zalogowany.",
 			'positive' => false
 		);
-	} else if ($data['method'] == "transfer") {
+	else if ($data['method'] == "transfer") {
 		if ($data['cost_transfer'] <= 1)
 			return array(
 				'status' => "too_little_for_transfer",
@@ -276,19 +272,18 @@ function validate_payment($data)
 				'text' => $lang['transfer_unavailable'],
 				'positive' => false
 			);
-	} else if ($data['method'] == "sms" && !$payment->sms_available()) {
+	} else if ($data['method'] == "sms" && !$payment->sms_available())
 		return array(
 			'status' => "sms_unavailable",
 			'text' => $lang['sms_unavailable'],
 			'positive' => false
 		);
-	} else if ($data['method'] == "sms" && $data['tariff'] && !isset($payment->payment_api->smses[$data['tariff']])) {
+	else if ($data['method'] == "sms" && $data['tariff'] && !isset($payment->payment_api->smses[$data['tariff']]))
 		return array(
 			'status' => "no_sms_option",
 			'text' => "Nie można zapłacić SMSem za tę ilość usługi. Wybierz inny sposób płatności.",
 			'positive' => false
 		);
-	}
 
 	// Kod SMS
 	$data['sms_code'] = trim($data['sms_code']);
@@ -314,13 +309,12 @@ function validate_payment($data)
 		$sms_return = $payment->pay_sms($data['sms_code'], $data['tariff']);
 		$payment_id = $sms_return['payment_id'];
 
-		if ($sms_return['status'] != "OK") {
+		if ($sms_return['status'] != "OK")
 			return array(
 				'status' => $sms_return['status'],
 				'text' => $sms_return['text'],
 				'positive' => false
 			);
-		}
 	} else if ($data['method'] == "wallet") {
 		// Dodanie informacji o płatności z portfela
 		$payment_id = pay_by_wallet($user, $data['cost_transfer']);
@@ -416,7 +410,7 @@ function add_bought_service_info($uid, $user_name, $ip, $method, $payment_id, $s
 	$bougt_service_id = $db->last_id();
 
 	$ret = $lang['none'];
-	if ($email) {
+	if (strlen($email)) {
 		$message = purchase_info(array(
 			'purchase_id' => $bougt_service_id,
 			'action' => "email"
@@ -498,8 +492,7 @@ function delete_players_old_services()
 		if( $service_module->delete_player_service($row) ) {
 			$delete_ids[] = $row['id'];
 			$players_services[] = $row;
-			log_info("AUTOMAT: Usunięto wygasłą usługę gracza. Auth Data: {$row['auth_data']} " .
-				"Serwer: {$row['server']} Usługa: {$row['service']} Typ: " . get_type_name($row['type']));
+			log_info("AUTOMAT: Usunięto wygasłą usługę gracza. Auth Data: {$row['auth_data']} Serwer: {$row['server']} Usługa: {$row['service']} Typ: " . get_type_name($row['type']));
 		}
 	}
 
@@ -548,13 +541,12 @@ function delete_players_old_services()
 	);
 
 	// Usuwamy przestarzałe logi
-	if (intval($settings['delete_logs']) != 0) {
+	if (intval($settings['delete_logs']) != 0)
 		$db->query($db->prepare(
 			"DELETE FROM `" . TABLE_PREFIX . "logs` " .
 			"WHERE `timestamp` < DATE_SUB(NOW(), INTERVAL '%d' DAY)",
 			array($settings['delete_logs'])
 		));
-	}
 }
 
 function send_email($email, $name, $subject, $text)
@@ -567,9 +559,8 @@ function send_email($email, $name, $subject, $text)
 	$sender_email = $settings['sender_email'];
 	$sender_name = $settings['sender_email_name'];
 
-	if (!$email) {
+	if (!strlen($email))
 		return "wrong_email";
-	}
 
 	$header = "MIME-Version: 1.0\r\n";
 	$header .= "Content-Type: text/html; charset=UTF-8\n";
@@ -582,12 +573,11 @@ function send_email($email, $name, $subject, $text)
 	$header .= "Importance: High\n";
 	$header .= "Return-Path: {$sender_email}\n"; // Return path for errors
 
-	if (mail($email, $subject, $text, $header)) {
-		log_info(newsprintf($lang['email_was_sent'], $email, $text));
-		return "sent";
-	} else {
+	if (!mail($email, $subject, $text, $header))
 		return "not_sent";
-	}
+
+	log_info(newsprintf($lang['email_was_sent'], $email, $text));
+	return "sent";
 }
 
 function log_info($string)
@@ -639,7 +629,7 @@ function myErrorHandler($errno, $string, $errfile, $errline)
 			eval("\$header = \"" . get_template("header_error") . "\";");
 			eval("\$message = \"" . get_template("error_handler") . "\";");
 
-			if ($array['query']) {
+			if (strlen($array['query'])) {
 				$text = date($settings['date_format']) . ": " . $array['query'];
 				if (!file_exists(SQL_LOG) || !strlen(file_get_contents(SQL_LOG))) file_put_contents(SQL_LOG, $text);
 				else file_put_contents(SQL_LOG, file_get_contents(SQL_LOG) . "\n\n" . $text);
@@ -667,7 +657,7 @@ function create_dom_element($name, $text = "", $data = array())
 		if (is_array($value) || !strlen($value))
 			continue;
 
-		$features .= ($features ? " " : "") . $key . '="' . str_replace('"', '\"', $value) . '"';
+		$features .= (strlen($features) ? " " : "") . $key . '="' . str_replace('"', '\"', $value) . '"';
 	}
 
 	$style = "";
@@ -675,15 +665,16 @@ function create_dom_element($name, $text = "", $data = array())
 		if (!strlen($value))
 			continue;
 
-		$style .= ($style ? "; " : "") . "{$key}: {$value}";
+		$style .= (strlen($style) ? "; " : "") . "{$key}: {$value}";
 	}
-	if ($style)
-		$features .= ($features ? " " : "") . "style=\"{$style}\"";
+	if (strlen($style))
+		$features .= (strlen($features) ? " " : "") . "style=\"{$style}\"";
 
 	$name_hsafe = htmlspecialchars($name);
 	$output = "<{$name_hsafe} {$features}>";
-	if ($text)
+	if (strlen($text))
 		$output .= $text;
+
 	if (!in_array($name, array("input", "img")))
 		$output .= "</{$name_hsafe}>";
 
@@ -752,13 +743,12 @@ function get_ip()
 
 function get_sms_cost($number)
 {
-	if (strlen($number) < 4) {
+	if (strlen($number) < 4)
 		return 0;
-	} else if ($number[0] == "7") {
+	else if ($number[0] == "7")
 		return $number[1] == "0" ? 0.5 : intval($number[1]);
-	} else if ($number[0] == "9") {
+	else if ($number[0] == "9")
 		return intval($number[1] . $number[2]);
-	}
 
 	return 0;
 }
@@ -773,9 +763,8 @@ function newsprintf($string)
 	$arg_list = func_get_args();
 	$num_args = count($arg_list);
 
-	for ($i = 1; $i < $num_args; $i++) {
+	for ($i = 1; $i < $num_args; $i++)
 		$string = str_replace('{' . $i . '}', $arg_list[$i], $string);
-	}
 
 	return $string;
 }
@@ -792,7 +781,9 @@ function get_random_string($length)
 {
 	$chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"; //length:36
 	$final_rand = "";
-	for ($i = 0; $i < $length; $i++) $final_rand .= $chars[rand(0, strlen($chars) - 1)];
+	for ($i = 0; $i < $length; $i++)
+		$final_rand .= $chars[rand(0, strlen($chars) - 1)];
+
 	return $final_rand;
 }
 
