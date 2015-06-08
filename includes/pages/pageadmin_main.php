@@ -21,27 +21,23 @@ class PageAdminMain extends PageAdmin {
 		$notes = "";
 
 		// Info o braku licki
-		if ($a_Tasks['text'] != "logged_in") {
+		if ($a_Tasks['text'] != "logged_in")
 			$this->add_note($lang['license_error'], "negative", $notes);
-		}
 
 		$a_Tasks['expire_seconds'] = strtotime($a_Tasks['expire']) - time();
-		if ($a_Tasks['expire'] != -1 && $a_Tasks['expire_seconds'] >= 0 && $a_Tasks['expire_seconds'] < 4 * 24 * 60 * 60) {
+		if ($a_Tasks['expire'] != -1 && $a_Tasks['expire_seconds'] >= 0 && $a_Tasks['expire_seconds'] < 4 * 24 * 60 * 60)
 			$this->add_note(newsprintf($lang['license_soon_expire'], secondsToTime(strtotime($a_Tasks['expire']) - time())), "negative", $notes);
-		}
 
 		// Info o katalogu install
-		if (file_exists(SCRIPT_ROOT . "install")) {
+		if (file_exists(SCRIPT_ROOT . "install"))
 			$this->add_note($lang['remove_install'], "negative", $notes);
-		}
 
 		// Sprawdzanie wersji skryptu
 		$next_version = trim(curl_get_contents("http://www.sklep-sms.pl/version.php?action=get_next&type=web&version=" . VERSION));
 		if (strlen($next_version)) {
 			$newest_version = trim(curl_get_contents("http://www.sklep-sms.pl/version.php?action=get_newest&type=web"));
-			if (strlen($newest_version) && VERSION != $newest_version) {
+			if (strlen($newest_version) && VERSION != $newest_version)
 				$this->add_note(newsprintf($lang['update_available'], $newest_version), "positive", $notes);
-			}
 		}
 
 		// Sprawdzanie wersji serwerów

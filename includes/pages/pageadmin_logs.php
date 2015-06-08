@@ -43,7 +43,7 @@ class PageAdminLogs extends PageAdmin {
 				$button_delete = create_dom_element("img", "", array(
 					'id' => "delete_row_{$i}",
 					'src' => "images/bin.png",
-					'title' => "Usuń {$row['id']}"
+					'title' => $lang['delete']. " " . $row['id']
 				));
 			else
 				$button_delete = "";

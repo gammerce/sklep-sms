@@ -57,7 +57,7 @@ class PageAdminPlayersServices extends PageAdmin {
 					$button_edit = create_dom_element("img", "", array(
 						'id' => "edit_row_{$i}",
 						'src' => "images/edit.png",
-						'title' => "Edytuj {$row['id']}"
+						'title' => $lang['edit']. " " . $row['id']
 					));
 				else
 					$button_edit = "";
@@ -65,7 +65,7 @@ class PageAdminPlayersServices extends PageAdmin {
 				$button_delete = create_dom_element("img", "", array(
 					'id' => "delete_row_{$i}",
 					'src' => "images/bin.png",
-					'title' => "Usuń {$row['id']}"
+					'title' => $lang['delete']. " " . $row['id']
 				));
 			} else
 				$button_edit = $button_delete = "";

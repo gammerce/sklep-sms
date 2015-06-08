@@ -14,6 +14,7 @@ $lang['no_data'] = "Brak danych";
 $lang['choose_option'] = "Wybierz opcję";
 $lang['forever'] = "Na zawsze";
 $lang['edit'] = "Edytuj";
+$lang['delete'] = "Usuń";
 
 $lang['days'] = "dni";
 $lang['hours'] = "godzin";
@@ -25,6 +26,7 @@ $lang['months'] = array("", "Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "C
 
 $lang['verification_error'] = "Coś poszło nie tak podczas łączenia się z serwerem weryfikacyjnym.";
 
+$lang['main_page'] = "Strona główna";
 $lang['acp'] = "Panel Admina";
 $lang['acp_short'] = "PA";
 $lang['no_privilages'] = "Nie masz dostępu do tego miejsca, więc tu nie zerkaj!";

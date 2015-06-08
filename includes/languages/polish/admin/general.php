@@ -12,7 +12,6 @@ $lang['update_available_servers'] = "Dostępna jest aktualizacja dla {1}/{2} ser
 $lang['license_error'] = "Licencja wygasła lub jest błędna. Przejdź do <a href=\"admin.php?pid=settings\">ustawień</a>, w celu wprowadzenia prawidłowych danych licencji.";
 $lang['license_soon_expire'] = "Licencja wygaśnie za: {1} Możesz ją przedłużyć już teraz: <a href=\"http://sklep-sms.pl/index.php?page=zakup\" target=\"_blank\">Przedłuż Licencję</a>";
 
-$lang['main_page'] = "Strona główna";
 $lang['players_flags'] = "Flagi graczy";
 $lang['players_services'] = "Czasowe usługi graczy";
 $lang['income'] = "Przychód";

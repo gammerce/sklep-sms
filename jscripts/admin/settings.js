@@ -24,7 +24,7 @@ $(document).delegate("#form_edit_settings", "submit", function (e) {
 			}
 			else if (jsonObj.return_id == "edited") {
 				// Odśwież stronę
-                refresh_bricks("admincontent", true);
+                refresh_blocks("admincontent", true);
 			}
 			else if (!jsonObj.return_id) {
 				show_info(lang['sth_went_wrong'], false);

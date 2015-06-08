@@ -6,6 +6,12 @@ class PageContact extends PageSimple
 {
 
 	protected $template = "contact";
-	protected $title = "Kontakt";
+
+	function __construct() {
+		global $lang;
+		$this->title = $lang['contact'];
+
+		parent::__construct();
+	}
 
 }

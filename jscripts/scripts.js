@@ -79,7 +79,7 @@ function fetch_data(action, admin, data, onSuccessFunction) {
 	});
 }
 
-function refresh_bricks(bricks, admin, onSuccessFunction) {
+function refresh_blocks(bricks, admin, onSuccessFunction) {
 	// Wyswietlenie ładowacza
 	loader.show();
 
@@ -90,7 +90,7 @@ function refresh_bricks(bricks, admin, onSuccessFunction) {
 		type: "POST",
 		url: (admin ? "jsonhttp_admin.php" : "jsonhttp.php") + "?" + document.URL.split("?").pop(),
 		data: {
-			action: 'refresh_bricks',
+			action: 'refresh_blocks',
 			bricks: bricks
 		},
 		complete: function () {
@@ -167,7 +167,7 @@ $(document).delegate("#form_login", "submit", function (e) {
 			// Wyświetlenie błędów w formularzu
 			if (jsonObj.return_id == "logged_in") {
 				$("#user_buttons").css({"overflow": "hidden"}); // Znikniecie pola do logowania
-				refresh_bricks("logged_info;wallet;user_buttons" + ($("#form_login_reload_content").val() == "0" ? "" : ";content"));
+				refresh_blocks("logged_info;wallet;user_buttons" + ($("#form_login_reload_content").val() == "0" ? "" : ";content"));
 			}
 			if (jsonObj.return_id == "already_logged_in") {
 				location.reload();
@@ -206,7 +206,7 @@ $(document).delegate("#logout", "click", function (e) {
 			// Wyświetlenie błędów w formularzu
 			if (jsonObj.return_id == "logged_out") {
 				//$("#user_buttons").css({"overflow": "hidden"}); // Znikniecie pola do logowania
-				refresh_bricks("logged_info;wallet;user_buttons;content");
+				refresh_blocks("logged_info;wallet;user_buttons;content");
 			}
 			if (jsonObj.return_id == "already_logged_out") {
 				location.reload();

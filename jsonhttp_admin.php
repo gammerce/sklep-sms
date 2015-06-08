@@ -1026,7 +1026,7 @@ if ($action == "charge_wallet") {
 	// Zwróć info o prawidłowym lub błędnym usunieciu
 	if ($db->affected_rows()) json_output("deleted", "Log został prawidłowo usunięty.", 1);
 	else json_output("not_deleted", "Log nie został usunięty.", 0);
-} else if ($action == "refresh_bricks") {
+} else if ($action == "refresh_blocks") {
 	if (isset($_POST['bricks']))
 		$bricks = explode(";", $_POST['bricks']);
 
@@ -1035,8 +1035,11 @@ if ($action == "charge_wallet") {
 		if(($block = $heart->get_block($brick)) === NULL)
 			continue;
 
-		$data[$brick]['class'] = $block->get_content_class();
-		$data[$brick]['content'] = $block->get_content($_GET, $_POST);
+		$data[$block->get_content_id()]['content'] = $block->get_content($_GET, $_POST);
+		if ($data[$block->get_content_id()]['content'] !== NULL)
+			$data[$block->get_content_id()]['class'] = $block->get_content_class();
+		else
+			$data[$block->get_content_id()]['class'] = "";
 	}
 
 	output_page(json_encode($data), "Content-type: text/plain; charset=\"UTF-8\"");

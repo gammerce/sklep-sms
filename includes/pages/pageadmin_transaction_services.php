@@ -19,8 +19,7 @@ class PageAdminTransactionServices extends PageAdmin {
 
 		// Pobranie listy serwisów transakcyjnych
 		$result = $db->query(
-			"SELECT SQL_CALC_FOUND_ROWS * " .
-			"FROM `" . TABLE_PREFIX . "transaction_services` " .
+			"SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "transaction_services` " .
 			"LIMIT " . get_row_limit($G_PAGE)
 		);
 		$rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
@@ -29,14 +28,14 @@ class PageAdminTransactionServices extends PageAdmin {
 		$tbody = "";
 		while ($row = $db->fetch_array_assoc($result)) {
 			$i += 1;
-			$row['sms'] = $row['sms'] ? "TAK" : "NIE";
-			$row['transfer'] = $row['transfer'] ? "TAK" : "NIE";
+			$row['sms'] = $row['sms'] ? strtoupper($lang['yes']) : strtoupper($lang['no']);
+			$row['transfer'] = $row['transfer'] ? strtoupper($lang['yes']) : strtoupper($lang['no']);
 
 			// Pobranie przycisku edycji
 			$button_edit = create_dom_element("img", "", array(
 				'id' => "edit_row_{$i}",
 				'src' => "images/edit.png",
-				'title' => "Edytuj " . $row['name']
+				'title' => $lang['edit']. " " . $row['name']
 			));
 
 			// Pobranie danych do tabeli

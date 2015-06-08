@@ -6,6 +6,12 @@ class PageRegulations extends PageSimple
 {
 
 	protected $template = "regulations_desc";
-	protected $title = "Regulamin";
+
+	function __construct() {
+		global $lang;
+		$this->title = $lang['regulations'];
+
+		parent::__construct();
+	}
 
 }

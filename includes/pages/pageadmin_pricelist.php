@@ -1,6 +1,6 @@
 <?php
 
-$heart->register_page("price_list", "PageAdminPriceList", "admin");
+$heart->register_page("pricelist", "PageAdminPriceList", "admin");
 
 class PageAdminPriceList extends PageAdmin {
 
@@ -34,12 +34,12 @@ class PageAdminPriceList extends PageAdmin {
 			$button_edit = create_dom_element("img", "", array(
 				'id' => "edit_row_{$i}",
 				'src' => "images/edit.png",
-				'title' => "Edytuj {$row['tariff']}"
+				'title' => $lang['edit'] . " " . $row['tariff']
 			));
 			$button_delete = create_dom_element("img", "", array(
 				'id' => "delete_row_{$i}",
 				'src' => "images/bin.png",
-				'title' => "Usuń {$row['tariff']}"
+				'title' => $lang['delete'] . " " . $row['tariff']
 			));
 
 			if ($row['server'] != -1) {

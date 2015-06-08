@@ -99,7 +99,6 @@ if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
 			$user = array();
 		}
 	}
-	// TODO: Przenieść logout do post zamiast get
 	else if ($_POST['action'] == "logout") { // Wylogowujemy
 		// Unset all of the session variables.
 		$_SESSION = array();

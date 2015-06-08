@@ -35,13 +35,13 @@ class PageAdminAntispamQuestions extends PageAdmin {
 				$button_edit = create_dom_element("img", "", array(
 					'id' => "edit_row_{$i}",
 					'src' => "images/edit.png",
-					'title' => "Edytuj {$row['tariff']}"
+					'title' => $lang['edit']. " " . $row['tariff']
 				));
 
 				$button_delete = create_dom_element("img", "", array(
 					'id' => "delete_row_{$i}",
 					'src' => "images/bin.png",
-					'title' => "Usuń {$row['tariff']}"
+					'title' => $lang['delete']. " " . $row['tariff']
 				));
 			} else
 				$button_delete = $button_edit = "";

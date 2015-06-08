@@ -1,6 +1,6 @@
 <?php
 
-$heart->register_page("admin_bought_services", "PageAdminBoughtServices");
+$heart->register_page("bought_services", "PageAdminBoughtServices", "admin");
 
 class PageAdminBoughtServices extends PageAdmin {
 

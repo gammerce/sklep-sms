@@ -353,7 +353,7 @@ if ($action == "login") {
 
 	$return_payment = validate_payment($payment_data);
 	json_output($return_payment['status'], $return_payment['text'], $return_payment['positive'], $return_payment['data']);
-} else if ($action == "refresh_bricks") {
+} else if ($action == "refresh_blocks") {
 	if (isset($_POST['bricks']))
 		$bricks = explode(";", $_POST['bricks']);
 
@@ -362,8 +362,11 @@ if ($action == "login") {
 		if(($block = $heart->get_block($brick)) === NULL)
 			continue;
 
-		$data[$brick]['class'] = $block->get_content_class();
-		$data[$brick]['content'] = $block->get_content($_GET, $_POST);
+		$data[$block->get_content_id()]['content'] = $block->get_content($_GET, $_POST);
+		if ($data[$block->get_content_id()]['content'] !== NULL)
+			$data[$block->get_content_id()]['class'] = $block->get_content_class();
+		else
+			$data[$block->get_content_id()]['class'] = "";
 	}
 
 	output_page(json_encode($data), "Content-type: text/plain; charset=\"UTF-8\"");

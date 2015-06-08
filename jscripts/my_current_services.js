@@ -58,7 +58,7 @@ $(document).delegate("#my_current_services .row", "submit", function (e) {
 				});
 			}
 			else if (jsonObj.return_id == "edited") {
-				refresh_bricks("content");
+				refresh_blocks("content");
 			}
 			else if (jsonObj.return_id == "payment") {
 				// Przechodzimy do płatności

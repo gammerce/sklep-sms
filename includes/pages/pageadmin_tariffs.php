@@ -25,13 +25,13 @@ class PageAdminTariffs extends PageAdmin {
 			$button_edit = create_dom_element("img", "", array(
 				'id' => "edit_row_{$i}",
 				'src' => "images/edit.png",
-				'title' => "Edytuj {$tariff_data['tariff']}"
+				'title' => $lang['edit']. " " . $tariff_data['tariff']
 			));
 			if (!$tariff_data['predefined'])
 				$button_delete = create_dom_element("img", "", array(
 					'id' => "delete_row_{$i}",
 					'src' => "images/bin.png",
-					'title' => "Usuń {$tariff_data['tariff']}"
+					'title' => $lang['delete']. " " . $tariff_data['tariff']
 				));
 			else
 				$button_delete = "";

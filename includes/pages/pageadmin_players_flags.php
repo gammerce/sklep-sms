@@ -35,7 +35,7 @@ class PageAdminPlayersFlags extends PageAdmin {
 			// Zamiana dat
 			for ($j = 0; $j < strlen($this->flags); ++$j) {
 				if (!$row[$this->flags[$j]])
-					$row[$this->lags[$j]] = " ";
+					$row[$this->flags[$j]] = " ";
 				else if ($row[$this->flags[$j]] == -1)
 					$row[$this->flags[$j]] = $lang['never'];
 				else

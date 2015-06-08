@@ -32,12 +32,12 @@ class PageAdminServices extends PageAdmin {
 				$button_edit = create_dom_element("img", "", array(
 					'id' => "edit_row_{$i}",
 					'src' => "images/edit.png",
-					'title' => "Edytuj {$row['name']}"
+					'title' => $lang['edit']. " " . $row['name']
 				));
 				$button_delete = create_dom_element("img", "", array(
 					'id' => "delete_row_{$i}",
 					'src' => "images/bin.png",
-					'title' => "Usuń {$row['name']}"
+					'title' => $lang['delete']. " " . $row['name']
 				));
 			} else
 				$button_delete = $button_edit = "";

@@ -6,6 +6,12 @@ class PageMain extends PageSimple
 {
 
 	protected $template = "main_content";
-	protected $title = "Strona główna";
+
+	function __construct() {
+		global $lang;
+		$this->title = $lang['main_page'];
+
+		parent::__construct();
+	}
 
 }
