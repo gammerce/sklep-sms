@@ -88,7 +88,9 @@ class PageAdminMain extends PageAdmin {
 	}
 
 	private function add_note($text, $class, &$notes) {
-		eval("\$notes .= \"" . get_template("admin/note") . "\";");
+		$notes .= create_dom_element("div", $text, array(
+			'class'	=> "note " . $class
+		));
 	}
 
 }
