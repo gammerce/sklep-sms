@@ -11,7 +11,7 @@ class PagePurchase extends Page
 	{
 		global $heart, $user, $lang, $settings, $scripts, $stylesheets;
 
-		if ($service_module = $heart->get_service_module($get['service']) === NULL)
+		if (($service_module = $heart->get_service_module($get['service'])) === NULL)
 			return $lang['site_not_exists'];
 
 		$heart->page_title .= " - " . $service_module->service['name'];
@@ -25,16 +25,13 @@ class PagePurchase extends Page
 		if (!$heart->user_can_use_service($user['uid'], $service_module->service))
 			return $lang['service_no_permission'];
 
-		//
-		// Dodajemy opis uslugi
+		// Nie ma formularza zakupu, to tak jakby strona nie istniała
+		if (!class_has_interface($service_module, "IServicePurchaseWeb"))
+			return $lang['site_not_exists'];
 
 		// Dodajemy długi opis
 		if (strlen($service_module->get_full_description()))
 			eval("\$show_more = \"" . get_template("services/show_more") . "\";");
-
-				// Nie ma formularza zakupu, to tak jakby strona nie istniała
-		if (class_has_interface($service_module, "IServicePurchaseWeb"))
-			return $lang['site_not_exists'];
 
 		$scripts[] = $settings['shop_url_slash'] . "jscripts/purchase.js?version=" . VERSION;
 		$stylesheets[] = $settings['shop_url_slash'] . "styles/style_purchase.css?version=" . VERSION;

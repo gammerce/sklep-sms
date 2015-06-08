@@ -9,5 +9,7 @@ abstract class PageAdmin extends Page
 			global $lang;
 			return $lang['no_privilages'];
 		}
+
+		return $this->content($get, $post);
 	}
 }

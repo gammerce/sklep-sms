@@ -22,7 +22,7 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 				row_id.css({"background": "#FFF4BA"});
 
 				// Odśwież stronę
-                refresh_brick("admincontent", true);
+                refresh_bricks("admincontent", true);
 			}
 			else if (!jsonObj.return_id) {
 				show_info(lang['sth_went_wrong'], false);

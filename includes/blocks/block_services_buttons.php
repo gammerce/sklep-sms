@@ -17,7 +17,7 @@ class BlockServicesButtons extends Block
 
 	protected function content($get, $post)
 	{
-		global $heart, $user;
+		global $heart, $user, $lang;
 
 		$services = "";
 		foreach ($heart->get_services() as $service) {

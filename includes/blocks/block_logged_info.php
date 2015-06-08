@@ -2,7 +2,7 @@
 
 $heart->register_block("logged_info", "BlockLoggedInfo");
 
-class PageLoggedInfo extends BlockSimple
+class BlockLoggedInfo extends BlockSimple
 {
 
 	protected $template = "logged_in_informations";

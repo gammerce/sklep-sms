@@ -21,13 +21,11 @@ class ServiceExtraFlagsSimple extends Service implements IServiceCreateNew
 
 		// Nick, IP, SID
 		$types = "";
-		for ($i = 0; $i < 3; $i++) {
-			$option_id = 1 << $i;
+		for ($i = 0, $option_id = 1; $i < 3; $option_id = 1 << ++$i)
 			$types .= create_dom_element("option", get_type_name($option_id), array(
 				'value' => $option_id,
 				'selected' => $this->service !== NULL && $this->service['types'] & $option_id ? "selected" : ""
 			));
-		}
 
 		// Pobieramy flagi, jeżeli service nie jest puste
 		// czyli kiedy edytujemy, a nie dodajemy usługę
@@ -461,18 +459,16 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 		// Formowanie flag do zapytania
 		$set = "";
-		foreach ($flags as $flag => $amount) {
+		foreach ($flags as $flag => $amount)
 			$set .= $db->prepare(", `%s`='%d'", array($flag, $amount));
-		}
 
 		// Dodanie flag
-		if (strlen($set)) {
+		if (strlen($set))
 			$db->query($db->prepare(
 				"INSERT INTO `" . TABLE_PREFIX . "players_flags` " .
 				"SET `server`='%d', `type`='%d', `auth_data`='%s', `password`='%s'{$set}",
 				array($server, $type, $auth_data, $password)
 			));
-		}
 	}
 
 	//
@@ -547,14 +543,11 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 		// Pobieramy listę typów usługi, (1<<2) ostatni typ
 		$types = "";
-		for ($i = 0; $i < 3; $i++) {
-			$option_id = 1 << $i;
-			if ($this->service['types'] & $option_id) {
+		for ($i = 0, $option_id = 1; $i < 3; $option_id = 1 << ++$i)
+			if ($this->service['types'] & $option_id)
 				$types .= create_dom_element("option", get_type_name($option_id), array(
 					'value' => $option_id
 				));
-			}
-		}
 
 		// Pobieramy listę serwerów
 		$servers = "";
@@ -673,7 +666,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 		// Dodajemy typ uslugi, (1<<2) ostatni typ
 		$types = "";
-		for ($i = 0, $option_id = 0; $i < 3; $option_id = 1 << ++$i)
+		for ($i = 0, $option_id = 1; $i < 3; $option_id = 1 << ++$i)
 			if ($this->service['types'] & $option_id)
 				$types .= create_dom_element("option", get_type_name($option_id), array(
 					'value' => $option_id,
@@ -827,7 +820,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 		// Dodajemy typ uslugi, (1<<2) ostatni typ
 		$service_info = array();
-		for ($i = 0, $option_id = 0; $i < 3; $option_id = 1 << ++$i) {
+		for ($i = 0, $option_id = 1; $i < 3; $option_id = 1 << ++$i) {
 			// Kiedy dana usługa nie wspiera danego typu i wykupiona usługa nie ma tego typu
 			if (!($this->service['types'] & $option_id) && $option_id != $player_service['type'])
 				continue;

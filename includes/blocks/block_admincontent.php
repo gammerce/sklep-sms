@@ -20,10 +20,10 @@ class BlockAdminContent extends Block
 	{
 		global $lang;
 
-		if ($this->require_login == 1 && !is_logged())
+		if ($this->require_login === 1 && !is_logged())
 			return $lang['must_be_logged_in'];
 
-		if ($this->require_login == -1 && is_logged())
+		if ($this->require_login === -1 && is_logged())
 			return $lang['must_be_logged_out'];
 
 		return $this->content($get, $post);

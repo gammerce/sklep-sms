@@ -41,7 +41,7 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 				row_id.css({"background": "#FFF4BA"});
 
 				// Odśwież stronę
-                refresh_brick("admincontent", true);
+                refresh_bricks("admincontent", true);
 			}
 			else if (!jsonObj.return_id) {
 				show_info(lang['sth_went_wrong'], false);
@@ -78,7 +78,7 @@ $(document).delegate("#form_add_group", "submit", function (e) {
 				$("#action_box_wraper_td").html("");
 
 				// Odśwież stronę
-                refresh_brick("admincontent", true);
+                refresh_bricks("admincontent", true);
 			}
 			else if (!jsonObj.return_id) {
 				show_info(lang['sth_went_wrong'], false);
@@ -115,7 +115,7 @@ $(document).delegate("#form_edit_group", "submit", function (e) {
 				$("#action_box_wraper_td").html("");
 
 				// Odśwież stronę
-                refresh_brick("admincontent", true);
+                refresh_bricks("admincontent", true);
 			}
 			else if (!jsonObj.return_id) {
 				show_info(lang['sth_went_wrong'], false);

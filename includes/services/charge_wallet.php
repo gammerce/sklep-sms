@@ -66,29 +66,28 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IServiceP
 	{
 		global $heart, $user, $settings, $lang;
 
-		if (!is_logged()) {
+		if (!is_logged())
 			return array(
 				'status' => "not_logged_in",
 				'text' => $lang['you_arent_logged'],
 				'positive' => false
 			);
-		}
 
 		// Są tylko dwie metody doładowania portfela
-		if (!in_array($data['method'], array("sms", "transfer"))) {
+		if (!in_array($data['method'], array("sms", "transfer")))
 			return array(
 				'status' => "wrong_method",
 				'text' => $lang['wrong_charge_method'],
 				'positive' => false
 			);
-		}
 
 		$warnings = array();
 
 		if ($data['method'] == "sms") {
 			if (!strlen($data['tariff']))
-				$warnings['tariff'] .= $lang['charge_amount_not_chosen']."<br />";
-		} else if ($data['method'] == "transfer") {
+				$warnings['tariff'] .= $lang['charge_amount_not_chosen'] . "<br />";
+		}
+		else if ($data['method'] == "transfer") {
 			// Kwota doładowania
 			if ($warning = check_for_warnings("number", $data['transfer_amount']))
 				$warnings['transfer_amount'] = $warning;
@@ -165,12 +164,11 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IServiceP
 				eval("\$output = \"" . get_template("services/charge_wallet/web_purchase_info_transfer", 0, 1, 0) . "\";");
 
 			return $output;
-		} else if ($action == "payment_log") {
+		} else if ($action == "payment_log")
 			return array(
 				'text' => newsprintf($lang['wallet_was_charged'], $data['amount']),
 				'class' => "income"
 			);
-		}
 	}
 
 	//

@@ -5,8 +5,7 @@ abstract class Page
 
 	protected $title = "";
 
-	function __construct()
-	{
+	function __construct() {
 		global $heart;
 
 		$heart->page_title = $this->title;
@@ -41,7 +40,9 @@ abstract class PageSimple extends Page
 	function __construct()
 	{
 		if (!isset($this->template))
-			throw new Exception('Class ' . __CLASS__ . ' has to have field $template because it extends class PageSimple');
+			throw new Exception('Class ' . get_class($this) . ' has to have field $template because it extends class PageSimple');
+
+		parent::__construct();
 	}
 
 	protected function content($get, $post)

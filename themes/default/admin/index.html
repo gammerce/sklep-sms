@@ -17,9 +17,9 @@
 			</td>
 			<td style="width: 360px; text-align: right;">
 				{$user['username']}
-				<form method="POST">
+				<form method="POST" class="form_logout">
                     <input type="hidden" name="action" value="logout" />
-                    <input type="submit" value="{$lang['logout']}" />
+                    ( <a href="#" onclick="$(this).parents('form').submit()">{$lang['logout']}</a> )
                 </form>
 			</td>
 		</tr>
@@ -74,8 +74,6 @@
 		{$logs_link}
 	</ul>
 </div>
-<div class="content">
-	{$content}
-</div>
+{$content}
 </body>
 </html>

@@ -57,7 +57,7 @@ function purchase_service(method) {
 				});
 
 				// Odswieżenie stanu portfela
-				refresh_brick("wallet", false, function () {
+				refresh_bricks("wallet", false, function () {
 					$("#wallet").effect("highlight", "slow");
 				});
 			}

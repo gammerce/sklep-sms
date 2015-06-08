@@ -58,14 +58,7 @@ $(document).delegate("#my_current_services .row", "submit", function (e) {
 				});
 			}
 			else if (jsonObj.return_id == "edited") {
-				/*fetch_data("get_user_service_brick",false,{
-				 id: temp_this.data('row')
-				 },function(html) {
-				 // Podmieniamy zawartość
-				 temp_this.html(html);
-				 temp_this.parents(".brick:first").removeClass("active");
-				 });*/
-				refresh_brick("content");
+				refresh_bricks("content");
 			}
 			else if (jsonObj.return_id == "payment") {
 				// Przechodzimy do płatności
