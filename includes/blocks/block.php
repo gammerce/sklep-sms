@@ -46,12 +46,11 @@ abstract class Block
 	 */
 	public function get_content_enveloped($get, $post)
 	{
-		if (($content = $this->get_content($get, $post)) === NULL)
-			return NULL;
+		$content = $this->get_content($get, $post);
 
 		return create_dom_element("div", $content, array(
 			'id' => $this->get_content_id(),
-			'class' => $this->get_content_class()
+			'class' => $content !== NULL ? $this->get_content_class() : ""
 		));
 	}
 

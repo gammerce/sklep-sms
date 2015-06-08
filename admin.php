@@ -4,7 +4,7 @@ define('IN_SCRIPT', "1");
 define('SCRIPT_NAME', "admin");
 
 require_once "global.php";
-$G_PID = $heart->page_exists($G_PID, "admin") ? $G_PID : "main_content";
+$G_PID = $G_PID == "login" || $heart->page_exists($G_PID, "admin") ? $G_PID : "main_content";
 
 // Uzytkownik nie jest zalogowany
 if ($G_PID == "login") {
