@@ -248,9 +248,8 @@ class Heart
 	 */
 	public function get_service($service_id)
 	{
-		if (!$this->services_fetched) {
+		if (!$this->services_fetched)
 			$this->fetch_services();
-		}
 
 		return if_isset($this->services[$service_id], NULL);
 	}

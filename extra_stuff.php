@@ -18,12 +18,13 @@ if ($_GET['popup']) {
 $action = $_GET['action'];
 
 switch ($action) {
-	case "service_long_description": {
+	case "service_long_description":
 		$output = "";
-		$service_module = $heart->get_service_module($_GET['service']);
 
-		if ($service_module !== NULL)
+		if (($service_module = $heart->get_service_module($_GET['service'])) !== NULL)
 			$output = $service_module->get_full_description();
+
+		$heart->page_title = $lang['description'] . ": " . $service_module->service['name'];
 
 		$stylesheets[] = "{$settings['shop_url_slash']}styles/extra_stuff/long_desc.css?version=" . VERSION;
 		parse_scripts_styles($scripts, $stylesheets);
@@ -31,5 +32,4 @@ switch ($action) {
 
 		$output = create_dom_element("html", create_dom_element("head", $header) . create_dom_element("body", $output));
 		output_page($output);
-	}
 }
