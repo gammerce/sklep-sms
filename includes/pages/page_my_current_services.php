@@ -6,7 +6,13 @@ class PageMyCurrentServices extends Page
 {
 
 	protected $require_login = 1;
-	protected $title = "Moje obecne usługi";
+
+	function __construct() {
+		global $lang;
+		$this->title = $lang['my_current_services'];
+
+		parent::__construct();
+	}
 
 	protected function content($get, $post)
 	{

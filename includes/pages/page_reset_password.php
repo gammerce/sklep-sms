@@ -6,7 +6,13 @@ class PageResetPassword extends Page
 {
 
 	protected $require_login = -1;
-	protected $title = "Resetowanie hasła";
+
+	function __construct() {
+		global $lang;
+		$this->title = $lang['reset_password'];
+
+		parent::__construct();
+	}
 
 	protected function content($get, $post)
 	{

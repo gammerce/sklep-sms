@@ -6,7 +6,13 @@ class PageRegister extends Page
 {
 
 	protected $require_login = -1;
-	protected $title = "Formularz rejestracyjny";
+
+	function __construct() {
+		global $lang;
+		$this->title = $lang['register'];
+
+		parent::__construct();
+	}
 
 	protected function content($get, $post)
 	{

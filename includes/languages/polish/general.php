@@ -1,5 +1,15 @@
 <?php
 
+$lang['forgotten_password'] = "Odzyskanie hasła";
+$lang['my_current_services'] = "Moje obecne usługi";
+$lang['title_payment'] = "Płatność";
+$lang['payment_log'] = "Historia płatności";
+$lang['purchase'] = "Zakup usługi";
+$lang['register'] = "Rejestracja";
+$lang['reset_password'] = "Zresetuj hasło";
+$lang['take_over_service'] = "Przejmij usługę";
+$lang['transfer_finalized'] = "Transakcja sfinalizowana";
+
 $lang['welcome_message'] = "Witaj w sklepie internetowym!";
 
 $lang['register_vert'] = "Z<br />A<br />R<br />E<br />J<br />E<br />S<br />T<br />R<br />U<br />J";
@@ -71,7 +81,7 @@ $lang['transfer_unavailable'] = "Nie można dokonać płatności za pomocą prze
 $lang['sms_unavailable'] = "Nie można dokonać płatności za pomocą SMSa.";
 
 $lang['my_services'] = "Moje usługi";
-$lang['change_password'] = "Zmień hasło";
+$lang['change_password'] = "Zmiana hasła";
 $lang['take_over_service'] = "Przejmij usługę";
 
 $lang['transfer'] = "Przelew";

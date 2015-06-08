@@ -5,7 +5,12 @@ $heart->register_page("transfer_finalized", "PageTransferFinalized");
 class PageTransferFinalized extends Page
 {
 
-	protected $title = "Transakcja sfinalizowana";
+	function __construct() {
+		global $lang;
+		$this->title = $lang['transfer_finalized'];
+
+		parent::__construct();
+	}
 
 	protected function content($get, $post)
 	{

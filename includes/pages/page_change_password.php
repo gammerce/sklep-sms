@@ -7,7 +7,13 @@ class PageChangePassword extends PageSimple
 
 	protected $template = "change_password";
 	protected $require_login = 1;
-	protected $title = "Zmiana hasła";
+
+	function __construct() {
+		global $lang;
+		$this->title = $lang['change_password'];
+
+		parent::__construct();
+	}
 
 	protected function content($get, $post) {
 		global $settings, $scripts;

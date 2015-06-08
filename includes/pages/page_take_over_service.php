@@ -6,7 +6,13 @@ class PageTakeOverService extends Page
 {
 
 	protected $require_login = 1;
-	protected $title = "Przejmij usługę";
+
+	function __construct() {
+		global $lang;
+		$this->title = $lang['take_over_service'];
+
+		parent::__construct();
+	}
 
 	protected function content($get, $post)
 	{

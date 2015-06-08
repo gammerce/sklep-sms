@@ -33,14 +33,13 @@ class PageAdminPlayersFlags extends PageAdmin {
 			$row['auth_data'] = htmlspecialchars($row['auth_data']);
 
 			// Zamiana dat
-			for ($j = 0; $j < strlen($this->flags); ++$j) {
+			for ($j = 0; $j < strlen($this->flags); ++$j)
 				if (!$row[$this->flags[$j]])
 					$row[$this->flags[$j]] = " ";
 				else if ($row[$this->flags[$j]] == -1)
 					$row[$this->flags[$j]] = $lang['never'];
 				else
 					$row[$this->flags[$j]] = date($settings['date_format'], $row[$this->flags[$j]]);
-			}
 
 			// Pobranie danych serwera
 			$temp_server = $heart->get_server($row['server']);

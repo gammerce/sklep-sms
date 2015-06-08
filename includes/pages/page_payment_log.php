@@ -6,7 +6,13 @@ class PagePaymentLog extends Page
 {
 
 	protected $require_login = 1;
-	protected $title = "Historia płatności";
+
+	function __construct() {
+		global $lang;
+		$this->title = $lang['payment_log'];
+
+		parent::__construct();
+	}
 
 	protected function content($get, $post)
 	{

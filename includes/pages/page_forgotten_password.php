@@ -7,7 +7,13 @@ class PageForgottenPassword extends PageSimple
 
 	protected $template = "forgotten_password";
 	protected $require_login = -1;
-	protected $title = "Odzyskanie hasła";
+
+	function __construct() {
+		global $lang;
+		$this->title = $lang['forgotten_password'];
+
+		parent::__construct();
+	}
 
 	protected function content($get, $post) {
 		global $settings, $scripts;

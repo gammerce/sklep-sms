@@ -5,7 +5,12 @@ $heart->register_page("purchase", "PagePurchase");
 class PagePurchase extends Page
 {
 
-	protected $title = "Zakup usługi";
+	function __construct() {
+		global $lang;
+		$this->title = $lang['purchase'];
+
+		parent::__construct();
+	}
 
 	protected function content($get, $post)
 	{

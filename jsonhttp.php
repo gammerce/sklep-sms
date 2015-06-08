@@ -272,9 +272,8 @@ if ($action == "login") {
 
 	json_output("password_changed", "Hasło zostało prawidłowo zmienione.", 1);
 } else if ($action == "change_password") {
-	if (!is_logged()) {
+	if (!is_logged())
 		json_output("logged_in", $lang['not_logged'], 0);
-	}
 
 	$oldpass = $_POST['old_pass'];
 	$pass = $_POST['pass'];

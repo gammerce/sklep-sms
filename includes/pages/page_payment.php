@@ -5,7 +5,12 @@ $heart->register_page("payment", "PagePayment");
 class PagePayment extends Page
 {
 
-	protected $title = "Płatność";
+	function __construct() {
+		global $lang;
+		$this->title = $lang['title_payment'];
+
+		parent::__construct();
+	}
 
 	protected function content($get, $post)
 	{
