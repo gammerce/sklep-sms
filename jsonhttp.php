@@ -20,14 +20,13 @@ if ($action == "login") {
 	if (is_logged())
 		json_output("already_logged_in");
 
-	if (!$_POST['username'] || !$_POST['password']) {
+	if (!$_POST['username'] || !$_POST['password'])
 		json_output("no_data", "No niestety, ale bez podania nazwy użytkownika oraz loginu, nie zalogujesz się.", 0);
-	}
 
 	$user = $heart->get_user(0, $_POST['username'], $_POST['password']);
-	if ($user['uid']) {
+	if (is_logged()) {
 		$_SESSION['uid'] = $user['uid'];
-		update_activity($_SESSION['uid']);
+		update_activity($user['uid']);
 		json_output("logged_in", "Logowanie przebiegło bez większych trudności.", 1);
 	}
 
@@ -77,40 +76,37 @@ if ($action == "login") {
 	}
 
 	// Nazwa użytkownika
-	if ($warning = check_for_warnings("username", $username)) {
+	if ($warning = check_for_warnings("username", $username))
 		$warnings['username'] = $warning;
-	}
+
 	$result = $db->query($db->prepare(
 		"SELECT `uid` FROM `" . TABLE_PREFIX . "users` " .
 		"WHERE `username` = '%s'",
 		array($username)
 	));
-	if ($db->num_rows($result)) {
+	if ($db->num_rows($result))
 		$warnings['username'] .= "Podana nazwa użytkownika jest już zajęta.<br />";
-	}
 
 	// Hasło
-	if ($warning = check_for_warnings("password", $password)) {
+	if ($warning = check_for_warnings("password", $password))
 		$warnings['password'] = $warning;
-	}
-	if ($password != $passwordr) {
+	if ($password != $passwordr)
 		$warnings['password_repeat'] .= "Podane hasła różnią się.<br />";
-	}
 
-	if ($warning = check_for_warnings("email", $email)) {
+	if ($warning = check_for_warnings("email", $email))
 		$warnings['email'] = $warning;
-	}
+
+	// Email
 	$result = $db->query($db->prepare(
 		"SELECT `uid` FROM `" . TABLE_PREFIX . "users` " .
 		"WHERE `email` = '%s'",
 		array($email)
 	));
-	if ($db->num_rows($result)) {
+	if ($db->num_rows($result))
 		$warnings['email'] .= "Podany e-mail jest już zajęty.<br />";
-	}
-	if ($email != $emailr) {
+
+	if ($email != $emailr)
 		$warnings['email_repeat'] .= "Podane e-maile różnią się.<br />";
-	}
 
 	// Pobranie z bazy pytania antyspamowego
 	$result = $db->query($db->prepare(
@@ -119,9 +115,8 @@ if ($action == "login") {
 		array($as_id)
 	));
 	$antispam_question = $db->fetch_array_assoc($result);
-	if (!in_array(strtolower($as_answer), explode(";", $antispam_question['answers']))) {
+	if (!in_array(strtolower($as_answer), explode(";", $antispam_question['answers'])))
 		$warnings['as_answer'] .= "Błędna odpowiedź na pytanie antyspamowe.<br />";
-	}
 
 	// Pobranie nowego pytania antyspamowego
 	$result = $db->query(
@@ -137,7 +132,9 @@ if ($action == "login") {
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", $warning, array(
+				'class'	=> "form_warning"
+			));
 			$data['warnings'][$brick] = $warning;
 		}
 		json_output("warnings", $lang['form_wrong_filled'], 0, $data);
@@ -198,7 +195,9 @@ if ($action == "login") {
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", $warning, array(
+				'class'	=> "form_warning"
+			));
 			$data['warnings'][$brick] = $warning;
 		}
 		json_output("warnings", $lang['form_wrong_filled'], 0, $data);
@@ -251,7 +250,9 @@ if ($action == "login") {
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", $warning, array(
+				'class'	=> "form_warning"
+			));
 			$data['warnings'][$brick] = $warning;
 		}
 		json_output("warnings", $lang['form_wrong_filled'], 0, $data);
@@ -292,7 +293,9 @@ if ($action == "login") {
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", $warning, array(
+				'class'	=> "form_warning"
+			));
 			$data['warnings'][$brick] = $warning;
 		}
 		json_output("warnings", $lang['form_wrong_filled'], 0, $data);
@@ -327,7 +330,9 @@ if ($action == "login") {
 	// Przerabiamy ostrzeżenia, aby lepiej wyglądały
 	if ($return_data['status'] == "warnings") {
 		foreach ($return_data['data']['warnings'] as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", $warning, array(
+				'class'	=> "form_warning"
+			));
 			$return_data['data']['warnings'][$brick] = $warning;
 		}
 	} else {
@@ -479,7 +484,9 @@ if ($action == "login") {
 	// Przerabiamy ostrzeżenia, aby lepiej wyglądały
 	if ($return_data['status'] == "warnings") {
 		foreach ($return_data['data']['warnings'] as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", $warning, array(
+				'class'	=> "form_warning"
+			));
 			$return_data['data']['warnings'][$brick] = $warning;
 		}
 	}
@@ -499,7 +506,9 @@ if ($action == "login") {
 	// Przerabiamy ostrzeżenia, aby lepiej wyglądały
 	if ($return_data['status'] == "warnings") {
 		foreach ($return_data['data']['warnings'] as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", $warning, array(
+				'class'	=> "form_warning"
+			));
 			$return_data['data']['warnings'][$brick] = $warning;
 		}
 	}

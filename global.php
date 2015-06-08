@@ -130,9 +130,13 @@ if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin")) && (!is_logged() || 
 	}
 }
 
+// Pobieramy dane pustego użytkownika / gościa
+if(!isset($user) || empty($user))
+	$user = $heart->get_user(0);
+
 // Aktualizujemy aktywność użytkownika
 if (is_logged())
-	update_activity($_SESSION['uid']);
+	update_activity($user['uid']);
 
 // Pobranie stałych
 $result = $db->query("SELECT * FROM `" . TABLE_PREFIX . "settings`");

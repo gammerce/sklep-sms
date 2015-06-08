@@ -192,6 +192,9 @@ function get_privilages($which, $user = array())
 
 function update_activity($uid)
 {
+	if (!$uid)
+		return;
+
 	global $db;
 	$db->query($db->prepare(
 		"UPDATE `" . TABLE_PREFIX . "users` " .
@@ -293,7 +296,9 @@ function validate_payment($data)
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", $warning, array(
+				'class'	=> "form_warning"
+			));
 			$warning_data['warnings'][$brick] = $warning;
 		}
 		return array(

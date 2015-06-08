@@ -43,7 +43,9 @@ if ($action == "charge_wallet") {
 
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", $warning, array(
+				'class'	=> "form_warning"
+			));
 			$data['warnings'][$brick] = $warning;
 		}
 		json_output("warnings", $lang['form_wrong_filled'], 0, $data);
@@ -104,7 +106,9 @@ if ($action == "charge_wallet") {
 	// Przerabiamy ostrzeżenia, aby lepiej wyglądały
 	if ($return_data['status'] == "warnings") {
 		foreach ($return_data['data']['warnings'] as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", $warning, array(
+				'class'	=> "form_warning"
+			));
 			$return_data['data']['warnings'][$brick] = $warning;
 		}
 	}
@@ -144,7 +148,9 @@ if ($action == "charge_wallet") {
 	// Przerabiamy ostrzeżenia, aby lepiej wyglądały
 	if ($return_data['status'] == "warnings") {
 		foreach ($return_data['data']['warnings'] as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", $warning, array(
+				'class'	=> "form_warning"
+			));
 			$return_data['data']['warnings'][$brick] = $warning;
 		}
 	}
@@ -215,7 +221,9 @@ if ($action == "charge_wallet") {
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", $warning, array(
+				'class'	=> "form_warning"
+			));
 			$data['warnings'][$brick] = $warning;
 		}
 		json_output("warnings", $lang['form_wrong_filled'], 0, $data);
@@ -349,7 +357,9 @@ if ($action == "charge_wallet") {
 
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", $warning, array(
+				'class'	=> "form_warning"
+			));
 			$data['warnings'][$brick] = $warning;
 		}
 		json_output("warnings", $lang['form_wrong_filled'], 0, $data);
@@ -485,7 +495,9 @@ if ($action == "charge_wallet") {
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", $warning, array(
+				'class'	=> "form_warning"
+			));
 			$data['warnings'][$brick] = $warning;
 		}
 		json_output("warnings", $lang['form_wrong_filled'], 0, $data);
@@ -604,7 +616,9 @@ if ($action == "charge_wallet") {
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", $warning, array(
+				'class'	=> "form_warning"
+			));
 			$data['warnings'][$brick] = $warning;
 		}
 		json_output("warnings", $lang['form_wrong_filled'], 0, $data);
@@ -712,7 +726,9 @@ if ($action == "charge_wallet") {
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", $warning, array(
+				'class'	=> "form_warning"
+			));
 			$data['warnings'][$brick] = $warning;
 		}
 		json_output("warnings", $lang['form_wrong_filled'], 0, $data);
@@ -803,7 +819,8 @@ if ($action == "charge_wallet") {
 	if ($db->affected_rows()) {
 		log_info("Admin {$user['username']}({$user['uid']}) usunął grupę. ID: {$_POST['id']}");
 		json_output("deleted", "Grupa została prawidłowo usunięta.", 1);
-	} else json_output("not_deleted", "Grupa nie została usunięta.", 0);
+	} else
+		json_output("not_deleted", "Grupa nie została usunięta.", 0);
 } else if ($action == "add_tariff") {
 	if (!get_privilages("manage_settings")) {
 		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
@@ -825,7 +842,9 @@ if ($action == "charge_wallet") {
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", $warning, array(
+				'class'	=> "form_warning"
+			));
 			$data['warnings'][$brick] = $warning;
 		}
 		json_output("warnings", $lang['form_wrong_filled'], 0, $data);
@@ -854,7 +873,9 @@ if ($action == "charge_wallet") {
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", $warning, array(
+				'class'	=> "form_warning"
+			));
 			$data['warnings'][$brick] = $warning;
 		}
 		json_output("warnings", $lang['form_wrong_filled'], 0, $data);
@@ -917,7 +938,9 @@ if ($action == "charge_wallet") {
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", $warning, array(
+				'class'	=> "form_warning"
+			));
 			$data['warnings'][$brick] = $warning;
 		}
 		json_output("warnings", $lang['form_wrong_filled'], 0, $data);
@@ -981,7 +1004,9 @@ if ($action == "charge_wallet") {
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", $warning, array(
+				'class'	=> "form_warning"
+			));
 			$data['warnings'][$brick] = $warning;
 		}
 		json_output("warnings", $lang['form_wrong_filled'], 0, $data);
