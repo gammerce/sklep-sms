@@ -29,7 +29,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IServiceP
 	{
 		global $settings, $lang;
 
-		if ($settings['sms_service']) {
+		if (strlen($settings['sms_service'])) {
 			$payment_sms = new Payment($settings['sms_service']);
 
 			// Pobieramy opcję wyboru doładowania za pomocą SMS

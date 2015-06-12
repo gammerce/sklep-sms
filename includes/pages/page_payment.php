@@ -23,18 +23,19 @@ class PagePayment extends Page
 		global $heart;
 
 		/** Odczytujemy dane, ich format powinien być taki jak poniżej
-		 * @param array $data 'service',
-		 *                        'order'
-		 *                            ...
-		 *                        'user',
-		 *                            'uid',
-		 *                            'email'
-		 *                            ...
-		 *                        'tariff',
-		 *                        'cost_transfer'
-		 *                        'no_sms'
-		 *                        'no_transfer'
-		 *                        'no_wallet'
+		 * @param array $data 	'service',
+		 *						'order'
+		 *							...
+		 *						'user',
+		 *							'uid',
+		 *							'email'
+		 *							...
+		 * 						'payment_sms'
+		 *						'tariff',
+		 *						'cost_transfer'
+		 *						'no_sms'
+		 *						'no_transfer'
+		 *						'no_wallet'
 		 */
 		$data = json_decode(base64_decode($post['data']), true);
 
@@ -45,11 +46,13 @@ class PagePayment extends Page
 		// Pobieramy szczegóły zamówienia
 		$order_details = $service_module->order_details($data);
 
+		// Pobieramy płatność sms
+		$sms_service = if_empty($data['sms_service'], $settings['sms_service']);
+
 		// Pobieramy sposoby płatności
 		$payment_methods = "";
-		// Sprawdzamy, czy płatność za pomocą SMS jest możliwa
-		if ($settings['sms_service'] && isset($data['tariff']) && !$data['no_sms']) {
-			$payment_sms = new Payment($settings['sms_service']);
+		if ($sms_service && isset($data['tariff']) && !$data['no_sms']) { // Sprawdzamy, czy płatność za pomocą SMS jest możliwa
+			$payment_sms = new Payment($sms_service);
 			if (strlen($number = $payment_sms->get_number_by_tariff($data['tariff']))) {
 				$tariff['number'] = $number;
 				$tariff['cost'] = number_format(get_sms_cost($tariff['number']) * $settings['vat'], 2);

@@ -155,13 +155,11 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		global $heart, $lang, $settings, $user;
 
 		// Generujemy typy usługi
-		for ($i = 0; $i < 3; $i++) {
-			$value = 1 << $i;
+		for ($i = 0, $value = 1; $i < 3; $value = 1 << ++$i)
 			if ($this->service['types'] & $value) {
 				$type = get_type_name($value);
 				eval("\$types .= \"" . get_template("services/extra_flags/service_type") . "\";");
 			}
-		}
 
 		// Pobieranie serwerów na których można zakupić daną usługę
 		$servers = "";
@@ -229,15 +227,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		else {
 			// Sprawdzanie czy serwer o danym id istnieje w bazie
 			$server = $heart->get_server($data['order']['server']);
-			if (!$server[$this->service['id']]) {
+			if (!$server[$this->service['id']])
 				$warnings['server'] .= $lang['chosen_incorrect_server']."<br />";
-			}
 		}
 
 		// Wartość usługi
-		if (!$data['tariff']) {
+		if (!$data['tariff'])
 			$warnings['value'] .= $lang['must_choose_amount']."<br />";
-		} else {
+		else {
 			// Wyszukiwanie usługi o konkretnej cenie
 			$result = $db->query($db->prepare(
 				"SELECT * FROM `" . TABLE_PREFIX . "pricelist` " .
@@ -245,29 +242,27 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 				array($this->service['id'], $data['tariff'], $server['id'])
 			));
 
-			if (!$db->num_rows($result)) { // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
+			if (!$db->num_rows($result)) // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
 				return array(
 					'status' => "no_option",
 					'text' => $lang['service_not_affordable'],
 					'positive' => false
 				);
-			} else {
+			else
 				$price = $db->fetch_array_assoc($result);
-			}
 		}
 
 		// Typ usługi
 		// Mogą być tylko 3 rodzaje typu
-		if (!($data['order']['type'] & (TYPE_NICK | TYPE_IP | TYPE_SID))) {
+		if (!($data['order']['type'] & (TYPE_NICK | TYPE_IP | TYPE_SID)))
 			$warnings['type'] .= $lang['must_choose_type']."<br />";
-		} else if (!($this->service['types'] & $data['order']['type'])) {
+		else if (!($this->service['types'] & $data['order']['type']))
 			$warnings['type'] .= $lang['chosen_incorrect_type']."<br />";
-		} else if ($data['order']['type'] & (TYPE_NICK | TYPE_IP)) {
+		else if ($data['order']['type'] & (TYPE_NICK | TYPE_IP)) {
 			// Nick
 			if ($data['order']['type'] == TYPE_NICK) {
-				if ($warning = check_for_warnings("nick", $data['order']['auth_data'])) {
+				if ($warning = check_for_warnings("nick", $data['order']['auth_data']))
 					$warnings['nick'] = $warning;
-				}
 
 				// Sprawdzanie czy istnieje już taka usługa
 				$query = $db->prepare(
@@ -277,9 +272,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 				);
 			} // IP
 			else if ($data['order']['type'] == TYPE_IP) {
-				if ($warning = check_for_warnings("ip", $data['order']['auth_data'])) {
+				if ($warning = check_for_warnings("ip", $data['order']['auth_data']))
 					$warnings['ip'] = $warning;
-				}
 
 				// Sprawdzanie czy istnieje już taka usługa
 				$query = $db->prepare(
@@ -290,41 +284,35 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 			}
 
 			// Hasło
-			if ($warning = check_for_warnings("password", $data['order']['password'])) {
+			if ($warning = check_for_warnings("password", $data['order']['password']))
 				$warnings['password'] = $warning;
-			}
-			if ($data['order']['password'] != $data['order']['passwordr']) {
+			if ($data['order']['password'] != $data['order']['passwordr'])
 				$warnings['password_repeat'] .= $lang['passwords_not_match']."<br />";
-			}
 
 			// Sprawdzanie czy istnieje już taka usługa
-			if ($temp_password = $db->get_column($query, 'password')) {
+			if ($temp_password = $db->get_column($query, 'password'))
 				// TODO: Usunąć md5 w przyszłości
-				if ($temp_password != $data['order']['password'] && $temp_password != md5($data['order']['password'])) {
+				if ($temp_password != $data['order']['password'] && $temp_password != md5($data['order']['password']))
 					$warnings['password'] .= $lang['existing_service_has_different_password']."<br />";
-				}
-			}
+
 			unset($temp_password);
 		} // SteamID
-		else {// $data['order']['type'] == TYPE_SID
-			if ($warning = check_for_warnings("sid", $data['order']['auth_data'])) {
+		else // $data['order']['type'] == TYPE_SID
+			if ($warning = check_for_warnings("sid", $data['order']['auth_data']))
 				$warnings['sid'] = $warning;
-			}
-		}
 
 		// E-mail
 		if ( strpos($data['user']['platform'], "engine") !== 0 && $warning = check_for_warnings("email", $data['user']['email']))
 			$warnings['email'] = $warning;
 
 		// Jeżeli są jakieś błedy, to je zwróć
-		if (!empty($warnings)) {
+		if (!empty($warnings))
 			return array(
 				'status' => "warnings",
 				'text' => $lang['form_wrong_filled'],
 				'positive' => false,
 				'data' => array('warnings' => $warnings)
 			);
-		}
 
 		//
 		// Wszystko przebiegło pomyślnie, zwracamy o tym info
@@ -344,7 +332,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 			),
 			'user' => $data['user'],
 			'tariff' => $data['tariff'],
-			'cost_transfer' => $cost_transfer
+			'cost_transfer' => $cost_transfer,
+			'sms_service' => $server['sms_service']
 		);
 
 		return array(
@@ -1227,12 +1216,15 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 	/**
 	 * Funkcja zwraca listę dostępnych taryf danej usługi na danym lserwerze
 	 *
-	 * @param integer $server
+	 * @param integer $server_id
 	 * @return string
 	 */
-	private function tariffs_for_server($server)
+	private function tariffs_for_server($server_id)
 	{
-		global $db, $settings, $lang;
+		global $heart, $db, $settings, $lang;
+
+		$server = $heart->get_server($server_id);
+		$sms_service = if_empty($server['sms_service'], $settings['sms_service']);
 
 		// Pobieranie kwot za które można zakupić daną usługę na danym serwerze
 		$result = $db->query($db->prepare(
@@ -1242,7 +1234,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 			"LEFT JOIN `" . TABLE_PREFIX . "sms_numbers` AS sn ON sn.tariff = p.tariff AND sn.service = '%s' " .
 			"WHERE p.service = '%s' AND ( p.server = '%d' OR p.server = '-1' ) " .
 			"ORDER BY t.provision ASC",
-			array($settings['sms_service'], $this->service['id'], $server)
+			array($sms_service, $this->service['id'], $server_id)
 		));
 
 		while ($row = $db->fetch_array_assoc($result)) {

@@ -68,7 +68,7 @@ if ($action == "purchase_service") {
 	// Sprawdzanie danych przebiegło pomyślnie, więc przechodzimy do płatności
 	$return_validation['purchase_data']['method'] = urldecode($_GET['method']);
 	$return_validation['purchase_data']['sms_code'] = urldecode($_GET['sms_code']);
-	$return_validation['purchase_data']['transaction_service'] = urldecode($_GET['transaction_service']);
+	$return_validation['purchase_data']['sms_service'] = urldecode($_GET['transaction_service']);
 	$return_payment = validate_payment($return_validation['purchase_data']);
 
 	$extra_data = "";

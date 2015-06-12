@@ -236,11 +236,11 @@ function validate_payment($data)
 
 	// Tworzymy obiekt, który będzie nam obsługiwał proces płatności
 	if ($data['method'] == "sms") {
-		$transaction_service = if_isset($data['transaction_service'], $settings['sms_service']);
+		$transaction_service = if_empty($data['sms_service'], $settings['sms_service']);
 		$payment = new Payment($transaction_service, $user['platform']);
 	}
 	else if ($data['method'] == "transfer") {
-		$transaction_service = if_isset($data['transaction_service'], $settings['transfer_service']);
+		$transaction_service = if_empty($data['transfer_service'], $settings['transfer_service']);
 		$payment = new Payment($transaction_service, $user['platform']);
 	}
 
@@ -809,6 +809,11 @@ function secondsToTime($seconds)
 function if_isset(&$isset, $default)
 {
 	return isset($isset) ? $isset : $default;
+}
+
+function if_empty(&$empty, $default)
+{
+	return isset($empty) && strlen($empty) ? $empty : $default;
 }
 
 function mb_str_split($string)
