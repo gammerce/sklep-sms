@@ -46,7 +46,7 @@ $(document).delegate("#my_current_services .row", "submit", function (e) {
 				return;
 
 			if (!jsonObj.return_id) {
-				show_info(lang['sth_went_wrong'], false);
+				infobox.show_info(lang['sth_went_wrong'], false);
 				return;
 			}
 			// Wyświetlenie błędów w formularzu
@@ -66,10 +66,10 @@ $(document).delegate("#my_current_services .row", "submit", function (e) {
 			}
 
 			// Wyświetlenie zwróconego info
-			show_info(jsonObj.text, jsonObj.positive);
+			infobox.show_info(jsonObj.text, jsonObj.positive);
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd przy edytowaniu usługi.", false);
+			infobox.show_info(lang['ajax_error'], false);
 		}
 	});
 });

@@ -45,7 +45,7 @@ function getnset_template(element, template, admin, data, onSuccessFunction) {
 			onSuccessFunction();
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd przy dynamicznym odświeżaniu strony.", false);
+			infobox.show_info(lang['ajax_error'], false);
 			location.reload();
 		}
 	});
@@ -74,7 +74,7 @@ function fetch_data(action, admin, data, onSuccessFunction) {
 			onSuccessFunction(content);
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd przy dynamicznym odświeżaniu strony.", false);
+			infobox.show_info(lang['ajax_error'], false);
 		}
 	});
 }
@@ -108,7 +108,7 @@ function refresh_blocks(bricks, admin, onSuccessFunction) {
 			onSuccessFunction(content);
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd przy dynamicznym odświeżaniu strony.", false);
+			infobox.show_info(lang['ajax_error'], false);
 			location.reload();
 		}
 	});
@@ -173,14 +173,14 @@ $(document).delegate("#form_login", "submit", function (e) {
 				location.reload();
 			}
 			else if (!jsonObj.return_id) {
-				show_info(lang['sth_went_wrong'], false);
+				infobox.show_info(lang['sth_went_wrong'], false);
 			}
 
 			// Wyświetlenie zwróconego info
-			show_info(jsonObj.text, jsonObj.positive);
+			infobox.show_info(jsonObj.text, jsonObj.positive);
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd podczas próby zalogowania.", false);
+			infobox.show_info(lang['ajax_error'], false);
 		}
 	});
 });
@@ -212,14 +212,14 @@ $(document).delegate("#logout", "click", function (e) {
 				location.reload();
 			}
 			else if (!jsonObj.return_id) {
-				show_info(lang['sth_went_wrong'], false);
+				infobox.show_info(lang['sth_went_wrong'], false);
 			}
 
 			// Wyświetlenie zwróconego info
-			show_info(jsonObj.text, jsonObj.positive);
+			infobox.show_info(jsonObj.text, jsonObj.positive);
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd podczas próby wylogowania.", false);
+			infobox.show_info(lang['ajax_error'], false);
 		}
 	});
 });

@@ -44,7 +44,7 @@ class Heart
 	public function register_service_module($id, $name, $class, $classsimple)
 	{
 		if (isset($this->services_classes[$id]))
-			throw new Exception('There is a service with such an id already.');
+			throw new Exception("There is a service with such an id: " . htmlspecialchars($id) . " already.");
 
 		$this->services_classes[$id] = array(
 			'name' => $name,

@@ -858,3 +858,5 @@ function curl_get_contents($url, $timeout = 10)
 
 	return $resp;
 }
+
+// TODO: Language

@@ -55,6 +55,7 @@ $lang['mysqli']['no_query_fetch_array'] = "Could not fetch array because no quer
 $lang['mysqli']['no_query_fetch_array_assoc'] = "Could not fetch array assoc because no query id was supplied!";
 
 $lang['sth_went_wrong'] = "Coś poszło nie tak :/";
+$lang['ajax_error'] = "Wystąpił błąd podczas pozyskiwania danych.";
 
 $lang['bought_service_info'] = "Zakupiono usługę {1}. Dane: {2} Ilość: {3} Serwer: {4} ID transakcji: {5}. Email: {6} {7}({8})({9})";
 

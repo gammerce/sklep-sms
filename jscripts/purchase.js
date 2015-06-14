@@ -34,16 +34,16 @@ $(document).delegate("#go_to_payment", "click", function () {
 				go_to_payment(jsonObj.data, jsonObj.sign);
 			}
 			else if (!jsonObj.return_id) {
-				show_info(lang['sth_went_wrong'], false);
+				infobox.show_info(lang['sth_went_wrong'], false);
 				return;
 			}
 
 			// Wyświetlenie zwróconego info
-			if (typeof(jsonObj.length) !== 'undefined') show_info(jsonObj.text, jsonObj.positive, jsonObj.length);
-			else show_info(jsonObj.text, jsonObj.positive);
+			if (typeof(jsonObj.length) !== 'undefined') infobox.show_info(jsonObj.text, jsonObj.positive, jsonObj.length);
+			else infobox.show_info(jsonObj.text, jsonObj.positive);
 		},
 		error: function (error) {
-			infobox.show_info("Wystąpił błąd podczas wysyłania formularza zakupu.", false);
+			infobox.show_info(lang['ajax_error'], false);
 		}
 	});
 });
@@ -65,7 +65,7 @@ $(document).delegate("#show_service_desc", "click", function () {
 			window_info.create('80%', '80%', content);
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd podczas wczytywania pełnego opisu.", false);
+			infobox.show_info(lang['ajax_error'], false);
 		}
 	});
 });

@@ -28,15 +28,15 @@ $(document).delegate("#form_edit_transaction_service", "submit", function (e) {
 				$("#action_box_wraper_td").html("");
 			}
 			else if (!jsonObj.return_id) {
-				show_info(lang['sth_went_wrong'], false);
+				infobox.show_info(lang['sth_went_wrong'], false);
 				return;
 			}
 
 			// Wyświetlenie zwróconego info
-			show_info(jsonObj.text, jsonObj.positive);
+			infobox.show_info(jsonObj.text, jsonObj.positive);
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd przy edytowaniu metody płatności.", false);
+			infobox.show_info(lang['ajax_error'], false);
 		}
 	});
 });

@@ -21,7 +21,7 @@ abstract class PaymentModule
 		));
 
 		if (!$db->num_rows($result))
-			output_page("Błąd w konstruktorze klasy API_*: Brak serwisu płatności ( " . $this::SERVICE_ID . " ) w bazie.");
+			output_page("An error occured in class: " . get_class($this) . " constructor. There is no " . $this::SERVICE_ID . " payment service in database.");
 
 		$row = $db->fetch_array_assoc($result);
 
@@ -30,13 +30,12 @@ abstract class PaymentModule
 		$this->data['transfer'] = $row['transfer'];
 
 		$data = json_decode($row['data']);
-		foreach ($data as $key => $value) {
+		foreach ($data as $key => $value)
 			$this->data[$key] = $value;
-		}
+
 		$data_hidden = json_decode($row['data_hidden']);
-		foreach ($data_hidden as $key => $value) {
+		foreach ($data_hidden as $key => $value)
 			$this->data[$key] = $value;
-		}
 
 		if (isset($this->data['sms_text'])) {
 			$this->data['sms_text_hsafe'] = htmlspecialchars($this->data['sms_text']);

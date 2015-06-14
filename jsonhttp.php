@@ -218,11 +218,11 @@ if ($action == "login") {
 	eval("\$text = \"" . get_template("emails/forgotten_password") . "\";");
 	$ret = send_email($user2['email'], $user2['username'], "Reset Hasła", $text);
 
-	if ($ret == "not_sent") {
+	if ($ret == "not_sent")
 		json_output("not_sent", "Wystąpił błąd podczas wysyłania e-maila z linkiem do zresetowania hasła.", 0);
-	} else if ($ret == "wrong_email") {
+	else if ($ret == "wrong_email")
 		json_output("wrong_email", "E-mail przypisany do Twojego konta jest błędny. Zgłoś to administratorowi serwisu.", 0);
-	} else if ($ret == "sent") {
+	else if ($ret == "sent") {
 		log_info("Wysłano e-maila z kodem do zresetowania hasła. Użytkownik: {$user2['username']}({$user2['uid']}) E-mail: {$user2['email']} Dane formularza. Nazwa użytkownika: {$username} E-mail: {$email}");
 		$data['username'] = $user2['username'];
 		json_output("sent", "E-mail wraz z linkiem do zresetowania hasła został wysłany na Twoją skrzynkę pocztową.", 1, $data);
@@ -237,15 +237,13 @@ if ($action == "login") {
 	$passr = $_POST['pass_repeat'];
 
 	// Sprawdzanie hashu najwazniejszych danych
-	if (!$sign || $sign != md5($uid . $settings['random_key'])) {
+	if (!$sign || $sign != md5($uid . $settings['random_key']))
 		json_output("wrong_sign", $lang['wrong_sign'], 0);
-	}
 
 	if ($warning = check_for_warnings("password", $pass))
 		$warnings['pass'] = $warning;
-	if ($pass != $passr) {
+	if ($pass != $passr)
 		$warnings['pass_repeat'] .= "Podane hasła różnią się.<br />";
-	}
 
 	// Błędy
 	if (!empty($warnings)) {
@@ -263,8 +261,8 @@ if ($action == "login") {
 
 	$db->query($db->prepare(
 		"UPDATE `" . TABLE_PREFIX . "users` " .
-		"SET password='%s', salt='%s', reset_password_key='' " .
-		"WHERE uid='%d'",
+		"SET `password` = '%s', `salt` = '%s', `reset_password_key` = '' " .
+		"WHERE `uid` = '%d'",
 		array(hash_password($pass, $salt), $salt, $uid)
 	));
 
@@ -539,4 +537,4 @@ if ($action == "login") {
 	output_page(json_encode($data), "Content-type: text/plain; charset=\"UTF-8\"");
 }
 
-json_output("script_error", "An error occured: no action.", 0);
+json_output("script_error", "An error occured: no action.");

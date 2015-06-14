@@ -1,7 +1,7 @@
 <?php
 
 if (!defined("IN_SCRIPT"))
-	die("Nie ma tu nic ciekawego.");
+	die("There is nothing interesting here.");
 
 //error_reporting(E_USER_ERROR);
 error_reporting(E_ALL);

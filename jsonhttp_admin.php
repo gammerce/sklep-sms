@@ -1373,4 +1373,4 @@ if ($action == "charge_wallet") {
 	output_page(json_encode($data), "Content-type: text/plain; charset=\"UTF-8\"");
 }
 
-json_output("script_error", "Błąd programistyczny.", 0);
+json_output("script_error", "An error occured: no action.");

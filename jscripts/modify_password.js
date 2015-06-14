@@ -28,14 +28,14 @@ $(document).delegate("#form_forgotten_password", "submit", function (e) {
 				getnset_template($("#content"), "forgotten_password_sent", false, {username: jsonObj.username});
 			}
 			else if (!jsonObj.return_id) {
-				show_info(lang['sth_went_wrong'], false);
+				infobox.show_info(lang['sth_went_wrong'], false);
 			}
 
 			// Wyświetlenie zwróconego info
-			show_info(jsonObj.text, jsonObj.positive);
+			infobox.show_info(jsonObj.text, jsonObj.positive);
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd podczas wysyłania formualarza o odzyskanie hasła.", false);
+			infobox.show_info(lang['ajax_error'], false);
 		}
 	});
 });
@@ -70,14 +70,14 @@ $(document).delegate("#form_reset_password", "submit", function (e) {
 				getnset_template($("#content"), "reset_password_changed", false);
 			}
 			else if (!jsonObj.return_id) {
-				show_info(lang['sth_went_wrong'], false);
+				infobox.show_info(lang['sth_went_wrong'], false);
 			}
 
 			// Wyświetlenie zwróconego info
-			show_info(jsonObj.text, jsonObj.positive);
+			infobox.show_info(jsonObj.text, jsonObj.positive);
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd podczas wysyłania formualarza resetu hasła.", false);
+			infobox.show_info(lang['ajax_error'], false);
 		}
 	});
 });
@@ -112,14 +112,14 @@ $(document).delegate("#form_change_password", "submit", function (e) {
 				getnset_template($("#content"), "reset_password_changed", false);
 			}
 			else if (!jsonObj.return_id) {
-				show_info(lang['sth_went_wrong'], false);
+				infobox.show_info(lang['sth_went_wrong'], false);
 			}
 
 			// Wyświetlenie zwróconego info
-			show_info(jsonObj.text, jsonObj.positive);
+			infobox.show_info(jsonObj.text, jsonObj.positive);
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd podczas wysyłania formualarza zmiany hasła.", false);
+			infobox.show_info(lang['ajax_error'], false);
 		}
 	});
 });

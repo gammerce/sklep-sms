@@ -37,7 +37,7 @@ class PageMyCurrentServices extends Page
 				$button_edit = create_dom_element("img", "", array(
 					'class' => "edit_row",
 					'src' => "images/pencil.png",
-					'title' => "Edytuj",
+					'title' => $lang['edit'],
 					'style' => array(
 						'height' => '24px'
 					)

@@ -50,15 +50,15 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 				refresh_blocks("admincontent", true);
 			}
 			else if (!jsonObj.return_id) {
-				show_info(lang['sth_went_wrong'], false);
+				infobox.show_info(lang['sth_went_wrong'], false);
 				return;
 			}
 
 			// Wyświetlenie zwróconego info
-			show_info(jsonObj.text, jsonObj.positive);
+			infobox.show_info(jsonObj.text, jsonObj.positive);
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd przy usuwaniu serwera.", false);
+			infobox.show_info(lang['ajax_error'], false);
 		}
 	});
 });
@@ -97,15 +97,15 @@ $(document).delegate("#form_add_server", "submit", function (e) {
 				refresh_blocks("admincontent", true);
 			}
 			else if (!jsonObj.return_id) {
-				show_info(lang['sth_went_wrong'], false);
+				infobox.show_info(lang['sth_went_wrong'], false);
 				return;
 			}
 
 			// Wyświetlenie zwróconego info
-			show_info(jsonObj.text, jsonObj.positive);
+			infobox.show_info(jsonObj.text, jsonObj.positive);
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd przy dodawaniu serwera.", false);
+			infobox.show_info(lang['ajax_error'], false);
 		}
 	});
 });
@@ -144,15 +144,15 @@ $(document).delegate("#form_edit_server", "submit", function (e) {
 				refresh_blocks("admincontent", true);
 			}
 			else if (!jsonObj.return_id) {
-				show_info(lang['sth_went_wrong'], false);
+				infobox.show_info(lang['sth_went_wrong'], false);
 				return;
 			}
 
 			// Wyświetlenie zwróconego info
-			show_info(jsonObj.text, jsonObj.positive);
+			infobox.show_info(jsonObj.text, jsonObj.positive);
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd przy edytowaniu serwera.", false);
+			infobox.show_info(lang['ajax_error'], false);
 		}
 	});
 });

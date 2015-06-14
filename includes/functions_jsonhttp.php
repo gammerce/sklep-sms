@@ -98,8 +98,9 @@ function json_output($id, $text = "", $positive = false, $data = array())
 	$output['return_id'] = $id;
 	$output['text'] = $text;
 	$output['positive'] = $positive;
+
 	if (is_array($data) && !empty($data))
 		$output = array_merge($output, $data);
+
 	output_page(json_encode($output), "Content-type: text/plain; charset=\"UTF-8\"");
-	exit;
 }

@@ -44,15 +44,15 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 				refresh_blocks("admincontent", true);
 			}
 			else if (!jsonObj.return_id) {
-				show_info(lang['sth_went_wrong'], false);
+				infobox.show_info(lang['sth_went_wrong'], false);
 				return;
 			}
 
 			// Wyświetlenie zwróconego info
-			show_info(jsonObj.text, jsonObj.positive);
+			infobox.show_info(jsonObj.text, jsonObj.positive);
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd przy usuwaniu pytania antyspamowego.", false);
+			infobox.show_info(lang['ajax_error'], false);
 		}
 	});
 });
@@ -91,15 +91,15 @@ $(document).delegate("#form_add_antispam_question", "submit", function (e) {
 				refresh_blocks("admincontent", true);
 			}
 			else if (!jsonObj.return_id) {
-				show_info(lang['sth_went_wrong'], false);
+				infobox.show_info(lang['sth_went_wrong'], false);
 				return;
 			}
 
 			// Wyświetlenie zwróconego info
-			show_info(jsonObj.text, jsonObj.positive);
+			infobox.show_info(jsonObj.text, jsonObj.positive);
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd przy dodawaniu pytania antyspamowego.", false);
+			infobox.show_info(lang['ajax_error'], false);
 		}
 	});
 });
@@ -138,15 +138,15 @@ $(document).delegate("#form_edit_antispam_question", "submit", function (e) {
 				refresh_blocks("admincontent", true);
 			}
 			else if (!jsonObj.return_id) {
-				show_info(lang['sth_went_wrong'], false);
+				infobox.show_info(lang['sth_went_wrong'], false);
 				return;
 			}
 
 			// Wyświetlenie zwróconego info
-			show_info(jsonObj.text, jsonObj.positive);
+			infobox.show_info(jsonObj.text, jsonObj.positive);
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd przy edytowaniu pytania antyspamowego.", false);
+			infobox.show_info(lang['ajax_error'], false);
 		}
 	});
 });

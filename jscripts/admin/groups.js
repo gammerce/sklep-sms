@@ -44,15 +44,15 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 				refresh_blocks("admincontent", true);
 			}
 			else if (!jsonObj.return_id) {
-				show_info(lang['sth_went_wrong'], false);
+				infobox.show_info(lang['sth_went_wrong'], false);
 				return;
 			}
 
 			// Wyświetlenie zwróconego info
-			show_info(jsonObj.text, jsonObj.positive);
+			infobox.show_info(jsonObj.text, jsonObj.positive);
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd przy usuwaniu grupy.", false);
+			infobox.show_info(lang['ajax_error'], false);
 		}
 	});
 });
@@ -81,15 +81,15 @@ $(document).delegate("#form_add_group", "submit", function (e) {
 				refresh_blocks("admincontent", true);
 			}
 			else if (!jsonObj.return_id) {
-				show_info(lang['sth_went_wrong'], false);
+				infobox.show_info(lang['sth_went_wrong'], false);
 				return;
 			}
 
 			// Wyświetlenie zwróconego info
-			show_info(jsonObj.text, jsonObj.positive);
+			infobox.show_info(jsonObj.text, jsonObj.positive);
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd przy dodawaniu grupy.", false);
+			infobox.show_info(lang['ajax_error'], false);
 		}
 	});
 });
@@ -118,15 +118,15 @@ $(document).delegate("#form_edit_group", "submit", function (e) {
 				refresh_blocks("admincontent", true);
 			}
 			else if (!jsonObj.return_id) {
-				show_info(lang['sth_went_wrong'], false);
+				infobox.show_info(lang['sth_went_wrong'], false);
 				return;
 			}
 
 			// Wyświetlenie zwróconego info
-			show_info(jsonObj.text, jsonObj.positive);
+			infobox.show_info(jsonObj.text, jsonObj.positive);
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd przy edytowaniu grupy.", false);
+			infobox.show_info(lang['ajax_error'], false);
 		}
 	});
 });
