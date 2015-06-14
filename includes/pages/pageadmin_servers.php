@@ -2,7 +2,8 @@
 
 $heart->register_page("servers", "PageAdminServers", "admin");
 
-class PageAdminServers extends PageAdmin {
+class PageAdminServers extends PageAdmin
+{
 
 	protected $privilage = "manage_servers";
 
@@ -14,7 +15,8 @@ class PageAdminServers extends PageAdmin {
 		parent::__construct();
 	}
 
-	protected function content($get, $post) {
+	protected function content($get, $post)
+	{
 		global $heart, $lang, $settings, $scripts;
 
 		$i = 0;
@@ -30,12 +32,12 @@ class PageAdminServers extends PageAdmin {
 				$button_edit = create_dom_element("img", "", array(
 					'id' => "edit_row_{$i}",
 					'src' => "images/edit.png",
-					'title' => $lang['edit']. " " . $row['name']
+					'title' => $lang['edit'] . " " . $row['name']
 				));
 				$button_delete = create_dom_element("img", "", array(
 					'id' => "delete_row_{$i}",
 					'src' => "images/bin.png",
-					'title' => $lang['delete']. " " .$row['name']
+					'title' => $lang['delete'] . " " . $row['name']
 				));
 			} else
 				$button_delete = $button_edit = "";

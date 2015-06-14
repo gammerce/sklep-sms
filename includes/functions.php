@@ -4,8 +4,8 @@
  * Pobranie szablonu.
  *
  * @param string $title Nazwa szablonu
- * @param bool $install  Prawda, jeżeli pobieramy szablon instalacji.
- * @param bool $eslashes  Prawda, jeżeli zawartość szablonu ma być "escaped".
+ * @param bool $install Prawda, jeżeli pobieramy szablon instalacji.
+ * @param bool $eslashes Prawda, jeżeli zawartość szablonu ma być "escaped".
  * @param bool $htmlcomments Prawda, jeżeli chcemy dodać komentarze o szablonie.
  * @return string Szablon.
  */
@@ -64,14 +64,14 @@ function get_content($element, $withenvelope = true)
 	return $withenvelope ? $block->get_content_enveloped($_GET, $_POST) : $block->get_content($_GET, $_POST);
 }
 
-function get_row_limit($page, $row_limit=0)
+function get_row_limit($page, $row_limit = 0)
 {
 	global $settings;
 	$row_limit = $row_limit ? $row_limit : $settings['row_limit'];
 	return ($page - 1) * $row_limit . "," . $row_limit;
 }
 
-function get_pagination($all, $current_page, $script, $get, $row_limit=0)
+function get_pagination($all, $current_page, $script, $get, $row_limit = 0)
 {
 	global $settings;
 
@@ -181,9 +181,9 @@ function get_privilages($which, $user = array())
 		global $user;
 
 	if (in_array($which, array("manage_settings", "view_groups", "manage_groups", "view_player_flags",
-		"view_player_services", "manage_player_services", "view_income", "view_users", "manage_users",
-		"view_sms_codes", "manage_sms_codes", "view_antispam_questions", "manage_antispam_questions",
-		"view_services", "manage_services", "view_servers", "manage_servers", "view_logs", "manage_logs", "update")
+			"view_player_services", "manage_player_services", "view_income", "view_users", "manage_users",
+			"view_sms_codes", "manage_sms_codes", "view_antispam_questions", "manage_antispam_questions",
+			"view_services", "manage_services", "view_servers", "manage_servers", "view_logs", "manage_logs", "update")
 	))
 		return $user['privilages'][$which] && $user['privilages']['acp'];
 
@@ -238,8 +238,7 @@ function validate_payment($data)
 	if ($data['method'] == "sms") {
 		$transaction_service = if_empty($data['sms_service'], $settings['sms_service']);
 		$payment = new Payment($transaction_service, $user['platform']);
-	}
-	else if ($data['method'] == "transfer") {
+	} else if ($data['method'] == "transfer") {
 		$transaction_service = if_empty($data['transfer_service'], $settings['transfer_service']);
 		$payment = new Payment($transaction_service, $user['platform']);
 	}
@@ -297,7 +296,7 @@ function validate_payment($data)
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
 			$warning = create_dom_element("div", $warning, array(
-				'class'	=> "form_warning"
+				'class' => "form_warning"
 			));
 			$warning_data['warnings'][$brick] = $warning;
 		}
@@ -494,7 +493,7 @@ function delete_players_old_services()
 		if (($service_module = $heart->get_service_module($row['service'])) === NULL)
 			continue;
 
-		if( $service_module->delete_player_service($row) ) {
+		if ($service_module->delete_player_service($row)) {
 			$delete_ids[] = $row['id'];
 			$players_services[] = $row;
 			log_info("AUTOMAT: Usunięto wygasłą usługę gracza. Auth Data: {$row['auth_data']} Serwer: {$row['server']} Usługa: {$row['service']} Typ: " . get_type_name($row['type']));
@@ -502,7 +501,7 @@ function delete_players_old_services()
 	}
 
 	// Usuwamy usugi ktre zwróciły true
-	if( !empty($delete_ids))
+	if (!empty($delete_ids))
 		$db->query($db->prepare(
 			"DELETE FROM `" . TABLE_PREFIX . "players_services` " .
 			"WHERE `id` IN (%s)",
@@ -510,7 +509,7 @@ function delete_players_old_services()
 		));
 
 	// Wywołujemy akcje po usunieciu
-	foreach($players_services as $player_service)
+	foreach ($players_services as $player_service)
 		$service_module->delete_player_service_post($player_service);
 
 	// Usunięcie przestarzałych flag graczy
@@ -559,7 +558,7 @@ function send_email($email, $name, $subject, $text)
 	global $settings, $lang;
 
 	////////// USTAWIENIA //////////
-	$email = filter_var($email, FILTER_VALIDATE_EMAIL);	// Adres e-mail adresata
+	$email = filter_var($email, FILTER_VALIDATE_EMAIL);    // Adres e-mail adresata
 	$name = htmlspecialchars($name);
 	$sender_email = $settings['sender_email'];
 	$sender_name = $settings['sender_email_name'];
@@ -601,11 +600,12 @@ function log_info($string)
  * @param $scripts
  * @param $stylesheets
  */
-function parse_scripts_styles(&$scripts, &$stylesheets) {
+function parse_scripts_styles(&$scripts, &$stylesheets)
+{
 	$scripts = array_unique($scripts);
 	$stylesheets = array_unique($stylesheets);
-	foreach($scripts as $key => $script) $scripts[$key] = "<script type=\"text/javascript\" src=\"{$script}\"></script>";
-	foreach($stylesheets as $key => $stylesheet) $stylesheets[$key] = "<link href=\"{$stylesheet}\" rel=\"stylesheet\" />";
+	foreach ($scripts as $key => $script) $scripts[$key] = "<script type=\"text/javascript\" src=\"{$script}\"></script>";
+	foreach ($stylesheets as $key => $stylesheet) $stylesheets[$key] = "<link href=\"{$stylesheet}\" rel=\"stylesheet\" />";
 	$scripts = implode("\n", $scripts);
 	$stylesheets = implode("\n", $stylesheets);
 }
@@ -845,7 +845,8 @@ function searchWhere($search_ids, $search, &$where)
  * @param int $timeout - po jakim czasie ma przerwać
  * @return string
  */
-function curl_get_contents($url, $timeout=10) {
+function curl_get_contents($url, $timeout = 10)
+{
 	$curl = curl_init();
 	curl_setopt_array($curl, array(
 		CURLOPT_RETURNTRANSFER => 1,

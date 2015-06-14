@@ -206,11 +206,11 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 	/**
 	 * order
-	 *	server - serwer na który ma być wykupiona usługa
-	 *	type - TYPE_NICK / TYPE_IP / TYPE_SID
-	 *	auth_data - dane rozpoznawcze gracza
-	 *	password - hasło do usługi
-	 *	passwordr - powtórzenie hasła
+	 *    server - serwer na który ma być wykupiona usługa
+	 *    type - TYPE_NICK / TYPE_IP / TYPE_SID
+	 *    auth_data - dane rozpoznawcze gracza
+	 *    password - hasło do usługi
+	 *    passwordr - powtórzenie hasła
 	 *
 	 * (non-PHPdoc)
 	 * @see Service::validate_purchase_data()
@@ -223,17 +223,17 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 		// Serwer
 		if (!strlen($data['order']['server']))
-			$warnings['server'] .= $lang['must_choose_server']."<br />";
+			$warnings['server'] .= $lang['must_choose_server'] . "<br />";
 		else {
 			// Sprawdzanie czy serwer o danym id istnieje w bazie
 			$server = $heart->get_server($data['order']['server']);
 			if (!$server[$this->service['id']])
-				$warnings['server'] .= $lang['chosen_incorrect_server']."<br />";
+				$warnings['server'] .= $lang['chosen_incorrect_server'] . "<br />";
 		}
 
 		// Wartość usługi
 		if (!$data['tariff'])
-			$warnings['value'] .= $lang['must_choose_amount']."<br />";
+			$warnings['value'] .= $lang['must_choose_amount'] . "<br />";
 		else {
 			// Wyszukiwanie usługi o konkretnej cenie
 			$result = $db->query($db->prepare(
@@ -255,9 +255,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		// Typ usługi
 		// Mogą być tylko 3 rodzaje typu
 		if (!($data['order']['type'] & (TYPE_NICK | TYPE_IP | TYPE_SID)))
-			$warnings['type'] .= $lang['must_choose_type']."<br />";
+			$warnings['type'] .= $lang['must_choose_type'] . "<br />";
 		else if (!($this->service['types'] & $data['order']['type']))
-			$warnings['type'] .= $lang['chosen_incorrect_type']."<br />";
+			$warnings['type'] .= $lang['chosen_incorrect_type'] . "<br />";
 		else if ($data['order']['type'] & (TYPE_NICK | TYPE_IP)) {
 			// Nick
 			if ($data['order']['type'] == TYPE_NICK) {
@@ -287,13 +287,13 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 			if ($warning = check_for_warnings("password", $data['order']['password']))
 				$warnings['password'] = $warning;
 			if ($data['order']['password'] != $data['order']['passwordr'])
-				$warnings['password_repeat'] .= $lang['passwords_not_match']."<br />";
+				$warnings['password_repeat'] .= $lang['passwords_not_match'] . "<br />";
 
 			// Sprawdzanie czy istnieje już taka usługa
 			if ($temp_password = $db->get_column($query, 'password'))
 				// TODO: Usunąć md5 w przyszłości
 				if ($temp_password != $data['order']['password'] && $temp_password != md5($data['order']['password']))
-					$warnings['password'] .= $lang['existing_service_has_different_password']."<br />";
+					$warnings['password'] .= $lang['existing_service_has_different_password'] . "<br />";
 
 			unset($temp_password);
 		} // SteamID
@@ -302,7 +302,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 				$warnings['sid'] = $warning;
 
 		// E-mail
-		if ( strpos($data['user']['platform'], "engine") !== 0 && $warning = check_for_warnings("email", $data['user']['email']))
+		if (strpos($data['user']['platform'], "engine") !== 0 && $warning = check_for_warnings("email", $data['user']['email']))
 			$warnings['email'] = $warning;
 
 		// Jeżeli są jakieś błedy, to je zwróć
@@ -370,12 +370,12 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 		// Dodanie informacji o zakupie usługi
 		return add_bought_service_info($data['user']['uid'], $data['user']['username'], $data['user']['ip'], $data['transaction']['method'],
-			$data['transaction']['payment_id'], $this->service['id'], $data['order']['server'], $data['order']['amount'],  $data['order']['auth_data'],
+			$data['transaction']['payment_id'], $this->service['id'], $data['order']['server'], $data['order']['amount'], $data['order']['auth_data'],
 			$data['user']['email'], array('type' => $data['order']['type'], 'password' => $data['order']['password'])
 		);
 	}
 
-	private function add_player_flags($uid, $type, $auth_data, $password, $days, $server, $forever=false)
+	private function add_player_flags($uid, $type, $auth_data, $password, $days, $server, $forever = false)
 	{
 		global $db;
 
@@ -691,8 +691,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 			$checked = "checked";
 			$disabled = "disabled";
 			$player_service['expire'] = "";
-		}
-		else
+		} else
 			$player_service['expire'] = date($settings['date_format'], $player_service['expire']);
 
 		eval("\$output = \"" . get_template("services/extra_flags/admin_edit_user_service", 0, 1, 0) . "\";");
@@ -1020,7 +1019,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		}
 	}
 
-	public function form_take_over_service($service_id) {
+	public function form_take_over_service($service_id)
+	{
 		global $heart, $lang;
 
 		// Generujemy typy usługi
@@ -1049,7 +1049,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		return $output;
 	}
 
-	public function take_over_service($data) {
+	public function take_over_service($data)
+	{
 		global $db, $user, $settings, $lang;
 
 		// Serwer
@@ -1060,7 +1061,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		if (!strlen($data['type']))
 			$warnings['type'] = $lang['field_empty'];
 
-		switch( $data['type'] ) {
+		switch ($data['type']) {
 			case "1":
 				// Nick
 				if (!strlen($data['nick']))
@@ -1128,8 +1129,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 					'text' => $lang['no_user_service'],
 					'positive' => false
 				);
-		}
-		else if ($data['payment'] == "sms") {
+		} else if ($data['payment'] == "sms") {
 			$result = $db->query($db->prepare(
 				"SELECT * FROM ({$settings['transactions_query']}) as t " .
 				"WHERE t.payment = 'sms' AND t.sms_code = '%s' AND `service` = '%s' AND `server` = '%d' AND `auth_data` = '%s'",
@@ -1146,7 +1146,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 		// TODO: Usunac md5
 		$result = $db->query($db->prepare(
-			"SELECT * FROM `" . TABLE_PREFIX . "players_services` ".
+			"SELECT * FROM `" . TABLE_PREFIX . "players_services` " .
 			"WHERE `service` = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND ( `password` = '%s' OR `password` = '%s' )",
 			array($this->service['id'], $data['server'], $data['type'], $auth_data, $data['password'], md5($data['password']))
 		));
@@ -1159,8 +1159,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 			);
 
 		$db->query($db->prepare(
-			"UPDATE `" . TABLE_PREFIX . "players_services` ".
-			"SET `uid` = '%d' ".
+			"UPDATE `" . TABLE_PREFIX . "players_services` " .
+			"SET `uid` = '%d' " .
 			"WHERE `service` = '%s' AND `type` = '%d' AND `auth_data` = '%s'",
 			array($user['uid'], $data['service'], $data['type'], $auth_data)
 		));
@@ -1186,7 +1186,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 	 * Metoda zwraca listę serwerów na których można zakupić daną usługę
 	 *
 	 * @param integer $server
-	 * @return string			Lista serwerów w postaci <option value="id_serwera">Nazwa</option>
+	 * @return string            Lista serwerów w postaci <option value="id_serwera">Nazwa</option>
 	 */
 	private function servers_for_service($server)
 	{
@@ -1268,7 +1268,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		}
 	}
 
-	private function max_minus($a, $b) {
+	private function max_minus($a, $b)
+	{
 		if ($a == -1 || $b == -1)
 			return -1;
 

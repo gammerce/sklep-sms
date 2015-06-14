@@ -3,8 +3,6 @@
 define('IN_SCRIPT', "1");
 define("SCRIPT_NAME", "servers_stuff");
 
-header("Content-type: text/plain; charset=\"UTF-8\"");
-
 require_once "global.php";
 require_once SCRIPT_ROOT . "includes/functions_jsonhttp.php";
 
@@ -19,9 +17,8 @@ function xml_output($return_value, $text, $positive, $extra_data = "")
 
 
 // Musi byc podany hash random_keya
-if ($_GET['key'] != md5($settings['random_key'])) {
+if ($_GET['key'] != md5($settings['random_key']))
 	exit;
-}
 
 $action = $_GET['action'];
 

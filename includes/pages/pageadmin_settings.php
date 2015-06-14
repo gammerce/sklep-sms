@@ -2,7 +2,8 @@
 
 $heart->register_page("settings", "PageAdminSettings", "admin");
 
-class PageAdminSettings extends PageAdmin {
+class PageAdminSettings extends PageAdmin
+{
 
 	protected $privilage = "manage_settings";
 
@@ -14,7 +15,8 @@ class PageAdminSettings extends PageAdmin {
 		parent::__construct();
 	}
 
-	protected function content($get, $post) {
+	protected function content($get, $post)
+	{
 		global $db, $settings, $lang, $scripts;
 
 		// Pobranie listy serwisów transakcyjnych

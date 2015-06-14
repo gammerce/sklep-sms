@@ -23,14 +23,14 @@ $(document).delegate("#form_purchase [name=value]", "change", function () {
 
 	var values = $(this).val().split(';');
 	$("#cost_transfer").text(parseFloat(values[0]).toFixed(2));
-    if (values[1] != "0") {
-        $("#cost_sms").text(parseFloat(values[1]).toFixed(2));
-        $("#currency_sms").show();
-    }
-    else {
-        $("#cost_sms").text(lang['none']);
-        $("#currency_sms").hide();
-    }
+	if (values[1] != "0") {
+		$("#cost_sms").text(parseFloat(values[1]).toFixed(2));
+		$("#currency_sms").show();
+	}
+	else {
+		$("#cost_sms").text(lang['none']);
+		$("#currency_sms").hide();
+	}
 });
 
 // Zmiana serwera

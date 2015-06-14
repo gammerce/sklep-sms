@@ -2,7 +2,8 @@
 
 $heart->register_page("pricelist", "PageAdminPriceList", "admin");
 
-class PageAdminPriceList extends PageAdmin {
+class PageAdminPriceList extends PageAdmin
+{
 
 	protected $privilage = "manage_settings";
 
@@ -14,7 +15,8 @@ class PageAdminPriceList extends PageAdmin {
 		parent::__construct();
 	}
 
-	protected function content($get, $post) {
+	protected function content($get, $post)
+	{
 		global $heart, $db, $lang, $G_PAGE, $settings, $scripts;
 
 		// Pobranie cen

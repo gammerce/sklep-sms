@@ -2,7 +2,8 @@
 
 $heart->register_page("payment_sms", "PageAdminPaymentSms", "admin");
 
-class PageAdminPaymentSms extends PageAdmin {
+class PageAdminPaymentSms extends PageAdmin
+{
 
 	function __construct()
 	{
@@ -12,7 +13,8 @@ class PageAdminPaymentSms extends PageAdmin {
 		parent::__construct();
 	}
 
-	protected function content($get, $post) {
+	protected function content($get, $post)
+	{
 		global $db, $settings, $lang, $G_PAGE;
 
 		$where = "( t.payment = 'sms' ) ";

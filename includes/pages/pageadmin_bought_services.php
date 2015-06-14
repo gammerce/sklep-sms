@@ -2,7 +2,8 @@
 
 $heart->register_page("bought_services", "PageAdminBoughtServices", "admin");
 
-class PageAdminBoughtServices extends PageAdmin {
+class PageAdminBoughtServices extends PageAdmin
+{
 
 	function __construct()
 	{
@@ -12,7 +13,8 @@ class PageAdminBoughtServices extends PageAdmin {
 		parent::__construct();
 	}
 
-	protected function content($get, $post) {
+	protected function content($get, $post)
+	{
 		global $heart, $db, $settings, $lang, $G_PAGE;
 
 		// Wyszukujemy dane ktore spelniaja kryteria

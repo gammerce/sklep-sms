@@ -5,7 +5,8 @@ $heart->register_page("purchase", "PagePurchase");
 class PagePurchase extends Page
 {
 
-	function __construct() {
+	function __construct()
+	{
 		global $lang;
 		$this->title = $lang['purchase'];
 

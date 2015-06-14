@@ -2,7 +2,8 @@
 
 $heart->register_page("update_servers", "PageAdminUpdateServers", "admin");
 
-class PageAdminUpdateServers extends PageAdmin {
+class PageAdminUpdateServers extends PageAdmin
+{
 
 	protected $privilage = "update";
 
@@ -14,7 +15,8 @@ class PageAdminUpdateServers extends PageAdmin {
 		parent::__construct();
 	}
 
-	protected function content($get, $post) {
+	protected function content($get, $post)
+	{
 		global $heart, $lang;
 
 		$newest_versions = json_decode(trim(curl_get_contents("http://www.sklep-sms.pl/version.php?action=get_newest&type=engines")), true);

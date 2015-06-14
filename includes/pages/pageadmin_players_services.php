@@ -2,7 +2,8 @@
 
 $heart->register_page("players_services", "PageAdminPlayersServices", "admin");
 
-class PageAdminPlayersServices extends PageAdmin {
+class PageAdminPlayersServices extends PageAdmin
+{
 
 	protected $privilage = "view_player_services";
 
@@ -14,7 +15,8 @@ class PageAdminPlayersServices extends PageAdmin {
 		parent::__construct();
 	}
 
-	protected function content($get, $post) {
+	protected function content($get, $post)
+	{
 		global $heart, $db, $settings, $lang, $G_PAGE, $scripts;
 
 		// Wyszukujemy dane ktore spelniaja kryteria
@@ -32,7 +34,7 @@ class PageAdminPlayersServices extends PageAdmin {
 			"LEFT JOIN `" . TABLE_PREFIX . "services` AS s ON s.id = ps.service " .
 			"LEFT JOIN `" . TABLE_PREFIX . "servers` AS srv ON srv.id = ps.server " .
 			"LEFT JOIN `" . TABLE_PREFIX . "users` AS u ON u.uid = ps.uid " .
-			$where  .
+			$where .
 			"ORDER BY `id` DESC " .
 			"LIMIT " . get_row_limit($G_PAGE)
 		);
@@ -57,7 +59,7 @@ class PageAdminPlayersServices extends PageAdmin {
 					$button_edit = create_dom_element("img", "", array(
 						'id' => "edit_row_{$i}",
 						'src' => "images/edit.png",
-						'title' => $lang['edit']. " " . $row['id']
+						'title' => $lang['edit'] . " " . $row['id']
 					));
 				else
 					$button_edit = "";
@@ -65,7 +67,7 @@ class PageAdminPlayersServices extends PageAdmin {
 				$button_delete = create_dom_element("img", "", array(
 					'id' => "delete_row_{$i}",
 					'src' => "images/bin.png",
-					'title' => $lang['delete']. " " . $row['id']
+					'title' => $lang['delete'] . " " . $row['id']
 				));
 			} else
 				$button_edit = $button_delete = "";

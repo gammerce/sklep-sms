@@ -30,16 +30,14 @@ class Language
 
 		if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) { // Ładujemy bilioteki dla PA
 			// Ładujemy wszystkie biblioteki językowe
-			foreach (scandir(SCRIPT_ROOT . "includes/languages/{$language}/admin") as $file) {
+			foreach (scandir(SCRIPT_ROOT . "includes/languages/{$language}/admin") as $file)
 				if (substr($file, -4) == ".php")
 					include SCRIPT_ROOT . "includes/languages/{$language}/admin/{$file}";
-			}
 		} else {
 			// Ładujemy wszystkie biblioteki językowe
-			foreach (scandir(SCRIPT_ROOT . "includes/languages/{$language}") as $file) {
+			foreach (scandir(SCRIPT_ROOT . "includes/languages/{$language}") as $file)
 				if (substr($file, -4) == ".php" && $file != "{$language}.php")
 					include SCRIPT_ROOT . "includes/languages/{$language}/{$file}";
-			}
 		}
 	}
 

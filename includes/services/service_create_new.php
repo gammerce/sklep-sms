@@ -1,5 +1,6 @@
 <?php
 
-interface IServiceCreateNew {
+interface IServiceCreateNew
+{
 
 }

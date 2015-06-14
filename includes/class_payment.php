@@ -39,8 +39,7 @@ class Payment
 		if (class_has_interface($this->payment_api, "IPaymentSMS")) {
 			$sms_number = $this->payment_api->smses[$tariff]['number'];
 			$sms_return = $this->payment_api->verify_sms($sms_code, $sms_number);
-		}
-		else // Nie przerywamy jeszcze, bo chcemy sprawdzic czy nie ma takiego SMSa do wykrozystania w bazie
+		} else // Nie przerywamy jeszcze, bo chcemy sprawdzic czy nie ma takiego SMSa do wykrozystania w bazie
 			$sms_return['status'] = "NO_SMS_SERVE";
 
 		// Jezeli weryfikacja smsa nie zwrocila, ze kod zostal prawidlowo zweryfikowany
@@ -90,7 +89,7 @@ class Payment
 			));
 
 			log_info(newsprintf($lang['add_code_to_reuse'], $sms_code, $sms_return['tariff'], $user['username'], $user['uid'], $user['ip'], $tariff));
-		} else if( $sms_return['status'] != "NO_SMS_SERVE" )
+		} else if ($sms_return['status'] != "NO_SMS_SERVE")
 			log_info(newsprintf($lang['bad_sms_code_used'], $user['username'], $user['uid'], $user['ip'], $sms_code,
 				$this->payment_api->data['sms_text'], $sms_number, $sms_return['status']));
 

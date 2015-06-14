@@ -89,7 +89,7 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 				row_id.css({"background": "#FFF4BA"});
 
 				// Odśwież stronę
-                refresh_blocks("admincontent", true);
+				refresh_blocks("admincontent", true);
 			}
 			else if (!jsonObj.return_id) {
 				show_info(lang['sth_went_wrong'], false);
@@ -136,7 +136,7 @@ $(document).delegate("#form_add_user_service", "submit", function (e) {
 				$("#action_box_wraper_td").html("");
 
 				// Odśwież stronę
-                refresh_blocks("admincontent", true);
+				refresh_blocks("admincontent", true);
 			}
 			else if (!jsonObj.return_id) {
 				show_info(lang['sth_went_wrong'], false);
@@ -183,7 +183,7 @@ $(document).delegate("#form_edit_user_service", "submit", function (e) {
 				$("#action_box_wraper_td").html("");
 
 				// Odśwież stronę
-                refresh_blocks("admincontent", true);
+				refresh_blocks("admincontent", true);
 			}
 			else if (!jsonObj.return_id) {
 				show_info(lang['sth_went_wrong'], false);

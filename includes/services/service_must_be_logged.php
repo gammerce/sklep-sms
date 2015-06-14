@@ -1,4 +1,5 @@
 <?php
 
-interface IServiceMustBeLogged {
+interface IServiceMustBeLogged
+{
 }

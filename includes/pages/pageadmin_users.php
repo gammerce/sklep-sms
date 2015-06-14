@@ -2,7 +2,8 @@
 
 $heart->register_page("users", "PageAdminUsers", "admin");
 
-class PageAdminUsers extends PageAdmin {
+class PageAdminUsers extends PageAdmin
+{
 
 	protected $privilage = "view_users";
 
@@ -14,7 +15,8 @@ class PageAdminUsers extends PageAdmin {
 		parent::__construct();
 	}
 
-	protected function content($get, $post) {
+	protected function content($get, $post)
+	{
 		global $heart, $db, $lang, $G_PAGE, $settings, $scripts;
 
 		// Wyszukujemy dane ktore spelniaja kryteria
@@ -59,12 +61,12 @@ class PageAdminUsers extends PageAdmin {
 				$button_edit = create_dom_element("img", "", array(
 					'id' => "edit_row_{$i}",
 					'src' => "images/edit.png",
-					'title' => $lang['edit']. " " . $row['username']
+					'title' => $lang['edit'] . " " . $row['username']
 				));
 				$button_delete = create_dom_element("img", "", array(
 					'id' => "delete_row_{$i}",
 					'src' => "images/bin.png",
-					'title' => $lang['delete']. " " . $row['username']
+					'title' => $lang['delete'] . " " . $row['username']
 				));
 			} else
 				$button_charge = $button_delete = $button_edit = "";

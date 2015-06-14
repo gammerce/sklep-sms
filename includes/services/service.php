@@ -28,8 +28,8 @@ abstract class Service
 	 * jak coś się jej nie spodoba to zwraca o tym info w tablicy
 	 *
 	 * @param array $data Dane $_POST
-	 * @return array		'key'	=> DOM Element name
-	 *						'value'	=> Error message
+	 * @return array        'key'    => DOM Element name
+	 *                        'value'    => Error message
 	 */
 	public function manage_service_pre($data)
 	{
@@ -51,9 +51,9 @@ abstract class Service
 	 *
 	 * @param string $form Id formularza, który ma zostać zwrócony
 	 * @param array $data Dane $_POST
-	 * @return string		Treść formularza
+	 * @return string        Treść formularza
 	 */
-	public function get_form($form, $data=array())
+	public function get_form($form, $data = array())
 	{
 		return FALSE;
 	}
@@ -63,32 +63,32 @@ abstract class Service
 	 * wywoływana gdy zakup został przeprowadzony z zewnątrz, nie przez formularz na stronie WWW.
 	 *
 	 * @param array $data user:
-	 *							uid - id uzytkownika wykonującego zakupy
-	 *							ip - ip użytkownika wykonującego zakupy
-	 *							email - email -||-
-	 *							platform - -||-
-	 *						transaction:
-	 *							method - sposób płatności
-	 *							service - serwis mający obsłużyć płatność
-	 *							[sms_code] - kod zwrotny sms
-	 *						order:
-	 *							... - dane zamówienia
-	 *						tariff - koszt usługi ( taryfa )
-	 * @return array		'status'	- id wiadomości,
-	 *						'text'		- treść wiadomości
-	 *						'positive'	- czy udało się przeprowadzić zakup czy nie
-	 * 						'purchase_data'	- dane zakupu ktore beda potrzebne przy pozniejszej platnosci
-	 * 							'order'
-	 *								...
-	 *							'user',
-	 *								'uid',
-	 *								'email'
-	 *								...
-	 *							'tariff',
-	 *							'cost_transfer'
-	 *							'no_sms'
-	 *							'no_transfer'
-	 *							'no_wallet'
+	 *                            uid - id uzytkownika wykonującego zakupy
+	 *                            ip - ip użytkownika wykonującego zakupy
+	 *                            email - email -||-
+	 *                            platform - -||-
+	 *                        transaction:
+	 *                            method - sposób płatności
+	 *                            service - serwis mający obsłużyć płatność
+	 *                            [sms_code] - kod zwrotny sms
+	 *                        order:
+	 *                            ... - dane zamówienia
+	 *                        tariff - koszt usługi ( taryfa )
+	 * @return array        'status'    - id wiadomości,
+	 *                        'text'        - treść wiadomości
+	 *                        'positive'    - czy udało się przeprowadzić zakup czy nie
+	 *                        'purchase_data'    - dane zakupu ktore beda potrzebne przy pozniejszej platnosci
+	 *                            'order'
+	 *                                ...
+	 *                            'user',
+	 *                                'uid',
+	 *                                'email'
+	 *                                ...
+	 *                            'tariff',
+	 *                            'cost_transfer'
+	 *                            'no_sms'
+	 *                            'no_transfer'
+	 *                            'no_wallet'
 	 */
 	public function validate_purchase_data($data)
 	{
@@ -101,7 +101,7 @@ abstract class Service
 	 *
 	 * @param array $user_service Dane o usłudze z bazy danych
 	 * @param string $button_edit String przycisku do edycji usługi
-	 * @return string		Informacje o zakupionej usłudze
+	 * @return string        Informacje o zakupionej usłudze
 	 */
 	public function my_service_info($user_service, $button_edit)
 	{
@@ -153,7 +153,7 @@ abstract class Service
 	 * Krotki opis, to 'description', krótki na strone WEB
 	 * Pełny opis, to plik z opisem całej usługi
 	 *
-	 * @return string	Description
+	 * @return string    Description
 	 */
 	public function get_full_description()
 	{

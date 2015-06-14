@@ -27,8 +27,8 @@ $(document).delegate(".table_structure .search", "submit", function (e) {
 				tmparr[1] = encodeURIComponent(search_text);
 			}
 
-            if (tmparr[0] == "page")
-                continue;
+			if (tmparr[0] == "page")
+				continue;
 
 			new_url += (new_url ? "&" : "") + tmparr[0] + "=" + tmparr[1];
 		}

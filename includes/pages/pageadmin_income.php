@@ -2,7 +2,8 @@
 
 $heart->register_page("income", "PageAdminIncome", "admin");
 
-class PageAdminIncome extends PageAdmin {
+class PageAdminIncome extends PageAdmin
+{
 
 	protected $privilage = "view_income";
 

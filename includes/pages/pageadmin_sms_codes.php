@@ -2,7 +2,8 @@
 
 $heart->register_page("sms_codes", "PageAdminSmsCodes", "admin");
 
-class PageAdminSmsCodes extends PageAdmin {
+class PageAdminSmsCodes extends PageAdmin
+{
 
 	protected $privilage = "view_sms_codes";
 
@@ -14,7 +15,8 @@ class PageAdminSmsCodes extends PageAdmin {
 		parent::__construct();
 	}
 
-	protected function content($get, $post) {
+	protected function content($get, $post)
+	{
 		global $db, $lang, $G_PAGE, $settings, $scripts;
 
 		// Pobranie kodów SMS
@@ -35,7 +37,7 @@ class PageAdminSmsCodes extends PageAdmin {
 				$button_delete = create_dom_element("img", "", array(
 					'id' => "delete_row_{$i}",
 					'src' => "images/bin.png",
-					'title' => $lang['delete']. " " . $row['id']
+					'title' => $lang['delete'] . " " . $row['id']
 				));
 			else
 				$button_delete = "";

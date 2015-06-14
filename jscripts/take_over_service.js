@@ -1,5 +1,5 @@
-$(document).delegate("#form_take_over_service [name=service]", "change", function() {
-	if( $(this).val() == "" ) {
+$(document).delegate("#form_take_over_service [name=service]", "change", function () {
+	if ($(this).val() == "") {
 		$("#form_take_over_service .extra_data").html("");
 		$("#form_take_over_service .take_over").hide();
 		return;
@@ -14,7 +14,7 @@ $(document).delegate("#form_take_over_service [name=service]", "change", functio
 	});
 });
 
-$(document).delegate("#form_take_over_service", "submit", function(e) {
+$(document).delegate("#form_take_over_service", "submit", function (e) {
 	e.preventDefault();
 
 	if (loader.blocked)
@@ -44,7 +44,7 @@ $(document).delegate("#form_take_over_service", "submit", function(e) {
 			}
 			else if (jsonObj.return_id == "ok") {
 				// Przejdź do strony my_current_services
-				setTimeout(function() {
+				setTimeout(function () {
 					window.location.href = "index.php?pid=my_current_services";
 				}, 2000);
 			}

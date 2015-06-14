@@ -11,6 +11,7 @@ abstract class Block
 	protected $require_login = 0;
 
 	abstract public function get_content_class();
+
 	abstract public function get_content_id();
 
 	/**

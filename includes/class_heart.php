@@ -163,7 +163,8 @@ class Heart
 	 * @param string $block_id
 	 * @return bool
 	 */
-	public function block_exists($block_id) {
+	public function block_exists($block_id)
+	{
 		return isset($this->blocks_classes[$block_id]);
 	}
 

@@ -5,7 +5,8 @@ $heart->register_page("payment", "PagePayment");
 class PagePayment extends Page
 {
 
-	function __construct() {
+	function __construct()
+	{
 		global $lang;
 		$this->title = $lang['title_payment'];
 
@@ -23,19 +24,19 @@ class PagePayment extends Page
 		global $heart;
 
 		/** Odczytujemy dane, ich format powinien być taki jak poniżej
-		 * @param array $data 	'service',
-		 *						'order'
-		 *							...
-		 *						'user',
-		 *							'uid',
-		 *							'email'
-		 *							...
-		 * 						'payment_sms'
-		 *						'tariff',
-		 *						'cost_transfer'
-		 *						'no_sms'
-		 *						'no_transfer'
-		 *						'no_wallet'
+		 * @param array $data 'service',
+		 *                        'order'
+		 *                            ...
+		 *                        'user',
+		 *                            'uid',
+		 *                            'email'
+		 *                            ...
+		 *                        'payment_sms'
+		 *                        'tariff',
+		 *                        'cost_transfer'
+		 *                        'no_sms'
+		 *                        'no_transfer'
+		 *                        'no_wallet'
 		 */
 		$data = json_decode(base64_decode($post['data']), true);
 

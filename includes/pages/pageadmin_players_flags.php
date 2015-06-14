@@ -2,7 +2,8 @@
 
 $heart->register_page("players_flags", "PageAdminPlayersFlags", "admin");
 
-class PageAdminPlayersFlags extends PageAdmin {
+class PageAdminPlayersFlags extends PageAdmin
+{
 
 	protected $privilage = "view_player_flags";
 	private $flags = "abcdefghijklmnopqrstuyvwxz";
@@ -15,7 +16,8 @@ class PageAdminPlayersFlags extends PageAdmin {
 		parent::__construct();
 	}
 
-	protected function content($get, $post) {
+	protected function content($get, $post)
+	{
 		global $heart, $db, $settings, $lang, $G_PAGE;
 
 		$result = $db->query(

@@ -2,7 +2,8 @@
 
 $heart->register_page("antispam_questions", "PageAdminAntispamQuestions", "admin");
 
-class PageAdminAntispamQuestions extends PageAdmin {
+class PageAdminAntispamQuestions extends PageAdmin
+{
 
 	protected $privilage = "view_antispam_questions";
 
@@ -14,7 +15,8 @@ class PageAdminAntispamQuestions extends PageAdmin {
 		parent::__construct();
 	}
 
-	protected function content($get, $post) {
+	protected function content($get, $post)
+	{
 		global $db, $lang, $G_PAGE, $settings, $scripts;
 
 		// Pobranie taryf
@@ -35,13 +37,13 @@ class PageAdminAntispamQuestions extends PageAdmin {
 				$button_edit = create_dom_element("img", "", array(
 					'id' => "edit_row_{$i}",
 					'src' => "images/edit.png",
-					'title' => $lang['edit']. " " . $row['tariff']
+					'title' => $lang['edit'] . " " . $row['tariff']
 				));
 
 				$button_delete = create_dom_element("img", "", array(
 					'id' => "delete_row_{$i}",
 					'src' => "images/bin.png",
-					'title' => $lang['delete']. " " . $row['tariff']
+					'title' => $lang['delete'] . " " . $row['tariff']
 				));
 			} else
 				$button_delete = $button_edit = "";

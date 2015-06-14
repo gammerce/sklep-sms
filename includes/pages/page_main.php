@@ -7,7 +7,8 @@ class PageMain extends PageSimple
 
 	protected $template = "main_content";
 
-	function __construct() {
+	function __construct()
+	{
 		global $lang;
 		$this->title = $lang['main_page'];
 

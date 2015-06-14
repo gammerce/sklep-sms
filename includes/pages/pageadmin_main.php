@@ -2,7 +2,8 @@
 
 $heart->register_page("main_content", "PageAdminMain", "admin");
 
-class PageAdminMain extends PageAdmin {
+class PageAdminMain extends PageAdmin
+{
 
 	function __construct()
 	{
@@ -12,7 +13,8 @@ class PageAdminMain extends PageAdmin {
 		parent::__construct();
 	}
 
-	protected function content($get, $post) {
+	protected function content($get, $post)
+	{
 		global $heart, $db, $settings, $lang, $a_Tasks, $stylesheets;
 
 		//
@@ -87,9 +89,10 @@ class PageAdminMain extends PageAdmin {
 		return $output;
 	}
 
-	private function add_note($text, $class, &$notes) {
+	private function add_note($text, $class, &$notes)
+	{
 		$notes .= create_dom_element("div", $text, array(
-			'class'	=> "note " . $class
+			'class' => "note " . $class
 		));
 	}
 

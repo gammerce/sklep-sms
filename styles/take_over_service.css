@@ -5,6 +5,7 @@
 #form_take_over_service .take_over {
 	display: none;
 }
+
 #form_take_over_service .take_over input {
 	margin-top: 12px;
 	text-transform: uppercase;

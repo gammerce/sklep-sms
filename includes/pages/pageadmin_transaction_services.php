@@ -2,7 +2,8 @@
 
 $heart->register_page("transaction_services", "PageAdminTransactionServices", "admin");
 
-class PageAdminTransactionServices extends PageAdmin {
+class PageAdminTransactionServices extends PageAdmin
+{
 
 	protected $privilage = "manage_settings";
 
@@ -14,7 +15,8 @@ class PageAdminTransactionServices extends PageAdmin {
 		parent::__construct();
 	}
 
-	protected function content($get, $post) {
+	protected function content($get, $post)
+	{
 		global $db, $lang, $G_PAGE, $settings, $scripts;
 
 		// Pobranie listy serwisów transakcyjnych
@@ -35,7 +37,7 @@ class PageAdminTransactionServices extends PageAdmin {
 			$button_edit = create_dom_element("img", "", array(
 				'id' => "edit_row_{$i}",
 				'src' => "images/edit.png",
-				'title' => $lang['edit']. " " . $row['name']
+				'title' => $lang['edit'] . " " . $row['name']
 			));
 
 			// Pobranie danych do tabeli

@@ -14,7 +14,7 @@ abstract class PaymentModule
 		global $db;
 
 		$result = $db->query($db->prepare(
-			"SELECT `name`,`data`,`data_hidden`,`sms`,`transfer` ".
+			"SELECT `name`,`data`,`data_hidden`,`sms`,`transfer` " .
 			"FROM `" . TABLE_PREFIX . "transaction_services` " .
 			"WHERE `id` = '%s' ",
 			array($this::SERVICE_ID)

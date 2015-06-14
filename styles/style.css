@@ -1,6 +1,6 @@
 body {
 	background: url('../images/3.2.0-dishonored.jpg') no-repeat fixed;
-    background-size: cover;
+	background-size: cover;
 }
 
 #content table {
@@ -48,7 +48,7 @@ body {
 .logged_info {
 	padding-left: 45px;
 	margin-right: 5px;
-	background-image: url('../images/user.png'), linear-gradient(45deg, rgba(131,131,131,1) 0%,rgba(140,140,140,1) 12%,rgba(149,149,149,1) 25%,rgba(109,109,109,1) 76%,rgba(98,98,98,1) 91%,rgba(92,92,92,1) 100%);
+	background-image: url('../images/user.png'), linear-gradient(45deg, rgba(131, 131, 131, 1) 0%, rgba(140, 140, 140, 1) 12%, rgba(149, 149, 149, 1) 25%, rgba(109, 109, 109, 1) 76%, rgba(98, 98, 98, 1) 91%, rgba(92, 92, 92, 1) 100%);
 	background-position: 0 center;
 }
 

@@ -5,7 +5,8 @@ abstract class Page
 
 	protected $title = "";
 
-	function __construct() {
+	function __construct()
+	{
 		global $heart;
 
 		$heart->page_title = $this->title;

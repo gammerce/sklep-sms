@@ -2,7 +2,8 @@
 
 $heart->register_page("update_web", "PageAdminUpdateWeb", "admin");
 
-class PageAdminUpdateWeb extends PageAdmin {
+class PageAdminUpdateWeb extends PageAdmin
+{
 
 	protected $privilage = "update";
 
@@ -14,7 +15,8 @@ class PageAdminUpdateWeb extends PageAdmin {
 		parent::__construct();
 	}
 
-	protected function content($get, $post) {
+	protected function content($get, $post)
+	{
 		global $lang;
 
 		$newest_version = trim(curl_get_contents("http://www.sklep-sms.pl/version.php?action=get_newest&type=web"));

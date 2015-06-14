@@ -133,7 +133,7 @@ if ($action == "login") {
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
 			$warning = create_dom_element("div", $warning, array(
-				'class'	=> "form_warning"
+				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
 		}
@@ -162,7 +162,7 @@ if ($action == "login") {
 		if ($warning = check_for_warnings("username", $username))
 			$warnings['username'] = $warning;
 		if (strlen($username)) {
-			$result = $db->query( $db->prepare(
+			$result = $db->query($db->prepare(
 				"SELECT `uid` FROM `" . TABLE_PREFIX . "users` " .
 				"WHERE `username` = '%s'",
 				array($username)
@@ -179,7 +179,7 @@ if ($action == "login") {
 		if ($warning = check_for_warnings("email", $email))
 			$warnings['email'] = $warning;
 		if (strlen($email)) {
-			$result = $db->query( $db->prepare(
+			$result = $db->query($db->prepare(
 				"SELECT `uid` FROM `" . TABLE_PREFIX . "users` " .
 				"WHERE `email` = '%s'",
 				array($email)
@@ -196,7 +196,7 @@ if ($action == "login") {
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
 			$warning = create_dom_element("div", $warning, array(
-				'class'	=> "form_warning"
+				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
 		}
@@ -251,7 +251,7 @@ if ($action == "login") {
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
 			$warning = create_dom_element("div", $warning, array(
-				'class'	=> "form_warning"
+				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
 		}
@@ -294,7 +294,7 @@ if ($action == "login") {
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
 			$warning = create_dom_element("div", $warning, array(
-				'class'	=> "form_warning"
+				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
 		}
@@ -331,7 +331,7 @@ if ($action == "login") {
 	if ($return_data['status'] == "warnings") {
 		foreach ($return_data['data']['warnings'] as $brick => $warning) {
 			$warning = create_dom_element("div", $warning, array(
-				'class'	=> "form_warning"
+				'class' => "form_warning"
 			));
 			$return_data['data']['warnings'][$brick] = $warning;
 		}
@@ -363,7 +363,7 @@ if ($action == "login") {
 
 	foreach ($bricks as $brick) {
 		// Nie ma takiego bloku do odświeżenia
-		if(($block = $heart->get_block($brick)) === NULL)
+		if (($block = $heart->get_block($brick)) === NULL)
 			continue;
 
 		$data[$block->get_content_id()]['content'] = $block->get_content($_GET, $_POST);
@@ -485,7 +485,7 @@ if ($action == "login") {
 	if ($return_data['status'] == "warnings") {
 		foreach ($return_data['data']['warnings'] as $brick => $warning) {
 			$warning = create_dom_element("div", $warning, array(
-				'class'	=> "form_warning"
+				'class' => "form_warning"
 			));
 			$return_data['data']['warnings'][$brick] = $warning;
 		}
@@ -507,7 +507,7 @@ if ($action == "login") {
 	if ($return_data['status'] == "warnings") {
 		foreach ($return_data['data']['warnings'] as $brick => $warning) {
 			$warning = create_dom_element("div", $warning, array(
-				'class'	=> "form_warning"
+				'class' => "form_warning"
 			));
 			$return_data['data']['warnings'][$brick] = $warning;
 		}

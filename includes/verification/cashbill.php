@@ -14,8 +14,10 @@ class PaymentModuleCashbill extends PaymentModule implements IPaymentSMS, IPayme
 
 		if ($handle) {
 			$status = fgets($handle, 8);
-			/*$czas_zycia = */fgets($handle, 24);
-			/*$foo = */fgets($handle, 96);
+			/*$czas_zycia = */
+			fgets($handle, 24);
+			/*$foo = */
+			fgets($handle, 96);
 			$bramka = fgets($handle, 96);
 			fclose($handle);
 

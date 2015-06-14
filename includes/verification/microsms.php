@@ -25,8 +25,7 @@ class PaymentModuleMicrosms extends PaymentModule implements IPaymentSMS
 			} else {
 				$output['status'] = "SERVICE_ERROR";
 			}
-		}
-		else
+		} else
 			$output['status'] = "NO_CONNECTION";
 
 		return $output;

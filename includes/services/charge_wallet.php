@@ -86,13 +86,12 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IServiceP
 		if ($data['method'] == "sms") {
 			if (!strlen($data['tariff']))
 				$warnings['tariff'] .= $lang['charge_amount_not_chosen'] . "<br />";
-		}
-		else if ($data['method'] == "transfer") {
+		} else if ($data['method'] == "transfer") {
 			// Kwota doładowania
 			if ($warning = check_for_warnings("number", $data['transfer_amount']))
 				$warnings['transfer_amount'] = $warning;
 			if ($data['transfer_amount'] <= 1)
-				$warnings['transfer_amount'] .= newsprintf($lang['charge_amount_too_low'], "1.00 ".$settings['currency'])."<br />";
+				$warnings['transfer_amount'] .= newsprintf($lang['charge_amount_too_low'], "1.00 " . $settings['currency']) . "<br />";
 		}
 
 		// Jeżeli są jakieś błedy, to je zwróć

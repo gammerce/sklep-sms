@@ -1,6 +1,7 @@
 <?php
 
-interface IServiceTakeOver {
+interface IServiceTakeOver
+{
 
 	/**
 	 * Zwraca formularz przejęcia usługi
@@ -15,9 +16,9 @@ interface IServiceTakeOver {
 	 * a jeżeli wszystko jest ok, to ją przejmuje
 	 *
 	 * @param $data - Dane $_POST
-	 * @return array	'status'	=> id wiadomości
-	 *				  'text'	  => treść wiadomości
-	 *				  'positive'  => czy udało się przejąć usługę
+	 * @return array    'status'    => id wiadomości
+	 *                  'text'      => treść wiadomości
+	 *                  'positive'  => czy udało się przejąć usługę
 	 */
 	public function take_over_service($data);
 

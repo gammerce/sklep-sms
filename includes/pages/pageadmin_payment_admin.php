@@ -2,7 +2,8 @@
 
 $heart->register_page("payment_admin", "PageAdminPaymentAdmin", "admin");
 
-class PageAdminPaymentAdmin extends PageAdmin {
+class PageAdminPaymentAdmin extends PageAdmin
+{
 
 	function __construct()
 	{
@@ -12,7 +13,8 @@ class PageAdminPaymentAdmin extends PageAdmin {
 		parent::__construct();
 	}
 
-	protected function content($get, $post) {
+	protected function content($get, $post)
+	{
 		global $db, $settings, $lang, $G_PAGE;
 
 		$result = $db->query(

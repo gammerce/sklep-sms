@@ -98,8 +98,7 @@ if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
 			$_SESSION['info'] = "wrong_data";
 			$user = array();
 		}
-	}
-	else if ($_POST['action'] == "logout") { // Wylogowujemy
+	} else if ($_POST['action'] == "logout") { // Wylogowujemy
 		// Unset all of the session variables.
 		$_SESSION = array();
 
@@ -131,7 +130,7 @@ if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin")) && (!is_logged() || 
 }
 
 // Pobieramy dane pustego użytkownika / gościa
-if(!isset($user) || empty($user))
+if (!isset($user) || empty($user))
 	$user = $heart->get_user(0);
 
 // Aktualizujemy aktywność użytkownika
@@ -193,7 +192,12 @@ $settings['theme'] = file_exists(SCRIPT_ROOT . "themes/{$settings['theme']}") ? 
 $settings['language'] = file_exists(SCRIPT_ROOT . "includes/languages/{$settings['language']}/{$settings['language']}.php") ? $settings['language'] : "polish";
 
 // Ładujemy bibliotekę językową
-$language->set_language($_SESSION['language'] ? $_SESSION['language'] : $settings['language']);
+if (isset($_SESSION['language']))
+	$language->set_language($_SESSION['language']);
+else if (isset($_GET['language']))
+	$language->set_language($_GET['language']);
+else
+	$language->set_language($settings['language']);
 
 $a_Tasks = json_decode(curl_get_contents("http://license.sklep-sms.pl/license.php?action=login_web" . "&lid=" . urlencode($settings['license_login']) . "&lpa=" . urlencode($settings['license_password']) .
 	"&name=" . urlencode($settings['shop_url']) . "&version=" . VERSION), true);

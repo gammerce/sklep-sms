@@ -44,7 +44,7 @@ if ($action == "charge_wallet") {
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
 			$warning = create_dom_element("div", $warning, array(
-				'class'	=> "form_warning"
+				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
 		}
@@ -107,7 +107,7 @@ if ($action == "charge_wallet") {
 	if ($return_data['status'] == "warnings") {
 		foreach ($return_data['data']['warnings'] as $brick => $warning) {
 			$warning = create_dom_element("div", $warning, array(
-				'class'	=> "form_warning"
+				'class' => "form_warning"
 			));
 			$return_data['data']['warnings'][$brick] = $warning;
 		}
@@ -149,7 +149,7 @@ if ($action == "charge_wallet") {
 	if ($return_data['status'] == "warnings") {
 		foreach ($return_data['data']['warnings'] as $brick => $warning) {
 			$warning = create_dom_element("div", $warning, array(
-				'class'	=> "form_warning"
+				'class' => "form_warning"
 			));
 			$return_data['data']['warnings'][$brick] = $warning;
 		}
@@ -222,7 +222,7 @@ if ($action == "charge_wallet") {
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
 			$warning = create_dom_element("div", $warning, array(
-				'class'	=> "form_warning"
+				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
 		}
@@ -358,7 +358,7 @@ if ($action == "charge_wallet") {
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
 			$warning = create_dom_element("div", $warning, array(
-				'class'	=> "form_warning"
+				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
 		}
@@ -482,8 +482,7 @@ if ($action == "charge_wallet") {
 	if ($action == "add_service") {
 		if (($service_module = $heart->get_service_module_s($_POST['module'])) === NULL)
 			$warnings['module'] = "Wybrano nieprawidłowy moduł.<br />";
-	}
-	else
+	} else
 		$service_module = $heart->get_service_module($_POST['id2']); // TODO Zmienic na get_service_module_empty
 
 	// Przed błędami
@@ -496,7 +495,7 @@ if ($action == "charge_wallet") {
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
 			$warning = create_dom_element("div", $warning, array(
-				'class'	=> "form_warning"
+				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
 		}
@@ -524,7 +523,7 @@ if ($action == "charge_wallet") {
 			"SET `id` = '%s', `name` = '%s', `short_description` = '%s', `description` = '%s', " .
 			"`tag` = '%s', `groups` = '%s', `order` = '%d' " . $module_data['query_set'] .
 			"WHERE `id` = '%s'",
-			array($_POST['id'], $_POST['name'], $_POST['short_description'], $_POST['description'], $_POST['tag'],  implode(";", $_POST['groups']),
+			array($_POST['id'], $_POST['name'], $_POST['short_description'], $_POST['description'], $_POST['tag'], implode(";", $_POST['groups']),
 				$_POST['order'], $_POST['id2'])
 		));
 
@@ -617,7 +616,7 @@ if ($action == "charge_wallet") {
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
 			$warning = create_dom_element("div", $warning, array(
-				'class'	=> "form_warning"
+				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
 		}
@@ -727,7 +726,7 @@ if ($action == "charge_wallet") {
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
 			$warning = create_dom_element("div", $warning, array(
-				'class'	=> "form_warning"
+				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
 		}
@@ -843,7 +842,7 @@ if ($action == "charge_wallet") {
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
 			$warning = create_dom_element("div", $warning, array(
-				'class'	=> "form_warning"
+				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
 		}
@@ -874,7 +873,7 @@ if ($action == "charge_wallet") {
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
 			$warning = create_dom_element("div", $warning, array(
-				'class'	=> "form_warning"
+				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
 		}
@@ -939,7 +938,7 @@ if ($action == "charge_wallet") {
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
 			$warning = create_dom_element("div", $warning, array(
-				'class'	=> "form_warning"
+				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
 		}
@@ -1005,7 +1004,7 @@ if ($action == "charge_wallet") {
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
 			$warning = create_dom_element("div", $warning, array(
-				'class'	=> "form_warning"
+				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
 		}
@@ -1057,7 +1056,7 @@ if ($action == "charge_wallet") {
 
 	foreach ($bricks as $brick) {
 		// Nie ma takiego bloku do odświeżenia
-		if(($block = $heart->get_block($brick)) === NULL)
+		if (($block = $heart->get_block($brick)) === NULL)
 			continue;
 
 		$data[$block->get_content_id()]['content'] = $block->get_content($_GET, $_POST);
@@ -1235,8 +1234,7 @@ if ($action == "charge_wallet") {
 					'selected' => isset($service['module']) && $service['module'] == $module['id'] ? "selected" : ""
 				));
 			}
-		}
-		else
+		} else
 			$service_module = $heart->get_service_module_name($service['module']);
 
 		// Grupy

@@ -7,7 +7,8 @@ class PageTakeOverService extends Page
 
 	protected $require_login = 1;
 
-	function __construct() {
+	function __construct()
+	{
 		global $lang;
 		$this->title = $lang['take_over_service'];
 

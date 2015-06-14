@@ -12,7 +12,7 @@ function check_for_warnings($type, $data)
 	global $lang;
 
 	$output = "";
-	switch($type) {
+	switch ($type) {
 		case "username":
 			if (strlen($data) < 2)
 				$output .= newsprintf($lang['field_length_min_warn'], 2) . "<br />";
