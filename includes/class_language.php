@@ -17,8 +17,11 @@ class Language
 
 	public function set_language($language)
 	{
-		$language = escape_filename($language);
+		$language = escape_filename(strtolower($language));
 		if (!is_dir(SCRIPT_ROOT . "includes/languages/" . $language))
+			return;
+
+		if ($this->language == $language)
 			return;
 
 		global $lang;
