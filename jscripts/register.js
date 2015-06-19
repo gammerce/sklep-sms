@@ -16,20 +16,7 @@ $(document).delegate("#register", "submit", function (e) {
 			if (!(jsonObj = json_parse(content)))
 				return;
 
-			$("#register .register_antispam [headers=as_question]").html(jsonObj.antispam.question);
-			$("#register .register_antispam [name=as_id]").val(jsonObj.antispam.id);
-			$("#register .register_antispam [name=as_answer]").val("");
-			$("#register [name=sign]").val(jsonObj.antispam.sign);
-
-			// Wyświetlenie błędów w formularzu
-			if (jsonObj.return_id == "warnings") {
-				$.each(jsonObj.warnings, function (name, text) {
-					var id = $("#register [name=\"" + name + "\"]");
-					id.parent("td").append(text);
-					id.effect("highlight", 1000);
-				});
-			}
-			else if (jsonObj.return_id == "registered") {
+			if (jsonObj.return_id == "registered") {
 				var username = $("#register [name=username]").val();
 				var password = $("#register [name=password]").val();
 				var email = $("#register [name=email]").val();
@@ -43,9 +30,24 @@ $(document).delegate("#register", "submit", function (e) {
 					$("#form_login").trigger("submit");
 				}, 3000);
 			}
-			else if (!jsonObj.return_id) {
-				infobox.show_info(lang['sth_went_wrong'], false);
+			else {
+				// Wyświetlenie błędów w formularzu
+				if (jsonObj.return_id == "warnings") {
+					$.each(jsonObj.warnings, function (name, text) {
+						var id = $("#register [name=\"" + name + "\"]");
+						id.parent("td").append(text);
+						id.effect("highlight", 1000);
+					});
+				}
+				else if (!jsonObj.return_id) {
+					infobox.show_info(lang['sth_went_wrong'], false);
+				}
+
+				$("#register .register_antispam [headers=as_question]").html(jsonObj.antispam.question);
+				$("#register .register_antispam [name=as_id]").val(jsonObj.antispam.id);
+				$("#register .register_antispam [name=as_answer]").val("");
 			}
+
 
 			// Wyświetlenie zwróconego info
 			infobox.show_info(jsonObj.text, jsonObj.positive);

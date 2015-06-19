@@ -24,8 +24,7 @@ class PageRegister extends Page
 			"ORDER BY RAND() " .
 			"LIMIT 1"
 		));
-
-		$sign = md5($antispam_question['id'] . $settings['random_key']);
+		$_SESSION['asid'] = $antispam_question['id'];
 
 		$scripts[] = $settings['shop_url_slash'] . "jscripts/register.js?version=" . VERSION;
 		$stylesheets[] = $settings['shop_url_slash'] . "styles/style_register.css?version=" . VERSION;

@@ -68,12 +68,22 @@ if ($action == "login") {
 	$surname = trim($_POST['surname']);
 	$as_id = $_POST['as_id'];
 	$as_answer = $_POST['as_answer'];
-	$sign = $_POST['sign'];
 
-	// Sprawdzanie hashu najwazniejszych danych
-	if (!$sign || $sign != md5($as_id . $settings['random_key'])) {
-		json_output("wrong_sign", $lang['wrong_sign'], 0);
-	}
+	// Pobranie nowego pytania antyspamowego
+	$antispam_question = $db->fetch_array_assoc($db->query(
+		"SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " .
+		"ORDER BY RAND() " .
+		"LIMIT 1"
+	));
+	$data['antispam']['question'] = $antispam_question['question'];
+	$data['antispam']['id'] = $antispam_question['id'];
+
+	// Sprawdzanie czy podane id pytania antyspamowego jest prawidlowe
+	if (!isset($_SESSION['asid']) || $as_id != $_SESSION['asid'])
+		json_output("wrong_sign", $lang['wrong_sign'], 0, $data);
+
+	// Zapisujemy id pytania antyspamowego
+	$_SESSION['asid'] = $antispam_question['id'];
 
 	// Nazwa użytkownika
 	if ($warning = check_for_warnings("username", $username))
@@ -117,17 +127,6 @@ if ($action == "login") {
 	$antispam_question = $db->fetch_array_assoc($result);
 	if (!in_array(strtolower($as_answer), explode(";", $antispam_question['answers'])))
 		$warnings['as_answer'] .= "Błędna odpowiedź na pytanie antyspamowe.<br />";
-
-	// Pobranie nowego pytania antyspamowego
-	$result = $db->query(
-		"SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " .
-		"ORDER BY RAND() " .
-		"LIMIT 1"
-	);
-	$antispam_question = $db->fetch_array_assoc($result);
-	$data['antispam']['question'] = $antispam_question['question'];
-	$data['antispam']['id'] = $antispam_question['id'];
-	$data['antispam']['sign'] = md5($antispam_question['id'] . $settings['random_key']);
 
 	// Błędy
 	if (!empty($warnings)) {
