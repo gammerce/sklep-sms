@@ -90,7 +90,7 @@ $lang['transfer_id'] = "ID Płatności";
 $lang['transfer_error'] = "Wystąpił błąd podczas przyjmowania danych o przelewie.";
 
 $lang['transfer_error'] = "Niestety, ale płatność za pomocą przelewu zakończyła się niepowodzeniem.";
-$lang['transfer_unverified'] = "Niestety, ale udało się zweryfikować poprawności danych przelewu.";
+$lang['transfer_unverified'] = "Niestety, ale nie udało się zweryfikować poprawności danych przelewu.";
 
 $lang['contact_info'] = "Możesz się z nami skontaktować na jeden z poniższych sposobów.";
 

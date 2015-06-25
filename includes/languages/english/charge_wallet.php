@@ -1,9 +1,9 @@
 <?php
 
-$lang['choose_charge_method'] = "Wybierz sposób doładowania";
+$lang['choose_charge_method'] = "Choose charging type";
 $lang['charge_sms_option'] = "{1} {2} - you get {3} {4}";
-$lang['charge_amount'] = "Kwota doładowania";
+$lang['charge_amount'] = "Charge amount";
 
-$lang['wrong_charge_method'] = "Wybrano błędną metodę doładowania.";
-$lang['charge_amount_not_chosen'] = "Nie wybrano wysokości doładowania ( koszt SMSa ).";
-$lang['charge_amount_too_low'] = "Wartość doładowania musi być większa niż {1}";
+$lang['wrong_charge_method'] = "Wrong charging method was chosen.";
+$lang['charge_amount_not_chosen'] = "No amount of charge was chosen ( koszt SMSa ).";
+$lang['charge_amount_too_low'] = "Charge value must be above {1}";

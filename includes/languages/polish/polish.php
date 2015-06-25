@@ -50,9 +50,9 @@ $lang['value_must_be_positive'] = "Wartość musi być dodatnia.";
 $lang['mysqli']['no_server_connection'] = "Nie można utworzyć połączenia z serwerem bazy danych!";
 $lang['mysqli']['no_db_connection'] = "Nie można połączyć się z bazą danych!";
 $lang['mysqli']['query_error'] = "Wystąpił błąd w zapytaniu do bazy danych.";
-$lang['mysqli']['no_query_num_rows'] = "Could not get number of rows because no query id was supplied!";
-$lang['mysqli']['no_query_fetch_array'] = "Could not fetch array because no query id was supplied!";
-$lang['mysqli']['no_query_fetch_array_assoc'] = "Could not fetch array assoc because no query id was supplied!";
+$lang['mysqli']['no_query_num_rows'] = "Nie można otrzymać liczby wierszy, ponieważ id zapytania nie zostało podane!";
+$lang['mysqli']['no_query_fetch_array'] = "Nie można pozyskać tablicy, ponieważ id zapytania nie zostało podane!";
+$lang['mysqli']['no_query_fetch_array_assoc'] = "Nie można pobrać tablicy asocjacyjnej, ponieważ id zapytania nie zostało podane!";
 
 $lang['sth_went_wrong'] = "Coś poszło nie tak :/";
 $lang['ajax_error'] = "Wystąpił błąd podczas pozyskiwania danych.";
