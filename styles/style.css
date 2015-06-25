@@ -236,9 +236,9 @@ body {
 }
 
 #language_choice {
-	position: fixed;
-	right: 12px;
-	top: 6px;
+    padding-right: 12px;
+    padding-top: 6px;
+    text-align: right;
 }
 
 #language_choice img {

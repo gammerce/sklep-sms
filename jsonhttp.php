@@ -53,8 +53,17 @@ if ($action == "login") {
 
 	json_output("logged_out", "Wylogowywanie przebiegło bez większych trudności.", 1);
 } else if ($action == "set_session_language") {
+    session_write_close();
+    session_name("admin");
+    session_start();
+    $_SESSION['language'] = escape_filename($_POST['language']);
+    session_write_close();
+
+    session_name("user");
+    session_start();
 	$_SESSION['language'] = escape_filename($_POST['language']);
-	exit;
+    session_write_close();
+    exit;
 } else if ($action == "register") {
 	if (is_logged())
 		json_output("logged_in", $lang['logged'], 0);
