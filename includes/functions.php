@@ -7,7 +7,7 @@
  * @param bool $install Prawda, jeżeli pobieramy szablon instalacji.
  * @param bool $eslashes Prawda, jeżeli zawartość szablonu ma być "escaped".
  * @param bool $htmlcomments Prawda, jeżeli chcemy dodać komentarze o szablonie.
- * @return string Szablon.
+ * @return string|bool Szablon.
  */
 function get_template($title, $install = false, $eslashes = true, $htmlcomments = true)
 {
@@ -18,7 +18,7 @@ function get_template($title, $install = false, $eslashes = true, $htmlcomments 
 		if (!file_exists($filename)) { // Jeżeli nie ma jakiegoś pliku, to pobierz go z szablonu domyślnego
 			$filename = SCRIPT_ROOT . "themes/default/{$title}.html";
 			if (!file_exists($filename))
-				return "";
+				return FALSE;
 		}
 		$template = file_get_contents($filename);
 	} else
