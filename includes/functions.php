@@ -11,18 +11,57 @@
  */
 function get_template($title, $install = false, $eslashes = true, $htmlcomments = true)
 {
-	global $settings;
+	global $settings, $language;
 
 	if (!$install) {
-		$filename = SCRIPT_ROOT . "themes/{$settings['theme']}/{$title}.html";
-		if (!file_exists($filename)) { // Jeżeli nie ma jakiegoś pliku, to pobierz go z szablonu domyślnego
-			$filename = SCRIPT_ROOT . "themes/default/{$title}.html";
-			if (!file_exists($filename))
-				return FALSE;
+		if (strlen($language->get_current_language_short())) {
+			$filename = $title . $language->get_current_language_short();
+			$temp = SCRIPT_ROOT . "themes/{$settings['theme']}/{$filename}.html";
+			if (file_exists($temp))
+				$path = $temp;
+			else {
+				$temp = SCRIPT_ROOT . "themes/default/{$filename}.html";
+				if (file_exists($temp))
+					$path = $temp;
+			}
 		}
-		$template = file_get_contents($filename);
-	} else
-		$template = file_get_contents(SCRIPT_ROOT . "install/templates/{$title}.html");
+
+		if (!isset($path)) {
+			$filename = $title;
+			$temp = SCRIPT_ROOT . "themes/{$settings['theme']}/{$filename}.html";
+			if (file_exists($temp))
+				$path = $temp;
+			else {
+				$temp = SCRIPT_ROOT . "themes/default/{$filename}.html";
+				if (file_exists($temp))
+					$path = $temp;
+			}
+		}
+
+		if (!isset($path))
+			return FALSE;
+
+		$template = file_get_contents($path);
+	} else {
+		if (strlen($language->get_current_language_short())) {
+			$filename = $title . $language->get_current_language_short();
+			$temp = SCRIPT_ROOT . "install/templates/{$filename}.html";
+			if (file_exists($temp))
+				$path = $temp;
+		}
+
+		if (!isset($path)) {
+			$filename = $title;
+			$temp = SCRIPT_ROOT . "install/templates/{$filename}.html";
+			if (file_exists($temp))
+				$path = $temp;
+		}
+
+		if (!isset($path))
+			return FALSE;
+
+		$template = file_get_contents($path);
+	}
 
 	if ($htmlcomments)
 		$template = "<!-- start: " . htmlspecialchars($title) . " -->\n{$template}\n<!-- end: " . htmlspecialchars($title) . " -->";
