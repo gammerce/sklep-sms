@@ -10,7 +10,7 @@ $lang['reset_password'] = "Reset password";
 $lang['take_over_service'] = "Take over service";
 $lang['transfer_finalized'] = "Transaction finalized";
 
-$lang['welcome_message'] = "Welcome to the internet shop!";
+$lang['welcome_message'] = "Welcome to the web store!";
 
 $lang['register_vert'] = "R<br />E<br />G<br />I<br />S<br />T<br />E<br />R";
 $lang['login_vert'] = "L<br />O<br />G<br /><br />I<br />N";

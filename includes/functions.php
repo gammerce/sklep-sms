@@ -15,7 +15,7 @@ function get_template($title, $install = false, $eslashes = true, $htmlcomments 
 
 	if (!$install) {
 		if (strlen($language->get_current_language_short())) {
-			$filename = $title . $language->get_current_language_short();
+			$filename = $title . "." . $language->get_current_language_short();
 			$temp = SCRIPT_ROOT . "themes/{$settings['theme']}/{$filename}.html";
 			if (file_exists($temp))
 				$path = $temp;
@@ -44,7 +44,7 @@ function get_template($title, $install = false, $eslashes = true, $htmlcomments 
 		$template = file_get_contents($path);
 	} else {
 		if (strlen($language->get_current_language_short())) {
-			$filename = $title . $language->get_current_language_short();
+			$filename = $title . "." . $language->get_current_language_short();
 			$temp = SCRIPT_ROOT . "install/templates/{$filename}.html";
 			if (file_exists($temp))
 				$path = $temp;
