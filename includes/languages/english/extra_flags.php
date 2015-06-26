@@ -11,6 +11,6 @@ $lang['service_not_affordable'] = "Holy shit, you cannot buy this service for su
 
 $lang['transfer_wallet_cost'] = "Cost Transfer / Wallet";
 
-$lang['passwords_not_match'] = "Given passwords are not the same.";
+$lang['passwords_not_match'] = "Introduced passwords are not the same.";
 
-$lang['existing_service_has_different_password'] = "There already exists a service purchased by (nick/ip) but it has different password.";
+$lang['existing_service_has_different_password'] = "Service purchased by (nick/ip) already exists but it has different password.";

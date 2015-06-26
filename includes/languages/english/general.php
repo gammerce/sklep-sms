@@ -2,7 +2,7 @@
 
 $lang['forgotten_password'] = "Password recovery";
 $lang['my_current_services'] = "My current services";
-$lang['title_payment'] = "Psyment";
+$lang['title_payment'] = "Payment";
 $lang['payment_log'] = "Payment log";
 $lang['purchase'] = "Service purchase";
 $lang['register'] = "Registration";
@@ -15,7 +15,7 @@ $lang['welcome_message'] = "Welcome to the internet shop!";
 $lang['register_vert'] = "R<br />E<br />G<br />I<br />S<br />T<br />E<br />R";
 $lang['login_vert'] = "L<br />O<br />G<br /><br />I<br />N";
 
-$lang['repeat'] = "Reapeat";
+$lang['repeat'] = "Repeat";
 $lang['send'] = "Send";
 $lang['clear'] = "Clear";
 $lang['name'] = "Name";
@@ -24,7 +24,7 @@ $lang['username'] = "Username";
 $lang['password_repeat'] = "Repeat password";
 $lang['forgot_password'] = "I don't remeber password";
 $lang['email'] = "E-mail address";
-$lang['email_repeat'] = "Reapeat e-mail address";
+$lang['email_repeat'] = "Repeat e-mail address";
 $lang['log_in'] = "Log in";
 $lang['service'] = "Service";
 $lang['nickipsid'] = "Nickname / IP / SteamID";
@@ -34,7 +34,7 @@ $lang['sid'] = "SteamID";
 $lang['server'] = "Server";
 $lang['expire'] = "Expires";
 $lang['date'] = "Date";
-$lang['description'] = "Desription";
+$lang['description'] = "Description";
 $lang['cost'] = "Cost";
 $lang['price'] = "Price";
 $lang['amount'] = "Quantity";
@@ -65,7 +65,7 @@ $lang['pay_wallet'] = "I pay by Wallet";
 $lang['take_over'] = "Take over";
 
 $lang['way_of_payment'] = "Payment method";
-$lang['choose_payment'] = "Chose payment";
+$lang['choose_payment'] = "Choose payment";
 $lang['admin'] = "Admin";
 $lang['wallet'] = "Wallet";
 
@@ -92,9 +92,9 @@ $lang['transfer_error'] = "An error occured while receiving transfer data.";
 $lang['transfer_error'] = "Unfortunately, transfer payment failed.";
 $lang['transfer_unverified'] = "Unfortunately, transfer data failed to be verified correctly.";
 
-$lang['contact_info'] = "You can contact us by methods below.";
+$lang['contact_info'] = "You can contact us by:";
 
-$lang['restore_password_info'] = "In order to restore password, give you address <strong>e-mail address</strong> or <strong>nickname</strong>.<br />
+$lang['restore_password_info'] = "In order to restore password, give your address <strong>e-mail address</strong> or <strong>nickname</strong>.<br />
 At the next step, an e-mail with a link to restore password will be send to you.";
 
 $lang['must_be_logged_out'] = "You cannot browse this page. You're logged in.";
@@ -109,7 +109,7 @@ $lang['wrong_id'] = "Wrong ID";
 $lang['site_not_exists'] = "Site does not exist.";
 
 $lang['payment_for_service'] = "Payment for service: {1}";
-$lang['service_was_bought'] = "Service was purchased {1} on server {2}";
+$lang['service_was_bought'] = "Service {1} was purchased on server {2}";
 $lang['wallet_charged'] = "Wallet was charged.";
 $lang['wallet_was_charged'] = "Wallet was charged with {1}";
 $lang['bought_service'] = "Service Purchase";
@@ -129,9 +129,9 @@ $lang['sms']['info']['ok'] = "Given return code is correct.";
 $lang['sms']['info']['bad_code'] = "Given return code is just incorrect.";
 $lang['sms']['info']['bad_number'] = "Code is OK, but unfortunately obtained by sending SMS on different number.";
 $lang['sms']['info']['bad_api'] = "Given API is incorrect.";
-$lang['sms']['info']['bad_email'] = "E-mail address given in payment configuration in incorrect.";
+$lang['sms']['info']['bad_email'] = "E-mail address given in payment configuration is incorrect.";
 $lang['sms']['info']['server_error'] = "Given API is incorrect, given return code was wrong or another error occured.";
-$lang['sms']['info']['service_error'] = "Incorrectly set up service, contact shop owner.";
+$lang['sms']['info']['service_error'] = "Incorrectly set up service, contact the shop owner.";
 $lang['sms']['info']['error'] = "An error occured. Cause is unknown.";
 $lang['sms']['info']['no_connection'] = "No connection to the verification script.";
 $lang['sms']['info']['bad_data'] = "Not all the necessary data were given in payment configuration.";

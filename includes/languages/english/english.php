@@ -1,6 +1,6 @@
 <?php
 
-$lang['shop_sms'] = "Shop SMS";
+$lang['shop_sms'] = "SMS Shop";
 $lang['logout'] = "Log out";
 $lang['go'] = "Go";
 $lang['and'] = "and";
@@ -29,12 +29,12 @@ $lang['verification_error'] = "Something went wrong while connecting to the veri
 $lang['main_page'] = "Main page";
 $lang['acp'] = "Admin Panel";
 $lang['acp_short'] = "PA";
-$lang['no_privilages'] = "You do not have access to this place, so don't peek in here!";
+$lang['no_privilages'] = "You have no access to this place, so don't peek in here!";
 $lang['wrong_login_data'] = "Nickname and/or password are incorrect.";
 
 $lang['wrong_cron_key'] = "It's not the way you hacker.";
 
-$lang['email_was_sent'] = "E-maila was sent to address: {1} saying: {2}";
+$lang['email_was_sent'] = "An e-mail was sent to address: {1} saying: {2}";
 
 $lang['username_chars_warn'] = "Nickname includes forbidden chars (<,>,&,\")";
 $lang['wrong_email'] = "Given e-mail address is incorrect.";
@@ -42,7 +42,7 @@ $lang['wrong_ip'] = "Given IP address is incorrect.";
 $lang['wrong_sid'] = "Given Steam ID is incorrect.";
 $lang['return_code_length_warn'] = "Given return code is a little bit too long.";
 $lang['field_empty'] = "Field cannot be empty.";
-$lang['field_must_be_number'] = "Field must have a number in it.";
+$lang['field_must_be_number'] = "Field must contain a number.";
 $lang['field_length_min_warn'] = "Field must consist of min. {1} chars.";
 $lang['field_length_max_warn'] = "Field must consist of max. {1} chars.";
 $lang['value_must_be_positive'] = "Value must be positive.";
@@ -77,7 +77,7 @@ $lang['module_is_bad'] = "Service module was programmed incorrectly.";
 $lang['wrong_sign'] = "Something is wrong, data verification ended up an IT failure.";
 $lang['no_service'] = "There is no service with such ID.";
 $lang['service_isnt_yours'] = "Service with this data already exists, but it is not yours.";
-$lang['only_yes_no'] = "Field can only accept values: 'YES' i 'NO'";
+$lang['only_yes_no'] = "Field can only accept values: 'YES' and 'NO'";
 
 $lang['edited_user_service'] = "Service edited correctly.";
 $lang['not_edited_user_service'] = "Could not edit service.";
