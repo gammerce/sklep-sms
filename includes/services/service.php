@@ -157,16 +157,8 @@ abstract class Service
 	 */
 	public function get_full_description()
 	{
-		global $language;
-
 		$file = "services/" . escape_filename($this->service['id']) . "_desc";
-		if (strlen($language->get_current_language_short())) {
-			if (($text = get_template($file . "_" . $language->get_current_language_short(), false, true, false)) !== FALSE)
-				eval("\$output = \"" . $text . "\";");
-		}
-
-		if(!isset($output) || $output === FALSE)
-			eval("\$output = \"" . get_template($file, false, true, false) . "\";");
+		eval("\$output = \"" . get_template($file, false, true, false) . "\";");
 
 		return $output;
 	}
