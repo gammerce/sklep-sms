@@ -187,6 +187,7 @@ body {
 /* Cegiełka z miejscem do wpisywania tekstu przy logowaniu */
 #form_login {
 	margin: 0;
+	padding: 12px 0;
 	color: black;
 	font-size: 14px;
 	font-family: Gill Sans MT, sans-serif;

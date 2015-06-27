@@ -192,10 +192,10 @@ $settings['theme'] = file_exists(SCRIPT_ROOT . "themes/{$settings['theme']}") ? 
 $settings['language'] = file_exists(SCRIPT_ROOT . "includes/languages/{$settings['language']}/{$settings['language']}.php") ? $settings['language'] : "polish";
 
 // Ładujemy bibliotekę językową
-if (isset($_SESSION['language']))
-	$language->set_language($_SESSION['language']);
-else if (isset($_GET['language']))
+if (isset($_GET['language']))
 	$language->set_language($_GET['language']);
+else if (isset($_SESSION['language']))
+	$language->set_language($_SESSION['language']);
 else
 	$language->set_language($settings['language']);
 
