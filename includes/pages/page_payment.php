@@ -42,7 +42,7 @@ class PagePayment extends Page
 
 
 		if (($service_module = $heart->get_service_module($data['service'])) === NULL || !class_has_interface($service_module, "IServicePurchaseWeb"))
-			return $lang['module_is_bad'];
+			return $lang['bad_module'];
 
 		// Pobieramy szczegóły zamówienia
 		$order_details = $service_module->order_details($data);

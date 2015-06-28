@@ -277,7 +277,7 @@ if ($action == "login") {
 	// LOGING
 	log_info("Zresetowano hasło. ID Użytkownika: {$uid}.");
 
-	json_output("password_changed", $lang['pass_changed'], 1);
+	json_output("password_changed", $lang['password_changed'], 1);
 } else if ($action == "change_password") {
 	if (!is_logged())
 		json_output("logged_in", $lang['not_logged'], 0);
@@ -323,7 +323,7 @@ if ($action == "login") {
 } else if ($action == "validate_purchase_form") {
 	$service_module = $heart->get_service_module($_POST['service']);
 	if ($service_module === NULL)
-		json_output("wrong_module", $lang['module_is_bad'], 0);
+		json_output("wrong_module", $lang['bad_module'], 0);
 
 	// Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
 	if (!$heart->user_can_use_service($user['uid'], $service_module->service))
@@ -331,7 +331,7 @@ if ($action == "login") {
 
 	// Przeprowadzamy walidację danych wprowadzonych w formularzu, a jak zwroci FALSE, to znaczy ze dupa
 	if (($return_data = $service_module->validate_purchase_form($_POST)) === FALSE)
-		json_output("wrong_module", $lang['module_is_bad'], 0);
+		json_output("wrong_module", $lang['bad_module'], 0);
 
 	// Przerabiamy ostrzeżenia, aby lepiej wyglądały
 	if ($return_data['status'] == "warnings") {
@@ -479,7 +479,7 @@ if ($action == "login") {
 		json_output("dont_play_games", $lang['dont_play_games'], 0);
 
 	if (($service_module = $heart->get_service_module($user_service['service'])) === NULL)
-		json_output("wrong_module", $lang['module_is_bad'], 0);
+		json_output("wrong_module", $lang['bad_module'], 0);
 
 	// Wykonujemy metode edycji usługi gracza na module, który ją obsługuje
 	if (!class_has_interface($service_module, "IServiceUserEdit"))
@@ -500,12 +500,12 @@ if ($action == "login") {
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
 } else if ($action == "form_take_over_service") {
 	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !class_has_interface($service_module, "IServiceTakeOver"))
-		output_page($lang['module_is_bad'], "Content-type: text/plain; charset=\"UTF-8\"");
+		output_page($lang['bad_module'], "Content-type: text/plain; charset=\"UTF-8\"");
 
 	output_page($service_module->form_take_over_service($_POST['service']), "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "take_over_service") {
 	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !class_has_interface($service_module, "IServiceTakeOver"))
-		output_page($lang['module_is_bad'], "Content-type: text/plain; charset=\"UTF-8\"");
+		output_page($lang['bad_module'], "Content-type: text/plain; charset=\"UTF-8\"");
 
 	$return_data = $service_module->take_over_service($_POST);
 
@@ -522,7 +522,7 @@ if ($action == "login") {
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
 } else if ($action == "execute_service_action") {
 	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !class_has_interface($service_module, "IServiceExecuteAction"))
-		output_page($lang['module_is_bad'], "Content-type: text/plain; charset=\"UTF-8\"");
+		output_page($lang['bad_module'], "Content-type: text/plain; charset=\"UTF-8\"");
 
 	output_page($service_module->execute_action($_POST['service_action'], $_POST), "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "get_template") {

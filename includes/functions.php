@@ -269,7 +269,7 @@ function validate_payment($data)
 	if ($service_module === NULL)
 		return array(
 			'status' => "wrong_module",
-			'text' => $lang['module_is_bad'],
+			'text' => $lang['bad_module'],
 			'positive' => false
 		);
 
@@ -459,7 +459,7 @@ function add_bought_service_info($uid, $user_name, $ip, $method, $payment_id, $s
 			'action' => "email"
 		));
 		if (strlen($message)) {
-			$title = ($service == 'charge_wallet' ? $lang['charge_wallet'] : $lang['bought_service']);
+			$title = ($service == 'charge_wallet' ? $lang['charge_wallet'] : $lang['purchase']);
 			$ret = send_email($email, $auth_data, $title, $message);
 		}
 

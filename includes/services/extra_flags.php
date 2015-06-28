@@ -715,7 +715,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 		// Sprawdzamy, czy ustawiono hasło, gdy hasła nie ma w bazie i dana usługa wymaga hasła
 		if (!strlen($data['password']) && $data['type'] & (TYPE_NICK | TYPE_IP) && !strlen($user_service['password']))
-			$warnings['password'] = $lang['field_empty'];
+			$warnings['password'] = $lang['field_no_empty'];
 
 		// Sprawdzamy poprawność wprowadzonych danych
 		$verify_data = $this->verify_user_service_data($data, $warnings);
@@ -881,7 +881,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 		// Sprawdzamy, czy ustawiono hasło, gdy hasła nie ma w bazie i dana usługa wymaga hasła
 		if (!strlen($data['password']) && $data['type'] & (TYPE_NICK | TYPE_IP) && !strlen($user_service['password']))
-			$warnings['password'] = $lang['field_empty'];
+			$warnings['password'] = $lang['field_no_empty'];
 
 		// Sprawdzamy poprawność wprowadzonych danych
 		$verify_data = $this->verify_user_service_data($data, $warnings, false);
@@ -1055,21 +1055,21 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 		// Serwer
 		if (!strlen($data['server']))
-			$warnings['server'] = $lang['field_empty'];
+			$warnings['server'] = $lang['field_no_empty'];
 
 		// Typ
 		if (!strlen($data['type']))
-			$warnings['type'] = $lang['field_empty'];
+			$warnings['type'] = $lang['field_no_empty'];
 
 		switch ($data['type']) {
 			case "1":
 				// Nick
 				if (!strlen($data['nick']))
-					$warnings['nick'] = $lang['field_empty'];
+					$warnings['nick'] = $lang['field_no_empty'];
 
 				// Hasło
 				if (!strlen($data['password']))
-					$warnings['password'] = $lang['field_empty'];
+					$warnings['password'] = $lang['field_no_empty'];
 
 				$auth_data = $data['nick'];
 
@@ -1078,11 +1078,11 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 			case "2":
 				// IP
 				if (!strlen($data['ip']))
-					$warnings['ip'] = $lang['field_empty'];
+					$warnings['ip'] = $lang['field_no_empty'];
 
 				// Hasło
 				if (!strlen($data['password']))
-					$warnings['password'] = $lang['field_empty'];
+					$warnings['password'] = $lang['field_no_empty'];
 
 				$auth_data = $data['ip'];
 
@@ -1091,7 +1091,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 			case "4":
 				// SID
 				if (!strlen($data['sid']))
-					$warnings['sid'] = $lang['field_empty'];
+					$warnings['sid'] = $lang['field_no_empty'];
 
 				$auth_data = $data['sid'];
 
@@ -1100,11 +1100,11 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 		// Płatność
 		if (!strlen($data['payment']))
-			$warnings['payment'] = $lang['field_empty'];
+			$warnings['payment'] = $lang['field_no_empty'];
 
 		if (in_array($data['payment'], array("sms", "transfer")))
 			if (!strlen($data['payment_id']))
-				$warnings['payment_id'] = $lang['field_empty'];
+				$warnings['payment_id'] = $lang['field_no_empty'];
 
 		// Jeżeli są jakieś błedy, to je zwróć
 		if (!empty($warnings)) {

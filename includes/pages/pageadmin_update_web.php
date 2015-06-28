@@ -60,7 +60,7 @@ class PageAdminUpdateWeb extends PageAdmin
 			$file_data['version'] = $next_version;
 			eval("\$shop_files['next_update'] = \"" . get_template("admin/update_file") . "\";");
 		} else
-			$shop_files['next_update'] = $next_version = $lang['lack'];
+			$shop_files['next_update'] = $next_version = $lang['none'];
 
 		// Pobranie wyglądu całej strony
 		eval("\$output = \"" . get_template("admin/update_web") . "\";");

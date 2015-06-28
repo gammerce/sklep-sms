@@ -2,8 +2,6 @@
 
 $lang['no_access'] = "You have no proper powers.";
 
-$lang['lack'] = "None";
-
 $lang['license_expires'] = "License expires";
 
 $lang['remove_install'] = "Remove install folder!";
@@ -44,7 +42,6 @@ $lang['add_service'] = "Add service";
 $lang['add_server'] = "Add server";
 $lang['add_tariff'] = "Add tariff";
 $lang['add_price'] = "Add price";
-$lang['add_user_service'] = "Add service";
 $lang['add_group'] = "Add group";
 $lang['add_sms_code'] = "Add SMS code";
 

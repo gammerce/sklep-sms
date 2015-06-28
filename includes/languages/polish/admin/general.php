@@ -2,7 +2,6 @@
 
 $lang['no_access'] = "Nie masz odpowiednich uprawnień.";
 
-$lang['lack'] = "Brak";
 
 $lang['license_expires'] = "Licencja wygasa";
 
@@ -44,7 +43,6 @@ $lang['add_service'] = "Dodaj usługę";
 $lang['add_server'] = "Dodaj serwer";
 $lang['add_tariff'] = "Dodaj taryfę";
 $lang['add_price'] = "Dodaj cenę";
-$lang['add_user_service'] = "Dodaj usługę";
 $lang['add_group'] = "Dodaj grupę";
 $lang['add_sms_code'] = "Dodaj kod SMS";
 
@@ -81,13 +79,11 @@ $lang['no_such_group'] = "Nie istnieje grupa o takim ID.";
 $lang['noaccount_id'] = "Podane ID użytkownika nie jest przypisane do żadnego konta.";
 $lang['no_charge_value'] = "Nie podano wartości doładowania.";
 $lang['charge_number'] = "Wartość doładowania musi być liczbą.";
-$lang['bad_module'] = "Moduł usługi został źle zaprogramowany.";
 $lang['no_service_chosen'] = "Nie wybrano usługi.";
 $lang['no_add_method'] = "Moduł usługi nie posiada metody dodawania usługi przez admina.";
 $lang['no_edit_method'] = "Moduł usługi nie posiada metody edycji usługi gracza przez admina.";
 $lang['delete_service'] = "Usługa gracza została prawidłowo usunięta.";
 $lang['no_delete_service'] = "Usługa gracza nie została usunięta.";
-$lang['field_no_empty'] = "Pole nie może być puste.";
 $lang['antispam_add'] = "Pytanie anty-spamowe zostało prawidłowo dodane.";
 $lang['antispam_edit'] = "Pytanie anty-spamowe zostało prawidłowo wyedytowane.";
 $lang['antispam_no_edit'] = "Pytanie anty-spamowe nie zostało prawidłowo wyedytowane.";

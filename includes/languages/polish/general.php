@@ -86,7 +86,7 @@ $lang['take_over_service'] = "Przejmij usługę";
 
 $lang['transfer'] = "Przelew";
 
-$lang['transfer_id'] = "ID Płatności";
+$lang['payment_id'] = "ID płatności";
 $lang['transfer_error'] = "Wystąpił błąd podczas przyjmowania danych o przelewie.";
 
 $lang['transfer_error'] = "Niestety, ale płatność za pomocą przelewu zakończyła się niepowodzeniem.";
@@ -112,7 +112,6 @@ $lang['payment_for_service'] = "Płatność za usługę: {1}";
 $lang['service_was_bought'] = "Zakupiono usługę {1} na serwerze {2}";
 $lang['wallet_charged'] = "Portfel został doładowany.";
 $lang['wallet_was_charged'] = "Doładowano portfel kwotą {1}";
-$lang['bought_service'] = "Zakup Usługi";
 $lang['charge_wallet'] = "Doładowanie Portfela";
 
 $lang['add_code_to_reuse'] = "Dodano kod do tabeli kodów do wykorzystania. Kod: {1} Taryfa: {2}." .
@@ -159,5 +158,4 @@ $lang['email_no_account'] = "Podany e-mail nie jest przypisany do żadnego konta
 $lang['keyreset_error'] = "Wystąpił błąd podczas wysyłania e-maila z linkiem do zresetowania hasła.";
 $lang['wrong_email'] = "E-mail przypisany do Twojego konta jest błędny. Zgłoś to administratorowi serwisu.";
 $lang['email_sent'] = "E-mail wraz z linkiem do zresetowania hasła został wysłany na Twoją skrzynkę pocztową.";
-$lang['pass_changed'] = "Hasło zostało prawidłowo zmienione.";
 $lang['oldpass_wrong'] = "Stare hasło jest nieprawidłowe.<br />";

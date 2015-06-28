@@ -584,18 +584,18 @@ if ($action == "charge_wallet") {
 
 	// Nazwa
 	if (!$_POST['name']) { // Nie podano nazwy serwera
-		$warnings['name'] = $lang['field_empty'] . "<br />";
+		$warnings['name'] = $lang['field_no_empty'] . "<br />";
 	}
 
 	// IP
 	if (!$_POST['ip']) { // Nie podano nazwy serwera
-		$warnings['ip'] = $lang['field_empty'] . "<br />";
+		$warnings['ip'] = $lang['field_no_empty'] . "<br />";
 	}
 	$_POST['ip'] = trim($_POST['ip']);
 
 	// Port
 	if (!$_POST['port']) { // Nie podano nazwy serwera
-		$warnings['port'] = $lang['field_empty'] . "<br />";
+		$warnings['port'] = $lang['field_no_empty'] . "<br />";
 	}
 	$_POST['port'] = trim($_POST['port']);
 

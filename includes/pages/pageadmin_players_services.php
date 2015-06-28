@@ -89,7 +89,7 @@ class PageAdminPlayersServices extends PageAdmin
 			$buttons .= create_dom_element("input", "", array(
 				'id' => "button_add_user_service",
 				'type' => "button",
-				'value' => $lang['add_user_service']
+				'value' => $lang['add_service']
 			));
 
 		// Pobranie paginacji

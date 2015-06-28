@@ -112,7 +112,6 @@ $lang['payment_for_service'] = "Payment for service: {1}";
 $lang['service_was_bought'] = "Service {1} was purchased on server {2}";
 $lang['wallet_charged'] = "Wallet was charged.";
 $lang['wallet_was_charged'] = "Wallet was charged with {1}";
-$lang['bought_service'] = "Service Purchase";
 $lang['charge_wallet'] = "Wallet Charge";
 
 $lang['add_code_to_reuse'] = "Code was added to the list of codes to be used. Code: {1} Tariff: {2}." .
@@ -159,5 +158,4 @@ $lang['email_no_account'] = "Given e-mail address is not assigned to any account
 $lang['keyreset_error'] = "An error occured while sending e-mail with password reset link.";
 $lang['wrong_email'] = "E-mail address assigned you your account is incorrect. Report it to the servis admin.";
 $lang['email_sent'] = "E-mail password reset link has been sent to your mailbox.";
-$lang['pass_changed'] = "Password changed successfully.";
 $lang['oldpass_wrong'] = "Old password is incorrect.<br />";

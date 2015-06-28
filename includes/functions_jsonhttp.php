@@ -55,7 +55,7 @@ function check_for_warnings($type, $data)
 
 		case "uid":
 			if (!strlen($data))
-				$output = $lang['field_empty'] . "<br />";
+				$output = $lang['field_no_empty'] . "<br />";
 			else if (!is_numeric($data))
 				$output = $lang['field_must_be_number'] . "<br />";
 
@@ -69,7 +69,7 @@ function check_for_warnings($type, $data)
 
 		case "sms_code":
 			if (!strlen($data))
-				$output = $lang['field_empty'] . "<br />";
+				$output = $lang['field_no_empty'] . "<br />";
 			else if (strlen($data) > 16)
 				$output = $lang['return_code_length_warn'] . "<br />";
 
@@ -77,7 +77,7 @@ function check_for_warnings($type, $data)
 
 		case "number":
 			if (!strlen($data))
-				$output = $lang['field_empty'] . "<br />";
+				$output = $lang['field_no_empty'] . "<br />";
 			else if (!is_numeric($data))
 				$output = $lang['field_must_be_number'] . "<br />";
 
