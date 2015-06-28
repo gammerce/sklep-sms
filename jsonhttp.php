@@ -21,16 +21,16 @@ if ($action == "login") {
 		json_output("already_logged_in");
 
 	if (!$_POST['username'] || !$_POST['password'])
-		json_output("no_data", "No niestety, ale bez podania nazwy użytkownika oraz loginu, nie zalogujesz się.", 0);
+		json_output("no_data", $lang['no_login_password'], 0);
 
 	$user = $heart->get_user(0, $_POST['username'], $_POST['password']);
 	if (is_logged()) {
 		$_SESSION['uid'] = $user['uid'];
 		update_activity($user['uid']);
-		json_output("logged_in", "Logowanie przebiegło bez większych trudności.", 1);
+		json_output("logged_in", $lang['login_success'], 1);
 	}
 
-	json_output("not_logged", "No niestety, ale hasło i/lub nazwa użytkownika są błędne.", 0);
+	json_output("not_logged", $lang['bad_pass_nick'], 0);
 } else if ($action == "logout") {
 	if (!is_logged())
 		json_output("already_logged_out");
@@ -51,7 +51,7 @@ if ($action == "login") {
 	// Finally, destroy the session.
 	session_destroy();
 
-	json_output("logged_out", "Wylogowywanie przebiegło bez większych trudności.", 1);
+	json_output("logged_out", $lang['logout_success'], 1);
 } else if ($action == "set_session_language") {
     session_write_close();
     session_name("admin");
@@ -104,13 +104,13 @@ if ($action == "login") {
 		array($username)
 	));
 	if ($db->num_rows($result))
-		$warnings['username'] .= "Podana nazwa użytkownika jest już zajęta.<br />";
+		$warnings['username'] .= $lang['nick_occupied'];
 
 	// Hasło
 	if ($warning = check_for_warnings("password", $password))
 		$warnings['password'] = $warning;
 	if ($password != $passwordr)
-		$warnings['password_repeat'] .= "Podane hasła różnią się.<br />";
+		$warnings['password_repeat'] .= $lang['different_pass'];
 
 	if ($warning = check_for_warnings("email", $email))
 		$warnings['email'] = $warning;
@@ -122,10 +122,10 @@ if ($action == "login") {
 		array($email)
 	));
 	if ($db->num_rows($result))
-		$warnings['email'] .= "Podany e-mail jest już zajęty.<br />";
+		$warnings['email'] .= $lang['email_occupied'];
 
 	if ($email != $emailr)
-		$warnings['email_repeat'] .= "Podane e-maile różnią się.<br />";
+		$warnings['email_repeat'] .= $lang['different_email'];
 
 	// Pobranie z bazy pytania antyspamowego
 	$result = $db->query($db->prepare(
@@ -135,7 +135,7 @@ if ($action == "login") {
 	));
 	$antispam_question = $db->fetch_array_assoc($result);
 	if (!in_array(strtolower($as_answer), explode(";", $antispam_question['answers'])))
-		$warnings['as_answer'] .= "Błędna odpowiedź na pytanie antyspamowe.<br />";
+		$warnings['as_answer'] .= $lang['wrong_antianswer'];
 
 	// Błędy
 	if (!empty($warnings)) {
@@ -158,7 +158,7 @@ if ($action == "login") {
 	// LOGING
 	log_info("Założono nowe konto. ID: " . $db->last_id() . " Nazwa Użytkownika: {$username}, IP: {$user['ip']}");
 
-	json_output("registered", "Konto zostało prawidłowo zarejestrowane. Za chwilę nastąpi automatyczne zalogowanie.", 1, $data);
+	json_output("registered", $lang['register_success'], 1, $data);
 } else if ($action == "forgotten_password") {
 	if (is_logged())
 		json_output("logged_in", $lang['logged'], 0);
@@ -177,7 +177,7 @@ if ($action == "login") {
 			));
 
 			if (!$db->num_rows($result))
-				$warnings['username'] .= "Podana nazwa użytkownika nie jest przypisana do żadnego konta.<br />";
+				$warnings['username'] .= $lang['nick_no_account'];
 			else
 				$row = $db->fetch_array_assoc($result);
 		}
@@ -194,7 +194,7 @@ if ($action == "login") {
 			));
 
 			if (!$db->num_rows($result))
-				$warnings['email'] .= "Podany e-mail nie jest przypisany do żadnego konta.<br />";
+				$warnings['email'] .= $lang['email_no_account'];
 			else
 				$row = $db->fetch_array_assoc($result);
 		}
@@ -227,13 +227,13 @@ if ($action == "login") {
 	$ret = send_email($user2['email'], $user2['username'], "Reset Hasła", $text);
 
 	if ($ret == "not_sent")
-		json_output("not_sent", "Wystąpił błąd podczas wysyłania e-maila z linkiem do zresetowania hasła.", 0);
+		json_output("not_sent", $lang['keyreset_error'], 0);
 	else if ($ret == "wrong_email")
-		json_output("wrong_email", "E-mail przypisany do Twojego konta jest błędny. Zgłoś to administratorowi serwisu.", 0);
+		json_output("wrong_email", $lang['wrong_email'], 0);
 	else if ($ret == "sent") {
 		log_info("Wysłano e-maila z kodem do zresetowania hasła. Użytkownik: {$user2['username']}({$user2['uid']}) E-mail: {$user2['email']} Dane formularza. Nazwa użytkownika: {$username} E-mail: {$email}");
 		$data['username'] = $user2['username'];
-		json_output("sent", "E-mail wraz z linkiem do zresetowania hasła został wysłany na Twoją skrzynkę pocztową.", 1, $data);
+		json_output("sent", $lang['email_sent'], 1, $data);
 	}
 } else if ($action == "reset_password") {
 	if (is_logged())
@@ -251,7 +251,7 @@ if ($action == "login") {
 	if ($warning = check_for_warnings("password", $pass))
 		$warnings['pass'] = $warning;
 	if ($pass != $passr)
-		$warnings['pass_repeat'] .= "Podane hasła różnią się.<br />";
+		$warnings['pass_repeat'] .= $lang['different_pass'];
 
 	// Błędy
 	if (!empty($warnings)) {
@@ -277,7 +277,7 @@ if ($action == "login") {
 	// LOGING
 	log_info("Zresetowano hasło. ID Użytkownika: {$uid}.");
 
-	json_output("password_changed", "Hasło zostało prawidłowo zmienione.", 1);
+	json_output("password_changed", $lang['pass_changed'], 1);
 } else if ($action == "change_password") {
 	if (!is_logged())
 		json_output("logged_in", $lang['not_logged'], 0);
@@ -289,11 +289,11 @@ if ($action == "login") {
 	if ($warning = check_for_warnings("password", $pass))
 		$warnings['pass'] = $warning;
 	if ($pass != $passr) {
-		$warnings['pass_repeat'] .= "Podane hasła różnią się.<br />";
+		$warnings['pass_repeat'] .= $lang['different_pass'];
 	}
 
 	if (hash_password($oldpass, $user['salt']) != $user['password']) {
-		$warnings['old_pass'] .= "Stare hasło jest nieprawidłowe.<br />";
+		$warnings['old_pass'] .= $lang['oldpass_wrong'];
 	}
 
 	// Błędy

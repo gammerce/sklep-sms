@@ -143,3 +143,21 @@ $lang['transfer_ok'] = "Payment preparation successful.<br />In a minute you wil
 $lang['service_no_permission'] = "You have no permission to use this service.";
 
 $lang['value_must_be_ge_than'] = "Value must me greater or equal to {1}.";
+
+$lang['no_login_password'] = "Unfortunately, without providing nickname and login, you can't log in.";
+$lang['login_success'] = "Logging in successful.";
+$lang['bad_pass_nick'] = "Unfortunately, passowrd or/and nickname are incorrect.";
+$lang['logout_success'] = "Logging out successful.";
+$lang['nick_occupied'] = "Given nickname is already taken.<br />";
+$lang['different_pass'] = "Given passwords are different.<br />";
+$lang['email_occupied'] = "Given e-mail is already taken.<br />";
+$lang['different_email'] = "Given e-mail addresses are different.<br />";
+$lang['wrong_antianswer'] = "Wrong answer to the antispam question.<br />";
+$lang['register_success'] = "Account registered successfully. In a moment you will be automatically logged in.";
+$lang['nick_no_account'] = "Given nickname is not assigned to any account.<br />";
+$lang['email_no_account'] = "Given e-mail address is not assigned to any account.<br />";
+$lang['keyreset_error'] = "An error occured while sending e-mail with password reset link.";
+$lang['wrong_email'] = "E-mail address assigned you your account is incorrect. Report it to the servis admin.";
+$lang['email_sent'] = "E-mail password reset link has been sent to your mailbox.";
+$lang['pass_changed'] = "Password changed successfully.";
+$lang['oldpass_wrong'] = "Old password is incorrect.<br />";

@@ -143,3 +143,21 @@ $lang['transfer_ok'] = "Przygotowanie płatności przebiegło pomyślnie.<br />Z
 $lang['service_no_permission'] = "Nie masz uprawnień, aby móc korzystać z tej usługi.";
 
 $lang['value_must_be_ge_than'] = "Wartość musi być większa lub równa {1}.";
+
+$lang['no_login_password'] = "No niestety, ale bez podania nazwy użytkownika oraz loginu, nie zalogujesz się.";
+$lang['login_success'] = "Logowanie przebiegło bez większych trudności.";
+$lang['bad_pass_nick'] = "No niestety, ale hasło i/lub nazwa użytkownika są błędne.";
+$lang['logout_success'] = "Wylogowywanie przebiegło bez większych trudności.";
+$lang['nick_occupied'] = "Podana nazwa użytkownika jest już zajęta.<br />";
+$lang['different_pass'] = "Podane hasła różnią się.<br />";
+$lang['email_occupied'] = "Podany e-mail jest już zajęty.<br />";
+$lang['different_email'] = "Podane e-maile różnią się.<br />";
+$lang['wrong_antianswer'] = "Błędna odpowiedź na pytanie antyspamowe.<br />";
+$lang['register_success'] = "Konto zostało prawidłowo zarejestrowane. Za chwilę nastąpi automatyczne zalogowanie.";
+$lang['nick_no_account'] = "Podana nazwa użytkownika nie jest przypisana do żadnego konta.<br />";
+$lang['email_no_account'] = "Podany e-mail nie jest przypisany do żadnego konta.<br />";
+$lang['keyreset_error'] = "Wystąpił błąd podczas wysyłania e-maila z linkiem do zresetowania hasła.";
+$lang['wrong_email'] = "E-mail przypisany do Twojego konta jest błędny. Zgłoś to administratorowi serwisu.";
+$lang['email_sent'] = "E-mail wraz z linkiem do zresetowania hasła został wysłany na Twoją skrzynkę pocztową.";
+$lang['pass_changed'] = "Hasło zostało prawidłowo zmienione.";
+$lang['oldpass_wrong'] = "Stare hasło jest nieprawidłowe.<br />";
