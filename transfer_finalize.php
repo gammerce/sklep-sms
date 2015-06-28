@@ -57,10 +57,10 @@ if ($payment->payment_api->check_sign($_POST, $payment->payment_api->data['key']
 	}
 
 	if (isset($bought_service_id) && $bought_service_id !== FALSE)
-		log_info("Zaakceptowano płatność za usługę: {$bought_service_id} Kwota: {$_POST['amount']} ID transakcji: {$_POST['orderid']} Service: {$_POST['service']} {$user['username']}({$user['uid']})({$user['ip']})");
+		log_info(newsprintf($lang['payment_accepted'], $bought_service_id, $_POST['amount'], $_POST['orderid'], $_POST['service'], $_POST['service'], $user['username'], $user['uid'], $user['ip']));
 	else
-		log_info("Płatność przelewem: {$_POST['orderid']} została zaakceptowana, jednakże moduł usługi {$transaction_data['service']} został źle zaprogramowany i nie doszło do zakupu.");
+		log_info(newsprintf($lang['transfer_accepted'], $_POST['orderid'], $transaction_data['service']));
 } else
-	log_info("Nieudana autoryzacja transakcji: {$_POST['orderid']} Kwota: {$_POST['amount']} Service: {$_POST['service']} {$user['username']}({$user['uid']})({$user['ip']})");
+	log_info(newsprintf($lang['payment_not_accepted'], $_POST['orderid'], $_POST['amount'], $_POST['service'], $user['username'], $user['uid'], $user['ip']));
 
 output_page("OK");

@@ -290,20 +290,20 @@ function validate_payment($data)
 	if (!in_array($data['method'], array("sms", "transfer", "wallet")))
 		return array(
 			'status' => "wrong_method",
-			'text' => "Wybrano błędny sposób zapłaty.",
+			'text' => $lang['wrong_payment_method'],
 			'positive' => false
 		);
 	else if ($data['method'] == "wallet" && !is_logged())
 		return array(
 			'status' => "wallet_not_logged",
-			'text' => "Nie można zapłacić portfelem, gdy nie jesteś zalogowany.",
+			'text' => $lang['no_login_no_wallet'],
 			'positive' => false
 		);
 	else if ($data['method'] == "transfer") {
 		if ($data['cost_transfer'] <= 1)
 			return array(
 				'status' => "too_little_for_transfer",
-				'text' => "Przelewem można płacić tylko za zakupy powyżej 1.00 {$settings['currency']}",
+				'text' => newsprintf($lang['transfer_above_amount'], $settings['currency']),
 				'positive' => false
 			);
 
@@ -322,7 +322,7 @@ function validate_payment($data)
 	else if ($data['method'] == "sms" && $data['tariff'] && !isset($payment->payment_api->smses[$data['tariff']]))
 		return array(
 			'status' => "no_sms_option",
-			'text' => "Nie można zapłacić SMSem za tę ilość usługi. Wybierz inny sposób płatności.",
+			'text' => $lang['no_sms_payment'],
 			'positive' => false
 		);
 
@@ -379,7 +379,7 @@ function validate_payment($data)
 
 		return array(
 			'status' => "purchased",
-			'text' => "Usługa została prawidłowo zakupiona.",
+			'text' => $lang['purchase_success'],
 			'positive' => true,
 			'data' => array('bsid' => $bought_service_id)
 		);
@@ -408,7 +408,7 @@ function pay_by_wallet($user, $cost)
 	if ($cost > $user['wallet'])
 		return array(
 			'status' => "no_money",
-			'text' => "Bida! Nie masz wystarczającej ilości kasy w portfelu. Doładuj portfel ;-)",
+			'text' => $lang['not_enough_money'],
 			'positive' => false
 		);
 
@@ -535,7 +535,7 @@ function delete_players_old_services()
 		if ($service_module->delete_player_service($row)) {
 			$delete_ids[] = $row['id'];
 			$players_services[] = $row;
-			log_info("AUTOMAT: Usunięto wygasłą usługę gracza. Auth Data: {$row['auth_data']} Serwer: {$row['server']} Usługa: {$row['service']} Typ: " . get_type_name($row['type']));
+			log_info(newsprintf($lang['expired_service_delete'], $row['auth_data'], $row['server'], $row['service'], get_type_name($row['type']));
 		}
 	}
 
@@ -741,8 +741,8 @@ function create_brick($text, $class = "", $alpha = 0.2)
 
 function get_platform($platform)
 {
-	if ($platform == "engine_amxx") return "Serwer gry (AMXX)";
-	else if ($platform == "engine_sm") return "Serwer gry (SM)";
+	if ($platform == "engine_amxx") return $lang['amxx_server'];
+	else if ($platform == "engine_sm") return $lang['sm_server'];
 
 	return $platform;
 }
@@ -904,5 +904,3 @@ function curl_get_contents($url, $timeout = 10)
 
 	return $resp;
 }
-
-// TODO: Language

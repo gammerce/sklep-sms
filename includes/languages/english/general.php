@@ -144,15 +144,32 @@ $lang['no_login_password'] = "Unfortunately, without providing nickname and logi
 $lang['login_success'] = "Logging in successful.";
 $lang['bad_pass_nick'] = "Unfortunately, passowrd or/and nickname are incorrect.";
 $lang['logout_success'] = "Logging out successful.";
-$lang['nick_occupied'] = "Given nickname is already taken.<br />";
-$lang['different_pass'] = "Given passwords are different.<br />";
-$lang['email_occupied'] = "Given e-mail is already taken.<br />";
-$lang['different_email'] = "Given e-mail addresses are different.<br />";
-$lang['wrong_antianswer'] = "Wrong answer to the antispam question.<br />";
+$lang['nick_occupied'] = "Given nickname is already taken.";
+$lang['different_pass'] = "Given passwords are different.";
+$lang['email_occupied'] = "Given e-mail is already taken.";
+$lang['different_email'] = "Given e-mail addresses are different.";
+$lang['wrong_anti_answer'] = "Wrong answer to the antispam question.";
 $lang['register_success'] = "Account registered successfully. In a moment you will be automatically logged in.";
-$lang['nick_no_account'] = "Given nickname is not assigned to any account.<br />";
-$lang['email_no_account'] = "Given e-mail address is not assigned to any account.<br />";
+$lang['nick_no_account'] = "Given nickname is not assigned to any account.";
+$lang['email_no_account'] = "Given e-mail address is not assigned to any account.";
 $lang['keyreset_error'] = "An error occured while sending e-mail with password reset link.";
 $lang['wrong_sender_email'] = "E-mail assigned you your account is incorrect. Report it to the shop owner.";
 $lang['email_sent'] = "E-mail password reset link has been sent to your mailbox.";
-$lang['oldpass_wrong'] = "Old password is incorrect.<br />";
+$lang['old_pass_wrong'] = "Old password is incorrect.";
+
+$lang['wrong_payment_method'] = "Wrong payment method was chosen.";
+$lang['no_login_no_wallet'] = "You can't pay by Wallet when not logged in.";
+$lang['no_sms_payment'] = "You can't pay by SMS for service quantity. Choose another payment method.";
+$lang['purchase_success'] = "Service purchased successfully.";
+
+$lang['not_enough_money'] = "Ups! You don't have enough money in wallet. Charge wallet ;-)";
+
+$lang['new_account'] = "Create new account. ID: {1} User name: {2}, IP: {3}";
+$lang['reset_key_email'] = "E-mail with password reset key has been sent. User: {1}({2}) E-mail: {3} Form data. User name: {4} E-mail: {5}";
+$lang['reset_pass'] = "Password has been reset. User ID: {1}.";
+
+$lang['transfer_above_amount'] = "You can pay by transfer only for purchase above 1.00 {1}";
+
+$lang['payment_accepted'] = "Payment for service accepted: {1} Amount: {2} Transaction ID: {3} Service: {4} {5}({6})({7})";
+$lang['transfer_accepted'] = "Transfer payment: {1} was accepted,but service module {2} was programmed incorrectly and purchase failed.";
+$lang['payment_not_accepted'] = "Transaction authorization failure: {1} Amount: {2} Service: {3} {4}({5})({6})";

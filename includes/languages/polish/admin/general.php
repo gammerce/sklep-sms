@@ -142,3 +142,33 @@ $lang['no_delete_sms_code'] = "Kod SMS nie został usunięty.";
 $lang['delete_log'] = "Log został prawidłowo usunięty.";
 $lang['no_delete_log'] = "Log nie został usunięty.";
 $lang['service_edit_unable'] = "Tej usługi nie da rady edytować.";
+
+$lang['amxx_server'] = "Serwer gry (AMXX)";
+$lang['sm_server'] = "Serwer gry (SM)";
+
+$lang['account_charge'] = "Admin {1}({2}) doładował konto użytkownika: {3}({4}) Kwota: {5} {6}";
+$lang['account_charge_success'] = "Prawidłowo doładowano konto użytkownika: {1} kwotą: {2} {3}";
+$lang['service_admin_delete'] = "Admin {1}({2}) usunął usługę gracza. ID: {3}";
+$lang['question_edit'] = "Admin {1}({2}) wyedytował pytanie anty-spamowe. ID: {3}";
+$lang['question_delete'] = "Admin {1}({2}) usunął pytanie anty-spamowe. ID: {3}";
+$lang['settings_admin_edit'] = "Admin {1}({2}) wyedytował ustawienia sklepu.";
+$lang['payment_admin_edit'] = "Admin {1}({2}) wyedytował metodę płatności. ID: {3}";
+$lang['service_admin_add'] = "Admin {1}({2}) dodał usługę. ID: {3}";
+$lang['service_admin_edit'] = "Admin {1}({2}) wyedytował usługę. ID: {3}";
+$lang['service_admin_delete'] = "Admin {1}({2}) usunął usługę. ID: {3}";
+$lang['server_admin_add'] = "Admin {1}({2}) dodał serwer. ID: {3}";
+$lang['server_admin_edit'] = "Admin {1}({2}) wyedytował serwer. ID: {3}";
+$lang['server_admin_delete'] = "Admin {1}({2}) usunął serwer. ID: {3}";
+$lang['user_admin_edit'] = "Admin {1}({2}) wyedytował użytkownika. ID: {3}";
+$lang['user_admin_delete'] = "Admin {1}({2}) usunął użytkownika. ID: {3}";
+$lang['group_admin_add'] = "Admin {1}({2}) dodał grupę. ID: {3}";
+$lang['group_admin_edit'] = "Admin {1}({2}) wyedytował grupę. ID: {3}";
+$lang['group_admin_delete'] = "Admin {1}({2}) usunął grupę. ID: {3}";
+$lang['tariff_admin_add'] = "Admin {1}({2}) dodał taryfę. ID: {3}";
+$lang['tariff_admin_edit'] = "Admin {1}({2}) wyedytował taryfę. ID: {3}";
+$lang['tariff_admin_delete'] = "Admin {1}({2}) usunął taryfę. ID: {3}";
+$lang['price_admin_edit'] = "Admin {1}({2}) wyedytował cenę. ID: {3}";
+$lang['price_admin_delete'] = "Admin {1}({2}) usunął cenę. ID: {3}";
+$lang['sms_code_admin_add'] = "Admin {1}({2}) dodał kod SMS. Kod: {3}, Taryfa: {4}";
+$lang['sms_code_admin_delete'] = "Admin {1}({2}) usunął kod SMS. ID: {3}";
+

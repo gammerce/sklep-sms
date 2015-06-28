@@ -89,3 +89,5 @@ $lang['languages'] = array(
 	'polish' => "Polski",
 	'english' => "English"
 );
+
+$lang['expired_service_delete'] = "AUTOMAT: Player's expired service removed. Auth Data: {1} Server: {2} Service: {3} Type: {4)";

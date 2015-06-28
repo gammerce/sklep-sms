@@ -104,13 +104,13 @@ if ($action == "login") {
 		array($username)
 	));
 	if ($db->num_rows($result))
-		$warnings['username'] .= $lang['nick_occupied'];
+		$warnings['username'] .= $lang['nick_occupied'] . "<br />";
 
 	// Hasło
 	if ($warning = check_for_warnings("password", $password))
 		$warnings['password'] = $warning;
 	if ($password != $passwordr)
-		$warnings['password_repeat'] .= $lang['different_pass'];
+		$warnings['password_repeat'] .= $lang['different_pass'] . "<br />";
 
 	if ($warning = check_for_warnings("email", $email))
 		$warnings['email'] = $warning;
@@ -122,10 +122,10 @@ if ($action == "login") {
 		array($email)
 	));
 	if ($db->num_rows($result))
-		$warnings['email'] .= $lang['email_occupied'];
+		$warnings['email'] .= $lang['email_occupied'] . "<br />";
 
 	if ($email != $emailr)
-		$warnings['email_repeat'] .= $lang['different_email'];
+		$warnings['email_repeat'] .= $lang['different_email'] . "<br />";
 
 	// Pobranie z bazy pytania antyspamowego
 	$result = $db->query($db->prepare(
@@ -135,7 +135,7 @@ if ($action == "login") {
 	));
 	$antispam_question = $db->fetch_array_assoc($result);
 	if (!in_array(strtolower($as_answer), explode(";", $antispam_question['answers'])))
-		$warnings['as_answer'] .= $lang['wrong_antianswer'];
+		$warnings['as_answer'] .= $lang['wrong_anti_answer'] . "<br />";
 
 	// Błędy
 	if (!empty($warnings)) {
@@ -156,7 +156,7 @@ if ($action == "login") {
 	));
 
 	// LOGING
-	log_info("Założono nowe konto. ID: " . $db->last_id() . " Nazwa Użytkownika: {$username}, IP: {$user['ip']}");
+	log_info(newsprintf($lang['new_account'], $db->last_id(), $username, $user['ip']));
 
 	json_output("registered", $lang['register_success'], 1, $data);
 } else if ($action == "forgotten_password") {
@@ -177,7 +177,7 @@ if ($action == "login") {
 			));
 
 			if (!$db->num_rows($result))
-				$warnings['username'] .= $lang['nick_no_account'];
+				$warnings['username'] .= $lang['nick_no_account'] . "<br />";
 			else
 				$row = $db->fetch_array_assoc($result);
 		}
@@ -194,7 +194,7 @@ if ($action == "login") {
 			));
 
 			if (!$db->num_rows($result))
-				$warnings['email'] .= $lang['email_no_account'];
+				$warnings['email'] .= $lang['email_no_account'] . "<br />";
 			else
 				$row = $db->fetch_array_assoc($result);
 		}
@@ -231,7 +231,7 @@ if ($action == "login") {
 	else if ($ret == "wrong_email")
 		json_output("wrong_sender_email", $lang['wrong_email'], 0);
 	else if ($ret == "sent") {
-		log_info("Wysłano e-maila z kodem do zresetowania hasła. Użytkownik: {$user2['username']}({$user2['uid']}) E-mail: {$user2['email']} Dane formularza. Nazwa użytkownika: {$username} E-mail: {$email}");
+		log_info(newsprintf($lang['reset_key_email'], $user2['username'], $user2['uid'], $user2['email'], $username, $email));
 		$data['username'] = $user2['username'];
 		json_output("sent", $lang['email_sent'], 1, $data);
 	}
@@ -275,7 +275,7 @@ if ($action == "login") {
 	));
 
 	// LOGING
-	log_info("Zresetowano hasło. ID Użytkownika: {$uid}.");
+	log_info(newsprintf($lang['reset_pass'], $uid));
 
 	json_output("password_changed", $lang['password_changed'], 1);
 } else if ($action == "change_password") {
@@ -293,7 +293,7 @@ if ($action == "login") {
 	}
 
 	if (hash_password($oldpass, $user['salt']) != $user['password']) {
-		$warnings['old_pass'] .= $lang['oldpass_wrong'];
+		$warnings['old_pass'] .= $lang['old_pass_wrong'] . "<br />";
 	}
 
 	// Błędy

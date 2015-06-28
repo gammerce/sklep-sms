@@ -145,15 +145,32 @@ $lang['no_login_password'] = "No niestety, ale bez podania nazwy użytkownika or
 $lang['login_success'] = "Logowanie przebiegło bez większych trudności.";
 $lang['bad_pass_nick'] = "No niestety, ale hasło i/lub nazwa użytkownika są błędne.";
 $lang['logout_success'] = "Wylogowywanie przebiegło bez większych trudności.";
-$lang['nick_occupied'] = "Podana nazwa użytkownika jest już zajęta.<br />";
-$lang['different_pass'] = "Podane hasła różnią się.<br />";
-$lang['email_occupied'] = "Podany e-mail jest już zajęty.<br />";
-$lang['different_email'] = "Podane e-maile różnią się.<br />";
-$lang['wrong_antianswer'] = "Błędna odpowiedź na pytanie antyspamowe.<br />";
+$lang['nick_occupied'] = "Podana nazwa użytkownika jest już zajęta.";
+$lang['different_pass'] = "Podane hasła różnią się.";
+$lang['email_occupied'] = "Podany e-mail jest już zajęty.";
+$lang['different_email'] = "Podane e-maile różnią się.";
+$lang['wrong_anti_answer'] = "Błędna odpowiedź na pytanie antyspamowe.";
 $lang['register_success'] = "Konto zostało prawidłowo zarejestrowane. Za chwilę nastąpi automatyczne zalogowanie.";
-$lang['nick_no_account'] = "Podana nazwa użytkownika nie jest przypisana do żadnego konta.<br />";
-$lang['email_no_account'] = "Podany e-mail nie jest przypisany do żadnego konta.<br />";
+$lang['nick_no_account'] = "Podana nazwa użytkownika nie jest przypisana do żadnego konta.";
+$lang['email_no_account'] = "Podany e-mail nie jest przypisany do żadnego konta.";
 $lang['keyreset_error'] = "Wystąpił błąd podczas wysyłania e-maila z linkiem do zresetowania hasła.";
 $lang['wrong_sender_email'] = "E-mail przypisany do Twojego konta jest błędny. Zgłoś to właścicielowi sklepu.";
 $lang['email_sent'] = "E-mail wraz z linkiem do zresetowania hasła został wysłany na Twoją skrzynkę pocztową.";
-$lang['oldpass_wrong'] = "Stare hasło jest nieprawidłowe.<br />";
+$lang['old_pass_wrong'] = "Stare hasło jest nieprawidłowe.";
+
+$lang['wrong_payment_method'] = "Wybrano błędny sposób zapłaty.";
+$lang['no_login_no_wallet'] = "Nie można zapłacić portfelem, gdy nie jesteś zalogowany.";
+$lang['no_sms_payment'] = "Nie można zapłacić SMSem za tę ilość usługi. Wybierz inny sposób płatności.";
+$lang['purchase_success'] = "Usługa została prawidłowo zakupiona.";
+
+$lang['not_enough_money'] = "Bida! Nie masz wystarczającej ilości kasy w portfelu. Doładuj portfel ;-)";
+
+$lang['new_account'] = "Założono nowe konto. ID: {1} Nazwa Użytkownika: {2}, IP: {3}";
+$lang['reset_key_email'] = "Wysłano e-maila z kodem do zresetowania hasła. Użytkownik: {1}({2}) E-mail: {3} Dane formularza. Nazwa użytkownika: {4} E-mail: {5}";
+$lang['reset_pass'] = "Zresetowano hasło. ID Użytkownika: {1}.";
+
+$lang['transfer_above_amount'] = "Przelewem można płacić tylko za zakupy powyżej 1.00 {1}";
+
+$lang['payment_accepted'] = "Zaakceptowano płatność za usługę: {1} Kwota: {2} ID transakcji: {3} Usługa: {4} {5}({6})({7})";
+$lang['transfer_accepted'] = "Płatność przelewem: {1} została zaakceptowana, jednakże moduł usługi {2} został źle zaprogramowany i nie doszło do zakupu.";
+$lang['payment_not_accepted'] = "Nieudana autoryzacja transakcji: {1} Kwota: {2} Usługa: {3} {4}({5})({6})";
