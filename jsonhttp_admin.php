@@ -1019,7 +1019,7 @@ if ($action == "charge_wallet") {
 
 	log_info("Admin {$user['username']}({$user['uid']}) dodał kod SMS. Kod: {$_POST['code']}, Taryfa: {$_POST['tariff']}");
 	// Zwróć info o prawidłowym dodaniu
-	json_output("added", $lang['SMScode_add'], 1);
+	json_output("added", $lang['sms_code_add'], 1);
 } else if ($action == "delete_sms_code") {
 	if (!get_privilages("manage_sms_codes")) {
 		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);

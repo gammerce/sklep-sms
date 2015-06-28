@@ -229,7 +229,7 @@ if ($action == "login") {
 	if ($ret == "not_sent")
 		json_output("not_sent", $lang['keyreset_error'], 0);
 	else if ($ret == "wrong_email")
-		json_output("wrong_email", $lang['wrong_email'], 0);
+		json_output("wrong_sender_email", $lang['wrong_email'], 0);
 	else if ($ret == "sent") {
 		log_info("Wysłano e-maila z kodem do zresetowania hasła. Użytkownik: {$user2['username']}({$user2['uid']}) E-mail: {$user2['email']} Dane formularza. Nazwa użytkownika: {$username} E-mail: {$email}");
 		$data['username'] = $user2['username'];

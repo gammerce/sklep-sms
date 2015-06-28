@@ -67,7 +67,6 @@ $lang['form_wrong_filled'] = "Nie wszystkie pola formularza zostały prawidłowo
 
 $lang['nickpass'] = "Nick + Hasło";
 $lang['ippass'] = "IP + Hasło";
-$lang['sid'] = "SteamID";
 
 $lang['not_logged'] = "Nie jesteś zalogowany/a";
 $lang['logged'] = "Jesteś zalogowany/a";

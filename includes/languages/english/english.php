@@ -37,7 +37,7 @@ $lang['wrong_cron_key'] = "It's not the way you hacker.";
 $lang['email_was_sent'] = "An e-mail was sent to address: {1} saying: {2}";
 
 $lang['username_chars_warn'] = "Nickname includes forbidden chars (<,>,&,\")";
-$lang['wrong_email'] = "Given e-mail address is incorrect.";
+$lang['wrong_email'] = "Given e-mail is incorrect.";
 $lang['wrong_ip'] = "Given IP address is incorrect.";
 $lang['wrong_sid'] = "Given Steam ID is incorrect.";
 $lang['return_code_length_warn'] = "Given return code is a little bit too long.";

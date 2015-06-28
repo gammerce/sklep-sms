@@ -7,7 +7,6 @@ $lang['payment_log'] = "Payment log";
 $lang['purchase'] = "Service purchase";
 $lang['register'] = "Registration";
 $lang['reset_password'] = "Reset password";
-$lang['take_over_service'] = "Take over service";
 $lang['transfer_finalized'] = "Transaction finalized";
 
 $lang['welcome_message'] = "Welcome to the web store!";
@@ -30,7 +29,6 @@ $lang['service'] = "Service";
 $lang['nickipsid'] = "Nickname / IP / SteamID";
 $lang['nick'] = "Nickname";
 $lang['ip'] = "IP";
-$lang['sid'] = "SteamID";
 $lang['server'] = "Server";
 $lang['expire'] = "Expires";
 $lang['date'] = "Date";
@@ -87,7 +85,6 @@ $lang['take_over_service'] = "Take over service";
 $lang['transfer'] = "Transfer";
 
 $lang['transfer_id'] = "Payment ID";
-$lang['transfer_error'] = "An error occured while receiving transfer data.";
 
 $lang['transfer_error'] = "Unfortunately, transfer payment failed.";
 $lang['transfer_unverified'] = "Unfortunately, transfer data failed to be verified correctly.";
@@ -156,6 +153,6 @@ $lang['register_success'] = "Account registered successfully. In a moment you wi
 $lang['nick_no_account'] = "Given nickname is not assigned to any account.<br />";
 $lang['email_no_account'] = "Given e-mail address is not assigned to any account.<br />";
 $lang['keyreset_error'] = "An error occured while sending e-mail with password reset link.";
-$lang['wrong_email'] = "E-mail address assigned you your account is incorrect. Report it to the servis admin.";
+$lang['wrong_sender_email'] = "E-mail assigned you your account is incorrect. Report it to the shop owner.";
 $lang['email_sent'] = "E-mail password reset link has been sent to your mailbox.";
 $lang['oldpass_wrong'] = "Old password is incorrect.<br />";

@@ -7,7 +7,6 @@ $lang['payment_log'] = "Historia płatności";
 $lang['purchase'] = "Zakup usługi";
 $lang['register'] = "Rejestracja";
 $lang['reset_password'] = "Zresetuj hasło";
-$lang['take_over_service'] = "Przejmij usługę";
 $lang['transfer_finalized'] = "Transakcja sfinalizowana";
 
 $lang['welcome_message'] = "Witaj w sklepie internetowym!";
@@ -87,7 +86,6 @@ $lang['take_over_service'] = "Przejmij usługę";
 $lang['transfer'] = "Przelew";
 
 $lang['payment_id'] = "ID płatności";
-$lang['transfer_error'] = "Wystąpił błąd podczas przyjmowania danych o przelewie.";
 
 $lang['transfer_error'] = "Niestety, ale płatność za pomocą przelewu zakończyła się niepowodzeniem.";
 $lang['transfer_unverified'] = "Niestety, ale nie udało się zweryfikować poprawności danych przelewu.";
@@ -156,6 +154,6 @@ $lang['register_success'] = "Konto zostało prawidłowo zarejestrowane. Za chwil
 $lang['nick_no_account'] = "Podana nazwa użytkownika nie jest przypisana do żadnego konta.<br />";
 $lang['email_no_account'] = "Podany e-mail nie jest przypisany do żadnego konta.<br />";
 $lang['keyreset_error'] = "Wystąpił błąd podczas wysyłania e-maila z linkiem do zresetowania hasła.";
-$lang['wrong_email'] = "E-mail przypisany do Twojego konta jest błędny. Zgłoś to administratorowi serwisu.";
+$lang['wrong_sender_email'] = "E-mail przypisany do Twojego konta jest błędny. Zgłoś to właścicielowi sklepu.";
 $lang['email_sent'] = "E-mail wraz z linkiem do zresetowania hasła został wysłany na Twoją skrzynkę pocztową.";
 $lang['oldpass_wrong'] = "Stare hasło jest nieprawidłowe.<br />";

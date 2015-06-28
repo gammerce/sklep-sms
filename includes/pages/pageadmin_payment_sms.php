@@ -8,7 +8,7 @@ class PageAdminPaymentSms extends PageAdmin
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang['payment_sms'];
+		$this->title = $lang['payments_sms'];
 
 		parent::__construct();
 	}
