@@ -1,7 +1,5 @@
 <?php
 
-$lang['payment_id'] = "Payment ID";
-
 $lang['must_choose_amount'] = "You have to choose quantity / service duration period.";
 $lang['must_choose_server'] = "You have to choose server for this service";
 $lang['must_choose_type'] = "You have to choose purchase type.";

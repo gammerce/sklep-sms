@@ -1034,8 +1034,8 @@ if ($action == "charge_wallet") {
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($db->affected_rows()) {
 		log_info("Admin {$user['username']}({$user['uid']}) usunął kod SMS. ID: {$_POST['id']}");
-		json_output("deleted", $lang['delete_SMScode'], 1);
-	} else json_output("not_deleted", $lang['no_delete_SMScode'], 0);
+		json_output("deleted", $lang['delete_sms_code'], 1);
+	} else json_output("not_deleted", $lang['no_delete_sms_code'], 0);
 } else if ($action == "delete_log") {
 	if (!get_privilages("manage_logs")) {
 		json_output("not_logged_in", $lang['not_logged_or_no_perm'], 0);
