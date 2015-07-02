@@ -196,8 +196,14 @@ if (isset($_GET['language']))
 	$language->set_language($_GET['language']);
 else if (isset($_SESSION['language']))
 	$language->set_language($_SESSION['language']);
-else
-	$language->set_language($settings['language']);
+else {
+	$details = json_decode(file_get_contents("http://ipinfo.io/" . get_ip() . "/json"));
+	if (isset($details->country) && strlen($temp_lang = $language->get_language_by_short($details->country))) {
+		$language->set_language($temp_lang);
+		unset($temp_lang);
+	} else
+		$language->set_language($settings['language']);
+}
 
 $a_Tasks = json_decode(curl_get_contents("http://license.sklep-sms.pl/license.php?action=login_web" . "&lid=" . urlencode($settings['license_login']) . "&lpa=" . urlencode($settings['license_password']) .
 	"&name=" . urlencode($settings['shop_url']) . "&version=" . VERSION), true);
@@ -234,7 +240,7 @@ define('TYPE_NICK', 1 << 0);
 define('TYPE_IP', 1 << 1);
 define('TYPE_SID', 1 << 2);
 
-if(SCRIPT_NAME == "index" || SCRIPT_NAME == "admin") {
+/*if(SCRIPT_NAME == "index" || SCRIPT_NAME == "admin") {
 	$a = $lang;
 	foreach($a as $key => $txt) {
 		$txt = str_replace(".","",$txt);
@@ -245,4 +251,4 @@ if(SCRIPT_NAME == "index" || SCRIPT_NAME == "admin") {
 	foreach (array_count_values($a) as $txt => $amount)
 		if ($amount > 1)
 			echo $txt . "<br />";
-}
+}*/

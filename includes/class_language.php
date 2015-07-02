@@ -4,15 +4,15 @@ class Language
 {
 
 	private $language;
-    private $language_short;
-    private $languages;
+	private $language_short;
+	private $languages;
 
 	function __construct($lang = "polish")
 	{
-        $this->languages = array(
-            'polish'    => "pl",
-            'english'   => "en"
-        );
+		$this->languages = array(
+			'polish' => "pl",
+			'english' => "en"
+		);
 		$this->set_language($lang);
 	}
 
@@ -21,10 +21,10 @@ class Language
 		return $this->language;
 	}
 
-    public function get_current_language_short()
-    {
-        return $this->language_short;
-    }
+	public function get_current_language_short()
+	{
+		return $this->language_short;
+	}
 
 	public function set_language($language)
 	{
@@ -37,7 +37,11 @@ class Language
 
 		global $lang;
 		$this->language = $language;
-        $this->language_short = if_isset($this->languages[$language], "");
+		$this->language_short = if_isset($this->languages[$language], "");
+
+		// Ładujemy globalną bibliotekę językową
+		if (file_exists(SCRIPT_ROOT . "includes/languages/global.php"))
+			include SCRIPT_ROOT . "includes/languages/global.php";
 
 		// Ładujemy ogólną bibliotekę językową
 		if (file_exists(SCRIPT_ROOT . "includes/languages/{$language}/{$language}.php"))
@@ -54,6 +58,11 @@ class Language
 				if (substr($file, -4) == ".php" && $file != "{$language}.php")
 					include SCRIPT_ROOT . "includes/languages/{$language}/{$file}";
 		}
+	}
+
+	public function get_language_by_short($short)
+	{
+		return array_search(strtolower($short), $this->languages);
 	}
 
 }

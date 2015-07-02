@@ -49,7 +49,7 @@ class PageAdminPriceList extends PageAdmin
 				$row['server'] = $temp_server['name'];
 				unset($temp_server);
 			} else
-				$row['server'] = "Wszystkie";
+				$row['server'] = $lang['all_servers'];
 
 			$service = $heart->get_service($row['service']);
 

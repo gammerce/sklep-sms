@@ -29,7 +29,6 @@ $lang['service'] = "Usługa";
 $lang['nickipsid'] = "Nick / IP / SteamID";
 $lang['nick'] = "Nick";
 $lang['ip'] = "IP";
-$lang['sid'] = "SteamID";
 $lang['server'] = "Serwer";
 $lang['expire'] = "Wygasa";
 $lang['date'] = "Data";

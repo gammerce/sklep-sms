@@ -53,17 +53,17 @@ if ($action == "login") {
 
 	json_output("logged_out", $lang['logout_success'], 1);
 } else if ($action == "set_session_language") {
-    session_write_close();
-    session_name("admin");
-    session_start();
-    $_SESSION['language'] = escape_filename($_POST['language']);
-    session_write_close();
-
-    session_name("user");
-    session_start();
+	session_write_close();
+	session_name("admin");
+	session_start();
 	$_SESSION['language'] = escape_filename($_POST['language']);
-    session_write_close();
-    exit;
+	session_write_close();
+
+	session_name("user");
+	session_start();
+	$_SESSION['language'] = escape_filename($_POST['language']);
+	session_write_close();
+	exit;
 } else if ($action == "register") {
 	if (is_logged())
 		json_output("logged_in", $lang['logged'], 0);
@@ -520,6 +520,10 @@ if ($action == "login") {
 	}
 
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
+} else if ($_GET['action'] == "get_income") {
+	$user['privilages']['view_income'] = $user['privilages']['acp'] = true;
+	$page = new PageAdminIncome();
+	output_page($page->get_content($_GET, $_POST), "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "execute_service_action") {
 	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !class_has_interface($service_module, "IServiceExecuteAction"))
 		output_page($lang['bad_module'], "Content-type: text/plain; charset=\"UTF-8\"");

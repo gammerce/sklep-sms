@@ -172,3 +172,5 @@ $lang['price_admin_delete'] = "Admin {1}({2}) usunął cenę. ID: {3}";
 $lang['sms_code_admin_add'] = "Admin {1}({2}) dodał kod SMS. Kod: {3}, Taryfa: {4}";
 $lang['sms_code_admin_delete'] = "Admin {1}({2}) usunął kod SMS. ID: {3}";
 
+$lang['all_servers'] = "Wszystkie";
+
