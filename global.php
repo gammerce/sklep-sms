@@ -16,8 +16,8 @@ if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
 	session_start();
 }
 
-if (in_array(SCRIPT_NAME, array("admin", "index")))
-	var_dump($_SESSION);
+/*if (in_array(SCRIPT_NAME, array("admin", "index")))
+	var_dump($_SESSION)*/
 
 $working_dir = dirname(__FILE__) ? dirname(__FILE__) : '.';
 require_once $working_dir . "/includes/init.php";
