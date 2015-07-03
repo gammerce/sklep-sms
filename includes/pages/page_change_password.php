@@ -11,7 +11,7 @@ class PageChangePassword extends PageSimple
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang['change_password'];
+		$this->title = $lang->change_password;
 
 		parent::__construct();
 	}

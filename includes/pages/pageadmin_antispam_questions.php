@@ -10,7 +10,7 @@ class PageAdminAntispamQuestions extends PageAdmin
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang['antispam_questions'];
+		$this->title = $lang->antispam_questions;
 
 		parent::__construct();
 	}
@@ -37,13 +37,13 @@ class PageAdminAntispamQuestions extends PageAdmin
 				$button_edit = create_dom_element("img", "", array(
 					'id' => "edit_row_{$i}",
 					'src' => "images/edit.png",
-					'title' => $lang['edit'] . " " . $row['tariff']
+					'title' => $lang->edit . " " . $row['tariff']
 				));
 
 				$button_delete = create_dom_element("img", "", array(
 					'id' => "delete_row_{$i}",
 					'src' => "images/bin.png",
-					'title' => $lang['delete'] . " " . $row['tariff']
+					'title' => $lang->delete . " " . $row['tariff']
 				));
 			} else
 				$button_delete = $button_edit = "";
@@ -64,7 +64,7 @@ class PageAdminAntispamQuestions extends PageAdmin
 			$buttons = create_dom_element("input", "", array(
 				'id' => "button_add_antispam_question",
 				'type' => "button",
-				'value' => $lang['add_antispam_question']
+				'value' => $lang->add_antispam_question
 			));
 
 		// Pobranie paginacji

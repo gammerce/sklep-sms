@@ -10,7 +10,7 @@ class PageAdminUpdateServers extends PageAdmin
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang['update_servers'];
+		$this->title = $lang->update_servers;
 
 		parent::__construct();
 	}

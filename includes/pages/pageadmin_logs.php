@@ -10,7 +10,7 @@ class PageAdminLogs extends PageAdmin
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang['logs'];
+		$this->title = $lang->logs;
 
 		parent::__construct();
 	}
@@ -45,7 +45,7 @@ class PageAdminLogs extends PageAdmin
 				$button_delete = create_dom_element("img", "", array(
 					'id' => "delete_row_{$i}",
 					'src' => "images/bin.png",
-					'title' => $lang['delete'] . " " . $row['id']
+					'title' => $lang->delete . " " . $row['id']
 				));
 			else
 				$button_delete = "";

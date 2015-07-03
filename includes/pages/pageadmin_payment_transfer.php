@@ -8,7 +8,7 @@ class PageAdminPaymentTransfer extends PageAdmin
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang['payments_transfer'];
+		$this->title = $lang->payments_transfer;
 
 		parent::__construct();
 	}

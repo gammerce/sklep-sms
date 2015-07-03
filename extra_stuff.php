@@ -24,7 +24,7 @@ switch ($action) {
 		if (($service_module = $heart->get_service_module($_GET['service'])) !== NULL)
 			$output = $service_module->get_full_description();
 
-		$heart->page_title = $lang['description'] . ": " . $service_module->service['name'];
+		$heart->page_title = $lang->description . ": " . $service_module->service['name'];
 
 		$stylesheets[] = "{$settings['shop_url_slash']}styles/extra_stuff/long_desc.css?version=" . VERSION;
 		parse_scripts_styles($scripts, $stylesheets);

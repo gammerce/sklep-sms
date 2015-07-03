@@ -10,7 +10,7 @@ class PageAdminTransactionServices extends PageAdmin
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang['transaction_services'];
+		$this->title = $lang->transaction_services;
 
 		parent::__construct();
 	}
@@ -30,14 +30,14 @@ class PageAdminTransactionServices extends PageAdmin
 		$tbody = "";
 		while ($row = $db->fetch_array_assoc($result)) {
 			$i += 1;
-			$row['sms'] = $row['sms'] ? strtoupper($lang['yes']) : strtoupper($lang['no']);
-			$row['transfer'] = $row['transfer'] ? strtoupper($lang['yes']) : strtoupper($lang['no']);
+			$row['sms'] = $row['sms'] ? strtoupper($lang->yes) : strtoupper($lang->no);
+			$row['transfer'] = $row['transfer'] ? strtoupper($lang->yes) : strtoupper($lang->no);
 
 			// Pobranie przycisku edycji
 			$button_edit = create_dom_element("img", "", array(
 				'id' => "edit_row_{$i}",
 				'src' => "images/edit.png",
-				'title' => $lang['edit'] . " " . $row['name']
+				'title' => $lang->edit . " " . $row['name']
 			));
 
 			// Pobranie danych do tabeli

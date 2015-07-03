@@ -8,7 +8,7 @@ abstract class PageAdmin extends Page
 	{
 		if (!get_privilages($this->privilage)) {
 			global $lang;
-			return $lang['no_privilages'];
+			return $lang->no_privilages;
 		}
 
 		return $this->content($get, $post);

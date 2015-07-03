@@ -10,7 +10,7 @@ class PageAdminUsers extends PageAdmin
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang['users'];
+		$this->title = $lang->users;
 
 		parent::__construct();
 	}
@@ -61,12 +61,12 @@ class PageAdminUsers extends PageAdmin
 				$button_edit = create_dom_element("img", "", array(
 					'id' => "edit_row_{$i}",
 					'src' => "images/edit.png",
-					'title' => $lang['edit'] . " " . $row['username']
+					'title' => $lang->edit . " " . $row['username']
 				));
 				$button_delete = create_dom_element("img", "", array(
 					'id' => "delete_row_{$i}",
 					'src' => "images/bin.png",
-					'title' => $lang['delete'] . " " . $row['username']
+					'title' => $lang->delete . " " . $row['username']
 				));
 			} else
 				$button_charge = $button_delete = $button_edit = "";

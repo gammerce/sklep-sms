@@ -27,7 +27,7 @@ if ($action == "purchase_service") {
 	$service_module = $heart->get_service_module(urldecode($_GET['service']));
 
 	if ($service_module === NULL)
-		xml_output("bad_module", $lang['bad_module'], 0);
+		xml_output("bad_module", $lang->bad_module, 0);
 
 	// Sprawdzamy dane zakupu
 	$return_validation = $service_module->validate_purchase_data(array(
@@ -48,7 +48,7 @@ if ($action == "purchase_service") {
 
 	// Moduł nie posiada metody validate_purchase_data
 	if ($return_validation === FALSE)
-		xml_output("bad_module", $lang['bad_module'], 0);
+		xml_output("bad_module", $lang->bad_module, 0);
 
 	// Są jakieś błędy przy sprawdzaniu danych
 	if (isset($return_validation['data']['warnings'])) {

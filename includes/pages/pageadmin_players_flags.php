@@ -11,7 +11,7 @@ class PageAdminPlayersFlags extends PageAdmin
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang['players_flags'];
+		$this->title = $lang->players_flags;
 
 		parent::__construct();
 	}
@@ -39,7 +39,7 @@ class PageAdminPlayersFlags extends PageAdmin
 				if (!$row[$this->flags[$j]])
 					$row[$this->flags[$j]] = " ";
 				else if ($row[$this->flags[$j]] == -1)
-					$row[$this->flags[$j]] = $lang['never'];
+					$row[$this->flags[$j]] = $lang->never;
 				else
 					$row[$this->flags[$j]] = date($settings['date_format'], $row[$this->flags[$j]]);
 

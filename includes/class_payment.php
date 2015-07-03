@@ -20,7 +20,7 @@ class Payment
 
 		// API podanej usługi nie istnieje.
 		if ($this->payment_api === NULL) {
-			output_page(newsprintf($lang['payment']['bad_service'], $this->service));
+			output_page($lang->sprintf($lang->payment['bad_service'], $this->service));
 		}
 	}
 
@@ -32,7 +32,7 @@ class Payment
 		if (!$this->payment_api->data['sms']) {
 			return array(
 				'status' => "NO_SMS_SERVE",
-				'text' => json_encode($this->payment_api->data)//$lang['sms']['info']['no_sms_serve']
+				'text' => json_encode($this->payment_api->data)//$lang->sms['info']['no_sms_serve']
 			);
 		}
 
@@ -65,7 +65,7 @@ class Payment
 				// Ustawienie wartości, jakby kod był prawidłowy
 				$sms_return['status'] = "OK";
 
-				log_info(newsprintf($lang['payment']['remove_code_from_db'], $db_code['code'], $db_code['tariff']));
+				log_info($lang->sprintf($lang->payment['remove_code_from_db'], $db_code['code'], $db_code['tariff']));
 			}
 		}
 
@@ -88,57 +88,57 @@ class Payment
 				array($sms_code, $sms_return['tariff'])
 			));
 
-			log_info(newsprintf($lang['add_code_to_reuse'], $sms_code, $sms_return['tariff'], $user['username'], $user['uid'], $user['ip'], $tariff));
+			log_info($lang->sprintf($lang->add_code_to_reuse, $sms_code, $sms_return['tariff'], $user['username'], $user['uid'], $user['ip'], $tariff));
 		} else if ($sms_return['status'] != "NO_SMS_SERVE")
-			log_info(newsprintf($lang['bad_sms_code_used'], $user['username'], $user['uid'], $user['ip'], $sms_code,
+			log_info($lang->sprintf($lang->bad_sms_code_used, $user['username'], $user['uid'], $user['ip'], $sms_code,
 				$this->payment_api->data['sms_text'], $sms_number, $sms_return['status']));
 
 		switch ($sms_return['status']) {
 			// Prawidłowy kod zwrotny
 			case "OK":
-				$output['text'] = $lang['sms']['info']['ok'];
+				$output['text'] = $lang->sms['info']['ok'];
 				break;
 			// Nieprawidlowy kod zwrotny
 			case "BAD_CODE":
-				$output['text'] = $lang['sms']['info']['bad_code'];
+				$output['text'] = $lang->sms['info']['bad_code'];
 				break;
 			// Nieprawidlowy kod zwrotny
 			case "BAD_NUMBER":
-				$output['text'] = $lang['sms']['info']['bad_number'];
+				$output['text'] = $lang->sms['info']['bad_number'];
 				break;
 			// Błąd API
 			case "BAD_API":
-				$output['text'] = $lang['sms']['info']['bad_api'];
+				$output['text'] = $lang->sms['info']['bad_api'];
 				break;
 			// Błędny email
 			case "BAD_EMAIL":
-				$output['text'] = $lang['sms']['info']['bad_email'];
+				$output['text'] = $lang->sms['info']['bad_email'];
 				break;
 			// Nie podano wszystkich potrzebnych danych
 			case "BAD_DATA":
-				$output['text'] = $lang['sms']['info']['bad_data'];
+				$output['text'] = $lang->sms['info']['bad_data'];
 				break;
 			// Błąd serwera weryfikującego kod
 			case "SERVER_ERROR":
-				$output['text'] = $lang['sms']['info']['server_error'];
+				$output['text'] = $lang->sms['info']['server_error'];
 				break;
 			// Blad konfiguracji uslugi
 			case "SERVICE_ERROR":
-				$output['text'] = $lang['sms']['info']['service_error'];
+				$output['text'] = $lang->sms['info']['service_error'];
 				break;
 			// Błąd
 			case "ERROR":
-				$output['text'] = $lang['sms']['info']['error'];
+				$output['text'] = $lang->sms['info']['error'];
 				break;
 			// Nie mozna sie polaczyc z serwerem sprawdzajacym
 			case "NO_CONNECTION":
-				$output['text'] = $lang['sms']['info']['no_connection'];
+				$output['text'] = $lang->sms['info']['no_connection'];
 				break;
 			case "NO_SMS_SERVE":
-				$output['text'] = $lang['sms']['info']['no_sms_serve'];
+				$output['text'] = $lang->sms['info']['no_sms_serve'];
 				break;
 			default:
-				$output['text'] = if_isset($output['text'], $lang['sms']['info']['dunno']);
+				$output['text'] = if_isset($output['text'], $lang->sms['info']['dunno']);
 		}
 
 		$output['status'] = $sms_return['status'];
@@ -153,14 +153,14 @@ class Payment
 		if (!$this->payment_api->data['transfer']) {
 			return array(
 				'status' => "NO_TRANSFER_SERVE",
-				'text' => $lang['no_transfer_serve']
+				'text' => $lang->no_transfer_serve
 			);
 		}
 
 		if (!class_has_interface($this->payment_api, "IPaymentTransfer"))
 			return array(
 				'status' => "NO_TRANSFER_SERVE",
-				'text' => $lang['no_transfer_serve']
+				'text' => $lang->no_transfer_serve
 			);
 
 		// Dodajemy extra info
@@ -172,7 +172,7 @@ class Payment
 
 		return array(
 			'status' => "transfer",
-			'text' => $lang['transfer_ok'],
+			'text' => $lang->transfer_ok,
 			'positive' => true,
 			'data' => array('data' => $this->payment_api->prepare_transfer($data)) // Przygotowuje dane płatności transferem
 		);

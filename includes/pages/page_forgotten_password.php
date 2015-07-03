@@ -11,7 +11,7 @@ class PageForgottenPassword extends PageSimple
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang['forgotten_password'];
+		$this->title = $lang->forgotten_password;
 
 		parent::__construct();
 	}

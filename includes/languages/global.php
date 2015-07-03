@@ -1,6 +1,6 @@
 <?php
 
-$lang['languages'] = array(
+$l['languages'] = array(
 	'polish' => "Polski",
 	'english' => "English"
 );

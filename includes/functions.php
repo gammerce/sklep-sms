@@ -11,11 +11,11 @@
  */
 function get_template($title, $install = false, $eslashes = true, $htmlcomments = true)
 {
-	global $settings, $language;
+	global $settings, $lang;
 
 	if (!$install) {
-		if (strlen($language->get_current_language_short())) {
-			$filename = $title . "." . $language->get_current_language_short();
+		if (strlen($lang->get_current_language_short())) {
+			$filename = $title . "." . $lang->get_current_language_short();
 			$temp = SCRIPT_ROOT . "themes/{$settings['theme']}/{$filename}.html";
 			if (file_exists($temp))
 				$path = $temp;
@@ -43,8 +43,8 @@ function get_template($title, $install = false, $eslashes = true, $htmlcomments 
 
 		$template = file_get_contents($path);
 	} else {
-		if (strlen($language->get_current_language_short())) {
-			$filename = $title . "." . $language->get_current_language_short();
+		if (strlen($lang->get_current_language_short())) {
+			$filename = $title . "." . $lang->get_current_language_short();
 			$temp = SCRIPT_ROOT . "install/templates/{$filename}.html";
 			if (file_exists($temp))
 				$path = $temp;
@@ -269,7 +269,7 @@ function validate_payment($data)
 	if ($service_module === NULL)
 		return array(
 			'status' => "wrong_module",
-			'text' => $lang['bad_module'],
+			'text' => $lang->bad_module,
 			'positive' => false
 		);
 
@@ -290,39 +290,39 @@ function validate_payment($data)
 	if (!in_array($data['method'], array("sms", "transfer", "wallet")))
 		return array(
 			'status' => "wrong_method",
-			'text' => $lang['wrong_payment_method'],
+			'text' => $lang->wrong_payment_method,
 			'positive' => false
 		);
 	else if ($data['method'] == "wallet" && !is_logged())
 		return array(
 			'status' => "wallet_not_logged",
-			'text' => $lang['no_login_no_wallet'],
+			'text' => $lang->no_login_no_wallet,
 			'positive' => false
 		);
 	else if ($data['method'] == "transfer") {
 		if ($data['cost_transfer'] <= 1)
 			return array(
 				'status' => "too_little_for_transfer",
-				'text' => newsprintf($lang['transfer_above_amount'], $settings['currency']),
+				'text' => $lang->sprintf($lang->transfer_above_amount, $settings['currency']),
 				'positive' => false
 			);
 
 		if (!$payment->transfer_available())
 			return array(
 				'status' => "transfer_unavailable",
-				'text' => $lang['transfer_unavailable'],
+				'text' => $lang->transfer_unavailable,
 				'positive' => false
 			);
 	} else if ($data['method'] == "sms" && !$payment->sms_available())
 		return array(
 			'status' => "sms_unavailable",
-			'text' => $lang['sms_unavailable'],
+			'text' => $lang->sms_unavailable,
 			'positive' => false
 		);
 	else if ($data['method'] == "sms" && $data['tariff'] && !isset($payment->payment_api->smses[$data['tariff']]))
 		return array(
 			'status' => "no_sms_option",
-			'text' => $lang['no_sms_payment'],
+			'text' => $lang->no_sms_payment,
 			'positive' => false
 		);
 
@@ -341,7 +341,7 @@ function validate_payment($data)
 		}
 		return array(
 			'status' => "warnings",
-			'text' => $lang['form_wrong_filled'],
+			'text' => $lang->form_wrong_filled,
 			'positive' => false,
 			'data' => $warning_data
 		);
@@ -379,7 +379,7 @@ function validate_payment($data)
 
 		return array(
 			'status' => "purchased",
-			'text' => $lang['purchase_success'],
+			'text' => $lang->purchase_success,
 			'positive' => true,
 			'data' => array('bsid' => $bought_service_id)
 		);
@@ -389,7 +389,7 @@ function validate_payment($data)
 			'service' => $service_module->service['id'],
 			'email' => $user['email'],
 			'cost' => $data['cost_transfer'],
-			'desc' => newsprintf($lang['payment_for_service'], $service_module->service['name']),
+			'desc' => $lang->sprintf($lang->payment_for_service, $service_module->service['name']),
 			'order' => $data['order']
 		);
 
@@ -408,7 +408,7 @@ function pay_by_wallet($user, $cost)
 	if ($cost > $user['wallet'])
 		return array(
 			'status' => "no_money",
-			'text' => $lang['not_enough_money'],
+			'text' => $lang->not_enough_money,
 			'positive' => false
 		);
 
@@ -452,14 +452,14 @@ function add_bought_service_info($uid, $user_name, $ip, $method, $payment_id, $s
 	));
 	$bougt_service_id = $db->last_id();
 
-	$ret = $lang['none'];
+	$ret = $lang->none;
 	if (strlen($email)) {
 		$message = purchase_info(array(
 			'purchase_id' => $bougt_service_id,
 			'action' => "email"
 		));
 		if (strlen($message)) {
-			$title = ($service == 'charge_wallet' ? $lang['charge_wallet'] : $lang['purchase']);
+			$title = ($service == 'charge_wallet' ? $lang->charge_wallet : $lang->purchase);
 			$ret = send_email($email, $auth_data, $title, $message);
 		}
 
@@ -471,8 +471,8 @@ function add_bought_service_info($uid, $user_name, $ip, $method, $payment_id, $s
 
 	$temp_service = $heart->get_service($service);
 	$temp_server = $heart->get_server($server);
-	$amount = $amount != -1 ? "{$amount} {$temp_service['tag']}" : $lang['forever'];
-	log_info(newsprintf($lang['bought_service_info'], $service, $auth_data, $amount, $temp_server['name'], $payment_id, $ret, $user_name, $uid, $ip));
+	$amount = $amount != -1 ? "{$amount} {$temp_service['tag']}" : $lang->forever;
+	log_info($lang->sprintf($lang->bought_service_info, $service, $auth_data, $amount, $temp_server['name'], $payment_id, $ret, $user_name, $uid, $ip));
 	unset($temp_server);
 
 	return $bougt_service_id;
@@ -535,7 +535,7 @@ function delete_players_old_services()
 		if ($service_module->delete_player_service($row)) {
 			$delete_ids[] = $row['id'];
 			$players_services[] = $row;
-			log_info(newsprintf($lang['expired_service_delete'], $row['auth_data'], $row['server'], $row['service'], get_type_name($row['type'])));
+			log_info($lang->sprintf($lang->expired_service_delete, $row['auth_data'], $row['server'], $row['service'], get_type_name($row['type'])));
 		}
 	}
 
@@ -619,7 +619,7 @@ function send_email($email, $name, $subject, $text)
 	if (!mail($email, $subject, $text, $header))
 		return "not_sent";
 
-	log_info(newsprintf($lang['email_was_sent'], $email, $text));
+	log_info($lang->sprintf($lang->email_was_sent, $email, $text));
 	return "sent";
 }
 
@@ -669,7 +669,7 @@ function myErrorHandler($errno, $string, $errfile, $errline)
 	switch ($errno) {
 		case E_USER_ERROR:
 			$array = json_decode($string, true);
-			$array['message'] = $lang['mysqli'][$array['message_id']]; // Pobieramy odpowiednik z bilioteki jezykowej
+			$array['message'] = $lang->mysqli[$array['message_id']]; // Pobieramy odpowiednik z bilioteki jezykowej
 			eval("\$header = \"" . get_template("header_error") . "\";");
 			eval("\$message = \"" . get_template("error_handler") . "\";");
 
@@ -743,8 +743,8 @@ function get_platform($platform)
 {
 	global $lang;
 
-	if ($platform == "engine_amxx") return $lang['amxx_server'];
-	else if ($platform == "engine_sm") return $lang['sm_server'];
+	if ($platform == "engine_amxx") return $lang->amxx_server;
+	else if ($platform == "engine_sm") return $lang->sm_server;
 
 	return $platform;
 }
@@ -755,11 +755,11 @@ function get_type_name($value)
 	global $lang;
 
 	if ($value == TYPE_NICK)
-		return $lang['nickpass'];
+		return $lang->nickpass;
 	else if ($value == TYPE_IP)
-		return $lang['ippass'];
+		return $lang->ippass;
 	else if ($value == TYPE_SID)
-		return $lang['sid'];
+		return $lang->sid;
 
 	return "";
 }
@@ -769,11 +769,11 @@ function get_type_name2($value)
 	global $lang;
 
 	if ($value == TYPE_NICK)
-		return $lang['nick'];
+		return $lang->nick;
 	else if ($value == TYPE_IP)
-		return $lang['ip'];
+		return $lang->ip;
 	else if ($value == TYPE_SID)
-		return $lang['sid'];
+		return $lang->sid;
 
 	return "";
 }
@@ -810,17 +810,6 @@ function hash_password($password, $salt)
 	return md5(md5($password) . md5($salt));
 }
 
-function newsprintf($string)
-{
-	$arg_list = func_get_args();
-	$num_args = count($arg_list);
-
-	for ($i = 1; $i < $num_args; $i++)
-		$string = str_replace('{' . $i . '}', $arg_list[$i], $string);
-
-	return $string;
-}
-
 function escape_filename($filename)
 {
 	$filename = str_replace('/', '_', $filename);
@@ -850,7 +839,7 @@ function secondsToTime($seconds)
 
 	$dtF = new DateTime("@0");
 	$dtT = new DateTime("@$seconds");
-	return $dtF->diff($dtT)->format("%a {$lang['days']} {$lang['and']} %h {$lang['hours']}");
+	return $dtF->diff($dtT)->format("%a {$lang->days} {$lang->and} %h {$lang->hours}");
 }
 
 function if_isset(&$isset, $default)

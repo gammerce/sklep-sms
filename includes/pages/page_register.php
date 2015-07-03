@@ -10,7 +10,7 @@ class PageRegister extends Page
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang['register'];
+		$this->title = $lang->register;
 
 		parent::__construct();
 	}

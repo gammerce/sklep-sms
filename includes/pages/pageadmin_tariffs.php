@@ -10,7 +10,7 @@ class PageAdminTariffs extends PageAdmin
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang['tariffs'];
+		$this->title = $lang->tariffs;
 
 		parent::__construct();
 	}
@@ -27,13 +27,13 @@ class PageAdminTariffs extends PageAdmin
 			$button_edit = create_dom_element("img", "", array(
 				'id' => "edit_row_{$i}",
 				'src' => "images/edit.png",
-				'title' => $lang['edit'] . " " . $tariff_data['tariff']
+				'title' => $lang->edit . " " . $tariff_data['tariff']
 			));
 			if (!$tariff_data['predefined'])
 				$button_delete = create_dom_element("img", "", array(
 					'id' => "delete_row_{$i}",
 					'src' => "images/bin.png",
-					'title' => $lang['delete'] . " " . $tariff_data['tariff']
+					'title' => $lang->delete . " " . $tariff_data['tariff']
 				));
 			else
 				$button_delete = "";
@@ -52,7 +52,7 @@ class PageAdminTariffs extends PageAdmin
 		$buttons = create_dom_element("input", "", array(
 			'id' => "button_add_tariff",
 			'type' => "button",
-			'value' => $lang['add_tariff']
+			'value' => $lang->add_tariff
 		));
 
 		// Pobranie nagłówka tabeli

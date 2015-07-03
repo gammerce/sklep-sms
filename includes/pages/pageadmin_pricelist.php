@@ -10,7 +10,7 @@ class PageAdminPriceList extends PageAdmin
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang['pricelist'];
+		$this->title = $lang->pricelist;
 
 		parent::__construct();
 	}
@@ -36,12 +36,12 @@ class PageAdminPriceList extends PageAdmin
 			$button_edit = create_dom_element("img", "", array(
 				'id' => "edit_row_{$i}",
 				'src' => "images/edit.png",
-				'title' => $lang['edit'] . " " . $row['tariff']
+				'title' => $lang->edit . " " . $row['tariff']
 			));
 			$button_delete = create_dom_element("img", "", array(
 				'id' => "delete_row_{$i}",
 				'src' => "images/bin.png",
-				'title' => $lang['delete'] . " " . $row['tariff']
+				'title' => $lang->delete . " " . $row['tariff']
 			));
 
 			if ($row['server'] != -1) {
@@ -49,7 +49,7 @@ class PageAdminPriceList extends PageAdmin
 				$row['server'] = $temp_server['name'];
 				unset($temp_server);
 			} else
-				$row['server'] = $lang['all_servers'];
+				$row['server'] = $lang->all_servers;
 
 			$service = $heart->get_service($row['service']);
 
@@ -65,7 +65,7 @@ class PageAdminPriceList extends PageAdmin
 		$buttons = create_dom_element("input", "", array(
 			'id' => "button_add_price",
 			'type' => "button",
-			'value' => $lang['add_price']
+			'value' => $lang->add_price
 		));
 
 		// Pobranie paginacji

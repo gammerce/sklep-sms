@@ -8,7 +8,7 @@ class PagePayment extends Page
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang['title_payment'];
+		$this->title = $lang->title_payment;
 
 		parent::__construct();
 	}
@@ -19,7 +19,7 @@ class PagePayment extends Page
 
 		// Sprawdzanie hashu danych przesłanych przez formularz
 		if (!isset($post['sign']) || $post['sign'] != md5($post['data'] . $settings['random_key']))
-			return $lang['wrong_sign'];
+			return $lang->wrong_sign;
 
 		global $heart;
 
@@ -42,7 +42,7 @@ class PagePayment extends Page
 
 
 		if (($service_module = $heart->get_service_module($data['service'])) === NULL || !class_has_interface($service_module, "IServicePurchaseWeb"))
-			return $lang['bad_module'];
+			return $lang->bad_module;
 
 		// Pobieramy szczegóły zamówienia
 		$order_details = $service_module->order_details($data);

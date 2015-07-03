@@ -10,7 +10,7 @@ class PageTakeOverService extends Page
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang['take_over_service'];
+		$this->title = $lang->take_over_service;
 
 		parent::__construct();
 	}

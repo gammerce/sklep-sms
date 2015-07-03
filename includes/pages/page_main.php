@@ -10,7 +10,7 @@ class PageMain extends PageSimple
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang['main_page'];
+		$this->title = $lang->main_page;
 
 		parent::__construct();
 	}

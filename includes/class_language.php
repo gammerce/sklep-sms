@@ -5,11 +5,11 @@ class Language
 
 	private $language;
 	private $language_short;
-	private $languages;
+	private $lang_list;
 
 	function __construct($lang = "polish")
 	{
-		$this->languages = array(
+		$this->lang_list = array(
 			'polish' => "pl",
 			'english' => "en"
 		);
@@ -26,6 +26,11 @@ class Language
 		return $this->language_short;
 	}
 
+	public function get_language_by_short($short)
+	{
+		return array_search(strtolower($short), $this->lang_list);
+	}
+
 	public function set_language($language)
 	{
 		$language = escape_filename(strtolower($language));
@@ -35,9 +40,8 @@ class Language
 		if ($this->language == $language)
 			return;
 
-		global $lang;
 		$this->language = $language;
-		$this->language_short = if_isset($this->languages[$language], "");
+		$this->language_short = if_isset($this->lang_list[$language], "");
 
 		// Ładujemy globalną bibliotekę językową
 		if (file_exists(SCRIPT_ROOT . "includes/languages/global.php"))
@@ -58,11 +62,25 @@ class Language
 				if (substr($file, -4) == ".php" && $file != "{$language}.php")
 					include SCRIPT_ROOT . "includes/languages/{$language}/{$file}";
 		}
+
+		// We must unite and protect our language variables!
+		$lang_keys_ignore = array('language', 'language_short', 'languages');
+
+		if (isset($l) && is_array($l))
+			foreach ($l as $key => $val)
+				if (!in_array($key, $lang_keys_ignore))
+					$this->$key = $val;
 	}
 
-	public function get_language_by_short($short)
+	public function sprintf($string)
 	{
-		return array_search(strtolower($short), $this->languages);
+		$arg_list = func_get_args();
+		$num_args = count($arg_list);
+
+		for ($i = 1; $i < $num_args; $i++)
+			$string = str_replace('{' . $i . '}', $arg_list[$i], $string);
+
+		return $string;
 	}
 
 }

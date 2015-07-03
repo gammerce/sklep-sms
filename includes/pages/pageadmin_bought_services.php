@@ -8,7 +8,7 @@ class PageAdminBoughtServices extends PageAdmin
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang['bought_services'];
+		$this->title = $lang->bought_services;
 
 		parent::__construct();
 	}
@@ -47,7 +47,7 @@ class PageAdminBoughtServices extends PageAdmin
 			$server = $heart->get_server($row['server']);
 
 			// Przerobienie ilosci
-			$amount = $row['amount'] != -1 ? "{$row['amount']} {$service['tag']}" : $lang['forever'];
+			$amount = $row['amount'] != -1 ? "{$row['amount']} {$service['tag']}" : $lang->forever;
 
 			// Rozkulbaczenie extra daty
 			$row['extra_data'] = json_decode($row['extra_data'], true);
@@ -59,9 +59,9 @@ class PageAdminBoughtServices extends PageAdmin
 				$value = htmlspecialchars($value);
 
 				if ($key == "password")
-					$key = $lang['password'];
+					$key = $lang->password;
 				else if ($key == "type") {
-					$key = $lang['type'];
+					$key = $lang->type;
 					$value = get_type_name($value);
 				}
 

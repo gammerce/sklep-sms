@@ -16,6 +16,9 @@ if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
 	session_start();
 }
 
+if (in_array(SCRIPT_NAME, array("admin", "index")))
+	var_dump($_SESSION);
+
 $working_dir = dirname(__FILE__) ? dirname(__FILE__) : '.';
 require_once $working_dir . "/includes/init.php";
 
@@ -39,8 +42,8 @@ require_once SCRIPT_ROOT . "includes/class_language.php";
 $heart = new Heart();
 
 // Tworzymy obiekt języka
-$lang = array();
-$language = new Language();
+$lang = new Language();
+$lang_shop = new Language();
 
 // Ustalenie funkcji obsługującej errory
 set_error_handler("myErrorHandler");
@@ -193,28 +196,29 @@ $settings['language'] = file_exists(SCRIPT_ROOT . "includes/languages/{$settings
 
 // Ładujemy bibliotekę językową
 if (isset($_GET['language']))
-	$language->set_language($_GET['language']);
+	$lang->set_language($_GET['language']);
 else if (isset($_SESSION['language']))
-	$language->set_language($_SESSION['language']);
+	$lang->set_language($_SESSION['language']);
 else {
 	$details = json_decode(file_get_contents("http://ipinfo.io/" . get_ip() . "/json"));
-	if (isset($details->country) && strlen($temp_lang = $language->get_language_by_short($details->country))) {
-		$language->set_language($temp_lang);
+	if (isset($details->country) && strlen($temp_lang = $lang->get_language_by_short($details->country))) {
+		$lang->set_language($temp_lang);
 		unset($temp_lang);
 	} else
-		$language->set_language($settings['language']);
+		$lang->set_language($settings['language']);
 }
+$lang_shop->set_language($settings['language']);
 
 $a_Tasks = json_decode(curl_get_contents("http://license.sklep-sms.pl/license.php?action=login_web" . "&lid=" . urlencode($settings['license_login']) . "&lpa=" . urlencode($settings['license_password']) .
 	"&name=" . urlencode($settings['shop_url']) . "&version=" . VERSION), true);
 
 // Brak tekstu, wywalamy błąd
 if (!isset($a_Tasks['text']))
-	output_page($lang['verification_error']);
+	output_page($lang->verification_error);
 
 if ($a_Tasks['expire']) {
 	if ($a_Tasks['expire'] == '-1')
-		$a_Tasks['expire'] = $lang['never'];
+		$a_Tasks['expire'] = $lang->never;
 	else
 		$a_Tasks['expire'] = date($settings['date_format'], $a_Tasks['expire']);
 }

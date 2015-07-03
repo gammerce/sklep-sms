@@ -10,7 +10,7 @@ class PageAdminSmsCodes extends PageAdmin
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang['sms_codes'];
+		$this->title = $lang->sms_codes;
 
 		parent::__construct();
 	}
@@ -37,7 +37,7 @@ class PageAdminSmsCodes extends PageAdmin
 				$button_delete = create_dom_element("img", "", array(
 					'id' => "delete_row_{$i}",
 					'src' => "images/bin.png",
-					'title' => $lang['delete'] . " " . $row['id']
+					'title' => $lang->delete . " " . $row['id']
 				));
 			else
 				$button_delete = "";
@@ -57,7 +57,7 @@ class PageAdminSmsCodes extends PageAdmin
 			$buttons = create_dom_element("input", "", array(
 				'id' => "button_add_sms_code",
 				'type' => "button",
-				'value' => $lang['add_sms_code']
+				'value' => $lang->add_sms_code
 			));
 
 		// Pobranie paginacji

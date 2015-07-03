@@ -10,7 +10,7 @@ class PageMyCurrentServices extends Page
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang['my_current_services'];
+		$this->title = $lang->my_current_services;
 
 		parent::__construct();
 	}
@@ -37,7 +37,7 @@ class PageMyCurrentServices extends Page
 				$button_edit = create_dom_element("img", "", array(
 					'class' => "edit_row",
 					'src' => "images/pencil.png",
-					'title' => $lang['edit'],
+					'title' => $lang->edit,
 					'style' => array(
 						'height' => '24px'
 					)
@@ -51,7 +51,7 @@ class PageMyCurrentServices extends Page
 
 		// Nie znalazło żadnych usług danego gracza
 		if (!strlen($my_current_services))
-			$my_current_services = $lang['no_data'];
+			$my_current_services = $lang->no_data;
 
 		$pagination = get_pagination($rows_count, $G_PAGE, "index.php", $get, 4);
 		$pagination_class = strlen($pagination) ? "" : "display_none";

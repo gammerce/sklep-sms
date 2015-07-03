@@ -10,7 +10,7 @@ class PagePaymentLog extends Page
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang['payment_log'];
+		$this->title = $lang->payment_log;
 
 		parent::__construct();
 	}
@@ -40,7 +40,7 @@ class PagePaymentLog extends Page
 			} else {
 				$temp_service = $heart->get_service($row['service']);
 				$temp_server = $heart->get_server($row['server']);
-				$desc = newsprintf($lang['service_was_bought'], $temp_service['name'], $temp_server['name']);
+				$desc = $lang->sprintf($lang->service_was_bought, $temp_service['name'], $temp_server['name']);
 				$class = "outcome";
 				unset($temp_service);
 				unset($temp_server);

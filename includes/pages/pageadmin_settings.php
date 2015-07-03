@@ -10,7 +10,7 @@ class PageAdminSettings extends PageAdmin
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang['settings'];
+		$this->title = $lang->settings;
 
 		parent::__construct();
 	}
@@ -55,7 +55,7 @@ class PageAdminSettings extends PageAdmin
 		$languages_list = "";
 		foreach ($dirlist as $dir_name)
 			if ($dir_name[0] != '.' && is_dir(SCRIPT_ROOT . "includes/languages/{$dir_name}"))
-				$languages_list .= create_dom_element("option", $lang['languages'][$dir_name], array(
+				$languages_list .= create_dom_element("option", $lang->languages[$dir_name], array(
 					'value' => $dir_name,
 					'selected' => $dir_name == $settings['language'] ? "selected" : ""
 				));

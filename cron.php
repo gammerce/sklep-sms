@@ -8,7 +8,7 @@ if (!defined("IN_SCRIPT")) {
 
 	// Sprawdzenie random stringu
 	if ($_GET['key'] != $settings['random_key'] && $argv[1] != $settings['random_key']) {
-		output_page($lang['wrong_cron_key']);
+		output_page($lang->wrong_cron_key);
 	}
 }
 

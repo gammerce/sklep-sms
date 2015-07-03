@@ -10,7 +10,7 @@ class PageAdminGroups extends PageAdmin
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang['groups'];
+		$this->title = $lang->groups;
 
 		parent::__construct();
 	}
@@ -35,12 +35,12 @@ class PageAdminGroups extends PageAdmin
 				$button_edit = create_dom_element("img", "", array(
 					'id' => "edit_row_{$i}",
 					'src' => "images/edit.png",
-					'title' => $lang['edit'] . " " . $row['name']
+					'title' => $lang->edit . " " . $row['name']
 				));
 				$button_delete = create_dom_element("img", "", array(
 					'id' => "delete_row_{$i}",
 					'src' => "images/bin.png",
-					'title' => $lang['delete'] . " " . $row['name']
+					'title' => $lang->delete . " " . $row['name']
 				));
 			} else
 				$button_delete = $button_edit = "";
@@ -68,7 +68,7 @@ class PageAdminGroups extends PageAdmin
 			$buttons = create_dom_element("input", "", array(
 				'id' => "button_add_group",
 				'type' => "button",
-				'value' => $lang['add_group']
+				'value' => $lang->add_group
 			));
 
 		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/groups.js?version=" . VERSION;

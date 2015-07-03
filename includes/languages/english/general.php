@@ -1,175 +1,175 @@
 <?php
 
-$lang['forgotten_password'] = "Password recovery";
-$lang['my_current_services'] = "My current services";
-$lang['title_payment'] = "Payment";
-$lang['payment_log'] = "Payment log";
-$lang['purchase'] = "Service purchase";
-$lang['register'] = "Registration";
-$lang['reset_password'] = "Reset password";
-$lang['transfer_finalized'] = "Transaction finalized";
+$l['forgotten_password'] = "Password recovery";
+$l['my_current_services'] = "My current services";
+$l['title_payment'] = "Payment";
+$l['payment_log'] = "Payment log";
+$l['purchase'] = "Service purchase";
+$l['register'] = "Registration";
+$l['reset_password'] = "Reset password";
+$l['transfer_finalized'] = "Transaction finalized";
 
-$lang['welcome_message'] = "Welcome to the web store!";
+$l['welcome_message'] = "Welcome to the web store!";
 
-$lang['register_vert'] = "R<br />E<br />G<br />I<br />S<br />T<br />E<br />R";
-$lang['login_vert'] = "L<br />O<br />G<br /><br />I<br />N";
+$l['register_vert'] = "R<br />E<br />G<br />I<br />S<br />T<br />E<br />R";
+$l['login_vert'] = "L<br />O<br />G<br /><br />I<br />N";
 
-$lang['repeat'] = "Repeat";
-$lang['send'] = "Send";
-$lang['clear'] = "Clear";
-$lang['name'] = "Name";
-$lang['surname'] = "Surname";
-$lang['username'] = "Username";
-$lang['password_repeat'] = "Repeat password";
-$lang['forgot_password'] = "I don't remeber password";
-$lang['email'] = "E-mail address";
-$lang['email_repeat'] = "Repeat e-mail address";
-$lang['log_in'] = "Log in";
-$lang['service'] = "Service";
-$lang['nickipsid'] = "Nickname / IP / SteamID";
-$lang['nick'] = "Nickname";
-$lang['ip'] = "IP";
-$lang['server'] = "Server";
-$lang['expire'] = "Expires";
-$lang['date'] = "Date";
-$lang['description'] = "Description";
-$lang['cost'] = "Cost";
-$lang['price'] = "Price";
-$lang['amount'] = "Quantity";
-$lang['question'] = "Question";
-$lang['answer'] = "Answer";
-$lang['contact'] = "Contact";
-$lang['regulations'] = "Regulations";
+$l['repeat'] = "Repeat";
+$l['send'] = "Send";
+$l['clear'] = "Clear";
+$l['name'] = "Name";
+$l['surname'] = "Surname";
+$l['username'] = "Username";
+$l['password_repeat'] = "Repeat password";
+$l['forgot_password'] = "I don't remeber password";
+$l['email'] = "E-mail address";
+$l['email_repeat'] = "Repeat e-mail address";
+$l['log_in'] = "Log in";
+$l['service'] = "Service";
+$l['nickipsid'] = "Nickname / IP / SteamID";
+$l['nick'] = "Nickname";
+$l['ip'] = "IP";
+$l['server'] = "Server";
+$l['expire'] = "Expires";
+$l['date'] = "Date";
+$l['description'] = "Description";
+$l['cost'] = "Cost";
+$l['price'] = "Price";
+$l['amount'] = "Quantity";
+$l['question'] = "Question";
+$l['answer'] = "Answer";
+$l['contact'] = "Contact";
+$l['regulations'] = "Regulations";
 
-$lang['old_password'] = "Old Password";
-$lang['new_password'] = "New Password";
+$l['old_password'] = "Old Password";
+$l['new_password'] = "New Password";
 
-$lang['required_data'] = "Required data";
-$lang['optional_data'] = "Optional data";
-$lang['antispam_question'] = "Antispam question";
-$lang['create_account'] = "Create account";
+$l['required_data'] = "Required data";
+$l['optional_data'] = "Optional data";
+$l['antispam_question'] = "Antispam question";
+$l['create_account'] = "Create account";
 
-$lang['go_to_payment'] = "Proceed to payment";
-$lang['purchase_form_validated'] = "Given data are correct. Now choose payment method.";
-$lang['order_details'] = "Order details";
-$lang['payment_sms'] = "SMS payment";
-$lang['payment_transfer'] = "Transfer payment";
-$lang['payment_wallet'] = "Wallet payment";
+$l['go_to_payment'] = "Proceed to payment";
+$l['purchase_form_validated'] = "Given data are correct. Now choose payment method.";
+$l['order_details'] = "Order details";
+$l['payment_sms'] = "SMS payment";
+$l['payment_transfer'] = "Transfer payment";
+$l['payment_wallet'] = "Wallet payment";
 
-$lang['pay_sms'] = "I pay by SMS";
-$lang['pay_transfer'] = "I pay by Transfer";
-$lang['pay_wallet'] = "I pay by Wallet";
+$l['pay_sms'] = "I pay by SMS";
+$l['pay_transfer'] = "I pay by Transfer";
+$l['pay_wallet'] = "I pay by Wallet";
 
-$lang['take_over'] = "Take over";
+$l['take_over'] = "Take over";
 
-$lang['way_of_payment'] = "Payment method";
-$lang['choose_payment'] = "Choose payment";
-$lang['admin'] = "Admin";
-$lang['wallet'] = "Wallet";
+$l['way_of_payment'] = "Payment method";
+$l['choose_payment'] = "Choose payment";
+$l['admin'] = "Admin";
+$l['wallet'] = "Wallet";
 
-$lang['choose_type'] = "Choose type";
-$lang['choose_server'] = "Choose server";
-$lang['choose_service'] = "Choose service";
-$lang['choose_amount'] = "Choose amount";
+$l['choose_type'] = "Choose type";
+$l['choose_server'] = "Choose server";
+$l['choose_service'] = "Choose service";
+$l['choose_amount'] = "Choose amount";
 
-$lang['transfer_cost'] = "Transfer cost";
-$lang['sms_cost'] = "SMS cost";
+$l['transfer_cost'] = "Transfer cost";
+$l['sms_cost'] = "SMS cost";
 
-$lang['transfer_unavailable'] = "Payment by transfer unavailable.";
-$lang['sms_unavailable'] = "Payment by SMS unavailable.";
+$l['transfer_unavailable'] = "Payment by transfer unavailable.";
+$l['sms_unavailable'] = "Payment by SMS unavailable.";
 
-$lang['my_services'] = "My services";
-$lang['change_password'] = "Change password";
-$lang['take_over_service'] = "Take over service";
+$l['my_services'] = "My services";
+$l['change_password'] = "Change password";
+$l['take_over_service'] = "Take over service";
 
-$lang['transfer'] = "Transfer";
+$l['transfer'] = "Transfer";
 
-$lang['transfer_id'] = "Payment ID";
+$l['transfer_id'] = "Payment ID";
 
-$lang['transfer_error'] = "Unfortunately, transfer payment failed.";
-$lang['transfer_unverified'] = "Unfortunately, transfer data failed to be verified correctly.";
+$l['transfer_error'] = "Unfortunately, transfer payment failed.";
+$l['transfer_unverified'] = "Unfortunately, transfer data failed to be verified correctly.";
 
-$lang['contact_info'] = "You can contact us by:";
+$l['contact_info'] = "You can contact us by:";
 
-$lang['restore_password_info'] = "In order to restore password, give your address <strong>e-mail address</strong> or <strong>nickname</strong>.<br />
+$l['restore_password_info'] = "In order to restore password, give your address <strong>e-mail address</strong> or <strong>nickname</strong>.<br />
 At the next step, an e-mail with a link to restore password will be send to you.";
 
-$lang['must_be_logged_out'] = "You cannot browse this page. You're logged in.";
-$lang['must_be_logged_in'] = "You cannot browse this page. You're not loggedd in.";
+$l['must_be_logged_out'] = "You cannot browse this page. You're logged in.";
+$l['must_be_logged_in'] = "You cannot browse this page. You're not loggedd in.";
 
-$lang['no_reset_key'] = "No reset key was given.";
-$lang['wrong_reset_key'] = "Reset key incorrect.<br />
+$l['no_reset_key'] = "No reset key was given.";
+$l['wrong_reset_key'] = "Reset key incorrect.<br />
 Contact our service administrator to receive more information.";
-$lang['password_changed'] = "Password was changed successfully.";
+$l['password_changed'] = "Password was changed successfully.";
 
-$lang['wrong_id'] = "Wrong ID";
-$lang['site_not_exists'] = "Site does not exist.";
+$l['wrong_id'] = "Wrong ID";
+$l['site_not_exists'] = "Site does not exist.";
 
-$lang['payment_for_service'] = "Payment for service: {1}";
-$lang['service_was_bought'] = "Service {1} was purchased on server {2}";
-$lang['wallet_charged'] = "Wallet was charged.";
-$lang['wallet_was_charged'] = "Wallet was charged with {1}";
-$lang['charge_wallet'] = "Wallet Charge";
+$l['payment_for_service'] = "Payment for service: {1}";
+$l['service_was_bought'] = "Service {1} was purchased on server {2}";
+$l['wallet_charged'] = "Wallet was charged.";
+$l['wallet_was_charged'] = "Wallet was charged with {1}";
+$l['charge_wallet'] = "Wallet Charge";
 
-$lang['add_code_to_reuse'] = "Code was added to the list of codes to be used. Code: {1} Tariff: {2}." .
+$l['add_code_to_reuse'] = "Code was added to the list of codes to be used. Code: {1} Tariff: {2}." .
 	"An attempt to use it by {3}({4})({5}) with service purchase, tariff: {6}.";
-$lang['bad_sms_code_used'] = "SMS transaction of user: {1}({2})({3}) failed. Used return code: {4} Content: {5} Number: {6} Error code: {7}";
+$l['bad_sms_code_used'] = "SMS transaction of user: {1}({2})({3}) failed. Used return code: {4} Content: {5} Number: {6} Error code: {7}";
 
-$lang['type_setinfo'] = "Type in the console: setinfo _ss \"{1}\"";
+$l['type_setinfo'] = "Type in the console: setinfo _ss \"{1}\"";
 
-$lang['sms']['send_sms'] = "Send SMS";
-$lang['sms']['text'] = "Saying";
-$lang['sms']['on'] = "On";
-$lang['sms']['return_code'] = "Return code";
-$lang['sms']['info']['ok'] = "Given return code is correct.";
-$lang['sms']['info']['bad_code'] = "Given return code is just incorrect.";
-$lang['sms']['info']['bad_number'] = "Code is OK, but unfortunately obtained by sending SMS on different number.";
-$lang['sms']['info']['bad_api'] = "Given API is incorrect.";
-$lang['sms']['info']['bad_email'] = "E-mail address given in payment configuration is incorrect.";
-$lang['sms']['info']['server_error'] = "Given API is incorrect, given return code was wrong or another error occured.";
-$lang['sms']['info']['service_error'] = "Incorrectly set up service, contact the shop owner.";
-$lang['sms']['info']['error'] = "An error occured. Cause is unknown.";
-$lang['sms']['info']['no_connection'] = "No connection to the verification script.";
-$lang['sms']['info']['bad_data'] = "Not all the necessary data were given in payment configuration.";
-$lang['sms']['info']['dunno'] = "An unknown error occured. Report it to the shop owner.";
-$lang['sms']['info']['no_sms_serve'] = "This service does not operate SMS payment. Report the error to the shop owner.";
-$lang['no_transfer_serve'] = "This service does not operate transfer payment. Report the error to the shop owner.";
-$lang['transfer_ok'] = "Payment preparation successful.<br />In a minute you will be send to transaction service.";
+$l['sms']['send_sms'] = "Send SMS";
+$l['sms']['text'] = "Saying";
+$l['sms']['on'] = "On";
+$l['sms']['return_code'] = "Return code";
+$l['sms']['info']['ok'] = "Given return code is correct.";
+$l['sms']['info']['bad_code'] = "Given return code is just incorrect.";
+$l['sms']['info']['bad_number'] = "Code is OK, but unfortunately obtained by sending SMS on different number.";
+$l['sms']['info']['bad_api'] = "Given API is incorrect.";
+$l['sms']['info']['bad_email'] = "E-mail address given in payment configuration is incorrect.";
+$l['sms']['info']['server_error'] = "Given API is incorrect, given return code was wrong or another error occured.";
+$l['sms']['info']['service_error'] = "Incorrectly set up service, contact the shop owner.";
+$l['sms']['info']['error'] = "An error occured. Cause is unknown.";
+$l['sms']['info']['no_connection'] = "No connection to the verification script.";
+$l['sms']['info']['bad_data'] = "Not all the necessary data were given in payment configuration.";
+$l['sms']['info']['dunno'] = "An unknown error occured. Report it to the shop owner.";
+$l['sms']['info']['no_sms_serve'] = "This service does not operate SMS payment. Report the error to the shop owner.";
+$l['no_transfer_serve'] = "This service does not operate transfer payment. Report the error to the shop owner.";
+$l['transfer_ok'] = "Payment preparation successful.<br />In a minute you will be send to transaction service.";
 
-$lang['service_no_permission'] = "You have no permission to use this service.";
+$l['service_no_permission'] = "You have no permission to use this service.";
 
-$lang['value_must_be_ge_than'] = "Value must me greater or equal to {1}.";
+$l['value_must_be_ge_than'] = "Value must me greater or equal to {1}.";
 
-$lang['no_login_password'] = "Unfortunately, without providing nickname and login, you can't log in.";
-$lang['login_success'] = "Logging in successful.";
-$lang['bad_pass_nick'] = "Unfortunately, passowrd or/and nickname are incorrect.";
-$lang['logout_success'] = "Logging out successful.";
-$lang['nick_occupied'] = "Given nickname is already taken.";
-$lang['different_pass'] = "Given passwords are different.";
-$lang['email_occupied'] = "Given e-mail is already taken.";
-$lang['different_email'] = "Given e-mail addresses are different.";
-$lang['wrong_anti_answer'] = "Wrong answer to the antispam question.";
-$lang['register_success'] = "Account registered successfully. In a moment you will be automatically logged in.";
-$lang['nick_no_account'] = "Given nickname is not assigned to any account.";
-$lang['email_no_account'] = "Given e-mail address is not assigned to any account.";
-$lang['keyreset_error'] = "An error occured while sending e-mail with password reset link.";
-$lang['wrong_sender_email'] = "E-mail assigned you your account is incorrect. Report it to the shop owner.";
-$lang['email_sent'] = "E-mail password reset link has been sent to your mailbox.";
-$lang['old_pass_wrong'] = "Old password is incorrect.";
+$l['no_login_password'] = "Unfortunately, without providing nickname and login, you can't log in.";
+$l['login_success'] = "Logging in successful.";
+$l['bad_pass_nick'] = "Unfortunately, passowrd or/and nickname are incorrect.";
+$l['logout_success'] = "Logging out successful.";
+$l['nick_occupied'] = "Given nickname is already taken.";
+$l['different_pass'] = "Given passwords are different.";
+$l['email_occupied'] = "Given e-mail is already taken.";
+$l['different_email'] = "Given e-mail addresses are different.";
+$l['wrong_anti_answer'] = "Wrong answer to the antispam question.";
+$l['register_success'] = "Account registered successfully. In a moment you will be automatically logged in.";
+$l['nick_no_account'] = "Given nickname is not assigned to any account.";
+$l['email_no_account'] = "Given e-mail address is not assigned to any account.";
+$l['keyreset_error'] = "An error occured while sending e-mail with password reset link.";
+$l['wrong_sender_email'] = "E-mail assigned you your account is incorrect. Report it to the shop owner.";
+$l['email_sent'] = "E-mail password reset link has been sent to your mailbox.";
+$l['old_pass_wrong'] = "Old password is incorrect.";
 
-$lang['wrong_payment_method'] = "Wrong payment method was chosen.";
-$lang['no_login_no_wallet'] = "You can't pay by Wallet when not logged in.";
-$lang['no_sms_payment'] = "You can't pay by SMS for service quantity. Choose another payment method.";
-$lang['purchase_success'] = "Service purchased successfully.";
+$l['wrong_payment_method'] = "Wrong payment method was chosen.";
+$l['no_login_no_wallet'] = "You can't pay by Wallet when not logged in.";
+$l['no_sms_payment'] = "You can't pay by SMS for service quantity. Choose another payment method.";
+$l['purchase_success'] = "Service purchased successfully.";
 
-$lang['not_enough_money'] = "Ups! You don't have enough money in wallet. Charge wallet ;-)";
+$l['not_enough_money'] = "Ups! You don't have enough money in wallet. Charge wallet ;-)";
 
-$lang['new_account'] = "Create new account. ID: {1} User name: {2}, IP: {3}";
-$lang['reset_key_email'] = "E-mail with password reset key has been sent. User: {1}({2}) E-mail: {3} Form data. User name: {4} E-mail: {5}";
-$lang['reset_pass'] = "Password has been reset. User ID: {1}.";
+$l['new_account'] = "Create new account. ID: {1} User name: {2}, IP: {3}";
+$l['reset_key_email'] = "E-mail with password reset key has been sent. User: {1}({2}) E-mail: {3} Form data. User name: {4} E-mail: {5}";
+$l['reset_pass'] = "Password has been reset. User ID: {1}.";
 
-$lang['transfer_above_amount'] = "You can pay by transfer only for purchase above 1.00 {1}";
+$l['transfer_above_amount'] = "You can pay by transfer only for purchase above 1.00 {1}";
 
-$lang['payment_accepted'] = "Payment for service accepted: {1} Amount: {2} Transaction ID: {3} Service: {4} {5}({6})({7})";
-$lang['transfer_accepted'] = "Transfer payment: {1} was accepted,but service module {2} was programmed incorrectly and purchase failed.";
-$lang['payment_not_accepted'] = "Transaction authorization failure: {1} Amount: {2} Service: {3} {4}({5})({6})";
+$l['payment_accepted'] = "Payment for service accepted: {1} Amount: {2} Transaction ID: {3} Service: {4} {5}({6})({7})";
+$l['transfer_accepted'] = "Transfer payment: {1} was accepted,but service module {2} was programmed incorrectly and purchase failed.";
+$l['payment_not_accepted'] = "Transaction authorization failure: {1} Amount: {2} Service: {3} {4}({5})({6})";

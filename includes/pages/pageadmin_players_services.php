@@ -10,7 +10,7 @@ class PageAdminPlayersServices extends PageAdmin
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang['players_services'];
+		$this->title = $lang->players_services;
 
 		parent::__construct();
 	}
@@ -51,7 +51,7 @@ class PageAdminPlayersServices extends PageAdmin
 			$row['username'] = htmlspecialchars($row['username']);
 
 			// Zamiana daty
-			$row['expire'] = $row['expire'] == -1 ? $lang['never'] : date($settings['date_format'], $row['expire']);
+			$row['expire'] = $row['expire'] == -1 ? $lang->never : date($settings['date_format'], $row['expire']);
 
 			// Pobranie przycisku edycji oraz usuwania
 			if (get_privilages("manage_player_services")) {
@@ -59,7 +59,7 @@ class PageAdminPlayersServices extends PageAdmin
 					$button_edit = create_dom_element("img", "", array(
 						'id' => "edit_row_{$i}",
 						'src' => "images/edit.png",
-						'title' => $lang['edit'] . " " . $row['id']
+						'title' => $lang->edit . " " . $row['id']
 					));
 				else
 					$button_edit = "";
@@ -67,7 +67,7 @@ class PageAdminPlayersServices extends PageAdmin
 				$button_delete = create_dom_element("img", "", array(
 					'id' => "delete_row_{$i}",
 					'src' => "images/bin.png",
-					'title' => $lang['delete'] . " " . $row['id']
+					'title' => $lang->delete . " " . $row['id']
 				));
 			} else
 				$button_edit = $button_delete = "";
@@ -89,7 +89,7 @@ class PageAdminPlayersServices extends PageAdmin
 			$buttons .= create_dom_element("input", "", array(
 				'id' => "button_add_user_service",
 				'type' => "button",
-				'value' => $lang['add_service']
+				'value' => $lang->add_service
 			));
 
 		// Pobranie paginacji
