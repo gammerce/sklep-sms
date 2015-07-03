@@ -65,7 +65,7 @@ class Payment
 				// Ustawienie wartości, jakby kod był prawidłowy
 				$sms_return['status'] = "OK";
 
-				log_info($lang->sprintf($lang->payment['remove_code_from_db'], $db_code['code'], $db_code['tariff']));
+				log_info($lang_shop->sprintf($lang_shop->payment['remove_code_from_db'], $db_code['code'], $db_code['tariff']));
 			}
 		}
 
@@ -88,9 +88,9 @@ class Payment
 				array($sms_code, $sms_return['tariff'])
 			));
 
-			log_info($lang->sprintf($lang->add_code_to_reuse, $sms_code, $sms_return['tariff'], $user['username'], $user['uid'], $user['ip'], $tariff));
+			log_info($lang_shop->sprintf($lang_shop->add_code_to_reuse, $sms_code, $sms_return['tariff'], $user['username'], $user['uid'], $user['ip'], $tariff));
 		} else if ($sms_return['status'] != "NO_SMS_SERVE")
-			log_info($lang->sprintf($lang->bad_sms_code_used, $user['username'], $user['uid'], $user['ip'], $sms_code,
+			log_info($lang_shop->sprintf($lang_shop->bad_sms_code_used, $user['username'], $user['uid'], $user['ip'], $sms_code,
 				$this->payment_api->data['sms_text'], $sms_number, $sms_return['status']));
 
 		switch ($sms_return['status']) {

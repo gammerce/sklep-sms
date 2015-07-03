@@ -34,7 +34,7 @@ class Language
 	public function set_language($language)
 	{
 		$language = escape_filename(strtolower($language));
-		if (!is_dir(SCRIPT_ROOT . "includes/languages/" . $language))
+		if (!strlen($language) || !is_dir(SCRIPT_ROOT . "includes/languages/" . $language))
 			return;
 
 		if ($this->language == $language)
@@ -64,7 +64,7 @@ class Language
 		}
 
 		// We must unite and protect our language variables!
-		$lang_keys_ignore = array('language', 'language_short', 'languages');
+		$lang_keys_ignore = array('language', 'language_short', 'lang_list');
 
 		if (isset($l) && is_array($l))
 			foreach ($l as $key => $val)

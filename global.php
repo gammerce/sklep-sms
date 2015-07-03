@@ -197,8 +197,8 @@ $settings['language'] = file_exists(SCRIPT_ROOT . "includes/languages/{$settings
 // Ładujemy bibliotekę językową
 if (isset($_GET['language']))
 	$lang->set_language($_GET['language']);
-else if (isset($_SESSION['language']))
-	$lang->set_language($_SESSION['language']);
+else if (isset($_COOKIE['language']))
+	$lang->set_language($_COOKIE['language']);
 else {
 	$details = json_decode(file_get_contents("http://ipinfo.io/" . get_ip() . "/json"));
 	if (isset($details->country) && strlen($temp_lang = $lang->get_language_by_short($details->country))) {

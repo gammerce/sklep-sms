@@ -57,10 +57,10 @@ if ($payment->payment_api->check_sign($_POST, $payment->payment_api->data['key']
 	}
 
 	if (isset($bought_service_id) && $bought_service_id !== FALSE)
-		log_info($lang->sprintf($lang->payment_accepted, $bought_service_id, $_POST['amount'], $_POST['orderid'], $_POST['service'], $_POST['service'], $user['username'], $user['uid'], $user['ip']));
+		log_info($lang_shop->sprintf($lang_shop->payment_accepted, $bought_service_id, $_POST['amount'], $_POST['orderid'], $_POST['service'], $_POST['service'], $user['username'], $user['uid'], $user['ip']));
 	else
-		log_info($lang->sprintf($lang->transfer_accepted, $_POST['orderid'], $transaction_data['service']));
+		log_info($lang_shop->sprintf($lang_shop->transfer_accepted, $_POST['orderid'], $transaction_data['service']));
 } else
-	log_info($lang->sprintf($lang->payment_not_accepted, $_POST['orderid'], $_POST['amount'], $_POST['service'], $user['username'], $user['uid'], $user['ip']));
+	log_info($lang_shop->sprintf($lang_shop->payment_not_accepted, $_POST['orderid'], $_POST['amount'], $_POST['service'], $user['username'], $user['uid'], $user['ip']));
 
 output_page("OK");

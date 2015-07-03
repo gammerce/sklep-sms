@@ -472,7 +472,7 @@ function add_bought_service_info($uid, $user_name, $ip, $method, $payment_id, $s
 	$temp_service = $heart->get_service($service);
 	$temp_server = $heart->get_server($server);
 	$amount = $amount != -1 ? "{$amount} {$temp_service['tag']}" : $lang->forever;
-	log_info($lang->sprintf($lang->bought_service_info, $service, $auth_data, $amount, $temp_server['name'], $payment_id, $ret, $user_name, $uid, $ip));
+	log_info($lang_shop->sprintf($lang_shop->bought_service_info, $service, $auth_data, $amount, $temp_server['name'], $payment_id, $ret, $user_name, $uid, $ip));
 	unset($temp_server);
 
 	return $bougt_service_id;
@@ -535,7 +535,7 @@ function delete_players_old_services()
 		if ($service_module->delete_player_service($row)) {
 			$delete_ids[] = $row['id'];
 			$players_services[] = $row;
-			log_info($lang->sprintf($lang->expired_service_delete, $row['auth_data'], $row['server'], $row['service'], get_type_name($row['type'])));
+			log_info($lang_shop->sprintf($lang_shop->expired_service_delete, $row['auth_data'], $row['server'], $row['service'], get_type_name($row['type'])));
 		}
 	}
 
@@ -619,7 +619,7 @@ function send_email($email, $name, $subject, $text)
 	if (!mail($email, $subject, $text, $header))
 		return "not_sent";
 
-	log_info($lang->sprintf($lang->email_was_sent, $email, $text));
+	log_info($lang_shop->sprintf($lang_shop->email_was_sent, $email, $text));
 	return "sent";
 }
 

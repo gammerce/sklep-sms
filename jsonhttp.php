@@ -53,7 +53,7 @@ if ($action == "login") {
 
 	json_output("logged_out", $lang->logout_success, 1);
 } else if ($action == "set_session_language") {
-	$_SESSION['language'] = escape_filename($_POST['language']);
+	setcookie("language", escape_filename($_POST['language']), time() + (86400 * 30), "/"); // 86400 = 1 day
 	exit;
 } else if ($action == "register") {
 	if (is_logged())
@@ -147,7 +147,7 @@ if ($action == "login") {
 	));
 
 	// LOGING
-	log_info($lang->sprintf($lang->new_account, $db->last_id(), $username, $user['ip']));
+	log_info($lang_shop->sprintf($lang_shop->new_account, $db->last_id(), $username, $user['ip']));
 
 	json_output("registered", $lang->register_success, 1, $data);
 } else if ($action == "forgotten_password") {
@@ -222,7 +222,7 @@ if ($action == "login") {
 	else if ($ret == "wrong_email")
 		json_output("wrong_sender_email", $lang->wrong_email, 0);
 	else if ($ret == "sent") {
-		log_info($lang->sprintf($lang->reset_key_email, $user2['username'], $user2['uid'], $user2['email'], $username, $email));
+		log_info($lang_shop->sprintf($lang_shop->reset_key_email, $user2['username'], $user2['uid'], $user2['email'], $username, $email));
 		$data['username'] = $user2['username'];
 		json_output("sent", $lang->email_sent, 1, $data);
 	}
@@ -266,7 +266,7 @@ if ($action == "login") {
 	));
 
 	// LOGING
-	log_info($lang->sprintf($lang->reset_pass, $uid));
+	log_info($lang_shop->sprintf($lang_shop->reset_pass, $uid));
 
 	json_output("password_changed", $lang->password_changed, 1);
 } else if ($action == "change_password") {
