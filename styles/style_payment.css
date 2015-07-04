@@ -2,6 +2,7 @@
 	padding: 12px;
 	display: inline-block;
 	margin-right: 20px;
+	margin-top: 20px;
 	vertical-align: top;
 
 	box-shadow: 0 0 10px;
@@ -17,7 +18,6 @@
 
 .payment_type.wallet {
 	background: rgba(0, 0, 255, 0.4);
-	margin-right: 0;
 }
 
 .payment_type.service_code {

@@ -22,9 +22,9 @@ class PageAdminServiceCodes extends PageAdmin
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.name AS `service`, srv.name AS `server`, sc.tariff, u.username, sc.amount, sc.data, sc.timestamp " .
 			"FROM `" . TABLE_PREFIX . "service_codes` AS sc " .
-			"JOIN `" . TABLE_PREFIX . "services` AS s ".
-			"JOIN `" . TABLE_PREFIX . "servers` AS srv ".
-			"JOIN `" . TABLE_PREFIX . "users` AS u ".
+			"LEFT JOIN `" . TABLE_PREFIX . "services` AS s ON sc.service = s.id ".
+			"LEFT JOIN `" . TABLE_PREFIX . "servers` AS srv ON sc.server = srv.id ".
+			"LEFT JOIN `" . TABLE_PREFIX . "users` AS u ON sc.uid = u.uid ".
 			"LIMIT " . get_row_limit($G_PAGE)
 		);
 		$rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
@@ -46,6 +46,8 @@ class PageAdminServiceCodes extends PageAdmin
 			// Zabezpieczanie danych
 			foreach($row AS $key => $value)
 				$row[$key] = htmlspecialchars($value);
+
+			$row['amount'] = $row['amount'] ? $row['amount'] : $lang->none;
 
 			// Pobranie danych do tabeli
 			eval("\$tbody .= \"" . get_template("admin/service_codes_trow") . "\";");

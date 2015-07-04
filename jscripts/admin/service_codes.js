@@ -1,12 +1,12 @@
-// Kliknięcie dodania kodu SMS
-$(document).delegate("#button_add_sms_code", "click", function () {
+// Kliknięcie dodania kodu na usługę
+$(document).delegate("#button_add_service_code", "click", function () {
 	action_box.create();
-	getnset_template(action_box.box, "admin_add_sms_code", true, {}, function () {
+	getnset_template(action_box.box, "admin_add_service_code", true, {}, function () {
 		action_box.show();
 	});
 });
 
-// Usuwanie kodu SMS
+// Usuwanie kodu na usługę
 $(document).delegate("[id^=delete_row_]", "click", function () {
 	var row_id = $("#" + $(this).attr("id").replace('delete_row_', 'row_'));
 	loader.show();
@@ -14,7 +14,7 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 		type: "POST",
 		url: "jsonhttp_admin.php",
 		data: {
-			action: "delete_sms_code",
+			action: "delete_service_code",
 			id: row_id.children("td[headers=id]").text()
 		},
 		complete: function () {
@@ -46,14 +46,14 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 	});
 });
 
-// Dodanie kodu SMS
-$(document).delegate("#form_add_sms_code", "submit", function (e) {
+// Dodanie kodu na usługę
+$(document).delegate("#form_add_service_code", "submit", function (e) {
 	e.preventDefault();
 	loader.show();
 	$.ajax({
 		type: "POST",
 		url: "jsonhttp_admin.php",
-		data: $(this).serialize() + "&action=add_sms_code",
+		data: $(this).serialize() + "&action=add_service_code",
 		complete: function () {
 			loader.hide();
 		},
@@ -66,7 +66,7 @@ $(document).delegate("#form_add_sms_code", "submit", function (e) {
 			// Wyświetlenie błędów w formularzu
 			if (jsonObj.return_id == "warnings") {
 				$.each(jsonObj.warnings, function (name, text) {
-					var id = $("#form_add_sms_code [name=\"" + name + "\"]");
+					var id = $("#form_add_service_code [name=\"" + name + "\"]");
 					id.parent("td").append(text);
 					id.effect("highlight", 1000);
 				});

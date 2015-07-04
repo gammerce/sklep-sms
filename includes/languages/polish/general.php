@@ -115,7 +115,7 @@ $l['type_setinfo'] = "Wpisz w konsoli: setinfo _ss \"{1}\"";
 
 $l['sms']['send_sms'] = "Wyślij SMSa";
 $l['sms']['text'] = "O treści";
-$l['sms']['on'] = "Na numer";
+$l['sms']['number'] = "Na numer";
 $l['sms']['return_code'] = "Kod zwrotny";
 $l['sms']['info']['ok'] = "Wprowadzono prawidłowy kod zwrotny.";
 $l['sms']['info']['bad_code'] = "Wprowadzony kod zwrotny jest zwyczajnie błędny.";
@@ -132,7 +132,7 @@ $l['sms']['info']['no_sms_serve'] = "Dany serwis nie obsługuje płatności SMS.
 $l['no_transfer_serve'] = "Dany serwis nie obsługuje płatności przelewem. Zgłoś błąd właścicielowi sklepu.";
 $l['transfer_ok'] = "Przygotowanie płatności przebiegło pomyślnie.<br />Za chwilę nastąpi przekierowanie do serwisu transakcyjnego.";
 
-$l['bad_service_code'] = "Podany kod jest błędny lub nie pasuje do kupowanej rzeczy.";
+$l['bad_service_code'] = "Podany kod jest błędny lub nie pasuje do kupowanej usługi.";
 $l['service_no_permission'] = "Nie masz uprawnień, aby móc korzystać z tej usługi.";
 
 $l['value_must_be_ge_than'] = "Wartość musi być większa lub równa {1}.";

@@ -11,19 +11,19 @@
 				</td>
 			</tr>
 			<tr>
-				<td>{$lang->sms['text']}</td>
+				<td class="right">{$lang->sms['text']}</td>
 				<td style="width: 20px;"></td>
-				<td>{$payment_sms->get_sms_text_hsafe()}</td>
+				<td class="left">{$payment_sms->get_sms_text_hsafe()}</td>
 			</tr>
 			<tr>
-				<td>{$lang->sms['on']}</td>
+				<td class="right">{$lang->sms['number']}</td>
 				<td></td>
-				<td>{$tariff['number']}</td>
+				<td class="left">{$tariff['number']}</td>
 			</tr>
 			<tr>
-				<td>{$lang->sms['return_code']}</td>
+				<td class="right">{$lang->sms['return_code']}</td>
 				<td></td>
-				<td><input type="text" id="sms_code" name="sms_code" style="width: 100px;" maxlength="16"/></td>
+				<td class="left"><input type="text" id="sms_code" name="sms_code" style="width: 100px;" maxlength="16"/></td>
 			</tr>
 		</table>
 		<br class="clear"/>

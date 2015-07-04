@@ -22,8 +22,8 @@ $l['surname'] = "Surname";
 $l['username'] = "Username";
 $l['password_repeat'] = "Repeat password";
 $l['forgot_password'] = "I don't remeber password";
-$l['email'] = "E-mail address";
-$l['email_repeat'] = "Repeat e-mail address";
+$l['email'] = "E-mail";
+$l['email_repeat'] = "Repeat e-mail";
 $l['log_in'] = "Log in";
 $l['nick'] = "Nickname";
 $l['ip'] = "IP";
@@ -87,7 +87,7 @@ $l['transfer_unverified'] = "Unfortunately, transfer data failed to be verified 
 
 $l['contact_info'] = "You can contact us by:";
 
-$l['restore_password_info'] = "In order to restore password, give your address <strong>e-mail address</strong> or <strong>nickname</strong>.<br />
+$l['restore_password_info'] = "In order to restore password, give your address <strong>e-mail</strong> or <strong>nickname</strong>.<br />
 At the next step, an e-mail with a link to restore password will be send to you.";
 
 $l['must_be_logged_out'] = "You cannot browse this page. You're logged in.";
@@ -114,14 +114,14 @@ $l['bad_sms_code_used'] = "SMS transaction of user: {1}({2})({3}) failed. Used r
 $l['type_setinfo'] = "Type in the console: setinfo _ss \"{1}\"";
 
 $l['sms']['send_sms'] = "Send SMS";
-$l['sms']['text'] = "Saying";
-$l['sms']['on'] = "On";
+$l['sms']['text'] = "Text";
+$l['sms']['number'] = "Number";
 $l['sms']['return_code'] = "Return code";
 $l['sms']['info']['ok'] = "Given return code is correct.";
 $l['sms']['info']['bad_code'] = "Given return code is just incorrect.";
 $l['sms']['info']['bad_number'] = "Code is OK, but unfortunately obtained by sending SMS on different number.";
 $l['sms']['info']['bad_api'] = "Given API is incorrect.";
-$l['sms']['info']['bad_email'] = "E-mail address given in payment configuration is incorrect.";
+$l['sms']['info']['bad_email'] = "E-mail given in payment configuration is incorrect.";
 $l['sms']['info']['server_error'] = "Given API is incorrect, given return code was wrong or another error occured.";
 $l['sms']['info']['service_error'] = "Incorrectly set up service, contact the shop owner.";
 $l['sms']['info']['error'] = "An error occured. Cause is unknown.";
@@ -144,11 +144,11 @@ $l['logout_success'] = "Logging out successful.";
 $l['nick_occupied'] = "Given nickname is already taken.";
 $l['different_pass'] = "Given passwords are different.";
 $l['email_occupied'] = "Given e-mail is already taken.";
-$l['different_email'] = "Given e-mail addresses are different.";
+$l['different_email'] = "Given e-mails are different.";
 $l['wrong_anti_answer'] = "Wrong answer to the antispam question.";
 $l['register_success'] = "Account registered successfully. In a moment you will be automatically logged in.";
 $l['nick_no_account'] = "Given nickname is not assigned to any account.";
-$l['email_no_account'] = "Given e-mail address is not assigned to any account.";
+$l['email_no_account'] = "Given e-mail is not assigned to any account.";
 $l['keyreset_error'] = "An error occured while sending e-mail with password reset link.";
 $l['wrong_sender_email'] = "E-mail assigned you your account is incorrect. Report it to the shop owner.";
 $l['email_sent'] = "E-mail password reset link has been sent to your mailbox.";

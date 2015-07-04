@@ -279,7 +279,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 				$query = $db->prepare(
 					"SELECT `password` FROM `" . TABLE_PREFIX . "players_services` " .
 					"WHERE `type` = '%d' AND `auth_data` = '%s' AND `server` = '%d'",
-					array(TYPE_NICK, $data['order']['auth_data'], $server['id'])
+					array(TYPE_IP, $data['order']['auth_data'], $server['id'])
 				);
 			}
 
