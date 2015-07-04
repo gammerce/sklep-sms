@@ -103,6 +103,11 @@ if (get_privilages("view_sms_codes")) {
 	$name = $lang->{$pid};
 	eval("\$sms_codes_link = \"" . get_template("admin/page_link") . "\";");
 }
+if (get_privilages("view_service_codes")) {
+	$pid = "service_codes";
+	$name = $lang->{$pid};
+	eval("\$service_codes_link = \"" . get_template("admin/page_link") . "\";");
+}
 if (get_privilages("view_antispam_questions")) {
 	// Pytania bezpieczeństwa
 	$pid = "antispam_questions";

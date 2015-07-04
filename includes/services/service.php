@@ -96,6 +96,17 @@ abstract class Service
 	}
 
 	/**
+	 * Sprawdza czy dany zakup może być zrealizowany ( opłacony ) przez dany kod
+	 *
+	 * @param array $purchase
+	 * @param array $code
+	 * @return bool
+	 */
+	public function validate_service_code($purchase, $code) {
+		return TRUE;
+	}
+
+	/**
 	 * Metoda zwraca informacje o zakupionej usłudze, szczegóły zakupu.
 	 * Informacje są wyświetlane na stronie my_current_services
 	 *

@@ -24,9 +24,9 @@ class Payment
 		}
 	}
 
-	public function pay_sms($sms_code, $tariff)
+	public function pay_sms($sms_code, $tariff, $user)
 	{
-		global $db, $user, $settings, $lang;
+		global $db, $settings, $lang, $lang_shop;
 
 		// Serwis płatności nie obsługuje płatności SMS
 		if (!$this->payment_api->data['sms']) {
@@ -145,9 +145,9 @@ class Payment
 		return $output;
 	}
 
-	public function pay_transfer($data)
+	public function pay_transfer($data, $user)
 	{
-		global $user, $lang;
+		global $lang;
 
 		// Serwis płatności nie obsługuje płatności przelewem
 		if (!$this->payment_api->data['transfer']) {

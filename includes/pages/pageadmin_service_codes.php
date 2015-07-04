@@ -1,16 +1,16 @@
 <?php
 
-$heart->register_page("sms_codes", "PageAdminSmsCodes", "admin");
+$heart->register_page("service_codes", "PageAdminServiceCodes", "admin");
 
-class PageAdminSmsCodes extends PageAdmin
+class PageAdminServiceCodes extends PageAdmin
 {
 
-	protected $privilage = "view_sms_codes";
+	protected $privilage = "view_service_codes";
 
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->sms_codes;
+		$this->title = $lang->service_codes;
 
 		parent::__construct();
 	}
@@ -19,11 +19,12 @@ class PageAdminSmsCodes extends PageAdmin
 	{
 		global $db, $lang, $G_PAGE, $settings, $scripts;
 
-		// Pobranie kodów SMS
 		$result = $db->query(
-			"SELECT SQL_CALC_FOUND_ROWS * " .
-			"FROM `" . TABLE_PREFIX . "sms_codes` " .
-			"WHERE `free` = '1' " .
+			"SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.name AS `service`, srv.name AS `server`, sc.tariff, u.username, sc.amount, sc.data, sc.timestamp " .
+			"FROM `" . TABLE_PREFIX . "service_codes` AS sc " .
+			"JOIN `" . TABLE_PREFIX . "services` AS s ".
+			"JOIN `" . TABLE_PREFIX . "servers` AS srv ".
+			"JOIN `" . TABLE_PREFIX . "users` AS u ".
 			"LIMIT " . get_row_limit($G_PAGE)
 		);
 		$rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
@@ -33,7 +34,7 @@ class PageAdminSmsCodes extends PageAdmin
 		while ($row = $db->fetch_array_assoc($result)) {
 			$i += 1;
 			// Pobranie przycisku usuwania
-			if (get_privilages("manage_sms_codes"))
+			if (get_privilages("manage_sservice_codes"))
 				$button_delete = create_dom_element("img", "", array(
 					'id' => "delete_row_{$i}",
 					'src' => "images/bin.png",
@@ -43,19 +44,20 @@ class PageAdminSmsCodes extends PageAdmin
 				$button_delete = "";
 
 			// Zabezpieczanie danych
-			$row['code'] = htmlspecialchars($row['code']);
+			foreach($row AS $key => $value)
+				$row[$key] = htmlspecialchars($value);
 
 			// Pobranie danych do tabeli
-			eval("\$tbody .= \"" . get_template("admin/sms_codes_trow") . "\";");
+			eval("\$tbody .= \"" . get_template("admin/service_codes_trow") . "\";");
 		}
 
 		// Nie ma zadnych danych do wyswietlenia
 		if (!strlen($tbody))
 			eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
 
-		if (get_privilages("manage_sms_codes"))
+		if (get_privilages("manage_service_codes"))
 			$buttons = create_dom_element("input", "", array(
-				'id' => "button_add_sms_code",
+				'id' => "button_add_service_code",
 				'type' => "button",
 				'value' => $lang->add_code
 			));
@@ -66,9 +68,9 @@ class PageAdminSmsCodes extends PageAdmin
 			$tfoot_class = "display_tfoot";
 
 		// Pobranie nagłówka tabeli
-		eval("\$thead = \"" . get_template("admin/sms_codes_thead") . "\";");
+		eval("\$thead = \"" . get_template("admin/service_codes_thead") . "\";");
 
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/sms_codes.js?version=" . VERSION;
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/service_codes.js?version=" . VERSION;
 
 		// Pobranie wygladu całej tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");

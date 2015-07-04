@@ -18,6 +18,12 @@ $(document).delegate("#pay_sms", "click", function () {
 		purchase_service("sms");
 });
 
+// Kliknięcie na płacenie kodem
+$(document).delegate("#pay_service_code", "click", function () {
+	$("#sms_details").slideUp();
+	purchase_service("service_code");
+});
+
 function purchase_service(method) {
 	if (loader.blocked)
 		return;
@@ -30,6 +36,7 @@ function purchase_service(method) {
 			action: "validate_payment_form",
 			method: method,
 			sms_code: $("#sms_code").val(),
+			service_code: $("#service_code").val(),
 			purchase_data: $("#payment [name=purchase_data]").val(),
 			purchase_sign: $("#payment [name=purchase_sign]").val()
 		},
@@ -46,7 +53,7 @@ function purchase_service(method) {
 			if (jsonObj.return_id == "warnings") {
 				$.each(jsonObj.warnings, function (name, text) {
 					var id = $("#payment [name=\"" + name + "\"]");
-					id.parent("td").append(text);
+					id.parent().append(text);
 					id.effect("highlight", 1000);
 				});
 			}

@@ -25,17 +25,12 @@ $l['forgot_password'] = "Nie pamiętam hasła";
 $l['email'] = "Adres e-mail";
 $l['email_repeat'] = "Powtórz adres e-mail";
 $l['log_in'] = "Zaloguj";
-$l['service'] = "Usługa";
-$l['nickipsid'] = "Nick / IP / SteamID";
 $l['nick'] = "Nick";
 $l['ip'] = "IP";
-$l['server'] = "Serwer";
 $l['expire'] = "Wygasa";
-$l['date'] = "Data";
 $l['description'] = "Opis";
 $l['cost'] = "Koszt";
 $l['price'] = "Cena";
-$l['amount'] = "Ilość";
 $l['question'] = "Pytanie";
 $l['answer'] = "Odpowiedź";
 $l['contact'] = "Kontakt";
@@ -59,6 +54,7 @@ $l['payment_wallet'] = "Płatność portfel";
 $l['pay_sms'] = "Płacę SMSem";
 $l['pay_transfer'] = "Płacę Przelewem";
 $l['pay_wallet'] = "Płacę z Portfela";
+$l['got_code'] = "Mam kod!";
 
 $l['take_over'] = "Przejmij";
 
@@ -136,6 +132,7 @@ $l['sms']['info']['no_sms_serve'] = "Dany serwis nie obsługuje płatności SMS.
 $l['no_transfer_serve'] = "Dany serwis nie obsługuje płatności przelewem. Zgłoś błąd właścicielowi sklepu.";
 $l['transfer_ok'] = "Przygotowanie płatności przebiegło pomyślnie.<br />Za chwilę nastąpi przekierowanie do serwisu transakcyjnego.";
 
+$l['bad_service_code'] = "Podany kod jest błędny lub nie pasuje do kupowanej rzeczy.";
 $l['service_no_permission'] = "Nie masz uprawnień, aby móc korzystać z tej usługi.";
 
 $l['value_must_be_ge_than'] = "Wartość musi być większa lub równa {1}.";

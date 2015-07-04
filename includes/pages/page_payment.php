@@ -48,7 +48,7 @@ class PagePayment extends Page
 		$order_details = $service_module->order_details($data);
 
 		// Pobieramy płatność sms
-		$sms_service = if_empty($data['sms_service'], $settings['sms_service']);
+		$sms_service = if_strlen($data['sms_service'], $settings['sms_service']);
 
 		// Pobieramy sposoby płatności
 		$payment_methods = "";
@@ -66,6 +66,7 @@ class PagePayment extends Page
 			eval("\$payment_methods .= \"" . get_template("payment_method_transfer") . "\";");
 		if (is_logged() && isset($data['cost_transfer']) && !$data['no_wallet'])
 			eval("\$payment_methods .= \"" . get_template("payment_method_wallet") . "\";");
+		eval("\$payment_methods .= \"" . get_template("payment_method_code") . "\";");
 
 		$purchase_data = htmlspecialchars($_POST['data']);
 		$purchase_sign = htmlspecialchars($_POST['sign']);

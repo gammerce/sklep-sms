@@ -351,6 +351,7 @@ if ($action == "login") {
 	$payment_data = json_decode(base64_decode($_POST['purchase_data']), true);
 	$payment_data['method'] = $_POST['method'];
 	$payment_data['sms_code'] = $_POST['sms_code'];
+	$payment_data['service_code'] = $_POST['service_code'];
 
 	$return_payment = validate_payment($payment_data);
 	json_output($return_payment['status'], $return_payment['text'], $return_payment['positive'], $return_payment['data']);

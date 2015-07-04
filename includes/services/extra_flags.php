@@ -474,7 +474,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		$data['auth_data'] = htmlspecialchars($data['auth_data']);
 		$data['extra_data']['password'] = htmlspecialchars($data['extra_data']['password']);
 		$data['email'] = htmlspecialchars($data['email']);
-		$data['cost'] = number_format($data['cost'], 2);
+		$cost = $data['cost'] ? $data['cost'] . " " . number_format($data['cost'], 2) : $lang->none;
 		$data['income'] = number_format($data['income'], 2);
 
 		if ($data['payment'] == "sms") {
@@ -1224,7 +1224,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		global $heart, $db, $settings, $lang;
 
 		$server = $heart->get_server($server_id);
-		$sms_service = if_empty($server['sms_service'], $settings['sms_service']);
+		$sms_service = if_strlen($server['sms_service'], $settings['sms_service']);
 
 		// Pobieranie kwot za które można zakupić daną usługę na danym serwerze
 		$result = $db->query($db->prepare(

@@ -23,12 +23,14 @@ $l['groups'] = "Grupy";
 $l['servers'] = "Serwery";
 $l['services'] = "Usługi";
 $l['sms_codes'] = "Kody SMS do wykorzystania";
+$l['service_codes'] = "Kody na usługi";
 $l['antispam_questions'] = "Pytania antypamowe";
 $l['bought_services'] = "Kupione usługi";
 $l['payments_sms'] = "Płatności SMS";
 $l['payments_transfer'] = "Płatności internetowe";
 $l['payments_wallet'] = "Płatności z portfela";
 $l['payments_admin'] = "Płatności admina";
+$l['payments_service_code'] = "Płatności kodem";
 $l['logs'] = "Logi";
 $l['update_web'] = "Aktualizacja strony WWW";
 $l['update_servers'] = "Aktualizacja serwerów";
@@ -44,7 +46,7 @@ $l['add_server'] = "Dodaj serwer";
 $l['add_tariff'] = "Dodaj taryfę";
 $l['add_price'] = "Dodaj cenę";
 $l['add_group'] = "Dodaj grupę";
-$l['add_sms_code'] = "Dodaj kod SMS";
+$l['add_code'] = "Dodaj kod";
 
 $l['confirm_remove_server'] = "Na pewno chcesz usunąć serwer\n{0}?";
 

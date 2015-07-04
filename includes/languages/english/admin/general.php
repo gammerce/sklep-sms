@@ -22,12 +22,14 @@ $l['groups'] = "Groups";
 $l['servers'] = "Servers";
 $l['services'] = "Services";
 $l['sms_codes'] = "SMS codes to be used";
+$l['service_codes'] = "Codes for services";
 $l['antispam_questions'] = "Antispam questions";
 $l['bought_services'] = "Purchased services";
 $l['payments_sms'] = "SMS payments";
 $l['payments_transfer'] = "Transfer payments";
 $l['payments_wallet'] = "Wallet payments";
 $l['payments_admin'] = "Admin payments";
+$l['payments_service_code'] = "Code payments";
 $l['logs'] = "Logs";
 $l['update_web'] = "WWW website update";
 $l['update_servers'] = "Servers update";
@@ -43,7 +45,7 @@ $l['add_server'] = "Add server";
 $l['add_tariff'] = "Add tariff";
 $l['add_price'] = "Add price";
 $l['add_group'] = "Add group";
-$l['add_sms_code'] = "Add SMS code";
+$l['add_code'] = "Add code";
 
 $l['confirm_remove_server'] = "Do you really want to remove server \n{0}?";
 

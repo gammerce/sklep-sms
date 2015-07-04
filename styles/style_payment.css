@@ -20,6 +20,11 @@
 	margin-right: 0;
 }
 
+.payment_type.service_code {
+	background: rgba(113, 0, 255, 0.4);
+	margin-right: 0;
+}
+
 .payment_header {
 	margin-bottom: 12px;
 	color: #FFF;

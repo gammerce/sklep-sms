@@ -165,8 +165,8 @@ bs.amount AS `amount`,
 bs.auth_data AS `auth_data`,
 bs.email AS `email`,
 bs.extra_data AS `extra_data`,
-CONCAT_WS('', pa.ip, ps.ip, pt.ip, pw.ip) AS `ip`,
-CONCAT_WS('', pa.platform, ps.platform, pt.platform, pw.platform) AS `platform`,
+CONCAT_WS('', pa.ip, ps.ip, pt.ip, pw.ip, pc.ip) AS `ip`,
+CONCAT_WS('', pa.platform, ps.platform, pt.platform, pw.platform, pc.platform) AS `platform`,
 CONCAT_WS('', ps.income, pt.income) AS `income`,
 CONCAT_WS('', ps.cost, pt.income, pw.cost) AS `cost`,
 pa.aid AS `aid`,
@@ -174,13 +174,15 @@ ps.code AS `sms_code`,
 ps.text AS `sms_text`,
 ps.number AS `sms_number`,
 IFNULL(ps.free,0) AS `free`,
+pc.code AS `service_code`,
 bs.timestamp AS `timestamp`
 FROM `" . TABLE_PREFIX . "bought_services` AS bs
 LEFT JOIN `" . TABLE_PREFIX . "users` AS u ON u.uid = bs.uid
 LEFT JOIN `" . TABLE_PREFIX . "payment_admin` AS pa ON bs.payment = 'admin' AND pa.id = bs.payment_id
 LEFT JOIN `" . TABLE_PREFIX . "payment_sms` AS ps ON bs.payment = 'sms' AND ps.id = bs.payment_id
 LEFT JOIN `" . TABLE_PREFIX . "payment_transfer` AS pt ON bs.payment = 'transfer' AND pt.id = bs.payment_id
-LEFT JOIN `" . TABLE_PREFIX . "payment_wallet` AS pw ON bs.payment = 'wallet' AND pw.id = bs.payment_id)";
+LEFT JOIN `" . TABLE_PREFIX . "payment_wallet` AS pw ON bs.payment = 'wallet' AND pw.id = bs.payment_id
+LEFT JOIN `" . TABLE_PREFIX . "payment_code` AS pc ON bs.payment = 'service_code' AND pc.id = bs.payment_id)";
 
 // Ustawianie strefy
 if ($settings['timezone'])

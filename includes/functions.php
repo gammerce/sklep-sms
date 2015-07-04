@@ -260,9 +260,9 @@ function validate_payment($data)
 
 	// Pobieramy dane użytkownika dokonującego zakupu
 	$user = $heart->get_user($data['user']['uid']);
-	$user['ip'] = $data['user']['ip'] ? $data['user']['ip'] : $user['ip'];
-	$user['email'] = $data['user']['email'] ? $data['user']['email'] : $user['email'];
-	$user['platform'] = $data['user']['platform'] ? $data['user']['platform'] : $user['platform'];
+	$user['ip'] = if_strlen($data['user']['ip'], $user['ip']);
+	$user['email'] = if_strlen($data['user']['email'], $user['email']);
+	$user['platform'] = if_strlen($data['user']['platform'], $user['platform']);
 
 	// Tworzymy obiekt usługi którą kupujemy
 	$service_module = $heart->get_service_module($data['service']);
@@ -275,10 +275,10 @@ function validate_payment($data)
 
 	// Tworzymy obiekt, który będzie nam obsługiwał proces płatności
 	if ($data['method'] == "sms") {
-		$transaction_service = if_empty($data['sms_service'], $settings['sms_service']);
+		$transaction_service = if_strlen($data['sms_service'], $settings['sms_service']);
 		$payment = new Payment($transaction_service, $user['platform']);
 	} else if ($data['method'] == "transfer") {
-		$transaction_service = if_empty($data['transfer_service'], $settings['transfer_service']);
+		$transaction_service = if_strlen($data['transfer_service'], $settings['transfer_service']);
 		$payment = new Payment($transaction_service, $user['platform']);
 	}
 
@@ -287,7 +287,7 @@ function validate_payment($data)
 		$data['cost_transfer'] = number_format($heart->get_tariff_provision($data['tariff']), 2);
 
 	// Metoda płatności
-	if (!in_array($data['method'], array("sms", "transfer", "wallet")))
+	if (!in_array($data['method'], array("sms", "transfer", "wallet", "service_code")))
 		return array(
 			'status' => "wrong_method",
 			'text' => $lang->wrong_payment_method,
@@ -331,6 +331,11 @@ function validate_payment($data)
 	if ($data['method'] == "sms" && $warning = check_for_warnings("sms_code", $data['sms_code']))
 		$warnings['sms_code'] = $warning;
 
+	// Kod na usługę
+	if ($data['method'] == "service_code")
+		if (!strlen($data['service_code']))
+			$warnings['service_code'] = $lang->field_no_empty . "<br />";
+
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
@@ -349,7 +354,7 @@ function validate_payment($data)
 
 	if ($data['method'] == "sms") {
 		// Sprawdzamy kod zwrotny
-		$sms_return = $payment->pay_sms($data['sms_code'], $data['tariff']);
+		$sms_return = $payment->pay_sms($data['sms_code'], $data['tariff'], $user);
 		$payment_id = $sms_return['payment_id'];
 
 		if ($sms_return['status'] != "OK")
@@ -360,14 +365,22 @@ function validate_payment($data)
 			);
 	} else if ($data['method'] == "wallet") {
 		// Dodanie informacji o płatności z portfela
-		$payment_id = pay_by_wallet($user, $data['cost_transfer']);
+		$payment_id = pay_wallet($data['cost_transfer'], $user);
 
-		// Funkcja pay_by_wallet zwróciła błąd.
+		// Metoda pay_wallet zwróciła błąd.
+		if (is_array($payment_id))
+			return $payment_id;
+	}
+	else if ($data['method'] == "service_code") {
+		// Dodanie informacji o płatności z portfela
+		$payment_id = pay_service_code($data, $service_module, $user);
+
+		// Metoda pay_service_code zwróciła błąd.
 		if (is_array($payment_id))
 			return $payment_id;
 	}
 
-	if ($data['method'] == "wallet" || $data['method'] == "sms") {
+	if (in_array($data['method'], array("wallet", "sms", "service_code"))) {
 		// Dokonujemy zakupu usługi
 		$purchase_data = $data;
 		$purchase_data['user'] = $user;
@@ -393,11 +406,25 @@ function validate_payment($data)
 			'order' => $data['order']
 		);
 
-		return $payment->pay_transfer($purchase_data);
+		return $payment->pay_transfer($purchase_data, $user);
 	}
 }
 
-function pay_by_wallet($user, $cost)
+function pay_by_admin($user)
+{
+	global $db;
+
+	// Dodawanie informacji o płatności
+	$db->query($db->prepare(
+		"INSERT INTO `" . TABLE_PREFIX . "payment_admin` (`aid`, `ip`, `platform`) " .
+		"VALUES ('%d', '%s', '%s')",
+		array($user['uid'], $user['ip'], $user['platform'])
+	));
+
+	return $db->last_id();
+}
+
+function pay_wallet($cost, $user)
 {
 	global $db, $lang;
 
@@ -425,23 +452,53 @@ function pay_by_wallet($user, $cost)
 	return $db->last_id();
 }
 
-function pay_by_admin($user)
+function pay_service_code($data, $service_module, $user)
 {
-	global $db;
+	global $db, $lang;
 
-	// Dodawanie informacji o płatności
-	$db->query($db->prepare(
-		"INSERT INTO `" . TABLE_PREFIX . "payment_admin` (aid, ip, platform) " .
-		"VALUES ('%d','%s','%s')",
-		array($user['uid'], $user['ip'], $user['platform'])
+	$result = $db->query($db->prepare(
+		"SELECT * FROM `" . TABLE_PREFIX . "service_codes` " .
+		"WHERE `code` = '%s' " .
+		"AND (`service` = '0' OR `service` = '%s') " .
+		"AND (`server` = '0' OR `server` = '%s') " .
+		"AND (`tariff` = '0' OR `tariff` = '%d') " .
+		"AND (`uid` = '0' OR `uid` = '%s')",
+		array($data['service_code'], $data['service'], $data['order']['server'], $data['tariff'], $user['uid'])
 	));
 
-	return $db->last_id();
+	if (!$db->num_rows($result))
+		return array(
+			'status' => "wrong_service_code",
+			'text' => $lang->bad_service_code
+		);
+
+	while ($row = $db->fetch_array_assoc($result))
+		if ($service_module->validate_service_code($data, $row)) { // Znalezlismy odpowiedni kod
+			$db->query($db->prepare(
+				"DELETE FROM `" . TABLE_PREFIX . "service_codes` " .
+				"WHERE `id` = '%d'",
+				array($row['id'])
+			));
+
+			// Dodajemy informacje o płatności kodem
+			$db->query($db->prepare(
+				"INSERT INTO `" . TABLE_PREFIX . "payment_code` " .
+				"SET `code` = '%s', `ip` = '%s', `platform` = '%s'",
+				array($data['service_code'], $user['ip'], $user['platform'])
+			));
+
+			return $db->last_id();
+		}
+
+	return array(
+		'status' => "wrong_service_code",
+		'text' => $lang->bad_service_code
+	);
 }
 
 function add_bought_service_info($uid, $user_name, $ip, $method, $payment_id, $service, $server, $amount, $auth_data, $email, $extra_data)
 {
-	global $heart, $db, $lang;
+	global $heart, $db, $lang, $lang_shop;
 
 	// Dodajemy informacje o kupionej usludze do bazy danych
 	$db->query($db->prepare(
@@ -516,7 +573,7 @@ function purchase_info($data)
 
 function delete_players_old_services()
 {
-	global $heart, $db, $settings, $lang;
+	global $heart, $db, $settings, $lang_shop;
 	// Usunięcie przestarzałych usług gracza
 	// Pierwsze pobieramy te, które usuniemy
 	// Potem je usuwamy, a następnie wywołujemy akcje na module
@@ -594,7 +651,7 @@ function delete_players_old_services()
 
 function send_email($email, $name, $subject, $text)
 {
-	global $settings, $lang;
+	global $settings, $lang_shop;
 
 	////////// USTAWIENIA //////////
 	$email = filter_var($email, FILTER_VALIDATE_EMAIL);    // Adres e-mail adresata
@@ -847,7 +904,7 @@ function if_isset(&$isset, $default)
 	return isset($isset) ? $isset : $default;
 }
 
-function if_empty(&$empty, $default)
+function if_strlen(&$empty, $default)
 {
 	return isset($empty) && strlen($empty) ? $empty : $default;
 }

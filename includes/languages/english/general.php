@@ -25,17 +25,12 @@ $l['forgot_password'] = "I don't remeber password";
 $l['email'] = "E-mail address";
 $l['email_repeat'] = "Repeat e-mail address";
 $l['log_in'] = "Log in";
-$l['service'] = "Service";
-$l['nickipsid'] = "Nickname / IP / SteamID";
 $l['nick'] = "Nickname";
 $l['ip'] = "IP";
-$l['server'] = "Server";
 $l['expire'] = "Expires";
-$l['date'] = "Date";
 $l['description'] = "Description";
 $l['cost'] = "Cost";
 $l['price'] = "Price";
-$l['amount'] = "Quantity";
 $l['question'] = "Question";
 $l['answer'] = "Answer";
 $l['contact'] = "Contact";
@@ -55,6 +50,7 @@ $l['order_details'] = "Order details";
 $l['payment_sms'] = "SMS payment";
 $l['payment_transfer'] = "Transfer payment";
 $l['payment_wallet'] = "Wallet payment";
+$l['got_code'] = "I've got code!";
 
 $l['pay_sms'] = "I pay by SMS";
 $l['pay_transfer'] = "I pay by Transfer";
@@ -136,6 +132,7 @@ $l['sms']['info']['no_sms_serve'] = "This service does not operate SMS payment. 
 $l['no_transfer_serve'] = "This service does not operate transfer payment. Report the error to the shop owner.";
 $l['transfer_ok'] = "Payment preparation successful.<br />In a minute you will be send to transaction service.";
 
+$l['bad_service_code'] = "Code is wrong or doesn't match purchase details.";
 $l['service_no_permission'] = "You have no permission to use this service.";
 
 $l['value_must_be_ge_than'] = "Value must me greater or equal to {1}.";

@@ -22,6 +22,13 @@ $l['minutes'] = "minut";
 $l['seconds'] = "sekund";
 $l['never'] = "Nigdy";
 
+$l['server'] = "Serwer";
+$l['service'] = "Usługa";
+$l['amount'] = "Ilość";
+$l['date'] = "Data";
+$l['user'] = "Użytkownik";
+$l['tariff'] = "Taryfa";
+
 $l['months'] = array("", "Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień");
 
 $l['verification_error'] = "Coś poszło nie tak podczas łączenia się z serwerem weryfikacyjnym.";
