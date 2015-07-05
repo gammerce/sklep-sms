@@ -221,8 +221,9 @@ function get_privilages($which, $user = array())
 
 	if (in_array($which, array("manage_settings", "view_groups", "manage_groups", "view_player_flags",
 			"view_player_services", "manage_player_services", "view_income", "view_users", "manage_users",
-			"view_sms_codes", "manage_sms_codes", "view_antispam_questions", "manage_antispam_questions",
-			"view_services", "manage_services", "view_servers", "manage_servers", "view_logs", "manage_logs", "update")
+			"view_sms_codes", "manage_sms_codes", "view_service_codes", "manage_service_codes",
+			"view_antispam_questions", "manage_antispam_questions", "view_services", "manage_services",
+			"view_servers", "manage_servers", "view_logs", "manage_logs", "update")
 	))
 		return $user['privilages'][$which] && $user['privilages']['acp'];
 

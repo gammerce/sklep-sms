@@ -92,4 +92,4 @@ $l['not_edited_user_service'] = "Could not edit service.";
 $l['you_arent_logged'] = "Something is wrong, you are not logged in oO";
 $l['not_logged_or_no_perm'] = "Something is wrong, you are not logged in or you have no permission oO";
 
-$l['expired_service_delete'] = "AUTOMAT: Player's expired service removed. Auth Data: {1} Server: {2} Service: {3} Type: {4)";
+$l['expired_service_delete'] = "AUTOMAT: Player's expired service removed. Auth Data: {1} Server: {2} Service: {3} Type: {4}";

@@ -5,8 +5,8 @@ $l['no_access'] = "You have no proper powers.";
 $l['license_expires'] = "License expires";
 
 $l['remove_install'] = "Remove install folder!";
-$l['update_available'] = "Script update available for version {1}. To download it go to <a href=\"admin.php?pid=update_web\">WWW website update</a>";
-$l['update_available_servers'] = "Update available for {1}/{2} servers. To download it go to <a href=\"admin.php?pid=update_servers\">Servers update</a>";
+$l['update_available'] = "Script update available for version {1}. To download it go to <a href=\"admin.php?pid=update_web\">WWW website update</a>.";
+$l['update_available_servers'] = "Update available for {1}/{2} servers. To download it go to <a href=\"admin.php?pid=update_servers\">Servers update</a>.";
 $l['license_error'] = "License has expired or is incorrect. Go to <a href=\"admin.php?pid=settings\">settings</a>, in order to supply correct license data.";
 $l['license_soon_expire'] = "License expires in: {1} You can prolong it just now: <a href=\"http://sklep-sms.pl/index.php?page=zakup\" target=\"_blank\">Prolong License</a>";
 

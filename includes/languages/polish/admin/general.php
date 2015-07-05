@@ -6,10 +6,10 @@ $l['no_access'] = "Nie masz odpowiednich uprawnień.";
 $l['license_expires'] = "Licencja wygasa";
 
 $l['remove_install'] = "Usuń folder install !";
-$l['update_available'] = "Dostępna jest aktualizacja skryptu do wersji {1}. Aby ją pobrać przejdź do strony <a href=\"admin.php?pid=update_web\">Aktualizacja strony WWW</a>";
-$l['update_available_servers'] = "Dostępna jest aktualizacja dla {1}/{2} serwerów. Aby ją pobrać przejdź do strony <a href=\"admin.php?pid=update_servers\">Aktualizacja Serwerów</a>";
+$l['update_available'] = "Dostępna jest aktualizacja skryptu do wersji {1}. Aby ją pobrać przejdź do strony <a href=\"admin.php?pid=update_web\">Aktualizacja strony WWW</a>.";
+$l['update_available_servers'] = "Dostępna jest aktualizacja dla {1}/{2} serwerów. Aby ją pobrać przejdź do strony <a href=\"admin.php?pid=update_servers\">Aktualizacja Serwerów</a>.";
 $l['license_error'] = "Licencja wygasła lub jest błędna. Przejdź do <a href=\"admin.php?pid=settings\">ustawień</a>, w celu wprowadzenia prawidłowych danych licencji.";
-$l['license_soon_expire'] = "Licencja wygaśnie za: {1} Możesz ją przedłużyć już teraz: <a href=\"http://sklep-sms.pl/index.php?page=zakup\" target=\"_blank\">Przedłuż Licencję</a>";
+$l['license_soon_expire'] = "Licencja wygaśnie za: {1} Możesz ją przedłużyć już teraz: <a href=\"http://sklep.sklep-sms.pl/index.php?pid=purchase&service=ss_license_plong\" target=\"_blank\">Przedłuż Licencję</a>.";
 
 $l['players_flags'] = "Flagi graczy";
 $l['players_services'] = "Czasowe usługi graczy";
