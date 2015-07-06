@@ -5,6 +5,7 @@ $heart->register_page("antispam_questions", "PageAdminAntispamQuestions", "admin
 class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBox
 {
 
+	const PAGE_ID = "antispam_questions";
 	protected $privilage = "view_antispam_questions";
 
 	function __construct()
@@ -17,7 +18,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
 
 	protected function content($get, $post)
 	{
-		global $db, $lang, $G_PAGE, $settings, $scripts;
+		global $db, $lang, $G_PAGE;
 
 		// Pobranie taryf
 		$result = $db->query(
@@ -74,8 +75,6 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
 
 		// Pobranie nagłówka tabeli
 		eval("\$thead = \"" . get_template("admin/antispam_questions_thead") . "\";");
-
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/antispam_questions.js?version=" . VERSION;
 
 		// Pobranie struktury tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");

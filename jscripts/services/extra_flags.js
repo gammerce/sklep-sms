@@ -1,3 +1,5 @@
+// TODO: Poprzenosić wszystko do odpowiednich miejsc w zależności od tego kiedy korzystamy z danej funkcji
+
 jQuery(document).ready(function ($) {
 	// Aby żadna opcja nie była zaznaczona w przypadku użycia "cofnij"
 	$("#form_purchase #purchase_value").val("0");

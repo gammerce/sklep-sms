@@ -5,6 +5,7 @@ $heart->register_page("servers", "PageAdminServers", "admin");
 class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 {
 
+	const PAGE_ID = "servers";
 	protected $privilage = "manage_servers";
 
 	function __construct()
@@ -17,7 +18,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
 	protected function content($get, $post)
 	{
-		global $heart, $lang, $settings, $scripts;
+		global $heart, $lang, $settings;
 
 		$i = 0;
 		$tbody = "";
@@ -60,8 +61,6 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 				'type' => "button",
 				'value' => $lang->add_server
 			));
-
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/servers.js?version=" . VERSION;
 
 		// Pobranie struktury tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");

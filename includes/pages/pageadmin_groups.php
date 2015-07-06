@@ -5,6 +5,7 @@ $heart->register_page("groups", "PageAdminGroups", "admin");
 class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 {
 
+	const PAGE_ID = "groups";
 	protected $privilage = "view_groups";
 
 	function __construct()
@@ -17,7 +18,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 
 	protected function content($get, $post)
 	{
-		global $db, $lang, $G_PAGE, $settings, $scripts;
+		global $db, $lang, $G_PAGE;
 
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "groups` " .
@@ -70,8 +71,6 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 				'type' => "button",
 				'value' => $lang->add_group
 			));
-
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/groups.js?version=" . VERSION;
 
 		// Pobranie struktury tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");

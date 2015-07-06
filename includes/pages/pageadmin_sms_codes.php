@@ -5,6 +5,7 @@ $heart->register_page("sms_codes", "PageAdminSmsCodes", "admin");
 class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 {
 
+	const PAGE_ID = "sms_codes";
 	protected $privilage = "view_sms_codes";
 
 	function __construct()
@@ -17,7 +18,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 
 	protected function content($get, $post)
 	{
-		global $db, $lang, $G_PAGE, $settings, $scripts;
+		global $db, $lang, $G_PAGE;
 
 		// Pobranie kodów SMS
 		$result = $db->query(
@@ -67,8 +68,6 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 
 		// Pobranie nagłówka tabeli
 		eval("\$thead = \"" . get_template("admin/sms_codes_thead") . "\";");
-
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/sms_codes.js?version=" . VERSION;
 
 		// Pobranie wygladu całej tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");

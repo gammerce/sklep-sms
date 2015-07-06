@@ -5,6 +5,7 @@ $heart->register_page("service_codes", "PageAdminServiceCodes", "admin");
 class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 {
 
+	const PAGE_ID = "service_codes";
 	protected $privilage = "view_service_codes";
 
 	function __construct()
@@ -17,7 +18,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 
 	protected function content($get, $post)
 	{
-		global $heart, $db, $lang, $G_PAGE, $settings, $scripts;
+		global $heart, $db, $lang, $G_PAGE;
 
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.name AS `service`, srv.name AS `server`, sc.tariff, pl.amount AS `tariff_amount`,
@@ -53,13 +54,14 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 
 			$row['amount'] = $row['amount'] ? $row['amount'] : $lang->none;
 			$username = $row['uid'] ? $row['username'] . " ({$row['uid']})" : $lang->none;
-			if ($row['tariff']) {
-				$tariff = "({$row['tariff']})";
-				if ($row['tariff_amount'])
-					$tariff = $row['tariff_amount'] . " " . $row['tag'] . " " . $tariff;
-			}
+			if ($row['tariff_amount'])
+				$amount = $row['tariff_amount'] . " " . $row['tag'];
+			else if ($row['tariff'])
+				$amount = $lang->tariff . ": " . $row['tariff'];
+			else if($row['amount'])
+				$amount = $row['amount'];
 			else
-				$tariff = $lang->none;
+				$amount = $lang->none;
 
 			// Pobranie danych do tabeli
 			eval("\$tbody .= \"" . get_template("admin/service_codes_trow") . "\";");
@@ -83,11 +85,6 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 
 		// Pobranie nagłówka tabeli
 		eval("\$thead = \"" . get_template("admin/service_codes_thead") . "\";");
-
-		// Dodajemy wszystkie skrypty
-		foreach (scandir(SCRIPT_ROOT . "jscripts/admin/pages/service_codes") as $file)
-			if (ends_at($file, ".js"))
-				$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/pages/service_codes/" . $file . "?version=" . VERSION;
 
 		// Pobranie wygladu całej tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");

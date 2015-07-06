@@ -5,6 +5,8 @@ $heart->register_page("payment_wallet", "PageAdminPaymentWallet", "admin");
 class PageAdminPaymentWallet extends PageAdmin
 {
 
+	const PAGE_ID = "payment_wallet";
+
 	function __construct()
 	{
 		global $lang;

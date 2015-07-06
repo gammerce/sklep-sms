@@ -5,6 +5,7 @@ $heart->register_page("logs", "PageAdminLogs", "admin");
 class PageAdminLogs extends PageAdmin
 {
 
+	const PAGE_ID = "logs";
 	protected $privilage = "view_logs";
 
 	function __construct()
@@ -17,7 +18,7 @@ class PageAdminLogs extends PageAdmin
 
 	protected function content($get, $post)
 	{
-		global $db, $lang, $G_PAGE, $settings, $scripts;
+		global $db, $lang, $G_PAGE;
 
 		// Wyszukujemy dane ktore spelniaja kryteria
 		if (isset($get['search']))
@@ -72,8 +73,6 @@ class PageAdminLogs extends PageAdmin
 
 		// Pobranie nagłówka tabeli
 		eval("\$thead = \"" . get_template("admin/logs_thead") . "\";");
-
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/logs.js?version=" . VERSION;
 
 		// Pobranie wygladu całej tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");

@@ -5,6 +5,7 @@ $heart->register_page("transaction_services", "PageAdminTransactionServices", "a
 class PageAdminTransactionServices extends PageAdmin implements IPageAdminActionBox
 {
 
+	const PAGE_ID = "transaction_services";
 	protected $privilage = "manage_settings";
 
 	function __construct()
@@ -17,7 +18,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
 
 	protected function content($get, $post)
 	{
-		global $db, $lang, $G_PAGE, $settings, $scripts;
+		global $db, $lang, $G_PAGE;
 
 		// Pobranie listy serwisów transakcyjnych
 		$result = $db->query(
@@ -55,8 +56,6 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
 
 		// Pobranie nagłówka tabeli
 		eval("\$thead = \"" . get_template("admin/transaction_services_thead") . "\";");
-
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/transaction_services.js?version=" . VERSION;
 
 		// Pobranie struktury tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");

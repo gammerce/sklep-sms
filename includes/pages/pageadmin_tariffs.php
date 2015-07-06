@@ -5,6 +5,7 @@ $heart->register_page("tariffs", "PageAdminTariffs", "admin");
 class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
 {
 
+	const PAGE_ID = "tariffs";
 	protected $privilage = "manage_settings";
 
 	function __construct()
@@ -17,7 +18,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
 
 	protected function content($get, $post)
 	{
-		global $heart, $lang, $settings, $scripts;
+		global $heart, $lang;
 
 		$i = 0;
 		$tbody = "";
@@ -57,8 +58,6 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
 
 		// Pobranie nagłówka tabeli
 		eval("\$thead = \"" . get_template("admin/tariffs_thead") . "\";");
-
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/tariffs.js?version=" . VERSION;
 
 		// Pobranie struktury tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");

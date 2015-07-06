@@ -5,6 +5,8 @@ $heart->register_page("payment_sms", "PageAdminPaymentSms", "admin");
 class PageAdminPaymentSms extends PageAdmin
 {
 
+	const PAGE_ID = "payment_sms";
+
 	function __construct()
 	{
 		global $lang;

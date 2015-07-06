@@ -1,3 +1,5 @@
+// TODO: Nie powinno działać, wtedy gdy edytujemy usługę nie extra_flags. Zobacz: service_codes/add_extra_flags.js
+
 // Zmiana typu usługi
 $(document).delegate("#form_add_user_service [name=type]", "change", function () {
 	$("#type_nick").hide();

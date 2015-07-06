@@ -5,6 +5,8 @@ $heart->register_page("main_content", "PageAdminMain", "admin");
 class PageAdminMain extends PageAdmin
 {
 
+	const PAGE_ID = "main_content";
+
 	function __construct()
 	{
 		global $lang;

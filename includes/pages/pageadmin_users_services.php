@@ -5,6 +5,7 @@ $heart->register_page("users_services", "PageAdminUsersServices", "admin");
 class PageAdminUsersServices extends PageAdmin implements IPageAdminActionBox
 {
 
+	const PAGE_ID = "users_services";
 	protected $privilage = "view_player_services";
 
 	function __construct()
@@ -17,7 +18,7 @@ class PageAdminUsersServices extends PageAdmin implements IPageAdminActionBox
 
 	protected function content($get, $post)
 	{
-		global $heart, $db, $settings, $lang, $G_PAGE, $scripts;
+		global $heart, $db, $settings, $lang, $G_PAGE;
 
 		// Wyszukujemy dane ktore spelniaja kryteria
 		if (isset($get['search']))
@@ -100,9 +101,6 @@ class PageAdminUsersServices extends PageAdmin implements IPageAdminActionBox
 
 		// Pobranie nagłówka tabeli
 		eval("\$thead = \"" . get_template("admin/users_services_thead") . "\";");
-
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/users_services.js?version=" . VERSION;
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/services/extra_flags.js?version=" . VERSION;
 
 		// Pobranie struktury tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");

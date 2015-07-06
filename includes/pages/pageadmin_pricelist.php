@@ -5,6 +5,7 @@ $heart->register_page("pricelist", "PageAdminPriceList", "admin");
 class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
 {
 
+	const PAGE_ID = "pricelist";
 	protected $privilage = "manage_settings";
 
 	function __construct()
@@ -17,7 +18,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
 
 	protected function content($get, $post)
 	{
-		global $heart, $db, $lang, $G_PAGE, $settings, $scripts;
+		global $heart, $db, $lang, $G_PAGE;
 
 		// Pobranie cen
 		$result = $db->query(
@@ -75,8 +76,6 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
 
 		// Pobranie nagłówka tabeli
 		eval("\$thead = \"" . get_template("admin/pricelist_thead") . "\";");
-
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/pricelist.js?version=" . VERSION;
 
 		// Pobranie struktury tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");

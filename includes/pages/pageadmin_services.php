@@ -5,6 +5,7 @@ $heart->register_page("services", "PageAdminServices", "admin");
 class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 {
 
+	const PAGE_ID = "services";
 	protected $privilage = "view_services";
 
 	function __construct()
@@ -17,7 +18,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
 	protected function content($get, $post)
 	{
-		global $heart, $lang, $settings, $scripts;
+		global $heart, $lang;
 
 		// Pobranie listy serwisów transakcyjnych
 		$i = 0;
@@ -62,8 +63,6 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 				'type' => "button",
 				'value' => $lang->add_service
 			));
-
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/services.js?version=" . VERSION;
 
 		// Pobranie struktury tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
