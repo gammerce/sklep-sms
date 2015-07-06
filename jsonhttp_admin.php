@@ -493,15 +493,28 @@ if ($action == "charge_wallet") {
 		json_output("warnings", $lang->form_wrong_filled, 0, $data);
 	}
 
-	// Po błędach wywołujemy na metodę modułu
-	if ($service_module !== NULL)
+	// Po błędach wywołujemy metodę modułu
+	if ($service_module !== NULL) {
 		$module_data = $service_module->manage_service_post($_POST);
+
+		// Tworzymy elementy SET zapytania
+		$set = "";
+		foreach($module_data['query_set'] as $element) {
+			if (strlen($set))
+				$set .= ", ";
+
+			$set .= $db->prepare("`%s` = '{$element['type']}'", array($element['column'], $element['value']));
+		}
+	}
+
+	if (isset($set) && strlen($set))
+		$set = ", " . $set;
 
 	if ($action == "add_service") {
 		$db->query($db->prepare(
 			"INSERT INTO `" . TABLE_PREFIX . "services` " .
 			"SET `id`='%s', `name`='%s', `short_description`='%s', `description`='%s', `tag`='%s', " .
-			"`module`='%s', `groups`='%s', `order` = '%d'{$module_data['query_set']}",
+			"`module`='%s', `groups`='%s', `order` = '%d' " . "{$set}",
 			array($_POST['id'], $_POST['name'], $_POST['short_description'], $_POST['description'], $_POST['tag'], $_POST['module'],
 				implode(";", $_POST['groups']), $_POST['order'])
 		));
@@ -512,7 +525,7 @@ if ($action == "charge_wallet") {
 		$db->query($db->prepare(
 			"UPDATE `" . TABLE_PREFIX . "services` " .
 			"SET `id` = '%s', `name` = '%s', `short_description` = '%s', `description` = '%s', " .
-			"`tag` = '%s', `groups` = '%s', `order` = '%d' " . $module_data['query_set'] .
+			"`tag` = '%s', `groups` = '%s', `order` = '%d' " . $set .
 			"WHERE `id` = '%s'",
 			array($_POST['id'], $_POST['name'], $_POST['short_description'], $_POST['description'], $_POST['tag'], implode(";", $_POST['groups']),
 				$_POST['order'], $_POST['id2'])
@@ -564,8 +577,8 @@ if ($action == "charge_wallet") {
 	if (is_null($service_module = $heart->get_service_module($_POST['service'])) || $service_module::MODULE_ID != $_POST['module'])
 		$service_module = $heart->get_service_module_s($_POST['module']);
 
-	if (!is_null($service_module))
-		$output = $service_module->service_extra_fields();
+	if ($service_module !== NULL && object_implements($service_module, "IServiceManageService"))
+		$output = $service_module->get_service_extra_fields();
 
 	output_page($output, "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "add_server" || $action == "edit_server") {
@@ -617,7 +630,7 @@ if ($action == "charge_wallet") {
 	$set = "";
 	foreach ($heart->get_services() as $service) {
 		// Dana usługa nie może być kupiona na serwerze
-		if (!is_null($service_module = $heart->get_service_module($service['id'])) && !$service_module->info['available_on_servers'])
+		if (!is_null($service_module = $heart->get_service_module($service['id'])) && !object_implements($service_module, "IServiceAvailableOnServers"))
 			continue;
 
 		$set .= $db->prepare(", `%s`='%d'", array($service['id'], $_POST[$service['id']]));

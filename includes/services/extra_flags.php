@@ -2,19 +2,13 @@
 
 $heart->register_service_module("extra_flags", "Dodatkowe Uprawnienia / Flagi", "ServiceExtraFlags", "ServiceExtraFlagsSimple");
 
-class ServiceExtraFlagsSimple extends Service implements IServiceCreateNew
+class ServiceExtraFlagsSimple extends Service implements IServiceManageService, IServiceCreateNew, IServiceAvailableOnServers
 {
 
 	const MODULE_ID = "extra_flags";
 
-	public $info = array(
-		'available_on_servers' => true
-	);
-
-	public function service_extra_fields()
+	public function get_service_extra_fields()
 	{
-		global $heart;
-
 		// WEB
 		if ($this->show_on_web()) $web_sel_yes = "selected";
 		else $web_sel_no = "selected";
@@ -47,8 +41,8 @@ class ServiceExtraFlagsSimple extends Service implements IServiceCreateNew
 		}
 
 		// Flagi
-		if (!strlen($data['flags']))
-			$output['flags'] = "Nie wprowadzono ani jednej flagi.<br />";
+		if (!strlen($data['flags'])) // TODO
+			$output['flags'] = $lang->field_no_empty . "<br />";
 		else if (strlen($data['flags']) > 25)
 			$output['flags'] = "Wprowadzono zbyt dużo flag. Maksymalna ilość to 25.<br />";
 		else if (implode('', array_unique(str_split($data['flags']))) != $data['flags'])
@@ -83,11 +77,6 @@ class ServiceExtraFlagsSimple extends Service implements IServiceCreateNew
 		$extra_data = $this->service['data'];
 		$extra_data['web'] = $data['web'];
 
-		$output['query_set'] = $db->prepare(
-			", `types`='%d', `flags`='%s', `data`='%s'",
-			array($types, $data['flags'], json_encode($extra_data))
-		);
-
 		// Tworzymy plik z opisem usługi
 		$file = SCRIPT_ROOT . "themes/{$settings['theme']}/services/" . escape_filename($data['id']) . "_desc.html";
 		if (!file_exists($file)) {
@@ -114,7 +103,25 @@ class ServiceExtraFlagsSimple extends Service implements IServiceCreateNew
 				array($data['id2'], $data['id'])
 			));
 
-		return $output;
+		return array(
+			'query_set'	=> array(
+				array(
+					'type'	=> '%d',
+					'column'=> 'types',
+					'value'	=> $types
+				),
+				array(
+					'type'	=> '%s',
+					'column'=> 'flags',
+					'value'	=> $data['flags']
+				),
+				array(
+					'type'	=> '%s',
+					'column'=> 'data',
+					'value'	=> json_encode($extra_data)
+				)
+			)
+		);
 	}
 
 }
@@ -136,8 +143,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		$scripts[] = "{$settings['shop_url_slash']}jscripts/services/extra_flags.js?version=" . VERSION;
 		if ($G_PID == "take_over_service")
 			$scripts[] = "{$settings['shop_url_slash']}jscripts/services/extra_flags_take_over.js?version=" . VERSION;
-		else if (SCRIPT_NAME == "admin" && $G_PID == "service_codes")
-			$scripts[] = "{$settings['shop_url_slash']}jscripts/services/extra_flags_add_service_code.js?version=" . VERSION;
+
 		// Dodajemy szablon css
 		$stylesheets[] = "{$settings['shop_url_slash']}styles/services/extra_flags.css?version=" . VERSION;
 	}

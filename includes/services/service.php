@@ -16,37 +16,6 @@ abstract class Service
 	}
 
 	/**
-	 * Metoda wywoływana przy edytowaniu lub dodawaniu usługi w PA
-	 * Zwraca dodatkowe pola do uzupełnienia
-	 */
-	public function service_extra_fields()
-	{
-	}
-
-	/**
-	 * Metoda testuje dane przesłane przez formularz podczas dodawania nowej usługi w PA
-	 * jak coś się jej nie spodoba to zwraca o tym info w tablicy
-	 *
-	 * @param array $data Dane $_POST
-	 * @return array        'key'    => DOM Element name
-	 *                        'value'    => Error message
-	 */
-	public function manage_service_pre($data)
-	{
-	}
-
-	/**
-	 * Metoda zostaje wywołana po tym, jak  weryfikacja danych
-	 * przesłanych w formularzu w PA przebiegła bezproblemowo
-	 *
-	 * @param array $data Dane $_POST
-	 * @return array 'query_set' - data for SET in a query
-	 */
-	public function manage_service_post($data)
-	{
-	}
-
-	/**
 	 * Metoda odpowiedzialna za zwracanie fomularzy do różnych czynności
 	 *
 	 * @param string $form Id formularza, który ma zostać zwrócony

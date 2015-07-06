@@ -75,8 +75,8 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
 		if (!get_privilages("manage_services"))
 			return array(
-				'id'	=> "not_logged_in",
-				'text'	=> $lang->not_logged_or_no_perm
+				'id' => "not_logged_in",
+				'text' => $lang->not_logged_or_no_perm
 			);
 
 		if ($box_id == "edit_service") {
@@ -84,16 +84,13 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 			$service['tag'] = htmlspecialchars($service['tag']);
 
 			// Pobieramy pola danego modułu
-			if ($service['module'])
-				if (($service_module = $heart->get_service_module($service['id'])) !== NULL) {
-					$extra_fields = create_dom_element("tbody", $service_module->service_extra_fields(), array(
+			if (strlen($service['module']))
+				if (($service_module = $heart->get_service_module($service['id'])) !== NULL && object_implements($service_module, "IServiceManageService"))
+					$extra_fields = create_dom_element("tbody", $service_module->get_service_extra_fields(), array(
 						'class' => 'extra_fields'
 					));
-				}
-		}
-
-		// Pobranie dostępnych modułów usług
-		if ($box_id == "add_service") {
+		} // Pobranie dostępnych modułów usług
+		else if ($box_id == "add_service") {
 			$services_modules = "";
 			foreach ($heart->get_services_modules() as $module) {
 				// Sprawdzamy czy dany moduł zezwala na tworzenie nowych usług, które będzie obsługiwał
@@ -105,8 +102,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 					'selected' => isset($service['module']) && $service['module'] == $module['id'] ? "selected" : ""
 				));
 			}
-		} else
-			$service_module = $heart->get_service_module_name($service['module']);
+		}
 
 		// Grupy
 		$groups = "";
@@ -117,19 +113,21 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 			));
 		}
 
-		switch($box_id) {
+		switch ($box_id) {
 			case "add_service":
 				eval("\$output = \"" . get_template("admin/action_boxes/service_add") . "\";");
 				break;
 
 			case "edit_service":
+				$service_module_name = $heart->get_service_module_name($service['module']);
+
 				eval("\$output = \"" . get_template("admin/action_boxes/service_edit") . "\";");
 				break;
 		}
 
 		return array(
-			'id'		=> "ok",
-			'template'	=> $output
+			'id' => "ok",
+			'template' => $output
 		);
 	}
 

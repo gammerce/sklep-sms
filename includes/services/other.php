@@ -7,10 +7,6 @@ class ServiceOtherSimple extends Service implements IServiceCreateNew
 
 	const MODULE_ID = "other";
 
-	public $info = array(
-		'available_on_servers' => true
-	);
-
 	public function manage_service_post($data)
 	{
 		global $db;

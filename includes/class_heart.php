@@ -73,7 +73,7 @@ class Heart
 		$className = $this->services_classes[$service['module']]['class'];
 
 		// Jeszcze sprawdzamy, czy moduł został prawidłowo stworzony
-		return $className ? new $className($service) : NULL;
+		return strlen($className) ? new $className($service) : NULL;
 	}
 
 	// Funkcja zwraca klasę modułu przez jego id
