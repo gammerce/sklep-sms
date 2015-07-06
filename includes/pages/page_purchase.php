@@ -24,7 +24,7 @@ class PagePurchase extends Page
 
 		// Sprawdzamy, czy usluga wymaga, by użytkownik był zalogowany
 		// Jeżeli wymaga, to to sprawdzamy
-		if (class_has_interface($service_module, "IServiceMustBeLogged") && !is_logged())
+		if (object_implements($service_module, "IServiceMustBeLogged") && !is_logged())
 			return $lang->must_be_logged_in;
 
 		// Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
@@ -32,7 +32,7 @@ class PagePurchase extends Page
 			return $lang->service_no_permission;
 
 		// Nie ma formularza zakupu, to tak jakby strona nie istniała
-		if (!class_has_interface($service_module, "IServicePurchaseWeb"))
+		if (!object_implements($service_module, "IServicePurchaseWeb"))
 			return $lang->site_not_exists;
 
 		// Dodajemy długi opis

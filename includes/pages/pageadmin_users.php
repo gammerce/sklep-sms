@@ -2,7 +2,7 @@
 
 $heart->register_page("users", "PageAdminUsers", "admin");
 
-class PageAdminUsers extends PageAdmin
+class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 {
 
 	protected $privilage = "view_users";
@@ -96,6 +96,45 @@ class PageAdminUsers extends PageAdmin
 		// Pobranie struktury tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
 		return $output;
+	}
+
+	public function get_action_box($box_id, $data)
+	{
+		global $heart, $lang;
+
+		if (!get_privilages("manage_users"))
+			return array(
+				'id'	=> "not_logged_in",
+				'text'	=> $lang->not_logged_or_no_perm
+			);
+
+		switch($box_id) {
+			case "edit_user":
+				// Pobranie użytkownika
+				$row = $heart->get_user($data['uid']);
+
+				$groups = "";
+				foreach ($heart->get_groups() as $group) {
+					$groups .= create_dom_element("option", "{$group['name']} ( {$group['id']} )", array(
+						'value' => $group['id'],
+						'selected' => in_array($group['id'], $row['groups']) ? "selected" : ""
+					));
+				}
+
+				eval("\$output = \"" . get_template("admin/action_boxes/user_edit") . "\";");
+				break;
+
+			case "charge_wallet":
+				$user = $heart->get_user($data['uid']);
+
+				eval("\$output = \"" . get_template("admin/action_boxes/user_charge_wallet") . "\";");
+				break;
+		}
+
+		return array(
+			'id'		=> "ok",
+			'template'	=> $output
+		);
 	}
 
 }

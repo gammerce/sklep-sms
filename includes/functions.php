@@ -569,10 +569,10 @@ function purchase_info($data)
 		return "Brak zakupu w bazie.";
 
 	$service_module = $heart->get_service_module($pbs['service']);
-	return $service_module !== NULL && class_has_interface($service_module, "IServicePurchaseWeb") ? $service_module->purchase_info($data['action'], $pbs) : "";
+	return $service_module !== NULL && object_implements($service_module, "IServicePurchaseWeb") ? $service_module->purchase_info($data['action'], $pbs) : "";
 }
 
-function delete_players_old_services()
+function delete_users_old_services()
 {
 	global $heart, $db, $settings, $lang_shop;
 	// Usunięcie przestarzałych usług gracza
@@ -585,14 +585,14 @@ function delete_players_old_services()
 	);
 
 	$delete_ids = array();
-	$players_services = array();
+	$users_services = array();
 	while ($row = $db->fetch_array_assoc($result)) {
 		if (($service_module = $heart->get_service_module($row['service'])) === NULL)
 			continue;
 
 		if ($service_module->delete_player_service($row)) {
 			$delete_ids[] = $row['id'];
-			$players_services[] = $row;
+			$users_services[] = $row;
 			log_info($lang_shop->sprintf($lang_shop->expired_service_delete, $row['auth_data'], $row['server'], $row['service'], get_type_name($row['type'])));
 		}
 	}
@@ -606,8 +606,8 @@ function delete_players_old_services()
 		));
 
 	// Wywołujemy akcje po usunieciu
-	foreach ($players_services as $player_service)
-		$service_module->delete_player_service_post($player_service);
+	foreach ($users_services as $user_service)
+		$service_module->delete_player_service_post($user_service);
 
 	// Usunięcie przestarzałych flag graczy
 	// Tak jakby co
@@ -714,7 +714,7 @@ function parse_scripts_styles(&$scripts, &$stylesheets)
  * @param $interface
  * @return bool
  */
-function class_has_interface($class, $interface)
+function object_implements($class, $interface)
 {
 	$interfaces = class_implements($class);
 	return in_array($interface, $interfaces);

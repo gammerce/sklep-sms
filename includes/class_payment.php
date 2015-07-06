@@ -36,7 +36,7 @@ class Payment
 			);
 		}
 
-		if (class_has_interface($this->payment_api, "IPaymentSMS")) {
+		if (object_implements($this->payment_api, "IPaymentSMS")) {
 			$sms_number = $this->payment_api->smses[$tariff]['number'];
 			$sms_return = $this->payment_api->verify_sms($sms_code, $sms_number);
 		} else // Nie przerywamy jeszcze, bo chcemy sprawdzic czy nie ma takiego SMSa do wykrozystania w bazie
@@ -157,7 +157,7 @@ class Payment
 			);
 		}
 
-		if (!class_has_interface($this->payment_api, "IPaymentTransfer"))
+		if (!object_implements($this->payment_api, "IPaymentTransfer"))
 			return array(
 				'status' => "NO_TRANSFER_SERVE",
 				'text' => $lang->no_transfer_serve

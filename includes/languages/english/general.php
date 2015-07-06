@@ -65,7 +65,6 @@ $l['wallet'] = "Wallet";
 
 $l['choose_type'] = "Choose type";
 $l['choose_server'] = "Choose server";
-$l['choose_service'] = "Choose service";
 $l['choose_amount'] = "Choose amount";
 
 $l['transfer_cost'] = "Transfer cost";

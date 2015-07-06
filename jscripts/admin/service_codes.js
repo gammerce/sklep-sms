@@ -1,8 +1,36 @@
 // Kliknięcie dodania kodu na usługę
 $(document).delegate("#button_add_service_code", "click", function () {
-	action_box.create();
-	getnset_template(action_box.box, "admin_add_service_code", true, {}, function () {
-		action_box.show();
+	show_action_box(get_get_param("pid"), "add_code");
+});
+
+// Kliknięcie przycisku losuj kod
+$(document).delegate("#form_add_service_code [name=random_code]", "click", function () {
+	$(this).closest("form").find("[name=code]").val(get_random_string());
+});
+
+// Wybranie usługi podczas dodawania kodu na usługę
+var extra_fields;
+$(document).delegate("#form_add_service_code [name=service]", "change", function () {
+	// Brak wybranej usługi
+	if (!$(this).val().length) {
+		// Usuwamy dodatkowe pola
+		if (extra_fields)
+			extra_fields.remove();
+		return;
+	}
+
+	fetch_data("get_form_add_service_code", true, {
+		service: $(this).val()
+	}, function (content) {
+		// Usuwamy dodatkowe pola
+		if (extra_fields)
+			extra_fields.remove();
+
+		// Dodajemy content do action boxa
+		extra_fields = $("<tbody>", {
+			html: content
+		});
+		extra_fields.insertAfter(".action_box .ftbody");
 	});
 });
 

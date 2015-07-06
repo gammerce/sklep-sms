@@ -33,7 +33,7 @@ class PagePaymentLog extends Page
 			$date = htmlspecialchars($row['timestamp']);
 			$cost = number_format(floatval($row['cost']), 2) . " " . $settings['currency'];
 
-			if (($service_module = $heart->get_service_module($row['service'])) !== NULL && class_has_interface($service_module, "IServicePurchaseWeb")) {
+			if (($service_module = $heart->get_service_module($row['service'])) !== NULL && object_implements($service_module, "IServicePurchaseWeb")) {
 				$log_info = $service_module->purchase_info("payment_log", $row);
 				$desc = $log_info['text'];
 				$class = $log_info['class'];

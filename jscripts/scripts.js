@@ -15,8 +15,7 @@ function show_info(message, positive, length) {
 function getnset_template(element, template, admin, data, onSuccessFunction) {
 	// Sprawdzenie czy data została przesłana
 	data = typeof data !== "undefined" ? data : {};
-	onSuccessFunction = typeof onSuccessFunction !== "undefined" ? onSuccessFunction : function () {
-	};
+	onSuccessFunction = typeof onSuccessFunction !== "undefined" ? onSuccessFunction : function () {};
 
 	// Dodanie informacji do wysyłanej mapy wartości
 	data['action'] = "get_template";

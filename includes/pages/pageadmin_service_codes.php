@@ -2,7 +2,7 @@
 
 $heart->register_page("service_codes", "PageAdminServiceCodes", "admin");
 
-class PageAdminServiceCodes extends PageAdmin
+class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 {
 
 	protected $privilage = "view_service_codes";
@@ -79,4 +79,55 @@ class PageAdminServiceCodes extends PageAdmin
 		return $output;
 	}
 
+	public function get_action_box($box_id, $data)
+	{
+		global $heart, $lang;
+
+		if (!get_privilages("manage_service_codes"))
+			return array(
+				'id'	=> "not_logged_in",
+				'text'	=> $lang->not_logged_or_no_perm
+			);
+
+		switch($box_id) {
+			case "add_code":
+				// Pobranie usług
+				$services = "";
+				foreach ($heart->get_services() as $id => $row) {
+					if (($service_module = $heart->get_service_module($id)) === NULL || !object_implements($service_module, "IServiceAdminManageServiceCodes"))
+						continue;
+
+					$services .= create_dom_element("option", $row['name'], array(
+						'value' => $row['id']
+					));
+				}
+
+				eval("\$output = \"" . get_template("admin/action_boxes/service_code_add") . "\";");
+				break;
+
+			case "edit_code":
+				// Pobieramy usługę z bazy
+				/*$player_service = $db->fetch_array_assoc($db->query($db->prepare(
+					"SELECT * FROM `" . TABLE_PREFIX . "players_services` " .
+					"WHERE `id` = '%d'",
+					array($data['id'])
+				)));
+
+				if (($service_module = $heart->get_service_module($player_service['service'])) !== NULL) {
+					$service_module_id = htmlspecialchars($service_module::MODULE_ID);
+					$form_data = $service_module->get_form("admin_edit_user_service", $player_service);
+				}
+
+				if (!isset($form_data) || !strlen($form_data))
+					$form_data = $lang->service_edit_unable;*/
+
+				eval("\$output = \"" . get_template("admin/action_boxes/service_code_edit") . "\";");
+				break;
+		}
+
+		return array(
+			'id'		=> "ok",
+			'template'	=> $output
+		);
+	}
 }

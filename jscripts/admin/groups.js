@@ -1,19 +1,13 @@
 // Kliknięcie dodania grupy
 $(document).delegate("#button_add_group", "click", function () {
-	action_box.create();
-	getnset_template(action_box.box, "admin_add_group", true, {}, function () {
-		action_box.show();
-	});
+	show_action_box(get_get_param("pid"), "add_group");
 });
 
 // Kliknięcie edycji grupy
 $(document).delegate("[id^=edit_row_]", "click", function () {
 	var row_id = $("#" + $(this).attr("id").replace('edit_row_', 'row_'));
-	action_box.create();
-	getnset_template(action_box.box, "admin_edit_group", true, {
+	show_action_box(get_get_param("pid"), "edit_group", {
 		id: row_id.children("td[headers=id]").text()
-	}, function () {
-		action_box.show();
 	});
 });
 

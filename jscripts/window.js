@@ -75,6 +75,7 @@ var action_box = {
 	element: $(""),
 	box: $(""),
 	exit: $(""),
+	created: false,
 
 	create: function () {
 
@@ -89,9 +90,15 @@ var action_box = {
 
 		action_box.element.appendTo('body');
 
+		action_box.created = true;
 	},
 
-	show: function () {
+	show: function (content) {
+
+		if (!action_box.created)
+			action_box.create();
+
+		action_box.box.html(content);
 
 		action_box.exit = $("<div>", {
 			class: "exit",
@@ -120,6 +127,7 @@ var action_box = {
 
 	hide: function () {
 		action_box.element.stop().fadeOut('slow', function () {
+			action_box.created = false;
 			$(this).remove();
 		});
 	}

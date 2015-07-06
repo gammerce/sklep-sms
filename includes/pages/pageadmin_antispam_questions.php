@@ -2,7 +2,7 @@
 
 $heart->register_page("antispam_questions", "PageAdminAntispamQuestions", "admin");
 
-class PageAdminAntispamQuestions extends PageAdmin
+class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBox
 {
 
 	protected $privilage = "view_antispam_questions";
@@ -80,6 +80,40 @@ class PageAdminAntispamQuestions extends PageAdmin
 		// Pobranie struktury tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
 		return $output;
+	}
+
+	public function get_action_box($box_id, $data)
+	{
+		global $db, $lang;
+
+		if (!get_privilages("manage_antispam_questions"))
+			return array(
+				'id'	=> "not_logged_in",
+				'text'	=> $lang->not_logged_or_no_perm
+			);
+
+		switch($box_id) {
+			case "add_antispam_question":
+				eval("\$output = \"" . get_template("admin/action_boxes/antispam_question_add") . "\";");
+				break;
+
+			case "edit_antispam_question":
+				$row = $db->fetch_array_assoc($db->query($db->prepare(
+					"SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " .
+					"WHERE `id` = '%d'",
+					array($data['id'])
+				)));
+				$row['question'] = htmlspecialchars($row['question']);
+				$row['answers'] = htmlspecialchars($row['answers']);
+
+				eval("\$output = \"" . get_template("admin/action_boxes/antispam_question_edit") . "\";");
+				break;
+		}
+
+		return array(
+			'id'		=> "ok",
+			'template'	=> $output
+		);
 	}
 
 }

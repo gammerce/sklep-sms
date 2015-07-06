@@ -12,7 +12,7 @@ $l['license_error'] = "Licencja wygasła lub jest błędna. Przejdź do <a href=
 $l['license_soon_expire'] = "Licencja wygaśnie za: {1} Możesz ją przedłużyć już teraz: <a href=\"http://sklep.sklep-sms.pl/index.php?pid=purchase&service=ss_license_plong\" target=\"_blank\">Przedłuż Licencję</a>.";
 
 $l['players_flags'] = "Flagi graczy";
-$l['players_services'] = "Czasowe usługi graczy";
+$l['users_services'] = "Czasowe usługi użytkowników";
 $l['income'] = "Przychód";
 $l['settings'] = "Ustawienia sklepu";
 $l['transaction_services'] = "Metody płatności";
@@ -66,6 +66,8 @@ $l['privilages_names'] = array(
 	"manage_users" => "Zarządzanie użytkownikami",
 	"view_sms_codes" => "Przeglądanie kodów SMS",
 	"manage_sms_codes" => "Zarządzanie kodami SMS",
+	"view_service_codes" => "Przeglądanie kodów na usługi", // TODO
+	"manage_service_codes" => "Zarządzanie kodami na usługi", // TODO
 	"view_antispam_questions" => "Przeglądanie pytań anty-spamowych",
 	"manage_antispam_questions" => "Zarządzanie pytaniami anty-spamowymi",
 	"view_services" => "Przeglądanie usług",

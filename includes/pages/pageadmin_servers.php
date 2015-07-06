@@ -2,7 +2,7 @@
 
 $heart->register_page("servers", "PageAdminServers", "admin");
 
-class PageAdminServers extends PageAdmin
+class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 {
 
 	protected $privilage = "manage_servers";
@@ -66,6 +66,76 @@ class PageAdminServers extends PageAdmin
 		// Pobranie struktury tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
 		return $output;
+	}
+
+	public function get_action_box($box_id, $data)
+	{
+		global $heart, $db, $lang;
+
+		if (!get_privilages("manage_servers"))
+			return array(
+				'id'	=> "not_logged_in",
+				'text'	=> $lang->not_logged_or_no_perm
+			);
+
+		if ($box_id == "edit_server") {
+			$server = $heart->get_server($data['id']);
+			$server['ip'] = htmlspecialchars($server['ip']);
+			$server['port'] = htmlspecialchars($server['port']);
+		}
+
+		// Pobranie listy serwisów transakcyjnych
+		$result = $db->query(
+			"SELECT `id`, `name`, `sms` " .
+			"FROM `" . TABLE_PREFIX . "transaction_services`"
+		);
+		$sms_services = "";
+		while ($row = $db->fetch_array_assoc($result)) {
+			if (!$row['sms'])
+				continue;
+
+			$sms_services .= create_dom_element("option", $row['name'], array(
+				'value' => $row['id'],
+				'selected' => $row['id'] == $server['sms_service'] ? "selected" : ""
+			));
+		}
+
+
+		foreach ($heart->get_services() as $service) {
+			// Dana usługa nie może być kupiona na serwerze
+			if (!is_null($service_module = $heart->get_service_module($service['id'])) && !$service_module->info['available_on_servers'])
+				continue;
+
+			$values = create_dom_element("option", strtoupper($lang->no), array(
+				'value' => 0,
+				'selected' => $server[$service['id']] ? "" : "selected"
+			));
+
+			$values .= create_dom_element("option", strtoupper($lang->yes), array(
+				'value' => 1,
+				'selected' => $server[$service['id']] ? "selected" : ""
+			));
+
+			$name = htmlspecialchars($service['id']);
+			$text = htmlspecialchars("{$service['name']} ( {$service['id']} )");
+
+			eval("\$services .= \"" . get_template("tr_text_select") . "\";");
+		}
+
+		switch($box_id) {
+			case "add_server":
+				eval("\$output = \"" . get_template("admin/action_boxes/server_add") . "\";");
+				break;
+
+			case "edit_server":
+				eval("\$output = \"" . get_template("admin/action_boxes/server_edit") . "\";");
+				break;
+		}
+
+		return array(
+			'id'		=> "ok",
+			'template'	=> $output
+		);
 	}
 
 }

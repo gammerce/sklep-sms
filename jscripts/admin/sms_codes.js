@@ -1,9 +1,11 @@
 // Kliknięcie dodania kodu SMS
 $(document).delegate("#button_add_sms_code", "click", function () {
-	action_box.create();
-	getnset_template(action_box.box, "admin_add_sms_code", true, {}, function () {
-		action_box.show();
-	});
+	show_action_box(get_get_param("pid"), "add_sms_code");
+});
+
+// Kliknięcie przycisku losuj kod
+$(document).delegate("#form_add_sms_code [name=random_code]", "click", function () {
+	$(this).closest("form").find("[name=code]").val(get_random_string());
 });
 
 // Usuwanie kodu SMS

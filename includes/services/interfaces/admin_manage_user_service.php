@@ -24,4 +24,23 @@ interface IServiceAdminManageUserService
 	 *                        'positive'    => czy udało się wyedytować usługę
 	 */
 	public function admin_edit_user_service($data, $user_service);
+
+	/**
+	 * Metoda powinna zwrócić dodatkowe pola do uzupełnienia przez admina
+	 * podczas dodawania usługi gracza
+	 *
+	 * @return array
+	 * 	'text'	- treść html
+	 * 	'scripts'	- skrypty js do dodania
+	 */
+	public function admin_get_form_add_user_service();
+
+	/**
+	 * Metoda powinna zwrócić dodatkowe pola usługi
+	 * podczas jej edycji w PA
+	 *
+	 * @param array $player_service	- dane edytowanej usługi
+	 * @return string
+	 */
+	public function admin_get_form_edit_user_service($player_service);
 }

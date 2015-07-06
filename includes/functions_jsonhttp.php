@@ -104,3 +104,18 @@ function json_output($id, $text = "", $positive = false, $data = array())
 
 	output_page(json_encode($output), "Content-type: text/plain; charset=\"UTF-8\"");
 }
+
+/**
+ * @param string $id
+ * @param string $text
+ * @param string $template
+ */
+function actionbox_output($id, $text = "", $template = "")
+{
+	$output['return_id'] = $id;
+	$output['text'] = $text;
+	if (strlen($template))
+		$output['template'] = $template;
+
+	output_page(json_encode($output), "Content-type: text/plain; charset=\"UTF-8\"");
+}

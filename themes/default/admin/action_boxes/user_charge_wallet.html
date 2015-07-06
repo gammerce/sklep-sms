@@ -5,7 +5,7 @@
 	<table>
 		<tr>
 			<td>Nazwa Użytkownika</td>
-			<td>{$username}</td>
+			<td>{$user['username']}</td>
 		</tr>
 		<tr>
 			<td>Ilość</td>
@@ -13,7 +13,7 @@
 		</tr>
 		<tr>
 			<td colspan="2">
-				<input type="hidden" name="uid" value="{$uid}"/>
+				<input type="hidden" name="uid" value="{$user['uid']}"/>
 				<input type="submit" value="Doładuj" style="width: 100%;"/>
 			</td>
 		</tr>

@@ -1,8 +1,8 @@
 <?php
 
-$heart->register_page("players_services", "PageAdminPlayersServices", "admin");
+$heart->register_page("users_services", "PageAdminUsersServices", "admin");
 
-class PageAdminPlayersServices extends PageAdmin
+class PageAdminUsersServices extends PageAdmin implements IPageAdminActionBox
 {
 
 	protected $privilage = "view_player_services";
@@ -10,7 +10,7 @@ class PageAdminPlayersServices extends PageAdmin
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->players_services;
+		$this->title = $lang->users_services;
 
 		parent::__construct();
 	}
@@ -55,7 +55,7 @@ class PageAdminPlayersServices extends PageAdmin
 
 			// Pobranie przycisku edycji oraz usuwania
 			if (get_privilages("manage_player_services")) {
-				if (($service_module = $heart->get_service_module($row['service_id'])) !== NULL && class_has_interface($service_module, "IServiceAdminManageUserService"))
+				if (($service_module = $heart->get_service_module($row['service_id'])) !== NULL && object_implements($service_module, "IServiceAdminManageUserService"))
 					$button_edit = create_dom_element("img", "", array(
 						'id' => "edit_row_{$i}",
 						'src' => "images/edit.png",
@@ -73,7 +73,7 @@ class PageAdminPlayersServices extends PageAdmin
 				$button_edit = $button_delete = "";
 
 			// Pobranie danych do tabeli
-			eval("\$tbody .= \"" . get_template("admin/players_services_trow") . "\";");
+			eval("\$tbody .= \"" . get_template("admin/users_services_trow") . "\";");
 		}
 
 		// Nie ma zadnych danych do wyswietlenia
@@ -85,6 +85,7 @@ class PageAdminPlayersServices extends PageAdmin
 		eval("\$buttons = \"" . get_template("admin/form_search") . "\";");
 
 		// Pobranie przycisku dodajacego flagi
+		$buttons = "";
 		if (get_privilages("manage_player_services"))
 			$buttons .= create_dom_element("input", "", array(
 				'id' => "button_add_user_service",
@@ -98,9 +99,9 @@ class PageAdminPlayersServices extends PageAdmin
 			$tfoot_class = "display_tfoot";
 
 		// Pobranie nagłówka tabeli
-		eval("\$thead = \"" . get_template("admin/players_services_thead") . "\";");
+		eval("\$thead = \"" . get_template("admin/users_services_thead") . "\";");
 
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/players_services.js?version=" . VERSION;
+		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/users_services.js?version=" . VERSION;
 		$scripts[] = $settings['shop_url_slash'] . "jscripts/services/extra_flags.js?version=" . VERSION;
 
 		// Pobranie struktury tabeli
@@ -108,4 +109,55 @@ class PageAdminPlayersServices extends PageAdmin
 		return $output;
 	}
 
+	public function get_action_box($box_id, $data)
+	{
+		global $heart, $db, $lang;
+
+		if (!get_privilages("manage_player_services"))
+			return array(
+				'id'	=> "not_logged_in",
+				'text'	=> $lang->not_logged_or_no_perm
+			);
+
+		switch($box_id) {
+			case "add_user_service":
+				// Pobranie usług
+				$services = "";
+				foreach ($heart->get_services() as $id => $row) {
+					if (($service_module = $heart->get_service_module($id)) === NULL || !object_implements($service_module, "IServiceAdminManageUserService"))
+						continue;
+
+					$services .= create_dom_element("option", $row['name'], array(
+						'value' => $row['id']
+					));
+				}
+
+				eval("\$output = \"" . get_template("admin/action_boxes/user_service_add") . "\";");
+				break;
+
+			case "edit_user_service":
+				// Pobieramy usługę z bazy
+				$player_service = $db->fetch_array_assoc($db->query($db->prepare(
+					"SELECT * FROM `" . TABLE_PREFIX . "players_services` " .
+					"WHERE `id` = '%d'",
+					array($data['id'])
+				)));
+
+				if (($service_module = $heart->get_service_module($player_service['service'])) !== NULL) {
+					$service_module_id = htmlspecialchars($service_module::MODULE_ID);
+					$form_data = $service_module->admin_get_form_edit_user_service($player_service);
+				}
+
+				if (!isset($form_data) || !strlen($form_data))
+					$form_data = $lang->service_edit_unable;
+
+				eval("\$output = \"" . get_template("admin/action_boxes/user_service_edit") . "\";");
+				break;
+		}
+
+		return array(
+			'id'		=> "ok",
+			'template'	=> $output
+		);
+	}
 }

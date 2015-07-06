@@ -52,6 +52,7 @@ set_error_handler("myErrorHandler");
 $db = new Database($db_host, $db_user, $db_pass, $db_name);
 $db->query("SET NAMES utf8");
 
+
 // Dodajemy klasy wszystkich modulow platnosci
 require_once SCRIPT_ROOT . "includes/verification/payment_module.php";
 require_once SCRIPT_ROOT . "includes/verification/payment_sms.php";
@@ -60,19 +61,19 @@ foreach (scandir(SCRIPT_ROOT . "includes/verification") as $file)
 	if (substr($file, -4) == ".php")
 		require_once SCRIPT_ROOT . "includes/verification/" . $file;
 
+
 // Dodajemy klasy wszystkich usług
 require_once SCRIPT_ROOT . "includes/services/service.php";
-require_once SCRIPT_ROOT . "includes/services/service_purchase.php";
-require_once SCRIPT_ROOT . "includes/services/service_purchase_web.php";
-require_once SCRIPT_ROOT . "includes/services/service_admin_manage_user_service.php";
-require_once SCRIPT_ROOT . "includes/services/service_user_edit.php";
-require_once SCRIPT_ROOT . "includes/services/service_execute_action.php";
-require_once SCRIPT_ROOT . "includes/services/service_create_new.php";
-require_once SCRIPT_ROOT . "includes/services/service_take_over.php";
-require_once SCRIPT_ROOT . "includes/services/service_must_be_logged.php";
+
+// Pierwsze ładujemy interfejsy
+foreach (scandir(SCRIPT_ROOT . "includes/services/interfaces") as $file)
+	if (substr($file, -4) == ".php")
+		require_once SCRIPT_ROOT . "includes/services/interfaces/" . $file;
+
 foreach (scandir(SCRIPT_ROOT . "includes/services") as $file)
 	if (substr($file, -4) == ".php")
 		require_once SCRIPT_ROOT . "includes/services/" . $file;
+
 
 // Dodajemy klasy wszystkich bloków
 require_once SCRIPT_ROOT . "includes/blocks/block.php";
@@ -80,12 +81,20 @@ foreach (scandir(SCRIPT_ROOT . "includes/blocks") as $file)
 	if (substr($file, -4) == ".php")
 		require_once SCRIPT_ROOT . "includes/blocks/" . $file;
 
+
 // Dodajemy klasy wszystkich stron
 require_once SCRIPT_ROOT . "includes/pages/page.php";
 require_once SCRIPT_ROOT . "includes/pages/pageadmin.php";
+
+// Pierwsze ładujemy interfejsy
+foreach (scandir(SCRIPT_ROOT . "includes/pages/interfaces") as $file)
+	if (substr($file, -4) == ".php")
+		require_once SCRIPT_ROOT . "includes/pages/interfaces/" . $file;
+
 foreach (scandir(SCRIPT_ROOT . "includes/pages") as $file)
 	if (substr($file, -4) == ".php")
 		require_once SCRIPT_ROOT . "includes/pages/" . $file;
+
 
 // Pobieramy id strony oraz obecna numer strony
 $G_PID = isset($_GET['pid']) ? $_GET['pid'] : "main_content";

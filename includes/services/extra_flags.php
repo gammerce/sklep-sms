@@ -120,7 +120,7 @@ class ServiceExtraFlagsSimple extends Service implements IServiceCreateNew
 }
 
 class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurchase, IServicePurchaseWeb, IServiceAdminManageUserService,
-	IServiceExecuteAction, IServiceUserEdit, IServiceTakeOver
+	IServiceExecuteAction, IServiceUserEdit, IServiceTakeOver, IServiceAdminManageServiceCodes
 {
 
 	function __construct($service)
@@ -142,11 +142,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 	public function get_form($form, $data)
 	{
-		if ($form == "admin_add_user_service")
-			return $this->form_admin_add_user_service();
-		else if ($form == "admin_edit_user_service")
-			return $this->form_admin_edit_user_service($data);
-		else if ($form == "user_edit_user_service")
+		if ($form == "user_edit_user_service")
 			return $this->form_user_edit_user_service($data);
 	}
 
@@ -382,7 +378,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		$auth_data = trim($auth_data);
 
 		// Usunięcie przestarzałych usług gracza
-		delete_players_old_services();
+		delete_users_old_services();
 
 		// Dodajemy usługę gracza do listy usług
 		// Jeżeli już istnieje dokładnie taka sama, to ją przedłużamy
@@ -520,13 +516,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 	// ----------------------------------------------------------------------------------
 	// ### Zarządzanie usługami użytkowników przez admina
 
-	//
-	// Funkcja zwraca formularz dodawania usług graczom przez PA
-	// $output:
-	// 	text - tekst wstawiany do action boxa
-	// 	scripts - skrypty które dorzucamy do strony
-	//
-	private function form_admin_add_user_service()
+	public function admin_get_form_add_user_service()
 	{
 		global $heart, $settings, $lang;
 
@@ -553,7 +543,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 		$output['scripts'] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/services/extra_flags_add_user_service.js?version=" . VERSION . "\"></script>";
 
-		return json_encode($output);
+		return $output;
 	}
 
 	//
@@ -572,11 +562,10 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 		// Amount
 		if (!$data['forever']) {
-			if ($warning = check_for_warnings("number", $data['amount'])) {
+			if ($warning = check_for_warnings("number", $data['amount']))
 				$warnings['amount'] = $warning;
-			} else if ($data['amount'] < 0) {
-				$warnings['amount'] .= "Ilość dni musi być nieujemna.<br />";
-			}
+			else if ($data['amount'] < 0)
+				$warnings['amount'] .= "Ilość dni musi być nieujemna.<br />"; // TODO
 		}
 
 		// E-mail
@@ -630,10 +619,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		);
 	}
 
-	//
-	// Funkcja zwraca formularz edycji usługi użytkownika przez PA
-	//
-	private function form_admin_edit_user_service($player_service)
+	public function admin_get_form_edit_user_service($player_service)
 	{
 		global $heart, $settings, $lang;
 
@@ -1276,4 +1262,56 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		return max($a, $b);
 	}
 
+	public function validate_admin_add_service_code($data)
+	{
+		global $heart, $lang;
+
+		$warnings = array();
+
+		// Serwer
+		if (!strlen($data['server']))
+			$warnings['server'] .= "Musisz wybrać serwer."; // TODO
+		// Wyszukiwanie serwera o danym id
+		else if (($server = $heart->get_server($data['server'])) === NULL)
+			$warnings['server'] .= "Brak serwera o takim ID."; // TODO
+
+		// Taryfa
+		if (!strlen($data['tariff']))
+			$warnings['tariff'] .= "Musisz wybrać taryfę."; // TODO
+		else if (($heart->get_tariff($data['tariff'])) === NULL)
+			$warnings['tariff'] .= $lang->no_such_tariff;
+
+		return $warnings;
+	}
+
+	public function validate_admin_edit_service_code($data, $user_service)
+	{
+		// TODO: Implement admin_edit_service_code() method.
+	}
+
+	public function admin_get_form_add_service_code()
+	{
+		global $heart, $lang;
+
+		// Pobieramy listę serwerów
+		$servers = "";
+		foreach ($heart->get_servers() as $id => $row) {
+			if (!$row[$this->service['id']]) // Tej usługi nie można kupić na tym serwerze
+				continue;
+
+			$servers .= create_dom_element("option", $row['name'], array(
+				'value' => $row['id']
+			));
+		}
+
+		// Pobieramy listę taryf
+		$tariffs = "";
+		foreach ($heart->get_tariffs() as $tariff)
+			$tariffs .= create_dom_element("option", $tariff['tariff'], array(
+				'value' => $tariff['id']
+			));
+
+		eval("\$output = \"" . get_template("services/extra_flags/admin_add_service_code", 0, 1, 0) . "\";");
+		return $output;
+	}
 }

@@ -2,7 +2,7 @@
 
 $heart->register_page("groups", "PageAdminGroups", "admin");
 
-class PageAdminGroups extends PageAdmin
+class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 {
 
 	protected $privilage = "view_groups";
@@ -76,6 +76,73 @@ class PageAdminGroups extends PageAdmin
 		// Pobranie struktury tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
 		return $output;
+	}
+
+	public function get_action_box($box_id, $data)
+	{
+		global $db, $lang;
+
+		if (!get_privilages("manage_groups"))
+			return array(
+				'id'	=> "not_logged_in",
+				'text'	=> $lang->not_logged_or_no_perm
+			);
+
+		if ($box_id == "edit_group") {
+			$result = $db->query($db->prepare(
+				"SELECT * FROM `" . TABLE_PREFIX . "groups` " .
+				"WHERE `id` = '%d'",
+				array($data['id'])
+			));
+
+			if (!$db->num_rows($result))
+				$data['template'] = create_dom_element("form", $lang->no_such_group, array(
+					'class' => 'action_box',
+					'style' => array(
+						'padding' => "20px",
+						'color' => "white"
+					)
+				));
+			else {
+				$group = $db->fetch_array_assoc($result);
+				$group['name'] = htmlspecialchars($group['name']);
+			}
+		}
+
+		$result = $db->query("DESCRIBE " . TABLE_PREFIX . "groups");
+		while ($row = $db->fetch_array_assoc($result)) {
+			if (in_array($row['Field'], array("id", "name"))) continue;
+
+			$values = create_dom_element("option", strtoupper($lang->no), array(
+				'value' => 0,
+				'selected' => $group[$row['Field']] ? "" : "selected"
+			));
+
+			$values .= create_dom_element("option", strtoupper($lang->yes), array(
+				'value' => 1,
+				'selected' => $group[$row['Field']] ? "selected" : ""
+			));
+
+			$name = htmlspecialchars($row['Field']);
+			$text = $lang->privilages_names[$row['Field']];
+
+			eval("\$privilages .= \"" . get_template("tr_text_select") . "\";");
+		}
+
+		switch($box_id) {
+			case "add_group":
+				eval("\$output = \"" . get_template("admin/action_boxes/group_add") . "\";");
+				break;
+
+			case "edit_group":
+				eval("\$output = \"" . get_template("admin/action_boxes/group_edit") . "\";");
+				break;
+		}
+
+		return array(
+			'id'		=> "ok",
+			'template'	=> $output
+		);
 	}
 
 }

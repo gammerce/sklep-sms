@@ -438,7 +438,7 @@ if ($action == "login") {
 	if (($service_module = $heart->get_service_module($player_service['service'])) === NULL)
 		output_page($lang->service_cant_be_modified);
 
-	if (!class_has_interface($service_module, "IServiceUserEdit"))
+	if (!object_implements($service_module, "IServiceUserEdit"))
 		output_page($lang->service_cant_be_modified);
 
 	$button_edit = create_dom_element("img", "", array(
@@ -474,7 +474,7 @@ if ($action == "login") {
 		json_output("wrong_module", $lang->bad_module, 0);
 
 	// Wykonujemy metode edycji usługi gracza na module, który ją obsługuje
-	if (!class_has_interface($service_module, "IServiceUserEdit"))
+	if (!object_implements($service_module, "IServiceUserEdit"))
 		json_output("service_cant_be_modified", $lang->service_cant_be_modified, 0);
 
 	$return_data = $service_module->user_edit_user_service($_POST, $user_service);
@@ -491,12 +491,12 @@ if ($action == "login") {
 
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
 } else if ($action == "form_take_over_service") {
-	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !class_has_interface($service_module, "IServiceTakeOver"))
+	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IServiceTakeOver"))
 		output_page($lang->bad_module, "Content-type: text/plain; charset=\"UTF-8\"");
 
 	output_page($service_module->form_take_over_service($_POST['service']), "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "take_over_service") {
-	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !class_has_interface($service_module, "IServiceTakeOver"))
+	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IServiceTakeOver"))
 		output_page($lang->bad_module, "Content-type: text/plain; charset=\"UTF-8\"");
 
 	$return_data = $service_module->take_over_service($_POST);
@@ -517,7 +517,7 @@ if ($action == "login") {
 	$page = new PageAdminIncome();
 	output_page($page->get_content($_GET, $_POST), "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "execute_service_action") {
-	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !class_has_interface($service_module, "IServiceExecuteAction"))
+	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IServiceExecuteAction"))
 		output_page($lang->bad_module, "Content-type: text/plain; charset=\"UTF-8\"");
 
 	output_page($service_module->execute_action($_POST['service_action'], $_POST), "Content-type: text/plain; charset=\"UTF-8\"");

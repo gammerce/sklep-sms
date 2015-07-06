@@ -2,7 +2,7 @@
 
 $heart->register_page("sms_codes", "PageAdminSmsCodes", "admin");
 
-class PageAdminSmsCodes extends PageAdmin
+class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 {
 
 	protected $privilage = "view_sms_codes";
@@ -73,6 +73,34 @@ class PageAdminSmsCodes extends PageAdmin
 		// Pobranie wygladu całej tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
 		return $output;
+	}
+
+	public function get_action_box($box_id, $data)
+	{
+		global $heart, $lang;
+
+		if (!get_privilages("manage_sms_codes"))
+			return array(
+				'id'	=> "not_logged_in",
+				'text'	=> $lang->not_logged_or_no_perm
+			);
+
+		switch($box_id) {
+			case "add_sms_code":
+				$tariffs = "";
+				foreach ($heart->get_tariffs() as $tariff_data)
+					$tariffs .= create_dom_element("option", $tariff_data['tariff'], array(
+						'value' => $tariff_data['tariff']
+					));
+
+				eval("\$output = \"" . get_template("admin/action_boxes/sms_code_add") . "\";");
+				break;
+		}
+
+		return array(
+			'id'		=> "ok",
+			'template'	=> $output
+		);
 	}
 
 }

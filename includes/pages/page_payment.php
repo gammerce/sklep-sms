@@ -41,7 +41,7 @@ class PagePayment extends Page
 		$data = json_decode(base64_decode($post['data']), true);
 
 
-		if (($service_module = $heart->get_service_module($data['service'])) === NULL || !class_has_interface($service_module, "IServicePurchaseWeb"))
+		if (($service_module = $heart->get_service_module($data['service'])) === NULL || !object_implements($service_module, "IServicePurchaseWeb"))
 			return $lang->bad_module;
 
 		// Pobieramy szczegóły zamówienia
@@ -68,8 +68,8 @@ class PagePayment extends Page
 			eval("\$payment_methods .= \"" . get_template("payment_method_wallet") . "\";");
 		eval("\$payment_methods .= \"" . get_template("payment_method_code") . "\";");
 
-		$purchase_data = htmlspecialchars($_POST['data']);
-		$purchase_sign = htmlspecialchars($_POST['sign']);
+		$purchase_data = htmlspecialchars($post['data']);
+		$purchase_sign = htmlspecialchars($post['sign']);
 
 		eval("\$output = \"" . get_template("payment_form") . "\";");
 

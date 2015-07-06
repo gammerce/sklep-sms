@@ -47,9 +47,9 @@ if (get_privilages("view_player_flags")) {
 	eval("\$players_flags_link = \"" . get_template("admin/page_link") . "\";");
 }
 if (get_privilages("view_player_services")) {
-	$pid = "players_services";
+	$pid = "users_services";
 	$name = $lang->{$pid};
-	eval("\$players_services_link = \"" . get_template("admin/page_link") . "\";");
+	eval("\$users_services_link = \"" . get_template("admin/page_link") . "\";");
 }
 if (get_privilages("view_income")) {
 	$pid = "income";

@@ -28,6 +28,7 @@ $l['amount'] = "Ilość";
 $l['date'] = "Data";
 $l['user'] = "Użytkownik";
 $l['tariff'] = "Taryfa";
+$l['choose_service'] = "Wybierz usługę";
 
 $l['months'] = array("", "Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień");
 

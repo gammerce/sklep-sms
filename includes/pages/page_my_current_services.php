@@ -33,7 +33,7 @@ class PageMyCurrentServices extends Page
 			if (($service_module = $heart->get_service_module($row['service'])) === NULL)
 				continue;
 
-			if ($settings['user_edit_service'] && class_has_interface($service_module, "IServiceUserEdit"))
+			if ($settings['user_edit_service'] && object_implements($service_module, "IServiceUserEdit"))
 				$button_edit = create_dom_element("img", "", array(
 					'class' => "edit_row",
 					'src' => "images/pencil.png",

@@ -1,0 +1,39 @@
+<form id="form_add_service_code" class="action_box">
+	<div class="service_main_info">
+		Dodaj kod na usługę
+	</div>
+	<table>
+		<tbody class="ftbody">
+		<tr>
+			<td>Kod</td>
+			<td>
+				<input type="text" name="code" style="width: 100px;"/>&nbsp;
+				<input type="button" name="random_code" value="Losuj"/>
+			</td>
+		</tr>
+		<tr>
+			<td>{$lang->service}</td>
+			<td>
+				<select name="service">
+					<option value="">{$lang->choose_service}</option>
+					{$services}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>ID użytkownika</td>
+			<td><input type="text" name="uid" style="width: 60px;"/></td>
+		</tr>
+		</tbody>
+		<tbody>
+		<tr>
+			<td colspan="2" class="line"></td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<input type="submit" value="Dodaj" style="width: 100%;"/>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</form>

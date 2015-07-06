@@ -1,19 +1,13 @@
 // Kliknięcie dodania pytania antyspamowego
 $(document).delegate("#button_add_antispam_question", "click", function () {
-	action_box.create();
-	getnset_template(action_box.box, "admin_add_antispam_question", true, {}, function () {
-		action_box.show();
-	});
+	show_action_box(get_get_param("pid"), "add_antispam_question");
 });
 
 // Kliknięcie edycji pytania antyspamowego
 $(document).delegate("[id^=edit_row_]", "click", function () {
 	var row_id = $("#" + $(this).attr("id").replace('edit_row_', 'row_'));
-	action_box.create();
-	getnset_template(action_box.box, "admin_edit_antispam_question", true, {
+	show_action_box(get_get_param("pid"), "edit_antispam_question", {
 		id: row_id.children("td[headers=id]").text()
-	}, function () {
-		action_box.show();
 	});
 });
 

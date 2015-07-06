@@ -11,7 +11,7 @@ $l['license_error'] = "License has expired or is incorrect. Go to <a href=\"admi
 $l['license_soon_expire'] = "License expires in: {1} You can prolong it just now: <a href=\"http://sklep-sms.pl/index.php?page=zakup\" target=\"_blank\">Prolong License</a>";
 
 $l['players_flags'] = "Players flags";
-$l['players_services'] = "Players temporary services";
+$l['users_services'] = "Users temporary services";
 $l['income'] = "Income";
 $l['settings'] = "Shop settings";
 $l['transaction_services'] = "Payment methods";

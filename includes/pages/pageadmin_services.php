@@ -2,7 +2,7 @@
 
 $heart->register_page("services", "PageAdminServices", "admin");
 
-class PageAdminServices extends PageAdmin
+class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 {
 
 	protected $privilage = "view_services";
@@ -68,6 +68,70 @@ class PageAdminServices extends PageAdmin
 		// Pobranie struktury tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
 		return $output;
+	}
+
+	public function get_action_box($box_id, $data)
+	{
+		global $heart, $lang;
+
+		if (!get_privilages("manage_services"))
+			return array(
+				'id'	=> "not_logged_in",
+				'text'	=> $lang->not_logged_or_no_perm
+			);
+
+		if ($box_id == "edit_service") {
+			$service = $heart->get_service($data['id']);
+			$service['tag'] = htmlspecialchars($service['tag']);
+
+			// Pobieramy pola danego modułu
+			if ($service['module'])
+				if (($service_module = $heart->get_service_module($service['id'])) !== NULL) {
+					$extra_fields = create_dom_element("tbody", $service_module->service_extra_fields(), array(
+						'class' => 'extra_fields'
+					));
+				}
+		}
+
+		// Pobranie dostępnych modułów usług
+		if ($box_id == "add_service") {
+			$services_modules = "";
+			foreach ($heart->get_services_modules() as $module) {
+				// Sprawdzamy czy dany moduł zezwala na tworzenie nowych usług, które będzie obsługiwał
+				if (($service_module = $heart->get_service_module_s($module['id'])) === NULL || !object_implements($service_module, "IServiceCreateNew"))
+					continue;
+
+				$services_modules .= create_dom_element("option", $module['name'], array(
+					'value' => $module['id'],
+					'selected' => isset($service['module']) && $service['module'] == $module['id'] ? "selected" : ""
+				));
+			}
+		} else
+			$service_module = $heart->get_service_module_name($service['module']);
+
+		// Grupy
+		$groups = "";
+		foreach ($heart->get_groups() as $group) {
+			$groups .= create_dom_element("option", "{$group['name']} ( {$group['id']} )", array(
+				'value' => $group['id'],
+				'selected' => isset($service['groups']) && in_array($group['id'], $service['groups']) ? "selected" : ""
+			));
+		}
+
+		switch($box_id) {
+			case "add_service":
+				eval("\$output = \"" . get_template("admin/action_boxes/service_add") . "\";");
+				break;
+
+			case "edit_service":
+				eval("\$output = \"" . get_template("admin/action_boxes/service_edit") . "\";");
+				break;
+		}
+
+		return array(
+			'id'		=> "ok",
+			'template'	=> $output
+		);
 	}
 
 }

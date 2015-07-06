@@ -2,7 +2,7 @@
 
 $heart->register_page("tariffs", "PageAdminTariffs", "admin");
 
-class PageAdminTariffs extends PageAdmin
+class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
 {
 
 	protected $privilage = "manage_settings";
@@ -63,6 +63,35 @@ class PageAdminTariffs extends PageAdmin
 		// Pobranie struktury tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
 		return $output;
+	}
+
+	public function get_action_box($box_id, $data)
+	{
+		global $heart, $lang;
+
+		if (!get_privilages("manage_settings"))
+			return array(
+				'id'	=> "not_logged_in",
+				'text'	=> $lang->not_logged_or_no_perm
+			);
+
+		switch($box_id) {
+			case "add_tariff":
+				eval("\$output = \"" . get_template("admin/action_boxes/tariff_add") . "\";");
+				break;
+
+			case "edit_tariff":
+				$tariff = htmlspecialchars($data['tariff']);
+				$provision = number_format($heart->get_tariff_provision($data['tariff']), 2);
+
+				eval("\$output = \"" . get_template("admin/action_boxes/tariff_edit") . "\";");
+				break;
+		}
+
+		return array(
+			'id'		=> "ok",
+			'template'	=> $output
+		);
 	}
 
 }

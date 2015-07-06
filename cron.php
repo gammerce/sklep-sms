@@ -13,4 +13,4 @@ if (!defined("IN_SCRIPT")) {
 }
 
 // Usuwamy przestarzałe usługi graczy
-delete_players_old_services();
+delete_users_old_services();

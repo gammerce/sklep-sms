@@ -65,7 +65,6 @@ $l['wallet'] = "Portfel";
 
 $l['choose_type'] = "Wybierz rodzaj";
 $l['choose_server'] = "Wybierz serwer";
-$l['choose_service'] = "Wybierz usługę";
 $l['choose_amount'] = "Wybierz ilość";
 
 $l['transfer_cost'] = "Koszt Przelewu";
