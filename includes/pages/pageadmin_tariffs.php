@@ -18,7 +18,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
 
 	protected function content($get, $post)
 	{
-		global $heart, $lang;
+		global $heart, $lang, $settings; // settings potrzebne w pliku trow
 
 		$i = 0;
 		$tbody = "";
@@ -66,7 +66,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
 
 	public function get_action_box($box_id, $data)
 	{
-		global $heart, $lang;
+		global $heart, $lang, $settings; // settings potrzebne
 
 		if (!get_privilages("manage_settings"))
 			return array(

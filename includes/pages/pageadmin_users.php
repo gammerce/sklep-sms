@@ -18,7 +18,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
 	protected function content($get, $post)
 	{
-		global $heart, $db, $lang, $G_PAGE;
+		global $heart, $db, $settings, $lang, $G_PAGE;
 
 		// Wyszukujemy dane ktore spelniaja kryteria
 		if (isset($get['search']))
@@ -99,7 +99,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
 	public function get_action_box($box_id, $data)
 	{
-		global $heart, $lang;
+		global $heart, $settings, $lang;
 
 		if (!get_privilages("manage_users"))
 			return array(
