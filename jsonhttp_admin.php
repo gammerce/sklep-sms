@@ -1047,7 +1047,7 @@ if ($action == "charge_wallet") {
 		$warnings['code'] = $lang->return_code_length_warn;
 
 	// Łączymy zwrócone błędy
-	$warnings = array_merge((array)$warnings, (array)$service_module->validate_admin_add_service_code($_POST));
+	$warnings = array_merge((array)$warnings, (array)$service_module->admin_add_service_code_validate($_POST));
 
 	// Przerabiamy ostrzeżenia, aby lepiej wyglądały
 	if (!empty($warnings)) {
@@ -1060,7 +1060,19 @@ if ($action == "charge_wallet") {
 		json_output("warnings", $lang->form_wrong_filled, 0, $data);
 	}
 
-	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
+	// Pozyskujemy dane kodu do dodania
+	$code_data = $service_module->admin_add_service_code_insert($_POST);
+
+	$db->query($db->prepare(
+		"INSERT INTO `" . TABLE_PREFIX . "service_codes` " .
+		"SET `code` = '%s', `service` = '%s', `uid` = '%d', `server` = '%d', `amount` = '%f', `tariff` = '%d', `data` = '%s'",
+		array($_POST['code'], $service_module->service['id'], if_strlen($_POST['uid'], 0), if_isset($code_data['server'], 0),
+			if_isset($code_data['amount'], 0.0), if_isset($code_data['tariff'], 0), $code_data['data'])
+	));
+
+	log_info($lang_shop->sprintf("Admin {1}({2}) dodał kod na usługę. Kod: {3}, Usługa: {4}", $user['username'], $user['uid'], $_POST['code'], $service_module->service['id'])); // TODO
+	// Zwróć info o prawidłowym dodaniu
+	json_output("added", "Kod na usługę został prawidłowo dodany.", 1); // TODO
 } else if ($action == "delete_service_code") {
 	if (!get_privilages("manage_service_codes"))
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);

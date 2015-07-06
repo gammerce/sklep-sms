@@ -20,7 +20,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 		global $db, $lang, $G_PAGE, $settings, $scripts;
 
 		$result = $db->query(
-			"SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.name AS `service`, srv.name AS `server`, sc.tariff, u.username, sc.amount, sc.data, sc.timestamp " .
+			"SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.name AS `service`, srv.name AS `server`, sc.tariff, u.username, u.uid, sc.amount, sc.data, sc.timestamp " .
 			"FROM `" . TABLE_PREFIX . "service_codes` AS sc " .
 			"LEFT JOIN `" . TABLE_PREFIX . "services` AS s ON sc.service = s.id ".
 			"LEFT JOIN `" . TABLE_PREFIX . "servers` AS srv ON sc.server = srv.id ".
@@ -34,7 +34,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 		while ($row = $db->fetch_array_assoc($result)) {
 			$i += 1;
 			// Pobranie przycisku usuwania
-			if (get_privilages("manage_sservice_codes"))
+			if (get_privilages("manage_service_codes"))
 				$button_delete = create_dom_element("img", "", array(
 					'id' => "delete_row_{$i}",
 					'src' => "images/bin.png",
@@ -48,6 +48,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 				$row[$key] = htmlspecialchars($value);
 
 			$row['amount'] = $row['amount'] ? $row['amount'] : $lang->none;
+			$username = $row['uid'] ? $row['username'] . " ({$row['uid']})" : $lang->none;
 
 			// Pobranie danych do tabeli
 			eval("\$tbody .= \"" . get_template("admin/service_codes_trow") . "\";");

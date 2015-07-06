@@ -3,7 +3,7 @@ $(document).delegate("#button_add_service_code", "click", function () {
 	show_action_box(get_get_param("pid"), "add_code");
 });
 
-// Kliknięcie przycisku losuj kod
+// Kliknięcie przycisku generuj kod
 $(document).delegate("#form_add_service_code [name=random_code]", "click", function () {
 	$(this).closest("form").find("[name=code]").val(get_random_string());
 });

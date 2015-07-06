@@ -376,7 +376,7 @@ function validate_payment($data)
 		// Dodanie informacji o płatności z portfela
 		$payment_id = pay_service_code($data, $service_module, $user);
 
-		// Metoda pay_service_code zwróciła błąd.
+		// Funkcja pay_service_code zwróciła błąd.
 		if (is_array($payment_id))
 			return $payment_id;
 	}
@@ -455,12 +455,12 @@ function pay_wallet($cost, $user)
 
 function pay_service_code($data, $service_module, $user)
 {
-	global $db, $lang;
+	global $db, $user, $lang, $lang_shop;
 
 	$result = $db->query($db->prepare(
 		"SELECT * FROM `" . TABLE_PREFIX . "service_codes` " .
 		"WHERE `code` = '%s' " .
-		"AND (`service` = '0' OR `service` = '%s') " .
+		"AND `service` = '%s' " .
 		"AND (`server` = '0' OR `server` = '%s') " .
 		"AND (`tariff` = '0' OR `tariff` = '%d') " .
 		"AND (`uid` = '0' OR `uid` = '%s')",
@@ -487,8 +487,12 @@ function pay_service_code($data, $service_module, $user)
 				"SET `code` = '%s', `ip` = '%s', `platform` = '%s'",
 				array($data['service_code'], $user['ip'], $user['platform'])
 			));
+			$payment_id = $db->last_id();
 
-			return $db->last_id();
+			log_info($lang_shop->sprintf("Wykorzystano kod {1} do zakupu usługi przez {2}({3}). ID płatności: {4}",
+				$data['service_code'], $user['username'], $user['uid'], $payment_id)); // TODO
+
+			return $payment_id;
 		}
 
 	return array(

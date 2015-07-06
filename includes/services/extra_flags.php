@@ -1262,33 +1262,6 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		return max($a, $b);
 	}
 
-	public function validate_admin_add_service_code($data)
-	{
-		global $heart, $lang;
-
-		$warnings = array();
-
-		// Serwer
-		if (!strlen($data['server']))
-			$warnings['server'] .= "Musisz wybrać serwer."; // TODO
-		// Wyszukiwanie serwera o danym id
-		else if (($server = $heart->get_server($data['server'])) === NULL)
-			$warnings['server'] .= "Brak serwera o takim ID."; // TODO
-
-		// Taryfa
-		if (!strlen($data['tariff']))
-			$warnings['tariff'] .= "Musisz wybrać taryfę."; // TODO
-		else if (($heart->get_tariff($data['tariff'])) === NULL)
-			$warnings['tariff'] .= $lang->no_such_tariff;
-
-		return $warnings;
-	}
-
-	public function validate_admin_edit_service_code($data, $user_service)
-	{
-		// TODO: Implement admin_edit_service_code() method.
-	}
-
 	public function admin_get_form_add_service_code()
 	{
 		global $heart, $lang;
@@ -1313,5 +1286,40 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 		eval("\$output = \"" . get_template("services/extra_flags/admin_add_service_code", 0, 1, 0) . "\";");
 		return $output;
+	}
+
+	public function admin_add_service_code_validate($data)
+	{
+		global $heart, $lang;
+
+		$warnings = array();
+
+		// Serwer
+		if (!strlen($data['server']))
+			$warnings['server'] .= "Musisz wybrać serwer."; // TODO
+		// Wyszukiwanie serwera o danym id
+		else if (($server = $heart->get_server($data['server'])) === NULL)
+			$warnings['server'] .= "Brak serwera o takim ID."; // TODO
+
+		// Taryfa
+		if (!strlen($data['tariff']))
+			$warnings['tariff'] .= "Musisz wybrać taryfę."; // TODO
+		else if (($heart->get_tariff($data['tariff'])) === NULL)
+			$warnings['tariff'] .= $lang->no_such_tariff;
+
+		return $warnings;
+	}
+
+	public function admin_add_service_code_insert($data)
+	{
+		return array(
+			'tariff' => $data['tariff'],
+			'server' => $data['server']
+		);
+	}
+
+	public function admin_edit_service_code_validate($data, $user_service)
+	{
+		// TODO: Implement admin_edit_service_code() method.
 	}
 }

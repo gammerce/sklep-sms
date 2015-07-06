@@ -8,7 +8,7 @@ interface IServiceAdminManageServiceCodes
 	 * @param array $data 	Dane $_POST
 	 * @return array 'key' (DOM element name) => 'value'
 	 */
-	public function validate_admin_add_service_code($data);
+	public function admin_add_service_code_validate($data);
 
 	/**
 	 * Metoda sprawdza dane formularza podczas edycji kodu na usługę w PA
@@ -17,7 +17,7 @@ interface IServiceAdminManageServiceCodes
 	 * @param array $user_service 	Obecne dane edytowanego kodu
 	 * @return array 'key' (DOM element name) => 'value'
 	 */
-	public function validate_admin_edit_service_code($data, $user_service);
+	public function admin_edit_service_code_validate($data, $user_service);
 
 	/**
 	 * Metoda powinna zwrócić dodatkowe pola do uzupełnienia przez admina
@@ -26,4 +26,18 @@ interface IServiceAdminManageServiceCodes
 	 * @return string
 	 */
 	public function admin_get_form_add_service_code();
+
+	/**
+	 * Metoda zwraca tablicę z danymi które zostaną dodane do bazy wraz z kodem na usługę
+	 * można założyć że dane są już prawidłowo zweryfikowane przez metodę admin_add_service_code_validate
+	 *
+	 * @param $data
+	 * @return array (
+	 * 		'server'	- integer,
+	 * 		'amount'	- double,
+	 * 		'tariff'	- integer,
+	 * 		'data'		- string
+	 * )
+	 */
+	public function admin_add_service_code_insert($data);
 }
