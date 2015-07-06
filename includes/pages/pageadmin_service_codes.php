@@ -17,23 +17,27 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 
 	protected function content($get, $post)
 	{
-		global $db, $lang, $G_PAGE, $settings, $scripts;
+		global $heart, $db, $lang, $G_PAGE, $settings, $scripts;
 
 		$result = $db->query(
-			"SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.name AS `service`, srv.name AS `server`, sc.tariff, u.username, u.uid, sc.amount, sc.data, sc.timestamp " .
+			"SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.name AS `service`, srv.name AS `server`, sc.tariff, pl.amount AS `tariff_amount`,
+			u.username, u.uid, sc.amount, sc.data, sc.timestamp, s.tag " .
 			"FROM `" . TABLE_PREFIX . "service_codes` AS sc " .
-			"LEFT JOIN `" . TABLE_PREFIX . "services` AS s ON sc.service = s.id ".
-			"LEFT JOIN `" . TABLE_PREFIX . "servers` AS srv ON sc.server = srv.id ".
-			"LEFT JOIN `" . TABLE_PREFIX . "users` AS u ON sc.uid = u.uid ".
+			"LEFT JOIN `" . TABLE_PREFIX . "services` AS s ON sc.service = s.id " .
+			"LEFT JOIN `" . TABLE_PREFIX . "servers` AS srv ON sc.server = srv.id " .
+			"LEFT JOIN `" . TABLE_PREFIX . "users` AS u ON sc.uid = u.uid " .
+			"LEFT JOIN `" . TABLE_PREFIX . "pricelist` AS pl ON sc.tariff = pl.tariff AND sc.service = pl.service
+			AND (pl.server = '-1' OR sc.server = pl.server) " .
 			"LIMIT " . get_row_limit($G_PAGE)
-		);
+		); // TODO
 		$rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
 		$i = 0;
 		$tbody = "";
 		while ($row = $db->fetch_array_assoc($result)) {
 			$i += 1;
-			// Pobranie przycisku usuwania
+
+			// Pobranie przycisku edycji oraz usuwania
 			if (get_privilages("manage_service_codes"))
 				$button_delete = create_dom_element("img", "", array(
 					'id' => "delete_row_{$i}",
@@ -44,11 +48,18 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 				$button_delete = "";
 
 			// Zabezpieczanie danych
-			foreach($row AS $key => $value)
+			foreach ($row AS $key => $value)
 				$row[$key] = htmlspecialchars($value);
 
 			$row['amount'] = $row['amount'] ? $row['amount'] : $lang->none;
 			$username = $row['uid'] ? $row['username'] . " ({$row['uid']})" : $lang->none;
+			if ($row['tariff']) {
+				$tariff = "({$row['tariff']})";
+				if ($row['tariff_amount'])
+					$tariff = $row['tariff_amount'] . " " . $row['tag'] . " " . $tariff;
+			}
+			else
+				$tariff = $lang->none;
 
 			// Pobranie danych do tabeli
 			eval("\$tbody .= \"" . get_template("admin/service_codes_trow") . "\";");
@@ -73,7 +84,10 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 		// Pobranie nagłówka tabeli
 		eval("\$thead = \"" . get_template("admin/service_codes_thead") . "\";");
 
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/service_codes.js?version=" . VERSION;
+		// Dodajemy wszystkie skrypty
+		foreach (scandir(SCRIPT_ROOT . "jscripts/admin/pages/service_codes") as $file)
+			if (ends_at($file, ".js"))
+				$scripts[] = $settings['shop_url_slash'] . "jscripts/admin/pages/service_codes/" . $file . "?version=" . VERSION;
 
 		// Pobranie wygladu całej tabeli
 		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
@@ -86,16 +100,16 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 
 		if (!get_privilages("manage_service_codes"))
 			return array(
-				'id'	=> "not_logged_in",
-				'text'	=> $lang->not_logged_or_no_perm
+				'id' => "not_logged_in",
+				'text' => $lang->not_logged_or_no_perm
 			);
 
-		switch($box_id) {
+		switch ($box_id) {
 			case "add_code":
 				// Pobranie usług
 				$services = "";
 				foreach ($heart->get_services() as $id => $row) {
-					if (($service_module = $heart->get_service_module($id)) === NULL || !object_implements($service_module, "IServiceAdminManageServiceCodes"))
+					if (($service_module = $heart->get_service_module($id)) === NULL || !object_implements($service_module, "IServiceAdminServiceCodes"))
 						continue;
 
 					$services .= create_dom_element("option", $row['name'], array(
@@ -105,30 +119,11 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 
 				eval("\$output = \"" . get_template("admin/action_boxes/service_code_add") . "\";");
 				break;
-
-			case "edit_code":
-				// Pobieramy usługę z bazy
-				/*$player_service = $db->fetch_array_assoc($db->query($db->prepare(
-					"SELECT * FROM `" . TABLE_PREFIX . "players_services` " .
-					"WHERE `id` = '%d'",
-					array($data['id'])
-				)));
-
-				if (($service_module = $heart->get_service_module($player_service['service'])) !== NULL) {
-					$service_module_id = htmlspecialchars($service_module::MODULE_ID);
-					$form_data = $service_module->get_form("admin_edit_user_service", $player_service);
-				}
-
-				if (!isset($form_data) || !strlen($form_data))
-					$form_data = $lang->service_edit_unable;*/
-
-				eval("\$output = \"" . get_template("admin/action_boxes/service_code_edit") . "\";");
-				break;
 		}
 
 		return array(
-			'id'		=> "ok",
-			'template'	=> $output
+			'id' => "ok",
+			'template' => $output
 		);
 	}
 }

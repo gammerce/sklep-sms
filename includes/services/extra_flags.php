@@ -120,7 +120,7 @@ class ServiceExtraFlagsSimple extends Service implements IServiceCreateNew
 }
 
 class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurchase, IServicePurchaseWeb, IServiceAdminManageUserService,
-	IServiceExecuteAction, IServiceUserEdit, IServiceTakeOver, IServiceAdminManageServiceCodes
+	IServiceExecuteAction, IServiceUserEdit, IServiceTakeOver, IServiceAdminServiceCodes
 {
 
 	function __construct($service)
@@ -136,6 +136,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		$scripts[] = "{$settings['shop_url_slash']}jscripts/services/extra_flags.js?version=" . VERSION;
 		if ($G_PID == "take_over_service")
 			$scripts[] = "{$settings['shop_url_slash']}jscripts/services/extra_flags_take_over.js?version=" . VERSION;
+		else if (SCRIPT_NAME == "admin" && $G_PID == "service_codes")
+			$scripts[] = "{$settings['shop_url_slash']}jscripts/services/extra_flags_add_service_code.js?version=" . VERSION;
 		// Dodajemy szablon css
 		$stylesheets[] = "{$settings['shop_url_slash']}styles/services/extra_flags.css?version=" . VERSION;
 	}
@@ -1277,13 +1279,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 			));
 		}
 
-		// Pobieramy listę taryf
-		$tariffs = "";
-		foreach ($heart->get_tariffs() as $tariff)
-			$tariffs .= create_dom_element("option", $tariff['tariff'], array(
-				'value' => $tariff['id']
-			));
-
+		$module_id = $this::MODULE_ID;
 		eval("\$output = \"" . get_template("services/extra_flags/admin_add_service_code", 0, 1, 0) . "\";");
 		return $output;
 	}
@@ -1302,24 +1298,21 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 			$warnings['server'] .= "Brak serwera o takim ID."; // TODO
 
 		// Taryfa
-		if (!strlen($data['tariff']))
-			$warnings['tariff'] .= "Musisz wybrać taryfę."; // TODO
-		else if (($heart->get_tariff($data['tariff'])) === NULL)
-			$warnings['tariff'] .= $lang->no_such_tariff;
+		$tariff = explode(';', $data['amount']); $tariff = $tariff[2];
+		if (!strlen($data['amount']))
+			$warnings['amount'] .= "Musisz wybrać ilość."; // TODO
+		else if (($heart->get_tariff($tariff)) === NULL)
+			$warnings['amount'] .= $lang->no_such_tariff;
 
 		return $warnings;
 	}
 
 	public function admin_add_service_code_insert($data)
 	{
+		$tariff = explode(';', $data['amount']); $tariff = $tariff[2];
 		return array(
-			'tariff' => $data['tariff'],
+			'tariff' => $tariff,
 			'server' => $data['server']
 		);
-	}
-
-	public function admin_edit_service_code_validate($data, $user_service)
-	{
-		// TODO: Implement admin_edit_service_code() method.
 	}
 }

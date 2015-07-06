@@ -1015,3 +1015,7 @@ function ip_in_range($ip, $range)
 		return false;
 	}
 }
+
+function ends_at($string, $end) {
+	return substr($string, -strlen($end)) == $end;
+}

@@ -1094,7 +1094,7 @@ if ($action == "charge_wallet") {
 
 	$output = "";
 	if (($service_module = $heart->get_service_module($_POST['service'])) !== NULL &&
-		object_implements($service_module, "IServiceAdminManageServiceCodes"))
+		object_implements($service_module, "IServiceAdminServiceCodes"))
 		$output = $service_module->admin_get_form_add_service_code();
 
 	output_page($output, "Content-type: text/plain; charset=\"UTF-8\"");

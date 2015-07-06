@@ -58,7 +58,7 @@ require_once SCRIPT_ROOT . "includes/verification/payment_module.php";
 require_once SCRIPT_ROOT . "includes/verification/payment_sms.php";
 require_once SCRIPT_ROOT . "includes/verification/payment_transfer.php";
 foreach (scandir(SCRIPT_ROOT . "includes/verification") as $file)
-	if (substr($file, -4) == ".php")
+	if (ends_at($file, ".php"))
 		require_once SCRIPT_ROOT . "includes/verification/" . $file;
 
 
@@ -67,18 +67,18 @@ require_once SCRIPT_ROOT . "includes/services/service.php";
 
 // Pierwsze ładujemy interfejsy
 foreach (scandir(SCRIPT_ROOT . "includes/services/interfaces") as $file)
-	if (substr($file, -4) == ".php")
+	if (ends_at($file, ".php"))
 		require_once SCRIPT_ROOT . "includes/services/interfaces/" . $file;
 
 foreach (scandir(SCRIPT_ROOT . "includes/services") as $file)
-	if (substr($file, -4) == ".php")
+	if (ends_at($file, ".php"))
 		require_once SCRIPT_ROOT . "includes/services/" . $file;
 
 
 // Dodajemy klasy wszystkich bloków
 require_once SCRIPT_ROOT . "includes/blocks/block.php";
 foreach (scandir(SCRIPT_ROOT . "includes/blocks") as $file)
-	if (substr($file, -4) == ".php")
+	if (ends_at($file, ".php"))
 		require_once SCRIPT_ROOT . "includes/blocks/" . $file;
 
 
@@ -88,11 +88,11 @@ require_once SCRIPT_ROOT . "includes/pages/pageadmin.php";
 
 // Pierwsze ładujemy interfejsy
 foreach (scandir(SCRIPT_ROOT . "includes/pages/interfaces") as $file)
-	if (substr($file, -4) == ".php")
+	if (ends_at($file, ".php"))
 		require_once SCRIPT_ROOT . "includes/pages/interfaces/" . $file;
 
 foreach (scandir(SCRIPT_ROOT . "includes/pages") as $file)
-	if (substr($file, -4) == ".php")
+	if (ends_at($file, ".php"))
 		require_once SCRIPT_ROOT . "includes/pages/" . $file;
 
 

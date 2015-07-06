@@ -4,18 +4,17 @@
 <tr>
 	<td>Serwer</td>
 	<td>
-		<select name="server">
+		<select name="server" data-module="{$module_id}">
 			<option value="">Wybierz serwer</option>
 			{$servers}
 		</select>
 	</td>
 </tr>
 <tr>
-	<td>Taryfa</td>
+	<td>Ilość</td>
 	<td>
-		<select name="tariff">
-			<option value="">Wybierz taryfę</option>
-			{$tariffs}
+		<select name="amount">
+			<option value="">Wybierz ilość</option>
 		</select>
 	</td>
 </tr>
