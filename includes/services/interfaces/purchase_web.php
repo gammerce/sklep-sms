@@ -1,6 +1,6 @@
 <?php
 
-interface IServicePurchaseWeb
+interface IService_PurchaseWeb
 {
 
 	/**
@@ -8,19 +8,19 @@ interface IServicePurchaseWeb
 	 *
 	 * @return string   - Formularz zakupu
 	 */
-	public function form_purchase_service();
+	public function purchase_form_get();
 
 	/**
 	 * Metoda wywoływana, gdy użytkownik wprowadzi dane w formularzu zakupu
 	 * i trzeba sprawdzić, czy są one prawidłowe
 	 *
 	 * @param array $data Dane $_POST
-	 * @return array        'status'    => id wiadomości,
-	 *                        'text'        => treść wiadomości
-	 *                        'positive'    => czy udało się przeprowadzić zakup czy nie
+	 * @return array        'status'	=> id wiadomości,
+	 *                      'text'		=> treść wiadomości
+	 *                      'positive'	=> czy udało się przeprowadzić zakup czy nie
+	 * 						'data'		=> array('warnings' => array())
 	 */
-	public function validate_purchase_form($data);
-	// TODO: Dodac checki w kodzie
+	public function purchase_form_validate($data);
 
 	/**
 	 * Metoda zwraca szczegóły zamówienia, wyświetlane podczas zakupu usługi, przed płatnością.
@@ -35,7 +35,6 @@ interface IServicePurchaseWeb
 	 * @return string        Szczegóły zamówienia
 	 */
 	public function order_details($data);
-	// TODO: Dodac checki w kodzie
 
 	/**
 	 * Metoda formatuje i zwraca informacje o zakupionej usłudze, zaraz po jej zakupie.

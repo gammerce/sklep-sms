@@ -33,7 +33,7 @@ function purchase_service(method) {
 		type: "POST",
 		url: "jsonhttp.php",
 		data: {
-			action: "validate_payment_form",
+			action: "payment_validate_form",
 			method: method,
 			sms_code: $("#sms_code").val(),
 			service_code: $("#service_code").val(),

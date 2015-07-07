@@ -3,15 +3,15 @@
 /**
  * Ten interfejs powinien być implementowany w klasie *Simple usługi
  *
- * Interface IServiceManageService
+ * Interface IService_AdminManage
  */
-interface IServiceManageService {
+interface IService_AdminManage {
 
 	/**
 	 * Metoda wywoływana przy edytowaniu lub dodawaniu usługi w PA
 	 * Powinna zwracać dodatkowe pola do uzupełnienia
 	 */
-	public function get_service_extra_fields();
+	public function service_admin_extra_fields_get();
 
 	/**
 	 * Metoda testuje dane przesłane przez formularz podczas dodawania nowej usługi w PA
@@ -21,7 +21,7 @@ interface IServiceManageService {
 	 * @return array        'key'    => DOM Element name
 	 *                        'value'    => Error message
 	 */
-	public function manage_service_pre($data);
+	public function service_admin_manage_pre($data);
 
 	/**
 	 * Metoda zostaje wywołana po tym, jak  weryfikacja danych
@@ -36,6 +36,6 @@ interface IServiceManageService {
 	 * 			'value'	=> wartość kolumny
 	 * 		)
 	 */
-	public function manage_service_post($data);
+	public function service_admin_manage_post($data);
 
 }

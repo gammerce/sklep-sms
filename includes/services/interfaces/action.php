@@ -1,6 +1,6 @@
 <?php
 
-interface IServiceExecuteAction
+interface IService_ActionExecute
 {
 	/**
 	 * Wykonuje jakąś akcję, przydatne przy pobieraniu danych przez jQuery
@@ -10,5 +10,5 @@ interface IServiceExecuteAction
 	 * @param array $data - Dane $_POST
 	 * @return string
 	 */
-	public function execute_action($action, $data);
+	public function service_action_execute($action, $data);
 }

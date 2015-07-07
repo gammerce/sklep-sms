@@ -24,13 +24,15 @@ $action = $_GET['action'];
 
 if ($action == "purchase_service") {
 	$output = "";
-	$service_module = $heart->get_service_module(urldecode($_GET['service']));
 
-	if ($service_module === NULL)
+	if (($service_module = $heart->get_service_module(urldecode($_GET['service']))) === NULL)
+		xml_output("bad_module", $lang->bad_module, 0);
+
+	if (!object_implements($service_module, "IService_PurchaseOutside"))
 		xml_output("bad_module", $lang->bad_module, 0);
 
 	// Sprawdzamy dane zakupu
-	$return_validation = $service_module->validate_purchase_data(array(
+	$return_validation = $service_module->purchase_validate_data(array(
 		'user' => array(
 			'uid' => $_GET['uid'],
 			'ip' => urldecode($_GET['ip']),
@@ -45,10 +47,6 @@ if ($action == "purchase_service") {
 		),
 		'tariff' => $_GET['tariff']
 	));
-
-	// Moduł nie posiada metody validate_purchase_data
-	if ($return_validation === FALSE)
-		xml_output("bad_module", $lang->bad_module, 0);
 
 	// Są jakieś błędy przy sprawdzaniu danych
 	if (isset($return_validation['data']['warnings'])) {

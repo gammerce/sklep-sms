@@ -1,5 +1,5 @@
 <?php
 
-interface IServiceAvailableOnServers
+interface IService_AvailableOnServers
 {
 }

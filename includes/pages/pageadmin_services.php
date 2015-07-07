@@ -85,8 +85,9 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
 			// Pobieramy pola danego modułu
 			if (strlen($service['module']))
-				if (($service_module = $heart->get_service_module($service['id'])) !== NULL && object_implements($service_module, "IServiceManageService"))
-					$extra_fields = create_dom_element("tbody", $service_module->get_service_extra_fields(), array(
+				if (($service_module = $heart->get_service_module($service['id'])) !== NULL
+					&& object_implements($service_module, "IService_AdminManage"))
+					$extra_fields = create_dom_element("tbody", $service_module->service_admin_extra_fields_get(), array(
 						'class' => 'extra_fields'
 					));
 		} // Pobranie dostępnych modułów usług
@@ -94,7 +95,8 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 			$services_modules = "";
 			foreach ($heart->get_services_modules() as $module) {
 				// Sprawdzamy czy dany moduł zezwala na tworzenie nowych usług, które będzie obsługiwał
-				if (($service_module = $heart->get_service_module_s($module['id'])) === NULL || !object_implements($service_module, "IServiceCreateNew"))
+				if (($service_module = $heart->get_service_module_s($module['id'])) === NULL
+					|| !object_implements($service_module, "IService_Create"))
 					continue;
 
 				$services_modules .= create_dom_element("option", $module['name'], array(

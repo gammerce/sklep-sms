@@ -2,12 +2,12 @@
 
 $heart->register_service_module("other", "Inne", "ServiceOther", "ServiceOtherSimple");
 
-class ServiceOtherSimple extends Service implements IServiceCreateNew
+class ServiceOtherSimple extends Service implements IService_Create
 {
 
 	const MODULE_ID = "other";
 
-	public function manage_service_post($data)
+	public function service_admin_manage_post($data)
 	{
 		global $db;
 
@@ -27,13 +27,13 @@ class ServiceOtherSimple extends Service implements IServiceCreateNew
 
 }
 
-class ServiceOther extends ServiceOtherSimple implements IServicePurchase
+class ServiceOther extends ServiceOtherSimple implements IService_Purchase, IService_PurchaseOutside
 {
 
 	//
 	// Funkcja przygotowania zakupu
 	//
-	public function validate_purchase_data($data)
+	public function purchase_validate_data($data)
 	{
 		global $heart, $db, $lang;
 
@@ -126,7 +126,7 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase
 
 	//
 	// Funkcja wywolywana podczas usuwania uslugi
-	public function delete_service($service_id)
+	public function service_delete($service_id)
 	{
 		global $db;
 

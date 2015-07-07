@@ -311,18 +311,19 @@ if ($action == "login") {
 	log_info("Zmieniono hasło. ID użytkownika: {$user['uid']}.");
 
 	json_output("password_changed", $lang->password_changed, 1);
-} else if ($action == "validate_purchase_form") {
-	$service_module = $heart->get_service_module($_POST['service']);
-	if ($service_module === NULL)
+} else if ($action == "purchase_form_validate") {
+	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL)
+		json_output("wrong_module", $lang->bad_module, 0);
+
+	if (!object_implements($service_module, "IService_PurchaseWeb"))
 		json_output("wrong_module", $lang->bad_module, 0);
 
 	// Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
 	if (!$heart->user_can_use_service($user['uid'], $service_module->service))
 		json_output("no_permission", $lang->service_no_permission, 0);
 
-	// Przeprowadzamy walidację danych wprowadzonych w formularzu, a jak zwroci FALSE, to znaczy ze dupa
-	if (($return_data = $service_module->validate_purchase_form($_POST)) === FALSE)
-		json_output("wrong_module", $lang->bad_module, 0);
+	// Przeprowadzamy walidację danych wprowadzonych w formularzu
+	$return_data = $service_module->purchase_form_validate($_POST);
 
 	// Przerabiamy ostrzeżenia, aby lepiej wyglądały
 	if ($return_data['status'] == "warnings") {
@@ -342,7 +343,7 @@ if ($action == "login") {
 	}
 
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
-} else if ($action == "validate_payment_form") {
+} else if ($action == "payment_validate_form") {
 	// Sprawdzanie hashu danych przesłanych przez formularz
 	if (!isset($_POST['purchase_sign']) || $_POST['purchase_sign'] != md5($_POST['purchase_data'] . $settings['random_key']))
 		json_output("wrong_sign", $lang->wrong_sign, 0);
@@ -375,7 +376,7 @@ if ($action == "login") {
 } else if ($action == "get_service_long_description") {
 	$output = "";
 	if (($service_module = $heart->get_service_module($_POST['service'])) !== NULL)
-		$output = $service_module->get_full_description();
+		$output = $service_module->description_full_get();
 
 	output_page($output, "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "get_purchase_info") {
@@ -401,20 +402,20 @@ if ($action == "login") {
 	if (!$db->num_rows($result))
 		output_page($lang->dont_play_games);
 
-	$player_service = $db->fetch_array_assoc($result);
+	$user_service = $db->fetch_array_assoc($result);
 	// Dany użytkownik nie jest właścicielem usługi o danym id
-	if ($player_service['uid'] != $user['uid'])
+	if ($user_service['uid'] != $user['uid'])
 		output_page($lang->dont_play_games);
 
-	if (($service_module = $heart->get_service_module($player_service['service'])) === NULL)
+	if (($service_module = $heart->get_service_module($user_service['service'])) === NULL)
 		output_page($lang->service_cant_be_modified);
 
-	if (($output = $service_module->get_form("user_edit_user_service", $player_service)) === FALSE)
+	if (!$settings['user_edit_service'] || !object_implements($service_module, "IService_UserOwnServicesEdit"))
 		output_page($lang->service_cant_be_modified);
 
 	eval("\$buttons = \"" . get_template("services/my_services_savencancel") . "\";");
 
-	output_page($buttons . $output);
+	output_page($buttons . $service_module->user_own_service_edit_form_get($user_service));
 } else if ($action == "get_user_service_brick") {
 	if (!is_logged())
 		output_page($lang->not_logged);
@@ -430,27 +431,28 @@ if ($action == "login") {
 	if (!$db->num_rows($result))
 		output_page($lang->dont_play_games);
 
-	$player_service = $db->fetch_array_assoc($result);
+	$user_service = $db->fetch_array_assoc($result);
 	// Dany użytkownik nie jest właścicielem usługi o danym id
-	if ($player_service['uid'] != $user['uid'])
+	if ($user_service['uid'] != $user['uid'])
 		output_page($lang->dont_play_games);
 
-	if (($service_module = $heart->get_service_module($player_service['service'])) === NULL)
-		output_page($lang->service_cant_be_modified);
+	if (($service_module = $heart->get_service_module($user_service['service'])) === NULL)
+		output_page("Usługa nie może zostać wyświetlona, ponieważ jej moduł nie zapewnia takiej funkcjonalności."); // TODO
 
-	if (!object_implements($service_module, "IServiceUserEdit"))
-		output_page($lang->service_cant_be_modified);
+	if (!object_implements($service_module, "IService_UserOwnServices"))
+		output_page("Usługa nie może zostać wyświetlona, ponieważ jej moduł nie zapewnia takiej funkcjonalności."); // TODO
 
-	$button_edit = create_dom_element("img", "", array(
-		'class' => "edit_row",
-		'src' => "images/pencil.png",
-		'title' => $lang->edit,
-		'style' => array(
-			'height' => '24px'
-		)
-	));
+	if ($settings['user_edit_service'] && object_implements($service_module, "IService_UserOwnServicesEdit"))
+		$button_edit = create_dom_element("img", "", array(
+			'class' => "edit_row",
+			'src' => "images/pencil.png",
+			'title' => $lang->edit,
+			'style' => array(
+				'height' => '24px'
+			)
+		));
 
-	output_page($service_module->my_service_info($player_service, $button_edit));
+	output_page($service_module->user_own_service_info_get($user_service, $button_edit));
 } else if ($action == "edit_user_service") {
 	if (!is_logged())
 		json_output("not_logged", $lang->not_logged, 0);
@@ -474,10 +476,10 @@ if ($action == "login") {
 		json_output("wrong_module", $lang->bad_module, 0);
 
 	// Wykonujemy metode edycji usługi gracza na module, który ją obsługuje
-	if (!object_implements($service_module, "IServiceUserEdit"))
+	if (!$settings['user_edit_service'] || !object_implements($service_module, "IService_UserOwnServicesEdit"))
 		json_output("service_cant_be_modified", $lang->service_cant_be_modified, 0);
 
-	$return_data = $service_module->user_edit_user_service($_POST, $user_service);
+	$return_data = $service_module->user_own_service_edit($_POST, $user_service);
 
 	// Przerabiamy ostrzeżenia, aby lepiej wyglądały
 	if ($return_data['status'] == "warnings") {
@@ -491,12 +493,12 @@ if ($action == "login") {
 
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
 } else if ($action == "form_take_over_service") {
-	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IServiceTakeOver"))
+	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IService_TakeOver"))
 		output_page($lang->bad_module, "Content-type: text/plain; charset=\"UTF-8\"");
 
 	output_page($service_module->form_take_over_service($_POST['service']), "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "take_over_service") {
-	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IServiceTakeOver"))
+	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IService_TakeOver"))
 		output_page($lang->bad_module, "Content-type: text/plain; charset=\"UTF-8\"");
 
 	$return_data = $service_module->take_over_service($_POST);
@@ -517,10 +519,10 @@ if ($action == "login") {
 	$page = new PageAdminIncome();
 	output_page($page->get_content($_GET, $_POST), "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "execute_service_action") {
-	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IServiceExecuteAction"))
+	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IService_ActionExecute"))
 		output_page($lang->bad_module, "Content-type: text/plain; charset=\"UTF-8\"");
 
-	output_page($service_module->execute_action($_POST['service_action'], $_POST), "Content-type: text/plain; charset=\"UTF-8\"");
+	output_page($service_module->service_action_execute($_POST['service_action'], $_POST), "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "get_template") {
 	$template = $_POST['template'];
 	// Zabezpieczanie wszystkich wartości post

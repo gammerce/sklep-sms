@@ -1,6 +1,6 @@
 <?php
 
-interface IServiceTakeOver
+interface IService_TakeOver
 {
 
 	/**

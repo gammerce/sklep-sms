@@ -26,7 +26,7 @@ class PageTakeOverService extends Page
 				continue;
 
 			// Moduł danej usługi nie zezwala na jej przejmowanie
-			if (!object_implements($service_module, "IServiceTakeOver"))
+			if (!object_implements($service_module, "IService_TakeOver"))
 				continue;
 
 			$services_options .= create_dom_element("option", $service['name'], array(

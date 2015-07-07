@@ -83,7 +83,7 @@ if ($action == "charge_wallet") {
 
 	json_output("charged", $lang->sprintf($lang->account_charge_success, $user2['username'], $amount, $settings['currency']), 1);
 } else if ($action == "add_user_service") {
-	if (!get_privilages("manage_player_services")) {
+	if (!get_privilages("manage_user_services")) {
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
 	}
 
@@ -91,10 +91,10 @@ if ($action == "charge_wallet") {
 	if (!strlen($_POST['service']))
 		json_output("no_service", $lang->no_service_chosen, 0);
 
-	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IServiceAdminManageUserService"))
+	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IService_UserServiceAdminManage"))
 		json_output("wrong_module", $lang->bad_module, 0);
 
-	$return_data = $service_module->admin_add_user_service($_POST);
+	$return_data = $service_module->user_service_admin_add($_POST);
 
 	// Przerabiamy ostrzeżenia, aby lepiej wyglądały
 	if ($return_data['status'] == "warnings")
@@ -107,7 +107,7 @@ if ($action == "charge_wallet") {
 
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
 } else if ($action == "edit_user_service") {
-	if (!get_privilages("manage_player_services"))
+	if (!get_privilages("manage_user_services"))
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
 
 	// Brak usługi
@@ -131,7 +131,7 @@ if ($action == "charge_wallet") {
 	$user_service = $db->fetch_array_assoc($result);
 
 	// Wykonujemy metode edycji usługi gracza przez admina na odpowiednim module
-	$return_data = $service_module->admin_edit_user_service($_POST, $user_service);
+	$return_data = $service_module->user_service_admin_edit($_POST, $user_service);
 
 	if ($return_data === FALSE)
 		json_output("missing_method", $lang->no_edit_method, 0);
@@ -147,51 +147,51 @@ if ($action == "charge_wallet") {
 	}
 
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
-} else if ($action == "delete_player_service") {
-	if (!get_privilages("manage_player_services")) {
+} else if ($action == "user_service_delete") {
+	if (!get_privilages("manage_user_services")) {
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
 	}
 
 	// Pobieramy usługę z bazy
-	$player_service = $db->fetch_array_assoc($db->query($db->prepare(
+	$user_service = $db->fetch_array_assoc($db->query($db->prepare(
 		"SELECT * FROM `" . TABLE_PREFIX . "players_services` " .
 		"WHERE `id` = '%d'",
 		array($_POST['id'])
 	)));
 
 	// Brak takiej usługi
-	if (empty($player_service))
+	if (empty($user_service))
 		json_output("no_service", $lang->no_service, 0);
 
 	// Usunięcie usługi gracza
 	$db->query($db->prepare(
 		"DELETE FROM `" . TABLE_PREFIX . "players_services` " .
 		"WHERE `id` = '%d'",
-		array($player_service['id'])
+		array($user_service['id'])
 	));
 	$affected = $db->affected_rows();
 
 	// Wywolujemy akcje przy usuwaniu
-	$service_module = $heart->get_service_module($player_service['service']);
+	$service_module = $heart->get_service_module($user_service['service']);
 	if ($service_module !== NULL) {
-		$service_module->delete_player_service($player_service);
+		$service_module->user_service_delete($user_service);
 	}
 
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($affected) {
-		log_info($lang_shop->sprintf($lang_shop->service_admin_delete, $user['username'], $user['uid'], $player_service['id']));
+		log_info($lang_shop->sprintf($lang_shop->service_admin_delete, $user['username'], $user['uid'], $user_service['id']));
 
 		json_output("deleted", $lang->delete_service, 1);
 	} else
 		json_output("not_deleted", $lang->no_delete_service, 0);
 } else if ($action == "get_add_user_service_form") {
-	if (!get_privilages("manage_player_services")) {
+	if (!get_privilages("manage_user_services")) {
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
 	}
 
 	$output = "";
 	if (($service_module = $heart->get_service_module($_POST['service'])) !== NULL)
-		$output = json_encode($service_module->admin_get_form_add_user_service());
+		$output = json_encode($service_module->user_service_admin_add_form_get());
 
 	output_page($output, "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "add_antispam_question" || $action == "edit_antispam_question") {
@@ -478,7 +478,7 @@ if ($action == "charge_wallet") {
 
 	// Przed błędami
 	if ($service_module !== NULL) {
-		$additional_warnings = $service_module->manage_service_pre($_POST);
+		$additional_warnings = $service_module->service_admin_manage_pre($_POST);
 		$warnings = array_merge((array)$warnings, (array)$additional_warnings);
 	}
 
@@ -495,7 +495,7 @@ if ($action == "charge_wallet") {
 
 	// Po błędach wywołujemy metodę modułu
 	if ($service_module !== NULL) {
-		$module_data = $service_module->manage_service_post($_POST);
+		$module_data = $service_module->service_admin_manage_post($_POST);
 
 		// Tworzymy elementy SET zapytania
 		$set = "";
@@ -545,7 +545,7 @@ if ($action == "charge_wallet") {
 	// Wywolujemy akcje przy uninstalacji
 	$service_module = $heart->get_service_module($_POST['id']);
 	if (!is_null($service_module)) {
-		$service_module->delete_service($_POST['id']);
+		$service_module->service_delete($_POST['id']);
 	}
 
 	$db->query($db->prepare(
@@ -568,7 +568,7 @@ if ($action == "charge_wallet") {
 	} else
 		json_output("not_deleted", $lang->no_delete_service, 0);
 } else if ($action == "get_service_module_extra_fields") {
-	if (!get_privilages("manage_player_services"))
+	if (!get_privilages("manage_user_services"))
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
 
 	$output = "";
@@ -577,8 +577,8 @@ if ($action == "charge_wallet") {
 	if (is_null($service_module = $heart->get_service_module($_POST['service'])) || $service_module::MODULE_ID != $_POST['module'])
 		$service_module = $heart->get_service_module_s($_POST['module']);
 
-	if ($service_module !== NULL && object_implements($service_module, "IServiceManageService"))
-		$output = $service_module->get_service_extra_fields();
+	if ($service_module !== NULL && object_implements($service_module, "IService_AdminManage"))
+		$output = $service_module->service_admin_extra_fields_get();
 
 	output_page($output, "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "add_server" || $action == "edit_server") {
@@ -630,7 +630,7 @@ if ($action == "charge_wallet") {
 	$set = "";
 	foreach ($heart->get_services() as $service) {
 		// Dana usługa nie może być kupiona na serwerze
-		if (!is_null($service_module = $heart->get_service_module($service['id'])) && !object_implements($service_module, "IServiceAvailableOnServers"))
+		if (!is_null($service_module = $heart->get_service_module($service['id'])) && !object_implements($service_module, "IService_AvailableOnServers"))
 			continue;
 
 		$set .= $db->prepare(", `%s`='%d'", array($service['id'], $_POST[$service['id']]));
@@ -1060,7 +1060,7 @@ if ($action == "charge_wallet") {
 		$warnings['code'] = $lang->return_code_length_warn;
 
 	// Łączymy zwrócone błędy
-	$warnings = array_merge((array)$warnings, (array)$service_module->admin_add_service_code_validate($_POST));
+	$warnings = array_merge((array)$warnings, (array)$service_module->service_code_admin_add_validate($_POST));
 
 	// Przerabiamy ostrzeżenia, aby lepiej wyglądały
 	if (!empty($warnings)) {
@@ -1074,7 +1074,7 @@ if ($action == "charge_wallet") {
 	}
 
 	// Pozyskujemy dane kodu do dodania
-	$code_data = $service_module->admin_add_service_code_insert($_POST);
+	$code_data = $service_module->service_code_admin_add_insert($_POST);
 
 	$db->query($db->prepare(
 		"INSERT INTO `" . TABLE_PREFIX . "service_codes` " .
@@ -1101,14 +1101,14 @@ if ($action == "charge_wallet") {
 		log_info($lang_shop->sprintf("Admin {1}({2}) usunął kod na usługę. ID: {3}", $user['username'], $user['uid'], $_POST['id'])); // TODO
 		json_output("deleted", "Kod na usługę został prawidłowo usunięty.", 1); // TODO
 	} else json_output("not_deleted", "Kod na usługę nie został usunięty.", 0); // TODO
-} else if ($action == "get_form_add_service_code") {
+} else if ($action == "add_service_code_get_form") {
 	if (!get_privilages("manage_service_codes"))
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
 
 	$output = "";
 	if (($service_module = $heart->get_service_module($_POST['service'])) !== NULL &&
-		object_implements($service_module, "IServiceAdminServiceCodes"))
-		$output = $service_module->admin_get_form_add_service_code();
+		object_implements($service_module, "IService_CodeAdminManage"))
+		$output = $service_module->service_code_admin_add_form_get();
 
 	output_page($output, "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "delete_log") {

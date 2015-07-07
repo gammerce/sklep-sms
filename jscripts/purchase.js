@@ -11,7 +11,7 @@ $(document).delegate("#go_to_payment", "click", function () {
 	$.ajax({
 		type: "POST",
 		url: "jsonhttp.php",
-		data: $("#form_purchase").serialize() + "&action=validate_purchase_form",
+		data: $("#form_purchase").serialize() + "&action=purchase_form_validate",
 		complete: function () {
 			loader.hide();
 		},

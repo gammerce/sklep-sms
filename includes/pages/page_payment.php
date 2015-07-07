@@ -41,7 +41,8 @@ class PagePayment extends Page
 		$data = json_decode(base64_decode($post['data']), true);
 
 
-		if (($service_module = $heart->get_service_module($data['service'])) === NULL || !object_implements($service_module, "IServicePurchaseWeb"))
+		if (($service_module = $heart->get_service_module($data['service'])) === NULL
+			|| !object_implements($service_module, "IService_PurchaseWeb"))
 			return $lang->bad_module;
 
 		// Pobieramy szczegóły zamówienia

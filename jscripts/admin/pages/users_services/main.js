@@ -66,7 +66,7 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 		type: "POST",
 		url: "jsonhttp_admin.php",
 		data: {
-			action: "delete_player_service",
+			action: "user_service_delete",
 			id: row_id.children("td[headers=id]").text()
 		},
 		complete: function () {

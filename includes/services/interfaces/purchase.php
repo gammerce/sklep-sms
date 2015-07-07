@@ -1,6 +1,6 @@
 <?php
 
-interface IServicePurchase
+interface IService_Purchase
 {
 	/**
 	 * Metoda wywoływana, gdy usługa została prawidłowo zakupiona

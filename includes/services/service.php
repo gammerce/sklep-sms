@@ -16,94 +16,21 @@ abstract class Service
 	}
 
 	/**
-	 * Metoda odpowiedzialna za zwracanie fomularzy do różnych czynności
-	 *
-	 * @param string $form Id formularza, który ma zostać zwrócony
-	 * @param array $data Dane $_POST
-	 * @return string        Treść formularza
-	 */
-	public function get_form($form, $data = array())
-	{
-		return FALSE;
-	}
-
-	/**
-	 * Metoda która sprawdza poprawność wprowadzonych danych zakupu,
-	 * wywoływana gdy zakup został przeprowadzony z zewnątrz, nie przez formularz na stronie WWW.
-	 *
-	 * @param array $data user:
-	 *                            uid - id uzytkownika wykonującego zakupy
-	 *                            ip - ip użytkownika wykonującego zakupy
-	 *                            email - email -||-
-	 *                            platform - -||-
-	 *                        transaction:
-	 *                            method - sposób płatności
-	 *                            service - serwis mający obsłużyć płatność
-	 *                            [sms_code] - kod zwrotny sms
-	 *                        order:
-	 *                            ... - dane zamówienia
-	 *                        tariff - koszt usługi ( taryfa )
-	 * @return array        'status'    - id wiadomości,
-	 *                        'text'        - treść wiadomości
-	 *                        'positive'    - czy udało się przeprowadzić zakup czy nie
-	 *                        'purchase_data'    - dane zakupu ktore beda potrzebne przy pozniejszej platnosci
-	 *                            'order'
-	 *                                ...
-	 *                            'user',
-	 *                                'uid',
-	 *                                'email'
-	 *                                ...
-	 *                            'tariff',
-	 *                            'cost_transfer'
-	 *                            'no_sms'
-	 *                            'no_transfer'
-	 *                            'no_wallet'
-	 */
-	public function validate_purchase_data($data)
-	{
-		return FALSE;
-	}
-
-	/**
-	 * Sprawdza czy dany zakup może być zrealizowany ( opłacony ) przez dany kod
-	 *
-	 * @param array $purchase
-	 * @param array $code
-	 * @return bool
-	 */
-	public function validate_service_code($purchase, $code) {
-		return TRUE;
-	}
-
-	/**
-	 * Metoda zwraca informacje o zakupionej usłudze, szczegóły zakupu.
-	 * Informacje są wyświetlane na stronie my_current_services
-	 *
-	 * @param array $user_service Dane o usłudze z bazy danych
-	 * @param string $button_edit String przycisku do edycji usługi
-	 * @return string        Informacje o zakupionej usłudze
-	 */
-	public function my_service_info($user_service, $button_edit)
-	{
-		return FALSE;
-	}
-
-	/**
 	 * Metoda wywoływana, gdy usługa jest usuwana.
 	 *
 	 * @param integer $service_id ID usługi
 	 */
-	public function delete_service($service_id)
+	public function service_delete($service_id)
 	{
 	}
 
 	/**
-	 * Metoda wywoływana przy usuwaniu usługi gracza.
+	 * Metoda wywoływana przy usuwaniu usługi użytkownika.
 	 *
-	 * @param array $player_service Dane o usłudze z bazy danych
+	 * @param array $user_service Dane o usłudze z bazy danych
 	 * @return boolean
 	 */
-	public function delete_player_service($player_service)
+	public function user_service_delete($user_service)
 	{
 		return true;
 	}
@@ -111,14 +38,25 @@ abstract class Service
 	/**
 	 * Metoda wywoływana po usunięciu usługi gracza.
 	 *
-	 * @param array $player_service Dane o usłudze z bazy danych
+	 * @param array $user_service Dane o usłudze z bazy danych
 	 */
-	public function delete_player_service_post($player_service)
+	public function user_service_delete_post($user_service)
 	{
 	}
 
 	/**
-	 * Metoda zwraca, czy usługa ma być wyświetlana na stronie WWW.
+	 * Sprawdza czy dany zakup może być zrealizowany ( opłacony ) przez dany kod na usługę
+	 *
+	 * @param array $purchase
+	 * @param array $code
+	 * @return bool
+	 */
+	public function service_code_validate($purchase, $code) {
+		return true;
+	}
+
+	/**
+	 * Metoda powinna zwrócić, czy usługa ma być wyświetlana na stronie WWW.
 	 */
 	public function show_on_web()
 	{
@@ -135,7 +73,7 @@ abstract class Service
 	 *
 	 * @return string    Description
 	 */
-	public function get_full_description()
+	public function description_full_get()
 	{
 		$file = "services/" . escape_filename($this->service['id']) . "_desc";
 		eval("\$output = \"" . get_template($file, false, true, false) . "\";");
@@ -143,7 +81,7 @@ abstract class Service
 		return $output;
 	}
 
-	public function get_short_description()
+	public function description_short_get()
 	{
 		return $this->service['description'];
 	}

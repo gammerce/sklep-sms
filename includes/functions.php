@@ -220,7 +220,7 @@ function get_privilages($which, $user = array())
 		global $user;
 
 	if (in_array($which, array("manage_settings", "view_groups", "manage_groups", "view_player_flags",
-			"view_player_services", "manage_player_services", "view_income", "view_users", "manage_users",
+			"view_user_services", "manage_user_services", "view_income", "view_users", "manage_users",
 			"view_sms_codes", "manage_sms_codes", "view_service_codes", "manage_service_codes",
 			"view_antispam_questions", "manage_antispam_questions", "view_services", "manage_services",
 			"view_servers", "manage_servers", "view_logs", "manage_logs", "update")
@@ -474,7 +474,7 @@ function pay_service_code($data, $service_module, $user)
 		);
 
 	while ($row = $db->fetch_array_assoc($result))
-		if ($service_module->validate_service_code($data, $row)) { // Znalezlismy odpowiedni kod
+		if ($service_module->service_code_validate($data, $row)) { // Znalezlismy odpowiedni kod
 			$db->query($db->prepare(
 				"DELETE FROM `" . TABLE_PREFIX . "service_codes` " .
 				"WHERE `id` = '%d'",
@@ -573,7 +573,7 @@ function purchase_info($data)
 		return "Brak zakupu w bazie.";
 
 	$service_module = $heart->get_service_module($pbs['service']);
-	return $service_module !== NULL && object_implements($service_module, "IServicePurchaseWeb") ? $service_module->purchase_info($data['action'], $pbs) : "";
+	return $service_module !== NULL && object_implements($service_module, "IService_PurchaseWeb") ? $service_module->purchase_info($data['action'], $pbs) : "";
 }
 
 function delete_users_old_services()
@@ -594,7 +594,7 @@ function delete_users_old_services()
 		if (($service_module = $heart->get_service_module($row['service'])) === NULL)
 			continue;
 
-		if ($service_module->delete_player_service($row)) {
+		if ($service_module->user_service_delete($row)) {
 			$delete_ids[] = $row['id'];
 			$users_services[] = $row;
 			log_info($lang_shop->sprintf($lang_shop->expired_service_delete, $row['auth_data'], $row['server'], $row['service'], get_type_name($row['type'])));
@@ -611,7 +611,7 @@ function delete_users_old_services()
 
 	// Wywołujemy akcje po usunieciu
 	foreach ($users_services as $user_service)
-		$service_module->delete_player_service_post($user_service);
+		$service_module->user_service_delete_post($user_service);
 
 	// Usunięcie przestarzałych flag graczy
 	// Tak jakby co

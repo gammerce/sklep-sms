@@ -102,7 +102,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
 		foreach ($heart->get_services() as $service) {
 			// Dana usługa nie może być kupiona na serwerze
-			if (!is_null($service_module = $heart->get_service_module($service['id'])) && !object_implements($service_module, "IServiceAvailableOnServers"))
+			if (!is_null($service_module = $heart->get_service_module($service['id'])) && !object_implements($service_module, "IService_AvailableOnServers"))
 				continue;
 
 			$values = create_dom_element("option", strtoupper($lang->no), array(

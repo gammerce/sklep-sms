@@ -2,14 +2,14 @@
 	<tbody>
 	<tr>
 		<td>ID</td>
-		<td>{$player_service['id']}</td>
+		<td>{$user_service['id']}</td>
 	</tr>
 	<tr>
 		<td colspan="2" class="line"></td>
 	</tr>
 	<tr>
 		<td>ID użytkownika</td>
-		<td><input type="text" name="uid" style="width: 60px;" value="{$player_service['uid']}"/></td>
+		<td><input type="text" name="uid" style="width: 60px;" value="{$user_service['uid']}"/></td>
 	</tr>
 	<tr>
 		<td>Typ</td>
@@ -71,13 +71,13 @@
 	<tr>
 		<td>Wygasa</td>
 		<td>
-			<input type="text" name="expire" value="{$player_service['expire']}" {$disabled}/><br/>
+			<input type="text" name="expire" value="{$user_service['expire']}" {$disabled}/><br/>
 			<input type="checkbox" name="forever" {$checked}/>{$lang->forever}
 		</td>
 	</tr>
 	<tr>
 		<td colspan="2">
-			<input type="hidden" name="id" value="{$player_service['id']}"/>
+			<input type="hidden" name="id" value="{$user_service['id']}"/>
 			<input type="submit" value="{$lang->edit}" style="width: 100%;"/>
 		</td>
 	</tr>

@@ -1,6 +1,6 @@
 <?php
 
-interface IServiceAdminManageUserService
+interface IService_UserServiceAdminManage
 {
 	/**
 	 * Metoda sprawdza dane formularza podczas dodawania graczowi usługi w PA
@@ -11,7 +11,7 @@ interface IServiceAdminManageUserService
 	 *                        'text'        => treść wiadomości
 	 *                        'positive'    => czy udało się dodać usługę
 	 */
-	public function admin_add_user_service($data);
+	public function user_service_admin_add($data);
 
 	/**
 	 * Metoda sprawdza dane formularza podczas edycji usługi gracza w PA
@@ -23,7 +23,7 @@ interface IServiceAdminManageUserService
 	 *                        'text'        => treść wiadomości
 	 *                        'positive'    => czy udało się wyedytować usługę
 	 */
-	public function admin_edit_user_service($data, $user_service);
+	public function user_service_admin_edit($data, $user_service);
 
 	/**
 	 * Metoda powinna zwrócić dodatkowe pola do uzupełnienia przez admina
@@ -33,14 +33,14 @@ interface IServiceAdminManageUserService
 	 * 	'text'	- treść html
 	 * 	'scripts'	- skrypty js do dodania
 	 */
-	public function admin_get_form_add_user_service();
+	public function user_service_admin_add_form_get();
 
 	/**
 	 * Metoda powinna zwrócić dodatkowe pola usługi
 	 * podczas jej edycji w PA
 	 *
-	 * @param array $player_service	- dane edytowanej usługi
+	 * @param array $user_service	- dane edytowanej usługi
 	 * @return string
 	 */
-	public function admin_get_form_edit_user_service($player_service);
+	public function user_service_admin_edit_form_get($user_service);
 }

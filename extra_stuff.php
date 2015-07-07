@@ -22,7 +22,7 @@ switch ($action) {
 		$output = "";
 
 		if (($service_module = $heart->get_service_module($_GET['service'])) !== NULL)
-			$output = $service_module->get_full_description();
+			$output = $service_module->description_full_get();
 
 		$heart->page_title = $lang->description . ": " . $service_module->service['name'];
 

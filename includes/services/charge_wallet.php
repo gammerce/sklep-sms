@@ -2,14 +2,14 @@
 
 $heart->register_service_module("charge_wallet", "Doładowanie Portfela", "ServiceChargeWallet", "ServiceChargeWalletSimple");
 
-class ServiceChargeWalletSimple extends Service implements IServiceMustBeLogged
+class ServiceChargeWalletSimple extends Service implements IService_BeLoggedMust
 {
 
 	const MODULE_ID = "charge_wallet";
 
 }
 
-class ServiceChargeWallet extends ServiceChargeWalletSimple implements IServicePurchase, IServicePurchaseWeb
+class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_Purchase, IService_PurchaseWeb
 {
 
 	function __construct($service)
@@ -25,7 +25,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IServiceP
 		$stylesheets[] = "{$settings['shop_url_slash']}styles/services/charge_wallet.css?version=" . VERSION;
 	}
 
-	public function form_purchase_service()
+	public function purchase_form_get()
 	{
 		global $settings, $lang;
 
@@ -62,7 +62,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IServiceP
 		return $output;
 	}
 
-	public function validate_purchase_form($data)
+	public function purchase_form_validate($data)
 	{
 		global $heart, $user, $settings, $lang;
 
@@ -182,7 +182,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IServiceP
 		return $output;
 	}
 
-	public function get_short_description()
+	public function description_short_get()
 	{
 		return $this->service['description'];
 	}
@@ -192,7 +192,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IServiceP
 		global $db;
 		$db->query($db->prepare(
 			"UPDATE `" . TABLE_PREFIX . "users` " .
-			"SET `wallet` = `wallet`+'%.2f' " .
+			"SET `wallet` = `wallet` + '%.2f' " .
 			"WHERE `uid` = '%d'",
 			array($amount, $uid)
 		));

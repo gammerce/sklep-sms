@@ -19,7 +19,7 @@ $(document).delegate("#form_add_service_code [name=service]", "change", function
 		return;
 	}
 
-	fetch_data("get_form_add_service_code", true, {
+	fetch_data("add_service_code_get_form", true, {
 		service: $(this).val()
 	}, function (content) {
 		// Usuwamy dodatkowe pola

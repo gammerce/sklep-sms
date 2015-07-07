@@ -33,7 +33,10 @@ class PageMyCurrentServices extends Page
 			if (($service_module = $heart->get_service_module($row['service'])) === NULL)
 				continue;
 
-			if ($settings['user_edit_service'] && object_implements($service_module, "IServiceUserEdit"))
+			if (!object_implements($service_module, "IService_UserOwnServices"))
+				continue;
+
+			if ($settings['user_edit_service'] && object_implements($service_module, "IService_UserOwnServicesEdit"))
 				$button_edit = create_dom_element("img", "", array(
 					'class' => "edit_row",
 					'src' => "images/pencil.png",
@@ -43,10 +46,7 @@ class PageMyCurrentServices extends Page
 					)
 				));
 
-			if (!strlen($temp_text = $service_module->my_service_info($row, $button_edit)))
-				continue;
-
-			$my_current_services .= create_brick($temp_text);
+			$my_current_services .= create_brick($service_module->user_own_service_info_get($row, $button_edit));
 		}
 
 		// Nie znalazło żadnych usług danego gracza

@@ -6,7 +6,7 @@ class PageAdminUsersServices extends PageAdmin implements IPageAdminActionBox
 {
 
 	const PAGE_ID = "users_services";
-	protected $privilage = "view_player_services";
+	protected $privilage = "view_user_services";
 
 	function __construct()
 	{
@@ -55,8 +55,8 @@ class PageAdminUsersServices extends PageAdmin implements IPageAdminActionBox
 			$row['expire'] = $row['expire'] == -1 ? $lang->never : date($settings['date_format'], $row['expire']);
 
 			// Pobranie przycisku edycji oraz usuwania
-			if (get_privilages("manage_player_services")) {
-				if (($service_module = $heart->get_service_module($row['service_id'])) !== NULL && object_implements($service_module, "IServiceAdminManageUserService"))
+			if (get_privilages("manage_user_services")) {
+				if (($service_module = $heart->get_service_module($row['service_id'])) !== NULL && object_implements($service_module, "IService_UserServiceAdminManage"))
 					$button_edit = create_dom_element("img", "", array(
 						'id' => "edit_row_{$i}",
 						'src' => "images/edit.png",
@@ -87,7 +87,7 @@ class PageAdminUsersServices extends PageAdmin implements IPageAdminActionBox
 
 		// Pobranie przycisku dodajacego flagi
 		$buttons = "";
-		if (get_privilages("manage_player_services"))
+		if (get_privilages("manage_user_services"))
 			$buttons .= create_dom_element("input", "", array(
 				'id' => "button_add_user_service",
 				'type' => "button",
@@ -111,7 +111,7 @@ class PageAdminUsersServices extends PageAdmin implements IPageAdminActionBox
 	{
 		global $heart, $db, $lang;
 
-		if (!get_privilages("manage_player_services"))
+		if (!get_privilages("manage_user_services"))
 			return array(
 				'id'	=> "not_logged_in",
 				'text'	=> $lang->not_logged_or_no_perm
@@ -122,7 +122,7 @@ class PageAdminUsersServices extends PageAdmin implements IPageAdminActionBox
 				// Pobranie usług
 				$services = "";
 				foreach ($heart->get_services() as $id => $row) {
-					if (($service_module = $heart->get_service_module($id)) === NULL || !object_implements($service_module, "IServiceAdminManageUserService"))
+					if (($service_module = $heart->get_service_module($id)) === NULL || !object_implements($service_module, "IService_UserServiceAdminManage"))
 						continue;
 
 					$services .= create_dom_element("option", $row['name'], array(
@@ -135,15 +135,15 @@ class PageAdminUsersServices extends PageAdmin implements IPageAdminActionBox
 
 			case "edit_user_service":
 				// Pobieramy usługę z bazy
-				$player_service = $db->fetch_array_assoc($db->query($db->prepare(
+				$user_service = $db->fetch_array_assoc($db->query($db->prepare(
 					"SELECT * FROM `" . TABLE_PREFIX . "players_services` " .
 					"WHERE `id` = '%d'",
 					array($data['id'])
 				)));
 
-				if (($service_module = $heart->get_service_module($player_service['service'])) !== NULL) {
+				if (($service_module = $heart->get_service_module($user_service['service'])) !== NULL) {
 					$service_module_id = htmlspecialchars($service_module::MODULE_ID);
-					$form_data = $service_module->admin_get_form_edit_user_service($player_service);
+					$form_data = $service_module->user_service_admin_edit_form_get($user_service);
 				}
 
 				if (!isset($form_data) || !strlen($form_data))

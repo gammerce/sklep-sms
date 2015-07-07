@@ -2,12 +2,12 @@
 
 $heart->register_service_module("extra_flags", "Dodatkowe Uprawnienia / Flagi", "ServiceExtraFlags", "ServiceExtraFlagsSimple");
 
-class ServiceExtraFlagsSimple extends Service implements IServiceManageService, IServiceCreateNew, IServiceAvailableOnServers
+class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, IService_Create, IService_AvailableOnServers
 {
 
 	const MODULE_ID = "extra_flags";
 
-	public function get_service_extra_fields()
+	public function service_admin_extra_fields_get()
 	{
 		// WEB
 		if ($this->show_on_web()) $web_sel_yes = "selected";
@@ -31,20 +31,19 @@ class ServiceExtraFlagsSimple extends Service implements IServiceManageService, 
 		return $output;
 	}
 
-	public function manage_service_pre($data)
+	public function service_admin_manage_pre($data)
 	{
 		global $lang;
 
 		// Web
-		if (!in_array($data['web'], array("1", "0"))) {
+		if (!in_array($data['web'], array("1", "0")))
 			$output['web'] = $lang->only_yes_no;
-		}
 
 		// Flagi
-		if (!strlen($data['flags'])) // TODO
+		if (!strlen($data['flags']))
 			$output['flags'] = $lang->field_no_empty . "<br />";
 		else if (strlen($data['flags']) > 25)
-			$output['flags'] = "Wprowadzono zbyt dużo flag. Maksymalna ilość to 25.<br />";
+			$output['flags'] = "Wprowadzono zbyt dużo flag. Maksymalna ilość to 25.<br />"; // TODO
 		else if (implode('', array_unique(str_split($data['flags']))) != $data['flags'])
 			$output['flags'] = "Niektóre flagi są wpisane więcej niż jeden raz.<br />";
 
@@ -62,7 +61,7 @@ class ServiceExtraFlagsSimple extends Service implements IServiceManageService, 
 		return $output;
 	}
 
-	public function manage_service_post($data)
+	public function service_admin_manage_post($data)
 	{
 		global $db, $settings;
 
@@ -126,8 +125,9 @@ class ServiceExtraFlagsSimple extends Service implements IServiceManageService, 
 
 }
 
-class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurchase, IServicePurchaseWeb, IServiceAdminManageUserService,
-	IServiceExecuteAction, IServiceUserEdit, IServiceTakeOver, IServiceAdminServiceCodes
+class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purchase, IService_PurchaseWeb, IService_PurchaseOutside,
+	IService_UserServiceAdminManage, IService_ActionExecute, IService_UserOwnServices, IService_UserOwnServicesEdit, IService_TakeOver,
+	IService_CodeAdminManage
 {
 
 	function __construct($service)
@@ -148,13 +148,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		$stylesheets[] = "{$settings['shop_url_slash']}styles/services/extra_flags.css?version=" . VERSION;
 	}
 
-	public function get_form($form, $data)
-	{
-		if ($form == "user_edit_user_service")
-			return $this->form_user_edit_user_service($data);
-	}
-
-	public function form_purchase_service()
+	public function purchase_form_get()
 	{
 		global $heart, $lang, $settings, $user;
 
@@ -182,7 +176,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		return $output;
 	}
 
-	public function validate_purchase_form($data)
+	public function purchase_form_validate($data)
 	{
 		global $user;
 
@@ -192,7 +186,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		// Pobieramy auth_data
 		$auth_data = $this->get_auth_data($data);
 
-		return $this->validate_purchase_data(array(
+		return $this->purchase_validate_data(array(
 			'user' => array(
 				'uid' => $user['uid'],
 				'email' => trim($data['email'])
@@ -217,9 +211,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 	 *    passwordr - powtórzenie hasła
 	 *
 	 * (non-PHPdoc)
-	 * @see Service::validate_purchase_data()
+	 * @see IService_PurchaseOutside::purchase_validate_data()
 	 */
-	public function validate_purchase_data($data)
+	public function purchase_validate_data($data)
 	{
 		global $heart, $db, $lang, $settings;
 
@@ -510,7 +504,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 	//
 	// Funkcja wywolywana podczas usuwania uslugi
-	public function delete_service($service_id)
+	public function service_delete($service_id)
 	{
 		global $db;
 
@@ -524,7 +518,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 	// ----------------------------------------------------------------------------------
 	// ### Zarządzanie usługami użytkowników przez admina
 
-	public function admin_get_form_add_user_service()
+	public function user_service_admin_add_form_get()
 	{
 		global $heart, $settings, $lang;
 
@@ -547,7 +541,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 			));
 		}
 
-		eval("\$output['text'] = \"" . get_template("services/extra_flags/admin_add_user_service", 0, 1, 0) . "\";");
+		eval("\$output['text'] = \"" . get_template("services/extra_flags/user_service_admin_add", 0, 1, 0) . "\";");
 
 		$output['scripts'] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/services/extra_flags_add_user_service.js?version=" . VERSION . "\"></script>";
 
@@ -557,7 +551,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 	//
 	// Funkcja dodawania usługi przez PA
 	//
-	public function admin_add_user_service($data)
+	public function user_service_admin_add($data)
 	{
 		global $heart, $lang, $user;
 
@@ -627,7 +621,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		);
 	}
 
-	public function admin_get_form_edit_user_service($player_service)
+	public function user_service_admin_edit_form_get($user_service)
 	{
 		global $heart, $settings, $lang;
 
@@ -643,7 +637,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 			$services .= create_dom_element("option", $row['name'], array(
 				'value' => $row['id'],
-				'selected' => $player_service['service'] == $row['id'] ? "selected" : ""
+				'selected' => $user_service['service'] == $row['id'] ? "selected" : ""
 			));
 		}
 
@@ -653,15 +647,15 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 			if ($this->service['types'] & $option_id)
 				$types .= create_dom_element("option", get_type_name($option_id), array(
 					'value' => $option_id,
-					'selected' => $option_id == $player_service['type'] ? "selected" : ""
+					'selected' => $option_id == $user_service['type'] ? "selected" : ""
 				));
 
-		if ($player_service['type'] == TYPE_NICK)
-			$nick = htmlspecialchars($player_service['auth_data']);
-		else if ($player_service['type'] == TYPE_IP)
-			$ip = htmlspecialchars($player_service['auth_data']);
-		else if ($player_service['type'] == TYPE_SID)
-			$sid = htmlspecialchars($player_service['auth_data']);
+		if ($user_service['type'] == TYPE_NICK)
+			$nick = htmlspecialchars($user_service['auth_data']);
+		else if ($user_service['type'] == TYPE_IP)
+			$ip = htmlspecialchars($user_service['auth_data']);
+		else if ($user_service['type'] == TYPE_SID)
+			$sid = htmlspecialchars($user_service['auth_data']);
 
 		// Pobranie serwerów
 		$servers = "";
@@ -672,23 +666,23 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 
 			$servers .= create_dom_element("option", $row['name'], array(
 				'value' => $row['id'],
-				'selected' => $player_service['server'] == $row['id'] ? "selected" : ""
+				'selected' => $user_service['server'] == $row['id'] ? "selected" : ""
 			));
 		}
 
 		// Pobranie hasła
-		if (strlen($player_service['password']))
+		if (strlen($user_service['password']))
 			$password = "********";
 
 		// Zamiana daty
-		if ($player_service['expire'] == -1) {
+		if ($user_service['expire'] == -1) {
 			$checked = "checked";
 			$disabled = "disabled";
-			$player_service['expire'] = "";
+			$user_service['expire'] = "";
 		} else
-			$player_service['expire'] = date($settings['date_format'], $player_service['expire']);
+			$user_service['expire'] = date($settings['date_format'], $user_service['expire']);
 
-		eval("\$output = \"" . get_template("services/extra_flags/admin_edit_user_service", 0, 1, 0) . "\";");
+		eval("\$output = \"" . get_template("services/extra_flags/user_service_admin_edit", 0, 1, 0) . "\";");
 
 		return $output;
 	}
@@ -696,7 +690,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 	//
 	// Funkcja edytowania usługi przez admina z PA
 	//
-	public function admin_edit_user_service($data, $user_service)
+	public function user_service_admin_edit($data, $user_service)
 	{
 		global $heart, $db, $lang, $user;
 
@@ -787,16 +781,16 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 			);
 	}
 
-	public function delete_player_service_post($player_service)
+	public function user_service_delete_post($user_service)
 	{
 		// Odśwież flagi gracza
-		$this->recalculate_player_flags($player_service['server'], $player_service['type'], $player_service['auth_data']);
+		$this->recalculate_player_flags($user_service['server'], $user_service['type'], $user_service['auth_data']);
 	}
 
 	// ----------------------------------------------------------------------------------
 	// ### Edytowanie usług przez użytkownika
 
-	private function form_user_edit_user_service($player_service)
+	public function user_own_service_edit_form_get($user_service)
 	{
 		global $heart, $settings, $lang;
 
@@ -804,37 +798,37 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		$service_info = array();
 		for ($i = 0, $option_id = 1; $i < 3; $option_id = 1 << ++$i) {
 			// Kiedy dana usługa nie wspiera danego typu i wykupiona usługa nie ma tego typu
-			if (!($this->service['types'] & $option_id) && $option_id != $player_service['type'])
+			if (!($this->service['types'] & $option_id) && $option_id != $user_service['type'])
 				continue;
 
 			$service_info['types'] .= create_dom_element("option", get_type_name($option_id), array(
 				'value' => $option_id,
-				'selected' => $option_id == $player_service['type'] ? "selected" : ""
+				'selected' => $option_id == $user_service['type'] ? "selected" : ""
 			));
 
-			if ($option_id == $player_service['type']) {
+			if ($option_id == $user_service['type']) {
 				if ($option_id == TYPE_NICK)
-					$service_info['player_nick'] = htmlspecialchars($player_service['auth_data']);
+					$service_info['player_nick'] = htmlspecialchars($user_service['auth_data']);
 				else if ($option_id == TYPE_IP)
-					$service_info['player_ip'] = htmlspecialchars($player_service['auth_data']);
+					$service_info['player_ip'] = htmlspecialchars($user_service['auth_data']);
 				else if ($option_id == TYPE_SID)
-					$service_info['player_sid'] = htmlspecialchars($player_service['auth_data']);
+					$service_info['player_sid'] = htmlspecialchars($user_service['auth_data']);
 				else
-					$service_info['player_ip'] = htmlspecialchars($player_service['auth_data']);
+					$service_info['player_ip'] = htmlspecialchars($user_service['auth_data']);
 			}
 		}
 
 		// Hasło
-		if (strlen($player_service['password']) && $player_service['password'] != md5(""))
+		if (strlen($user_service['password']) && $user_service['password'] != md5(""))
 			$service_info['password'] = "********";
 
 		// Serwer
-		$temp_server = $heart->get_server($player_service['server']);
+		$temp_server = $heart->get_server($user_service['server']);
 		$service_info['server'] = $temp_server['name'];
 		unset($temp_server);
 
 		// Wygasa
-		$service_info['expire'] = $player_service['expire'] == -1 ? $lang->never : date($settings['date_format'], $player_service['expire']);
+		$service_info['expire'] = $user_service['expire'] == -1 ? $lang->never : date($settings['date_format'], $user_service['expire']);
 
 		// Usługa
 		$service_info['service'] = $this->service['name'];
@@ -844,7 +838,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		return $output;
 	}
 
-	public function my_service_info($data, $button_edit)
+	public function user_own_service_info_get($data, $button_edit)
 	{
 		global $heart, $settings, $lang, $scripts;
 
@@ -866,7 +860,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		return $output;
 	}
 
-	public function user_edit_user_service($data, $user_service)
+	public function user_own_service_edit($data, $user_service)
 	{
 		global $lang, $user;
 
@@ -1185,7 +1179,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 	private function servers_for_service($server)
 	{
 		global $lang;
-		if (!get_privilages("manage_player_services")) {
+		if (!get_privilages("manage_user_services")) {
 			json_output("not_logged_in", $lang->no_access, 0);
 		}
 
@@ -1252,7 +1246,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 			return $data['sid'];
 	}
 
-	public function execute_action($action, $data)
+	public function service_action_execute($action, $data)
 	{
 		switch ($action) {
 			case "tariffs_for_server":
@@ -1270,7 +1264,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		return max($a, $b);
 	}
 
-	public function admin_get_form_add_service_code()
+	public function service_code_admin_add_form_get()
 	{
 		global $heart, $lang;
 
@@ -1286,11 +1280,11 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		}
 
 		$module_id = $this::MODULE_ID;
-		eval("\$output = \"" . get_template("services/extra_flags/admin_add_service_code", 0, 1, 0) . "\";");
+		eval("\$output = \"" . get_template("services/extra_flags/service_code_admin_add", 0, 1, 0) . "\";");
 		return $output;
 	}
 
-	public function admin_add_service_code_validate($data)
+	public function service_code_admin_add_validate($data)
 	{
 		global $heart, $lang;
 
@@ -1313,7 +1307,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IServicePurch
 		return $warnings;
 	}
 
-	public function admin_add_service_code_insert($data)
+	public function service_code_admin_add_insert($data)
 	{
 		$tariff = explode(';', $data['amount']); $tariff = $tariff[2];
 		return array(

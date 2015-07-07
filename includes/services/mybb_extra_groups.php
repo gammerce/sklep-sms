@@ -2,7 +2,7 @@
 
 $heart->register_service_module("mybb_extra_groups", "Dodatkowe Grupy (MyBB)", "ServiceMybbExtraGroups", "ServiceMybbExtraGroupsSimple");
 
-class ServiceMybbExtraGroupsSimple extends Service implements IServiceManageService, IServiceCreateNew
+class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminManage, IService_Create
 {
 
 	const MODULE_ID = "mybb_extra_groups";
@@ -11,7 +11,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements IServiceManageServ
 	 * Metoda wywoływana przy edytowaniu lub dodawaniu usługi w PA
 	 * Powinna zwracać dodatkowe pola do uzupełnienia
 	 */
-	public function get_service_extra_fields()
+	public function service_admin_extra_fields_get()
 	{
 		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/extra_fields", 0, 1, 0) . "\";");
 		return $output;
@@ -25,7 +25,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements IServiceManageServ
 	 * @return array        'key'    => DOM Element name
 	 *                        'value'    => Error message
 	 */
-	public function manage_service_pre($data)
+	public function service_admin_manage_pre($data)
 	{
 		global $lang;
 
@@ -48,7 +48,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements IServiceManageServ
 	 *            'value'	=> wartość kolumny
 	 *        )
 	 */
-	public function manage_service_post($data)
+	public function service_admin_manage_post($data)
 	{
 		$extra_data['groups_mybb'] = trim($data['groups_mybb']);
 
@@ -64,136 +64,16 @@ class ServiceMybbExtraGroupsSimple extends Service implements IServiceManageServ
 	}
 }
 
-class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements IServicePurchase, IServicePurchaseWeb, IServiceAdminManageUserService,
-	IServiceUserEdit, IServiceTakeOver, IServiceAdminServiceCodes
+class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements IService_Purchase, IService_PurchaseWeb
 {
-
-	/**
-	 * Metoda sprawdza dane formularza podczas dodawania kodu na usługę w PA
-	 *
-	 * @param array $data Dane $_POST
-	 * @return array 'key' (DOM element name) => 'value'
-	 */
-	public function admin_add_service_code_validate($data)
-	{
-		// TODO: Implement admin_add_service_code_validate() method.
-	}
-
-	/**
-	 * Metoda powinna zwrócić dodatkowe pola do uzupełnienia przez admina
-	 * podczas dodawania kodu na usługę
-	 *
-	 * @return string
-	 */
-	public function admin_get_form_add_service_code()
-	{
-		// TODO: Implement admin_get_form_add_service_code() method.
-	}
-
-	/**
-	 * Metoda zwraca tablicę z danymi które zostaną dodane do bazy wraz z kodem na usługę
-	 * można założyć że dane są już prawidłowo zweryfikowane przez metodę admin_add_service_code_validate
-	 *
-	 * @param $data
-	 * @return array (
-	 *        'server'    - integer,
-	 *        'amount'    - double,
-	 *        'tariff'    - integer,
-	 *        'data'        - string
-	 * )
-	 */
-	public function admin_add_service_code_insert($data)
-	{
-		// TODO: Implement admin_add_service_code_insert() method.
-	}
-
-	/**
-	 * Metoda sprawdza dane formularza podczas dodawania graczowi usługi w PA
-	 * i gdy wszystko jest okej, to ją dodaje.
-	 *
-	 * @param array $data Dane $_POST
-	 * @return array        'status'    => id wiadomości,
-	 *                        'text'        => treść wiadomości
-	 *                        'positive'    => czy udało się dodać usługę
-	 */
-	public function admin_add_user_service($data)
-	{
-		// TODO: Implement admin_add_user_service() method.
-	}
-
-	/**
-	 * Metoda sprawdza dane formularza podczas edycji usługi gracza w PA
-	 * i gdy wszystko jest okej, to ją edytuje.
-	 *
-	 * @param array $data Dane $_POST
-	 * @param array $user_service Obecne dane edytowanej usługi
-	 * @return array        'status'    => id wiadomości,
-	 *                        'text'        => treść wiadomości
-	 *                        'positive'    => czy udało się wyedytować usługę
-	 */
-	public function admin_edit_user_service($data, $user_service)
-	{
-		// TODO: Implement admin_edit_user_service() method.
-	}
-
-	/**
-	 * Metoda powinna zwrócić dodatkowe pola do uzupełnienia przez admina
-	 * podczas dodawania usługi gracza
-	 *
-	 * @return array
-	 *    'text'    - treść html
-	 *    'scripts'    - skrypty js do dodania
-	 */
-	public function admin_get_form_add_user_service()
-	{
-		// TODO: Implement admin_get_form_add_user_service() method.
-	}
-
-	/**
-	 * Metoda powinna zwrócić dodatkowe pola usługi
-	 * podczas jej edycji w PA
-	 *
-	 * @param array $player_service - dane edytowanej usługi
-	 * @return string
-	 */
-	public function admin_get_form_edit_user_service($player_service)
-	{
-		// TODO: Implement admin_get_form_edit_user_service() method.
-	}
-
-	/**
-	 * Metoda wywoływana, gdy usługa została prawidłowo zakupiona
-	 *
-	 * @param array $data user:
-	 *                            uid - id uzytkownika wykonującego zakupy
-	 *                            ip - ip użytkownika wykonującego zakupy
-	 *                            email - email -||-
-	 *                            name - nazwa -||-
-	 *                        transaction:
-	 *                            method - sposób płatności
-	 *                            payment_id - id płatności
-	 *                        order:
-	 *                            server - serwer na który ma być wykupiona usługa
-	 *                            auth_data - dane rozpoznawcze gracza
-	 *                            type - TYPE_NICK / TYPE_IP / TYPE_SID
-	 *                            password - hasło do usługi
-	 *                            amount - ilość kupionej usługi
-	 *
-	 * @return integer        value returned by function add_bought_service_info
-	 */
-	public function purchase($data)
-	{
-		// TODO: Implement purchase() method.
-	}
-
 	/**
 	 * Metoda powinna zwracać formularz zakupu w postaci stringa
 	 *
 	 * @return string   - Formularz zakupu
 	 */
-	public function form_purchase_service()
+	public function purchase_form_get()
 	{
-		// TODO: Implement form_purchase_service() method.
+
 	}
 
 	/**
@@ -205,9 +85,8 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	 *                        'text'        => treść wiadomości
 	 *                        'positive'    => czy udało się przeprowadzić zakup czy nie
 	 */
-	public function validate_purchase_form($data)
+	public function purchase_form_validate($data)
 	{
-		// TODO: Implement validate_purchase_form() method.
 	}
 
 	/**
@@ -243,42 +122,27 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	}
 
 	/**
-	 * Zwraca formularz przejęcia usługi
+	 * Metoda wywoływana, gdy usługa została prawidłowo zakupiona
 	 *
-	 * @param $service_id - ID usługi do przejęcia
-	 * @return string
-	 */
-	public function form_take_over_service($service_id)
-	{
-		// TODO: Implement form_take_over_service() method.
-	}
-
-	/**
-	 * Sprawdza poprawność danych wprowadzonych w formularzu przejęcia usługi
-	 * a jeżeli wszystko jest ok, to ją przejmuje
+	 * @param array $data user:
+	 *                            uid - id uzytkownika wykonującego zakupy
+	 *                            ip - ip użytkownika wykonującego zakupy
+	 *                            email - email -||-
+	 *                            name - nazwa -||-
+	 *                        transaction:
+	 *                            method - sposób płatności
+	 *                            payment_id - id płatności
+	 *                        order:
+	 *                            server - serwer na który ma być wykupiona usługa
+	 *                            auth_data - dane rozpoznawcze gracza
+	 *                            type - TYPE_NICK / TYPE_IP / TYPE_SID
+	 *                            password - hasło do usługi
+	 *                            amount - ilość kupionej usługi
 	 *
-	 * @param $data - Dane $_POST
-	 * @return array    'status'    => id wiadomości
-	 *                  'text'      => treść wiadomości
-	 *                  'positive'  => czy udało się przejąć usługę
+	 * @return integer        value returned by function add_bought_service_info
 	 */
-	public function take_over_service($data)
+	public function purchase($data)
 	{
-		// TODO: Implement take_over_service() method.
-	}
-
-	/**
-	 * Metoda sprawdza dane formularza, podczas edycji usługi gracza przez gracza
-	 * i gdy wszystko jest okej, to ją edytuje.
-	 *
-	 * @param array $data Dane $_POST
-	 * @param array $user_service Obecne dane edytowanej usługi
-	 * @return array        'status'    => id wiadomości,
-	 *                        'text'        => treść wiadomości
-	 *                        'positive'    => czy udało się wyedytować usługę
-	 */
-	public function user_edit_user_service($data, $user_service)
-	{
-		// TODO: Implement user_edit_user_service() method.
+		// TODO: Implement purchase() method.
 	}
 }

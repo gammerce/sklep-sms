@@ -30,7 +30,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 			"LEFT JOIN `" . TABLE_PREFIX . "pricelist` AS pl ON sc.tariff = pl.tariff AND sc.service = pl.service
 			AND (pl.server = '-1' OR sc.server = pl.server) " .
 			"LIMIT " . get_row_limit($G_PAGE)
-		); // TODO
+		);
 		$rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
 		$i = 0;
@@ -106,7 +106,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 				// Pobranie usług
 				$services = "";
 				foreach ($heart->get_services() as $id => $row) {
-					if (($service_module = $heart->get_service_module($id)) === NULL || !object_implements($service_module, "IServiceAdminServiceCodes"))
+					if (($service_module = $heart->get_service_module($id)) === NULL || !object_implements($service_module, "IService_CodeAdminManage"))
 						continue;
 
 					$services .= create_dom_element("option", $row['name'], array(
