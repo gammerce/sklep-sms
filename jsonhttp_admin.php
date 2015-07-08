@@ -1147,7 +1147,7 @@ if ($action == "charge_wallet") {
 		json_output("no_data", $lang->not_all_data, 0);
 
 	if (($page = $heart->get_page($_POST['page_id'], "admin")) === NULL)
-		json_output("wrong_page", $lang->wrong_website_id, 0);
+		json_output("wrong_page", $lang->wrong_page_id, 0);
 
 	if (!object_implements($page, "IPageAdminActionBox"))
 		json_output("page_no_action_box", $lang->no_action_box_support, 0);

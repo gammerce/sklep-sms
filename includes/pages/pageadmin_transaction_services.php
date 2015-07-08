@@ -88,7 +88,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
 				foreach ($transaction_service['data'] as $name => $value) {
 					switch ($name) {
 						case 'sms_text':
-							$text = strtoupper($lang->sms);
+							$text = strtoupper($lang->sms_code);
 							break;
 						case 'account_id':
 							$text = strtoupper($lang->account_id);

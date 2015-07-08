@@ -178,7 +178,7 @@ $l['sms_code_admin_delete'] = "Admin {1}({2}) usunął kod SMS. ID: {3}";
 
 $l['all_servers'] = "Wszystkie";
 
-$l['sms'] = "kod sms";
+$l['sms_code'] = "kod sms";
 $l['account_id'] = "id konta";
 
 $l['code_added_admin'] = "Admin {1}({2}) dodał kod na usługę. Kod: {3}, Usługa: {4}";
@@ -187,6 +187,6 @@ $l['code_deleted_admin'] = "Admin {1}({2}) usunął kod na usługę. ID: {3}";
 $l['code_deleted'] = "Kod na usługę został prawidłowo usunięty.";
 $l['code_not_deleted'] = "Kod na usługę nie został usunięty.";
 $l['not_all_data'] = "Nie podano wszystkich potrzebnych danych.";
-$l['wrong_website_id'] = "Podano błędne id strony.";
+$l['wrong_page_id'] = "Podano błędne id strony.";
 $l['no_action_box_support'] = "Strona nie wspiera action boxów.";
 
