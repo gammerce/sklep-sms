@@ -83,4 +83,8 @@ class Language
 		return $string;
 	}
 
+	public function strtoupper($string) {
+		return strtoupper($string);
+	}
+
 }

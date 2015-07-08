@@ -15,12 +15,29 @@ class PagePurchase extends Page
 		parent::__construct();
 	}
 
+	public function get_content($get, $post)
+	{
+		return $this->content($get, $post);
+	}
+
 	protected function content($get, $post)
 	{
-		global $heart, $user, $lang, $settings, $stylesheets;
+		global $heart, $user, $lang, $settings, $stylesheets, $scripts;
 
 		if (($service_module = $heart->get_service_module($get['service'])) === NULL)
 			return $lang->site_not_exists;
+
+		// Dodajemy wszystkie skrypty
+		$script_path = "jscripts/pages/" . $this::PAGE_ID . "/";
+		if (strlen($this::PAGE_ID)) {
+			$path = $script_path . "main.js";
+			if (file_exists(SCRIPT_ROOT . $path))
+				$scripts[] = $settings['shop_url_slash'] . $path . "?version=" . VERSION;
+
+			$path = $script_path . $service_module->get_module_id() . ".js";
+			if (file_exists(SCRIPT_ROOT . $path))
+				$scripts[] = $settings['shop_url_slash'] . $path . "?version=" . VERSION;
+		}
 
 		$heart->page_title .= " - " . $service_module->service['name'];
 

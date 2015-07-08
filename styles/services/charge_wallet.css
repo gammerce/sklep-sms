@@ -9,3 +9,7 @@
 [name=transfer_amount] {
 	display: inline-block;
 }
+
+#form_purchase tfoot {
+	display: none;
+}

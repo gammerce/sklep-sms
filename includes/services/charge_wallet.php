@@ -14,13 +14,11 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 
 	function __construct($service)
 	{
-		global $settings, $scripts, $stylesheets;
+		global $settings, $stylesheets;
 
 		// Wywolujemy konstruktor klasy ktora rozszerzamy
 		parent::__construct($service);
 
-		// Dodajemy skrypt js
-		$scripts[] = "{$settings['shop_url_slash']}jscripts/services/charge_wallet.js?version=" . VERSION;
 		// Dodajemy szablon css
 		$stylesheets[] = "{$settings['shop_url_slash']}styles/services/charge_wallet.css?version=" . VERSION;
 	}
