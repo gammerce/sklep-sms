@@ -765,7 +765,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 				$warnings['server'] .= $lang->choose_server_for_service . "<br />";
 			// Wyszukiwanie serwera o danym id
 			else if (($server = $heart->get_server($data['server'])) === NULL)
-				$warnings['server'] .= $lang->no_id_server . "<br />";
+				$warnings['server'] .= $lang->no_server_id . "<br />";
 		}
 
 		// Jeżeli są jakieś błedy, to je zwróć

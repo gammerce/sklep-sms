@@ -23,7 +23,6 @@ $l['no_account_id'] = "Podane ID użytkownika nie jest przypisane do żadnego ko
 $l['must_choose_service_type'] = "Musisz wybrać typ usługi.";
 $l['forbidden_purchase_type'] = "Wybrano niedozwolony typ zakupu.";
 $l['choose_server_for_service'] = "Musisz wybrać serwer na który chcesz dodać daną usługę.";
-$l['no_id_server'] = "Brak serwera o takim ID. Coś tu ktoś namieszał.";
 $l['have_to_choose_server'] = "Musisz wybrać serwer.";
 $l['no_server_id'] = "Brak serwera o takim ID.";
 $l['must_choose_quantity'] = "Musisz wybrać ilość.";

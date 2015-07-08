@@ -23,7 +23,6 @@ $l['no_account_id'] = "Given user's ID is not assigned to any account.";
 $l['must_choose_service_type'] = "You must choose service type.";
 $l['forbidden_purchase_type'] = "Forbidden purchase type was chosen.";
 $l['choose_server_for_service'] = "You must choose server to add this service to.";
-$l['no_id_server'] = "No server with such ID. Someone messed up.";
 $l['have_to_choose_server'] = "You must choose server.";
 $l['no_server_id'] = "No server with such ID.";
 $l['must_choose_quantity'] = "You must choose quantity.";

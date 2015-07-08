@@ -489,8 +489,7 @@ function pay_service_code($data, $service_module, $user)
 			));
 			$payment_id = $db->last_id();
 
-			log_info($lang_shop->sprintf($lang_shop->purchase_code,
-				$data['service_code'], $user['username'], $user['uid'], $payment_id));
+			log_info($lang_shop->sprintf($lang_shop->purchase_code, $data['service_code'], $user['username'], $user['uid'], $payment_id));
 
 			return $payment_id;
 		}
