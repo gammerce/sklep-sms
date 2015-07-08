@@ -178,7 +178,7 @@ $l['sms_code_admin_delete'] = "Admin {1}({2}) usunął kod SMS. ID: {3}";
 
 $l['all_servers'] = "Wszystkie";
 
-$l['sms_code'] = "kod sms";
+$l['sms_code'] = "Kod SMS";
 $l['account_id'] = "id konta";
 
 $l['code_added_admin'] = "Admin {1}({2}) dodał kod na usługę. Kod: {3}, Usługa: {4}";
@@ -190,3 +190,29 @@ $l['not_all_data'] = "Nie podano wszystkich potrzebnych danych.";
 $l['wrong_page_id'] = "Podano błędne id strony.";
 $l['no_action_box_support'] = "Strona nie wspiera action boxów.";
 
+$l['id'] = "ID";
+$l['answers'] = "Odpowiedzi";
+$l['actions'] = "Akcje";
+$l['payment_admin'] = "Płatność";
+$l['nick_ip_sid'] = "Nick/IP/SID";
+$l['additional'] = "Dodatkowe";
+$l['name_admin'] = "Nazwa";
+$l['other'] = "Inne";
+$l['sum'] = "Suma";
+$l['text'] = "Tekst";
+$l['admin_id'] = "ID Admina";
+$l['platform'] = "Platforma";
+$l['code'] = "Kod";
+$l['content'] = "Treść";
+$l['number'] = "Numer";
+$l['return_code'] = "Kod Zwortny";
+$l['free_of_charge'] = "Darmowy";
+$l['ip_port'] = "IP:Port";
+$l['version'] = "Wersja";
+$l['date_of_creation'] = "Data utworzenia";
+$l['short_description'] = "Krótki Opis";
+$l['order'] = "Kolejność";
+$l['commission'] = "Prowizja";
+$l['sms_service'] = "Obsługa SMS";
+$l['transfer_service'] = "Obsługa Przelewów";
+$l['expires'] = "Wygasa";

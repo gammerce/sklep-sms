@@ -177,7 +177,7 @@ $l['sms_code_admin_delete'] = "Admin {1}({2}) removed SMS code. ID: {3}";
 
 $l['all_servers'] = "All";
 
-$l['sms_code'] = "sms code";
+$l['sms_code'] = "SMS code";
 $l['account_id'] = "account id";
 
 $l['code_added_admin'] = "Admin {1}({2})added code for service. Code: {3}, Service: {4}";
@@ -188,3 +188,29 @@ $l['code_not_deleted'] = "Code for service was not deleted.";
 $l['not_all_data'] = "Not all necessary data were given.";
 $l['wrong_page_id'] = "Wrong page ID was given.";
 $l['no_action_box_support'] = "Page does not support action boxes.";
+
+$l['id'] = "ID";
+$l['answers'] = "Answers";
+$l['actions'] = "Actions";
+$l['payment_admin'] = "Payment";
+$l['nick_ip_sid'] = "Nick/IP/SID";
+$l['additional'] = "Additional";
+$l['name_admin'] = "Name";
+$l['other'] = "Other";
+$l['sum'] = "Sum";
+$l['text'] = "Text";
+$l['admin_id'] = "Admin ID";
+$l['platform'] = "Platform";
+$l['code'] = "Code";
+$l['content'] = "Content";
+$l['number'] = "Number";
+$l['free_of_charge'] = "Free";
+$l['ip_port'] = "IP:Port";
+$l['version'] = "Version";
+$l['date_of_creation'] = "Creation date";
+$l['short_description'] = "Short Description";
+$l['order'] = "Order";
+$l['commission'] = "Commission";
+$l['sms_service'] = "SMS Service";
+$l['transfer_service'] = "Transfer Service";
+$l['expires'] = "Expires";
