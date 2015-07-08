@@ -66,8 +66,8 @@ $l['privilages_names'] = array(
 	"manage_users" => "Zarządzanie użytkownikami",
 	"view_sms_codes" => "Przeglądanie kodów SMS",
 	"manage_sms_codes" => "Zarządzanie kodami SMS",
-	"view_service_codes" => "Przeglądanie kodów na usługi", // TODO lang - dodać takie w pliku z jezykiem angielskim
-	"manage_service_codes" => "Zarządzanie kodami na usługi", // TODO lang - dodać takie w pliku z jezykiem angielskim
+	"view_service_codes" => "Przeglądanie kodów na usługi",
+	"manage_service_codes" => "Zarządzanie kodami na usługi",
 	"view_antispam_questions" => "Przeglądanie pytań anty-spamowych",
 	"manage_antispam_questions" => "Zarządzanie pytaniami anty-spamowymi",
 	"view_services" => "Przeglądanie usług",
@@ -177,4 +177,16 @@ $l['sms_code_admin_add'] = "Admin {1}({2}) dodał kod SMS. Kod: {3}, Taryfa: {4}
 $l['sms_code_admin_delete'] = "Admin {1}({2}) usunął kod SMS. ID: {3}";
 
 $l['all_servers'] = "Wszystkie";
+
+$l['sms'] = "kod sms";
+$l['account_id'] = "id konta";
+
+$l['code_added_admin'] = "Admin {1}({2}) dodał kod na usługę. Kod: {3}, Usługa: {4}";
+$l['code_added'] = "Kod na usługę został prawidłowo dodany.";
+$l['code_deleted_admin'] = "Admin {1}({2}) usunął kod na usługę. ID: {3}";
+$l['code_deleted'] = "Kod na usługę został prawidłowo usunięty.";
+$l['code_not_deleted'] = "Kod na usługę nie został usunięty.";
+$l['not_all_data'] = "Nie podano wszystkich potrzebnych danych.";
+$l['wrong_website_id'] = "Podano błędne id strony.";
+$l['no_action_box_support'] = "Strona nie wspiera action boxów.";
 

@@ -1083,9 +1083,9 @@ if ($action == "charge_wallet") {
 			if_isset($code_data['amount'], 0.0), if_isset($code_data['tariff'], 0), $code_data['data'])
 	));
 
-	log_info($lang_shop->sprintf("Admin {1}({2}) dodał kod na usługę. Kod: {3}, Usługa: {4}", $user['username'], $user['uid'], $_POST['code'], $service_module->service['id'])); // TODO lang
+	log_info($lang_shop->sprintf($lang_shop->code_added_admin, $user['username'], $user['uid'], $_POST['code'], $service_module->service['id']));
 	// Zwróć info o prawidłowym dodaniu
-	json_output("added", "Kod na usługę został prawidłowo dodany.", 1); // TODO lang
+	json_output("added", $lang->code_added, 1);
 } else if ($action == "delete_service_code") {
 	if (!get_privilages("manage_service_codes"))
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
@@ -1098,9 +1098,9 @@ if ($action == "charge_wallet") {
 
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($db->affected_rows()) {
-		log_info($lang_shop->sprintf("Admin {1}({2}) usunął kod na usługę. ID: {3}", $user['username'], $user['uid'], $_POST['id'])); // TODO lang
-		json_output("deleted", "Kod na usługę został prawidłowo usunięty.", 1); // TODO lang
-	} else json_output("not_deleted", "Kod na usługę nie został usunięty.", 0); // TODO lang
+		log_info($lang_shop->sprintf($lang_shop->code_deleted_admin, $user['username'], $user['uid'], $_POST['id']));
+		json_output("deleted", $lang->code_deleted, 1);
+	} else json_output("not_deleted", $lang->code_not_deleted, 0);
 } else if ($action == "add_service_code_get_form") {
 	if (!get_privilages("manage_service_codes"))
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
@@ -1144,13 +1144,13 @@ if ($action == "charge_wallet") {
 	output_page(json_encode($data), "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "get_action_box") {
 	if (!isset($_POST['page_id']) || !isset($_POST['box_id']))
-		json_output("no_data", "Nie podano wszystkich potrzebnych danych.", 0); // TODO lang
+		json_output("no_data", $lang->not_all_data, 0);
 
 	if (($page = $heart->get_page($_POST['page_id'], "admin")) === NULL)
-		json_output("wrong_page", "Podano błędne id strony.", 0); // TODO lang
+		json_output("wrong_page", $lang->wrong_website_id, 0);
 
 	if (!object_implements($page, "IPageAdminActionBox"))
-		json_output("page_no_action_box", "Strona nie wspiera action boxów.", 0); // TODO lang
+		json_output("page_no_action_box", $lang->no_action_box_support, 0);
 
 	$action_box = $page->get_action_box($_POST['box_id'], $_POST);
 

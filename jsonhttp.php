@@ -437,10 +437,10 @@ if ($action == "login") {
 		output_page($lang->dont_play_games);
 
 	if (($service_module = $heart->get_service_module($user_service['service'])) === NULL)
-		output_page("Usługa nie może zostać wyświetlona, ponieważ jej moduł nie zapewnia takiej funkcjonalności."); // TODO lang
+		output_page($lang->service_not_displayed);
 
 	if (!object_implements($service_module, "IService_UserOwnServices"))
-		output_page("Usługa nie może zostać wyświetlona, ponieważ jej moduł nie zapewnia takiej funkcjonalności."); // TODO lang
+		output_page($lang->service_not_displayed);
 
 	if ($settings['user_edit_service'] && object_implements($service_module, "IService_UserOwnServicesEdit"))
 		$button_edit = create_dom_element("img", "", array(

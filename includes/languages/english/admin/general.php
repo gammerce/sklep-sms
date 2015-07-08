@@ -65,6 +65,8 @@ $l['privilages_names'] = array(
 	"manage_users" => "Users management",
 	"view_sms_codes" => "SMS codes preview",
 	"manage_sms_codes" => "SMS codes management",
+	"view_service_codes" => "Service codes preview",
+	"manage_service_codes" => "Service codes management",
 	"view_antispam_questions" => "Antispam questions preview",
 	"manage_antispam_questions" => "Antispam questions management",
 	"view_services" => "Services preview",
@@ -174,3 +176,15 @@ $l['sms_code_admin_add'] = "Admin {1}({2}) added SMS code. Code: {3}, Tariff: {4
 $l['sms_code_admin_delete'] = "Admin {1}({2}) removed SMS code. ID: {3}";
 
 $l['all_servers'] = "All";
+
+$l['sms'] = "sms code";
+$l['account_id'] = "account id";
+
+$l['code_added_admin'] = "Admin {1}({2})added code for service. Code: {3}, Service: {4}";
+$l['code_added'] = "Code for service was added correctly.";
+$l['code_deleted_admin'] = "Admin {1}({2})deleted code for service. ID: {3}";
+$l['code_deleted'] = "Code for service was deleted correctly.";
+$l['code_not_deleted'] = "Code for service was not deleted.";
+$l['not_all_data'] = "Not all necessary data were given.";
+$l['wrong_website_id'] = "Wrong website ID was given.";
+$l['no_action_box_support'] = "Website does not support action boxes.";

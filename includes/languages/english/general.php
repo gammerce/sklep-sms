@@ -169,3 +169,7 @@ $l['transfer_above_amount'] = "You can pay by transfer only for purchase above 1
 $l['payment_accepted'] = "Payment for service accepted: {1} Amount: {2} Transaction ID: {3} Service: {4} {5}({6})({7})";
 $l['transfer_accepted'] = "Transfer payment: {1} was accepted,but service module {2} was programmed incorrectly and purchase failed.";
 $l['payment_not_accepted'] = "Transaction authorization failure: {1} Amount: {2} Service: {3} {4}({5})({6})";
+
+$l['purchase_code'] = "Code{1} was used to purchase service by {2}({3}). Payment ID: {4}";
+
+$l['service_not_displayed'] = "Service cannot be displayed, because its module does not provide such functionality.";
