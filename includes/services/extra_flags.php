@@ -546,7 +546,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 	//
 	public function user_service_admin_add($data)
 	{
-		global $heart, $lang, $user;
+		global $heart, $lang, $lang_shop, $user;
 
 		// Pobieramy auth_data
 		$data['auth_data'] = $this->get_auth_data($data);
@@ -689,14 +689,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 	//
 	public function user_service_admin_edit($data, $user_service)
 	{
-		global $heart, $db, $lang, $user;
+		global $lang, $lang_shop, $user;
 
 		// Pobieramy auth_data
 		$data['auth_data'] = $this->get_auth_data($data);
 
 		// Expire
 		if (!$data['forever'] && ($data['expire'] = strtotime($data['expire'])) === FALSE)
-			$warnings['expire'] = "Błędny format daty.<br />";
+			$warnings['expire'] = "Błędny format daty.<br />"; // TODO lang
 
 		// Sprawdzamy, czy ustawiono hasło, gdy hasła nie ma w bazie i dana usługa wymaga hasła
 		if (!strlen($data['password']) && $data['type'] & (TYPE_NICK | TYPE_IP) && !strlen($user_service['password']))
@@ -863,7 +863,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 	public function user_own_service_edit($data, $user_service)
 	{
-		global $lang, $user;
+		global $lang, $lang_shop, $user;
 
 		// Pobieramy auth_data
 		$data['auth_data'] = $this->get_auth_data($data);
@@ -907,7 +907,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 		// Dodajemy uid do zapytania
 		if (isset($data['uid']))
-			$set[] = $db->prepare("`uid`='%d'", array($data['uid']));
+			$set[] = $db->prepare("`uid` = '%d'", array($data['uid']));
 
 		// Sprawdzenie czy nie ma już takiej usługi
 		$result = $db->query($db->prepare(
@@ -1059,7 +1059,6 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 					$warnings['password'] = $lang->field_no_empty;
 
 				$auth_data = $data['nick'];
-
 				break;
 
 			case "2":
@@ -1072,7 +1071,6 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 					$warnings['password'] = $lang->field_no_empty;
 
 				$auth_data = $data['ip'];
-
 				break;
 
 			case "4":
@@ -1081,7 +1079,6 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 					$warnings['sid'] = $lang->field_no_empty;
 
 				$auth_data = $data['sid'];
-
 				break;
 		}
 
