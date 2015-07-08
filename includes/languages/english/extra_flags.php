@@ -29,3 +29,5 @@ $l['must_choose_quantity'] = "You must choose quantity.";
 $l['admin_added_service'] = "Admin {1}({2}) added service to user. Purchase ID : {3}";
 $l['admin_edited_service'] = "Admin {1}({2}) edited user's service. ID: {3}";
 $l['user_edited_service'] = "User{1}({2}) edited their service. ID: {3}";
+$l['wrong_service_description_file'] = "Service description file was not created correctly.
+Probably folder <strong>themes/{1}/services/</strong> has no permission to write.";
