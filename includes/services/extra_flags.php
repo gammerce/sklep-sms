@@ -43,18 +43,18 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 		if (!strlen($data['flags']))
 			$output['flags'] = $lang->field_no_empty . "<br />";
 		else if (strlen($data['flags']) > 25)
-			$output['flags'] = "Wprowadzono zbyt dużo flag. Maksymalna ilość to 25.<br />"; // TODO
+			$output['flags'] = "Wprowadzono zbyt dużo flag. Maksymalna ilość to 25.<br />"; // TODO lang
 		else if (implode('', array_unique(str_split($data['flags']))) != $data['flags'])
-			$output['flags'] = "Niektóre flagi są wpisane więcej niż jeden raz.<br />";
+			$output['flags'] = "Niektóre flagi są wpisane więcej niż jeden raz.<br />"; // TODO lang
 
 		// Typy
 		if (empty($data['type']))
-			$output['type[]'] = "Nie wybrano żadnego typu.<br />";
+			$output['type[]'] = "Nie wybrano żadnego typu.<br />"; // TODO lang
 
 		// Sprawdzamy, czy typy są prawidłowe
 		foreach ($data['type'] as $type)
 			if (!($type & (TYPE_NICK | TYPE_IP | TYPE_SID))) {
-				$output['type[]'] .= "Wybrano błędny typ.<br />";
+				$output['type[]'] .= "Wybrano błędny typ.<br />"; // TODO lang
 				break;
 			}
 
@@ -86,7 +86,7 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 
 			// Sprawdzamy czy uprawnienia się dodały
 			if (substr(sprintf('%o', fileperms($file)), -4) != "0777")
-				json_output("not_created", "Plik z opisem usługi nie został prawidłowo utworzony.<br />Prawdopodobnie folder <strong>themes/{$settings['theme']}/services/</strong> nie ma uprawnień do zapisu.", 0);
+				json_output("not_created", "Plik z opisem usługi nie został prawidłowo utworzony.<br />Prawdopodobnie folder <strong>themes/{$settings['theme']}/services/</strong> nie ma uprawnień do zapisu.", 0); // TODO lang
 		}
 
 		if ($data['action'] == "add_service")
@@ -560,7 +560,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			if ($warning = check_for_warnings("number", $data['amount']))
 				$warnings['amount'] = $warning;
 			else if ($data['amount'] < 0)
-				$warnings['amount'] .= "Ilość dni musi być nieujemna.<br />"; // TODO
+				$warnings['amount'] .= "Ilość dni musi być nieujemna.<br />"; // TODO lang
 		}
 
 		// E-mail
@@ -714,7 +714,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$edit_return = $this->edit_user_service($user_service, $data);
 
 		if ($edit_return['status'] == "edited")
-			log_info("Admin {$user['username']}({$user['uid']}) edytował usługę gracza. ID: {$user_service['id']}");
+			log_info("Admin {$user['username']}({$user['uid']}) edytował usługę gracza. ID: {$user_service['id']}"); // TODO lang
 
 		return $edit_return;
 	}
@@ -734,16 +734,16 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			else {
 				$user2 = $heart->get_user($data['uid']);
 				if (!isset($user2['uid']))
-					$warnings['uid'] .= "Podane ID użytkownika nie jest przypisane do żadnego konta.<br />";
+					$warnings['uid'] .= "Podane ID użytkownika nie jest przypisane do żadnego konta.<br />"; // TODO lang
 			}
 		}
 
 		// Typ usługi
 		// Mogą być tylko 3 rodzaje typu
 		if (!($data['type'] & (TYPE_NICK | TYPE_IP | TYPE_SID)))
-			$warnings['type'] .= "Musisz wybrać typ usługi<br />";
+			$warnings['type'] .= "Musisz wybrać typ usługi<br />"; // TODO lang
 		else if (!($this->service['types'] & $data['type']))
-			$warnings['type'] .= "Wybrano niedozwolony typ zakupu.<br />";
+			$warnings['type'] .= "Wybrano niedozwolony typ zakupu.<br />"; // TODO lang
 		else if ($data['type'] & (TYPE_NICK | TYPE_IP)) {
 			// Nick
 			if ($data['type'] == TYPE_NICK && $warning = check_for_warnings("nick", $data['auth_data']))
@@ -762,10 +762,10 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		// Server
 		if ($server) {
 			if (!strlen($data['server']))
-				$warnings['server'] .= "Musisz wybrać serwer na który chcesz dodać daną usługę.<br />";
+				$warnings['server'] .= "Musisz wybrać serwer na który chcesz dodać daną usługę.<br />"; // TODO lang
 			// Wyszukiwanie serwera o danym id
 			else if (($server = $heart->get_server($data['server'])) === NULL)
-				$warnings['server'] .= "Brak serwera o takim ID. Coś tu ktoś namieszał.<br />";
+				$warnings['server'] .= "Brak serwera o takim ID. Coś tu ktoś namieszał.<br />"; // TODO lang
 		}
 
 		// Jeżeli są jakieś błedy, to je zwróć
@@ -889,7 +889,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		));
 
 		if ($edit_return['status'] == "edited")
-			log_info("Użytkownik {$user['username']}({$user['uid']}) wyedytował swoją usługę. ID: {$user_service['id']}");
+			log_info("Użytkownik {$user['username']}({$user['uid']}) wyedytował swoją usługę. ID: {$user_service['id']}"); // TODO lang
 
 		return $edit_return;
 	}
@@ -1290,16 +1290,16 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 		// Serwer
 		if (!strlen($data['server']))
-			$warnings['server'] .= "Musisz wybrać serwer."; // TODO
+			$warnings['server'] .= "Musisz wybrać serwer."; // TODO lang
 		// Wyszukiwanie serwera o danym id
 		else if (($server = $heart->get_server($data['server'])) === NULL)
-			$warnings['server'] .= "Brak serwera o takim ID."; // TODO
+			$warnings['server'] .= "Brak serwera o takim ID."; // TODO lang
 
 		// Taryfa
 		$tariff = explode(';', $data['amount']);
 		$tariff = $tariff[2];
 		if (!strlen($data['amount']))
-			$warnings['amount'] .= "Musisz wybrać ilość."; // TODO
+			$warnings['amount'] .= "Musisz wybrać ilość."; // TODO lang
 		else if (($heart->get_tariff($tariff)) === NULL)
 			$warnings['amount'] .= $lang->no_such_tariff;
 
