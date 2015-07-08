@@ -1,4 +1,4 @@
-<table>
+<table data-module="{$this->get_module_id()}">
 	<tbody>
 	<tr>
 		<td>ID</td>
@@ -16,7 +16,7 @@
 		<td><select name="type">{$types}</select></td>
 	</tr>
 	</tbody>
-	<tbody id="type_nick">
+	<tbody id="type_nick" style="{$styles['nick']}">
 	<tr>
 		<td>Nick</td>
 		<td>
@@ -24,7 +24,7 @@
 		</td>
 	</tr>
 	</tbody>
-	<tbody id="type_ip">
+	<tbody id="type_ip" style="{$styles['ip']}">
 	<tr>
 		<td>IP</td>
 		<td>
@@ -32,7 +32,7 @@
 		</td>
 	</tr>
 	</tbody>
-	<tbody id="type_sid">
+	<tbody id="type_sid" style="{$styles['sid']}">
 	<tr>
 		<td>SteamID</td>
 		<td>
@@ -40,7 +40,7 @@
 		</td>
 	</tr>
 	</tbody>
-	<tbody id="type_password">
+	<tbody id="type_password" style="{$styles['password']}">
 	<tr>
 		<td>Hasło</td>
 		<td>

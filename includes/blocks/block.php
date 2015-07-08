@@ -3,13 +3,6 @@
 abstract class Block
 {
 
-	/**
-	 * @var int    -1 musi byc niezalogowany
-	 *                0 obojetne
-	 *                1 musi byc zalogowany
-	 */
-	protected $require_login = 0;
-
 	abstract public function get_content_class();
 
 	abstract public function get_content_id();
@@ -23,7 +16,7 @@ abstract class Block
 	 */
 	public function get_content($get, $post)
 	{
-		if (($this->require_login === 1 && !is_logged()) || ($this->require_login === -1 && is_logged()))
+		if ((object_implements($this, "I_BeLoggedMust") && !is_logged()) || (object_implements($this, "I_BeLoggedCannot") && is_logged()))
 			return NULL;
 
 		return $this->content($get, $post);

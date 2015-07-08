@@ -5,6 +5,8 @@ $heart->register_page("transfer_finalized", "PageTransferFinalized");
 class PageTransferFinalized extends Page
 {
 
+	const PAGE_ID = "transfer_finalized";
+
 	function __construct()
 	{
 		global $lang;

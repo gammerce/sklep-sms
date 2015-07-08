@@ -1,25 +1,25 @@
 <?php
 
-$heart->register_page("my_current_services", "PageMyCurrentServices");
+$heart->register_page("user_own_services", "Page_UserOIwnServices");
 
-class PageMyCurrentServices extends Page
+class Page_UserOIwnServices extends Page implements I_BeLoggedMust
 {
 
-	protected $require_login = 1;
+	const PAGE_ID = "user_own_services";
 
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->my_current_services;
+		$this->title = $lang->user_own_services;
 
 		parent::__construct();
 	}
 
 	protected function content($get, $post)
 	{
-		global $heart, $db, $settings, $user, $lang, $G_PAGE, $scripts, $stylesheets;
+		global $heart, $db, $settings, $user, $lang, $G_PAGE, $stylesheets;
 
-		$my_current_services = "";
+		$user_own_services = "";
 		$result = $db->query($db->prepare(
 			"SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "players_services` " .
 			"WHERE `uid` = '%d' " .
@@ -46,20 +46,19 @@ class PageMyCurrentServices extends Page
 					)
 				));
 
-			$my_current_services .= create_brick($service_module->user_own_service_info_get($row, $button_edit));
+			$user_own_services .= create_brick($service_module->user_own_service_info_get($row, $button_edit));
 		}
 
 		// Nie znalazło żadnych usług danego gracza
-		if (!strlen($my_current_services))
-			$my_current_services = $lang->no_data;
+		if (!strlen($user_own_services))
+			$user_own_services = $lang->no_data;
 
 		$pagination = get_pagination($rows_count, $G_PAGE, "index.php", $get, 4);
 		$pagination_class = strlen($pagination) ? "" : "display_none";
 
-		eval("\$output = \"" . get_template("my_current_services") . "\";");
+		eval("\$output = \"" . get_template("user_own_services") . "\";");
 
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/my_current_services.js?version=" . VERSION;
-		$stylesheets[] = $settings['shop_url_slash'] . "styles/style_my_current_services.css?version=" . VERSION;
+		$stylesheets[] = $settings['shop_url_slash'] . "styles/style_user_own_services.css?version=" . VERSION;
 
 		return $output;
 	}

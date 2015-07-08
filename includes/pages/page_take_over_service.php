@@ -2,10 +2,10 @@
 
 $heart->register_page("take_over_service", "PageTakeOverService");
 
-class PageTakeOverService extends Page
+class PageTakeOverService extends Page implements I_BeLoggedMust
 {
 
-	protected $require_login = 1;
+	const PAGE_ID = "take_over_service";
 
 	function __construct()
 	{
@@ -17,7 +17,7 @@ class PageTakeOverService extends Page
 
 	protected function content($get, $post)
 	{
-		global $heart, $lang, $settings, $scripts, $stylesheets;
+		global $heart, $lang, $settings, $stylesheets;
 
 		$services_options = "";
 		$services = $heart->get_services();
@@ -34,7 +34,6 @@ class PageTakeOverService extends Page
 			));
 		}
 
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/take_over_service.js?version=" . VERSION;
 		$stylesheets[] = $settings['shop_url_slash'] . "styles/take_over_service.css?version=" . VERSION;
 
 		eval("\$output = \"" . get_template("take_over_service") . "\";");

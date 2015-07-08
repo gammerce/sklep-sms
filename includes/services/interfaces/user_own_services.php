@@ -5,7 +5,7 @@ interface IService_UserOwnServices
 
 	/**
 	 * Metoda powinna zwrócić informacje o usłudze użytkownika.
-	 * Są one następnie wyświetlane na stronie my_current_services
+	 * Są one następnie wyświetlane na stronie user_own_services
 	 *
 	 * @param array $user_service Dane o usłudze z bazy danych
 	 * @param string $button_edit String przycisku do edycji usługi

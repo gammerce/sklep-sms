@@ -2,11 +2,11 @@
 
 $heart->register_page("forgotten_password", "PageForgottenPassword");
 
-class PageForgottenPassword extends PageSimple
+class PageForgottenPassword extends PageSimple implements I_BeLoggedCannot
 {
 
+	const PAGE_ID = "forgotten_password";
 	protected $template = "forgotten_password";
-	protected $require_login = -1;
 
 	function __construct()
 	{
@@ -14,14 +14,6 @@ class PageForgottenPassword extends PageSimple
 		$this->title = $lang->forgotten_password;
 
 		parent::__construct();
-	}
-
-	protected function content($get, $post)
-	{
-		global $settings, $scripts;
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/modify_password.js?version=" . VERSION;
-
-		return parent::content($get, $post);
 	}
 
 }

@@ -16,7 +16,7 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 		// Nick, IP, SID
 		$types = "";
 		for ($i = 0, $option_id = 1; $i < 3; $option_id = 1 << ++$i)
-			$types .= create_dom_element("option", get_type_name($option_id), array(
+			$types .= create_dom_element("option", $this->get_type_name($option_id), array(
 				'value' => $option_id,
 				'selected' => $this->service !== NULL && $this->service['types'] & $option_id ? "selected" : ""
 			));
@@ -103,21 +103,21 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 			));
 
 		return array(
-			'query_set'	=> array(
+			'query_set' => array(
 				array(
-					'type'	=> '%d',
-					'column'=> 'types',
-					'value'	=> $types
+					'type' => '%d',
+					'column' => 'types',
+					'value' => $types
 				),
 				array(
-					'type'	=> '%s',
-					'column'=> 'flags',
-					'value'	=> $data['flags']
+					'type' => '%s',
+					'column' => 'flags',
+					'value' => $data['flags']
 				),
 				array(
-					'type'	=> '%s',
-					'column'=> 'data',
-					'value'	=> json_encode($extra_data)
+					'type' => '%s',
+					'column' => 'data',
+					'value' => json_encode($extra_data)
 				)
 			)
 		);
@@ -132,17 +132,12 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 	function __construct($service)
 	{
-		global $settings, $scripts, $stylesheets, $G_PID;
+		global $settings, $stylesheets;
 
 		// Wywolujemy konstruktor klasy ktora rozszerzamy
 		parent::__construct($service);
 
 		$this->service['flags_hsafe'] = htmlspecialchars($this->service['flags']);
-
-		// Dodajemy do strony skrypt js
-		$scripts[] = "{$settings['shop_url_slash']}jscripts/services/extra_flags.js?version=" . VERSION;
-		if ($G_PID == "take_over_service")
-			$scripts[] = "{$settings['shop_url_slash']}jscripts/services/extra_flags_take_over.js?version=" . VERSION;
 
 		// Dodajemy szablon css
 		$stylesheets[] = "{$settings['shop_url_slash']}styles/services/extra_flags.css?version=" . VERSION;
@@ -349,7 +344,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		global $heart, $lang;
 
 		$server = $heart->get_server($data['order']['server']);
-		$data['order']['type_name'] = get_type_name2($data['order']['type']);
+		$data['order']['type_name'] = $this->get_type_name2($data['order']['type']);
 		if ($data['order']['password'])
 			$password = "<strong>{$lang->password}</strong>: " . htmlspecialchars($data['order']['password']) . "<br />";
 		$data['order']['email'] = $data['order']['email'] ? htmlspecialchars($data['order']['email']) : $lang->none;
@@ -465,7 +460,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		global $heart, $settings, $lang;
 
 		$data['extra_data'] = json_decode($data['extra_data'], true);
-		$data['extra_data']['type_name'] = get_type_name2($data['extra_data']['type']);
+		$data['extra_data']['type_name'] = $this->get_type_name2($data['extra_data']['type']);
 		if (strlen($data['extra_data']['password']))
 			$password = "<strong>{$lang->password}</strong>: " . htmlspecialchars($data['extra_data']['password']) . "<br />";
 		$amount = $data['amount'] != -1 ? "{$data['amount']} {$this->service['tag']}" : $lang->forever;
@@ -526,7 +521,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$types = "";
 		for ($i = 0, $option_id = 1; $i < 3; $option_id = 1 << ++$i)
 			if ($this->service['types'] & $option_id)
-				$types .= create_dom_element("option", get_type_name($option_id), array(
+				$types .= create_dom_element("option", $this->get_type_name($option_id), array(
 					'value' => $option_id
 				));
 
@@ -541,9 +536,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			));
 		}
 
-		eval("\$output['text'] = \"" . get_template("services/extra_flags/user_service_admin_add", 0, 1, 0) . "\";");
-
-		$output['scripts'] = "<script type=\"text/javascript\" src=\"{$settings['shop_url_slash']}jscripts/services/extra_flags_add_user_service.js?version=" . VERSION . "\"></script>";
+		eval("\$output = \"" . get_template("services/extra_flags/user_service_admin_add", 0, 1, 0) . "\";");
 
 		return $output;
 	}
@@ -612,11 +605,11 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			)
 		));
 
-		log_info("Admin {$user['username']}({$user['uid']}) dodał graczowi usługę. ID zakupu: {$bought_service_id}");
+		log_info("Admin {$user['username']}({$user['uid']}) dodał graczowi usługę. ID zakupu: {$bought_service_id}"); // TODO lang
 
 		return array(
 			'status' => "added",
-			'text' => "Prawidłowo dodano usługę graczowi.",
+			'text' => "Prawidłowo dodano usługę graczowi.", // TODO lang
 			'positive' => true
 		);
 	}
@@ -645,17 +638,21 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$types = "";
 		for ($i = 0, $option_id = 1; $i < 3; $option_id = 1 << ++$i)
 			if ($this->service['types'] & $option_id)
-				$types .= create_dom_element("option", get_type_name($option_id), array(
+				$types .= create_dom_element("option", $this->get_type_name($option_id), array(
 					'value' => $option_id,
 					'selected' => $option_id == $user_service['type'] ? "selected" : ""
 				));
 
-		if ($user_service['type'] == TYPE_NICK)
+		if ($user_service['type'] == TYPE_NICK) {
 			$nick = htmlspecialchars($user_service['auth_data']);
-		else if ($user_service['type'] == TYPE_IP)
+			$styles['nick'] = $styles['password'] = "display: table-row-group";
+		} else if ($user_service['type'] == TYPE_IP) {
 			$ip = htmlspecialchars($user_service['auth_data']);
-		else if ($user_service['type'] == TYPE_SID)
+			$styles['ip'] = $styles['password'] = "display: table-row-group";
+		} else if ($user_service['type'] == TYPE_SID) {
 			$sid = htmlspecialchars($user_service['auth_data']);
+			$styles['sid'] = "display: table-row-group";
+		}
 
 		// Pobranie serwerów
 		$servers = "";
@@ -796,25 +793,34 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 		// Dodajemy typ uslugi, (1<<2) ostatni typ
 		$service_info = array();
+		$styles['nick'] = $styles['ip'] = $styles['sid'] = $styles['password'] = "display: none";
 		for ($i = 0, $option_id = 1; $i < 3; $option_id = 1 << ++$i) {
 			// Kiedy dana usługa nie wspiera danego typu i wykupiona usługa nie ma tego typu
 			if (!($this->service['types'] & $option_id) && $option_id != $user_service['type'])
 				continue;
 
-			$service_info['types'] .= create_dom_element("option", get_type_name($option_id), array(
+			$service_info['types'] .= create_dom_element("option", $this->get_type_name($option_id), array(
 				'value' => $option_id,
 				'selected' => $option_id == $user_service['type'] ? "selected" : ""
 			));
 
 			if ($option_id == $user_service['type']) {
-				if ($option_id == TYPE_NICK)
-					$service_info['player_nick'] = htmlspecialchars($user_service['auth_data']);
-				else if ($option_id == TYPE_IP)
-					$service_info['player_ip'] = htmlspecialchars($user_service['auth_data']);
-				else if ($option_id == TYPE_SID)
-					$service_info['player_sid'] = htmlspecialchars($user_service['auth_data']);
-				else
-					$service_info['player_ip'] = htmlspecialchars($user_service['auth_data']);
+				switch ($option_id) {
+					case TYPE_NICK:
+						$service_info['player_nick'] = htmlspecialchars($user_service['auth_data']);
+						$styles['nick'] = $styles['password'] = "display: table-row";
+						break;
+
+					case TYPE_IP:
+						$service_info['player_ip'] = htmlspecialchars($user_service['auth_data']);
+						$styles['ip'] = $styles['password'] = "display: table-row";
+						break;
+
+					case TYPE_SID:
+						$service_info['player_sid'] = htmlspecialchars($user_service['auth_data']);
+						$styles['sid'] = "display: table-row";
+						break;
+				}
 			}
 		}
 
@@ -833,29 +839,24 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		// Usługa
 		$service_info['service'] = $this->service['name'];
 
-		eval("\$output .= \"" . get_template("services/extra_flags/user_edit_service") . "\";");
+		eval("\$output .= \"" . get_template("services/extra_flags/user_own_service_edit") . "\";");
 
 		return $output;
 	}
 
 	public function user_own_service_info_get($data, $button_edit)
 	{
-		global $heart, $settings, $lang, $scripts;
+		global $heart, $settings, $lang;
 
 		$service_info['expire'] = $data['expire'] == -1 ? $lang->never : date($settings['date_format'], $data['expire']);
 		$temp_server = $heart->get_server($data['server']);
 		$service_info['server'] = $temp_server['name'];
 		$service_info['service'] = $this->service['name'];
-		$service_info['type'] = get_type_name2($data['type']);
+		$service_info['type'] = $this->get_type_name2($data['type']);
 		$service_info['auth_data'] = htmlspecialchars($data['auth_data']);
 		unset($temp_server);
 
-		// Dodajemy skrypty
-		$scripts[] = "{$settings['shop_url_slash']}jscripts/services/extra_flags.js?version=" . VERSION;
-		$scripts[] = "{$settings['shop_url_slash']}jscripts/services/extra_flags_user_edit_service.js?version=" . VERSION;
-
-		$module_id = $this::MODULE_ID;
-		eval("\$output = \"" . get_template("services/extra_flags/my_service") . "\";");
+		eval("\$output = \"" . get_template("services/extra_flags/user_own_service") . "\";");
 
 		return $output;
 	}
@@ -1016,7 +1017,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		for ($i = 0; $i < 3; $i++) {
 			$value = 1 << $i;
 			if ($this->service['types'] & $value) {
-				$types .= create_dom_element("option", get_type_name($value), array(
+				$types .= create_dom_element("option", $this->get_type_name($value), array(
 					'value' => $value
 				));
 			}
@@ -1029,8 +1030,6 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 				'value' => $row['id']
 			));
 		}
-
-		$module_id = $this::MODULE_ID;
 
 		eval("\$output .= \"" . get_template("services/extra_flags/take_over_service") . "\";");
 
@@ -1179,7 +1178,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 	private function servers_for_service($server)
 	{
 		global $lang;
-		if (!get_privilages("manage_user_services")) {
+		if (!get_privilages("manage_player_services")) {
 			json_output("not_logged_in", $lang->no_access, 0);
 		}
 
@@ -1279,7 +1278,6 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			));
 		}
 
-		$module_id = $this::MODULE_ID;
 		eval("\$output = \"" . get_template("services/extra_flags/service_code_admin_add", 0, 1, 0) . "\";");
 		return $output;
 	}
@@ -1298,7 +1296,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			$warnings['server'] .= "Brak serwera o takim ID."; // TODO
 
 		// Taryfa
-		$tariff = explode(';', $data['amount']); $tariff = $tariff[2];
+		$tariff = explode(';', $data['amount']);
+		$tariff = $tariff[2];
 		if (!strlen($data['amount']))
 			$warnings['amount'] .= "Musisz wybrać ilość."; // TODO
 		else if (($heart->get_tariff($tariff)) === NULL)
@@ -1309,10 +1308,40 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 	public function service_code_admin_add_insert($data)
 	{
-		$tariff = explode(';', $data['amount']); $tariff = $tariff[2];
+		$tariff = explode(';', $data['amount']);
+		$tariff = $tariff[2];
 		return array(
 			'tariff' => $tariff,
 			'server' => $data['server']
 		);
+	}
+
+	// Zwraca nazwę typu
+	private function get_type_name($value)
+	{
+		global $lang;
+
+		if ($value == TYPE_NICK)
+			return $lang->nickpass;
+		else if ($value == TYPE_IP)
+			return $lang->ippass;
+		else if ($value == TYPE_SID)
+			return $lang->sid;
+
+		return "";
+	}
+
+	private function get_type_name2($value)
+	{
+		global $lang;
+
+		if ($value == TYPE_NICK)
+			return $lang->nick;
+		else if ($value == TYPE_IP)
+			return $lang->ip;
+		else if ($value == TYPE_SID)
+			return $lang->sid;
+
+		return "";
 	}
 }

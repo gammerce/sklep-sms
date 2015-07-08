@@ -29,9 +29,7 @@ interface IService_UserServiceAdminManage
 	 * Metoda powinna zwrócić dodatkowe pola do uzupełnienia przez admina
 	 * podczas dodawania usługi gracza
 	 *
-	 * @return array
-	 * 	'text'	- treść html
-	 * 	'scripts'	- skrypty js do dodania
+	 * @return string
 	 */
 	public function user_service_admin_add_form_get();
 

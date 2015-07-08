@@ -1,13 +1,12 @@
 <?php
 
-abstract class PageAdmin extends Page
+abstract class PageAdmin extends Page implements I_BeLoggedMust
 {
-	const PAGE_ID = "";
 	protected $privilage = "acp";
 
 	public function get_content($get, $post)
 	{
-		global $scripts, $settings;
+		global $settings,$scripts;
 
 		if (!get_privilages($this->privilage)) {
 			global $lang;

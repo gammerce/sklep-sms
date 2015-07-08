@@ -5,6 +5,8 @@ $heart->register_block("content", "BlockContent");
 class BlockContent extends Block
 {
 
+	private $page;
+
 	public function get_content_class()
 	{
 		return "content";
@@ -18,12 +20,15 @@ class BlockContent extends Block
 	// Nadpisujemy get_content, aby wyswieltac info gdy nie jest zalogowany lub jest zalogowany, lecz nie powinien
 	public function get_content($get, $post)
 	{
-		global $lang;
+		global $heart, $lang, $G_PID;
 
-		if ($this->require_login === 1 && !is_logged())
+		if (($this->page = $heart->get_page($G_PID)) === NULL)
+			return NULL;
+
+		if (object_implements($this->page, "I_BeLoggedMust") && !is_logged())
 			return $lang->must_be_logged_in;
 
-		if ($this->require_login === -1 && is_logged())
+		if (object_implements($this->page, "I_BeLoggedCannot") && is_logged())
 			return $lang->must_be_logged_out;
 
 		return $this->content($get, $post);
@@ -31,12 +36,7 @@ class BlockContent extends Block
 
 	protected function content($get, $post)
 	{
-		global $heart, $G_PID;
-
-		if (($page = $heart->get_page($G_PID)) === NULL)
-			return NULL;
-
-		return $page->get_content($get, $post);
+		return $this->page->get_content($get, $post);
 	}
 
 }

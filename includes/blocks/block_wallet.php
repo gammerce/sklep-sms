@@ -2,11 +2,10 @@
 
 $heart->register_block("wallet", "BlockWallet");
 
-class BlockWallet extends BlockSimple
+class BlockWallet extends BlockSimple implements I_BeLoggedMust
 {
 
 	protected $template = "wallet";
-	protected $require_login = 1;
 
 	public function get_content_class()
 	{

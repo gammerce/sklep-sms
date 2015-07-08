@@ -2,10 +2,10 @@
 
 $heart->register_page("payment_log", "PagePaymentLog");
 
-class PagePaymentLog extends Page
+class PagePaymentLog extends Page implements I_BeLoggedMust
 {
 
-	protected $require_login = 1;
+	const PAGE_ID = "payment_log";
 
 	function __construct()
 	{

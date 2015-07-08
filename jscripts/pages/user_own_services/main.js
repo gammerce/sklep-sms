@@ -1,5 +1,5 @@
 // Kliknięcie edycji usługi
-$(document).delegate("#my_current_services .edit_row", "click", function () {
+$(document).delegate("#user_own_services .edit_row", "click", function () {
 	var row_id = $(this).parents('form:first');
 
 	fetch_data("form_edit_user_service", false, {
@@ -20,14 +20,11 @@ $(document).delegate("#my_current_services .edit_row", "click", function () {
 				row_id.parents(".brick:first").removeClass("active");
 			});
 		});
-
-		// Na start odpalamy zmiane typu usługi, żeby ładnie poznikały niepotrzebne elementy
-		row_id.find("[name=type]").trigger("change");
 	});
 });
 
 // Wyedytowanie usługi
-$(document).delegate("#my_current_services .row", "submit", function (e) {
+$(document).delegate("#user_own_services .row", "submit", function (e) {
 	e.preventDefault();
 
 	loader.show();

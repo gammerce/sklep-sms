@@ -87,3 +87,23 @@ function get_random_string(length)
 
 	return final_rand;
 }
+
+function element_with_data_module(a) {
+	if (typeof a.attr('data-module') !== "undefined")
+		return a;
+
+	if (typeof a.prop("tagName") === "undefined")
+		return null;
+
+	return element_with_data_module(a.parent());
+}
+
+// TODO trzeba zrobić ogolny plik js dla wszystkich miejsc extra_flags
+function get_type_name(value) {
+	if (value == "1")
+		return "nick";
+	else if (value == "2")
+		return "ip";
+	else if (value == "4")
+		return "sid";
+}

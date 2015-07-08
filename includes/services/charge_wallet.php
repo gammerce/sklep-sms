@@ -2,7 +2,7 @@
 
 $heart->register_service_module("charge_wallet", "Doładowanie Portfela", "ServiceChargeWallet", "ServiceChargeWalletSimple");
 
-class ServiceChargeWalletSimple extends Service implements IService_BeLoggedMust
+class ServiceChargeWalletSimple extends Service implements I_BeLoggedMust
 {
 
 	const MODULE_ID = "charge_wallet";

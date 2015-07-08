@@ -220,7 +220,7 @@ function get_privilages($which, $user = array())
 		global $user;
 
 	if (in_array($which, array("manage_settings", "view_groups", "manage_groups", "view_player_flags",
-			"view_user_services", "manage_user_services", "view_income", "view_users", "manage_users",
+			"view_player_services", "manage_player_services", "view_income", "view_users", "manage_users",
 			"view_sms_codes", "manage_sms_codes", "view_service_codes", "manage_service_codes",
 			"view_antispam_questions", "manage_antispam_questions", "view_services", "manage_services",
 			"view_servers", "manage_servers", "view_logs", "manage_logs", "update")
@@ -820,20 +820,6 @@ function get_type_name($value)
 		return $lang->nickpass;
 	else if ($value == TYPE_IP)
 		return $lang->ippass;
-	else if ($value == TYPE_SID)
-		return $lang->sid;
-
-	return "";
-}
-
-function get_type_name2($value)
-{
-	global $lang;
-
-	if ($value == TYPE_NICK)
-		return $lang->nick;
-	else if ($value == TYPE_IP)
-		return $lang->ip;
 	else if ($value == TYPE_SID)
 		return $lang->sid;
 

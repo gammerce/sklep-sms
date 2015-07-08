@@ -5,6 +5,8 @@ $heart->register_page("payment", "PagePayment");
 class PagePayment extends Page
 {
 
+	const PAGE_ID = "payment";
+
 	function __construct()
 	{
 		global $lang;
@@ -15,7 +17,7 @@ class PagePayment extends Page
 
 	protected function content($get, $post)
 	{
-		global $settings, $lang, $stylesheets, $scripts;
+		global $settings, $lang, $stylesheets;
 
 		// Sprawdzanie hashu danych przesłanych przez formularz
 		if (!isset($post['sign']) || $post['sign'] != md5($post['data'] . $settings['random_key']))
@@ -75,7 +77,6 @@ class PagePayment extends Page
 		eval("\$output = \"" . get_template("payment_form") . "\";");
 
 		$stylesheets[] = $settings['shop_url_slash'] . "styles/style_payment.css?version=" . VERSION;
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/payment.js?version=" . VERSION;
 
 		return $output;
 	}

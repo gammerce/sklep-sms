@@ -2,10 +2,10 @@
 
 $heart->register_page("register", "PageRegister");
 
-class PageRegister extends Page
+class PageRegister extends Page implements I_BeLoggedCannot
 {
 
-	protected $require_login = -1;
+	const PAGE_ID = "register";
 
 	function __construct()
 	{
@@ -17,7 +17,7 @@ class PageRegister extends Page
 
 	protected function content($get, $post)
 	{
-		global $db, $settings, $lang, $scripts, $stylesheets;
+		global $db, $settings, $lang, $stylesheets;
 
 		$antispam_question = $db->fetch_array_assoc($db->query(
 			"SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " .
@@ -26,7 +26,6 @@ class PageRegister extends Page
 		));
 		$_SESSION['asid'] = $antispam_question['id'];
 
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/register.js?version=" . VERSION;
 		$stylesheets[] = $settings['shop_url_slash'] . "styles/style_register.css?version=" . VERSION;
 
 		eval("\$output = \"" . get_template("register") . "\";");

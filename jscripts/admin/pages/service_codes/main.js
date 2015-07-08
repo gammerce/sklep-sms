@@ -27,9 +27,7 @@ $(document).delegate("#form_add_service_code [name=service]", "change", function
 			extra_fields.remove();
 
 		// Dodajemy content do action boxa
-		extra_fields = $("<tbody>", {
-			html: content
-		});
+		extra_fields = $(content);
 		extra_fields.insertAfter(".action_box .ftbody");
 	});
 });

@@ -3,6 +3,7 @@
 abstract class Page
 {
 
+	const PAGE_ID = "";
 	protected $title = "";
 
 	function __construct()
@@ -21,6 +22,15 @@ abstract class Page
 	 */
 	public function get_content($get, $post)
 	{
+		global $settings, $scripts;
+
+		// Dodajemy wszystkie skrypty
+		$script_path = "jscripts/pages/" . $this::PAGE_ID . "/";
+		if (strlen($this::PAGE_ID) && file_exists(SCRIPT_ROOT . $script_path))
+			foreach (scandir(SCRIPT_ROOT . $script_path) as $file)
+				if (ends_at($file, ".js"))
+					$scripts[] = $settings['shop_url_slash'] . $script_path . $file . "?version=" . VERSION;
+
 		return $this->content($get, $post);
 	}
 

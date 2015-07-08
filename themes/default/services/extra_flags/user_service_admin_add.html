@@ -1,10 +1,16 @@
+<tbody data-module="{$this->get_module_id()}">
 <tr>
 	<td>ID użytkownika</td>
 	<td><input type="text" name="uid" style="width: 60px;"/></td>
 </tr>
 <tr>
 	<td>Typ</td>
-	<td><select name="type">{$types}</select></td>
+	<td>
+		<select name="type">
+			<option value="">Wybierz typ</option>
+			{$types}
+		</select>
+	</td>
 </tr>
 <tr id="type_nick">
 	<td>Nick</td>
@@ -55,3 +61,4 @@
 		<input type="checkbox" name="forever"/>{$lang->forever}
 	</td>
 </tr>
+</tbody>

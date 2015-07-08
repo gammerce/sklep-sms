@@ -3,6 +3,7 @@
 abstract class Service
 {
 
+	const MODULE_ID = "";
 	public $service = array();
 
 	function __construct($service)
@@ -86,4 +87,7 @@ abstract class Service
 		return $this->service['description'];
 	}
 
+	public function get_module_id() {
+		return $this::MODULE_ID;
+	}
 }

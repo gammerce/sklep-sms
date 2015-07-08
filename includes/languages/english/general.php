@@ -1,7 +1,7 @@
 <?php
 
 $l['forgotten_password'] = "Password recovery";
-$l['my_current_services'] = "My current services";
+$l['user_own_services'] = "My current services";
 $l['title_payment'] = "Payment";
 $l['payment_log'] = "Payment log";
 $l['purchase'] = "Service purchase";

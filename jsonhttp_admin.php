@@ -83,7 +83,7 @@ if ($action == "charge_wallet") {
 
 	json_output("charged", $lang->sprintf($lang->account_charge_success, $user2['username'], $amount, $settings['currency']), 1);
 } else if ($action == "add_user_service") {
-	if (!get_privilages("manage_user_services")) {
+	if (!get_privilages("manage_player_services")) {
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
 	}
 
@@ -107,7 +107,7 @@ if ($action == "charge_wallet") {
 
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
 } else if ($action == "edit_user_service") {
-	if (!get_privilages("manage_user_services"))
+	if (!get_privilages("manage_player_services"))
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
 
 	// Brak usługi
@@ -148,7 +148,7 @@ if ($action == "charge_wallet") {
 
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
 } else if ($action == "user_service_delete") {
-	if (!get_privilages("manage_user_services")) {
+	if (!get_privilages("manage_player_services")) {
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
 	}
 
@@ -185,13 +185,13 @@ if ($action == "charge_wallet") {
 	} else
 		json_output("not_deleted", $lang->no_delete_service, 0);
 } else if ($action == "get_add_user_service_form") {
-	if (!get_privilages("manage_user_services")) {
+	if (!get_privilages("manage_player_services")) {
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
 	}
 
 	$output = "";
 	if (($service_module = $heart->get_service_module($_POST['service'])) !== NULL)
-		$output = json_encode($service_module->user_service_admin_add_form_get());
+		$output = $service_module->user_service_admin_add_form_get();
 
 	output_page($output, "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "add_antispam_question" || $action == "edit_antispam_question") {
@@ -568,7 +568,7 @@ if ($action == "charge_wallet") {
 	} else
 		json_output("not_deleted", $lang->no_delete_service, 0);
 } else if ($action == "get_service_module_extra_fields") {
-	if (!get_privilages("manage_user_services"))
+	if (!get_privilages("manage_player_services"))
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
 
 	$output = "";

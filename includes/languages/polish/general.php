@@ -1,7 +1,7 @@
 <?php
 
 $l['forgotten_password'] = "Odzyskanie hasła";
-$l['my_current_services'] = "Moje obecne usługi";
+$l['user_own_services'] = "Moje obecne usługi";
 $l['title_payment'] = "Płatność";
 $l['payment_log'] = "Historia płatności";
 $l['purchase'] = "Zakup usługi";

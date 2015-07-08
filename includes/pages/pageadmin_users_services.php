@@ -6,7 +6,7 @@ class PageAdminUsersServices extends PageAdmin implements IPageAdminActionBox
 {
 
 	const PAGE_ID = "users_services";
-	protected $privilage = "view_user_services";
+	protected $privilage = "view_player_services";
 
 	function __construct()
 	{
@@ -55,7 +55,7 @@ class PageAdminUsersServices extends PageAdmin implements IPageAdminActionBox
 			$row['expire'] = $row['expire'] == -1 ? $lang->never : date($settings['date_format'], $row['expire']);
 
 			// Pobranie przycisku edycji oraz usuwania
-			if (get_privilages("manage_user_services")) {
+			if (get_privilages("manage_player_services")) {
 				if (($service_module = $heart->get_service_module($row['service_id'])) !== NULL && object_implements($service_module, "IService_UserServiceAdminManage"))
 					$button_edit = create_dom_element("img", "", array(
 						'id' => "edit_row_{$i}",
@@ -87,7 +87,7 @@ class PageAdminUsersServices extends PageAdmin implements IPageAdminActionBox
 
 		// Pobranie przycisku dodajacego flagi
 		$buttons = "";
-		if (get_privilages("manage_user_services"))
+		if (get_privilages("manage_player_services"))
 			$buttons .= create_dom_element("input", "", array(
 				'id' => "button_add_user_service",
 				'type' => "button",
@@ -111,7 +111,7 @@ class PageAdminUsersServices extends PageAdmin implements IPageAdminActionBox
 	{
 		global $heart, $db, $lang;
 
-		if (!get_privilages("manage_user_services"))
+		if (!get_privilages("manage_player_services"))
 			return array(
 				'id'	=> "not_logged_in",
 				'text'	=> $lang->not_logged_or_no_perm

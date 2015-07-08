@@ -12,43 +12,27 @@ $(document).delegate("[id^=edit_row_]", "click", function () {
 });
 
 // Wybranie usługi podczas dodawania usługi graczowi
-var extra_fields, extra_scripts;
+var extra_fields;
 $(document).delegate("#form_add_user_service [name=service]", "change", function () {
 	// Brak wybranego modułu
 	if ($(this).val() == "") {
 		// Usuwamy dodatkowe pola
-		if (extra_fields) {
+		if (extra_fields)
 			extra_fields.remove();
-		}
-		if (extra_scripts) {
-			extra_scripts.remove();
-		}
+
 		return;
 	}
 
 	fetch_data("get_add_user_service_form", true, {
 		service: $(this).val()
 	}, function (content) {
-		if (!(jsonObj = json_parse(content)))
-			return;
-
 		// Usuwamy dodatkowe pola
-		if (extra_fields) {
+		if (extra_fields)
 			extra_fields.remove();
-		}
-		if (extra_scripts) {
-			extra_scripts.remove();
-		}
 
 		// Dodajemy content do action boxa
-		extra_fields = $("<tbody>", {
-			html: jsonObj.text
-		});
+		extra_fields = $(content);
 		extra_fields.insertAfter(".action_box .ftbody");
-
-		// Dodajemy skrypty
-		extra_scripts = $(jsonObj.scripts);
-		extra_scripts.insertAfter("head");
 	});
 });
 
@@ -57,9 +41,8 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 	var row_id = $("#" + $(this).attr("id").replace('delete_row_', 'row_'));
 
 	var confirm_info = "Na pewno chcesz usunąć usluge o ID: " + row_id.children("td[headers=id]").text() + " ?";
-	if (confirm(confirm_info) == false) {
+	if (confirm(confirm_info) == false)
 		return;
-	}
 
 	loader.show();
 	$.ajax({

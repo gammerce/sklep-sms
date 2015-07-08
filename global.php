@@ -52,6 +52,10 @@ set_error_handler("myErrorHandler");
 $db = new Database($db_host, $db_user, $db_pass, $db_name);
 $db->query("SET NAMES utf8");
 
+// Te interfejsy są potrzebne do klas różnych rodzajów
+foreach (scandir(SCRIPT_ROOT . "includes/interfaces") as $file)
+	if (ends_at($file, ".php"))
+		require_once SCRIPT_ROOT . "includes/interfaces/" . $file;
 
 // Dodajemy klasy wszystkich modulow platnosci
 require_once SCRIPT_ROOT . "includes/verification/payment_module.php";

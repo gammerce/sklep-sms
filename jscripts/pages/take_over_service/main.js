@@ -43,9 +43,9 @@ $(document).delegate("#form_take_over_service", "submit", function (e) {
 				});
 			}
 			else if (jsonObj.return_id == "ok") {
-				// Przejdź do strony my_current_services
+				// Przejdź do strony user_own_services
 				setTimeout(function () {
-					window.location.href = "index.php?pid=my_current_services";
+					window.location.href = "../../../index.php";
 				}, 2000);
 			}
 			else if (!jsonObj.return_id) {

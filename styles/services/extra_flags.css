@@ -8,6 +8,10 @@
 	display: none;
 }
 
+.type_nick, .type_ip, .type_sid, .type_password {
+	display: none;
+}
+
 #cost_wraper {
 	width: 100%;
 	margin: 50px 0;
