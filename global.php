@@ -105,7 +105,7 @@ $G_PID = isset($_GET['pid']) ? $_GET['pid'] : "main_content";
 $G_PAGE = isset($_GET['page']) && intval($_GET['page']) >= 1 ? intval($_GET['page']) : 1;
 
 // Logowanie się do panelu admina
-if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
+if (admin_session()) {
 	if (isset($_POST['username']) && isset($_POST['password'])) { // Logujemy się
 		$user = $heart->get_user(0, $_POST['username'], $_POST['password']);
 		if (is_logged() && get_privilages("acp"))
@@ -135,7 +135,7 @@ if (!isset($user) && isset($_SESSION['uid']))
 	$user = $heart->get_user($_SESSION['uid']);
 
 // Jeżeli próbujemy wejść do PA i nie jesteśmy zalogowani, to zmień stronę
-if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin")) && (!is_logged() || !get_privilages("acp"))) {
+if (admin_session() && (!is_logged() || !get_privilages("acp"))) {
 	$G_PID = "login";
 
 	// Jeżeli jest zalogowany, ale w międzyczasie odebrano mu dostęp do PA

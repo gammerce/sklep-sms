@@ -11,17 +11,12 @@ class ServiceOtherSimple extends Service implements IService_Create
 	{
 		global $db;
 
-		if ($data['action'] == "service_add")
+		if ($data['action'] == "service_edit" && $data['id2'] != $data['id'])
 			$db->query($db->prepare(
-				"ALTER TABLE `" . TABLE_PREFIX . "servers` " .
-				"ADD  `%s` TINYINT( 1 ) NOT NULL DEFAULT '0'",
-				array($data['id'])
-			));
-		else
-			$db->query($db->prepare(
-				"ALTER TABLE `" . TABLE_PREFIX . "servers` " .
-				"CHANGE  `%s`  `%s` TINYINT( 1 ) NOT NULL DEFAULT '0'",
-				array($data['id2'], $data['id'])
+				"UPDATE `" . TABLE_PREFIX . "servers_services` " .
+				"SET `service_id` = '%s' " .
+				"WHERE `service_id` = '%s'",
+				array($data['id'], $data['id2'])
 			));
 	}
 
@@ -46,7 +41,7 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
 		else {
 			// Sprawdzanie czy serwer o danym id istnieje w bazie
 			$server = $heart->get_server($data['order']['server']);
-			if (!$server[$this->service['id']])
+			if (!$heart->server_service_linked($server['id'], $this->service['id']))
 				$warnings['server'] .= $lang->chosen_incorrect_server . "<br />";
 		}
 
@@ -131,8 +126,8 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
 		global $db;
 
 		$db->query($db->prepare(
-			"ALTER TABLE `" . TABLE_PREFIX . "servers` " .
-			"DROP `%s`",
+			"DELETE FROM `" . TABLE_PREFIX . "servers_services` " .
+			"WHERE `service_id` = '%s'",
 			array($service_id)
 		));
 	}

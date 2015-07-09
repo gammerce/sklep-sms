@@ -63,7 +63,7 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 
 	public function service_admin_manage_post($data)
 	{
-		global $db, $settings;
+		global $db, $settings, $lang;
 
 		$output = array();
 
@@ -89,17 +89,13 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 				json_output("not_created", $lang->sprintf($lang->wrong_service_description_file, $settings['theme']), 0);
 		}
 
-		if ($data['action'] == "service_add")
+
+		if ($data['action'] == "service_edit" && $data['id2'] != $data['id'])
 			$db->query($db->prepare(
-				"ALTER TABLE `" . TABLE_PREFIX . "servers` " .
-				"ADD  `%s` TINYINT( 1 ) NOT NULL DEFAULT '0'",
-				array($data['id'])
-			));
-		else
-			$db->query($db->prepare(
-				"ALTER TABLE `" . TABLE_PREFIX . "servers` " .
-				"CHANGE  `%s`  `%s` TINYINT( 1 ) NOT NULL DEFAULT '0'",
-				array($data['id2'], $data['id'])
+				"UPDATE `" . TABLE_PREFIX . "servers_services` " .
+				"SET `service_id` = '%s' " .
+				"WHERE `service_id` = '%s'",
+				array($data['id'], $data['id2'])
 			));
 
 		return array(
@@ -158,7 +154,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$servers = "";
 		foreach ($heart->get_servers() as $id => $row) {
 			// Usługi nie mozna kupic na tym serwerze
-			if ($row[$this->service['id']] != "1")
+			if (!$heart->server_service_linked($id, $this->service['id']))
 				continue;
 
 			$servers .= create_dom_element("option", $row['name'], array(
@@ -220,7 +216,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		else {
 			// Sprawdzanie czy serwer o danym id istnieje w bazie
 			$server = $heart->get_server($data['order']['server']);
-			if (!$server[$this->service['id']])
+			if (!$heart->server_service_linked($server['id'], $this->service['id']))
 				$warnings['server'] .= $lang->chosen_incorrect_server . "<br />";
 		}
 
@@ -504,8 +500,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		global $db;
 
 		$db->query($db->prepare(
-			"ALTER TABLE `" . TABLE_PREFIX . "servers` " .
-			"DROP `%s`",
+			"DELETE FROM `" . TABLE_PREFIX . "servers_services` " .
+			"WHERE `service_id` = '%s'",
 			array($service_id)
 		));
 	}
@@ -528,7 +524,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		// Pobieramy listę serwerów
 		$servers = "";
 		foreach ($heart->get_servers() as $id => $row) {
-			if (!$row[$this->service['id']])
+			if (!$heart->server_service_linked($id, $this->service['id']))
 				continue;
 
 			$servers .= create_dom_element("option", $row['name'], array(
@@ -657,8 +653,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		// Pobranie serwerów
 		$servers = "";
 		foreach ($heart->get_servers() as $id => $row) {
-			// Usługi którą edytujemy, nie można zakupić na serwerze
-			if (!$row[$this->service['id']])
+			if (!$heart->server_service_linked($id, $this->service['id']))
 				continue;
 
 			$servers .= create_dom_element("option", $row['name'], array(
@@ -1184,8 +1179,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$servers = "";
 		// Pobieranie serwerów na których można zakupić daną usługę
 		foreach ($heart->get_servers() as $id => $row) {
-			// Usługi nie mozna kupic na tym serwerze
-			if ($row[$this->service['id']] != "1")
+			if (!$heart->server_service_linked($id, $this->service['id']))
 				continue;
 
 			$servers .= create_dom_element("option", $row['name'], array(
@@ -1267,7 +1261,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		// Pobieramy listę serwerów
 		$servers = "";
 		foreach ($heart->get_servers() as $id => $row) {
-			if (!$row[$this->service['id']]) // Tej usługi nie można kupić na tym serwerze
+			if (!$heart->server_service_linked($id, $this->service['id']))
 				continue;
 
 			$servers .= create_dom_element("option", $row['name'], array(

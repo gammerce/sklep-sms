@@ -9,6 +9,9 @@ class Heart
 	private $services = array();
 	private $services_fetched;
 
+	private $servers_services = array();
+	private $servers_services_fetched;
+
 	private $tariffs = array();
 	private $tariffs_fetched;
 
@@ -331,6 +334,37 @@ class Heart
 			$this->servers[$row['id']] = $row;
 		}
 		$this->servers_fetched = true;
+	}
+
+	//
+	// Serwery - Usługi
+	//
+
+	/**
+	 * Sprawdza czy dana usluge mozne kupic na danym serwerze
+	 *
+	 * @param integer $server_id
+	 * @param string $service_id
+	 * @return boolean
+	 */
+	public function server_service_linked($server_id, $service_id)
+	{
+		if (!$this->servers_services_fetched) {
+			$this->fetch_servers_services();
+		}
+
+		return isset($this->servers_services[$server_id][$service_id]);
+	}
+
+	private function fetch_servers_services()
+	{
+		global $db;
+
+		$result = $db->query("SELECT * FROM `" . TABLE_PREFIX . "servers_services`");
+		while ($row = $db->fetch_array_assoc($result)) {
+			$this->servers_services[$row['server_id']][$row['service_id']] = true;
+		}
+		$this->servers_services_fetched = true;
 	}
 
 	//

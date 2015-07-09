@@ -1,6 +1,15 @@
 <?php
 
 /**
+ * Sprawdza czy jesteśmy w adminowskiej części sklepu
+ *
+ * @return bool
+ */
+function admin_session() {
+	return in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"));
+}
+
+/**
  * Pobranie szablonu.
  *
  * @param string $title Nazwa szablonu
@@ -253,6 +262,45 @@ function charge_wallet($uid, $amount)
 		"WHERE `uid` = '%d'",
 		array(number_format($amount, 2), $uid)
 	));
+}
+
+/**
+ * Aktualizuje tabele servers_services
+ *
+ * @param $data
+ */
+function update_servers_services($data)
+{
+	global $db;
+
+	$delete = array();
+	foreach ($data as $arr) {
+		if ($arr['status']) {
+			$add[] = $db->prepare(
+				"('%d', '%s')",
+				array($data['server'], $data['service'])
+			);
+		} else {
+			$delete[] = $db->prepare(
+				"(`server_id` = '%d' AND `service_id` = '%s')",
+				array($data['server'], $data['service'])
+			);
+		}
+	}
+
+	if (!empty($add)) {
+		$db->query(
+			"INSERT IGNORE INTO `" . TABLE_PREFIX . "servers_services` (`server_id`, `service_id`) VALUES " .
+			implode(", ", $add)
+		);
+	}
+
+	if (!empty($delete)) {
+		$db->query(
+			"DELETE FROM `" . TABLE_PREFIX . "servers_services` " .
+			"WHERE " . implode(" OR ", $delete)
+		);
+	}
 }
 
 function validate_payment($data)

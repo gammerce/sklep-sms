@@ -112,7 +112,6 @@ $l['service_edit'] = "Usługa została prawidłowo wyedytowana.";
 $l['service_no_edit'] = "Usługa nie została wyedytowana.";
 $l['server_added'] = "Serwer został prawidłowo dodany.";
 $l['server_edit'] = "Serwer został prawidłowo wyedytowany.";
-$l['server_no_edit'] = "Serwer nie został prawidłowo wyedytowany.";
 $l['delete_server'] = "Serwer został prawidłowo usunięty.";
 $l['no_delete_server'] = "Serwer nie został usunięty.";
 $l['nick_taken'] = "Podana nazwa użytkownika jest już zajęta.";

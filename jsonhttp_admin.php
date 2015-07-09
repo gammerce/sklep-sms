@@ -627,44 +627,62 @@ if ($action == "charge_wallet") {
 		json_output("warnings", $lang->form_wrong_filled, 0, $data);
 	}
 
-	$set = "";
-	foreach ($heart->get_services() as $service) {
-		// Dana usługa nie może być kupiona na serwerze
-		if (!is_null($service_module = $heart->get_service_module($service['id'])) && !object_implements($service_module, "IService_AvailableOnServers"))
-			continue;
-
-		$set .= $db->prepare(", `%s`='%d'", array($service['id'], $_POST[$service['id']]));
-	}
-
 	if ($action == "server_add") {
 		$db->query($db->prepare(
 			"INSERT INTO `" . TABLE_PREFIX . "servers` " .
-			"SET `name`='%s', `ip`='%s', `port`='%s', `sms_service`='%s'{$set}",
-			array($_POST['name'], $_POST['ip'], $_POST['port'], $_POST['sms_service'])));
+			"SET `name`='%s', `ip`='%s', `port`='%s', `sms_service`='%s'",
+			array($_POST['name'], $_POST['ip'], $_POST['port'], $_POST['sms_service'])
+		));
 
-		log_info($lang_shop->sprintf($lang_shop->server_admin_add, $user['username'], $user['uid'], $db->last_id()));
-		// Zwróć info o prawidłowym zakończeniu dodawania
-		json_output("added", $lang->server_added, 1);
+		$server_id = $db->last_id();
 	} else if ($action == "server_edit") {
 		$db->query($db->prepare(
 			"UPDATE `" . TABLE_PREFIX . "servers` " .
-			"SET `name` = '%s', `ip` = '%s', `port` = '%s', `sms_service` = '%s'{$set} " .
+			"SET `name` = '%s', `ip` = '%s', `port` = '%s', `sms_service` = '%s' " .
 			"WHERE `id` = '%s'",
 			array($_POST['name'], $_POST['ip'], $_POST['port'], $_POST['sms_service'], $_POST['id'])
 		));
 
-		// Zwróć info o prawidłowej lub błędnej edycji
-		if ($db->affected_rows()) {
-			// LOGGING
-			log_info($lang_shop->sprintf($lang_shop->server_admin_edit, $user['username'], $user['uid'], $_POST['id']));
-			json_output("edited", $lang->server_edit, 1);
-		} else
-			json_output("not_edited", $lang->server_no_edit, 0);
+		$server_id = $_POST['id'];
 	}
+
+	// Aktualizujemy powiazania serwerow z uslugami
+	if ($server_id) {
+		$servers_services = array();
+		foreach ($heart->get_services() as $service) {
+			// Dana usługa nie może być kupiona na serwerze
+			if (!is_null($service_module = $heart->get_service_module($service['id'])) && !object_implements($service_module, "IService_AvailableOnServers"))
+				continue;
+
+			$servers_services[] = array(
+				'service' => $service['id'],
+				'server' => $server_id,
+				'status' => $_POST[$service['id']]
+			);
+		}
+
+		update_servers_services($servers_services);
+	}
+
+	if ($action == "server_add") {
+		log_info($lang_shop->sprintf($lang_shop->server_admin_add, $user['username'], $user['uid'], $server_id));
+		json_output("added", $lang->server_added, 1);
+	} else if ($action == "server_edit") {
+		log_info($lang_shop->sprintf($lang_shop->server_admin_edit, $user['username'], $user['uid'], $server_id));
+		json_output("edited", $lang->server_edit, 1);
+	}
+
 } else if ($action == "delete_server") {
 	if (!get_privilages("manage_servers")) {
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
 	}
+
+	// Usuwamy powiazania uslugi - serwery
+	$db->query($db->prepare(
+		"DELETE FROM `" . TABLE_PREFIX . "servers_services` " .
+		"WHERE `server_id` = '%s'",
+		array($_POST['id'])
+	));
 
 	$db->query($db->prepare(
 		"DELETE FROM `" . TABLE_PREFIX . "servers` " .
@@ -924,7 +942,7 @@ if ($action == "charge_wallet") {
 	}
 
 	// Serwer
-	if ($_POST['server'] != -1 && is_null($heart->get_server($_POST['server']))) {
+	if ($_POST['server'] != -1 && $heart->get_server($_POST['server']) === NULL) {
 		$warnings['server'] .= $lang->no_such_server . "<br />";
 	}
 

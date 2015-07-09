@@ -111,7 +111,6 @@ $l['service_edit'] = "Service edited successfully.";
 $l['service_no_edit'] = "Service not edited.";
 $l['server_added'] = "Server added successfully.";
 $l['server_edit'] = "Server edited successfully.";
-$l['server_no_edit'] = "Could not edit server.";
 $l['delete_server'] = "Server removed successfully.";
 $l['no_delete_server'] = "Server not removed.";
 $l['nick_taken'] = "Given nickname is already taken.";

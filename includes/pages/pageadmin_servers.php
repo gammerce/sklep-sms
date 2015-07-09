@@ -107,12 +107,12 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
 			$values = create_dom_element("option", strtoupper($lang->no), array(
 				'value' => 0,
-				'selected' => $server[$service['id']] ? "" : "selected"
+				'selected' => $heart->server_service_linked($server['id'], $service['id']) ? "" : "selected"
 			));
 
 			$values .= create_dom_element("option", strtoupper($lang->yes), array(
 				'value' => 1,
-				'selected' => $server[$service['id']] ? "selected" : ""
+				'selected' => $heart->server_service_linked($server['id'], $service['id']) ? "selected" : ""
 			));
 
 			$name = htmlspecialchars($service['id']);

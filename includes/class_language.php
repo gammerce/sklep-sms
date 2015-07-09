@@ -43,24 +43,24 @@ class Language
 		$this->language = $language;
 		$this->language_short = if_isset($this->lang_list[$language], "");
 
-		// Ładujemy globalną bibliotekę językową
-		if (file_exists(SCRIPT_ROOT . "includes/languages/global.php"))
-			include SCRIPT_ROOT . "includes/languages/global.php";
-
 		// Ładujemy ogólną bibliotekę językową
-		if (file_exists(SCRIPT_ROOT . "includes/languages/{$language}/{$language}.php"))
-			include SCRIPT_ROOT . "includes/languages/{$language}/{$language}.php";
+		if (file_exists(SCRIPT_ROOT . "includes/languages/general.php"))
+			include SCRIPT_ROOT . "includes/languages/general.php";
 
-		if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) { // Ładujemy bilioteki dla PA
-			// Ładujemy wszystkie biblioteki językowe
+		// Ładujemy ogólne biblioteki językowe języka
+		foreach (scandir(SCRIPT_ROOT . "includes/languages/{$language}") as $file)
+			if (ends_at($file, ".php"))
+				include SCRIPT_ROOT . "includes/languages/{$language}/{$file}";
+
+		// Ładujemy bilioteki dla PA
+		if (admin_session()) {
 			foreach (scandir(SCRIPT_ROOT . "includes/languages/{$language}/admin") as $file)
-				if (substr($file, -4) == ".php")
+				if (ends_at($file, ".php"))
 					include SCRIPT_ROOT . "includes/languages/{$language}/admin/{$file}";
 		} else {
-			// Ładujemy wszystkie biblioteki językowe
-			foreach (scandir(SCRIPT_ROOT . "includes/languages/{$language}") as $file)
-				if (substr($file, -4) == ".php" && $file != "{$language}.php")
-					include SCRIPT_ROOT . "includes/languages/{$language}/{$file}";
+			foreach (scandir(SCRIPT_ROOT . "includes/languages/{$language}/user") as $file)
+				if (ends_at($file, ".php"))
+					include SCRIPT_ROOT . "includes/languages/{$language}/user/{$file}";
 		}
 
 		// We must unite and protect our language variables!
