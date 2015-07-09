@@ -214,3 +214,51 @@ $l['provision'] = "Prowizja";
 $l['sms_service'] = "Obsługa SMS";
 $l['transfer_service'] = "Obsługa Przelewów";
 $l['expires'] = "Wygasa";
+
+$l['see_payment'] = "Zobacz płatność";
+$l['type_to_search'] = "Wpisz, aby wyszukać";
+$l['bring_it_on'] = "Dajesz!";
+$l['main'] = "Główne";
+$l['players'] = "Gracze";
+$l['additions'] = "Dodatki";
+$l['no_data'] = "Brak danych";
+$l['script_updated'] = "Skrypt sklepu jest zaktualizowany do najnowszej wersji.";
+$l['payments'] = "Płatności";
+$l['sms_payment_service'] = "Serwis Płatności SMS";
+$l['none_such'] = "Żaden";
+$l['transfer_payment_service'] = "Serwis Płatności Internetowych";
+$l['currency'] = "Waluta";
+$l['vat'] = "VAT";
+$l['information'] = "Informacje";
+$l['shop_address'] = "Adres Sklepu";
+$l['auto_email'] = "E-mail dla automatu";
+$l['email_sender_name'] = "Nazwa nadawcy e-maila";
+$l['signature'] = "Podpis";
+$l['eg_emails'] = "( np. w e-mailach )";
+$l['license'] = "Licencja";
+$l['user_service_edit'] = "Edytowanie usługi przez gracza";
+$l['theme'] = "Motyw";
+$l['language'] = "Język";
+$l['delete_old_logs'] = "Usuwaj logi starsze niż";
+$l['dont_delete'] = "( 0 - nie usuwaj )";
+$l['cron_page_start'] = "Cron przy każdym uruchomieniu strony";
+$l['lines_per_page'] = "Ilość wierszy na stronę";
+$l['date_format'] = "Format Daty";
+$l['save'] = "Zapisz";
+$l['additional_info'] = "Dodatkowe Informacje";
+$l['versions'] = "Wersje";
+$l['how_to_update'] = "Jak zaktualizować";
+$l['server_first_possibility'] = "Mamy dwie możliwości. Pobieramy paczkę z najnowszą wersją pluginów w wersji FULL, albo aktualizujemy stopniowo,
+		z jednej wersji na drugą, za pomocą paczek w wersji UPDATE.";
+$l['server_second_possibility'] = "Pobieramy cały sklepik w najnowszej wersji <em>(full)</em> lub tylko zmienione pliki <em>(update)</em>
+				kolejnej wersji:";
+$l['unzip_arch'] = "Rozpakowywujemy archiwum, a następnie kopiujemy pliki na serwer z zachowaniem hierarchii katalogów.";
+$l['present_version'] = "Obecna wersja";
+$l['next_version'] = "Kolejna wersja";
+$l['latest_version'] = "Najnowsza wersja";
+$l['web_first_possibility'] = "Mamy dwie możliwości. Pobieramy paczkę z najnowszą wersją skryptu w wersji FULL, albo aktualizujemy stopniowo, z
+		jednej wersji na drugą, za pomocą paczek w wersji UPDATE.";
+$l['web_second_possibility'] = "Pobieramy cały sklepik w najnowszej wersji: {$shop_files['newest_full']} lub tylko zmienione pliki
+				kolejnej wersji: {$shop_files['next_update']}";
+$l['change_log'] = "Lista Zmian";
+$l['updated_files'] = "Aktualizowane Pliki";
