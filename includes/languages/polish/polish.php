@@ -99,3 +99,4 @@ $l['languages'] = array(
 );
 
 $l['expired_service_delete'] = "AUTOMAT: Usunięto wygasłą usługę gracza. Auth Data: {1} Serwer: {2} Usługa: {3} Typ: {4}";
+

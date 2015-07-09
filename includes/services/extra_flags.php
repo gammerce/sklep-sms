@@ -86,7 +86,7 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 
 			// Sprawdzamy czy uprawnienia się dodały
 			if (substr(sprintf('%o', fileperms($file)), -4) != "0777")
-				json_output("not_created", "Plik z opisem usługi nie został prawidłowo utworzony.<br />Prawdopodobnie folder <strong>themes/{$settings['theme']}/services/</strong> nie ma uprawnień do zapisu.", 0); // TODO lang
+				json_output("not_created", $lang->sprintf($lang->wrong_service_description_file, $settings['theme']), 0);
 		}
 
 		if ($data['action'] == "service_add")
