@@ -29,5 +29,4 @@ $l['must_choose_quantity'] = "Musisz wybrać ilość.";
 $l['admin_added_service'] = "Admin {1}({2}) dodał graczowi usługę. ID zakupu: {3}";
 $l['admin_edited_service'] = "Admin {1}({2}) edytował usługę gracza. ID: {3}";
 $l['user_edited_service'] = "Użytkownik {1}({2}) wyedytował swoją usługę. ID: {3}";
-$l['wrong_service_description_file'] = "Plik z opisem usługi nie został prawidłowo utworzony.
-Prawdopodobnie folder <strong>themes/{1}/services/</strong> nie ma uprawnień do zapisu.";
+$l['wrong_service_description_file'] = "Plik z opisem usługi nie został prawidłowo utworzony. </br>Prawdopodobnie folder <strong>themes/{1}/services/</strong> nie ma uprawnień do zapisu.";
