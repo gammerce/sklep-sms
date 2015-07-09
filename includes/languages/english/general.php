@@ -15,6 +15,9 @@ $l['choose_option'] = "Choose option";
 $l['forever'] = "Forever";
 $l['edit'] = "Edit";
 $l['delete'] = "Delete";
+$l['ip'] = "IP";
+$l['email'] = "E-mail";
+$l['nick'] = "Nickname";
 
 $l['days'] = "days";
 $l['hours'] = "hours";
