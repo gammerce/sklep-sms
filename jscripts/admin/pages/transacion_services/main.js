@@ -1,17 +1,17 @@
 $(document).delegate("[id^=edit_row_]", "click", function () {
 	var row_id = $("#" + $(this).attr("id").replace('edit_row_', 'row_'));
-	show_action_box(get_get_param("pid"), "edit_transaction_service", {
+	show_action_box(get_get_param("pid"), "transaction_service_edit", {
 		id: row_id.children("td[headers=id]").text()
 	});
 });
 
-$(document).delegate("#form_edit_transaction_service", "submit", function (e) {
+$(document).delegate("#form_transaction_service_edit", "submit", function (e) {
 	e.preventDefault();
 	loader.show();
 	$.ajax({
 		type: "POST",
 		url: "jsonhttp_admin.php",
-		data: $(this).serialize() + "&action=edit_transaction_service",
+		data: $(this).serialize() + "&action=transaction_service_edit",
 		complete: function () {
 			loader.hide();
 		},

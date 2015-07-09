@@ -1,12 +1,12 @@
 // Kliknięcie dodania pytania antyspamowego
-$(document).delegate("#button_add_antispam_question", "click", function () {
-	show_action_box(get_get_param("pid"), "add_antispam_question");
+$(document).delegate("#antispam_question_button_add", "click", function () {
+	show_action_box(get_get_param("pid"), "antispam_question_add");
 });
 
 // Kliknięcie edycji pytania antyspamowego
 $(document).delegate("[id^=edit_row_]", "click", function () {
 	var row_id = $("#" + $(this).attr("id").replace('edit_row_', 'row_'));
-	show_action_box(get_get_param("pid"), "edit_antispam_question", {
+	show_action_box(get_get_param("pid"), "antispam_question_edit", {
 		id: row_id.children("td[headers=id]").text()
 	});
 });
@@ -52,13 +52,13 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 });
 
 // Dodanie pytania antyspamowego
-$(document).delegate("#form_add_antispam_question", "submit", function (e) {
+$(document).delegate("#form_antispam_question_add", "submit", function (e) {
 	e.preventDefault();
 	loader.show();
 	$.ajax({
 		type: "POST",
 		url: "jsonhttp_admin.php",
-		data: $(this).serialize() + "&action=add_antispam_question",
+		data: $(this).serialize() + "&action=antispam_question_add",
 		complete: function () {
 			loader.hide();
 		},
@@ -71,7 +71,7 @@ $(document).delegate("#form_add_antispam_question", "submit", function (e) {
 			// Wyświetlenie błędów w formularzu
 			if (jsonObj.return_id == "warnings") {
 				$.each(jsonObj.warnings, function (name, text) {
-					var id = $("#form_add_antispam_question [name=\"" + name + "\"]");
+					var id = $("#form_antispam_question_add [name=\"" + name + "\"]");
 					id.parent("td").append(text);
 					id.effect("highlight", 1000);
 				});
@@ -99,13 +99,13 @@ $(document).delegate("#form_add_antispam_question", "submit", function (e) {
 });
 
 // Edycja pytania antyspamowego
-$(document).delegate("#form_edit_antispam_question", "submit", function (e) {
+$(document).delegate("#form_antispam_question_edit", "submit", function (e) {
 	e.preventDefault();
 	loader.show();
 	$.ajax({
 		type: "POST",
 		url: "jsonhttp_admin.php",
-		data: $(this).serialize() + "&action=edit_antispam_question",
+		data: $(this).serialize() + "&action=antispam_question_edit",
 		complete: function () {
 			loader.hide();
 		},
@@ -118,7 +118,7 @@ $(document).delegate("#form_edit_antispam_question", "submit", function (e) {
 			// Wyświetlenie błędów w formularzu
 			if (jsonObj.return_id == "warnings") {
 				$.each(jsonObj.warnings, function (name, text) {
-					var id = $("#form_edit_antispam_question [name=\"" + name + "\"]");
+					var id = $("#form_antispam_question_edit [name=\"" + name + "\"]");
 					id.parent("td").append(text);
 					id.effect("highlight", 1000);
 				});

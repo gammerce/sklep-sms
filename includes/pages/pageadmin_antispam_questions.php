@@ -63,7 +63,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
 		if (get_privilages("manage_antispam_questions"))
 			// Pobranie przycisku dodającego pytanie antyspamowe
 			$buttons = create_dom_element("input", "", array(
-				'id' => "button_add_antispam_question",
+				'id' => "antispam_question_button_add",
 				'type' => "button",
 				'value' => $lang->add_antispam_question
 			));
@@ -92,11 +92,11 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
 			);
 
 		switch($box_id) {
-			case "add_antispam_question":
+			case "antispam_question_add":
 				eval("\$output = \"" . get_template("admin/action_boxes/antispam_question_add") . "\";");
 				break;
 
-			case "edit_antispam_question":
+			case "antispam_question_edit":
 				$row = $db->fetch_array_assoc($db->query($db->prepare(
 					"SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " .
 					"WHERE `id` = '%d'",

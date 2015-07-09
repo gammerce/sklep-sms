@@ -108,7 +108,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 			);
 
 		switch($box_id) {
-			case "edit_user":
+			case "user_edit":
 				// Pobranie użytkownika
 				$row = $heart->get_user($data['uid']);
 

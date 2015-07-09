@@ -73,7 +73,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 
 		if (get_privilages("manage_service_codes"))
 			$buttons = create_dom_element("input", "", array(
-				'id' => "button_add_service_code",
+				'id' => "service_code_button_add",
 				'type' => "button",
 				'value' => $lang->add_code
 			));
@@ -102,7 +102,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 			);
 
 		switch ($box_id) {
-			case "add_code":
+			case "code_add":
 				// Pobranie usług
 				$services = "";
 				foreach ($heart->get_services() as $id => $row) {

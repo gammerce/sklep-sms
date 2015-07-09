@@ -67,7 +67,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 		if (get_privilages("manage_groups"))
 			// Pobranie przycisku dodającego grupę
 			$buttons = create_dom_element("input", "", array(
-				'id' => "button_add_group",
+				'id' => "group_button_add",
 				'type' => "button",
 				'value' => $lang->add_group
 			));
@@ -87,7 +87,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 				'text'	=> $lang->not_logged_or_no_perm
 			);
 
-		if ($box_id == "edit_group") {
+		if ($box_id == "group_edit") {
 			$result = $db->query($db->prepare(
 				"SELECT * FROM `" . TABLE_PREFIX . "groups` " .
 				"WHERE `id` = '%d'",
@@ -129,11 +129,11 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 		}
 
 		switch($box_id) {
-			case "add_group":
+			case "group_add":
 				eval("\$output = \"" . get_template("admin/action_boxes/group_add") . "\";");
 				break;
 
-			case "edit_group":
+			case "group_edit":
 				eval("\$output = \"" . get_template("admin/action_boxes/group_edit") . "\";");
 				break;
 		}

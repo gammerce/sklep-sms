@@ -51,7 +51,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
 
 		// Pobranie przycisku dodającego taryfę
 		$buttons = create_dom_element("input", "", array(
-			'id' => "button_add_tariff",
+			'id' => "tariff_button_add",
 			'type' => "button",
 			'value' => $lang->add_tariff
 		));
@@ -75,11 +75,11 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
 			);
 
 		switch($box_id) {
-			case "add_tariff":
+			case "tariff_add":
 				eval("\$output = \"" . get_template("admin/action_boxes/tariff_add") . "\";");
 				break;
 
-			case "edit_tariff":
+			case "tariff_edit":
 				$tariff = htmlspecialchars($data['tariff']);
 				$provision = number_format($heart->get_tariff_provision($data['tariff']), 2);
 

@@ -1,12 +1,12 @@
 // Kliknięcie dodania taryfy
-$(document).delegate("#button_add_tariff", "click", function () {
-	show_action_box(get_get_param("pid"), "add_tariff");
+$(document).delegate("#tariff_button_add", "click", function () {
+	show_action_box(get_get_param("pid"), "tariff_add");
 });
 
 // Kliknięcie edycji taryfy
 $(document).delegate("[id^=edit_row_]", "click", function () {
 	var row_id = $("#" + $(this).attr("id").replace('edit_row_', 'row_'));
-	show_action_box(get_get_param("pid"), "edit_tariff", {
+	show_action_box(get_get_param("pid"), "tariff_edit", {
 		tariff: row_id.children("td[headers=tariff]").text()
 	});
 });
@@ -52,13 +52,13 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 });
 
 // Dodanie taryfy
-$(document).delegate("#form_add_tariff", "submit", function (e) {
+$(document).delegate("#form_tariff_add", "submit", function (e) {
 	e.preventDefault();
 	loader.show();
 	$.ajax({
 		type: "POST",
 		url: "jsonhttp_admin.php",
-		data: $(this).serialize() + "&action=add_tariff",
+		data: $(this).serialize() + "&action=tariff_add",
 		complete: function () {
 			loader.hide();
 		},
@@ -71,7 +71,7 @@ $(document).delegate("#form_add_tariff", "submit", function (e) {
 			// Wyświetlenie błędów w formularzu
 			if (jsonObj.return_id == "warnings") {
 				$.each(jsonObj.warnings, function (name, text) {
-					var id = $("#form_add_tariff [name=\"" + name + "\"]");
+					var id = $("#form_tariff_add [name=\"" + name + "\"]");
 					id.parent("td").append(text);
 					id.effect("highlight", 1000);
 				});
@@ -99,13 +99,13 @@ $(document).delegate("#form_add_tariff", "submit", function (e) {
 });
 
 // Edycja taryfy
-$(document).delegate("#form_edit_tariff", "submit", function (e) {
+$(document).delegate("#form_tariff_edit", "submit", function (e) {
 	e.preventDefault();
 	loader.show();
 	$.ajax({
 		type: "POST",
 		url: "jsonhttp_admin.php",
-		data: $(this).serialize() + "&action=edit_tariff",
+		data: $(this).serialize() + "&action=tariff_edit",
 		complete: function () {
 			loader.hide();
 		},
@@ -118,7 +118,7 @@ $(document).delegate("#form_edit_tariff", "submit", function (e) {
 			// Wyświetlenie błędów w formularzu
 			if (jsonObj.return_id == "warnings") {
 				$.each(jsonObj.warnings, function (name, text) {
-					var id = $("#form_edit_tariff [name=\"" + name + "\"]");
+					var id = $("#form_tariff_edit [name=\"" + name + "\"]");
 					id.parent("td").append(text);
 					id.effect("highlight", 1000);
 				});

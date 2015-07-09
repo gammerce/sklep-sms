@@ -64,7 +64,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
 
 		// Pobranie przycisku dodającego cenę
 		$buttons = create_dom_element("input", "", array(
-			'id' => "button_add_price",
+			'id' => "price_button_add",
 			'type' => "button",
 			'value' => $lang->add_price
 		));
@@ -92,7 +92,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
 				'text'	=> $lang->not_logged_or_no_perm
 			);
 
-		if ($box_id == "edit_price") {
+		if ($box_id == "price_edit") {
 			$result = $db->query($db->prepare(
 				"SELECT * " .
 				"FROM `" . TABLE_PREFIX . "pricelist` " .
@@ -129,11 +129,11 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
 			));
 
 		switch($box_id) {
-			case "add_price":
+			case "price_add":
 				eval("\$output = \"" . get_template("admin/action_boxes/price_add") . "\";");
 				break;
 
-			case "edit_price":
+			case "price_edit":
 				eval("\$output = \"" . get_template("admin/action_boxes/price_edit") . "\";");
 				break;
 		}

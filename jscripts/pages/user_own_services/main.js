@@ -2,7 +2,7 @@
 $(document).delegate("#user_own_services .edit_row", "click", function () {
 	var row_id = $(this).parents('form:first');
 
-	fetch_data("form_edit_user_service", false, {
+	fetch_data("form_user_service_edit", false, {
 		id: row_id.data('row')
 	}, function (html) {
 		// Podmieniamy zawartość
@@ -32,7 +32,7 @@ $(document).delegate("#user_own_services .row", "submit", function (e) {
 	$.ajax({
 		type: "POST",
 		url: "jsonhttp.php",
-		data: $(this).serialize() + "&action=edit_user_service&id=" + temp_this.data('row'),
+		data: $(this).serialize() + "&action=user_service_edit&id=" + temp_this.data('row'),
 		complete: function () {
 			loader.hide();
 		},

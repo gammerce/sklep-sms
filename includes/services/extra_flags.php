@@ -89,7 +89,7 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 				json_output("not_created", "Plik z opisem usługi nie został prawidłowo utworzony.<br />Prawdopodobnie folder <strong>themes/{$settings['theme']}/services/</strong> nie ma uprawnień do zapisu.", 0); // TODO lang
 		}
 
-		if ($data['action'] == "add_service")
+		if ($data['action'] == "service_add")
 			$db->query($db->prepare(
 				"ALTER TABLE `" . TABLE_PREFIX . "servers` " .
 				"ADD  `%s` TINYINT( 1 ) NOT NULL DEFAULT '0'",
@@ -711,7 +711,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 		//
 		// Aktualizujemy usługę
-		$edit_return = $this->edit_user_service($user_service, $data);
+		$edit_return = $this->user_service_edit($user_service, $data);
 
 		if ($edit_return['status'] == "edited")
 			log_info($lang_shop->sprintf($lang_shop->admin_edited_service, $user['username'], $user['uid'], $user_service['id']));
@@ -882,7 +882,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		//
 		// Aktualizujemy usługę
 
-		$edit_return = $this->edit_user_service($user_service, array(
+		$edit_return = $this->user_service_edit($user_service, array(
 			'type' => $data['type'],
 			'auth_data' => $data['auth_data'],
 			'password' => $data['password']
@@ -897,7 +897,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 	// ----------------------------------------------------------------------------------
 	// ### Dodatkowe funkcje przydatne przy zarządzaniu usługami użytkowników
 
-	private function edit_user_service($user_service, $data)
+	private function user_service_edit($user_service, $data)
 	{
 		global $db, $lang;
 

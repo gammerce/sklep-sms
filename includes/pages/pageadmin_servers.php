@@ -57,7 +57,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 		if (get_privilages("manage_servers"))
 			// Pobranie przycisku dodającego serwer
 			$buttons = create_dom_element("input", "", array(
-				'id' => "button_add_server",
+				'id' => "erver_button_add",
 				'type' => "button",
 				'value' => $lang->add_server
 			));
@@ -77,7 +77,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 				'text'	=> $lang->not_logged_or_no_perm
 			);
 
-		if ($box_id == "edit_server") {
+		if ($box_id == "server_edit") {
 			$server = $heart->get_server($data['id']);
 			$server['ip'] = htmlspecialchars($server['ip']);
 			$server['port'] = htmlspecialchars($server['port']);
@@ -122,11 +122,11 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 		}
 
 		switch($box_id) {
-			case "add_server":
+			case "server_add":
 				eval("\$output = \"" . get_template("admin/action_boxes/server_add") . "\";");
 				break;
 
-			case "edit_server":
+			case "server_edit":
 				eval("\$output = \"" . get_template("admin/action_boxes/server_edit") . "\";");
 				break;
 		}

@@ -220,17 +220,17 @@ h4 {
 	background: #F5F6CE;
 }
 
-#form_edit_settings, .form_update {
+#form_settings_edit, .form_update {
 	display: inline-block;
 	padding: 6px;
 	min-width: 30%;
 }
 
-#form_edit_settings > table, .form_update > table {
+#form_settings_edit > table, .form_update > table {
 	border-spacing: 15px 5px;
 }
 
-#form_edit_settings select, #form_edit_settings input[type=text], #form_edit_settings input[type=password], #form_edit_settings textarea {
+#form_settings_edit select, #form_settings_edit input[type=text], #form_settings_edit input[type=password], #form_settings_edit textarea {
 	color: #000;
 	background-color: #AAA;
 }

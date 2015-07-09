@@ -56,7 +56,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 
 		if (get_privilages("manage_sms_codes"))
 			$buttons = create_dom_element("input", "", array(
-				'id' => "button_add_sms_code",
+				'id' => "sms_code_button_add",
 				'type' => "button",
 				'value' => $lang->add_code
 			));
@@ -85,7 +85,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 			);
 
 		switch($box_id) {
-			case "add_sms_code":
+			case "sms_code_add":
 				$tariffs = "";
 				foreach ($heart->get_tariffs() as $tariff_data)
 					$tariffs .= create_dom_element("option", $tariff_data['tariff'], array(

@@ -1,6 +1,6 @@
 <div class="title">{$this->title}</div>
 
-<form id="form_edit_settings">
+<form id="form_settings_edit">
 	<h4>Płatności</h4>
 	<table>
 		<tr>
@@ -79,10 +79,8 @@
 			<td>Edytowanie usługi przez gracza</td>
 			<td>
 				<select name="user_edit_service">
-					<option {$user_edit_service[
-					'yes']} value="1">TAK</option>
-					<option value="0" {$user_edit_service[
-					'no']}>NIE</option>
+					<option {$user_edit_service['yes']} value="1">TAK</option>
+					<option value="0" {$user_edit_service['no']}>NIE</option>
 				</select>
 			</td>
 		</tr>
@@ -118,10 +116,8 @@
 			<td>Cron przy każdym uruchomieniu strony</td>
 			<td>
 				<select name="cron">
-					<option value="1" {$cron[
-					'yes']}>TAK</option>
-					<option value="0" {$cron[
-					'no']}>NIE</option>
+					<option value="1" {$cron['yes']}>TAK</option>
+					<option value="0" {$cron['no']}>NIE</option>
 				</select>
 			</td>
 		</tr>

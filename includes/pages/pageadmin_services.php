@@ -59,7 +59,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 		if (get_privilages("manage_services"))
 			// Pobranie przycisku dodającego usługę
 			$buttons = create_dom_element("input", "", array(
-				'id' => "button_add_service",
+				'id' => "service_button_add",
 				'type' => "button",
 				'value' => $lang->add_service
 			));
@@ -79,7 +79,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 				'text' => $lang->not_logged_or_no_perm
 			);
 
-		if ($box_id == "edit_service") {
+		if ($box_id == "service_edit") {
 			$service = $heart->get_service($data['id']);
 			$service['tag'] = htmlspecialchars($service['tag']);
 
@@ -91,7 +91,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 						'class' => 'extra_fields'
 					));
 		} // Pobranie dostępnych modułów usług
-		else if ($box_id == "add_service") {
+		else if ($box_id == "service_add") {
 			$services_modules = "";
 			foreach ($heart->get_services_modules() as $module) {
 				// Sprawdzamy czy dany moduł zezwala na tworzenie nowych usług, które będzie obsługiwał
@@ -116,11 +116,11 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 		}
 
 		switch ($box_id) {
-			case "add_service":
+			case "service_add":
 				eval("\$output = \"" . get_template("admin/action_boxes/service_add") . "\";");
 				break;
 
-			case "edit_service":
+			case "service_edit":
 				$service_module_name = $heart->get_service_module_name($service['module']);
 
 				eval("\$output = \"" . get_template("admin/action_boxes/service_edit") . "\";");

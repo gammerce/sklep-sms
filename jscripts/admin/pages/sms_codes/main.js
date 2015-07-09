@@ -1,10 +1,10 @@
 // Kliknięcie dodania kodu SMS
-$(document).delegate("#button_add_sms_code", "click", function () {
-	show_action_box(get_get_param("pid"), "add_sms_code");
+$(document).delegate("#sms_code_button_add", "click", function () {
+	show_action_box(get_get_param("pid"), "sms_code_add");
 });
 
 // Kliknięcie przycisku generuj kod
-$(document).delegate("#form_add_sms_code [name=random_code]", "click", function () {
+$(document).delegate("#form_sms_code_add [name=random_code]", "click", function () {
 	$(this).closest("form").find("[name=code]").val(get_random_string());
 });
 
@@ -49,13 +49,13 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 });
 
 // Dodanie kodu SMS
-$(document).delegate("#form_add_sms_code", "submit", function (e) {
+$(document).delegate("#form_sms_code_add", "submit", function (e) {
 	e.preventDefault();
 	loader.show();
 	$.ajax({
 		type: "POST",
 		url: "jsonhttp_admin.php",
-		data: $(this).serialize() + "&action=add_sms_code",
+		data: $(this).serialize() + "&action=sms_code_add",
 		complete: function () {
 			loader.hide();
 		},
@@ -68,7 +68,7 @@ $(document).delegate("#form_add_sms_code", "submit", function (e) {
 			// Wyświetlenie błędów w formularzu
 			if (jsonObj.return_id == "warnings") {
 				$.each(jsonObj.warnings, function (name, text) {
-					var id = $("#form_add_sms_code [name=\"" + name + "\"]");
+					var id = $("#form_sms_code_add [name=\"" + name + "\"]");
 					id.parent("td").append(text);
 					id.effect("highlight", 1000);
 				});

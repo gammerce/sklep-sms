@@ -11,7 +11,7 @@ class ServiceOtherSimple extends Service implements IService_Create
 	{
 		global $db;
 
-		if ($data['action'] == "add_service")
+		if ($data['action'] == "service_add")
 			$db->query($db->prepare(
 				"ALTER TABLE `" . TABLE_PREFIX . "servers` " .
 				"ADD  `%s` TINYINT( 1 ) NOT NULL DEFAULT '0'",

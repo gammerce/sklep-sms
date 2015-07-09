@@ -1,19 +1,19 @@
 // Kliknięcie dodania usługi gracza
-$(document).delegate("#button_add_user_service", "click", function () {
-	show_action_box(get_get_param("pid"), "add_user_service");
+$(document).delegate("#user_service_button_add", "click", function () {
+	show_action_box(get_get_param("pid"), "user_service_add");
 });
 
 // Kliknięcie edycji usługi gracza
 $(document).delegate("[id^=edit_row_]", "click", function () {
 	var row_id = $("#" + $(this).attr("id").replace('edit_row_', 'row_'));
-	show_action_box(get_get_param("pid"), "edit_user_service", {
+	show_action_box(get_get_param("pid"), "user_service_edit", {
 		id: row_id.children("td[headers=id]").text()
 	});
 });
 
 // Wybranie usługi podczas dodawania usługi graczowi
 var extra_fields;
-$(document).delegate("#form_add_user_service [name=service]", "change", function () {
+$(document).delegate("#form_user_service_add [name=service]", "change", function () {
 	// Brak wybranego modułu
 	if ($(this).val() == "") {
 		// Usuwamy dodatkowe pola
@@ -23,7 +23,7 @@ $(document).delegate("#form_add_user_service [name=service]", "change", function
 		return;
 	}
 
-	fetch_data("get_add_user_service_form", true, {
+	fetch_data("user_service_add_form_get", true, {
 		service: $(this).val()
 	}, function (content) {
 		// Usuwamy dodatkowe pola
@@ -82,13 +82,13 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 });
 
 // Dodanie usługi gracza
-$(document).delegate("#form_add_user_service", "submit", function (e) {
+$(document).delegate("#form_user_service_add", "submit", function (e) {
 	e.preventDefault();
 	loader.show();
 	$.ajax({
 		type: "POST",
 		url: "jsonhttp_admin.php",
-		data: $(this).serialize() + "&action=add_user_service",
+		data: $(this).serialize() + "&action=user_service_add",
 		complete: function () {
 			loader.hide();
 		},
@@ -101,7 +101,7 @@ $(document).delegate("#form_add_user_service", "submit", function (e) {
 			// Wyświetlenie błędów w formularzu
 			if (jsonObj.return_id == "warnings") {
 				$.each(jsonObj.warnings, function (name, text) {
-					var id = $("#form_add_user_service [name=\"" + name + "\"]");
+					var id = $("#form_user_service_add [name=\"" + name + "\"]");
 					id.parent("td").append(text);
 					id.effect("highlight", 1000);
 				});
@@ -129,13 +129,13 @@ $(document).delegate("#form_add_user_service", "submit", function (e) {
 });
 
 // Edycja usługi gracza
-$(document).delegate("#form_edit_user_service", "submit", function (e) {
+$(document).delegate("#form_user_service_edit", "submit", function (e) {
 	e.preventDefault();
 	loader.show();
 	$.ajax({
 		type: "POST",
 		url: "jsonhttp_admin.php",
-		data: $(this).serialize() + "&action=edit_user_service",
+		data: $(this).serialize() + "&action=user_service_edit",
 		complete: function () {
 			loader.hide();
 		},
@@ -148,7 +148,7 @@ $(document).delegate("#form_edit_user_service", "submit", function (e) {
 			// Wyświetlenie błędów w formularzu
 			if (jsonObj.return_id == "warnings") {
 				$.each(jsonObj.warnings, function (name, text) {
-					var id = $("#form_edit_user_service [name=\"" + name + "\"]");
+					var id = $("#form_user_service_edit [name=\"" + name + "\"]");
 					id.parent("td").append(text);
 					id.effect("highlight", 1000);
 				});

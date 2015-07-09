@@ -15,7 +15,7 @@ function service_module_act_can(name, a) {
 //
 
 // Zmiana typu usługi
-$(document).delegate("#form_add_user_service [name=type]", "change", function () {
+$(document).delegate("#form_user_service_add [name=type]", "change", function () {
 	var module;
 	if (!(module = service_module_act_can("extra_flags", $(this))))
 		return;
@@ -31,7 +31,7 @@ $(document).delegate("#form_add_user_service [name=type]", "change", function ()
 });
 
 // Ustawienie na zawsze
-$(document).delegate("#form_add_user_service [name=forever]", "change", function () {
+$(document).delegate("#form_user_service_add [name=forever]", "change", function () {
 	var module;
 	if (!(module = service_module_act_can("extra_flags", $(this))))
 		return;
@@ -48,7 +48,7 @@ $(document).delegate("#form_add_user_service [name=forever]", "change", function
 //
 
 // Zmiana usługi przy edycji
-$(document).delegate("#form_edit_user_service [name=service]", "change", function () {
+$(document).delegate("#form_user_service_edit [name=service]", "change", function () {
 	var module;
 	if (!(module = service_module_act_can("extra_flags", $(this))))
 		return;
@@ -68,7 +68,7 @@ $(document).delegate("#form_edit_user_service [name=service]", "change", functio
 });
 
 // Ustawienie na zawsze przy edycji
-$(document).delegate("#form_edit_user_service [name=forever]", "change", function () {
+$(document).delegate("#form_user_service_edit [name=forever]", "change", function () {
 	var module;
 	if (!(module = service_module_act_can("extra_flags", $(this))))
 		return;
@@ -80,7 +80,7 @@ $(document).delegate("#form_edit_user_service [name=forever]", "change", functio
 });
 
 // Zmiana typu usługi
-$(document).delegate("#form_edit_user_service [name=type]", "change", function () {
+$(document).delegate("#form_user_service_edit [name=type]", "change", function () {
 	var module;
 	if (!(module = service_module_act_can("extra_flags", $(this))))
 		return;

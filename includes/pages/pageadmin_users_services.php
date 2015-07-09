@@ -89,7 +89,7 @@ class PageAdminUsersServices extends PageAdmin implements IPageAdminActionBox
 		$buttons = "";
 		if (get_privilages("manage_player_services"))
 			$buttons .= create_dom_element("input", "", array(
-				'id' => "button_add_user_service",
+				'id' => "user_service_button_add",
 				'type' => "button",
 				'value' => $lang->add_service
 			));
@@ -118,7 +118,7 @@ class PageAdminUsersServices extends PageAdmin implements IPageAdminActionBox
 			);
 
 		switch($box_id) {
-			case "add_user_service":
+			case "user_service_add":
 				// Pobranie usług
 				$services = "";
 				foreach ($heart->get_services() as $id => $row) {
@@ -133,7 +133,7 @@ class PageAdminUsersServices extends PageAdmin implements IPageAdminActionBox
 				eval("\$output = \"" . get_template("admin/action_boxes/user_service_add") . "\";");
 				break;
 
-			case "edit_user_service":
+			case "user_service_edit":
 				// Pobieramy usługę z bazy
 				$user_service = $db->fetch_array_assoc($db->query($db->prepare(
 					"SELECT * FROM `" . TABLE_PREFIX . "players_services` " .

@@ -11,7 +11,7 @@ function service_module_act_can(name, a) {
 }
 
 // Zmiana serwera
-$(document).delegate("#form_add_service_code [name=server]", "change", function () {
+$(document).delegate("#form_service_code_add [name=server]", "change", function () {
 	var module;
 	if (!(module = service_module_act_can("extra_flags", $(this))))
 		return;

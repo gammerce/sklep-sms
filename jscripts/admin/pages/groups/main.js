@@ -1,12 +1,12 @@
 // Kliknięcie dodania grupy
-$(document).delegate("#button_add_group", "click", function () {
-	show_action_box(get_get_param("pid"), "add_group");
+$(document).delegate("#group_button_add", "click", function () {
+	show_action_box(get_get_param("pid"), "group_add");
 });
 
 // Kliknięcie edycji grupy
 $(document).delegate("[id^=edit_row_]", "click", function () {
 	var row_id = $("#" + $(this).attr("id").replace('edit_row_', 'row_'));
-	show_action_box(get_get_param("pid"), "edit_group", {
+	show_action_box(get_get_param("pid"), "group_edit", {
 		id: row_id.children("td[headers=id]").text()
 	});
 });
@@ -52,13 +52,13 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 });
 
 // Dodanie grupy
-$(document).delegate("#form_add_group", "submit", function (e) {
+$(document).delegate("#form_group_add", "submit", function (e) {
 	e.preventDefault();
 	loader.show();
 	$.ajax({
 		type: "POST",
 		url: "jsonhttp_admin.php",
-		data: $(this).serialize() + "&action=add_group",
+		data: $(this).serialize() + "&action=group_add",
 		complete: function () {
 			loader.hide();
 		},
@@ -89,13 +89,13 @@ $(document).delegate("#form_add_group", "submit", function (e) {
 });
 
 // Edycja grupy
-$(document).delegate("#form_edit_group", "submit", function (e) {
+$(document).delegate("#form_group_edit", "submit", function (e) {
 	e.preventDefault();
 	loader.show();
 	$.ajax({
 		type: "POST",
 		url: "jsonhttp_admin.php",
-		data: $(this).serialize() + "&action=edit_group",
+		data: $(this).serialize() + "&action=group_edit",
 		complete: function () {
 			loader.hide();
 		},

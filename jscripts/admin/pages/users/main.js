@@ -10,7 +10,7 @@ $(document).delegate("[id^=charge_wallet_]", "click", function () {
 // Kliknięcie edycji użytkownika
 $(document).delegate("[id^=edit_row_]", "click", function () {
 	var row_id = $("#" + $(this).attr("id").replace('edit_row_', 'row_'));
-	show_action_box(get_get_param("pid"), "edit_user", {
+	show_action_box(get_get_param("pid"), "user_edit", {
 		uid: row_id.children("td[headers=uid]").text()
 	});
 });
@@ -115,13 +115,13 @@ $(document).delegate("#form_charge_wallet", "submit", function (e) {
 });
 
 // Edycja uzytkownika
-$(document).delegate("#form_edit_user", "submit", function (e) {
+$(document).delegate("#form_user_edit", "submit", function (e) {
 	e.preventDefault();
 	loader.show();
 	$.ajax({
 		type: "POST",
 		url: "jsonhttp_admin.php",
-		data: $(this).serialize() + "&action=edit_user",
+		data: $(this).serialize() + "&action=user_edit",
 		complete: function () {
 			loader.hide();
 		},
@@ -134,7 +134,7 @@ $(document).delegate("#form_edit_user", "submit", function (e) {
 			// Wyświetlenie błędów w formularzu
 			if (jsonObj.return_id == "warnings") {
 				$.each(jsonObj.warnings, function (name, text) {
-					var id = $("#form_edit_user [name=\"" + name + "\"]");
+					var id = $("#form_user_edit [name=\"" + name + "\"]");
 					id.parent("td").append(text);
 					id.effect("highlight", 1000);
 				});

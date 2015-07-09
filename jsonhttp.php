@@ -384,7 +384,7 @@ if ($action == "login") {
 		'purchase_id' => $_POST['purchase_id'],
 		'action' => "web"
 	)), "Content-type: text/plain; charset=\"UTF-8\"");
-} else if ($action == "form_edit_user_service") {
+} else if ($action == "form_user_service_edit") {
 	if (!is_logged())
 		output_page($lang->service_cant_be_modified);
 
@@ -453,7 +453,7 @@ if ($action == "login") {
 		));
 
 	output_page($service_module->user_own_service_info_get($user_service, $button_edit));
-} else if ($action == "edit_user_service") {
+} else if ($action == "user_service_edit") {
 	if (!is_logged())
 		json_output("not_logged", $lang->not_logged, 0);
 

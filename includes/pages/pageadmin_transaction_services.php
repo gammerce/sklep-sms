@@ -73,7 +73,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
 			);
 
 		switch($box_id) {
-			case "edit_transaction_service":
+			case "transaction_service_edit":
 				// Pobranie danych o metodzie płatności
 				$result = $db->query($db->prepare(
 					"SELECT * FROM `" . TABLE_PREFIX . "transaction_services` " .

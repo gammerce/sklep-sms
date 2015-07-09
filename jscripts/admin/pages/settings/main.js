@@ -1,10 +1,10 @@
-$(document).delegate("#form_edit_settings", "submit", function (e) {
+$(document).delegate("#form_settings_edit", "submit", function (e) {
 	e.preventDefault();
 	loader.show();
 	$.ajax({
 		type: "POST",
 		url: "jsonhttp_admin.php",
-		data: $(this).serialize() + "&action=edit_settings",
+		data: $(this).serialize() + "&action=settings_edit",
 		complete: function () {
 			loader.hide();
 		},
@@ -17,7 +17,7 @@ $(document).delegate("#form_edit_settings", "submit", function (e) {
 			// Wyświetlenie błędów w formularzu
 			if (jsonObj.return_id == "warnings") {
 				$.each(jsonObj.warnings, function (name, text) {
-					var id = $("#form_edit_settings [name=\"" + name + "\"]");
+					var id = $("#form_settings_edit [name=\"" + name + "\"]");
 					id.parent("td").append(text);
 					id.effect("highlight", 1000);
 				});

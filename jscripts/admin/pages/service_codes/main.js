@@ -1,16 +1,16 @@
 // Kliknięcie dodania kodu na usługę
-$(document).delegate("#button_add_service_code", "click", function () {
-	show_action_box(get_get_param("pid"), "add_code");
+$(document).delegate("#button_service_code_add", "click", function () {
+	show_action_box(get_get_param("pid"), "code_add");
 });
 
 // Kliknięcie przycisku generuj kod
-$(document).delegate("#form_add_service_code [name=random_code]", "click", function () {
+$(document).delegate("#form_service_code_add [name=random_code]", "click", function () {
 	$(this).closest("form").find("[name=code]").val(get_random_string());
 });
 
 // Wybranie usługi podczas dodawania kodu na usługę
 var extra_fields;
-$(document).delegate("#form_add_service_code [name=service]", "change", function () {
+$(document).delegate("#form_service_code_add [name=service]", "change", function () {
 	// Brak wybranej usługi
 	if (!$(this).val().length) {
 		// Usuwamy dodatkowe pola
@@ -19,7 +19,7 @@ $(document).delegate("#form_add_service_code [name=service]", "change", function
 		return;
 	}
 
-	fetch_data("add_service_code_get_form", true, {
+	fetch_data("service_code_add_get_form", true, {
 		service: $(this).val()
 	}, function (content) {
 		// Usuwamy dodatkowe pola
@@ -73,13 +73,13 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 });
 
 // Dodanie kodu na usługę
-$(document).delegate("#form_add_service_code", "submit", function (e) {
+$(document).delegate("#form_service_code_add", "submit", function (e) {
 	e.preventDefault();
 	loader.show();
 	$.ajax({
 		type: "POST",
 		url: "jsonhttp_admin.php",
-		data: $(this).serialize() + "&action=add_service_code",
+		data: $(this).serialize() + "&action=service_code_add",
 		complete: function () {
 			loader.hide();
 		},
@@ -92,7 +92,7 @@ $(document).delegate("#form_add_service_code", "submit", function (e) {
 			// Wyświetlenie błędów w formularzu
 			if (jsonObj.return_id == "warnings") {
 				$.each(jsonObj.warnings, function (name, text) {
-					var id = $("#form_add_service_code [name=\"" + name + "\"]");
+					var id = $("#form_service_code_add [name=\"" + name + "\"]");
 					id.parent("td").append(text);
 					id.effect("highlight", 1000);
 				});
