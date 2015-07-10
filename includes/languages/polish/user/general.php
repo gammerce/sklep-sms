@@ -17,24 +17,14 @@ $l['login_vert'] = "Z<br />A<br />L<br />O<br />G<br />U<br />J";
 $l['repeat'] = "Powtórz";
 $l['send'] = "Wyślij";
 $l['clear'] = "Wyczyść";
-$l['name'] = "Imię";
-$l['surname'] = "Nazwisko";
-$l['username'] = "Nazwa Użytkownika";
+
 $l['password_repeat'] = "Powtórz Hasło";
 $l['forgot_password'] = "Nie pamiętam hasła";
 $l['email_repeat'] = "Powtórz adres e-mail";
-$l['sign_in'] = "Zaloguj się";
 $l['expire'] = "Wygasa";
-$l['description'] = "Opis";
-$l['cost'] = "Koszt";
 $l['price'] = "Cena";
-$l['question'] = "Pytanie";
 $l['answer'] = "Odpowiedź";
-$l['contact'] = "Kontakt";
 $l['regulations'] = "Regulamin";
-
-$l['old_password'] = "Stare Hasło";
-$l['new_password'] = "Nowe Hasło";
 
 $l['required_data'] = "Wymagane dane";
 $l['optional_data'] = "Opcjonalne dane";
@@ -58,10 +48,7 @@ $l['take_over'] = "Przejmij";
 $l['way_of_payment'] = "Sposób płatności";
 $l['choose_payment'] = "Wybierz płatność";
 $l['admin'] = "Admin";
-$l['wallet'] = "Portfel";
 
-$l['choose_type'] = "Wybierz rodzaj";
-$l['choose_server'] = "Wybierz serwer";
 $l['choose_amount'] = "Wybierz ilość";
 
 $l['transfer_cost'] = "Koszt Przelewu";
@@ -112,7 +99,6 @@ $l['type_setinfo'] = "Wpisz w konsoli: setinfo _ss \"{1}\"";
 $l['sms']['send_sms'] = "Wyślij SMSa";
 $l['sms']['text'] = "O treści";
 $l['sms']['number'] = "Na numer";
-$l['sms']['return_code'] = "Kod zwrotny";
 $l['sms']['info']['ok'] = "Wprowadzono prawidłowy kod zwrotny.";
 $l['sms']['info']['bad_code'] = "Wprowadzony kod zwrotny jest zwyczajnie błędny.";
 $l['sms']['info']['bad_number'] = "Kod jest dobry, lecz niestety został uzyskany poprzez wysłanie SMSa na inny numer.";
@@ -170,3 +156,10 @@ $l['payment_not_accepted'] = "Nieudana autoryzacja transakcji: {1} Kwota: {2} Us
 $l['purchase_code'] = "Wykorzystano kod {1} do zakupu usługi przez {2}({3}). ID płatności: {4}";
 
 $l['service_not_displayed'] = "Usługa nie może zostać wyświetlona, ponieważ jej moduł nie zapewnia takiej funkcjonalności.";
+
+$l['password_change'] = "W celu zmiany hasła do swojego konta, podaj stare hasło. Następnie wpisz nowe hasło oraz wprowadź je ponownie.";
+$l['type_code'] = "Wprowadź kod";
+$l['password_reset'] = "W celu zmiany hasła do swojego konta, podaj nowe hasło, a następnie wpisz je ponownie.";
+$l['service_takeover'] = "<strong>Przejęcie usługi</strong> służy do przypisania konkretnej, czasowej usługi do swojego konta. Zazwyczaj używane,
+	gdy zakupiliśmy usługę nie będąc zalogowani.";
+$l['show_more'] = "Pokaż więcej";

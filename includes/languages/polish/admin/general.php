@@ -194,7 +194,6 @@ $l['answers'] = "Odpowiedzi";
 $l['actions'] = "Akcje";
 $l['payment_admin'] = "Płatność";
 $l['additional'] = "Dodatkowe";
-$l['firstname'] = "Nazwa";
 $l['other'] = "Inne";
 $l['sum'] = "Suma";
 $l['text'] = "Tekst";
@@ -244,7 +243,6 @@ $l['dont_delete'] = "( 0 - nie usuwaj )";
 $l['cron_page_start'] = "Cron przy każdym uruchomieniu strony";
 $l['lines_per_page'] = "Ilość wierszy na stronę";
 $l['date_format'] = "Format daty";
-$l['save'] = "Zapisz";
 $l['additional_info'] = "Dodatkowe informacje";
 $l['versions'] = "Wersje";
 $l['how_to_update'] = "Jak zaktualizować";
@@ -258,13 +256,11 @@ $l['next_version'] = "Kolejna wersja";
 $l['latest_version'] = "Najnowsza wersja";
 $l['web_first_possibility'] = "Mamy dwie możliwości. Pobieramy paczkę z najnowszą wersją skryptu w wersji FULL, albo aktualizujemy stopniowo, z
 		jednej wersji na drugą, za pomocą paczek w wersji UPDATE.";
-$l['web_second_possibility'] = "Pobieramy cały sklepik w najnowszej wersji: {1} lub tylko zmienione pliki
-				kolejnej wersji: {2}";
+$l['web_second_possibility'] = "Pobieramy cały sklepik w najnowszej wersji: {1} lub tylko zmienione pliki kolejnej wersji: {2}";
 $l['change_log'] = "Lista zmian";
 $l['updated_files'] = "Aktualizowane pliki";
-$l['charge'] = "Doładuj {1}";
+$l['charge'] = "Doładuj";
 
-$l['question'] = "Pytanie";
 $l['html_allowed'] = "( dozwolony HTML )";
 $l['separated'] = "( oddzielone średnikiem ';' )";
 $l['add'] = "Dodaj";
