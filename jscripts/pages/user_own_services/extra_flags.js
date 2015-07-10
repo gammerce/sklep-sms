@@ -1,15 +1,3 @@
-/**
- * Sprawdza, czy działa na elemencie stworzonym przez moduł extra_flags
- * Jeżeli tak, to zwraca obiekt najwyżej w drzewie, który został utworzony przez dany moduł
- *
- * @param a
- * @returns {*}
- */
-function service_module_act_can(name, a) {
-	var element = element_with_data_module(a);
-	return element !== null && element.data("module") == name ? element : false;
-}
-
 //Zmiana typu usługi
 $(document).delegate("#user_own_services .row [name=type]", "change", function () {
 	var module;

@@ -17,7 +17,7 @@ class PageTakeOverService extends Page implements I_BeLoggedMust
 
 	protected function content($get, $post)
 	{
-		global $heart, $lang, $settings, $stylesheets;
+		global $heart, $lang, $settings;
 
 		$services_options = "";
 		$services = $heart->get_services();
@@ -33,8 +33,6 @@ class PageTakeOverService extends Page implements I_BeLoggedMust
 				'value' => $service['id']
 			));
 		}
-
-		$stylesheets[] = $settings['shop_url_slash'] . "styles/take_over_service.css?version=" . VERSION;
 
 		eval("\$output = \"" . get_template("take_over_service") . "\";");
 		return $output;

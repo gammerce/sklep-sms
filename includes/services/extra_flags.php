@@ -128,15 +128,10 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 	function __construct($service)
 	{
-		global $settings, $stylesheets;
-
 		// Wywolujemy konstruktor klasy ktora rozszerzamy
 		parent::__construct($service);
 
 		$this->service['flags_hsafe'] = htmlspecialchars($this->service['flags']);
-
-		// Dodajemy szablon css
-		$stylesheets[] = "{$settings['shop_url_slash']}styles/services/extra_flags.css?version=" . VERSION;
 	}
 
 	public function purchase_form_get()

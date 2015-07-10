@@ -17,7 +17,7 @@ class PageResetPassword extends Page implements I_BeLoggedCannot
 
 	protected function content($get, $post)
 	{
-		global $db, $settings, $lang, $scripts;
+		global $db, $settings, $lang;
 
 		// Brak podanego kodu
 		if (!strlen($get['code']))
@@ -34,8 +34,6 @@ class PageResetPassword extends Page implements I_BeLoggedCannot
 
 		$row = $db->fetch_array_assoc($result);
 		$sign = md5($row['uid'] . $settings['random_key']);
-
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/modify_password.js?version=" . VERSION;
 
 		eval("\$output = \"" . get_template("reset_password") . "\";");
 		return $output;

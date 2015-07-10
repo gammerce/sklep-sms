@@ -17,7 +17,7 @@ class PagePayment extends Page
 
 	protected function content($get, $post)
 	{
-		global $settings, $lang, $stylesheets;
+		global $settings, $lang;
 
 		// Sprawdzanie hashu danych przesłanych przez formularz
 		if (!isset($post['sign']) || $post['sign'] != md5($post['data'] . $settings['random_key']))
@@ -75,8 +75,6 @@ class PagePayment extends Page
 		$purchase_sign = htmlspecialchars($post['sign']);
 
 		eval("\$output = \"" . get_template("payment_form") . "\";");
-
-		$stylesheets[] = $settings['shop_url_slash'] . "styles/style_payment.css?version=" . VERSION;
 
 		return $output;
 	}

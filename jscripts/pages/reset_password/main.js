@@ -1,11 +1,11 @@
-// Wysłanie formularza o odzyskanie hasła
-$(document).delegate("#form_forgotten_password", "submit", function (e) {
+// Wysłanie formularza o reset hasła
+$(document).delegate("#form_reset_password", "submit", function (e) {
 	e.preventDefault();
 	loader.show();
 	$.ajax({
 		type: "POST",
 		url: "jsonhttp.php",
-		data: $(this).serialize() + "&action=forgotten_password",
+		data: $(this).serialize() + "&action=reset_password",
 		complete: function () {
 			loader.hide();
 		},
@@ -18,14 +18,14 @@ $(document).delegate("#form_forgotten_password", "submit", function (e) {
 			// Wyświetlenie błędów w formularzu
 			if (jsonObj.return_id == "warnings") {
 				$.each(jsonObj.warnings, function (name, text) {
-					var id = $("#form_forgotten_password [name=\"" + name + "\"]");
+					var id = $("#form_reset_password [name=\"" + name + "\"]");
 					id.parent("td").append(text);
 					id.effect("highlight", 1000);
 				});
 			}
-			else if (jsonObj.return_id == "sent") {
-				// Wyświetl informacje o wysłaniu maila
-				getnset_template($("#content"), "forgotten_password_sent", false, {username: jsonObj.username});
+			else if (jsonObj.return_id == "password_changed") {
+				// Wyświetl informacje o zmianie hasła
+				getnset_template($("#content"), "reset_password_changed", false);
 			}
 			else if (!jsonObj.return_id) {
 				infobox.show_info(lang['sth_went_wrong'], false);

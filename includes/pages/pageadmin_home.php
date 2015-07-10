@@ -1,11 +1,11 @@
 <?php
 
-$heart->register_page("main_content", "PageAdminMain", "admin");
+$heart->register_page("home", "PageAdminMain", "admin");
 
 class PageAdminMain extends PageAdmin
 {
 
-	const PAGE_ID = "main_content";
+	const PAGE_ID = "home";
 
 	function __construct()
 	{
@@ -17,7 +17,7 @@ class PageAdminMain extends PageAdmin
 
 	protected function content($get, $post)
 	{
-		global $heart, $db, $settings, $lang, $a_Tasks, $stylesheets;
+		global $heart, $db, $settings, $lang, $a_Tasks;
 
 		//
 		// Ogloszenia
@@ -84,10 +84,8 @@ class PageAdminMain extends PageAdmin
 		);
 		$bricks .= create_brick($lang->sprintf($lang->amount_of_sent_smses, $amount), "brick_pa_main");
 
-		$stylesheets[] = $settings['shop_url_slash'] . "styles/admin/style_main.css?version=" . VERSION;
-
 		// Pobranie wyglądu strony
-		eval("\$output = \"" . get_template("admin/main_content") . "\";");
+		eval("\$output = \"" . get_template("admin/home") . "\";");
 		return $output;
 	}
 

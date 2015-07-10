@@ -97,13 +97,14 @@ function element_with_data_module(a) {
 
 	return element_with_data_module(a.parent());
 }
-
-// TODO trzeba zrobić ogolny plik js dla wszystkich miejsc extra_flags
-function get_type_name(value) {
-	if (value == "1")
-		return "nick";
-	else if (value == "2")
-		return "ip";
-	else if (value == "4")
-		return "sid";
+/**
+ * Sprawdza, czy działa na elemencie stworzonym przez moduł extra_flags
+ * Jeżeli tak, to zwraca obiekt najwyżej w drzewie, który został utworzony przez dany moduł
+ *
+ * @param a
+ * @returns {*}
+ */
+function service_module_act_can(name, a) {
+	var element = element_with_data_module(a);
+	return element !== null && element.data("module") == name ? element : false;
 }

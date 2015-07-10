@@ -4,12 +4,12 @@ define('IN_SCRIPT', "1");
 define('SCRIPT_NAME', "admin");
 
 require_once "global.php";
-$G_PID = $G_PID == "login" || $heart->page_exists($G_PID, "admin") ? $G_PID : "main_content";
+$G_PID = $G_PID == "login" || $heart->page_exists($G_PID, "admin") ? $G_PID : "home";
 
 // Uzytkownik nie jest zalogowany
 if ($G_PID == "login") {
 	$heart->page_title = "Login";
-	$stylesheets[] = "{$settings['shop_url_slash']}styles/admin/style_login.css?version=" . VERSION;
+	$heart->style_add($settings['shop_url_slash'] . "styles/admin/style_login.css?version=" . VERSION);
 
 	if (isset($_SESSION['info'])) {
 		if ($_SESSION['info'] == "wrong_data") {
@@ -23,7 +23,6 @@ if ($G_PID == "login") {
 	}
 
 	// Pobranie headera
-	parse_scripts_styles($scripts, $stylesheets);
 	eval("\$header = \"" . get_template("admin/header") . "\";");
 
 	$get_data = "";
@@ -122,7 +121,6 @@ if (get_privilages("view_logs")) {
 }
 
 // Pobranie headera
-parse_scripts_styles($scripts, $stylesheets);
 eval("\$header = \"" . get_template("admin/header") . "\";");
 
 // Pobranie ostatecznego szablonu

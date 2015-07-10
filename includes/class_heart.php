@@ -27,6 +27,9 @@ class Heart
 	private $groups;
 	private $groups_fetched;
 
+	private $scripts;
+	private $styles;
+
 	function __construct()
 	{
 		$this->servers_fetched = false;
@@ -44,6 +47,15 @@ class Heart
 	// Klasy usług
 	//
 
+	/**
+	 * Rejestruje moduł usługi
+	 *
+	 * @param string $id
+	 * @param string $name
+	 * @param string $class
+	 * @param string $classsimple
+	 * @throws Exception
+	 */
 	public function register_service_module($id, $name, $class, $classsimple)
 	{
 		if (isset($this->services_classes[$id]))
@@ -526,5 +538,41 @@ class Heart
 		}
 
 		$this->groups_fetched = true;
+	}
+
+	/**
+	 * Dodaje skrypt js
+	 *
+	 * @param string $path
+	 */
+	public function script_add($path) {
+		if (!in_array($path, $this->scripts))
+			$this->scripts[] = $path;
+	}
+
+	/**
+	 * Dodaje szablon css
+	 *
+	 * @param string $path
+	 */
+	public function style_add($path) {
+		if (!in_array($path, $this->styles))
+			$this->styles[] = $path;
+	}
+
+	public function scripts_get() {
+		$output = array();
+		foreach ($this->scripts as $script)
+			$output[] = "<script type=\"text/javascript\" src=\"{$script}\"></script>";
+
+		return implode("\n", $output);
+	}
+
+	public function styles_get() {
+		$output = array();
+		foreach ($this->styles as $style)
+			$output[] = "<link href=\"{$style}\" rel=\"stylesheet\" />";
+
+		return implode("\n", $output);
 	}
 }

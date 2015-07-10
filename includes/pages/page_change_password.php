@@ -16,12 +16,4 @@ class PageChangePassword extends PageSimple implements I_BeLoggedMust
 		parent::__construct();
 	}
 
-	protected function content($get, $post)
-	{
-		global $settings, $scripts;
-		$scripts[] = $settings['shop_url_slash'] . "jscripts/modify_password.js?version=" . VERSION;
-
-		return parent::content($get, $post);
-	}
-
 }

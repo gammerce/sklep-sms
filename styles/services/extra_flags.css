@@ -1,25 +1,7 @@
-#form_purchase ul {
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-}
-
 #type_nick, #type_ip, #type_sid, #type_password {
 	display: none;
 }
 
 .type_nick, .type_ip, .type_sid, .type_password {
 	display: none;
-}
-
-#cost_wraper {
-	width: 100%;
-	margin: 50px 0;
-	text-align: center;
-	display: none;
-}
-
-#cost_wraper div {
-	display: inline-block;
-	text-align: left;
 }

@@ -4,7 +4,7 @@ define('IN_SCRIPT', "1");
 define('SCRIPT_NAME', "index");
 
 require_once "global.php";
-$G_PID = $heart->page_exists($G_PID) ? $G_PID : "main_content";
+$G_PID = $heart->page_exists($G_PID) ? $G_PID : "home";
 
 // Pobranie miejsca logowania
 $logged_info = get_content("logged_info");
@@ -22,7 +22,6 @@ $services_buttons = get_content("services_buttons");
 $user_buttons = get_content("user_buttons");
 
 // Pobranie headera
-parse_scripts_styles($scripts, $stylesheets);
 eval("\$header = \"" . get_template("header") . "\";");
 
 // Pobranie ostatecznego szablonu

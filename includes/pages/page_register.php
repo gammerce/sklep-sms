@@ -17,7 +17,7 @@ class PageRegister extends Page implements I_BeLoggedCannot
 
 	protected function content($get, $post)
 	{
-		global $db, $settings, $lang, $stylesheets;
+		global $db, $settings, $lang;
 
 		$antispam_question = $db->fetch_array_assoc($db->query(
 			"SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " .
@@ -25,8 +25,6 @@ class PageRegister extends Page implements I_BeLoggedCannot
 			"LIMIT 1"
 		));
 		$_SESSION['asid'] = $antispam_question['id'];
-
-		$stylesheets[] = $settings['shop_url_slash'] . "styles/style_register.css?version=" . VERSION;
 
 		eval("\$output = \"" . get_template("register") . "\";");
 		return $output;

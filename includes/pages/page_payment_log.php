@@ -17,7 +17,7 @@ class PagePaymentLog extends Page implements I_BeLoggedMust
 
 	protected function content($get, $post)
 	{
-		global $heart, $db, $settings, $user, $lang, $G_PAGE, $stylesheets;
+		global $heart, $db, $settings, $user, $lang, $G_PAGE;
 
 		$result = $db->query($db->prepare(
 			"SELECT SQL_CALC_FOUND_ROWS * FROM ({$settings['transactions_query']}) as t " .
@@ -59,8 +59,6 @@ class PagePaymentLog extends Page implements I_BeLoggedMust
 		$pagination_class = strlen($pagination) ? "" : "display_none";
 
 		eval("\$output = \"" . get_template("payment_log") . "\";");
-
-		$stylesheets[] = $settings['shop_url_slash'] . "styles/style_payment_log.css?version=" . VERSION;
 
 		return $output;
 	}

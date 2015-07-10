@@ -12,17 +12,6 @@ class ServiceChargeWalletSimple extends Service implements I_BeLoggedMust
 class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_Purchase, IService_PurchaseWeb
 {
 
-	function __construct($service)
-	{
-		global $settings, $stylesheets;
-
-		// Wywolujemy konstruktor klasy ktora rozszerzamy
-		parent::__construct($service);
-
-		// Dodajemy szablon css
-		$stylesheets[] = "{$settings['shop_url_slash']}styles/services/charge_wallet.css?version=" . VERSION;
-	}
-
 	public function purchase_form_get()
 	{
 		global $settings, $lang;

@@ -1,12 +1,12 @@
 <?php
 
-$heart->register_page("main_content", "PageMain");
+$heart->register_page("home", "PageMain");
 
 class PageMain extends PageSimple
 {
 
-	const PAGE_ID = "main_content";
-	protected $template = "main_content";
+	const PAGE_ID = "home";
+	protected $template = "home";
 
 	function __construct()
 	{
