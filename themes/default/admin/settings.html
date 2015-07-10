@@ -79,8 +79,8 @@
 			<td>{$lang->user_service_edit}</td>
 			<td>
 				<select name="user_edit_service">
-					<option {$user_edit_service['yes']} value="1">TAK</option>
-					<option value="0" {$user_edit_service['no']}>NIE</option>
+					<option {$user_edit_service['yes']} value="1">{$lang->yes}</option>
+					<option value="0" {$user_edit_service['no']}>{$lang->no}</option>
 				</select>
 			</td>
 		</tr>
@@ -123,13 +123,11 @@
 		</tr>
 		<tr>
 			<td>{$lang->lines_per_page}</td>
-			<td><input name="row_limit" type="text" value="{$settings['row_limit']}" style="width: 40px"
-					   maxlength="256"/></td>
+			<td><input name="row_limit" type="text" value="{$settings['row_limit']}" style="width: 40px" maxlength="256"/></td>
 		</tr>
 		<tr>
 			<td>{$lang->date_format}</td>
-			<td><input name="date_format" type="text" value="{$settings['date_format']}" style="width: 100px"
-					   maxlength="256"/></td>
+			<td><input name="date_format" type="text" value="{$settings['date_format']}" style="width: 100px" maxlength="256"/></td>
 		</tr>
 	</table>
 	<hr/>

@@ -17,24 +17,13 @@ $l['login_vert'] = "L<br />O<br />G<br /><br />I<br />N";
 $l['repeat'] = "Repeat";
 $l['send'] = "Send";
 $l['clear'] = "Clear";
-$l['name'] = "Name";
-$l['surname'] = "Surname";
-$l['username'] = "Username";
 $l['password_repeat'] = "Repeat password";
 $l['forgot_password'] = "I don't remeber password";
 $l['email_repeat'] = "Repeat e-mail";
-$l['sign_in'] = "Log in";
 $l['expire'] = "Expires";
-$l['description'] = "Description";
-$l['cost'] = "Cost";
 $l['price'] = "Price";
-$l['question'] = "Question";
 $l['answer'] = "Answer";
-$l['contact'] = "Contact";
 $l['regulations'] = "Regulations";
-
-$l['old_password'] = "Old Password";
-$l['new_password'] = "New Password";
 
 $l['required_data'] = "Required data";
 $l['optional_data'] = "Optional data";
@@ -58,10 +47,7 @@ $l['take_over'] = "Take over";
 $l['way_of_payment'] = "Payment method";
 $l['choose_payment'] = "Choose payment";
 $l['admin'] = "Admin";
-$l['wallet'] = "Wallet";
 
-$l['choose_type'] = "Choose type";
-$l['choose_server'] = "Choose server";
 $l['choose_amount'] = "Choose amount";
 
 $l['transfer_cost'] = "Transfer cost";
@@ -81,7 +67,7 @@ $l['transfer_id'] = "Payment ID";
 $l['transfer_error'] = "Unfortunately, transfer payment failed.";
 $l['transfer_unverified'] = "Unfortunately, transfer data failed to be verified correctly.";
 
-$l['contact_info'] = "You can contact us by:";
+$l['contact_info'] = "You can contact us on the following ways.";
 
 $l['restore_password_info'] = "In order to restore password, give your address <strong>e-mail</strong> or <strong>nickname</strong>.<br />
 At the next step, an e-mail with a link to restore password will be send to you.";
@@ -112,7 +98,6 @@ $l['type_setinfo'] = "Type in the console: setinfo _ss \"{1}\"";
 $l['sms']['send_sms'] = "Send SMS";
 $l['sms']['text'] = "Text";
 $l['sms']['number'] = "Number";
-$l['sms']['return_code'] = "Return code";
 $l['sms']['info']['ok'] = "Given return code is correct.";
 $l['sms']['info']['bad_code'] = "Given return code is just incorrect.";
 $l['sms']['info']['bad_number'] = "Code is OK, but unfortunately obtained by sending SMS on different number.";
@@ -172,7 +157,6 @@ $l['purchase_code'] = "Code {1} was used to purchase service by {2}({3}). Paymen
 $l['service_not_displayed'] = "Service cannot be displayed, because its module does not provide such functionality.";
 
 $l['password_change'] = "In order to change password to your account, enter old password. Then enter new password and type it again.";
-$l['test'] = "test@test.com";
 $l['type_code'] = "Enter the code";
 $l['password_reset'] = "In order to change password to your account, enter new password and type it again.";
 $l['service_takeover'] = "<strong>Service takeover</strong> is to assign specific, time-bound service to your account. Usually

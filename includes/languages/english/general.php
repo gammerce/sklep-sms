@@ -18,6 +18,17 @@ $l['delete'] = "Delete";
 $l['ip'] = "IP";
 $l['email'] = "E-mail";
 $l['nick'] = "Nickname";
+$l['username'] = "Username";
+$l['save'] = "Save";
+$l['cancel'] = "Cancel";
+$l['sign_in'] = "Sign in";
+$l['contact'] = "Contact";
+
+$l['old_password'] = "Old Password";
+$l['new_password'] = "New Password";
+$l['name'] = "Name";
+$l['firstname'] = "Name";
+$l['surname'] = "Surname";
 
 $l['days'] = "days";
 $l['hours'] = "hours";
@@ -25,13 +36,20 @@ $l['minutes'] = "minutes";
 $l['seconds'] = "seconds";
 $l['never'] = "Never";
 
+$l['question'] = "Question";
+$l['description'] = "Description";
 $l['server'] = "Server";
 $l['service'] = "Service";
 $l['amount'] = "Quantity";
 $l['date'] = "Date";
 $l['user'] = "User";
 $l['tariff'] = "Tariff";
+$l['wallet'] = "Wallet";
+$l['cost'] = "Cost";
+$l['sms']['return_code'] = "Return code";
 $l['choose_service'] = "Choose service";
+$l['choose_type'] = "Choose type";
+$l['choose_server'] = "Choose server";
 
 $l['months'] = array("", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
 

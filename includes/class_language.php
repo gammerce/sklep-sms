@@ -3,13 +3,13 @@
 class Language
 {
 
-	private $language;
-	private $language_short;
-	private $lang_list;
+	private $g_language;
+	private $g_language_short;
+	private $g_lang_list;
 
 	function __construct($lang = "polish")
 	{
-		$this->lang_list = array(
+		$this->g_lang_list = array(
 			'polish' => "pl",
 			'english' => "en"
 		);
@@ -18,17 +18,17 @@ class Language
 
 	public function get_current_language()
 	{
-		return $this->language;
+		return $this->g_language;
 	}
 
 	public function get_current_language_short()
 	{
-		return $this->language_short;
+		return $this->g_language_short;
 	}
 
 	public function get_language_by_short($short)
 	{
-		return array_search(strtolower($short), $this->lang_list);
+		return array_search(strtolower($short), $this->g_lang_list);
 	}
 
 	public function set_language($language)
@@ -37,11 +37,11 @@ class Language
 		if (!strlen($language) || !is_dir(SCRIPT_ROOT . "includes/languages/" . $language))
 			return;
 
-		if ($this->language == $language)
+		if ($this->g_language == $language)
 			return;
 
-		$this->language = $language;
-		$this->language_short = if_isset($this->lang_list[$language], "");
+		$this->g_language = $language;
+		$this->g_language_short = if_isset($this->g_lang_list[$language], "");
 
 		// Ładujemy ogólną bibliotekę językową
 		if (file_exists(SCRIPT_ROOT . "includes/languages/general.php"))
@@ -64,7 +64,7 @@ class Language
 		}
 
 		// We must unite and protect our language variables!
-		$lang_keys_ignore = array('language', 'language_short', 'lang_list');
+		$lang_keys_ignore = array('g_language', 'g_language_short', 'g_lang_list');
 
 		if (isset($l) && is_array($l))
 			foreach ($l as $key => $val)
