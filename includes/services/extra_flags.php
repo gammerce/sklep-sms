@@ -119,6 +119,35 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 		);
 	}
 
+	// Zwraca nazwę typu
+	protected function get_type_name($value)
+	{
+		global $lang;
+
+		if ($value == TYPE_NICK)
+			return $lang->nickpass;
+		else if ($value == TYPE_IP)
+			return $lang->ippass;
+		else if ($value == TYPE_SID)
+			return $lang->sid;
+
+		return "";
+	}
+
+	protected function get_type_name2($value)
+	{
+		global $lang;
+
+		if ($value == TYPE_NICK)
+			return $lang->nick;
+		else if ($value == TYPE_IP)
+			return $lang->ip;
+		else if ($value == TYPE_SID)
+			return $lang->sid;
+
+		return "";
+	}
+
 }
 
 class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purchase, IService_PurchaseWeb, IService_PurchaseOutside,
@@ -1300,34 +1329,5 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			'tariff' => $tariff,
 			'server' => $data['server']
 		);
-	}
-
-	// Zwraca nazwę typu
-	private function get_type_name($value)
-	{
-		global $lang;
-
-		if ($value == TYPE_NICK)
-			return $lang->nickpass;
-		else if ($value == TYPE_IP)
-			return $lang->ippass;
-		else if ($value == TYPE_SID)
-			return $lang->sid;
-
-		return "";
-	}
-
-	private function get_type_name2($value)
-	{
-		global $lang;
-
-		if ($value == TYPE_NICK)
-			return $lang->nick;
-		else if ($value == TYPE_IP)
-			return $lang->ip;
-		else if ($value == TYPE_SID)
-			return $lang->sid;
-
-		return "";
 	}
 }

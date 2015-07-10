@@ -12,25 +12,28 @@ $(document).delegate("[id^=edit_row_]", "click", function () {
 });
 
 // Zmiana modułu usługi
+var extra_fields;
 $(document).delegate(".action_box [name=module]", "change", function () {
 	// Brak wybranego modułu
 	if ($(this).val() == "") {
 		// Usuwamy dodatkowe pola
-		$(".action_box .extra_fields").remove();
+		if (extra_fields)
+			extra_fields.remove();
+
 		return;
 	}
 
 	fetch_data("get_service_module_extra_fields", true, {
 		module: $(this).val(),
 		service: $(".action_box [name=id2]").val()
-	}, function (html) {
+	}, function (content) {
 		// Usuwamy dodatkowe pola
-		$(".action_box .extra_fields").remove();
+		if (extra_fields)
+			extra_fields.remove();
 
-		$("<tbody>", {
-			class: 'extra_fields',
-			html: html
-		}).insertAfter(".action_box .ftbody");
+		// Dodajemy content do action boxa
+		extra_fields = $(content);
+		extra_fields.insertAfter(".action_box .ftbody");
 	});
 });
 

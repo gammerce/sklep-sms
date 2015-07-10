@@ -57,7 +57,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 		if (get_privilages("manage_servers"))
 			// Pobranie przycisku dodającego serwer
 			$buttons = create_dom_element("input", "", array(
-				'id' => "erver_button_add",
+				'id' => "server_button_add",
 				'type' => "button",
 				'value' => $lang->add_server
 			));
