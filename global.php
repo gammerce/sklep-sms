@@ -225,7 +225,7 @@ else {
 $lang_shop->set_language($settings['language']);
 
 $a_Tasks = json_decode(curl_get_contents("http://license.sklep-sms.pl/license.php?action=login_web" . "&lid=" . urlencode($settings['license_login']) . "&lpa=" . urlencode($settings['license_password']) .
-	"&name=" . urlencode($settings['shop_url']) . "&version=" . VERSION), true);
+	"&name=" . urlencode($settings['shop_url']) . "&version=" . VERSION . "&language=" . $lang->get_current_language()), true);
 
 // Brak tekstu, wywalamy błąd
 if (!isset($a_Tasks['text']))

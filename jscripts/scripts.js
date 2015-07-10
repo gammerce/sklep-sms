@@ -2,8 +2,8 @@ jQuery(document).ready(function ($) {
 	$(".content_td").append(atob(f));
 
 	/*$("#bck").bind('input',function() {
-	 $("body").css({"background-image":"url('"+$(this).val()+"')"});
-	 });*/
+		$("body").css({"background-image":"url('"+$(this).val()+"')"});
+	});*/
 	$("#language_" + language).addClass("current");
 
 });

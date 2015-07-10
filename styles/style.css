@@ -1,5 +1,5 @@
 body {
-	background: url('../images/3.2.0-dishonored.jpg') no-repeat fixed;
+	background: url('../images/3.3.0-witcher3.jpg') no-repeat fixed;
 	background-size: cover;
 }
 
@@ -38,7 +38,7 @@ body {
 .wallet_status {
 	padding-left: 55px;
 	background-image: url('../images/wallet.png') !important;
-	background-color: #d62226;
+	background-color: #AE0A0E;
 	background-position: 10px center !important;
 	text-align: right;
 	font-weight: bold;
@@ -56,9 +56,9 @@ body {
 .content_title {
 	float: left;
 	padding: 10px;
-	/* background: rgba(0, 0, 0, 0.7); */
 	font-family: Georgia, serif;
 	color: #fff;
+	text-shadow: 2px 2px 1px #000;
 	font-size: 20px;
 	border-radius: 15px 15px 0 0;
 	box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.7);
@@ -99,7 +99,7 @@ body {
 }
 
 .services_buttons li a {
-	background-color: #d62226;
+	background-color: #3D0001;
 	box-shadow: -4px 2px 11px 0 rgba(53, 53, 50, 0.61);
 }
 
@@ -128,7 +128,7 @@ body {
 }
 
 .user_buttons li a, #loginarea_roll_button, #register_redirect_button, #logout {
-	background-color: #6D9782;
+	background-color: #2E555A;
 	box-shadow: 4px 3px 11px 0 rgba(53, 53, 50, 0.61);
 }
 
