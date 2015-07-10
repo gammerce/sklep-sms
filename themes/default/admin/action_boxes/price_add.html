@@ -1,38 +1,38 @@
 <form id="form_price_add" class="action_box">
 	<div class="service_main_info">
-		Dodaj Cenę
+		{$lang->add_price}
 	</div>
 	<table>
 		<tr>
-			<td>USŁUGA</td>
+			<td>$lang->strtoupper({$lang->service})</td>
 			<td>
 				<select name="service">
-					<option value="0">Wybierz Usługę</option>
+					<option value="0">{$lang->choose_service}</option>
 					{$services}
 				</select>
 			</td>
 		</tr>
 		<tr>
-			<td>SERWER</td>
+			<td>$lang->strtoupper({$lang->server})</td>
 			<td>
 				<select name="server">
-					<option value="0">Wybierz Serwer</option>
-					<option value="-1">Wszystkie</option>
+					<option value="0">{$lang->choose_server}</option>
+					<option value="-1">{$lang->all}</option>
 					{$servers}
 				</select>
 			</td>
 		</tr>
 		<tr>
-			<td>TARYFA</td>
+			<td>$lang->strtoupper({$lang->tariff})</td>
 			<td>
 				<select name="tariff">
-					<option value="0">Wybierz Taryfę</option>
+					<option value="0">{$lang->choose_tariff}</option>
 					{$tariffs}
 				</select>
 			</td>
 		</tr>
 		<tr>
-			<td>ILOŚĆ</td>
+			<td>$lang->strtoupper({$lang->amount})</td>
 			<td><input type="text" name="amount" style="width: 100px;"/></td>
 		</tr>
 		<tr>
@@ -40,7 +40,7 @@
 		</tr>
 		<tr>
 			<td colspan="2">
-				<input type="submit" value="Dodaj" style="width: 100%;"/>
+				<input type="submit" value="{$lang->add}" style="width: 100%;"/>
 			</td>
 		</tr>
 	</table>

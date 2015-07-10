@@ -1,14 +1,14 @@
 <form id="form_user_service_add" class="action_box">
 	<div class="service_main_info">
-		Dodaj usługę graczowi
+		{$lang->add_service_for_user}
 	</div>
 	<table>
 		<tbody class="ftbody">
 		<tr>
-			<td>Usługa</td>
+			<td>{$lang->service}</td>
 			<td>
 				<select name="service">
-					<option value="">Wybierz Usługę</option>
+					<option value="">{$lang->choose_service}</option>
 					{$services}
 				</select>
 			</td>
@@ -20,7 +20,7 @@
 		</tr>
 		<tr>
 			<td colspan="2">
-				<input type="submit" value="Dodaj" style="width: 100%;"/>
+				<input type="submit" value="{$lang->add}" style="width: 100%;"/>
 			</td>
 		</tr>
 		</tbody>

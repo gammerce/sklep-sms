@@ -258,7 +258,37 @@ $l['next_version'] = "Kolejna wersja";
 $l['latest_version'] = "Najnowsza wersja";
 $l['web_first_possibility'] = "Mamy dwie możliwości. Pobieramy paczkę z najnowszą wersją skryptu w wersji FULL, albo aktualizujemy stopniowo, z
 		jednej wersji na drugą, za pomocą paczek w wersji UPDATE.";
-$l['web_second_possibility'] = "Pobieramy cały sklepik w najnowszej wersji: {$shop_files['newest_full']} lub tylko zmienione pliki
-				kolejnej wersji: {$shop_files['next_update']}";
+$l['web_second_possibility'] = "Pobieramy cały sklepik w najnowszej wersji: {1} lub tylko zmienione pliki
+				kolejnej wersji: {2}";
 $l['change_log'] = "Lista Zmian";
 $l['updated_files'] = "Aktualizowane Pliki";
+$l['charge'] = "Doładuj {1}";
+
+$l['question'] = "Pytanie";
+$l['html_allowed'] = "( dozwolony HTML )";
+$l['separated'] = "( oddzielone średnikiem ';' )";
+$l['add'] = "Dodaj";
+$l['edit_antispam_question'] = "Edytuj pytanie anty-spamowe";
+$l['edit_group'] = "Edytuj Grupę";
+$l['all'] = "Wszystkie";
+$l['choose_tariff'] = "Wybierz taryfę";
+$l['edit_price'] = "Edytuj Cenę";
+$l['default'] = "Domyślnie";
+$l['edit_server'] = "Edytuj Serwer";
+$l['description_on_server'] = "Opis na serwerze </br> HTML: niedozwolony";
+$l['description_on_www'] = "Opis na stronie WWW </br> HTML: dozwolony";
+$l['tag'] = "Tag";
+$l['groups_to_buy_service'] = "Które grupy mogą zakupić tę usługę.<br/>Zostaw puste, aby zezwolić wszystkim.";
+$l['module'] = "Moduł";
+$l['module_to_operate_service'] = "Jaki moduł ma obsługiwać daną usługę.";
+$l['add_code_for_service'] = "Dodaj kod na usługę";
+$l['generate'] = "Generuj";
+$l['user_id'] = "ID użytkownika";
+$l['edit_service'] = "Edytuj Usługę";
+$l['confirm'] = "Zatwierdź";
+$l['edit_tariff'] = "Edytuj Taryfę";
+$l['edit_payment_method'] = "Edytuj Metodę Płatności";
+$l['wallet_charge'] = "Doładowanie portfela";
+$l['edit_user'] = "Edytuj Użytkownika";
+$l['add_service_for_user'] = "Dodaj usługę graczowi";
+$l['edit_user_service'] = "Edytuj Usługę Gracza";

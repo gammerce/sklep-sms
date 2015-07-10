@@ -1,10 +1,10 @@
 <form id="form_group_add" class="action_box">
 	<div class="service_main_info">
-		Dodaj Grupę
+		{$lang->add_group}
 	</div>
 	<table>
 		<tr>
-			<td>NAZWA</td>
+			<td>$lang->strtoupper({$lang->firstname})</td>
 			<td><input type="text" name="name"/></td>
 		</tr>
 		<tr>
@@ -16,7 +16,7 @@
 		</tr>
 		<tr>
 			<td colspan="2">
-				<input type="submit" value="Dodaj" style="width: 100%;"/>
+				<input type="submit" value="{$lang->add}" style="width: 100%;"/>
 			</td>
 		</tr>
 	</table>

@@ -1,43 +1,43 @@
 <form id="form_service_add" class="action_box">
 	<div class="service_main_info">
-		Dodaj Usługę
+		{$lang->add_service}
 	</div>
 	<table>
 		<tbody class="ftbody">
 		<tr>
-			<td>ID</td>
+			<td>{$lang->id}</td>
 			<td><input type="text" name="id" maxlength="16"/></td>
 		</tr>
 		<tr>
-			<td>NAZWA</td>
+			<td>$lang->strtoupper({$lang->firstname})</td>
 			<td><input type="text" name="name" maxlength="32"/></td>
 		</tr>
 		<tr>
 			<td>
-				KRÓTKI OPIS<br/>
-				<span class="hint">Opis na serwerze<br/>HTML: niedozwolony</span>
+				$lang->strtoupper({$lang->short_description})<br/>
+				<span class="hint">{$lang->description_on_server}</span>
 			</td>
 			<td><input type="text" name="short_description" maxlength="28"/></td>
 		</tr>
 		<tr>
 			<td>
-				OPIS<br/>
-				<span class="hint">Opis na stronie WWW<br/>HTML: dozwolony</span>
+				$lang->strtoupper({$lang->description})<br/>
+				<span class="hint">{$lang->description_on_www}</span>
 			</td>
 			<td><textarea name="description" style="width: 400px; height: 80px;"></textarea></td>
 		</tr>
 		<tr>
-			<td>TAG</td>
+			<td>$lang->strtoupper({$lang->tag})</td>
 			<td><input type="text" name="tag" maxlength="16"/></td>
 		</tr>
 		<tr>
-			<td>KOLEJNOŚĆ</td>
+			<td>$lang->strtoupper({$lang->order})</td>
 			<td><input type="text" name="order"/></td>
 		</tr>
 		<tr>
 			<td>
-				GRUPY
-				<div class="hint">Które grupy mogą zakupić tę usługę.<br/>Zostaw puste, aby zezwolić wszystkim.</div>
+				$lang->strtoupper({$lang->groups})
+				<div class="hint">{$lang->groups_to_buy_service}</div>
 			</td>
 			<td>
 				<select name="groups[]" multiple>
@@ -50,8 +50,8 @@
 		</tr>
 		<tr>
 			<td>
-				MODUŁ
-				<div class="hint">Jaki moduł ma obsługiwać daną usługę.</div>
+				$lang->strtoupper({$lang->module})
+				<div class="hint">{$lang->module_to_operate_service}</div>
 			</td>
 			<td>
 				<select name="module">
@@ -67,7 +67,7 @@
 		</tr>
 		<tr>
 			<td colspan="2">
-				<input type="submit" value="Dodaj" style="width: 100%;"/>
+				<input type="submit" value="{$lang->add}" style="width: 100%;"/>
 			</td>
 		</tr>
 		</tbody>

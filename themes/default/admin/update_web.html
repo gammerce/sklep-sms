@@ -23,7 +23,7 @@
 	<div class="info">
 		{$lang->web_first_possibility}
 		<ol>
-			<li>{$lang->web_second_possibility} //jak tutaj z tymi zmiennymi, sprintf ? //
+			<li>$lang->sprintf({$lang->web_second_possibility}, $shop_files['newest_full'], $shop_files['next_update'])
 			</li>
 			<li>{$lang->unzip_arch}</li>
 		</ol>

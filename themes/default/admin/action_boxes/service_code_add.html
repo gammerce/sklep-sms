@@ -1,14 +1,14 @@
 <form id="form_service_code_add" class="action_box">
 	<div class="service_main_info">
-		Dodaj kod na usługę
+		{$lang->add_code_for_service}
 	</div>
 	<table>
 		<tbody class="ftbody">
 		<tr>
-			<td>Kod</td>
+			<td>{$lang->code}</td>
 			<td>
 				<input type="text" name="code" style="width: 100px;"/>&nbsp;
-				<input type="button" name="random_code" value="Generuj"/>
+				<input type="button" name="random_code" value="{$lang->generate}"/>
 			</td>
 		</tr>
 		<tr>
@@ -21,7 +21,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td>ID użytkownika</td>
+			<td>{$lang->user_id}</td>
 			<td><input type="text" name="uid" style="width: 60px;"/></td>
 		</tr>
 		</tbody>
@@ -31,7 +31,7 @@
 		</tr>
 		<tr>
 			<td colspan="2">
-				<input type="submit" value="Dodaj" style="width: 100%;"/>
+				<input type="submit" value="{$lang->add}" style="width: 100%;"/>
 			</td>
 		</tr>
 		</tbody>

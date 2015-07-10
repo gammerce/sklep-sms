@@ -1,14 +1,14 @@
 <form id="form_transaction_service_edit" class="action_box">
 	<div class="service_main_info">
-		Edytuj Metodę Płatności
+		{$lang->edit_payment_method}
 	</div>
 	<table>
 		<tr>
-			<td>ID</td>
+			<td>{$lang->id}</td>
 			<td>{$transaction_service['id']}</td>
 		</tr>
 		<tr>
-			<td>NAZWA</td>
+			<td>$lang->strtoupper({$lang->firstname})</td>
 			<td>{$transaction_service['name']}</td>
 		</tr>
 		<tr>
@@ -21,7 +21,7 @@
 		<tr>
 			<td colspan="2">
 				<input type="hidden" name="id" value="{$transaction_service['id']}"/>
-				<input type="submit" value="Zatwierdź" style="width: 100%;"/>
+				<input type="submit" value="{$lang->confirm}" style="width: 100%;"/>
 			</td>
 		</tr>
 	</table>

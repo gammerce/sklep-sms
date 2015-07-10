@@ -1,10 +1,10 @@
 <form id="form_price_edit" class="action_box">
 	<div class="service_main_info">
-		Edytuj Cenę
+		{$lang->edit_price}
 	</div>
 	<table>
 		<tr>
-			<td>USŁUGA</td>
+			<td>$lang->strtoupper({$lang->service})</td>
 			<td>
 				<select name="service">
 					{$services}
@@ -12,16 +12,16 @@
 			</td>
 		</tr>
 		<tr>
-			<td>SERWER</td>
+			<td>$lang->strtoupper({$lang->server})</td>
 			<td>
 				<select name="server">
-					<option value="-1" {$all_servers}>Wszystkie</option>
+					<option value="-1" {$all_servers}>{$lang->all}</option>
 					{$servers}
 				</select>
 			</td>
 		</tr>
 		<tr>
-			<td>TARYFA</td>
+			<td>$lang->strtoupper({$lang->tariff})</td>
 			<td>
 				<select name="tariff">
 					{$tariffs}
@@ -29,7 +29,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td>ILOŚĆ</td>
+			<td>$lang->strtoupper({$lang->amount})</td>
 			<td><input type="text" name="amount" value="{$price['amount']}" style="width: 100px;"/></td>
 		</tr>
 		<tr>
