@@ -183,6 +183,7 @@ CONCAT_WS('', pa.platform, ps.platform, pt.platform, pw.platform, pc.platform) A
 CONCAT_WS('', ps.income, pt.income) AS `income`,
 CONCAT_WS('', ps.cost, pt.income, pw.cost) AS `cost`,
 pa.aid AS `aid`,
+u2.username AS `adminname`,
 ps.code AS `sms_code`,
 ps.text AS `sms_text`,
 ps.number AS `sms_number`,
@@ -192,6 +193,7 @@ bs.timestamp AS `timestamp`
 FROM `" . TABLE_PREFIX . "bought_services` AS bs
 LEFT JOIN `" . TABLE_PREFIX . "users` AS u ON u.uid = bs.uid
 LEFT JOIN `" . TABLE_PREFIX . "payment_admin` AS pa ON bs.payment = 'admin' AND pa.id = bs.payment_id
+LEFT JOIN `" . TABLE_PREFIX . "users` AS u2 ON u2.uid = pa.aid
 LEFT JOIN `" . TABLE_PREFIX . "payment_sms` AS ps ON bs.payment = 'sms' AND ps.id = bs.payment_id
 LEFT JOIN `" . TABLE_PREFIX . "payment_transfer` AS pt ON bs.payment = 'transfer' AND pt.id = bs.payment_id
 LEFT JOIN `" . TABLE_PREFIX . "payment_wallet` AS pw ON bs.payment = 'wallet' AND pw.id = bs.payment_id

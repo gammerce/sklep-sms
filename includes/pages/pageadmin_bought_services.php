@@ -40,7 +40,7 @@ class PageAdminBoughtServices extends PageAdmin
 		while ($row = $db->fetch_array_assoc($result)) {
 			$row['auth_data'] = htmlspecialchars($row['auth_data']);
 			$row['email'] = htmlspecialchars($row['email']);
-			$username = htmlspecialchars($row['username']);
+			$username = $row['uid'] ? htmlspecialchars($row['username']) . " ({$row['uid']})" : $lang->none;
 
 			// Pobranie danych o usłudze, która została kupiona
 			$service = $heart->get_service($row['service']);

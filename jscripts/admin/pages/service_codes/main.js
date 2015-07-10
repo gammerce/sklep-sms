@@ -1,5 +1,5 @@
 // Kliknięcie dodania kodu na usługę
-$(document).delegate("#button_service_code_add", "click", function () {
+$(document).delegate("#service_code_button_add", "click", function () {
 	show_action_box(get_get_param("pid"), "code_add");
 });
 
@@ -19,7 +19,7 @@ $(document).delegate("#form_service_code_add [name=service]", "change", function
 		return;
 	}
 
-	fetch_data("service_code_add_get_form", true, {
+	fetch_data("service_code_add_form_get", true, {
 		service: $(this).val()
 	}, function (content) {
 		// Usuwamy dodatkowe pola

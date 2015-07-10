@@ -12,7 +12,7 @@ $(document).delegate("#form_service_code_add [name=server]", "change", function 
 	fetch_data("execute_service_action", false, {
 		service_action: "tariffs_for_server",
 		server: $(this).val(),
-		service: module.find("[name=service]").val()
+		service: module.closest("form").find("[name=service]").val()
 	}, function (html) {
 		module.find("[name=amount]").html(html);
 	});

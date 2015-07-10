@@ -34,6 +34,7 @@ class PageAdminPaymentAdmin extends PageAdmin
 			if ($get['highlight'] && $get['payid'] == $row['payment_id'])
 				$row['class'] = "highlighted";
 
+			$adminname = $row['aid'] ? htmlspecialchars($row['adminname']) . " ({$row['aid']})" : $lang->none;
 			$row['platform'] = get_platform($row['platform']);
 
 			// Pobranie danych do tabeli

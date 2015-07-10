@@ -49,7 +49,7 @@ class PageAdminUsersServices extends PageAdmin implements IPageAdminActionBox
 			$row['auth_data'] = htmlspecialchars($row['auth_data']);
 			$row['service'] = htmlspecialchars($row['service']);
 			$row['server'] = htmlspecialchars($row['server']);
-			$row['username'] = htmlspecialchars($row['username']);
+			$username = $row['uid'] ? htmlspecialchars($row['username']) . " ({$row['uid']})" : $lang->none;
 
 			// Zamiana daty
 			$row['expire'] = $row['expire'] == -1 ? $lang->never : date($settings['date_format'], $row['expire']);
