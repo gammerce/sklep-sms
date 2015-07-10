@@ -170,3 +170,14 @@ $l['payment_not_accepted'] = "Nieudana autoryzacja transakcji: {1} Kwota: {2} Us
 $l['purchase_code'] = "Wykorzystano kod {1} do zakupu usługi przez {2}({3}). ID płatności: {4}";
 
 $l['service_not_displayed'] = "Usługa nie może zostać wyświetlona, ponieważ jej moduł nie zapewnia takiej funkcjonalności.";
+
+$l['password_change'] = "W celu zmiany hasła do swojego konta, podaj stare hasło. Następnie wpisz nowe hasło oraz wprowadź je ponownie.";
+$l['email'] = "E-mail";
+$l['test'] = "test@test.pl";
+$l['talk_talk'] = "Gadu-Gadu";
+$l['error_sms_shop'] = "ERROR - Sklep SMS";
+$l['type_code'] = "Wprowadź kod";
+$l['password_reset'] = "W celu zmiany hasła do swojego konta, podaj nowe hasło, a następnie wpisz je ponownie.";
+$l['service_takeover'] = "<strong>Przejęcie usługi</strong> służy do przypisania konkretnej, czasowej usługi do swojego konta. Zazwyczaj
+	używane,
+	gdy zakupiliśmy usługę nie będąc zalogowani.";

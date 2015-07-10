@@ -170,3 +170,14 @@ $l['payment_not_accepted'] = "Transaction authorization failure: {1} Amount: {2}
 $l['purchase_code'] = "Code {1} was used to purchase service by {2}({3}). Payment ID: {4}";
 
 $l['service_not_displayed'] = "Service cannot be displayed, because its module does not provide such functionality.";
+
+$l['password_change'] = "In order to change password to your account, enter old password. Then enter new password and type it again.";
+$l['email'] = "E-mail";
+$l['test'] = "test@test.com";
+$l['talk_talk'] = "Talk-Talk";
+$l['error_sms_shop'] = "ERROR - SMS Shop";
+$l['type_code'] = "Enter the code";
+$l['password_reset'] = "In order to change password to your account, enter new password and type it again.";
+$l['service_takeover'] = "<strong>Service takeover</strong> is to assign specific, time-bound service to your account. Usually
+	used
+	when buying service while not logged in.";
