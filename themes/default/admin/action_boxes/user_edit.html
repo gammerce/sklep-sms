@@ -11,26 +11,26 @@
 			<td colspan="2" class="line"></td>
 		</tr>
 		<tr>
-			<td>$lang->strtoupper({$lang->username})</td>
+			<td>{$lang->strtoupper($lang->username)}</td>
 			<td><input type="text" name="username" maxlength="64" value="{$row['username']}"/></td>
 		</tr>
 		<tr>
-			<td>$lang->strtoupper({$lang->name})</td>
+			<td>{$lang->strtoupper($lang->name)}</td>
 			<td><input type="text" name="forename" maxlength="32" value="{$row['forename']}"/></td>
 		</tr>
 		<tr>
-			<td>$lang->strtoupper({$lang->surname})</td>
+			<td>{$lang->strtoupper($lang->surname)}</td>
 			<td><input type="text" name="surname" maxlength="64" value="{$row['surname']}"/></td>
 		</tr>
 		<tr>
-			<td>$lang->strtoupper({$lang->email})</td>
+			<td>{$lang->strtoupper($lang->email)}</td>
 			<td><input type="text" name="email" maxlength="128" value="{$row['email']}"/></td>
 		</tr>
 		<tr>
 			<td colspan="2" class="line"></td>
 		</tr>
 		<tr>
-			<td>$lang->strtoupper({$lang->groups})</td>
+			<td>{$lang->strtoupper($lang->groups)}</td>
 			<td>
 				<select name="groups[]" multiple>
 					{$groups}
@@ -38,7 +38,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td>$lang->strtoupper({$lang->wallet})</td>
+			<td>{$lang->strtoupper($lang->wallet)}</td>
 			<td style="vertical-align: middle">
 				<input type="text" name="wallet" style="width: 60px" maxlength="32" value="{$row['wallet']}"/>&nbsp;{$settings['currency']}
 			</td>

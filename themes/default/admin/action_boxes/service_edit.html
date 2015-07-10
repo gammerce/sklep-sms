@@ -14,7 +14,7 @@
 		</tr>
 		<tr>
 			<td>
-				$lang->strtoupper({$lang->short_description})<br/>
+				{$lang->strtoupper($lang->short_description)}<br/>
 				<span class="hint">{$lang->description_on_server}</span>
 			</td>
 			<td><input type="text" name="short_description" maxlength="28" value="{$service['short_description']}"/>
@@ -22,23 +22,23 @@
 		</tr>
 		<tr>
 			<td>
-				$lang->strtoupper({$lang->description})<br/>
+				{$lang->strtoupper($lang->description)}<br/>
 				<span class="hint">{$lang->description_on_www}</span>
 			</td>
 			<td><textarea name="description" style="width: 400px; height: 80px;">{$service['description']}</textarea>
 			</td>
 		</tr>
 		<tr>
-			<td>$lang->strtoupper({$lang->tag})</td>
+			<td>{$lang->strtoupper($lang->tag)}</td>
 			<td><input type="text" name="tag" value="{$service['tag']}" maxlength="16"/></td>
 		</tr>
 		<tr>
-			<td>$lang->strtoupper({$lang->order})</td>
+			<td>{$lang->strtoupper($lang->order)}</td>
 			<td><input type="text" name="order" value="{$service['order']}"/></td>
 		</tr>
 		<tr>
 			<td>
-				$lang->strtoupper({$lang->groups})
+				{$lang->strtoupper($lang->groups)}
 				<div class="hint">{$lang->groups_to_buy_service}</div>
 			</td>
 			<td>
@@ -51,7 +51,7 @@
 			<td colspan="2" class="line"></td>
 		</tr>
 		<tr>
-			<td>$lang->strtoupper({$lang->module})</td>
+			<td>{$lang->strtoupper($lang->module)}</td>
 			<td>{$service_module_name}</td>
 		</tr>
 		</tbody>

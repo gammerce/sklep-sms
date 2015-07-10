@@ -11,7 +11,7 @@
 			<td colspan="2" class="line"></td>
 		</tr>
 		<tr>
-			<td>$lang->strtoupper({$lang->firstname})</td>
+			<td>{$lang->strtoupper($lang->firstname)}</td>
 			<td><input type="text" name="name" maxlength="64" value="{$server['name']}"/></td>
 		</tr>
 		<tr>
@@ -19,7 +19,7 @@
 			<td><input type="text" name="ip" style="width: 120px" maxlength="16" value="{$server['ip']}"/></td>
 		</tr>
 		<tr>
-			<td>$lang->strtoupper({$lang->port})</td>
+			<td>{$lang->strtoupper($lang->port)}</td>
 			<td><input type="text" name="port" style="width: 60px" maxlength="8" value="{$server['port']}"/></td>
 		</tr>
 		<tr>
