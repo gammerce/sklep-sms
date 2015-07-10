@@ -6,9 +6,9 @@
 <body>
 <div class="center">
 	<form id="form_admin_login" action="admin.php{$get_data}" method="POST">
-		<h2>Zaloguj się</h2>
+		<h2>{$lang->sign_in}</h2>
 		{$warning}
-		<div class="label">Nazwa użytkownika:</div>
+		<div class="label">{$lang->username},":"</div>
 		<div class="field">
 			<input type="text" name="username"/>
 		</div>
@@ -19,7 +19,7 @@
 			<input type="password" name="password"/>
 		</div>
 		<br class="clear"/>
-		<input type="submit" value="Zaloguj"/>
+		<input type="submit" value="{$lang->sign_in}"/>
 		<br class="clear"/>
 	</form>
 </div>

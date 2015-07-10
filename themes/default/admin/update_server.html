@@ -1,24 +1,22 @@
 <div class="title">{$this->title}</div>
 <div class="form_update">
-	<h4>Wersje</h4>
+	<h4>{$lang->versions}</h4>
 
 	<div class="info">
 		{$version_bricks}
 	</div>
 
-	<h4>Jak zaktualizować</h4>
+	<h4>{$lang->how_to_update}</h4>
 
 	<div class="info">
-		Mamy dwie możliwości. Pobieramy paczkę z najnowszą wersją pluginów w wersji FULL, albo aktualizujemy stopniowo,
-		z jednej wersji na drugą, za pomocą paczek w wersji UPDATE.
+		{$lang->server_first_possibility}
 		<ol>
-			<li>Pobieramy cały sklepik w najnowszej wersji <em>(full)</em> lub tylko zmienione pliki <em>(update)</em>
-				kolejnej wersji:
+			<li>{$lang->server_second_possibility}
 				<ul>
 					{$servers_versions}
 				</ul>
 			</li>
-			<li>Rozpakowywujemy archiwum, a następnie kopiujemy pliki na serwer z zachowaniem hierarchii katalogów.</li>
+			<li>{$lang->unzip_arch}</li>
 		</ol>
 	</div>
 </div>

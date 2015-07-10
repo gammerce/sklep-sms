@@ -1,25 +1,25 @@
 <form id="form_server_add" class="action_box">
 	<div class="service_main_info">
-		Dodaj Serwer
+		{$lang->add_server}
 	</div>
 	<table>
 		<tr>
-			<td>NAZWA</td>
+			<td>{$lang->strtoupper($lang->firstname)}</td>
 			<td><input type="text" name="name" maxlength="64"/></td>
 		</tr>
 		<tr>
-			<td>IP</td>
+			<td>{$lang->ip}</td>
 			<td><input type="text" name="ip" style="width: 120px" maxlength="16"/></td>
 		</tr>
 		<tr>
-			<td>PORT</td>
+			<td>{$lang->strtoupper($lang->port)}</td>
 			<td><input type="text" name="port" style="width: 60px" maxlength="8"/></td>
 		</tr>
 		<tr>
-			<td>Serwis Płatności SMS</td>
+			<td>{$lang->sms_payment_service}</td>
 			<td>
 				<select name="sms_service">
-					<option value="">Domyślnie</option>
+					<option value="">{$lang->default}</option>
 					{$sms_services}
 				</select>
 			</td>
@@ -33,7 +33,7 @@
 		</tr>
 		<tr>
 			<td colspan="2">
-				<input type="submit" value="Dodaj" style="width: 100%;"/>
+				<input type="submit" value="{$lang->add}" style="width: 100%;"/>
 			</td>
 		</tr>
 	</table>

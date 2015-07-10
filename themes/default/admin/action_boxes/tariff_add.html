@@ -1,14 +1,14 @@
 <form id="form_tariff_add" class="action_box">
 	<div class="service_main_info">
-		Dodaj Taryfę
+		{$lang->add_tariff}
 	</div>
 	<table>
 		<tr>
-			<td>TARYFA</td>
+			<td>{$lang->strtoupper($lang->tariff)}</td>
 			<td><input type="text" name="tariff" style="width: 60px;"/></td>
 		</tr>
 		<tr>
-			<td>PROWIZJA</td>
+			<td>{$lang->strtoupper($lang->provision)}</td>
 			<td><input type="text" name="provision" style="width: 60px;"/> {$settings['currency']}</td>
 		</tr>
 		<tr>
@@ -16,7 +16,7 @@
 		</tr>
 		<tr>
 			<td colspan="2">
-				<input type="submit" value="Dodaj" style="width: 100%;"/>
+				<input type="submit" value="{$lang->add}" style="width: 100%;"/>
 			</td>
 		</tr>
 	</table>

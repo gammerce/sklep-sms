@@ -3,38 +3,36 @@
 	<h4>Wersje</h4>
 
 	<div class="info">
-		<strong>Najnowsza Wersja:</strong> {$newest_version}<br/><br/>
+		<strong>{$lang->latest_version}, ":"</strong> {$newest_version}<br/><br/>
 		<table>
 			<tr>
-				<td><strong>Obecna Wersja</strong></td>
+				<td><strong>{$lang->present_version}</strong></td>
 				<td style="width: 5px;">&nbsp;</td>
 				<td>{__VERSION__}</td>
 			</tr>
 			<tr>
-				<td><strong>Kolejna Wersja</strong></td>
+				<td><strong>{$lang->next_version}</strong></td>
 				<td></td>
 				<td>{$next_version}</td>
 			</tr>
 		</table>
 	</div>
 	{$additional_info}
-	<h4>Jak zaktualizować</h4>
+	<h4>{$lang->how_to_update}</h4>
 
 	<div class="info">
-		Mamy dwie możliwości. Pobieramy paczkę z najnowszą wersją skryptu w wersji FULL, albo aktualizujemy stopniowo, z
-		jednej wersji na drugą, za pomocą paczek w wersji UPDATE.
+		{$lang->web_first_possibility}
 		<ol>
-			<li>Pobieramy cały sklepik w najnowszej wersji: {$shop_files['newest_full']} lub tylko zmienione pliki
-				kolejnej wersji: {$shop_files['next_update']}
+			<li>{$lang->sprintf($lang->web_second_possibility, $shop_files['newest_full'], $shop_files['next_update'])}
 			</li>
-			<li>Rozpakowywujemy archiwum, a następnie kopiujemy pliki na serwer z zachowaniem hierarchii katalogów.</li>
+			<li>{$lang->unzip_arch}</li>
 		</ol>
 	</div>
-	<h4>Lista Zmian</h4>
+	<h4>{$lang->change_log}</h4>
 	<ul>
 		{$changelog}
 	</ul>
-	<h4>Aktualizowane Pliki</h4>
+	<h4>{$lang->updated_files}</h4>
 	<ul>
 		{$files}
 	</ul>
