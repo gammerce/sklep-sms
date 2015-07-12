@@ -163,3 +163,9 @@ $l['password_reset'] = "W celu zmiany hasła do swojego konta, podaj nowe hasło
 $l['service_takeover'] = "<strong>Przejęcie usługi</strong> służy do przypisania konkretnej, czasowej usługi do swojego konta. Zazwyczaj używane,
 	gdy zakupiliśmy usługę nie będąc zalogowani.";
 $l['show_more'] = "Pokaż więcej";
+
+$l['pass_changed'] = "Hasło zostało prawidłowo zmienione.";
+$l['reset_link_sent'] = "e-mail wraz z linkiem do zresetowania hasła został wysłany na Twoją skrzynkę pocztową.<br/>
+Postępuj zgodnie ze wskazówkami zawartymi w e-mailu.";
+$l['register_success'] = "Twoje konto zostało prawidłowo zarejestrowane na adres email: {1}.<br/>
+Możesz teraz skorzystać z wielu przydatnych dodatków.";

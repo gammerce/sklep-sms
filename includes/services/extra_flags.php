@@ -715,8 +715,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 		// Expire
 		if (!$data['forever'] && ($data['expire'] = strtotime($data['expire'])) === FALSE)
-			$warnings['expire'] = "Błędny format daty.<br />"; // TODO lang
-
+			$warnings['expire'] = $lang->wrong_date_format . "<br />";
 		// Sprawdzamy, czy ustawiono hasło, gdy hasła nie ma w bazie i dana usługa wymaga hasła
 		if (!strlen($data['password']) && $data['type'] & (TYPE_NICK | TYPE_IP) && !strlen($user_service['password']))
 			$warnings['password'] = $lang->field_no_empty;

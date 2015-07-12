@@ -163,3 +163,9 @@ $l['service_takeover'] = "<strong>Service takeover</strong> is to assign specifi
 	used
 	when buying service while not logged in.";
 $l['show_more'] = "Show more";
+
+$l['pass_changed'] = "Password changed successfully.";
+$l['reset_link_sent'] = "e-mail with link to reset password has been sent to your e-mail box.<br/>
+Follow the directions in the e-mail.";
+$l['register_success'] = "Your account has been registered successfully, e-mail: {1}.<br/>
+You can now profit from many add-ons.";

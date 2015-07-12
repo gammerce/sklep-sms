@@ -1,5 +1,4 @@
-Witaj {$data['auth_data']},<br/>
-przed chwilą dokonałeś/aś zakupu w naszym sklepie.<br/>
+{$lang->sprintf($lang->just_purchased, $data['auth_data'])}<br/>
 <br/>
 <strong>{$lang->service}:</strong> {$this->service['name']}<br/>
 <strong>{$lang->amount}:</strong> {$amount}<br/>
@@ -10,5 +9,5 @@ przed chwilą dokonałeś/aś zakupu w naszym sklepie.<br/>
 <br/>
 {$setinfo}<br/>
 <br/>
-Pozdrawiamy,<br/>
+{$lang->regards},<br/>
 {$settings['signature']}
