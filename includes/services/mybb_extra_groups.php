@@ -13,6 +13,12 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 	 */
 	public function service_admin_extra_fields_get()
 	{
+		global $lang;
+
+		// WEB
+		if ($this->show_on_web()) $web_sel_yes = "selected";
+		else $web_sel_no = "selected";
+
 		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/extra_fields", 0, 1, 0) . "\";");
 		return $output;
 	}
@@ -29,6 +35,11 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 	{
 		global $lang;
 
+		// Web
+		if (!in_array($data['web'], array("1", "0")))
+			$output['web'] = $lang->only_yes_no;
+
+		// MyBB groups
 		if (!strlen($_POST['groups_mybb']))
 			$output['groups_mybb'] = $lang->field_no_empty;
 
@@ -51,6 +62,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 	public function service_admin_manage_post($data)
 	{
 		$extra_data['groups_mybb'] = trim($data['groups_mybb']);
+		$extra_data['web'] = $data['web'];
 
 		return array(
 			'query_set'	=> array(
@@ -73,7 +85,9 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	 */
 	public function purchase_form_get()
 	{
+		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/purchase_form") . "\";");
 
+		return $output;
 	}
 
 	/**
