@@ -46,11 +46,6 @@ function get_template($title, $install = false, $eslashes = true, $htmlcomments 
 					$path = $temp;
 			}
 		}
-
-		if (!isset($path))
-			return FALSE;
-
-		$template = file_get_contents($path);
 	} else {
 		if (strlen($lang->get_current_language_short())) {
 			$filename = $title . "." . $lang->get_current_language_short();
@@ -65,12 +60,12 @@ function get_template($title, $install = false, $eslashes = true, $htmlcomments 
 			if (file_exists($temp))
 				$path = $temp;
 		}
-
-		if (!isset($path))
-			return FALSE;
-
-		$template = file_get_contents($path);
 	}
+
+	if (!isset($path))
+		return FALSE;
+
+	$template = file_get_contents($path);
 
 	if ($htmlcomments)
 		$template = "<!-- start: " . htmlspecialchars($title) . " -->\n{$template}\n<!-- end: " . htmlspecialchars($title) . " -->";

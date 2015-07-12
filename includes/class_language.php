@@ -89,12 +89,4 @@ class Language
 		return strtoupper($string);
 	}
 
-	private $aaa = array();
-	public function add($key, $val) {
-		if (!isset($this->aaa[$key]))
-			$this->aaa[$key] = $val;
-		else
-			echo $key . "<br />";
-	}
-
 }
