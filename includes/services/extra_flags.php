@@ -1026,7 +1026,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		}
 	}
 
-	public function form_take_over_service($service_id)
+	public function service_take_over_form_get($service_id)
 	{
 		global $heart, $lang;
 
@@ -1049,12 +1049,12 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			));
 		}
 
-		eval("\$output .= \"" . get_template("services/extra_flags/take_over_service") . "\";");
+		eval("\$output .= \"" . get_template("services/extra_flags/service_take_over") . "\";");
 
 		return $output;
 	}
 
-	public function take_over_service($data)
+	public function service_take_over($data)
 	{
 		global $db, $user, $settings, $lang;
 
@@ -1259,7 +1259,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			return $data['sid'];
 	}
 
-	public function service_action_execute($action, $data)
+	public function action_execute($action, $data)
 	{
 		switch ($action) {
 			case "tariffs_for_server":

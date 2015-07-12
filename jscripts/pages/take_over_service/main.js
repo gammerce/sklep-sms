@@ -1,20 +1,20 @@
-$(document).delegate("#form_take_over_service [name=service]", "change", function () {
+$(document).delegate("#form_service_take_over [name=service]", "change", function () {
 	if ($(this).val() == "") {
-		$("#form_take_over_service .extra_data").html("");
-		$("#form_take_over_service .take_over").hide();
+		$("#form_service_take_over .extra_data").html("");
+		$("#form_service_take_over .take_over").hide();
 		return;
 	}
 
 	var data = {
 		service: $(this).val()
 	};
-	fetch_data("form_take_over_service", false, data, function (html) {
-		$("#form_take_over_service .extra_data").html(html);
-		$("#form_take_over_service .take_over").show();
+	fetch_data("service_take_over_form_get", false, data, function (html) {
+		$("#form_service_take_over .extra_data").html(html);
+		$("#form_service_take_over .take_over").show();
 	});
 });
 
-$(document).delegate("#form_take_over_service", "submit", function (e) {
+$(document).delegate("#form_service_take_over", "submit", function (e) {
 	e.preventDefault();
 
 	if (loader.blocked)
@@ -24,7 +24,7 @@ $(document).delegate("#form_take_over_service", "submit", function (e) {
 	$.ajax({
 		type: "POST",
 		url: "jsonhttp.php",
-		data: $(this).serialize() + "&action=take_over_service",
+		data: $(this).serialize() + "&action=service_take_over",
 		complete: function () {
 			loader.hide();
 		},
@@ -37,7 +37,7 @@ $(document).delegate("#form_take_over_service", "submit", function (e) {
 			// Wyświetlenie błędów w formularzu
 			if (jsonObj.return_id == "warnings") {
 				$.each(jsonObj.warnings, function (name, text) {
-					var id = $("#form_take_over_service [name=\"" + name + "\"]:first");
+					var id = $("#form_service_take_over [name=\"" + name + "\"]:first");
 					id.parent().append(text);
 					id.effect("highlight", 1000);
 				});

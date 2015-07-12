@@ -39,7 +39,7 @@ abstract class Page
 					$heart->style_add($settings['shop_url_slash'] . $path . $file . "?version=" . VERSION);
 
 		// Globalne jsy cssy konkretnych modułów usług
-		if (in_array($this::PAGE_ID, array("purchase", "user_own_services", "take_over_service", "payment_log"))) {
+		if (in_array($this::PAGE_ID, array("purchase", "user_own_services", "service_take_over", "payment_log"))) {
 			foreach ($heart->get_services_modules() as $module_info) {
 				$path = "styles/services/" . $module_info['id'] . ".css";
 				if (file_exists(SCRIPT_ROOT . $path))

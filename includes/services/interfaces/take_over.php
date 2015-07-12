@@ -9,7 +9,7 @@ interface IService_TakeOver
 	 * @param $service_id - ID usługi do przejęcia
 	 * @return string
 	 */
-	public function form_take_over_service($service_id);
+	public function service_take_over_form_get($service_id);
 
 	/**
 	 * Sprawdza poprawność danych wprowadzonych w formularzu przejęcia usługi
@@ -20,6 +20,6 @@ interface IService_TakeOver
 	 *                  'text'      => treść wiadomości
 	 *                  'positive'  => czy udało się przejąć usługę
 	 */
-	public function take_over_service($data);
+	public function service_take_over($data);
 
 }

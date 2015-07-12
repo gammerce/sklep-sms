@@ -492,16 +492,16 @@ if ($action == "login") {
 	}
 
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
-} else if ($action == "form_take_over_service") {
+} else if ($action == "service_take_over_form_get") {
 	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IService_TakeOver"))
 		output_page($lang->bad_module, "Content-type: text/plain; charset=\"UTF-8\"");
 
-	output_page($service_module->form_take_over_service($_POST['service']), "Content-type: text/plain; charset=\"UTF-8\"");
-} else if ($action == "take_over_service") {
+	output_page($service_module->service_take_over_form_get($_POST['service']), "Content-type: text/plain; charset=\"UTF-8\"");
+} else if ($action == "service_take_over") {
 	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IService_TakeOver"))
 		output_page($lang->bad_module, "Content-type: text/plain; charset=\"UTF-8\"");
 
-	$return_data = $service_module->take_over_service($_POST);
+	$return_data = $service_module->service_take_over($_POST);
 
 	// Przerabiamy ostrzeżenia, aby lepiej wyglądały
 	if ($return_data['status'] == "warnings") {

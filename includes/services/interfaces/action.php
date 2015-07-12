@@ -10,5 +10,5 @@ interface IService_ActionExecute
 	 * @param array $data - Dane $_POST
 	 * @return string
 	 */
-	public function service_action_execute($action, $data);
+	public function action_execute($action, $data);
 }

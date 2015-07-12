@@ -1,12 +1,12 @@
-#form_take_over_service {
+#form_service_take_over {
 	margin-top: 30px;
 }
 
-#form_take_over_service .take_over {
+#form_service_take_over .take_over {
 	display: none;
 }
 
-#form_take_over_service .take_over input {
+#form_service_take_over .take_over input {
 	margin-top: 12px;
 	text-transform: uppercase;
 }

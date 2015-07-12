@@ -1,4 +1,4 @@
-$(document).delegate("#form_take_over_service [name=type]", "change", function () {
+$(document).delegate("#form_service_take_over [name=type]", "change", function () {
 	var module;
 	if (!(module = service_module_act_can("extra_flags", $(this))))
 		return;
@@ -13,7 +13,7 @@ $(document).delegate("#form_take_over_service [name=type]", "change", function (
 		module.find("[data-type='password']").show();
 });
 
-$(document).delegate("#form_take_over_service [name=payment]", "change", function () {
+$(document).delegate("#form_service_take_over [name=payment]", "change", function () {
 	var module;
 	if (!(module = service_module_act_can("extra_flags", $(this))))
 		return;

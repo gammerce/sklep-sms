@@ -1,11 +1,11 @@
 <?php
 
-$heart->register_page("take_over_service", "PageTakeOverService");
+$heart->register_page("service_take_over", "PageTakeOverService");
 
 class PageTakeOverService extends Page implements I_BeLoggedMust
 {
 
-	const PAGE_ID = "take_over_service";
+	const PAGE_ID = "service_take_over";
 
 	function __construct()
 	{
@@ -34,7 +34,7 @@ class PageTakeOverService extends Page implements I_BeLoggedMust
 			));
 		}
 
-		eval("\$output = \"" . get_template("take_over_service") . "\";");
+		eval("\$output = \"" . get_template("service_take_over") . "\";");
 		return $output;
 	}
 
