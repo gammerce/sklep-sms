@@ -1,32 +1,36 @@
-<div class="payment_type sms">
-	<div class="payment_header">{$lang->payment_sms}</div>
-	<strong>{$lang->price}</strong>: {$tariff['cost']} {$settings['currency']}<br/>
-	<br/>
-
-	<div id="sms_details">
-		<table>
-			<tr>
-				<td colspan="3" style="font-weight: bold; padding-bottom: 5px; font-size: 18px;">
-					{$lang->sms['send_sms']}
-				</td>
-			</tr>
-			<tr>
-				<td class="right">{$lang->sms['text']}</td>
-				<td style="width: 20px;"></td>
-				<td class="left">{$payment_sms->get_sms_text_hsafe()}</td>
-			</tr>
-			<tr>
-				<td class="right">{$lang->sms['number']}</td>
-				<td></td>
-				<td class="left">{$tariff['number']}</td>
-			</tr>
-			<tr>
-				<td class="right">{$lang->sms['return_code']}</td>
-				<td></td>
-				<td class="left"><input type="text" id="sms_code" name="sms_code" style="width: 100px;" maxlength="16"/></td>
-			</tr>
-		</table>
-		<br class="clear"/>
+<div class="payment_type_wraper">
+	<div class="payment_type sms header">
+		{$lang->payment_sms}
 	</div>
-	<input type="button" id="pay_sms" value="{$lang->pay_sms}" class="purchase_button"/>
+	<div class="payment_type sms">
+		<strong>{$lang->price}</strong>: {$tariff['cost']} {$settings['currency']}<br/>
+		<br/>
+
+		<div id="sms_details">
+			<table>
+				<tr>
+					<td colspan="3" style="font-weight: bold; padding-bottom: 5px; font-size: 18px;">
+						{$lang->sms['send_sms']}
+					</td>
+				</tr>
+				<tr>
+					<td class="right">{$lang->sms['text']}</td>
+					<td style="width: 20px;"></td>
+					<td class="left">{$payment_sms->get_sms_text_hsafe()}</td>
+				</tr>
+				<tr>
+					<td class="right">{$lang->sms['number']}</td>
+					<td></td>
+					<td class="left">{$tariff['number']}</td>
+				</tr>
+				<tr>
+					<td class="right">{$lang->sms['return_code']}</td>
+					<td></td>
+					<td class="left"><input type="text" id="sms_code" name="sms_code" style="width: 100px;" maxlength="16"/></td>
+				</tr>
+			</table>
+			<br class="clear"/>
+		</div>
+		<input type="button" id="pay_sms" value="{$lang->pay_sms}" class="purchase_button"/>
+	</div>
 </div>

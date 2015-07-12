@@ -522,7 +522,7 @@ if ($action == "login") {
 	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IService_ActionExecute"))
 		output_page($lang->bad_module, "Content-type: text/plain; charset=\"UTF-8\"");
 
-	output_page($service_module->service_action_execute($_POST['service_action'], $_POST), "Content-type: text/plain; charset=\"UTF-8\"");
+	output_page($service_module->action_execute($_POST['service_action'], $_POST), "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "get_template") {
 	$template = $_POST['template'];
 	// Zabezpieczanie wszystkich wartości post

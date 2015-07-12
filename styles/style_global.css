@@ -181,6 +181,7 @@ hr, .line {
 .form_warning {
 	color: #FF2B00;
 	font-size: 16px;
+	text-shadow: 1px 1px 1px #000;
 }
 
 /* Opisy usług */

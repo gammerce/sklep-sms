@@ -1,36 +1,53 @@
+.payment_type_wraper {
+	display: inline-block;
+	vertical-align: top;
+}
+
 .payment_type {
 	padding: 12px;
-	display: inline-block;
+	display: block;
 	margin-right: 20px;
-	margin-top: 20px;
-	vertical-align: top;
+	margin-top: 10px;
 
-	box-shadow: 0 0 10px;
+	box-shadow: 0 0 5px #B2B2B2;
+}
+
+.payment_type.header {
+	box-shadow: 0 0 5px #FFF;
+	color: #FFF;
+	text-shadow: 1px 1px 1px #000;
+	font-weight: bold;
+	text-transform: uppercase;
 }
 
 .payment_type.sms {
 	background: rgba(255, 0, 0, 0.4);
 }
+.payment_type.sms.header {
+	background: rgba(255, 0, 0, 0.6);
+}
 
 .payment_type.transfer {
 	background: rgba(0, 255, 0, 0.4);
 }
+.payment_type.transfer.header {
+	background: rgba(0, 255, 0, 0.6);
+}
 
 .payment_type.wallet {
 	background: rgba(0, 0, 255, 0.4);
+}
+.payment_type.wallet.header {
+	background: rgba(0, 0, 255, 0.6);
 }
 
 .payment_type.service_code {
 	background: rgba(113, 0, 255, 0.4);
 	margin-right: 0;
 }
-
-.payment_header {
-	margin-bottom: 12px;
-	color: #FFF;
-	text-shadow: 1px 1px 1px #000;
-	font-weight: bold;
-	text-transform: uppercase;
+.payment_type.service_code.header {
+	background: rgba(113, 0, 255, 0.6);
+	margin-right: 0;
 }
 
 #payment .order_details {
