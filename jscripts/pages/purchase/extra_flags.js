@@ -47,7 +47,7 @@ $(document).delegate("#form_purchase [name=server]", "change", function () {
 		return;
 	}
 
-	fetch_data("execute_service_action", false, {
+	fetch_data("service_action_execute", false, {
 		service_action: "tariffs_for_server",
 		server: $(this).val(),
 		service: form.find("[name=service]").val()

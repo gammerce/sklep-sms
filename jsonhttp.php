@@ -518,7 +518,7 @@ if ($action == "login") {
 	$user['privilages']['view_income'] = $user['privilages']['acp'] = true;
 	$page = new PageAdminIncome();
 	output_page($page->get_content($_GET, $_POST), "Content-type: text/plain; charset=\"UTF-8\"");
-} else if ($action == "execute_service_action") {
+} else if ($action == "service_action_execute") {
 	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IService_ActionExecute"))
 		output_page($lang->bad_module, "Content-type: text/plain; charset=\"UTF-8\"");
 
