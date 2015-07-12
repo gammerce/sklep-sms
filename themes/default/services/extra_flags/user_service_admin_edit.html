@@ -8,11 +8,11 @@
 		<td colspan="2" class="line"></td>
 	</tr>
 	<tr>
-		<td>ID użytkownika</td>
+		<td>{$lang->user_id}</td>
 		<td><input type="text" name="uid" style="width: 60px;" value="{$user_service['uid']}"/></td>
 	</tr>
 	<tr>
-		<td>Typ</td>
+		<td>{$lang->type}</td>
 		<td><select name="type">{$types}</select></td>
 	</tr>
 	</tbody>
@@ -42,7 +42,7 @@
 	</tbody>
 	<tbody id="type_password" style="{$styles['password']}">
 	<tr>
-		<td>Hasło</td>
+		<td>{$lang->password}</td>
 		<td>
 			<input type="text" name="password" maxlength="32" placeholder="{$password}"/>
 		</td>
@@ -53,7 +53,7 @@
 		<td colspan="2" class="line"></td>
 	</tr>
 	<tr>
-		<td>Usługa</td>
+		<td>{$lang->service}</td>
 		<td>
 			<select name="service">
 				{$services}
@@ -61,7 +61,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td>Serwer</td>
+		<td>{$lang->server}</td>
 		<td>
 			<select name="server">
 				{$servers}
@@ -69,7 +69,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td>Wygasa</td>
+		<td>{$lang->expires}</td>
 		<td>
 			<input type="text" name="expire" value="{$user_service['expire']}" {$disabled}/><br/>
 			<input type="checkbox" name="forever" {$checked}/>{$lang->forever}

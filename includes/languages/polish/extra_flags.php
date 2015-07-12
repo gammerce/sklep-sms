@@ -31,3 +31,16 @@ $l['admin_edited_service'] = "Admin {1}({2}) edytował usługę gracza. ID: {3}"
 $l['user_edited_service'] = "Użytkownik {1}({2}) wyedytował swoją usługę. ID: {3}";
 $l['wrong_service_description_file'] = "Plik z opisem usługi nie został prawidłowo utworzony. </br>
 Prawdopodobnie folder <strong>themes/{1}/services/</strong> nie ma uprawnień do zapisu.";
+$l['wrong_date_format'] = "Błędny format daty.";
+
+$l['if_displayed_in_shop'] = "Czy ma być wyświetlane <br/>w sklepie internetowym.";
+$l['types'] = "Typy";
+$l['flags'] = "Flagi";
+$l['just_purchased'] = "Witaj {1},<br/>
+przed chwilą dokonałeś/aś zakupu w naszym sklepie.";
+$l['regards'] = "Pozdrawiamy";
+$l['service_bought'] = "Zakupiono prawidłowo usługę";
+$l['sms_code_transfer_id'] = "( kod sms, ID przelewu )";
+$l['user_id'] = "ID użytkownika";
+$l['choose_type'] = "Wybierz typ";
+$l['days_amount'] = "Ilość dni";

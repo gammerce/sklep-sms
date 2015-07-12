@@ -31,3 +31,16 @@ $l['admin_edited_service'] = "Admin {1}({2}) edited user's service. ID: {3}";
 $l['user_edited_service'] = "User{1}({2}) edited their service. ID: {3}";
 $l['wrong_service_description_file'] = "Service description file was not created correctly. </br>
 Probably folder <strong>themes/{1}/services/</strong> has no permission to write.";
+$l['wrong_date_format'] = "Wrong date format.";
+
+$l['if_displayed_in_shop'] = "Should it be displayed <br/>in webstore.";
+$l['types'] = "Types";
+$l['flags'] = "Flags";
+$l['just_purchased'] = "Hello {1},<br/>
+you have just made purchase in our shop.";
+$l['regards'] = "Regards";
+$l['service_bought'] = "Service purchased successfully";
+$l['sms_code_transfer_id'] = "( sms code, transfer ID  )";
+$l['user_id'] = "User ID";
+$l['choose_type'] = "Choose type";
+$l['days_amount'] = "Days amount";

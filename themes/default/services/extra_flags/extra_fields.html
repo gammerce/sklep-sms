@@ -2,17 +2,17 @@
 <tr>
 	<td>
 		WEB
-		<div class="hint">Czy ma być wyświetlane <br/>w sklepie internetowym.</div>
+		<div class="hint">{$lang->if_displayed_in_shop}</div>
 	</td>
 	<td>
 		<select name="web">
-			<option value="0" {$web_sel_no}>NIE</option>
-			<option value="1" {$web_sel_yes}>TAK</option>
+			<option value="0" {$web_sel_no}>{$lang->strtoupper($lang->no)}</option>
+			<option value="1" {$web_sel_yes}>{$lang->strtoupper($lang->yes)}</option>
 		</select>
 	</td>
 </tr>
 <tr>
-	<td>TYPY</td>
+	<td>{$lang->strtoupper($lang->types)}</td>
 	<td>
 		<select name="type[]" multiple>
 			{$types}
@@ -20,7 +20,7 @@
 	</td>
 </tr>
 <tr>
-	<td>FLAGI</td>
+	<td>{$lang->strtoupper($lang->flags)}</td>
 	<td><input type="text" name="flags" value="{$flags}" maxlength="25"/></td>
 </tr>
 </tbody>

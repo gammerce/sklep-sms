@@ -1,13 +1,13 @@
 <tbody data-module="{$this->get_module_id()}">
 <tr>
-	<td>ID użytkownika</td>
+	<td>{$lang->user_id}</td>
 	<td><input type="text" name="uid" style="width: 60px;"/></td>
 </tr>
 <tr>
-	<td>Typ</td>
+	<td>{$lang->type}</td>
 	<td>
 		<select name="type">
-			<option value="">Wybierz typ</option>
+			<option value="">{$lang->choose_type}</option>
 			{$types}
 		</select>
 	</td>
@@ -31,7 +31,7 @@
 	</td>
 </tr>
 <tr id="type_password">
-	<td>Hasło</td>
+	<td>{$lang->password}</td>
 	<td>
 		<input type="text" name="password" maxlength="32"/>
 	</td>
@@ -46,16 +46,16 @@
 	<td colspan="2" class="line"></td>
 </tr>
 <tr>
-	<td>Serwer</td>
+	<td>{$lang->server}</td>
 	<td>
 		<select name="server">
-			<option value="">Wybierz Serwer</option>
+			<option value="">{$lang->choose_server}</option>
 			{$servers}
 		</select>
 	</td>
 </tr>
 <tr>
-	<td>Ilość Dni</td>
+	<td>{$lang->days_amount}</td>
 	<td>
 		<input type="text" name="amount"/><br/>
 		<input type="checkbox" name="forever"/>{$lang->forever}
