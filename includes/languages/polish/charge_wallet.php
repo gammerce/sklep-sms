@@ -11,4 +11,3 @@ $l['charge_amount_too_low'] = "Wartość doładowania musi być większa niż {1
 $l['choose_sms_value'] = "Wybierz wartość SMSa";
 $l['type_amount'] = "Podaj kwotę";
 $l['content'] = "Treść";
-$l['cost'] = "Koszt";

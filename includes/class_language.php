@@ -52,6 +52,7 @@ class Language
 			if (ends_at($file, ".php"))
 				include SCRIPT_ROOT . "includes/languages/{$language}/{$file}";
 
+
 		// Ładujemy bilioteki dla PA
 		if (admin_session()) {
 			foreach (scandir(SCRIPT_ROOT . "includes/languages/{$language}/admin") as $file)
@@ -67,9 +68,10 @@ class Language
 		$lang_keys_ignore = array('g_language', 'g_language_short', 'g_lang_list');
 
 		if (isset($l) && is_array($l))
-			foreach ($l as $key => $val)
+			foreach ($l as $key => $val) {
 				if (!in_array($key, $lang_keys_ignore))
 					$this->$key = $val;
+			}
 	}
 
 	public function sprintf($string)
@@ -85,6 +87,14 @@ class Language
 
 	public function strtoupper($string) {
 		return strtoupper($string);
+	}
+
+	private $aaa = array();
+	public function add($key, $val) {
+		if (!isset($this->aaa[$key]))
+			$this->aaa[$key] = $val;
+		else
+			echo $key . "<br />";
 	}
 
 }

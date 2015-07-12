@@ -260,16 +260,3 @@ if ($settings['cron_each_visit'] && SCRIPT_NAME != "cron")
 define('TYPE_NICK', 1 << 0);
 define('TYPE_IP', 1 << 1);
 define('TYPE_SID', 1 << 2);
-
-/*if(SCRIPT_NAME == "index" || SCRIPT_NAME == "admin") {
-	$a = $lang;
-	foreach($a as $key => $txt) {
-		$txt = str_replace(".","",$txt);
-		$txt = str_replace(",","",$txt);
-		$txt = str_replace(" ","",$txt);
-		$a[$key] = strtolower($txt);
-	}
-	foreach (array_count_values($a) as $txt => $amount)
-		if ($amount > 1)
-			echo $txt . "<br />";
-}*/

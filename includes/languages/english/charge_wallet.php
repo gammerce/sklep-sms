@@ -11,4 +11,3 @@ $l['charge_amount_too_low'] = "Charge value must be above {1}";
 $l['choose_sms_value'] = "Choose SMS value";
 $l['type_amount'] = "Enter amount";
 $l['content'] = "Content";
-$l['cost'] = "Cost";

@@ -11,7 +11,6 @@ $l['password'] = "Password";
 $l['none'] = "None";
 $l['bought_date'] = "Puchase date";
 $l['no_data'] = "No data";
-$l['choose_option'] = "Choose option";
 $l['forever'] = "Forever";
 $l['edit'] = "Edit";
 $l['delete'] = "Delete";
@@ -50,6 +49,7 @@ $l['sms']['return_code'] = "Return code";
 $l['choose_service'] = "Choose service";
 $l['choose_type'] = "Choose type";
 $l['choose_server'] = "Choose server";
+$l['choose_option'] = "Choose option";
 
 $l['months'] = array("", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
 
@@ -115,6 +115,3 @@ $l['you_arent_logged'] = "Something is wrong, you are not logged in oO";
 $l['not_logged_or_no_perm'] = "Something is wrong, you are not logged in or you have no permission oO";
 
 $l['expired_service_delete'] = "AUTOMAT: Player's expired service removed. Auth Data: {1} Server: {2} Service: {3} Type: {4}";
-
-$l['choose_option'] = "Choose option.";
-$l['choose_server'] = "Choose server";

@@ -11,7 +11,6 @@ $l['password'] = "Hasło";
 $l['none'] = "Brak";
 $l['bought_date'] = "Data zakupu";
 $l['no_data'] = "Brak danych";
-$l['choose_option'] = "Wybierz opcję";
 $l['forever'] = "Na zawsze";
 $l['edit'] = "Edytuj";
 $l['delete'] = "Usuń";
@@ -49,7 +48,7 @@ $l['cost'] = "Koszt";
 $l['sms']['return_code'] = "Kod zwrotny";
 $l['choose_service'] = "Wybierz usługę";
 $l['choose_type'] = "Wybierz rodzaj";
-
+$l['choose_server'] = "Wybierz serwer";
 
 $l['months'] = array("", "Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień");
 
@@ -120,6 +119,3 @@ $l['languages'] = array(
 );
 
 $l['expired_service_delete'] = "AUTOMAT: Usunięto wygasłą usługę gracza. Auth Data: {1} Serwer: {2} Usługa: {3} Typ: {4}";
-
-$l['choose_option'] = "Wybierz opcję.";
-$l['choose_server'] = "Wybierz serwer";

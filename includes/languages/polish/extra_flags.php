@@ -42,5 +42,4 @@ $l['regards'] = "Pozdrawiamy";
 $l['service_bought'] = "Zakupiono prawidłowo usługę";
 $l['sms_code_transfer_id'] = "( kod sms, ID przelewu )";
 $l['user_id'] = "ID użytkownika";
-$l['choose_type'] = "Wybierz typ";
 $l['days_amount'] = "Ilość dni";

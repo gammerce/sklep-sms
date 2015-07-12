@@ -42,5 +42,4 @@ $l['regards'] = "Regards";
 $l['service_bought'] = "Service purchased successfully";
 $l['sms_code_transfer_id'] = "( sms code, transfer ID  )";
 $l['user_id'] = "User ID";
-$l['choose_type'] = "Choose type";
 $l['days_amount'] = "Days amount";

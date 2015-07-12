@@ -1156,7 +1156,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		if (!$db->num_rows($result))
 			return array(
 				'status' => "no_service",
-				'text' => $lang->no_user_service,
+				'text' => $lang->no_user_service, // TODO nie ma takiego klucza w bibliotece jezykowej - dodaj do extra_flags.php
 				'positive' => false
 			);
 
