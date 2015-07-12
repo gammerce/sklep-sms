@@ -43,3 +43,4 @@ $l['service_bought'] = "Service purchased successfully";
 $l['sms_code_transfer_id'] = "( sms code, transfer ID  )";
 $l['user_id'] = "User ID";
 $l['days_amount'] = "Days amount";
+$l['no_user_service'] = "There is no service with such a data.";

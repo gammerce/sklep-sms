@@ -38,9 +38,9 @@ $l['payment_transfer'] = "Transfer payment";
 $l['payment_wallet'] = "Wallet payment";
 $l['got_code'] = "I've got code!";
 
-$l['pay_sms'] = "I pay by SMS";
-$l['pay_transfer'] = "I pay by Transfer";
-$l['pay_wallet'] = "I pay by Wallet";
+$l['pay_sms'] = "Pay by SMS";
+$l['pay_transfer'] = "Pay by transfer";
+$l['pay_wallet'] = "Pay by wallet";
 
 $l['take_over'] = "Take over";
 
