@@ -99,6 +99,10 @@ foreach (scandir(SCRIPT_ROOT . "includes/pages") as $file)
 	if (ends_at($file, ".php"))
 		require_once SCRIPT_ROOT . "includes/pages/" . $file;
 
+foreach (scandir(SCRIPT_ROOT . "includes/entity") as $file)
+	if (ends_at($file, ".php"))
+		require_once SCRIPT_ROOT . "includes/entity/" . $file;
+
 
 // Pobieramy id strony oraz obecna numer strony
 $G_PID = isset($_GET['pid']) ? $_GET['pid'] : "home";

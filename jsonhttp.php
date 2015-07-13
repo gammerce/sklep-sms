@@ -334,14 +334,24 @@ if ($action == "login") {
 			$return_data['data']['warnings'][$brick] = $warning;
 		}
 	} else {
-		// Dopełniamy danymi
-		if ($return_data['purchase_data']['order']['amount'] == -1)
-			$return_data['purchase_data']['order']['forever'] = true;
+		//
+		// Uzupełniamy brakujące dane
+		$purchase = $return_data['purchase'];
 
-		if(!isset($return_data['purchase_data']['user']['uid']) && is_logged())
-			$return_data['purchase_data']['user']['uid'] = $user['uid'];
+		if($purchase->getPayment('cost') === NULL && $purchase->getTariff() !== NULL)
+			$purchase->setPayment(array(
+				'cost' => $heart->get_tariff_provision($purchase->getTariff())
+			));
 
-		$data_encoded = base64_encode(json_encode($return_data['purchase_data']));
+		if ($purchase->getPayment('sms_service') === NULL && !$purchase->getPayment("no_sms"))
+			$purchase->setPayment(array(
+				'sms_service' => $settings['sms_service']
+			));
+
+		if ($purchase->getService() === NULL)
+			$purchase->setService($service_module->service['id']);
+
+		$data_encoded = base64_encode(serialize($return_data['purchase']));
 		$return_data['data'] = array(
 			'length' => 8000,
 			'data' => $data_encoded,
@@ -355,13 +365,17 @@ if ($action == "login") {
 	if (!isset($_POST['purchase_sign']) || $_POST['purchase_sign'] != md5($_POST['purchase_data'] . $settings['random_key']))
 		json_output("wrong_sign", $lang->wrong_sign, 0);
 
-	// Te same dane, co w "payment_form"
-	$purchase_data = json_decode(base64_decode($_POST['purchase_data']), true);
-	$purchase_data['payment']['method'] = $_POST['method'];
-	$purchase_data['payment']['sms_code'] = $_POST['sms_code'];
-	$purchase_data['payment']['service_code'] = $_POST['service_code'];
+	/** @var Entity_Purchase $purchase */
+	$purchase = unserialize(base64_decode($_POST['purchase_data']));
 
-	$return_payment = validate_payment($purchase_data);
+	// Dodajemy dane płatności
+	$purchase->setPayment(array(
+		'method' => $_POST['method'],
+		'sms_code' => $_POST['sms_code'],
+		'service_code' => $_POST['service_code']
+	));
+
+	$return_payment = validate_payment($purchase);
 	json_output($return_payment['status'], $return_payment['text'], $return_payment['positive'], $return_payment['data']);
 } else if ($action == "refresh_blocks") {
 	if (isset($_POST['bricks']))

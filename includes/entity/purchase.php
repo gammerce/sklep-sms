@@ -5,34 +5,37 @@ class Entity_Purchase {
 	/**
 	 * @var string
 	 */
-	private $service;
+	private $service = NULL;
 
 	/**
 	 * @var array
 	 */
-	private $order;
+	private $order = NULL;
 
 	/**
 	 * @var array
 	 */
-	private $user;
+	private $user = NULL;
 
 	/**
 	 * @var integer
 	 */
-	private $tariff;
+	private $tariff = NULL;
 
 	/**
 	 * @var string
 	 */
-	private $email;
+	private $email = NULL;
 
 	/**
 	 * @var array
 	 */
-	private $payment;
+	private $payment = NULL;
 
 	function __construct($data) {
+		global $user;
+		$this->user = $user;
+
 		if (isset($data['service']))
 			$this->setService($data['service']);
 
@@ -46,14 +49,14 @@ class Entity_Purchase {
 			$this->setTariff($data['tariff']);
 
 		if (isset($data['email']))
-			$this->setUser($data['email']);
+			$this->setEmail($data['email']);
 
 		if (isset($data['payment']))
-			$this->setUser($data['payment']);
+			$this->setPayment($data['payment']);
 	}
 
 	public function setService($service) {
-		$this->service = $service;
+		$this->service = (string)$service;
 	}
 
 	public function setOrder($order) {
@@ -67,11 +70,11 @@ class Entity_Purchase {
 	}
 
 	public function setTariff($tariff) {
-		$this->tariff = $tariff;
+		$this->tariff = (integer)$tariff;
 	}
 
 	public function setEmail($email) {
-		$this->email = $email;
+		$this->email = (string)$email;
 	}
 
 	public function setPayment($payment) {
@@ -87,16 +90,22 @@ class Entity_Purchase {
 	 * @param string $key
 	 * @return mixed
 	 */
-	public function getOrder($key) {
-		return $this->order[$key];
+	public function getOrder($key = NULL) {
+		if ($key === NULL)
+			return $this->order;
+
+		return if_isset($this->order[$key], NULL);
 	}
 
 	/**
 	 * @param string $key
 	 * @return mixed
 	 */
-	public function getUser($key) {
-		return $this->user[$key];
+	public function getUser($key = NULL) {
+		if ($key === NULL)
+			return $this->user;
+
+		return if_isset($this->user[$key], NULL);
 	}
 
 	/**
@@ -104,7 +113,7 @@ class Entity_Purchase {
 	 * @return mixed
 	 */
 	public function getPayment($key) {
-		return $this->payment[$key];
+		return if_isset($this->payment[$key], NULL);
 	}
 
 	public function getTariff() {

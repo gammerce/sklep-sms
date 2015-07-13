@@ -28,7 +28,7 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
 	//
 	// Funkcja przygotowania zakupu
 	//
-	public function purchase_validate_data($data)
+	public function purchase_data_validate($purchase)
 	{
 		global $heart, $db, $lang;
 
@@ -36,25 +36,25 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
 
 		// Serwer
 		$server = array();
-		if (!strlen($data['order']['server']))
+		if (!strlen($purchase->getOrder('server')))
 			$warnings['server'][] = $lang->must_choose_server;
 		else {
 			// Sprawdzanie czy serwer o danym id istnieje w bazie
-			$server = $heart->get_server($data['order']['server']);
+			$server = $heart->get_server($purchase->getOrder('server'));
 			if (!$heart->server_service_linked($server['id'], $this->service['id']))
 				$warnings['server'][] = $lang->chosen_incorrect_server;
 		}
 
 		// Wartość usługi
 		$price = array();
-		if (!strlen($data['tariff']))
+		if (!strlen($purchase->getTariff()))
 			$warnings['value'][] = $lang->must_choose_amount;
 		else {
 			// Wyszukiwanie usługi o konkretnej cenie
 			$result = $db->query($db->prepare(
 				"SELECT * FROM `" . TABLE_PREFIX . "pricelist` " .
 				"WHERE `service` = '%s' AND `tariff` = '%d' AND ( `server` = '%d' OR `server` = '-1' )",
-				array($this->service['id'], $data['tariff'], $server['id'])
+				array($this->service['id'], $purchase->getTariff(), $server['id'])
 			));
 
 			if (!$db->num_rows($result)) // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
@@ -68,7 +68,7 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
 		}
 
 		// E-mail
-		if (strlen($data['user']['email']) && $warning = check_for_warnings("email", $data['user']['email']))
+		if (strlen($purchase->getUser('email')) && $warning = check_for_warnings("email", $purchase->getUser('email')))
 			$warnings['email'] = array_merge((array)$warnings['email'], $warning);
 
 		// Jeżeli są jakieś błedy, to je zwróć
@@ -81,46 +81,32 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
 			);
 		}
 
-		//
-		// Wszystko przebiegło pomyślnie, zwracamy o tym info
+		$purchase->setOrder(array(
+			'amount' => $price['amount'],
+			'forever' => $price['amount'] == -1 ? true : false
+		));
 
-		// Pobieramy koszt usługi dla przelewu / paypal / portfela
-		$cost_transfer = $heart->get_tariff_provision($data['tariff']);
-
-		$purchase_data = array(
-			'service' => $this->service['id'],
-			'order' => array(
-				'server' => $data['order']['server'],
-				'auth_data' => $data['order']['auth_data'],
-				'amount' => $price['amount'],
-				'forever' => $price['amount'] == -1 ? true : false
-			),
-			'user' => $data['user'],
-			'tariff' => $data['tariff'],
-			'cost_transfer' => $cost_transfer
-		);
+		$purchase->setPayment(array(
+			'cost' => $heart->get_tariff_provision($purchase->getTariff())
+		));
 
 		return array(
 			'status' => "validated",
 			'text' => $lang->purchase_form_validated,
 			'positive' => true,
-			'purchase_data' => $purchase_data
+			'purchase' => $purchase
 		);
 	}
 
-	//
-	// Funkcja zakupu
-	public function purchase($data)
+	public function purchase($purchase)
 	{
-		// Dodanie informacji o zakupie usługi
-		return add_bought_service_info($data['user']['uid'], $data['user']['username'], $data['user']['ip'], $data['transaction']['method'],
-			$data['transaction']['payment_id'], $this->service['id'], $data['order']['server'], $data['order']['amount'],
-			$data['order']['auth_data'], $data['user']['email']
+		return add_bought_service_info(
+			$purchase->getUser('uid'), $purchase->getUser('username'), $purchase->getUser('ip'), $purchase->getPayment('method'),
+			$purchase->getPayment('payment_id'), $this->service['id'], $purchase->getOrder('server'), $purchase->getOrder('amount'),
+			$purchase->getOrder('auth_data'), $purchase->getUser('email')
 		);
 	}
 
-	//
-	// Funkcja wywolywana podczas usuwania uslugi
 	public function service_delete($service_id)
 	{
 		global $db;

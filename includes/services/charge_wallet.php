@@ -123,17 +123,16 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 		);
 	}
 
-	public function purchase($data)
+	public function purchase($purchase)
 	{
-		if ($this->service === NULL)
-			return;
-
 		// Aktualizacja stanu portfela
-		$this->charge_wallet($data['user']['uid'], $data['order']['amount']);
+		$this->charge_wallet($purchase->getUser('uid'), $purchase->getOrder('amount'));
 
-		// Dodanie informacji o zakupie usługi
-		return add_bought_service_info($data['user']['uid'], $data['user']['username'], $data['user']['ip'], $data['transaction']['method'],
-			$data['transaction']['payment_id'], $this->service['id'], 0, $data['order']['amount'], $data['user']['username'], $data['user']['email']);
+		return add_bought_service_info(
+			$purchase->getUser('uid'), $purchase->getUser('username'), $purchase->getUser('ip'), $purchase->getPayment('method'),
+			$purchase->getPayment('payment_id'), $this->service['id'], 0, $purchase->getOrder('amount'), $purchase->getUser('username'),
+			$purchase->getUser('email')
+		);
 	}
 
 	public function purchase_info($action, $data)
@@ -164,15 +163,13 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 			);
 	}
 
-	//
-	// Szczegóły zamówienia
-	public function order_details($data)
+	public function order_details($purchase)
 	{
 		global $lang, $settings;
 
-		$data['order']['amount'] = number_format($data['order']['amount'], 2);
+		$amount = number_format($purchase->getOrder('amount'), 2);
 
-		eval("\$output = \"" . get_template("services/charge_wallet/order_details", 0, 1, 0) . "\";");
+		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/order_details", 0, 1, 0) . "\";");
 		return $output;
 	}
 

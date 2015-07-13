@@ -25,16 +25,10 @@ interface IService_PurchaseWeb
 	/**
 	 * Metoda zwraca szczegóły zamówienia, wyświetlane podczas zakupu usługi, przed płatnością.
 	 *
-	 * @param array $data 'service',
-	 *                        'server',
-	 *                        'order'
-	 *                          ...
-	 *                        'user',
-	 *                        'tariff',
-	 *                        'cost_transfer'
+	 * @param Entity_Purchase $purchase
 	 * @return string        Szczegóły zamówienia
 	 */
-	public function order_details($data);
+	public function order_details($purchase);
 
 	/**
 	 * Metoda formatuje i zwraca informacje o zakupionej usłudze, zaraz po jej zakupie.

@@ -25,56 +25,38 @@ class PagePayment extends Page
 
 		global $heart;
 
-		/** Odczytujemy dane, ich format powinien być taki jak poniżej
-		 * @param array $data 'service',
-		 *                        'order'
-		 *                            ...
-		 *                        'user',
-		 *                            'uid',
-		 *                            'email'
-		 *                            ...
-		 *                        'payment_sms'
-		 *                        'tariff',
-		 *                        'cost_transfer'
-		 *                        'no_sms'
-		 *                        'no_transfer'
-		 *                        'no_wallet'
-		 * 						  'no_code'
-		 */
-		$data = json_decode(base64_decode($post['data']), true);
+		/** @var Entity_Purchase $purchase */
+		$purchase = unserialize(base64_decode($post['data']));
 
-
-		if (($service_module = $heart->get_service_module($data['service'])) === NULL
+		if (($service_module = $heart->get_service_module($purchase->getService())) === NULL
 			|| !object_implements($service_module, "IService_PurchaseWeb"))
 			return $lang->bad_module;
 
 		// Pobieramy szczegóły zamówienia
-		$order_details = $service_module->order_details($data);
-
-		// Pobieramy płatność sms
-		$sms_service = if_strlen($data['sms_service'], $settings['sms_service']);
+		$order_details = $service_module->order_details($purchase);
 
 		//
 		// Pobieramy sposoby płatności
 
 		$payment_methods = "";
-		if ($sms_service && isset($data['tariff']) && !$data['no_sms']) { // Sprawdzamy, czy płatność za pomocą SMS jest możliwa
-			$payment_sms = new Payment($sms_service);
-			if (strlen($number = $payment_sms->get_number_by_tariff($data['tariff']))) {
+		// Sprawdzamy, czy płatność za pomocą SMS jest możliwa
+		if ($purchase->getPayment("sms_service") && $purchase->getTariff() !== NULL && !$purchase->getPayment('no_sms')) {
+			$payment_sms = new Payment($purchase->getPayment("sms_service"));
+			if (strlen($number = $payment_sms->get_number_by_tariff($purchase->getTariff()))) {
 				$tariff['number'] = $number;
 				$tariff['cost'] = number_format(get_sms_cost($tariff['number']) * $settings['vat'], 2);
 				eval("\$payment_methods .= \"" . get_template("payment_method_sms") . "\";");
 			}
 		}
 
-		$cost_transfer = number_format($data['cost_transfer'], 2);
-		if ($settings['transfer_service'] && isset($data['cost_transfer']) && $data['cost_transfer'] > 1 && !$data['no_transfer'])
+		$cost_transfer = number_format($purchase->getPayment('cost'), 2);
+		if ($settings['transfer_service'] && $purchase->getPayment('cost') !== NULL && $purchase->getPayment('cost') > 1 && !$purchase->getPayment('no_transfer'))
 			eval("\$payment_methods .= \"" . get_template("payment_method_transfer") . "\";");
 
-		if (is_logged() && isset($data['cost_transfer']) && !$data['no_wallet'])
+		if (is_logged() && $purchase->getPayment('cost') !== NULL && !$purchase->getPayment('no_wallet'))
 			eval("\$payment_methods .= \"" . get_template("payment_method_wallet") . "\";");
 
-		if (!$data['no_code'] && object_implements($service_module, "IService_ServiceCode"))
+		if (!$purchase->getPayment('no_code') && object_implements($service_module, "IService_ServiceCode"))
 			eval("\$payment_methods .= \"" . get_template("payment_method_code") . "\";");
 
 		$purchase_data = htmlspecialchars($post['data']);

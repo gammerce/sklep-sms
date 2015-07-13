@@ -298,19 +298,18 @@ function update_servers_services($data)
 	}
 }
 
-function validate_payment($data)
+/**
+ * @param Entity_Purchase $purchase
+ * @return array
+ */
+function validate_payment($purchase)
 {
 	global $heart, $settings, $lang;
 
-	// Pobieramy dane użytkownika dokonującego zakupu
-	$user = $heart->get_user($data['user']['uid']);
-	$user['ip'] = if_strlen($data['user']['ip'], $user['ip']);
-	$user['email'] = if_strlen($data['user']['email'], $user['email']);
-	$user['platform'] = if_strlen($data['user']['platform'], $user['platform']);
+	$warnings = array();
 
 	// Tworzymy obiekt usługi którą kupujemy
-	$service_module = $heart->get_service_module($data['service']);
-	if ($service_module === NULL)
+	if (($service_module = $heart->get_service_module($purchase->getService())) === NULL)
 		return array(
 			'status' => "wrong_module",
 			'text' => $lang->bad_module,
@@ -318,33 +317,35 @@ function validate_payment($data)
 		);
 
 	// Tworzymy obiekt, który będzie nam obsługiwał proces płatności
-	if ($data['payment']['method'] == "sms") {
-		$transaction_service = if_strlen($data['payment']['sms_service'], $settings['sms_service']);
-		$payment = new Payment($transaction_service, $user['platform']);
-	} else if ($data['payment']['method'] == "transfer") {
-		$transaction_service = if_strlen($data['payment']['transfer_service'], $settings['transfer_service']);
-		$payment = new Payment($transaction_service, $user['platform']);
+	if ($purchase->getPayment('method') == "sms") {
+		$transaction_service = if_strlen($purchase->getPayment('sms_service'), $settings['sms_service']);
+		$payment = new Payment($transaction_service, $purchase->getUser('platform'));
+	} else if ($purchase->getPayment('method') == "transfer") {
+		$transaction_service = if_strlen($purchase->getPayment('transfer_service'), $settings['transfer_service']);
+		$payment = new Payment($transaction_service, $purchase->getUser('platform'));
 	}
 
 	// Pobieramy ile kosztuje ta usługa dla przelewu / portfela
-	if (!isset($data['cost_transfer']))
-		$data['cost_transfer'] = number_format($heart->get_tariff_provision($data['tariff']), 2);
+	if ($purchase->getPayment('cost') === NULL)
+		$purchase->setPayment(array(
+			'cost' => number_format($heart->get_tariff_provision($purchase->getTariff()), 2)
+		));
 
 	// Metoda płatności
-	if (!in_array($data['method'], array("sms", "transfer", "wallet", "service_code")))
+	if (!in_array($purchase->getPayment('method'), array("sms", "transfer", "wallet", "service_code")))
 		return array(
 			'status' => "wrong_method",
 			'text' => $lang->wrong_payment_method,
 			'positive' => false
 		);
-	else if ($data['method'] == "wallet" && !is_logged())
+	else if ($purchase->getPayment('method') == "wallet" && !is_logged())
 		return array(
 			'status' => "wallet_not_logged",
 			'text' => $lang->no_login_no_wallet,
 			'positive' => false
 		);
-	else if ($data['method'] == "transfer") {
-		if ($data['cost_transfer'] <= 1)
+	else if ($purchase->getPayment('method') == "transfer") {
+		if ($purchase->getPayment('cost') <= 1)
 			return array(
 				'status' => "too_little_for_transfer",
 				'text' => $lang->sprintf($lang->transfer_above_amount, $settings['currency']),
@@ -357,13 +358,13 @@ function validate_payment($data)
 				'text' => $lang->transfer_unavailable,
 				'positive' => false
 			);
-	} else if ($data['method'] == "sms" && !$payment->sms_available())
+	} else if ($purchase->getPayment('method') == "sms" && !$payment->sms_available())
 		return array(
 			'status' => "sms_unavailable",
 			'text' => $lang->sms_unavailable,
 			'positive' => false
 		);
-	else if ($data['method'] == "sms" && $data['tariff'] && !isset($payment->payment_api->smses[$data['tariff']]))
+	else if ($purchase->getPayment('method') == "sms" && $purchase->getTariff() && !isset($payment->payment_api->smses[$purchase->getTariff()]))
 		return array(
 			'status' => "no_sms_option",
 			'text' => $lang->no_sms_payment,
@@ -371,13 +372,15 @@ function validate_payment($data)
 		);
 
 	// Kod SMS
-	$data['sms_code'] = trim($data['sms_code']);
-	if ($data['method'] == "sms" && $warning = check_for_warnings("sms_code", $data['sms_code']))
+	$purchase->setPayment(array(
+		'sms_code' => trim($purchase->getPayment('sms_code'))
+	));
+	if ($purchase->getPayment('method') == "sms" && $warning = check_for_warnings("sms_code", $purchase->getPayment('sms_code')))
 		$warnings['sms_code'] = array_merge((array)$warnings['sms_code'], $warning);
 
 	// Kod na usługę
-	if ($data['method'] == "service_code")
-		if (!strlen($data['service_code']))
+	if ($purchase->getPayment('method') == "service_code")
+		if (!strlen($purchase->getPayment('service_code')))
 			$warnings['service_code'][] = $lang->field_no_empty;
 
 	// Błędy
@@ -396,9 +399,9 @@ function validate_payment($data)
 		);
 	}
 
-	if ($data['method'] == "sms") {
+	if ($purchase->getPayment('method') == "sms") {
 		// Sprawdzamy kod zwrotny
-		$sms_return = $payment->pay_sms($data['sms_code'], $data['tariff'], $user);
+		$sms_return = $payment->pay_sms($purchase->getPayment('sms_code'), $purchase->getTariff(), $purchase->getUser());
 		$payment_id = $sms_return['payment_id'];
 
 		if ($sms_return['status'] != "OK")
@@ -407,32 +410,30 @@ function validate_payment($data)
 				'text' => $sms_return['text'],
 				'positive' => false
 			);
-	} else if ($data['method'] == "wallet") {
+	} else if ($purchase->getPayment('method') == "wallet") {
 		// Dodanie informacji o płatności z portfela
-		$payment_id = pay_wallet($data['cost_transfer'], $user);
+		$payment_id = pay_wallet($purchase->getPayment('cost'), $purchase->getUser());
 
 		// Metoda pay_wallet zwróciła błąd.
 		if (is_array($payment_id))
 			return $payment_id;
 	}
-	else if ($data['method'] == "service_code") {
+	else if ($purchase->getPayment('method') == "service_code") {
 		// Dodanie informacji o płatności z portfela
-		$payment_id = pay_service_code($data, $service_module, $user);
+		$payment_id = pay_service_code($purchase, $service_module);
 
 		// Funkcja pay_service_code zwróciła błąd.
 		if (is_array($payment_id))
 			return $payment_id;
 	}
 
-	if (in_array($data['method'], array("wallet", "sms", "service_code"))) {
+	if (in_array($purchase->getPayment('method'), array("wallet", "sms", "service_code"))) {
 		// Dokonujemy zakupu usługi
-		$purchase_data = $data;
-		$purchase_data['user'] = $user;
-		$purchase_data['transaction'] = array(
-			'method' => $data['method'],
+		$purchase->setUser($purchase->getUser());
+		$purchase->setPayment(array(
 			'payment_id' => $payment_id
-		);
-		$bought_service_id = $service_module->purchase($purchase_data);
+		));
+		$bought_service_id = $service_module->purchase($purchase);
 
 		return array(
 			'status' => "purchased",
@@ -440,17 +441,17 @@ function validate_payment($data)
 			'positive' => true,
 			'data' => array('bsid' => $bought_service_id)
 		);
-	} else if ($data['method'] == "transfer") {
+	} else if ($purchase->getPayment('method') == "transfer") {
 		// Przygotowujemy dane do przeslania ich do dalszej obróbki w celu stworzenia płatności przelewem
 		$purchase_data = array(
 			'service' => $service_module->service['id'],
-			'email' => $user['email'],
-			'cost' => $data['cost_transfer'],
+			'email' => $purchase->getUser('email'),
+			'cost' => $purchase->getPayment('cost'),
 			'desc' => $lang->sprintf($lang->payment_for_service, $service_module->service['name']),
-			'order' => $data['order']
+			'order' => $purchase->getOrder()
 		);
 
-		return $payment->pay_transfer($purchase_data, $user);
+		return $payment->pay_transfer($purchase_data, $purchase->getUser());
 	}
 }
 
@@ -496,9 +497,14 @@ function pay_wallet($cost, $user)
 	return $db->last_id();
 }
 
-function pay_service_code($data, $service_module, $user)
+/**
+ * @param Entity_Purchase $purchase
+ * @param Service|ServiceChargeWallet|ServiceExtraFlags|ServiceOther $service_module
+ * @return array|int|string
+ */
+function pay_service_code($purchase, $service_module)
 {
-	global $db, $user, $lang, $lang_shop;
+	global $db, $lang, $lang_shop;
 
 	$result = $db->query($db->prepare(
 		"SELECT * FROM `" . TABLE_PREFIX . "service_codes` " .
@@ -507,7 +513,8 @@ function pay_service_code($data, $service_module, $user)
 		"AND (`server` = '0' OR `server` = '%s') " .
 		"AND (`tariff` = '0' OR `tariff` = '%d') " .
 		"AND (`uid` = '0' OR `uid` = '%s')",
-		array($data['service_code'], $data['service'], $data['order']['server'], $data['tariff'], $user['uid'])
+		array($purchase->getPayment('service_code'), $purchase->getService(), $purchase->getOrder('server'),
+			$purchase->getTariff(), $purchase->getUser('uid'))
 	));
 
 	if (!$db->num_rows($result))
@@ -517,7 +524,7 @@ function pay_service_code($data, $service_module, $user)
 		);
 
 	while ($row = $db->fetch_array_assoc($result))
-		if ($service_module->service_code_validate($data, $row)) { // Znalezlismy odpowiedni kod
+		if ($service_module->service_code_validate($purchase, $row)) { // Znalezlismy odpowiedni kod
 			$db->query($db->prepare(
 				"DELETE FROM `" . TABLE_PREFIX . "service_codes` " .
 				"WHERE `id` = '%d'",
@@ -528,11 +535,12 @@ function pay_service_code($data, $service_module, $user)
 			$db->query($db->prepare(
 				"INSERT INTO `" . TABLE_PREFIX . "payment_code` " .
 				"SET `code` = '%s', `ip` = '%s', `platform` = '%s'",
-				array($data['service_code'], $user['ip'], $user['platform'])
+				array($purchase->getPayment('service_code'), $purchase->getUser('ip'), $purchase->getUser('platform'))
 			));
 			$payment_id = $db->last_id();
 
-			log_info($lang_shop->sprintf($lang_shop->purchase_code, $data['service_code'], $user['username'], $user['uid'], $payment_id));
+			log_info($lang_shop->sprintf($lang_shop->purchase_code, $purchase->getPayment('service_code'),
+				$purchase->getUser('username'), $purchase->getUser('uid'), $payment_id));
 
 			return $payment_id;
 		}
@@ -543,6 +551,22 @@ function pay_service_code($data, $service_module, $user)
 	);
 }
 
+/**
+ * Add information about purchasing a service
+ *
+ * @param integer $uid
+ * @param string $user_name
+ * @param string $ip
+ * @param string $method
+ * @param string $payment_id
+ * @param string $service
+ * @param integer $server
+ * @param string $amount
+ * @param string $auth_data
+ * @param string $email
+ * @param array $extra_data
+ * @return int|string
+ */
 function add_bought_service_info($uid, $user_name, $ip, $method, $payment_id, $service, $server, $amount, $auth_data, $email, $extra_data)
 {
 	global $heart, $db, $lang, $lang_shop;

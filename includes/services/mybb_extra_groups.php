@@ -168,7 +168,8 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 			'service' => $this->service['id'],
 			'order' => array(
 				'auth_data' => $data['username'],
-				'amount' => $price['amount']
+				'amount' => $price['amount'],
+				'forever' => $price['amount'] == -1 ? true : false
 			),
 			'email' => $data['email'],
 			'tariff' => $tariff,
@@ -178,29 +179,23 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 			'status' => "validated",
 			'text' => $lang->purchase_form_validated,
 			'positive' => true,
-			'purchase_data' => $purchase
+			'purchase' => $purchase
 		);
 	}
 
 	/**
 	 * Metoda zwraca szczegóły zamówienia, wyświetlane podczas zakupu usługi, przed płatnością.
 	 *
-	 * @param array $data 'service',
-	 *                        'server',
-	 *                        'order'
-	 *                          ...
-	 *                        'user',
-	 *                        'tariff',
-	 *                        'cost_transfer'
+	 * @param Entity_Purchase $purchase
 	 * @return string        Szczegóły zamówienia
 	 */
-	public function order_details($data)
+	public function order_details($purchase)
 	{
 		global $lang;
 
-		$email = $data['order']['email'] ? htmlspecialchars($data['order']['email']) : $lang->none;
-		$username = htmlspecialchars($data['order']['auth_data']);
-		$amount = $data['order']['amount'] != -1 ? ($data['order']['amount'] . " " . $this->service['tag']) : $lang->forever;
+		$email = $purchase->getEmail() ? htmlspecialchars($purchase->getEmail()) : $lang->none;
+		$username = htmlspecialchars($purchase->getOrder('auth_data'));
+		$amount = $purchase->getOrder('amount') != -1 ? ($purchase->getOrder('amount') . " " . $this->service['tag']) : $lang->forever;
 
 		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/order_details", 0, 1, 0) . "\";");
 		return $output;

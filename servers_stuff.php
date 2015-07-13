@@ -32,7 +32,7 @@ if ($action == "purchase_service") {
 		xml_output("bad_module", $lang->bad_module, 0);
 
 	// Sprawdzamy dane zakupu
-	$return_validation = $service_module->purchase_validate_data(array(
+	$return_validation = $service_module->purchase_data_validate(new Entity_Purchase(array(
 		'user' => array(
 			'uid' => $_GET['uid'],
 			'ip' => urldecode($_GET['ip']),
@@ -46,10 +46,10 @@ if ($action == "purchase_service") {
 			'passwordr' => urldecode($_GET['password'])
 		),
 		'tariff' => $_GET['tariff']
-	));
+	)));
 
 	// Są jakieś błędy przy sprawdzaniu danych
-	if (isset($return_validation['data']['warnings'])) {
+	if (!empty($return_validation['data']['warnings'])) {
 		$warnings = $extra_data = "";
 		foreach ($return_validation['data']['warnings'] as $what => $text)
 			$warnings .= "<strong>{$what}</strong><br />{$text}<br />";
@@ -60,12 +60,13 @@ if ($action == "purchase_service") {
 		xml_output($return_validation['status'], $return_validation['text'], $return_validation['positive'], $extra_data);
 	}
 
-	// Sprawdzanie danych przebiegło pomyślnie, więc przechodzimy do płatności
-	$purchase_data = $return_validation['purchase_data'];
-	$purchase_data['payment']['method'] = urldecode($_GET['method']);
-	$purchase_data['payment']['sms_code'] = urldecode($_GET['sms_code']);
-	$purchase_data['payment']['sms_service'] = urldecode($_GET['transaction_service']);
-	$return_payment = validate_payment($purchase_data);
+	$purchase = $return_validation['purchase'];
+	$purchase->setPayment(array(
+		'method' => urldecode($_GET['method']),
+		'sms_code' => urldecode($_GET['sms_code']),
+		'sms_service' => urldecode($_GET['transaction_service'])
+	));
+	$return_payment = validate_payment($purchase);
 
 	$extra_data = "";
 

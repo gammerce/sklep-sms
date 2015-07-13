@@ -8,21 +8,10 @@ interface IService_PurchaseOutside
 	 *
 	 * @param Entity_Purchase $purchase
 	 *
-	 * @return array        'status'    - id wiadomości,
-	 *                        'text'        - treść wiadomości
-	 *                        'positive'    - czy udało się przeprowadzić zakup czy nie
-	 *                        'purchase_data'    - dane zakupu ktore beda potrzebne przy pozniejszej platnosci
-	 *                            'order'
-	 *                                ...
-	 *                            'user',
-	 *                                'uid',
-	 *                                'email'
-	 *                                ...
-	 *                            'tariff',
-	 *                            'cost_transfer'
-	 *                            'no_sms'
-	 *                            'no_transfer'
-	 *                            'no_wallet'
+	 * @return array          string 'status' - id wiadomości,
+	 *                        string'text' - treść wiadomości
+	 *                        boolean 'positive' - czy udało się przeprowadzić zakup czy nie
+	 *                        Entity_Purchase 'purchase_data'
 	 */
-	public function purchase_validate_data($purchase);
+	public function purchase_data_validate($purchase);
 }

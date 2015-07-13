@@ -5,7 +5,7 @@ interface IService_ServiceCode
 	/**
 	 * Sprawdza czy dany zakup może być zrealizowany ( opłacony ) przez dany kod na usługę
 	 *
-	 * @param array $purchase
+	 * @param Entity_Purchase $purchase
 	 * @param array $code
 	 * @return bool
 	 */
