@@ -505,7 +505,7 @@ if ($action == "login") {
 	// Przerabiamy ostrzeżenia, aby lepiej wyglądały
 	if ($return_data['status'] == "warnings") {
 		foreach ($return_data['data']['warnings'] as $brick => $warning) {
-			$warning = create_dom_element("div", $warning, array(
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
 				'class' => "form_warning"
 			));
 			$return_data['data']['warnings'][$brick] = $warning;
@@ -527,7 +527,7 @@ if ($action == "login") {
 	// Przerabiamy ostrzeżenia, aby lepiej wyglądały
 	if ($return_data['status'] == "warnings") {
 		foreach ($return_data['data']['warnings'] as $brick => $warning) {
-			$warning = create_dom_element("div", $warning, array(
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
 				'class' => "form_warning"
 			));
 			$return_data['data']['warnings'][$brick] = $warning;

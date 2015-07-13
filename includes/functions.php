@@ -269,16 +269,17 @@ function update_servers_services($data)
 	global $db;
 
 	$delete = array();
+	$add = array();
 	foreach ($data as $arr) {
 		if ($arr['status']) {
 			$add[] = $db->prepare(
 				"('%d', '%s')",
-				array($data['server'], $data['service'])
+				array($arr['server'], $arr['service'])
 			);
 		} else {
 			$delete[] = $db->prepare(
 				"(`server_id` = '%d' AND `service_id` = '%s')",
-				array($data['server'], $data['service'])
+				array($arr['server'], $arr['service'])
 			);
 		}
 	}
