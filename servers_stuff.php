@@ -33,6 +33,7 @@ if ($action == "purchase_service") {
 
 	// Sprawdzamy dane zakupu
 	$return_validation = $service_module->purchase_data_validate(new Entity_Purchase(array(
+		'service' => $service_module->service['id'],
 		'user' => array(
 			'uid' => $_GET['uid'],
 			'ip' => urldecode($_GET['ip']),
