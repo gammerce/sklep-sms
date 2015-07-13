@@ -11,80 +11,80 @@ function check_for_warnings($type, $data)
 {
 	global $lang;
 
-	$output = "";
+	$warnings = array();
 	switch ($type) {
 		case "username":
 			if (strlen($data) < 2)
-				$output .= $lang->sprintf($lang->field_length_min_warn, 2) . "<br />";
+				$warnings[] = $lang->sprintf($lang->field_length_min_warn, 2);
 			if ($data != htmlspecialchars($data))
-				$output .= $lang->username_chars_warn . "<br />";
+				$warnings[] = $lang->username_chars_warn;
 
 			break;
 
 		case "nick":
 			if (strlen($data) < 2)
-				$output .= $lang->sprintf($lang->field_length_min_warn, 2) . "<br />";
+				$warnings[] = $lang->sprintf($lang->field_length_min_warn, 2);
 			else if (strlen($data) > 32)
-				$output .= $lang->sprintf($lang->field_length_max_warn, 32) . "<br />";
+				$warnings[] = $lang->sprintf($lang->field_length_max_warn, 32);
 
 			break;
 
 		case "password":
 			if (strlen($data) < 6)
-				$output = $lang->sprintf($lang->field_length_min_warn, 6) . "<br />";
+				$warnings[] = $lang->sprintf($lang->field_length_min_warn, 6);
 
 			break;
 
 		case "email":
 			if (!filter_var($data, FILTER_VALIDATE_EMAIL))
-				$output = $lang->wrong_email . "<br />";
+				$warnings[] = $lang->wrong_email;
 
 			break;
 
 		case "ip":
 			if (!filter_var($data, FILTER_VALIDATE_IP))
-				$output = $lang->wrong_ip . "<br />";
+				$warnings[] = $lang->wrong_ip;
 
 			break;
 
 		case "sid":
 			if (!valid_steam($data) || strlen($data) > 32)
-				$output = $lang->wrong_sid . "<br />";
+				$warnings[] = $lang->wrong_sid;
 
 			break;
 
 		case "uid":
 			if (!strlen($data))
-				$output = $lang->field_no_empty . "<br />";
+				$warnings[] = $lang->field_no_empty;
 			else if (!is_numeric($data))
-				$output = $lang->field_must_be_number . "<br />";
+				$warnings[] = $lang->field_must_be_number;
 
 			break;
 
 		case "service_description":
 			if (strlen($data) > 28)
-				$output = $lang->sprintf($lang->field_length_max_warn, 28) . "<br />";
+				$warnings[] = $lang->sprintf($lang->field_length_max_warn, 28);
 
 			break;
 
 		case "sms_code":
 			if (!strlen($data))
-				$output = $lang->field_no_empty . "<br />";
+				$warnings[] = $lang->field_no_empty;
 			else if (strlen($data) > 16)
-				$output = $lang->return_code_length_warn . "<br />";
+				$warnings[] = $lang->return_code_length_warn;
 
 			break;
 
 		case "number":
 			if (!strlen($data))
-				$output = $lang->field_no_empty . "<br />";
+				$warnings[] = $lang->field_no_empty;
 			else if (!is_numeric($data))
-				$output = $lang->field_must_be_number . "<br />";
+				$warnings[] = $lang->field_must_be_number;
 
 			break;
 	}
 
-	return $output;
+	return $warnings;
 }
 
 /**

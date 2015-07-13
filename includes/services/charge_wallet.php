@@ -51,7 +51,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 
 	public function purchase_form_validate($data)
 	{
-		global $heart, $user, $settings, $lang;
+		global $heart, $settings, $lang;
 
 		if (!is_logged())
 			return array(
@@ -72,13 +72,13 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 
 		if ($data['method'] == "sms") {
 			if (!strlen($data['tariff']))
-				$warnings['tariff'] .= $lang->charge_amount_not_chosen . "<br />";
+				$warnings['tariff'][] = $lang->charge_amount_not_chosen;
 		} else if ($data['method'] == "transfer") {
 			// Kwota doładowania
 			if ($warning = check_for_warnings("number", $data['transfer_amount']))
-				$warnings['transfer_amount'] = $warning;
+				$warnings['transfer_amount'] = array_merge((array)$warnings['transfer_amount'], $warning);
 			if ($data['transfer_amount'] <= 1)
-				$warnings['transfer_amount'] .= $lang->sprintf($lang->charge_amount_too_low, "1.00 " . $settings['currency']) . "<br />";
+				$warnings['transfer_amount'][] = $lang->sprintf($lang->charge_amount_too_low, "1.00 " . $settings['currency']);
 		}
 
 		// Jeżeli są jakieś błedy, to je zwróć
@@ -90,29 +90,36 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 				'data' => array('warnings' => $warnings)
 			);
 
-		// Zbieramy dane do jednego miejsca, aby potem je zwrócić
-		$purchase_data = array(
+		$purchase = new Entity_Purchase(array(
 			'service' => $this->service['id'],
-			'user' => array(
-				'uid' => $user['uid']
-			),
 			'tariff' => $data['tariff'],
-			'cost_transfer' => $data['transfer_amount'],
-			'no_wallet' => true
-		);
+			'payment' => array(
+				'cost' => $data['transfer_amount'],
+				'no_wallet' => true
+			)
+		));
+
 		if ($data['method'] == "sms") {
-			$purchase_data['no_transfer'] = true;
-			$purchase_data['order']['amount'] = $heart->get_tariff_provision($data['tariff']);
+			$purchase->setPayment(array(
+				'no_transfer' => true
+			));
+			$purchase->setOrder(array(
+				'amount' => $heart->get_tariff_provision($data['tariff'])
+			));
 		} else if ($data['method'] == "transfer") {
-			$purchase_data['no_sms'] = true;
-			$purchase_data['order']['amount'] = $data['transfer_amount'];
+			$purchase->setPayment(array(
+				'no_sms' => true
+			));
+			$purchase->setOrder(array(
+				'amount' => $data['transfer_amount']
+			));
 		}
 
 		return array(
 			'status' => "validated",
 			'text' => $lang->purchase_form_validated,
 			'positive' => true,
-			'purchase_data' => $purchase_data
+			'purchase' => $purchase
 		);
 	}
 

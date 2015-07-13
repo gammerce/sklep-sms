@@ -1,0 +1,9 @@
+#form_purchase {
+	margin-top: 20px;
+	text-align: center;
+}
+
+#form_purchase .inputs {
+	display: inline-block;
+	text-align: left;
+}

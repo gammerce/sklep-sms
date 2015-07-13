@@ -6,18 +6,7 @@ interface IService_PurchaseOutside
 	 * Metoda która sprawdza poprawność wprowadzonych danych zakupu,
 	 * wywoływana gdy zakup został przeprowadzony z zewnątrz, nie przez formularz na stronie WWW.
 	 *
-	 * @param array $data user:
-	 *                            uid - id uzytkownika wykonującego zakupy
-	 *                            ip - ip użytkownika wykonującego zakupy
-	 *                            email - email -||-
-	 *                            platform - -||-
-	 *                        transaction:
-	 *                            method - sposób płatności
-	 *                            service - serwis mający obsłużyć płatność
-	 *                            [sms_code] - kod zwrotny sms
-	 *                        order:
-	 *                            ... - dane zamówienia
-	 *                        tariff - koszt usługi ( taryfa )
+	 * @param Entity_Purchase $purchase
 	 *
 	 * @return array        'status'    - id wiadomości,
 	 *                        'text'        - treść wiadomości
@@ -35,5 +24,5 @@ interface IService_PurchaseOutside
 	 *                            'no_transfer'
 	 *                            'no_wallet'
 	 */
-	public function purchase_validate_data($data);
+	public function purchase_validate_data($purchase);
 }

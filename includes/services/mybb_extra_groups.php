@@ -85,6 +85,26 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	 */
 	public function purchase_form_get()
 	{
+		global $db, $user, $settings, $lang;
+
+		// Pozyskujemy taryfy
+		$result = $db->query($db->prepare(
+			"SELECT sn.number AS `sms_number`, t.provision AS `provision`, t.tariff AS `tariff`, p.amount AS `amount` " .
+			"FROM `" . TABLE_PREFIX . "pricelist` AS p " .
+			"JOIN `" . TABLE_PREFIX . "tariffs` AS t ON t.tariff = p.tariff " .
+			"LEFT JOIN `" . TABLE_PREFIX . "sms_numbers` AS sn ON sn.tariff = p.tariff AND sn.service = '%s' " .
+			"WHERE p.service = '%s' " .
+			"ORDER BY t.provision ASC",
+			array($settings['sms_service'], $this->service['id'])
+		));
+
+		$amount = "";
+		while ($row = $db->fetch_array_assoc($result)) {
+			$sms_cost = strlen($row['sms_number']) ? get_sms_cost($row['sms_number']) * $settings['vat'] : 0;
+			$amount = $row['amount'] != -1 ? $row['amount'] . " " . $this->service['tag'] : $lang->forever;
+			eval("\$amounts .= \"" . get_template("services/" . $this::MODULE_ID . "/purchase_value", false, true, false) . "\";");
+		}
+
 		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/purchase_form") . "\";");
 
 		return $output;
@@ -101,6 +121,65 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	 */
 	public function purchase_form_validate($data)
 	{
+		global $db, $lang;
+
+		// Username
+		if (!strlen($data['username']))
+			$warnings['username'][] = $lang->field_no_empty;
+
+		// Amount
+		$amount = explode(';', $data['amount']); // Wyłuskujemy taryfę
+		$tariff = $amount[2];
+
+		if (!$tariff)
+			$warnings['amount'][] = $lang->must_choose_amount;
+		else {
+			// Wyszukiwanie usługi o konkretnej cenie
+			$result = $db->query($db->prepare(
+				"SELECT * FROM `" . TABLE_PREFIX . "pricelist` " .
+				"WHERE `service` = '%s' AND `tariff` = '%d'",
+				array($this->service['id'], $tariff)
+			));
+
+			if (!$db->num_rows($result)) // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
+				return array(
+					'status' => "no_option",
+					'text' => $lang->service_not_affordable,
+					'positive' => false
+				);
+
+			$price = $db->fetch_array_assoc($result);
+		}
+
+		// E-mail
+		if ($warning = check_for_warnings("email", $data['email']))
+			$warnings['email'] = array_merge((array)$warnings['email'], $warning);
+
+		// Jeżeli są jakieś błedy, to je zwróć
+		if (!empty($warnings))
+			return array(
+				'status' => "warnings",
+				'text' => $lang->form_wrong_filled,
+				'positive' => false,
+				'data' => array('warnings' => $warnings)
+			);
+
+		$purchase = new Entity_Purchase(array(
+			'service' => $this->service['id'],
+			'order' => array(
+				'auth_data' => $data['username'],
+				'amount' => $price['amount']
+			),
+			'email' => $data['email'],
+			'tariff' => $tariff,
+		));
+
+		return array(
+			'status' => "validated",
+			'text' => $lang->purchase_form_validated,
+			'positive' => true,
+			'purchase_data' => $purchase
+		);
 	}
 
 	/**
@@ -117,7 +196,14 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	 */
 	public function order_details($data)
 	{
-		// TODO: Implement order_details() method.
+		global $lang;
+
+		$email = $data['order']['email'] ? htmlspecialchars($data['order']['email']) : $lang->none;
+		$username = htmlspecialchars($data['order']['auth_data']);
+		$amount = $data['order']['amount'] != -1 ? ($data['order']['amount'] . " " . $this->service['tag']) : $lang->forever;
+
+		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/order_details", 0, 1, 0) . "\";");
+		return $output;
 	}
 
 	/**

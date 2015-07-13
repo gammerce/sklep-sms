@@ -87,7 +87,7 @@ if ($action == "login") {
 
 	// Nazwa użytkownika
 	if ($warning = check_for_warnings("username", $username))
-		$warnings['username'] = $warning;
+		$warnings['username'] = array_merge((array)$warnings['username'], $warning);
 
 	$result = $db->query($db->prepare(
 		"SELECT `uid` FROM `" . TABLE_PREFIX . "users` " .
@@ -95,16 +95,16 @@ if ($action == "login") {
 		array($username)
 	));
 	if ($db->num_rows($result))
-		$warnings['username'] .= $lang->nick_occupied . "<br />";
+		$warnings['username'][] = $lang->nick_occupied;
 
 	// Hasło
 	if ($warning = check_for_warnings("password", $password))
-		$warnings['password'] = $warning;
+		$warnings['password'] = array_merge((array)$warnings['password'], $warning);
 	if ($password != $passwordr)
-		$warnings['password_repeat'] .= $lang->different_pass . "<br />";
+		$warnings['password_repeat'][] = $lang->different_pass;
 
 	if ($warning = check_for_warnings("email", $email))
-		$warnings['email'] = $warning;
+		$warnings['email'] = array_merge((array)$warnings['email'], $warning);
 
 	// Email
 	$result = $db->query($db->prepare(
@@ -113,10 +113,10 @@ if ($action == "login") {
 		array($email)
 	));
 	if ($db->num_rows($result))
-		$warnings['email'] .= $lang->email_occupied . "<br />";
+		$warnings['email'][] = $lang->email_occupied;
 
 	if ($email != $emailr)
-		$warnings['email_repeat'] .= $lang->different_email . "<br />";
+		$warnings['email_repeat'][] = $lang->different_email;
 
 	// Pobranie z bazy pytania antyspamowego
 	$result = $db->query($db->prepare(
@@ -126,12 +126,12 @@ if ($action == "login") {
 	));
 	$antispam_question = $db->fetch_array_assoc($result);
 	if (!in_array(strtolower($as_answer), explode(";", $antispam_question['answers'])))
-		$warnings['as_answer'] .= $lang->wrong_anti_answer . "<br />";
+		$warnings['as_answer'][] = $lang->wrong_anti_answer;
 
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			$warning = create_dom_element("div", $warning, array(
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
 				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
@@ -159,7 +159,7 @@ if ($action == "login") {
 
 	if ($username || (!$username && !$email)) {
 		if ($warning = check_for_warnings("username", $username))
-			$warnings['username'] = $warning;
+			$warnings['username'] = array_merge((array)$warnings['username'], $warning);
 		if (strlen($username)) {
 			$result = $db->query($db->prepare(
 				"SELECT `uid` FROM `" . TABLE_PREFIX . "users` " .
@@ -168,7 +168,7 @@ if ($action == "login") {
 			));
 
 			if (!$db->num_rows($result))
-				$warnings['username'] .= $lang->nick_no_account . "<br />";
+				$warnings['username'][] = $lang->nick_no_account;
 			else
 				$row = $db->fetch_array_assoc($result);
 		}
@@ -176,7 +176,7 @@ if ($action == "login") {
 
 	if (!strlen($username)) {
 		if ($warning = check_for_warnings("email", $email))
-			$warnings['email'] = $warning;
+			$warnings['email'] = array_merge((array)$warnings['email'], $warning);
 		if (strlen($email)) {
 			$result = $db->query($db->prepare(
 				"SELECT `uid` FROM `" . TABLE_PREFIX . "users` " .
@@ -185,7 +185,7 @@ if ($action == "login") {
 			));
 
 			if (!$db->num_rows($result))
-				$warnings['email'] .= $lang->email_no_account . "<br />";
+				$warnings['email'][] = $lang->email_no_account;
 			else
 				$row = $db->fetch_array_assoc($result);
 		}
@@ -194,7 +194,7 @@ if ($action == "login") {
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			$warning = create_dom_element("div", $warning, array(
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
 				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
@@ -240,14 +240,14 @@ if ($action == "login") {
 		json_output("wrong_sign", $lang->wrong_sign, 0);
 
 	if ($warning = check_for_warnings("password", $pass))
-		$warnings['pass'] = $warning;
+		$warnings['pass'] = array_merge((array)$warnings['pass'], $warning);
 	if ($pass != $passr)
-		$warnings['pass_repeat'] .= $lang->different_pass;
+		$warnings['pass_repeat'][] = $lang->different_pass;
 
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			$warning = create_dom_element("div", $warning, array(
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
 				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
@@ -278,19 +278,19 @@ if ($action == "login") {
 	$passr = $_POST['pass_repeat'];
 
 	if ($warning = check_for_warnings("password", $pass))
-		$warnings['pass'] = $warning;
+		$warnings['pass'] = array_merge((array)$warnings['pass'], $warning);
 	if ($pass != $passr) {
-		$warnings['pass_repeat'] .= $lang->different_pass;
+		$warnings['pass_repeat'][] = $lang->different_pass;
 	}
 
 	if (hash_password($oldpass, $user['salt']) != $user['password']) {
-		$warnings['old_pass'] .= $lang->old_pass_wrong . "<br />";
+		$warnings['old_pass'][] = $lang->old_pass_wrong;
 	}
 
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			$warning = create_dom_element("div", $warning, array(
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
 				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
@@ -328,12 +328,19 @@ if ($action == "login") {
 	// Przerabiamy ostrzeżenia, aby lepiej wyglądały
 	if ($return_data['status'] == "warnings") {
 		foreach ($return_data['data']['warnings'] as $brick => $warning) {
-			$warning = create_dom_element("div", $warning, array(
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
 				'class' => "form_warning"
 			));
 			$return_data['data']['warnings'][$brick] = $warning;
 		}
 	} else {
+		// Dopełniamy danymi
+		if ($return_data['purchase_data']['order']['amount'] == -1)
+			$return_data['purchase_data']['order']['forever'] = true;
+
+		if(!isset($return_data['purchase_data']['user']['uid']) && is_logged())
+			$return_data['purchase_data']['user']['uid'] = $user['uid'];
+
 		$data_encoded = base64_encode(json_encode($return_data['purchase_data']));
 		$return_data['data'] = array(
 			'length' => 8000,
@@ -343,18 +350,18 @@ if ($action == "login") {
 	}
 
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
-} else if ($action == "payment_validate_form") {
+} else if ($action == "payment_form_validate") {
 	// Sprawdzanie hashu danych przesłanych przez formularz
 	if (!isset($_POST['purchase_sign']) || $_POST['purchase_sign'] != md5($_POST['purchase_data'] . $settings['random_key']))
 		json_output("wrong_sign", $lang->wrong_sign, 0);
 
 	// Te same dane, co w "payment_form"
-	$payment_data = json_decode(base64_decode($_POST['purchase_data']), true);
-	$payment_data['method'] = $_POST['method'];
-	$payment_data['sms_code'] = $_POST['sms_code'];
-	$payment_data['service_code'] = $_POST['service_code'];
+	$purchase_data = json_decode(base64_decode($_POST['purchase_data']), true);
+	$purchase_data['payment']['method'] = $_POST['method'];
+	$purchase_data['payment']['sms_code'] = $_POST['sms_code'];
+	$purchase_data['payment']['service_code'] = $_POST['service_code'];
 
-	$return_payment = validate_payment($payment_data);
+	$return_payment = validate_payment($purchase_data);
 	json_output($return_payment['status'], $return_payment['text'], $return_payment['positive'], $return_payment['data']);
 } else if ($action == "refresh_blocks") {
 	if (isset($_POST['bricks']))

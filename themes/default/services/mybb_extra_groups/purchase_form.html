@@ -1,0 +1,28 @@
+<form id="form_purchase">
+	<div class="inputs">
+		<table>
+			<tr>
+				<td><strong>{$lang->username}</strong></td>
+				<td><input type="text" name="username" /></td>
+			</tr>
+			<tr>
+				<td><strong>{$lang->amount}</strong></td>
+				<td>
+					<select name="amount">
+						<option value="">{$lang->choose_amount}</option>
+						{$amounts}
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td><strong>{$lang->email}</strong></td>
+				<td><input type="text" name="email" value="{$user['email']}"/></td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="purchase_button_wraper">
+		<input type="button" id="go_to_payment" value="{$lang->go_to_payment}" class="purchase_button"/>
+	</div>
+	<input type="hidden" name="service" value="{$this->service['id']}"/>
+</form>

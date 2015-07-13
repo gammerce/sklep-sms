@@ -318,11 +318,11 @@ function validate_payment($data)
 		);
 
 	// Tworzymy obiekt, który będzie nam obsługiwał proces płatności
-	if ($data['method'] == "sms") {
-		$transaction_service = if_strlen($data['sms_service'], $settings['sms_service']);
+	if ($data['payment']['method'] == "sms") {
+		$transaction_service = if_strlen($data['payment']['sms_service'], $settings['sms_service']);
 		$payment = new Payment($transaction_service, $user['platform']);
-	} else if ($data['method'] == "transfer") {
-		$transaction_service = if_strlen($data['transfer_service'], $settings['transfer_service']);
+	} else if ($data['payment']['method'] == "transfer") {
+		$transaction_service = if_strlen($data['payment']['transfer_service'], $settings['transfer_service']);
 		$payment = new Payment($transaction_service, $user['platform']);
 	}
 
@@ -373,17 +373,17 @@ function validate_payment($data)
 	// Kod SMS
 	$data['sms_code'] = trim($data['sms_code']);
 	if ($data['method'] == "sms" && $warning = check_for_warnings("sms_code", $data['sms_code']))
-		$warnings['sms_code'] = $warning;
+		$warnings['sms_code'] = array_merge((array)$warnings['sms_code'], $warning);
 
 	// Kod na usługę
 	if ($data['method'] == "service_code")
 		if (!strlen($data['service_code']))
-			$warnings['service_code'] = $lang->field_no_empty . "<br />";
+			$warnings['service_code'][] = $lang->field_no_empty;
 
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			$warning = create_dom_element("div", $warning, array(
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
 				'class' => "form_warning"
 			));
 			$warning_data['warnings'][$brick] = $warning;
@@ -1030,4 +1030,15 @@ function ip_in_range($ip, $range)
 
 function ends_at($string, $end) {
 	return substr($string, -strlen($end)) == $end;
+}
+
+/**
+ * Prints var_dump in pre
+ *
+ * @param mixed $a
+ */
+function pr($a) {
+	echo "<pre>";
+	var_dump($a);
+	echo "</pre>";
 }

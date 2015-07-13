@@ -26,24 +26,24 @@ if ($action == "charge_wallet") {
 
 	// ID użytkownika
 	if ($warning = check_for_warnings("uid", $uid)) {
-		$warnings['uid'] = $warning;
+		$warnings['uid'] = array_merge((array)$warnings['uid'], $warning);
 	} else {
 		$user2 = $heart->get_user($uid);
 		if (!isset($user2['uid'])) {
-			$warnings['uid'] = $lang->noaccount_id . "<br />";
+			$warnings['uid'][] = $lang->noaccount_id;
 		}
 	}
 
 	// Wartość Doładowania
 	if (!$amount) {
-		$warnings['amount'] .= $lang->no_charge_value . "<br />";
+		$warnings['amount'][] = $lang->no_charge_value;
 	} else if (!is_numeric($amount)) {
-		$warnings['amount'] .= $lang->charge_number . "<br />";
+		$warnings['amount'][] = $lang->charge_number;
 	}
 
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			$warning = create_dom_element("div", $warning, array(
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
 				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
@@ -201,18 +201,18 @@ if ($action == "charge_wallet") {
 
 	// Pytanie
 	if (!$_POST['question']) {
-		$warnings['question'] = $lang->field_no_empty . "<br />";
+		$warnings['question'][] = $lang->field_no_empty;
 	}
 
 	// Odpowiedzi
 	if (!$_POST['answers']) {
-		$warnings['answers'] = $lang->field_no_empty . "<br />";
+		$warnings['answers'][] = $lang->field_no_empty;
 	}
 
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			$warning = create_dom_element("div", $warning, array(
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
 				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
@@ -291,7 +291,7 @@ if ($action == "charge_wallet") {
 			array($sms_service)
 		));
 		if (!$db->num_rows($result)) {
-			$warnings['sms_service'] = $lang->no_sms_service . "<br />";
+			$warnings['sms_service'][] = $lang->no_sms_service;
 		}
 	}
 
@@ -304,51 +304,51 @@ if ($action == "charge_wallet") {
 			array($transfer_service)
 		));
 		if (!$db->num_rows($result)) {
-			$warnings['transfer_service'] = $lang->no_net_service . "<br />";
+			$warnings['transfer_service'][] = $lang->no_net_service;
 		}
 	}
 
 	// Email dla automatu
 	if ($warning = check_for_warnings("email", $sender_email)) {
-		$warnings['sender_email'] = $warning;
+		$warnings['sender_email'] = array_merge((array)$warnings['sender_email'], $warning);
 	}
 
 	// VAT
 	if ($warning = check_for_warnings("number", $vat)) {
-		$warnings['vat'] = $warning;
+		$warnings['vat'] = array_merge((array)$warnings['vat'], $warning);
 	}
 
 	// Usuwanie logów
 	if ($warning = check_for_warnings("number", $delete_logs)) {
-		$warnings['delete_logs'] = $warning;
+		$warnings['delete_logs'] = array_merge((array)$warnings['delete_logs'], $warning);
 	}
 
 	// Wierszy na stronę
 	if ($warning = check_for_warnings("number", $row_limit)) {
-		$warnings['row_limit'] = $warning;
+		$warnings['row_limit'] = array_merge((array)$warnings['row_limit'], $warning);
 	}
 
 	// Cron
 	if (!in_array($cron, array("1", "0"))) {
-		$warnings['cron'] = $lang->only_yes_no;
+		$warnings['cron'][] = $lang->only_yes_no;
 	}
 
 	// Edytowanie usługi przez gracza
 	if (!in_array($_POST['user_edit_service'], array("1", "0"))) {
-		$warnings['user_edit_service'] = $lang->only_yes_no;
+		$warnings['user_edit_service'][] = $lang->only_yes_no;
 	}
 
 	// Motyw
 	if (!is_dir(SCRIPT_ROOT . "themes/{$theme}") || $theme[0] == '.')
-		$warnings['theme'] = $lang->no_theme;
+		$warnings['theme'][] = $lang->no_theme;
 
 	// Język
 	if (!is_dir(SCRIPT_ROOT . "includes/languages/{$language}") || $language[0] == '.')
-		$warnings['language'] = $lang->no_language;
+		$warnings['language'][] = $lang->no_language;
 
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			$warning = create_dom_element("div", $warning, array(
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
 				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
@@ -436,35 +436,35 @@ if ($action == "charge_wallet") {
 
 	// ID
 	if (!strlen($_POST['id'])) { // Nie podano id usługi
-		$warnings['id'] = $lang->no_service_id . "<br />";
+		$warnings['id'][] = $lang->no_service_id;
 	} else if ($action == "service_add") {
 		if (strlen($_POST['id']) > 16)
-			$warnings['id'] = $lang->long_service_id . "<br />";
+			$warnings['id'][] = $lang->long_service_id;
 	}
 
 	if (($action == "service_add" && !isset($warnings['id'])) || ($action == "service_edit" && $_POST['id'] !== $_POST['id2']))
 		// Sprawdzanie czy usługa o takim ID już istnieje
 		if ($heart->get_service($_POST['id']) !== NULL)
-			$warnings['id'] = $lang->id_exist . "<br />";
+			$warnings['id'][] = $lang->id_exist;
 
 	// Nazwa
 	if (!strlen($_POST['name'])) {
-		$warnings['name'] = $lang->no_service_name . "<br />";
+		$warnings['name'][] = $lang->no_service_name;
 	}
 
 	// Opis
 	if ($warning = check_for_warnings("service_description", $_POST['short_description']))
-		$warnings['short_description'] = $warning;
+		$warnings['short_description'] = array_merge((array)$warnings['short_description'], $warning);
 
 	// Kolejność
 	if ($_POST['order'] != intval($_POST['order'])) {
-		$warnings['order'] = $lang->field_integer . "<br />";
+		$warnings['order'][] = $lang->field_integer;
 	}
 
 	// Grupy
 	foreach ($_POST['groups'] as $group) {
 		if (is_null($heart->get_group($group))) {
-			$warnings['groups[]'] .= $lang->wrong_group . "<br />";
+			$warnings['groups[]'][] = $lang->wrong_group;
 			break;
 		}
 	}
@@ -472,7 +472,7 @@ if ($action == "charge_wallet") {
 	// Moduł usługi
 	if ($action == "service_add") {
 		if (($service_module = $heart->get_service_module_s($_POST['module'])) === NULL)
-			$warnings['module'] = $lang->wrong_module . "<br />";
+			$warnings['module'][] = $lang->wrong_module;
 	} else
 		$service_module = $heart->get_service_module($_POST['id2']);
 
@@ -485,7 +485,7 @@ if ($action == "charge_wallet") {
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			$warning = create_dom_element("div", $warning, array(
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
 				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
@@ -588,18 +588,18 @@ if ($action == "charge_wallet") {
 
 	// Nazwa
 	if (!$_POST['name']) { // Nie podano nazwy serwera
-		$warnings['name'] = $lang->field_no_empty . "<br />";
+		$warnings['name'][] = $lang->field_no_empty;
 	}
 
 	// IP
 	if (!$_POST['ip']) { // Nie podano nazwy serwera
-		$warnings['ip'] = $lang->field_no_empty . "<br />";
+		$warnings['ip'][] = $lang->field_no_empty;
 	}
 	$_POST['ip'] = trim($_POST['ip']);
 
 	// Port
 	if (!$_POST['port']) { // Nie podano nazwy serwera
-		$warnings['port'] = $lang->field_no_empty . "<br />";
+		$warnings['port'][] = $lang->field_no_empty;
 	}
 	$_POST['port'] = trim($_POST['port']);
 
@@ -612,14 +612,14 @@ if ($action == "charge_wallet") {
 			array($_POST['sms_service'])
 		));
 		if (!$db->num_rows($result)) {
-			$warnings['sms_service'] = $lang->no_sms_service . "<br />";
+			$warnings['sms_service'][] = $lang->no_sms_service;
 		}
 	}
 
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			$warning = create_dom_element("div", $warning, array(
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
 				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
@@ -705,7 +705,7 @@ if ($action == "charge_wallet") {
 	// Nazwa użytkownika
 	if ($user2['username'] != $_POST['username']) {
 		if ($warning = check_for_warnings("username", $_POST['username']))
-			$warnings['username'] = $warning;
+			$warnings['username'] = array_merge((array)$warnings['username'], $warning);
 		$result = $db->query($db->prepare(
 			"SELECT `uid` " .
 			"FROM `" . TABLE_PREFIX . "users` " .
@@ -713,14 +713,14 @@ if ($action == "charge_wallet") {
 			array($_POST['username'])
 		));
 		if ($db->num_rows($result)) {
-			$warnings['username'] .= $lang->nick_taken . "<br />";
+			$warnings['username'][] = $lang->nick_taken;
 		}
 	}
 
 	// E-mail
 	if ($user2['email'] != $_POST['email']) {
 		if ($warning = check_for_warnings("email", $_POST['email']))
-			$warnings['email'] = $warning;
+			$warnings['email'] = array_merge((array)$warnings['email'], $warning);
 		$result = $db->query($db->prepare(
 			"SELECT `uid` " .
 			"FROM `" . TABLE_PREFIX . "users` " .
@@ -728,26 +728,26 @@ if ($action == "charge_wallet") {
 			array($_POST['email'])
 		));
 		if ($db->num_rows($result)) {
-			$warnings['email'] .= $lang->email_taken . "<br />";
+			$warnings['email'][] = $lang->email_taken;
 		}
 	}
 
 	// Grupy
 	foreach ($_POST['groups'] as $gid) {
 		if (is_null($heart->get_group($gid))) {
-			$warnings['groups[]'] .= $lang->wrong_group . "<br />";
+			$warnings['groups[]'][] = $lang->wrong_group;
 			break;
 		}
 	}
 
 	// Portfel
 	if ($warning = check_for_warnings("number", $_POST['wallet']))
-		$warnings['wallet'] = $warning;
+		$warnings['wallet'] = array_merge((array)$warnings['wallet'], $warning);
 
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			$warning = create_dom_element("div", $warning, array(
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
 				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
@@ -849,21 +849,21 @@ if ($action == "charge_wallet") {
 
 	// Taryfa
 	if ($warning = check_for_warnings("number", $_POST['tariff'])) {
-		$warnings['tariff'] = $warning;
+		$warnings['tariff'] = array_merge((array)$warnings['tariff'], $warning);
 	}
 	if (($heart->get_tariff($_POST['tariff'])) !== NULL) {
-		$warnings['tariff'] .= $lang->tariff_exist . "<br />";
+		$warnings['tariff'][] = $lang->tariff_exist;
 	}
 
 	// Prowizja
 	if ($warning = check_for_warnings("number", $_POST['provision'])) {
-		$warnings['provision'] = $warning;
+		$warnings['provision'] = array_merge((array)$warnings['provision'], $warning);
 	}
 
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			$warning = create_dom_element("div", $warning, array(
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
 				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
@@ -888,13 +888,13 @@ if ($action == "charge_wallet") {
 
 	// Prowizja
 	if ($warning = check_for_warnings("number", $_POST['provision'])) {
-		$warnings['provision'] = $warning;
+		$warnings['provision'] = array_merge((array)$warnings['provision'], $warning);
 	}
 
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			$warning = create_dom_element("div", $warning, array(
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
 				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
@@ -938,28 +938,28 @@ if ($action == "charge_wallet") {
 
 	// Usługa
 	if (is_null($heart->get_service($_POST['service']))) {
-		$warnings['service'] .= $lang->no_such_service . "<br />";
+		$warnings['service'][] = $lang->no_such_service;
 	}
 
 	// Serwer
 	if ($_POST['server'] != -1 && $heart->get_server($_POST['server']) === NULL) {
-		$warnings['server'] .= $lang->no_such_server . "<br />";
+		$warnings['server'][] = $lang->no_such_server;
 	}
 
 	// Taryfa
 	if (($heart->get_tariff($_POST['tariff'])) === NULL) {
-		$warnings['tariff'] .= $lang->no_such_tariff . "<br />";
+		$warnings['tariff'][] = $lang->no_such_tariff;
 	}
 
 	// Ilość
 	if ($warning = check_for_warnings("number", $_POST['amount'])) {
-		$warnings['amount'] = $warning;
+		$warnings['amount'] = array_merge((array)$warnings['amount'], $warning);
 	}
 
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			$warning = create_dom_element("div", $warning, array(
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
 				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
@@ -1014,16 +1014,16 @@ if ($action == "charge_wallet") {
 
 	// Taryfa
 	if ($warning = check_for_warnings("number", $_POST['tariff']))
-		$warnings['tariff'] = $warning;
+		$warnings['tariff'] = array_merge((array)$warnings['tariff'], $warning);
 
 	// Kod SMS
 	if ($warning = check_for_warnings("sms_code", $_POST['code']))
-		$warnings['code'] = $warning;
+		$warnings['code'] = array_merge((array)$warnings['code'], $warning);
 
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			$warning = create_dom_element("div", $warning, array(
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
 				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;
@@ -1069,13 +1069,13 @@ if ($action == "charge_wallet") {
 
 	// Id użytkownika
 	if (strlen($_POST['uid']) && ($warning = check_for_warnings("uid", $_POST['uid'])))
-		$warnings['uid'] = $warning;
+		$warnings['uid'] = array_merge((array)$warnings['uid'], $warning);
 
 	// Kod
 	if (!strlen($_POST['code']))
-		$warnings['code'] = $lang->field_no_empty;
+		$warnings['code'][] = $lang->field_no_empty;
 	else if (strlen($_POST['code']) > 16)
-		$warnings['code'] = $lang->return_code_length_warn;
+		$warnings['code'][] = $lang->return_code_length_warn;
 
 	// Łączymy zwrócone błędy
 	$warnings = array_merge((array)$warnings, (array)$service_module->service_code_admin_add_validate($_POST));
@@ -1083,7 +1083,7 @@ if ($action == "charge_wallet") {
 	// Przerabiamy ostrzeżenia, aby lepiej wyglądały
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			$warning = create_dom_element("div", $warning, array(
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
 				'class' => "form_warning"
 			));
 			$data['warnings'][$brick] = $warning;

@@ -37,18 +37,18 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
 		// Serwer
 		$server = array();
 		if (!strlen($data['order']['server']))
-			$warnings['server'] .= $lang->must_choose_server . "<br />";
+			$warnings['server'][] = $lang->must_choose_server;
 		else {
 			// Sprawdzanie czy serwer o danym id istnieje w bazie
 			$server = $heart->get_server($data['order']['server']);
 			if (!$heart->server_service_linked($server['id'], $this->service['id']))
-				$warnings['server'] .= $lang->chosen_incorrect_server . "<br />";
+				$warnings['server'][] = $lang->chosen_incorrect_server;
 		}
 
 		// Wartość usługi
 		$price = array();
 		if (!strlen($data['tariff']))
-			$warnings['value'] .= $lang->must_choose_amount . "<br />";
+			$warnings['value'][] = $lang->must_choose_amount;
 		else {
 			// Wyszukiwanie usługi o konkretnej cenie
 			$result = $db->query($db->prepare(
@@ -69,7 +69,7 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
 
 		// E-mail
 		if (strlen($data['user']['email']) && $warning = check_for_warnings("email", $data['user']['email']))
-			$warnings['email'] = $warning;
+			$warnings['email'] = array_merge((array)$warnings['email'], $warning);
 
 		// Jeżeli są jakieś błedy, to je zwróć
 		if (!empty($warnings)) {
