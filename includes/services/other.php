@@ -68,7 +68,7 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
 		}
 
 		// E-mail
-		if (strlen($purchase->getUser('email')) && $warning = check_for_warnings("email", $purchase->getUser('email')))
+		if (strlen($purchase->getEmail()) && $warning = check_for_warnings("email", $purchase->getEmail()))
 			$warnings['email'] = array_merge((array)$warnings['email'], $warning);
 
 		// Jeżeli są jakieś błedy, to je zwróć
@@ -103,7 +103,7 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
 		return add_bought_service_info(
 			$purchase->getUser('uid'), $purchase->getUser('username'), $purchase->getUser('ip'), $purchase->getPayment('method'),
 			$purchase->getPayment('payment_id'), $this->service['id'], $purchase->getOrder('server'), $purchase->getOrder('amount'),
-			$purchase->getOrder('auth_data'), $purchase->getUser('email')
+			$purchase->getOrder('auth_data'), $purchase->getEmail()
 		);
 	}
 

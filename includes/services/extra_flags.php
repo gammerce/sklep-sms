@@ -355,7 +355,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		return add_bought_service_info(
 			$purchase->getUser('uid'), $purchase->getUser('username'), $purchase->getUser('ip'), $purchase->getPayment('method'),
 			$purchase->getPayment('payment_id'), $this->service['id'], $purchase->getOrder('server'), $purchase->getOrder('amount'),
-			$purchase->getOrder('auth_data'), $purchase->getUser('email'), array(
+			$purchase->getOrder('auth_data'), $purchase->getEmail(), array(
 				'type' => $purchase->getOrder('type'),
 				'password' => $purchase->getOrder('password')
 			)
@@ -542,6 +542,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 	{
 		global $heart, $lang, $lang_shop, $user;
 
+		$warnings = array();
+
 		// Pobieramy auth_data
 		$data['auth_data'] = $this->get_auth_data($data);
 
@@ -577,15 +579,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		// Dodawanie informacji o płatności
 		$payment_id = pay_by_admin($user);
 
-		// Dokonujemy zakupu usługi
-		$bought_service_id = $this->purchase(array(
+		$bought_service_id = $this->purchase(new Entity_Purchase(array(
+			'service' => $this->service['id'],
 			'user' => array(
 				'uid' => $data['uid'],
 				'name' => $user2['username'],
-				'ip' => $user2['ip'],
-				'email' => $data['email']
+				'ip' => $user2['ip']
 			),
-			'transaction' => array(
+			'payment' => array(
 				'method' => "admin",
 				'payment_id' => $payment_id
 			),
@@ -596,8 +597,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 				'password' => $data['password'],
 				'amount' => $data['amount'],
 				'forever' => (boolean)$data['forever']
-			)
-		));
+			),
+			'email' => $data['email']
+		)));
 
 		log_info($lang_shop->sprintf($lang_shop->admin_added_service, $user['username'], $user['uid'], $bought_service_id));
 
@@ -1189,7 +1191,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 	}
 
 	/**
-	 * Funkcja zwraca listę dostępnych taryf danej usługi na danym lserwerze
+	 * Funkcja zwraca listę dostępnych taryf danej usługi na danym serwerze
 	 *
 	 * @param integer $server_id
 	 * @return string

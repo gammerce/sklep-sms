@@ -445,7 +445,7 @@ function validate_payment($purchase)
 		// Przygotowujemy dane do przeslania ich do dalszej obróbki w celu stworzenia płatności przelewem
 		$purchase_data = array(
 			'service' => $service_module->service['id'],
-			'email' => $purchase->getUser('email'),
+			'email' => $purchase->getEmail(),
 			'cost' => $purchase->getPayment('cost'),
 			'desc' => $lang->sprintf($lang->payment_for_service, $service_module->service['name']),
 			'order' => $purchase->getOrder()
