@@ -106,7 +106,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 				// Pobranie usług
 				$services = "";
 				foreach ($heart->get_services() as $id => $row) {
-					if (($service_module = $heart->get_service_module($id)) === NULL || !object_implements($service_module, "IService_CodeAdminManage"))
+					if (($service_module = $heart->get_service_module($id)) === NULL || !object_implements($service_module, "IService_ServiceCodeAdminManage"))
 						continue;
 
 					$services .= create_dom_element("option", $row['name'], array(

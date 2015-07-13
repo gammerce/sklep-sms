@@ -152,7 +152,7 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 
 class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purchase, IService_PurchaseWeb, IService_PurchaseOutside,
 	IService_UserServiceAdminManage, IService_ActionExecute, IService_UserOwnServices, IService_UserOwnServicesEdit, IService_TakeOver,
-	IService_CodeAdminManage
+	IService_ServiceCode, IService_ServiceCodeAdminManage
 {
 
 	function __construct($service)
@@ -1248,17 +1248,6 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		return $output;
 	}
 
-	// Zwraca wartość w zależności od typu
-	private function get_auth_data($data)
-	{
-		if ($data['type'] == TYPE_NICK)
-			return $data['nick'];
-		else if ($data['type'] == TYPE_IP)
-			return $data['ip'];
-		else if ($data['type'] == TYPE_SID)
-			return $data['sid'];
-	}
-
 	public function action_execute($action, $data)
 	{
 		switch ($action) {
@@ -1269,12 +1258,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		}
 	}
 
-	private function max_minus($a, $b)
-	{
-		if ($a == -1 || $b == -1)
-			return -1;
-
-		return max($a, $b);
+	public function service_code_validate($purchase, $code) {
+		return true;
 	}
 
 	public function service_code_admin_add_form_get()
@@ -1328,5 +1313,24 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			'tariff' => $tariff,
 			'server' => $data['server']
 		);
+	}
+
+	// Zwraca wartość w zależności od typu
+	private function get_auth_data($data)
+	{
+		if ($data['type'] == TYPE_NICK)
+			return $data['nick'];
+		else if ($data['type'] == TYPE_IP)
+			return $data['ip'];
+		else if ($data['type'] == TYPE_SID)
+			return $data['sid'];
+	}
+
+	private function max_minus($a, $b)
+	{
+		if ($a == -1 || $b == -1)
+			return -1;
+
+		return max($a, $b);
 	}
 }

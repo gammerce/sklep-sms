@@ -46,17 +46,6 @@ abstract class Service
 	}
 
 	/**
-	 * Sprawdza czy dany zakup może być zrealizowany ( opłacony ) przez dany kod na usługę
-	 *
-	 * @param array $purchase
-	 * @param array $code
-	 * @return bool
-	 */
-	public function service_code_validate($purchase, $code) {
-		return true;
-	}
-
-	/**
 	 * Metoda powinna zwrócić, czy usługa ma być wyświetlana na stronie WWW.
 	 */
 	public function show_on_web()

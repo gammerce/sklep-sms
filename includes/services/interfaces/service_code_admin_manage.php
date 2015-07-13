@@ -1,6 +1,6 @@
 <?php
 
-interface IService_CodeAdminManage
+interface IService_ServiceCodeAdminManage
 {
 	/**
 	 * Metoda sprawdza dane formularza podczas dodawania kodu na usługę w PA

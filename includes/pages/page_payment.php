@@ -39,6 +39,7 @@ class PagePayment extends Page
 		 *                        'no_sms'
 		 *                        'no_transfer'
 		 *                        'no_wallet'
+		 * 						  'no_code'
 		 */
 		$data = json_decode(base64_decode($post['data']), true);
 
@@ -53,7 +54,9 @@ class PagePayment extends Page
 		// Pobieramy płatność sms
 		$sms_service = if_strlen($data['sms_service'], $settings['sms_service']);
 
+		//
 		// Pobieramy sposoby płatności
+
 		$payment_methods = "";
 		if ($sms_service && isset($data['tariff']) && !$data['no_sms']) { // Sprawdzamy, czy płatność za pomocą SMS jest możliwa
 			$payment_sms = new Payment($sms_service);
@@ -67,9 +70,12 @@ class PagePayment extends Page
 		$cost_transfer = number_format($data['cost_transfer'], 2);
 		if ($settings['transfer_service'] && isset($data['cost_transfer']) && $data['cost_transfer'] > 1 && !$data['no_transfer'])
 			eval("\$payment_methods .= \"" . get_template("payment_method_transfer") . "\";");
+
 		if (is_logged() && isset($data['cost_transfer']) && !$data['no_wallet'])
 			eval("\$payment_methods .= \"" . get_template("payment_method_wallet") . "\";");
-		eval("\$payment_methods .= \"" . get_template("payment_method_code") . "\";");
+
+		if (!$data['no_code'] && object_implements($service_module, "IService_ServiceCode"))
+			eval("\$payment_methods .= \"" . get_template("payment_method_code") . "\";");
 
 		$purchase_data = htmlspecialchars($post['data']);
 		$purchase_sign = htmlspecialchars($post['sign']);
