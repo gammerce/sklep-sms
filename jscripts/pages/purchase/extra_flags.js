@@ -22,8 +22,10 @@ $(document).delegate("#form_purchase [name=value]", "change", function () {
 
 	if ($(this).val().length)
 		form.find("#cost_wraper").slideDown('slow');
-	else
+	else {
 		form.find("#cost_wraper").slideUp('slow');
+		return;
+	}
 
 	var values = $(this).val().split(';');
 	form.find("#cost_transfer").text(parseFloat(values[0]).toFixed(2));

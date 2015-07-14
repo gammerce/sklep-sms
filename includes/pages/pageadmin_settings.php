@@ -18,7 +18,7 @@ class PageAdminSettings extends PageAdmin
 
 	protected function content($get, $post)
 	{
-		global $db, $settings, $lang;
+		global $db, $settings, $lang, $lang_shop;
 
 		// Pobranie listy serwisów transakcyjnych
 		$result = $db->query(
@@ -45,7 +45,7 @@ class PageAdminSettings extends PageAdmin
 		$dirlist = scandir(SCRIPT_ROOT . "themes");
 		$themes_list = "";
 		foreach ($dirlist as $dir_name)
-			if ($dir_name[0] != '.' && is_dir(SCRIPT_ROOT . "themes/{$dir_name}"))
+			if ($dir_name[0] != '.' && is_dir(SCRIPT_ROOT . "themes/" . $dir_name))
 				$themes_list .= create_dom_element("option", $dir_name, array(
 					'value' => $dir_name,
 					'selected' => $dir_name == $settings['theme'] ? "selected" : ""
@@ -58,7 +58,7 @@ class PageAdminSettings extends PageAdmin
 			if ($dir_name[0] != '.' && is_dir(SCRIPT_ROOT . "includes/languages/{$dir_name}"))
 				$languages_list .= create_dom_element("option", $lang->languages[$dir_name], array(
 					'value' => $dir_name,
-					'selected' => $dir_name == $settings['language'] ? "selected" : ""
+					'selected' => $dir_name == $lang_shop->get_current_language() ? "selected" : ""
 				));
 
 		// Pobranie wyglądu strony

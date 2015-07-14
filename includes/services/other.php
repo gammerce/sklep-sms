@@ -91,7 +91,7 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
 		));
 
 		return array(
-			'status' => "validated",
+			'status' => "ok",
 			'text' => $lang->purchase_form_validated,
 			'positive' => true,
 			'purchase' => $purchase

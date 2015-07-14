@@ -62,8 +62,6 @@ $l['take_over_service'] = "Take over service";
 
 $l['transfer'] = "Transfer";
 
-$l['payment_id'] = "Payment ID";
-
 $l['transfer_error'] = "Unfortunately, transfer payment failed.";
 $l['transfer_unverified'] = "Unfortunately, transfer data failed to be verified correctly.";
 

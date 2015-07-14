@@ -88,8 +88,9 @@ $l['ajax_error'] = "Could not obtain data.";
 
 $l['bought_service_info'] = "Service was purchased {1}. Data: {2} Qunatity: {3} Server: {4} Transaction ID: {5}. Email: {6} {7}({8})({9})";
 
+$l['payment_id'] = "Payment ID";
 $l['payment']['bad_type'] = "Error in Payment class constructor. Payment type not allowed.";
-$l['payment']['bad_service'] = "Service API {1} was not implemented in code.";
+$l['payment']['bad_service'] = "Service API {1} was not implemented.";
 $l['payment']['remove_code_from_db'] = "Code was removed from the list of codes to be used. Code: {1} Tariff: {2}";
 
 $l['form_wrong_filled'] = "Not all the form fields were filled correctly.";

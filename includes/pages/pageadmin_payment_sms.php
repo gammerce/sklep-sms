@@ -34,6 +34,9 @@ class PageAdminPaymentSms extends PageAdmin
 		else if (isset($get['search']))
 			searchWhere(array("t.payment_id", "t.sms_text", "t.sms_code", "t.sms_number"), urldecode($get['search']), $where);
 
+		if (isset($get['payid']))
+			$where .= $db->prepare(" AND `payment_id` = '%d' ", array($get['payid']));
+
 		// Jezeli jest jakis where, to dodajemy WHERE
 		if (strlen($where))
 			$where = "WHERE " . $where . " ";

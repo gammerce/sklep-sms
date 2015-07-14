@@ -72,7 +72,7 @@ class PageAdminBoughtServices extends PageAdmin
 			$row['extra_data'] = implode("<br />", $extra_data);
 
 			// Pobranie linku płatności
-			$payment_link = "admin.php?pid=payment_{$row['payment']}&payid={$row['payment_id']}&highlight=1";
+			$payment_link = "admin.php?pid=payment_{$row['payment']}&payid={$row['payment_id']}";
 
 			// Pobranie danych do tabeli
 			eval("\$tbody .= \"" . get_template("admin/bought_services_trow") . "\";");

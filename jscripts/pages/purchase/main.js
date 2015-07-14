@@ -29,7 +29,7 @@ $(document).delegate("#go_to_payment", "click", function () {
 					id.effect("highlight", 1000);
 				});
 			}
-			else if (jsonObj.return_id == "validated") {
+			else if (jsonObj.return_id == "ok") {
 				// Przechodzimy do płatności
 				go_to_payment(jsonObj.data, jsonObj.sign);
 			}

@@ -20,7 +20,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 			$payment_sms = new Payment($settings['sms_service']);
 
 			// Pobieramy opcję wyboru doładowania za pomocą SMS
-			eval("\$option_sms = \"" . get_template("services/charge_wallet/option_sms") . "\";");
+			eval("\$option_sms = \"" . get_template("services/" . $this::MODULE_ID . "/option_sms") . "\";");
 
 			$sms_list = "";
 			foreach ($payment_sms->payment_api->sms_list AS $row) {
@@ -34,17 +34,17 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 					)
 				);
 			}
-			eval("\$sms_body = \"" . get_template("services/charge_wallet/sms_body") . "\";");
+			eval("\$sms_body = \"" . get_template("services/" . $this::MODULE_ID . "/sms_body") . "\";");
 		}
 
 		if ($settings['transfer_service']) {
 			// Pobieramy opcję wyboru doładowania za pomocą przelewu
-			eval("\$option_transfer = \"" . get_template("services/charge_wallet/option_transfer") . "\";");
+			eval("\$option_transfer = \"" . get_template("services/" . $this::MODULE_ID . "/option_transfer") . "\";");
 
-			eval("\$transfer_body = \"" . get_template("services/charge_wallet/transfer_body") . "\";");
+			eval("\$transfer_body = \"" . get_template("services/" . $this::MODULE_ID . "/transfer_body") . "\";");
 		}
 
-		eval("\$output = \"" . get_template("services/charge_wallet/purchase_form") . "\";");
+		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/purchase_form") . "\";");
 
 		return $output;
 	}
@@ -116,7 +116,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 		}
 
 		return array(
-			'status' => "validated",
+			'status' => "ok",
 			'text' => $lang->purchase_form_validated,
 			'positive' => true,
 			'purchase' => $purchase
@@ -151,9 +151,9 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 		if ($action == "web") {
 			if ($data['payment'] == "sms") {
 				$desc = $lang->sprintf($lang->wallet_was_charged, $data['amount']);
-				eval("\$output = \"" . get_template("services/charge_wallet/web_purchase_info_sms", 0, 1, 0) . "\";");
+				eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/web_purchase_info_sms", 0, 1, 0) . "\";");
 			} else if ($data['payment'] == "transfer")
-				eval("\$output = \"" . get_template("services/charge_wallet/web_purchase_info_transfer", 0, 1, 0) . "\";");
+				eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/web_purchase_info_transfer", 0, 1, 0) . "\";");
 
 			return $output;
 		} else if ($action == "payment_log")

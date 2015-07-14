@@ -19,10 +19,14 @@ class PageAdminPaymentServiceCode extends PageAdmin
 	{
 		global $db, $settings, $lang, $G_PAGE;
 
+		$where = "";
+		if (isset($get['payid']))
+			$where .= $db->prepare(" AND `payment_id` = '%d' ", array($get['payid']));
+
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS * " .
 			"FROM ({$settings['transactions_query']}) as t " .
-			"WHERE t.payment = 'service_code' " .
+			"WHERE t.payment = 'service_code' " . $where .
 			"ORDER BY t.timestamp DESC " .
 			"LIMIT " . get_row_limit($G_PAGE)
 		);

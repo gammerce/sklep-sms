@@ -15,7 +15,6 @@ function xml_output($return_value, $text, $positive, $extra_data = "")
 	output_page($output, "Content-type: text/plain; charset=\"UTF-8\"");
 }
 
-
 // Musi byc podany hash random_keya
 if ($_GET['key'] != md5($settings['random_key']))
 	exit;
@@ -50,13 +49,16 @@ if ($action == "purchase_service") {
 	)));
 
 	// Są jakieś błędy przy sprawdzaniu danych
-	if (!empty($return_validation['data']['warnings'])) {
-		$warnings = $extra_data = "";
-		foreach ($return_validation['data']['warnings'] as $what => $text)
-			$warnings .= "<strong>{$what}</strong><br />{$text}<br />";
+	if ($return_validation['status'] != "ok") {
+		$extra_data = "";
+		if (!empty($return_validation['data']['warnings'])) {
+			$warnings = "";
+			foreach ($return_validation['data']['warnings'] as $what => $warning)
+				$warnings .= "<strong>{$what}</strong><br />" . implode("<br />", $warning) . "<br />";
 
-		if (strlen($warnings))
-			$extra_data .= "<warnings>{$warnings}</warnings>";
+			if (strlen($warnings))
+				$extra_data .= "<warnings>{$warnings}</warnings>";
+		}
 
 		xml_output($return_validation['status'], $return_validation['text'], $return_validation['positive'], $extra_data);
 	}
@@ -85,3 +87,5 @@ if ($action == "purchase_service") {
 
 	xml_output($return_payment['status'], $return_payment['text'], $return_payment['positive'], $extra_data);
 }
+
+xml_output("script_error", "An error occured: no action.", false);

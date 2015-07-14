@@ -317,6 +317,13 @@ function validate_payment($purchase)
 			'positive' => false
 		);
 
+	if (!in_array($purchase->getPayment('method'), array("sms", "transfer", "wallet", "service_code")))
+		return array(
+			'status' => "wrong_method",
+			'text' => $lang->wrong_payment_method,
+			'positive' => false
+		);
+
 	// Tworzymy obiekt, który będzie nam obsługiwał proces płatności
 	if ($purchase->getPayment('method') == "sms") {
 		$transaction_service = if_strlen($purchase->getPayment('sms_service'), $settings['sms_service']);
@@ -333,13 +340,7 @@ function validate_payment($purchase)
 		));
 
 	// Metoda płatności
-	if (!in_array($purchase->getPayment('method'), array("sms", "transfer", "wallet", "service_code")))
-		return array(
-			'status' => "wrong_method",
-			'text' => $lang->wrong_payment_method,
-			'positive' => false
-		);
-	else if ($purchase->getPayment('method') == "wallet" && !is_logged())
+	if ($purchase->getPayment('method') == "wallet" && !is_logged())
 		return array(
 			'status' => "wallet_not_logged",
 			'text' => $lang->no_login_no_wallet,

@@ -38,7 +38,7 @@ interface IService_PurchaseWeb
 	 *                            web - informacje wyświetlone na stronie WWW zaraz po zakupie
 	 *                            payment_log - wpis w historii płatności
 	 * @param array $data Dane o zakupie usługi, zwrócone przez zapytanie zdefiniowane w global.php
-	 * @return string        Informacje o zakupionej usłudze
+	 * @return string|array        Informacje o zakupionej usłudze
 	 */
 	public function purchase_info($action, $data);
 

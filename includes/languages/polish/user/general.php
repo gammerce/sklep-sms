@@ -63,8 +63,6 @@ $l['take_over_service'] = "Przejmij usługę";
 
 $l['transfer'] = "Przelew";
 
-$l['payment_id'] = "ID płatności";
-
 $l['transfer_error'] = "Niestety, ale płatność za pomocą przelewu zakończyła się niepowodzeniem.";
 $l['transfer_unverified'] = "Niestety, ale nie udało się zweryfikować poprawności danych przelewu.";
 

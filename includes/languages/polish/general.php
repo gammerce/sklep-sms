@@ -87,8 +87,9 @@ $l['ajax_error'] = "Wystąpił błąd podczas pozyskiwania danych.";
 
 $l['bought_service_info'] = "Zakupiono usługę {1}. Dane: {2} Ilość: {3} Serwer: {4} ID transakcji: {5}. Email: {6} {7}({8})({9})";
 
+$l['payment_id'] = "ID płatności";
 $l['payment']['bad_type'] = "Błąd w konstruktorze klasy Payment. Niedozwolony typ płatności.";
-$l['payment']['bad_service'] = "API usługi {1} nie zostało zaimplenetowane w kodzie.";
+$l['payment']['bad_service'] = "API usługi {1} nie zostało zaimplenetowane.";
 $l['payment']['remove_code_from_db'] = "Usunięto kod z tabeli kodów do wykorzystania. Kod: {1} Taryfa: {2}";
 
 $l['form_wrong_filled'] = "Nie wszystkie pola formularza zostały prawidłowo wypełnione.";

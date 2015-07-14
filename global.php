@@ -212,9 +212,6 @@ $settings['date_format'] = strlen($settings['date_format']) ? $settings['date_fo
 // Sprawdzanie czy taki szablon istnieje, jak nie to ustaw defaultowy
 $settings['theme'] = file_exists(SCRIPT_ROOT . "themes/{$settings['theme']}") ? $settings['theme'] : "default";
 
-// Dodawanie biblioteki językowej
-$settings['language'] = file_exists(SCRIPT_ROOT . "includes/languages/{$settings['language']}/{$settings['language']}.php") ? $settings['language'] : "polish";
-
 // Ładujemy bibliotekę językową
 if (isset($_GET['language']))
 	$lang->set_language($_GET['language']);

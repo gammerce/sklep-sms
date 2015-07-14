@@ -64,6 +64,8 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 		$extra_data['groups_mybb'] = trim($data['groups_mybb']);
 		$extra_data['web'] = $data['web'];
 
+		// TODO: Zmiana grup i jej wpływ na obecne usługi
+
 		return array(
 			'query_set'	=> array(
 				array(
@@ -78,6 +80,31 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 
 class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements IService_Purchase, IService_PurchaseWeb
 {
+	/**
+	 * @var array
+	 */
+	private $groups;
+
+	private $db_host;
+	private $db_user;
+	private $db_password;
+	private $db_name;
+
+	/**
+	 * @var Database
+	 */
+	private $db_mybb = null;
+
+	function __construct($service) {
+		parent::__construct($service);
+
+		$this->groups = explode(",", $this->service['data']['groups_mybb']);
+		$this->db_host = if_isset($this->service['data']['db_host'], "");
+		$this->db_user = if_isset($this->service['data']['db_user'], "");
+		$this->db_password = if_isset($this->service['data']['db_password'], "");
+		$this->db_name = if_isset($this->service['data']['db_name'], "");
+	}
+
 	/**
 	 * Metoda powinna zwracać formularz zakupu w postaci stringa
 	 *
@@ -176,7 +203,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		));
 
 		return array(
-			'status' => "validated",
+			'status' => "ok",
 			'text' => $lang->purchase_form_validated,
 			'positive' => true,
 			'purchase' => $purchase
@@ -202,6 +229,30 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	}
 
 	/**
+	 * Metoda wywoływana, gdy usługa została prawidłowo zakupiona
+	 *
+	 * @param Entity_Purchase $purchase
+	 * @return integer        value returned by function add_bought_service_info
+	 */
+	public function purchase($purchase)
+	{
+		// Nie znaleziono użytkownika o takich danych jak podane podczas zakupu
+		if (($mybb_user = $this->createMybbUserByUsername($purchase->getOrder('auth_data'))) === NULL) {
+			// TODO: Dodać co ma się dziać
+			return;
+		}
+		foreach ($this->groups as $group) {
+			$mybb_user->prolongGroup($group, $purchase->getOrder('amount'));
+		}
+		$this->saveMybbUser($mybb_user);
+
+		return add_bought_service_info(
+			$purchase->getUser('uid'), $purchase->getUser('username'), $purchase->getUser('ip'), $purchase->getPayment('method'),
+			$purchase->getPayment('payment_id'), $this->service['id'], 0, $purchase->getOrder('amount'), $purchase->getOrder('auth_data'), $purchase->getEmail()
+		);
+	}
+
+	/**
 	 * Metoda formatuje i zwraca informacje o zakupionej usłudze, zaraz po jej zakupie.
 	 *
 	 * @param string $action Do czego zostaną te dane użyte ( email, web, payment_log )
@@ -209,35 +260,73 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	 *                            web - informacje wyświetlone na stronie WWW zaraz po zakupie
 	 *                            payment_log - wpis w historii płatności
 	 * @param array $data Dane o zakupie usługi, zwrócone przez zapytanie zdefiniowane w global.php
-	 * @return string        Informacje o zakupionej usłudze
+	 * @return string|array        Informacje o zakupionej usłudze
 	 */
 	public function purchase_info($action, $data)
 	{
-		// TODO: Implement purchase_info() method.
+		global $settings, $lang;
+
+		$username = htmlspecialchars($data['auth_data']);
+		$amount = $data['amount'] != -1 ? ($data['amount'] . " " . $this->service['tag']) : $lang->forever;
+		$email = htmlspecialchars($data['email']);
+		$cost = $data['cost'] ? (number_format($data['cost'], 2) . " " . $settings['currency']) : $lang->none;
+
+		if ($action == "email")
+			eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/purchase_info_email", false, true, false) . "\";");
+		else if ($action == "web")
+			eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/purchase_info_web", false, true, false) . "\";");
+		else if ($action == "payment_log")
+			return array(
+				'text' => $output = $lang->sprintf($lang->mybb_group_bought, $this->service['name'], $username),
+				'class' => "outcome"
+			);
+
+		return $output;
 	}
 
 	/**
-	 * Metoda wywoływana, gdy usługa została prawidłowo zakupiona
-	 *
-	 * @param array $data user:
-	 *                            uid - id uzytkownika wykonującego zakupy
-	 *                            ip - ip użytkownika wykonującego zakupy
-	 *                            email - email -||-
-	 *                            name - nazwa -||-
-	 *                        transaction:
-	 *                            method - sposób płatności
-	 *                            payment_id - id płatności
-	 *                        order:
-	 *                            server - serwer na który ma być wykupiona usługa
-	 *                            auth_data - dane rozpoznawcze gracza
-	 *                            type - TYPE_NICK / TYPE_IP / TYPE_SID
-	 *                            password - hasło do usługi
-	 *                            amount - ilość kupionej usługi
-	 *
-	 * @return integer        value returned by function add_bought_service_info
+	 * @param $username
+	 * @return null|Entity_MyBB_User
 	 */
-	public function purchase($data)
-	{
-		// TODO: Implement purchase() method.
+	private function createMybbUserByUsername($username) {
+		$this->connectMybb();
+
+		$result = $this->db_mybb->query($this->db_mybb->prepare(
+			"SELECT `uid`, `usergroup`, `additionalgroups` " .
+			"FROM `mybb_users` " .
+			"WHERE `username` = '%s'",
+			array($username)
+		));
+
+		if (!$this->db_mybb->num_rows($result))
+			return NULL;
+
+		$row_mybb = $this->db_mybb->fetch_array_assoc($result);
+
+		// TODO: Pozyskanie danych o kupionych grupach
+
+		$mybb_user = new Entity_MyBB_User(array(
+			'uid' => $row_mybb['uid']
+		));
+
+		return $mybb_user;
+	}
+
+	/**
+	 * Zapisuje dane o użytkowniku
+	 *
+	 * @param Entity_MyBB_User $mybb_user
+	 */
+	private function saveMybbUser($mybb_user) {
+		$this->connectMybb();
+
+		// TODO: Zapisanie użytkownika do db oraz db_mybb
+	}
+
+	private function connectMybb() {
+		if ($this->db_mybb !== NULL)
+			return;
+
+		$this->db_mybb = new Database($this->db_host, $this->db_user, $this->db_password, $this->db_name);
 	}
 }

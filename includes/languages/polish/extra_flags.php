@@ -5,7 +5,7 @@ $l['must_choose_server'] = "Musisz wybrać serwer na który chcesz wykupić dan�
 $l['must_choose_type'] = "Musisz wybrać typ zakupu.";
 $l['chosen_incorrect_server'] = "Coś jest nie tak, wybrany serwer nie istnieje w bazie lub danej usługi nie można wykupić na tym serwerze.";
 $l['chosen_incorrect_type'] = "Wybrano niedozwolony typ zakupu.";
-$l['service_not_affordable'] = "No kurczaki, nie możesz kupić tej usługi za taką kwotę.";
+$l['service_not_affordable'] = "No kurczaki, nie możesz kupić takiej ilości tej usługi.";
 
 $l['transfer_wallet_cost'] = "Koszt Przelew / Portfel";
 
