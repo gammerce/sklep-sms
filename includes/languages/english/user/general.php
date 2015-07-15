@@ -31,7 +31,7 @@ $l['antispam_question'] = "Antispam question";
 $l['create_account'] = "Create account";
 
 $l['go_to_payment'] = "Proceed to payment";
-$l['purchase_form_validated'] = "Given data are correct. Now choose payment method.";
+$l['purchase_form_validated'] = "Given data is correct. Now choose payment method.";
 $l['order_details'] = "Order details";
 $l['payment_sms'] = "SMS payment";
 $l['payment_transfer'] = "Transfer payment";

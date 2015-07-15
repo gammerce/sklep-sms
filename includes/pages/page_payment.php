@@ -28,6 +28,9 @@ class PagePayment extends Page
 		/** @var Entity_Purchase $purchase */
 		$purchase = unserialize(base64_decode($post['data']));
 
+		if (!($purchase instanceof Entity_Purchase))
+			return $lang->error_occured;
+
 		if (($service_module = $heart->get_service_module($purchase->getService())) === NULL
 			|| !object_implements($service_module, "IService_PurchaseWeb"))
 			return $lang->bad_module;
