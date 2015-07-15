@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Obsługa dodawania nowych kodów na usługę w PA
+ *
+ * Interface IService_ServiceCodeAdminManage
+ */
 interface IService_ServiceCodeAdminManage
 {
 	/**

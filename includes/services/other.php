@@ -2,7 +2,7 @@
 
 $heart->register_service_module("other", "Inne", "ServiceOther", "ServiceOtherSimple");
 
-class ServiceOtherSimple extends Service implements IService_Create
+class ServiceOtherSimple extends Service implements IService_Create, IService_AdminManage
 {
 
 	const MODULE_ID = "other";
@@ -20,6 +20,15 @@ class ServiceOtherSimple extends Service implements IService_Create
 			));
 	}
 
+	public function service_admin_extra_fields_get()
+	{
+		return "";
+	}
+
+	public function service_admin_manage_pre($data)
+	{
+		return array();
+	}
 }
 
 class ServiceOther extends ServiceOtherSimple implements IService_Purchase, IService_PurchaseOutside

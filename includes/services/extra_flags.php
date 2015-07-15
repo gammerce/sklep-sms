@@ -37,6 +37,8 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 	{
 		global $lang;
 
+		$warnings = array();
+
 		// Web
 		if (!in_array($data['web'], array("1", "0")))
 			$warnings['web'][] = $lang->only_yes_no;
@@ -60,7 +62,7 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 				break;
 			}
 
-		return $output;
+		return $warnings;
 	}
 
 	public function service_admin_manage_post($data)

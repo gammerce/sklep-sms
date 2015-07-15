@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Możliwość zakupu usługi z zewnątrz ( np. z serwera )
+ *
+ * Implementacja tego interfejsu powinna pociągnąć za sobą implementacje interfejsu:
+ * 	IService_Purchase
+ *
+ * Interface IService_PurchaseOutside
+ */
 interface IService_PurchaseOutside
 {
 	/**

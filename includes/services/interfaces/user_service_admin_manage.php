@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Obsługa edycji usług użytkownika w PA
+ *
+ * Interface IService_UserServiceAdminManage
+ */
 interface IService_UserServiceAdminManage
 {
 	/**

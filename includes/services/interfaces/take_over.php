@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Obsługa przejmowania usług przez użytkowników
+ *
+ * Interface IService_TakeOver
+ */
 interface IService_TakeOver
 {
 

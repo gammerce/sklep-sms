@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Możliwość zakupu usługi przez stronę WWWW
+ *
+ * Implementacja tego interfejsu powinna pociągnąć za sobą implementacje interfejsu:
+ * 	IService_Purchase
+ *
+ * Interface IService_PurchaseWeb
+ */
 interface IService_PurchaseWeb
 {
 

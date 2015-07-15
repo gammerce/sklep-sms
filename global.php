@@ -28,8 +28,12 @@ if (file_exists(SCRIPT_ROOT . "install")) {
 	exit;
 }
 
-$settings['date_format'] = "Y-m-d H:i";
-$settings['theme'] = "default";
+$settings = array(
+	'date_format' => "Y-m-d H:i",
+	'theme' => "default",
+	'shop_url' => "",
+	'shop_url_slash' => ""
+);
 
 require_once SCRIPT_ROOT . "includes/config.php";
 require_once SCRIPT_ROOT . "includes/functions.php";

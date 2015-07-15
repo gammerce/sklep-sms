@@ -50,10 +50,10 @@ class Heart
 	/**
 	 * Rejestruje moduł usługi
 	 *
-	 * @param string $id
-	 * @param string $name
-	 * @param string $class
-	 * @param string $classsimple
+	 * @param string $id identyfikator modułu
+	 * @param string $name nazwa modułu
+	 * @param string $class klasa modułu
+	 * @param string $classsimple klasa simple modułu
 	 * @throws Exception
 	 */
 	public function register_service_module($id, $name, $class, $classsimple)

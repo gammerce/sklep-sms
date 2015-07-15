@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Obsługa płatności za pomocą kodu na usługę
+ *
+ * Interface IService_ServiceCode
+ */
 interface IService_ServiceCode
 {
 	/**

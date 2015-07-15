@@ -114,7 +114,7 @@ $(document).delegate("#form_service_add", "submit", function (e) {
 				$("#action_box_wraper_td").html("");
 
 				// Odśwież stronę
-				refresh_blocks("services", true);
+				refresh_blocks("admincontent", true);
 			}
 			else if (!jsonObj.return_id) {
 				infobox.show_info(lang['sth_went_wrong'], false);
@@ -162,7 +162,7 @@ $(document).delegate("#form_service_edit", "submit", function (e) {
 				$("#action_box_wraper_td").html("");
 
 				// Odśwież stronę
-				refresh_blocks("services", true);
+				refresh_blocks("admincontent", true);
 			}
 			else if (!jsonObj.return_id) {
 				infobox.show_info(lang['sth_went_wrong'], false);

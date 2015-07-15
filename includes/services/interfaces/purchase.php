@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Możliwość zakupu usługi
+ *
+ * Interface IService_Purchase
+ */
 interface IService_Purchase
 {
 	/**

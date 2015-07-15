@@ -457,7 +457,7 @@ if ($action == "charge_wallet") {
 		$warnings['short_description'] = array_merge((array)$warnings['short_description'], $warning);
 
 	// Kolejność
-	if ($_POST['order'] != intval($_POST['order'])) {
+	if (!strlen($_POST['order']) || trim($_POST['order']) !== strval(intval($_POST['order']))) {
 		$warnings['order'][] = $lang->field_integer;
 	}
 
@@ -477,7 +477,7 @@ if ($action == "charge_wallet") {
 		$service_module = $heart->get_service_module($_POST['id2']);
 
 	// Przed błędami
-	if ($service_module !== NULL) {
+	if ($service_module !== NULL && object_implements($service_module, "IService_AdminManage")) {
 		$additional_warnings = $service_module->service_admin_manage_pre($_POST);
 		$warnings = array_merge((array)$warnings, (array)$additional_warnings);
 	}
@@ -516,7 +516,7 @@ if ($action == "charge_wallet") {
 			"SET `id`='%s', `name`='%s', `short_description`='%s', `description`='%s', `tag`='%s', " .
 			"`module`='%s', `groups`='%s', `order` = '%d' " . "{$set}",
 			array($_POST['id'], $_POST['name'], $_POST['short_description'], $_POST['description'], $_POST['tag'], $_POST['module'],
-				implode(";", $_POST['groups']), $_POST['order'])
+				implode(";", $_POST['groups']), trim($_POST['order']))
 		));
 
 		log_info($lang_shop->sprintf($lang_shop->service_admin_add, $user['username'], $user['uid'], $_POST['id']));

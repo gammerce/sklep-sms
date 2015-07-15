@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Obiekty tej klasy są używane podczas przeprowadzania zakupu
+ *
+ * Class Entity_Purchase
+ */
 class Entity_Purchase {
 
 	/**

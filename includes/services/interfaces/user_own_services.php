@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Obsługa wyświetlania użytkownikowi jego usług
+ *
+ * Interface IService_UserOwnServices
+ */
 interface IService_UserOwnServices
 {
 

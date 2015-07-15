@@ -10,6 +10,8 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 	/**
 	 * Metoda wywoływana przy edytowaniu lub dodawaniu usługi w PA
 	 * Powinna zwracać dodatkowe pola do uzupełnienia
+	 *
+	 * @return string
 	 */
 	public function service_admin_extra_fields_get()
 	{
@@ -18,6 +20,17 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 		// WEB
 		if ($this->show_on_web()) $web_sel_yes = "selected";
 		else $web_sel_no = "selected";
+
+		if ($this->service !== NULL) {
+			// DB
+			$db_password = strlen($this->service['data']['db_password']) ? "********" : "";
+			$db_host = htmlspecialchars($this->service['data']['db_host']);
+			$db_user = htmlspecialchars($this->service['data']['db_user']);
+			$db_name = htmlspecialchars($this->service['data']['db_name']);
+
+			// MyBB groups
+			$mybb_groups = htmlspecialchars($this->service['data']['mybb_groups']);
+		}
 
 		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/extra_fields", 0, 1, 0) . "\";");
 		return $output;
@@ -28,22 +41,50 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 	 * jak coś się jej nie spodoba to zwraca o tym info w tablicy
 	 *
 	 * @param array $data Dane $_POST
-	 * @return array        'key'    => DOM Element name
-	 *                        'value'    => Error message
+	 * @return array        'key' => DOM Element name
+	 *                      'value' => Array of error messages
 	 */
 	public function service_admin_manage_pre($data)
 	{
 		global $lang;
 
+		$warnings = array();
+
 		// Web
 		if (!in_array($data['web'], array("1", "0")))
-			$output['web'] = $lang->only_yes_no;
+			$warnings['web'][] = $lang->only_yes_no;
 
 		// MyBB groups
-		if (!strlen($_POST['groups_mybb']))
-			$output['groups_mybb'] = $lang->field_no_empty;
+		if (!strlen($data['mybb_groups']))
+			$warnings['mybb_groups'][] = $lang->field_no_empty;
+		else {
+			$groups = explode(",", $data['mybb_groups']);
+			foreach($groups as $group) {
+				$group = trim($group);
+				if(strlen($group) && $group !== strval(intval($group))) {
+					$warnings['mybb_groups'][] = $lang->group_not_integer;
+					break;
+				}
+			}
+		}
 
-		return $output;
+		// Db host
+		if (!strlen($data['db_host']))
+			$warnings['db_host'][] = $lang->field_no_empty;
+
+		// Db user
+		if (!strlen($data['db_user']))
+			$warnings['db_user'][] = $lang->field_no_empty;
+
+		// Db password
+		if ($this->service === NULL && !strlen($data['db_password']))
+			$warnings['db_password'][] = $lang->field_no_empty;
+
+		// Db name
+		if (!strlen($data['db_name']))
+			$warnings['db_name'][] = $lang->field_no_empty;
+
+		return $warnings;
 	}
 
 	/**
@@ -61,8 +102,21 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 	 */
 	public function service_admin_manage_post($data)
 	{
-		$extra_data['groups_mybb'] = trim($data['groups_mybb']);
-		$extra_data['web'] = $data['web'];
+		$mybb_groups = explode(",", $data['mybb_groups']);
+		foreach($mybb_groups as $key => $group) {
+			$mybb_groups[$key] = trim($group);
+			if (!strlen($mybb_groups[$key]))
+				unset($mybb_groups[$key]);
+		}
+
+		$extra_data = array(
+			'mybb_groups' => implode(",", $mybb_groups),
+			'web' => $data['web'],
+			'db_host' => $data['db_host'],
+			'db_user' => $data['db_user'],
+			'db_password' => if_strlen($data['db_password'], $this->service['data']['db_password']),
+			'db_name' => $data['db_name'],
+		);
 
 		// TODO: Zmiana grup i jej wpływ na obecne usługi
 
@@ -98,7 +152,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	function __construct($service) {
 		parent::__construct($service);
 
-		$this->groups = explode(",", $this->service['data']['groups_mybb']);
+		$this->groups = explode(",", $this->service['data']['mybb_groups']);
 		$this->db_host = if_isset($this->service['data']['db_host'], "");
 		$this->db_user = if_isset($this->service['data']['db_user'], "");
 		$this->db_password = if_isset($this->service['data']['db_password'], "");
@@ -150,14 +204,11 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	{
 		global $db, $lang;
 
-		// Username
-		if (!strlen($data['username']))
-			$warnings['username'][] = $lang->field_no_empty;
-
 		// Amount
 		$amount = explode(';', $data['amount']); // Wyłuskujemy taryfę
 		$tariff = $amount[2];
 
+		// Tariff
 		if (!$tariff)
 			$warnings['amount'][] = $lang->must_choose_amount;
 		else {
@@ -176,6 +227,23 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 				);
 
 			$price = $db->fetch_array_assoc($result);
+		}
+
+		// Username
+		if (!strlen($data['username']))
+			$warnings['username'][] = $lang->field_no_empty;
+		else {
+			$this->connectMybb();
+
+			$result = $this->db_mybb->query($this->db_mybb->prepare(
+				"SELECT 1 FROM `mybb_users` " .
+				"WHERE `username` = '%s'",
+				array($data['username'])
+			));
+
+			if (!$this->db_mybb->num_rows($result))
+				$warnings['username'][] = $lang->no_user;
+
 		}
 
 		// E-mail

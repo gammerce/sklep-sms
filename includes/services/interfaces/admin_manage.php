@@ -1,7 +1,8 @@
 <?php
 
 /**
- * Ten interfejs powinien być implementowany w klasie *Simple usługi
+ * Obsługa dodawania nowych usług w PA
+ * (Ten interfejs powinien być implementowany w klasie *Simple usługi)
  *
  * Interface IService_AdminManage
  */
@@ -10,6 +11,8 @@ interface IService_AdminManage {
 	/**
 	 * Metoda wywoływana przy edytowaniu lub dodawaniu usługi w PA
 	 * Powinna zwracać dodatkowe pola do uzupełnienia
+	 *
+	 * @return string
 	 */
 	public function service_admin_extra_fields_get();
 
@@ -18,8 +21,8 @@ interface IService_AdminManage {
 	 * jak coś się jej nie spodoba to zwraca o tym info w tablicy
 	 *
 	 * @param array $data Dane $_POST
-	 * @return array        'key'    => DOM Element name
-	 *                        'value'    => Error message
+	 * @return array        'key' => DOM Element name
+	 *                      'value' => Array of error messages
 	 */
 	public function service_admin_manage_pre($data);
 

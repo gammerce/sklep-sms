@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Jeżeli moduł usługi implementuje ten interfejs, to będzie możliwe
- * tworzenie nowych usług, które będą obsługiwane przez ten moduł
+ * Jeżeli moduł usługi implementuje ten interfejs, to oznacza to, że
+ * będzie możliwe tworzenie nowych usług obsługiwanych przez ten moduł
  *
  * Interface IService_Create
  */

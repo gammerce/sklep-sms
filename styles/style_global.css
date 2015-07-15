@@ -164,6 +164,15 @@ hr, .line {
 	text-shadow: 0 0 10px #FF0000;
 }
 
+.action_box .h2 {
+	padding: 6px;
+	background: rgba(255, 255, 255, 0.1);
+	border: 2px solid #346BC0;
+	font-size: 17px;
+	color: #FFF;
+	text-shadow: 2px 2px 2px #000;
+}
+
 .action_box > table {
 	border-spacing: 10px;
 	width: 100%;
