@@ -5,7 +5,6 @@ define("SCRIPT_NAME", "extra_stuff");
 
 require_once "global.php";
 
-
 // Jezeli jest popup, to wyswietl info w nowym oknie
 if ($_GET['popup']) {
 	// Usuwamy napis popup z linku
@@ -19,23 +18,17 @@ if ($_GET['popup']) {
 $action = $_GET['action'];
 
 switch ($action) {
-	case "service_long_description": {
+	case "service_long_description":
 		$output = "";
-		$service_module = $heart->get_service_module($_GET['service']);
 
-		if (!is_null($service_module))
-			$output = $service_module->get_full_description();
+		if (($service_module = $heart->get_service_module($_GET['service'])) !== NULL)
+			$output = $service_module->description_full_get();
 
-		$stylesheets[] = "{$settings['shop_url_slash']}styles/extra_stuff/long_desc.css?version=" . VERSION;
-		$scripts = array_unique($scripts);
-		$stylesheets = array_unique($stylesheets);
-		foreach($scripts as $key => $script) $scripts[$key] = "<script type=\"text/javascript\" src=\"{$script}\"></script>";
-		foreach($stylesheets as $key => $stylesheet) $stylesheets[$key] = "<link href=\"{$stylesheet}\" rel=\"stylesheet\" />";
-		$scripts = implode("\n", $scripts);
-		$stylesheets = implode("\n", $stylesheets);
+		$heart->page_title = $lang->description . ": " . $service_module->service['name'];
+
+		$heart->style_add($settings['shop_url_slash'] . "styles/extra_stuff/long_desc.css?version=" . VERSION);
 		eval("\$header = \"" . get_template("header") . "\";");
 
 		$output = create_dom_element("html", create_dom_element("head", $header) . create_dom_element("body", $output));
 		output_page($output);
-	}
 }

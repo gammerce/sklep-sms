@@ -18,17 +18,19 @@ class PaymentModuleProfitsms extends PaymentModule implements IPaymentSMS
 			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 			$status = curl_exec($curl);
 			curl_close($curl);
-		} else {
+		} else
 			$status = curl_get_contents($url);
-		}
+
 		$raport = explode('|', $status);
 		switch ($raport['0']) {
 			case 1:
 				$output['status'] = "OK";
 				break;
+
 			case 0:
 				$output['status'] = "BAD_CODE";
 				break;
+
 			default:
 				$output['status'] = "ERROR";
 				break;

@@ -10,7 +10,7 @@ class PaymentModuleMicrosms extends PaymentModule implements IPaymentSMS
 	public function verify_sms($sms_code, $sms_number)
 	{
 		$handle = fopen("http://microsms.pl/api/check.php?userid=" . urlencode($this->data['api']) . "&number=" . urlencode($sms_number) .
-			"&code=" . urlencode($sms_code) . '&serviceid=' . urlencode($this->data[$sms_number]), 'r');
+			"&code=" . urlencode($sms_code) . '&serviceid=' . urlencode($this->data['serviceid']), 'r');
 
 		if ($handle) {
 			$check = fgetcsv($handle, 1024);
@@ -25,8 +25,7 @@ class PaymentModuleMicrosms extends PaymentModule implements IPaymentSMS
 			} else {
 				$output['status'] = "SERVICE_ERROR";
 			}
-		}
-		else
+		} else
 			$output['status'] = "NO_CONNECTION";
 
 		return $output;

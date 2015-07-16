@@ -35,13 +35,11 @@ input[type=button], input[type=submit], input[type=reset] {
 	padding: 1px 7px;
 	border: none;
 	color: #000;
-	/*text-shadow: 0px 0px 1px #FF0000;*/
 	box-shadow: 1px 1px 4px black;
+	cursor: pointer;
 }
 
 input[type=button]:hover, input[type=submit]:hover {
-	cursor: pointer;
-	/*box-shadow: solid 1px 1px 1px rgba(0,0,0,0.7);*/
 	box-shadow: 0 0 5px #6B0000;
 }
 
@@ -166,6 +164,15 @@ hr, .line {
 	text-shadow: 0 0 10px #FF0000;
 }
 
+.action_box .h2 {
+	padding: 6px;
+	background: rgba(255, 255, 255, 0.1);
+	border: 2px solid #346BC0;
+	font-size: 17px;
+	color: #FFF;
+	text-shadow: 2px 2px 2px #000;
+}
+
 .action_box > table {
 	border-spacing: 10px;
 	width: 100%;
@@ -183,6 +190,7 @@ hr, .line {
 .form_warning {
 	color: #FF2B00;
 	font-size: 16px;
+	text-shadow: 1px 1px 1px #000;
 }
 
 /* Opisy usług */

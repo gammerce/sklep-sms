@@ -2,7 +2,7 @@
 	<td>{$row['id']}</td>
 	<td>{$row['payment']}</td>
 	<td>{$row['payment_id']}</td>
-	<td>{$username} ({$row['uid']})</td>
+	<td>{$username}</td>
 	<td>{$server['name']}</td>
 	<td>{$service['name']}</td>
 	<td>{$amount}</td>
@@ -13,7 +13,7 @@
 	<td>{$row['timestamp']}</td>
 	<td>
 		<a href="{$payment_link}" target="_blank">
-			<img src="images/go.png" title="Zobacz płatność"/>
+			<img src="images/go.png" title="{$lang->see_payment}"/>
 		</a>
 	</td>
 </tr>

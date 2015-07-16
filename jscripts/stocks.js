@@ -61,3 +61,50 @@ function json_parse(text, show) {
 		return false;
 	}
 }
+
+function get_get_param(key) {
+	var prmstr = window.location.search.substr(1);
+	if (prmstr == null || prmstr == "")
+		return null;
+
+	var prmarr = prmstr.split("&");
+	for ( var i = 0; i < prmarr.length; i++) {
+		var tmparr = prmarr[i].split("=");
+		if (tmparr[0] == key)
+			return tmparr[1];
+	}
+
+	return null;
+}
+
+function get_random_string(length)
+{
+	length = get_value(length, 8);
+	var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+	var final_rand = "";
+	for (var i = 0; i < length; i++)
+		final_rand += chars[Math.floor(Math.random() * (chars.length - 1))];
+
+	return final_rand;
+}
+
+function element_with_data_module(a) {
+	if (typeof a.attr('data-module') !== "undefined")
+		return a;
+
+	if (typeof a.prop("tagName") === "undefined")
+		return null;
+
+	return element_with_data_module(a.parent());
+}
+/**
+ * Sprawdza, czy działa na elemencie stworzonym przez moduł extra_flags
+ * Jeżeli tak, to zwraca obiekt najwyżej w drzewie, który został utworzony przez dany moduł
+ *
+ * @param a
+ * @returns {*}
+ */
+function service_module_act_can(name, a) {
+	var element = element_with_data_module(a);
+	return element !== null && element.data("module") == name ? element : false;
+}

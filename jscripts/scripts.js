@@ -2,8 +2,8 @@ jQuery(document).ready(function ($) {
 	$(".content_td").append(atob(f));
 
 	/*$("#bck").bind('input',function() {
-	 $("body").css({"background-image":"url('"+$(this).val()+"')"});
-	 });*/
+		$("body").css({"background-image":"url('"+$(this).val()+"')"});
+	});*/
 	$("#language_" + language).addClass("current");
 
 });
@@ -15,8 +15,7 @@ function show_info(message, positive, length) {
 function getnset_template(element, template, admin, data, onSuccessFunction) {
 	// Sprawdzenie czy data została przesłana
 	data = typeof data !== "undefined" ? data : {};
-	onSuccessFunction = typeof onSuccessFunction !== "undefined" ? onSuccessFunction : function () {
-	};
+	onSuccessFunction = typeof onSuccessFunction !== "undefined" ? onSuccessFunction : function () {};
 
 	// Dodanie informacji do wysyłanej mapy wartości
 	data['action'] = "get_template";
@@ -36,16 +35,16 @@ function getnset_template(element, template, admin, data, onSuccessFunction) {
 			if (!(jsonObj = json_parse(content)))
 				return;
 
-            if (jsonObj.return_id == "no_access") {
-                alert(jsonObj.text);
-                location.reload();
-            }
+			if (jsonObj.return_id == "no_access") {
+				alert(jsonObj.text);
+				location.reload();
+			}
 
 			element.html(jsonObj.template);
 			onSuccessFunction();
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd przy dynamicznym odświeżaniu strony.", false);
+			infobox.show_info(lang['ajax_error'], false);
 			location.reload();
 		}
 	});
@@ -74,12 +73,12 @@ function fetch_data(action, admin, data, onSuccessFunction) {
 			onSuccessFunction(content);
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd przy dynamicznym odświeżaniu strony.", false);
+			infobox.show_info(lang['ajax_error'], false);
 		}
 	});
 }
 
-function refresh_brick(bricks, admin, onSuccessFunction) {
+function refresh_blocks(bricks, admin, onSuccessFunction) {
 	// Wyswietlenie ładowacza
 	loader.show();
 
@@ -90,7 +89,7 @@ function refresh_brick(bricks, admin, onSuccessFunction) {
 		type: "POST",
 		url: (admin ? "jsonhttp_admin.php" : "jsonhttp.php") + "?" + document.URL.split("?").pop(),
 		data: {
-			action: 'refresh_bricks',
+			action: 'refresh_blocks',
 			bricks: bricks
 		},
 		complete: function () {
@@ -108,7 +107,7 @@ function refresh_brick(bricks, admin, onSuccessFunction) {
 			onSuccessFunction(content);
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd przy dynamicznym odświeżaniu strony.", false);
+			infobox.show_info(lang['ajax_error'], false);
 			location.reload();
 		}
 	});
@@ -167,20 +166,20 @@ $(document).delegate("#form_login", "submit", function (e) {
 			// Wyświetlenie błędów w formularzu
 			if (jsonObj.return_id == "logged_in") {
 				$("#user_buttons").css({"overflow": "hidden"}); // Znikniecie pola do logowania
-				refresh_brick("logged_info;wallet;user_buttons" + ($("#form_login_reload_content").val() == "0" ? "" : ";content"));
+				refresh_blocks("logged_info;wallet;user_buttons" + ($("#form_login_reload_content").val() == "0" ? "" : ";content"));
 			}
 			if (jsonObj.return_id == "already_logged_in") {
 				location.reload();
 			}
 			else if (!jsonObj.return_id) {
-				show_info(lang['sth_went_wrong'], false);
+				infobox.show_info(lang['sth_went_wrong'], false);
 			}
 
 			// Wyświetlenie zwróconego info
-			show_info(jsonObj.text, jsonObj.positive);
+			infobox.show_info(jsonObj.text, jsonObj.positive);
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd podczas próby zalogowania.", false);
+			infobox.show_info(lang['ajax_error'], false);
 		}
 	});
 });
@@ -206,20 +205,20 @@ $(document).delegate("#logout", "click", function (e) {
 			// Wyświetlenie błędów w formularzu
 			if (jsonObj.return_id == "logged_out") {
 				//$("#user_buttons").css({"overflow": "hidden"}); // Znikniecie pola do logowania
-				refresh_brick("logged_info;wallet;user_buttons;content");
+				refresh_blocks("logged_info;wallet;user_buttons;content");
 			}
 			if (jsonObj.return_id == "already_logged_out") {
 				location.reload();
 			}
 			else if (!jsonObj.return_id) {
-				show_info(lang['sth_went_wrong'], false);
+				infobox.show_info(lang['sth_went_wrong'], false);
 			}
 
 			// Wyświetlenie zwróconego info
-			show_info(jsonObj.text, jsonObj.positive);
+			infobox.show_info(jsonObj.text, jsonObj.positive);
 		},
 		error: function (error) {
-			show_info("Wystąpił błąd podczas próby wylogowania.", false);
+			infobox.show_info(lang['ajax_error'], false);
 		}
 	});
 });

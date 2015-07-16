@@ -1,0 +1,10 @@
+<form class="row" data-module="{$this->get_module_id()}" data-row="{$data['id']}">
+	<div class="fright">
+		{$button_edit}
+	</div>
+	<strong>{$lang->service}</strong>: {$service_info['service']}<br/>
+	<strong>{$service_info['type']}</strong>: {$service_info['auth_data']}<br/>
+	<strong>{$lang->server}</strong>: {$service_info['server']}<br/>
+	<br/>
+	<strong>{$lang->expire}</strong>: {$service_info['expire']}
+</form>

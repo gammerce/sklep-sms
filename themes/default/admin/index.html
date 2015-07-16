@@ -8,25 +8,28 @@
 		<tr>
 			<td style="width: 360px">
 				<a href="index.php">
-					<img class="logo" src="http://sklep-sms.pl/images/logo_medium.png" alt="sklep-sms">
+					<img class="logo" src="http://sklep-sms.pl/images/logo_medium.png" alt="{$lang->shop_sms}">
 				</a>
 			</td>
 			<td class="center">
-				{$lang['acp']} (&nbsp;v{__VERSION__}&nbsp;)
-				<div class="hint">{$lang['license_expires']}: {$a_Tasks['expire']}</div>
+				{$lang->acp} (&nbsp;v{__VERSION__}&nbsp;)
+				<div class="hint">{$lang->license_expires}: {$a_Tasks['expire']}</div>
 			</td>
 			<td style="width: 360px; text-align: right;">
 				{$user['username']}
-				( <a href="admin.php?action=logout">{$lang['logout']}</a> )
+				<form method="POST" class="form_logout">
+					<input type="hidden" name="action" value="logout"/>
+					( <a href="#" onclick="$(this).parents('form').submit()">{$lang->logout}</a> )
+				</form>
 			</td>
 		</tr>
 	</table>
 </div>
 <div class="sidebar">
-	<h3>Główne</h3>
+	<h3>{$lang->main}</h3>
 	<ul>
-		<a href="admin.php?pid=main_content">
-			<li>&#8594; {$lang['main_page']}</li>
+		<a href="admin.php?pid=home">
+			<li>&#8594; {$lang->main_page}</li>
 		</a>
 		{$settings_link}
 		{$antispam_questions_link}
@@ -36,43 +39,45 @@
 		{$tariffs_link}
 		{$pricelist_link}
 	</ul>
-	<h3>Gracze</h3>
+	<h3>{$lang->players}</h3>
 	<ul>
-		{$players_services_link}
+		{$users_services_link}
 		{$players_flags_link}
 	</ul>
-	<h3>Użytkownicy</h3>
+	<h3>{$lang->users}</h3>
 	<ul>
 		{$users_link}
 		{$groups_link}
 	</ul>
-	<h3>Dodatki</h3>
+	<h3>{$lang->additions}</h3>
 	<ul>
 		{$income_link}
+		{$service_codes_link}
 		{$sms_codes_link}
 	</ul>
-	<h3>Logi</h3>
+	<h3>{$lang->logs}</h3>
 	<ul>
 		<a href="admin.php?pid=bought_services">
-			<li>&#8594; {$lang['bought_services']}</li>
+			<li>&#8594; {$lang->bought_services}</li>
 		</a>
 		<a href="admin.php?pid=payment_sms">
-			<li>&#8594; {$lang['payment_sms']}</li>
+			<li>&#8594; {$lang->payments_sms}</li>
 		</a>
 		<a href="admin.php?pid=payment_transfer">
-			<li>&#8594; {$lang['payment_transfer']}</li>
+			<li>&#8594; {$lang->payments_transfer}</li>
 		</a>
 		<a href="admin.php?pid=payment_wallet">
-			<li>&#8594; {$lang['payment_wallet']}</li>
+			<li>&#8594; {$lang->payments_wallet}</li>
 		</a>
 		<a href="admin.php?pid=payment_admin">
-			<li>&#8594; {$lang['payment_admin']}</li>
+			<li>&#8594; {$lang->payments_admin}</li>
+		</a>
+		<a href="admin.php?pid=payment_service_code">
+			<li>&#8594; {$lang->payments_service_code}</li>
 		</a>
 		{$logs_link}
 	</ul>
 </div>
-<div class="content">
-	{$content}
-</div>
+{$content}
 </body>
 </html>

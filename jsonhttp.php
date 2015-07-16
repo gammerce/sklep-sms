@@ -4,7 +4,6 @@ define('IN_SCRIPT', "1");
 define('SCRIPT_NAME', "jsonhttp");
 
 require_once "global.php";
-require_once SCRIPT_ROOT . "includes/functions_content.php";
 require_once SCRIPT_ROOT . "includes/functions_jsonhttp.php";
 
 // Pobranie akcji
@@ -21,18 +20,17 @@ if ($action == "login") {
 	if (is_logged())
 		json_output("already_logged_in");
 
-	if (!$_POST['username'] || !$_POST['password']) {
-		json_output("no_data", "No niestety, ale bez podania nazwy użytkownika oraz loginu, nie zalogujesz się.", 0);
-	}
+	if (!$_POST['username'] || !$_POST['password'])
+		json_output("no_data", $lang->no_login_password, 0);
 
-	$user = $heart->get_user("", $_POST['username'], $_POST['password']);
-	if ($user['uid']) {
+	$user = $heart->get_user(0, $_POST['username'], $_POST['password']);
+	if (is_logged()) {
 		$_SESSION['uid'] = $user['uid'];
-		update_activity($_SESSION['uid']);
-		json_output("logged_in", "Logowanie przebiegło bez większych trudności.", 1);
+		update_activity($user['uid']);
+		json_output("logged_in", $lang->login_success, 1);
 	}
 
-	json_output("not_logged", "No niestety, ale hasło i/lub nazwa użytkownika są błędne.", 0);
+	json_output("not_logged", $lang->bad_pass_nick, 0);
 } else if ($action == "logout") {
 	if (!is_logged())
 		json_output("already_logged_out");
@@ -53,14 +51,13 @@ if ($action == "login") {
 	// Finally, destroy the session.
 	session_destroy();
 
-	json_output("logged_out", "Wylogowywanie przebiegło bez większych trudności.", 1);
+	json_output("logged_out", $lang->logout_success, 1);
 } else if ($action == "set_session_language") {
-	$_SESSION['language'] = escape_filename($_POST['language']);
+	setcookie("language", escape_filename($_POST['language']), time() + (86400 * 30), "/"); // 86400 = 1 day
 	exit;
 } else if ($action == "register") {
-	if (is_logged()) {
-		json_output("logged_in", $lang['not_logged'], 0);
-	}
+	if (is_logged())
+		json_output("logged_in", $lang->logged, 0);
 
 	$username = trim($_POST['username']);
 	$password = $_POST['password'];
@@ -71,149 +68,142 @@ if ($action == "login") {
 	$surname = trim($_POST['surname']);
 	$as_id = $_POST['as_id'];
 	$as_answer = $_POST['as_answer'];
-	$sign = $_POST['sign'];
 
-	// Sprawdzanie hashu najwazniejszych danych
-	if (!$sign || $sign != md5($as_id . $settings['random_key'])) {
-		json_output("wrong_sign", $lang['wrong_sign'], 0);
-	}
+	// Pobranie nowego pytania antyspamowego
+	$antispam_question = $db->fetch_array_assoc($db->query(
+		"SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " .
+		"ORDER BY RAND() " .
+		"LIMIT 1"
+	));
+	$data['antispam']['question'] = $antispam_question['question'];
+	$data['antispam']['id'] = $antispam_question['id'];
+
+	// Sprawdzanie czy podane id pytania antyspamowego jest prawidlowe
+	if (!isset($_SESSION['asid']) || $as_id != $_SESSION['asid'])
+		json_output("wrong_sign", $lang->wrong_sign, 0, $data);
+
+	// Zapisujemy id pytania antyspamowego
+	$_SESSION['asid'] = $antispam_question['id'];
 
 	// Nazwa użytkownika
-	if ($warning = check_for_warnings("username", $username)) {
-		$warnings['username'] = $warning;
-	}
+	if ($warning = check_for_warnings("username", $username))
+		$warnings['username'] = array_merge((array)$warnings['username'], $warning);
+
 	$result = $db->query($db->prepare(
-		"SELECT `uid` " .
-		"FROM `" . TABLE_PREFIX . "users` " .
-		"WHERE username = '%s'",
+		"SELECT `uid` FROM `" . TABLE_PREFIX . "users` " .
+		"WHERE `username` = '%s'",
 		array($username)
 	));
-	if ($db->num_rows($result)) {
-		$warnings['username'] .= "Podana nazwa użytkownika jest już zajęta.<br />";
-	}
+	if ($db->num_rows($result))
+		$warnings['username'][] = $lang->nick_occupied;
 
 	// Hasło
-	if ($warning = check_for_warnings("password", $password)) {
-		$warnings['password'] = $warning;
-	}
-	if ($password != $passwordr) {
-		$warnings['password_repeat'] .= "Podane hasła różnią się.<br />";
-	}
+	if ($warning = check_for_warnings("password", $password))
+		$warnings['password'] = array_merge((array)$warnings['password'], $warning);
+	if ($password != $passwordr)
+		$warnings['password_repeat'][] = $lang->different_pass;
 
-	if ($warning = check_for_warnings("email", $email)) {
-		$warnings['email'] = $warning;
-	}
+	if ($warning = check_for_warnings("email", $email))
+		$warnings['email'] = array_merge((array)$warnings['email'], $warning);
+
+	// Email
 	$result = $db->query($db->prepare(
-		"SELECT `uid` " .
-		"FROM `" . TABLE_PREFIX . "users` " .
+		"SELECT `uid` FROM `" . TABLE_PREFIX . "users` " .
 		"WHERE `email` = '%s'",
 		array($email)
 	));
-	if ($db->num_rows($result)) {
-		$warnings['email'] .= "Podany e-mail jest już zajęty.<br />";
-	}
-	if ($email != $emailr) {
-		$warnings['email_repeat'] .= "Podane e-maile różnią się.<br />";
-	}
+	if ($db->num_rows($result))
+		$warnings['email'][] = $lang->email_occupied;
+
+	if ($email != $emailr)
+		$warnings['email_repeat'][] = $lang->different_email;
 
 	// Pobranie z bazy pytania antyspamowego
 	$result = $db->query($db->prepare(
-		"SELECT * " .
-		"FROM `" . TABLE_PREFIX . "antispam_questions` " .
+		"SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " .
 		"WHERE `id` = '%d'",
 		array($as_id)
 	));
 	$antispam_question = $db->fetch_array_assoc($result);
-	if (!in_array(strtolower($as_answer), explode(";", $antispam_question['answers']))) {
-		$warnings['as_answer'] .= "Błędna odpowiedź na pytanie antyspamowe.<br />";
-	}
-
-	// Pobranie nowego pytania antyspamowego
-	$result = $db->query(
-		"SELECT * " .
-		"FROM `" . TABLE_PREFIX . "antispam_questions` " .
-		"ORDER BY RAND() " .
-		"LIMIT 1"
-	);
-	$antispam_question = $db->fetch_array_assoc($result);
-	$data['antispam']['question'] = $antispam_question['question'];
-	$data['antispam']['id'] = $antispam_question['id'];
-	$data['antispam']['sign'] = md5($antispam_question['id'] . $settings['random_key']);
+	if (!in_array(strtolower($as_answer), explode(";", $antispam_question['answers'])))
+		$warnings['as_answer'][] = $lang->wrong_anti_answer;
 
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
+				'class' => "form_warning"
+			));
 			$data['warnings'][$brick] = $warning;
 		}
-		json_output("warnings", $lang['form_wrong_filled'], 0, $data);
+		json_output("warnings", $lang->form_wrong_filled, 0, $data);
 	}
 
 	$salt = get_random_string(8);
 	$db->query($db->prepare(
-		"INSERT " .
-		"INTO " . TABLE_PREFIX . "users (username, password, salt, email, forename, surname, regip) " .
+		"INSERT INTO `" . TABLE_PREFIX . "users` (`username`, `password`, `salt`, `email`, `forename`, `surname`, `regip`) " .
 		"VALUES ('%s','%s','%s','%s','%s','%s','%s')",
 		array($username, hash_password($password, $salt), $salt, $email, $forename, $surname, $user['ip'])
 	));
 
 	// LOGING
-	log_info("Założono nowe konto. ID: " . $db->last_id() . " Nazwa Użytkownika: {$username}, IP: {$user['ip']}");
+	log_info($lang_shop->sprintf($lang_shop->new_account, $db->last_id(), $username, $user['ip']));
 
-	json_output("registered", "Konto zostało prawidłowo zarejestrowane. Za chwilę nastąpi automatyczne zalogowanie.", 1, $data);
+	json_output("registered", $lang->register_success, 1, $data);
 } else if ($action == "forgotten_password") {
-	if (is_logged()) {
-		json_output("logged_in", $lang['not_logged'], 0);
-	}
+	if (is_logged())
+		json_output("logged_in", $lang->logged, 0);
 
 	$username = trim($_POST['username']);
 	$email = trim($_POST['email']);
 
 	if ($username || (!$username && !$email)) {
 		if ($warning = check_for_warnings("username", $username))
-			$warnings['username'] = $warning;
-		if ($username) {
-			$query = $db->prepare(
-				"SELECT `uid` " .
-				"FROM `" . TABLE_PREFIX . "users` " .
+			$warnings['username'] = array_merge((array)$warnings['username'], $warning);
+		if (strlen($username)) {
+			$result = $db->query($db->prepare(
+				"SELECT `uid` FROM `" . TABLE_PREFIX . "users` " .
 				"WHERE `username` = '%s'",
-				array($username));
-			$result = $db->query($query);
-			$row = $db->fetch_array_assoc($result);
-			if (empty($row)) {
-				$warnings['username'] .= "Podana nazwa użytkownika nie jest przypisana do żadnego konta.<br />";
-			}
+				array($username)
+			));
+
+			if (!$db->num_rows($result))
+				$warnings['username'][] = $lang->nick_no_account;
+			else
+				$row = $db->fetch_array_assoc($result);
 		}
 	}
 
-	if (!$username) {
+	if (!strlen($username)) {
 		if ($warning = check_for_warnings("email", $email))
-			$warnings['email'] = $warning;
-		if ($email) {
-			$query = $db->prepare(
-				"SELECT `uid` " .
-				"FROM `" . TABLE_PREFIX . "users` " .
+			$warnings['email'] = array_merge((array)$warnings['email'], $warning);
+		if (strlen($email)) {
+			$result = $db->query($db->prepare(
+				"SELECT `uid` FROM `" . TABLE_PREFIX . "users` " .
 				"WHERE `email` = '%s'",
-				array($email));
-			$result = $db->query($query);
-			$row = $db->fetch_array_assoc($result);
-			if (empty($row)) {
-				$warnings['email'] .= "Podany e-mail nie jest przypisany do żadnego konta.<br />";
-			}
+				array($email)
+			));
+
+			if (!$db->num_rows($result))
+				$warnings['email'][] = $lang->email_no_account;
+			else
+				$row = $db->fetch_array_assoc($result);
 		}
 	}
-
-	// Pobranie danych użytkownika
-	$user2 = $heart->get_user($row['uid']);
 
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
+				'class' => "form_warning"
+			));
 			$data['warnings'][$brick] = $warning;
 		}
-		json_output("warnings", $lang['form_wrong_filled'], 0, $data);
+		json_output("warnings", $lang->form_wrong_filled, 0, $data);
 	}
+
+	// Pobranie danych użytkownika
+	$user2 = $heart->get_user($row['uid']);
 
 	$key = get_random_string(32);
 	$db->query($db->prepare(
@@ -227,19 +217,18 @@ if ($action == "login") {
 	eval("\$text = \"" . get_template("emails/forgotten_password") . "\";");
 	$ret = send_email($user2['email'], $user2['username'], "Reset Hasła", $text);
 
-	if ($ret == "not_sent") {
-		json_output("not_sent", "Wystąpił błąd podczas wysyłania e-maila z linkiem do zresetowania hasła.", 0);
-	} else if ($ret == "wrong_email") {
-		json_output("wrong_email", "E-mail przypisany do Twojego konta jest błędny. Zgłoś to administratorowi serwisu.", 0);
-	} else if ($ret == "sent") {
-		log_info("Wysłano e-maila z kodem do zresetowania hasła. Użytkownik: {$user2['username']}({$user2['uid']}) E-mail: {$user2['email']} Dane formularza. Nazwa użytkownika: {$username} E-mail: {$email}");
+	if ($ret == "not_sent")
+		json_output("not_sent", $lang->keyreset_error, 0);
+	else if ($ret == "wrong_email")
+		json_output("wrong_sender_email", $lang->wrong_email, 0);
+	else if ($ret == "sent") {
+		log_info($lang_shop->sprintf($lang_shop->reset_key_email, $user2['username'], $user2['uid'], $user2['email'], $username, $email));
 		$data['username'] = $user2['username'];
-		json_output("sent", "E-mail wraz z linkiem do zresetowania hasła został wysłany na Twoją skrzynkę pocztową.", 1, $data);
+		json_output("sent", $lang->email_sent, 1, $data);
 	}
 } else if ($action == "reset_password") {
-	if (is_logged()) {
-		json_output("logged_in", $lang['not_logged'], 0);
-	}
+	if (is_logged())
+		json_output("logged_in", $lang->logged, 0);
 
 	$uid = $_POST['uid'];
 	$sign = $_POST['sign'];
@@ -247,23 +236,23 @@ if ($action == "login") {
 	$passr = $_POST['pass_repeat'];
 
 	// Sprawdzanie hashu najwazniejszych danych
-	if (!$sign || $sign != md5($uid . $settings['random_key'])) {
-		json_output("wrong_sign", $lang['wrong_sign'], 0);
-	}
+	if (!$sign || $sign != md5($uid . $settings['random_key']))
+		json_output("wrong_sign", $lang->wrong_sign, 0);
 
 	if ($warning = check_for_warnings("password", $pass))
-		$warnings['pass'] = $warning;
-	if ($pass != $passr) {
-		$warnings['pass_repeat'] .= "Podane hasła różnią się.<br />";
-	}
+		$warnings['pass'] = array_merge((array)$warnings['pass'], $warning);
+	if ($pass != $passr)
+		$warnings['pass_repeat'][] = $lang->different_pass;
 
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
+				'class' => "form_warning"
+			));
 			$data['warnings'][$brick] = $warning;
 		}
-		json_output("warnings", $lang['form_wrong_filled'], 0, $data);
+		json_output("warnings", $lang->form_wrong_filled, 0, $data);
 	}
 
 	// Zmień hasło
@@ -271,41 +260,42 @@ if ($action == "login") {
 
 	$db->query($db->prepare(
 		"UPDATE `" . TABLE_PREFIX . "users` " .
-		"SET password='%s', salt='%s', reset_password_key='' " .
-		"WHERE uid='%d'",
+		"SET `password` = '%s', `salt` = '%s', `reset_password_key` = '' " .
+		"WHERE `uid` = '%d'",
 		array(hash_password($pass, $salt), $salt, $uid)
 	));
 
 	// LOGING
-	log_info("Zresetowano hasło. ID Użytkownika: {$uid}.");
+	log_info($lang_shop->sprintf($lang_shop->reset_pass, $uid));
 
-	json_output("password_changed", "Hasło zostało prawidłowo zmienione.", 1);
+	json_output("password_changed", $lang->password_changed, 1);
 } else if ($action == "change_password") {
-	if (!is_logged()) {
-		json_output("logged_in", $lang['not_logged'], 0);
-	}
+	if (!is_logged())
+		json_output("logged_in", $lang->not_logged, 0);
 
 	$oldpass = $_POST['old_pass'];
 	$pass = $_POST['pass'];
 	$passr = $_POST['pass_repeat'];
 
 	if ($warning = check_for_warnings("password", $pass))
-		$warnings['pass'] = $warning;
+		$warnings['pass'] = array_merge((array)$warnings['pass'], $warning);
 	if ($pass != $passr) {
-		$warnings['pass_repeat'] .= "Podane hasła różnią się.<br />";
+		$warnings['pass_repeat'][] = $lang->different_pass;
 	}
 
 	if (hash_password($oldpass, $user['salt']) != $user['password']) {
-		$warnings['old_pass'] .= "Stare hasło jest nieprawidłowe.<br />";
+		$warnings['old_pass'][] = $lang->old_pass_wrong;
 	}
 
 	// Błędy
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
+				'class' => "form_warning"
+			));
 			$data['warnings'][$brick] = $warning;
 		}
-		json_output("warnings", $lang['form_wrong_filled'], 0, $data);
+		json_output("warnings", $lang->form_wrong_filled, 0, $data);
 	}
 	// Zmień hasło
 	$salt = get_random_string(8);
@@ -320,28 +310,48 @@ if ($action == "login") {
 	// LOGING
 	log_info("Zmieniono hasło. ID użytkownika: {$user['uid']}.");
 
-	json_output("password_changed", "Hasło zostało prawidłowo zmienione.", 1);
-} else if ($action == "validate_purchase_form") {
-	$service_module = $heart->get_service_module($_POST['service']);
-	if (is_null($service_module))
-		json_output("wrong_module", $lang['module_is_bad'], 0);
+	json_output("password_changed", $lang->password_changed, 1);
+} else if ($action == "purchase_form_validate") {
+	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL)
+		json_output("wrong_module", $lang->bad_module, 0);
+
+	if (!object_implements($service_module, "IService_PurchaseWeb"))
+		json_output("wrong_module", $lang->bad_module, 0);
 
 	// Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
 	if (!$heart->user_can_use_service($user['uid'], $service_module->service))
-		json_output("no_permission", $lang['service_no_permission'], 0);
+		json_output("no_permission", $lang->service_no_permission, 0);
 
-	// Przeprowadzamy walidację danych wprowadzonych w formularzu, a jak zwroci FALSE, to znaczy ze dupa
-	if (($return_data = $service_module->validate_purchase_form($_POST)) === FALSE)
-		json_output("wrong_module", $lang['module_is_bad'], 0);
+	// Przeprowadzamy walidację danych wprowadzonych w formularzu
+	$return_data = $service_module->purchase_form_validate($_POST);
 
 	// Przerabiamy ostrzeżenia, aby lepiej wyglądały
 	if ($return_data['status'] == "warnings") {
 		foreach ($return_data['data']['warnings'] as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
+				'class' => "form_warning"
+			));
 			$return_data['data']['warnings'][$brick] = $warning;
 		}
 	} else {
-		$data_encoded = base64_encode(json_encode($return_data['purchase_data']));
+		//
+		// Uzupełniamy brakujące dane
+		$purchase = $return_data['purchase'];
+
+		if($purchase->getPayment('cost') === NULL && $purchase->getTariff() !== NULL)
+			$purchase->setPayment(array(
+				'cost' => $heart->get_tariff_provision($purchase->getTariff())
+			));
+
+		if ($purchase->getPayment('sms_service') === NULL && !$purchase->getPayment("no_sms"))
+			$purchase->setPayment(array(
+				'sms_service' => $settings['sms_service']
+			));
+
+		if ($purchase->getService() === NULL)
+			$purchase->setService($service_module->service['id']);
+
+		$data_encoded = base64_encode(serialize($return_data['purchase']));
 		$return_data['data'] = array(
 			'length' => 8000,
 			'data' => $data_encoded,
@@ -350,33 +360,44 @@ if ($action == "login") {
 	}
 
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
-} else if ($action == "validate_payment_form") {
+} else if ($action == "payment_form_validate") {
 	// Sprawdzanie hashu danych przesłanych przez formularz
 	if (!isset($_POST['purchase_sign']) || $_POST['purchase_sign'] != md5($_POST['purchase_data'] . $settings['random_key']))
-		json_output("wrong_sign", $lang['wrong_sign'], 0);
+		json_output("wrong_sign", $lang->wrong_sign, 0);
 
-	// Te same dane, co w "payment_form"
-	$payment_data = json_decode(base64_decode($_POST['purchase_data']), true);
-	$payment_data['method'] = $_POST['method'];
-	$payment_data['sms_code'] = $_POST['sms_code'];
+	/** @var Entity_Purchase $purchase */
+	$purchase = unserialize(base64_decode($_POST['purchase_data']));
 
-	$return_payment = validate_payment($payment_data);
+	// Dodajemy dane płatności
+	$purchase->setPayment(array(
+		'method' => $_POST['method'],
+		'sms_code' => $_POST['sms_code'],
+		'service_code' => $_POST['service_code']
+	));
+
+	$return_payment = validate_payment($purchase);
 	json_output($return_payment['status'], $return_payment['text'], $return_payment['positive'], $return_payment['data']);
-} else if ($action == "refresh_bricks") {
+} else if ($action == "refresh_blocks") {
 	if (isset($_POST['bricks']))
 		$bricks = explode(";", $_POST['bricks']);
 
 	foreach ($bricks as $brick) {
-		$array = get_content($brick, false, true);
-		$data[$brick]['class'] = $array['class'];
-		$data[$brick]['content'] = $array['content'];
+		// Nie ma takiego bloku do odświeżenia
+		if (($block = $heart->get_block($brick)) === NULL)
+			continue;
+
+		$data[$block->get_content_id()]['content'] = $block->get_content($_GET, $_POST);
+		if ($data[$block->get_content_id()]['content'] !== NULL)
+			$data[$block->get_content_id()]['class'] = $block->get_content_class();
+		else
+			$data[$block->get_content_id()]['class'] = "";
 	}
 
 	output_page(json_encode($data), "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "get_service_long_description") {
 	$output = "";
 	if (($service_module = $heart->get_service_module($_POST['service'])) !== NULL)
-		$output = $service_module->get_full_description();
+		$output = $service_module->description_full_get();
 
 	output_page($output, "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "get_purchase_info") {
@@ -384,13 +405,13 @@ if ($action == "login") {
 		'purchase_id' => $_POST['purchase_id'],
 		'action' => "web"
 	)), "Content-type: text/plain; charset=\"UTF-8\"");
-} else if ($action == "form_edit_user_service") {
+} else if ($action == "form_user_service_edit") {
 	if (!is_logged())
-		output_page($lang['service_cant_be_modified']);
+		output_page($lang->service_cant_be_modified);
 
 	// Użytkownik nie może edytować usługi
 	if (!$settings['user_edit_service'])
-		output_page($lang['not_logged']);
+		output_page($lang->not_logged);
 
 	$result = $db->query($db->prepare(
 		"SELECT * FROM `" . TABLE_PREFIX . "players_services` " .
@@ -400,25 +421,25 @@ if ($action == "login") {
 
 	// Brak takiej usługi w bazie
 	if (!$db->num_rows($result))
-		output_page($lang['dont_play_games']);
+		output_page($lang->dont_play_games);
 
-	$player_service = $db->fetch_array_assoc($result);
+	$user_service = $db->fetch_array_assoc($result);
 	// Dany użytkownik nie jest właścicielem usługi o danym id
-	if ($player_service['uid'] != $user['uid'])
-		output_page($lang['dont_play_games']);
+	if ($user_service['uid'] != $user['uid'])
+		output_page($lang->dont_play_games);
 
-	if (($service_module = $heart->get_service_module($player_service['service'])) === NULL)
-		output_page($lang['service_cant_be_modified']);
+	if (($service_module = $heart->get_service_module($user_service['service'])) === NULL)
+		output_page($lang->service_cant_be_modified);
 
-	if (($output = $service_module->get_form("user_edit_user_service", $player_service)) === FALSE)
-		output_page($lang['service_cant_be_modified']);
+	if (!$settings['user_edit_service'] || !object_implements($service_module, "IService_UserOwnServicesEdit"))
+		output_page($lang->service_cant_be_modified);
 
 	eval("\$buttons = \"" . get_template("services/my_services_savencancel") . "\";");
 
-	output_page($buttons . $output);
+	output_page($buttons . $service_module->user_own_service_edit_form_get($user_service));
 } else if ($action == "get_user_service_brick") {
 	if (!is_logged())
-		output_page($lang['not_logged']);
+		output_page($lang->not_logged);
 
 	// Sprawdzamy, czy usluga ktora chcemy edytowac jest w bazie
 	$result = $db->query($db->prepare(
@@ -429,32 +450,33 @@ if ($action == "login") {
 
 	// Brak takiej usługi w bazie
 	if (!$db->num_rows($result))
-		output_page($lang['dont_play_games']);
+		output_page($lang->dont_play_games);
 
-	$player_service = $db->fetch_array_assoc($result);
+	$user_service = $db->fetch_array_assoc($result);
 	// Dany użytkownik nie jest właścicielem usługi o danym id
-	if ($player_service['uid'] != $user['uid'])
-		output_page($lang['dont_play_games']);
+	if ($user_service['uid'] != $user['uid'])
+		output_page($lang->dont_play_games);
 
-	if (($service_module = $heart->get_service_module($player_service['service'])) === NULL)
-		output_page($lang['service_cant_be_modified']);
+	if (($service_module = $heart->get_service_module($user_service['service'])) === NULL)
+		output_page($lang->service_not_displayed);
 
-	if (!class_has_interface($service_module, "IServiceUserEdit"))
-		output_page($lang['service_cant_be_modified']);
+	if (!object_implements($service_module, "IService_UserOwnServices"))
+		output_page($lang->service_not_displayed);
 
-	$button_edit = create_dom_element("img", "", array(
-		'class' => "edit_row",
-		'src' => "images/pencil.png",
-		'title' => "Edytuj",
-		'style' => array(
-			'height' => '24px'
-		)
-	));
+	if ($settings['user_edit_service'] && object_implements($service_module, "IService_UserOwnServicesEdit"))
+		$button_edit = create_dom_element("img", "", array(
+			'class' => "edit_row",
+			'src' => "images/pencil.png",
+			'title' => $lang->edit,
+			'style' => array(
+				'height' => '24px'
+			)
+		));
 
-	output_page($service_module->my_service_info($player_service, $button_edit));
-} else if ($action == "edit_user_service") {
+	output_page($service_module->user_own_service_info_get($user_service, $button_edit));
+} else if ($action == "user_service_edit") {
 	if (!is_logged())
-		json_output("not_logged", $lang['not_logged'], 0);
+		json_output("not_logged", $lang->not_logged, 0);
 
 	$result = $db->query($db->prepare(
 		"SELECT * FROM `" . TABLE_PREFIX . "players_services` " .
@@ -464,56 +486,64 @@ if ($action == "login") {
 
 	// Brak takiej usługi w bazie
 	if (!$db->num_rows($result))
-		json_output("dont_play_games", $lang['dont_play_games'], 0);
+		json_output("dont_play_games", $lang->dont_play_games, 0);
 
 	$user_service = $db->fetch_array_assoc($result);
 	// Dany użytkownik nie jest właścicielem usługi o danym id
 	if ($user_service['uid'] != $user['uid'])
-		json_output("dont_play_games", $lang['dont_play_games'], 0);
+		json_output("dont_play_games", $lang->dont_play_games, 0);
 
 	if (($service_module = $heart->get_service_module($user_service['service'])) === NULL)
-		json_output("wrong_module", $lang['module_is_bad'], 0);
+		json_output("wrong_module", $lang->bad_module, 0);
 
 	// Wykonujemy metode edycji usługi gracza na module, który ją obsługuje
-	if (!class_has_interface($service_module, "IServiceUserEdit"))
-		json_output("service_cant_be_modified", $lang['service_cant_be_modified'], 0);
+	if (!$settings['user_edit_service'] || !object_implements($service_module, "IService_UserOwnServicesEdit"))
+		json_output("service_cant_be_modified", $lang->service_cant_be_modified, 0);
 
-	$return_data = $service_module->user_edit_user_service($_POST, $user_service);
+	$return_data = $service_module->user_own_service_edit($_POST, $user_service);
 
 	// Przerabiamy ostrzeżenia, aby lepiej wyglądały
 	if ($return_data['status'] == "warnings") {
 		foreach ($return_data['data']['warnings'] as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
+				'class' => "form_warning"
+			));
 			$return_data['data']['warnings'][$brick] = $warning;
 		}
 	}
 
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
-} else if ($action == "form_take_over_service") {
-	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !class_has_interface($service_module, "IServiceTakeOver"))
-		output_page($lang['module_is_bad'], "Content-type: text/plain; charset=\"UTF-8\"");
+} else if ($action == "service_take_over_form_get") {
+	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IService_TakeOver"))
+		output_page($lang->bad_module, "Content-type: text/plain; charset=\"UTF-8\"");
 
-	output_page($service_module->form_take_over_service($_POST['service']), "Content-type: text/plain; charset=\"UTF-8\"");
-} else if ($action == "take_over_service") {
-	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !class_has_interface($service_module, "IServiceTakeOver"))
-		output_page($lang['module_is_bad'], "Content-type: text/plain; charset=\"UTF-8\"");
+	output_page($service_module->service_take_over_form_get($_POST['service']), "Content-type: text/plain; charset=\"UTF-8\"");
+} else if ($action == "service_take_over") {
+	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IService_TakeOver"))
+		output_page($lang->bad_module, "Content-type: text/plain; charset=\"UTF-8\"");
 
-	$return_data = $service_module->take_over_service($_POST);
+	$return_data = $service_module->service_take_over($_POST);
 
 	// Przerabiamy ostrzeżenia, aby lepiej wyglądały
 	if ($return_data['status'] == "warnings") {
 		foreach ($return_data['data']['warnings'] as $brick => $warning) {
-			eval("\$warning = \"" . get_template("form_warning") . "\";");
+			$warning = create_dom_element("div", implode("<br />", $warning), array(
+				'class' => "form_warning"
+			));
 			$return_data['data']['warnings'][$brick] = $warning;
 		}
 	}
 
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
-} else if ($action == "execute_service_action") {
-	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !class_has_interface($service_module, "IServiceExecuteAction"))
-		output_page($lang['module_is_bad'], "Content-type: text/plain; charset=\"UTF-8\"");
+} else if ($_GET['action'] == "get_income") {
+	$user['privilages']['view_income'] = $user['privilages']['acp'] = true;
+	$page = new PageAdminIncome();
+	output_page($page->get_content($_GET, $_POST), "Content-type: text/plain; charset=\"UTF-8\"");
+} else if ($action == "service_action_execute") {
+	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IService_ActionExecute"))
+		output_page($lang->bad_module, "Content-type: text/plain; charset=\"UTF-8\"");
 
-	output_page($service_module->execute_action($_POST['service_action'], $_POST), "Content-type: text/plain; charset=\"UTF-8\"");
+	output_page($service_module->action_execute($_POST['service_action'], $_POST), "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "get_template") {
 	$template = $_POST['template'];
 	// Zabezpieczanie wszystkich wartości post
@@ -534,4 +564,4 @@ if ($action == "login") {
 	output_page(json_encode($data), "Content-type: text/plain; charset=\"UTF-8\"");
 }
 
-json_output("script_error", "Błąd programistyczny.", 0);
+json_output("script_error", "An error occured: no action.");

@@ -3,6 +3,7 @@
 abstract class Service
 {
 
+	const MODULE_ID = "";
 	public $service = array();
 
 	function __construct($service)
@@ -16,102 +17,21 @@ abstract class Service
 	}
 
 	/**
-	 * Metoda wywoływana przy edytowaniu lub dodawaniu usługi w PA
-	 * Zwraca dodatkowe pola do uzupełnienia
-	 */
-	public function service_extra_fields()
-	{
-	}
-
-	/**
-	 * Metoda testuje dane przesłane przez formularz podczas dodawania nowej usługi w PA
-	 * jak coś się jej nie spodoba to zwraca o tym info w tablicy
-	 *
-	 * @param array $data Dane $_POST
-	 * @return array		'key'	=> DOM Element name
-	 *						'value'	=> Error message
-	 */
-	public function manage_service_pre($data)
-	{
-	}
-
-	/**
-	 * Metoda zostaje wywołana po tym, jak  weryfikacja danych
-	 * przesłanych w formularzu w PA przebiegła bezproblemowo
-	 *
-	 * @param array $data Dane $_POST
-	 * @return array 'query_set' - data for SET in a query
-	 */
-	public function manage_service_post($data)
-	{
-	}
-
-	/**
-	 * Metoda odpowiedzialna za zwracanie fomularzy do różnych czynności
-	 *
-	 * @param string $form Id formularza, który ma zostać zwrócony
-	 * @param array $data Dane $_POST
-	 * @return string		Treść formularza
-	 */
-	public function get_form($form, $data=array())
-	{
-		return FALSE;
-	}
-
-	/**
-	 * Metoda która sprawdza poprawność wprowadzonych danych zakupu,
-	 * wywoływana gdy zakup został przeprowadzony z zewnątrz, nie przez formularz na stronie WWW.
-	 *
-	 * @param array $data user:
-	 *							uid - id uzytkownika wykonującego zakupy
-	 *							ip - ip użytkownika wykonującego zakupy
-	 *							email - email -||-
-	 *							platform - -||-
-	 *						transaction:
-	 *							method - sposób płatności
-	 *							service - serwis mający obsłużyć płatność
-	 *							[sms_code] - kod zwrotny sms
-	 *						order:
-	 *							... - dane zamówienia
-	 *						tariff - koszt usługi ( taryfa )
-	 * @return array		'status'	=> id wiadomości,
-	 *						'text'		=> treść wiadomości
-	 *						'positive'	=> czy udało się przeprowadzić zakup czy nie
-	 */
-	public function validate_purchase_data($data)
-	{
-		return FALSE;
-	}
-
-	/**
-	 * Metoda zwraca informacje o zakupionej usłudze, szczegóły zakupu.
-	 * Informacje są wyświetlane na stronie my_current_services
-	 *
-	 * @param array $user_service Dane o usłudze z bazy danych
-	 * @param string $button_edit String przycisku do edycji usługi
-	 * @return string		Informacje o zakupionej usłudze
-	 */
-	public function my_service_info($user_service, $button_edit)
-	{
-		return FALSE;
-	}
-
-	/**
 	 * Metoda wywoływana, gdy usługa jest usuwana.
 	 *
 	 * @param integer $service_id ID usługi
 	 */
-	public function delete_service($service_id)
+	public function service_delete($service_id)
 	{
 	}
 
 	/**
-	 * Metoda wywoływana przy usuwaniu usługi gracza.
+	 * Metoda wywoływana przy usuwaniu usługi użytkownika.
 	 *
-	 * @param array $player_service Dane o usłudze z bazy danych
+	 * @param array $user_service Dane o usłudze z bazy danych
 	 * @return boolean
 	 */
-	public function delete_player_service($player_service)
+	public function user_service_delete($user_service)
 	{
 		return true;
 	}
@@ -119,18 +39,18 @@ abstract class Service
 	/**
 	 * Metoda wywoływana po usunięciu usługi gracza.
 	 *
-	 * @param array $player_service Dane o usłudze z bazy danych
+	 * @param array $user_service Dane o usłudze z bazy danych
 	 */
-	public function delete_player_service_post($player_service)
+	public function user_service_delete_post($user_service)
 	{
 	}
 
 	/**
-	 * Metoda zwraca, czy usługa ma być wyświetlana na stronie WWW.
+	 * Metoda powinna zwrócić, czy usługa ma być wyświetlana na stronie WWW.
 	 */
 	public function show_on_web()
 	{
-		if (!is_null($this->service))
+		if ($this->service !== NULL)
 			return $this->service['data']['web'];
 
 		return false;
@@ -141,20 +61,22 @@ abstract class Service
 	 * Krotki opis, to 'description', krótki na strone WEB
 	 * Pełny opis, to plik z opisem całej usługi
 	 *
-	 * @return string	Description
+	 * @return string    Description
 	 */
-	public function get_full_description()
+	public function description_full_get()
 	{
 		$file = "services/" . escape_filename($this->service['id']) . "_desc";
-
 		eval("\$output = \"" . get_template($file, false, true, false) . "\";");
 
 		return $output;
 	}
 
-	public function get_short_description()
+	public function description_short_get()
 	{
 		return $this->service['description'];
 	}
 
+	public function get_module_id() {
+		return $this::MODULE_ID;
+	}
 }

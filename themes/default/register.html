@@ -1,31 +1,31 @@
 <form id="register">
 	<dl>
-		<dt>{$lang['required_data']}</dt>
+		<dt>{$lang->required_data}</dt>
 		<dd>
 			<table class="register_names">
 				<tr>
 					<td colspan="2">
-						{$lang['username']}:
+						{$lang->username}:
 						<input name="username" type="text"/>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						{$lang['password']}:<br/>
+						{$lang->password}:<br/>
 						<input name="password" type="password"/>
 					</td>
 					<td>
-						{$lang['password_repeat']}:<br/>
+						{$lang->password_repeat}:<br/>
 						<input name="password_repeat" type="password"/>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						{$lang['email']}:<br/>
+						E-mail:<br/>
 						<input name="email" type="text"/>
 					</td>
 					<td>
-						{$lang['email_repeat']}:<br/>
+						{$lang->email_repeat}:<br/>
 						<input name="email_repeat" type="text"/>
 					</td>
 				</tr>
@@ -34,28 +34,28 @@
 				</tr>
 			</table>
 		</dd>
-		<dt>{$lang['optional_data']} *</dt>
+		<dt>{$lang->optional_data} *</dt>
 		<dd>
 			<table class="register_names">
 				<tr>
-					<td>{$lang['name']}:</td>
+					<td>{$lang->firstname}:</td>
 					<td><input name="forename" type="text" maxlength="32"/></td>
 				</tr>
 				<tr>
-					<td>{$lang['surname']}:</td>
+					<td>{$lang->surname}:</td>
 					<td><input name="surname" type="text" maxlength="64"/></td>
 				</tr>
 			</table>
 		</dd>
-		<dt>{$lang['antispam_question']}</dt>
+		<dt>{$lang->antispam_question}</dt>
 		<dd>
 			<table class="register_antispam">
 				<tr>
-					<td>{$lang['question']}</td>
+					<td>{$lang->question}</td>
 					<td headers="as_question">{$antispam_question['question']}</td>
 				</tr>
 				<tr>
-					<td>{$lang['answer']}</td>
+					<td>{$lang->answer}</td>
 					<td>
 						<input name="as_answer" type="text" maxlength="64"/>
 						<input name="as_id" type="hidden" value="{$antispam_question['id']}"/>
@@ -64,7 +64,6 @@
 			</table>
 		</dd>
 	</dl>
-	<input type="hidden" name="sign" value="{$sign}"/>
-	<input type="reset" value="{$lang['clear']}" class="register_buttons"/>
-	<input type="submit" value="{$lang['create_account']}" class="register_buttons"/>
+	<input type="reset" value="{$lang->clear}" class="register_buttons"/>
+	<input type="submit" value="{$lang->create_account}" class="register_buttons"/>
 </form>

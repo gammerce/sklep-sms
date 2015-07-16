@@ -1,5 +1,5 @@
 <meta http-equiv="Content-Type" content="text/plain" charset="UTF-8"/>
-<title>PA - Sklep SMS</title>
+<title>{$lang->acp_short}: {$heart->page_title} - {$lang->shop_sms}</title>
 
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
@@ -10,9 +10,10 @@
 <script type="text/javascript" src="{$settings['shop_url_slash']}jscripts/window.js?version={__VERSION__}"></script>
 <script type="text/javascript" src="{$settings['shop_url_slash']}jscripts/infobox.js?version={__VERSION__}"></script>
 <script type="text/javascript" src="{$settings['shop_url_slash']}js.php?script=language&version={__VERSION__}"></script>
-{$scripts}
+{$heart->scripts_get()}
 
 <link href="{$settings['shop_url_slash']}styles/style_global.css?version={__VERSION__}" rel="stylesheet"/>
 <link href="{$settings['shop_url_slash']}styles/admin/style.css?version={__VERSION__}" rel="stylesheet"/>
 <link href="{$settings['shop_url_slash']}styles/infobox.css?version={__VERSION__}" rel="stylesheet"/>
-{$stylesheets}
+<link rel="shortcut icon" href="{$settings['shop_url_slash']}favicon.ico" />
+{$heart->styles_get()}

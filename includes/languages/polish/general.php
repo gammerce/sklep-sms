@@ -1,134 +1,124 @@
 <?php
 
-$lang['welcome_message'] = "Witaj w sklepie internetowym!";
+$l['shop_sms'] = "Sklep SMS";
+$l['logout'] = "Wyloguj";
+$l['go'] = "Idź";
+$l['and'] = "i";
+$l['yes'] = "Tak";
+$l['no'] = "Nie";
+$l['type'] = "Typ";
+$l['password'] = "Hasło";
+$l['none'] = "Brak";
+$l['bought_date'] = "Data zakupu";
+$l['no_data'] = "Brak danych";
+$l['forever'] = "Na zawsze";
+$l['edit'] = "Edytuj";
+$l['delete'] = "Usuń";
+$l['ip'] = "IP";
+$l['email'] = "Adres e-mail";
+$l['nick'] = "Nick";
+$l['username'] = "Nazwa Użytkownika";
+$l['save'] = "Zapisz";
+$l['cancel'] = "Anuluj";
+$l['sign_in'] = "Zaloguj się";
+$l['contact'] = "Kontakt";
 
-$lang['register_vert'] = "Z<br />A<br />R<br />E<br />J<br />E<br />S<br />T<br />R<br />U<br />J";
-$lang['login_vert'] = "Z<br />A<br />L<br />O<br />G<br />U<br />J";
+$l['old_password'] = "Stare Hasło";
+$l['new_password'] = "Nowe Hasło";
+$l['name'] = "Nazwa";
+$l['firstname'] = "Imię";
+$l['surname'] = "Nazwisko";
 
-$lang['repeat'] = "Powtórz";
-$lang['send'] = "Wyślij";
-$lang['clear'] = "Wyczyść";
-$lang['name'] = "Imię";
-$lang['surname'] = "Nazwisko";
-$lang['username'] = "Nazwa Użytkownika";
-$lang['password_repeat'] = "Powtórz Hasło";
-$lang['forgot_password'] = "Nie pamiętam hasła";
-$lang['email'] = "Adres e-mail";
-$lang['email_repeat'] = "Powtórz adres e-mail";
-$lang['log_in'] = "Zaloguj";
-$lang['service'] = "Usługa";
-$lang['nickipsid'] = "Nick / IP / SteamID";
-$lang['nick'] = "Nick";
-$lang['ip'] = "IP";
-$lang['sid'] = "SteamID";
-$lang['server'] = "Serwer";
-$lang['expire'] = "Wygasa";
-$lang['date'] = "Data";
-$lang['description'] = "Opis";
-$lang['cost'] = "Koszt";
-$lang['price'] = "Cena";
-$lang['amount'] = "Ilość";
-$lang['question'] = "Pytanie";
-$lang['answer'] = "Odpowiedź";
-$lang['contact'] = "Kontakt";
-$lang['regulations'] = "Regulamin";
+$l['days'] = "dni";
+$l['hours'] = "godzin";
+$l['minutes'] = "minut";
+$l['seconds'] = "sekund";
+$l['never'] = "Nigdy";
 
-$lang['old_password'] = "Stare Hasło";
-$lang['new_password'] = "Nowe Hasło";
+$l['question'] = "Pytanie";
+$l['description'] = "Opis";
+$l['server'] = "Serwer";
+$l['service'] = "Usługa";
+$l['amount'] = "Ilość";
+$l['date'] = "Data";
+$l['user'] = "Użytkownik";
+$l['tariff'] = "Taryfa";
+$l['wallet'] = "Portfel";
+$l['cost'] = "Koszt";
+$l['sms']['return_code'] = "Kod zwrotny";
+$l['choose_service'] = "Wybierz usługę";
+$l['choose_type'] = "Wybierz rodzaj";
+$l['choose_server'] = "Wybierz serwer";
 
-$lang['required_data'] = "Wymagane dane";
-$lang['optional_data'] = "Opcjonalne dane";
-$lang['antispam_question'] = "Pytanie Antyspamowe";
-$lang['create_account'] = "Załóż Konto";
+$l['months'] = array("", "Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień");
 
-$lang['go_to_payment'] = "Przejdź do płatności";
-$lang['purchase_form_validated'] = "Wprowadzone dane są prawidłowe. Wybierz teraz sposób płatności.";
-$lang['order_details'] = "Szczegóły zamówienia";
-$lang['payment_sms'] = "Płatność SMS";
-$lang['payment_transfer'] = "Płatność przelew";
-$lang['payment_wallet'] = "Płatność portfel";
+$l['verification_error'] = "Coś poszło nie tak podczas łączenia się z serwerem weryfikacyjnym.";
 
-$lang['pay_sms'] = "Płacę SMSem";
-$lang['pay_transfer'] = "Płacę Przelewem";
-$lang['pay_wallet'] = "Płacę z Portfela";
+$l['main_page'] = "Strona główna";
+$l['acp'] = "Panel Admina";
+$l['acp_short'] = "PA";
+$l['no_privilages'] = "Nie masz dostępu do tego miejsca, więc tu nie zerkaj!";
+$l['wrong_login_data'] = "Login i/lub hasło są nieprawidłowe.";
 
-$lang['take_over'] = "Przejmij";
+$l['wrong_cron_key'] = "Nie tędy droga hakierze.";
 
-$lang['way_of_payment'] = "Sposób płatności";
-$lang['choose_payment'] = "Wybierz płatność";
-$lang['admin'] = "Admin";
-$lang['wallet'] = "Portfel";
+$l['email_was_sent'] = "Wysłano e-maila na adres: {1} o treści: {2}";
 
-$lang['choose_type'] = "Wybierz rodzaj";
-$lang['choose_server'] = "Wybierz serwer";
-$lang['choose_service'] = "Wybierz usługę";
-$lang['choose_amount'] = "Wybierz ilość";
+$l['username_chars_warn'] = "Nazwa użytkownika zawiera niedozwolone znaki (<,>,&,\")";
+$l['wrong_email'] = "Wprowadzony adres e-mail jest nieprawidłowy.";
+$l['wrong_ip'] = "Wprowadzony adres IP jest nieprawidłowy.";
+$l['wrong_sid'] = "Wprowadzony Steam ID jest nieprawidłowy.";
+$l['return_code_length_warn'] = "Wprowadzony kod zwrotny jest nieco przydługaśny.";
+$l['field_no_empty'] = "Pole nie może być puste.";
+$l['field_must_be_number'] = "W polu musi się znajdować liczba.";
+$l['field_length_min_warn'] = "Pole musi się składać z co najmniej {1} znaków.";
+$l['field_length_max_warn'] = "Pole może się składać z co najwyżej {1} znaków.";
+$l['value_must_be_positive'] = "Wartość musi być dodatnia.";
 
-$lang['transfer_cost'] = "Koszt Przelewu";
-$lang['sms_cost'] = "Koszt SMS";
+$l['mysqli']['no_server_connection'] = "Nie można utworzyć połączenia z serwerem bazy danych!";
+$l['mysqli']['no_db_connection'] = "Nie można połączyć się z bazą danych!";
+$l['mysqli']['query_error'] = "Wystąpił błąd w zapytaniu do bazy danych.";
+$l['mysqli']['no_query_num_rows'] = "Nie można otrzymać liczby wierszy, ponieważ id zapytania nie zostało podane!";
+$l['mysqli']['no_query_fetch_array'] = "Nie można pozyskać tablicy, ponieważ id zapytania nie zostało podane!";
+$l['mysqli']['no_query_fetch_array_assoc'] = "Nie można pobrać tablicy asocjacyjnej, ponieważ id zapytania nie zostało podane!";
 
-$lang['transfer_unavailable'] = "Nie można dokonać płatności za pomocą przelewu.";
-$lang['sms_unavailable'] = "Nie można dokonać płatności za pomocą SMSa.";
+$l['sth_went_wrong'] = "Coś poszło nie tak :/";
+$l['ajax_error'] = "Wystąpił błąd podczas pozyskiwania danych.";
 
-$lang['my_services'] = "Moje usługi";
-$lang['change_password'] = "Zmień hasło";
-$lang['take_over_service'] = "Przejmij usługę";
+$l['bought_service_info'] = "Zakupiono usługę {1}. Dane: {2} Ilość: {3} Serwer: {4} ID transakcji: {5}. Email: {6} {7}({8})({9})";
 
-$lang['transfer'] = "Przelew";
+$l['payment_id'] = "ID płatności";
+$l['payment']['bad_type'] = "Błąd w konstruktorze klasy Payment. Niedozwolony typ płatności.";
+$l['payment']['bad_service'] = "API usługi {1} nie zostało zaimplenetowane.";
+$l['payment']['remove_code_from_db'] = "Usunięto kod z tabeli kodów do wykorzystania. Kod: {1} Taryfa: {2}";
 
-$lang['transfer_id'] = "ID Płatności";
-$lang['transfer_error'] = "Wystąpił błąd podczas przyjmowania danych o przelewie.";
+$l['form_wrong_filled'] = "Nie wszystkie pola formularza zostały prawidłowo wypełnione.";
 
-$lang['transfer_error'] = "Niestety, ale płatność za pomocą przelewu zakończyła się niepowodzeniem.";
-$lang['transfer_unverified'] = "Niestety, ale udało się zweryfikować poprawności danych przelewu.";
+$l['nickpass'] = "Nick + Hasło";
+$l['ippass'] = "IP + Hasło";
+$l['sid'] = "SteamID";
 
-$lang['contact_info'] = "Możesz się z nami skontaktować na jeden z poniższych sposobów.";
+$l['not_logged'] = "Nie jesteś zalogowany/a";
+$l['logged'] = "Jesteś zalogowany/a";
+$l['dont_play_games'] = "Nie kombinuj...";
+$l['service_cant_be_modified'] = "Tej usługi nie można edytować.";
+$l['bad_module'] = "Moduł usługi został źle zaprogramowany.";
+$l['wrong_sign'] = "Coś tu nie gra, weryfikacja danych zakończyła się informatyczną klęską.";
+$l['no_service'] = "Nie ma usługi o takim id.";
+$l['service_isnt_yours'] = "Istnieje już usługa na takie dane, lecz nie należy ona do Ciebie.";
+$l['only_yes_no'] = "Pole może przyjąć tylko wartości: 'TAK' i 'NIE'";
 
-$lang['restore_password_info'] = "W celu odzyskania hasła, podaj swój adres <strong>adres e-mail</strong> lub <strong>nazwę użytkownika</strong>.<br />
-W kolejnym etapie, zostanie do Ciebie wysłany e-mail z linkiem do zresetowania hasła.";
+$l['edited_user_service'] = "Prawidłowo wyedytowano usługę.";
+$l['not_edited_user_service'] = "Nie udało się wyedytować usługi.";
 
-$lang['must_be_logged_out'] = "Nie możesz przeglądać tej strony. Jesteś zalogowany/a.";
-$lang['must_be_logged_in'] = "Nie możesz przeglądać tej strony. Nie jesteś zalogowany/a.";
+$l['you_arent_logged'] = "Coś tu nie gra, nie jesteś zalogowany/a oO";
+$l['not_logged_or_no_perm'] = "Coś tu nie gra, nie jesteś zalogowany/a lub nie masz odpowiednich uprawnień oO";
 
-$lang['no_reset_key'] = "Nie podano kodu resetowania hasła.";
-$lang['wrong_reset_key'] = "Kod resetowania hasła jest błędny.<br />
-Skontaktuj się z administratorem serwisu w celu uzyskania dodatkowych informacji.";
+$l['languages'] = array(
+	'polish' => "Polski",
+	'english' => "English"
+);
 
-$lang['wrong_id'] = "Błędne ID";
-$lang['site_not_exists'] = "Strona nie istnieje.";
+$l['expired_service_delete'] = "AUTOMAT: Usunięto wygasłą usługę gracza. Auth Data: {1} Serwer: {2} Usługa: {3} Typ: {4}";
 
-$lang['payment_for_service'] = "Płatność za usługę: {1}";
-$lang['service_was_bought'] = "Zakupiono usługę {1} na serwerze {2}";
-$lang['wallet_charged'] = "Portfel został doładowany.";
-$lang['wallet_was_charged'] = "Doładowano portfel kwotą {1}";
-$lang['bought_service'] = "Zakup Usługi";
-$lang['charge_wallet'] = "Doładowanie Portfela";
-
-$lang['add_code_to_reuse'] = "Dodano kod do tabeli kodów do wykorzystania. Kod: {1} Taryfa: {2}." .
-	"Próba użycia go przez {3}({4})({5}) przy zakupie usługi o taryfie: {6}.";
-$lang['bad_sms_code_used'] = "Transakcja SMS użytkownika: {1}({2})({3}) nie powiodła się. Użyto kodu zwrotnego: {4} Treść: {5} Numer: {6} Kod błędu: {7}";
-
-$lang['type_setinfo'] = "Wpisz w konsoli: setinfo _ss \"{1}\"";
-
-$lang['sms']['send_sms'] = "Wyślij SMSa";
-$lang['sms']['text'] = "O treści";
-$lang['sms']['on'] = "Na numer";
-$lang['sms']['return_code'] = "Kod zwrotny";
-$lang['sms']['info']['ok'] = "Wprowadzono prawidłowy kod zwrotny.";
-$lang['sms']['info']['bad_code'] = "Wprowadzony kod zwrotny jest zwyczajnie błędny.";
-$lang['sms']['info']['bad_number'] = "Kod jest dobry, lecz niestety został uzyskany poprzez wysłanie SMSa na inny numer.";
-$lang['sms']['info']['bad_api'] = "Podane API jest nieprawidłowe.";
-$lang['sms']['info']['bad_email'] = "Podany email w konfiguracji płatności jest nieprawidłowy.";
-$lang['sms']['info']['server_error'] = "Podane API jest nieprawidłowe, podano zły kod zwrotny lub wystapil jeszcze inny blad.";
-$lang['sms']['info']['service_error'] = "Nieprawidłowo skonfigurowana usługa, skontaktuj się z właścicielem sklepu.";
-$lang['sms']['info']['error'] = "Wystąpił błąd. Przyczyny nie są znane.";
-$lang['sms']['info']['no_connection'] = "Nie można się połączyć ze skryptem weryfikacyjnym.";
-$lang['sms']['info']['bad_data'] = "Nie podano wszystkich potrzebnych danych w konfiguracji płatności.";
-$lang['sms']['info']['dunno'] = "Wystąpił nieznany błąd. Zgłoś go właścicielowi sklepu.";
-$lang['sms']['info']['no_sms_serve'] = "Dany serwis nie obsługuje płatności SMS. Zgłoś błąd właścicielowi sklepu.";
-$lang['no_transfer_serve'] = "Dany serwis nie obsługuje płatności przelewem. Zgłoś błąd właścicielowi sklepu.";
-$lang['transfer_ok'] = "Przygotowanie płatności przebiegło pomyślnie.<br />Za chwilę nastąpi przekierowanie do serwisu transakcyjnego.";
-
-$lang['service_no_permission'] = "Nie masz uprawnień, aby móc korzystać z tej usługi.";
-
-$lang['value_must_be_ge_than'] = "Wartość musi być większa lub równa {1}.";
+$l['error_occured'] = "Wystąpił błąd.";

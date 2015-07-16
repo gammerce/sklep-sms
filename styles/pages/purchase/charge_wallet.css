@@ -1,0 +1,15 @@
+#charge_sms, #charge_transfer {
+	display: none;
+}
+
+#charge_table tfoot tr td {
+	text-align: center;
+}
+
+[name=transfer_amount] {
+	display: inline-block;
+}
+
+#form_purchase tfoot {
+	display: none;
+}

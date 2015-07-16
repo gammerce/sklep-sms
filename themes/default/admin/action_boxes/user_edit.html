@@ -1,0 +1,56 @@
+<form id="form_user_edit" class="action_box">
+	<div class="service_main_info">
+		{$lang->edit_user}
+	</div>
+	<table>
+		<tr>
+			<td>{$lang->id}</td>
+			<td>{$row['uid']}</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="line"></td>
+		</tr>
+		<tr>
+			<td>{$lang->strtoupper($lang->username)}</td>
+			<td><input type="text" name="username" maxlength="64" value="{$row['username']}"/></td>
+		</tr>
+		<tr>
+			<td>{$lang->strtoupper($lang->firstname)}</td>
+			<td><input type="text" name="forename" maxlength="32" value="{$row['forename']}"/></td>
+		</tr>
+		<tr>
+			<td>{$lang->strtoupper($lang->surname)}</td>
+			<td><input type="text" name="surname" maxlength="64" value="{$row['surname']}"/></td>
+		</tr>
+		<tr>
+			<td>{$lang->strtoupper($lang->email)}</td>
+			<td><input type="text" name="email" maxlength="128" value="{$row['email']}"/></td>
+		</tr>
+		<tr>
+			<td colspan="2" class="line"></td>
+		</tr>
+		<tr>
+			<td>{$lang->strtoupper($lang->groups)}</td>
+			<td>
+				<select name="groups[]" multiple>
+					{$groups}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>{$lang->strtoupper($lang->wallet)}</td>
+			<td style="vertical-align: middle">
+				<input type="text" name="wallet" style="width: 60px" maxlength="32" value="{$row['wallet']}"/>&nbsp;{$settings['currency']}
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="line"></td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<input type="hidden" name="uid" value="{$row['uid']}"/>
+				<input type="submit" value="{$lang->edit}" style="width: 100%;"/>
+			</td>
+		</tr>
+	</table>
+</form>

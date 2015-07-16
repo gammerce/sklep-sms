@@ -1,6 +1,6 @@
 body {
-	background: url('../images/3.2.0-dishonored.jpg') no-repeat fixed;
-    background-size: cover;
+	background: url('../images/3.3.0-witcher3.jpg') no-repeat fixed;
+	background-size: cover;
 }
 
 #content table {
@@ -38,7 +38,7 @@ body {
 .wallet_status {
 	padding-left: 55px;
 	background-image: url('../images/wallet.png') !important;
-	background-color: #d62226;
+	background-color: #AE0A0E;
 	background-position: 10px center !important;
 	text-align: right;
 	font-weight: bold;
@@ -48,7 +48,7 @@ body {
 .logged_info {
 	padding-left: 45px;
 	margin-right: 5px;
-	background-image: url('../images/user.png'), linear-gradient(45deg, rgba(131,131,131,1) 0%,rgba(140,140,140,1) 12%,rgba(149,149,149,1) 25%,rgba(109,109,109,1) 76%,rgba(98,98,98,1) 91%,rgba(92,92,92,1) 100%);
+	background-image: url('../images/user.png'), linear-gradient(45deg, rgba(131, 131, 131, 1) 0%, rgba(140, 140, 140, 1) 12%, rgba(149, 149, 149, 1) 25%, rgba(109, 109, 109, 1) 76%, rgba(98, 98, 98, 1) 91%, rgba(92, 92, 92, 1) 100%);
 	background-position: 0 center;
 }
 
@@ -56,9 +56,9 @@ body {
 .content_title {
 	float: left;
 	padding: 10px;
-	/* background: rgba(0, 0, 0, 0.7); */
 	font-family: Georgia, serif;
 	color: #fff;
+	text-shadow: 2px 2px 1px #000;
 	font-size: 20px;
 	border-radius: 15px 15px 0 0;
 	box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.7);
@@ -99,7 +99,7 @@ body {
 }
 
 .services_buttons li a {
-	background-color: #d62226;
+	background-color: #3D0001;
 	box-shadow: -4px 2px 11px 0 rgba(53, 53, 50, 0.61);
 }
 
@@ -128,7 +128,7 @@ body {
 }
 
 .user_buttons li a, #loginarea_roll_button, #register_redirect_button, #logout {
-	background-color: #6D9782;
+	background-color: #2E555A;
 	box-shadow: 4px 3px 11px 0 rgba(53, 53, 50, 0.61);
 }
 
@@ -187,6 +187,7 @@ body {
 /* Cegiełka z miejscem do wpisywania tekstu przy logowaniu */
 #form_login {
 	margin: 0;
+	padding: 12px 0;
 	color: black;
 	font-size: 14px;
 	font-family: Gill Sans MT, sans-serif;
@@ -210,6 +211,7 @@ body {
 }
 
 #loginarea_roll_button, #logout {
+	vertical-align: middle;
 	background-color: #5B9931;
 }
 
@@ -236,9 +238,9 @@ body {
 }
 
 #language_choice {
-	position: fixed;
-	right: 12px;
-	top: 6px;
+	padding-right: 12px;
+	padding-top: 6px;
+	text-align: right;
 }
 
 #language_choice img {

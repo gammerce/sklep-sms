@@ -2,42 +2,42 @@
 
 $heart->register_service_module("other", "Inne", "ServiceOther", "ServiceOtherSimple");
 
-class ServiceOtherSimple extends Service implements IServiceCreateNew
+class ServiceOtherSimple extends Service implements IService_Create, IService_AdminManage
 {
 
 	const MODULE_ID = "other";
 
-	public $info = array(
-		'available_on_servers' => true
-	);
-
-	public function manage_service_post($data)
+	public function service_admin_manage_post($data)
 	{
 		global $db;
 
-		if ($data['action'] == "add_service")
+		if ($data['action'] == "service_edit" && $data['id2'] != $data['id'])
 			$db->query($db->prepare(
-				"ALTER TABLE `" . TABLE_PREFIX . "servers` " .
-				"ADD  `%s` TINYINT( 1 ) NOT NULL DEFAULT '0'",
-				array($data['id'])
-			));
-		else
-			$db->query($db->prepare(
-				"ALTER TABLE `" . TABLE_PREFIX . "servers` " .
-				"CHANGE  `%s`  `%s` TINYINT( 1 ) NOT NULL DEFAULT '0'",
-				array($data['id2'], $data['id'])
+				"UPDATE `" . TABLE_PREFIX . "servers_services` " .
+				"SET `service_id` = '%s' " .
+				"WHERE `service_id` = '%s'",
+				array($data['id'], $data['id2'])
 			));
 	}
 
+	public function service_admin_extra_fields_get()
+	{
+		return "";
+	}
+
+	public function service_admin_manage_pre($data)
+	{
+		return array();
+	}
 }
 
-class ServiceOther extends ServiceOtherSimple implements IServicePurchase
+class ServiceOther extends ServiceOtherSimple implements IService_Purchase, IService_PurchaseOutside
 {
 
 	//
 	// Funkcja przygotowania zakupu
 	//
-	public function validate_purchase_data($data)
+	public function purchase_data_validate($purchase)
 	{
 		global $heart, $db, $lang;
 
@@ -45,31 +45,31 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase
 
 		// Serwer
 		$server = array();
-		if (!strlen($data['order']['server']))
-			$warnings['server'] .= $lang['must_choose_server'] . "<br />";
+		if (!strlen($purchase->getOrder('server')))
+			$warnings['server'][] = $lang->must_choose_server;
 		else {
 			// Sprawdzanie czy serwer o danym id istnieje w bazie
-			$server = $heart->get_server($data['order']['server']);
-			if (!$server[$this->service['id']])
-				$warnings['server'] .= $lang['chosen_incorrect_server']."<br />";
+			$server = $heart->get_server($purchase->getOrder('server'));
+			if (!$heart->server_service_linked($server['id'], $this->service['id']))
+				$warnings['server'][] = $lang->chosen_incorrect_server;
 		}
 
 		// Wartość usługi
 		$price = array();
-		if (!strlen($data['tariff']))
-			$warnings['value'] .= $lang['must_choose_amount']."<br />";
+		if (!strlen($purchase->getTariff()))
+			$warnings['value'][] = $lang->must_choose_amount;
 		else {
 			// Wyszukiwanie usługi o konkretnej cenie
 			$result = $db->query($db->prepare(
 				"SELECT * FROM `" . TABLE_PREFIX . "pricelist` " .
 				"WHERE `service` = '%s' AND `tariff` = '%d' AND ( `server` = '%d' OR `server` = '-1' )",
-				array($this->service['id'], $data['tariff'], $server['id'])
+				array($this->service['id'], $purchase->getTariff(), $server['id'])
 			));
 
 			if (!$db->num_rows($result)) // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
 				return array(
 					'status' => "no_option",
-					'text' => $lang['service_not_affordable'],
+					'text' => $lang->service_not_affordable,
 					'positive' => false
 				);
 
@@ -77,66 +77,52 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase
 		}
 
 		// E-mail
-		if ($data['user']['email'] != "" && $warning = check_for_warnings("email", $data['user']['email']))
-			$warnings['email'] = $warning;
+		if (strlen($purchase->getEmail()) && $warning = check_for_warnings("email", $purchase->getEmail()))
+			$warnings['email'] = array_merge((array)$warnings['email'], $warning);
 
 		// Jeżeli są jakieś błedy, to je zwróć
 		if (!empty($warnings)) {
 			return array(
 				'status' => "warnings",
-				'text' => $lang['form_wrong_filled'],
+				'text' => $lang->form_wrong_filled,
 				'positive' => false,
 				'data' => array('warnings' => $warnings)
 			);
 		}
 
-		//
-		// Wszystko przebiegło pomyślnie, zwracamy o tym info
+		$purchase->setOrder(array(
+			'amount' => $price['amount'],
+			'forever' => $price['amount'] == -1 ? true : false
+		));
 
-		// Pobieramy koszt usługi dla przelewu / paypal / portfela
-		$cost_transfer = $heart->get_tariff_provision($data['tariff']);
-
-		$purchase_data = array(
-			'service' => $this->service['id'],
-			'order' => array(
-				'server' => $data['order']['server'],
-				'auth_data' => $data['order']['auth_data'],
-				'amount' => $price['amount'],
-				'forever' => $price['amount'] == -1 ? true : false
-			),
-			'user' => $data['user'],
-			'tariff' => $data['tariff'],
-			'cost_transfer' => $cost_transfer
-		);
+		$purchase->setPayment(array(
+			'cost' => $heart->get_tariff_provision($purchase->getTariff())
+		));
 
 		return array(
-			'status' => "validated",
-			'text' => $lang['purchase_form_validated'],
+			'status' => "ok",
+			'text' => $lang->purchase_form_validated,
 			'positive' => true,
-			'purchase_data' => $purchase_data
+			'purchase' => $purchase
 		);
 	}
 
-	//
-	// Funkcja zakupu
-	public function purchase($data)
+	public function purchase($purchase)
 	{
-		// Dodanie informacji o zakupie usługi
-		return add_bought_service_info($data['user']['uid'], $data['user']['username'], $data['user']['ip'], $data['transaction']['method'],
-			$data['transaction']['payment_id'], $this->service['id'], $data['order']['server'], $data['order']['amount'],
-			$data['order']['auth_data'], $data['user']['email']
+		return add_bought_service_info(
+			$purchase->getUser('uid'), $purchase->getUser('username'), $purchase->getUser('ip'), $purchase->getPayment('method'),
+			$purchase->getPayment('payment_id'), $this->service['id'], $purchase->getOrder('server'), $purchase->getOrder('amount'),
+			$purchase->getOrder('auth_data'), $purchase->getEmail()
 		);
 	}
 
-	//
-	// Funkcja wywolywana podczas usuwania uslugi
-	public function delete_service($service_id)
+	public function service_delete($service_id)
 	{
 		global $db;
 
 		$db->query($db->prepare(
-			"ALTER TABLE `" . TABLE_PREFIX . "servers` " .
-			"DROP `%s`",
+			"DELETE FROM `" . TABLE_PREFIX . "servers_services` " .
+			"WHERE `service_id` = '%s'",
 			array($service_id)
 		));
 	}

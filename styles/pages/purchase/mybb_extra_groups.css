@@ -1,0 +1,21 @@
+#form_purchase {
+	margin-top: 20px;
+	text-align: center;
+}
+
+#form_purchase .inputs {
+	display: inline-block;
+	text-align: left;
+}
+
+#cost_wraper {
+	width: 100%;
+	margin: 20px 0 40px 0;
+	text-align: center;
+	display: none;
+}
+
+#cost_wraper div {
+	display: inline-block;
+	text-align: left;
+}

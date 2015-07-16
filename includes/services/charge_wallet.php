@@ -2,38 +2,25 @@
 
 $heart->register_service_module("charge_wallet", "Doładowanie Portfela", "ServiceChargeWallet", "ServiceChargeWalletSimple");
 
-class ServiceChargeWalletSimple extends Service implements IServiceMustBeLogged
+class ServiceChargeWalletSimple extends Service implements I_BeLoggedMust
 {
 
 	const MODULE_ID = "charge_wallet";
 
 }
 
-class ServiceChargeWallet extends ServiceChargeWalletSimple implements IServicePurchase, IServicePurchaseWeb
+class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_Purchase, IService_PurchaseWeb
 {
 
-	function __construct($service)
-	{
-		global $settings, $scripts, $stylesheets;
-
-		// Wywolujemy konstruktor klasy ktora rozszerzamy
-		parent::__construct($service);
-
-		// Dodajemy skrypt js
-		$scripts[] = "{$settings['shop_url_slash']}jscripts/services/charge_wallet.js?version=" . VERSION;
-		// Dodajemy szablon css
-		$stylesheets[] = "{$settings['shop_url_slash']}styles/services/charge_wallet.css?version=" . VERSION;
-	}
-
-	public function form_purchase_service()
+	public function purchase_form_get()
 	{
 		global $settings, $lang;
 
-		if ($settings['sms_service']) {
+		if (strlen($settings['sms_service'])) {
 			$payment_sms = new Payment($settings['sms_service']);
 
 			// Pobieramy opcję wyboru doładowania za pomocą SMS
-			eval("\$option_sms = \"" . get_template("services/charge_wallet/option_sms") . "\";");
+			eval("\$option_sms = \"" . get_template("services/" . $this::MODULE_ID . "/option_sms") . "\";");
 
 			$sms_list = "";
 			foreach ($payment_sms->payment_api->sms_list AS $row) {
@@ -41,107 +28,111 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IServiceP
 				$row['provision'] = number_format($row['provision'], 2);
 				// Przygotowuje opcje wyboru
 				$sms_list .= create_dom_element("option",
-					newsprintf($lang['charge_sms_option'], $row['cost'], $settings['currency'], $row['provision'], $settings['currency']),
+					$lang->sprintf($lang->charge_sms_option, $row['cost'], $settings['currency'], $row['provision'], $settings['currency']),
 					array(
 						'value' => "{$row['tariff']}"
 					)
 				);
 			}
-			eval("\$sms_body = \"" . get_template("services/charge_wallet/sms_body") . "\";");
+			eval("\$sms_body = \"" . get_template("services/" . $this::MODULE_ID . "/sms_body") . "\";");
 		}
 
 		if ($settings['transfer_service']) {
 			// Pobieramy opcję wyboru doładowania za pomocą przelewu
-			eval("\$option_transfer = \"" . get_template("services/charge_wallet/option_transfer") . "\";");
+			eval("\$option_transfer = \"" . get_template("services/" . $this::MODULE_ID . "/option_transfer") . "\";");
 
-			eval("\$transfer_body = \"" . get_template("services/charge_wallet/transfer_body") . "\";");
+			eval("\$transfer_body = \"" . get_template("services/" . $this::MODULE_ID . "/transfer_body") . "\";");
 		}
 
-		eval("\$output = \"" . get_template("services/charge_wallet/purchase_form") . "\";");
+		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/purchase_form") . "\";");
 
 		return $output;
 	}
 
-	public function validate_purchase_form($data)
+	public function purchase_form_validate($data)
 	{
-		global $heart, $user, $settings, $lang;
+		global $heart, $settings, $lang;
 
-		if (!is_logged()) {
+		if (!is_logged())
 			return array(
 				'status' => "not_logged_in",
-				'text' => $lang['you_arent_logged'],
+				'text' => $lang->you_arent_logged,
 				'positive' => false
 			);
-		}
 
 		// Są tylko dwie metody doładowania portfela
-		if (!in_array($data['method'], array("sms", "transfer"))) {
+		if (!in_array($data['method'], array("sms", "transfer")))
 			return array(
 				'status' => "wrong_method",
-				'text' => $lang['wrong_charge_method'],
+				'text' => $lang->wrong_charge_method,
 				'positive' => false
 			);
-		}
 
 		$warnings = array();
 
 		if ($data['method'] == "sms") {
-			if ($data['tariff'] == "")
-				$warnings['tariff'] .= $lang['charge_amount_not_chosen']."<br />";
+			if (!strlen($data['tariff']))
+				$warnings['tariff'][] = $lang->charge_amount_not_chosen;
 		} else if ($data['method'] == "transfer") {
 			// Kwota doładowania
 			if ($warning = check_for_warnings("number", $data['transfer_amount']))
-				$warnings['transfer_amount'] = $warning;
+				$warnings['transfer_amount'] = array_merge((array)$warnings['transfer_amount'], $warning);
 			if ($data['transfer_amount'] <= 1)
-				$warnings['transfer_amount'] .= newsprintf($lang['charge_amount_too_low'], "1.00 ".$settings['currency'])."<br />";
+				$warnings['transfer_amount'][] = $lang->sprintf($lang->charge_amount_too_low, "1.00 " . $settings['currency']);
 		}
 
 		// Jeżeli są jakieś błedy, to je zwróć
 		if (!empty($warnings))
 			return array(
 				'status' => "warnings",
-				'text' => $lang['form_wrong_filled'],
+				'text' => $lang->form_wrong_filled,
 				'positive' => false,
 				'data' => array('warnings' => $warnings)
 			);
 
-		// Zbieramy dane do jednego miejsca, aby potem je zwrócić
-		$purchase_data = array(
+		$purchase = new Entity_Purchase(array(
 			'service' => $this->service['id'],
-			'user' => array(
-				'uid' => $user['uid']
-			),
 			'tariff' => $data['tariff'],
-			'cost_transfer' => $data['transfer_amount'],
-			'no_wallet' => true
-		);
+			'payment' => array(
+				'cost' => $data['transfer_amount'],
+				'no_wallet' => true
+			)
+		));
+
 		if ($data['method'] == "sms") {
-			$purchase_data['no_transfer'] = true;
-			$purchase_data['order']['amount'] = $heart->get_tariff_provision($data['tariff']);
+			$purchase->setPayment(array(
+				'no_transfer' => true
+			));
+			$purchase->setOrder(array(
+				'amount' => $heart->get_tariff_provision($data['tariff'])
+			));
 		} else if ($data['method'] == "transfer") {
-			$purchase_data['no_sms'] = true;
-			$purchase_data['order']['amount'] = $data['transfer_amount'];
+			$purchase->setPayment(array(
+				'no_sms' => true
+			));
+			$purchase->setOrder(array(
+				'amount' => $data['transfer_amount']
+			));
 		}
 
 		return array(
-			'status' => "validated",
-			'text' => $lang['purchase_form_validated'],
+			'status' => "ok",
+			'text' => $lang->purchase_form_validated,
 			'positive' => true,
-			'purchase_data' => $purchase_data
+			'purchase' => $purchase
 		);
 	}
 
-	public function purchase($data)
+	public function purchase($purchase)
 	{
-		if ($this->service === NULL)
-			return;
-
 		// Aktualizacja stanu portfela
-		$this->charge_wallet($data['user']['uid'], $data['order']['amount']);
+		$this->charge_wallet($purchase->getUser('uid'), $purchase->getOrder('amount'));
 
-		// Dodanie informacji o zakupie usługi
-		return add_bought_service_info($data['user']['uid'], $data['user']['username'], $data['user']['ip'], $data['transaction']['method'],
-			$data['transaction']['payment_id'], $this->service['id'], 0, $data['order']['amount'], $data['user']['username'], $data['user']['email']);
+		return add_bought_service_info(
+			$purchase->getUser('uid'), $purchase->getUser('username'), $purchase->getUser('ip'), $purchase->getPayment('method'),
+			$purchase->getPayment('payment_id'), $this->service['id'], 0, $purchase->getOrder('amount'), $purchase->getUser('username'),
+			$purchase->getEmail()
+		);
 	}
 
 	public function purchase_info($action, $data)
@@ -159,33 +150,30 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IServiceP
 
 		if ($action == "web") {
 			if ($data['payment'] == "sms") {
-				$desc = newsprintf($lang['wallet_was_charged'], $data['amount']);
-				eval("\$output = \"" . get_template("services/charge_wallet/web_purchase_info_sms", 0, 1, 0) . "\";");
+				$desc = $lang->sprintf($lang->wallet_was_charged, $data['amount']);
+				eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/web_purchase_info_sms", 0, 1, 0) . "\";");
 			} else if ($data['payment'] == "transfer")
-				eval("\$output = \"" . get_template("services/charge_wallet/web_purchase_info_transfer", 0, 1, 0) . "\";");
+				eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/web_purchase_info_transfer", 0, 1, 0) . "\";");
 
 			return $output;
-		} else if ($action == "payment_log") {
+		} else if ($action == "payment_log")
 			return array(
-				'text' => newsprintf($lang['wallet_was_charged'], $data['amount']),
+				'text' => $lang->sprintf($lang->wallet_was_charged, $data['amount']),
 				'class' => "income"
 			);
-		}
 	}
 
-	//
-	// Szczegóły zamówienia
-	public function order_details($data)
+	public function order_details($purchase)
 	{
 		global $lang, $settings;
 
-		$data['order']['amount'] = number_format($data['order']['amount'], 2);
+		$amount = number_format($purchase->getOrder('amount'), 2);
 
-		eval("\$output = \"" . get_template("services/charge_wallet/order_details", 0, 1, 0) . "\";");
+		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/order_details", 0, 1, 0) . "\";");
 		return $output;
 	}
 
-	public function get_short_description()
+	public function description_short_get()
 	{
 		return $this->service['description'];
 	}
@@ -195,7 +183,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IServiceP
 		global $db;
 		$db->query($db->prepare(
 			"UPDATE `" . TABLE_PREFIX . "users` " .
-			"SET `wallet` = `wallet`+'%.2f' " .
+			"SET `wallet` = `wallet` + '%.2f' " .
 			"WHERE `uid` = '%d'",
 			array($amount, $uid)
 		));

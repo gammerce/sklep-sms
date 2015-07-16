@@ -9,19 +9,26 @@ class Heart
 	private $services = array();
 	private $services_fetched;
 
+	private $servers_services = array();
+	private $servers_services_fetched;
+
 	private $tariffs = array();
 	private $tariffs_fetched;
 
-	private $page = array();
 	public $page_title;
 
 	private $services_classes;
 	private $payment_api_classes;
+	private $pages_classes;
+	private $blocks_classes;
 
 	private $users;
 
 	private $groups;
 	private $groups_fetched;
+
+	private $scripts;
+	private $styles;
 
 	function __construct()
 	{
@@ -31,6 +38,7 @@ class Heart
 		$this->groups_fetched = false;
 		$this->services_classes = array();
 		$this->payment_api_classes = array();
+		$this->pages_classes = array();
 		$this->users = array();
 		$this->groups = array();
 	}
@@ -39,10 +47,19 @@ class Heart
 	// Klasy usług
 	//
 
+	/**
+	 * Rejestruje moduł usługi
+	 *
+	 * @param string $id identyfikator modułu
+	 * @param string $name nazwa modułu
+	 * @param string $class klasa modułu
+	 * @param string $classsimple klasa simple modułu
+	 * @throws Exception
+	 */
 	public function register_service_module($id, $name, $class, $classsimple)
 	{
 		if (isset($this->services_classes[$id]))
-			throw new Exception('There is already a service with such an id.');
+			throw new Exception("There is a service with such an id: " . htmlspecialchars($id) . " already.");
 
 		$this->services_classes[$id] = array(
 			'name' => $name,
@@ -61,7 +78,7 @@ class Heart
 	public function get_service_module($service_id)
 	{
 		// Brak usługi o takim ID
-		if (is_null($service = $this->get_service($service_id)))
+		if (($service = $this->get_service($service_id)) === NULL)
 			return NULL;
 
 		// Brak takiego modułu
@@ -71,7 +88,7 @@ class Heart
 		$className = $this->services_classes[$service['module']]['class'];
 
 		// Jeszcze sprawdzamy, czy moduł został prawidłowo stworzony
-		return $className ? new $className($service) : NULL;
+		return strlen($className) ? new $className($service) : NULL;
 	}
 
 	// Funkcja zwraca klasę modułu przez jego id
@@ -83,10 +100,13 @@ class Heart
 		if (!isset($this->services_classes[$module_id]))
 			return NULL;
 
-		$className = $this->services_classes[$module_id]['classsimple'];
+		if (!isset($this->services_classes[$module_id]['classsimple']))
+			return NULL;
+
+		$classname = $this->services_classes[$module_id]['classsimple'];
 
 		// Jeszcze sprawdzamy, czy moduł został prawidłowo stworzony
-		return $className ? new $className() : NULL;
+		return new $classname();
 	}
 
 	public function get_service_module_name($module_id)
@@ -122,12 +142,104 @@ class Heart
 
 	public function register_payment_api($id, $class)
 	{
+		if (isset($this->payment_api_classes[$id]))
+			throw new Exception("There is a payment api with id: " . htmlspecialchars($id) . " already.");
+
 		$this->payment_api_classes[$id] = $class;
 	}
 
 	public function get_payment_api($id)
 	{
 		return isset($this->payment_api_classes[$id]) ? $this->payment_api_classes[$id] : NULL;
+	}
+
+	//
+	// Obsługa bloków
+	//
+
+	/**
+	 * Rejestruje blok
+	 *
+	 * @param string $block_id
+	 * @param string $class
+	 * @throws Exception
+	 */
+	public function register_block($block_id, $class)
+	{
+		if ($this->block_exists($block_id))
+			throw new Exception("There is a block with such an id: " . htmlspecialchars($block_id) . " already.");
+
+		$this->blocks_classes[$block_id] = $class;
+	}
+
+	/**
+	 * Sprawdza czy dany blok istnieje
+	 *
+	 * @param string $block_id
+	 * @return bool
+	 */
+	public function block_exists($block_id)
+	{
+		return isset($this->blocks_classes[$block_id]);
+	}
+
+	/**
+	 * Zwraca obiekt bloku
+	 *
+	 * @param string $block_id
+	 * @return null|Block|BlockSimple
+	 */
+	public function get_block($block_id)
+	{
+		return $this->block_exists($block_id) ? new $this->blocks_classes[$block_id]() : NULL;
+	}
+
+	//
+	// Obsługa stron
+	//
+
+	/**
+	 * Rejestruje strone
+	 *
+	 * @param string $page_id
+	 * @param string $class
+	 * @param string $type
+	 * @throws Exception
+	 */
+	public function register_page($page_id, $class, $type = "user")
+	{
+		if ($this->page_exists($page_id, $type))
+			throw new Exception("There is a page with such an id: " . htmlspecialchars($page_id) . " already.");
+
+		$this->pages_classes[$type][$page_id] = $class;
+	}
+
+	/**
+	 * Sprawdza czy dana strona istnieje
+	 *
+	 * @param string $page_id
+	 * @param string $type
+	 * @return bool
+	 */
+	public function page_exists($page_id, $type = "user")
+	{
+		return isset($this->pages_classes[$type][$page_id]);
+	}
+
+	/**
+	 * Zwraca obiekt strony
+	 *
+	 * @param string $page_id
+	 * @param string $type
+	 * @return null|Page|PageSimple
+	 */
+	public function get_page($page_id, $type = "user")
+	{
+		if (!$this->page_exists($page_id, $type))
+			return NULL;
+
+		$classname = $this->pages_classes[$type][$page_id];
+		return new $classname();
 	}
 
 	//
@@ -156,9 +268,8 @@ class Heart
 	 */
 	public function get_service($service_id)
 	{
-		if (!$this->services_fetched) {
+		if (!$this->services_fetched)
 			$this->fetch_services();
-		}
 
 		return if_isset($this->services[$service_id], NULL);
 	}
@@ -238,6 +349,37 @@ class Heart
 	}
 
 	//
+	// Serwery - Usługi
+	//
+
+	/**
+	 * Sprawdza czy dana usluge mozne kupic na danym serwerze
+	 *
+	 * @param integer $server_id
+	 * @param string $service_id
+	 * @return boolean
+	 */
+	public function server_service_linked($server_id, $service_id)
+	{
+		if (!$this->servers_services_fetched) {
+			$this->fetch_servers_services();
+		}
+
+		return isset($this->servers_services[$server_id][$service_id]);
+	}
+
+	private function fetch_servers_services()
+	{
+		global $db;
+
+		$result = $db->query("SELECT * FROM `" . TABLE_PREFIX . "servers_services`");
+		while ($row = $db->fetch_array_assoc($result)) {
+			$this->servers_services[$row['server_id']][$row['service_id']] = true;
+		}
+		$this->servers_services_fetched = true;
+	}
+
+	//
 	// TARYFY
 	//
 
@@ -289,16 +431,21 @@ class Heart
 	// Użytkownicy
 	//
 
+	/**
+	 * @param $uid
+	 * @param string $login
+	 * @param string $password
+	 * @return array
+	 */
 	public function get_user($uid, $login = "", $password = "")
 	{
 		global $db;
 
 		// Wcześniej już pobraliśmy takiego użytkownika
-		if ($uid != "" && isset($this->users[$uid])) {
+		if ($uid && isset($this->users[$uid]))
 			return $this->users[$uid];
-		}
 
-		if ($uid != "" || ($login != "" && $password != "")) {
+		if ($uid || (strlen($login) && strlen($password))) {
 			$result = $db->query($db->prepare(
 				"SELECT * FROM `" . TABLE_PREFIX . "users` " .
 				"WHERE `uid` = '%d' OR ((username = '%s' OR email = '%s') AND PASSWORD = md5( CONCAT( md5('%s'), md5(salt) ) ))",
@@ -321,7 +468,8 @@ class Heart
 		foreach ($user['groups'] as $gid) {
 			$group = $this->get_group_privilages($gid);
 			foreach ($group as $priv => $value)
-				if ($value) $user['privilages'][$priv] = true;
+				if ($value)
+					$user['privilages'][$priv] = true;
 		}
 
 		$user['platform'] = htmlspecialchars($_SERVER['HTTP_USER_AGENT']);
@@ -392,43 +540,39 @@ class Heart
 		$this->groups_fetched = true;
 	}
 
-	//
-	// Informacje o stronie
-	//
-
-	public function get_page($id)
-	{
-		if (!isset($this->page[$id])) {
-			$this->fetch_page($id);
-		}
-
-		$this->page_title = isset($this->page[$id]) ? $this->page[$id]['title'] : $this->page['main_content']['title'];
-		return isset($this->page[$id]) ? $this->page[$id] : $this->page['main_content'];
+	/**
+	 * Dodaje skrypt js
+	 *
+	 * @param string $path
+	 */
+	public function script_add($path) {
+		if (!in_array($path, $this->scripts))
+			$this->scripts[] = $path;
 	}
 
-	private function fetch_page($id)
-	{
-		global $db;
-
-		// Pobieranie info o danej podstronie
-		$result = $db->query($db->prepare(
-			"SELECT * FROM `" . TABLE_PREFIX . "pages` " .
-			"WHERE `id` = '%s' OR `id` = 'main_content'",
-			array($id)
-		));
-
-		// Pobieramy strone
-		$row = $db->fetch_array_assoc($result);
-		// Jeżeli sa dwie strony, to sprawdzamy, czy nie pobralismy przypadkiem main_content
-		if ($db->num_rows($result) == 2) {
-			// Jesteśmy przy main_content, więc pobieramy jeszcze raz
-			if ($row['id'] != $id)
-				$row = $db->fetch_array_assoc($result);
-		}
-
-		// Przypisujemy pobraną stronę
-		$this->page[$row['id']] = $row;
-		$this->page['id_safe'] = htmlspecialchars($row['id']);
+	/**
+	 * Dodaje szablon css
+	 *
+	 * @param string $path
+	 */
+	public function style_add($path) {
+		if (!in_array($path, $this->styles))
+			$this->styles[] = $path;
 	}
 
+	public function scripts_get() {
+		$output = array();
+		foreach ($this->scripts as $script)
+			$output[] = "<script type=\"text/javascript\" src=\"{$script}\"></script>";
+
+		return implode("\n", $output);
+	}
+
+	public function styles_get() {
+		$output = array();
+		foreach ($this->styles as $style)
+			$output[] = "<link href=\"{$style}\" rel=\"stylesheet\" />";
+
+		return implode("\n", $output);
+	}
 }

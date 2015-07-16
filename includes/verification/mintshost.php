@@ -19,8 +19,7 @@ class PaymentModuleMintshost extends PaymentModule implements IPaymentSMS
 			$output['status'] = "BAD_EMAIL";
 		} else if ($status == "3") {
 			$output['status'] = "BAD_DATA";
-		}
-		else
+		} else
 			$output['status'] = "ERROR";
 
 		return $output;
