@@ -319,9 +319,11 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			'amount' => $price['amount'],
 			'forever' => $price['amount'] == -1 ? true : false
 		));
-		$purchase->setPayment(array(
-			'sms_service' => $server['sms_service']
-		));
+
+		if (strlen($server['sms_service']))
+			$purchase->setPayment(array(
+				'sms_service' => $server['sms_service']
+			));
 
 		return array(
 			'status' => "ok",
