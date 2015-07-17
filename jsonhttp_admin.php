@@ -63,21 +63,21 @@ if ($action == "charge_wallet") {
 	$payment_id = pay_by_admin($user);
 
 	// Kupujemy usługę
-	$purchase_return = $service_module->purchase(array(
+	$purchase_return = $service_module->purchase(new Entity_Purchase(array(
 		'user' => array(
 			'uid' => $user2['uid'],
 			'ip' => $user2['ip'],
-			'email' => $user2['email'],
-			'name' => $user2['username']
+			'username' => $user2['username']
 		),
-		'transaction' => array(
+		'payment' => array(
 			'method' => "admin",
 			'payment_id' => $payment_id
 		),
 		'order' => array(
 			'amount' => $amount
-		)
-	));
+		),
+		'email' => $user2['email']
+	)));
 
 	log_info($lang_shop->sprintf($lang_shop->account_charge, $user['username'], $user['uid'], $user2['username'], $user2['uid'], $amount, $settings['currency']));
 

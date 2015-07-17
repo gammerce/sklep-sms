@@ -41,7 +41,7 @@ if ($payment->payment_api->check_sign($_POST, $payment->payment_api->data['key']
 		$bought_service_id = $service_module->purchase(new Entity_Purchase(array(
 			'user' => array(
 				'uid' => $user['uid'],
-				'name' => $user['username'],
+				'username' => $user['username'],
 				'ip' => $user['ip']
 			),
 			'payment' => array(
