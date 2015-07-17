@@ -213,7 +213,7 @@ if ($action == "login") {
 		array($key, $user2['uid'])
 	));
 
-	$link = $settings['shop_url'] . "/index.php?pid=reset_password&code=" . htmlspecialchars($key);
+	$link = $settings['shop_url_slash'] . "index.php?pid=reset_password&code=" . htmlspecialchars($key);
 	eval("\$text = \"" . get_template("emails/forgotten_password") . "\";");
 	$ret = send_email($user2['email'], $user2['username'], "Reset Hasła", $text);
 
