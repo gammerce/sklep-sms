@@ -2,7 +2,7 @@
 
 $heart->register_service_module("other", "Inne", "ServiceOther", "ServiceOtherSimple");
 
-class ServiceOtherSimple extends Service implements IService_Create, IService_AdminManage
+class ServiceOtherSimple extends Service implements IService_Create, IService_AdminManage, IService_AvailableOnServers
 {
 
 	const MODULE_ID = "other";
