@@ -86,7 +86,7 @@ class Language
 	}
 
 	public function strtoupper($string) {
-		return mb_strtoupper($string);
+		return mb_convert_case($string, MB_CASE_UPPER, "UTF-8");
 	}
 
 }

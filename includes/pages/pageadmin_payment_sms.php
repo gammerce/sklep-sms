@@ -52,7 +52,7 @@ class PageAdminPaymentSms extends PageAdmin
 
 		$tbody = "";
 		while ($row = $db->fetch_array_assoc($result)) {
-			$row['free'] = $row['free'] ? mb_strtoupper($lang->yes) : mb_strtoupper($lang->no);
+			$row['free'] = $row['free'] ? $lang->strtoupper($lang->yes) : $lang->strtoupper($lang->no);
 			$row['income'] = $row['income'] ? number_format($row['income'], 2) . " " . $settings['currency'] : "";
 			$row['cost'] = $row['cost'] ? number_format($row['cost'], 2) . " " . $settings['currency'] : "";
 			$row['platform'] = get_platform($row['platform']);
