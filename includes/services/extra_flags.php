@@ -587,7 +587,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			'service' => $this->service['id'],
 			'user' => array(
 				'uid' => $data['uid'],
-				'name' => $user2['username'],
+				'username' => $user2['username'],
 				'ip' => $user2['ip']
 			),
 			'payment' => array(
