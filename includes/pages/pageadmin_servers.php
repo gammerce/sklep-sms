@@ -105,12 +105,12 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 			if (($service_module = $heart->get_service_module($service['id'])) === NULL || !object_implements($service_module, "IService_AvailableOnServers"))
 				continue;
 
-			$values = create_dom_element("option", strtoupper($lang->no), array(
+			$values = create_dom_element("option", mb_strtoupper($lang->no), array(
 				'value' => 0,
 				'selected' => $heart->server_service_linked($server['id'], $service['id']) ? "" : "selected"
 			));
 
-			$values .= create_dom_element("option", strtoupper($lang->yes), array(
+			$values .= create_dom_element("option", mb_strtoupper($lang->yes), array(
 				'value' => 1,
 				'selected' => $heart->server_service_linked($server['id'], $service['id']) ? "selected" : ""
 			));

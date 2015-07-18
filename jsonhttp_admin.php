@@ -1034,7 +1034,7 @@ if ($action == "charge_wallet") {
 	$db->query($db->prepare(
 		"INSERT INTO `" . TABLE_PREFIX . "sms_codes` (`code`, `tariff`) " .
 		"VALUES( '%s', '%d' )",
-		array(strtoupper($_POST['code']), $_POST['tariff'])
+		array(mb_strtoupper($_POST['code']), $_POST['tariff'])
 	));
 
 	log_info($lang_shop->sprintf($lang_shop->sms_code_admin_add, $user['username'], $user['uid'], $_POST['code'], $_POST['tariff']));

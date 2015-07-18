@@ -86,7 +86,7 @@ class Language
 	}
 
 	public function strtoupper($string) {
-		return strtoupper($string);
+		return mb_strtoupper($string);
 	}
 
 }

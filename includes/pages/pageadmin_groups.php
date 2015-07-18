@@ -112,12 +112,12 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 		while ($row = $db->fetch_array_assoc($result)) {
 			if (in_array($row['Field'], array("id", "name"))) continue;
 
-			$values = create_dom_element("option", strtoupper($lang->no), array(
+			$values = create_dom_element("option", mb_strtoupper($lang->no), array(
 				'value' => 0,
 				'selected' => $group[$row['Field']] ? "" : "selected"
 			));
 
-			$values .= create_dom_element("option", strtoupper($lang->yes), array(
+			$values .= create_dom_element("option", mb_strtoupper($lang->yes), array(
 				'value' => 1,
 				'selected' => $group[$row['Field']] ? "selected" : ""
 			));
