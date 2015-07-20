@@ -57,6 +57,9 @@ class PageAdminPaymentSms extends PageAdmin
 			$row['cost'] = $row['cost'] ? number_format($row['cost'], 2) . " " . $settings['currency'] : "";
 			$row['platform'] = get_platform($row['platform']);
 
+			// Poprawienie timestampa
+			$row['timestamp'] = convertDate($row['timestamp']);
+
 			// Pobranie danych do tabeli
 			eval("\$tbody .= \"" . get_template("admin/payment_sms_trow") . "\";");
 		}

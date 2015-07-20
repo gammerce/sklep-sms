@@ -37,6 +37,9 @@ class PageAdminPaymentAdmin extends PageAdmin
 			$adminname = $row['aid'] ? htmlspecialchars($row['adminname']) . " ({$row['aid']})" : $lang->none;
 			$row['platform'] = get_platform($row['platform']);
 
+			// Poprawienie timestampa
+			$row['timestamp'] = convertDate($row['timestamp']);
+
 			// Pobranie danych do tabeli
 			eval("\$tbody .= \"" . get_template("admin/payment_admin_trow") . "\";");
 		}
