@@ -37,7 +37,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 			eval("\$sms_body = \"" . get_template("services/" . $this::MODULE_ID . "/sms_body") . "\";");
 		}
 
-		if ($settings['transfer_service']) {
+		if (strlen($settings['transfer_service'])) {
 			// Pobieramy opcję wyboru doładowania za pomocą przelewu
 			eval("\$option_transfer = \"" . get_template("services/" . $this::MODULE_ID . "/option_transfer") . "\";");
 
