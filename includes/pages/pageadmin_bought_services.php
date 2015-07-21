@@ -51,6 +51,9 @@ class PageAdminBoughtServices extends PageAdmin
 			// Przerobienie ilosci
 			$amount = $row['amount'] != -1 ? "{$row['amount']} {$service['tag']}" : $lang->forever;
 
+			// Poprawienie timestampa
+			$row['timestamp'] = convertDate($row['timestamp']);
+
 			// Rozkulbaczenie extra daty
 			$row['extra_data'] = json_decode($row['extra_data'], true);
 			$extra_data = array();

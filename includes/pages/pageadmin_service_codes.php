@@ -63,6 +63,9 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 			else
 				$amount = $lang->none;
 
+			// Poprawienie timestampa
+			$row['timestamp'] = convertDate($row['timestamp']);
+
 			// Pobranie danych do tabeli
 			$tbody .= eval($templates->render("admin/service_codes_trow"));
 		}

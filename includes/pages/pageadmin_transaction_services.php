@@ -31,8 +31,8 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
 		$tbody = "";
 		while ($row = $db->fetch_array_assoc($result)) {
 			$i += 1;
-			$row['sms'] = $row['sms'] ? strtoupper($lang->yes) : strtoupper($lang->no);
-			$row['transfer'] = $row['transfer'] ? strtoupper($lang->yes) : strtoupper($lang->no);
+			$row['sms'] = $row['sms'] ? $lang->strtoupper($lang->yes) : $lang->strtoupper($lang->no);
+			$row['transfer'] = $row['transfer'] ? $lang->strtoupper($lang->yes) : $lang->strtoupper($lang->no);
 
 			// Pobranie przycisku edycji
 			$button_edit = create_dom_element("img", "", array(
@@ -90,13 +90,13 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
 				foreach ($transaction_service['data'] as $name => $value) {
 					switch ($name) {
 						case 'sms_text':
-							$text = strtoupper($lang->sms_code);
+							$text = $lang->strtoupper($lang->sms_code);
 							break;
 						case 'account_id':
-							$text = strtoupper($lang->account_id);
+							$text = $lang->strtoupper($lang->account_id);
 							break;
 						default:
-							$text = strtoupper($name);
+							$text = $lang->strtoupper($name);
 							break;
 					}
 					$data_values .= eval($templates->render("tr_name_input"));

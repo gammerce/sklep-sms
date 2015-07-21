@@ -893,6 +893,24 @@ function get_ip()
 	return $_SERVER['REMOTE_ADDR'];
 }
 
+/**
+ * Zwraca datę w odpowiednim formacie
+ *
+ * @param integer|string $timestamp
+ * @param string $format
+ * @return string
+ */
+function convertDate($timestamp, $format="")
+{
+	if (!strlen($format)) {
+		global $settings;
+		$format = $settings['date_format'];
+	}
+
+	$date = new DateTime($timestamp);
+	return $date->format($format);
+}
+
 function get_sms_cost($number)
 {
 	if (strlen($number) < 4)

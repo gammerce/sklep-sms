@@ -42,6 +42,9 @@ class PageAdminPaymentWallet extends PageAdmin
 
 			$row['platform'] = get_platform($row['platform']);
 
+			// Poprawienie timestampa
+			$row['timestamp'] = convertDate($row['timestamp']);
+
 			// Pobranie danych do tabeli
 			$tbody .= eval($templates->render("admin/payment_wallet_trow"));
 		}

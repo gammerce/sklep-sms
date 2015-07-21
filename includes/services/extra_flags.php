@@ -320,9 +320,11 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			'amount' => $price['amount'],
 			'forever' => $price['amount'] == -1 ? true : false
 		));
-		$purchase->setPayment(array(
-			'sms_service' => $server['sms_service']
-		));
+
+		if (strlen($server['sms_service']))
+			$purchase->setPayment(array(
+				'sms_service' => $server['sms_service']
+			));
 
 		return array(
 			'status' => "ok",
@@ -586,7 +588,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			'service' => $this->service['id'],
 			'user' => array(
 				'uid' => $data['uid'],
-				'name' => $user2['username'],
+				'username' => $user2['username'],
 				'ip' => $user2['ip']
 			),
 			'payment' => array(

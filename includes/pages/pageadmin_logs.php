@@ -54,6 +54,9 @@ class PageAdminLogs extends PageAdmin
 			// Zabezpieczanie danych
 			$row['text'] = htmlspecialchars($row['text']);
 
+			// Poprawienie timestampa
+			$row['timestamp'] = convertDate($row['timestamp']);
+
 			// Pobranie danych do tabeli
 			$tbody .= eval($templates->render("admin/logs_trow"));
 		}

@@ -36,24 +36,21 @@ if ($payment->payment_api->check_sign($_POST, $payment->payment_api->data['key']
 		array($_POST['orderid'], $_POST['amount'], $_POST['service'], $user['ip'], $user['platform'])
 	));
 
-	// Tworzymy obiekt usługi, którą będziemy dodawać
-	$service_module = $heart->get_service_module($transaction_data['service']);
-
 	// Dokonujemy zakupu usługi
-	if ($service_module !== NULL) {
-		$bought_service_id = $service_module->purchase(array(
+	if (($service_module = $heart->get_service_module($transaction_data['service'])) !== NULL) {
+		$bought_service_id = $service_module->purchase(new Entity_Purchase(array(
 			'user' => array(
 				'uid' => $user['uid'],
-				'name' => $user['username'],
-				'ip' => $user['ip'],
-				'email' => $user['email']
+				'username' => $user['username'],
+				'ip' => $user['ip']
 			),
-			'transaction' => array(
+			'payment' => array(
 				'method' => "transfer",
 				'payment_id' => $_POST['orderid']
 			),
-			'order' => $transaction_data['order']
-		));
+			'order' => $transaction_data['order'],
+			'email' => $user['email']
+		)));
 	}
 
 	if (isset($bought_service_id) && $bought_service_id !== FALSE)

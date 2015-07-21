@@ -338,7 +338,7 @@ if ($action == "login") {
 		// Uzupełniamy brakujące dane
 		$purchase = $return_data['purchase'];
 
-		if($purchase->getPayment('cost') === NULL && $purchase->getTariff() !== NULL)
+		if(($server['sms_service'] === NULL || !strlen($server['sms_service'])) && $purchase->getTariff() !== NULL)
 			$purchase->setPayment(array(
 				'cost' => $heart->get_tariff_provision($purchase->getTariff())
 			));
