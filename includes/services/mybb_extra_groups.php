@@ -32,7 +32,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 			$mybb_groups = htmlspecialchars($this->service['data']['mybb_groups']);
 		}
 
-		$output = eval($templates->render("services/" . $this::MODULE_ID . "/extra_fields", 0, 1, 0));
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/extra_fields", true, false));
 		return $output;
 	}
 
@@ -183,7 +183,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		while ($row = $db->fetch_array_assoc($result)) {
 			$sms_cost = strlen($row['sms_number']) ? get_sms_cost($row['sms_number']) * $settings['vat'] : 0;
 			$amount = $row['amount'] != -1 ? $row['amount'] . " " . $this->service['tag'] : $lang->forever;
-			$amounts .= eval($templates->render("services/" . $this::MODULE_ID . "/purchase_value", false, true, false));
+			$amounts .= eval($templates->render("services/" . $this::MODULE_ID . "/purchase_value", true, false));
 		}
 
 		$output = eval($templates->render("services/" . $this::MODULE_ID . "/purchase_form"));
@@ -292,7 +292,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		$username = htmlspecialchars($purchase->getOrder('auth_data'));
 		$amount = $purchase->getOrder('amount') != -1 ? ($purchase->getOrder('amount') . " " . $this->service['tag']) : $lang->forever;
 
-		$output = eval($templates->render("services/" . $this::MODULE_ID . "/order_details", 0, 1, 0));
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/order_details", true, false));
 		return $output;
 	}
 
@@ -340,9 +340,9 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		$cost = $data['cost'] ? (number_format($data['cost'], 2) . " " . $settings['currency']) : $lang->none;
 
 		if ($action == "email")
-			$output = eval($templates->render("services/" . $this::MODULE_ID . "/purchase_info_email", false, true, false));
+			$output = eval($templates->render("services/" . $this::MODULE_ID . "/purchase_info_email", true, false));
 		else if ($action == "web")
-			$output = eval($templates->render("services/" . $this::MODULE_ID . "/purchase_info_web", false, true, false));
+			$output = eval($templates->render("services/" . $this::MODULE_ID . "/purchase_info_web", true, false));
 		else if ($action == "payment_log")
 			return array(
 				'text' => $output = $lang->sprintf($lang->mybb_group_bought, $this->service['name'], $username),

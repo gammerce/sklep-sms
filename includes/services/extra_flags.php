@@ -28,7 +28,7 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 		if ($this->service !== NULL)
 			$flags = $this->service['flags_hsafe'];
 
-		$output = eval($templates->render("services/" . $this::MODULE_ID . "/extra_fields", 0, 1, 0));
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/extra_fields", true, false));
 
 		return $output;
 	}
@@ -346,7 +346,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$auth_data = htmlspecialchars($purchase->getOrder('auth_data'));
 		$amount = !$purchase->getOrder('forever') ? ($purchase->getOrder('amount') . " " . $this->service['tag']) : $lang->forever;
 
-		$output = eval($templates->render("services/" . $this::MODULE_ID . "/order_details", 0, 1, 0));
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/order_details", true, false));
 		return $output;
 	}
 
@@ -481,9 +481,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			$setinfo = $lang->sprintf($lang->type_setinfo, htmlspecialchars($data['extra_data']['password']));
 
 		if ($action == "email")
-			$output = eval($templates->render("services/" . $this::MODULE_ID . "/purchase_info_email", false, true, false));
+			$output = eval($templates->render("services/" . $this::MODULE_ID . "/purchase_info_email", true, false));
 		else if ($action == "web")
-			$output = eval($templates->render("services/" . $this::MODULE_ID . "/purchase_info_web", false, true, false));
+			$output = eval($templates->render("services/" . $this::MODULE_ID . "/purchase_info_web", true, false));
 		else if ($action == "payment_log")
 			return array(
 				'text' => $output = $lang->sprintf($lang->service_was_bought, $this->service['name'], $server['name']),
@@ -535,7 +535,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			));
 		}
 
-		$output = eval($templates->render("services/" . $this::MODULE_ID . "/user_service_admin_add", 0, 1, 0));
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/user_service_admin_add", true, false));
 
 		return $output;
 	}
@@ -679,7 +679,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		} else
 			$user_service['expire'] = date($settings['date_format'], $user_service['expire']);
 
-		$output = eval($templates->render("services/" . $this::MODULE_ID . "/user_service_admin_edit", 0, 1, 0));
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/user_service_admin_edit", true, false));
 
 		return $output;
 	}
@@ -1223,7 +1223,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		while ($row = $db->fetch_array_assoc($result)) {
 			$sms_cost = strlen($row['sms_number']) ? get_sms_cost($row['sms_number']) * $settings['vat'] : 0;
 			$amount = $row['amount'] != -1 ? "{$row['amount']} {$this->service['tag']}" : $lang->forever;
-			$values .= eval($templates->render("services/" . $this::MODULE_ID . "/purchase_value", false, true, false));
+			$values .= eval($templates->render("services/" . $this::MODULE_ID . "/purchase_value", true, false));
 		}
 
 		$output = eval($templates->render("services/" . $this::MODULE_ID . "/tariffs_for_server"));
@@ -1259,7 +1259,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			));
 		}
 
-		$output = eval($templates->render("services/" . $this::MODULE_ID . "/service_code_admin_add", 0, 1, 0));
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/service_code_admin_add", true, false));
 		return $output;
 	}
 

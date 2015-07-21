@@ -68,7 +68,7 @@ abstract class Service
 		global $templates;
 
 		$file = "services/" . escape_filename($this->service['id']) . "_desc";
-		$output = eval($templates->render($file, false, true, false));
+		$output = eval($templates->render($file, true, false));
 
 		return $output;
 	}

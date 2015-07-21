@@ -151,9 +151,9 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 		if ($action == "web") {
 			if ($data['payment'] == "sms") {
 				$desc = $lang->sprintf($lang->wallet_was_charged, $data['amount']);
-				$output = eval($templates->render("services/" . $this::MODULE_ID . "/web_purchase_info_sms", 0, 1, 0));
+				$output = eval($templates->render("services/" . $this::MODULE_ID . "/web_purchase_info_sms", true, false));
 			} else if ($data['payment'] == "transfer")
-				$output = eval($templates->render("services/" . $this::MODULE_ID . "/web_purchase_info_transfer", 0, 1, 0));
+				$output = eval($templates->render("services/" . $this::MODULE_ID . "/web_purchase_info_transfer", true, false));
 
 			return $output;
 		} else if ($action == "payment_log")
@@ -169,7 +169,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 
 		$amount = number_format($purchase->getOrder('amount'), 2);
 
-		$output = eval($templates->render("services/" . $this::MODULE_ID . "/order_details", 0, 1, 0));
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/order_details", true, false));
 		return $output;
 	}
 
