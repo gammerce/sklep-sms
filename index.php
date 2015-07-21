@@ -22,10 +22,10 @@ $services_buttons = get_content("services_buttons");
 $user_buttons = get_content("user_buttons");
 
 // Pobranie headera
-eval("\$header = \"" . get_template("header") . "\";");
+$header = eval($templates->render("header"));
 
 // Pobranie ostatecznego szablonu
-eval("\$output = \"" . get_template("index") . "\";");
+$output = eval($templates->render("index"));
 
 // Wyświetlenie strony
 output_page($output);

@@ -18,7 +18,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
 
 	protected function content($get, $post)
 	{
-		global $heart, $db, $lang, $G_PAGE;
+		global $heart, $db, $lang, $G_PAGE, $templates;
 
 		// Pobranie cen
 		$result = $db->query(
@@ -55,12 +55,12 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
 			$service = $heart->get_service($row['service']);
 
 			// Pobranie danych do tabeli
-			eval("\$tbody .= \"" . get_template("admin/pricelist_trow") . "\";");
+			$tbody .= eval($templates->render("admin/pricelist_trow"));
 		}
 
 		// Nie ma zadnych danych do wyswietlenia
 		if (!strlen($tbody))
-			eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
+			$tbody = eval($templates->render("admin/no_records"));
 
 		// Pobranie przycisku dodającego cenę
 		$buttons = create_dom_element("input", "", array(
@@ -75,16 +75,16 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
 			$tfoot_class = "display_tfoot";
 
 		// Pobranie nagłówka tabeli
-		eval("\$thead = \"" . get_template("admin/pricelist_thead") . "\";");
+		$thead = eval($templates->render("admin/pricelist_thead"));
 
 		// Pobranie struktury tabeli
-		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
+		$output = eval($templates->render("admin/table_structure"));
 		return $output;
 	}
 
 	public function get_action_box($box_id, $data)
 	{
-		global $heart, $db, $lang;
+		global $heart, $db, $lang, $templates;
 
 		if (!get_privilages("manage_settings"))
 			return array(
@@ -130,11 +130,11 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
 
 		switch($box_id) {
 			case "price_add":
-				eval("\$output = \"" . get_template("admin/action_boxes/price_add") . "\";");
+				$output = eval($templates->render("admin/action_boxes/price_add"));
 				break;
 
 			case "price_edit":
-				eval("\$output = \"" . get_template("admin/action_boxes/price_edit") . "\";");
+				$output = eval($templates->render("admin/action_boxes/price_edit"));
 				break;
 		}
 

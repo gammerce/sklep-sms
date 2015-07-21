@@ -18,7 +18,7 @@ class PageAdminIncome extends PageAdmin
 
 	protected function content($get, $post)
 	{
-		global $heart, $db, $settings, $lang;
+		global $heart, $db, $settings, $lang, $templates;
 
 		$G_MONTH = isset($get['month']) ? $get['month'] : date("m");
 		$G_YEAR = isset($get['year']) ? $get['year'] : date("Y");
@@ -63,10 +63,10 @@ class PageAdminIncome extends PageAdmin
 				'selected' => $G_YEAR == $i ? "selected" : ""
 			));
 
-		eval("\$buttons = \"" . get_template("admin/income_button") . "\";");
+		$buttons = eval($templates->render("admin/income_button"));
 
 		// Pobranie nagłówka tabeli
-		eval("\$thead = \"" . get_template("admin/income_thead") . "\";");
+		$thead = eval($templates->render("admin/income_thead"));
 
 		//
 		// Pobranie danych do tabeli
@@ -74,6 +74,7 @@ class PageAdminIncome extends PageAdmin
 		// Pobieramy ilość dni w danym miesiącu
 		$num = cal_days_in_month(CAL_GREGORIAN, $G_MONTH, $G_YEAR);
 
+		$tbody = "";
 		$servers_incomes = array();
 		// Lecimy pętla po każdym dniu
 		for ($i = 1; $i <= $num; ++$i) {
@@ -99,7 +100,7 @@ class PageAdminIncome extends PageAdmin
 			// Zaokraglenie do dowch miejsc po przecinku zarobku w danym dniu
 			$day_income = number_format($day_income, 2);
 
-			eval("\$tbody .= \"" . get_template("admin/income_trow") . "\";");
+			$tbody .= eval($templates->render("admin/income_trow"));
 		}
 
 		// Pobranie podliczenia tabeli
@@ -112,14 +113,14 @@ class PageAdminIncome extends PageAdmin
 		}
 
 		// Jeżeli coś się policzyło, są jakieś dane
-		if (isset($tbody)) {
+		if (strlen($tbody)) {
 			$total_income = number_format($total_income, 2);
-			eval("\$tbody .= \"" . get_template("admin/income_trow2") . "\";");
+			$tbody .= eval($templates->render("admin/income_trow2"));
 		} else // Brak danych
-			eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
+			$tbody = eval($templates->render("admin/no_records"));
 
 		// Pobranie wygladu strony
-		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
+		$output = eval($templates->render("admin/table_structure"));
 		return $output;
 	}
 

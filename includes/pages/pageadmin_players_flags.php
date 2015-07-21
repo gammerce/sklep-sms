@@ -19,7 +19,7 @@ class PageAdminPlayersFlags extends PageAdmin
 
 	protected function content($get, $post)
 	{
-		global $heart, $db, $settings, $lang, $G_PAGE;
+		global $heart, $db, $settings, $lang, $G_PAGE, $templates;
 
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "players_flags` " .
@@ -50,12 +50,12 @@ class PageAdminPlayersFlags extends PageAdmin
 			unset($temp_server);
 
 			// Pobranie danych do tabeli
-			eval("\$tbody .= \"" . get_template("admin/players_flags_trow") . "\";");
+			$tbody .= eval($templates->render("admin/players_flags_trow"));
 		}
 
 		// Nie ma zadnych danych do wyswietlenia
 		if (!strlen($tbody))
-			eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
+			$tbody = eval($templates->render("admin/no_records"));
 
 		// Pobranie paginacji
 		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
@@ -63,10 +63,10 @@ class PageAdminPlayersFlags extends PageAdmin
 			$tfoot_class = "display_tfoot";
 
 		// Pobranie nagłówka tabeli
-		eval("\$thead = \"" . get_template("admin/players_flags_thead") . "\";");
+		$thead = eval($templates->render("admin/players_flags_thead"));
 
 		// Pobranie struktury tabeli
-		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
+		$output = eval($templates->render("admin/table_structure"));
 		return $output;
 	}
 

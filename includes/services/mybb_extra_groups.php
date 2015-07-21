@@ -15,7 +15,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 	 */
 	public function service_admin_extra_fields_get()
 	{
-		global $lang;
+		global $lang, $templates;
 
 		// WEB
 		if ($this->show_on_web()) $web_sel_yes = "selected";
@@ -32,7 +32,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 			$mybb_groups = htmlspecialchars($this->service['data']['mybb_groups']);
 		}
 
-		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/extra_fields", 0, 1, 0) . "\";");
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/extra_fields", 0, 1, 0));
 		return $output;
 	}
 
@@ -166,7 +166,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	 */
 	public function purchase_form_get()
 	{
-		global $db, $user, $settings, $lang;
+		global $db, $user, $settings, $lang, $templates;
 
 		// Pozyskujemy taryfy
 		$result = $db->query($db->prepare(
@@ -179,14 +179,14 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 			array($settings['sms_service'], $this->service['id'])
 		));
 
-		$amount = "";
+		$amounts = "";
 		while ($row = $db->fetch_array_assoc($result)) {
 			$sms_cost = strlen($row['sms_number']) ? get_sms_cost($row['sms_number']) * $settings['vat'] : 0;
 			$amount = $row['amount'] != -1 ? $row['amount'] . " " . $this->service['tag'] : $lang->forever;
-			eval("\$amounts .= \"" . get_template("services/" . $this::MODULE_ID . "/purchase_value", false, true, false) . "\";");
+			$amounts .= eval($templates->render("services/" . $this::MODULE_ID . "/purchase_value", false, true, false));
 		}
 
-		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/purchase_form") . "\";");
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/purchase_form"));
 
 		return $output;
 	}
@@ -286,13 +286,13 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	 */
 	public function order_details($purchase)
 	{
-		global $lang;
+		global $lang, $templates;
 
 		$email = $purchase->getEmail() ? htmlspecialchars($purchase->getEmail()) : $lang->none;
 		$username = htmlspecialchars($purchase->getOrder('auth_data'));
 		$amount = $purchase->getOrder('amount') != -1 ? ($purchase->getOrder('amount') . " " . $this->service['tag']) : $lang->forever;
 
-		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/order_details", 0, 1, 0) . "\";");
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/order_details", 0, 1, 0));
 		return $output;
 	}
 
@@ -332,7 +332,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	 */
 	public function purchase_info($action, $data)
 	{
-		global $settings, $lang;
+		global $settings, $lang, $templates;
 
 		$username = htmlspecialchars($data['auth_data']);
 		$amount = $data['amount'] != -1 ? ($data['amount'] . " " . $this->service['tag']) : $lang->forever;
@@ -340,9 +340,9 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		$cost = $data['cost'] ? (number_format($data['cost'], 2) . " " . $settings['currency']) : $lang->none;
 
 		if ($action == "email")
-			eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/purchase_info_email", false, true, false) . "\";");
+			$output = eval($templates->render("services/" . $this::MODULE_ID . "/purchase_info_email", false, true, false));
 		else if ($action == "web")
-			eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/purchase_info_web", false, true, false) . "\";");
+			$output = eval($templates->render("services/" . $this::MODULE_ID . "/purchase_info_web", false, true, false));
 		else if ($action == "payment_log")
 			return array(
 				'text' => $output = $lang->sprintf($lang->mybb_group_bought, $this->service['name'], $username),

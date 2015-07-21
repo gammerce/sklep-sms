@@ -22,7 +22,7 @@ class PagePurchase extends Page
 
 	protected function content($get, $post)
 	{
-		global $heart, $user, $lang, $settings;
+		global $heart, $user, $lang, $settings, $templates;
 
 		if (($service_module = $heart->get_service_module($get['service'])) === NULL)
 			return $lang->site_not_exists;
@@ -83,9 +83,9 @@ class PagePurchase extends Page
 
 		// Dodajemy długi opis
 		if (strlen($service_module->description_full_get()))
-			eval("\$show_more = \"" . get_template("services/show_more") . "\";");
+			$show_more = eval($templates->render("services/show_more"));
 
-		eval("\$output = \"" . get_template("services/short_description") . "\";"); // Dodajemy krótki opis
+		$output = eval($templates->render("services/short_description")); // Dodajemy krótki opis
 		return $output . $service_module->purchase_form_get();
 	}
 

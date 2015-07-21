@@ -36,6 +36,7 @@ $settings = array(
 );
 
 require_once SCRIPT_ROOT . "includes/config.php";
+require_once SCRIPT_ROOT . "includes/class_template.php";
 require_once SCRIPT_ROOT . "includes/functions.php";
 require_once SCRIPT_ROOT . "includes/class_heart.php";
 require_once SCRIPT_ROOT . "includes/mysqli.php";
@@ -44,6 +45,9 @@ require_once SCRIPT_ROOT . "includes/class_language.php";
 
 // Tworzymy obiekt posiadający mnóstwo przydatnych funkcji
 $heart = new Heart();
+
+// Tworzymy obiekt szablonów
+$templates = new Templates();
 
 // Tworzymy obiekt języka
 $lang = new Language();

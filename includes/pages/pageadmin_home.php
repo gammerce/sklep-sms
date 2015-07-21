@@ -17,7 +17,7 @@ class PageAdminMain extends PageAdmin
 
 	protected function content($get, $post)
 	{
-		global $heart, $db, $settings, $lang, $a_Tasks;
+		global $heart, $db, $settings, $lang, $a_Tasks, $templates;
 
 		//
 		// Ogloszenia
@@ -85,7 +85,7 @@ class PageAdminMain extends PageAdmin
 		$bricks .= create_brick($lang->sprintf($lang->amount_of_sent_smses, $amount), "brick_pa_main");
 
 		// Pobranie wyglądu strony
-		eval("\$output = \"" . get_template("admin/home") . "\";");
+		$output = eval($templates->render("admin/home"));
 		return $output;
 	}
 

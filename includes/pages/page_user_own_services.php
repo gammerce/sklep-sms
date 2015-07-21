@@ -17,7 +17,7 @@ class Page_UserOIwnServices extends Page implements I_BeLoggedMust
 
 	protected function content($get, $post)
 	{
-		global $heart, $db, $settings, $user, $lang, $G_PAGE;
+		global $heart, $db, $settings, $user, $lang, $G_PAGE, $templates;
 
 		$user_own_services = "";
 		$result = $db->query($db->prepare(
@@ -56,7 +56,7 @@ class Page_UserOIwnServices extends Page implements I_BeLoggedMust
 		$pagination = get_pagination($rows_count, $G_PAGE, "index.php", $get, 4);
 		$pagination_class = strlen($pagination) ? "" : "display_none";
 
-		eval("\$output = \"" . get_template("user_own_services") . "\";");
+		$output = eval($templates->render("user_own_services"));
 
 		return $output;
 	}

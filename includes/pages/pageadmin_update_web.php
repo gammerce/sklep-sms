@@ -18,7 +18,7 @@ class PageAdminUpdateWeb extends PageAdmin
 
 	protected function content($get, $post)
 	{
-		global $lang;
+		global $lang, $templates;
 
 		$newest_version = trim(curl_get_contents("http://www.sklep-sms.pl/version.php?action=get_newest&type=web"));
 		$version = simplexml_load_file("http://www.sklep-sms.pl/version.php?action=get_version&type=web&version={$newest_version}", 'SimpleXMLElement', LIBXML_NOCDATA);
@@ -26,7 +26,7 @@ class PageAdminUpdateWeb extends PageAdmin
 
 		// Mamy najnowszą wersję
 		if (!strlen($newest_version) || !strlen($next_version) || VERSION == $newest_version) {
-			eval("\$output = \"" . get_template("admin/no_update") . "\";");
+			$output = eval($templates->render("admin/no_update"));
 			return $output;
 		}
 
@@ -36,7 +36,7 @@ class PageAdminUpdateWeb extends PageAdmin
 			$additional_info .= create_dom_element("li", $value);
 
 		if (strlen($additional_info))
-			eval("\$additional_info = \"" . get_template("admin/update_additional_info") . "\";");
+			$additional_info = eval($templates->render("admin/update_additional_info"));
 
 		// Pobieramy listę plików do wymiany
 		$files = "";
@@ -52,19 +52,19 @@ class PageAdminUpdateWeb extends PageAdmin
 		$file_data['type'] = "full";
 		$file_data['platform'] = "web";
 		$file_data['version'] = $newest_version;
-		eval("\$shop_files['newest_full'] = \"" . get_template("admin/update_file") . "\";");
+		$shop_files['newest_full'] = eval($templates->render("admin/update_file"));
 
 		// Pobieramy plik kolejnej wersji update
 		if ($next_version) {
 			$file_data['type'] = "update";
 			$file_data['platform'] = "web";
 			$file_data['version'] = $next_version;
-			eval("\$shop_files['next_update'] = \"" . get_template("admin/update_file") . "\";");
+			$shop_files['next_update'] = eval($templates->render("admin/update_file"));
 		} else
 			$shop_files['next_update'] = $next_version = $lang->none;
 
 		// Pobranie wyglądu całej strony
-		eval("\$output = \"" . get_template("admin/update_web") . "\";");
+		$output = eval($templates->render("admin/update_web"));
 		return $output;
 	}
 

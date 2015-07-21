@@ -17,7 +17,7 @@ class PagePayment extends Page
 
 	protected function content($get, $post)
 	{
-		global $settings, $lang;
+		global $settings, $lang, $templates;
 
 		// Sprawdzanie hashu danych przesłanych przez formularz
 		if (!isset($post['sign']) || $post['sign'] != md5($post['data'] . $settings['random_key']))
@@ -48,24 +48,24 @@ class PagePayment extends Page
 			if (strlen($number = $payment_sms->get_number_by_tariff($purchase->getTariff()))) {
 				$tariff['number'] = $number;
 				$tariff['cost'] = number_format(get_sms_cost($tariff['number']) * $settings['vat'], 2);
-				eval("\$payment_methods .= \"" . get_template("payment_method_sms") . "\";");
+				$payment_methods .= eval($templates->render("payment_method_sms"));
 			}
 		}
 
-		$cost_transfer = number_format($purchase->getPayment('cost'), 2);
-		if ($settings['transfer_service'] && $purchase->getPayment('cost') !== NULL && $purchase->getPayment('cost') > 1 && !$purchase->getPayment('no_transfer'))
-			eval("\$payment_methods .= \"" . get_template("payment_method_transfer") . "\";");
+		$cost_transfer = $purchase->getPayment('cost') !== NULL ? number_format($purchase->getPayment('cost'), 2) : "0.00";
+		if (strlen($settings['transfer_service']) && $purchase->getPayment('cost') !== NULL && $purchase->getPayment('cost') > 1 && !$purchase->getPayment('no_transfer'))
+			$payment_methods .= eval($templates->render("payment_method_transfer"));
 
 		if (is_logged() && $purchase->getPayment('cost') !== NULL && !$purchase->getPayment('no_wallet'))
-			eval("\$payment_methods .= \"" . get_template("payment_method_wallet") . "\";");
+			$payment_methods .= eval($templates->render("payment_method_wallet"));
 
 		if (!$purchase->getPayment('no_code') && object_implements($service_module, "IService_ServiceCode"))
-			eval("\$payment_methods .= \"" . get_template("payment_method_code") . "\";");
+			$payment_methods .= eval($templates->render("payment_method_code"));
 
 		$purchase_data = htmlspecialchars($post['data']);
 		$purchase_sign = htmlspecialchars($post['sign']);
 
-		eval("\$output = \"" . get_template("payment_form") . "\";");
+		$output = eval($templates->render("payment_form"));
 
 		return $output;
 	}

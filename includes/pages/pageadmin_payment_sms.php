@@ -17,7 +17,7 @@ class PageAdminPaymentSms extends PageAdmin
 
 	protected function content($get, $post)
 	{
-		global $db, $settings, $lang, $G_PAGE;
+		global $db, $settings, $lang, $G_PAGE, $templates;
 
 		$where = "( t.payment = 'sms' ) ";
 
@@ -58,16 +58,16 @@ class PageAdminPaymentSms extends PageAdmin
 			$row['platform'] = get_platform($row['platform']);
 
 			// Pobranie danych do tabeli
-			eval("\$tbody .= \"" . get_template("admin/payment_sms_trow") . "\";");
+			$tbody .= eval($templates->render("admin/payment_sms_trow"));
 		}
 
 		// Nie ma zadnych danych do wyswietlenia
 		if (!strlen($tbody))
-			eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
+			$tbody = eval($templates->render("admin/no_records"));
 
 		// Pole wyszukiwania
 		$search_text = htmlspecialchars($get['search']);
-		eval("\$buttons = \"" . get_template("admin/form_search") . "\";");
+		$buttons = eval($templates->render("admin/form_search"));
 
 		// Pobranie paginacji
 		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
@@ -75,10 +75,10 @@ class PageAdminPaymentSms extends PageAdmin
 			$tfoot_class = "display_tfoot";
 
 		// Pobranie nagłówka tabeli
-		eval("\$thead = \"" . get_template("admin/payment_sms_thead") . "\";");
+		$thead = eval($templates->render("admin/payment_sms_thead"));
 
 		// Pobranie struktury tabeli
-		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
+		$output = eval($templates->render("admin/table_structure"));
 		return $output;
 	}
 
