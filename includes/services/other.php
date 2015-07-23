@@ -77,7 +77,7 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
 		}
 
 		// E-mail
-		if (strlen($purchase->getEmail()) && $warning = check_for_warnings("email", $purchase->getEmail()))
+		if ((strpos($purchase->getUser('platform'), "engine") !== 0 || strlen($purchase->getEmail())) && $warning = check_for_warnings("email", $purchase->getEmail()))
 			$warnings['email'] = array_merge((array)$warnings['email'], $warning);
 
 		// Jeżeli są jakieś błedy, to je zwróć
