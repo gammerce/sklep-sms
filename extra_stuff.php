@@ -27,7 +27,7 @@ switch ($action) {
 		$heart->page_title = $lang->description . ": " . $service_module->service['name'];
 
 		$heart->style_add($settings['shop_url_slash'] . "styles/extra_stuff/long_desc.css?version=" . VERSION);
-		eval("\$header = \"" . get_template("header") . "\";");
+		$header = eval($templates->render("header"));
 
 		$output = create_dom_element("html", create_dom_element("head", $header) . create_dom_element("body", $output));
 		output_page($output);

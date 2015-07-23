@@ -17,7 +17,7 @@ class PageAdminPaymentAdmin extends PageAdmin
 
 	protected function content($get, $post)
 	{
-		global $db, $settings, $lang, $G_PAGE;
+		global $db, $settings, $lang, $G_PAGE, $templates;
 
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS * " .
@@ -41,12 +41,12 @@ class PageAdminPaymentAdmin extends PageAdmin
 			$row['timestamp'] = convertDate($row['timestamp']);
 
 			// Pobranie danych do tabeli
-			eval("\$tbody .= \"" . get_template("admin/payment_admin_trow") . "\";");
+			$tbody .= eval($templates->render("admin/payment_admin_trow"));
 		}
 
 		// Nie ma zadnych danych do wyswietlenia
 		if (!strlen($tbody))
-			eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
+			$tbody = eval($templates->render("admin/no_records"));
 
 		// Pobranie paginacji
 		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
@@ -54,10 +54,10 @@ class PageAdminPaymentAdmin extends PageAdmin
 			$tfoot_class = "display_tfoot";
 
 		// Pobranie nagłówka tabeli
-		eval("\$thead = \"" . get_template("admin/payment_admin_thead") . "\";");
+		$thead = eval($templates->render("admin/payment_admin_thead"));
 
 		// Pobranie struktury tabeli
-		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
+		$output = eval($templates->render("admin/table_structure"));
 		return $output;
 	}
 

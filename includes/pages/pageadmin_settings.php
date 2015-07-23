@@ -18,7 +18,7 @@ class PageAdminSettings extends PageAdmin
 
 	protected function content($get, $post)
 	{
-		global $db, $settings, $lang, $lang_shop;
+		global $db, $settings, $lang, $lang_shop, $templates;
 
 		// Pobranie listy serwisów transakcyjnych
 		$result = $db->query(
@@ -62,7 +62,7 @@ class PageAdminSettings extends PageAdmin
 				));
 
 		// Pobranie wyglądu strony
-		eval("\$output = \"" . get_template("admin/settings") . "\";");
+		$output = eval($templates->render("admin/settings"));
 		return $output;
 	}
 

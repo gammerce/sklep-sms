@@ -18,7 +18,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
 
 	protected function content($get, $post)
 	{
-		global $db, $lang, $G_PAGE;
+		global $db, $lang, $G_PAGE, $templates;
 
 		// Pobranie taryf
 		$result = $db->query(
@@ -53,12 +53,12 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
 			$row['answers'] = htmlspecialchars($row['answers']);
 
 			// Pobranie danych do tabeli
-			eval("\$tbody .= \"" . get_template("admin/antispam_questions_trow") . "\";");
+			$tbody .= eval($templates->render("admin/antispam_questions_trow"));
 		}
 
 		// Nie ma zadnych danych do wyswietlenia
 		if (!strlen($tbody))
-			eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
+			$tbody = eval($templates->render("admin/no_records"));
 
 		if (get_privilages("manage_antispam_questions"))
 			// Pobranie przycisku dodającego pytanie antyspamowe
@@ -74,16 +74,16 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
 			$tfoot_class = "display_tfoot";
 
 		// Pobranie nagłówka tabeli
-		eval("\$thead = \"" . get_template("admin/antispam_questions_thead") . "\";");
+		$thead = eval($templates->render("admin/antispam_questions_thead"));
 
 		// Pobranie struktury tabeli
-		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
+		$output = eval($templates->render("admin/table_structure"));
 		return $output;
 	}
 
 	public function get_action_box($box_id, $data)
 	{
-		global $db, $lang;
+		global $db, $lang, $templates;
 
 		if (!get_privilages("manage_antispam_questions"))
 			return array(
@@ -93,7 +93,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
 
 		switch($box_id) {
 			case "antispam_question_add":
-				eval("\$output = \"" . get_template("admin/action_boxes/antispam_question_add") . "\";");
+				$output = eval($templates->render("admin/action_boxes/antispam_question_add"));
 				break;
 
 			case "antispam_question_edit":
@@ -105,7 +105,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
 				$row['question'] = htmlspecialchars($row['question']);
 				$row['answers'] = htmlspecialchars($row['answers']);
 
-				eval("\$output = \"" . get_template("admin/action_boxes/antispam_question_edit") . "\";");
+				$output = eval($templates->render("admin/action_boxes/antispam_question_edit"));
 				break;
 		}
 

@@ -18,7 +18,7 @@ class PageAdminLogs extends PageAdmin
 
 	protected function content($get, $post)
 	{
-		global $db, $lang, $G_PAGE;
+		global $db, $lang, $G_PAGE, $templates;
 
 		// Wyszukujemy dane ktore spelniaja kryteria
 		if (isset($get['search']))
@@ -58,16 +58,16 @@ class PageAdminLogs extends PageAdmin
 			$row['timestamp'] = convertDate($row['timestamp']);
 
 			// Pobranie danych do tabeli
-			eval("\$tbody .= \"" . get_template("admin/logs_trow") . "\";");
+			$tbody .= eval($templates->render("admin/logs_trow"));
 		}
 
 		// Nie ma zadnych danych do wyswietlenia
 		if (!strlen($tbody))
-			eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
+			$tbody = eval($templates->render("admin/no_records"));
 
 		// Pole wyszukiwania
 		$search_text = htmlspecialchars($get['search']);
-		eval("\$buttons = \"" . get_template("admin/form_search") . "\";");
+		$buttons = eval($templates->render("admin/form_search"));
 
 		// Pobranie paginacji
 		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
@@ -75,10 +75,10 @@ class PageAdminLogs extends PageAdmin
 			$tfoot_class = "display_tfoot";
 
 		// Pobranie nagłówka tabeli
-		eval("\$thead = \"" . get_template("admin/logs_thead") . "\";");
+		$thead = eval($templates->render("admin/logs_thead"));
 
 		// Pobranie wygladu całej tabeli
-		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
+		$output = eval($templates->render("admin/table_structure"));
 		return $output;
 	}
 

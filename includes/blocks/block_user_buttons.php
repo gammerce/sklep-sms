@@ -17,7 +17,7 @@ class BlockUserButtons extends Block
 
 	protected function content($get, $post)
 	{
-		global $lang;
+		global $lang, $templates;
 
 		if (is_logged()) {
 			global $heart, $user;
@@ -34,9 +34,9 @@ class BlockUserButtons extends Block
 					'href' => "index.php?pid=purchase&service=charge_wallet"
 				)));
 
-			eval("\$output = \"" . get_template("user_buttons") . "\";");
+			$output = eval($templates->render("user_buttons"));
 		} else
-			eval("\$output = \"" . get_template("loginarea") . "\";");
+			$output = eval($templates->render("loginarea"));
 
 		return $output;
 	}

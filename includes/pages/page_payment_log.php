@@ -17,7 +17,7 @@ class PagePaymentLog extends Page implements I_BeLoggedMust
 
 	protected function content($get, $post)
 	{
-		global $heart, $db, $settings, $user, $lang, $G_PAGE;
+		global $heart, $db, $settings, $user, $lang, $G_PAGE, $templates;
 
 		$result = $db->query($db->prepare(
 			"SELECT SQL_CALC_FOUND_ROWS * FROM ({$settings['transactions_query']}) as t " .
@@ -49,7 +49,7 @@ class PagePaymentLog extends Page implements I_BeLoggedMust
 			$row['auth_data'] = htmlspecialchars($row['auth_data']);
 			$row['email'] = htmlspecialchars($row['email']);
 
-			eval("\$payment_log_brick = \"" . get_template("payment_log_brick") . "\";");
+			$payment_log_brick = eval($templates->render("payment_log_brick"));
 			$payment_logs .= create_dom_element("div", $payment_log_brick, $data = array(
 				'class' => "brick " . $class
 			));
@@ -58,7 +58,7 @@ class PagePaymentLog extends Page implements I_BeLoggedMust
 		$pagination = get_pagination($rows_count, $G_PAGE, "index.php", $get, 10);
 		$pagination_class = strlen($pagination) ? "" : "display_none";
 
-		eval("\$output = \"" . get_template("payment_log") . "\";");
+		$output = eval($templates->render("payment_log"));
 
 		return $output;
 	}

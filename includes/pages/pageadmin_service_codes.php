@@ -18,7 +18,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 
 	protected function content($get, $post)
 	{
-		global $heart, $db, $lang, $G_PAGE;
+		global $heart, $db, $lang, $G_PAGE, $templates;
 
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.name AS `service`, srv.name AS `server`, sc.tariff, pl.amount AS `tariff_amount`,
@@ -67,12 +67,12 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 			$row['timestamp'] = convertDate($row['timestamp']);
 
 			// Pobranie danych do tabeli
-			eval("\$tbody .= \"" . get_template("admin/service_codes_trow") . "\";");
+			$tbody .= eval($templates->render("admin/service_codes_trow"));
 		}
 
 		// Nie ma zadnych danych do wyswietlenia
 		if (!strlen($tbody))
-			eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
+			$tbody = eval($templates->render("admin/no_records"));
 
 		if (get_privilages("manage_service_codes"))
 			$buttons = create_dom_element("input", "", array(
@@ -87,16 +87,16 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 			$tfoot_class = "display_tfoot";
 
 		// Pobranie nagłówka tabeli
-		eval("\$thead = \"" . get_template("admin/service_codes_thead") . "\";");
+		$thead = eval($templates->render("admin/service_codes_thead"));
 
 		// Pobranie wygladu całej tabeli
-		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
+		$output = eval($templates->render("admin/table_structure"));
 		return $output;
 	}
 
 	public function get_action_box($box_id, $data)
 	{
-		global $heart, $lang;
+		global $heart, $lang, $templates;
 
 		if (!get_privilages("manage_service_codes"))
 			return array(
@@ -117,7 +117,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 					));
 				}
 
-				eval("\$output = \"" . get_template("admin/action_boxes/service_code_add") . "\";");
+				$output = eval($templates->render("admin/action_boxes/service_code_add"));
 				break;
 		}
 

@@ -18,7 +18,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 
 	protected function content($get, $post)
 	{
-		global $db, $lang, $G_PAGE;
+		global $db, $lang, $G_PAGE, $templates;
 
 		// Pobranie kodów SMS
 		$result = $db->query(
@@ -47,12 +47,12 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 			$row['code'] = htmlspecialchars($row['code']);
 
 			// Pobranie danych do tabeli
-			eval("\$tbody .= \"" . get_template("admin/sms_codes_trow") . "\";");
+			$tbody .= eval($templates->render("admin/sms_codes_trow"));
 		}
 
 		// Nie ma zadnych danych do wyswietlenia
 		if (!strlen($tbody))
-			eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
+			$tbody = eval($templates->render("admin/no_records"));
 
 		if (get_privilages("manage_sms_codes"))
 			$buttons = create_dom_element("input", "", array(
@@ -67,16 +67,16 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 			$tfoot_class = "display_tfoot";
 
 		// Pobranie nagłówka tabeli
-		eval("\$thead = \"" . get_template("admin/sms_codes_thead") . "\";");
+		$thead = eval($templates->render("admin/sms_codes_thead"));
 
 		// Pobranie wygladu całej tabeli
-		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
+		$output = eval($templates->render("admin/table_structure"));
 		return $output;
 	}
 
 	public function get_action_box($box_id, $data)
 	{
-		global $heart, $lang;
+		global $heart, $lang, $templates;
 
 		if (!get_privilages("manage_sms_codes"))
 			return array(
@@ -92,7 +92,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 						'value' => $tariff_data['tariff']
 					));
 
-				eval("\$output = \"" . get_template("admin/action_boxes/sms_code_add") . "\";");
+				$output = eval($templates->render("admin/action_boxes/sms_code_add"));
 				break;
 		}
 

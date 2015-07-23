@@ -79,9 +79,9 @@ abstract class PageSimple extends Page
 
 	protected function content($get, $post)
 	{
-		global $lang;
+		global $lang, $templates;
 
-		eval("\$output = \"" . get_template($this->template) . "\";");
+		$output = eval($templates->render($this->template));
 		return $output;
 	}
 

@@ -1187,7 +1187,7 @@ if ($action == "charge_wallet") {
 	}
 
 	if (!isset($data['template']))
-		eval("\$data['template'] = \"" . get_template("jsonhttp/" . $template) . "\";");
+		$data['template'] = eval($templates->render("jsonhttp/" . $template));
 
 	output_page(json_encode($data), "Content-type: text/plain; charset=\"UTF-8\"");
 }
