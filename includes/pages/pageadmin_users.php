@@ -18,7 +18,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
 	protected function content($get, $post)
 	{
-		global $heart, $db, $settings, $lang, $G_PAGE;
+		global $heart, $db, $settings, $lang, $G_PAGE, $templates;
 
 		// Wyszukujemy dane ktore spelniaja kryteria
 		if (isset($get['search']))
@@ -58,7 +58,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
 			// Pobranie przycisku doładowania portfela
 			if (get_privilages("manage_users")) {
-				eval("\$button_charge = \"" . get_template("admin/users_button_charge") . "\";");
+				$button_charge = eval($templates->render("admin/users_button_charge"));
 				$button_edit = create_dom_element("img", "", array(
 					'id' => "edit_row_{$i}",
 					'src' => "images/edit.png",
@@ -73,16 +73,16 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 				$button_charge = $button_delete = $button_edit = "";
 
 			// Pobranie danych do tabeli
-			eval("\$tbody .= \"" . get_template("admin/users_trow") . "\";");
+			$tbody .= eval($templates->render("admin/users_trow"));
 		}
 
 		// Nie ma zadnych danych do wyswietlenia
 		if (!strlen($tbody))
-			eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
+			$tbody = eval($templates->render("admin/no_records"));
 
 		// Pole wyszukiwania
 		$search_text = htmlspecialchars($get['search']);
-		eval("\$buttons = \"" . get_template("admin/form_search") . "\";");
+		$buttons = eval($templates->render("admin/form_search"));
 
 		// Pobranie paginacji
 		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
@@ -90,16 +90,16 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 			$tfoot_class = "display_tfoot";
 
 		// Pobranie nagłówka tabeli
-		eval("\$thead = \"" . get_template("admin/users_thead") . "\";");
+		$thead = eval($templates->render("admin/users_thead"));
 
 		// Pobranie struktury tabeli
-		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
+		$output = eval($templates->render("admin/table_structure"));
 		return $output;
 	}
 
 	public function get_action_box($box_id, $data)
 	{
-		global $heart, $settings, $lang;
+		global $heart, $settings, $lang, $templates;
 
 		if (!get_privilages("manage_users"))
 			return array(
@@ -120,13 +120,13 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 					));
 				}
 
-				eval("\$output = \"" . get_template("admin/action_boxes/user_edit") . "\";");
+				$output = eval($templates->render("admin/action_boxes/user_edit"));
 				break;
 
 			case "charge_wallet":
 				$user = $heart->get_user($data['uid']);
 
-				eval("\$output = \"" . get_template("admin/action_boxes/user_charge_wallet") . "\";");
+				$output = eval($templates->render("admin/action_boxes/user_charge_wallet"));
 				break;
 		}
 

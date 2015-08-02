@@ -17,7 +17,7 @@ class BlockServicesButtons extends Block
 
 	protected function content($get, $post)
 	{
-		global $heart, $user, $lang;
+		global $heart, $user, $lang, $templates;
 
 		$services = "";
 		foreach ($heart->get_services() as $service) {
@@ -32,7 +32,7 @@ class BlockServicesButtons extends Block
 			)));
 		}
 
-		eval("\$output = \"" . get_template("services_buttons") . "\";");
+		$output = eval($templates->render("services_buttons"));
 		return $output;
 	}
 

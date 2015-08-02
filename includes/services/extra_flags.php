@@ -9,7 +9,7 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 
 	public function service_admin_extra_fields_get()
 	{
-		global $lang;
+		global $lang, $templates;
 
 		// WEB
 		if ($this->show_on_web()) $web_sel_yes = "selected";
@@ -28,7 +28,7 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 		if ($this->service !== NULL)
 			$flags = $this->service['flags_hsafe'];
 
-		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/extra_fields", 0, 1, 0) . "\";");
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/extra_fields", true, false));
 
 		return $output;
 	}
@@ -169,13 +169,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 	public function purchase_form_get()
 	{
-		global $heart, $lang, $settings, $user;
+		global $heart, $lang, $settings, $user, $templates;
 
 		// Generujemy typy usługi
+		$types = "";
 		for ($i = 0, $value = 1; $i < 3; $value = 1 << ++$i)
 			if ($this->service['types'] & $value) {
 				$type = get_type_name($value);
-				eval("\$types .= \"" . get_template("services/" . $this::MODULE_ID . "/service_type") . "\";");
+				$types .= eval($templates->render("services/" . $this::MODULE_ID . "/service_type"));
 			}
 
 		// Pobieranie serwerów na których można zakupić daną usługę
@@ -190,7 +191,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			));
 		}
 
-		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/purchase_form") . "\";");
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/purchase_form"));
 
 		return $output;
 	}
@@ -335,7 +336,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 	public function order_details($purchase)
 	{
-		global $heart, $lang;
+		global $heart, $lang, $templates;
 
 		$server = $heart->get_server($purchase->getOrder('server'));
 		$type_name = $this->get_type_name2($purchase->getOrder('type'));
@@ -345,7 +346,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$auth_data = htmlspecialchars($purchase->getOrder('auth_data'));
 		$amount = !$purchase->getOrder('forever') ? ($purchase->getOrder('amount') . " " . $this->service['tag']) : $lang->forever;
 
-		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/order_details", 0, 1, 0) . "\";");
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/order_details", true, false));
 		return $output;
 	}
 
@@ -455,7 +456,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 	// Funkcja zwraca informacje o zakupie usługi
 	public function purchase_info($action, $data)
 	{
-		global $heart, $settings, $lang;
+		global $heart, $settings, $lang, $templates;
 
 		$data['extra_data'] = json_decode($data['extra_data'], true);
 		$data['extra_data']['type_name'] = $this->get_type_name2($data['extra_data']['type']);
@@ -480,9 +481,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			$setinfo = $lang->sprintf($lang->type_setinfo, htmlspecialchars($data['extra_data']['password']));
 
 		if ($action == "email")
-			eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/purchase_info_email", false, true, false) . "\";");
+			$output = eval($templates->render("services/" . $this::MODULE_ID . "/purchase_info_email", true, false));
 		else if ($action == "web")
-			eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/purchase_info_web", false, true, false) . "\";");
+			$output = eval($templates->render("services/" . $this::MODULE_ID . "/purchase_info_web", true, false));
 		else if ($action == "payment_log")
 			return array(
 				'text' => $output = $lang->sprintf($lang->service_was_bought, $this->service['name'], $server['name']),
@@ -513,7 +514,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 	public function user_service_admin_add_form_get()
 	{
-		global $heart, $settings, $lang;
+		global $heart, $settings, $lang, $templates;
 
 		// Pobieramy listę typów usługi, (1<<2) ostatni typ
 		$types = "";
@@ -534,7 +535,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			));
 		}
 
-		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/user_service_admin_add", 0, 1, 0) . "\";");
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/user_service_admin_add", true, false));
 
 		return $output;
 	}
@@ -616,7 +617,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 	public function user_service_admin_edit_form_get($user_service)
 	{
-		global $heart, $settings, $lang;
+		global $heart, $settings, $lang, $templates;
 
 		// Pobranie usług
 		$services = "";
@@ -678,7 +679,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		} else
 			$user_service['expire'] = date($settings['date_format'], $user_service['expire']);
 
-		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/user_service_admin_edit", 0, 1, 0) . "\";");
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/user_service_admin_edit", true, false));
 
 		return $output;
 	}
@@ -787,7 +788,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 	public function user_own_service_edit_form_get($user_service)
 	{
-		global $heart, $settings, $lang;
+		global $heart, $settings, $lang, $templates;
 
 		// Dodajemy typ uslugi, (1<<2) ostatni typ
 		$service_info = array();
@@ -837,14 +838,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		// Usługa
 		$service_info['service'] = $this->service['name'];
 
-		eval("\$output .= \"" . get_template("services/" . $this::MODULE_ID . "/user_own_service_edit") . "\";");
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/user_own_service_edit"));
 
 		return $output;
 	}
 
 	public function user_own_service_info_get($data, $button_edit)
 	{
-		global $heart, $settings, $lang;
+		global $heart, $settings, $lang, $templates;
 
 		$service_info['expire'] = $data['expire'] == -1 ? $lang->never : date($settings['date_format'], $data['expire']);
 		$temp_server = $heart->get_server($data['server']);
@@ -854,7 +855,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$service_info['auth_data'] = htmlspecialchars($data['auth_data']);
 		unset($temp_server);
 
-		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/user_own_service") . "\";");
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/user_own_service"));
 
 		return $output;
 	}
@@ -1008,7 +1009,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 	public function service_take_over_form_get($service_id)
 	{
-		global $heart, $lang;
+		global $heart, $lang, $templates;
 
 		// Generujemy typy usługi
 		$types = "";
@@ -1029,7 +1030,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			));
 		}
 
-		eval("\$output .= \"" . get_template("services/" . $this::MODULE_ID . "/service_take_over") . "\";");
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/service_take_over"));
 
 		return $output;
 	}
@@ -1202,7 +1203,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 	 */
 	private function tariffs_for_server($server_id)
 	{
-		global $heart, $db, $settings, $lang;
+		global $heart, $db, $settings, $lang, $templates;
 
 		$server = $heart->get_server($server_id);
 		$sms_service = if_strlen($server['sms_service'], $settings['sms_service']);
@@ -1218,13 +1219,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			array($sms_service, $this->service['id'], $server_id)
 		));
 
+		$values = "";
 		while ($row = $db->fetch_array_assoc($result)) {
 			$sms_cost = strlen($row['sms_number']) ? get_sms_cost($row['sms_number']) * $settings['vat'] : 0;
 			$amount = $row['amount'] != -1 ? "{$row['amount']} {$this->service['tag']}" : $lang->forever;
-			eval("\$values .= \"" . get_template("services/" . $this::MODULE_ID . "/purchase_value", false, true, false) . "\";");
+			$values .= eval($templates->render("services/" . $this::MODULE_ID . "/purchase_value", true, false));
 		}
 
-		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/tariffs_for_server") . "\";");
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/tariffs_for_server"));
 		return $output;
 	}
 
@@ -1244,7 +1246,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 	public function service_code_admin_add_form_get()
 	{
-		global $heart, $lang;
+		global $heart, $lang, $templates;
 
 		// Pobieramy listę serwerów
 		$servers = "";
@@ -1257,7 +1259,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			));
 		}
 
-		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/service_code_admin_add", 0, 1, 0) . "\";");
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/service_code_admin_add", true, false));
 		return $output;
 	}
 

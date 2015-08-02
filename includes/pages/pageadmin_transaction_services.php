@@ -18,7 +18,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
 
 	protected function content($get, $post)
 	{
-		global $db, $lang, $G_PAGE;
+		global $db, $lang, $G_PAGE, $templates;
 
 		// Pobranie listy serwisów transakcyjnych
 		$result = $db->query(
@@ -31,8 +31,8 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
 		$tbody = "";
 		while ($row = $db->fetch_array_assoc($result)) {
 			$i += 1;
-			$row['sms'] = $row['sms'] ? strtoupper($lang->yes) : strtoupper($lang->no);
-			$row['transfer'] = $row['transfer'] ? strtoupper($lang->yes) : strtoupper($lang->no);
+			$row['sms'] = $row['sms'] ? $lang->strtoupper($lang->yes) : $lang->strtoupper($lang->no);
+			$row['transfer'] = $row['transfer'] ? $lang->strtoupper($lang->yes) : $lang->strtoupper($lang->no);
 
 			// Pobranie przycisku edycji
 			$button_edit = create_dom_element("img", "", array(
@@ -42,12 +42,12 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
 			));
 
 			// Pobranie danych do tabeli
-			eval("\$tbody .= \"" . get_template("admin/transaction_services_trow") . "\";");
+			$tbody .= eval($templates->render("admin/transaction_services_trow"));
 		}
 
 		// Nie ma zadnych danych do wyswietlenia
 		if (!strlen($tbody))
-			eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
+			$tbody = eval($templates->render("admin/no_records"));
 
 		// Pobranie paginacji
 		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
@@ -55,16 +55,16 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
 			$tfoot_class = "display_tfoot";
 
 		// Pobranie nagłówka tabeli
-		eval("\$thead = \"" . get_template("admin/transaction_services_thead") . "\";");
+		$thead = eval($templates->render("admin/transaction_services_thead"));
 
 		// Pobranie struktury tabeli
-		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
+		$output = eval($templates->render("admin/table_structure"));
 		return $output;
 	}
 
 	public function get_action_box($box_id, $data)
 	{
-		global $db, $lang;
+		global $db, $lang, $templates;
 
 		if (!get_privilages("manage_settings"))
 			return array(
@@ -85,22 +85,24 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
 				$transaction_service['id'] = htmlspecialchars($transaction_service['id']);
 				$transaction_service['name'] = htmlspecialchars($transaction_service['name']);
 				$transaction_service['data'] = json_decode($transaction_service['data']);
+
+				$data_values = "";
 				foreach ($transaction_service['data'] as $name => $value) {
 					switch ($name) {
 						case 'sms_text':
-							$text = strtoupper($lang->sms_code);
+							$text = $lang->strtoupper($lang->sms_code);
 							break;
 						case 'account_id':
-							$text = strtoupper($lang->account_id);
+							$text = $lang->strtoupper($lang->account_id);
 							break;
 						default:
-							$text = strtoupper($name);
+							$text = $lang->strtoupper($name);
 							break;
 					}
-					eval("\$data_values .= \"" . get_template("tr_name_input") . "\";");
+					$data_values .= eval($templates->render("tr_name_input"));
 				}
 
-				eval("\$output = \"" . get_template("admin/action_boxes/transaction_service_edit") . "\";");
+				$output = eval($templates->render("admin/action_boxes/transaction_service_edit"));
 				break;
 		}
 

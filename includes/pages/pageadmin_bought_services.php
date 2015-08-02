@@ -17,7 +17,7 @@ class PageAdminBoughtServices extends PageAdmin
 
 	protected function content($get, $post)
 	{
-		global $heart, $db, $settings, $lang, $G_PAGE;
+		global $heart, $db, $settings, $lang, $G_PAGE, $templates;
 
 		// Wyszukujemy dane ktore spelniaja kryteria
 		if (isset($get['search']))
@@ -51,6 +51,9 @@ class PageAdminBoughtServices extends PageAdmin
 			// Przerobienie ilosci
 			$amount = $row['amount'] != -1 ? "{$row['amount']} {$service['tag']}" : $lang->forever;
 
+			// Poprawienie timestampa
+			$row['timestamp'] = convertDate($row['timestamp']);
+
 			// Rozkulbaczenie extra daty
 			$row['extra_data'] = json_decode($row['extra_data'], true);
 			$extra_data = array();
@@ -75,16 +78,16 @@ class PageAdminBoughtServices extends PageAdmin
 			$payment_link = "admin.php?pid=payment_{$row['payment']}&payid={$row['payment_id']}";
 
 			// Pobranie danych do tabeli
-			eval("\$tbody .= \"" . get_template("admin/bought_services_trow") . "\";");
+			$tbody .= eval($templates->render("admin/bought_services_trow"));
 		}
 
 		// Nie ma zadnych danych do wyswietlenia
 		if (!strlen($tbody))
-			eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
+			$tbody = eval($templates->render("admin/no_records"));
 
 		// Pole wyszukiwania
 		$search_text = htmlspecialchars($get['search']);
-		eval("\$buttons = \"" . get_template("admin/form_search") . "\";");
+		$buttons = eval($templates->render("admin/form_search"));
 
 		// Pobranie paginacji
 		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
@@ -92,10 +95,10 @@ class PageAdminBoughtServices extends PageAdmin
 			$tfoot_class = "display_tfoot";
 
 		// Pobranie nagłówka tabeli
-		eval("\$thead = \"" . get_template("admin/bought_services_thead") . "\";");
+		$thead = eval($templates->render("admin/bought_services_thead"));
 
 		// Pobranie struktury tabeli
-		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
+		$output = eval($templates->render("admin/table_structure"));
 		return $output;
 	}
 

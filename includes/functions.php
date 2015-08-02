@@ -778,14 +778,14 @@ function object_implements($class, $interface)
 
 function myErrorHandler($errno, $string, $errfile, $errline)
 {
-	global $settings, $lang;
+	global $settings, $lang, $templates;
 
 	switch ($errno) {
 		case E_USER_ERROR:
 			$array = json_decode($string, true);
 			$array['message'] = $lang->mysqli[$array['message_id']]; // Pobieramy odpowiednik z bilioteki jezykowej
-			eval("\$header = \"" . get_template("header_error") . "\";");
-			eval("\$message = \"" . get_template("error_handler") . "\";");
+			$header = eval($templates->render("header_error"));
+			$message = eval($templates->render("error_handler"));
 
 			if (strlen($array['query'])) {
 				$text = date($settings['date_format']) . ": " . $array['query'];
@@ -891,6 +891,24 @@ function get_ip()
 	}
 
 	return $_SERVER['REMOTE_ADDR'];
+}
+
+/**
+ * Zwraca datę w odpowiednim formacie
+ *
+ * @param integer|string $timestamp
+ * @param string $format
+ * @return string
+ */
+function convertDate($timestamp, $format="")
+{
+	if (!strlen($format)) {
+		global $settings;
+		$format = $settings['date_format'];
+	}
+
+	$date = new DateTime($timestamp);
+	return $date->format($format);
 }
 
 function get_sms_cost($number)

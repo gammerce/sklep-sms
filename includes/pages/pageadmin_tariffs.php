@@ -18,7 +18,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
 
 	protected function content($get, $post)
 	{
-		global $heart, $lang, $settings; // settings potrzebne w pliku trow
+		global $heart, $lang, $settings, $templates; // settings potrzebne w pliku trow
 
 		$i = 0;
 		$tbody = "";
@@ -42,12 +42,12 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
 			$provision = number_format($tariff_data['provision'], 2);
 
 			// Pobranie danych do tabeli
-			eval("\$tbody .= \"" . get_template("admin/tariffs_trow") . "\";");
+			$tbody .= eval($templates->render("admin/tariffs_trow"));
 		}
 
 		// Nie ma zadnych danych do wyswietlenia
 		if (!strlen($tbody))
-			eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
+			$tbody = eval($templates->render("admin/no_records"));
 
 		// Pobranie przycisku dodającego taryfę
 		$buttons = create_dom_element("input", "", array(
@@ -57,16 +57,16 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
 		));
 
 		// Pobranie nagłówka tabeli
-		eval("\$thead = \"" . get_template("admin/tariffs_thead") . "\";");
+		$thead = eval($templates->render("admin/tariffs_thead"));
 
 		// Pobranie struktury tabeli
-		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
+		$output = eval($templates->render("admin/table_structure"));
 		return $output;
 	}
 
 	public function get_action_box($box_id, $data)
 	{
-		global $heart, $lang, $settings; // settings potrzebne
+		global $heart, $lang, $settings, $templates; // settings potrzebne
 
 		if (!get_privilages("manage_settings"))
 			return array(
@@ -76,14 +76,14 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
 
 		switch($box_id) {
 			case "tariff_add":
-				eval("\$output = \"" . get_template("admin/action_boxes/tariff_add") . "\";");
+				$output = eval($templates->render("admin/action_boxes/tariff_add"));
 				break;
 
 			case "tariff_edit":
 				$tariff = htmlspecialchars($data['tariff']);
 				$provision = number_format($heart->get_tariff_provision($data['tariff']), 2);
 
-				eval("\$output = \"" . get_template("admin/action_boxes/tariff_edit") . "\";");
+				$output = eval($templates->render("admin/action_boxes/tariff_edit"));
 				break;
 		}
 

@@ -17,7 +17,7 @@ class PageRegister extends Page implements I_BeLoggedCannot
 
 	protected function content($get, $post)
 	{
-		global $db, $settings, $lang;
+		global $db, $settings, $lang, $templates;
 
 		$antispam_question = $db->fetch_array_assoc($db->query(
 			"SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " .
@@ -26,7 +26,7 @@ class PageRegister extends Page implements I_BeLoggedCannot
 		));
 		$_SESSION['asid'] = $antispam_question['id'];
 
-		eval("\$output = \"" . get_template("register") . "\";");
+		$output = eval($templates->render("register"));
 		return $output;
 	}
 

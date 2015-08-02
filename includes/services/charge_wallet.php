@@ -14,13 +14,13 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 
 	public function purchase_form_get()
 	{
-		global $settings, $lang;
+		global $settings, $lang, $templates;
 
 		if (strlen($settings['sms_service'])) {
 			$payment_sms = new Payment($settings['sms_service']);
 
 			// Pobieramy opcję wyboru doładowania za pomocą SMS
-			eval("\$option_sms = \"" . get_template("services/" . $this::MODULE_ID . "/option_sms") . "\";");
+			$option_sms = eval($templates->render("services/" . $this::MODULE_ID . "/option_sms"));
 
 			$sms_list = "";
 			foreach ($payment_sms->payment_api->sms_list AS $row) {
@@ -34,17 +34,17 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 					)
 				);
 			}
-			eval("\$sms_body = \"" . get_template("services/" . $this::MODULE_ID . "/sms_body") . "\";");
+			$sms_body = eval($templates->render("services/" . $this::MODULE_ID . "/sms_body"));
 		}
 
 		if (strlen($settings['transfer_service'])) {
 			// Pobieramy opcję wyboru doładowania za pomocą przelewu
-			eval("\$option_transfer = \"" . get_template("services/" . $this::MODULE_ID . "/option_transfer") . "\";");
+			$option_transfer = eval($templates->render("services/" . $this::MODULE_ID . "/option_transfer"));
 
-			eval("\$transfer_body = \"" . get_template("services/" . $this::MODULE_ID . "/transfer_body") . "\";");
+			$transfer_body = eval($templates->render("services/" . $this::MODULE_ID . "/transfer_body"));
 		}
 
-		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/purchase_form") . "\";");
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/purchase_form"));
 
 		return $output;
 	}
@@ -137,7 +137,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 
 	public function purchase_info($action, $data)
 	{
-		global $heart, $settings, $lang;
+		global $heart, $settings, $lang, $templates;
 
 		$data['amount'] = number_format($data['amount'], 2) . " " . $settings['currency'];
 		$data['cost'] = number_format($data['cost'], 2) . " " . $settings['currency'];
@@ -151,9 +151,9 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 		if ($action == "web") {
 			if ($data['payment'] == "sms") {
 				$desc = $lang->sprintf($lang->wallet_was_charged, $data['amount']);
-				eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/web_purchase_info_sms", 0, 1, 0) . "\";");
+				$output = eval($templates->render("services/" . $this::MODULE_ID . "/web_purchase_info_sms", true, false));
 			} else if ($data['payment'] == "transfer")
-				eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/web_purchase_info_transfer", 0, 1, 0) . "\";");
+				$output = eval($templates->render("services/" . $this::MODULE_ID . "/web_purchase_info_transfer", true, false));
 
 			return $output;
 		} else if ($action == "payment_log")
@@ -165,11 +165,11 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 
 	public function order_details($purchase)
 	{
-		global $lang, $settings;
+		global $lang, $settings, $templates;
 
 		$amount = number_format($purchase->getOrder('amount'), 2);
 
-		eval("\$output = \"" . get_template("services/" . $this::MODULE_ID . "/order_details", 0, 1, 0) . "\";");
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/order_details", true, false));
 		return $output;
 	}
 

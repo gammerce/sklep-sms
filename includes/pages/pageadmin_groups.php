@@ -18,7 +18,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 
 	protected function content($get, $post)
 	{
-		global $db, $lang, $G_PAGE;
+		global $db, $lang, $G_PAGE, $templates;
 
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "groups` " .
@@ -49,12 +49,12 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 			$row['name'] = htmlspecialchars($row['name']);
 
 			// Pobranie danych do tabeli
-			eval("\$tbody .= \"" . get_template("admin/groups_trow") . "\";");
+			$tbody .= eval($templates->render("admin/groups_trow"));
 		}
 
 		// Nie ma zadnych danych do wyswietlenia
 		if (!strlen($tbody))
-			eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
+			$tbody = eval($templates->render("admin/no_records"));
 
 		// Pobranie paginacji
 		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
@@ -62,7 +62,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 			$tfoot_class = "display_tfoot";
 
 		// Pobranie nagłówka tabeli
-		eval("\$thead = \"" . get_template("admin/groups_thead") . "\";");
+		$thead = eval($templates->render("admin/groups_thead"));
 
 		if (get_privilages("manage_groups"))
 			// Pobranie przycisku dodającego grupę
@@ -73,13 +73,13 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 			));
 
 		// Pobranie struktury tabeli
-		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
+		$output = eval($templates->render("admin/table_structure"));
 		return $output;
 	}
 
 	public function get_action_box($box_id, $data)
 	{
-		global $db, $lang;
+		global $db, $lang, $templates;
 
 		if (!get_privilages("manage_groups"))
 			return array(
@@ -108,16 +108,17 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 			}
 		}
 
+		$privilages = "";
 		$result = $db->query("DESCRIBE " . TABLE_PREFIX . "groups");
 		while ($row = $db->fetch_array_assoc($result)) {
 			if (in_array($row['Field'], array("id", "name"))) continue;
 
-			$values = create_dom_element("option", strtoupper($lang->no), array(
+			$values = create_dom_element("option", $lang->strtoupper($lang->no), array(
 				'value' => 0,
 				'selected' => $group[$row['Field']] ? "" : "selected"
 			));
 
-			$values .= create_dom_element("option", strtoupper($lang->yes), array(
+			$values .= create_dom_element("option", $lang->strtoupper($lang->yes), array(
 				'value' => 1,
 				'selected' => $group[$row['Field']] ? "selected" : ""
 			));
@@ -125,16 +126,16 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 			$name = htmlspecialchars($row['Field']);
 			$text = $lang->privilages_names[$row['Field']];
 
-			eval("\$privilages .= \"" . get_template("tr_text_select") . "\";");
+			$privilages .= eval($templates->render("tr_text_select"));
 		}
 
 		switch($box_id) {
 			case "group_add":
-				eval("\$output = \"" . get_template("admin/action_boxes/group_add") . "\";");
+				$output = eval($templates->render("admin/action_boxes/group_add"));
 				break;
 
 			case "group_edit":
-				eval("\$output = \"" . get_template("admin/action_boxes/group_edit") . "\";");
+				$output = eval($templates->render("admin/action_boxes/group_edit"));
 				break;
 		}
 

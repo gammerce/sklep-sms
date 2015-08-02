@@ -18,7 +18,7 @@ class PageAdminUsersServices extends PageAdmin implements IPageAdminActionBox
 
 	protected function content($get, $post)
 	{
-		global $heart, $db, $settings, $lang, $G_PAGE;
+		global $heart, $db, $settings, $lang, $G_PAGE, $templates;
 
 		// Wyszukujemy dane ktore spelniaja kryteria
 		if (isset($get['search']))
@@ -74,16 +74,16 @@ class PageAdminUsersServices extends PageAdmin implements IPageAdminActionBox
 				$button_edit = $button_delete = "";
 
 			// Pobranie danych do tabeli
-			eval("\$tbody .= \"" . get_template("admin/users_services_trow") . "\";");
+			$tbody .= eval($templates->render("admin/users_services_trow"));
 		}
 
 		// Nie ma zadnych danych do wyswietlenia
 		if (!strlen($tbody))
-			eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
+			$tbody = eval($templates->render("admin/no_records"));
 
 		// Pole wyszukiwania
 		$search_text = htmlspecialchars($get['search']);
-		eval("\$buttons = \"" . get_template("admin/form_search") . "\";");
+		$buttons = eval($templates->render("admin/form_search"));
 
 		// Pobranie przycisku dodajacego flagi
 		$buttons = "";
@@ -100,16 +100,16 @@ class PageAdminUsersServices extends PageAdmin implements IPageAdminActionBox
 			$tfoot_class = "display_tfoot";
 
 		// Pobranie nagłówka tabeli
-		eval("\$thead = \"" . get_template("admin/users_services_thead") . "\";");
+		$thead = eval($templates->render("admin/users_services_thead"));
 
 		// Pobranie struktury tabeli
-		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
+		$output = eval($templates->render("admin/table_structure"));
 		return $output;
 	}
 
 	public function get_action_box($box_id, $data)
 	{
-		global $heart, $db, $lang;
+		global $heart, $db, $lang, $templates;
 
 		if (!get_privilages("manage_player_services"))
 			return array(
@@ -130,7 +130,7 @@ class PageAdminUsersServices extends PageAdmin implements IPageAdminActionBox
 					));
 				}
 
-				eval("\$output = \"" . get_template("admin/action_boxes/user_service_add") . "\";");
+				$output = eval($templates->render("admin/action_boxes/user_service_add"));
 				break;
 
 			case "user_service_edit":
@@ -149,7 +149,7 @@ class PageAdminUsersServices extends PageAdmin implements IPageAdminActionBox
 				if (!isset($form_data) || !strlen($form_data))
 					$form_data = $lang->service_edit_unable;
 
-				eval("\$output = \"" . get_template("admin/action_boxes/user_service_edit") . "\";");
+				$output = eval($templates->render("admin/action_boxes/user_service_edit"));
 				break;
 		}
 

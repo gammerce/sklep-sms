@@ -1034,7 +1034,7 @@ if ($action == "charge_wallet") {
 	$db->query($db->prepare(
 		"INSERT INTO `" . TABLE_PREFIX . "sms_codes` (`code`, `tariff`) " .
 		"VALUES( '%s', '%d' )",
-		array(strtoupper($_POST['code']), $_POST['tariff'])
+		array($lang->strtoupper($_POST['code']), $_POST['tariff'])
 	));
 
 	log_info($lang_shop->sprintf($lang_shop->sms_code_admin_add, $user['username'], $user['uid'], $_POST['code'], $_POST['tariff']));
@@ -1187,7 +1187,7 @@ if ($action == "charge_wallet") {
 	}
 
 	if (!isset($data['template']))
-		eval("\$data['template'] = \"" . get_template("jsonhttp/" . $template) . "\";");
+		$data['template'] = eval($templates->render("jsonhttp/" . $template));
 
 	output_page(json_encode($data), "Content-type: text/plain; charset=\"UTF-8\"");
 }

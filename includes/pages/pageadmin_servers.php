@@ -18,7 +18,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
 	protected function content($get, $post)
 	{
-		global $heart, $lang, $settings;
+		global $heart, $lang, $settings, $templates;
 
 		$i = 0;
 		$tbody = "";
@@ -44,15 +44,15 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 				$button_delete = $button_edit = "";
 
 			// Pobranie danych do tabeli
-			eval("\$tbody .= \"" . get_template("admin/servers_trow") . "\";");
+			$tbody .= eval($templates->render("admin/servers_trow"));
 		}
 
 		// Nie ma zadnych danych do wyswietlenia
 		if (!strlen($tbody))
-			eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
+			$tbody = eval($templates->render("admin/no_records"));
 
 		// Pobranie nagłówka tabeli
-		eval("\$thead = \"" . get_template("admin/servers_thead") . "\";");
+		$thead = eval($templates->render("admin/servers_thead"));
 
 		if (get_privilages("manage_servers"))
 			// Pobranie przycisku dodającego serwer
@@ -63,13 +63,13 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 			));
 
 		// Pobranie struktury tabeli
-		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
+		$output = eval($templates->render("admin/table_structure"));
 		return $output;
 	}
 
 	public function get_action_box($box_id, $data)
 	{
-		global $heart, $db, $lang;
+		global $heart, $db, $lang, $templates;
 
 		if (!get_privilages("manage_servers"))
 			return array(
@@ -99,18 +99,18 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 			));
 		}
 
-
+		$services = "";
 		foreach ($heart->get_services() as $service) {
 			// Dana usługa nie może być kupiona na serwerze
 			if (($service_module = $heart->get_service_module($service['id'])) === NULL || !object_implements($service_module, "IService_AvailableOnServers"))
 				continue;
 
-			$values = create_dom_element("option", strtoupper($lang->no), array(
+			$values = create_dom_element("option", $lang->strtoupper($lang->no), array(
 				'value' => 0,
 				'selected' => $heart->server_service_linked($server['id'], $service['id']) ? "" : "selected"
 			));
 
-			$values .= create_dom_element("option", strtoupper($lang->yes), array(
+			$values .= create_dom_element("option", $lang->strtoupper($lang->yes), array(
 				'value' => 1,
 				'selected' => $heart->server_service_linked($server['id'], $service['id']) ? "selected" : ""
 			));
@@ -118,16 +118,16 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 			$name = htmlspecialchars($service['id']);
 			$text = htmlspecialchars("{$service['name']} ( {$service['id']} )");
 
-			eval("\$services .= \"" . get_template("tr_text_select") . "\";");
+			$services .= eval($templates->render("tr_text_select"));
 		}
 
 		switch($box_id) {
 			case "server_add":
-				eval("\$output = \"" . get_template("admin/action_boxes/server_add") . "\";");
+				$output = eval($templates->render("admin/action_boxes/server_add"));
 				break;
 
 			case "server_edit":
-				eval("\$output = \"" . get_template("admin/action_boxes/server_edit") . "\";");
+				$output = eval($templates->render("admin/action_boxes/server_edit"));
 				break;
 		}
 

@@ -214,7 +214,7 @@ if ($action == "login") {
 	));
 
 	$link = $settings['shop_url_slash'] . "index.php?pid=reset_password&code=" . htmlspecialchars($key);
-	eval("\$text = \"" . get_template("emails/forgotten_password") . "\";");
+	$text = eval($templates->render("emails/forgotten_password"));
 	$ret = send_email($user2['email'], $user2['username'], "Reset Hasła", $text);
 
 	if ($ret == "not_sent")
@@ -434,7 +434,7 @@ if ($action == "login") {
 	if (!$settings['user_edit_service'] || !object_implements($service_module, "IService_UserOwnServicesEdit"))
 		output_page($lang->service_cant_be_modified);
 
-	eval("\$buttons = \"" . get_template("services/my_services_savencancel") . "\";");
+	$buttons = eval($templates->render("services/my_services_savencancel"));
 
 	output_page($buttons . $service_module->user_own_service_edit_form_get($user_service));
 } else if ($action == "get_user_service_brick") {
@@ -559,7 +559,7 @@ if ($action == "login") {
 	}
 
 	if (!isset($data['template']))
-		eval("\$data['template'] = \"" . get_template("jsonhttp/" . $template) . "\";");
+		$data['template'] = eval($templates->render("jsonhttp/" . $template));
 
 	output_page(json_encode($data), "Content-type: text/plain; charset=\"UTF-8\"");
 }

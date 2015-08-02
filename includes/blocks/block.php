@@ -61,9 +61,9 @@ abstract class BlockSimple extends Block
 
 	protected function content($get, $post)
 	{
-		global $user, $lang, $settings;
+		global $user, $lang, $settings, $templates;
 
-		eval("\$output = \"" . get_template($this->template) . "\";");
+		$output = eval($templates->render($this->template));
 		return $output;
 	}
 

@@ -18,7 +18,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
 	protected function content($get, $post)
 	{
-		global $heart, $lang;
+		global $heart, $lang, $templates;
 
 		// Pobranie listy serwisów transakcyjnych
 		$i = 0;
@@ -46,15 +46,15 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 				$button_delete = $button_edit = "";
 
 			// Pobranie danych do tabeli
-			eval("\$tbody .= \"" . get_template("admin/services_trow") . "\";");
+			$tbody .= eval($templates->render("admin/services_trow"));
 		}
 
 		// Nie ma zadnych danych do wyswietlenia
 		if (!strlen($tbody))
-			eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
+			$tbody = eval($templates->render("admin/no_records"));
 
 		// Pobranie nagłówka tabeli
-		eval("\$thead = \"" . get_template("admin/services_thead") . "\";");
+		$thead = eval($templates->render("admin/services_thead"));
 
 		if (get_privilages("manage_services"))
 			// Pobranie przycisku dodającego usługę
@@ -65,13 +65,13 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 			));
 
 		// Pobranie struktury tabeli
-		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
+		$output = eval($templates->render("admin/table_structure"));
 		return $output;
 	}
 
 	public function get_action_box($box_id, $data)
 	{
-		global $heart, $lang;
+		global $heart, $lang, $templates;
 
 		if (!get_privilages("manage_services"))
 			return array(
@@ -117,13 +117,13 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
 		switch ($box_id) {
 			case "service_add":
-				eval("\$output = \"" . get_template("admin/action_boxes/service_add") . "\";");
+				$output = eval($templates->render("admin/action_boxes/service_add"));
 				break;
 
 			case "service_edit":
 				$service_module_name = $heart->get_service_module_name($service['module']);
 
-				eval("\$output = \"" . get_template("admin/action_boxes/service_edit") . "\";");
+				$output = eval($templates->render("admin/action_boxes/service_edit"));
 				break;
 		}
 

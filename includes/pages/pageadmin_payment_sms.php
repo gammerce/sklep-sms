@@ -17,7 +17,7 @@ class PageAdminPaymentSms extends PageAdmin
 
 	protected function content($get, $post)
 	{
-		global $db, $settings, $lang, $G_PAGE;
+		global $db, $settings, $lang, $G_PAGE, $templates;
 
 		$where = "( t.payment = 'sms' ) ";
 
@@ -52,22 +52,25 @@ class PageAdminPaymentSms extends PageAdmin
 
 		$tbody = "";
 		while ($row = $db->fetch_array_assoc($result)) {
-			$row['free'] = $row['free'] ? strtoupper($lang->yes) : strtoupper($lang->no);
+			$row['free'] = $row['free'] ? $lang->strtoupper($lang->yes) : $lang->strtoupper($lang->no);
 			$row['income'] = $row['income'] ? number_format($row['income'], 2) . " " . $settings['currency'] : "";
 			$row['cost'] = $row['cost'] ? number_format($row['cost'], 2) . " " . $settings['currency'] : "";
 			$row['platform'] = get_platform($row['platform']);
 
+			// Poprawienie timestampa
+			$row['timestamp'] = convertDate($row['timestamp']);
+
 			// Pobranie danych do tabeli
-			eval("\$tbody .= \"" . get_template("admin/payment_sms_trow") . "\";");
+			$tbody .= eval($templates->render("admin/payment_sms_trow"));
 		}
 
 		// Nie ma zadnych danych do wyswietlenia
 		if (!strlen($tbody))
-			eval("\$tbody = \"" . get_template("admin/no_records") . "\";");
+			$tbody = eval($templates->render("admin/no_records"));
 
 		// Pole wyszukiwania
 		$search_text = htmlspecialchars($get['search']);
-		eval("\$buttons = \"" . get_template("admin/form_search") . "\";");
+		$buttons = eval($templates->render("admin/form_search"));
 
 		// Pobranie paginacji
 		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
@@ -75,10 +78,10 @@ class PageAdminPaymentSms extends PageAdmin
 			$tfoot_class = "display_tfoot";
 
 		// Pobranie nagłówka tabeli
-		eval("\$thead = \"" . get_template("admin/payment_sms_thead") . "\";");
+		$thead = eval($templates->render("admin/payment_sms_thead"));
 
 		// Pobranie struktury tabeli
-		eval("\$output = \"" . get_template("admin/table_structure") . "\";");
+		$output = eval($templates->render("admin/table_structure"));
 		return $output;
 	}
 
