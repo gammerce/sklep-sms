@@ -283,7 +283,7 @@ if ($action == "charge_wallet") {
 	$delete_logs = $_POST['delete_logs'];
 
 	// Serwis płatności SMS
-	if ($sms_service != '0') {
+	if (strlen($sms_service)) {
 		$result = $db->query($db->prepare(
 			"SELECT id " .
 			"FROM `" . TABLE_PREFIX . "transaction_services` " .
@@ -296,7 +296,7 @@ if ($action == "charge_wallet") {
 	}
 
 	// Serwis płatności internetowej
-	if ($transfer_service != '0') {
+	if (strlen($transfer_service)) {
 		$result = $db->query($db->prepare(
 			"SELECT id " .
 			"FROM `" . TABLE_PREFIX . "transaction_services` " .

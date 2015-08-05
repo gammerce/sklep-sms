@@ -7,7 +7,7 @@
 			<td>{$lang->sms_payment_service}</td>
 			<td>
 				<select name="sms_service">
-					<option value="0">{$lang->none_such}</option>
+					<option value="">{$lang->none_such}</option>
 					{$sms_services}
 				</select>
 			</td>
@@ -16,7 +16,7 @@
 			<td>{$lang->transfer_payment_service}</td>
 			<td>
 				<select name="transfer_service">
-					<option value="0">{$lang->none_such}</option>
+					<option value="">{$lang->none_such}</option>
 					{$transfer_services}
 				</select>
 			</td>
@@ -79,7 +79,7 @@
 			<td>{$lang->user_service_edit}</td>
 			<td>
 				<select name="user_edit_service">
-					<option {$user_edit_service['yes']} value="1">{$lang->yes}</option>
+					<option value="1" {$user_edit_service['yes']}>{$lang->yes}</option>
 					<option value="0" {$user_edit_service['no']}>{$lang->no}</option>
 				</select>
 			</td>
