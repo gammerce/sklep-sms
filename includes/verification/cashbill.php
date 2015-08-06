@@ -36,11 +36,11 @@ class PaymentModuleCashbill extends PaymentModule implements IPaymentSMS, IPayme
 
 	public function prepare_transfer($data)
 	{
-		// Tworzenie userdata
-		$userdata = base64_encode(json_encode($data));
+		$data_hash = time() . "-" . md5(serialize($data));
+		file_put_contents(SCRIPT_ROOT . "data/transfers/" . $data_hash, json_encode($data));
 
 		// Obliczanie hashu
-		$sign = md5($this->data['service'] . $data['cost'] . $data['desc'] . $userdata . $data['forename'] . $data['surname'] . $data['email'] . $this->data['key']);
+		$sign = md5($this->data['service'] . $data['cost'] . $data['desc'] . $data_hash . $data['forename'] . $data['surname'] . $data['email'] . $this->data['key']);
 
 		return array(
 			'url' => $this->data['transfer_url'],
@@ -50,7 +50,7 @@ class PaymentModuleCashbill extends PaymentModule implements IPaymentSMS, IPayme
 			'surname' => $data['surname'],
 			'email' => $data['email'],
 			'amount' => $data['cost'],
-			'userdata' => $userdata,
+			'userdata' => $data_hash,
 			'sign' => $sign,
 		);
 	}

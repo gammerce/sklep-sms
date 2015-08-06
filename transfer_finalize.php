@@ -16,7 +16,7 @@ if ($db->num_rows($result))
 	die("OK");
 
 // Decodujemy dane transakcji
-$transaction_data = json_decode(base64_decode(urldecode($_POST['userdata'])), true);
+$transaction_data = json_decode(file_get_contents(SCRIPT_ROOT . "data/transfers/" . $_POST['userdata']), true);
 
 // Pobieramy dane użytkownika
 if ($transaction_data['uid'])
