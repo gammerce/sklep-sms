@@ -148,7 +148,8 @@ $l['reset_pass'] = "Zresetowano hasło. ID Użytkownika: {1}.";
 $l['transfer_above_amount'] = "Przelewem można płacić tylko za zakupy powyżej 1.00 {1}";
 
 $l['payment_accepted'] = "Zaakceptowano płatność za usługę: {1} Kwota: {2} ID transakcji: {3} Usługa: {4} {5}({6})({7})";
-$l['transfer_accepted'] = "Płatność przelewem: {1} została zaakceptowana, jednakże moduł usługi {2} został źle zaprogramowany i nie doszło do zakupu.";
+$l['transfer_bad_module'] = "Płatność przelewem: {1} została zaakceptowana, jednakże moduł usługi {2} nie został znaleziony i nie doszło do zakupu.";
+$l['transfer_no_purchase'] = "Płatność przelewem: {1} została zaakceptowana, jednakże moduł usługi {2} nie implementuje interfejsu IService_Purchase.";
 $l['payment_not_accepted'] = "Nieudana autoryzacja transakcji: {1} Kwota: {2} Usługa: {3} {4}({5})({6})";
 
 $l['purchase_code'] = "Wykorzystano kod {1} do zakupu usługi przez {2}({3}). ID płatności: {4}";
