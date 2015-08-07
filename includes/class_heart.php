@@ -22,6 +22,9 @@ class Heart
 	private $pages_classes;
 	private $blocks_classes;
 
+	/**
+	 * @var Entity_User[]
+	 */
 	private $users;
 
 	private $groups;
@@ -456,7 +459,7 @@ class Heart
 	public function has_user_group($uid, $gid)
 	{
 		$user = $this->get_user($uid);
-		return in_array($gid, $user['groups']);
+		return in_array($gid, $user->getGroups());
 	}
 
 	//

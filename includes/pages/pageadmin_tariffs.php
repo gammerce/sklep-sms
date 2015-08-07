@@ -39,7 +39,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
 			else
 				$button_delete = "";
 
-			$provision = number_format($tariff_data['provision'], 2);
+			$provision = number_format($tariff_data['provision'] / 100.0, 2);
 
 			// Pobranie danych do tabeli
 			$tbody .= eval($templates->render("admin/tariffs_trow"));
@@ -81,7 +81,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
 
 			case "tariff_edit":
 				$tariff = htmlspecialchars($data['tariff']);
-				$provision = number_format($heart->get_tariff_provision($data['tariff']), 2);
+				$provision = number_format($heart->get_tariff_provision($data['tariff']) / 100.0, 2);
 
 				$output = eval($templates->render("admin/action_boxes/tariff_edit"));
 				break;

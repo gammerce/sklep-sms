@@ -32,7 +32,7 @@ if ($action == "login") {
 
 	json_output("not_logged", $lang->bad_pass_nick, 0);
 } else if ($action == "logout") {
-	if (!$user->isLogged())
+	if (!is_logged())
 		json_output("already_logged_out");
 
 	// Unset all of the session variables.
@@ -143,11 +143,11 @@ if ($action == "login") {
 	$db->query($db->prepare(
 		"INSERT INTO `" . TABLE_PREFIX . "users` (`username`, `password`, `salt`, `email`, `forename`, `surname`, `regip`) " .
 		"VALUES ('%s','%s','%s','%s','%s','%s','%s')",
-		array($username, hash_password($password, $salt), $salt, $email, $forename, $surname, $user['ip'])
+		array($username, hash_password($password, $salt), $salt, $email, $forename, $surname, $user->getLastIp())
 	));
 
 	// LOGING
-	log_info($lang_shop->sprintf($lang_shop->new_account, $db->last_id(), $username, $user['ip']));
+	log_info($lang_shop->sprintf($lang_shop->new_account, $db->last_id(), $username, $user->getLastIp()));
 
 	json_output("registered", $lang->register_success, 1, $data);
 } else if ($action == "forgotten_password") {
@@ -210,20 +210,20 @@ if ($action == "login") {
 		"UPDATE `" . TABLE_PREFIX . "users` " .
 		"SET `reset_password_key`='%s' " .
 		"WHERE `uid`='%d'",
-		array($key, $user2['uid'])
+		array($key, $user2->getUid())
 	));
 
 	$link = $settings['shop_url_slash'] . "index.php?pid=reset_password&code=" . htmlspecialchars($key);
 	$text = eval($templates->render("emails/forgotten_password"));
-	$ret = send_email($user2['email'], $user2['username'], "Reset Hasła", $text);
+	$ret = send_email($user2['email'], $user2->getUsername(), "Reset Hasła", $text);
 
 	if ($ret == "not_sent")
 		json_output("not_sent", $lang->keyreset_error, 0);
 	else if ($ret == "wrong_email")
 		json_output("wrong_sender_email", $lang->wrong_email, 0);
 	else if ($ret == "sent") {
-		log_info($lang_shop->sprintf($lang_shop->reset_key_email, $user2['username'], $user2['uid'], $user2['email'], $username, $email));
-		$data['username'] = $user2['username'];
+		log_info($lang_shop->sprintf($lang_shop->reset_key_email, $user2->getUsername(), $user2->getUid(), $user2['email'], $username, $email));
+		$data['username'] = $user2->getUsername();
 		json_output("sent", $lang->email_sent, 1, $data);
 	}
 } else if ($action == "reset_password") {
@@ -283,7 +283,7 @@ if ($action == "login") {
 		$warnings['pass_repeat'][] = $lang->different_pass;
 	}
 
-	if (hash_password($oldpass, $user['salt']) != $user['password']) {
+	if (hash_password($oldpass, $user->getSalt()) != $user->getPassword()) {
 		$warnings['old_pass'][] = $lang->old_pass_wrong;
 	}
 
@@ -304,11 +304,11 @@ if ($action == "login") {
 		"UPDATE `" . TABLE_PREFIX . "users` " .
 		"SET password='%s', salt='%s'" .
 		"WHERE uid='%d'",
-		array(hash_password($pass, $salt), $salt, $user['uid'])
+		array(hash_password($pass, $salt), $salt, $user->getUid())
 	));
 
 	// LOGING
-	log_info("Zmieniono hasło. ID użytkownika: {$user['uid']}.");
+	log_info("Zmieniono hasło. ID użytkownika: {$user->getUid()}.");
 
 	json_output("password_changed", $lang->password_changed, 1);
 } else if ($action == "purchase_form_validate") {
@@ -319,7 +319,7 @@ if ($action == "login") {
 		json_output("wrong_module", $lang->bad_module, 0);
 
 	// Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
-	if (!$heart->user_can_use_service($user['uid'], $service_module->service))
+	if (!$heart->user_can_use_service($user->getUid(), $service_module->service))
 		json_output("no_permission", $lang->service_no_permission, 0);
 
 	// Przeprowadzamy walidację danych wprowadzonych w formularzu
@@ -336,20 +336,20 @@ if ($action == "login") {
 	} else {
 		//
 		// Uzupełniamy brakujące dane
-		$purchase = $return_data['purchase'];
+		$purchase_data = $return_data['purchase'];
 
-		if(!$purchase->getPayment('cost') && $purchase->getTariff() !== NULL)
-			$purchase->setPayment(array(
-				'cost' => $heart->get_tariff_provision($purchase->getTariff())
+		if(!$purchase_data->getPayment('cost') && $purchase_data->getTariff() !== NULL)
+			$purchase_data->setPayment(array(
+				'cost' => $heart->get_tariff_provision($purchase_data->getTariff())
 			));
 
-		if ($purchase->getPayment('sms_service') === NULL && !$purchase->getPayment("no_sms"))
-			$purchase->setPayment(array(
+		if ($purchase_data->getPayment('sms_service') === NULL && !$purchase_data->getPayment("no_sms"))
+			$purchase_data->setPayment(array(
 				'sms_service' => $settings['sms_service']
 			));
 
-		if ($purchase->getService() === NULL)
-			$purchase->setService($service_module->service['id']);
+		if ($purchase_data->getService() === NULL)
+			$purchase_data->setService($service_module->service['id']);
 
 		$data_encoded = base64_encode(serialize($return_data['purchase']));
 		$return_data['data'] = array(
@@ -365,32 +365,34 @@ if ($action == "login") {
 	if (!isset($_POST['purchase_sign']) || $_POST['purchase_sign'] != md5($_POST['purchase_data'] . $settings['random_key']))
 		json_output("wrong_sign", $lang->wrong_sign, 0);
 
-	/** @var Entity_Purchase $purchase */
-	$purchase = unserialize(base64_decode($_POST['purchase_data']));
+	/** @var Entity_Purchase $purchase_data */
+	$purchase_data = unserialize(base64_decode($_POST['purchase_data']));
 
 	// Dodajemy dane płatności
-	$purchase->setPayment(array(
+	$purchase_data->setPayment(array(
 		'method' => $_POST['method'],
 		'sms_code' => $_POST['sms_code'],
 		'service_code' => $_POST['service_code']
 	));
 
-	$return_payment = validate_payment($purchase);
+	$return_payment = validate_payment($purchase_data);
 	json_output($return_payment['status'], $return_payment['text'], $return_payment['positive'], $return_payment['data']);
 } else if ($action == "refresh_blocks") {
-	if (isset($_POST['bricks']))
+	$data = array();
+	if (isset($_POST['bricks'])) {
 		$bricks = explode(";", $_POST['bricks']);
 
-	foreach ($bricks as $brick) {
-		// Nie ma takiego bloku do odświeżenia
-		if (($block = $heart->get_block($brick)) === NULL)
-			continue;
+		foreach ($bricks as $brick) {
+			// Nie ma takiego bloku do odświeżenia
+			if (($block = $heart->get_block($brick)) === NULL)
+				continue;
 
-		$data[$block->get_content_id()]['content'] = $block->get_content($_GET, $_POST);
-		if ($data[$block->get_content_id()]['content'] !== NULL)
-			$data[$block->get_content_id()]['class'] = $block->get_content_class();
-		else
-			$data[$block->get_content_id()]['class'] = "";
+			$data[$block->get_content_id()]['content'] = $block->get_content($_GET, $_POST);
+			if ($data[$block->get_content_id()]['content'] !== NULL)
+				$data[$block->get_content_id()]['class'] = $block->get_content_class();
+			else
+				$data[$block->get_content_id()]['class'] = "";
+		}
 	}
 
 	output_page(json_encode($data), "Content-type: text/plain; charset=\"UTF-8\"");
@@ -425,7 +427,7 @@ if ($action == "login") {
 
 	$user_service = $db->fetch_array_assoc($result);
 	// Dany użytkownik nie jest właścicielem usługi o danym id
-	if ($user_service['uid'] != $user['uid'])
+	if ($user_service['uid'] != $user->getUid())
 		output_page($lang->dont_play_games);
 
 	if (($service_module = $heart->get_service_module($user_service['service'])) === NULL)
@@ -454,7 +456,7 @@ if ($action == "login") {
 
 	$user_service = $db->fetch_array_assoc($result);
 	// Dany użytkownik nie jest właścicielem usługi o danym id
-	if ($user_service['uid'] != $user['uid'])
+	if ($user_service['uid'] != $user->getUid())
 		output_page($lang->dont_play_games);
 
 	if (($service_module = $heart->get_service_module($user_service['service'])) === NULL)
@@ -490,7 +492,7 @@ if ($action == "login") {
 
 	$user_service = $db->fetch_array_assoc($result);
 	// Dany użytkownik nie jest właścicielem usługi o danym id
-	if ($user_service['uid'] != $user['uid'])
+	if ($user_service['uid'] != $user->getUid())
 		json_output("dont_play_games", $lang->dont_play_games, 0);
 
 	if (($service_module = $heart->get_service_module($user_service['service'])) === NULL)
@@ -536,8 +538,12 @@ if ($action == "login") {
 
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
 } else if ($_GET['action'] == "get_income") {
-	$user['privilages']['view_income'] = $user['privilages']['acp'] = true;
+	$user->setPrivilages(array(
+		'acp' => true,
+		'view_income' => true
+	));
 	$page = new PageAdminIncome();
+
 	output_page($page->get_content($_GET, $_POST), "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "service_action_execute") {
 	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IService_ActionExecute"))

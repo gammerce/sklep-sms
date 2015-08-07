@@ -113,7 +113,7 @@ foreach (scandir(SCRIPT_ROOT . "includes/entity") as $file)
 $G_PID = isset($_GET['pid']) ? $_GET['pid'] : "home";
 $G_PAGE = isset($_GET['page']) && intval($_GET['page']) >= 1 ? intval($_GET['page']) : 1;
 
-$user = new Entity_User();
+$user = $heart->get_user();
 
 // Logowanie się do panelu admina
 if (admin_session()) {
@@ -154,9 +154,9 @@ if (admin_session() && (!$user->isLogged() || !get_privilages("acp"))) {
 	$G_PID = "login";
 
 	// Jeżeli jest zalogowany, ale w międzyczasie odebrano mu dostęp do PA
-	if (is_logged()) {
+	if ($user->isLogged()) {
 		$_SESSION['info'] = "no_privilages";
-		$user = new Entity_User();
+		$user = $heart->get_user();
 	}
 }
 

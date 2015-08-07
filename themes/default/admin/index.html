@@ -16,7 +16,7 @@
 				<div class="hint">{$lang->license_expires}: {$a_Tasks['expire']}</div>
 			</td>
 			<td style="width: 360px; text-align: right;">
-				{$user['username']}
+				{$user->getUsername()}
 				<form method="POST" class="form_logout">
 					<input type="hidden" name="action" value="logout"/>
 					( <a href="#" onclick="$(this).parents('form').submit()">{$lang->logout}</a> )

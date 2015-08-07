@@ -204,44 +204,45 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		// Pobieramy auth_data
 		$auth_data = $this->get_auth_data($data);
 
-		return $this->purchase_data_validate(new Entity_Purchase(array(
-			'order' => array(
-				'server' => $data['server'],
-				'type' => $data['type'],
-				'auth_data' => trim($auth_data),
-				'password' => $data['password'],
-				'passwordr' => $data['password_repeat']
-			),
-			'tariff' => $value[2],
-			'email' => trim($data['email'])
-		)));
+		$purchase_data = new Entity_Purchase();
+		$purchase_data->setOrder(array(
+			'server' => $data['server'],
+			'type' => $data['type'],
+			'auth_data' => trim($auth_data),
+			'password' => $data['password'],
+			'passwordr' => $data['password_repeat']
+		));
+		$purchase_data->setTariff($value[2]);
+		$purchase_data->setEmail($data['email']);
+
+		return $this->purchase_data_validate($purchase_data);
 	}
 
-	public function purchase_data_validate($purchase)
+	public function purchase_data_validate($purchase_data)
 	{
 		global $heart, $db, $lang;
 
 		$warnings = array();
 
 		// Serwer
-		if (!strlen($purchase->getOrder('server')))
+		if (!strlen($purchase_data->getOrder('server')))
 			$warnings['server'][] = $lang->must_choose_server;
 		else {
 			// Sprawdzanie czy serwer o danym id istnieje w bazie
-			$server = $heart->get_server($purchase->getOrder('server'));
+			$server = $heart->get_server($purchase_data->getOrder('server'));
 			if (!$heart->server_service_linked($server['id'], $this->service['id']))
 				$warnings['server'][] = $lang->chosen_incorrect_server;
 		}
 
 		// Wartość usługi
-		if (!$purchase->getTariff())
+		if (!$purchase_data->getTariff())
 			$warnings['value'][] = $lang->must_choose_amount;
 		else {
 			// Wyszukiwanie usługi o konkretnej cenie
 			$result = $db->query($db->prepare(
 				"SELECT * FROM `" . TABLE_PREFIX . "pricelist` " .
 				"WHERE `service` = '%s' AND `tariff` = '%d' AND ( `server` = '%d' OR `server` = '-1' )",
-				array($this->service['id'], $purchase->getTariff(), $server['id'])
+				array($this->service['id'], $purchase_data->getTariff(), $server['id'])
 			));
 
 			if (!$db->num_rows($result)) // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
@@ -256,55 +257,55 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 		// Typ usługi
 		// Mogą być tylko 3 rodzaje typu
-		if ($purchase->getOrder('type') != TYPE_NICK && $purchase->getOrder('type') != TYPE_IP && $purchase->getOrder('type') != TYPE_SID)
+		if ($purchase_data->getOrder('type') != TYPE_NICK && $purchase_data->getOrder('type') != TYPE_IP && $purchase_data->getOrder('type') != TYPE_SID)
 			$warnings['type'][] = $lang->must_choose_type;
-		else if (!($this->service['types'] & $purchase->getOrder('type')))
+		else if (!($this->service['types'] & $purchase_data->getOrder('type')))
 			$warnings['type'][] = $lang->chosen_incorrect_type;
-		else if ($purchase->getOrder('type') & (TYPE_NICK | TYPE_IP)) {
+		else if ($purchase_data->getOrder('type') & (TYPE_NICK | TYPE_IP)) {
 			// Nick
-			if ($purchase->getOrder('type') == TYPE_NICK) {
-				if ($warning = check_for_warnings("nick", $purchase->getOrder('auth_data')))
+			if ($purchase_data->getOrder('type') == TYPE_NICK) {
+				if ($warning = check_for_warnings("nick", $purchase_data->getOrder('auth_data')))
 					$warnings['nick'] = array_merge((array)$warnings['nick'], $warning);
 
 				// Sprawdzanie czy istnieje już taka usługa
 				$query = $db->prepare(
 					"SELECT `password` FROM `" . TABLE_PREFIX . "players_services` " .
 					"WHERE `type` = '%d' AND `auth_data` = '%s' AND `server` = '%d'",
-					array(TYPE_NICK, $purchase->getOrder('auth_data'), $server['id'])
+					array(TYPE_NICK, $purchase_data->getOrder('auth_data'), $server['id'])
 				);
 			} // IP
-			else if ($purchase->getOrder('type') == TYPE_IP) {
-				if ($warning = check_for_warnings("ip", $purchase->getOrder('auth_data')))
+			else if ($purchase_data->getOrder('type') == TYPE_IP) {
+				if ($warning = check_for_warnings("ip", $purchase_data->getOrder('auth_data')))
 					$warnings['ip'] = array_merge((array)$warnings['ip'], $warning);
 
 				// Sprawdzanie czy istnieje już taka usługa
 				$query = $db->prepare(
 					"SELECT `password` FROM `" . TABLE_PREFIX . "players_services` " .
 					"WHERE `type` = '%d' AND `auth_data` = '%s' AND `server` = '%d'",
-					array(TYPE_IP, $purchase->getOrder('auth_data'), $server['id'])
+					array(TYPE_IP, $purchase_data->getOrder('auth_data'), $server['id'])
 				);
 			}
 
 			// Hasło
-			if ($warning = check_for_warnings("password", $purchase->getOrder('password')))
+			if ($warning = check_for_warnings("password", $purchase_data->getOrder('password')))
 				$warnings['password'] = array_merge((array)$warnings['password'], $warning);
-			if ($purchase->getOrder('password') != $purchase->getOrder('passwordr'))
+			if ($purchase_data->getOrder('password') != $purchase_data->getOrder('passwordr'))
 				$warnings['password_repeat'][] = $lang->passwords_not_match;
 
 			// Sprawdzanie czy istnieje już taka usługa
 			if ($temp_password = $db->get_column($query, 'password'))
 				// TODO: Usunąć md5 w przyszłości
-				if ($temp_password != $purchase->getOrder('password') && $temp_password != md5($purchase->getOrder('password')))
+				if ($temp_password != $purchase_data->getOrder('password') && $temp_password != md5($purchase_data->getOrder('password')))
 					$warnings['password'][] = $lang->existing_service_has_different_password;
 
 			unset($temp_password);
 		} // SteamID
 		else
-			if ($warning = check_for_warnings("sid", $purchase->getOrder('auth_data')))
+			if ($warning = check_for_warnings("sid", $purchase_data->getOrder('auth_data')))
 				$warnings['sid'] = array_merge((array)$warnings['sid'], $warning);
 
 		// E-mail
-		if ((strpos($purchase->getUser('platform'), "engine") !== 0 || strlen($purchase->getEmail())) && $warning = check_for_warnings("email", $purchase->getEmail()))
+		if ((strpos($purchase_data->user->getPlatform(), "engine") !== 0 || strlen($purchase_data->getEmail())) && $warning = check_for_warnings("email", $purchase_data->getEmail()))
 			$warnings['email'] = array_merge((array)$warnings['email'], $warning);
 
 		// Jeżeli są jakieś błedy, to je zwróć
@@ -316,13 +317,13 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 				'data' => array('warnings' => $warnings)
 			);
 
-		$purchase->setOrder(array(
+		$purchase_data->setOrder(array(
 			'amount' => $price['amount'],
 			'forever' => $price['amount'] == -1 ? true : false
 		));
 
 		if (strlen($server['sms_service']))
-			$purchase->setPayment(array(
+			$purchase_data->setPayment(array(
 				'sms_service' => $server['sms_service']
 			));
 
@@ -330,39 +331,39 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			'status' => "ok",
 			'text' => $lang->purchase_form_validated,
 			'positive' => true,
-			'purchase' => $purchase
+			'purchase' => $purchase_data
 		);
 	}
 
-	public function order_details($purchase)
+	public function order_details($purchase_data)
 	{
 		global $heart, $lang, $templates;
 
-		$server = $heart->get_server($purchase->getOrder('server'));
-		$type_name = $this->get_type_name2($purchase->getOrder('type'));
-		if (strlen($purchase->getOrder('password')))
-			$password = "<strong>{$lang->password}</strong>: " . htmlspecialchars($purchase->getOrder('password')) . "<br />";
-		$email = strlen($purchase->getEmail()) ? htmlspecialchars($purchase->getEmail()) : $lang->none;
-		$auth_data = htmlspecialchars($purchase->getOrder('auth_data'));
-		$amount = !$purchase->getOrder('forever') ? ($purchase->getOrder('amount') . " " . $this->service['tag']) : $lang->forever;
+		$server = $heart->get_server($purchase_data->getOrder('server'));
+		$type_name = $this->get_type_name2($purchase_data->getOrder('type'));
+		if (strlen($purchase_data->getOrder('password')))
+			$password = "<strong>{$lang->password}</strong>: " . htmlspecialchars($purchase_data->getOrder('password')) . "<br />";
+		$email = strlen($purchase_data->getEmail()) ? htmlspecialchars($purchase_data->getEmail()) : $lang->none;
+		$auth_data = htmlspecialchars($purchase_data->getOrder('auth_data'));
+		$amount = !$purchase_data->getOrder('forever') ? ($purchase_data->getOrder('amount') . " " . $this->service['tag']) : $lang->forever;
 
 		$output = eval($templates->render("services/" . $this::MODULE_ID . "/order_details", true, false));
 		return $output;
 	}
 
-	public function purchase($purchase)
+	public function purchase($purchase_data)
 	{
 		$this->add_player_flags(
-			$purchase->getUser('uid'), $purchase->getOrder('type'), $purchase->getOrder('auth_data'), $purchase->getOrder('password'),
-			$purchase->getOrder('amount'), $purchase->getOrder('server'), $purchase->getOrder('forever')
+			$purchase_data->user->getUid(), $purchase_data->getOrder('type'), $purchase_data->getOrder('auth_data'), $purchase_data->getOrder('password'),
+			$purchase_data->getOrder('amount'), $purchase_data->getOrder('server'), $purchase_data->getOrder('forever')
 		);
 
 		return add_bought_service_info(
-			$purchase->getUser('uid'), $purchase->getUser('username'), $purchase->getUser('ip'), $purchase->getPayment('method'),
-			$purchase->getPayment('payment_id'), $this->service['id'], $purchase->getOrder('server'), $purchase->getOrder('amount'),
-			$purchase->getOrder('auth_data'), $purchase->getEmail(), array(
-				'type' => $purchase->getOrder('type'),
-				'password' => $purchase->getOrder('password')
+			$purchase_data->user->getUid(), $purchase_data->user->getUsername(), $purchase_data->user->getLastip(), $purchase_data->getPayment('method'),
+			$purchase_data->getPayment('payment_id'), $this->service['id'], $purchase_data->getOrder('server'), $purchase_data->getOrder('amount'),
+			$purchase_data->getOrder('auth_data'), $purchase_data->getEmail(), array(
+				'type' => $purchase_data->getOrder('type'),
+				'password' => $purchase_data->getOrder('password')
 			)
 		);
 	}
@@ -466,8 +467,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$data['auth_data'] = htmlspecialchars($data['auth_data']);
 		$data['extra_data']['password'] = htmlspecialchars($data['extra_data']['password']);
 		$data['email'] = htmlspecialchars($data['email']);
-		$cost = $data['cost'] ? number_format($data['cost'], 2) . " " . $settings['currency'] : $lang->none;
-		$data['income'] = number_format($data['income'], 2);
+		$cost = $data['cost'] ? number_format($data['cost'] / 100.0, 2) . " " . $settings['currency'] : $lang->none;
+		$data['income'] = number_format($data['income'] / 100.0, 2);
 
 		if ($data['payment'] == "sms") {
 			$data['sms_code'] = htmlspecialchars($data['sms_code']);
@@ -575,38 +576,31 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		if (!empty($verify_data))
 			return $verify_data;
 
-		// Pobieramy dane o użytkowniku na które jego wykupiona usługa
-		$user2 = $heart->get_user($data['uid']);
-
 		//
 		// Dodajemy usługę
 
 		// Dodawanie informacji o płatności
 		$payment_id = pay_by_admin($user);
 
-		$bought_service_id = $this->purchase(new Entity_Purchase(array(
-			'service' => $this->service['id'],
-			'user' => array(
-				'uid' => $data['uid'],
-				'username' => $user2['username'],
-				'ip' => $user2['ip']
-			),
-			'payment' => array(
-				'method' => "admin",
-				'payment_id' => $payment_id
-			),
-			'order' => array(
-				'server' => $data['server'],
-				'type' => $data['type'],
-				'auth_data' => trim($data['auth_data']),
-				'password' => $data['password'],
-				'amount' => $data['amount'],
-				'forever' => (boolean)$data['forever']
-			),
-			'email' => $data['email']
-		)));
+		$purchase_data = new Entity_Purchase();
+		$purchase_data->setService($this->service['id']);
+		$purchase_data->user = $heart->get_user($data['uid']); // Pobieramy dane o użytkowniku na które jego wykupiona usługa
+		$purchase_data->setPayment(array(
+			'method' => "admin",
+			'payment_id' => $payment_id
+		));
+		$purchase_data->setOrder(array(
+			'server' => $data['server'],
+			'type' => $data['type'],
+			'auth_data' => trim($data['auth_data']),
+			'password' => $data['password'],
+			'amount' => $data['amount'],
+			'forever' => (boolean)$data['forever']
+		));
+		$purchase_data->setEmail($data['email']);
+		$bought_service_id = $this->purchase($purchase_data);
 
-		log_info($lang_shop->sprintf($lang_shop->admin_added_service, $user['username'], $user['uid'], $bought_service_id));
+		log_info($lang_shop->sprintf($lang_shop->admin_added_service, $user->getUsername(), $user->getUid(), $bought_service_id));
 
 		return array(
 			'status' => "added",
@@ -713,7 +707,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$edit_return = $this->user_service_edit($user_service, $data);
 
 		if ($edit_return['status'] == "edited")
-			log_info($lang_shop->sprintf($lang_shop->admin_edited_service, $user['username'], $user['uid'], $user_service['id']));
+			log_info($lang_shop->sprintf($lang_shop->admin_edited_service, $user->getUsername(), $user->getUid(), $user_service['id']));
 
 		return $edit_return;
 	}
@@ -732,7 +726,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 				$warnings['uid'] = array_merge((array)$warnings['uid'], $warning);
 			else {
 				$user2 = $heart->get_user($data['uid']);
-				if (!isset($user2['uid']))
+				if (!$user2->isLogged())
 					$warnings['uid'][] = $lang->no_account_id;
 			}
 		}
@@ -888,7 +882,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		));
 
 		if ($edit_return['status'] == "edited")
-			log_info($lang_shop->sprintf($lang_shop->user_edited_service, $user['username'], $user['uid'], $user_service['id']));
+			log_info($lang_shop->sprintf($lang_shop->user_edited_service, $user->getUsername(), $user->getUid(), $user_service['id']));
 
 		return $edit_return;
 	}
@@ -1145,7 +1139,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			"UPDATE `" . TABLE_PREFIX . "players_services` " .
 			"SET `uid` = '%d' " .
 			"WHERE `service` = '%s' AND `type` = '%d' AND `auth_data` = '%s'",
-			array($user['uid'], $data['service'], $data['type'], $auth_data)
+			array($user->getUid(), $data['service'], $data['type'], $auth_data)
 		));
 
 		if ($db->affected_rows())

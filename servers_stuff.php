@@ -33,7 +33,7 @@ if ($action == "purchase_service") {
 	// Sprawdzamy dane zakupu
 	$purchase_data = new Entity_Purchase();
 	$purchase_data->setService($service_module->service['id']);
-	$purchase_data->user = new Entity_User($_GET['uid']);
+	$purchase_data->user = $heart->get_user($_GET['uid']);
 	$purchase_data->user->setPlatform($_GET['platform']);
 	$purchase_data->setOrder(array(
 		'server' => $_GET['server'],
@@ -60,13 +60,14 @@ if ($action == "purchase_service") {
 		xml_output($return_validation['status'], $return_validation['text'], $return_validation['positive'], $extra_data);
 	}
 
-	$purchase = $return_validation['purchase'];
-	$purchase->setPayment(array(
+	/** @var Entity_Purchase $purchase_data */
+	$purchase_data = $return_validation['purchase'];
+	$purchase_data->setPayment(array(
 		'method' => urldecode($_GET['method']),
 		'sms_code' => urldecode($_GET['sms_code']),
 		'sms_service' => urldecode($_GET['transaction_service'])
 	));
-	$return_payment = validate_payment($purchase);
+	$return_payment = validate_payment($purchase_data);
 
 	$extra_data = "";
 

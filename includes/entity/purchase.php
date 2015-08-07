@@ -42,6 +42,11 @@ class Entity_Purchase {
 	 */
 	private $desc = NULL;
 
+	function __construct() {
+		global $user;
+		$this->user = $user;
+	}
+
 	public function setService($service) {
 		$this->service = (string)$service;
 	}

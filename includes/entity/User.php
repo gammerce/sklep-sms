@@ -190,6 +190,14 @@ class Entity_User
 	}
 
 	/**
+	 * @param string $email
+	 */
+	public function setEmail($email)
+	{
+		$this->email = $email;
+	}
+
+	/**
 	 * @param bool $escape
 	 * @return string
 	 */
@@ -232,11 +240,12 @@ class Entity_User
 	}
 
 	/**
+	 * @param bool $divide
 	 * @return int
 	 */
-	public function getWallet()
+	public function getWallet($divide = false)
 	{
-		return $this->wallet;
+		return $divide ? number_format($this->wallet / 100.0, 2) : $this->wallet;
 	}
 
 	/**
@@ -261,6 +270,14 @@ class Entity_User
 	public function getLastip()
 	{
 		return $this->lastip;
+	}
+
+	/**
+	 * @param string $lastip
+	 */
+	public function setLastip($lastip)
+	{
+		$this->lastip = $lastip;
 	}
 
 	/**

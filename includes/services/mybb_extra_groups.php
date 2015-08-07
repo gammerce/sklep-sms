@@ -280,16 +280,16 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	/**
 	 * Metoda zwraca szczegóły zamówienia, wyświetlane podczas zakupu usługi, przed płatnością.
 	 *
-	 * @param Entity_Purchase $purchase
+	 * @param Entity_Purchase $purchase_data
 	 * @return string        Szczegóły zamówienia
 	 */
-	public function order_details($purchase)
+	public function order_details($purchase_data)
 	{
 		global $lang, $templates;
 
-		$email = $purchase->getEmail() ? htmlspecialchars($purchase->getEmail()) : $lang->none;
-		$username = htmlspecialchars($purchase->getOrder('auth_data'));
-		$amount = $purchase->getOrder('amount') != -1 ? ($purchase->getOrder('amount') . " " . $this->service['tag']) : $lang->forever;
+		$email = $purchase_data->getEmail() ? htmlspecialchars($purchase_data->getEmail()) : $lang->none;
+		$username = htmlspecialchars($purchase_data->getOrder('auth_data'));
+		$amount = $purchase_data->getOrder('amount') != -1 ? ($purchase_data->getOrder('amount') . " " . $this->service['tag']) : $lang->forever;
 
 		$output = eval($templates->render("services/" . $this::MODULE_ID . "/order_details", true, false));
 		return $output;
@@ -298,24 +298,24 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	/**
 	 * Metoda wywoływana, gdy usługa została prawidłowo zakupiona
 	 *
-	 * @param Entity_Purchase $purchase
+	 * @param Entity_Purchase $purchase_data
 	 * @return integer        value returned by function add_bought_service_info
 	 */
-	public function purchase($purchase)
+	public function purchase($purchase_data)
 	{
 		// Nie znaleziono użytkownika o takich danych jak podane podczas zakupu
-		if (($mybb_user = $this->createMybbUserByUsername($purchase->getOrder('auth_data'))) === NULL) {
+		if (($mybb_user = $this->createMybbUserByUsername($purchase_data->getOrder('auth_data'))) === NULL) {
 			// TODO: Dodać co ma się dziać
 			return;
 		}
 		foreach ($this->groups as $group) {
-			$mybb_user->prolongGroup($group, $purchase->getOrder('amount'));
+			$mybb_user->prolongGroup($group, $purchase_data->getOrder('amount'));
 		}
 		$this->saveMybbUser($mybb_user);
 
 		return add_bought_service_info(
-			$purchase->getUser('uid'), $purchase->getUser('username'), $purchase->getUser('ip'), $purchase->getPayment('method'),
-			$purchase->getPayment('payment_id'), $this->service['id'], 0, $purchase->getOrder('amount'), $purchase->getOrder('auth_data'), $purchase->getEmail()
+			$purchase_data->user->getUid(), $purchase_data->user->getUsername(), $purchase_data->user->getLastip(), $purchase_data->getPayment('method'),
+			$purchase_data->getPayment('payment_id'), $this->service['id'], 0, $purchase_data->getOrder('amount'), $purchase_data->getOrder('auth_data'), $purchase_data->getEmail()
 		);
 	}
 
@@ -336,7 +336,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		$username = htmlspecialchars($data['auth_data']);
 		$amount = $data['amount'] != -1 ? ($data['amount'] . " " . $this->service['tag']) : $lang->forever;
 		$email = htmlspecialchars($data['email']);
-		$cost = $data['cost'] ? (number_format($data['cost'], 2) . " " . $settings['currency']) : $lang->none;
+		$cost = $data['cost'] ? (number_format($data['cost'] / 100.0, 2) . " " . $settings['currency']) : $lang->none;
 
 		if ($action == "email")
 			$output = eval($templates->render("services/" . $this::MODULE_ID . "/purchase_info_email", true, false));

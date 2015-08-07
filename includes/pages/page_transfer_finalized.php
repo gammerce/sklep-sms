@@ -27,9 +27,6 @@ class PageTransferFinalized extends Page
 		if (strtoupper($get['status']) != 'OK')
 			return $lang->transfer_error;
 
-		$orderid = htmlspecialchars($get['orderid']);
-		$amount = number_format($get['amount'], 2);
-
 		return purchase_info(array(
 			'payment' => 'transfer',
 			'payment_id' => $get['orderid'],
