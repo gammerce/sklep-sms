@@ -145,7 +145,12 @@ class Payment
 		return $output;
 	}
 
-	public function pay_transfer($data, $user)
+	/**
+	 * @param Entity_Purchase $transfer_data
+	 * @param array $user
+	 * @return array
+	 */
+	public function pay_transfer($purchase, $user)
 	{
 		global $lang;
 
@@ -164,9 +169,8 @@ class Payment
 			);
 
 		// Dodajemy extra info
+		$purchase->
 		$data['platform'] = $this->platform;
-		$data['uid'] = $user['uid'];
-		$data['ip'] = $user['ip'];
 		$data['forename'] = $user['forename'];
 		$data['surname'] = $user['surname'];
 

@@ -214,13 +214,18 @@ function get_pagination($all, $current_page, $script, $get, $row_limit = 0)
 function is_logged()
 {
 	global $user;
-	return $user['uid'] ? true : false;
+	return $user->getUid() ? true : false;
 }
 
-function get_privilages($which, $user = array())
+/**
+ * @param string $which
+ * @param Entity_User $user
+ * @return bool
+ */
+function get_privilages($which, $user = NULL)
 {
 	// Jeżeli nie podano użytkownika
-	if (empty($user))
+	if ($user === NULL)
 		global $user;
 
 	if (in_array($which, array("manage_settings", "view_groups", "manage_groups", "view_player_flags",
@@ -229,23 +234,9 @@ function get_privilages($which, $user = array())
 			"view_antispam_questions", "manage_antispam_questions", "view_services", "manage_services",
 			"view_servers", "manage_servers", "view_logs", "manage_logs", "update")
 	))
-		return $user['privilages'][$which] && $user['privilages']['acp'];
+		return $user->getPrivilages('acp') && $user->getPrivilages($which);
 
-	return $user['privilages'][$which];
-}
-
-function update_activity($uid)
-{
-	if (!$uid)
-		return;
-
-	global $db;
-	$db->query($db->prepare(
-		"UPDATE `" . TABLE_PREFIX . "users` " .
-		"SET `lastactiv` = NOW(), `lastip` = '%s' " .
-		"WHERE `uid` = '%d'",
-		array(get_ip(), $uid)
-	));
+	return $user->getPrivilages($which);
 }
 
 function charge_wallet($uid, $amount)
@@ -444,16 +435,8 @@ function validate_payment($purchase)
 			'data' => array('bsid' => $bought_service_id)
 		);
 	} else if ($purchase->getPayment('method') == "transfer") {
-		// Przygotowujemy dane do przeslania ich do dalszej obróbki w celu stworzenia płatności przelewem
-		$purchase_data = array(
-			'service' => $service_module->service['id'],
-			'email' => $purchase->getEmail(),
-			'cost' => $purchase->getPayment('cost'),
-			'desc' => $lang->sprintf($lang->payment_for_service, $service_module->service['name']),
-			'order' => $purchase->getOrder()
-		);
-
-		return $payment->pay_transfer($purchase_data, $purchase->getUser());
+		$purchase->setDesc($lang->sprintf($lang->payment_for_service, $service_module->service['name']));
+		return $payment->pay_transfer($purchase);
 	}
 }
 

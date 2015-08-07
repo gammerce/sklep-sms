@@ -16,9 +16,6 @@ if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
 	session_start();
 }
 
-/*if (in_array(SCRIPT_NAME, array("admin", "index")))
-	var_dump($_SESSION)*/
-
 $working_dir = dirname(__FILE__) ? dirname(__FILE__) : '.';
 require_once $working_dir . "/includes/init.php";
 
@@ -116,17 +113,23 @@ foreach (scandir(SCRIPT_ROOT . "includes/entity") as $file)
 $G_PID = isset($_GET['pid']) ? $_GET['pid'] : "home";
 $G_PAGE = isset($_GET['page']) && intval($_GET['page']) >= 1 ? intval($_GET['page']) : 1;
 
+$user = new Entity_User();
+
 // Logowanie się do panelu admina
 if (admin_session()) {
-	if (isset($_POST['username']) && isset($_POST['password'])) { // Logujemy się
+	// Logujemy się
+	if (isset($_POST['username']) && isset($_POST['password'])) {
 		$user = $heart->get_user(0, $_POST['username'], $_POST['password']);
-		if (is_logged() && get_privilages("acp"))
-			$_SESSION['uid'] = $user['uid'];
+
+		if ($user->isLogged() && get_privilages("acp")) {
+			$_SESSION['uid'] = $user->getUid();
+		}
 		else {
 			$_SESSION['info'] = "wrong_data";
-			$user = array();
 		}
-	} else if ($_POST['action'] == "logout") { // Wylogowujemy
+	}
+	// Wylogowujemy
+	else if ($_POST['action'] == "logout") {
 		// Unset all of the session variables.
 		$_SESSION = array();
 
@@ -142,38 +145,34 @@ if (admin_session()) {
 	}
 }
 
-// Pobieramy dane gracza, jeżeli jeszcze ich nie ma
-if (!isset($user) && isset($_SESSION['uid']))
+// Pozyskujemy dane gracza, jeżeli jeszcze ich nie ma
+if (!$user->isLogged() && isset($_SESSION['uid']))
 	$user = $heart->get_user($_SESSION['uid']);
 
 // Jeżeli próbujemy wejść do PA i nie jesteśmy zalogowani, to zmień stronę
-if (admin_session() && (!is_logged() || !get_privilages("acp"))) {
+if (admin_session() && (!$user->isLogged() || !get_privilages("acp"))) {
 	$G_PID = "login";
 
 	// Jeżeli jest zalogowany, ale w międzyczasie odebrano mu dostęp do PA
 	if (is_logged()) {
 		$_SESSION['info'] = "no_privilages";
-		$user = array();
+		$user = new Entity_User();
 	}
 }
 
-// Pobieramy dane pustego użytkownika / gościa
-if (!isset($user) || empty($user))
-	$user = $heart->get_user(0);
-
 // Aktualizujemy aktywność użytkownika
-if (is_logged())
-	update_activity($user['uid']);
+$user->updateActivity();
 
-// Pobranie stałych
+// Pozyskanie ustawień sklepu
 $result = $db->query("SELECT * FROM `" . TABLE_PREFIX . "settings`");
 while ($row = $db->fetch_array_assoc($result))
 	$settings[$row['key']] = $row['value'];
 
 // Poprawiamy adres URL sklepu
-if ($settings['shop_url']) {
+if (strlen($settings['shop_url'])) {
 	if (strpos($settings['shop_url'], "http://") !== 0 && strpos($settings['shop_url'], "https://") !== 0)
 		$settings['shop_url'] = "http://" . $settings['shop_url'];
+
 	$settings['shop_url'] = rtrim($settings['shop_url'], "/");
 	$settings['shop_url_slash'] = $settings['shop_url'] . "/";
 }
@@ -251,11 +250,11 @@ if ($a_Tasks['expire']) {
 }
 
 if ($a_Tasks['text'] != "logged_in") {
-	if (get_privilages("manage_settings", $user))
-		$user['privilages'] = array(
+	if (get_privilages("manage_settings"))
+		$user->setPrivilages(array(
 			"acp" => true,
 			"manage_settings" => true
-		);
+		));
 
 	if (SCRIPT_NAME == "index")
 		output_page($a_Tasks['page']);

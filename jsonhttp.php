@@ -24,15 +24,15 @@ if ($action == "login") {
 		json_output("no_data", $lang->no_login_password, 0);
 
 	$user = $heart->get_user(0, $_POST['username'], $_POST['password']);
-	if (is_logged()) {
-		$_SESSION['uid'] = $user['uid'];
-		update_activity($user['uid']);
+	if ($user->isLogged()) {
+		$_SESSION['uid'] = $user->getUid();
+		$user->updateActivity();
 		json_output("logged_in", $lang->login_success, 1);
 	}
 
 	json_output("not_logged", $lang->bad_pass_nick, 0);
 } else if ($action == "logout") {
-	if (!is_logged())
+	if (!$user->isLogged())
 		json_output("already_logged_out");
 
 	// Unset all of the session variables.

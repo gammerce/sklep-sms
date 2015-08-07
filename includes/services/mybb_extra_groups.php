@@ -259,22 +259,21 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 				'data' => array('warnings' => $warnings)
 			);
 
-		$purchase = new Entity_Purchase(array(
-			'service' => $this->service['id'],
-			'order' => array(
-				'auth_data' => $data['username'],
-				'amount' => $price['amount'],
-				'forever' => $price['amount'] == -1 ? true : false
-			),
-			'email' => $data['email'],
-			'tariff' => $tariff,
+		$purchase_data = new Entity_Purchase();
+		$purchase_data->setService($this->service['id']);
+		$purchase_data->setOrder(array(
+			'auth_data' => $data['username'],
+			'amount' => $price['amount'],
+			'forever' => $price['amount'] == -1 ? true : false
 		));
+		$purchase_data->setEmail($data['email']);
+		$purchase_data->setTariff($tariff);
 
 		return array(
 			'status' => "ok",
 			'text' => $lang->purchase_form_validated,
 			'positive' => true,
-			'purchase' => $purchase
+			'purchase' => $purchase_data
 		);
 	}
 

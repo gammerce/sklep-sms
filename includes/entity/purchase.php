@@ -18,9 +18,9 @@ class Entity_Purchase {
 	private $order = NULL;
 
 	/**
-	 * @var array
+	 * @var Entity_User
 	 */
-	private $user = NULL;
+	public $user;
 
 	/**
 	 * @var integer
@@ -37,28 +37,10 @@ class Entity_Purchase {
 	 */
 	private $payment = NULL;
 
-	function __construct($data) {
-		global $user;
-		$this->user = $user;
-
-		if (isset($data['service']))
-			$this->setService($data['service']);
-
-		if (isset($data['user']))
-			$this->setUser($data['user']);
-
-		if (isset($data['order']))
-			$this->setOrder($data['order']);
-
-		if (isset($data['tariff']))
-			$this->setTariff($data['tariff']);
-
-		if (isset($data['email']))
-			$this->setEmail($data['email']);
-
-		if (isset($data['payment']))
-			$this->setPayment($data['payment']);
-	}
+	/**
+	 * @var string
+	 */
+	private $desc = NULL;
 
 	public function setService($service) {
 		$this->service = (string)$service;
@@ -67,11 +49,6 @@ class Entity_Purchase {
 	public function setOrder($order) {
 		foreach($order as $key => $value)
 			$this->order[$key] = $value;
-	}
-
-	public function setUser($user) {
-		foreach($user as $key => $value)
-			$this->user[$key] = $value;
 	}
 
 	public function setTariff($tariff) {
@@ -106,17 +83,6 @@ class Entity_Purchase {
 	 * @param string $key
 	 * @return mixed
 	 */
-	public function getUser($key = NULL) {
-		if ($key === NULL)
-			return $this->user;
-
-		return if_isset($this->user[$key], NULL);
-	}
-
-	/**
-	 * @param string $key
-	 * @return mixed
-	 */
 	public function getPayment($key) {
 		return if_isset($this->payment[$key], NULL);
 	}
@@ -127,6 +93,22 @@ class Entity_Purchase {
 
 	public function getEmail() {
 		return $this->email;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDesc()
+	{
+		return $this->desc;
+	}
+
+	/**
+	 * @param string $desc
+	 */
+	public function setDesc($desc)
+	{
+		$this->desc = $desc;
 	}
 
 }

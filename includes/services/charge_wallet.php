@@ -90,27 +90,26 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 				'data' => array('warnings' => $warnings)
 			);
 
-		$purchase = new Entity_Purchase(array(
-			'service' => $this->service['id'],
-			'tariff' => $data['tariff'],
-			'payment' => array(
-				'cost' => $data['transfer_amount'],
-				'no_wallet' => true
-			)
+		$purchase_data = new Entity_Purchase();
+		$purchase_data->setService($this->service['id']);
+		$purchase_data->setTariff($data['tariff']);
+		$purchase_data->setPayment(array(
+			'cost' => $data['transfer_amount'],
+			'no_wallet' => true
 		));
 
 		if ($data['method'] == "sms") {
-			$purchase->setPayment(array(
+			$purchase_data->setPayment(array(
 				'no_transfer' => true
 			));
-			$purchase->setOrder(array(
+			$purchase_data->setOrder(array(
 				'amount' => $heart->get_tariff_provision($data['tariff'])
 			));
 		} else if ($data['method'] == "transfer") {
-			$purchase->setPayment(array(
+			$purchase_data->setPayment(array(
 				'no_sms' => true
 			));
-			$purchase->setOrder(array(
+			$purchase_data->setOrder(array(
 				'amount' => $data['transfer_amount']
 			));
 		}
@@ -119,7 +118,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 			'status' => "ok",
 			'text' => $lang->purchase_form_validated,
 			'positive' => true,
-			'purchase' => $purchase
+			'purchase' => $purchase_data
 		);
 	}
 

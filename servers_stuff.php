@@ -31,22 +31,19 @@ if ($action == "purchase_service") {
 		xml_output("bad_module", $lang->bad_module, 0);
 
 	// Sprawdzamy dane zakupu
-	$return_validation = $service_module->purchase_data_validate(new Entity_Purchase(array(
-		'service' => $service_module->service['id'],
-		'user' => array(
-			'uid' => $_GET['uid'],
-			'ip' => urldecode($_GET['ip']),
-			'platform' => urldecode($_GET['platform'])
-		),
-		'order' => array(
-			'server' => $_GET['server'],
-			'type' => $_GET['type'],
-			'auth_data' => urldecode($_GET['auth_data']),
-			'password' => urldecode($_GET['password']),
-			'passwordr' => urldecode($_GET['password'])
-		),
-		'tariff' => $_GET['tariff']
-	)));
+	$purchase_data = new Entity_Purchase();
+	$purchase_data->setService($service_module->service['id']);
+	$purchase_data->user = new Entity_User($_GET['uid']);
+	$purchase_data->user->setPlatform($_GET['platform']);
+	$purchase_data->setOrder(array(
+		'server' => $_GET['server'],
+		'type' => $_GET['type'],
+		'auth_data' => urldecode($_GET['auth_data']),
+		'password' => urldecode($_GET['password']),
+		'passwordr' => urldecode($_GET['password'])
+	));
+	$purchase_data->setTariff($_GET['tariff']);
+	$return_validation = $service_module->purchase_data_validate($purchase_data);
 
 	// Są jakieś błędy przy sprawdzaniu danych
 	if ($return_validation['status'] != "ok") {
