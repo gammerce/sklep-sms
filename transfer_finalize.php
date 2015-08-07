@@ -35,6 +35,7 @@ if ($payment->payment_api->check_sign($_POST, $payment->payment_api->data['key']
 		"SET `id` = '%s', `income` = '%.2f', `transfer_service` = '%s', `ip` = '%s', `platform` = '%s' ",
 		array($_POST['orderid'], $_POST['amount'], $_POST['service'], $user['ip'], $user['platform'])
 	));
+	unlink(SCRIPT_ROOT . "data/transfers/" . $_POST['userdata']);
 
 	// Dokonujemy zakupu usługi
 	if (($service_module = $heart->get_service_module($transaction_data['service'])) !== NULL) {
