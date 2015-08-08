@@ -112,6 +112,8 @@ $l['only_yes_no'] = "Pole może przyjąć tylko wartości: 'TAK' i 'NIE'";
 $l['edited_user_service'] = "Prawidłowo wyedytowano usługę.";
 $l['not_edited_user_service'] = "Nie udało się wyedytować usługi.";
 
+$l['user_service_cannot_be_deleted'] = "Ta usługa gracza nie może zostać usunięta.";
+
 $l['you_arent_logged'] = "Coś tu nie gra, nie jesteś zalogowany/a oO";
 $l['not_logged_or_no_perm'] = "Coś tu nie gra, nie jesteś zalogowany/a lub nie masz odpowiednich uprawnień oO";
 

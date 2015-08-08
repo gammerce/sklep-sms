@@ -112,6 +112,8 @@ $l['only_yes_no'] = "Field can only accept values: 'YES' and 'NO'";
 $l['edited_user_service'] = "Service edited correctly.";
 $l['not_edited_user_service'] = "Could not edit service.";
 
+$l['user_service_cannot_be_deleted'] = "This user service cannot be deleted.";
+
 $l['you_arent_logged'] = "Something is wrong, you are not logged in oO";
 $l['not_logged_or_no_perm'] = "Something is wrong, you are not logged in or you have no permission oO";
 

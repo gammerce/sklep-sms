@@ -10,3 +10,4 @@ $l['db_password'] = "Password";
 $l['db_name'] = "Database name";
 $l['mybb_db_data'] = "MyBB database data";
 $l['group_not_integer'] = "Groups have to be integers separated with a coma.";
+$l['mybb_purchase_no_user'] = "User was deleted from MyBB db during purchase. Payment: {1}";

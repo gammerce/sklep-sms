@@ -286,8 +286,8 @@ function update_servers_services($data)
 
 	if (!empty($add)) {
 		$db->query(
-			"INSERT IGNORE INTO `" . TABLE_PREFIX . "servers_services` (`server_id`, `service_id`) VALUES " .
-			implode(", ", $add)
+			"INSERT IGNORE INTO `" . TABLE_PREFIX . "servers_services` (`server_id`, `service_id`) " .
+			"VALUES " . implode(", ", $add)
 		);
 	}
 
@@ -651,8 +651,8 @@ function delete_users_old_services()
 	// Pierwsze pobieramy te, które usuniemy
 	// Potem je usuwamy, a następnie wywołujemy akcje na module
 	$result = $db->query(
-		"SELECT `id`, `server`, `type`, `auth_data`, `service`, `expire`, UNIX_TIMESTAMP() as `now` " .
-		"FROM `" . TABLE_PREFIX . "players_services` " .
+		"SELECT ps.*, UNIX_TIMESTAMP() as `now` " .
+		"FROM `" . TABLE_PREFIX . "players_services` AS ps " .
 		"WHERE `expire` < UNIX_TIMESTAMP() AND `expire` != '-1'"
 	);
 
@@ -673,13 +673,17 @@ function delete_users_old_services()
 	if (!empty($delete_ids))
 		$db->query($db->prepare(
 			"DELETE FROM `" . TABLE_PREFIX . "players_services` " .
-			"WHERE `id` IN (%s)",
-			array(implode(", ", $delete_ids))
+			"WHERE `id` IN (" . implode(", ", $delete_ids) . ")",
+			array()
 		));
 
 	// Wywołujemy akcje po usunieciu
-	foreach ($users_services as $user_service)
+	foreach ($users_services as $user_service) {
+		if (($service_module = $heart->get_service_module($user_service['service'])) === NULL)
+			continue;
+
 		$service_module->user_service_delete_post($user_service);
+	}
 
 	// Usunięcie przestarzałych flag graczy
 	// Tak jakby co
@@ -1085,4 +1089,12 @@ function pr($a) {
 	echo "<pre>";
 	var_dump($a);
 	echo "</pre>";
+}
+
+/**
+ * @param mixed $val
+ * @return bool
+ */
+function is_integer($val) {
+	return strlen($val) && trim($val) === strval(intval($val));
 }

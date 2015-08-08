@@ -154,7 +154,7 @@ if ($action == "charge_wallet") {
 
 	// Pobieramy usługę z bazy
 	$user_service = $db->fetch_array_assoc($db->query($db->prepare(
-		"SELECT * FROM `" . TABLE_PREFIX . "players_services` " .
+		"SELECT ps.*, UNIX_TIMESTAMP() as `now` FROM `" . TABLE_PREFIX . "players_services` AS ps " .
 		"WHERE `id` = '%d'",
 		array($_POST['id'])
 	)));
@@ -162,6 +162,12 @@ if ($action == "charge_wallet") {
 	// Brak takiej usługi
 	if (empty($user_service))
 		json_output("no_service", $lang->no_service, 0);
+
+	// Wywolujemy akcje przy usuwaniu
+	$service_module = $heart->get_service_module($user_service['service']);
+	if ($service_module !== NULL && !$service_module->user_service_delete($user_service)) {
+		json_output("no_service", $lang->service_cannot_be_deleted, 0);
+	}
 
 	// Usunięcie usługi gracza
 	$db->query($db->prepare(
@@ -171,10 +177,8 @@ if ($action == "charge_wallet") {
 	));
 	$affected = $db->affected_rows();
 
-	// Wywolujemy akcje przy usuwaniu
-	$service_module = $heart->get_service_module($user_service['service']);
 	if ($service_module !== NULL) {
-		$service_module->user_service_delete($user_service);
+		$service_module->user_service_delete_post($user_service);
 	}
 
 	// Zwróć info o prawidłowym lub błędnym usunięciu
@@ -457,7 +461,7 @@ if ($action == "charge_wallet") {
 		$warnings['short_description'] = array_merge((array)$warnings['short_description'], $warning);
 
 	// Kolejność
-	if (!strlen($_POST['order']) || trim($_POST['order']) !== strval(intval($_POST['order']))) {
+	if (!is_integer($_POST['order'])) {
 		$warnings['order'][] = $lang->field_integer;
 	}
 

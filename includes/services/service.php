@@ -29,7 +29,7 @@ abstract class Service
 	 * Metoda wywoływana przy usuwaniu usługi użytkownika.
 	 *
 	 * @param array $user_service Dane o usłudze z bazy danych
-	 * @return boolean
+	 * @return bool
 	 */
 	public function user_service_delete($user_service)
 	{

@@ -60,8 +60,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 		else {
 			$groups = explode(",", $data['mybb_groups']);
 			foreach($groups as $group) {
-				$group = trim($group);
-				if(strlen($group) && $group !== strval(intval($group))) {
+				if(!is_integer($group)) {
 					$warnings['mybb_groups'][] = $lang->group_not_integer;
 					break;
 				}
@@ -244,6 +243,30 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 			if (!$this->db_mybb->num_rows($result))
 				$warnings['username'][] = $lang->no_user;
 
+			// Sprawdzamy czy dany mybb_uzytkownik ma juz takie grupy jakie probuje kupic
+			// Jezeli ma i nie sa to grupy kupione przez sklep to rzuc bledem
+			// Jezeli ma ale sa to grupy kupione przez sklep, to zezwol na zakup
+			/*$row = $this->db_mybb->fetch_array_assoc($result);
+			$groups = array();
+
+			if (strlen($row['additionalgroups']))
+				$groups = explode(',', $row['additionalgroups']);
+
+			if (strlen($row['usergroup']))
+				$groups[] = $row['usergroup'];
+
+			$groups = array_intersect($this->groups, $groups);
+			if (!empty($groups)) {
+				// Sprawdzamy czy grupy ktore ma uzytkownik sa kupione przez sklep
+				$result = $db->query($db->prepare(
+					"SELECT 1 FROM `" . TABLE_PREFIX . "mybb_group` " .
+					"WHERE `expire` > NOW() AND `uid` = '%d' AND `gid` IN (" . implode(',', $groups) . ")",
+					array($row['uid'])
+				));
+
+				if (count($groups) > $db->num_rows($result))
+					$warnings['username'][] = $lang->mybb_user_has_groups;
+			}*/
 		}
 
 		// E-mail
@@ -306,9 +329,11 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	{
 		// Nie znaleziono użytkownika o takich danych jak podane podczas zakupu
 		if (($mybb_user = $this->createMybbUserByUsername($purchase->getOrder('auth_data'))) === NULL) {
-			// TODO: Dodać co ma się dziać
-			return;
+			global $lang_shop;
+			log_info($lang_shop->sprintf($lang_shop->mybb_purchase_no_user, json_encode($purchase->getPayment())));
+			die("Critical error occured");
 		}
+
 		foreach ($this->groups as $group) {
 			$mybb_user->prolongGroup($group, $purchase->getOrder('amount'));
 		}
@@ -316,7 +341,11 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 
 		return add_bought_service_info(
 			$purchase->getUser('uid'), $purchase->getUser('username'), $purchase->getUser('ip'), $purchase->getPayment('method'),
-			$purchase->getPayment('payment_id'), $this->service['id'], 0, $purchase->getOrder('amount'), $purchase->getOrder('auth_data'), $purchase->getEmail()
+			$purchase->getPayment('payment_id'), $this->service['id'], 0, $purchase->getOrder('amount'), $purchase->getOrder('auth_data'), $purchase->getEmail(),
+			array(
+				'uid' => $mybb_user->getUid(),
+				'groups' => implode(',', $this->groups)
+			)
 		);
 	}
 
@@ -357,10 +386,11 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	 * @return null|Entity_MyBB_User
 	 */
 	private function createMybbUserByUsername($username) {
+		global $db;
 		$this->connectMybb();
 
 		$result = $this->db_mybb->query($this->db_mybb->prepare(
-			"SELECT `uid`, `usergroup`, `additionalgroups` " .
+			"SELECT `uid`, `additionalgroups` " .
 			"FROM `mybb_users` " .
 			"WHERE `username` = '%s'",
 			array($username)
@@ -371,11 +401,20 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 
 		$row_mybb = $this->db_mybb->fetch_array_assoc($result);
 
-		// TODO: Pozyskanie danych o kupionych grupach
+		$mybb_user = new Entity_MyBB_User($row_mybb['uid']);
+		$mybb_user->setMybbAddGroups(explode(",", $row_mybb['additionalgroups']));
 
-		$mybb_user = new Entity_MyBB_User(array(
-			'uid' => $row_mybb['uid']
+		$result = $db->query($db->prepare(
+			"SELECT `gid`, UNIX_TIMESTAMP(`expire`) as `expire` FROM `". TABLE_PREFIX . "mybb_group` ".
+			"WHERE `uid` = '%d'",
+			array($row_mybb['uid'])
 		));
+
+		while ($row = $db->fetch_array_assoc($result)) {
+			$mybb_user->setGroups(array(
+				$row['gid'] => $row['expire']
+			));
+		}
 
 		return $mybb_user;
 	}
@@ -386,9 +425,39 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	 * @param Entity_MyBB_User $mybb_user
 	 */
 	private function saveMybbUser($mybb_user) {
+		global $db;
 		$this->connectMybb();
 
-		// TODO: Zapisanie użytkownika do db oraz db_mybb
+		$values = array();
+		foreach($mybb_user->getGroups() as $gid => $expire) {
+			$values[] = $db->prepare(
+				"('%d', '%d', FROM_UNIXTIME('%d'), '%d')",
+				array($mybb_user->getUid(), $gid, $expire, in_array($gid, $mybb_user->getMybbAddGroups()))
+			);
+		}
+
+		if (!empty($values)) {
+			$db->query(
+				"INSERT INTO `" . TABLE_PREFIX . "mybb_group` (`uid`, `gid`, `expire` `was_before`) " .
+				"VALUES " . implode(", ", $values) . " " .
+				"ON DUPLICATE KEY " .
+				"UPDATE `expire` = VALUES(`expire`)"
+			);
+		}
+
+		$addgroups = array_unique(array_merge($mybb_user->getGroups(), $mybb_user->getMybbAddGroups()));
+
+		$this->db_mybb->query($this->db_mybb->prepare(
+			"UPDATE `mybb_users` SET `additionalgroups` = '%s'",
+			array(implode(',', $addgroups))
+		));
+	}
+
+	public function user_service_delete($user_service) {
+		global $db;
+		$this->connectMybb();
+
+
 	}
 
 	private function connectMybb() {

@@ -75,11 +75,11 @@ class Entity_Purchase {
 	}
 
 	public function setTariff($tariff) {
-		$this->tariff = (integer)$tariff;
+		$this->tariff = intval($tariff);
 	}
 
 	public function setEmail($email) {
-		$this->email = (string)$email;
+		$this->email = strval($email);
 	}
 
 	public function setPayment($payment) {
@@ -117,7 +117,10 @@ class Entity_Purchase {
 	 * @param string $key
 	 * @return mixed
 	 */
-	public function getPayment($key) {
+	public function getPayment($key = NULL) {
+		if ($key === NULL)
+			return $this->payment;
+
 		return if_isset($this->payment[$key], NULL);
 	}
 
