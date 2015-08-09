@@ -60,7 +60,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 		else {
 			$groups = explode(",", $data['mybb_groups']);
 			foreach($groups as $group) {
-				if(!is_integer($group)) {
+				if(!my_is_integer($group)) {
 					$warnings['mybb_groups'][] = $lang->group_not_integer;
 					break;
 				}

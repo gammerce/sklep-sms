@@ -461,13 +461,13 @@ if ($action == "charge_wallet") {
 		$warnings['short_description'] = array_merge((array)$warnings['short_description'], $warning);
 
 	// Kolejność
-	if (!is_integer($_POST['order'])) {
+	if (!my_is_integer($_POST['order'])) {
 		$warnings['order'][] = $lang->field_integer;
 	}
 
 	// Grupy
 	foreach ($_POST['groups'] as $group) {
-		if (is_null($heart->get_group($group))) {
+		if ($heart->get_group($group) === NULL) {
 			$warnings['groups[]'][] = $lang->wrong_group;
 			break;
 		}
@@ -973,9 +973,10 @@ if ($action == "charge_wallet") {
 
 	if ($action == "price_add") {
 		$db->query($db->prepare(
-			"INSERT " .
-			"INTO " . TABLE_PREFIX . "pricelist (service,tariff,amount,server) " .
-			"VALUES( '%s', '%d', '%d', '%d' )",
+			"INSERT INTO " . TABLE_PREFIX . "pricelist (service,tariff,amount,server) " .
+			"VALUES( '%s', '%d', '%d', '%d' ) " .
+			"ON DUPLICATE KEY UPDATE " .
+			"`amount` = VALUES(`amount`)",
 			array($_POST['service'], $_POST['tariff'], $_POST['amount'], $_POST['server'])));
 
 		log_info("Admin {$user['username']}({$user['uid']}) dodał cenę. ID: " . $db->last_id());

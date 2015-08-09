@@ -1095,6 +1095,6 @@ function pr($a) {
  * @param mixed $val
  * @return bool
  */
-function is_integer($val) {
+function my_is_integer($val) {
 	return strlen($val) && trim($val) === strval(intval($val));
 }
