@@ -1,9 +1,9 @@
-// Kliknięcie dodania usługi gracza
+// Kliknięcie dodania usługi użytkownika
 $(document).delegate("#user_service_button_add", "click", function () {
 	show_action_box(get_get_param("pid"), "user_service_add");
 });
 
-// Kliknięcie edycji usługi gracza
+// Kliknięcie edycji usługi użytkownika
 $(document).delegate("[id^=edit_row_]", "click", function () {
 	var row_id = $("#" + $(this).attr("id").replace('edit_row_', 'row_'));
 	show_action_box(get_get_param("pid"), "user_service_edit", {
@@ -11,7 +11,7 @@ $(document).delegate("[id^=edit_row_]", "click", function () {
 	});
 });
 
-// Wybranie usługi podczas dodawania usługi graczowi
+// Wybranie usługi podczas dodawania usługi użytkownikowi
 var extra_fields;
 $(document).delegate("#form_user_service_add [name=service]", "change", function () {
 	// Brak wybranego modułu
@@ -36,7 +36,7 @@ $(document).delegate("#form_user_service_add [name=service]", "change", function
 	});
 });
 
-// Usuwanie usługi gracza
+// Usuwanie usługi użytkownika
 $(document).delegate("[id^=delete_row_]", "click", function () {
 	var row_id = $("#" + $(this).attr("id").replace('delete_row_', 'row_'));
 
@@ -81,7 +81,7 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 	});
 });
 
-// Dodanie usługi gracza
+// Dodanie usługi użytkownikowi
 $(document).delegate("#form_user_service_add", "submit", function (e) {
 	e.preventDefault();
 	loader.show();
@@ -128,7 +128,7 @@ $(document).delegate("#form_user_service_add", "submit", function (e) {
 	});
 });
 
-// Edycja usługi gracza
+// Edycja usługi użytkownika
 $(document).delegate("#form_user_service_edit", "submit", function (e) {
 	e.preventDefault();
 	loader.show();

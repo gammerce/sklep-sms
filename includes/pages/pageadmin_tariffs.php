@@ -2,7 +2,7 @@
 
 $heart->register_page("tariffs", "PageAdminTariffs", "admin");
 
-class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
+class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
 {
 
 	const PAGE_ID = "tariffs";
@@ -70,11 +70,11 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
 
 		if (!get_privilages("manage_settings"))
 			return array(
-				'id'	=> "not_logged_in",
-				'text'	=> $lang->not_logged_or_no_perm
+				'status' => "not_logged_in",
+				'text' => $lang->not_logged_or_no_perm
 			);
 
-		switch($box_id) {
+		switch ($box_id) {
 			case "tariff_add":
 				$output = eval($templates->render("admin/action_boxes/tariff_add"));
 				break;
@@ -88,8 +88,8 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
 		}
 
 		return array(
-			'id'		=> "ok",
-			'template'	=> $output
+			'status' => 'ok',
+			'template' => $output
 		);
 	}
 

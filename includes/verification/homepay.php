@@ -2,7 +2,7 @@
 
 $heart->register_payment_api("homepay", "PaymentModuleHomepay");
 
-class PaymentModuleHomepay extends PaymentModule implements IPaymentSMS
+class PaymentModuleHomepay extends PaymentModule implements IPayment_Sms
 {
 
 	const SERVICE_ID = "homepay";

@@ -14,7 +14,7 @@ interface IService_UserOwnServices
 	 *
 	 * @param array $user_service Dane o usłudze z bazy danych
 	 * @param string $button_edit String przycisku do edycji usługi
-	 * (jeżeli moduł ma mieć mozliwość edycji usług przez gracza,
+	 * (jeżeli moduł ma mieć mozliwość edycji usług przez użytkownika,
 	 * musisz ten przycisk umieścić w informacjach o usłudze)
 	 * @return string        Informacje o usłudze
 	 */

@@ -32,7 +32,8 @@ class PagePayment extends Page
 			return $lang->error_occured;
 
 		if (($service_module = $heart->get_service_module($purchase->getService())) === NULL
-			|| !object_implements($service_module, "IService_PurchaseWeb"))
+			|| !object_implements($service_module, "IService_PurchaseWeb")
+		)
 			return $lang->bad_module;
 
 		// Pobieramy szczegóły zamówienia

@@ -91,7 +91,7 @@ if ($action == "charge_wallet") {
 	if (!strlen($_POST['service']))
 		json_output("no_service", $lang->no_service_chosen, 0);
 
-	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IService_UserServiceAdminManage"))
+	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IService_UserServiceAdminAdd"))
 		json_output("wrong_module", $lang->bad_module, 0);
 
 	$return_data = $service_module->user_service_admin_add($_POST);
@@ -126,9 +126,7 @@ if ($action == "charge_wallet") {
 	if (empty($user_service))
 		json_output("no_service", $lang->no_service, 0);
 
-	$user_service = $user_service[0];
-
-	// Wykonujemy metode edycji usługi gracza przez admina na odpowiednim module
+	// Wykonujemy metode edycji usługi użytkownika przez admina na odpowiednim module
 	$return_data = $service_module->user_service_admin_edit($_POST, $user_service);
 
 	if ($return_data === FALSE)
@@ -165,7 +163,7 @@ if ($action == "charge_wallet") {
 		json_output("no_service", $lang->service_cannot_be_deleted, 0);
 	}
 
-	// Usunięcie usługi gracza
+	// Usunięcie usługi użytkownika
 	$db->query($db->prepare(
 		"DELETE FROM `" . TABLE_PREFIX . "user_service` " .
 		"WHERE `id` = '%d'",
@@ -179,7 +177,7 @@ if ($action == "charge_wallet") {
 
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($affected) {
-		log_info($lang_shop->sprintf($lang_shop->service_admin_delete, $user['username'], $user['uid'], $user_service['id']));
+		log_info($lang_shop->sprintf($lang_shop->user_service_admin_delete, $user['username'], $user['uid'], $user_service['id']));
 
 		json_output("deleted", $lang->delete_service, 1);
 	} else
@@ -333,7 +331,7 @@ if ($action == "charge_wallet") {
 		$warnings['cron'][] = $lang->only_yes_no;
 	}
 
-	// Edytowanie usługi przez gracza
+	// Edytowanie usługi przez użytkownika
 	if (!in_array($_POST['user_edit_service'], array("1", "0"))) {
 		$warnings['user_edit_service'][] = $lang->only_yes_no;
 	}
@@ -1167,12 +1165,12 @@ if ($action == "charge_wallet") {
 	if (($page = $heart->get_page($_POST['page_id'], "admin")) === NULL)
 		json_output("wrong_page", $lang->wrong_page_id, 0);
 
-	if (!object_implements($page, "IPageAdminActionBox"))
+	if (!object_implements($page, "IPageAdmin_ActionBox"))
 		json_output("page_no_action_box", $lang->no_action_box_support, 0);
 
 	$action_box = $page->get_action_box($_POST['box_id'], $_POST);
 
-	actionbox_output($action_box['id'], $action_box['text'], $action_box['template']);
+	actionbox_output($action_box['status'], $action_box['text'], $action_box['template']);
 } else if ($action == "get_template") {
 	$template = $_POST['template'];
 	// Zabezpieczanie wszystkich wartości post

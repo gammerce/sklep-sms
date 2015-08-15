@@ -39,7 +39,7 @@ abstract class Service
 	}
 
 	/**
-	 * Metoda wywoływana po usunięciu usługi gracza.
+	 * Metoda wywoływana po usunięciu usługi użytkownika.
 	 *
 	 * @param array $user_service Dane o usłudze z bazy danych
 	 */

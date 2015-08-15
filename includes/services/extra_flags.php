@@ -2,7 +2,7 @@
 
 $heart->register_service_module("extra_flags", "Dodatkowe Uprawnienia / Flagi", "ServiceExtraFlags", "ServiceExtraFlagsSimple");
 
-class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, IService_Create, IService_AvailableOnServers
+class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, IService_Create, IService_AvailableOnServers, IService_UserServiceAdminDisplay
 {
 
 	const MODULE_ID = "extra_flags";
@@ -153,11 +153,109 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 		return "";
 	}
 
+	// ----------------------------------------------------------------------------------
+	// ### Wyświetlanie usług użytkowników w PA
+
+	public static function user_service_admin_display_subpageid_get()
+	{
+		return 'user_service_extra_flags';
+	}
+
+	public function user_service_admin_display_title_get()
+	{
+		global $lang;
+		return $lang->user_service_extra_flags;
+	}
+
+	public function user_service_admin_display_get($get, $post)
+	{
+		global $heart, $db, $settings, $lang, $G_PAGE, $templates;
+
+		// Wyszukujemy dane ktore spelniaja kryteria
+		$where = "";
+		if (isset($get['search']))
+			searchWhere(array("us.id", "us.uid", "u.username", "srv.name", "s.name", "usef.auth_data"), urldecode($get['search']), $where);
+		// Jezeli jest jakis where, to dodajemy WHERE
+		if (strlen($where))
+			$where = "WHERE " . $where . " ";
+
+		$result = $db->query(
+			"SELECT SQL_CALC_FOUND_ROWS us.id AS `id`, us.uid AS `uid`, u.username AS `username`, " .
+			"srv.name AS `server`, s.id AS `service_id`, s.name AS `service`, " .
+			"usef.type AS `type`, usef.auth_data AS `auth_data`, us.expire AS `expire` " .
+			"FROM `" . TABLE_PREFIX . "user_service` AS us " .
+			"INNER JOIN `" . TABLE_PREFIX . "user_service_extra_flags` AS usef ON usef.us_id = us.id " .
+			"LEFT JOIN `" . TABLE_PREFIX . "services` AS s ON s.id = usef.service " .
+			"LEFT JOIN `" . TABLE_PREFIX . "servers` AS srv ON srv.id = usef.server " .
+			"LEFT JOIN `" . TABLE_PREFIX . "users` AS u ON u.uid = us.uid " .
+			$where .
+			"ORDER BY us.id DESC " .
+			"LIMIT " . get_row_limit($G_PAGE)
+		);
+		$rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
+
+		$i = 0;
+		$tbody = "";
+		while ($row = $db->fetch_array_assoc($result)) {
+			$i += 1;
+			// Zabezpieczanie danych
+			$row['auth_data'] = htmlspecialchars($row['auth_data']);
+			$row['service'] = htmlspecialchars($row['service']);
+			$row['server'] = htmlspecialchars($row['server']);
+			$username = $row['uid'] ? htmlspecialchars($row['username']) . " ({$row['uid']})" : $lang->none;
+
+			// Zamiana daty
+			$row['expire'] = $row['expire'] === NULL ? $lang->never : date($settings['date_format'], $row['expire']);
+
+			// Pobranie przycisku edycji oraz usuwania
+			if (get_privilages("manage_user_services")) {
+				$button_edit = create_dom_element("img", "", array(
+					'id' => "edit_row_{$i}",
+					'src' => "images/edit.png",
+					'title' => $lang->edit . " " . $row['id']
+				));
+
+				$button_delete = create_dom_element("img", "", array(
+					'id' => "delete_row_{$i}",
+					'src' => "images/bin.png",
+					'title' => $lang->delete . " " . $row['id']
+				));
+			} else
+				$button_edit = $button_delete = '';
+
+			// Pobranie danych do tabeli
+			$tbody .= eval($templates->render("admin/user_service_extra_flags_trow"));
+		}
+
+		// Nie ma zadnych danych do wyswietlenia
+		if (!strlen($tbody))
+			$tbody = eval($templates->render("admin/no_records"));
+
+		// Pole wyszukiwania
+		$search_text = htmlspecialchars($get['search']);
+		$buttons = eval($templates->render("admin/form_search"));
+
+		// Pobranie paginacji
+		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
+		$tfoot_class = strlen($pagination) ? "display_tfoot" : "";
+
+		// Pobranie nagłówka tabeli
+		$thead = eval($templates->render("admin/user_service_extra_flags_thead"));
+
+		return array(
+			'thead' => $thead,
+			'tbody' => $tbody,
+			'tfoot_class' => $tfoot_class,
+			'pagination' => $pagination,
+			'buttons' => $buttons
+		);
+	}
+
 }
 
 class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purchase, IService_PurchaseWeb, IService_PurchaseOutside,
-	IService_UserServiceAdminManage, IService_ActionExecute, IService_UserOwnServices, IService_UserOwnServicesEdit, IService_TakeOver,
-	IService_ServiceCode, IService_ServiceCodeAdminManage
+	IService_UserServiceAdminAdd, IService_UserServiceAdminEdit, IService_ActionExecute, IService_UserOwnServices,
+	IService_UserOwnServicesEdit, IService_TakeOver, IService_ServiceCode, IService_ServiceCodeAdminManage
 {
 
 	function __construct($service)
@@ -377,6 +475,10 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		// Usunięcie przestarzałych usług gracza
 		delete_users_old_services();
 
+		// Usunięcie przestarzałych flag graczy
+		// Tak jakby co
+		$this->delete_old_flags();
+
 		// Dodajemy usługę gracza do listy usług
 		// Jeżeli już istnieje dokładnie taka sama, to ją przedłużamy
 		$result = $db->query($db->prepare(
@@ -431,6 +533,41 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 		// Przeliczamy flagi gracza, ponieważ dodaliśmy nową usługę
 		$this->recalculate_player_flags($server_id, $type, $auth_data);
+	}
+
+	private function delete_old_flags()
+	{
+		global $db;
+
+		$db->query(
+			"DELETE FROM `" . TABLE_PREFIX . "players_flags` " .
+			"WHERE (`a` < UNIX_TIMESTAMP() AND `a` != '-1') " .
+			"AND (`b` < UNIX_TIMESTAMP() AND `b` != '-1') " .
+			"AND (`c` < UNIX_TIMESTAMP() AND `c` != '-1') " .
+			"AND (`d` < UNIX_TIMESTAMP() AND `d` != '-1') " .
+			"AND (`e` < UNIX_TIMESTAMP() AND `e` != '-1') " .
+			"AND (`f` < UNIX_TIMESTAMP() AND `f` != '-1') " .
+			"AND (`g` < UNIX_TIMESTAMP() AND `g` != '-1') " .
+			"AND (`h` < UNIX_TIMESTAMP() AND `h` != '-1') " .
+			"AND (`i` < UNIX_TIMESTAMP() AND `i` != '-1') " .
+			"AND (`j` < UNIX_TIMESTAMP() AND `j` != '-1') " .
+			"AND (`k` < UNIX_TIMESTAMP() AND `k` != '-1') " .
+			"AND (`l` < UNIX_TIMESTAMP() AND `l` != '-1') " .
+			"AND (`m` < UNIX_TIMESTAMP() AND `m` != '-1') " .
+			"AND (`n` < UNIX_TIMESTAMP() AND `n` != '-1') " .
+			"AND (`o` < UNIX_TIMESTAMP() AND `o` != '-1') " .
+			"AND (`p` < UNIX_TIMESTAMP() AND `p` != '-1') " .
+			"AND (`q` < UNIX_TIMESTAMP() AND `q` != '-1') " .
+			"AND (`r` < UNIX_TIMESTAMP() AND `r` != '-1') " .
+			"AND (`s` < UNIX_TIMESTAMP() AND `s` != '-1') " .
+			"AND (`t` < UNIX_TIMESTAMP() AND `t` != '-1') " .
+			"AND (`u` < UNIX_TIMESTAMP() AND `u` != '-1') " .
+			"AND (`v` < UNIX_TIMESTAMP() AND `v` != '-1') " .
+			"AND (`w` < UNIX_TIMESTAMP() AND `w` != '-1') " .
+			"AND (`x` < UNIX_TIMESTAMP() AND `x` != '-1') " .
+			"AND (`y` < UNIX_TIMESTAMP() AND `y` != '-1') " .
+			"AND (`z` < UNIX_TIMESTAMP() AND `z` != '-1')"
+		);
 	}
 
 	private function recalculate_player_flags($server_id, $type, $auth_data)
@@ -641,7 +778,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			'email' => $data['email']
 		)));
 
-		log_info($lang_shop->sprintf($lang_shop->admin_added_service, $user['username'], $user['uid'], $bought_service_id));
+		log_info($lang_shop->sprintf($lang_shop->admin_added_user_service, $user['username'], $user['uid'], $bought_service_id));
 
 		return array(
 			'status' => "added",
@@ -748,7 +885,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$edit_return = $this->user_service_edit($user_service, $data);
 
 		if ($edit_return['status'] == "edited")
-			log_info($lang_shop->sprintf($lang_shop->admin_edited_service, $user['username'], $user['uid'], $user_service['id']));
+			log_info($lang_shop->sprintf($lang_shop->admin_edited_user_service, $user['username'], $user['uid'], $user_service['id']));
 
 		return $edit_return;
 	}
@@ -1305,7 +1442,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		}
 	}
 
-	public function service_code_validate($purchase, $code) {
+	public function service_code_validate($purchase, $code)
+	{
 		return true;
 	}
 
@@ -1362,7 +1500,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		);
 	}
 
-	private function update_user_service($set, $where1, $where2) {
+	private function update_user_service($set, $where1, $where2)
+	{
 		global $db;
 
 		$set_data1 = $set_data2 = $where_data = $where_data2 = array();
@@ -1374,8 +1513,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			);
 			if (in_array($data['column'], array('uid', 'expire'))) {
 				$set_data1[] = $set_data;
-			}
-			else {
+			} else {
 				$set_data2[] = $set_data;
 			}
 		}

@@ -49,7 +49,7 @@ class Page_UserOIwnServices extends Page implements I_BeLoggedMust
 			$user_own_services .= create_brick($service_module->user_own_service_info_get($row, $button_edit));
 		}
 
-		// Nie znalazło żadnych usług danego gracza
+		// Nie znalazło żadnych usług danego użytkownika
 		if (!strlen($user_own_services))
 			$user_own_services = $lang->no_data;
 

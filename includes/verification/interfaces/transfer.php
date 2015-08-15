@@ -1,6 +1,6 @@
 <?php
 
-interface IPaymentTransfer
+interface IPayment_Transfer
 {
 
 	/**

@@ -2,7 +2,7 @@
 
 $heart->register_payment_api("cashbill", "PaymentModuleCashbill");
 
-class PaymentModuleCashbill extends PaymentModule implements IPaymentSMS, IPaymentTransfer
+class PaymentModuleCashbill extends PaymentModule implements IPayment_Sms, IPayment_Transfer
 {
 
 	const SERVICE_ID = "cashbill";

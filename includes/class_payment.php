@@ -5,6 +5,7 @@ class Payment
 
 	private $service;
 	private $platform;
+	/** @var PaymentModule|IPayment_Sms|IPayment_Transfer */
 	public $payment_api;
 
 	function __construct($payment_service, $platform = "")
@@ -36,7 +37,7 @@ class Payment
 			);
 		}
 
-		if (object_implements($this->payment_api, "IPaymentSMS")) {
+		if (object_implements($this->payment_api, "IPayment_Sms")) {
 			$sms_number = $this->payment_api->smses[$tariff]['number'];
 			$sms_return = $this->payment_api->verify_sms($sms_code, $sms_number);
 		} else // Nie przerywamy jeszcze, bo chcemy sprawdzic czy nie ma takiego SMSa do wykrozystania w bazie
@@ -157,7 +158,7 @@ class Payment
 			);
 		}
 
-		if (!object_implements($this->payment_api, "IPaymentTransfer"))
+		if (!object_implements($this->payment_api, "IPayment_Transfer"))
 			return array(
 				'status' => "NO_TRANSFER_SERVE",
 				'text' => $lang->no_transfer_serve

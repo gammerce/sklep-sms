@@ -150,7 +150,7 @@ $l['sm_server'] = "Game server (SM)";
 
 $l['account_charge'] = "Admin {1}({2}) charged user's account: {3}({4}) Amount: {5} {6}";
 $l['account_charge_success'] = "User's account charged successfully: {1} with amount: {2} {3}";
-$l['service_admin_delete'] = "Admin {1}({2}) removed player's service. ID: {3}";
+$l['user_service_admin_delete'] = "Admin {1}({2}) removed user's service. ID: {3}";
 $l['question_edit'] = "Admin {1}({2}) edited antispam question. ID: {3}";
 $l['question_delete'] = "Admin {1}({2}) removed antispam question. ID: {3}";
 $l['settings_admin_edit'] = "Admin {1}({2}) edited shop settings.";
@@ -283,5 +283,7 @@ $l['edit_tariff'] = "Edit tariff";
 $l['edit_payment_method'] = "Edit payment method";
 $l['wallet_charge'] = "Wallet charge";
 $l['edit_user'] = "Edit user";
-$l['add_service_for_user'] = "Add service for user";
-$l['edit_user_service'] = "Edit player's service";
+$l['add_user_service'] = "Add service for user";
+$l['edit_user_service'] = "Edit user's service";
+
+$l['no_subpage'] = "There is no subpage with ID: {1}";

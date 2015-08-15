@@ -1,6 +1,6 @@
 <?php
 
-interface IPaymentSMS
+interface IPayment_Sms
 {
 
 	/**

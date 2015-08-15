@@ -26,8 +26,8 @@ $l['choose_server_for_service'] = "You must choose server to add this service to
 $l['have_to_choose_server'] = "You must choose server.";
 $l['no_server_id'] = "No server with such ID.";
 $l['must_choose_quantity'] = "You must choose quantity.";
-$l['admin_added_service'] = "Admin {1}({2}) added service to user. Purchase ID : {3}";
-$l['admin_edited_service'] = "Admin {1}({2}) edited user's service. ID: {3}";
+$l['admin_added_user_service'] = "Admin {1}({2}) added service to user. Purchase ID : {3}";
+$l['admin_edited_user_service'] = "Admin {1}({2}) edited user's service. ID: {3}";
 $l['user_edited_service'] = "User{1}({2}) edited their service. ID: {3}";
 $l['wrong_service_description_file'] = "Service description file was not created correctly. </br>
 Probably folder <strong>themes/{1}/services/</strong> has no permission to write.";

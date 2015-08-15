@@ -2,7 +2,7 @@
 
 $heart->register_page("users", "PageAdminUsers", "admin");
 
-class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
+class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 {
 
 	const PAGE_ID = "users";
@@ -103,11 +103,11 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
 		if (!get_privilages("manage_users"))
 			return array(
-				'id'	=> "not_logged_in",
-				'text'	=> $lang->not_logged_or_no_perm
+				'status' => "not_logged_in",
+				'text' => $lang->not_logged_or_no_perm
 			);
 
-		switch($box_id) {
+		switch ($box_id) {
 			case "user_edit":
 				// Pobranie użytkownika
 				$row = $heart->get_user($data['uid']);
@@ -131,8 +131,8 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 		}
 
 		return array(
-			'id'		=> "ok",
-			'template'	=> $output
+			'status' => 'ok',
+			'template' => $output
 		);
 	}
 

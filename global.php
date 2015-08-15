@@ -60,15 +60,17 @@ set_error_handler("myErrorHandler");
 $db = new Database($db_host, $db_user, $db_pass, $db_name);
 $db->query("SET NAMES utf8");
 
-// Te interfejsy są potrzebne do klas różnych rodzajów
+// Te interfejsy są potrzebne do klas różnego rodzajów
 foreach (scandir(SCRIPT_ROOT . "includes/interfaces") as $file)
 	if (ends_at($file, ".php"))
 		require_once SCRIPT_ROOT . "includes/interfaces/" . $file;
 
 // Dodajemy klasy wszystkich modulow platnosci
 require_once SCRIPT_ROOT . "includes/verification/payment_module.php";
-require_once SCRIPT_ROOT . "includes/verification/payment_sms.php";
-require_once SCRIPT_ROOT . "includes/verification/payment_transfer.php";
+foreach (scandir(SCRIPT_ROOT . "includes/verification/interfaces") as $file)
+	if (ends_at($file, ".php"))
+		require_once SCRIPT_ROOT . "includes/verification/interfaces/" . $file;
+
 foreach (scandir(SCRIPT_ROOT . "includes/verification") as $file)
 	if (ends_at($file, ".php"))
 		require_once SCRIPT_ROOT . "includes/verification/" . $file;
@@ -142,7 +144,7 @@ if (admin_session()) {
 	}
 }
 
-// Pobieramy dane gracza, jeżeli jeszcze ich nie ma
+// Pozyskujemy dane użytkownika, jeżeli jeszcze ich nie ma
 if (!isset($user) && isset($_SESSION['uid']))
 	$user = $heart->get_user($_SESSION['uid']);
 

@@ -9,9 +9,9 @@ interface IService_UserOwnServicesEdit
 {
 
 	/**
-	 * Metoda powinna zwrócić formularz do edycji danych usługi przez gracza.
+	 * Metoda powinna zwrócić formularz do edycji danych usługi przez użytkownika.
 	 *
-	 * @param $user_service		Dane edytowanej usługi
+	 * @param array $user_service Dane edytowanej usługi
 	 * @return string
 	 */
 	public function user_own_service_edit_form_get($user_service);

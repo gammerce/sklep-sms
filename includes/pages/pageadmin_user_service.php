@@ -2,7 +2,7 @@
 
 $heart->register_page("user_service", "PageAdmin_UserService", "admin");
 
-class PageAdmin_UserService extends PageAdmin implements IPageAdminActionBox
+class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
 {
 
 	const PAGE_ID = "user_service";
@@ -14,20 +14,20 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdminActionBox
 
 		$className = '';
 		foreach (get_declared_classes() as $class) {
-			if (in_array('IPageAdmin_UserService', class_implements($class)) && $class::PAGE_ID == $get['subpage']) {
+			if (in_array('IService_UserServiceAdminDisplay', class_implements($class)) && $class::PAGE_ID == $get['subpage']) {
 				$className = $class;
 				break;
 			}
 		}
 
 		if (!strlen($className))
-			return "Brak podstrony o ID: " . htmlspecialchars($get['subpage']);
+			return $lang->sprintf($lang->no_subpage, htmlspecialchars($get['subpage']));
 
-		/** @var IPageAdmin_UserService $subpage */
-		$subpage = new $className($get, $post);
+		/** @var IService_UserServiceAdminDisplay $service_module_simple */
+		$service_module_simple = new $className();
 
-		$this->title = $subpage->get_title();
-		$content = $subpage->get_content($get, $post);
+		$this->title = $service_module_simple->user_service_admin_display_title_get();
+		$content = $service_module_simple->user_service_admin_display_get($get, $post);
 
 		if (!is_array($content))
 			return $content;
@@ -51,16 +51,16 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdminActionBox
 
 		if (!get_privilages("manage_user_services"))
 			return array(
-				'id'	=> "not_logged_in",
-				'text'	=> $lang->not_logged_or_no_perm
+				'status' => "not_logged_in",
+				'text' => $lang->not_logged_or_no_perm
 			);
 
-		switch($box_id) {
+		switch ($box_id) {
 			case "user_service_add":
 				// Pobranie usług
 				$services = "";
 				foreach ($heart->get_services() as $id => $row) {
-					if (($service_module = $heart->get_service_module($id)) === NULL || !object_implements($service_module, "IService_UserServiceAdminManage"))
+					if (($service_module = $heart->get_service_module($id)) === NULL || !object_implements($service_module, "IService_UserServiceAdminAdd"))
 						continue;
 
 					$services .= create_dom_element("option", $row['name'], array(
@@ -77,21 +77,22 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdminActionBox
 					array($data['id'])
 				));
 
-				if (!empty($user_service) && ($service_module = $heart->get_service_module($user_service['service'])) !== NULL) {
+				if (empty($user_service) || ($service_module = $heart->get_service_module($user_service['service'])) === NULL
+					|| !object_implements($service_module, "IService_UserServiceAdminEdit")
+				) {
+					$form_data = $lang->service_edit_unable;
+				} else {
 					$service_module_id = htmlspecialchars($service_module::MODULE_ID);
 					$form_data = $service_module->user_service_admin_edit_form_get($user_service);
 				}
-
-				if (!isset($form_data) || !strlen($form_data))
-					$form_data = $lang->service_edit_unable;
 
 				$output = eval($templates->render("admin/action_boxes/user_service_edit"));
 				break;
 		}
 
 		return array(
-			'id'		=> "ok",
-			'template'	=> $output
+			'status' => 'ok',
+			'template' => $output
 		);
 	}
 }

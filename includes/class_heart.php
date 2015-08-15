@@ -233,7 +233,7 @@ class Heart
 	 *
 	 * @param string $page_id
 	 * @param string $type
-	 * @return null|Page|PageSimple
+	 * @return null|Page|PageSimple|IPageAdmin_ActionBox
 	 */
 	public function get_page($page_id, $type = "user")
 	{
@@ -465,7 +465,7 @@ class Heart
 			}
 		}
 
-		// Pobieramy uprawnienia gracza w jedno miejsce
+		// Pozyskujemy uprawnienia użytkownika w jedno miejsce
 		$user['privilages'] = array();
 		foreach ($user['groups'] as $gid) {
 			$group = $this->get_group_privilages($gid);

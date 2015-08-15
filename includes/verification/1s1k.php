@@ -2,7 +2,7 @@
 
 $heart->register_payment_api("1s1k", "PaymentModule1s1k");
 
-class PaymentModule1s1k extends PaymentModule implements IPaymentSMS
+class PaymentModule1s1k extends PaymentModule implements IPayment_Sms
 {
 
 	const SERVICE_ID = "1s1k";

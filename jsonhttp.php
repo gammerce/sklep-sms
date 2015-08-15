@@ -487,7 +487,7 @@ if ($action == "login") {
 	if (($service_module = $heart->get_service_module($user_service['service'])) === NULL)
 		json_output("wrong_module", $lang->bad_module, 0);
 
-	// Wykonujemy metode edycji usługi gracza na module, który ją obsługuje
+	// Wykonujemy metode edycji usługi użytkownika na module, który ją obsługuje
 	if (!$settings['user_edit_service'] || !object_implements($service_module, "IService_UserOwnServicesEdit"))
 		json_output("service_cant_be_modified", $lang->service_cant_be_modified, 0);
 

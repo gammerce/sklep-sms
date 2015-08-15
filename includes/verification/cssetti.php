@@ -2,7 +2,7 @@
 
 $heart->register_payment_api("cssetti", "PaymentModuleCssetti");
 
-class PaymentModuleCssetti extends PaymentModule implements IPaymentSMS
+class PaymentModuleCssetti extends PaymentModule implements IPayment_Sms
 {
 
 	const SERVICE_ID = "cssetti";

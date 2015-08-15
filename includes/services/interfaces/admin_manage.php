@@ -2,7 +2,7 @@
 
 /**
  * Obsługa dodawania nowych usług w PA
- * (Ten interfejs powinien być implementowany w klasie *Simple usługi)
+ * (Ten interfejs powinien być implementowany w klasie *Simple modułu usługi)
  *
  * Interface IService_AdminManage
  */
