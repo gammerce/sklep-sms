@@ -83,7 +83,7 @@ if ($action == "charge_wallet") {
 
 	json_output("charged", $lang->sprintf($lang->account_charge_success, $user2['username'], $amount, $settings['currency']), 1);
 } else if ($action == "user_service_add") {
-	if (!get_privilages("manage_player_services")) {
+	if (!get_privilages("manage_user_services")) {
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
 	}
 
@@ -107,7 +107,7 @@ if ($action == "charge_wallet") {
 
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
 } else if ($action == "user_service_edit") {
-	if (!get_privilages("manage_player_services"))
+	if (!get_privilages("manage_user_services"))
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
 
 	// Brak usługi
@@ -117,18 +117,16 @@ if ($action == "charge_wallet") {
 	if (is_null($service_module = $heart->get_service_module($_POST['service'])))
 		json_output("wrong_module", $lang->bad_module, 0);
 
-	// Sprawdzamy czy dana usługa gracza istnieje
-	$result = $db->query($db->prepare(
-		"SELECT * FROM `" . TABLE_PREFIX . "players_services` " .
+	$user_service = get_users_services($db->prepare(
 		"WHERE `id` = '%d'",
 		array($_POST['id'])
 	));
 
 	// Brak takiej usługi w bazie
-	if (!$db->num_rows($result))
+	if (empty($user_service))
 		json_output("no_service", $lang->no_service, 0);
 
-	$user_service = $db->fetch_array_assoc($result);
+	$user_service = $user_service[0];
 
 	// Wykonujemy metode edycji usługi gracza przez admina na odpowiednim module
 	$return_data = $service_module->user_service_admin_edit($_POST, $user_service);
@@ -148,30 +146,28 @@ if ($action == "charge_wallet") {
 
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
 } else if ($action == "user_service_delete") {
-	if (!get_privilages("manage_player_services")) {
+	if (!get_privilages("manage_user_services")) {
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
 	}
 
-	// Pobieramy usługę z bazy
-	$user_service = $db->fetch_array_assoc($db->query($db->prepare(
-		"SELECT ps.*, UNIX_TIMESTAMP() as `now` FROM `" . TABLE_PREFIX . "players_services` AS ps " .
+	$user_service = get_users_services($db->prepare(
 		"WHERE `id` = '%d'",
 		array($_POST['id'])
-	)));
+	));
 
 	// Brak takiej usługi
 	if (empty($user_service))
 		json_output("no_service", $lang->no_service, 0);
 
 	// Wywolujemy akcje przy usuwaniu
-	$service_module = $heart->get_service_module($user_service['service']);
-	if ($service_module !== NULL && !$service_module->user_service_delete($user_service)) {
+	if (($service_module = $heart->get_service_module($user_service['service'])) !== NULL
+		&& !$service_module->user_service_delete($user_service, 'admin')) {
 		json_output("no_service", $lang->service_cannot_be_deleted, 0);
 	}
 
 	// Usunięcie usługi gracza
 	$db->query($db->prepare(
-		"DELETE FROM `" . TABLE_PREFIX . "players_services` " .
+		"DELETE FROM `" . TABLE_PREFIX . "user_service` " .
 		"WHERE `id` = '%d'",
 		array($user_service['id'])
 	));
@@ -189,7 +185,7 @@ if ($action == "charge_wallet") {
 	} else
 		json_output("not_deleted", $lang->no_delete_service, 0);
 } else if ($action == "user_service_add_form_get") {
-	if (!get_privilages("manage_player_services")) {
+	if (!get_privilages("manage_user_services")) {
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
 	}
 
@@ -461,7 +457,7 @@ if ($action == "charge_wallet") {
 		$warnings['short_description'] = array_merge((array)$warnings['short_description'], $warning);
 
 	// Kolejność
-	if (!is_integer($_POST['order'])) {
+	if (!my_is_integer($_POST['order'])) {
 		$warnings['order'][] = $lang->field_integer;
 	}
 
@@ -572,7 +568,7 @@ if ($action == "charge_wallet") {
 	} else
 		json_output("not_deleted", $lang->no_delete_service, 0);
 } else if ($action == "get_service_module_extra_fields") {
-	if (!get_privilages("manage_player_services"))
+	if (!get_privilages("manage_user_services"))
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
 
 	$output = "";

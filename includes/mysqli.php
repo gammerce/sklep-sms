@@ -11,6 +11,7 @@ class Database
 	private $error;
 	private $errno;
 	private $query;
+	private $result;
 	public $counter = 0;
 
 	function __construct($host, $user, $pass, $name, $conn = true)
@@ -59,9 +60,10 @@ class Database
 	public function query($query)
 	{
 		$this->counter += 1;
+		$this->query = $query;
 		//file_put_contents(SQL_LOG, file_get_contents(SQL_LOG)."\n".$query);
-		if ($this->query = @mysqli_query($this->link, $query)) {
-			return $this->query;
+		if ($this->result = @mysqli_query($this->link, $query)) {
+			return $this->result;
 		} else {
 			$this->exception("query_error", $query);
 			return false;
@@ -71,8 +73,8 @@ class Database
 	public function multi_query($query)
 	{
 		//file_put_contents(SQL_LOG, file_get_contents(SQL_LOG)."\n\n".$query);
-		if ($this->query = @mysqli_multi_query($this->link, $query)) {
-			return $this->query;
+		if ($this->result = @mysqli_multi_query($this->link, $query)) {
+			return $this->result;
 		} else {
 			$this->exception("query_error", $query);
 			return false;
@@ -138,6 +140,10 @@ class Database
 	public function escape($str)
 	{
 		return mysqli_real_escape_string($this->link, $str);
+	}
+
+	public function get_last_query() {
+		return $this->query;
 	}
 
 	private function exception($message_id, $query = "")

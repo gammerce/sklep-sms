@@ -224,7 +224,7 @@ function get_privilages($which, $user = array())
 		global $user;
 
 	if (in_array($which, array("manage_settings", "view_groups", "manage_groups", "view_player_flags",
-			"view_player_services", "manage_player_services", "view_income", "view_users", "manage_users",
+			"view_user_services", "manage_user_services", "view_income", "view_users", "manage_users",
 			"view_sms_codes", "manage_sms_codes", "view_service_codes", "manage_service_codes",
 			"view_antispam_questions", "manage_antispam_questions", "view_services", "manage_services",
 			"view_servers", "manage_servers", "view_logs", "manage_logs", "update")
@@ -644,25 +644,56 @@ function purchase_info($data)
 	return $service_module !== NULL && object_implements($service_module, "IService_PurchaseWeb") ? $service_module->purchase_info($data['action'], $pbs) : "";
 }
 
+/**
+ * Pozyskuje z bazy wszystkie usługi użytkowników
+ *
+ * @param string $where
+ * @return array
+ */
+function get_users_services($where = "") {
+	global $heart, $db;
+
+	$join = array();
+	foreach($heart->get_services_modules() as $service_module_data) {
+		/** @var Service $service_module_simple */
+		$service_module_simple = new $service_module_data['classsimple']();
+
+		$table = $service_module_simple::USER_SERVICE_TABLE;
+		if (!strlen($table))
+			continue;
+
+		$join[] = "LEFT JOIN `". TABLE_PREFIX . $table . "` AS {$table} ON {$table}.us_id = us.id ";
+	}
+
+	if (strlen($where))
+		$where = "WHERE " . $where;
+
+	$result = $db->query(
+		"SELECT *, UNIX_TIMESTAMP() AS `now` FROM `". TABLE_PREFIX . "user_service` AS us " .
+		implode(' ', $join) .
+		$where
+	);
+
+	$output = array();
+	while($row = $db->fetch_array_assoc($result))
+		$output[] = $row;
+
+	return count($output) == 1 ? $output[0] : $output;
+}
+
 function delete_users_old_services()
 {
 	global $heart, $db, $settings, $lang_shop;
 	// Usunięcie przestarzałych usług gracza
 	// Pierwsze pobieramy te, które usuniemy
-	// Potem je usuwamy, a następnie wywołujemy akcje na module
-	$result = $db->query(
-		"SELECT ps.*, UNIX_TIMESTAMP() as `now` " .
-		"FROM `" . TABLE_PREFIX . "players_services` AS ps " .
-		"WHERE `expire` < UNIX_TIMESTAMP() AND `expire` != '-1'"
-	);
+	// Potem wywolujemy akcje na module, potem je usuwamy, a następnie wywołujemy akcje na module
 
-	$delete_ids = array();
-	$users_services = array();
-	while ($row = $db->fetch_array_assoc($result)) {
+	$delete_ids = $users_services = array();
+	foreach (get_users_services("`expire` < UNIX_TIMESTAMP() AND `expire` != '-1'") as $row) { // TODO make sure
 		if (($service_module = $heart->get_service_module($row['service'])) === NULL)
 			continue;
 
-		if ($service_module->user_service_delete($row)) {
+		if ($service_module->user_service_delete($row, 'task')) {
 			$delete_ids[] = $row['id'];
 			$users_services[] = $row;
 			log_info($lang_shop->sprintf($lang_shop->expired_service_delete, $row['auth_data'], $row['server'], $row['service'], get_type_name($row['type'])));
@@ -671,11 +702,10 @@ function delete_users_old_services()
 
 	// Usuwamy usugi ktre zwróciły true
 	if (!empty($delete_ids))
-		$db->query($db->prepare(
-			"DELETE FROM `" . TABLE_PREFIX . "players_services` " .
-			"WHERE `id` IN (" . implode(", ", $delete_ids) . ")",
-			array()
-		));
+		$db->query(
+			"DELETE FROM `" . TABLE_PREFIX . "user_service` " .
+			"WHERE `id` IN (" . implode(", ", $delete_ids) . ")"
+		);
 
 	// Wywołujemy akcje po usunieciu
 	foreach ($users_services as $user_service) {
@@ -1095,6 +1125,6 @@ function pr($a) {
  * @param mixed $val
  * @return bool
  */
-function is_integer($val) {
+function my_is_integer($val) {
 	return strlen($val) && trim($val) === strval(intval($val));
 }

@@ -312,10 +312,8 @@ if ($action == "login") {
 
 	json_output("password_changed", $lang->password_changed, 1);
 } else if ($action == "purchase_form_validate") {
-	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL)
-		json_output("wrong_module", $lang->bad_module, 0);
-
-	if (!object_implements($service_module, "IService_PurchaseWeb"))
+	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL
+		|| !object_implements($service_module, "IService_PurchaseWeb"))
 		json_output("wrong_module", $lang->bad_module, 0);
 
 	// Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
@@ -413,17 +411,14 @@ if ($action == "login") {
 	if (!$settings['user_edit_service'])
 		output_page($lang->not_logged);
 
-	$result = $db->query($db->prepare(
-		"SELECT * FROM `" . TABLE_PREFIX . "players_services` " .
+	$user_service = get_users_services($db->prepare(
 		"WHERE `id` = '%d'",
 		array($_POST['id'])
 	));
 
-	// Brak takiej usługi w bazie
-	if (!$db->num_rows($result))
+	if (empty($user_service))
 		output_page($lang->dont_play_games);
 
-	$user_service = $db->fetch_array_assoc($result);
 	// Dany użytkownik nie jest właścicielem usługi o danym id
 	if ($user_service['uid'] != $user['uid'])
 		output_page($lang->dont_play_games);
@@ -442,17 +437,15 @@ if ($action == "login") {
 		output_page($lang->not_logged);
 
 	// Sprawdzamy, czy usluga ktora chcemy edytowac jest w bazie
-	$result = $db->query($db->prepare(
-		"SELECT * FROM `" . TABLE_PREFIX . "players_services` " .
+	$user_service = get_users_services($db->prepare(
 		"WHERE `id` = '%d'",
 		array($_POST['id'])
 	));
 
 	// Brak takiej usługi w bazie
-	if (!$db->num_rows($result))
+	if (!empty($user_service))
 		output_page($lang->dont_play_games);
 
-	$user_service = $db->fetch_array_assoc($result);
 	// Dany użytkownik nie jest właścicielem usługi o danym id
 	if ($user_service['uid'] != $user['uid'])
 		output_page($lang->dont_play_games);
@@ -478,17 +471,15 @@ if ($action == "login") {
 	if (!is_logged())
 		json_output("not_logged", $lang->not_logged, 0);
 
-	$result = $db->query($db->prepare(
-		"SELECT * FROM `" . TABLE_PREFIX . "players_services` " .
+	$user_service = get_users_services($db->prepare(
 		"WHERE `id` = '%d'",
 		array($_POST['id'])
 	));
 
 	// Brak takiej usługi w bazie
-	if (!$db->num_rows($result))
+	if (empty($user_service))
 		json_output("dont_play_games", $lang->dont_play_games, 0);
 
-	$user_service = $db->fetch_array_assoc($result);
 	// Dany użytkownik nie jest właścicielem usługi o danym id
 	if ($user_service['uid'] != $user['uid'])
 		json_output("dont_play_games", $lang->dont_play_games, 0);

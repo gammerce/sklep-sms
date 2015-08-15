@@ -6,6 +6,7 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 {
 
 	const MODULE_ID = "extra_flags";
+	const USER_SERVICE_TABLE = "user_service_extra_flags";
 
 	public function service_admin_extra_fields_get()
 	{
@@ -268,7 +269,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 				// Sprawdzanie czy istnieje już taka usługa
 				$query = $db->prepare(
-					"SELECT `password` FROM `" . TABLE_PREFIX . "players_services` " .
+					"SELECT `password` FROM `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` " .
 					"WHERE `type` = '%d' AND `auth_data` = '%s' AND `server` = '%d'",
 					array(TYPE_NICK, $purchase->getOrder('auth_data'), $server['id'])
 				);
@@ -279,7 +280,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 				// Sprawdzanie czy istnieje już taka usługa
 				$query = $db->prepare(
-					"SELECT `password` FROM `" . TABLE_PREFIX . "players_services` " .
+					"SELECT `password` FROM `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` " .
 					"WHERE `type` = '%d' AND `auth_data` = '%s' AND `server` = '%d'",
 					array(TYPE_IP, $purchase->getOrder('auth_data'), $server['id'])
 				);
@@ -367,7 +368,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		);
 	}
 
-	private function add_player_flags($uid, $type, $auth_data, $password, $days, $server, $forever = false)
+	private function add_player_flags($uid, $type, $auth_data, $password, $days, $server_id, $forever = false)
 	{
 		global $db;
 
@@ -378,26 +379,61 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 		// Dodajemy usługę gracza do listy usług
 		// Jeżeli już istnieje dokładnie taka sama, to ją przedłużamy
-		$db->query($db->prepare(
-			"INSERT INTO `" . TABLE_PREFIX . "players_services` (`uid`, `server`, `service`, `type`, `auth_data`, `password`, `expire`) " .
-			"VALUES ('%d','%d','%s','%d','%s','%s',IF('%d' = '1', '-1', UNIX_TIMESTAMP()+'%d')) " .
-			"ON DUPLICATE KEY UPDATE `uid` = '%d', `password` = '%s', `expire` = IF('%d' = '1', '-1', `expire`+'%d')",
-			array($uid, $server, $this->service['id'], $type, $auth_data, $password, $forever, $days * 24 * 60 * 60, $uid, $password, $forever, $days * 24 * 60 * 60)
+		$result = $db->query($db->prepare(
+			"SELECT `id` FROM `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` " .
+			"WHERE `service` = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s'",
+			array($this->service['id'], $server_id, $type, $auth_data)
 		));
+
+		if ($db->num_rows($result)) { // Aktualizujemy
+			$row = $db->fetch_array_assoc($result);
+			$user_service_id = $row['id'];
+
+			$this->update_user_service(array(
+				array(
+					'column' => 'uid',
+					'value' => "'%d'",
+					'data' => array($uid)
+				),
+				array(
+					'column' => 'password',
+					'value' => "'%s'",
+					'data' => array($password)
+				),
+				array(
+					'column' => 'expire',
+					'value' => "IF('%d' = '1', -1, `expire` + '%d')",
+					'data' => array($forever, $days * 24 * 60 * 60)
+				)
+			), $user_service_id, $user_service_id);
+		} else { // Wstawiamy
+			$db->query($db->prepare(
+				"INSERT INTO `" . TABLE_PREFIX . "user_service` (`uid`, `expire`) " .
+				"VALUES ('%d', IF('%d' = '1', '-1', UNIX_TIMESTAMP() + '%d')) ",
+				array($uid, $forever, $days * 24 * 60 * 60)
+			));
+			$user_service_id = $db->last_id();
+
+			$db->query($db->prepare(
+				"INSERT INTO `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` (`id`, `server`, `service`, `type`, `auth_data`, `password`) " .
+				"VALUES ('%d', '%d', '%s', '%d', '%s', '%s')",
+				array($user_service_id, $server_id, $this->service['id'], $type, $auth_data, $password)
+			));
+		}
 
 		// Ustawiamy jednakowe hasła dla wszystkich usług tego gracza na tym serwerze
 		$db->query($db->prepare(
-			"UPDATE `" . TABLE_PREFIX . "players_services` " .
+			"UPDATE `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` " .
 			"SET `password` = '%s' " .
 			"WHERE `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s'",
-			array($password, $server, $type, $auth_data)
+			array($password, $server_id, $type, $auth_data)
 		));
 
 		// Przeliczamy flagi gracza, ponieważ dodaliśmy nową usługę
-		$this->recalculate_player_flags($server, $type, $auth_data);
+		$this->recalculate_player_flags($server_id, $type, $auth_data);
 	}
 
-	private function recalculate_player_flags($server, $type, $auth_data)
+	private function recalculate_player_flags($server_id, $type, $auth_data)
 	{
 		global $heart, $db;
 
@@ -410,15 +446,16 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		// Ponieważ za chwilę będziemy je tworzyć na nowo
 		$db->query($db->prepare(
 			"DELETE FROM `" . TABLE_PREFIX . "players_flags` " .
-			"WHERE `server`='%d' AND `type`='%d' AND `auth_data`='%s'",
-			array($server, $type, $auth_data)
+			"WHERE `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s'",
+			array($server_id, $type, $auth_data)
 		));
 
 		// Pobieranie wszystkich usług na konkretne dane
 		$result = $db->query($db->prepare(
-			"SELECT * FROM `" . TABLE_PREFIX . "players_services` " .
-			"WHERE `server`='%d' AND `type`='%d' AND `auth_data`='%s' AND ( `expire` > UNIX_TIMESTAMP() OR `expire` = '-1' )",
-			array($server, $type, $auth_data)
+			"SELECT * FROM `" . TABLE_PREFIX . "user_service` AS us " .
+			"INNER JOIN `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` AS usef ON us.id = usef.us_id " .
+			"WHERE `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND ( `expire` > UNIX_TIMESTAMP() OR `expire` = -1 )",
+			array($server_id, $type, $auth_data)
 		));
 
 		// Wyliczanie za jaki czas dana flaga ma wygasnąć
@@ -439,21 +476,19 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		}
 
 		// Formowanie flag do zapytania
-		$set = "";
+		$set = '';
 		foreach ($flags as $flag => $amount)
-			$set .= $db->prepare(", `%s`='%d'", array($flag, $amount));
+			$set .= $db->prepare(", `%s` = '%d'", array($flag, $amount));
 
 		// Dodanie flag
 		if (strlen($set))
 			$db->query($db->prepare(
 				"INSERT INTO `" . TABLE_PREFIX . "players_flags` " .
-				"SET `server`='%d', `type`='%d', `auth_data`='%s', `password`='%s'{$set}",
-				array($server, $type, $auth_data, $password)
+				"SET `server` = '%d', `type` = '%d', `auth_data` = '%s', `password` = '%s'{$set}",
+				array($server_id, $type, $auth_data, $password)
 			));
 	}
 
-	//
-	// Funkcja zwraca informacje o zakupie usługi
 	public function purchase_info($action, $data)
 	{
 		global $heart, $settings, $lang, $templates;
@@ -902,15 +937,31 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 		// Dodanie hasła do zapytania
 		if (strlen($data['password']))
-			$set[] = $db->prepare("`password`='%s'", array($data['password']));
+			$set[] = array(
+				'column' => 'password',
+				'value' => "'%s'",
+				'data' => array($data['password'])
+			);
 
 		// Dodajemy uid do zapytania
 		if (isset($data['uid']))
-			$set[] = $db->prepare("`uid` = '%d'", array($data['uid']));
+			$set[] = array(
+				'column' => 'uid',
+				'value' => "'%d'",
+				'data' => array($data['uid'])
+			);
+
+		// Dodajemy expire na zawsze
+		if ($data['forever'])
+			$set[] = array(
+				'column' => 'expire',
+				'value' => "-1",
+			);
 
 		// Sprawdzenie czy nie ma już takiej usługi
 		$result = $db->query($db->prepare(
-			"SELECT * FROM `" . TABLE_PREFIX . "players_services` " .
+			"SELECT * FROM `" . TABLE_PREFIX . "user_service` AS us " .
+			"INNER JOIN `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` AS usef ON us.id = usef.us_id " .
 			"WHERE `service` = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND `id` != '%d'",
 			array($this->service['id'], if_isset($data['server'], $user_service['server']), if_isset($data['type'], $user_service['type']),
 				if_isset($data['auth_data'], $user_service['auth_data']), $user_service['id'])
@@ -930,46 +981,57 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 			// Usuwamy opcję którą aktualizujemy
 			$db->query($db->prepare(
-				"DELETE FROM `" . TABLE_PREFIX . "players_services` " .
+				"DELETE FROM `" . TABLE_PREFIX . "user_service` " .
 				"WHERE `id` = '%d'",
 				array($user_service['id'])
 			));
 
 			// Dodajemy expire
-			if ($data['forever'])
-				$set[] = "`expire` = '-1'";
-			else
-				$set[] = $db->prepare("`expire` = ( `expire`-UNIX_TIMESTAMP()+'%d' )", array(if_isset($data['expire'], $user_service['expire'])));
-
-			$set_formatted = implode(", ", $set);
+			if (!$data['forever'] && isset($data['expire']))
+				$set[] = array(
+					'column' => 'expire',
+					'value' => "( `expire` - UNIX_TIMESTAMP() + '%d' )",
+					'data' => array(if_isset($data['expire'], $user_service['expire']))
+				);
 
 			// Aktualizujemy usługę, która już istnieje w bazie i ma takie same dane jak nasze nowe
-			$db->query($db->prepare(
-				"UPDATE `" . TABLE_PREFIX . "players_services` " .
-				"SET {$set_formatted} " .
-				"WHERE `id` = '%d'",
-				array($user_service2['id'])
-			));
+			$this->update_user_service($set, $user_service2['id'], $user_service2['id']);
 		} else {
-			// Dodajemy dane do zapytania
-			$set[] = $db->prepare("`service` = '%s'", array($this->service['id']));
-			if ($data['forever'])
-				$set[] = "`expire` = '-1'";
-			else if (isset($data['expire']))
-				$set[] = $db->prepare("`expire` = '%d'", array($data['expire']));
-			if (isset($data['server'])) $set[] = $db->prepare("`server` = '%d'", array($data['server']));
-			if (isset($data['type'])) $set[] = $db->prepare("`type` = '%d'", array($data['type']));
-			if (isset($data['auth_data'])) $set[] = $db->prepare("`auth_data` = '%s'", array($data['auth_data']));
+			$set[] = array(
+				'column' => 'service',
+				'value' => "'%s'",
+				'data' => array($this->service['id'])
+			);
 
-			$set_formatted = implode(", ", $set);
+			if (!$data['forever'] && isset($data['expire']))
+				$set[] = array(
+					'column' => 'expire',
+					'value' => "'%d'",
+					'data' => array($data['expire'])
+				);
 
-			// Aktualizujemy usługę
-			$db->query($db->prepare(
-				"UPDATE `" . TABLE_PREFIX . "players_services` " .
-				"SET {$set_formatted} " .
-				"WHERE `id` = '%d'",
-				array($user_service['id'])
-			));
+			if (isset($data['server']))
+				$set[] = array(
+					'column' => 'server',
+					'type' => "'%d'",
+					'data' => array($data['server'])
+				);
+
+			if (isset($data['type']))
+				$set[] = array(
+					'column' => 'type',
+					'value' => "'%d'",
+					'data' => array($data['type'])
+				);
+
+			if (isset($data['auth_data']))
+				$set[] = array(
+					'column' => 'auth_data',
+					'value' => "'%s'",
+					'data' => array($data['auth_data']),
+				);
+
+			$this->update_user_service($set, $user_service['id'], $user_service['id']);
 		}
 		$affected = $db->affected_rows();
 
@@ -977,7 +1039,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		// żeby potem nie było problemów z różnymi hasłami
 		if (strlen($data['password']))
 			$db->query($db->prepare(
-				"UPDATE `" . TABLE_PREFIX . "players_services` " .
+				"UPDATE `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` " .
 				"SET `password` = '%s' " .
 				"WHERE `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s'",
 				array($data['password'], if_isset($data['server'], $user_service['server']), if_isset($data['type'], $user_service['type']),
@@ -1129,7 +1191,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 		// TODO: Usunac md5
 		$result = $db->query($db->prepare(
-			"SELECT * FROM `" . TABLE_PREFIX . "players_services` " .
+			"SELECT `id` FROM `" . TABLE_PREFIX . "user_service` AS us " .
+			"INNER JOIN `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` AS usef ON us.id = usef.us_id " .
 			"WHERE `service` = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND ( `password` = '%s' OR `password` = '%s' )",
 			array($this->service['id'], $data['server'], $data['type'], $auth_data, $data['password'], md5($data['password']))
 		));
@@ -1141,11 +1204,13 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 				'positive' => false
 			);
 
+		$row = $db->fetch_array_assoc($result);
+
 		$db->query($db->prepare(
-			"UPDATE `" . TABLE_PREFIX . "players_services` " .
+			"UPDATE `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` " .
 			"SET `uid` = '%d' " .
-			"WHERE `service` = '%s' AND `type` = '%d' AND `auth_data` = '%s'",
-			array($user['uid'], $data['service'], $data['type'], $auth_data)
+			"WHERE `id` = '%d'",
+			array($user['uid'], $row['id'])
 		));
 
 		if ($db->affected_rows())
@@ -1174,7 +1239,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 	private function servers_for_service($server)
 	{
 		global $lang;
-		if (!get_privilages("manage_player_services")) {
+		if (!get_privilages("manage_user_services")) {
 			json_output("not_logged_in", $lang->no_access, 0);
 		}
 
@@ -1295,6 +1360,49 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			'tariff' => $tariff,
 			'server' => $data['server']
 		);
+	}
+
+	private function update_user_service($set, $where1, $where2) {
+		global $db;
+
+		$set_data1 = $set_data2 = $where_data = $where_data2 = array();
+
+		foreach ($set as $data) {
+			$set_data = $db->prepare(
+				"`{$data['column']}` = {$data['value']}",
+				if_isset($data['data'], array())
+			);
+			if (in_array($data['column'], array('uid', 'expire'))) {
+				$set_data1[] = $set_data;
+			}
+			else {
+				$set_data2[] = $set_data;
+			}
+		}
+
+		if (my_is_integer($where1))
+			$where1 = "WHERE `id` = {$where1}";
+		else if (strlen($where1))
+			$where1 = "WHERE {$where1}";
+
+		if (my_is_integer($where2))
+			$where2 = "WHERE `us_id` = {$where2}";
+		else if (strlen($where2))
+			$where2 = "WHERE {$where2}";
+
+		if (!empty($set_data1))
+			$db->query(
+				"UPDATE `" . TABLE_PREFIX . "user_service` " .
+				"SET " . implode(', ', $set_data1) . " " .
+				$where1
+			);
+
+		if (!empty($set_data2))
+			$db->query(
+				"UPDATE `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` " .
+				"SET " . implode(', ', $set_data2) . " " .
+				$where2
+			);
 	}
 
 	// Zwraca wartość w zależności od typu

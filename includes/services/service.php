@@ -4,6 +4,7 @@ abstract class Service
 {
 
 	const MODULE_ID = "";
+	const USER_SERVICE_TABLE = "";
 	public $service = array();
 
 	function __construct($service)
@@ -29,9 +30,10 @@ abstract class Service
 	 * Metoda wywoływana przy usuwaniu usługi użytkownika.
 	 *
 	 * @param array $user_service Dane o usłudze z bazy danych
+	 * @param string $who Kto wywołał akcję ( admin, task )
 	 * @return bool
 	 */
-	public function user_service_delete($user_service)
+	public function user_service_delete($user_service, $who)
 	{
 		return true;
 	}

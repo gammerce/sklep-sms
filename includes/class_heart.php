@@ -129,7 +129,9 @@ class Heart
 		foreach ($this->services_classes as $id => $data) {
 			$modules[] = array(
 				'id' => $id,
-				'name' => $data['name']
+				'name' => $data['name'],
+				'class' => $data['class'],
+				'classsimple' => $data['classsimple']
 			);
 		}
 

@@ -6,6 +6,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 {
 
 	const MODULE_ID = "mybb_extra_groups";
+	//const USER_SERVICE_TABLE = "module_mybb_extra_groups";
 
 	/**
 	 * Metoda wywoływana przy edytowaniu lub dodawaniu usługi w PA
@@ -21,6 +22,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 		if ($this->show_on_web()) $web_sel_yes = "selected";
 		else $web_sel_no = "selected";
 
+		// Jeżeli edytujemy
 		if ($this->service !== NULL) {
 			// DB
 			$db_password = strlen($this->service['data']['db_password']) ? "********" : "";
@@ -60,7 +62,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 		else {
 			$groups = explode(",", $data['mybb_groups']);
 			foreach($groups as $group) {
-				if(!is_integer($group)) {
+				if(!my_is_integer($group)) {
 					$warnings['mybb_groups'][] = $lang->group_not_integer;
 					break;
 				}
@@ -259,7 +261,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 			if (!empty($groups)) {
 				// Sprawdzamy czy grupy ktore ma uzytkownik sa kupione przez sklep
 				$result = $db->query($db->prepare(
-					"SELECT 1 FROM `" . TABLE_PREFIX . "mybb_group` " .
+					"SELECT 1 FROM `" . TABLE_PREFIX . "mybb_user_group` " .
 					"WHERE `expire` > NOW() AND `uid` = '%d' AND `gid` IN (" . implode(',', $groups) . ")",
 					array($row['uid'])
 				));
@@ -405,7 +407,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		$mybb_user->setMybbAddGroups(explode(",", $row_mybb['additionalgroups']));
 
 		$result = $db->query($db->prepare(
-			"SELECT `gid`, UNIX_TIMESTAMP(`expire`) as `expire` FROM `". TABLE_PREFIX . "mybb_group` ".
+			"SELECT `gid`, UNIX_TIMESTAMP(`expire`) as `expire` FROM `". TABLE_PREFIX . "mybb_user_group` ".
 			"WHERE `uid` = '%d'",
 			array($row_mybb['uid'])
 		));
@@ -438,10 +440,10 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 
 		if (!empty($values)) {
 			$db->query(
-				"INSERT INTO `" . TABLE_PREFIX . "mybb_group` (`uid`, `gid`, `expire` `was_before`) " .
+				"INSERT INTO `" . TABLE_PREFIX . "mybb_user_group` (`uid`, `gid`, `expire` `was_before`) " .
 				"VALUES " . implode(", ", $values) . " " .
-				"ON DUPLICATE KEY " .
-				"UPDATE `expire` = VALUES(`expire`)"
+				"ON DUPLICATE KEY UPDATE " .
+				"`expire` = VALUES(`expire`)"
 			);
 		}
 
@@ -453,7 +455,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		));
 	}
 
-	public function user_service_delete($user_service) {
+	public function user_service_delete($user_service, $who) {
 		global $db;
 		$this->connectMybb();
 
