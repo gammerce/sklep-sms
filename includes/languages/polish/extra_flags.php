@@ -45,4 +45,4 @@ $l['user_id'] = "ID użytkownika";
 $l['days_amount'] = "Ilość dni";
 $l['no_user_service'] = "Nie ma usługi z takimi danymi.";
 
-$l['user_service_extra_flags'] = "Usługi użytkowników - dodatkowe flagi";
+$l['extra_flags'] = "Dodatkowe flagi";

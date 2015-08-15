@@ -14,7 +14,7 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
 
 		$className = '';
 		foreach (get_declared_classes() as $class) {
-			if (in_array('IService_UserServiceAdminDisplay', class_implements($class)) && $class::PAGE_ID == $get['subpage']) {
+			if (in_array('IService_UserServiceAdminDisplay', class_implements($class)) && $class::MODULE_ID == $get['subpage']) {
 				$className = $class;
 				break;
 			}

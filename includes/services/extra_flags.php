@@ -156,20 +156,15 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 	// ----------------------------------------------------------------------------------
 	// ### Wyświetlanie usług użytkowników w PA
 
-	public static function user_service_admin_display_subpageid_get()
-	{
-		return 'user_service_extra_flags';
-	}
-
 	public function user_service_admin_display_title_get()
 	{
 		global $lang;
-		return $lang->user_service_extra_flags;
+		return $lang->users_services . ': ' . $lang->extra_flags;
 	}
 
 	public function user_service_admin_display_get($get, $post)
 	{
-		global $heart, $db, $settings, $lang, $G_PAGE, $templates;
+		global $db, $settings, $lang, $G_PAGE, $templates;
 
 		// Wyszukujemy dane ktore spelniaja kryteria
 		$where = "";

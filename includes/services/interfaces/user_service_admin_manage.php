@@ -8,8 +8,6 @@
  */
 interface IService_UserServiceAdminDisplay
 {
-	public static function user_service_admin_display_subpageid_get();
-
 	/**
 	 * Zwraca tytuł strony, gdy włączona jest lista usług użytkowników
 	 *

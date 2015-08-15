@@ -2,7 +2,7 @@
 
 $heart->register_service_module("mybb_extra_groups", "Dodatkowe Grupy (MyBB)", "ServiceMybbExtraGroups", "ServiceMybbExtraGroupsSimple");
 
-class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminManage, IService_Create
+class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminManage, IService_Create, IService_UserServiceAdminDisplay
 {
 
 	const MODULE_ID = "mybb_extra_groups";
@@ -130,6 +130,17 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 				)
 			)
 		);
+	}
+
+	public function user_service_admin_display_title_get()
+	{
+		global $lang;
+		return $lang->users_services . ': ' . $lang->mybb_groups;
+	}
+
+	public function user_service_admin_display_get($get, $post)
+	{
+		// TODO: Implement user_service_admin_display_get() method.
 	}
 }
 

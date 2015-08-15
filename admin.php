@@ -46,7 +46,7 @@ if (get_privilages("view_player_flags")) {
 	$players_flags_link = eval($templates->render("admin/page_link"));
 }
 if (get_privilages("view_user_services")) {
-	$pid = "user_service&subpage=user_service_extra_flags";
+	$pid = "user_service&subpage=extra_flags";
 	$name = $lang->users_services;
 	$user_service_link = eval($templates->render("admin/page_link"));
 }
