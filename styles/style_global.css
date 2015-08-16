@@ -146,7 +146,8 @@ hr, .line {
 	background: rgba(0, 0, 0, 0.8);
 	box-shadow: 0 0 10px #000;
 	min-width: 200px;
-	margin-top: 20px
+	margin-top: 20px;
+	color: #FFF;
 }
 
 .action_box .exit {
@@ -254,12 +255,12 @@ hr, .line {
 	height: calc(100% - 100px)
 }
 
-[id^=edit_row_], .edit_row {
+[id^=edit_row_], .edit_row, [id^=delete_row_], .delete_row {
 	cursor: pointer;
 	opacity: 0.6;
 }
 
-[id^=edit_row_]:hover, .edit_row:hover {
+[id^=edit_row_]:hover, .edit_row:hover, [id^=delete_row_]:hover, .delete_row:hover {
 	opacity: 1.0;
 }
 

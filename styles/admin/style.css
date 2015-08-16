@@ -193,12 +193,12 @@ h4 {
 	white-space: nowrap;
 }
 
-[id^=charge_wallet_], [id^=delete_row_], [id^=deactivate_flags_] {
+[id^=charge_wallet_], [id^=deactivate_flags_] {
 	cursor: pointer;
 	opacity: 0.6;
 }
 
-[id^=charge_wallet_]:hover, [id^=delete_row_]:hover, [id^=deactivate_flags_]:hover {
+[id^=charge_wallet_]:hover, [id^=deactivate_flags_]:hover {
 	opacity: 1.0;
 }
 

@@ -1,12 +1,14 @@
 <?php
 
+use Admin\Table;
+
 $heart->register_service_module("mybb_extra_groups", "Dodatkowe Grupy (MyBB)", "ServiceMybbExtraGroups", "ServiceMybbExtraGroupsSimple");
 
 class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminManage, IService_Create, IService_UserServiceAdminDisplay
 {
 
 	const MODULE_ID = "mybb_extra_groups";
-	//const USER_SERVICE_TABLE = "module_mybb_extra_groups";
+	const USER_SERVICE_TABLE = "user_service_mybb_extra_groups";
 
 	/**
 	 * Metoda wywoływana przy edytowaniu lub dodawaniu usługi w PA
@@ -140,7 +142,63 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 
 	public function user_service_admin_display_get($get, $post)
 	{
-		// TODO: Implement user_service_admin_display_get() method.
+		global $db, $settings, $lang, $G_PAGE;
+
+		$wrapper = new Table\Wrapper();
+		$wrapper->setSearch();
+
+		$table = new Table\Structure();
+
+		$cell = new Table\Cell($lang->id);
+		$cell->setParam('headers', 'id');
+		$table->addHeadCell($cell);
+
+		$table->addHeadCell(new Table\Cell($lang->user));
+		$table->addHeadCell(new Table\Cell($lang->service));
+		$table->addHeadCell(new Table\Cell($lang->mybb_user));
+		$table->addHeadCell(new Table\Cell($lang->expires));
+
+		// Wyszukujemy dane ktore spelniaja kryteria
+		$where = '';
+		if (isset($get['search']))
+			searchWhere(array("us.id", "us.uid", "u.username", "srv.name", "s.name", "usef.auth_data"), urldecode($get['search']), $where);
+		// Jezeli jest jakis where, to dodajemy WHERE
+		if (strlen($where))
+			$where = "WHERE " . $where . ' ';
+
+		$result = $db->query(
+			"SELECT SQL_CALC_FOUND_ROWS us.id, us.uid, u.username, " .
+			"s.id AS `service_id`, s.name AS `service`, us.expire, usmeg.mybb_uid " .
+			"FROM `" . TABLE_PREFIX . "user_service` AS us " .
+			"INNER JOIN `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` AS usmeg ON usmeg.us_id = us.id " .
+			"LEFT JOIN `" . TABLE_PREFIX . "services` AS s ON s.id = usmeg.service " .
+			"LEFT JOIN `" . TABLE_PREFIX . "users` AS u ON u.uid = us.uid " .
+			$where .
+			"ORDER BY us.id DESC " .
+			"LIMIT " . get_row_limit($G_PAGE)
+		);
+
+		$table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+
+		while ($row = $db->fetch_array_assoc($result)) {
+			$body_row = new Table\BodyRow();
+
+			$body_row->setDbId($row['id']);
+			$body_row->addCell(new Table\Cell($row['uid'] ? $row['username'] . " ({$row['uid']})" : $lang->none));
+			$body_row->addCell(new Table\Cell($row['service']));
+			$body_row->addCell(new Table\Cell($row['mybb_uid']));
+			$body_row->addCell(new Table\Cell($row['expire'] == '-1' ? $lang->never : date($settings['date_format'], $row['expire'])));
+			if (get_privilages("manage_user_services")) {
+				$body_row->setButtonDelete();
+				$body_row->setButtonEdit();
+			}
+
+			$table->addBodyRow($body_row);
+		}
+
+		$wrapper->table = $table;
+
+		return $wrapper;
 	}
 }
 
@@ -195,6 +253,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		while ($row = $db->fetch_array_assoc($result)) {
 			$sms_cost = strlen($row['sms_number']) ? get_sms_cost($row['sms_number']) * $settings['vat'] : 0;
 			$amount = $row['amount'] != -1 ? $row['amount'] . " " . $this->service['tag'] : $lang->forever;
+			$provision = number_format($row['provision']/100, 2);
 			$amounts .= eval($templates->render("services/" . $this::MODULE_ID . "/purchase_value", true, false));
 		}
 
@@ -451,7 +510,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 
 		if (!empty($values)) {
 			$db->query(
-				"INSERT INTO `" . TABLE_PREFIX . "mybb_user_group` (`uid`, `gid`, `expire` `was_before`) " .
+				"INSERT INTO `" . TABLE_PREFIX . "mybb_user_group` (`uid`, `gid`, `expire`, `was_before`) " .
 				"VALUES " . implode(", ", $values) . " " .
 				"ON DUPLICATE KEY UPDATE " .
 				"`expire` = VALUES(`expire`)"
@@ -470,7 +529,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		global $db;
 		$this->connectMybb();
 
-
+		// TODO
 	}
 
 	private function connectMybb() {

@@ -29,18 +29,27 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
 		$service_module_simple = new $className();
 
 		$this->title = $lang->users_services . ': ' . $service_module_simple->user_service_admin_display_title_get();
+		$heart->page_title = $this->title;
 		$wrapper = $service_module_simple->user_service_admin_display_get($get, $post);
 
-		if (get_class($wrapper) !== '\Admin\Table\Wrapper')
+		if (get_class($wrapper) !== 'Admin\Table\Wrapper')
 			return $wrapper;
 
 		$wrapper->setTitle($this->title);
 
 		// Lista z wyborem modułów
 		$button = new Table\Select();
+		$button->setParam('id', 'user_service_display_module');
 		foreach ($heart->get_services_modules() as $service_module_data) {
+			if (!in_array('IService_UserServiceAdminDisplay', class_implements($service_module_data['classsimple'])))
+				continue;
+
 			$option = new Table\Option($service_module_data['name']);
 			$option->setParam('value', $service_module_data['id']);
+
+			if ($service_module_data['id'] == $get['subpage'])
+				$option->setParam('selected', 'selected');
+
 			$button->addContent($option);
 		}
 		$wrapper->addButton($button);
@@ -84,10 +93,7 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
 				break;
 
 			case "user_service_edit":
-				$user_service = get_users_services($db->prepare(
-					"`id` = '%d'",
-					array($data['id'])
-				));
+				$user_service = get_users_services($data['id']);
 
 				if (empty($user_service) || ($service_module = $heart->get_service_module($user_service['service'])) === NULL
 					|| !object_implements($service_module, "IService_UserServiceAdminEdit")

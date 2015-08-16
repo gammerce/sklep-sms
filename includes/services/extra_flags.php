@@ -173,10 +173,9 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 
 		$table = new Table\Structure();
 
-		// Pobranie nagłówka tabeli
-		$thead_cell = new Table\Cell($lang->id);
-		$thead_cell->setParam('headers', 'id');
-		$table->addHeadCell($thead_cell);
+		$cell = new Table\Cell($lang->id);
+		$cell->setParam('headers', 'id');
+		$table->addHeadCell($cell);
 
 		$table->addHeadCell(new Table\Cell($lang->user));
 		$table->addHeadCell(new Table\Cell($lang->server));
@@ -216,7 +215,7 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 			$body_row->addCell(new Table\Cell($row['server']));
 			$body_row->addCell(new Table\Cell($row['service']));
 			$body_row->addCell(new Table\Cell($row['auth_data']));
-			$body_row->addCell(new Table\Cell($row['expire'] === NULL ? $lang->never : date($settings['date_format'], $row['expire'])));
+			$body_row->addCell(new Table\Cell($row['expire'] == '-1' ? $lang->never : date($settings['date_format'], $row['expire'])));
 			if (get_privilages("manage_user_services")) {
 				$body_row->setButtonDelete();
 				$body_row->setButtonEdit();
@@ -461,14 +460,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		// Dodajemy usługę gracza do listy usług
 		// Jeżeli już istnieje dokładnie taka sama, to ją przedłużamy
 		$result = $db->query($db->prepare(
-			"SELECT `id` FROM `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` " .
+			"SELECT `us_id` FROM `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` " .
 			"WHERE `service` = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s'",
 			array($this->service['id'], $server_id, $type, $auth_data)
 		));
 
 		if ($db->num_rows($result)) { // Aktualizujemy
 			$row = $db->fetch_array_assoc($result);
-			$user_service_id = $row['id'];
+			$user_service_id = $row['us_id'];
 
 			$this->update_user_service(array(
 				array(
@@ -496,7 +495,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			$user_service_id = $db->last_id();
 
 			$db->query($db->prepare(
-				"INSERT INTO `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` (`id`, `server`, `service`, `type`, `auth_data`, `password`) " .
+				"INSERT INTO `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` (`us_id`, `server`, `service`, `type`, `auth_data`, `password`) " .
 				"VALUES ('%d', '%d', '%s', '%d', '%s', '%s')",
 				array($user_service_id, $server_id, $this->service['id'], $type, $auth_data, $password)
 			));
@@ -1111,7 +1110,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 				);
 
 			// Aktualizujemy usługę, która już istnieje w bazie i ma takie same dane jak nasze nowe
-			$this->update_user_service($set, $user_service2['id'], $user_service2['id']);
+			$affected = $this->update_user_service($set, $user_service2['id'], $user_service2['id']);
 		} else {
 			$set[] = array(
 				'column' => 'service',
@@ -1129,7 +1128,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			if (isset($data['server']))
 				$set[] = array(
 					'column' => 'server',
-					'type' => "'%d'",
+					'value' => "'%d'",
 					'data' => array($data['server'])
 				);
 
@@ -1147,9 +1146,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 					'data' => array($data['auth_data']),
 				);
 
-			$this->update_user_service($set, $user_service['id'], $user_service['id']);
+			$affected = $this->update_user_service($set, $user_service['id'], $user_service['id']);
 		}
-		$affected = $db->affected_rows();
 
 		// Ustaw jednakowe hasła
 		// żeby potem nie było problemów z różnymi hasłami
@@ -1355,6 +1353,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 	private function servers_for_service($server)
 	{
 		global $lang;
+
 		if (!get_privilages("manage_user_services")) {
 			json_output("not_logged_in", $lang->no_access, 0);
 		}
@@ -1507,19 +1506,26 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		else if (strlen($where2))
 			$where2 = "WHERE {$where2}";
 
-		if (!empty($set_data1))
+		$affected = 0;
+		if (!empty($set_data1)) {
 			$db->query(
 				"UPDATE `" . TABLE_PREFIX . "user_service` " .
 				"SET " . implode(', ', $set_data1) . " " .
 				$where1
 			);
+			$affected = max($affected, $db->affected_rows());
+		}
 
-		if (!empty($set_data2))
+		if (!empty($set_data2)) {
 			$db->query(
 				"UPDATE `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` " .
 				"SET " . implode(', ', $set_data2) . " " .
 				$where2
 			);
+			$affected = max($affected, $db->affected_rows());
+		}
+
+		return $affected;
 	}
 
 	// Zwraca wartość w zależności od typu

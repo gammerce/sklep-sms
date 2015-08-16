@@ -1,6 +1,7 @@
 <?php
 
 $l['mybb_groups'] = "MyBB groups";
+$l['mybb_user'] = 'MyBB user';
 $l['coma_separated'] = "Separated with a coma.";
 $l['mybb_group_bought'] = "Purchase of a service {1} for user: {2}.";
 $l['no_user'] = "There is no user with such username.";

@@ -1,8 +1,5 @@
 <?php
 
-$l['no_access'] = "Nie masz odpowiednich uprawnień.";
-
-
 $l['license_expires'] = "Licencja wygasa";
 
 $l['remove_install'] = "Usuń folder install !";
@@ -144,7 +141,7 @@ $l['delete_sms_code'] = "Kod SMS został prawidłowo usunięty.";
 $l['no_delete_sms_code'] = "Kod SMS nie został usunięty.";
 $l['delete_log'] = "Log został prawidłowo usunięty.";
 $l['no_delete_log'] = "Log nie został usunięty.";
-$l['service_edit_unable'] = "Tej usługi nie da rady edytować.";
+$l['service_edit_unable'] = "Tej usługi nie da rady się edytować.";
 
 $l['amxx_server'] = "Serwer gry (AMXX)";
 $l['sm_server'] = "Serwer gry (SM)";

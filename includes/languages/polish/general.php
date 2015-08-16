@@ -125,3 +125,4 @@ $l['languages'] = array(
 $l['expired_service_delete'] = "AUTOMAT: Usunięto wygasłą usługę użytkownika. Auth Data: {1} Serwer: {2} Usługa: {3} Typ: {4}";
 
 $l['error_occured'] = "Wystąpił błąd.";
+$l['no_access'] = "Nie masz odpowiednich uprawnień.";

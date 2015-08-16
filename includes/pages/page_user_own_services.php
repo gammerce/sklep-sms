@@ -21,7 +21,7 @@ class Page_UserOIwnServices extends Page implements I_BeLoggedMust
 
 		$user_own_services = "";
 		$result = $db->query($db->prepare(
-			"SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "players_services` " .
+			"SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "user_service` " .
 			"WHERE `uid` = '%d' " .
 			"ORDER BY `id` DESC " .
 			"LIMIT " . get_row_limit($G_PAGE, 4),

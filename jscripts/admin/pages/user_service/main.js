@@ -10,6 +10,18 @@ $(document).delegate("[id^=edit_row_]", "click", function () {
 		id: row_id.children("td[headers=id]").text()
 	});
 });
+$(document).delegate(".edit_row", "click", function () {
+	show_action_box(get_get_param("pid"), "user_service_edit", {
+		id: $(this).closest('tr').find("td[headers=id]").text()
+	});
+});
+
+// Wybranie modułu
+$(document).delegate('#user_service_display_module', 'change', function () {
+	changeUrl({
+		subpage: $(this).val()
+	});
+});
 
 // Wybranie usługi podczas dodawania usługi użytkownikowi
 var extra_fields;
@@ -39,6 +51,50 @@ $(document).delegate("#form_user_service_add [name=service]", "change", function
 // Usuwanie usługi użytkownika
 $(document).delegate("[id^=delete_row_]", "click", function () {
 	var row_id = $("#" + $(this).attr("id").replace('delete_row_', 'row_'));
+
+	var confirm_info = "Na pewno chcesz usunąć usluge o ID: " + row_id.children("td[headers=id]").text() + " ?";
+	if (confirm(confirm_info) == false)
+		return;
+
+	loader.show();
+	$.ajax({
+		type: "POST",
+		url: "jsonhttp_admin.php",
+		data: {
+			action: "user_service_delete",
+			id: row_id.children("td[headers=id]").text()
+		},
+		complete: function () {
+			loader.hide();
+		},
+		success: function (content) {
+			if (!(jsonObj = json_parse(content)))
+				return;
+
+			if (jsonObj.return_id == "deleted") {
+				// Usuń row
+				row_id.fadeOut("slow");
+				row_id.css({"background": "#FFF4BA"});
+
+				// Odśwież stronę
+				refresh_blocks("admincontent", true);
+			}
+			else if (!jsonObj.return_id) {
+				infobox.show_info(lang['sth_went_wrong'], false);
+				return;
+			}
+
+			// Wyświetlenie zwróconego info
+			infobox.show_info(jsonObj.text, jsonObj.positive);
+		},
+		error: function (error) {
+			infobox.show_info(lang['ajax_error'], false);
+		}
+	});
+});
+
+$(document).delegate(".delete_row", "click", function () {
+	var row_id = $(this).closest('tr');
 
 	var confirm_info = "Na pewno chcesz usunąć usluge o ID: " + row_id.children("td[headers=id]").text() + " ?";
 	if (confirm(confirm_info) == false)

@@ -120,3 +120,4 @@ $l['not_logged_or_no_perm'] = "Something is wrong, you are not logged in or you 
 $l['expired_service_delete'] = "AUTOMAT: Player's expired service removed. Auth Data: {1} Server: {2} Service: {3} Type: {4}";
 
 $l['error_occured'] = "Error occured.";
+$l['no_access'] = "You have no proper powers.";

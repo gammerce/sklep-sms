@@ -117,10 +117,7 @@ if ($action == "charge_wallet") {
 	if (is_null($service_module = $heart->get_service_module($_POST['service'])))
 		json_output("wrong_module", $lang->bad_module, 0);
 
-	$user_service = get_users_services($db->prepare(
-		"WHERE `id` = '%d'",
-		array($_POST['id'])
-	));
+	$user_service = get_users_services($_POST['id']);
 
 	// Brak takiej usługi w bazie
 	if (empty($user_service))
@@ -148,10 +145,7 @@ if ($action == "charge_wallet") {
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
 	}
 
-	$user_service = get_users_services($db->prepare(
-		"WHERE `id` = '%d'",
-		array($_POST['id'])
-	));
+	$user_service = get_users_services($_POST['id']);
 
 	// Brak takiej usługi
 	if (empty($user_service))
@@ -1188,6 +1182,14 @@ if ($action == "charge_wallet") {
 		$data['template'] = eval($templates->render("jsonhttp/" . $template));
 
 	output_page(json_encode($data), "Content-type: text/plain; charset=\"UTF-8\"");
+} else if ($action == "service_action_execute") {
+	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL
+		|| !object_implements($service_module, "IService_ActionExecute")
+	) {
+		output_page($lang->bad_module, "Content-type: text/plain; charset=\"UTF-8\"");
+	}
+
+	output_page($service_module->action_execute($_POST['service_action'], $_POST), "Content-type: text/plain; charset=\"UTF-8\"");
 }
 
 json_output("script_error", "An error occured: no action.");

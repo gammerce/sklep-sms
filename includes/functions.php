@@ -647,34 +647,34 @@ function purchase_info($data)
 /**
  * Pozyskuje z bazy wszystkie usługi użytkowników
  *
- * @param string $where
+ * @param string|int $where
  * @return array
  */
 function get_users_services($where = '') {
 	global $heart, $db;
 
-	$join = array();
+	if (my_is_integer($where))
+		$where = "WHERE `id` = " . intval($where);
+	else if (strlen($where))
+		$where = "WHERE " . $where;
+
+	$output = array();
+	// Niestety dla każdego modułu musimy wykonać osobne zapytanie :-(
 	foreach($heart->get_services_modules() as $service_module_data) {
-		$class = $service_module_data['classsimple'];
-		$table = $class()::USER_SERVICE_TABLE;
+		$table = $service_module_data['classsimple']::USER_SERVICE_TABLE;
 		if (!strlen($table))
 			continue;
 
-		$join[] = "LEFT JOIN `". TABLE_PREFIX . $table . "` AS {$table} ON {$table}.us_id = us.id ";
+		$result = $db->query(
+			"SELECT *, UNIX_TIMESTAMP() AS `now` FROM `". TABLE_PREFIX . "user_service` AS us " .
+			"INNER JOIN `". TABLE_PREFIX . $table . "` AS m ON m.us_id = us.id " .
+			$where
+		);
+
+		while($row = $db->fetch_array_assoc($result)) {
+			$output[] = $row;
+		}
 	}
-
-	if (strlen($where))
-		$where = "WHERE " . $where;
-
-	$result = $db->query(
-		"SELECT *, UNIX_TIMESTAMP() AS `now` FROM `". TABLE_PREFIX . "user_service` AS us " .
-		implode(' ', $join) .
-		$where
-	);
-
-	$output = array();
-	while($row = $db->fetch_array_assoc($result))
-		$output[] = $row;
 
 	return count($output) == 1 ? $output[0] : $output;
 }
@@ -687,7 +687,7 @@ function delete_users_old_services()
 	// Potem wywolujemy akcje na module, potem je usuwamy, a następnie wywołujemy akcje na module
 
 	$delete_ids = $users_services = array();
-	foreach (get_users_services("`expire` < UNIX_TIMESTAMP() AND `expire` != '-1'") as $row) { // TODO make sure
+	foreach (get_users_services("`expire` < UNIX_TIMESTAMP() AND `expire` != '-1'") as $row) {
 		if (($service_module = $heart->get_service_module($row['service'])) === NULL)
 			continue;
 

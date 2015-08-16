@@ -9,7 +9,7 @@ $(document).delegate("#form_service_code_add [name=server]", "change", function 
 		return;
 	}
 
-	fetch_data("service_action_execute", false, {
+	fetch_data("service_action_execute", true, {
 		service_action: "tariffs_for_server",
 		server: $(this).val(),
 		service: module.closest("form").find("[name=service]").val()

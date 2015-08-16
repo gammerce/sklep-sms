@@ -21,7 +21,7 @@ $classes = array_filter(
 );
 
 foreach ($classes as $class) {
-	$class()::cronjob_pre();
+	$class::cronjob_pre();
 }
 
 // Usuwamy przestarzałe usługi użytkowników
@@ -38,12 +38,12 @@ if (intval($settings['delete_logs']) != 0)
 // Remove files older than 30 days from data/transfers
 $path = SCRIPT_ROOT . "data/transfers";
 foreach (scandir($path) as $file) {
-	if (filectime($path . $file) < time() - 60*60*24*30) {
+	if (filectime($path . $file) < time() - 60 * 60 * 24 * 30) {
 		unlink($path . $file);
 	}
 }
 unset($path);
 
 foreach ($classes as $class) {
-	$class()::cronjob_post();
+	$class::cronjob_post();
 }

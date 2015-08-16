@@ -313,7 +313,8 @@ if ($action == "login") {
 	json_output("password_changed", $lang->password_changed, 1);
 } else if ($action == "purchase_form_validate") {
 	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL
-		|| !object_implements($service_module, "IService_PurchaseWeb"))
+		|| !object_implements($service_module, "IService_PurchaseWeb")
+	)
 		json_output("wrong_module", $lang->bad_module, 0);
 
 	// Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
@@ -337,7 +338,7 @@ if ($action == "login") {
 		/** @var Entity_Purchase $purchase */
 		$purchase = $return_data['purchase'];
 
-		if(!$purchase->getPayment('cost') && $purchase->getTariff() !== NULL)
+		if (!$purchase->getPayment('cost') && $purchase->getTariff() !== NULL)
 			$purchase->setPayment(array(
 				'cost' => $heart->get_tariff_provision($purchase->getTariff())
 			));
@@ -415,10 +416,7 @@ if ($action == "login") {
 	if (!$settings['user_edit_service'])
 		output_page($lang->not_logged);
 
-	$user_service = get_users_services($db->prepare(
-		"WHERE `id` = '%d'",
-		array($_POST['id'])
-	));
+	$user_service = get_users_services($_POST['id']);
 
 	if (empty($user_service))
 		output_page($lang->dont_play_games);
@@ -441,10 +439,7 @@ if ($action == "login") {
 		output_page($lang->not_logged);
 
 	// Sprawdzamy, czy usluga ktora chcemy edytowac jest w bazie
-	$user_service = get_users_services($db->prepare(
-		"WHERE `id` = '%d'",
-		array($_POST['id'])
-	));
+	$user_service = get_users_services($_POST['id']);
 
 	// Brak takiej usługi w bazie
 	if (!empty($user_service))
@@ -475,10 +470,7 @@ if ($action == "login") {
 	if (!is_logged())
 		json_output("not_logged", $lang->not_logged, 0);
 
-	$user_service = get_users_services($db->prepare(
-		"WHERE `id` = '%d'",
-		array($_POST['id'])
-	));
+	$user_service = get_users_services($_POST['id']);
 
 	// Brak takiej usługi w bazie
 	if (empty($user_service))
@@ -535,8 +527,11 @@ if ($action == "login") {
 	$page = new PageAdminIncome();
 	output_page($page->get_content($_GET, $_POST), "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "service_action_execute") {
-	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IService_ActionExecute"))
+	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL
+		|| !object_implements($service_module, "IService_ActionExecute")
+	) {
 		output_page($lang->bad_module, "Content-type: text/plain; charset=\"UTF-8\"");
+	}
 
 	output_page($service_module->action_execute($_POST['service_action'], $_POST), "Content-type: text/plain; charset=\"UTF-8\"");
 } else if ($action == "get_template") {

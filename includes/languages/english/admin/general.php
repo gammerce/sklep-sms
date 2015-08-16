@@ -1,7 +1,5 @@
 <?php
 
-$l['no_access'] = "You have no proper powers.";
-
 $l['license_expires'] = "License expires";
 
 $l['remove_install'] = "Remove install folder!";

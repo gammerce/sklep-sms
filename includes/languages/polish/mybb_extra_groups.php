@@ -1,6 +1,7 @@
 <?php
 
 $l['mybb_groups'] = "Grupy MyBB";
+$l['mybb_user'] = 'Użytkownik MyBB';
 $l['coma_separated'] = "Oddzielone przecinkiem.";
 $l['mybb_group_bought'] = "Zakup usługi {1} dla użytkownika: {2}.";
 $l['no_user'] = "Nie ma użytkownika o takiej nazwie.";

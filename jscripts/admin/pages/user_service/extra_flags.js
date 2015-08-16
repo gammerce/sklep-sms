@@ -1,4 +1,4 @@
-//
+// --------------------------------------------------------------------------------------------
 // Dodanie usługi graczowi
 //
 
@@ -46,7 +46,7 @@ $(document).delegate("#form_user_service_edit [name=service]", "change", functio
 		return;
 	}
 
-	fetch_data("service_action_execute", false, {
+	fetch_data("service_action_execute", true, {
 		service_action: "servers_for_service",
 		service: $(this).val(),
 		server: module.find("[name=server]").val()
