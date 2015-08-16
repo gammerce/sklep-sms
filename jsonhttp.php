@@ -334,6 +334,7 @@ if ($action == "login") {
 	} else {
 		//
 		// Uzupełniamy brakujące dane
+		/** @var Entity_Purchase $purchase */
 		$purchase = $return_data['purchase'];
 
 		if(!$purchase->getPayment('cost') && $purchase->getTariff() !== NULL)
@@ -348,6 +349,9 @@ if ($action == "login") {
 
 		if ($purchase->getService() === NULL)
 			$purchase->setService($service_module->service['id']);
+
+		if ($purchase->getEmail() === NULL && strlen($user['email']))
+			$purchase->setEmail($user['email']);
 
 		$data_encoded = base64_encode(serialize($return_data['purchase']));
 		$return_data['data'] = array(

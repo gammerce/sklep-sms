@@ -1,5 +1,7 @@
 <?php
 
+use Admin\Table;
+
 $heart->register_service_module("extra_flags", "Dodatkowe Uprawnienia / Flagi", "ServiceExtraFlags", "ServiceExtraFlagsSimple");
 
 class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, IService_Create, IService_AvailableOnServers, IService_UserServiceAdminDisplay
@@ -159,27 +161,43 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 	public function user_service_admin_display_title_get()
 	{
 		global $lang;
-		return $lang->users_services . ': ' . $lang->extra_flags;
+		return $lang->extra_flags;
 	}
 
 	public function user_service_admin_display_get($get, $post)
 	{
-		global $db, $settings, $lang, $G_PAGE, $templates;
+		global $db, $settings, $lang, $G_PAGE;
+
+		$wrapper = new Table\Wrapper();
+		$wrapper->setSearch();
+
+		$table = new Table\Structure();
+
+		// Pobranie nagłówka tabeli
+		$thead_cell = new Table\Cell($lang->id);
+		$thead_cell->setParam('headers', 'id');
+		$table->addHeadCell($thead_cell);
+
+		$table->addHeadCell(new Table\Cell($lang->user));
+		$table->addHeadCell(new Table\Cell($lang->server));
+		$table->addHeadCell(new Table\Cell($lang->service));
+		$table->addHeadCell(new Table\Cell("{$lang->nick}/{$lang->ip}/{$lang->sid}"));
+		$table->addHeadCell(new Table\Cell($lang->expires));
 
 		// Wyszukujemy dane ktore spelniaja kryteria
-		$where = "";
+		$where = '';
 		if (isset($get['search']))
 			searchWhere(array("us.id", "us.uid", "u.username", "srv.name", "s.name", "usef.auth_data"), urldecode($get['search']), $where);
 		// Jezeli jest jakis where, to dodajemy WHERE
 		if (strlen($where))
-			$where = "WHERE " . $where . " ";
+			$where = "WHERE " . $where . ' ';
 
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS us.id AS `id`, us.uid AS `uid`, u.username AS `username`, " .
 			"srv.name AS `server`, s.id AS `service_id`, s.name AS `service`, " .
 			"usef.type AS `type`, usef.auth_data AS `auth_data`, us.expire AS `expire` " .
 			"FROM `" . TABLE_PREFIX . "user_service` AS us " .
-			"INNER JOIN `" . TABLE_PREFIX . "user_service_extra_flags` AS usef ON usef.us_id = us.id " .
+			"INNER JOIN `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` AS usef ON usef.us_id = us.id " .
 			"LEFT JOIN `" . TABLE_PREFIX . "services` AS s ON s.id = usef.service " .
 			"LEFT JOIN `" . TABLE_PREFIX . "servers` AS srv ON srv.id = usef.server " .
 			"LEFT JOIN `" . TABLE_PREFIX . "users` AS u ON u.uid = us.uid " .
@@ -187,63 +205,29 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 			"ORDER BY us.id DESC " .
 			"LIMIT " . get_row_limit($G_PAGE)
 		);
-		$rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
-		$i = 0;
-		$tbody = "";
+		$table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+
 		while ($row = $db->fetch_array_assoc($result)) {
-			$i += 1;
-			// Zabezpieczanie danych
-			$row['auth_data'] = htmlspecialchars($row['auth_data']);
-			$row['service'] = htmlspecialchars($row['service']);
-			$row['server'] = htmlspecialchars($row['server']);
-			$username = $row['uid'] ? htmlspecialchars($row['username']) . " ({$row['uid']})" : $lang->none;
+			$body_row = new Table\BodyRow();
 
-			// Zamiana daty
-			$row['expire'] = $row['expire'] === NULL ? $lang->never : date($settings['date_format'], $row['expire']);
-
-			// Pobranie przycisku edycji oraz usuwania
+			$body_row->setDbId($row['id']);
+			$body_row->addCell(new Table\Cell($row['uid'] ? $row['username'] . " ({$row['uid']})" : $lang->none));
+			$body_row->addCell(new Table\Cell($row['server']));
+			$body_row->addCell(new Table\Cell($row['service']));
+			$body_row->addCell(new Table\Cell($row['auth_data']));
+			$body_row->addCell(new Table\Cell($row['expire'] === NULL ? $lang->never : date($settings['date_format'], $row['expire'])));
 			if (get_privilages("manage_user_services")) {
-				$button_edit = create_dom_element("img", "", array(
-					'id' => "edit_row_{$i}",
-					'src' => "images/edit.png",
-					'title' => $lang->edit . " " . $row['id']
-				));
+				$body_row->setButtonDelete();
+				$body_row->setButtonEdit();
+			}
 
-				$button_delete = create_dom_element("img", "", array(
-					'id' => "delete_row_{$i}",
-					'src' => "images/bin.png",
-					'title' => $lang->delete . " " . $row['id']
-				));
-			} else
-				$button_edit = $button_delete = '';
-
-			// Pobranie danych do tabeli
-			$tbody .= eval($templates->render("admin/user_service_extra_flags_trow"));
+			$table->addBodyRow($body_row);
 		}
 
-		// Nie ma zadnych danych do wyswietlenia
-		if (!strlen($tbody))
-			$tbody = eval($templates->render("admin/no_records"));
+		$wrapper->table = $table;
 
-		// Pole wyszukiwania
-		$search_text = htmlspecialchars($get['search']);
-		$buttons = eval($templates->render("admin/form_search"));
-
-		// Pobranie paginacji
-		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
-		$tfoot_class = strlen($pagination) ? "display_tfoot" : "";
-
-		// Pobranie nagłówka tabeli
-		$thead = eval($templates->render("admin/user_service_extra_flags_thead"));
-
-		return array(
-			'thead' => $thead,
-			'tbody' => $tbody,
-			'tfoot_class' => $tfoot_class,
-			'pagination' => $pagination,
-			'buttons' => $buttons
-		);
+		return $wrapper;
 	}
 
 }

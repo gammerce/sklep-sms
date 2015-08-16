@@ -135,7 +135,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 	public function user_service_admin_display_title_get()
 	{
 		global $lang;
-		return $lang->users_services . ': ' . $lang->mybb_groups;
+		return $lang->mybb_groups;
 	}
 
 	public function user_service_admin_display_get($get, $post)

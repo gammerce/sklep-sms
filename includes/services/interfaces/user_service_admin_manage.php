@@ -23,7 +23,7 @@ interface IService_UserServiceAdminDisplay
 	 *
 	 * @param array $get
 	 * @param array $post
-	 * @return array|string
+	 * @return Admin\Table\Wrapper | string
 	 */
 	public function user_service_admin_display_get($get, $post);
 }

@@ -1,5 +1,7 @@
 <?php
 
+use Admin\Table;
+
 $heart->register_page("user_service", "PageAdmin_UserService", "admin");
 
 class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
@@ -10,7 +12,7 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
 
 	protected function content($get, $post)
 	{
-		global $heart, $lang, $templates;
+		global $heart, $lang;
 
 		$className = '';
 		foreach (get_declared_classes() as $class) {
@@ -26,23 +28,33 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
 		/** @var IService_UserServiceAdminDisplay $service_module_simple */
 		$service_module_simple = new $className();
 
-		$this->title = $service_module_simple->user_service_admin_display_title_get();
-		$content = $service_module_simple->user_service_admin_display_get($get, $post);
+		$this->title = $lang->users_services . ': ' . $service_module_simple->user_service_admin_display_title_get();
+		$wrapper = $service_module_simple->user_service_admin_display_get($get, $post);
 
-		if (!is_array($content))
-			return $content;
+		if (get_class($wrapper) !== '\Admin\Table\Wrapper')
+			return $wrapper;
 
-		// Pobranie przycisku dodajacego flagi
-		if (get_privilages("manage_user_services"))
-			$content['buttons'] .= create_dom_element("input", "", array(
-				'id' => "user_service_button_add",
-				'type' => "button",
-				'value' => $lang->add_service
-			));
+		$wrapper->setTitle($this->title);
 
-		extract($content);
+		// Lista z wyborem modułów
+		$button = new Table\Select();
+		foreach ($heart->get_services_modules() as $service_module_data) {
+			$option = new Table\Option($service_module_data['name']);
+			$option->setParam('value', $service_module_data['id']);
+			$button->addContent($option);
+		}
+		$wrapper->addButton($button);
 
-		return eval($templates->render("admin/table_structure"));
+		// Przycisk dodajacy nowa usluge użytkownikowi
+		if (get_privilages("manage_user_services")) {
+			$button = new Table\Input();
+			$button->setParam('id', 'user_service_button_add');
+			$button->setParam('type', 'button');
+			$button->setParam('value', $lang->add_service);
+			$wrapper->addButton($button);
+		}
+
+		return $wrapper->toHtml();
 	}
 
 	public function get_action_box($box_id, $data)
