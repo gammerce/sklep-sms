@@ -176,8 +176,8 @@ class Payment
 		// Dodajemy extra info
 		//$purchase->
 		$data['platform'] = $this->platform;
-		$data['forename'] = $user->getForename();
-		$data['surname'] = $user->getSurname();
+		$data['forename'] = $purchase_data->user->getForename();
+		$data['surname'] = $purchase_data->user->getSurname();
 
 		return array(
 			'status' => "transfer",
