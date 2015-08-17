@@ -166,5 +166,5 @@ $l['show_more'] = "Pokaż więcej";
 $l['pass_changed'] = "Hasło zostało prawidłowo zmienione.";
 $l['reset_link_sent'] = "e-mail wraz z linkiem do zresetowania hasła został wysłany na Twoją skrzynkę pocztową.<br/>
 Postępuj zgodnie ze wskazówkami zawartymi w e-mailu.";
-$l['register_success'] = "Twoje konto zostało prawidłowo zarejestrowane na adres email: {1}.<br/>
+$l['sign_up_info'] = "Twoje konto zostało prawidłowo zarejestrowane na adres email: {1}.<br/>
 Możesz teraz skorzystać z wielu przydatnych dodatków.";

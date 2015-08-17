@@ -40,7 +40,7 @@ class Entity_User
 	/**
 	 * @var array
 	 */
-	private $groups;
+	private $groups = array();
 
 	/**
 	 * @var string
@@ -75,7 +75,7 @@ class Entity_User
 	/**
 	 * @var array
 	 */
-	private $privilages;
+	private $privilages = array();
 
 	/**
 	 * @var string
