@@ -45,7 +45,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 			$row['email'] = htmlspecialchars($row['email']);
 			$row['forename'] = htmlspecialchars($row['forename']);
 			$row['surname'] = htmlspecialchars($row['surname']);
-			$row['wallet'] = number_format($row['wallet'], 2);
+			$row['wallet'] = number_format($row['wallet'] / 100.0, 2);
 
 
 			$row['groups'] = explode(";", $row['groups']);

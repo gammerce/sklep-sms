@@ -34,7 +34,7 @@ class PageAdminPaymentWallet extends PageAdmin
 
 		$tbody = "";
 		while ($row = $db->fetch_array_assoc($result)) {
-			$row['cost'] = $row['cost'] ? number_format($row['cost'], 2) . " " . $settings['currency'] : "";
+			$row['cost'] = $row['cost'] ? number_format($row['cost'] / 100.0, 2) . " " . $settings['currency'] : "";
 
 			// Podświetlenie konkretnej płatności
 			if ($get['highlight'] && $get['payid'] == $row['payment_id'])

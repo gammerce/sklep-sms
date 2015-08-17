@@ -25,7 +25,7 @@ class Page_UserOIwnServices extends Page implements I_BeLoggedMust
 			"WHERE `uid` = '%d' " .
 			"ORDER BY `id` DESC " .
 			"LIMIT " . get_row_limit($G_PAGE, 4),
-			array($user['uid'])
+			array($user->getUid())
 		));
 		$rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 

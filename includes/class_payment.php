@@ -25,6 +25,12 @@ class Payment
 		}
 	}
 
+	/**
+	 * @param string $sms_code
+	 * @param int $tariff
+	 * @param Entity_User $user
+	 * @return array
+	 */
 	public function pay_sms($sms_code, $tariff, $user)
 	{
 		global $db, $settings, $lang, $lang_shop;
@@ -74,9 +80,9 @@ class Payment
 			// Dodanie informacji o płatności sms
 			$db->query($db->prepare(
 				"INSERT INTO `" . TABLE_PREFIX . "payment_sms` (`code`, `income`, `cost`, `text`, `number`, `ip`, `platform`, `free`) " .
-				"VALUES ('%s','%.2f','%.2f','%s','%s','%s','%s','%d')",
-				array($sms_code, get_sms_cost($sms_number) / 2.0, number_format(get_sms_cost($sms_number) * $settings['vat'], 2),
-					$this->payment_api->data['sms_text'], $sms_number, $user['ip'], $this->platform, $db_code['free'])
+				"VALUES ('%s','%d','%d','%s','%s','%s','%s','%d')",
+				array($sms_code, get_sms_cost($sms_number) / 2, get_sms_cost($sms_number) * $settings['vat'],
+					$this->payment_api->data['sms_text'], $sms_number, $user->getLastIp(), $this->platform, $db_code['free'])
 			));
 
 			$output['payment_id'] = $db->last_id();
@@ -89,9 +95,9 @@ class Payment
 				array($sms_code, $sms_return['tariff'])
 			));
 
-			log_info($lang_shop->sprintf($lang_shop->add_code_to_reuse, $sms_code, $sms_return['tariff'], $user['username'], $user['uid'], $user['ip'], $tariff));
+			log_info($lang_shop->sprintf($lang_shop->add_code_to_reuse, $sms_code, $sms_return['tariff'], $user->getUsername(), $user->getUid(), $user->getLastIp(), $tariff));
 		} else if ($sms_return['status'] != "NO_SMS_SERVE")
-			log_info($lang_shop->sprintf($lang_shop->bad_sms_code_used, $user['username'], $user['uid'], $user['ip'], $sms_code,
+			log_info($lang_shop->sprintf($lang_shop->bad_sms_code_used, $user->getUsername(), $user->getUid(), $user->getLastIp(), $sms_code,
 				$this->payment_api->data['sms_text'], $sms_number, $sms_return['status']));
 
 		switch ($sms_return['status']) {
@@ -146,7 +152,11 @@ class Payment
 		return $output;
 	}
 
-	public function pay_transfer($data, $user)
+	/**
+	 * @param Entity_Purchase $purchase_data
+	 * @return array
+	 */
+	public function pay_transfer($purchase_data)
 	{
 		global $lang;
 
@@ -165,11 +175,10 @@ class Payment
 			);
 
 		// Dodajemy extra info
+		//$purchase->
 		$data['platform'] = $this->platform;
-		$data['uid'] = $user['uid'];
-		$data['ip'] = $user['ip'];
-		$data['forename'] = $user['forename'];
-		$data['surname'] = $user['surname'];
+		$data['forename'] = $purchase_data->user->getForename();
+		$data['surname'] = $purchase_data->user->getSurname();
 
 		return array(
 			'status' => "transfer",

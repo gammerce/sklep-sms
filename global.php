@@ -144,18 +144,18 @@ if (admin_session()) {
 	}
 }
 
-// Pozyskujemy dane użytkownika, jeżeli jeszcze ich nie ma
-if (!isset($user) && isset($_SESSION['uid']))
+// Pozyskujemy dane gracza, jeżeli jeszcze ich nie ma
+if (!$user->isLogged() && isset($_SESSION['uid']))
 	$user = $heart->get_user($_SESSION['uid']);
 
 // Jeżeli próbujemy wejść do PA i nie jesteśmy zalogowani, to zmień stronę
-if (admin_session() && (!is_logged() || !get_privilages("acp"))) {
+if (admin_session() && (!$user->isLogged() || !get_privilages("acp"))) {
 	$G_PID = "login";
 
 	// Jeżeli jest zalogowany, ale w międzyczasie odebrano mu dostęp do PA
-	if (is_logged()) {
+	if ($user->isLogged()) {
 		$_SESSION['info'] = "no_privilages";
-		$user = array();
+		$user = $heart->get_user();
 	}
 }
 
@@ -164,18 +164,18 @@ if (!isset($user) || empty($user))
 	$user = $heart->get_user(0);
 
 // Aktualizujemy aktywność użytkownika
-if (is_logged())
-	update_activity($user['uid']);
+$user->updateActivity();
 
-// Pobranie stałych
+// Pozyskanie ustawień sklepu
 $result = $db->query("SELECT * FROM `" . TABLE_PREFIX . "settings`");
 while ($row = $db->fetch_array_assoc($result))
 	$settings[$row['key']] = $row['value'];
 
 // Poprawiamy adres URL sklepu
-if ($settings['shop_url']) {
+if (strlen($settings['shop_url'])) {
 	if (strpos($settings['shop_url'], "http://") !== 0 && strpos($settings['shop_url'], "https://") !== 0)
 		$settings['shop_url'] = "http://" . $settings['shop_url'];
+
 	$settings['shop_url'] = rtrim($settings['shop_url'], "/");
 	$settings['shop_url_slash'] = $settings['shop_url'] . "/";
 }
@@ -253,11 +253,11 @@ if ($a_Tasks['expire']) {
 }
 
 if ($a_Tasks['text'] != "logged_in") {
-	if (get_privilages("manage_settings", $user))
-		$user['privilages'] = array(
+	if (get_privilages("manage_settings"))
+		$user->setPrivilages(array(
 			"acp" => true,
 			"manage_settings" => true
-		);
+		));
 
 	if (SCRIPT_NAME == "index")
 		output_page($a_Tasks['page']);

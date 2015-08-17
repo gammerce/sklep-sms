@@ -22,6 +22,9 @@ class Heart
 	private $pages_classes;
 	private $blocks_classes;
 
+	/**
+	 * @var Entity_User[]
+	 */
 	private $users;
 
 	private $groups;
@@ -307,7 +310,7 @@ class Heart
 	public function user_can_use_service($uid, $service)
 	{
 		$user = $this->get_user($uid);
-		$combined = array_intersect($service['groups'], $user['groups']);
+		$combined = array_intersect($service['groups'], $user->getGroups());
 		return empty($service['groups']) || !empty($combined);
 	}
 
@@ -434,58 +437,31 @@ class Heart
 	//
 
 	/**
-	 * @param $uid
+	 * @param int $uid
 	 * @param string $login
 	 * @param string $password
-	 * @return array
+	 * @return Entity_User
 	 */
-	public function get_user($uid, $login = "", $password = "")
+	public function get_user($uid = 0, $login = "", $password = "")
 	{
-		global $db;
-
 		// Wcześniej już pobraliśmy takiego użytkownika
 		if ($uid && isset($this->users[$uid]))
 			return $this->users[$uid];
 
 		if ($uid || (strlen($login) && strlen($password))) {
-			$result = $db->query($db->prepare(
-				"SELECT * FROM `" . TABLE_PREFIX . "users` " .
-				"WHERE `uid` = '%d' OR ((username = '%s' OR email = '%s') AND PASSWORD = md5( CONCAT( md5('%s'), md5(salt) ) ))",
-				array($uid, $login, $login, $password)
-			));
+			$user = new Entity_User($uid, $login, $password);
+			$this->users[$user->getUid()] = $user;
 
-			if ($db->num_rows($result)) {
-				$user = $db->fetch_array_assoc($result);
-				$user['wallet'] = number_format($user['wallet'], 2);
-				$user['forename'] = htmlspecialchars($user['forename']);
-				$user['surname'] = htmlspecialchars($user['surname']);
-				$user['email'] = htmlspecialchars($user['email']);
-				$user['username'] = htmlspecialchars($user['username']);
-				$user['groups'] = explode(';', $user['groups']);
-			}
+			return $user;
 		}
 
-		// Pozyskujemy uprawnienia użytkownika w jedno miejsce
-		$user['privilages'] = array();
-		foreach ($user['groups'] as $gid) {
-			$group = $this->get_group_privilages($gid);
-			foreach ($group as $priv => $value)
-				if ($value)
-					$user['privilages'][$priv] = true;
-		}
-
-		$user['platform'] = htmlspecialchars($_SERVER['HTTP_USER_AGENT']);
-		$user['ip'] = get_ip();
-
-		$this->users[$user['uid']] = $user;
-
-		return $user;
+		return new Entity_User();
 	}
 
 	public function has_user_group($uid, $gid)
 	{
 		$user = $this->get_user($uid);
-		return in_array($gid, $user['groups']);
+		return in_array($gid, $user->getGroups());
 	}
 
 	//

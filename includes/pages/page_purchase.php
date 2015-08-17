@@ -74,7 +74,7 @@ class PagePurchase extends Page
 			return $lang->must_be_logged_in;
 
 		// Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
-		if (!$heart->user_can_use_service($user['uid'], $service_module->service))
+		if (!$heart->user_can_use_service($user->getUid(), $service_module->service))
 			return $lang->service_no_permission;
 
 		// Nie ma formularza zakupu, to tak jakby strona nie istniała
