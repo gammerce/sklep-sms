@@ -397,7 +397,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			'status' => "ok",
 			'text' => $lang->purchase_form_validated,
 			'positive' => true,
-			'purchase' => $purchase_data
+			'purchase_data' => $purchase_data
 		);
 	}
 
@@ -1151,7 +1151,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		}
 	}
 
-	public function service_take_over_form_get($service_id)
+	public function service_take_over_form_get()
 	{
 		global $heart, $lang, $templates;
 

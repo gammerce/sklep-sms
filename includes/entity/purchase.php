@@ -105,8 +105,12 @@ class Entity_Purchase {
 		return $this->tariff;
 	}
 
-	public function getEmail() {
-		return $this->email;
+	/**
+	 * @param bool $escaped
+	 * @return string
+	 */
+	public function getEmail($escaped = false) {
+		return $escaped ? htmlspecialchars($this->email) : $this->email;
 	}
 
 	/**

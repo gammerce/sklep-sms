@@ -118,7 +118,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 			'status' => "ok",
 			'text' => $lang->purchase_form_validated,
 			'positive' => true,
-			'purchase' => $purchase_data
+			'purchase_data' => $purchase_data
 		);
 	}
 

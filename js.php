@@ -8,4 +8,4 @@ require_once "global.php";
 if ($_GET['script'] == "language")
 	$output = eval($templates->render("js/language.js", true, false));
 
-output_page($output, "Content-type: text/plain; charset=\"UTF-8\"");
+output_page($output, 1);

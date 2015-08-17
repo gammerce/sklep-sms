@@ -336,7 +336,7 @@ if ($action == "login") {
 		//
 		// Uzupełniamy brakujące dane
 		/** @var Entity_Purchase $purchase_data */
-		$purchase_data = $return_data['purchase'];
+		$purchase_data = $return_data['purchase_data'];
 
 		if(!$purchase_data->getPayment('cost') && $purchase_data->getTariff() !== NULL)
 			$purchase_data->setPayment(array(
@@ -354,11 +354,11 @@ if ($action == "login") {
 		if ($purchase_data->getEmail() === NULL && strlen($user->getEmail()))
 			$purchase_data->setEmail($user->getEmail());
 
-		$data_encoded = base64_encode(serialize($return_data['purchase']));
+		$purchase_data_encoded = base64_encode(serialize($purchase_data));
 		$return_data['data'] = array(
 			'length' => 8000,
-			'data' => $data_encoded,
-			'sign' => md5($data_encoded . $settings['random_key'])
+			'data' => $purchase_data_encoded,
+			'sign' => md5($purchase_data_encoded . $settings['random_key'])
 		);
 	}
 
@@ -398,18 +398,18 @@ if ($action == "login") {
 		}
 	}
 
-	output_page(json_encode($data), "Content-type: text/plain; charset=\"UTF-8\"");
+	output_page(json_encode($data), 1);
 } else if ($action == "get_service_long_description") {
 	$output = "";
 	if (($service_module = $heart->get_service_module($_POST['service'])) !== NULL)
 		$output = $service_module->description_full_get();
 
-	output_page($output, "Content-type: text/plain; charset=\"UTF-8\"");
+	output_page($output, 1);
 } else if ($action == "get_purchase_info") {
 	output_page(purchase_info(array(
 		'purchase_id' => $_POST['purchase_id'],
 		'action' => "web"
-	)), "Content-type: text/plain; charset=\"UTF-8\"");
+	)), 1);
 } else if ($action == "form_user_service_edit") {
 	if (!is_logged())
 		output_page($lang->service_cant_be_modified);
@@ -503,12 +503,12 @@ if ($action == "login") {
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
 } else if ($action == "service_take_over_form_get") {
 	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IService_TakeOver"))
-		output_page($lang->bad_module, "Content-type: text/plain; charset=\"UTF-8\"");
+		output_page($lang->bad_module, 1);
 
-	output_page($service_module->service_take_over_form_get($_POST['service']), "Content-type: text/plain; charset=\"UTF-8\"");
+	output_page($service_module->service_take_over_form_get(), 1);
 } else if ($action == "service_take_over") {
 	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IService_TakeOver"))
-		output_page($lang->bad_module, "Content-type: text/plain; charset=\"UTF-8\"");
+		output_page($lang->bad_module, 1);
 
 	$return_data = $service_module->service_take_over($_POST);
 
@@ -530,15 +530,15 @@ if ($action == "login") {
 	));
 	$page = new PageAdminIncome();
 
-	output_page($page->get_content($_GET, $_POST), "Content-type: text/plain; charset=\"UTF-8\"");
+	output_page($page->get_content($_GET, $_POST), 1);
 } else if ($action == "service_action_execute") {
 	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL
 		|| !object_implements($service_module, "IService_ActionExecute")
 	) {
-		output_page($lang->bad_module, "Content-type: text/plain; charset=\"UTF-8\"");
+		output_page($lang->bad_module, 1);
 	}
 
-	output_page($service_module->action_execute($_POST['service_action'], $_POST), "Content-type: text/plain; charset=\"UTF-8\"");
+	output_page($service_module->action_execute($_POST['service_action'], $_POST), 1);
 } else if ($action == "get_template") {
 	$template = $_POST['template'];
 	// Zabezpieczanie wszystkich wartości post
@@ -556,7 +556,7 @@ if ($action == "login") {
 	if (!isset($data['template']))
 		$data['template'] = eval($templates->render("jsonhttp/" . $template));
 
-	output_page(json_encode($data), "Content-type: text/plain; charset=\"UTF-8\"");
+	output_page(json_encode($data), 1);
 }
 
 json_output("script_error", "An error occured: no action.");

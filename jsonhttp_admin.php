@@ -182,7 +182,7 @@ if ($action == "charge_wallet") {
 	if (($service_module = $heart->get_service_module($_POST['service'])) !== NULL)
 		$output = $service_module->user_service_admin_add_form_get();
 
-	output_page($output, "Content-type: text/plain; charset=\"UTF-8\"");
+	output_page($output, 1);
 } else if ($action == "antispam_question_add" || $action == "antispam_question_edit") {
 	if (!get_privilages("manage_antispam_questions")) {
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
@@ -572,7 +572,7 @@ if ($action == "charge_wallet") {
 	if ($service_module !== NULL && object_implements($service_module, "IService_AdminManage"))
 		$output = $service_module->service_admin_extra_fields_get();
 
-	output_page($output, "Content-type: text/plain; charset=\"UTF-8\"");
+	output_page($output, 1);
 } else if ($action == "server_add" || $action == "server_edit") {
 	if (!get_privilages("manage_servers")) {
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
@@ -1115,7 +1115,7 @@ if ($action == "charge_wallet") {
 	)
 		$output = $service_module->service_code_admin_add_form_get();
 
-	output_page($output, "Content-type: text/plain; charset=\"UTF-8\"");
+	output_page($output, 1);
 } else if ($action == "delete_log") {
 	if (!get_privilages("manage_logs")) {
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
@@ -1146,7 +1146,7 @@ if ($action == "charge_wallet") {
 			$data[$block->get_content_id()]['class'] = "";
 	}
 
-	output_page(json_encode($data), "Content-type: text/plain; charset=\"UTF-8\"");
+	output_page(json_encode($data), 1);
 } else if ($action == "get_action_box") {
 	if (!isset($_POST['page_id']) || !isset($_POST['box_id']))
 		json_output("no_data", $lang->not_all_data, 0);
@@ -1176,15 +1176,15 @@ if ($action == "charge_wallet") {
 	if (!isset($data['template']))
 		$data['template'] = eval($templates->render("jsonhttp/" . $template));
 
-	output_page(json_encode($data), "Content-type: text/plain; charset=\"UTF-8\"");
+	output_page(json_encode($data), 1);
 } else if ($action == "service_action_execute") {
 	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL
 		|| !object_implements($service_module, "IService_ActionExecute")
 	) {
-		output_page($lang->bad_module, "Content-type: text/plain; charset=\"UTF-8\"");
+		output_page($lang->bad_module, 1);
 	}
 
-	output_page($service_module->action_execute($_POST['service_action'], $_POST), "Content-type: text/plain; charset=\"UTF-8\"");
+	output_page($service_module->action_execute($_POST['service_action'], $_POST), 1);
 }
 
 json_output("script_error", "An error occured: no action.");

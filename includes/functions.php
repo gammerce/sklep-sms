@@ -82,13 +82,24 @@ function get_template($title, $install = false, $eslashes = true, $htmlcomments 
 /**
  * Pobranie szablonu
  * @param string $output Zwartość do wyświetlenia
- * @param string $header String do użycia w funkcji header()
+ * @param int|string $header String do użycia w funkcji header()
  */
-function output_page($output, $header = "Content-type: text/html; charset=\"UTF-8\"")
+function output_page($output, $header = 0)
 {
-	header($header);
-	echo $output;
-	exit;
+	if (is_string($header)) {
+		header($header);
+	} else {
+		switch ($header) {
+			case 1:
+				header('Content-type: text/plain; charset="UTF-8"');
+				break;
+
+			default:
+				header('Content-type: text/html; charset="UTF-8"');
+		}
+	}
+
+	die($output);
 }
 
 /**

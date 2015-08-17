@@ -12,7 +12,7 @@ function xml_output($return_value, $text, $positive, $extra_data = "")
 	$output .= "<text>{$text}</text>";
 	$output .= "<positive>{$positive}</positive>";
 	$output .= $extra_data;
-	output_page($output, "Content-type: text/plain; charset=\"UTF-8\"");
+	output_page($output, 1);
 }
 
 // Musi byc podany hash random_keya
@@ -61,7 +61,7 @@ if ($action == "purchase_service") {
 	}
 
 	/** @var Entity_Purchase $purchase_data */
-	$purchase_data = $return_validation['purchase'];
+	$purchase_data = $return_validation['purchase_data'];
 	$purchase_data->setPayment(array(
 		'method' => urldecode($_GET['method']),
 		'sms_code' => urldecode($_GET['sms_code']),
