@@ -285,3 +285,5 @@ $l['add_user_service'] = "Add service for user";
 $l['edit_user_service'] = "Edit user's service";
 
 $l['no_subpage'] = "There is no subpage with ID: {1}";
+
+$l['delete_service_er_row_is_referenced_2'] = "This service cannot be deleted, there are still users' services.";

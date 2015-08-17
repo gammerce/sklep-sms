@@ -13,6 +13,8 @@ class Entity_Purchase {
 	private $service = NULL;
 
 	/**
+	 * Szczegóły zamawianej usługi
+	 *
 	 * @var array
 	 */
 	private $order = NULL;
@@ -33,11 +35,15 @@ class Entity_Purchase {
 	private $email = NULL;
 
 	/**
+	 * Szczegóły płatności
+	 *
 	 * @var array
 	 */
 	private $payment = NULL;
 
 	/**
+	 * Opis zakupu ( przydaje się przy płatności przelewem )
+	 *
 	 * @var string
 	 */
 	private $desc = NULL;

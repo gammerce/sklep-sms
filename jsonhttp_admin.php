@@ -75,7 +75,7 @@ if ($action == "charge_wallet") {
 
 	$purchase_return = $service_module->purchase($purchase_data);
 
-	log_info($lang_shop->sprintf($lang_shop->account_charge, $user->getUsername(), $user->getUid(), $user2->getUsername(), $user2->getUid(), number_format($amount/100.0, 2), $settings['currency']));
+	log_info($lang_shop->sprintf($lang_shop->account_charge, $user->getUsername(), $user->getUid(), $user2->getUsername(), $user2->getUid(), number_format($amount / 100.0, 2), $settings['currency']));
 
 	json_output("charged", $lang->sprintf($lang->account_charge_success, $user2->getUsername(), number_format($amount / 100.0, 2), $settings['currency']), 1);
 } else if ($action == "user_service_add") {
@@ -149,7 +149,8 @@ if ($action == "charge_wallet") {
 
 	// Wywolujemy akcje przy usuwaniu
 	if (($service_module = $heart->get_service_module($user_service['service'])) !== NULL
-		&& !$service_module->user_service_delete($user_service, 'admin')) {
+		&& !$service_module->user_service_delete($user_service, 'admin')
+	) {
 		json_output("no_service", $lang->service_cannot_be_deleted, 0);
 	}
 
@@ -167,7 +168,7 @@ if ($action == "charge_wallet") {
 
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($affected) {
-		log_info($lang_shop->sprintf($lang_shop->user_service_admin_delete, $user['username'], $user['uid'], $user_service['id']));
+		log_info($lang_shop->sprintf($lang_shop->user_service_admin_delete, $user->getUsername(), $user->getUid(), $user_service['id']));
 
 		json_output("deleted", $lang->delete_service, 1);
 	} else
@@ -486,12 +487,14 @@ if ($action == "charge_wallet") {
 		$module_data = $service_module->service_admin_manage_post($_POST);
 
 		// Tworzymy elementy SET zapytania
-		$set = "";
-		foreach($module_data['query_set'] as $element) {
-			if (strlen($set))
-				$set .= ", ";
+		if (isset($module_data['query_set'])) {
+			$set = '';
+			foreach ($module_data['query_set'] as $element) {
+				if (strlen($set))
+					$set .= ", ";
 
-			$set .= $db->prepare("`%s` = '{$element['type']}'", array($element['column'], $element['value']));
+				$set .= $db->prepare("`%s` = '{$element['type']}'", array($element['column'], $element['value']));
+			}
 		}
 	}
 
@@ -536,17 +539,18 @@ if ($action == "charge_wallet") {
 		$service_module->service_delete($_POST['id']);
 	}
 
-	$db->query($db->prepare(
-		"DELETE FROM `" . TABLE_PREFIX . "pricelist` " .
-		"WHERE `service` = '%s'",
-		array($_POST['id'])
-	));
+	try {
+		$db->query($db->prepare(
+			"DELETE FROM `" . TABLE_PREFIX . "services` " .
+			"WHERE `id` = '%s'",
+			array($_POST['id'])
+		));
+	} catch (SqlQueryException $e) {
+		if ($e->getErrorno() == 1451) // Istnieją powiązania
+			json_output("error", $lang->delete_service_er_row_is_referenced_2, 0);
 
-	$db->query($db->prepare(
-		"DELETE FROM `" . TABLE_PREFIX . "services` " .
-		"WHERE `id` = '%s'",
-		array($_POST['id'])
-	));
+		throw $e;
+	}
 	$affected = $db->affected_rows();
 
 	// Zwróć info o prawidłowym lub błędnym usunięciu
@@ -665,13 +669,6 @@ if ($action == "charge_wallet") {
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
 	}
 
-	// Usuwamy powiazania uslugi - serwery
-	$db->query($db->prepare(
-		"DELETE FROM `" . TABLE_PREFIX . "servers_services` " .
-		"WHERE `server_id` = '%s'",
-		array($_POST['id'])
-	));
-
 	$db->query($db->prepare(
 		"DELETE FROM `" . TABLE_PREFIX . "servers` " .
 		"WHERE `id` = '%s'",
@@ -682,7 +679,8 @@ if ($action == "charge_wallet") {
 	if ($db->affected_rows()) {
 		log_info($lang_shop->sprintf($lang_shop->server_admin_delete, $user->getUsername(), $user->getUid(), $_POST['id']));
 		json_output("deleted", $lang->delete_server, 1);
-	} else json_output("not_deleted", $lang->no_delete_server, 0);
+	} else
+		json_output("not_deleted", $lang->no_delete_server, 0);
 } else if ($action == "user_edit") {
 	if (!get_privilages("manage_users")) {
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
@@ -808,7 +806,7 @@ if ($action == "charge_wallet") {
 		// Zwróć info o prawidłowej lub błędnej edycji
 		if ($db->affected_rows()) {
 			// LOGGING
-			log_info($lang_shop->sprintf($lang_shop->group_admin_edit, $user['username'], $user['uid'], $_POST['id']));
+			log_info($lang_shop->sprintf($lang_shop->group_admin_edit, $user->getUsername(), $user->getUid(), $_POST['id']));
 			json_output("edited", $lang->group_edit, 1);
 		} else
 			json_output("not_edited", $lang->group_no_edit, 0);
@@ -826,7 +824,7 @@ if ($action == "charge_wallet") {
 
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($db->affected_rows()) {
-		log_info($lang_shop->sprintf($lang_shop->group_admin_delete, $user['username'], $user['uid'], $_POST['id']));
+		log_info($lang_shop->sprintf($lang_shop->group_admin_delete, $user->getUsername(), $user->getUid(), $_POST['id']));
 		json_output("deleted", $lang->delete_group, 1);
 	} else
 		json_output("not_deleted", $lang->no_delete_group, 0);
@@ -958,8 +956,7 @@ if ($action == "charge_wallet") {
 
 	if ($action == "price_add") {
 		$db->query($db->prepare(
-			"INSERT " .
-			"INTO " . TABLE_PREFIX . "pricelist (service,tariff,amount,server) " .
+			"INSERT INTO `" . TABLE_PREFIX . "pricelist` (`service`, `tariff`, `amount`, `server`) " .
 			"VALUES( '%s', '%d', '%d', '%d' )",
 			array($_POST['service'], $_POST['tariff'], $_POST['amount'], $_POST['server'])));
 
@@ -1114,7 +1111,8 @@ if ($action == "charge_wallet") {
 
 	$output = "";
 	if (($service_module = $heart->get_service_module($_POST['service'])) !== NULL &&
-		object_implements($service_module, "IService_ServiceCodeAdminManage"))
+		object_implements($service_module, "IService_ServiceCodeAdminManage")
+	)
 		$output = $service_module->service_code_admin_add_form_get();
 
 	output_page($output, "Content-type: text/plain; charset=\"UTF-8\"");

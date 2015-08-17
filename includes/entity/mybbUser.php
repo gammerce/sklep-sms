@@ -3,14 +3,14 @@
 class Entity_MyBB_User {
 
 	/**
-	 * @var integer
+	 * @var int
 	 */
 	private $uid;
 
 	/**
 	 * @var array
 	 */
-	private $groups = array();
+	private $shop_groups = array();
 
 	/**
 	 * @var int[]
@@ -20,17 +20,17 @@ class Entity_MyBB_User {
 	/**
 	 * @param int $uid
 	 */
-	function __contruct($uid) {
-		$this->uid = $uid;
+	function __construct($uid) {
+		$this->uid = intval($uid);
 	}
 
 	/**
 	 * @param array $groups
 	 */
-	public function setGroups($groups) {
+	public function setShopGroups($groups) {
 		foreach($groups as $key => $value) {
 			if (intval($key) != 0)
-				$this->groups[intval($key)] = intval($value);
+				$this->shop_groups[intval($key)] = intval($value);
 		}
 	}
 
@@ -38,25 +38,25 @@ class Entity_MyBB_User {
 	 * @param integer $group
 	 * @param integer $seconds
 	 */
-	public function prolongGroup($group, $seconds) {
+	public function prolongShopGroup($group, $seconds) {
 		if (intval($group) == 0)
 			return;
 
-		if (!isset($this->groups[$group]))
-			$this->groups[$group] = 0;
+		if (!isset($this->shop_groups[$group]))
+			$this->shop_groups[$group] = 0;
 
-		$this->groups[$group] += intval($seconds);
+		$this->shop_groups[$group] += intval($seconds);
 	}
 
 	public function getUid() {
 		return $this->uid;
 	}
 
-	public function getGroups($key = NULL) {
+	public function getShopGroups($key = NULL) {
 		if ($key === NULL)
-			return $this->groups;
+			return $this->shop_groups;
 
-		return if_isset($this->groups[$key], NULL);
+		return if_isset($this->shop_groups[$key], NULL);
 	}
 
 	/**

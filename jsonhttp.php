@@ -215,14 +215,14 @@ if ($action == "login") {
 
 	$link = $settings['shop_url_slash'] . "index.php?pid=reset_password&code=" . htmlspecialchars($key);
 	$text = eval($templates->render("emails/forgotten_password"));
-	$ret = send_email($user2['email'], $user2->getUsername(), "Reset Hasła", $text);
+	$ret = send_email($user2->getEmail(), $user2->getUsername(), "Reset Hasła", $text);
 
 	if ($ret == "not_sent")
 		json_output("not_sent", $lang->keyreset_error, 0);
 	else if ($ret == "wrong_email")
 		json_output("wrong_sender_email", $lang->wrong_email, 0);
 	else if ($ret == "sent") {
-		log_info($lang_shop->sprintf($lang_shop->reset_key_email, $user2->getUsername(), $user2->getUid(), $user2['email'], $username, $email));
+		log_info($lang_shop->sprintf($lang_shop->reset_key_email, $user2->getUsername(), $user2->getUid(), $user2->getEmail(), $username, $email));
 		$data['username'] = $user2->getUsername();
 		json_output("sent", $lang->email_sent, 1, $data);
 	}
@@ -335,7 +335,7 @@ if ($action == "login") {
 	} else {
 		//
 		// Uzupełniamy brakujące dane
-		/** @var Entity_Purchase $purchase */
+		/** @var Entity_Purchase $purchase_data */
 		$purchase_data = $return_data['purchase'];
 
 		if(!$purchase_data->getPayment('cost') && $purchase_data->getTariff() !== NULL)
@@ -351,8 +351,8 @@ if ($action == "login") {
 		if ($purchase_data->getService() === NULL)
 			$purchase_data->setService($service_module->service['id']);
 		
-		if ($purchase->getEmail() === NULL && strlen($user['email']))
-			$purchase->setEmail($user['email']);
+		if ($purchase_data->getEmail() === NULL && strlen($user->getEmail()))
+			$purchase_data->setEmail($user->getEmail());
 
 		$data_encoded = base64_encode(serialize($return_data['purchase']));
 		$return_data['data'] = array(
@@ -440,11 +440,10 @@ if ($action == "login") {
 	if (!is_logged())
 		output_page($lang->not_logged);
 
-	// Sprawdzamy, czy usluga ktora chcemy edytowac jest w bazie
 	$user_service = get_users_services($_POST['id']);
 
 	// Brak takiej usługi w bazie
-	if (!empty($user_service))
+	if (empty($user_service))
 		output_page($lang->dont_play_games);
 
 	// Dany użytkownik nie jest właścicielem usługi o danym id

@@ -286,3 +286,5 @@ $l['add_user_service'] = "Dodaj usługę użytkownikowi";
 $l['edit_user_service'] = "Edytuj usługę użytkownika";
 
 $l['no_subpage'] = "Brak podstrony o ID: {1}";
+
+$l['delete_service_er_row_is_referenced_2'] = "Nie można usunąć tej usługi, ponieważ wciąz istnieją usługi graczy.";

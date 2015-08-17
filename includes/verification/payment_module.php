@@ -29,11 +29,11 @@ abstract class PaymentModule
 		$this->data['sms'] = $row['sms'];
 		$this->data['transfer'] = $row['transfer'];
 
-		$data = json_decode($row['data']);
+		$data = (array)json_decode($row['data'], true);
 		foreach ($data as $key => $value)
 			$this->data[$key] = $value;
 
-		$data_hidden = json_decode($row['data_hidden']);
+		$data_hidden = (array)json_decode($row['data_hidden'], true);
 		foreach ($data_hidden as $key => $value)
 			$this->data[$key] = $value;
 

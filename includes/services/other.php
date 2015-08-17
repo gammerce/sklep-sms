@@ -9,20 +9,12 @@ class ServiceOtherSimple extends Service implements IService_Create, IService_Ad
 
 	public function service_admin_manage_post($data)
 	{
-		global $db;
-
-		if ($data['action'] == "service_edit" && $data['id2'] != $data['id'])
-			$db->query($db->prepare(
-				"UPDATE `" . TABLE_PREFIX . "servers_services` " .
-				"SET `service_id` = '%s' " .
-				"WHERE `service_id` = '%s'",
-				array($data['id'], $data['id2'])
-			));
+		return array();
 	}
 
 	public function service_admin_extra_fields_get()
 	{
-		return "";
+		return '';
 	}
 
 	public function service_admin_manage_pre($data)
@@ -100,7 +92,7 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
 			'status' => "ok",
 			'text' => $lang->purchase_form_validated,
 			'positive' => true,
-			'purchase' => $purchase
+			'purchase' => $purchase_data
 		);
 	}
 
@@ -112,16 +104,4 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
 			$purchase_data->getOrder('auth_data'), $purchase_data->getEmail()
 		);
 	}
-
-	public function service_delete($service_id)
-	{
-		global $db;
-
-		$db->query($db->prepare(
-			"DELETE FROM `" . TABLE_PREFIX . "servers_services` " .
-			"WHERE `service_id` = '%s'",
-			array($service_id)
-		));
-	}
-
 }

@@ -175,16 +175,13 @@ class Payment
 			);
 
 		// Dodajemy extra info
-		//$purchase->
-		$data['platform'] = $this->platform;
-		$data['forename'] = $purchase_data->user->getForename();
-		$data['surname'] = $purchase_data->user->getSurname();
+		$purchase_data->user->setPlatform($this->platform);
 
 		return array(
 			'status' => "transfer",
 			'text' => $lang->transfer_ok,
 			'positive' => true,
-			'data' => array('data' => $this->payment_api->prepare_transfer($data)) // Przygotowuje dane płatności transferem
+			'data' => array('data' => $this->payment_api->prepare_transfer($purchase_data)) // Przygotowuje dane płatności transferem
 		);
 	}
 

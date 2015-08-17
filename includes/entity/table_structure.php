@@ -46,7 +46,7 @@ class DOMElement implements I_ToHtml
 	protected $name;
 
 	/** @var  I_ToHtml[] */
-	protected $contents;
+	protected $contents = array();
 
 	/** @var  array */
 	protected $params;
@@ -243,7 +243,7 @@ class BodyRow extends Row
 	private $db_id = NULL;
 
 	/** @var  DOMElement[] */
-	private $actions;
+	private $actions = array();
 
 	/** @var bool $button_edit */
 	private $button_edit = false;

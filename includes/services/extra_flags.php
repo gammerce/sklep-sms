@@ -70,9 +70,7 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 
 	public function service_admin_manage_post($data)
 	{
-		global $db, $settings, $lang;
-
-		$output = array();
+		global $settings, $lang;
 
 		// Przygotowujemy do zapisu ( suma bitowa ), które typy zostały wybrane
 		$types = 0;
@@ -95,15 +93,6 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 			if (substr(sprintf('%o', fileperms($file)), -4) != "0777")
 				json_output("not_created", $lang->sprintf($lang->wrong_service_description_file, $settings['theme']), 0);
 		}
-
-
-		if ($data['action'] == "service_edit" && $data['id2'] != $data['id'])
-			$db->query($db->prepare(
-				"UPDATE `" . TABLE_PREFIX . "servers_services` " .
-				"SET `service_id` = '%s' " .
-				"WHERE `service_id` = '%s'",
-				array($data['id'], $data['id2'])
-			));
 
 		return array(
 			'query_set' => array(
@@ -489,9 +478,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			), $user_service_id, $user_service_id);
 		} else { // Wstawiamy
 			$db->query($db->prepare(
-				"INSERT INTO `" . TABLE_PREFIX . "user_service` (`uid`, `expire`) " .
-				"VALUES ('%d', IF('%d' = '1', '-1', UNIX_TIMESTAMP() + '%d')) ",
-				array($uid, $forever, $days * 24 * 60 * 60)
+				"INSERT INTO `" . TABLE_PREFIX . "user_service` (`uid`, `service`, `expire`) " .
+				"VALUES ('%d', '%s', IF('%d' = '1', '-1', UNIX_TIMESTAMP() + '%d')) ",
+				array($uid, $this->service['id'], $forever, $days * 24 * 60 * 60)
 			));
 			$user_service_id = $db->last_id();
 
@@ -642,22 +631,6 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			);
 
 		return $output;
-	}
-
-	// ----------------------------------------------------------------------------------
-	// ### Zarządzanie usługami
-
-	//
-	// Funkcja wywolywana podczas usuwania uslugi
-	public function service_delete($service_id)
-	{
-		global $db;
-
-		$db->query($db->prepare(
-			"DELETE FROM `" . TABLE_PREFIX . "servers_services` " .
-			"WHERE `service_id` = '%s'",
-			array($service_id)
-		));
 	}
 
 	// ----------------------------------------------------------------------------------
@@ -987,16 +960,16 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		return $output;
 	}
 
-	public function user_own_service_info_get($data, $button_edit)
+	public function user_own_service_info_get($user_service, $button_edit)
 	{
 		global $heart, $settings, $lang, $templates;
 
-		$service_info['expire'] = $data['expire'] == -1 ? $lang->never : date($settings['date_format'], $data['expire']);
-		$temp_server = $heart->get_server($data['server']);
+		$service_info['expire'] = $user_service['expire'] == -1 ? $lang->never : date($settings['date_format'], $user_service['expire']);
+		$temp_server = $heart->get_server($user_service['server']);
 		$service_info['server'] = $temp_server['name'];
 		$service_info['service'] = $this->service['name'];
-		$service_info['type'] = $this->get_type_name2($data['type']);
-		$service_info['auth_data'] = htmlspecialchars($data['auth_data']);
+		$service_info['type'] = $this->get_type_name2($user_service['type']);
+		$service_info['auth_data'] = htmlspecialchars($user_service['auth_data']);
 		unset($temp_server);
 
 		$output = eval($templates->render("services/" . $this::MODULE_ID . "/user_own_service"));
@@ -1044,6 +1017,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 	{
 		global $db, $lang;
 
+		$set = array();
 		// Dodanie hasła do zapytania
 		if (strlen($data['password']))
 			$set[] = array(
@@ -1318,7 +1292,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			"UPDATE `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` " .
 			"SET `uid` = '%d' " .
 			"WHERE `id` = '%d'",
-			array($user['uid'], $row['id'])
+			array($user->getUid(), $row['id'])
 		));
 
 		if ($db->affected_rows())
@@ -1386,7 +1360,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$result = $db->query($db->prepare(
 			"SELECT sn.number AS `sms_number`, t.provision AS `provision`, t.tariff AS `tariff`, p.amount AS `amount` " .
 			"FROM `" . TABLE_PREFIX . "pricelist` AS p " .
-			"JOIN `" . TABLE_PREFIX . "tariffs` AS t ON t.tariff = p.tariff " .
+			"INNER JOIN `" . TABLE_PREFIX . "tariffs` AS t ON t.tariff = p.tariff " .
 			"LEFT JOIN `" . TABLE_PREFIX . "sms_numbers` AS sn ON sn.tariff = p.tariff AND sn.service = '%s' " .
 			"WHERE p.service = '%s' AND ( p.server = '%d' OR p.server = '-1' ) " .
 			"ORDER BY t.provision ASC",
@@ -1395,7 +1369,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 		$values = "";
 		while ($row = $db->fetch_array_assoc($result)) {
-			$sms_cost = strlen($row['sms_number']) ? get_sms_cost($row['sms_number']) * $settings['vat'] : 0;
+			$provision = number_format($row['provision'] / 100, 2);
+			$sms_cost = strlen($row['sms_number']) ? number_format(get_sms_cost($row['sms_number']) / 100 * $settings['vat'], 2) : 0;
 			$amount = $row['amount'] != -1 ? "{$row['amount']} {$this->service['tag']}" : $lang->forever;
 			$values .= eval($templates->render("services/" . $this::MODULE_ID . "/purchase_value", true, false));
 		}
@@ -1414,7 +1389,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		}
 	}
 
-	public function service_code_validate($purchase, $code)
+	public function service_code_validate($purchase_data, $code)
 	{
 		return true;
 	}
@@ -1470,56 +1445,6 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			'tariff' => $tariff,
 			'server' => $data['server']
 		);
-	}
-
-	private function update_user_service($set, $where1, $where2)
-	{
-		global $db;
-
-		$set_data1 = $set_data2 = $where_data = $where_data2 = array();
-
-		foreach ($set as $data) {
-			$set_data = $db->prepare(
-				"`{$data['column']}` = {$data['value']}",
-				if_isset($data['data'], array())
-			);
-			if (in_array($data['column'], array('uid', 'expire'))) {
-				$set_data1[] = $set_data;
-			} else {
-				$set_data2[] = $set_data;
-			}
-		}
-
-		if (my_is_integer($where1))
-			$where1 = "WHERE `id` = {$where1}";
-		else if (strlen($where1))
-			$where1 = "WHERE {$where1}";
-
-		if (my_is_integer($where2))
-			$where2 = "WHERE `us_id` = {$where2}";
-		else if (strlen($where2))
-			$where2 = "WHERE {$where2}";
-
-		$affected = 0;
-		if (!empty($set_data1)) {
-			$db->query(
-				"UPDATE `" . TABLE_PREFIX . "user_service` " .
-				"SET " . implode(', ', $set_data1) . " " .
-				$where1
-			);
-			$affected = max($affected, $db->affected_rows());
-		}
-
-		if (!empty($set_data2)) {
-			$db->query(
-				"UPDATE `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` " .
-				"SET " . implode(', ', $set_data2) . " " .
-				$where2
-			);
-			$affected = max($affected, $db->affected_rows());
-		}
-
-		return $affected;
 	}
 
 	// Zwraca wartość w zależności od typu

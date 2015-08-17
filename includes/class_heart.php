@@ -4,51 +4,32 @@ class Heart
 {
 
 	private $servers = array();
-	private $servers_fetched;
+	private $servers_fetched = false;
 
 	private $services = array();
-	private $services_fetched;
+	private $services_fetched = false;
 
 	private $servers_services = array();
-	private $servers_services_fetched;
+	private $servers_services_fetched = false;
 
 	private $tariffs = array();
-	private $tariffs_fetched;
+	private $tariffs_fetched = false;
 
 	public $page_title;
 
-	private $services_classes;
-	private $payment_api_classes;
-	private $pages_classes;
-	private $blocks_classes;
+	private $services_classes = array();
+	private $payment_api_classes = array();
+	private $pages_classes = array();
+	private $blocks_classes = array();
 
-	/**
-	 * @var Entity_User[]
-	 */
-	private $users;
+	/** @var array Entity_User[] */
+	private $users = array();
 
-	private $groups;
-	private $groups_fetched;
+	private $groups = array();
+	private $groups_fetched = false;
 
-	private $scripts;
-	private $styles;
-
-	function __construct()
-	{
-		$this->servers_fetched = false;
-		$this->services_fetched = false;
-		$this->tariffs_fetched = false;
-		$this->groups_fetched = false;
-		$this->services_classes = array();
-		$this->payment_api_classes = array();
-		$this->pages_classes = array();
-		$this->users = array();
-		$this->groups = array();
-	}
-
-	//
-	// Klasy usług
-	//
+	private $scripts = array();
+	private $styles = array();
 
 	/**
 	 * Rejestruje moduł usługi

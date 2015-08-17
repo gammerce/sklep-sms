@@ -1,5 +1,77 @@
 <?php
 
+class SqlQueryException extends Exception
+{
+	/** @var  string */
+	private $query;
+
+	/** @var  string */
+	private $message_id;
+
+	/** @var  string */
+	private $error;
+
+	/** @var  int */
+	private $errorno;
+
+	/**
+	 * @param bool $escape
+	 * @return string
+	 */
+	public function getQuery($escape = true)
+	{
+		return $escape ? htmlspecialchars($this->query) : $this->query;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getMessageId()
+	{
+		return $this->message_id;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getError()
+	{
+		return $this->error;
+	}
+
+	/**
+	 * @param string $query
+	 */
+	public function setQuery($query)
+	{
+		$this->query = $query;
+	}
+
+	/**
+	 * @param string $error
+	 */
+	public function setError($error)
+	{
+		$this->error = $error;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getErrorno()
+	{
+		return $this->errorno;
+	}
+
+	/**
+	 * @param int $errorno
+	 */
+	public function setErrorno($errorno)
+	{
+		$this->errorno = $errorno;
+	}
+}
+
 class Database
 {
 
@@ -7,9 +79,12 @@ class Database
 	private $user;
 	private $pass;
 	private $name;
+
 	private $link;
+
 	private $error;
 	private $errno;
+
 	private $query;
 	private $result;
 	public $counter = 0;
@@ -65,24 +140,26 @@ class Database
 		if ($this->result = @mysqli_query($this->link, $query)) {
 			return $this->result;
 		} else {
-			$this->exception("query_error", $query);
+			$this->exception("query_error");
 			return false;
 		}
 	}
 
 	public function multi_query($query)
 	{
+		$this->query = $query;
 		//file_put_contents(SQL_LOG, file_get_contents(SQL_LOG)."\n\n".$query);
 		if ($this->result = @mysqli_multi_query($this->link, $query)) {
 			return $this->result;
 		} else {
-			$this->exception("query_error", $query);
+			$this->exception("query_error");
 			return false;
 		}
 	}
 
 	public function get_column($query, $column)
 	{
+		$this->query = $query;
 		$result = $this->query($query);
 
 		if (!$this->num_rows($result))
@@ -142,28 +219,47 @@ class Database
 		return mysqli_real_escape_string($this->link, $str);
 	}
 
-	public function get_last_query() {
+	public function get_last_query()
+	{
 		return $this->query;
 	}
 
-	private function exception($message_id, $query = "")
+	private function exception($message_id)
 	{
+		$exception = new SqlQueryException($message_id);
+
 		if ($this->link) {
 			$this->error = mysqli_error($this->link);
 			$this->errno = mysqli_errno($this->link);
 		}
 
-		$array['message_id'] = $message_id;
-		$array['query'] = $query;
-		$array['error'] = $this->error;
+		$exception->setError($this->error);
+		$exception->setErrorno($this->errno);
+		$exception->setQuery($this->query);
 
-		if (PHP_SAPI !== 'cli') {
-			$array['request_uri'] = @$_SERVER['REQUEST_URI'];
+		throw $exception;
+	}
 
-			if (@$_SERVER['HTTP_REFERER'])
-				$array['http_referer'] = @$_SERVER['HTTP_REFERER'];
+	public static function showError(SqlQueryException $e)
+	{
+		global $settings, $lang, $templates;
+
+		if (strlen($e->getQuery())) {
+			$text = date($settings['date_format']) . ": " . $e->getQuery(false);
+			if (!file_exists(SQL_LOG) || !strlen(file_get_contents(SQL_LOG)))
+				file_put_contents(SQL_LOG, $text);
+			else
+				file_put_contents(SQL_LOG, file_get_contents(SQL_LOG) . "\n\n" . $text);
 		}
-		$string = json_encode($array);
-		trigger_error($string, E_USER_ERROR);
+
+		$message = $lang->mysqli[$e->getMessage()];
+		$query = $e->getQuery();
+
+		if (SCRIPT_NAME == 'jsonhttp' || SCRIPT_NAME == 'jsonhttp_admin') {
+			output_page($message);
+		}
+
+		$header = eval($templates->render("header_error"));
+		output_page(eval($templates->render("error_handler")));
 	}
 }

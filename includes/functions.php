@@ -5,7 +5,8 @@
  *
  * @return bool
  */
-function admin_session() {
+function admin_session()
+{
 	return in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"));
 }
 
@@ -228,6 +229,9 @@ function get_privilages($which, $user = NULL)
 	if ($user === NULL)
 		global $user;
 
+	if ($user === NULL)
+		return false;
+
 	if (in_array($which, array("manage_settings", "view_groups", "manage_groups", "view_player_flags",
 			"view_user_services", "manage_user_services", "view_income", "view_users", "manage_users",
 			"view_sms_codes", "manage_sms_codes", "view_service_codes", "manage_service_codes",
@@ -321,10 +325,10 @@ function validate_payment($purchase_data)
 
 	// Tworzymy obiekt, który będzie nam obsługiwał proces płatności
 	if ($purchase_data->getPayment('method') == "sms") {
-		$transaction_service = if_strlen($purchase_data->getPayment('sms_service'), $settings['sms_service']);
+		$transaction_service = if_strlen2($purchase_data->getPayment('sms_service'), $settings['sms_service']);
 		$payment = new Payment($transaction_service, $purchase_data->user->getPlatform());
 	} else if ($purchase_data->getPayment('method') == "transfer") {
-		$transaction_service = if_strlen($purchase_data->getPayment('transfer_service'), $settings['transfer_service']);
+		$transaction_service = if_strlen2($purchase_data->getPayment('transfer_service'), $settings['transfer_service']);
 		$payment = new Payment($transaction_service, $purchase_data->user->getPlatform());
 	}
 
@@ -414,8 +418,7 @@ function validate_payment($purchase_data)
 		// Metoda pay_wallet zwróciła błąd.
 		if (is_array($payment_id))
 			return $payment_id;
-	}
-	else if ($purchase_data->getPayment('method') == "service_code") {
+	} else if ($purchase_data->getPayment('method') == "service_code") {
 		// Dodanie informacji o płatności z portfela
 		$payment_id = pay_service_code($purchase_data, $service_module);
 
@@ -561,7 +564,7 @@ function pay_service_code($purchase_data, $service_module)
  * @param array $extra_data
  * @return int|string
  */
-function add_bought_service_info($uid, $user_name, $ip, $method, $payment_id, $service, $server, $amount, $auth_data, $email, $extra_data)
+function add_bought_service_info($uid, $user_name, $ip, $method, $payment_id, $service, $server, $amount, $auth_data, $email, $extra_data = array())
 {
 	global $heart, $db, $lang, $lang_shop;
 
@@ -639,36 +642,39 @@ function purchase_info($data)
 /**
  * Pozyskuje z bazy wszystkie usługi użytkowników
  *
- * @param string|int $where
+ * @param string|int $conditions Jezeli jest tylko jeden element w tablicy, to zwroci ten element zamiast tablicy
+ * @param bool $take_out
  * @return array
  */
-function get_users_services($where = '') {
+function get_users_services($conditions = '', $take_out = true)
+{
 	global $heart, $db;
 
-	if (my_is_integer($where))
-		$where = "WHERE `id` = " . intval($where);
-	else if (strlen($where))
-		$where = "WHERE " . $where;
+	if (my_is_integer($conditions))
+		$conditions = "WHERE `id` = " . intval($conditions);
 
 	$output = array();
 	// Niestety dla każdego modułu musimy wykonać osobne zapytanie :-(
-	foreach($heart->get_services_modules() as $service_module_data) {
+	foreach ($heart->get_services_modules() as $service_module_data) {
 		$table = $service_module_data['classsimple']::USER_SERVICE_TABLE;
 		if (!strlen($table))
 			continue;
 
 		$result = $db->query(
-			"SELECT *, UNIX_TIMESTAMP() AS `now` FROM `". TABLE_PREFIX . "user_service` AS us " .
-			"INNER JOIN `". TABLE_PREFIX . $table . "` AS m ON m.us_id = us.id " .
-			$where
+			"SELECT us.*, m.*, UNIX_TIMESTAMP() AS `now` FROM `" . TABLE_PREFIX . "user_service` AS us " .
+			"INNER JOIN `" . TABLE_PREFIX . $table . "` AS m ON m.us_id = us.id " .
+			$conditions .
+			" ORDER BY us.id DESC "
 		);
 
-		while($row = $db->fetch_array_assoc($result)) {
-			$output[] = $row;
+		while ($row = $db->fetch_array_assoc($result)) {
+			$output[$row['id']] = $row;
 		}
 	}
 
-	return count($output) == 1 ? $output[0] : $output;
+	sort($output);
+
+	return $take_out && count($output) == 1 ? $output[0] : $output;
 }
 
 function delete_users_old_services()
@@ -679,7 +685,7 @@ function delete_users_old_services()
 	// Potem wywolujemy akcje na module, potem je usuwamy, a następnie wywołujemy akcje na module
 
 	$delete_ids = $users_services = array();
-	foreach (get_users_services("`expire` < UNIX_TIMESTAMP() AND `expire` != '-1'") as $row) {
+	foreach (get_users_services("WHERE `expire` < UNIX_TIMESTAMP() AND `expire` != '-1'") as $row) {
 		if (($service_module = $heart->get_service_module($row['service'])) === NULL)
 			continue;
 
@@ -760,36 +766,10 @@ function object_implements($class, $interface)
 	return in_array($interface, $interfaces);
 }
 
-function myErrorHandler($errno, $string, $errfile, $errline)
+function exceptionHandler(Exception $e)
 {
-	global $settings, $lang, $templates;
-
-	switch ($errno) {
-		case E_USER_ERROR:
-			$array = json_decode($string, true);
-			$array['message'] = $lang->mysqli[$array['message_id']]; // Pobieramy odpowiednik z bilioteki jezykowej
-			$header = eval($templates->render("header_error"));
-			$message = eval($templates->render("error_handler"));
-
-			if (strlen($array['query'])) {
-				$text = date($settings['date_format']) . ": " . $array['query'];
-				if (!file_exists(SQL_LOG) || !strlen(file_get_contents(SQL_LOG))) file_put_contents(SQL_LOG, $text);
-				else file_put_contents(SQL_LOG, file_get_contents(SQL_LOG) . "\n\n" . $text);
-			}
-
-			output_page($message);
-			exit;
-			break;
-
-		default:
-			break;
-	}
-
-	/* Don't execute PHP internal error handler */
-	if (!(error_reporting() & $errno))
-		return false;
-	else
-		return true;
+	if (get_class($e) == 'SqlQueryException')
+		Database::showError($e);
 }
 
 function create_dom_element($name, $text = "", $data = array())
@@ -802,15 +782,17 @@ function create_dom_element($name, $text = "", $data = array())
 		$features .= (strlen($features) ? " " : "") . $key . '="' . str_replace('"', '\"', $value) . '"';
 	}
 
-	$style = "";
-	foreach ($data['style'] as $key => $value) {
-		if (!strlen($value))
-			continue;
+	if (isset($data['style'])) {
+		$style = '';
+		foreach ($data['style'] as $key => $value) {
+			if (!strlen($value))
+				continue;
 
-		$style .= (strlen($style) ? "; " : "") . "{$key}: {$value}";
+			$style .= (strlen($style) ? "; " : "") . "{$key}: {$value}";
+		}
+		if (strlen($style))
+			$features .= (strlen($features) ? " " : "") . "style=\"{$style}\"";
 	}
-	if (strlen($style))
-		$features .= (strlen($features) ? " " : "") . "style=\"{$style}\"";
 
 	$name_hsafe = htmlspecialchars($name);
 	$output = "<{$name_hsafe} {$features}>";
@@ -884,7 +866,7 @@ function get_ip()
  * @param string $format
  * @return string
  */
-function convertDate($timestamp, $format="")
+function convertDate($timestamp, $format = "")
 {
 	if (!strlen($format)) {
 		global $settings;
@@ -956,6 +938,11 @@ function if_isset(&$isset, $default)
 function if_strlen(&$empty, $default)
 {
 	return isset($empty) && strlen($empty) ? $empty : $default;
+}
+
+function if_strlen2($empty, $default)
+{
+	return strlen($empty) ? $empty : $default;
 }
 
 function mb_str_split($string)
@@ -1060,7 +1047,8 @@ function ip_in_range($ip, $range)
 	}
 }
 
-function ends_at($string, $end) {
+function ends_at($string, $end)
+{
 	return substr($string, -strlen($end)) == $end;
 }
 
@@ -1069,7 +1057,8 @@ function ends_at($string, $end) {
  *
  * @param mixed $a
  */
-function pr($a) {
+function pr($a)
+{
 	echo "<pre>";
 	var_dump($a);
 	echo "</pre>";
@@ -1079,6 +1068,27 @@ function pr($a) {
  * @param mixed $val
  * @return bool
  */
-function my_is_integer($val) {
+function my_is_integer($val)
+{
 	return strlen($val) && trim($val) === strval(intval($val));
+}
+
+/**
+ * @param string $glue
+ * @param array $stack
+ * @return string
+ */
+function implode_esc($glue, $stack)
+{
+	global $db;
+
+	$output = '';
+	foreach ($stack as $value) {
+		if (strlen($output))
+			$output .= $glue;
+
+		$output .= $db->prepare("'%s'", array($value));
+	}
+
+	return $output;
 }

@@ -82,6 +82,7 @@ class PagePurchase extends Page
 			return $lang->site_not_exists;
 
 		// Dodajemy długi opis
+		$show_more = '';
 		if (strlen($service_module->description_full_get()))
 			$show_more = eval($templates->render("services/show_more"));
 

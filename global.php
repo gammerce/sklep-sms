@@ -3,8 +3,7 @@
 if (!defined("IN_SCRIPT"))
 	die("There is nothing interesting here.");
 
-//error_reporting(E_USER_ERROR);
-error_reporting(E_ALL);
+error_reporting(E_ALL & ~E_NOTICE);
 ini_set("display_errors", 1);
 
 // Tworzenie / Wznawianie sesji
@@ -15,9 +14,6 @@ if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
 	session_name("user");
 	session_start();
 }
-
-/*if (in_array(SCRIPT_NAME, array("admin", "index")))
-	var_dump($_SESSION)*/
 
 $working_dir = dirname(__FILE__) ? dirname(__FILE__) : '.';
 require_once $working_dir . "/includes/init.php";
@@ -43,6 +39,8 @@ require_once SCRIPT_ROOT . "includes/mysqli.php";
 require_once SCRIPT_ROOT . "includes/class_payment.php";
 require_once SCRIPT_ROOT . "includes/class_language.php";
 
+set_exception_handler("exceptionHandler");
+
 // Tworzymy obiekt posiadający mnóstwo przydatnych funkcji
 $heart = new Heart();
 
@@ -52,9 +50,6 @@ $templates = new Templates();
 // Tworzymy obiekt języka
 $lang = new Language();
 $lang_shop = new Language();
-
-// Ustalenie funkcji obsługującej errory
-set_error_handler("myErrorHandler");
 
 // Utworzenie połączenia z bazą danych
 $db = new Database($db_host, $db_user, $db_pass, $db_name);
@@ -118,17 +113,23 @@ foreach (scandir(SCRIPT_ROOT . "includes/entity") as $file)
 $G_PID = isset($_GET['pid']) ? $_GET['pid'] : "home";
 $G_PAGE = isset($_GET['page']) && intval($_GET['page']) >= 1 ? intval($_GET['page']) : 1;
 
+$user = $heart->get_user();
+
 // Logowanie się do panelu admina
 if (admin_session()) {
-	if (isset($_POST['username']) && isset($_POST['password'])) { // Logujemy się
+	// Logujemy się
+	if (isset($_POST['username']) && isset($_POST['password'])) {
 		$user = $heart->get_user(0, $_POST['username'], $_POST['password']);
-		if (is_logged() && get_privilages("acp"))
-			$_SESSION['uid'] = $user['uid'];
+
+		if ($user->isLogged() && get_privilages("acp")) {
+			$_SESSION['uid'] = $user->getUid();
+		}
 		else {
 			$_SESSION['info'] = "wrong_data";
-			$user = array();
 		}
-	} else if ($_POST['action'] == "logout") { // Wylogowujemy
+	}
+	// Wylogowujemy
+	else if ($_POST['action'] == "logout") {
 		// Unset all of the session variables.
 		$_SESSION = array();
 
@@ -158,10 +159,6 @@ if (admin_session() && (!$user->isLogged() || !get_privilages("acp"))) {
 		$user = $heart->get_user();
 	}
 }
-
-// Pobieramy dane pustego użytkownika / gościa
-if (!isset($user) || empty($user))
-	$user = $heart->get_user(0);
 
 // Aktualizujemy aktywność użytkownika
 $user->updateActivity();

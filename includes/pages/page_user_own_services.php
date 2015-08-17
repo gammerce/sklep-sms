@@ -19,18 +19,52 @@ class Page_UserOIwnServices extends Page implements I_BeLoggedMust
 	{
 		global $heart, $db, $settings, $user, $lang, $G_PAGE, $templates;
 
-		$user_own_services = "";
-		$result = $db->query($db->prepare(
-			"SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "user_service` " .
-			"WHERE `uid` = '%d' " .
-			"ORDER BY `id` DESC " .
-			"LIMIT " . get_row_limit($G_PAGE, 4),
-			array($user->getUid())
-		));
-		$rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
+		// Ktore moduly wspieraja usługi użytkowników
+		$classes = array_filter(
+			get_declared_classes(),
+			function ($className) {
+				return in_array('IService_UserOwnServices', class_implements($className));
+			}
+		);
 
-		while ($row = $db->fetch_array_assoc($result)) {
-			if (($service_module = $heart->get_service_module($row['service'])) === NULL)
+		$modules = array();
+		foreach ($classes as $class) {
+			$modules[] = $class::MODULE_ID;
+		}
+
+		$users_services = array();
+		$rows_count = 0;
+		if (!empty($modules)) {
+			$modules = implode_esc(', ', $modules);
+
+			$rows_count = $db->get_column($db->prepare(
+				"SELECT COUNT(*) as `amount` FROM `" . TABLE_PREFIX . "user_service` AS us " .
+				"INNER JOIN `" . TABLE_PREFIX . "services` AS s ON us.service = s.id " .
+				"WHERE us.uid = '%d' AND s.module IN ({$modules}) ",
+				array($user->getUid())
+			), 'amount');
+
+			$result = $db->query($db->prepare(
+				"SELECT us.id FROM `" . TABLE_PREFIX . "user_service` AS us " .
+				"INNER JOIN `" . TABLE_PREFIX . "services` AS s ON us.service = s.id " .
+				"WHERE us.uid = '%d' AND s.module IN ({$modules}) " .
+				"ORDER BY us.id DESC " .
+				"LIMIT " . get_row_limit($G_PAGE, 4),
+				array($user->getUid())
+			));
+
+			$user_service_ids = array();
+			while ($row = $db->fetch_array_assoc($result)) {
+				$user_service_ids[] = $row['id'];
+			}
+
+			if (!empty($user_service_ids))
+				$users_services = get_users_services("WHERE us.id IN (" . implode(', ', $user_service_ids) . ")", false);
+		}
+
+		$user_own_services = '';
+		foreach ($users_services as $user_service) {
+			if (($service_module = $heart->get_service_module($user_service['service'])) === NULL)
 				continue;
 
 			if (!object_implements($service_module, "IService_UserOwnServices"))
@@ -46,7 +80,7 @@ class Page_UserOIwnServices extends Page implements I_BeLoggedMust
 					)
 				));
 
-			$user_own_services .= create_brick($service_module->user_own_service_info_get($row, $button_edit));
+			$user_own_services .= create_brick($service_module->user_own_service_info_get($user_service, if_isset($button_edit, '')));
 		}
 
 		// Nie znalazło żadnych usług danego użytkownika
