@@ -38,7 +38,6 @@ $l['types'] = "Types";
 $l['flags'] = "Flags";
 $l['just_purchased'] = "Hello {1},<br/>
 you have just made purchase in our shop.";
-$l['regards'] = "Regards";
 $l['service_bought'] = "Service purchased successfully";
 $l['sms_code_transfer_id'] = "( sms code, transfer ID  )";
 $l['user_id'] = "User ID";

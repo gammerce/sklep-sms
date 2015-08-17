@@ -38,7 +38,6 @@ $l['types'] = "Typy";
 $l['flags'] = "Flagi";
 $l['just_purchased'] = "Witaj {1},<br/>
 przed chwilą dokonałeś/aś zakupu w naszym sklepie.";
-$l['regards'] = "Pozdrawiamy";
 $l['service_bought'] = "Zakupiono prawidłowo usługę";
 $l['sms_code_transfer_id'] = "( kod sms, ID przelewu )";
 $l['user_id'] = "ID użytkownika";

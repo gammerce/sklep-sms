@@ -121,3 +121,4 @@ $l['expired_service_delete'] = "AUTOMAT: Player's expired service removed. Auth 
 
 $l['error_occured'] = "Error occured.";
 $l['no_access'] = "You have no proper powers.";
+$l['regards'] = "Regards";

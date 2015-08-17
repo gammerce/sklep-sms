@@ -126,3 +126,4 @@ $l['expired_service_delete'] = "AUTOMAT: Usunięto wygasłą usługę użytkowni
 
 $l['error_occured'] = "Wystąpił błąd.";
 $l['no_access'] = "Nie masz odpowiednich uprawnień.";
+$l['regards'] = "Pozdrawiamy";
