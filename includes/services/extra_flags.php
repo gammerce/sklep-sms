@@ -659,9 +659,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			));
 		}
 
-		$output = eval($templates->render("services/" . $this::MODULE_ID . "/user_service_admin_add", true, false));
-
-		return $output;
+		return eval($templates->render("services/" . $this::MODULE_ID . "/user_service_admin_add", true, false));
 	}
 
 	//

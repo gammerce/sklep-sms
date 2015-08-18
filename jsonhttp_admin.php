@@ -151,7 +151,7 @@ if ($action == "charge_wallet") {
 	if (($service_module = $heart->get_service_module($user_service['service'])) !== NULL
 		&& !$service_module->user_service_delete($user_service, 'admin')
 	) {
-		json_output("no_service", $lang->service_cannot_be_deleted, 0);
+		json_output("user_service_cannot_be_deleted", $lang->user_service_cannot_be_deleted, 0);
 	}
 
 	// Usunięcie usługi użytkownika

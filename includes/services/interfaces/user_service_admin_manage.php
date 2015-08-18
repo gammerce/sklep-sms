@@ -39,12 +39,13 @@ interface IService_UserServiceAdminAdd
 	 * Metoda sprawdza dane formularza podczas dodawania użytkownikowi usługi w PA
 	 * i gdy wszystko jest okej, to ją dodaje.
 	 *
-	 * @param array $data Dane $_POST
-	 * @return array        'status'    => id wiadomości,
-	 *                        'text'        => treść wiadomości
-	 *                        'positive'    => czy udało się dodać usługę
+	 * @param array $post Dane $_POST
+	 * @return array
+	 *  status => id wiadomości
+	 *  text => treść wiadomości
+	 *  positive => czy udało się dodać usługę
 	 */
-	public function user_service_admin_add($data);
+	public function user_service_admin_add($post);
 
 	/**
 	 * Metoda powinna zwrócić dodatkowe pola do uzupełnienia przez admina
@@ -68,9 +69,10 @@ interface IService_UserServiceAdminEdit
 	 *
 	 * @param array $data Dane $_POST
 	 * @param array $user_service Obecne dane edytowanej usługi
-	 * @return array        'status'    => id wiadomości,
-	 *                        'text'        => treść wiadomości
-	 *                        'positive'    => czy udało się wyedytować usługę
+	 * @return array
+	 *  'status' => id wiadomości,
+	 *  'text' => treść wiadomości
+	 *  'positive' => czy udało się wyedytować usługę
 	 */
 	public function user_service_admin_edit($data, $user_service);
 

@@ -121,8 +121,6 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 			'db_name' => $data['db_name'],
 		);
 
-		// TODO: Zmiana grup i jej wpływ na obecne usługi
-
 		return array(
 			'query_set' => array(
 				array(
@@ -189,7 +187,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 			$body_row->addCell(new Table\Cell($row['mybb_uid']));
 			$body_row->addCell(new Table\Cell($row['expire'] == '-1' ? $lang->never : date($settings['date_format'], $row['expire'])));
 			if (get_privilages("manage_user_services")) {
-				$body_row->setButtonDelete(false);
+				$body_row->setButtonDelete(true);
 				$body_row->setButtonEdit(false);
 			}
 
@@ -202,7 +200,8 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 	}
 }
 
-class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements IService_Purchase, IService_PurchaseWeb, IService_UserOwnServices
+class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements IService_Purchase, IService_PurchaseWeb, IService_UserServiceAdminAdd,
+	IService_UserOwnServices
 {
 	/**
 	 * @var array
@@ -375,13 +374,13 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	public function purchase($purchase_data)
 	{
 		// Nie znaleziono użytkownika o takich danych jak podane podczas zakupu
-		if (($mybb_user = $this->createMybbUserByUsername($purchase_data->getOrder('username'))) === NULL) {
+		if (($mybb_user = $this->createMybbUser($purchase_data->getOrder('username'))) === NULL) {
 			global $lang_shop;
 			log_info($lang_shop->sprintf($lang_shop->mybb_purchase_no_user, json_encode($purchase_data->getPayment())));
 			die("Critical error occured");
 		}
 
-		$this->add_user_service($purchase_data->user->getUid(), $mybb_user->getUid(), $purchase_data->getOrder('amount'), $purchase_data->getOrder('forever'));
+		$this->user_service_add($purchase_data->user->getUid(), $mybb_user->getUid(), $purchase_data->getOrder('amount'), $purchase_data->getOrder('forever'));
 		foreach ($this->groups as $group) {
 			$mybb_user->prolongShopGroup($group, $purchase_data->getOrder('amount') * 24 * 60 * 60);
 		}
@@ -389,8 +388,8 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 
 		return add_bought_service_info(
 			$purchase_data->user->getUid(), $purchase_data->user->getUsername(), $purchase_data->user->getLastIp(), $purchase_data->getPayment('method'),
-			$purchase_data->getPayment('payment_id'), $this->service['id'], 0, $purchase_data->getOrder('amount'), $purchase_data->getOrder('username'), $purchase_data->getEmail(),
-			array(
+			$purchase_data->getPayment('payment_id'), $this->service['id'], 0, $purchase_data->getOrder('amount'), $purchase_data->getOrder('username'),
+			$purchase_data->getEmail(), array(
 				'uid' => $mybb_user->getUid(),
 				'groups' => implode(',', $this->groups)
 			)
@@ -429,6 +428,54 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		return $output;
 	}
 
+	public function user_service_delete($user_service)
+	{
+		$this->connectMybb();
+		return true;
+	}
+
+	public function user_service_delete_post($user_service)
+	{
+		global $db;
+
+		$mybb_user = $this->createMybbUser(intval($user_service['mybb_uid']));
+
+		// Usuwamy wszystkie shopGroups oraz z mybbGroups te grupy, które maja was_before = false
+		foreach ($mybb_user->getShopGroup() as $gid => $group_data) {
+			if (!$group_data['was_before'])
+				$mybb_user->removeMybbAddGroup($gid);
+		}
+		$mybb_user->removeShopGroup();
+
+		// Dodajemy uzytkownikowi grupy na podstawie USER_SERVICE_TABLE
+		$result = $db->query($db->prepare(
+			"SELECT us.expire - UNIX_TIMESTAMP() AS `expire`, s.data AS `extra_data` FROM `" . TABLE_PREFIX . "user_service` AS us " .
+			"INNER JOIN `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` AS m ON us.id = m.us_id " .
+			"INNER JOIN `" . TABLE_PREFIX . "services` AS s ON us.service = s.id " .
+			"WHERE m.mybb_uid = '%d'",
+			array($user_service['mybb_uid'])
+		));
+
+		while ($row = $db->fetch_array_assoc($result)) {
+			$row['extra_data'] = json_decode($row['extra_data'], true);
+			foreach (explode(',', $row['extra_data']['mybb_groups']) as $group_id) {
+				$mybb_user->prolongShopGroup($group_id, $row['expire']);
+			}
+		}
+
+		// Użytkownik nie może mieć takiej displaygroup
+		if (!in_array($mybb_user->getMybbDisplayGroup(), array_unique(array_merge(
+			array_keys($mybb_user->getShopGroup()),
+			$mybb_user->getMybbAddGroups(),
+			array($mybb_user->getMybbUserGroup())
+		)))
+		) {
+			$mybb_user->setMybbDisplayGroup(0);
+		}
+
+		$this->saveMybbUser($mybb_user);
+	}
+
 	/**
 	 * Dodaje graczowi usłguę
 	 *
@@ -437,7 +484,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	 * @param $days
 	 * @param $forever
 	 */
-	private function add_user_service($uid, $mybb_uid, $days, $forever)
+	private function user_service_add($uid, $mybb_uid, $days, $forever)
 	{
 		global $db;
 
@@ -486,13 +533,88 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		}
 	}
 
+	/**
+	 * Metoda powinna zwrócić dodatkowe pola do uzupełnienia przez admina
+	 * podczas dodawania usługi użytkownikowi
+	 *
+	 * @return string
+	 */
+	public function user_service_admin_add_form_get()
+	{
+		global $lang, $templates;
+
+		return eval($templates->render("services/" . $this::MODULE_ID . "/user_service_admin_add", true, false));
+	}
+
+	public function user_service_admin_add($post)
+	{
+		global $heart, $lang;
+
+		$warnings = array();
+
+		// TODO JS add forever checkbox
+
+		// Amount
+		if (!$post['forever']) {
+			if ($warning = check_for_warnings("number", $post['amount']))
+				$warnings['amount'] = array_merge((array)$warnings['amount'], $warning);
+			else if ($post['amount'] < 0)
+				$warnings['amount'][] = $lang->days_quantity_positive;
+		}
+
+		// ID użytkownika
+		if (strlen($post['uid'])) {
+			if ($warning = check_for_warnings('uid', $post['uid']))
+				$warnings['uid'] = array_merge((array)$warnings['uid'], $warning);
+			else {
+				$user2 = $heart->get_user($post['uid']);
+				if (!$user2->isLogged())
+					$warnings['uid'][] = $lang->no_account_id;
+			}
+		}
+
+		// Username
+		if (!strlen($post['mybb_username']))
+			$warnings['mybb_username'][] = $lang->field_no_empty;
+		else {
+			$this->connectMybb();
+
+			$result = $this->db_mybb->query($this->db_mybb->prepare(
+				"SELECT 1 FROM `mybb_users` " .
+				"WHERE `username` = '%s'",
+				array($post['mybb_username'])
+			));
+
+			if (!$this->db_mybb->num_rows($result))
+				$warnings['mybb_username'][] = $lang->no_user;
+		}
+
+		// E-mail
+		if (strlen($post['email']) && $warning = check_for_warnings("email", $post['email']))
+			$warnings['email'] = array_merge((array)$warnings['email'], $warning);
+
+		if (!empty($warnings))
+			return array(
+				'status' => "warnings",
+				'text' => $lang->form_wrong_filled,
+				'positive' => false,
+				'data' => array('warnings' => $warnings)
+			);
+
+		return array(
+			'status' => "added",
+			'text' => $lang->service_added_correctly,
+			'positive' => true
+		);
+	}
+
 	public function user_own_service_info_get($user_service, $button_edit)
 	{
 		global $settings, $lang, $templates;
 
 		$expire = $user_service['expire'] == -1 ? $lang->never : date($settings['date_format'], $user_service['expire']);
 		$service = $this->service['name'];
-		$mybb_user = htmlspecialchars($user_service['mybb_uid']);
+		$mybb_uid = htmlspecialchars($user_service['mybb_uid']);
 
 		$output = eval($templates->render("services/" . $this::MODULE_ID . "/user_own_service"));
 
@@ -500,38 +622,48 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	}
 
 	/**
-	 * @param $username
+	 * @param string|int $user_id Int - by uid, String - by username
 	 * @return null|Entity_MyBB_User
 	 */
-	private function createMybbUserByUsername($username)
+	private function createMybbUser($user_id)
 	{
 		global $db;
 		$this->connectMybb();
 
-		$result = $this->db_mybb->query($this->db_mybb->prepare(
-			"SELECT `uid`, `additionalgroups` " .
+		if (is_integer($user_id)) {
+			$where = "`uid` = {$user_id}";
+		} else {
+			$where = $this->db_mybb->prepare(
+				"`username` = '%s'",
+				array($user_id)
+			);
+		}
+
+		$result = $this->db_mybb->query(
+			"SELECT `uid`, `additionalgroups`, `displaygroup`, `usergroup` " .
 			"FROM `mybb_users` " .
-			"WHERE `username` = '%s'",
-			array($username)
-		));
+			"WHERE {$where}"
+		);
 
 		if (!$this->db_mybb->num_rows($result))
 			return NULL;
 
 		$row_mybb = $this->db_mybb->fetch_array_assoc($result);
 
-		$mybb_user = new Entity_MyBB_User($row_mybb['uid']);
+		$mybb_user = new Entity_MyBB_User($row_mybb['uid'], $row_mybb['usergroup']);
 		$mybb_user->setMybbAddGroups(explode(",", $row_mybb['additionalgroups']));
+		$mybb_user->setMybbDisplayGroup($row_mybb['displaygroup']);
 
 		$result = $db->query($db->prepare(
-			"SELECT `gid`, UNIX_TIMESTAMP(`expire`) - UNIX_TIMESTAMP() as `expire` FROM `" . TABLE_PREFIX . "mybb_user_group` " .
+			"SELECT `gid`, UNIX_TIMESTAMP(`expire`) - UNIX_TIMESTAMP() as `expire`, `was_before` FROM `" . TABLE_PREFIX . "mybb_user_group` " .
 			"WHERE `uid` = '%d'",
 			array($row_mybb['uid'])
 		));
 
 		while ($row = $db->fetch_array_assoc($result)) {
-			$mybb_user->setShopGroups(array(
-				$row['gid'] => $row['expire']
+			$mybb_user->setShopGroup($row['gid'], array(
+				'expire' => $row['expire'],
+				'was_before' => $row['was_before']
 			));
 		}
 
@@ -548,39 +680,35 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		global $db;
 		$this->connectMybb();
 
+		$db->query($db->prepare(
+			"DELETE FROM `" . TABLE_PREFIX . "mybb_user_group` " .
+			"WHERE `uid` = '%d'",
+			array($mybb_user->getUid())
+		));
+
 		$values = array();
-		foreach ($mybb_user->getShopGroups() as $gid => $expire) {
+		foreach ($mybb_user->getShopGroup() as $gid => $group_data) {
 			$values[] = $db->prepare(
 				"('%d', '%d', FROM_UNIXTIME(UNIX_TIMESTAMP() + %d), '%d')",
-				array($mybb_user->getUid(), $gid, $expire, in_array($gid, $mybb_user->getMybbAddGroups()))
+				array($mybb_user->getUid(), $gid, $group_data['expire'], $group_data['was_before'])
 			);
 		}
 
 		if (!empty($values)) {
 			$db->query(
 				"INSERT INTO `" . TABLE_PREFIX . "mybb_user_group` (`uid`, `gid`, `expire`, `was_before`) " .
-				"VALUES " . implode(", ", $values) . " " .
-				"ON DUPLICATE KEY UPDATE " .
-				"`expire` = VALUES(`expire`)"
+				"VALUES " . implode(", ", $values)
 			);
 		}
 
-		$addgroups = array_unique(array_merge(array_keys($mybb_user->getShopGroups()), $mybb_user->getMybbAddGroups()));
+		$addgroups = array_unique(array_merge(array_keys($mybb_user->getShopGroup()), $mybb_user->getMybbAddGroups()));
 
 		$this->db_mybb->query($this->db_mybb->prepare(
 			"UPDATE `mybb_users` " .
-			"SET `additionalgroups` = '%s' " .
+			"SET `additionalgroups` = '%s', `displaygroup` = '%d' " .
 			"WHERE `uid` = '%d'",
-			array(implode(',', $addgroups), $mybb_user->getUid())
+			array(implode(',', $addgroups), $mybb_user->getMybbDisplayGroup(), $mybb_user->getUid())
 		));
-	}
-
-	public function user_service_delete($user_service, $who)
-	{
-		global $db;
-		$this->connectMybb();
-
-		// TODO Zmień display group na 0
 	}
 
 	private function connectMybb()

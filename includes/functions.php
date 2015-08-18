@@ -664,11 +664,11 @@ function get_users_services($conditions = '', $take_out = true)
 	if (my_is_integer($conditions))
 		$conditions = "WHERE `id` = " . intval($conditions);
 
-	$output = array();
+	$output = $used_table = array();
 	// Niestety dla każdego modułu musimy wykonać osobne zapytanie :-(
 	foreach ($heart->get_services_modules() as $service_module_data) {
 		$table = $service_module_data['classsimple']::USER_SERVICE_TABLE;
-		if (!strlen($table))
+		if (!strlen($table) || $used_table[$table])
 			continue;
 
 		$result = $db->query(
@@ -679,8 +679,11 @@ function get_users_services($conditions = '', $take_out = true)
 		);
 
 		while ($row = $db->fetch_array_assoc($result)) {
+			unset($row['us_id']);
 			$output[$row['id']] = $row;
 		}
+
+		$used_table[$table] = true;
 	}
 
 	sort($output);
@@ -690,29 +693,39 @@ function get_users_services($conditions = '', $take_out = true)
 
 function delete_users_old_services()
 {
-	global $heart, $db, $settings, $lang_shop;
+	global $heart, $db, $lang_shop;
 	// Usunięcie przestarzałych usług użytkownika
 	// Pierwsze pobieramy te, które usuniemy
 	// Potem wywolujemy akcje na module, potem je usuwamy, a następnie wywołujemy akcje na module
 
 	$delete_ids = $users_services = array();
-	foreach (get_users_services("WHERE `expire` < UNIX_TIMESTAMP() AND `expire` != '-1'") as $row) {
-		if (($service_module = $heart->get_service_module($row['service'])) === NULL)
+	foreach (get_users_services("WHERE `expire` != '-1' AND `expire` < UNIX_TIMESTAMP()") as $user_service) {
+		if (($service_module = $heart->get_service_module($user_service['service'])) === NULL)
 			continue;
 
-		if ($service_module->user_service_delete($row, 'task')) {
-			$delete_ids[] = $row['id'];
-			$users_services[] = $row;
-			log_info($lang_shop->sprintf($lang_shop->expired_service_delete, $row['auth_data'], $row['server'], $row['service'], get_type_name($row['type'])));
+		if ($service_module->user_service_delete($user_service, 'task')) {
+			$delete_ids[] = $user_service['id'];
+			$users_services[] = $user_service;
+
+			$user_service_desc = '';
+			foreach ($user_service as $key => $value) {
+				if (strlen($user_service_desc))
+					$user_service_desc .= ' ; ';
+
+				$user_service_desc .= ucfirst(strtolower($key)) . ': ' . $value;
+			}
+
+			log_info($lang_shop->sprintf($lang_shop->expired_service_delete, $user_service_desc));
 		}
 	}
 
 	// Usuwamy usugi ktre zwróciły true
-	if (!empty($delete_ids))
+	if (!empty($delete_ids)) {
 		$db->query(
 			"DELETE FROM `" . TABLE_PREFIX . "user_service` " .
 			"WHERE `id` IN (" . implode(", ", $delete_ids) . ")"
 		);
+	}
 
 	// Wywołujemy akcje po usunieciu
 	foreach ($users_services as $user_service) {

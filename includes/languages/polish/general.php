@@ -17,11 +17,13 @@ $l['delete'] = "Usuń";
 $l['ip'] = "IP";
 $l['email'] = "Adres e-mail";
 $l['nick'] = "Nick";
-$l['username'] = "Nazwa Użytkownika";
+$l['user_id'] = "ID użytkownika";
+$l['username'] = "Nazwa użytkownika";
 $l['save'] = "Zapisz";
 $l['cancel'] = "Anuluj";
 $l['sign_in'] = "Zaloguj się";
 $l['contact'] = "Kontakt";
+$l['days_amount'] = "Ilość dni";
 
 $l['old_password'] = "Stare Hasło";
 $l['new_password'] = "Nowe Hasło";
@@ -122,7 +124,7 @@ $l['languages'] = array(
 	'english' => "English"
 );
 
-$l['expired_service_delete'] = "AUTOMAT: Usunięto wygasłą usługę użytkownika. Auth Data: {1} Serwer: {2} Usługa: {3} Typ: {4}";
+$l['expired_service_delete'] = "AUTOMAT: Usunięto wygasłą usługę użytkownika. {1}";
 
 $l['error_occured'] = "Wystąpił błąd.";
 $l['no_access'] = "Nie masz odpowiednich uprawnień.";
