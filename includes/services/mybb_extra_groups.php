@@ -223,10 +223,10 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		parent::__construct($service);
 
 		$this->groups = explode(",", $this->service['data']['mybb_groups']);
-		$this->db_host = if_isset($this->service['data']['db_host'], "");
-		$this->db_user = if_isset($this->service['data']['db_user'], "");
-		$this->db_password = if_isset($this->service['data']['db_password'], "");
-		$this->db_name = if_isset($this->service['data']['db_name'], "");
+		$this->db_host = if_isset($this->service['data']['db_host'], '');
+		$this->db_user = if_isset($this->service['data']['db_user'], '');
+		$this->db_password = if_isset($this->service['data']['db_password'], '');
+		$this->db_name = if_isset($this->service['data']['db_name'], '');
 	}
 
 	/**
@@ -388,8 +388,8 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 
 		return add_bought_service_info(
 			$purchase_data->user->getUid(), $purchase_data->user->getUsername(), $purchase_data->user->getLastIp(), $purchase_data->getPayment('method'),
-			$purchase_data->getPayment('payment_id'), $this->service['id'], 0, $purchase_data->getOrder('amount'), $purchase_data->getOrder('username'),
-			$purchase_data->getEmail(), array(
+			$purchase_data->getPayment('payment_id'), $this->service['id'], 0, $purchase_data->getOrder('amount'),
+			$purchase_data->getOrder('username') . '(' . $mybb_user->getUid() . ')', $purchase_data->getEmail(), array(
 				'uid' => $mybb_user->getUid(),
 				'groups' => implode(',', $this->groups)
 			)
@@ -548,11 +548,9 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 
 	public function user_service_admin_add($post)
 	{
-		global $heart, $lang;
+		global $heart, $user, $lang, $lang_shop;
 
 		$warnings = array();
-
-		// TODO JS add forever checkbox
 
 		// Amount
 		if (!$post['forever']) {
@@ -600,6 +598,26 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 				'positive' => false,
 				'data' => array('warnings' => $warnings)
 			);
+
+		// Dodawanie informacji o płatności
+		$payment_id = pay_by_admin($user);
+
+		$purchase_data = new Entity_Purchase();
+		$purchase_data->setService($this->service['id']);
+		$purchase_data->user = $heart->get_user($post['uid']);
+		$purchase_data->setPayment(array(
+			'method' => "admin",
+			'payment_id' => $payment_id
+		));
+		$purchase_data->setOrder(array(
+			'username' => $post['mybb_username'],
+			'amount' => $post['amount'],
+			'forever' => (boolean)$post['forever']
+		));
+		$purchase_data->setEmail($post['email']);
+		$bought_service_id = $this->purchase($purchase_data);
+
+		log_info($lang_shop->sprintf($lang_shop->admin_added_service, $user->getUsername(), $user->getUid(), $bought_service_id));
 
 		return array(
 			'status' => "added",

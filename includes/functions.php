@@ -458,10 +458,10 @@ function validate_payment($purchase_data)
 }
 
 /**
- * @param Entity_User $user
+ * @param Entity_User $user_admin
  * @return int|string
  */
-function pay_by_admin($user)
+function pay_by_admin($user_admin)
 {
 	global $db;
 
@@ -469,7 +469,7 @@ function pay_by_admin($user)
 	$db->query($db->prepare(
 		"INSERT INTO `" . TABLE_PREFIX . "payment_admin` (`aid`, `ip`, `platform`) " .
 		"VALUES ('%d', '%s', '%s')",
-		array($user->getUid(), $user->getLastIp(), $user->getPlatform())
+		array($user_admin->getUid(), $user_admin->getLastIp(), $user_admin->getPlatform())
 	));
 
 	return $db->last_id();
