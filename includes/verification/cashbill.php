@@ -36,8 +36,9 @@ class PaymentModuleCashbill extends PaymentModule implements IPayment_Sms, IPaym
 
 	public function prepare_transfer($purchase_data)
 	{
-		$data_hash = time() . "-" . md5(serialize($purchase_data));
-		file_put_contents(SCRIPT_ROOT . "data/transfers/" . $data_hash, serialize($purchase_data));
+		$serialized = serialize($purchase_data);
+		$data_hash = time() . "-" . md5($serialized);
+		file_put_contents(SCRIPT_ROOT . "data/transfers/" . $data_hash, $serialized);
 
 		$cost = number_format($purchase_data->getPayment('cost') / 100, 2);
 

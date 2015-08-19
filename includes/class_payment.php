@@ -9,7 +9,7 @@ class Payment
 	/** @var PaymentModule|IPayment_Sms|IPayment_Transfer */
 	public $payment_api;
 
-	function __construct($payment_service, $platform = "")
+	function __construct($payment_service, $platform = '')
 	{
 		global $heart, $lang;
 

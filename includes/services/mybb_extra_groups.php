@@ -389,7 +389,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		return add_bought_service_info(
 			$purchase_data->user->getUid(), $purchase_data->user->getUsername(), $purchase_data->user->getLastIp(), $purchase_data->getPayment('method'),
 			$purchase_data->getPayment('payment_id'), $this->service['id'], 0, $purchase_data->getOrder('amount'),
-			$purchase_data->getOrder('username') . '(' . $mybb_user->getUid() . ')', $purchase_data->getEmail(), array(
+			$purchase_data->getOrder('username') .  " ({$mybb_user->getUid()})", $purchase_data->getEmail(), array(
 				'uid' => $mybb_user->getUid(),
 				'groups' => implode(',', $this->groups)
 			)
@@ -637,9 +637,17 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	{
 		global $settings, $lang, $templates;
 
+		$this->connectMybb();
+
+		$username = $this->db_mybb->get_column($this->db_mybb->prepare(
+			"SELECT `username` FROM `mybb_users` " .
+			"WHERE `uid` = '%d'",
+			array($user_service['mybb_uid'])
+		), 'username');
+
 		$expire = $user_service['expire'] == -1 ? $lang->never : date($settings['date_format'], $user_service['expire']);
 		$service = $this->service['name'];
-		$mybb_uid = htmlspecialchars($user_service['mybb_uid']);
+		$mybb_uid = htmlspecialchars($username . " ({$user_service['mybb_uid']})");
 
 		$output = eval($templates->render("services/" . $this::MODULE_ID . "/user_own_service"));
 

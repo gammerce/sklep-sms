@@ -506,7 +506,7 @@ class Wrapper extends Div
 		$buttons = new Div();
 		$buttons->setStyle('float', 'right');
 
-		$search_text = $_GET['search'];
+		$search_text = urldecode($_GET['search']);
 		$buttons->addContent(new String(eval($templates->render("admin/form_search"))));
 
 		foreach ($this->buttons as $button) {

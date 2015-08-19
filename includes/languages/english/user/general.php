@@ -146,7 +146,7 @@ $l['reset_pass'] = "Password has been reset. User ID: {1}.";
 
 $l['transfer_above_amount'] = "You can pay by transfer only for purchase above 1.00 {1}";
 
-$l['payment_accepted'] = "Payment for service accepted: {1} Amount: {2} Transaction ID: {3} Service: {4} {5}({6})({7})";
+$l['payment_transfer_accepted'] = "Payment transfer accepted. Purchase ID: {1} Transaction ID: {2} Amount: {3} Service: {4} {5}({6})({7})";
 $l['transfer_bad_module'] = "Transfer payment: {1} was accepted, but service module {2} wasn't found and purchase failed.";
 $l['transfer_no_purchase'] = "Transfer payment: {1} was accepted, but service module {2} doesn't implement IService_Purchase interface.";
 $l['payment_not_accepted'] = "Transaction authorization failure: {1} Amount: {2} Service: {3} {4}({5})({6})";
