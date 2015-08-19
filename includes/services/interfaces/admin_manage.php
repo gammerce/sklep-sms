@@ -20,17 +20,18 @@ interface IService_AdminManage {
 	 * Metoda testuje dane przesłane przez formularz podczas dodawania nowej usługi w PA
 	 * jak coś się jej nie spodoba to zwraca o tym info w tablicy
 	 *
-	 * @param array $data Dane $_POST
-	 * @return array        'key' => DOM Element name
-	 *                      'value' => Array of error messages
+	 * @param array $post Dane $_POST
+	 * @return array
+	 *  'key' => DOM Element name
+	 *  'value' => Array of error messages
 	 */
-	public function service_admin_manage_pre($data);
+	public function service_admin_manage_pre($post);
 
 	/**
 	 * Metoda zostaje wywołana po tym, jak  weryfikacja danych
 	 * przesłanych w formularzu dodania nowej usługi w PA przebiegła bezproblemowo
 	 *
-	 * @param array $data Dane $_POST
+	 * @param array $post Dane $_POST
 	 * @return array (
 	 * 	'query_set' - array of query SET elements:
 	 * 		array(
@@ -39,6 +40,6 @@ interface IService_AdminManage {
 	 * 			'value'	=> wartość kolumny
 	 * 		)
 	 */
-	public function service_admin_manage_post($data);
+	public function service_admin_manage_post($post);
 
 }

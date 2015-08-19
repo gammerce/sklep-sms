@@ -10,7 +10,8 @@ $(document).delegate(".table_structure .search", "submit", function (e) {
 	e.preventDefault();
 
 	changeUrl({
-		search: $(this).find(".search_text").val()
+		search: $(this).find(".search_text").val(),
+		page: ''
 	})
 });
 

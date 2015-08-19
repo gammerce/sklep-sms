@@ -39,8 +39,10 @@ class PaymentModuleCashbill extends PaymentModule implements IPayment_Sms, IPaym
 		$data_hash = time() . "-" . md5(serialize($purchase_data));
 		file_put_contents(SCRIPT_ROOT . "data/transfers/" . $data_hash, serialize($purchase_data));
 
+		$cost = number_format($purchase_data->getPayment('cost') / 100, 2);
+
 		// Obliczanie hashu
-		$sign = md5($this->data['service'] . $purchase_data->getPayment('cost') . $purchase_data->getDesc() . $data_hash . $purchase_data->user->getForename(false) .
+		$sign = md5($this->data['service'] . $cost . $purchase_data->getDesc() . $data_hash . $purchase_data->user->getForename(false) .
 			$purchase_data->user->getSurname(false) . $purchase_data->getEmail() . $this->data['key']);
 
 		return array(
@@ -50,7 +52,7 @@ class PaymentModuleCashbill extends PaymentModule implements IPayment_Sms, IPaym
 			'forname' => $purchase_data->user->getForename(false),
 			'surname' => $purchase_data->user->getSurname(false),
 			'email' => $purchase_data->getEmail(),
-			'amount' => $purchase_data->getPayment('cost'),
+			'amount' => $cost,
 			'userdata' => $data_hash,
 			'sign' => $sign,
 		);

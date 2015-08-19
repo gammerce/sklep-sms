@@ -16,10 +16,10 @@ function xml_output($return_value, $text, $positive, $extra_data = "")
 }
 
 // Musi byc podany hash random_keya
-if ($_GET['key'] != md5($settings['random_key']))
+if (urldecode($_GET['key']) != md5($settings['random_key']))
 	exit;
 
-$action = $_GET['action'];
+$action = urldecode($_GET['action']);
 
 if ($action == "purchase_service") {
 	$output = "";
@@ -33,16 +33,17 @@ if ($action == "purchase_service") {
 	// Sprawdzamy dane zakupu
 	$purchase_data = new Entity_Purchase();
 	$purchase_data->setService($service_module->service['id']);
-	$purchase_data->user = $heart->get_user($_GET['uid']);
-	$purchase_data->user->setPlatform($_GET['platform']);
+	$purchase_data->user = $heart->get_user(urldecode($_GET['uid']));
+	$purchase_data->user->setPlatform(urldecode($_GET['platform']));
+	$purchase_data->user->setLastip(urldecode($_GET['ip']));
 	$purchase_data->setOrder(array(
-		'server' => $_GET['server'],
-		'type' => $_GET['type'],
+		'server' => urldecode($_GET['server']),
+		'type' => urldecode($_GET['type']),
 		'auth_data' => urldecode($_GET['auth_data']),
 		'password' => urldecode($_GET['password']),
 		'passwordr' => urldecode($_GET['password'])
 	));
-	$purchase_data->setTariff($_GET['tariff']);
+	$purchase_data->setTariff(urldecode($_GET['tariff']));
 	$return_validation = $service_module->purchase_data_validate($purchase_data);
 
 	// Są jakieś błędy przy sprawdzaniu danych

@@ -5,6 +5,7 @@ class Payment
 
 	private $service;
 	private $platform;
+
 	/** @var PaymentModule|IPayment_Sms|IPayment_Transfer */
 	public $payment_api;
 

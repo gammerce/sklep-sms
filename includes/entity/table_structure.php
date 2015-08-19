@@ -305,7 +305,7 @@ class BodyRow extends Row
 	 */
 	public function setButtonEdit($button_edit = true)
 	{
-		$this->button_edit = boolval($button_edit);
+		$this->button_edit = (bool)$button_edit;
 	}
 
 	/**
@@ -313,7 +313,7 @@ class BodyRow extends Row
 	 */
 	public function setButtonDelete($button_delete = true)
 	{
-		$this->button_delete = boolval($button_delete);
+		$this->button_delete = (bool)$button_delete;
 	}
 
 	/**
@@ -461,6 +461,7 @@ class Structure extends DOMElement
 		if (strlen($pagination_txt)) {
 			$this->foot = new DOMElement();
 			$this->foot->setName('tfoot');
+			$this->foot->setParam('class', 'display_tfoot');
 
 			$row = new Row();
 

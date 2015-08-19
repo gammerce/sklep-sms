@@ -3,7 +3,7 @@
 define('IN_SCRIPT', "1");
 define("SCRIPT_NAME", "transfer_finalize");
 
-require_once "global.php";
+require_once 'global.php';
 
 $result = $db->query($db->prepare(
 	"SELECT * FROM `" . TABLE_PREFIX . "payment_transfer` " .

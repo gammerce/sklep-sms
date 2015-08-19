@@ -428,9 +428,16 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		return $output;
 	}
 
-	public function user_service_delete($user_service)
+	public function user_service_delete($user_service, $who)
 	{
-		$this->connectMybb();
+		try {
+			$this->connectMybb();
+		} catch(SqlQueryException $e) {
+			if ($who == 'admin')
+				output_page($e->getError());
+
+			return false;
+		}
 		return true;
 	}
 
