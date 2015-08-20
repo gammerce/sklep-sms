@@ -483,7 +483,7 @@ if ($action == "charge_wallet") {
 	}
 
 	// Po błędach wywołujemy metodę modułu
-	if ($service_module !== NULL) {
+	if ($service_module !== NULL && object_implements($service_module, "IService_AdminManage")) {
 		$module_data = $service_module->service_admin_manage_post($_POST);
 
 		// Tworzymy elementy SET zapytania

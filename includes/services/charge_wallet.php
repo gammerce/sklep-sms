@@ -94,7 +94,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 		$purchase_data->setService($this->service['id']);
 		$purchase_data->setTariff($data['tariff']);
 		$purchase_data->setPayment(array(
-			'cost' => $data['transfer_amount'],
+			'cost' => $data['transfer_amount'] * 100,
 			'no_wallet' => true
 		));
 
@@ -110,7 +110,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 				'no_sms' => true
 			));
 			$purchase_data->setOrder(array(
-				'amount' => $data['transfer_amount']
+				'amount' => $data['transfer_amount'] * 100
 			));
 		}
 
@@ -122,6 +122,16 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 		);
 	}
 
+	public function order_details($purchase_data)
+	{
+		global $lang, $settings, $templates;
+
+		$amount = number_format($purchase_data->getOrder('amount') / 100, 2);
+
+		$output = eval($templates->render("services/" . $this::MODULE_ID . "/order_details", true, false));
+		return $output;
+	}
+
 	public function purchase($purchase_data)
 	{
 		// Aktualizacja stanu portfela
@@ -130,7 +140,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 		return add_bought_service_info(
 			$purchase_data->user->getUid(), $purchase_data->user->getUsername(), $purchase_data->user->getLastip(),
 			$purchase_data->getPayment('method'), $purchase_data->getPayment('payment_id'), $this->service['id'], 0,
-			$purchase_data->getOrder('amount'), $purchase_data->user->getUsername(), $purchase_data->getEmail()
+			number_format($purchase_data->getOrder('amount') / 100, 2), $purchase_data->user->getUsername(), $purchase_data->getEmail()
 		);
 	}
 
@@ -138,8 +148,8 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 	{
 		global $heart, $settings, $lang, $templates;
 
-		$data['amount'] = number_format($data['amount'] / 100.0, 2) . " " . $settings['currency'];
-		$data['cost'] = number_format($data['cost'] / 100.0, 2) . " " . $settings['currency'];
+		$data['amount'] .=  ' ' . $settings['currency'];
+		$data['cost'] = number_format($data['cost'] / 100, 2) . ' ' . $settings['currency'];
 
 		if ($data['payment'] == "sms") {
 			$data['sms_code'] = htmlspecialchars($data['sms_code']);
@@ -151,8 +161,9 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 			if ($data['payment'] == "sms") {
 				$desc = $lang->sprintf($lang->wallet_was_charged, $data['amount']);
 				$output = eval($templates->render("services/" . $this::MODULE_ID . "/web_purchase_info_sms", true, false));
-			} else if ($data['payment'] == "transfer")
+			} else if ($data['payment'] == "transfer") {
 				$output = eval($templates->render("services/" . $this::MODULE_ID . "/web_purchase_info_transfer", true, false));
+			}
 
 			return $output;
 		} else if ($action == "payment_log")
@@ -160,16 +171,6 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 				'text' => $lang->sprintf($lang->wallet_was_charged, $data['amount']),
 				'class' => "income"
 			);
-	}
-
-	public function order_details($purchase_data)
-	{
-		global $lang, $settings, $templates;
-
-		$amount = number_format($purchase_data->getOrder('amount'), 2);
-
-		$output = eval($templates->render("services/" . $this::MODULE_ID . "/order_details", true, false));
-		return $output;
 	}
 
 	public function description_short_get()
