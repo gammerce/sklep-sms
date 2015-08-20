@@ -207,14 +207,13 @@ class Payment
 		return $this->payment_api->smses[$tariff]['number'];
 	}
 
-	public function get_sms_text()
+	/**
+	 * @param bool $escape
+	 * @return mixed
+	 */
+	public function get_sms_text($escape = false)
 	{
-		return $this->payment_api->data['sms_text'];
-	}
-
-	public function get_sms_text_hsafe()
-	{
-		return $this->payment_api->data['sms_text_hsafe'];
+		return $escape ? htmlspecialchars($this->payment_api->data['sms_text']) : $this->payment_api->data['sms_text'];
 	}
 
 	public function get_payment_service()

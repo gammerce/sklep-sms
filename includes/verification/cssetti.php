@@ -7,41 +7,74 @@ class PaymentModuleCssetti extends PaymentModule implements IPayment_Sms
 
 	const SERVICE_ID = "cssetti";
 
+	/** @var array */
+	private $numbers = array();
+
+	function __construct()
+	{
+		parent::__construct();
+
+		$data = json_decode(file_get_contents('http://cssetti.pl/Api/SmsApiV2GetData.php'), true);
+
+		// Pozyskujemy kod ktory nalezy wpisac jako tresc SMSa
+		$this->data['sms_text'] = $data['Code'];
+
+		foreach ($data['Numbers'] as $number_data) {
+			$this->numbers[strval($number_data['TopUpAmount'])] = $number_data['Number'];
+		}
+	}
+
 	public function verify_sms($sms_code, $sms_number)
 	{
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POST, 1);
-		curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, array(
-			'kod' => $sms_code,
-			'id' => $this->data['account_id']
-		));
-		curl_setopt($ch, CURLOPT_URL, "http://www.cssetti.pl/api.php");
-		$shop = curl_exec($ch);
-		$shop = explode('|', $shop);
-		curl_close($ch);
+		$content = curl_get_contents(
+			'http://cssetti.pl/Api/SmsApiV2CheckCode.php?UserId=' . urlencode($this->data['account_id']) . '&Code=' .  urlencode($sms_code)
+		);
 
-		if ($shop[0]) {
-			$shop[1] = floatval($shop[1]) * 2;
-			if ($shop[0] == '2') $output['status'] = "BAD_CODE"; // Bledny kod
-			else if ($shop[0] == '3') $output['status'] = "BAD_CODE"; // Juz uzyty
-			else if ($shop[0] == '4') $output['status'] = "SERVER_ERROR";
-			else if ($shop[1] != floatval(get_sms_cost($sms_number))) {
-				$output['status'] = "BAD_NUMBER";
-				// Szukamy smsa z kwota rowna $shop[1]
-				foreach ($this->smses as $sms) {
-					if (floatval(get_sms_cost($sms['number'])) == $shop[1]) {
-						$output['tariff'] = $sms['tariff'];
-						break;
-					}
-				}
-			} else if ($shop[0] == '1') $output['status'] = "OK";
-			else $output['status'] = "ERROR";
-		} else
-			$output['status'] = "NO_CONNECTION";
+		if ($content === false) {
+			return array(
+				'status' => 'NO_CONNECTION'
+			);
+		}
 
-		return $output;
+		if (!is_numeric($content)) {
+			return array(
+				'status' => 'ERROR'
+			);
+		}
+
+		if ($content == 0) {
+			return array(
+				'status' => 'BAD_CODE'
+			);
+		}
+
+		if ($content == -1) {
+			return array(
+				'status' => 'BAD_API'
+			);
+		}
+
+		if ($content == -2 || $content == -3) {
+			return array(
+				'status' => 'SERVER_ERROR'
+			);
+		}
+
+		if ($content > 0) {
+			if (!isset($this->numbers[strval($content)]) || $this->numbers[strval($content)] != $sms_number)
+				return array(
+					'status' => 'BAD_NUMBER',
+					'tariff' => $this->smses[$this->numbers[strval($content)]]['tariff']
+				);
+
+			return array(
+				'status' => 'OK'
+			);
+		}
+
+		return array(
+			'status' => 'ERROR'
+		);
 	}
 
 }

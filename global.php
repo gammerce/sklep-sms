@@ -3,8 +3,8 @@
 if (!defined("IN_SCRIPT"))
 	die("There is nothing interesting here.");
 
-error_reporting(E_ALL);
-ini_set("display_errors", 1);
+//error_reporting(E_ALL);
+//ini_set("display_errors", 1);
 
 // Tworzenie / Wznawianie sesji
 if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
