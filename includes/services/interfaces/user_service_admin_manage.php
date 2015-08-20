@@ -16,10 +16,7 @@ interface IService_UserServiceAdminDisplay
 	public function user_service_admin_display_title_get();
 
 	/**
-	 * Zwraca listę usług użytkowników.
-	 * Na zwróconej tablicy wykonywana jest funkcja extract()
-	 * a wygląd jest generowany przy użyciu pliku table_structure.html
-	 * Jeżeli zwróci stringa, to jest on wyświetlany bez żadnej dodatkowej obróbki.
+	 * Zwraca listę usług użytkowników ubraną w ładny obiekt.
 	 *
 	 * @param array $get
 	 * @param array $post
