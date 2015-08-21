@@ -1043,7 +1043,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$result = $db->query($db->prepare(
 			"SELECT * FROM `" . TABLE_PREFIX . "user_service` AS us " .
 			"INNER JOIN `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` AS usef ON us.id = usef.us_id " .
-			"WHERE `service` = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND `id` != '%d'",
+			"WHERE us.service = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND `id` != '%d'",
 			array($this->service['id'], if_isset($data['server'], $user_service['server']), if_isset($data['type'], $user_service['type']),
 				if_isset($data['auth_data'], $user_service['auth_data']), $user_service['id'])
 		));
@@ -1273,7 +1273,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$result = $db->query($db->prepare(
 			"SELECT `id` FROM `" . TABLE_PREFIX . "user_service` AS us " .
 			"INNER JOIN `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` AS usef ON us.id = usef.us_id " .
-			"WHERE `service` = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND ( `password` = '%s' OR `password` = '%s' )",
+			"WHERE us.service = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND ( `password` = '%s' OR `password` = '%s' )",
 			array($this->service['id'], $data['server'], $data['type'], $auth_data, $data['password'], md5($data['password']))
 		));
 
