@@ -686,7 +686,8 @@ function get_users_services($conditions = '', $take_out = true)
 		$used_table[$table] = true;
 	}
 
-	sort($output);
+	ksort($output);
+	$output = array_reverse($output);
 
 	return $take_out && count($output) == 1 ? $output[0] : $output;
 }

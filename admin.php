@@ -48,8 +48,10 @@ if (get_privilages("view_player_flags")) {
 if (get_privilages("view_user_services")) {
 	$pid = '';
 	foreach($heart->get_services_modules() as $module_data) {
-		if (class_implements($module_data['class'], 'IService_UserServiceAdminDisplay'))
+		if (in_array('IService_UserServiceAdminDisplay', class_implements($module_data['class']))) {
 			$pid = "user_service&subpage=" . urlencode($module_data['id']);
+			break;
+		}
 	};
 	$name = $lang->users_services;
 	$user_service_link = eval($templates->render("admin/page_link"));

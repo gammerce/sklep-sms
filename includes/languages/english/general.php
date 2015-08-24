@@ -1,6 +1,7 @@
 <?php
 
 $l['shop_sms'] = "SMS Shop";
+$l['id'] = "ID";
 $l['logout'] = "Log out";
 $l['go'] = "Go";
 $l['and'] = "and";

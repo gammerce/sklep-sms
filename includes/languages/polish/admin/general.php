@@ -186,7 +186,6 @@ $l['not_all_data'] = "Nie podano wszystkich potrzebnych danych.";
 $l['wrong_page_id'] = "Podano błędne id strony.";
 $l['no_action_box_support'] = "Strona nie wspiera action boxów.";
 
-$l['id'] = "ID";
 $l['answers'] = "Odpowiedzi";
 $l['actions'] = "Akcje";
 $l['payment_admin'] = "Płatność";

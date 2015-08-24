@@ -186,7 +186,6 @@ $l['not_all_data'] = "Not all necessary data were given.";
 $l['wrong_page_id'] = "Wrong page ID was given.";
 $l['no_action_box_support'] = "Page does not support action boxes.";
 
-$l['id'] = "ID";
 $l['answers'] = "Answers";
 $l['actions'] = "Actions";
 $l['payment_admin'] = "Payment";
