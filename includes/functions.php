@@ -795,6 +795,8 @@ function exceptionHandler(Exception $e)
 {
 	if (get_class($e) == 'SqlQueryException')
 		Database::showError($e);
+	else
+		throw $e;
 }
 
 function create_dom_element($name, $text = "", $data = array())

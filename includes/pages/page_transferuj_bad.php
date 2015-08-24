@@ -1,13 +1,13 @@
-/**
-* Created by MilyGosc.
-* URL: http://forum.sklep-sms.pl/showthread.php?tid=88
-*/
-
 <?php
+
+/**
+ * Created by MilyGosc.
+ * URL: http://forum.sklep-sms.pl/showthread.php?tid=88
+ */
 
 $heart->register_page("transferuj_bad", "PageTransferujBad");
 
-class PageTransferujBad extends PageSimple // PageExample - nazwa klasy, która bêdzie odpowiedzialna za obs³ugê strony
+class PageTransferujBad extends PageSimple
 {
 
 	const PAGE_ID = "transferuj_bad";

@@ -1,9 +1,9 @@
-/**
-* Created by MilyGosc.
-* URL: http://forum.sklep-sms.pl/showthread.php?tid=88
-*/
-
 <?php
+
+/**
+ * Created by MilyGosc.
+ * URL: http://forum.sklep-sms.pl/showthread.php?tid=88
+ */
 
 if ($_SERVER['REMOTE_ADDR'] != '195.149.229.109' || empty($_POST))
 	exit;

@@ -1,9 +1,9 @@
-/**
-* Created by MilyGosc.
-* URL: http://forum.sklep-sms.pl/showthread.php?tid=88
-*/
-
 <?php
+
+/**
+ * Created by MilyGosc.
+ * URL: http://forum.sklep-sms.pl/showthread.php?tid=88
+ */
 
 $heart->register_page("transferuj_ok", "PageTransferujOk");
 
