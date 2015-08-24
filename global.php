@@ -6,6 +6,10 @@ if (!defined("IN_SCRIPT"))
 //error_reporting(E_ALL);
 //ini_set("display_errors", 1);
 
+foreach($_GET as $key => $value) {
+	$_GET[$key] = urldecode($value);
+}
+
 // Tworzenie / Wznawianie sesji
 if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
 	session_name("admin");

@@ -23,7 +23,7 @@ class PageAdminPaymentTransfer extends PageAdmin
 
 		// Wyszukujemy dane ktore spelniaja kryteria
 		if (isset($get['search']))
-			searchWhere(array("t.payment_id", "t.income", "t.ip"), urldecode($get['search']), $where);
+			searchWhere(array("t.payment_id", "t.income", "t.ip"), $get['search'], $where);
 
 		if (isset($get['payid']))
 			$where .= $db->prepare(" AND `payment_id` = '%s' ", array($get['payid']));

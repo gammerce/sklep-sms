@@ -16,15 +16,15 @@ function xml_output($return_value, $text, $positive, $extra_data = "")
 }
 
 // Musi byc podany hash random_keya
-if (urldecode($_GET['key']) != md5($settings['random_key']))
+if ($_GET['key'] != md5($settings['random_key']))
 	exit;
 
-$action = urldecode($_GET['action']);
+$action = $_GET['action'];
 
 if ($action == "purchase_service") {
 	$output = "";
 
-	if (($service_module = $heart->get_service_module(urldecode($_GET['service']))) === NULL)
+	if (($service_module = $heart->get_service_module($_GET['service'])) === NULL)
 		xml_output("bad_module", $lang->bad_module, 0);
 
 	if (!object_implements($service_module, "IService_PurchaseOutside"))
@@ -33,17 +33,17 @@ if ($action == "purchase_service") {
 	// Sprawdzamy dane zakupu
 	$purchase_data = new Entity_Purchase();
 	$purchase_data->setService($service_module->service['id']);
-	$purchase_data->user = $heart->get_user(urldecode($_GET['uid']));
-	$purchase_data->user->setPlatform(urldecode($_GET['platform']));
-	$purchase_data->user->setLastip(urldecode($_GET['ip']));
+	$purchase_data->user = $heart->get_user($_GET['uid']);
+	$purchase_data->user->setPlatform($_GET['platform']);
+	$purchase_data->user->setLastip($_GET['ip']);
 	$purchase_data->setOrder(array(
-		'server' => urldecode($_GET['server']),
-		'type' => urldecode($_GET['type']),
-		'auth_data' => urldecode($_GET['auth_data']),
-		'password' => urldecode($_GET['password']),
-		'passwordr' => urldecode($_GET['password'])
+		'server' => $_GET['server'],
+		'type' => $_GET['type'],
+		'auth_data' => $_GET['auth_data'],
+		'password' => $_GET['password'],
+		'passwordr' => $_GET['password']
 	));
-	$purchase_data->setTariff(urldecode($_GET['tariff']));
+	$purchase_data->setTariff($_GET['tariff']);
 	$return_validation = $service_module->purchase_data_validate($purchase_data);
 
 	// Są jakieś błędy przy sprawdzaniu danych
@@ -64,9 +64,9 @@ if ($action == "purchase_service") {
 	/** @var Entity_Purchase $purchase_data */
 	$purchase_data = $return_validation['purchase_data'];
 	$purchase_data->setPayment(array(
-		'method' => urldecode($_GET['method']),
-		'sms_code' => urldecode($_GET['sms_code']),
-		'sms_service' => urldecode($_GET['transaction_service'])
+		'method' => $_GET['method'],
+		'sms_code' => $_GET['sms_code'],
+		'sms_service' => $_GET['transaction_service']
 	));
 	$return_payment = validate_payment($purchase_data);
 

@@ -21,7 +21,7 @@ class PageAdminBoughtServices extends PageAdmin
 
 		// Wyszukujemy dane ktore spelniaja kryteria
 		if (isset($get['search']))
-			searchWhere(array("t.id", "t.payment", "t.payment_id", "t.uid", "t.ip", "t.email", "t.auth_data", "CAST(t.timestamp as CHAR)"), urldecode($get['search']), $where);
+			searchWhere(array("t.id", "t.payment", "t.payment_id", "t.uid", "t.ip", "t.email", "t.auth_data", "CAST(t.timestamp as CHAR)"), $get['search'], $where);
 
 		// Jezeli jest jakis where, to dodajemy WHERE
 		if (strlen($where))

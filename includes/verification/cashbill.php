@@ -70,7 +70,7 @@ class PaymentModuleCashbill extends PaymentModule implements IPayment_Sms, IPaym
 	 */
 	public function check_sign($data, $key, $sign)
 	{
-		return md5($data['service'] . $data['orderid'] . $data['amount'] . urldecode($data['userdata']) . $data['status'] . $key) == $sign;
+		return md5($data['service'] . $data['orderid'] . $data['amount'] . $data['userdata'] . $data['status'] . $key) == $sign;
 	}
 
 }

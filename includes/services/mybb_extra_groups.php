@@ -159,7 +159,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 		// Wyszukujemy dane ktore spelniaja kryteria
 		$where = '';
 		if (isset($get['search']))
-			searchWhere(array("us.id", "us.uid", "u.username", "s.name", "usmeg.mybb_uid"), urldecode($get['search']), $where);
+			searchWhere(array("us.id", "us.uid", "u.username", "s.name", "usmeg.mybb_uid"), $get['search'], $where);
 		// Jezeli jest jakis where, to dodajemy WHERE
 		if (strlen($where))
 			$where = "WHERE " . $where . ' ';

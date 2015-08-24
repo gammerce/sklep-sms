@@ -22,7 +22,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 
 		// Wyszukujemy dane ktore spelniaja kryteria
 		if (isset($get['search']))
-			searchWhere(array("`uid`", "`username`", "`forename`", "`surname`", "`email`", "`groups`", "`wallet`"), urldecode($get['search']), $where);
+			searchWhere(array("`uid`", "`username`", "`forename`", "`surname`", "`email`", "`groups`", "`wallet`"), $get['search'], $where);
 
 		// Jezeli jest jakis where, to dodajemy WHERE
 		if (strlen($where))

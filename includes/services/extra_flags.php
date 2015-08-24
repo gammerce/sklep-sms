@@ -175,7 +175,7 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 		// Wyszukujemy dane ktore spelniaja kryteria
 		$where = '';
 		if (isset($get['search']))
-			searchWhere(array("us.id", "us.uid", "u.username", "srv.name", "s.name", "usef.auth_data"), urldecode($get['search']), $where);
+			searchWhere(array("us.id", "us.uid", "u.username", "srv.name", "s.name", "usef.auth_data"), $get['search'], $where);
 		// Jezeli jest jakis where, to dodajemy WHERE
 		if (strlen($where))
 			$where = "WHERE " . $where . ' ';
