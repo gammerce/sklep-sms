@@ -724,7 +724,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		log_info($lang_shop->sprintf($lang_shop->admin_added_service, $user->getUsername(), $user->getUid(), $bought_service_id));
 
 		return array(
-			'status' => "added",
+			'status' => "ok",
 			'text' => $lang->service_added_correctly,
 			'positive' => true
 		);
@@ -827,7 +827,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		// Aktualizujemy usługę
 		$edit_return = $this->user_service_edit($user_service, $data);
 
-		if ($edit_return['status'] == "edited")
+		if ($edit_return['status'] == 'ok')
 			log_info($lang_shop->sprintf($lang_shop->admin_edited_user_service, $user->getUsername(), $user->getUid(), $user_service['id']));
 
 		return $edit_return;
@@ -1002,7 +1002,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			'password' => $data['password']
 		));
 
-		if ($edit_return['status'] == "edited")
+		if ($edit_return['status'] == 'ok')
 			log_info($lang_shop->sprintf($lang_shop->user_edited_service, $user->getUsername(), $user->getUid(), $user_service['id']));
 
 		return $edit_return;
@@ -1136,7 +1136,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 				if_isset($data['auth_data'], $user_service['auth_data']));
 
 			return array(
-				'status' => "edited",
+				'status' => 'ok',
 				'text' => $lang->edited_user_service,
 				'positive' => true
 			);

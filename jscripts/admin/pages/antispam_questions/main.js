@@ -76,7 +76,7 @@ $(document).delegate("#form_antispam_question_add", "submit", function (e) {
 					id.effect("highlight", 1000);
 				});
 			}
-			else if (jsonObj.return_id == "added") {
+			else if (jsonObj.return_id == 'ok') {
 				// Ukryj i wyczyść action box
 				action_box.hide();
 				$("#action_box_wraper_td").html("");
@@ -123,7 +123,7 @@ $(document).delegate("#form_antispam_question_edit", "submit", function (e) {
 					id.effect("highlight", 1000);
 				});
 			}
-			else if (jsonObj.return_id == "edited") {
+			else if (jsonObj.return_id == 'ok') {
 				// Ukryj i wyczyść action box
 				action_box.hide();
 				$("#action_box_wraper_td").html("");

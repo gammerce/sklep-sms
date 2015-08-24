@@ -627,7 +627,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		log_info($lang_shop->sprintf($lang_shop->admin_added_service, $user->getUsername(), $user->getUid(), $bought_service_id));
 
 		return array(
-			'status' => "added",
+			'status' => "ok",
 			'text' => $lang->service_added_correctly,
 			'positive' => true
 		);

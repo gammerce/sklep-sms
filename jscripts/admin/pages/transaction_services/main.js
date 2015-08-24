@@ -19,7 +19,7 @@ $(document).delegate("#form_transaction_service_edit", "submit", function (e) {
 			if (!(jsonObj = json_parse(content)))
 				return;
 
-			if (jsonObj.return_id == "edited") {
+			if (jsonObj.return_id == 'ok') {
 				// Ukryj i wyczyść action box
 				action_box.hide();
 				$("#action_box_wraper_td").html("");
