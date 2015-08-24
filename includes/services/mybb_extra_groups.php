@@ -624,7 +624,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		$purchase_data->setEmail($post['email']);
 		$bought_service_id = $this->purchase($purchase_data);
 
-		log_info($lang_shop->sprintf($lang_shop->admin_added_service, $user->getUsername(), $user->getUid(), $bought_service_id));
+		log_info($lang_shop->sprintf($lang_shop->admin_added_user_service, $user->getUsername(), $user->getUid(), $bought_service_id));
 
 		return array(
 			'status' => "ok",

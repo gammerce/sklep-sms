@@ -721,7 +721,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$purchase_data->setEmail($data['email']);
 		$bought_service_id = $this->purchase($purchase_data);
 
-		log_info($lang_shop->sprintf($lang_shop->admin_added_service, $user->getUsername(), $user->getUid(), $bought_service_id));
+		log_info($lang_shop->sprintf($lang_shop->admin_added_user_service, $user->getUsername(), $user->getUid(), $bought_service_id));
 
 		return array(
 			'status' => "ok",
