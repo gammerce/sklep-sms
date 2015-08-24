@@ -1,8 +1,8 @@
 <?php
 
-$heart->register_page("transfer_finalized", "PageTransferFinalized");
+$heart->register_page("transfer_finalized", "PageCashbillTransferFinalized");
 
-class PageTransferFinalized extends Page
+class PageCashbillTransferFinalized extends Page
 {
 
 	const PAGE_ID = "transfer_finalized";
