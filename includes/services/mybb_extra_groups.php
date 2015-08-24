@@ -750,5 +750,6 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 			return;
 
 		$this->db_mybb = new Database($this->db_host, $this->db_user, $this->db_password, $this->db_name);
+		$this->db_mybb->query("SET NAMES utf8");
 	}
 }
