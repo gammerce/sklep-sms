@@ -23,6 +23,14 @@ $(document).delegate('#user_service_display_module', 'change', function () {
 	});
 });
 
+// Ustawienie na zawsze
+$(document).delegate("#form_user_service_add [name=forever]", "change", function () {
+	if ($(this).prop('checked'))
+		$("#form_user_service_add [name=amount]").prop('disabled', true);
+	else
+		$("#form_user_service_add [name=amount]").prop('disabled', false);
+});
+
 // Wybranie usługi podczas dodawania usługi użytkownikowi
 var extra_fields;
 $(document).delegate("#form_user_service_add [name=service]", "change", function () {
@@ -71,7 +79,7 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 			if (!(jsonObj = json_parse(content)))
 				return;
 
-			if (jsonObj.return_id == "deleted") {
+			if (jsonObj.return_id == 'ok') {
 				// Usuń row
 				row_id.fadeOut("slow");
 				row_id.css({"background": "#FFF4BA"});
@@ -115,7 +123,7 @@ $(document).delegate(".delete_row", "click", function () {
 			if (!(jsonObj = json_parse(content)))
 				return;
 
-			if (jsonObj.return_id == "deleted") {
+			if (jsonObj.return_id == 'ok') {
 				// Usuń row
 				row_id.fadeOut("slow");
 				row_id.css({"background": "#FFF4BA"});

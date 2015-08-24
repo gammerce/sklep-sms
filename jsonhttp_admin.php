@@ -170,7 +170,7 @@ if ($action == "charge_wallet") {
 	if ($affected) {
 		log_info($lang_shop->sprintf($lang_shop->user_service_admin_delete, $user->getUsername(), $user->getUid(), $user_service['id']));
 
-		json_output("deleted", $lang->delete_service, 1);
+		json_output('ok', $lang->delete_service, 1);
 	} else
 		json_output("not_deleted", $lang->no_delete_service, 0);
 } else if ($action == "user_service_add_form_get") {
@@ -244,7 +244,7 @@ if ($action == "charge_wallet") {
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($db->affected_rows()) {
 		log_info($lang_shop->sprintf($lang_shop->question_delete, $user->getUsername(), $user->getUid(), $_POST['id']));
-		json_output("deleted", $lang->delete_antispamq, 1);
+		json_output('ok', $lang->delete_antispamq, 1);
 	} else {
 		json_output("not_deleted", $lang->no_delete_antispamq, 0);
 	}
@@ -556,7 +556,7 @@ if ($action == "charge_wallet") {
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($affected) {
 		log_info($lang_shop->sprintf($lang_shop->service_admin_delete, $user->getUsername(), $user->getUid(), $_POST['id']));
-		json_output("deleted", $lang->delete_service, 1);
+		json_output('ok', $lang->delete_service, 1);
 	} else
 		json_output("not_deleted", $lang->no_delete_service, 0);
 } else if ($action == "get_service_module_extra_fields") {
@@ -678,7 +678,7 @@ if ($action == "charge_wallet") {
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($db->affected_rows()) {
 		log_info($lang_shop->sprintf($lang_shop->server_admin_delete, $user->getUsername(), $user->getUid(), $_POST['id']));
-		json_output("deleted", $lang->delete_server, 1);
+		json_output('ok', $lang->delete_server, 1);
 	} else
 		json_output("not_deleted", $lang->no_delete_server, 0);
 } else if ($action == "user_edit") {
@@ -770,7 +770,7 @@ if ($action == "charge_wallet") {
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($db->affected_rows()) {
 		log_info($lang_shop->sprintf($lang_shop->user_admin_delete, $user->getUsername(), $user->getUid(), $_POST['uid']));
-		json_output("deleted", $lang->delete_user, 1);
+		json_output('ok', $lang->delete_user, 1);
 	} else json_output("not_deleted", $lang->no_delete_user, 0);
 } else if ($action == "group_add" || $action == "group_edit") {
 	if (!get_privilages("manage_groups")) {
@@ -825,7 +825,7 @@ if ($action == "charge_wallet") {
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($db->affected_rows()) {
 		log_info($lang_shop->sprintf($lang_shop->group_admin_delete, $user->getUsername(), $user->getUid(), $_POST['id']));
-		json_output("deleted", $lang->delete_group, 1);
+		json_output('ok', $lang->delete_group, 1);
 	} else
 		json_output("not_deleted", $lang->no_delete_group, 0);
 } else if ($action == "tariff_add") {
@@ -914,7 +914,7 @@ if ($action == "charge_wallet") {
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($db->affected_rows()) {
 		log_info($lang_shop->sprintf($lang_shop->tariff_admin_delete, $user->getUsername(), $user->getUid(), $_POST['tariff']));
-		json_output("deleted", $lang->delete_tariff, 1);
+		json_output('ok', $lang->delete_tariff, 1);
 	} else {
 		json_output("not_deleted", $lang->no_delete_tariff, 0);
 	}
@@ -991,7 +991,7 @@ if ($action == "charge_wallet") {
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($db->affected_rows()) {
 		log_info($lang_shop->sprintf($lang_shop->price_admin_delete, $user->getUsername(), $user->getUid(), $_POST['id']));
-		json_output("deleted", $lang->delete_price, 1);
+		json_output('ok', $lang->delete_price, 1);
 	} else json_output("not_deleted", $lang->no_delete_price, 0);
 } else if ($action == "sms_code_add") {
 	if (!get_privilages("manage_sms_codes")) {
@@ -1040,7 +1040,7 @@ if ($action == "charge_wallet") {
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($db->affected_rows()) {
 		log_info($lang_shop->sprintf($lang_shop->sms_code_admin_delete, $user->getUsername(), $user->getUid(), $_POST['id']));
-		json_output("deleted", $lang->delete_sms_code, 1);
+		json_output('ok', $lang->delete_sms_code, 1);
 	} else json_output("not_deleted", $lang->no_delete_sms_code, 0);
 } else if ($action == "service_code_add") {
 	if (!get_privilages("manage_service_codes"))
@@ -1103,7 +1103,7 @@ if ($action == "charge_wallet") {
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($db->affected_rows()) {
 		log_info($lang_shop->sprintf($lang_shop->code_deleted_admin, $user->getUsername(), $user->getUid(), $_POST['id']));
-		json_output("deleted", $lang->code_deleted, 1);
+		json_output('ok', $lang->code_deleted, 1);
 	} else json_output("not_deleted", $lang->code_not_deleted, 0);
 } else if ($action == "service_code_add_form_get") {
 	if (!get_privilages("manage_service_codes"))
@@ -1128,7 +1128,7 @@ if ($action == "charge_wallet") {
 	));
 
 	// Zwróć info o prawidłowym lub błędnym usunieciu
-	if ($db->affected_rows()) json_output("deleted", $lang->delete_log, 1);
+	if ($db->affected_rows()) json_output('ok', $lang->delete_log, 1);
 	else json_output("not_deleted", $lang->no_delete_log, 0);
 } else if ($action == "refresh_blocks") {
 	if (isset($_POST['bricks']))
