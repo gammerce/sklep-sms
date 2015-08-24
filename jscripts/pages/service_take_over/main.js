@@ -45,7 +45,7 @@ $(document).delegate("#form_service_take_over", "submit", function (e) {
 			else if (jsonObj.return_id == "ok") {
 				// Przejdź do strony user_own_services
 				setTimeout(function () {
-					window.location.href = "../../../index.php";
+					window.location.href = "index.php?pid=user_own_services";
 				}, 2000);
 			}
 			else if (!jsonObj.return_id) {

@@ -3,8 +3,8 @@
 if (!defined("IN_SCRIPT"))
 	die("There is nothing interesting here.");
 
-//error_reporting(E_ALL);
-//ini_set("display_errors", 1);
+error_reporting(E_ERROR);
+ini_set("display_errors", 1);
 
 foreach($_GET as $key => $value) {
 	$_GET[$key] = urldecode($value);
