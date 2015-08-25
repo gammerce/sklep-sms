@@ -9,8 +9,12 @@ class PaymentModuleMicrosms extends PaymentModule implements IPayment_Sms
 
 	public function verify_sms($sms_code, $sms_number)
 	{
-		$handle = fopen("http://microsms.pl/api/check.php?userid=" . urlencode($this->data['api']) . "&number=" . urlencode($sms_number) .
-			"&code=" . urlencode($sms_code) . '&serviceid=' . urlencode($this->data[$sms_number]), 'r');
+		$handle = fopen(
+			'http://microsms.pl/api/check.php' .
+			'?userid=' . urlencode($this->data['api']) .
+			'&number=' . urlencode($sms_number) .
+			'&code=' . urlencode($sms_code) .
+			'&serviceid=' . urlencode($this->data['service_id']), 'r');
 
 		if ($handle) {
 			$check = fgetcsv($handle, 1024);
