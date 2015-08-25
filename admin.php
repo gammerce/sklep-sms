@@ -45,10 +45,16 @@ if (get_privilages("view_player_flags")) {
 	$name = $lang->{$pid};
 	$players_flags_link = eval($templates->render("admin/page_link"));
 }
-if (get_privilages("view_player_services")) {
-	$pid = "users_services";
-	$name = $lang->{$pid};
-	$users_services_link = eval($templates->render("admin/page_link"));
+if (get_privilages("view_user_services")) {
+	$pid = '';
+	foreach($heart->get_services_modules() as $module_data) {
+		if (in_array('IService_UserServiceAdminDisplay', class_implements($module_data['class']))) {
+			$pid = "user_service&subpage=" . urlencode($module_data['id']);
+			break;
+		}
+	};
+	$name = $lang->users_services;
+	$user_service_link = eval($templates->render("admin/page_link"));
 }
 if (get_privilages("view_income")) {
 	$pid = "income";

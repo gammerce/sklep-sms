@@ -13,14 +13,16 @@ class Entity_Purchase {
 	private $service = NULL;
 
 	/**
+	 * Szczegóły zamawianej usługi
+	 *
 	 * @var array
 	 */
 	private $order = NULL;
 
 	/**
-	 * @var array
+	 * @var Entity_User
 	 */
-	private $user = NULL;
+	public $user;
 
 	/**
 	 * @var integer
@@ -33,31 +35,22 @@ class Entity_Purchase {
 	private $email = NULL;
 
 	/**
+	 * Szczegóły płatności
+	 *
 	 * @var array
 	 */
 	private $payment = NULL;
 
-	function __construct($data) {
+	/**
+	 * Opis zakupu ( przydaje się przy płatności przelewem )
+	 *
+	 * @var string
+	 */
+	private $desc = NULL;
+
+	function __construct() {
 		global $user;
 		$this->user = $user;
-
-		if (isset($data['service']))
-			$this->setService($data['service']);
-
-		if (isset($data['user']))
-			$this->setUser($data['user']);
-
-		if (isset($data['order']))
-			$this->setOrder($data['order']);
-
-		if (isset($data['tariff']))
-			$this->setTariff($data['tariff']);
-
-		if (isset($data['email']))
-			$this->setEmail($data['email']);
-
-		if (isset($data['payment']))
-			$this->setPayment($data['payment']);
 	}
 
 	public function setService($service) {
@@ -69,17 +62,12 @@ class Entity_Purchase {
 			$this->order[$key] = $value;
 	}
 
-	public function setUser($user) {
-		foreach($user as $key => $value)
-			$this->user[$key] = $value;
-	}
-
 	public function setTariff($tariff) {
-		$this->tariff = intval($tariff);
+		$this->tariff = (integer)$tariff;
 	}
 
 	public function setEmail($email) {
-		$this->email = strval($email);
+		$this->email = (string)$email;
 	}
 
 	public function setPayment($payment) {
@@ -103,18 +91,7 @@ class Entity_Purchase {
 	}
 
 	/**
-	 * @param string $key
-	 * @return mixed
-	 */
-	public function getUser($key = NULL) {
-		if ($key === NULL)
-			return $this->user;
-
-		return if_isset($this->user[$key], NULL);
-	}
-
-	/**
-	 * @param string $key
+	 * @param string|null $key
 	 * @return mixed
 	 */
 	public function getPayment($key = NULL) {
@@ -128,8 +105,28 @@ class Entity_Purchase {
 		return $this->tariff;
 	}
 
-	public function getEmail() {
-		return $this->email;
+	/**
+	 * @param bool $escaped
+	 * @return string
+	 */
+	public function getEmail($escaped = false) {
+		return $escaped ? htmlspecialchars($this->email) : $this->email;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDesc()
+	{
+		return $this->desc;
+	}
+
+	/**
+	 * @param string $desc
+	 */
+	public function setDesc($desc)
+	{
+		$this->desc = $desc;
 	}
 
 }

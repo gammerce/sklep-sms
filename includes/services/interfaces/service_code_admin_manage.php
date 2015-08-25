@@ -10,10 +10,10 @@ interface IService_ServiceCodeAdminManage
 	/**
 	 * Metoda sprawdza dane formularza podczas dodawania kodu na usługę w PA
 	 *
-	 * @param array $data 	Dane $_POST
+	 * @param array $post Dane $_POST
 	 * @return array 'key' (DOM element name) => 'value'
 	 */
-	public function service_code_admin_add_validate($data);
+	public function service_code_admin_add_validate($post);
 
 	/**
 	 * Metoda powinna zwrócić dodatkowe pola do uzupełnienia przez admina

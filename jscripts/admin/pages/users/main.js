@@ -39,7 +39,7 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 			if (!(jsonObj = json_parse(content)))
 				return;
 
-			if (jsonObj.return_id == "deleted") {
+			if (jsonObj.return_id == 'ok') {
 				// Usuń row
 				row_id.fadeOut("slow");
 				row_id.css({"background": "#FFF4BA"});
@@ -139,7 +139,7 @@ $(document).delegate("#form_user_edit", "submit", function (e) {
 					id.effect("highlight", 1000);
 				});
 			}
-			else if (jsonObj.return_id == "edited") {
+			else if (jsonObj.return_id == 'ok') {
 				// Ukryj i wyczyść action box
 				action_box.hide();
 				$("#action_box_wraper_td").html("");

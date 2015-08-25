@@ -1,6 +1,7 @@
 <?php
 
 $l['shop_sms'] = "SMS Shop";
+$l['id'] = "ID";
 $l['logout'] = "Log out";
 $l['go'] = "Go";
 $l['and'] = "and";
@@ -22,6 +23,8 @@ $l['save'] = "Save";
 $l['cancel'] = "Cancel";
 $l['sign_in'] = "Sign in";
 $l['contact'] = "Contact";
+$l['user_id'] = "User ID";
+$l['days_amount'] = "Days amount";
 
 $l['old_password'] = "Old Password";
 $l['new_password'] = "New Password";
@@ -117,6 +120,8 @@ $l['user_service_cannot_be_deleted'] = "This user service cannot be deleted.";
 $l['you_arent_logged'] = "Something is wrong, you are not logged in oO";
 $l['not_logged_or_no_perm'] = "Something is wrong, you are not logged in or you have no permission oO";
 
-$l['expired_service_delete'] = "AUTOMAT: Player's expired service removed. Auth Data: {1} Server: {2} Service: {3} Type: {4}";
+$l['expired_service_delete'] = "AUTOMAT: Player's expired service removed. {1}";
 
 $l['error_occured'] = "Error occured.";
+$l['no_access'] = "You have no proper powers.";
+$l['regards'] = "Regards";

@@ -2,7 +2,7 @@
 
 $heart->register_page("sms_codes", "PageAdminSmsCodes", "admin");
 
-class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
+class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
 {
 
 	const PAGE_ID = "sms_codes";
@@ -80,11 +80,11 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 
 		if (!get_privilages("manage_sms_codes"))
 			return array(
-				'id'	=> "not_logged_in",
-				'text'	=> $lang->not_logged_or_no_perm
+				'status' => "not_logged_in",
+				'text' => $lang->not_logged_or_no_perm
 			);
 
-		switch($box_id) {
+		switch ($box_id) {
 			case "sms_code_add":
 				$tariffs = "";
 				foreach ($heart->get_tariffs() as $tariff_data)
@@ -97,8 +97,8 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 		}
 
 		return array(
-			'id'		=> "ok",
-			'template'	=> $output
+			'status' => 'ok',
+			'template' => $output
 		);
 	}
 

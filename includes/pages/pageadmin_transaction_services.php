@@ -2,7 +2,7 @@
 
 $heart->register_page("transaction_services", "PageAdminTransactionServices", "admin");
 
-class PageAdminTransactionServices extends PageAdmin implements IPageAdminActionBox
+class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_ActionBox
 {
 
 	const PAGE_ID = "transaction_services";
@@ -68,11 +68,11 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
 
 		if (!get_privilages("manage_settings"))
 			return array(
-				'id'	=> "not_logged_in",
-				'text'	=> $lang->not_logged_or_no_perm
+				'status' => "not_logged_in",
+				'text' => $lang->not_logged_or_no_perm
 			);
 
-		switch($box_id) {
+		switch ($box_id) {
 			case "transaction_service_edit":
 				// Pobranie danych o metodzie płatności
 				$result = $db->query($db->prepare(
@@ -107,8 +107,8 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
 		}
 
 		return array(
-			'id'		=> "ok",
-			'template'	=> $output
+			'status' => 'ok',
+			'template' => $output
 		);
 	}
 

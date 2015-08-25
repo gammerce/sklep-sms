@@ -12,7 +12,7 @@ function xml_output($return_value, $text, $positive, $extra_data = "")
 	$output .= "<text>{$text}</text>";
 	$output .= "<positive>{$positive}</positive>";
 	$output .= $extra_data;
-	output_page($output, "Content-type: text/plain; charset=\"UTF-8\"");
+	output_page($output, 1);
 }
 
 // Musi byc podany hash random_keya
@@ -24,29 +24,27 @@ $action = $_GET['action'];
 if ($action == "purchase_service") {
 	$output = "";
 
-	if (($service_module = $heart->get_service_module(urldecode($_GET['service']))) === NULL)
+	if (($service_module = $heart->get_service_module($_GET['service'])) === NULL)
 		xml_output("bad_module", $lang->bad_module, 0);
 
 	if (!object_implements($service_module, "IService_PurchaseOutside"))
 		xml_output("bad_module", $lang->bad_module, 0);
 
 	// Sprawdzamy dane zakupu
-	$return_validation = $service_module->purchase_data_validate(new Entity_Purchase(array(
-		'service' => $service_module->service['id'],
-		'user' => array(
-			'uid' => $_GET['uid'],
-			'ip' => urldecode($_GET['ip']),
-			'platform' => urldecode($_GET['platform'])
-		),
-		'order' => array(
-			'server' => $_GET['server'],
-			'type' => $_GET['type'],
-			'auth_data' => urldecode($_GET['auth_data']),
-			'password' => urldecode($_GET['password']),
-			'passwordr' => urldecode($_GET['password'])
-		),
-		'tariff' => $_GET['tariff']
-	)));
+	$purchase_data = new Entity_Purchase();
+	$purchase_data->setService($service_module->service['id']);
+	$purchase_data->user = $heart->get_user($_GET['uid']);
+	$purchase_data->user->setPlatform($_GET['platform']);
+	$purchase_data->user->setLastip($_GET['ip']);
+	$purchase_data->setOrder(array(
+		'server' => $_GET['server'],
+		'type' => $_GET['type'],
+		'auth_data' => $_GET['auth_data'],
+		'password' => $_GET['password'],
+		'passwordr' => $_GET['password']
+	));
+	$purchase_data->setTariff($_GET['tariff']);
+	$return_validation = $service_module->purchase_data_validate($purchase_data);
 
 	// Są jakieś błędy przy sprawdzaniu danych
 	if ($return_validation['status'] != "ok") {
@@ -63,13 +61,14 @@ if ($action == "purchase_service") {
 		xml_output($return_validation['status'], $return_validation['text'], $return_validation['positive'], $extra_data);
 	}
 
-	$purchase = $return_validation['purchase'];
-	$purchase->setPayment(array(
-		'method' => urldecode($_GET['method']),
-		'sms_code' => urldecode($_GET['sms_code']),
-		'sms_service' => urldecode($_GET['transaction_service'])
+	/** @var Entity_Purchase $purchase_data */
+	$purchase_data = $return_validation['purchase_data'];
+	$purchase_data->setPayment(array(
+		'method' => $_GET['method'],
+		'sms_code' => $_GET['sms_code'],
+		'sms_service' => $_GET['transaction_service']
 	));
-	$return_payment = validate_payment($purchase);
+	$return_payment = validate_payment($purchase_data);
 
 	$extra_data = "";
 

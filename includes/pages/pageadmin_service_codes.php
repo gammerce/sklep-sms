@@ -2,7 +2,7 @@
 
 $heart->register_page("service_codes", "PageAdminServiceCodes", "admin");
 
-class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
+class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
 {
 
 	const PAGE_ID = "service_codes";
@@ -58,7 +58,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 				$amount = $row['tariff_amount'] . " " . $row['tag'];
 			else if ($row['tariff'])
 				$amount = $lang->tariff . ": " . $row['tariff'];
-			else if($row['amount'])
+			else if ($row['amount'])
 				$amount = $row['amount'];
 			else
 				$amount = $lang->none;
@@ -100,7 +100,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 
 		if (!get_privilages("manage_service_codes"))
 			return array(
-				'id' => "not_logged_in",
+				'status' => "not_logged_in",
 				'text' => $lang->not_logged_or_no_perm
 			);
 
@@ -122,7 +122,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 		}
 
 		return array(
-			'id' => "ok",
+			'status' => 'ok',
 			'template' => $output
 		);
 	}

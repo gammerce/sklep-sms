@@ -2,10 +2,8 @@
 
 $heart->register_block("wallet", "BlockWallet");
 
-class BlockWallet extends BlockSimple implements I_BeLoggedMust
+class BlockWallet extends Block implements I_BeLoggedMust
 {
-
-	protected $template = "wallet";
 
 	public function get_content_class()
 	{
@@ -15,6 +13,16 @@ class BlockWallet extends BlockSimple implements I_BeLoggedMust
 	public function get_content_id()
 	{
 		return "wallet";
+	}
+
+	protected function content($get, $post)
+	{
+		global $user, $settings, $lang, $templates;
+
+		$amount = number_format($user->getWallet() / 100, 2);
+
+		$output = eval($templates->render('wallet'));
+		return $output;
 	}
 
 	public function get_content_enveloped($get, $post)

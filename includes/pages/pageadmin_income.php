@@ -94,11 +94,11 @@ class PageAdminIncome extends PageAdmin
 				$income = $data[$date][$object_id];
 				$day_income += $income;
 				$servers_incomes[$object_id] += $income;
-				$table_row .= create_dom_element("td", number_format($income, 2));
+				$table_row .= create_dom_element("td", number_format($income / 100.0, 2));
 			}
 
 			// Zaokraglenie do dowch miejsc po przecinku zarobku w danym dniu
-			$day_income = number_format($day_income, 2);
+			$day_income = number_format($day_income / 100.0, 2);
 
 			$tbody .= eval($templates->render("admin/income_trow"));
 		}
@@ -109,12 +109,12 @@ class PageAdminIncome extends PageAdmin
 		// Lecimy po wszystkich obiektach na których zarobiliśmy kasę
 		foreach ($servers_incomes as $server_income) {
 			$total_income += $server_income; // Całk przychód
-			$table_row .= create_dom_element("td", number_format($server_income, 2));
+			$table_row .= create_dom_element("td", number_format($server_income / 100.0, 2));
 		}
 
 		// Jeżeli coś się policzyło, są jakieś dane
 		if (strlen($tbody)) {
-			$total_income = number_format($total_income, 2);
+			$total_income = number_format($total_income / 100.0, 2);
 			$tbody .= eval($templates->render("admin/income_trow2"));
 		} else // Brak danych
 			$tbody = eval($templates->render("admin/no_records"));

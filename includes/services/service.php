@@ -3,10 +3,11 @@
 abstract class Service
 {
 
-	const MODULE_ID = "";
+	const MODULE_ID = '';
+	const USER_SERVICE_TABLE = '';
 	public $service = array();
 
-	function __construct($service)
+	function __construct($service = NULL)
 	{
 		if (!is_array($service)) { // Podano błędne dane usługi
 			$this->service = NULL;
@@ -29,15 +30,16 @@ abstract class Service
 	 * Metoda wywoływana przy usuwaniu usługi użytkownika.
 	 *
 	 * @param array $user_service Dane o usłudze z bazy danych
+	 * @param string $who Kto wywołał akcję ( admin, task )
 	 * @return bool
 	 */
-	public function user_service_delete($user_service)
+	public function user_service_delete($user_service, $who)
 	{
 		return true;
 	}
 
 	/**
-	 * Metoda wywoływana po usunięciu usługi gracza.
+	 * Metoda wywoływana po usunięciu usługi użytkownika.
 	 *
 	 * @param array $user_service Dane o usłudze z bazy danych
 	 */
@@ -78,7 +80,71 @@ abstract class Service
 		return $this->service['description'];
 	}
 
-	public function get_module_id() {
+	public function get_module_id()
+	{
 		return $this::MODULE_ID;
+	}
+
+	/**
+	 * Aktualizuje usługę gracza
+	 *
+	 * @param array $set (column, value, data)
+	 * @param string $where1 Where dla update na tabeli user_service
+	 * @param string $where2 Where dla update na tabeli modułu
+	 * @return int Ilosc wierszy które zostały zaktualizowane
+	 */
+	protected function update_user_service($set, $where1, $where2)
+	{
+		global $db;
+
+		$set_data1 = $set_data2 = $where_data = $where_data2 = array();
+
+		foreach ($set as $data) {
+			$set_data = $db->prepare(
+				"`{$data['column']}` = {$data['value']}",
+				if_isset($data['data'], array())
+			);
+
+			if (in_array($data['column'], array('uid', 'service', 'expire'))) {
+				$set_data1[] = $set_data;
+			} else {
+				$set_data2[] = $set_data;
+			}
+
+			// Service jest w obu tabelach
+			if ($data['column'] == 'service')
+				$set_data2[] = $set_data;
+		}
+
+		if (my_is_integer($where1))
+			$where1 = "WHERE `id` = {$where1}";
+		else if (strlen($where1))
+			$where1 = "WHERE {$where1}";
+
+		if (my_is_integer($where2))
+			$where2 = "WHERE `us_id` = {$where2}";
+		else if (strlen($where2))
+			$where2 = "WHERE {$where2}";
+
+		$affected = 0;
+		if (!empty($set_data1)) {
+			$db->query(
+				"UPDATE `" . TABLE_PREFIX . "user_service` " .
+				"SET " . implode(', ', $set_data1) . " " .
+				$where1
+			);
+			$affected = max($affected, $db->affected_rows());
+		}
+
+		if (!empty($set_data2)) {
+			$db->query(
+				"UPDATE `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` " .
+				"SET " . implode(', ', $set_data2) . " " .
+				$where2
+			);
+			$affected = max($affected, $db->affected_rows());
+		}
+
+		return $affected;
 	}
 }

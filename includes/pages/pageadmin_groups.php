@@ -2,7 +2,7 @@
 
 $heart->register_page("groups", "PageAdminGroups", "admin");
 
-class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
+class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
 {
 
 	const PAGE_ID = "groups";
@@ -83,8 +83,8 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 
 		if (!get_privilages("manage_groups"))
 			return array(
-				'id'	=> "not_logged_in",
-				'text'	=> $lang->not_logged_or_no_perm
+				'status' => "not_logged_in",
+				'text' => $lang->not_logged_or_no_perm
 			);
 
 		if ($box_id == "group_edit") {
@@ -129,7 +129,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 			$privilages .= eval($templates->render("tr_text_select"));
 		}
 
-		switch($box_id) {
+		switch ($box_id) {
 			case "group_add":
 				$output = eval($templates->render("admin/action_boxes/group_add"));
 				break;
@@ -140,8 +140,8 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 		}
 
 		return array(
-			'id'		=> "ok",
-			'template'	=> $output
+			'status' => 'ok',
+			'template' => $output
 		);
 	}
 

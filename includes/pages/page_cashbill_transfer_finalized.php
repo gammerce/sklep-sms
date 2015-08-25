@@ -1,8 +1,8 @@
 <?php
 
-$heart->register_page("transfer_finalized", "PageTransferFinalized");
+$heart->register_page("transfer_finalized", "PageCashbillTransferFinalized");
 
-class PageTransferFinalized extends Page
+class PageCashbillTransferFinalized extends Page
 {
 
 	const PAGE_ID = "transfer_finalized";
@@ -26,9 +26,6 @@ class PageTransferFinalized extends Page
 		// prawidlowa sygnatura, w zaleznosci od statusu odpowiednia informacja dla klienta
 		if (strtoupper($get['status']) != 'OK')
 			return $lang->transfer_error;
-
-		$orderid = htmlspecialchars($get['orderid']);
-		$amount = number_format($get['amount'], 2);
 
 		return purchase_info(array(
 			'payment' => 'transfer',

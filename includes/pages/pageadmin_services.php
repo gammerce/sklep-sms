@@ -2,7 +2,7 @@
 
 $heart->register_page("services", "PageAdminServices", "admin");
 
-class PageAdminServices extends PageAdmin implements IPageAdminActionBox
+class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
 {
 
 	const PAGE_ID = "services";
@@ -75,7 +75,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
 		if (!get_privilages("manage_services"))
 			return array(
-				'id' => "not_logged_in",
+				'status' => "not_logged_in",
 				'text' => $lang->not_logged_or_no_perm
 			);
 
@@ -86,7 +86,8 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 			// Pobieramy pola danego modułu
 			if (strlen($service['module']))
 				if (($service_module = $heart->get_service_module($service['id'])) !== NULL
-					&& object_implements($service_module, "IService_AdminManage"))
+					&& object_implements($service_module, "IService_AdminManage")
+				)
 					$extra_fields = create_dom_element("tbody", $service_module->service_admin_extra_fields_get(), array(
 						'class' => 'extra_fields'
 					));
@@ -96,7 +97,8 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 			foreach ($heart->get_services_modules() as $module) {
 				// Sprawdzamy czy dany moduł zezwala na tworzenie nowych usług, które będzie obsługiwał
 				if (($service_module = $heart->get_service_module_s($module['id'])) === NULL
-					|| !object_implements($service_module, "IService_Create"))
+					|| !object_implements($service_module, "IService_Create")
+				)
 					continue;
 
 				$services_modules .= create_dom_element("option", $module['name'], array(
@@ -128,7 +130,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 		}
 
 		return array(
-			'id' => "ok",
+			'status' => 'ok',
 			'template' => $output
 		);
 	}

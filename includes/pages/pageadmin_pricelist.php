@@ -2,7 +2,7 @@
 
 $heart->register_page("pricelist", "PageAdminPriceList", "admin");
 
-class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
+class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
 {
 
 	const PAGE_ID = "pricelist";
@@ -88,14 +88,13 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
 
 		if (!get_privilages("manage_settings"))
 			return array(
-				'id'	=> "not_logged_in",
-				'text'	=> $lang->not_logged_or_no_perm
+				'status' => "not_logged_in",
+				'text' => $lang->not_logged_or_no_perm
 			);
 
 		if ($box_id == "price_edit") {
 			$result = $db->query($db->prepare(
-				"SELECT * " .
-				"FROM `" . TABLE_PREFIX . "pricelist` " .
+				"SELECT * FROM `" . TABLE_PREFIX . "pricelist` " .
 				"WHERE `id` = '%d'",
 				array($data['id'])
 			));
@@ -128,7 +127,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
 				'selected' => isset($price) && $price['tariff'] == $tariff_data['tariff'] ? "selected" : ""
 			));
 
-		switch($box_id) {
+		switch ($box_id) {
 			case "price_add":
 				$output = eval($templates->render("admin/action_boxes/price_add"));
 				break;
@@ -139,8 +138,8 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
 		}
 
 		return array(
-			'id'		=> "ok",
-			'template'	=> $output
+			'status' => 'ok',
+			'template' => $output
 		);
 	}
 

@@ -29,7 +29,7 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 			if (!(jsonObj = json_parse(content)))
 				return;
 
-			if (jsonObj.return_id == "deleted") {
+			if (jsonObj.return_id == 'ok') {
 				// Usuń row
 				row_id.fadeOut("slow");
 				row_id.css({"background": "#FFF4BA"});
@@ -66,7 +66,7 @@ $(document).delegate("#form_group_add", "submit", function (e) {
 			if (!(jsonObj = json_parse(content)))
 				return;
 
-			if (jsonObj.return_id == "added") {
+			if (jsonObj.return_id == 'ok') {
 				// Ukryj i wyczyść action box
 				action_box.hide();
 				$("#action_box_wraper_td").html("");
@@ -103,7 +103,7 @@ $(document).delegate("#form_group_edit", "submit", function (e) {
 			if (!(jsonObj = json_parse(content)))
 				return;
 
-			if (jsonObj.return_id == "edited") {
+			if (jsonObj.return_id == 'ok') {
 				// Ukryj i wyczyść action box
 				action_box.hide();
 				$("#action_box_wraper_td").html("");

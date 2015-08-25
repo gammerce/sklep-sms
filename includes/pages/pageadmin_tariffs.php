@@ -2,7 +2,7 @@
 
 $heart->register_page("tariffs", "PageAdminTariffs", "admin");
 
-class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
+class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
 {
 
 	const PAGE_ID = "tariffs";
@@ -39,7 +39,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
 			else
 				$button_delete = "";
 
-			$provision = number_format($tariff_data['provision'], 2);
+			$provision = number_format($tariff_data['provision'] / 100.0, 2);
 
 			// Pobranie danych do tabeli
 			$tbody .= eval($templates->render("admin/tariffs_trow"));
@@ -70,26 +70,26 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
 
 		if (!get_privilages("manage_settings"))
 			return array(
-				'id'	=> "not_logged_in",
-				'text'	=> $lang->not_logged_or_no_perm
+				'status' => "not_logged_in",
+				'text' => $lang->not_logged_or_no_perm
 			);
 
-		switch($box_id) {
+		switch ($box_id) {
 			case "tariff_add":
 				$output = eval($templates->render("admin/action_boxes/tariff_add"));
 				break;
 
 			case "tariff_edit":
 				$tariff = htmlspecialchars($data['tariff']);
-				$provision = number_format($heart->get_tariff_provision($data['tariff']), 2);
+				$provision = number_format($heart->get_tariff_provision($data['tariff']) / 100.0, 2);
 
 				$output = eval($templates->render("admin/action_boxes/tariff_edit"));
 				break;
 		}
 
 		return array(
-			'id'		=> "ok",
-			'template'	=> $output
+			'status' => 'ok',
+			'template' => $output
 		);
 	}
 
