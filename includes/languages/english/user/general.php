@@ -149,6 +149,7 @@ $l['transfer_above_amount'] = "You can pay by transfer only for purchase above 1
 $l['payment_transfer_accepted'] = "Payment transfer accepted. Purchase ID: {1} Transaction ID: {2} Amount: {3} Service: {4} {5}({6})({7})";
 $l['transfer_bad_module'] = "Transfer payment: {1} was accepted, but service module {2} wasn't found and purchase failed.";
 $l['transfer_no_purchase'] = "Transfer payment: {1} was accepted, but service module {2} doesn't implement IService_Purchase interface.";
+$l['transfer_no_data_file'] = "Transfer payment: {1} was accepted, but there was no file with purchase data.";
 $l['payment_not_accepted'] = "Transaction authorization failure: {1} Amount: {2} Service: {3} {4}({5})({6})";
 
 $l['purchase_code'] = "Code {1} was used to purchase service by {2}({3}). Payment ID: {4}";

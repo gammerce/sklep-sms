@@ -34,17 +34,10 @@ class PaymentModuleCashbill extends PaymentModule implements IPayment_Sms, IPaym
 		return $output;
 	}
 
-	public function prepare_transfer($purchase_data)
+	public function prepare_transfer($purchase_data, $data_filename)
 	{
-		$serialized = serialize($purchase_data);
-		$data_hash = time() . "-" . md5($serialized);
-		file_put_contents(SCRIPT_ROOT . "data/transfers/" . $data_hash, $serialized);
-
+		// Zamieniamy grosze na złotówki
 		$cost = number_format($purchase_data->getPayment('cost') / 100, 2);
-
-		// Obliczanie hashu
-		$sign = md5($this->data['service'] . $cost . $purchase_data->getDesc() . $data_hash . $purchase_data->user->getForename(false) .
-			$purchase_data->user->getSurname(false) . $purchase_data->getEmail() . $this->data['key']);
 
 		return array(
 			'url' => $this->data['transfer_url'],
@@ -54,9 +47,27 @@ class PaymentModuleCashbill extends PaymentModule implements IPayment_Sms, IPaym
 			'surname' => $purchase_data->user->getSurname(false),
 			'email' => $purchase_data->getEmail(),
 			'amount' => $cost,
-			'userdata' => $data_hash,
-			'sign' => $sign,
+			'userdata' => $data_filename,
+			'sign' => md5($this->data['service'] . $cost . $purchase_data->getDesc() . $data_filename . $purchase_data->user->getForename(false) .
+				$purchase_data->user->getSurname(false) . $purchase_data->getEmail() . $this->data['key'])
 		);
+	}
+
+	public function finalizeTransfer($get, $post)
+	{
+		$transfer_finalize = new Entity_TransferFinalize();
+
+		if ($this->check_sign($post, $this->data['key'], $post['sign']) && strtoupper($post['status']) == 'OK' && $post['service'] == $this->data['service']) {
+			$transfer_finalize->setStatus(true);
+		}
+
+		$transfer_finalize->setOrderid($post['orderid']);
+		$transfer_finalize->setAmount($post['amount']);
+		$transfer_finalize->setDataFilename($post['userdata']);
+		$transfer_finalize->setTransferService($post['service']);
+		$transfer_finalize->setOutput('OK');
+
+		return $transfer_finalize;
 	}
 
 	/**
@@ -72,5 +83,4 @@ class PaymentModuleCashbill extends PaymentModule implements IPayment_Sms, IPaym
 	{
 		return md5($data['service'] . $data['orderid'] . $data['amount'] . $data['userdata'] . $data['status'] . $key) == $sign;
 	}
-
 }

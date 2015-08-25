@@ -178,12 +178,76 @@ class Payment
 		// Dodajemy extra info
 		$purchase_data->user->setPlatform($this->platform);
 
+		$serialized = serialize($purchase_data);
+		$data_filename = time() . "-" . md5($serialized);
+		file_put_contents(SCRIPT_ROOT . "data/transfers/" . $data_filename, $serialized);
+
 		return array(
 			'status' => "transfer",
 			'text' => $lang->transfer_ok,
 			'positive' => true,
-			'data' => array('data' => $this->payment_api->prepare_transfer($purchase_data)) // Przygotowuje dane płatności transferem
+			'data' => array('data' => $this->payment_api->prepare_transfer($purchase_data, $data_filename)) // Przygotowuje dane płatności transferem
 		);
+	}
+
+	/**
+	 * @param Entity_TransferFinalize $transfer_finalize
+	 * @return bool
+	 */
+	public function transferFinalize($transfer_finalize)
+	{
+		global $heart, $db, $lang_shop;
+
+		$result = $db->query($db->prepare(
+			"SELECT * FROM `" . TABLE_PREFIX . "payment_transfer` " .
+			"WHERE `id` = '%d'",
+			array($transfer_finalize->getOrderid())
+		));
+
+		// Próba ponownej autoryzacji
+		if ($db->num_rows($result))
+			return false;
+
+		// Nie znaleziono pliku z danymi
+		if (!file_exists(SCRIPT_ROOT . "data/transfers/" . $transfer_finalize->getDataFilename())) {
+			log_info($lang_shop->sprintf($lang_shop->transfer_no_data_file, $transfer_finalize->getOrderid()));
+			return false;
+		}
+
+		/** @var Entity_Purchase $purchase_data */
+		$purchase_data = unserialize(file_get_contents(SCRIPT_ROOT . "data/transfers/" . $transfer_finalize->getDataFilename()));
+
+		// Dodanie informacji do bazy danych
+		$db->query($db->prepare(
+			"INSERT INTO `" . TABLE_PREFIX . "payment_transfer` " .
+			"SET `id` = '%s', `income` = '%d', `transfer_service` = '%s', `ip` = '%s', `platform` = '%s' ",
+			array($transfer_finalize->getOrderid(), $purchase_data->getPayment('cost'), $transfer_finalize->getTransferService(),
+				$purchase_data->user->getLastIp(), $purchase_data->user->getPlatform())
+		));
+		unlink(SCRIPT_ROOT . "data/transfers/" . $transfer_finalize->getDataFilename());
+
+		// Błędny moduł
+		if (($service_module = $heart->get_service_module($purchase_data->getService())) === NULL) {
+			log_info($lang_shop->sprintf($lang_shop->transfer_bad_module, $transfer_finalize->getOrderid(), $purchase_data->getService()));
+			return false;
+		}
+
+		if (!object_implements($service_module, "IService_Purchase")) {
+			log_info($lang_shop->sprintf($lang_shop->transfer_no_purchase, $transfer_finalize->getOrderid(), $purchase_data->getService()));
+			return false;
+		}
+
+		// Dokonujemy zakupu
+		$purchase_data->setPayment(array(
+			'method' => 'transfer',
+			'payment_id' => $transfer_finalize->getOrderid()
+		));
+		$bought_service_id = $service_module->purchase($purchase_data);
+
+		log_info($lang_shop->sprintf($lang_shop->payment_transfer_accepted, $bought_service_id, $transfer_finalize->getOrderid(), $transfer_finalize->getAmount(),
+			$transfer_finalize->getTransferService(), $purchase_data->user->getUsername(), $purchase_data->user->getUid(), $purchase_data->user->getLastIp()));
+
+		return true;
 	}
 
 	public function get_provision_by_tariff($tariff)
