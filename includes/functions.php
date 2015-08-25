@@ -1018,9 +1018,10 @@ function curl_get_contents($url, $timeout = 10, $post = false, $data = array())
 	}
 
 	$resp = curl_exec($curl);
+	$http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 	curl_close($curl);
 
-	return $resp;
+	return $http_code == 200 ? $resp : '';
 }
 
 // ip_in_range
