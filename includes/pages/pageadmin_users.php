@@ -2,7 +2,7 @@
 
 $heart->register_page("users", "PageAdminUsers", "admin");
 
-class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
+class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 {
 
 	const PAGE_ID = "users";
@@ -22,7 +22,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
 		// Wyszukujemy dane ktore spelniaja kryteria
 		if (isset($get['search']))
-			searchWhere(array("`uid`", "`username`", "`forename`", "`surname`", "`email`", "`groups`", "`wallet`"), urldecode($get['search']), $where);
+			searchWhere(array("`uid`", "`username`", "`forename`", "`surname`", "`email`", "`groups`", "`wallet`"), $get['search'], $where);
 
 		// Jezeli jest jakis where, to dodajemy WHERE
 		if (strlen($where))
@@ -45,7 +45,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 			$row['email'] = htmlspecialchars($row['email']);
 			$row['forename'] = htmlspecialchars($row['forename']);
 			$row['surname'] = htmlspecialchars($row['surname']);
-			$row['wallet'] = number_format($row['wallet'], 2);
+			$row['wallet'] = number_format($row['wallet'] / 100.0, 2);
 
 
 			$row['groups'] = explode(";", $row['groups']);
@@ -103,11 +103,11 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
 		if (!get_privilages("manage_users"))
 			return array(
-				'id'	=> "not_logged_in",
-				'text'	=> $lang->not_logged_or_no_perm
+				'status' => "not_logged_in",
+				'text' => $lang->not_logged_or_no_perm
 			);
 
-		switch($box_id) {
+		switch ($box_id) {
 			case "user_edit":
 				// Pobranie użytkownika
 				$row = $heart->get_user($data['uid']);
@@ -131,8 +131,8 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 		}
 
 		return array(
-			'id'		=> "ok",
-			'template'	=> $output
+			'status' => 'ok',
+			'template' => $output
 		);
 	}
 

@@ -5,7 +5,7 @@
 	<table>
 		<tr>
 			<td>{$lang->username}</td>
-			<td>{$user['username']}</td>
+			<td>{$user->getUsername()}</td>
 		</tr>
 		<tr>
 			<td>{$lang->amount}</td>
@@ -13,7 +13,7 @@
 		</tr>
 		<tr>
 			<td colspan="2">
-				<input type="hidden" name="uid" value="{$user['uid']}"/>
+				<input type="hidden" name="uid" value="{$user->getUid()}"/>
 				<input type="submit" value="{$lang->charge}" style="width: 100%;"/>
 			</td>
 		</tr>

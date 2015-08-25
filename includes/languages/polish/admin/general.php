@@ -1,8 +1,5 @@
 <?php
 
-$l['no_access'] = "Nie masz odpowiednich uprawnień.";
-
-
 $l['license_expires'] = "Licencja wygasa";
 
 $l['remove_install'] = "Usuń folder install !";
@@ -59,8 +56,8 @@ $l['privilages_names'] = array(
 	"view_groups" => "Przeglądanie grup",
 	"manage_groups" => "Zarządzanie grupami",
 	"view_player_flags" => "Przeglądanie flag graczy",
-	"view_player_services" => "Przeglądanie usług graczy",
-	"manage_player_services" => "Zarządzanie usługami graczy",
+	"view_user_services" => "Przeglądanie usług użytkowników",
+	"manage_user_services" => "Zarządzanie usługami użytkowników",
 	"view_income" => "Przeglądanie przychodów",
 	"view_users" => "Przeglądanie użytkowników",
 	"manage_users" => "Zarządzanie użytkownikami",
@@ -85,7 +82,7 @@ $l['no_charge_value'] = "Nie podano wartości doładowania.";
 $l['charge_number'] = "Wartość doładowania musi być liczbą.";
 $l['no_service_chosen'] = "Nie wybrano usługi.";
 $l['no_add_method'] = "Moduł usługi nie posiada metody dodawania usługi przez admina.";
-$l['no_edit_method'] = "Moduł usługi nie posiada metody edycji usługi gracza przez admina.";
+$l['no_edit_method'] = "Moduł usługi nie posiada możliwości edycji usługi użytkownika przez admina.";
 $l['delete_service'] = "Usługa została prawidłowo usunięta.";
 $l['no_delete_service'] = "Usługa nie została usunięta.";
 $l['antispam_add'] = "Pytanie anty-spamowe zostało prawidłowo dodane.";
@@ -144,14 +141,14 @@ $l['delete_sms_code'] = "Kod SMS został prawidłowo usunięty.";
 $l['no_delete_sms_code'] = "Kod SMS nie został usunięty.";
 $l['delete_log'] = "Log został prawidłowo usunięty.";
 $l['no_delete_log'] = "Log nie został usunięty.";
-$l['service_edit_unable'] = "Tej usługi nie da rady edytować.";
+$l['service_edit_unable'] = "Tej usługi nie da rady się edytować.";
 
 $l['amxx_server'] = "Serwer gry (AMXX)";
 $l['sm_server'] = "Serwer gry (SM)";
 
 $l['account_charge'] = "Admin {1}({2}) doładował konto użytkownika: {3}({4}) Kwota: {5} {6}";
 $l['account_charge_success'] = "Prawidłowo doładowano konto użytkownika: {1} kwotą: {2} {3}";
-$l['service_admin_delete'] = "Admin {1}({2}) usunął usługę gracza. ID: {3}";
+$l['user_service_admin_delete'] = "Admin {1}({2}) usunął usługę użytkownika. ID: {3}";
 $l['question_edit'] = "Admin {1}({2}) wyedytował pytanie anty-spamowe. ID: {3}";
 $l['question_delete'] = "Admin {1}({2}) usunął pytanie anty-spamowe. ID: {3}";
 $l['settings_admin_edit'] = "Admin {1}({2}) wyedytował ustawienia sklepu.";
@@ -189,7 +186,6 @@ $l['not_all_data'] = "Nie podano wszystkich potrzebnych danych.";
 $l['wrong_page_id'] = "Podano błędne id strony.";
 $l['no_action_box_support'] = "Strona nie wspiera action boxów.";
 
-$l['id'] = "ID";
 $l['answers'] = "Odpowiedzi";
 $l['actions'] = "Akcje";
 $l['payment_admin'] = "Płatność";
@@ -218,7 +214,6 @@ $l['see_payment'] = "Zobacz płatność";
 $l['type_to_search'] = "Wpisz, aby wyszukać";
 $l['bring_it_on'] = "Dajesz!";
 $l['main'] = "Główne";
-$l['players'] = "Gracze";
 $l['additions'] = "Dodatki";
 $l['no_data'] = "Brak danych";
 $l['script_updated'] = "Skrypt sklepu jest zaktualizowany do najnowszej wersji.";
@@ -235,12 +230,13 @@ $l['email_sender_name'] = "Nazwa nadawcy e-maila";
 $l['signature'] = "Podpis";
 $l['eg_emails'] = "( np. w e-mailach )";
 $l['license'] = "Licencja";
-$l['user_service_edit'] = "Edytowanie usługi przez gracza";
+$l['user_service_edit'] = "Edytowanie usługi przez użytkownika";
 $l['theme'] = "Motyw";
 $l['language'] = "Język";
 $l['delete_old_logs'] = "Usuwaj logi starsze niż";
 $l['dont_delete'] = "( 0 - nie usuwaj )";
 $l['cron_page_start'] = "Cron przy każdym uruchomieniu strony";
+$l['global'] = "Globalne";
 $l['lines_per_page'] = "Ilość wierszy na stronę";
 $l['date_format'] = "Format daty";
 $l['additional_info'] = "Dodatkowe informacje";
@@ -286,5 +282,9 @@ $l['edit_tariff'] = "Edytuj taryfę";
 $l['edit_payment_method'] = "Edytuj metodę płatności";
 $l['wallet_charge'] = "Doładowanie portfela";
 $l['edit_user'] = "Edytuj użytkownika";
-$l['add_service_for_user'] = "Dodaj usługę graczowi";
-$l['edit_user_service'] = "Edytuj usługę gracza";
+$l['add_user_service'] = "Dodaj usługę użytkownikowi";
+$l['edit_user_service'] = "Edytuj usługę użytkownika";
+
+$l['no_subpage'] = "Brak podstrony o ID: {1}";
+
+$l['delete_service_er_row_is_referenced_2'] = "Nie można usunąć tej usługi, ponieważ wciąz istnieją usługi graczy.";

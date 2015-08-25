@@ -28,7 +28,7 @@ abstract class PageAdmin extends Page implements I_BeLoggedMust
 					$heart->style_add($settings['shop_url_slash'] . $path . $file . "?version=" . VERSION);
 
 		// Globalne jsy cssy konkretnych modułów usług
-		if (in_array($this::PAGE_ID, array("service_codes", "services", "users_services"))) {
+		if (in_array($this::PAGE_ID, array("service_codes", "services", "user_service"))) {
 			foreach ($heart->get_services_modules() as $module_info) {
 				$path = "styles/services/" . $module_info['id'] . ".css";
 				if (file_exists(SCRIPT_ROOT . $path))

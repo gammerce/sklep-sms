@@ -3,8 +3,8 @@
 <body>
 <strong>Wystąpił BŁĄD</strong><br/>
 <br/>
-Wiadomość: {$array['message']}<br/>
-Błąd: {$array['error']}<br/>
-Skrypt: {$array['request_uri']}<br/>
+Wiadomość: {$message}<br/>
+Błąd: {$e->getError()}<br/>
+Zapytanie: {$query}
 </body>
 </html>

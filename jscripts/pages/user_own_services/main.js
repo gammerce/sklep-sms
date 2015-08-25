@@ -54,7 +54,7 @@ $(document).delegate("#user_own_services .row", "submit", function (e) {
 					id.effect("highlight", 1000);
 				});
 			}
-			else if (jsonObj.return_id == "edited") {
+			else if (jsonObj.return_id == 'ok') {
 				refresh_blocks("content");
 			}
 			else if (jsonObj.return_id == "payment") {

@@ -1,11 +1,14 @@
 <?php
 
+use Admin\Table;
+
 $heart->register_service_module("extra_flags", "Dodatkowe Uprawnienia / Flagi", "ServiceExtraFlags", "ServiceExtraFlagsSimple");
 
-class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, IService_Create, IService_AvailableOnServers
+class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, IService_Create, IService_AvailableOnServers, IService_UserServiceAdminDisplay
 {
 
 	const MODULE_ID = "extra_flags";
+	const USER_SERVICE_TABLE = "user_service_extra_flags";
 
 	public function service_admin_extra_fields_get()
 	{
@@ -67,9 +70,7 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 
 	public function service_admin_manage_post($data)
 	{
-		global $db, $settings, $lang;
-
-		$output = array();
+		global $settings, $lang;
 
 		// Przygotowujemy do zapisu ( suma bitowa ), które typy zostały wybrane
 		$types = 0;
@@ -92,15 +93,6 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 			if (substr(sprintf('%o', fileperms($file)), -4) != "0777")
 				json_output("not_created", $lang->sprintf($lang->wrong_service_description_file, $settings['theme']), 0);
 		}
-
-
-		if ($data['action'] == "service_edit" && $data['id2'] != $data['id'])
-			$db->query($db->prepare(
-				"UPDATE `" . TABLE_PREFIX . "servers_services` " .
-				"SET `service_id` = '%s' " .
-				"WHERE `service_id` = '%s'",
-				array($data['id'], $data['id2'])
-			));
 
 		return array(
 			'query_set' => array(
@@ -152,11 +144,85 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 		return "";
 	}
 
+	// ----------------------------------------------------------------------------------
+	// ### Wyświetlanie usług użytkowników w PA
+
+	public function user_service_admin_display_title_get()
+	{
+		global $lang;
+		return $lang->extra_flags;
+	}
+
+	public function user_service_admin_display_get($get, $post)
+	{
+		global $db, $settings, $lang, $G_PAGE;
+
+		$wrapper = new Table\Wrapper();
+		$wrapper->setSearch();
+
+		$table = new Table\Structure();
+
+		$cell = new Table\Cell($lang->id);
+		$cell->setParam('headers', 'id');
+		$table->addHeadCell($cell);
+
+		$table->addHeadCell(new Table\Cell($lang->user));
+		$table->addHeadCell(new Table\Cell($lang->server));
+		$table->addHeadCell(new Table\Cell($lang->service));
+		$table->addHeadCell(new Table\Cell("{$lang->nick}/{$lang->ip}/{$lang->sid}"));
+		$table->addHeadCell(new Table\Cell($lang->expires));
+
+		// Wyszukujemy dane ktore spelniaja kryteria
+		$where = '';
+		if (isset($get['search']))
+			searchWhere(array("us.id", "us.uid", "u.username", "srv.name", "s.name", "usef.auth_data"), $get['search'], $where);
+		// Jezeli jest jakis where, to dodajemy WHERE
+		if (strlen($where))
+			$where = "WHERE " . $where . ' ';
+
+		$result = $db->query(
+			"SELECT SQL_CALC_FOUND_ROWS us.id AS `id`, us.uid AS `uid`, u.username AS `username`, " .
+			"srv.name AS `server`, s.id AS `service_id`, s.name AS `service`, " .
+			"usef.type AS `type`, usef.auth_data AS `auth_data`, us.expire AS `expire` " .
+			"FROM `" . TABLE_PREFIX . "user_service` AS us " .
+			"INNER JOIN `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` AS usef ON usef.us_id = us.id " .
+			"LEFT JOIN `" . TABLE_PREFIX . "services` AS s ON s.id = usef.service " .
+			"LEFT JOIN `" . TABLE_PREFIX . "servers` AS srv ON srv.id = usef.server " .
+			"LEFT JOIN `" . TABLE_PREFIX . "users` AS u ON u.uid = us.uid " .
+			$where .
+			"ORDER BY us.id DESC " .
+			"LIMIT " . get_row_limit($G_PAGE)
+		);
+
+		$table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+
+		while ($row = $db->fetch_array_assoc($result)) {
+			$body_row = new Table\BodyRow();
+
+			$body_row->setDbId($row['id']);
+			$body_row->addCell(new Table\Cell($row['uid'] ? $row['username'] . " ({$row['uid']})" : $lang->none));
+			$body_row->addCell(new Table\Cell($row['server']));
+			$body_row->addCell(new Table\Cell($row['service']));
+			$body_row->addCell(new Table\Cell($row['auth_data']));
+			$body_row->addCell(new Table\Cell($row['expire'] == '-1' ? $lang->never : date($settings['date_format'], $row['expire'])));
+			if (get_privilages("manage_user_services")) {
+				$body_row->setButtonDelete();
+				$body_row->setButtonEdit();
+			}
+
+			$table->addBodyRow($body_row);
+		}
+
+		$wrapper->table = $table;
+
+		return $wrapper;
+	}
+
 }
 
 class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purchase, IService_PurchaseWeb, IService_PurchaseOutside,
-	IService_UserServiceAdminManage, IService_ActionExecute, IService_UserOwnServices, IService_UserOwnServicesEdit, IService_TakeOver,
-	IService_ServiceCode, IService_ServiceCodeAdminManage
+	IService_UserServiceAdminAdd, IService_UserServiceAdminEdit, IService_ActionExecute, IService_UserOwnServices,
+	IService_UserOwnServicesEdit, IService_TakeOver, IService_ServiceCode, IService_ServiceCodeAdminManage
 {
 
 	function __construct($service)
@@ -204,44 +270,45 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		// Pobieramy auth_data
 		$auth_data = $this->get_auth_data($data);
 
-		return $this->purchase_data_validate(new Entity_Purchase(array(
-			'order' => array(
-				'server' => $data['server'],
-				'type' => $data['type'],
-				'auth_data' => trim($auth_data),
-				'password' => $data['password'],
-				'passwordr' => $data['password_repeat']
-			),
-			'tariff' => $value[2],
-			'email' => trim($data['email'])
-		)));
+		$purchase_data = new Entity_Purchase();
+		$purchase_data->setOrder(array(
+			'server' => $data['server'],
+			'type' => $data['type'],
+			'auth_data' => trim($auth_data),
+			'password' => $data['password'],
+			'passwordr' => $data['password_repeat']
+		));
+		$purchase_data->setTariff($value[2]);
+		$purchase_data->setEmail($data['email']);
+
+		return $this->purchase_data_validate($purchase_data);
 	}
 
-	public function purchase_data_validate($purchase)
+	public function purchase_data_validate($purchase_data)
 	{
 		global $heart, $db, $lang;
 
 		$warnings = array();
 
 		// Serwer
-		if (!strlen($purchase->getOrder('server')))
+		if (!strlen($purchase_data->getOrder('server')))
 			$warnings['server'][] = $lang->must_choose_server;
 		else {
 			// Sprawdzanie czy serwer o danym id istnieje w bazie
-			$server = $heart->get_server($purchase->getOrder('server'));
+			$server = $heart->get_server($purchase_data->getOrder('server'));
 			if (!$heart->server_service_linked($server['id'], $this->service['id']))
 				$warnings['server'][] = $lang->chosen_incorrect_server;
 		}
 
 		// Wartość usługi
-		if (!$purchase->getTariff())
+		if (!$purchase_data->getTariff())
 			$warnings['value'][] = $lang->must_choose_amount;
 		else {
 			// Wyszukiwanie usługi o konkretnej cenie
 			$result = $db->query($db->prepare(
 				"SELECT * FROM `" . TABLE_PREFIX . "pricelist` " .
 				"WHERE `service` = '%s' AND `tariff` = '%d' AND ( `server` = '%d' OR `server` = '-1' )",
-				array($this->service['id'], $purchase->getTariff(), $server['id'])
+				array($this->service['id'], $purchase_data->getTariff(), $server['id'])
 			));
 
 			if (!$db->num_rows($result)) // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
@@ -256,55 +323,55 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 		// Typ usługi
 		// Mogą być tylko 3 rodzaje typu
-		if ($purchase->getOrder('type') != TYPE_NICK && $purchase->getOrder('type') != TYPE_IP && $purchase->getOrder('type') != TYPE_SID)
+		if ($purchase_data->getOrder('type') != TYPE_NICK && $purchase_data->getOrder('type') != TYPE_IP && $purchase_data->getOrder('type') != TYPE_SID)
 			$warnings['type'][] = $lang->must_choose_type;
-		else if (!($this->service['types'] & $purchase->getOrder('type')))
+		else if (!($this->service['types'] & $purchase_data->getOrder('type')))
 			$warnings['type'][] = $lang->chosen_incorrect_type;
-		else if ($purchase->getOrder('type') & (TYPE_NICK | TYPE_IP)) {
+		else if ($purchase_data->getOrder('type') & (TYPE_NICK | TYPE_IP)) {
 			// Nick
-			if ($purchase->getOrder('type') == TYPE_NICK) {
-				if ($warning = check_for_warnings("nick", $purchase->getOrder('auth_data')))
+			if ($purchase_data->getOrder('type') == TYPE_NICK) {
+				if ($warning = check_for_warnings("nick", $purchase_data->getOrder('auth_data')))
 					$warnings['nick'] = array_merge((array)$warnings['nick'], $warning);
 
 				// Sprawdzanie czy istnieje już taka usługa
 				$query = $db->prepare(
-					"SELECT `password` FROM `" . TABLE_PREFIX . "players_services` " .
+					"SELECT `password` FROM `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` " .
 					"WHERE `type` = '%d' AND `auth_data` = '%s' AND `server` = '%d'",
-					array(TYPE_NICK, $purchase->getOrder('auth_data'), $server['id'])
+					array(TYPE_NICK, $purchase_data->getOrder('auth_data'), $server['id'])
 				);
 			} // IP
-			else if ($purchase->getOrder('type') == TYPE_IP) {
-				if ($warning = check_for_warnings("ip", $purchase->getOrder('auth_data')))
+			else if ($purchase_data->getOrder('type') == TYPE_IP) {
+				if ($warning = check_for_warnings("ip", $purchase_data->getOrder('auth_data')))
 					$warnings['ip'] = array_merge((array)$warnings['ip'], $warning);
 
 				// Sprawdzanie czy istnieje już taka usługa
 				$query = $db->prepare(
-					"SELECT `password` FROM `" . TABLE_PREFIX . "players_services` " .
+					"SELECT `password` FROM `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` " .
 					"WHERE `type` = '%d' AND `auth_data` = '%s' AND `server` = '%d'",
-					array(TYPE_IP, $purchase->getOrder('auth_data'), $server['id'])
+					array(TYPE_IP, $purchase_data->getOrder('auth_data'), $server['id'])
 				);
 			}
 
 			// Hasło
-			if ($warning = check_for_warnings("password", $purchase->getOrder('password')))
+			if ($warning = check_for_warnings("password", $purchase_data->getOrder('password')))
 				$warnings['password'] = array_merge((array)$warnings['password'], $warning);
-			if ($purchase->getOrder('password') != $purchase->getOrder('passwordr'))
+			if ($purchase_data->getOrder('password') != $purchase_data->getOrder('passwordr'))
 				$warnings['password_repeat'][] = $lang->passwords_not_match;
 
 			// Sprawdzanie czy istnieje już taka usługa
 			if ($temp_password = $db->get_column($query, 'password'))
 				// TODO: Usunąć md5 w przyszłości
-				if ($temp_password != $purchase->getOrder('password') && $temp_password != md5($purchase->getOrder('password')))
+				if ($temp_password != $purchase_data->getOrder('password') && $temp_password != md5($purchase_data->getOrder('password')))
 					$warnings['password'][] = $lang->existing_service_has_different_password;
 
 			unset($temp_password);
 		} // SteamID
 		else
-			if ($warning = check_for_warnings("sid", $purchase->getOrder('auth_data')))
+			if ($warning = check_for_warnings("sid", $purchase_data->getOrder('auth_data')))
 				$warnings['sid'] = array_merge((array)$warnings['sid'], $warning);
 
 		// E-mail
-		if ((strpos($purchase->getUser('platform'), "engine") !== 0 || strlen($purchase->getEmail())) && $warning = check_for_warnings("email", $purchase->getEmail()))
+		if ((strpos($purchase_data->user->getPlatform(), "engine") !== 0 || strlen($purchase_data->getEmail())) && $warning = check_for_warnings("email", $purchase_data->getEmail()))
 			$warnings['email'] = array_merge((array)$warnings['email'], $warning);
 
 		// Jeżeli są jakieś błedy, to je zwróć
@@ -316,13 +383,13 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 				'data' => array('warnings' => $warnings)
 			);
 
-		$purchase->setOrder(array(
+		$purchase_data->setOrder(array(
 			'amount' => $price['amount'],
 			'forever' => $price['amount'] == -1 ? true : false
 		));
 
 		if (strlen($server['sms_service']))
-			$purchase->setPayment(array(
+			$purchase_data->setPayment(array(
 				'sms_service' => $server['sms_service']
 			));
 
@@ -330,44 +397,44 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			'status' => "ok",
 			'text' => $lang->purchase_form_validated,
 			'positive' => true,
-			'purchase' => $purchase
+			'purchase_data' => $purchase_data
 		);
 	}
 
-	public function order_details($purchase)
+	public function order_details($purchase_data)
 	{
 		global $heart, $lang, $templates;
 
-		$server = $heart->get_server($purchase->getOrder('server'));
-		$type_name = $this->get_type_name2($purchase->getOrder('type'));
-		if (strlen($purchase->getOrder('password')))
-			$password = "<strong>{$lang->password}</strong>: " . htmlspecialchars($purchase->getOrder('password')) . "<br />";
-		$email = strlen($purchase->getEmail()) ? htmlspecialchars($purchase->getEmail()) : $lang->none;
-		$auth_data = htmlspecialchars($purchase->getOrder('auth_data'));
-		$amount = !$purchase->getOrder('forever') ? ($purchase->getOrder('amount') . " " . $this->service['tag']) : $lang->forever;
+		$server = $heart->get_server($purchase_data->getOrder('server'));
+		$type_name = $this->get_type_name2($purchase_data->getOrder('type'));
+		if (strlen($purchase_data->getOrder('password')))
+			$password = "<strong>{$lang->password}</strong>: " . htmlspecialchars($purchase_data->getOrder('password')) . "<br />";
+		$email = strlen($purchase_data->getEmail()) ? htmlspecialchars($purchase_data->getEmail()) : $lang->none;
+		$auth_data = htmlspecialchars($purchase_data->getOrder('auth_data'));
+		$amount = !$purchase_data->getOrder('forever') ? ($purchase_data->getOrder('amount') . " " . $this->service['tag']) : $lang->forever;
 
 		$output = eval($templates->render("services/" . $this::MODULE_ID . "/order_details", true, false));
 		return $output;
 	}
 
-	public function purchase($purchase)
+	public function purchase($purchase_data)
 	{
 		$this->add_player_flags(
-			$purchase->getUser('uid'), $purchase->getOrder('type'), $purchase->getOrder('auth_data'), $purchase->getOrder('password'),
-			$purchase->getOrder('amount'), $purchase->getOrder('server'), $purchase->getOrder('forever')
+			$purchase_data->user->getUid(), $purchase_data->getOrder('type'), $purchase_data->getOrder('auth_data'), $purchase_data->getOrder('password'),
+			$purchase_data->getOrder('amount'), $purchase_data->getOrder('server'), $purchase_data->getOrder('forever')
 		);
 
 		return add_bought_service_info(
-			$purchase->getUser('uid'), $purchase->getUser('username'), $purchase->getUser('ip'), $purchase->getPayment('method'),
-			$purchase->getPayment('payment_id'), $this->service['id'], $purchase->getOrder('server'), $purchase->getOrder('amount'),
-			$purchase->getOrder('auth_data'), $purchase->getEmail(), array(
-				'type' => $purchase->getOrder('type'),
-				'password' => $purchase->getOrder('password')
+			$purchase_data->user->getUid(), $purchase_data->user->getUsername(), $purchase_data->user->getLastip(), $purchase_data->getPayment('method'),
+			$purchase_data->getPayment('payment_id'), $this->service['id'], $purchase_data->getOrder('server'), $purchase_data->getOrder('amount'),
+			$purchase_data->getOrder('auth_data'), $purchase_data->getEmail(), array(
+				'type' => $purchase_data->getOrder('type'),
+				'password' => $purchase_data->getOrder('password')
 			)
 		);
 	}
 
-	private function add_player_flags($uid, $type, $auth_data, $password, $days, $server, $forever = false)
+	private function add_player_flags($uid, $type, $auth_data, $password, $days, $server_id, $forever = false)
 	{
 		global $db;
 
@@ -376,28 +443,102 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		// Usunięcie przestarzałych usług gracza
 		delete_users_old_services();
 
+		// Usunięcie przestarzałych flag graczy
+		// Tak jakby co
+		$this->delete_old_flags();
+
 		// Dodajemy usługę gracza do listy usług
 		// Jeżeli już istnieje dokładnie taka sama, to ją przedłużamy
-		$db->query($db->prepare(
-			"INSERT INTO `" . TABLE_PREFIX . "players_services` (`uid`, `server`, `service`, `type`, `auth_data`, `password`, `expire`) " .
-			"VALUES ('%d','%d','%s','%d','%s','%s',IF('%d' = '1', '-1', UNIX_TIMESTAMP()+'%d')) " .
-			"ON DUPLICATE KEY UPDATE `uid` = '%d', `password` = '%s', `expire` = IF('%d' = '1', '-1', `expire`+'%d')",
-			array($uid, $server, $this->service['id'], $type, $auth_data, $password, $forever, $days * 24 * 60 * 60, $uid, $password, $forever, $days * 24 * 60 * 60)
+		$result = $db->query($db->prepare(
+			"SELECT `us_id` FROM `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` " .
+			"WHERE `service` = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s'",
+			array($this->service['id'], $server_id, $type, $auth_data)
 		));
+
+		if ($db->num_rows($result)) { // Aktualizujemy
+			$row = $db->fetch_array_assoc($result);
+			$user_service_id = $row['us_id'];
+
+			$this->update_user_service(array(
+				array(
+					'column' => 'uid',
+					'value' => "'%d'",
+					'data' => array($uid)
+				),
+				array(
+					'column' => 'password',
+					'value' => "'%s'",
+					'data' => array($password)
+				),
+				array(
+					'column' => 'expire',
+					'value' => "IF('%d' = '1', -1, `expire` + '%d')",
+					'data' => array($forever, $days * 24 * 60 * 60)
+				)
+			), $user_service_id, $user_service_id);
+		} else { // Wstawiamy
+			$db->query($db->prepare(
+				"INSERT INTO `" . TABLE_PREFIX . "user_service` (`uid`, `service`, `expire`) " .
+				"VALUES ('%d', '%s', IF('%d' = '1', '-1', UNIX_TIMESTAMP() + '%d')) ",
+				array($uid, $this->service['id'], $forever, $days * 24 * 60 * 60)
+			));
+			$user_service_id = $db->last_id();
+
+			$db->query($db->prepare(
+				"INSERT INTO `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` (`us_id`, `server`, `service`, `type`, `auth_data`, `password`) " .
+				"VALUES ('%d', '%d', '%s', '%d', '%s', '%s')",
+				array($user_service_id, $server_id, $this->service['id'], $type, $auth_data, $password)
+			));
+		}
 
 		// Ustawiamy jednakowe hasła dla wszystkich usług tego gracza na tym serwerze
 		$db->query($db->prepare(
-			"UPDATE `" . TABLE_PREFIX . "players_services` " .
+			"UPDATE `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` " .
 			"SET `password` = '%s' " .
 			"WHERE `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s'",
-			array($password, $server, $type, $auth_data)
+			array($password, $server_id, $type, $auth_data)
 		));
 
 		// Przeliczamy flagi gracza, ponieważ dodaliśmy nową usługę
-		$this->recalculate_player_flags($server, $type, $auth_data);
+		$this->recalculate_player_flags($server_id, $type, $auth_data);
 	}
 
-	private function recalculate_player_flags($server, $type, $auth_data)
+	private function delete_old_flags()
+	{
+		global $db;
+
+		$db->query(
+			"DELETE FROM `" . TABLE_PREFIX . "players_flags` " .
+			"WHERE (`a` < UNIX_TIMESTAMP() AND `a` != '-1') " .
+			"AND (`b` < UNIX_TIMESTAMP() AND `b` != '-1') " .
+			"AND (`c` < UNIX_TIMESTAMP() AND `c` != '-1') " .
+			"AND (`d` < UNIX_TIMESTAMP() AND `d` != '-1') " .
+			"AND (`e` < UNIX_TIMESTAMP() AND `e` != '-1') " .
+			"AND (`f` < UNIX_TIMESTAMP() AND `f` != '-1') " .
+			"AND (`g` < UNIX_TIMESTAMP() AND `g` != '-1') " .
+			"AND (`h` < UNIX_TIMESTAMP() AND `h` != '-1') " .
+			"AND (`i` < UNIX_TIMESTAMP() AND `i` != '-1') " .
+			"AND (`j` < UNIX_TIMESTAMP() AND `j` != '-1') " .
+			"AND (`k` < UNIX_TIMESTAMP() AND `k` != '-1') " .
+			"AND (`l` < UNIX_TIMESTAMP() AND `l` != '-1') " .
+			"AND (`m` < UNIX_TIMESTAMP() AND `m` != '-1') " .
+			"AND (`n` < UNIX_TIMESTAMP() AND `n` != '-1') " .
+			"AND (`o` < UNIX_TIMESTAMP() AND `o` != '-1') " .
+			"AND (`p` < UNIX_TIMESTAMP() AND `p` != '-1') " .
+			"AND (`q` < UNIX_TIMESTAMP() AND `q` != '-1') " .
+			"AND (`r` < UNIX_TIMESTAMP() AND `r` != '-1') " .
+			"AND (`s` < UNIX_TIMESTAMP() AND `s` != '-1') " .
+			"AND (`t` < UNIX_TIMESTAMP() AND `t` != '-1') " .
+			"AND (`u` < UNIX_TIMESTAMP() AND `u` != '-1') " .
+			"AND (`v` < UNIX_TIMESTAMP() AND `v` != '-1') " .
+			"AND (`w` < UNIX_TIMESTAMP() AND `w` != '-1') " .
+			"AND (`x` < UNIX_TIMESTAMP() AND `x` != '-1') " .
+			"AND (`y` < UNIX_TIMESTAMP() AND `y` != '-1') " .
+			"AND (`z` < UNIX_TIMESTAMP() AND `z` != '-1')"
+		);
+	}
+
+	private function recalculate_player_flags($server_id, $type, $auth_data)
 	{
 		global $heart, $db;
 
@@ -410,15 +551,16 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		// Ponieważ za chwilę będziemy je tworzyć na nowo
 		$db->query($db->prepare(
 			"DELETE FROM `" . TABLE_PREFIX . "players_flags` " .
-			"WHERE `server`='%d' AND `type`='%d' AND `auth_data`='%s'",
-			array($server, $type, $auth_data)
+			"WHERE `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s'",
+			array($server_id, $type, $auth_data)
 		));
 
 		// Pobieranie wszystkich usług na konkretne dane
 		$result = $db->query($db->prepare(
-			"SELECT * FROM `" . TABLE_PREFIX . "players_services` " .
-			"WHERE `server`='%d' AND `type`='%d' AND `auth_data`='%s' AND ( `expire` > UNIX_TIMESTAMP() OR `expire` = '-1' )",
-			array($server, $type, $auth_data)
+			"SELECT * FROM `" . TABLE_PREFIX . "user_service` AS us " .
+			"INNER JOIN `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` AS usef ON us.id = usef.us_id " .
+			"WHERE `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND ( `expire` > UNIX_TIMESTAMP() OR `expire` = -1 )",
+			array($server_id, $type, $auth_data)
 		));
 
 		// Wyliczanie za jaki czas dana flaga ma wygasnąć
@@ -439,21 +581,19 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		}
 
 		// Formowanie flag do zapytania
-		$set = "";
+		$set = '';
 		foreach ($flags as $flag => $amount)
-			$set .= $db->prepare(", `%s`='%d'", array($flag, $amount));
+			$set .= $db->prepare(", `%s` = '%d'", array($flag, $amount));
 
 		// Dodanie flag
 		if (strlen($set))
 			$db->query($db->prepare(
 				"INSERT INTO `" . TABLE_PREFIX . "players_flags` " .
-				"SET `server`='%d', `type`='%d', `auth_data`='%s', `password`='%s'{$set}",
-				array($server, $type, $auth_data, $password)
+				"SET `server` = '%d', `type` = '%d', `auth_data` = '%s', `password` = '%s'{$set}",
+				array($server_id, $type, $auth_data, $password)
 			));
 	}
 
-	//
-	// Funkcja zwraca informacje o zakupie usługi
 	public function purchase_info($action, $data)
 	{
 		global $heart, $settings, $lang, $templates;
@@ -466,8 +606,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$data['auth_data'] = htmlspecialchars($data['auth_data']);
 		$data['extra_data']['password'] = htmlspecialchars($data['extra_data']['password']);
 		$data['email'] = htmlspecialchars($data['email']);
-		$cost = $data['cost'] ? number_format($data['cost'], 2) . " " . $settings['currency'] : $lang->none;
-		$data['income'] = number_format($data['income'], 2);
+		$cost = $data['cost'] ? number_format($data['cost'] / 100.0, 2) . " " . $settings['currency'] : $lang->none;
+		$data['income'] = number_format($data['income'] / 100.0, 2);
 
 		if ($data['payment'] == "sms") {
 			$data['sms_code'] = htmlspecialchars($data['sms_code']);
@@ -491,22 +631,6 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			);
 
 		return $output;
-	}
-
-	// ----------------------------------------------------------------------------------
-	// ### Zarządzanie usługami
-
-	//
-	// Funkcja wywolywana podczas usuwania uslugi
-	public function service_delete($service_id)
-	{
-		global $db;
-
-		$db->query($db->prepare(
-			"DELETE FROM `" . TABLE_PREFIX . "servers_services` " .
-			"WHERE `service_id` = '%s'",
-			array($service_id)
-		));
 	}
 
 	// ----------------------------------------------------------------------------------
@@ -535,9 +659,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			));
 		}
 
-		$output = eval($templates->render("services/" . $this::MODULE_ID . "/user_service_admin_add", true, false));
-
-		return $output;
+		return eval($templates->render("services/" . $this::MODULE_ID . "/user_service_admin_add", true, false));
 	}
 
 	//
@@ -575,41 +697,34 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		if (!empty($verify_data))
 			return $verify_data;
 
-		// Pobieramy dane o użytkowniku na które jego wykupiona usługa
-		$user2 = $heart->get_user($data['uid']);
-
 		//
 		// Dodajemy usługę
 
 		// Dodawanie informacji o płatności
 		$payment_id = pay_by_admin($user);
 
-		$bought_service_id = $this->purchase(new Entity_Purchase(array(
-			'service' => $this->service['id'],
-			'user' => array(
-				'uid' => $data['uid'],
-				'username' => $user2['username'],
-				'ip' => $user2['ip']
-			),
-			'payment' => array(
-				'method' => "admin",
-				'payment_id' => $payment_id
-			),
-			'order' => array(
-				'server' => $data['server'],
-				'type' => $data['type'],
-				'auth_data' => trim($data['auth_data']),
-				'password' => $data['password'],
-				'amount' => $data['amount'],
-				'forever' => (boolean)$data['forever']
-			),
-			'email' => $data['email']
-		)));
+		$purchase_data = new Entity_Purchase();
+		$purchase_data->setService($this->service['id']);
+		$purchase_data->user = $heart->get_user($data['uid']); // Pobieramy dane o użytkowniku na które jego wykupiona usługa
+		$purchase_data->setPayment(array(
+			'method' => "admin",
+			'payment_id' => $payment_id
+		));
+		$purchase_data->setOrder(array(
+			'server' => $data['server'],
+			'type' => $data['type'],
+			'auth_data' => trim($data['auth_data']),
+			'password' => $data['password'],
+			'amount' => $data['amount'],
+			'forever' => (boolean)$data['forever']
+		));
+		$purchase_data->setEmail($data['email']);
+		$bought_service_id = $this->purchase($purchase_data);
 
-		log_info($lang_shop->sprintf($lang_shop->admin_added_service, $user['username'], $user['uid'], $bought_service_id));
+		log_info($lang_shop->sprintf($lang_shop->admin_added_user_service, $user->getUsername(), $user->getUid(), $bought_service_id));
 
 		return array(
-			'status' => "added",
+			'status' => "ok",
 			'text' => $lang->service_added_correctly,
 			'positive' => true
 		);
@@ -712,8 +827,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		// Aktualizujemy usługę
 		$edit_return = $this->user_service_edit($user_service, $data);
 
-		if ($edit_return['status'] == "edited")
-			log_info($lang_shop->sprintf($lang_shop->admin_edited_service, $user['username'], $user['uid'], $user_service['id']));
+		if ($edit_return['status'] == 'ok')
+			log_info($lang_shop->sprintf($lang_shop->admin_edited_user_service, $user->getUsername(), $user->getUid(), $user_service['id']));
 
 		return $edit_return;
 	}
@@ -732,7 +847,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 				$warnings['uid'] = array_merge((array)$warnings['uid'], $warning);
 			else {
 				$user2 = $heart->get_user($data['uid']);
-				if (!isset($user2['uid']))
+				if (!$user2->isLogged())
 					$warnings['uid'][] = $lang->no_account_id;
 			}
 		}
@@ -843,16 +958,16 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		return $output;
 	}
 
-	public function user_own_service_info_get($data, $button_edit)
+	public function user_own_service_info_get($user_service, $button_edit)
 	{
 		global $heart, $settings, $lang, $templates;
 
-		$service_info['expire'] = $data['expire'] == -1 ? $lang->never : date($settings['date_format'], $data['expire']);
-		$temp_server = $heart->get_server($data['server']);
+		$service_info['expire'] = $user_service['expire'] == -1 ? $lang->never : date($settings['date_format'], $user_service['expire']);
+		$temp_server = $heart->get_server($user_service['server']);
 		$service_info['server'] = $temp_server['name'];
 		$service_info['service'] = $this->service['name'];
-		$service_info['type'] = $this->get_type_name2($data['type']);
-		$service_info['auth_data'] = htmlspecialchars($data['auth_data']);
+		$service_info['type'] = $this->get_type_name2($user_service['type']);
+		$service_info['auth_data'] = htmlspecialchars($user_service['auth_data']);
 		unset($temp_server);
 
 		$output = eval($templates->render("services/" . $this::MODULE_ID . "/user_own_service"));
@@ -887,8 +1002,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			'password' => $data['password']
 		));
 
-		if ($edit_return['status'] == "edited")
-			log_info($lang_shop->sprintf($lang_shop->user_edited_service, $user['username'], $user['uid'], $user_service['id']));
+		if ($edit_return['status'] == 'ok')
+			log_info($lang_shop->sprintf($lang_shop->user_edited_service, $user->getUsername(), $user->getUid(), $user_service['id']));
 
 		return $edit_return;
 	}
@@ -900,18 +1015,35 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 	{
 		global $db, $lang;
 
+		$set = array();
 		// Dodanie hasła do zapytania
 		if (strlen($data['password']))
-			$set[] = $db->prepare("`password`='%s'", array($data['password']));
+			$set[] = array(
+				'column' => 'password',
+				'value' => "'%s'",
+				'data' => array($data['password'])
+			);
 
 		// Dodajemy uid do zapytania
 		if (isset($data['uid']))
-			$set[] = $db->prepare("`uid` = '%d'", array($data['uid']));
+			$set[] = array(
+				'column' => 'uid',
+				'value' => "'%d'",
+				'data' => array($data['uid'])
+			);
+
+		// Dodajemy expire na zawsze
+		if ($data['forever'])
+			$set[] = array(
+				'column' => 'expire',
+				'value' => "-1",
+			);
 
 		// Sprawdzenie czy nie ma już takiej usługi
 		$result = $db->query($db->prepare(
-			"SELECT * FROM `" . TABLE_PREFIX . "players_services` " .
-			"WHERE `service` = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND `id` != '%d'",
+			"SELECT * FROM `" . TABLE_PREFIX . "user_service` AS us " .
+			"INNER JOIN `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` AS usef ON us.id = usef.us_id " .
+			"WHERE us.service = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND `id` != '%d'",
 			array($this->service['id'], if_isset($data['server'], $user_service['server']), if_isset($data['type'], $user_service['type']),
 				if_isset($data['auth_data'], $user_service['auth_data']), $user_service['id'])
 		));
@@ -930,54 +1062,64 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 			// Usuwamy opcję którą aktualizujemy
 			$db->query($db->prepare(
-				"DELETE FROM `" . TABLE_PREFIX . "players_services` " .
+				"DELETE FROM `" . TABLE_PREFIX . "user_service` " .
 				"WHERE `id` = '%d'",
 				array($user_service['id'])
 			));
 
 			// Dodajemy expire
-			if ($data['forever'])
-				$set[] = "`expire` = '-1'";
-			else
-				$set[] = $db->prepare("`expire` = ( `expire`-UNIX_TIMESTAMP()+'%d' )", array(if_isset($data['expire'], $user_service['expire'])));
-
-			$set_formatted = implode(", ", $set);
+			if (!$data['forever'] && isset($data['expire']))
+				$set[] = array(
+					'column' => 'expire',
+					'value' => "( `expire` - UNIX_TIMESTAMP() + '%d' )",
+					'data' => array(if_isset($data['expire'], $user_service['expire']))
+				);
 
 			// Aktualizujemy usługę, która już istnieje w bazie i ma takie same dane jak nasze nowe
-			$db->query($db->prepare(
-				"UPDATE `" . TABLE_PREFIX . "players_services` " .
-				"SET {$set_formatted} " .
-				"WHERE `id` = '%d'",
-				array($user_service2['id'])
-			));
+			$affected = $this->update_user_service($set, $user_service2['id'], $user_service2['id']);
 		} else {
-			// Dodajemy dane do zapytania
-			$set[] = $db->prepare("`service` = '%s'", array($this->service['id']));
-			if ($data['forever'])
-				$set[] = "`expire` = '-1'";
-			else if (isset($data['expire']))
-				$set[] = $db->prepare("`expire` = '%d'", array($data['expire']));
-			if (isset($data['server'])) $set[] = $db->prepare("`server` = '%d'", array($data['server']));
-			if (isset($data['type'])) $set[] = $db->prepare("`type` = '%d'", array($data['type']));
-			if (isset($data['auth_data'])) $set[] = $db->prepare("`auth_data` = '%s'", array($data['auth_data']));
+			$set[] = array(
+				'column' => 'service',
+				'value' => "'%s'",
+				'data' => array($this->service['id'])
+			);
 
-			$set_formatted = implode(", ", $set);
+			if (!$data['forever'] && isset($data['expire']))
+				$set[] = array(
+					'column' => 'expire',
+					'value' => "'%d'",
+					'data' => array($data['expire'])
+				);
 
-			// Aktualizujemy usługę
-			$db->query($db->prepare(
-				"UPDATE `" . TABLE_PREFIX . "players_services` " .
-				"SET {$set_formatted} " .
-				"WHERE `id` = '%d'",
-				array($user_service['id'])
-			));
+			if (isset($data['server']))
+				$set[] = array(
+					'column' => 'server',
+					'value' => "'%d'",
+					'data' => array($data['server'])
+				);
+
+			if (isset($data['type']))
+				$set[] = array(
+					'column' => 'type',
+					'value' => "'%d'",
+					'data' => array($data['type'])
+				);
+
+			if (isset($data['auth_data']))
+				$set[] = array(
+					'column' => 'auth_data',
+					'value' => "'%s'",
+					'data' => array($data['auth_data']),
+				);
+
+			$affected = $this->update_user_service($set, $user_service['id'], $user_service['id']);
 		}
-		$affected = $db->affected_rows();
 
 		// Ustaw jednakowe hasła
 		// żeby potem nie było problemów z różnymi hasłami
 		if (strlen($data['password']))
 			$db->query($db->prepare(
-				"UPDATE `" . TABLE_PREFIX . "players_services` " .
+				"UPDATE `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` " .
 				"SET `password` = '%s' " .
 				"WHERE `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s'",
 				array($data['password'], if_isset($data['server'], $user_service['server']), if_isset($data['type'], $user_service['type']),
@@ -994,7 +1136,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 				if_isset($data['auth_data'], $user_service['auth_data']));
 
 			return array(
-				'status' => "edited",
+				'status' => 'ok',
 				'text' => $lang->edited_user_service,
 				'positive' => true
 			);
@@ -1007,7 +1149,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		}
 	}
 
-	public function service_take_over_form_get($service_id)
+	public function service_take_over_form_get()
 	{
 		global $heart, $lang, $templates;
 
@@ -1129,8 +1271,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 		// TODO: Usunac md5
 		$result = $db->query($db->prepare(
-			"SELECT * FROM `" . TABLE_PREFIX . "players_services` " .
-			"WHERE `service` = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND ( `password` = '%s' OR `password` = '%s' )",
+			"SELECT `id` FROM `" . TABLE_PREFIX . "user_service` AS us " .
+			"INNER JOIN `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` AS usef ON us.id = usef.us_id " .
+			"WHERE us.service = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND ( `password` = '%s' OR `password` = '%s' )",
 			array($this->service['id'], $data['server'], $data['type'], $auth_data, $data['password'], md5($data['password']))
 		));
 
@@ -1141,11 +1284,13 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 				'positive' => false
 			);
 
+		$row = $db->fetch_array_assoc($result);
+
 		$db->query($db->prepare(
-			"UPDATE `" . TABLE_PREFIX . "players_services` " .
+			"UPDATE `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` " .
 			"SET `uid` = '%d' " .
-			"WHERE `service` = '%s' AND `type` = '%d' AND `auth_data` = '%s'",
-			array($user['uid'], $data['service'], $data['type'], $auth_data)
+			"WHERE `id` = '%d'",
+			array($user->getUid(), $row['id'])
 		));
 
 		if ($db->affected_rows())
@@ -1174,7 +1319,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 	private function servers_for_service($server)
 	{
 		global $lang;
-		if (!get_privilages("manage_player_services")) {
+
+		if (!get_privilages("manage_user_services")) {
 			json_output("not_logged_in", $lang->no_access, 0);
 		}
 
@@ -1212,7 +1358,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$result = $db->query($db->prepare(
 			"SELECT sn.number AS `sms_number`, t.provision AS `provision`, t.tariff AS `tariff`, p.amount AS `amount` " .
 			"FROM `" . TABLE_PREFIX . "pricelist` AS p " .
-			"JOIN `" . TABLE_PREFIX . "tariffs` AS t ON t.tariff = p.tariff " .
+			"INNER JOIN `" . TABLE_PREFIX . "tariffs` AS t ON t.tariff = p.tariff " .
 			"LEFT JOIN `" . TABLE_PREFIX . "sms_numbers` AS sn ON sn.tariff = p.tariff AND sn.service = '%s' " .
 			"WHERE p.service = '%s' AND ( p.server = '%d' OR p.server = '-1' ) " .
 			"ORDER BY t.provision ASC",
@@ -1221,7 +1367,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 		$values = "";
 		while ($row = $db->fetch_array_assoc($result)) {
-			$sms_cost = strlen($row['sms_number']) ? get_sms_cost($row['sms_number']) * $settings['vat'] : 0;
+			$provision = number_format($row['provision'] / 100, 2);
+			$sms_cost = strlen($row['sms_number']) ? number_format(get_sms_cost($row['sms_number']) / 100 * $settings['vat'], 2) : 0;
 			$amount = $row['amount'] != -1 ? "{$row['amount']} {$this->service['tag']}" : $lang->forever;
 			$values .= eval($templates->render("services/" . $this::MODULE_ID . "/purchase_value", true, false));
 		}
@@ -1240,7 +1387,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		}
 	}
 
-	public function service_code_validate($purchase, $code) {
+	public function service_code_validate($purchase_data, $code)
+	{
 		return true;
 	}
 

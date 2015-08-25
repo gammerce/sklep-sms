@@ -2,7 +2,7 @@
 
 $heart->register_page("servers", "PageAdminServers", "admin");
 
-class PageAdminServers extends PageAdmin implements IPageAdminActionBox
+class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
 {
 
 	const PAGE_ID = "servers";
@@ -73,8 +73,8 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
 		if (!get_privilages("manage_servers"))
 			return array(
-				'id'	=> "not_logged_in",
-				'text'	=> $lang->not_logged_or_no_perm
+				'status' => "not_logged_in",
+				'text' => $lang->not_logged_or_no_perm
 			);
 
 		if ($box_id == "server_edit") {
@@ -121,7 +121,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 			$services .= eval($templates->render("tr_text_select"));
 		}
 
-		switch($box_id) {
+		switch ($box_id) {
 			case "server_add":
 				$output = eval($templates->render("admin/action_boxes/server_add"));
 				break;
@@ -132,8 +132,8 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 		}
 
 		return array(
-			'id'		=> "ok",
-			'template'	=> $output
+			'status' => 'ok',
+			'template' => $output
 		);
 	}
 

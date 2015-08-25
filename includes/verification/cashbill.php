@@ -2,7 +2,7 @@
 
 $heart->register_payment_api("cashbill", "PaymentModuleCashbill");
 
-class PaymentModuleCashbill extends PaymentModule implements IPaymentSMS, IPaymentTransfer
+class PaymentModuleCashbill extends PaymentModule implements IPayment_Sms, IPayment_Transfer
 {
 
 	const SERVICE_ID = "cashbill";
@@ -34,25 +34,40 @@ class PaymentModuleCashbill extends PaymentModule implements IPaymentSMS, IPayme
 		return $output;
 	}
 
-	public function prepare_transfer($data)
+	public function prepare_transfer($purchase_data, $data_filename)
 	{
-		// Tworzenie userdata
-		$userdata = base64_encode(json_encode($data));
-
-		// Obliczanie hashu
-		$sign = md5($this->data['service'] . $data['cost'] . $data['desc'] . $userdata . $data['forename'] . $data['surname'] . $data['email'] . $this->data['key']);
+		// Zamieniamy grosze na złotówki
+		$cost = number_format($purchase_data->getPayment('cost') / 100, 2);
 
 		return array(
-			'url' => $this->data['transfer_url'],
+			'url' => 'https://pay.cashbill.pl/form/pay.php',
 			'service' => $this->data['service'],
-			'desc' => $data['desc'],
-			'forname' => $data['forename'],
-			'surname' => $data['surname'],
-			'email' => $data['email'],
-			'amount' => $data['cost'],
-			'userdata' => $userdata,
-			'sign' => $sign,
+			'desc' => $purchase_data->getDesc(),
+			'forname' => $purchase_data->user->getForename(false),
+			'surname' => $purchase_data->user->getSurname(false),
+			'email' => $purchase_data->getEmail(),
+			'amount' => $cost,
+			'userdata' => $data_filename,
+			'sign' => md5($this->data['service'] . $cost . $purchase_data->getDesc() . $data_filename . $purchase_data->user->getForename(false) .
+				$purchase_data->user->getSurname(false) . $purchase_data->getEmail() . $this->data['key'])
 		);
+	}
+
+	public function finalizeTransfer($get, $post)
+	{
+		$transfer_finalize = new Entity_TransferFinalize();
+
+		if ($this->check_sign($post, $this->data['key'], $post['sign']) && strtoupper($post['status']) == 'OK' && $post['service'] == $this->data['service']) {
+			$transfer_finalize->setStatus(true);
+		}
+
+		$transfer_finalize->setOrderid($post['orderid']);
+		$transfer_finalize->setAmount($post['amount']);
+		$transfer_finalize->setDataFilename($post['userdata']);
+		$transfer_finalize->setTransferService($post['service']);
+		$transfer_finalize->setOutput('OK');
+
+		return $transfer_finalize;
 	}
 
 	/**
@@ -66,7 +81,6 @@ class PaymentModuleCashbill extends PaymentModule implements IPaymentSMS, IPayme
 	 */
 	public function check_sign($data, $key, $sign)
 	{
-		return md5($data['service'] . $data['orderid'] . $data['amount'] . urldecode($data['userdata']) . $data['status'] . $key) == $sign;
+		return md5($data['service'] . $data['orderid'] . $data['amount'] . $data['userdata'] . $data['status'] . $key) == $sign;
 	}
-
 }

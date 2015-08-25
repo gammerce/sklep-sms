@@ -1,7 +1,5 @@
 <?php
 
-$l['no_access'] = "You have no proper powers.";
-
 $l['license_expires'] = "License expires";
 
 $l['remove_install'] = "Remove install folder!";
@@ -58,8 +56,8 @@ $l['privilages_names'] = array(
 	"view_groups" => "Groups preview",
 	"manage_groups" => "Groups management",
 	"view_player_flags" => "Players' flags preview",
-	"view_player_services" => "Players' services preview",
-	"manage_player_services" => "Players' services management",
+	"view_user_services" => "Players' services preview",
+	"manage_user_services" => "Players' services management",
 	"view_income" => "Income preview",
 	"view_users" => "Users preview",
 	"manage_users" => "Users management",
@@ -150,7 +148,7 @@ $l['sm_server'] = "Game server (SM)";
 
 $l['account_charge'] = "Admin {1}({2}) charged user's account: {3}({4}) Amount: {5} {6}";
 $l['account_charge_success'] = "User's account charged successfully: {1} with amount: {2} {3}";
-$l['service_admin_delete'] = "Admin {1}({2}) removed player's service. ID: {3}";
+$l['user_service_admin_delete'] = "Admin {1}({2}) removed user's service. ID: {3}";
 $l['question_edit'] = "Admin {1}({2}) edited antispam question. ID: {3}";
 $l['question_delete'] = "Admin {1}({2}) removed antispam question. ID: {3}";
 $l['settings_admin_edit'] = "Admin {1}({2}) edited shop settings.";
@@ -188,7 +186,6 @@ $l['not_all_data'] = "Not all necessary data were given.";
 $l['wrong_page_id'] = "Wrong page ID was given.";
 $l['no_action_box_support'] = "Page does not support action boxes.";
 
-$l['id'] = "ID";
 $l['answers'] = "Answers";
 $l['actions'] = "Actions";
 $l['payment_admin'] = "Payment";
@@ -216,7 +213,6 @@ $l['see_payment'] = "See payment";
 $l['type_to_search'] = "Type to search";
 $l['bring_it_on'] = "Bring it on!";
 $l['main'] = "Main";
-$l['players'] = "Players";
 $l['additions'] = "Additions";
 $l['no_data'] = "No data";
 $l['script_updated'] = "Shop script is updated to the latest version.";
@@ -239,6 +235,7 @@ $l['language'] = "Language";
 $l['delete_old_logs'] = "Delete logs older than";
 $l['dont_delete'] = "( 0 - don't delete )";
 $l['cron_page_start'] = "Cron at every page start";
+$l['global'] = "Global";
 $l['lines_per_page'] = "Quantity of lines per page";
 $l['date_format'] = "Date format";
 $l['additional_info'] = "Additional information";
@@ -284,5 +281,9 @@ $l['edit_tariff'] = "Edit tariff";
 $l['edit_payment_method'] = "Edit payment method";
 $l['wallet_charge'] = "Wallet charge";
 $l['edit_user'] = "Edit user";
-$l['add_service_for_user'] = "Add service for user";
-$l['edit_user_service'] = "Edit player's service";
+$l['add_user_service'] = "Add service for user";
+$l['edit_user_service'] = "Edit user's service";
+
+$l['no_subpage'] = "There is no subpage with ID: {1}";
+
+$l['delete_service_er_row_is_referenced_2'] = "This service cannot be deleted, there are still users' services.";

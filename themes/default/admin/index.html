@@ -16,7 +16,7 @@
 				<div class="hint">{$lang->license_expires}: {$a_Tasks['expire']}</div>
 			</td>
 			<td style="width: 360px; text-align: right;">
-				{$user['username']}
+				{$user->getUsername()}
 				<form method="POST" class="form_logout">
 					<input type="hidden" name="action" value="logout"/>
 					( <a href="#" onclick="$(this).parents('form').submit()">{$lang->logout}</a> )
@@ -39,9 +39,9 @@
 		{$tariffs_link}
 		{$pricelist_link}
 	</ul>
-	<h3>{$lang->players}</h3>
+	<h3>{$lang->users_services}</h3>
 	<ul>
-		{$users_services_link}
+		{$user_service_link}
 		{$players_flags_link}
 	</ul>
 	<h3>{$lang->users}</h3>

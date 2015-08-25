@@ -32,7 +32,7 @@ class PageAdminPaymentSms extends PageAdmin
 			//$row['class'] = "highlighted";
 		} // Wyszukujemy dane ktore spelniaja kryteria
 		else if (isset($get['search']))
-			searchWhere(array("t.payment_id", "t.sms_text", "t.sms_code", "t.sms_number"), urldecode($get['search']), $where);
+			searchWhere(array("t.payment_id", "t.sms_text", "t.sms_code", "t.sms_number"), $get['search'], $where);
 
 		if (isset($get['payid']))
 			$where .= $db->prepare(" AND `payment_id` = '%d' ", array($get['payid']));
@@ -53,8 +53,8 @@ class PageAdminPaymentSms extends PageAdmin
 		$tbody = "";
 		while ($row = $db->fetch_array_assoc($result)) {
 			$row['free'] = $row['free'] ? $lang->strtoupper($lang->yes) : $lang->strtoupper($lang->no);
-			$row['income'] = $row['income'] ? number_format($row['income'], 2) . " " . $settings['currency'] : "";
-			$row['cost'] = $row['cost'] ? number_format($row['cost'], 2) . " " . $settings['currency'] : "";
+			$row['income'] = $row['income'] ? number_format($row['income'] / 100.0, 2) . " " . $settings['currency'] : "";
+			$row['cost'] = $row['cost'] ? number_format($row['cost'] / 100.0, 2) . " " . $settings['currency'] : "";
 			$row['platform'] = get_platform($row['platform']);
 
 			// Poprawienie timestampa

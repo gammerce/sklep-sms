@@ -1,6 +1,7 @@
 <?php
 
 $l['shop_sms'] = "Sklep SMS";
+$l['id'] = "ID";
 $l['logout'] = "Wyloguj";
 $l['go'] = "Idź";
 $l['and'] = "i";
@@ -17,11 +18,13 @@ $l['delete'] = "Usuń";
 $l['ip'] = "IP";
 $l['email'] = "Adres e-mail";
 $l['nick'] = "Nick";
-$l['username'] = "Nazwa Użytkownika";
+$l['user_id'] = "ID użytkownika";
+$l['username'] = "Nazwa użytkownika";
 $l['save'] = "Zapisz";
 $l['cancel'] = "Anuluj";
 $l['sign_in'] = "Zaloguj się";
 $l['contact'] = "Kontakt";
+$l['days_amount'] = "Ilość dni";
 
 $l['old_password'] = "Stare Hasło";
 $l['new_password'] = "Nowe Hasło";
@@ -112,6 +115,8 @@ $l['only_yes_no'] = "Pole może przyjąć tylko wartości: 'TAK' i 'NIE'";
 $l['edited_user_service'] = "Prawidłowo wyedytowano usługę.";
 $l['not_edited_user_service'] = "Nie udało się wyedytować usługi.";
 
+$l['user_service_cannot_be_deleted'] = "Ta usługa użytkownika nie może zostać usunięta.";
+
 $l['you_arent_logged'] = "Coś tu nie gra, nie jesteś zalogowany/a oO";
 $l['not_logged_or_no_perm'] = "Coś tu nie gra, nie jesteś zalogowany/a lub nie masz odpowiednich uprawnień oO";
 
@@ -120,6 +125,8 @@ $l['languages'] = array(
 	'english' => "English"
 );
 
-$l['expired_service_delete'] = "AUTOMAT: Usunięto wygasłą usługę gracza. Auth Data: {1} Serwer: {2} Usługa: {3} Typ: {4}";
+$l['expired_service_delete'] = "AUTOMAT: Usunięto wygasłą usługę użytkownika. {1}";
 
 $l['error_occured'] = "Wystąpił błąd.";
+$l['no_access'] = "Nie masz odpowiednich uprawnień.";
+$l['regards'] = "Pozdrawiamy";

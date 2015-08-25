@@ -24,14 +24,14 @@ class PagePaymentLog extends Page implements I_BeLoggedMust
 			"WHERE t.uid = '%d' " .
 			"ORDER BY t.timestamp DESC " .
 			"LIMIT " . get_row_limit($G_PAGE, 10),
-			array($user['uid'])
+			array($user->getUid())
 		));
 		$rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
 		$payment_logs = "";
 		while ($row = $db->fetch_array_assoc($result)) {
 			$date = htmlspecialchars($row['timestamp']);
-			$cost = number_format(floatval($row['cost']), 2) . " " . $settings['currency'];
+			$cost = number_format($row['cost'] / 100.0, 2) . " " . $settings['currency'];
 
 			if (($service_module = $heart->get_service_module($row['service'])) !== NULL && object_implements($service_module, "IService_PurchaseWeb")) {
 				$log_info = $service_module->purchase_info("payment_log", $row);

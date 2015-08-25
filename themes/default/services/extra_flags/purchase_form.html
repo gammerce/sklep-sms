@@ -32,7 +32,7 @@
 					<tbody id="type_ip">
 					<tr>
 						<td>{$lang->ip}</td>
-						<td><input type="text" name="ip" value="{$user['ip']}" maxlength="16"/></td>
+						<td><input type="text" name="ip" value="{$user->getLastIp()}" maxlength="16"/></td>
 					</tr>
 					</tbody>
 					<tbody id="type_password">
@@ -54,7 +54,7 @@
 					<tbody>
 					<tr>
 						<td>{$lang->email}</td>
-						<td><input type="text" name="email" value="{$user['email']}"/></td>
+						<td><input type="text" name="email" value="{$user->getEmail()}"/></td>
 					</tr>
 					</tbody>
 					<tbody>

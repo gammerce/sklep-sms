@@ -102,7 +102,7 @@ function json_output($id, $text = "", $positive = false, $data = array())
 	if (is_array($data) && !empty($data))
 		$output = array_merge($output, $data);
 
-	output_page(json_encode($output), "Content-type: text/plain; charset=\"UTF-8\"");
+	output_page(json_encode($output), 1);
 }
 
 /**
@@ -117,5 +117,5 @@ function actionbox_output($id, $text = "", $template = "")
 	if (strlen($template))
 		$output['template'] = $template;
 
-	output_page(json_encode($output), "Content-type: text/plain; charset=\"UTF-8\"");
+	output_page(json_encode($output), 1);
 }

@@ -22,7 +22,7 @@ class PageAdminLogs extends PageAdmin
 
 		// Wyszukujemy dane ktore spelniaja kryteria
 		if (isset($get['search']))
-			searchWhere(array("`id`", "`text`", "CAST(`timestamp` as CHAR)"), urldecode($get['search']), $where);
+			searchWhere(array("`id`", "`text`", "CAST(`timestamp` as CHAR)"), $get['search'], $where);
 
 		// Jezeli jest jakis where, to dodajemy WHERE
 		if (strlen($where))

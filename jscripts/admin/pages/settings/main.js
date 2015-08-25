@@ -22,7 +22,7 @@ $(document).delegate("#form_settings_edit", "submit", function (e) {
 					id.effect("highlight", 1000);
 				});
 			}
-			else if (jsonObj.return_id == "edited") {
+			else if (jsonObj.return_id == 'ok') {
 				// Odśwież stronę
 				refresh_blocks("admincontent", true);
 			}

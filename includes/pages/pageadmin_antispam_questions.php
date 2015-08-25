@@ -2,7 +2,7 @@
 
 $heart->register_page("antispam_questions", "PageAdminAntispamQuestions", "admin");
 
-class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBox
+class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionBox
 {
 
 	const PAGE_ID = "antispam_questions";
@@ -87,11 +87,11 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
 
 		if (!get_privilages("manage_antispam_questions"))
 			return array(
-				'id'	=> "not_logged_in",
-				'text'	=> $lang->not_logged_or_no_perm
+				'status' => "not_logged_in",
+				'text' => $lang->not_logged_or_no_perm
 			);
 
-		switch($box_id) {
+		switch ($box_id) {
 			case "antispam_question_add":
 				$output = eval($templates->render("admin/action_boxes/antispam_question_add"));
 				break;
@@ -110,8 +110,8 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
 		}
 
 		return array(
-			'id'		=> "ok",
-			'template'	=> $output
+			'status' => 'ok',
+			'template' => $output
 		);
 	}
 

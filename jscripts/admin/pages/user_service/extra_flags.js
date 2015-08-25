@@ -1,4 +1,4 @@
-//
+// --------------------------------------------------------------------------------------------
 // Dodanie usługi graczowi
 //
 
@@ -18,19 +18,6 @@ $(document).delegate("#form_user_service_add [name=type]", "change", function ()
 		module.find("#type_password").show();
 });
 
-// Ustawienie na zawsze
-$(document).delegate("#form_user_service_add [name=forever]", "change", function () {
-	var module;
-	if (!(module = service_module_act_can("extra_flags", $(this))))
-		return;
-
-	if ($(this).prop('checked'))
-		module.find("[name=amount]").prop('disabled', true);
-	else
-		module.find("[name=amount]").prop('disabled', false);
-});
-
-
 // --------------------------------------------------------------------------------------------
 // Edycja usługi gracza
 //
@@ -46,7 +33,7 @@ $(document).delegate("#form_user_service_edit [name=service]", "change", functio
 		return;
 	}
 
-	fetch_data("service_action_execute", false, {
+	fetch_data("service_action_execute", true, {
 		service_action: "servers_for_service",
 		service: $(this).val(),
 		server: module.find("[name=server]").val()

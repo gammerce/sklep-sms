@@ -3,9 +3,12 @@
 if (!defined("IN_SCRIPT"))
 	die("There is nothing interesting here.");
 
-//error_reporting(E_USER_ERROR);
-error_reporting(E_ALL);
+error_reporting(E_ERROR);
 ini_set("display_errors", 1);
+
+foreach($_GET as $key => $value) {
+	$_GET[$key] = urldecode($value);
+}
 
 // Tworzenie / Wznawianie sesji
 if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
@@ -15,9 +18,6 @@ if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
 	session_name("user");
 	session_start();
 }
-
-/*if (in_array(SCRIPT_NAME, array("admin", "index")))
-	var_dump($_SESSION)*/
 
 $working_dir = dirname(__FILE__) ? dirname(__FILE__) : '.';
 require_once $working_dir . "/includes/init.php";
@@ -43,6 +43,8 @@ require_once SCRIPT_ROOT . "includes/mysqli.php";
 require_once SCRIPT_ROOT . "includes/class_payment.php";
 require_once SCRIPT_ROOT . "includes/class_language.php";
 
+set_exception_handler("exceptionHandler");
+
 // Tworzymy obiekt posiadający mnóstwo przydatnych funkcji
 $heart = new Heart();
 
@@ -53,22 +55,21 @@ $templates = new Templates();
 $lang = new Language();
 $lang_shop = new Language();
 
-// Ustalenie funkcji obsługującej errory
-set_error_handler("myErrorHandler");
-
 // Utworzenie połączenia z bazą danych
 $db = new Database($db_host, $db_user, $db_pass, $db_name);
 $db->query("SET NAMES utf8");
 
-// Te interfejsy są potrzebne do klas różnych rodzajów
+// Te interfejsy są potrzebne do klas różnego rodzajów
 foreach (scandir(SCRIPT_ROOT . "includes/interfaces") as $file)
 	if (ends_at($file, ".php"))
 		require_once SCRIPT_ROOT . "includes/interfaces/" . $file;
 
 // Dodajemy klasy wszystkich modulow platnosci
 require_once SCRIPT_ROOT . "includes/verification/payment_module.php";
-require_once SCRIPT_ROOT . "includes/verification/payment_sms.php";
-require_once SCRIPT_ROOT . "includes/verification/payment_transfer.php";
+foreach (scandir(SCRIPT_ROOT . "includes/verification/interfaces") as $file)
+	if (ends_at($file, ".php"))
+		require_once SCRIPT_ROOT . "includes/verification/interfaces/" . $file;
+
 foreach (scandir(SCRIPT_ROOT . "includes/verification") as $file)
 	if (ends_at($file, ".php"))
 		require_once SCRIPT_ROOT . "includes/verification/" . $file;
@@ -116,17 +117,23 @@ foreach (scandir(SCRIPT_ROOT . "includes/entity") as $file)
 $G_PID = isset($_GET['pid']) ? $_GET['pid'] : "home";
 $G_PAGE = isset($_GET['page']) && intval($_GET['page']) >= 1 ? intval($_GET['page']) : 1;
 
+$user = $heart->get_user();
+
 // Logowanie się do panelu admina
 if (admin_session()) {
-	if (isset($_POST['username']) && isset($_POST['password'])) { // Logujemy się
+	// Logujemy się
+	if (isset($_POST['username']) && isset($_POST['password'])) {
 		$user = $heart->get_user(0, $_POST['username'], $_POST['password']);
-		if (is_logged() && get_privilages("acp"))
-			$_SESSION['uid'] = $user['uid'];
+
+		if ($user->isLogged() && get_privilages("acp")) {
+			$_SESSION['uid'] = $user->getUid();
+		}
 		else {
 			$_SESSION['info'] = "wrong_data";
-			$user = array();
 		}
-	} else if ($_POST['action'] == "logout") { // Wylogowujemy
+	}
+	// Wylogowujemy
+	else if ($_POST['action'] == "logout") {
 		// Unset all of the session variables.
 		$_SESSION = array();
 
@@ -142,38 +149,34 @@ if (admin_session()) {
 	}
 }
 
-// Pobieramy dane gracza, jeżeli jeszcze ich nie ma
-if (!isset($user) && isset($_SESSION['uid']))
+// Pozyskujemy dane gracza, jeżeli jeszcze ich nie ma
+if (!$user->isLogged() && isset($_SESSION['uid']))
 	$user = $heart->get_user($_SESSION['uid']);
 
 // Jeżeli próbujemy wejść do PA i nie jesteśmy zalogowani, to zmień stronę
-if (admin_session() && (!is_logged() || !get_privilages("acp"))) {
+if (admin_session() && (!$user->isLogged() || !get_privilages("acp"))) {
 	$G_PID = "login";
 
 	// Jeżeli jest zalogowany, ale w międzyczasie odebrano mu dostęp do PA
-	if (is_logged()) {
+	if ($user->isLogged()) {
 		$_SESSION['info'] = "no_privilages";
-		$user = array();
+		$user = $heart->get_user();
 	}
 }
 
-// Pobieramy dane pustego użytkownika / gościa
-if (!isset($user) || empty($user))
-	$user = $heart->get_user(0);
-
 // Aktualizujemy aktywność użytkownika
-if (is_logged())
-	update_activity($user['uid']);
+$user->updateActivity();
 
-// Pobranie stałych
+// Pozyskanie ustawień sklepu
 $result = $db->query("SELECT * FROM `" . TABLE_PREFIX . "settings`");
 while ($row = $db->fetch_array_assoc($result))
 	$settings[$row['key']] = $row['value'];
 
 // Poprawiamy adres URL sklepu
-if ($settings['shop_url']) {
+if (strlen($settings['shop_url'])) {
 	if (strpos($settings['shop_url'], "http://") !== 0 && strpos($settings['shop_url'], "https://") !== 0)
 		$settings['shop_url'] = "http://" . $settings['shop_url'];
+
 	$settings['shop_url'] = rtrim($settings['shop_url'], "/");
 	$settings['shop_url_slash'] = $settings['shop_url'] . "/";
 }
@@ -251,11 +254,11 @@ if ($a_Tasks['expire']) {
 }
 
 if ($a_Tasks['text'] != "logged_in") {
-	if (get_privilages("manage_settings", $user))
-		$user['privilages'] = array(
+	if (get_privilages("manage_settings"))
+		$user->setPrivilages(array(
 			"acp" => true,
 			"manage_settings" => true
-		);
+		));
 
 	if (SCRIPT_NAME == "index")
 		output_page($a_Tasks['page']);
