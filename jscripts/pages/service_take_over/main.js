@@ -1,7 +1,7 @@
 $(document).delegate("#form_service_take_over [name=service]", "change", function () {
 	if ($(this).val() == "") {
-		$("#form_service_take_over .extra_data").html("");
-		$("#form_service_take_over .take_over").hide();
+		$("#form_service_take_over").find(".extra_data").html('');
+		$("#form_service_take_over").find(".take_over").hide();
 		return;
 	}
 
