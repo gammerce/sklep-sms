@@ -236,6 +236,7 @@ $l['language'] = "Język";
 $l['delete_old_logs'] = "Usuwaj logi starsze niż";
 $l['dont_delete'] = "( 0 - nie usuwaj )";
 $l['cron_page_start'] = "Cron przy każdym uruchomieniu strony";
+$l['global'] = "Globalne";
 $l['lines_per_page'] = "Ilość wierszy na stronę";
 $l['date_format'] = "Format daty";
 $l['additional_info'] = "Dodatkowe informacje";

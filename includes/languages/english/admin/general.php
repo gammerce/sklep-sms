@@ -235,6 +235,7 @@ $l['language'] = "Language";
 $l['delete_old_logs'] = "Delete logs older than";
 $l['dont_delete'] = "( 0 - don't delete )";
 $l['cron_page_start'] = "Cron at every page start";
+$l['global'] = "Global";
 $l['lines_per_page'] = "Quantity of lines per page";
 $l['date_format'] = "Date format";
 $l['additional_info'] = "Additional information";

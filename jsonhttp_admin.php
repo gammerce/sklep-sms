@@ -270,6 +270,7 @@ if ($action == "charge_wallet") {
 	$theme = escape_filename($_POST['theme']);
 	$date_format = $_POST['date_format'];
 	$delete_logs = $_POST['delete_logs'];
+	$google_analytics = trim($_POST['google_analytics']);
 
 	// Serwis płatności SMS
 	if (strlen($sms_service)) {
@@ -371,12 +372,14 @@ if ($action == "charge_wallet") {
 		"WHEN 'language' THEN '%s' " .
 		"WHEN 'date_format' THEN '%s' " .
 		"WHEN 'delete_logs' THEN '%d' " .
+		"WHEN 'google_analytics' THEN '%s' " .
 		$set_license_password .
 		"END " .
 		"WHERE `key` IN ( 'sms_service','transfer_service','currency','shop_url','sender_email','sender_email_name','signature','vat'," .
-		"'contact','row_limit','license_login','cron_each_visit','user_edit_service','theme','language','date_format','delete_logs'{$key_license_password} )",
+		"'contact','row_limit','license_login','cron_each_visit','user_edit_service','theme','language','date_format','delete_logs'," .
+		"'google_analytics'{$key_license_password} )",
 		array($sms_service, $transfer_service, $currency, $shop_url, $sender_email, $sender_email_name, $signature, $vat, $contact, $row_limit,
-			$license_login, $cron, $_POST['user_edit_service'], $theme, $language, $date_format, $delete_logs)
+			$license_login, $cron, $_POST['user_edit_service'], $theme, $language, $date_format, $delete_logs, $google_analytics)
 	));
 
 	// Zwróć info o prawidłowej lub błędnej edycji
@@ -384,8 +387,9 @@ if ($action == "charge_wallet") {
 		log_info($lang_shop->sprintf($lang_shop->settings_admin_edit, $user->getUsername(), $user->getUid()));
 
 		json_output('ok', $lang->settings_edit, 1);
-	} else
+	} else {
 		json_output("not_edited", $lang->settings_no_edit, 0);
+	}
 } else if ($action == "transaction_service_edit") {
 	if (!get_privilages("manage_settings")) {
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);

@@ -220,7 +220,7 @@ h4 {
 	background: #F5F6CE;
 }
 
-#form_settings_edit, .form_update {
+.form_update {
 	display: inline-block;
 	padding: 6px;
 	min-width: 30%;
@@ -233,6 +233,11 @@ h4 {
 #form_settings_edit select, #form_settings_edit input[type=text], #form_settings_edit input[type=password], #form_settings_edit textarea {
 	color: #000;
 	background-color: #AAA;
+}
+
+#form_settings_edit .settings-brick {
+	display: inline-block;
+	margin: 24px;
 }
 
 .form_update {

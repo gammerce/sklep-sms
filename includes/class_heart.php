@@ -534,4 +534,11 @@ class Heart
 
 		return implode("\n", $output);
 	}
+
+	public function getGoogleAnalytics()
+	{
+		global $settings, $templates;
+
+		return strlen($settings['google_analytics']) ? eval($templates->render('google_analytics')) : '';
+	}
 }
