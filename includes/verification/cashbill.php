@@ -40,7 +40,7 @@ class PaymentModuleCashbill extends PaymentModule implements IPayment_Sms, IPaym
 		$cost = number_format($purchase_data->getPayment('cost') / 100, 2);
 
 		return array(
-			'url' => $this->data['transfer_url'],
+			'url' => 'https://pay.cashbill.pl/form/pay.php',
 			'service' => $this->data['service'],
 			'desc' => $purchase_data->getDesc(),
 			'forname' => $purchase_data->user->getForename(false),

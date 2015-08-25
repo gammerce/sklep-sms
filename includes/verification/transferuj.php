@@ -20,7 +20,7 @@ class PaymentModuleTransferuj extends PaymentModule implements IPayment_Transfer
 		$cost = number_format($purchase_data->getPayment('cost') / 100, 2);
 
 		return array(
-			'url' => $this->data['transfer_url'],
+			'url' => 'https://secure.transferuj.pl',
 			'id' => $this->data['account_id'],
 			'kwota' => $cost,
 			'opis' => $purchase_data->getDesc(),

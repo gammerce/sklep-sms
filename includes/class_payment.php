@@ -40,15 +40,17 @@ class Payment
 		if (!$this->payment_api->data['sms']) {
 			return array(
 				'status' => "NO_SMS_SERVE",
-				'text' => json_encode($this->payment_api->data)//$lang->sms['info']['no_sms_serve']
+				'text' => $lang->sms['info']['no_sms_serve']
 			);
 		}
 
 		if (object_implements($this->payment_api, "IPayment_Sms")) {
 			$sms_number = $this->payment_api->smses[$tariff]['number'];
 			$sms_return = $this->payment_api->verify_sms($sms_code, $sms_number);
-		} else // Nie przerywamy jeszcze, bo chcemy sprawdzic czy nie ma takiego SMSa do wykrozystania w bazie
+		} else {
 			$sms_return['status'] = "NO_SMS_SERVE";
+			// Nie przerywamy jeszcze, bo chcemy sprawdzic czy nie ma takiego SMSa do wykrozystania w bazie
+		}
 
 		// Jezeli weryfikacja smsa nie zwrocila, ze kod zostal prawidlowo zweryfikowany
 		// ani, że sms został wysłany na błędny numer,
@@ -82,12 +84,13 @@ class Payment
 			$db->query($db->prepare(
 				"INSERT INTO `" . TABLE_PREFIX . "payment_sms` (`code`, `income`, `cost`, `text`, `number`, `ip`, `platform`, `free`) " .
 				"VALUES ('%s','%d','%d','%s','%s','%s','%s','%d')",
-				array($sms_code, get_sms_cost($sms_number) / 2, get_sms_cost($sms_number) * $settings['vat'],
-					$this->payment_api->data['sms_text'], $sms_number, $user->getLastIp(), $this->platform, $db_code['free'])
+				array($sms_code, get_sms_cost($sms_number) / 2, ceil(get_sms_cost($sms_number) * $settings['vat']),
+					$this->payment_api->data['sms_text'], $sms_number, $user->getLastIp(), $this->platform, $sms_return['free'] ? 1 : $db_code['free'])
 			));
 
 			$output['payment_id'] = $db->last_id();
-		} // SMS został wysłany na błędny numer
+		}
+		// SMS został wysłany na błędny numer
 		else if ($sms_return['status'] == "BAD_NUMBER" && isset($sms_return['tariff'])) {
 			// Dodajemy kod do listy kodów do wykorzystania
 			$db->query($db->prepare(
@@ -97,11 +100,12 @@ class Payment
 			));
 
 			log_info($lang_shop->sprintf($lang_shop->add_code_to_reuse, $sms_code, $sms_return['tariff'], $user->getUsername(), $user->getUid(), $user->getLastIp(), $tariff));
-		} else if ($sms_return['status'] != "NO_SMS_SERVE")
-			log_info($lang_shop->sprintf($lang_shop->bad_sms_code_used, $user->getUsername(), $user->getUid(), $user->getLastIp(), $sms_code,
-				$this->payment_api->data['sms_text'], $sms_number, $sms_return['status']));
+		} else if ($sms_return['status'] != "NO_SMS_SERVE") {
+			log_info($lang_shop->sprintf($lang_shop->bad_sms_code_used, $user->getUsername(), $user->getUid(), $user->getLastIp(),
+				$sms_code, $this->payment_api->data['sms_text'], $sms_number, $sms_return['status']));
+		}
 
-		switch ($sms_return['status']) {
+		switch (strtoupper($sms_return['status'])) {
 			// Prawidłowy kod zwrotny
 			case "OK":
 				$output['text'] = $lang->sms['info']['ok'];
@@ -146,7 +150,7 @@ class Payment
 				$output['text'] = $lang->sms['info']['no_sms_serve'];
 				break;
 			default:
-				$output['text'] = if_isset($output['text'], $lang->sms['info']['dunno']);
+				$output['text'] = if_isset($sms_return['text'], $lang->sms['info']['dunno']);
 		}
 
 		$output['status'] = $sms_return['status'];

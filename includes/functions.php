@@ -997,11 +997,13 @@ function searchWhere($search_ids, $search, &$where)
 }
 
 /**
- * @param $url - adres url
- * @param int $timeout - po jakim czasie ma przerwać
+ * @param string $url
+ * @param int $timeout
+ * @param bool $post
+ * @param array data
  * @return string
  */
-function curl_get_contents($url, $timeout = 10)
+function curl_get_contents($url, $timeout = 10, $post = false, $data = array())
 {
 	$curl = curl_init();
 	curl_setopt_array($curl, array(
@@ -1009,6 +1011,12 @@ function curl_get_contents($url, $timeout = 10)
 		CURLOPT_URL => $url,
 		CURLOPT_TIMEOUT => $timeout
 	));
+
+	if ($post) {
+		curl_setopt($curl, CURLOPT_POST, true);
+		curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode(array('params' => $data)));
+	}
+
 	$resp = curl_exec($curl);
 	curl_close($curl);
 

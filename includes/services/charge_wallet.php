@@ -94,7 +94,6 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 		$purchase_data->setService($this->service['id']);
 		$purchase_data->setTariff($data['tariff']);
 		$purchase_data->setPayment(array(
-			'cost' => $data['transfer_amount'] * 100,
 			'no_wallet' => true
 		));
 
@@ -107,6 +106,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 			));
 		} else if ($data['method'] == "transfer") {
 			$purchase_data->setPayment(array(
+				'cost' => $data['transfer_amount'] * 100,
 				'no_sms' => true
 			));
 			$purchase_data->setOrder(array(
