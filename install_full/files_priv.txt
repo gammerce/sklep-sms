@@ -1,0 +1,4 @@
+errors/
+includes/config.php
+themes/default/services/
+data/transfers/

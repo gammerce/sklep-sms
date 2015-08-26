@@ -1,0 +1,7 @@
+includes/pages/page_transfer_finalized.php
+includes/pages/pageadmin_users_services.php
+includes/verification/payment_sms.php
+includes/verification/payment_transfer.php
+jscripts/admin/pages/users_services
+themes/default/admin/users_services_thead.html
+themes/default/admin/users_services_trow.html
