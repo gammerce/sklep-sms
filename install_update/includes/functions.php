@@ -1,8 +1,9 @@
 <?php
 
-function update_info(&$everything_ok) {
+function update_info(&$everything_ok)
+{
 	global $templates, $files_priv, $files_del, $modules;
-	
+
 	// Sprawdzamy ustawienia modułuów
 	$server_modules = '';
 	foreach ($modules as $module) {
@@ -15,7 +16,7 @@ function update_info(&$everything_ok) {
 		}
 
 		$server_modules .= eval($templates->install_render('module'));
-		
+
 		if (!$module['value'] && $module['must-be'])
 			$everything_ok = false;
 	}
@@ -70,38 +71,33 @@ function update_info(&$everything_ok) {
 
 function SplitSQL($file, $delimiter = ';')
 {
-    set_time_limit(0);
-    
-    $queries = array();
+	set_time_limit(0);
 
-    if (is_file($file) === true)
-    {
-        $file = fopen($file, 'r');
+	$queries = array();
 
-        if (is_resource($file) === true)
-        {
-            $query = array();
+	if (is_file($file) === true) {
+		$file = fopen($file, 'r');
 
-            while (feof($file) === false)
-            {
-                $query[] = fgets($file);
+		if (is_resource($file) === true) {
+			$query = array();
 
-                if (preg_match('~' . preg_quote($delimiter, '~') . '\s*$~iS', end($query)) === 1)
-                {
+			while (feof($file) === false) {
+				$query[] = fgets($file);
+
+				if (preg_match('~' . preg_quote($delimiter, '~') . '\s*$~iS', end($query)) === 1) {
 					$query = trim(implode('', $query));
-                    $queries[] = $query;
-                }
+					$queries[] = $query;
+				}
 
-                if (is_string($query) === true)
-                {
-                    $query = array();
-                }
-            }
+				if (is_string($query) === true) {
+					$query = array();
+				}
+			}
 
 			fclose($file);
-            return $queries;
-        }
-    }
+			return $queries;
+		}
+	}
 
-    return false;
+	return false;
 }

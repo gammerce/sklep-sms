@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/plain" charset="UTF-8" />
+	<meta http-equiv="Content-Type" content="text/plain" charset="UTF-8"/>
 	<title>Instalacja - Sklep SMS</title>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script type="text/javascript" src="jscripts/update.js?version={__VERSION__}"></script>
@@ -14,8 +14,10 @@
 <body>
 <div class="window {$class}">
 	<h1>Aktualizator Sklepu</h1>
+
 	<div class="notify backup">
-		<div style="font-weight: bold;">Pamiętaj, aby przed wykonaniem aktualizacji zadbać o backup <i>( kopię zapasową )</i></div>
+		<div style="font-weight: bold;">Pamiętaj, aby przed wykonaniem aktualizacji zadbać o backup <i>( kopię zapasową
+			)</i></div>
 		<ul>
 			<li>Bazy danych sklepu</li>
 			<li>Plików znajdujących się na FTP serwerów gier</li>
@@ -24,23 +26,26 @@
 	</div>
 	<div class="notify attention">
 		<div style="font-weight: bold;">Zmiana płatności przelewem CashBill!</div>
-		Jeżeli korzystasz z płatności internetowej CashBill, OBOWIĄZKOWO zmień w panelu pole<br />
-		<u>Adres serwerowego potwierdzenia transakcji</u> z wartości */transfer_finalize.php na */transfer_finalize.php?service=cashbill
+		Jeżeli korzystasz z płatności internetowej CashBill, OBOWIĄZKOWO zmień w panelu pole<br/>
+		<u>Adres serwerowego potwierdzenia transakcji</u> z wartości */transfer_finalize.php na
+		*/transfer_finalize.php?service=cashbill
 	</div>
 	<div class="notify attention">
 		<div style="font-weight: bold;">Reset danych: HomePay, CSSetti, MicroSMS</div>
-		Jeżeli korzystasz z którejś z powyższych płatności, po tej aktualizacji będziesz zmuszony wypełnić ponownie dane w zakładce <u>Metody Płatności</u> w PA.
+		Jeżeli korzystasz z którejś z powyższych płatności, po tej aktualizacji będziesz zmuszony wypełnić ponownie dane
+		w zakładce <u>Metody Płatności</u> w PA.
 	</div>
 	<form id="form_update" class="content">
 		<div class="update_info">
 			{$update_info}
 		</div>
-		<br style="clear: both" />
+		<br style="clear: both"/>
+
 		<div style="text-align: center;">
-			<input type="submit" value="Aktualizuj" />
+			<input type="submit" value="Aktualizuj"/>
 		</div>
 	</form>
 </div>
-<br /><br />
+<br/><br/>
 </body>
 </html>

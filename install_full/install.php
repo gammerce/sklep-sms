@@ -7,9 +7,8 @@ require_once "global.php";
 
 try {
 	$db = new Database($_POST['db_host'], $_POST['db_user'], $_POST['db_password'], $_POST['db_db']);
-} catch(Exception $e) {
-	die('sdsd');
-	//output_page($lang->mysqli[$e->getMessage()] . "\n" . $e->getError());
+} catch (SqlQueryException $e) {
+	output_page($lang->mysqli[$e->getMessage()] . "\n\n" . $e->getError());
 }
 
 $warnings = array();
@@ -56,7 +55,7 @@ if (!empty($warnings)) {
 				'class' => "form_warning"
 			));
 		}
-		
+
 		$return_data['warnings'][$brick] = $warning;
 	}
 
@@ -108,12 +107,12 @@ foreach ($queries as $query) {
 }
 
 file_put_contents(SCRIPT_ROOT . "includes/config.php",
-	"<?php
-	\$db_host = \"" . addslashes($_POST['db_host']) . "\";
-	\$db_user = \"" . addslashes($_POST['db_user']) . "\";
-	\$db_pass = \"" . addslashes($_POST['db_password']) . "\";
-	\$db_name = \"" . addslashes($_POST['db_db']) . "\";
-?>");
+	'<?php
+$db_host = \'' . addslashes($_POST['db_host']) . '\';
+$db_user = \'' . addslashes($_POST['db_user']) . '\';
+$db_pass = \'' . addslashes($_POST['db_password']) . '\';
+$db_name = \'' . addslashes($_POST['db_db']) . '\';'
+);
 
 unlink(SCRIPT_ROOT . "install/progress");
 file_put_contents(SCRIPT_ROOT . "install/block", '');

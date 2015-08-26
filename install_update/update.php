@@ -11,10 +11,11 @@ $everything_ok = true;
 $update_info = update_info($everything_ok);
 
 // Nie wszystko jest git
-if( !$everything_ok )
-    json_output("warnings", "Aktualizacja nie mogła zostać przeprowadzona. Nie wszystkie warunki są spełnione.", false, array(
-        'update_info' => $update_info
-    ));
+if (!$everything_ok) {
+	json_output("warnings", "Aktualizacja nie mogła zostać przeprowadzona. Nie wszystkie warunki są spełnione.", false, array(
+		'update_info' => $update_info
+	));
+}
 
 // -------------------- INSTALACJA --------------------
 
@@ -44,7 +45,7 @@ foreach ($queries as $query) {
 try {
 	$db->query("ALTER TABLE `ss_groups` CHANGE `view_player_services` `view_user_services` TINYINT(1) NOT NULL DEFAULT '0';");
 	$db->query("ALTER TABLE `ss_groups` CHANGE `manage_player_services` `manage_user_services` TINYINT(1) NOT NULL DEFAULT '0';");
-} catch(SqlQueryException $e) {
+} catch (SqlQueryException $e) {
 }
 // -------------- END VERSION 3.3.2 -------------------
 
