@@ -110,13 +110,13 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 		switch ($box_id) {
 			case "user_edit":
 				// Pobranie użytkownika
-				$row = $heart->get_user($data['uid']);
+				$user = $heart->get_user($data['uid']);
 
-				$groups = "";
+				$groups = '';
 				foreach ($heart->get_groups() as $group) {
 					$groups .= create_dom_element("option", "{$group['name']} ( {$group['id']} )", array(
 						'value' => $group['id'],
-						'selected' => in_array($group['id'], $row['groups']) ? "selected" : ""
+						'selected' => in_array($group['id'], $user->getGroups()) ? "selected" : ""
 					));
 				}
 

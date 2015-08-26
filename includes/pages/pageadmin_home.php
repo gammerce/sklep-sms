@@ -41,7 +41,7 @@ class PageAdminMain extends PageAdmin
 		if (strlen($next_version)) {
 			$newest_version = trim(curl_get_contents("http://www.sklep-sms.pl/version.php?action=get_newest&type=web"));
 			if (strlen($newest_version) && VERSION != $newest_version)
-				$this->add_note($lang->sprintf($lang->update_available, $newest_version), "positive", $notes);
+				$this->add_note($lang->sprintf($lang->update_available, htmlspecialchars($newest_version)), "positive", $notes);
 		}
 
 		// Sprawdzanie wersji serwerów
@@ -54,7 +54,7 @@ class PageAdminMain extends PageAdmin
 		}
 
 		if ($amount)
-			$this->add_note($lang->sprintf($lang->update_available_servers, $amount, $heart->get_servers_amount(), $newest_version), "positive", $notes);
+			$this->add_note($lang->sprintf($lang->update_available_servers, $amount, $heart->get_servers_amount(), htmlspecialchars($newest_version)), "positive", $notes);
 
 		//
 		// Cegielki informacyjne

@@ -750,7 +750,7 @@ if ($action == "charge_wallet") {
 		"SET `username` = '%s', `forename` = '%s', `surname` = '%s', `email` = '%s', `groups` = '%s', `wallet` = '%d' " .
 		"WHERE `uid` = '%d'",
 		array($_POST['username'], $_POST['forename'], $_POST['surname'], $_POST['email'], implode(";", $_POST['groups']),
-			$_POST['wallet'], $_POST['uid'])
+			ceil($_POST['wallet'] * 100), $_POST['uid'])
 	));
 
 	// Zwróć info o prawidłowej lub błędnej edycji
