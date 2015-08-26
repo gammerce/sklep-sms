@@ -106,8 +106,8 @@ class Database
 
 	public function connect()
 	{
-		if ($this->link = mysqli_connect($this->host, $this->user, $this->pass)) {
-			if (!mysqli_select_db($this->link, $this->name))
+		if ($this->link = @mysqli_connect($this->host, $this->user, $this->pass)) {
+			if (!@mysqli_select_db($this->link, $this->name))
 				$this->exception("no_db_connection");
 		} else {
 			$this->error = mysqli_connect_error();
