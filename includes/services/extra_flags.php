@@ -1287,7 +1287,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$row = $db->fetch_array_assoc($result);
 
 		$db->query($db->prepare(
-			"UPDATE `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` " .
+			"UPDATE `" . TABLE_PREFIX . "user_service` " .
 			"SET `uid` = '%d' " .
 			"WHERE `id` = '%d'",
 			array($user->getUid(), $row['id'])

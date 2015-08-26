@@ -32,6 +32,7 @@ foreach ($queries as $query) {
 		} catch (SqlQueryException $e) {
 			$input = array();
 			$input[] = "Message: " . $lang->mysqli[$e->getMessage()];
+			$input[] = "Error: " . $e->getError();
 			$input[] = "Query: " . $e->getQuery(false);
 			file_put_contents(SCRIPT_ROOT . 'errors/update.log', implode("\n", $input));
 			file_put_contents(SCRIPT_ROOT . 'install/error', '');

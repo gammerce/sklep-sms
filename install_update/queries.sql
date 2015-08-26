@@ -1,18 +1,3 @@
-UPDATE `ss_payment_sms`
-SET `income` = `income` * 100, `cost` = `cost` * 100;
-
-UPDATE `ss_payment_transfer`
-SET `income` = `income` * 100;
-
-UPDATE `ss_payment_wallet`
-SET `cost` = `cost` * 100;
-
-UPDATE `ss_users`
-SET `wallet` = `wallet` * 100;
-
-UPDATE `ss_tariffs`
-SET `provision` = `provision` * 100;
-
 UPDATE `ss_sms_numbers`
 SET `number` = '76660'
 WHERE `service` = 'homepay' AND `number` = '7655';
@@ -224,6 +209,21 @@ INSERT INTO `ss_user_service_extra_flags` (`us_id`, `service`, `server`, `type`,
   FROM `ss_players_services` AS ps
     LEFT JOIN `ss_services` AS s ON ps.service = s.id
   WHERE s.module = 'extra_flags';
+
+UPDATE `ss_payment_sms`
+SET `income` = `income` * 100, `cost` = `cost` * 100;
+
+UPDATE `ss_payment_transfer`
+SET `income` = `income` * 100;
+
+UPDATE `ss_payment_wallet`
+SET `cost` = `cost` * 100;
+
+UPDATE `ss_users`
+SET `wallet` = `wallet` * 100;
+
+UPDATE `ss_tariffs`
+SET `provision` = `provision` * 100;
 
 DROP TABLE `ss_players_services`;
 
