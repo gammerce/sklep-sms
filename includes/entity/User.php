@@ -2,6 +2,8 @@
 
 class Entity_User
 {
+	const TEST = 1;
+
 	/**
 	 * @var integer
 	 */

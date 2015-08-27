@@ -656,7 +656,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 
 	/**
 	 * @param string|int $user_id Int - by uid, String - by username
-	 * @return null|Entity_MyBB_User
+	 * @return null|Entity_MybbUser
 	 */
 	private function createMybbUser($user_id)
 	{
@@ -683,7 +683,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 
 		$row_mybb = $this->db_mybb->fetch_array_assoc($result);
 
-		$mybb_user = new Entity_MyBB_User($row_mybb['uid'], $row_mybb['usergroup']);
+		$mybb_user = new Entity_MybbUser($row_mybb['uid'], $row_mybb['usergroup']);
 		$mybb_user->setMybbAddGroups(explode(",", $row_mybb['additionalgroups']));
 		$mybb_user->setMybbDisplayGroup($row_mybb['displaygroup']);
 
@@ -706,7 +706,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	/**
 	 * Zapisuje dane o użytkowniku
 	 *
-	 * @param Entity_MyBB_User $mybb_user
+	 * @param Entity_MybbUser $mybb_user
 	 */
 	private function saveMybbUser($mybb_user)
 	{

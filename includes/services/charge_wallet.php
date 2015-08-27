@@ -23,8 +23,8 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 			$option_sms = eval($templates->render("services/" . $this::MODULE_ID . "/option_sms"));
 
 			$sms_list = "";
-			foreach ($payment_sms->payment_api->sms_list AS $row) {
-				$row['cost'] = number_format(get_sms_cost($row['number']) * $settings['vat'] / 100.0, 2);
+			foreach ($payment_sms->getPaymentModule()->getTariffs() AS $tariff) {
+				$row['cost'] = $tariff->getSmsCostBrutto();
 				$row['provision'] = number_format($row['provision'] / 100.0, 2);
 				// Przygotowuje opcje wyboru
 				$sms_list .= create_dom_element("option",

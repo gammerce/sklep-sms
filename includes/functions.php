@@ -275,44 +275,51 @@ function validate_payment($purchase_data)
 	}
 
 	// Pobieramy ile kosztuje ta usługa dla przelewu / portfela
-	if ($purchase_data->getPayment('cost') === NULL)
+	if ($purchase_data->getPayment('cost') === NULL) {
 		$purchase_data->setPayment(array(
 			'cost' => $heart->get_tariff_provision($purchase_data->getTariff())
 		));
+	}
 
 	// Metoda płatności
-	if ($purchase_data->getPayment('method') == "wallet" && !is_logged())
+	if ($purchase_data->getPayment('method') == "wallet" && !is_logged()) {
 		return array(
 			'status' => "wallet_not_logged",
 			'text' => $lang->no_login_no_wallet,
 			'positive' => false
 		);
+	}
 	else if ($purchase_data->getPayment('method') == "transfer") {
-		if ($purchase_data->getPayment('cost') <= 1)
+		if ($purchase_data->getPayment('cost') <= 1) {
 			return array(
 				'status' => "too_little_for_transfer",
 				'text' => $lang->sprintf($lang->transfer_above_amount, $settings['currency']),
 				'positive' => false
 			);
+		}
 
-		if (!$payment->transfer_available())
+		if (!$payment->getPaymentModule()->supportTransfer()) {
 			return array(
 				'status' => "transfer_unavailable",
 				'text' => $lang->transfer_unavailable,
 				'positive' => false
 			);
-	} else if ($purchase_data->getPayment('method') == "sms" && !$payment->sms_available())
+		}
+	} else if ($purchase_data->getPayment('method') == "sms" && !$payment->getPaymentModule()->supportSms()) {
 		return array(
 			'status' => "sms_unavailable",
 			'text' => $lang->sms_unavailable,
 			'positive' => false
 		);
-	else if ($purchase_data->getPayment('method') == "sms" && $purchase_data->getTariff() && !isset($payment->payment_api->smses[$purchase_data->getTariff()]))
+	} else if ($purchase_data->getPayment('method') == "sms" && $purchase_data->getTariff()
+		&& $payment->getPaymentModule()->getTariffById($purchase_data->getTariff()) === NULL
+	) {
 		return array(
 			'status' => "no_sms_option",
 			'text' => $lang->no_sms_payment,
 			'positive' => false
 		);
+	}
 
 	// Kod SMS
 	$purchase_data->setPayment(array(
@@ -347,12 +354,13 @@ function validate_payment($purchase_data)
 		$sms_return = $payment->pay_sms($purchase_data->getPayment('sms_code'), $purchase_data->getTariff(), $purchase_data->user);
 		$payment_id = $sms_return['payment_id'];
 
-		if ($sms_return['status'] != "OK")
+		if ($sms_return['status'] != IPayment_Sms::OK) {
 			return array(
 				'status' => $sms_return['status'],
 				'text' => $sms_return['text'],
 				'positive' => false
 			);
+		}
 	} else if ($purchase_data->getPayment('method') == "wallet") {
 		// Dodanie informacji o płatności z portfela
 		$payment_id = pay_wallet($purchase_data->getPayment('cost'), $purchase_data->user);

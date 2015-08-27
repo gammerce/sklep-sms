@@ -1,27 +1,59 @@
 <?php
 
-$heart->register_payment_api("zabijaka", "PaymentModuleZabijaka");
+$heart->register_payment_module("zabijaka", "PaymentModule_Zabijaka");
 
-class PaymentModuleZabijaka extends PaymentModule implements IPayment_Sms
+class PaymentModule_Zabijaka extends PaymentModule implements IPayment_Sms
 {
 
 	const SERVICE_ID = "zabijaka";
 
-	public function verify_sms($sms_code, $sms_number)
+	/** @var  string */
+	private $api;
+
+	/** @var  string */
+	private $sms_code;
+
+	function __construct()
 	{
+		parent::__construct();
 
-		$xml = simplexml_load_file("http://api.zabijaka.pl/1.1/" . urlencode($this->data['api']) . "/sms/" .
-			get_sms_cost($sms_number) . "/" . urlencode($sms_code) . "/sms.xml/add");
+		$this->api = $this->data['api'];
+		$this->sms_code = $this->data['sms_text'];
+	}
 
-		if ($xml) {
-			if ($xml->error == '2') $output['status'] = "BAD_CODE";
-			else if ($xml->error == '1') $output['status'] = "BAD_API";
-			else if ($xml->success == '1') $output['status'] = "OK";
-			else $output['status'] = "ERROR";
-		} else
-			$output['status'] = "NO_CONNECTION";
+	public function verify_sms($return_code, $number)
+	{
+		$xml = simplexml_load_file(
+			'http://api.zabijaka.pl/1.1' .
+			'/' . urlencode($this->api) .
+			'/sms' .
+			'/' . round(get_sms_cost($number) / 100) .
+			"/" . urlencode($return_code) .
+			"/sms.xml/add"
+		);
 
-		return $output;
+		if (!$xml) {
+			return IPayment_Sms::NO_CONNECTION;
+		}
+
+		if ($xml->error == '2') {
+			return IPayment_Sms::BAD_CODE;
+		}
+
+		if ($xml->error == '1') {
+			return IPayment_Sms::BAD_API;
+		}
+
+		if ($xml->success == '1') {
+			return IPayment_Sms::OK;
+		}
+
+		return IPayment_Sms::ERROR;
+	}
+
+	public function getSmsCode()
+	{
+		return $this->sms_code;
 	}
 
 }

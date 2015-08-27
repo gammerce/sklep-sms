@@ -65,7 +65,7 @@ foreach (scandir(SCRIPT_ROOT . "includes/interfaces") as $file)
 		require_once SCRIPT_ROOT . "includes/interfaces/" . $file;
 
 // Dodajemy klasy wszystkich modulow platnosci
-require_once SCRIPT_ROOT . "includes/verification/payment_module.php";
+require_once SCRIPT_ROOT . "includes/PaymentModule.php";
 foreach (scandir(SCRIPT_ROOT . "includes/verification/interfaces") as $file)
 	if (ends_at($file, ".php"))
 		require_once SCRIPT_ROOT . "includes/verification/interfaces/" . $file;

@@ -1,73 +1,96 @@
 <?php
 
-$heart->register_payment_api("1s1k", "PaymentModule1s1k");
+$heart->register_payment_module("1s1k", "PaymentModule_1s1k");
 
-class PaymentModule1s1k extends PaymentModule implements IPayment_Sms
+class PaymentModule_1s1k extends PaymentModule implements IPayment_Sms
 {
 
 	const SERVICE_ID = "1s1k";
+
+	/** @var string */
+	private $api;
+
+	/** @var string */
+	private $sms_code;
+
 	private $rates = array();
 
 	function __construct()
 	{
-		parent::__construct(); // Wywolujemy konstruktor klasy którą rozszerzamy
+		parent::__construct();
+
+		$this->api = $this->data['api'];
+		$this->sms_code = $this->data['sms_text'];
 
 		$this->rates = array(
-			"0.65" => "7169",
-			"1.30" => "72550",
-			"1.95" => "73550",
-			"2.60" => "74550",
-			"3.25" => "75550",
-			"3.90" => "76550",
-			"5.85" => "79550",
-			"12.35" => "91986",
-			"16.25" => "92596"
+			'0.65' => '7169',
+			'1.30' => '72550',
+			'1.95' => '73550',
+			'2.60' => '74550',
+			'3.25' => '75550',
+			'3.90' => '76550',
+			'5.85' => '79550',
+			'12.35' => '91986',
+			'16.25' => '92596'
 		);
 	}
 
-	public function verify_sms($sms_code, $sms_number)
+	public function verify_sms($return_code, $number)
 	{
-		$content = curl_get_contents("http://www.1shot1kill.pl/api?type=sms&key=" . urlencode($this->data['api']) . "&sms_code=" . urlencode($sms_code) . "&comment=");
-		$return = json_decode($content, true);
+		$content = curl_get_contents(
+			'http://www.1shot1kill.pl/api' .
+			'?type=sms' .
+			'&key=' . urlencode($this->api) .
+			'&sms_code=' . urlencode($return_code) .
+			'&comment='
+		);
 
-		if (!is_array($return)) {
-			$output['status'] = "BAD_API";
-		} else {
-			$number = $this->rates[number_format(floatval($return['amount']), 2)];
-
-			switch ($return['status']) {
-				case "ok":
-					if ($number == $sms_number) {
-						$output['status'] = "OK";
-					} else {
-						$output['status'] = "BAD_NUMBER";
-						$output['number'] = $number;
-					}
-					break;
-				case "fail":
-					$output['status'] = "BAD_CODE";
-					break;
-				case "error":
-					switch ($return['desc']) {
-						case "internal api error":
-							$output['status'] = "SERVER_ERROR";
-							break;
-						case "wrong api type":
-							$output['status'] = "BAD_API";
-							break;
-						case "wrong api key":
-							$output['status'] = "BAD_API";
-							break;
-						default:
-							$output['status'] = "ERROR";
-					}
-					break;
-				default:
-					$output['status'] = "ERROR";
-			}
+		if ($content === FALSE) {
+			return IPayment_Sms::NO_CONNECTION;
 		}
 
-		return $output;
+		$response = json_decode($content, true);
+		if (!is_array($response)) {
+			return IPayment_Sms::BAD_API;
+		}
+
+		$response_number = $this->rates[number_format(floatval($response['amount']), 2)];
+
+		switch ($response['status']) {
+			case 'ok':
+				if ($response_number == $number) {
+					return IPayment_Sms::OK;
+				}
+
+				return array(
+					'status' => IPayment_Sms::BAD_NUMBER,
+					'number' => $response_number
+				);
+
+			case 'fail':
+				return IPayment_Sms::BAD_CODE;
+
+			case 'error':
+				switch ($response['desc']) {
+					case 'internal api error':
+						return IPayment_Sms::SERVER_ERROR;
+
+					case 'wrong api type':
+					case 'wrong api key':
+						return IPayment_Sms::BAD_API;
+				}
+
+				return array(
+					'status' => IPayment_Sms::UNKNOWN,
+					'text' => $response['desc']
+				);
+		}
+
+		return IPayment_Sms::ERROR;
 	}
 
+	public function getSmsCode()
+	{
+		return $this->sms_code;
+	}
 }

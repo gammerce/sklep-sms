@@ -20,12 +20,14 @@ class PageCashbillTransferFinalized extends Page
 		global $settings, $lang;
 
 		$payment = new Payment($settings['transfer_service']);
-		if ($payment->payment_api->check_sign($get, $payment->payment_api->data['key'], $get['sign']) && $get['service'] != $payment->payment_api->data['service'])
+		if ($payment->getPaymentModule()->check_sign($get, $payment->getPaymentModule()->getKey(), $get['sign']) && $get['service'] != $payment->getPaymentModule()->getService()) {
 			return $lang->transfer_unverified;
+		}
 
 		// prawidlowa sygnatura, w zaleznosci od statusu odpowiednia informacja dla klienta
-		if (strtoupper($get['status']) != 'OK')
+		if (strtoupper($get['status']) != 'OK') {
 			return $lang->transfer_error;
+		}
 
 		return purchase_info(array(
 			'payment' => 'transfer',

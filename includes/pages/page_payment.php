@@ -45,7 +45,7 @@ class PagePayment extends Page
 		// Sprawdzamy, czy płatność za pomocą SMS jest możliwa
 		if ($purchase_data->getPayment('sms_service') && $purchase_data->getTariff() !== NULL && !$purchase_data->getPayment('no_sms')) {
 			$payment_sms = new Payment($purchase_data->getPayment("sms_service"));
-			if (strlen($number = $payment_sms->get_number_by_tariff($purchase_data->getTariff()))) {
+			if (strlen($number = $payment_sms->getPaymentModule()->getTariffById($purchase_data->getTariff())->getNumber())) {
 				$tariff['number'] = $number;
 				$tariff['cost'] = number_format(get_sms_cost($tariff['number']) * $settings['vat'] / 100.0, 2);
 				$payment_methods .= eval($templates->render("payment_method_sms"));

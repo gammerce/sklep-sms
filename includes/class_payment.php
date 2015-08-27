@@ -2,27 +2,27 @@
 
 class Payment
 {
+	const SMS_NOT_SUPPORTED = 1;
+	const TRANSFER_NOT_SUPPORTED = 2;
 
-	private $service;
 	private $platform;
 
 	/** @var PaymentModule|IPayment_Sms|IPayment_Transfer */
-	public $payment_api;
+	private $payment_module;
 
-	function __construct($payment_service, $platform = '')
+	function __construct($payment_module_id, $platform = '')
 	{
 		global $heart, $lang;
 
-		$this->service = $payment_service;
 		$this->platform = strlen($platform) ? $platform : $_SERVER['HTTP_USER_AGENT'];
 
 		// Tworzymy obiekt obslugujacy stricte weryfikacje
-		$className = $heart->get_payment_api($this->service);
-		$this->payment_api = $className ? new $className() : NULL;
+		$className = $heart->get_payment_module($payment_module_id);
+		$this->payment_module = $className ? new $className() : NULL;
 
 		// API podanej usługi nie istnieje.
-		if ($this->payment_api === NULL) {
-			output_page($lang->sprintf($lang->payment['bad_service'], $this->service));
+		if ($this->payment_module === NULL) {
+			output_page($lang->sprintf($lang->payment['bad_service'], $payment_module_id));
 		}
 	}
 
@@ -36,26 +36,29 @@ class Payment
 	{
 		global $db, $settings, $lang, $lang_shop;
 
-		// Serwis płatności nie obsługuje płatności SMS
-		if (!$this->payment_api->data['sms']) {
+		if (!$this->getPaymentModule()->supportSms()) {
 			return array(
-				'status' => "NO_SMS_SERVE",
-				'text' => $lang->sms['info']['no_sms_serve']
+				'status' => Payment::SMS_NOT_SUPPORTED,
+				'text' => $lang->sms['info'][Payment::SMS_NOT_SUPPORTED]
 			);
 		}
 
-		if (object_implements($this->payment_api, "IPayment_Sms")) {
-			$sms_number = $this->payment_api->smses[$tariff]['number'];
-			$sms_return = $this->payment_api->verify_sms($sms_code, $sms_number);
+		if (object_implements($this->getPaymentModule(), "IPayment_Sms")) {
+			$sms_number = $this->getPaymentModule()->getTariffById($tariff)->getNumber();
+			$sms_return = $this->getPaymentModule()->verify_sms($sms_code, $sms_number);
+
+			if (!is_array($sms_return)) {
+				$sms_return['status'] = $sms_return;
+			}
 		} else {
-			$sms_return['status'] = "NO_SMS_SERVE";
-			// Nie przerywamy jeszcze, bo chcemy sprawdzic czy nie ma takiego SMSa do wykrozystania w bazie
+			$sms_return['status'] = Payment::SMS_NOT_SUPPORTED;
+			// Nie przerywamy jeszcze, bo chcemy sprawdzic czy nie ma takiego SMSa do wykorzystania w bazie
 		}
 
 		// Jezeli weryfikacja smsa nie zwrocila, ze kod zostal prawidlowo zweryfikowany
 		// ani, że sms został wysłany na błędny numer,
 		// to sprawdzamy czy kod jest w bazie kodów do wykorzystania
-		if (!isset($sms_return) || !in_array($sms_return['status'], array("BAD_NUMBER", "OK"))) {
+		if (!isset($sms_return) || !in_array($sms_return['status'], array(IPayment_Sms::BAD_NUMBER, IPayment_Sms::OK))) {
 			$result = $db->query($db->prepare(
 				"SELECT * FROM `" . TABLE_PREFIX . "sms_codes` " .
 				"WHERE `code` = '%s' AND `tariff` = '%d'",
@@ -73,25 +76,24 @@ class Payment
 					array($db_code['id'])
 				));
 				// Ustawienie wartości, jakby kod był prawidłowy
-				$sms_return['status'] = "OK";
+				$sms_return['status'] = IPayment_Sms::OK;
 
 				log_info($lang_shop->sprintf($lang_shop->payment['remove_code_from_db'], $db_code['code'], $db_code['tariff']));
 			}
 		}
 
-		if ($sms_return['status'] == "OK") {
+		if ($sms_return['status'] == IPayment_Sms::OK) {
 			// Dodanie informacji o płatności sms
 			$db->query($db->prepare(
 				"INSERT INTO `" . TABLE_PREFIX . "payment_sms` (`code`, `income`, `cost`, `text`, `number`, `ip`, `platform`, `free`) " .
 				"VALUES ('%s','%d','%d','%s','%s','%s','%s','%d')",
 				array($sms_code, get_sms_cost($sms_number) / 2, ceil(get_sms_cost($sms_number) * $settings['vat']),
-					$this->payment_api->data['sms_text'], $sms_number, $user->getLastIp(), $this->platform, $sms_return['free'] ? 1 : $db_code['free'])
+					$this->getPaymentModule()->getSmsCode(), $sms_number, $user->getLastIp(), $this->platform, $sms_return['free'] ? 1 : $db_code['free'])
 			));
 
 			$output['payment_id'] = $db->last_id();
-		}
-		// SMS został wysłany na błędny numer
-		else if ($sms_return['status'] == "BAD_NUMBER" && isset($sms_return['tariff'])) {
+		} // SMS został wysłany na błędny numer
+		else if ($sms_return['status'] == IPayment_Sms::BAD_NUMBER && isset($sms_return['tariff'])) {
 			// Dodajemy kod do listy kodów do wykorzystania
 			$db->query($db->prepare(
 				"INSERT INTO `" . TABLE_PREFIX . "sms_codes` " .
@@ -99,62 +101,17 @@ class Payment
 				array($sms_code, $sms_return['tariff'])
 			));
 
-			log_info($lang_shop->sprintf($lang_shop->add_code_to_reuse, $sms_code, $sms_return['tariff'], $user->getUsername(), $user->getUid(), $user->getLastIp(), $tariff));
-		} else if ($sms_return['status'] != "NO_SMS_SERVE") {
+			log_info($lang_shop->sprintf($lang_shop->add_code_to_reuse, $sms_code, $sms_return['tariff'],
+				$user->getUsername(), $user->getUid(), $user->getLastIp(), $tariff));
+		} else if ($sms_return['status'] != Payment::SMS_NOT_SUPPORTED) {
 			log_info($lang_shop->sprintf($lang_shop->bad_sms_code_used, $user->getUsername(), $user->getUid(), $user->getLastIp(),
-				$sms_code, $this->payment_api->data['sms_text'], $sms_number, $sms_return['status']));
+				$sms_code, $this->getPaymentModule()->getSmsCode(), $sms_number, $sms_return['status']));
 		}
 
-		switch (strtoupper($sms_return['status'])) {
-			// Prawidłowy kod zwrotny
-			case "OK":
-				$output['text'] = $lang->sms['info']['ok'];
-				break;
-			// Nieprawidlowy kod zwrotny
-			case "BAD_CODE":
-				$output['text'] = $lang->sms['info']['bad_code'];
-				break;
-			// Nieprawidlowy kod zwrotny
-			case "BAD_NUMBER":
-				$output['text'] = $lang->sms['info']['bad_number'];
-				break;
-			// Błąd API
-			case "BAD_API":
-				$output['text'] = $lang->sms['info']['bad_api'];
-				break;
-			// Błędny email
-			case "BAD_EMAIL":
-				$output['text'] = $lang->sms['info']['bad_email'];
-				break;
-			// Nie podano wszystkich potrzebnych danych
-			case "BAD_DATA":
-				$output['text'] = $lang->sms['info']['bad_data'];
-				break;
-			// Błąd serwera weryfikującego kod
-			case "SERVER_ERROR":
-				$output['text'] = $lang->sms['info']['server_error'];
-				break;
-			// Blad konfiguracji uslugi
-			case "SERVICE_ERROR":
-				$output['text'] = $lang->sms['info']['service_error'];
-				break;
-			// Błąd
-			case "ERROR":
-				$output['text'] = $lang->sms['info']['error'];
-				break;
-			// Nie mozna sie polaczyc z serwerem sprawdzajacym
-			case "NO_CONNECTION":
-				$output['text'] = $lang->sms['info']['no_connection'];
-				break;
-			case "NO_SMS_SERVE":
-				$output['text'] = $lang->sms['info']['no_sms_serve'];
-				break;
-			default:
-				$output['text'] = if_isset($sms_return['text'], $lang->sms['info']['dunno']);
-		}
-
-		$output['status'] = $sms_return['status'];
-		return $output;
+		return array(
+			'status' => $sms_return['status'],
+			'text' => if_isset($sms_return['text'], if_isset($lang->sms['info'][$sms_return['status']], $sms_return['status']))
+		);
 	}
 
 	/**
@@ -165,19 +122,12 @@ class Payment
 	{
 		global $lang;
 
-		// Serwis płatności nie obsługuje płatności przelewem
-		if (!$this->payment_api->data['transfer']) {
+		if (!$this->getPaymentModule()->supportTransfer() || !object_implements($this->getPaymentModule(), "IPayment_Transfer")) {
 			return array(
-				'status' => "NO_TRANSFER_SERVE",
-				'text' => $lang->no_transfer_serve
+				'status' => Payment::TRANSFER_NOT_SUPPORTED,
+				'text' => $lang->transfer[Payment::TRANSFER_NOT_SUPPORTED]
 			);
 		}
-
-		if (!object_implements($this->payment_api, "IPayment_Transfer"))
-			return array(
-				'status' => "NO_TRANSFER_SERVE",
-				'text' => $lang->no_transfer_serve
-			);
 
 		// Dodajemy extra info
 		$purchase_data->user->setPlatform($this->platform);
@@ -188,9 +138,9 @@ class Payment
 
 		return array(
 			'status' => "transfer",
-			'text' => $lang->transfer_ok,
+			'text' => $lang->transfer['prepared'],
 			'positive' => true,
-			'data' => array('data' => $this->payment_api->prepare_transfer($purchase_data, $data_filename)) // Przygotowuje dane płatności transferem
+			'data' => array('data' => $this->getPaymentModule()->prepare_transfer($purchase_data, $data_filename)) // Przygotowuje dane płatności transferem
 		);
 	}
 
@@ -254,39 +204,13 @@ class Payment
 		return true;
 	}
 
-	public function get_provision_by_tariff($tariff)
-	{
-		return $this->payment_api->smses[$tariff]['provision'];
-	}
-
-	public function get_provision_by_number($number)
-	{
-		if (!isset($this->payment_api->smses[$number]))
-			return 0;
-
-		return $this->payment_api->smses[$number]['provision'];
-	}
-
-	public function get_number_by_tariff($tariff)
-	{
-		if (!isset($this->payment_api->smses[$tariff]))
-			return "";
-
-		return $this->payment_api->smses[$tariff]['number'];
-	}
-
 	/**
 	 * @param bool $escape
-	 * @return mixed
+	 * @return string
 	 */
-	public function get_sms_text($escape = false)
+	public function getSmsCode($escape = false)
 	{
-		return $escape ? htmlspecialchars($this->payment_api->data['sms_text']) : $this->payment_api->data['sms_text'];
-	}
-
-	public function get_payment_service()
-	{
-		return $this->service;
+		return $escape ? htmlspecialchars($this->getPaymentModule()->getSmsCode()) : $this->getPaymentModule()->getSmsCode();
 	}
 
 	public function get_platform()
@@ -294,14 +218,12 @@ class Payment
 		return $this->platform;
 	}
 
-	public function transfer_available()
+	/**
+	 * @return IPayment_Sms|IPayment_Transfer|PaymentModule
+	 */
+	public function getPaymentModule()
 	{
-		return $this->payment_api->data['transfer'];
-	}
-
-	public function sms_available()
-	{
-		return $this->payment_api->data['sms'];
+		return $this->payment_module;
 	}
 
 }

@@ -1,20 +1,40 @@
 <?php
 
-$heart->register_payment_api("microsms", "PaymentModuleMicrosms");
+$heart->register_payment_module("microsms", "PaymentModule_Microsms");
 
-class PaymentModuleMicrosms extends PaymentModule implements IPayment_Sms
+class PaymentModule_Microsms extends PaymentModule implements IPayment_Sms
 {
 
 	const SERVICE_ID = "microsms";
 
-	public function verify_sms($sms_code, $sms_number)
+	/** @var  string */
+	private $api;
+
+	/** @var  string */
+	private $service_id;
+
+	/** @var  string */
+	private $sms_code;
+
+	function __construct()
+	{
+		parent::__construct();
+
+		$this->api = $this->data['api'];
+		$this->service_id = $this->data['service_id'];
+		$this->sms_code = $this->data['sms_text'];
+	}
+
+	public function verify_sms($return_code, $number)
 	{
 		$handle = fopen(
 			'http://microsms.pl/api/check.php' .
-			'?userid=' . urlencode($this->data['api']) .
-			'&number=' . urlencode($sms_number) .
-			'&code=' . urlencode($sms_code) .
-			'&serviceid=' . urlencode($this->data['service_id']), 'r');
+			'?userid=' . urlencode($this->api) .
+			'&number=' . urlencode($number) .
+			'&code=' . urlencode($return_code) .
+			'&serviceid=' . urlencode($this->service_id),
+			'r'
+		);
 
 		if ($handle) {
 			$check = fgetcsv($handle, 1024);
@@ -22,17 +42,21 @@ class PaymentModuleMicrosms extends PaymentModule implements IPayment_Sms
 
 			if ($check[0] != 'E') {
 				if ($check[0] == 1) {
-					$output['status'] = "OK";
-				} else {
-					$output['status'] = "BAD_CODE";
+					return IPayment_Sms::OK;
 				}
-			} else {
-				$output['status'] = "SERVICE_ERROR";
-			}
-		} else
-			$output['status'] = "NO_CONNECTION";
 
-		return $output;
+				return IPayment_Sms::BAD_CODE;
+			}
+
+			return IPayment_Sms::MISCONFIGURATION;
+		}
+
+		return IPayment_Sms::NO_CONNECTION;
+	}
+
+	public function getSmsCode()
+	{
+		return $this->sms_code;
 	}
 
 }

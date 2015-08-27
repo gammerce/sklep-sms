@@ -18,7 +18,7 @@ class Heart
 	public $page_title;
 
 	private $services_classes = array();
-	private $payment_api_classes = array();
+	private $payment_module_classes = array();
 	private $pages_classes = array();
 	private $blocks_classes = array();
 
@@ -126,17 +126,17 @@ class Heart
 	// Klasy API płatności
 	//
 
-	public function register_payment_api($id, $class)
+	public function register_payment_module($id, $class)
 	{
-		if (isset($this->payment_api_classes[$id]))
+		if (isset($this->payment_module_classes[$id]))
 			throw new Exception("There is a payment api with id: " . htmlspecialchars($id) . " already.");
 
-		$this->payment_api_classes[$id] = $class;
+		$this->payment_module_classes[$id] = $class;
 	}
 
-	public function get_payment_api($id)
+	public function get_payment_module($id)
 	{
-		return isset($this->payment_api_classes[$id]) ? $this->payment_api_classes[$id] : NULL;
+		return isset($this->payment_module_classes[$id]) ? $this->payment_module_classes[$id] : NULL;
 	}
 
 	//
