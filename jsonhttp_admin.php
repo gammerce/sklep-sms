@@ -895,7 +895,7 @@ if ($action == "charge_wallet") {
 		"UPDATE `" . TABLE_PREFIX . "tariffs` " .
 		"SET `provision` = '%d' " .
 		"WHERE `tariff` = '%d'",
-		array($_POST['provision'], $_POST['tariff'])
+		array($_POST['provision'] * 100, $_POST['tariff'])
 	));
 
 	// Zwróć info o prawidłowej lub błędnej edycji
