@@ -11,75 +11,6 @@ function admin_session()
 }
 
 /**
- * Pobranie szablonu.
- *
- * @param string $title Nazwa szablonu
- * @param bool $install Prawda, jeżeli pobieramy szablon instalacji.
- * @param bool $eslashes Prawda, jeżeli zawartość szablonu ma być "escaped".
- * @param bool $htmlcomments Prawda, jeżeli chcemy dodać komentarze o szablonie.
- * @return string|bool Szablon.
- */
-function get_template($title, $install = false, $eslashes = true, $htmlcomments = true)
-{
-	global $settings, $lang;
-
-	if (!$install) {
-		if (strlen($lang->get_current_language_short())) {
-			$filename = $title . "." . $lang->get_current_language_short();
-			$temp = SCRIPT_ROOT . "themes/{$settings['theme']}/{$filename}.html";
-			if (file_exists($temp))
-				$path = $temp;
-			else {
-				$temp = SCRIPT_ROOT . "themes/default/{$filename}.html";
-				if (file_exists($temp))
-					$path = $temp;
-			}
-		}
-
-		if (!isset($path)) {
-			$filename = $title;
-			$temp = SCRIPT_ROOT . "themes/{$settings['theme']}/{$filename}.html";
-			if (file_exists($temp))
-				$path = $temp;
-			else {
-				$temp = SCRIPT_ROOT . "themes/default/{$filename}.html";
-				if (file_exists($temp))
-					$path = $temp;
-			}
-		}
-	} else {
-		if (strlen($lang->get_current_language_short())) {
-			$filename = $title . "." . $lang->get_current_language_short();
-			$temp = SCRIPT_ROOT . "install/templates/{$filename}.html";
-			if (file_exists($temp))
-				$path = $temp;
-		}
-
-		if (!isset($path)) {
-			$filename = $title;
-			$temp = SCRIPT_ROOT . "install/templates/{$filename}.html";
-			if (file_exists($temp))
-				$path = $temp;
-		}
-	}
-
-	if (!isset($path))
-		return FALSE;
-
-	$template = file_get_contents($path);
-
-	if ($htmlcomments)
-		$template = "<!-- start: " . htmlspecialchars($title) . " -->\n{$template}\n<!-- end: " . htmlspecialchars($title) . " -->";
-
-	if ($eslashes)
-		$template = str_replace("\\'", "'", addslashes($template));
-
-	$template = str_replace("{__VERSION__}", VERSION, $template);
-
-	return $template;
-}
-
-/**
  * Pobranie szablonu
  * @param string $output Zwartość do wyświetlenia
  * @param int|string $header String do użycia w funkcji header()
@@ -226,7 +157,7 @@ function get_pagination($all, $current_page, $script, $get, $row_limit = 0)
 function is_logged()
 {
 	global $user;
-	return $user->getUid() ? true : false;
+	return $user->isLogged();
 }
 
 /**

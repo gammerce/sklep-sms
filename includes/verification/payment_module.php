@@ -5,7 +5,22 @@ abstract class PaymentModule
 
 	const SERVICE_ID = '';
 
-	public $data = array();
+	/** @var  string */
+	private $name;
+
+	/** @var  bool */
+	private $support_sms = false;
+
+	/** @var  bool */
+	private $support_transfer = false;
+
+	/**
+	 * Data from columns: data & data_hidden
+	 *
+	 * @var array
+	 */
+	private $data = array();
+
 	public $smses = array();
 	public $sms_list = array();
 
@@ -25,17 +40,19 @@ abstract class PaymentModule
 
 		$row = $db->fetch_array_assoc($result);
 
-		$this->data['name'] = $row['name'];
-		$this->data['sms'] = $row['sms'];
-		$this->data['transfer'] = $row['transfer'];
+		$this->name = $row['name'];
+		$this->support_sms = (bool)$row['sms'];
+		$this->support_transfer = (bool)$row['transfer'];
 
 		$data = (array)json_decode($row['data'], true);
-		foreach ($data as $key => $value)
+		foreach ($data as $key => $value) {
 			$this->data[$key] = $value;
+		}
 
 		$data_hidden = (array)json_decode($row['data_hidden'], true);
-		foreach ($data_hidden as $key => $value)
+		foreach ($data_hidden as $key => $value) {
 			$this->data[$key] = $value;
+		}
 
 		//
 		// Pobieranie SMSow - numer, taryfa
@@ -53,6 +70,30 @@ abstract class PaymentModule
 			$this->smses[$row['number']] = $row;
 			$this->smses[$row['tariff']] = $row;
 		}
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function supportTransfer()
+	{
+		return $this->support_transfer;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function supportSms()
+	{
+		return $this->support_sms;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getName()
+	{
+		return $this->name;
 	}
 
 }
