@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS `ss_tmp` (
 );
 
 INSERT INTO `ss_tmp` (`id`)
-  SELECT `id`
+  SELECT a.id AS `id`
   FROM `ss_pricelist` AS a
     LEFT JOIN `ss_services` AS b ON a.service = b.id
   WHERE b.id IS NULL;
@@ -150,7 +150,7 @@ ALTER TABLE `ss_servers_services` ADD FOREIGN KEY (`service_id`) REFERENCES `ss_
   ON UPDATE CASCADE;
 
 INSERT INTO `ss_tmp` (`id`)
-  SELECT `id`
+  SELECT pa.id AS `id`
   FROM `ss_payment_admin` AS pa
     LEFT JOIN `ss_users` AS u ON pa.aid = u.uid
   WHERE u.uid IS NULL;
