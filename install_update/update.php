@@ -48,6 +48,51 @@ try {
 	$db->query("ALTER TABLE `ss_groups` CHANGE `manage_player_services` `manage_user_services` TINYINT(1) NOT NULL DEFAULT '0';");
 } catch (SqlQueryException $e) {
 }
+
+try {
+	$db->query("ALTER TABLE `ss_payment_admin` ADD FOREIGN KEY (`aid`) REFERENCES `ss_users` (`uid`)
+  ON DELETE NO ACTION
+  ON UPDATE CASCADE;");
+} catch (SqlQueryException $e) {
+}
+
+try {
+	$db->query("ALTER TABLE `ss_sms_numbers` ADD FOREIGN KEY (`tariff`) REFERENCES `ss_tariffs` (`tariff`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE;");
+} catch (SqlQueryException $e) {
+}
+
+try {
+	$db->query("ALTER TABLE `ss_sms_numbers` ADD FOREIGN KEY (`service`) REFERENCES `ss_transaction_services` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE;");
+} catch (SqlQueryException $e) {
+}
+
+try {
+	$db->query("ALTER TABLE `ss_user_service` ADD CONSTRAINT `ss_user_service_ibfk_1` FOREIGN KEY (`service`) REFERENCES `ss_services` (`id`)
+  ON UPDATE CASCADE;");
+} catch (SqlQueryException $e) {
+}
+
+try {
+	$db->query("ALTER TABLE `ss_user_service_extra_flags` ADD CONSTRAINT `ss_user_service_extra_flags_ibfk_1` FOREIGN KEY (`us_id`) REFERENCES `ss_user_service` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE, ADD CONSTRAINT `ss_user_service_extra_flags_ibfk_2` FOREIGN KEY (`service`) REFERENCES `ss_services` (`id`)
+  ON UPDATE CASCADE, ADD CONSTRAINT `ss_user_service_extra_flags_ibfk_3` FOREIGN KEY (`server`) REFERENCES `ss_servers` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE CASCADE;");
+} catch (SqlQueryException $e) {
+}
+
+try {
+	$db->query("ALTER TABLE `ss_user_service_mybb_extra_groups` ADD CONSTRAINT `ss_user_service_mybb_extra_groups_ibfk_1` FOREIGN KEY (`us_id`) REFERENCES `ss_user_service` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE, ADD CONSTRAINT `ss_user_service_mybb_extra_groups_ibfk_2` FOREIGN KEY (`service`) REFERENCES `ss_services` (`id`)
+  ON UPDATE CASCADE;");
+} catch (SqlQueryException $e) {
+}
 // -------------- END VERSION 3.3.2 -------------------
 
 unlink(SCRIPT_ROOT . "install/progress");
