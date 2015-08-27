@@ -273,7 +273,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	 */
 	public function purchase_form_validate($data)
 	{
-		global $db, $lang;
+		global $heart, $db, $lang;
 
 		// Amount
 		$amount = explode(';', $data['amount']); // Wyłuskujemy taryfę
@@ -337,7 +337,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 			'forever' => $price['amount'] == -1 ? true : false
 		));
 		$purchase_data->setEmail($data['email']);
-		$purchase_data->setTariff($tariff);
+		$purchase_data->setTariff($heart->getTariff($tariff));
 
 		return array(
 			'status' => "ok",

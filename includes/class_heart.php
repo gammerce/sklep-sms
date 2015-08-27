@@ -12,6 +12,7 @@ class Heart
 	private $servers_services = array();
 	private $servers_services_fetched = false;
 
+	/** @var Entity_Tariff[] */
 	private $tariffs = array();
 	private $tariffs_fetched = false;
 
@@ -369,7 +370,10 @@ class Heart
 	// TARYFY
 	//
 
-	public function get_tariffs()
+	/**
+	 * @return Entity_Tariff[]
+	 */
+	public function getTariffs()
 	{
 		if (!$this->tariffs_fetched) {
 			$this->fetch_tariffs();
@@ -378,7 +382,11 @@ class Heart
 		return $this->tariffs;
 	}
 
-	public function get_tariff($id)
+	/**
+	 * @param int $id
+	 * @return Entity_Tariff | null
+	 */
+	public function getTariff($id)
 	{
 		if (!$this->tariffs_fetched) {
 			$this->fetch_tariffs();
@@ -387,16 +395,7 @@ class Heart
 		return if_isset($this->tariffs[$id], NULL);
 	}
 
-	public function get_tariff_provision($id)
-	{
-		if (!$this->tariffs_fetched) {
-			$this->fetch_tariffs();
-		}
-
-		return if_isset($this->tariffs[$id]['provision'], NULL);
-	}
-
-	public function get_tariffs_amount()
+	public function getTariffsAmount()
 	{
 		return count($this->tariffs);
 	}
@@ -407,7 +406,7 @@ class Heart
 
 		$result = $db->query("SELECT * FROM `" . TABLE_PREFIX . "tariffs`");
 		while ($row = $db->fetch_array_assoc($result)) {
-			$this->tariffs[$row['tariff']] = $row;
+			$this->tariffs[$row['tariff']] = new Entity_Tariff($row['tariff'], $row['provision'], $row['predefined']);
 		}
 
 		$this->tariffs_fetched = true;

@@ -28,7 +28,7 @@ class Payment
 
 	/**
 	 * @param string $sms_code
-	 * @param int $tariff
+	 * @param Entity_Tariff $tariff
 	 * @param Entity_User $user
 	 * @return array
 	 */
@@ -44,11 +44,13 @@ class Payment
 		}
 
 		if (object_implements($this->getPaymentModule(), "IPayment_Sms")) {
-			$sms_number = $this->getPaymentModule()->getTariffById($tariff)->getNumber();
+			$sms_number = $tariff->getNumber();
 			$sms_return = $this->getPaymentModule()->verify_sms($sms_code, $sms_number);
 
 			if (!is_array($sms_return)) {
-				$sms_return['status'] = $sms_return;
+				$sms_return = array(
+					'status' => $sms_return
+				);
 			}
 		} else {
 			$sms_return['status'] = Payment::SMS_NOT_SUPPORTED;
@@ -62,7 +64,7 @@ class Payment
 			$result = $db->query($db->prepare(
 				"SELECT * FROM `" . TABLE_PREFIX . "sms_codes` " .
 				"WHERE `code` = '%s' AND `tariff` = '%d'",
-				array($sms_code, $tariff)
+				array($sms_code, $tariff->getId())
 			));
 
 			// Jest taki kod w bazie
@@ -102,7 +104,7 @@ class Payment
 			));
 
 			log_info($lang_shop->sprintf($lang_shop->add_code_to_reuse, $sms_code, $sms_return['tariff'],
-				$user->getUsername(), $user->getUid(), $user->getLastIp(), $tariff));
+				$user->getUsername(), $user->getUid(), $user->getLastIp(), $tariff->getId()));
 		} else if ($sms_return['status'] != Payment::SMS_NOT_SUPPORTED) {
 			log_info($lang_shop->sprintf($lang_shop->bad_sms_code_used, $user->getUsername(), $user->getUid(), $user->getLastIp(),
 				$sms_code, $this->getPaymentModule()->getSmsCode(), $sms_number, $sms_return['status']));
@@ -110,7 +112,7 @@ class Payment
 
 		return array(
 			'status' => $sms_return['status'],
-			'text' => if_isset($sms_return['text'], if_isset($lang->sms['info'][$sms_return['status']], $sms_return['status']))
+			'text' => if_strlen2($sms_return['text'], if_strlen2($lang->sms['info'][$sms_return['status']], $sms_return['status']))
 		);
 	}
 

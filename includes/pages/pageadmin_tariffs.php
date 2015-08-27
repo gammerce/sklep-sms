@@ -22,24 +22,24 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
 
 		$i = 0;
 		$tbody = "";
-		foreach ($heart->get_tariffs() as $tariff_data) {
+		foreach ($heart->getTariffs() as $tariff) {
 			$i += 1;
 			// Pobranie przycisku edycji oraz usuwania
 			$button_edit = create_dom_element("img", "", array(
 				'id' => "edit_row_{$i}",
 				'src' => "images/edit.png",
-				'title' => $lang->edit . " " . $tariff_data['tariff']
+				'title' => $lang->edit . " " . $tariff->getId()
 			));
-			if (!$tariff_data['predefined'])
+			if (!$tariff->isPredefined())
 				$button_delete = create_dom_element("img", "", array(
 					'id' => "delete_row_{$i}",
 					'src' => "images/bin.png",
-					'title' => $lang->delete . " " . $tariff_data['tariff']
+					'title' => $lang->delete . " " . $tariff->getId()
 				));
 			else
 				$button_delete = "";
 
-			$provision = number_format($tariff_data['provision'] / 100.0, 2);
+			$provision = number_format($tariff->getProvision() / 100.0, 2);
 
 			// Pobranie danych do tabeli
 			$tbody .= eval($templates->render("admin/tariffs_trow"));
@@ -80,8 +80,8 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
 				break;
 
 			case "tariff_edit":
-				$tariff = htmlspecialchars($data['tariff']);
-				$provision = number_format($heart->get_tariff_provision($data['tariff']) / 100.0, 2);
+				$tariff = $heart->getTariff($data['tariff']);
+				$provision = number_format($tariff->getProvision() / 100.0, 2);
 
 				$output = eval($templates->render("admin/action_boxes/tariff_edit"));
 				break;

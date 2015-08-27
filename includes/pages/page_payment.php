@@ -32,7 +32,8 @@ class PagePayment extends Page
 			return $lang->error_occured;
 
 		if (($service_module = $heart->get_service_module($purchase_data->getService())) === NULL
-			|| !object_implements($service_module, "IService_PurchaseWeb"))
+			|| !object_implements($service_module, "IService_PurchaseWeb")
+		)
 			return $lang->bad_module;
 
 		// Pobieramy szczegóły zamówienia
@@ -44,23 +45,24 @@ class PagePayment extends Page
 		$payment_methods = '';
 		// Sprawdzamy, czy płatność za pomocą SMS jest możliwa
 		if ($purchase_data->getPayment('sms_service') && $purchase_data->getTariff() !== NULL && !$purchase_data->getPayment('no_sms')) {
-			$payment_sms = new Payment($purchase_data->getPayment("sms_service"));
-			if (strlen($number = $payment_sms->getPaymentModule()->getTariffById($purchase_data->getTariff())->getNumber())) {
-				$tariff['number'] = $number;
-				$tariff['cost'] = number_format(get_sms_cost($tariff['number']) * $settings['vat'] / 100.0, 2);
-				$payment_methods .= eval($templates->render("payment_method_sms"));
-			}
+			$payment_sms = new Payment($purchase_data->getPayment('sms_service'));
+			$payment_methods .= eval($templates->render('payment_method_sms'));
 		}
 
 		$cost_transfer = $purchase_data->getPayment('cost') !== NULL ? number_format($purchase_data->getPayment('cost') / 100.0, 2) : "0.00";
-		if (strlen($settings['transfer_service']) && $purchase_data->getPayment('cost') !== NULL && $purchase_data->getPayment('cost') > 1 && !$purchase_data->getPayment('no_transfer'))
+		if (strlen($settings['transfer_service']) && $purchase_data->getPayment('cost') !== NULL
+			&& $purchase_data->getPayment('cost') > 1 && !$purchase_data->getPayment('no_transfer')
+		) {
 			$payment_methods .= eval($templates->render("payment_method_transfer"));
+		}
 
-		if (is_logged() && $purchase_data->getPayment('cost') !== NULL && !$purchase_data->getPayment('no_wallet'))
+		if (is_logged() && $purchase_data->getPayment('cost') !== NULL && !$purchase_data->getPayment('no_wallet')) {
 			$payment_methods .= eval($templates->render("payment_method_wallet"));
+		}
 
-		if (!$purchase_data->getPayment('no_code') && object_implements($service_module, "IService_ServiceCode"))
+		if (!$purchase_data->getPayment('no_code') && object_implements($service_module, "IService_ServiceCode")) {
 			$payment_methods .= eval($templates->render("payment_method_code"));
+		}
 
 		$purchase_data = htmlspecialchars($post['data']);
 		$purchase_sign = htmlspecialchars($post['sign']);

@@ -841,7 +841,7 @@ if ($action == "charge_wallet") {
 	if ($warning = check_for_warnings("number", $_POST['tariff'])) {
 		$warnings['tariff'] = array_merge((array)$warnings['tariff'], $warning);
 	}
-	if (($heart->get_tariff($_POST['tariff'])) !== NULL) {
+	if (($heart->getTariff($_POST['tariff'])) !== NULL) {
 		$warnings['tariff'][] = $lang->tariff_exist;
 	}
 
@@ -938,7 +938,7 @@ if ($action == "charge_wallet") {
 	}
 
 	// Taryfa
-	if (($heart->get_tariff($_POST['tariff'])) === NULL) {
+	if (($heart->getTariff($_POST['tariff'])) === NULL) {
 		$warnings['tariff'][] = $lang->no_such_tariff;
 	}
 

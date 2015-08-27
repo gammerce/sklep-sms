@@ -121,10 +121,10 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
 
 		// Pobranie taryf
 		$tariffs = "";
-		foreach ($heart->get_tariffs() as $tariff_data)
-			$tariffs .= create_dom_element("option", $tariff_data['tariff'], array(
-				'value' => $tariff_data['tariff'],
-				'selected' => isset($price) && $price['tariff'] == $tariff_data['tariff'] ? "selected" : ""
+		foreach ($heart->getTariffs() as $tariff)
+			$tariffs .= create_dom_element("option", $tariff->getId(), array(
+				'value' => $tariff->getId(),
+				'selected' => isset($price) && $price['tariff'] == $tariff->getId() ? "selected" : ""
 			));
 
 		switch ($box_id) {

@@ -22,7 +22,7 @@ if ($_GET['key'] != md5($settings['random_key']))
 $action = $_GET['action'];
 
 if ($action == "purchase_service") {
-	$output = "";
+	$output = '';
 
 	if (($service_module = $heart->get_service_module($_GET['service'])) === NULL)
 		xml_output("bad_module", $lang->bad_module, 0);
@@ -43,7 +43,7 @@ if ($action == "purchase_service") {
 		'password' => $_GET['password'],
 		'passwordr' => $_GET['password']
 	));
-	$purchase_data->setTariff($_GET['tariff']);
+	$purchase_data->setTariff($heart->getTariff($_GET['tariff']));
 	$return_validation = $service_module->purchase_data_validate($purchase_data);
 
 	// Są jakieś błędy przy sprawdzaniu danych

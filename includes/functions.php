@@ -251,19 +251,21 @@ function validate_payment($purchase_data)
 	$warnings = array();
 
 	// Tworzymy obiekt usługi którą kupujemy
-	if (($service_module = $heart->get_service_module($purchase_data->getService())) === NULL)
+	if (($service_module = $heart->get_service_module($purchase_data->getService())) === NULL) {
 		return array(
 			'status' => "wrong_module",
 			'text' => $lang->bad_module,
 			'positive' => false
 		);
+	}
 
-	if (!in_array($purchase_data->getPayment('method'), array("sms", "transfer", "wallet", "service_code")))
+	if (!in_array($purchase_data->getPayment('method'), array("sms", "transfer", "wallet", "service_code"))) {
 		return array(
 			'status' => "wrong_method",
 			'text' => $lang->wrong_payment_method,
 			'positive' => false
 		);
+	}
 
 	// Tworzymy obiekt, który będzie nam obsługiwał proces płatności
 	if ($purchase_data->getPayment('method') == "sms") {
@@ -277,7 +279,7 @@ function validate_payment($purchase_data)
 	// Pobieramy ile kosztuje ta usługa dla przelewu / portfela
 	if ($purchase_data->getPayment('cost') === NULL) {
 		$purchase_data->setPayment(array(
-			'cost' => $heart->get_tariff_provision($purchase_data->getTariff())
+			'cost' => $purchase_data->getTariff()->getProvision()
 		));
 	}
 
@@ -311,9 +313,7 @@ function validate_payment($purchase_data)
 			'text' => $lang->sms_unavailable,
 			'positive' => false
 		);
-	} else if ($purchase_data->getPayment('method') == "sms" && $purchase_data->getTariff()
-		&& $payment->getPaymentModule()->getTariffById($purchase_data->getTariff()) === NULL
-	) {
+	} else if ($purchase_data->getPayment('method') == "sms" && $purchase_data->getTariff() === NULL) {
 		return array(
 			'status' => "no_sms_option",
 			'text' => $lang->no_sms_payment,
@@ -325,8 +325,9 @@ function validate_payment($purchase_data)
 	$purchase_data->setPayment(array(
 		'sms_code' => trim($purchase_data->getPayment('sms_code'))
 	));
-	if ($purchase_data->getPayment('method') == "sms" && $warning = check_for_warnings("sms_code", $purchase_data->getPayment('sms_code')))
+	if ($purchase_data->getPayment('method') == "sms" && $warning = check_for_warnings("sms_code", $purchase_data->getPayment('sms_code'))) {
 		$warnings['sms_code'] = array_merge((array)$warnings['sms_code'], $warning);
+	}
 
 	// Kod na usługę
 	if ($purchase_data->getPayment('method') == "service_code")
