@@ -11,6 +11,11 @@ class Entity_Tariff
 	/** @var  int */
 	private $provision;
 
+	public function __toString() // Potrzebne do funkcji array_unique
+	{
+		return $this->getId() . '|' . $this->getNumber() . '|' . $this->getProvision();
+	}
+
 	function __construct($id, $provision, $number = NULL)
 	{
 		$this->id = (int)$id;

@@ -2,8 +2,8 @@
 
 class Payment
 {
-	const SMS_NOT_SUPPORTED = 1;
-	const TRANSFER_NOT_SUPPORTED = 2;
+	const SMS_NOT_SUPPORTED = 'sms_not_supported';
+	const TRANSFER_NOT_SUPPORTED = 'transfer_not_supported';
 
 	private $platform;
 

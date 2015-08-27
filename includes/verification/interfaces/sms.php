@@ -3,18 +3,18 @@
 interface IPayment_Sms
 {
 
-	const OK = 11;
-	const BAD_CODE = 12;
-	const BAD_NUMBER = 13;
-	const BAD_API = 14;
-	const BAD_EMAIL = 15;
-	const BAD_DATA = 16;
-	const SERVER_ERROR = 17;
-	const MISCONFIGURATION = 18;
-	const ERROR = 19;
-	const NO_CONNECTION = 20;
-	const UNKNOWN = 21;
-	
+	const OK = 'ok';
+	const BAD_CODE = 'bad_code';
+	const BAD_NUMBER = 'bad_number';
+	const BAD_API = 'bad_api';
+	const BAD_EMAIL = 'bad_email';
+	const BAD_DATA = 'bad_data';
+	const SERVER_ERROR = 'server_error';
+	const MISCONFIGURATION = 'misconfiguration';
+	const ERROR = 'error';
+	const NO_CONNECTION = 'no_connection';
+	const UNKNOWN = 'unknown';
+
 	/**
 	 * Weryfikacja kodu zwrotnego otrzymanego poprzez wyslanie SMSa na dany numer
 	 *
