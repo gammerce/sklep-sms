@@ -14,7 +14,7 @@ WHERE `id` = 'homepay';
 DELETE FROM `ss_sms_numbers`
 WHERE `service` = 'cssetti';
 
-INSERT INTO `ss_sms_numbers` (`number`, `tariff`, `service`) VALUES
+INSERT IGNORE INTO `ss_sms_numbers` (`number`, `tariff`, `service`) VALUES
   ('7055', '26', 'cssetti'), ('71624', '1', 'cssetti'), ('72624', '2', 'cssetti'),
   ('73624', '3', 'cssetti'), ('74624', '4', 'cssetti'), ('75624', '5', 'cssetti'),
   ('76624', '6', 'cssetti'), ('77464', '7', 'cssetti'), ('78464', '8', 'cssetti'),
@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `ss_tmp` (
   `id` INT(11) NOT NULL
 );
 
-INSERT INTO `ss_tmp` (`id`)
+INSERT IGNORE INTO `ss_tmp` (`id`)
   SELECT a.id AS `id`
   FROM `ss_pricelist` AS a
     LEFT JOIN `ss_services` AS b ON a.service = b.id
@@ -149,7 +149,7 @@ ALTER TABLE `ss_servers_services` ADD FOREIGN KEY (`service_id`) REFERENCES `ss_
   ON DELETE CASCADE
   ON UPDATE CASCADE;
 
-INSERT INTO `ss_tmp` (`id`)
+INSERT IGNORE INTO `ss_tmp` (`id`)
   SELECT pa.id AS `id`
   FROM `ss_payment_admin` AS pa
     LEFT JOIN `ss_users` AS u ON pa.aid = u.uid
@@ -190,7 +190,7 @@ ALTER TABLE `ss_user_service_mybb_extra_groups` ADD CONSTRAINT `ss_user_service_
   ON UPDATE CASCADE, ADD CONSTRAINT `ss_user_service_mybb_extra_groups_ibfk_2` FOREIGN KEY (`service`) REFERENCES `ss_services` (`id`)
   ON UPDATE CASCADE;
 
-INSERT INTO `ss_user_service` (`id`, `service`, `uid`, `expire`)
+INSERT IGNORE INTO `ss_user_service` (`id`, `service`, `uid`, `expire`)
   SELECT
     `id`,
     `service`,
@@ -198,16 +198,17 @@ INSERT INTO `ss_user_service` (`id`, `service`, `uid`, `expire`)
     `expire`
   FROM `ss_players_services`;
 
-INSERT INTO `ss_user_service_extra_flags` (`us_id`, `service`, `server`, `type`, `auth_data`, `password`)
+INSERT IGNORE INTO `ss_user_service_extra_flags` (`us_id`, `service`, `server`, `type`, `auth_data`, `password`)
   SELECT
     ps.id,
-    `service`,
-    `server`,
-    `type`,
-    `auth_data`,
-    `password`
+    ps.service,
+    ps.server,
+    ps.type,
+    ps.auth_data,
+    ps.password
   FROM `ss_players_services` AS ps
-    LEFT JOIN `ss_services` AS s ON ps.service = s.id
+    INNER JOIN `ss_services` AS s ON ps.service = s.id
+    INNER JOIN `ss_servers` AS servers ON ps.server = servers.id
   WHERE s.module = 'extra_flags';
 
 UPDATE `ss_payment_sms`
