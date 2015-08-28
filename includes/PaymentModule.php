@@ -99,12 +99,12 @@ abstract class PaymentModule
 	}
 
 	/**
-	 * @param int $tariff
+	 * @param int $tariff_id
 	 * @return Entity_Tariff
 	 */
-	public function getTariffById($tariff)
+	public function getTariffById($tariff_id)
 	{
-		return if_isset($this->tariffs[$tariff], NULL);
+		return if_isset($this->tariffs[$tariff_id], NULL);
 	}
 
 	/**

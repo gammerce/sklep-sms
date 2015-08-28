@@ -64,7 +64,7 @@ class PaymentModule_1s1k extends PaymentModule implements IPayment_Sms
 
 				return array(
 					'status' => IPayment_Sms::BAD_NUMBER,
-					'number' => $response_number
+					'tariff' => $this->getTariffByNumber($response_number)->getId()
 				);
 
 			case 'fail':

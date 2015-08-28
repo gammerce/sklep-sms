@@ -5,16 +5,12 @@ class Payment
 	const SMS_NOT_SUPPORTED = 'sms_not_supported';
 	const TRANSFER_NOT_SUPPORTED = 'transfer_not_supported';
 
-	private $platform;
-
 	/** @var PaymentModule|IPayment_Sms|IPayment_Transfer */
 	private $payment_module;
 
-	function __construct($payment_module_id, $platform = '')
+	function __construct($payment_module_id)
 	{
 		global $heart, $lang;
-
-		$this->platform = strlen($platform) ? $platform : $_SERVER['HTTP_USER_AGENT'];
 
 		// Tworzymy obiekt obslugujacy stricte weryfikacje
 		$className = $heart->get_payment_module($payment_module_id);
@@ -90,10 +86,10 @@ class Payment
 				"INSERT INTO `" . TABLE_PREFIX . "payment_sms` (`code`, `income`, `cost`, `text`, `number`, `ip`, `platform`, `free`) " .
 				"VALUES ('%s','%d','%d','%s','%s','%s','%s','%d')",
 				array($sms_code, get_sms_cost($sms_number) / 2, ceil(get_sms_cost($sms_number) * $settings['vat']),
-					$this->getPaymentModule()->getSmsCode(), $sms_number, $user->getLastIp(), $this->platform, $sms_return['free'] ? 1 : $db_code['free'])
+					$this->getPaymentModule()->getSmsCode(), $sms_number, $user->getLastIp(), $user->getPlatform(), $sms_return['free'] ? 1 : $db_code['free'])
 			));
 
-			$output['payment_id'] = $db->last_id();
+			$payment_id = $db->last_id();
 		} // SMS został wysłany na błędny numer
 		else if ($sms_return['status'] == IPayment_Sms::BAD_NUMBER && isset($sms_return['tariff'])) {
 			// Dodajemy kod do listy kodów do wykorzystania
@@ -112,7 +108,8 @@ class Payment
 
 		return array(
 			'status' => $sms_return['status'],
-			'text' => if_strlen2($sms_return['text'], if_strlen2($lang->sms['info'][$sms_return['status']], $sms_return['status']))
+			'text' => if_strlen2($sms_return['text'], if_strlen2($lang->sms['info'][$sms_return['status']], $sms_return['status'])),
+			'payment_id' => $payment_id
 		);
 	}
 
@@ -130,9 +127,6 @@ class Payment
 				'text' => $lang->transfer[Payment::TRANSFER_NOT_SUPPORTED]
 			);
 		}
-
-		// Dodajemy extra info
-		$purchase_data->user->setPlatform($this->platform);
 
 		$serialized = serialize($purchase_data);
 		$data_filename = time() . "-" . md5($serialized);
@@ -213,11 +207,6 @@ class Payment
 	public function getSmsCode($escape = false)
 	{
 		return $escape ? htmlspecialchars($this->getPaymentModule()->getSmsCode()) : $this->getPaymentModule()->getSmsCode();
-	}
-
-	public function get_platform()
-	{
-		return $this->platform;
 	}
 
 	/**

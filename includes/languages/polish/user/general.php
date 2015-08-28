@@ -110,6 +110,19 @@ $l['sms']['info']['sms_not_supported'] = "Dany serwis nie obsługuje płatności
 $l['transfer']['transfer'] = "Przelew";
 $l['transfer']['transfer_not_supported'] = "Dany serwis nie obsługuje płatności przelewem. Zgłoś błąd właścicielowi sklepu.";
 $l['transfer']['prepared'] = "Przygotowanie płatności przebiegło pomyślnie.<br />Za chwilę nastąpi przekierowanie do serwisu transakcyjnego.";
+
+$l['bad_service_code'] = "Podany kod jest błędny lub nie pasuje do kupowanej usługi.";
+$l['service_no_permission'] = "Nie masz uprawnień, aby móc korzystać z tej usługi.";
+
+$l['value_must_be_ge_than'] = "Wartość musi być większa lub równa {1}.";
+
+$l['no_login_password'] = "No niestety, ale bez podania nazwy użytkownika oraz loginu, nie zalogujesz się.";
+$l['login_success'] = "Logowanie przebiegło bez większych trudności.";
+$l['bad_pass_nick'] = "No niestety, ale hasło i/lub nazwa użytkownika są błędne.";
+$l['logout_success'] = "Wylogowywanie przebiegło bez większych trudności.";
+$l['nick_occupied'] = "Podana nazwa użytkownika jest już zajęta.";
+$l['different_pass'] = "Podane hasła różnią się.";
+$l['email_occupied'] = "Podany e-mail jest już zajęty.";
 $l['different_email'] = "Podane e-maile różnią się.";
 $l['wrong_anti_answer'] = "Błędna odpowiedź na pytanie antyspamowe.";
 $l['register_success'] = "Konto zostało prawidłowo zarejestrowane. Za chwilę nastąpi automatyczne zalogowanie.";

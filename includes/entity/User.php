@@ -89,8 +89,11 @@ class Entity_User
 	 * @param string $username
 	 * @param string $password
 	 */
-	function __construct($uid = 0, $username = "", $password = "") {
+	function __construct($uid = 0, $username = '', $password = '') {
 		global $heart, $db;
+
+		$this->platform = $_SERVER['HTTP_USER_AGENT'];
+		$this->lastip = get_ip();
 
 		if (!$uid && (!strlen($username) || !strlen($password)))
 			return;
@@ -122,13 +125,12 @@ class Entity_User
 
 		foreach ($this->groups as $group_id) {
 			$privilages = $heart->get_group_privilages($group_id);
-			foreach ($privilages as $privilage => $value)
-				if (strlen($privilage))
+			foreach ($privilages as $privilage => $value) {
+				if (strlen($privilage)) {
 					$this->privilages[$privilage] = $value ? true : false;
+				}
+			}
 		}
-
-		$this->platform = $_SERVER['HTTP_USER_AGENT'];
-		$this->lastip = get_ip();
 	}
 
 	public function updateActivity() {
@@ -320,7 +322,7 @@ class Entity_User
 	 * @param bool $escape
 	 * @return string
 	 */
-	public function getPlatform($escape = true)
+	public function getPlatform($escape = false)
 	{
 		return $escape ? htmlspecialchars($this->platform) : $this->platform;
 	}

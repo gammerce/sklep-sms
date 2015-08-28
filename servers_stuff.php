@@ -43,14 +43,23 @@ if ($action == "purchase_service") {
 		'password' => $_GET['password'],
 		'passwordr' => $_GET['password']
 	));
-	$purchase_data->setTariff($heart->getTariff($_GET['tariff']));
+	$purchase_data->setPayment(array(
+		'method' => $_GET['method'],
+		'sms_code' => $_GET['sms_code'],
+		'sms_service' => $_GET['transaction_service']
+	));
+
+	// Ustawiamy taryfę z numerem
+	$payment = new Payment($purchase_data->getPayment('sms_service'));
+	$purchase_data->setTariff($payment->getPaymentModule()->getTariffById($_GET['tariff']));
+
 	$return_validation = $service_module->purchase_data_validate($purchase_data);
 
 	// Są jakieś błędy przy sprawdzaniu danych
 	if ($return_validation['status'] != "ok") {
-		$extra_data = "";
+		$extra_data = '';
 		if (!empty($return_validation['data']['warnings'])) {
-			$warnings = "";
+			$warnings = '';
 			foreach ($return_validation['data']['warnings'] as $what => $warning)
 				$warnings .= "<strong>{$what}</strong><br />" . implode("<br />", $warning) . "<br />";
 

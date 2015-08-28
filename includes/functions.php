@@ -270,10 +270,10 @@ function validate_payment($purchase_data)
 	// Tworzymy obiekt, który będzie nam obsługiwał proces płatności
 	if ($purchase_data->getPayment('method') == "sms") {
 		$transaction_service = if_strlen2($purchase_data->getPayment('sms_service'), $settings['sms_service']);
-		$payment = new Payment($transaction_service, $purchase_data->user->getPlatform());
+		$payment = new Payment($transaction_service);
 	} else if ($purchase_data->getPayment('method') == "transfer") {
 		$transaction_service = if_strlen2($purchase_data->getPayment('transfer_service'), $settings['transfer_service']);
-		$payment = new Payment($transaction_service, $purchase_data->user->getPlatform());
+		$payment = new Payment($transaction_service);
 	}
 
 	// Pobieramy ile kosztuje ta usługa dla przelewu / portfela
@@ -336,6 +336,7 @@ function validate_payment($purchase_data)
 
 	// Błędy
 	if (!empty($warnings)) {
+		$warning_data = array();
 		foreach ($warnings as $brick => $warning) {
 			$warning = create_dom_element("div", implode("<br />", $warning), array(
 				'class' => "form_warning"
@@ -465,13 +466,7 @@ function pay_service_code($purchase_data, $service_module)
 			$purchase_data->getTariff(), $purchase_data->user->getUid())
 	));
 
-	if (!$db->num_rows($result))
-		return array(
-			'status' => "wrong_service_code",
-			'text' => $lang->bad_service_code
-		);
-
-	while ($row = $db->fetch_array_assoc($result))
+	while ($row = $db->fetch_array_assoc($result)) {
 		if ($service_module->service_code_validate($purchase_data, $row)) { // Znalezlismy odpowiedni kod
 			$db->query($db->prepare(
 				"DELETE FROM `" . TABLE_PREFIX . "service_codes` " .
@@ -492,10 +487,12 @@ function pay_service_code($purchase_data, $service_module)
 
 			return $payment_id;
 		}
+	}
 
 	return array(
 		'status' => "wrong_service_code",
-		'text' => $lang->bad_service_code
+		'text' => $lang->bad_service_code,
+		'positive' => false
 	);
 }
 
@@ -793,7 +790,7 @@ function get_platform($platform)
 	if ($platform == "engine_amxx") return $lang->amxx_server;
 	else if ($platform == "engine_sm") return $lang->sm_server;
 
-	return $platform;
+	return htmlspecialchars($platform);
 }
 
 // Zwraca nazwę typu
