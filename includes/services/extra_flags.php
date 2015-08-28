@@ -264,6 +264,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 	public function purchase_form_validate($data)
 	{
+		global $heart;
+
 		// Wyłuskujemy taryfę
 		$value = explode(';', $data['value']);
 
@@ -278,7 +280,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			'password' => $data['password'],
 			'passwordr' => $data['password_repeat']
 		));
-		$purchase_data->setTariff($value[2]);
+		$purchase_data->setTariff($heart->getTariff($value[2]));
 		$purchase_data->setEmail($data['email']);
 
 		return $this->purchase_data_validate($purchase_data);
@@ -1365,7 +1367,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			array($sms_service, $this->service['id'], $server_id)
 		));
 
-		$values = "";
+		$values = '';
 		while ($row = $db->fetch_array_assoc($result)) {
 			$provision = number_format($row['provision'] / 100, 2);
 			$sms_cost = strlen($row['sms_number']) ? number_format(get_sms_cost($row['sms_number']) / 100 * $settings['vat'], 2) : 0;
@@ -1429,7 +1431,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$tariff = $tariff[2];
 		if (!strlen($data['amount']))
 			$warnings['amount'][] = $lang->must_choose_quantity;
-		else if (($heart->get_tariff($tariff)) === NULL)
+		else if (($heart->getTariff($tariff)) === NULL)
 			$warnings['amount'][] = $lang->no_such_tariff;
 
 		return $warnings;

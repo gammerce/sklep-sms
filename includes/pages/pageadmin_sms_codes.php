@@ -87,10 +87,11 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
 		switch ($box_id) {
 			case "sms_code_add":
 				$tariffs = "";
-				foreach ($heart->get_tariffs() as $tariff_data)
-					$tariffs .= create_dom_element("option", $tariff_data['tariff'], array(
-						'value' => $tariff_data['tariff']
+				foreach ($heart->getTariffs() as $tariff) {
+					$tariffs .= create_dom_element("option", $tariff->getId(), array(
+						'value' => $tariff->getId()
 					));
+				}
 
 				$output = eval($templates->render("admin/action_boxes/sms_code_add"));
 				break;

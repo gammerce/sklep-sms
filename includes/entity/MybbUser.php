@@ -1,6 +1,6 @@
 <?php
 
-class Entity_MyBB_User {
+class Entity_MybbUser {
 
 	/** @var int */
 	private $uid;

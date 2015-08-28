@@ -1,42 +1,54 @@
 <?php
 
-$heart->register_payment_api("profitsms", "PaymentModuleProfitsms");
+$heart->register_payment_module("profitsms", "PaymentModule_Profitsms");
 
-class PaymentModuleProfitsms extends PaymentModule implements IPayment_Sms
+class PaymentModule_Profitsms extends PaymentModule implements IPayment_Sms
 {
 
 	const SERVICE_ID = "profitsms";
 
-	public function verify_sms($sms_code, $sms_number)
+	/** @var  string */
+	private $api;
+
+	/** @var  string */
+	private $sms_code;
+
+	function __construct()
 	{
-		$url = "http://profitsms.pl/check.php?apiKey=" . urlencode($this->data['api']) .
-			"&code=" . urlencode($sms_code) . "&smsNr=" . urlencode($sms_number);
+		parent::__construct();
 
-		if (in_array('curl', get_loaded_extensions())) {
-			$curl = curl_init($url);
-			curl_setopt($curl, CURLOPT_URL, $url);
-			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-			$status = curl_exec($curl);
-			curl_close($curl);
-		} else
-			$status = curl_get_contents($url);
+		$this->api = $this->data['api'];
+		$this->sms_code = $this->data['sms_text'];
+	}
 
-		$raport = explode('|', $status);
-		switch ($raport['0']) {
-			case 1:
-				$output['status'] = "OK";
-				break;
+	public function verify_sms($return_code, $number)
+	{
+		$url =
+			'http://profitsms.pl/check.php' .
+			'?apiKey=' . urlencode($this->api) .
+			'&code=' . urlencode($return_code) .
+			'&smsNr=' . urlencode($number);
 
-			case 0:
-				$output['status'] = "BAD_CODE";
-				break;
-
-			default:
-				$output['status'] = "ERROR";
-				break;
+		$response = curl_get_contents($url);
+		if ($response === false) {
+			return IPayment_Sms::NO_CONNECTION;
 		}
 
-		return $output;
+		$raport = explode('|', $response);
+		switch ($raport['0']) {
+			case 1:
+				return IPayment_Sms::OK;
+
+			case 0:
+				return IPayment_Sms::BAD_CODE;
+		}
+
+		return IPayment_Sms::ERROR;
+	}
+
+	public function getSmsCode()
+	{
+		return $this->sms_code;
 	}
 
 }

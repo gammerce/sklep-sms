@@ -61,8 +61,6 @@ $l['my_services'] = "Moje usługi";
 $l['change_password'] = "Zmiana hasła";
 $l['take_over_service'] = "Przejmij usługę";
 
-$l['transfer'] = "Przelew";
-
 $l['transfer_error'] = "Niestety, ale płatność za pomocą przelewu zakończyła się niepowodzeniem.";
 $l['transfer_unverified'] = "Niestety, ale nie udało się zweryfikować poprawności danych przelewu.";
 
@@ -103,14 +101,15 @@ $l['sms']['info']['bad_number'] = "Kod jest dobry, lecz niestety został uzyskan
 $l['sms']['info']['bad_api'] = "Podane API jest nieprawidłowe.";
 $l['sms']['info']['bad_email'] = "Podany email w konfiguracji płatności jest nieprawidłowy.";
 $l['sms']['info']['server_error'] = "Podane API jest nieprawidłowe, podano zły kod zwrotny lub wystapil jeszcze inny blad.";
-$l['sms']['info']['service_error'] = "Nieprawidłowo skonfigurowana usługa, skontaktuj się z właścicielem sklepu.";
+$l['sms']['info']['misconfiguration'] = "Nieprawidłowo skonfigurowana metoda płatności, skontaktuj się z właścicielem sklepu.";
 $l['sms']['info']['error'] = "Wystąpił błąd. Przyczyny nie są znane.";
 $l['sms']['info']['no_connection'] = "Nie można się połączyć ze skryptem weryfikacyjnym.";
 $l['sms']['info']['bad_data'] = "Nie podano wszystkich potrzebnych danych w konfiguracji płatności.";
-$l['sms']['info']['dunno'] = "Wystąpił nieznany błąd. Zgłoś go właścicielowi sklepu.";
-$l['sms']['info']['no_sms_serve'] = "Dany serwis nie obsługuje płatności SMS. Zgłoś błąd właścicielowi sklepu.";
-$l['no_transfer_serve'] = "Dany serwis nie obsługuje płatności przelewem. Zgłoś błąd właścicielowi sklepu.";
-$l['transfer_ok'] = "Przygotowanie płatności przebiegło pomyślnie.<br />Za chwilę nastąpi przekierowanie do serwisu transakcyjnego.";
+$l['sms']['info']['unknown'] = "Wystąpił nieznany błąd. Zgłoś go właścicielowi sklepu.";
+$l['sms']['info']['sms_not_supported'] = "Dany serwis nie obsługuje płatności SMS. Zgłoś błąd właścicielowi sklepu.";
+$l['transfer']['transfer'] = "Przelew";
+$l['transfer']['transfer_not_supported'] = "Dany serwis nie obsługuje płatności przelewem. Zgłoś błąd właścicielowi sklepu.";
+$l['transfer']['prepared'] = "Przygotowanie płatności przebiegło pomyślnie.<br />Za chwilę nastąpi przekierowanie do serwisu transakcyjnego.";
 
 $l['bad_service_code'] = "Podany kod jest błędny lub nie pasuje do kupowanej usługi.";
 $l['service_no_permission'] = "Nie masz uprawnień, aby móc korzystać z tej usługi.";

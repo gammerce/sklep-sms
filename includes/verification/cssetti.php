@@ -1,11 +1,17 @@
 <?php
 
-$heart->register_payment_api("cssetti", "PaymentModuleCssetti");
+$heart->register_payment_module("cssetti", "PaymentModule_Cssetti");
 
-class PaymentModuleCssetti extends PaymentModule implements IPayment_Sms
+class PaymentModule_Cssetti extends PaymentModule implements IPayment_Sms
 {
 
 	const SERVICE_ID = "cssetti";
+
+	/** @var  string */
+	private $account_id;
+
+	/** @var  string */
+	private $sms_code;
 
 	/** @var array */
 	private $numbers = array();
@@ -16,70 +22,62 @@ class PaymentModuleCssetti extends PaymentModule implements IPayment_Sms
 
 		$data = json_decode(file_get_contents('http://cssetti.pl/Api/SmsApiV2GetData.php'), true);
 
-		// Pozyskujemy kod ktory nalezy wpisac jako tresc SMSa
-		$this->data['sms_text'] = $data['Code'];
+		// CSSetti dostarcza w feedzie kod sms
+		$this->sms_code = $data['Code'];
 
 		foreach ($data['Numbers'] as $number_data) {
 			$this->numbers[strval(floatval($number_data['TopUpAmount']))] = strval($number_data['Number']);
 		}
+
+		$this->account_id = $this->data['account_id'];
 	}
 
-	public function verify_sms($sms_code, $sms_number)
+	public function verify_sms($return_code, $number)
 	{
-		$content = curl_get_contents(
-			'http://cssetti.pl/Api/SmsApiV2CheckCode.php?UserId=' . urlencode($this->data['account_id']) . '&Code=' .  urlencode($sms_code)
+		$response = curl_get_contents(
+			'http://cssetti.pl/Api/SmsApiV2CheckCode.php' .
+			'?UserId=' . urlencode($this->account_id) .
+			'&Code=' .  urlencode($return_code)
 		);
 
-		file_put_contents(SQL_LOG, $content);
-		log_info($content);
-
-		if ($content === false) {
-			return array(
-				'status' => 'NO_CONNECTION'
-			);
+		if ($response === false) {
+			return IPayment_Sms::NO_CONNECTION;
 		}
 
-		if (!is_numeric($content)) {
-			return array(
-				'status' => 'ERROR'
-			);
+		if (!is_numeric($response)) {
+			return IPayment_Sms::ERROR;
 		}
 
-		$content = strval(floatval($content));
+		$response = strval(floatval($response));
 
-		if ($content == '0') {
-			return array(
-				'status' => 'BAD_CODE'
-			);
+		if ($response == '0') {
+			return IPayment_Sms::BAD_CODE;
 		}
 
-		if ($content == '-1') {
-			return array(
-				'status' => 'BAD_API'
-			);
+		if ($response == '-1') {
+			return IPayment_Sms::BAD_API;
 		}
 
-		if ($content == '-2' || $content == '-3') {
-			return array(
-				'status' => 'SERVER_ERROR'
-			);
+		if ($response == '-2' || $response == '-3') {
+			return IPayment_Sms::SERVER_ERROR;
 		}
 
-		if (floatval($content) > 0) {
-			if (!isset($this->numbers[$content]) || $this->numbers[$content] != $sms_number)
+		if (floatval($response) > 0) {
+			if (!isset($this->numbers[$response]) || $this->numbers[$response] != $number) {
 				return array(
-					'status' => 'BAD_NUMBER',
-					'tariff' => $this->smses[$this->numbers[$content]]['tariff']
+					'status' => IPayment_Sms::BAD_NUMBER,
+					'tariff' => $this->getTariffByNumber($this->numbers[$response])->getId()
 				);
+			}
 
-			return array(
-				'status' => 'OK'
-			);
+			return IPayment_Sms::OK;
 		}
 
-		return array(
-			'status' => 'ERROR'
-		);
+		return IPayment_Sms::ERROR;
 	}
 
+	public function getSmsCode()
+	{
+		return $this->sms_code;
+	}
 }

@@ -5,7 +5,7 @@
 	<table>
 		<tr>
 			<td>{$lang->strtoupper($lang->tariff)}</td>
-			<td>{$tariff}</td>
+			<td>{$tariff->getId()}</td>
 		</tr>
 		<tr>
 			<td colspan="2" class="line"></td>
@@ -20,7 +20,7 @@
 		</tr>
 		<tr>
 			<td colspan="2">
-				<input type="hidden" name="tariff" value="{$tariff}"/>
+				<input type="hidden" name="tariff" value="{$tariff->getId()}"/>
 				<input type="submit" value="{$lang->confirm}" style="width: 100%;"/>
 			</td>
 		</tr>

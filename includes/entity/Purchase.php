@@ -25,7 +25,7 @@ class Entity_Purchase {
 	public $user;
 
 	/**
-	 * @var integer
+	 * @var Entity_Tariff
 	 */
 	private $tariff = NULL;
 
@@ -62,8 +62,11 @@ class Entity_Purchase {
 			$this->order[$key] = $value;
 	}
 
+	/**
+	 * @param Entity_Tariff $tariff
+	 */
 	public function setTariff($tariff) {
-		$this->tariff = (integer)$tariff;
+		$this->tariff = $tariff;
 	}
 
 	public function setEmail($email) {
@@ -71,8 +74,9 @@ class Entity_Purchase {
 	}
 
 	public function setPayment($payment) {
-		foreach($payment as $key => $value)
+		foreach($payment as $key => $value) {
 			$this->payment[$key] = $value;
+		}
 	}
 
 	public function getService() {
@@ -101,6 +105,9 @@ class Entity_Purchase {
 		return if_isset($this->payment[$key], NULL);
 	}
 
+	/**
+	 * @return Entity_Tariff
+	 */
 	public function getTariff() {
 		return $this->tariff;
 	}

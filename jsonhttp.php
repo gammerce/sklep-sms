@@ -338,21 +338,31 @@ if ($action == "login") {
 		/** @var Entity_Purchase $purchase_data */
 		$purchase_data = $return_data['purchase_data'];
 
-		if(!$purchase_data->getPayment('cost') && $purchase_data->getTariff() !== NULL)
-			$purchase_data->setPayment(array(
-				'cost' => $heart->get_tariff_provision($purchase_data->getTariff())
-			));
+		if ($purchase_data->getService() === NULL) {
+			$purchase_data->setService($service_module->service['id']);
+		}
 
-		if ($purchase_data->getPayment('sms_service') === NULL && !$purchase_data->getPayment("no_sms"))
+		if(!$purchase_data->getPayment('cost') && $purchase_data->getTariff() !== NULL) {
+			$purchase_data->setPayment(array(
+				'cost' => $purchase_data->getTariff()->getProvision()
+			));
+		}
+
+		if ($purchase_data->getPayment('sms_service') === NULL && !$purchase_data->getPayment("no_sms")) {
 			$purchase_data->setPayment(array(
 				'sms_service' => $settings['sms_service']
 			));
+		}
 
-		if ($purchase_data->getService() === NULL)
-			$purchase_data->setService($service_module->service['id']);
+		// Ustawiamy taryfe z numerem
+		if ($purchase_data->getPayment('sms_service') !== NULL) {
+			$payment = new Payment($purchase_data->getPayment('sms_service'));
+			$purchase_data->setTariff($payment->getPaymentModule()->getTariffById($purchase_data->getTariff()->getId()));
+		}
 		
-		if ($purchase_data->getEmail() === NULL && strlen($user->getEmail()))
+		if ($purchase_data->getEmail() === NULL && strlen($user->getEmail())) {
 			$purchase_data->setEmail($user->getEmail());
+		}
 
 		$purchase_data_encoded = base64_encode(serialize($purchase_data));
 		$return_data['data'] = array(

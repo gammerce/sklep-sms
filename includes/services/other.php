@@ -85,7 +85,7 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
 		));
 
 		$purchase_data->setPayment(array(
-			'cost' => $heart->get_tariff_provision($purchase_data->getTariff())
+			'cost' => $purchase_data->getTariff()->getProvision()
 		));
 
 		return array(

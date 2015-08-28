@@ -60,8 +60,6 @@ $l['my_services'] = "My services";
 $l['change_password'] = "Change password";
 $l['take_over_service'] = "Take over service";
 
-$l['transfer'] = "Transfer";
-
 $l['transfer_error'] = "Unfortunately, transfer payment failed.";
 $l['transfer_unverified'] = "Unfortunately, transfer data failed to be verified correctly.";
 
@@ -102,14 +100,15 @@ $l['sms']['info']['bad_number'] = "Code is OK, but unfortunately obtained by sen
 $l['sms']['info']['bad_api'] = "Given API is incorrect.";
 $l['sms']['info']['bad_email'] = "E-mail given in payment configuration is incorrect.";
 $l['sms']['info']['server_error'] = "Given API is incorrect, given return code was wrong or another error occured.";
-$l['sms']['info']['service_error'] = "Incorrectly set up service, contact the shop owner.";
+$l['sms']['info']['misconfiguration'] = "Incorrectly set up payment method, contact the shop owner.";
 $l['sms']['info']['error'] = "An error occured. Cause is unknown.";
 $l['sms']['info']['no_connection'] = "No connection to the verification script.";
 $l['sms']['info']['bad_data'] = "Not all the necessary data were given in payment configuration.";
-$l['sms']['info']['dunno'] = "An unknown error occured. Report it to the shop owner.";
-$l['sms']['info']['no_sms_serve'] = "This service does not operate SMS payment. Report the error to the shop owner.";
-$l['no_transfer_serve'] = "This service does not operate transfer payment. Report the error to the shop owner.";
-$l['transfer_ok'] = "Payment preparation successful.<br />In a minute you will be send to transaction service.";
+$l['sms']['info']['unknown'] = "An unknown error occured. Report it to the shop owner.";
+$l['sms']['info']['sms_not_supported'] = "This service does not operate SMS payment. Report the error to the shop owner.";
+$l['transfer']['transfer'] = "Transfer";
+$l['transfer']['transfer_not_supported'] = "This service does not operate transfer payment. Report the error to the shop owner.";
+$l['transfer']['prepared'] = "Payment preparation successful.<br />In a minute you will be send to transaction service.";
 
 $l['bad_service_code'] = "Code is wrong or doesn't match purchase details.";
 $l['service_no_permission'] = "You have no permission to use this service.";

@@ -3,7 +3,8 @@
 if (!defined("IN_SCRIPT"))
 	die("There is nothing interesting here.");
 
-error_reporting(E_ERROR);
+error_reporting(E_ERROR | E_CORE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR | E_COMPILE_ERROR);
+//error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
 foreach($_GET as $key => $value) {
@@ -65,7 +66,7 @@ foreach (scandir(SCRIPT_ROOT . "includes/interfaces") as $file)
 		require_once SCRIPT_ROOT . "includes/interfaces/" . $file;
 
 // Dodajemy klasy wszystkich modulow platnosci
-require_once SCRIPT_ROOT . "includes/verification/payment_module.php";
+require_once SCRIPT_ROOT . "includes/PaymentModule.php";
 foreach (scandir(SCRIPT_ROOT . "includes/verification/interfaces") as $file)
 	if (ends_at($file, ".php"))
 		require_once SCRIPT_ROOT . "includes/verification/interfaces/" . $file;
@@ -215,8 +216,9 @@ LEFT JOIN `" . TABLE_PREFIX . "payment_wallet` AS pw ON bs.payment = 'wallet' AN
 LEFT JOIN `" . TABLE_PREFIX . "payment_code` AS pc ON bs.payment = 'service_code' AND pc.id = bs.payment_id)";
 
 // Ustawianie strefy
-if ($settings['timezone'])
+if ($settings['timezone']) {
 	date_default_timezone_set($settings['timezone']);
+}
 
 $settings['date_format'] = strlen($settings['date_format']) ? $settings['date_format'] : "Y-m-d H:i";
 
@@ -243,8 +245,9 @@ $a_Tasks = curl_get_contents("http://license.sklep-sms.pl/license.php?action=log
 $a_Tasks = json_decode($a_Tasks, true);
 
 // Brak tekstu, wywalamy błąd
-if (!isset($a_Tasks['text']))
+if (!isset($a_Tasks['text'])) {
 	output_page($lang->verification_error);
+}
 
 if ($a_Tasks['expire']) {
 	if ($a_Tasks['expire'] == '-1')
@@ -267,8 +270,9 @@ if ($a_Tasks['text'] != "logged_in") {
 }
 
 // Cron co wizytę
-if ($settings['cron_each_visit'] && SCRIPT_NAME != "cron")
+if ($settings['cron_each_visit'] && SCRIPT_NAME != "cron") {
 	include(SCRIPT_ROOT . "cron.php");
+}
 
 define('TYPE_NICK', 1 << 0);
 define('TYPE_IP', 1 << 1);

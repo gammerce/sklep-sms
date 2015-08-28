@@ -5,12 +5,26 @@
  * URL: http://forum.sklep-sms.pl/showthread.php?tid=88
  */
 
-$heart->register_payment_api("transferuj", "PaymentModuleTransferuj");
+$heart->register_payment_module("transferuj", "PaymentModuleTransferuj");
 
 class PaymentModuleTransferuj extends PaymentModule implements IPayment_Transfer
 {
 
 	const SERVICE_ID = "transferuj";
+
+	/** @var  string */
+	private $account_id;
+
+	/** @var  string */
+	private $key;
+
+	function __construct()
+	{
+		parent::__construct();
+
+		$this->key = $this->data['key'];
+		$this->account_id = $this->data['account_id'];
+	}
 
 	public function prepare_transfer($purchase_data, $data_filename)
 	{
@@ -21,11 +35,11 @@ class PaymentModuleTransferuj extends PaymentModule implements IPayment_Transfer
 
 		return array(
 			'url' => 'https://secure.transferuj.pl',
-			'id' => $this->data['account_id'],
+			'id' => $this->account_id,
 			'kwota' => $cost,
 			'opis' => $purchase_data->getDesc(),
 			'crc' => $data_filename,
-			'md5sum' => md5($this->data['account_id'] . $cost . $data_filename . $this->data['key']),
+			'md5sum' => md5($this->account_id . $cost . $data_filename . $this->key),
 			'imie' => $purchase_data->user->getForename(false),
 			'nazwisko' => $purchase_data->user->getSurname(false),
 			'email' => $purchase_data->getEmail(),

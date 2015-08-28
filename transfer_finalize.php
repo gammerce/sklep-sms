@@ -6,7 +6,7 @@ define("SCRIPT_NAME", "transfer_finalize");
 require_once 'global.php';
 
 $payment = new Payment($_GET['service']);
-$transfer_finalize = $payment->payment_api->finalizeTransfer($_GET, $_POST);
+$transfer_finalize = $payment->getPaymentModule()->finalizeTransfer($_GET, $_POST);
 
 if ($transfer_finalize->getStatus() === false) {
 	log_info($lang_shop->sprintf($lang_shop->payment_not_accepted, $transfer_finalize->getOrderid(), $transfer_finalize->getAmount(), $transfer_finalize->getTransferService(),

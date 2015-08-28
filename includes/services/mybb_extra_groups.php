@@ -273,7 +273,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	 */
 	public function purchase_form_validate($data)
 	{
-		global $db, $lang;
+		global $heart, $db, $lang;
 
 		// Amount
 		$amount = explode(';', $data['amount']); // Wyłuskujemy taryfę
@@ -337,7 +337,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 			'forever' => $price['amount'] == -1 ? true : false
 		));
 		$purchase_data->setEmail($data['email']);
-		$purchase_data->setTariff($tariff);
+		$purchase_data->setTariff($heart->getTariff($tariff));
 
 		return array(
 			'status' => "ok",
@@ -656,7 +656,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 
 	/**
 	 * @param string|int $user_id Int - by uid, String - by username
-	 * @return null|Entity_MyBB_User
+	 * @return null|Entity_MybbUser
 	 */
 	private function createMybbUser($user_id)
 	{
@@ -683,7 +683,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 
 		$row_mybb = $this->db_mybb->fetch_array_assoc($result);
 
-		$mybb_user = new Entity_MyBB_User($row_mybb['uid'], $row_mybb['usergroup']);
+		$mybb_user = new Entity_MybbUser($row_mybb['uid'], $row_mybb['usergroup']);
 		$mybb_user->setMybbAddGroups(explode(",", $row_mybb['additionalgroups']));
 		$mybb_user->setMybbDisplayGroup($row_mybb['displaygroup']);
 
@@ -706,7 +706,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	/**
 	 * Zapisuje dane o użytkowniku
 	 *
-	 * @param Entity_MyBB_User $mybb_user
+	 * @param Entity_MybbUser $mybb_user
 	 */
 	private function saveMybbUser($mybb_user)
 	{

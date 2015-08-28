@@ -1,31 +1,57 @@
 <?php
 
-$heart->register_payment_api("homepay", "PaymentModuleHomepay");
+$heart->register_payment_module("homepay", "PaymentModuleHomepay");
 
 class PaymentModuleHomepay extends PaymentModule implements IPayment_Sms
 {
 
 	const SERVICE_ID = "homepay";
 
-	public function verify_sms($sms_code, $sms_number)
+	/** @var  string */
+	private $api;
+
+	/** @var  string */
+	private $sms_code;
+
+	function __construct()
 	{
-		$handle = fopen("http://homepay.pl/API/check_code.php?usr_id=" . urlencode($this->data['api']) .
-			"&acc_id={$this->data[$sms_number]}&code=" . urlencode($sms_code), 'r');
+		parent::__construct();
+
+		$this->sms_code = $this->data['sms_text'];
+		$this->api = $this->data['api'];
+	}
+
+	public function verify_sms($return_code, $number)
+	{
+		$handle = fopen(
+			'http://homepay.pl/API/check_code.php' .
+			'?usr_id=' . urlencode($this->api) .
+			'&acc_id=' . urlencode($this->data[$number]) .
+			'&code=' . urlencode($return_code),
+			'r'
+		);
 
 		if ($handle) {
 			$status = fgets($handle, 8);
 			fclose($handle);
 
-			if ($status == '0')
-				$output['status'] = "BAD_CODE";
-			else if ($status == '1')
-				$output['status'] = "OK";
-			else
-				$output['status'] = "SERVER_ERROR";
-		} else
-			$output['status'] = "NO_CONNECTION";
+			if ($status == '0') {
+				return IPayment_Sms::BAD_CODE;
+			}
 
-		return $output;
+			if ($status == '1') {
+				return IPayment_Sms::OK;
+			}
+
+			return IPayment_Sms::SERVER_ERROR;
+		}
+
+		return IPayment_Sms::NO_CONNECTION;
+	}
+
+	public function getSmsCode()
+	{
+		return $this->sms_code;
 	}
 
 }
