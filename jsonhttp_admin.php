@@ -271,6 +271,7 @@ if ($action == "charge_wallet") {
 	$date_format = $_POST['date_format'];
 	$delete_logs = $_POST['delete_logs'];
 	$google_analytics = trim($_POST['google_analytics']);
+	$gadugadu = $_POST['gadugadu'];
 
 	// Serwis płatności SMS
 	if (strlen($sms_service)) {
@@ -373,13 +374,14 @@ if ($action == "charge_wallet") {
 		"WHEN 'date_format' THEN '%s' " .
 		"WHEN 'delete_logs' THEN '%d' " .
 		"WHEN 'google_analytics' THEN '%s' " .
+		"WHEN 'gadugadu' THEN '%s' " .
 		$set_license_password .
 		"END " .
 		"WHERE `key` IN ( 'sms_service','transfer_service','currency','shop_url','sender_email','sender_email_name','signature','vat'," .
 		"'contact','row_limit','license_login','cron_each_visit','user_edit_service','theme','language','date_format','delete_logs'," .
-		"'google_analytics'{$key_license_password} )",
+		"'google_analytics','gadugadu'{$key_license_password} )",
 		array($sms_service, $transfer_service, $currency, $shop_url, $sender_email, $sender_email_name, $signature, $vat, $contact, $row_limit,
-			$license_login, $cron, $_POST['user_edit_service'], $theme, $language, $date_format, $delete_logs, $google_analytics)
+			$license_login, $cron, $_POST['user_edit_service'], $theme, $language, $date_format, $delete_logs, $google_analytics, $gadugadu)
 	));
 
 	// Zwróć info o prawidłowej lub błędnej edycji
@@ -841,7 +843,7 @@ if ($action == "charge_wallet") {
 	if ($warning = check_for_warnings("number", $_POST['tariff'])) {
 		$warnings['tariff'] = array_merge((array)$warnings['tariff'], $warning);
 	}
-	if (($heart->getTariff($_POST['tariff'])) !== NULL) {
+	if (($heart->get_tariff($_POST['tariff'])) !== NULL) {
 		$warnings['tariff'][] = $lang->tariff_exist;
 	}
 
@@ -895,7 +897,7 @@ if ($action == "charge_wallet") {
 		"UPDATE `" . TABLE_PREFIX . "tariffs` " .
 		"SET `provision` = '%d' " .
 		"WHERE `tariff` = '%d'",
-		array($_POST['provision'] * 100, $_POST['tariff'])
+		array($_POST['provision'], $_POST['tariff'])
 	));
 
 	// Zwróć info o prawidłowej lub błędnej edycji
@@ -938,7 +940,7 @@ if ($action == "charge_wallet") {
 	}
 
 	// Taryfa
-	if (($heart->getTariff($_POST['tariff'])) === NULL) {
+	if (($heart->get_tariff($_POST['tariff'])) === NULL) {
 		$warnings['tariff'][] = $lang->no_such_tariff;
 	}
 
