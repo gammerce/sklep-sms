@@ -45,7 +45,7 @@ class PaymentModuleTransferuj extends PaymentModule implements IPayment_Transfer
 			'email' => $purchase_data->getEmail(),
 			'pow_url' => $settings['shop_url_slash'] . "index.php?pid=transferuj_ok",
 			'pow_url_blad' => $settings['shop_url_slash'] . "index.php?pid=transferuj_bad",
-            'wyn_url' => $settings['shop_url_slash'] . "transfer_finalize.php?service=transferuj"
+			'wyn_url' => $settings['shop_url_slash'] . "transfer_finalize.php?service=transferuj"
 		);
 	}
 
