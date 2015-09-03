@@ -4,7 +4,6 @@ if (!defined("IN_SCRIPT"))
 	die("There is nothing interesting here.");
 
 error_reporting(E_ERROR | E_CORE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR | E_COMPILE_ERROR);
-//error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
 foreach($_GET as $key => $value) {

@@ -229,6 +229,7 @@ $l['email_sender_name'] = "E-mail sender name";
 $l['signature'] = "Signature";
 $l['eg_emails'] = "( eg. in e-mails )";
 $l['license'] = "License";
+$l['license_id'] = "License ID";
 $l['user_service_edit'] = "Player's service editing";
 $l['theme'] = "Theme";
 $l['language'] = "Language";

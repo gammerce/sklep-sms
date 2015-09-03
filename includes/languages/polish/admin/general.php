@@ -230,6 +230,7 @@ $l['email_sender_name'] = "Nazwa nadawcy e-maila";
 $l['signature'] = "Podpis";
 $l['eg_emails'] = "( np. w e-mailach )";
 $l['license'] = "Licencja";
+$l['license_id'] = "ID licencji";
 $l['user_service_edit'] = "Edytowanie usługi przez użytkownika";
 $l['theme'] = "Motyw";
 $l['language'] = "Język";
