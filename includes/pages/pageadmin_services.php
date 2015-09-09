@@ -1,5 +1,12 @@
 <?php
 
+use Admin\Table;
+use Admin\Table\Wrapper;
+use Admin\Table\Structure;
+use Admin\Table\BodyRow;
+use Admin\Table\Cell;
+use Admin\Table\Input;
+
 $heart->register_page("services", "PageAdminServices", "admin");
 
 class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
@@ -18,55 +25,53 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
 
 	protected function content($get, $post)
 	{
-		global $heart, $lang, $templates;
+		global $heart, $lang;
 
-		// Pobranie listy serwisów transakcyjnych
-		$i = 0;
-		$tbody = "";
+		$wrapper = new Wrapper();
+		$wrapper->setTitle($this->title);
+
+		$table = new Structure();
+
+		$cell = new Cell($lang->id);
+		$cell->setParam('headers', 'id');
+		$table->addHeadCell($cell);
+
+		$table->addHeadCell(new Cell($lang->name));
+		$table->addHeadCell(new Cell($lang->short_description));
+		$table->addHeadCell(new Cell($lang->description));
+		$table->addHeadCell(new Cell($lang->order));
+
 		foreach ($heart->get_services() as $row) {
-			$i += 1;
-			$row['id'] = htmlspecialchars($row['id']);
-			$row['name'] = htmlspecialchars($row['name']);
-			$row['short_description'] = htmlspecialchars($row['short_description']);
-			$row['description'] = htmlspecialchars($row['description']);
+			$body_row = new BodyRow();
 
-			if (get_privilages("manage_services")) {
-				// Pobranie przycisku edycji
-				$button_edit = create_dom_element("img", "", array(
-					'id' => "edit_row_{$i}",
-					'src' => "images/edit.png",
-					'title' => $lang->edit . " " . $row['name']
-				));
-				$button_delete = create_dom_element("img", "", array(
-					'id' => "delete_row_{$i}",
-					'src' => "images/bin.png",
-					'title' => $lang->delete . " " . $row['name']
-				));
-			} else
-				$button_delete = $button_edit = "";
+			$body_row->setDbId(htmlspecialchars($row['id']));
 
-			// Pobranie danych do tabeli
-			$tbody .= eval($templates->render("admin/services_trow"));
+			$cell = new Cell(htmlspecialchars($row['name']));
+			$cell->setParam('headers', 'name');
+			$body_row->addCell($cell);
+			$body_row->addCell(new Cell(htmlspecialchars($row['short_description'])));
+			$body_row->addCell(new Cell(htmlspecialchars($row['description'])));
+			$body_row->addCell(new Cell($row['order']));
+
+			if (get_privilages('manage_services')) {
+				$body_row->setButtonDelete(true);
+				$body_row->setButtonEdit(true);
+			}
+
+			$table->addBodyRow($body_row);
 		}
 
-		// Nie ma zadnych danych do wyswietlenia
-		if (!strlen($tbody))
-			$tbody = eval($templates->render("admin/no_records"));
+		$wrapper->setTable($table);
 
-		// Pobranie nagłówka tabeli
-		$thead = eval($templates->render("admin/services_thead"));
+		if (get_privilages('manage_services')) {
+			$button = new Input();
+			$button->setParam('id', 'service_button_add');
+			$button->setParam('type', 'button');
+			$button->setParam('value', $lang->add_service);
+			$wrapper->addButton($button);
+		}
 
-		if (get_privilages("manage_services"))
-			// Pobranie przycisku dodającego usługę
-			$buttons = create_dom_element("input", "", array(
-				'id' => "service_button_add",
-				'type' => "button",
-				'value' => $lang->add_service
-			));
-
-		// Pobranie struktury tabeli
-		$output = eval($templates->render("admin/table_structure"));
-		return $output;
+		return $wrapper->toHtml();
 	}
 
 	public function get_action_box($box_id, $data)

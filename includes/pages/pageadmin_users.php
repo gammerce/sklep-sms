@@ -1,5 +1,12 @@
 <?php
 
+use Admin\Table;
+use Admin\Table\Wrapper;
+use Admin\Table\Structure;
+use Admin\Table\BodyRow;
+use Admin\Table\Cell;
+use Admin\Table\Img;
+
 $heart->register_page("users", "PageAdminUsers", "admin");
 
 class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
@@ -18,15 +25,34 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 
 	protected function content($get, $post)
 	{
-		global $heart, $db, $settings, $lang, $G_PAGE, $templates;
+		global $heart, $db, $settings, $lang, $G_PAGE;
 
-		// Wyszukujemy dane ktore spelniaja kryteria
-		if (isset($get['search']))
+		$wrapper = new Wrapper();
+		$wrapper->setTitle($this->title);
+		$wrapper->setSearch();
+
+		$table = new Structure();
+
+		$cell = new Cell($lang->id);
+		$cell->setParam('headers', 'id');
+		$table->addHeadCell($cell);
+
+		$table->addHeadCell(new Cell($lang->username));
+		$table->addHeadCell(new Cell($lang->firstname));
+		$table->addHeadCell(new Cell($lang->surname));
+		$table->addHeadCell(new Cell($lang->email));
+		$table->addHeadCell(new Cell($lang->groups));
+		$table->addHeadCell(new Cell($lang->wallet));
+
+		$where = '';
+		if (isset($get['search'])) {
 			searchWhere(array("`uid`", "`username`", "`forename`", "`surname`", "`email`", "`groups`", "`wallet`"), $get['search'], $where);
+		}
 
 		// Jezeli jest jakis where, to dodajemy WHERE
-		if (strlen($where))
-			$where = "WHERE " . $where . " ";
+		if (strlen($where)) {
+			$where = 'WHERE ' . $where . ' ';
+		}
 
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS `uid`, `username`, `forename`, `surname`, `email`, `groups`, `wallet` " .
@@ -34,19 +60,11 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 			$where .
 			"LIMIT " . get_row_limit($G_PAGE)
 		);
-		$rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
-		$i = 0;
-		$tbody = "";
+		$table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+
 		while ($row = $db->fetch_array_assoc($result)) {
-			$i += 1;
-			// Zabezpieczanie danych
-			$row['username'] = htmlspecialchars($row['username']);
-			$row['email'] = htmlspecialchars($row['email']);
-			$row['forename'] = htmlspecialchars($row['forename']);
-			$row['surname'] = htmlspecialchars($row['surname']);
-			$row['wallet'] = number_format($row['wallet'] / 100.0, 2);
-
+			$body_row = new BodyRow();
 
 			$row['groups'] = explode(";", $row['groups']);
 			$groups = array();
@@ -56,45 +74,34 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 			}
 			$groups = implode("; ", $groups);
 
-			// Pobranie przycisku doładowania portfela
-			if (get_privilages("manage_users")) {
-				$button_charge = eval($templates->render("admin/users_button_charge"));
-				$button_edit = create_dom_element("img", "", array(
-					'id' => "edit_row_{$i}",
-					'src' => "images/edit.png",
-					'title' => $lang->edit . " " . $row['username']
-				));
-				$button_delete = create_dom_element("img", "", array(
-					'id' => "delete_row_{$i}",
-					'src' => "images/bin.png",
-					'title' => $lang->delete . " " . $row['username']
-				));
-			} else
-				$button_charge = $button_delete = $button_edit = "";
+			$body_row->setDbId($row['uid']);
+			$body_row->addCell(new Cell(htmlspecialchars($row['username'])));
+			$body_row->addCell(new Cell(htmlspecialchars($row['forename'])));
+			$body_row->addCell(new Cell(htmlspecialchars($row['surname'])));
+			$body_row->addCell(new Cell(htmlspecialchars($row['email'])));
+			$body_row->addCell(new Cell($groups));
 
-			// Pobranie danych do tabeli
-			$tbody .= eval($templates->render("admin/users_trow"));
+			$cell = new Cell(number_format($row['wallet'] / 100.0, 2) . ' ' . $settings['currency']);
+			$cell->setParam('headers', 'wallet');
+			$body_row->addCell($cell);
+
+			$button_charge = new Img();
+			$button_charge->setParam('class', 'charge_wallet');
+			$button_charge->setParam('title', $lang->charge . ' ' . htmlspecialchars($row['username']));
+			$button_charge->setParam('src', 'images/dollar.png');
+			$body_row->addAction($button_charge);
+
+			if (get_privilages('manage_users')) {
+				$body_row->setButtonDelete(true);
+				$body_row->setButtonEdit(true);
+			}
+
+			$table->addBodyRow($body_row);
 		}
 
-		// Nie ma zadnych danych do wyswietlenia
-		if (!strlen($tbody))
-			$tbody = eval($templates->render("admin/no_records"));
+		$wrapper->setTable($table);
 
-		// Pole wyszukiwania
-		$search_text = htmlspecialchars($get['search']);
-		$buttons = eval($templates->render("admin/form_search"));
-
-		// Pobranie paginacji
-		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
-		if (strlen($pagination))
-			$tfoot_class = "display_tfoot";
-
-		// Pobranie nagłówka tabeli
-		$thead = eval($templates->render("admin/users_thead"));
-
-		// Pobranie struktury tabeli
-		$output = eval($templates->render("admin/table_structure"));
-		return $output;
+		return $wrapper->toHtml();
 	}
 
 	public function get_action_box($box_id, $data)

@@ -191,12 +191,12 @@ h4 {
 	white-space: nowrap;
 }
 
-[id^=charge_wallet_], [id^=deactivate_flags_] {
+.table_structure .charge_wallet {
 	cursor: pointer;
 	opacity: 0.6;
 }
 
-[id^=charge_wallet_]:hover, [id^=deactivate_flags_]:hover {
+.table_structure .charge_wallet:hover {
 	opacity: 1.0;
 }
 
