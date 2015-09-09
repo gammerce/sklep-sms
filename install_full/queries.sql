@@ -469,7 +469,6 @@ INSERT INTO `ss_sms_numbers` (`number`, `tariff`, `service`) VALUES
   ('79624', 9, 'cssetti'),
   ('91055', 10, 'homepay'),
   ('91055', 10, 'microsms'),
-  ('91055', 10, 'mintshost'),
   ('91055', 10, 'simpay'),
   ('91155', 11, 'homepay'),
   ('91155', 11, 'microsms'),
