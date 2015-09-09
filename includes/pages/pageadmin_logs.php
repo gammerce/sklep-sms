@@ -1,5 +1,12 @@
 <?php
 
+use Admin\Table;
+use Admin\Table\Wrapper;
+use Admin\Table\Structure;
+use Admin\Table\BodyRow;
+use Admin\Table\Cell;
+use Admin\Table\Div;
+
 $heart->register_page("logs", "PageAdminLogs", "admin");
 
 class PageAdminLogs extends PageAdmin
@@ -18,68 +25,66 @@ class PageAdminLogs extends PageAdmin
 
 	protected function content($get, $post)
 	{
-		global $db, $lang, $G_PAGE, $templates;
+		global $db, $lang, $G_PAGE;
+
+		$wrapper = new Wrapper();
+		$wrapper->setTitle($this->title);
+		$wrapper->setSearch();
+
+		$table = new Structure();
+
+		$cell = new Cell($lang->id);
+		$cell->setParam('headers', 'id');
+		$table->addHeadCell($cell);
+
+		$table->addHeadCell(new Cell($lang->text));
+		$table->addHeadCell(new Cell($lang->date));
 
 		// Wyszukujemy dane ktore spelniaja kryteria
-		if (isset($get['search']))
+		$where = '';
+		if (isset($get['search'])) {
 			searchWhere(array("`id`", "`text`", "CAST(`timestamp` as CHAR)"), $get['search'], $where);
+		}
 
 		// Jezeli jest jakis where, to dodajemy WHERE
-		if (strlen($where))
+		if (strlen($where)) {
 			$where = "WHERE " . $where . " ";
+		}
 
-		// Pobranie logów
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "logs` " .
 			$where .
 			"ORDER BY `id` DESC " .
 			"LIMIT " . get_row_limit($G_PAGE)
 		);
-		$rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
-		$i = 0;
-		$tbody = "";
+		$table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+
 		while ($row = $db->fetch_array_assoc($result)) {
-			$i += 1;
-			// Pobranie przycisku usuwania
-			if (get_privilages("manage_logs"))
-				$button_delete = create_dom_element("img", "", array(
-					'id' => "delete_row_{$i}",
-					'src' => "images/bin.png",
-					'title' => $lang->delete . " " . $row['id']
-				));
-			else
-				$button_delete = "";
+			$body_row = new BodyRow();
 
-			// Zabezpieczanie danych
-			$row['text'] = htmlspecialchars($row['text']);
+			$body_row->setDbId($row['id']);
 
-			// Poprawienie timestampa
-			$row['timestamp'] = convertDate($row['timestamp']);
+			$cell = new Cell();
+			$div = new Div(htmlspecialchars($row['text']));
+			$div->setParam('class', 'one_line');
+			$cell->addContent($div);
+			$body_row->addCell($cell);
 
-			// Pobranie danych do tabeli
-			$tbody .= eval($templates->render("admin/logs_trow"));
+			$cell = new Cell(convertDate($row['timestamp']));
+			$cell->setParam('headers', 'date');
+			$body_row->addCell($cell);
+
+			if (get_privilages("manage_logs")) {
+				$body_row->setButtonDelete(true);
+			}
+
+			$table->addBodyRow($body_row);
 		}
 
-		// Nie ma zadnych danych do wyswietlenia
-		if (!strlen($tbody))
-			$tbody = eval($templates->render("admin/no_records"));
+		$wrapper->setTable($table);
 
-		// Pole wyszukiwania
-		$search_text = htmlspecialchars($get['search']);
-		$buttons = eval($templates->render("admin/form_search"));
-
-		// Pobranie paginacji
-		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
-		if (strlen($pagination))
-			$tfoot_class = "display_tfoot";
-
-		// Pobranie nagłówka tabeli
-		$thead = eval($templates->render("admin/logs_thead"));
-
-		// Pobranie wygladu całej tabeli
-		$output = eval($templates->render("admin/table_structure"));
-		return $output;
+		return $wrapper->toHtml();
 	}
 
 }

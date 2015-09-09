@@ -4,23 +4,23 @@ $(document).delegate("#tariff_button_add", "click", function () {
 });
 
 // Kliknięcie edycji taryfy
-$(document).delegate("[id^=edit_row_]", "click", function () {
-	var row_id = $("#" + $(this).attr("id").replace('edit_row_', 'row_'));
+$(document).delegate(".table_structure .edit_row", "click", function () {
 	show_action_box(get_get_param("pid"), "tariff_edit", {
-		tariff: row_id.children("td[headers=tariff]").text()
+		id: $(this).closest('tr').find("td[headers=id]").text()
 	});
 });
 
 // Usuwanie taryfy
-$(document).delegate("[id^=delete_row_]", "click", function () {
-	var row_id = $("#" + $(this).attr("id").replace('delete_row_', 'row_'));
+$(document).delegate(".table_structure .delete_row", "click", function () {
+	var row_id = $(this).closest('tr');
+
 	loader.show();
 	$.ajax({
 		type: "POST",
 		url: "jsonhttp_admin.php",
 		data: {
 			action: "delete_tariff",
-			tariff: row_id.children("td[headers=tariff]").text()
+			tariff: row_id.children("td[headers=id]").text()
 		},
 		complete: function () {
 			loader.hide();
@@ -54,6 +54,7 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 // Dodanie taryfy
 $(document).delegate("#form_tariff_add", "submit", function (e) {
 	e.preventDefault();
+
 	loader.show();
 	$.ajax({
 		type: "POST",
@@ -101,6 +102,7 @@ $(document).delegate("#form_tariff_add", "submit", function (e) {
 // Edycja taryfy
 $(document).delegate("#form_tariff_edit", "submit", function (e) {
 	e.preventDefault();
+
 	loader.show();
 	$.ajax({
 		type: "POST",

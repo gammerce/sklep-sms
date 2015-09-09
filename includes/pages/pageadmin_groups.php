@@ -1,5 +1,12 @@
 <?php
 
+use Admin\Table;
+use Admin\Table\Wrapper;
+use Admin\Table\Structure;
+use Admin\Table\BodyRow;
+use Admin\Table\Cell;
+use Admin\Table\Input;
+
 $heart->register_page("groups", "PageAdminGroups", "admin");
 
 class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
@@ -18,74 +25,62 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
 
 	protected function content($get, $post)
 	{
-		global $db, $lang, $G_PAGE, $templates;
+		global $db, $lang, $G_PAGE;
+
+		$wrapper = new Wrapper();
+		$wrapper->setTitle($this->title);
+
+		$table = new Structure();
+
+		$cell = new Cell($lang->id);
+		$cell->setParam('headers', 'id');
+		$table->addHeadCell($cell);
+
+		$table->addHeadCell(new Cell($lang->name));
 
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "groups` " .
 			"LIMIT " . get_row_limit($G_PAGE)
 		);
-		$rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
-		$i = 0;
-		$tbody = "";
+		$table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+
 		while ($row = $db->fetch_array_assoc($result)) {
-			$i += 1;
+			$body_row = new BodyRow();
 
+			$body_row->setDbId($row['id']);
+			$body_row->addCell(new Cell($row['name']));
 			if (get_privilages("manage_groups")) {
-				// Pobranie przycisku edycji
-				$button_edit = create_dom_element("img", "", array(
-					'id' => "edit_row_{$i}",
-					'src' => "images/edit.png",
-					'title' => $lang->edit . " " . $row['name']
-				));
-				$button_delete = create_dom_element("img", "", array(
-					'id' => "delete_row_{$i}",
-					'src' => "images/bin.png",
-					'title' => $lang->delete . " " . $row['name']
-				));
-			} else
-				$button_delete = $button_edit = "";
+				$body_row->setButtonDelete(true);
+				$body_row->setButtonEdit(true);
+			}
 
-			$row['name'] = htmlspecialchars($row['name']);
-
-			// Pobranie danych do tabeli
-			$tbody .= eval($templates->render("admin/groups_trow"));
+			$table->addBodyRow($body_row);
 		}
 
-		// Nie ma zadnych danych do wyswietlenia
-		if (!strlen($tbody))
-			$tbody = eval($templates->render("admin/no_records"));
+		$wrapper->setTable($table);
 
-		// Pobranie paginacji
-		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
-		if (strlen($pagination))
-			$tfoot_class = "display_tfoot";
+		if (get_privilages("manage_groups")) {
+			$button = new Input();
+			$button->setParam('id', 'group_button_add');
+			$button->setParam('type', 'button');
+			$button->setParam('value', $lang->add_group);
+			$wrapper->addButton($button);
+		}
 
-		// Pobranie nagłówka tabeli
-		$thead = eval($templates->render("admin/groups_thead"));
-
-		if (get_privilages("manage_groups"))
-			// Pobranie przycisku dodającego grupę
-			$buttons = create_dom_element("input", "", array(
-				'id' => "group_button_add",
-				'type' => "button",
-				'value' => $lang->add_group
-			));
-
-		// Pobranie struktury tabeli
-		$output = eval($templates->render("admin/table_structure"));
-		return $output;
+		return $wrapper->toHtml();
 	}
 
 	public function get_action_box($box_id, $data)
 	{
 		global $db, $lang, $templates;
 
-		if (!get_privilages("manage_groups"))
+		if (!get_privilages("manage_groups")) {
 			return array(
 				'status' => "not_logged_in",
 				'text' => $lang->not_logged_or_no_perm
 			);
+		}
 
 		if ($box_id == "group_edit") {
 			$result = $db->query($db->prepare(
@@ -94,7 +89,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
 				array($data['id'])
 			));
 
-			if (!$db->num_rows($result))
+			if (!$db->num_rows($result)) {
 				$data['template'] = create_dom_element("form", $lang->no_such_group, array(
 					'class' => 'action_box',
 					'style' => array(
@@ -102,6 +97,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
 						'color' => "white"
 					)
 				));
+			}
 			else {
 				$group = $db->fetch_array_assoc($result);
 				$group['name'] = htmlspecialchars($group['name']);

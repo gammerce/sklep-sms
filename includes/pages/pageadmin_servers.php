@@ -1,5 +1,12 @@
 <?php
 
+use Admin\Table;
+use Admin\Table\Wrapper;
+use Admin\Table\Structure;
+use Admin\Table\BodyRow;
+use Admin\Table\Cell;
+use Admin\Table\Input;
+
 $heart->register_page("servers", "PageAdminServers", "admin");
 
 class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
@@ -18,53 +25,48 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
 
 	protected function content($get, $post)
 	{
-		global $heart, $lang, $settings, $templates;
+		global $heart, $lang;
 
-		$i = 0;
-		$tbody = "";
+		$wrapper = new Wrapper();
+		$wrapper->setTitle($this->title);
+
+		$table = new Structure();
+
+		$cell = new Cell($lang->id);
+		$cell->setParam('headers', 'id');
+		$table->addHeadCell($cell);
+
+		$table->addHeadCell(new Cell($lang->name));
+		$table->addHeadCell(new Cell($lang->ip . ':' . $lang->port));
+		$table->addHeadCell(new Cell($lang->version));
+
 		foreach ($heart->get_servers() as $row) {
-			$i += 1;
-			$row['name'] = htmlspecialchars($row['name']);
-			$row['ip'] = htmlspecialchars($row['ip']);
-			$row['port'] = htmlspecialchars($row['port']);
+			$body_row = new BodyRow();
+
+			$body_row->setDbId($row['id']);
+			$body_row->addCell(new Cell(htmlspecialchars($row['name'])));
+			$body_row->addCell(new Cell(htmlspecialchars($row['ip'] . ':' . $row['port'])));
+			$body_row->addCell(new Cell(htmlspecialchars($row['version'])));
 
 			if (get_privilages("manage_servers")) {
-				// Pobranie przycisku edycji
-				$button_edit = create_dom_element("img", "", array(
-					'id' => "edit_row_{$i}",
-					'src' => "images/edit.png",
-					'title' => $lang->edit . " " . $row['name']
-				));
-				$button_delete = create_dom_element("img", "", array(
-					'id' => "delete_row_{$i}",
-					'src' => "images/bin.png",
-					'title' => $lang->delete . " " . $row['name']
-				));
-			} else
-				$button_delete = $button_edit = "";
+				$body_row->setButtonDelete(true);
+				$body_row->setButtonEdit(true);
+			}
 
-			// Pobranie danych do tabeli
-			$tbody .= eval($templates->render("admin/servers_trow"));
+			$table->addBodyRow($body_row);
 		}
 
-		// Nie ma zadnych danych do wyswietlenia
-		if (!strlen($tbody))
-			$tbody = eval($templates->render("admin/no_records"));
+		$wrapper->setTable($table);
 
-		// Pobranie nagłówka tabeli
-		$thead = eval($templates->render("admin/servers_thead"));
+		if (get_privilages("manage_servers")) {
+			$button = new Input();
+			$button->setParam('id', 'server_button_add');
+			$button->setParam('type', 'button');
+			$button->setParam('value', $lang->add_server);
+			$wrapper->addButton($button);
+		}
 
-		if (get_privilages("manage_servers"))
-			// Pobranie przycisku dodającego serwer
-			$buttons = create_dom_element("input", "", array(
-				'id' => "server_button_add",
-				'type' => "button",
-				'value' => $lang->add_server
-			));
-
-		// Pobranie struktury tabeli
-		$output = eval($templates->render("admin/table_structure"));
-		return $output;
+		return $wrapper->toHtml();
 	}
 
 	public function get_action_box($box_id, $data)

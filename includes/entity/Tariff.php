@@ -29,6 +29,7 @@ class Entity_Tariff
 	{
 		$this->id = (int)$id;
 		$this->provision = (int)$provision;
+		$this->predefined = (bool)$predefined;
 		$this->number = isset($number) ? (string)$number : NULL;
 	}
 

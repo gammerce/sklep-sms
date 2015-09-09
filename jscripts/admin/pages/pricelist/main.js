@@ -4,16 +4,16 @@ $(document).delegate("#price_button_add", "click", function () {
 });
 
 // Kliknięcie edycji ceny
-$(document).delegate("[id^=edit_row_]", "click", function () {
-	var row_id = $("#" + $(this).attr("id").replace('edit_row_', 'row_'));
+$(document).delegate(".table_structure .edit_row", "click", function () {
 	show_action_box(get_get_param("pid"), "price_edit", {
-		id: row_id.children("td[headers=id]").text()
+		id: $(this).closest('tr').find("td[headers=id]").text()
 	});
 });
 
 // Usuwanie taryfy
-$(document).delegate("[id^=delete_row_]", "click", function () {
-	var row_id = $("#" + $(this).attr("id").replace('delete_row_', 'row_'));
+$(document).delegate(".table_structure .delete_row", "click", function () {
+	var row_id = $(this).closest('tr');
+
 	loader.show();
 	$.ajax({
 		type: "POST",
@@ -54,6 +54,7 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 // Dodanie ceny
 $(document).delegate("#form_price_add", "submit", function (e) {
 	e.preventDefault();
+
 	loader.show();
 	$.ajax({
 		type: "POST",
@@ -101,6 +102,7 @@ $(document).delegate("#form_price_add", "submit", function (e) {
 // Edycja taryfy
 $(document).delegate("#form_price_edit", "submit", function (e) {
 	e.preventDefault();
+
 	loader.show();
 	$.ajax({
 		type: "POST",

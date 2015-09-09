@@ -1,5 +1,12 @@
 <?php
 
+use Admin\Table;
+use Admin\Table\Wrapper;
+use Admin\Table\Structure;
+use Admin\Table\BodyRow;
+use Admin\Table\Cell;
+use Admin\Table\Input;
+
 $heart->register_page("antispam_questions", "PageAdminAntispamQuestions", "admin");
 
 class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionBox
@@ -18,67 +25,53 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
 
 	protected function content($get, $post)
 	{
-		global $db, $lang, $G_PAGE, $templates;
+		global $db, $lang, $G_PAGE;
 
-		// Pobranie taryf
+		$wrapper = new Wrapper();
+		$wrapper->setTitle($this->title);
+
+		$table = new Structure();
+
+		$cell = new Cell($lang->id);
+		$cell->setParam('headers', 'id');
+		$table->addHeadCell($cell);
+
+		$table->addHeadCell(new Cell($lang->question));
+		$table->addHeadCell(new Cell($lang->answers));
+
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS * " .
 			"FROM `" . TABLE_PREFIX . "antispam_questions` " .
 			"LIMIT " . get_row_limit($G_PAGE)
 		);
-		$rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
-		$i = 0;
-		$tbody = "";
+		$table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+
 		while ($row = $db->fetch_array_assoc($result)) {
-			$i += 1;
-			// Pobranie przycisku edycji oraz usuwania
+			$body_row = new BodyRow();
 
+			$body_row->setDbId($row['id']);
+			$body_row->addCell(new Cell($row['question']));
+			$body_row->addCell(new Cell($row['answers']));
 			if (get_privilages("manage_antispam_questions")) {
-				$button_edit = create_dom_element("img", "", array(
-					'id' => "edit_row_{$i}",
-					'src' => "images/edit.png",
-					'title' => $lang->edit . " " . $row['tariff']
-				));
+				$body_row->setButtonDelete(true);
+				$body_row->setButtonEdit(true);
+			}
 
-				$button_delete = create_dom_element("img", "", array(
-					'id' => "delete_row_{$i}",
-					'src' => "images/bin.png",
-					'title' => $lang->delete . " " . $row['tariff']
-				));
-			} else
-				$button_delete = $button_edit = "";
-
-			// Zabezpieczanie danych
-			$row['answers'] = htmlspecialchars($row['answers']);
-
-			// Pobranie danych do tabeli
-			$tbody .= eval($templates->render("admin/antispam_questions_trow"));
+			$table->addBodyRow($body_row);
 		}
 
-		// Nie ma zadnych danych do wyswietlenia
-		if (!strlen($tbody))
-			$tbody = eval($templates->render("admin/no_records"));
+		$wrapper->setTable($table);
 
-		if (get_privilages("manage_antispam_questions"))
-			// Pobranie przycisku dodającego pytanie antyspamowe
-			$buttons = create_dom_element("input", "", array(
-				'id' => "antispam_question_button_add",
-				'type' => "button",
-				'value' => $lang->add_antispam_question
-			));
+		if (get_privilages("manage_antispam_questions")) {
+			$button = new Input();
+			$button->setParam('id', 'antispam_question_button_add');
+			$button->setParam('type', 'button');
+			$button->setParam('value', $lang->add_antispam_question);
+			$wrapper->addButton($button);
+		}
 
-		// Pobranie paginacji
-		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
-		if (strlen($pagination))
-			$tfoot_class = "display_tfoot";
-
-		// Pobranie nagłówka tabeli
-		$thead = eval($templates->render("admin/antispam_questions_thead"));
-
-		// Pobranie struktury tabeli
-		$output = eval($templates->render("admin/table_structure"));
-		return $output;
+		return $wrapper->toHtml();
 	}
 
 	public function get_action_box($box_id, $data)

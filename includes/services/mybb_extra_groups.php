@@ -194,7 +194,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 			$table->addBodyRow($body_row);
 		}
 
-		$wrapper->table = $table;
+		$wrapper->setTable($table);
 
 		return $wrapper;
 	}

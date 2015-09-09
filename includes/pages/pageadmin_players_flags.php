@@ -1,5 +1,12 @@
 <?php
 
+use Admin\Table;
+use Admin\Table\Wrapper;
+use Admin\Table\Structure;
+use Admin\Table\BodyRow;
+use Admin\Table\Cell;
+use Admin\Table\Input;
+
 $heart->register_page("players_flags", "PageAdminPlayersFlags", "admin");
 
 class PageAdminPlayersFlags extends PageAdmin
@@ -7,7 +14,8 @@ class PageAdminPlayersFlags extends PageAdmin
 
 	const PAGE_ID = "players_flags";
 	protected $privilage = "view_player_flags";
-	private $flags = "abcdefghijklmnopqrstuyvwxz";
+
+	protected $flags = "abcdefghijklmnopqrstuyvwxz";
 
 	function __construct()
 	{
@@ -19,55 +27,61 @@ class PageAdminPlayersFlags extends PageAdmin
 
 	protected function content($get, $post)
 	{
-		global $heart, $db, $settings, $lang, $G_PAGE, $templates;
+		global $heart, $db, $settings, $lang, $G_PAGE;
+
+		$wrapper = new Wrapper();
+		$wrapper->setTitle($this->title);
+
+		$table = new Structure();
+
+		$cell = new Cell($lang->id);
+		$cell->setParam('headers', 'id');
+		$table->addHeadCell($cell);
+
+		$table->addHeadCell(new Cell($lang->server));
+		$table->addHeadCell(new Cell("{$lang->nick}/{$lang->ip}/{$lang->sid}"));
+		foreach (str_split($this->flags) as $flag) {
+			$table->addHeadCell(new Cell($flag));
+		}
 
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "players_flags` " .
 			"ORDER BY `id` DESC " .
 			"LIMIT " . get_row_limit($G_PAGE)
 		);
-		$rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
-		$i = 0;
-		$tbody = "";
+		$table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+
 		while ($row = $db->fetch_array_assoc($result)) {
-			$i += 1;
-			// Zabezpieczanie danych
-			$row['auth_data'] = htmlspecialchars($row['auth_data']);
+			$body_row = new BodyRow();
 
-			// Zamiana dat
-			for ($j = 0; $j < strlen($this->flags); ++$j)
-				if (!$row[$this->flags[$j]])
-					$row[$this->flags[$j]] = " ";
-				else if ($row[$this->flags[$j]] == -1)
-					$row[$this->flags[$j]] = $lang->never;
-				else
-					$row[$this->flags[$j]] = date($settings['date_format'], $row[$this->flags[$j]]);
-
-			// Pobranie danych serwera
+			// Pozyskanie danych serwera
 			$temp_server = $heart->get_server($row['server']);
-			$row['server'] = $temp_server['name'];
+			$server_name = $temp_server['name'];
 			unset($temp_server);
 
-			// Pobranie danych do tabeli
-			$tbody .= eval($templates->render("admin/players_flags_trow"));
+			$body_row->setDbId($row['id']);
+			$body_row->addCell(new Cell($server_name));
+			$body_row->addCell(new Cell(htmlspecialchars($row['auth_data'])));
+
+			foreach (str_split($this->flags) as $flag) {
+				if (!$row[$flag]) {
+					$body_row->addCell(new Cell(' '));
+				}
+				else if ($row[$flag] == -1) {
+					$body_row->addCell(new Cell($lang->never));
+				}
+				else {
+					$body_row->addCell(new Cell(date($settings['date_format'], $row[$flag])));
+				}
+			}
+
+			$table->addBodyRow($body_row);
 		}
 
-		// Nie ma zadnych danych do wyswietlenia
-		if (!strlen($tbody))
-			$tbody = eval($templates->render("admin/no_records"));
+		$wrapper->setTable($table);
 
-		// Pobranie paginacji
-		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
-		if (strlen($pagination))
-			$tfoot_class = "display_tfoot";
-
-		// Pobranie nagłówka tabeli
-		$thead = eval($templates->render("admin/players_flags_thead"));
-
-		// Pobranie struktury tabeli
-		$output = eval($templates->render("admin/table_structure"));
-		return $output;
+		return $wrapper->toHtml();
 	}
 
 }
