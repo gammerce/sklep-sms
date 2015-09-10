@@ -49,8 +49,6 @@ $l['way_of_payment'] = "Sposób płatności";
 $l['choose_payment'] = "Wybierz płatność";
 $l['admin'] = "Admin";
 
-$l['choose_amount'] = "Wybierz ilość";
-
 $l['transfer_cost'] = "Koszt Przelewu";
 $l['sms_cost'] = "Koszt SMS";
 

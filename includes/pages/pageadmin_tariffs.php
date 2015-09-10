@@ -1,5 +1,12 @@
 <?php
 
+use Admin\Table;
+use Admin\Table\Wrapper;
+use Admin\Table\Structure;
+use Admin\Table\BodyRow;
+use Admin\Table\Cell;
+use Admin\Table\Input;
+
 $heart->register_page("tariffs", "PageAdminTariffs", "admin");
 
 class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
@@ -18,50 +25,44 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
 
 	protected function content($get, $post)
 	{
-		global $heart, $lang, $settings, $templates; // settings potrzebne w pliku trow
+		global $heart, $settings, $lang;
 
-		$i = 0;
-		$tbody = "";
+		$wrapper = new Wrapper();
+		$wrapper->setTitle($this->title);
+
+		$table = new Structure();
+
+		$cell = new Cell($lang->tariff);
+		$cell->setParam('headers', 'id');
+		$table->addHeadCell($cell);
+
+		$table->addHeadCell(new Cell($lang->provision));
+
 		foreach ($heart->getTariffs() as $tariff) {
-			$i += 1;
-			// Pobranie przycisku edycji oraz usuwania
-			$button_edit = create_dom_element("img", "", array(
-				'id' => "edit_row_{$i}",
-				'src' => "images/edit.png",
-				'title' => $lang->edit . " " . $tariff->getId()
-			));
-			if (!$tariff->isPredefined())
-				$button_delete = create_dom_element("img", "", array(
-					'id' => "delete_row_{$i}",
-					'src' => "images/bin.png",
-					'title' => $lang->delete . " " . $tariff->getId()
-				));
-			else
-				$button_delete = "";
+			$body_row = new BodyRow();
 
 			$provision = number_format($tariff->getProvision() / 100.0, 2);
 
-			// Pobranie danych do tabeli
-			$tbody .= eval($templates->render("admin/tariffs_trow"));
+			$body_row->setDbId($tariff->getId());
+			$body_row->addCell(new Cell("{$provision} {$settings['currency']}"));
+
+			$body_row->setButtonEdit(true);
+			if (!$tariff->isPredefined()) {
+				$body_row->setButtonDelete(true);
+			}
+
+			$table->addBodyRow($body_row);
 		}
 
-		// Nie ma zadnych danych do wyswietlenia
-		if (!strlen($tbody))
-			$tbody = eval($templates->render("admin/no_records"));
+		$wrapper->setTable($table);
 
-		// Pobranie przycisku dodającego taryfę
-		$buttons = create_dom_element("input", "", array(
-			'id' => "tariff_button_add",
-			'type' => "button",
-			'value' => $lang->add_tariff
-		));
+		$button = new Input();
+		$button->setParam('id', 'tariff_button_add');
+		$button->setParam('type', 'button');
+		$button->setParam('value', $lang->add_tariff);
+		$wrapper->addButton($button);
 
-		// Pobranie nagłówka tabeli
-		$thead = eval($templates->render("admin/tariffs_thead"));
-
-		// Pobranie struktury tabeli
-		$output = eval($templates->render("admin/table_structure"));
-		return $output;
+		return $wrapper->toHtml();
 	}
 
 	public function get_action_box($box_id, $data)

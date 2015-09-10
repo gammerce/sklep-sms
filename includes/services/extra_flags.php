@@ -213,7 +213,7 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 			$table->addBodyRow($body_row);
 		}
 
-		$wrapper->table = $table;
+		$wrapper->setTable($table);
 
 		return $wrapper;
 	}

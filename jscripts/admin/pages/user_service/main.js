@@ -10,7 +10,7 @@ $(document).delegate("[id^=edit_row_]", "click", function () {
 		id: row_id.children("td[headers=id]").text()
 	});
 });
-$(document).delegate(".edit_row", "click", function () {
+$(document).delegate(".table_structure .edit_row", "click", function () {
 	show_action_box(get_get_param("pid"), "user_service_edit", {
 		id: $(this).closest('tr').find("td[headers=id]").text()
 	});
@@ -101,7 +101,7 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 	});
 });
 
-$(document).delegate(".delete_row", "click", function () {
+$(document).delegate(".table_structure .delete_row", "click", function () {
 	var row_id = $(this).closest('tr');
 
 	var confirm_info = "Na pewno chcesz usunąć usluge o ID: " + row_id.children("td[headers=id]").text() + " ?";

@@ -1,5 +1,12 @@
 <?php
 
+use Admin\Table;
+use Admin\Table\Wrapper;
+use Admin\Table\Structure;
+use Admin\Table\BodyRow;
+use Admin\Table\Cell;
+use Admin\Table\Input;
+
 $heart->register_page("pricelist", "PageAdminPriceList", "admin");
 
 class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
@@ -18,68 +25,65 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
 
 	protected function content($get, $post)
 	{
-		global $heart, $db, $lang, $G_PAGE, $templates;
+		global $heart, $db, $lang, $G_PAGE;
 
-		// Pobranie cen
+		$wrapper = new Wrapper();
+		$wrapper->setTitle($this->title);
+
+		$table = new Structure();
+
+		$cell = new Cell($lang->id);
+		$cell->setParam('headers', 'id');
+		$table->addHeadCell($cell);
+
+		$table->addHeadCell(new Cell($lang->service));
+		$table->addHeadCell(new Cell($lang->tariff));
+		$table->addHeadCell(new Cell($lang->amount));
+		$table->addHeadCell(new Cell($lang->server));
+
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS * " .
 			"FROM `" . TABLE_PREFIX . "pricelist` " .
 			"ORDER BY `service`, `server`, `tariff` " .
 			"LIMIT " . get_row_limit($G_PAGE)
 		);
-		$rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
-		$i = 0;
-		$tbody = "";
+		$table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+
 		while ($row = $db->fetch_array_assoc($result)) {
-			$i += 1;
-			// Pobranie przycisku edycji oraz usuwania
-			$button_edit = create_dom_element("img", "", array(
-				'id' => "edit_row_{$i}",
-				'src' => "images/edit.png",
-				'title' => $lang->edit . " " . $row['tariff']
-			));
-			$button_delete = create_dom_element("img", "", array(
-				'id' => "delete_row_{$i}",
-				'src' => "images/bin.png",
-				'title' => $lang->delete . " " . $row['tariff']
-			));
-
-			if ($row['server'] != -1) {
-				$temp_server = $heart->get_server($row['server']);
-				$row['server'] = $temp_server['name'];
-				unset($temp_server);
-			} else
-				$row['server'] = $lang->all_servers;
+			$body_row = new BodyRow();
 
 			$service = $heart->get_service($row['service']);
 
-			// Pobranie danych do tabeli
-			$tbody .= eval($templates->render("admin/pricelist_trow"));
+			if ($row['server'] != -1) {
+				$temp_server = $heart->get_server($row['server']);
+				$server_name = $temp_server['name'];
+				unset($temp_server);
+			} else {
+				$server_name = $lang->all_servers;
+			}
+
+			$body_row->setDbId($row['id']);
+			$body_row->addCell(new Cell("{$service['name']} ( {$service['id']} )"));
+			$body_row->addCell(new Cell($row['tariff']));
+			$body_row->addCell(new Cell($row['amount']));
+			$body_row->addCell(new Cell($server_name));
+
+			$body_row->setButtonDelete(true);
+			$body_row->setButtonEdit(true);
+
+			$table->addBodyRow($body_row);
 		}
 
-		// Nie ma zadnych danych do wyswietlenia
-		if (!strlen($tbody))
-			$tbody = eval($templates->render("admin/no_records"));
+		$wrapper->setTable($table);
 
-		// Pobranie przycisku dodającego cenę
-		$buttons = create_dom_element("input", "", array(
-			'id' => "price_button_add",
-			'type' => "button",
-			'value' => $lang->add_price
-		));
+		$button = new Input();
+		$button->setParam('id', 'price_button_add');
+		$button->setParam('type', 'button');
+		$button->setParam('value', $lang->add_price);
+		$wrapper->addButton($button);
 
-		// Pobranie paginacji
-		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
-		if (strlen($pagination))
-			$tfoot_class = "display_tfoot";
-
-		// Pobranie nagłówka tabeli
-		$thead = eval($templates->render("admin/pricelist_thead"));
-
-		// Pobranie struktury tabeli
-		$output = eval($templates->render("admin/table_structure"));
-		return $output;
+		return $wrapper->toHtml();
 	}
 
 	public function get_action_box($box_id, $data)

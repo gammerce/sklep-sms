@@ -1,26 +1,25 @@
 // Klikniecie doladowania portfela
 var row_id = 0;
-$(document).delegate("[id^=charge_wallet_]", "click", function () {
-	row_id = $("#" + $(this).attr("id").replace('charge_wallet_', 'row_'));
+$(document).delegate(".table_structure .charge_wallet", "click", function () {
+	row_id = $(this).closest('tr');
 	show_action_box(get_get_param("pid"), "charge_wallet", {
-		uid: row_id.children("td[headers=uid]").text()
+		uid: row_id.children("td[headers=id]").text()
 	});
 });
 
 // Kliknięcie edycji użytkownika
-$(document).delegate("[id^=edit_row_]", "click", function () {
-	var row_id = $("#" + $(this).attr("id").replace('edit_row_', 'row_'));
+$(document).delegate(".table_structure .edit_row", "click", function () {
 	show_action_box(get_get_param("pid"), "user_edit", {
-		uid: row_id.children("td[headers=uid]").text()
+		uid: $(this).closest('tr').find("td[headers=id]").text()
 	});
 });
 
 // Usuwanie użytkownika
-$(document).delegate("[id^=delete_row_]", "click", function () {
-	var row_id = $("#" + $(this).attr("id").replace('delete_row_', 'row_'));
+$(document).delegate(".table_structure .delete_row", "click", function () {
+	var row_id = $(this).closest('tr');
 
 	// Czy na pewno?
-	if (confirm("Czy na pewno chcesz usunąć konto o ID " + row_id.children("td[headers=uid]").text() + "?") == false) {
+	if (confirm("Czy na pewno chcesz usunąć konto o ID " + row_id.children("td[headers=id]").text() + "?") == false) {
 		return;
 	}
 
@@ -30,7 +29,7 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 		url: "jsonhttp_admin.php",
 		data: {
 			action: "delete_user",
-			uid: row_id.children("td[headers=uid]").text()
+			uid: row_id.children("td[headers=id]").text()
 		},
 		complete: function () {
 			loader.hide();
@@ -90,15 +89,15 @@ $(document).delegate("#form_charge_wallet", "submit", function (e) {
 				// Zmień stan portfela
 				getnset_template(row_id.children("td[headers=wallet]"), "admin_user_wallet", true, {
 						uid: $("#form_charge_wallet input[name=uid]").val()
-					},
-					function () {
+					}, function () {
 						// Podświetl row
 						row_id.children("td[headers=wallet]").effect("highlight", 1000);
-					});
+					}
+				);
 
 				// Ukryj i wyczyść action box
 				action_box.hide();
-				$("#action_box_wraper_td").html("");
+				$("#action_box_wraper_td").html('');
 			}
 			else if (!jsonObj.return_id) {
 				infobox.show_info(lang['sth_went_wrong'], false);

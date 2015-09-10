@@ -56,8 +56,11 @@ class DOMElement implements I_ToHtml
 	 */
 	function __construct($value = NULL)
 	{
-		if ($value !== NULL)
+		if ($value !== NULL) {
 			$this->addContent(new String($value));
+		}
+
+		return $this;
 	}
 
 	public function toHtml()
@@ -86,8 +89,9 @@ class DOMElement implements I_ToHtml
 		$output = "<{$this->getName(true)} {$params}>";
 
 		if (!in_array($this->getName(), array('input', 'img', 'br', 'hr'))) {
-			foreach ($this->contents as $element)
+			foreach ($this->contents as $element) {
 				$output .= $element->toHtml();
+			}
 
 			$output .= "</{$this->getName(true)}>";
 		}
@@ -214,6 +218,11 @@ class Div extends DOMElement
 	protected $name = 'div';
 }
 
+class Img extends DOMElement
+{
+	protected $name = 'img';
+}
+
 class Row extends DOMElement
 {
 	protected $name = 'tr';
@@ -242,7 +251,7 @@ class BodyRow extends Row
 	/** @var  string */
 	private $db_id = NULL;
 
-	/** @var  DOMElement[] */
+	/** @var  I_ToHtml[] */
 	private $actions = array();
 
 	/** @var bool $button_edit */
@@ -317,7 +326,7 @@ class BodyRow extends Row
 	}
 
 	/**
-	 * @param DOMElement $action
+	 * @param I_ToHtml $action
 	 */
 	public function addAction($action)
 	{
@@ -479,16 +488,16 @@ class Wrapper extends Div
 {
 
 	/** @var  Structure */
-	public $table;
+	protected $table;
 
 	/** @var  string */
-	private $title;
+	protected $title;
 
 	/** @var  DOMElement[] */
-	private $buttons;
+	protected $buttons;
 
 	/** @var bool */
-	private $search = false;
+	protected $search = false;
 
 	function __construct()
 	{
@@ -506,8 +515,10 @@ class Wrapper extends Div
 		$buttons = new Div();
 		$buttons->setStyle('float', 'right');
 
-		$search_text = $_GET['search'];
-		$buttons->addContent(new String(eval($templates->render("admin/form_search"))));
+		if ($this->search) {
+			$search_text = $_GET['search'];
+			$buttons->addContent(new String(eval($templates->render("admin/form_search"))));
+		}
 
 		foreach ($this->buttons as $button) {
 			$buttons->addContent($button);
@@ -519,7 +530,7 @@ class Wrapper extends Div
 		$title->addContent(new String('<br class="clear" />'));
 
 		$this->addContent($title);
-		$this->addContent($this->table);
+		$this->addContent($this->getTable());
 
 		$output = parent::toHtml();
 		$this->contents = $old_contets;
@@ -556,5 +567,21 @@ class Wrapper extends Div
 	public function setSearch($value = true)
 	{
 		$this->search = $value;
+	}
+
+	/**
+	 * @return Structure
+	 */
+	public function getTable()
+	{
+		return $this->table;
+	}
+
+	/**
+	 * @param Structure $table
+	 */
+	public function setTable($table)
+	{
+		$this->table = $table;
 	}
 }

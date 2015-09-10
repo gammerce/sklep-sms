@@ -70,11 +70,12 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
 	{
 		global $heart, $db, $lang, $templates;
 
-		if (!get_privilages("manage_user_services"))
+		if (!get_privilages("manage_user_services")) {
 			return array(
 				'status' => "not_logged_in",
 				'text' => $lang->not_logged_or_no_perm
 			);
+		}
 
 		switch ($box_id) {
 			case "user_service_add":
@@ -109,8 +110,8 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
 		}
 
 		return array(
-			'status' => 'ok',
-			'template' => $output
+			'status' => isset($output) ? 'ok' : 'no_output',
+			'template' => if_isset($output, '')
 		);
 	}
 }

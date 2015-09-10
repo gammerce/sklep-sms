@@ -1,12 +1,12 @@
-$(document).delegate("[id^=edit_row_]", "click", function () {
-	var row_id = $("#" + $(this).attr("id").replace('edit_row_', 'row_'));
+$(document).delegate(".table_structure .edit_row", "click", function () {
 	show_action_box(get_get_param("pid"), "transaction_service_edit", {
-		id: row_id.children("td[headers=id]").text()
+		id: $(this).closest('tr').find("td[headers=id]").text()
 	});
 });
 
 $(document).delegate("#form_transaction_service_edit", "submit", function (e) {
 	e.preventDefault();
+
 	loader.show();
 	$.ajax({
 		type: "POST",

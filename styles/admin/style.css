@@ -183,20 +183,24 @@ h4 {
 	text-shadow: 1px 1px 10px #000;
 }
 
-[headers=id] {
+.table_structure [headers=id] {
 	width: 4%;
 }
 
-[headers=date] {
+.table_structure [headers=platform] {
+	width: 30%;
+}
+
+.table_structure [headers=date] {
 	white-space: nowrap;
 }
 
-[id^=charge_wallet_], [id^=deactivate_flags_] {
+.table_structure .charge_wallet {
 	cursor: pointer;
 	opacity: 0.6;
 }
 
-[id^=charge_wallet_]:hover, [id^=deactivate_flags_]:hover {
+.table_structure .charge_wallet:hover {
 	opacity: 1.0;
 }
 

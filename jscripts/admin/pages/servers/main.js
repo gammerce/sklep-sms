@@ -4,16 +4,15 @@ $(document).delegate("#server_button_add", "click", function () {
 });
 
 // Kliknięcie edycji serwera
-$(document).delegate("[id^=edit_row_]", "click", function () {
-	var row_id = $("#" + $(this).attr("id").replace('edit_row_', 'row_'));
+$(document).delegate(".table_structure .edit_row", "click", function () {
 	show_action_box(get_get_param("pid"), "server_edit", {
-		id: row_id.children("td[headers=id]").text()
+		id: $(this).closest('tr').find("td[headers=id]").text()
 	});
 });
 
 // Usuwanie serwera
-$(document).delegate("[id^=delete_row_]", "click", function () {
-	var row_id = $("#" + $(this).attr("id").replace('delete_row_', 'row_'));
+$(document).delegate(".table_structure .delete_row", "click", function () {
+	var row_id = $(this).closest('tr');
 
 	var confirm_info = "Na pewno chcesz usunąć serwer:\n(" + row_id.children("td[headers=id]").text() + ") " + row_id.children("td[headers=name]").text() + " ?";
 	if (confirm(confirm_info) == false) {
@@ -60,6 +59,7 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
 // Dodanie serwera
 $(document).delegate("#form_server_add", "submit", function (e) {
 	e.preventDefault();
+
 	loader.show();
 	$.ajax({
 		type: "POST",
@@ -107,6 +107,7 @@ $(document).delegate("#form_server_add", "submit", function (e) {
 // Edycja serwera
 $(document).delegate("#form_server_edit", "submit", function (e) {
 	e.preventDefault();
+
 	loader.show();
 	$.ajax({
 		type: "POST",

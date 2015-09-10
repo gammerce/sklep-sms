@@ -1,6 +1,7 @@
 // Usuwanie logu
-$(document).delegate("[id^=delete_row_]", "click", function () {
-	var row_id = $("#" + $(this).attr("id").replace('delete_row_', 'row_'));
+$(document).delegate(".table_structure .delete_row", "click", function () {
+	var row_id = $(this).closest('tr');
+
 	loader.show();
 	$.ajax({
 		type: "POST",

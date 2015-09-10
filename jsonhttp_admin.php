@@ -913,8 +913,8 @@ if ($action == "charge_wallet") {
 
 	$db->query($db->prepare(
 		"DELETE FROM `" . TABLE_PREFIX . "tariffs` " .
-		"WHERE `tariff` = '%d' AND `predefined` = '%d'",
-		array($_POST['tariff'], 0)
+		"WHERE `tariff` = '%d' AND `predefined` = '0'",
+		array($_POST['tariff'])
 	));
 
 	// Zwróć info o prawidłowym lub błędnym usunięciu

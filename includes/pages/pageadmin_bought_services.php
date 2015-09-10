@@ -1,5 +1,13 @@
 <?php
 
+use Admin\Table;
+use Admin\Table\Wrapper;
+use Admin\Table\Structure;
+use Admin\Table\BodyRow;
+use Admin\Table\Cell;
+use Admin\Table\DOMElement;
+use Admin\Table\Img;
+
 $heart->register_page("bought_services", "PageAdminBoughtServices", "admin");
 
 class PageAdminBoughtServices extends PageAdmin
@@ -17,15 +25,41 @@ class PageAdminBoughtServices extends PageAdmin
 
 	protected function content($get, $post)
 	{
-		global $heart, $db, $settings, $lang, $G_PAGE, $templates;
+		global $heart, $db, $settings, $lang, $G_PAGE;
+
+		$wrapper = new Wrapper();
+		$wrapper->setTitle($this->title);
+		$wrapper->setSearch();
+
+		$table = new Structure();
+
+		$cell = new Cell($lang->id);
+		$cell->setParam('headers', 'id');
+		$table->addHeadCell($cell);
+
+		$table->addHeadCell(new Cell($lang->payment_admin));
+		$table->addHeadCell(new Cell($lang->payment_id));
+		$table->addHeadCell(new Cell($lang->user));
+		$table->addHeadCell(new Cell($lang->server));
+		$table->addHeadCell(new Cell($lang->service));
+		$table->addHeadCell(new Cell($lang->amount));
+		$table->addHeadCell(new Cell("{$lang->nick}/{$lang->ip}/{$lang->sid}"));
+		$table->addHeadCell(new Cell($lang->additional));
+		$table->addHeadCell(new Cell($lang->email));
+		$table->addHeadCell(new Cell($lang->ip));
+		$table->addHeadCell(new Cell($lang->date));
 
 		// Wyszukujemy dane ktore spelniaja kryteria
-		if (isset($get['search']))
+		$where = '';
+
+		if (isset($get['search'])) {
 			searchWhere(array("t.id", "t.payment", "t.payment_id", "t.uid", "t.ip", "t.email", "t.auth_data", "CAST(t.timestamp as CHAR)"), $get['search'], $where);
+		}
 
 		// Jezeli jest jakis where, to dodajemy WHERE
-		if (strlen($where))
-			$where = "WHERE " . $where . " ";
+		if (strlen($where)) {
+			$where = "WHERE " . $where . ' ';
+		}
 
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS * " .
@@ -34,13 +68,11 @@ class PageAdminBoughtServices extends PageAdmin
 			"ORDER BY t.timestamp DESC " .
 			"LIMIT " . get_row_limit($G_PAGE)
 		);
-		$rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
-		$tbody = "";
+		$table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+
 		while ($row = $db->fetch_array_assoc($result)) {
-			$row['auth_data'] = htmlspecialchars($row['auth_data']);
-			$row['email'] = htmlspecialchars($row['email']);
-			$username = $row['uid'] ? htmlspecialchars($row['username']) . " ({$row['uid']})" : $lang->none;
+			$body_row = new BodyRow();
 
 			// Pobranie danych o usłudze, która została kupiona
 			$service = $heart->get_service($row['service']);
@@ -48,58 +80,67 @@ class PageAdminBoughtServices extends PageAdmin
 			// Pobranie danych o serwerze na ktorym zostala wykupiona usługa
 			$server = $heart->get_server($row['server']);
 
-			// Przerobienie ilosci
-			$amount = $row['amount'] != -1 ? "{$row['amount']} {$service['tag']}" : $lang->forever;
+			$username = $row['uid'] ? htmlspecialchars($row['username']) . " ({$row['uid']})" : $lang->none;
 
-			// Poprawienie timestampa
-			$row['timestamp'] = convertDate($row['timestamp']);
+			// Przerobienie ilosci
+			$amount = $row['amount'] != -1 ? $row['amount'] . ' ' . $service['tag'] : $lang->forever;
 
 			// Rozkulbaczenie extra daty
 			$row['extra_data'] = json_decode($row['extra_data'], true);
 			$extra_data = array();
 			foreach ($row['extra_data'] as $key => $value) {
-				if (!strlen($value))
+				if (!strlen($value)) {
 					continue;
+				}
 
 				$value = htmlspecialchars($value);
 
-				if ($key == "password")
+				if ($key == "password") {
 					$key = $lang->password;
-				else if ($key == "type") {
+				} else if ($key == "type") {
 					$key = $lang->type;
 					$value = get_type_name($value);
 				}
 
-				$extra_data[] = $key . ": " . $value;
+				$extra_data[] = $key . ': ' . $value;
 			}
-			$row['extra_data'] = implode("<br />", $extra_data);
+			$extra_data = implode('<br />', $extra_data);
 
 			// Pobranie linku płatności
-			$payment_link = "admin.php?pid=payment_{$row['payment']}&payid={$row['payment_id']}";
+			$payment_link = new DOMElement();
+			$payment_link->setName('a');
+			$payment_link->setParam('href', "admin.php?pid=payment_{$row['payment']}&payid={$row['payment_id']}");
+			$payment_link->setParam('target', '_blank');
 
-			// Pobranie danych do tabeli
-			$tbody .= eval($templates->render("admin/bought_services_trow"));
+			$payment_img = new Img();
+			$payment_img->setParam('src', 'images/go.png');
+			$payment_img->setParam('title', $lang->see_payment);
+			$payment_link->addContent($payment_img);
+
+			$body_row->addAction($payment_link);
+
+			$body_row->setDbId($row['id']);
+			$body_row->addCell(new Cell($row['payment']));
+			$body_row->addCell(new Cell($row['payment_id']));
+			$body_row->addCell(new Cell($username));
+			$body_row->addCell(new Cell($server['name']));
+			$body_row->addCell(new Cell($service['name']));
+			$body_row->addCell(new Cell($amount));
+			$body_row->addCell(new Cell(htmlspecialchars($row['auth_data'])));
+			$body_row->addCell(new Cell($extra_data));
+			$body_row->addCell(new Cell(htmlspecialchars($row['email'])));
+			$body_row->addCell(new Cell($row['ip']));
+
+			$cell = new Cell(convertDate($row['timestamp']));
+			$cell->setParam('headers', 'date');
+			$body_row->addCell($cell);
+
+			$table->addBodyRow($body_row);
 		}
 
-		// Nie ma zadnych danych do wyswietlenia
-		if (!strlen($tbody))
-			$tbody = eval($templates->render("admin/no_records"));
+		$wrapper->setTable($table);
 
-		// Pole wyszukiwania
-		$search_text = htmlspecialchars($get['search']);
-		$buttons = eval($templates->render("admin/form_search"));
-
-		// Pobranie paginacji
-		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
-		if (strlen($pagination))
-			$tfoot_class = "display_tfoot";
-
-		// Pobranie nagłówka tabeli
-		$thead = eval($templates->render("admin/bought_services_thead"));
-
-		// Pobranie struktury tabeli
-		$output = eval($templates->render("admin/table_structure"));
-		return $output;
+		return $wrapper->toHtml();
 	}
 
 }

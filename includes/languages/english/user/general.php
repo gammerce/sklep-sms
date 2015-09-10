@@ -48,8 +48,6 @@ $l['way_of_payment'] = "Payment method";
 $l['choose_payment'] = "Choose payment";
 $l['admin'] = "Admin";
 
-$l['choose_amount'] = "Choose amount";
-
 $l['transfer_cost'] = "Transfer cost";
 $l['sms_cost'] = "SMS cost";
 
