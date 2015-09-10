@@ -80,12 +80,12 @@ $l['field_length_min_warn'] = "Pole musi się składać z co najmniej {1} znakó
 $l['field_length_max_warn'] = "Pole może się składać z co najwyżej {1} znaków.";
 $l['value_must_be_positive'] = "Wartość musi być dodatnia.";
 
-$l['mysqli']['no_server_connection'] = "Nie można utworzyć połączenia z serwerem bazy danych!";
-$l['mysqli']['no_db_connection'] = "Nie można połączyć się z bazą danych!";
-$l['mysqli']['query_error'] = "Wystąpił błąd w zapytaniu do bazy danych.";
-$l['mysqli']['no_query_num_rows'] = "Nie można otrzymać liczby wierszy, ponieważ id zapytania nie zostało podane!";
-$l['mysqli']['no_query_fetch_array'] = "Nie można pozyskać tablicy, ponieważ id zapytania nie zostało podane!";
-$l['mysqli']['no_query_fetch_array_assoc'] = "Nie można pobrać tablicy asocjacyjnej, ponieważ id zapytania nie zostało podane!";
+$l['mysqli_no_server_connection'] = "Nie można utworzyć połączenia z serwerem bazy danych!";
+$l['mysqli_no_db_connection'] = "Nie można połączyć się z bazą danych!";
+$l['mysqli_query_error'] = "Wystąpił błąd w zapytaniu do bazy danych.";
+$l['mysqli_no_query_num_rows'] = "Nie można otrzymać liczby wierszy, ponieważ id zapytania nie zostało podane!";
+$l['mysqli_no_query_fetch_array'] = "Nie można pozyskać tablicy, ponieważ id zapytania nie zostało podane!";
+$l['mysqli_no_query_fetch_array_assoc'] = "Nie można pobrać tablicy asocjacyjnej, ponieważ id zapytania nie zostało podane!";
 
 $l['sth_went_wrong'] = "Coś poszło nie tak :/";
 $l['ajax_error'] = "Wystąpił błąd podczas pozyskiwania danych.";
@@ -93,9 +93,9 @@ $l['ajax_error'] = "Wystąpił błąd podczas pozyskiwania danych.";
 $l['bought_service_info'] = "Zakupiono usługę {1}. Dane: {2} Ilość: {3} Serwer: {4} ID transakcji: {5}. Email: {6} {7}({8})({9})";
 
 $l['payment_id'] = "ID płatności";
-$l['payment']['bad_type'] = "Błąd w konstruktorze klasy Payment. Niedozwolony typ płatności.";
-$l['payment']['bad_service'] = "API usługi {1} nie zostało zaimplenetowane.";
-$l['payment']['remove_code_from_db'] = "Usunięto kod z tabeli kodów do wykorzystania. Kod: {1} Taryfa: {2}";
+$l['payment_bad_type'] = "Błąd w konstruktorze klasy Payment. Niedozwolony typ płatności.";
+$l['payment_bad_service'] = "API usługi {1} nie zostało zaimplenetowane.";
+$l['payment_remove_code_from_db'] = "Usunięto kod z tabeli kodów do wykorzystania. Kod: {1} Taryfa: {2}";
 
 $l['form_wrong_filled'] = "Nie wszystkie pola formularza zostały prawidłowo wypełnione.";
 

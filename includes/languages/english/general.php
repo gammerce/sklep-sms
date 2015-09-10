@@ -48,7 +48,7 @@ $l['user'] = "User";
 $l['tariff'] = "Tariff";
 $l['wallet'] = "Wallet";
 $l['cost'] = "Cost";
-$l['sms']['return_code'] = "Return code";
+$l['sms_return_code'] = "Return code";
 $l['choose_service'] = "Choose service";
 $l['choose_type'] = "Choose type";
 $l['choose_server'] = "Choose server";
@@ -80,12 +80,12 @@ $l['field_length_min_warn'] = "Field must consist of min. {1} chars.";
 $l['field_length_max_warn'] = "Field must consist of max. {1} chars.";
 $l['value_must_be_positive'] = "Value must be positive.";
 
-$l['mysqli']['no_server_connection'] = "Could not create database connection!";
-$l['mysqli']['no_db_connection'] = "Could not connect to the database!";
-$l['mysqli']['query_error'] = "Could not query database!";
-$l['mysqli']['no_query_num_rows'] = "Could not get number of rows because no query id was supplied!";
-$l['mysqli']['no_query_fetch_array'] = "Could not fetch array because no query id was supplied!";
-$l['mysqli']['no_query_fetch_array_assoc'] = "Could not fetch array assoc because no query id was supplied!";
+$l['mysqli_no_server_connection'] = "Could not create database connection!";
+$l['mysqli_no_db_connection'] = "Could not connect to the database!";
+$l['mysqli_query_error'] = "Could not query database!";
+$l['mysqli_no_query_num_rows'] = "Could not get number of rows because no query id was supplied!";
+$l['mysqli_no_query_fetch_array'] = "Could not fetch array because no query id was supplied!";
+$l['mysqli_no_query_fetch_array_assoc'] = "Could not fetch array assoc because no query id was supplied!";
 
 $l['sth_went_wrong'] = "Something went wrong :/";
 $l['ajax_error'] = "Could not obtain data.";
@@ -93,9 +93,9 @@ $l['ajax_error'] = "Could not obtain data.";
 $l['bought_service_info'] = "Service was purchased {1}. Data: {2} Qunatity: {3} Server: {4} Transaction ID: {5}. Email: {6} {7}({8})({9})";
 
 $l['payment_id'] = "Payment ID";
-$l['payment']['bad_type'] = "Error in Payment class constructor. Payment type not allowed.";
-$l['payment']['bad_service'] = "Service API {1} was not implemented.";
-$l['payment']['remove_code_from_db'] = "Code was removed from the list of codes to be used. Code: {1} Tariff: {2}";
+$l['payment_bad_type'] = "Error in Payment class constructor. Payment type not allowed.";
+$l['payment_bad_service'] = "Service API {1} was not implemented.";
+$l['payment_remove_code_from_db'] = "Code was removed from the list of codes to be used. Code: {1} Tariff: {2}";
 
 $l['form_wrong_filled'] = "Not all the form fields were filled correctly.";
 
