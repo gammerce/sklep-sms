@@ -240,9 +240,9 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 
 		// Pozyskujemy taryfy
 		$result = $db->query($db->prepare(
-			"SELECT sn.number AS `sms_number`, t.provision AS `provision`, t.tariff AS `tariff`, p.amount AS `amount` " .
+			"SELECT sn.number AS `sms_number`, t.provision AS `provision`, t.id AS `tariff`, p.amount AS `amount` " .
 			"FROM `" . TABLE_PREFIX . "pricelist` AS p " .
-			"INNER JOIN `" . TABLE_PREFIX . "tariffs` AS t ON t.tariff = p.tariff " .
+			"INNER JOIN `" . TABLE_PREFIX . "tariffs` AS t ON t.id = p.tariff " .
 			"LEFT JOIN `" . TABLE_PREFIX . "sms_numbers` AS sn ON sn.tariff = p.tariff AND sn.service = '%s' " .
 			"WHERE p.service = '%s' " .
 			"ORDER BY t.provision ASC",

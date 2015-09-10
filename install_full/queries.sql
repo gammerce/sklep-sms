@@ -520,7 +520,7 @@ INSERT INTO `ss_sms_numbers` (`number`, `tariff`, `service`) VALUES
   ('70567', 26, 'pukawka');
 
 CREATE TABLE IF NOT EXISTS `ss_tariffs` (
-  `tariff`     INT(11)    NOT NULL,
+  `id`     INT(11)    NOT NULL,
   `provision`  INT(11)    NOT NULL DEFAULT '0',
   `predefined` TINYINT(1) NOT NULL DEFAULT '0',
   UNIQUE KEY `tariff` (`tariff`)
@@ -528,7 +528,7 @@ CREATE TABLE IF NOT EXISTS `ss_tariffs` (
   ENGINE = InnoDB
   DEFAULT CHARSET = latin1;
 
-INSERT INTO `ss_tariffs` (`tariff`, `provision`, `predefined`) VALUES
+INSERT INTO `ss_tariffs` (`id`, `provision`, `predefined`) VALUES
   (1, 70, 1),
   (2, 140, 1),
   (3, 210, 1),

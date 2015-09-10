@@ -1358,9 +1358,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 		// Pobieranie kwot za które można zakupić daną usługę na danym serwerze
 		$result = $db->query($db->prepare(
-			"SELECT sn.number AS `sms_number`, t.provision AS `provision`, t.tariff AS `tariff`, p.amount AS `amount` " .
+			"SELECT sn.number AS `sms_number`, t.provision AS `provision`, t.id AS `tariff`, p.amount AS `amount` " .
 			"FROM `" . TABLE_PREFIX . "pricelist` AS p " .
-			"INNER JOIN `" . TABLE_PREFIX . "tariffs` AS t ON t.tariff = p.tariff " .
+			"INNER JOIN `" . TABLE_PREFIX . "tariffs` AS t ON t.id = p.tariff " .
 			"LEFT JOIN `" . TABLE_PREFIX . "sms_numbers` AS sn ON sn.tariff = p.tariff AND sn.service = '%s' " .
 			"WHERE p.service = '%s' AND ( p.server = '%d' OR p.server = '-1' ) " .
 			"ORDER BY t.provision ASC",

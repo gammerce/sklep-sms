@@ -20,7 +20,7 @@ $(document).delegate(".table_structure .delete_row", "click", function () {
 		url: "jsonhttp_admin.php",
 		data: {
 			action: "delete_tariff",
-			tariff: row_id.children("td[headers=id]").text()
+			id: row_id.children("td[headers=id]").text()
 		},
 		complete: function () {
 			loader.hide();

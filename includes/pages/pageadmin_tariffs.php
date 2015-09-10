@@ -81,7 +81,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
 				break;
 
 			case "tariff_edit":
-				$tariff = $heart->getTariff($data['tariff']);
+				$tariff = $heart->getTariff($data['id']);
 				$provision = number_format($tariff->getProvision() / 100.0, 2);
 
 				$output = eval($templates->render("admin/action_boxes/tariff_edit"));

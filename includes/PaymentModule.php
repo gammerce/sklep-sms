@@ -57,15 +57,15 @@ abstract class PaymentModule
 
 		// Pozyskujemy taryfy
 		$result = $db->query($db->prepare(
-			"SELECT t.tariff, t.provision, t.predefined, sn.number " .
+			"SELECT t.id, t.provision, t.predefined, sn.number " .
 			"FROM `" . TABLE_PREFIX . "tariffs` AS t " .
-			"LEFT JOIN `" . TABLE_PREFIX . "sms_numbers` AS sn ON t.tariff = sn.tariff " .
+			"LEFT JOIN `" . TABLE_PREFIX . "sms_numbers` AS sn ON t.id = sn.tariff " .
 			"WHERE sn.service = '%s' ",
 			array($this::SERVICE_ID)
 		));
 
 		while ($row = $db->fetch_array_assoc($result)) {
-			$tariff = new Entity_Tariff($row['tariff'], $row['provision'], $row['predefined'], $row['number']);
+			$tariff = new Entity_Tariff($row['id'], $row['provision'], $row['predefined'], $row['number']);
 
 			$this->tariffs[$tariff->getId()] = $tariff;
 

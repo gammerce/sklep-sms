@@ -840,11 +840,11 @@ if ($action == "charge_wallet") {
 	}
 
 	// Taryfa
-	if ($warning = check_for_warnings("number", $_POST['tariff'])) {
-		$warnings['tariff'] = array_merge((array)$warnings['tariff'], $warning);
+	if ($warning = check_for_warnings("number", $_POST['id'])) {
+		$warnings['id'] = array_merge((array)$warnings['id'], $warning);
 	}
-	if (($heart->getTariff($_POST['tariff'])) !== NULL) {
-		$warnings['tariff'][] = $lang->tariff_exist;
+	if (($heart->getTariff($_POST['id'])) !== NULL) {
+		$warnings['id'][] = $lang->tariff_exist;
 	}
 
 	// Prowizja
@@ -865,12 +865,11 @@ if ($action == "charge_wallet") {
 
 	$db->query($db->prepare(
 		"INSERT INTO `" . TABLE_PREFIX . "tariffs` " .
-		"SET `tariff` = '%d', `provision` = '%d'",
-		array($_POST['tariff'], $_POST['provision'] * 100)
+		"SET `id` = '%d', `provision` = '%d'",
+		array($_POST['id'], $_POST['provision'] * 100)
 	));
 
 	log_info($lang_shop->sprintf($lang_shop->tariff_admin_add, $user->getUsername(), $user->getUid(), $db->last_id()));
-	// Zwróć info o prawidłowym dodaniu
 	json_output('ok', $lang->tariff_add, 1);
 } else if ($action == "tariff_edit") {
 	if (!get_privilages("manage_settings")) {
@@ -896,16 +895,17 @@ if ($action == "charge_wallet") {
 	$db->query($db->prepare(
 		"UPDATE `" . TABLE_PREFIX . "tariffs` " .
 		"SET `provision` = '%d' " .
-		"WHERE `tariff` = '%d'",
-		array($_POST['provision'] * 100, $_POST['tariff'])
+		"WHERE `id` = '%d'",
+		array($_POST['provision'] * 100, $_POST['id'])
 	));
 
-	// Zwróć info o prawidłowej lub błędnej edycji
+	// Zwróć info o prawidłowej edycji
 	if ($affected || $db->affected_rows()) {
 		log_info($lang_shop->sprintf($lang_shop->tariff_admin_edit, $user->getUsername(), $user->getUid(), $_POST['id']));
 		json_output('ok', $lang->tariff_edit, 1);
-	} else
-		json_output("not_edited", $lang->tariff_no_edit, 0);
+	}
+
+	json_output("not_edited", $lang->tariff_no_edit, 0);
 } else if ($action == "delete_tariff") {
 	if (!get_privilages("manage_settings")) {
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
@@ -913,17 +913,17 @@ if ($action == "charge_wallet") {
 
 	$db->query($db->prepare(
 		"DELETE FROM `" . TABLE_PREFIX . "tariffs` " .
-		"WHERE `tariff` = '%d' AND `predefined` = '0'",
-		array($_POST['tariff'])
+		"WHERE `id` = '%d' AND `predefined` = '0'",
+		array($_POST['id'])
 	));
 
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($db->affected_rows()) {
-		log_info($lang_shop->sprintf($lang_shop->tariff_admin_delete, $user->getUsername(), $user->getUid(), $_POST['tariff']));
+		log_info($lang_shop->sprintf($lang_shop->tariff_admin_delete, $user->getUsername(), $user->getUid(), $_POST['id']));
 		json_output('ok', $lang->delete_tariff, 1);
-	} else {
-		json_output("not_deleted", $lang->no_delete_tariff, 0);
 	}
+
+	json_output("not_deleted", $lang->no_delete_tariff, 0);
 } else if ($action == "price_add" || $action == "price_edit") {
 	if (!get_privilages("manage_settings")) {
 		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
@@ -964,7 +964,8 @@ if ($action == "charge_wallet") {
 		$db->query($db->prepare(
 			"INSERT INTO `" . TABLE_PREFIX . "pricelist` (`service`, `tariff`, `amount`, `server`) " .
 			"VALUES( '%s', '%d', '%d', '%d' )",
-			array($_POST['service'], $_POST['tariff'], $_POST['amount'], $_POST['server'])));
+			array($_POST['service'], $_POST['tariff'], $_POST['amount'], $_POST['server'])
+		));
 
 		log_info("Admin {$user->getUsername()}({$user->getUid()}) dodał cenę. ID: " . $db->last_id());
 
@@ -975,7 +976,8 @@ if ($action == "charge_wallet") {
 			"UPDATE `" . TABLE_PREFIX . "pricelist` " .
 			"SET `service` = '%s', `tariff` = '%d', `amount` = '%d', `server` = '%d' " .
 			"WHERE `id` = '%d'",
-			array($_POST['service'], $_POST['tariff'], $_POST['amount'], $_POST['server'], $_POST['id'])));
+			array($_POST['service'], $_POST['tariff'], $_POST['amount'], $_POST['server'], $_POST['id'])
+		));
 
 		// Zwróć info o prawidłowej lub błędnej edycji
 		if ($db->affected_rows()) {

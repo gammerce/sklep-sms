@@ -406,7 +406,7 @@ class Heart
 
 		$result = $db->query("SELECT * FROM `" . TABLE_PREFIX . "tariffs`");
 		while ($row = $db->fetch_array_assoc($result)) {
-			$this->tariffs[$row['tariff']] = new Entity_Tariff($row['tariff'], $row['provision'], $row['predefined']);
+			$this->tariffs[$row['id']] = new Entity_Tariff($row['id'], $row['provision'], $row['predefined']);
 		}
 
 		$this->tariffs_fetched = true;
