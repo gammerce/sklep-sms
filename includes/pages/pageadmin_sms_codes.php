@@ -1,5 +1,12 @@
 <?php
 
+use Admin\Table;
+use Admin\Table\Wrapper;
+use Admin\Table\Structure;
+use Admin\Table\BodyRow;
+use Admin\Table\Cell;
+use Admin\Table\Input;
+
 $heart->register_page("sms_codes", "PageAdminSmsCodes", "admin");
 
 class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
@@ -18,60 +25,54 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
 
 	protected function content($get, $post)
 	{
-		global $db, $lang, $G_PAGE, $templates;
+		global $db, $lang, $G_PAGE;
 
-		// Pobranie kodów SMS
+		$wrapper = new Wrapper();
+		$wrapper->setTitle($this->title);
+
+		$table = new Structure();
+
+		$cell = new Cell($lang->id);
+		$cell->setParam('headers', 'id');
+		$table->addHeadCell($cell);
+
+		$table->addHeadCell(new Cell($lang->sms_code));
+		$table->addHeadCell(new Cell($lang->tariff));
+
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS * " .
 			"FROM `" . TABLE_PREFIX . "sms_codes` " .
 			"WHERE `free` = '1' " .
 			"LIMIT " . get_row_limit($G_PAGE)
 		);
-		$rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
-		$i = 0;
-		$tbody = "";
+		$table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+
 		while ($row = $db->fetch_array_assoc($result)) {
-			$i += 1;
-			// Pobranie przycisku usuwania
-			if (get_privilages("manage_sms_codes"))
-				$button_delete = create_dom_element("img", "", array(
-					'id' => "delete_row_{$i}",
-					'src' => "images/bin.png",
-					'title' => $lang->delete . " " . $row['id']
-				));
-			else
-				$button_delete = "";
+			$body_row = new BodyRow();
 
-			// Zabezpieczanie danych
-			$row['code'] = htmlspecialchars($row['code']);
+			$body_row->setDbId($row['id']);
+			$body_row->addCell(new Cell(htmlspecialchars($row['code'])));
+			$body_row->addCell(new Cell(htmlspecialchars($row['tariff'])));
 
-			// Pobranie danych do tabeli
-			$tbody .= eval($templates->render("admin/sms_codes_trow"));
+			if (get_privilages('manage_sms_codes')) {
+				$body_row->setButtonDelete(true);
+			}
+
+			$table->addBodyRow($body_row);
 		}
 
-		// Nie ma zadnych danych do wyswietlenia
-		if (!strlen($tbody))
-			$tbody = eval($templates->render("admin/no_records"));
+		$wrapper->setTable($table);
 
-		if (get_privilages("manage_sms_codes"))
-			$buttons = create_dom_element("input", "", array(
-				'id' => "sms_code_button_add",
-				'type' => "button",
-				'value' => $lang->add_code
-			));
+		if (get_privilages('manage_sms_codes')) {
+			$button = new Input();
+			$button->setParam('id', 'sms_code_button_add');
+			$button->setParam('type', 'button');
+			$button->setParam('value', $lang->add_code);
+			$wrapper->addButton($button);
+		}
 
-		// Pobranie paginacji
-		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
-		if (strlen($pagination))
-			$tfoot_class = "display_tfoot";
-
-		// Pobranie nagłówka tabeli
-		$thead = eval($templates->render("admin/sms_codes_thead"));
-
-		// Pobranie wygladu całej tabeli
-		$output = eval($templates->render("admin/table_structure"));
-		return $output;
+		return $wrapper->toHtml();
 	}
 
 	public function get_action_box($box_id, $data)

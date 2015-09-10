@@ -43,14 +43,15 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
 			"LIMIT " . get_row_limit($G_PAGE)
 		);
 
-		$table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+		$table->setDbRowsAmount($db->get_column('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
 
 		while ($row = $db->fetch_array_assoc($result)) {
 			$body_row = new BodyRow();
 
 			$body_row->setDbId($row['id']);
 			$body_row->addCell(new Cell($row['name']));
-			if (get_privilages("manage_groups")) {
+
+			if (get_privilages('manage_groups')) {
 				$body_row->setButtonDelete(true);
 				$body_row->setButtonEdit(true);
 			}
@@ -60,7 +61,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
 
 		$wrapper->setTable($table);
 
-		if (get_privilages("manage_groups")) {
+		if (get_privilages('manage_groups')) {
 			$button = new Input();
 			$button->setParam('id', 'group_button_add');
 			$button->setParam('type', 'button');

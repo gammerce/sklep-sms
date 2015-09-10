@@ -1,38 +1,39 @@
 <?php
 
-if (!defined("IN_SCRIPT"))
-	die("There is nothing interesting here.");
+if (!defined("IN_SCRIPT")) {
+	die('There is nothing interesting here.');
+}
 
 error_reporting(E_ERROR | E_CORE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR | E_COMPILE_ERROR);
-ini_set("display_errors", 1);
+ini_set('display_errors', 1);
 
 foreach($_GET as $key => $value) {
 	$_GET[$key] = urldecode($value);
 }
 
 // Tworzenie / Wznawianie sesji
-if (in_array(SCRIPT_NAME, array("admin", "jsonhttp_admin"))) {
-	session_name("admin");
+if (in_array(SCRIPT_NAME, array('admin', 'jsonhttp_admin'))) {
+	session_name('admin');
 	session_start();
 } else {
-	session_name("user");
+	session_name('user');
 	session_start();
 }
 
 $working_dir = dirname(__FILE__) ? dirname(__FILE__) : '.';
-require_once $working_dir . "/includes/init.php";
+require_once $working_dir . '/includes/init.php';
 
 // Przenieś do folderu install, jeżeli istnieje
-if (file_exists(SCRIPT_ROOT . "install")) {
-	header("Location: install");
+if (file_exists(SCRIPT_ROOT . 'install')) {
+	header('Location: install');
 	exit;
 }
 
 $settings = array(
-	'date_format' => "Y-m-d H:i",
-	'theme' => "default",
-	'shop_url' => "",
-	'shop_url_slash' => ""
+	'date_format' => 'Y-m-d H:i',
+	'theme' => 'default',
+	'shop_url' => '',
+	'shop_url_slash' => ''
 );
 
 require_once SCRIPT_ROOT . "includes/config.php";

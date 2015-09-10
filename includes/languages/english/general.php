@@ -53,6 +53,7 @@ $l['choose_service'] = "Choose service";
 $l['choose_type'] = "Choose type";
 $l['choose_server'] = "Choose server";
 $l['choose_option'] = "Choose option";
+$l['choose_amount'] = "Choose amount";
 
 $l['months'] = array("", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
 

@@ -183,11 +183,15 @@ h4 {
 	text-shadow: 1px 1px 10px #000;
 }
 
-[headers=id] {
+.table_structure [headers=id] {
 	width: 4%;
 }
 
-[headers=date] {
+.table_structure [headers=platform] {
+	width: 30%;
+}
+
+.table_structure [headers=date] {
 	white-space: nowrap;
 }
 

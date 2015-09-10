@@ -1,5 +1,12 @@
 <?php
 
+use Admin\Table;
+use Admin\Table\Wrapper;
+use Admin\Table\Structure;
+use Admin\Table\BodyRow;
+use Admin\Table\Cell;
+use Admin\Table\Input;
+
 $heart->register_page("service_codes", "PageAdminServiceCodes", "admin");
 
 class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
@@ -18,7 +25,23 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
 
 	protected function content($get, $post)
 	{
-		global $heart, $db, $lang, $G_PAGE, $templates;
+		global $db, $lang, $G_PAGE;
+
+		$wrapper = new Wrapper();
+		$wrapper->setTitle($this->title);
+
+		$table = new Structure();
+
+		$cell = new Cell($lang->id);
+		$cell->setParam('headers', 'id');
+		$table->addHeadCell($cell);
+
+		$table->addHeadCell(new Cell($lang->code));
+		$table->addHeadCell(new Cell($lang->service));
+		$table->addHeadCell(new Cell($lang->server));
+		$table->addHeadCell(new Cell($lang->amount));
+		$table->addHeadCell(new Cell($lang->user));
+		$table->addHeadCell(new Cell($lang->date_of_creation));
 
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.name AS `service`, srv.name AS `server`, sc.tariff, pl.amount AS `tariff_amount`,
@@ -31,67 +54,53 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
 			AND (pl.server = '-1' OR sc.server = pl.server) " .
 			"LIMIT " . get_row_limit($G_PAGE)
 		);
-		$rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
-		$i = 0;
-		$tbody = "";
+		$table->setDbRowsAmount($db->get_column('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
+
 		while ($row = $db->fetch_array_assoc($result)) {
-			$i += 1;
+			$body_row = new BodyRow();
 
-			// Pobranie przycisku edycji oraz usuwania
-			if (get_privilages("manage_service_codes"))
-				$button_delete = create_dom_element("img", "", array(
-					'id' => "delete_row_{$i}",
-					'src' => "images/bin.png",
-					'title' => $lang->delete . " " . $row['id']
-				));
-			else
-				$button_delete = "";
-
-			// Zabezpieczanie danych
-			foreach ($row AS $key => $value)
-				$row[$key] = htmlspecialchars($value);
-
-			$row['amount'] = $row['amount'] ? $row['amount'] : $lang->none;
 			$username = $row['uid'] ? $row['username'] . " ({$row['uid']})" : $lang->none;
-			if ($row['tariff_amount'])
-				$amount = $row['tariff_amount'] . " " . $row['tag'];
-			else if ($row['tariff'])
-				$amount = $lang->tariff . ": " . $row['tariff'];
-			else if ($row['amount'])
+
+			if ($row['tariff_amount']) {
+				$amount = $row['tariff_amount'] . ' ' . $row['tag'];
+			}
+			else if ($row['tariff']) {
+				$amount = $lang->tariff . ': ' . $row['tariff'];
+			}
+			else if ($row['amount']) {
 				$amount = $row['amount'];
-			else
+			}
+			else {
 				$amount = $lang->none;
+			}
 
-			// Poprawienie timestampa
-			$row['timestamp'] = convertDate($row['timestamp']);
+			$body_row->setDbId($row['id']);
+			$body_row->addCell(new Cell(htmlspecialchars($row['code'])));
+			$body_row->addCell(new Cell(htmlspecialchars($row['service'])));
+			$body_row->addCell(new Cell(htmlspecialchars($row['server'])));
+			$body_row->addCell(new Cell($amount));
+			$body_row->addCell(new Cell($username));
+			$body_row->addCell(new Cell(convertDate($row['timestamp'])));
 
-			// Pobranie danych do tabeli
-			$tbody .= eval($templates->render("admin/service_codes_trow"));
+			if (get_privilages('manage_service_codes')) {
+				$body_row->setButtonDelete(true);
+			}
+
+			$table->addBodyRow($body_row);
 		}
 
-		// Nie ma zadnych danych do wyswietlenia
-		if (!strlen($tbody))
-			$tbody = eval($templates->render("admin/no_records"));
+		$wrapper->setTable($table);
 
-		if (get_privilages("manage_service_codes"))
-			$buttons = create_dom_element("input", "", array(
-				'id' => "service_code_button_add",
-				'type' => "button",
-				'value' => $lang->add_code
-			));
+		if (get_privilages('manage_service_codes')) {
+			$button = new Input();
+			$button->setParam('id', 'service_code_button_add');
+			$button->setParam('type', 'button');
+			$button->setParam('value', $lang->add_code);
+			$wrapper->addButton($button);
+		}
 
-		// Pobranie paginacji
-		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
-		if (strlen($pagination))
-			$tfoot_class = "display_tfoot";
-
-		// Pobranie nagłówka tabeli
-		$thead = eval($templates->render("admin/service_codes_thead"));
-
-		// Pobranie wygladu całej tabeli
-		$output = eval($templates->render("admin/table_structure"));
-		return $output;
+		return $wrapper->toHtml();
 	}
 
 	public function get_action_box($box_id, $data)

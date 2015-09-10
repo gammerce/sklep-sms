@@ -1,5 +1,12 @@
 <?php
 
+use Admin\Table;
+use Admin\Table\Wrapper;
+use Admin\Table\Structure;
+use Admin\Table\BodyRow;
+use Admin\Table\Cell;
+use Admin\Table\Div;
+
 $heart->register_page("payment_admin", "PageAdminPaymentAdmin", "admin");
 
 class PageAdminPaymentAdmin extends PageAdmin
@@ -17,7 +24,25 @@ class PageAdminPaymentAdmin extends PageAdmin
 
 	protected function content($get, $post)
 	{
-		global $db, $settings, $lang, $G_PAGE, $templates;
+		global $db, $settings, $lang, $G_PAGE;
+
+		$wrapper = new Wrapper();
+		$wrapper->setTitle($this->title);
+
+		$table = new Structure();
+
+		$cell = new Cell($lang->id);
+		$cell->setParam('headers', 'id');
+		$table->addHeadCell($cell);
+
+		$table->addHeadCell(new Cell($lang->admin_id));
+		$table->addHeadCell(new Cell($lang->ip));
+
+		$cell = new Cell($lang->platform);
+		$cell->setParam('headers', 'platform');
+		$table->addHeadCell($cell);
+
+		$table->addHeadCell(new Cell($lang->date));
 
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS * " .
@@ -26,39 +51,36 @@ class PageAdminPaymentAdmin extends PageAdmin
 			"ORDER BY t.timestamp DESC " .
 			"LIMIT " . get_row_limit($G_PAGE)
 		);
-		$rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
-		$tbody = "";
+		$table->setDbRowsAmount($db->get_column('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
+
 		while ($row = $db->fetch_array_assoc($result)) {
-			// Podświetlenie konkretnej płatności
-			if ($get['highlight'] && $get['payid'] == $row['payment_id'])
-				$row['class'] = "highlighted";
+			$body_row = new BodyRow();
+
+			if ($get['highlight'] && $get['payid'] == $row['payment_id']) {
+				$body_row->setParam('class', 'highlighted');
+			}
 
 			$adminname = $row['aid'] ? htmlspecialchars($row['adminname']) . " ({$row['aid']})" : $lang->none;
-			$row['platform'] = get_platform($row['platform']);
 
-			// Poprawienie timestampa
-			$row['timestamp'] = convertDate($row['timestamp']);
+			$body_row->setDbId($row['id']);
+			$body_row->addCell(new Cell($adminname));
+			$body_row->addCell(new Cell(htmlspecialchars($row['ip'])));
 
-			// Pobranie danych do tabeli
-			$tbody .= eval($templates->render("admin/payment_admin_trow"));
+			$cell = new Cell();
+			$div = new Div(get_platform($row['platform']));
+			$div->setParam('class', 'one_line');
+			$cell->addContent($div);
+			$body_row->addCell($cell);
+
+			$body_row->addCell(new Cell(convertDate($row['timestamp'])));
+
+			$table->addBodyRow($body_row);
 		}
 
-		// Nie ma zadnych danych do wyswietlenia
-		if (!strlen($tbody))
-			$tbody = eval($templates->render("admin/no_records"));
+		$wrapper->setTable($table);
 
-		// Pobranie paginacji
-		$pagination = get_pagination($rows_count, $G_PAGE, "admin.php", $get);
-		if (strlen($pagination))
-			$tfoot_class = "display_tfoot";
-
-		// Pobranie nagłówka tabeli
-		$thead = eval($templates->render("admin/payment_admin_thead"));
-
-		// Pobranie struktury tabeli
-		$output = eval($templates->render("admin/table_structure"));
-		return $output;
+		return $wrapper->toHtml();
 	}
 
 }
