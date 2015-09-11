@@ -18,7 +18,7 @@ header("Pragma: no-cache");
 $data = array();
 if ($action == "charge_wallet") {
 	if (!get_privilages("manage_users")) {
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 	}
 
 	$uid = $_POST['uid'];
@@ -30,15 +30,15 @@ if ($action == "charge_wallet") {
 	} else {
 		$user2 = $heart->get_user($uid);
 		if (!$user2->isLogged()) {
-			$warnings['uid'][] = $lang->noaccount_id;
+			$warnings['uid'][] = $lang->translate('noaccount_id');
 		}
 	}
 
 	// Wartość Doładowania
 	if (!$amount) {
-		$warnings['amount'][] = $lang->no_charge_value;
+		$warnings['amount'][] = $lang->translate('no_charge_value');
 	} else if (!is_numeric($amount)) {
-		$warnings['amount'][] = $lang->charge_number;
+		$warnings['amount'][] = $lang->translate('charge_number');
 	}
 
 	if (!empty($warnings)) {
@@ -48,7 +48,7 @@ if ($action == "charge_wallet") {
 			));
 			$data['warnings'][$brick] = $warning;
 		}
-		json_output("warnings", $lang->form_wrong_filled, 0, $data);
+		json_output("warnings", $lang->translate('form_wrong_filled'), 0, $data);
 	}
 
 	// Zmiana wartości amount, aby stan konta nie zszedł poniżej zera
@@ -56,7 +56,7 @@ if ($action == "charge_wallet") {
 
 	$service_module = $heart->get_service_module("charge_wallet");
 	if (is_null($service_module))
-		json_output("wrong_module", $lang->bad_module, 0);
+		json_output("wrong_module", $lang->translate('bad_module'), 0);
 
 	// Dodawanie informacji o płatności do bazy
 	$payment_id = pay_by_admin($user);
@@ -75,20 +75,20 @@ if ($action == "charge_wallet") {
 
 	$purchase_return = $service_module->purchase($purchase_data);
 
-	log_info($lang_shop->sprintf($lang_shop->account_charge, $user->getUsername(), $user->getUid(), $user2->getUsername(), $user2->getUid(), number_format($amount / 100.0, 2), $settings['currency']));
+	log_info($lang_shop->sprintf($lang_shop->translate('account_charge'), $user->getUsername(), $user->getUid(), $user2->getUsername(), $user2->getUid(), number_format($amount / 100.0, 2), $settings['currency']));
 
-	json_output("charged", $lang->sprintf($lang->account_charge_success, $user2->getUsername(), number_format($amount / 100.0, 2), $settings['currency']), 1);
+	json_output("charged", $lang->sprintf($lang->translate('account_charge_success'), $user2->getUsername(), number_format($amount / 100.0, 2), $settings['currency']), 1);
 } else if ($action == "user_service_add") {
 	if (!get_privilages("manage_user_services")) {
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 	}
 
 	// Brak usługi
 	if (!strlen($_POST['service']))
-		json_output("no_service", $lang->no_service_chosen, 0);
+		json_output("no_service", $lang->translate('no_service_chosen'), 0);
 
 	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IService_UserServiceAdminAdd"))
-		json_output("wrong_module", $lang->bad_module, 0);
+		json_output("wrong_module", $lang->translate('bad_module'), 0);
 
 	$return_data = $service_module->user_service_admin_add($_POST);
 
@@ -104,26 +104,26 @@ if ($action == "charge_wallet") {
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
 } else if ($action == "user_service_edit") {
 	if (!get_privilages("manage_user_services"))
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 
 	// Brak usługi
 	if (!strlen($_POST['service']))
 		json_output("no_service", "Nie wybrano usługi.", 0);
 
 	if (is_null($service_module = $heart->get_service_module($_POST['service'])))
-		json_output("wrong_module", $lang->bad_module, 0);
+		json_output("wrong_module", $lang->translate('bad_module'), 0);
 
 	$user_service = get_users_services($_POST['id']);
 
 	// Brak takiej usługi w bazie
 	if (empty($user_service))
-		json_output("no_service", $lang->no_service, 0);
+		json_output("no_service", $lang->translate('no_service'), 0);
 
 	// Wykonujemy metode edycji usługi użytkownika przez admina na odpowiednim module
 	$return_data = $service_module->user_service_admin_edit($_POST, $user_service);
 
 	if ($return_data === FALSE)
-		json_output("missing_method", $lang->no_edit_method, 0);
+		json_output("missing_method", $lang->translate('no_edit_method'), 0);
 
 	// Przerabiamy ostrzeżenia, aby lepiej wyglądały
 	if ($return_data['status'] == "warnings") {
@@ -138,20 +138,20 @@ if ($action == "charge_wallet") {
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
 } else if ($action == "user_service_delete") {
 	if (!get_privilages("manage_user_services")) {
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 	}
 
 	$user_service = get_users_services($_POST['id']);
 
 	// Brak takiej usługi
 	if (empty($user_service))
-		json_output("no_service", $lang->no_service, 0);
+		json_output("no_service", $lang->translate('no_service'), 0);
 
 	// Wywolujemy akcje przy usuwaniu
 	if (($service_module = $heart->get_service_module($user_service['service'])) !== NULL
 		&& !$service_module->user_service_delete($user_service, 'admin')
 	) {
-		json_output("user_service_cannot_be_deleted", $lang->user_service_cannot_be_deleted, 0);
+		json_output("user_service_cannot_be_deleted", $lang->translate('user_service_cannot_be_deleted'), 0);
 	}
 
 	// Usunięcie usługi użytkownika
@@ -168,14 +168,14 @@ if ($action == "charge_wallet") {
 
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($affected) {
-		log_info($lang_shop->sprintf($lang_shop->user_service_admin_delete, $user->getUsername(), $user->getUid(), $user_service['id']));
+		log_info($lang_shop->sprintf($lang_shop->translate('user_service_admin_delete'), $user->getUsername(), $user->getUid(), $user_service['id']));
 
-		json_output('ok', $lang->delete_service, 1);
+		json_output('ok', $lang->translate('delete_service'), 1);
 	} else
-		json_output("not_deleted", $lang->no_delete_service, 0);
+		json_output("not_deleted", $lang->translate('no_delete_service'), 0);
 } else if ($action == "user_service_add_form_get") {
 	if (!get_privilages("manage_user_services")) {
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 	}
 
 	$output = "";
@@ -185,17 +185,17 @@ if ($action == "charge_wallet") {
 	output_page($output, 1);
 } else if ($action == "antispam_question_add" || $action == "antispam_question_edit") {
 	if (!get_privilages("manage_antispam_questions")) {
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 	}
 
 	// Pytanie
 	if (!$_POST['question']) {
-		$warnings['question'][] = $lang->field_no_empty;
+		$warnings['question'][] = $lang->translate('field_no_empty');
 	}
 
 	// Odpowiedzi
 	if (!$_POST['answers']) {
-		$warnings['answers'][] = $lang->field_no_empty;
+		$warnings['answers'][] = $lang->translate('field_no_empty');
 	}
 
 	// Błędy
@@ -206,7 +206,7 @@ if ($action == "charge_wallet") {
 			));
 			$data['warnings'][$brick] = $warning;
 		}
-		json_output("warnings", $lang->form_wrong_filled, 0, $data);
+		json_output("warnings", $lang->translate('form_wrong_filled'), 0, $data);
 	}
 
 	if ($action == "antispam_question_add") {
@@ -215,7 +215,7 @@ if ($action == "charge_wallet") {
 			"VALUES ('%s','%s')",
 			array($_POST['question'], $_POST['answers'])));
 
-		json_output('ok', $lang->antispam_add, 1);
+		json_output('ok', $lang->translate('antispam_add'), 1);
 	} else if ($action == "antispam_question_edit") {
 		$db->query($db->prepare(
 			"UPDATE `" . TABLE_PREFIX . "antispam_questions` " .
@@ -225,14 +225,14 @@ if ($action == "charge_wallet") {
 
 		// Zwróć info o prawidłowej lub błędnej edycji
 		if ($db->affected_rows()) {
-			log_info($lang_shop->sprintf($lang_shop->question_edit, $user->getUsername(), $user->getUid(), $_POST['id']));
-			json_output('ok', $lang->antispam_edit, 1);
+			log_info($lang_shop->sprintf($lang_shop->translate('question_edit'), $user->getUsername(), $user->getUid(), $_POST['id']));
+			json_output('ok', $lang->translate('antispam_edit'), 1);
 		} else
-			json_output("not_edited", $lang->antispam_no_edit, 0);
+			json_output("not_edited", $lang->translate('antispam_no_edit'), 0);
 	}
 } else if ($action == "delete_antispam_question") {
 	if (!get_privilages("manage_antispam_questions")) {
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 	}
 
 	$db->query($db->prepare(
@@ -243,14 +243,14 @@ if ($action == "charge_wallet") {
 
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($db->affected_rows()) {
-		log_info($lang_shop->sprintf($lang_shop->question_delete, $user->getUsername(), $user->getUid(), $_POST['id']));
-		json_output('ok', $lang->delete_antispamq, 1);
+		log_info($lang_shop->sprintf($lang_shop->translate('question_delete'), $user->getUsername(), $user->getUid(), $_POST['id']));
+		json_output('ok', $lang->translate('delete_antispamq'), 1);
 	} else {
-		json_output("not_deleted", $lang->no_delete_antispamq, 0);
+		json_output("not_deleted", $lang->translate('no_delete_antispamq'), 0);
 	}
 } else if ($action == "settings_edit") {
 	if (!get_privilages("manage_settings")) {
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 	}
 
 	$sms_service = $_POST['sms_service'];
@@ -282,7 +282,7 @@ if ($action == "charge_wallet") {
 			array($sms_service)
 		));
 		if (!$db->num_rows($result)) {
-			$warnings['sms_service'][] = $lang->no_sms_service;
+			$warnings['sms_service'][] = $lang->translate('no_sms_service');
 		}
 	}
 
@@ -295,7 +295,7 @@ if ($action == "charge_wallet") {
 			array($transfer_service)
 		));
 		if (!$db->num_rows($result)) {
-			$warnings['transfer_service'][] = $lang->no_net_service;
+			$warnings['transfer_service'][] = $lang->translate('no_net_service');
 		}
 	}
 
@@ -321,21 +321,21 @@ if ($action == "charge_wallet") {
 
 	// Cron
 	if (!in_array($cron, array("1", "0"))) {
-		$warnings['cron'][] = $lang->only_yes_no;
+		$warnings['cron'][] = $lang->translate('only_yes_no');
 	}
 
 	// Edytowanie usługi przez użytkownika
 	if (!in_array($_POST['user_edit_service'], array("1", "0"))) {
-		$warnings['user_edit_service'][] = $lang->only_yes_no;
+		$warnings['user_edit_service'][] = $lang->translate('only_yes_no');
 	}
 
 	// Motyw
 	if (!is_dir(SCRIPT_ROOT . "themes/{$theme}") || $theme[0] == '.')
-		$warnings['theme'][] = $lang->no_theme;
+		$warnings['theme'][] = $lang->translate('no_theme');
 
 	// Język
 	if (!is_dir(SCRIPT_ROOT . "includes/languages/{$language}") || $language[0] == '.')
-		$warnings['language'][] = $lang->no_language;
+		$warnings['language'][] = $lang->translate('no_language');
 
 	if (!empty($warnings)) {
 		foreach ($warnings as $brick => $warning) {
@@ -344,7 +344,7 @@ if ($action == "charge_wallet") {
 			));
 			$data['warnings'][$brick] = $warning;
 		}
-		json_output("warnings", $lang->form_wrong_filled, 0, $data);
+		json_output("warnings", $lang->translate('form_wrong_filled'), 0, $data);
 	}
 
 	if ($license_password) {
@@ -386,15 +386,15 @@ if ($action == "charge_wallet") {
 
 	// Zwróć info o prawidłowej lub błędnej edycji
 	if ($db->affected_rows()) {
-		log_info($lang_shop->sprintf($lang_shop->settings_admin_edit, $user->getUsername(), $user->getUid()));
+		log_info($lang_shop->sprintf($lang_shop->translate('settings_admin_edit'), $user->getUsername(), $user->getUid()));
 
-		json_output('ok', $lang->settings_edit, 1);
+		json_output('ok', $lang->translate('settings_edit'), 1);
 	} else {
-		json_output("not_edited", $lang->settings_no_edit, 0);
+		json_output("not_edited", $lang->translate('settings_no_edit'), 0);
 	}
 } else if ($action == "transaction_service_edit") {
 	if (!get_privilages("manage_settings")) {
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 	}
 
 	// Pobieranie danych
@@ -419,32 +419,32 @@ if ($action == "charge_wallet") {
 	// Zwróć info o prawidłowej lub błędnej edycji
 	if ($db->affected_rows()) {
 		// LOGGING
-		log_info($lang_shop->sprintf($lang_shop->payment_admin_edit, $user->getUsername(), $user->getUid(), $_POST['id']));
+		log_info($lang_shop->sprintf($lang_shop->translate('payment_admin_edit'), $user->getUsername(), $user->getUid(), $_POST['id']));
 
-		json_output('ok', $lang->payment_edit, 1);
+		json_output('ok', $lang->translate('payment_edit'), 1);
 	} else
-		json_output("not_edited", $lang->payment_no_edit, 0);
+		json_output("not_edited", $lang->translate('payment_no_edit'), 0);
 } else if ($action == "service_add" || $action == "service_edit") {
 	if (!get_privilages("manage_services")) {
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 	}
 
 	// ID
 	if (!strlen($_POST['id'])) { // Nie podano id usługi
-		$warnings['id'][] = $lang->no_service_id;
+		$warnings['id'][] = $lang->translate('no_service_id');
 	} else if ($action == "service_add") {
 		if (strlen($_POST['id']) > 16)
-			$warnings['id'][] = $lang->long_service_id;
+			$warnings['id'][] = $lang->translate('long_service_id');
 	}
 
 	if (($action == "service_add" && !isset($warnings['id'])) || ($action == "service_edit" && $_POST['id'] !== $_POST['id2']))
 		// Sprawdzanie czy usługa o takim ID już istnieje
 		if ($heart->get_service($_POST['id']) !== NULL)
-			$warnings['id'][] = $lang->id_exist;
+			$warnings['id'][] = $lang->translate('id_exist');
 
 	// Nazwa
 	if (!strlen($_POST['name'])) {
-		$warnings['name'][] = $lang->no_service_name;
+		$warnings['name'][] = $lang->translate('no_service_name');
 	}
 
 	// Opis
@@ -453,13 +453,13 @@ if ($action == "charge_wallet") {
 
 	// Kolejność
 	if (!my_is_integer($_POST['order'])) {
-		$warnings['order'][] = $lang->field_integer;
+		$warnings['order'][] = $lang->translate('field_integer');
 	}
 
 	// Grupy
 	foreach ($_POST['groups'] as $group) {
 		if (is_null($heart->get_group($group))) {
-			$warnings['groups[]'][] = $lang->wrong_group;
+			$warnings['groups[]'][] = $lang->translate('wrong_group');
 			break;
 		}
 	}
@@ -467,7 +467,7 @@ if ($action == "charge_wallet") {
 	// Moduł usługi
 	if ($action == "service_add") {
 		if (($service_module = $heart->get_service_module_s($_POST['module'])) === NULL)
-			$warnings['module'][] = $lang->wrong_module;
+			$warnings['module'][] = $lang->translate('wrong_module');
 	} else
 		$service_module = $heart->get_service_module($_POST['id2']);
 
@@ -485,7 +485,7 @@ if ($action == "charge_wallet") {
 			));
 			$data['warnings'][$brick] = $warning;
 		}
-		json_output("warnings", $lang->form_wrong_filled, 0, $data);
+		json_output("warnings", $lang->translate('form_wrong_filled'), 0, $data);
 	}
 
 	// Po błędach wywołujemy metodę modułu
@@ -516,8 +516,8 @@ if ($action == "charge_wallet") {
 				implode(";", $_POST['groups']), trim($_POST['order']))
 		));
 
-		log_info($lang_shop->sprintf($lang_shop->service_admin_add, $user->getUsername(), $user->getUid(), $_POST['id']));
-		json_output('ok', $lang->service_added, 1, array('length' => 10000));
+		log_info($lang_shop->sprintf($lang_shop->translate('service_admin_add'), $user->getUsername(), $user->getUid(), $_POST['id']));
+		json_output('ok', $lang->translate('service_added'), 1, array('length' => 10000));
 	} else if ($action == "service_edit") {
 		$db->query($db->prepare(
 			"UPDATE `" . TABLE_PREFIX . "services` " .
@@ -530,14 +530,14 @@ if ($action == "charge_wallet") {
 
 		// Zwróć info o prawidłowej lub błędnej edycji
 		if ($db->affected_rows()) {
-			log_info($lang_shop->sprintf($lang_shop->service_admin_edit, $user->getUsername(), $user->getUid(), $_POST['id2']));
-			json_output('ok', $lang->service_edit, 1);
+			log_info($lang_shop->sprintf($lang_shop->translate('service_admin_edit'), $user->getUsername(), $user->getUid(), $_POST['id2']));
+			json_output('ok', $lang->translate('service_edit'), 1);
 		} else
-			json_output("not_edited", $lang->service_no_edit, 0);
+			json_output("not_edited", $lang->translate('service_no_edit'), 0);
 	}
 } else if ($action == "delete_service") {
 	if (!get_privilages("manage_services"))
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 
 	// Wywolujemy akcje przy uninstalacji
 	$service_module = $heart->get_service_module($_POST['id']);
@@ -553,7 +553,7 @@ if ($action == "charge_wallet") {
 		));
 	} catch (SqlQueryException $e) {
 		if ($e->getErrorno() == 1451) // Istnieją powiązania
-			json_output("error", $lang->delete_service_er_row_is_referenced_2, 0);
+			json_output("error", $lang->translate('delete_service_er_row_is_referenced_2'), 0);
 
 		throw $e;
 	}
@@ -561,13 +561,13 @@ if ($action == "charge_wallet") {
 
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($affected) {
-		log_info($lang_shop->sprintf($lang_shop->service_admin_delete, $user->getUsername(), $user->getUid(), $_POST['id']));
-		json_output('ok', $lang->delete_service, 1);
+		log_info($lang_shop->sprintf($lang_shop->translate('service_admin_delete'), $user->getUsername(), $user->getUid(), $_POST['id']));
+		json_output('ok', $lang->translate('delete_service'), 1);
 	} else
-		json_output("not_deleted", $lang->no_delete_service, 0);
+		json_output("not_deleted", $lang->translate('no_delete_service'), 0);
 } else if ($action == "get_service_module_extra_fields") {
 	if (!get_privilages("manage_user_services"))
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 
 	$output = "";
 	// Pobieramy moduł obecnie edytowanej usługi, jeżeli powróciliśmy do pierwotnego modułu
@@ -581,23 +581,23 @@ if ($action == "charge_wallet") {
 	output_page($output, 1);
 } else if ($action == "server_add" || $action == "server_edit") {
 	if (!get_privilages("manage_servers")) {
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 	}
 
 	// Nazwa
 	if (!$_POST['name']) { // Nie podano nazwy serwera
-		$warnings['name'][] = $lang->field_no_empty;
+		$warnings['name'][] = $lang->translate('field_no_empty');
 	}
 
 	// IP
 	if (!$_POST['ip']) { // Nie podano nazwy serwera
-		$warnings['ip'][] = $lang->field_no_empty;
+		$warnings['ip'][] = $lang->translate('field_no_empty');
 	}
 	$_POST['ip'] = trim($_POST['ip']);
 
 	// Port
 	if (!$_POST['port']) { // Nie podano nazwy serwera
-		$warnings['port'][] = $lang->field_no_empty;
+		$warnings['port'][] = $lang->translate('field_no_empty');
 	}
 	$_POST['port'] = trim($_POST['port']);
 
@@ -610,7 +610,7 @@ if ($action == "charge_wallet") {
 			array($_POST['sms_service'])
 		));
 		if (!$db->num_rows($result)) {
-			$warnings['sms_service'][] = $lang->no_sms_service;
+			$warnings['sms_service'][] = $lang->translate('no_sms_service');
 		}
 	}
 
@@ -622,7 +622,7 @@ if ($action == "charge_wallet") {
 			));
 			$data['warnings'][$brick] = $warning;
 		}
-		json_output("warnings", $lang->form_wrong_filled, 0, $data);
+		json_output("warnings", $lang->translate('form_wrong_filled'), 0, $data);
 	}
 
 	if ($action == "server_add") {
@@ -663,16 +663,16 @@ if ($action == "charge_wallet") {
 	}
 
 	if ($action == "server_add") {
-		log_info($lang_shop->sprintf($lang_shop->server_admin_add, $user->getUsername(), $user->getUid(), $server_id));
-		json_output('ok', $lang->server_added, 1);
+		log_info($lang_shop->sprintf($lang_shop->translate('server_admin_add'), $user->getUsername(), $user->getUid(), $server_id));
+		json_output('ok', $lang->translate('server_added'), 1);
 	} else if ($action == "server_edit") {
-		log_info($lang_shop->sprintf($lang_shop->server_admin_edit, $user->getUsername(), $user->getUid(), $server_id));
-		json_output('ok', $lang->server_edit, 1);
+		log_info($lang_shop->sprintf($lang_shop->translate('server_admin_edit'), $user->getUsername(), $user->getUid(), $server_id));
+		json_output('ok', $lang->translate('server_edit'), 1);
 	}
 
 } else if ($action == "delete_server") {
 	if (!get_privilages("manage_servers")) {
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 	}
 
 	$db->query($db->prepare(
@@ -683,13 +683,13 @@ if ($action == "charge_wallet") {
 
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($db->affected_rows()) {
-		log_info($lang_shop->sprintf($lang_shop->server_admin_delete, $user->getUsername(), $user->getUid(), $_POST['id']));
-		json_output('ok', $lang->delete_server, 1);
+		log_info($lang_shop->sprintf($lang_shop->translate('server_admin_delete'), $user->getUsername(), $user->getUid(), $_POST['id']));
+		json_output('ok', $lang->translate('delete_server'), 1);
 	} else
-		json_output("not_deleted", $lang->no_delete_server, 0);
+		json_output("not_deleted", $lang->translate('no_delete_server'), 0);
 } else if ($action == "user_edit") {
 	if (!get_privilages("manage_users")) {
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 	}
 
 	$user2 = $heart->get_user($_POST['uid']);
@@ -705,7 +705,7 @@ if ($action == "charge_wallet") {
 			array($_POST['username'])
 		));
 		if ($db->num_rows($result)) {
-			$warnings['username'][] = $lang->nick_taken;
+			$warnings['username'][] = $lang->translate('nick_taken');
 		}
 	}
 
@@ -720,14 +720,14 @@ if ($action == "charge_wallet") {
 			array($_POST['email'])
 		));
 		if ($db->num_rows($result)) {
-			$warnings['email'][] = $lang->email_taken;
+			$warnings['email'][] = $lang->translate('email_taken');
 		}
 	}
 
 	// Grupy
 	foreach ($_POST['groups'] as $gid) {
 		if (is_null($heart->get_group($gid))) {
-			$warnings['groups[]'][] = $lang->wrong_group;
+			$warnings['groups[]'][] = $lang->translate('wrong_group');
 			break;
 		}
 	}
@@ -744,7 +744,7 @@ if ($action == "charge_wallet") {
 			));
 			$data['warnings'][$brick] = $warning;
 		}
-		json_output("warnings", $lang->form_wrong_filled, 0, $data);
+		json_output("warnings", $lang->translate('form_wrong_filled'), 0, $data);
 	}
 
 	$db->query($db->prepare(
@@ -758,13 +758,13 @@ if ($action == "charge_wallet") {
 	// Zwróć info o prawidłowej lub błędnej edycji
 	if ($db->affected_rows()) {
 		// LOGGING
-		log_info($lang_shop->sprintf($lang_shop->user_admin_edit, $user->getUsername(), $user->getUid(), $_POST['uid']));
-		json_output('ok', $lang->user_edit, 1);
+		log_info($lang_shop->sprintf($lang_shop->translate('user_admin_edit'), $user->getUsername(), $user->getUid(), $_POST['uid']));
+		json_output('ok', $lang->translate('user_edit'), 1);
 	} else
-		json_output("not_edited", $lang->user_no_edit, 0);
+		json_output("not_edited", $lang->translate('user_no_edit'), 0);
 } else if ($action == "delete_user") {
 	if (!get_privilages("manage_users")) {
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 	}
 
 	$db->query($db->prepare(
@@ -775,12 +775,12 @@ if ($action == "charge_wallet") {
 
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($db->affected_rows()) {
-		log_info($lang_shop->sprintf($lang_shop->user_admin_delete, $user->getUsername(), $user->getUid(), $_POST['uid']));
-		json_output('ok', $lang->delete_user, 1);
-	} else json_output("not_deleted", $lang->no_delete_user, 0);
+		log_info($lang_shop->sprintf($lang_shop->translate('user_admin_delete'), $user->getUsername(), $user->getUid(), $_POST['uid']));
+		json_output('ok', $lang->translate('delete_user'), 1);
+	} else json_output("not_deleted", $lang->translate('no_delete_user'), 0);
 } else if ($action == "group_add" || $action == "group_edit") {
 	if (!get_privilages("manage_groups")) {
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 	}
 
 	$set = "";
@@ -798,9 +798,9 @@ if ($action == "charge_wallet") {
 			array($_POST['name'])
 		));
 
-		log_info($lang_shop->sprintf($lang_shop->group_admin_add, $user->getUsername(), $user->getUid(), $db->last_id()));
+		log_info($lang_shop->sprintf($lang_shop->translate('group_admin_add'), $user->getUsername(), $user->getUid(), $db->last_id()));
 		// Zwróć info o prawidłowym zakończeniu dodawania
-		json_output('ok', $lang->group_add, 1);
+		json_output('ok', $lang->translate('group_add'), 1);
 	} else if ($action == "group_edit") {
 		$db->query($db->prepare(
 			"UPDATE `" . TABLE_PREFIX . "groups` " .
@@ -812,14 +812,14 @@ if ($action == "charge_wallet") {
 		// Zwróć info o prawidłowej lub błędnej edycji
 		if ($db->affected_rows()) {
 			// LOGGING
-			log_info($lang_shop->sprintf($lang_shop->group_admin_edit, $user->getUsername(), $user->getUid(), $_POST['id']));
-			json_output('ok', $lang->group_edit, 1);
+			log_info($lang_shop->sprintf($lang_shop->translate('group_admin_edit'), $user->getUsername(), $user->getUid(), $_POST['id']));
+			json_output('ok', $lang->translate('group_edit'), 1);
 		} else
-			json_output("not_edited", $lang->group_no_edit, 0);
+			json_output("not_edited", $lang->translate('group_no_edit'), 0);
 	}
 } else if ($action == "delete_group") {
 	if (!get_privilages("manage_groups")) {
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 	}
 
 	$db->query($db->prepare(
@@ -830,13 +830,13 @@ if ($action == "charge_wallet") {
 
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($db->affected_rows()) {
-		log_info($lang_shop->sprintf($lang_shop->group_admin_delete, $user->getUsername(), $user->getUid(), $_POST['id']));
-		json_output('ok', $lang->delete_group, 1);
+		log_info($lang_shop->sprintf($lang_shop->translate('group_admin_delete'), $user->getUsername(), $user->getUid(), $_POST['id']));
+		json_output('ok', $lang->translate('delete_group'), 1);
 	} else
-		json_output("not_deleted", $lang->no_delete_group, 0);
+		json_output("not_deleted", $lang->translate('no_delete_group'), 0);
 } else if ($action == "tariff_add") {
 	if (!get_privilages("manage_settings")) {
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 	}
 
 	// Taryfa
@@ -844,7 +844,7 @@ if ($action == "charge_wallet") {
 		$warnings['id'] = array_merge((array)$warnings['id'], $warning);
 	}
 	if (($heart->getTariff($_POST['id'])) !== NULL) {
-		$warnings['id'][] = $lang->tariff_exist;
+		$warnings['id'][] = $lang->translate('tariff_exist');
 	}
 
 	// Prowizja
@@ -860,7 +860,7 @@ if ($action == "charge_wallet") {
 			));
 			$data['warnings'][$brick] = $warning;
 		}
-		json_output("warnings", $lang->form_wrong_filled, 0, $data);
+		json_output("warnings", $lang->translate('form_wrong_filled'), 0, $data);
 	}
 
 	$db->query($db->prepare(
@@ -869,11 +869,11 @@ if ($action == "charge_wallet") {
 		array($_POST['id'], $_POST['provision'] * 100)
 	));
 
-	log_info($lang_shop->sprintf($lang_shop->tariff_admin_add, $user->getUsername(), $user->getUid(), $db->last_id()));
-	json_output('ok', $lang->tariff_add, 1);
+	log_info($lang_shop->sprintf($lang_shop->translate('tariff_admin_add'), $user->getUsername(), $user->getUid(), $db->last_id()));
+	json_output('ok', $lang->translate('tariff_add'), 1);
 } else if ($action == "tariff_edit") {
 	if (!get_privilages("manage_settings")) {
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 	}
 
 	// Prowizja
@@ -889,7 +889,7 @@ if ($action == "charge_wallet") {
 			));
 			$data['warnings'][$brick] = $warning;
 		}
-		json_output("warnings", $lang->form_wrong_filled, 0, $data);
+		json_output("warnings", $lang->translate('form_wrong_filled'), 0, $data);
 	}
 
 	$db->query($db->prepare(
@@ -901,14 +901,14 @@ if ($action == "charge_wallet") {
 
 	// Zwróć info o prawidłowej edycji
 	if ($affected || $db->affected_rows()) {
-		log_info($lang_shop->sprintf($lang_shop->tariff_admin_edit, $user->getUsername(), $user->getUid(), $_POST['id']));
-		json_output('ok', $lang->tariff_edit, 1);
+		log_info($lang_shop->sprintf($lang_shop->translate('tariff_admin_edit'), $user->getUsername(), $user->getUid(), $_POST['id']));
+		json_output('ok', $lang->translate('tariff_edit'), 1);
 	}
 
-	json_output("not_edited", $lang->tariff_no_edit, 0);
+	json_output("not_edited", $lang->translate('tariff_no_edit'), 0);
 } else if ($action == "delete_tariff") {
 	if (!get_privilages("manage_settings")) {
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 	}
 
 	$db->query($db->prepare(
@@ -919,29 +919,29 @@ if ($action == "charge_wallet") {
 
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($db->affected_rows()) {
-		log_info($lang_shop->sprintf($lang_shop->tariff_admin_delete, $user->getUsername(), $user->getUid(), $_POST['id']));
-		json_output('ok', $lang->delete_tariff, 1);
+		log_info($lang_shop->sprintf($lang_shop->translate('tariff_admin_delete'), $user->getUsername(), $user->getUid(), $_POST['id']));
+		json_output('ok', $lang->translate('delete_tariff'), 1);
 	}
 
-	json_output("not_deleted", $lang->no_delete_tariff, 0);
+	json_output("not_deleted", $lang->translate('no_delete_tariff'), 0);
 } else if ($action == "price_add" || $action == "price_edit") {
 	if (!get_privilages("manage_settings")) {
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 	}
 
 	// Usługa
 	if (is_null($heart->get_service($_POST['service']))) {
-		$warnings['service'][] = $lang->no_such_service;
+		$warnings['service'][] = $lang->translate('no_such_service');
 	}
 
 	// Serwer
 	if ($_POST['server'] != -1 && $heart->get_server($_POST['server']) === NULL) {
-		$warnings['server'][] = $lang->no_such_server;
+		$warnings['server'][] = $lang->translate('no_such_server');
 	}
 
 	// Taryfa
 	if (($heart->getTariff($_POST['tariff'])) === NULL) {
-		$warnings['tariff'][] = $lang->no_such_tariff;
+		$warnings['tariff'][] = $lang->translate('no_such_tariff');
 	}
 
 	// Ilość
@@ -957,7 +957,7 @@ if ($action == "charge_wallet") {
 			));
 			$data['warnings'][$brick] = $warning;
 		}
-		json_output("warnings", $lang->form_wrong_filled, 0, $data);
+		json_output("warnings", $lang->translate('form_wrong_filled'), 0, $data);
 	}
 
 	if ($action == "price_add") {
@@ -970,7 +970,7 @@ if ($action == "charge_wallet") {
 		log_info("Admin {$user->getUsername()}({$user->getUid()}) dodał cenę. ID: " . $db->last_id());
 
 		// Zwróć info o prawidłowym dodaniu
-		json_output('ok', $lang->price_add, 1);
+		json_output('ok', $lang->translate('price_add'), 1);
 	} else if ($action == "price_edit") {
 		$db->query($db->prepare(
 			"UPDATE `" . TABLE_PREFIX . "pricelist` " .
@@ -981,13 +981,13 @@ if ($action == "charge_wallet") {
 
 		// Zwróć info o prawidłowej lub błędnej edycji
 		if ($db->affected_rows()) {
-			log_info($lang_shop->sprintf($lang_shop->price_admin_edit, $user->getUsername(), $user->getUid(), $_POST['id']));
-			json_output('ok', $lang->price_edit, 1);
-		} else json_output("not_edited", $lang->price_no_edit, 0);
+			log_info($lang_shop->sprintf($lang_shop->translate('price_admin_edit'), $user->getUsername(), $user->getUid(), $_POST['id']));
+			json_output('ok', $lang->translate('price_edit'), 1);
+		} else json_output("not_edited", $lang->translate('price_no_edit'), 0);
 	}
 } else if ($action == "delete_price") {
 	if (!get_privilages("manage_settings")) {
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 	}
 
 	$db->query($db->prepare(
@@ -998,12 +998,12 @@ if ($action == "charge_wallet") {
 
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($db->affected_rows()) {
-		log_info($lang_shop->sprintf($lang_shop->price_admin_delete, $user->getUsername(), $user->getUid(), $_POST['id']));
-		json_output('ok', $lang->delete_price, 1);
-	} else json_output("not_deleted", $lang->no_delete_price, 0);
+		log_info($lang_shop->sprintf($lang_shop->translate('price_admin_delete'), $user->getUsername(), $user->getUid(), $_POST['id']));
+		json_output('ok', $lang->translate('delete_price'), 1);
+	} else json_output("not_deleted", $lang->translate('no_delete_price'), 0);
 } else if ($action == "sms_code_add") {
 	if (!get_privilages("manage_sms_codes")) {
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 	}
 
 	// Taryfa
@@ -1022,7 +1022,7 @@ if ($action == "charge_wallet") {
 			));
 			$data['warnings'][$brick] = $warning;
 		}
-		json_output("warnings", $lang->form_wrong_filled, 0, $data);
+		json_output("warnings", $lang->translate('form_wrong_filled'), 0, $data);
 	}
 
 	$db->query($db->prepare(
@@ -1031,12 +1031,12 @@ if ($action == "charge_wallet") {
 		array($lang->strtoupper($_POST['code']), $_POST['tariff'])
 	));
 
-	log_info($lang_shop->sprintf($lang_shop->sms_code_admin_add, $user->getUsername(), $user->getUid(), $_POST['code'], $_POST['tariff']));
+	log_info($lang_shop->sprintf($lang_shop->translate('sms_code_admin_add'), $user->getUsername(), $user->getUid(), $_POST['code'], $_POST['tariff']));
 	// Zwróć info o prawidłowym dodaniu
-	json_output('ok', $lang->sms_code_add, 1);
+	json_output('ok', $lang->translate('sms_code_add'), 1);
 } else if ($action == "delete_sms_code") {
 	if (!get_privilages("manage_sms_codes")) {
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 	}
 
 	$result = $db->query($db->prepare(
@@ -1047,19 +1047,19 @@ if ($action == "charge_wallet") {
 
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($db->affected_rows()) {
-		log_info($lang_shop->sprintf($lang_shop->sms_code_admin_delete, $user->getUsername(), $user->getUid(), $_POST['id']));
-		json_output('ok', $lang->delete_sms_code, 1);
-	} else json_output("not_deleted", $lang->no_delete_sms_code, 0);
+		log_info($lang_shop->sprintf($lang_shop->translate('sms_code_admin_delete'), $user->getUsername(), $user->getUid(), $_POST['id']));
+		json_output('ok', $lang->translate('delete_sms_code'), 1);
+	} else json_output("not_deleted", $lang->translate('no_delete_sms_code'), 0);
 } else if ($action == "service_code_add") {
 	if (!get_privilages("manage_service_codes"))
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 
 	// Brak usługi
 	if (!strlen($_POST['service']))
-		json_output("no_service", $lang->no_service_chosen, 0);
+		json_output("no_service", $lang->translate('no_service_chosen'), 0);
 
 	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL)
-		json_output("wrong_module", $lang->bad_module, 0);
+		json_output("wrong_module", $lang->translate('bad_module'), 0);
 
 	// Id użytkownika
 	if (strlen($_POST['uid']) && ($warning = check_for_warnings("uid", $_POST['uid'])))
@@ -1067,9 +1067,9 @@ if ($action == "charge_wallet") {
 
 	// Kod
 	if (!strlen($_POST['code']))
-		$warnings['code'][] = $lang->field_no_empty;
+		$warnings['code'][] = $lang->translate('field_no_empty');
 	else if (strlen($_POST['code']) > 16)
-		$warnings['code'][] = $lang->return_code_length_warn;
+		$warnings['code'][] = $lang->translate('return_code_length_warn');
 
 	// Łączymy zwrócone błędy
 	$warnings = array_merge((array)$warnings, (array)$service_module->service_code_admin_add_validate($_POST));
@@ -1082,7 +1082,7 @@ if ($action == "charge_wallet") {
 			));
 			$data['warnings'][$brick] = $warning;
 		}
-		json_output("warnings", $lang->form_wrong_filled, 0, $data);
+		json_output("warnings", $lang->translate('form_wrong_filled'), 0, $data);
 	}
 
 	// Pozyskujemy dane kodu do dodania
@@ -1095,12 +1095,12 @@ if ($action == "charge_wallet") {
 			if_isset($code_data['amount'], 0), if_isset($code_data['tariff'], 0), $code_data['data'])
 	));
 
-	log_info($lang_shop->sprintf($lang_shop->code_added_admin, $user->getUsername(), $user->getUid(), $_POST['code'], $service_module->service['id']));
+	log_info($lang_shop->sprintf($lang_shop->translate('code_added_admin'), $user->getUsername(), $user->getUid(), $_POST['code'], $service_module->service['id']));
 	// Zwróć info o prawidłowym dodaniu
-	json_output('ok', $lang->code_added, 1);
+	json_output('ok', $lang->translate('code_added'), 1);
 } else if ($action == "delete_service_code") {
 	if (!get_privilages("manage_service_codes"))
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 
 	$result = $db->query($db->prepare(
 		"DELETE FROM `" . TABLE_PREFIX . "service_codes` " .
@@ -1110,12 +1110,12 @@ if ($action == "charge_wallet") {
 
 	// Zwróć info o prawidłowym lub błędnym usunięciu
 	if ($db->affected_rows()) {
-		log_info($lang_shop->sprintf($lang_shop->code_deleted_admin, $user->getUsername(), $user->getUid(), $_POST['id']));
-		json_output('ok', $lang->code_deleted, 1);
-	} else json_output("not_deleted", $lang->code_not_deleted, 0);
+		log_info($lang_shop->sprintf($lang_shop->translate('code_deleted_admin'), $user->getUsername(), $user->getUid(), $_POST['id']));
+		json_output('ok', $lang->translate('code_deleted'), 1);
+	} else json_output("not_deleted", $lang->translate('code_not_deleted'), 0);
 } else if ($action == "service_code_add_form_get") {
 	if (!get_privilages("manage_service_codes"))
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 
 	$output = "";
 	if (($service_module = $heart->get_service_module($_POST['service'])) !== NULL &&
@@ -1126,7 +1126,7 @@ if ($action == "charge_wallet") {
 	output_page($output, 1);
 } else if ($action == "delete_log") {
 	if (!get_privilages("manage_logs")) {
-		json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+		json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 	}
 
 	$db->query($db->prepare(
@@ -1136,8 +1136,8 @@ if ($action == "charge_wallet") {
 	));
 
 	// Zwróć info o prawidłowym lub błędnym usunieciu
-	if ($db->affected_rows()) json_output('ok', $lang->delete_log, 1);
-	else json_output("not_deleted", $lang->no_delete_log, 0);
+	if ($db->affected_rows()) json_output('ok', $lang->translate('delete_log'), 1);
+	else json_output("not_deleted", $lang->translate('no_delete_log'), 0);
 } else if ($action == "refresh_blocks") {
 	if (isset($_POST['bricks']))
 		$bricks = explode(";", $_POST['bricks']);
@@ -1157,13 +1157,13 @@ if ($action == "charge_wallet") {
 	output_page(json_encode($data), 1);
 } else if ($action == "get_action_box") {
 	if (!isset($_POST['page_id']) || !isset($_POST['box_id']))
-		json_output("no_data", $lang->not_all_data, 0);
+		json_output("no_data", $lang->translate('not_all_data'), 0);
 
 	if (($page = $heart->get_page($_POST['page_id'], "admin")) === NULL)
-		json_output("wrong_page", $lang->wrong_page_id, 0);
+		json_output("wrong_page", $lang->translate('wrong_page_id'), 0);
 
 	if (!object_implements($page, "IPageAdmin_ActionBox"))
-		json_output("page_no_action_box", $lang->no_action_box_support, 0);
+		json_output("page_no_action_box", $lang->translate('no_action_box_support'), 0);
 
 	$action_box = $page->get_action_box($_POST['box_id'], $_POST);
 
@@ -1176,7 +1176,7 @@ if ($action == "charge_wallet") {
 
 	if ($template == "admin_user_wallet") {
 		if (!get_privilages("manage_users"))
-			json_output("not_logged_in", $lang->not_logged_or_no_perm, 0);
+			json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
 
 		$user2 = $heart->get_user($_POST['uid']);
 	}
@@ -1189,7 +1189,7 @@ if ($action == "charge_wallet") {
 	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL
 		|| !object_implements($service_module, "IService_ActionExecute")
 	) {
-		output_page($lang->bad_module, 1);
+		output_page($lang->translate('bad_module'), 1);
 	}
 
 	output_page($service_module->action_execute($_POST['service_action'], $_POST), 1);

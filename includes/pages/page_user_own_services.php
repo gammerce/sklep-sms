@@ -10,7 +10,7 @@ class Page_UserOIwnServices extends Page implements I_BeLoggedMust
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->user_own_services;
+		$this->title = $lang->translate('user_own_services');
 
 		parent::__construct();
 	}
@@ -74,7 +74,7 @@ class Page_UserOIwnServices extends Page implements I_BeLoggedMust
 				$button_edit = create_dom_element("img", "", array(
 					'class' => "edit_row",
 					'src' => "images/pencil.png",
-					'title' => $lang->edit,
+					'title' => $lang->translate('edit'),
 					'style' => array(
 						'height' => '24px'
 					)
@@ -85,7 +85,7 @@ class Page_UserOIwnServices extends Page implements I_BeLoggedMust
 
 		// Nie znalazło żadnych usług danego użytkownika
 		if (!strlen($user_own_services))
-			$user_own_services = $lang->no_data;
+			$user_own_services = $lang->translate('no_data');
 
 		$pagination = get_pagination($rows_count, $G_PAGE, "index.php", $get, 4);
 		$pagination_class = strlen($pagination) ? "" : "display_none";

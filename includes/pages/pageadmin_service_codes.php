@@ -18,7 +18,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->service_codes;
+		$this->title = $lang->translate('service_codes');
 
 		parent::__construct();
 	}
@@ -32,16 +32,16 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
 
 		$table = new Structure();
 
-		$cell = new Cell($lang->id);
+		$cell = new Cell($lang->translate('id'));
 		$cell->setParam('headers', 'id');
 		$table->addHeadCell($cell);
 
-		$table->addHeadCell(new Cell($lang->code));
-		$table->addHeadCell(new Cell($lang->service));
-		$table->addHeadCell(new Cell($lang->server));
-		$table->addHeadCell(new Cell($lang->amount));
-		$table->addHeadCell(new Cell($lang->user));
-		$table->addHeadCell(new Cell($lang->date_of_creation));
+		$table->addHeadCell(new Cell($lang->translate('code')));
+		$table->addHeadCell(new Cell($lang->translate('service')));
+		$table->addHeadCell(new Cell($lang->translate('server')));
+		$table->addHeadCell(new Cell($lang->translate('amount')));
+		$table->addHeadCell(new Cell($lang->translate('user')));
+		$table->addHeadCell(new Cell($lang->translate('date_of_creation')));
 
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.name AS `service`, srv.name AS `server`, sc.tariff, pl.amount AS `tariff_amount`,
@@ -60,19 +60,19 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
 		while ($row = $db->fetch_array_assoc($result)) {
 			$body_row = new BodyRow();
 
-			$username = $row['uid'] ? $row['username'] . " ({$row['uid']})" : $lang->none;
+			$username = $row['uid'] ? $row['username'] . " ({$row['uid']})" : $lang->translate('none');
 
 			if ($row['tariff_amount']) {
 				$amount = $row['tariff_amount'] . ' ' . $row['tag'];
 			}
 			else if ($row['tariff']) {
-				$amount = $lang->tariff . ': ' . $row['tariff'];
+				$amount = $lang->translate('tariff') . ': ' . $row['tariff'];
 			}
 			else if ($row['amount']) {
 				$amount = $row['amount'];
 			}
 			else {
-				$amount = $lang->none;
+				$amount = $lang->translate('none');
 			}
 
 			$body_row->setDbId($row['id']);
@@ -96,7 +96,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
 			$button = new Input();
 			$button->setParam('id', 'service_code_button_add');
 			$button->setParam('type', 'button');
-			$button->setParam('value', $lang->add_code);
+			$button->setParam('value', $lang->translate('add_code'));
 			$wrapper->addButton($button);
 		}
 
@@ -110,7 +110,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
 		if (!get_privilages("manage_service_codes"))
 			return array(
 				'status' => "not_logged_in",
-				'text' => $lang->not_logged_or_no_perm
+				'text' => $lang->translate('not_logged_or_no_perm')
 			);
 
 		switch ($box_id) {

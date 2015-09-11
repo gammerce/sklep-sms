@@ -8,7 +8,7 @@ require_once "global.php";
 try {
 	$db = new Database($_POST['db_host'], $_POST['db_user'], $_POST['db_password'], $_POST['db_db']);
 } catch (SqlQueryException $e) {
-	output_page($lang->mysqli[$e->getMessage()] . "\n\n" . $e->getError());
+	output_page($lang->translate('mysqli_' . $e->getMessage()) . "\n\n" . $e->getError());
 }
 
 $warnings = array();
@@ -59,7 +59,7 @@ if (!empty($warnings)) {
 		$return_data['warnings'][$brick] = $warning;
 	}
 
-	json_output("warnings", $lang->form_wrong_filled, false, $return_data);
+	json_output("warnings", $lang->translate('form_wrong_filled'), false, $return_data);
 }
 
 file_put_contents(SCRIPT_ROOT . "install/progress", '');
@@ -96,7 +96,7 @@ foreach ($queries as $query) {
 			$db->query($query);
 		} catch (SqlQueryException $e) {
 			$input = array();
-			$input[] = "Message: " . $lang->mysqli[$e->getMessage()];
+			$input[] = "Message: " . $lang->translate('mysqli_' . $e->getMessage());
 			$input[] = "Error: " . $e->getError();
 			$input[] = "Query: " . $e->getQuery(false);
 			file_put_contents(SCRIPT_ROOT . 'errors/install.log', implode("\n", $input));

@@ -18,7 +18,7 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->servers;
+		$this->title = $lang->translate('servers');
 
 		parent::__construct();
 	}
@@ -32,13 +32,13 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
 
 		$table = new Structure();
 
-		$cell = new Cell($lang->id);
+		$cell = new Cell($lang->translate('id'));
 		$cell->setParam('headers', 'id');
 		$table->addHeadCell($cell);
 
-		$table->addHeadCell(new Cell($lang->name));
-		$table->addHeadCell(new Cell($lang->ip . ':' . $lang->port));
-		$table->addHeadCell(new Cell($lang->version));
+		$table->addHeadCell(new Cell($lang->translate('name')));
+		$table->addHeadCell(new Cell($lang->translate('ip') . ':' . $lang->translate('port')));
+		$table->addHeadCell(new Cell($lang->translate('version')));
 
 		foreach ($heart->get_servers() as $row) {
 			$body_row = new BodyRow();
@@ -62,7 +62,7 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
 			$button = new Input();
 			$button->setParam('id', 'server_button_add');
 			$button->setParam('type', 'button');
-			$button->setParam('value', $lang->add_server);
+			$button->setParam('value', $lang->translate('add_server'));
 			$wrapper->addButton($button);
 		}
 
@@ -76,7 +76,7 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
 		if (!get_privilages("manage_servers"))
 			return array(
 				'status' => "not_logged_in",
-				'text' => $lang->not_logged_or_no_perm
+				'text' => $lang->translate('not_logged_or_no_perm')
 			);
 
 		if ($box_id == "server_edit") {
@@ -107,12 +107,12 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
 			if (($service_module = $heart->get_service_module($service['id'])) === NULL || !object_implements($service_module, "IService_AvailableOnServers"))
 				continue;
 
-			$values = create_dom_element("option", $lang->strtoupper($lang->no), array(
+			$values = create_dom_element("option", $lang->strtoupper($lang->translate('no')), array(
 				'value' => 0,
 				'selected' => $heart->server_service_linked($server['id'], $service['id']) ? "" : "selected"
 			));
 
-			$values .= create_dom_element("option", $lang->strtoupper($lang->yes), array(
+			$values .= create_dom_element("option", $lang->strtoupper($lang->translate('yes')), array(
 				'value' => 1,
 				'selected' => $heart->server_service_linked($server['id'], $service['id']) ? "selected" : ""
 			));

@@ -1,44 +1,44 @@
 <form id="form_service_add" class="action_box" autocomplete="off">
 	<input type="password" class="display_none" />
 	<div class="service_main_info">
-		{$lang->add_service}
+		{$lang->translate('add_service')}
 	</div>
 	<table>
 		<tbody class="ftbody">
 		<tr>
-			<td>{$lang->id}</td>
+			<td>{$lang->translate('id')}</td>
 			<td><input type="text" name="id" maxlength="16"/></td>
 		</tr>
 		<tr>
-			<td>{$lang->strtoupper($lang->name)}</td>
+			<td>{$lang->strtoupper($lang->translate('name'))}</td>
 			<td><input type="text" name="name" maxlength="32"/></td>
 		</tr>
 		<tr>
 			<td>
-				{$lang->strtoupper($lang->short_description)}<br/>
-				<span class="hint">{$lang->description_on_server}</span>
+				{$lang->strtoupper($lang->translate('short_description'))}<br/>
+				<span class="hint">{$lang->translate('description_on_server')}</span>
 			</td>
 			<td><input type="text" name="short_description" maxlength="28"/></td>
 		</tr>
 		<tr>
 			<td>
-				{$lang->strtoupper($lang->description)}<br/>
-				<span class="hint">{$lang->description_on_www}</span>
+				{$lang->strtoupper($lang->translate('description'))}<br/>
+				<span class="hint">{$lang->translate('description_on_www')}</span>
 			</td>
 			<td><textarea name="description" style="width: 400px; height: 80px;"></textarea></td>
 		</tr>
 		<tr>
-			<td>{$lang->strtoupper($lang->tag)}</td>
+			<td>{$lang->strtoupper($lang->translate('tag'))}</td>
 			<td><input type="text" name="tag" maxlength="16"/></td>
 		</tr>
 		<tr>
-			<td>{$lang->strtoupper($lang->order)}</td>
+			<td>{$lang->strtoupper($lang->translate('order'))}</td>
 			<td><input type="text" name="order"/></td>
 		</tr>
 		<tr>
 			<td>
-				{$lang->strtoupper($lang->groups)}
-				<div class="hint">{$lang->groups_to_buy_service}</div>
+				{$lang->strtoupper($lang->translate('groups'))}
+				<div class="hint">{$lang->translate('groups_to_buy_service')}</div>
 			</td>
 			<td>
 				<select name="groups[]" multiple>
@@ -51,12 +51,12 @@
 		</tr>
 		<tr>
 			<td>
-				{$lang->strtoupper($lang->module)}
-				<div class="hint">{$lang->module_to_operate_service}</div>
+				{$lang->strtoupper($lang->translate('module'))}
+				<div class="hint">{$lang->translate('module_to_operate_service')}</div>
 			</td>
 			<td>
 				<select name="module">
-					<option value="">{$lang->choose_option}</option>
+					<option value="">{$lang->translate('choose_option')}</option>
 					{$services_modules}
 				</select>
 			</td>
@@ -68,7 +68,7 @@
 		</tr>
 		<tr>
 			<td colspan="2">
-				<input type="submit" value="{$lang->add}" style="width: 100%;"/>
+				<input type="submit" value="{$lang->translate('add')}" style="width: 100%;"/>
 			</td>
 		</tr>
 		</tbody>

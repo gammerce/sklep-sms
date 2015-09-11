@@ -56,16 +56,16 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 
 		// Web
 		if (!in_array($data['web'], array("1", "0")))
-			$warnings['web'][] = $lang->only_yes_no;
+			$warnings['web'][] = $lang->translate('only_yes_no');
 
 		// MyBB groups
 		if (!strlen($data['mybb_groups']))
-			$warnings['mybb_groups'][] = $lang->field_no_empty;
+			$warnings['mybb_groups'][] = $lang->translate('field_no_empty');
 		else {
 			$groups = explode(",", $data['mybb_groups']);
 			foreach ($groups as $group) {
 				if (!my_is_integer($group)) {
-					$warnings['mybb_groups'][] = $lang->group_not_integer;
+					$warnings['mybb_groups'][] = $lang->translate('group_not_integer');
 					break;
 				}
 			}
@@ -73,19 +73,19 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 
 		// Db host
 		if (!strlen($data['db_host']))
-			$warnings['db_host'][] = $lang->field_no_empty;
+			$warnings['db_host'][] = $lang->translate('field_no_empty');
 
 		// Db user
 		if (!strlen($data['db_user']))
-			$warnings['db_user'][] = $lang->field_no_empty;
+			$warnings['db_user'][] = $lang->translate('field_no_empty');
 
 		// Db password
 		if ($this->service === NULL && !strlen($data['db_password']))
-			$warnings['db_password'][] = $lang->field_no_empty;
+			$warnings['db_password'][] = $lang->translate('field_no_empty');
 
 		// Db name
 		if (!strlen($data['db_name']))
-			$warnings['db_name'][] = $lang->field_no_empty;
+			$warnings['db_name'][] = $lang->translate('field_no_empty');
 
 		return $warnings;
 	}
@@ -135,7 +135,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 	public function user_service_admin_display_title_get()
 	{
 		global $lang;
-		return $lang->mybb_groups;
+		return $lang->translate('mybb_groups');
 	}
 
 	public function user_service_admin_display_get($get, $post)
@@ -147,14 +147,14 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 
 		$table = new Table\Structure();
 
-		$cell = new Table\Cell($lang->id);
+		$cell = new Table\Cell($lang->translate('id'));
 		$cell->setParam('headers', 'id');
 		$table->addHeadCell($cell);
 
-		$table->addHeadCell(new Table\Cell($lang->user));
-		$table->addHeadCell(new Table\Cell($lang->service));
-		$table->addHeadCell(new Table\Cell($lang->mybb_user));
-		$table->addHeadCell(new Table\Cell($lang->expires));
+		$table->addHeadCell(new Table\Cell($lang->translate('user')));
+		$table->addHeadCell(new Table\Cell($lang->translate('service')));
+		$table->addHeadCell(new Table\Cell($lang->translate('mybb_user')));
+		$table->addHeadCell(new Table\Cell($lang->translate('expires')));
 
 		// Wyszukujemy dane ktore spelniaja kryteria
 		$where = '';
@@ -182,10 +182,10 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 			$body_row = new Table\BodyRow();
 
 			$body_row->setDbId($row['id']);
-			$body_row->addCell(new Table\Cell($row['uid'] ? $row['username'] . " ({$row['uid']})" : $lang->none));
+			$body_row->addCell(new Table\Cell($row['uid'] ? $row['username'] . " ({$row['uid']})" : $lang->translate('none')));
 			$body_row->addCell(new Table\Cell($row['service']));
 			$body_row->addCell(new Table\Cell($row['mybb_uid']));
-			$body_row->addCell(new Table\Cell($row['expire'] == '-1' ? $lang->never : date($settings['date_format'], $row['expire'])));
+			$body_row->addCell(new Table\Cell($row['expire'] == '-1' ? $lang->translate('never') : date($settings['date_format'], $row['expire'])));
 			if (get_privilages("manage_user_services")) {
 				$body_row->setButtonDelete(true);
 				$body_row->setButtonEdit(false);
@@ -252,7 +252,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		$amounts = "";
 		while ($row = $db->fetch_array_assoc($result)) {
 			$sms_cost = strlen($row['sms_number']) ? number_format(get_sms_cost($row['sms_number']) / 100 * $settings['vat'], 2) : 0;
-			$amount = $row['amount'] != -1 ? $row['amount'] . " " . $this->service['tag'] : $lang->forever;
+			$amount = $row['amount'] != -1 ? $row['amount'] . " " . $this->service['tag'] : $lang->translate('forever');
 			$provision = number_format($row['provision'] / 100, 2);
 			$amounts .= eval($templates->render("services/" . $this::MODULE_ID . "/purchase_value", true, false));
 		}
@@ -281,7 +281,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 
 		// Tariff
 		if (!$tariff)
-			$warnings['amount'][] = $lang->must_choose_amount;
+			$warnings['amount'][] = $lang->translate('must_choose_amount');
 		else {
 			// Wyszukiwanie usługi o konkretnej cenie
 			$result = $db->query($db->prepare(
@@ -293,7 +293,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 			if (!$db->num_rows($result)) // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
 				return array(
 					'status' => "no_option",
-					'text' => $lang->service_not_affordable,
+					'text' => $lang->translate('service_not_affordable'),
 					'positive' => false
 				);
 
@@ -302,7 +302,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 
 		// Username
 		if (!strlen($data['username']))
-			$warnings['username'][] = $lang->field_no_empty;
+			$warnings['username'][] = $lang->translate('field_no_empty');
 		else {
 			$this->connectMybb();
 
@@ -313,7 +313,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 			));
 
 			if (!$this->db_mybb->num_rows($result))
-				$warnings['username'][] = $lang->no_user;
+				$warnings['username'][] = $lang->translate('no_user');
 		}
 
 		// E-mail
@@ -324,7 +324,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		if (!empty($warnings))
 			return array(
 				'status' => "warnings",
-				'text' => $lang->form_wrong_filled,
+				'text' => $lang->translate('form_wrong_filled'),
 				'positive' => false,
 				'data' => array('warnings' => $warnings)
 			);
@@ -341,7 +341,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 
 		return array(
 			'status' => "ok",
-			'text' => $lang->purchase_form_validated,
+			'text' => $lang->translate('purchase_form_validated'),
 			'positive' => true,
 			'purchase_data' => $purchase_data
 		);
@@ -357,9 +357,9 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 	{
 		global $lang, $templates;
 
-		$email = $purchase_data->getEmail() ? htmlspecialchars($purchase_data->getEmail()) : $lang->none;
+		$email = $purchase_data->getEmail() ? htmlspecialchars($purchase_data->getEmail()) : $lang->translate('none');
 		$username = htmlspecialchars($purchase_data->getOrder('username'));
-		$amount = $purchase_data->getOrder('amount') != -1 ? ($purchase_data->getOrder('amount') . " " . $this->service['tag']) : $lang->forever;
+		$amount = $purchase_data->getOrder('amount') != -1 ? ($purchase_data->getOrder('amount') . " " . $this->service['tag']) : $lang->translate('forever');
 
 		$output = eval($templates->render("services/" . $this::MODULE_ID . "/order_details", true, false));
 		return $output;
@@ -376,7 +376,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		// Nie znaleziono użytkownika o takich danych jak podane podczas zakupu
 		if (($mybb_user = $this->createMybbUser($purchase_data->getOrder('username'))) === NULL) {
 			global $lang_shop;
-			log_info($lang_shop->sprintf($lang_shop->mybb_purchase_no_user, json_encode($purchase_data->getPayment())));
+			log_info($lang_shop->sprintf($lang_shop->translate('mybb_purchase_no_user'), json_encode($purchase_data->getPayment())));
 			die("Critical error occured");
 		}
 
@@ -411,9 +411,9 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		global $settings, $lang, $templates;
 
 		$username = htmlspecialchars($data['auth_data']);
-		$amount = $data['amount'] != -1 ? ($data['amount'] . " " . $this->service['tag']) : $lang->forever;
+		$amount = $data['amount'] != -1 ? ($data['amount'] . " " . $this->service['tag']) : $lang->translate('forever');
 		$email = htmlspecialchars($data['email']);
-		$cost = $data['cost'] ? (number_format($data['cost'] / 100.0, 2) . " " . $settings['currency']) : $lang->none;
+		$cost = $data['cost'] ? (number_format($data['cost'] / 100.0, 2) . " " . $settings['currency']) : $lang->translate('none');
 
 		if ($action == "email")
 			$output = eval($templates->render("services/" . $this::MODULE_ID . "/purchase_info_email", true, false));
@@ -421,7 +421,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 			$output = eval($templates->render("services/" . $this::MODULE_ID . "/purchase_info_web", true, false));
 		else if ($action == "payment_log")
 			return array(
-				'text' => $output = $lang->sprintf($lang->mybb_group_bought, $this->service['name'], $username),
+				'text' => $output = $lang->sprintf($lang->translate('mybb_group_bought'), $this->service['name'], $username),
 				'class' => "outcome"
 			);
 
@@ -564,7 +564,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 			if ($warning = check_for_warnings("number", $post['amount']))
 				$warnings['amount'] = array_merge((array)$warnings['amount'], $warning);
 			else if ($post['amount'] < 0)
-				$warnings['amount'][] = $lang->days_quantity_positive;
+				$warnings['amount'][] = $lang->translate('days_quantity_positive');
 		}
 
 		// ID użytkownika
@@ -574,13 +574,13 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 			else {
 				$user2 = $heart->get_user($post['uid']);
 				if (!$user2->isLogged())
-					$warnings['uid'][] = $lang->no_account_id;
+					$warnings['uid'][] = $lang->translate('no_account_id');
 			}
 		}
 
 		// Username
 		if (!strlen($post['mybb_username']))
-			$warnings['mybb_username'][] = $lang->field_no_empty;
+			$warnings['mybb_username'][] = $lang->translate('field_no_empty');
 		else {
 			$this->connectMybb();
 
@@ -591,7 +591,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 			));
 
 			if (!$this->db_mybb->num_rows($result))
-				$warnings['mybb_username'][] = $lang->no_user;
+				$warnings['mybb_username'][] = $lang->translate('no_user');
 		}
 
 		// E-mail
@@ -601,7 +601,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		if (!empty($warnings))
 			return array(
 				'status' => "warnings",
-				'text' => $lang->form_wrong_filled,
+				'text' => $lang->translate('form_wrong_filled'),
 				'positive' => false,
 				'data' => array('warnings' => $warnings)
 			);
@@ -624,11 +624,11 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 		$purchase_data->setEmail($post['email']);
 		$bought_service_id = $this->purchase($purchase_data);
 
-		log_info($lang_shop->sprintf($lang_shop->admin_added_user_service, $user->getUsername(), $user->getUid(), $bought_service_id));
+		log_info($lang_shop->sprintf($lang_shop->translate('admin_added_user_service'), $user->getUsername(), $user->getUid(), $bought_service_id));
 
 		return array(
 			'status' => "ok",
-			'text' => $lang->service_added_correctly,
+			'text' => $lang->translate('service_added_correctly'),
 			'positive' => true
 		);
 	}
@@ -645,7 +645,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 			array($user_service['mybb_uid'])
 		), 'username');
 
-		$expire = $user_service['expire'] == -1 ? $lang->never : date($settings['date_format'], $user_service['expire']);
+		$expire = $user_service['expire'] == -1 ? $lang->translate('never') : date($settings['date_format'], $user_service['expire']);
 		$service = $this->service['name'];
 		$mybb_uid = htmlspecialchars($username . " ({$user_service['mybb_uid']})");
 

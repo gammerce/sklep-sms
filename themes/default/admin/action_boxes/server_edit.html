@@ -1,32 +1,32 @@
 <form id="form_server_edit" class="action_box">
 	<div class="service_main_info">
-		{$lang->edit_server}
+		{$lang->translate('edit_server')}
 	</div>
 	<table>
 		<tr>
-			<td>{$lang->id}</td>
+			<td>{$lang->translate('id')}</td>
 			<td>{$server['id']}</td>
 		</tr>
 		<tr>
 			<td colspan="2" class="line"></td>
 		</tr>
 		<tr>
-			<td>{$lang->strtoupper($lang->name)}</td>
+			<td>{$lang->strtoupper($lang->translate('name'))}</td>
 			<td><input type="text" name="name" maxlength="64" value="{$server['name']}"/></td>
 		</tr>
 		<tr>
-			<td>{$lang->ip}</td>
+			<td>{$lang->translate('ip')}</td>
 			<td><input type="text" name="ip" style="width: 120px" maxlength="16" value="{$server['ip']}"/></td>
 		</tr>
 		<tr>
-			<td>{$lang->strtoupper($lang->port)}</td>
+			<td>{$lang->strtoupper($lang->translate('port'))}</td>
 			<td><input type="text" name="port" style="width: 60px" maxlength="8" value="{$server['port']}"/></td>
 		</tr>
 		<tr>
-			<td>{$lang->sms_payment_service}</td>
+			<td>{$lang->translate('sms_payment_service')}</td>
 			<td>
 				<select name="sms_service">
-					<option value="">{$lang->default}</option>
+					<option value="">{$lang->translate('default')}</option>
 					{$sms_services}
 				</select>
 			</td>
@@ -41,7 +41,7 @@
 		<tr>
 			<td colspan="2">
 				<input type="hidden" name="id" value="{$server['id']}"/>
-				<input type="submit" value="{$lang->edit}" style="width: 100%;"/>
+				<input type="submit" value="{$lang->translate('edit')}" style="width: 100%;"/>
 			</td>
 		</tr>
 	</table>

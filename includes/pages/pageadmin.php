@@ -10,7 +10,7 @@ abstract class PageAdmin extends Page implements I_BeLoggedMust
 
 		if (!get_privilages($this->privilage)) {
 			global $lang;
-			return $lang->no_privilages;
+			return $lang->translate('no_privilages');
 		}
 
 		// Dodajemy wszystkie skrypty

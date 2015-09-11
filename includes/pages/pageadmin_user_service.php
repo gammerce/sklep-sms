@@ -23,12 +23,12 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
 		}
 
 		if (!strlen($className))
-			return $lang->sprintf($lang->no_subpage, htmlspecialchars($get['subpage']));
+			return $lang->sprintf($lang->translate('no_subpage'), htmlspecialchars($get['subpage']));
 
 		/** @var IService_UserServiceAdminDisplay $service_module_simple */
 		$service_module_simple = new $className();
 
-		$this->title = $lang->users_services . ': ' . $service_module_simple->user_service_admin_display_title_get();
+		$this->title = $lang->translate('users_services') . ': ' . $service_module_simple->user_service_admin_display_title_get();
 		$heart->page_title = $this->title;
 		$wrapper = $service_module_simple->user_service_admin_display_get($get, $post);
 
@@ -59,7 +59,7 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
 			$button = new Table\Input();
 			$button->setParam('id', 'user_service_button_add');
 			$button->setParam('type', 'button');
-			$button->setParam('value', $lang->add_service);
+			$button->setParam('value', $lang->translate('add_service'));
 			$wrapper->addButton($button);
 		}
 
@@ -73,7 +73,7 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
 		if (!get_privilages("manage_user_services")) {
 			return array(
 				'status' => "not_logged_in",
-				'text' => $lang->not_logged_or_no_perm
+				'text' => $lang->translate('not_logged_or_no_perm')
 			);
 		}
 
@@ -99,7 +99,7 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
 				if (empty($user_service) || ($service_module = $heart->get_service_module($user_service['service'])) === NULL
 					|| !object_implements($service_module, "IService_UserServiceAdminEdit")
 				) {
-					$form_data = $lang->service_edit_unable;
+					$form_data = $lang->translate('service_edit_unable');
 				} else {
 					$service_module_id = htmlspecialchars($service_module::MODULE_ID);
 					$form_data = $service_module->user_service_admin_edit_form_get($user_service);

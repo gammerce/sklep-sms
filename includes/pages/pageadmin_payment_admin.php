@@ -17,7 +17,7 @@ class PageAdminPaymentAdmin extends PageAdmin
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->payments_admin;
+		$this->title = $lang->translate('payments_admin');
 
 		parent::__construct();
 	}
@@ -31,18 +31,18 @@ class PageAdminPaymentAdmin extends PageAdmin
 
 		$table = new Structure();
 
-		$cell = new Cell($lang->id);
+		$cell = new Cell($lang->translate('id'));
 		$cell->setParam('headers', 'id');
 		$table->addHeadCell($cell);
 
-		$table->addHeadCell(new Cell($lang->admin_id));
-		$table->addHeadCell(new Cell($lang->ip));
+		$table->addHeadCell(new Cell($lang->translate('admin_id')));
+		$table->addHeadCell(new Cell($lang->translate('ip')));
 
-		$cell = new Cell($lang->platform);
+		$cell = new Cell($lang->translate('platform'));
 		$cell->setParam('headers', 'platform');
 		$table->addHeadCell($cell);
 
-		$table->addHeadCell(new Cell($lang->date));
+		$table->addHeadCell(new Cell($lang->translate('date')));
 
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS * " .
@@ -61,7 +61,7 @@ class PageAdminPaymentAdmin extends PageAdmin
 				$body_row->setParam('class', 'highlighted');
 			}
 
-			$adminname = $row['aid'] ? htmlspecialchars($row['adminname']) . " ({$row['aid']})" : $lang->none;
+			$adminname = $row['aid'] ? htmlspecialchars($row['adminname']) . " ({$row['aid']})" : $lang->translate('none');
 
 			$body_row->setDbId($row['id']);
 			$body_row->addCell(new Cell($adminname));

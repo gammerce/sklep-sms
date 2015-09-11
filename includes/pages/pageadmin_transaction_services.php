@@ -17,7 +17,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->transaction_services;
+		$this->title = $lang->translate('transaction_services');
 
 		parent::__construct();
 	}
@@ -31,13 +31,13 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
 
 		$table = new Structure();
 
-		$cell = new Cell($lang->id);
+		$cell = new Cell($lang->translate('id'));
 		$cell->setParam('headers', 'id');
 		$table->addHeadCell($cell);
 
-		$table->addHeadCell(new Cell($lang->name));
-		$table->addHeadCell(new Cell($lang->sms_service));
-		$table->addHeadCell(new Cell($lang->transfer_service));
+		$table->addHeadCell(new Cell($lang->translate('name')));
+		$table->addHeadCell(new Cell($lang->translate('sms_service')));
+		$table->addHeadCell(new Cell($lang->translate('transfer_service')));
 
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "transaction_services` " .
@@ -49,8 +49,8 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
 		while ($row = $db->fetch_array_assoc($result)) {
 			$body_row = new BodyRow();
 
-			$sms_service = $row['sms'] ? $lang->strtoupper($lang->yes) : $lang->strtoupper($lang->no);
-			$transfer_service = $row['transfer'] ? $lang->strtoupper($lang->yes) : $lang->strtoupper($lang->no);
+			$sms_service = $row['sms'] ? $lang->strtoupper($lang->translate('yes')) : $lang->strtoupper($lang->translate('no'));
+			$transfer_service = $row['transfer'] ? $lang->strtoupper($lang->translate('yes')) : $lang->strtoupper($lang->translate('no'));
 
 			$body_row->setDbId($row['id']);
 			$body_row->addCell(new Cell($row['name']));
@@ -74,7 +74,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
 		if (!get_privilages("manage_settings"))
 			return array(
 				'status' => "not_logged_in",
-				'text' => $lang->not_logged_or_no_perm
+				'text' => $lang->translate('not_logged_or_no_perm')
 			);
 
 		switch ($box_id) {
@@ -95,10 +95,10 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
 				foreach ($transaction_service['data'] as $name => $value) {
 					switch ($name) {
 						case 'sms_text':
-							$text = $lang->strtoupper($lang->sms_code);
+							$text = $lang->strtoupper($lang->translate('sms_code'));
 							break;
 						case 'account_id':
-							$text = $lang->strtoupper($lang->account_id);
+							$text = $lang->strtoupper($lang->translate('account_id'));
 							break;
 						default:
 							$text = $lang->strtoupper($name);

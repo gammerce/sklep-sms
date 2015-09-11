@@ -11,7 +11,7 @@ class PageChangePassword extends PageSimple implements I_BeLoggedMust
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->change_password;
+		$this->title = $lang->translate('change_password');
 
 		parent::__construct();
 	}

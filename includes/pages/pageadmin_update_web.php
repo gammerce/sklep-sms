@@ -11,7 +11,7 @@ class PageAdminUpdateWeb extends PageAdmin
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->update_web;
+		$this->title = $lang->translate('update_web');
 
 		parent::__construct();
 	}
@@ -61,7 +61,7 @@ class PageAdminUpdateWeb extends PageAdmin
 			$file_data['version'] = $next_version;
 			$shop_files['next_update'] = eval($templates->render("admin/update_file"));
 		} else
-			$shop_files['next_update'] = $next_version = $lang->none;
+			$shop_files['next_update'] = $next_version = $lang->translate('none');
 
 		// Pobranie wyglądu całej strony
 		$output = eval($templates->render("admin/update_web"));

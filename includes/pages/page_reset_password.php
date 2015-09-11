@@ -10,7 +10,7 @@ class PageResetPassword extends Page implements I_BeLoggedCannot
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->reset_password;
+		$this->title = $lang->translate('reset_password');
 
 		parent::__construct();
 	}
@@ -21,7 +21,7 @@ class PageResetPassword extends Page implements I_BeLoggedCannot
 
 		// Brak podanego kodu
 		if (!strlen($get['code']))
-			return $lang->no_reset_key;
+			return $lang->translate('no_reset_key');
 
 		$result = $db->query($db->prepare(
 			"SELECT `uid` FROM `" . TABLE_PREFIX . "users` " .
@@ -30,7 +30,7 @@ class PageResetPassword extends Page implements I_BeLoggedCannot
 		));
 
 		if (!$db->num_rows($result)) // Nie znalazło użytkownika z takim kodem
-			return $lang->wrong_reset_key;
+			return $lang->translate('wrong_reset_key');
 
 		$row = $db->fetch_array_assoc($result);
 		$sign = md5($row['uid'] . $settings['random_key']);

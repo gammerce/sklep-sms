@@ -17,7 +17,7 @@ class PageAdminPaymentServiceCode extends PageAdmin
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->payments_service_code;
+		$this->title = $lang->translate('payments_service_code');
 
 		parent::__construct();
 	}
@@ -31,18 +31,18 @@ class PageAdminPaymentServiceCode extends PageAdmin
 
 		$table = new Structure();
 
-		$cell = new Cell($lang->id);
+		$cell = new Cell($lang->translate('id'));
 		$cell->setParam('headers', 'id');
 		$table->addHeadCell($cell);
 
-		$table->addHeadCell(new Cell($lang->code));
-		$table->addHeadCell(new Cell($lang->ip));
+		$table->addHeadCell(new Cell($lang->translate('code')));
+		$table->addHeadCell(new Cell($lang->translate('ip')));
 
-		$cell = new Cell($lang->platform);
+		$cell = new Cell($lang->translate('platform'));
 		$cell->setParam('headers', 'platform');
 		$table->addHeadCell($cell);
 
-		$table->addHeadCell(new Cell($lang->date));
+		$table->addHeadCell(new Cell($lang->translate('date')));
 
 		$where = "";
 		if (isset($get['payid'])) {

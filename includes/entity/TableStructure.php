@@ -278,7 +278,7 @@ class BodyRow extends Row
 			$button->setName('img');
 			$button->setParam('class', "edit_row");
 			$button->setParam('src', 'images/edit.png');
-			$button->setParam('title', $lang->edit . ' ' . $this->db_id);
+			$button->setParam('title', $lang->translate('edit') . ' ' . $this->db_id);
 			$actions->addContent($button);
 		}
 
@@ -287,7 +287,7 @@ class BodyRow extends Row
 			$button->setName('img');
 			$button->setParam('class', "delete_row");
 			$button->setParam('src', 'images/bin.png');
-			$button->setParam('title', $lang->delete . ' ' . $this->db_id);
+			$button->setParam('title', $lang->translate('delete') . ' ' . $this->db_id);
 			$actions->addContent($button);
 		}
 
@@ -390,7 +390,7 @@ class Structure extends DOMElement
 		foreach ($this->head_cells as $cell) {
 			$head_row->addContent($cell);
 		}
-		$actions = new Cell($lang->actions);
+		$actions = new Cell($lang->translate('actions'));
 		$actions->setStyle('width', '4%');
 		$head_row->addContent($actions);
 
@@ -407,7 +407,7 @@ class Structure extends DOMElement
 
 		if (!$body->getContentsAmount()) {
 			$row = new Row();
-			$cell = new Cell($lang->no_data);
+			$cell = new Cell($lang->translate('no_data'));
 			$cell->setParam('colspan', '30');
 			$cell->setStyle('text-align', 'center');
 			$cell->setStyle('padding', '40px');

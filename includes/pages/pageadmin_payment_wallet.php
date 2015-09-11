@@ -17,7 +17,7 @@ class PageAdminPaymentWallet extends PageAdmin
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->payments_wallet;
+		$this->title = $lang->translate('payments_wallet');
 
 		parent::__construct();
 	}
@@ -31,18 +31,18 @@ class PageAdminPaymentWallet extends PageAdmin
 
 		$table = new Structure();
 
-		$cell = new Cell($lang->id);
+		$cell = new Cell($lang->translate('id'));
 		$cell->setParam('headers', 'id');
 		$table->addHeadCell($cell);
 
-		$table->addHeadCell(new Cell($lang->cost));
-		$table->addHeadCell(new Cell($lang->ip));
+		$table->addHeadCell(new Cell($lang->translate('cost')));
+		$table->addHeadCell(new Cell($lang->translate('ip')));
 
-		$cell = new Cell($lang->platform);
+		$cell = new Cell($lang->translate('platform'));
 		$cell->setParam('headers', 'platform');
 		$table->addHeadCell($cell);
 
-		$table->addHeadCell(new Cell($lang->date));
+		$table->addHeadCell(new Cell($lang->translate('date')));
 
 		$where = "";
 		if (isset($get['payid']))

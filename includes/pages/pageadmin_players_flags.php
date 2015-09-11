@@ -20,7 +20,7 @@ class PageAdminPlayersFlags extends PageAdmin
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->players_flags;
+		$this->title = $lang->translate('players_flags');
 
 		parent::__construct();
 	}
@@ -34,12 +34,12 @@ class PageAdminPlayersFlags extends PageAdmin
 
 		$table = new Structure();
 
-		$cell = new Cell($lang->id);
+		$cell = new Cell($lang->translate('id'));
 		$cell->setParam('headers', 'id');
 		$table->addHeadCell($cell);
 
-		$table->addHeadCell(new Cell($lang->server));
-		$table->addHeadCell(new Cell("{$lang->nick}/{$lang->ip}/{$lang->sid}"));
+		$table->addHeadCell(new Cell($lang->translate('server')));
+		$table->addHeadCell(new Cell("{$lang->translate('nick')}/{$lang->translate('ip')}/{$lang->translate('sid')}"));
 		foreach (str_split($this->flags) as $flag) {
 			$table->addHeadCell(new Cell($flag));
 		}
@@ -69,7 +69,7 @@ class PageAdminPlayersFlags extends PageAdmin
 					$body_row->addCell(new Cell(' '));
 				}
 				else if ($row[$flag] == -1) {
-					$body_row->addCell(new Cell($lang->never));
+					$body_row->addCell(new Cell($lang->translate('never')));
 				}
 				else {
 					$body_row->addCell(new Cell(date($settings['date_format'], $row[$flag])));

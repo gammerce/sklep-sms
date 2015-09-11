@@ -11,7 +11,7 @@ class PageContact extends PageSimple
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->contact;
+		$this->title = $lang->translate('contact');
 
 		parent::__construct();
 	}

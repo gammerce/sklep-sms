@@ -10,7 +10,7 @@ class PagePurchase extends Page
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->purchase;
+		$this->title = $lang->translate('purchase');
 
 		parent::__construct();
 	}
@@ -25,7 +25,7 @@ class PagePurchase extends Page
 		global $heart, $user, $lang, $settings, $templates;
 
 		if (($service_module = $heart->get_service_module($get['service'])) === NULL)
-			return $lang->site_not_exists;
+			return $lang->translate('site_not_exists');
 
 		// Dodajemy wszystkie skrypty
 		if (strlen($this::PAGE_ID)) {
@@ -71,15 +71,15 @@ class PagePurchase extends Page
 		// Sprawdzamy, czy usluga wymaga, by użytkownik był zalogowany
 		// Jeżeli wymaga, to to sprawdzamy
 		if (object_implements($service_module, "I_BeLoggedMust") && !is_logged())
-			return $lang->must_be_logged_in;
+			return $lang->translate('must_be_logged_in');
 
 		// Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
 		if (!$heart->user_can_use_service($user->getUid(), $service_module->service))
-			return $lang->service_no_permission;
+			return $lang->translate('service_no_permission');
 
 		// Nie ma formularza zakupu, to tak jakby strona nie istniała
 		if (!object_implements($service_module, "IService_PurchaseWeb"))
-			return $lang->site_not_exists;
+			return $lang->translate('site_not_exists');
 
 		// Dodajemy długi opis
 		$show_more = '';

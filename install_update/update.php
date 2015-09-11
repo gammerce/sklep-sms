@@ -31,7 +31,7 @@ foreach ($queries as $query) {
 			$db->query($query);
 		} catch (SqlQueryException $e) {
 			$input = array();
-			$input[] = "Message: " . $lang->mysqli[$e->getMessage()];
+			$input[] = "Message: " . $lang->translate('mysqli_' . $e->getMessage());
 			$input[] = "Error: " . $e->getError();
 			$input[] = "Query: " . $e->getQuery(false);
 			file_put_contents(SCRIPT_ROOT . 'errors/update.log', implode("\n", $input));

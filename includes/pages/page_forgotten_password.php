@@ -11,7 +11,7 @@ class PageForgottenPassword extends PageSimple implements I_BeLoggedCannot
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->forgotten_password;
+		$this->title = $lang->translate('forgotten_password');
 
 		parent::__construct();
 	}

@@ -5,7 +5,8 @@ $heart->register_block("content", "BlockContent");
 class BlockContent extends Block
 {
 
-	private $page;
+	/** @var  Page */
+	protected $page;
 
 	public function get_content_class()
 	{
@@ -26,10 +27,10 @@ class BlockContent extends Block
 			return NULL;
 
 		if (object_implements($this->page, "I_BeLoggedMust") && !is_logged())
-			return $lang->must_be_logged_in;
+			return $lang->translate('must_be_logged_in');
 
 		if (object_implements($this->page, "I_BeLoggedCannot") && is_logged())
-			return $lang->must_be_logged_out;
+			return $lang->translate('must_be_logged_out');
 
 		return $this->content($get, $post);
 	}

@@ -1,16 +1,16 @@
 <tbody data-module="{$this->get_module_id()}">
 <tr>
-	<td>{$lang->user_id}</td>
+	<td>{$lang->translate('user_id')}</td>
 	<td><input type="text" name="uid" style="width: 60px;"/></td>
 </tr>
 <tr>
-	<td>{$lang->username} MyBB</td>
+	<td>{$lang->translate('username')} MyBB</td>
 	<td>
 		<input type="text" name="mybb_username" />
 	</td>
 </tr>
 <tr>
-	<td>{$lang->email}</td>
+	<td>{$lang->translate('email')}</td>
 	<td>
 		<input type="text" name="email" maxlength="128"/>
 	</td>
@@ -19,10 +19,10 @@
 	<td colspan="2" class="line"></td>
 </tr>
 <tr>
-	<td>{$lang->days_amount}</td>
+	<td>{$lang->translate('days_amount')}</td>
 	<td>
 		<input type="text" name="amount"/><br/>
-		<input type="checkbox" name="forever"/>{$lang->forever}
+		<input type="checkbox" name="forever"/>{$lang->translate('forever')}
 	</td>
 </tr>
 </tbody>

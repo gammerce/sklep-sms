@@ -1,20 +1,20 @@
 <form id="form_charge_wallet" class="action_box">
 	<div class="service_main_info">
-		{$lang->wallet_charge}
+		{$lang->translate('wallet_charge')}
 	</div>
 	<table>
 		<tr>
-			<td>{$lang->username}</td>
+			<td>{$lang->translate('username')}</td>
 			<td>{$user->getUsername()}</td>
 		</tr>
 		<tr>
-			<td>{$lang->amount}</td>
+			<td>{$lang->translate('amount')}</td>
 			<td><input type="text" name="amount" style="width: 60px;"/> {$settings['currency']}</td>
 		</tr>
 		<tr>
 			<td colspan="2">
 				<input type="hidden" name="uid" value="{$user->getUid()}"/>
-				<input type="submit" value="{$lang->charge}" style="width: 100%;"/>
+				<input type="submit" value="{$lang->translate('charge')}" style="width: 100%;"/>
 			</td>
 		</tr>
 	</table>

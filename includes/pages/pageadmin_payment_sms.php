@@ -17,7 +17,7 @@ class PageAdminPaymentSms extends PageAdmin
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->payments_sms;
+		$this->title = $lang->translate('payments_sms');
 
 		parent::__construct();
 	}
@@ -31,23 +31,23 @@ class PageAdminPaymentSms extends PageAdmin
 
 		$table = new Structure();
 
-		$cell = new Cell($lang->id);
+		$cell = new Cell($lang->translate('id'));
 		$cell->setParam('headers', 'id');
 		$table->addHeadCell($cell);
 
-		$table->addHeadCell(new Cell($lang->content));
-		$table->addHeadCell(new Cell($lang->number));
-		$table->addHeadCell(new Cell($lang->sms['return_code']));
-		$table->addHeadCell(new Cell($lang->income));
-		$table->addHeadCell(new Cell($lang->cost));
-		$table->addHeadCell(new Cell($lang->free_of_charge));
-		$table->addHeadCell(new Cell($lang->ip));
+		$table->addHeadCell(new Cell($lang->translate('content')));
+		$table->addHeadCell(new Cell($lang->translate('number')));
+		$table->addHeadCell(new Cell($lang->translate('sms_return_code')));
+		$table->addHeadCell(new Cell($lang->translate('income')));
+		$table->addHeadCell(new Cell($lang->translate('cost')));
+		$table->addHeadCell(new Cell($lang->translate('free_of_charge')));
+		$table->addHeadCell(new Cell($lang->translate('ip')));
 
-		$cell = new Cell($lang->platform);
+		$cell = new Cell($lang->translate('platform'));
 		$cell->setParam('headers', 'platform');
 		$table->addHeadCell($cell);
 
-		$table->addHeadCell(new Cell($lang->date));
+		$table->addHeadCell(new Cell($lang->translate('date')));
 
 		$where = "( t.payment = 'sms' ) ";
 
@@ -91,7 +91,7 @@ class PageAdminPaymentSms extends PageAdmin
 				$body_row->setParam('class', 'highlighted');
 			}
 
-			$free = $row['free'] ? $lang->strtoupper($lang->yes) : $lang->strtoupper($lang->no);
+			$free = $row['free'] ? $lang->strtoupper($lang->translate('yes')) : $lang->strtoupper($lang->translate('no'));
 			$income = $row['income'] ? number_format($row['income'] / 100.0, 2) . " " . $settings['currency'] : "";
 			$cost = $row['cost'] ? number_format($row['cost'] / 100.0, 2) . " " . $settings['currency'] : "";
 

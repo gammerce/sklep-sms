@@ -1,9 +1,9 @@
 <div class="payment_type_wraper">
 	<div class="payment_type sms header">
-		{$lang->payment_sms}
+		{$lang->translate('payment_sms')}
 	</div>
 	<div class="payment_type sms">
-		<strong>{$lang->price}</strong>: {$purchase_data->getTariff()->getSmsCostBrutto()} {$settings['currency']}<br/>
+		<strong>{$lang->translate('price')}</strong>: {$purchase_data->getTariff()->getSmsCostBrutto()} {$settings['currency']}<br/>
 		<br/>
 
 		<div id="sms_details">
@@ -31,6 +31,6 @@
 			</table>
 			<br class="clear"/>
 		</div>
-		<input type="button" id="pay_sms" value="{$lang->pay_sms}" class="purchase_button"/>
+		<input type="button" id="pay_sms" value="{$lang->translate('pay_sms')}" class="purchase_button"/>
 	</div>
 </div>

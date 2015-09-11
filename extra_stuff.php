@@ -24,7 +24,7 @@ switch ($action) {
 		if (($service_module = $heart->get_service_module($_GET['service'])) !== NULL)
 			$output = $service_module->description_full_get();
 
-		$heart->page_title = $lang->description . ": " . $service_module->service['name'];
+		$heart->page_title = $lang->translate('description') . ": " . $service_module->service['name'];
 
 		$heart->style_add($settings['shop_url_slash'] . "styles/extra_stuff/long_desc.css?version=" . VERSION);
 		$header = eval($templates->render("header"));

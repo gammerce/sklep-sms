@@ -18,7 +18,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->sms_codes;
+		$this->title = $lang->translate('sms_codes');
 
 		parent::__construct();
 	}
@@ -32,12 +32,12 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
 
 		$table = new Structure();
 
-		$cell = new Cell($lang->id);
+		$cell = new Cell($lang->translate('id'));
 		$cell->setParam('headers', 'id');
 		$table->addHeadCell($cell);
 
-		$table->addHeadCell(new Cell($lang->sms_code));
-		$table->addHeadCell(new Cell($lang->tariff));
+		$table->addHeadCell(new Cell($lang->translate('sms_code')));
+		$table->addHeadCell(new Cell($lang->translate('tariff')));
 
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS * " .
@@ -68,7 +68,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
 			$button = new Input();
 			$button->setParam('id', 'sms_code_button_add');
 			$button->setParam('type', 'button');
-			$button->setParam('value', $lang->add_code);
+			$button->setParam('value', $lang->translate('add_code'));
 			$wrapper->addButton($button);
 		}
 
@@ -82,7 +82,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
 		if (!get_privilages("manage_sms_codes"))
 			return array(
 				'status' => "not_logged_in",
-				'text' => $lang->not_logged_or_no_perm
+				'text' => $lang->translate('not_logged_or_no_perm')
 			);
 
 		switch ($box_id) {

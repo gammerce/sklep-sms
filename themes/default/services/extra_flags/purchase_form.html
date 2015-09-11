@@ -10,7 +10,7 @@
 					</tbody>
 					<tbody>
 					<tr>
-						<td>{$lang->choose_type}</td>
+						<td>{$lang->translate('choose_type')}</td>
 						<td>
 							<ul name="type">
 								{$types}
@@ -25,35 +25,35 @@
 					</tbody>
 					<tbody id="type_nick">
 					<tr>
-						<td>{$lang->nick}</td>
+						<td>{$lang->translate('nick')}</td>
 						<td><input type="text" name="nick" maxlength="32"/></td>
 					</tr>
 					</tbody>
 					<tbody id="type_ip">
 					<tr>
-						<td>{$lang->ip}</td>
+						<td>{$lang->translate('ip')}</td>
 						<td><input type="text" name="ip" value="{$user->getLastIp()}" maxlength="16"/></td>
 					</tr>
 					</tbody>
 					<tbody id="type_password">
 					<tr>
-						<td>{$lang->password}</td>
+						<td>{$lang->translate('password')}</td>
 						<td><input type="password" name="password" maxlength="32"/></td>
 					</tr>
 					<tr>
-						<td>{$lang->password_repeat}</td>
+						<td>{$lang->translate('password_repeat')}</td>
 						<td><input type="password" name="password_repeat" maxlength="32"/></td>
 					</tr>
 					</tbody>
 					<tbody id="type_sid">
 					<tr>
-						<td>{$lang->sid}</td>
+						<td>{$lang->translate('sid')}</td>
 						<td><input type="text" name="sid" maxlength="32"/></td>
 					</tr>
 					</tbody>
 					<tbody>
 					<tr>
-						<td>{$lang->email}</td>
+						<td>{$lang->translate('email')}</td>
 						<td><input type="text" name="email" value="{$user->getEmail()}"/></td>
 					</tr>
 					</tbody>
@@ -73,10 +73,10 @@
 					</tbody>
 					<tbody>
 					<tr>
-						<td>{$lang->server}</td>
+						<td>{$lang->translate('server')}</td>
 						<td>
 							<select name="server">
-								<option value="">{$lang->choose_server}</option>
+								<option value="">{$lang->translate('choose_server')}</option>
 								{$servers}
 							</select>
 						</td>
@@ -84,10 +84,10 @@
 					</tbody>
 					<tbody>
 					<tr>
-						<td>{$lang->amount}</td>
+						<td>{$lang->translate('amount')}</td>
 						<td>
 							<select name="value">
-								<option value="">{$lang->choose_amount}</option>
+								<option value="">{$lang->translate('choose_amount')}</option>
 							</select>
 						</td>
 					</tr>
@@ -100,9 +100,9 @@
 				</table>
 				<div id="cost_wraper">
 					<div>
-						<strong>{$lang->transfer_wallet_cost}</strong>: <span id="cost_transfer"></span>
+						<strong>{$lang->translate('transfer_wallet_cost')}</strong>: <span id="cost_transfer"></span>
 						{$settings['currency']}<br/>
-						<strong>{$lang->sms_cost}</strong>: <span id="cost_sms"></span> <span id="currency_sms">{$settings['currency']}</span>
+						<strong>{$lang->translate('sms_cost')}</strong>: <span id="cost_sms"></span> <span id="currency_sms">{$settings['currency']}</span>
 					</div>
 				</div>
 			</td>
@@ -110,7 +110,7 @@
 	</table>
 
 	<div class="purchase_button_wraper">
-		<input type="button" id="go_to_payment" value="{$lang->go_to_payment}" class="purchase_button"/>
+		<input type="button" id="go_to_payment" value="{$lang->translate('go_to_payment')}" class="purchase_button"/>
 	</div>
 
 	<input type="hidden" name="service" value="{$this->service['id']}"/>

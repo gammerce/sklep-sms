@@ -18,7 +18,7 @@ class Payment
 
 		// API podanej usługi nie istnieje.
 		if ($this->payment_module === NULL) {
-			output_page($lang->sprintf($lang->payment['bad_service'], $payment_module_id));
+			output_page($lang->sprintf($lang->translate('payment_bad_service'), $payment_module_id));
 		}
 	}
 
@@ -35,7 +35,7 @@ class Payment
 		if (!$this->getPaymentModule()->supportSms()) {
 			return array(
 				'status' => Payment::SMS_NOT_SUPPORTED,
-				'text' => $lang->sms['info'][Payment::SMS_NOT_SUPPORTED]
+				'text' => $lang->translate('sms_info_' . Payment::SMS_NOT_SUPPORTED)
 			);
 		}
 
@@ -76,7 +76,7 @@ class Payment
 				// Ustawienie wartości, jakby kod był prawidłowy
 				$sms_return['status'] = IPayment_Sms::OK;
 
-				log_info($lang_shop->sprintf($lang_shop->payment['remove_code_from_db'], $db_code['code'], $db_code['tariff']));
+				log_info($lang_shop->sprintf($lang_shop->translate('payment_remove_code_from_db'), $db_code['code'], $db_code['tariff']));
 			}
 		}
 
@@ -99,16 +99,16 @@ class Payment
 				array($sms_code, $sms_return['tariff'])
 			));
 
-			log_info($lang_shop->sprintf($lang_shop->add_code_to_reuse, $sms_code, $sms_return['tariff'],
+			log_info($lang_shop->sprintf($lang_shop->translate('add_code_to_reuse'), $sms_code, $sms_return['tariff'],
 				$user->getUsername(), $user->getUid(), $user->getLastIp(), $tariff->getId()));
 		} else if ($sms_return['status'] != Payment::SMS_NOT_SUPPORTED) {
-			log_info($lang_shop->sprintf($lang_shop->bad_sms_code_used, $user->getUsername(), $user->getUid(), $user->getLastIp(),
+			log_info($lang_shop->sprintf($lang_shop->translate('bad_sms_code_used'), $user->getUsername(), $user->getUid(), $user->getLastIp(),
 				$sms_code, $this->getPaymentModule()->getSmsCode(), $sms_number, $sms_return['status']));
 		}
 
 		return array(
 			'status' => $sms_return['status'],
-			'text' => if_strlen2($sms_return['text'], if_strlen2($lang->sms['info'][$sms_return['status']], $sms_return['status'])),
+			'text' => if_strlen2($sms_return['text'], if_strlen2($lang->translate('sms_info_' . $sms_return['status']), $sms_return['status'])),
 			'payment_id' => $payment_id
 		);
 	}
@@ -124,7 +124,7 @@ class Payment
 		if (!$this->getPaymentModule()->supportTransfer() || !object_implements($this->getPaymentModule(), "IPayment_Transfer")) {
 			return array(
 				'status' => Payment::TRANSFER_NOT_SUPPORTED,
-				'text' => $lang->transfer[Payment::TRANSFER_NOT_SUPPORTED]
+				'text' => $lang->translate('transfer_' . Payment::TRANSFER_NOT_SUPPORTED)
 			);
 		}
 
@@ -134,7 +134,7 @@ class Payment
 
 		return array(
 			'status' => "transfer",
-			'text' => $lang->transfer['prepared'],
+			'text' => $lang->translate('transfer_prepared'),
 			'positive' => true,
 			'data' => array('data' => $this->getPaymentModule()->prepare_transfer($purchase_data, $data_filename)) // Przygotowuje dane płatności transferem
 		);
@@ -160,7 +160,7 @@ class Payment
 
 		// Nie znaleziono pliku z danymi
 		if (!file_exists(SCRIPT_ROOT . "data/transfers/" . $transfer_finalize->getDataFilename())) {
-			log_info($lang_shop->sprintf($lang_shop->transfer_no_data_file, $transfer_finalize->getOrderid()));
+			log_info($lang_shop->sprintf($lang_shop->translate('transfer_no_data_file'), $transfer_finalize->getOrderid()));
 			return false;
 		}
 
@@ -178,12 +178,12 @@ class Payment
 
 		// Błędny moduł
 		if (($service_module = $heart->get_service_module($purchase_data->getService())) === NULL) {
-			log_info($lang_shop->sprintf($lang_shop->transfer_bad_module, $transfer_finalize->getOrderid(), $purchase_data->getService()));
+			log_info($lang_shop->sprintf($lang_shop->translate('transfer_bad_module'), $transfer_finalize->getOrderid(), $purchase_data->getService()));
 			return false;
 		}
 
 		if (!object_implements($service_module, "IService_Purchase")) {
-			log_info($lang_shop->sprintf($lang_shop->transfer_no_purchase, $transfer_finalize->getOrderid(), $purchase_data->getService()));
+			log_info($lang_shop->sprintf($lang_shop->translate('transfer_no_purchase'), $transfer_finalize->getOrderid(), $purchase_data->getService()));
 			return false;
 		}
 
@@ -194,7 +194,7 @@ class Payment
 		));
 		$bought_service_id = $service_module->purchase($purchase_data);
 
-		log_info($lang_shop->sprintf($lang_shop->payment_transfer_accepted, $bought_service_id, $transfer_finalize->getOrderid(), $transfer_finalize->getAmount(),
+		log_info($lang_shop->sprintf($lang_shop->translate('payment_transfer_accepted'), $bought_service_id, $transfer_finalize->getOrderid(), $transfer_finalize->getAmount(),
 			$transfer_finalize->getTransferService(), $purchase_data->user->getUsername(), $purchase_data->user->getUid(), $purchase_data->user->getLastIp()));
 
 		return true;

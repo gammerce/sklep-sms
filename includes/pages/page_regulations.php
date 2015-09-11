@@ -11,7 +11,7 @@ class PageRegulations extends PageSimple
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->regulations;
+		$this->title = $lang->translate('regulations');
 
 		parent::__construct();
 	}

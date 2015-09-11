@@ -21,7 +21,7 @@ class BlockAdminContent extends Block
 		global $lang;
 
 		if (!is_logged())
-			return $lang->must_be_logged_in;
+			return $lang->translate('must_be_logged_in');
 
 		return $this->content($get, $post);
 	}

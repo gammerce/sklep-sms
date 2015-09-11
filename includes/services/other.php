@@ -35,18 +35,18 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
 		// Serwer
 		$server = array();
 		if (!strlen($purchase_data->getOrder('server')))
-			$warnings['server'][] = $lang->must_choose_server;
+			$warnings['server'][] = $lang->translate('must_choose_server');
 		else {
 			// Sprawdzanie czy serwer o danym id istnieje w bazie
 			$server = $heart->get_server($purchase_data->getOrder('server'));
 			if (!$heart->server_service_linked($server['id'], $this->service['id']))
-				$warnings['server'][] = $lang->chosen_incorrect_server;
+				$warnings['server'][] = $lang->translate('chosen_incorrect_server');
 		}
 
 		// Wartość usługi
 		$price = array();
 		if (!strlen($purchase_data->getTariff()))
-			$warnings['value'][] = $lang->must_choose_amount;
+			$warnings['value'][] = $lang->translate('must_choose_amount');
 		else {
 			// Wyszukiwanie usługi o konkretnej cenie
 			$result = $db->query($db->prepare(
@@ -58,7 +58,7 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
 			if (!$db->num_rows($result)) // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
 				return array(
 					'status' => "no_option",
-					'text' => $lang->service_not_affordable,
+					'text' => $lang->translate('service_not_affordable'),
 					'positive' => false
 				);
 
@@ -73,7 +73,7 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
 		if (!empty($warnings)) {
 			return array(
 				'status' => "warnings",
-				'text' => $lang->form_wrong_filled,
+				'text' => $lang->translate('form_wrong_filled'),
 				'positive' => false,
 				'data' => array('warnings' => $warnings)
 			);
@@ -90,7 +90,7 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
 
 		return array(
 			'status' => "ok",
-			'text' => $lang->purchase_form_validated,
+			'text' => $lang->translate('purchase_form_validated'),
 			'positive' => true,
 			'purchase_data' => $purchase_data
 		);

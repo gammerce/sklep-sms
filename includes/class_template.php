@@ -24,8 +24,8 @@ class Templates
 		global $settings, $lang;
 
 		if (!$install) {
-			if (strlen($lang->get_current_language_short())) {
-				$filename = $title . "." . $lang->get_current_language_short();
+			if (strlen($lang->getCurrentLanguageShort())) {
+				$filename = $title . "." . $lang->getCurrentLanguageShort();
 				$temp = SCRIPT_ROOT . "themes/{$settings['theme']}/{$filename}.html";
 				if (file_exists($temp))
 					$path = $temp;
@@ -48,8 +48,8 @@ class Templates
 				}
 			}
 		} else {
-			if (strlen($lang->get_current_language_short())) {
-				$filename = $title . "." . $lang->get_current_language_short();
+			if (strlen($lang->getCurrentLanguageShort())) {
+				$filename = $title . "." . $lang->getCurrentLanguageShort();
 				$temp = SCRIPT_ROOT . "install/templates/{$filename}.html";
 				if (file_exists($temp))
 					$path = $temp;

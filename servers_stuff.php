@@ -25,10 +25,10 @@ if ($action == "purchase_service") {
 	$output = '';
 
 	if (($service_module = $heart->get_service_module($_GET['service'])) === NULL)
-		xml_output("bad_module", $lang->bad_module, 0);
+		xml_output("bad_module", $lang->translate('bad_module'), 0);
 
 	if (!object_implements($service_module, "IService_PurchaseOutside"))
-		xml_output("bad_module", $lang->bad_module, 0);
+		xml_output("bad_module", $lang->translate('bad_module'), 0);
 
 	// Sprawdzamy dane zakupu
 	$purchase_data = new Entity_Purchase();

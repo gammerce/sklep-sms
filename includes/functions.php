@@ -254,7 +254,7 @@ function validate_payment($purchase_data)
 	if (($service_module = $heart->get_service_module($purchase_data->getService())) === NULL) {
 		return array(
 			'status' => "wrong_module",
-			'text' => $lang->bad_module,
+			'text' => $lang->translate('bad_module'),
 			'positive' => false
 		);
 	}
@@ -262,7 +262,7 @@ function validate_payment($purchase_data)
 	if (!in_array($purchase_data->getPayment('method'), array("sms", "transfer", "wallet", "service_code"))) {
 		return array(
 			'status' => "wrong_method",
-			'text' => $lang->wrong_payment_method,
+			'text' => $lang->translate('wrong_payment_method'),
 			'positive' => false
 		);
 	}
@@ -287,7 +287,7 @@ function validate_payment($purchase_data)
 	if ($purchase_data->getPayment('method') == "wallet" && !is_logged()) {
 		return array(
 			'status' => "wallet_not_logged",
-			'text' => $lang->no_login_no_wallet,
+			'text' => $lang->translate('no_login_no_wallet'),
 			'positive' => false
 		);
 	}
@@ -295,7 +295,7 @@ function validate_payment($purchase_data)
 		if ($purchase_data->getPayment('cost') <= 1) {
 			return array(
 				'status' => "too_little_for_transfer",
-				'text' => $lang->sprintf($lang->transfer_above_amount, $settings['currency']),
+				'text' => $lang->sprintf($lang->translate('transfer_above_amount'), $settings['currency']),
 				'positive' => false
 			);
 		}
@@ -303,20 +303,20 @@ function validate_payment($purchase_data)
 		if (!$payment->getPaymentModule()->supportTransfer()) {
 			return array(
 				'status' => "transfer_unavailable",
-				'text' => $lang->transfer_unavailable,
+				'text' => $lang->translate('transfer_unavailable'),
 				'positive' => false
 			);
 		}
 	} else if ($purchase_data->getPayment('method') == "sms" && !$payment->getPaymentModule()->supportSms()) {
 		return array(
 			'status' => "sms_unavailable",
-			'text' => $lang->sms_unavailable,
+			'text' => $lang->translate('sms_unavailable'),
 			'positive' => false
 		);
 	} else if ($purchase_data->getPayment('method') == "sms" && $purchase_data->getTariff() === NULL) {
 		return array(
 			'status' => "no_sms_option",
-			'text' => $lang->no_sms_payment,
+			'text' => $lang->translate('no_sms_payment'),
 			'positive' => false
 		);
 	}
@@ -332,7 +332,7 @@ function validate_payment($purchase_data)
 	// Kod na usługę
 	if ($purchase_data->getPayment('method') == "service_code")
 		if (!strlen($purchase_data->getPayment('service_code')))
-			$warnings['service_code'][] = $lang->field_no_empty;
+			$warnings['service_code'][] = $lang->translate('field_no_empty');
 
 	// Błędy
 	if (!empty($warnings)) {
@@ -345,7 +345,7 @@ function validate_payment($purchase_data)
 		}
 		return array(
 			'status' => "warnings",
-			'text' => $lang->form_wrong_filled,
+			'text' => $lang->translate('form_wrong_filled'),
 			'positive' => false,
 			'data' => $warning_data
 		);
@@ -388,12 +388,12 @@ function validate_payment($purchase_data)
 
 		return array(
 			'status' => "purchased",
-			'text' => $lang->purchase_success,
+			'text' => $lang->translate('purchase_success'),
 			'positive' => true,
 			'data' => array('bsid' => $bought_service_id)
 		);
 	} else if ($purchase_data->getPayment('method') == "transfer") {
-		$purchase_data->setDesc($lang->sprintf($lang->payment_for_service, $service_module->service['name']));
+		$purchase_data->setDesc($lang->sprintf($lang->translate('payment_for_service'), $service_module->service['name']));
 		return $payment->pay_transfer($purchase_data);
 	}
 }
@@ -429,7 +429,7 @@ function pay_wallet($cost, $user)
 	if ($cost > $user->getWallet())
 		return array(
 			'status' => "no_money",
-			'text' => $lang->not_enough_money,
+			'text' => $lang->translate('not_enough_money'),
 			'positive' => false
 		);
 
@@ -482,7 +482,7 @@ function pay_service_code($purchase_data, $service_module)
 			));
 			$payment_id = $db->last_id();
 
-			log_info($lang_shop->sprintf($lang_shop->purchase_code, $purchase_data->getPayment('service_code'),
+			log_info($lang_shop->sprintf($lang_shop->translate('purchase_code'), $purchase_data->getPayment('service_code'),
 				$purchase_data->user->getUsername(), $purchase_data->user->getUid(), $payment_id));
 
 			return $payment_id;
@@ -491,7 +491,7 @@ function pay_service_code($purchase_data, $service_module)
 
 	return array(
 		'status' => "wrong_service_code",
-		'text' => $lang->bad_service_code,
+		'text' => $lang->translate('bad_service_code'),
 		'positive' => false
 	);
 }
@@ -525,14 +525,14 @@ function add_bought_service_info($uid, $user_name, $ip, $method, $payment_id, $s
 	));
 	$bougt_service_id = $db->last_id();
 
-	$ret = $lang->none;
+	$ret = $lang->translate('none');
 	if (strlen($email)) {
 		$message = purchase_info(array(
 			'purchase_id' => $bougt_service_id,
 			'action' => "email"
 		));
 		if (strlen($message)) {
-			$title = ($service == 'charge_wallet' ? $lang->charge_wallet : $lang->purchase);
+			$title = ($service == 'charge_wallet' ? $lang->translate('charge_wallet') : $lang->translate('purchase'));
 			$ret = send_email($email, $auth_data, $title, $message);
 		}
 
@@ -544,8 +544,8 @@ function add_bought_service_info($uid, $user_name, $ip, $method, $payment_id, $s
 
 	$temp_service = $heart->get_service($service);
 	$temp_server = $heart->get_server($server);
-	$amount = $amount != -1 ? "{$amount} {$temp_service['tag']}" : $lang->forever;
-	log_info($lang_shop->sprintf($lang_shop->bought_service_info, $service, $auth_data, $amount, $temp_server['name'], $payment_id, $ret, $user_name, $uid, $ip));
+	$amount = $amount != -1 ? "{$amount} {$temp_service['tag']}" : $lang->translate('forever');
+	log_info($lang_shop->sprintf($lang_shop->translate('bought_service_info'), $service, $auth_data, $amount, $temp_server['name'], $payment_id, $ret, $user_name, $uid, $ip));
 	unset($temp_server);
 
 	return $bougt_service_id;
@@ -653,7 +653,7 @@ function delete_users_old_services()
 				$user_service_desc .= ucfirst(strtolower($key)) . ': ' . $value;
 			}
 
-			log_info($lang_shop->sprintf($lang_shop->expired_service_delete, $user_service_desc));
+			log_info($lang_shop->sprintf($lang_shop->translate('expired_service_delete'), $user_service_desc));
 		}
 	}
 
@@ -701,7 +701,7 @@ function send_email($email, $name, $subject, $text)
 	if (!mail($email, $subject, $text, $header))
 		return "not_sent";
 
-	log_info($lang_shop->sprintf($lang_shop->email_was_sent, $email, $text));
+	log_info($lang_shop->sprintf($lang_shop->translate('email_was_sent'), $email, $text));
 	return "sent";
 }
 
@@ -730,10 +730,12 @@ function object_implements($class, $interface)
 
 function exceptionHandler(Exception $e)
 {
-	if (get_class($e) == 'SqlQueryException')
+	if ($e instanceof SqlQueryException) {
 		Database::showError($e);
-	else
+	}
+	else {
 		throw $e;
+	}
 }
 
 function create_dom_element($name, $text = "", $data = array())
@@ -787,8 +789,8 @@ function get_platform($platform)
 {
 	global $lang;
 
-	if ($platform == "engine_amxx") return $lang->amxx_server;
-	else if ($platform == "engine_sm") return $lang->sm_server;
+	if ($platform == "engine_amxx") return $lang->translate('amxx_server');
+	else if ($platform == "engine_sm") return $lang->translate('sm_server');
 
 	return htmlspecialchars($platform);
 }
@@ -799,11 +801,11 @@ function get_type_name($value)
 	global $lang;
 
 	if ($value == TYPE_NICK)
-		return $lang->nickpass;
+		return $lang->translate('nickpass');
 	else if ($value == TYPE_IP)
-		return $lang->ippass;
+		return $lang->translate('ippass');
 	else if ($value == TYPE_SID)
-		return $lang->sid;
+		return $lang->translate('sid');
 
 	return "";
 }
@@ -891,7 +893,7 @@ function secondsToTime($seconds)
 
 	$dtF = new DateTime("@0");
 	$dtT = new DateTime("@$seconds");
-	return $dtF->diff($dtT)->format("%a {$lang->days} {$lang->and} %h {$lang->hours}");
+	return $dtF->diff($dtT)->format("%a {$lang->translate('days')} {$lang->translate('and')} %h {$lang->translate('hours')}");
 }
 
 function if_isset(&$isset, $default)

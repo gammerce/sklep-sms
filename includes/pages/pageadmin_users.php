@@ -18,7 +18,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->users;
+		$this->title = $lang->translate('users');
 
 		parent::__construct();
 	}
@@ -33,16 +33,16 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 
 		$table = new Structure();
 
-		$cell = new Cell($lang->id);
+		$cell = new Cell($lang->translate('id'));
 		$cell->setParam('headers', 'id');
 		$table->addHeadCell($cell);
 
-		$table->addHeadCell(new Cell($lang->username));
-		$table->addHeadCell(new Cell($lang->firstname));
-		$table->addHeadCell(new Cell($lang->surname));
-		$table->addHeadCell(new Cell($lang->email));
-		$table->addHeadCell(new Cell($lang->groups));
-		$table->addHeadCell(new Cell($lang->wallet));
+		$table->addHeadCell(new Cell($lang->translate('username')));
+		$table->addHeadCell(new Cell($lang->translate('firstname')));
+		$table->addHeadCell(new Cell($lang->translate('surname')));
+		$table->addHeadCell(new Cell($lang->translate('email')));
+		$table->addHeadCell(new Cell($lang->translate('groups')));
+		$table->addHeadCell(new Cell($lang->translate('wallet')));
 
 		$where = '';
 		if (isset($get['search'])) {
@@ -87,7 +87,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 
 			$button_charge = new Img();
 			$button_charge->setParam('class', 'charge_wallet');
-			$button_charge->setParam('title', $lang->charge . ' ' . htmlspecialchars($row['username']));
+			$button_charge->setParam('title', $lang->translate('charge') . ' ' . htmlspecialchars($row['username']));
 			$button_charge->setParam('src', 'images/dollar.png');
 			$body_row->addAction($button_charge);
 
@@ -111,7 +111,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 		if (!get_privilages("manage_users"))
 			return array(
 				'status' => "not_logged_in",
-				'text' => $lang->not_logged_or_no_perm
+				'text' => $lang->translate('not_logged_or_no_perm')
 			);
 
 		switch ($box_id) {

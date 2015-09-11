@@ -1,133 +1,122 @@
 <?php
 
-$l['shop_sms'] = "Sklep SMS";
-$l['id'] = "ID";
-$l['logout'] = "Wyloguj";
-$l['go'] = "Idź";
-$l['and'] = "i";
-$l['yes'] = "Tak";
-$l['no'] = "Nie";
-$l['type'] = "Typ";
-$l['password'] = "Hasło";
-$l['none'] = "Brak";
-$l['bought_date'] = "Data zakupu";
-$l['no_data'] = "Brak danych";
-$l['forever'] = "Na zawsze";
-$l['edit'] = "Edytuj";
-$l['delete'] = "Usuń";
-$l['ip'] = "IP";
-$l['email'] = "Adres e-mail";
-$l['nick'] = "Nick";
-$l['user_id'] = "ID użytkownika";
-$l['username'] = "Nazwa użytkownika";
-$l['save'] = "Zapisz";
-$l['cancel'] = "Anuluj";
-$l['sign_in'] = "Zaloguj się";
-$l['contact'] = "Kontakt";
-$l['days_amount'] = "Ilość dni";
+return array(
+	'acp' => 'Panel Admina',
+	'acp_short' => 'PA',
+	'ajax_error' => 'Wystąpił błąd podczas pozyskiwania danych.',
+	'amount' => 'Ilość',
+	'and' => 'i',
+	'april' => 'Kwiecień',
+	'august' => 'Sierpień',
+	'bad_module' => 'Moduł usługi został źle zaprogramowany.',
+	'bought_date' => 'Data zakupu',
+	'bought_service_info' => 'Zakupiono usługę {1}. Dane: {2} Ilość: {3} Serwer: {4} ID transakcji: {5}. Email: {6} {7}({8})({9})',
+	'cancel' => 'Anuluj',
+	'choose_amount' => 'Wybierz ilość',
+	'choose_option' => 'Wybierz opcję',
+	'choose_server' => 'Wybierz serwer',
+	'choose_service' => 'Wybierz usługę',
+	'choose_type' => 'Wybierz rodzaj',
+	'contact' => 'Kontakt',
+	'content' => 'Treść',
+	'cost' => 'Koszt',
+	'date' => 'Data',
+	'days' => 'dni',
+	'days_amount' => 'Ilość dni',
+	'december' => 'Grudzień',
+	'delete' => 'Usuń',
+	'description' => 'Opis',
+	'dont_play_games' => 'Nie kombinuj...',
+	'edit' => 'Edytuj',
+	'edited_user_service' => 'Prawidłowo wyedytowano usługę.',
+	'email' => 'Adres e-mail',
+	'email_was_sent' => 'Wysłano e-maila na adres: {1} o treści: {2}',
+	'error_occured' => 'Wystąpił błąd.',
+	'expired_service_delete' => 'AUTOMAT: Usunięto wygasłą usługę użytkownika. {1}',
+	'february' => 'Luty',
+	'field_length_max_warn' => 'Pole może się składać z co najwyżej {1} znaków.',
+	'field_length_min_warn' => 'Pole musi się składać z co najmniej {1} znaków.',
+	'field_must_be_number' => 'W polu musi się znajdować liczba.',
+	'field_no_empty' => 'Pole nie może być puste.',
+	'firstname' => 'Imię',
+	'forever' => 'Na zawsze',
+	'form_wrong_filled' => 'Nie wszystkie pola formularza zostały prawidłowo wypełnione.',
+	'go' => 'Idź',
+	'hours' => 'godzin',
+	'id' => 'ID',
+	'ip' => 'IP',
+	'ippass' => 'IP + Hasło',
+	'january' => 'Styczeń',
+	'july' => 'Lipiec',
+	'june' => 'Czerwiec',
+	'logged' => 'Jesteś zalogowany/a',
+	'logout' => 'Wyloguj',
+	'main_page' => 'Strona główna',
+	'march' => 'Marzec',
+	'may' => 'Maj',
+	'minutes' => 'minut',
+	'mysqli_no_db_connection' => 'Nie można połączyć się z bazą danych!',
+	'mysqli_no_query_fetch_array' => 'Nie można pozyskać tablicy, ponieważ id zapytania nie zostało podane!',
+	'mysqli_no_query_fetch_array_assoc' => 'Nie można pobrać tablicy asocjacyjnej, ponieważ id zapytania nie zostało podane!',
+	'mysqli_no_query_num_rows' => 'Nie można otrzymać liczby wierszy, ponieważ id zapytania nie zostało podane!',
+	'mysqli_no_server_connection' => 'Nie można utworzyć połączenia z serwerem bazy danych!',
+	'mysqli_query_error' => 'Wystąpił błąd w zapytaniu do bazy danych.',
+	'name' => 'Nazwa',
+	'never' => 'Nigdy',
+	'new_password' => 'Nowe Hasło',
+	'nick' => 'Nick',
+	'nickpass' => 'Nick + Hasło',
+	'no' => 'Nie',
+	'no_access' => 'Nie masz odpowiednich uprawnień.',
+	'no_data' => 'Brak danych',
+	'no_privilages' => 'Nie masz dostępu do tego miejsca, więc tu nie zerkaj!',
+	'no_service' => 'Nie ma usługi o takim id.',
+	'none' => 'Brak',
+	'not_edited_user_service' => 'Nie udało się wyedytować usługi.',
+	'not_logged' => 'Nie jesteś zalogowany/a',
+	'not_logged_or_no_perm' => 'Coś tu nie gra, nie jesteś zalogowany/a lub nie masz odpowiednich uprawnień oO',
+	'november' => 'Listopad',
+	'october' => 'Październik',
+	'old_password' => 'Stare Hasło',
+	'only_yes_no' => 'Pole może przyjąć tylko wartości: \'TAK\' i \'NIE\'',
+	'password' => 'Hasło',
+	'payment_bad_service' => 'API usługi {1} nie zostało zaimplenetowane.',
+	'payment_bad_type' => 'Błąd w konstruktorze klasy Payment. Niedozwolony typ płatności.',
+	'payment_id' => 'ID płatności',
+	'payment_remove_code_from_db' => 'Usunięto kod z tabeli kodów do wykorzystania. Kod: {1} Taryfa: {2}',
+	'question' => 'Pytanie',
+	'regards' => 'Pozdrawiamy',
+	'return_code_length_warn' => 'Wprowadzony kod zwrotny jest nieco przydługaśny.',
+	'save' => 'Zapisz',
+	'seconds' => 'sekund',
+	'september' => 'Wrzesień',
+	'server' => 'Serwer',
+	'service' => 'Usługa',
+	'service_cant_be_modified' => 'Tej usługi nie można edytować.',
+	'service_isnt_yours' => 'Istnieje już usługa na takie dane, lecz nie należy ona do Ciebie.',
+	'shop_sms' => 'Sklep SMS',
+	'sid' => 'SteamID',
+	'sign_in' => 'Zaloguj się',
+	'sms_return_code' => 'Kod zwrotny',
+	'sth_went_wrong' => 'Coś poszło nie tak :/',
+	'surname' => 'Nazwisko',
+	'tariff' => 'Taryfa',
+	'type' => 'Typ',
+	'user' => 'Użytkownik',
+	'user_id' => 'ID użytkownika',
+	'user_service_cannot_be_deleted' => 'Ta usługa użytkownika nie może zostać usunięta.',
+	'username' => 'Nazwa użytkownika',
+	'username_chars_warn' => 'Nazwa użytkownika zawiera niedozwolone znaki (<,>,&,")',
+	'value_must_be_positive' => 'Wartość musi być dodatnia.',
+	'verification_error' => 'Coś poszło nie tak podczas łączenia się z serwerem weryfikacyjnym.',
+	'wallet' => 'Portfel',
+	'wrong_cron_key' => 'Nie tędy droga hakierze.',
+	'wrong_email' => 'Wprowadzony adres e-mail jest nieprawidłowy.',
+	'wrong_ip' => 'Wprowadzony adres IP jest nieprawidłowy.',
+	'wrong_login_data' => 'Login i/lub hasło są nieprawidłowe.',
+	'wrong_sid' => 'Wprowadzony Steam ID jest nieprawidłowy.',
+	'wrong_sign' => 'Coś tu nie gra, weryfikacja danych zakończyła się informatyczną klęską.',
+	'yes' => 'Tak',
+	'you_arent_logged' => 'Coś tu nie gra, nie jesteś zalogowany/a oO',
 
-$l['old_password'] = "Stare Hasło";
-$l['new_password'] = "Nowe Hasło";
-$l['name'] = "Nazwa";
-$l['firstname'] = "Imię";
-$l['surname'] = "Nazwisko";
-
-$l['days'] = "dni";
-$l['hours'] = "godzin";
-$l['minutes'] = "minut";
-$l['seconds'] = "sekund";
-$l['never'] = "Nigdy";
-
-$l['question'] = "Pytanie";
-$l['description'] = "Opis";
-$l['server'] = "Serwer";
-$l['service'] = "Usługa";
-$l['amount'] = "Ilość";
-$l['date'] = "Data";
-$l['user'] = "Użytkownik";
-$l['tariff'] = "Taryfa";
-$l['wallet'] = "Portfel";
-$l['cost'] = "Koszt";
-$l['sms']['return_code'] = "Kod zwrotny";
-$l['choose_service'] = "Wybierz usługę";
-$l['choose_type'] = "Wybierz rodzaj";
-$l['choose_server'] = "Wybierz serwer";
-$l['choose_option'] = "Wybierz opcję";
-$l['choose_amount'] = "Wybierz ilość";
-
-$l['months'] = array("", "Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień");
-
-$l['verification_error'] = "Coś poszło nie tak podczas łączenia się z serwerem weryfikacyjnym.";
-
-$l['main_page'] = "Strona główna";
-$l['acp'] = "Panel Admina";
-$l['acp_short'] = "PA";
-$l['no_privilages'] = "Nie masz dostępu do tego miejsca, więc tu nie zerkaj!";
-$l['wrong_login_data'] = "Login i/lub hasło są nieprawidłowe.";
-
-$l['wrong_cron_key'] = "Nie tędy droga hakierze.";
-
-$l['email_was_sent'] = "Wysłano e-maila na adres: {1} o treści: {2}";
-
-$l['username_chars_warn'] = "Nazwa użytkownika zawiera niedozwolone znaki (<,>,&,\")";
-$l['wrong_email'] = "Wprowadzony adres e-mail jest nieprawidłowy.";
-$l['wrong_ip'] = "Wprowadzony adres IP jest nieprawidłowy.";
-$l['wrong_sid'] = "Wprowadzony Steam ID jest nieprawidłowy.";
-$l['return_code_length_warn'] = "Wprowadzony kod zwrotny jest nieco przydługaśny.";
-$l['field_no_empty'] = "Pole nie może być puste.";
-$l['field_must_be_number'] = "W polu musi się znajdować liczba.";
-$l['field_length_min_warn'] = "Pole musi się składać z co najmniej {1} znaków.";
-$l['field_length_max_warn'] = "Pole może się składać z co najwyżej {1} znaków.";
-$l['value_must_be_positive'] = "Wartość musi być dodatnia.";
-
-$l['mysqli_no_server_connection'] = "Nie można utworzyć połączenia z serwerem bazy danych!";
-$l['mysqli_no_db_connection'] = "Nie można połączyć się z bazą danych!";
-$l['mysqli_query_error'] = "Wystąpił błąd w zapytaniu do bazy danych.";
-$l['mysqli_no_query_num_rows'] = "Nie można otrzymać liczby wierszy, ponieważ id zapytania nie zostało podane!";
-$l['mysqli_no_query_fetch_array'] = "Nie można pozyskać tablicy, ponieważ id zapytania nie zostało podane!";
-$l['mysqli_no_query_fetch_array_assoc'] = "Nie można pobrać tablicy asocjacyjnej, ponieważ id zapytania nie zostało podane!";
-
-$l['sth_went_wrong'] = "Coś poszło nie tak :/";
-$l['ajax_error'] = "Wystąpił błąd podczas pozyskiwania danych.";
-
-$l['bought_service_info'] = "Zakupiono usługę {1}. Dane: {2} Ilość: {3} Serwer: {4} ID transakcji: {5}. Email: {6} {7}({8})({9})";
-
-$l['payment_id'] = "ID płatności";
-$l['payment_bad_type'] = "Błąd w konstruktorze klasy Payment. Niedozwolony typ płatności.";
-$l['payment_bad_service'] = "API usługi {1} nie zostało zaimplenetowane.";
-$l['payment_remove_code_from_db'] = "Usunięto kod z tabeli kodów do wykorzystania. Kod: {1} Taryfa: {2}";
-
-$l['form_wrong_filled'] = "Nie wszystkie pola formularza zostały prawidłowo wypełnione.";
-
-$l['nickpass'] = "Nick + Hasło";
-$l['ippass'] = "IP + Hasło";
-$l['sid'] = "SteamID";
-
-$l['not_logged'] = "Nie jesteś zalogowany/a";
-$l['logged'] = "Jesteś zalogowany/a";
-$l['dont_play_games'] = "Nie kombinuj...";
-$l['service_cant_be_modified'] = "Tej usługi nie można edytować.";
-$l['bad_module'] = "Moduł usługi został źle zaprogramowany.";
-$l['wrong_sign'] = "Coś tu nie gra, weryfikacja danych zakończyła się informatyczną klęską.";
-$l['no_service'] = "Nie ma usługi o takim id.";
-$l['service_isnt_yours'] = "Istnieje już usługa na takie dane, lecz nie należy ona do Ciebie.";
-$l['only_yes_no'] = "Pole może przyjąć tylko wartości: 'TAK' i 'NIE'";
-
-$l['edited_user_service'] = "Prawidłowo wyedytowano usługę.";
-$l['not_edited_user_service'] = "Nie udało się wyedytować usługi.";
-
-$l['user_service_cannot_be_deleted'] = "Ta usługa użytkownika nie może zostać usunięta.";
-
-$l['you_arent_logged'] = "Coś tu nie gra, nie jesteś zalogowany/a oO";
-$l['not_logged_or_no_perm'] = "Coś tu nie gra, nie jesteś zalogowany/a lub nie masz odpowiednich uprawnień oO";
-
-$l['languages'] = array(
-	'polish' => "Polski",
-	'english' => "English"
 );
-
-$l['expired_service_delete'] = "AUTOMAT: Usunięto wygasłą usługę użytkownika. {1}";
-
-$l['error_occured'] = "Wystąpił błąd.";
-$l['no_access'] = "Nie masz odpowiednich uprawnień.";
-$l['regards'] = "Pozdrawiamy";

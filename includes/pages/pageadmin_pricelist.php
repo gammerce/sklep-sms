@@ -18,7 +18,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->pricelist;
+		$this->title = $lang->translate('pricelist');
 
 		parent::__construct();
 	}
@@ -32,14 +32,14 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
 
 		$table = new Structure();
 
-		$cell = new Cell($lang->id);
+		$cell = new Cell($lang->translate('id'));
 		$cell->setParam('headers', 'id');
 		$table->addHeadCell($cell);
 
-		$table->addHeadCell(new Cell($lang->service));
-		$table->addHeadCell(new Cell($lang->tariff));
-		$table->addHeadCell(new Cell($lang->amount));
-		$table->addHeadCell(new Cell($lang->server));
+		$table->addHeadCell(new Cell($lang->translate('service')));
+		$table->addHeadCell(new Cell($lang->translate('tariff')));
+		$table->addHeadCell(new Cell($lang->translate('amount')));
+		$table->addHeadCell(new Cell($lang->translate('server')));
 
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS * " .
@@ -60,7 +60,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
 				$server_name = $temp_server['name'];
 				unset($temp_server);
 			} else {
-				$server_name = $lang->all_servers;
+				$server_name = $lang->translate('all_servers');
 			}
 
 			$body_row->setDbId($row['id']);
@@ -80,7 +80,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
 		$button = new Input();
 		$button->setParam('id', 'price_button_add');
 		$button->setParam('type', 'button');
-		$button->setParam('value', $lang->add_price);
+		$button->setParam('value', $lang->translate('add_price'));
 		$wrapper->addButton($button);
 
 		return $wrapper->toHtml();
@@ -93,7 +93,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
 		if (!get_privilages("manage_settings"))
 			return array(
 				'status' => "not_logged_in",
-				'text' => $lang->not_logged_or_no_perm
+				'text' => $lang->translate('not_logged_or_no_perm')
 			);
 
 		if ($box_id == "price_edit") {

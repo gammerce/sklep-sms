@@ -18,7 +18,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->tariffs;
+		$this->title = $lang->translate('tariffs');
 
 		parent::__construct();
 	}
@@ -32,11 +32,11 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
 
 		$table = new Structure();
 
-		$cell = new Cell($lang->tariff);
+		$cell = new Cell($lang->translate('tariff'));
 		$cell->setParam('headers', 'id');
 		$table->addHeadCell($cell);
 
-		$table->addHeadCell(new Cell($lang->provision));
+		$table->addHeadCell(new Cell($lang->translate('provision')));
 
 		foreach ($heart->getTariffs() as $tariff) {
 			$body_row = new BodyRow();
@@ -59,7 +59,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
 		$button = new Input();
 		$button->setParam('id', 'tariff_button_add');
 		$button->setParam('type', 'button');
-		$button->setParam('value', $lang->add_tariff);
+		$button->setParam('value', $lang->translate('add_tariff'));
 		$wrapper->addButton($button);
 
 		return $wrapper->toHtml();
@@ -72,7 +72,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
 		if (!get_privilages("manage_settings"))
 			return array(
 				'status' => "not_logged_in",
-				'text' => $lang->not_logged_or_no_perm
+				'text' => $lang->translate('not_logged_or_no_perm')
 			);
 
 		switch ($box_id) {

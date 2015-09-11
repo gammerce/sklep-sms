@@ -44,24 +44,24 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 
 		// Web
 		if (!in_array($data['web'], array("1", "0")))
-			$warnings['web'][] = $lang->only_yes_no;
+			$warnings['web'][] = $lang->translate('only_yes_no');
 
 		// Flagi
 		if (!strlen($data['flags']))
-			$warnings['flags'][] = $lang->field_no_empty;
+			$warnings['flags'][] = $lang->translate('field_no_empty');
 		else if (strlen($data['flags']) > 25)
-			$warnings['flags'][] = $lang->too_many_flags;
+			$warnings['flags'][] = $lang->translate('too_many_flags');
 		else if (implode('', array_unique(str_split($data['flags']))) != $data['flags'])
-			$warnings['flags'][] = $lang->same_flags;
+			$warnings['flags'][] = $lang->translate('same_flags');
 
 		// Typy
 		if (empty($data['type']))
-			$warnings['type[]'][] = $lang->no_type_chosen;
+			$warnings['type[]'][] = $lang->translate('no_type_chosen');
 
 		// Sprawdzamy, czy typy są prawidłowe
 		foreach ($data['type'] as $type)
 			if (!($type & (TYPE_NICK | TYPE_IP | TYPE_SID))) {
-				$warnings['type[]'][] = $lang->wrong_type_chosen;
+				$warnings['type[]'][] = $lang->translate('wrong_type_chosen');
 				break;
 			}
 
@@ -91,7 +91,7 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 
 			// Sprawdzamy czy uprawnienia się dodały
 			if (substr(sprintf('%o', fileperms($file)), -4) != "0777")
-				json_output("not_created", $lang->sprintf($lang->wrong_service_description_file, $settings['theme']), 0);
+				json_output("not_created", $lang->sprintf($lang->translate('wrong_service_description_file'), $settings['theme']), 0);
 		}
 
 		return array(
@@ -121,11 +121,11 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 		global $lang;
 
 		if ($value == TYPE_NICK)
-			return $lang->nickpass;
+			return $lang->translate('nickpass');
 		else if ($value == TYPE_IP)
-			return $lang->ippass;
+			return $lang->translate('ippass');
 		else if ($value == TYPE_SID)
-			return $lang->sid;
+			return $lang->translate('sid');
 
 		return "";
 	}
@@ -135,11 +135,11 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 		global $lang;
 
 		if ($value == TYPE_NICK)
-			return $lang->nick;
+			return $lang->translate('nick');
 		else if ($value == TYPE_IP)
-			return $lang->ip;
+			return $lang->translate('ip');
 		else if ($value == TYPE_SID)
-			return $lang->sid;
+			return $lang->translate('sid');
 
 		return "";
 	}
@@ -150,7 +150,7 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 	public function user_service_admin_display_title_get()
 	{
 		global $lang;
-		return $lang->extra_flags;
+		return $lang->translate('extra_flags');
 	}
 
 	public function user_service_admin_display_get($get, $post)
@@ -162,15 +162,15 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 
 		$table = new Table\Structure();
 
-		$cell = new Table\Cell($lang->id);
+		$cell = new Table\Cell($lang->translate('id'));
 		$cell->setParam('headers', 'id');
 		$table->addHeadCell($cell);
 
-		$table->addHeadCell(new Table\Cell($lang->user));
-		$table->addHeadCell(new Table\Cell($lang->server));
-		$table->addHeadCell(new Table\Cell($lang->service));
-		$table->addHeadCell(new Table\Cell("{$lang->nick}/{$lang->ip}/{$lang->sid}"));
-		$table->addHeadCell(new Table\Cell($lang->expires));
+		$table->addHeadCell(new Table\Cell($lang->translate('user')));
+		$table->addHeadCell(new Table\Cell($lang->translate('server')));
+		$table->addHeadCell(new Table\Cell($lang->translate('service')));
+		$table->addHeadCell(new Table\Cell("{$lang->translate('nick')}/{$lang->translate('ip')}/{$lang->translate('sid')}"));
+		$table->addHeadCell(new Table\Cell($lang->translate('expires')));
 
 		// Wyszukujemy dane ktore spelniaja kryteria
 		$where = '';
@@ -200,11 +200,11 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 			$body_row = new Table\BodyRow();
 
 			$body_row->setDbId($row['id']);
-			$body_row->addCell(new Table\Cell($row['uid'] ? $row['username'] . " ({$row['uid']})" : $lang->none));
+			$body_row->addCell(new Table\Cell($row['uid'] ? $row['username'] . " ({$row['uid']})" : $lang->translate('none')));
 			$body_row->addCell(new Table\Cell($row['server']));
 			$body_row->addCell(new Table\Cell($row['service']));
 			$body_row->addCell(new Table\Cell($row['auth_data']));
-			$body_row->addCell(new Table\Cell($row['expire'] == '-1' ? $lang->never : date($settings['date_format'], $row['expire'])));
+			$body_row->addCell(new Table\Cell($row['expire'] == '-1' ? $lang->translate('never') : date($settings['date_format'], $row['expire'])));
 			if (get_privilages("manage_user_services")) {
 				$body_row->setButtonDelete();
 				$body_row->setButtonEdit();
@@ -294,17 +294,17 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 		// Serwer
 		if (!strlen($purchase_data->getOrder('server')))
-			$warnings['server'][] = $lang->must_choose_server;
+			$warnings['server'][] = $lang->translate('must_choose_server');
 		else {
 			// Sprawdzanie czy serwer o danym id istnieje w bazie
 			$server = $heart->get_server($purchase_data->getOrder('server'));
 			if (!$heart->server_service_linked($server['id'], $this->service['id']))
-				$warnings['server'][] = $lang->chosen_incorrect_server;
+				$warnings['server'][] = $lang->translate('chosen_incorrect_server');
 		}
 
 		// Wartość usługi
 		if (!$purchase_data->getTariff())
-			$warnings['value'][] = $lang->must_choose_amount;
+			$warnings['value'][] = $lang->translate('must_choose_amount');
 		else {
 			// Wyszukiwanie usługi o konkretnej cenie
 			$result = $db->query($db->prepare(
@@ -316,7 +316,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			if (!$db->num_rows($result)) // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
 				return array(
 					'status' => "no_option",
-					'text' => $lang->service_not_affordable,
+					'text' => $lang->translate('service_not_affordable'),
 					'positive' => false
 				);
 
@@ -326,9 +326,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		// Typ usługi
 		// Mogą być tylko 3 rodzaje typu
 		if ($purchase_data->getOrder('type') != TYPE_NICK && $purchase_data->getOrder('type') != TYPE_IP && $purchase_data->getOrder('type') != TYPE_SID)
-			$warnings['type'][] = $lang->must_choose_type;
+			$warnings['type'][] = $lang->translate('must_choose_type');
 		else if (!($this->service['types'] & $purchase_data->getOrder('type')))
-			$warnings['type'][] = $lang->chosen_incorrect_type;
+			$warnings['type'][] = $lang->translate('chosen_incorrect_type');
 		else if ($purchase_data->getOrder('type') & (TYPE_NICK | TYPE_IP)) {
 			// Nick
 			if ($purchase_data->getOrder('type') == TYPE_NICK) {
@@ -358,13 +358,13 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			if ($warning = check_for_warnings("password", $purchase_data->getOrder('password')))
 				$warnings['password'] = array_merge((array)$warnings['password'], $warning);
 			if ($purchase_data->getOrder('password') != $purchase_data->getOrder('passwordr'))
-				$warnings['password_repeat'][] = $lang->passwords_not_match;
+				$warnings['password_repeat'][] = $lang->translate('passwords_not_match');
 
 			// Sprawdzanie czy istnieje już taka usługa
 			if ($temp_password = $db->get_column($query, 'password'))
 				// TODO: Usunąć md5 w przyszłości
 				if ($temp_password != $purchase_data->getOrder('password') && $temp_password != md5($purchase_data->getOrder('password')))
-					$warnings['password'][] = $lang->existing_service_has_different_password;
+					$warnings['password'][] = $lang->translate('existing_service_has_different_password');
 
 			unset($temp_password);
 		} // SteamID
@@ -380,7 +380,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		if (!empty($warnings))
 			return array(
 				'status' => "warnings",
-				'text' => $lang->form_wrong_filled,
+				'text' => $lang->translate('form_wrong_filled'),
 				'positive' => false,
 				'data' => array('warnings' => $warnings)
 			);
@@ -397,7 +397,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 		return array(
 			'status' => "ok",
-			'text' => $lang->purchase_form_validated,
+			'text' => $lang->translate('purchase_form_validated'),
 			'positive' => true,
 			'purchase_data' => $purchase_data
 		);
@@ -410,10 +410,10 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$server = $heart->get_server($purchase_data->getOrder('server'));
 		$type_name = $this->get_type_name2($purchase_data->getOrder('type'));
 		if (strlen($purchase_data->getOrder('password')))
-			$password = "<strong>{$lang->password}</strong>: " . htmlspecialchars($purchase_data->getOrder('password')) . "<br />";
-		$email = strlen($purchase_data->getEmail()) ? htmlspecialchars($purchase_data->getEmail()) : $lang->none;
+			$password = "<strong>{$lang->translate('password')}</strong>: " . htmlspecialchars($purchase_data->getOrder('password')) . "<br />";
+		$email = strlen($purchase_data->getEmail()) ? htmlspecialchars($purchase_data->getEmail()) : $lang->translate('none');
 		$auth_data = htmlspecialchars($purchase_data->getOrder('auth_data'));
-		$amount = !$purchase_data->getOrder('forever') ? ($purchase_data->getOrder('amount') . " " . $this->service['tag']) : $lang->forever;
+		$amount = !$purchase_data->getOrder('forever') ? ($purchase_data->getOrder('amount') . " " . $this->service['tag']) : $lang->translate('forever');
 
 		$output = eval($templates->render("services/" . $this::MODULE_ID . "/order_details", true, false));
 		return $output;
@@ -603,12 +603,12 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$data['extra_data'] = json_decode($data['extra_data'], true);
 		$data['extra_data']['type_name'] = $this->get_type_name2($data['extra_data']['type']);
 		if (strlen($data['extra_data']['password']))
-			$password = "<strong>{$lang->password}</strong>: " . htmlspecialchars($data['extra_data']['password']) . "<br />";
-		$amount = $data['amount'] != -1 ? "{$data['amount']} {$this->service['tag']}" : $lang->forever;
+			$password = "<strong>{$lang->translate('password')}</strong>: " . htmlspecialchars($data['extra_data']['password']) . "<br />";
+		$amount = $data['amount'] != -1 ? "{$data['amount']} {$this->service['tag']}" : $lang->translate('forever');
 		$data['auth_data'] = htmlspecialchars($data['auth_data']);
 		$data['extra_data']['password'] = htmlspecialchars($data['extra_data']['password']);
 		$data['email'] = htmlspecialchars($data['email']);
-		$cost = $data['cost'] ? number_format($data['cost'] / 100.0, 2) . " " . $settings['currency'] : $lang->none;
+		$cost = $data['cost'] ? number_format($data['cost'] / 100.0, 2) . " " . $settings['currency'] : $lang->translate('none');
 		$data['income'] = number_format($data['income'] / 100.0, 2);
 
 		if ($data['payment'] == "sms") {
@@ -620,7 +620,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$server = $heart->get_server($data['server']);
 
 		if ($data['extra_data']['type'] & (TYPE_NICK | TYPE_IP))
-			$setinfo = $lang->sprintf($lang->type_setinfo, htmlspecialchars($data['extra_data']['password']));
+			$setinfo = $lang->sprintf($lang->translate('type_setinfo'), htmlspecialchars($data['extra_data']['password']));
 
 		if ($action == "email")
 			$output = eval($templates->render("services/" . $this::MODULE_ID . "/purchase_info_email", true, false));
@@ -628,7 +628,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			$output = eval($templates->render("services/" . $this::MODULE_ID . "/purchase_info_web", true, false));
 		else if ($action == "payment_log")
 			return array(
-				'text' => $output = $lang->sprintf($lang->service_was_bought, $this->service['name'], $server['name']),
+				'text' => $output = $lang->sprintf($lang->translate('service_was_bought'), $this->service['name'], $server['name']),
 				'class' => "outcome"
 			);
 
@@ -685,7 +685,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			if ($warning = check_for_warnings("number", $data['amount']))
 				$warnings['amount'] = array_merge((array)$warnings['amount'], $warning);
 			else if ($data['amount'] < 0)
-				$warnings['amount'][] = $lang->days_quantity_positive;
+				$warnings['amount'][] = $lang->translate('days_quantity_positive');
 		}
 
 		// E-mail
@@ -723,11 +723,11 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$purchase_data->setEmail($data['email']);
 		$bought_service_id = $this->purchase($purchase_data);
 
-		log_info($lang_shop->sprintf($lang_shop->admin_added_user_service, $user->getUsername(), $user->getUid(), $bought_service_id));
+		log_info($lang_shop->sprintf($lang_shop->translate('admin_added_user_service'), $user->getUsername(), $user->getUid(), $bought_service_id));
 
 		return array(
 			'status' => "ok",
-			'text' => $lang->service_added_correctly,
+			'text' => $lang->translate('service_added_correctly'),
 			'positive' => true
 		);
 	}
@@ -741,6 +741,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		foreach ($heart->get_services() as $id => $row) {
 			if (($service_module = $heart->get_service_module_s($row['module'])) === NULL)
 				continue;
+
 			// Usługę możemy zmienić tylko na taka, która korzysta z tego samego modułu.
 			// Inaczej to nie ma sensu, lepiej ją usunąć i dodać nową
 			if ($this::MODULE_ID != $service_module::MODULE_ID)
@@ -813,10 +814,10 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 		// Expire
 		if (!$data['forever'] && ($data['expire'] = strtotime($data['expire'])) === FALSE)
-			$warnings['expire'][] = $lang->wrong_date_format;
+			$warnings['expire'][] = $lang->translate('wrong_date_format');
 		// Sprawdzamy, czy ustawiono hasło, gdy hasła nie ma w bazie i dana usługa wymaga hasła
 		if (!strlen($data['password']) && $data['type'] & (TYPE_NICK | TYPE_IP) && !strlen($user_service['password']))
-			$warnings['password'][] = $lang->field_no_empty;
+			$warnings['password'][] = $lang->translate('field_no_empty');
 
 		// Sprawdzamy poprawność wprowadzonych danych
 		$verify_data = $this->verify_user_service_data($data, $warnings);
@@ -830,7 +831,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		$edit_return = $this->user_service_edit($user_service, $data);
 
 		if ($edit_return['status'] == 'ok')
-			log_info($lang_shop->sprintf($lang_shop->admin_edited_user_service, $user->getUsername(), $user->getUid(), $user_service['id']));
+			log_info($lang_shop->sprintf($lang_shop->translate('admin_edited_user_service'), $user->getUsername(), $user->getUid(), $user_service['id']));
 
 		return $edit_return;
 	}
@@ -850,16 +851,16 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			else {
 				$user2 = $heart->get_user($data['uid']);
 				if (!$user2->isLogged())
-					$warnings['uid'][] = $lang->no_account_id;
+					$warnings['uid'][] = $lang->translate('no_account_id');
 			}
 		}
 
 		// Typ usługi
 		// Mogą być tylko 3 rodzaje typu
 		if ($data['type'] != TYPE_NICK && $data['type'] != TYPE_IP && $data['type'] != TYPE_SID)
-			$warnings['type'][] = $lang->must_choose_service_type;
+			$warnings['type'][] = $lang->translate('must_choose_service_type');
 		else if (!($this->service['types'] & $data['type']))
-			$warnings['type'][] = $lang->forbidden_purchase_type;
+			$warnings['type'][] = $lang->translate('forbidden_purchase_type');
 		else if ($data['type'] & (TYPE_NICK | TYPE_IP)) {
 			// Nick
 			if ($data['type'] == TYPE_NICK && $warning = check_for_warnings("nick", $data['auth_data']))
@@ -878,17 +879,17 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		// Server
 		if ($server) {
 			if (!strlen($data['server']))
-				$warnings['server'][] = $lang->choose_server_for_service;
+				$warnings['server'][] = $lang->translate('choose_server_for_service');
 			// Wyszukiwanie serwera o danym id
 			else if (($server = $heart->get_server($data['server'])) === NULL)
-				$warnings['server'][] = $lang->no_server_id;
+				$warnings['server'][] = $lang->translate('no_server_id');
 		}
 
 		// Jeżeli są jakieś błedy, to je zwróć
 		if (!empty($warnings))
 			return array(
 				'status' => "warnings",
-				'text' => $lang->form_wrong_filled,
+				'text' => $lang->translate('form_wrong_filled'),
 				'positive' => false,
 				'data' => array('warnings' => $warnings)
 			);
@@ -950,7 +951,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		unset($temp_server);
 
 		// Wygasa
-		$service_info['expire'] = $user_service['expire'] == -1 ? $lang->never : date($settings['date_format'], $user_service['expire']);
+		$service_info['expire'] = $user_service['expire'] == -1 ? $lang->translate('never') : date($settings['date_format'], $user_service['expire']);
 
 		// Usługa
 		$service_info['service'] = $this->service['name'];
@@ -964,7 +965,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 	{
 		global $heart, $settings, $lang, $templates;
 
-		$service_info['expire'] = $user_service['expire'] == -1 ? $lang->never : date($settings['date_format'], $user_service['expire']);
+		$service_info['expire'] = $user_service['expire'] == -1 ? $lang->translate('never') : date($settings['date_format'], $user_service['expire']);
 		$temp_server = $heart->get_server($user_service['server']);
 		$service_info['server'] = $temp_server['name'];
 		$service_info['service'] = $this->service['name'];
@@ -986,7 +987,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 		// Sprawdzamy, czy ustawiono hasło, gdy hasła nie ma w bazie i dana usługa wymaga hasła
 		if (!strlen($data['password']) && $data['type'] & (TYPE_NICK | TYPE_IP) && !strlen($user_service['password']))
-			$warnings['password'][] = $lang->field_no_empty;
+			$warnings['password'][] = $lang->translate('field_no_empty');
 
 		// Sprawdzamy poprawność wprowadzonych danych
 		$verify_data = $this->verify_user_service_data($data, $warnings, false);
@@ -1005,7 +1006,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		));
 
 		if ($edit_return['status'] == 'ok')
-			log_info($lang_shop->sprintf($lang_shop->user_edited_service, $user->getUsername(), $user->getUid(), $user_service['id']));
+			log_info($lang_shop->sprintf($lang_shop->translate('user_edited_service'), $user->getUsername(), $user->getUid(), $user_service['id']));
 
 		return $edit_return;
 	}
@@ -1058,7 +1059,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			if (!isset($data['uid']) && $user_service['uid'] != $user_service2['uid'])
 				return array(
 					'status' => "service_exists",
-					'text' => $lang->service_isnt_yours,
+					'text' => $lang->translate('service_isnt_yours'),
 					'positive' => false
 				);
 
@@ -1139,13 +1140,13 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 			return array(
 				'status' => 'ok',
-				'text' => $lang->edited_user_service,
+				'text' => $lang->translate('edited_user_service'),
 				'positive' => true
 			);
 		} else {
 			return array(
 				'status' => "not_edited",
-				'text' => $lang->not_edited_user_service,
+				'text' => $lang->translate('not_edited_user_service'),
 				'positive' => false
 			);
 		}
@@ -1185,21 +1186,21 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 		// Serwer
 		if (!strlen($data['server']))
-			$warnings['server'][] = $lang->field_no_empty;
+			$warnings['server'][] = $lang->translate('field_no_empty');
 
 		// Typ
 		if (!strlen($data['type']))
-			$warnings['type'][] = $lang->field_no_empty;
+			$warnings['type'][] = $lang->translate('field_no_empty');
 
 		switch ($data['type']) {
 			case "1":
 				// Nick
 				if (!strlen($data['nick']))
-					$warnings['nick'][] = $lang->field_no_empty;
+					$warnings['nick'][] = $lang->translate('field_no_empty');
 
 				// Hasło
 				if (!strlen($data['password']))
-					$warnings['password'][] = $lang->field_no_empty;
+					$warnings['password'][] = $lang->translate('field_no_empty');
 
 				$auth_data = $data['nick'];
 				break;
@@ -1207,11 +1208,11 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			case "2":
 				// IP
 				if (!strlen($data['ip']))
-					$warnings['ip'][] = $lang->field_no_empty;
+					$warnings['ip'][] = $lang->translate('field_no_empty');
 
 				// Hasło
 				if (!strlen($data['password']))
-					$warnings['password'][] = $lang->field_no_empty;
+					$warnings['password'][] = $lang->translate('field_no_empty');
 
 				$auth_data = $data['ip'];
 				break;
@@ -1219,7 +1220,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			case "4":
 				// SID
 				if (!strlen($data['sid']))
-					$warnings['sid'][] = $lang->field_no_empty;
+					$warnings['sid'][] = $lang->translate('field_no_empty');
 
 				$auth_data = $data['sid'];
 				break;
@@ -1227,17 +1228,17 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 		// Płatność
 		if (!strlen($data['payment']))
-			$warnings['payment'][] = $lang->field_no_empty;
+			$warnings['payment'][] = $lang->translate('field_no_empty');
 
 		if (in_array($data['payment'], array("sms", "transfer")))
 			if (!strlen($data['payment_id']))
-				$warnings['payment_id'][] = $lang->field_no_empty;
+				$warnings['payment_id'][] = $lang->translate('field_no_empty');
 
 		// Jeżeli są jakieś błedy, to je zwróć
 		if (!empty($warnings)) {
 			return array(
 				'status' => "warnings",
-				'text' => $lang->form_wrong_filled,
+				'text' => $lang->translate('form_wrong_filled'),
 				'positive' => false,
 				'data' => array('warnings' => $warnings)
 			);
@@ -1253,7 +1254,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			if (!$db->num_rows($result))
 				return array(
 					'status' => "no_service",
-					'text' => $lang->no_user_service,
+					'text' => $lang->translate('no_user_service'),
 					'positive' => false
 				);
 		} else if ($data['payment'] == "sms") {
@@ -1266,7 +1267,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			if (!$db->num_rows($result))
 				return array(
 					'status' => "no_service",
-					'text' => $lang->no_user_service,
+					'text' => $lang->translate('no_user_service'),
 					'positive' => false
 				);
 		}
@@ -1282,7 +1283,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		if (!$db->num_rows($result))
 			return array(
 				'status' => "no_service",
-				'text' => $lang->no_user_service,
+				'text' => $lang->translate('no_user_service'),
 				'positive' => false
 			);
 
@@ -1298,13 +1299,13 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		if ($db->affected_rows())
 			return array(
 				'status' => "ok",
-				'text' => $lang->service_taken_over,
+				'text' => $lang->translate('service_taken_over'),
 				'positive' => true
 			);
 		else
 			return array(
 				'status' => "service_not_taken_over",
-				'text' => $lang->service_not_taken_over,
+				'text' => $lang->translate('service_not_taken_over'),
 				'positive' => false
 			);
 	}
@@ -1323,7 +1324,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		global $lang;
 
 		if (!get_privilages("manage_user_services")) {
-			json_output("not_logged_in", $lang->no_access, 0);
+			json_output("not_logged_in", $lang->translate('no_access'), 0);
 		}
 
 		global $heart;
@@ -1371,7 +1372,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 		while ($row = $db->fetch_array_assoc($result)) {
 			$provision = number_format($row['provision'] / 100, 2);
 			$sms_cost = strlen($row['sms_number']) ? number_format(get_sms_cost($row['sms_number']) / 100 * $settings['vat'], 2) : 0;
-			$amount = $row['amount'] != -1 ? "{$row['amount']} {$this->service['tag']}" : $lang->forever;
+			$amount = $row['amount'] != -1 ? "{$row['amount']} {$this->service['tag']}" : $lang->translate('forever');
 			$values .= eval($templates->render("services/" . $this::MODULE_ID . "/purchase_value", true, false));
 		}
 
@@ -1421,18 +1422,18 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
 		// Serwer
 		if (!strlen($data['server']))
-			$warnings['server'][] = $lang->have_to_choose_server;
+			$warnings['server'][] = $lang->translate('have_to_choose_server');
 		// Wyszukiwanie serwera o danym id
 		else if (($server = $heart->get_server($data['server'])) === NULL)
-			$warnings['server'][] = $lang->no_server_id;
+			$warnings['server'][] = $lang->translate('no_server_id');
 
 		// Taryfa
 		$tariff = explode(';', $data['amount']);
 		$tariff = $tariff[2];
 		if (!strlen($data['amount']))
-			$warnings['amount'][] = $lang->must_choose_quantity;
+			$warnings['amount'][] = $lang->translate('must_choose_quantity');
 		else if (($heart->getTariff($tariff)) === NULL)
-			$warnings['amount'][] = $lang->no_such_tariff;
+			$warnings['amount'][] = $lang->translate('no_such_tariff');
 
 		return $warnings;
 	}

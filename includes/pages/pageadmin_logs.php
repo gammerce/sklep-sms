@@ -18,7 +18,7 @@ class PageAdminLogs extends PageAdmin
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->logs;
+		$this->title = $lang->translate('logs');
 
 		parent::__construct();
 	}
@@ -33,12 +33,12 @@ class PageAdminLogs extends PageAdmin
 
 		$table = new Structure();
 
-		$cell = new Cell($lang->id);
+		$cell = new Cell($lang->translate('id'));
 		$cell->setParam('headers', 'id');
 		$table->addHeadCell($cell);
 
-		$table->addHeadCell(new Cell($lang->text));
-		$table->addHeadCell(new Cell($lang->date));
+		$table->addHeadCell(new Cell($lang->translate('text')));
+		$table->addHeadCell(new Cell($lang->translate('date')));
 
 		// Wyszukujemy dane ktore spelniaja kryteria
 		$where = '';

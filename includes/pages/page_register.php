@@ -10,7 +10,7 @@ class PageRegister extends Page implements I_BeLoggedCannot
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->register;
+		$this->title = $lang->translate('register');
 
 		parent::__construct();
 	}

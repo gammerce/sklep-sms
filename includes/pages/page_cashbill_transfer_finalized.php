@@ -10,7 +10,7 @@ class PageCashbillTransferFinalized extends Page
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->transfer_finalized;
+		$this->title = $lang->translate('transfer_finalized');
 
 		parent::__construct();
 	}
@@ -20,13 +20,15 @@ class PageCashbillTransferFinalized extends Page
 		global $settings, $lang;
 
 		$payment = new Payment($settings['transfer_service']);
-		if ($payment->getPaymentModule()->check_sign($get, $payment->getPaymentModule()->getKey(), $get['sign']) && $get['service'] != $payment->getPaymentModule()->getService()) {
-			return $lang->transfer_unverified;
+		if ($payment->getPaymentModule()->check_sign($get, $payment->getPaymentModule()->getKey(), $get['sign'])
+			&& $get['service'] != $payment->getPaymentModule()->getService()
+		) {
+			return $lang->translate('transfer_unverified');
 		}
 
 		// prawidlowa sygnatura, w zaleznosci od statusu odpowiednia informacja dla klienta
 		if (strtoupper($get['status']) != 'OK') {
-			return $lang->transfer_error;
+			return $lang->translate('transfer_error');
 		}
 
 		return purchase_info(array(

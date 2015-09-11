@@ -252,7 +252,7 @@ class Database
 				file_put_contents(SQL_LOG, file_get_contents(SQL_LOG) . "\n\n" . $text);
 		}
 
-		$message = $lang->mysqli[$e->getMessage()];
+		$message = $lang->translate('mysqli_' . $e->getMessage());
 		$query = $e->getQuery();
 
 		if (SCRIPT_NAME == 'jsonhttp' || SCRIPT_NAME == 'jsonhttp_admin') {

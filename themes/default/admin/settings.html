@@ -2,45 +2,45 @@
 
 <form id="form_settings_edit">
 	<div class="settings-brick">
-		<h4>{$lang->license}</h4>
+		<h4>{$lang->translate('license')}</h4>
 		<table>
 			<tr>
-				<td>{$lang->license_id}</td>
+				<td>{$lang->translate('license_id')}</td>
 				<td><input name="license_login" type="text" value="{$settings['license_login']}" maxlength="256"/></td>
 			</tr>
 			<tr>
-				<td>{$lang->new_password}</td>
+				<td>{$lang->translate('new_password')}</td>
 				<td><input name="license_password" type="password" maxlength="256"/></td>
 			</tr>
 		</table>
 	</div>
 
 	<div class="settings-brick">
-		<h4>{$lang->information}</h4>
+		<h4>{$lang->translate('information')}</h4>
 		<table>
 			<tr>
-				<td>{$lang->shop_address}</td>
+				<td>{$lang->translate('shop_address')}</td>
 				<td><input name="shop_url" type="text" value="{$settings['shop_url']}" style="width: 200px"
 						   maxlength="256"/></td>
 			</tr>
 			<tr>
-				<td>{$lang->contact}</td>
+				<td>{$lang->translate('contact')}</td>
 				<td><input name="contact" type="text" value="{$settings['contact']}" style="width: 200px"
 						   maxlength="256"/>
 				</td>
 			</tr>
 			<tr>
-				<td>{$lang->auto_email}</td>
+				<td>{$lang->translate('auto_email')}</td>
 				<td><input name="sender_email" type="text" value="{$settings['sender_email']}" style="width: 200px"
 						   maxlength="256"/></td>
 			</tr>
 			<tr>
-				<td>{$lang->email_sender_name}</td>
+				<td>{$lang->translate('email_sender_name')}</td>
 				<td><input name="sender_email_name" type="text" value="{$settings['sender_email_name']}"
 						   style="width: 200px" maxlength="256"/></td>
 			</tr>
 			<tr>
-				<td>{$lang->signature} <em>{$lang->eg_emails}</em></td>
+				<td>{$lang->translate('signature')} <em>{$lang->translate('eg_emails')}</em></td>
 				<td><textarea name="signature" type="textarea" style="width: 300px; height: 100px;" maxlength="256">{$settings['signature']}</textarea>
 				</td>
 			</tr>
@@ -48,50 +48,50 @@
 	</div>
 
 	<div class="settings-brick">
-		<h4>{$lang->payments}</h4>
+		<h4>{$lang->translate('payments')}</h4>
 		<table>
 			<tr>
-				<td>{$lang->sms_payment_service}</td>
+				<td>{$lang->translate('sms_payment_service')}</td>
 				<td>
 					<select name="sms_service">
-						<option value="">{$lang->none_such}</option>
+						<option value="">{$lang->translate('none_such')}</option>
 						{$sms_services}
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td>{$lang->transfer_payment_service}</td>
+				<td>{$lang->translate('transfer_payment_service')}</td>
 				<td>
 					<select name="transfer_service">
-						<option value="">{$lang->none_such}</option>
+						<option value="">{$lang->translate('none_such')}</option>
 						{$transfer_services}
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td>{$lang->currency}</td>
+				<td>{$lang->translate('currency')}</td>
 				<td><input name="currency" type="text" value="{$settings['currency']}" style="width: 60px"
 						   maxlength="256"/>
 				</td>
 			</tr>
 			<tr>
-				<td>{$lang->vat}</td>
+				<td>{$lang->translate('vat')}</td>
 				<td><input name="vat" type="text" value="{$settings['vat']}" style="width: 60px" maxlength="256"/></td>
 			</tr>
 		</table>
 	</div>
 
 	<div class="settings-brick">
-		<h4>{$lang->users}</h4>
+		<h4>{$lang->translate('users')}</h4>
 		<table>
 			<tr>
-				<td>{$lang->user_service_edit}</td>
+				<td>{$lang->translate('user_service_edit')}</td>
 				<td>
 					<select name="user_edit_service">
 						<option value="1" {$user_edit_service[
-						'yes']}>{$lang->yes}</option>
+						'yes']}>{$lang->translate('yes')}</option>
 						<option value="0" {$user_edit_service[
-						'no']}>{$lang->no}</option>
+						'no']}>{$lang->translate('no')}</option>
 					</select>
 				</td>
 			</tr>
@@ -99,10 +99,10 @@
 	</div>
 
 	<div class="settings-brick">
-		<h4>{$lang->global}</h4>
+		<h4>{$lang->translate('global')}</h4>
 		<table>
 			<tr>
-				<td>{$lang->language}</td>
+				<td>{$lang->translate('language')}</td>
 				<td>
 					<select name="language">
 						{$languages_list}
@@ -110,7 +110,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td>{$lang->theme}</td>
+				<td>{$lang->translate('theme')}</td>
 				<td>
 					<select name="theme">
 						{$themes_list}
@@ -118,18 +118,16 @@
 				</td>
 			</tr>
 			<tr>
-				<td>{$lang->date_format}</td>
+				<td>{$lang->translate('date_format')}</td>
 				<td><input name="date_format" type="text" value="{$settings['date_format']}" style="width: 100px"
 						   maxlength="256"/></td>
 			</tr>
 			<tr>
-				<td>{$lang->cron_page_start}</td>
+				<td>{$lang->translate('cron_page_start')}</td>
 				<td>
 					<select name="cron">
-						<option value="1" {$cron[
-						'yes']}>{$lang->yes}</option>
-						<option value="0" {$cron[
-						'no']}>{$lang->no}</option>
+						<option value="1" {$cron['yes']}>{$lang->translate('yes')}</option>
+						<option value="0" {$cron['no']}>{$lang->translate('no')}</option>
 					</select>
 				</td>
 			</tr>
@@ -149,19 +147,19 @@
 	</div>
 
 	<div class="settings-brick">
-		<h4>{$lang->other}</h4>
+		<h4>{$lang->translate('other')}</h4>
 		<table>
 			<tr>
-				<td>{$lang->delete_old_logs} <em>{$lang->dont_delete}</em></td>
+				<td>{$lang->translate('delete_old_logs')} <em>{$lang->translate('dont_delete')}</em></td>
 				<td>
 					<input name="delete_logs" type="text" value="{$settings['delete_logs']}" maxlength="256"
 						   style="width: 50px"/>
-					<span class="vcenter">{$lang->days}</span>
+					<span class="vcenter">{$lang->translate('days')}</span>
 				</td>
 			</tr>
 
 			<tr>
-				<td>{$lang->lines_per_page}</td>
+				<td>{$lang->translate('lines_per_page')}</td>
 				<td><input name="row_limit" type="text" value="{$settings['row_limit']}" style="width: 40px"
 						   maxlength="256"/></td>
 			</tr>
@@ -170,6 +168,6 @@
 
 	<hr/>
 	<div class="center" style="margin-top: 12px;">
-		<input type="submit" value="{$lang->save}" style="width: 50%; margin: 0 auto;"/>
+		<input type="submit" value="{$lang->translate('save')}" style="width: 50%; margin: 0 auto;"/>
 	</div>
 </form>

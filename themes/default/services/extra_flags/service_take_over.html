@@ -2,42 +2,42 @@
 	<div class="column_left">
 		<div class="table_form">
 			<div class="row">
-				<div class="cell">{$lang->server}</div>
+				<div class="cell">{$lang->translate('server')}</div>
 				<div class="cell">
 					<select name="server">
-						<option value="">{$lang->choose_server}</option>
+						<option value="">{$lang->translate('choose_server')}</option>
 						{$servers}
 					</select>
 				</div>
 			</div>
 
 			<div class="row">
-				<div class="cell">{$lang->type}</div>
+				<div class="cell">{$lang->translate('type')}</div>
 				<div class="cell">
 					<select name="type">
-						<option value="">{$lang->choose_type}</option>
+						<option value="">{$lang->translate('choose_type')}</option>
 						{$types}
 					</select>
 				</div>
 			</div>
 
 			<div class="row" style="display: none" data-type="nick">
-				<div class="cell">{$lang->nick}</div>
+				<div class="cell">{$lang->translate('nick')}</div>
 				<div class="cell"><input type="text" name="nick"/></div>
 			</div>
 
 			<div class="row" style="display: none" data-type="ip">
-				<div class="cell">{$lang->ip}</div>
+				<div class="cell">{$lang->translate('ip')}</div>
 				<div class="cell"><input type="text" name="ip"/></div>
 			</div>
 
 			<div class="row" style="display: none" data-type="sid">
-				<div class="cell">{$lang->sid}</div>
+				<div class="cell">{$lang->translate('sid')}</div>
 				<div class="cell"><input type="text" name="sid"/></div>
 			</div>
 
 			<div class="row" style="display: none" data-type="password">
-				<div class="cell">{$lang->password}</div>
+				<div class="cell">{$lang->translate('password')}</div>
 				<div class="cell"><input type="password" name="password"/></div>
 			</div>
 		</div>
@@ -47,22 +47,22 @@
 		<div class="table_form">
 
 			<div class="row">
-				<div class="cell">{$lang->way_of_payment}</div>
+				<div class="cell">{$lang->translate('way_of_payment')}</div>
 				<div class="cell">
 					<select name="payment">
-						<option value="">{$lang->choose_payment}</option>
-						<option value="wallet">{$lang->wallet}</option>
+						<option value="">{$lang->translate('choose_payment')}</option>
+						<option value="wallet">{$lang->translate('wallet')}</option>
 						<option value="sms">SMS</option>
 						<option value="transfer">{$lang->transfer['transfer']}</option>
-						<option value="admin">{$lang->admin}</option>
+						<option value="admin">{$lang->translate('admin')}</option>
 					</select>
 				</div>
 			</div>
 
 			<div class="row" style="display: none" data-name="payment_id">
 				<div class="cell">
-					{$lang->payment_id}<br/>
-					<span class="hint">{$lang->sms_code_transfer_id}</span>
+					{$lang->translate('payment_id')}<br/>
+					<span class="hint">{$lang->translate('sms_code_transfer_id')}</span>
 				</div>
 				<div class="cell"><input type="text" name="payment_id"/></div>
 			</div>

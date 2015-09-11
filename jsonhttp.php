@@ -21,16 +21,16 @@ if ($action == "login") {
 		json_output("already_logged_in");
 
 	if (!$_POST['username'] || !$_POST['password'])
-		json_output("no_data", $lang->no_login_password, 0);
+		json_output("no_data", $lang->translate('no_login_password'), 0);
 
 	$user = $heart->get_user(0, $_POST['username'], $_POST['password']);
 	if ($user->isLogged()) {
 		$_SESSION['uid'] = $user->getUid();
 		$user->updateActivity();
-		json_output("logged_in", $lang->login_success, 1);
+		json_output("logged_in", $lang->translate('login_success'), 1);
 	}
 
-	json_output("not_logged", $lang->bad_pass_nick, 0);
+	json_output("not_logged", $lang->translate('bad_pass_nick'), 0);
 } else if ($action == "logout") {
 	if (!is_logged())
 		json_output("already_logged_out");
@@ -51,13 +51,13 @@ if ($action == "login") {
 	// Finally, destroy the session.
 	session_destroy();
 
-	json_output("logged_out", $lang->logout_success, 1);
+	json_output("logged_out", $lang->translate('logout_success'), 1);
 } else if ($action == "set_session_language") {
 	setcookie("language", escape_filename($_POST['language']), time() + (86400 * 30), "/"); // 86400 = 1 day
 	exit;
 } else if ($action == "register") {
 	if (is_logged())
-		json_output("logged_in", $lang->logged, 0);
+		json_output("logged_in", $lang->translate('logged'), 0);
 
 	$username = trim($_POST['username']);
 	$password = $_POST['password'];
@@ -80,7 +80,7 @@ if ($action == "login") {
 
 	// Sprawdzanie czy podane id pytania antyspamowego jest prawidlowe
 	if (!isset($_SESSION['asid']) || $as_id != $_SESSION['asid'])
-		json_output("wrong_sign", $lang->wrong_sign, 0, $data);
+		json_output("wrong_sign", $lang->translate('wrong_sign'), 0, $data);
 
 	// Zapisujemy id pytania antyspamowego
 	$_SESSION['asid'] = $antispam_question['id'];
@@ -95,13 +95,13 @@ if ($action == "login") {
 		array($username)
 	));
 	if ($db->num_rows($result))
-		$warnings['username'][] = $lang->nick_occupied;
+		$warnings['username'][] = $lang->translate('nick_occupied');
 
 	// Hasło
 	if ($warning = check_for_warnings("password", $password))
 		$warnings['password'] = array_merge((array)$warnings['password'], $warning);
 	if ($password != $passwordr)
-		$warnings['password_repeat'][] = $lang->different_pass;
+		$warnings['password_repeat'][] = $lang->translate('different_pass');
 
 	if ($warning = check_for_warnings("email", $email))
 		$warnings['email'] = array_merge((array)$warnings['email'], $warning);
@@ -113,10 +113,10 @@ if ($action == "login") {
 		array($email)
 	));
 	if ($db->num_rows($result))
-		$warnings['email'][] = $lang->email_occupied;
+		$warnings['email'][] = $lang->translate('email_occupied');
 
 	if ($email != $emailr)
-		$warnings['email_repeat'][] = $lang->different_email;
+		$warnings['email_repeat'][] = $lang->translate('different_email');
 
 	// Pobranie z bazy pytania antyspamowego
 	$result = $db->query($db->prepare(
@@ -126,7 +126,7 @@ if ($action == "login") {
 	));
 	$antispam_question = $db->fetch_array_assoc($result);
 	if (!in_array(strtolower($as_answer), explode(";", $antispam_question['answers'])))
-		$warnings['as_answer'][] = $lang->wrong_anti_answer;
+		$warnings['as_answer'][] = $lang->translate('wrong_anti_answer');
 
 	// Błędy
 	if (!empty($warnings)) {
@@ -136,7 +136,7 @@ if ($action == "login") {
 			));
 			$data['warnings'][$brick] = $warning;
 		}
-		json_output("warnings", $lang->form_wrong_filled, 0, $data);
+		json_output("warnings", $lang->translate('form_wrong_filled'), 0, $data);
 	}
 
 	$salt = get_random_string(8);
@@ -147,12 +147,12 @@ if ($action == "login") {
 	));
 
 	// LOGING
-	log_info($lang_shop->sprintf($lang_shop->new_account, $db->last_id(), $username, $user->getLastIp()));
+	log_info($lang_shop->sprintf($lang_shop->translate('new_account'), $db->last_id(), $username, $user->getLastIp()));
 
-	json_output("registered", $lang->register_success, 1, $data);
+	json_output("registered", $lang->translate('register_success'), 1, $data);
 } else if ($action == "forgotten_password") {
 	if (is_logged())
-		json_output("logged_in", $lang->logged, 0);
+		json_output("logged_in", $lang->translate('logged'), 0);
 
 	$username = trim($_POST['username']);
 	$email = trim($_POST['email']);
@@ -168,7 +168,7 @@ if ($action == "login") {
 			));
 
 			if (!$db->num_rows($result))
-				$warnings['username'][] = $lang->nick_no_account;
+				$warnings['username'][] = $lang->translate('nick_no_account');
 			else
 				$row = $db->fetch_array_assoc($result);
 		}
@@ -185,7 +185,7 @@ if ($action == "login") {
 			));
 
 			if (!$db->num_rows($result))
-				$warnings['email'][] = $lang->email_no_account;
+				$warnings['email'][] = $lang->translate('email_no_account');
 			else
 				$row = $db->fetch_array_assoc($result);
 		}
@@ -199,7 +199,7 @@ if ($action == "login") {
 			));
 			$data['warnings'][$brick] = $warning;
 		}
-		json_output("warnings", $lang->form_wrong_filled, 0, $data);
+		json_output("warnings", $lang->translate('form_wrong_filled'), 0, $data);
 	}
 
 	// Pobranie danych użytkownika
@@ -218,17 +218,17 @@ if ($action == "login") {
 	$ret = send_email($user2->getEmail(), $user2->getUsername(), "Reset Hasła", $text);
 
 	if ($ret == "not_sent")
-		json_output("not_sent", $lang->keyreset_error, 0);
+		json_output("not_sent", $lang->translate('keyreset_error'), 0);
 	else if ($ret == "wrong_email")
-		json_output("wrong_sender_email", $lang->wrong_email, 0);
+		json_output("wrong_sender_email", $lang->translate('wrong_email'), 0);
 	else if ($ret == "sent") {
-		log_info($lang_shop->sprintf($lang_shop->reset_key_email, $user2->getUsername(), $user2->getUid(), $user2->getEmail(), $username, $email));
+		log_info($lang_shop->sprintf($lang_shop->translate('reset_key_email'), $user2->getUsername(), $user2->getUid(), $user2->getEmail(), $username, $email));
 		$data['username'] = $user2->getUsername();
-		json_output("sent", $lang->email_sent, 1, $data);
+		json_output("sent", $lang->translate('email_sent'), 1, $data);
 	}
 } else if ($action == "reset_password") {
 	if (is_logged())
-		json_output("logged_in", $lang->logged, 0);
+		json_output("logged_in", $lang->translate('logged'), 0);
 
 	$uid = $_POST['uid'];
 	$sign = $_POST['sign'];
@@ -237,12 +237,12 @@ if ($action == "login") {
 
 	// Sprawdzanie hashu najwazniejszych danych
 	if (!$sign || $sign != md5($uid . $settings['random_key']))
-		json_output("wrong_sign", $lang->wrong_sign, 0);
+		json_output("wrong_sign", $lang->translate('wrong_sign'), 0);
 
 	if ($warning = check_for_warnings("password", $pass))
 		$warnings['pass'] = array_merge((array)$warnings['pass'], $warning);
 	if ($pass != $passr)
-		$warnings['pass_repeat'][] = $lang->different_pass;
+		$warnings['pass_repeat'][] = $lang->translate('different_pass');
 
 	// Błędy
 	if (!empty($warnings)) {
@@ -252,7 +252,7 @@ if ($action == "login") {
 			));
 			$data['warnings'][$brick] = $warning;
 		}
-		json_output("warnings", $lang->form_wrong_filled, 0, $data);
+		json_output("warnings", $lang->translate('form_wrong_filled'), 0, $data);
 	}
 
 	// Zmień hasło
@@ -266,12 +266,12 @@ if ($action == "login") {
 	));
 
 	// LOGING
-	log_info($lang_shop->sprintf($lang_shop->reset_pass, $uid));
+	log_info($lang_shop->sprintf($lang_shop->translate('reset_pass'), $uid));
 
-	json_output("password_changed", $lang->password_changed, 1);
+	json_output("password_changed", $lang->translate('password_changed'), 1);
 } else if ($action == "change_password") {
 	if (!is_logged())
-		json_output("logged_in", $lang->not_logged, 0);
+		json_output("logged_in", $lang->translate('not_logged'), 0);
 
 	$oldpass = $_POST['old_pass'];
 	$pass = $_POST['pass'];
@@ -280,11 +280,11 @@ if ($action == "login") {
 	if ($warning = check_for_warnings("password", $pass))
 		$warnings['pass'] = array_merge((array)$warnings['pass'], $warning);
 	if ($pass != $passr) {
-		$warnings['pass_repeat'][] = $lang->different_pass;
+		$warnings['pass_repeat'][] = $lang->translate('different_pass');
 	}
 
 	if (hash_password($oldpass, $user->getSalt()) != $user->getPassword()) {
-		$warnings['old_pass'][] = $lang->old_pass_wrong;
+		$warnings['old_pass'][] = $lang->translate('old_pass_wrong');
 	}
 
 	// Błędy
@@ -295,7 +295,7 @@ if ($action == "login") {
 			));
 			$data['warnings'][$brick] = $warning;
 		}
-		json_output("warnings", $lang->form_wrong_filled, 0, $data);
+		json_output("warnings", $lang->translate('form_wrong_filled'), 0, $data);
 	}
 	// Zmień hasło
 	$salt = get_random_string(8);
@@ -310,16 +310,16 @@ if ($action == "login") {
 	// LOGING
 	log_info("Zmieniono hasło. ID użytkownika: {$user->getUid()}.");
 
-	json_output("password_changed", $lang->password_changed, 1);
+	json_output("password_changed", $lang->translate('password_changed'), 1);
 } else if ($action == "purchase_form_validate") {
 	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL
 		|| !object_implements($service_module, "IService_PurchaseWeb")
 	)
-		json_output("wrong_module", $lang->bad_module, 0);
+		json_output("wrong_module", $lang->translate('bad_module'), 0);
 
 	// Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
 	if (!$heart->user_can_use_service($user->getUid(), $service_module->service))
-		json_output("no_permission", $lang->service_no_permission, 0);
+		json_output("no_permission", $lang->translate('service_no_permission'), 0);
 
 	// Przeprowadzamy walidację danych wprowadzonych w formularzu
 	$return_data = $service_module->purchase_form_validate($_POST);
@@ -376,7 +376,7 @@ if ($action == "login") {
 } else if ($action == "payment_form_validate") {
 	// Sprawdzanie hashu danych przesłanych przez formularz
 	if (!isset($_POST['purchase_sign']) || $_POST['purchase_sign'] != md5($_POST['purchase_data'] . $settings['random_key']))
-		json_output("wrong_sign", $lang->wrong_sign, 0);
+		json_output("wrong_sign", $lang->translate('wrong_sign'), 0);
 
 	/** @var Entity_Purchase $purchase_data */
 	$purchase_data = unserialize(base64_decode($_POST['purchase_data']));
@@ -422,55 +422,55 @@ if ($action == "login") {
 	)), 1);
 } else if ($action == "form_user_service_edit") {
 	if (!is_logged())
-		output_page($lang->service_cant_be_modified);
+		output_page($lang->translate('service_cant_be_modified'));
 
 	// Użytkownik nie może edytować usługi
 	if (!$settings['user_edit_service'])
-		output_page($lang->not_logged);
+		output_page($lang->translate('not_logged'));
 
 	$user_service = get_users_services($_POST['id']);
 
 	if (empty($user_service))
-		output_page($lang->dont_play_games);
+		output_page($lang->translate('dont_play_games'));
 
 	// Dany użytkownik nie jest właścicielem usługi o danym id
 	if ($user_service['uid'] != $user->getUid())
-		output_page($lang->dont_play_games);
+		output_page($lang->translate('dont_play_games'));
 
 	if (($service_module = $heart->get_service_module($user_service['service'])) === NULL)
-		output_page($lang->service_cant_be_modified);
+		output_page($lang->translate('service_cant_be_modified'));
 
 	if (!$settings['user_edit_service'] || !object_implements($service_module, "IService_UserOwnServicesEdit"))
-		output_page($lang->service_cant_be_modified);
+		output_page($lang->translate('service_cant_be_modified'));
 
 	$buttons = eval($templates->render("services/my_services_savencancel"));
 
 	output_page($buttons . $service_module->user_own_service_edit_form_get($user_service));
 } else if ($action == "get_user_service_brick") {
 	if (!is_logged())
-		output_page($lang->not_logged);
+		output_page($lang->translate('not_logged'));
 
 	$user_service = get_users_services($_POST['id']);
 
 	// Brak takiej usługi w bazie
 	if (empty($user_service))
-		output_page($lang->dont_play_games);
+		output_page($lang->translate('dont_play_games'));
 
 	// Dany użytkownik nie jest właścicielem usługi o danym id
 	if ($user_service['uid'] != $user->getUid())
-		output_page($lang->dont_play_games);
+		output_page($lang->translate('dont_play_games'));
 
 	if (($service_module = $heart->get_service_module($user_service['service'])) === NULL)
-		output_page($lang->service_not_displayed);
+		output_page($lang->translate('service_not_displayed'));
 
 	if (!object_implements($service_module, "IService_UserOwnServices"))
-		output_page($lang->service_not_displayed);
+		output_page($lang->translate('service_not_displayed'));
 
 	if ($settings['user_edit_service'] && object_implements($service_module, "IService_UserOwnServicesEdit"))
 		$button_edit = create_dom_element("img", "", array(
 			'class' => "edit_row",
 			'src' => "images/pencil.png",
-			'title' => $lang->edit,
+			'title' => $lang->translate('edit'),
 			'style' => array(
 				'height' => '24px'
 			)
@@ -479,24 +479,24 @@ if ($action == "login") {
 	output_page($service_module->user_own_service_info_get($user_service, $button_edit));
 } else if ($action == "user_service_edit") {
 	if (!is_logged())
-		json_output("not_logged", $lang->not_logged, 0);
+		json_output("not_logged", $lang->translate('not_logged'), 0);
 
 	$user_service = get_users_services($_POST['id']);
 
 	// Brak takiej usługi w bazie
 	if (empty($user_service))
-		json_output("dont_play_games", $lang->dont_play_games, 0);
+		json_output("dont_play_games", $lang->translate('dont_play_games'), 0);
 
 	// Dany użytkownik nie jest właścicielem usługi o danym id
 	if ($user_service['uid'] != $user->getUid())
-		json_output("dont_play_games", $lang->dont_play_games, 0);
+		json_output("dont_play_games", $lang->translate('dont_play_games'), 0);
 
 	if (($service_module = $heart->get_service_module($user_service['service'])) === NULL)
-		json_output("wrong_module", $lang->bad_module, 0);
+		json_output("wrong_module", $lang->translate('bad_module'), 0);
 
 	// Wykonujemy metode edycji usługi użytkownika na module, który ją obsługuje
 	if (!$settings['user_edit_service'] || !object_implements($service_module, "IService_UserOwnServicesEdit"))
-		json_output("service_cant_be_modified", $lang->service_cant_be_modified, 0);
+		json_output("service_cant_be_modified", $lang->translate('service_cant_be_modified'), 0);
 
 	$return_data = $service_module->user_own_service_edit($_POST, $user_service);
 
@@ -513,12 +513,12 @@ if ($action == "login") {
 	json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
 } else if ($action == "service_take_over_form_get") {
 	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IService_TakeOver"))
-		output_page($lang->bad_module, 1);
+		output_page($lang->translate('bad_module'), 1);
 
 	output_page($service_module->service_take_over_form_get(), 1);
 } else if ($action == "service_take_over") {
 	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL || !object_implements($service_module, "IService_TakeOver"))
-		output_page($lang->bad_module, 1);
+		output_page($lang->translate('bad_module'), 1);
 
 	$return_data = $service_module->service_take_over($_POST);
 
@@ -545,7 +545,7 @@ if ($action == "login") {
 	if (($service_module = $heart->get_service_module($_POST['service'])) === NULL
 		|| !object_implements($service_module, "IService_ActionExecute")
 	) {
-		output_page($lang->bad_module, 1);
+		output_page($lang->translate('bad_module'), 1);
 	}
 
 	output_page($service_module->action_execute($_POST['service_action'], $_POST), 1);

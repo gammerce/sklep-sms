@@ -1,38 +1,38 @@
 <form id="form_price_add" class="action_box">
 	<div class="service_main_info">
-		{$lang->add_price}
+		{$lang->translate('add_price')}
 	</div>
 	<table>
 		<tr>
-			<td>{$lang->strtoupper($lang->service)}</td>
+			<td>{$lang->strtoupper($lang->translate('service'))}</td>
 			<td>
 				<select name="service">
-					<option value="">{$lang->choose_service}</option>
+					<option value="">{$lang->translate('choose_service')}</option>
 					{$services}
 				</select>
 			</td>
 		</tr>
 		<tr>
-			<td>{$lang->strtoupper($lang->server)}</td>
+			<td>{$lang->strtoupper($lang->translate('server'))}</td>
 			<td>
 				<select name="server">
-					<option value="">{$lang->choose_server}</option>
-					<option value="-1">{$lang->all}</option>
+					<option value="">{$lang->translate('choose_server')}</option>
+					<option value="-1">{$lang->translate('all')}</option>
 					{$servers}
 				</select>
 			</td>
 		</tr>
 		<tr>
-			<td>{$lang->strtoupper($lang->tariff)}</td>
+			<td>{$lang->strtoupper($lang->translate('tariff'))}</td>
 			<td>
 				<select name="tariff">
-					<option value="">{$lang->choose_tariff}</option>
+					<option value="">{$lang->translate('choose_tariff')}</option>
 					{$tariffs}
 				</select>
 			</td>
 		</tr>
 		<tr>
-			<td>{$lang->strtoupper($lang->amount)}</td>
+			<td>{$lang->strtoupper($lang->translate('amount'))}</td>
 			<td><input type="text" name="amount" style="width: 100px;"/></td>
 		</tr>
 		<tr>
@@ -40,7 +40,7 @@
 		</tr>
 		<tr>
 			<td colspan="2">
-				<input type="submit" value="{$lang->add}" style="width: 100%;"/>
+				<input type="submit" value="{$lang->translate('add')}" style="width: 100%;"/>
 			</td>
 		</tr>
 	</table>

@@ -2,17 +2,17 @@
 <tr>
 	<td>
 		WEB
-		<div class="hint">{$lang->if_displayed_in_shop}</div>
+		<div class="hint">{$lang->translate('if_displayed_in_shop')}</div>
 	</td>
 	<td>
 		<select name="web">
-			<option value="0" {$web_sel_no}>{$lang->strtoupper($lang->no)}</option>
-			<option value="1" {$web_sel_yes}>{$lang->strtoupper($lang->yes)}</option>
+			<option value="0" {$web_sel_no}>{$lang->strtoupper($lang->translate('no'))}</option>
+			<option value="1" {$web_sel_yes}>{$lang->strtoupper($lang->translate('yes'))}</option>
 		</select>
 	</td>
 </tr>
 <tr>
-	<td>{$lang->strtoupper($lang->types)}</td>
+	<td>{$lang->strtoupper($lang->translate('types'))}</td>
 	<td>
 		<select name="type[]" multiple>
 			{$types}
@@ -20,7 +20,7 @@
 	</td>
 </tr>
 <tr>
-	<td>{$lang->strtoupper($lang->flags)}</td>
+	<td>{$lang->strtoupper($lang->translate('flags'))}</td>
 	<td><input type="text" name="flags" value="{$flags}" maxlength="25"/></td>
 </tr>
 </tbody>

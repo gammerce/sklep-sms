@@ -69,10 +69,13 @@ abstract class Page
 abstract class PageSimple extends Page
 {
 
+	protected $template = NULL;
+
 	function __construct()
 	{
-		if (!isset($this->template))
+		if (!isset($this->template)) {
 			throw new Exception('Class ' . get_class($this) . ' has to have field $template because it extends class PageSimple');
+		}
 
 		parent::__construct();
 	}

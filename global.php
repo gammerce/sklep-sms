@@ -7,7 +7,7 @@ if (!defined("IN_SCRIPT")) {
 error_reporting(E_ERROR | E_CORE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR | E_COMPILE_ERROR);
 ini_set('display_errors', 1);
 
-foreach($_GET as $key => $value) {
+foreach ($_GET as $key => $value) {
 	$_GET[$key] = urldecode($value);
 }
 
@@ -42,7 +42,7 @@ require_once SCRIPT_ROOT . "includes/functions.php";
 require_once SCRIPT_ROOT . "includes/class_heart.php";
 require_once SCRIPT_ROOT . "includes/mysqli.php";
 require_once SCRIPT_ROOT . "includes/class_payment.php";
-require_once SCRIPT_ROOT . "includes/class_language.php";
+require_once SCRIPT_ROOT . "includes/class_translator.php";
 
 set_exception_handler("exceptionHandler");
 
@@ -53,8 +53,8 @@ $heart = new Heart();
 $templates = new Templates();
 
 // Tworzymy obiekt języka
-$lang = new Language();
-$lang_shop = new Language();
+$lang = new Translator();
+$lang_shop = new Translator();
 
 // Utworzenie połączenia z bazą danych
 $db = new Database($db_host, $db_user, $db_pass, $db_name);
@@ -128,12 +128,10 @@ if (admin_session()) {
 
 		if ($user->isLogged() && get_privilages("acp")) {
 			$_SESSION['uid'] = $user->getUid();
-		}
-		else {
+		} else {
 			$_SESSION['info'] = "wrong_data";
 		}
-	}
-	// Wylogowujemy
+	} // Wylogowujemy
 	else if ($_POST['action'] == "logout") {
 		// Unset all of the session variables.
 		$_SESSION = array();
@@ -226,32 +224,32 @@ $settings['date_format'] = strlen($settings['date_format']) ? $settings['date_fo
 $settings['theme'] = file_exists(SCRIPT_ROOT . "themes/{$settings['theme']}") ? $settings['theme'] : "default";
 
 // Ładujemy bibliotekę językową
-if (isset($_GET['language']))
-	$lang->set_language($_GET['language']);
-else if (isset($_COOKIE['language']))
-	$lang->set_language($_COOKIE['language']);
-else {
+if (isset($_GET['language'])) {
+	$lang->setLanguage($_GET['language']);
+} else if (isset($_COOKIE['language'])) {
+	$lang->setLanguage($_COOKIE['language']);
+} else {
 	$details = json_decode(file_get_contents("http://ipinfo.io/" . get_ip() . "/json"));
-	if (isset($details->country) && strlen($temp_lang = $lang->get_language_by_short($details->country))) {
-		$lang->set_language($temp_lang);
+	if (isset($details->country) && strlen($temp_lang = $lang->getLanguageByShort($details->country))) {
+		$lang->setLanguage($temp_lang);
 		unset($temp_lang);
 	} else
-		$lang->set_language($settings['language']);
+		$lang->setLanguage($settings['language']);
 }
-$lang_shop->set_language($settings['language']);
+$lang_shop->setLanguage($settings['language']);
 
 $a_Tasks = curl_get_contents("http://license.sklep-sms.pl/license.php?action=login_web" . "&lid=" . urlencode($settings['license_login']) . "&lpa=" . urlencode($settings['license_password']) .
-	"&name=" . urlencode($settings['shop_url']) . "&version=" . VERSION . "&language=" . $lang->get_current_language());
+	"&name=" . urlencode($settings['shop_url']) . "&version=" . VERSION . "&language=" . $lang->getCurrentLanguage());
 $a_Tasks = json_decode($a_Tasks, true);
 
 // Brak tekstu, wywalamy błąd
 if (!isset($a_Tasks['text'])) {
-	output_page($lang->verification_error);
+	output_page($lang->translate('verification_error'));
 }
 
 if ($a_Tasks['expire']) {
 	if ($a_Tasks['expire'] == '-1')
-		$a_Tasks['expire'] = $lang->never;
+		$a_Tasks['expire'] = $lang->translate('never');
 	else
 		$a_Tasks['expire'] = date($settings['date_format'], $a_Tasks['expire']);
 }

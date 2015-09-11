@@ -4,17 +4,17 @@
 	</div>
 	<table>
 		<tr>
-			<td>{$lang->strtoupper($lang->sms_code)}</td>
+			<td>{$lang->strtoupper($lang->translate('sms_code'))}</td>
 			<td>
 				<input type="text" name="code" style="width: 100px;"/>&nbsp;
-				<input type="button" name="random_code" value="{$lang->generate}"/>
+				<input type="button" name="random_code" value="{$lang->translate('generate')}"/>
 			</td>
 		</tr>
 		<tr>
-			<td>{$lang->strtoupper($lang->tariff)}</td>
+			<td>{$lang->strtoupper($lang->translate('tariff'))}</td>
 			<td>
 				<select name="tariff">
-					<option value="">{$lang->choose_tariff}</option>
+					<option value="">{$lang->translate('choose_tariff')}</option>
 					{$tariffs}
 				</select>
 			</td>
@@ -24,7 +24,7 @@
 		</tr>
 		<tr>
 			<td colspan="2">
-				<input type="submit" value="{$lang->add}" style="width: 100%;"/>
+				<input type="submit" value="{$lang->translate('add')}" style="width: 100%;"/>
 			</td>
 		</tr>
 	</table>

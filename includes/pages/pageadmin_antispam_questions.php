@@ -18,7 +18,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->antispam_questions;
+		$this->title = $lang->translate('antispam_questions');
 
 		parent::__construct();
 	}
@@ -32,12 +32,12 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
 
 		$table = new Structure();
 
-		$cell = new Cell($lang->id);
+		$cell = new Cell($lang->translate('id'));
 		$cell->setParam('headers', 'id');
 		$table->addHeadCell($cell);
 
-		$table->addHeadCell(new Cell($lang->question));
-		$table->addHeadCell(new Cell($lang->answers));
+		$table->addHeadCell(new Cell($lang->translate('question')));
+		$table->addHeadCell(new Cell($lang->translate('answers')));
 
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS * " .
@@ -67,7 +67,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
 			$button = new Input();
 			$button->setParam('id', 'antispam_question_button_add');
 			$button->setParam('type', 'button');
-			$button->setParam('value', $lang->add_antispam_question);
+			$button->setParam('value', $lang->translate('add_antispam_question'));
 			$wrapper->addButton($button);
 		}
 
@@ -81,7 +81,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
 		if (!get_privilages("manage_antispam_questions"))
 			return array(
 				'status' => "not_logged_in",
-				'text' => $lang->not_logged_or_no_perm
+				'text' => $lang->translate('not_logged_or_no_perm')
 			);
 
 		switch ($box_id) {

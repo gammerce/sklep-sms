@@ -6,12 +6,15 @@ class PageAdminIncome extends PageAdmin
 {
 
 	const PAGE_ID = "income";
+
 	protected $privilage = "view_income";
+
+	protected $months = array('', "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december");
 
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->income;
+		$this->title = $lang->translate('income');
 
 		parent::__construct();
 	}
@@ -48,12 +51,13 @@ class PageAdminIncome extends PageAdmin
 		}
 
 		// Dodanie wyboru miesiąca
-		$months = "";
-		for ($i = 1; $i <= 12; $i++)
-			$months .= create_dom_element("option", $lang->months[$i], array(
+		$months = '';
+		for ($i = 1; $i <= 12; $i++) {
+			$months .= create_dom_element("option", $lang->translate($this->months[$i]), array(
 				'value' => str_pad($i, 2, 0, STR_PAD_LEFT),
 				'selected' => $G_MONTH == $i ? "selected" : ""
 			));
+		}
 
 		// Dodanie wyboru roku
 		$years = "";

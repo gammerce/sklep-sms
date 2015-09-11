@@ -18,7 +18,7 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->services;
+		$this->title = $lang->translate('services');
 
 		parent::__construct();
 	}
@@ -32,14 +32,14 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
 
 		$table = new Structure();
 
-		$cell = new Cell($lang->id);
+		$cell = new Cell($lang->translate('id'));
 		$cell->setParam('headers', 'id');
 		$table->addHeadCell($cell);
 
-		$table->addHeadCell(new Cell($lang->name));
-		$table->addHeadCell(new Cell($lang->short_description));
-		$table->addHeadCell(new Cell($lang->description));
-		$table->addHeadCell(new Cell($lang->order));
+		$table->addHeadCell(new Cell($lang->translate('name')));
+		$table->addHeadCell(new Cell($lang->translate('short_description')));
+		$table->addHeadCell(new Cell($lang->translate('description')));
+		$table->addHeadCell(new Cell($lang->translate('order')));
 
 		foreach ($heart->get_services() as $row) {
 			$body_row = new BodyRow();
@@ -67,7 +67,7 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
 			$button = new Input();
 			$button->setParam('id', 'service_button_add');
 			$button->setParam('type', 'button');
-			$button->setParam('value', $lang->add_service);
+			$button->setParam('value', $lang->translate('add_service'));
 			$wrapper->addButton($button);
 		}
 
@@ -81,7 +81,7 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
 		if (!get_privilages("manage_services"))
 			return array(
 				'status' => "not_logged_in",
-				'text' => $lang->not_logged_or_no_perm
+				'text' => $lang->translate('not_logged_or_no_perm')
 			);
 
 		if ($box_id == "service_edit") {

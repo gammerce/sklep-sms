@@ -10,7 +10,7 @@ class PagePayment extends Page
 	function __construct()
 	{
 		global $lang;
-		$this->title = $lang->title_payment;
+		$this->title = $lang->translate('title_payment');
 
 		parent::__construct();
 	}
@@ -21,7 +21,7 @@ class PagePayment extends Page
 
 		// Sprawdzanie hashu danych przesłanych przez formularz
 		if (!isset($post['sign']) || $post['sign'] != md5($post['data'] . $settings['random_key']))
-			return $lang->wrong_sign;
+			return $lang->translate('wrong_sign');
 
 		global $heart;
 
@@ -29,12 +29,12 @@ class PagePayment extends Page
 		$purchase_data = unserialize(base64_decode($post['data']));
 
 		if (!($purchase_data instanceof Entity_Purchase))
-			return $lang->error_occured;
+			return $lang->translate('error_occured');
 
 		if (($service_module = $heart->get_service_module($purchase_data->getService())) === NULL
 			|| !object_implements($service_module, "IService_PurchaseWeb")
 		)
-			return $lang->bad_module;
+			return $lang->translate('bad_module');
 
 		// Pobieramy szczegóły zamówienia
 		$order_details = $service_module->order_details($purchase_data);
