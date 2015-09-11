@@ -248,23 +248,29 @@ if (!isset($a_Tasks['text'])) {
 }
 
 if ($a_Tasks['expire']) {
-	if ($a_Tasks['expire'] == '-1')
+	if ($a_Tasks['expire'] == '-1') {
 		$a_Tasks['expire'] = $lang->translate('never');
-	else
+	}
+	else {
 		$a_Tasks['expire'] = date($settings['date_format'], $a_Tasks['expire']);
+	}
 }
 
 if ($a_Tasks['text'] != "logged_in") {
-	if (get_privilages("manage_settings"))
+	if (get_privilages("manage_settings")) {
+		$user->removePrivilages();
 		$user->setPrivilages(array(
 			"acp" => true,
 			"manage_settings" => true
 		));
+	}
 
-	if (SCRIPT_NAME == "index")
+	if (SCRIPT_NAME == "index") {
 		output_page($a_Tasks['page']);
-	else if (in_array(SCRIPT_NAME, array("jsonhttp", "servers_stuff", "extra_stuff")))
+	}
+	else if (in_array(SCRIPT_NAME, array("jsonhttp", "servers_stuff", "extra_stuff"))) {
 		exit;
+	}
 }
 
 // Cron co wizytę

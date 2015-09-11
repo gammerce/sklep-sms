@@ -314,8 +314,17 @@ class Entity_User
 	 */
 	public function setPrivilages($privilages)
 	{
-		foreach($privilages as $key => $value)
+		foreach($privilages as $key => $value) {
 			$this->privilages[$key] = $value;
+		}
+	}
+
+	/**
+	 * Removes all privilages
+	 */
+	public function removePrivilages()
+	{
+		$this->privilages = array();
 	}
 
 	/**
