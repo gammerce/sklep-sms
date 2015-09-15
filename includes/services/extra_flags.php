@@ -1341,6 +1341,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 			));
 		}
 
+		echo 'sdsd';
+
 		return $servers;
 	}
 

@@ -71,7 +71,7 @@ function update_info(&$everything_ok)
 
 function SplitSQL($file, $delimiter = ';')
 {
-	set_time_limit(0);
+	@set_time_limit(0);
 
 	$queries = array();
 
