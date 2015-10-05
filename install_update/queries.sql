@@ -23,3 +23,5 @@ INSERT INTO `ss_sms_numbers` (`number`, `tariff`, `service`) VALUES
   ('91955', 19, '1s1k'),
   ('92055', 20, '1s1k'),
   ('92555', 25, '1s1k');
+
+INSERT INTO `ss_settings`(`key`, `value`) VALUES ('gadugadu', '');

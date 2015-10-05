@@ -355,7 +355,8 @@ INSERT INTO `ss_settings` (`key`, `value`) VALUES
   ('timezone', 'Europe/Warsaw'),
   ('transfer_service', ''),
   ('user_edit_service', '1'),
-  ('vat', '1.23');
+  ('vat', '1.23'),
+  ('gadugadu', '');
 
 CREATE TABLE IF NOT EXISTS `ss_sms_codes` (
   `id`     INT(11)            NOT NULL AUTO_INCREMENT,
