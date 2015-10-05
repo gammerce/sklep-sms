@@ -33,6 +33,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 					)
 				);
 			}
+
 			$sms_body = eval($templates->render("services/" . $this::MODULE_ID . "/sms_body"));
 		}
 

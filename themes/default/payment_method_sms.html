@@ -10,21 +10,21 @@
 			<table>
 				<tr>
 					<td colspan="3" style="font-weight: bold; padding-bottom: 5px; font-size: 18px;">
-						{$lang->sms['send_sms']}
+						{$lang->translate('sms_send_sms')}
 					</td>
 				</tr>
 				<tr>
-					<td class="right">{$lang->sms['text']}</td>
+					<td class="right">{$lang->translate('sms_text')}</td>
 					<td style="width: 20px;"></td>
 					<td class="left">{$payment_sms->getSmsCode(true)}</td>
 				</tr>
 				<tr>
-					<td class="right">{$lang->sms['number']}</td>
+					<td class="right">{$lang->translate('sms_number')}</td>
 					<td></td>
 					<td class="left">{$purchase_data->getTariff()->getNumber()}</td>
 				</tr>
 				<tr>
-					<td class="right">{$lang->sms['return_code']}</td>
+					<td class="right">{$lang->translate('sms_return_code')}</td>
 					<td></td>
 					<td class="left"><input type="text" id="sms_code" name="sms_code" style="width: 100px;" maxlength="16"/></td>
 				</tr>

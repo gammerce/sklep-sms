@@ -28,9 +28,18 @@ class PaymentModule_Zabijaka extends PaymentModule implements IPayment_Sms
 			'/' . urlencode($this->api) .
 			'/sms' .
 			'/' . round(get_sms_cost($number) / 100) .
-			"/" . urlencode($return_code) .
-			"/sms.xml/add"
+			'/' . urlencode($return_code) .
+			'/sms.xml/add'
 		);
+
+		echo 'http://api.zabijaka.pl/1.1' .
+			'/' . urlencode($this->api) .
+			'/sms' .
+			'/' . round(get_sms_cost($number) / 100) .
+			'/' . urlencode($return_code) .
+			'/sms.xml/add';
+
+		var_dump($xml);
 
 		if (!$xml) {
 			return IPayment_Sms::NO_CONNECTION;

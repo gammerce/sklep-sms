@@ -164,6 +164,7 @@ if (admin_session() && (!$user->isLogged() || !get_privilages("acp"))) {
 }
 
 // Aktualizujemy aktywność użytkownika
+$user->setLastip(get_ip());
 $user->updateActivity();
 
 // Pozyskanie ustawień sklepu
