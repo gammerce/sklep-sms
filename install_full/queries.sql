@@ -565,7 +565,7 @@ INSERT INTO `ss_transaction_services` (`id`, `name`, `data`, `data_hidden`, `sms
   ('cssetti', 'CSSetti', '{"account_id":"","sms_text":"DP CSSETTI"}', '', 1, 0),
   ('homepay', 'HomePay', '{"api":"","sms_text":"","7055":"","7155":"","7255":"","7355":"","7455":"","7555":"","76660":"","7955":"","91055":"","91155":"","91455":"","91955":"","92055":"","92520":""}', '', 1, 0),
   ('microsms', 'MicroSMS', '{"api":"","sms_text":"","service_id":""}', '', 1, 0),
-  ('mintshost', 'MintsHost', '{"email":"","sms_text":"KDW.MINTS"}', '', 1, 0),
+  ('mintshost', 'MintsHost', '{"email":"","sms_text":"SIM.MINTS"}', '', 1, 0),
   ('profitsms', 'Profit SMS', '{"api":"","sms_text":""}', '', 1, 0),
   ('pukawka', 'Pukawka', '{"api":"","sms_text":"PUKAWKA"}', '', 1, 0),
   ('simpay', 'SimPay', '{"sms_text":"","key":"","secret":"","service_id":""}', '', 1, 0),
