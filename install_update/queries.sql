@@ -1,7 +1,14 @@
 DELETE FROM `ss_sms_numbers`
 WHERE `tariff` = '10' AND `service` = 'mintshost';
 
+ALTER TABLE `ss_sms_numbers` DROP FOREIGN KEY `ss_sms_numbers_ibfk_1`;
+
 ALTER TABLE `ss_tariffs` CHANGE `tariff` `id` INT(11) NOT NULL;
+
+ALTER TABLE `ss_sms_numbers`
+ADD CONSTRAINT `ss_sms_numbers_ibfk_1` FOREIGN KEY (`tariff`) REFERENCES `ss_tariffs` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE;
 
 DELETE FROM `ss_sms_numbers`
 WHERE `service` = '1s1k';
@@ -24,4 +31,4 @@ INSERT INTO `ss_sms_numbers` (`number`, `tariff`, `service`) VALUES
   ('92055', 20, '1s1k'),
   ('92555', 25, '1s1k');
 
-INSERT INTO `ss_settings`(`key`, `value`) VALUES ('gadugadu', '');
+INSERT INTO `ss_settings` (`key`, `value`) VALUES ('gadugadu', '');

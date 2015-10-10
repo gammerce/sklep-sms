@@ -521,7 +521,7 @@ CREATE TABLE IF NOT EXISTS `ss_tariffs` (
   `id`         INT(11)    NOT NULL,
   `provision`  INT(11)    NOT NULL DEFAULT '0',
   `predefined` TINYINT(1) NOT NULL DEFAULT '0',
-  UNIQUE KEY `tariff` (`tariff`)
+  UNIQUE KEY `id` (`id`)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = latin1;
@@ -674,7 +674,7 @@ ALTER TABLE `ss_sms_numbers`
 ADD CONSTRAINT `ss_sms_numbers_ibfk_2` FOREIGN KEY (`service`) REFERENCES `ss_transaction_services` (`id`)
   ON DELETE CASCADE
   ON UPDATE CASCADE,
-ADD CONSTRAINT `ss_sms_numbers_ibfk_1` FOREIGN KEY (`tariff`) REFERENCES `ss_tariffs` (`tariff`)
+ADD CONSTRAINT `ss_sms_numbers_ibfk_1` FOREIGN KEY (`tariff`) REFERENCES `ss_tariffs` (`id`)
   ON DELETE CASCADE
   ON UPDATE CASCADE;
 
