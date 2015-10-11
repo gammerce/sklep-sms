@@ -939,7 +939,7 @@ function searchWhere($search_ids, $search, &$where)
  * @param string $url
  * @param int $timeout
  * @param bool $post
- * @param array data
+ * @param array $data
  * @return string
  */
 function curl_get_contents($url, $timeout = 10, $post = false, $data = array())
@@ -957,6 +957,10 @@ function curl_get_contents($url, $timeout = 10, $post = false, $data = array())
 	}
 
 	$resp = curl_exec($curl);
+	if ($resp === false) {
+		return false;
+	}
+
 	$http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 	curl_close($curl);
 
