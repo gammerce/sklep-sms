@@ -31,7 +31,7 @@ class PaymentModuleTransferuj extends PaymentModule implements IPayment_Transfer
 		global $settings;
 
 		// Zamieniamy grosze na złotówki
-		$cost = number_format($purchase_data->getPayment('cost') / 100, 2);
+		$cost = round($purchase_data->getPayment('cost') / 100, 2);
 
 		return array(
 			'url' => 'https://secure.transferuj.pl',
