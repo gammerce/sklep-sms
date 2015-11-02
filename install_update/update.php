@@ -23,7 +23,7 @@ file_put_contents(SCRIPT_ROOT . "install/progress", "");
 
 $db->query("SET NAMES utf8");
 
-$queries = SplitSQL(SCRIPT_ROOT . "install/queries.sql");//explode("\n", str_replace("\n\r", "\n", file_get_contents(SCRIPT_ROOT . "install/queries.sql")));
+$queries = SplitSQL(SCRIPT_ROOT . "install/queries.sql");
 // Wykonujemy zapytania, jedno po drugim
 foreach ($queries as $query) {
 	if (strlen($query)) {

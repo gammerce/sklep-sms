@@ -9,10 +9,10 @@ $payment = new Payment($_GET['service']);
 $transfer_finalize = $payment->getPaymentModule()->finalizeTransfer($_GET, $_POST);
 
 if ($transfer_finalize->getStatus() === false) {
-	log_info($lang_shop->sprintf($lang_shop->translate('payment_not_accepted'), $transfer_finalize->getOrderid(), $transfer_finalize->getAmount(), $transfer_finalize->getTransferService(),
-		$purchase_data->user->getUsername(), $purchase_data->user->getUid(), $purchase_data->user->getLastIp()));
+	log_info($lang_shop->sprintf($lang_shop->translate('payment_not_accepted'), $transfer_finalize->getOrderid(),
+		$transfer_finalize->getAmount(), $transfer_finalize->getTransferService()));
+} else {
+	$payment->transferFinalize($transfer_finalize);
 }
 
-$payment->transferFinalize($transfer_finalize);
-
-output_page($transfer_finalize->getOutput());
+output_page($transfer_finalize->getOutput(), 1);

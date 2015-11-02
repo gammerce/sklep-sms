@@ -53,7 +53,7 @@ return array(
 	'pay_wallet' => 'Płacę z Portfela',
 	'payment_for_service' => 'Płatność za usługę: {1}',
 	'payment_log' => 'Historia płatności',
-	'payment_not_accepted' => 'Nieudana autoryzacja transakcji: {1} Kwota: {2} Usługa: {3} {4}({5})({6})',
+	'payment_not_accepted' => 'Nieudana autoryzacja transakcji: {1} Kwota: {2} Usługa: {3}',
 	'payment_sms' => 'Płatność SMS',
 	'payment_transfer' => 'Płatność przelew',
 	'payment_transfer_accepted' => 'Zaakceptowano płatność przelewem. ID zakupu {1} ID transakcji: {2} Kwota: {3} Usługa: {4} {5}({6})({7})',

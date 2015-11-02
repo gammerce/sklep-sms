@@ -53,7 +53,7 @@ class PaymentModuleTransferuj extends PaymentModule implements IPayment_Transfer
 	{
 		$transfer_finalize = new Entity_TransferFinalize();
 
-		if ($_SERVER['REMOTE_ADDR'] == '195.149.229.109' && !empty($post) && $_POST['tr_status'] == 'TRUE' && $_POST['tr_error'] == 'none') {
+		if (get_ip() == '195.149.229.109' && !empty($post) && $post['tr_status'] == 'TRUE' && $post['tr_error'] == 'none') {
 			$transfer_finalize->setStatus(true);
 		}
 

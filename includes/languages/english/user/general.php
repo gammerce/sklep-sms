@@ -54,7 +54,7 @@ return array(
 	'pay_wallet' => 'Pay by wallet',
 	'payment_for_service' => 'Payment for service: {1}',
 	'payment_log' => 'Payment log',
-	'payment_not_accepted' => 'Transaction authorization failure: {1} Amount: {2} Service: {3} {4}({5})({6})',
+	'payment_not_accepted' => 'Transaction authorization failure: {1} Amount: {2} Service: {3}',
 	'payment_sms' => 'SMS payment',
 	'payment_transfer' => 'Transfer payment',
 	'payment_transfer_accepted' => 'Payment transfer accepted. Purchase ID: {1} Transaction ID: {2} Amount: {3} Service: {4} {5}({6})({7})',

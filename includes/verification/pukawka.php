@@ -42,29 +42,30 @@ class PaymentModule_Pukawka extends PaymentModule implements IPayment_Sms
 			return IPayment_Sms::NO_CONNECTION;
 		}
 
-		$get = json_decode($get);
+		$get = json_decode($get, true);
 
-		if (is_object($get)) {
-			if ($get->error) {
+		if (!empty($get)) {
+			if ($get['error']) {
 				return array(
 					'status' => IPayment_Sms::UNKNOWN,
-					'text' => $get->error
+					'text' => $get['error']
 				);
 			}
 
-			if ($get->status == 'ok') {
-				$kwota = str_replace(',', '.', $get->kwota);
+			if ($get['status'] == 'ok') {
+				$kwota = str_replace(',', '.', $get['kwota']);
 				foreach ($this->stawki as $s) {
-					if (str_replace(',', '.', $s->wartosc) != $kwota)
+					if (str_replace(',', '.', $s['wartosc']) != $kwota) {
 						continue;
+					}
 
-					if ($s->numer == $number) {
+					if ($s['numer'] == $number) {
 						return IPayment_Sms::OK;
 					}
 
 					return array(
 						'status' => IPayment_Sms::BAD_NUMBER,
-						'tariff' => $this->getTariffByNumber($s->numer)->getId()
+						'tariff' => $this->getTariffByNumber($s['numer'])->getId()
 					);
 				}
 

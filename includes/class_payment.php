@@ -6,7 +6,7 @@ class Payment
 	const TRANSFER_NOT_SUPPORTED = 'transfer_not_supported';
 
 	/** @var PaymentModule|IPayment_Sms|IPayment_Transfer */
-	private $payment_module;
+	private $payment_module = NULL;
 
 	function __construct($payment_module_id)
 	{
@@ -14,7 +14,9 @@ class Payment
 
 		// Tworzymy obiekt obslugujacy stricte weryfikacje
 		$className = $heart->get_payment_module($payment_module_id);
-		$this->payment_module = $className ? new $className() : NULL;
+		if ($className !== NULL) {
+			$this->payment_module = new $className();
+		}
 
 		// API podanej usługi nie istnieje.
 		if ($this->payment_module === NULL) {
@@ -155,11 +157,12 @@ class Payment
 		));
 
 		// Próba ponownej autoryzacji
-		if ($db->num_rows($result))
+		if ($db->num_rows($result)) {
 			return false;
+		}
 
 		// Nie znaleziono pliku z danymi
-		if (!file_exists(SCRIPT_ROOT . "data/transfers/" . $transfer_finalize->getDataFilename())) {
+		if (!$transfer_finalize->getDataFilename() || !file_exists(SCRIPT_ROOT . "data/transfers/" . $transfer_finalize->getDataFilename())) {
 			log_info($lang_shop->sprintf($lang_shop->translate('transfer_no_data_file'), $transfer_finalize->getOrderid()));
 			return false;
 		}
