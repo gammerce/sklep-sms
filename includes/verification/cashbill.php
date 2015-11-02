@@ -64,7 +64,7 @@ class PaymentModule_Cashbill extends PaymentModule implements IPayment_Sms, IPay
 	public function prepare_transfer($purchase_data, $data_filename)
 	{
 		// Zamieniamy grosze na złotówki
-		$cost = number_format($purchase_data->getPayment('cost') / 100, 2);
+		$cost = round($purchase_data->getPayment('cost') / 100, 2);
 
 		return array(
 			'url' => 'https://pay.cashbill.pl/form/pay.php',
