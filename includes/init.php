@@ -10,4 +10,4 @@ if (!defined('SQL_LOG'))
 	define('SQL_LOG', SCRIPT_ROOT . "errors/sql.log");
 
 if (!defined('VERSION'))
-	define('VERSION', "3.3.3");
+	define('VERSION', "3.3.4");
