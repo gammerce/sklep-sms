@@ -521,7 +521,7 @@ CREATE TABLE IF NOT EXISTS `ss_tariffs` (
   `id`         INT(11)    NOT NULL,
   `provision`  INT(11)    NOT NULL DEFAULT '0',
   `predefined` TINYINT(1) NOT NULL DEFAULT '0',
-  UNIQUE KEY `tariff` (`tariff`)
+  UNIQUE KEY `id` (`id`)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = latin1;
@@ -565,7 +565,7 @@ INSERT INTO `ss_transaction_services` (`id`, `name`, `data`, `data_hidden`, `sms
   ('cssetti', 'CSSetti', '{"account_id":"","sms_text":"DP CSSETTI"}', '', 1, 0),
   ('homepay', 'HomePay', '{"api":"","sms_text":"","7055":"","7155":"","7255":"","7355":"","7455":"","7555":"","76660":"","7955":"","91055":"","91155":"","91455":"","91955":"","92055":"","92520":""}', '', 1, 0),
   ('microsms', 'MicroSMS', '{"api":"","sms_text":"","service_id":""}', '', 1, 0),
-  ('mintshost', 'MintsHost', '{"email":"","sms_text":"KDW.MINTS"}', '', 1, 0),
+  ('mintshost', 'MintsHost', '{"email":"","sms_text":"SIM.MINTS"}', '', 1, 0),
   ('profitsms', 'Profit SMS', '{"api":"","sms_text":""}', '', 1, 0),
   ('pukawka', 'Pukawka', '{"api":"","sms_text":"PUKAWKA"}', '', 1, 0),
   ('simpay', 'SimPay', '{"sms_text":"","key":"","secret":"","service_id":""}', '', 1, 0),
@@ -674,7 +674,7 @@ ALTER TABLE `ss_sms_numbers`
 ADD CONSTRAINT `ss_sms_numbers_ibfk_2` FOREIGN KEY (`service`) REFERENCES `ss_transaction_services` (`id`)
   ON DELETE CASCADE
   ON UPDATE CASCADE,
-ADD CONSTRAINT `ss_sms_numbers_ibfk_1` FOREIGN KEY (`tariff`) REFERENCES `ss_tariffs` (`tariff`)
+ADD CONSTRAINT `ss_sms_numbers_ibfk_1` FOREIGN KEY (`tariff`) REFERENCES `ss_tariffs` (`id`)
   ON DELETE CASCADE
   ON UPDATE CASCADE;
 
