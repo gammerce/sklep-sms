@@ -30,7 +30,7 @@ return array(
 	'antispam_add' => 'Pytanie anty-spamowe zostało prawidłowo dodane.',
 	'antispam_edit' => 'Pytanie anty-spamowe zostało prawidłowo wyedytowane.',
 	'antispam_no_edit' => 'Pytanie anty-spamowe nie zostało prawidłowo wyedytowane.',
-	'antispam_questions' => 'Pytania antypamowe',
+	'antispam_questions' => 'Pytania antyspamowe',
 	'auto_email' => 'E-mail dla automatu',
 	'bought_services' => 'Kupione usługi',
 	'bring_it_on' => 'Dajesz!',
