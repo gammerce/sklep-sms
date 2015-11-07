@@ -117,6 +117,23 @@ abstract class PaymentModule
 	}
 
 	/**
+	 * Returns tariff by sms cost brutto
+	 *
+	 * @param float $cost
+	 * @return Entity_Tariff|null
+	 */
+	public function getTariffBySmsCostBrutto($cost)
+	{
+		foreach ($this->tariffs as $tariff) {
+			if ($tariff->getSmsCostBrutto() == $cost) {
+				return $tariff;
+			}
+		}
+
+		return NULL;
+	}
+
+	/**
 	 * @return Entity_Tariff[]
 	 */
 	public function getTariffs()

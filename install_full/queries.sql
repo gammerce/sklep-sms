@@ -515,7 +515,15 @@ INSERT INTO `ss_sms_numbers` (`number`, `tariff`, `service`) VALUES
   ('91664', 16, '1s1k'),
   ('91955', 19, '1s1k'),
   ('92055', 20, '1s1k'),
-  ('92555', 25, '1s1k');
+  ('92555', 25, '1s1k'),
+  ('7155', 1, 'bizneshost'),
+  ('7255', 2, 'bizneshost'),
+  ('7355', 3, 'bizneshost'),
+  ('7555', 5, 'bizneshost'),
+  ('76660', 6, 'bizneshost'),
+  ('7955', 9, 'bizneshost'),
+  ('91955', 19, 'bizneshost'),
+  ('92520', 25, 'bizneshost');
 
 CREATE TABLE IF NOT EXISTS `ss_tariffs` (
   `id`         INT(11)    NOT NULL,
@@ -561,6 +569,7 @@ CREATE TABLE IF NOT EXISTS `ss_transaction_services` (
 
 INSERT INTO `ss_transaction_services` (`id`, `name`, `data`, `data_hidden`, `sms`, `transfer`) VALUES
   ('1s1k', '1shot 1kill', '{"api":"","sms_text":"SHOT"}', '', 1, 0),
+  ('bizneshost', 'Biznes-Host', '{"uid":"","sms_text":"HPAY.BH"}', '', 1, 0),
   ('cashbill', 'CashBill', '{"service":"","key":"","sms_text":""}', '', 1, 1),
   ('cssetti', 'CSSetti', '{"account_id":"","sms_text":"DP CSSETTI"}', '', 1, 0),
   ('homepay', 'HomePay', '{"api":"","sms_text":"","7055":"","7155":"","7255":"","7355":"","7455":"","7555":"","76660":"","7955":"","91055":"","91155":"","91455":"","91955":"","92055":"","92520":""}', '', 1, 0),
