@@ -33,21 +33,21 @@ class PaymentModule_Bizneshost extends PaymentModule implements IPayment_Sms
 			return IPayment_Sms::NO_CONNECTION;
 		}
 
-		$status = explode(':', $status);
+		$status_exploded = explode(':', $status);
 
 		// Bad code
-		if ($status[0] == 'E') {
+		if ($status_exploded[0] == 'E') {
 			return IPayment_Sms::BAD_CODE;
 		}
 
 		// Code is correct
-		if ($status[0] == '1') {
+		if ($status_exploded[0] == '1') {
 			// Check whether prices are equal
-			if (get_sms_cost($number) / 100 == floatval($status[2])) {
+			if (abs(get_sms_cost_brutto($number) / 100 - floatval($status_exploded[1])) < 0.1) {
 				return IPayment_Sms::OK;
 			}
 
-			$tariff = $this->getTariffBySmsCostBrutto($status[1]);
+			$tariff = $this->getTariffBySmsCostBrutto($status_exploded[1]);
 			return array(
 				'status' => IPayment_Sms::BAD_NUMBER,
 				'tariff' => !is_null($tariff) ? $tariff->getId() : NULL
@@ -55,17 +55,17 @@ class PaymentModule_Bizneshost extends PaymentModule implements IPayment_Sms
 		}
 
 		// Code used
-		if ($status[0] == '2') {
+		if ($status_exploded[0] == '2') {
 			return IPayment_Sms::BAD_CODE;
 		}
 
 		// No code - $return_code is empty
-		if ($status[0] == '-1') {
+		if ($status_exploded[0] == '-1') {
 			return IPayment_Sms::BAD_CODE;
 		}
 
 		// No uid
-		if ($status[0] == '-2') {
+		if ($status_exploded[0] == '-2') {
 			return IPayment_Sms::BAD_DATA;
 		}
 

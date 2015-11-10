@@ -844,6 +844,8 @@ function convertDate($timestamp, $format = "")
 }
 
 /**
+ * Returns sms cost netto by number
+ *
  * @param string $number
  * @return int
  */
@@ -857,6 +859,19 @@ function get_sms_cost($number)
 		return intval($number[1] . $number[2]) * 100;
 
 	return 0;
+}
+
+/**
+ * Returns sms cost brutto by number
+ *
+ * @param $number
+ * @return float
+ */
+function get_sms_cost_brutto($number)
+{
+	global $settings;
+
+	return ceil(get_sms_cost($number) * $settings['vat']);
 }
 
 function hash_password($password, $salt)
