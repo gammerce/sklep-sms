@@ -23,6 +23,10 @@ class PaymentModule_Bizneshost extends PaymentModule implements IPayment_Sms
 
 	public function verify_sms($return_code, $number)
 	{
+		if (!strlen($this->uid)) {
+			return IPayment_Sms::BAD_DATA;
+		}
+
 		$status = curl_get_contents(
 			'http://biznes-host.pl/api/sprawdzkod_v2.php' .
 			'?uid=' . urlencode($this->uid) .
