@@ -25,7 +25,7 @@ class PaymentModuleHostplay extends PaymentModule implements IPayment_Sms
     {
         $response = curl_get_contents(
             'http://hostplay.pl/api/payment/api_code_verify.php' .
-            '?payment=' . // TODO
+            '?payment=homepay_sms' .
             '&userid=' . urlencode($this->userId) .
             '&comment=SklepSMS' .
             '&code=' . urlencode($return_code)

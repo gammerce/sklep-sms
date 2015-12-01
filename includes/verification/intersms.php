@@ -75,35 +75,27 @@ class PaymentModuleIntersms extends PaymentModule implements IPayment_Sms
 
 
 		if ($status == '1') {
-			if ($control_test == $control) {
-				# podpisy są zgodne
-				# transakcja jest prawidłowa
-
-				#
-				#
-				# TUTAJ wykonaj skrypt sprzedaży w swoim serwisie
-				# z wykorzystaniem przekazanych danych o transakcji
-				#
-				#
-
-			} else {
-				# podpis NIE zgadza się
-				print 'Podpis transakcji nie jest prawidłowy.';
-				exit;
+			if ($control_test != $control) {
+				return IPayment_Sms::MISCONFIGURATION;
 			}
-		} elseif ($status == '0') {
-			# Kod niepoprawny
-			print 'Wysłany kod SMS jest nieprawidłowy lub wcześniej wykorzystany.';
-			$kod_bledu = $amount;
-			print 'Kod błędu: ' . $kod_bledu;
-			exit;
-		} else {
-			# nic nie rób
-			# zmienna $status ma niezdefiniowaną wartość
-			exit;
+
+			// Check whether prices are equal
+			if (abs(get_sms_cost_brutto($number) - intval($amount * 2)) < 10) {
+				return IPayment_Sms::OK;
+			}
+
+			$tariff = $this->getTariffBySmsCostBrutto($amount * 2 / 100);
+			return array(
+					'status' => IPayment_Sms::BAD_NUMBER,
+					'tariff' => !is_null($tariff) ? $tariff->getId() : NULL
+			);
 		}
 
+		if ($status == '0') {
+			return IPayment_Sms::BAD_CODE;
+		}
 
+		return IPayment_Sms::ERROR;
 	}
 
 	public function getSmsCode()
