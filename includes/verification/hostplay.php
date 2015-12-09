@@ -46,7 +46,7 @@ class PaymentModuleHostplay extends PaymentModule implements IPayment_Sms
             );
         }
 
-        if (strtoupper($response['error']) == "BAD_CODE") {
+        if (strtoupper($response['status']) == 'FAIL'/* && strtoupper($response['error']) == "BAD_CODE"*/) {
             return IPayment_Sms::BAD_CODE;
         }
 
