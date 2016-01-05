@@ -1,9 +1,9 @@
-INSERT INTO `ss_transaction_services` (`id`, `name`, `data`, `data_hidden`, `sms`, `transfer`) VALUES
+INSERT IGNORE INTO `ss_transaction_services` (`id`, `name`, `data`, `data_hidden`, `sms`, `transfer`) VALUES
   ('bizneshost', 'Biznes-Host', '{"uid":"","sms_text":"HPAY.BH"}', '', 1, 0),
   ('intersms', 'InterSMS', '{"sms_text":"","user_id":"","client_key":""}', '', 1, 0),
   ('hostplay', 'HostPlay', '{"sms_text":"HPAY.HOSTPLAY","user_id":""}', '', 1, 0);
 
-INSERT INTO `ss_sms_numbers` (`number`, `tariff`, `service`) VALUES
+INSERT IGNORE INTO `ss_sms_numbers` (`number`, `tariff`, `service`) VALUES
   ('7143', 1, 'intersms'),
   ('72550', 2, 'intersms'),
   ('73550', 3, 'intersms'),

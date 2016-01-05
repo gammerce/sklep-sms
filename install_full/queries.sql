@@ -1,49 +1,54 @@
-CREATE TABLE IF NOT EXISTS `ss_antispam_questions` (
+DROP TABLE IF EXISTS `ss_payment_admin`;
+CREATE TABLE IF NOT EXISTS `ss_payment_admin` (
   `id`       INT(11)      NOT NULL AUTO_INCREMENT,
-  `question` VARCHAR(128) NOT NULL,
-  `answers`  VARCHAR(128) NOT NULL,
+  `aid`      INT(11)      NOT NULL,
+  `ip`       VARCHAR(16)  NOT NULL DEFAULT '',
+  `platform` TEXT NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  AUTO_INCREMENT = 11;
-
-INSERT INTO `ss_antispam_questions` (`id`, `question`, `answers`) VALUES
-  (1, 'Podaj <b><u>piątą</u></b> literę alfabetu.', 'e'),
-  (2, 'Jak nazywa się pierwsza stolica Polski?', 'gniezno'),
-  (3, 'Na której pozycji znajduje się litera <b><u>n</u></b> w wyrazie narcyz?', '1;pierwsza;pierwszej'),
-  (4, 'Jakiego koloru jest dolna część polskiej flagi?', 'czerwona;czerwony;czerwonego'),
-  (5, 'Na której pozycji znajduje się litera <b><u>r</u></b> w wyrazie marchew?', '3;trzeciej;trzecia'),
-  (6, 'Ile wynosi wynik dodawania (słownie) <b><u>2 + 5</u></b> ?', 'siedem'),
-  (7, 'Jeden + trzy minus 3 = ? (słownie)', 'jeden'),
-  (8, 'Jakiego koloru jest pomarańcza?', 'pomarańczowego;pomarańczowy'),
-  (9, 'Jakiego koloru jest cytryna?', 'żółty;żółtego'),
-  (10, 'Jakiego koloru jest czarny but?', 'czarnego;czarny');
-
-CREATE TABLE IF NOT EXISTS `ss_bought_services` (
-  `id`         INT(11)          NOT NULL AUTO_INCREMENT,
-  `uid`        INT(11)          NOT NULL,
-  `payment`    VARCHAR(16)
-               CHARACTER SET utf8
-               COLLATE utf8_bin NOT NULL,
-  `payment_id` VARCHAR(16)      NOT NULL,
-  `service`    VARCHAR(32)
-               CHARACTER SET utf8
-               COLLATE utf8_bin NOT NULL,
-  `server`     INT(11)          NOT NULL,
-  `amount`     VARCHAR(32)      NOT NULL,
-  `auth_data`  VARCHAR(32)      NOT NULL,
-  `email`      VARCHAR(128)     NOT NULL,
-  `extra_data` VARCHAR(256)     NOT NULL DEFAULT '',
-  `timestamp`  TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `orderid` (`id`)
+  UNIQUE KEY `id` (`id`),
+  KEY `aid` (`aid`)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   AUTO_INCREMENT = 1;
 
+
+DROP TABLE IF EXISTS `ss_users`;
+CREATE TABLE IF NOT EXISTS `ss_users` (
+  `uid`                INT(11)            NOT NULL AUTO_INCREMENT,
+  `username`           VARCHAR(64)
+                       CHARACTER SET utf8 NOT NULL,
+  `password`           VARCHAR(128)
+                       CHARACTER SET utf8 NOT NULL,
+  `salt`               VARCHAR(8)
+                       CHARACTER SET utf8
+                       COLLATE utf8_bin   NOT NULL,
+  `email`              VARCHAR(128)
+                       CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `forename`           VARCHAR(32)
+                       CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `surname`            VARCHAR(64)
+                       CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `groups`             VARCHAR(32)
+                       CHARACTER SET utf8
+                       COLLATE utf8_bin   NOT NULL DEFAULT '1',
+  `regdate`            TIMESTAMP          NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `lastactiv`          TIMESTAMP          NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `wallet`             INT(11)            NOT NULL DEFAULT '0',
+  `regip`              VARCHAR(16)        NOT NULL DEFAULT '',
+  `lastip`             VARCHAR(16)        NOT NULL DEFAULT '',
+  `reset_password_key` VARCHAR(32)
+                       CHARACTER SET utf8
+                       COLLATE utf8_bin   NOT NULL DEFAULT '',
+  UNIQUE KEY `uid` (`uid`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `emial` (`email`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = latin1
+  AUTO_INCREMENT = 1;
+
+DROP TABLE IF EXISTS `ss_groups`;
 CREATE TABLE IF NOT EXISTS `ss_groups` (
   `id`                        INT(11)          NOT NULL AUTO_INCREMENT,
   `name`                      TEXT
@@ -83,150 +88,14 @@ VALUES
   (1, 'Użytkownik', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
   (2, 'Właściciel', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
-CREATE TABLE IF NOT EXISTS `ss_logs` (
-  `id`        INT(11)   NOT NULL AUTO_INCREMENT,
-  `text`      TEXT      NOT NULL,
-  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  AUTO_INCREMENT = 1;
-
-CREATE TABLE IF NOT EXISTS `ss_mybb_user_group` (
-  `uid`        INT(11)    NOT NULL,
-  `gid`        INT(11)    NOT NULL,
-  `expire`     TIMESTAMP  NULL DEFAULT NULL,
-  `was_before` TINYINT(4) NOT NULL,
-  PRIMARY KEY (`uid`, `gid`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  COLLATE = utf8_bin;
-
-CREATE TABLE IF NOT EXISTS `ss_payment_admin` (
-  `id`       INT(11)      NOT NULL AUTO_INCREMENT,
-  `aid`      INT(11)      NOT NULL,
-  `ip`       VARCHAR(16)  NOT NULL,
-  `platform` VARCHAR(128) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
-  KEY `aid` (`aid`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  AUTO_INCREMENT = 1;
-
-CREATE TABLE IF NOT EXISTS `ss_payment_code` (
-  `id`       INT(11)     NOT NULL AUTO_INCREMENT,
-  `code`     VARCHAR(16) NOT NULL,
-  `ip`       VARCHAR(16) NOT NULL,
-  `platform` TEXT        NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  AUTO_INCREMENT = 1;
-
-CREATE TABLE IF NOT EXISTS `ss_payment_sms` (
-  `id`       INT(11)            NOT NULL AUTO_INCREMENT,
-  `code`     VARCHAR(16)
-             CHARACTER SET utf8 NOT NULL,
-  `income`   INT(11)            NOT NULL,
-  `cost`     INT(11)            NOT NULL,
-  `text`     VARCHAR(32)
-             CHARACTER SET utf8 NOT NULL,
-  `number`   VARCHAR(16)
-             CHARACTER SET utf8 NOT NULL,
-  `ip`       VARCHAR(16)
-             CHARACTER SET utf8 NOT NULL,
-  `platform` VARCHAR(128)
-             CHARACTER SET utf8 NOT NULL,
-  `free`     TINYINT(1)         NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = latin1
-  AUTO_INCREMENT = 1;
-
-CREATE TABLE IF NOT EXISTS `ss_payment_transfer` (
-  `id`               VARCHAR(16)
-                     CHARACTER SET utf8
-                     COLLATE utf8_bin NOT NULL,
-  `income`           INT(11)          NOT NULL,
-  `transfer_service` VARCHAR(64)
-                     CHARACTER SET utf8
-                     COLLATE utf8_bin NOT NULL,
-  `ip`               VARCHAR(16)      NOT NULL,
-  `platform`         VARCHAR(128)     NOT NULL,
-  UNIQUE KEY `orderid` (`id`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
-CREATE TABLE IF NOT EXISTS `ss_payment_wallet` (
-  `id`       INT(11)      NOT NULL AUTO_INCREMENT,
-  `cost`     INT(11)      NOT NULL,
-  `ip`       VARCHAR(16)  NOT NULL,
-  `platform` VARCHAR(128) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  AUTO_INCREMENT = 1;
-
-CREATE TABLE IF NOT EXISTS `ss_players_flags` (
-  `id`        INT(11)          NOT NULL AUTO_INCREMENT,
-  `server`    INT(11)          NOT NULL,
-  `type`      INT(11)          NOT NULL DEFAULT '0',
-  `auth_data` VARCHAR(32)      NOT NULL,
-  `password`  VARCHAR(34)
-              CHARACTER SET utf8
-              COLLATE utf8_bin NOT NULL,
-  `a`         INT(11)          NOT NULL DEFAULT '0',
-  `b`         INT(11)          NOT NULL DEFAULT '0',
-  `c`         INT(11)          NOT NULL DEFAULT '0',
-  `d`         INT(11)          NOT NULL DEFAULT '0',
-  `e`         INT(11)          NOT NULL DEFAULT '0',
-  `f`         INT(11)          NOT NULL DEFAULT '0',
-  `g`         INT(11)          NOT NULL DEFAULT '0',
-  `h`         INT(11)          NOT NULL DEFAULT '0',
-  `i`         INT(11)          NOT NULL DEFAULT '0',
-  `j`         INT(11)          NOT NULL DEFAULT '0',
-  `k`         INT(11)          NOT NULL DEFAULT '0',
-  `l`         INT(11)          NOT NULL DEFAULT '0',
-  `m`         INT(11)          NOT NULL DEFAULT '0',
-  `n`         INT(11)          NOT NULL DEFAULT '0',
-  `o`         INT(11)          NOT NULL DEFAULT '0',
-  `p`         INT(11)          NOT NULL DEFAULT '0',
-  `q`         INT(11)          NOT NULL DEFAULT '0',
-  `r`         INT(11)          NOT NULL DEFAULT '0',
-  `s`         INT(11)          NOT NULL DEFAULT '0',
-  `t`         INT(11)          NOT NULL DEFAULT '0',
-  `u`         INT(11)          NOT NULL DEFAULT '0',
-  `y`         INT(11)          NOT NULL DEFAULT '0',
-  `v`         INT(11)          NOT NULL DEFAULT '0',
-  `w`         INT(11)          NOT NULL DEFAULT '0',
-  `x`         INT(11)          NOT NULL DEFAULT '0',
-  `z`         INT(11)          NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `server+type+player` (`server`, `type`, `auth_data`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  AUTO_INCREMENT = 1;
-
+DROP TABLE IF EXISTS `ss_pricelist`;
 CREATE TABLE IF NOT EXISTS `ss_pricelist` (
   `id`      INT(11)          NOT NULL AUTO_INCREMENT,
   `service` VARCHAR(16)
             CHARACTER SET utf8
             COLLATE utf8_bin NOT NULL,
   `tariff`  INT(11)          NOT NULL,
-  `amount`  INT(11)          NOT NULL,
+  `amount`  INT(11)          NOT NULL DEFAULT '0',
   `server`  INT(11)          NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
@@ -236,23 +105,7 @@ CREATE TABLE IF NOT EXISTS `ss_pricelist` (
   DEFAULT CHARSET = utf8
   AUTO_INCREMENT = 1;
 
-CREATE TABLE IF NOT EXISTS `ss_servers` (
-  `id`          INT(11)          NOT NULL AUTO_INCREMENT,
-  `name`        VARCHAR(64)      NOT NULL,
-  `ip`          VARCHAR(16)      NOT NULL,
-  `port`        VARCHAR(8)       NOT NULL,
-  `sms_service` VARCHAR(32)
-                CHARACTER SET utf8
-                COLLATE utf8_bin NOT NULL,
-  `type`        VARCHAR(16)      NOT NULL DEFAULT '',
-  `version`     VARCHAR(8)       NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  AUTO_INCREMENT = 1;
-
+DROP TABLE IF EXISTS `ss_servers_services`;
 CREATE TABLE IF NOT EXISTS `ss_servers_services` (
   `server_id`  INT(11)          NOT NULL,
   `service_id` VARCHAR(16)
@@ -264,12 +117,61 @@ CREATE TABLE IF NOT EXISTS `ss_servers_services` (
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
 
+DROP TABLE IF EXISTS `ss_user_service_extra_flags`;
+CREATE TABLE IF NOT EXISTS `ss_user_service_extra_flags` (
+  `us_id`     INT(11)          NOT NULL,
+  `service`   VARCHAR(16)
+              CHARACTER SET utf8
+              COLLATE utf8_bin NOT NULL,
+  `server`    INT(11)          NOT NULL,
+  `type`      INT(11)          NOT NULL,
+  `auth_data` VARCHAR(64)      NOT NULL,
+  `password`  VARCHAR(64)
+              CHARACTER SET utf8
+              COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`us_id`),
+  UNIQUE KEY `server` (`server`, `service`, `type`, `auth_data`),
+  KEY `service` (`service`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS `ss_user_service_mybb_extra_groups`;
+CREATE TABLE IF NOT EXISTS `ss_user_service_mybb_extra_groups` (
+  `us_id`    INT(11)          NOT NULL,
+  `service`  VARCHAR(16)
+             COLLATE utf8_bin NOT NULL,
+  `mybb_uid` INT(11)          NOT NULL,
+  UNIQUE KEY `user_service` (`us_id`),
+  UNIQUE KEY `service` (`service`, `mybb_uid`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_bin;
+
+DROP TABLE IF EXISTS `ss_user_service`;
+CREATE TABLE IF NOT EXISTS `ss_user_service` (
+  `id`      INT(11)          NOT NULL AUTO_INCREMENT,
+  `service` VARCHAR(16)
+            COLLATE utf8_bin NOT NULL,
+  `uid`     INT(11)          NOT NULL,
+  `expire`  INT(11)          NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `service` (`service`),
+  KEY `uid` (`uid`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_bin
+  AUTO_INCREMENT = 1;
+
+DROP TABLE IF EXISTS `ss_services`;
 CREATE TABLE IF NOT EXISTS `ss_services` (
   `id`                VARCHAR(16)
                       CHARACTER SET utf8
                       COLLATE utf8_bin NOT NULL,
-  `name`              VARCHAR(32)      NOT NULL,
-  `short_description` VARCHAR(28)      NOT NULL,
+  `name`              VARCHAR(32)      NOT NULL DEFAULT '',
+  `short_description` VARCHAR(28)      NOT NULL DEFAULT '',
   `description`       TEXT             NOT NULL,
   `types`             INT(11)          NOT NULL DEFAULT '0',
   `tag`               VARCHAR(16)      NOT NULL,
@@ -307,16 +209,17 @@ VALUES
    7, 'dni', 'extra_flags', '', 'btx', 2, '{"web": "1"}'),
   ('zp_ap', 'Ammo Packs', '', '', 0, 'AP', 'other', '', '', 7, '');
 
-CREATE TABLE IF NOT EXISTS `ss_service_codes` (
-  `id`        INT(11)     NOT NULL AUTO_INCREMENT,
-  `code`      VARCHAR(16) NOT NULL,
-  `service`   VARCHAR(16) NOT NULL,
-  `server`    INT(11)     NOT NULL DEFAULT '0',
-  `tariff`    INT(11)     NOT NULL DEFAULT '0',
-  `uid`       INT(11)     NOT NULL DEFAULT '0',
-  `amount`    DOUBLE      NOT NULL DEFAULT '0',
-  `data`      TEXT        NOT NULL,
-  `timestamp` TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+DROP TABLE IF EXISTS `ss_servers`;
+CREATE TABLE IF NOT EXISTS `ss_servers` (
+  `id`          INT(11)          NOT NULL AUTO_INCREMENT,
+  `name`        VARCHAR(64)      NOT NULL DEFAULT '',
+  `ip`          VARCHAR(16)      NOT NULL DEFAULT '',
+  `port`        VARCHAR(8)       NOT NULL DEFAULT '',
+  `sms_service` VARCHAR(32)
+                CHARACTER SET utf8
+                COLLATE utf8_bin NOT NULL,
+  `type`        VARCHAR(16)      NOT NULL DEFAULT '',
+  `version`     VARCHAR(8)       NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
 )
@@ -324,55 +227,9 @@ CREATE TABLE IF NOT EXISTS `ss_service_codes` (
   DEFAULT CHARSET = utf8
   AUTO_INCREMENT = 1;
 
-CREATE TABLE IF NOT EXISTS `ss_settings` (
-  `key`   VARCHAR(128)
-          CHARACTER SET utf8
-          COLLATE utf8_bin NOT NULL,
-  `value` VARCHAR(256)     NOT NULL,
-  UNIQUE KEY `key` (`key`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
-
-INSERT INTO `ss_settings` (`key`, `value`) VALUES
-  ('contact', ''),
-  ('cron_each_visit', '0'),
-  ('currency', 'PLN'),
-  ('date_format', 'Y-m-d H:i'),
-  ('delete_logs', '0'),
-  ('google_analytics', ''),
-  ('language', 'polish'),
-  ('license_login', ''),
-  ('license_password', ''),
-  ('random_key', ''),
-  ('row_limit', '30'),
-  ('sender_email', ''),
-  ('sender_email_name', ''),
-  ('shop_url', ''),
-  ('signature', ''),
-  ('sms_service', ''),
-  ('theme', 'default'),
-  ('timezone', 'Europe/Warsaw'),
-  ('transfer_service', ''),
-  ('user_edit_service', '1'),
-  ('vat', '1.23'),
-  ('gadugadu', '');
-
-CREATE TABLE IF NOT EXISTS `ss_sms_codes` (
-  `id`     INT(11)            NOT NULL AUTO_INCREMENT,
-  `code`   VARCHAR(16)
-           CHARACTER SET utf8 NOT NULL,
-  `tariff` INT(11)            NOT NULL,
-  `free`   TINYINT(1)         NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = latin1
-  AUTO_INCREMENT = 1;
-
+DROP TABLE IF EXISTS `ss_sms_numbers`;
 CREATE TABLE IF NOT EXISTS `ss_sms_numbers` (
-  `number`  VARCHAR(16)      NOT NULL,
+  `number`  VARCHAR(16)      NOT NULL DEFAULT '',
   `tariff`  INT(11)          NOT NULL,
   `service` VARCHAR(32)
             CHARACTER SET utf8
@@ -548,6 +405,38 @@ INSERT INTO `ss_sms_numbers` (`number`, `tariff`, `service`) VALUES
   ('92055', 20, 'hostplay'),
   ('92555', 25, 'hostplay');
 
+DROP TABLE IF EXISTS `ss_transaction_services`;
+CREATE TABLE IF NOT EXISTS `ss_transaction_services` (
+  `id`          VARCHAR(32)
+                CHARACTER SET utf8
+                COLLATE utf8_bin NOT NULL,
+  `name`        VARCHAR(32)      NOT NULL DEFAULT '',
+  `data`        VARCHAR(512)     NOT NULL DEFAULT '',
+  `data_hidden` VARCHAR(256)     NOT NULL DEFAULT '',
+  `sms`         TINYINT(1)       NOT NULL DEFAULT '0',
+  `transfer`    TINYINT(1)       NOT NULL DEFAULT '0',
+  UNIQUE KEY `id` (`id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+INSERT INTO `ss_transaction_services` (`id`, `name`, `data`, `data_hidden`, `sms`, `transfer`) VALUES
+  ('1s1k', '1shot 1kill', '{"api":"","sms_text":"SHOT"}', '', 1, 0),
+  ('bizneshost', 'Biznes-Host', '{"uid":"","sms_text":"HPAY.BH"}', '', 1, 0),
+  ('cashbill', 'CashBill', '{"service":"","key":"","sms_text":""}', '', 1, 1),
+  ('cssetti', 'CSSetti', '{"account_id":"","sms_text":"DP CSSETTI"}', '', 1, 0),
+  ('homepay', 'HomePay', '{"api":"","sms_text":"","7055":"","7155":"","7255":"","7355":"","7455":"","7555":"","76660":"","7955":"","91055":"","91155":"","91455":"","91955":"","92055":"","92520":""}', '', 1, 0),
+  ('hostplay', 'HostPlay', '{"sms_text":"HPAY.HOSTPLAY","user_id":""}', '', 1, 0),
+  ('intersms', 'InterSMS', '{"sms_text":"","user_id":"","client_key":""}', '', 1, 0),
+  ('microsms', 'MicroSMS', '{"api":"","sms_text":"","service_id":""}', '', 1, 0),
+  ('mintshost', 'MintsHost', '{"email":"","sms_text":"SIM.MINTS"}', '', 1, 0),
+  ('profitsms', 'Profit SMS', '{"api":"","sms_text":""}', '', 1, 0),
+  ('pukawka', 'Pukawka', '{"api":"","sms_text":"PUKAWKA"}', '', 1, 0),
+  ('simpay', 'SimPay', '{"sms_text":"","key":"","secret":"","service_id":""}', '', 1, 0),
+  ('transferuj', 'Transferuj', '{"account_id":"","key":""}', '', 0, 1),
+  ('zabijaka', 'Zabijaka', '{"api":"","sms_text":"AG.ZABIJAKA"}', '', 1, 0);
+
+DROP TABLE IF EXISTS `ss_tariffs`;
 CREATE TABLE IF NOT EXISTS `ss_tariffs` (
   `id`         INT(11)    NOT NULL,
   `provision`  INT(11)    NOT NULL DEFAULT '0',
@@ -576,114 +465,250 @@ INSERT INTO `ss_tariffs` (`id`, `provision`, `predefined`) VALUES
   (25, 1750, 1),
   (26, 35, 1);
 
-CREATE TABLE IF NOT EXISTS `ss_transaction_services` (
-  `id`          VARCHAR(32)
-                CHARACTER SET utf8
-                COLLATE utf8_bin NOT NULL,
-  `name`        VARCHAR(32)      NOT NULL,
-  `data`        VARCHAR(512)     NOT NULL,
-  `data_hidden` VARCHAR(256)     NOT NULL,
-  `sms`         TINYINT(1)       NOT NULL DEFAULT '0',
-  `transfer`    TINYINT(1)       NOT NULL DEFAULT '0',
+DROP TABLE IF EXISTS `ss_antispam_questions`;
+CREATE TABLE IF NOT EXISTS `ss_antispam_questions` (
+  `id`       INT(11)      NOT NULL AUTO_INCREMENT,
+  `question` VARCHAR(128) NOT NULL,
+  `answers`  VARCHAR(128) NOT NULL,
+  PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8
+  AUTO_INCREMENT = 11;
 
-INSERT INTO `ss_transaction_services` (`id`, `name`, `data`, `data_hidden`, `sms`, `transfer`) VALUES
-  ('1s1k', '1shot 1kill', '{"api":"","sms_text":"SHOT"}', '', 1, 0),
-  ('bizneshost', 'Biznes-Host', '{"uid":"","sms_text":"HPAY.BH"}', '', 1, 0),
-  ('cashbill', 'CashBill', '{"service":"","key":"","sms_text":""}', '', 1, 1),
-  ('cssetti', 'CSSetti', '{"account_id":"","sms_text":"DP CSSETTI"}', '', 1, 0),
-  ('homepay', 'HomePay', '{"api":"","sms_text":"","7055":"","7155":"","7255":"","7355":"","7455":"","7555":"","76660":"","7955":"","91055":"","91155":"","91455":"","91955":"","92055":"","92520":""}', '', 1, 0),
-  ('hostplay', 'HostPlay', '{"sms_text":"HPAY.HOSTPLAY","user_id":""}', '', 1, 0),
-  ('intersms', 'InterSMS', '{"sms_text":"","user_id":"","client_key":""}', '', 1, 0),
-  ('microsms', 'MicroSMS', '{"api":"","sms_text":"","service_id":""}', '', 1, 0),
-  ('mintshost', 'MintsHost', '{"email":"","sms_text":"SIM.MINTS"}', '', 1, 0),
-  ('profitsms', 'Profit SMS', '{"api":"","sms_text":""}', '', 1, 0),
-  ('pukawka', 'Pukawka', '{"api":"","sms_text":"PUKAWKA"}', '', 1, 0),
-  ('simpay', 'SimPay', '{"sms_text":"","key":"","secret":"","service_id":""}', '', 1, 0),
-  ('transferuj', 'Transferuj', '{"account_id":"","key":""}', '', 0, 1),
-  ('zabijaka', 'Zabijaka', '{"api":"","sms_text":"AG.ZABIJAKA"}', '', 1, 0);
+INSERT INTO `ss_antispam_questions` (`id`, `question`, `answers`) VALUES
+  (1, 'Podaj <b><u>piątą</u></b> literę alfabetu.', 'e'),
+  (2, 'Jak nazywa się pierwsza stolica Polski?', 'gniezno'),
+  (3, 'Na której pozycji znajduje się litera <b><u>n</u></b> w wyrazie narcyz?', '1;pierwsza;pierwszej'),
+  (4, 'Jakiego koloru jest dolna część polskiej flagi?', 'czerwona;czerwony;czerwonego'),
+  (5, 'Na której pozycji znajduje się litera <b><u>r</u></b> w wyrazie marchew?', '3;trzeciej;trzecia'),
+  (6, 'Ile wynosi wynik dodawania (słownie) <b><u>2 + 5</u></b> ?', 'siedem'),
+  (7, 'Jeden + trzy minus 3 = ? (słownie)', 'jeden'),
+  (8, 'Jakiego koloru jest pomarańcza?', 'pomarańczowego;pomarańczowy'),
+  (9, 'Jakiego koloru jest cytryna?', 'żółty;żółtego'),
+  (10, 'Jakiego koloru jest czarny but?', 'czarnego;czarny');
 
-CREATE TABLE IF NOT EXISTS `ss_users` (
-  `uid`                INT(11)            NOT NULL AUTO_INCREMENT,
-  `username`           VARCHAR(64)
-                       CHARACTER SET utf8 NOT NULL,
-  `password`           VARCHAR(128)
-                       CHARACTER SET utf8 NOT NULL,
-  `salt`               VARCHAR(8)
-                       CHARACTER SET utf8
-                       COLLATE utf8_bin   NOT NULL,
-  `email`              VARCHAR(128)
-                       CHARACTER SET utf8 NOT NULL,
-  `forename`           VARCHAR(32)
-                       CHARACTER SET utf8 NOT NULL DEFAULT '',
-  `surname`            VARCHAR(64)
-                       CHARACTER SET utf8 NOT NULL DEFAULT '',
-  `groups`             VARCHAR(32)
-                       CHARACTER SET utf8
-                       COLLATE utf8_bin   NOT NULL DEFAULT '1',
-  `regdate`            TIMESTAMP          NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `lastactiv`          TIMESTAMP          NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `wallet`             INT(11)            NOT NULL DEFAULT '0',
-  `regip`              VARCHAR(16)        NOT NULL,
-  `lastip`             VARCHAR(16)        NOT NULL,
-  `reset_password_key` VARCHAR(32)
-                       CHARACTER SET utf8
-                       COLLATE utf8_bin   NOT NULL,
-  UNIQUE KEY `uid` (`uid`),
-  UNIQUE KEY `username` (`username`),
-  UNIQUE KEY `emial` (`email`)
+DROP TABLE IF EXISTS `ss_bought_services`;
+CREATE TABLE IF NOT EXISTS `ss_bought_services` (
+  `id`         INT(11)          NOT NULL AUTO_INCREMENT,
+  `uid`        INT(11)          NOT NULL,
+  `payment`    VARCHAR(16)
+               CHARACTER SET utf8
+               COLLATE utf8_bin NOT NULL,
+  `payment_id` VARCHAR(16)      NOT NULL,
+  `service`    VARCHAR(32)
+               CHARACTER SET utf8
+               COLLATE utf8_bin NOT NULL,
+  `server`     INT(11)          NOT NULL,
+  `amount`     VARCHAR(32)      NOT NULL DEFAULT '',
+  `auth_data`  VARCHAR(32)      NOT NULL DEFAULT '',
+  `email`      VARCHAR(128)     NOT NULL DEFAULT '',
+  `extra_data` VARCHAR(256)     NOT NULL DEFAULT '',
+  `timestamp`  TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `orderid` (`id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  AUTO_INCREMENT = 1;
+
+DROP TABLE IF EXISTS `ss_logs`;
+CREATE TABLE IF NOT EXISTS `ss_logs` (
+  `id`        INT(11)   NOT NULL AUTO_INCREMENT,
+  `text`      TEXT      NOT NULL,
+  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  AUTO_INCREMENT = 1;
+
+DROP TABLE IF EXISTS `ss_mybb_user_group`;
+CREATE TABLE IF NOT EXISTS `ss_mybb_user_group` (
+  `uid`        INT(11)    NOT NULL,
+  `gid`        INT(11)    NOT NULL,
+  `expire`     TIMESTAMP  NULL DEFAULT NULL,
+  `was_before` TINYINT(4) NOT NULL,
+  PRIMARY KEY (`uid`, `gid`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_bin;
+
+DROP TABLE IF EXISTS `ss_payment_code`;
+CREATE TABLE IF NOT EXISTS `ss_payment_code` (
+  `id`       INT(11)     NOT NULL AUTO_INCREMENT,
+  `code`     VARCHAR(16) NOT NULL DEFAULT '',
+  `ip`       VARCHAR(16) NOT NULL DEFAULT '',
+  `platform` TEXT        NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  AUTO_INCREMENT = 1;
+
+DROP TABLE IF EXISTS `ss_payment_sms`;
+CREATE TABLE IF NOT EXISTS `ss_payment_sms` (
+  `id`       INT(11)            NOT NULL AUTO_INCREMENT,
+  `code`     VARCHAR(16)
+             CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `income`   INT(11)            NOT NULL DEFAULT '0',
+  `cost`     INT(11)            NOT NULL DEFAULT '0',
+  `text`     VARCHAR(32)
+             CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `number`   VARCHAR(16)
+             CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `ip`       VARCHAR(16)
+             CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `platform` TEXT               NOT NULL,
+  `free`     TINYINT(1)         NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = latin1
   AUTO_INCREMENT = 1;
 
-CREATE TABLE IF NOT EXISTS `ss_user_service` (
-  `id`      INT(11)          NOT NULL AUTO_INCREMENT,
-  `service` VARCHAR(16)
-            COLLATE utf8_bin NOT NULL,
-  `uid`     INT(11)          NOT NULL,
-  `expire`  INT(11)          NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `service` (`service`),
-  KEY `uid` (`uid`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  COLLATE = utf8_bin
-  AUTO_INCREMENT = 2777;
-
-CREATE TABLE IF NOT EXISTS `ss_user_service_extra_flags` (
-  `us_id`     INT(11)          NOT NULL,
-  `service`   VARCHAR(16)
-              CHARACTER SET utf8
-              COLLATE utf8_bin NOT NULL,
-  `server`    INT(11)          NOT NULL,
-  `type`      INT(11)          NOT NULL,
-  `auth_data` VARCHAR(64)      NOT NULL,
-  `password`  VARCHAR(64)
-              CHARACTER SET utf8
-              COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`us_id`),
-  UNIQUE KEY `server` (`server`, `service`, `type`, `auth_data`),
-  KEY `service` (`service`)
+DROP TABLE IF EXISTS `ss_payment_transfer`;
+CREATE TABLE IF NOT EXISTS `ss_payment_transfer` (
+  `id`               VARCHAR(16)
+                     CHARACTER SET utf8
+                     COLLATE utf8_bin NOT NULL,
+  `income`           INT(11)          NOT NULL DEFAULT '0',
+  `transfer_service` VARCHAR(64)
+                     CHARACTER SET utf8
+                     COLLATE utf8_bin NOT NULL,
+  `ip`               VARCHAR(16)      NOT NULL DEFAULT '',
+  `platform`         TEXT             NOT NULL,
+  UNIQUE KEY `orderid` (`id`)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
-CREATE TABLE IF NOT EXISTS `ss_user_service_mybb_extra_groups` (
-  `us_id`    INT(11)          NOT NULL,
-  `service`  VARCHAR(16)
-             COLLATE utf8_bin NOT NULL,
-  `mybb_uid` INT(11)          NOT NULL,
-  UNIQUE KEY `user_service` (`us_id`),
-  UNIQUE KEY `service` (`service`, `mybb_uid`)
+DROP TABLE IF EXISTS `ss_payment_wallet`;
+CREATE TABLE IF NOT EXISTS `ss_payment_wallet` (
+  `id`       INT(11)      NOT NULL AUTO_INCREMENT,
+  `cost`     INT(11)      NOT NULL DEFAULT '0',
+  `ip`       VARCHAR(16)  NOT NULL DEFAULT '',
+  `platform` TEXT         NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8
-  COLLATE = utf8_bin;
+  AUTO_INCREMENT = 1;
+
+DROP TABLE IF EXISTS `ss_players_flags`;
+CREATE TABLE IF NOT EXISTS `ss_players_flags` (
+  `id`        INT(11)          NOT NULL AUTO_INCREMENT,
+  `server`    INT(11)          NOT NULL,
+  `type`      INT(11)          NOT NULL DEFAULT '0',
+  `auth_data` VARCHAR(32)      NOT NULL,
+  `password`  VARCHAR(34)
+              CHARACTER SET utf8
+              COLLATE utf8_bin NOT NULL,
+  `a`         INT(11)          NOT NULL DEFAULT '0',
+  `b`         INT(11)          NOT NULL DEFAULT '0',
+  `c`         INT(11)          NOT NULL DEFAULT '0',
+  `d`         INT(11)          NOT NULL DEFAULT '0',
+  `e`         INT(11)          NOT NULL DEFAULT '0',
+  `f`         INT(11)          NOT NULL DEFAULT '0',
+  `g`         INT(11)          NOT NULL DEFAULT '0',
+  `h`         INT(11)          NOT NULL DEFAULT '0',
+  `i`         INT(11)          NOT NULL DEFAULT '0',
+  `j`         INT(11)          NOT NULL DEFAULT '0',
+  `k`         INT(11)          NOT NULL DEFAULT '0',
+  `l`         INT(11)          NOT NULL DEFAULT '0',
+  `m`         INT(11)          NOT NULL DEFAULT '0',
+  `n`         INT(11)          NOT NULL DEFAULT '0',
+  `o`         INT(11)          NOT NULL DEFAULT '0',
+  `p`         INT(11)          NOT NULL DEFAULT '0',
+  `q`         INT(11)          NOT NULL DEFAULT '0',
+  `r`         INT(11)          NOT NULL DEFAULT '0',
+  `s`         INT(11)          NOT NULL DEFAULT '0',
+  `t`         INT(11)          NOT NULL DEFAULT '0',
+  `u`         INT(11)          NOT NULL DEFAULT '0',
+  `y`         INT(11)          NOT NULL DEFAULT '0',
+  `v`         INT(11)          NOT NULL DEFAULT '0',
+  `w`         INT(11)          NOT NULL DEFAULT '0',
+  `x`         INT(11)          NOT NULL DEFAULT '0',
+  `z`         INT(11)          NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `server+type+player` (`server`, `type`, `auth_data`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  AUTO_INCREMENT = 1;
+
+DROP TABLE IF EXISTS `ss_service_codes`;
+CREATE TABLE IF NOT EXISTS `ss_service_codes` (
+  `id`        INT(11)     NOT NULL AUTO_INCREMENT,
+  `code`      VARCHAR(16) NOT NULL DEFAULT '',
+  `service`   VARCHAR(16) NOT NULL,
+  `server`    INT(11)     NOT NULL DEFAULT '0',
+  `tariff`    INT(11)     NOT NULL DEFAULT '0',
+  `uid`       INT(11)     NOT NULL DEFAULT '0',
+  `amount`    DOUBLE      NOT NULL DEFAULT '0',
+  `data`      TEXT        NOT NULL,
+  `timestamp` TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  AUTO_INCREMENT = 1;
+
+DROP TABLE IF EXISTS `ss_settings`;
+CREATE TABLE IF NOT EXISTS `ss_settings` (
+  `key`   VARCHAR(128)
+          CHARACTER SET utf8
+          COLLATE utf8_bin NOT NULL DEFAULT '',
+  `value` VARCHAR(256)     NOT NULL DEFAULT '',
+  UNIQUE KEY `key` (`key`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+INSERT INTO `ss_settings` (`key`, `value`) VALUES
+  ('contact', ''),
+  ('cron_each_visit', '0'),
+  ('currency', 'PLN'),
+  ('date_format', 'Y-m-d H:i'),
+  ('delete_logs', '0'),
+  ('google_analytics', ''),
+  ('language', 'polish'),
+  ('license_login', ''),
+  ('license_password', ''),
+  ('random_key', ''),
+  ('row_limit', '30'),
+  ('sender_email', ''),
+  ('sender_email_name', ''),
+  ('shop_url', ''),
+  ('signature', ''),
+  ('sms_service', ''),
+  ('theme', 'default'),
+  ('timezone', 'Europe/Warsaw'),
+  ('transfer_service', ''),
+  ('user_edit_service', '1'),
+  ('vat', '1.23'),
+  ('gadugadu', '');
+
+DROP TABLE IF EXISTS `ss_sms_codes`;
+CREATE TABLE IF NOT EXISTS `ss_sms_codes` (
+  `id`     INT(11)            NOT NULL AUTO_INCREMENT,
+  `code`   VARCHAR(16)
+           CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `tariff` INT(11)            NOT NULL,
+  `free`   TINYINT(1)         NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = latin1
+  AUTO_INCREMENT = 1;
 
 
 ALTER TABLE `ss_payment_admin`

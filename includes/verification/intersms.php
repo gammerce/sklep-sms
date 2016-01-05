@@ -1,6 +1,6 @@
 <?php
 
-$heart->register_payment_module("intersms", "PaymentModuleIntersms");
+//$heart->register_payment_module("intersms", "PaymentModuleIntersms");
 
 class PaymentModuleIntersms extends PaymentModule implements IPayment_Sms
 {
@@ -79,8 +79,8 @@ class PaymentModuleIntersms extends PaymentModule implements IPayment_Sms
 				return IPayment_Sms::MISCONFIGURATION;
 			}
 
-			// Check whether prices are equal
-			if (abs(get_sms_cost_brutto($number) - intval($amount * 2)) < 10) {
+			// Check whether prices are almost equal
+			if (abs(get_sms_cost($number) - $amount) < 10) {
 				return IPayment_Sms::OK;
 			}
 
