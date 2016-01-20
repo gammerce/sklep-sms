@@ -1,18 +1,8 @@
 INSERT IGNORE INTO `ss_transaction_services` (`id`, `name`, `data`, `data_hidden`, `sms`, `transfer`) VALUES
   ('bizneshost', 'Biznes-Host', '{"uid":"","sms_text":"HPAY.BH"}', '', 1, 0),
-  ('intersms', 'InterSMS', '{"sms_text":"","user_id":"","client_key":""}', '', 1, 0),
   ('hostplay', 'HostPlay', '{"sms_text":"HPAY.HOSTPLAY","user_id":""}', '', 1, 0);
 
 INSERT IGNORE INTO `ss_sms_numbers` (`number`, `tariff`, `service`) VALUES
-  ('7143', 1, 'intersms'),
-  ('72550', 2, 'intersms'),
-  ('73550', 3, 'intersms'),
-  ('74550', 4, 'intersms'),
-  ('75550', 5, 'intersms'),
-  ('76550', 6, 'intersms'),
-  ('79550', 9, 'intersms'),
-  ('91909', 19, 'intersms'),
-  ('92505', 25, 'intersms'),
   ('7055', 26, 'hostplay'),
   ('7155', 1, 'hostplay'),
   ('7255', 2, 'hostplay'),
