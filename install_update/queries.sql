@@ -25,3 +25,6 @@ INSERT IGNORE INTO `ss_sms_numbers` (`number`, `tariff`, `service`) VALUES
   ('7955', 9, 'bizneshost'),
   ('91955', 19, 'bizneshost'),
   ('92520', 25, 'bizneshost');
+  
+DELETE FROM `ss_sms_numbers`
+WHERE `number` = '70567' AND `tariff` = 26 AND `service` = 'pukawka';

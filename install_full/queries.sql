@@ -356,7 +356,6 @@ INSERT INTO `ss_sms_numbers` (`number`, `tariff`, `service`) VALUES
   ('7055', 26, 'profitsms'),
   ('7055', 26, 'simpay'),
   ('70567', 26, 'cashbill'),
-  ('70567', 26, 'pukawka'),
   ('7136', 1, '1s1k'),
   ('7255', 2, '1s1k'),
   ('7355', 3, '1s1k'),
