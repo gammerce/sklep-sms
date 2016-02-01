@@ -53,16 +53,19 @@ class PageAdminPaymentSms extends PageAdmin
 
 		// Wyszukujemy platnosci o konkretnym ID
 		if (isset($get['payid'])) {
-			if (strlen($where))
+			if (strlen($where)) {
 				$where .= " AND ";
+			}
 
 			$where .= $db->prepare("( t.payment_id = '%s' ) ", array($get['payid']));
 
 			// Podświetlenie konkretnej płatności
 			//$row['class'] = "highlighted";
 		} // Wyszukujemy dane ktore spelniaja kryteria
-		else if (isset($get['search'])) {
-			searchWhere(array("t.payment_id", "t.sms_text", "t.sms_code", "t.sms_number"), $get['search'], $where);
+		else {
+			if (isset($get['search'])) {
+				searchWhere(array("t.payment_id", "t.sms_text", "t.sms_code", "t.sms_number"), $get['search'], $where);
+			}
 		}
 
 		if (isset($get['payid'])) {

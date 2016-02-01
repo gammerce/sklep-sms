@@ -54,9 +54,9 @@ class DOMElement implements I_ToHtml
 	/**
 	 * @param string|null $value
 	 */
-	function __construct($value = NULL)
+	function __construct($value = null)
 	{
-		if ($value !== NULL) {
+		if ($value !== null) {
 			$this->addContent(new String($value));
 		}
 
@@ -69,18 +69,21 @@ class DOMElement implements I_ToHtml
 
 		$style = array();
 		foreach ((array)$this->getParam('style') as $key => $value) {
-			if (!strlen($value))
+			if (!strlen($value)) {
 				continue;
+			}
 
 			$style[] = htmlspecialchars($key) . ': ' . htmlspecialchars($value);
 		}
-		if (!empty($style))
+		if (!empty($style)) {
 			$this->setParam('style', implode('; ', $style));
+		}
 
 		$params = array();
 		foreach ($this->params as $key => $value) {
-			if (!strlen($value))
+			if (!strlen($value)) {
 				continue;
+			}
 
 			$params[] = htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"';
 		}
@@ -97,6 +100,7 @@ class DOMElement implements I_ToHtml
 		}
 
 		$this->params = $old_params;
+
 		return $output;
 	}
 
@@ -137,6 +141,7 @@ class DOMElement implements I_ToHtml
 
 	/**
 	 * @param string $key
+	 *
 	 * @return I_ToHtml
 	 */
 	public function getContent($key)
@@ -154,6 +159,7 @@ class DOMElement implements I_ToHtml
 
 	/**
 	 * @param $key
+	 *
 	 * @return string|array
 	 */
 	public function getParam($key)
@@ -181,6 +187,7 @@ class DOMElement implements I_ToHtml
 
 	/**
 	 * @param bool $escape
+	 *
 	 * @return string
 	 */
 	public function getName($escape = false)
@@ -249,7 +256,7 @@ class BodyRow extends Row
 {
 
 	/** @var  string */
-	private $db_id = NULL;
+	private $db_id = null;
 
 	/** @var  I_ToHtml[] */
 	private $actions = array();
@@ -376,7 +383,7 @@ class Structure extends DOMElement
 	private $db_rows_amount;
 
 	/** @var  DOMElement */
-	public $foot = NULL;
+	public $foot = null;
 
 	public function toHtml()
 	{
@@ -418,8 +425,9 @@ class Structure extends DOMElement
 		$this->contents = array();
 		$this->addContent($head);
 		$this->addContent($body);
-		if ($this->foot !== NULL)
+		if ($this->foot !== null) {
 			$this->addContent($this->foot);
+		}
 
 		return parent::toHtml();
 	}
@@ -504,7 +512,8 @@ class Wrapper extends Div
 		$this->setParam('class', 'table_structure');
 	}
 
-	public function toHtml() {
+	public function toHtml()
+	{
 		global $templates, $lang;
 
 		$old_contets = $this->contents;
@@ -534,6 +543,7 @@ class Wrapper extends Div
 
 		$output = parent::toHtml();
 		$this->contents = $old_contets;
+
 		return $output;
 	}
 

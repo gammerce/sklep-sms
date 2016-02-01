@@ -58,34 +58,39 @@ class Page_UserOIwnServices extends Page implements I_BeLoggedMust
 				$user_service_ids[] = $row['id'];
 			}
 
-			if (!empty($user_service_ids))
+			if (!empty($user_service_ids)) {
 				$users_services = get_users_services("WHERE us.id IN (" . implode(', ', $user_service_ids) . ")", false);
+			}
 		}
 
 		$user_own_services = '';
 		foreach ($users_services as $user_service) {
-			if (($service_module = $heart->get_service_module($user_service['service'])) === NULL)
+			if (($service_module = $heart->get_service_module($user_service['service'])) === null) {
 				continue;
+			}
 
-			if (!object_implements($service_module, "IService_UserOwnServices"))
+			if (!object_implements($service_module, "IService_UserOwnServices")) {
 				continue;
+			}
 
-			if ($settings['user_edit_service'] && object_implements($service_module, "IService_UserOwnServicesEdit"))
+			if ($settings['user_edit_service'] && object_implements($service_module, "IService_UserOwnServicesEdit")) {
 				$button_edit = create_dom_element("img", "", array(
 					'class' => "edit_row",
-					'src' => "images/pencil.png",
+					'src'   => "images/pencil.png",
 					'title' => $lang->translate('edit'),
 					'style' => array(
 						'height' => '24px'
 					)
 				));
+			}
 
 			$user_own_services .= create_brick($service_module->user_own_service_info_get($user_service, if_isset($button_edit, '')));
 		}
 
 		// Nie znalazło żadnych usług danego użytkownika
-		if (!strlen($user_own_services))
+		if (!strlen($user_own_services)) {
 			$user_own_services = $lang->translate('no_data');
+		}
 
 		$pagination = get_pagination($rows_count, $G_PAGE, "index.php", $get, 4);
 		$pagination_class = strlen($pagination) ? "" : "display_none";

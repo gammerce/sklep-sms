@@ -1,9 +1,9 @@
 DROP TABLE IF EXISTS `ss_payment_admin`;
 CREATE TABLE IF NOT EXISTS `ss_payment_admin` (
-  `id`       INT(11)      NOT NULL AUTO_INCREMENT,
-  `aid`      INT(11)      NOT NULL,
-  `ip`       VARCHAR(16)  NOT NULL DEFAULT '',
-  `platform` TEXT NOT NULL,
+  `id`       INT(11)     NOT NULL AUTO_INCREMENT,
+  `aid`      INT(11)     NOT NULL,
+  `ip`       VARCHAR(16) NOT NULL DEFAULT '',
+  `platform` TEXT        NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `aid` (`aid`)
@@ -199,14 +199,14 @@ VALUES
   ('gxm_exp', 'Doswiadczenie', '', '', 0, 'EXP', 'other', '', '', 5, ''),
   ('resnick', 'Rezerwacja Nicku', '', '<strong>Rezerwacja Nicku</strong> zabezpiecza Twój nick, aby nikt inny nie mógł na nim grać!', 1, 'dni', 'extra_flags', '', 'z', 3, '{"web": "1"}'),
   ('resslot', 'Rezerwacja Slota', '',
-   '<strong>Rezerwacja Slota</strong> pozwala na wejście na serwer bez czekania na wolny slot!', 7, 'dni',
-   'extra_flags', '', 'b', 4, '{"web": "1"}'),
+              '<strong>Rezerwacja Slota</strong> pozwala na wejście na serwer bez czekania na wolny slot!', 7, 'dni',
+              'extra_flags', '', 'b', 4, '{"web": "1"}'),
   ('vip', 'VIP', '',
-   '<strong>VIP</strong> to specjalne bonusy dla graczy, oraz sporo ułatwień podczas rozgrywki. Oferta konta VIP może się nieco różnić w zależności typu rozgrywki. Poniższa lista przedstawia bonusy, na poszczególnych serwerach.',
-   7, 'dni', 'extra_flags', '', 't', 1, '{"web": "1"}'),
+          '<strong>VIP</strong> to specjalne bonusy dla graczy, oraz sporo ułatwień podczas rozgrywki. Oferta konta VIP może się nieco różnić w zależności typu rozgrywki. Poniższa lista przedstawia bonusy, na poszczególnych serwerach.',
+          7, 'dni', 'extra_flags', '', 't', 1, '{"web": "1"}'),
   ('vippro', 'VIP PRO', '',
-   '<strong>VIP PRO</strong> to jeszcze więcej specjalnych bonusów dla graczy, oraz sporo ułatwień podczas rozgrywki. Oferta konta VIP PRO może się nieco różnić w zależności od typu rozgrywki. Poniższa lista przedstawia bonusy, na poszczególnych serwerach.',
-   7, 'dni', 'extra_flags', '', 'btx', 2, '{"web": "1"}'),
+             '<strong>VIP PRO</strong> to jeszcze więcej specjalnych bonusów dla graczy, oraz sporo ułatwień podczas rozgrywki. Oferta konta VIP PRO może się nieco różnić w zależności od typu rozgrywki. Poniższa lista przedstawia bonusy, na poszczególnych serwerach.',
+             7, 'dni', 'extra_flags', '', 'btx', 2, '{"web": "1"}'),
   ('zp_ap', 'Ammo Packs', '', '', 0, 'AP', 'other', '', '', 7, '');
 
 DROP TABLE IF EXISTS `ss_servers`;
@@ -579,10 +579,10 @@ CREATE TABLE IF NOT EXISTS `ss_payment_transfer` (
 
 DROP TABLE IF EXISTS `ss_payment_wallet`;
 CREATE TABLE IF NOT EXISTS `ss_payment_wallet` (
-  `id`       INT(11)      NOT NULL AUTO_INCREMENT,
-  `cost`     INT(11)      NOT NULL DEFAULT '0',
-  `ip`       VARCHAR(16)  NOT NULL DEFAULT '',
-  `platform` TEXT         NOT NULL,
+  `id`       INT(11)     NOT NULL AUTO_INCREMENT,
+  `cost`     INT(11)     NOT NULL DEFAULT '0',
+  `ip`       VARCHAR(16) NOT NULL DEFAULT '',
+  `platform` TEXT        NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
 )

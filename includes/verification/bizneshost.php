@@ -52,9 +52,10 @@ class PaymentModule_Bizneshost extends PaymentModule implements IPayment_Sms
 			}
 
 			$tariff = $this->getTariffBySmsCostBrutto($status_exploded[1]);
+
 			return array(
 				'status' => IPayment_Sms::BAD_NUMBER,
-				'tariff' => !is_null($tariff) ? $tariff->getId() : NULL
+				'tariff' => !is_null($tariff) ? $tariff->getId() : null
 			);
 		}
 

@@ -53,42 +53,50 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 	{
 		global $heart, $settings, $lang;
 
-		if (!is_logged())
+		if (!is_logged()) {
 			return array(
-				'status' => "not_logged_in",
-				'text' => $lang->translate('you_arent_logged'),
+				'status'   => "not_logged_in",
+				'text'     => $lang->translate('you_arent_logged'),
 				'positive' => false
 			);
+		}
 
 		// Są tylko dwie metody doładowania portfela
-		if (!in_array($data['method'], array("sms", "transfer")))
+		if (!in_array($data['method'], array("sms", "transfer"))) {
 			return array(
-				'status' => "wrong_method",
-				'text' => $lang->translate('wrong_charge_method'),
+				'status'   => "wrong_method",
+				'text'     => $lang->translate('wrong_charge_method'),
 				'positive' => false
 			);
+		}
 
 		$warnings = array();
 
 		if ($data['method'] == "sms") {
-			if (!strlen($data['tariff']))
+			if (!strlen($data['tariff'])) {
 				$warnings['tariff'][] = $lang->translate('charge_amount_not_chosen');
-		} else if ($data['method'] == "transfer") {
-			// Kwota doładowania
-			if ($warning = check_for_warnings("number", $data['transfer_amount']))
-				$warnings['transfer_amount'] = array_merge((array)$warnings['transfer_amount'], $warning);
-			if ($data['transfer_amount'] <= 1)
-				$warnings['transfer_amount'][] = $lang->sprintf($lang->translate('charge_amount_too_low'), "1.00 " . $settings['currency']);
+			}
+		} else {
+			if ($data['method'] == "transfer") {
+				// Kwota doładowania
+				if ($warning = check_for_warnings("number", $data['transfer_amount'])) {
+					$warnings['transfer_amount'] = array_merge((array)$warnings['transfer_amount'], $warning);
+				}
+				if ($data['transfer_amount'] <= 1) {
+					$warnings['transfer_amount'][] = $lang->sprintf($lang->translate('charge_amount_too_low'), "1.00 " . $settings['currency']);
+				}
+			}
 		}
 
 		// Jeżeli są jakieś błedy, to je zwróć
-		if (!empty($warnings))
+		if (!empty($warnings)) {
 			return array(
-				'status' => "warnings",
-				'text' => $lang->translate('form_wrong_filled'),
+				'status'   => "warnings",
+				'text'     => $lang->translate('form_wrong_filled'),
 				'positive' => false,
-				'data' => array('warnings' => $warnings)
+				'data'     => array('warnings' => $warnings)
 			);
+		}
 
 		$purchase_data = new Entity_Purchase();
 		$purchase_data->setService($this->service['id']);
@@ -104,20 +112,22 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 			$purchase_data->setOrder(array(
 				'amount' => $heart->getTariff($data['tariff'])->getProvision()
 			));
-		} else if ($data['method'] == "transfer") {
-			$purchase_data->setPayment(array(
-				'cost' => $data['transfer_amount'] * 100,
-				'no_sms' => true
-			));
-			$purchase_data->setOrder(array(
-				'amount' => $data['transfer_amount'] * 100
-			));
+		} else {
+			if ($data['method'] == "transfer") {
+				$purchase_data->setPayment(array(
+					'cost'   => $data['transfer_amount'] * 100,
+					'no_sms' => true
+				));
+				$purchase_data->setOrder(array(
+					'amount' => $data['transfer_amount'] * 100
+				));
+			}
 		}
 
 		return array(
-			'status' => "ok",
-			'text' => $lang->translate('purchase_form_validated'),
-			'positive' => true,
+			'status'        => "ok",
+			'text'          => $lang->translate('purchase_form_validated'),
+			'positive'      => true,
 			'purchase_data' => $purchase_data
 		);
 	}
@@ -129,6 +139,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 		$amount = number_format($purchase_data->getOrder('amount') / 100, 2);
 
 		$output = eval($templates->render("services/" . $this::MODULE_ID . "/order_details", true, false));
+
 		return $output;
 	}
 
@@ -148,7 +159,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 	{
 		global $heart, $settings, $lang, $templates;
 
-		$data['amount'] .=  ' ' . $settings['currency'];
+		$data['amount'] .= ' ' . $settings['currency'];
 		$data['cost'] = number_format($data['cost'] / 100, 2) . ' ' . $settings['currency'];
 
 		if ($data['payment'] == "sms") {
@@ -161,16 +172,21 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
 			if ($data['payment'] == "sms") {
 				$desc = $lang->sprintf($lang->translate('wallet_was_charged'), $data['amount']);
 				$output = eval($templates->render("services/" . $this::MODULE_ID . "/web_purchase_info_sms", true, false));
-			} else if ($data['payment'] == "transfer") {
-				$output = eval($templates->render("services/" . $this::MODULE_ID . "/web_purchase_info_transfer", true, false));
+			} else {
+				if ($data['payment'] == "transfer") {
+					$output = eval($templates->render("services/" . $this::MODULE_ID . "/web_purchase_info_transfer", true, false));
+				}
 			}
 
 			return $output;
-		} else if ($action == "payment_log")
-			return array(
-				'text' => $lang->sprintf($lang->translate('wallet_was_charged'), $data['amount']),
-				'class' => "income"
-			);
+		} else {
+			if ($action == "payment_log") {
+				return array(
+					'text'  => $lang->sprintf($lang->translate('wallet_was_charged'), $data['amount']),
+					'class' => "income"
+				);
+			}
+		}
 	}
 
 	public function description_short_get()

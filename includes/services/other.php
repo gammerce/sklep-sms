@@ -34,20 +34,21 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
 
 		// Serwer
 		$server = array();
-		if (!strlen($purchase_data->getOrder('server')))
+		if (!strlen($purchase_data->getOrder('server'))) {
 			$warnings['server'][] = $lang->translate('must_choose_server');
-		else {
+		} else {
 			// Sprawdzanie czy serwer o danym id istnieje w bazie
 			$server = $heart->get_server($purchase_data->getOrder('server'));
-			if (!$heart->server_service_linked($server['id'], $this->service['id']))
+			if (!$heart->server_service_linked($server['id'], $this->service['id'])) {
 				$warnings['server'][] = $lang->translate('chosen_incorrect_server');
+			}
 		}
 
 		// Wartość usługi
 		$price = array();
-		if (!strlen($purchase_data->getTariff()))
+		if (!strlen($purchase_data->getTariff())) {
 			$warnings['value'][] = $lang->translate('must_choose_amount');
-		else {
+		} else {
 			// Wyszukiwanie usługi o konkretnej cenie
 			$result = $db->query($db->prepare(
 				"SELECT * FROM `" . TABLE_PREFIX . "pricelist` " .
@@ -56,31 +57,34 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
 			));
 
 			if (!$db->num_rows($result)) // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
+			{
 				return array(
-					'status' => "no_option",
-					'text' => $lang->translate('service_not_affordable'),
+					'status'   => "no_option",
+					'text'     => $lang->translate('service_not_affordable'),
 					'positive' => false
 				);
+			}
 
 			$price = $db->fetch_array_assoc($result);
 		}
 
 		// E-mail
-		if (strlen($purchase_data->getEmail()) && $warning = check_for_warnings("email", $purchase_data->getEmail()))
+		if (strlen($purchase_data->getEmail()) && $warning = check_for_warnings("email", $purchase_data->getEmail())) {
 			$warnings['email'] = array_merge((array)$warnings['email'], $warning);
+		}
 
 		// Jeżeli są jakieś błedy, to je zwróć
 		if (!empty($warnings)) {
 			return array(
-				'status' => "warnings",
-				'text' => $lang->translate('form_wrong_filled'),
+				'status'   => "warnings",
+				'text'     => $lang->translate('form_wrong_filled'),
 				'positive' => false,
-				'data' => array('warnings' => $warnings)
+				'data'     => array('warnings' => $warnings)
 			);
 		}
 
 		$purchase_data->setOrder(array(
-			'amount' => $price['amount'],
+			'amount'  => $price['amount'],
 			'forever' => $price['amount'] == -1 ? true : false
 		));
 
@@ -89,9 +93,9 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
 		));
 
 		return array(
-			'status' => "ok",
-			'text' => $lang->translate('purchase_form_validated'),
-			'positive' => true,
+			'status'        => "ok",
+			'text'          => $lang->translate('purchase_form_validated'),
+			'positive'      => true,
 			'purchase_data' => $purchase_data
 		);
 	}

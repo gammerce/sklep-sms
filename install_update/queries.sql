@@ -25,6 +25,43 @@ INSERT IGNORE INTO `ss_sms_numbers` (`number`, `tariff`, `service`) VALUES
   ('7955', 9, 'bizneshost'),
   ('91955', 19, 'bizneshost'),
   ('92520', 25, 'bizneshost');
-  
+
 DELETE FROM `ss_sms_numbers`
 WHERE `number` = '70567' AND `tariff` = 26 AND `service` = 'pukawka';
+
+ALTER TABLE `ss_payment_admin` CHANGE `platform`  `platform` TEXT
+CHARACTER SET utf8 NOT NULL;
+
+ALTER TABLE `ss_payment_code` CHANGE `platform`  `platform` TEXT
+CHARACTER SET utf8 NOT NULL;
+
+ALTER TABLE `ss_payment_sms` CHANGE `platform`  `platform` TEXT
+CHARACTER SET utf8 NOT NULL;
+
+ALTER TABLE `ss_payment_transfer` CHANGE `platform`  `platform` TEXT
+CHARACTER SET utf8 NOT NULL;
+
+ALTER TABLE `ss_payment_wallet` CHANGE `platform`  `platform` TEXT
+CHARACTER SET utf8 NOT NULL;
+
+ALTER TABLE `ss_users`
+CHANGE `email`  `email` VARCHAR(128)
+CHARACTER SET utf8 NOT NULL DEFAULT '',
+CHANGE `regip`  `regip` VARCHAR(16)
+CHARACTER SET utf8 NOT NULL DEFAULT '',
+CHANGE `lastip`  `lastip` VARCHAR(16)
+CHARACTER SET utf8 NOT NULL DEFAULT '',
+CHANGE `reset_password_key`  `reset_password_key` VARCHAR(32)
+CHARACTER SET utf8 NOT NULL DEFAULT '';
+
+ALTER TABLE `ss_bought_services`
+CHANGE `email`  `email` VARCHAR(128)
+CHARACTER SET utf8 NOT NULL DEFAULT '',
+CHANGE `auth_data`  `auth_data` VARCHAR(32)
+CHARACTER SET utf8 NOT NULL DEFAULT '',
+CHANGE `amount`  `amount` VARCHAR(32)
+CHARACTER SET utf8 NOT NULL DEFAULT '';
+
+ALTER TABLE `ss_servers`
+CHANGE `version`  `version` VARCHAR(8)
+CHARACTER SET utf8 NOT NULL DEFAULT '';

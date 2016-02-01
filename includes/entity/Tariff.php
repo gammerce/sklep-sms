@@ -25,12 +25,12 @@ class Entity_Tariff
 	 * @param bool $predefined
 	 * @param string | null $number
 	 */
-	function __construct($id, $provision, $predefined, $number = NULL)
+	function __construct($id, $provision, $predefined, $number = null)
 	{
 		$this->id = (int)$id;
 		$this->provision = (int)$provision;
 		$this->predefined = (bool)$predefined;
-		$this->number = isset($number) ? (string)$number : NULL;
+		$this->number = isset($number) ? (string)$number : null;
 	}
 
 	/**

@@ -32,13 +32,13 @@ class PaymentModule_Simpay extends PaymentModule implements IPayment_Sms
 	public function verify_sms($sms_code, $sms_number)
 	{
 		$response = curl_get_contents('https://simpay.pl/api/1/status', 10, true, array(
-			'auth' => array(
-				'key' => $this->key,
+			'auth'       => array(
+				'key'    => $this->key,
 				'secret' => $this->secret
 			),
 			'service_id' => $this->service_id,
-			'number' => $sms_number,
-			'code' => $sms_code
+			'number'     => $sms_number,
+			'code'       => $sms_code
 		));
 
 		if (!$response) {
@@ -50,7 +50,7 @@ class PaymentModule_Simpay extends PaymentModule implements IPayment_Sms
 		if (isset($response['respond']['status']) && $response['respond']['status'] == 'OK') {
 			return array(
 				'status' => IPayment_Sms::OK,
-				'free' => $response['respond']['test']
+				'free'   => $response['respond']['test']
 			);
 		}
 
@@ -67,7 +67,7 @@ class PaymentModule_Simpay extends PaymentModule implements IPayment_Sms
 
 			return array(
 				'status' => IPayment_Sms::UNKNOWN,
-				'text' => $response['error'][0]['error_name']
+				'text'   => $response['error'][0]['error_name']
 			);
 		}
 

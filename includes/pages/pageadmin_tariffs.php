@@ -69,11 +69,12 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
 	{
 		global $heart, $lang, $settings, $templates; // settings potrzebne
 
-		if (!get_privilages("manage_settings"))
+		if (!get_privilages("manage_settings")) {
 			return array(
 				'status' => "not_logged_in",
-				'text' => $lang->translate('not_logged_or_no_perm')
+				'text'   => $lang->translate('not_logged_or_no_perm')
 			);
+		}
 
 		switch ($box_id) {
 			case "tariff_add":
@@ -89,7 +90,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
 		}
 
 		return array(
-			'status' => 'ok',
+			'status'   => 'ok',
 			'template' => $output
 		);
 	}

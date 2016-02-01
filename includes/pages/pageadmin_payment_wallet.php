@@ -45,8 +45,9 @@ class PageAdminPaymentWallet extends PageAdmin
 		$table->addHeadCell(new Cell($lang->translate('date')));
 
 		$where = "";
-		if (isset($get['payid']))
+		if (isset($get['payid'])) {
 			$where .= $db->prepare(" AND `payment_id` = '%d' ", array($get['payid']));
+		}
 
 		$result = $db->query(
 			"SELECT SQL_CALC_FOUND_ROWS * " .

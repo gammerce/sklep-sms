@@ -79,11 +79,12 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
 	{
 		global $heart, $lang, $templates;
 
-		if (!get_privilages("manage_sms_codes"))
+		if (!get_privilages("manage_sms_codes")) {
 			return array(
 				'status' => "not_logged_in",
-				'text' => $lang->translate('not_logged_or_no_perm')
+				'text'   => $lang->translate('not_logged_or_no_perm')
 			);
+		}
 
 		switch ($box_id) {
 			case "sms_code_add":
@@ -99,7 +100,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
 		}
 
 		return array(
-			'status' => 'ok',
+			'status'   => 'ok',
 			'template' => $output
 		);
 	}

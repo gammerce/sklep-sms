@@ -15,9 +15,11 @@ if ($G_PID == "login") {
 		if ($_SESSION['info'] == "wrong_data") {
 			$text = $lang->translate('wrong_login_data');
 			$warning = eval($templates->render("admin/login_warning"));
-		} else if ($_SESSION['info'] == "no_privilages") {
-			$text = $lang->translate('no_access');
-			$warning = eval($templates->render("admin/login_warning"));
+		} else {
+			if ($_SESSION['info'] == "no_privilages") {
+				$text = $lang->translate('no_access');
+				$warning = eval($templates->render("admin/login_warning"));
+			}
 		}
 		unset($_SESSION['info']);
 	}
@@ -27,8 +29,9 @@ if ($G_PID == "login") {
 
 	$get_data = "";
 	// Fromatujemy dane get
-	foreach ($_GET as $key => $value)
+	foreach ($_GET as $key => $value) {
 		$get_data .= (!strlen($get_data) ? '?' : '&') . "{$key}={$value}";
+	}
 
 	// Pobranie szablonu logowania
 	$output = eval($templates->render("admin/login"));
@@ -47,7 +50,7 @@ if (get_privilages("view_player_flags")) {
 }
 if (get_privilages("view_user_services")) {
 	$pid = '';
-	foreach($heart->get_services_modules() as $module_data) {
+	foreach ($heart->get_services_modules() as $module_data) {
 		if (in_array('IService_UserServiceAdminDisplay', class_implements($module_data['class']))) {
 			$pid = "user_service&subpage=" . urlencode($module_data['id']);
 			break;

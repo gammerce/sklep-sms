@@ -22,12 +22,14 @@ class PageTakeOverService extends Page implements I_BeLoggedMust
 		$services_options = "";
 		$services = $heart->get_services();
 		foreach ($services as $service) {
-			if (($service_module = $heart->get_service_module($service['id'])) === NULL)
+			if (($service_module = $heart->get_service_module($service['id'])) === null) {
 				continue;
+			}
 
 			// Moduł danej usługi nie zezwala na jej przejmowanie
-			if (!object_implements($service_module, "IService_TakeOver"))
+			if (!object_implements($service_module, "IService_TakeOver")) {
 				continue;
+			}
 
 			$services_options .= create_dom_element("option", $service['name'], array(
 				'value' => $service['id']
@@ -35,6 +37,7 @@ class PageTakeOverService extends Page implements I_BeLoggedMust
 		}
 
 		$output = eval($templates->render("service_take_over"));
+
 		return $output;
 	}
 

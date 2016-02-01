@@ -23,18 +23,18 @@ class PaymentModule_1s1k extends PaymentModule implements IPayment_Sms
 		$this->sms_code = $this->data['sms_text'];
 
 		$this->rates = array(
-			'0.65' => '7136',
-			'1.30' => '7255',
-			'1.95' => '7355',
-			'2.60' => '7455',
-			'3.25' => '7555',
-			'3.90' => '7636',
-			'4.55' => '77464',
-			'5.20' => '78464',
-			'5.85' => '7936',
-			'6.50' => '91055',
-			'7.15' => '91155',
-			'9.10' => '91455',
+			'0.65'  => '7136',
+			'1.30'  => '7255',
+			'1.95'  => '7355',
+			'2.60'  => '7455',
+			'3.25'  => '7555',
+			'3.90'  => '7636',
+			'4.55'  => '77464',
+			'5.20'  => '78464',
+			'5.85'  => '7936',
+			'6.50'  => '91055',
+			'7.15'  => '91155',
+			'9.10'  => '91455',
 			'10.40' => '91664',
 			'12.35' => '91955',
 			'13.00' => '92055',
@@ -52,7 +52,7 @@ class PaymentModule_1s1k extends PaymentModule implements IPayment_Sms
 			'&comment='
 		);
 
-		if ($content === FALSE) {
+		if ($content === false) {
 			return IPayment_Sms::NO_CONNECTION;
 		}
 
@@ -89,7 +89,7 @@ class PaymentModule_1s1k extends PaymentModule implements IPayment_Sms
 
 				return array(
 					'status' => IPayment_Sms::UNKNOWN,
-					'text' => $response['desc']
+					'text'   => $response['desc']
 				);
 		}
 

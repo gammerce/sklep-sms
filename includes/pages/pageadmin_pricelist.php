@@ -90,11 +90,12 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
 	{
 		global $heart, $db, $lang, $templates;
 
-		if (!get_privilages("manage_settings"))
+		if (!get_privilages("manage_settings")) {
 			return array(
 				'status' => "not_logged_in",
-				'text' => $lang->translate('not_logged_or_no_perm')
+				'text'   => $lang->translate('not_logged_or_no_perm')
 			);
+		}
 
 		if ($box_id == "price_edit") {
 			$result = $db->query($db->prepare(
@@ -109,27 +110,30 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
 
 		// Pobranie usług
 		$services = "";
-		foreach ($heart->get_services() as $service_id => $service)
+		foreach ($heart->get_services() as $service_id => $service) {
 			$services .= create_dom_element("option", $service['name'] . " ( " . $service['id'] . " )", array(
-				'value' => $service['id'],
+				'value'    => $service['id'],
 				'selected' => isset($price) && $price['service'] == $service['id'] ? "selected" : ""
 			));
+		}
 
 		// Pobranie serwerów
 		$servers = "";
-		foreach ($heart->get_servers() as $server_id => $server)
+		foreach ($heart->get_servers() as $server_id => $server) {
 			$servers .= create_dom_element("option", $server['name'], array(
-				'value' => $server['id'],
+				'value'    => $server['id'],
 				'selected' => isset($price) && $price['server'] == $server['id'] ? "selected" : ""
 			));
+		}
 
 		// Pobranie taryf
 		$tariffs = "";
-		foreach ($heart->getTariffs() as $tariff)
+		foreach ($heart->getTariffs() as $tariff) {
 			$tariffs .= create_dom_element("option", $tariff->getId(), array(
-				'value' => $tariff->getId(),
+				'value'    => $tariff->getId(),
 				'selected' => isset($price) && $price['tariff'] == $tariff->getId() ? "selected" : ""
 			));
+		}
 
 		switch ($box_id) {
 			case "price_add":
@@ -142,7 +146,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
 		}
 
 		return array(
-			'status' => 'ok',
+			'status'   => 'ok',
 			'template' => $output
 		);
 	}

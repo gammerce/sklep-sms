@@ -2,7 +2,6 @@
 
 /**
  * Obsługa dodawania nowych kodów na usługę w PA
- *
  * Interface IService_ServiceCodeAdminManage
  */
 interface IService_ServiceCodeAdminManage
@@ -11,6 +10,7 @@ interface IService_ServiceCodeAdminManage
 	 * Metoda sprawdza dane formularza podczas dodawania kodu na usługę w PA
 	 *
 	 * @param array $post Dane $_POST
+	 *
 	 * @return array 'key' (DOM element name) => 'value'
 	 */
 	public function service_code_admin_add_validate($post);
@@ -28,11 +28,12 @@ interface IService_ServiceCodeAdminManage
 	 * można założyć że dane są już prawidłowo zweryfikowane przez metodę service_code_admin_add_validate
 	 *
 	 * @param $data
+	 *
 	 * @return array (
-	 * 		'server'	- integer,
-	 * 		'amount'	- double,
-	 * 		'tariff'	- integer,
-	 * 		'data'		- string
+	 *        'server'    - integer,
+	 *        'amount'    - double,
+	 *        'tariff'    - integer,
+	 *        'data'        - string
 	 * )
 	 */
 	public function service_code_admin_add_insert($data);

@@ -24,14 +24,17 @@ require_once SCRIPT_ROOT . "includes/class_translator.php";
 
 set_exception_handler("exceptionHandler");
 
-if (file_exists(SCRIPT_ROOT . "install/error"))
+if (file_exists(SCRIPT_ROOT . "install/error")) {
 	output_page(INSTALL_ERROR);
+}
 
-if (file_exists(SCRIPT_ROOT . "install/block"))
+if (file_exists(SCRIPT_ROOT . "install/block")) {
 	output_page("Instalacja została już przeprowadzona. Jeżeli chcesz dokonać jej ponownie, usuń plik 'block' z folderu install.");
+}
 
-if (file_exists(SCRIPT_ROOT . "install/progress"))
+if (file_exists(SCRIPT_ROOT . "install/progress")) {
 	output_page("Aktualizacja trwa, lub została błędnie przeprowadzona.");
+}
 
 // Tworzymy obiekt szablonów
 $templates = new Templates();
@@ -49,14 +52,14 @@ $files_priv[] = "install";
 // Wymagane moduły
 $modules = array(
 	array(
-		'text' => "PHP v5.3.0 lub wyższa",
-		'value' => PHP_VERSION_ID >= 50300,
+		'text'    => "PHP v5.3.0 lub wyższa",
+		'value'   => PHP_VERSION_ID >= 50300,
 		'must-be' => false
 	),
 
 	array(
-		'text' => "Moduł cURL",
-		'value' => function_exists('curl_version'),
+		'text'    => "Moduł cURL",
+		'value'   => function_exists('curl_version'),
 		'must-be' => true
 	)
 );

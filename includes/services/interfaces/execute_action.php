@@ -8,6 +8,7 @@ interface IService_ActionExecute
 	 *
 	 * @param string $action Akcja do wykonania
 	 * @param array $post Dane $_POST
+	 *
 	 * @return string
 	 */
 	public function action_execute($action, $post);

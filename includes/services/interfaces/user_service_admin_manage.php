@@ -3,7 +3,6 @@
 /**
  * Obsługa wyświetlania trwających usług użytkowników w PA
  * (Ten interfejs powinien być implementowany w klasie *Simple modułu usługi)
- *
  * Interface IService_UserServiceAdminDisplay
  */
 interface IService_UserServiceAdminDisplay
@@ -20,6 +19,7 @@ interface IService_UserServiceAdminDisplay
 	 *
 	 * @param array $get
 	 * @param array $post
+	 *
 	 * @return Admin\Table\Wrapper | string
 	 */
 	public function user_service_admin_display_get($get, $post);
@@ -27,7 +27,6 @@ interface IService_UserServiceAdminDisplay
 
 /**
  * Obsługa dodawania usług użytkownika w PA
- *
  * Interface IService_UserServiceAdminAdd
  */
 interface IService_UserServiceAdminAdd
@@ -37,6 +36,7 @@ interface IService_UserServiceAdminAdd
 	 * i gdy wszystko jest okej, to ją dodaje.
 	 *
 	 * @param array $post Dane $_POST
+	 *
 	 * @return array
 	 *  status => id wiadomości
 	 *  text => treść wiadomości
@@ -55,7 +55,6 @@ interface IService_UserServiceAdminAdd
 
 /**
  * Obsługa edycji usług użytkownika w PA
- *
  * Interface IService_UserServiceAdminEdit
  */
 interface IService_UserServiceAdminEdit
@@ -66,6 +65,7 @@ interface IService_UserServiceAdminEdit
 	 *
 	 * @param array $post Dane $_POST
 	 * @param array $user_service Obecne dane edytowanej usługi
+	 *
 	 * @return array
 	 *  'status' => id wiadomości,
 	 *  'text' => treść wiadomości
@@ -77,7 +77,8 @@ interface IService_UserServiceAdminEdit
 	 * Metoda powinna zwrócić dodatkowe pola usługi
 	 * podczas jej edycji w PA
 	 *
-	 * @param array $user_service	- dane edytowanej usługi
+	 * @param array $user_service - dane edytowanej usługi
+	 *
 	 * @return string
 	 */
 	public function user_service_admin_edit_form_get($user_service);

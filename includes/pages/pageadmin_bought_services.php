@@ -97,9 +97,11 @@ class PageAdminBoughtServices extends PageAdmin
 
 				if ($key == "password") {
 					$key = $lang->translate('password');
-				} else if ($key == "type") {
-					$key = $lang->translate('type');
-					$value = get_type_name($value);
+				} else {
+					if ($key == "type") {
+						$key = $lang->translate('type');
+						$value = get_type_name($value);
+					}
 				}
 
 				$extra_data[] = $key . ': ' . $value;

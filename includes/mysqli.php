@@ -16,6 +16,7 @@ class SqlQueryException extends Exception
 
 	/**
 	 * @param bool $escape
+	 *
 	 * @return string
 	 */
 	public function getQuery($escape = true)
@@ -95,8 +96,9 @@ class Database
 		$this->user = $user;
 		$this->pass = $pass;
 		$this->name = $name;
-		if ($conn)
+		if ($conn) {
 			$this->connect();
+		}
 	}
 
 	function __destruct()
@@ -107,8 +109,9 @@ class Database
 	public function connect()
 	{
 		if ($this->link = @mysqli_connect($this->host, $this->user, $this->pass)) {
-			if (!@mysqli_select_db($this->link, $this->name))
+			if (!@mysqli_select_db($this->link, $this->name)) {
 				$this->exception("no_db_connection");
+			}
 		} else {
 			$this->error = mysqli_connect_error();
 			$this->errno = mysqli_connect_errno();
@@ -141,6 +144,7 @@ class Database
 			return $this->result;
 		} else {
 			$this->exception("query_error");
+
 			return false;
 		}
 	}
@@ -153,6 +157,7 @@ class Database
 			return $this->result;
 		} else {
 			$this->exception("query_error");
+
 			return false;
 		}
 	}
@@ -162,12 +167,14 @@ class Database
 		$this->query = $query;
 		$result = $this->query($query);
 
-		if (!$this->num_rows($result))
-			return NULL;
+		if (!$this->num_rows($result)) {
+			return null;
+		}
 
 		$row = $this->fetch_array_assoc($result);
-		if (!isset($row[$column]))
-			return NULL;
+		if (!isset($row[$column])) {
+			return null;
+		}
 
 		return $row[$column];
 	}
@@ -176,6 +183,7 @@ class Database
 	{
 		if (empty($result)) {
 			$this->exception("no_query_num_rows");
+
 			return false;
 		} else {
 			return mysqli_num_rows($result);
@@ -186,10 +194,12 @@ class Database
 	{
 		if (empty($result)) {
 			$this->exception("no_query_fetch_array_assoc");
+
 			return false;
 		} else {
 			$data = mysqli_fetch_assoc($result);
 		}
+
 		return $data;
 	}
 
@@ -197,10 +207,12 @@ class Database
 	{
 		if (empty($result)) {
 			$this->exception("no_query_fetch_array");
+
 			return false;
 		} else {
 			$data = mysqli_fetch_array($result);
 		}
+
 		return $data;
 	}
 
@@ -245,11 +257,7 @@ class Database
 		global $settings, $lang, $templates;
 
 		if (strlen($e->getQuery())) {
-			$text = date($settings['date_format']) . ": " . $e->getQuery(false);
-			if (!file_exists(SQL_LOG) || !strlen(file_get_contents(SQL_LOG)))
-				file_put_contents(SQL_LOG, $text);
-			else
-				file_put_contents(SQL_LOG, file_get_contents(SQL_LOG) . "\n\n" . $text);
+			log_to_file(SQL_LOG, $e->getQuery(false));
 		}
 
 		$message = $lang->translate('mysqli_' . $e->getMessage());

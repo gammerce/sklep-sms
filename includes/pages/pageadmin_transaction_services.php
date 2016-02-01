@@ -71,11 +71,12 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
 	{
 		global $db, $lang, $templates;
 
-		if (!get_privilages("manage_settings"))
+		if (!get_privilages("manage_settings")) {
 			return array(
 				'status' => "not_logged_in",
-				'text' => $lang->translate('not_logged_or_no_perm')
+				'text'   => $lang->translate('not_logged_or_no_perm')
 			);
+		}
 
 		switch ($box_id) {
 			case "transaction_service_edit":
@@ -112,7 +113,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
 		}
 
 		return array(
-			'status' => 'ok',
+			'status'   => 'ok',
 			'template' => $output
 		);
 	}

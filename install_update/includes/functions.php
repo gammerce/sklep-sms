@@ -17,8 +17,9 @@ function update_info(&$everything_ok)
 
 		$server_modules .= eval($templates->install_render('module'));
 
-		if (!$module['value'] && $module['must-be'])
+		if (!$module['value'] && $module['must-be']) {
 			$everything_ok = false;
+		}
 	}
 	if (strlen($server_modules)) {
 		$text = "Moduły na serwerze";
@@ -28,12 +29,13 @@ function update_info(&$everything_ok)
 
 	$files_privilages = '';
 	foreach ($files_priv as $file) {
-		if (!strlen($file))
+		if (!strlen($file)) {
 			continue;
+		}
 
-		if (is_writable(SCRIPT_ROOT . $file))
+		if (is_writable(SCRIPT_ROOT . $file)) {
 			$status = "ok";
-		else {
+		} else {
 			$status = "bad";
 			$everything_ok = false;
 		}
@@ -48,12 +50,13 @@ function update_info(&$everything_ok)
 
 	$files_delete = '';
 	foreach ($files_del as $file) {
-		if (!strlen($file))
+		if (!strlen($file)) {
 			continue;
+		}
 
-		if (!file_exists(SCRIPT_ROOT . $file))
+		if (!file_exists(SCRIPT_ROOT . $file)) {
 			$status = "ok";
-		else {
+		} else {
 			$status = "bad";
 			$everything_ok = false;
 		}
@@ -95,6 +98,7 @@ function SplitSQL($file, $delimiter = ';')
 			}
 
 			fclose($file);
+
 			return $queries;
 		}
 	}

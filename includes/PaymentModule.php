@@ -69,8 +69,9 @@ abstract class PaymentModule
 
 			$this->tariffs[$tariff->getId()] = $tariff;
 
-			if ($tariff->getNumber() !== NULL)
+			if ($tariff->getNumber() !== null) {
 				$this->tariffs[$tariff->getNumber()] = $tariff;
+			}
 		}
 	}
 
@@ -100,26 +101,29 @@ abstract class PaymentModule
 
 	/**
 	 * @param int $tariff_id
+	 *
 	 * @return Entity_Tariff
 	 */
 	public function getTariffById($tariff_id)
 	{
-		return if_isset($this->tariffs[$tariff_id], NULL);
+		return if_isset($this->tariffs[$tariff_id], null);
 	}
 
 	/**
 	 * @param string $number
+	 *
 	 * @return Entity_Tariff
 	 */
 	public function getTariffByNumber($number)
 	{
-		return if_isset($this->tariffs[$number], NULL);
+		return if_isset($this->tariffs[$number], null);
 	}
 
 	/**
 	 * Returns tariff by sms cost brutto
 	 *
 	 * @param float $cost
+	 *
 	 * @return Entity_Tariff|null
 	 */
 	public function getTariffBySmsCostBrutto($cost)
@@ -130,7 +134,7 @@ abstract class PaymentModule
 			}
 		}
 
-		return NULL;
+		return null;
 	}
 
 	/**

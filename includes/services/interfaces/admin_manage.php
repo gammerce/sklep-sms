@@ -3,10 +3,10 @@
 /**
  * Obsługa dodawania nowych usług w PA
  * (Ten interfejs powinien być implementowany w klasie *Simple modułu usługi)
- *
  * Interface IService_AdminManage
  */
-interface IService_AdminManage {
+interface IService_AdminManage
+{
 
 	/**
 	 * Metoda wywoływana przy edytowaniu lub dodawaniu usługi w PA
@@ -21,6 +21,7 @@ interface IService_AdminManage {
 	 * jak coś się jej nie spodoba to zwraca o tym info w tablicy
 	 *
 	 * @param array $post Dane $_POST
+	 *
 	 * @return array
 	 *  'key' => DOM Element name
 	 *  'value' => Array of error messages
@@ -32,13 +33,14 @@ interface IService_AdminManage {
 	 * przesłanych w formularzu dodania nowej usługi w PA przebiegła bezproblemowo
 	 *
 	 * @param array $post Dane $_POST
+	 *
 	 * @return array (
-	 * 	'query_set' - array of query SET elements:
-	 * 		array(
-	 * 			'type'	=> '%s'|'%d'|'%f'|'%c'|etc.
-	 * 			'column'=> kolumna
-	 * 			'value'	=> wartość kolumny
-	 * 		)
+	 *    'query_set' - array of query SET elements:
+	 *        array(
+	 *            'type'    => '%s'|'%d'|'%f'|'%c'|etc.
+	 *            'column'=> kolumna
+	 *            'value'    => wartość kolumny
+	 *        )
 	 */
 	public function service_admin_manage_post($post);
 

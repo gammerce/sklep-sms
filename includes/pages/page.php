@@ -18,6 +18,7 @@ abstract class Page
 	 *
 	 * @param array $get - dane get
 	 * @param array $post - dane post
+	 *
 	 * @return string - zawartość do wyświetlenia
 	 */
 	public function get_content($get, $post)
@@ -26,28 +27,36 @@ abstract class Page
 
 		// Dodajemy wszystkie skrypty
 		$path = "jscripts/pages/" . $this::PAGE_ID . "/";
-		if (strlen($this::PAGE_ID) && file_exists(SCRIPT_ROOT . $path))
-			foreach (scandir(SCRIPT_ROOT . $path) as $file)
-				if (ends_at($file, ".js"))
+		if (strlen($this::PAGE_ID) && file_exists(SCRIPT_ROOT . $path)) {
+			foreach (scandir(SCRIPT_ROOT . $path) as $file) {
+				if (ends_at($file, ".js")) {
 					$heart->script_add($settings['shop_url_slash'] . $path . $file . "?version=" . VERSION);
+				}
+			}
+		}
 
 		// Dodajemy wszystkie css
 		$path = "styles/pages/" . $this::PAGE_ID . "/";
-		if (strlen($this::PAGE_ID) && file_exists(SCRIPT_ROOT . $path))
-			foreach (scandir(SCRIPT_ROOT . $path) as $file)
-				if (ends_at($file, ".css"))
+		if (strlen($this::PAGE_ID) && file_exists(SCRIPT_ROOT . $path)) {
+			foreach (scandir(SCRIPT_ROOT . $path) as $file) {
+				if (ends_at($file, ".css")) {
 					$heart->style_add($settings['shop_url_slash'] . $path . $file . "?version=" . VERSION);
+				}
+			}
+		}
 
 		// Globalne jsy cssy konkretnych modułów usług
 		if (in_array($this::PAGE_ID, array("purchase", "user_own_services", "service_take_over", "payment_log"))) {
 			foreach ($heart->get_services_modules() as $module_info) {
 				$path = "styles/services/" . $module_info['id'] . ".css";
-				if (file_exists(SCRIPT_ROOT . $path))
+				if (file_exists(SCRIPT_ROOT . $path)) {
 					$heart->style_add($settings['shop_url_slash'] . $path . "?version=" . VERSION);
+				}
 
 				$path = "jscripts/services/" . $module_info['id'] . ".js";
-				if (file_exists(SCRIPT_ROOT . $path))
+				if (file_exists(SCRIPT_ROOT . $path)) {
 					$heart->script_add($settings['shop_url_slash'] . $path . "?version=" . VERSION);
+				}
 			}
 		}
 
@@ -60,6 +69,7 @@ abstract class Page
 	 *
 	 * @param string $get
 	 * @param string $post
+	 *
 	 * @return string
 	 */
 	abstract protected function content($get, $post);
@@ -69,7 +79,7 @@ abstract class Page
 abstract class PageSimple extends Page
 {
 
-	protected $template = NULL;
+	protected $template = null;
 
 	function __construct()
 	{
@@ -85,6 +95,7 @@ abstract class PageSimple extends Page
 		global $lang, $templates;
 
 		$output = eval($templates->render($this->template));
+
 		return $output;
 	}
 

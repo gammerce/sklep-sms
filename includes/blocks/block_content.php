@@ -23,14 +23,17 @@ class BlockContent extends Block
 	{
 		global $heart, $lang, $G_PID;
 
-		if (($this->page = $heart->get_page($G_PID)) === NULL)
-			return NULL;
+		if (($this->page = $heart->get_page($G_PID)) === null) {
+			return null;
+		}
 
-		if (object_implements($this->page, "I_BeLoggedMust") && !is_logged())
+		if (object_implements($this->page, "I_BeLoggedMust") && !is_logged()) {
 			return $lang->translate('must_be_logged_in');
+		}
 
-		if (object_implements($this->page, "I_BeLoggedCannot") && is_logged())
+		if (object_implements($this->page, "I_BeLoggedCannot") && is_logged()) {
 			return $lang->translate('must_be_logged_out');
+		}
 
 		return $this->content($get, $post);
 	}

@@ -14,41 +14,49 @@ try {
 $warnings = array();
 
 // Licencja ID
-if (!strlen($_POST['license_id']))
+if (!strlen($_POST['license_id'])) {
 	$warnings['license_id'][] = "Nie podano ID licencji.";
+}
 
 // Licencja hasło
-if (!strlen($_POST['license_password']))
+if (!strlen($_POST['license_password'])) {
 	$warnings['license_password'][] = "Nie podano hasła licencji.";
+}
 
 // Admin nick
-if (!strlen($_POST['admin_username']))
+if (!strlen($_POST['admin_username'])) {
 	$warnings['admin_username'][] = "Nie podano nazwy dla użytkownika admin.";
+}
 
 // Admin hasło
-if (!strlen($_POST['admin_password']))
+if (!strlen($_POST['admin_password'])) {
 	$warnings['admin_password'][] = "Nie podano hasła dla użytkownika admin.";
+}
 
 foreach ($files_priv as $file) {
-	if (!strlen($file))
+	if (!strlen($file)) {
 		continue;
+	}
 
-	if (!is_writable(SCRIPT_ROOT . '/' . $file))
+	if (!is_writable(SCRIPT_ROOT . '/' . $file)) {
 		$warnings['general'][] = "Ścieżka <b>" . htmlspecialchars($file) . "</b> nie posiada praw do zapisu.";
+	}
 }
 
 // Sprawdzamy ustawienia modułuów
 foreach ($modules as $module) {
-	if (!$module['value'] && $module['must-be'])
+	if (!$module['value'] && $module['must-be']) {
 		$warnings['general'][] = "Wymaganie: <b>{$module['text']}</b> nie jest spełnione.";
+	}
 }
 
 // Jeżeli są jakieś błedy, to je zwróć
 if (!empty($warnings)) {
 	// Przerabiamy ostrzeżenia, aby lepiej wyglądały
 	foreach ($warnings as $brick => $warning) {
-		if (empty($warning))
+		if (empty($warning)) {
 			continue;
+		}
 
 		if ($brick != "general") {
 			$warning = create_dom_element("div", implode("<br />", $warning), array(

@@ -7,10 +7,11 @@ abstract class Service
 	const USER_SERVICE_TABLE = '';
 	public $service = array();
 
-	function __construct($service = NULL)
+	function __construct($service = null)
 	{
 		if (!is_array($service)) { // Podano błędne dane usługi
-			$this->service = NULL;
+			$this->service = null;
+
 			return;
 		}
 
@@ -31,6 +32,7 @@ abstract class Service
 	 *
 	 * @param array $user_service Dane o usłudze z bazy danych
 	 * @param string $who Kto wywołał akcję ( admin, task )
+	 *
 	 * @return bool
 	 */
 	public function user_service_delete($user_service, $who)
@@ -52,8 +54,9 @@ abstract class Service
 	 */
 	public function show_on_web()
 	{
-		if ($this->service !== NULL)
+		if ($this->service !== null) {
 			return $this->service['data']['web'];
+		}
 
 		return false;
 	}
@@ -91,6 +94,7 @@ abstract class Service
 	 * @param array $set (column, value, data)
 	 * @param string $where1 Where dla update na tabeli user_service
 	 * @param string $where2 Where dla update na tabeli modułu
+	 *
 	 * @return int Ilosc wierszy które zostały zaktualizowane
 	 */
 	protected function update_user_service($set, $where1, $where2)
@@ -112,19 +116,26 @@ abstract class Service
 			}
 
 			// Service jest w obu tabelach
-			if ($data['column'] == 'service')
+			if ($data['column'] == 'service') {
 				$set_data2[] = $set_data;
+			}
 		}
 
-		if (my_is_integer($where1))
+		if (my_is_integer($where1)) {
 			$where1 = "WHERE `id` = {$where1}";
-		else if (strlen($where1))
-			$where1 = "WHERE {$where1}";
+		} else {
+			if (strlen($where1)) {
+				$where1 = "WHERE {$where1}";
+			}
+		}
 
-		if (my_is_integer($where2))
+		if (my_is_integer($where2)) {
 			$where2 = "WHERE `us_id` = {$where2}";
-		else if (strlen($where2))
-			$where2 = "WHERE {$where2}";
+		} else {
+			if (strlen($where2)) {
+				$where2 = "WHERE {$where2}";
+			}
+		}
 
 		$affected = 0;
 		if (!empty($set_data1)) {

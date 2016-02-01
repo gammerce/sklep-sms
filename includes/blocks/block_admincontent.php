@@ -20,8 +20,9 @@ class BlockAdminContent extends Block
 	{
 		global $lang;
 
-		if (!is_logged())
+		if (!is_logged()) {
 			return $lang->translate('must_be_logged_in');
+		}
 
 		return $this->content($get, $post);
 	}
@@ -30,8 +31,9 @@ class BlockAdminContent extends Block
 	{
 		global $heart, $G_PID;
 
-		if (($page = $heart->get_page($G_PID, "admin")) === NULL)
-			return NULL;
+		if (($page = $heart->get_page($G_PID, "admin")) === null) {
+			return null;
+		}
 
 		return $page->get_content($get, $post);
 	}

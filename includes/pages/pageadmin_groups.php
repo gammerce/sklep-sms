@@ -79,7 +79,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
 		if (!get_privilages("manage_groups")) {
 			return array(
 				'status' => "not_logged_in",
-				'text' => $lang->translate('not_logged_or_no_perm')
+				'text'   => $lang->translate('not_logged_or_no_perm')
 			);
 		}
 
@@ -95,11 +95,10 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
 					'class' => 'action_box',
 					'style' => array(
 						'padding' => "20px",
-						'color' => "white"
+						'color'   => "white"
 					)
 				));
-			}
-			else {
+			} else {
 				$group = $db->fetch_array_assoc($result);
 				$group['name'] = htmlspecialchars($group['name']);
 			}
@@ -108,15 +107,17 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
 		$privilages = "";
 		$result = $db->query("DESCRIBE " . TABLE_PREFIX . "groups");
 		while ($row = $db->fetch_array_assoc($result)) {
-			if (in_array($row['Field'], array("id", "name"))) continue;
+			if (in_array($row['Field'], array("id", "name"))) {
+				continue;
+			}
 
 			$values = create_dom_element("option", $lang->strtoupper($lang->translate('no')), array(
-				'value' => 0,
+				'value'    => 0,
 				'selected' => $group[$row['Field']] ? "" : "selected"
 			));
 
 			$values .= create_dom_element("option", $lang->strtoupper($lang->translate('yes')), array(
-				'value' => 1,
+				'value'    => 1,
 				'selected' => $group[$row['Field']] ? "selected" : ""
 			));
 
@@ -137,7 +138,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
 		}
 
 		return array(
-			'status' => 'ok',
+			'status'   => 'ok',
 			'template' => $output
 		);
 	}

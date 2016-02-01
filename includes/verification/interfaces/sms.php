@@ -20,6 +20,7 @@ interface IPayment_Sms
 	 *
 	 * @param string $return_code kod zwrotny
 	 * @param string $number numer na który powinien był zostać wysłany SMS
+	 *
 	 * @return int | array
 	 *  status => zwracany status sms
 	 *  number => numer na który został wysłany SMS

@@ -89,14 +89,16 @@ class Entity_User
 	 * @param string $username
 	 * @param string $password
 	 */
-	function __construct($uid = 0, $username = '', $password = '') {
+	function __construct($uid = 0, $username = '', $password = '')
+	{
 		global $heart, $db;
 
 		$this->platform = $_SERVER['HTTP_USER_AGENT'];
 		$this->lastip = get_ip();
 
-		if (!$uid && (!strlen($username) || !strlen($password)))
+		if (!$uid && (!strlen($username) || !strlen($password))) {
 			return;
+		}
 
 		$result = $db->query($db->prepare(
 			"SELECT * FROM `" . TABLE_PREFIX . "users` " .
@@ -114,7 +116,7 @@ class Entity_User
 			$this->email = $row['email'];
 			$this->forename = $row['forename'];
 			$this->surname = $row['surname'];
-			$this->groups =  explode(';', $row['groups']);
+			$this->groups = explode(';', $row['groups']);
 			$this->regdate = $row['regdate'];
 			$this->lastactiv = $row['lastactiv'];
 			$this->wallet = intval($row['wallet']);
@@ -133,9 +135,11 @@ class Entity_User
 		}
 	}
 
-	public function updateActivity() {
-		if (!$this->isLogged())
+	public function updateActivity()
+	{
+		if (!$this->isLogged()) {
 			return;
+		}
 
 		global $db;
 
@@ -147,7 +151,8 @@ class Entity_User
 		));
 	}
 
-	public function isLogged() {
+	public function isLogged()
+	{
 		return $this->getUid() ? true : false;
 	}
 
@@ -161,6 +166,7 @@ class Entity_User
 
 	/**
 	 * @param bool $escape
+	 *
 	 * @return string
 	 */
 	public function getUsername($escape = true)
@@ -186,6 +192,7 @@ class Entity_User
 
 	/**
 	 * @param bool $escape
+	 *
 	 * @return string
 	 */
 	public function getEmail($escape = true)
@@ -203,6 +210,7 @@ class Entity_User
 
 	/**
 	 * @param bool $escape
+	 *
 	 * @return string
 	 */
 	public function getForename($escape = true)
@@ -212,6 +220,7 @@ class Entity_User
 
 	/**
 	 * @param bool $escape
+	 *
 	 * @return string
 	 */
 	public function getSurname($escape = true)
@@ -245,6 +254,7 @@ class Entity_User
 
 	/**
 	 * @param bool $divide
+	 *
 	 * @return int
 	 */
 	public function getWallet($divide = false)
@@ -302,6 +312,7 @@ class Entity_User
 
 	/**
 	 * @param string $key
+	 *
 	 * @return array
 	 */
 	public function getPrivilages($key)
@@ -314,7 +325,7 @@ class Entity_User
 	 */
 	public function setPrivilages($privilages)
 	{
-		foreach($privilages as $key => $value) {
+		foreach ($privilages as $key => $value) {
 			$this->privilages[$key] = $value;
 		}
 	}
@@ -329,6 +340,7 @@ class Entity_User
 
 	/**
 	 * @param bool $escape
+	 *
 	 * @return string
 	 */
 	public function getPlatform($escape = false)

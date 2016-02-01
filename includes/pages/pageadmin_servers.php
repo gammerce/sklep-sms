@@ -73,11 +73,12 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
 	{
 		global $heart, $db, $lang, $templates;
 
-		if (!get_privilages("manage_servers"))
+		if (!get_privilages("manage_servers")) {
 			return array(
 				'status' => "not_logged_in",
-				'text' => $lang->translate('not_logged_or_no_perm')
+				'text'   => $lang->translate('not_logged_or_no_perm')
 			);
+		}
 
 		if ($box_id == "server_edit") {
 			$server = $heart->get_server($data['id']);
@@ -92,11 +93,12 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
 		);
 		$sms_services = "";
 		while ($row = $db->fetch_array_assoc($result)) {
-			if (!$row['sms'])
+			if (!$row['sms']) {
 				continue;
+			}
 
 			$sms_services .= create_dom_element("option", $row['name'], array(
-				'value' => $row['id'],
+				'value'    => $row['id'],
 				'selected' => $row['id'] == $server['sms_service'] ? "selected" : ""
 			));
 		}
@@ -104,16 +106,17 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
 		$services = "";
 		foreach ($heart->get_services() as $service) {
 			// Dana usługa nie może być kupiona na serwerze
-			if (($service_module = $heart->get_service_module($service['id'])) === NULL || !object_implements($service_module, "IService_AvailableOnServers"))
+			if (($service_module = $heart->get_service_module($service['id'])) === null || !object_implements($service_module, "IService_AvailableOnServers")) {
 				continue;
+			}
 
 			$values = create_dom_element("option", $lang->strtoupper($lang->translate('no')), array(
-				'value' => 0,
+				'value'    => 0,
 				'selected' => $heart->server_service_linked($server['id'], $service['id']) ? "" : "selected"
 			));
 
 			$values .= create_dom_element("option", $lang->strtoupper($lang->translate('yes')), array(
-				'value' => 1,
+				'value'    => 1,
 				'selected' => $heart->server_service_linked($server['id'], $service['id']) ? "selected" : ""
 			));
 
@@ -134,7 +137,7 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
 		}
 
 		return array(
-			'status' => 'ok',
+			'status'   => 'ok',
 			'template' => $output
 		);
 	}

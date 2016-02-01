@@ -54,18 +54,19 @@ class PageAdminIncome extends PageAdmin
 		$months = '';
 		for ($i = 1; $i <= 12; $i++) {
 			$months .= create_dom_element("option", $lang->translate($this->months[$i]), array(
-				'value' => str_pad($i, 2, 0, STR_PAD_LEFT),
+				'value'    => str_pad($i, 2, 0, STR_PAD_LEFT),
 				'selected' => $G_MONTH == $i ? "selected" : ""
 			));
 		}
 
 		// Dodanie wyboru roku
 		$years = "";
-		for ($i = 2014; $i <= intval(date("Y")); $i++)
+		for ($i = 2014; $i <= intval(date("Y")); $i++) {
 			$years .= create_dom_element("option", $i, array(
-				'value' => $i,
+				'value'    => $i,
 				'selected' => $G_YEAR == $i ? "selected" : ""
 			));
+		}
 
 		$buttons = eval($templates->render("admin/income_button"));
 
@@ -86,8 +87,9 @@ class PageAdminIncome extends PageAdmin
 			$date = $G_YEAR . "-" . str_pad($G_MONTH, 2, 0, STR_PAD_LEFT) . "-" . str_pad($i, 2, 0, STR_PAD_LEFT);
 
 			// Jeżeli jest to dzień z przyszłości
-			if ($date > date("Y-m-d"))
+			if ($date > date("Y-m-d")) {
 				continue;
+			}
 
 			// Zerujemy dochód w danym dniu na danym serwerze
 			$day_income = 0;
@@ -121,10 +123,13 @@ class PageAdminIncome extends PageAdmin
 			$total_income = number_format($total_income / 100.0, 2);
 			$tbody .= eval($templates->render("admin/income_trow2"));
 		} else // Brak danych
+		{
 			$tbody = eval($templates->render("admin/no_records"));
+		}
 
 		// Pobranie wygladu strony
 		$output = eval($templates->render("admin/table_structure"));
+
 		return $output;
 	}
 

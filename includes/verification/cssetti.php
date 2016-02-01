@@ -37,7 +37,7 @@ class PaymentModule_Cssetti extends PaymentModule implements IPayment_Sms
 		$response = curl_get_contents(
 			'http://cssetti.pl/Api/SmsApiV2CheckCode.php' .
 			'?UserId=' . urlencode($this->account_id) .
-			'&Code=' .  urlencode($return_code)
+			'&Code=' . urlencode($return_code)
 		);
 
 		if ($response === false) {

@@ -27,6 +27,7 @@ class PageRegister extends Page implements I_BeLoggedCannot
 		$_SESSION['asid'] = $antispam_question['id'];
 
 		$output = eval($templates->render("register"));
+
 		return $output;
 	}
 

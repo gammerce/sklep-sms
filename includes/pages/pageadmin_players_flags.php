@@ -67,12 +67,12 @@ class PageAdminPlayersFlags extends PageAdmin
 			foreach (str_split($this->flags) as $flag) {
 				if (!$row[$flag]) {
 					$body_row->addCell(new Cell(' '));
-				}
-				else if ($row[$flag] == -1) {
-					$body_row->addCell(new Cell($lang->translate('never')));
-				}
-				else {
-					$body_row->addCell(new Cell(date($settings['date_format'], $row[$flag])));
+				} else {
+					if ($row[$flag] == -1) {
+						$body_row->addCell(new Cell($lang->translate('never')));
+					} else {
+						$body_row->addCell(new Cell(date($settings['date_format'], $row[$flag])));
+					}
 				}
 			}
 

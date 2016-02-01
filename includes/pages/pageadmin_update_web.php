@@ -27,26 +27,31 @@ class PageAdminUpdateWeb extends PageAdmin
 		// Mamy najnowszą wersję
 		if (!strlen($newest_version) || !strlen($next_version) || VERSION == $newest_version) {
 			$output = eval($templates->render("admin/no_update"));
+
 			return $output;
 		}
 
 		// Pobieramy dodatkowe informacje
 		$additional_info = "";
-		foreach ($version->extra_info->children() as $value)
+		foreach ($version->extra_info->children() as $value) {
 			$additional_info .= create_dom_element("li", $value);
+		}
 
-		if (strlen($additional_info))
+		if (strlen($additional_info)) {
 			$additional_info = eval($templates->render("admin/update_additional_info"));
+		}
 
 		// Pobieramy listę plików do wymiany
 		$files = "";
-		foreach ($version->files->children() as $value)
+		foreach ($version->files->children() as $value) {
 			$files .= create_dom_element("li", $value);
+		}
 
 		// Pobieramy listę zmian
 		$changelog = "";
-		foreach ($version->changelog->children() as $value)
+		foreach ($version->changelog->children() as $value) {
 			$changelog .= create_dom_element("li", $value);
+		}
 
 		// Pobieramy plik najnowszej wersji full
 		$file_data['type'] = "full";
@@ -60,11 +65,13 @@ class PageAdminUpdateWeb extends PageAdmin
 			$file_data['platform'] = "web";
 			$file_data['version'] = $next_version;
 			$shop_files['next_update'] = eval($templates->render("admin/update_file"));
-		} else
+		} else {
 			$shop_files['next_update'] = $next_version = $lang->translate('none');
+		}
 
 		// Pobranie wyglądu całej strony
 		$output = eval($templates->render("admin/update_web"));
+
 		return $output;
 	}
 

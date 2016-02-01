@@ -6,7 +6,7 @@ class Payment
 	const TRANSFER_NOT_SUPPORTED = 'transfer_not_supported';
 
 	/** @var PaymentModule|IPayment_Sms|IPayment_Transfer */
-	private $payment_module = NULL;
+	private $payment_module = null;
 
 	function __construct($payment_module_id)
 	{
@@ -14,12 +14,12 @@ class Payment
 
 		// Tworzymy obiekt obslugujacy stricte weryfikacje
 		$className = $heart->get_payment_module($payment_module_id);
-		if ($className !== NULL) {
+		if ($className !== null) {
 			$this->payment_module = new $className();
 		}
 
 		// API podanej usługi nie istnieje.
-		if ($this->payment_module === NULL) {
+		if ($this->payment_module === null) {
 			output_page($lang->sprintf($lang->translate('payment_bad_service'), $payment_module_id));
 		}
 	}
@@ -28,6 +28,7 @@ class Payment
 	 * @param string $sms_code
 	 * @param Entity_Tariff $tariff
 	 * @param Entity_User $user
+	 *
 	 * @return array
 	 */
 	public function pay_sms($sms_code, $tariff, $user)
@@ -37,7 +38,7 @@ class Payment
 		if (!$this->getPaymentModule()->supportSms()) {
 			return array(
 				'status' => Payment::SMS_NOT_SUPPORTED,
-				'text' => $lang->translate('sms_info_' . Payment::SMS_NOT_SUPPORTED)
+				'text'   => $lang->translate('sms_info_' . Payment::SMS_NOT_SUPPORTED)
 			);
 		}
 
@@ -93,30 +94,35 @@ class Payment
 
 			$payment_id = $db->last_id();
 		} // SMS został wysłany na błędny numer
-		else if ($sms_return['status'] == IPayment_Sms::BAD_NUMBER && isset($sms_return['tariff'])) {
-			// Dodajemy kod do listy kodów do wykorzystania
-			$db->query($db->prepare(
-				"INSERT INTO `" . TABLE_PREFIX . "sms_codes` " .
-				"SET `code` = '%s', `tariff` = '%d', `free` = '0'",
-				array($sms_code, $sms_return['tariff'])
-			));
+		else {
+			if ($sms_return['status'] == IPayment_Sms::BAD_NUMBER && isset($sms_return['tariff'])) {
+				// Dodajemy kod do listy kodów do wykorzystania
+				$db->query($db->prepare(
+					"INSERT INTO `" . TABLE_PREFIX . "sms_codes` " .
+					"SET `code` = '%s', `tariff` = '%d', `free` = '0'",
+					array($sms_code, $sms_return['tariff'])
+				));
 
-			log_info($lang_shop->sprintf($lang_shop->translate('add_code_to_reuse'), $sms_code, $sms_return['tariff'],
-				$user->getUsername(), $user->getUid(), $user->getLastIp(), $tariff->getId()));
-		} else if ($sms_return['status'] != Payment::SMS_NOT_SUPPORTED) {
-			log_info($lang_shop->sprintf($lang_shop->translate('bad_sms_code_used'), $user->getUsername(), $user->getUid(), $user->getLastIp(),
-				$sms_code, $this->getPaymentModule()->getSmsCode(), $sms_number, $sms_return['status']));
+				log_info($lang_shop->sprintf($lang_shop->translate('add_code_to_reuse'), $sms_code, $sms_return['tariff'],
+					$user->getUsername(), $user->getUid(), $user->getLastIp(), $tariff->getId()));
+			} else {
+				if ($sms_return['status'] != Payment::SMS_NOT_SUPPORTED) {
+					log_info($lang_shop->sprintf($lang_shop->translate('bad_sms_code_used'), $user->getUsername(), $user->getUid(), $user->getLastIp(),
+						$sms_code, $this->getPaymentModule()->getSmsCode(), $sms_number, $sms_return['status']));
+				}
+			}
 		}
 
 		return array(
-			'status' => $sms_return['status'],
-			'text' => if_strlen2($sms_return['text'], if_strlen2($lang->translate('sms_info_' . $sms_return['status']), $sms_return['status'])),
+			'status'     => $sms_return['status'],
+			'text'       => if_strlen2($sms_return['text'], if_strlen2($lang->translate('sms_info_' . $sms_return['status']), $sms_return['status'])),
 			'payment_id' => $payment_id
 		);
 	}
 
 	/**
 	 * @param Entity_Purchase $purchase_data
+	 *
 	 * @return array
 	 */
 	public function pay_transfer($purchase_data)
@@ -126,7 +132,7 @@ class Payment
 		if (!$this->getPaymentModule()->supportTransfer() || !object_implements($this->getPaymentModule(), "IPayment_Transfer")) {
 			return array(
 				'status' => Payment::TRANSFER_NOT_SUPPORTED,
-				'text' => $lang->translate('transfer_' . Payment::TRANSFER_NOT_SUPPORTED)
+				'text'   => $lang->translate('transfer_' . Payment::TRANSFER_NOT_SUPPORTED)
 			);
 		}
 
@@ -135,15 +141,16 @@ class Payment
 		file_put_contents(SCRIPT_ROOT . "data/transfers/" . $data_filename, $serialized);
 
 		return array(
-			'status' => "transfer",
-			'text' => $lang->translate('transfer_prepared'),
+			'status'   => "transfer",
+			'text'     => $lang->translate('transfer_prepared'),
 			'positive' => true,
-			'data' => array('data' => $this->getPaymentModule()->prepare_transfer($purchase_data, $data_filename)) // Przygotowuje dane płatności transferem
+			'data'     => array('data' => $this->getPaymentModule()->prepare_transfer($purchase_data, $data_filename)) // Przygotowuje dane płatności transferem
 		);
 	}
 
 	/**
 	 * @param Entity_TransferFinalize $transfer_finalize
+	 *
 	 * @return bool
 	 */
 	public function transferFinalize($transfer_finalize)
@@ -164,6 +171,7 @@ class Payment
 		// Nie znaleziono pliku z danymi
 		if (!$transfer_finalize->getDataFilename() || !file_exists(SCRIPT_ROOT . "data/transfers/" . $transfer_finalize->getDataFilename())) {
 			log_info($lang_shop->sprintf($lang_shop->translate('transfer_no_data_file'), $transfer_finalize->getOrderid()));
+
 			return false;
 		}
 
@@ -180,19 +188,21 @@ class Payment
 		unlink(SCRIPT_ROOT . "data/transfers/" . $transfer_finalize->getDataFilename());
 
 		// Błędny moduł
-		if (($service_module = $heart->get_service_module($purchase_data->getService())) === NULL) {
+		if (($service_module = $heart->get_service_module($purchase_data->getService())) === null) {
 			log_info($lang_shop->sprintf($lang_shop->translate('transfer_bad_module'), $transfer_finalize->getOrderid(), $purchase_data->getService()));
+
 			return false;
 		}
 
 		if (!object_implements($service_module, "IService_Purchase")) {
 			log_info($lang_shop->sprintf($lang_shop->translate('transfer_no_purchase'), $transfer_finalize->getOrderid(), $purchase_data->getService()));
+
 			return false;
 		}
 
 		// Dokonujemy zakupu
 		$purchase_data->setPayment(array(
-			'method' => 'transfer',
+			'method'     => 'transfer',
 			'payment_id' => $transfer_finalize->getOrderid()
 		));
 		$bought_service_id = $service_module->purchase($purchase_data);
@@ -205,6 +215,7 @@ class Payment
 
 	/**
 	 * @param bool $escape
+	 *
 	 * @return string
 	 */
 	public function getSmsCode($escape = false)

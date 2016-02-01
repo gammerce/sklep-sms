@@ -11,12 +11,15 @@ require_once "global.php";
 
 $files_privilages = '';
 foreach ($files_priv as $file) {
-	if ($file == "") continue;
+	if ($file == "") {
+		continue;
+	}
 
-	if (is_writable(SCRIPT_ROOT . '/' . $file))
+	if (is_writable(SCRIPT_ROOT . '/' . $file)) {
 		$privilage = "ok";
-	else
+	} else {
 		$privilage = "bad";
+	}
 
 	$files_privilages .= eval($templates->install_render('file_privilages'));
 }

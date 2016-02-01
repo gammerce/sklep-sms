@@ -78,11 +78,12 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
 	{
 		global $db, $lang, $templates;
 
-		if (!get_privilages("manage_antispam_questions"))
+		if (!get_privilages("manage_antispam_questions")) {
 			return array(
 				'status' => "not_logged_in",
-				'text' => $lang->translate('not_logged_or_no_perm')
+				'text'   => $lang->translate('not_logged_or_no_perm')
 			);
+		}
 
 		switch ($box_id) {
 			case "antispam_question_add":
@@ -103,7 +104,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
 		}
 
 		return array(
-			'status' => 'ok',
+			'status'   => 'ok',
 			'template' => $output
 		);
 	}

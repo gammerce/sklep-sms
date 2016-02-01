@@ -67,15 +67,15 @@ class PaymentModule_Cashbill extends PaymentModule implements IPayment_Sms, IPay
 		$cost = round($purchase_data->getPayment('cost') / 100, 2);
 
 		return array(
-			'url' => 'https://pay.cashbill.pl/form/pay.php',
-			'service' => $this->getService(),
-			'desc' => $purchase_data->getDesc(),
-			'forname' => $purchase_data->user->getForename(false),
-			'surname' => $purchase_data->user->getSurname(false),
-			'email' => $purchase_data->getEmail(),
-			'amount' => $cost,
+			'url'      => 'https://pay.cashbill.pl/form/pay.php',
+			'service'  => $this->getService(),
+			'desc'     => $purchase_data->getDesc(),
+			'forname'  => $purchase_data->user->getForename(false),
+			'surname'  => $purchase_data->user->getSurname(false),
+			'email'    => $purchase_data->getEmail(),
+			'amount'   => $cost,
 			'userdata' => $data_filename,
-			'sign' => md5($this->getService() . $cost . $purchase_data->getDesc() . $data_filename . $purchase_data->user->getForename(false) .
+			'sign'     => md5($this->getService() . $cost . $purchase_data->getDesc() . $data_filename . $purchase_data->user->getForename(false) .
 				$purchase_data->user->getSurname(false) . $purchase_data->getEmail() . $this->getKey())
 		);
 	}
@@ -104,6 +104,7 @@ class PaymentModule_Cashbill extends PaymentModule implements IPayment_Sms, IPay
 	 * @param $data - dane
 	 * @param $key - klucz do hashowania
 	 * @param $sign - hash danych
+	 *
 	 * @return bool
 	 */
 	public function check_sign($data, $key, $sign)

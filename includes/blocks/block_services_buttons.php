@@ -21,11 +21,13 @@ class BlockServicesButtons extends Block
 
 		$services = "";
 		foreach ($heart->get_services() as $service) {
-			if (($service_module = $heart->get_service_module($service['id'])) === NULL || !$service_module->show_on_web())
+			if (($service_module = $heart->get_service_module($service['id'])) === null || !$service_module->show_on_web()) {
 				continue;
+			}
 
-			if (!$heart->user_can_use_service($user->getUid(), $service))
+			if (!$heart->user_can_use_service($user->getUid(), $service)) {
 				continue;
+			}
 
 			$services .= create_dom_element("li", create_dom_element("a", $service['name'], array(
 				'href' => "index.php?pid=purchase&service=" . urlencode($service['id'])
@@ -33,6 +35,7 @@ class BlockServicesButtons extends Block
 		}
 
 		$output = eval($templates->render("services_buttons"));
+
 		return $output;
 	}
 

@@ -26,6 +26,7 @@ function SplitSQL($file, $delimiter = ';')
 			}
 
 			fclose($file);
+
 			return $queries;
 		}
 	}

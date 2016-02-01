@@ -21,8 +21,9 @@ switch ($action) {
 	case "service_long_description":
 		$output = "";
 
-		if (($service_module = $heart->get_service_module($_GET['service'])) !== NULL)
+		if (($service_module = $heart->get_service_module($_GET['service'])) !== null) {
 			$output = $service_module->description_full_get();
+		}
 
 		$heart->page_title = $lang->translate('description') . ": " . $service_module->service['name'];
 

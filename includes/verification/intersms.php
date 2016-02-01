@@ -43,7 +43,7 @@ class PaymentModuleIntersms extends PaymentModule implements IPayment_Sms
 		$opch = curl_init();
 
 		curl_setopt($opch, CURLOPT_URL, $sms_server);
-		curl_setopt($opch, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($opch, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($opch, CURLOPT_SSL_VERIFYHOST, 2);
 		curl_setopt($opch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($opch, CURLOPT_TIMEOUT, 100);
@@ -85,9 +85,10 @@ class PaymentModuleIntersms extends PaymentModule implements IPayment_Sms
 			}
 
 			$tariff = $this->getTariffBySmsCostBrutto($amount * 2 / 100);
+
 			return array(
-					'status' => IPayment_Sms::BAD_NUMBER,
-					'tariff' => !is_null($tariff) ? $tariff->getId() : NULL
+				'status' => IPayment_Sms::BAD_NUMBER,
+				'tariff' => !is_null($tariff) ? $tariff->getId() : null
 			);
 		}
 

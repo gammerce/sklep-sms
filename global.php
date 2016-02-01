@@ -30,9 +30,9 @@ if (file_exists(SCRIPT_ROOT . 'install')) {
 }
 
 $settings = array(
-	'date_format' => 'Y-m-d H:i',
-	'theme' => 'default',
-	'shop_url' => '',
+	'date_format'    => 'Y-m-d H:i',
+	'theme'          => 'default',
+	'shop_url'       => '',
 	'shop_url_slash' => ''
 );
 
@@ -61,39 +61,51 @@ $db = new Database($db_host, $db_user, $db_pass, $db_name);
 $db->query("SET NAMES utf8");
 
 // Te interfejsy są potrzebne do klas różnego rodzajów
-foreach (scandir(SCRIPT_ROOT . "includes/interfaces") as $file)
-	if (ends_at($file, ".php"))
+foreach (scandir(SCRIPT_ROOT . "includes/interfaces") as $file) {
+	if (ends_at($file, ".php")) {
 		require_once SCRIPT_ROOT . "includes/interfaces/" . $file;
+	}
+}
 
 // Dodajemy klasy wszystkich modulow platnosci
 require_once SCRIPT_ROOT . "includes/PaymentModule.php";
-foreach (scandir(SCRIPT_ROOT . "includes/verification/interfaces") as $file)
-	if (ends_at($file, ".php"))
+foreach (scandir(SCRIPT_ROOT . "includes/verification/interfaces") as $file) {
+	if (ends_at($file, ".php")) {
 		require_once SCRIPT_ROOT . "includes/verification/interfaces/" . $file;
+	}
+}
 
-foreach (scandir(SCRIPT_ROOT . "includes/verification") as $file)
-	if (ends_at($file, ".php"))
+foreach (scandir(SCRIPT_ROOT . "includes/verification") as $file) {
+	if (ends_at($file, ".php")) {
 		require_once SCRIPT_ROOT . "includes/verification/" . $file;
+	}
+}
 
 
 // Dodajemy klasy wszystkich usług
 require_once SCRIPT_ROOT . "includes/services/service.php";
 
 // Pierwsze ładujemy interfejsy
-foreach (scandir(SCRIPT_ROOT . "includes/services/interfaces") as $file)
-	if (ends_at($file, ".php"))
+foreach (scandir(SCRIPT_ROOT . "includes/services/interfaces") as $file) {
+	if (ends_at($file, ".php")) {
 		require_once SCRIPT_ROOT . "includes/services/interfaces/" . $file;
+	}
+}
 
-foreach (scandir(SCRIPT_ROOT . "includes/services") as $file)
-	if (ends_at($file, ".php"))
+foreach (scandir(SCRIPT_ROOT . "includes/services") as $file) {
+	if (ends_at($file, ".php")) {
 		require_once SCRIPT_ROOT . "includes/services/" . $file;
+	}
+}
 
 
 // Dodajemy klasy wszystkich bloków
 require_once SCRIPT_ROOT . "includes/blocks/block.php";
-foreach (scandir(SCRIPT_ROOT . "includes/blocks") as $file)
-	if (ends_at($file, ".php"))
+foreach (scandir(SCRIPT_ROOT . "includes/blocks") as $file) {
+	if (ends_at($file, ".php")) {
 		require_once SCRIPT_ROOT . "includes/blocks/" . $file;
+	}
+}
 
 
 // Dodajemy klasy wszystkich stron
@@ -101,17 +113,23 @@ require_once SCRIPT_ROOT . "includes/pages/page.php";
 require_once SCRIPT_ROOT . "includes/pages/pageadmin.php";
 
 // Pierwsze ładujemy interfejsy
-foreach (scandir(SCRIPT_ROOT . "includes/pages/interfaces") as $file)
-	if (ends_at($file, ".php"))
+foreach (scandir(SCRIPT_ROOT . "includes/pages/interfaces") as $file) {
+	if (ends_at($file, ".php")) {
 		require_once SCRIPT_ROOT . "includes/pages/interfaces/" . $file;
+	}
+}
 
-foreach (scandir(SCRIPT_ROOT . "includes/pages") as $file)
-	if (ends_at($file, ".php"))
+foreach (scandir(SCRIPT_ROOT . "includes/pages") as $file) {
+	if (ends_at($file, ".php")) {
 		require_once SCRIPT_ROOT . "includes/pages/" . $file;
+	}
+}
 
-foreach (scandir(SCRIPT_ROOT . "includes/entity") as $file)
-	if (ends_at($file, ".php"))
+foreach (scandir(SCRIPT_ROOT . "includes/entity") as $file) {
+	if (ends_at($file, ".php")) {
 		require_once SCRIPT_ROOT . "includes/entity/" . $file;
+	}
+}
 
 
 // Pobieramy id strony oraz obecna numer strony
@@ -132,25 +150,28 @@ if (admin_session()) {
 			$_SESSION['info'] = "wrong_data";
 		}
 	} // Wylogowujemy
-	else if ($_POST['action'] == "logout") {
-		// Unset all of the session variables.
-		$_SESSION = array();
+	else {
+		if ($_POST['action'] == "logout") {
+			// Unset all of the session variables.
+			$_SESSION = array();
 
-		// If it's desired to kill the session, also delete the session cookie.
-		// Note: This will destroy the session, and not just the session data!
-		if (ini_get("session.use_cookies")) {
-			$params = session_get_cookie_params();
-			setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
+			// If it's desired to kill the session, also delete the session cookie.
+			// Note: This will destroy the session, and not just the session data!
+			if (ini_get("session.use_cookies")) {
+				$params = session_get_cookie_params();
+				setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
+			}
+
+			// Finally, destroy the session.
+			session_destroy();
 		}
-
-		// Finally, destroy the session.
-		session_destroy();
 	}
 }
 
 // Pozyskujemy dane gracza, jeżeli jeszcze ich nie ma
-if (!$user->isLogged() && isset($_SESSION['uid']))
+if (!$user->isLogged() && isset($_SESSION['uid'])) {
 	$user = $heart->get_user($_SESSION['uid']);
+}
 
 // Jeżeli próbujemy wejść do PA i nie jesteśmy zalogowani, to zmień stronę
 if (admin_session() && (!$user->isLogged() || !get_privilages("acp"))) {
@@ -169,13 +190,15 @@ $user->updateActivity();
 
 // Pozyskanie ustawień sklepu
 $result = $db->query("SELECT * FROM `" . TABLE_PREFIX . "settings`");
-while ($row = $db->fetch_array_assoc($result))
+while ($row = $db->fetch_array_assoc($result)) {
 	$settings[$row['key']] = $row['value'];
+}
 
 // Poprawiamy adres URL sklepu
 if (strlen($settings['shop_url'])) {
-	if (strpos($settings['shop_url'], "http://") !== 0 && strpos($settings['shop_url'], "https://") !== 0)
+	if (strpos($settings['shop_url'], "http://") !== 0 && strpos($settings['shop_url'], "https://") !== 0) {
 		$settings['shop_url'] = "http://" . $settings['shop_url'];
+	}
 
 	$settings['shop_url'] = rtrim($settings['shop_url'], "/");
 	$settings['shop_url_slash'] = $settings['shop_url'] . "/";
@@ -227,15 +250,18 @@ $settings['theme'] = file_exists(SCRIPT_ROOT . "themes/{$settings['theme']}") ? 
 // Ładujemy bibliotekę językową
 if (isset($_GET['language'])) {
 	$lang->setLanguage($_GET['language']);
-} else if (isset($_COOKIE['language'])) {
-	$lang->setLanguage($_COOKIE['language']);
 } else {
-	$details = json_decode(file_get_contents("http://ipinfo.io/" . get_ip() . "/json"));
-	if (isset($details->country) && strlen($temp_lang = $lang->getLanguageByShort($details->country))) {
-		$lang->setLanguage($temp_lang);
-		unset($temp_lang);
-	} else
-		$lang->setLanguage($settings['language']);
+	if (isset($_COOKIE['language'])) {
+		$lang->setLanguage($_COOKIE['language']);
+	} else {
+		$details = json_decode(file_get_contents("http://ipinfo.io/" . get_ip() . "/json"));
+		if (isset($details->country) && strlen($temp_lang = $lang->getLanguageByShort($details->country))) {
+			$lang->setLanguage($temp_lang);
+			unset($temp_lang);
+		} else {
+			$lang->setLanguage($settings['language']);
+		}
+	}
 }
 $lang_shop->setLanguage($settings['language']);
 
@@ -251,8 +277,7 @@ if (!isset($a_Tasks['text'])) {
 if ($a_Tasks['expire']) {
 	if ($a_Tasks['expire'] == '-1') {
 		$a_Tasks['expire'] = $lang->translate('never');
-	}
-	else {
+	} else {
 		$a_Tasks['expire'] = date($settings['date_format'], $a_Tasks['expire']);
 	}
 }
@@ -261,16 +286,17 @@ if ($a_Tasks['text'] != "logged_in") {
 	if (get_privilages("manage_settings")) {
 		$user->removePrivilages();
 		$user->setPrivilages(array(
-			"acp" => true,
+			"acp"             => true,
 			"manage_settings" => true
 		));
 	}
 
 	if (SCRIPT_NAME == "index") {
 		output_page($a_Tasks['page']);
-	}
-	else if (in_array(SCRIPT_NAME, array("jsonhttp", "servers_stuff", "extra_stuff"))) {
-		exit;
+	} else {
+		if (in_array(SCRIPT_NAME, array("jsonhttp", "servers_stuff", "extra_stuff"))) {
+			exit;
+		}
 	}
 }
 

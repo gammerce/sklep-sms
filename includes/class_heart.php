@@ -39,16 +39,18 @@ class Heart
 	 * @param string $name nazwa modułu
 	 * @param string $class klasa modułu
 	 * @param string $classsimple klasa simple modułu
+	 *
 	 * @throws Exception
 	 */
 	public function register_service_module($id, $name, $class, $classsimple)
 	{
-		if (isset($this->services_classes[$id]))
+		if (isset($this->services_classes[$id])) {
 			throw new Exception("There is a service with such an id: " . htmlspecialchars($id) . " already.");
+		}
 
 		$this->services_classes[$id] = array(
-			'name' => $name,
-			'class' => $class,
+			'name'        => $name,
+			'class'       => $class,
 			'classsimple' => $classsimple
 		);
 	}
@@ -58,22 +60,25 @@ class Heart
 	 * Moduł jest wypełniony, są w nim wszystkie dane
 	 *
 	 * @param $service_id
+	 *
 	 * @return null|Service|ServiceChargeWallet|ServiceExtraFlags|ServiceOther
 	 */
 	public function get_service_module($service_id)
 	{
 		// Brak usługi o takim ID
-		if (($service = $this->get_service($service_id)) === NULL)
-			return NULL;
+		if (($service = $this->get_service($service_id)) === null) {
+			return null;
+		}
 
 		// Brak takiego modułu
-		if (!isset($this->services_classes[$service['module']]))
-			return NULL;
+		if (!isset($this->services_classes[$service['module']])) {
+			return null;
+		}
 
 		$className = $this->services_classes[$service['module']]['class'];
 
 		// Jeszcze sprawdzamy, czy moduł został prawidłowo stworzony
-		return strlen($className) ? new $className($service) : NULL;
+		return strlen($className) ? new $className($service) : null;
 	}
 
 	// Funkcja zwraca klasę modułu przez jego id
@@ -82,11 +87,13 @@ class Heart
 	public function get_service_module_s($module_id)
 	{
 		// Brak takiego modułu
-		if (!isset($this->services_classes[$module_id]))
-			return NULL;
+		if (!isset($this->services_classes[$module_id])) {
+			return null;
+		}
 
-		if (!isset($this->services_classes[$module_id]['classsimple']))
-			return NULL;
+		if (!isset($this->services_classes[$module_id]['classsimple'])) {
+			return null;
+		}
 
 		$classname = $this->services_classes[$module_id]['classsimple'];
 
@@ -97,8 +104,9 @@ class Heart
 	public function get_service_module_name($module_id)
 	{
 		// Brak takiego modułu
-		if (!isset($this->services_classes[$module_id]))
-			return NULL;
+		if (!isset($this->services_classes[$module_id])) {
+			return null;
+		}
 
 		return $this->services_classes[$module_id]['name'];
 	}
@@ -113,9 +121,9 @@ class Heart
 		$modules = array();
 		foreach ($this->services_classes as $id => $data) {
 			$modules[] = array(
-				'id' => $id,
-				'name' => $data['name'],
-				'class' => $data['class'],
+				'id'          => $id,
+				'name'        => $data['name'],
+				'class'       => $data['class'],
 				'classsimple' => $data['classsimple']
 			);
 		}
@@ -129,15 +137,16 @@ class Heart
 
 	public function register_payment_module($id, $class)
 	{
-		if (isset($this->payment_module_classes[$id]))
+		if (isset($this->payment_module_classes[$id])) {
 			throw new Exception("There is a payment api with id: " . htmlspecialchars($id) . " already.");
+		}
 
 		$this->payment_module_classes[$id] = $class;
 	}
 
 	public function get_payment_module($id)
 	{
-		return isset($this->payment_module_classes[$id]) ? $this->payment_module_classes[$id] : NULL;
+		return isset($this->payment_module_classes[$id]) ? $this->payment_module_classes[$id] : null;
 	}
 
 	//
@@ -149,12 +158,14 @@ class Heart
 	 *
 	 * @param string $block_id
 	 * @param string $class
+	 *
 	 * @throws Exception
 	 */
 	public function register_block($block_id, $class)
 	{
-		if ($this->block_exists($block_id))
+		if ($this->block_exists($block_id)) {
 			throw new Exception("There is a block with such an id: " . htmlspecialchars($block_id) . " already.");
+		}
 
 		$this->blocks_classes[$block_id] = $class;
 	}
@@ -163,6 +174,7 @@ class Heart
 	 * Sprawdza czy dany blok istnieje
 	 *
 	 * @param string $block_id
+	 *
 	 * @return bool
 	 */
 	public function block_exists($block_id)
@@ -174,11 +186,12 @@ class Heart
 	 * Zwraca obiekt bloku
 	 *
 	 * @param string $block_id
+	 *
 	 * @return null|Block|BlockSimple
 	 */
 	public function get_block($block_id)
 	{
-		return $this->block_exists($block_id) ? new $this->blocks_classes[$block_id]() : NULL;
+		return $this->block_exists($block_id) ? new $this->blocks_classes[$block_id]() : null;
 	}
 
 	//
@@ -191,12 +204,14 @@ class Heart
 	 * @param string $page_id
 	 * @param string $class
 	 * @param string $type
+	 *
 	 * @throws Exception
 	 */
 	public function register_page($page_id, $class, $type = "user")
 	{
-		if ($this->page_exists($page_id, $type))
+		if ($this->page_exists($page_id, $type)) {
 			throw new Exception("There is a page with such an id: " . htmlspecialchars($page_id) . " already.");
+		}
 
 		$this->pages_classes[$type][$page_id] = $class;
 	}
@@ -206,6 +221,7 @@ class Heart
 	 *
 	 * @param string $page_id
 	 * @param string $type
+	 *
 	 * @return bool
 	 */
 	public function page_exists($page_id, $type = "user")
@@ -218,14 +234,17 @@ class Heart
 	 *
 	 * @param string $page_id
 	 * @param string $type
+	 *
 	 * @return null|Page|PageSimple|IPageAdmin_ActionBox
 	 */
 	public function get_page($page_id, $type = "user")
 	{
-		if (!$this->page_exists($page_id, $type))
-			return NULL;
+		if (!$this->page_exists($page_id, $type)) {
+			return null;
+		}
 
 		$classname = $this->pages_classes[$type][$page_id];
+
 		return new $classname();
 	}
 
@@ -251,14 +270,16 @@ class Heart
 	 * Zwraca usługę do zakupienia
 	 *
 	 * @param $service_id
+	 *
 	 * @return mixed
 	 */
 	public function get_service($service_id)
 	{
-		if (!$this->services_fetched)
+		if (!$this->services_fetched) {
 			$this->fetch_services();
+		}
 
-		return if_isset($this->services[$service_id], NULL);
+		return if_isset($this->services[$service_id], null);
 	}
 
 	/**
@@ -293,6 +314,7 @@ class Heart
 	{
 		$user = $this->get_user($uid);
 		$combined = array_intersect($service['groups'], $user->getGroups());
+
 		return empty($service['groups']) || !empty($combined);
 	}
 
@@ -315,7 +337,7 @@ class Heart
 			$this->fetch_servers();
 		}
 
-		return if_isset($this->servers[$id], NULL);
+		return if_isset($this->servers[$id], null);
 	}
 
 	public function get_servers_amount()
@@ -344,6 +366,7 @@ class Heart
 	 *
 	 * @param integer $server_id
 	 * @param string $service_id
+	 *
 	 * @return boolean
 	 */
 	public function server_service_linked($server_id, $service_id)
@@ -384,6 +407,7 @@ class Heart
 
 	/**
 	 * @param int $id
+	 *
 	 * @return Entity_Tariff | null
 	 */
 	public function getTariff($id)
@@ -392,7 +416,7 @@ class Heart
 			$this->fetch_tariffs();
 		}
 
-		return if_isset($this->tariffs[$id], NULL);
+		return if_isset($this->tariffs[$id], null);
 	}
 
 	public function getTariffsAmount()
@@ -420,13 +444,15 @@ class Heart
 	 * @param int $uid
 	 * @param string $login
 	 * @param string $password
+	 *
 	 * @return Entity_User
 	 */
 	public function get_user($uid = 0, $login = "", $password = "")
 	{
 		// Wcześniej już pobraliśmy takiego użytkownika
-		if ($uid && isset($this->users[$uid]))
+		if ($uid && isset($this->users[$uid])) {
 			return $this->users[$uid];
+		}
 
 		if ($uid || (strlen($login) && strlen($password))) {
 			$user = new Entity_User($uid, $login, $password);
@@ -441,6 +467,7 @@ class Heart
 	public function has_user_group($uid, $gid)
 	{
 		$user = $this->get_user($uid);
+
 		return in_array($gid, $user->getGroups());
 	}
 
@@ -450,24 +477,27 @@ class Heart
 
 	public function get_groups()
 	{
-		if (!$this->groups_fetched)
+		if (!$this->groups_fetched) {
 			$this->fetch_groups();
+		}
 
 		return $this->groups;
 	}
 
 	public function get_group($id)
 	{
-		if (!$this->groups_fetched)
+		if (!$this->groups_fetched) {
 			$this->fetch_groups();
+		}
 
-		return if_isset($this->groups[$id], NULL);
+		return if_isset($this->groups[$id], null);
 	}
 
 	public function get_group_privilages($id)
 	{
-		if (!$this->groups_fetched)
+		if (!$this->groups_fetched) {
 			$this->fetch_groups();
+		}
 
 		if (isset($this->groups[$id])) {
 			$group = $this->groups[$id];
@@ -477,7 +507,7 @@ class Heart
 			return $group;
 		}
 
-		return NULL;
+		return null;
 	}
 
 	public function get_groups_amount()
@@ -503,9 +533,11 @@ class Heart
 	 *
 	 * @param string $path
 	 */
-	public function script_add($path) {
-		if (!in_array($path, $this->scripts))
+	public function script_add($path)
+	{
+		if (!in_array($path, $this->scripts)) {
 			$this->scripts[] = $path;
+		}
 	}
 
 	/**
@@ -513,23 +545,29 @@ class Heart
 	 *
 	 * @param string $path
 	 */
-	public function style_add($path) {
-		if (!in_array($path, $this->styles))
+	public function style_add($path)
+	{
+		if (!in_array($path, $this->styles)) {
 			$this->styles[] = $path;
+		}
 	}
 
-	public function scripts_get() {
+	public function scripts_get()
+	{
 		$output = array();
-		foreach ($this->scripts as $script)
+		foreach ($this->scripts as $script) {
 			$output[] = "<script type=\"text/javascript\" src=\"{$script}\"></script>";
+		}
 
 		return implode("\n", $output);
 	}
 
-	public function styles_get() {
+	public function styles_get()
+	{
 		$output = array();
-		foreach ($this->styles as $style)
+		foreach ($this->styles as $style) {
 			$output[] = "<link href=\"{$style}\" rel=\"stylesheet\" />";
+		}
 
 		return implode("\n", $output);
 	}

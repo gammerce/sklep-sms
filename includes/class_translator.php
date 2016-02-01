@@ -27,7 +27,7 @@ class Translator
 	function __construct($lang = 'polish')
 	{
 		$this->langList = array(
-			'polish' => "pl",
+			'polish'  => "pl",
 			'english' => "en"
 		);
 
@@ -48,6 +48,7 @@ class Translator
 	 * Returns full language name by its shortcut
 	 *
 	 * @param string $short
+	 *
 	 * @return string
 	 */
 	public function getLanguageByShort($short)
@@ -136,6 +137,7 @@ class Translator
 	 * Translate key to text
 	 *
 	 * @param string $key
+	 *
 	 * @return string
 	 */
 	public function translate($key)
@@ -145,6 +147,7 @@ class Translator
 
 	/**
 	 * @param $string
+	 *
 	 * @return mixed
 	 */
 	public function sprintf($string)
@@ -163,6 +166,7 @@ class Translator
 	 * Strtoupper function
 	 *
 	 * @param $string
+	 *
 	 * @return string
 	 */
 	public function strtoupper($string)

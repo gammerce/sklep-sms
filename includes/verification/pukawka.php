@@ -48,7 +48,7 @@ class PaymentModule_Pukawka extends PaymentModule implements IPayment_Sms
 			if ($get['error']) {
 				return array(
 					'status' => IPayment_Sms::UNKNOWN,
-					'text' => $get['error']
+					'text'   => $get['error']
 				);
 			}
 
@@ -64,9 +64,10 @@ class PaymentModule_Pukawka extends PaymentModule implements IPayment_Sms
 					}
 
 					$tariff = $this->getTariffByNumber($s['numer']);
+
 					return array(
 						'status' => IPayment_Sms::BAD_NUMBER,
-						'tariff' => !is_null($tariff) ? $tariff->getId() : NULL
+						'tariff' => !is_null($tariff) ? $tariff->getId() : null
 					);
 				}
 

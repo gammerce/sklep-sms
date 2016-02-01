@@ -28,12 +28,13 @@ foreach ($classes as $class) {
 delete_users_old_services();
 
 // Usuwamy przestarzałe logi
-if (intval($settings['delete_logs']) != 0)
+if (intval($settings['delete_logs']) != 0) {
 	$db->query($db->prepare(
 		"DELETE FROM `" . TABLE_PREFIX . "logs` " .
 		"WHERE `timestamp` < DATE_SUB(NOW(), INTERVAL '%d' DAY)",
 		array($settings['delete_logs'])
 	));
+}
 
 // Remove files older than 30 days from data/transfers
 $path = SCRIPT_ROOT . "data/transfers";

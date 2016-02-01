@@ -12,12 +12,14 @@ abstract class Block
 	 *
 	 * @param array $get - dane get
 	 * @param array $post - dane post
+	 *
 	 * @return string|null - zawartość do wyświetlenia
 	 */
 	public function get_content($get, $post)
 	{
-		if ((object_implements($this, "I_BeLoggedMust") && !is_logged()) || (object_implements($this, "I_BeLoggedCannot") && is_logged()))
-			return NULL;
+		if ((object_implements($this, "I_BeLoggedMust") && !is_logged()) || (object_implements($this, "I_BeLoggedCannot") && is_logged())) {
+			return null;
+		}
 
 		return $this->content($get, $post);
 	}
@@ -27,6 +29,7 @@ abstract class Block
 	 *
 	 * @param string $get
 	 * @param string $post
+	 *
 	 * @return string
 	 */
 	abstract protected function content($get, $post);
@@ -36,6 +39,7 @@ abstract class Block
 	 *
 	 * @param array $get
 	 * @param array $post
+	 *
 	 * @return string|null
 	 */
 	public function get_content_enveloped($get, $post)
@@ -43,8 +47,8 @@ abstract class Block
 		$content = $this->get_content($get, $post);
 
 		return create_dom_element("div", $content, array(
-			'id' => $this->get_content_id(),
-			'class' => $content !== NULL ? $this->get_content_class() : ""
+			'id'    => $this->get_content_id(),
+			'class' => $content !== null ? $this->get_content_class() : ""
 		));
 	}
 
@@ -53,7 +57,7 @@ abstract class Block
 abstract class BlockSimple extends Block
 {
 
-	protected $template = NULL;
+	protected $template = null;
 
 	function __construct()
 	{
@@ -67,6 +71,7 @@ abstract class BlockSimple extends Block
 		global $user, $lang, $settings, $templates;
 
 		$output = eval($templates->render($this->template));
+
 		return $output;
 	}
 

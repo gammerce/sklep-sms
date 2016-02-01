@@ -33,7 +33,7 @@ class PagePaymentLog extends Page implements I_BeLoggedMust
 			$date = htmlspecialchars($row['timestamp']);
 			$cost = number_format($row['cost'] / 100.0, 2) . " " . $settings['currency'];
 
-			if (($service_module = $heart->get_service_module($row['service'])) !== NULL && object_implements($service_module, "IService_PurchaseWeb")) {
+			if (($service_module = $heart->get_service_module($row['service'])) !== null && object_implements($service_module, "IService_PurchaseWeb")) {
 				$log_info = $service_module->purchase_info("payment_log", $row);
 				$desc = $log_info['text'];
 				$class = $log_info['class'];

@@ -22,8 +22,9 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
 			}
 		}
 
-		if (!strlen($className))
+		if (!strlen($className)) {
 			return $lang->sprintf($lang->translate('no_subpage'), htmlspecialchars($get['subpage']));
+		}
 
 		/** @var IService_UserServiceAdminDisplay $service_module_simple */
 		$service_module_simple = new $className();
@@ -32,8 +33,9 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
 		$heart->page_title = $this->title;
 		$wrapper = $service_module_simple->user_service_admin_display_get($get, $post);
 
-		if (get_class($wrapper) !== 'Admin\Table\Wrapper')
+		if (get_class($wrapper) !== 'Admin\Table\Wrapper') {
 			return $wrapper;
+		}
 
 		$wrapper->setTitle($this->title);
 
@@ -41,14 +43,16 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
 		$button = new Table\Select();
 		$button->setParam('id', 'user_service_display_module');
 		foreach ($heart->get_services_modules() as $service_module_data) {
-			if (!in_array('IService_UserServiceAdminDisplay', class_implements($service_module_data['classsimple'])))
+			if (!in_array('IService_UserServiceAdminDisplay', class_implements($service_module_data['classsimple']))) {
 				continue;
+			}
 
 			$option = new Table\Option($service_module_data['name']);
 			$option->setParam('value', $service_module_data['id']);
 
-			if ($service_module_data['id'] == $get['subpage'])
+			if ($service_module_data['id'] == $get['subpage']) {
 				$option->setParam('selected', 'selected');
+			}
 
 			$button->addContent($option);
 		}
@@ -73,7 +77,7 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
 		if (!get_privilages("manage_user_services")) {
 			return array(
 				'status' => "not_logged_in",
-				'text' => $lang->translate('not_logged_or_no_perm')
+				'text'   => $lang->translate('not_logged_or_no_perm')
 			);
 		}
 
@@ -82,8 +86,9 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
 				// Pobranie usług
 				$services = "";
 				foreach ($heart->get_services() as $id => $row) {
-					if (($service_module = $heart->get_service_module($id)) === NULL || !object_implements($service_module, "IService_UserServiceAdminAdd"))
+					if (($service_module = $heart->get_service_module($id)) === null || !object_implements($service_module, "IService_UserServiceAdminAdd")) {
 						continue;
+					}
 
 					$services .= create_dom_element("option", $row['name'], array(
 						'value' => $row['id']
@@ -96,7 +101,7 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
 			case "user_service_edit":
 				$user_service = get_users_services($data['id']);
 
-				if (empty($user_service) || ($service_module = $heart->get_service_module($user_service['service'])) === NULL
+				if (empty($user_service) || ($service_module = $heart->get_service_module($user_service['service'])) === null
 					|| !object_implements($service_module, "IService_UserServiceAdminEdit")
 				) {
 					$form_data = $lang->translate('service_edit_unable');
@@ -110,7 +115,7 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
 		}
 
 		return array(
-			'status' => isset($output) ? 'ok' : 'no_output',
+			'status'   => isset($output) ? 'ok' : 'no_output',
 			'template' => if_isset($output, '')
 		);
 	}

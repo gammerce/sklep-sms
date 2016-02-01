@@ -26,8 +26,9 @@ class PageAdminUpdateServers extends PageAdmin
 		foreach ($heart->get_servers() as $server) {
 			$engine = "engine_{$server['type']}";
 			// Mamy najnowszą wersję
-			if ($server['version'] == $newest_versions[$engine])
+			if ($server['version'] == $newest_versions[$engine]) {
 				continue;
+			}
 
 			$name = htmlspecialchars($server['name']);
 			$current_version = $server['version'];
@@ -35,8 +36,9 @@ class PageAdminUpdateServers extends PageAdmin
 			$newest_version = $newest_versions[$engine];
 
 			// Nie ma kolejnej wersji
-			if (!strlen($next_version))
+			if (!strlen($next_version)) {
 				continue;
+			}
 
 			// Pobieramy informacje o danym serwerze, jego obecnej wersji i nastepnej wersji
 			$version_bricks .= eval($templates->render("admin/update_version_block"));
@@ -59,11 +61,13 @@ class PageAdminUpdateServers extends PageAdmin
 		// Brak aktualizacji
 		if (!strlen($version_bricks)) {
 			$output = eval($templates->render("admin/no_update"));
+
 			return $output;
 		}
 
 		// Pobranie wyglądu całej strony
 		$output = eval($templates->render("admin/update_server"));
+
 		return $output;
 	}
 

@@ -2,7 +2,6 @@
 
 /**
  * Obsługa przejmowania usług przez użytkowników
- *
  * Interface IService_TakeOver
  */
 interface IService_TakeOver
@@ -20,6 +19,7 @@ interface IService_TakeOver
 	 * a jeżeli wszystko jest ok, to ją przejmuje
 	 *
 	 * @param array $post Dane $_POST
+	 *
 	 * @return array
 	 * status => id wiadomości
 	 * text => treść wiadomości

@@ -78,38 +78,44 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
 	{
 		global $heart, $lang, $templates;
 
-		if (!get_privilages("manage_services"))
+		if (!get_privilages("manage_services")) {
 			return array(
 				'status' => "not_logged_in",
-				'text' => $lang->translate('not_logged_or_no_perm')
+				'text'   => $lang->translate('not_logged_or_no_perm')
 			);
+		}
 
 		if ($box_id == "service_edit") {
 			$service = $heart->get_service($data['id']);
 			$service['tag'] = htmlspecialchars($service['tag']);
 
 			// Pobieramy pola danego modułu
-			if (strlen($service['module']))
-				if (($service_module = $heart->get_service_module($service['id'])) !== NULL
+			if (strlen($service['module'])) {
+				if (($service_module = $heart->get_service_module($service['id'])) !== null
 					&& object_implements($service_module, "IService_AdminManage")
-				)
+				) {
 					$extra_fields = create_dom_element("tbody", $service_module->service_admin_extra_fields_get(), array(
 						'class' => 'extra_fields'
 					));
+				}
+			}
 		} // Pobranie dostępnych modułów usług
-		else if ($box_id == "service_add") {
-			$services_modules = "";
-			foreach ($heart->get_services_modules() as $module) {
-				// Sprawdzamy czy dany moduł zezwala na tworzenie nowych usług, które będzie obsługiwał
-				if (($service_module = $heart->get_service_module_s($module['id'])) === NULL
-					|| !object_implements($service_module, "IService_Create")
-				)
-					continue;
+		else {
+			if ($box_id == "service_add") {
+				$services_modules = "";
+				foreach ($heart->get_services_modules() as $module) {
+					// Sprawdzamy czy dany moduł zezwala na tworzenie nowych usług, które będzie obsługiwał
+					if (($service_module = $heart->get_service_module_s($module['id'])) === null
+						|| !object_implements($service_module, "IService_Create")
+					) {
+						continue;
+					}
 
-				$services_modules .= create_dom_element("option", $module['name'], array(
-					'value' => $module['id'],
-					'selected' => isset($service['module']) && $service['module'] == $module['id'] ? "selected" : ""
-				));
+					$services_modules .= create_dom_element("option", $module['name'], array(
+						'value'    => $module['id'],
+						'selected' => isset($service['module']) && $service['module'] == $module['id'] ? "selected" : ""
+					));
+				}
 			}
 		}
 
@@ -117,7 +123,7 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
 		$groups = "";
 		foreach ($heart->get_groups() as $group) {
 			$groups .= create_dom_element("option", "{$group['name']} ( {$group['id']} )", array(
-				'value' => $group['id'],
+				'value'    => $group['id'],
 				'selected' => isset($service['groups']) && in_array($group['id'], $service['groups']) ? "selected" : ""
 			));
 		}
@@ -135,7 +141,7 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
 		}
 
 		return array(
-			'status' => 'ok',
+			'status'   => 'ok',
 			'template' => $output
 		);
 	}

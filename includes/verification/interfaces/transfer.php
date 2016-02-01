@@ -8,6 +8,7 @@ interface IPayment_Transfer
 	 *
 	 * @param Entity_Purchase $purchase_data
 	 * @param string $data_filename
+	 *
 	 * @return array
 	 *  string url => adres url strony do ktorej wysylamy dane POST
 	 *  ... - wysyłane pola POST
@@ -19,6 +20,7 @@ interface IPayment_Transfer
 	 *
 	 * @param $get
 	 * @param $post
+	 *
 	 * @return Entity_TransferFinalize
 	 */
 	public function finalizeTransfer($get, $post);

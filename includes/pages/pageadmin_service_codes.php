@@ -64,15 +64,16 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
 
 			if ($row['tariff_amount']) {
 				$amount = $row['tariff_amount'] . ' ' . $row['tag'];
-			}
-			else if ($row['tariff']) {
-				$amount = $lang->translate('tariff') . ': ' . $row['tariff'];
-			}
-			else if ($row['amount']) {
-				$amount = $row['amount'];
-			}
-			else {
-				$amount = $lang->translate('none');
+			} else {
+				if ($row['tariff']) {
+					$amount = $lang->translate('tariff') . ': ' . $row['tariff'];
+				} else {
+					if ($row['amount']) {
+						$amount = $row['amount'];
+					} else {
+						$amount = $lang->translate('none');
+					}
+				}
 			}
 
 			$body_row->setDbId($row['id']);
@@ -107,19 +108,21 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
 	{
 		global $heart, $lang, $templates;
 
-		if (!get_privilages("manage_service_codes"))
+		if (!get_privilages("manage_service_codes")) {
 			return array(
 				'status' => "not_logged_in",
-				'text' => $lang->translate('not_logged_or_no_perm')
+				'text'   => $lang->translate('not_logged_or_no_perm')
 			);
+		}
 
 		switch ($box_id) {
 			case "code_add":
 				// Pobranie usług
 				$services = "";
 				foreach ($heart->get_services() as $id => $row) {
-					if (($service_module = $heart->get_service_module($id)) === NULL || !object_implements($service_module, "IService_ServiceCodeAdminManage"))
+					if (($service_module = $heart->get_service_module($id)) === null || !object_implements($service_module, "IService_ServiceCodeAdminManage")) {
 						continue;
+					}
 
 					$services .= create_dom_element("option", $row['name'], array(
 						'value' => $row['id']
@@ -131,7 +134,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
 		}
 
 		return array(
-			'status' => 'ok',
+			'status'   => 'ok',
 			'template' => $output
 		);
 	}

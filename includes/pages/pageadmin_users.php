@@ -108,11 +108,12 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 	{
 		global $heart, $settings, $lang, $templates;
 
-		if (!get_privilages("manage_users"))
+		if (!get_privilages("manage_users")) {
 			return array(
 				'status' => "not_logged_in",
-				'text' => $lang->translate('not_logged_or_no_perm')
+				'text'   => $lang->translate('not_logged_or_no_perm')
 			);
+		}
 
 		switch ($box_id) {
 			case "user_edit":
@@ -122,7 +123,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 				$groups = '';
 				foreach ($heart->get_groups() as $group) {
 					$groups .= create_dom_element("option", "{$group['name']} ( {$group['id']} )", array(
-						'value' => $group['id'],
+						'value'    => $group['id'],
 						'selected' => in_array($group['id'], $user->getGroups()) ? "selected" : ""
 					));
 				}
@@ -138,7 +139,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 		}
 
 		return array(
-			'status' => 'ok',
+			'status'   => 'ok',
 			'template' => $output
 		);
 	}

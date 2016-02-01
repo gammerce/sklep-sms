@@ -34,18 +34,18 @@ class PaymentModuleTransferuj extends PaymentModule implements IPayment_Transfer
 		$cost = round($purchase_data->getPayment('cost') / 100, 2);
 
 		return array(
-			'url' => 'https://secure.transferuj.pl',
-			'id' => $this->account_id,
-			'kwota' => $cost,
-			'opis' => $purchase_data->getDesc(),
-			'crc' => $data_filename,
-			'md5sum' => md5($this->account_id . $cost . $data_filename . $this->key),
-			'imie' => $purchase_data->user->getForename(false),
-			'nazwisko' => $purchase_data->user->getSurname(false),
-			'email' => $purchase_data->getEmail(),
-			'pow_url' => $settings['shop_url_slash'] . "index.php?pid=transferuj_ok",
+			'url'          => 'https://secure.transferuj.pl',
+			'id'           => $this->account_id,
+			'kwota'        => $cost,
+			'opis'         => $purchase_data->getDesc(),
+			'crc'          => $data_filename,
+			'md5sum'       => md5($this->account_id . $cost . $data_filename . $this->key),
+			'imie'         => $purchase_data->user->getForename(false),
+			'nazwisko'     => $purchase_data->user->getSurname(false),
+			'email'        => $purchase_data->getEmail(),
+			'pow_url'      => $settings['shop_url_slash'] . "index.php?pid=transferuj_ok",
 			'pow_url_blad' => $settings['shop_url_slash'] . "index.php?pid=transferuj_bad",
-			'wyn_url' => $settings['shop_url_slash'] . "transfer_finalize.php?service=transferuj"
+			'wyn_url'      => $settings['shop_url_slash'] . "transfer_finalize.php?service=transferuj"
 		);
 	}
 
