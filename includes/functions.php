@@ -181,10 +181,9 @@ function is_logged()
 function get_privilages($which, $user = null)
 {
 	// Jeżeli nie podano użytkownika
-	if ($user === null)
-		global {
-	$user;
-}
+	if ($user === null) {
+		global $user;
+	}
 
 	if ($user === null) {
 		return false;
