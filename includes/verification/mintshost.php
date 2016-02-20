@@ -34,19 +34,19 @@ class PaymentModule_Mintshost extends PaymentModule implements IPayment_Sms
 			return IPayment_Sms::NO_CONNECTION;
 		}
 
-		if ($status == "0") {
-			return IPayment_Sms::BAD_CODE;
-		}
-
-		if ($status == "1") {
+		if ($status === "1") {
 			return IPayment_Sms::OK;
 		}
 
-		if ($status == "2") {
+		if ($status === "0") {
+			return IPayment_Sms::BAD_CODE;
+		}
+
+		if ($status === "2") {
 			return IPayment_Sms::BAD_EMAIL;
 		}
 
-		if ($status == "3") {
+		if ($status === "3") {
 			return IPayment_Sms::BAD_DATA;
 		}
 

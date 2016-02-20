@@ -41,7 +41,7 @@ class PaymentModule_Simpay extends PaymentModule implements IPayment_Sms
 			'code'       => $sms_code
 		));
 
-		if (!$response) {
+		if (!strlen($response)) {
 			return IPayment_Sms::NO_CONNECTION;
 		}
 
