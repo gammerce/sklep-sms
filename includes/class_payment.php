@@ -178,6 +178,9 @@ class Payment
 		/** @var Entity_Purchase $purchase_data */
 		$purchase_data = unserialize(file_get_contents(SCRIPT_ROOT . "data/transfers/" . $transfer_finalize->getDataFilename()));
 
+		// Fix: get user data again to avoid bugs linked with user wallet
+		$purchase_data->user = $heart->get_user($purchase_data->user->getUid());
+
 		// Dodanie informacji do bazy danych
 		$db->query($db->prepare(
 			"INSERT INTO `" . TABLE_PREFIX . "payment_transfer` " .

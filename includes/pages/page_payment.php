@@ -29,6 +29,9 @@ class PagePayment extends Page
 		/** @var Entity_Purchase $purchase_data */
 		$purchase_data = unserialize(base64_decode($post['data']));
 
+		// Fix: get user data again to avoid bugs linked with user wallet
+		$purchase_data->user = $heart->get_user($purchase_data->user->getUid());
+
 		if (!($purchase_data instanceof Entity_Purchase)) {
 			return $lang->translate('error_occured');
 		}

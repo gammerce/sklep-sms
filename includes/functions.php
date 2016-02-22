@@ -390,25 +390,21 @@ function validate_payment($purchase_data)
 				'positive' => false
 			);
 		}
-	} else {
-		if ($purchase_data->getPayment('method') == "wallet") {
-			// Dodanie informacji o płatności z portfela
-			$payment_id = pay_wallet($purchase_data->getPayment('cost'), $purchase_data->user);
+	} else if ($purchase_data->getPayment('method') == "wallet") {
+		// Dodanie informacji o płatności z portfela
+		$payment_id = pay_wallet($purchase_data->getPayment('cost'), $purchase_data->user);
 
-			// Metoda pay_wallet zwróciła błąd.
-			if (is_array($payment_id)) {
-				return $payment_id;
-			}
-		} else {
-			if ($purchase_data->getPayment('method') == "service_code") {
-				// Dodanie informacji o płatności z portfela
-				$payment_id = pay_service_code($purchase_data, $service_module);
+		// Metoda pay_wallet zwróciła błąd.
+		if (is_array($payment_id)) {
+			return $payment_id;
+		}
+	} else if ($purchase_data->getPayment('method') == "service_code") {
+		// Dodanie informacji o płatności z portfela
+		$payment_id = pay_service_code($purchase_data, $service_module);
 
-				// Funkcja pay_service_code zwróciła błąd.
-				if (is_array($payment_id)) {
-					return $payment_id;
-				}
-			}
+		// Funkcja pay_service_code zwróciła błąd.
+		if (is_array($payment_id)) {
+			return $payment_id;
 		}
 	}
 

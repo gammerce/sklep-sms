@@ -420,6 +420,9 @@ if ($action == "login") {
 									/** @var Entity_Purchase $purchase_data */
 									$purchase_data = unserialize(base64_decode($_POST['purchase_data']));
 
+									// Fix: get user data again to avoid bugs linked with user wallet
+									$purchase_data->user = $heart->get_user($purchase_data->user->getUid());
+
 									// Dodajemy dane płatności
 									$purchase_data->setPayment(array(
 										'method'       => $_POST['method'],
