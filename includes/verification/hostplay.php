@@ -31,8 +31,6 @@ class PaymentModuleHostplay extends PaymentModule implements IPayment_Sms
 			'&code=' . urlencode($return_code)
 		);
 
-		file_put_contents('test.log', $response);
-
 		$response = json_decode($response, true);
 
 		if (strtoupper($response['status']) == 'OK') {
