@@ -393,7 +393,7 @@ INSERT INTO `ss_sms_numbers` (`number`, `tariff`, `service`) VALUES
   ('91455', 14, 'hostplay'),
   ('91955', 19, 'hostplay'),
   ('92055', 20, 'hostplay'),
-  ('92555', 25, 'hostplay');
+  ('92520', 25, 'hostplay');
 
 DROP TABLE IF EXISTS `ss_transaction_services`;
 CREATE TABLE IF NOT EXISTS `ss_transaction_services` (
@@ -416,7 +416,7 @@ INSERT INTO `ss_transaction_services` (`id`, `name`, `data`, `data_hidden`, `sms
   ('cashbill', 'CashBill', '{"service":"","key":"","sms_text":""}', '', 1, 1),
   ('cssetti', 'CSSetti', '{"account_id":"","sms_text":"DP CSSETTI"}', '', 1, 0),
   ('homepay', 'HomePay', '{"api":"","sms_text":"","7055":"","7155":"","7255":"","7355":"","7455":"","7555":"","76660":"","7955":"","91055":"","91155":"","91455":"","91955":"","92055":"","92520":""}', '', 1, 0),
-  ('hostplay', 'HostPlay', '{"sms_text":"HPAY.HOSTPLAY","user_id":""}', '', 1, 0),
+  ('hostplay', 'HostPlay', '{"sms_text":"HOSTPLAY","user_id":""}', '', 1, 0),
   ('microsms', 'MicroSMS', '{"api":"","sms_text":"","service_id":""}', '', 1, 0),
   ('mintshost', 'MintsHost', '{"email":"","sms_text":"SIM.MINTS"}', '', 1, 0),
   ('profitsms', 'Profit SMS', '{"api":"","sms_text":""}', '', 1, 0),
