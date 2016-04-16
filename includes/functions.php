@@ -1193,5 +1193,5 @@ function log_to_file($file, $message)
 		$text = file_get_contents($file) . "\n" . $text;
 	}
 
-	file_put_contents(SQL_LOG, $text);
+	file_put_contents($file, $text);
 }

@@ -24,7 +24,7 @@ class PaymentModule_Mintshost extends PaymentModule implements IPayment_Sms
 	public function verify_sms($return_code, $number)
 	{
 		$status = curl_get_contents(
-			'http://mintshost.pl/sms2.php' .
+			'https://mintshost.pl/sms2.php' .
 			'?kod=' . urlencode($return_code) .
 			'&sms=' . urlencode($number) .
 			'&email=' . urlencode($this->email)
