@@ -1,9 +1,10 @@
 <?php
 
-define('IN_SCRIPT', "1");
-define('SCRIPT_NAME', "install_index");
+if (!defined('IN_SCRIPT')) {
+    exit;
+}
 
-require_once "global.php";
+require_once SCRIPT_ROOT . "install/full/includes/global.php";
 
 // #########################################
 // ##########    Wyświetl dane    ##########
@@ -21,7 +22,7 @@ foreach ($files_priv as $file) {
 		$privilage = "bad";
 	}
 
-	$files_privilages .= eval($templates->install_render('file_privilages'));
+	$files_privilages .= eval($templates->install_full_render('file_privilages'));
 }
 
 $server_modules = '';
@@ -34,11 +35,11 @@ foreach ($modules as $module) {
 		$title = "Nieprawidłowo";
 	}
 
-	$server_modules .= eval($templates->install_render('module'));
+	$server_modules .= eval($templates->install_full_render('module'));
 }
 
 // Pobranie ostatecznego szablonu
-$output = eval($templates->install_render('index'));
+$output = eval($templates->install_full_render('index'));
 
 // Wyświetlenie strony
 output_page($output);

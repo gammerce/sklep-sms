@@ -1,4 +1,4 @@
 errors/
-includes/config.php
+credentials/
 themes/default/services/
 data/transfers/

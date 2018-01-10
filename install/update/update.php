@@ -1,9 +1,10 @@
 <?php
 
-define('IN_SCRIPT', "1");
-define('SCRIPT_NAME', "install_update");
+if (!defined('IN_SCRIPT')) {
+    exit;
+}
 
-require_once "global.php";
+require_once SCRIPT_ROOT . "install/update/includes/global.php";
 
 $db = new Database($db_host, $db_user, $db_pass, $db_name);
 
@@ -23,7 +24,7 @@ file_put_contents(SCRIPT_ROOT . "install/progress", "");
 
 $db->query("SET NAMES utf8");
 
-$queries = SplitSQL(SCRIPT_ROOT . "install/queries.sql");
+$queries = SplitSQL(SCRIPT_ROOT . "install/update/queries/" . VERSION . ".sql");
 // Wykonujemy zapytania, jedno po drugim
 foreach ($queries as $query) {
 	if (strlen($query)) {

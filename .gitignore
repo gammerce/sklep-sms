@@ -1,2 +1,13 @@
 .idea
-includes/config.php
+/install/error
+/install/block
+/install/progress
+/credentials/*
+!/credentials/.htaccess
+/errors/*
+!/errors/.htaccess
+/themes/*
+!/themes/default
+!/themes/.htaccess
+/data/transfers/*
+!/data/transfers/.gitkeep

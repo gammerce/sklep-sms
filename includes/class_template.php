@@ -1,116 +1,123 @@
 <?php
 
-/**
- * MyBB 1.8
- * Copyright 2014 MyBB Group, All Rights Reserved
- * Website: http://www.mybb.com
- * License: http://www.mybb.com/about/license
-
- */
 class Templates
 {
-	/**
-	 * Pobranie szablonu.
-	 *
-	 * @param string $title Nazwa szablonu
-	 * @param bool $install Prawda, jeżeli pobieramy szablon instalacji.
-	 * @param bool $eslashes Prawda, jeżeli zawartość szablonu ma być "escaped".
-	 * @param bool $htmlcomments Prawda, jeżeli chcemy dodać komentarze o szablonie.
-	 *
-	 * @return string|bool Szablon.
-	 */
-	public function get_template($title, $install = false, $eslashes = true, $htmlcomments = true)
-	{
-		global $settings, $lang;
+    public function render($template, $eslashes = true, $htmlcomments = true)
+    {
+        return 'return "' . $this->get_template($template, $eslashes, $htmlcomments) . '";';
+    }
 
-		if (!$install) {
-			if (strlen($lang->getCurrentLanguageShort())) {
-				$filename = $title . "." . $lang->getCurrentLanguageShort();
-				$temp = SCRIPT_ROOT . "themes/{$settings['theme']}/{$filename}.html";
-				if (file_exists($temp)) {
-					$path = $temp;
-				} else {
-					$temp = SCRIPT_ROOT . "themes/default/{$filename}.html";
-					if (file_exists($temp)) {
-						$path = $temp;
-					}
-				}
-			}
+    public function install_render($template, $eslashes = true, $htmlcomments = true)
+    {
+        return 'return "' . $this->get_install_template($template, $eslashes, $htmlcomments) . '";';
+    }
 
-			if (!isset($path)) {
-				$filename = $title;
-				$temp = SCRIPT_ROOT . "themes/{$settings['theme']}/{$filename}.html";
-				if (file_exists($temp)) {
-					$path = $temp;
-				} else {
-					$temp = SCRIPT_ROOT . "themes/default/{$filename}.html";
-					if (file_exists($temp)) {
-						$path = $temp;
-					}
-				}
-			}
-		} else {
-			if (strlen($lang->getCurrentLanguageShort())) {
-				$filename = $title . "." . $lang->getCurrentLanguageShort();
-				$temp = SCRIPT_ROOT . "install/templates/{$filename}.html";
-				if (file_exists($temp)) {
-					$path = $temp;
-				}
-			}
+    public function install_full_render($template, $eslashes = true, $htmlcomments = true)
+    {
+        return 'return "' . $this->get_install_template($template, true, $eslashes, $htmlcomments) . '";';
+    }
 
-			if (!isset($path)) {
-				$filename = $title;
-				$temp = SCRIPT_ROOT . "install/templates/{$filename}.html";
-				if (file_exists($temp)) {
-					$path = $temp;
-				}
-			}
-		}
+    public function install_update_render($template, $eslashes = true, $htmlcomments = true)
+    {
+        return 'return "' . $this->get_install_template($template, false, $eslashes, $htmlcomments) . '";';
+    }
 
-		if (!isset($path)) {
-			return false;
-		}
+    /**
+     * Pobranie szablonu.
+     *
+     * @param string $title Nazwa szablonu
+     * @param bool   $eslashes Prawda, jeżeli zawartość szablonu ma być "escaped".
+     * @param bool   $htmlcomments Prawda, jeżeli chcemy dodać komentarze o szablonie.
+     *
+     * @return string|bool Szablon.
+     */
+    private function get_template($title, $eslashes = true, $htmlcomments = true)
+    {
+        global $settings, $lang;
 
-		$template = file_get_contents($path);
+        if (strlen($lang->getCurrentLanguageShort())) {
+            $filename = $title . "." . $lang->getCurrentLanguageShort();
+            $temp = SCRIPT_ROOT . "themes/{$settings['theme']}/{$filename}.html";
+            if (file_exists($temp)) {
+                $path = $temp;
+            } else {
+                $temp = SCRIPT_ROOT . "themes/default/{$filename}.html";
+                if (file_exists($temp)) {
+                    $path = $temp;
+                }
+            }
+        }
 
-		if ($htmlcomments) {
-			$template = "<!-- start: " . htmlspecialchars($title) . " -->\n{$template}\n<!-- end: " . htmlspecialchars($title) . " -->";
-		}
+        if (!isset($path)) {
+            $filename = $title;
+            $temp = SCRIPT_ROOT . "themes/{$settings['theme']}/{$filename}.html";
+            if (file_exists($temp)) {
+                $path = $temp;
+            } else {
+                $temp = SCRIPT_ROOT . "themes/default/{$filename}.html";
+                if (file_exists($temp)) {
+                    $path = $temp;
+                }
+            }
+        }
 
-		if ($eslashes) {
-			$template = str_replace("\\'", "'", addslashes($template));
-		}
+        if (!isset($path)) {
+            return false;
+        }
 
-		$template = str_replace("{__VERSION__}", VERSION, $template);
+        return $this->read_template($path, $title, $htmlcomments, $eslashes);
+    }
 
-		return $template;
-	}
+    private function get_install_template($title, $full, $eslashes = true, $htmlcomments = true)
+    {
+        global $lang;
 
-	/**
-	 * Prepare a template for rendering to a variable.
-	 *
-	 * @param string $template The name of the template to get.
-	 * @param boolean $eslashes True if template contents must be escaped, false if not.
-	 * @param boolean $htmlcomments True to output HTML comments, false to not output.
-	 *
-	 * @return string The eval()-ready PHP code for rendering the template
-	 */
-	function render($template, $eslashes = true, $htmlcomments = true)
-	{
-		return 'return "' . $this->get_template($template, false, $eslashes, $htmlcomments) . '";';
-	}
+        if (strlen($lang->getCurrentLanguageShort())) {
+            $filename = $title . "." . $lang->getCurrentLanguageShort();
+            $temp = $this->get_install_path($filename, $full);
+            if (file_exists($temp)) {
+                $path = $temp;
+            }
+        }
 
-	/**
-	 * Prepare a template for rendering to a variable.
-	 *
-	 * @param string $template The name of the template to get.
-	 * @param boolean $eslashes True if template contents must be escaped, false if not.
-	 * @param boolean $htmlcomments True to output HTML comments, false to not output.
-	 *
-	 * @return string The eval()-ready PHP code for rendering the template
-	 */
-	function install_render($template, $eslashes = true, $htmlcomments = true)
-	{
-		return 'return "' . $this->get_template($template, true, $eslashes, $htmlcomments) . '";';
-	}
+        if (!isset($path)) {
+            $filename = $title;
+            $temp = $this->get_install_path($filename, $full);
+            if (file_exists($temp)) {
+                $path = $temp;
+            }
+        }
+
+        if (!isset($path)) {
+            return false;
+        }
+
+        return $this->read_template($path, $title, $htmlcomments, $eslashes);
+    }
+
+    private function get_install_path($filename, $full)
+    {
+        if ($full) {
+            return SCRIPT_ROOT . "install/full/templates/{$filename}.html";
+        }
+
+        return SCRIPT_ROOT . "install/update/templates/{$filename}.html";
+    }
+
+    private function read_template($path, $title, $htmlcomments, $eslashes)
+    {
+        $template = file_get_contents($path);
+
+        if ($htmlcomments) {
+            $template = "<!-- start: " . htmlspecialchars($title) . " -->\n{$template}\n<!-- end: " . htmlspecialchars($title) . " -->";
+        }
+
+        if ($eslashes) {
+            $template = str_replace("\\'", "'", addslashes($template));
+        }
+
+        $template = str_replace("{__VERSION__}", VERSION, $template);
+
+        return $template;
+    }
 }

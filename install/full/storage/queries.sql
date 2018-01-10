@@ -1,3 +1,16 @@
+DROP TABLE IF EXISTS `ss_meta`;
+CREATE TABLE IF NOT EXISTS `ss_meta` (
+  `id`    INT(11)      NOT NULL AUTO_INCREMENT,
+  `name`  VARCHAR(255) NOT NULL,
+  `value` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
+  UNIQUE KEY `name` (`name`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  AUTO_INCREMENT = 1;
+
 DROP TABLE IF EXISTS `ss_payment_admin`;
 CREATE TABLE IF NOT EXISTS `ss_payment_admin` (
   `id`       INT(11)     NOT NULL AUTO_INCREMENT,
@@ -33,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `ss_users` (
                        CHARACTER SET utf8
                        COLLATE utf8_bin   NOT NULL DEFAULT '1',
   `regdate`            TIMESTAMP          NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `lastactiv`          TIMESTAMP          NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `lastactiv`          TIMESTAMP          NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `wallet`             INT(11)            NOT NULL DEFAULT '0',
   `regip`              VARCHAR(16)        NOT NULL DEFAULT '',
   `lastip`             VARCHAR(16)        NOT NULL DEFAULT '',
@@ -701,48 +714,48 @@ CREATE TABLE IF NOT EXISTS `ss_sms_codes` (
 
 
 ALTER TABLE `ss_payment_admin`
-ADD CONSTRAINT `ss_payment_admin_ibfk_1` FOREIGN KEY (`aid`) REFERENCES `ss_users` (`uid`)
+  ADD CONSTRAINT `ss_payment_admin_ibfk_1` FOREIGN KEY (`aid`) REFERENCES `ss_users` (`uid`)
   ON DELETE NO ACTION
   ON UPDATE CASCADE;
 
 ALTER TABLE `ss_pricelist`
-ADD CONSTRAINT `ss_pricelist_ibfk_1` FOREIGN KEY (`service`) REFERENCES `ss_services` (`id`)
+  ADD CONSTRAINT `ss_pricelist_ibfk_1` FOREIGN KEY (`service`) REFERENCES `ss_services` (`id`)
   ON DELETE CASCADE
   ON UPDATE CASCADE;
 
 ALTER TABLE `ss_servers_services`
-ADD CONSTRAINT `ss_servers_services_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `ss_services` (`id`)
+  ADD CONSTRAINT `ss_servers_services_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `ss_services` (`id`)
   ON DELETE CASCADE
   ON UPDATE CASCADE,
-ADD CONSTRAINT `ss_servers_services_ibfk_1` FOREIGN KEY (`server_id`) REFERENCES `ss_servers` (`id`)
+  ADD CONSTRAINT `ss_servers_services_ibfk_1` FOREIGN KEY (`server_id`) REFERENCES `ss_servers` (`id`)
   ON DELETE CASCADE
   ON UPDATE CASCADE;
 
 ALTER TABLE `ss_sms_numbers`
-ADD CONSTRAINT `ss_sms_numbers_ibfk_2` FOREIGN KEY (`service`) REFERENCES `ss_transaction_services` (`id`)
+  ADD CONSTRAINT `ss_sms_numbers_ibfk_2` FOREIGN KEY (`service`) REFERENCES `ss_transaction_services` (`id`)
   ON DELETE CASCADE
   ON UPDATE CASCADE,
-ADD CONSTRAINT `ss_sms_numbers_ibfk_1` FOREIGN KEY (`tariff`) REFERENCES `ss_tariffs` (`id`)
+  ADD CONSTRAINT `ss_sms_numbers_ibfk_1` FOREIGN KEY (`tariff`) REFERENCES `ss_tariffs` (`id`)
   ON DELETE CASCADE
   ON UPDATE CASCADE;
 
 ALTER TABLE `ss_user_service`
-ADD CONSTRAINT `ss_user_service_ibfk_1` FOREIGN KEY (`service`) REFERENCES `ss_services` (`id`)
+  ADD CONSTRAINT `ss_user_service_ibfk_1` FOREIGN KEY (`service`) REFERENCES `ss_services` (`id`)
   ON UPDATE CASCADE;
 
 ALTER TABLE `ss_user_service_extra_flags`
-ADD CONSTRAINT `ss_user_service_extra_flags_ibfk_1` FOREIGN KEY (`us_id`) REFERENCES `ss_user_service` (`id`)
+  ADD CONSTRAINT `ss_user_service_extra_flags_ibfk_1` FOREIGN KEY (`us_id`) REFERENCES `ss_user_service` (`id`)
   ON DELETE CASCADE
   ON UPDATE CASCADE,
-ADD CONSTRAINT `ss_user_service_extra_flags_ibfk_2` FOREIGN KEY (`service`) REFERENCES `ss_services` (`id`)
+  ADD CONSTRAINT `ss_user_service_extra_flags_ibfk_2` FOREIGN KEY (`service`) REFERENCES `ss_services` (`id`)
   ON UPDATE CASCADE,
-ADD CONSTRAINT `ss_user_service_extra_flags_ibfk_3` FOREIGN KEY (`server`) REFERENCES `ss_servers` (`id`)
+  ADD CONSTRAINT `ss_user_service_extra_flags_ibfk_3` FOREIGN KEY (`server`) REFERENCES `ss_servers` (`id`)
   ON DELETE NO ACTION
   ON UPDATE CASCADE;
 
 ALTER TABLE `ss_user_service_mybb_extra_groups`
-ADD CONSTRAINT `ss_user_service_mybb_extra_groups_ibfk_1` FOREIGN KEY (`us_id`) REFERENCES `ss_user_service` (`id`)
+  ADD CONSTRAINT `ss_user_service_mybb_extra_groups_ibfk_1` FOREIGN KEY (`us_id`) REFERENCES `ss_user_service` (`id`)
   ON DELETE CASCADE
   ON UPDATE CASCADE,
-ADD CONSTRAINT `ss_user_service_mybb_extra_groups_ibfk_2` FOREIGN KEY (`service`) REFERENCES `ss_services` (`id`)
+  ADD CONSTRAINT `ss_user_service_mybb_extra_groups_ibfk_2` FOREIGN KEY (`service`) REFERENCES `ss_services` (`id`)
   ON UPDATE CASCADE;

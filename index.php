@@ -1,5 +1,4 @@
 <?php
-
 define('IN_SCRIPT', "1");
 define('SCRIPT_NAME', "index");
 

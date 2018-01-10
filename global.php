@@ -29,6 +29,10 @@ if (file_exists(SCRIPT_ROOT . 'install')) {
 	exit;
 }
 
+if (!file_exists(SCRIPT_ROOT . 'credentials/database.php')) {
+    exit("Plik credentials/database.php nie istnieje.");
+}
+
 $settings = array(
 	'date_format'    => 'Y-m-d H:i',
 	'theme'          => 'default',
@@ -36,7 +40,7 @@ $settings = array(
 	'shop_url_slash' => ''
 );
 
-require_once SCRIPT_ROOT . "includes/config.php";
+require_once SCRIPT_ROOT . "credentials/database.php";
 require_once SCRIPT_ROOT . "includes/class_template.php";
 require_once SCRIPT_ROOT . "includes/functions.php";
 require_once SCRIPT_ROOT . "includes/class_heart.php";
