@@ -29,8 +29,13 @@ $(document).ready(function ($) {
 					$("body").addClass("updated");
 					$("body").html($("<div>", {
 						class: "updated",
-						html: "Aktualizacja przebiegła pomyślnie. Usuń folder install."
+						html: "Aktualizacja przebiegła pomyślnie."
 					}));
+
+                    setTimeout(function () {
+                        location.reload();
+                    }, 4000);
+
 					return;
 				}
 				else if (jsonObj.return_id == 'error') {

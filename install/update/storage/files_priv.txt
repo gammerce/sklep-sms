@@ -1,0 +1,4 @@
+errors/
+credentials/
+themes/default/services/
+data/transfers/

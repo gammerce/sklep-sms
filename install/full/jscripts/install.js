@@ -39,8 +39,13 @@ jQuery(document).ready(function ($) {
                     $("body").addClass("installed");
                     $("body").html($("<div>", {
                         class: "installed",
-                        html: "Instalacja przebiegła pomyślnie. Usuń folder install."
+                        html: "Instalacja przebiegła pomyślnie."
                     }));
+
+                    setTimeout(function () {
+                        location.reload();
+                    }, 4000);
+
                     return;
                 }
                 else if (jsonObj.return_id == 'error') {

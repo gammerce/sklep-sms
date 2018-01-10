@@ -75,7 +75,6 @@ class SqlQueryException extends Exception
 
 class Database
 {
-
 	private $host;
 	private $user;
 	private $pass;
@@ -270,4 +269,41 @@ class Database
 		$header = eval($templates->render("header_error"));
 		output_page(eval($templates->render("error_handler")));
 	}
+}
+
+abstract class DBInstance {
+    /** @var Database */
+    private static $db;
+
+    public static function get()
+    {
+        if (self::$db !== null) {
+            return self::$db;
+        }
+
+        return self::$db = self::connect();
+    }
+
+    public static function set(Database $database)
+    {
+        self::$db = $database;
+    }
+
+    protected static function connect()
+    {
+        if (!file_exists(SCRIPT_ROOT . "credentials/database.php")) {
+            return null;
+        }
+
+        require SCRIPT_ROOT . "credentials/database.php";
+
+        try {
+            $db = new Database($db_host, $db_user, $db_pass, $db_name);
+            $db->query("SET NAMES utf8");
+
+            return $db;
+        } catch (SqlQueryException $exception) {
+            return null;
+        }
+    }
 }

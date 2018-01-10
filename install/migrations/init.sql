@@ -1,16 +1,3 @@
-DROP TABLE IF EXISTS `ss_meta`;
-CREATE TABLE IF NOT EXISTS `ss_meta` (
-  `id`    INT(11)      NOT NULL AUTO_INCREMENT,
-  `name`  VARCHAR(255) NOT NULL,
-  `value` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
-  UNIQUE KEY `name` (`name`)
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  AUTO_INCREMENT = 1;
-
 DROP TABLE IF EXISTS `ss_payment_admin`;
 CREATE TABLE IF NOT EXISTS `ss_payment_admin` (
   `id`       INT(11)     NOT NULL AUTO_INCREMENT,

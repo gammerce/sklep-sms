@@ -5,9 +5,12 @@ if (!defined('IN_SCRIPT')) {
 }
 
 require_once SCRIPT_ROOT . "install/full/includes/global.php";
+require_once SCRIPT_ROOT . "install/includes/DatabaseMigration.php";
+require_once SCRIPT_ROOT . "install/includes/InstallManager.php";
 
 try {
     $db = new Database($_POST['db_host'], $_POST['db_user'], $_POST['db_password'], $_POST['db_db']);
+    DBInstance::set($db);
 } catch (SqlQueryException $e) {
     output_page($lang->translate('mysqli_' . $e->getMessage()) . "\n\n" . $e->getError());
 }
@@ -71,57 +74,13 @@ if (!empty($warnings)) {
     json_output("warnings", $lang->translate('form_wrong_filled'), false, $return_data);
 }
 
-file_put_contents(SCRIPT_ROOT . "install/progress", '');
-
-$queries = SplitSQL(SCRIPT_ROOT . "install/full/storage/queries.sql");
-$queries[] = $db->prepare(
-    "UPDATE `" . TABLE_PREFIX . "settings` " .
-    "SET `value`='%s' WHERE `key`='random_key';",
-    [get_random_string(16)]
-);
-$queries[] = $db->prepare(
-    "UPDATE `" . TABLE_PREFIX . "settings` " .
-    "SET `value`='%s' WHERE `key`='license_login';",
-    [$_POST['license_id']]
-);
-$queries[] = $db->prepare(
-    "UPDATE `" . TABLE_PREFIX . "settings` " .
-    "SET `value`='%s' WHERE `key`='license_password';",
-    [md5($_POST['license_password'])]
-);
-$salt = get_random_string(8);
-$queries[] = $db->prepare(
-    "INSERT INTO `" . TABLE_PREFIX . "users` " .
-    "SET `username` = '%s', `password` = '%s', `salt` = '%s', `regip` = '%s', `groups` = '2';",
-    [$_POST['admin_username'], hash_password($_POST['admin_password'], $salt), $salt, get_ip()]
-);
+InstallManager::instance()->start();
 
 $db->query("SET NAMES utf8");
-
-// Wykonujemy zapytania, jedno po drugim
-foreach ($queries as $query) {
-    if (strlen($query)) {
-        try {
-            $db->query($query);
-        } catch (SqlQueryException $e) {
-            $input = [];
-            $input[] = "Message: " . $lang->translate('mysqli_' . $e->getMessage());
-            $input[] = "Error: " . $e->getError();
-            $input[] = "Query: " . $e->getQuery(false);
-            file_put_contents(SCRIPT_ROOT . 'errors/install.log', implode("\n", $input));
-            file_put_contents(SCRIPT_ROOT . 'install/error', '');
-            unlink(SCRIPT_ROOT . "install/progress");
-            json_output('error', INSTALL_ERROR, false);
-        }
-    }
-}
-
-// Zapisz wersję sklepu
-$db->query($db->prepare(
-    "INSERT INTO `" . TABLE_PREFIX . "meta` " .
-    "SET `name` = 'version', `value` = '%s';",
-    [VERSION]
-));
+$migrator = new DatabaseMigration($db, $lang);
+$migrator->install(
+    $_POST['license_id'], $_POST['license_password'], $_POST['admin_username'], $_POST['admin_password']
+);
 
 file_put_contents(SCRIPT_ROOT . "credentials/database.php",
     '<?php
@@ -131,7 +90,6 @@ $db_pass = \'' . addslashes($_POST['db_password']) . '\';
 $db_name = \'' . addslashes($_POST['db_db']) . '\';'
 );
 
-unlink(SCRIPT_ROOT . "install/progress");
-file_put_contents(SCRIPT_ROOT . "install/block", '');
+InstallManager::instance()->finish();
 
-json_output("ok", "Instalacja przebiegła pomyślnie. Usuń folder install.", true);
+json_output("ok", "Instalacja przebiegła pomyślnie.", true);

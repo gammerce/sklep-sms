@@ -23,16 +23,6 @@ if (in_array(SCRIPT_NAME, array('admin', 'jsonhttp_admin'))) {
 $working_dir = dirname(__FILE__) ? dirname(__FILE__) : '.';
 require_once $working_dir . '/includes/init.php';
 
-// Przenieś do folderu install, jeżeli istnieje
-if (file_exists(SCRIPT_ROOT . 'install')) {
-	header('Location: install');
-	exit;
-}
-
-if (!file_exists(SCRIPT_ROOT . 'credentials/database.php')) {
-    exit("Plik credentials/database.php nie istnieje.");
-}
-
 $settings = array(
 	'date_format'    => 'Y-m-d H:i',
 	'theme'          => 'default',
@@ -40,11 +30,23 @@ $settings = array(
 	'shop_url_slash' => ''
 );
 
-require_once SCRIPT_ROOT . "credentials/database.php";
+require_once SCRIPT_ROOT . "includes/mysqli.php";
+require_once SCRIPT_ROOT . "includes/ShopState.php";
+
+$db = DBInstance::get();
+
+if (!ShopState::isInstalled() || !(new ShopState($db))->isUpToDate()) {
+    header('Location: install');
+    exit;
+}
+
+if (!file_exists(SCRIPT_ROOT . 'credentials/database.php')) {
+    exit("Plik credentials/database.php nie istnieje.");
+}
+
 require_once SCRIPT_ROOT . "includes/class_template.php";
 require_once SCRIPT_ROOT . "includes/functions.php";
 require_once SCRIPT_ROOT . "includes/class_heart.php";
-require_once SCRIPT_ROOT . "includes/mysqli.php";
 require_once SCRIPT_ROOT . "includes/class_payment.php";
 require_once SCRIPT_ROOT . "includes/class_translator.php";
 
@@ -59,10 +61,6 @@ $templates = new Templates();
 // Tworzymy obiekt języka
 $lang = new Translator();
 $lang_shop = new Translator();
-
-// Utworzenie połączenia z bazą danych
-$db = new Database($db_host, $db_user, $db_pass, $db_name);
-$db->query("SET NAMES utf8");
 
 // Te interfejsy są potrzebne do klas różnego rodzajów
 foreach (scandir(SCRIPT_ROOT . "includes/interfaces") as $file) {

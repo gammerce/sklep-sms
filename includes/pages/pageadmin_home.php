@@ -35,9 +35,9 @@ class PageAdminMain extends PageAdmin
 		}
 
 		// Info o katalogu install
-		if (file_exists(SCRIPT_ROOT . "install")) {
-			$this->add_note($lang->translate('remove_install'), "negative", $notes);
-		}
+//		if (file_exists(SCRIPT_ROOT . "install")) {
+//			$this->add_note($lang->translate('remove_install'), "negative", $notes);
+//		}
 
 		// Sprawdzanie wersji skryptu
 		$next_version = trim(curl_get_contents("http://www.sklep-sms.pl/version.php?action=get_next&type=web&version=" . VERSION));

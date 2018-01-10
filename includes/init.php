@@ -17,5 +17,5 @@ if (!defined('ERROR_LOG')) {
 }
 
 if (!defined('VERSION')) {
-	define('VERSION', "3.3.6");
+	define('VERSION', "3.3.7");
 }

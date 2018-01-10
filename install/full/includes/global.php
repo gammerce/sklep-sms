@@ -1,12 +1,7 @@
 <?php
 
-// Błąd podczas instalacji
-const INSTALL_ERROR = "Wystąpił błąd podczas instalacji.<br />Poinformuj o swoim problemie na forum sklepu. Do wątku załącz plik errors/install.log";
-
-require_once SCRIPT_ROOT . "install/full/includes/functions.php";
-
 if (file_exists(SCRIPT_ROOT . "install/error")) {
-    output_page(INSTALL_ERROR);
+    InstallManager::instance()->showError();
 }
 
 if (file_exists(SCRIPT_ROOT . "install/block")) {
@@ -19,9 +14,6 @@ if (file_exists(SCRIPT_ROOT . "install/progress")) {
 
 // Tworzymy obiekt szablonów
 $templates = new Templates();
-
-// Tworzymy obiekt języka
-$lang = new Translator("polish");
 
 // Którym plikom / folderom trzeba nadać uprawnienia do zapisywania
 $files_priv = [];

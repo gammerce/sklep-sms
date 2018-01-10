@@ -18,6 +18,9 @@ require_once SCRIPT_ROOT . "includes/functions.php";
 require_once SCRIPT_ROOT . "includes/functions_jsonhttp.php";
 require_once SCRIPT_ROOT . "includes/mysqli.php";
 require_once SCRIPT_ROOT . "includes/class_translator.php";
-require_once SCRIPT_ROOT . "install/includes/functions.php";
+require_once SCRIPT_ROOT . "includes/ShopState.php";
+require_once SCRIPT_ROOT . "install/includes/InstallManager.php";
 
-set_exception_handler("exceptionHandler");
+$lang = new Translator();
+
+set_exception_handler([InstallManager::instance(), 'handleException']);

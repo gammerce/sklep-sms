@@ -14,7 +14,7 @@ interface I_ToHtml
 
 }
 
-class String implements I_ToHtml
+class SimpleText implements I_ToHtml
 {
 
 	/** @var  string */
@@ -57,7 +57,7 @@ class DOMElement implements I_ToHtml
 	function __construct($value = null)
 	{
 		if ($value !== null) {
-			$this->addContent(new String($value));
+			$this->addContent(new SimpleText($value));
 		}
 
 		return $this;
@@ -526,17 +526,17 @@ class Wrapper extends Div
 
 		if ($this->search) {
 			$search_text = $_GET['search'];
-			$buttons->addContent(new String(eval($templates->render("admin/form_search"))));
+			$buttons->addContent(new SimpleText(eval($templates->render("admin/form_search"))));
 		}
 
 		foreach ($this->buttons as $button) {
 			$buttons->addContent($button);
-			$buttons->addContent(new String(' '));
+			$buttons->addContent(new SimpleText(' '));
 		}
 
-		$title->addContent(new String($this->getTitle()));
+		$title->addContent(new SimpleText($this->getTitle()));
 		$title->addContent($buttons);
-		$title->addContent(new String('<br class="clear" />'));
+		$title->addContent(new SimpleText('<br class="clear" />'));
 
 		$this->addContent($title);
 		$this->addContent($this->getTable());

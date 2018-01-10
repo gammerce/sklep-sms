@@ -1,12 +1,10 @@
 <?php
 
-// Błąd podczas aktualizacji
-const UPDATE_ERROR = "Wystąpił błąd podczas aktualizacji.<br />Poinformuj o swoim problemie na forum sklepu. Do wątku załącz plik errors/update.log";
-
 require_once SCRIPT_ROOT . "install/update/includes/functions.php";
+require_once SCRIPT_ROOT . "install/includes/InstallManager.php";
 
 if (file_exists(SCRIPT_ROOT . "install/error")) {
-    output_page(UPDATE_ERROR);
+    InstallManager::instance()->showError();
 }
 
 if (file_exists(SCRIPT_ROOT . "install/block")) {
@@ -19,9 +17,6 @@ if (file_exists(SCRIPT_ROOT . "install/progress")) {
 
 // Tworzymy obiekt szablonów
 $templates = new Templates();
-
-// Tworzymy obiekt języka
-$lang = new Translator("polish");
 
 $warnings = $files_priv = $files_del = [];
 
