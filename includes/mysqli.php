@@ -2,276 +2,277 @@
 
 class SqlQueryException extends Exception
 {
-	/** @var  string */
-	private $query;
+    /** @var  string */
+    private $query;
 
-	/** @var  string */
-	private $message_id;
+    /** @var  string */
+    private $message_id;
 
-	/** @var  string */
-	private $error;
+    /** @var  string */
+    private $error;
 
-	/** @var  int */
-	private $errorno;
+    /** @var  int */
+    private $errorno;
 
-	/**
-	 * @param bool $escape
-	 *
-	 * @return string
-	 */
-	public function getQuery($escape = true)
-	{
-		return $escape ? htmlspecialchars($this->query) : $this->query;
-	}
+    /**
+     * @param bool $escape
+     *
+     * @return string
+     */
+    public function getQuery($escape = true)
+    {
+        return $escape ? htmlspecialchars($this->query) : $this->query;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getMessageId()
-	{
-		return $this->message_id;
-	}
+    /**
+     * @return string
+     */
+    public function getMessageId()
+    {
+        return $this->message_id;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getError()
-	{
-		return $this->error;
-	}
+    /**
+     * @return string
+     */
+    public function getError()
+    {
+        return $this->error;
+    }
 
-	/**
-	 * @param string $query
-	 */
-	public function setQuery($query)
-	{
-		$this->query = $query;
-	}
+    /**
+     * @param string $query
+     */
+    public function setQuery($query)
+    {
+        $this->query = $query;
+    }
 
-	/**
-	 * @param string $error
-	 */
-	public function setError($error)
-	{
-		$this->error = $error;
-	}
+    /**
+     * @param string $error
+     */
+    public function setError($error)
+    {
+        $this->error = $error;
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getErrorno()
-	{
-		return $this->errorno;
-	}
+    /**
+     * @return int
+     */
+    public function getErrorno()
+    {
+        return $this->errorno;
+    }
 
-	/**
-	 * @param int $errorno
-	 */
-	public function setErrorno($errorno)
-	{
-		$this->errorno = $errorno;
-	}
+    /**
+     * @param int $errorno
+     */
+    public function setErrorno($errorno)
+    {
+        $this->errorno = $errorno;
+    }
 }
 
 class Database
 {
-	private $host;
-	private $user;
-	private $pass;
-	private $name;
+    private $host;
+    private $user;
+    private $pass;
+    private $name;
 
-	private $link;
+    private $link;
 
-	private $error;
-	private $errno;
+    private $error;
+    private $errno;
 
-	private $query;
-	private $result;
-	public $counter = 0;
+    private $query;
+    private $result;
+    public $counter = 0;
 
-	function __construct($host, $user, $pass, $name, $conn = true)
-	{
-		$this->host = $host;
-		$this->user = $user;
-		$this->pass = $pass;
-		$this->name = $name;
-		if ($conn) {
-			$this->connect();
-		}
-	}
+    function __construct($host, $user, $pass, $name, $conn = true)
+    {
+        $this->host = $host;
+        $this->user = $user;
+        $this->pass = $pass;
+        $this->name = $name;
+        if ($conn) {
+            $this->connect();
+        }
+    }
 
-	function __destruct()
-	{
-		@mysqli_close($this->link);
-	}
+    function __destruct()
+    {
+        @mysqli_close($this->link);
+    }
 
-	public function connect()
-	{
-		if ($this->link = @mysqli_connect($this->host, $this->user, $this->pass)) {
-			if (!@mysqli_select_db($this->link, $this->name)) {
-				$this->exception("no_db_connection");
-			}
-		} else {
-			$this->error = mysqli_connect_error();
-			$this->errno = mysqli_connect_errno();
-			$this->exception("no_server_connection");
-		}
-	}
+    public function connect()
+    {
+        if ($this->link = @mysqli_connect($this->host, $this->user, $this->pass)) {
+            if (!@mysqli_select_db($this->link, $this->name)) {
+                $this->exception("no_db_connection");
+            }
+        } else {
+            $this->error = mysqli_connect_error();
+            $this->errno = mysqli_connect_errno();
+            $this->exception("no_server_connection");
+        }
+    }
 
-	public function close()
-	{
-		@mysqli_close($this->link);
-	}
+    public function close()
+    {
+        @mysqli_close($this->link);
+    }
 
-	public function prepare($query, $values)
-	{
-		// Escapeowanie wszystkich argumentów
-		$i = 0;
-		foreach ($values as $value) {
-			$values[$i++] = $this->escape($value);
-		}
+    public function prepare($query, $values)
+    {
+        // Escapeowanie wszystkich argumentów
+        $i = 0;
+        foreach ($values as $value) {
+            $values[$i++] = $this->escape($value);
+        }
 
-		return vsprintf($query, $values);
-	}
+        return vsprintf($query, $values);
+    }
 
-	public function query($query)
-	{
-		$this->counter += 1;
-		$this->query = $query;
-		//file_put_contents(SQL_LOG, file_get_contents(SQL_LOG)."\n".$query);
-		if ($this->result = @mysqli_query($this->link, $query)) {
-			return $this->result;
-		} else {
-			$this->exception("query_error");
+    public function query($query)
+    {
+        $this->counter += 1;
+        $this->query = $query;
+        //file_put_contents(SQL_LOG, file_get_contents(SQL_LOG)."\n".$query);
+        if ($this->result = @mysqli_query($this->link, $query)) {
+            return $this->result;
+        } else {
+            $this->exception("query_error");
 
-			return false;
-		}
-	}
+            return false;
+        }
+    }
 
-	public function multi_query($query)
-	{
-		$this->query = $query;
-		//file_put_contents(SQL_LOG, file_get_contents(SQL_LOG)."\n\n".$query);
-		if ($this->result = @mysqli_multi_query($this->link, $query)) {
-			return $this->result;
-		} else {
-			$this->exception("query_error");
+    public function multi_query($query)
+    {
+        $this->query = $query;
+        //file_put_contents(SQL_LOG, file_get_contents(SQL_LOG)."\n\n".$query);
+        if ($this->result = @mysqli_multi_query($this->link, $query)) {
+            return $this->result;
+        } else {
+            $this->exception("query_error");
 
-			return false;
-		}
-	}
+            return false;
+        }
+    }
 
-	public function get_column($query, $column)
-	{
-		$this->query = $query;
-		$result = $this->query($query);
+    public function get_column($query, $column)
+    {
+        $this->query = $query;
+        $result = $this->query($query);
 
-		if (!$this->num_rows($result)) {
-			return null;
-		}
+        if (!$this->num_rows($result)) {
+            return null;
+        }
 
-		$row = $this->fetch_array_assoc($result);
-		if (!isset($row[$column])) {
-			return null;
-		}
+        $row = $this->fetch_array_assoc($result);
+        if (!isset($row[$column])) {
+            return null;
+        }
 
-		return $row[$column];
-	}
+        return $row[$column];
+    }
 
-	public function num_rows($result)
-	{
-		if (empty($result)) {
-			$this->exception("no_query_num_rows");
+    public function num_rows($result)
+    {
+        if (empty($result)) {
+            $this->exception("no_query_num_rows");
 
-			return false;
-		} else {
-			return mysqli_num_rows($result);
-		}
-	}
+            return false;
+        } else {
+            return mysqli_num_rows($result);
+        }
+    }
 
-	public function fetch_array_assoc($result)
-	{
-		if (empty($result)) {
-			$this->exception("no_query_fetch_array_assoc");
+    public function fetch_array_assoc($result)
+    {
+        if (empty($result)) {
+            $this->exception("no_query_fetch_array_assoc");
 
-			return false;
-		} else {
-			$data = mysqli_fetch_assoc($result);
-		}
+            return false;
+        } else {
+            $data = mysqli_fetch_assoc($result);
+        }
 
-		return $data;
-	}
+        return $data;
+    }
 
-	public function fetch_array($result)
-	{
-		if (empty($result)) {
-			$this->exception("no_query_fetch_array");
+    public function fetch_array($result)
+    {
+        if (empty($result)) {
+            $this->exception("no_query_fetch_array");
 
-			return false;
-		} else {
-			$data = mysqli_fetch_array($result);
-		}
+            return false;
+        } else {
+            $data = mysqli_fetch_array($result);
+        }
 
-		return $data;
-	}
+        return $data;
+    }
 
-	public function last_id()
-	{
-		return mysqli_insert_id($this->link);
-	}
+    public function last_id()
+    {
+        return mysqli_insert_id($this->link);
+    }
 
-	public function affected_rows()
-	{
-		return mysqli_affected_rows($this->link);
-	}
+    public function affected_rows()
+    {
+        return mysqli_affected_rows($this->link);
+    }
 
-	public function escape($str)
-	{
-		return mysqli_real_escape_string($this->link, $str);
-	}
+    public function escape($str)
+    {
+        return mysqli_real_escape_string($this->link, $str);
+    }
 
-	public function get_last_query()
-	{
-		return $this->query;
-	}
+    public function get_last_query()
+    {
+        return $this->query;
+    }
 
-	private function exception($message_id)
-	{
-		$exception = new SqlQueryException($message_id);
+    private function exception($message_id)
+    {
+        $exception = new SqlQueryException($message_id);
 
-		if ($this->link) {
-			$this->error = mysqli_error($this->link);
-			$this->errno = mysqli_errno($this->link);
-		}
+        if ($this->link) {
+            $this->error = mysqli_error($this->link);
+            $this->errno = mysqli_errno($this->link);
+        }
 
-		$exception->setError($this->error);
-		$exception->setErrorno($this->errno);
-		$exception->setQuery($this->query);
+        $exception->setError($this->error);
+        $exception->setErrorno($this->errno);
+        $exception->setQuery($this->query);
 
-		throw $exception;
-	}
+        throw $exception;
+    }
 
-	public static function showError(SqlQueryException $e)
-	{
-		global $settings, $lang, $templates;
+    public static function showError(SqlQueryException $e)
+    {
+        global $settings, $lang, $templates;
 
-		if (strlen($e->getQuery())) {
-			log_to_file(SQL_LOG, $e->getQuery(false));
-		}
+        if (strlen($e->getQuery())) {
+            log_to_file(SQL_LOG, $e->getQuery(false));
+        }
 
-		$message = $lang->translate('mysqli_' . $e->getMessage());
-		$query = $e->getQuery();
+        $message = $lang->translate('mysqli_' . $e->getMessage());
+        $query = $e->getQuery();
 
-		if (SCRIPT_NAME == 'jsonhttp' || SCRIPT_NAME == 'jsonhttp_admin') {
-			output_page($message);
-		}
+        if (SCRIPT_NAME == 'jsonhttp' || SCRIPT_NAME == 'jsonhttp_admin') {
+            output_page($message);
+        }
 
-		$header = eval($templates->render("header_error"));
-		output_page(eval($templates->render("error_handler")));
-	}
+        $header = eval($templates->render("header_error"));
+        output_page(eval($templates->render("error_handler")));
+    }
 }
 
-abstract class DBInstance {
+abstract class DBInstance
+{
     /** @var Database */
     private static $db;
 
@@ -291,11 +292,14 @@ abstract class DBInstance {
 
     protected static function connect()
     {
-        if (!file_exists(SCRIPT_ROOT . "credentials/database.php")) {
+        if (file_exists(SCRIPT_ROOT . "credentials/database.php")) {
+            require SCRIPT_ROOT . "credentials/database.php";
+        } elseif (file_exists(SCRIPT_ROOT . "includes/config.php")) {
+            require SCRIPT_ROOT . "includes/config.php";
+        } else {
             return null;
         }
 
-        require SCRIPT_ROOT . "credentials/database.php";
 
         try {
             $db = new Database($db_host, $db_user, $db_pass, $db_name);

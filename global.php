@@ -40,10 +40,6 @@ if (!ShopState::isInstalled() || !(new ShopState($db))->isUpToDate()) {
     exit;
 }
 
-if (!file_exists(SCRIPT_ROOT . 'credentials/database.php')) {
-    exit("Plik credentials/database.php nie istnieje.");
-}
-
 require_once SCRIPT_ROOT . "includes/class_template.php";
 require_once SCRIPT_ROOT . "includes/functions.php";
 require_once SCRIPT_ROOT . "includes/class_heart.php";
