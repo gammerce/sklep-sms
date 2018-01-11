@@ -1,18 +1,23 @@
 <?php
 
+require_once SCRIPT_ROOT . "/includes/MigrationFiles.php";
+
 class ShopState
 {
     /** @var Database */
     protected $db;
 
+    protected $migrationFiles;
+
     public function __construct(Database $database)
     {
         $this->db = $database;
+        $this->migrationFiles = new MigrationFiles();
     }
 
     public function isUpToDate()
     {
-        return $this->getDbVersion() === $this->getFileVersion();
+        return $this->getDbVersion() === $this->migrationFileVersion();
     }
 
     public function getDbVersion()
@@ -38,6 +43,15 @@ class ShopState
     public function getFileVersion()
     {
         return self::versionToInteger(VERSION);
+    }
+
+    public function migrationFileVersion()
+    {
+        $migrations = $this->migrationFiles->getMigrationPaths();
+
+        end($migrations);
+
+        return key($migrations);
     }
 
     public static function versionToInteger($version)

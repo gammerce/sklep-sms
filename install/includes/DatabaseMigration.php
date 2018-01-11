@@ -1,6 +1,7 @@
 <?php
 
 require_once SCRIPT_ROOT . "includes/ShopState.php";
+require_once SCRIPT_ROOT . "includes/MigrationFiles.php";
 require_once SCRIPT_ROOT . "install/includes/InstallManager.php";
 
 class DatabaseMigration
@@ -11,8 +12,8 @@ class DatabaseMigration
     /** @var Translator */
     protected $lang;
 
-    /** @var string */
-    protected $migrationsPath;
+    /** @var MigrationFiles */
+    protected $migrationFiles;
 
     /** @var ShopState */
     protected $shopState;
@@ -24,8 +25,8 @@ class DatabaseMigration
     {
         $this->db = $db;
         $this->lang = $translator;
-        $this->migrationsPath = SCRIPT_ROOT . '/install/migrations/';
         $this->shopState = new ShopState($db);
+        $this->migrationFiles = new MigrationFiles();
         $this->installManager = InstallManager::instance();
     }
 
@@ -66,7 +67,7 @@ class DatabaseMigration
     {
         $dbVersion = $this->shopState->getDbVersion();
         $fileVersion = $this->shopState->getFileVersion();
-        $migrationPaths = $this->getMigrationPaths();
+        $migrationPaths = $this->migrationFiles->getMigrationPaths();
 
         foreach ($migrationPaths as $version => $path) {
             if ($dbVersion < $version && $version <= $fileVersion) {
@@ -74,26 +75,6 @@ class DatabaseMigration
                 $dbVersion = $version;
             }
         }
-    }
-
-    protected function getMigrationPaths()
-    {
-        $paths = [];
-        $dir = new DirectoryIterator($this->migrationsPath);
-
-        foreach ($dir as $fileinfo) {
-            if (!preg_match("/[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}\.sql/", $fileinfo->getFilename())) {
-                continue;
-            }
-
-            $version = substr($fileinfo->getFilename(), 0, -4);
-            $versionNumber = ShopState::versionToInteger($version);
-            $paths[$versionNumber] = $fileinfo->getRealPath();
-        }
-
-        ksort($paths);
-
-        return $paths;
     }
 
     protected function migrate($path, $version)
