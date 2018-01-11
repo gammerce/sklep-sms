@@ -13,7 +13,7 @@
 			</td>
 			<td class="center">
 				{$lang->translate('acp')} (&nbsp;v{__VERSION__}&nbsp;)
-				<div class="hint">{$lang->translate('license_expires')}: {$a_Tasks['expire']}</div>
+				<div class="hint">{$lang->translate('license_expires')}: {$license->getExpires()}</div>
 			</td>
 			<td style="width: 360px; text-align: right;">
 				{$user->getUsername()}

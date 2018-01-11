@@ -17,7 +17,7 @@ class PageAdminMain extends PageAdmin
 
 	protected function content($get, $post)
 	{
-		global $heart, $db, $settings, $lang, $a_Tasks, $templates;
+		global $heart, $db, $settings, $lang, $license, $templates;
 
 		//
 		// Ogloszenia
@@ -25,19 +25,14 @@ class PageAdminMain extends PageAdmin
 		$notes = "";
 
 		// Info o braku licki
-		if ($a_Tasks['text'] != "logged_in") {
+		if (!$license->isValid()) {
 			$this->add_note($lang->translate('license_error'), "negative", $notes);
 		}
 
-		$a_Tasks['expire_seconds'] = strtotime($a_Tasks['expire']) - time();
-		if ($a_Tasks['expire'] != -1 && $a_Tasks['expire_seconds'] >= 0 && $a_Tasks['expire_seconds'] < 4 * 24 * 60 * 60) {
-			$this->add_note($lang->sprintf($lang->translate('license_soon_expire'), secondsToTime(strtotime($a_Tasks['expire']) - time())), "negative", $notes);
+		$expireSeconds = strtotime($license->getExpires()) - time();
+		if (!$license->isForever() && $expireSeconds >= 0 && $expireSeconds < 4 * 24 * 60 * 60) {
+			$this->add_note($lang->sprintf($lang->translate('license_soon_expire'), secondsToTime(strtotime($license->getExpires()) - time())), "negative", $notes);
 		}
-
-		// Info o katalogu install
-//		if (file_exists(SCRIPT_ROOT . "install")) {
-//			$this->add_note($lang->translate('remove_install'), "negative", $notes);
-//		}
 
 		// Sprawdzanie wersji skryptu
 		$next_version = trim(curl_get_contents("http://www.sklep-sms.pl/version.php?action=get_next&type=web&version=" . VERSION));

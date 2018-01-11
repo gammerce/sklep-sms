@@ -1,6 +1,6 @@
 <?php
 
-require_once SCRIPT_ROOT . "/includes/MigrationFiles.php";
+require_once SCRIPT_ROOT . "includes/MigrationFiles.php";
 
 class ShopState
 {
@@ -17,7 +17,7 @@ class ShopState
 
     public function isUpToDate()
     {
-        return $this->getDbVersion() === $this->migrationFileVersion();
+        return $this->getDbVersion() === $this->getMigrationFileVersion();
     }
 
     public function getDbVersion()
@@ -45,7 +45,7 @@ class ShopState
         return self::versionToInteger(VERSION);
     }
 
-    public function migrationFileVersion()
+    public function getMigrationFileVersion()
     {
         $migrations = $this->migrationFiles->getMigrationPaths();
 

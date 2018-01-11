@@ -66,11 +66,11 @@ class DatabaseMigration
     public function update()
     {
         $dbVersion = $this->shopState->getDbVersion();
-        $fileVersion = $this->shopState->getFileVersion();
+        $migrationFileVersion = $this->shopState->getMigrationFileVersion();
         $migrationPaths = $this->migrationFiles->getMigrationPaths();
 
         foreach ($migrationPaths as $version => $path) {
-            if ($dbVersion < $version && $version <= $fileVersion) {
+            if ($dbVersion < $version && $version <= $migrationFileVersion) {
                 $this->migrate($path, $version);
                 $dbVersion = $version;
             }
