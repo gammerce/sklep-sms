@@ -1,0 +1,68 @@
+<form id="form_purchase" class="shopsms_license_purchase">
+    <div class="column_left">
+        <div class="piece">
+            <div class="header1">
+                <b>{$lang->translate('engines_for_shop')}</b><br />
+                <span class="hint">{$lang->translate('price_per_option')}</span>
+            </div>
+            <div class="engines" name="engines">
+                <input type="hidden" name="platform_amxmodx" />
+
+                <div class="engine amxx" title="Counter Strike 1.6, etc.">AMX Mod X</div>
+                <input type="hidden" name="platform_sourcemod" />
+
+                <div
+                    class="engine sm"
+                    title="Counter Strike: Global Offensive, Team Fortress 2, etc."
+                >
+                    SOURCEMOD
+                </div>
+            </div>
+        </div>
+
+        <div class="piece">
+            <div class="header1">
+                <b>{$lang->translate('license_duration')}</b><br />
+                <span class="hint">{$lang->translate('license_price')}</span>
+            </div>
+            <div class="center">
+                <input type="text" name="amount" style="width: 40px" />&nbsp;{$serviceTag}
+            </div>
+        </div>
+    </div>
+
+    <div class="column_right">
+        <div class="piece">
+            <div class="header1">
+                <b>{$lang->translate('give_email')}</b>
+            </div>
+            <div class="center">
+                <input type="text" name="email" value="{$user->getEmail()}" />
+            </div>
+        </div>
+    </div>
+
+    <div class="column_bottom">
+        <div class="center">
+            <img
+                src="{$settings['shop_url_slash']}images/reload.png"
+                id="cost_reload"
+                title="{$lang->translate('reload')}"
+            />
+            <span style="text-transform: uppercase;">{$lang->translate('price')}:</span>
+            <span id="cost">{$lang->translate('none')}</span><br />
+        </div>
+    </div>
+    {$lang->translate('sms_payment_conditions')}
+
+    <div class="purchase_button_wraper">
+        <input
+            type="button"
+            id="go_to_payment"
+            value="{$lang->translate('go_to_payment')}"
+            class="button is-success purchase_button"
+        />
+    </div>
+
+    <input type="hidden" name="service" value="{$serviceId}" />
+</form>

@@ -1,0 +1,67 @@
+<b>{$lang->translate('service')}</b>: {$serviceName}<br />
+<b>{$lang->translate('identifier')}</b>: {$identifier}<br />
+<b>{$lang->translate('expire')}</b>: {$expire}<br />
+<hr />
+
+<div class="shopsms_user_edit">
+    <div class="table_form">
+        <div class="row">
+            <div class="cell">{$lang->translate('email')}</div>
+            <div class="cell">
+                <input type="text" name="email" value="{$email}" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="cell">{$lang->translate('engines')}</div>
+            <div class="cell">
+                <div class="engines" name="engines">
+                    <input
+                        type="hidden"
+                        name="platform_amxmodx"
+                        value="{$engines['amxx']['input']}"
+                    />
+
+                    <div
+                        class="engine amxx {$engines['amxx']['div']}"
+                        title="Counter Strike 1.6, etc."
+                    >
+                        AMX Mod X
+                    </div>
+                    <input
+                        type="hidden"
+                        name="platform_sourcemod"
+                        value="{$engines['sm']['input']}"
+                    />
+
+                    <div
+                        class="engine sm {$engines['sm']['div']}"
+                        title="Counter Strike: Global Offensive, Team Fortress 2, etc."
+                    >
+                        SOURCEMOD
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="cell">{$lang->translate('price_monthly')}</div>
+            <div class="cell">
+                <span id="cost_monthly">{$cost_monthly} {$settings['currency']}</span>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+    <div class="center">
+        <img
+            src="{$settings['shop_url_slash']}images/reload.png"
+            id="cost_reload"
+            title="{$lang->translate('reload')}"
+        />
+        <span style="text-transform: uppercase;">{$lang->translate('surcharge')}:</span>
+        <span id="cost">0.00 {$settings['currency']}</span>
+    </div>
+</div>
+
+<input type="hidden" name="service" value="{$serviceId}" />

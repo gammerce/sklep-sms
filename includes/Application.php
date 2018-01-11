@@ -4,6 +4,7 @@ namespace App;
 use App\Providers\AppServiceProvider;
 use App\Providers\HeartServiceProvider;
 use App\Providers\SentryServiceProvider;
+use App\Providers\LicenseServiceProvider;
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidPathException;
 use Illuminate\Container\Container;
@@ -14,6 +15,7 @@ class Application extends Container
 
     protected $providers = [
         AppServiceProvider::class,
+        LicenseServiceProvider::class,
         HeartServiceProvider::class,
         SentryServiceProvider::class,
     ];

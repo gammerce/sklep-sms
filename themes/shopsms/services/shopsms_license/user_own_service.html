@@ -1,0 +1,26 @@
+<form class="row" data-module="{$moduleId}" data-row="{$user_service['id']}">
+    <div class="brick regenerated_token_box">Nowy token: <strong class="token_value"></strong></div>
+
+    <div class="fright">
+        <a href="{$url->to('/page/purchase?service=ss_license_plong&identifier=' . $identifier)}">
+            <button class="button prolong_license" type="button">
+                {$lang->translate('prolong_license')}
+            </button>
+        </a>
+        <button
+            class="button regenerate_token"
+            type="button"
+            onClick="regenerate_token('{$identifier}', this)"
+        >
+            {$lang->translate('regenerate_token')}
+        </button>
+        {$button_edit}
+    </div>
+    <b>{$lang->translate('service')}</b>: {$serviceName}<br />
+    <b>{$lang->translate('identifier')}</b>: {$identifier}<br />
+    <b>{$lang->translate('engines')}</b>: {$engines}<br />
+    <b>{$lang->translate('email')}</b>: {$email}<br />
+    <br />
+    <b>{$lang->translate('expire')}</b>: {$expire}<br />
+    <b>{$lang->translate('price_monthly')}</b>: {$cost_monthly} {$settings['currency']}
+</form>
