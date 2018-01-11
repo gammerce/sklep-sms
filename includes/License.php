@@ -33,18 +33,13 @@ class License
         return $this->message === "logged_in";
     }
 
-    public function expiresMessage()
+    public function getExpires()
     {
         if ($this->isForever()) {
             return $this->lang->translate('never');
         }
 
         return date($this->settings['date_format'], $this->expires);
-    }
-
-    public function getExpires()
-    {
-        return $this->expires;
     }
 
     public function isForever()
