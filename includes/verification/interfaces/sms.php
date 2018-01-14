@@ -2,7 +2,6 @@
 
 interface IPayment_Sms
 {
-
 	const OK = 'ok';
 	const BAD_CODE = 'bad_code';
 	const BAD_NUMBER = 'bad_number';
@@ -33,5 +32,4 @@ interface IPayment_Sms
 	 * @return string
 	 */
 	public function getSmsCode();
-
 }

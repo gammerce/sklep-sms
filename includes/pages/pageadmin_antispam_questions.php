@@ -11,7 +11,6 @@ $heart->register_page("antispam_questions", "PageAdminAntispamQuestions", "admin
 
 class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionBox
 {
-
 	const PAGE_ID = "antispam_questions";
 	protected $privilage = "view_antispam_questions";
 
@@ -108,5 +107,4 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
 			'template' => $output
 		);
 	}
-
 }

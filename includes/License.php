@@ -1,4 +1,7 @@
 <?php
+namespace App;
+
+use App\Exceptions\LicenseException;
 
 class License
 {

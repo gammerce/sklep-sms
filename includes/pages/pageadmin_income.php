@@ -4,7 +4,6 @@ $heart->register_page("income", "PageAdminIncome", "admin");
 
 class PageAdminIncome extends PageAdmin
 {
-
 	const PAGE_ID = "income";
 
 	protected $privilage = "view_income";
@@ -132,5 +131,4 @@ class PageAdminIncome extends PageAdmin
 
 		return $output;
 	}
-
 }

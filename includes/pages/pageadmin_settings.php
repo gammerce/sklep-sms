@@ -4,7 +4,6 @@ $heart->register_page("settings", "PageAdminSettings", "admin");
 
 class PageAdminSettings extends PageAdmin
 {
-
 	const PAGE_ID = "settings";
 	protected $privilage = "manage_settings";
 
@@ -72,5 +71,4 @@ class PageAdminSettings extends PageAdmin
 
 		return $output;
 	}
-
 }

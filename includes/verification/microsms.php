@@ -1,5 +1,7 @@
 <?php
 
+use App\PaymentModule;
+
 $heart->register_payment_module("microsms", "PaymentModule_Microsms");
 
 class PaymentModule_Microsms extends PaymentModule implements IPayment_Sms

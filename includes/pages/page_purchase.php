@@ -4,7 +4,6 @@ $heart->register_page("purchase", "PagePurchase");
 
 class PagePurchase extends Page
 {
-
 	const PAGE_ID = "purchase";
 
 	function __construct()
@@ -100,5 +99,4 @@ class PagePurchase extends Page
 		$output = eval($templates->render("services/short_description")); // Dodajemy krótki opis
 		return $output . $service_module->purchase_form_get();
 	}
-
 }

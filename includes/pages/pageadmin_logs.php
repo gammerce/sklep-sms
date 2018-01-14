@@ -11,7 +11,6 @@ $heart->register_page("logs", "PageAdminLogs", "admin");
 
 class PageAdminLogs extends PageAdmin
 {
-
 	const PAGE_ID = "logs";
 	protected $privilage = "view_logs";
 
@@ -86,5 +85,4 @@ class PageAdminLogs extends PageAdmin
 
 		return $wrapper->toHtml();
 	}
-
 }

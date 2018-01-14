@@ -1,8 +1,10 @@
 <?php
+namespace App;
+
+use Entity_Tariff;
 
 abstract class PaymentModule
 {
-
 	const SERVICE_ID = '';
 
 	/** @var  string */

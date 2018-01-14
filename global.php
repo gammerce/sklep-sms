@@ -1,5 +1,11 @@
 <?php
 
+use App\Heart;
+use App\License;
+use App\ShopState;
+use App\Template;
+use App\Translator;
+
 if (!defined("IN_SCRIPT")) {
     die('There is nothing interesting here.');
 }
@@ -20,8 +26,7 @@ if (in_array(SCRIPT_NAME, ['admin', 'jsonhttp_admin'])) {
     session_start();
 }
 
-$working_dir = dirname(__FILE__) ? dirname(__FILE__) : '.';
-require_once $working_dir . '/includes/init.php';
+require __DIR__ . '/bootstrap/autoload.php';
 
 $settings = [
     'date_format'    => 'Y-m-d H:i',
@@ -30,9 +35,6 @@ $settings = [
     'shop_url_slash' => '',
 ];
 
-require_once SCRIPT_ROOT . "includes/mysqli.php";
-require_once SCRIPT_ROOT . "includes/ShopState.php";
-
 $db = DBInstance::get();
 
 if (!ShopState::isInstalled() || !(new ShopState($db))->isUpToDate()) {
@@ -40,21 +42,13 @@ if (!ShopState::isInstalled() || !(new ShopState($db))->isUpToDate()) {
     exit;
 }
 
-require_once SCRIPT_ROOT . "includes/License.php";
-require_once SCRIPT_ROOT . "includes/exceptions/LicenseException.php";
-require_once SCRIPT_ROOT . "includes/class_template.php";
-require_once SCRIPT_ROOT . "includes/functions.php";
-require_once SCRIPT_ROOT . "includes/class_heart.php";
-require_once SCRIPT_ROOT . "includes/class_payment.php";
-require_once SCRIPT_ROOT . "includes/class_translator.php";
-
 set_exception_handler("exceptionHandler");
 
 // Tworzymy obiekt posiadający mnóstwo przydatnych funkcji
 $heart = new Heart();
 
 // Tworzymy obiekt szablonów
-$templates = new Templates();
+$templates = new Template();
 
 // Tworzymy obiekt języka
 $lang = new Translator();

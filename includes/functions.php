@@ -1,5 +1,7 @@
 <?php
 
+use App\Exceptions\LicenseException;
+
 /**
  * Sprawdza czy jesteśmy w adminowskiej części sklepu
  *
@@ -1277,7 +1279,7 @@ function array_get($array, $key, $default = null)
     }
 
     foreach (explode('.', $key) as $segment) {
-        if (! is_array($array) || ! array_key_exists($segment, $array)) {
+        if (!is_array($array) || !array_key_exists($segment, $array)) {
             return $default;
         }
 

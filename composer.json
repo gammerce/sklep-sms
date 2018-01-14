@@ -1,0 +1,27 @@
+{
+    "name": "gammerce/sklep-sms",
+    "description": "Shop SMS makes it easier to earn money on your game servers.",
+    "type": "project",
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Michał Budziak",
+            "email": "michal.mariusz.b@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6",
+        "vlucas/phpdotenv": "^2.4"
+    },
+    "autoload": {
+        "files": [
+            "includes/functions.php",
+            "includes/functions_jsonhttp.php",
+            "includes/mysqli.php"
+        ],
+        "psr-4": {
+            "App\\": "includes/",
+            "Install\\": "install/src/"
+        }
+    }
+}

@@ -4,7 +4,6 @@ $heart->register_page("home", "PageAdminMain", "admin");
 
 class PageAdminMain extends PageAdmin
 {
-
 	const PAGE_ID = "home";
 
 	function __construct()
@@ -97,5 +96,4 @@ class PageAdminMain extends PageAdmin
 			'class' => "note " . $class
 		));
 	}
-
 }

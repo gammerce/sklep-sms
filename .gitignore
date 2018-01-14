@@ -12,3 +12,4 @@
 /data/transfers/*
 !/data/transfers/.gitkeep
 /includes/config.php
+/vendor

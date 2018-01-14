@@ -1,5 +1,7 @@
 <?php
 
+use App\PaymentModule;
+
 $heart->register_payment_module("profitsms", "PaymentModule_Profitsms");
 
 class PaymentModule_Profitsms extends PaymentModule implements IPayment_Sms

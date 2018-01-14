@@ -2,7 +2,6 @@
 
 interface IPayment_Transfer
 {
-
 	/**
 	 * Przygotowanie zapytania POST w celu płatności przelewem
 	 *
@@ -24,5 +23,4 @@ interface IPayment_Transfer
 	 * @return Entity_TransferFinalize
 	 */
 	public function finalizeTransfer($get, $post);
-
 }

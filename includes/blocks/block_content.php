@@ -4,7 +4,6 @@ $heart->register_block("content", "BlockContent");
 
 class BlockContent extends Block
 {
-
 	/** @var  Page */
 	protected $page;
 
@@ -42,5 +41,4 @@ class BlockContent extends Block
 	{
 		return $this->page->get_content($get, $post);
 	}
-
 }

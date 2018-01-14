@@ -11,7 +11,6 @@ $heart->register_page("pricelist", "PageAdminPriceList", "admin");
 
 class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
 {
-
 	const PAGE_ID = "pricelist";
 	protected $privilage = "manage_settings";
 
@@ -150,5 +149,4 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
 			'template' => $output
 		);
 	}
-
 }

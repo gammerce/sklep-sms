@@ -4,7 +4,6 @@ $heart->register_block("admincontent", "BlockAdminContent");
 
 class BlockAdminContent extends Block
 {
-
 	public function get_content_class()
 	{
 		return "content";
@@ -37,5 +36,4 @@ class BlockAdminContent extends Block
 
 		return $page->get_content($get, $post);
 	}
-
 }

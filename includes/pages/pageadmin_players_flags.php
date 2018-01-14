@@ -11,7 +11,6 @@ $heart->register_page("players_flags", "PageAdminPlayersFlags", "admin");
 
 class PageAdminPlayersFlags extends PageAdmin
 {
-
 	const PAGE_ID = "players_flags";
 	protected $privilage = "view_player_flags";
 
@@ -83,5 +82,4 @@ class PageAdminPlayersFlags extends PageAdmin
 
 		return $wrapper->toHtml();
 	}
-
 }

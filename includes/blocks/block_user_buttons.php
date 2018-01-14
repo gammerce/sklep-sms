@@ -4,7 +4,6 @@ $heart->register_block("user_buttons", "BlockUserButtons");
 
 class BlockUserButtons extends Block
 {
-
 	public function get_content_class()
 	{
 		return is_logged() ? "user_buttons" : "loginarea";
@@ -43,5 +42,4 @@ class BlockUserButtons extends Block
 
 		return $output;
 	}
-
 }

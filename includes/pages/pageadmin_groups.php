@@ -11,7 +11,6 @@ $heart->register_page("groups", "PageAdminGroups", "admin");
 
 class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
 {
-
 	const PAGE_ID = "groups";
 	protected $privilage = "view_groups";
 
@@ -142,5 +141,4 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
 			'template' => $output
 		);
 	}
-
 }

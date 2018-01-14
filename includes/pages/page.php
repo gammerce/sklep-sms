@@ -2,7 +2,6 @@
 
 abstract class Page
 {
-
 	const PAGE_ID = "";
 	protected $title = "";
 
@@ -73,12 +72,10 @@ abstract class Page
 	 * @return string
 	 */
 	abstract protected function content($get, $post);
-
 }
 
 abstract class PageSimple extends Page
 {
-
 	protected $template = null;
 
 	function __construct()
@@ -98,5 +95,4 @@ abstract class PageSimple extends Page
 
 		return $output;
 	}
-
 }

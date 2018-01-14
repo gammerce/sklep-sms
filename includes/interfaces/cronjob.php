@@ -2,7 +2,6 @@
 
 interface I_Cronjob
 {
-
 	/**
 	 * Metoda wywoływana na początku cronjoba
 	 */
@@ -12,5 +11,4 @@ interface I_Cronjob
 	 * Metoda wywoływana na koniec cronjoba
 	 */
 	public static function cronjob_post();
-
 }

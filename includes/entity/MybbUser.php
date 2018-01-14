@@ -2,7 +2,6 @@
 
 class Entity_MybbUser
 {
-
 	/** @var int */
 	private $uid;
 
@@ -159,5 +158,4 @@ class Entity_MybbUser
 	{
 		$this->mybb_display_group = intval($mybb_display_group);
 	}
-
 }

@@ -6,7 +6,6 @@
  */
 interface IService_TakeOver
 {
-
 	/**
 	 * Zwraca formularz przejęcia usługi
 	 *
@@ -26,5 +25,4 @@ interface IService_TakeOver
 	 * positive => czy udało się przejąć usługę
 	 */
 	public function service_take_over($post);
-
 }

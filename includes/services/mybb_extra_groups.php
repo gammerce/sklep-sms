@@ -6,7 +6,6 @@ $heart->register_service_module("mybb_extra_groups", "Dodatkowe Grupy (MyBB)", "
 
 class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminManage, IService_Create, IService_UserServiceAdminDisplay
 {
-
 	const MODULE_ID = "mybb_extra_groups";
 	const USER_SERVICE_TABLE = "user_service_mybb_extra_groups";
 

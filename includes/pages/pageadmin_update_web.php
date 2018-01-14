@@ -4,7 +4,6 @@ $heart->register_page("update_web", "PageAdminUpdateWeb", "admin");
 
 class PageAdminUpdateWeb extends PageAdmin
 {
-
 	const PAGE_ID = "update_web";
 	protected $privilage = "update";
 
@@ -74,5 +73,4 @@ class PageAdminUpdateWeb extends PageAdmin
 
 		return $output;
 	}
-
 }

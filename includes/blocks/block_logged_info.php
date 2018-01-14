@@ -4,7 +4,6 @@ $heart->register_block("logged_info", "BlockLoggedInfo");
 
 class BlockLoggedInfo extends BlockSimple implements I_BeLoggedMust
 {
-
 	protected $template = "logged_in_informations";
 
 	public function get_content_class()
@@ -16,5 +15,4 @@ class BlockLoggedInfo extends BlockSimple implements I_BeLoggedMust
 	{
 		return "logged_info";
 	}
-
 }

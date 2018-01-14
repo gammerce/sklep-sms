@@ -11,7 +11,6 @@ $heart->register_page("sms_codes", "PageAdminSmsCodes", "admin");
 
 class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
 {
-
 	const PAGE_ID = "sms_codes";
 	protected $privilage = "view_sms_codes";
 
@@ -104,5 +103,4 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
 			'template' => $output
 		);
 	}
-
 }

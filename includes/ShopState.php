@@ -1,6 +1,11 @@
 <?php
+namespace App;
 
-require_once SCRIPT_ROOT . "includes/MigrationFiles.php";
+use Database;
+use DBInstance;
+use InvalidArgumentException;
+use SqlQueryException;
+use UnexpectedValueException;
 
 class ShopState
 {

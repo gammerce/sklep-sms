@@ -8,7 +8,6 @@
  */
 interface IService_PurchaseWeb
 {
-
 	/**
 	 * Metoda powinna zwracać formularz zakupu w postaci stringa
 	 *
@@ -52,5 +51,4 @@ interface IService_PurchaseWeb
 	 * @return string|array Informacje o zakupionej usłudze
 	 */
 	public function purchase_info($action, $data);
-
 }

@@ -6,7 +6,6 @@
  */
 class Entity_Purchase
 {
-
 	/**
 	 * @var string
 	 */
@@ -152,5 +151,4 @@ class Entity_Purchase
 	{
 		$this->desc = $desc;
 	}
-
 }

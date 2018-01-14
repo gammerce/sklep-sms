@@ -4,7 +4,6 @@ $heart->register_page("home", "PageMain");
 
 class PageMain extends PageSimple
 {
-
 	const PAGE_ID = "home";
 	protected $template = "home";
 
@@ -15,5 +14,4 @@ class PageMain extends PageSimple
 
 		parent::__construct();
 	}
-
 }

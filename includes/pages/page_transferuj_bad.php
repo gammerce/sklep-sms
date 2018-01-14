@@ -9,7 +9,6 @@ $heart->register_page("transferuj_bad", "PageTransferujBad");
 
 class PageTransferujBad extends PageSimple
 {
-
 	const PAGE_ID = "transferuj_bad";
 	protected $template = "transferuj_bad";
 
@@ -20,5 +19,4 @@ class PageTransferujBad extends PageSimple
 
 		parent::__construct();
 	}
-
 }

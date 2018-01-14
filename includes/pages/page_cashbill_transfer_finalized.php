@@ -4,7 +4,6 @@ $heart->register_page("transfer_finalized", "PageCashbillTransferFinalized");
 
 class PageCashbillTransferFinalized extends Page
 {
-
 	const PAGE_ID = "transfer_finalized";
 
 	function __construct()
@@ -37,5 +36,4 @@ class PageCashbillTransferFinalized extends Page
 			'action'     => 'web'
 		));
 	}
-
 }

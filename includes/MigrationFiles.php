@@ -1,4 +1,7 @@
 <?php
+namespace App;
+
+use DirectoryIterator;
 
 class MigrationFiles
 {

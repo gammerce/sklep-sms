@@ -4,7 +4,6 @@ $heart->register_page("register", "PageRegister");
 
 class PageRegister extends Page implements I_BeLoggedCannot
 {
-
 	const PAGE_ID = "register";
 
 	function __construct()
@@ -30,5 +29,4 @@ class PageRegister extends Page implements I_BeLoggedCannot
 
 		return $output;
 	}
-
 }

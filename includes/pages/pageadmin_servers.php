@@ -11,7 +11,6 @@ $heart->register_page("servers", "PageAdminServers", "admin");
 
 class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
 {
-
 	const PAGE_ID = "servers";
 	protected $privilage = "manage_servers";
 

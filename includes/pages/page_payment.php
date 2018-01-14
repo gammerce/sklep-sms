@@ -4,7 +4,6 @@ $heart->register_page("payment", "PagePayment");
 
 class PagePayment extends Page
 {
-
 	const PAGE_ID = "payment";
 
 	function __construct()
@@ -77,5 +76,4 @@ class PagePayment extends Page
 
 		return $output;
 	}
-
 }

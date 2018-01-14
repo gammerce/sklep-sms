@@ -2,7 +2,6 @@
 
 abstract class Service
 {
-
 	const MODULE_ID = '';
 	const USER_SERVICE_TABLE = '';
 	public $service = array();

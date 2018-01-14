@@ -11,7 +11,6 @@ $heart->register_page("services", "PageAdminServices", "admin");
 
 class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
 {
-
 	const PAGE_ID = "services";
 	protected $privilage = "view_services";
 
@@ -145,5 +144,4 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
 			'template' => $output
 		);
 	}
-
 }

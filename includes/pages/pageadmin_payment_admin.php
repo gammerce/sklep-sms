@@ -11,7 +11,6 @@ $heart->register_page("payment_admin", "PageAdminPaymentAdmin", "admin");
 
 class PageAdminPaymentAdmin extends PageAdmin
 {
-
 	const PAGE_ID = "payment_admin";
 
 	function __construct()
@@ -82,5 +81,4 @@ class PageAdminPaymentAdmin extends PageAdmin
 
 		return $wrapper->toHtml();
 	}
-
 }

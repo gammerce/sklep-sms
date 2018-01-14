@@ -4,7 +4,6 @@ $heart->register_block("wallet", "BlockWallet");
 
 class BlockWallet extends Block implements I_BeLoggedMust
 {
-
 	public function get_content_class()
 	{
 		return "wallet_status";
@@ -36,5 +35,4 @@ class BlockWallet extends Block implements I_BeLoggedMust
 			'href'  => "index.php?pid=payment_log"
 		));
 	}
-
 }

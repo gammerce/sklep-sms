@@ -2,7 +2,6 @@
 
 class Entity_TransferFinalize
 {
-
 	/**
 	 * Status płatności, czy wszystkie dane są prawidłowe
 	 *
@@ -141,5 +140,4 @@ class Entity_TransferFinalize
 	{
 		$this->output = (string)$output;
 	}
-
 }

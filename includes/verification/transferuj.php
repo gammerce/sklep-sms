@@ -5,6 +5,8 @@
  * URL: http://forum.sklep-sms.pl/showthread.php?tid=88
  */
 
+use App\PaymentModule;
+
 $heart->register_payment_module("transferuj", "PaymentModuleTransferuj");
 
 class PaymentModuleTransferuj extends PaymentModule implements IPayment_Transfer

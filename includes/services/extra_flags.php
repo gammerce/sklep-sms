@@ -6,7 +6,6 @@ $heart->register_service_module("extra_flags", "Dodatkowe Uprawnienia / Flagi", 
 
 class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, IService_Create, IService_AvailableOnServers, IService_UserServiceAdminDisplay
 {
-
 	const MODULE_ID = "extra_flags";
 	const USER_SERVICE_TABLE = "user_service_extra_flags";
 

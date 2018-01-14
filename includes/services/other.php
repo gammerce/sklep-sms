@@ -4,7 +4,6 @@ $heart->register_service_module("other", "Inne", "ServiceOther", "ServiceOtherSi
 
 class ServiceOtherSimple extends Service implements IService_Create, IService_AdminManage, IService_AvailableOnServers
 {
-
 	const MODULE_ID = "other";
 
 	public function service_admin_manage_post($data)
@@ -25,7 +24,6 @@ class ServiceOtherSimple extends Service implements IService_Create, IService_Ad
 
 class ServiceOther extends ServiceOtherSimple implements IService_Purchase, IService_PurchaseOutside
 {
-
 	public function purchase_data_validate($purchase_data)
 	{
 		global $heart, $db, $lang;

@@ -4,19 +4,16 @@ namespace Admin\Table;
 
 interface I_ToHtml
 {
-
 	/**
 	 * Tworzy kod html elementu
 	 *
 	 * @return string
 	 */
 	public function toHtml();
-
 }
 
 class SimpleText implements I_ToHtml
 {
-
 	/** @var  string */
 	private $text;
 
@@ -41,7 +38,6 @@ class SimpleText implements I_ToHtml
 
 class DOMElement implements I_ToHtml
 {
-
 	/** @var  string */
 	protected $name;
 
@@ -202,7 +198,6 @@ class DOMElement implements I_ToHtml
 	{
 		$this->name = strval($name);
 	}
-
 }
 
 class Input extends DOMElement
@@ -254,7 +249,6 @@ class Line extends Row
 
 class BodyRow extends Row
 {
-
 	/** @var  string */
 	private $db_id = null;
 
@@ -360,12 +354,10 @@ class BodyRow extends Row
 	{
 		return $this->db_id;
 	}
-
 }
 
 class Structure extends DOMElement
 {
-
 	protected $name = 'table';
 
 	/** @var  DOMElement[] */
@@ -489,12 +481,10 @@ class Structure extends DOMElement
 			$this->foot->addContent($row);
 		}
 	}
-
 }
 
 class Wrapper extends Div
 {
-
 	/** @var  Structure */
 	protected $table;
 

@@ -6,7 +6,6 @@
  */
 interface IService_UserOwnServicesEdit
 {
-
 	/**
 	 * Metoda powinna zwrócić formularz do edycji danych usługi przez użytkownika.
 	 *
@@ -28,5 +27,4 @@ interface IService_UserOwnServicesEdit
 	 *                        'positive'    => czy udało się wyedytować usługę
 	 */
 	public function user_own_service_edit($post, $user_service);
-
 }

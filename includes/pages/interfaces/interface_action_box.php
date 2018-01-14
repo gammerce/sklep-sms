@@ -2,7 +2,6 @@
 
 interface IPageAdmin_ActionBox
 {
-
 	/**
 	 * Zwraca html action boxa
 	 *
@@ -12,5 +11,4 @@ interface IPageAdmin_ActionBox
 	 * @return string|null mixed
 	 */
 	public function get_action_box($box_id, $post);
-
 }

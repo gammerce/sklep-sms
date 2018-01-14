@@ -4,7 +4,6 @@ $heart->register_page("payment_log", "PagePaymentLog");
 
 class PagePaymentLog extends Page implements I_BeLoggedMust
 {
-
 	const PAGE_ID = "payment_log";
 
 	function __construct()
@@ -62,5 +61,4 @@ class PagePaymentLog extends Page implements I_BeLoggedMust
 
 		return $output;
 	}
-
 }

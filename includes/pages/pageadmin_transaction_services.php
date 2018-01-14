@@ -10,7 +10,6 @@ $heart->register_page("transaction_services", "PageAdminTransactionServices", "a
 
 class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_ActionBox
 {
-
 	const PAGE_ID = "transaction_services";
 	protected $privilage = "manage_settings";
 
@@ -117,5 +116,4 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
 			'template' => $output
 		);
 	}
-
 }

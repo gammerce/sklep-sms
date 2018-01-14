@@ -2,7 +2,6 @@
 
 abstract class Block
 {
-
 	abstract public function get_content_class();
 
 	abstract public function get_content_id();
@@ -51,12 +50,10 @@ abstract class Block
 			'class' => $content !== null ? $this->get_content_class() : ""
 		));
 	}
-
 }
 
 abstract class BlockSimple extends Block
 {
-
 	protected $template = null;
 
 	function __construct()
@@ -74,5 +71,4 @@ abstract class BlockSimple extends Block
 
 		return $output;
 	}
-
 }

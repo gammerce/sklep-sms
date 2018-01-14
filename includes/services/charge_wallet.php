@@ -4,14 +4,11 @@ $heart->register_service_module("charge_wallet", "Doładowanie Portfela", "Servi
 
 class ServiceChargeWalletSimple extends Service implements I_BeLoggedMust
 {
-
 	const MODULE_ID = "charge_wallet";
-
 }
 
 class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_Purchase, IService_PurchaseWeb
 {
-
 	public function purchase_form_get()
 	{
 		global $settings, $lang, $templates;

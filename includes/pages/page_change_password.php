@@ -4,7 +4,6 @@ $heart->register_page("change_password", "PageChangePassword");
 
 class PageChangePassword extends PageSimple implements I_BeLoggedMust
 {
-
 	const PAGE_ID = "change_password";
 	protected $template = "change_password";
 
@@ -15,5 +14,4 @@ class PageChangePassword extends PageSimple implements I_BeLoggedMust
 
 		parent::__construct();
 	}
-
 }

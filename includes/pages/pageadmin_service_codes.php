@@ -11,7 +11,6 @@ $heart->register_page("service_codes", "PageAdminServiceCodes", "admin");
 
 class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
 {
-
 	const PAGE_ID = "service_codes";
 	protected $privilage = "view_service_codes";
 

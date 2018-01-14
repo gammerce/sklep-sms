@@ -4,7 +4,6 @@ $heart->register_page("user_own_services", "Page_UserOIwnServices");
 
 class Page_UserOIwnServices extends Page implements I_BeLoggedMust
 {
-
 	const PAGE_ID = "user_own_services";
 
 	function __construct()
@@ -99,5 +98,4 @@ class Page_UserOIwnServices extends Page implements I_BeLoggedMust
 
 		return $output;
 	}
-
 }

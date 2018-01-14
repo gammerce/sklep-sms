@@ -11,7 +11,6 @@ $heart->register_page("tariffs", "PageAdminTariffs", "admin");
 
 class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
 {
-
 	const PAGE_ID = "tariffs";
 	protected $privilage = "manage_settings";
 
@@ -94,5 +93,4 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
 			'template' => $output
 		);
 	}
-
 }

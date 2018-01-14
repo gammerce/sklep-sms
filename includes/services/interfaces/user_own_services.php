@@ -6,7 +6,6 @@
  */
 interface IService_UserOwnServices
 {
-
 	/**
 	 * Metoda powinna zwrócić informacje o usłudze użytkownika.
 	 * Są one następnie wyświetlane na stronie user_own_services
@@ -19,5 +18,4 @@ interface IService_UserOwnServices
 	 * @return string Informacje o usłudze
 	 */
 	public function user_own_service_info_get($user_service, $button_edit);
-
 }

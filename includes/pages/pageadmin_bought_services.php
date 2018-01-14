@@ -12,7 +12,6 @@ $heart->register_page("bought_services", "PageAdminBoughtServices", "admin");
 
 class PageAdminBoughtServices extends PageAdmin
 {
-
 	const PAGE_ID = "bought_services";
 
 	function __construct()
@@ -144,5 +143,4 @@ class PageAdminBoughtServices extends PageAdmin
 
 		return $wrapper->toHtml();
 	}
-
 }

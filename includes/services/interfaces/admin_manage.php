@@ -7,7 +7,6 @@
  */
 interface IService_AdminManage
 {
-
 	/**
 	 * Metoda wywoływana przy edytowaniu lub dodawaniu usługi w PA
 	 * Powinna zwracać dodatkowe pola do uzupełnienia
@@ -43,5 +42,4 @@ interface IService_AdminManage
 	 *        )
 	 */
 	public function service_admin_manage_post($post);
-
 }

@@ -1,5 +1,7 @@
 <?php
 
+use App\PaymentModule;
+
 $heart->register_payment_module("1s1k", "PaymentModule_1s1k");
 
 class PaymentModule_1s1k extends PaymentModule implements IPayment_Sms

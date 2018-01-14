@@ -1,5 +1,7 @@
 <?php
 
+use App\PaymentModule;
+
 $heart->register_payment_module("cashbill", "PaymentModule_Cashbill");
 
 class PaymentModule_Cashbill extends PaymentModule implements IPayment_Sms, IPayment_Transfer
