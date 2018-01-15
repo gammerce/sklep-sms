@@ -11,7 +11,8 @@ require_once SCRIPT_ROOT . "install/src/full/includes/global.php";
 
 try {
     $db = new Database($_POST['db_host'], $_POST['db_user'], $_POST['db_password'], $_POST['db_db']);
-    DBInstance::set($db);
+    $db->query("SET NAMES utf8");
+    app()->instance(Database::class, $db);
 } catch (SqlQueryException $e) {
     output_page($lang->translate('mysqli_' . $e->getMessage()) . "\n\n" . $e->getError());
 }
@@ -75,22 +76,24 @@ if (!empty($warnings)) {
     json_output("warnings", $lang->translate('form_wrong_filled'), false, $return_data);
 }
 
-InstallManager::instance()->start();
+/** @var InstallManager $installManager */
+$installManager = app()->make(InstallManager::class);
+$installManager->start();
 
-$db->query("SET NAMES utf8");
-$migrator = new DatabaseMigration($db, $lang);
+/** @var DatabaseMigration $migrator */
+$migrator = app()->make(DatabaseMigration::class);
 $migrator->install(
     $_POST['license_id'], $_POST['license_password'], $_POST['admin_username'], $_POST['admin_password']
 );
 
-file_put_contents(SCRIPT_ROOT . "credentials/database.php",
-    '<?php
-$db_host = \'' . addslashes($_POST['db_host']) . '\';
-$db_user = \'' . addslashes($_POST['db_user']) . '\';
-$db_pass = \'' . addslashes($_POST['db_password']) . '\';
-$db_name = \'' . addslashes($_POST['db_db']) . '\';'
+file_put_contents(
+    SCRIPT_ROOT . "confidential/.env",
+    "DB_HOST={$_POST['db_host']}" . PHP_EOL .
+    "DB_DATABASE={$_POST['db_db']}" . PHP_EOL .
+    "DB_USERNAME={$_POST['db_user']}" . PHP_EOL .
+    "DB_PASSWORD={$_POST['db_password']}" . PHP_EOL
 );
 
-InstallManager::instance()->finish();
+$installManager->finish();
 
 json_output("ok", "Instalacja przebiegła pomyślnie.", true);

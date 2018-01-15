@@ -9,8 +9,6 @@ if (!defined('IN_SCRIPT')) {
 
 require_once SCRIPT_ROOT . "install/src/update/includes/global.php";
 
-$db = DBInstance::get();
-
 $everything_ok = true;
 $update_info = update_info($everything_ok);
 
@@ -28,13 +26,15 @@ if (!$everything_ok) {
 
 // -------------------- INSTALACJA --------------------
 
-InstallManager::instance()->start();
+/** @var InstallManager $installManager */
+$installManager = app()->make(InstallManager::class);
 
-$db->query("SET NAMES utf8");
+$installManager->start();
 
-$migrator = new DatabaseMigration($db, $lang);
+/** @var DatabaseMigration $migrator */
+$migrator = app()->make(DatabaseMigration::class);
 $migrator->update();
 
-InstallManager::instance()->finish();
+$installManager->finish();
 
 json_output('ok', "Instalacja przebiegła pomyślnie.", true);

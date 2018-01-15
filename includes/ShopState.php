@@ -1,48 +1,26 @@
 <?php
 namespace App;
 
-use Database;
-use DBInstance;
+use Install\DatabaseMigration;
 use InvalidArgumentException;
-use SqlQueryException;
-use UnexpectedValueException;
 
 class ShopState
 {
-    /** @var Database */
-    protected $db;
-
+    /** @var MigrationFiles */
     protected $migrationFiles;
 
-    public function __construct(Database $database)
+    /** @var DatabaseMigration */
+    protected $databaseMigration;
+
+    public function __construct(MigrationFiles $migrationFiles, DatabaseMigration $databaseMigration)
     {
-        $this->db = $database;
-        $this->migrationFiles = new MigrationFiles();
+        $this->migrationFiles = $migrationFiles;
+        $this->databaseMigration = $databaseMigration;
     }
 
     public function isUpToDate()
     {
-        return $this->getDbVersion() === $this->getMigrationFileVersion();
-    }
-
-    public function getDbVersion()
-    {
-        try {
-            $version = $this->db->get_column(
-                "SELECT `version` FROM `" . TABLE_PREFIX . "migrations` " .
-                "ORDER BY id DESC " .
-                "LIMIT 1",
-                'version'
-            );
-        } catch (SqlQueryException $exception) {
-            return 30306;
-        }
-
-        if ($version === null) {
-            throw new UnexpectedValueException();
-        }
-
-        return (int)$version;
+        return $this->databaseMigration->getLastExecutedMigration() === $this->migrationFiles->getLastMigration();
     }
 
     public function getFileVersion()
@@ -52,7 +30,7 @@ class ShopState
 
     public function getMigrationFileVersion()
     {
-        $migrations = $this->migrationFiles->getMigrationPaths();
+        $migrations = $this->migrationFiles->getMigrations();
 
         end($migrations);
 
@@ -72,6 +50,12 @@ class ShopState
 
     public static function isInstalled()
     {
-        return DBInstance::get() !== null;
+        try {
+            app()->make(\Database::class);
+
+            return true;
+        } catch (\SqlQueryException $e) {
+            return false;
+        }
     }
 }

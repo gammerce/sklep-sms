@@ -9,6 +9,7 @@ if (!defined('IN_SCRIPT')) {
 
 require __DIR__ . '/../../bootstrap/autoload.php';
 
-$lang = new Translator();
+/** @var Translator $lang */
+$lang = app()->make(Translator::class);
 
-set_exception_handler([InstallManager::instance(), 'handleException']);
+set_exception_handler([app()->make(InstallManager::class), 'handleException']);

@@ -35,24 +35,32 @@ $settings = [
     'shop_url_slash' => '',
 ];
 
-$db = DBInstance::get();
+/** @var ShopState $shopState */
+$shopState = app()->make(ShopState::class);
 
-if (!ShopState::isInstalled() || !(new ShopState($db))->isUpToDate()) {
+if (!ShopState::isInstalled() || !$shopState->isUpToDate()) {
     header('Location: install');
     exit;
 }
 
 set_exception_handler("exceptionHandler");
 
+/** @var Database $db */
+$db = app()->make(Database::class);
+
 // Tworzymy obiekt posiadający mnóstwo przydatnych funkcji
-$heart = new Heart();
+/** @var Heart $heart */
+$heart = app()->make(Heart::class);
 
 // Tworzymy obiekt szablonów
-$templates = new Template();
+/** @var Template $templates */
+$templates = app()->make(Template::class);
 
 // Tworzymy obiekt języka
-$lang = new Translator();
-$lang_shop = new Translator();
+/** @var Translator $lang */
+$lang = app()->make(Translator::class);
+/** @var Translator $lang_shop */
+$lang_shop = app()->make(Translator::class);
 
 // Te interfejsy są potrzebne do klas różnego rodzajów
 foreach (scandir(SCRIPT_ROOT . "includes/interfaces") as $file) {

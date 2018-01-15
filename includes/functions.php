@@ -1,6 +1,23 @@
 <?php
 
 use App\Exceptions\LicenseException;
+use Illuminate\Container\Container;
+
+/**
+ * Get the available container instance.
+ *
+ * @param  string  $abstract
+ * @param  array   $parameters
+ * @return mixed|\Illuminate\Container\Container
+ */
+function app($abstract = null, array $parameters = [])
+{
+    if ($abstract === null) {
+        return Container::getInstance();
+    }
+
+    return Container::getInstance()->make($abstract, $parameters);
+}
 
 /**
  * Sprawdza czy jesteśmy w adminowskiej części sklepu

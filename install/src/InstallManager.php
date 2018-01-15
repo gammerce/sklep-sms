@@ -7,26 +7,12 @@ use SqlQueryException;
 
 class InstallManager
 {
-    /** @var InstallManager */
-    private static $instance;
-
     /** @var Translator */
     private $lang;
 
-    private function __construct(Translator $translator)
+    public function __construct(Translator $translator)
     {
         $this->lang = $translator;
-    }
-
-    public static function instance()
-    {
-        if (self::$instance !== null) {
-            return self::$instance;
-        }
-
-        global $lang;
-
-        return self::$instance = new InstallManager($lang);
     }
 
     public function handleException(Exception $e)

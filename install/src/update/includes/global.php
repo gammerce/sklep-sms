@@ -6,7 +6,9 @@ use Install\InstallManager;
 require_once SCRIPT_ROOT . "install/src/update/includes/functions.php";
 
 if (file_exists(SCRIPT_ROOT . "install/error")) {
-    InstallManager::instance()->showError();
+    /** @var InstallManager $installManager */
+    $installManager = app()->make(InstallManager::class);
+    $installManager->showError();
 }
 
 if (file_exists(SCRIPT_ROOT . "install/block")) {
@@ -22,15 +24,15 @@ $templates = new Template();
 
 $warnings = $files_priv = $files_del = [];
 
-if (file_exists(SCRIPT_ROOT . "install/src/update/storage/files_priv.txt")) {
+if (file_exists(SCRIPT_ROOT . "install/storage/update/files_priv.txt")) {
     $files_priv = explode("\n",
-        str_replace("\n\r", "\n", file_get_contents(SCRIPT_ROOT . "install/src/update/storage/files_priv.txt")));
+        str_replace("\n\r", "\n", file_get_contents(SCRIPT_ROOT . "install/storage/update/files_priv.txt")));
 }
 $files_priv[] = "install";
 
-if (file_exists(SCRIPT_ROOT . "install/src/update/storage/files_del.txt")) {
+if (file_exists(SCRIPT_ROOT . "install/storage/update/files_del.txt")) {
     $files_del = explode("\n",
-        str_replace("\n\r", "\n", file_get_contents(SCRIPT_ROOT . "install/src/updates/storage/files_del.txt")));
+        str_replace("\n\r", "\n", file_get_contents(SCRIPT_ROOT . "iinstall/storage/update/files_del.txt")));
 }
 
 // Wymagane moduły

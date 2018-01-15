@@ -1,5 +1,9 @@
 <?php
 
+use Dotenv\Dotenv;
+use Dotenv\Exception\InvalidPathException;
+use Illuminate\Container\Container;
+
 require __DIR__ . '/../vendor/autoload.php';
 
 if (!defined('SCRIPT_ROOT')) {
@@ -26,3 +30,23 @@ if (!defined('PHP_VERSION_ID')) {
     $version = explode('.', PHP_VERSION);
     define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
 }
+
+$app = Container::getInstance();
+
+try {
+    (new Dotenv(SCRIPT_ROOT . "confidential"))->load();
+} catch (InvalidPathException $e) {
+    //
+}
+
+$app->singleton(Database::class, function () {
+    $db = new Database(
+        getenv('DB_HOST'),
+        getenv('DB_USERNAME'),
+        getenv('DB_PASSWORD'),
+        getenv('DB_DATABASE')
+    );
+    $db->query("SET NAMES utf8");
+
+    return $db;
+});

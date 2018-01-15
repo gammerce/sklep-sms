@@ -8,19 +8,31 @@ class Template
         return 'return "' . $this->get_template($template, $eslashes, $htmlcomments) . '";';
     }
 
-    public function install_render($template, $eslashes = true, $htmlcomments = true)
+    public function install_render($template)
     {
-        return 'return "' . $this->get_install_template($template, $eslashes, $htmlcomments) . '";';
+        $template = $this->get_install_template($template, function ($filename) {
+            return SCRIPT_ROOT . "install/templates/{$filename}.html";
+        });
+
+        return 'return "' . $template . '";';
     }
 
-    public function install_full_render($template, $eslashes = true, $htmlcomments = true)
+    public function install_full_render($template)
     {
-        return 'return "' . $this->get_install_template($template, true, $eslashes, $htmlcomments) . '";';
+        $template = $this->get_install_template($template, function ($filename) {
+            return SCRIPT_ROOT . "install/templates/full/{$filename}.html";
+        });
+
+        return 'return "' . $template . '";';
     }
 
-    public function install_update_render($template, $eslashes = true, $htmlcomments = true)
+    public function install_update_render($template)
     {
-        return 'return "' . $this->get_install_template($template, false, $eslashes, $htmlcomments) . '";';
+        $template = $this->get_install_template($template, function ($filename) {
+            return SCRIPT_ROOT . "install/templates/update/{$filename}.html";
+        });
+
+        return 'return "' . $template . '";';
     }
 
     /**
@@ -69,13 +81,13 @@ class Template
         return $this->read_template($path, $title, $htmlcomments, $eslashes);
     }
 
-    private function get_install_template($title, $full, $eslashes = true, $htmlcomments = true)
+    private function get_install_template($title, callable $pathResolver)
     {
         global $lang;
 
         if (strlen($lang->getCurrentLanguageShort())) {
             $filename = $title . "." . $lang->getCurrentLanguageShort();
-            $temp = $this->get_install_path($filename, $full);
+            $temp = call_user_func($pathResolver, $filename);
             if (file_exists($temp)) {
                 $path = $temp;
             }
@@ -83,7 +95,7 @@ class Template
 
         if (!isset($path)) {
             $filename = $title;
-            $temp = $this->get_install_path($filename, $full);
+            $temp = call_user_func($pathResolver, $filename);
             if (file_exists($temp)) {
                 $path = $temp;
             }
@@ -93,16 +105,7 @@ class Template
             return false;
         }
 
-        return $this->read_template($path, $title, $htmlcomments, $eslashes);
-    }
-
-    private function get_install_path($filename, $full)
-    {
-        if ($full) {
-            return SCRIPT_ROOT . "install/templates/full/{$filename}.html";
-        }
-
-        return SCRIPT_ROOT . "install/templates/update/{$filename}.html";
+        return $this->read_template($path, $title, true, true);
     }
 
     private function read_template($path, $title, $htmlcomments, $eslashes)

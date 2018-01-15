@@ -2,8 +2,8 @@
 /install/error
 /install/block
 /install/progress
-/credentials/*
-!/credentials/.htaccess
+/confidential/*
+!/confidential/.htaccess
 /errors/*
 !/errors/.htaccess
 /themes/*
@@ -11,5 +11,4 @@
 !/themes/.htaccess
 /data/transfers/*
 !/data/transfers/.gitkeep
-/includes/config.php
 /vendor

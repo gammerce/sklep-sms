@@ -4,7 +4,9 @@ use App\Template;
 use Install\InstallManager;
 
 if (file_exists(SCRIPT_ROOT . "install/error")) {
-    InstallManager::instance()->showError();
+    /** @var InstallManager $installManager */
+    $installManager = app()->make(InstallManager::class);
+    $installManager->showError();
 }
 
 if (file_exists(SCRIPT_ROOT . "install/block")) {
@@ -20,9 +22,9 @@ $templates = new Template();
 
 // Którym plikom / folderom trzeba nadać uprawnienia do zapisywania
 $files_priv = [];
-if (file_exists(SCRIPT_ROOT . "install/src/full/storage/files_priv.txt")) {
+if (file_exists(SCRIPT_ROOT . "install/storage/full/files_priv.txt")) {
     $files_priv = explode(
-        "\n", str_replace("\n\r", "\n", file_get_contents(SCRIPT_ROOT . "install/src/full/storage/files_priv.txt"))
+        "\n", str_replace("\n\r", "\n", file_get_contents(SCRIPT_ROOT . "install/storage/full/files_priv.txt"))
     );
 }
 $files_priv[] = "install";
@@ -30,8 +32,8 @@ $files_priv[] = "install";
 // Wymagane moduły
 $modules = [
     [
-        'text'    => "PHP v5.3.0 lub wyższa",
-        'value'   => PHP_VERSION_ID >= 50300,
+        'text'    => "PHP v5.6.0 lub wyższa",
+        'value'   => PHP_VERSION_ID >= 50600,
         'must-be' => false,
     ],
 

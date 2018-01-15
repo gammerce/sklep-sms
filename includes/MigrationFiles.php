@@ -13,23 +13,33 @@ class MigrationFiles
         $this->migrationsPath = SCRIPT_ROOT . '/install/migrations/';
     }
 
-    public function getMigrationPaths()
+    public function getMigrations()
     {
-        $paths = [];
+        $migrations = [];
         $dir = new DirectoryIterator($this->migrationsPath);
 
         foreach ($dir as $fileinfo) {
-            if (!preg_match("/[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}\.sql/", $fileinfo->getFilename())) {
+            if (!preg_match("/^.+\.sql$/", $fileinfo->getFilename())) {
                 continue;
             }
 
-            $version = substr($fileinfo->getFilename(), 0, -4);
-            $versionNumber = ShopState::versionToInteger($version);
-            $paths[$versionNumber] = $fileinfo->getRealPath();
+            $migrations[] = $fileinfo->getBasename('.sql');
         }
 
-        ksort($paths);
+        sort($migrations);
 
-        return $paths;
+        return $migrations;
+    }
+
+    public function getLastMigration()
+    {
+        $migrations = $this->getMigrations();
+
+        return end($migrations);
+    }
+
+    public function getMigrationPath($migration)
+    {
+        return $this->migrationsPath . $migration . '.sql';
     }
 }

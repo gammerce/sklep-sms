@@ -2,8 +2,6 @@
 namespace Install;
 
 use App\MigrationFiles;
-use App\ShopState;
-use App\Translator;
 use Database;
 use InvalidArgumentException;
 use SqlQueryException;
@@ -13,34 +11,23 @@ class DatabaseMigration
     /** @var Database */
     protected $db;
 
-    /** @var Translator */
-    protected $lang;
-
     /** @var MigrationFiles */
     protected $migrationFiles;
 
-    /** @var ShopState */
-    protected $shopState;
-
-    /** @var InstallManager */
-    protected $installManager;
-
-    public function __construct(Database $db, Translator $translator)
+    public function __construct(Database $db, MigrationFiles $migrationFiles)
     {
         $this->db = $db;
-        $this->lang = $translator;
-        $this->shopState = new ShopState($db);
-        $this->migrationFiles = new MigrationFiles();
-        $this->installManager = InstallManager::instance();
+        $this->migrationFiles = $migrationFiles;
     }
 
     public function install($licenseId, $licensePassword, $adminUsername, $adminPassword)
     {
-        // TODO: Refactor it
-        $queries = $this->splitSQL($this->migrationsPath . 'init.sql');
+        foreach ($this->migrationFiles->getMigrations() as $migration) {
+            $this->migrate($migration);
+        }
 
         $salt = get_random_string(8);
-        $customizedQueried = [
+        $queries = [
             $this->db->prepare(
                 "UPDATE `" . TABLE_PREFIX . "settings` " .
                 "SET `value`='%s' WHERE `key`='random_key';",
@@ -63,83 +50,99 @@ class DatabaseMigration
             ),
         ];
 
-        $this->executeQueries(array_merge($queries, $customizedQueried));
-
-        $this->update();
+        $this->executeQueries($queries);
     }
 
     public function update()
     {
-        $dbVersion = $this->shopState->getDbVersion();
-        $migrationFileVersion = $this->shopState->getMigrationFileVersion();
-        $migrationPaths = $this->migrationFiles->getMigrationPaths();
+        $lastExecutedMigration = $this->getLastExecutedMigration();
+        $migrations = $this->migrationFiles->getMigrations();
 
-        foreach ($migrationPaths as $version => $path) {
-            if ($dbVersion < $version && $version <= $migrationFileVersion) {
-                $this->migrate($path, $version);
-                $dbVersion = $version;
+        foreach ($migrations as $migration) {
+            if ($lastExecutedMigration < $migration) {
+                $this->migrate($migration);
+                $lastExecutedMigration = $migration;
             }
         }
     }
 
-    protected function migrate($path, $version)
+    public function getLastExecutedMigration()
     {
-        $queries = $this->splitSQL($path);
+        try {
+            return $this->db->get_column(
+                "SELECT `name` FROM `" . TABLE_PREFIX . "migrations` " .
+                "ORDER BY id DESC " .
+                "LIMIT 1",
+                'name'
+            );
+        } catch (SqlQueryException $e) {
+            if (preg_match("/Table .*ss_migrations.* doesn't exist/", $e->getError())) {
+                // It means that user has installed shop sms but using old codebase,
+                // that is why we want to create migration table for him and also
+                // fake init migration so as not to overwrite his database
+                $this->migrate('2018_01_14_224424_create_migrations');
+                $this->saveExecutedMigration('2018_01_14_230340_init');
+
+                return $this->getLastExecutedMigration();
+            }
+
+            throw $e;
+        }
+    }
+
+    protected function migrate($migration)
+    {
+        $path = $this->migrationFiles->getMigrationPath($migration);
+        $queries = $this->splitSQLFile($path);
         $this->executeQueries($queries);
-        $this->bumpVersion($version);
+        $this->saveExecutedMigration($migration);
     }
 
     protected function executeQueries($queries)
     {
         foreach ($queries as $query) {
-            if (!strlen($query)) {
-                continue;
-            }
-
-            try {
-                $this->db->query($query);
-            } catch (SqlQueryException $e) {
-                $this->installManager->handleSqlException($e);
-            }
+            $this->db->query($query);
         }
     }
 
-    protected function bumpVersion($version)
+    protected function saveExecutedMigration($name)
     {
         $this->db->query($this->db->prepare(
             "INSERT INTO `" . TABLE_PREFIX . "migrations` " .
-            "SET `version` = '%s'",
-            [$version]
+            "SET `name` = '%s'",
+            [$name]
         ));
     }
 
-    protected function splitSQL($path, $delimiter = ';')
+    protected function splitSQLFile($path, $delimiter = ';')
     {
         $queries = [];
 
         $path = fopen($path, 'r');
 
-        if (is_resource($path) === true) {
-            $query = [];
-
-            while (feof($path) === false) {
-                $query[] = fgets($path);
-
-                if (preg_match('~' . preg_quote($delimiter, '~') . '\s*$~iS', end($query)) === 1) {
-                    $query = trim(implode('', $query));
-                    $queries[] = $query;
-                }
-
-                if (is_string($query) === true) {
-                    $query = [];
-                }
-            }
-
-            fclose($path);
-
-            return $queries;
+        if (is_resource($path) !== true) {
+            throw new InvalidArgumentException('Invalid path to queries');
         }
 
-        throw new InvalidArgumentException('Invalid path to queries');
+        $query = [];
+
+        while (feof($path) === false) {
+            $query[] = fgets($path);
+
+            if (preg_match('~' . preg_quote($delimiter, '~') . '\s*$~iS', end($query)) === 1) {
+                $query = trim(implode('', $query));
+                $queries[] = $query;
+            }
+
+            if (is_string($query) === true) {
+                $query = [];
+            }
+        }
+
+        fclose($path);
+
+        return array_filter($queries, function ($query) {
+            return strlen($query);
+        });
     }
 }
