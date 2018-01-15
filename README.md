@@ -1,4 +1,4 @@
-# [Sklep SMS](http://sklep-sms.pl/)
+# [Sklep SMS](http://sklep-sms.pl/) [![Build Status](https://travis-ci.org/gammerce/sklep-sms.svg?branch=master)](https://travis-ci.org/gammerce/sklep-sms)
 
 Sklep SMS ułatwia zarabianie realnych pieniędzy na własnych serwerach gier!
 
