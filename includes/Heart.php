@@ -16,7 +16,6 @@ use ServiceOther;
 
 class Heart
 {
-
     private $servers = [];
     private $servers_fetched = false;
 
@@ -112,7 +111,7 @@ class Heart
         $classname = $this->services_classes[$module_id]['classsimple'];
 
         // Jeszcze sprawdzamy, czy moduł został prawidłowo stworzony
-        return new $classname();
+        return app()->make($classname);
     }
 
     public function get_service_module_name($module_id)
@@ -205,7 +204,7 @@ class Heart
      */
     public function get_block($block_id)
     {
-        return $this->block_exists($block_id) ? new $this->blocks_classes[$block_id]() : null;
+        return $this->block_exists($block_id) ? app()->make($this->blocks_classes[$block_id]) : null;
     }
 
     //
@@ -259,7 +258,7 @@ class Heart
 
         $classname = $this->pages_classes[$type][$page_id];
 
-        return new $classname();
+        return app()->make($classname);
     }
 
     //

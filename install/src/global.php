@@ -1,6 +1,5 @@
 <?php
 
-use App\ShopState;
 use App\Translator;
 use Install\InstallManager;
 
@@ -14,7 +13,3 @@ require __DIR__ . '/../../bootstrap/autoload.php';
 $lang = app()->make(Translator::class);
 
 set_exception_handler([app()->make(InstallManager::class), 'handleException']);
-
-if (ShopState::isInstalled() && app()->make(ShopState::class)->isUpToDate()) {
-    exit;
-}

@@ -27,7 +27,7 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
         }
 
         /** @var IService_UserServiceAdminDisplay $service_module_simple */
-        $service_module_simple = new $className();
+        $service_module_simple = app()->make($className);
 
         $this->title = $lang->translate('users_services') . ': ' . $service_module_simple->user_service_admin_display_title_get();
         $heart->page_title = $this->title;

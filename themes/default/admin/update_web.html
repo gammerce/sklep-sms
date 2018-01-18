@@ -3,38 +3,21 @@
   <h4>Wersje</h4>
 
   <div class="info">
-    <strong>{$lang->translate('latest_version')}</strong> {$newest_version}<br/><br/>
+    <strong>{$this->lang->translate('latest_version')}</strong> {$newestVersion}<br/><br/>
     <table>
       <tr>
-        <td><strong>{$lang->translate('present_version')}</strong></td>
+        <td><strong>{$this->lang->translate('present_version')}</strong></td>
         <td style="width: 5px;">&nbsp;</td>
         <td>{__VERSION__}</td>
       </tr>
-      <tr>
-        <td><strong>{$lang->translate('next_version')}</strong></td>
-        <td></td>
-        <td>{$next_version}</td>
-      </tr>
     </table>
   </div>
-  {$additional_info}
-  <h4>{$lang->translate('how_to_update')}</h4>
 
+  <h4>{$this->lang->translate('how_to_update')}</h4>
   <div class="info">
-    {$lang->translate('web_first_possibility')}
     <ol>
-      <li>{$lang->sprintf($lang->translate('web_second_possibility'), $shop_files['newest_full'],
-        $shop_files['next_update'])}
-      </li>
-      <li>{$lang->translate('unzip_arch')}</li>
+      <li>{$this->lang->translate('web_update_instruction')}</li>
+      <li>{$this->lang->translate('unzip_arch')}</li>
     </ol>
   </div>
-  <h4>{$lang->translate('change_log')}</h4>
-  <ul>
-    {$changelog}
-  </ul>
-  <h4>{$lang->translate('updated_files')}</h4>
-  <ul>
-    {$files}
-  </ul>
 </div>

@@ -23,7 +23,7 @@ class Payment
         // Tworzymy obiekt obslugujacy stricte weryfikacje
         $className = $heart->get_payment_module($payment_module_id);
         if ($className !== null) {
-            $this->payment_module = new $className();
+            $this->payment_module = app()->make($className);
         }
 
         // API podanej usługi nie istnieje.

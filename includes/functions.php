@@ -1141,6 +1141,7 @@ function curl_get_contents($url, $timeout = 10, $post = false, $data = [])
         CURLOPT_RETURNTRANSFER => 1,
         CURLOPT_URL            => $url,
         CURLOPT_TIMEOUT        => $timeout,
+        CURLOPT_USERAGENT      => 'gammerce/sklep-sms',
     ]);
 
     if ($post) {

@@ -34,7 +34,6 @@ return [
     'auto_email'                            => 'E-mail dla automatu',
     'bought_services'                       => 'Kupione usługi',
     'bring_it_on'                           => 'Dajesz!',
-    'change_log'                            => 'Lista zmian',
     'charge'                                => 'Doładuj',
     'charge_number'                         => 'Wartość doładowania musi być liczbą.',
     'choose_tariff'                         => 'Wybierz taryfę',
@@ -248,7 +247,6 @@ return [
     'update_available_servers'              => 'Dostępna jest aktualizacja dla {1}/{2} serwerów. Aby ją pobrać przejdź do strony <a href="admin.php?pid=update_servers">Aktualizacja Serwerów</a>.',
     'update_servers'                        => 'Aktualizacja serwerów',
     'update_web'                            => 'Aktualizacja strony WWW',
-    'updated_files'                         => 'Aktualizowane pliki',
     'user_admin_delete'                     => 'Admin {1}({2}) usunął użytkownika. ID: {3}',
     'user_admin_edit'                       => 'Admin {1}({2}) wyedytował użytkownika. ID: {3}',
     'user_edit'                             => 'Użytkownik został prawidłowo wyedytowany.',
@@ -261,11 +259,8 @@ return [
     'version'                               => 'Wersja',
     'versions'                              => 'Wersje',
     'wallet_charge'                         => 'Doładowanie portfela',
-    'web_first_possibility'                 => 'Mamy dwie możliwości. Pobieramy paczkę z najnowszą wersją skryptu w wersji FULL, albo aktualizujemy stopniowo, z
-		jednej wersji na drugą, za pomocą paczek w wersji UPDATE.',
-    'web_second_possibility'                => 'Pobieramy cały sklepik w najnowszej wersji: {1} lub tylko zmienione pliki kolejnej wersji: {2}',
+    'web_update_instruction'                => 'Wchodzimy na stronę <a href="https://github.com/gammerce/sklep-sms/releases/latest" target="_blank">repozytorium sklepu</a> i pobieramy plik <strong>build.zip</strong>',
     'wrong_group'                           => 'Wybrano błędną grupę.',
     'wrong_module'                          => 'Wybrano nieprawidłowy moduł.',
     'wrong_page_id'                         => 'Podano błędne id strony.',
-
 ];

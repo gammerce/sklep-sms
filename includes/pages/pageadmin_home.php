@@ -1,17 +1,24 @@
 <?php
 
+use App\Version;
+
 $heart->register_page("home", "PageAdminMain", "admin");
 
 class PageAdminMain extends PageAdmin
 {
     const PAGE_ID = "home";
 
-    function __construct()
+    /** @var Version */
+    private $version;
+
+    function __construct(Version $version)
     {
         global $lang;
         $this->title = $lang->translate('main_page');
 
         parent::__construct();
+
+        $this->version = $version;
     }
 
     protected function content($get, $post)
@@ -35,19 +42,20 @@ class PageAdminMain extends PageAdmin
         }
 
         // Sprawdzanie wersji skryptu
-        $next_version = trim(curl_get_contents("http://www.sklep-sms.pl/version.php?action=get_next&type=web&version=" . VERSION));
-        if (strlen($next_version)) {
-            $newest_version = trim(curl_get_contents("http://www.sklep-sms.pl/version.php?action=get_newest&type=web"));
-            if (strlen($newest_version) && VERSION != $newest_version) {
-                $this->add_note($lang->sprintf($lang->translate('update_available'), htmlspecialchars($newest_version)),
-                    "positive", $notes);
-            }
+        $newestVersion = $this->version->getNewestWeb();
+        if (VERSION != $newestVersion) {
+            $this->add_note(
+                $lang->sprintf($lang->translate('update_available'), htmlspecialchars($newestVersion)),
+                "positive",
+                $notes
+            );
         }
 
         // Sprawdzanie wersji serwerów
         $amount = 0;
-        $newest_versions = json_decode(trim(curl_get_contents("http://www.sklep-sms.pl/version.php?action=get_newest&type=engines")),
-            true);
+        $newest_versions = json_decode(
+            trim(curl_get_contents("http://www.sklep-sms.pl/version.php?action=get_newest&type=engines")), true
+        );
         foreach ($heart->get_servers() as $server) {
             $engine = "engine_{$server['type']}";
             if (strlen($newest_versions[$engine]) && $server['version'] != $newest_versions[$engine]) {
@@ -57,7 +65,7 @@ class PageAdminMain extends PageAdmin
 
         if ($amount) {
             $this->add_note($lang->sprintf($lang->translate('update_available_servers'), $amount,
-                $heart->get_servers_amount(), htmlspecialchars($newest_version)), "positive", $notes);
+                $heart->get_servers_amount(), htmlspecialchars($newestVersion)), "positive", $notes);
         }
 
         //
