@@ -1,6 +1,7 @@
 <?php
 
 use Install\DatabaseMigration;
+use Install\EnvCreator;
 use Install\InstallManager;
 
 if (!defined('IN_SCRIPT')) {
@@ -86,13 +87,9 @@ $migrator->install(
     $_POST['license_id'], $_POST['license_password'], $_POST['admin_username'], $_POST['admin_password']
 );
 
-file_put_contents(
-    SCRIPT_ROOT . "confidential/.env",
-    "DB_HOST={$_POST['db_host']}" . PHP_EOL .
-    "DB_DATABASE={$_POST['db_db']}" . PHP_EOL .
-    "DB_USERNAME={$_POST['db_user']}" . PHP_EOL .
-    "DB_PASSWORD={$_POST['db_password']}" . PHP_EOL
-);
+/** @var EnvCreator $envCreator */
+$envCreator = app()->make(EnvCreator::class);
+$envCreator->create($_POST['db_host'], $_POST['db_db'], $_POST['db_user'], $_POST['db_password']);
 
 $installManager->finish();
 

@@ -35,10 +35,7 @@ $settings = [
     'shop_url_slash' => '',
 ];
 
-/** @var ShopState $shopState */
-$shopState = app()->make(ShopState::class);
-
-if (!ShopState::isInstalled() || !$shopState->isUpToDate()) {
+if (!ShopState::isInstalled() || !app()->make(ShopState::class)->isUpToDate()) {
     header('Location: install');
     exit;
 }
