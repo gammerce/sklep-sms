@@ -4,14 +4,14 @@ $heart->register_page("change_password", "PageChangePassword");
 
 class PageChangePassword extends PageSimple implements I_BeLoggedMust
 {
-	const PAGE_ID = "change_password";
-	protected $template = "change_password";
+    const PAGE_ID = "change_password";
+    protected $template = "change_password";
 
-	function __construct()
-	{
-		global $lang;
-		$this->title = $lang->translate('change_password');
+    function __construct()
+    {
+        global $lang;
+        $this->title = $lang->translate('change_password');
 
-		parent::__construct();
-	}
+        parent::__construct();
+    }
 }

@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-	{$header}
+  {$header}
 </head>
 <body>
 <div class="center">
-	<form id="form_admin_login" action="admin.php{$get_data}" method="POST">
-		<h2>{$lang->translate('sign_in')}</h2>
-		{$warning}
-		<div class="label">{$lang->translate('username')}</div>
-		<div class="field">
-			<input type="text" name="username"/>
-		</div>
-		<br class="clear"/>
+  <form id="form_admin_login" action="admin.php{$get_data}" method="POST">
+    <h2>{$lang->translate('sign_in')}</h2>
+    {$warning}
+    <div class="label">{$lang->translate('username')}</div>
+    <div class="field">
+      <input type="text" name="username"/>
+    </div>
+    <br class="clear"/>
 
-		<div class="label">{$lang->translate('password')}</div>
-		<div class="field">
-			<input type="password" name="password"/>
-		</div>
-		<br class="clear"/>
-		<input type="submit" value="{$lang->translate('sign_in')}"/>
-		<br class="clear"/>
-	</form>
+    <div class="label">{$lang->translate('password')}</div>
+    <div class="field">
+      <input type="password" name="password"/>
+    </div>
+    <br class="clear"/>
+    <input type="submit" value="{$lang->translate('sign_in')}"/>
+    <br class="clear"/>
+  </form>
 </div>
 </body>
 </html>

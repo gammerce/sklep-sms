@@ -1,40 +1,40 @@
 <form id="form_server_add" class="action_box">
-	<div class="service_main_info">
-		{$lang->translate('add_server')}
-	</div>
-	<table>
-		<tr>
-			<td>{$lang->strtoupper($lang->translate('name'))}</td>
-			<td><input type="text" name="name" maxlength="64"/></td>
-		</tr>
-		<tr>
-			<td>{$lang->translate('ip')}</td>
-			<td><input type="text" name="ip" style="width: 120px" maxlength="16"/></td>
-		</tr>
-		<tr>
-			<td>{$lang->strtoupper($lang->translate('port'))}</td>
-			<td><input type="text" name="port" style="width: 60px" maxlength="8"/></td>
-		</tr>
-		<tr>
-			<td>{$lang->translate('sms_payment_service')}</td>
-			<td>
-				<select name="sms_service">
-					<option value="">{$lang->translate('default')}</option>
-					{$sms_services}
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2" class="line"></td>
-		</tr>
-		{$services}
-		<tr>
-			<td colspan="2" class="line"></td>
-		</tr>
-		<tr>
-			<td colspan="2">
-				<input type="submit" value="{$lang->translate('add')}" style="width: 100%;"/>
-			</td>
-		</tr>
-	</table>
+  <div class="service_main_info">
+    {$lang->translate('add_server')}
+  </div>
+  <table>
+    <tr>
+      <td>{$lang->strtoupper($lang->translate('name'))}</td>
+      <td><input type="text" name="name" maxlength="64"/></td>
+    </tr>
+    <tr>
+      <td>{$lang->translate('ip')}</td>
+      <td><input type="text" name="ip" style="width: 120px" maxlength="16"/></td>
+    </tr>
+    <tr>
+      <td>{$lang->strtoupper($lang->translate('port'))}</td>
+      <td><input type="text" name="port" style="width: 60px" maxlength="8"/></td>
+    </tr>
+    <tr>
+      <td>{$lang->translate('sms_payment_service')}</td>
+      <td>
+        <select name="sms_service">
+          <option value="">{$lang->translate('default')}</option>
+          {$sms_services}
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" class="line"></td>
+    </tr>
+    {$services}
+    <tr>
+      <td colspan="2" class="line"></td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <input type="submit" value="{$lang->translate('add')}" style="width: 100%;"/>
+      </td>
+    </tr>
+  </table>
 </form>

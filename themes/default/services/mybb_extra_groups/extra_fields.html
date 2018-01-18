@@ -1,43 +1,43 @@
 <tbody data-module="{$this->get_module_id()}">
-<tr>
-	<td>
-		WEB
-		<div class="hint">{$lang->translate('if_displayed_in_shop')}</div>
-	</td>
-	<td>
-		<select name="web">
-			<option value="0" {$web_sel_no}>{$lang->strtoupper($lang->translate('no'))}</option>
-			<option value="1" {$web_sel_yes}>{$lang->strtoupper($lang->translate('yes'))}</option>
-		</select>
-	</td>
-</tr>
-<tr>
-	<td>
-		{$lang->strtoupper($lang->translate('mybb_groups'))}
-		<div class="hint">{$lang->translate('coma_separated')}</div>
-	</td>
-	<td><input type="text" name="mybb_groups" value="{$mybb_groups}"/></td>
-</tr>
-<tr>
-	<td colspan="2" class="line"></td>
-</tr>
-<tr>
-	<td colspan="2" class="h2 center">{$lang->translate('mybb_db_data')}</td>
-</tr>
-<tr>
-	<td>{$lang->translate('db_host')}</td>
-	<td><input type="text" name="db_host" value="{$db_host}"/></td>
-</tr>
-<tr>
-	<td>{$lang->translate('db_user')}</td>
-	<td><input type="text" name="db_user" value="{$db_user}"/></td>
-</tr>
-<tr>
-	<td>{$lang->translate('db_password')}</td>
-	<td><input type="password" name="db_password" placeholder="{$db_password}"/></td>
-</tr>
-<tr>
-	<td>{$lang->translate('db_name')}</td>
-	<td><input type="text" name="db_name" value="{$db_name}"/></td>
-</tr>
+  <tr>
+    <td>
+      WEB
+      <div class="hint">{$lang->translate('if_displayed_in_shop')}</div>
+    </td>
+    <td>
+      <select name="web">
+        <option value="0" {$web_sel_no}>{$lang->strtoupper($lang->translate('no'))}</option>
+        <option value="1" {$web_sel_yes}>{$lang->strtoupper($lang->translate('yes'))}</option>
+      </select>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      {$lang->strtoupper($lang->translate('mybb_groups'))}
+      <div class="hint">{$lang->translate('coma_separated')}</div>
+    </td>
+    <td><input type="text" name="mybb_groups" value="{$mybb_groups}"/></td>
+  </tr>
+  <tr>
+    <td colspan="2" class="line"></td>
+  </tr>
+  <tr>
+    <td colspan="2" class="h2 center">{$lang->translate('mybb_db_data')}</td>
+  </tr>
+  <tr>
+    <td>{$lang->translate('db_host')}</td>
+    <td><input type="text" name="db_host" value="{$db_host}"/></td>
+  </tr>
+  <tr>
+    <td>{$lang->translate('db_user')}</td>
+    <td><input type="text" name="db_user" value="{$db_user}"/></td>
+  </tr>
+  <tr>
+    <td>{$lang->translate('db_password')}</td>
+    <td><input type="password" name="db_password" placeholder="{$db_password}"/></td>
+  </tr>
+  <tr>
+    <td>{$lang->translate('db_name')}</td>
+    <td><input type="text" name="db_name" value="{$db_name}"/></td>
+  </tr>
 </tbody>

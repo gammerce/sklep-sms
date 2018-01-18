@@ -1,23 +1,23 @@
 .income {
-	background-color: rgba(0, 255, 0, 0.2) !important;
+    background-color: rgba(0, 255, 0, 0.2) !important;
 }
 
 .income:hover {
-	cursor: pointer;
-	background-color: rgba(0, 255, 0, 0.4) !important;
-	color: burlywood;
-	font-weight: bold;
-	text-shadow: 1px 1px 1px #000;
+    cursor: pointer;
+    background-color: rgba(0, 255, 0, 0.4) !important;
+    color: burlywood;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px #000;
 }
 
 .outcome {
-	background-color: rgba(255, 0, 0, 0.2) !important;
+    background-color: rgba(255, 0, 0, 0.2) !important;
 }
 
 .outcome:hover {
-	cursor: pointer;
-	background-color: rgba(255, 0, 0, 0.4) !important;
-	color: goldenrod;
-	font-weight: bold;
-	text-shadow: 1px 1px 1px #000;
+    cursor: pointer;
+    background-color: rgba(255, 0, 0, 0.4) !important;
+    color: goldenrod;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px #000;
 }

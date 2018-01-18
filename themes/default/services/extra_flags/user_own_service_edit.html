@@ -1,42 +1,42 @@
-<input type="password" class="display_none" />
+<input type="password" class="display_none"/>
 <strong>{$lang->translate('service')}</strong>: {$service_info['service']}<br/>
 <strong>{$lang->translate('server')}</strong>: {$service_info['server']}<br/>
 <strong>{$lang->translate('expire')}</strong>: {$service_info['expire']}<br/>
 <hr/>
 
 <div class="table_form">
-	<div class="row">
-		<div class="cell">{$lang->translate('type')}</div>
-		<div class="cell">
-			<select name="type">{$service_info['types']}</select>
-		</div>
-	</div>
+  <div class="row">
+    <div class="cell">{$lang->translate('type')}</div>
+    <div class="cell">
+      <select name="type">{$service_info['types']}</select>
+    </div>
+  </div>
 
-	<div class="row type_nick" style="{$styles['nick']}">
-		<div class="cell">{$lang->translate('nick')}</div>
-		<div class="cell">
-			<input type="text" name="nick" maxlength="32" value="{$service_info['player_nick']}"/>
-		</div>
-	</div>
+  <div class="row type_nick" style="{$styles['nick']}">
+    <div class="cell">{$lang->translate('nick')}</div>
+    <div class="cell">
+      <input type="text" name="nick" maxlength="32" value="{$service_info['player_nick']}"/>
+    </div>
+  </div>
 
-	<div class="row type_ip" style="{$styles['ip']}">
-		<div class="cell">{$lang->translate('ip')}</div>
-		<div class="cell">
-			<input type="text" name="ip" maxlength="21" value="{$service_info['player_ip']}"/>
-		</div>
-	</div>
+  <div class="row type_ip" style="{$styles['ip']}">
+    <div class="cell">{$lang->translate('ip')}</div>
+    <div class="cell">
+      <input type="text" name="ip" maxlength="21" value="{$service_info['player_ip']}"/>
+    </div>
+  </div>
 
-	<div class="row type_sid" style="{$styles['sid']}">
-		<div class="cell">{$lang->translate('sid')}</div>
-		<div class="cell">
-			<input type="text" name="sid" maxlength="32" value="{$service_info['player_sid']}"/>
-		</div>
-	</div>
+  <div class="row type_sid" style="{$styles['sid']}">
+    <div class="cell">{$lang->translate('sid')}</div>
+    <div class="cell">
+      <input type="text" name="sid" maxlength="32" value="{$service_info['player_sid']}"/>
+    </div>
+  </div>
 
-	<div class="row type_password" style="{$styles['password']}">
-		<div class="cell">{$lang->translate('password')}</div>
-		<div class="cell">
-			<input type="password" name="password" maxlength="32" placeholder="{$service_info['password']}"/>
-		</div>
-	</div>
+  <div class="row type_password" style="{$styles['password']}">
+    <div class="cell">{$lang->translate('password')}</div>
+    <div class="cell">
+      <input type="password" name="password" maxlength="32" placeholder="{$service_info['password']}"/>
+    </div>
+  </div>
 </div>

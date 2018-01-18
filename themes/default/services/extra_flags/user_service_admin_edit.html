@@ -1,85 +1,85 @@
 <table data-module="{$this->get_module_id()}">
-	<tbody>
-	<tr>
-		<td>ID</td>
-		<td>{$user_service['id']}</td>
-	</tr>
-	<tr>
-		<td colspan="2" class="line"></td>
-	</tr>
-	<tr>
-		<td>{$lang->translate('user_id')}</td>
-		<td><input type="text" name="uid" style="width: 60px;" value="{$user_service['uid']}"/></td>
-	</tr>
-	<tr>
-		<td>{$lang->translate('type')}</td>
-		<td><select name="type">{$types}</select></td>
-	</tr>
-	</tbody>
-	<tbody id="type_nick" style="{$styles['nick']}">
-	<tr>
-		<td>Nick</td>
-		<td>
-			<input type="text" name="nick" maxlength="32" value="{$nick}"/>
-		</td>
-	</tr>
-	</tbody>
-	<tbody id="type_ip" style="{$styles['ip']}">
-	<tr>
-		<td>IP</td>
-		<td>
-			<input type="text" name="ip" maxlength="21" style="width: 100px;" value="{$ip}"/>
-		</td>
-	</tr>
-	</tbody>
-	<tbody id="type_sid" style="{$styles['sid']}">
-	<tr>
-		<td>SteamID</td>
-		<td>
-			<input type="text" name="sid" maxlength="32" value="{$sid}"/>
-		</td>
-	</tr>
-	</tbody>
-	<tbody id="type_password" style="{$styles['password']}">
-	<tr>
-		<td>{$lang->translate('password')}</td>
-		<td>
-			<input type="text" name="password" maxlength="32" placeholder="{$password}"/>
-		</td>
-	</tr>
-	</tbody>
-	<tbody>
-	<tr>
-		<td colspan="2" class="line"></td>
-	</tr>
-	<tr>
-		<td>{$lang->translate('service')}</td>
-		<td>
-			<select name="service">
-				{$services}
-			</select>
-		</td>
-	</tr>
-	<tr>
-		<td>{$lang->translate('server')}</td>
-		<td>
-			<select name="server">
-				{$servers}
-			</select>
-		</td>
-	</tr>
-	<tr>
-		<td>{$lang->translate('expires')}</td>
-		<td>
-			<input type="text" name="expire" value="{$user_service['expire']}" {$disabled}/><br/>
-			<input type="checkbox" name="forever" {$checked}/>{$lang->translate('forever')}
-		</td>
-	</tr>
-	<tr>
-		<td colspan="2">
-			<input type="hidden" name="id" value="{$user_service['id']}"/>
-			<input type="submit" value="{$lang->translate('edit')}" style="width: 100%;"/>
-		</td>
-	</tr>
-	</tbody>
+  <tbody>
+    <tr>
+      <td>ID</td>
+      <td>{$user_service['id']}</td>
+    </tr>
+    <tr>
+      <td colspan="2" class="line"></td>
+    </tr>
+    <tr>
+      <td>{$lang->translate('user_id')}</td>
+      <td><input type="text" name="uid" style="width: 60px;" value="{$user_service['uid']}"/></td>
+    </tr>
+    <tr>
+      <td>{$lang->translate('type')}</td>
+      <td><select name="type">{$types}</select></td>
+    </tr>
+  </tbody>
+  <tbody id="type_nick" style="{$styles['nick']}">
+    <tr>
+      <td>Nick</td>
+      <td>
+        <input type="text" name="nick" maxlength="32" value="{$nick}"/>
+      </td>
+    </tr>
+  </tbody>
+  <tbody id="type_ip" style="{$styles['ip']}">
+    <tr>
+      <td>IP</td>
+      <td>
+        <input type="text" name="ip" maxlength="21" style="width: 100px;" value="{$ip}"/>
+      </td>
+    </tr>
+  </tbody>
+  <tbody id="type_sid" style="{$styles['sid']}">
+    <tr>
+      <td>SteamID</td>
+      <td>
+        <input type="text" name="sid" maxlength="32" value="{$sid}"/>
+      </td>
+    </tr>
+  </tbody>
+  <tbody id="type_password" style="{$styles['password']}">
+    <tr>
+      <td>{$lang->translate('password')}</td>
+      <td>
+        <input type="text" name="password" maxlength="32" placeholder="{$password}"/>
+      </td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td colspan="2" class="line"></td>
+    </tr>
+    <tr>
+      <td>{$lang->translate('service')}</td>
+      <td>
+        <select name="service">
+          {$services}
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>{$lang->translate('server')}</td>
+      <td>
+        <select name="server">
+          {$servers}
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>{$lang->translate('expires')}</td>
+      <td>
+        <input type="text" name="expire" value="{$user_service['expire']}" {$disabled}/><br/>
+        <input type="checkbox" name="forever" {$checked}/>{$lang->translate('forever')}
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <input type="hidden" name="id" value="{$user_service['id']}"/>
+        <input type="submit" value="{$lang->translate('edit')}" style="width: 100%;"/>
+      </td>
+    </tr>
+  </tbody>
 </table>

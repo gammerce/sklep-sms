@@ -76,12 +76,13 @@ class License
 
     protected function request()
     {
-        $url = "http://license.sklep-sms.pl/license.php?action=login_web" .
-            "&lid=" . urlencode($this->settings['license_login']) .
-            "&lpa=" . urlencode($this->settings['license_password']) .
-            "&name=" . urlencode($this->settings['shop_url']) .
-            "&version=" . VERSION .
-            "&language=" . $this->lang->getCurrentLanguage();
+        $url = 'http://license.sklep-sms.pl/license.php' .
+            '?action=login_web' .
+            '&lid=' . urlencode($this->settings['license_login']) .
+            '&lpa=' . urlencode($this->settings['license_password']) .
+            '&name=' . urlencode($this->settings['shop_url']) .
+            '&version=' . VERSION .
+            '&language=' . $this->lang->getCurrentLanguage();
 
         $response = curl_get_contents($url);
 

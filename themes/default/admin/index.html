@@ -1,82 +1,82 @@
 <html>
 <head>
-	{$header}
+  {$header}
 </head>
 <body>
 <div class="header">
-	<table>
-		<tr>
-			<td style="width: 360px">
-				<a href="index.php">
-					<img class="logo" src="http://sklep-sms.pl/images/logo_medium.png" alt="{$lang->translate('shop_sms')}">
-				</a>
-			</td>
-			<td class="center">
-				{$lang->translate('acp')} (&nbsp;v{__VERSION__}&nbsp;)
-				<div class="hint">{$lang->translate('license_expires')}: {$license->getExpires()}</div>
-			</td>
-			<td style="width: 360px; text-align: right;">
-				{$user->getUsername()}
-				<form method="POST" class="form_logout">
-					<input type="hidden" name="action" value="logout"/>
-					( <a href="#" onclick="$(this).parents('form').submit()">{$lang->translate('logout')}</a> )
-				</form>
-			</td>
-		</tr>
-	</table>
+  <table>
+    <tr>
+      <td style="width: 360px">
+        <a href="index.php">
+          <img class="logo" src="http://sklep-sms.pl/images/logo_medium.png" alt="{$lang->translate('shop_sms')}">
+        </a>
+      </td>
+      <td class="center">
+        {$lang->translate('acp')} (&nbsp;v{__VERSION__}&nbsp;)
+        <div class="hint">{$lang->translate('license_expires')}: {$license->getExpires()}</div>
+      </td>
+      <td style="width: 360px; text-align: right;">
+        {$user->getUsername()}
+        <form method="POST" class="form_logout">
+          <input type="hidden" name="action" value="logout"/>
+          ( <a href="#" onclick="$(this).parents('form').submit()">{$lang->translate('logout')}</a> )
+        </form>
+      </td>
+    </tr>
+  </table>
 </div>
 <div class="sidebar">
-	<h3>{$lang->translate('main')}</h3>
-	<ul>
-		<a href="admin.php?pid=home">
-			<li>&#8594; {$lang->translate('main_page')}</li>
-		</a>
-		{$settings_link}
-		{$antispam_questions_link}
-		{$transaction_services_link}
-		{$services_link}
-		{$servers_link}
-		{$tariffs_link}
-		{$pricelist_link}
-	</ul>
-	<h3>{$lang->translate('users_services')}</h3>
-	<ul>
-		{$user_service_link}
-		{$players_flags_link}
-	</ul>
-	<h3>{$lang->translate('users')}</h3>
-	<ul>
-		{$users_link}
-		{$groups_link}
-	</ul>
-	<h3>{$lang->translate('additions')}</h3>
-	<ul>
-		{$income_link}
-		{$service_codes_link}
-		{$sms_codes_link}
-	</ul>
-	<h3>{$lang->translate('logs')}</h3>
-	<ul>
-		<a href="admin.php?pid=bought_services">
-			<li>&#8594; {$lang->translate('bought_services')}</li>
-		</a>
-		<a href="admin.php?pid=payment_sms">
-			<li>&#8594; {$lang->translate('payments_sms')}</li>
-		</a>
-		<a href="admin.php?pid=payment_transfer">
-			<li>&#8594; {$lang->translate('payments_transfer')}</li>
-		</a>
-		<a href="admin.php?pid=payment_wallet">
-			<li>&#8594; {$lang->translate('payments_wallet')}</li>
-		</a>
-		<a href="admin.php?pid=payment_admin">
-			<li>&#8594; {$lang->translate('payments_admin')}</li>
-		</a>
-		<a href="admin.php?pid=payment_service_code">
-			<li>&#8594; {$lang->translate('payments_service_code')}</li>
-		</a>
-		{$logs_link}
-	</ul>
+  <h3>{$lang->translate('main')}</h3>
+  <ul>
+    <a href="admin.php?pid=home">
+      <li>&#8594; {$lang->translate('main_page')}</li>
+    </a>
+    {$settings_link}
+    {$antispam_questions_link}
+    {$transaction_services_link}
+    {$services_link}
+    {$servers_link}
+    {$tariffs_link}
+    {$pricelist_link}
+  </ul>
+  <h3>{$lang->translate('users_services')}</h3>
+  <ul>
+    {$user_service_link}
+    {$players_flags_link}
+  </ul>
+  <h3>{$lang->translate('users')}</h3>
+  <ul>
+    {$users_link}
+    {$groups_link}
+  </ul>
+  <h3>{$lang->translate('additions')}</h3>
+  <ul>
+    {$income_link}
+    {$service_codes_link}
+    {$sms_codes_link}
+  </ul>
+  <h3>{$lang->translate('logs')}</h3>
+  <ul>
+    <a href="admin.php?pid=bought_services">
+      <li>&#8594; {$lang->translate('bought_services')}</li>
+    </a>
+    <a href="admin.php?pid=payment_sms">
+      <li>&#8594; {$lang->translate('payments_sms')}</li>
+    </a>
+    <a href="admin.php?pid=payment_transfer">
+      <li>&#8594; {$lang->translate('payments_transfer')}</li>
+    </a>
+    <a href="admin.php?pid=payment_wallet">
+      <li>&#8594; {$lang->translate('payments_wallet')}</li>
+    </a>
+    <a href="admin.php?pid=payment_admin">
+      <li>&#8594; {$lang->translate('payments_admin')}</li>
+    </a>
+    <a href="admin.php?pid=payment_service_code">
+      <li>&#8594; {$lang->translate('payments_service_code')}</li>
+    </a>
+    {$logs_link}
+  </ul>
 </div>
 {$content}
 </body>

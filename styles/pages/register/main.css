@@ -1,14 +1,14 @@
 #register[name=username], #register[name=pass], #register[name=password_repeat], #register[name=email], #register[name=email_repeat] {
-	width: 100%;
+    width: 100%;
 }
 
 .register_buttons {
-	margin-left: 20px;
+    margin-left: 20px;
 }
 
 #register dt {
-	font-size: 18px;
-	font-weight: bold;
-	color: #AAA;
-	text-shadow: 1px 1px 1px #000;
+    font-size: 18px;
+    font-weight: bold;
+    color: #AAA;
+    text-shadow: 1px 1px 1px #000;
 }

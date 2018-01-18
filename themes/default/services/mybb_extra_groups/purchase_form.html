@@ -1,36 +1,36 @@
 <form id="form_purchase">
-	<div class="inputs">
-		<table>
-			<tr>
-				<td><strong>{$lang->translate('username')}</strong></td>
-				<td><input type="text" name="username" /></td>
-			</tr>
-			<tr>
-				<td><strong>{$lang->translate('amount')}</strong></td>
-				<td>
-					<select name="amount">
-						<option value="">{$lang->translate('choose_amount')}</option>
-						{$amounts}
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td><strong>{$lang->translate('email')}</strong></td>
-				<td><input type="text" name="email" value="{$user->getEmail()}"/></td>
-			</tr>
-		</table>
-	</div>
+  <div class="inputs">
+    <table>
+      <tr>
+        <td><strong>{$lang->translate('username')}</strong></td>
+        <td><input type="text" name="username"/></td>
+      </tr>
+      <tr>
+        <td><strong>{$lang->translate('amount')}</strong></td>
+        <td>
+          <select name="amount">
+            <option value="">{$lang->translate('choose_amount')}</option>
+            {$amounts}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td><strong>{$lang->translate('email')}</strong></td>
+        <td><input type="text" name="email" value="{$user->getEmail()}"/></td>
+      </tr>
+    </table>
+  </div>
 
-	<div id="cost_wraper">
-		<div>
-			<strong>{$lang->translate('transfer_wallet_cost')}</strong>: <span id="cost_transfer"></span>
-			{$settings['currency']}<br/>
-			<strong>{$lang->translate('sms_cost')}</strong>: <span id="cost_sms"></span> <span id="currency_sms">{$settings['currency']}</span>
-		</div>
-	</div>
+  <div id="cost_wraper">
+    <div>
+      <strong>{$lang->translate('transfer_wallet_cost')}</strong>: <span id="cost_transfer"></span>
+      {$settings['currency']}<br/>
+      <strong>{$lang->translate('sms_cost')}</strong>: <span id="cost_sms"></span> <span id="currency_sms">{$settings['currency']}</span>
+    </div>
+  </div>
 
-	<div class="purchase_button_wraper">
-		<input type="button" id="go_to_payment" value="{$lang->translate('go_to_payment')}" class="purchase_button"/>
-	</div>
-	<input type="hidden" name="service" value="{$this->service['id']}"/>
+  <div class="purchase_button_wraper">
+    <input type="button" id="go_to_payment" value="{$lang->translate('go_to_payment')}" class="purchase_button"/>
+  </div>
+  <input type="hidden" name="service" value="{$this->service['id']}"/>
 </form>

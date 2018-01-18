@@ -4,14 +4,14 @@ $heart->register_page("regulations", "PageRegulations");
 
 class PageRegulations extends PageSimple
 {
-	const PAGE_ID = "regulations";
-	protected $template = "regulations_desc";
+    const PAGE_ID = "regulations";
+    protected $template = "regulations_desc";
 
-	function __construct()
-	{
-		global $lang;
-		$this->title = $lang->translate('regulations');
+    function __construct()
+    {
+        global $lang;
+        $this->title = $lang->translate('regulations');
 
-		parent::__construct();
-	}
+        parent::__construct();
+    }
 }

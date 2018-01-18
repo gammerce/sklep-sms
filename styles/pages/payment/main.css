@@ -1,70 +1,74 @@
 .payment_type_wraper {
-	display: inline-block;
-	vertical-align: top;
+    display: inline-block;
+    vertical-align: top;
 }
 
 .payment_type {
-	padding: 12px;
-	display: block;
-	margin-right: 20px;
-	margin-top: 10px;
+    padding: 12px;
+    display: block;
+    margin-right: 20px;
+    margin-top: 10px;
 
-	box-shadow: 0 0 5px #B2B2B2;
+    box-shadow: 0 0 5px #B2B2B2;
 }
 
 .payment_type.header {
-	box-shadow: 0 0 5px #FFF;
-	color: #FFF;
-	text-shadow: 1px 1px 1px #000;
-	font-weight: bold;
-	text-transform: uppercase;
+    box-shadow: 0 0 5px #FFF;
+    color: #FFF;
+    text-shadow: 1px 1px 1px #000;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
 .payment_type.sms {
-	background: rgba(255, 0, 0, 0.4);
+    background: rgba(255, 0, 0, 0.4);
 }
+
 .payment_type.sms.header {
-	background: rgba(255, 0, 0, 0.6);
+    background: rgba(255, 0, 0, 0.6);
 }
 
 .payment_type.transfer {
-	background: rgba(0, 255, 0, 0.4);
+    background: rgba(0, 255, 0, 0.4);
 }
+
 .payment_type.transfer.header {
-	background: rgba(0, 255, 0, 0.6);
+    background: rgba(0, 255, 0, 0.6);
 }
 
 .payment_type.wallet {
-	background: rgba(0, 0, 255, 0.4);
+    background: rgba(0, 0, 255, 0.4);
 }
+
 .payment_type.wallet.header {
-	background: rgba(0, 0, 255, 0.6);
+    background: rgba(0, 0, 255, 0.6);
 }
 
 .payment_type.service_code {
-	background: rgba(113, 0, 255, 0.4);
-	margin-right: 0;
+    background: rgba(113, 0, 255, 0.4);
+    margin-right: 0;
 }
+
 .payment_type.service_code.header {
-	background: rgba(113, 0, 255, 0.6);
-	margin-right: 0;
+    background: rgba(113, 0, 255, 0.6);
+    margin-right: 0;
 }
 
 #payment .order_details {
-	line-height: 1.3;
-	background-color: rgba(255, 255, 255, 0.1);
-	border-color: #F00;
-	color: #FFF;
-	padding-top: 12px;
+    line-height: 1.3;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #F00;
+    color: #FFF;
+    padding-top: 12px;
 }
 
 #payment .order_details legend {
-	text-transform: uppercase;
-	text-shadow: 1px 1px 1px #000000;
-	font-size: 14px;
-	color: #EDE100;
+    text-transform: uppercase;
+    text-shadow: 1px 1px 1px #000000;
+    font-size: 14px;
+    color: #EDE100;
 }
 
 #sms_details {
-	display: none;
+    display: none;
 }

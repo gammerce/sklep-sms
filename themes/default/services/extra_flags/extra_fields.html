@@ -1,26 +1,26 @@
 <tbody data-module="{$this->get_module_id()}">
-<tr>
-	<td>
-		WEB
-		<div class="hint">{$lang->translate('if_displayed_in_shop')}</div>
-	</td>
-	<td>
-		<select name="web">
-			<option value="0" {$web_sel_no}>{$lang->strtoupper($lang->translate('no'))}</option>
-			<option value="1" {$web_sel_yes}>{$lang->strtoupper($lang->translate('yes'))}</option>
-		</select>
-	</td>
-</tr>
-<tr>
-	<td>{$lang->strtoupper($lang->translate('types'))}</td>
-	<td>
-		<select name="type[]" multiple>
-			{$types}
-		</select>
-	</td>
-</tr>
-<tr>
-	<td>{$lang->strtoupper($lang->translate('flags'))}</td>
-	<td><input type="text" name="flags" value="{$flags}" maxlength="25"/></td>
-</tr>
+  <tr>
+    <td>
+      WEB
+      <div class="hint">{$lang->translate('if_displayed_in_shop')}</div>
+    </td>
+    <td>
+      <select name="web">
+        <option value="0" {$web_sel_no}>{$lang->strtoupper($lang->translate('no'))}</option>
+        <option value="1" {$web_sel_yes}>{$lang->strtoupper($lang->translate('yes'))}</option>
+      </select>
+    </td>
+  </tr>
+  <tr>
+    <td>{$lang->strtoupper($lang->translate('types'))}</td>
+    <td>
+      <select name="type[]" multiple>
+        {$types}
+      </select>
+    </td>
+  </tr>
+  <tr>
+    <td>{$lang->strtoupper($lang->translate('flags'))}</td>
+    <td><input type="text" name="flags" value="{$flags}" maxlength="25"/></td>
+  </tr>
 </tbody>

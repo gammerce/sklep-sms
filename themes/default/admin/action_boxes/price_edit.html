@@ -1,45 +1,45 @@
 <form id="form_price_edit" class="action_box">
-	<div class="service_main_info">
-		{$lang->translate('edit_price')}
-	</div>
-	<table>
-		<tr>
-			<td>{$lang->strtoupper($lang->translate('service'))}</td>
-			<td>
-				<select name="service">
-					{$services}
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td>{$lang->strtoupper($lang->translate('server'))}</td>
-			<td>
-				<select name="server">
-					<option value="-1" {$all_servers}>{$lang->translate('all')}</option>
-					{$servers}
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td>{$lang->strtoupper($lang->translate('tariff'))}</td>
-			<td>
-				<select name="tariff">
-					{$tariffs}
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td>{$lang->strtoupper($lang->translate('amount'))}</td>
-			<td><input type="text" name="amount" value="{$price['amount']}" style="width: 100px;"/></td>
-		</tr>
-		<tr>
-			<td colspan="2" class="line"></td>
-		</tr>
-		<tr>
-			<td colspan="2">
-				<input type="hidden" name="id" value="{$price['id']}"/>
-				<input type="submit" value="{$lang->translate('edit')}" style="width: 100%;"/>
-			</td>
-		</tr>
-	</table>
+  <div class="service_main_info">
+    {$lang->translate('edit_price')}
+  </div>
+  <table>
+    <tr>
+      <td>{$lang->strtoupper($lang->translate('service'))}</td>
+      <td>
+        <select name="service">
+          {$services}
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>{$lang->strtoupper($lang->translate('server'))}</td>
+      <td>
+        <select name="server">
+          <option value="-1" {$all_servers}>{$lang->translate('all')}</option>
+          {$servers}
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>{$lang->strtoupper($lang->translate('tariff'))}</td>
+      <td>
+        <select name="tariff">
+          {$tariffs}
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>{$lang->strtoupper($lang->translate('amount'))}</td>
+      <td><input type="text" name="amount" value="{$price['amount']}" style="width: 100px;"/></td>
+    </tr>
+    <tr>
+      <td colspan="2" class="line"></td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <input type="hidden" name="id" value="{$price['id']}"/>
+        <input type="submit" value="{$lang->translate('edit')}" style="width: 100%;"/>
+      </td>
+    </tr>
+  </table>
 </form>

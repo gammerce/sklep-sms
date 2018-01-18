@@ -1,28 +1,28 @@
 <form id="form_tariff_edit" class="action_box">
-	<div class="service_main_info">
-		{$lang->translate('edit_tariff')}
-	</div>
-	<table>
-		<tr>
-			<td>{$lang->strtoupper($lang->translate('tariff'))}</td>
-			<td>{$tariff->getId()}</td>
-		</tr>
-		<tr>
-			<td colspan="2" class="line"></td>
-		</tr>
-		<tr>
-			<td>{$lang->strtoupper($lang->translate('provision'))}</td>
-			<td><input type="text" name="provision" value="{$provision}" style="width: 60px;"/> {$settings['currency']}
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2" class="line"></td>
-		</tr>
-		<tr>
-			<td colspan="2">
-				<input type="hidden" name="id" value="{$tariff->getId()}"/>
-				<input type="submit" value="{$lang->translate('confirm')}" style="width: 100%;"/>
-			</td>
-		</tr>
-	</table>
+  <div class="service_main_info">
+    {$lang->translate('edit_tariff')}
+  </div>
+  <table>
+    <tr>
+      <td>{$lang->strtoupper($lang->translate('tariff'))}</td>
+      <td>{$tariff->getId()}</td>
+    </tr>
+    <tr>
+      <td colspan="2" class="line"></td>
+    </tr>
+    <tr>
+      <td>{$lang->strtoupper($lang->translate('provision'))}</td>
+      <td><input type="text" name="provision" value="{$provision}" style="width: 60px;"/> {$settings['currency']}
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" class="line"></td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <input type="hidden" name="id" value="{$tariff->getId()}"/>
+        <input type="submit" value="{$lang->translate('confirm')}" style="width: 100%;"/>
+      </td>
+    </tr>
+  </table>
 </form>

@@ -9,14 +9,14 @@ $heart->register_page("transferuj_ok", "PageTransferujOk");
 
 class PageTransferujOk extends PageSimple
 {
-	const PAGE_ID = "transferuj_ok";
-	protected $template = "transferuj_ok";
+    const PAGE_ID = "transferuj_ok";
+    protected $template = "transferuj_ok";
 
-	function __construct()
-	{
-		global $lang;
-		$this->title = "Płatność Zaakceptowana";
+    function __construct()
+    {
+        global $lang;
+        $this->title = "Płatność Zaakceptowana";
 
-		parent::__construct();
-	}
+        parent::__construct();
+    }
 }

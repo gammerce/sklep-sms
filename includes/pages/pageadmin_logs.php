@@ -1,88 +1,87 @@
 <?php
 
-use Admin\Table;
-use Admin\Table\Wrapper;
-use Admin\Table\Structure;
 use Admin\Table\BodyRow;
 use Admin\Table\Cell;
 use Admin\Table\Div;
+use Admin\Table\Structure;
+use Admin\Table\Wrapper;
 
 $heart->register_page("logs", "PageAdminLogs", "admin");
 
 class PageAdminLogs extends PageAdmin
 {
-	const PAGE_ID = "logs";
-	protected $privilage = "view_logs";
+    const PAGE_ID = "logs";
+    protected $privilage = "view_logs";
 
-	function __construct()
-	{
-		global $lang;
-		$this->title = $lang->translate('logs');
+    function __construct()
+    {
+        global $lang;
+        $this->title = $lang->translate('logs');
 
-		parent::__construct();
-	}
+        parent::__construct();
+    }
 
-	protected function content($get, $post)
-	{
-		global $db, $lang, $G_PAGE;
+    protected function content($get, $post)
+    {
+        global $db, $lang, $G_PAGE;
 
-		$wrapper = new Wrapper();
-		$wrapper->setTitle($this->title);
-		$wrapper->setSearch();
+        $wrapper = new Wrapper();
+        $wrapper->setTitle($this->title);
+        $wrapper->setSearch();
 
-		$table = new Structure();
+        $table = new Structure();
 
-		$cell = new Cell($lang->translate('id'));
-		$cell->setParam('headers', 'id');
-		$table->addHeadCell($cell);
+        $cell = new Cell($lang->translate('id'));
+        $cell->setParam('headers', 'id');
+        $table->addHeadCell($cell);
 
-		$table->addHeadCell(new Cell($lang->translate('text')));
-		$table->addHeadCell(new Cell($lang->translate('date')));
+        $table->addHeadCell(new Cell($lang->translate('text')));
+        $table->addHeadCell(new Cell($lang->translate('date')));
 
-		// Wyszukujemy dane ktore spelniaja kryteria
-		$where = '';
-		if (isset($get['search'])) {
-			searchWhere(array("`id`", "`text`", "CAST(`timestamp` as CHAR)"), $get['search'], $where);
-		}
+        // Wyszukujemy dane ktore spelniaja kryteria
+        $where = '';
+        if (isset($get['search'])) {
+            searchWhere(["`id`", "`text`", "CAST(`timestamp` as CHAR)"], $get['search'], $where);
+        }
 
-		// Jezeli jest jakis where, to dodajemy WHERE
-		if (strlen($where)) {
-			$where = "WHERE " . $where . " ";
-		}
+        // Jezeli jest jakis where, to dodajemy WHERE
+        if (strlen($where)) {
+            $where = "WHERE " . $where . " ";
+        }
 
-		$result = $db->query(
-			"SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "logs` " .
-			$where .
-			"ORDER BY `id` DESC " .
-			"LIMIT " . get_row_limit($G_PAGE)
-		);
+        $result = $db->query(
+            "SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "logs` " .
+            $where .
+            "ORDER BY `id` DESC " .
+            "LIMIT " . get_row_limit($G_PAGE)
+        );
 
-		$table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+        $table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
-		while ($row = $db->fetch_array_assoc($result)) {
-			$body_row = new BodyRow();
+        while ($row = $db->fetch_array_assoc($result)) {
+            $body_row = new BodyRow();
 
-			$body_row->setDbId($row['id']);
+            $body_row->setDbId($row['id']);
 
-			$cell = new Cell();
-			$div = new Div(htmlspecialchars($row['text']));
-			$div->setParam('class', 'one_line');
-			$cell->addContent($div);
-			$body_row->addCell($cell);
+            $cell = new Cell();
+            $div = new Div(htmlspecialchars($row['text']));
+            $div->setParam('class', 'one_line');
+            $cell->addContent($div);
+            $body_row->addCell($cell);
 
-			$cell = new Cell(convertDate($row['timestamp']));
-			$cell->setParam('headers', 'date');
-			$body_row->addCell($cell);
+            $cell = new Cell(convertDate($row['timestamp']));
+            $cell->setParam('headers', 'date');
+            $body_row->addCell($cell);
 
-			if (get_privilages("manage_logs")) {
-				$body_row->setButtonDelete(true);
-			}
+            if (get_privilages("manage_logs")) {
+                $body_row->setButtonDelete(true);
+            }
 
-			$table->addBodyRow($body_row);
-		}
+            $table->addBodyRow($body_row);
+        }
 
-		$wrapper->setTable($table);
+        $wrapper->setTable($table);
 
-		return $wrapper->toHtml();
-	}
+        return $wrapper->toHtml();
+    }
 }

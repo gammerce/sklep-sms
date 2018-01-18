@@ -1,44 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-	{$header}
+  {$header}
 </head>
 <body>
 {$heart->getGoogleAnalytics()}
 <table class="contentwraper">
-	<tr>
-		<td></td>
-		<td>{$logged_info}{$wallet}</td>
-		<td>
-			<div id="language_choice">
-				<img src="{$settings['shop_url_slash']}images/polish.jpg" id="language_polish"
-					 title="{$lang->translate('language_polish')}"/>&nbsp;
-				<img src="{$settings['shop_url_slash']}images/english.jpg" id="language_english"
-					 title="{$lang->translate('language_english')}"/>
-			</div>
-		</td>
-	</tr>
-	<tr>
-		<td></td>
-		<td class="header_wraper_td">
-			<table>
-				<tr>
-					<td>
-						<div class="content_title">{$heart->page_title}</div>
-					</td>
-					<td class="right">
-						<a href="index.php"><img src="http://sklep-sms.pl/images/logo_medium.png" alt="sklep-sms"/></a>
-					</td>
-				</tr>
-			</table>
-		</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td class="services_buttons_td">{$services_buttons}</td>
-		<td class="content_td">{$content}</td>
-		<td class="user_buttons_td">{$user_buttons}</td>
-	</tr>
+  <tr>
+    <td></td>
+    <td>{$logged_info}{$wallet}</td>
+    <td>
+      <div id="language_choice">
+        <img src="{$settings['shop_url_slash']}images/polish.jpg" id="language_polish"
+             title="{$lang->translate('language_polish')}"/>&nbsp;
+        <img src="{$settings['shop_url_slash']}images/english.jpg" id="language_english"
+             title="{$lang->translate('language_english')}"/>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td class="header_wraper_td">
+      <table>
+        <tr>
+          <td>
+            <div class="content_title">{$heart->page_title}</div>
+          </td>
+          <td class="right">
+            <a href="index.php"><img src="http://sklep-sms.pl/images/logo_medium.png" alt="sklep-sms"/></a>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td class="services_buttons_td">{$services_buttons}</td>
+    <td class="content_td">{$content}</td>
+    <td class="user_buttons_td">{$user_buttons}</td>
+  </tr>
 </table>
 <br/><br/>
 

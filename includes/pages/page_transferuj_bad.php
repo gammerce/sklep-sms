@@ -9,14 +9,14 @@ $heart->register_page("transferuj_bad", "PageTransferujBad");
 
 class PageTransferujBad extends PageSimple
 {
-	const PAGE_ID = "transferuj_bad";
-	protected $template = "transferuj_bad";
+    const PAGE_ID = "transferuj_bad";
+    protected $template = "transferuj_bad";
 
-	function __construct()
-	{
-		global $lang;
-		$this->title = "Płatność Odrzucona";
+    function __construct()
+    {
+        global $lang;
+        $this->title = "Płatność Odrzucona";
 
-		parent::__construct();
-	}
+        parent::__construct();
+    }
 }

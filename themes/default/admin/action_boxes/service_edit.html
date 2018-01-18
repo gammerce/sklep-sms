@@ -1,72 +1,72 @@
 <form id="form_service_edit" class="action_box" autocomplete="off">
-	<input type="password" class="display_none" />
-	<div class="service_main_info">
-		{$lang->translate('edit_service')}
-	</div>
-	<table>
-		<tbody class="ftbody">
-		<tr>
-			<td>{$lang->translate('id')}</td>
-			<td><input type="text" name="id" value="{$service['id_hsafe']}" maxlength="16"/></td>
-		</tr>
-		<tr>
-			<td>{$lang->strtoupper($lang->translate('name'))}</td>
-			<td><input type="text" name="name" value="{$service['name']}" maxlength="32"/></td>
-		</tr>
-		<tr>
-			<td>
-				{$lang->strtoupper($lang->translate('short_description'))}<br/>
-				<span class="hint">{$lang->translate('description_on_server')}</span>
-			</td>
-			<td><input type="text" name="short_description" maxlength="28" value="{$service['short_description']}"/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				{$lang->strtoupper($lang->translate('description'))}<br/>
-				<span class="hint">{$lang->translate('description_on_www')}</span>
-			</td>
-			<td><textarea name="description" style="width: 400px; height: 80px;">{$service['description']}</textarea>
-			</td>
-		</tr>
-		<tr>
-			<td>{$lang->strtoupper($lang->translate('tag'))}</td>
-			<td><input type="text" name="tag" value="{$service['tag']}" maxlength="16"/></td>
-		</tr>
-		<tr>
-			<td>{$lang->strtoupper($lang->translate('order'))}</td>
-			<td><input type="text" name="order" value="{$service['order']}"/></td>
-		</tr>
-		<tr>
-			<td>
-				{$lang->strtoupper($lang->translate('groups'))}
-				<div class="hint">{$lang->translate('groups_to_buy_service')}</div>
-			</td>
-			<td>
-				<select name="groups[]" multiple>
-					{$groups}
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2" class="line"></td>
-		</tr>
-		<tr>
-			<td>{$lang->strtoupper($lang->translate('module'))}</td>
-			<td>{$service_module_name}</td>
-		</tr>
-		</tbody>
-		{$extra_fields}
-		<tbody>
-		<tr>
-			<td colspan="2" class="line"></td>
-		</tr>
-		<tr>
-			<td colspan="2">
-				<input type="hidden" name="id2" value="{$service['id']}"/>
-				<input type="submit" value="{$lang->translate('edit')}" style="width: 100%;"/>
-			</td>
-		</tr>
-		</tbody>
-	</table>
+  <input type="password" class="display_none"/>
+  <div class="service_main_info">
+    {$lang->translate('edit_service')}
+  </div>
+  <table>
+    <tbody class="ftbody">
+      <tr>
+        <td>{$lang->translate('id')}</td>
+        <td><input type="text" name="id" value="{$service['id_hsafe']}" maxlength="16"/></td>
+      </tr>
+      <tr>
+        <td>{$lang->strtoupper($lang->translate('name'))}</td>
+        <td><input type="text" name="name" value="{$service['name']}" maxlength="32"/></td>
+      </tr>
+      <tr>
+        <td>
+          {$lang->strtoupper($lang->translate('short_description'))}<br/>
+          <span class="hint">{$lang->translate('description_on_server')}</span>
+        </td>
+        <td><input type="text" name="short_description" maxlength="28" value="{$service['short_description']}"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          {$lang->strtoupper($lang->translate('description'))}<br/>
+          <span class="hint">{$lang->translate('description_on_www')}</span>
+        </td>
+        <td><textarea name="description" style="width: 400px; height: 80px;">{$service['description']}</textarea>
+        </td>
+      </tr>
+      <tr>
+        <td>{$lang->strtoupper($lang->translate('tag'))}</td>
+        <td><input type="text" name="tag" value="{$service['tag']}" maxlength="16"/></td>
+      </tr>
+      <tr>
+        <td>{$lang->strtoupper($lang->translate('order'))}</td>
+        <td><input type="text" name="order" value="{$service['order']}"/></td>
+      </tr>
+      <tr>
+        <td>
+          {$lang->strtoupper($lang->translate('groups'))}
+          <div class="hint">{$lang->translate('groups_to_buy_service')}</div>
+        </td>
+        <td>
+          <select name="groups[]" multiple>
+            {$groups}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="line"></td>
+      </tr>
+      <tr>
+        <td>{$lang->strtoupper($lang->translate('module'))}</td>
+        <td>{$service_module_name}</td>
+      </tr>
+    </tbody>
+    {$extra_fields}
+    <tbody>
+      <tr>
+        <td colspan="2" class="line"></td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <input type="hidden" name="id2" value="{$service['id']}"/>
+          <input type="submit" value="{$lang->translate('edit')}" style="width: 100%;"/>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </form>

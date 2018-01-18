@@ -1,13 +1,14 @@
 <?php
 
 use App\Exceptions\LicenseException;
+use App\Payment;
 use Illuminate\Container\Container;
 
 /**
  * Get the available container instance.
  *
- * @param  string  $abstract
- * @param  array   $parameters
+ * @param  string $abstract
+ * @param  array  $parameters
  * @return mixed|\Illuminate\Container\Container
  */
 function app($abstract = null, array $parameters = [])
@@ -853,7 +854,7 @@ function object_implements($class, $interface)
     return in_array($interface, $interfaces);
 }
 
-function exceptionHandler(Exception $e)
+function exceptionHandler($e)
 {
     global $lang;
 

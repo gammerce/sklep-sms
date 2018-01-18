@@ -1,7 +1,7 @@
 <?php
 
-return array(
-	'language_english' => 'English',
-	'language_polish'  => 'Polski',
+return [
+    'language_english' => 'English',
+    'language_polish'  => 'Polski',
 
-);
+];
