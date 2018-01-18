@@ -6,9 +6,6 @@
 !/confidential/.htaccess
 /errors/*
 !/errors/.htaccess
-/themes/*
-!/themes/default
-!/themes/.htaccess
 /data/transfers/*
 !/data/transfers/.gitkeep
 /vendor
