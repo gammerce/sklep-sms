@@ -50,8 +50,6 @@ class PaymentModuleHostplay extends PaymentModule implements IPayment_Sms
 			'&code=' . urlencode($return_code)
 		);
 
-		file_put_contents('test.log', $response);
-
 		$response = json_decode($response, true);
 		$response_number = $this->rates_number[number_format(floatval($response['kwota']), 2)];
 		
