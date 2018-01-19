@@ -54,7 +54,7 @@ class PageAdminMain extends PageAdmin
         // Sprawdzanie wersji serwerów
         $amount = 0;
         $newest_versions = json_decode(
-            trim(curl_get_contents("http://www.sklep-sms.pl/version.php?action=get_newest&type=engines")), true
+            trim(curl_get_contents("https://sklep-sms.pl/version.php?action=get_newest&type=engines")), true
         );
         foreach ($heart->get_servers() as $server) {
             $engine = "engine_{$server['type']}";

@@ -100,7 +100,7 @@ return [
     'license_error'                         => 'License has expired or is incorrect. Go to <a href="admin.php?pid=settings">settings</a>, in order to supply correct license data.',
     'license_expires'                       => 'License expires',
     'license_id'                            => 'License ID',
-    'license_soon_expire'                   => 'License expires in: {1} You can prolong it just now: <a href="http://sklep-sms.pl/index.php?page=zakup" target="_blank">Prolong License</a>',
+    'license_soon_expire'                   => 'License expires in: {1} You can prolong it just now: <a href="https://sklep.sklep-sms.pl/index.php?pid=purchase&service=ss_license_plong" target="_blank">Prolong License</a>',
     'lines_per_page'                        => 'Quantity of lines per page',
     'logs'                                  => 'Logs',
     'long_service_id'                       => 'Supplied service ID is too long. Maximum 16 chars.',

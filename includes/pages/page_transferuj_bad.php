@@ -2,7 +2,7 @@
 
 /**
  * Created by MilyGosc.
- * URL: http://forum.sklep-sms.pl/showthread.php?tid=88
+ * URL: https://forum.sklep-sms.pl/showthread.php?tid=88
  */
 
 $heart->register_page("transferuj_bad", "PageTransferujBad");
