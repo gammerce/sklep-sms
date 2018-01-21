@@ -13,7 +13,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
     const PAGE_ID = "tariffs";
     protected $privilage = "manage_settings";
 
-    function __construct()
+    public function __construct()
     {
         global $lang;
         $this->title = $lang->translate('tariffs');

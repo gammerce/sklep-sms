@@ -1,36 +1,40 @@
 <?php
 
-define('IN_SCRIPT', "1");
-define("SCRIPT_NAME", "extra_stuff");
+define('IN_SCRIPT', '1');
+define('SCRIPT_NAME', 'extra_stuff');
 
-require_once "global.php";
+error_reporting(E_ERROR | E_CORE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR | E_COMPILE_ERROR);
+ini_set('display_errors', 1);
 
-// Jezeli jest popup, to wyswietl info w nowym oknie
-if ($_GET['popup']) {
-    // Usuwamy napis popup z linku
-    $url = preg_replace('/' . preg_quote("&popup={$_GET['popup']}", '/') . '$/', '', $_SERVER['REQUEST_URI']);
-    $output = create_dom_element("script",
-        'window.open("' . str_replace('"', '\"', $url) . '", "", "height=720,width=1280");', [
-            'type' => "text/javascript",
-        ]);
-    output_page($output);
+require __DIR__ . '/bootstrap/autoload.php';
+
+$app = require __DIR__ . '/bootstrap/app.php';
+
+$app->singleton(
+    App\Kernels\KernelContract::class,
+    App\Kernels\ExtraStuffKernel::class
+);
+
+/** @var App\Kernels\KernelContract $kernel */
+$kernel = $app->make(App\Kernels\KernelContract::class);
+
+$request = Symfony\Component\HttpFoundation\Request::createFromGlobals();
+
+try {
+    require __DIR__ . '/bootstrap/app_global.php';
+    $response = $kernel->handle($request);
+} catch (Exception $e) {
+    /** @var App\ExceptionHandlerContract $handler */
+    $handler = $app->make(App\ExceptionHandlerContract::class);
+    $handler->report($e);
+    $response = $handler->render($request, $e);
+} catch (Throwable $e) {
+    /** @var App\ExceptionHandlerContract $handler */
+    $handler = $app->make(App\ExceptionHandlerContract::class);
+    $e = new Symfony\Component\Debug\Exception\FatalThrowableError($e);
+    $handler->report($e);
+    $response = $handler->render($request, $e);
 }
 
-$action = $_GET['action'];
-
-switch ($action) {
-    case "service_long_description":
-        $output = "";
-
-        if (($service_module = $heart->get_service_module($_GET['service'])) !== null) {
-            $output = $service_module->description_full_get();
-        }
-
-        $heart->page_title = $lang->translate('description') . ": " . $service_module->service['name'];
-
-        $heart->style_add($settings['shop_url_slash'] . "styles/extra_stuff/long_desc.css?version=" . VERSION);
-        $header = eval($templates->render("header"));
-
-        $output = create_dom_element("html", create_dom_element("head", $header) . create_dom_element("body", $output));
-        output_page($output);
-}
+$response->send();
+$kernel->terminate($request, $response);

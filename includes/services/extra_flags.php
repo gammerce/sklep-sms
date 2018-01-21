@@ -1,9 +1,11 @@
 <?php
 
 use Admin\Table;
+use App\CurrentPage;
 
-$heart->register_service_module("extra_flags", "Dodatkowe Uprawnienia / Flagi", "ServiceExtraFlags",
-    "ServiceExtraFlagsSimple");
+$heart->register_service_module(
+    "extra_flags", "Dodatkowe Uprawnienia / Flagi", "ServiceExtraFlags", "ServiceExtraFlagsSimple"
+);
 
 class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, IService_Create, IService_AvailableOnServers, IService_UserServiceAdminDisplay
 {
@@ -181,7 +183,12 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
 
     public function user_service_admin_display_get($get, $post)
     {
-        global $db, $settings, $lang, $G_PAGE;
+        global $db, $settings, $lang;
+
+        /** @var CurrentPage $currentPage */
+        $currentPage = app()->make(CurrentPage::class);
+
+        $pageNumber = $currentPage->getPageNumber();
 
         $wrapper = new Table\Wrapper();
         $wrapper->setSearch();
@@ -220,7 +227,7 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
             "LEFT JOIN `" . TABLE_PREFIX . "users` AS u ON u.uid = us.uid " .
             $where .
             "ORDER BY us.id DESC " .
-            "LIMIT " . get_row_limit($G_PAGE)
+            "LIMIT " . get_row_limit($pageNumber)
         );
 
         $table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));

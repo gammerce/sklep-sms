@@ -854,21 +854,6 @@ function object_implements($class, $interface)
     return in_array($interface, $interfaces);
 }
 
-function exceptionHandler($e)
-{
-    global $lang;
-
-    if ($e instanceof SqlQueryException) {
-        Database::showError($e);
-    }
-
-    if ($e instanceof LicenseException) {
-        output_page($lang->translate('verification_error'));
-    }
-
-    throw $e;
-}
-
 function create_dom_element($name, $text = "", $data = [])
 {
     $features = "";

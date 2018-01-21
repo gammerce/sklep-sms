@@ -8,7 +8,7 @@ class PageCashbillTransferFinalized extends Page
 {
     const PAGE_ID = "transfer_finalized";
 
-    function __construct()
+    public function __construct()
     {
         global $lang;
         $this->title = $lang->translate('transfer_finalized');

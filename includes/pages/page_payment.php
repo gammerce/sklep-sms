@@ -8,7 +8,7 @@ class PagePayment extends Page
 {
     const PAGE_ID = "payment";
 
-    function __construct()
+    public function __construct()
     {
         global $lang;
         $this->title = $lang->translate('title_payment');

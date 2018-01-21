@@ -1,11 +1,10 @@
 <?php
 
-use Admin\Table;
-use Admin\Table\Wrapper;
-use Admin\Table\Structure;
 use Admin\Table\BodyRow;
 use Admin\Table\Cell;
 use Admin\Table\Img;
+use Admin\Table\Structure;
+use Admin\Table\Wrapper;
 
 $heart->register_page("users", "PageAdminUsers", "admin");
 
@@ -14,7 +13,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
     const PAGE_ID = "users";
     protected $privilage = "view_users";
 
-    function __construct()
+    public function __construct()
     {
         global $lang;
         $this->title = $lang->translate('users');
@@ -24,7 +23,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 
     protected function content($get, $post)
     {
-        global $heart, $db, $settings, $lang, $G_PAGE;
+        global $heart, $db, $settings, $lang;
 
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
@@ -58,7 +57,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
             "SELECT SQL_CALC_FOUND_ROWS `uid`, `username`, `forename`, `surname`, `email`, `groups`, `wallet` " .
             "FROM `" . TABLE_PREFIX . "users` " .
             $where .
-            "LIMIT " . get_row_limit($G_PAGE)
+            "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
         );
 
         $table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));

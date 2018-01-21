@@ -12,7 +12,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
     const PAGE_ID = "transaction_services";
     protected $privilage = "manage_settings";
 
-    function __construct()
+    public function __construct()
     {
         global $lang;
         $this->title = $lang->translate('transaction_services');
@@ -22,7 +22,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
 
     protected function content($get, $post)
     {
-        global $db, $lang, $G_PAGE;
+        global $db, $lang;
 
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
@@ -39,7 +39,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
 
         $result = $db->query(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "transaction_services` " .
-            "LIMIT " . get_row_limit($G_PAGE)
+            "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
         );
 
         $table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));

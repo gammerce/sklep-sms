@@ -3,6 +3,7 @@
 use App\Translator;
 use Install\InstallManager;
 
+// TODO: Refactor install scripts
 if (!defined('IN_SCRIPT')) {
     exit;
 }

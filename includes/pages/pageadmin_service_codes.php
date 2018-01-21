@@ -13,7 +13,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
     const PAGE_ID = "service_codes";
     protected $privilage = "view_service_codes";
 
-    function __construct()
+    public function __construct()
     {
         global $lang;
         $this->title = $lang->translate('service_codes');
@@ -23,7 +23,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
 
     protected function content($get, $post)
     {
-        global $db, $lang, $G_PAGE;
+        global $db, $lang;
 
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
@@ -50,7 +50,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
             "LEFT JOIN `" . TABLE_PREFIX . "users` AS u ON sc.uid = u.uid " .
             "LEFT JOIN `" . TABLE_PREFIX . "pricelist` AS pl ON sc.tariff = pl.tariff AND sc.service = pl.service
 			AND (pl.server = '-1' OR sc.server = pl.server) " .
-            "LIMIT " . get_row_limit($G_PAGE)
+            "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
         );
 
         $table->setDbRowsAmount($db->get_column('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));

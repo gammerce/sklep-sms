@@ -2,6 +2,8 @@
 
 namespace Admin\Table;
 
+use App\CurrentPage;
+
 interface I_ToHtml
 {
     /**
@@ -462,11 +464,13 @@ class Structure extends DOMElement
      */
     public function setDbRowsAmount($amount)
     {
-        global $G_PAGE;
+        /** @var CurrentPage $currentPage */
+        $currentPage = app()->make(CurrentPage::class);
 
+        $pageNumber = $currentPage->getPageNumber();
         $this->db_rows_amount = intval($amount);
 
-        $pagination_txt = get_pagination($this->db_rows_amount, $G_PAGE, "admin.php", $_GET);
+        $pagination_txt = get_pagination($this->db_rows_amount, $pageNumber, "admin.php", $_GET);
         if (strlen($pagination_txt)) {
             $this->foot = new DOMElement();
             $this->foot->setName('tfoot');

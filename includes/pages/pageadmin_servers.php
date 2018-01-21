@@ -13,7 +13,7 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
     const PAGE_ID = "servers";
     protected $privilage = "manage_servers";
 
-    function __construct()
+    public function __construct()
     {
         global $lang;
         $this->title = $lang->translate('servers');

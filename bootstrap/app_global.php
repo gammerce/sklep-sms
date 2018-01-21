@@ -1,22 +1,20 @@
 <?php
 
+use App\CronExceutor;
+use App\CurrentPage;
+use App\Exceptions\ShopNeedsInstallException;
 use App\Heart;
 use App\License;
+use App\Settings;
 use App\ShopState;
 use App\Template;
 use App\Translator;
-
-if (!defined("IN_SCRIPT")) {
-    die('There is nothing interesting here.');
-}
-
-error_reporting(E_ERROR | E_CORE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR | E_COMPILE_ERROR);
-ini_set('display_errors', 1);
 
 foreach ($_GET as $key => $value) {
     $_GET[$key] = urldecode($value);
 }
 
+// TODO: Refactor session
 // Tworzenie / Wznawianie sesji
 if (in_array(SCRIPT_NAME, ['admin', 'jsonhttp_admin'])) {
     session_name('admin');
@@ -26,40 +24,29 @@ if (in_array(SCRIPT_NAME, ['admin', 'jsonhttp_admin'])) {
     session_start();
 }
 
-require __DIR__ . '/bootstrap/autoload.php';
-
-$app = require __DIR__ . '/bootstrap/app.php';
-
-$settings = [
-    'date_format'    => 'Y-m-d H:i',
-    'theme'          => 'default',
-    'shop_url'       => '',
-    'shop_url_slash' => '',
-];
-
-if (!ShopState::isInstalled() || !app()->make(ShopState::class)->isUpToDate()) {
-    header('Location: install');
-    exit;
+if (!ShopState::isInstalled() || !$app->make(ShopState::class)->isUpToDate()) {
+    throw new ShopNeedsInstallException();
 }
 
-set_exception_handler("exceptionHandler");
-
 /** @var Database $db */
-$db = app()->make(Database::class);
+$db = $app->make(Database::class);
+
+/** @var Settings $settings */
+$settings = $app->make(Settings::class);
 
 // Tworzymy obiekt posiadający mnóstwo przydatnych funkcji
 /** @var Heart $heart */
-$heart = app()->make(Heart::class);
+$heart = $app->make(Heart::class);
 
 // Tworzymy obiekt szablonów
 /** @var Template $templates */
-$templates = app()->make(Template::class);
+$templates = $app->make(Template::class);
 
 // Tworzymy obiekt języka
 /** @var Translator $lang */
-$lang = app()->make(Translator::class);
+$lang = $app->make(Translator::class);
 /** @var Translator $lang_shop */
-$lang_shop = app()->make(Translator::class);
+$lang_shop = $app->make(Translator::class);
 
 // Te interfejsy są potrzebne do klas różnego rodzajów
 foreach (scandir(SCRIPT_ROOT . "includes/interfaces") as $file) {
@@ -132,11 +119,6 @@ foreach (scandir(SCRIPT_ROOT . "includes/entity") as $file) {
     }
 }
 
-
-// Pobieramy id strony oraz obecna numer strony
-$G_PID = isset($_GET['pid']) ? $_GET['pid'] : "home";
-$G_PAGE = isset($_GET['page']) && intval($_GET['page']) >= 1 ? intval($_GET['page']) : 1;
-
 $user = $heart->get_user();
 
 // Logowanie się do panelu admina
@@ -177,7 +159,10 @@ if (!$user->isLogged() && isset($_SESSION['uid'])) {
 
 // Jeżeli próbujemy wejść do PA i nie jesteśmy zalogowani, to zmień stronę
 if (admin_session() && (!$user->isLogged() || !get_privilages("acp"))) {
-    $G_PID = "login";
+    /** @var CurrentPage $currentPage */
+    $currentPage = $app->make(CurrentPage::class);
+
+    $currentPage->setPid('login');
 
     // Jeżeli jest zalogowany, ale w międzyczasie odebrano mu dostęp do PA
     if ($user->isLogged()) {
@@ -190,64 +175,7 @@ if (admin_session() && (!$user->isLogged() || !get_privilages("acp"))) {
 $user->setLastip(get_ip());
 $user->updateActivity();
 
-// Pozyskanie ustawień sklepu
-$result = $db->query("SELECT * FROM `" . TABLE_PREFIX . "settings`");
-while ($row = $db->fetch_array_assoc($result)) {
-    $settings[$row['key']] = $row['value'];
-}
-
-// Poprawiamy adres URL sklepu
-if (strlen($settings['shop_url'])) {
-    if (strpos($settings['shop_url'], "http://") !== 0 && strpos($settings['shop_url'], "https://") !== 0) {
-        $settings['shop_url'] = "http://" . $settings['shop_url'];
-    }
-
-    $settings['shop_url'] = rtrim($settings['shop_url'], "/");
-    $settings['shop_url_slash'] = $settings['shop_url'] . "/";
-}
-
-$settings['currency'] = htmlspecialchars($settings['currency']);
-$settings['transactions_query'] = "(SELECT bs.id AS `id`,
-bs.uid AS `uid`,
-u.username AS `username`,
-bs.payment AS `payment`,
-bs.payment_id AS `payment_id`,
-bs.service AS `service`,
-bs.server AS `server`,
-bs.amount AS `amount`,
-bs.auth_data AS `auth_data`,
-bs.email AS `email`,
-bs.extra_data AS `extra_data`,
-CONCAT_WS('', pa.ip, ps.ip, pt.ip, pw.ip, pc.ip) AS `ip`,
-CONCAT_WS('', pa.platform, ps.platform, pt.platform, pw.platform, pc.platform) AS `platform`,
-CONCAT_WS('', ps.income, pt.income) AS `income`,
-CONCAT_WS('', ps.cost, pt.income, pw.cost) AS `cost`,
-pa.aid AS `aid`,
-u2.username AS `adminname`,
-ps.code AS `sms_code`,
-ps.text AS `sms_text`,
-ps.number AS `sms_number`,
-IFNULL(ps.free,0) AS `free`,
-pc.code AS `service_code`,
-bs.timestamp AS `timestamp`
-FROM `" . TABLE_PREFIX . "bought_services` AS bs
-LEFT JOIN `" . TABLE_PREFIX . "users` AS u ON u.uid = bs.uid
-LEFT JOIN `" . TABLE_PREFIX . "payment_admin` AS pa ON bs.payment = 'admin' AND pa.id = bs.payment_id
-LEFT JOIN `" . TABLE_PREFIX . "users` AS u2 ON u2.uid = pa.aid
-LEFT JOIN `" . TABLE_PREFIX . "payment_sms` AS ps ON bs.payment = 'sms' AND ps.id = bs.payment_id
-LEFT JOIN `" . TABLE_PREFIX . "payment_transfer` AS pt ON bs.payment = 'transfer' AND pt.id = bs.payment_id
-LEFT JOIN `" . TABLE_PREFIX . "payment_wallet` AS pw ON bs.payment = 'wallet' AND pw.id = bs.payment_id
-LEFT JOIN `" . TABLE_PREFIX . "payment_code` AS pc ON bs.payment = 'service_code' AND pc.id = bs.payment_id)";
-
-// Ustawianie strefy
-if ($settings['timezone']) {
-    date_default_timezone_set($settings['timezone']);
-}
-
-$settings['date_format'] = strlen($settings['date_format']) ? $settings['date_format'] : "Y-m-d H:i";
-
-// Sprawdzanie czy taki szablon istnieje, jak nie to ustaw defaultowy
-$settings['theme'] = file_exists(SCRIPT_ROOT . "themes/{$settings['theme']}") ? $settings['theme'] : "default";
+$settings->init();
 
 // Ładujemy bibliotekę językową
 if (isset($_GET['language'])) {
@@ -267,7 +195,7 @@ if (isset($_GET['language'])) {
 }
 $lang_shop->setLanguage($settings['language']);
 
-$license = new License($lang, $settings);
+$license = $app->make(License::class);
 
 if (!$license->isValid()) {
     if (get_privilages("manage_settings")) {
@@ -289,9 +217,7 @@ if (!$license->isValid()) {
 
 // Cron co wizytę
 if ($settings['cron_each_visit'] && SCRIPT_NAME != "cron") {
-    include(SCRIPT_ROOT . "cron.php");
+    /** @var CronExceutor $cronExecutor */
+    $cronExecutor = $app->make(CronExceutor::class);
+    $cronExecutor->run();
 }
-
-define('TYPE_NICK', 1 << 0);
-define('TYPE_IP', 1 << 1);
-define('TYPE_SID', 1 << 2);

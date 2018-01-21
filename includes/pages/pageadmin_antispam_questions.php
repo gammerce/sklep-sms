@@ -13,7 +13,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
     const PAGE_ID = "antispam_questions";
     protected $privilage = "view_antispam_questions";
 
-    function __construct()
+    public function __construct()
     {
         global $lang;
         $this->title = $lang->translate('antispam_questions');
@@ -23,7 +23,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
 
     protected function content($get, $post)
     {
-        global $db, $lang, $G_PAGE;
+        global $db, $lang;
 
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
@@ -40,7 +40,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
         $result = $db->query(
             "SELECT SQL_CALC_FOUND_ROWS * " .
             "FROM `" . TABLE_PREFIX . "antispam_questions` " .
-            "LIMIT " . get_row_limit($G_PAGE)
+            "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
         );
 
         $table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));

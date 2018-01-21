@@ -13,7 +13,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
     const PAGE_ID = "sms_codes";
     protected $privilage = "view_sms_codes";
 
-    function __construct()
+    public function __construct()
     {
         global $lang;
         $this->title = $lang->translate('sms_codes');
@@ -23,7 +23,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
 
     protected function content($get, $post)
     {
-        global $db, $lang, $G_PAGE;
+        global $db, $lang;
 
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
@@ -41,7 +41,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
             "SELECT SQL_CALC_FOUND_ROWS * " .
             "FROM `" . TABLE_PREFIX . "sms_codes` " .
             "WHERE `free` = '1' " .
-            "LIMIT " . get_row_limit($G_PAGE)
+            "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
         );
 
         $table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));

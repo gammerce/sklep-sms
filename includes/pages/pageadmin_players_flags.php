@@ -14,7 +14,7 @@ class PageAdminPlayersFlags extends PageAdmin
 
     protected $flags = "abcdefghijklmnopqrstuyvwxz";
 
-    function __construct()
+    public function __construct()
     {
         global $lang;
         $this->title = $lang->translate('players_flags');
@@ -24,7 +24,7 @@ class PageAdminPlayersFlags extends PageAdmin
 
     protected function content($get, $post)
     {
-        global $heart, $db, $settings, $lang, $G_PAGE;
+        global $heart, $db, $settings, $lang;
 
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
@@ -44,7 +44,7 @@ class PageAdminPlayersFlags extends PageAdmin
         $result = $db->query(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "players_flags` " .
             "ORDER BY `id` DESC " .
-            "LIMIT " . get_row_limit($G_PAGE)
+            "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
         );
 
         $table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));

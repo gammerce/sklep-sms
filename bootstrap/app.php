@@ -1,5 +1,10 @@
 <?php
 
-use App\Application;
+$app = new App\Application();
 
-return new Application();
+$app->singleton(
+    App\ExceptionHandlerContract::class,
+    App\ExceptionHandler::class
+);
+
+return $app;

@@ -250,23 +250,4 @@ class Database
 
         throw $exception;
     }
-
-    public static function showError(SqlQueryException $e)
-    {
-        global $settings, $lang, $templates;
-
-        if (strlen($e->getQuery())) {
-            log_to_file(SQL_LOG, $e->getQuery(false));
-        }
-
-        $message = $lang->translate('mysqli_' . $e->getMessage());
-        $query = $e->getQuery();
-
-        if (SCRIPT_NAME == 'jsonhttp' || SCRIPT_NAME == 'jsonhttp_admin') {
-            output_page($message);
-        }
-
-        $header = eval($templates->render("header_error"));
-        output_page(eval($templates->render("error_handler")));
-    }
 }

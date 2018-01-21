@@ -8,7 +8,7 @@ class License
     /** @var Translator */
     protected $lang;
 
-    /** @var array */
+    /** @var Settings */
     protected $settings;
 
     /** @var string */
@@ -23,7 +23,7 @@ class License
     /** @var string */
     protected $footer;
 
-    public function __construct(Translator $translator, $settings)
+    public function __construct(Translator $translator, Settings $settings)
     {
         $this->lang = $translator;
         $this->settings = $settings;

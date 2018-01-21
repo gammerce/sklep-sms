@@ -6,7 +6,7 @@ class PageResetPassword extends Page implements I_BeLoggedCannot
 {
     const PAGE_ID = "reset_password";
 
-    function __construct()
+    public function __construct()
     {
         global $lang;
         $this->title = $lang->translate('reset_password');

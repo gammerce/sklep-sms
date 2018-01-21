@@ -13,7 +13,7 @@ class PageAdminLogs extends PageAdmin
     const PAGE_ID = "logs";
     protected $privilage = "view_logs";
 
-    function __construct()
+    public function __construct()
     {
         global $lang;
         $this->title = $lang->translate('logs');
@@ -23,7 +23,7 @@ class PageAdminLogs extends PageAdmin
 
     protected function content($get, $post)
     {
-        global $db, $lang, $G_PAGE;
+        global $db, $lang;
 
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
@@ -53,7 +53,7 @@ class PageAdminLogs extends PageAdmin
             "SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "logs` " .
             $where .
             "ORDER BY `id` DESC " .
-            "LIMIT " . get_row_limit($G_PAGE)
+            "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
         );
 
         $table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));

@@ -1,6 +1,7 @@
 <?php
 namespace App;
 
+use Database;
 use Install\DatabaseMigration;
 use InvalidArgumentException;
 
@@ -51,7 +52,7 @@ class ShopState
     public static function isInstalled()
     {
         try {
-            app()->make(\Database::class);
+            app()->make(Database::class);
 
             return true;
         } catch (\SqlQueryException $e) {

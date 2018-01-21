@@ -13,7 +13,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
     const PAGE_ID = "pricelist";
     protected $privilage = "manage_settings";
 
-    function __construct()
+    public function __construct()
     {
         global $lang;
         $this->title = $lang->translate('pricelist');
@@ -23,7 +23,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
 
     protected function content($get, $post)
     {
-        global $heart, $db, $lang, $G_PAGE;
+        global $heart, $db, $lang;
 
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
@@ -43,7 +43,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
             "SELECT SQL_CALC_FOUND_ROWS * " .
             "FROM `" . TABLE_PREFIX . "pricelist` " .
             "ORDER BY `service`, `server`, `tariff` " .
-            "LIMIT " . get_row_limit($G_PAGE)
+            "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
         );
 
         $table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));

@@ -24,7 +24,7 @@ class PageAdminIncome extends PageAdmin
         "december",
     ];
 
-    function __construct()
+    public function __construct()
     {
         global $lang;
         $this->title = $lang->translate('income');

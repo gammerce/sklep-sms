@@ -6,7 +6,7 @@ class PagePaymentLog extends Page implements I_BeLoggedMust
 {
     const PAGE_ID = "payment_log";
 
-    function __construct()
+    public function __construct()
     {
         global $lang;
         $this->title = $lang->translate('payment_log');
@@ -16,13 +16,13 @@ class PagePaymentLog extends Page implements I_BeLoggedMust
 
     protected function content($get, $post)
     {
-        global $heart, $db, $settings, $user, $lang, $G_PAGE, $templates;
+        global $heart, $db, $settings, $user, $lang, $templates;
 
         $result = $db->query($db->prepare(
             "SELECT SQL_CALC_FOUND_ROWS * FROM ({$settings['transactions_query']}) as t " .
             "WHERE t.uid = '%d' " .
             "ORDER BY t.timestamp DESC " .
-            "LIMIT " . get_row_limit($G_PAGE, 10),
+            "LIMIT " . get_row_limit($this->currentPage->getPageNumber(), 10),
             [$user->getUid()]
         ));
         $rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
@@ -56,7 +56,7 @@ class PagePaymentLog extends Page implements I_BeLoggedMust
             ]);
         }
 
-        $pagination = get_pagination($rows_count, $G_PAGE, "index.php", $get, 10);
+        $pagination = get_pagination($rows_count, $this->currentPage->getPageNumber(), "index.php", $get, 10);
         $pagination_class = strlen($pagination) ? "" : "display_none";
 
         $output = eval($templates->render("payment_log"));

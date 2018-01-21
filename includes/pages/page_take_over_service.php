@@ -6,7 +6,7 @@ class PageTakeOverService extends Page implements I_BeLoggedMust
 {
     const PAGE_ID = "service_take_over";
 
-    function __construct()
+    public function __construct()
     {
         global $lang;
         $this->title = $lang->translate('take_over_service');

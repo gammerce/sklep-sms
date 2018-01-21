@@ -12,7 +12,7 @@ class PageTransferujOk extends PageSimple
     const PAGE_ID = "transferuj_ok";
     protected $template = "transferuj_ok";
 
-    function __construct()
+    public function __construct()
     {
         global $lang;
         $this->title = "Płatność Zaakceptowana";

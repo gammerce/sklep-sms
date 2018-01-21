@@ -12,7 +12,7 @@ class PageAdminPaymentAdmin extends PageAdmin
 {
     const PAGE_ID = "payment_admin";
 
-    function __construct()
+    public function __construct()
     {
         global $lang;
         $this->title = $lang->translate('payments_admin');
@@ -22,7 +22,7 @@ class PageAdminPaymentAdmin extends PageAdmin
 
     protected function content($get, $post)
     {
-        global $db, $settings, $lang, $G_PAGE;
+        global $db, $settings, $lang;
 
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
@@ -47,7 +47,7 @@ class PageAdminPaymentAdmin extends PageAdmin
             "FROM ({$settings['transactions_query']}) as t " .
             "WHERE t.payment = 'admin' " .
             "ORDER BY t.timestamp DESC " .
-            "LIMIT " . get_row_limit($G_PAGE)
+            "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
         );
 
         $table->setDbRowsAmount($db->get_column('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));

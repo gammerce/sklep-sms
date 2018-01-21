@@ -13,7 +13,7 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
     const PAGE_ID = "services";
     protected $privilage = "view_services";
 
-    function __construct()
+    public function __construct()
     {
         global $lang;
         $this->title = $lang->translate('services');

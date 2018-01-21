@@ -1,12 +1,39 @@
 <?php
+define('IN_SCRIPT', '1');
+define('SCRIPT_NAME', 'js');
 
-define('IN_SCRIPT', "1");
-define('SCRIPT_NAME', "js");
+error_reporting(E_ERROR | E_CORE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR | E_COMPILE_ERROR);
+ini_set('display_errors', 1);
 
-require_once "global.php";
+require __DIR__ . '/bootstrap/autoload.php';
 
-if ($_GET['script'] == "language") {
-    $output = eval($templates->render("js/language.js", true, false));
+$app = require __DIR__ . '/bootstrap/app.php';
+
+$app->singleton(
+    App\Kernels\KernelContract::class,
+    App\Kernels\JsKernel::class
+);
+
+/** @var App\Kernels\KernelContract $kernel */
+$kernel = $app->make(App\Kernels\KernelContract::class);
+
+$request = Symfony\Component\HttpFoundation\Request::createFromGlobals();
+
+try {
+    require __DIR__ . '/bootstrap/app_global.php';
+    $response = $kernel->handle($request);
+} catch (Exception $e) {
+    /** @var App\ExceptionHandlerContract $handler */
+    $handler = $app->make(App\ExceptionHandlerContract::class);
+    $handler->report($e);
+    $response = $handler->render($request, $e);
+} catch (Throwable $e) {
+    /** @var App\ExceptionHandlerContract $handler */
+    $handler = $app->make(App\ExceptionHandlerContract::class);
+    $e = new Symfony\Component\Debug\Exception\FatalThrowableError($e);
+    $handler->report($e);
+    $response = $handler->render($request, $e);
 }
 
-output_page($output, 1);
+$response->send();
+$kernel->terminate($request, $response);

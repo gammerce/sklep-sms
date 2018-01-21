@@ -7,7 +7,7 @@ class PageContact extends PageSimple
     const PAGE_ID = "contact";
     protected $template = "contact";
 
-    function __construct()
+    public function __construct()
     {
         global $lang;
         $this->title = $lang->translate('contact');

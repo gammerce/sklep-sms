@@ -26,3 +26,15 @@ if (!defined('PHP_VERSION_ID')) {
     $version = explode('.', PHP_VERSION);
     define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
 }
+
+if (!defined('TYPE_NICK')) {
+    define('TYPE_NICK', 1 << 0);
+}
+
+if (!defined('TYPE_IP')) {
+    define('TYPE_IP', 1 << 1);
+}
+
+if (!defined('TYPE_SID')) {
+    define('TYPE_SID', 1 << 2);
+}

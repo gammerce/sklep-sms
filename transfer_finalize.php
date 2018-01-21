@@ -1,20 +1,40 @@
 <?php
 
-use App\Payment;
+define('IN_SCRIPT', '1');
+define('SCRIPT_NAME', 'transfer_finalize');
 
-define('IN_SCRIPT', "1");
-define("SCRIPT_NAME", "transfer_finalize");
+error_reporting(E_ERROR | E_CORE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR | E_COMPILE_ERROR);
+ini_set('display_errors', 1);
 
-require_once 'global.php';
+require __DIR__ . '/bootstrap/autoload.php';
 
-$payment = new Payment($_GET['service']);
-$transfer_finalize = $payment->getPaymentModule()->finalizeTransfer($_GET, $_POST);
+$app = require __DIR__ . '/bootstrap/app.php';
 
-if ($transfer_finalize->getStatus() === false) {
-    log_info($lang_shop->sprintf($lang_shop->translate('payment_not_accepted'), $transfer_finalize->getOrderid(),
-        $transfer_finalize->getAmount(), $transfer_finalize->getTransferService()));
-} else {
-    $payment->transferFinalize($transfer_finalize);
+$app->singleton(
+    App\Kernels\KernelContract::class,
+    App\Kernels\TransferFinalizeKernel::class
+);
+
+/** @var App\Kernels\KernelContract $kernel */
+$kernel = $app->make(App\Kernels\KernelContract::class);
+
+$request = Symfony\Component\HttpFoundation\Request::createFromGlobals();
+
+try {
+    require __DIR__ . '/bootstrap/app_global.php';
+    $response = $kernel->handle($request);
+} catch (Exception $e) {
+    /** @var App\ExceptionHandlerContract $handler */
+    $handler = $app->make(App\ExceptionHandlerContract::class);
+    $handler->report($e);
+    $response = $handler->render($request, $e);
+} catch (Throwable $e) {
+    /** @var App\ExceptionHandlerContract $handler */
+    $handler = $app->make(App\ExceptionHandlerContract::class);
+    $e = new Symfony\Component\Debug\Exception\FatalThrowableError($e);
+    $handler->report($e);
+    $response = $handler->render($request, $e);
 }
 
-output_page($transfer_finalize->getOutput(), 1);
+$response->send();
+$kernel->terminate($request, $response);

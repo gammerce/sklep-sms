@@ -7,7 +7,7 @@ class PageAdminUpdateServers extends PageAdmin
     const PAGE_ID = "update_servers";
     protected $privilage = "update";
 
-    function __construct()
+    public function __construct()
     {
         global $lang;
         $this->title = $lang->translate('update_servers');

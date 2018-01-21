@@ -7,7 +7,7 @@ class PageRegulations extends PageSimple
     const PAGE_ID = "regulations";
     protected $template = "regulations_desc";
 
-    function __construct()
+    public function __construct()
     {
         global $lang;
         $this->title = $lang->translate('regulations');

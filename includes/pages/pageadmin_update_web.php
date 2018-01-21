@@ -20,7 +20,7 @@ class PageAdminUpdateWeb extends PageAdmin
     /** @var Translator */
     private $lang;
 
-    function __construct(Version $version, Template $template, Translator $lang)
+    public function __construct(Version $version, Template $template, Translator $lang)
     {
         global $lang;
         $this->title = $lang->translate('update_web');

@@ -10,17 +10,25 @@ class Application extends Container
 {
     public function __construct()
     {
-        $this->registerBaseBindings();
+        static::setInstance($this);
+        $this->registerBindings();
+        $this->bootstrap();
     }
 
-    protected function registerBaseBindings()
+    protected function registerBindings()
     {
-        static::setInstance($this);
-
-        $this->instance('app', $this);
         $this->instance(Container::class, $this);
-        $this->registerDatabase();
+        $this->instance(Application::class, $this);
+    }
+
+    protected function bootstrap()
+    {
         $this->loadEnvironmentVariables();
+        $this->registerDatabase();
+        $this->singleton(Heart::class);
+        $this->singleton(Settings::class);
+        $this->singleton(CurrentPage::class);
+        $this->singleton(License::class);
     }
 
     protected function registerDatabase()

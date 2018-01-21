@@ -7,7 +7,7 @@ class PageAdminSettings extends PageAdmin
     const PAGE_ID = "settings";
     protected $privilage = "manage_settings";
 
-    function __construct()
+    public function __construct()
     {
         global $lang;
         $this->title = $lang->translate('settings');
