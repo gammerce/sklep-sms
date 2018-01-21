@@ -28,6 +28,8 @@ if (in_array(SCRIPT_NAME, ['admin', 'jsonhttp_admin'])) {
 
 require __DIR__ . '/bootstrap/autoload.php';
 
+$app = require __DIR__ . '/bootstrap/app.php';
+
 $settings = [
     'date_format'    => 'Y-m-d H:i',
     'theme'          => 'default',

@@ -10,14 +10,16 @@ cache:
   directories:
     - $HOME/.composer/cache
 
-install:
-  - composer install --no-dev --no-interaction
-
 before_install:
   - composer self-update
 
+install:
+  - composer install --no-interaction
+
 before_deploy:
-  - zip -r --exclude='*.git*' --exclude='*.travis.yml' build.zip .
+  - rm -Rf vendor
+  - composer install --no-dev --no-interaction
+  - zip -r --exclude='*.git*' --exclude='*tests*' --exclude='*phpunit.xml' --exclude='*.travis.yml' build.zip .
 
 deploy:
   provider: releases
