@@ -1,10 +1,11 @@
 <?php
 
+use App\Payment;
+
 define('IN_SCRIPT', "1");
 define("SCRIPT_NAME", "servers_stuff");
 
 require_once "global.php";
-require_once SCRIPT_ROOT . "includes/functions_jsonhttp.php";
 
 function xml_output($return_value, $text, $positive, $extra_data = "")
 {

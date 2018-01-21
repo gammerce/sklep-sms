@@ -426,9 +426,10 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
         }
 
         // E-mail
-        if ((strpos($purchase_data->user->getPlatform(),
-                    "engine") !== 0 || strlen($purchase_data->getEmail())) && $warning = check_for_warnings("email",
-                $purchase_data->getEmail())) {
+        if (
+            (strpos($purchase_data->user->getPlatform(), "engine") !== 0 || strlen($purchase_data->getEmail()))
+            && $warning = check_for_warnings("email", $purchase_data->getEmail())
+        ) {
             $warnings['email'] = array_merge((array)$warnings['email'], $warning);
         }
 
