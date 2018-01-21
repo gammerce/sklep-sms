@@ -1,5 +1,8 @@
 <?php
 
+use App\Heart;
+use Symfony\Component\HttpFoundation\Request;
+
 class Entity_User
 {
     const TEST = 1;
@@ -84,6 +87,9 @@ class Entity_User
      */
     private $platform;
 
+    /** @var Database */
+    private $db;
+
     /**
      * @param int    $uid
      * @param string $username
@@ -91,24 +97,30 @@ class Entity_User
      */
     function __construct($uid = 0, $username = '', $password = '')
     {
-        global $heart, $db;
+        $this->db = app()->make(Database::class);
 
-        $this->platform = $_SERVER['HTTP_USER_AGENT'];
+        /** @var Heart $heart */
+        $heart = app()->make(Heart::class);
+
+        /** @var Request $request */
+        $request = app()->make(Request::class);
+
+        $this->platform = $request->server->get('HTTP_USER_AGENT');
         $this->lastip = get_ip();
 
         if (!$uid && (!strlen($username) || !strlen($password))) {
             return;
         }
 
-        $result = $db->query($db->prepare(
+        $result = $this->db->query($this->db->prepare(
             "SELECT * FROM `" . TABLE_PREFIX . "users` " .
             "WHERE `uid` = '%d' " .
             "OR ((`username` = '%s' OR `email` = '%s') AND `password` = md5(CONCAT(md5('%s'), md5(`salt`))))",
             [$uid, $username, $username, $password]
         ));
 
-        if ($db->num_rows($result)) {
-            $row = $db->fetch_array_assoc($result);
+        if ($this->db->num_rows($result)) {
+            $row = $this->db->fetch_array_assoc($result);
             $this->uid = intval($row['uid']);
             $this->username = $row['username'];
             $this->password = $row['password'];
@@ -141,9 +153,7 @@ class Entity_User
             return;
         }
 
-        global $db;
-
-        $db->query($db->prepare(
+        $this->db->query($this->db->prepare(
             "UPDATE `" . TABLE_PREFIX . "users` " .
             "SET `lastactiv` = NOW(), `lastip` = '%s' " .
             "WHERE `uid` = '%d'",

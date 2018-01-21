@@ -102,13 +102,13 @@ class Database
 
     function __destruct()
     {
-        @mysqli_close($this->link);
+        $this->close();
     }
 
     public function connect()
     {
-        if ($this->link = @mysqli_connect($this->host, $this->user, $this->pass)) {
-            if (!@mysqli_select_db($this->link, $this->name)) {
+        if ($this->link = mysqli_connect($this->host, $this->user, $this->pass)) {
+            if (!mysqli_select_db($this->link, $this->name)) {
                 $this->exception("no_db_connection");
             }
         } else {
@@ -120,7 +120,7 @@ class Database
 
     public function close()
     {
-        @mysqli_close($this->link);
+        mysqli_close($this->link);
     }
 
     public function prepare($query, $values)
@@ -138,8 +138,7 @@ class Database
     {
         $this->counter += 1;
         $this->query = $query;
-        //file_put_contents(SQL_LOG, file_get_contents(SQL_LOG)."\n".$query);
-        if ($this->result = @mysqli_query($this->link, $query)) {
+        if ($this->result = mysqli_query($this->link, $query)) {
             return $this->result;
         } else {
             $this->exception("query_error");
@@ -151,8 +150,7 @@ class Database
     public function multi_query($query)
     {
         $this->query = $query;
-        //file_put_contents(SQL_LOG, file_get_contents(SQL_LOG)."\n\n".$query);
-        if ($this->result = @mysqli_multi_query($this->link, $query)) {
+        if ($this->result = mysqli_multi_query($this->link, $query)) {
             return $this->result;
         } else {
             $this->exception("query_error");

@@ -14,16 +14,6 @@ foreach ($_GET as $key => $value) {
     $_GET[$key] = urldecode($value);
 }
 
-// TODO: Refactor session
-// Tworzenie / Wznawianie sesji
-if (in_array(SCRIPT_NAME, ['admin', 'jsonhttp_admin'])) {
-    session_name('admin');
-    session_start();
-} else {
-    session_name('user');
-    session_start();
-}
-
 if (!ShopState::isInstalled() || !$app->make(ShopState::class)->isUpToDate()) {
     throw new ShopNeedsInstallException();
 }

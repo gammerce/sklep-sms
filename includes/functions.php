@@ -1,8 +1,8 @@
 <?php
 
-use App\Exceptions\LicenseException;
 use App\Payment;
 use Illuminate\Container\Container;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Get the available container instance.
@@ -944,7 +944,10 @@ function get_type_name($value)
 
 function get_ip()
 {
-    if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+    /** @var Request $request */
+    $request = app()->make(Request::class);
+
+    if ($request->server->has('HTTP_CF_CONNECTING_IP')) {
         $cf_ip_ranges = [
             '204.93.240.0/24',
             '204.93.177.0/24',
@@ -963,13 +966,13 @@ function get_ip()
         ];
 
         foreach ($cf_ip_ranges as $range) {
-            if (ip_in_range($_SERVER['REMOTE_ADDR'], $range)) {
-                return $_SERVER['HTTP_CF_CONNECTING_IP'];
+            if (ip_in_range($request->server->get('REMOTE_ADDR'), $range)) {
+                return $request->server->get('HTTP_CF_CONNECTING_IP');
             }
         }
     }
 
-    return $_SERVER['REMOTE_ADDR'];
+    return $request->server->get('REMOTE_ADDR');
 }
 
 /**

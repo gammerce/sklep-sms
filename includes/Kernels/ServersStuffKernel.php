@@ -23,16 +23,14 @@ class ServersStuffKernel extends Kernel
         $lang = $this->app->make(Translator::class);
 
         // Musi byc podany hash random_keya
-        if ($_GET['key'] != md5($settings['random_key'])) {
+        if ($request->get('key') != md5($settings['random_key'])) {
             return new Response();
         }
 
-        $action = $_GET['action'];
+        $action = $request->get('action');
 
         if ($action == "purchase_service") {
-            $output = '';
-
-            if (($service_module = $heart->get_service_module($_GET['service'])) === null) {
+            if (($service_module = $heart->get_service_module($request->get('service'))) === null) {
                 return $this->xmlOutput("bad_module", $lang->translate('bad_module'), 0);
             }
 
@@ -43,25 +41,25 @@ class ServersStuffKernel extends Kernel
             // Sprawdzamy dane zakupu
             $purchaseData = new Entity_Purchase();
             $purchaseData->setService($service_module->service['id']);
-            $purchaseData->user = $heart->get_user($_GET['uid']);
-            $purchaseData->user->setPlatform($_GET['platform']);
-            $purchaseData->user->setLastip($_GET['ip']);
+            $purchaseData->user = $heart->get_user($request->get('uid'));
+            $purchaseData->user->setPlatform($request->get('platform'));
+            $purchaseData->user->setLastip($request->get('ip'));
             $purchaseData->setOrder([
-                'server'    => $_GET['server'],
-                'type'      => $_GET['type'],
-                'auth_data' => $_GET['auth_data'],
-                'password'  => $_GET['password'],
-                'passwordr' => $_GET['password'],
+                'server'    => $request->get('server'),
+                'type'      => $request->get('type'),
+                'auth_data' => $request->get('auth_data'),
+                'password'  => $request->get('password'),
+                'passwordr' => $request->get('password'),
             ]);
             $purchaseData->setPayment([
-                'method'      => $_GET['method'],
-                'sms_code'    => $_GET['sms_code'],
-                'sms_service' => $_GET['transaction_service'],
+                'method'      => $request->get('method'),
+                'sms_code'    => $request->get('sms_code'),
+                'sms_service' => $request->get('transaction_service'),
             ]);
 
             // Ustawiamy taryfę z numerem
             $payment = new Payment($purchaseData->getPayment('sms_service'));
-            $purchaseData->setTariff($payment->getPaymentModule()->getTariffById($_GET['tariff']));
+            $purchaseData->setTariff($payment->getPaymentModule()->getTariffById($request->get('tariff')));
 
             $returnValidation = $service_module->purchase_data_validate($purchaseData);
 
@@ -87,9 +85,9 @@ class ServersStuffKernel extends Kernel
             /** @var Entity_Purchase $purchaseData */
             $purchaseData = $returnValidation['purchase_data'];
             $purchaseData->setPayment([
-                'method'      => $_GET['method'],
-                'sms_code'    => $_GET['sms_code'],
-                'sms_service' => $_GET['transaction_service'],
+                'method'      => $request->get('method'),
+                'sms_code'    => $request->get('sms_code'),
+                'sms_service' => $request->get('transaction_service'),
             ]);
             $returnPayment = validate_payment($purchaseData);
 

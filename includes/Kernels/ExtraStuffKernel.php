@@ -31,7 +31,12 @@ class ExtraStuffKernel extends Kernel
         // Jezeli jest popup, to wyswietl info w nowym oknie
         if ($_GET['popup']) {
             // Usuwamy napis popup z linku
-            $url = preg_replace('/' . preg_quote("&popup={$_GET['popup']}", '/') . '$/', '', $_SERVER['REQUEST_URI']);
+            $url = preg_replace(
+                '/' . preg_quote("&popup={$_GET['popup']}", '/') . '$/',
+                '',
+                $request->server->get('REQUEST_URI')
+            );
+
             $output = create_dom_element("script",
                 'window.open("' . str_replace('"', '\"', $url) . '", "", "height=720,width=1280");', [
                     'type' => "text/javascript",
