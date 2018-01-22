@@ -1,7 +1,7 @@
 <?php
 namespace App;
 
-use Database;
+use App\Exceptions\SqlQueryException;
 use Install\DatabaseMigration;
 use InvalidArgumentException;
 
@@ -55,7 +55,7 @@ class ShopState
             app()->make(Database::class);
 
             return true;
-        } catch (\SqlQueryException $e) {
+        } catch (SqlQueryException $e) {
             return false;
         }
     }

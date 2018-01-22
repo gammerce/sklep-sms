@@ -1,8 +1,6 @@
 <?php
 namespace App;
 
-use Database;
-
 class CronExceutor
 {
     /** @var Database */

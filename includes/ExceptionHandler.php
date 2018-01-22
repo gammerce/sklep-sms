@@ -3,8 +3,8 @@ namespace App;
 
 use App\Exceptions\LicenseException;
 use App\Exceptions\ShopNeedsInstallException;
+use App\Exceptions\SqlQueryException;
 use Exception;
-use SqlQueryException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;

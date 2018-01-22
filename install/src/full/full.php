@@ -1,5 +1,7 @@
 <?php
 
+use App\Database;
+use App\Exceptions\SqlQueryException;
 use Install\DatabaseMigration;
 use Install\EnvCreator;
 use Install\InstallManager;

@@ -6,7 +6,6 @@ $heart->register_payment_module("cashbill", "PaymentModule_Cashbill");
 
 class PaymentModule_Cashbill extends PaymentModule implements IPayment_Sms, IPayment_Transfer
 {
-
     const SERVICE_ID = "cashbill";
 
     /** @var  string */
@@ -18,7 +17,7 @@ class PaymentModule_Cashbill extends PaymentModule implements IPayment_Sms, IPay
     /** @var  string */
     private $sms_code;
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
 

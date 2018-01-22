@@ -6,7 +6,6 @@ $heart->register_payment_module("cssetti", "PaymentModule_Cssetti");
 
 class PaymentModule_Cssetti extends PaymentModule implements IPayment_Sms
 {
-
     const SERVICE_ID = "cssetti";
 
     /** @var  string */
@@ -18,7 +17,7 @@ class PaymentModule_Cssetti extends PaymentModule implements IPayment_Sms
     /** @var array */
     private $numbers = [];
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
 

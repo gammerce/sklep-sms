@@ -7,6 +7,9 @@ abstract class PaymentModule
 {
     const SERVICE_ID = '';
 
+    /** @var Database */
+    protected $db;
+
     /** @var  string */
     protected $name;
 
@@ -28,20 +31,20 @@ abstract class PaymentModule
 
     function __construct()
     {
-        global $db;
+        $this->db = app()->make(Database::class);
 
-        $result = $db->query($db->prepare(
+        $result = $this->db->query($this->db->prepare(
             "SELECT `name`, `data`, `data_hidden`, `sms`, `transfer` " .
             "FROM `" . TABLE_PREFIX . "transaction_services` " .
             "WHERE `id` = '%s' ",
             [$this::SERVICE_ID]
         ));
 
-        if (!$db->num_rows($result)) {
+        if (!$this->db->num_rows($result)) {
             output_page("An error occured in class: " . get_class($this) . " constructor. There is no " . $this::SERVICE_ID . " payment service in database.");
         }
 
-        $row = $db->fetch_array_assoc($result);
+        $row = $this->db->fetch_array_assoc($result);
 
         $this->name = $row['name'];
         $this->support_sms = (bool)$row['sms'];
@@ -58,7 +61,7 @@ abstract class PaymentModule
         }
 
         // Pozyskujemy taryfy
-        $result = $db->query($db->prepare(
+        $result = $this->db->query($this->db->prepare(
             "SELECT t.id, t.provision, t.predefined, sn.number " .
             "FROM `" . TABLE_PREFIX . "tariffs` AS t " .
             "LEFT JOIN `" . TABLE_PREFIX . "sms_numbers` AS sn ON t.id = sn.tariff " .
@@ -66,7 +69,7 @@ abstract class PaymentModule
             [$this::SERVICE_ID]
         ));
 
-        while ($row = $db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetch_array_assoc($result)) {
             $tariff = new Entity_Tariff($row['id'], $row['provision'], $row['predefined'], $row['number']);
 
             $this->tariffs[$tariff->getId()] = $tariff;
@@ -146,5 +149,4 @@ abstract class PaymentModule
     {
         return array_unique($this->tariffs);
     }
-
 }

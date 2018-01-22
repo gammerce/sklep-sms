@@ -2,6 +2,10 @@
 
 use Admin\Table;
 use App\CurrentPage;
+use App\Heart;
+use App\Settings;
+use App\Template;
+use App\Translator;
 
 $heart->register_service_module(
     "extra_flags", "Dodatkowe Uprawnienia / Flagi", "ServiceExtraFlags", "ServiceExtraFlagsSimple"
@@ -261,11 +265,26 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
     IService_UserServiceAdminAdd, IService_UserServiceAdminEdit, IService_ActionExecute, IService_UserOwnServices,
     IService_UserOwnServicesEdit, IService_TakeOver, IService_ServiceCode, IService_ServiceCodeAdminManage
 {
+    /** @var Heart */
+    private $heart;
 
-    function __construct($service)
+    /** @var Template */
+    private $lang;
+
+    /** @var Settings */
+    private $settings;
+
+    /** @var Template */
+    private $template;
+
+    public function __construct($service)
     {
         // Wywolujemy konstruktor klasy ktora rozszerzamy
         parent::__construct($service);
+
+        $this->lang = app()->make(Translator::class);
+        $this->settings = app()->make(Settings::class);
+        $this->template = app()->make(Template::class);
 
         $this->service['flags_hsafe'] = htmlspecialchars($this->service['flags']);
     }

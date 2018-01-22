@@ -17,7 +17,7 @@ class PaymentModule_Gosetti extends PaymentModule implements IPayment_Sms
     /** @var array */
     private $numbers = [];
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
 

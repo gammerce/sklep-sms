@@ -6,7 +6,6 @@ $heart->register_payment_module("homepay", "PaymentModuleHomepay");
 
 class PaymentModuleHomepay extends PaymentModule implements IPayment_Sms
 {
-
     const SERVICE_ID = "homepay";
 
     /** @var  string */
@@ -15,7 +14,7 @@ class PaymentModuleHomepay extends PaymentModule implements IPayment_Sms
     /** @var  string */
     private $sms_code;
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
 

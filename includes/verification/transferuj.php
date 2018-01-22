@@ -6,6 +6,7 @@
  */
 
 use App\PaymentModule;
+use App\Settings;
 
 $heart->register_payment_module("transferuj", "PaymentModuleTransferuj");
 
@@ -19,18 +20,20 @@ class PaymentModuleTransferuj extends PaymentModule implements IPayment_Transfer
     /** @var  string */
     private $key;
 
-    function __construct()
+    /** @var Settings */
+    private $settings;
+
+    public function __construct()
     {
         parent::__construct();
 
+        $this->settings = app()->make(Settings::class);
         $this->key = $this->data['key'];
         $this->account_id = $this->data['account_id'];
     }
 
     public function prepare_transfer($purchase_data, $data_filename)
     {
-        global $settings;
-
         // Zamieniamy grosze na złotówki
         $cost = round($purchase_data->getPayment('cost') / 100, 2);
 
@@ -44,9 +47,9 @@ class PaymentModuleTransferuj extends PaymentModule implements IPayment_Transfer
             'imie'         => $purchase_data->user->getForename(false),
             'nazwisko'     => $purchase_data->user->getSurname(false),
             'email'        => $purchase_data->getEmail(),
-            'pow_url'      => $settings['shop_url_slash'] . "index.php?pid=transferuj_ok",
-            'pow_url_blad' => $settings['shop_url_slash'] . "index.php?pid=transferuj_bad",
-            'wyn_url'      => $settings['shop_url_slash'] . "transfer_finalize.php?service=transferuj",
+            'pow_url'      => $this->settings['shop_url_slash'] . "index.php?pid=transferuj_ok",
+            'pow_url_blad' => $this->settings['shop_url_slash'] . "index.php?pid=transferuj_bad",
+            'wyn_url'      => $this->settings['shop_url_slash'] . "transfer_finalize.php?service=transferuj",
         ];
     }
 

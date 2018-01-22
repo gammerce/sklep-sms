@@ -1,13 +1,13 @@
 <?php
 namespace App\Kernels;
 
+use App\Database;
+use App\Exceptions\SqlQueryException;
 use App\Heart;
 use App\Settings;
 use App\Template;
 use App\Translator;
-use Database;
 use Entity_Purchase;
-use SqlQueryException;
 use Symfony\Component\HttpFoundation\Request;
 
 class JsonHttpAdminKernel extends Kernel

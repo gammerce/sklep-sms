@@ -1,10 +1,10 @@
 <?php
 namespace Install;
 
+use App\Database;
+use App\Exceptions\SqlQueryException;
 use App\MigrationFiles;
-use Database;
 use InvalidArgumentException;
-use SqlQueryException;
 
 class DatabaseMigration
 {

@@ -2,6 +2,8 @@
 
 use Admin\Table;
 use App\CurrentPage;
+use App\Database;
+use App\Exceptions\SqlQueryException;
 
 $heart->register_service_module("mybb_extra_groups", "Dodatkowe Grupy (MyBB)", "ServiceMybbExtraGroups",
     "ServiceMybbExtraGroupsSimple");

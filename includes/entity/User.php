@@ -1,5 +1,6 @@
 <?php
 
+use App\Database;
 use App\Heart;
 use Symfony\Component\HttpFoundation\Request;
 

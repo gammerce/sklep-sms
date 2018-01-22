@@ -6,7 +6,6 @@ $heart->register_payment_module("microsms", "PaymentModule_Microsms");
 
 class PaymentModule_Microsms extends PaymentModule implements IPayment_Sms
 {
-
     const SERVICE_ID = "microsms";
 
     /** @var  string */
@@ -18,7 +17,7 @@ class PaymentModule_Microsms extends PaymentModule implements IPayment_Sms
     /** @var  string */
     private $sms_code;
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
 

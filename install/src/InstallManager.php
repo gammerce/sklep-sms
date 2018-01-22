@@ -1,9 +1,9 @@
 <?php
 namespace Install;
 
+use App\Exceptions\SqlQueryException;
 use App\Translator;
 use Exception;
-use SqlQueryException;
 
 class InstallManager
 {

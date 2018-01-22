@@ -1,7 +1,6 @@
 <?php
 namespace App;
 
-use Database;
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidPathException;
 use Illuminate\Container\Container;

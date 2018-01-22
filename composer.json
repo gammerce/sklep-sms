@@ -22,8 +22,7 @@
   "autoload": {
     "files": [
       "includes/functions.php",
-      "includes/functions_jsonhttp.php",
-      "includes/mysqli.php"
+      "includes/functions_jsonhttp.php"
     ],
     "psr-4": {
       "App\\": "includes/",

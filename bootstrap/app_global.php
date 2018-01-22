@@ -2,6 +2,7 @@
 
 use App\CronExceutor;
 use App\CurrentPage;
+use App\Database;
 use App\Exceptions\ShopNeedsInstallException;
 use App\Heart;
 use App\License;

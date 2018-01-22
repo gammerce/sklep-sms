@@ -6,7 +6,6 @@ $heart->register_payment_module("pukawka", "PaymentModule_Pukawka");
 
 class PaymentModule_Pukawka extends PaymentModule implements IPayment_Sms
 {
-
     const SERVICE_ID = "pukawka";
 
     /** @var  string */
@@ -17,7 +16,7 @@ class PaymentModule_Pukawka extends PaymentModule implements IPayment_Sms
 
     private $stawki = [];
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
 

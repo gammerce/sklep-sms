@@ -16,34 +16,49 @@ use ServiceOther;
 
 class Heart
 {
+    /** @var Database */
+    private $db;
+
+    /** @var Settings */
+    private $settings;
+
+    /** @var Template */
+    private $template;
+
     private $servers = [];
+
     private $servers_fetched = false;
-
     private $services = [];
-    private $services_fetched = false;
 
+    private $services_fetched = false;
     private $servers_services = [];
+
     private $servers_services_fetched = false;
 
     /** @var Entity_Tariff[] */
     private $tariffs = [];
     private $tariffs_fetched = false;
-
     public $page_title;
-
     private $services_classes = [];
+
     private $payment_module_classes = [];
+
     private $pages_classes = [];
     private $blocks_classes = [];
 
     /** @var array Entity_User[] */
     private $users = [];
-
     private $groups = [];
     private $groups_fetched = false;
-
     private $scripts = [];
     private $styles = [];
+
+    public function __construct(Database $db, Settings $settings, Template $template)
+    {
+        $this->db = $db;
+        $this->settings = $settings;
+        $this->template = $template;
+    }
 
     /**
      * Rejestruje moduł usługi
@@ -307,13 +322,11 @@ class Heart
 
     private function fetch_services()
     {
-        global $db;
-
-        $result = $db->query(
+        $result = $this->db->query(
             "SELECT * FROM `" . TABLE_PREFIX . "services` " .
             "ORDER BY `order` ASC"
         );
-        while ($row = $db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetch_array_assoc($result)) {
             $row['id_hsafe'] = htmlspecialchars($row['id']);
             $row['name'] = htmlspecialchars($row['name']);
             $row['groups'] = $row['groups'] ? explode(";", $row['groups']) : [];
@@ -360,10 +373,8 @@ class Heart
 
     private function fetch_servers()
     {
-        global $db;
-
-        $result = $db->query("SELECT * FROM `" . TABLE_PREFIX . "servers`");
-        while ($row = $db->fetch_array_assoc($result)) {
+        $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "servers`");
+        while ($row = $this->db->fetch_array_assoc($result)) {
             $row['name'] = htmlspecialchars($row['name']);
             $this->servers[$row['id']] = $row;
         }
@@ -393,10 +404,8 @@ class Heart
 
     private function fetch_servers_services()
     {
-        global $db;
-
-        $result = $db->query("SELECT * FROM `" . TABLE_PREFIX . "servers_services`");
-        while ($row = $db->fetch_array_assoc($result)) {
+        $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "servers_services`");
+        while ($row = $this->db->fetch_array_assoc($result)) {
             $this->servers_services[$row['server_id']][$row['service_id']] = true;
         }
         $this->servers_services_fetched = true;
@@ -439,10 +448,8 @@ class Heart
 
     private function fetch_tariffs()
     {
-        global $db;
-
-        $result = $db->query("SELECT * FROM `" . TABLE_PREFIX . "tariffs`");
-        while ($row = $db->fetch_array_assoc($result)) {
+        $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "tariffs`");
+        while ($row = $this->db->fetch_array_assoc($result)) {
             $this->tariffs[$row['id']] = new Entity_Tariff($row['id'], $row['provision'], $row['predefined']);
         }
 
@@ -530,10 +537,8 @@ class Heart
 
     private function fetch_groups()
     {
-        global $db;
-
-        $result = $db->query("SELECT * FROM `" . TABLE_PREFIX . "groups`");
-        while ($row = $db->fetch_array_assoc($result)) {
+        $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "groups`");
+        while ($row = $this->db->fetch_array_assoc($result)) {
             $row['name'] = htmlspecialchars($row['name']);
             $this->groups[$row['id']] = $row;
         }
@@ -587,8 +592,6 @@ class Heart
 
     public function getGoogleAnalytics()
     {
-        global $settings, $templates;
-
-        return strlen($settings['google_analytics']) ? eval($templates->render('google_analytics')) : '';
+        return strlen($this->settings['google_analytics']) ? eval($this->template->render('google_analytics')) : '';
     }
 }
