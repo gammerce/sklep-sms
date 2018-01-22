@@ -27,8 +27,20 @@ class License
     {
         $this->lang = $translator;
         $this->settings = $settings;
+    }
 
-        $this->validate();
+    public function validate()
+    {
+        $response = $this->request();
+
+        if ($response === null || !isset($response['text'])) {
+            throw new LicenseException();
+        }
+
+        $this->message = $response['text'];
+        $this->expires = array_get($response, 'expire');
+        $this->page = array_get($response, 'page');
+        $this->footer = array_get($response, 'f');
     }
 
     public function isValid()
@@ -58,20 +70,6 @@ class License
     public function getFooter()
     {
         return $this->footer;
-    }
-
-    protected function validate()
-    {
-        $response = $this->request();
-
-        if ($response === null || !isset($response['text'])) {
-            throw new LicenseException();
-        }
-
-        $this->message = $response['text'];
-        $this->expires = array_get($response, 'expire');
-        $this->page = array_get($response, 'page');
-        $this->footer = array_get($response, 'f');
     }
 
     protected function request()

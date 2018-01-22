@@ -3,9 +3,9 @@
 use Admin\Table;
 use App\Auth;
 use App\CurrentPage;
-use App\Database;
 use App\Heart;
 use App\Settings;
+use App\TranslationManager;
 use App\Translator;
 
 $heart->register_service_module(
@@ -30,9 +30,10 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
     {
         parent::__construct($service);
 
-        global $lang_shop;
-        $this->lang = app()->make(Translator::class);
-        $this->langShop = $lang_shop;
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $this->lang = $translationManager->user();
+        $this->langShop = $translationManager->shop();
         $this->settings = app()->make(Settings::class);
     }
 
@@ -1154,7 +1155,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
         if ($edit_return['status'] == 'ok') {
             log_info($this->langShop->sprintf(
-                $this->langShop->translate('user_edited_service'), $user->getUsername(), $user->getUid(), $user_service['id']
+                $this->langShop->translate('user_edited_service'), $user->getUsername(), $user->getUid(),
+                $user_service['id']
             ));
         }
 

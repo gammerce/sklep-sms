@@ -5,7 +5,7 @@ use App\Database;
 use App\Heart;
 use App\Payment;
 use App\Settings;
-use App\Translator;
+use App\TranslationManager;
 use Illuminate\Container\Container;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -317,8 +317,9 @@ function update_servers_services($data)
  */
 function validate_payment($purchase_data)
 {
-    /** @var Translator $lang */
-    $lang = app()->make(Translator::class);
+    /** @var TranslationManager $translationManager */
+    $translationManager = app()->make(TranslationManager::class);
+    $lang = $translationManager->user();
 
     /** @var Heart $heart */
     $heart = app()->make(Heart::class);
@@ -527,8 +528,9 @@ function pay_by_admin($user_admin)
  */
 function pay_wallet($cost, $user)
 {
-    /** @var Translator $lang */
-    $lang = app()->make(Translator::class);
+    /** @var TranslationManager $translationManager */
+    $translationManager = app()->make(TranslationManager::class);
+    $lang = $translationManager->user();
 
     /** @var Database $db */
     $db = app()->make(Database::class);
@@ -563,10 +565,10 @@ function pay_wallet($cost, $user)
  */
 function pay_service_code($purchase_data, $service_module)
 {
-    global $lang_shop;
-
-    /** @var Translator $lang */
-    $lang = app()->make(Translator::class);
+    /** @var TranslationManager $translationManager */
+    $translationManager = app()->make(TranslationManager::class);
+    $lang = $translationManager->user();
+    $langShop = $translationManager->shop();
 
     /** @var Database $db */
     $db = app()->make(Database::class);
@@ -607,7 +609,7 @@ function pay_service_code($purchase_data, $service_module)
             ));
             $payment_id = $db->last_id();
 
-            log_info($lang_shop->sprintf($lang_shop->translate('purchase_code'),
+            log_info($langShop->sprintf($langShop->translate('purchase_code'),
                 $purchase_data->getPayment('service_code'),
                 $purchase_data->user->getUsername(), $purchase_data->user->getUid(), $payment_id));
 
@@ -652,13 +654,13 @@ function add_bought_service_info(
     $email,
     $extra_data = []
 ) {
-    global $lang_shop;
-
     /** @var Database $db */
     $db = app()->make(Database::class);
 
-    /** @var Translator $lang */
-    $lang = app()->make(Translator::class);
+    /** @var TranslationManager $translationManager */
+    $translationManager = app()->make(TranslationManager::class);
+    $lang = $translationManager->user();
+    $langShop = $translationManager->shop();
 
     /** @var Heart $heart */
     $heart = app()->make(Heart::class);
@@ -695,8 +697,18 @@ function add_bought_service_info(
     $temp_service = $heart->get_service($service);
     $temp_server = $heart->get_server($server);
     $amount = $amount != -1 ? "{$amount} {$temp_service['tag']}" : $lang->translate('forever');
-    log_info($lang_shop->sprintf($lang_shop->translate('bought_service_info'), $service, $auth_data, $amount,
-        $temp_server['name'], $payment_id, $ret, $user_name, $uid, $ip));
+    log_info($langShop->sprintf(
+        $langShop->translate('bought_service_info'),
+        $service,
+        $auth_data,
+        $amount,
+        $temp_server['name'],
+        $payment_id,
+        $ret,
+        $user_name,
+        $uid,
+        $ip
+    ));
     unset($temp_server);
 
     return $bougt_service_id;
@@ -802,7 +814,9 @@ function get_users_services($conditions = '', $take_out = true)
 
 function delete_users_old_services()
 {
-    global $lang_shop;
+    /** @var TranslationManager $translationManager */
+    $translationManager = app()->make(TranslationManager::class);
+    $langShop = $translationManager->shop();
 
     /** @var Database $db */
     $db = app()->make(Database::class);
@@ -833,7 +847,7 @@ function delete_users_old_services()
                 $user_service_desc .= ucfirst(strtolower($key)) . ': ' . $value;
             }
 
-            log_info($lang_shop->sprintf($lang_shop->translate('expired_service_delete'), $user_service_desc));
+            log_info($langShop->sprintf($langShop->translate('expired_service_delete'), $user_service_desc));
         }
     }
 
@@ -857,7 +871,9 @@ function delete_users_old_services()
 
 function send_email($email, $name, $subject, $text)
 {
-    global $lang_shop;
+    /** @var TranslationManager $translationManager */
+    $translationManager = app()->make(TranslationManager::class);
+    $langShop = $translationManager->shop();
 
     /** @var Settings $settings */
     $settings = app()->make(Settings::class);
@@ -887,7 +903,7 @@ function send_email($email, $name, $subject, $text)
         return "not_sent";
     }
 
-    log_info($lang_shop->sprintf($lang_shop->translate('email_was_sent'), $email, $text));
+    log_info($langShop->sprintf($langShop->translate('email_was_sent'), $email, $text));
 
     return "sent";
 }
@@ -974,8 +990,9 @@ function create_brick($text, $class = "", $alpha = 0.2)
 
 function get_platform($platform)
 {
-    /** @var Translator $lang */
-    $lang = app()->make(Translator::class);
+    /** @var TranslationManager $translationManager */
+    $translationManager = app()->make(TranslationManager::class);
+    $lang = $translationManager->user();
 
     if ($platform == "engine_amxx") {
         return $lang->translate('amxx_server');
@@ -991,8 +1008,9 @@ function get_platform($platform)
 // Zwraca nazwę typu
 function get_type_name($value)
 {
-    /** @var Translator $lang */
-    $lang = app()->make(Translator::class);
+    /** @var TranslationManager $translationManager */
+    $translationManager = app()->make(TranslationManager::class);
+    $lang = $translationManager->user();
 
     if ($value == TYPE_NICK) {
         return $lang->translate('nickpass');
@@ -1135,8 +1153,9 @@ function valid_steam($steamid)
 
 function secondsToTime($seconds)
 {
-    /** @var Translator $lang */
-    $lang = app()->make(Translator::class);
+    /** @var TranslationManager $translationManager */
+    $translationManager = app()->make(TranslationManager::class);
+    $lang = $translationManager->user();
 
     $dtF = new DateTime("@0");
     $dtT = new DateTime("@$seconds");

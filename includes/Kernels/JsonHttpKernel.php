@@ -7,7 +7,7 @@ use App\Heart;
 use App\Payment;
 use App\Settings;
 use App\Template;
-use App\Translator;
+use App\TranslationManager;
 use Entity_Purchase;
 use PageAdminIncome;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +16,9 @@ class JsonHttpKernel extends Kernel
 {
     public function handle(Request $request)
     {
-        global $lang_shop;
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $langShop = $translationManager->shop();
 
         /** @var Heart $heart */
         $heart = $this->app->make(Heart::class);
@@ -28,8 +30,9 @@ class JsonHttpKernel extends Kernel
         /** @var Template $templates */
         $templates = $this->app->make(Template::class);
 
-        /** @var Translator $lang */
-        $lang = $this->app->make(Translator::class);
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $lang = $translationManager->user();
 
         /** @var Settings $settings */
         $settings = $this->app->make(Settings::class);
@@ -193,7 +196,7 @@ class JsonHttpKernel extends Kernel
             ));
 
             // LOGING
-            log_info($lang_shop->sprintf($lang_shop->translate('new_account'), $db->last_id(), $username,
+            log_info($langShop->sprintf($langShop->translate('new_account'), $db->last_id(), $username,
                 $user->getLastIp()));
 
             json_output("registered", $lang->translate('register_success'), 1, $data);
@@ -274,7 +277,7 @@ class JsonHttpKernel extends Kernel
             } elseif ($ret == "wrong_email") {
                 json_output("wrong_sender_email", $lang->translate('wrong_email'), 0);
             } elseif ($ret == "sent") {
-                log_info($lang_shop->sprintf($lang_shop->translate('reset_key_email'), $user2->getUsername(),
+                log_info($langShop->sprintf($langShop->translate('reset_key_email'), $user2->getUsername(),
                     $user2->getUid(), $user2->getEmail(), $username, $email));
                 $data['username'] = $user2->getUsername();
                 json_output("sent", $lang->translate('email_sent'), 1, $data);
@@ -323,7 +326,7 @@ class JsonHttpKernel extends Kernel
             ));
 
             // LOGING
-            log_info($lang_shop->sprintf($lang_shop->translate('reset_pass'), $uid));
+            log_info($langShop->sprintf($langShop->translate('reset_pass'), $uid));
 
             json_output("password_changed", $lang->translate('password_changed'), 1);
         } elseif ($action == "change_password") {

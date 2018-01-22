@@ -1,6 +1,6 @@
 <?php
 
-use App\Translator;
+use App\TranslationManager;
 
 /**
  * Sprawdza czy podane dane są prawidłowe dla danego typu
@@ -12,8 +12,9 @@ use App\Translator;
  */
 function check_for_warnings($type, $data)
 {
-    /** @var Translator $lang */
-    $lang = app()->make(Translator::class);
+    /** @var TranslationManager $translationManager */
+    $translationManager = app()->make(TranslationManager::class);
+    $lang = $translationManager->user();
 
     $warnings = [];
     switch ($type) {

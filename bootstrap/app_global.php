@@ -10,6 +10,7 @@ use App\License;
 use App\Settings;
 use App\ShopState;
 use App\Template;
+use App\TranslationManager;
 use App\Translator;
 
 foreach ($_GET as $key => $value) {
@@ -37,11 +38,11 @@ $auth = $app->make(Auth::class);
 /** @var Template $templates */
 $templates = $app->make(Template::class);
 
-// Tworzymy obiekt języka
-/** @var Translator $lang */
-$lang = $app->make(Translator::class);
-/** @var Translator $lang_shop */
-$lang_shop = $app->make(Translator::class);
+/** @var TranslationManager $translationManager */
+$translationManager = $app->make(TranslationManager::class);
+
+/** @var License $license */
+$license = $app->make(License::class);
 
 // Te interfejsy są potrzebne do klas różnego rodzajów
 foreach (scandir(SCRIPT_ROOT . "includes/interfaces") as $file) {
@@ -147,25 +148,25 @@ $user->updateActivity();
 
 $settings->load();
 
-// Ładujemy bibliotekę językową
+$lang = $translationManager->user();
+$langShop = $translationManager->shop();
+$langShop->setLanguage($settings['language']);
+
 if (isset($_GET['language'])) {
     $lang->setLanguage($_GET['language']);
+} elseif (isset($_COOKIE['language'])) {
+    $lang->setLanguage($_COOKIE['language']);
 } else {
-    if (isset($_COOKIE['language'])) {
-        $lang->setLanguage($_COOKIE['language']);
+    $details = json_decode(file_get_contents("http://ipinfo.io/" . get_ip() . "/json"));
+    if (isset($details->country) && strlen($temp_lang = $lang->getLanguageByShort($details->country))) {
+        $lang->setLanguage($temp_lang);
+        unset($temp_lang);
     } else {
-        $details = json_decode(file_get_contents("http://ipinfo.io/" . get_ip() . "/json"));
-        if (isset($details->country) && strlen($temp_lang = $lang->getLanguageByShort($details->country))) {
-            $lang->setLanguage($temp_lang);
-            unset($temp_lang);
-        } else {
-            $lang->setLanguage($settings['language']);
-        }
+        $lang->setLanguage($settings['language']);
     }
 }
-$lang_shop->setLanguage($settings['language']);
 
-$license = $app->make(License::class);
+$license->validate();
 
 if (!$license->isValid()) {
     if (get_privilages("manage_settings")) {

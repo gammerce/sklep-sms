@@ -14,24 +14,30 @@ class Payment
     const TRANSFER_NOT_SUPPORTED = 'transfer_not_supported';
 
     /** @var PaymentModule|IPayment_Sms|IPayment_Transfer */
-    private $payment_module = null;
+    protected $payment_module = null;
 
     /** @var Heart */
-    private $heart;
+    protected $heart;
 
     /** @var Translator */
-    private $lang;
+    protected $lang;
+
+    /** @var Translator */
+    protected $langShop;
 
     /** @var Settings */
-    private $settings;
+    protected $settings;
 
     /** @var Database */
-    private $db;
+    protected $db;
 
     function __construct($paymentModuleId)
     {
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $this->lang = $translationManager->user();
+        $this->langShop = $translationManager->shop();
         $this->heart = app()->make(Heart::class);
-        $this->lang = app()->make(Translator::class);
         $this->settings = app()->make(Settings::class);
         $this->db = app()->make(Database::class);
 
@@ -56,8 +62,6 @@ class Payment
      */
     public function pay_sms($sms_code, $tariff, $user)
     {
-        global $lang_shop;
-
         if (!$this->getPaymentModule()->supportSms()) {
             return [
                 'status' => Payment::SMS_NOT_SUPPORTED,
@@ -102,8 +106,9 @@ class Payment
                 // Ustawienie wartości, jakby kod był prawidłowy
                 $sms_return['status'] = IPayment_Sms::OK;
 
-                log_info($lang_shop->sprintf($lang_shop->translate('payment_remove_code_from_db'), $db_code['code'],
-                    $db_code['tariff']));
+                log_info($this->langShop->sprintf(
+                    $this->langShop->translate('payment_remove_code_from_db'), $db_code['code'], $db_code['tariff']
+                ));
             }
         }
 
@@ -135,12 +140,13 @@ class Payment
                     [$sms_code, $sms_return['tariff']]
                 ));
 
-                log_info($lang_shop->sprintf($lang_shop->translate('add_code_to_reuse'), $sms_code,
+                log_info($this->langShop->sprintf($this->langShop->translate('add_code_to_reuse'), $sms_code,
                     $sms_return['tariff'],
                     $user->getUsername(), $user->getUid(), $user->getLastIp(), $tariff->getId()));
             } else {
                 if ($sms_return['status'] != Payment::SMS_NOT_SUPPORTED) {
-                    log_info($lang_shop->sprintf($lang_shop->translate('bad_sms_code_used'), $user->getUsername(),
+                    log_info($this->langShop->sprintf($this->langShop->translate('bad_sms_code_used'),
+                        $user->getUsername(),
                         $user->getUid(), $user->getLastIp(),
                         $sms_code, $this->getPaymentModule()->getSmsCode(), $sms_number, $sms_return['status']));
                 }
@@ -149,8 +155,10 @@ class Payment
 
         return [
             'status'     => $sms_return['status'],
-            'text'       => if_strlen2($sms_return['text'],
-                if_strlen2($this->lang->translate('sms_info_' . $sms_return['status']), $sms_return['status'])),
+            'text'       => if_strlen2(
+                $sms_return['text'],
+                if_strlen2($this->lang->translate('sms_info_' . $sms_return['status']), $sms_return['status'])
+            ),
             'payment_id' => $payment_id,
         ];
     }
@@ -192,8 +200,6 @@ class Payment
      */
     public function transferFinalize($transfer_finalize)
     {
-        global $lang_shop;
-
         $result = $this->db->query($this->db->prepare(
             "SELECT * FROM `" . TABLE_PREFIX . "payment_transfer` " .
             "WHERE `id` = '%d'",
@@ -207,8 +213,9 @@ class Payment
 
         // Nie znaleziono pliku z danymi
         if (!$transfer_finalize->getDataFilename() || !file_exists(SCRIPT_ROOT . "data/transfers/" . $transfer_finalize->getDataFilename())) {
-            log_info($lang_shop->sprintf($lang_shop->translate('transfer_no_data_file'),
-                $transfer_finalize->getOrderid()));
+            log_info($this->langShop->sprintf(
+                $this->langShop->translate('transfer_no_data_file'), $transfer_finalize->getOrderid()
+            ));
 
             return false;
         }
@@ -235,14 +242,17 @@ class Payment
 
         // Błędny moduł
         if (($service_module = $this->heart->get_service_module($purchase_data->getService())) === null) {
-            log_info($lang_shop->sprintf($lang_shop->translate('transfer_bad_module'), $transfer_finalize->getOrderid(),
-                $purchase_data->getService()));
+            log_info($this->langShop->sprintf(
+                $this->langShop->translate('transfer_bad_module'),
+                $transfer_finalize->getOrderid(),
+                $purchase_data->getService()
+            ));
 
             return false;
         }
 
         if (!object_implements($service_module, "IService_Purchase")) {
-            log_info($lang_shop->sprintf($lang_shop->translate('transfer_no_purchase'),
+            log_info($this->langShop->sprintf($this->langShop->translate('transfer_no_purchase'),
                 $transfer_finalize->getOrderid(), $purchase_data->getService()));
 
             return false;
@@ -255,8 +265,8 @@ class Payment
         ]);
         $bought_service_id = $service_module->purchase($purchase_data);
 
-        log_info($lang_shop->sprintf(
-            $lang_shop->translate('payment_transfer_accepted'),
+        log_info($this->langShop->sprintf(
+            $this->langShop->translate('payment_transfer_accepted'),
             $bought_service_id,
             $transfer_finalize->getOrderid(),
             $transfer_finalize->getAmount(),

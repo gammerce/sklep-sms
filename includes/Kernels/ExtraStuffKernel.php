@@ -5,7 +5,7 @@ use App\Heart;
 use App\License;
 use App\Settings;
 use App\Template;
-use App\Translator;
+use App\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -16,8 +16,9 @@ class ExtraStuffKernel extends Kernel
         /** @var Heart $heart */
         $heart = $this->app->make(Heart::class);
 
-        /** @var Translator $lang */
-        $lang = $this->app->make(Translator::class);
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $lang = $translationManager->user();
 
         /** @var Template $template */
         $template = $this->app->make(Template::class);

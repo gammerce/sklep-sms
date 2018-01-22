@@ -1,7 +1,7 @@
 <?php
 
-use App\Heart;
 use App\CurrentPage;
+use App\Heart;
 use App\Translator;
 
 $heart->register_block("admincontent", "BlockAdminContent");

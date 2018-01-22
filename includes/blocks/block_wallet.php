@@ -3,7 +3,7 @@
 use App\Auth;
 use App\Settings;
 use App\Template;
-use App\Translator;
+use App\TranslationManager;
 
 $heart->register_block("wallet", "BlockWallet");
 
@@ -28,8 +28,9 @@ class BlockWallet extends Block implements I_BeLoggedMust
         /** @var Template $template */
         $template = app()->make(Template::class);
 
-        /** @var Translator $lang */
-        $lang = app()->make(Translator::class);
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $lang = $translationManager->user();
 
         /** @var Settings $settings */
         $settings = app()->make(Settings::class);

@@ -7,6 +7,7 @@ use App\Database;
 use App\Exceptions\SqlQueryException;
 use App\Heart;
 use App\Settings;
+use App\TranslationManager;
 use App\Translator;
 
 $heart->register_service_module(
@@ -28,7 +29,9 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
     {
         parent::__construct($service);
 
-        $this->lang = app()->make(Translator::class);
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $this->lang = $translationManager->user();
         $this->settings = app()->make(Settings::class);
     }
 
@@ -264,8 +267,9 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
     {
         parent::__construct($service);
 
-        global $lang_shop;
-        $this->langShop = $lang_shop;
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $this->langShop = $translationManager->shop();
         $this->auth = app()->make(Auth::class);
         $this->heart = app()->make(Heart::class);
 

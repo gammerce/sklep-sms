@@ -3,7 +3,7 @@
 use App\Auth;
 use App\Settings;
 use App\Template;
-use App\Translator;
+use App\TranslationManager;
 
 abstract class Block
 {
@@ -75,8 +75,9 @@ abstract class BlockSimple extends Block
         $auth = app()->make(Auth::class);
         $user = $auth->user();
 
-        /** @var Translator $lang */
-        $lang = app()->make(Translator::class);
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $lang = $translationManager->user();
 
         /** @var Settings $settings */
         $settings = app()->make(Settings::class);

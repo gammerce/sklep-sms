@@ -29,6 +29,7 @@ class Application extends Container
         $this->singleton(Settings::class);
         $this->singleton(CurrentPage::class);
         $this->singleton(License::class);
+        $this->singleton(TranslationManager::class);
     }
 
     protected function registerDatabase()

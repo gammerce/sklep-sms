@@ -3,7 +3,7 @@
 use App\Auth;
 use App\Heart;
 use App\Template;
-use App\Translator;
+use App\TranslationManager;
 
 $heart->register_block("services_buttons", "BlockServicesButtons");
 
@@ -28,8 +28,9 @@ class BlockServicesButtons extends Block
         /** @var Template $template */
         $template = app()->make(Template::class);
 
-        /** @var Translator $lang */
-        $lang = app()->make(Translator::class);
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $lang = $translationManager->user();
 
         /** @var Heart $heart */
         $heart = app()->make(Heart::class);

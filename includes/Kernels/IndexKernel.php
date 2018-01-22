@@ -6,7 +6,7 @@ use App\Heart;
 use App\License;
 use App\Settings;
 use App\Template;
-use App\Translator;
+use App\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -17,8 +17,9 @@ class IndexKernel extends Kernel
         /** @var Heart $heart */
         $heart = $this->app->make(Heart::class);
 
-        /** @var Translator $lang */
-        $lang = $this->app->make(Translator::class);
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $lang = $translationManager->user();
 
         /** @var Settings $settings */
         $settings = $this->app->make(Settings::class);

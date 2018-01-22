@@ -3,6 +3,7 @@
 use App\Heart;
 use App\Payment;
 use App\Settings;
+use App\TranslationManager;
 use App\Translator;
 
 $heart->register_service_module("charge_wallet", "Doładowanie Portfela", "ServiceChargeWallet",
@@ -28,7 +29,9 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
     {
         parent::__construct($service);
 
-        $this->lang = app()->make(Translator::class);
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $this->lang = $translationManager->user();
         $this->heart = app()->make(Heart::class);
         $this->settings = app()->make(Settings::class);
     }

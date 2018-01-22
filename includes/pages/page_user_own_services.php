@@ -4,6 +4,7 @@ use App\Auth;
 use App\Database;
 use App\Settings;
 use App\Template;
+use App\TranslationManager;
 use App\Translator;
 
 $heart->register_page("user_own_services", "Page_UserOIwnServices");
@@ -17,7 +18,10 @@ class Page_UserOIwnServices extends Page implements I_BeLoggedMust
 
     public function __construct()
     {
-        $this->lang = app()->make(Translator::class);
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $this->lang = $translationManager->user();
+
         $this->title = $this->lang->translate('user_own_services');
 
         parent::__construct();

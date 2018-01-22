@@ -2,9 +2,9 @@
 
 use App\Auth;
 use App\Database;
-use App\Heart;
 use App\Settings;
 use App\Template;
+use App\TranslationManager;
 use App\Translator;
 
 $heart->register_page("payment_log", "PagePaymentLog");
@@ -18,7 +18,10 @@ class PagePaymentLog extends Page implements I_BeLoggedMust
 
     public function __construct()
     {
-        $this->lang = app()->make(Translator::class);
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $this->lang = $translationManager->user();
+
         $this->title = $this->lang->translate('payment_log');
 
         parent::__construct();

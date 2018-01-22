@@ -2,10 +2,6 @@
 namespace App\Kernels;
 
 use App\Application;
-use App\CurrentPage;
-use App\Heart;
-use App\License;
-use App\Settings;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

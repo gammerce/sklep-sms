@@ -1,5 +1,7 @@
 <?php
 
+use App\TranslationManager;
+
 $heart->register_page("settings", "PageAdminSettings", "admin");
 
 class PageAdminSettings extends PageAdmin
@@ -17,7 +19,12 @@ class PageAdminSettings extends PageAdmin
 
     protected function content($get, $post)
     {
-        global $db, $settings, $lang, $lang_shop, $templates;
+        global $db, $settings, $templates;
+
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $lang = $translationManager->user();
+        $langShop = $translationManager->shop();
 
         // Pobranie listy serwisów transakcyjnych
         $result = $db->query(
@@ -61,7 +68,7 @@ class PageAdminSettings extends PageAdmin
             if ($dir_name[0] != '.' && is_dir(SCRIPT_ROOT . "includes/languages/{$dir_name}")) {
                 $languages_list .= create_dom_element("option", $lang->translate('language_' . $dir_name), [
                     'value'    => $dir_name,
-                    'selected' => $dir_name == $lang_shop->getCurrentLanguage() ? "selected" : "",
+                    'selected' => $dir_name == $langShop->getCurrentLanguage() ? "selected" : "",
                 ]);
             }
         }

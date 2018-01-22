@@ -1,6 +1,7 @@
 <?php
 
 use App\Heart;
+use App\TranslationManager;
 use App\Translator;
 
 $heart->register_service_module("other", "Inne", "ServiceOther", "ServiceOtherSimple");
@@ -37,10 +38,11 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
     {
         parent::__construct($service);
 
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $this->lang = $translationManager->user();
         $this->heart = app()->make(Heart::class);
-        $this->lang = app()->make(Translator::class);
     }
-
 
     /**
      * @param Entity_Purchase $purchase_data

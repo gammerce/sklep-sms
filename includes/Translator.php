@@ -3,7 +3,6 @@ namespace App;
 
 class Translator
 {
-
     /**
      * Current language
      *
@@ -16,7 +15,10 @@ class Translator
      *
      * @var array
      */
-    protected $langList;
+    protected $langList = [
+        'polish'  => 'pl',
+        'english' => 'en',
+    ];
 
     /**
      * Array of translations
@@ -27,11 +29,6 @@ class Translator
 
     function __construct($lang = 'polish')
     {
-        $this->langList = [
-            'polish'  => "pl",
-            'english' => "en",
-        ];
-
         $this->setLanguage($lang);
     }
 
@@ -174,5 +171,4 @@ class Translator
     {
         return mb_convert_case($string, MB_CASE_UPPER, "UTF-8");
     }
-
 }

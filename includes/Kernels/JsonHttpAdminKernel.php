@@ -7,7 +7,7 @@ use App\Exceptions\SqlQueryException;
 use App\Heart;
 use App\Settings;
 use App\Template;
-use App\Translator;
+use App\TranslationManager;
 use Entity_Purchase;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -15,7 +15,9 @@ class JsonHttpAdminKernel extends Kernel
 {
     public function handle(Request $request)
     {
-        global $lang_shop;
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $langShop = $translationManager->shop();
 
         /** @var Heart $heart */
         $heart = $this->app->make(Heart::class);
@@ -27,8 +29,9 @@ class JsonHttpAdminKernel extends Kernel
         /** @var Template $templates */
         $templates = $this->app->make(Template::class);
 
-        /** @var Translator $lang */
-        $lang = $this->app->make(Translator::class);
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $lang = $translationManager->user();
 
         /** @var Settings $settings */
         $settings = $this->app->make(Settings::class);
@@ -110,7 +113,7 @@ class JsonHttpAdminKernel extends Kernel
 
             $purchase_return = $service_module->purchase($purchase_data);
 
-            log_info($lang_shop->sprintf($lang_shop->translate('account_charge'), $user->getUsername(), $user->getUid(),
+            log_info($langShop->sprintf($langShop->translate('account_charge'), $user->getUsername(), $user->getUid(),
                 $user2->getUsername(), $user2->getUid(), number_format($amount / 100.0, 2), $settings['currency']));
 
             json_output("charged", $lang->sprintf($lang->translate('account_charge_success'), $user2->getUsername(),
@@ -215,7 +218,7 @@ class JsonHttpAdminKernel extends Kernel
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
             if ($affected) {
-                log_info($lang_shop->sprintf($lang_shop->translate('user_service_admin_delete'), $user->getUsername(),
+                log_info($langShop->sprintf($langShop->translate('user_service_admin_delete'), $user->getUsername(),
                     $user->getUid(), $user_service['id']));
 
                 json_output('ok', $lang->translate('delete_service'), 1);
@@ -275,7 +278,7 @@ class JsonHttpAdminKernel extends Kernel
 
                 // Zwróć info o prawidłowej lub błędnej edycji
                 if ($db->affected_rows()) {
-                    log_info($lang_shop->sprintf($lang_shop->translate('question_edit'), $user->getUsername(),
+                    log_info($langShop->sprintf($langShop->translate('question_edit'), $user->getUsername(),
                         $user->getUid(),
                         $_POST['id']));
                     json_output('ok', $lang->translate('antispam_edit'), 1);
@@ -296,7 +299,7 @@ class JsonHttpAdminKernel extends Kernel
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
             if ($db->affected_rows()) {
-                log_info($lang_shop->sprintf($lang_shop->translate('question_delete'), $user->getUsername(),
+                log_info($langShop->sprintf($langShop->translate('question_delete'), $user->getUsername(),
                     $user->getUid(),
                     $_POST['id']));
                 json_output('ok', $lang->translate('delete_antispamq'), 1);
@@ -462,7 +465,7 @@ class JsonHttpAdminKernel extends Kernel
 
             // Zwróć info o prawidłowej lub błędnej edycji
             if ($db->affected_rows()) {
-                log_info($lang_shop->sprintf($lang_shop->translate('settings_admin_edit'), $user->getUsername(),
+                log_info($langShop->sprintf($langShop->translate('settings_admin_edit'), $user->getUsername(),
                     $user->getUid()));
 
                 json_output('ok', $lang->translate('settings_edit'), 1);
@@ -496,7 +499,7 @@ class JsonHttpAdminKernel extends Kernel
             // Zwróć info o prawidłowej lub błędnej edycji
             if ($db->affected_rows()) {
                 // LOGGING
-                log_info($lang_shop->sprintf($lang_shop->translate('payment_admin_edit'), $user->getUsername(),
+                log_info($langShop->sprintf($langShop->translate('payment_admin_edit'), $user->getUsername(),
                     $user->getUid(),
                     $_POST['id']));
 
@@ -614,7 +617,7 @@ class JsonHttpAdminKernel extends Kernel
                     ]
                 ));
 
-                log_info($lang_shop->sprintf($lang_shop->translate('service_admin_add'), $user->getUsername(),
+                log_info($langShop->sprintf($langShop->translate('service_admin_add'), $user->getUsername(),
                     $user->getUid(),
                     $_POST['id']));
                 json_output('ok', $lang->translate('service_added'), 1, ['length' => 10000]);
@@ -638,7 +641,7 @@ class JsonHttpAdminKernel extends Kernel
 
                 // Zwróć info o prawidłowej lub błędnej edycji
                 if ($db->affected_rows()) {
-                    log_info($lang_shop->sprintf($lang_shop->translate('service_admin_edit'), $user->getUsername(),
+                    log_info($langShop->sprintf($langShop->translate('service_admin_edit'), $user->getUsername(),
                         $user->getUid(), $_POST['id2']));
                     json_output('ok', $lang->translate('service_edit'), 1);
                 } else {
@@ -674,7 +677,7 @@ class JsonHttpAdminKernel extends Kernel
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
             if ($affected) {
-                log_info($lang_shop->sprintf($lang_shop->translate('service_admin_delete'), $user->getUsername(),
+                log_info($langShop->sprintf($langShop->translate('service_admin_delete'), $user->getUsername(),
                     $user->getUid(), $_POST['id']));
                 json_output('ok', $lang->translate('delete_service'), 1);
             } else {
@@ -783,12 +786,12 @@ class JsonHttpAdminKernel extends Kernel
             }
 
             if ($action == "server_add") {
-                log_info($lang_shop->sprintf($lang_shop->translate('server_admin_add'), $user->getUsername(),
+                log_info($langShop->sprintf($langShop->translate('server_admin_add'), $user->getUsername(),
                     $user->getUid(),
                     $server_id));
                 json_output('ok', $lang->translate('server_added'), 1);
             } elseif ($action == "server_edit") {
-                log_info($lang_shop->sprintf($lang_shop->translate('server_admin_edit'), $user->getUsername(),
+                log_info($langShop->sprintf($langShop->translate('server_admin_edit'), $user->getUsername(),
                     $user->getUid(),
                     $server_id));
                 json_output('ok', $lang->translate('server_edit'), 1);
@@ -807,7 +810,7 @@ class JsonHttpAdminKernel extends Kernel
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
             if ($db->affected_rows()) {
-                log_info($lang_shop->sprintf($lang_shop->translate('server_admin_delete'), $user->getUsername(),
+                log_info($langShop->sprintf($langShop->translate('server_admin_delete'), $user->getUsername(),
                     $user->getUid(), $_POST['id']));
                 json_output('ok', $lang->translate('delete_server'), 1);
             } else {
@@ -894,7 +897,7 @@ class JsonHttpAdminKernel extends Kernel
             // Zwróć info o prawidłowej lub błędnej edycji
             if ($db->affected_rows()) {
                 // LOGGING
-                log_info($lang_shop->sprintf($lang_shop->translate('user_admin_edit'), $user->getUsername(),
+                log_info($langShop->sprintf($langShop->translate('user_admin_edit'), $user->getUsername(),
                     $user->getUid(),
                     $_POST['uid']));
                 json_output('ok', $lang->translate('user_edit'), 1);
@@ -914,7 +917,7 @@ class JsonHttpAdminKernel extends Kernel
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
             if ($db->affected_rows()) {
-                log_info($lang_shop->sprintf($lang_shop->translate('user_admin_delete'), $user->getUsername(),
+                log_info($langShop->sprintf($langShop->translate('user_admin_delete'), $user->getUsername(),
                     $user->getUid(),
                     $_POST['uid']));
                 json_output('ok', $lang->translate('delete_user'), 1);
@@ -943,7 +946,7 @@ class JsonHttpAdminKernel extends Kernel
                     [$_POST['name']]
                 ));
 
-                log_info($lang_shop->sprintf($lang_shop->translate('group_admin_add'), $user->getUsername(),
+                log_info($langShop->sprintf($langShop->translate('group_admin_add'), $user->getUsername(),
                     $user->getUid(),
                     $db->last_id()));
                 // Zwróć info o prawidłowym zakończeniu dodawania
@@ -959,7 +962,7 @@ class JsonHttpAdminKernel extends Kernel
                 // Zwróć info o prawidłowej lub błędnej edycji
                 if ($db->affected_rows()) {
                     // LOGGING
-                    log_info($lang_shop->sprintf($lang_shop->translate('group_admin_edit'), $user->getUsername(),
+                    log_info($langShop->sprintf($langShop->translate('group_admin_edit'), $user->getUsername(),
                         $user->getUid(), $_POST['id']));
                     json_output('ok', $lang->translate('group_edit'), 1);
                 } else {
@@ -979,7 +982,7 @@ class JsonHttpAdminKernel extends Kernel
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
             if ($db->affected_rows()) {
-                log_info($lang_shop->sprintf($lang_shop->translate('group_admin_delete'), $user->getUsername(),
+                log_info($langShop->sprintf($langShop->translate('group_admin_delete'), $user->getUsername(),
                     $user->getUid(),
                     $_POST['id']));
                 json_output('ok', $lang->translate('delete_group'), 1);
@@ -1021,7 +1024,7 @@ class JsonHttpAdminKernel extends Kernel
                 [$_POST['id'], $_POST['provision'] * 100]
             ));
 
-            log_info($lang_shop->sprintf($lang_shop->translate('tariff_admin_add'), $user->getUsername(),
+            log_info($langShop->sprintf($langShop->translate('tariff_admin_add'), $user->getUsername(),
                 $user->getUid(),
                 $db->last_id()));
             json_output('ok', $lang->translate('tariff_add'), 1);
@@ -1055,7 +1058,7 @@ class JsonHttpAdminKernel extends Kernel
 
             // Zwróć info o prawidłowej edycji
             if ($affected || $db->affected_rows()) {
-                log_info($lang_shop->sprintf($lang_shop->translate('tariff_admin_edit'), $user->getUsername(),
+                log_info($langShop->sprintf($langShop->translate('tariff_admin_edit'), $user->getUsername(),
                     $user->getUid(),
                     $_POST['id']));
                 json_output('ok', $lang->translate('tariff_edit'), 1);
@@ -1075,7 +1078,7 @@ class JsonHttpAdminKernel extends Kernel
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
             if ($db->affected_rows()) {
-                log_info($lang_shop->sprintf($lang_shop->translate('tariff_admin_delete'), $user->getUsername(),
+                log_info($langShop->sprintf($langShop->translate('tariff_admin_delete'), $user->getUsername(),
                     $user->getUid(), $_POST['id']));
                 json_output('ok', $lang->translate('delete_tariff'), 1);
             }
@@ -1138,7 +1141,7 @@ class JsonHttpAdminKernel extends Kernel
 
                 // Zwróć info o prawidłowej lub błędnej edycji
                 if ($db->affected_rows()) {
-                    log_info($lang_shop->sprintf($lang_shop->translate('price_admin_edit'), $user->getUsername(),
+                    log_info($langShop->sprintf($langShop->translate('price_admin_edit'), $user->getUsername(),
                         $user->getUid(), $_POST['id']));
                     json_output('ok', $lang->translate('price_edit'), 1);
                 } else {
@@ -1158,7 +1161,7 @@ class JsonHttpAdminKernel extends Kernel
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
             if ($db->affected_rows()) {
-                log_info($lang_shop->sprintf($lang_shop->translate('price_admin_delete'), $user->getUsername(),
+                log_info($langShop->sprintf($langShop->translate('price_admin_delete'), $user->getUsername(),
                     $user->getUid(),
                     $_POST['id']));
                 json_output('ok', $lang->translate('delete_price'), 1);
@@ -1197,7 +1200,7 @@ class JsonHttpAdminKernel extends Kernel
                 [$lang->strtoupper($_POST['code']), $_POST['tariff']]
             ));
 
-            log_info($lang_shop->sprintf($lang_shop->translate('sms_code_admin_add'), $user->getUsername(),
+            log_info($langShop->sprintf($langShop->translate('sms_code_admin_add'), $user->getUsername(),
                 $user->getUid(),
                 $_POST['code'], $_POST['tariff']));
             // Zwróć info o prawidłowym dodaniu
@@ -1215,7 +1218,7 @@ class JsonHttpAdminKernel extends Kernel
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
             if ($db->affected_rows()) {
-                log_info($lang_shop->sprintf($lang_shop->translate('sms_code_admin_delete'), $user->getUsername(),
+                log_info($langShop->sprintf($langShop->translate('sms_code_admin_delete'), $user->getUsername(),
                     $user->getUid(), $_POST['id']));
                 json_output('ok', $lang->translate('delete_sms_code'), 1);
             } else {
@@ -1280,7 +1283,7 @@ class JsonHttpAdminKernel extends Kernel
                 ]
             ));
 
-            log_info($lang_shop->sprintf($lang_shop->translate('code_added_admin'), $user->getUsername(),
+            log_info($langShop->sprintf($langShop->translate('code_added_admin'), $user->getUsername(),
                 $user->getUid(),
                 $_POST['code'], $service_module->service['id']));
             // Zwróć info o prawidłowym dodaniu
@@ -1298,7 +1301,7 @@ class JsonHttpAdminKernel extends Kernel
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
             if ($db->affected_rows()) {
-                log_info($lang_shop->sprintf($lang_shop->translate('code_deleted_admin'), $user->getUsername(),
+                log_info($langShop->sprintf($langShop->translate('code_deleted_admin'), $user->getUsername(),
                     $user->getUid(),
                     $_POST['id']));
                 json_output('ok', $lang->translate('code_deleted'), 1);

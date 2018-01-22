@@ -3,6 +3,7 @@
 use App\Auth;
 use App\Settings;
 use App\Template;
+use App\TranslationManager;
 use App\Translator;
 
 $heart->register_page("purchase", "PagePurchase");
@@ -16,7 +17,10 @@ class PagePurchase extends Page
 
     public function __construct()
     {
-        $this->lang = app()->make(Translator::class);
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $this->lang = $translationManager->user();
+
         $this->title = $this->lang->translate('purchase');
 
         parent::__construct();

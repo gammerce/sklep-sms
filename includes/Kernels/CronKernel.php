@@ -3,7 +3,7 @@ namespace App\Kernels;
 
 use App\CronExceutor;
 use App\Settings;
-use App\Translator;
+use App\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -16,8 +16,9 @@ class CronKernel extends Kernel
         /** @var Settings $settings */
         $settings = $this->app->make(Settings::class);
 
-        /** @var Translator $lang */
-        $lang = $this->app->make(Translator::class);
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $lang = $translationManager->user();
 
         /** @var CronExceutor $cronExecutor */
         $cronExecutor = $this->app->make(CronExceutor::class);

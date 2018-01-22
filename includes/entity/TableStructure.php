@@ -4,7 +4,7 @@ namespace Admin\Table;
 
 use App\CurrentPage;
 use App\Template;
-use App\Translator;
+use App\TranslationManager;
 
 interface I_ToHtml
 {
@@ -267,8 +267,9 @@ class BodyRow extends Row
 
     public function toHtml()
     {
-        /** @var Translator $lang */
-        $lang = app()->make(Translator::class);
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $lang = $translationManager->user();
 
         // Zachowujemy poprzedni stan, aby go przywrocic
         $old_contents = $this->contents;
@@ -384,8 +385,9 @@ class Structure extends DOMElement
 
     public function toHtml()
     {
-        /** @var Translator $lang */
-        $lang = app()->make(Translator::class);
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $lang = $translationManager->user();
 
         // Tworzymy thead
         $head = new DOMElement();
@@ -515,8 +517,9 @@ class Wrapper extends Div
         /** @var Template $template */
         $template = app()->make(Template::class);
 
-        /** @var Translator $lang */
-        $lang = app()->make(Translator::class);
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $lang = $translationManager->user();
 
         $old_contets = $this->contents;
 
