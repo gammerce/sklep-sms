@@ -444,8 +444,9 @@ function validate_payment($purchase_data)
 
     if ($purchase_data->getPayment('method') == "sms") {
         // Sprawdzamy kod zwrotny
-        $sms_return = $payment->pay_sms($purchase_data->getPayment('sms_code'), $purchase_data->getTariff(),
-            $purchase_data->user);
+        $sms_return = $payment->pay_sms(
+            $purchase_data->getPayment('sms_code'), $purchase_data->getTariff(), $purchase_data->user
+        );
         $payment_id = $sms_return['payment_id'];
 
         if ($sms_return['status'] != IPayment_Sms::OK) {
@@ -787,7 +788,7 @@ function get_users_services($conditions = '', $take_out = true)
     // Niestety dla każdego modułu musimy wykonać osobne zapytanie :-(
     foreach ($heart->get_services_modules() as $service_module_data) {
         $table = $service_module_data['classsimple']::USER_SERVICE_TABLE;
-        if (!strlen($table) || $used_table[$table]) {
+        if (!strlen($table) || array_key_exists($table, $used_table)) {
             continue;
         }
 

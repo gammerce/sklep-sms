@@ -661,7 +661,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
                 // A tak to jak wygaśnie jakaś usługa, to wykona się cron, usunie ją i przeliczy flagi jeszcze raz
                 // I znowu weźmie maksa
                 // Czyli stan w tabeli players flags nie jest do końca odzwierciedleniem rzeczywistości :)
-                $flags[$service['flags'][$i]] = $this->max_minus($flags[$service['flags'][$i]], $row['expire']);
+                $flags[$service['flags'][$i]] = $this->max_minus(
+                    array_get($flags, $service['flags'][$i]), $row['expire']
+                );
             }
         }
 

@@ -50,7 +50,12 @@ class Database
 
     public function close()
     {
+        if ($this->link === null) {
+            return;
+        }
+
         mysqli_close($this->link);
+        $this->link = null;
     }
 
     public function prepare($query, $values)
@@ -161,6 +166,16 @@ class Database
     public function get_last_query()
     {
         return $this->query;
+    }
+
+    public function start_transaction()
+    {
+        mysqli_begin_transaction($this->link);
+    }
+
+    public function rollback()
+    {
+        mysqli_rollback($this->link);
     }
 
     private function exception($message_id)

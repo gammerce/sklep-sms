@@ -106,7 +106,7 @@ class Heart
         $className = $this->services_classes[$service['module']]['class'];
 
         // Jeszcze sprawdzamy, czy moduł został prawidłowo stworzony
-        return strlen($className) ? new $className($service) : null;
+        return strlen($className) ? app()->makeWith($className, ['service' => $service]) : null;
     }
 
     // Funkcja zwraca klasę modułu przez jego id

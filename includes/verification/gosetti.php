@@ -35,11 +35,11 @@ class PaymentModule_Gosetti extends PaymentModule implements IPayment_Sms
 
     public function verify_sms($return_code, $number)
     {
-        $response = curl_get_contents(
-            'https://gosetti.pl/Api/SmsApiV2CheckCode.php' .
+        $url = 'https://gosetti.pl/Api/SmsApiV2CheckCode.php' .
             '?UserId=' . urlencode($this->account_id) .
-            '&Code=' . urlencode($return_code)
-        );
+            '&Code=' . urlencode($return_code);
+
+        $response = curl_get_contents($url);
 
         if ($response === false) {
             return IPayment_Sms::NO_CONNECTION;

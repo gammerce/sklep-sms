@@ -112,8 +112,16 @@ class Payment
             }
         }
 
+        // Dodanie informacji o płatności sms
         if ($sms_return['status'] == IPayment_Sms::OK) {
-            // Dodanie informacji o płatności sms
+            if (isset($sms_return['free'])) {
+                $free = (bool)$sms_return['free'];
+            } elseif (isset($db_code)) {
+                $free = (bool)$db_code['free'];
+            } else {
+                $free = false;
+            }
+
             $this->db->query($this->db->prepare(
                 "INSERT INTO `" . TABLE_PREFIX . "payment_sms` (`code`, `income`, `cost`, `text`, `number`, `ip`, `platform`, `free`) " .
                 "VALUES ('%s','%d','%d','%s','%s','%s','%s','%d')",
@@ -125,42 +133,57 @@ class Payment
                     $sms_number,
                     $user->getLastIp(),
                     $user->getPlatform(),
-                    $sms_return['free'] ? 1 : $db_code['free'],
+                    $free,
                 ]
             ));
 
             $payment_id = $this->db->last_id();
         } // SMS został wysłany na błędny numer
-        else {
-            if ($sms_return['status'] == IPayment_Sms::BAD_NUMBER && isset($sms_return['tariff'])) {
-                // Dodajemy kod do listy kodów do wykorzystania
-                $this->db->query($this->db->prepare(
-                    "INSERT INTO `" . TABLE_PREFIX . "sms_codes` " .
-                    "SET `code` = '%s', `tariff` = '%d', `free` = '0'",
-                    [$sms_code, $sms_return['tariff']]
-                ));
+        elseif ($sms_return['status'] == IPayment_Sms::BAD_NUMBER && isset($sms_return['tariff'])) {
+            // Dodajemy kod do listy kodów do wykorzystania
+            $this->db->query($this->db->prepare(
+                "INSERT INTO `" . TABLE_PREFIX . "sms_codes` " .
+                "SET `code` = '%s', `tariff` = '%d', `free` = '0'",
+                [$sms_code, $sms_return['tariff']]
+            ));
 
-                log_info($this->langShop->sprintf($this->langShop->translate('add_code_to_reuse'), $sms_code,
-                    $sms_return['tariff'],
-                    $user->getUsername(), $user->getUid(), $user->getLastIp(), $tariff->getId()));
-            } else {
-                if ($sms_return['status'] != Payment::SMS_NOT_SUPPORTED) {
-                    log_info($this->langShop->sprintf($this->langShop->translate('bad_sms_code_used'),
-                        $user->getUsername(),
-                        $user->getUid(), $user->getLastIp(),
-                        $sms_code, $this->getPaymentModule()->getSmsCode(), $sms_number, $sms_return['status']));
-                }
-            }
+            log_info($this->langShop->sprintf(
+                $this->langShop->translate('add_code_to_reuse'),
+                $sms_code,
+                $sms_return['tariff'],
+                $user->getUsername(),
+                $user->getUid(),
+                $user->getLastIp(),
+                $tariff->getId()
+            ));
+        } elseif ($sms_return['status'] != Payment::SMS_NOT_SUPPORTED) {
+            log_info($this->langShop->sprintf(
+                $this->langShop->translate('bad_sms_code_used'),
+                $user->getUsername(),
+                $user->getUid(), $user->getLastIp(),
+                $sms_code, $this->getPaymentModule()->getSmsCode(), $sms_number, $sms_return['status']
+            ));
         }
 
         return [
             'status'     => $sms_return['status'],
-            'text'       => if_strlen2(
-                $sms_return['text'],
-                if_strlen2($this->lang->translate('sms_info_' . $sms_return['status']), $sms_return['status'])
-            ),
-            'payment_id' => $payment_id,
+            'text'       => $this->getSmsText($sms_return),
+            'payment_id' => isset($payment_id) ? $payment_id : null,
         ];
+    }
+
+    protected function getSmsText($smsReturn)
+    {
+        if (isset($smsReturn['text']) && strlen($smsReturn['text'])) {
+            return $smsReturn['text'];
+        }
+
+        $text = $this->lang->translate('sms_info_' . $smsReturn['status']);
+        if (strlen($text)) {
+            return $text;
+        }
+
+        return $smsReturn['status'];
     }
 
     /**

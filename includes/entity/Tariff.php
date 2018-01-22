@@ -4,16 +4,16 @@ use App\Settings;
 
 class Entity_Tariff
 {
-    /** @var  int */
+    /** @var int */
     private $id;
 
-    /** @var  string */
+    /** @var string */
     private $number;
 
-    /** @var  int */
+    /** @var int */
     private $provision;
 
-    /** @var  bool */
+    /** @var bool */
     private $predefined = false;
 
     public function __toString() // Potrzebne do funkcji array_unique
