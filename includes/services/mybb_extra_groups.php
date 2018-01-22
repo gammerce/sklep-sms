@@ -21,11 +21,15 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
     /** @var Translator */
     protected $lang;
 
+    /** @var Settings */
+    protected $settings;
+
     public function __construct($service = null)
     {
         parent::__construct($service);
 
         $this->lang = app()->make(Translator::class);
+        $this->settings = app()->make(Settings::class);
     }
 
     /**
@@ -164,8 +168,6 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 
     public function user_service_admin_display_get($get, $post)
     {
-        global $db, $settings, $lang;
-
         /** @var CurrentPage $currentPage */
         $currentPage = app()->make(CurrentPage::class);
 
@@ -176,14 +178,14 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 
         $table = new Table\Structure();
 
-        $cell = new Table\Cell($lang->translate('id'));
+        $cell = new Table\Cell($this->lang->translate('id'));
         $cell->setParam('headers', 'id');
         $table->addHeadCell($cell);
 
-        $table->addHeadCell(new Table\Cell($lang->translate('user')));
-        $table->addHeadCell(new Table\Cell($lang->translate('service')));
-        $table->addHeadCell(new Table\Cell($lang->translate('mybb_user')));
-        $table->addHeadCell(new Table\Cell($lang->translate('expires')));
+        $table->addHeadCell(new Table\Cell($this->lang->translate('user')));
+        $table->addHeadCell(new Table\Cell($this->lang->translate('service')));
+        $table->addHeadCell(new Table\Cell($this->lang->translate('mybb_user')));
+        $table->addHeadCell(new Table\Cell($this->lang->translate('expires')));
 
         // Wyszukujemy dane ktore spelniaja kryteria
         $where = '';
@@ -195,7 +197,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
             $where = "WHERE " . $where . ' ';
         }
 
-        $result = $db->query(
+        $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS us.id, us.uid, u.username, " .
             "s.id AS `service_id`, s.name AS `service`, us.expire, usmeg.mybb_uid " .
             "FROM `" . TABLE_PREFIX . "user_service` AS us " .
@@ -207,17 +209,18 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
             "LIMIT " . get_row_limit($pageNumber)
         );
 
-        $table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+        $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
-        while ($row = $db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetch_array_assoc($result)) {
             $body_row = new Table\BodyRow();
 
             $body_row->setDbId($row['id']);
-            $body_row->addCell(new Table\Cell($row['uid'] ? $row['username'] . " ({$row['uid']})" : $lang->translate('none')));
+            $body_row->addCell(new Table\Cell($row['uid'] ? $row['username'] . " ({$row['uid']})" : $this->lang->translate('none')));
             $body_row->addCell(new Table\Cell($row['service']));
             $body_row->addCell(new Table\Cell($row['mybb_uid']));
-            $body_row->addCell(new Table\Cell($row['expire'] == '-1' ? $lang->translate('never') : date($settings['date_format'],
-                $row['expire'])));
+            $body_row->addCell(new Table\Cell($row['expire'] == '-1'
+                ? $this->lang->translate('never')
+                : date($this->settings['date_format'], $row['expire'])));
             if (get_privilages("manage_user_services")) {
                 $body_row->setButtonDelete(true);
                 $body_row->setButtonEdit(false);
@@ -248,14 +251,8 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
     /** @var Database */
     protected $db_mybb = null;
 
-    /** @var Database */
-    protected $db;
-
     /** @var Translator */
     protected $langShop;
-
-    /** @var Settings */
-    protected $settings;
 
     /** @var Auth */
     protected $auth;
@@ -269,8 +266,6 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 
         global $lang_shop;
         $this->langShop = $lang_shop;
-        $this->db = app()->make(Database::class);
-        $this->settings = app()->make(Settings::class);
         $this->auth = app()->make(Auth::class);
         $this->heart = app()->make(Heart::class);
 

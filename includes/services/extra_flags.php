@@ -26,9 +26,6 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
     /** @var Settings */
     protected $settings;
 
-    /** @var Database */
-    protected $db;
-
     public function __construct($service = null)
     {
         parent::__construct($service);
@@ -37,7 +34,6 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
         $this->lang = app()->make(Translator::class);
         $this->langShop = $lang_shop;
         $this->settings = app()->make(Settings::class);
-        $this->db = app()->make(Database::class);
     }
 
     public function service_admin_extra_fields_get()

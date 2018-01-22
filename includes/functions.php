@@ -1,7 +1,11 @@
 <?php
 
 use App\Auth;
+use App\Database;
+use App\Heart;
 use App\Payment;
+use App\Settings;
+use App\Translator;
 use Illuminate\Container\Container;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -65,7 +69,8 @@ function output_page($output, $header = 0)
  */
 function get_content($element, $withenvelope = true)
 {
-    global $heart;
+    /** @var Heart $heart */
+    $heart = app()->make(Heart::class);
 
     if (($block = $heart->get_block($element)) === null) {
         return "";
@@ -76,7 +81,9 @@ function get_content($element, $withenvelope = true)
 
 function get_row_limit($page, $row_limit = 0)
 {
-    global $settings;
+    /** @var Settings $settings */
+    $settings = app()->make(Settings::class);
+
     $row_limit = $row_limit ? $row_limit : $settings['row_limit'];
 
     return ($page - 1) * $row_limit . "," . $row_limit;
@@ -84,7 +91,8 @@ function get_row_limit($page, $row_limit = 0)
 
 function get_pagination($all, $current_page, $script, $get, $row_limit = 0)
 {
-    global $settings;
+    /** @var Settings $settings */
+    $settings = app()->make(Settings::class);
 
     $row_limit = $row_limit ? $row_limit : $settings['row_limit'];
 
@@ -204,7 +212,9 @@ function get_privilages($which, $user = null)
 {
     // Jeżeli nie podano użytkownika
     if ($user === null) {
-        global $user;
+        /** @var Auth $auth */
+        $auth = app()->make(Auth::class);
+        $user = $auth->user();
     }
 
     if ($user === null) {
@@ -248,7 +258,9 @@ function get_privilages($which, $user = null)
  */
 function charge_wallet($uid, $amount)
 {
-    global $db;
+    /** @var Database $db */
+    $db = app()->make(Database::class);
+
     $db->query($db->prepare(
         "UPDATE `" . TABLE_PREFIX . "users` " .
         "SET `wallet` = `wallet` + '%d' " .
@@ -264,7 +276,8 @@ function charge_wallet($uid, $amount)
  */
 function update_servers_services($data)
 {
-    global $db;
+    /** @var Database $db */
+    $db = app()->make(Database::class);
 
     $delete = [];
     $add = [];
@@ -304,7 +317,14 @@ function update_servers_services($data)
  */
 function validate_payment($purchase_data)
 {
-    global $heart, $settings, $lang;
+    /** @var Translator $lang */
+    $lang = app()->make(Translator::class);
+
+    /** @var Heart $heart */
+    $heart = app()->make(Heart::class);
+
+    /** @var Settings $settings */
+    $settings = app()->make(Settings::class);
 
     $warnings = [];
 
@@ -486,7 +506,8 @@ function validate_payment($purchase_data)
  */
 function pay_by_admin($user_admin)
 {
-    global $db;
+    /** @var Database $db */
+    $db = app()->make(Database::class);
 
     // Dodawanie informacji o płatności
     $db->query($db->prepare(
@@ -506,7 +527,11 @@ function pay_by_admin($user_admin)
  */
 function pay_wallet($cost, $user)
 {
-    global $db, $lang;
+    /** @var Translator $lang */
+    $lang = app()->make(Translator::class);
+
+    /** @var Database $db */
+    $db = app()->make(Database::class);
 
     // Sprawdzanie, czy jest wystarczająca ilość kasy w portfelu
     if ($cost > $user->getWallet()) {
@@ -538,7 +563,13 @@ function pay_wallet($cost, $user)
  */
 function pay_service_code($purchase_data, $service_module)
 {
-    global $db, $lang, $lang_shop;
+    global $lang_shop;
+
+    /** @var Translator $lang */
+    $lang = app()->make(Translator::class);
+
+    /** @var Database $db */
+    $db = app()->make(Database::class);
 
     $result = $db->query($db->prepare(
         "SELECT * FROM `" . TABLE_PREFIX . "service_codes` " .
@@ -621,7 +652,16 @@ function add_bought_service_info(
     $email,
     $extra_data = []
 ) {
-    global $heart, $db, $lang, $lang_shop;
+    global $lang_shop;
+
+    /** @var Database $db */
+    $db = app()->make(Database::class);
+
+    /** @var Translator $lang */
+    $lang = app()->make(Translator::class);
+
+    /** @var Heart $heart */
+    $heart = app()->make(Heart::class);
 
     // Dodajemy informacje o kupionej usludze do bazy danych
     $db->query($db->prepare(
@@ -671,7 +711,14 @@ function add_bought_service_info(
 //
 function purchase_info($data)
 {
-    global $heart, $db, $settings;
+    /** @var Database $db */
+    $db = app()->make(Database::class);
+
+    /** @var Heart $heart */
+    $heart = app()->make(Heart::class);
+
+    /** @var Settings $settings */
+    $settings = app()->make(Settings::class);
 
     // Wyszukujemy po id zakupu
     if (isset($data['purchase_id'])) {
@@ -714,7 +761,11 @@ function purchase_info($data)
  */
 function get_users_services($conditions = '', $take_out = true)
 {
-    global $heart, $db;
+    /** @var Database $db */
+    $db = app()->make(Database::class);
+
+    /** @var Heart $heart */
+    $heart = app()->make(Heart::class);
 
     if (my_is_integer($conditions)) {
         $conditions = "WHERE `id` = " . intval($conditions);
@@ -751,7 +802,14 @@ function get_users_services($conditions = '', $take_out = true)
 
 function delete_users_old_services()
 {
-    global $heart, $db, $lang_shop;
+    global $lang_shop;
+
+    /** @var Database $db */
+    $db = app()->make(Database::class);
+
+    /** @var Heart $heart */
+    $heart = app()->make(Heart::class);
+
     // Usunięcie przestarzałych usług użytkownika
     // Pierwsze pobieramy te, które usuniemy
     // Potem wywolujemy akcje na module, potem je usuwamy, a następnie wywołujemy akcje na module
@@ -799,7 +857,10 @@ function delete_users_old_services()
 
 function send_email($email, $name, $subject, $text)
 {
-    global $settings, $lang_shop;
+    global $lang_shop;
+
+    /** @var Settings $settings */
+    $settings = app()->make(Settings::class);
 
     ////////// USTAWIENIA //////////
     $email = filter_var($email, FILTER_VALIDATE_EMAIL);    // Adres e-mail adresata
@@ -833,7 +894,9 @@ function send_email($email, $name, $subject, $text)
 
 function log_info($string)
 {
-    global $db;
+    /** @var Database $db */
+    $db = app()->make(Database::class);
+
     $db->query($db->prepare(
         "INSERT INTO `" . TABLE_PREFIX . "logs` " .
         "SET `text` = '%s'",
@@ -911,7 +974,8 @@ function create_brick($text, $class = "", $alpha = 0.2)
 
 function get_platform($platform)
 {
-    global $lang;
+    /** @var Translator $lang */
+    $lang = app()->make(Translator::class);
 
     if ($platform == "engine_amxx") {
         return $lang->translate('amxx_server');
@@ -927,7 +991,8 @@ function get_platform($platform)
 // Zwraca nazwę typu
 function get_type_name($value)
 {
-    global $lang;
+    /** @var Translator $lang */
+    $lang = app()->make(Translator::class);
 
     if ($value == TYPE_NICK) {
         return $lang->translate('nickpass');
@@ -987,8 +1052,10 @@ function get_ip()
  */
 function convertDate($timestamp, $format = "")
 {
+    /** @var Settings $settings */
+    $settings = app()->make(Settings::class);
+
     if (!strlen($format)) {
-        global $settings;
         $format = $settings['date_format'];
     }
 
@@ -1030,7 +1097,8 @@ function get_sms_cost($number)
  */
 function get_sms_cost_brutto($number)
 {
-    global $settings;
+    /** @var Settings $settings */
+    $settings = app()->make(Settings::class);
 
     return ceil(get_sms_cost($number) * $settings['vat']);
 }
@@ -1067,7 +1135,8 @@ function valid_steam($steamid)
 
 function secondsToTime($seconds)
 {
-    global $lang;
+    /** @var Translator $lang */
+    $lang = app()->make(Translator::class);
 
     $dtF = new DateTime("@0");
     $dtT = new DateTime("@$seconds");
@@ -1097,7 +1166,8 @@ function mb_str_split($string)
 
 function searchWhere($search_ids, $search, &$where)
 {
-    global $db;
+    /** @var Database $db */
+    $db = app()->make(Database::class);
 
     $search_where = [];
     $search_like = $db->escape('%' . implode('%', mb_str_split($search)) . '%');
@@ -1250,7 +1320,8 @@ function my_is_integer($val)
  */
 function implode_esc($glue, $stack)
 {
-    global $db;
+    /** @var Database $db */
+    $db = app()->make(Database::class);
 
     $output = '';
     foreach ($stack as $value) {
@@ -1266,7 +1337,8 @@ function implode_esc($glue, $stack)
 
 function log_to_file($file, $message)
 {
-    global $settings;
+    /** @var Settings $settings */
+    $settings = app()->make(Settings::class);
 
     $text = date($settings['date_format']) . ": " . $message;
 

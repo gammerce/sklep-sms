@@ -1,5 +1,8 @@
 <?php
 
+use App\Heart;
+use App\Translator;
+
 $heart->register_service_module("other", "Inne", "ServiceOther", "ServiceOtherSimple");
 
 class ServiceOtherSimple extends Service implements IService_Create, IService_AdminManage, IService_AvailableOnServers
@@ -24,50 +27,63 @@ class ServiceOtherSimple extends Service implements IService_Create, IService_Ad
 
 class ServiceOther extends ServiceOtherSimple implements IService_Purchase, IService_PurchaseOutside
 {
+    /** @var Heart */
+    protected $heart;
+
+    /** @var Translator */
+    protected $lang;
+
+    public function __construct($service = null)
+    {
+        parent::__construct($service);
+
+        $this->heart = app()->make(Heart::class);
+        $this->lang = app()->make(Translator::class);
+    }
+
+
     /**
      * @param Entity_Purchase $purchase_data
      * @return array
      */
     public function purchase_data_validate($purchase_data)
     {
-        global $heart, $db, $lang;
-
         $warnings = [];
 
         // Serwer
         $server = [];
         if (!strlen($purchase_data->getOrder('server'))) {
-            $warnings['server'][] = $lang->translate('must_choose_server');
+            $warnings['server'][] = $this->lang->translate('must_choose_server');
         } else {
             // Sprawdzanie czy serwer o danym id istnieje w bazie
-            $server = $heart->get_server($purchase_data->getOrder('server'));
-            if (!$heart->server_service_linked($server['id'], $this->service['id'])) {
-                $warnings['server'][] = $lang->translate('chosen_incorrect_server');
+            $server = $this->heart->get_server($purchase_data->getOrder('server'));
+            if (!$this->heart->server_service_linked($server['id'], $this->service['id'])) {
+                $warnings['server'][] = $this->lang->translate('chosen_incorrect_server');
             }
         }
 
         // Wartość usługi
         $price = [];
         if (!strlen($purchase_data->getTariff())) {
-            $warnings['value'][] = $lang->translate('must_choose_amount');
+            $warnings['value'][] = $this->lang->translate('must_choose_amount');
         } else {
             // Wyszukiwanie usługi o konkretnej cenie
-            $result = $db->query($db->prepare(
+            $result = $this->db->query($this->db->prepare(
                 "SELECT * FROM `" . TABLE_PREFIX . "pricelist` " .
                 "WHERE `service` = '%s' AND `tariff` = '%d' AND ( `server` = '%d' OR `server` = '-1' )",
                 [$this->service['id'], $purchase_data->getTariff(), $server['id']]
             ));
 
-            if (!$db->num_rows($result)) // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
+            if (!$this->db->num_rows($result)) // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
             {
                 return [
                     'status'   => "no_option",
-                    'text'     => $lang->translate('service_not_affordable'),
+                    'text'     => $this->lang->translate('service_not_affordable'),
                     'positive' => false,
                 ];
             }
 
-            $price = $db->fetch_array_assoc($result);
+            $price = $this->db->fetch_array_assoc($result);
         }
 
         // E-mail
@@ -79,7 +95,7 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
         if (!empty($warnings)) {
             return [
                 'status'   => "warnings",
-                'text'     => $lang->translate('form_wrong_filled'),
+                'text'     => $this->lang->translate('form_wrong_filled'),
                 'positive' => false,
                 'data'     => ['warnings' => $warnings],
             ];
@@ -96,7 +112,7 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
 
         return [
             'status'        => "ok",
-            'text'          => $lang->translate('purchase_form_validated'),
+            'text'          => $this->lang->translate('purchase_form_validated'),
             'positive'      => true,
             'purchase_data' => $purchase_data,
         ];

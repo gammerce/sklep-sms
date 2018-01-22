@@ -3,6 +3,8 @@
 namespace Admin\Table;
 
 use App\CurrentPage;
+use App\Template;
+use App\Translator;
 
 interface I_ToHtml
 {
@@ -265,7 +267,8 @@ class BodyRow extends Row
 
     public function toHtml()
     {
-        global $lang;
+        /** @var Translator $lang */
+        $lang = app()->make(Translator::class);
 
         // Zachowujemy poprzedni stan, aby go przywrocic
         $old_contents = $this->contents;
@@ -381,7 +384,8 @@ class Structure extends DOMElement
 
     public function toHtml()
     {
-        global $lang;
+        /** @var Translator $lang */
+        $lang = app()->make(Translator::class);
 
         // Tworzymy thead
         $head = new DOMElement();
@@ -508,7 +512,11 @@ class Wrapper extends Div
 
     public function toHtml()
     {
-        global $templates, $lang;
+        /** @var Template $template */
+        $template = app()->make(Template::class);
+
+        /** @var Translator $lang */
+        $lang = app()->make(Translator::class);
 
         $old_contets = $this->contents;
 
@@ -520,7 +528,7 @@ class Wrapper extends Div
 
         if ($this->search) {
             $search_text = $_GET['search'];
-            $buttons->addContent(new SimpleText(eval($templates->render("admin/form_search"))));
+            $buttons->addContent(new SimpleText(eval($template->render("admin/form_search"))));
         }
 
         foreach ($this->buttons as $button) {

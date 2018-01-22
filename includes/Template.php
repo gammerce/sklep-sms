@@ -3,6 +3,18 @@ namespace App;
 
 class Template
 {
+    /** @var Settings */
+    protected $settings;
+
+    /** @var Translator */
+    private $lang;
+
+    public function __construct(Settings $settings, Translator $lang)
+    {
+        $this->settings = $settings;
+        $this->lang = $lang;
+    }
+
     public function render($template, $eslashes = true, $htmlcomments = true)
     {
         return 'return "' . $this->get_template($template, $eslashes, $htmlcomments) . '";';
@@ -46,11 +58,9 @@ class Template
      */
     private function get_template($title, $eslashes = true, $htmlcomments = true)
     {
-        global $settings, $lang;
-
-        if (strlen($lang->getCurrentLanguageShort())) {
-            $filename = $title . "." . $lang->getCurrentLanguageShort();
-            $temp = SCRIPT_ROOT . "themes/{$settings['theme']}/{$filename}.html";
+        if (strlen($this->lang->getCurrentLanguageShort())) {
+            $filename = $title . "." . $this->lang->getCurrentLanguageShort();
+            $temp = SCRIPT_ROOT . "themes/{$this->settings['theme']}/{$filename}.html";
             if (file_exists($temp)) {
                 $path = $temp;
             } else {
@@ -63,7 +73,7 @@ class Template
 
         if (!isset($path)) {
             $filename = $title;
-            $temp = SCRIPT_ROOT . "themes/{$settings['theme']}/{$filename}.html";
+            $temp = SCRIPT_ROOT . "themes/{$this->settings['theme']}/{$filename}.html";
             if (file_exists($temp)) {
                 $path = $temp;
             } else {
@@ -83,10 +93,8 @@ class Template
 
     private function get_install_template($title, callable $pathResolver)
     {
-        global $lang;
-
-        if (strlen($lang->getCurrentLanguageShort())) {
-            $filename = $title . "." . $lang->getCurrentLanguageShort();
+        if (strlen($this->lang->getCurrentLanguageShort())) {
+            $filename = $title . "." . $this->lang->getCurrentLanguageShort();
             $temp = call_user_func($pathResolver, $filename);
             if (file_exists($temp)) {
                 $path = $temp;

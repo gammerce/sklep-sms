@@ -2,6 +2,7 @@
 
 use App\CurrentPage;
 use App\Heart;
+use App\Settings;
 
 abstract class Page
 {
@@ -11,12 +12,16 @@ abstract class Page
     /** @var Heart */
     protected $heart;
 
+    /** @var Settings */
+    protected $settings;
+
     /** @var CurrentPage */
     protected $currentPage;
 
     public function __construct()
     {
         $this->heart = app()->make(Heart::class);
+        $this->settings = app()->make(Settings::class);
         $this->currentPage = app()->make(CurrentPage::class);
         $this->heart->page_title = $this->title;
     }
@@ -31,14 +36,12 @@ abstract class Page
      */
     public function get_content($get, $post)
     {
-        global $settings;
-
         // Dodajemy wszystkie skrypty
         $path = "jscripts/pages/" . $this::PAGE_ID . "/";
         if (strlen($this::PAGE_ID) && file_exists(SCRIPT_ROOT . $path)) {
             foreach (scandir(SCRIPT_ROOT . $path) as $file) {
                 if (ends_at($file, ".js")) {
-                    $this->heart->script_add($settings['shop_url_slash'] . $path . $file . "?version=" . VERSION);
+                    $this->heart->script_add($this->settings['shop_url_slash'] . $path . $file . "?version=" . VERSION);
                 }
             }
         }
@@ -48,7 +51,7 @@ abstract class Page
         if (strlen($this::PAGE_ID) && file_exists(SCRIPT_ROOT . $path)) {
             foreach (scandir(SCRIPT_ROOT . $path) as $file) {
                 if (ends_at($file, ".css")) {
-                    $this->heart->style_add($settings['shop_url_slash'] . $path . $file . "?version=" . VERSION);
+                    $this->heart->style_add($this->settings['shop_url_slash'] . $path . $file . "?version=" . VERSION);
                 }
             }
         }
@@ -58,12 +61,12 @@ abstract class Page
             foreach ($this->heart->get_services_modules() as $module_info) {
                 $path = "styles/services/" . $module_info['id'] . ".css";
                 if (file_exists(SCRIPT_ROOT . $path)) {
-                    $this->heart->style_add($settings['shop_url_slash'] . $path . "?version=" . VERSION);
+                    $this->heart->style_add($this->settings['shop_url_slash'] . $path . "?version=" . VERSION);
                 }
 
                 $path = "jscripts/services/" . $module_info['id'] . ".js";
                 if (file_exists(SCRIPT_ROOT . $path)) {
-                    $this->heart->script_add($settings['shop_url_slash'] . $path . "?version=" . VERSION);
+                    $this->heart->script_add($this->settings['shop_url_slash'] . $path . "?version=" . VERSION);
                 }
             }
         }
@@ -100,8 +103,6 @@ abstract class PageSimple extends Page
     {
         global $lang, $templates;
 
-        $output = eval($templates->render($this->template));
-
-        return $output;
+        return eval($templates->render($this->template));
     }
 }

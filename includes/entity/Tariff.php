@@ -1,5 +1,7 @@
 <?php
 
+use App\Settings;
+
 class Entity_Tariff
 {
     /** @var  int */
@@ -72,7 +74,8 @@ class Entity_Tariff
      */
     public function getSmsCostBrutto()
     {
-        global $settings;
+        /** @var Settings $settings */
+        $settings = app()->make(Settings::class);
 
         return (float)number_format(get_sms_cost($this->getNumber()) * $settings['vat'] / 100.0, 2);
     }
