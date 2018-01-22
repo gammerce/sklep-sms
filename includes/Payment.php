@@ -1,10 +1,10 @@
 <?php
 namespace App;
 
-use Entity_Purchase;
-use Entity_Tariff;
-use Entity_TransferFinalize;
-use Entity_User;
+use App\Models\Purchase;
+use App\Models\Tariff;
+use App\Models\TransferFinalize;
+use App\Models\User;
 use IPayment_Sms;
 use IPayment_Transfer;
 
@@ -54,9 +54,9 @@ class Payment
     }
 
     /**
-     * @param string        $sms_code
-     * @param Entity_Tariff $tariff
-     * @param Entity_User   $user
+     * @param string $sms_code
+     * @param Tariff $tariff
+     * @param User   $user
      *
      * @return array
      */
@@ -187,7 +187,7 @@ class Payment
     }
 
     /**
-     * @param Entity_Purchase $purchase_data
+     * @param Purchase $purchase_data
      *
      * @return array
      */
@@ -217,7 +217,7 @@ class Payment
     }
 
     /**
-     * @param Entity_TransferFinalize $transfer_finalize
+     * @param TransferFinalize $transfer_finalize
      *
      * @return bool
      */
@@ -243,7 +243,7 @@ class Payment
             return false;
         }
 
-        /** @var Entity_Purchase $purchase_data */
+        /** @var Purchase $purchase_data */
         $purchase_data = unserialize(file_get_contents(SCRIPT_ROOT . "data/transfers/" . $transfer_finalize->getDataFilename()));
 
         // Fix: get user data again to avoid bugs linked with user wallet

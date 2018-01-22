@@ -178,6 +178,38 @@ class Database
         mysqli_rollback($this->link);
     }
 
+    public function dropAllTables()
+    {
+        $tables = $this->getAllTables();
+
+        $this->disableForeignKeyConstraints();
+        $this->query('drop table ' . implode(',', $tables));
+        $this->enableForeignKeyConstraints();
+    }
+
+    public function getAllTables()
+    {
+        $tables = [];
+        $result = $this->query('SHOW FULL TABLES WHERE table_type = \'BASE TABLE\'');
+
+        while ($row = $this->fetch_array_assoc($result)) {
+            $row = (array)$row;
+            $tables[] = reset($row);
+        }
+
+        return $tables;
+    }
+
+    public function disableForeignKeyConstraints()
+    {
+        $this->query('SET FOREIGN_KEY_CHECKS=0;');
+    }
+
+    public function enableForeignKeyConstraints()
+    {
+        $this->query('SET FOREIGN_KEY_CHECKS=1;');
+    }
+
     private function exception($message_id)
     {
         $exception = new SqlQueryException($message_id);

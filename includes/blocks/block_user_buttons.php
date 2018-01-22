@@ -5,8 +5,6 @@ use App\Heart;
 use App\Template;
 use App\TranslationManager;
 
-$heart->register_block("user_buttons", "BlockUserButtons");
-
 class BlockUserButtons extends Block
 {
     public function get_content_class()

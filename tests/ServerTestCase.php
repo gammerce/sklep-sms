@@ -20,8 +20,6 @@ class ServerTestCase extends TestCase
         $request = Request::create($this->prepareUrlForRequest(''), 'GET');
         $app->instance(Request::class, $request);
 
-        require __DIR__ . '/../bootstrap/app_global.php';
-
         return $app;
     }
 

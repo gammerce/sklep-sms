@@ -10,8 +10,19 @@ cache:
   directories:
     - $HOME/.composer/cache
 
+services:
+  - mysql
+
+env:
+  global:
+    - DB_HOST=localhost
+    - DB_DATABASE=myapp_test
+    - DB_USERNAME=root
+    - DB_PASSWORD=
+
 before_install:
   - composer self-update
+  - mysql -e 'CREATE DATABASE myapp_test;'
 
 install:
   - composer install --no-interaction

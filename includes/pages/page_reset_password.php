@@ -1,7 +1,5 @@
 <?php
 
-$heart->register_page("reset_password", "PageResetPassword");
-
 class PageResetPassword extends Page implements I_BeLoggedCannot
 {
     const PAGE_ID = "reset_password";

@@ -5,8 +5,6 @@ use Admin\Table\Cell;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 
-$heart->register_page("players_flags", "PageAdminPlayersFlags", "admin");
-
 class PageAdminPlayersFlags extends PageAdmin
 {
     const PAGE_ID = "players_flags";

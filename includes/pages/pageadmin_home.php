@@ -2,8 +2,6 @@
 
 use App\Version;
 
-$heart->register_page("home", "PageAdminMain", "admin");
-
 class PageAdminMain extends PageAdmin
 {
     const PAGE_ID = "home";

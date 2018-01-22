@@ -1,10 +1,11 @@
 <?php
+namespace App\Models;
 
 use App\Database;
 use App\Heart;
 use Symfony\Component\HttpFoundation\Request;
 
-class Entity_User
+class User
 {
     const TEST = 1;
 

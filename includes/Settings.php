@@ -1,7 +1,9 @@
 <?php
 namespace App;
 
-class Settings implements \ArrayAccess
+use ArrayAccess;
+
+class Settings implements ArrayAccess
 {
     /** @var array */
     protected $settings;

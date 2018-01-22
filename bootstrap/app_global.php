@@ -4,21 +4,14 @@ use App\Auth;
 use App\CronExceutor;
 use App\CurrentPage;
 use App\Database;
-use App\Exceptions\ShopNeedsInstallException;
 use App\Heart;
 use App\License;
 use App\Settings;
-use App\ShopState;
 use App\Template;
 use App\TranslationManager;
-use App\Translator;
 
 foreach ($_GET as $key => $value) {
     $_GET[$key] = urldecode($value);
-}
-
-if (!ShopState::isInstalled() || !$app->make(ShopState::class)->isUpToDate()) {
-    throw new ShopNeedsInstallException();
 }
 
 /** @var Database $db */
@@ -43,77 +36,6 @@ $translationManager = $app->make(TranslationManager::class);
 
 /** @var License $license */
 $license = $app->make(License::class);
-
-// Te interfejsy są potrzebne do klas różnego rodzajów
-foreach (scandir(SCRIPT_ROOT . "includes/interfaces") as $file) {
-    if (ends_at($file, ".php")) {
-        require_once SCRIPT_ROOT . "includes/interfaces/" . $file;
-    }
-}
-
-// Dodajemy klasy wszystkich modulow platnosci
-require_once SCRIPT_ROOT . "includes/PaymentModule.php";
-foreach (scandir(SCRIPT_ROOT . "includes/verification/interfaces") as $file) {
-    if (ends_at($file, ".php")) {
-        require_once SCRIPT_ROOT . "includes/verification/interfaces/" . $file;
-    }
-}
-
-foreach (scandir(SCRIPT_ROOT . "includes/verification") as $file) {
-    if (ends_at($file, ".php")) {
-        require_once SCRIPT_ROOT . "includes/verification/" . $file;
-    }
-}
-
-
-// Dodajemy klasy wszystkich usług
-require_once SCRIPT_ROOT . "includes/services/service.php";
-
-// Pierwsze ładujemy interfejsy
-foreach (scandir(SCRIPT_ROOT . "includes/services/interfaces") as $file) {
-    if (ends_at($file, ".php")) {
-        require_once SCRIPT_ROOT . "includes/services/interfaces/" . $file;
-    }
-}
-
-foreach (scandir(SCRIPT_ROOT . "includes/services") as $file) {
-    if (ends_at($file, ".php")) {
-        require_once SCRIPT_ROOT . "includes/services/" . $file;
-    }
-}
-
-
-// Dodajemy klasy wszystkich bloków
-require_once SCRIPT_ROOT . "includes/blocks/block.php";
-foreach (scandir(SCRIPT_ROOT . "includes/blocks") as $file) {
-    if (ends_at($file, ".php")) {
-        require_once SCRIPT_ROOT . "includes/blocks/" . $file;
-    }
-}
-
-
-// Dodajemy klasy wszystkich stron
-require_once SCRIPT_ROOT . "includes/pages/page.php";
-require_once SCRIPT_ROOT . "includes/pages/pageadmin.php";
-
-// Pierwsze ładujemy interfejsy
-foreach (scandir(SCRIPT_ROOT . "includes/pages/interfaces") as $file) {
-    if (ends_at($file, ".php")) {
-        require_once SCRIPT_ROOT . "includes/pages/interfaces/" . $file;
-    }
-}
-
-foreach (scandir(SCRIPT_ROOT . "includes/pages") as $file) {
-    if (ends_at($file, ".php")) {
-        require_once SCRIPT_ROOT . "includes/pages/" . $file;
-    }
-}
-
-foreach (scandir(SCRIPT_ROOT . "includes/entity") as $file) {
-    if (ends_at($file, ".php")) {
-        require_once SCRIPT_ROOT . "includes/entity/" . $file;
-    }
-}
 
 // Logowanie się do panelu admina
 if (admin_session()) {
@@ -146,11 +68,7 @@ $user = $auth->user();
 $user->setLastip(get_ip());
 $user->updateActivity();
 
-$settings->load();
-
 $lang = $translationManager->user();
-$langShop = $translationManager->shop();
-$langShop->setLanguage($settings['language']);
 
 if (isset($_GET['language'])) {
     $lang->setLanguage($_GET['language']);
@@ -165,8 +83,6 @@ if (isset($_GET['language'])) {
         $lang->setLanguage($settings['language']);
     }
 }
-
-$license->validate();
 
 if (!$license->isValid()) {
     if (get_privilages("manage_settings")) {

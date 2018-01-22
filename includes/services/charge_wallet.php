@@ -1,13 +1,11 @@
 <?php
 
 use App\Heart;
+use App\Models\Purchase;
 use App\Payment;
 use App\Settings;
 use App\TranslationManager;
 use App\Translator;
-
-$heart->register_service_module("charge_wallet", "Doładowanie Portfela", "ServiceChargeWallet",
-    "ServiceChargeWalletSimple");
 
 class ServiceChargeWalletSimple extends Service implements I_BeLoggedMust
 {
@@ -121,7 +119,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
             ];
         }
 
-        $purchase_data = new Entity_Purchase();
+        $purchase_data = new Purchase();
         $purchase_data->setService($this->service['id']);
         $purchase_data->setTariff($this->heart->getTariff($data['tariff']));
         $purchase_data->setPayment([

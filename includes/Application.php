@@ -1,12 +1,19 @@
 <?php
 namespace App;
 
+use App\Providers\AppServiceProvider;
+use App\Providers\HeartServiceProvider;
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidPathException;
 use Illuminate\Container\Container;
 
 class Application extends Container
 {
+    protected $providers = [
+        HeartServiceProvider::class,
+        AppServiceProvider::class,
+    ];
+
     public function __construct()
     {
         static::setInstance($this);
@@ -30,6 +37,8 @@ class Application extends Container
         $this->singleton(CurrentPage::class);
         $this->singleton(License::class);
         $this->singleton(TranslationManager::class);
+        $this->registerServiceProviders();
+        $this->bootServiceProviders();
     }
 
     protected function registerDatabase()
@@ -53,6 +62,24 @@ class Application extends Container
             (new Dotenv(SCRIPT_ROOT . "confidential"))->load();
         } catch (InvalidPathException $e) {
             //
+        }
+    }
+
+    protected function registerServiceProviders()
+    {
+        foreach ($this->providers as $provider) {
+            if (method_exists($provider, 'register')) {
+                $this->call("$provider@register");
+            }
+        }
+    }
+
+    protected function bootServiceProviders()
+    {
+        foreach ($this->providers as $provider) {
+            if (method_exists($provider, 'boot')) {
+                $this->call("$provider@boot");
+            }
         }
     }
 }

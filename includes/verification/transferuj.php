@@ -5,10 +5,9 @@
  * URL: https://forum.sklep-sms.pl/showthread.php?tid=88
  */
 
+use App\Models\TransferFinalize;
 use App\PaymentModule;
 use App\Settings;
-
-$heart->register_payment_module("transferuj", "PaymentModuleTransferuj");
 
 class PaymentModuleTransferuj extends PaymentModule implements IPayment_Transfer
 {
@@ -55,7 +54,7 @@ class PaymentModuleTransferuj extends PaymentModule implements IPayment_Transfer
 
     public function finalizeTransfer($get, $post)
     {
-        $transfer_finalize = new Entity_TransferFinalize();
+        $transfer_finalize = new TransferFinalize();
 
         if ($this->isPaymentValid($post)) {
             $transfer_finalize->setStatus(true);

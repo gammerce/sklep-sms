@@ -1,7 +1,7 @@
 <?php
 namespace App;
 
-use Entity_Tariff;
+use App\Models\Tariff;
 
 abstract class PaymentModule
 {
@@ -26,7 +26,7 @@ abstract class PaymentModule
      */
     protected $data = [];
 
-    /** @var Entity_Tariff[] */
+    /** @var Tariff[] */
     protected $tariffs = [];
 
     function __construct()
@@ -70,7 +70,7 @@ abstract class PaymentModule
         ));
 
         while ($row = $this->db->fetch_array_assoc($result)) {
-            $tariff = new Entity_Tariff($row['id'], $row['provision'], $row['predefined'], $row['number']);
+            $tariff = new Tariff($row['id'], $row['provision'], $row['predefined'], $row['number']);
 
             $this->tariffs[$tariff->getId()] = $tariff;
 
@@ -107,7 +107,7 @@ abstract class PaymentModule
     /**
      * @param int $tariff_id
      *
-     * @return Entity_Tariff
+     * @return Tariff
      */
     public function getTariffById($tariff_id)
     {
@@ -117,7 +117,7 @@ abstract class PaymentModule
     /**
      * @param string $number
      *
-     * @return Entity_Tariff
+     * @return Tariff
      */
     public function getTariffByNumber($number)
     {
@@ -129,7 +129,7 @@ abstract class PaymentModule
      *
      * @param float $cost
      *
-     * @return Entity_Tariff|null
+     * @return Tariff|null
      */
     public function getTariffBySmsCostBrutto($cost)
     {
@@ -143,7 +143,7 @@ abstract class PaymentModule
     }
 
     /**
-     * @return Entity_Tariff[]
+     * @return Tariff[]
      */
     public function getTariffs()
     {

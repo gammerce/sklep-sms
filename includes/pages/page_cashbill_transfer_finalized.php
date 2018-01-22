@@ -2,8 +2,6 @@
 
 use App\Payment;
 
-$heart->register_page("transfer_finalized", "PageCashbillTransferFinalized");
-
 class PageCashbillTransferFinalized extends Page
 {
     const PAGE_ID = "transfer_finalized";

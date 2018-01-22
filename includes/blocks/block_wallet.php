@@ -5,8 +5,6 @@ use App\Settings;
 use App\Template;
 use App\TranslationManager;
 
-$heart->register_block("wallet", "BlockWallet");
-
 class BlockWallet extends Block implements I_BeLoggedMust
 {
     public function get_content_class()

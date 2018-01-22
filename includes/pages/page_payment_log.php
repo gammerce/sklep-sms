@@ -7,8 +7,6 @@ use App\Template;
 use App\TranslationManager;
 use App\Translator;
 
-$heart->register_page("payment_log", "PagePaymentLog");
-
 class PagePaymentLog extends Page implements I_BeLoggedMust
 {
     const PAGE_ID = "payment_log";

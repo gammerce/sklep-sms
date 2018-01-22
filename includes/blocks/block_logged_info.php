@@ -1,7 +1,5 @@
 <?php
 
-$heart->register_block("logged_info", "BlockLoggedInfo");
-
 class BlockLoggedInfo extends BlockSimple implements I_BeLoggedMust
 {
     protected $template = "logged_in_informations";

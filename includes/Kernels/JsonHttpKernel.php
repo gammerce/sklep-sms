@@ -4,11 +4,11 @@ namespace App\Kernels;
 use App\Auth;
 use App\Database;
 use App\Heart;
+use App\Models\Purchase;
 use App\Payment;
 use App\Settings;
 use App\Template;
 use App\TranslationManager;
-use Entity_Purchase;
 use PageAdminIncome;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -399,7 +399,7 @@ class JsonHttpKernel extends Kernel
             } else {
                 //
                 // Uzupełniamy brakujące dane
-                /** @var Entity_Purchase $purchase_data */
+                /** @var Purchase $purchase_data */
                 $purchase_data = $return_data['purchase_data'];
 
                 if ($purchase_data->getService() === null) {
@@ -443,7 +443,7 @@ class JsonHttpKernel extends Kernel
                 json_output("wrong_sign", $lang->translate('wrong_sign'), 0);
             }
 
-            /** @var Entity_Purchase $purchase_data */
+            /** @var Purchase $purchase_data */
             $purchase_data = unserialize(base64_decode($_POST['purchase_data']));
 
             // Fix: get user data again to avoid bugs linked with user wallet

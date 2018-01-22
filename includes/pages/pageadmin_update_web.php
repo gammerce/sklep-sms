@@ -4,8 +4,6 @@ use App\Template;
 use App\Translator;
 use App\Version;
 
-$heart->register_page("update_web", "PageAdminUpdateWeb", "admin");
-
 class PageAdminUpdateWeb extends PageAdmin
 {
     const PAGE_ID = "update_web";

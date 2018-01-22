@@ -1,6 +1,7 @@
 <?php
+namespace App\Models;
 
-class Entity_MybbUser
+class MybbUser
 {
     /** @var int */
     private $uid;

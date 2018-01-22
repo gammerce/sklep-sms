@@ -1,10 +1,9 @@
 <?php
 
 use App\Heart;
+use App\Models\Purchase;
 use App\TranslationManager;
 use App\Translator;
-
-$heart->register_service_module("other", "Inne", "ServiceOther", "ServiceOtherSimple");
 
 class ServiceOtherSimple extends Service implements IService_Create, IService_AdminManage, IService_AvailableOnServers
 {
@@ -45,7 +44,7 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
     }
 
     /**
-     * @param Entity_Purchase $purchase_data
+     * @param Purchase $purchase_data
      * @return array
      */
     public function purchase_data_validate($purchase_data)

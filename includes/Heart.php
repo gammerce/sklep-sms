@@ -1,10 +1,10 @@
 <?php
 namespace App;
 
+use App\Models\Tariff;
+use App\Models\User;
 use Block;
 use BlockSimple;
-use Entity_Tariff;
-use Entity_User;
 use Exception;
 use IPageAdmin_ActionBox;
 use Page;
@@ -35,7 +35,7 @@ class Heart
 
     private $servers_services_fetched = false;
 
-    /** @var Entity_Tariff[] */
+    /** @var Tariff[] */
     private $tariffs = [];
     private $tariffs_fetched = false;
     public $page_title;
@@ -46,7 +46,7 @@ class Heart
     private $pages_classes = [];
     private $blocks_classes = [];
 
-    /** @var array Entity_User[] */
+    /** @var User[] */
     private $users = [];
     private $groups = [];
     private $groups_fetched = false;
@@ -416,7 +416,7 @@ class Heart
     //
 
     /**
-     * @return Entity_Tariff[]
+     * @return Tariff[]
      */
     public function getTariffs()
     {
@@ -430,7 +430,7 @@ class Heart
     /**
      * @param int $id
      *
-     * @return Entity_Tariff | null
+     * @return Tariff | null
      */
     public function getTariff($id)
     {
@@ -450,7 +450,7 @@ class Heart
     {
         $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "tariffs`");
         while ($row = $this->db->fetch_array_assoc($result)) {
-            $this->tariffs[$row['id']] = new Entity_Tariff($row['id'], $row['provision'], $row['predefined']);
+            $this->tariffs[$row['id']] = new Tariff($row['id'], $row['provision'], $row['predefined']);
         }
 
         $this->tariffs_fetched = true;
@@ -465,7 +465,7 @@ class Heart
      * @param string $login
      * @param string $password
      *
-     * @return Entity_User
+     * @return User
      */
     public function get_user($uid = 0, $login = "", $password = "")
     {
@@ -475,13 +475,13 @@ class Heart
         }
 
         if ($uid || (strlen($login) && strlen($password))) {
-            $user = new Entity_User($uid, $login, $password);
+            $user = new User($uid, $login, $password);
             $this->users[$user->getUid()] = $user;
 
             return $user;
         }
 
-        return new Entity_User();
+        return new User();
     }
 
     public function has_user_group($uid, $gid)

@@ -1,7 +1,9 @@
 <?php
 namespace Tests;
 
+use App\Exceptions\ShopNeedsInstallException;
 use App\Kernels\KernelContract;
+use App\ShopState;
 use Symfony\Component\HttpFoundation\Request;
 
 trait MakesHttpRequests
@@ -13,6 +15,14 @@ trait MakesHttpRequests
 
         $request = Request::create($this->prepareUrlForRequest($uri), $method, $parameters);
         $this->app->instance(Request::class, $request);
+
+        $app = $this->app;
+        require __DIR__ . '/../bootstrap/app_global.php';
+
+        if (!ShopState::isInstalled() || !$this->app->make(ShopState::class)->isUpToDate()) {
+            throw new ShopNeedsInstallException();
+        }
+
         $response = $kernel->handle($request);
         $kernel->terminate($request, $response);
 

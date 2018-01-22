@@ -7,8 +7,6 @@ use App\Template;
 use App\TranslationManager;
 use App\Translator;
 
-$heart->register_page("user_own_services", "Page_UserOIwnServices");
-
 class Page_UserOIwnServices extends Page implements I_BeLoggedMust
 {
     const PAGE_ID = "user_own_services";

@@ -1,7 +1,5 @@
 <?php
 
-$heart->register_page("service_take_over", "PageTakeOverService");
-
 class PageTakeOverService extends Page implements I_BeLoggedMust
 {
     const PAGE_ID = "service_take_over";

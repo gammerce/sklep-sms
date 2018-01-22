@@ -2,8 +2,6 @@
 
 use App\PaymentModule;
 
-$heart->register_payment_module("hostplay", "PaymentModuleHostplay");
-
 class PaymentModuleHostplay extends PaymentModule implements IPayment_Sms
 {
 	const SERVICE_ID = "hostplay";

@@ -1,8 +1,9 @@
 <?php
+namespace App\Models;
 
 use App\Settings;
 
-class Entity_Tariff
+class Tariff
 {
     /** @var int */
     private $id;

@@ -6,8 +6,6 @@ use App\Template;
 use App\TranslationManager;
 use App\Translator;
 
-$heart->register_page("purchase", "PagePurchase");
-
 class PagePurchase extends Page
 {
     const PAGE_ID = "purchase";

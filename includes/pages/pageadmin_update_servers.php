@@ -1,7 +1,5 @@
 <?php
 
-$heart->register_page("update_servers", "PageAdminUpdateServers", "admin");
-
 class PageAdminUpdateServers extends PageAdmin
 {
     const PAGE_ID = "update_servers";

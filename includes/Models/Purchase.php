@@ -1,12 +1,12 @@
 <?php
+namespace App\Models;
 
 use App\Auth;
 
 /**
  * Obiekty tej klasy są używane podczas przeprowadzania zakupu
- * Class Entity_Purchase
  */
-class Entity_Purchase
+class Purchase
 {
     /**
      * @var string
@@ -21,12 +21,12 @@ class Entity_Purchase
     private $order = null;
 
     /**
-     * @var Entity_User
+     * @var User
      */
     public $user;
 
     /**
-     * @var Entity_Tariff
+     * @var Tariff
      */
     private $tariff = null;
 
@@ -70,7 +70,7 @@ class Entity_Purchase
     }
 
     /**
-     * @param Entity_Tariff $tariff
+     * @param Tariff $tariff
      */
     public function setTariff($tariff)
     {
@@ -123,7 +123,7 @@ class Entity_Purchase
     }
 
     /**
-     * @return Entity_Tariff
+     * @return Tariff
      */
     public function getTariff()
     {

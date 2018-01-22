@@ -2,8 +2,6 @@
 
 use Admin\Table;
 
-$heart->register_page("user_service", "PageAdmin_UserService", "admin");
-
 class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
 {
     const PAGE_ID = "user_service";

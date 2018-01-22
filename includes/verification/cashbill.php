@@ -1,8 +1,7 @@
 <?php
 
+use App\Models\TransferFinalize;
 use App\PaymentModule;
-
-$heart->register_payment_module("cashbill", "PaymentModule_Cashbill");
 
 class PaymentModule_Cashbill extends PaymentModule implements IPayment_Sms, IPayment_Transfer
 {
@@ -83,7 +82,7 @@ class PaymentModule_Cashbill extends PaymentModule implements IPayment_Sms, IPay
 
     public function finalizeTransfer($get, $post)
     {
-        $transfer_finalize = new Entity_TransferFinalize();
+        $transfer_finalize = new TransferFinalize();
 
         if ($this->check_sign($post, $this->getKey(),
                 $post['sign']) && strtoupper($post['status']) == 'OK' && $post['service'] == $this->getService()) {

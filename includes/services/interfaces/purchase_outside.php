@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Purchase;
+
 /**
  * Możliwość zakupu usługi z zewnątrz ( np. z serwera )
  * Implementacja tego interfejsu powinna pociągnąć za sobą implementacje interfejsu:
@@ -12,7 +14,7 @@ interface IService_PurchaseOutside
      * Metoda która sprawdza poprawność wprowadzonych danych zakupu,
      * wywoływana gdy zakup został przeprowadzony z zewnątrz, nie przez formularz na stronie WWW.
      *
-     * @param Entity_Purchase $purchase_data
+     * @param Purchase $purchase_data
      *
      * @return array
      *  status => string id wiadomości,

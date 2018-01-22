@@ -6,8 +6,6 @@ use Admin\Table\Img;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 
-$heart->register_page("users", "PageAdminUsers", "admin");
-
 class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 {
     const PAGE_ID = "users";

@@ -1,14 +1,14 @@
 <?php
 namespace App;
 
-use Entity_User;
+use App\Models\User;
 
 class Auth
 {
     /** @var Heart */
     private $heart;
 
-    /** @var Entity_User */
+    /** @var User */
     protected $user;
 
     public function __construct(Heart $heart)
@@ -17,7 +17,7 @@ class Auth
     }
 
     /**
-     * @return Entity_User
+     * @return User
      */
     public function user()
     {

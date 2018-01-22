@@ -2,8 +2,6 @@
 
 use App\PaymentModule;
 
-$heart->register_payment_module("homepay", "PaymentModuleHomepay");
-
 class PaymentModuleHomepay extends PaymentModule implements IPayment_Sms
 {
     const SERVICE_ID = "homepay";

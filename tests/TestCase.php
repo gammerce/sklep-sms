@@ -3,6 +3,8 @@ namespace Tests;
 
 use App\Application;
 use App\Database;
+use App\License;
+use Install\DatabaseMigration;
 use Mockery;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
@@ -20,9 +22,18 @@ class TestCase extends BaseTestCase
             $this->app = $this->createApplication();
         }
 
+        $this->mockLicense();
+
+        /** @var Database $db */
+        $db = $this->app->make(Database::class);
+
+        /** @var DatabaseMigration $databaseMigration */
+        $databaseMigration = $this->app->make(DatabaseMigration::class);
+
+        $db->dropAllTables();
+        $databaseMigration->install('lic_000', 'abc123', 'admin', 'abc123');
+
         if ($this->wrapInTransaction) {
-            /** @var Database $db */
-            $db = $this->app->make(Database::class);
             $db->start_transaction();
         }
     }
@@ -55,5 +66,17 @@ class TestCase extends BaseTestCase
     protected function createApplication()
     {
         return require __DIR__ . '/../bootstrap/app.php';
+    }
+
+    protected function mockLicense()
+    {
+        $license = Mockery::mock(License::class);
+        $license->shouldReceive('validate')->andReturn();
+        $license->shouldReceive('getPage')->andReturn('');
+        $license->shouldReceive('getExpires')->andReturn('');
+        $license->shouldReceive('isForever')->andReturn(true);
+        $license->shouldReceive('isValid')->andReturn(true);
+        $license->shouldReceive('getFooter')->andReturn('');
+        $this->app->instance(License::class, $license);
     }
 }

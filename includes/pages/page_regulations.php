@@ -1,7 +1,5 @@
 <?php
 
-$heart->register_page("regulations", "PageRegulations");
-
 class PageRegulations extends PageSimple
 {
     const PAGE_ID = "regulations";

@@ -1,6 +1,7 @@
 <?php
+namespace App\Models;
 
-class Entity_TransferFinalize
+class TransferFinalize
 {
     /**
      * Status płatności, czy wszystkie dane są prawidłowe

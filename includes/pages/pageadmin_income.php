@@ -1,7 +1,5 @@
 <?php
 
-$heart->register_page("income", "PageAdminIncome", "admin");
-
 class PageAdminIncome extends PageAdmin
 {
     const PAGE_ID = "income";

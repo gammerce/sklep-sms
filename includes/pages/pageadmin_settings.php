@@ -2,8 +2,6 @@
 
 use App\TranslationManager;
 
-$heart->register_page("settings", "PageAdminSettings", "admin");
-
 class PageAdminSettings extends PageAdmin
 {
     const PAGE_ID = "settings";

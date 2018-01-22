@@ -1,7 +1,5 @@
 <?php
 
-$heart->register_page("forgotten_password", "PageForgottenPassword");
-
 class PageForgottenPassword extends PageSimple implements I_BeLoggedCannot
 {
     const PAGE_ID = "forgotten_password";

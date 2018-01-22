@@ -5,10 +5,12 @@ use App\Auth;
 use App\Database;
 use App\Exceptions\SqlQueryException;
 use App\Heart;
+use App\Models\Pricelist;
+use App\Models\Purchase;
+use App\Models\Server;
 use App\Settings;
 use App\Template;
 use App\TranslationManager;
-use Entity_Purchase;
 use Symfony\Component\HttpFoundation\Request;
 
 class JsonHttpAdminKernel extends Kernel
@@ -100,7 +102,7 @@ class JsonHttpAdminKernel extends Kernel
             $payment_id = pay_by_admin($user);
 
             // Kupujemy usługę
-            $purchase_data = new Entity_Purchase();
+            $purchase_data = new Purchase();
             $purchase_data->user = $user2;
             $purchase_data->setPayment([
                 'method'     => "admin",
@@ -747,13 +749,8 @@ class JsonHttpAdminKernel extends Kernel
             }
 
             if ($action == "server_add") {
-                $db->query($db->prepare(
-                    "INSERT INTO `" . TABLE_PREFIX . "servers` " .
-                    "SET `name`='%s', `ip`='%s', `port`='%s', `sms_service`='%s'",
-                    [$_POST['name'], $_POST['ip'], $_POST['port'], $_POST['sms_service']]
-                ));
-
-                $server_id = $db->last_id();
+                $server = Server::create($_POST['name'], $_POST['ip'], $_POST['port'], $_POST['sms_service']);
+                $server_id = $server->getId();
             } elseif ($action == "server_edit") {
                 $db->query($db->prepare(
                     "UPDATE `" . TABLE_PREFIX . "servers` " .
@@ -1121,11 +1118,7 @@ class JsonHttpAdminKernel extends Kernel
             }
 
             if ($action == "price_add") {
-                $db->query($db->prepare(
-                    "INSERT INTO `" . TABLE_PREFIX . "pricelist` (`service`, `tariff`, `amount`, `server`) " .
-                    "VALUES( '%s', '%d', '%d', '%d' )",
-                    [$_POST['service'], $_POST['tariff'], $_POST['amount'], $_POST['server']]
-                ));
+                Pricelist::create($_POST['service'], $_POST['tariff'], $_POST['amount'], $_POST['server']);
 
                 log_info("Admin {$user->getUsername()}({$user->getUid()}) dodał cenę. ID: " . $db->last_id());
 

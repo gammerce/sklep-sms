@@ -1,8 +1,7 @@
 <?php
 
+use App\Models\Purchase;
 use App\Payment;
-
-$heart->register_page("payment", "PagePayment");
 
 class PagePayment extends Page
 {
@@ -27,13 +26,13 @@ class PagePayment extends Page
 
         global $heart;
 
-        /** @var Entity_Purchase $purchase_data */
+        /** @var Purchase $purchase_data */
         $purchase_data = unserialize(base64_decode($post['data']));
 
         // Fix: get user data again to avoid bugs linked with user wallet
         $purchase_data->user = $heart->get_user($purchase_data->user->getUid());
 
-        if (!($purchase_data instanceof Entity_Purchase)) {
+        if (!($purchase_data instanceof Purchase)) {
             return $lang->translate('error_occured');
         }
 

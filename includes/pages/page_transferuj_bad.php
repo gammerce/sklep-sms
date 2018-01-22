@@ -5,8 +5,6 @@
  * URL: https://forum.sklep-sms.pl/showthread.php?tid=88
  */
 
-$heart->register_page("transferuj_bad", "PageTransferujBad");
-
 class PageTransferujBad extends PageSimple
 {
     const PAGE_ID = "transferuj_bad";

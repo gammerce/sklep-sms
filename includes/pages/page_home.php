@@ -1,7 +1,5 @@
 <?php
 
-$heart->register_page("home", "PageMain");
-
 class PageMain extends PageSimple
 {
     const PAGE_ID = "home";

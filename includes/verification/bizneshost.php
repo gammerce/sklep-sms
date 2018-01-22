@@ -2,8 +2,6 @@
 
 use App\PaymentModule;
 
-$heart->register_payment_module("bizneshost", "PaymentModule_Bizneshost");
-
 class PaymentModule_Bizneshost extends PaymentModule implements IPayment_Sms
 {
     const SERVICE_ID = 'bizneshost';

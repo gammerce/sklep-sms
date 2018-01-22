@@ -2,10 +2,10 @@
 namespace App\Kernels;
 
 use App\Heart;
+use App\Models\Purchase;
 use App\Payment;
 use App\Settings;
 use App\TranslationManager;
-use Entity_Purchase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -40,7 +40,7 @@ class ServersStuffKernel extends Kernel
             }
 
             // Sprawdzamy dane zakupu
-            $purchaseData = new Entity_Purchase();
+            $purchaseData = new Purchase();
             $purchaseData->setService($service_module->service['id']);
             $purchaseData->user = $heart->get_user($request->get('uid'));
             $purchaseData->user->setPlatform($request->get('platform'));
@@ -83,7 +83,7 @@ class ServersStuffKernel extends Kernel
                 );
             }
 
-            /** @var Entity_Purchase $purchaseData */
+            /** @var Purchase $purchaseData */
             $purchaseData = $returnValidation['purchase_data'];
             $purchaseData->setPayment([
                 'method'      => $request->get('method'),

@@ -7,8 +7,6 @@ use Admin\Table\Img;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 
-$heart->register_page("bought_services", "PageAdminBoughtServices", "admin");
-
 class PageAdminBoughtServices extends PageAdmin
 {
     const PAGE_ID = "bought_services";

@@ -1,8 +1,10 @@
 <?php
 namespace Tests\Feature;
 
-use App\Database;
-use App\Entity\Pricelist;
+use App\Models\Pricelist;
+use App\Models\Server;
+use App\Models\ServerService;
+use App\Settings;
 use IPayment_Sms;
 use PaymentModule_Gosetti;
 use Tests\ServerTestCase;
@@ -10,44 +12,30 @@ use Tests\ServerTestCase;
 class PurchaseServiceFromServerTest extends ServerTestCase
 {
     /** @test */
-    public function abc123()
-    {
-        // given
-        /** @var Database $db */
-        $db = $this->app->make(Database::class);
-        $db->query("INSERT INTO ss_logs SET text = 'abc123'");
-
-        // when
-
-
-        // then
-
-    }
-
-    /** @test */
     public function player_can_purchase_service()
     {
         // given
-        $key = '630f889b7d0f479a6a408385d000ce08';
-        $action = 'purchase_service';
         $service = 'vip';
+        $tariff = 2;
         $transactionService = 'gosetti';
-        $server = 1;
-        $type = 1;
+        $type = TYPE_NICK;
         $authData = 'test';
         $password = 'test123';
         $smsCode = 'ABCD12EF';
         $method = 'sms';
-        $tariff = 2;
         $uid = 0;
         $platform = 'engine_amxx';
 
+        $server = Server::create('test', '127.0.0.1', '27015');
+        ServerService::create($server->getId(), $service);
+        Pricelist::create($service, $tariff, 20, $server->getId());
+
         $query = http_build_query([
-            'key'                 => $key,
-            'action'              => $action,
+            'key'                 => md5(app()->make(Settings::class)->get('random_key')),
+            'action'              => 'purchase_service',
             'service'             => $service,
             'transaction_service' => $transactionService,
-            'server'              => $server,
+            'server'              => $server->getId(),
             'type'                => $type,
             'auth_data'           => $authData,
             'password'            => $password,
@@ -58,7 +46,6 @@ class PurchaseServiceFromServerTest extends ServerTestCase
             'platform'            => $platform,
         ]);
 
-        Pricelist::create($service, $tariff, 20, $server);
         $this->mockGoSetti();
 
         // when

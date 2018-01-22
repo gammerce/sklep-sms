@@ -1,5 +1,4 @@
 <?php
-
 namespace Admin\Table;
 
 use App\CurrentPage;

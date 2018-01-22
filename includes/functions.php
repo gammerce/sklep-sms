@@ -3,6 +3,8 @@
 use App\Auth;
 use App\Database;
 use App\Heart;
+use App\Models\Purchase;
+use App\Models\User;
 use App\Payment;
 use App\Settings;
 use App\TranslationManager;
@@ -203,8 +205,8 @@ function is_logged()
 }
 
 /**
- * @param string      $which
- * @param Entity_User $user
+ * @param string $which
+ * @param User   $user
  *
  * @return bool
  */
@@ -311,7 +313,7 @@ function update_servers_services($data)
 }
 
 /**
- * @param Entity_Purchase $purchase_data
+ * @param Purchase $purchase_data
  *
  * @return array
  */
@@ -372,40 +374,34 @@ function validate_payment($purchase_data)
             'text'     => $lang->translate('no_login_no_wallet'),
             'positive' => false,
         ];
-    } else {
-        if ($purchase_data->getPayment('method') == "transfer") {
-            if ($purchase_data->getPayment('cost') <= 1) {
-                return [
-                    'status'   => "too_little_for_transfer",
-                    'text'     => $lang->sprintf($lang->translate('transfer_above_amount'), $settings['currency']),
-                    'positive' => false,
-                ];
-            }
-
-            if (!$payment->getPaymentModule()->supportTransfer()) {
-                return [
-                    'status'   => "transfer_unavailable",
-                    'text'     => $lang->translate('transfer_unavailable'),
-                    'positive' => false,
-                ];
-            }
-        } else {
-            if ($purchase_data->getPayment('method') == "sms" && !$payment->getPaymentModule()->supportSms()) {
-                return [
-                    'status'   => "sms_unavailable",
-                    'text'     => $lang->translate('sms_unavailable'),
-                    'positive' => false,
-                ];
-            } else {
-                if ($purchase_data->getPayment('method') == "sms" && $purchase_data->getTariff() === null) {
-                    return [
-                        'status'   => "no_sms_option",
-                        'text'     => $lang->translate('no_sms_payment'),
-                        'positive' => false,
-                    ];
-                }
-            }
+    } elseif ($purchase_data->getPayment('method') == "transfer") {
+        if ($purchase_data->getPayment('cost') <= 1) {
+            return [
+                'status'   => "too_little_for_transfer",
+                'text'     => $lang->sprintf($lang->translate('transfer_above_amount'), $settings['currency']),
+                'positive' => false,
+            ];
         }
+
+        if (!$payment->getPaymentModule()->supportTransfer()) {
+            return [
+                'status'   => "transfer_unavailable",
+                'text'     => $lang->translate('transfer_unavailable'),
+                'positive' => false,
+            ];
+        }
+    } elseif ($purchase_data->getPayment('method') == "sms" && !$payment->getPaymentModule()->supportSms()) {
+        return [
+            'status'   => "sms_unavailable",
+            'text'     => $lang->translate('sms_unavailable'),
+            'positive' => false,
+        ];
+    } elseif ($purchase_data->getPayment('method') == "sms" && $purchase_data->getTariff() === null) {
+        return [
+            'status'   => "no_sms_option",
+            'text'     => $lang->translate('no_sms_payment'),
+            'positive' => false,
+        ];
     }
 
     // Kod SMS
@@ -456,25 +452,21 @@ function validate_payment($purchase_data)
                 'positive' => false,
             ];
         }
-    } else {
-        if ($purchase_data->getPayment('method') == "wallet") {
-            // Dodanie informacji o płatności z portfela
-            $payment_id = pay_wallet($purchase_data->getPayment('cost'), $purchase_data->user);
+    } elseif ($purchase_data->getPayment('method') == "wallet") {
+        // Dodanie informacji o płatności z portfela
+        $payment_id = pay_wallet($purchase_data->getPayment('cost'), $purchase_data->user);
 
-            // Metoda pay_wallet zwróciła błąd.
-            if (is_array($payment_id)) {
-                return $payment_id;
-            }
-        } else {
-            if ($purchase_data->getPayment('method') == "service_code") {
-                // Dodanie informacji o płatności z portfela
-                $payment_id = pay_service_code($purchase_data, $service_module);
+        // Metoda pay_wallet zwróciła błąd.
+        if (is_array($payment_id)) {
+            return $payment_id;
+        }
+    } elseif ($purchase_data->getPayment('method') == "service_code") {
+        // Dodanie informacji o płatności z portfela
+        $payment_id = pay_service_code($purchase_data, $service_module);
 
-                // Funkcja pay_service_code zwróciła błąd.
-                if (is_array($payment_id)) {
-                    return $payment_id;
-                }
-            }
+        // Funkcja pay_service_code zwróciła błąd.
+        if (is_array($payment_id)) {
+            return $payment_id;
         }
     }
 
@@ -491,18 +483,17 @@ function validate_payment($purchase_data)
             'positive' => true,
             'data'     => ['bsid' => $bought_service_id],
         ];
-    } else {
-        if ($purchase_data->getPayment('method') == "transfer") {
-            $purchase_data->setDesc($lang->sprintf($lang->translate('payment_for_service'),
-                $service_module->service['name']));
+    } elseif ($purchase_data->getPayment('method') == "transfer") {
+        $purchase_data->setDesc(
+            $lang->sprintf($lang->translate('payment_for_service'), $service_module->service['name'])
+        );
 
-            return $payment->pay_transfer($purchase_data);
-        }
+        return $payment->pay_transfer($purchase_data);
     }
 }
 
 /**
- * @param Entity_User $user_admin
+ * @param User $user_admin
  *
  * @return int|string
  */
@@ -522,8 +513,8 @@ function pay_by_admin($user_admin)
 }
 
 /**
- * @param int         $cost
- * @param Entity_User $user
+ * @param int  $cost
+ * @param User $user
  *
  * @return array|int|string
  */
@@ -559,7 +550,7 @@ function pay_wallet($cost, $user)
 }
 
 /**
- * @param Entity_Purchase                                            $purchase_data
+ * @param Purchase                                                   $purchase_data
  * @param Service|ServiceChargeWallet|ServiceExtraFlags|ServiceOther $service_module
  *
  * @return array|int|string

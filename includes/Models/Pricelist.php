@@ -1,5 +1,5 @@
 <?php
-namespace App\Entity;
+namespace App\Models;
 
 use App\Database;
 
@@ -43,5 +43,30 @@ class Pricelist
         $id = $db->last_id();
 
         return new Pricelist($id, $service, $tariff, $amount, $server);
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getService()
+    {
+        return $this->service;
+    }
+
+    public function getTariff()
+    {
+        return $this->tariff;
+    }
+
+    public function getAmount()
+    {
+        return $this->amount;
+    }
+
+    public function getServer()
+    {
+        return $this->server;
     }
 }

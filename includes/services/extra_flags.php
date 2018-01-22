@@ -4,13 +4,10 @@ use Admin\Table;
 use App\Auth;
 use App\CurrentPage;
 use App\Heart;
+use App\Models\Purchase;
 use App\Settings;
 use App\TranslationManager;
 use App\Translator;
-
-$heart->register_service_module(
-    "extra_flags", "Dodatkowe Uprawnienia / Flagi", "ServiceExtraFlags", "ServiceExtraFlagsSimple"
-);
 
 class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, IService_Create, IService_AvailableOnServers, IService_UserServiceAdminDisplay
 {
@@ -332,7 +329,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
         // Pobieramy auth_data
         $auth_data = $this->get_auth_data($data);
 
-        $purchase_data = new Entity_Purchase();
+        $purchase_data = new Purchase();
         $purchase_data->setOrder([
             'server'    => $data['server'],
             'type'      => $data['type'],
@@ -347,7 +344,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
     }
 
     /**
-     * @param Entity_Purchase $purchase_data
+     * @param Purchase $purchase_data
      * @return array
      */
     public function purchase_data_validate($purchase_data)
@@ -813,7 +810,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
         // Dodawanie informacji o płatności
         $payment_id = pay_by_admin($user);
 
-        $purchase_data = new Entity_Purchase();
+        $purchase_data = new Purchase();
         $purchase_data->setService($this->service['id']);
         $purchase_data->user = $this->heart->get_user($data['uid']); // Pobieramy dane o użytkowniku na które jego wykupiona usługa
         $purchase_data->setPayment([

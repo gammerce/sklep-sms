@@ -6,8 +6,6 @@ use Admin\Table\Input;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 
-$heart->register_page("pricelist", "PageAdminPriceList", "admin");
-
 class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
 {
     const PAGE_ID = "pricelist";

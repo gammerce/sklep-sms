@@ -6,8 +6,6 @@ use Admin\Table\Input;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 
-$heart->register_page("services", "PageAdminServices", "admin");
-
 class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
 {
     const PAGE_ID = "services";

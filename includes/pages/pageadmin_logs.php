@@ -6,8 +6,6 @@ use Admin\Table\Div;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 
-$heart->register_page("logs", "PageAdminLogs", "admin");
-
 class PageAdminLogs extends PageAdmin
 {
     const PAGE_ID = "logs";

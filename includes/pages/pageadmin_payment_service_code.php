@@ -6,8 +6,6 @@ use Admin\Table\Div;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 
-$heart->register_page("payment_service_code", "PageAdminPaymentServiceCode", "admin");
-
 class PageAdminPaymentServiceCode extends PageAdmin
 {
     const PAGE_ID = "payment_service_code";

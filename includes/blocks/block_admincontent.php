@@ -4,8 +4,6 @@ use App\CurrentPage;
 use App\Heart;
 use App\Translator;
 
-$heart->register_block("admincontent", "BlockAdminContent");
-
 class BlockAdminContent extends Block
 {
     /** @var Heart */

@@ -6,13 +6,11 @@ use App\CurrentPage;
 use App\Database;
 use App\Exceptions\SqlQueryException;
 use App\Heart;
+use App\Models\MybbUser;
+use App\Models\Purchase;
 use App\Settings;
 use App\TranslationManager;
 use App\Translator;
-
-$heart->register_service_module(
-    "mybb_extra_groups", "Dodatkowe Grupy (MyBB)", "ServiceMybbExtraGroups", "ServiceMybbExtraGroupsSimple"
-);
 
 class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminManage, IService_Create, IService_UserServiceAdminDisplay
 {
@@ -386,7 +384,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
             ];
         }
 
-        $purchase_data = new Entity_Purchase();
+        $purchase_data = new Purchase();
         $purchase_data->setService($this->service['id']);
         $purchase_data->setOrder([
             'username' => $data['username'],
@@ -407,7 +405,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
     /**
      * Metoda zwraca szczegóły zamówienia, wyświetlane podczas zakupu usługi, przed płatnością.
      *
-     * @param Entity_Purchase $purchase_data
+     * @param Purchase $purchase_data
      *
      * @return string        Szczegóły zamówienia
      */
@@ -426,7 +424,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
     /**
      * Metoda wywoływana, gdy usługa została prawidłowo zakupiona
      *
-     * @param Entity_Purchase $purchase_data
+     * @param Purchase $purchase_data
      *
      * @return integer        value returned by function add_bought_service_info
      */
@@ -690,7 +688,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
         // Dodawanie informacji o płatności
         $payment_id = pay_by_admin($user);
 
-        $purchase_data = new Entity_Purchase();
+        $purchase_data = new Purchase();
         $purchase_data->setService($this->service['id']);
         $purchase_data->user = $this->heart->get_user($post['uid']);
         $purchase_data->setPayment([
@@ -743,7 +741,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
     /**
      * @param string|int $user_id Int - by uid, String - by username
      *
-     * @return null|Entity_MybbUser
+     * @return null|MybbUser
      */
     private function createMybbUser($user_id)
     {
@@ -770,7 +768,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 
         $row_mybb = $this->db_mybb->fetch_array_assoc($result);
 
-        $mybb_user = new Entity_MybbUser($row_mybb['uid'], $row_mybb['usergroup']);
+        $mybb_user = new MybbUser($row_mybb['uid'], $row_mybb['usergroup']);
         $mybb_user->setMybbAddGroups(explode(",", $row_mybb['additionalgroups']));
         $mybb_user->setMybbDisplayGroup($row_mybb['displaygroup']);
 
@@ -793,7 +791,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
     /**
      * Zapisuje dane o użytkowniku
      *
-     * @param Entity_MybbUser $mybb_user
+     * @param MybbUser $mybb_user
      */
     private function saveMybbUser($mybb_user)
     {

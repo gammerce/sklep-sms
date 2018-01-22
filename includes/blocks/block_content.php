@@ -4,8 +4,6 @@ use App\CurrentPage;
 use App\Heart;
 use App\Translator;
 
-$heart->register_block("content", "BlockContent");
-
 class BlockContent extends Block
 {
     /** @var Heart */
