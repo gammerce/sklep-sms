@@ -84,6 +84,10 @@ if (isset($_GET['language'])) {
     }
 }
 
+$settings->load();
+$translationManager->shop()->setLanguage($settings['language']);
+$license->validate();
+
 if (!$license->isValid()) {
     if (get_privilages("manage_settings")) {
         $user->removePrivilages();

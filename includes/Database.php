@@ -182,6 +182,10 @@ class Database
     {
         $tables = $this->getAllTables();
 
+        if (empty($tables)) {
+            return;
+        }
+
         $this->disableForeignKeyConstraints();
         $this->query('drop table ' . implode(',', $tables));
         $this->enableForeignKeyConstraints();

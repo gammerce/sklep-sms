@@ -17,14 +17,15 @@ abstract class Service
 
     public function __construct($service = null)
     {
+        $this->template = app()->make(Template::class);
+        $this->db = app()->make(Database::class);
+
         if (!is_array($service)) { // Podano błędne dane usługi
             $this->service = null;
             return;
         }
 
         $this->service = $service;
-        $this->template = app()->make(Template::class);
-        $this->db = app()->make(Database::class);
     }
 
     /**

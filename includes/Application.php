@@ -1,7 +1,6 @@
 <?php
 namespace App;
 
-use App\Providers\AppServiceProvider;
 use App\Providers\HeartServiceProvider;
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidPathException;
@@ -11,7 +10,6 @@ class Application extends Container
 {
     protected $providers = [
         HeartServiceProvider::class,
-        AppServiceProvider::class,
     ];
 
     public function __construct()

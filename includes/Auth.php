@@ -42,7 +42,7 @@ class Auth
     {
         $user = $this->heart->get_user(0, $username, $password);
 
-        if ($user->isLogged() && get_privilages("acp")) {
+        if ($user->isLogged() && get_privilages("acp", $user)) {
             $_SESSION['uid'] = $user->getUid();
         } else {
             $_SESSION['info'] = "wrong_data";

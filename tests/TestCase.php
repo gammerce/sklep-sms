@@ -4,6 +4,7 @@ namespace Tests;
 use App\Application;
 use App\Database;
 use App\License;
+use App\Settings;
 use Install\DatabaseMigration;
 use Mockery;
 use PHPUnit\Framework\TestCase as BaseTestCase;
@@ -27,11 +28,16 @@ class TestCase extends BaseTestCase
         /** @var Database $db */
         $db = $this->app->make(Database::class);
 
+        /** @var Settings $settings */
+        $settings = $this->app->make(Settings::class);
+
         /** @var DatabaseMigration $databaseMigration */
         $databaseMigration = $this->app->make(DatabaseMigration::class);
 
         $db->dropAllTables();
         $databaseMigration->install('lic_000', 'abc123', 'admin', 'abc123');
+
+        $settings->load();
 
         if ($this->wrapInTransaction) {
             $db->start_transaction();
