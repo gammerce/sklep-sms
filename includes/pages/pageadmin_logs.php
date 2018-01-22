@@ -8,15 +8,14 @@ use Admin\Table\Wrapper;
 
 class PageAdminLogs extends PageAdmin
 {
-    const PAGE_ID = "logs";
-    protected $privilage = "view_logs";
+    const PAGE_ID = 'logs';
+    protected $privilage = 'view_logs';
 
     public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('logs');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('logs');
     }
 
     protected function content($get, $post)

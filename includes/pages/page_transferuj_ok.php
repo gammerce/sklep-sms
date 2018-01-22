@@ -7,14 +7,13 @@
 
 class PageTransferujOk extends PageSimple
 {
-    const PAGE_ID = "transferuj_ok";
-    protected $template = "transferuj_ok";
+    const PAGE_ID = 'transferuj_ok';
+    protected $template = 'transferuj_ok';
 
     public function __construct()
     {
-        global $lang;
-        $this->title = "Płatność Zaakceptowana";
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = 'Płatność Zaakceptowana';
     }
 }

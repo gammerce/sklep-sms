@@ -7,14 +7,13 @@
 
 class PageTransferujBad extends PageSimple
 {
-    const PAGE_ID = "transferuj_bad";
-    protected $template = "transferuj_bad";
+    const PAGE_ID = 'transferuj_bad';
+    protected $template = 'transferuj_bad';
 
     public function __construct()
     {
-        global $lang;
-        $this->title = "Płatność Odrzucona";
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = 'Płatność Odrzucona';
     }
 }

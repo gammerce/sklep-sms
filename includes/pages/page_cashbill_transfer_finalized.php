@@ -4,14 +4,13 @@ use App\Payment;
 
 class PageCashbillTransferFinalized extends Page
 {
-    const PAGE_ID = "transfer_finalized";
+    const PAGE_ID = 'transfer_finalized';
 
     public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('transfer_finalized');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('transfer_finalized');
     }
 
     protected function content($get, $post)

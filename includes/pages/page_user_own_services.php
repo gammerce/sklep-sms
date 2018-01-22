@@ -4,25 +4,16 @@ use App\Auth;
 use App\Database;
 use App\Settings;
 use App\Template;
-use App\TranslationManager;
-use App\Translator;
 
 class Page_UserOIwnServices extends Page implements I_BeLoggedMust
 {
-    const PAGE_ID = "user_own_services";
-
-    /** @var Translator */
-    protected $lang;
+    const PAGE_ID = 'user_own_services';
 
     public function __construct()
     {
-        /** @var TranslationManager $translationManager */
-        $translationManager = app()->make(TranslationManager::class);
-        $this->lang = $translationManager->user();
-
-        $this->title = $this->lang->translate('user_own_services');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('user_own_services');
     }
 
     protected function content($get, $post)

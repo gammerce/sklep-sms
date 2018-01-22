@@ -8,14 +8,13 @@ use Admin\Table\Wrapper;
 
 class PageAdminPaymentTransfer extends PageAdmin
 {
-    const PAGE_ID = "payment_transfer";
+    const PAGE_ID = 'payment_transfer';
 
     public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('payments_transfer');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('payments_transfer');
     }
 
     protected function content($get, $post)

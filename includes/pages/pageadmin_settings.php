@@ -4,15 +4,14 @@ use App\TranslationManager;
 
 class PageAdminSettings extends PageAdmin
 {
-    const PAGE_ID = "settings";
-    protected $privilage = "manage_settings";
+    const PAGE_ID = 'settings';
+    protected $privilage = 'manage_settings';
 
     public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('settings');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('settings');
     }
 
     protected function content($get, $post)

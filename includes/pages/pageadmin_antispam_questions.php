@@ -8,15 +8,14 @@ use Admin\Table\Wrapper;
 
 class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionBox
 {
-    const PAGE_ID = "antispam_questions";
-    protected $privilage = "view_antispam_questions";
+    const PAGE_ID = 'antispam_questions';
+    protected $privilage = 'view_antispam_questions';
 
     public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('antispam_questions');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('antispam_questions');
     }
 
     protected function content($get, $post)

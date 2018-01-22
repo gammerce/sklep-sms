@@ -3,6 +3,8 @@
 use App\CurrentPage;
 use App\Heart;
 use App\Settings;
+use App\TranslationManager;
+use App\Translator;
 
 abstract class Page
 {
@@ -18,12 +20,17 @@ abstract class Page
     /** @var CurrentPage */
     protected $currentPage;
 
+    /** @var Translator */
+    protected $lang;
+
     public function __construct()
     {
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $this->lang = $translationManager->user();
         $this->heart = app()->make(Heart::class);
         $this->settings = app()->make(Settings::class);
         $this->currentPage = app()->make(CurrentPage::class);
-        $this->heart->page_title = $this->title;
     }
 
     /**

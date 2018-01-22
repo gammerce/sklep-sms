@@ -8,15 +8,14 @@ use Admin\Table\Wrapper;
 
 class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
 {
-    const PAGE_ID = "service_codes";
-    protected $privilage = "view_service_codes";
+    const PAGE_ID = 'service_codes';
+    protected $privilage = 'view_service_codes';
 
     public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('service_codes');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('service_codes');
     }
 
     protected function content($get, $post)

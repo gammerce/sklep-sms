@@ -4,8 +4,8 @@ use Admin\Table;
 
 class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
 {
-    const PAGE_ID = "user_service";
-    protected $privilage = "view_user_services";
+    const PAGE_ID = 'user_service';
+    protected $privilage = 'view_user_services';
 
     protected function content($get, $post)
     {

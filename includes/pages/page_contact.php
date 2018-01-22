@@ -2,14 +2,13 @@
 
 class PageContact extends PageSimple
 {
-    const PAGE_ID = "contact";
-    protected $template = "contact";
+    const PAGE_ID = 'contact';
+    protected $template = 'contact';
 
     public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('contact');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('contact');
     }
 }

@@ -8,15 +8,14 @@ use Admin\Table\Wrapper;
 
 class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
 {
-    const PAGE_ID = "servers";
-    protected $privilage = "manage_servers";
+    const PAGE_ID = 'servers';
+    protected $privilage = 'manage_servers';
 
     public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('servers');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('servers');
     }
 
     protected function content($get, $post)

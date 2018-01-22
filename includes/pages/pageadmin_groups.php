@@ -8,15 +8,14 @@ use Admin\Table\Wrapper;
 
 class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
 {
-    const PAGE_ID = "groups";
-    protected $privilage = "view_groups";
+    const PAGE_ID = 'groups';
+    protected $privilage = 'view_groups';
 
     public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('groups');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('groups');
     }
 
     protected function content($get, $post)

@@ -8,14 +8,13 @@ use Admin\Table\Wrapper;
 
 class PageAdminPaymentWallet extends PageAdmin
 {
-    const PAGE_ID = "payment_wallet";
+    const PAGE_ID = 'payment_wallet';
 
     public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('payments_wallet');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('payments_wallet');
     }
 
     protected function content($get, $post)

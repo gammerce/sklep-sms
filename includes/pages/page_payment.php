@@ -5,14 +5,13 @@ use App\Payment;
 
 class PagePayment extends Page
 {
-    const PAGE_ID = "payment";
+    const PAGE_ID = 'payment';
 
     public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('title_payment');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('title_payment');
     }
 
     protected function content($get, $post)

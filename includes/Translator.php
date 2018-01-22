@@ -140,7 +140,7 @@ class Translator
      */
     public function translate($key)
     {
-        return if_isset($this->translations[$key], $key);
+        return array_get($this->translations, $key, $key);
     }
 
     /**

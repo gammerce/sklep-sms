@@ -8,20 +8,13 @@ use App\Translator;
 
 class PagePurchase extends Page
 {
-    const PAGE_ID = "purchase";
-
-    /** @var Translator */
-    protected $lang;
+    const PAGE_ID = 'purchase';
 
     public function __construct()
     {
-        /** @var TranslationManager $translationManager */
-        $translationManager = app()->make(TranslationManager::class);
-        $this->lang = $translationManager->user();
-
-        $this->title = $this->lang->translate('purchase');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('purchase');
     }
 
     public function get_content($get, $post)

@@ -8,15 +8,14 @@ use Admin\Table\Wrapper;
 
 class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
 {
-    const PAGE_ID = "tariffs";
-    protected $privilage = "manage_settings";
+    const PAGE_ID = 'tariffs';
+    protected $privilage = 'manage_settings';
 
     public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('tariffs');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('tariffs');
     }
 
     protected function content($get, $post)

@@ -2,9 +2,9 @@
 
 class PageAdminIncome extends PageAdmin
 {
-    const PAGE_ID = "income";
+    const PAGE_ID = 'income';
 
-    protected $privilage = "view_income";
+    protected $privilage = 'view_income';
 
     protected $months = [
         '',
@@ -24,10 +24,9 @@ class PageAdminIncome extends PageAdmin
 
     public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('income');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('income');
     }
 
     protected function content($get, $post)

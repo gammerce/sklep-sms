@@ -2,14 +2,13 @@
 
 class PageRegister extends Page implements I_BeLoggedCannot
 {
-    const PAGE_ID = "register";
+    const PAGE_ID = 'register';
 
     public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('register');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('register');
     }
 
     protected function content($get, $post)

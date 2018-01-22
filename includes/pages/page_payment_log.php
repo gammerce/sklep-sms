@@ -4,25 +4,16 @@ use App\Auth;
 use App\Database;
 use App\Settings;
 use App\Template;
-use App\TranslationManager;
-use App\Translator;
 
 class PagePaymentLog extends Page implements I_BeLoggedMust
 {
-    const PAGE_ID = "payment_log";
-
-    /** @var Translator */
-    protected $lang;
+    const PAGE_ID = 'payment_log';
 
     public function __construct()
     {
-        /** @var TranslationManager $translationManager */
-        $translationManager = app()->make(TranslationManager::class);
-        $this->lang = $translationManager->user();
-
-        $this->title = $this->lang->translate('payment_log');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('payment_log');
     }
 
     protected function content($get, $post)

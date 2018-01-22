@@ -2,14 +2,13 @@
 
 class PageChangePassword extends PageSimple implements I_BeLoggedMust
 {
-    const PAGE_ID = "change_password";
-    protected $template = "change_password";
+    const PAGE_ID = 'change_password';
+    protected $template = 'change_password';
 
     public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('change_password');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('change_password');
     }
 }

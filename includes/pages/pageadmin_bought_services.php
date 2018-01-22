@@ -9,14 +9,13 @@ use Admin\Table\Wrapper;
 
 class PageAdminBoughtServices extends PageAdmin
 {
-    const PAGE_ID = "bought_services";
+    const PAGE_ID = 'bought_services';
 
     public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('bought_services');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('bought_services');
     }
 
     protected function content($get, $post)

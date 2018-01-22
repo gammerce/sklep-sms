@@ -2,14 +2,13 @@
 
 class PageRegulations extends PageSimple
 {
-    const PAGE_ID = "regulations";
-    protected $template = "regulations_desc";
+    const PAGE_ID = 'regulations';
+    protected $template = 'regulations_desc';
 
     public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('regulations');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('regulations');
     }
 }

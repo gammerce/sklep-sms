@@ -7,15 +7,14 @@ use Admin\Table\Wrapper;
 
 class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_ActionBox
 {
-    const PAGE_ID = "transaction_services";
-    protected $privilage = "manage_settings";
+    const PAGE_ID = 'transaction_services';
+    protected $privilage = 'manage_settings';
 
     public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('transaction_services');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('transaction_services');
     }
 
     protected function content($get, $post)

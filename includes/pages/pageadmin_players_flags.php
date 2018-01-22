@@ -7,17 +7,16 @@ use Admin\Table\Wrapper;
 
 class PageAdminPlayersFlags extends PageAdmin
 {
-    const PAGE_ID = "players_flags";
-    protected $privilage = "view_player_flags";
+    const PAGE_ID = 'players_flags';
+    protected $privilage = 'view_player_flags';
 
-    protected $flags = "abcdefghijklmnopqrstuyvwxz";
+    protected $flags = 'abcdefghijklmnopqrstuyvwxz';
 
     public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('players_flags');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('players_flags');
     }
 
     protected function content($get, $post)

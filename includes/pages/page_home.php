@@ -2,14 +2,13 @@
 
 class PageMain extends PageSimple
 {
-    const PAGE_ID = "home";
-    protected $template = "home";
+    const PAGE_ID = 'home';
+    protected $template = 'home';
 
     public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('main_page');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('main_page');
     }
 }

@@ -2,7 +2,7 @@
 
 abstract class PageAdmin extends Page implements I_BeLoggedMust
 {
-    protected $privilage = "acp";
+    protected $privilage = 'acp';
 
     public function get_content($get, $post)
     {

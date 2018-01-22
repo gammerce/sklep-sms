@@ -11,11 +11,9 @@ class PageAdminMain extends PageAdmin
 
     public function __construct(Version $version)
     {
-        global $lang;
-        $this->title = $lang->translate('main_page');
-
         parent::__construct();
 
+        $this->heart->page_title = $this->title = $this->lang->translate('main_page');
         $this->version = $version;
     }
 
