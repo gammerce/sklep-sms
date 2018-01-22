@@ -1,12 +1,17 @@
 <?php
 
+use App\Template;
+
 abstract class Service
 {
     const MODULE_ID = '';
     const USER_SERVICE_TABLE = '';
     public $service = [];
 
-    function __construct($service = null)
+    /** @var Template */
+    protected $template;
+
+    public function __construct($service = null)
     {
         if (!is_array($service)) { // Podano błędne dane usługi
             $this->service = null;
@@ -15,6 +20,7 @@ abstract class Service
         }
 
         $this->service = $service;
+        $this->template = app()->make(Template::class);
     }
 
     /**
@@ -69,12 +75,8 @@ abstract class Service
      */
     public function description_full_get()
     {
-        global $templates;
-
         $file = "services/" . escape_filename($this->service['id']) . "_desc";
-        $output = eval($templates->render($file, true, false));
-
-        return $output;
+        return eval($this->template->render($file, true, false));
     }
 
     public function description_short_get()

@@ -1,6 +1,7 @@
 <?php
 namespace App\Kernels;
 
+use App\Auth;
 use App\CurrentPage;
 use App\Heart;
 use App\License;
@@ -14,10 +15,12 @@ class AdminKernel extends Kernel
 {
     public function handle(Request $request)
     {
-        global $user;
-
         /** @var Heart $heart */
         $heart = $this->app->make(Heart::class);
+
+        /** @var Auth $auth */
+        $auth = $this->app->make(Auth::class);
+        $user = $auth->user();
 
         /** @var CurrentPage $currentPage */
         $currentPage = $this->app->make(CurrentPage::class);

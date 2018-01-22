@@ -1,5 +1,6 @@
 <?php
 
+use App\Auth;
 use App\CronExceutor;
 use App\CurrentPage;
 use App\Database;
@@ -28,6 +29,9 @@ $settings = $app->make(Settings::class);
 // Tworzymy obiekt posiadający mnóstwo przydatnych funkcji
 /** @var Heart $heart */
 $heart = $app->make(Heart::class);
+
+/** @var Auth $auth */
+$auth = $app->make(Auth::class);
 
 // Tworzymy obiekt szablonów
 /** @var Template $templates */
@@ -110,63 +114,38 @@ foreach (scandir(SCRIPT_ROOT . "includes/entity") as $file) {
     }
 }
 
-$user = $heart->get_user();
-
 // Logowanie się do panelu admina
 if (admin_session()) {
-    // Logujemy się
     if (isset($_POST['username']) && isset($_POST['password'])) {
-        $user = $heart->get_user(0, $_POST['username'], $_POST['password']);
-
-        if ($user->isLogged() && get_privilages("acp")) {
-            $_SESSION['uid'] = $user->getUid();
-        } else {
-            $_SESSION['info'] = "wrong_data";
-        }
-    } // Wylogowujemy
-    else {
-        if ($_POST['action'] == "logout") {
-            // Unset all of the session variables.
-            $_SESSION = [];
-
-            // If it's desired to kill the session, also delete the session cookie.
-            // Note: This will destroy the session, and not just the session data!
-            if (ini_get("session.use_cookies")) {
-                $params = session_get_cookie_params();
-                setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"],
-                    $params["httponly"]);
-            }
-
-            // Finally, destroy the session.
-            session_destroy();
-        }
+        $auth->loginAdminUsingCredentials($_POST['username'], $_POST['password']);
+    } elseif ($_POST['action'] == "logout") {
+        $auth->logoutAdmin();
     }
 }
 
 // Pozyskujemy dane gracza, jeżeli jeszcze ich nie ma
-if (!$user->isLogged() && isset($_SESSION['uid'])) {
-    $user = $heart->get_user($_SESSION['uid']);
+if (!$auth->check() && isset($_SESSION['uid'])) {
+    $auth->loginUserUsingId($_SESSION['uid']);
 }
 
 // Jeżeli próbujemy wejść do PA i nie jesteśmy zalogowani, to zmień stronę
-if (admin_session() && (!$user->isLogged() || !get_privilages("acp"))) {
+if (admin_session() && (!$auth->check() || !get_privilages("acp"))) {
     /** @var CurrentPage $currentPage */
     $currentPage = $app->make(CurrentPage::class);
-
     $currentPage->setPid('login');
 
     // Jeżeli jest zalogowany, ale w międzyczasie odebrano mu dostęp do PA
-    if ($user->isLogged()) {
+    if ($auth->check()) {
         $_SESSION['info'] = "no_privilages";
-        $user = $heart->get_user();
     }
 }
 
 // Aktualizujemy aktywność użytkownika
+$user = $auth->user();
 $user->setLastip(get_ip());
 $user->updateActivity();
 
-$settings->init();
+$settings->load();
 
 // Ładujemy bibliotekę językową
 if (isset($_GET['language'])) {

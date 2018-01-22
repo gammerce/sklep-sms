@@ -25,6 +25,7 @@ class Application extends Container
         $this->loadEnvironmentVariables();
         $this->registerDatabase();
         $this->singleton(Heart::class);
+        $this->singleton(Auth::class);
         $this->singleton(Settings::class);
         $this->singleton(CurrentPage::class);
         $this->singleton(License::class);

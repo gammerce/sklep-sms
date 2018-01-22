@@ -1,5 +1,6 @@
 <?php
 
+use App\Auth;
 use App\Payment;
 use Illuminate\Container\Container;
 use Symfony\Component\HttpFoundation\Request;
@@ -187,9 +188,10 @@ function get_pagination($all, $current_page, $script, $get, $row_limit = 0)
  */
 function is_logged()
 {
-    global $user;
+    /** @var Auth $auth */
+    $auth = app()->make(Auth::class);
 
-    return $user->isLogged();
+    return $auth->check();
 }
 
 /**

@@ -1,5 +1,7 @@
 <?php
 
+use App\Auth;
+
 /**
  * Obiekty tej klasy są używane podczas przeprowadzania zakupu
  * Class Entity_Purchase
@@ -49,8 +51,10 @@ class Entity_Purchase
 
     function __construct()
     {
-        global $user;
-        $this->user = $user;
+        /** @var Auth $auth */
+        $auth = app()->make(Auth::class);
+
+        $this->user = $auth->user();
     }
 
     public function setService($service)

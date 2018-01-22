@@ -21,7 +21,7 @@ class Settings implements \ArrayAccess
         ];
     }
 
-    public function init()
+    public function load()
     {
         // Pozyskanie ustawień sklepu
         $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "settings`");

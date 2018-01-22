@@ -1,15 +1,23 @@
 <?php
 
+use App\Auth;
+use App\Settings;
+use App\Template;
+use App\Translator;
+
 $heart->register_page("purchase", "PagePurchase");
 
 class PagePurchase extends Page
 {
     const PAGE_ID = "purchase";
 
+    /** @var Translator */
+    protected $lang;
+
     public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('purchase');
+        $this->lang = app()->make(Translator::class);
+        $this->title = $this->lang->translate('purchase');
 
         parent::__construct();
     }
@@ -21,7 +29,18 @@ class PagePurchase extends Page
 
     protected function content($get, $post)
     {
-        global $heart, $user, $lang, $settings, $templates;
+        $heart = $this->heart;
+        $lang = $this->lang;
+
+        /** @var Auth $auth */
+        $auth = app()->make(Auth::class);
+        $user = $auth->user();
+
+        /** @var Template $template */
+        $template = app()->make(Template::class);
+
+        /** @var Settings $settings */
+        $settings = app()->make(Settings::class);
 
         if (($service_module = $heart->get_service_module($get['service'])) === null) {
             return $lang->translate('site_not_exists');
@@ -93,10 +112,11 @@ class PagePurchase extends Page
         // Dodajemy długi opis
         $show_more = '';
         if (strlen($service_module->description_full_get())) {
-            $show_more = eval($templates->render("services/show_more"));
+            $show_more = eval($template->render("services/show_more"));
         }
 
-        $output = eval($templates->render("services/short_description")); // Dodajemy krótki opis
+        $output = eval($template->render("services/short_description")); // Dodajemy krótki opis
+
         return $output . $service_module->purchase_form_get();
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace App\Kernels;
 
+use App\Auth;
 use App\Database;
 use App\Heart;
 use App\Payment;
@@ -15,10 +16,14 @@ class JsonHttpKernel extends Kernel
 {
     public function handle(Request $request)
     {
-        global $user, $lang_shop;
+        global $lang_shop;
 
         /** @var Heart $heart */
         $heart = $this->app->make(Heart::class);
+
+        /** @var Auth $auth */
+        $auth = $this->app->make(Auth::class);
+        $user = $auth->user();
 
         /** @var Template $templates */
         $templates = $this->app->make(Template::class);

@@ -1,6 +1,7 @@
 <?php
 namespace App\Kernels;
 
+use App\Auth;
 use App\Database;
 use App\Exceptions\SqlQueryException;
 use App\Heart;
@@ -14,10 +15,14 @@ class JsonHttpAdminKernel extends Kernel
 {
     public function handle(Request $request)
     {
-        global $user, $lang_shop;
+        global $lang_shop;
 
         /** @var Heart $heart */
         $heart = $this->app->make(Heart::class);
+
+        /** @var Auth $auth */
+        $auth = $this->app->make(Auth::class);
+        $user = $auth->user();
 
         /** @var Template $templates */
         $templates = $this->app->make(Template::class);

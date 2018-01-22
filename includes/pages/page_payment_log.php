@@ -1,22 +1,46 @@
 <?php
 
+use App\Auth;
+use App\Database;
+use App\Heart;
+use App\Settings;
+use App\Template;
+use App\Translator;
+
 $heart->register_page("payment_log", "PagePaymentLog");
 
 class PagePaymentLog extends Page implements I_BeLoggedMust
 {
     const PAGE_ID = "payment_log";
 
+    /** @var Translator */
+    protected $lang;
+
     public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('payment_log');
+        $this->lang = app()->make(Translator::class);
+        $this->title = $this->lang->translate('payment_log');
 
         parent::__construct();
     }
 
     protected function content($get, $post)
     {
-        global $heart, $db, $settings, $user, $lang, $templates;
+        $heart = $this->heart;
+        $lang = $this->lang;
+
+        /** @var Auth $auth */
+        $auth = app()->make(Auth::class);
+        $user = $auth->user();
+
+        /** @var Template $template */
+        $template = app()->make(Template::class);
+
+        /** @var Settings $settings */
+        $settings = app()->make(Settings::class);
+
+        /** @var Database $db */
+        $db = app()->make(Database::class);
 
         $result = $db->query($db->prepare(
             "SELECT SQL_CALC_FOUND_ROWS * FROM ({$settings['transactions_query']}) as t " .
@@ -50,7 +74,7 @@ class PagePaymentLog extends Page implements I_BeLoggedMust
             $row['auth_data'] = htmlspecialchars($row['auth_data']);
             $row['email'] = htmlspecialchars($row['email']);
 
-            $payment_log_brick = eval($templates->render("payment_log_brick"));
+            $payment_log_brick = eval($template->render("payment_log_brick"));
             $payment_logs .= create_dom_element("div", $payment_log_brick, $data = [
                 'class' => "brick " . $class,
             ]);
@@ -59,8 +83,6 @@ class PagePaymentLog extends Page implements I_BeLoggedMust
         $pagination = get_pagination($rows_count, $this->currentPage->getPageNumber(), "index.php", $get, 10);
         $pagination_class = strlen($pagination) ? "" : "display_none";
 
-        $output = eval($templates->render("payment_log"));
-
-        return $output;
+        return eval($template->render("payment_log"));
     }
 }

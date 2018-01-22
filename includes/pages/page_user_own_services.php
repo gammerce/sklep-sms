@@ -1,22 +1,45 @@
 <?php
 
+use App\Auth;
+use App\Database;
+use App\Settings;
+use App\Template;
+use App\Translator;
+
 $heart->register_page("user_own_services", "Page_UserOIwnServices");
 
 class Page_UserOIwnServices extends Page implements I_BeLoggedMust
 {
     const PAGE_ID = "user_own_services";
 
+    /** @var Translator */
+    protected $lang;
+
     public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('user_own_services');
+        $this->lang = app()->make(Translator::class);
+        $this->title = $this->lang->translate('user_own_services');
 
         parent::__construct();
     }
 
     protected function content($get, $post)
     {
-        global $heart, $db, $settings, $user, $lang, $templates;
+        $heart = $this->heart;
+        $lang = $this->lang;
+
+        /** @var Auth $auth */
+        $auth = app()->make(Auth::class);
+        $user = $auth->user();
+
+        /** @var Template $template */
+        $template = app()->make(Template::class);
+
+        /** @var Settings $settings */
+        $settings = app()->make(Settings::class);
+
+        /** @var Database $db */
+        $db = app()->make(Database::class);
 
         // Ktore moduly wspieraja usługi użytkowników
         $classes = array_filter(
@@ -96,8 +119,6 @@ class Page_UserOIwnServices extends Page implements I_BeLoggedMust
         $pagination = get_pagination($rows_count, $this->currentPage->getPageNumber(), "index.php", $get, 4);
         $pagination_class = strlen($pagination) ? "" : "display_none";
 
-        $output = eval($templates->render("user_own_services"));
-
-        return $output;
+        return eval($template->render("user_own_services"));
     }
 }

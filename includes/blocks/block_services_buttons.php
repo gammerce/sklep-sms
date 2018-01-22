@@ -1,5 +1,10 @@
 <?php
 
+use App\Auth;
+use App\Heart;
+use App\Template;
+use App\Translator;
+
 $heart->register_block("services_buttons", "BlockServicesButtons");
 
 class BlockServicesButtons extends Block
@@ -16,7 +21,18 @@ class BlockServicesButtons extends Block
 
     protected function content($get, $post)
     {
-        global $heart, $user, $lang, $templates;
+        /** @var Auth $auth */
+        $auth = app()->make(Auth::class);
+        $user = $auth->user();
+
+        /** @var Template $template */
+        $template = app()->make(Template::class);
+
+        /** @var Translator $lang */
+        $lang = app()->make(Translator::class);
+
+        /** @var Heart $heart */
+        $heart = app()->make(Heart::class);
 
         $services = "";
         foreach ($heart->get_services() as $service) {
@@ -33,8 +49,6 @@ class BlockServicesButtons extends Block
             ]));
         }
 
-        $output = eval($templates->render("services_buttons"));
-
-        return $output;
+        return eval($template->render("services_buttons"));
     }
 }
