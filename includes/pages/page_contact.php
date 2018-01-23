@@ -3,7 +3,7 @@
 class PageContact extends PageSimple
 {
     const PAGE_ID = 'contact';
-    protected $template = 'contact';
+    protected $templateName = 'contact';
 
     public function __construct()
     {

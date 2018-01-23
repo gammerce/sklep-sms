@@ -1,7 +1,6 @@
 <?php
 
 use App\Template;
-use App\Translator;
 use App\Version;
 
 class PageAdminUpdateWeb extends PageAdmin
@@ -12,16 +11,12 @@ class PageAdminUpdateWeb extends PageAdmin
     /** @var Version */
     private $version;
 
-    /** @var Template */
-    private $template;
-
     public function __construct(Version $version, Template $template)
     {
         parent::__construct();
 
         $this->heart->page_title = $this->title = $this->lang->translate('update_web');
         $this->version = $version;
-        $this->template = $template;
     }
 
     protected function content($get, $post)

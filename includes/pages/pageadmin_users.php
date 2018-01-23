@@ -102,7 +102,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 
     public function get_action_box($box_id, $data)
     {
-        global $heart, $settings, $lang, $templates;
+        global $heart, $settings, $lang;
 
         if (!get_privilages("manage_users")) {
             return [
@@ -124,13 +124,13 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
                     ]);
                 }
 
-                $output = eval($templates->render("admin/action_boxes/user_edit"));
+                $output = eval($this->template->render("admin/action_boxes/user_edit"));
                 break;
 
             case "charge_wallet":
                 $user = $heart->get_user($data['uid']);
 
-                $output = eval($templates->render("admin/action_boxes/user_charge_wallet"));
+                $output = eval($this->template->render("admin/action_boxes/user_charge_wallet"));
                 break;
         }
 

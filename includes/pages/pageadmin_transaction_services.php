@@ -64,7 +64,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
 
     public function get_action_box($box_id, $data)
     {
-        global $db, $lang, $templates;
+        global $db, $lang;
 
         if (!get_privilages("manage_settings")) {
             return [
@@ -100,10 +100,10 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
                             $text = $lang->strtoupper($name);
                             break;
                     }
-                    $data_values .= eval($templates->render("tr_name_input"));
+                    $data_values .= eval($this->template->render("tr_name_input"));
                 }
 
-                $output = eval($templates->render("admin/action_boxes/transaction_service_edit"));
+                $output = eval($this->template->render("admin/action_boxes/transaction_service_edit"));
                 break;
         }
 

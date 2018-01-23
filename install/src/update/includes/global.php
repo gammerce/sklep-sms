@@ -20,7 +20,7 @@ if (file_exists(SCRIPT_ROOT . "install/progress")) {
 }
 
 // Tworzymy obiekt szablonów
-$templates = new Template();
+$templates = app()->make(Template::class);
 
 $warnings = $files_priv = $files_del = [];
 

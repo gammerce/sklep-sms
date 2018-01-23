@@ -3,7 +3,7 @@
 class PageChangePassword extends PageSimple implements I_BeLoggedMust
 {
     const PAGE_ID = 'change_password';
-    protected $template = 'change_password';
+    protected $templateName = 'change_password';
 
     public function __construct()
     {

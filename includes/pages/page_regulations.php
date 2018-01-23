@@ -3,7 +3,7 @@
 class PageRegulations extends PageSimple
 {
     const PAGE_ID = 'regulations';
-    protected $template = 'regulations_desc';
+    protected $templateName = 'regulations_desc';
 
     public function __construct()
     {

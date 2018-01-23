@@ -71,7 +71,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
 
     public function get_action_box($box_id, $data)
     {
-        global $db, $lang, $templates;
+        global $db, $lang;
 
         if (!get_privilages("manage_antispam_questions")) {
             return [
@@ -82,7 +82,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
 
         switch ($box_id) {
             case "antispam_question_add":
-                $output = eval($templates->render("admin/action_boxes/antispam_question_add"));
+                $output = eval($this->template->render("admin/action_boxes/antispam_question_add"));
                 break;
 
             case "antispam_question_edit":
@@ -94,7 +94,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
                 $row['question'] = htmlspecialchars($row['question']);
                 $row['answers'] = htmlspecialchars($row['answers']);
 
-                $output = eval($templates->render("admin/action_boxes/antispam_question_edit"));
+                $output = eval($this->template->render("admin/action_boxes/antispam_question_edit"));
                 break;
         }
 

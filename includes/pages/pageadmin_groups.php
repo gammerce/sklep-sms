@@ -69,7 +69,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
 
     public function get_action_box($box_id, $data)
     {
-        global $db, $lang, $templates;
+        global $db, $lang;
 
         if (!get_privilages("manage_groups")) {
             return [
@@ -119,16 +119,16 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
             $name = htmlspecialchars($row['Field']);
             $text = $lang->translate('privilage_' . $row['Field']);
 
-            $privilages .= eval($templates->render("tr_text_select"));
+            $privilages .= eval($this->template->render("tr_text_select"));
         }
 
         switch ($box_id) {
             case "group_add":
-                $output = eval($templates->render("admin/action_boxes/group_add"));
+                $output = eval($this->template->render("admin/action_boxes/group_add"));
                 break;
 
             case "group_edit":
-                $output = eval($templates->render("admin/action_boxes/group_edit"));
+                $output = eval($this->template->render("admin/action_boxes/group_edit"));
                 break;
         }
 

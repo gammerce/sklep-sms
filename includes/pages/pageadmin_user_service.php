@@ -70,7 +70,7 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
 
     public function get_action_box($box_id, $data)
     {
-        global $heart, $db, $lang, $templates;
+        global $heart, $db, $lang;
 
         if (!get_privilages("manage_user_services")) {
             return [
@@ -94,7 +94,7 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
                     ]);
                 }
 
-                $output = eval($templates->render("admin/action_boxes/user_service_add"));
+                $output = eval($this->template->render("admin/action_boxes/user_service_add"));
                 break;
 
             case "user_service_edit":
@@ -109,7 +109,7 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
                     $form_data = $service_module->user_service_admin_edit_form_get($user_service);
                 }
 
-                $output = eval($templates->render("admin/action_boxes/user_service_edit"));
+                $output = eval($this->template->render("admin/action_boxes/user_service_edit"));
                 break;
         }
 

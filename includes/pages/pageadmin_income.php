@@ -31,7 +31,7 @@ class PageAdminIncome extends PageAdmin
 
     protected function content($get, $post)
     {
-        global $heart, $db, $settings, $lang, $templates;
+        global $heart, $db, $settings, $lang;
 
         $G_MONTH = isset($get['month']) ? $get['month'] : date("m");
         $G_YEAR = isset($get['year']) ? $get['year'] : date("Y");
@@ -78,10 +78,10 @@ class PageAdminIncome extends PageAdmin
             ]);
         }
 
-        $buttons = eval($templates->render("admin/income_button"));
+        $buttons = eval($this->template->render("admin/income_button"));
 
         // Pobranie nagłówka tabeli
-        $thead = eval($templates->render("admin/income_thead"));
+        $thead = eval($this->template->render("admin/income_thead"));
 
         //
         // Pobranie danych do tabeli
@@ -116,7 +116,7 @@ class PageAdminIncome extends PageAdmin
             // Zaokraglenie do dowch miejsc po przecinku zarobku w danym dniu
             $day_income = number_format($day_income / 100.0, 2);
 
-            $tbody .= eval($templates->render("admin/income_trow"));
+            $tbody .= eval($this->template->render("admin/income_trow"));
         }
 
         // Pobranie podliczenia tabeli
@@ -131,15 +131,13 @@ class PageAdminIncome extends PageAdmin
         // Jeżeli coś się policzyło, są jakieś dane
         if (strlen($tbody)) {
             $total_income = number_format($total_income / 100.0, 2);
-            $tbody .= eval($templates->render("admin/income_trow2"));
+            $tbody .= eval($this->template->render("admin/income_trow2"));
         } else // Brak danych
         {
-            $tbody = eval($templates->render("admin/no_records"));
+            $tbody = eval($this->template->render("admin/no_records"));
         }
 
         // Pobranie wygladu strony
-        $output = eval($templates->render("admin/table_structure"));
-
-        return $output;
+        return eval($this->template->render("admin/table_structure"));
     }
 }

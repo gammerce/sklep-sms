@@ -66,7 +66,7 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
 
     public function get_action_box($box_id, $data)
     {
-        global $heart, $db, $lang, $templates;
+        global $heart, $db, $lang;
 
         if (!get_privilages("manage_servers")) {
             return [
@@ -119,16 +119,16 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
             $name = htmlspecialchars($service['id']);
             $text = htmlspecialchars("{$service['name']} ( {$service['id']} )");
 
-            $services .= eval($templates->render("tr_text_select"));
+            $services .= eval($this->template->render("tr_text_select"));
         }
 
         switch ($box_id) {
             case "server_add":
-                $output = eval($templates->render("admin/action_boxes/server_add"));
+                $output = eval($this->template->render("admin/action_boxes/server_add"));
                 break;
 
             case "server_edit":
-                $output = eval($templates->render("admin/action_boxes/server_edit"));
+                $output = eval($this->template->render("admin/action_boxes/server_edit"));
                 break;
         }
 

@@ -71,7 +71,7 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
 
     public function get_action_box($box_id, $data)
     {
-        global $heart, $lang, $templates;
+        global $heart, $lang;
 
         if (!get_privilages("manage_services")) {
             return [
@@ -95,22 +95,20 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
                 }
             }
         } // Pobranie dostępnych modułów usług
-        else {
-            if ($box_id == "service_add") {
-                $services_modules = "";
-                foreach ($heart->get_services_modules() as $module) {
-                    // Sprawdzamy czy dany moduł zezwala na tworzenie nowych usług, które będzie obsługiwał
-                    if (($service_module = $heart->get_service_module_s($module['id'])) === null
-                        || !object_implements($service_module, "IService_Create")
-                    ) {
-                        continue;
-                    }
-
-                    $services_modules .= create_dom_element("option", $module['name'], [
-                        'value'    => $module['id'],
-                        'selected' => isset($service['module']) && $service['module'] == $module['id'] ? "selected" : "",
-                    ]);
+        elseif ($box_id == "service_add") {
+            $services_modules = "";
+            foreach ($heart->get_services_modules() as $module) {
+                // Sprawdzamy czy dany moduł zezwala na tworzenie nowych usług, które będzie obsługiwał
+                if (($service_module = $heart->get_service_module_s($module['id'])) === null
+                    || !object_implements($service_module, "IService_Create")
+                ) {
+                    continue;
                 }
+
+                $services_modules .= create_dom_element("option", $module['name'], [
+                    'value'    => $module['id'],
+                    'selected' => isset($service['module']) && $service['module'] == $module['id'] ? "selected" : "",
+                ]);
             }
         }
 
@@ -125,13 +123,13 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
 
         switch ($box_id) {
             case "service_add":
-                $output = eval($templates->render("admin/action_boxes/service_add"));
+                $output = eval($this->template->render("admin/action_boxes/service_add"));
                 break;
 
             case "service_edit":
                 $service_module_name = $heart->get_service_module_name($service['module']);
 
-                $output = eval($templates->render("admin/action_boxes/service_edit"));
+                $output = eval($this->template->render("admin/action_boxes/service_edit"));
                 break;
         }
 

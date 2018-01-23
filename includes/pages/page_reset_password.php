@@ -13,7 +13,7 @@ class PageResetPassword extends Page implements I_BeLoggedCannot
 
     protected function content($get, $post)
     {
-        global $db, $settings, $lang, $templates;
+        global $db, $settings, $lang;
 
         // Brak podanego kodu
         if (!strlen($get['code'])) {
@@ -34,7 +34,7 @@ class PageResetPassword extends Page implements I_BeLoggedCannot
         $row = $db->fetch_array_assoc($result);
         $sign = md5($row['uid'] . $settings['random_key']);
 
-        $output = eval($templates->render("reset_password"));
+        $output = eval($this->template->render("reset_password"));
 
         return $output;
     }

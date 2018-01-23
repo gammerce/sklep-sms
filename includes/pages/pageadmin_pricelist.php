@@ -83,7 +83,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
 
     public function get_action_box($box_id, $data)
     {
-        global $heart, $db, $lang, $templates;
+        global $heart, $db, $lang;
 
         if (!get_privilages("manage_settings")) {
             return [
@@ -132,11 +132,11 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
 
         switch ($box_id) {
             case "price_add":
-                $output = eval($templates->render("admin/action_boxes/price_add"));
+                $output = eval($this->template->render("admin/action_boxes/price_add"));
                 break;
 
             case "price_edit":
-                $output = eval($templates->render("admin/action_boxes/price_edit"));
+                $output = eval($this->template->render("admin/action_boxes/price_edit"));
                 break;
         }
 

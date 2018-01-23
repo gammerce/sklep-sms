@@ -62,7 +62,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
 
     public function get_action_box($box_id, $data)
     {
-        global $heart, $lang, $settings, $templates; // settings potrzebne
+        global $heart, $lang, $settings; // settings potrzebne
 
         if (!get_privilages("manage_settings")) {
             return [
@@ -73,14 +73,14 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
 
         switch ($box_id) {
             case "tariff_add":
-                $output = eval($templates->render("admin/action_boxes/tariff_add"));
+                $output = eval($this->template->render("admin/action_boxes/tariff_add"));
                 break;
 
             case "tariff_edit":
                 $tariff = $heart->getTariff($data['id']);
                 $provision = number_format($tariff->getProvision() / 100.0, 2);
 
-                $output = eval($templates->render("admin/action_boxes/tariff_edit"));
+                $output = eval($this->template->render("admin/action_boxes/tariff_edit"));
                 break;
         }
 

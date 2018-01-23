@@ -101,7 +101,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
 
     public function get_action_box($box_id, $data)
     {
-        global $heart, $lang, $templates;
+        global $heart, $lang;
 
         if (!get_privilages("manage_service_codes")) {
             return [
@@ -125,7 +125,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
                     ]);
                 }
 
-                $output = eval($templates->render("admin/action_boxes/service_code_add"));
+                $output = eval($this->template->render("admin/action_boxes/service_code_add"));
                 break;
         }
 

@@ -3,7 +3,7 @@
 class PageMain extends PageSimple
 {
     const PAGE_ID = 'home';
-    protected $template = 'home';
+    protected $templateName = 'home';
 
     public function __construct()
     {

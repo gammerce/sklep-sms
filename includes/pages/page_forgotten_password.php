@@ -3,7 +3,7 @@
 class PageForgottenPassword extends PageSimple implements I_BeLoggedCannot
 {
     const PAGE_ID = 'forgotten_password';
-    protected $template = 'forgotten_password';
+    protected $templateName = 'forgotten_password';
 
     public function __construct()
     {

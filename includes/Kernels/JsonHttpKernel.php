@@ -457,8 +457,9 @@ class JsonHttpKernel extends Kernel
             ]);
 
             $return_payment = validate_payment($purchase_data);
-            json_output($return_payment['status'], $return_payment['text'], $return_payment['positive'],
-                $return_payment['data']);
+            json_output(
+                $return_payment['status'], $return_payment['text'], $return_payment['positive'], $return_payment['data']
+            );
         } elseif ($action == "refresh_blocks") {
             $data = [];
             if (isset($_POST['bricks'])) {

@@ -13,7 +13,7 @@ class PageTakeOverService extends Page implements I_BeLoggedMust
 
     protected function content($get, $post)
     {
-        global $heart, $lang, $settings, $templates;
+        global $heart, $lang, $settings;
 
         $services_options = "";
         $services = $heart->get_services();
@@ -32,7 +32,7 @@ class PageTakeOverService extends Page implements I_BeLoggedMust
             ]);
         }
 
-        $output = eval($templates->render("service_take_over"));
+        $output = eval($this->template->render("service_take_over"));
 
         return $output;
     }

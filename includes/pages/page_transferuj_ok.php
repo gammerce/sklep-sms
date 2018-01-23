@@ -8,7 +8,7 @@
 class PageTransferujOk extends PageSimple
 {
     const PAGE_ID = 'transferuj_ok';
-    protected $template = 'transferuj_ok';
+    protected $templateName = 'transferuj_ok';
 
     public function __construct()
     {

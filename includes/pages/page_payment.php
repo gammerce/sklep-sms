@@ -16,7 +16,7 @@ class PagePayment extends Page
 
     protected function content($get, $post)
     {
-        global $settings, $lang, $templates;
+        global $settings, $lang;
 
         // Sprawdzanie hashu danych przesłanych przez formularz
         if (!isset($post['sign']) || $post['sign'] != md5($post['data'] . $settings['random_key'])) {
@@ -51,7 +51,7 @@ class PagePayment extends Page
         // Sprawdzamy, czy płatność za pomocą SMS jest możliwa
         if ($purchase_data->getPayment('sms_service') && $purchase_data->getTariff() !== null && !$purchase_data->getPayment('no_sms')) {
             $payment_sms = new Payment($purchase_data->getPayment('sms_service'));
-            $payment_methods .= eval($templates->render('payment_method_sms'));
+            $payment_methods .= eval($this->template->render('payment_method_sms'));
         }
 
         $cost_transfer = $purchase_data->getPayment('cost') !== null ? number_format($purchase_data->getPayment('cost') / 100.0,
@@ -59,21 +59,21 @@ class PagePayment extends Page
         if (strlen($settings['transfer_service']) && $purchase_data->getPayment('cost') !== null
             && $purchase_data->getPayment('cost') > 1 && !$purchase_data->getPayment('no_transfer')
         ) {
-            $payment_methods .= eval($templates->render("payment_method_transfer"));
+            $payment_methods .= eval($this->template->render("payment_method_transfer"));
         }
 
         if (is_logged() && $purchase_data->getPayment('cost') !== null && !$purchase_data->getPayment('no_wallet')) {
-            $payment_methods .= eval($templates->render("payment_method_wallet"));
+            $payment_methods .= eval($this->template->render("payment_method_wallet"));
         }
 
         if (!$purchase_data->getPayment('no_code') && object_implements($service_module, "IService_ServiceCode")) {
-            $payment_methods .= eval($templates->render("payment_method_code"));
+            $payment_methods .= eval($this->template->render("payment_method_code"));
         }
 
         $purchase_data = htmlspecialchars($post['data']);
         $purchase_sign = htmlspecialchars($post['sign']);
 
-        $output = eval($templates->render("payment_form"));
+        $output = eval($this->template->render("payment_form"));
 
         return $output;
     }

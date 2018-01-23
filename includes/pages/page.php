@@ -3,6 +3,7 @@
 use App\CurrentPage;
 use App\Heart;
 use App\Settings;
+use App\Template;
 use App\TranslationManager;
 use App\Translator;
 
@@ -23,6 +24,9 @@ abstract class Page
     /** @var Translator */
     protected $lang;
 
+    /** @var Template */
+    protected $template;
+
     public function __construct()
     {
         /** @var TranslationManager $translationManager */
@@ -31,6 +35,7 @@ abstract class Page
         $this->heart = app()->make(Heart::class);
         $this->settings = app()->make(Settings::class);
         $this->currentPage = app()->make(CurrentPage::class);
+        $this->template = app()->make(Template::class);
     }
 
     /**
@@ -95,11 +100,11 @@ abstract class Page
 
 abstract class PageSimple extends Page
 {
-    protected $template = null;
+    protected $templateName = null;
 
     public function __construct()
     {
-        if (!isset($this->template)) {
+        if (!isset($this->templateName)) {
             throw new Exception('Class ' . get_class($this) . ' has to have field $template because it extends class PageSimple');
         }
 
@@ -108,8 +113,7 @@ abstract class PageSimple extends Page
 
     protected function content($get, $post)
     {
-        global $lang, $templates;
-
-        return eval($templates->render($this->template));
+        $lang = $this->lang;
+        return eval($this->template->render($this->templateName));
     }
 }

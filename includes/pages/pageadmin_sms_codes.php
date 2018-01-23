@@ -72,7 +72,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
 
     public function get_action_box($box_id, $data)
     {
-        global $heart, $lang, $templates;
+        global $heart, $lang;
 
         if (!get_privilages("manage_sms_codes")) {
             return [
@@ -90,7 +90,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
                     ]);
                 }
 
-                $output = eval($templates->render("admin/action_boxes/sms_code_add"));
+                $output = eval($this->template->render("admin/action_boxes/sms_code_add"));
                 break;
         }
 

@@ -8,7 +8,7 @@
 class PageTransferujBad extends PageSimple
 {
     const PAGE_ID = 'transferuj_bad';
-    protected $template = 'transferuj_bad';
+    protected $templateName = 'transferuj_bad';
 
     public function __construct()
     {
