@@ -1,5 +1,5 @@
 <?php
-namespace Tests;
+namespace Tests\Psr4;
 
 use App\Kernels\KernelContract;
 use App\Kernels\ServersStuffKernel;
@@ -14,7 +14,7 @@ class ServerTestCase extends TestCase
         define('IN_SCRIPT', '1');
         define('SCRIPT_NAME', 'servers_stuff');
 
-        $app = require __DIR__ . '/../bootstrap/app.php';
+        $app = require __DIR__ . '/../../bootstrap/app.php';
         $app->singleton(KernelContract::class, ServersStuffKernel::class);
 
         $request = Request::create($this->prepareUrlForRequest(''), 'GET');

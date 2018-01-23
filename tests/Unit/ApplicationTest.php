@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Unit;
 
-use Tests\TestCase;
+use Tests\Psr4\TestCase;
 
 class ApplicationTest extends TestCase
 {

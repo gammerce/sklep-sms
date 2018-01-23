@@ -1,5 +1,5 @@
 <?php
-namespace Tests;
+namespace Tests\Psr4;
 
 use App\Application;
 use App\Database;
@@ -17,12 +17,16 @@ class TestCase extends BaseTestCase
     /** @var bool */
     protected $wrapInTransaction = true;
 
+    /** @var Factory */
+    protected $factory;
+
     protected function setUp()
     {
         if (!$this->app) {
             $this->app = $this->createApplication();
         }
 
+        $this->factory = $this->app->make(Factory::class);
         $this->mockLicense();
 
         /** @var Database $db */
@@ -71,7 +75,7 @@ class TestCase extends BaseTestCase
 
     protected function createApplication()
     {
-        return require __DIR__ . '/../bootstrap/app.php';
+        return require __DIR__ . '/../../bootstrap/app.php';
     }
 
     protected function mockLicense()

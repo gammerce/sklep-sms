@@ -1,13 +1,10 @@
 <?php
 namespace Tests\Feature;
 
-use App\Models\Pricelist;
-use App\Models\Server;
-use App\Models\ServerService;
 use App\Settings;
 use IPayment_Sms;
 use PaymentModule_Gosetti;
-use Tests\ServerTestCase;
+use Tests\Psr4\ServerTestCase;
 
 class PurchaseServiceFromServerTest extends ServerTestCase
 {
@@ -15,7 +12,7 @@ class PurchaseServiceFromServerTest extends ServerTestCase
     public function player_can_purchase_service()
     {
         // given
-        $service = 'vip';
+        $serviceId = 'vip';
         $tariff = 2;
         $transactionService = 'gosetti';
         $type = TYPE_NICK;
@@ -26,14 +23,21 @@ class PurchaseServiceFromServerTest extends ServerTestCase
         $uid = 0;
         $platform = 'engine_amxx';
 
-        $server = Server::create('test', '127.0.0.1', '27015');
-        ServerService::create($server->getId(), $service);
-        Pricelist::create($service, $tariff, 20, $server->getId());
+        $server = $this->factory->server();
+        $this->factory->serverService([
+            'server_id'  => $server->getId(),
+            'service_id' => $serviceId,
+        ]);
+        $this->factory->pricelist([
+            'service_id' => $serviceId,
+            'tariff'     => $tariff,
+            'server_id'  => $server->getId(),
+        ]);
 
         $query = http_build_query([
             'key'                 => md5(app()->make(Settings::class)->get('random_key')),
             'action'              => 'purchase_service',
-            'service'             => $service,
+            'service'             => $serviceId,
             'transaction_service' => $transactionService,
             'server'              => $server->getId(),
             'type'                => $type,

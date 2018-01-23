@@ -1,5 +1,5 @@
 <?php
-namespace Tests;
+namespace Tests\Psr4;
 
 use App\Exceptions\ShopNeedsInstallException;
 use App\Kernels\KernelContract;
@@ -17,7 +17,7 @@ trait MakesHttpRequests
         $this->app->instance(Request::class, $request);
 
         $app = $this->app;
-        require __DIR__ . '/../bootstrap/app_global.php';
+        require __DIR__ . '/../../bootstrap/app_global.php';
 
         if (!ShopState::isInstalled() || !$this->app->make(ShopState::class)->isUpToDate()) {
             throw new ShopNeedsInstallException();
