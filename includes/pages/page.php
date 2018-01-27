@@ -1,6 +1,7 @@
 <?php
 
 use App\CurrentPage;
+use App\Database;
 use App\Heart;
 use App\Settings;
 use App\Template;
@@ -27,6 +28,9 @@ abstract class Page
     /** @var Template */
     protected $template;
 
+    /** @var Database */
+    protected $db;
+
     public function __construct()
     {
         /** @var TranslationManager $translationManager */
@@ -36,6 +40,7 @@ abstract class Page
         $this->settings = app()->make(Settings::class);
         $this->currentPage = app()->make(CurrentPage::class);
         $this->template = app()->make(Template::class);
+        $this->db = app()->make(Database::class);
     }
 
     /**

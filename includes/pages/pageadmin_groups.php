@@ -20,27 +20,25 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
 
     protected function content($get, $post)
     {
-        global $db, $lang;
-
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
 
-        $cell = new Cell($lang->translate('id'));
+        $cell = new Cell($this->lang->translate('id'));
         $cell->setParam('headers', 'id');
         $table->addHeadCell($cell);
 
-        $table->addHeadCell(new Cell($lang->translate('name')));
+        $table->addHeadCell(new Cell($this->lang->translate('name')));
 
-        $result = $db->query(
+        $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "groups` " .
             "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($db->get_column('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
+        $table->setDbRowsAmount($this->db->get_column('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
 
-        while ($row = $db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetch_array_assoc($result)) {
             $body_row = new BodyRow();
 
             $body_row->setDbId($row['id']);
@@ -60,7 +58,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
             $button = new Input();
             $button->setParam('id', 'group_button_add');
             $button->setParam('type', 'button');
-            $button->setParam('value', $lang->translate('add_group'));
+            $button->setParam('value', $this->lang->translate('add_group'));
             $wrapper->addButton($button);
         }
 
@@ -69,24 +67,24 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
 
     public function get_action_box($box_id, $data)
     {
-        global $db, $lang;
+        $lang = $this->lang;
 
         if (!get_privilages("manage_groups")) {
             return [
                 'status' => "not_logged_in",
-                'text'   => $lang->translate('not_logged_or_no_perm'),
+                'text'   => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
         if ($box_id == "group_edit") {
-            $result = $db->query($db->prepare(
+            $result = $this->db->query($this->db->prepare(
                 "SELECT * FROM `" . TABLE_PREFIX . "groups` " .
                 "WHERE `id` = '%d'",
                 [$data['id']]
             ));
 
-            if (!$db->num_rows($result)) {
-                $data['template'] = create_dom_element("form", $lang->translate('no_such_group'), [
+            if (!$this->db->num_rows($result)) {
+                $data['template'] = create_dom_element("form", $this->lang->translate('no_such_group'), [
                     'class' => 'action_box',
                     'style' => [
                         'padding' => "20px",
@@ -94,30 +92,30 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
                     ],
                 ]);
             } else {
-                $group = $db->fetch_array_assoc($result);
+                $group = $this->db->fetch_array_assoc($result);
                 $group['name'] = htmlspecialchars($group['name']);
             }
         }
 
         $privilages = "";
-        $result = $db->query("DESCRIBE " . TABLE_PREFIX . "groups");
-        while ($row = $db->fetch_array_assoc($result)) {
+        $result = $this->db->query("DESCRIBE " . TABLE_PREFIX . "groups");
+        while ($row = $this->db->fetch_array_assoc($result)) {
             if (in_array($row['Field'], ["id", "name"])) {
                 continue;
             }
 
-            $values = create_dom_element("option", $lang->strtoupper($lang->translate('no')), [
+            $values = create_dom_element("option", $this->lang->strtoupper($this->lang->translate('no')), [
                 'value'    => 0,
                 'selected' => $group[$row['Field']] ? "" : "selected",
             ]);
 
-            $values .= create_dom_element("option", $lang->strtoupper($lang->translate('yes')), [
+            $values .= create_dom_element("option", $this->lang->strtoupper($this->lang->translate('yes')), [
                 'value'    => 1,
                 'selected' => $group[$row['Field']] ? "selected" : "",
             ]);
 
             $name = htmlspecialchars($row['Field']);
-            $text = $lang->translate('privilage_' . $row['Field']);
+            $text = $this->lang->translate('privilage_' . $row['Field']);
 
             $privilages .= eval($this->template->render("tr_text_select"));
         }

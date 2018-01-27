@@ -20,20 +20,18 @@ class PageAdminLogs extends PageAdmin
 
     protected function content($get, $post)
     {
-        global $db, $lang;
-
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
         $wrapper->setSearch();
 
         $table = new Structure();
 
-        $cell = new Cell($lang->translate('id'));
+        $cell = new Cell($this->lang->translate('id'));
         $cell->setParam('headers', 'id');
         $table->addHeadCell($cell);
 
-        $table->addHeadCell(new Cell($lang->translate('text')));
-        $table->addHeadCell(new Cell($lang->translate('date')));
+        $table->addHeadCell(new Cell($this->lang->translate('text')));
+        $table->addHeadCell(new Cell($this->lang->translate('date')));
 
         // Wyszukujemy dane ktore spelniaja kryteria
         $where = '';
@@ -46,16 +44,16 @@ class PageAdminLogs extends PageAdmin
             $where = "WHERE " . $where . " ";
         }
 
-        $result = $db->query(
+        $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "logs` " .
             $where .
             "ORDER BY `id` DESC " .
             "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+        $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
-        while ($row = $db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetch_array_assoc($result)) {
             $body_row = new BodyRow();
 
             $body_row->setDbId($row['id']);

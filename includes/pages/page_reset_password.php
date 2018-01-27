@@ -13,29 +13,28 @@ class PageResetPassword extends Page implements I_BeLoggedCannot
 
     protected function content($get, $post)
     {
-        global $db, $settings, $lang;
+        $settings = $this->settings;
+        $lang = $this->lang;
 
         // Brak podanego kodu
         if (!strlen($get['code'])) {
-            return $lang->translate('no_reset_key');
+            return $this->lang->translate('no_reset_key');
         }
 
-        $result = $db->query($db->prepare(
+        $result = $this->db->query($this->db->prepare(
             "SELECT `uid` FROM `" . TABLE_PREFIX . "users` " .
             "WHERE `reset_password_key` = '%s'",
             [$get['code']]
         ));
 
-        if (!$db->num_rows($result)) // Nie znalazło użytkownika z takim kodem
+        if (!$this->db->num_rows($result)) // Nie znalazło użytkownika z takim kodem
         {
-            return $lang->translate('wrong_reset_key');
+            return $this->lang->translate('wrong_reset_key');
         }
 
-        $row = $db->fetch_array_assoc($result);
-        $sign = md5($row['uid'] . $settings['random_key']);
+        $row = $this->db->fetch_array_assoc($result);
+        $sign = md5($row['uid'] . $this->settings['random_key']);
 
-        $output = eval($this->template->render("reset_password"));
-
-        return $output;
+        return eval($this->template->render("reset_password"));
     }
 }

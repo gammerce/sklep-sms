@@ -14,13 +14,13 @@ class PageAdminUpdateServers extends PageAdmin
 
     protected function content($get, $post)
     {
-        global $heart, $lang;
+        $lang = $this->lang;
 
         $newest_versions = json_decode(trim(curl_get_contents("https://sklep-sms.pl/version.php?action=get_newest&type=engines")),
             true);
 
         $version_bricks = $servers_versions = "";
-        foreach ($heart->get_servers() as $server) {
+        foreach ($this->heart->get_servers() as $server) {
             $engine = "engine_{$server['type']}";
             // Mamy najnowszą wersję
             if ($server['version'] == $newest_versions[$engine]) {

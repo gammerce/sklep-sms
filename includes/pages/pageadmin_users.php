@@ -20,24 +20,22 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 
     protected function content($get, $post)
     {
-        global $heart, $db, $settings, $lang;
-
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
         $wrapper->setSearch();
 
         $table = new Structure();
 
-        $cell = new Cell($lang->translate('id'));
+        $cell = new Cell($this->lang->translate('id'));
         $cell->setParam('headers', 'id');
         $table->addHeadCell($cell);
 
-        $table->addHeadCell(new Cell($lang->translate('username')));
-        $table->addHeadCell(new Cell($lang->translate('firstname')));
-        $table->addHeadCell(new Cell($lang->translate('surname')));
-        $table->addHeadCell(new Cell($lang->translate('email')));
-        $table->addHeadCell(new Cell($lang->translate('groups')));
-        $table->addHeadCell(new Cell($lang->translate('wallet')));
+        $table->addHeadCell(new Cell($this->lang->translate('username')));
+        $table->addHeadCell(new Cell($this->lang->translate('firstname')));
+        $table->addHeadCell(new Cell($this->lang->translate('surname')));
+        $table->addHeadCell(new Cell($this->lang->translate('email')));
+        $table->addHeadCell(new Cell($this->lang->translate('groups')));
+        $table->addHeadCell(new Cell($this->lang->translate('wallet')));
 
         $where = '';
         if (isset($get['search'])) {
@@ -50,22 +48,22 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
             $where = 'WHERE ' . $where . ' ';
         }
 
-        $result = $db->query(
+        $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS `uid`, `username`, `forename`, `surname`, `email`, `groups`, `wallet` " .
             "FROM `" . TABLE_PREFIX . "users` " .
             $where .
             "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+        $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
-        while ($row = $db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetch_array_assoc($result)) {
             $body_row = new BodyRow();
 
             $row['groups'] = explode(";", $row['groups']);
             $groups = [];
             foreach ($row['groups'] as $gid) {
-                $group = $heart->get_group($gid);
+                $group = $this->heart->get_group($gid);
                 $groups[] = "{$group['name']} ({$group['id']})";
             }
             $groups = implode("; ", $groups);
@@ -77,13 +75,14 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
             $body_row->addCell(new Cell(htmlspecialchars($row['email'])));
             $body_row->addCell(new Cell($groups));
 
-            $cell = new Cell(number_format($row['wallet'] / 100.0, 2) . ' ' . $settings['currency']);
+            $cell = new Cell(number_format($row['wallet'] / 100.0, 2) . ' ' . $this->settings['currency']);
             $cell->setParam('headers', 'wallet');
             $body_row->addCell($cell);
 
             $button_charge = new Img();
             $button_charge->setParam('class', 'charge_wallet');
-            $button_charge->setParam('title', $lang->translate('charge') . ' ' . htmlspecialchars($row['username']));
+            $button_charge->setParam('title',
+                $this->lang->translate('charge') . ' ' . htmlspecialchars($row['username']));
             $button_charge->setParam('src', 'images/dollar.png');
             $body_row->addAction($button_charge);
 
@@ -102,22 +101,23 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 
     public function get_action_box($box_id, $data)
     {
-        global $heart, $settings, $lang;
+        $settings = $this->settings;
+        $lang = $this->lang;
 
         if (!get_privilages("manage_users")) {
             return [
                 'status' => "not_logged_in",
-                'text'   => $lang->translate('not_logged_or_no_perm'),
+                'text'   => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
         switch ($box_id) {
             case "user_edit":
                 // Pobranie użytkownika
-                $user = $heart->get_user($data['uid']);
+                $user = $this->heart->get_user($data['uid']);
 
                 $groups = '';
-                foreach ($heart->get_groups() as $group) {
+                foreach ($this->heart->get_groups() as $group) {
                     $groups .= create_dom_element("option", "{$group['name']} ( {$group['id']} )", [
                         'value'    => $group['id'],
                         'selected' => in_array($group['id'], $user->getGroups()) ? "selected" : "",
@@ -128,7 +128,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
                 break;
 
             case "charge_wallet":
-                $user = $heart->get_user($data['uid']);
+                $user = $this->heart->get_user($data['uid']);
 
                 $output = eval($this->template->render("admin/action_boxes/user_charge_wallet"));
                 break;

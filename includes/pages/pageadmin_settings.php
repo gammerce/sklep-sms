@@ -16,7 +16,7 @@ class PageAdminSettings extends PageAdmin
 
     protected function content($get, $post)
     {
-        global $db, $settings;
+        $settings = $this->settings;
 
         /** @var TranslationManager $translationManager */
         $translationManager = app()->make(TranslationManager::class);
@@ -24,27 +24,27 @@ class PageAdminSettings extends PageAdmin
         $langShop = $translationManager->shop();
 
         // Pobranie listy serwisów transakcyjnych
-        $result = $db->query(
+        $result = $this->db->query(
             "SELECT id, name, sms, transfer " .
             "FROM `" . TABLE_PREFIX . "transaction_services`"
         );
         $sms_services = $transfer_services = "";
-        while ($row = $db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetch_array_assoc($result)) {
             if ($row['sms']) {
                 $sms_services .= create_dom_element("option", $row['name'], [
                     'value'    => $row['id'],
-                    'selected' => $row['id'] == $settings['sms_service'] ? "selected" : "",
+                    'selected' => $row['id'] == $this->settings['sms_service'] ? "selected" : "",
                 ]);
             }
             if ($row['transfer']) {
                 $transfer_services .= create_dom_element("option", $row['name'], [
                     'value'    => $row['id'],
-                    'selected' => $row['id'] == $settings['transfer_service'] ? "selected" : "",
+                    'selected' => $row['id'] == $this->settings['transfer_service'] ? "selected" : "",
                 ]);
             }
         }
-        $cron[$settings['cron_each_visit'] ? "yes" : "no"] = "selected";
-        $user_edit_service[$settings['user_edit_service'] ? "yes" : "no"] = "selected";
+        $cron[$this->settings['cron_each_visit'] ? "yes" : "no"] = "selected";
+        $user_edit_service[$this->settings['user_edit_service'] ? "yes" : "no"] = "selected";
 
         // Pobieranie listy dostępnych szablonów
         $dirlist = scandir(SCRIPT_ROOT . "themes");
@@ -53,7 +53,7 @@ class PageAdminSettings extends PageAdmin
             if ($dir_name[0] != '.' && is_dir(SCRIPT_ROOT . "themes/" . $dir_name)) {
                 $themes_list .= create_dom_element("option", $dir_name, [
                     'value'    => $dir_name,
-                    'selected' => $dir_name == $settings['theme'] ? "selected" : "",
+                    'selected' => $dir_name == $this->settings['theme'] ? "selected" : "",
                 ]);
             }
         }

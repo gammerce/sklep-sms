@@ -16,29 +16,29 @@ class PagePayment extends Page
 
     protected function content($get, $post)
     {
-        global $settings, $lang;
+        $lang = $this->lang;
+        $settings = $this->settings;
+        $heart = $this->heart;
 
         // Sprawdzanie hashu danych przesłanych przez formularz
-        if (!isset($post['sign']) || $post['sign'] != md5($post['data'] . $settings['random_key'])) {
-            return $lang->translate('wrong_sign');
+        if (!isset($post['sign']) || $post['sign'] != md5($post['data'] . $this->settings['random_key'])) {
+            return $this->lang->translate('wrong_sign');
         }
-
-        global $heart;
 
         /** @var Purchase $purchase_data */
         $purchase_data = unserialize(base64_decode($post['data']));
 
         // Fix: get user data again to avoid bugs linked with user wallet
-        $purchase_data->user = $heart->get_user($purchase_data->user->getUid());
+        $purchase_data->user = $this->heart->get_user($purchase_data->user->getUid());
 
         if (!($purchase_data instanceof Purchase)) {
-            return $lang->translate('error_occured');
+            return $this->lang->translate('error_occured');
         }
 
-        if (($service_module = $heart->get_service_module($purchase_data->getService())) === null
+        if (($service_module = $this->heart->get_service_module($purchase_data->getService())) === null
             || !object_implements($service_module, "IService_PurchaseWeb")
         ) {
-            return $lang->translate('bad_module');
+            return $this->lang->translate('bad_module');
         }
 
         // Pobieramy szczegóły zamówienia
@@ -56,7 +56,7 @@ class PagePayment extends Page
 
         $cost_transfer = $purchase_data->getPayment('cost') !== null ? number_format($purchase_data->getPayment('cost') / 100.0,
             2) : "0.00";
-        if (strlen($settings['transfer_service']) && $purchase_data->getPayment('cost') !== null
+        if (strlen($this->settings['transfer_service']) && $purchase_data->getPayment('cost') !== null
             && $purchase_data->getPayment('cost') > 1 && !$purchase_data->getPayment('no_transfer')
         ) {
             $payment_methods .= eval($this->template->render("payment_method_transfer"));
@@ -73,8 +73,6 @@ class PagePayment extends Page
         $purchase_data = htmlspecialchars($post['data']);
         $purchase_sign = htmlspecialchars($post['sign']);
 
-        $output = eval($this->template->render("payment_form"));
-
-        return $output;
+        return eval($this->template->render("payment_form"));
     }
 }

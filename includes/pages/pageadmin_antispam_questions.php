@@ -5,6 +5,7 @@ use Admin\Table\Cell;
 use Admin\Table\Input;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
+use App\Database;
 
 class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionBox
 {
@@ -20,29 +21,27 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
 
     protected function content($get, $post)
     {
-        global $db, $lang;
-
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
 
-        $cell = new Cell($lang->translate('id'));
+        $cell = new Cell($this->lang->translate('id'));
         $cell->setParam('headers', 'id');
         $table->addHeadCell($cell);
 
-        $table->addHeadCell(new Cell($lang->translate('question')));
-        $table->addHeadCell(new Cell($lang->translate('answers')));
+        $table->addHeadCell(new Cell($this->lang->translate('question')));
+        $table->addHeadCell(new Cell($this->lang->translate('answers')));
 
-        $result = $db->query(
+        $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * " .
             "FROM `" . TABLE_PREFIX . "antispam_questions` " .
             "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+        $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
-        while ($row = $db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetch_array_assoc($result)) {
             $body_row = new BodyRow();
 
             $body_row->setDbId($row['id']);
@@ -62,7 +61,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
             $button = new Input();
             $button->setParam('id', 'antispam_question_button_add');
             $button->setParam('type', 'button');
-            $button->setParam('value', $lang->translate('add_antispam_question'));
+            $button->setParam('value', $this->lang->translate('add_antispam_question'));
             $wrapper->addButton($button);
         }
 
@@ -71,12 +70,12 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
 
     public function get_action_box($box_id, $data)
     {
-        global $db, $lang;
+        $lang = $this->lang;
 
         if (!get_privilages("manage_antispam_questions")) {
             return [
                 'status' => "not_logged_in",
-                'text'   => $lang->translate('not_logged_or_no_perm'),
+                'text'   => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
@@ -86,7 +85,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
                 break;
 
             case "antispam_question_edit":
-                $row = $db->fetch_array_assoc($db->query($db->prepare(
+                $row = $this->db->fetch_array_assoc($this->db->query($this->db->prepare(
                     "SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " .
                     "WHERE `id` = '%d'",
                     [$data['id']]

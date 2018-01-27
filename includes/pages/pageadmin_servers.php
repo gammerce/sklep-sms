@@ -20,22 +20,20 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
 
     protected function content($get, $post)
     {
-        global $heart, $lang;
-
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
 
-        $cell = new Cell($lang->translate('id'));
+        $cell = new Cell($this->lang->translate('id'));
         $cell->setParam('headers', 'id');
         $table->addHeadCell($cell);
 
-        $table->addHeadCell(new Cell($lang->translate('name')));
-        $table->addHeadCell(new Cell($lang->translate('ip') . ':' . $lang->translate('port')));
-        $table->addHeadCell(new Cell($lang->translate('version')));
+        $table->addHeadCell(new Cell($this->lang->translate('name')));
+        $table->addHeadCell(new Cell($this->lang->translate('ip') . ':' . $this->lang->translate('port')));
+        $table->addHeadCell(new Cell($this->lang->translate('version')));
 
-        foreach ($heart->get_servers() as $row) {
+        foreach ($this->heart->get_servers() as $row) {
             $body_row = new BodyRow();
 
             $body_row->setDbId($row['id']);
@@ -57,7 +55,7 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
             $button = new Input();
             $button->setParam('id', 'server_button_add');
             $button->setParam('type', 'button');
-            $button->setParam('value', $lang->translate('add_server'));
+            $button->setParam('value', $this->lang->translate('add_server'));
             $wrapper->addButton($button);
         }
 
@@ -66,28 +64,29 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
 
     public function get_action_box($box_id, $data)
     {
-        global $heart, $db, $lang;
+        $heart = $this->heart;
+        $lang = $this->lang;
 
         if (!get_privilages("manage_servers")) {
             return [
                 'status' => "not_logged_in",
-                'text'   => $lang->translate('not_logged_or_no_perm'),
+                'text'   => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
         if ($box_id == "server_edit") {
-            $server = $heart->get_server($data['id']);
+            $server = $this->heart->get_server($data['id']);
             $server['ip'] = htmlspecialchars($server['ip']);
             $server['port'] = htmlspecialchars($server['port']);
         }
 
         // Pobranie listy serwisów transakcyjnych
-        $result = $db->query(
+        $result = $this->db->query(
             "SELECT `id`, `name`, `sms` " .
             "FROM `" . TABLE_PREFIX . "transaction_services`"
         );
         $sms_services = "";
-        while ($row = $db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetch_array_assoc($result)) {
             if (!$row['sms']) {
                 continue;
             }
@@ -99,21 +98,21 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
         }
 
         $services = "";
-        foreach ($heart->get_services() as $service) {
+        foreach ($this->heart->get_services() as $service) {
             // Dana usługa nie może być kupiona na serwerze
-            if (($service_module = $heart->get_service_module($service['id'])) === null || !object_implements($service_module,
+            if (($service_module = $this->heart->get_service_module($service['id'])) === null || !object_implements($service_module,
                     "IService_AvailableOnServers")) {
                 continue;
             }
 
-            $values = create_dom_element("option", $lang->strtoupper($lang->translate('no')), [
+            $values = create_dom_element("option", $this->lang->strtoupper($this->lang->translate('no')), [
                 'value'    => 0,
-                'selected' => $heart->server_service_linked($server['id'], $service['id']) ? "" : "selected",
+                'selected' => $this->heart->server_service_linked($server['id'], $service['id']) ? "" : "selected",
             ]);
 
-            $values .= create_dom_element("option", $lang->strtoupper($lang->translate('yes')), [
+            $values .= create_dom_element("option", $this->lang->strtoupper($this->lang->translate('yes')), [
                 'value'    => 1,
-                'selected' => $heart->server_service_linked($server['id'], $service['id']) ? "selected" : "",
+                'selected' => $this->heart->server_service_linked($server['id'], $service['id']) ? "selected" : "",
             ]);
 
             $name = htmlspecialchars($service['id']);
