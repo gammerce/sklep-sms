@@ -20,26 +20,24 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
 
     protected function content($get, $post)
     {
-        global $heart, $settings, $lang;
-
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
 
-        $cell = new Cell($lang->translate('tariff'));
+        $cell = new Cell($this->lang->translate('tariff'));
         $cell->setParam('headers', 'id');
         $table->addHeadCell($cell);
 
-        $table->addHeadCell(new Cell($lang->translate('provision')));
+        $table->addHeadCell(new Cell($this->lang->translate('provision')));
 
-        foreach ($heart->getTariffs() as $tariff) {
+        foreach ($this->heart->getTariffs() as $tariff) {
             $body_row = new BodyRow();
 
             $provision = number_format($tariff->getProvision() / 100.0, 2);
 
             $body_row->setDbId($tariff->getId());
-            $body_row->addCell(new Cell("{$provision} {$settings['currency']}"));
+            $body_row->addCell(new Cell("{$provision} {$this->settings['currency']}"));
 
             $body_row->setButtonEdit(true);
             if (!$tariff->isPredefined()) {
@@ -54,7 +52,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
         $button = new Input();
         $button->setParam('id', 'tariff_button_add');
         $button->setParam('type', 'button');
-        $button->setParam('value', $lang->translate('add_tariff'));
+        $button->setParam('value', $this->lang->translate('add_tariff'));
         $wrapper->addButton($button);
 
         return $wrapper->toHtml();
@@ -62,12 +60,13 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
 
     public function get_action_box($box_id, $data)
     {
-        global $heart, $lang, $settings; // settings potrzebne
+        $lang = $this->lang;
+        $settings = $this->settings;
 
         if (!get_privilages("manage_settings")) {
             return [
                 'status' => "not_logged_in",
-                'text'   => $lang->translate('not_logged_or_no_perm'),
+                'text'   => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
@@ -77,7 +76,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
                 break;
 
             case "tariff_edit":
-                $tariff = $heart->getTariff($data['id']);
+                $tariff = $this->heart->getTariff($data['id']);
                 $provision = number_format($tariff->getProvision() / 100.0, 2);
 
                 $output = eval($this->template->render("admin/action_boxes/tariff_edit"));

@@ -19,33 +19,31 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
 
     protected function content($get, $post)
     {
-        global $db, $lang;
-
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
 
-        $cell = new Cell($lang->translate('id'));
+        $cell = new Cell($this->lang->translate('id'));
         $cell->setParam('headers', 'id');
         $table->addHeadCell($cell);
 
-        $table->addHeadCell(new Cell($lang->translate('name')));
-        $table->addHeadCell(new Cell($lang->translate('sms_service')));
-        $table->addHeadCell(new Cell($lang->translate('transfer_service')));
+        $table->addHeadCell(new Cell($this->lang->translate('name')));
+        $table->addHeadCell(new Cell($this->lang->translate('sms_service')));
+        $table->addHeadCell(new Cell($this->lang->translate('transfer_service')));
 
-        $result = $db->query(
+        $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "transaction_services` " .
             "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+        $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
-        while ($row = $db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetch_array_assoc($result)) {
             $body_row = new BodyRow();
 
-            $sms_service = $row['sms'] ? $lang->strtoupper($lang->translate('yes')) : $lang->strtoupper($lang->translate('no'));
-            $transfer_service = $row['transfer'] ? $lang->strtoupper($lang->translate('yes')) : $lang->strtoupper($lang->translate('no'));
+            $sms_service = $row['sms'] ? $this->lang->strtoupper($this->lang->translate('yes')) : $this->lang->strtoupper($this->lang->translate('no'));
+            $transfer_service = $row['transfer'] ? $this->lang->strtoupper($this->lang->translate('yes')) : $this->lang->strtoupper($this->lang->translate('no'));
 
             $body_row->setDbId($row['id']);
             $body_row->addCell(new Cell($row['name']));
@@ -64,24 +62,24 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
 
     public function get_action_box($box_id, $data)
     {
-        global $db, $lang;
+        $lang = $this->lang;
 
         if (!get_privilages("manage_settings")) {
             return [
                 'status' => "not_logged_in",
-                'text'   => $lang->translate('not_logged_or_no_perm'),
+                'text'   => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
         switch ($box_id) {
             case "transaction_service_edit":
                 // Pobranie danych o metodzie płatności
-                $result = $db->query($db->prepare(
+                $result = $this->db->query($this->db->prepare(
                     "SELECT * FROM `" . TABLE_PREFIX . "transaction_services` " .
                     "WHERE `id` = '%s'",
                     [$data['id']]
                 ));
-                $transaction_service = $db->fetch_array_assoc($result);
+                $transaction_service = $this->db->fetch_array_assoc($result);
 
                 $transaction_service['id'] = htmlspecialchars($transaction_service['id']);
                 $transaction_service['name'] = htmlspecialchars($transaction_service['name']);
@@ -91,13 +89,13 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
                 foreach ($transaction_service['data'] as $name => $value) {
                     switch ($name) {
                         case 'sms_text':
-                            $text = $lang->strtoupper($lang->translate('sms_code'));
+                            $text = $this->lang->strtoupper($this->lang->translate('sms_code'));
                             break;
                         case 'account_id':
-                            $text = $lang->strtoupper($lang->translate('account_id'));
+                            $text = $this->lang->strtoupper($this->lang->translate('account_id'));
                             break;
                         default:
-                            $text = $lang->strtoupper($name);
+                            $text = $this->lang->strtoupper($name);
                             break;
                     }
                     $data_values .= eval($this->template->render("tr_name_input"));

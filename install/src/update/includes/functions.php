@@ -1,8 +1,13 @@
 <?php
 
+use App\Template;
+
 function update_info(&$everything_ok)
 {
-    global $templates, $files_priv, $files_del, $modules;
+    global $files_priv, $files_del, $modules;
+
+    /** @var Template $template */
+    $template = app()->make(Template::class);
 
     // Sprawdzamy ustawienia modułuów
     $server_modules = '';
@@ -15,7 +20,7 @@ function update_info(&$everything_ok)
             $title = "Nieprawidłowo";
         }
 
-        $server_modules .= eval($templates->install_update_render('module'));
+        $server_modules .= eval($template->install_update_render('module'));
 
         if (!$module['value'] && $module['must-be']) {
             $everything_ok = false;
@@ -24,7 +29,7 @@ function update_info(&$everything_ok)
     if (strlen($server_modules)) {
         $text = "Moduły na serwerze";
         $data = $server_modules;
-        $server_modules = eval($templates->install_update_render('update_info_brick'));
+        $server_modules = eval($template->install_update_render('update_info_brick'));
     }
 
     $files_privilages = '';
@@ -40,12 +45,12 @@ function update_info(&$everything_ok)
             $everything_ok = false;
         }
 
-        $files_privilages .= eval($templates->install_update_render('file'));
+        $files_privilages .= eval($template->install_update_render('file'));
     }
     if (strlen($files_privilages)) {
         $text = "Uprawnienia do zapisu";
         $data = $files_privilages;
-        $files_privilages = eval($templates->install_update_render('update_info_brick'));
+        $files_privilages = eval($template->install_update_render('update_info_brick'));
     }
 
     $files_delete = '';
@@ -61,13 +66,13 @@ function update_info(&$everything_ok)
             $everything_ok = false;
         }
 
-        $files_delete .= eval($templates->install_update_render('file'));
+        $files_delete .= eval($template->install_update_render('file'));
     }
     if (strlen($files_delete)) {
         $text = "Pliki do usunięcia";
         $data = $files_delete;
-        $files_delete = eval($templates->install_update_render('update_info_brick'));
+        $files_delete = eval($template->install_update_render('update_info_brick'));
     }
 
-    return eval($templates->install_update_render('update_info'));
+    return eval($template->install_update_render('update_info'));
 }

@@ -20,25 +20,23 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
 
     protected function content($get, $post)
     {
-        global $db, $lang;
-
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
 
-        $cell = new Cell($lang->translate('id'));
+        $cell = new Cell($this->lang->translate('id'));
         $cell->setParam('headers', 'id');
         $table->addHeadCell($cell);
 
-        $table->addHeadCell(new Cell($lang->translate('code')));
-        $table->addHeadCell(new Cell($lang->translate('service')));
-        $table->addHeadCell(new Cell($lang->translate('server')));
-        $table->addHeadCell(new Cell($lang->translate('amount')));
-        $table->addHeadCell(new Cell($lang->translate('user')));
-        $table->addHeadCell(new Cell($lang->translate('date_of_creation')));
+        $table->addHeadCell(new Cell($this->lang->translate('code')));
+        $table->addHeadCell(new Cell($this->lang->translate('service')));
+        $table->addHeadCell(new Cell($this->lang->translate('server')));
+        $table->addHeadCell(new Cell($this->lang->translate('amount')));
+        $table->addHeadCell(new Cell($this->lang->translate('user')));
+        $table->addHeadCell(new Cell($this->lang->translate('date_of_creation')));
 
-        $result = $db->query(
+        $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.name AS `service`, srv.name AS `server`, sc.tariff, pl.amount AS `tariff_amount`,
 			u.username, u.uid, sc.amount, sc.data, sc.timestamp, s.tag " .
             "FROM `" . TABLE_PREFIX . "service_codes` AS sc " .
@@ -50,23 +48,23 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
             "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($db->get_column('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
+        $table->setDbRowsAmount($this->db->get_column('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
 
-        while ($row = $db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetch_array_assoc($result)) {
             $body_row = new BodyRow();
 
-            $username = $row['uid'] ? $row['username'] . " ({$row['uid']})" : $lang->translate('none');
+            $username = $row['uid'] ? $row['username'] . " ({$row['uid']})" : $this->lang->translate('none');
 
             if ($row['tariff_amount']) {
                 $amount = $row['tariff_amount'] . ' ' . $row['tag'];
             } else {
                 if ($row['tariff']) {
-                    $amount = $lang->translate('tariff') . ': ' . $row['tariff'];
+                    $amount = $this->lang->translate('tariff') . ': ' . $row['tariff'];
                 } else {
                     if ($row['amount']) {
                         $amount = $row['amount'];
                     } else {
-                        $amount = $lang->translate('none');
+                        $amount = $this->lang->translate('none');
                     }
                 }
             }
@@ -92,7 +90,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
             $button = new Input();
             $button->setParam('id', 'service_code_button_add');
             $button->setParam('type', 'button');
-            $button->setParam('value', $lang->translate('add_code'));
+            $button->setParam('value', $this->lang->translate('add_code'));
             $wrapper->addButton($button);
         }
 
@@ -101,12 +99,12 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
 
     public function get_action_box($box_id, $data)
     {
-        global $heart, $lang;
+        $lang = $this->lang;
 
         if (!get_privilages("manage_service_codes")) {
             return [
                 'status' => "not_logged_in",
-                'text'   => $lang->translate('not_logged_or_no_perm'),
+                'text'   => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
@@ -114,8 +112,8 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
             case "code_add":
                 // Pobranie usług
                 $services = "";
-                foreach ($heart->get_services() as $id => $row) {
-                    if (($service_module = $heart->get_service_module($id)) === null || !object_implements($service_module,
+                foreach ($this->heart->get_services() as $id => $row) {
+                    if (($service_module = $this->heart->get_service_module($id)) === null || !object_implements($service_module,
                             "IService_ServiceCodeAdminManage")) {
                         continue;
                     }

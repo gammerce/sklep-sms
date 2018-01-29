@@ -31,22 +31,23 @@ class PageAdminIncome extends PageAdmin
 
     protected function content($get, $post)
     {
-        global $heart, $db, $settings, $lang;
+        $settings = $this->settings;
+        $lang = $this->lang;
 
         $G_MONTH = isset($get['month']) ? $get['month'] : date("m");
         $G_YEAR = isset($get['year']) ? $get['year'] : date("Y");
 
         $table_row = "";
         // Uzyskanie wszystkich serwerów
-        foreach ($heart->get_servers() as $id => $server) {
+        foreach ($this->heart->get_servers() as $id => $server) {
             $obejcts_ids[] = $id;
             $table_row .= create_dom_element("td", $server['name']);
         }
         $obejcts_ids[] = 0;
 
-        $result = $db->query($db->prepare(
+        $result = $this->db->query($this->db->prepare(
             "SELECT t.income, t.timestamp, t.server " .
-            "FROM ({$settings['transactions_query']}) as t " .
+            "FROM ({$this->settings['transactions_query']}) as t " .
             "WHERE t.free = '0' AND IFNULL(t.income,'') != '' AND t.payment != 'wallet' AND t.timestamp LIKE '%s-%s-%%' " .
             "ORDER BY t.timestamp ASC",
             [$G_YEAR, $G_MONTH]
@@ -54,7 +55,7 @@ class PageAdminIncome extends PageAdmin
 
         // Sumujemy dochód po dacie (z dokładnością do dnia) i po serwerze
         $data = [];
-        while ($row = $db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetch_array_assoc($result)) {
             $temp = explode(" ", $row['timestamp']);
 
             $data[$temp[0]][in_array($row['server'], $obejcts_ids) ? $row['server'] : 0] += $row['income'];
@@ -63,7 +64,7 @@ class PageAdminIncome extends PageAdmin
         // Dodanie wyboru miesiąca
         $months = '';
         for ($i = 1; $i <= 12; $i++) {
-            $months .= create_dom_element("option", $lang->translate($this->months[$i]), [
+            $months .= create_dom_element("option", $this->lang->translate($this->months[$i]), [
                 'value'    => str_pad($i, 2, 0, STR_PAD_LEFT),
                 'selected' => $G_MONTH == $i ? "selected" : "",
             ]);

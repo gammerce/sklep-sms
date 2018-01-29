@@ -20,23 +20,21 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
 
     protected function content($get, $post)
     {
-        global $heart, $lang;
-
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
 
-        $cell = new Cell($lang->translate('id'));
+        $cell = new Cell($this->lang->translate('id'));
         $cell->setParam('headers', 'id');
         $table->addHeadCell($cell);
 
-        $table->addHeadCell(new Cell($lang->translate('name')));
-        $table->addHeadCell(new Cell($lang->translate('short_description')));
-        $table->addHeadCell(new Cell($lang->translate('description')));
-        $table->addHeadCell(new Cell($lang->translate('order')));
+        $table->addHeadCell(new Cell($this->lang->translate('name')));
+        $table->addHeadCell(new Cell($this->lang->translate('short_description')));
+        $table->addHeadCell(new Cell($this->lang->translate('description')));
+        $table->addHeadCell(new Cell($this->lang->translate('order')));
 
-        foreach ($heart->get_services() as $row) {
+        foreach ($this->heart->get_services() as $row) {
             $body_row = new BodyRow();
 
             $body_row->setDbId(htmlspecialchars($row['id']));
@@ -62,7 +60,7 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
             $button = new Input();
             $button->setParam('id', 'service_button_add');
             $button->setParam('type', 'button');
-            $button->setParam('value', $lang->translate('add_service'));
+            $button->setParam('value', $this->lang->translate('add_service'));
             $wrapper->addButton($button);
         }
 
@@ -71,22 +69,22 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
 
     public function get_action_box($box_id, $data)
     {
-        global $heart, $lang;
+        $lang = $this->lang;
 
         if (!get_privilages("manage_services")) {
             return [
                 'status' => "not_logged_in",
-                'text'   => $lang->translate('not_logged_or_no_perm'),
+                'text'   => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
         if ($box_id == "service_edit") {
-            $service = $heart->get_service($data['id']);
+            $service = $this->heart->get_service($data['id']);
             $service['tag'] = htmlspecialchars($service['tag']);
 
             // Pobieramy pola danego modułu
             if (strlen($service['module'])) {
-                if (($service_module = $heart->get_service_module($service['id'])) !== null
+                if (($service_module = $this->heart->get_service_module($service['id'])) !== null
                     && object_implements($service_module, "IService_AdminManage")
                 ) {
                     $extra_fields = create_dom_element("tbody", $service_module->service_admin_extra_fields_get(), [
@@ -97,9 +95,9 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
         } // Pobranie dostępnych modułów usług
         elseif ($box_id == "service_add") {
             $services_modules = "";
-            foreach ($heart->get_services_modules() as $module) {
+            foreach ($this->heart->get_services_modules() as $module) {
                 // Sprawdzamy czy dany moduł zezwala na tworzenie nowych usług, które będzie obsługiwał
-                if (($service_module = $heart->get_service_module_s($module['id'])) === null
+                if (($service_module = $this->heart->get_service_module_s($module['id'])) === null
                     || !object_implements($service_module, "IService_Create")
                 ) {
                     continue;
@@ -114,7 +112,7 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
 
         // Grupy
         $groups = "";
-        foreach ($heart->get_groups() as $group) {
+        foreach ($this->heart->get_groups() as $group) {
             $groups .= create_dom_element("option", "{$group['name']} ( {$group['id']} )", [
                 'value'    => $group['id'],
                 'selected' => isset($service['groups']) && in_array($group['id'], $service['groups']) ? "selected" : "",
@@ -127,7 +125,7 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
                 break;
 
             case "service_edit":
-                $service_module_name = $heart->get_service_module_name($service['module']);
+                $service_module_name = $this->heart->get_service_module_name($service['module']);
 
                 $output = eval($this->template->render("admin/action_boxes/service_edit"));
                 break;
