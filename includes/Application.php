@@ -42,15 +42,12 @@ class Application extends Container
     protected function registerDatabase()
     {
         $this->singleton(Database::class, function () {
-            $db = new Database(
+            return new Database(
                 getenv('DB_HOST'),
                 getenv('DB_USERNAME'),
                 getenv('DB_PASSWORD'),
                 getenv('DB_DATABASE')
             );
-            $db->query("SET NAMES utf8");
-
-            return $db;
         });
     }
 

@@ -17,7 +17,7 @@ class CronKernel extends Kernel
         $settings = $this->app->make(Settings::class);
 
         /** @var TranslationManager $translationManager */
-        $translationManager = app()->make(TranslationManager::class);
+        $translationManager = $this->app->make(TranslationManager::class);
         $lang = $translationManager->user();
 
         /** @var CronExceutor $cronExecutor */

@@ -18,7 +18,7 @@ class JsonHttpAdminKernel extends Kernel
     public function handle(Request $request)
     {
         /** @var TranslationManager $translationManager */
-        $translationManager = app()->make(TranslationManager::class);
+        $translationManager = $this->app->make(TranslationManager::class);
         $langShop = $translationManager->shop();
 
         /** @var Heart $heart */
@@ -32,7 +32,7 @@ class JsonHttpAdminKernel extends Kernel
         $templates = $this->app->make(Template::class);
 
         /** @var TranslationManager $translationManager */
-        $translationManager = app()->make(TranslationManager::class);
+        $translationManager = $this->app->make(TranslationManager::class);
         $lang = $translationManager->user();
 
         /** @var Settings $settings */

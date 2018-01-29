@@ -1,20 +1,19 @@
 <?php
 
-/** @var App\Kernels\KernelContract $kernel */
-
 use App\Exceptions\ShopNeedsInstallException;
 use App\ShopState;
 
+/** @var App\Kernels\KernelContract $kernel */
 $kernel = $app->make(App\Kernels\KernelContract::class);
 $request = Symfony\Component\HttpFoundation\Request::createFromGlobals();
 $app->instance(Symfony\Component\HttpFoundation\Request::class, $request);
 
 try {
-    require __DIR__ . '/../bootstrap/app_global.php';
-
     if (!ShopState::isInstalled() || !$app->make(ShopState::class)->isUpToDate()) {
         throw new ShopNeedsInstallException();
     }
+
+    require __DIR__ . '/../bootstrap/app_global.php';
 
     $response = $kernel->handle($request);
 } catch (Exception $e) {

@@ -11,7 +11,7 @@ class TransferFinalizeKernel extends Kernel
     public function handle(Request $request)
     {
         /** @var TranslationManager $translationManager */
-        $translationManager = app()->make(TranslationManager::class);
+        $translationManager = $this->app->make(TranslationManager::class);
         $langShop = $translationManager->shop();
 
         $payment = new Payment($_GET['service']);

@@ -29,7 +29,7 @@ class AdminKernel extends Kernel
         $template = $this->app->make(Template::class);
 
         /** @var TranslationManager $translationManager */
-        $translationManager = app()->make(TranslationManager::class);
+        $translationManager = $this->app->make(TranslationManager::class);
         $lang = $translationManager->user();
 
         /** @var Settings $settings */

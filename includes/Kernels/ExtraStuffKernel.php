@@ -17,7 +17,7 @@ class ExtraStuffKernel extends Kernel
         $heart = $this->app->make(Heart::class);
 
         /** @var TranslationManager $translationManager */
-        $translationManager = app()->make(TranslationManager::class);
+        $translationManager = $this->app->make(TranslationManager::class);
         $lang = $translationManager->user();
 
         /** @var Template $template */

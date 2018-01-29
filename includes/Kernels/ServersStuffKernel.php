@@ -20,7 +20,7 @@ class ServersStuffKernel extends Kernel
         $settings = $this->app->make(Settings::class);
 
         /** @var TranslationManager $translationManager */
-        $translationManager = app()->make(TranslationManager::class);
+        $translationManager = $this->app->make(TranslationManager::class);
         $lang = $translationManager->user();
 
         // Musi byc podany hash random_keya

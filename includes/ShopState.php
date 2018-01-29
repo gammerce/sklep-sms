@@ -51,9 +51,11 @@ class ShopState
 
     public static function isInstalled()
     {
-        try {
-            app()->make(Database::class);
+        /** @var Database $db */
+        $db = app()->make(Database::class);
 
+        try {
+            $db->connect();
             return true;
         } catch (SqlQueryException $e) {
             return false;

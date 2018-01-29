@@ -19,15 +19,12 @@ class Database
     private $result;
     public $counter = 0;
 
-    function __construct($host, $user, $pass, $name, $conn = true)
+    function __construct($host, $user, $pass, $name)
     {
         $this->host = $host;
         $this->user = $user;
         $this->pass = $pass;
         $this->name = $name;
-        if ($conn) {
-            $this->connect();
-        }
     }
 
     function __destruct()
@@ -46,11 +43,13 @@ class Database
             $this->errno = mysqli_connect_errno();
             $this->exception("no_server_connection");
         }
+
+        $this->query("SET NAMES utf8");
     }
 
     public function close()
     {
-        if ($this->link === null) {
+        if (!$this->isConnected()) {
             return;
         }
 
@@ -71,6 +70,10 @@ class Database
 
     public function query($query)
     {
+        if (!$this->isConnected()) {
+            $this->connect();
+        }
+
         $this->counter += 1;
         $this->query = $query;
         if ($this->result = mysqli_query($this->link, $query)) {
@@ -84,6 +87,10 @@ class Database
 
     public function multi_query($query)
     {
+        if (!$this->isConnected()) {
+            $this->connect();
+        }
+
         $this->query = $query;
         if ($this->result = mysqli_multi_query($this->link, $query)) {
             return $this->result;
@@ -228,5 +235,10 @@ class Database
         $exception->setQuery($this->query);
 
         throw $exception;
+    }
+
+    protected function isConnected()
+    {
+        return !!$this->link;
     }
 }
