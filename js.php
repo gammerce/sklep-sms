@@ -17,4 +17,10 @@ $app->singleton(
     App\Kernels\JsKernel::class
 );
 
-require __DIR__ . '/includes/handle.php';
+/** @var App\Kernels\KernelContract $kernel */
+$kernel = $app->make(App\Kernels\KernelContract::class);
+$request = Symfony\Component\HttpFoundation\Request::createFromGlobals();
+
+$response = $kernel->handle($request);
+$response->send();
+$kernel->terminate($request, $response);

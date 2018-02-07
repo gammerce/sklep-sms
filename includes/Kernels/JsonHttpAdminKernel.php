@@ -12,12 +12,24 @@ use App\Models\Server;
 use App\Settings;
 use App\Template;
 use App\TranslationManager;
+use App\Middlewares\DecodeGetAttributes;
+use App\Middlewares\LicenseIsValid;
+use App\Middlewares\LoadSettings;
+use App\Middlewares\ManageAuthentication;
+use App\Middlewares\SetLanguage;
+use App\Middlewares\UpdateUserActivity;
 use Symfony\Component\HttpFoundation\Request;
 
 class JsonHttpAdminKernel extends Kernel
 {
     protected $middlewares = [
+        DecodeGetAttributes::class,
         IsUpToDate::class,
+        LoadSettings::class,
+        SetLanguage::class,
+        ManageAuthentication::class,
+        LicenseIsValid::class,
+        UpdateUserActivity::class,
     ];
 
     public function run(Request $request)

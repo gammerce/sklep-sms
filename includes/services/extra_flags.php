@@ -357,6 +357,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
         } else {
             // Sprawdzanie czy serwer o danym id istnieje w bazie
             $server = $this->heart->get_server($purchase_data->getOrder('server'));
+
             if (!$this->heart->server_service_linked($server['id'], $this->service['id'])) {
                 $warnings['server'][] = $this->lang->translate('chosen_incorrect_server');
             }

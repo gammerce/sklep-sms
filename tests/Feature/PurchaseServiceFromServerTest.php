@@ -35,7 +35,7 @@ class PurchaseServiceFromServerTest extends ServerTestCase
         ]);
 
         $query = http_build_query([
-            'key'                 => md5(app()->make(Settings::class)->get('random_key')),
+            'key'                 => md5($this->app->make(Settings::class)->get('random_key')),
             'action'              => 'purchase_service',
             'service'             => $serviceId,
             'transaction_service' => $transactionService,

@@ -237,7 +237,7 @@ class Database
         throw $exception;
     }
 
-    protected function isConnected()
+    public function isConnected()
     {
         return !!$this->link;
     }

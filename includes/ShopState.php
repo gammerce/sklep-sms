@@ -54,6 +54,10 @@ class ShopState
         /** @var Database $db */
         $db = app()->make(Database::class);
 
+        if ($db->isConnected()) {
+            return true;
+        }
+
         try {
             $db->connect();
             return true;
