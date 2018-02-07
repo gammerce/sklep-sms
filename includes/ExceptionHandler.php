@@ -2,7 +2,7 @@
 namespace App;
 
 use App\Exceptions\LicenseException;
-use App\Exceptions\ShopNeedsInstallException;
+use App\Exceptions\RequireInstallationException;
 use App\Exceptions\SqlQueryException;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,7 +16,7 @@ class ExceptionHandler implements ExceptionHandlerContract
     private $lang;
 
     protected $dontReport = [
-        ShopNeedsInstallException::class,
+        RequireInstallationException::class,
     ];
 
     public function __construct(Translator $lang)
@@ -36,7 +36,7 @@ class ExceptionHandler implements ExceptionHandlerContract
             return new Response($this->lang->translate('verification_error'));
         }
 
-        if ($e instanceof ShopNeedsInstallException) {
+        if ($e instanceof RequireInstallationException) {
             return new RedirectResponse('/install');
         }
 

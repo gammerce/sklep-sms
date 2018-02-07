@@ -1,6 +1,7 @@
 <?php
 namespace App\Kernels;
 
+use App\Middlewares\IsUpToDate;
 use App\Settings;
 use App\Template;
 use App\TranslationManager;
@@ -9,7 +10,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class JsKernel extends Kernel
 {
-    public function handle(Request $request)
+    protected $middlewares = [
+        IsUpToDate::class,
+    ];
+
+    public function run(Request $request)
     {
         /** @var Template $template */
         $template = $this->app->make(Template::class);

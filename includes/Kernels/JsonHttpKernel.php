@@ -4,6 +4,7 @@ namespace App\Kernels;
 use App\Auth;
 use App\Database;
 use App\Heart;
+use App\Middlewares\IsUpToDate;
 use App\Models\Purchase;
 use App\Payment;
 use App\Settings;
@@ -14,7 +15,11 @@ use Symfony\Component\HttpFoundation\Request;
 
 class JsonHttpKernel extends Kernel
 {
-    public function handle(Request $request)
+    protected $middlewares = [
+        IsUpToDate::class,
+    ];
+
+    public function run(Request $request)
     {
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);

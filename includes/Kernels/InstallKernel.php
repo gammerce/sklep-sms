@@ -1,6 +1,7 @@
 <?php
 namespace App\Kernels;
 
+use App\Middlewares\RequireInstallationOrUpdate;
 use App\ShopState;
 use App\Template;
 use Install\Full;
@@ -8,10 +9,15 @@ use Install\OldShop;
 use Install\Update;
 use Install\UpdateInfo;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class InstallKernel extends Kernel
 {
-    public function handle(Request $request)
+    protected $middlewares = [
+        RequireInstallationOrUpdate::class,
+    ];
+
+    public function run(Request $request)
     {
         /** @var OldShop $oldShop */
         $oldShop = $this->app->make(OldShop::class);
@@ -27,7 +33,7 @@ class InstallKernel extends Kernel
             return $this->update();
         }
 
-        output_page("Sklep nie wymaga aktualizacji. Przejdź na stronę sklepu usuwająć z paska adresu /install");
+        return new Response("Sklep nie wymaga aktualizacji. Przejdź na stronę sklepu usuwająć z paska adresu /install");
     }
 
     protected function full()
@@ -75,8 +81,7 @@ class InstallKernel extends Kernel
         // Pobranie ostatecznego szablonu
         $output = eval($template->install_full_render('index'));
 
-        // Wyświetlenie strony
-        output_page($output);
+        return new Response($output);
     }
 
     protected function update()
@@ -100,7 +105,6 @@ class InstallKernel extends Kernel
         // Pobranie ostatecznego szablonu
         $output = eval($template->install_update_render('index'));
 
-        // Wyświetlenie strony
-        output_page($output);
+        return new Response($output);
     }
 }

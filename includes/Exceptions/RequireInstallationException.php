@@ -3,7 +3,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class ShopNeedsInstallException extends Exception
+class RequireInstallationException extends Exception
 {
     //
 }

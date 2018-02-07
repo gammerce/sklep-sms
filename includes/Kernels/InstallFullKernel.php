@@ -3,7 +3,7 @@ namespace App\Kernels;
 
 use App\Database;
 use App\Exceptions\SqlQueryException;
-use App\Template;
+use App\Middlewares\RequireInstallation;
 use App\TranslationManager;
 use Install\DatabaseMigration;
 use Install\EnvCreator;
@@ -13,7 +13,11 @@ use Symfony\Component\HttpFoundation\Request;
 
 class InstallFullKernel extends Kernel
 {
-    public function handle(Request $request)
+    protected $middlewares = [
+        RequireInstallation::class,
+    ];
+
+    public function run(Request $request)
     {
         /** @var InstallManager $installManager */
         $installManager = $this->app->make(InstallManager::class);

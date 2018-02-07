@@ -2,6 +2,7 @@
 namespace App\Kernels;
 
 use App\Heart;
+use App\Middlewares\IsUpToDate;
 use App\Models\Purchase;
 use App\Payment;
 use App\Settings;
@@ -11,7 +12,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ServersStuffKernel extends Kernel
 {
-    public function handle(Request $request)
+    protected $middlewares = [
+        IsUpToDate::class,
+    ];
+
+    public function run(Request $request)
     {
         /** @var Heart $heart */
         $heart = $this->app->make(Heart::class);

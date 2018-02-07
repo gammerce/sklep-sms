@@ -1,6 +1,7 @@
 <?php
 namespace App\Kernels;
 
+use App\Middlewares\RequireUpdate;
 use Install\DatabaseMigration;
 use Install\InstallManager;
 use Install\Update;
@@ -9,7 +10,11 @@ use Symfony\Component\HttpFoundation\Request;
 
 class InstallUpdateKernel extends Kernel
 {
-    public function handle(Request $request)
+    protected $middlewares = [
+        RequireUpdate::class,
+    ];
+
+    public function run(Request $request)
     {
         /** @var InstallManager $installManager */
         $installManager = $this->app->make(InstallManager::class);

@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Psr4;
 
-use App\Exceptions\ShopNeedsInstallException;
+use App\Exceptions\RequireInstallationException;
 use App\Kernels\KernelContract;
 use App\ShopState;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,7 +20,7 @@ trait MakesHttpRequests
         require __DIR__ . '/../../bootstrap/app_global.php';
 
         if (!ShopState::isInstalled() || !$this->app->make(ShopState::class)->isUpToDate()) {
-            throw new ShopNeedsInstallException();
+            throw new RequireInstallationException();
         }
 
         $response = $kernel->handle($request);

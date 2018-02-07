@@ -4,6 +4,7 @@ namespace App\Kernels;
 use App\CurrentPage;
 use App\Heart;
 use App\License;
+use App\Middlewares\IsUpToDate;
 use App\Settings;
 use App\Template;
 use App\TranslationManager;
@@ -12,7 +13,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class IndexKernel extends Kernel
 {
-    public function handle(Request $request)
+    protected $middlewares = [
+        IsUpToDate::class,
+    ];
+
+    public function run(Request $request)
     {
         /** @var Heart $heart */
         $heart = $this->app->make(Heart::class);

@@ -1,6 +1,7 @@
 <?php
 namespace App\Kernels;
 
+use App\Middlewares\IsUpToDate;
 use App\Payment;
 use App\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -8,7 +9,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TransferFinalizeKernel extends Kernel
 {
-    public function handle(Request $request)
+    protected $middlewares = [
+        IsUpToDate::class,
+    ];
+
+    public function run(Request $request)
     {
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);

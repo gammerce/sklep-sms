@@ -2,6 +2,7 @@
 namespace App\Kernels;
 
 use App\CronExceutor;
+use App\Middlewares\IsUpToDate;
 use App\Settings;
 use App\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -9,7 +10,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CronKernel extends Kernel
 {
-    public function handle(Request $request)
+    protected $middlewares = [
+        IsUpToDate::class,
+    ];
+
+    public function run(Request $request)
     {
         global $argv;
 

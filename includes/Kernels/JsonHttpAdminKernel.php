@@ -5,6 +5,7 @@ use App\Auth;
 use App\Database;
 use App\Exceptions\SqlQueryException;
 use App\Heart;
+use App\Middlewares\IsUpToDate;
 use App\Models\Pricelist;
 use App\Models\Purchase;
 use App\Models\Server;
@@ -15,7 +16,11 @@ use Symfony\Component\HttpFoundation\Request;
 
 class JsonHttpAdminKernel extends Kernel
 {
-    public function handle(Request $request)
+    protected $middlewares = [
+        IsUpToDate::class,
+    ];
+
+    public function run(Request $request)
     {
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
