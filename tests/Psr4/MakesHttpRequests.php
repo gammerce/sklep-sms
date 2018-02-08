@@ -1,9 +1,7 @@
 <?php
 namespace Tests\Psr4;
 
-use App\Exceptions\RequireInstallationException;
 use App\Kernels\KernelContract;
-use App\ShopState;
 use Symfony\Component\HttpFoundation\Request;
 
 trait MakesHttpRequests

@@ -5,7 +5,6 @@ use Admin\Table\Cell;
 use Admin\Table\Input;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
-use App\Database;
 
 class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionBox
 {

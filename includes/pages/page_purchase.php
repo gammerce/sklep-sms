@@ -3,8 +3,6 @@
 use App\Auth;
 use App\Settings;
 use App\Template;
-use App\TranslationManager;
-use App\Translator;
 
 class PagePurchase extends Page
 {

@@ -1,14 +1,14 @@
 <?php
 namespace App\Kernels;
 
-use App\Middlewares\IsUpToDate;
-use App\Payment;
-use App\TranslationManager;
 use App\Middlewares\DecodeGetAttributes;
+use App\Middlewares\IsUpToDate;
 use App\Middlewares\LicenseIsValid;
 use App\Middlewares\LoadSettings;
 use App\Middlewares\ManageAuthentication;
 use App\Middlewares\SetLanguage;
+use App\Payment;
+use App\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
