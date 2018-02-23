@@ -4,6 +4,7 @@ namespace Tests\Psr4;
 use App\Application;
 use App\Database;
 use App\License;
+use App\LocaleService;
 use App\Settings;
 use Install\DatabaseMigration;
 use Mockery;
@@ -28,6 +29,7 @@ class TestCase extends BaseTestCase
 
         $this->factory = $this->app->make(Factory::class);
         $this->mockLicense();
+        $this->mockLocale();
 
         /** @var Database $db */
         $db = $this->app->make(Database::class);
@@ -88,5 +90,12 @@ class TestCase extends BaseTestCase
         $license->shouldReceive('isValid')->andReturn(true);
         $license->shouldReceive('getFooter')->andReturn('');
         $this->app->instance(License::class, $license);
+    }
+
+    protected function mockLocale()
+    {
+        $localeService = Mockery::mock(LocaleService::class);
+        $localeService->shouldReceive('getLocale')->andReturn('pl');
+        $this->app->instance(LocaleService::class, $localeService);
     }
 }

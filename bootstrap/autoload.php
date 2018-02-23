@@ -27,18 +27,6 @@ if (!defined('PHP_VERSION_ID')) {
     define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
 }
 
-if (!defined('TYPE_NICK')) {
-    define('TYPE_NICK', 1 << 0);
-}
-
-if (!defined('TYPE_IP')) {
-    define('TYPE_IP', 1 << 1);
-}
-
-if (!defined('TYPE_SID')) {
-    define('TYPE_SID', 1 << 2);
-}
-
 // Te interfejsy są potrzebne do klas różnego rodzajów
 foreach (scandir(SCRIPT_ROOT . "includes/interfaces") as $file) {
     if (ends_at($file, ".php")) {

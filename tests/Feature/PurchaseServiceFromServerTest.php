@@ -2,7 +2,9 @@
 namespace Tests\Feature;
 
 use App\Settings;
+use ExtraFlagType;
 use IPayment_Sms;
+use Mockery;
 use PaymentModule_Gosetti;
 use Tests\Psr4\ServerTestCase;
 
@@ -15,7 +17,7 @@ class PurchaseServiceFromServerTest extends ServerTestCase
         $serviceId = 'vip';
         $tariff = 2;
         $transactionService = 'gosetti';
-        $type = TYPE_NICK;
+        $type = ExtraFlagType::TYPE_NICK;
         $authData = 'test';
         $password = 'test123';
         $smsCode = 'ABCD12EF';
@@ -65,7 +67,7 @@ class PurchaseServiceFromServerTest extends ServerTestCase
 
     protected function mockGoSetti()
     {
-        $gosetti = \Mockery::mock(new PaymentModule_Gosetti())->makePartial();
+        $gosetti = Mockery::mock(new PaymentModule_Gosetti())->makePartial();
         $gosetti->shouldReceive('verify_sms')->andReturn(IPayment_Sms::OK);
         $this->app->instance(PaymentModule_Gosetti::class, $gosetti);
     }

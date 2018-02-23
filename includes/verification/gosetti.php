@@ -21,7 +21,7 @@ class PaymentModule_Gosetti extends PaymentModule implements IPayment_Sms
 
         $data = json_decode(file_get_contents('https://gosetti.pl/Api/SmsApiV2GetData.php'), true);
 
-        // CSSetti dostarcza w feedzie kod sms
+        // GOsetti dostarcza w feedzie kod sms
         $this->sms_code = $data['Code'];
 
         foreach ($data['Numbers'] as $number_data) {

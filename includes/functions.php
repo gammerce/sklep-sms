@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Get the available container instance.
  *
  * @param  string $abstract
- * @param  array  $parameters
+ * @param  array $parameters
  * @return mixed|\Illuminate\Container\Container
  */
 function app($abstract = null, array $parameters = [])
@@ -40,7 +40,7 @@ function admin_session()
 /**
  * Pobranie szablonu
  *
- * @param string     $output Zwartość do wyświetlenia
+ * @param string $output Zwartość do wyświetlenia
  * @param int|string $header String do użycia w funkcji header()
  */
 function output_page($output, $header = 0)
@@ -65,7 +65,7 @@ function output_page($output, $header = 0)
  * Zwraca treść danego bloku
  *
  * @param string $element
- * @param bool   $withenvelope
+ * @param bool $withenvelope
  *
  * @return string
  */
@@ -180,7 +180,7 @@ function get_pagination($all, $current_page, $script, $get, $row_limit = 0)
         }
 
         $output .= create_dom_element("a", $i, [
-                'href'  => $href = $script . $get_string . (strlen($get_string) ? "&" : "?") .
+                'href' => $href = $script . $get_string . (strlen($get_string) ? "&" : "?") .
                     "page=" . $i,
                 'class' => $current_page == $i ? "current" : "",
             ]) . "&nbsp;";
@@ -206,7 +206,7 @@ function is_logged()
 
 /**
  * @param string $which
- * @param User   $user
+ * @param User $user
  *
  * @return bool
  */
@@ -334,16 +334,16 @@ function validate_payment($purchase_data)
     // Tworzymy obiekt usługi którą kupujemy
     if (($service_module = $heart->get_service_module($purchase_data->getService())) === null) {
         return [
-            'status'   => "wrong_module",
-            'text'     => $lang->translate('bad_module'),
+            'status' => "wrong_module",
+            'text' => $lang->translate('bad_module'),
             'positive' => false,
         ];
     }
 
     if (!in_array($purchase_data->getPayment('method'), ["sms", "transfer", "wallet", "service_code"])) {
         return [
-            'status'   => "wrong_method",
-            'text'     => $lang->translate('wrong_payment_method'),
+            'status' => "wrong_method",
+            'text' => $lang->translate('wrong_payment_method'),
             'positive' => false,
         ];
     }
@@ -370,36 +370,36 @@ function validate_payment($purchase_data)
     // Metoda płatności
     if ($purchase_data->getPayment('method') == "wallet" && !is_logged()) {
         return [
-            'status'   => "wallet_not_logged",
-            'text'     => $lang->translate('no_login_no_wallet'),
+            'status' => "wallet_not_logged",
+            'text' => $lang->translate('no_login_no_wallet'),
             'positive' => false,
         ];
     } elseif ($purchase_data->getPayment('method') == "transfer") {
         if ($purchase_data->getPayment('cost') <= 1) {
             return [
-                'status'   => "too_little_for_transfer",
-                'text'     => $lang->sprintf($lang->translate('transfer_above_amount'), $settings['currency']),
+                'status' => "too_little_for_transfer",
+                'text' => $lang->sprintf($lang->translate('transfer_above_amount'), $settings['currency']),
                 'positive' => false,
             ];
         }
 
         if (!$payment->getPaymentModule()->supportTransfer()) {
             return [
-                'status'   => "transfer_unavailable",
-                'text'     => $lang->translate('transfer_unavailable'),
+                'status' => "transfer_unavailable",
+                'text' => $lang->translate('transfer_unavailable'),
                 'positive' => false,
             ];
         }
     } elseif ($purchase_data->getPayment('method') == "sms" && !$payment->getPaymentModule()->supportSms()) {
         return [
-            'status'   => "sms_unavailable",
-            'text'     => $lang->translate('sms_unavailable'),
+            'status' => "sms_unavailable",
+            'text' => $lang->translate('sms_unavailable'),
             'positive' => false,
         ];
     } elseif ($purchase_data->getPayment('method') == "sms" && $purchase_data->getTariff() === null) {
         return [
-            'status'   => "no_sms_option",
-            'text'     => $lang->translate('no_sms_payment'),
+            'status' => "no_sms_option",
+            'text' => $lang->translate('no_sms_payment'),
             'positive' => false,
         ];
     }
@@ -431,10 +431,10 @@ function validate_payment($purchase_data)
         }
 
         return [
-            'status'   => "warnings",
-            'text'     => $lang->translate('form_wrong_filled'),
+            'status' => "warnings",
+            'text' => $lang->translate('form_wrong_filled'),
             'positive' => false,
-            'data'     => $warning_data,
+            'data' => $warning_data,
         ];
     }
 
@@ -447,8 +447,8 @@ function validate_payment($purchase_data)
 
         if ($sms_return['status'] != IPayment_Sms::OK) {
             return [
-                'status'   => $sms_return['status'],
-                'text'     => $sms_return['text'],
+                'status' => $sms_return['status'],
+                'text' => $sms_return['text'],
                 'positive' => false,
             ];
         }
@@ -478,10 +478,10 @@ function validate_payment($purchase_data)
         $bought_service_id = $service_module->purchase($purchase_data);
 
         return [
-            'status'   => "purchased",
-            'text'     => $lang->translate('purchase_success'),
+            'status' => "purchased",
+            'text' => $lang->translate('purchase_success'),
             'positive' => true,
-            'data'     => ['bsid' => $bought_service_id],
+            'data' => ['bsid' => $bought_service_id],
         ];
     } elseif ($purchase_data->getPayment('method') == "transfer") {
         $purchase_data->setDesc(
@@ -513,7 +513,7 @@ function pay_by_admin($user_admin)
 }
 
 /**
- * @param int  $cost
+ * @param int $cost
  * @param User $user
  *
  * @return array|int|string
@@ -530,8 +530,8 @@ function pay_wallet($cost, $user)
     // Sprawdzanie, czy jest wystarczająca ilość kasy w portfelu
     if ($cost > $user->getWallet()) {
         return [
-            'status'   => "no_money",
-            'text'     => $lang->translate('not_enough_money'),
+            'status' => "no_money",
+            'text' => $lang->translate('not_enough_money'),
             'positive' => false,
         ];
     }
@@ -550,7 +550,7 @@ function pay_wallet($cost, $user)
 }
 
 /**
- * @param Purchase                                                   $purchase_data
+ * @param Purchase $purchase_data
  * @param Service|ServiceChargeWallet|ServiceExtraFlags|ServiceOther $service_module
  *
  * @return array|int|string
@@ -610,8 +610,8 @@ function pay_service_code($purchase_data, $service_module)
     }
 
     return [
-        'status'   => "wrong_service_code",
-        'text'     => $lang->translate('bad_service_code'),
+        'status' => "wrong_service_code",
+        'text' => $lang->translate('bad_service_code'),
         'positive' => false,
     ];
 }
@@ -620,16 +620,16 @@ function pay_service_code($purchase_data, $service_module)
  * Add information about purchasing a service
  *
  * @param integer $uid
- * @param string  $user_name
- * @param string  $ip
- * @param string  $method
- * @param string  $payment_id
- * @param string  $service
+ * @param string $user_name
+ * @param string $ip
+ * @param string $method
+ * @param string $payment_id
+ * @param string $service
  * @param integer $server
- * @param string  $amount
- * @param string  $auth_data
- * @param string  $email
- * @param array   $extra_data
+ * @param string $amount
+ * @param string $auth_data
+ * @param string $email
+ * @param array $extra_data
  *
  * @return int|string
  */
@@ -645,7 +645,8 @@ function add_bought_service_info(
     $auth_data,
     $email,
     $extra_data = []
-) {
+)
+{
     /** @var Database $db */
     $db = app()->make(Database::class);
 
@@ -670,7 +671,7 @@ function add_bought_service_info(
     if (strlen($email)) {
         $message = purchase_info([
             'purchase_id' => $bougt_service_id,
-            'action'      => "email",
+            'action' => "email",
         ]);
         if (strlen($message)) {
             $title = ($service == 'charge_wallet' ? $lang->translate('charge_wallet') : $lang->translate('purchase'));
@@ -759,7 +760,7 @@ function purchase_info($data)
  * Pozyskuje z bazy wszystkie usługi użytkowników
  *
  * @param string|int $conditions Jezeli jest tylko jeden element w tablicy, to zwroci ten element zamiast tablicy
- * @param bool       $take_out
+ * @param bool $take_out
  *
  * @return array
  */
@@ -974,7 +975,7 @@ function create_brick($text, $class = "", $alpha = 0.2)
     return create_dom_element("div", $text, [
         'class' => "brick" . ($class ? " {$class}" : ""),
         'style' => [
-            'border-color'     => "rgb({$brick_r},{$brick_g},{$brick_b})",
+            'border-color' => "rgb({$brick_r},{$brick_g},{$brick_b})",
             'background-color' => "rgba({$brick_r},{$brick_g},{$brick_b},{$alpha})",
         ],
     ]);
@@ -995,28 +996,6 @@ function get_platform($platform)
     }
 
     return htmlspecialchars($platform);
-}
-
-// Zwraca nazwę typu
-function get_type_name($value)
-{
-    /** @var TranslationManager $translationManager */
-    $translationManager = app()->make(TranslationManager::class);
-    $lang = $translationManager->user();
-
-    if ($value == TYPE_NICK) {
-        return $lang->translate('nickpass');
-    } else {
-        if ($value == TYPE_IP) {
-            return $lang->translate('ippass');
-        } else {
-            if ($value == TYPE_SID) {
-                return $lang->translate('sid');
-            }
-        }
-    }
-
-    return "";
 }
 
 function get_ip()
@@ -1056,7 +1035,7 @@ function get_ip()
  * Zwraca datę w odpowiednim formacie
  *
  * @param integer|string $timestamp
- * @param string         $format
+ * @param string $format
  *
  * @return string
  */
@@ -1199,9 +1178,9 @@ function searchWhere($search_ids, $search, &$where)
 
 /**
  * @param string $url
- * @param int    $timeout
- * @param bool   $post
- * @param array  $data
+ * @param int $timeout
+ * @param bool $post
+ * @param array $data
  *
  * @return string
  */
@@ -1210,9 +1189,9 @@ function curl_get_contents($url, $timeout = 10, $post = false, $data = [])
     $curl = curl_init();
     curl_setopt_array($curl, [
         CURLOPT_RETURNTRANSFER => 1,
-        CURLOPT_URL            => $url,
-        CURLOPT_TIMEOUT        => $timeout,
-        CURLOPT_USERAGENT      => 'gammerce/sklep-sms',
+        CURLOPT_URL => $url,
+        CURLOPT_TIMEOUT => $timeout,
+        CURLOPT_USERAGENT => 'gammerce/sklep-sms',
     ]);
 
     if ($post) {
@@ -1325,7 +1304,7 @@ function my_is_integer($val)
 
 /**
  * @param string $glue
- * @param array  $stack
+ * @param array $stack
  *
  * @return string
  */
