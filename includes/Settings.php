@@ -5,14 +5,18 @@ use ArrayAccess;
 
 class Settings implements ArrayAccess
 {
+    /** @var Application */
+    protected $app;
+
     /** @var array */
     protected $settings;
 
     /** @var Database */
     protected $db;
 
-    public function __construct(Database $database)
+    public function __construct(Application $app, Database $database)
     {
+        $this->app = $app;
         $this->db = $database;
 
         $this->settings = [
@@ -83,7 +87,7 @@ LEFT JOIN `" . TABLE_PREFIX . "payment_code` AS pc ON bs.payment = 'service_code
         $this->settings['date_format'] = strlen($this->settings['date_format']) ? $this->settings['date_format'] : "Y-m-d H:i";
 
         // Sprawdzanie czy taki szablon istnieje, jak nie to ustaw defaultowy
-        $this->settings['theme'] = file_exists(SCRIPT_ROOT . "themes/{$this->settings['theme']}") ? $this->settings['theme'] : "default";
+        $this->settings['theme'] = file_exists($this->app->path("themes/{$this->settings['theme']}")) ? $this->settings['theme'] : "default";
     }
 
     public function get($key)

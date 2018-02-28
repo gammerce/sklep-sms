@@ -66,7 +66,7 @@ class Application extends Container
     protected function loadEnvironmentVariables()
     {
         try {
-            (new Dotenv(SCRIPT_ROOT . "confidential"))->load();
+            (new Dotenv($this->path('confidential')))->load();
         } catch (InvalidPathException $e) {
             //
         }
@@ -99,6 +99,10 @@ class Application extends Container
     {
         if (!strlen($path)) {
             return $this->basePath;
+        }
+
+        if (starts_with($path, DIRECTORY_SEPARATOR)) {
+            return $this->basePath . $path;
         }
 
         return $this->basePath . DIRECTORY_SEPARATOR . $path;

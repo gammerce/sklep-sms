@@ -72,7 +72,7 @@ class InstallFullKernel extends Kernel
                 continue;
             }
 
-            if (!is_writable(SCRIPT_ROOT . '/' . $file)) {
+            if (!is_writable($this->app->path($file))) {
                 $warnings['general'][] = "Ścieżka <b>" . htmlspecialchars($file) . "</b> nie posiada praw do zapisu.";
             }
         }

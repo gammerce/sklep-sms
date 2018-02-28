@@ -3,18 +3,18 @@ namespace App;
 
 class Template
 {
+    /** @var Application */
+    protected $app;
+
     /** @var Settings */
     protected $settings;
 
     /** @var Translator */
     protected $lang;
 
-    /** @var Application */
-    protected $app;
-
-    public function __construct(Settings $settings, Translator $lang, Application $application)
+    public function __construct(Application $app, Settings $settings, Translator $lang)
     {
-        $this->app = $application;
+        $this->app = $app;
         $this->settings = $settings;
         $this->lang = $lang;
     }
@@ -27,7 +27,7 @@ class Template
     public function install_render($template)
     {
         $template = $this->get_install_template($template, function ($filename) {
-            return SCRIPT_ROOT . "install/templates/{$filename}.html";
+            return $this->app->path("install/templates/{$filename}.html");
         });
 
         return 'return "' . $template . '";';
@@ -36,7 +36,7 @@ class Template
     public function install_full_render($template)
     {
         $template = $this->get_install_template($template, function ($filename) {
-            return SCRIPT_ROOT . "install/templates/full/{$filename}.html";
+            return $this->app->path("install/templates/full/{$filename}.html");
         });
 
         return 'return "' . $template . '";';
@@ -45,7 +45,7 @@ class Template
     public function install_update_render($template)
     {
         $template = $this->get_install_template($template, function ($filename) {
-            return SCRIPT_ROOT . "install/templates/update/{$filename}.html";
+            return $this->app->path("install/templates/update/{$filename}.html");
         });
 
         return 'return "' . $template . '";';
@@ -64,11 +64,11 @@ class Template
     {
         if (strlen($this->lang->getCurrentLanguageShort())) {
             $filename = $title . "." . $this->lang->getCurrentLanguageShort();
-            $temp = SCRIPT_ROOT . "themes/{$this->settings['theme']}/{$filename}.html";
+            $temp = $this->app->path("themes/{$this->settings['theme']}/{$filename}.html");
             if (file_exists($temp)) {
                 $path = $temp;
             } else {
-                $temp = SCRIPT_ROOT . "themes/default/{$filename}.html";
+                $temp = $this->app->path("themes/default/{$filename}.html");
                 if (file_exists($temp)) {
                     $path = $temp;
                 }
@@ -77,11 +77,11 @@ class Template
 
         if (!isset($path)) {
             $filename = $title;
-            $temp = SCRIPT_ROOT . "themes/{$this->settings['theme']}/{$filename}.html";
+            $temp = $this->app->path("themes/{$this->settings['theme']}/{$filename}.html");
             if (file_exists($temp)) {
                 $path = $temp;
             } else {
-                $temp = SCRIPT_ROOT . "themes/default/{$filename}.html";
+                $temp = $this->app->path("themes/default/{$filename}.html");
                 if (file_exists($temp)) {
                     $path = $temp;
                 }

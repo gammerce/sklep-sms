@@ -1,7 +1,7 @@
 <?php
 namespace App\Kernels;
 
-use App\CronExceutor;
+use App\CronExecutor;
 use App\Middlewares\DecodeGetAttributes;
 use App\Middlewares\IsUpToDate;
 use App\Middlewares\LicenseIsValid;
@@ -35,8 +35,8 @@ class CronKernel extends Kernel
         $translationManager = $this->app->make(TranslationManager::class);
         $lang = $translationManager->user();
 
-        /** @var CronExceutor $cronExecutor */
-        $cronExecutor = $this->app->make(CronExceutor::class);
+        /** @var CronExecutor $cronExecutor */
+        $cronExecutor = $this->app->make(CronExecutor::class);
 
         // Sprawdzenie random stringu
         if ($_GET['key'] != $settings['random_key'] && $argv[1] != $settings['random_key']) {

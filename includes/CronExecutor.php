@@ -1,16 +1,20 @@
 <?php
 namespace App;
 
-class CronExceutor
+class CronExecutor
 {
+    /** @var Application */
+    protected $app;
+
     /** @var Database */
     protected $db;
 
     /** @var Settings */
     protected $settings;
 
-    public function __construct(Database $db, Settings $settings)
+    public function __construct(Application $application, Database $db, Settings $settings)
     {
+        $this->app = $application;
         $this->db = $db;
         $this->settings = $settings;
     }
@@ -42,7 +46,7 @@ class CronExceutor
         }
 
         // Remove files older than 30 days from data/transfers
-        $path = SCRIPT_ROOT . "data/transfers";
+        $path = $this->app->path('data/transfers');
         foreach (scandir($path) as $file) {
             if (filectime($path . $file) < time() - 60 * 60 * 24 * 30) {
                 unlink($path . $file);

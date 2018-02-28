@@ -3,6 +3,9 @@ namespace App;
 
 class Translator
 {
+    /** @var Application */
+    protected $app;
+
     /**
      * Current language
      *
@@ -36,6 +39,7 @@ class Translator
 
     function __construct($lang = 'polish')
     {
+        $this->app = app();
         $this->setLanguage($lang);
     }
 
@@ -74,7 +78,7 @@ class Translator
             !strlen($language) ||
             !isset($this->langList[$language]) ||
             $this->getCurrentLanguage() == $language ||
-            !is_dir(SCRIPT_ROOT . "includes/languages/" . $language)
+            !is_dir($this->app->path("includes/languages/" . $language))
         ) {
             return;
         }
@@ -134,26 +138,26 @@ class Translator
         $filesToInclude = [];
 
         // Ładujemy ogólną bibliotekę językową
-        $filesToInclude[] = SCRIPT_ROOT . "includes/languages/general.php";
+        $filesToInclude[] = $this->app->path("includes/languages/general.php");
 
         // Ładujemy ogólne biblioteki językowe języka
-        foreach (scandir(SCRIPT_ROOT . "includes/languages/{$language}") as $file) {
+        foreach (scandir($this->app->path("includes/languages/{$language}")) as $file) {
             if (ends_at($file, ".php")) {
-                $filesToInclude[] = SCRIPT_ROOT . "includes/languages/{$language}/{$file}";
+                $filesToInclude[] = $this->app->path("includes/languages/{$language}/{$file}");
             }
         }
 
         // Ładujemy bilioteki dla PA
         if (admin_session()) {
-            foreach (scandir(SCRIPT_ROOT . "includes/languages/{$language}/admin") as $file) {
+            foreach (scandir($this->app->path("includes/languages/{$language}/admin")) as $file) {
                 if (ends_at($file, ".php")) {
-                    $filesToInclude[] = SCRIPT_ROOT . "includes/languages/{$language}/admin/{$file}";
+                    $filesToInclude[] = $this->app->path("includes/languages/{$language}/admin/{$file}");
                 }
             }
         } else {
-            foreach (scandir(SCRIPT_ROOT . "includes/languages/{$language}/user") as $file) {
+            foreach (scandir($this->app->path("includes/languages/{$language}/user")) as $file) {
                 if (ends_at($file, ".php")) {
-                    $filesToInclude[] = SCRIPT_ROOT . "includes/languages/{$language}/user/{$file}";
+                    $filesToInclude[] = $this->app->path("includes/languages/{$language}/user/{$file}");
                 }
             }
         }

@@ -16,6 +16,9 @@ class Payment
     /** @var PaymentModule|IPayment_Sms|IPayment_Transfer */
     protected $payment_module = null;
 
+    /** @var Application */
+    protected $app;
+
     /** @var Heart */
     protected $heart;
 
@@ -33,18 +36,19 @@ class Payment
 
     function __construct($paymentModuleId)
     {
+        $this->app = app();
         /** @var TranslationManager $translationManager */
-        $translationManager = app()->make(TranslationManager::class);
+        $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
         $this->langShop = $translationManager->shop();
-        $this->heart = app()->make(Heart::class);
-        $this->settings = app()->make(Settings::class);
-        $this->db = app()->make(Database::class);
+        $this->heart = $this->app->make(Heart::class);
+        $this->settings = $this->app->make(Settings::class);
+        $this->db = $this->app->make(Database::class);
 
         // Tworzymy obiekt obslugujacy stricte weryfikacje
         $className = $this->heart->get_payment_module($paymentModuleId);
         if ($className !== null) {
-            $this->payment_module = app()->make($className);
+            $this->payment_module = $this->app->make($className);
         }
 
         // API podanej usługi nie istnieje.
@@ -56,7 +60,7 @@ class Payment
     /**
      * @param string $sms_code
      * @param Tariff $tariff
-     * @param User   $user
+     * @param User $user
      *
      * @return array
      */
@@ -205,7 +209,7 @@ class Payment
 
         $serialized = serialize($purchase_data);
         $data_filename = time() . "-" . md5($serialized);
-        file_put_contents(SCRIPT_ROOT . "data/transfers/" . $data_filename, $serialized);
+        file_put_contents($this->app->path('data/transfers/' . $data_filename), $serialized);
 
         return [
             'status'   => "transfer",
@@ -235,7 +239,7 @@ class Payment
         }
 
         // Nie znaleziono pliku z danymi
-        if (!$transfer_finalize->getDataFilename() || !file_exists(SCRIPT_ROOT . "data/transfers/" . $transfer_finalize->getDataFilename())) {
+        if (!$transfer_finalize->getDataFilename() || !file_exists($this->app->path('data/transfers/' . $transfer_finalize->getDataFilename()))) {
             log_info($this->langShop->sprintf(
                 $this->langShop->translate('transfer_no_data_file'), $transfer_finalize->getOrderid()
             ));
@@ -244,7 +248,9 @@ class Payment
         }
 
         /** @var Purchase $purchase_data */
-        $purchase_data = unserialize(file_get_contents(SCRIPT_ROOT . "data/transfers/" . $transfer_finalize->getDataFilename()));
+        $purchase_data = unserialize(
+            file_get_contents($this->app->path('data/transfers/' . $transfer_finalize->getDataFilename()))
+        );
 
         // Fix: get user data again to avoid bugs linked with user wallet
         $purchase_data->user = $this->heart->get_user($purchase_data->user->getUid());
@@ -261,7 +267,7 @@ class Payment
                 $purchase_data->user->getPlatform(),
             ]
         ));
-        unlink(SCRIPT_ROOT . "data/transfers/" . $transfer_finalize->getDataFilename());
+        unlink($this->app->path('data/transfers/' . $transfer_finalize->getDataFilename()));
 
         // Błędny moduł
         if (($service_module = $this->heart->get_service_module($purchase_data->getService())) === null) {

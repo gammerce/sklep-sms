@@ -407,12 +407,12 @@ class JsonHttpAdminKernel extends Kernel
             }
 
             // Motyw
-            if (!is_dir(SCRIPT_ROOT . "themes/{$theme}") || $theme[0] == '.') {
+            if (!is_dir($this->app->path("themes/{$theme}")) || $theme[0] == '.') {
                 $warnings['theme'][] = $lang->translate('no_theme');
             }
 
             // Język
-            if (!is_dir(SCRIPT_ROOT . "includes/languages/{$language}") || $language[0] == '.') {
+            if (!is_dir($this->app->path("includes/languages/{$language}")) || $language[0] == '.') {
                 $warnings['language'][] = $lang->translate('no_language');
             }
 

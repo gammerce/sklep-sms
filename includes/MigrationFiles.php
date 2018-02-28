@@ -8,9 +8,9 @@ class MigrationFiles
     /** @var string */
     protected $migrationsPath;
 
-    public function __construct()
+    public function __construct(Application $app)
     {
-        $this->migrationsPath = SCRIPT_ROOT . '/install/migrations/';
+        $this->migrationsPath = $app->path('install/migrations/');
     }
 
     public function getMigrations()

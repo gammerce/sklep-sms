@@ -56,7 +56,7 @@ class InstallKernel extends Kernel
                 continue;
             }
 
-            if (is_writable(SCRIPT_ROOT . '/' . $file)) {
+            if (is_writable($this->app->path($file))) {
                 $privilage = "ok";
             } else {
                 $privilage = "bad";
