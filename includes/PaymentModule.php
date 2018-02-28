@@ -10,6 +10,9 @@ abstract class PaymentModule
     /** @var Database */
     protected $db;
 
+    /** @var Requester */
+    protected $requester;
+
     /** @var  string */
     protected $name;
 
@@ -32,6 +35,7 @@ abstract class PaymentModule
     function __construct()
     {
         $this->db = app()->make(Database::class);
+        $this->requester = app()->make(Requester::class);
 
         $result = $this->db->query($this->db->prepare(
             "SELECT `name`, `data`, `data_hidden`, `sms`, `transfer` " .

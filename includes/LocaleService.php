@@ -9,10 +9,14 @@ class LocaleService
     /** @var Settings */
     private $settings;
 
-    public function __construct(TranslationManager $translationManager, Settings $settings)
+    /** @var Requester */
+    private $requester;
+
+    public function __construct(TranslationManager $translationManager, Settings $settings, Requester $requester)
     {
         $this->translationManager = $translationManager;
         $this->settings = $settings;
+        $this->requester = $requester;
     }
 
     public function getLocale()
@@ -25,7 +29,7 @@ class LocaleService
             return $_COOKIE['language'];
         }
 
-        $details = json_decode(file_get_contents("http://ipinfo.io/" . get_ip() . "/json"));
+        $details = json_decode($this->requester->get("http://ipinfo.io/" . get_ip() . "/json"));
         if (isset($details->country)) {
             $locale = $this->translationManager->user()->getLanguageByShort($details->country);
             if (strlen($locale)) {

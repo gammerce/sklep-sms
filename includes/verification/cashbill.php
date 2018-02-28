@@ -61,6 +61,11 @@ class PaymentModule_Cashbill extends PaymentModule implements IPayment_Sms, IPay
         return IPayment_Sms::NO_CONNECTION;
     }
 
+    /**
+     * @param \App\Models\Purchase $purchase_data
+     * @param string $data_filename
+     * @return array
+     */
     public function prepare_transfer($purchase_data, $data_filename)
     {
         // Zamieniamy grosze na złotówki

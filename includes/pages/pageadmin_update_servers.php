@@ -1,14 +1,20 @@
 <?php
 
+use App\Requester;
+
 class PageAdminUpdateServers extends PageAdmin
 {
     const PAGE_ID = 'update_servers';
     protected $privilage = 'update';
 
-    public function __construct()
+    /** @var Requester */
+    protected $requester;
+
+    public function __construct(Requester $requester)
     {
         parent::__construct();
 
+        $this->requester = $requester;
         $this->heart->page_title = $this->title = $this->lang->translate('update_servers');
     }
 
@@ -16,8 +22,13 @@ class PageAdminUpdateServers extends PageAdmin
     {
         $lang = $this->lang;
 
-        $newest_versions = json_decode(trim(curl_get_contents("https://sklep-sms.pl/version.php?action=get_newest&type=engines")),
-            true);
+        $newest_versions = json_decode(
+            trim($this->requester->get('https://sklep-sms.pl/version.php', [
+                'action' => 'get_newest',
+                'type'   => 'engines',
+            ])),
+            true
+        );
 
         $version_bricks = $servers_versions = "";
         foreach ($this->heart->get_servers() as $server) {
@@ -29,7 +40,11 @@ class PageAdminUpdateServers extends PageAdmin
 
             $name = htmlspecialchars($server['name']);
             $current_version = $server['version'];
-            $next_version = trim(curl_get_contents("https://sklep-sms.pl/version.php?action=get_next&type={$engine}&version={$server['version']}"));
+            $next_version = trim($this->requester->get('https://sklep-sms.pl/version.php', [
+                'action'  => 'get_next',
+                'type'    => $engine,
+                'version' => $server['version'],
+            ]));
             $newest_version = $newest_versions[$engine];
 
             // Nie ma kolejnej wersji

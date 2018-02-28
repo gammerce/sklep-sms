@@ -6,10 +6,10 @@ class PaymentModule_Pukawka extends PaymentModule implements IPayment_Sms
 {
     const SERVICE_ID = "pukawka";
 
-    /** @var  string */
+    /** @var string */
     private $api;
 
-    /** @var  string */
+    /** @var string */
     private $sms_code;
 
     private $stawki = [];
@@ -21,21 +21,22 @@ class PaymentModule_Pukawka extends PaymentModule implements IPayment_Sms
         $this->api = $this->data['api'];
         $this->sms_code = $this->data['sms_text'];
 
-        $this->stawki = json_decode(curl_get_contents(
-            'https://admin.pukawka.pl/api/' .
-            '?keyapi=' . urlencode($this->api) .
-            '&type=sms_table'
-        ), true);
+        $this->stawki = json_decode(
+            $this->requester->get('https://admin.pukawka.pl/api', [
+                'keyapi' => $this->api,
+                'type'   => 'sms_table',
+            ]),
+            true
+        );
     }
 
     public function verify_sms($return_code, $number)
     {
-        $get = curl_get_contents(
-            'https://admin.pukawka.pl/api/' .
-            '?keyapi=' . urlencode($this->api) .
-            '&type=sms' .
-            '&code=' . urlencode($return_code)
-        );
+        $get = $this->requester->get('https://admin.pukawka.pl/api', [
+            'keyapi' => $this->api,
+            'type'   => 'sms',
+            'code'   => $return_code,
+        ]);
 
         if (!$get) {
             return IPayment_Sms::NO_CONNECTION;
@@ -83,5 +84,4 @@ class PaymentModule_Pukawka extends PaymentModule implements IPayment_Sms
     {
         return $this->sms_code;
     }
-
 }

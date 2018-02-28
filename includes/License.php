@@ -23,10 +23,14 @@ class License
     /** @var string */
     protected $footer;
 
-    public function __construct(Translator $translator, Settings $settings)
+    /** @var Requester */
+    protected $requester;
+
+    public function __construct(Translator $translator, Settings $settings, Requester $requester)
     {
         $this->lang = $translator;
         $this->settings = $settings;
+        $this->requester = $requester;
     }
 
     public function validate()
@@ -74,15 +78,14 @@ class License
 
     protected function request()
     {
-        $url = 'http://license.sklep-sms.pl/license.php' .
-            '?action=login_web' .
-            '&lid=' . urlencode($this->settings['license_login']) .
-            '&lpa=' . urlencode($this->settings['license_password']) .
-            '&name=' . urlencode($this->settings['shop_url']) .
-            '&version=' . VERSION .
-            '&language=' . $this->lang->getCurrentLanguage();
-
-        $response = curl_get_contents($url);
+        $response = $this->requester->get('http://license.sklep-sms.pl/license.php', [
+            'action' => 'login_web',
+            'lid' => $this->settings['license_login'],
+            'lpa' => $this->settings['license_password'],
+            'name' => $this->settings['shop_url'],
+            'version' => VERSION,
+            'language' => $this->lang->getCurrentLanguage(),
+        ]);
 
         return json_decode($response, true);
     }

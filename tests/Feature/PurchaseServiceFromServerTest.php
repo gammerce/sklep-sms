@@ -6,10 +6,20 @@ use ExtraFlagType;
 use IPayment_Sms;
 use Mockery;
 use PaymentModule_Gosetti;
+use Tests\Psr4\Concerns\RequesterConcern;
 use Tests\Psr4\ServerTestCase;
 
 class PurchaseServiceFromServerTest extends ServerTestCase
 {
+    use RequesterConcern;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->mockRequester();
+    }
+
     /** @test */
     public function player_can_purchase_service()
     {
@@ -36,8 +46,11 @@ class PurchaseServiceFromServerTest extends ServerTestCase
             'server_id'  => $server->getId(),
         ]);
 
+        /** @var Settings $settings */
+        $settings = $this->app->make(Settings::class);
+
         $query = http_build_query([
-            'key'                 => md5($this->app->make(Settings::class)->get('random_key')),
+            'key'                 => md5($settings->get('random_key')),
             'action'              => 'purchase_service',
             'service'             => $serviceId,
             'transaction_service' => $transactionService,
@@ -67,6 +80,14 @@ class PurchaseServiceFromServerTest extends ServerTestCase
 
     protected function mockGoSetti()
     {
+        $this->requesterMock
+            ->shouldReceive('get')
+            ->withArgs(['https://gosetti.pl/Api/SmsApiV2GetData.php'])
+            ->andReturn(json_encode([
+                'Code'    => 'abc123',
+                'Numbers' => [],
+            ]));
+
         $gosetti = Mockery::mock(new PaymentModule_Gosetti())->makePartial();
         $gosetti->shouldReceive('verify_sms')->andReturn(IPayment_Sms::OK);
         $this->app->instance(PaymentModule_Gosetti::class, $gosetti);

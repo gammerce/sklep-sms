@@ -1,6 +1,7 @@
 <?php
 
 use App\License;
+use App\Requester;
 use App\Version;
 
 class PageAdminMain extends PageAdmin
@@ -8,18 +9,22 @@ class PageAdminMain extends PageAdmin
     const PAGE_ID = "home";
 
     /** @var Version */
-    private $version;
+    protected $version;
 
     /** @var License */
     protected $license;
 
-    public function __construct(Version $version)
+    /** @var Requester */
+    protected $requester;
+
+    public function __construct(Version $version, License $license, Requester $requester)
     {
         parent::__construct();
 
         $this->heart->page_title = $this->title = $this->lang->translate('main_page');
         $this->version = $version;
-        $this->license = app()->make(License::class);
+        $this->license = $license;
+        $this->requester = $requester;
     }
 
     protected function content($get, $post)
@@ -57,7 +62,11 @@ class PageAdminMain extends PageAdmin
         // Sprawdzanie wersji serwerów
         $amount = 0;
         $newest_versions = json_decode(
-            trim(curl_get_contents("https://sklep-sms.pl/version.php?action=get_newest&type=engines")), true
+            trim($this->requester->get('https://sklep-sms.pl/version.php', [
+                'action' => 'get_newest',
+                'type'   => 'engines',
+            ])),
+            true
         );
         foreach ($this->heart->get_servers() as $server) {
             $engine = "engine_{$server['type']}";

@@ -30,7 +30,7 @@ class PaymentModule_Simpay extends PaymentModule implements IPayment_Sms
 
     public function verify_sms($sms_code, $sms_number)
     {
-        $response = curl_get_contents('https://simpay.pl/api/1/status', 10, true, [
+        $response = $this->requester->post('https://simpay.pl/api/1/status', [
             'auth'       => [
                 'key'    => $this->key,
                 'secret' => $this->secret,

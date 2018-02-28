@@ -19,7 +19,8 @@ class PaymentModule_Gosetti extends PaymentModule implements IPayment_Sms
     {
         parent::__construct();
 
-        $data = json_decode(file_get_contents('https://gosetti.pl/Api/SmsApiV2GetData.php'), true);
+        $response = $this->requester->get('https://gosetti.pl/Api/SmsApiV2GetData.php');
+        $data = json_decode($response, true);
 
         // GOsetti dostarcza w feedzie kod sms
         $this->sms_code = $data['Code'];
@@ -33,11 +34,10 @@ class PaymentModule_Gosetti extends PaymentModule implements IPayment_Sms
 
     public function verify_sms($return_code, $number)
     {
-        $url = 'https://gosetti.pl/Api/SmsApiV2CheckCode.php' .
-            '?UserId=' . urlencode($this->account_id) .
-            '&Code=' . urlencode($return_code);
-
-        $response = curl_get_contents($url);
+        $response = $this->requester->get('https://gosetti.pl/Api/SmsApiV2CheckCode.php', [
+            'UserId' => $this->account_id,
+            'Code'   => $return_code,
+        ]);
 
         if ($response === false) {
             return IPayment_Sms::NO_CONNECTION;

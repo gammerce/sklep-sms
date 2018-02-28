@@ -5,6 +5,7 @@
  * URL: https://forum.sklep-sms.pl/showthread.php?tid=88
  */
 
+use App\Models\Purchase;
 use App\Models\TransferFinalize;
 use App\PaymentModule;
 use App\Settings;
@@ -13,10 +14,10 @@ class PaymentModuleTransferuj extends PaymentModule implements IPayment_Transfer
 {
     const SERVICE_ID = "transferuj";
 
-    /** @var  string */
+    /** @var string */
     private $account_id;
 
-    /** @var  string */
+    /** @var string */
     private $key;
 
     /** @var Settings */
@@ -31,6 +32,11 @@ class PaymentModuleTransferuj extends PaymentModule implements IPayment_Transfer
         $this->account_id = $this->data['account_id'];
     }
 
+    /**
+     * @param Purchase $purchase_data
+     * @param string $data_filename
+     * @return array
+     */
     public function prepare_transfer($purchase_data, $data_filename)
     {
         // Zamieniamy grosze na złotówki
