@@ -3,12 +3,16 @@ namespace App;
 
 class Version
 {
+    /** @var Application */
+    protected $app;
+
     /** @var Requester */
     protected $requester;
 
-    public function __construct(Requester $requester)
+    public function __construct(Application $application, Requester $requester)
     {
         $this->requester = $requester;
+        $this->app = $application;
     }
 
     public function getNewestWeb()
@@ -17,5 +21,10 @@ class Version
         $decoded = json_decode($response, true);
 
         return array_get($decoded, 'tag_name');
+    }
+
+    public function isUpToDate()
+    {
+        return $this->app->version() === $this->getNewestWeb();
     }
 }

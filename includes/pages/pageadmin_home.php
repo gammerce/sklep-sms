@@ -51,7 +51,7 @@ class PageAdminMain extends PageAdmin
 
         // Sprawdzanie wersji skryptu
         $newestVersion = $this->version->getNewestWeb();
-        if (VERSION != $newestVersion) {
+        if ($this->app->version() !== $newestVersion) {
             $this->add_note(
                 $this->lang->sprintf($this->lang->translate('update_available'), htmlspecialchars($newestVersion)),
                 "positive",

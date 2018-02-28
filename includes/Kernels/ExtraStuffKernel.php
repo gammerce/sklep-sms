@@ -75,7 +75,9 @@ class ExtraStuffKernel extends Kernel
 
                 $heart->page_title = $lang->translate('description') . ": " . $service_module->service['name'];
 
-                $heart->style_add($settings['shop_url_slash'] . "styles/extra_stuff/long_desc.css?version=" . VERSION);
+                $heart->style_add(
+                    $settings['shop_url_slash'] . "styles/extra_stuff/long_desc.css?version=" . $this->app->version()
+                );
                 $header = eval($template->render("header"));
 
                 $output = create_dom_element(

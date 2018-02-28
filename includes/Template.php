@@ -7,10 +7,14 @@ class Template
     protected $settings;
 
     /** @var Translator */
-    private $lang;
+    protected $lang;
 
-    public function __construct(Settings $settings, Translator $lang)
+    /** @var Application */
+    protected $app;
+
+    public function __construct(Settings $settings, Translator $lang, Application $application)
     {
+        $this->app = $application;
         $this->settings = $settings;
         $this->lang = $lang;
     }
@@ -51,8 +55,8 @@ class Template
      * Pobranie szablonu.
      *
      * @param string $title Nazwa szablonu
-     * @param bool   $eslashes Prawda, jeżeli zawartość szablonu ma być "escaped".
-     * @param bool   $htmlcomments Prawda, jeżeli chcemy dodać komentarze o szablonie.
+     * @param bool $eslashes Prawda, jeżeli zawartość szablonu ma być "escaped".
+     * @param bool $htmlcomments Prawda, jeżeli chcemy dodać komentarze o szablonie.
      *
      * @return string|bool Szablon.
      */
@@ -128,7 +132,7 @@ class Template
             $template = str_replace("\\'", "'", addslashes($template));
         }
 
-        $template = str_replace("{__VERSION__}", VERSION, $template);
+        $template = str_replace("{__VERSION__}", $this->app->version(), $template);
 
         return $template;
     }

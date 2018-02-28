@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @param  string $abstract
  * @param  array $parameters
- * @return mixed|\Illuminate\Container\Container
+ * @return mixed|\Illuminate\Container\Container|\App\Application
  */
 function app($abstract = null, array $parameters = [])
 {

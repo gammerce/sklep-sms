@@ -64,7 +64,9 @@ class AdminKernel extends Kernel
         // Uzytkownik nie jest zalogowany
         if ($currentPage->getPid() == "login") {
             $heart->page_title = "Login";
-            $heart->style_add($settings['shop_url_slash'] . "styles/admin/style_login.css?version=" . VERSION);
+            $heart->style_add(
+                $settings['shop_url_slash'] . "styles/admin/style_login.css?version=" . $this->app->version()
+            );
 
             if (isset($_SESSION['info'])) {
                 if ($_SESSION['info'] == "wrong_data") {

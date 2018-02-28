@@ -79,11 +79,11 @@ class License
     protected function request()
     {
         $response = $this->requester->get('http://license.sklep-sms.pl/license.php', [
-            'action' => 'login_web',
-            'lid' => $this->settings['license_login'],
-            'lpa' => $this->settings['license_password'],
-            'name' => $this->settings['shop_url'],
-            'version' => VERSION,
+            'action'   => 'login_web',
+            'lid'      => $this->settings['license_login'],
+            'lpa'      => $this->settings['license_password'],
+            'name'     => $this->settings['shop_url'],
+            'version'  => app()->version(),
             'language' => $this->lang->getCurrentLanguage(),
         ]);
 

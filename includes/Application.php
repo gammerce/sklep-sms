@@ -8,15 +8,27 @@ use Illuminate\Container\Container;
 
 class Application extends Container
 {
+    const VERSION = '3.4.0';
+
     protected $providers = [
         HeartServiceProvider::class,
     ];
 
-    public function __construct()
+    /** @var string */
+    protected $basePath;
+
+    public function __construct($basePath)
     {
+        $this->setBasePath($basePath);
+
         static::setInstance($this);
         $this->registerBindings();
         $this->bootstrap();
+    }
+
+    public function version()
+    {
+        return self::VERSION;
     }
 
     protected function registerBindings()
@@ -76,5 +88,19 @@ class Application extends Container
                 $this->call("$provider@boot");
             }
         }
+    }
+
+    public function setBasePath($basePath)
+    {
+        $this->basePath = rtrim($basePath, '\/');
+    }
+
+    public function path($path = '')
+    {
+        if (!strlen($path)) {
+            return $this->basePath;
+        }
+
+        return $this->basePath . DIRECTORY_SEPARATOR . $path;
     }
 }

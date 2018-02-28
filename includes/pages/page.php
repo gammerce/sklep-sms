@@ -1,5 +1,6 @@
 <?php
 
+use App\Application;
 use App\CurrentPage;
 use App\Database;
 use App\Heart;
@@ -12,6 +13,9 @@ abstract class Page
 {
     const PAGE_ID = "";
     protected $title = "";
+
+    /** @var Application */
+    protected $app;
 
     /** @var Heart */
     protected $heart;
@@ -33,14 +37,15 @@ abstract class Page
 
     public function __construct()
     {
+        $this->app = app();
         /** @var TranslationManager $translationManager */
-        $translationManager = app()->make(TranslationManager::class);
+        $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
-        $this->heart = app()->make(Heart::class);
-        $this->settings = app()->make(Settings::class);
-        $this->currentPage = app()->make(CurrentPage::class);
-        $this->template = app()->make(Template::class);
-        $this->db = app()->make(Database::class);
+        $this->heart = $this->app->make(Heart::class);
+        $this->settings = $this->app->make(Settings::class);
+        $this->currentPage = $this->app->make(CurrentPage::class);
+        $this->template = $this->app->make(Template::class);
+        $this->db = $this->app->make(Database::class);
     }
 
     /**
@@ -58,7 +63,7 @@ abstract class Page
         if (strlen($this::PAGE_ID) && file_exists(SCRIPT_ROOT . $path)) {
             foreach (scandir(SCRIPT_ROOT . $path) as $file) {
                 if (ends_at($file, ".js")) {
-                    $this->heart->script_add($this->settings['shop_url_slash'] . $path . $file . "?version=" . VERSION);
+                    $this->heart->script_add($this->settings['shop_url_slash'] . $path . $file . "?version=" . $this->app->version());
                 }
             }
         }
@@ -68,7 +73,7 @@ abstract class Page
         if (strlen($this::PAGE_ID) && file_exists(SCRIPT_ROOT . $path)) {
             foreach (scandir(SCRIPT_ROOT . $path) as $file) {
                 if (ends_at($file, ".css")) {
-                    $this->heart->style_add($this->settings['shop_url_slash'] . $path . $file . "?version=" . VERSION);
+                    $this->heart->style_add($this->settings['shop_url_slash'] . $path . $file . "?version=" . $this->app->version());
                 }
             }
         }
@@ -78,12 +83,12 @@ abstract class Page
             foreach ($this->heart->get_services_modules() as $module_info) {
                 $path = "styles/services/" . $module_info['id'] . ".css";
                 if (file_exists(SCRIPT_ROOT . $path)) {
-                    $this->heart->style_add($this->settings['shop_url_slash'] . $path . "?version=" . VERSION);
+                    $this->heart->style_add($this->settings['shop_url_slash'] . $path . "?version=" . $this->app->version());
                 }
 
                 $path = "jscripts/services/" . $module_info['id'] . ".js";
                 if (file_exists(SCRIPT_ROOT . $path)) {
-                    $this->heart->script_add($this->settings['shop_url_slash'] . $path . "?version=" . VERSION);
+                    $this->heart->script_add($this->settings['shop_url_slash'] . $path . "?version=" . $this->app->version());
                 }
             }
         }
