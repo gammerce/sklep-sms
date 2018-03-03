@@ -6,7 +6,7 @@ use App\ShopState;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class RequireUpdate implements MiddlewareContract
+class RequireInstalledAndNotUpdated implements MiddlewareContract
 {
     public function handle(Request $request, Application $app)
     {

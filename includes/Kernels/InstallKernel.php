@@ -1,7 +1,7 @@
 <?php
 namespace App\Kernels;
 
-use App\Middlewares\RequireInstallationOrUpdate;
+use App\Middlewares\RequireNotInstalledOrNotUpdated;
 use App\ShopState;
 use App\Template;
 use Install\Full;
@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 class InstallKernel extends Kernel
 {
     protected $middlewares = [
-        RequireInstallationOrUpdate::class,
+        RequireNotInstalledOrNotUpdated::class,
     ];
 
     public function run(Request $request)

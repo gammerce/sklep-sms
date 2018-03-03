@@ -3,7 +3,7 @@ namespace App\Kernels;
 
 use App\Database;
 use App\Exceptions\SqlQueryException;
-use App\Middlewares\RequireInstallation;
+use App\Middlewares\RequireNotInstalled;
 use App\TranslationManager;
 use Install\DatabaseMigration;
 use Install\EnvCreator;
@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 class InstallFullKernel extends Kernel
 {
     protected $middlewares = [
-        RequireInstallation::class,
+        RequireNotInstalled::class,
     ];
 
     public function run(Request $request)

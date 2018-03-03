@@ -1,7 +1,7 @@
 <?php
 namespace App\Kernels;
 
-use App\Middlewares\RequireUpdate;
+use App\Middlewares\RequireInstalledAndNotUpdated;
 use Install\DatabaseMigration;
 use Install\InstallManager;
 use Install\Update;
@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 class InstallUpdateKernel extends Kernel
 {
     protected $middlewares = [
-        RequireUpdate::class,
+        RequireInstalledAndNotUpdated::class,
     ];
 
     public function run(Request $request)

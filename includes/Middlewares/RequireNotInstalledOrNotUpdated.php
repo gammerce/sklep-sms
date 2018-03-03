@@ -6,12 +6,12 @@ use App\ShopState;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class RequireInstallation implements MiddlewareContract
+class RequireNotInstalledOrNotUpdated implements MiddlewareContract
 {
     public function handle(Request $request, Application $app)
     {
-        if (ShopState::isInstalled()) {
-            return new Response('Shop is already installed');
+        if (ShopState::isInstalled() && $app->make(ShopState::class)->isUpToDate()) {
+            return new Response('Shop is up to date');
         }
 
         return null;
