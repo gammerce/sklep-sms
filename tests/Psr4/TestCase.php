@@ -30,23 +30,7 @@ class TestCase extends BaseTestCase
         $this->factory = $this->app->make(Factory::class);
         $this->mockLicense();
         $this->mockLocale();
-
-        /** @var Database $db */
-        $db = $this->app->make(Database::class);
-
-        /** @var Settings $settings */
-        $settings = $this->app->make(Settings::class);
-
-        /** @var DatabaseMigration $databaseMigration */
-        $databaseMigration = $this->app->make(DatabaseMigration::class);
-
-        $db->dropAllTables();
-        $databaseMigration->install('lic_000', 'abc123', 'admin', 'abc123');
-        $settings->load();
-
-        if ($this->wrapInTransaction) {
-            $db->startTransaction();
-        }
+        $this->setupDatabase();
     }
 
     protected function tearDown()
@@ -96,5 +80,25 @@ class TestCase extends BaseTestCase
         $localeService = Mockery::mock(LocaleService::class);
         $localeService->shouldReceive('getLocale')->andReturn('pl');
         $this->app->instance(LocaleService::class, $localeService);
+    }
+
+    protected function setupDatabase()
+    {
+        /** @var Database $db */
+        $db = $this->app->make(Database::class);
+
+        /** @var Settings $settings */
+        $settings = $this->app->make(Settings::class);
+
+        /** @var DatabaseMigration $databaseMigration */
+        $databaseMigration = $this->app->make(DatabaseMigration::class);
+
+        $db->dropAllTables();
+        $databaseMigration->install('lic_000', 'abc123', 'admin', 'abc123');
+        $settings->load();
+
+        if ($this->wrapInTransaction) {
+            $db->startTransaction();
+        }
     }
 }
