@@ -7,7 +7,7 @@ services:
         volumes:
             - ./:/var/www
         ports:
-            - "8888:80"
+            - "8888:8888"
         links:
             - app
     app:
