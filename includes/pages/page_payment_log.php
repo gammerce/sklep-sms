@@ -22,17 +22,17 @@ class PagePaymentLog extends Page implements I_BeLoggedMust
         $lang = $this->lang;
 
         /** @var Auth $auth */
-        $auth = app()->make(Auth::class);
+        $auth = $this->app->make(Auth::class);
         $user = $auth->user();
 
         /** @var Template $template */
-        $template = app()->make(Template::class);
+        $template = $this->app->make(Template::class);
 
         /** @var Settings $settings */
-        $settings = app()->make(Settings::class);
+        $settings = $this->app->make(Settings::class);
 
         /** @var Database $db */
-        $db = app()->make(Database::class);
+        $db = $this->app->make(Database::class);
 
         $result = $db->query($db->prepare(
             "SELECT SQL_CALC_FOUND_ROWS * FROM ({$settings['transactions_query']}) as t " .

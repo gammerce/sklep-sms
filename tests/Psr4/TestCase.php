@@ -42,11 +42,10 @@ class TestCase extends BaseTestCase
 
         $db->dropAllTables();
         $databaseMigration->install('lic_000', 'abc123', 'admin', 'abc123');
-
         $settings->load();
 
         if ($this->wrapInTransaction) {
-            $db->start_transaction();
+            $db->startTransaction();
         }
     }
 

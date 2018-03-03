@@ -38,9 +38,9 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
         parent::__construct($service);
 
         /** @var TranslationManager $translationManager */
-        $translationManager = app()->make(TranslationManager::class);
+        $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
-        $this->heart = app()->make(Heart::class);
+        $this->heart = $this->app->make(Heart::class);
     }
 
     /**

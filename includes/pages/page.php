@@ -60,8 +60,8 @@ abstract class Page
     {
         // Dodajemy wszystkie skrypty
         $path = "jscripts/pages/" . $this::PAGE_ID . "/";
-        if (strlen($this::PAGE_ID) && file_exists(SCRIPT_ROOT . $path)) {
-            foreach (scandir(SCRIPT_ROOT . $path) as $file) {
+        if (strlen($this::PAGE_ID) && file_exists($this->app->path($path))) {
+            foreach (scandir($this->app->path($path)) as $file) {
                 if (ends_at($file, ".js")) {
                     $this->heart->script_add($this->settings['shop_url_slash'] . $path . $file . "?version=" . $this->app->version());
                 }
@@ -70,8 +70,8 @@ abstract class Page
 
         // Dodajemy wszystkie css
         $path = "styles/pages/" . $this::PAGE_ID . "/";
-        if (strlen($this::PAGE_ID) && file_exists(SCRIPT_ROOT . $path)) {
-            foreach (scandir(SCRIPT_ROOT . $path) as $file) {
+        if (strlen($this::PAGE_ID) && file_exists($this->app->path($path))) {
+            foreach (scandir($this->app->path($path)) as $file) {
                 if (ends_at($file, ".css")) {
                     $this->heart->style_add($this->settings['shop_url_slash'] . $path . $file . "?version=" . $this->app->version());
                 }
@@ -82,12 +82,12 @@ abstract class Page
         if (in_array($this::PAGE_ID, ["purchase", "user_own_services", "service_take_over", "payment_log"])) {
             foreach ($this->heart->get_services_modules() as $module_info) {
                 $path = "styles/services/" . $module_info['id'] . ".css";
-                if (file_exists(SCRIPT_ROOT . $path)) {
+                if (file_exists($this->app->path($path))) {
                     $this->heart->style_add($this->settings['shop_url_slash'] . $path . "?version=" . $this->app->version());
                 }
 
                 $path = "jscripts/services/" . $module_info['id'] . ".js";
-                if (file_exists(SCRIPT_ROOT . $path)) {
+                if (file_exists($this->app->path($path))) {
                     $this->heart->script_add($this->settings['shop_url_slash'] . $path . "?version=" . $this->app->version());
                 }
             }

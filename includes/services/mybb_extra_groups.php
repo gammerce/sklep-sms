@@ -28,9 +28,9 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
         parent::__construct($service);
 
         /** @var TranslationManager $translationManager */
-        $translationManager = app()->make(TranslationManager::class);
+        $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
-        $this->settings = app()->make(Settings::class);
+        $this->settings = $this->app->make(Settings::class);
     }
 
     /**
@@ -170,7 +170,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
     public function user_service_admin_display_get($get, $post)
     {
         /** @var CurrentPage $currentPage */
-        $currentPage = app()->make(CurrentPage::class);
+        $currentPage = $this->app->make(CurrentPage::class);
 
         $pageNumber = $currentPage->getPageNumber();
 
@@ -266,10 +266,10 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
         parent::__construct($service);
 
         /** @var TranslationManager $translationManager */
-        $translationManager = app()->make(TranslationManager::class);
+        $translationManager = $this->app->make(TranslationManager::class);
         $this->langShop = $translationManager->shop();
-        $this->auth = app()->make(Auth::class);
-        $this->heart = app()->make(Heart::class);
+        $this->auth = $this->app->make(Auth::class);
+        $this->heart = $this->app->make(Heart::class);
 
         $this->groups = explode(",", $this->service['data']['mybb_groups']);
         $this->db_host = if_isset($this->service['data']['db_host'], '');

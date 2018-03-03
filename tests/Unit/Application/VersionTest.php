@@ -1,9 +1,9 @@
 <?php
-namespace Tests\Unit;
+namespace Tests\Unit\Application;
 
 use Tests\Psr4\TestCase;
 
-class ApplicationTest extends TestCase
+class VersionTest extends TestCase
 {
     /** @test */
     public function version_is_341()

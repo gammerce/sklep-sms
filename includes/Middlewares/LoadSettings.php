@@ -9,6 +9,7 @@ class LoadSettings implements MiddlewareContract
 {
     public function handle(Request $request, Application $app)
     {
+        /** @var Settings $settings */
         $settings = $app->make(Settings::class);
         $settings->load();
 

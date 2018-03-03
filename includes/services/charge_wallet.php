@@ -28,10 +28,10 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
         parent::__construct($service);
 
         /** @var TranslationManager $translationManager */
-        $translationManager = app()->make(TranslationManager::class);
+        $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
-        $this->heart = app()->make(Heart::class);
-        $this->settings = app()->make(Settings::class);
+        $this->heart = $this->app->make(Heart::class);
+        $this->settings = $this->app->make(Settings::class);
     }
 
     public function purchase_form_get()

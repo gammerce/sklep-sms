@@ -1,6 +1,7 @@
 <?php
 namespace Install;
 
+use App\Application;
 use App\Template;
 
 class OldShop
@@ -8,18 +9,21 @@ class OldShop
     /** @var Template */
     private $template;
 
-    public function __construct(Template $template)
+    /** @var Application */
+    private $app;
+
+    public function __construct(Application $app, Template $template)
     {
         $this->template = $template;
+        $this->app = $app;
     }
 
     public function checkForConfigFile()
     {
-        if (!file_exists(SCRIPT_ROOT . '/includes/config.php')) {
+        if (!file_exists($this->app->path('/includes/config.php'))) {
             return;
         }
 
-        $output = eval($this->template->install_render('missing_env'));
-        output_page($output);
+        output_page(eval($this->template->install_render('missing_env')));
     }
 }

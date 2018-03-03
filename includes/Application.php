@@ -107,4 +107,14 @@ class Application extends Container
 
         return $this->basePath . DIRECTORY_SEPARATOR . $path;
     }
+
+    public function sqlLogPath()
+    {
+        return $this->path('errors/sql.log');
+    }
+
+    public function errorsLogPath()
+    {
+        return $this->path('errors/errors.log');
+    }
 }

@@ -175,7 +175,7 @@ class Database
         return $this->query;
     }
 
-    public function start_transaction()
+    public function startTransaction()
     {
         mysqli_begin_transaction($this->link);
     }

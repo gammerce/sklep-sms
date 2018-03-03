@@ -2,20 +2,10 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-if (!defined('SCRIPT_ROOT')) {
-    define('SCRIPT_ROOT', dirname(__DIR__) . "/");
-}
+$scriptRoot = dirname(__DIR__);
 
 if (!defined('TABLE_PREFIX')) {
     define('TABLE_PREFIX', "ss_");
-}
-
-if (!defined('SQL_LOG')) {
-    define('SQL_LOG', SCRIPT_ROOT . "errors/sql.log");
-}
-
-if (!defined('ERROR_LOG')) {
-    define('ERROR_LOG', SCRIPT_ROOT . "errors/errors.log");
 }
 
 if (!defined('PHP_VERSION_ID')) {
@@ -24,71 +14,71 @@ if (!defined('PHP_VERSION_ID')) {
 }
 
 // Te interfejsy są potrzebne do klas różnego rodzajów
-foreach (scandir(SCRIPT_ROOT . "includes/interfaces") as $file) {
+foreach (scandir("$scriptRoot/includes/interfaces") as $file) {
     if (ends_at($file, ".php")) {
-        require_once SCRIPT_ROOT . "includes/interfaces/" . $file;
+        require_once "$scriptRoot/includes/interfaces/" . $file;
     }
 }
 
 // Dodajemy klasy wszystkich modulow platnosci
-foreach (scandir(SCRIPT_ROOT . "includes/verification/interfaces") as $file) {
+foreach (scandir("$scriptRoot/includes/verification/interfaces") as $file) {
     if (ends_at($file, ".php")) {
-        require_once SCRIPT_ROOT . "includes/verification/interfaces/" . $file;
+        require_once "$scriptRoot/includes/verification/interfaces/" . $file;
     }
 }
 
-foreach (scandir(SCRIPT_ROOT . "includes/verification") as $file) {
+foreach (scandir("$scriptRoot/includes/verification") as $file) {
     if (ends_at($file, ".php")) {
-        require_once SCRIPT_ROOT . "includes/verification/" . $file;
+        require_once "$scriptRoot/includes/verification/" . $file;
     }
 }
 
 
 // Dodajemy klasy wszystkich usług
-require_once SCRIPT_ROOT . "includes/services/service.php";
+require_once "$scriptRoot/includes/services/service.php";
 
 // Pierwsze ładujemy interfejsy
-foreach (scandir(SCRIPT_ROOT . "includes/services/interfaces") as $file) {
+foreach (scandir("$scriptRoot/includes/services/interfaces") as $file) {
     if (ends_at($file, ".php")) {
-        require_once SCRIPT_ROOT . "includes/services/interfaces/" . $file;
+        require_once "$scriptRoot/includes/services/interfaces/" . $file;
     }
 }
 
-foreach (scandir(SCRIPT_ROOT . "includes/services") as $file) {
+foreach (scandir("$scriptRoot/includes/services") as $file) {
     if (ends_at($file, ".php")) {
-        require_once SCRIPT_ROOT . "includes/services/" . $file;
+        require_once "$scriptRoot/includes/services/" . $file;
     }
 }
 
 
 // Dodajemy klasy wszystkich bloków
-require_once SCRIPT_ROOT . "includes/blocks/block.php";
-foreach (scandir(SCRIPT_ROOT . "includes/blocks") as $file) {
+require_once "$scriptRoot/includes/blocks/block.php";
+foreach (scandir("$scriptRoot/includes/blocks") as $file) {
     if (ends_at($file, ".php")) {
-        require_once SCRIPT_ROOT . "includes/blocks/" . $file;
+        require_once "$scriptRoot/includes/blocks/" . $file;
     }
 }
 
 
 // Dodajemy klasy wszystkich stron
-require_once SCRIPT_ROOT . "includes/pages/page.php";
-require_once SCRIPT_ROOT . "includes/pages/pageadmin.php";
+require_once "$scriptRoot/includes/pages/page.php";
+require_once "$scriptRoot/includes/pages/pageadmin.php";
 
 // Pierwsze ładujemy interfejsy
-foreach (scandir(SCRIPT_ROOT . "includes/pages/interfaces") as $file) {
+foreach (scandir("$scriptRoot/includes/pages/interfaces") as $file) {
     if (ends_at($file, ".php")) {
-        require_once SCRIPT_ROOT . "includes/pages/interfaces/" . $file;
+        require_once "$scriptRoot/includes/pages/interfaces/" . $file;
     }
 }
 
-foreach (scandir(SCRIPT_ROOT . "includes/pages") as $file) {
+foreach (scandir("$scriptRoot/includes/pages") as $file) {
     if (ends_at($file, ".php")) {
-        require_once SCRIPT_ROOT . "includes/pages/" . $file;
+        require_once "$scriptRoot/includes/pages/" . $file;
     }
 }
 
-foreach (scandir(SCRIPT_ROOT . "includes/entity") as $file) {
+foreach (scandir("$scriptRoot/includes/entity") as $file) {
     if (ends_at($file, ".php")) {
-        require_once SCRIPT_ROOT . "includes/entity/" . $file;
+        require_once "$scriptRoot/includes/entity/" . $file;
     }
 }

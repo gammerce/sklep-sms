@@ -226,7 +226,7 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
     public function user_service_admin_display_get($get, $post)
     {
         /** @var CurrentPage $currentPage */
-        $currentPage = app()->make(CurrentPage::class);
+        $currentPage = $this->app->make(CurrentPage::class);
 
         $pageNumber = $currentPage->getPageNumber();
 
@@ -311,8 +311,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
     {
         parent::__construct($service);
 
-        $this->auth = app()->make(Auth::class);
-        $this->heart = app()->make(Heart::class);
+        $this->auth = $this->app->make(Auth::class);
+        $this->heart = $this->app->make(Heart::class);
 
         $this->service['flags_hsafe'] = htmlspecialchars($this->service['flags']);
     }

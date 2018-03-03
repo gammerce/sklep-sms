@@ -1,15 +1,20 @@
 <?php
 namespace Install;
 
+use App\Application;
 use App\Translator;
 
 class InstallManager
 {
+    /** @var Application */
+    private $app;
+
     /** @var Translator */
     private $lang;
 
-    public function __construct(Translator $translator)
+    public function __construct(Application $app, Translator $translator)
     {
+        $this->app = $app;
         $this->lang = $translator;
     }
 
@@ -30,11 +35,11 @@ class InstallManager
 
     private function putInProgress()
     {
-        file_put_contents(SCRIPT_ROOT . "install/progress", "");
+        file_put_contents($this->app->path('install/progress'), "");
     }
 
     public function removeInProgress()
     {
-        unlink(SCRIPT_ROOT . "install/progress");
+        unlink($this->app->path('install/progress'));
     }
 }

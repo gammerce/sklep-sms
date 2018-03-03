@@ -12,6 +12,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ExceptionHandler implements ExceptionHandlerContract
 {
+    /** @var Application */
+    private $app;
+
     /** @var Translator */
     private $lang;
 
@@ -19,8 +22,9 @@ class ExceptionHandler implements ExceptionHandlerContract
         RequireInstallationException::class,
     ];
 
-    public function __construct(Translator $lang)
+    public function __construct(Application $app, Translator $lang)
     {
+        $this->app = $app;
         $this->lang = $lang;
     }
 
@@ -51,7 +55,7 @@ class ExceptionHandler implements ExceptionHandlerContract
 
         $exceptionDetails = $this->getExceptionDetails($e);
 
-        log_to_file(ERROR_LOG, json_encode($exceptionDetails, JSON_PRETTY_PRINT));
+        log_to_file($this->app->errorsLogPath(), json_encode($exceptionDetails, JSON_PRETTY_PRINT));
 
         if ($e instanceof SqlQueryException) {
             $this->reportSqlException($e);
@@ -72,7 +76,7 @@ class ExceptionHandler implements ExceptionHandlerContract
     protected function reportSqlException(SqlQueryException $e)
     {
         if (strlen($e->getQuery())) {
-            log_to_file(SQL_LOG, $e->getQuery(false));
+            log_to_file($this->app->sqlLogPath(), $e->getQuery(false));
         }
     }
 

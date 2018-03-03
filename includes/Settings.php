@@ -14,6 +14,9 @@ class Settings implements ArrayAccess
     /** @var Database */
     protected $db;
 
+    /** @var bool */
+    protected $loaded = false;
+
     public function __construct(Application $app, Database $database)
     {
         $this->app = $app;
@@ -25,6 +28,40 @@ class Settings implements ArrayAccess
             'shop_url'       => '',
             'shop_url_slash' => '',
         ];
+    }
+
+    public function get($key)
+    {
+        return $this->offsetGet($key);
+    }
+
+    public function offsetExists($offset)
+    {
+        return isset($this->settings[$offset]);
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->settings[$offset];
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        $this->settings[$offset] = $value;
+    }
+
+    public function offsetUnset($offset)
+    {
+        unset($this->settings[$offset]);
+    }
+
+    public function loadIfNotLoaded()
+    {
+        if ($this->loaded) {
+            return;
+        }
+
+        $this->load();
     }
 
     public function load()
@@ -88,30 +125,7 @@ LEFT JOIN `" . TABLE_PREFIX . "payment_code` AS pc ON bs.payment = 'service_code
 
         // Sprawdzanie czy taki szablon istnieje, jak nie to ustaw defaultowy
         $this->settings['theme'] = file_exists($this->app->path("themes/{$this->settings['theme']}")) ? $this->settings['theme'] : "default";
-    }
 
-    public function get($key)
-    {
-        return $this->offsetGet($key);
-    }
-
-    public function offsetExists($offset)
-    {
-        return isset($this->settings[$offset]);
-    }
-
-    public function offsetGet($offset)
-    {
-        return $this->settings[$offset];
-    }
-
-    public function offsetSet($offset, $value)
-    {
-        $this->settings[$offset] = $value;
-    }
-
-    public function offsetUnset($offset)
-    {
-        unset($this->settings[$offset]);
+        $this->loaded = true;
     }
 }

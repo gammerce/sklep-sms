@@ -47,7 +47,7 @@ class PaymentModule_Microsms extends PaymentModule implements IPayment_Sms
                 return IPayment_Sms::BAD_CODE;
             }
 
-            log_to_file(ERROR_LOG, "Microsms details: " . $check);
+            log_to_file(app()->errorsLogPath(), "Microsms details: " . $check);
 
             return IPayment_Sms::MISCONFIGURATION;
         }
