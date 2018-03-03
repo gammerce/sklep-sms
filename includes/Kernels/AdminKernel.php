@@ -26,8 +26,8 @@ class AdminKernel extends Kernel
         IsUpToDate::class,
         LoadSettings::class,
         SetLanguage::class,
-        LicenseIsValid::class,
         ManageAuthentication::class,
+        LicenseIsValid::class,
         UpdateUserActivity::class,
         RunCron::class,
     ];

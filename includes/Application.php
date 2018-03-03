@@ -56,6 +56,7 @@ class Application extends Container
         $this->singleton(Database::class, function () {
             return new Database(
                 getenv('DB_HOST'),
+                getenv('DB_PORT'),
                 getenv('DB_USERNAME'),
                 getenv('DB_PASSWORD'),
                 getenv('DB_DATABASE')

@@ -10,6 +10,7 @@ use Install\EnvCreator;
 use Install\Full;
 use Install\InstallManager;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class InstallFullKernel extends Kernel
 {
@@ -19,31 +20,31 @@ class InstallFullKernel extends Kernel
 
     public function run(Request $request)
     {
-        /** @var InstallManager $installManager */
-        $installManager = $this->app->make(InstallManager::class);
+        /** @var Full $full */
+        $full = $this->app->make(Full::class);
+
+        list($modules, $files_priv) = $full->get();
 
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $lang = $translationManager->user();
+
+        try {
+            $db = new Database($_POST['db_host'], $_POST['db_port'], $_POST['db_user'], $_POST['db_password'], $_POST['db_db']);
+            $db->query("SET NAMES utf8");
+            $this->app->instance(Database::class, $db);
+        } catch (SqlQueryException $e) {
+            return new Response($lang->translate('mysqli_' . $e->getMessage()) . "\n\n" . $e->getError());
+        }
+
+        /** @var InstallManager $installManager */
+        $installManager = $this->app->make(InstallManager::class);
 
         /** @var DatabaseMigration $migrator */
         $migrator = $this->app->make(DatabaseMigration::class);
 
         /** @var EnvCreator $envCreator */
         $envCreator = $this->app->make(EnvCreator::class);
-
-        /** @var Full $full */
-        $full = $this->app->make(Full::class);
-
-        list($modules, $files_priv) = $full->get();
-
-        try {
-            $db = new Database($_POST['db_host'], $_POST['db_user'], $_POST['db_password'], $_POST['db_db']);
-            $db->query("SET NAMES utf8");
-            $this->app->instance(Database::class, $db);
-        } catch (SqlQueryException $e) {
-            output_page($lang->translate('mysqli_' . $e->getMessage()) . "\n\n" . $e->getError());
-        }
 
         $warnings = [];
 
@@ -110,7 +111,7 @@ class InstallFullKernel extends Kernel
             $_POST['license_id'], $_POST['license_password'], $_POST['admin_username'], $_POST['admin_password']
         );
 
-        $envCreator->create($_POST['db_host'], $_POST['db_db'], $_POST['db_user'], $_POST['db_password']);
+        $envCreator->create($_POST['db_host'], $_POST['db_port'], $_POST['db_db'], $_POST['db_user'], $_POST['db_password']);
 
         $installManager->finish();
 

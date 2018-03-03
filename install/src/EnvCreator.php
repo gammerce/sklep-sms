@@ -13,17 +13,18 @@ class EnvCreator
         $this->app = $app;
     }
 
-    public function create($host, $db, $user, $password)
+    public function create($host, $port, $db, $user, $password)
     {
         $path = $this->path();
 
-        file_put_contents($path, $this->getContent($host, $db, $user, $password));
+        file_put_contents($path, $this->getContent($host, $port, $db, $user, $password));
         chmod($path, 0777);
     }
 
-    protected function getContent($host, $db, $user, $password)
+    protected function getContent($host, $port, $db, $user, $password)
     {
         return "DB_HOST=$host" . PHP_EOL .
+            "DB_PORT=$port" . PHP_EOL .
             "DB_DATABASE=$db" . PHP_EOL .
             "DB_USERNAME=$user" . PHP_EOL .
             "DB_PASSWORD=$password" . PHP_EOL;
