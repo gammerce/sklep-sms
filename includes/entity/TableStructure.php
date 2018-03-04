@@ -4,6 +4,7 @@ namespace Admin\Table;
 use App\CurrentPage;
 use App\Template;
 use App\TranslationManager;
+use Symfony\Component\HttpFoundation\Request;
 
 interface I_ToHtml
 {
@@ -520,6 +521,9 @@ class Wrapper extends Div
         $translationManager = app()->make(TranslationManager::class);
         $lang = $translationManager->user();
 
+        /** @var Request $request */
+        $request = app()->make(Request::class);
+
         $old_contets = $this->contents;
 
         $title = new Div();
@@ -529,7 +533,7 @@ class Wrapper extends Div
         $buttons->setStyle('float', 'right');
 
         if ($this->search) {
-            $search_text = $_GET['search'];
+            $search_text = $request->get('search');
             $buttons->addContent(new SimpleText(eval($template->render("admin/form_search"))));
         }
 

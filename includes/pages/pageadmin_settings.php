@@ -45,6 +45,7 @@ class PageAdminSettings extends PageAdmin
         }
         $cron[$this->settings['cron_each_visit'] ? "yes" : "no"] = "selected";
         $user_edit_service[$this->settings['user_edit_service'] ? "yes" : "no"] = "selected";
+        $user_edit_service[$this->settings['user_edit_service'] ? "no" : "yes"] = "";
 
         // Pobieranie listy dostępnych szablonów
         $dirlist = scandir($this->app->path('themes'));
