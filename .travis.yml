@@ -23,10 +23,10 @@ env:
 before_install:
   - composer self-update
   - mysql -e 'CREATE DATABASE sklep_sms_test;'
-  - php artisan test:setup
 
 install:
   - composer install --no-interaction
+  - php artisan test:setup
 
 before_deploy:
   - rm -Rf vendor
