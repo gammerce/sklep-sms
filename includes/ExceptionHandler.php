@@ -30,7 +30,7 @@ class ExceptionHandler implements ExceptionHandlerContract
 
     public function render(Request $request, Exception $e)
     {
-        if (getenv('APP_DEBUG') === 'true') {
+        if ($this->app->isDebug()) {
             $exceptionDetails = $this->getExceptionDetails($e);
 
             return new JsonResponse($exceptionDetails);

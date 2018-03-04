@@ -96,7 +96,7 @@ class AdminKernel extends Kernel
             return new Response(eval($template->render("admin/login")));
         }
 
-        $content = get_content("admincontent");
+        $content = get_content("admincontent", $request);
 
         // Pobranie przycisków do sidebaru
         if (get_privilages("view_player_flags")) {

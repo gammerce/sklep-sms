@@ -57,19 +57,19 @@ class IndexKernel extends Kernel
         }
 
         // Pobranie miejsca logowania
-        $logged_info = get_content("logged_info");
+        $logged_info = get_content("logged_info", $request);
 
         // Pobranie portfela
-        $wallet = get_content("wallet");
+        $wallet = get_content("wallet", $request);
 
         // Pobranie zawartości
-        $content = get_content("content");
+        $content = get_content("content", $request);
 
         // Pobranie przycisków usług
-        $services_buttons = get_content("services_buttons");
+        $services_buttons = get_content("services_buttons", $request);
 
         // Pobranie przycisków użytkownika
-        $user_buttons = get_content("user_buttons");
+        $user_buttons = get_content("user_buttons", $request);
 
         // Pobranie headera
         $header = eval($template->render("header"));

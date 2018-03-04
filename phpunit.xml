@@ -19,6 +19,7 @@
     </testsuites>
     <php>
         <env name="APP_ENV" value="testing"/>
+        <env name="APP_DEBUG" value="true"/>
         <env name="DB_DATABASE" value="sklep_sms_test"/>
     </php>
 </phpunit>

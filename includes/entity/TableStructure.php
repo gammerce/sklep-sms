@@ -252,10 +252,10 @@ class Line extends Row
 
 class BodyRow extends Row
 {
-    /** @var  string */
+    /** @var string */
     private $db_id = null;
 
-    /** @var  I_ToHtml[] */
+    /** @var I_ToHtml[] */
     private $actions = [];
 
     /** @var bool $button_edit */
@@ -365,11 +365,11 @@ class Structure extends DOMElement
 {
     protected $name = 'table';
 
-    /** @var  DOMElement[] */
-    private $head_cells;
+    /** @var DOMElement[] */
+    private $head_cells = [];
 
-    /** @var  BodyRow[] */
-    private $body_rows;
+    /** @var BodyRow[] */
+    private $body_rows = [];
 
     /**
      * Ilość elementów w bazie danych
@@ -379,7 +379,7 @@ class Structure extends DOMElement
      */
     private $db_rows_amount;
 
-    /** @var  DOMElement */
+    /** @var DOMElement */
     public $foot = null;
 
     public function toHtml()
@@ -501,7 +501,7 @@ class Wrapper extends Div
     protected $title;
 
     /** @var  DOMElement[] */
-    protected $buttons;
+    protected $buttons = [];
 
     /** @var bool */
     protected $search = false;

@@ -65,11 +65,12 @@ function output_page($output, $header = 0)
  * Zwraca treść danego bloku
  *
  * @param string $element
+ * @param Request $request
  * @param bool $withenvelope
  *
  * @return string
  */
-function get_content($element, $withenvelope = true)
+function get_content($element, Request $request, $withenvelope = true)
 {
     /** @var Heart $heart */
     $heart = app()->make(Heart::class);
@@ -78,7 +79,10 @@ function get_content($element, $withenvelope = true)
         return "";
     }
 
-    return $withenvelope ? $block->get_content_enveloped($_GET, $_POST) : $block->get_content($_GET, $_POST);
+    $get = $request->query->all();
+    $post = $request->request->all();
+
+    return $withenvelope ? $block->get_content_enveloped($get, $post) : $block->get_content($get, $post);
 }
 
 function get_row_limit($page, $row_limit = 0)

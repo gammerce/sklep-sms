@@ -1,6 +1,8 @@
 <?php
 namespace App;
 
+use Symfony\Component\HttpFoundation\Request;
+
 class CurrentPage
 {
     /**
@@ -17,10 +19,10 @@ class CurrentPage
      */
     protected $pid;
 
-    public function __construct()
+    public function __construct(Request $request)
     {
-        $this->pageNumber = isset($_GET['page']) && intval($_GET['page']) >= 1 ? intval($_GET['page']) : 1;
-        $this->pid = isset($_GET['pid']) ? $_GET['pid'] : "home";
+        $this->pageNumber = $this->resolvePageNumber($request);
+        $this->pid = $this->resolvePid($request);
     }
 
     public function setPageNumber($pageNumber)
@@ -41,5 +43,17 @@ class CurrentPage
     public function getPid()
     {
         return $this->pid;
+    }
+
+    protected function resolvePageNumber(Request $request)
+    {
+        $pageNumber = intval($request->get('page', 1));
+
+        return max($pageNumber, 1);
+    }
+
+    protected function resolvePid(Request $request)
+    {
+        return $request->get('pid', 'home');
     }
 }

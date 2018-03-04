@@ -136,4 +136,11 @@ class Application extends Container
     {
         return $this->isAdminSession;
     }
+
+    public function isDebug()
+    {
+        $debug = getenv('APP_DEBUG');
+
+        return $debug === '1' || $debug === 'true' || $debug === 1;
+    }
 }
