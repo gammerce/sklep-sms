@@ -16,13 +16,14 @@ services:
 env:
   global:
     - DB_HOST=localhost
-    - DB_DATABASE=myapp_test
+    - DB_DATABASE=sklep_sms_test
     - DB_USERNAME=root
     - DB_PASSWORD=
 
 before_install:
   - composer self-update
-  - mysql -e 'CREATE DATABASE myapp_test;'
+  - mysql -e 'CREATE DATABASE sklep_sms_test;'
+  - php artisan test:setup
 
 install:
   - composer install --no-interaction
