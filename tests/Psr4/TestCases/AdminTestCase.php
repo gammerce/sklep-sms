@@ -10,8 +10,9 @@ class AdminTestCase extends TestCase
 
     protected function createApplication()
     {
-        define('IN_SCRIPT', '1');
-        define('SCRIPT_NAME', 'admin');
+        if (!defined('IN_SCRIPT')) {
+            define('IN_SCRIPT', '1');
+        }
 
         $app = require __DIR__ . '/../../../bootstrap/app.php';
         $app->singleton(KernelContract::class, AdminKernel::class);
