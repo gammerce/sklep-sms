@@ -5,6 +5,11 @@ $app = new App\Application(
 );
 
 $app->singleton(
+    App\Kernels\ConsoleKernelContract::class,
+    App\Kernels\ConsoleKernel::class
+);
+
+$app->singleton(
     App\ExceptionHandlerContract::class,
     App\ExceptionHandler::class
 );

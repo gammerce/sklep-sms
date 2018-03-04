@@ -36,17 +36,28 @@ class Database
 
     public function connect()
     {
-        if ($this->link = mysqli_connect($this->host, $this->user, $this->pass, '', $this->port)) {
-            if (!mysqli_select_db($this->link, $this->name)) {
-                $this->exception("no_db_connection");
-            }
-        } else {
+        $this->connectWithoutDb();
+        $this->selectDb($this->name);
+    }
+
+    public function connectWithoutDb()
+    {
+        $this->link = mysqli_connect($this->host, $this->user, $this->pass, '', $this->port);
+        if (!$this->link) {
             $this->error = mysqli_connect_error();
             $this->errno = mysqli_connect_errno();
             $this->exception("no_server_connection");
         }
 
         $this->query("SET NAMES utf8");
+    }
+
+    public function selectDb($name)
+    {
+        $result = mysqli_select_db($this->link, $name);
+        if (!$result) {
+            $this->exception("no_db_connection");
+        }
     }
 
     public function close()
@@ -221,6 +232,11 @@ class Database
     public function enableForeignKeyConstraints()
     {
         $this->query('SET FOREIGN_KEY_CHECKS=1;');
+    }
+
+    public function createDatabaseIfNotExists($database)
+    {
+        $this->query("CREATE DATABASE IF NOT EXISTS $database");
     }
 
     private function exception($message_id)

@@ -3,7 +3,6 @@ namespace Tests\Psr4;
 
 use App\Kernels\KernelContract;
 use App\Kernels\ServersStuffKernel;
-use Symfony\Component\HttpFoundation\Request;
 
 class ServerTestCase extends TestCase
 {
@@ -16,9 +15,6 @@ class ServerTestCase extends TestCase
 
         $app = require __DIR__ . '/../../bootstrap/app.php';
         $app->singleton(KernelContract::class, ServersStuffKernel::class);
-
-        $request = Request::create($this->prepareUrlForRequest(''), 'GET');
-        $app->instance(Request::class, $request);
 
         return $app;
     }

@@ -118,4 +118,9 @@ class Application extends Container
     {
         return $this->path('errors/errors.log');
     }
+
+    public function terminate()
+    {
+        //
+    }
 }
