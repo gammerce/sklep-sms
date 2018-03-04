@@ -15,6 +15,7 @@ services:
 
 env:
   global:
+    - APP_DEBUG=true
     - DB_HOST=localhost
     - DB_DATABASE=sklep_sms_test
     - DB_USERNAME=root
