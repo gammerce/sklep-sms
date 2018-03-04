@@ -20,7 +20,6 @@ class CronKernel extends Kernel
         IsUpToDate::class,
         LoadSettings::class,
         SetLanguage::class,
-        ManageAuthentication::class,
         LicenseIsValid::class,
     ];
 

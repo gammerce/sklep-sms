@@ -1,14 +1,14 @@
 <?php
-namespace Tests\Psr4;
+namespace Tests\Psr4\TestCases;
 
 use App\Application;
 use App\Database;
 use App\License;
 use App\LocaleService;
 use App\Settings;
-use Install\DatabaseMigration;
 use Mockery;
 use PHPUnit\Framework\TestCase as BaseTestCase;
+use Tests\Psr4\Factory;
 
 class TestCase extends BaseTestCase
 {
@@ -21,6 +21,9 @@ class TestCase extends BaseTestCase
     /** @var Factory */
     protected $factory;
 
+    /** @var array */
+    protected $afterApplicationCreatedCallbacks = [];
+
     protected function setUp()
     {
         if (!$this->app) {
@@ -31,16 +34,18 @@ class TestCase extends BaseTestCase
         $this->mockLicense();
         $this->mockLocale();
 
-        /** @var Database $db */
-        $db = $this->app->make(Database::class);
-
         /** @var Settings $settings */
         $settings = $this->app->make(Settings::class);
-
         $settings->load();
 
+        /** @var Database $db */
+        $db = $this->app->make(Database::class);
         if ($this->wrapInTransaction) {
             $db->startTransaction();
+        }
+
+        foreach ($this->afterApplicationCreatedCallbacks as $callback) {
+            call_user_func($callback);
         }
     }
 
@@ -71,7 +76,12 @@ class TestCase extends BaseTestCase
 
     protected function createApplication()
     {
-        return require __DIR__ . '/../../bootstrap/app.php';
+        return require __DIR__ . '/../../../bootstrap/app.php';
+    }
+
+    public function afterApplicationCreated(callable $callback)
+    {
+        $this->afterApplicationCreatedCallbacks[] = $callback;
     }
 
     protected function mockLicense()

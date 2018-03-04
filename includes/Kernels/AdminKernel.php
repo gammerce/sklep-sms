@@ -9,8 +9,9 @@ use App\Middlewares\DecodeGetAttributes;
 use App\Middlewares\IsUpToDate;
 use App\Middlewares\LicenseIsValid;
 use App\Middlewares\LoadSettings;
-use App\Middlewares\ManageAuthentication;
+use App\Middlewares\ManageAdminAuthentication;
 use App\Middlewares\RunCron;
+use App\Middlewares\SetAdminSession;
 use App\Middlewares\SetLanguage;
 use App\Middlewares\UpdateUserActivity;
 use App\Settings;
@@ -22,11 +23,12 @@ use Symfony\Component\HttpFoundation\Response;
 class AdminKernel extends Kernel
 {
     protected $middlewares = [
+        SetAdminSession::class,
         DecodeGetAttributes::class,
         IsUpToDate::class,
         LoadSettings::class,
         SetLanguage::class,
-        ManageAuthentication::class,
+        ManageAdminAuthentication::class,
         LicenseIsValid::class,
         UpdateUserActivity::class,
         RunCron::class,
@@ -91,10 +93,7 @@ class AdminKernel extends Kernel
             }
 
             // Pobranie szablonu logowania
-            $output = eval($template->render("admin/login"));
-
-            // Wyświetlenie strony
-            output_page($output);
+            return new Response(eval($template->render("admin/login")));
         }
 
         $content = get_content("admincontent");
@@ -190,8 +189,6 @@ class AdminKernel extends Kernel
         $header = eval($template->render("admin/header"));
 
         // Pobranie ostatecznego szablonu
-        $output = eval($template->render("admin/index"));
-
-        return new Response($output);
+        return new Response(eval($template->render("admin/index")));
     }
 }

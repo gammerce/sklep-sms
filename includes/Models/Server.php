@@ -1,8 +1,6 @@
 <?php
 namespace App\Models;
 
-use App\Database;
-
 class Server
 {
     /** @var int */
@@ -27,22 +25,6 @@ class Server
         $this->ip = $ip;
         $this->port = $port;
         $this->smsService = $smsService;
-    }
-
-    public static function create($name, $ip, $port, $smsService = '')
-    {
-        /** @var Database $db */
-        $db = app()->make(Database::class);
-
-        $db->query($db->prepare(
-            "INSERT INTO `" . TABLE_PREFIX . "servers` " .
-            "SET `name`='%s', `ip`='%s', `port`='%s', `sms_service`='%s'",
-            [$name, $ip, $port, $smsService]
-        ));
-
-        $id = $db->last_id();
-
-        return new Server($id, $name, $ip, $port, $smsService);
     }
 
     public function getId()

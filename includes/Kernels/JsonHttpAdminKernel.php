@@ -9,12 +9,13 @@ use App\Middlewares\DecodeGetAttributes;
 use App\Middlewares\IsUpToDate;
 use App\Middlewares\LicenseIsValid;
 use App\Middlewares\LoadSettings;
-use App\Middlewares\ManageAuthentication;
+use App\Middlewares\ManageAdminAuthentication;
+use App\Middlewares\SetAdminSession;
 use App\Middlewares\SetLanguage;
 use App\Middlewares\UpdateUserActivity;
-use App\Models\Pricelist;
 use App\Models\Purchase;
-use App\Models\Server;
+use App\Repositories\PricelistRepository;
+use App\Repositories\ServerRepository;
 use App\Settings;
 use App\Template;
 use App\TranslationManager;
@@ -23,11 +24,12 @@ use Symfony\Component\HttpFoundation\Request;
 class JsonHttpAdminKernel extends Kernel
 {
     protected $middlewares = [
+        SetAdminSession::class,
         DecodeGetAttributes::class,
         IsUpToDate::class,
         LoadSettings::class,
         SetLanguage::class,
-        ManageAuthentication::class,
+        ManageAdminAuthentication::class,
         LicenseIsValid::class,
         UpdateUserActivity::class,
     ];
@@ -766,7 +768,9 @@ class JsonHttpAdminKernel extends Kernel
             }
 
             if ($action == "server_add") {
-                $server = Server::create($_POST['name'], $_POST['ip'], $_POST['port'], $_POST['sms_service']);
+                /** @var ServerRepository $serverRepository */
+                $serverRepository = $this->app->make(ServerRepository::class);
+                $server = $serverRepository->create($_POST['name'], $_POST['ip'], $_POST['port'], $_POST['sms_service']);
                 $server_id = $server->getId();
             } elseif ($action == "server_edit") {
                 $db->query($db->prepare(
@@ -1135,7 +1139,9 @@ class JsonHttpAdminKernel extends Kernel
             }
 
             if ($action == "price_add") {
-                Pricelist::create($_POST['service'], $_POST['tariff'], $_POST['amount'], $_POST['server']);
+                /** @var PricelistRepository $pricelistRepository */
+                $pricelistRepository = $this->app->make(PricelistRepository::class);
+                $pricelistRepository->create($_POST['service'], $_POST['tariff'], $_POST['amount'], $_POST['server']);
 
                 log_info("Admin {$user->getUsername()}({$user->getUid()}) dodał cenę. ID: " . $db->last_id());
 

@@ -7,18 +7,11 @@ use IPayment_Sms;
 use Mockery;
 use PaymentModule_Gosetti;
 use Tests\Psr4\Concerns\RequesterConcern;
-use Tests\Psr4\ServerTestCase;
+use Tests\Psr4\TestCases\ServerTestCase;
 
 class PurchaseServiceFromServerTest extends ServerTestCase
 {
     use RequesterConcern;
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->mockRequester();
-    }
 
     /** @test */
     public function player_can_purchase_service()
@@ -49,7 +42,7 @@ class PurchaseServiceFromServerTest extends ServerTestCase
         /** @var Settings $settings */
         $settings = $this->app->make(Settings::class);
 
-        $query = http_build_query([
+        $query = [
             'key'                 => md5($settings->get('random_key')),
             'action'              => 'purchase_service',
             'service'             => $serviceId,
@@ -63,12 +56,12 @@ class PurchaseServiceFromServerTest extends ServerTestCase
             'tariff'              => $tariff,
             'uid'                 => $uid,
             'platform'            => $platform,
-        ]);
+        ];
 
         $this->mockGoSetti();
 
         // when
-        $response = $this->call('GET', "?$query");
+        $response = $this->get('/', $query);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

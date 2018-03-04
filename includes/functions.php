@@ -34,7 +34,7 @@ function app($abstract = null, array $parameters = [])
  */
 function admin_session()
 {
-    return in_array(SCRIPT_NAME, ["admin", "jsonhttp_admin"]);
+    return app()->isAdminSession();
 }
 
 /**

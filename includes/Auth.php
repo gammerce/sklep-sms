@@ -28,6 +28,11 @@ class Auth
         return $this->user = $this->heart->get_user();
     }
 
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+    }
+
     public function check()
     {
         return $this->user !== null && $this->user->isLogged();
