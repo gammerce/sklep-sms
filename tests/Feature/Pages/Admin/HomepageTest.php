@@ -23,4 +23,17 @@ class HomepageTest extends AdminTestCase
         $this->assertContains('Panel Admina', $response->getContent());
         $this->assertContains('Strona główna', $response->getContent());
     }
+
+    /** @test */
+    public function it_requires_login_when_not_logged()
+    {
+        // given
+
+        // when
+        $response = $this->call('GET', '/');
+
+        // then
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertContains('PA: Login - Sklep SMS', $response->getContent());
+    }
 }
