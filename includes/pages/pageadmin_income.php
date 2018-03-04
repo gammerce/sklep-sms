@@ -108,7 +108,11 @@ class PageAdminIncome extends PageAdmin
 
             // Lecimy po każdym obiekcie, niezależnie, czy zarobiliśmy na nim czy nie
             foreach ($obejcts_ids as $object_id) {
-                $income = array_get($data, "$date.$object_id");
+                if (!isset($servers_incomes[$object_id])) {
+                    $servers_incomes[$object_id] = 0;
+                }
+
+                $income = array_get($data, "$date.$object_id", 0);
                 $day_income += $income;
                 $servers_incomes[$object_id] += $income;
                 $table_row .= create_dom_element("td", number_format($income / 100.0, 2));

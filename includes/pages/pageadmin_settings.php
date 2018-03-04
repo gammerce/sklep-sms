@@ -44,6 +44,7 @@ class PageAdminSettings extends PageAdmin
             }
         }
         $cron[$this->settings['cron_each_visit'] ? "yes" : "no"] = "selected";
+        $cron[$this->settings['cron_each_visit'] ? "no" : "yes"] = "";
         $user_edit_service[$this->settings['user_edit_service'] ? "yes" : "no"] = "selected";
         $user_edit_service[$this->settings['user_edit_service'] ? "no" : "yes"] = "";
 
