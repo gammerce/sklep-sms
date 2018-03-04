@@ -143,6 +143,8 @@ class PageAdminIncome extends PageAdmin
         }
 
         // Pobranie wygladu strony
+        $tfoot_class = '';
+        $pagination = '';
         return eval($this->template->render("admin/table_structure"));
     }
 }
