@@ -16,7 +16,7 @@ class SettingsTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->call('GET', '/', ['pid' => 'settings']);
+        $response = $this->get('/', ['pid' => 'settings']);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

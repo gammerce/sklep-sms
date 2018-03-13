@@ -16,7 +16,7 @@ class BoughtServicesTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->call('GET', '/', ['pid' => 'bought_services']);
+        $response = $this->get('/', ['pid' => 'bought_services']);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

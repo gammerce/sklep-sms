@@ -16,7 +16,7 @@ class TariffsTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->call('GET', '/', ['pid' => 'tariffs']);
+        $response = $this->get('/', ['pid' => 'tariffs']);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

@@ -16,7 +16,7 @@ class ServiceCodesTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->call('GET', '/', ['pid' => 'service_codes']);
+        $response = $this->get('/', ['pid' => 'service_codes']);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

@@ -16,7 +16,7 @@ class PaymentSmsTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->call('GET', '/', ['pid' => 'payment_sms']);
+        $response = $this->get('/', ['pid' => 'payment_sms']);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

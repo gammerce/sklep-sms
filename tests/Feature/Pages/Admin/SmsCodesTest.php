@@ -16,7 +16,7 @@ class SmsCodesTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->call('GET', '/', ['pid' => 'sms_codes']);
+        $response = $this->get('/', ['pid' => 'sms_codes']);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

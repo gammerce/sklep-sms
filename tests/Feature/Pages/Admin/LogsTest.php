@@ -16,7 +16,7 @@ class LogsTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->call('GET', '/', ['pid' => 'logs']);
+        $response = $this->get('/', ['pid' => 'logs']);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

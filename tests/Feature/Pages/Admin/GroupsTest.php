@@ -16,7 +16,7 @@ class GroupsTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->call('GET', '/', ['pid' => 'groups']);
+        $response = $this->get('/', ['pid' => 'groups']);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

@@ -16,7 +16,7 @@ class TransactionServicesTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->call('GET', '/', ['pid' => 'transaction_services']);
+        $response = $this->get('/', ['pid' => 'transaction_services']);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

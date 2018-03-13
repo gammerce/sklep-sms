@@ -16,7 +16,7 @@ class PaymentTransferTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->call('GET', '/', ['pid' => 'payment_transfer']);
+        $response = $this->get('/', ['pid' => 'payment_transfer']);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

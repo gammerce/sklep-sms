@@ -16,7 +16,7 @@ class HomepageTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->call('GET', '/');
+        $response = $this->get('/');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());
@@ -30,7 +30,7 @@ class HomepageTest extends AdminTestCase
         // given
 
         // when
-        $response = $this->call('GET', '/');
+        $response = $this->get('/');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

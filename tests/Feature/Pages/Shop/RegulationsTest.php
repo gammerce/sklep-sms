@@ -3,7 +3,7 @@ namespace Tests\Feature\Pages\Shop;
 
 use Tests\Psr4\TestCases\IndexTestCase;
 
-class HomepageTest extends IndexTestCase
+class RegulationsTest extends IndexTestCase
 {
     /** @test */
     public function it_loads()
@@ -11,10 +11,10 @@ class HomepageTest extends IndexTestCase
         // given
 
         // when
-        $response = $this->get('/');
+        $response = $this->get('/', ['pid' => 'regulations']);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertContains('Strona główna', $response->getContent());
+        $this->assertContains('Regulamin', $response->getContent());
     }
 }

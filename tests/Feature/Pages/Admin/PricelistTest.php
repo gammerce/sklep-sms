@@ -16,7 +16,7 @@ class PricelistTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->call('GET', '/', ['pid' => 'pricelist']);
+        $response = $this->get('/', ['pid' => 'pricelist']);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

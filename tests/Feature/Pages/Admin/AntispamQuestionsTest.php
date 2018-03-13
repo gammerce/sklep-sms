@@ -16,7 +16,7 @@ class AntispamQuestionsTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->call('GET', '/', ['pid' => 'antispam_questions']);
+        $response = $this->get('/', ['pid' => 'antispam_questions']);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

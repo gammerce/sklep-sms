@@ -16,7 +16,7 @@ class ExtraFlagsTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->call('GET', '/', ['pid' => 'players_flags']);
+        $response = $this->get('/', ['pid' => 'players_flags']);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

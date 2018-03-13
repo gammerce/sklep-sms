@@ -16,7 +16,7 @@ class UserServicesTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->call('GET', '/', ['pid' => 'user_service', 'subpage' => 'extra_flags']);
+        $response = $this->get('/', ['pid' => 'user_service', 'subpage' => 'extra_flags']);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());
