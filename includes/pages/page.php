@@ -124,6 +124,7 @@ abstract class PageSimple extends Page
     protected function content($get, $post)
     {
         $lang = $this->lang;
+        $settings = $this->settings;
         return eval($this->template->render($this->templateName));
     }
 }
