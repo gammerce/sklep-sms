@@ -38,8 +38,9 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
     {
         $settings = $this->settings;
         $lang = $this->lang;
-
         $option_sms = '';
+        $option_transfer = '';
+
         if (strlen($this->settings['sms_service'])) {
             $payment_sms = new Payment($this->settings['sms_service']);
 
