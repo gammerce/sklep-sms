@@ -19,7 +19,7 @@ if (!defined('ERROR_LOG')) {
 }
 
 if (!defined('VERSION')) {
-    define('VERSION', "3.4.1");
+    define('VERSION', "3.4.2");
 }
 
 if (!defined('PHP_VERSION_ID')) {
