@@ -2,6 +2,7 @@
 namespace App;
 
 use App\Providers\HeartServiceProvider;
+use App\Providers\SentryServiceProvider;
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidPathException;
 use Illuminate\Container\Container;
@@ -12,6 +13,7 @@ class Application extends Container
 
     protected $providers = [
         HeartServiceProvider::class,
+        SentryServiceProvider::class,
     ];
 
     /** @var string */

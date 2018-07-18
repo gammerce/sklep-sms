@@ -5,6 +5,7 @@ use App\Exceptions\LicenseException;
 use App\Exceptions\RequireInstallationException;
 use App\Exceptions\SqlQueryException;
 use Exception;
+use Raven_Client;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -57,9 +58,20 @@ class ExceptionHandler implements ExceptionHandlerContract
 
         log_to_file($this->app->errorsLogPath(), json_encode($exceptionDetails, JSON_PRETTY_PRINT));
 
+        if ($this->app->bound(Raven_Client::class)) {
+            $this->reportToSentry($e);
+        }
+
         if ($e instanceof SqlQueryException) {
             $this->reportSqlException($e);
         }
+    }
+
+    protected function reportToSentry(Exception $e)
+    {
+        /** @var Raven_Client $client */
+        $client = $this->app->make(Raven_Client::class);
+        $client->captureException($e);
     }
 
     protected function getExceptionDetails(Exception $e)
