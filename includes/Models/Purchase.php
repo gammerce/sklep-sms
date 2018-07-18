@@ -49,7 +49,7 @@ class Purchase
      */
     private $desc = null;
 
-    function __construct()
+    public function __construct()
     {
         /** @var Auth $auth */
         $auth = app()->make(Auth::class);

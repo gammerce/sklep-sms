@@ -261,7 +261,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
     /** @var Heart */
     protected $heart;
 
-    function __construct($service)
+    public function __construct($service)
     {
         parent::__construct($service);
 

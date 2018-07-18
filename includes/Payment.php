@@ -34,7 +34,7 @@ class Payment
     /** @var Database */
     protected $db;
 
-    function __construct($paymentModuleId)
+    public function __construct($paymentModuleId)
     {
         $this->app = app();
         /** @var TranslationManager $translationManager */

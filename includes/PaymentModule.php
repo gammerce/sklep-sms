@@ -32,7 +32,7 @@ abstract class PaymentModule
     /** @var Tariff[] */
     protected $tariffs = [];
 
-    function __construct()
+    public function __construct()
     {
         $this->db = app()->make(Database::class);
         $this->requester = app()->make(Requester::class);

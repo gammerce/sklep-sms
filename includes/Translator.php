@@ -37,7 +37,7 @@ class Translator
      */
     protected $translations;
 
-    function __construct($lang = 'polish')
+    public function __construct($lang = 'polish')
     {
         $this->app = app();
         $this->setLanguage($lang);

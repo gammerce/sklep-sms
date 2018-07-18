@@ -62,7 +62,7 @@ abstract class BlockSimple extends Block
 {
     protected $template = null;
 
-    function __construct()
+    public function __construct()
     {
         if (!isset($this->template)) {
             throw new Exception('Class ' . get_class($this) . ' has to have field $template because it extends class BlockSimple');

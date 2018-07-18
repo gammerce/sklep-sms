@@ -22,7 +22,7 @@ class MybbUser
      * @param int $uid
      * @param int $mybb_user_group
      */
-    function __construct($uid, $mybb_user_group)
+    public function __construct($uid, $mybb_user_group)
     {
         $this->uid = intval($uid);
         $this->mybb_user_group = intval($mybb_user_group);

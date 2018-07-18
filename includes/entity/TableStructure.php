@@ -24,7 +24,7 @@ class SimpleText implements I_ToHtml
     /**
      * @param string $text
      */
-    function __construct($text)
+    public function __construct($text)
     {
         $this->text = strval($text);
     }
@@ -54,7 +54,7 @@ class DOMElement implements I_ToHtml
     /**
      * @param string|null $value
      */
-    function __construct($value = null)
+    public function __construct($value = null)
     {
         if ($value !== null) {
             $this->addContent(new SimpleText($value));
@@ -241,7 +241,7 @@ class Cell extends DOMElement
 
 class Line extends Row
 {
-    function __construct()
+    public function __construct()
     {
         $cell = new Cell();
         $cell->setParam('colspan', '31');
@@ -507,7 +507,7 @@ class Wrapper extends Div
     /** @var bool */
     protected $search = false;
 
-    function __construct()
+    public function __construct()
     {
         $this->setParam('class', 'table_structure');
     }

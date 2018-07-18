@@ -97,7 +97,7 @@ class User
      * @param string $username
      * @param string $password
      */
-    function __construct($uid = 0, $username = '', $password = '')
+    public function __construct($uid = 0, $username = '', $password = '')
     {
         $this->db = app()->make(Database::class);
 

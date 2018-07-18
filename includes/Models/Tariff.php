@@ -28,7 +28,7 @@ class Tariff
      * @param bool          $predefined
      * @param string | null $number
      */
-    function __construct($id, $provision, $predefined, $number = null)
+    public function __construct($id, $provision, $predefined, $number = null)
     {
         $this->id = (int)$id;
         $this->provision = (int)$provision;

@@ -20,7 +20,7 @@ class Database
     private $result;
     public $counter = 0;
 
-    function __construct($host, $port, $user, $pass, $name)
+    public function __construct($host, $port, $user, $pass, $name)
     {
         $this->host = $host;
         $this->port = $port;
