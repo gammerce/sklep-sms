@@ -429,7 +429,7 @@ class JsonHttpKernel extends Kernel
                     ]);
                 }
 
-                if ($purchase_data->getPayment('sms_service') === null && !$purchase_data->getPayment("no_sms")) {
+                if ($purchase_data->getPayment('sms_service') === null && !$purchase_data->getPayment("no_sms") && strlen($settings['sms_service'])) {
                     $purchase_data->setPayment([
                         'sms_service' => $settings['sms_service'],
                     ]);
