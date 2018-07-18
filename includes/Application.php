@@ -8,7 +8,7 @@ use Illuminate\Container\Container;
 
 class Application extends Container
 {
-    const VERSION = '3.4.1';
+    const VERSION = '3.5.0';
 
     protected $providers = [
         HeartServiceProvider::class,

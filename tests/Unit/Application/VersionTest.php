@@ -6,8 +6,8 @@ use Tests\Psr4\TestCases\TestCase;
 class VersionTest extends TestCase
 {
     /** @test */
-    public function version_is_341()
+    public function version_is_350()
     {
-        $this->assertEquals('3.4.1', $this->app->version());
+        $this->assertEquals('3.5.0', $this->app->version());
     }
 }
