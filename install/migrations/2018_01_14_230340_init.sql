@@ -35,8 +35,8 @@ CREATE TABLE IF NOT EXISTS `ss_users` (
   `regdate`            TIMESTAMP          NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `lastactiv`          TIMESTAMP          NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `wallet`             INT(11)            NOT NULL DEFAULT '0',
-  `regip`              VARCHAR(16)        NOT NULL DEFAULT '',
-  `lastip`             VARCHAR(16)        NOT NULL DEFAULT '',
+  `regip`              VARCHAR(64)        NOT NULL DEFAULT '',
+  `lastip`             VARCHAR(64)        NOT NULL DEFAULT '',
   `reset_password_key` VARCHAR(32)
                        CHARACTER SET utf8
                        COLLATE utf8_bin   NOT NULL DEFAULT '',
@@ -530,7 +530,7 @@ DROP TABLE IF EXISTS `ss_payment_code`;
 CREATE TABLE IF NOT EXISTS `ss_payment_code` (
   `id`       INT(11)     NOT NULL AUTO_INCREMENT,
   `code`     VARCHAR(16) NOT NULL DEFAULT '',
-  `ip`       VARCHAR(16) NOT NULL DEFAULT '',
+  `ip`       VARCHAR(64) NOT NULL DEFAULT '',
   `platform` TEXT        NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
@@ -550,7 +550,7 @@ CREATE TABLE IF NOT EXISTS `ss_payment_sms` (
              CHARACTER SET utf8 NOT NULL DEFAULT '',
   `number`   VARCHAR(16)
              CHARACTER SET utf8 NOT NULL DEFAULT '',
-  `ip`       VARCHAR(16)
+  `ip`       VARCHAR(64)
              CHARACTER SET utf8 NOT NULL DEFAULT '',
   `platform` TEXT               NOT NULL,
   `free`     TINYINT(1)         NOT NULL DEFAULT '0',
@@ -570,7 +570,7 @@ CREATE TABLE IF NOT EXISTS `ss_payment_transfer` (
   `transfer_service` VARCHAR(64)
                      CHARACTER SET utf8
                      COLLATE utf8_bin NOT NULL,
-  `ip`               VARCHAR(16)      NOT NULL DEFAULT '',
+  `ip`               VARCHAR(64)      NOT NULL DEFAULT '',
   `platform`         TEXT             NOT NULL,
   UNIQUE KEY `orderid` (`id`)
 )
@@ -581,7 +581,7 @@ DROP TABLE IF EXISTS `ss_payment_wallet`;
 CREATE TABLE IF NOT EXISTS `ss_payment_wallet` (
   `id`       INT(11)     NOT NULL AUTO_INCREMENT,
   `cost`     INT(11)     NOT NULL DEFAULT '0',
-  `ip`       VARCHAR(16) NOT NULL DEFAULT '',
+  `ip`       VARCHAR(64) NOT NULL DEFAULT '',
   `platform` TEXT        NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
