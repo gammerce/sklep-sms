@@ -127,4 +127,9 @@ class Application extends Container
 
         return $debug === '1' || $debug === 'true' || $debug === 1;
     }
+
+    public function isTesting()
+    {
+        return getenv('APP_ENV') === 'testing';
+    }
 }
