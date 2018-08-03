@@ -21,6 +21,6 @@
         <env name="APP_ENV" value="testing"/>
         <env name="APP_DEBUG" value="true"/>
         <env name="DB_DATABASE" value="sklep_sms_test"/>
-        <env name="SENTRY_DSN" value=""/>
+        <env name="SENTRY_DSN" value="nope"/>
     </php>
 </phpunit>

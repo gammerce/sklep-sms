@@ -2,6 +2,7 @@
 namespace App;
 
 use App\Exceptions\LicenseException;
+use App\Exceptions\RequestException;
 use App\Exceptions\RequireInstallationException;
 use App\Exceptions\SqlQueryException;
 use Exception;
@@ -39,6 +40,10 @@ class ExceptionHandler implements ExceptionHandlerContract
 
         if ($e instanceof LicenseException) {
             return new Response($this->lang->translate('verification_error'));
+        }
+
+        if ($e instanceof RequestException) {
+            return new Response($e->getMessage());
         }
 
         if ($e instanceof RequireInstallationException) {

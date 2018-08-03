@@ -1,10 +1,15 @@
 <?php
 namespace App;
 
+use App\Cache\CacheEnum;
+use App\Cache\CachingRequester;
 use App\Exceptions\LicenseException;
+use App\Exceptions\RequestException;
 
 class License
 {
+    const CACHE_TTL = 20 * 60;
+
     /** @var Translator */
     protected $lang;
 
@@ -26,18 +31,30 @@ class License
     /** @var Requester */
     protected $requester;
 
-    public function __construct(Translator $translator, Settings $settings, Requester $requester)
-    {
+    /** @var CachingRequester */
+    protected $cachingRequester;
+
+    public function __construct(
+        Translator $translator,
+        Settings $settings,
+        Requester $requester,
+        CachingRequester $cachingRequester
+    ) {
         $this->lang = $translator;
         $this->settings = $settings;
         $this->requester = $requester;
+        $this->cachingRequester = $cachingRequester;
     }
 
     public function validate()
     {
-        $response = $this->request();
+        try {
+            $response = $this->loadLicense();
+        } catch (RequestException $e) {
+            throw new LicenseException('', 0, $e);
+        }
 
-        if ($response === null || !isset($response['text'])) {
+        if (!isset($response['text'])) {
             throw new LicenseException();
         }
 
@@ -74,6 +91,13 @@ class License
     public function getFooter()
     {
         return $this->footer;
+    }
+
+    protected function loadLicense()
+    {
+        return $this->cachingRequester->load(CacheEnum::LICENSE, static::CACHE_TTL, function () {
+            return $this->request();
+        });
     }
 
     protected function request()

@@ -14,8 +14,8 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Get the available container instance.
  *
- * @param  string $abstract
- * @param  array $parameters
+ * @param string $abstract
+ * @param array  $parameters
  * @return mixed|\Illuminate\Container\Container|\App\Application
  */
 function app($abstract = null, array $parameters = [])
@@ -40,7 +40,7 @@ function admin_session()
 /**
  * Pobranie szablonu
  *
- * @param string $output Zwartość do wyświetlenia
+ * @param string     $output Zwartość do wyświetlenia
  * @param int|string $header String do użycia w funkcji header()
  */
 function output_page($output, $header = 0)
@@ -64,9 +64,9 @@ function output_page($output, $header = 0)
 /**
  * Zwraca treść danego bloku
  *
- * @param string $element
+ * @param string  $element
  * @param Request $request
- * @param bool $withenvelope
+ * @param bool    $withenvelope
  *
  * @return string
  */
@@ -210,7 +210,7 @@ function is_logged()
 
 /**
  * @param string $which
- * @param User $user
+ * @param User   $user
  *
  * @return bool
  */
@@ -517,7 +517,7 @@ function pay_by_admin($user_admin)
 }
 
 /**
- * @param int $cost
+ * @param int  $cost
  * @param User $user
  *
  * @return array|int|string
@@ -554,7 +554,7 @@ function pay_wallet($cost, $user)
 }
 
 /**
- * @param Purchase $purchase_data
+ * @param Purchase                                                   $purchase_data
  * @param Service|ServiceChargeWallet|ServiceExtraFlags|ServiceOther $service_module
  *
  * @return array|int|string
@@ -624,16 +624,16 @@ function pay_service_code($purchase_data, $service_module)
  * Add information about purchasing a service
  *
  * @param integer $uid
- * @param string $user_name
- * @param string $ip
- * @param string $method
- * @param string $payment_id
- * @param string $service
+ * @param string  $user_name
+ * @param string  $ip
+ * @param string  $method
+ * @param string  $payment_id
+ * @param string  $service
  * @param integer $server
- * @param string $amount
- * @param string $auth_data
- * @param string $email
- * @param array $extra_data
+ * @param string  $amount
+ * @param string  $auth_data
+ * @param string  $email
+ * @param array   $extra_data
  *
  * @return int|string
  */
@@ -763,7 +763,7 @@ function purchase_info($data)
  * Pozyskuje z bazy wszystkie usługi użytkowników
  *
  * @param string|int $conditions Jezeli jest tylko jeden element w tablicy, to zwroci ten element zamiast tablicy
- * @param bool $take_out
+ * @param bool       $take_out
  *
  * @return array
  */
@@ -1038,7 +1038,7 @@ function get_ip()
  * Zwraca datę w odpowiednim formacie
  *
  * @param integer|string $timestamp
- * @param string $format
+ * @param string         $format
  *
  * @return string
  */
@@ -1278,7 +1278,7 @@ function my_is_integer($val)
 
 /**
  * @param string $glue
- * @param array $stack
+ * @param array  $stack
  *
  * @return string
  */

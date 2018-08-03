@@ -1,11 +1,13 @@
 <?php
 namespace App;
 
+use App\Cache\FileCache;
 use App\Providers\HeartServiceProvider;
 use App\Providers\SentryServiceProvider;
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidPathException;
 use Illuminate\Container\Container;
+use Psr\SimpleCache\CacheInterface;
 
 class Application extends Container
 {
@@ -52,6 +54,7 @@ class Application extends Container
         $this->singleton(CurrentPage::class);
         $this->singleton(License::class);
         $this->singleton(TranslationManager::class);
+        $this->bind(CacheInterface::class, FileCache::class);
         $this->registerServiceProviders();
         $this->bootServiceProviders();
     }
