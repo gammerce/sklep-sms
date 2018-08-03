@@ -56,7 +56,7 @@ class CachingRequesterTest extends TestCase
         $cache = Mockery::mock(CacheInterface::class);
         $cache->shouldReceive('get')
             ->withArgs(['test'])
-            ->andReturn(new CacheEntity('value', new \DateTime('-2 hours')))
+            ->andReturn(new CacheEntity('value', time() - 2 * 60 * 60))
             ->once();
 
         $cache->shouldReceive('set')
@@ -81,7 +81,7 @@ class CachingRequesterTest extends TestCase
         $cache = Mockery::mock(CacheInterface::class);
         $cache->shouldReceive('get')
             ->withArgs(['test'])
-            ->andReturn(new CacheEntity('value', new \DateTime('-2 hours')))
+            ->andReturn(new CacheEntity('value', time() - 2 * 60 * 60))
             ->once();
 
         $requester = new CachingRequester($cache);

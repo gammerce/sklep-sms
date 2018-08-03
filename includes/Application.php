@@ -1,19 +1,19 @@
 <?php
 namespace App;
 
-use App\Cache\FileCache;
+use App\Providers\AppServiceProvider;
 use App\Providers\HeartServiceProvider;
 use App\Providers\SentryServiceProvider;
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidPathException;
 use Illuminate\Container\Container;
-use Psr\SimpleCache\CacheInterface;
 
 class Application extends Container
 {
     const VERSION = '3.5.0';
 
     protected $providers = [
+        AppServiceProvider::class,
         HeartServiceProvider::class,
         SentryServiceProvider::class,
     ];
@@ -47,29 +47,8 @@ class Application extends Container
     protected function bootstrap()
     {
         $this->loadEnvironmentVariables();
-        $this->registerDatabase();
-        $this->singleton(Heart::class);
-        $this->singleton(Auth::class);
-        $this->singleton(Settings::class);
-        $this->singleton(CurrentPage::class);
-        $this->singleton(License::class);
-        $this->singleton(TranslationManager::class);
-        $this->bind(CacheInterface::class, FileCache::class);
         $this->registerServiceProviders();
         $this->bootServiceProviders();
-    }
-
-    protected function registerDatabase()
-    {
-        $this->singleton(Database::class, function () {
-            return new Database(
-                getenv('DB_HOST'),
-                getenv('DB_PORT') ?: 3306,
-                getenv('DB_USERNAME'),
-                getenv('DB_PASSWORD'),
-                getenv('DB_DATABASE')
-            );
-        });
     }
 
     protected function loadEnvironmentVariables()

@@ -2,10 +2,13 @@
 /install/error
 /install/block
 /install/progress
+/install/data
 /confidential/*
 !/confidential/.htaccess
 /errors/*
 !/errors/.htaccess
 /data/transfers/*
 !/data/transfers/.gitkeep
+/data/cache/*
+!/data/cache/.gitkeep
 /vendor

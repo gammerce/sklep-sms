@@ -1,7 +1,6 @@
 <?php
 namespace App;
 
-use App\Cache\CacheEnum;
 use App\Cache\CachingRequester;
 use App\Exceptions\LicenseException;
 use App\Exceptions\RequestException;
@@ -95,9 +94,8 @@ class License
 
     protected function loadLicense()
     {
-        return $this->cachingRequester->load(CacheEnum::LICENSE, static::CACHE_TTL, function () {
-            return $this->request();
-        });
+        // TODO Cache successful response
+        return $this->request();
     }
 
     protected function request()
