@@ -4,6 +4,7 @@ namespace App\Kernels;
 use App\Auth;
 use App\Database;
 use App\Heart;
+use App\Mailer;
 use App\Middlewares\DecodeGetAttributes;
 use App\Middlewares\IsUpToDate;
 use App\Middlewares\LicenseIsValid;
@@ -56,6 +57,9 @@ class JsonHttpKernel extends Kernel
 
         /** @var Database $db */
         $db = $this->app->make(Database::class);
+
+        /** @var Mailer $mailer */
+        $mailer = app()->make(Mailer::class);
 
         // Pobranie akcji
         $action = $_POST['action'];
@@ -287,7 +291,7 @@ class JsonHttpKernel extends Kernel
 
             $link = $settings['shop_url_slash'] . "index.php?pid=reset_password&code=" . htmlspecialchars($key);
             $text = eval($templates->render("emails/forgotten_password"));
-            $ret = send_email($user2->getEmail(), $user2->getUsername(), "Reset Hasła", $text);
+            $ret = $mailer->send($user2->getEmail(), $user2->getUsername(), "Reset Hasła", $text);
 
             if ($ret == "not_sent") {
                 json_output("not_sent", $lang->translate('keyreset_error'), 0);

@@ -5,6 +5,8 @@ use App\Database;
 use App\Heart;
 use App\Models\Purchase;
 use App\Models\User;
+use App\Exceptions\LicenseException;
+use App\Mailer;
 use App\Payment;
 use App\Settings;
 use App\TranslationManager;
@@ -660,6 +662,8 @@ function add_bought_service_info(
 
     /** @var Heart $heart */
     $heart = app()->make(Heart::class);
+    /** @var Mailer $mailer */
+    $mailer = app()->make(Mailer::class);
 
     // Dodajemy informacje o kupionej usludze do bazy danych
     $db->query($db->prepare(
@@ -678,7 +682,7 @@ function add_bought_service_info(
         ]);
         if (strlen($message)) {
             $title = ($service == 'charge_wallet' ? $lang->translate('charge_wallet') : $lang->translate('purchase'));
-            $ret = send_email($email, $auth_data, $title, $message);
+            $ret = $mailer->send($email, $auth_data, $title, $message);
         }
 
         if ($ret == "not_sent") {
@@ -863,45 +867,6 @@ function delete_users_old_services()
 
         $service_module->user_service_delete_post($user_service);
     }
-}
-
-function send_email($email, $name, $subject, $text)
-{
-    /** @var TranslationManager $translationManager */
-    $translationManager = app()->make(TranslationManager::class);
-    $langShop = $translationManager->shop();
-
-    /** @var Settings $settings */
-    $settings = app()->make(Settings::class);
-
-    ////////// USTAWIENIA //////////
-    $email = filter_var($email, FILTER_VALIDATE_EMAIL);    // Adres e-mail adresata
-    $name = htmlspecialchars($name);
-    $sender_email = $settings['sender_email'];
-    $sender_name = $settings['sender_email_name'];
-
-    if (!strlen($email)) {
-        return "wrong_email";
-    }
-
-    $header = "MIME-Version: 1.0\r\n";
-    $header .= "Content-Type: text/html; charset=UTF-8\n";
-    $header .= "From: {$sender_name} < {$sender_email} >\n";
-    $header .= "To: {$name} < {$email} >\n";
-    $header .= "X-Sender: {$sender_name} < {$sender_email} >\n";
-    $header .= 'X-Mailer: PHP/' . phpversion();
-    $header .= "X-Priority: 1 (Highest)\n";
-    $header .= "X-MSMail-Priority: High\n";
-    $header .= "Importance: High\n";
-    $header .= "Return-Path: {$sender_email}\n"; // Return path for errors
-
-    if (!mail($email, $subject, $text, $header)) {
-        return "not_sent";
-    }
-
-    log_info($langShop->sprintf($langShop->translate('email_was_sent'), $email, $text));
-
-    return "sent";
 }
 
 function log_info($string)

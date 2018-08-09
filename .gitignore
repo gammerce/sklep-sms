@@ -2,7 +2,6 @@
 /install/error
 /install/block
 /install/progress
-/install/data
 /confidential/*
 !/confidential/.htaccess
 /errors/*
@@ -12,3 +11,4 @@
 /data/cache/*
 !/data/cache/.gitkeep
 /vendor
+composer.lock

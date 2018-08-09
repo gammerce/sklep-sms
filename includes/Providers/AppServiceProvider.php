@@ -46,7 +46,7 @@ class AppServiceProvider
     protected function registerCache(Application $app)
     {
         $app->bind(FileCache::class, function () use ($app) {
-            return new FileCache($app->make(Filesystem::class), 'data/cache');
+            return new FileCache($app->make(Filesystem::class), $app->path('data/cache'));
         });
         $app->bind(CacheInterface::class, FileCache::class);
     }
