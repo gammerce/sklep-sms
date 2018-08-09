@@ -11,4 +11,3 @@
 /data/cache/*
 !/data/cache/.gitkeep
 /vendor
-composer.lock
