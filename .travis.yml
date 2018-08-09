@@ -32,7 +32,21 @@ install:
 before_deploy:
   - rm -Rf vendor
   - composer install --no-dev --no-interaction
-  - zip -r --exclude='*.git*' --exclude='*tests*' --exclude='*phpunit.xml' --exclude='*.travis.yml' build.zip .
+  - |
+   zip -r \
+   --exclude='.git*' \
+   --exclude='tests/*' \
+   --exclude='docker-compose.yml' \
+   --exclude='docker/*' \
+   --exclude='data/cache/**' \
+   --exclude='data/transfers/**' \
+   --exclude='errors/**' \
+   --exclude='phpunit.xml' \
+   --exclude='.travis.yml' \
+   --exclude='composer.json' \
+   --exclude='composer.lock' \
+   --exclude='README.md' \
+   build.zip .
 
 deploy:
   provider: releases
