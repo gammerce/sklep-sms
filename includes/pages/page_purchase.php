@@ -1,17 +1,18 @@
 <?php
 
-$heart->register_page("purchase", "PagePurchase");
+use App\Auth;
+use App\Settings;
+use App\Template;
 
 class PagePurchase extends Page
 {
-    const PAGE_ID = "purchase";
+    const PAGE_ID = 'purchase';
 
-    function __construct()
+    public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('purchase');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('purchase');
     }
 
     public function get_content($get, $post)
@@ -21,7 +22,18 @@ class PagePurchase extends Page
 
     protected function content($get, $post)
     {
-        global $heart, $user, $lang, $settings, $templates;
+        $heart = $this->heart;
+        $lang = $this->lang;
+
+        /** @var Auth $auth */
+        $auth = $this->app->make(Auth::class);
+        $user = $auth->user();
+
+        /** @var Template $template */
+        $template = $this->app->make(Template::class);
+
+        /** @var Settings $settings */
+        $settings = $this->app->make(Settings::class);
 
         if (($service_module = $heart->get_service_module($get['service'])) === null) {
             return $lang->translate('site_not_exists');
@@ -31,13 +43,13 @@ class PagePurchase extends Page
         if (strlen($this::PAGE_ID)) {
             $path = "jscripts/pages/" . $this::PAGE_ID . "/";
             $path_file = $path . "main.js";
-            if (file_exists(SCRIPT_ROOT . $path_file)) {
-                $heart->script_add($settings['shop_url_slash'] . $path_file . "?version=" . VERSION);
+            if (file_exists($this->app->path($path_file))) {
+                $heart->script_add($settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version());
             }
 
             $path_file = $path . $service_module->get_module_id() . ".js";
-            if (file_exists(SCRIPT_ROOT . $path_file)) {
-                $heart->script_add($settings['shop_url_slash'] . $path_file . "?version=" . VERSION);
+            if (file_exists($this->app->path($path_file))) {
+                $heart->script_add($settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version());
             }
         }
 
@@ -45,13 +57,13 @@ class PagePurchase extends Page
         if (strlen($this::PAGE_ID)) {
             $path = "styles/pages/" . $this::PAGE_ID . "/";
             $path_file = $path . "main.css";
-            if (file_exists(SCRIPT_ROOT . $path_file)) {
-                $heart->style_add($settings['shop_url_slash'] . $path_file . "?version=" . VERSION);
+            if (file_exists($this->app->path($path_file))) {
+                $heart->style_add($settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version());
             }
 
             $path_file = $path . $service_module->get_module_id() . ".css";
-            if (file_exists(SCRIPT_ROOT . $path_file)) {
-                $heart->style_add($settings['shop_url_slash'] . $path_file . "?version=" . VERSION);
+            if (file_exists($this->app->path($path_file))) {
+                $heart->style_add($settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version());
             }
         }
 
@@ -59,13 +71,13 @@ class PagePurchase extends Page
         foreach ($heart->get_services_modules() as $module_info) {
             if ($module_info['id'] == $service_module->get_module_id()) {
                 $path = "styles/services/" . $module_info['id'] . ".css";
-                if (file_exists(SCRIPT_ROOT . $path)) {
-                    $heart->style_add($settings['shop_url_slash'] . $path . "?version=" . VERSION);
+                if (file_exists($this->app->path($path))) {
+                    $heart->style_add($settings['shop_url_slash'] . $path . "?version=" . $this->app->version());
                 }
 
                 $path = "jscripts/services/" . $module_info['id'] . ".js";
-                if (file_exists(SCRIPT_ROOT . $path)) {
-                    $heart->script_add($settings['shop_url_slash'] . $path . "?version=" . VERSION);
+                if (file_exists($this->app->path($path))) {
+                    $heart->script_add($settings['shop_url_slash'] . $path . "?version=" . $this->app->version());
                 }
 
                 break;
@@ -93,10 +105,11 @@ class PagePurchase extends Page
         // Dodajemy długi opis
         $show_more = '';
         if (strlen($service_module->description_full_get())) {
-            $show_more = eval($templates->render("services/show_more"));
+            $show_more = eval($template->render("services/show_more"));
         }
 
-        $output = eval($templates->render("services/short_description")); // Dodajemy krótki opis
+        $output = eval($template->render("services/short_description")); // Dodajemy krótki opis
+
         return $output . $service_module->purchase_form_get();
     }
 }

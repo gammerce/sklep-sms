@@ -10,11 +10,24 @@ cache:
   directories:
     - $HOME/.composer/cache
 
+services:
+  - mysql
+
+env:
+  global:
+    - APP_DEBUG=true
+    - DB_HOST=localhost
+    - DB_DATABASE=sklep_sms_test
+    - DB_USERNAME=root
+    - DB_PASSWORD=
+
 before_install:
   - composer self-update
+  - mysql -e 'CREATE DATABASE sklep_sms_test;'
 
 install:
   - composer install --no-interaction
+  - php artisan test:setup
 
 before_deploy:
   - rm -Rf vendor

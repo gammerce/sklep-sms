@@ -2,11 +2,8 @@
 
 use App\PaymentModule;
 
-$heart->register_payment_module("1s1k", "PaymentModule_1s1k");
-
 class PaymentModule_1s1k extends PaymentModule implements IPayment_Sms
 {
-
     const SERVICE_ID = "1s1k";
 
     /** @var string */
@@ -17,7 +14,7 @@ class PaymentModule_1s1k extends PaymentModule implements IPayment_Sms
 
     private $rates = [];
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
 
@@ -46,13 +43,12 @@ class PaymentModule_1s1k extends PaymentModule implements IPayment_Sms
 
     public function verify_sms($return_code, $number)
     {
-        $content = curl_get_contents(
-            'http://www.1shot1kill.pl/api' .
-            '?type=sms' .
-            '&key=' . urlencode($this->api) .
-            '&sms_code=' . urlencode($return_code) .
-            '&comment='
-        );
+        $content = $this->requester->get('http://www.1shot1kill.pl/api', [
+            'type'     => 'sms',
+            'key'      => $this->api,
+            'sms_code' => $return_code,
+            'comment'  => '',
+        ]);
 
         if ($content === false) {
             return IPayment_Sms::NO_CONNECTION;

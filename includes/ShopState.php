@@ -1,6 +1,7 @@
 <?php
 namespace App;
 
+use App\Exceptions\SqlQueryException;
 use Install\DatabaseMigration;
 use InvalidArgumentException;
 
@@ -12,10 +13,17 @@ class ShopState
     /** @var DatabaseMigration */
     protected $databaseMigration;
 
-    public function __construct(MigrationFiles $migrationFiles, DatabaseMigration $databaseMigration)
-    {
+    /** @var Application */
+    protected $app;
+
+    public function __construct(
+        Application $application,
+        MigrationFiles $migrationFiles,
+        DatabaseMigration $databaseMigration
+    ) {
         $this->migrationFiles = $migrationFiles;
         $this->databaseMigration = $databaseMigration;
+        $this->app = $application;
     }
 
     public function isUpToDate()
@@ -25,7 +33,7 @@ class ShopState
 
     public function getFileVersion()
     {
-        return self::versionToInteger(VERSION);
+        return self::versionToInteger($this->app->version());
     }
 
     public function getMigrationFileVersion()
@@ -50,11 +58,17 @@ class ShopState
 
     public static function isInstalled()
     {
-        try {
-            app()->make(\Database::class);
+        /** @var Database $db */
+        $db = app()->make(Database::class);
 
+        if ($db->isConnected()) {
             return true;
-        } catch (\SqlQueryException $e) {
+        }
+
+        try {
+            $db->connect();
+            return true;
+        } catch (SqlQueryException $e) {
             return false;
         }
     }

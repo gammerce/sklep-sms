@@ -1,27 +1,25 @@
 <?php
 
-$heart->register_page("service_take_over", "PageTakeOverService");
-
 class PageTakeOverService extends Page implements I_BeLoggedMust
 {
-    const PAGE_ID = "service_take_over";
+    const PAGE_ID = 'service_take_over';
 
-    function __construct()
+    public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('take_over_service');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('take_over_service');
     }
 
     protected function content($get, $post)
     {
-        global $heart, $lang, $settings, $templates;
+        $lang = $this->lang;
+        $settings = $this->settings;
 
         $services_options = "";
-        $services = $heart->get_services();
+        $services = $this->heart->get_services();
         foreach ($services as $service) {
-            if (($service_module = $heart->get_service_module($service['id'])) === null) {
+            if (($service_module = $this->heart->get_service_module($service['id'])) === null) {
                 continue;
             }
 
@@ -35,8 +33,6 @@ class PageTakeOverService extends Page implements I_BeLoggedMust
             ]);
         }
 
-        $output = eval($templates->render("service_take_over"));
-
-        return $output;
+        return eval($this->template->render("service_take_over"));
     }
 }

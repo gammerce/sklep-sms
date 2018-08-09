@@ -3,6 +3,8 @@ namespace App;
 
 class Translator
 {
+    /** @var Application */
+    protected $app;
 
     /**
      * Current language
@@ -12,11 +14,21 @@ class Translator
     protected $language;
 
     /**
+     * Language of loaded translations
+     *
+     * @var string
+     */
+    protected $loadedLanguage;
+
+    /**
      * Array of language => language short
      *
      * @var array
      */
-    protected $langList;
+    protected $langList = [
+        'polish'  => 'pl',
+        'english' => 'en',
+    ];
 
     /**
      * Array of translations
@@ -25,13 +37,9 @@ class Translator
      */
     protected $translations;
 
-    function __construct($lang = 'polish')
+    public function __construct($lang = 'polish')
     {
-        $this->langList = [
-            'polish'  => "pl",
-            'english' => "en",
-        ];
-
+        $this->app = app();
         $this->setLanguage($lang);
     }
 
@@ -65,73 +73,17 @@ class Translator
     public function setLanguage($language)
     {
         $language = strtolower($language);
-        if (!strlen($language) || !isset($this->langList[$language]) || $this->getCurrentLanguage() == $language
-            || !is_dir(SCRIPT_ROOT . "includes/languages/" . $language)
+
+        if (
+            !strlen($language) ||
+            !isset($this->langList[$language]) ||
+            $this->getCurrentLanguage() == $language ||
+            !is_dir($this->app->path("includes/languages/" . $language))
         ) {
             return;
         }
 
-        // Ustawiamy obeny język
         $this->language = $language;
-
-        $filesToInclude = [];
-
-        // Ładujemy ogólną bibliotekę językową
-        $filesToInclude[] = SCRIPT_ROOT . "includes/languages/general.php";
-
-        // Ładujemy ogólne biblioteki językowe języka
-        foreach (scandir(SCRIPT_ROOT . "includes/languages/{$language}") as $file) {
-            if (ends_at($file, ".php")) {
-                $filesToInclude[] = SCRIPT_ROOT . "includes/languages/{$language}/{$file}";
-            }
-        }
-
-        // Ładujemy bilioteki dla PA
-        if (admin_session()) {
-            foreach (scandir(SCRIPT_ROOT . "includes/languages/{$language}/admin") as $file) {
-                if (ends_at($file, ".php")) {
-                    $filesToInclude[] = SCRIPT_ROOT . "includes/languages/{$language}/admin/{$file}";
-                }
-            }
-        } else {
-            foreach (scandir(SCRIPT_ROOT . "includes/languages/{$language}/user") as $file) {
-                if (ends_at($file, ".php")) {
-                    $filesToInclude[] = SCRIPT_ROOT . "includes/languages/{$language}/user/{$file}";
-                }
-            }
-        }
-
-        // Dodajemy translacje
-        foreach ($filesToInclude as $path) {
-            if (!file_exists($path)) {
-                continue;
-            }
-
-            $l = include $path;
-//			ksort($l);
-//
-//			$save = array();
-//			$save[] = '<?php';
-//			$save[] = '';
-//			$save[] = 'return array(';
-//			foreach ($l as $key => $value) {
-//				$value = str_replace("'", "\\'", $value);
-//				$key = str_replace("'", "\\'", $key);
-//				$save[] = "	'{$key}' => '{$value}',";
-//			}
-//			$save[] = '';
-//			$save[] = ');';
-//
-//			file_put_contents($path, implode("\n", $save));
-
-            if (!isset($l) || !is_array($l)) {
-                continue;
-            }
-
-            foreach ($l as $key => $val) {
-                $this->translations[$key] = $val;
-            }
-        }
     }
 
     /**
@@ -143,7 +95,9 @@ class Translator
      */
     public function translate($key)
     {
-        return if_isset($this->translations[$key], $key);
+        $this->load($this->getCurrentLanguage());
+
+        return array_get($this->translations, $key, $key);
     }
 
     /**
@@ -175,4 +129,56 @@ class Translator
         return mb_convert_case($string, MB_CASE_UPPER, "UTF-8");
     }
 
+    protected function load($language)
+    {
+        if ($this->loadedLanguage === $language) {
+            return;
+        }
+
+        $filesToInclude = [];
+
+        // Ładujemy ogólną bibliotekę językową
+        $filesToInclude[] = $this->app->path("includes/languages/general.php");
+
+        // Ładujemy ogólne biblioteki językowe języka
+        foreach (scandir($this->app->path("includes/languages/{$language}")) as $file) {
+            if (ends_at($file, ".php")) {
+                $filesToInclude[] = $this->app->path("includes/languages/{$language}/{$file}");
+            }
+        }
+
+        // Ładujemy bilioteki dla PA
+        if (admin_session()) {
+            foreach (scandir($this->app->path("includes/languages/{$language}/admin")) as $file) {
+                if (ends_at($file, ".php")) {
+                    $filesToInclude[] = $this->app->path("includes/languages/{$language}/admin/{$file}");
+                }
+            }
+        } else {
+            foreach (scandir($this->app->path("includes/languages/{$language}/user")) as $file) {
+                if (ends_at($file, ".php")) {
+                    $filesToInclude[] = $this->app->path("includes/languages/{$language}/user/{$file}");
+                }
+            }
+        }
+
+        // Dodajemy translacje
+        foreach ($filesToInclude as $path) {
+            if (!file_exists($path)) {
+                continue;
+            }
+
+            $l = include $path;
+
+            if (!isset($l) || !is_array($l)) {
+                continue;
+            }
+
+            foreach ($l as $key => $val) {
+                $this->translations[$key] = $val;
+            }
+        }
+
+        $this->loadedLanguage = $language;
+    }
 }

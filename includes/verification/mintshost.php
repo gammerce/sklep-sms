@@ -2,11 +2,8 @@
 
 use App\PaymentModule;
 
-$heart->register_payment_module("mintshost", "PaymentModule_Mintshost");
-
 class PaymentModule_Mintshost extends PaymentModule implements IPayment_Sms
 {
-
     const SERVICE_ID = "mintshost";
 
     /** @var  string */
@@ -15,7 +12,7 @@ class PaymentModule_Mintshost extends PaymentModule implements IPayment_Sms
     /** @var  string */
     private $sms_code;
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
 
@@ -25,12 +22,11 @@ class PaymentModule_Mintshost extends PaymentModule implements IPayment_Sms
 
     public function verify_sms($return_code, $number)
     {
-        $status = curl_get_contents(
-            'https://mintshost.pl/sms2.php' .
-            '?kod=' . urlencode($return_code) .
-            '&sms=' . urlencode($number) .
-            '&email=' . urlencode($this->email)
-        );
+        $status = $this->requester->get('https://mintshost.pl/sms2.php', [
+            'kod'   => $return_code,
+            'sms'   => $number,
+            'email' => $this->email,
+        ]);
 
         if ($status === false) {
             return IPayment_Sms::NO_CONNECTION;
@@ -59,5 +55,4 @@ class PaymentModule_Mintshost extends PaymentModule implements IPayment_Sms
     {
         return $this->sms_code;
     }
-
 }

@@ -1,5 +1,10 @@
 <?php
 
+use App\Auth;
+use App\Settings;
+use App\Template;
+use App\TranslationManager;
+
 abstract class Block
 {
     abstract public function get_content_class();
@@ -57,7 +62,7 @@ abstract class BlockSimple extends Block
 {
     protected $template = null;
 
-    function __construct()
+    public function __construct()
     {
         if (!isset($this->template)) {
             throw new Exception('Class ' . get_class($this) . ' has to have field $template because it extends class BlockSimple');
@@ -66,10 +71,20 @@ abstract class BlockSimple extends Block
 
     protected function content($get, $post)
     {
-        global $user, $lang, $settings, $templates;
+        /** @var Auth $auth */
+        $auth = app()->make(Auth::class);
+        $user = $auth->user();
 
-        $output = eval($templates->render($this->template));
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $lang = $translationManager->user();
 
-        return $output;
+        /** @var Settings $settings */
+        $settings = app()->make(Settings::class);
+
+        /** @var Template $template */
+        $template = app()->make(Template::class);
+
+        return eval($template->render($this->template));
     }
 }

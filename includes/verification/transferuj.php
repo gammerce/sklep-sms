@@ -5,32 +5,40 @@
  * URL: https://forum.sklep-sms.pl/showthread.php?tid=88
  */
 
+use App\Models\Purchase;
+use App\Models\TransferFinalize;
 use App\PaymentModule;
-
-$heart->register_payment_module("transferuj", "PaymentModuleTransferuj");
+use App\Settings;
 
 class PaymentModuleTransferuj extends PaymentModule implements IPayment_Transfer
 {
     const SERVICE_ID = "transferuj";
 
-    /** @var  string */
+    /** @var string */
     private $account_id;
 
-    /** @var  string */
+    /** @var string */
     private $key;
 
-    function __construct()
+    /** @var Settings */
+    private $settings;
+
+    public function __construct()
     {
         parent::__construct();
 
+        $this->settings = app()->make(Settings::class);
         $this->key = $this->data['key'];
         $this->account_id = $this->data['account_id'];
     }
 
+    /**
+     * @param Purchase $purchase_data
+     * @param string $data_filename
+     * @return array
+     */
     public function prepare_transfer($purchase_data, $data_filename)
     {
-        global $settings;
-
         // Zamieniamy grosze na złotówki
         $cost = round($purchase_data->getPayment('cost') / 100, 2);
 
@@ -44,15 +52,15 @@ class PaymentModuleTransferuj extends PaymentModule implements IPayment_Transfer
             'imie'         => $purchase_data->user->getForename(false),
             'nazwisko'     => $purchase_data->user->getSurname(false),
             'email'        => $purchase_data->getEmail(),
-            'pow_url'      => $settings['shop_url_slash'] . "index.php?pid=transferuj_ok",
-            'pow_url_blad' => $settings['shop_url_slash'] . "index.php?pid=transferuj_bad",
-            'wyn_url'      => $settings['shop_url_slash'] . "transfer_finalize.php?service=transferuj",
+            'pow_url'      => $this->settings['shop_url_slash'] . "index.php?pid=transferuj_ok",
+            'pow_url_blad' => $this->settings['shop_url_slash'] . "index.php?pid=transferuj_bad",
+            'wyn_url'      => $this->settings['shop_url_slash'] . "transfer_finalize.php?service=transferuj",
         ];
     }
 
     public function finalizeTransfer($get, $post)
     {
-        $transfer_finalize = new Entity_TransferFinalize();
+        $transfer_finalize = new TransferFinalize();
 
         if ($this->isPaymentValid($post)) {
             $transfer_finalize->setStatus(true);

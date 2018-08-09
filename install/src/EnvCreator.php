@@ -1,21 +1,37 @@
 <?php
 namespace Install;
 
+use App\Application;
+
 class EnvCreator
 {
-    private $path = SCRIPT_ROOT . "confidential/.env";
+    /** @var Application */
+    private $app;
 
-    public function create($host, $db, $user, $password)
+    public function __construct(Application $app)
     {
-        file_put_contents($this->path, $this->getContent($host, $db, $user, $password));
-        chmod($this->path, 0777);
+        $this->app = $app;
     }
 
-    protected function getContent($host, $db, $user, $password)
+    public function create($host, $port, $db, $user, $password)
+    {
+        $path = $this->path();
+
+        file_put_contents($path, $this->getContent($host, $port, $db, $user, $password));
+        chmod($path, 0777);
+    }
+
+    protected function getContent($host, $port, $db, $user, $password)
     {
         return "DB_HOST=$host" . PHP_EOL .
+            "DB_PORT=$port" . PHP_EOL .
             "DB_DATABASE=$db" . PHP_EOL .
             "DB_USERNAME=$user" . PHP_EOL .
             "DB_PASSWORD=$password" . PHP_EOL;
+    }
+
+    protected function path()
+    {
+        return $this->app->path('confidential/.env');
     }
 }

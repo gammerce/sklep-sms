@@ -1,15 +1,24 @@
 <?php
 
+use App\Auth;
+use App\Database;
+use App\Heart;
+use App\Models\Purchase;
+use App\Models\User;
 use App\Exceptions\LicenseException;
+use App\Mailer;
 use App\Payment;
+use App\Settings;
+use App\TranslationManager;
 use Illuminate\Container\Container;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Get the available container instance.
  *
- * @param  string $abstract
- * @param  array  $parameters
- * @return mixed|\Illuminate\Container\Container
+ * @param string $abstract
+ * @param array  $parameters
+ * @return mixed|\Illuminate\Container\Container|\App\Application
  */
 function app($abstract = null, array $parameters = [])
 {
@@ -27,7 +36,7 @@ function app($abstract = null, array $parameters = [])
  */
 function admin_session()
 {
-    return in_array(SCRIPT_NAME, ["admin", "jsonhttp_admin"]);
+    return app()->isAdminSession();
 }
 
 /**
@@ -57,25 +66,32 @@ function output_page($output, $header = 0)
 /**
  * Zwraca treść danego bloku
  *
- * @param string $element
- * @param bool   $withenvelope
+ * @param string  $element
+ * @param Request $request
+ * @param bool    $withenvelope
  *
  * @return string
  */
-function get_content($element, $withenvelope = true)
+function get_content($element, Request $request, $withenvelope = true)
 {
-    global $heart;
+    /** @var Heart $heart */
+    $heart = app()->make(Heart::class);
 
     if (($block = $heart->get_block($element)) === null) {
         return "";
     }
 
-    return $withenvelope ? $block->get_content_enveloped($_GET, $_POST) : $block->get_content($_GET, $_POST);
+    $get = $request->query->all();
+    $post = $request->request->all();
+
+    return $withenvelope ? $block->get_content_enveloped($get, $post) : $block->get_content($get, $post);
 }
 
 function get_row_limit($page, $row_limit = 0)
 {
-    global $settings;
+    /** @var Settings $settings */
+    $settings = app()->make(Settings::class);
+
     $row_limit = $row_limit ? $row_limit : $settings['row_limit'];
 
     return ($page - 1) * $row_limit . "," . $row_limit;
@@ -83,7 +99,8 @@ function get_row_limit($page, $row_limit = 0)
 
 function get_pagination($all, $current_page, $script, $get, $row_limit = 0)
 {
-    global $settings;
+    /** @var Settings $settings */
+    $settings = app()->make(Settings::class);
 
     $row_limit = $row_limit ? $row_limit : $settings['row_limit'];
 
@@ -187,14 +204,15 @@ function get_pagination($all, $current_page, $script, $get, $row_limit = 0)
  */
 function is_logged()
 {
-    global $user;
+    /** @var Auth $auth */
+    $auth = app()->make(Auth::class);
 
-    return $user->isLogged();
+    return $auth->check();
 }
 
 /**
- * @param string      $which
- * @param Entity_User $user
+ * @param string $which
+ * @param User   $user
  *
  * @return bool
  */
@@ -202,7 +220,9 @@ function get_privilages($which, $user = null)
 {
     // Jeżeli nie podano użytkownika
     if ($user === null) {
-        global $user;
+        /** @var Auth $auth */
+        $auth = app()->make(Auth::class);
+        $user = $auth->user();
     }
 
     if ($user === null) {
@@ -246,7 +266,9 @@ function get_privilages($which, $user = null)
  */
 function charge_wallet($uid, $amount)
 {
-    global $db;
+    /** @var Database $db */
+    $db = app()->make(Database::class);
+
     $db->query($db->prepare(
         "UPDATE `" . TABLE_PREFIX . "users` " .
         "SET `wallet` = `wallet` + '%d' " .
@@ -262,7 +284,8 @@ function charge_wallet($uid, $amount)
  */
 function update_servers_services($data)
 {
-    global $db;
+    /** @var Database $db */
+    $db = app()->make(Database::class);
 
     $delete = [];
     $add = [];
@@ -296,13 +319,21 @@ function update_servers_services($data)
 }
 
 /**
- * @param Entity_Purchase $purchase_data
+ * @param Purchase $purchase_data
  *
  * @return array
  */
 function validate_payment($purchase_data)
 {
-    global $heart, $settings, $lang;
+    /** @var TranslationManager $translationManager */
+    $translationManager = app()->make(TranslationManager::class);
+    $lang = $translationManager->user();
+
+    /** @var Heart $heart */
+    $heart = app()->make(Heart::class);
+
+    /** @var Settings $settings */
+    $settings = app()->make(Settings::class);
 
     $warnings = [];
 
@@ -349,40 +380,34 @@ function validate_payment($purchase_data)
             'text'     => $lang->translate('no_login_no_wallet'),
             'positive' => false,
         ];
-    } else {
-        if ($purchase_data->getPayment('method') == "transfer") {
-            if ($purchase_data->getPayment('cost') <= 1) {
-                return [
-                    'status'   => "too_little_for_transfer",
-                    'text'     => $lang->sprintf($lang->translate('transfer_above_amount'), $settings['currency']),
-                    'positive' => false,
-                ];
-            }
-
-            if (!$payment->getPaymentModule()->supportTransfer()) {
-                return [
-                    'status'   => "transfer_unavailable",
-                    'text'     => $lang->translate('transfer_unavailable'),
-                    'positive' => false,
-                ];
-            }
-        } else {
-            if ($purchase_data->getPayment('method') == "sms" && !$payment->getPaymentModule()->supportSms()) {
-                return [
-                    'status'   => "sms_unavailable",
-                    'text'     => $lang->translate('sms_unavailable'),
-                    'positive' => false,
-                ];
-            } else {
-                if ($purchase_data->getPayment('method') == "sms" && $purchase_data->getTariff() === null) {
-                    return [
-                        'status'   => "no_sms_option",
-                        'text'     => $lang->translate('no_sms_payment'),
-                        'positive' => false,
-                    ];
-                }
-            }
+    } elseif ($purchase_data->getPayment('method') == "transfer") {
+        if ($purchase_data->getPayment('cost') <= 1) {
+            return [
+                'status'   => "too_little_for_transfer",
+                'text'     => $lang->sprintf($lang->translate('transfer_above_amount'), $settings['currency']),
+                'positive' => false,
+            ];
         }
+
+        if (!$payment->getPaymentModule()->supportTransfer()) {
+            return [
+                'status'   => "transfer_unavailable",
+                'text'     => $lang->translate('transfer_unavailable'),
+                'positive' => false,
+            ];
+        }
+    } elseif ($purchase_data->getPayment('method') == "sms" && !$payment->getPaymentModule()->supportSms()) {
+        return [
+            'status'   => "sms_unavailable",
+            'text'     => $lang->translate('sms_unavailable'),
+            'positive' => false,
+        ];
+    } elseif ($purchase_data->getPayment('method') == "sms" && $purchase_data->getTariff() === null) {
+        return [
+            'status'   => "no_sms_option",
+            'text'     => $lang->translate('no_sms_payment'),
+            'positive' => false,
+        ];
     }
 
     // Kod SMS
@@ -421,8 +446,9 @@ function validate_payment($purchase_data)
 
     if ($purchase_data->getPayment('method') == "sms") {
         // Sprawdzamy kod zwrotny
-        $sms_return = $payment->pay_sms($purchase_data->getPayment('sms_code'), $purchase_data->getTariff(),
-            $purchase_data->user);
+        $sms_return = $payment->pay_sms(
+            $purchase_data->getPayment('sms_code'), $purchase_data->getTariff(), $purchase_data->user
+        );
         $payment_id = $sms_return['payment_id'];
 
         if ($sms_return['status'] != IPayment_Sms::OK) {
@@ -432,25 +458,21 @@ function validate_payment($purchase_data)
                 'positive' => false,
             ];
         }
-    } else {
-        if ($purchase_data->getPayment('method') == "wallet") {
-            // Dodanie informacji o płatności z portfela
-            $payment_id = pay_wallet($purchase_data->getPayment('cost'), $purchase_data->user);
+    } elseif ($purchase_data->getPayment('method') == "wallet") {
+        // Dodanie informacji o płatności z portfela
+        $payment_id = pay_wallet($purchase_data->getPayment('cost'), $purchase_data->user);
 
-            // Metoda pay_wallet zwróciła błąd.
-            if (is_array($payment_id)) {
-                return $payment_id;
-            }
-        } else {
-            if ($purchase_data->getPayment('method') == "service_code") {
-                // Dodanie informacji o płatności z portfela
-                $payment_id = pay_service_code($purchase_data, $service_module);
+        // Metoda pay_wallet zwróciła błąd.
+        if (is_array($payment_id)) {
+            return $payment_id;
+        }
+    } elseif ($purchase_data->getPayment('method') == "service_code") {
+        // Dodanie informacji o płatności z portfela
+        $payment_id = pay_service_code($purchase_data, $service_module);
 
-                // Funkcja pay_service_code zwróciła błąd.
-                if (is_array($payment_id)) {
-                    return $payment_id;
-                }
-            }
+        // Funkcja pay_service_code zwróciła błąd.
+        if (is_array($payment_id)) {
+            return $payment_id;
         }
     }
 
@@ -467,24 +489,24 @@ function validate_payment($purchase_data)
             'positive' => true,
             'data'     => ['bsid' => $bought_service_id],
         ];
-    } else {
-        if ($purchase_data->getPayment('method') == "transfer") {
-            $purchase_data->setDesc($lang->sprintf($lang->translate('payment_for_service'),
-                $service_module->service['name']));
+    } elseif ($purchase_data->getPayment('method') == "transfer") {
+        $purchase_data->setDesc(
+            $lang->sprintf($lang->translate('payment_for_service'), $service_module->service['name'])
+        );
 
-            return $payment->pay_transfer($purchase_data);
-        }
+        return $payment->pay_transfer($purchase_data);
     }
 }
 
 /**
- * @param Entity_User $user_admin
+ * @param User $user_admin
  *
  * @return int|string
  */
 function pay_by_admin($user_admin)
 {
-    global $db;
+    /** @var Database $db */
+    $db = app()->make(Database::class);
 
     // Dodawanie informacji o płatności
     $db->query($db->prepare(
@@ -497,14 +519,19 @@ function pay_by_admin($user_admin)
 }
 
 /**
- * @param int         $cost
- * @param Entity_User $user
+ * @param int  $cost
+ * @param User $user
  *
  * @return array|int|string
  */
 function pay_wallet($cost, $user)
 {
-    global $db, $lang;
+    /** @var TranslationManager $translationManager */
+    $translationManager = app()->make(TranslationManager::class);
+    $lang = $translationManager->user();
+
+    /** @var Database $db */
+    $db = app()->make(Database::class);
 
     // Sprawdzanie, czy jest wystarczająca ilość kasy w portfelu
     if ($cost > $user->getWallet()) {
@@ -529,14 +556,20 @@ function pay_wallet($cost, $user)
 }
 
 /**
- * @param Entity_Purchase                                            $purchase_data
+ * @param Purchase                                                   $purchase_data
  * @param Service|ServiceChargeWallet|ServiceExtraFlags|ServiceOther $service_module
  *
  * @return array|int|string
  */
 function pay_service_code($purchase_data, $service_module)
 {
-    global $db, $lang, $lang_shop;
+    /** @var TranslationManager $translationManager */
+    $translationManager = app()->make(TranslationManager::class);
+    $lang = $translationManager->user();
+    $langShop = $translationManager->shop();
+
+    /** @var Database $db */
+    $db = app()->make(Database::class);
 
     $result = $db->query($db->prepare(
         "SELECT * FROM `" . TABLE_PREFIX . "service_codes` " .
@@ -574,7 +607,7 @@ function pay_service_code($purchase_data, $service_module)
             ));
             $payment_id = $db->last_id();
 
-            log_info($lang_shop->sprintf($lang_shop->translate('purchase_code'),
+            log_info($langShop->sprintf($langShop->translate('purchase_code'),
                 $purchase_data->getPayment('service_code'),
                 $purchase_data->user->getUsername(), $purchase_data->user->getUid(), $payment_id));
 
@@ -619,7 +652,18 @@ function add_bought_service_info(
     $email,
     $extra_data = []
 ) {
-    global $heart, $db, $lang, $lang_shop;
+    /** @var Database $db */
+    $db = app()->make(Database::class);
+
+    /** @var TranslationManager $translationManager */
+    $translationManager = app()->make(TranslationManager::class);
+    $lang = $translationManager->user();
+    $langShop = $translationManager->shop();
+
+    /** @var Heart $heart */
+    $heart = app()->make(Heart::class);
+    /** @var Mailer $mailer */
+    $mailer = app()->make(Mailer::class);
 
     // Dodajemy informacje o kupionej usludze do bazy danych
     $db->query($db->prepare(
@@ -638,7 +682,7 @@ function add_bought_service_info(
         ]);
         if (strlen($message)) {
             $title = ($service == 'charge_wallet' ? $lang->translate('charge_wallet') : $lang->translate('purchase'));
-            $ret = send_email($email, $auth_data, $title, $message);
+            $ret = $mailer->send($email, $auth_data, $title, $message);
         }
 
         if ($ret == "not_sent") {
@@ -653,8 +697,18 @@ function add_bought_service_info(
     $temp_service = $heart->get_service($service);
     $temp_server = $heart->get_server($server);
     $amount = $amount != -1 ? "{$amount} {$temp_service['tag']}" : $lang->translate('forever');
-    log_info($lang_shop->sprintf($lang_shop->translate('bought_service_info'), $service, $auth_data, $amount,
-        $temp_server['name'], $payment_id, $ret, $user_name, $uid, $ip));
+    log_info($langShop->sprintf(
+        $langShop->translate('bought_service_info'),
+        $service,
+        $auth_data,
+        $amount,
+        $temp_server['name'],
+        $payment_id,
+        $ret,
+        $user_name,
+        $uid,
+        $ip
+    ));
     unset($temp_server);
 
     return $bougt_service_id;
@@ -669,7 +723,14 @@ function add_bought_service_info(
 //
 function purchase_info($data)
 {
-    global $heart, $db, $settings;
+    /** @var Database $db */
+    $db = app()->make(Database::class);
+
+    /** @var Heart $heart */
+    $heart = app()->make(Heart::class);
+
+    /** @var Settings $settings */
+    $settings = app()->make(Settings::class);
 
     // Wyszukujemy po id zakupu
     if (isset($data['purchase_id'])) {
@@ -712,7 +773,11 @@ function purchase_info($data)
  */
 function get_users_services($conditions = '', $take_out = true)
 {
-    global $heart, $db;
+    /** @var Database $db */
+    $db = app()->make(Database::class);
+
+    /** @var Heart $heart */
+    $heart = app()->make(Heart::class);
 
     if (my_is_integer($conditions)) {
         $conditions = "WHERE `id` = " . intval($conditions);
@@ -722,7 +787,7 @@ function get_users_services($conditions = '', $take_out = true)
     // Niestety dla każdego modułu musimy wykonać osobne zapytanie :-(
     foreach ($heart->get_services_modules() as $service_module_data) {
         $table = $service_module_data['classsimple']::USER_SERVICE_TABLE;
-        if (!strlen($table) || $used_table[$table]) {
+        if (!strlen($table) || array_key_exists($table, $used_table)) {
             continue;
         }
 
@@ -749,7 +814,16 @@ function get_users_services($conditions = '', $take_out = true)
 
 function delete_users_old_services()
 {
-    global $heart, $db, $lang_shop;
+    /** @var TranslationManager $translationManager */
+    $translationManager = app()->make(TranslationManager::class);
+    $langShop = $translationManager->shop();
+
+    /** @var Database $db */
+    $db = app()->make(Database::class);
+
+    /** @var Heart $heart */
+    $heart = app()->make(Heart::class);
+
     // Usunięcie przestarzałych usług użytkownika
     // Pierwsze pobieramy te, które usuniemy
     // Potem wywolujemy akcje na module, potem je usuwamy, a następnie wywołujemy akcje na module
@@ -773,7 +847,7 @@ function delete_users_old_services()
                 $user_service_desc .= ucfirst(strtolower($key)) . ': ' . $value;
             }
 
-            log_info($lang_shop->sprintf($lang_shop->translate('expired_service_delete'), $user_service_desc));
+            log_info($langShop->sprintf($langShop->translate('expired_service_delete'), $user_service_desc));
         }
     }
 
@@ -795,43 +869,11 @@ function delete_users_old_services()
     }
 }
 
-function send_email($email, $name, $subject, $text)
-{
-    global $settings, $lang_shop;
-
-    ////////// USTAWIENIA //////////
-    $email = filter_var($email, FILTER_VALIDATE_EMAIL);    // Adres e-mail adresata
-    $name = htmlspecialchars($name);
-    $sender_email = $settings['sender_email'];
-    $sender_name = $settings['sender_email_name'];
-
-    if (!strlen($email)) {
-        return "wrong_email";
-    }
-
-    $header = "MIME-Version: 1.0\r\n";
-    $header .= "Content-Type: text/html; charset=UTF-8\n";
-    $header .= "From: {$sender_name} < {$sender_email} >\n";
-    $header .= "To: {$name} < {$email} >\n";
-    $header .= "X-Sender: {$sender_name} < {$sender_email} >\n";
-    $header .= 'X-Mailer: PHP/' . phpversion();
-    $header .= "X-Priority: 1 (Highest)\n";
-    $header .= "X-MSMail-Priority: High\n";
-    $header .= "Importance: High\n";
-    $header .= "Return-Path: {$sender_email}\n"; // Return path for errors
-
-    if (!mail($email, $subject, $text, $header)) {
-        return "not_sent";
-    }
-
-    log_info($lang_shop->sprintf($lang_shop->translate('email_was_sent'), $email, $text));
-
-    return "sent";
-}
-
 function log_info($string)
 {
-    global $db;
+    /** @var Database $db */
+    $db = app()->make(Database::class);
+
     $db->query($db->prepare(
         "INSERT INTO `" . TABLE_PREFIX . "logs` " .
         "SET `text` = '%s'",
@@ -852,21 +894,6 @@ function object_implements($class, $interface)
     $interfaces = class_implements($class);
 
     return in_array($interface, $interfaces);
-}
-
-function exceptionHandler($e)
-{
-    global $lang;
-
-    if ($e instanceof SqlQueryException) {
-        Database::showError($e);
-    }
-
-    if ($e instanceof LicenseException) {
-        output_page($lang->translate('verification_error'));
-    }
-
-    throw $e;
 }
 
 function create_dom_element($name, $text = "", $data = [])
@@ -924,7 +951,9 @@ function create_brick($text, $class = "", $alpha = 0.2)
 
 function get_platform($platform)
 {
-    global $lang;
+    /** @var TranslationManager $translationManager */
+    $translationManager = app()->make(TranslationManager::class);
+    $lang = $translationManager->user();
 
     if ($platform == "engine_amxx") {
         return $lang->translate('amxx_server');
@@ -937,29 +966,12 @@ function get_platform($platform)
     return htmlspecialchars($platform);
 }
 
-// Zwraca nazwę typu
-function get_type_name($value)
-{
-    global $lang;
-
-    if ($value == TYPE_NICK) {
-        return $lang->translate('nickpass');
-    } else {
-        if ($value == TYPE_IP) {
-            return $lang->translate('ippass');
-        } else {
-            if ($value == TYPE_SID) {
-                return $lang->translate('sid');
-            }
-        }
-    }
-
-    return "";
-}
-
 function get_ip()
 {
-    if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+    /** @var Request $request */
+    $request = app()->make(Request::class);
+
+    if ($request->server->has('HTTP_CF_CONNECTING_IP')) {
         $cf_ip_ranges = [
             '103.21.244.0/22',
             '103.22.200.0/22',
@@ -978,13 +990,13 @@ function get_ip()
         ];
 
         foreach ($cf_ip_ranges as $range) {
-            if (ip_in_range($_SERVER['REMOTE_ADDR'], $range)) {
-                return $_SERVER['HTTP_CF_CONNECTING_IP'];
+            if (ip_in_range($request->server->get('REMOTE_ADDR'), $range)) {
+                return $request->server->get('HTTP_CF_CONNECTING_IP');
             }
         }
     }
 
-    return $_SERVER['REMOTE_ADDR'];
+    return $request->server->get('REMOTE_ADDR');
 }
 
 /**
@@ -997,8 +1009,10 @@ function get_ip()
  */
 function convertDate($timestamp, $format = "")
 {
+    /** @var Settings $settings */
+    $settings = app()->make(Settings::class);
+
     if (!strlen($format)) {
-        global $settings;
         $format = $settings['date_format'];
     }
 
@@ -1040,7 +1054,8 @@ function get_sms_cost($number)
  */
 function get_sms_cost_brutto($number)
 {
-    global $settings;
+    /** @var Settings $settings */
+    $settings = app()->make(Settings::class);
 
     return ceil(get_sms_cost($number) * $settings['vat']);
 }
@@ -1077,7 +1092,9 @@ function valid_steam($steamid)
 
 function secondsToTime($seconds)
 {
-    global $lang;
+    /** @var TranslationManager $translationManager */
+    $translationManager = app()->make(TranslationManager::class);
+    $lang = $translationManager->user();
 
     $dtF = new DateTime("@0");
     $dtT = new DateTime("@$seconds");
@@ -1107,7 +1124,8 @@ function mb_str_split($string)
 
 function searchWhere($search_ids, $search, &$where)
 {
-    global $db;
+    /** @var Database $db */
+    $db = app()->make(Database::class);
 
     $search_where = [];
     $search_like = $db->escape('%' . implode('%', mb_str_split($search)) . '%');
@@ -1124,40 +1142,6 @@ function searchWhere($search_ids, $search, &$where)
 
         $where .= "( {$search_where} )";
     }
-}
-
-/**
- * @param string $url
- * @param int    $timeout
- * @param bool   $post
- * @param array  $data
- *
- * @return string
- */
-function curl_get_contents($url, $timeout = 10, $post = false, $data = [])
-{
-    $curl = curl_init();
-    curl_setopt_array($curl, [
-        CURLOPT_RETURNTRANSFER => 1,
-        CURLOPT_URL            => $url,
-        CURLOPT_TIMEOUT        => $timeout,
-        CURLOPT_USERAGENT      => 'gammerce/sklep-sms',
-    ]);
-
-    if ($post) {
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode(['params' => $data]));
-    }
-
-    $resp = curl_exec($curl);
-    if ($resp === false) {
-        return false;
-    }
-
-    $http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-    curl_close($curl);
-
-    return $http_code == 200 ? $resp : '';
 }
 
 // ip_in_range
@@ -1230,6 +1214,11 @@ function ends_at($string, $end)
     return substr($string, -strlen($end)) == $end;
 }
 
+function starts_with($haystack, $needle)
+{
+    return substr($haystack, 0, strlen($needle)) === (string)$needle;
+}
+
 /**
  * Prints var_dump in pre
  *
@@ -1260,7 +1249,8 @@ function my_is_integer($val)
  */
 function implode_esc($glue, $stack)
 {
-    global $db;
+    /** @var Database $db */
+    $db = app()->make(Database::class);
 
     $output = '';
     foreach ($stack as $value) {
@@ -1276,7 +1266,8 @@ function implode_esc($glue, $stack)
 
 function log_to_file($file, $message)
 {
-    global $settings;
+    /** @var Settings $settings */
+    $settings = app()->make(Settings::class);
 
     $text = date($settings['date_format']) . ": " . $message;
 

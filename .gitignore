@@ -8,4 +8,7 @@
 !/errors/.htaccess
 /data/transfers/*
 !/data/transfers/.gitkeep
+/data/cache/*
+!/data/cache/.gitkeep
 /vendor
+composer.lock

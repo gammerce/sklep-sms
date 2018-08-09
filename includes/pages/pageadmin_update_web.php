@@ -1,10 +1,7 @@
 <?php
 
 use App\Template;
-use App\Translator;
 use App\Version;
-
-$heart->register_page("update_web", "PageAdminUpdateWeb", "admin");
 
 class PageAdminUpdateWeb extends PageAdmin
 {
@@ -14,22 +11,12 @@ class PageAdminUpdateWeb extends PageAdmin
     /** @var Version */
     private $version;
 
-    /** @var Template */
-    private $template;
-
-    /** @var Translator */
-    private $lang;
-
-    function __construct(Version $version, Template $template, Translator $lang)
+    public function __construct(Version $version, Template $template)
     {
-        global $lang;
-        $this->title = $lang->translate('update_web');
-
         parent::__construct();
 
+        $this->heart->page_title = $this->title = $this->lang->translate('update_web');
         $this->version = $version;
-        $this->template = $template;
-        $this->lang = $lang;
     }
 
     protected function content($get, $post)
@@ -37,7 +24,7 @@ class PageAdminUpdateWeb extends PageAdmin
         $newestVersion = $this->version->getNewestWeb();
 
         // Mamy najnowszą wersję
-        if (VERSION === $newestVersion) {
+        if ($this->app->version() === $newestVersion) {
             return eval($this->template->render("admin/no_update"));
         }
 

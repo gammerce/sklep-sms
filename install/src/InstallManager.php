@@ -1,61 +1,21 @@
 <?php
 namespace Install;
 
+use App\Application;
 use App\Translator;
-use Exception;
-use SqlQueryException;
 
 class InstallManager
 {
+    /** @var Application */
+    private $app;
+
     /** @var Translator */
     private $lang;
 
-    public function __construct(Translator $translator)
+    public function __construct(Application $app, Translator $translator)
     {
+        $this->app = $app;
         $this->lang = $translator;
-    }
-
-    public function handleException(Exception $e)
-    {
-        if ($e instanceof SqlQueryException) {
-            $this->handleSqlException($e);
-        }
-
-        $data = [
-            "Message: " . $e->getMessage(),
-            "File: " . $e->getFile(),
-            "Line: " . $e->getLine(),
-            "Stack:\n" . $e->getTraceAsString(),
-        ];
-
-        $this->logError(implode("\n", $data));
-    }
-
-    public function handleSqlException(SqlQueryException $e)
-    {
-        $input = [
-            "Message: " . $this->lang->translate('mysqli_' . $e->getMessage()),
-            "Error: " . $e->getError(),
-            "Query: " . $e->getQuery(false),
-        ];
-
-        $this->logError(implode("\n", $input));
-    }
-
-    public function logError($message)
-    {
-        file_put_contents(SCRIPT_ROOT . 'errors/install.log', $message);
-        file_put_contents(SCRIPT_ROOT . 'install/error', '');
-        $this->removeInProgress();
-
-        $this->showJsonError();
-    }
-
-    public function showJsonError()
-    {
-        $message = 'Wystąpił błąd podczas aktualizacji.<br />Poinformuj o swoim problemie na forum sklepu. Do wątku załącz plik errors/install.log';
-
-        json_output('error', $message, false);
     }
 
     public function showError()
@@ -75,11 +35,11 @@ class InstallManager
 
     private function putInProgress()
     {
-        file_put_contents(SCRIPT_ROOT . "install/progress", "");
+        file_put_contents($this->app->path('install/progress'), "");
     }
 
-    private function removeInProgress()
+    public function removeInProgress()
     {
-        unlink(SCRIPT_ROOT . "install/progress");
+        unlink($this->app->path('install/progress'));
     }
 }

@@ -2,11 +2,8 @@
 
 use App\PaymentModule;
 
-$heart->register_payment_module("profitsms", "PaymentModule_Profitsms");
-
 class PaymentModule_Profitsms extends PaymentModule implements IPayment_Sms
 {
-
     const SERVICE_ID = "profitsms";
 
     /** @var  string */
@@ -15,7 +12,7 @@ class PaymentModule_Profitsms extends PaymentModule implements IPayment_Sms
     /** @var  string */
     private $sms_code;
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
 
@@ -25,12 +22,11 @@ class PaymentModule_Profitsms extends PaymentModule implements IPayment_Sms
 
     public function verify_sms($return_code, $number)
     {
-        $response = curl_get_contents(
-            'http://profitsms.pl/check.php' .
-            '?apiKey=' . urlencode($this->api) .
-            '&code=' . urlencode($return_code) .
-            '&smsNr=' . urlencode($number)
-        );
+        $response = $this->requester->get('http://profitsms.pl/check.php', [
+            'apiKey' => $this->api,
+            'code'   => $return_code,
+            'smsNr'  => $number,
+        ]);
 
         if ($response === false) {
             return IPayment_Sms::NO_CONNECTION;

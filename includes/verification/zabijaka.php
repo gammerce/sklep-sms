@@ -2,11 +2,8 @@
 
 use App\PaymentModule;
 
-$heart->register_payment_module("zabijaka", "PaymentModule_Zabijaka");
-
 class PaymentModule_Zabijaka extends PaymentModule implements IPayment_Sms
 {
-
     const SERVICE_ID = "zabijaka";
 
     /** @var  string */
@@ -15,7 +12,7 @@ class PaymentModule_Zabijaka extends PaymentModule implements IPayment_Sms
     /** @var  string */
     private $sms_code;
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
 
@@ -57,5 +54,4 @@ class PaymentModule_Zabijaka extends PaymentModule implements IPayment_Sms
     {
         return $this->sms_code;
     }
-
 }

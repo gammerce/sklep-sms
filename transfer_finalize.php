@@ -1,20 +1,27 @@
 <?php
 
-use App\Payment;
+define('IN_SCRIPT', '1');
+define('SCRIPT_NAME', 'transfer_finalize');
 
-define('IN_SCRIPT', "1");
-define("SCRIPT_NAME", "transfer_finalize");
+error_reporting(E_ERROR | E_CORE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR | E_COMPILE_ERROR);
+ini_set('display_errors', 1);
 
-require_once 'global.php';
+session_name('user');
+session_start();
 
-$payment = new Payment($_GET['service']);
-$transfer_finalize = $payment->getPaymentModule()->finalizeTransfer($_GET, $_POST);
+require __DIR__ . '/bootstrap/autoload.php';
 
-if ($transfer_finalize->getStatus() === false) {
-    log_info($lang_shop->sprintf($lang_shop->translate('payment_not_accepted'), $transfer_finalize->getOrderid(),
-        $transfer_finalize->getAmount(), $transfer_finalize->getTransferService()));
-} else {
-    $payment->transferFinalize($transfer_finalize);
-}
+$app = require __DIR__ . '/bootstrap/app.php';
 
-output_page($transfer_finalize->getOutput(), 1);
+$app->singleton(
+    App\Kernels\KernelContract::class,
+    App\Kernels\TransferFinalizeKernel::class
+);
+
+/** @var App\Kernels\KernelContract $kernel */
+$kernel = $app->make(App\Kernels\KernelContract::class);
+$request = Symfony\Component\HttpFoundation\Request::createFromGlobals();
+
+$response = $kernel->handle($request);
+$response->send();
+$kernel->terminate($request, $response);

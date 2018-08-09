@@ -2,8 +2,6 @@
 
 use App\PaymentModule;
 
-$heart->register_payment_module("gosetti", "PaymentModule_Gosetti");
-
 class PaymentModule_Gosetti extends PaymentModule implements IPayment_Sms
 {
     const SERVICE_ID = "gosetti";
@@ -17,13 +15,14 @@ class PaymentModule_Gosetti extends PaymentModule implements IPayment_Sms
     /** @var array */
     private $numbers = [];
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
 
-        $data = json_decode(file_get_contents('https://gosetti.pl/Api/SmsApiV2GetData.php'), true);
+        $response = $this->requester->get('https://gosetti.pl/Api/SmsApiV2GetData.php');
+        $data = json_decode($response, true);
 
-        // CSSetti dostarcza w feedzie kod sms
+        // GOsetti dostarcza w feedzie kod sms
         $this->sms_code = $data['Code'];
 
         foreach ($data['Numbers'] as $number_data) {
@@ -35,11 +34,10 @@ class PaymentModule_Gosetti extends PaymentModule implements IPayment_Sms
 
     public function verify_sms($return_code, $number)
     {
-        $response = curl_get_contents(
-            'https://gosetti.pl/Api/SmsApiV2CheckCode.php' .
-            '?UserId=' . urlencode($this->account_id) .
-            '&Code=' . urlencode($return_code)
-        );
+        $response = $this->requester->get('https://gosetti.pl/Api/SmsApiV2CheckCode.php', [
+            'UserId' => $this->account_id,
+            'Code'   => $return_code,
+        ]);
 
         if ($response === false) {
             return IPayment_Sms::NO_CONNECTION;

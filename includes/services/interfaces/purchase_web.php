@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Purchase;
+
 /**
  * Możliwość zakupu usługi przez stronę WWWW
  * Implementacja tego interfejsu powinna pociągnąć za sobą implementacje interfejsu:
@@ -33,7 +35,7 @@ interface IService_PurchaseWeb
     /**
      * Metoda zwraca szczegóły zamówienia, wyświetlane podczas zakupu usługi, przed płatnością.
      *
-     * @param Entity_Purchase $purchase_data
+     * @param Purchase $purchase_data
      *
      * @return string Szczegóły zamówienia
      */

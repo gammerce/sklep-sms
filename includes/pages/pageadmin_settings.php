@@ -1,74 +1,78 @@
 <?php
 
-$heart->register_page("settings", "PageAdminSettings", "admin");
+use App\TranslationManager;
 
 class PageAdminSettings extends PageAdmin
 {
-    const PAGE_ID = "settings";
-    protected $privilage = "manage_settings";
+    const PAGE_ID = 'settings';
+    protected $privilage = 'manage_settings';
 
-    function __construct()
+    public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('settings');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('settings');
     }
 
     protected function content($get, $post)
     {
-        global $db, $settings, $lang, $lang_shop, $templates;
+        $settings = $this->settings;
+
+        /** @var TranslationManager $translationManager */
+        $translationManager = $this->app->make(TranslationManager::class);
+        $lang = $translationManager->user();
+        $langShop = $translationManager->shop();
 
         // Pobranie listy serwisów transakcyjnych
-        $result = $db->query(
+        $result = $this->db->query(
             "SELECT id, name, sms, transfer " .
             "FROM `" . TABLE_PREFIX . "transaction_services`"
         );
         $sms_services = $transfer_services = "";
-        while ($row = $db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetch_array_assoc($result)) {
             if ($row['sms']) {
                 $sms_services .= create_dom_element("option", $row['name'], [
                     'value'    => $row['id'],
-                    'selected' => $row['id'] == $settings['sms_service'] ? "selected" : "",
+                    'selected' => $row['id'] == $this->settings['sms_service'] ? "selected" : "",
                 ]);
             }
             if ($row['transfer']) {
                 $transfer_services .= create_dom_element("option", $row['name'], [
                     'value'    => $row['id'],
-                    'selected' => $row['id'] == $settings['transfer_service'] ? "selected" : "",
+                    'selected' => $row['id'] == $this->settings['transfer_service'] ? "selected" : "",
                 ]);
             }
         }
-        $cron[$settings['cron_each_visit'] ? "yes" : "no"] = "selected";
-        $user_edit_service[$settings['user_edit_service'] ? "yes" : "no"] = "selected";
+        $cron[$this->settings['cron_each_visit'] ? "yes" : "no"] = "selected";
+        $cron[$this->settings['cron_each_visit'] ? "no" : "yes"] = "";
+        $user_edit_service[$this->settings['user_edit_service'] ? "yes" : "no"] = "selected";
+        $user_edit_service[$this->settings['user_edit_service'] ? "no" : "yes"] = "";
 
         // Pobieranie listy dostępnych szablonów
-        $dirlist = scandir(SCRIPT_ROOT . "themes");
+        $dirlist = scandir($this->app->path('themes'));
         $themes_list = "";
         foreach ($dirlist as $dir_name) {
-            if ($dir_name[0] != '.' && is_dir(SCRIPT_ROOT . "themes/" . $dir_name)) {
+            if ($dir_name[0] != '.' && is_dir($this->app->path("themes/$dir_name"))) {
                 $themes_list .= create_dom_element("option", $dir_name, [
                     'value'    => $dir_name,
-                    'selected' => $dir_name == $settings['theme'] ? "selected" : "",
+                    'selected' => $dir_name == $this->settings['theme'] ? "selected" : "",
                 ]);
             }
         }
 
         // Pobieranie listy dostępnych języków
-        $dirlist = scandir(SCRIPT_ROOT . "includes/languages");
+        $dirlist = scandir($this->app->path('includes/languages'));
         $languages_list = "";
         foreach ($dirlist as $dir_name) {
-            if ($dir_name[0] != '.' && is_dir(SCRIPT_ROOT . "includes/languages/{$dir_name}")) {
+            if ($dir_name[0] != '.' && is_dir($this->app->path("includes/languages/{$dir_name}"))) {
                 $languages_list .= create_dom_element("option", $lang->translate('language_' . $dir_name), [
                     'value'    => $dir_name,
-                    'selected' => $dir_name == $lang_shop->getCurrentLanguage() ? "selected" : "",
+                    'selected' => $dir_name == $langShop->getCurrentLanguage() ? "selected" : "",
                 ]);
             }
         }
 
         // Pobranie wyglądu strony
-        $output = eval($templates->render("admin/settings"));
-
-        return $output;
+        return eval($this->template->render("admin/settings"));
     }
 }

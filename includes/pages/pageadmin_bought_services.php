@@ -7,45 +7,40 @@ use Admin\Table\Img;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 
-$heart->register_page("bought_services", "PageAdminBoughtServices", "admin");
-
 class PageAdminBoughtServices extends PageAdmin
 {
-    const PAGE_ID = "bought_services";
+    const PAGE_ID = 'bought_services';
 
-    function __construct()
+    public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('bought_services');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('bought_services');
     }
 
     protected function content($get, $post)
     {
-        global $heart, $db, $settings, $lang, $G_PAGE;
-
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
         $wrapper->setSearch();
 
         $table = new Structure();
 
-        $cell = new Cell($lang->translate('id'));
+        $cell = new Cell($this->lang->translate('id'));
         $cell->setParam('headers', 'id');
         $table->addHeadCell($cell);
 
-        $table->addHeadCell(new Cell($lang->translate('payment_admin')));
-        $table->addHeadCell(new Cell($lang->translate('payment_id')));
-        $table->addHeadCell(new Cell($lang->translate('user')));
-        $table->addHeadCell(new Cell($lang->translate('server')));
-        $table->addHeadCell(new Cell($lang->translate('service')));
-        $table->addHeadCell(new Cell($lang->translate('amount')));
-        $table->addHeadCell(new Cell("{$lang->translate('nick')}/{$lang->translate('ip')}/{$lang->translate('sid')}"));
-        $table->addHeadCell(new Cell($lang->translate('additional')));
-        $table->addHeadCell(new Cell($lang->translate('email')));
-        $table->addHeadCell(new Cell($lang->translate('ip')));
-        $table->addHeadCell(new Cell($lang->translate('date')));
+        $table->addHeadCell(new Cell($this->lang->translate('payment_admin')));
+        $table->addHeadCell(new Cell($this->lang->translate('payment_id')));
+        $table->addHeadCell(new Cell($this->lang->translate('user')));
+        $table->addHeadCell(new Cell($this->lang->translate('server')));
+        $table->addHeadCell(new Cell($this->lang->translate('service')));
+        $table->addHeadCell(new Cell($this->lang->translate('amount')));
+        $table->addHeadCell(new Cell("{$this->lang->translate('nick')}/{$this->lang->translate('ip')}/{$this->lang->translate('sid')}"));
+        $table->addHeadCell(new Cell($this->lang->translate('additional')));
+        $table->addHeadCell(new Cell($this->lang->translate('email')));
+        $table->addHeadCell(new Cell($this->lang->translate('ip')));
+        $table->addHeadCell(new Cell($this->lang->translate('date')));
 
         // Wyszukujemy dane ktore spelniaja kryteria
         $where = '';
@@ -68,29 +63,29 @@ class PageAdminBoughtServices extends PageAdmin
             $where = "WHERE " . $where . ' ';
         }
 
-        $result = $db->query(
+        $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * " .
-            "FROM ({$settings['transactions_query']}) as t " .
+            "FROM ({$this->settings['transactions_query']}) as t " .
             $where .
             "ORDER BY t.timestamp DESC " .
-            "LIMIT " . get_row_limit($G_PAGE)
+            "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+        $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
-        while ($row = $db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetch_array_assoc($result)) {
             $body_row = new BodyRow();
 
             // Pobranie danych o usłudze, która została kupiona
-            $service = $heart->get_service($row['service']);
+            $service = $this->heart->get_service($row['service']);
 
             // Pobranie danych o serwerze na ktorym zostala wykupiona usługa
-            $server = $heart->get_server($row['server']);
+            $server = $this->heart->get_server($row['server']);
 
-            $username = $row['uid'] ? htmlspecialchars($row['username']) . " ({$row['uid']})" : $lang->translate('none');
+            $username = $row['uid'] ? htmlspecialchars($row['username']) . " ({$row['uid']})" : $this->lang->translate('none');
 
             // Przerobienie ilosci
-            $amount = $row['amount'] != -1 ? $row['amount'] . ' ' . $service['tag'] : $lang->translate('forever');
+            $amount = $row['amount'] != -1 ? $row['amount'] . ' ' . $service['tag'] : $this->lang->translate('forever');
 
             // Rozkulbaczenie extra daty
             $row['extra_data'] = json_decode($row['extra_data'], true);
@@ -103,12 +98,10 @@ class PageAdminBoughtServices extends PageAdmin
                 $value = htmlspecialchars($value);
 
                 if ($key == "password") {
-                    $key = $lang->translate('password');
-                } else {
-                    if ($key == "type") {
-                        $key = $lang->translate('type');
-                        $value = get_type_name($value);
-                    }
+                    $key = $this->lang->translate('password');
+                } elseif ($key == "type") {
+                    $key = $this->lang->translate('type');
+                    $value = ExtraFlagType::get_type_name($value);
                 }
 
                 $extra_data[] = $key . ': ' . $value;
@@ -123,7 +116,7 @@ class PageAdminBoughtServices extends PageAdmin
 
             $payment_img = new Img();
             $payment_img->setParam('src', 'images/go.png');
-            $payment_img->setParam('title', $lang->translate('see_payment'));
+            $payment_img->setParam('title', $this->lang->translate('see_payment'));
             $payment_link->addContent($payment_img);
 
             $body_row->addAction($payment_link);

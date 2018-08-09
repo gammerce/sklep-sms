@@ -1,0 +1,30 @@
+version: '2'
+services:
+    web:
+        build:
+            context: ./docker
+            dockerfile: web.docker
+        volumes:
+            - ./:/var/www
+        ports:
+            - "8888:8888"
+        links:
+            - app
+    app:
+        build:
+            context: ./docker
+            dockerfile: app.docker
+        volumes:
+            - ./:/var/www
+        links:
+            - database
+        environment:
+            - "DB_PORT=3306"
+            - "DB_HOST=database"
+    database:
+        image: mysql:5.7
+        environment:
+            - "MYSQL_ROOT_PASSWORD=secret"
+            - "MYSQL_DATABASE=sklep_sms"
+        ports:
+            - "33061:3306"

@@ -3,3 +3,4 @@ install/
 confidential/
 themes/default/services/
 data/transfers/
+data/cache/

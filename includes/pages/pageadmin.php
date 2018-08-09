@@ -2,49 +2,45 @@
 
 abstract class PageAdmin extends Page implements I_BeLoggedMust
 {
-    protected $privilage = "acp";
+    protected $privilage = 'acp';
 
     public function get_content($get, $post)
     {
-        global $heart, $settings;
-
         if (!get_privilages($this->privilage)) {
-            global $lang;
-
-            return $lang->translate('no_privilages');
+            return $this->lang->translate('no_privilages');
         }
 
         // Dodajemy wszystkie skrypty
         $path = "jscripts/admin/pages/" . $this::PAGE_ID . "/";
-        if (strlen($this::PAGE_ID) && file_exists(SCRIPT_ROOT . $path)) {
-            foreach (scandir(SCRIPT_ROOT . $path) as $file) {
+        if (strlen($this::PAGE_ID) && file_exists($this->app->path($path))) {
+            foreach (scandir($this->app->path($path)) as $file) {
                 if (ends_at($file, ".js")) {
-                    $heart->script_add($settings['shop_url_slash'] . $path . $file . "?version=" . VERSION);
+                    $this->heart->script_add($this->settings['shop_url_slash'] . $path . $file . "?version=" . $this->app->version());
                 }
             }
         }
 
         // Dodajemy wszystkie css
         $path = "styles/admin/pages/" . $this::PAGE_ID . "/";
-        if (strlen($this::PAGE_ID) && file_exists(SCRIPT_ROOT . $path)) {
-            foreach (scandir(SCRIPT_ROOT . $path) as $file) {
+        if (strlen($this::PAGE_ID) && file_exists($this->app->path($path))) {
+            foreach (scandir($this->app->path($path)) as $file) {
                 if (ends_at($file, ".css")) {
-                    $heart->style_add($settings['shop_url_slash'] . $path . $file . "?version=" . VERSION);
+                    $this->heart->style_add($this->settings['shop_url_slash'] . $path . $file . "?version=" . $this->app->version());
                 }
             }
         }
 
         // Globalne jsy cssy konkretnych modułów usług
         if (in_array($this::PAGE_ID, ["service_codes", "services", "user_service"])) {
-            foreach ($heart->get_services_modules() as $module_info) {
+            foreach ($this->heart->get_services_modules() as $module_info) {
                 $path = "styles/services/" . $module_info['id'] . ".css";
-                if (file_exists(SCRIPT_ROOT . $path)) {
-                    $heart->style_add($settings['shop_url_slash'] . $path . "?version=" . VERSION);
+                if (file_exists($this->app->path($path))) {
+                    $this->heart->style_add($this->settings['shop_url_slash'] . $path . "?version=" . $this->app->version());
                 }
 
                 $path = "jscripts/services/" . $module_info['id'] . ".js";
-                if (file_exists(SCRIPT_ROOT . $path)) {
-                    $heart->script_add($settings['shop_url_slash'] . $path . "?version=" . VERSION);
+                if (file_exists($this->app->path($path))) {
+                    $this->heart->script_add($this->settings['shop_url_slash'] . $path . "?version=" . $this->app->version());
                 }
             }
         }

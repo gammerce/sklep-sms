@@ -1,6 +1,9 @@
 <?php
 
-$heart->register_block("wallet", "BlockWallet");
+use App\Auth;
+use App\Settings;
+use App\Template;
+use App\TranslationManager;
 
 class BlockWallet extends Block implements I_BeLoggedMust
 {
@@ -16,13 +19,23 @@ class BlockWallet extends Block implements I_BeLoggedMust
 
     protected function content($get, $post)
     {
-        global $user, $settings, $lang, $templates;
+        /** @var Auth $auth */
+        $auth = app()->make(Auth::class);
+        $user = $auth->user();
+
+        /** @var Template $template */
+        $template = app()->make(Template::class);
+
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $lang = $translationManager->user();
+
+        /** @var Settings $settings */
+        $settings = app()->make(Settings::class);
 
         $amount = number_format($user->getWallet() / 100, 2);
 
-        $output = eval($templates->render('wallet'));
-
-        return $output;
+        return eval($template->render('wallet'));
     }
 
     public function get_content_enveloped($get, $post)

@@ -1,9 +1,27 @@
 <?php
 
-$heart->register_block("admincontent", "BlockAdminContent");
+use App\CurrentPage;
+use App\Heart;
+use App\Translator;
 
 class BlockAdminContent extends Block
 {
+    /** @var Heart */
+    protected $heart;
+
+    /** @var CurrentPage */
+    protected $page;
+
+    /** @var Translator */
+    protected $lang;
+
+    public function __construct(Heart $heart, CurrentPage $page, Translator $lang)
+    {
+        $this->heart = $heart;
+        $this->page = $page;
+        $this->lang = $lang;
+    }
+
     public function get_content_class()
     {
         return "content";
@@ -17,10 +35,8 @@ class BlockAdminContent extends Block
     // Nadpisujemy get_content, aby wyswieltac info gdy nie jest zalogowany lub jest zalogowany, lecz nie powinien
     public function get_content($get, $post)
     {
-        global $lang;
-
         if (!is_logged()) {
-            return $lang->translate('must_be_logged_in');
+            return $this->lang->translate('must_be_logged_in');
         }
 
         return $this->content($get, $post);
@@ -28,9 +44,7 @@ class BlockAdminContent extends Block
 
     protected function content($get, $post)
     {
-        global $heart, $G_PID;
-
-        if (($page = $heart->get_page($G_PID, "admin")) === null) {
+        if (($page = $this->heart->get_page($this->page->getPid(), "admin")) === null) {
             return null;
         }
 

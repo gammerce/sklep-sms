@@ -1,12 +1,10 @@
 <?php
 
-$heart->register_page("income", "PageAdminIncome", "admin");
-
 class PageAdminIncome extends PageAdmin
 {
-    const PAGE_ID = "income";
+    const PAGE_ID = 'income';
 
-    protected $privilage = "view_income";
+    protected $privilage = 'view_income';
 
     protected $months = [
         '',
@@ -24,32 +22,32 @@ class PageAdminIncome extends PageAdmin
         "december",
     ];
 
-    function __construct()
+    public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('income');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('income');
     }
 
     protected function content($get, $post)
     {
-        global $heart, $db, $settings, $lang, $templates;
+        $settings = $this->settings;
+        $lang = $this->lang;
 
         $G_MONTH = isset($get['month']) ? $get['month'] : date("m");
         $G_YEAR = isset($get['year']) ? $get['year'] : date("Y");
 
         $table_row = "";
         // Uzyskanie wszystkich serwerów
-        foreach ($heart->get_servers() as $id => $server) {
+        foreach ($this->heart->get_servers() as $id => $server) {
             $obejcts_ids[] = $id;
             $table_row .= create_dom_element("td", $server['name']);
         }
         $obejcts_ids[] = 0;
 
-        $result = $db->query($db->prepare(
+        $result = $this->db->query($this->db->prepare(
             "SELECT t.income, t.timestamp, t.server " .
-            "FROM ({$settings['transactions_query']}) as t " .
+            "FROM ({$this->settings['transactions_query']}) as t " .
             "WHERE t.free = '0' AND IFNULL(t.income,'') != '' AND t.payment != 'wallet' AND t.timestamp LIKE '%s-%s-%%' " .
             "ORDER BY t.timestamp ASC",
             [$G_YEAR, $G_MONTH]
@@ -57,7 +55,7 @@ class PageAdminIncome extends PageAdmin
 
         // Sumujemy dochód po dacie (z dokładnością do dnia) i po serwerze
         $data = [];
-        while ($row = $db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetch_array_assoc($result)) {
             $temp = explode(" ", $row['timestamp']);
 
             $data[$temp[0]][in_array($row['server'], $obejcts_ids) ? $row['server'] : 0] += $row['income'];
@@ -66,7 +64,7 @@ class PageAdminIncome extends PageAdmin
         // Dodanie wyboru miesiąca
         $months = '';
         for ($i = 1; $i <= 12; $i++) {
-            $months .= create_dom_element("option", $lang->translate($this->months[$i]), [
+            $months .= create_dom_element("option", $this->lang->translate($this->months[$i]), [
                 'value'    => str_pad($i, 2, 0, STR_PAD_LEFT),
                 'selected' => $G_MONTH == $i ? "selected" : "",
             ]);
@@ -81,10 +79,10 @@ class PageAdminIncome extends PageAdmin
             ]);
         }
 
-        $buttons = eval($templates->render("admin/income_button"));
+        $buttons = eval($this->template->render("admin/income_button"));
 
         // Pobranie nagłówka tabeli
-        $thead = eval($templates->render("admin/income_thead"));
+        $thead = eval($this->template->render("admin/income_thead"));
 
         //
         // Pobranie danych do tabeli
@@ -110,7 +108,11 @@ class PageAdminIncome extends PageAdmin
 
             // Lecimy po każdym obiekcie, niezależnie, czy zarobiliśmy na nim czy nie
             foreach ($obejcts_ids as $object_id) {
-                $income = $data[$date][$object_id];
+                if (!isset($servers_incomes[$object_id])) {
+                    $servers_incomes[$object_id] = 0;
+                }
+
+                $income = array_get($data, "$date.$object_id", 0);
                 $day_income += $income;
                 $servers_incomes[$object_id] += $income;
                 $table_row .= create_dom_element("td", number_format($income / 100.0, 2));
@@ -119,7 +121,7 @@ class PageAdminIncome extends PageAdmin
             // Zaokraglenie do dowch miejsc po przecinku zarobku w danym dniu
             $day_income = number_format($day_income / 100.0, 2);
 
-            $tbody .= eval($templates->render("admin/income_trow"));
+            $tbody .= eval($this->template->render("admin/income_trow"));
         }
 
         // Pobranie podliczenia tabeli
@@ -134,15 +136,15 @@ class PageAdminIncome extends PageAdmin
         // Jeżeli coś się policzyło, są jakieś dane
         if (strlen($tbody)) {
             $total_income = number_format($total_income / 100.0, 2);
-            $tbody .= eval($templates->render("admin/income_trow2"));
+            $tbody .= eval($this->template->render("admin/income_trow2"));
         } else // Brak danych
         {
-            $tbody = eval($templates->render("admin/no_records"));
+            $tbody = eval($this->template->render("admin/no_records"));
         }
 
         // Pobranie wygladu strony
-        $output = eval($templates->render("admin/table_structure"));
-
-        return $output;
+        $tfoot_class = '';
+        $pagination = '';
+        return eval($this->template->render("admin/table_structure"));
     }
 }

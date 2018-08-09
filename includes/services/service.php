@@ -1,16 +1,32 @@
 <?php
 
+use App\Application;
+use App\Database;
+use App\Template;
+
 abstract class Service
 {
     const MODULE_ID = '';
     const USER_SERVICE_TABLE = '';
     public $service = [];
 
-    function __construct($service = null)
+    /** @var Application */
+    protected $app;
+
+    /** @var Template */
+    protected $template;
+
+    /** @var Database */
+    protected $db;
+
+    public function __construct($service = null)
     {
+        $this->app = app();
+        $this->template = $this->app->make(Template::class);
+        $this->db = $this->app->make(Database::class);
+
         if (!is_array($service)) { // Podano błędne dane usługi
             $this->service = null;
-
             return;
         }
 
@@ -29,7 +45,7 @@ abstract class Service
     /**
      * Metoda wywoływana przy usuwaniu usługi użytkownika.
      *
-     * @param array  $user_service Dane o usłudze z bazy danych
+     * @param array $user_service Dane o usłudze z bazy danych
      * @param string $who Kto wywołał akcję ( admin, task )
      *
      * @return bool
@@ -69,12 +85,8 @@ abstract class Service
      */
     public function description_full_get()
     {
-        global $templates;
-
         $file = "services/" . escape_filename($this->service['id']) . "_desc";
-        $output = eval($templates->render($file, true, false));
-
-        return $output;
+        return eval($this->template->render($file, true, false));
     }
 
     public function description_short_get()
@@ -90,7 +102,7 @@ abstract class Service
     /**
      * Aktualizuje usługę gracza
      *
-     * @param array  $set (column, value, data)
+     * @param array $set (column, value, data)
      * @param string $where1 Where dla update na tabeli user_service
      * @param string $where2 Where dla update na tabeli modułu
      *
@@ -98,12 +110,10 @@ abstract class Service
      */
     protected function update_user_service($set, $where1, $where2)
     {
-        global $db;
-
         $set_data1 = $set_data2 = $where_data = $where_data2 = [];
 
         foreach ($set as $data) {
-            $set_data = $db->prepare(
+            $set_data = $this->db->prepare(
                 "`{$data['column']}` = {$data['value']}",
                 if_isset($data['data'], [])
             );
@@ -138,21 +148,21 @@ abstract class Service
 
         $affected = 0;
         if (!empty($set_data1)) {
-            $db->query(
+            $this->db->query(
                 "UPDATE `" . TABLE_PREFIX . "user_service` " .
                 "SET " . implode(', ', $set_data1) . " " .
                 $where1
             );
-            $affected = max($affected, $db->affected_rows());
+            $affected = max($affected, $this->db->affected_rows());
         }
 
         if (!empty($set_data2)) {
-            $db->query(
+            $this->db->query(
                 "UPDATE `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` " .
                 "SET " . implode(', ', $set_data2) . " " .
                 $where2
             );
-            $affected = max($affected, $db->affected_rows());
+            $affected = max($affected, $this->db->affected_rows());
         }
 
         return $affected;

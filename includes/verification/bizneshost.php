@@ -2,11 +2,8 @@
 
 use App\PaymentModule;
 
-$heart->register_payment_module("bizneshost", "PaymentModule_Bizneshost");
-
 class PaymentModule_Bizneshost extends PaymentModule implements IPayment_Sms
 {
-
     const SERVICE_ID = 'bizneshost';
 
     /** @var  int */
@@ -15,7 +12,7 @@ class PaymentModule_Bizneshost extends PaymentModule implements IPayment_Sms
     /** @var  string */
     protected $sms_code;
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
 
@@ -29,11 +26,10 @@ class PaymentModule_Bizneshost extends PaymentModule implements IPayment_Sms
             return IPayment_Sms::BAD_DATA;
         }
 
-        $status = curl_get_contents(
-            'http://biznes-host.pl/api/sprawdzkod_v2.php' .
-            '?uid=' . urlencode($this->uid) .
-            '&kod=' . urlencode($return_code)
-        );
+        $status = $this->requester->get('http://biznes-host.pl/api/sprawdzkod_v2.php', [
+            'uid' => $this->uid,
+            'kod' => $return_code,
+        ]);
 
         if ($status === false) {
             return IPayment_Sms::NO_CONNECTION;

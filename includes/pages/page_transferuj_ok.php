@@ -5,18 +5,15 @@
  * URL: https://forum.sklep-sms.pl/showthread.php?tid=88
  */
 
-$heart->register_page("transferuj_ok", "PageTransferujOk");
-
 class PageTransferujOk extends PageSimple
 {
-    const PAGE_ID = "transferuj_ok";
-    protected $template = "transferuj_ok";
+    const PAGE_ID = 'transferuj_ok';
+    protected $templateName = 'transferuj_ok';
 
-    function __construct()
+    public function __construct()
     {
-        global $lang;
-        $this->title = "Płatność Zaakceptowana";
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = 'Płatność Zaakceptowana';
     }
 }

@@ -1,17 +1,14 @@
 <?php
 
-$heart->register_page("contact", "PageContact");
-
 class PageContact extends PageSimple
 {
-    const PAGE_ID = "contact";
-    protected $template = "contact";
+    const PAGE_ID = 'contact';
+    protected $templateName = 'contact';
 
-    function __construct()
+    public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('contact');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('contact');
     }
 }

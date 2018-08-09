@@ -1,22 +1,38 @@
 <?php
 
-$heart->register_page("user_own_services", "Page_UserOIwnServices");
+use App\Auth;
+use App\Database;
+use App\Settings;
+use App\Template;
 
 class Page_UserOIwnServices extends Page implements I_BeLoggedMust
 {
-    const PAGE_ID = "user_own_services";
+    const PAGE_ID = 'user_own_services';
 
-    function __construct()
+    public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('user_own_services');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('user_own_services');
     }
 
     protected function content($get, $post)
     {
-        global $heart, $db, $settings, $user, $lang, $G_PAGE, $templates;
+        $heart = $this->heart;
+        $lang = $this->lang;
+
+        /** @var Auth $auth */
+        $auth = $this->app->make(Auth::class);
+        $user = $auth->user();
+
+        /** @var Template $template */
+        $template = $this->app->make(Template::class);
+
+        /** @var Settings $settings */
+        $settings = $this->app->make(Settings::class);
+
+        /** @var Database $db */
+        $db = $this->app->make(Database::class);
 
         // Ktore moduly wspieraja usługi użytkowników
         $classes = array_filter(
@@ -48,7 +64,7 @@ class Page_UserOIwnServices extends Page implements I_BeLoggedMust
                 "INNER JOIN `" . TABLE_PREFIX . "services` AS s ON us.service = s.id " .
                 "WHERE us.uid = '%d' AND s.module IN ({$modules}) " .
                 "ORDER BY us.id DESC " .
-                "LIMIT " . get_row_limit($G_PAGE, 4),
+                "LIMIT " . get_row_limit($this->currentPage->getPageNumber(), 4),
                 [$user->getUid()]
             ));
 
@@ -93,11 +109,9 @@ class Page_UserOIwnServices extends Page implements I_BeLoggedMust
             $user_own_services = $lang->translate('no_data');
         }
 
-        $pagination = get_pagination($rows_count, $G_PAGE, "index.php", $get, 4);
+        $pagination = get_pagination($rows_count, $this->currentPage->getPageNumber(), "index.php", $get, 4);
         $pagination_class = strlen($pagination) ? "" : "display_none";
 
-        $output = eval($templates->render("user_own_services"));
-
-        return $output;
+        return eval($template->render("user_own_services"));
     }
 }

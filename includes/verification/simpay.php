@@ -2,11 +2,8 @@
 
 use App\PaymentModule;
 
-$heart->register_payment_module("simpay", "PaymentModule_Simpay");
-
 class PaymentModule_Simpay extends PaymentModule implements IPayment_Sms
 {
-
     const SERVICE_ID = "simpay";
 
     /** @var string */
@@ -21,7 +18,7 @@ class PaymentModule_Simpay extends PaymentModule implements IPayment_Sms
     /** @var string */
     private $sms_code;
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
 
@@ -33,7 +30,7 @@ class PaymentModule_Simpay extends PaymentModule implements IPayment_Sms
 
     public function verify_sms($sms_code, $sms_number)
     {
-        $response = curl_get_contents('https://simpay.pl/api/1/status', 10, true, [
+        $response = $this->requester->post('https://simpay.pl/api/1/status', [
             'auth'       => [
                 'key'    => $this->key,
                 'secret' => $this->secret,

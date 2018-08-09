@@ -1,15 +1,51 @@
 <?php
 
+use App\Application;
+use App\CurrentPage;
+use App\Database;
+use App\Heart;
+use App\Settings;
+use App\Template;
+use App\TranslationManager;
+use App\Translator;
+
 abstract class Page
 {
     const PAGE_ID = "";
     protected $title = "";
 
-    function __construct()
-    {
-        global $heart;
+    /** @var Application */
+    protected $app;
 
-        $heart->page_title = $this->title;
+    /** @var Heart */
+    protected $heart;
+
+    /** @var Settings */
+    protected $settings;
+
+    /** @var CurrentPage */
+    protected $currentPage;
+
+    /** @var Translator */
+    protected $lang;
+
+    /** @var Template */
+    protected $template;
+
+    /** @var Database */
+    protected $db;
+
+    public function __construct()
+    {
+        $this->app = app();
+        /** @var TranslationManager $translationManager */
+        $translationManager = $this->app->make(TranslationManager::class);
+        $this->lang = $translationManager->user();
+        $this->heart = $this->app->make(Heart::class);
+        $this->settings = $this->app->make(Settings::class);
+        $this->currentPage = $this->app->make(CurrentPage::class);
+        $this->template = $this->app->make(Template::class);
+        $this->db = $this->app->make(Database::class);
     }
 
     /**
@@ -22,39 +58,37 @@ abstract class Page
      */
     public function get_content($get, $post)
     {
-        global $heart, $settings;
-
         // Dodajemy wszystkie skrypty
         $path = "jscripts/pages/" . $this::PAGE_ID . "/";
-        if (strlen($this::PAGE_ID) && file_exists(SCRIPT_ROOT . $path)) {
-            foreach (scandir(SCRIPT_ROOT . $path) as $file) {
+        if (strlen($this::PAGE_ID) && file_exists($this->app->path($path))) {
+            foreach (scandir($this->app->path($path)) as $file) {
                 if (ends_at($file, ".js")) {
-                    $heart->script_add($settings['shop_url_slash'] . $path . $file . "?version=" . VERSION);
+                    $this->heart->script_add($this->settings['shop_url_slash'] . $path . $file . "?version=" . $this->app->version());
                 }
             }
         }
 
         // Dodajemy wszystkie css
         $path = "styles/pages/" . $this::PAGE_ID . "/";
-        if (strlen($this::PAGE_ID) && file_exists(SCRIPT_ROOT . $path)) {
-            foreach (scandir(SCRIPT_ROOT . $path) as $file) {
+        if (strlen($this::PAGE_ID) && file_exists($this->app->path($path))) {
+            foreach (scandir($this->app->path($path)) as $file) {
                 if (ends_at($file, ".css")) {
-                    $heart->style_add($settings['shop_url_slash'] . $path . $file . "?version=" . VERSION);
+                    $this->heart->style_add($this->settings['shop_url_slash'] . $path . $file . "?version=" . $this->app->version());
                 }
             }
         }
 
         // Globalne jsy cssy konkretnych modułów usług
         if (in_array($this::PAGE_ID, ["purchase", "user_own_services", "service_take_over", "payment_log"])) {
-            foreach ($heart->get_services_modules() as $module_info) {
+            foreach ($this->heart->get_services_modules() as $module_info) {
                 $path = "styles/services/" . $module_info['id'] . ".css";
-                if (file_exists(SCRIPT_ROOT . $path)) {
-                    $heart->style_add($settings['shop_url_slash'] . $path . "?version=" . VERSION);
+                if (file_exists($this->app->path($path))) {
+                    $this->heart->style_add($this->settings['shop_url_slash'] . $path . "?version=" . $this->app->version());
                 }
 
                 $path = "jscripts/services/" . $module_info['id'] . ".js";
-                if (file_exists(SCRIPT_ROOT . $path)) {
-                    $heart->script_add($settings['shop_url_slash'] . $path . "?version=" . VERSION);
+                if (file_exists($this->app->path($path))) {
+                    $this->heart->script_add($this->settings['shop_url_slash'] . $path . "?version=" . $this->app->version());
                 }
             }
         }
@@ -76,11 +110,11 @@ abstract class Page
 
 abstract class PageSimple extends Page
 {
-    protected $template = null;
+    protected $templateName = null;
 
-    function __construct()
+    public function __construct()
     {
-        if (!isset($this->template)) {
+        if (!isset($this->templateName)) {
             throw new Exception('Class ' . get_class($this) . ' has to have field $template because it extends class PageSimple');
         }
 
@@ -89,10 +123,8 @@ abstract class PageSimple extends Page
 
     protected function content($get, $post)
     {
-        global $lang, $templates;
-
-        $output = eval($templates->render($this->template));
-
-        return $output;
+        $lang = $this->lang;
+        $settings = $this->settings;
+        return eval($this->template->render($this->templateName));
     }
 }

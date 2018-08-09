@@ -1,6 +1,9 @@
 <?php
 
-$heart->register_block("user_buttons", "BlockUserButtons");
+use App\Auth;
+use App\Heart;
+use App\Template;
+use App\TranslationManager;
 
 class BlockUserButtons extends Block
 {
@@ -16,31 +19,39 @@ class BlockUserButtons extends Block
 
     protected function content($get, $post)
     {
-        global $lang, $templates;
+        /** @var Auth $auth */
+        $auth = app()->make(Auth::class);
+        $user = $auth->user();
 
-        if (is_logged()) {
-            global $heart, $user;
+        /** @var Template $template */
+        $template = app()->make(Template::class);
 
-            // Panel Admina
-            if (get_privilages("acp", $user)) {
-                $acp_button = create_dom_element("li", create_dom_element("a", $lang->translate('acp'), [
-                    'href' => "admin.php",
-                ]));
-            }
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $lang = $translationManager->user();
 
-            // Doładowanie portfela
-            if ($heart->user_can_use_service($user->getUid(), $heart->get_service("charge_wallet"))) {
-                $charge_wallet_button = create_dom_element("li",
-                    create_dom_element("a", $lang->translate('charge_wallet'), [
-                        'href' => "index.php?pid=purchase&service=charge_wallet",
-                    ]));
-            }
+        /** @var Heart $heart */
+        $heart = app()->make(Heart::class);
 
-            $output = eval($templates->render("user_buttons"));
-        } else {
-            $output = eval($templates->render("loginarea"));
+        if (!$auth->check()) {
+            return eval($template->render("loginarea"));
         }
 
-        return $output;
+        // Panel Admina
+        if (get_privilages("acp", $user)) {
+            $acp_button = create_dom_element("li", create_dom_element("a", $lang->translate('acp'), [
+                'href' => "admin.php",
+            ]));
+        }
+
+        // Doładowanie portfela
+        if ($heart->user_can_use_service($user->getUid(), $heart->get_service("charge_wallet"))) {
+            $charge_wallet_button = create_dom_element("li",
+                create_dom_element("a", $lang->translate('charge_wallet'), [
+                    'href' => "index.php?pid=purchase&service=charge_wallet",
+                ]));
+        }
+
+        return eval($template->render("user_buttons"));
     }
 }

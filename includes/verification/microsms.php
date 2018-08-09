@@ -2,11 +2,8 @@
 
 use App\PaymentModule;
 
-$heart->register_payment_module("microsms", "PaymentModule_Microsms");
-
 class PaymentModule_Microsms extends PaymentModule implements IPayment_Sms
 {
-
     const SERVICE_ID = "microsms";
 
     /** @var  string */
@@ -18,7 +15,7 @@ class PaymentModule_Microsms extends PaymentModule implements IPayment_Sms
     /** @var  string */
     private $sms_code;
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
 
@@ -50,7 +47,7 @@ class PaymentModule_Microsms extends PaymentModule implements IPayment_Sms
                 return IPayment_Sms::BAD_CODE;
             }
 
-            log_to_file(ERROR_LOG, "Microsms details: " . $check);
+            log_to_file(app()->errorsLogPath(), "Microsms details: " . $check);
 
             return IPayment_Sms::MISCONFIGURATION;
         }

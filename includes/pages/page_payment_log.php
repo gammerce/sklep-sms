@@ -1,28 +1,44 @@
 <?php
 
-$heart->register_page("payment_log", "PagePaymentLog");
+use App\Auth;
+use App\Database;
+use App\Settings;
+use App\Template;
 
 class PagePaymentLog extends Page implements I_BeLoggedMust
 {
-    const PAGE_ID = "payment_log";
+    const PAGE_ID = 'payment_log';
 
-    function __construct()
+    public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('payment_log');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('payment_log');
     }
 
     protected function content($get, $post)
     {
-        global $heart, $db, $settings, $user, $lang, $G_PAGE, $templates;
+        $heart = $this->heart;
+        $lang = $this->lang;
+
+        /** @var Auth $auth */
+        $auth = $this->app->make(Auth::class);
+        $user = $auth->user();
+
+        /** @var Template $template */
+        $template = $this->app->make(Template::class);
+
+        /** @var Settings $settings */
+        $settings = $this->app->make(Settings::class);
+
+        /** @var Database $db */
+        $db = $this->app->make(Database::class);
 
         $result = $db->query($db->prepare(
             "SELECT SQL_CALC_FOUND_ROWS * FROM ({$settings['transactions_query']}) as t " .
             "WHERE t.uid = '%d' " .
             "ORDER BY t.timestamp DESC " .
-            "LIMIT " . get_row_limit($G_PAGE, 10),
+            "LIMIT " . get_row_limit($this->currentPage->getPageNumber(), 10),
             [$user->getUid()]
         ));
         $rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
@@ -50,17 +66,15 @@ class PagePaymentLog extends Page implements I_BeLoggedMust
             $row['auth_data'] = htmlspecialchars($row['auth_data']);
             $row['email'] = htmlspecialchars($row['email']);
 
-            $payment_log_brick = eval($templates->render("payment_log_brick"));
+            $payment_log_brick = eval($template->render("payment_log_brick"));
             $payment_logs .= create_dom_element("div", $payment_log_brick, $data = [
                 'class' => "brick " . $class,
             ]);
         }
 
-        $pagination = get_pagination($rows_count, $G_PAGE, "index.php", $get, 10);
+        $pagination = get_pagination($rows_count, $this->currentPage->getPageNumber(), "index.php", $get, 10);
         $pagination_class = strlen($pagination) ? "" : "display_none";
 
-        $output = eval($templates->render("payment_log"));
-
-        return $output;
+        return eval($template->render("payment_log"));
     }
 }

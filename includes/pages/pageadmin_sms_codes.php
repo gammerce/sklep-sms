@@ -6,47 +6,42 @@ use Admin\Table\Input;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 
-$heart->register_page("sms_codes", "PageAdminSmsCodes", "admin");
-
 class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
 {
-    const PAGE_ID = "sms_codes";
-    protected $privilage = "view_sms_codes";
+    const PAGE_ID = 'sms_codes';
+    protected $privilage = 'view_sms_codes';
 
-    function __construct()
+    public function __construct()
     {
-        global $lang;
-        $this->title = $lang->translate('sms_codes');
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = $this->lang->translate('sms_codes');
     }
 
     protected function content($get, $post)
     {
-        global $db, $lang, $G_PAGE;
-
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
 
-        $cell = new Cell($lang->translate('id'));
+        $cell = new Cell($this->lang->translate('id'));
         $cell->setParam('headers', 'id');
         $table->addHeadCell($cell);
 
-        $table->addHeadCell(new Cell($lang->translate('sms_code')));
-        $table->addHeadCell(new Cell($lang->translate('tariff')));
+        $table->addHeadCell(new Cell($this->lang->translate('sms_code')));
+        $table->addHeadCell(new Cell($this->lang->translate('tariff')));
 
-        $result = $db->query(
+        $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * " .
             "FROM `" . TABLE_PREFIX . "sms_codes` " .
             "WHERE `free` = '1' " .
-            "LIMIT " . get_row_limit($G_PAGE)
+            "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+        $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
-        while ($row = $db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetch_array_assoc($result)) {
             $body_row = new BodyRow();
 
             $body_row->setDbId($row['id']);
@@ -66,7 +61,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
             $button = new Input();
             $button->setParam('id', 'sms_code_button_add');
             $button->setParam('type', 'button');
-            $button->setParam('value', $lang->translate('add_code'));
+            $button->setParam('value', $this->lang->translate('add_code'));
             $wrapper->addButton($button);
         }
 
@@ -75,25 +70,25 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
 
     public function get_action_box($box_id, $data)
     {
-        global $heart, $lang, $templates;
+        $lang = $this->lang;
 
         if (!get_privilages("manage_sms_codes")) {
             return [
                 'status' => "not_logged_in",
-                'text'   => $lang->translate('not_logged_or_no_perm'),
+                'text'   => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
         switch ($box_id) {
             case "sms_code_add":
                 $tariffs = "";
-                foreach ($heart->getTariffs() as $tariff) {
+                foreach ($this->heart->getTariffs() as $tariff) {
                     $tariffs .= create_dom_element("option", $tariff->getId(), [
                         'value' => $tariff->getId(),
                     ]);
                 }
 
-                $output = eval($templates->render("admin/action_boxes/sms_code_add"));
+                $output = eval($this->template->render("admin/action_boxes/sms_code_add"));
                 break;
         }
 

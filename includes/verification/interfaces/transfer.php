@@ -1,12 +1,15 @@
 <?php
 
+use App\Models\Purchase;
+use App\Models\TransferFinalize;
+
 interface IPayment_Transfer
 {
     /**
      * Przygotowanie zapytania POST w celu płatności przelewem
      *
-     * @param Entity_Purchase $purchase_data
-     * @param string          $data_filename
+     * @param Purchase $purchase_data
+     * @param string   $data_filename
      *
      * @return array
      *  string url => adres url strony do ktorej wysylamy dane POST
@@ -20,7 +23,7 @@ interface IPayment_Transfer
      * @param $get
      * @param $post
      *
-     * @return Entity_TransferFinalize
+     * @return TransferFinalize
      */
     public function finalizeTransfer($get, $post);
 }

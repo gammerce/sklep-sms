@@ -5,18 +5,15 @@
  * URL: https://forum.sklep-sms.pl/showthread.php?tid=88
  */
 
-$heart->register_page("transferuj_bad", "PageTransferujBad");
-
 class PageTransferujBad extends PageSimple
 {
-    const PAGE_ID = "transferuj_bad";
-    protected $template = "transferuj_bad";
+    const PAGE_ID = 'transferuj_bad';
+    protected $templateName = 'transferuj_bad';
 
-    function __construct()
+    public function __construct()
     {
-        global $lang;
-        $this->title = "Płatność Odrzucona";
-
         parent::__construct();
+
+        $this->heart->page_title = $this->title = 'Płatność Odrzucona';
     }
 }

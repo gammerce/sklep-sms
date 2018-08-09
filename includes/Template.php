@@ -3,6 +3,22 @@ namespace App;
 
 class Template
 {
+    /** @var Application */
+    protected $app;
+
+    /** @var Settings */
+    protected $settings;
+
+    /** @var Translator */
+    protected $lang;
+
+    public function __construct(Application $app, Settings $settings, Translator $lang)
+    {
+        $this->app = $app;
+        $this->settings = $settings;
+        $this->lang = $lang;
+    }
+
     public function render($template, $eslashes = true, $htmlcomments = true)
     {
         return 'return "' . $this->get_template($template, $eslashes, $htmlcomments) . '";';
@@ -11,7 +27,7 @@ class Template
     public function install_render($template)
     {
         $template = $this->get_install_template($template, function ($filename) {
-            return SCRIPT_ROOT . "install/templates/{$filename}.html";
+            return $this->app->path("install/templates/{$filename}.html");
         });
 
         return 'return "' . $template . '";';
@@ -20,7 +36,7 @@ class Template
     public function install_full_render($template)
     {
         $template = $this->get_install_template($template, function ($filename) {
-            return SCRIPT_ROOT . "install/templates/full/{$filename}.html";
+            return $this->app->path("install/templates/full/{$filename}.html");
         });
 
         return 'return "' . $template . '";';
@@ -29,7 +45,7 @@ class Template
     public function install_update_render($template)
     {
         $template = $this->get_install_template($template, function ($filename) {
-            return SCRIPT_ROOT . "install/templates/update/{$filename}.html";
+            return $this->app->path("install/templates/update/{$filename}.html");
         });
 
         return 'return "' . $template . '";';
@@ -39,22 +55,20 @@ class Template
      * Pobranie szablonu.
      *
      * @param string $title Nazwa szablonu
-     * @param bool   $eslashes Prawda, jeżeli zawartość szablonu ma być "escaped".
-     * @param bool   $htmlcomments Prawda, jeżeli chcemy dodać komentarze o szablonie.
+     * @param bool $eslashes Prawda, jeżeli zawartość szablonu ma być "escaped".
+     * @param bool $htmlcomments Prawda, jeżeli chcemy dodać komentarze o szablonie.
      *
      * @return string|bool Szablon.
      */
     private function get_template($title, $eslashes = true, $htmlcomments = true)
     {
-        global $settings, $lang;
-
-        if (strlen($lang->getCurrentLanguageShort())) {
-            $filename = $title . "." . $lang->getCurrentLanguageShort();
-            $temp = SCRIPT_ROOT . "themes/{$settings['theme']}/{$filename}.html";
+        if (strlen($this->lang->getCurrentLanguageShort())) {
+            $filename = $title . "." . $this->lang->getCurrentLanguageShort();
+            $temp = $this->app->path("themes/{$this->settings['theme']}/{$filename}.html");
             if (file_exists($temp)) {
                 $path = $temp;
             } else {
-                $temp = SCRIPT_ROOT . "themes/default/{$filename}.html";
+                $temp = $this->app->path("themes/default/{$filename}.html");
                 if (file_exists($temp)) {
                     $path = $temp;
                 }
@@ -63,11 +77,11 @@ class Template
 
         if (!isset($path)) {
             $filename = $title;
-            $temp = SCRIPT_ROOT . "themes/{$settings['theme']}/{$filename}.html";
+            $temp = $this->app->path("themes/{$this->settings['theme']}/{$filename}.html");
             if (file_exists($temp)) {
                 $path = $temp;
             } else {
-                $temp = SCRIPT_ROOT . "themes/default/{$filename}.html";
+                $temp = $this->app->path("themes/default/{$filename}.html");
                 if (file_exists($temp)) {
                     $path = $temp;
                 }
@@ -83,10 +97,8 @@ class Template
 
     private function get_install_template($title, callable $pathResolver)
     {
-        global $lang;
-
-        if (strlen($lang->getCurrentLanguageShort())) {
-            $filename = $title . "." . $lang->getCurrentLanguageShort();
+        if (strlen($this->lang->getCurrentLanguageShort())) {
+            $filename = $title . "." . $this->lang->getCurrentLanguageShort();
             $temp = call_user_func($pathResolver, $filename);
             if (file_exists($temp)) {
                 $path = $temp;
@@ -120,7 +132,7 @@ class Template
             $template = str_replace("\\'", "'", addslashes($template));
         }
 
-        $template = str_replace("{__VERSION__}", VERSION, $template);
+        $template = str_replace("{__VERSION__}", $this->app->version(), $template);
 
         return $template;
     }

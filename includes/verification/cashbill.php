@@ -1,12 +1,10 @@
 <?php
 
+use App\Models\TransferFinalize;
 use App\PaymentModule;
-
-$heart->register_payment_module("cashbill", "PaymentModule_Cashbill");
 
 class PaymentModule_Cashbill extends PaymentModule implements IPayment_Sms, IPayment_Transfer
 {
-
     const SERVICE_ID = "cashbill";
 
     /** @var  string */
@@ -18,7 +16,7 @@ class PaymentModule_Cashbill extends PaymentModule implements IPayment_Sms, IPay
     /** @var  string */
     private $sms_code;
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
 
@@ -63,6 +61,11 @@ class PaymentModule_Cashbill extends PaymentModule implements IPayment_Sms, IPay
         return IPayment_Sms::NO_CONNECTION;
     }
 
+    /**
+     * @param \App\Models\Purchase $purchase_data
+     * @param string $data_filename
+     * @return array
+     */
     public function prepare_transfer($purchase_data, $data_filename)
     {
         // Zamieniamy grosze na złotówki
@@ -84,7 +87,7 @@ class PaymentModule_Cashbill extends PaymentModule implements IPayment_Sms, IPay
 
     public function finalizeTransfer($get, $post)
     {
-        $transfer_finalize = new Entity_TransferFinalize();
+        $transfer_finalize = new TransferFinalize();
 
         if ($this->check_sign($post, $this->getKey(),
                 $post['sign']) && strtoupper($post['status']) == 'OK' && $post['service'] == $this->getService()) {

@@ -1,6 +1,10 @@
 <?php
-
 namespace Admin\Table;
+
+use App\CurrentPage;
+use App\Template;
+use App\TranslationManager;
+use Symfony\Component\HttpFoundation\Request;
 
 interface I_ToHtml
 {
@@ -20,7 +24,7 @@ class SimpleText implements I_ToHtml
     /**
      * @param string $text
      */
-    function __construct($text)
+    public function __construct($text)
     {
         $this->text = strval($text);
     }
@@ -50,7 +54,7 @@ class DOMElement implements I_ToHtml
     /**
      * @param string|null $value
      */
-    function __construct($value = null)
+    public function __construct($value = null)
     {
         if ($value !== null) {
             $this->addContent(new SimpleText($value));
@@ -237,7 +241,7 @@ class Cell extends DOMElement
 
 class Line extends Row
 {
-    function __construct()
+    public function __construct()
     {
         $cell = new Cell();
         $cell->setParam('colspan', '31');
@@ -249,10 +253,10 @@ class Line extends Row
 
 class BodyRow extends Row
 {
-    /** @var  string */
+    /** @var string */
     private $db_id = null;
 
-    /** @var  I_ToHtml[] */
+    /** @var I_ToHtml[] */
     private $actions = [];
 
     /** @var bool $button_edit */
@@ -263,7 +267,9 @@ class BodyRow extends Row
 
     public function toHtml()
     {
-        global $lang;
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $lang = $translationManager->user();
 
         // Zachowujemy poprzedni stan, aby go przywrocic
         $old_contents = $this->contents;
@@ -360,11 +366,11 @@ class Structure extends DOMElement
 {
     protected $name = 'table';
 
-    /** @var  DOMElement[] */
-    private $head_cells;
+    /** @var DOMElement[] */
+    private $head_cells = [];
 
-    /** @var  BodyRow[] */
-    private $body_rows;
+    /** @var BodyRow[] */
+    private $body_rows = [];
 
     /**
      * Ilość elementów w bazie danych
@@ -374,12 +380,14 @@ class Structure extends DOMElement
      */
     private $db_rows_amount;
 
-    /** @var  DOMElement */
+    /** @var DOMElement */
     public $foot = null;
 
     public function toHtml()
     {
-        global $lang;
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $lang = $translationManager->user();
 
         // Tworzymy thead
         $head = new DOMElement();
@@ -462,11 +470,13 @@ class Structure extends DOMElement
      */
     public function setDbRowsAmount($amount)
     {
-        global $G_PAGE;
+        /** @var CurrentPage $currentPage */
+        $currentPage = app()->make(CurrentPage::class);
 
+        $pageNumber = $currentPage->getPageNumber();
         $this->db_rows_amount = intval($amount);
 
-        $pagination_txt = get_pagination($this->db_rows_amount, $G_PAGE, "admin.php", $_GET);
+        $pagination_txt = get_pagination($this->db_rows_amount, $pageNumber, "admin.php", $_GET);
         if (strlen($pagination_txt)) {
             $this->foot = new DOMElement();
             $this->foot->setName('tfoot');
@@ -492,19 +502,27 @@ class Wrapper extends Div
     protected $title;
 
     /** @var  DOMElement[] */
-    protected $buttons;
+    protected $buttons = [];
 
     /** @var bool */
     protected $search = false;
 
-    function __construct()
+    public function __construct()
     {
         $this->setParam('class', 'table_structure');
     }
 
     public function toHtml()
     {
-        global $templates, $lang;
+        /** @var Template $template */
+        $template = app()->make(Template::class);
+
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $lang = $translationManager->user();
+
+        /** @var Request $request */
+        $request = app()->make(Request::class);
 
         $old_contets = $this->contents;
 
@@ -515,8 +533,8 @@ class Wrapper extends Div
         $buttons->setStyle('float', 'right');
 
         if ($this->search) {
-            $search_text = $_GET['search'];
-            $buttons->addContent(new SimpleText(eval($templates->render("admin/form_search"))));
+            $search_text = $request->get('search');
+            $buttons->addContent(new SimpleText(eval($template->render("admin/form_search"))));
         }
 
         foreach ($this->buttons as $button) {
