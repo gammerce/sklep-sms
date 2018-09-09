@@ -25,6 +25,7 @@ class PageAdminUpdateWeb extends PageAdmin
 
         // Mamy najnowszą wersję
         if ($this->app->version() === $newestVersion) {
+            $lang = $this->lang;
             return eval($this->template->render("admin/no_update"));
         }
 
