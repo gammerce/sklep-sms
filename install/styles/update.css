@@ -121,6 +121,11 @@ h2 {
     text-shadow: 1px 1px 1px #FFAA25;
 }
 
+.notify.apache2 {
+    border: 2px solid #F9FF00;
+    background: rgba(255, 255, 0, 0.1);
+}
+
 .notify.attention {
     border: 2px solid #FF0000;
     background: rgba(255, 0, 0, 0.1);

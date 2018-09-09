@@ -1219,6 +1219,11 @@ function starts_with($haystack, $needle)
     return substr($haystack, 0, strlen($needle)) === (string)$needle;
 }
 
+function str_contains($string, $needle)
+{
+    return strpos($string, $needle) !== false;
+}
+
 /**
  * Prints var_dump in pre
  *

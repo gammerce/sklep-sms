@@ -1,77 +1,79 @@
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/plain" charset="UTF-8"/>
-  <title>Instalacja - Sklep SMS</title>
-  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script type="text/javascript" src="jscripts/full.js?version={__VERSION__}"></script>
-  <script type="text/javascript" src="../jscripts/infobox.js?version={__VERSION__}"></script>
-  <script type="text/javascript" src="../jscripts/stocks.js?version={__VERSION__}"></script>
-  <script type="text/javascript" src="../js.php?script=language&version={__VERSION__}"></script>
-  <link href="styles/full.css?version={__VERSION__}" rel="stylesheet"/>
-  <link href="../styles/infobox.css?version={__VERSION__}" rel="stylesheet"/>
+    <meta http-equiv="Content-Type" content="text/plain" charset="UTF-8"/>
+    <title>Instalacja - Sklep SMS</title>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="jscripts/full.js?version={__VERSION__}"></script>
+    <script type="text/javascript" src="../jscripts/infobox.js?version={__VERSION__}"></script>
+    <script type="text/javascript" src="../jscripts/stocks.js?version={__VERSION__}"></script>
+    <script type="text/javascript" src="../js.php?script=language&version={__VERSION__}"></script>
+    <link href="styles/full.css?version={__VERSION__}" rel="stylesheet"/>
+    <link href="../styles/infobox.css?version={__VERSION__}" rel="stylesheet"/>
 </head>
 <body>
 <div class="window">
-  <h1>Instalator Sklepu SMS</h1>
+    <h1>Instalator Sklepu SMS</h1>
 
-  <form id="form_install" class="content">
-    <div class="left" style="width: auto">
-      <h2>Dane do bazy danych</h2>
+    {$notifyHttpServer}
 
-      <div class="data">
-        <div class="label">Host</div>
-        <div class="field"><input type="text" name="db_host"/></div>
+    <form id="form_install" class="content">
+        <div class="left" style="width: auto">
+            <h2>Dane do bazy danych</h2>
 
-        <div class="label">Port</div>
-        <div class="field"><input type="number" name="db_port" value="3306"/></div>
+            <div class="data">
+                <div class="label">Host</div>
+                <div class="field"><input type="text" name="db_host"/></div>
 
-        <div class="label">Użytkownik</div>
-        <div class="field"><input type="text" name="db_user"/></div>
+                <div class="label">Port</div>
+                <div class="field"><input type="number" name="db_port" value="3306"/></div>
 
-        <div class="label">Hasło</div>
-        <div class="field"><input type="password" name="db_password"/></div>
+                <div class="label">Użytkownik</div>
+                <div class="field"><input type="text" name="db_user"/></div>
 
-        <div class="label">Nazwa bazy</div>
-        <div class="field"><input type="text" name="db_db"/></div>
-      </div>
+                <div class="label">Hasło</div>
+                <div class="field"><input type="password" name="db_password"/></div>
 
-      <h2>Dane Licencji</h2>
+                <div class="label">Nazwa bazy</div>
+                <div class="field"><input type="text" name="db_db"/></div>
+            </div>
 
-      <div class="data">
-        <div class="label">ID Licencji</div>
-        <div class="field"><input type="text" name="license_id"/></div>
+            <h2>Dane Licencji</h2>
 
-        <div class="label">Hasło</div>
-        <div class="field"><input type="password" name="license_password"/>
+            <div class="data">
+                <div class="label">ID Licencji</div>
+                <div class="field"><input type="text" name="license_id"/></div>
+
+                <div class="label">Hasło</div>
+                <div class="field"><input type="password" name="license_password"/>
+                </div>
+            </div>
+
+            <h2>Dane Administratora</h2>
+
+            <div class="data">
+                <div class="label">Login</div>
+                <div class="field"><input type="text" name="admin_username"/></div>
+
+                <div class="label">Hasło</div>
+                <div class="field"><input type="password" name="admin_password"/>
+                </div>
+            </div>
         </div>
-      </div>
+        <div class="right">
+            <h2>Uprawnienia do zapisu</h2>
 
-      <h2>Dane Administratora</h2>
+            <div class="data">{$files_privilages}</div>
 
-      <div class="data">
-        <div class="label">Login</div>
-        <div class="field"><input type="text" name="admin_username"/></div>
+            <h2>Moduły na serwerze</h2>
 
-        <div class="label">Hasło</div>
-        <div class="field"><input type="password" name="admin_password"/>
+            <div class="data">{$server_modules}</div>
         </div>
-      </div>
-    </div>
-    <div class="right">
-      <h2>Uprawnienia do zapisu</h2>
+        <br style="clear: both"/>
 
-      <div class="data">{$files_privilages}</div>
-
-      <h2>Moduły na serwerze</h2>
-
-      <div class="data">{$server_modules}</div>
-    </div>
-    <br style="clear: both"/>
-
-    <div style="text-align: center;">
-      <input type="submit" value="Instaluj"/>
-    </div>
-  </form>
+        <div style="text-align: center;">
+            <input type="submit" value="Instaluj"/>
+        </div>
+    </form>
 </div>
 </body>
 </html>

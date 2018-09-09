@@ -132,3 +132,14 @@ h2 {
     font-weight: bold;
     font-size: 18px;
 }
+
+.notify {
+    margin: 0 8px 8px 8px;
+    padding: 12px;
+    width: 580px;
+}
+
+.notify.apache2 {
+    border: 2px solid #F9FF00;
+    background: rgba(255, 255, 0, 0.1);
+}

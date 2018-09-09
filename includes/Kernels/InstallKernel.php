@@ -78,6 +78,8 @@ class InstallKernel extends Kernel
             $server_modules .= eval($template->install_full_render('module'));
         }
 
+        $notifyHttpServer = $this->generateHttpServerNotification();
+
         // Pobranie ostatecznego szablonu
         $output = eval($template->install_full_render('index'));
 
@@ -102,9 +104,23 @@ class InstallKernel extends Kernel
         $update_info = $updateInfo->updateInfo($everything_ok, $files_priv, $files_del, $modules);
         $class = $everything_ok ? "ok" : "bad";
 
+        $notifyHttpServer = $this->generateHttpServerNotification();
+
         // Pobranie ostatecznego szablonu
         $output = eval($template->install_update_render('index'));
 
         return new Response($output);
+    }
+
+    protected function generateHttpServerNotification()
+    {
+        /** @var Template $template */
+        $template = $this->app->make(Template::class);
+
+        if (str_contains(strtolower($_SERVER["SERVER_SOFTWARE"]), 'apache')) {
+            return '';
+        }
+
+        return eval($template->install_render('http_server_notification'));
     }
 }
