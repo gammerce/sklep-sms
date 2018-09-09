@@ -8,6 +8,6 @@ class VersionTest extends TestCase
     /** @test */
     public function version_is_350()
     {
-        $this->assertEquals('3.5.0', $this->app->version());
+        $this->assertEquals('3.5.1', $this->app->version());
     }
 }
