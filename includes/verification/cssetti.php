@@ -62,7 +62,14 @@ class PaymentModule_Cssetti extends PaymentModule implements IPayment_Sms
         }
 
         if (floatval($response) > 0) {
-            if (!isset($this->numbers[$response]) || $this->numbers[$response] != $number) {
+            if (!isset($this->numbers[$response])) {
+                return [
+                    'status' => IPayment_Sms::BAD_NUMBER,
+                    'tariff' => null,
+                ];
+            }
+
+            if ($this->numbers[$response] != $number) {
                 return [
                     'status' => IPayment_Sms::BAD_NUMBER,
                     'tariff' => $this->getTariffByNumber($this->numbers[$response])->getId(),
