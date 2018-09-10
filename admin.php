@@ -19,7 +19,7 @@ $app->singleton(
 
 /** @var App\Kernels\KernelContract $kernel */
 $kernel = $app->make(App\Kernels\KernelContract::class);
-$request = Symfony\Component\HttpFoundation\Request::createFromGlobals();
+$request = captureRequest();
 
 $response = $kernel->handle($request);
 $response->send();

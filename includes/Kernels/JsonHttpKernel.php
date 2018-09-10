@@ -5,7 +5,6 @@ use App\Auth;
 use App\Database;
 use App\Heart;
 use App\Mailer;
-use App\Middlewares\DecodeGetAttributes;
 use App\Middlewares\IsUpToDate;
 use App\Middlewares\LicenseIsValid;
 use App\Middlewares\LoadSettings;
@@ -23,7 +22,6 @@ use Symfony\Component\HttpFoundation\Request;
 class JsonHttpKernel extends Kernel
 {
     protected $middlewares = [
-        DecodeGetAttributes::class,
         IsUpToDate::class,
         LoadSettings::class,
         SetLanguage::class,

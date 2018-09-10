@@ -3,10 +3,9 @@
 use App\Auth;
 use App\Database;
 use App\Heart;
+use App\Mailer;
 use App\Models\Purchase;
 use App\Models\User;
-use App\Exceptions\LicenseException;
-use App\Mailer;
 use App\Payment;
 use App\Settings;
 use App\TranslationManager;
@@ -1302,4 +1301,17 @@ function array_get($array, $key, $default = null)
     }
 
     return $array;
+}
+
+function captureRequest()
+{
+    $queryAttributes = [];
+    foreach ($_GET as $key => $value) {
+        $queryAttributes[$key] = urldecode($value);
+    }
+
+    $request = Symfony\Component\HttpFoundation\Request::createFromGlobals();
+    $request->query->replace($queryAttributes);
+
+    return $request;
 }

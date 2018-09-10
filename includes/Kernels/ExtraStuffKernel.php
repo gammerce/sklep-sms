@@ -3,7 +3,6 @@ namespace App\Kernels;
 
 use App\Heart;
 use App\License;
-use App\Middlewares\DecodeGetAttributes;
 use App\Middlewares\IsUpToDate;
 use App\Middlewares\LicenseIsValid;
 use App\Middlewares\LoadSettings;
@@ -19,7 +18,6 @@ use Symfony\Component\HttpFoundation\Response;
 class ExtraStuffKernel extends Kernel
 {
     protected $middlewares = [
-        DecodeGetAttributes::class,
         IsUpToDate::class,
         LoadSettings::class,
         SetLanguage::class,

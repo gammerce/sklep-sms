@@ -5,7 +5,6 @@ use App\Auth;
 use App\CurrentPage;
 use App\Heart;
 use App\License;
-use App\Middlewares\DecodeGetAttributes;
 use App\Middlewares\IsUpToDate;
 use App\Middlewares\LicenseIsValid;
 use App\Middlewares\LoadSettings;
@@ -24,7 +23,6 @@ class AdminKernel extends Kernel
 {
     protected $middlewares = [
         SetAdminSession::class,
-        DecodeGetAttributes::class,
         IsUpToDate::class,
         LoadSettings::class,
         SetLanguage::class,

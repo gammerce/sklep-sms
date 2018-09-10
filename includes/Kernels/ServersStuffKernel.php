@@ -2,7 +2,6 @@
 namespace App\Kernels;
 
 use App\Heart;
-use App\Middlewares\DecodeGetAttributes;
 use App\Middlewares\IsUpToDate;
 use App\Middlewares\LicenseIsValid;
 use App\Middlewares\LoadSettings;
@@ -18,7 +17,6 @@ use Symfony\Component\HttpFoundation\Response;
 class ServersStuffKernel extends Kernel
 {
     protected $middlewares = [
-        DecodeGetAttributes::class,
         IsUpToDate::class,
         LoadSettings::class,
         SetLanguage::class,

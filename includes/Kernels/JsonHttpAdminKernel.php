@@ -5,7 +5,6 @@ use App\Auth;
 use App\Database;
 use App\Exceptions\SqlQueryException;
 use App\Heart;
-use App\Middlewares\DecodeGetAttributes;
 use App\Middlewares\IsUpToDate;
 use App\Middlewares\LicenseIsValid;
 use App\Middlewares\LoadSettings;
@@ -25,7 +24,6 @@ class JsonHttpAdminKernel extends Kernel
 {
     protected $middlewares = [
         SetAdminSession::class,
-        DecodeGetAttributes::class,
         IsUpToDate::class,
         LoadSettings::class,
         SetLanguage::class,
