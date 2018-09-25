@@ -32,7 +32,9 @@ class PaymentModule_Profitsms extends PaymentModule implements IPayment_Sms
             return IPayment_Sms::NO_CONNECTION;
         }
 
-        $raport = explode('|', $response);
+        $content = $response->getBody();
+        $raport = explode('|', $content);
+
         switch ($raport['0']) {
             case 1:
                 return IPayment_Sms::OK;
@@ -48,5 +50,4 @@ class PaymentModule_Profitsms extends PaymentModule implements IPayment_Sms
     {
         return $this->sms_code;
     }
-
 }

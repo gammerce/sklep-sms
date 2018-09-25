@@ -2,6 +2,7 @@
 namespace App;
 
 use App\Models\Tariff;
+use App\Requesting\Requester;
 
 abstract class PaymentModule
 {

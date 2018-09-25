@@ -43,25 +43,25 @@ class PaymentModule_1s1k extends PaymentModule implements IPayment_Sms
 
     public function verify_sms($return_code, $number)
     {
-        $content = $this->requester->get('http://www.1shot1kill.pl/api', [
+        $response = $this->requester->get('http://www.1shot1kill.pl/api', [
             'type'     => 'sms',
             'key'      => $this->api,
             'sms_code' => $return_code,
             'comment'  => '',
         ]);
 
-        if ($content === false) {
+        if ($response === false) {
             return IPayment_Sms::NO_CONNECTION;
         }
 
-        $response = json_decode($content, true);
-        if (!is_array($response)) {
+        $content = $response->json();
+        if (!is_array($content)) {
             return IPayment_Sms::BAD_API;
         }
 
-        $response_number = $this->rates[number_format(floatval($response['amount']), 2)];
+        $response_number = $this->rates[number_format(floatval($content['amount']), 2)];
 
-        switch ($response['status']) {
+        switch ($content['status']) {
             case 'ok':
                 if ($response_number == $number) {
                     return IPayment_Sms::OK;
@@ -76,7 +76,7 @@ class PaymentModule_1s1k extends PaymentModule implements IPayment_Sms
                 return IPayment_Sms::BAD_CODE;
 
             case 'error':
-                switch ($response['desc']) {
+                switch ($content['desc']) {
                     case 'internal api error':
                         return IPayment_Sms::SERVER_ERROR;
 
@@ -87,7 +87,7 @@ class PaymentModule_1s1k extends PaymentModule implements IPayment_Sms
 
                 return [
                     'status' => IPayment_Sms::UNKNOWN,
-                    'text'   => $response['desc'],
+                    'text'   => $content['desc'],
                 ];
         }
 

@@ -76,10 +76,12 @@ class PurchaseServiceFromServerTest extends ServerTestCase
         $this->requesterMock
             ->shouldReceive('get')
             ->withArgs(['https://gosetti.pl/Api/SmsApiV2GetData.php'])
-            ->andReturn(json_encode([
-                'Code'    => 'abc123',
-                'Numbers' => [],
-            ]));
+            ->andReturn([
+                'body' => json_encode([
+                    'Code'    => 'abc123',
+                    'Numbers' => [],
+                ]),
+            ]);
 
         $gosetti = Mockery::mock(new PaymentModule_Gosetti())->makePartial();
         $gosetti->shouldReceive('verify_sms')->andReturn(IPayment_Sms::OK);

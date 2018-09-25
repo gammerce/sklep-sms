@@ -20,7 +20,7 @@ class PaymentModule_Gosetti extends PaymentModule implements IPayment_Sms
         parent::__construct();
 
         $response = $this->requester->get('https://gosetti.pl/Api/SmsApiV2GetData.php');
-        $data = json_decode($response, true);
+        $data = $response->json();
 
         // GOsetti dostarcza w feedzie kod sms
         $this->sms_code = $data['Code'];
@@ -39,40 +39,42 @@ class PaymentModule_Gosetti extends PaymentModule implements IPayment_Sms
             'Code'   => $return_code,
         ]);
 
-        if ($response === false) {
+        $content = $response->getBody();
+
+        if ($content === false) {
             return IPayment_Sms::NO_CONNECTION;
         }
 
-        if (!is_numeric($response)) {
+        if (!is_numeric($content)) {
             return IPayment_Sms::ERROR;
         }
 
-        $response = strval(floatval($response));
+        $content = strval(floatval($content));
 
-        if ($response == '0') {
+        if ($content == '0') {
             return IPayment_Sms::BAD_CODE;
         }
 
-        if ($response == '-1') {
+        if ($content == '-1') {
             return IPayment_Sms::BAD_API;
         }
 
-        if ($response == '-2' || $response == '-3') {
+        if ($content == '-2' || $content == '-3') {
             return IPayment_Sms::SERVER_ERROR;
         }
 
-        if (floatval($response) > 0) {
-            if (!isset($this->numbers[$response])) {
+        if (floatval($content) > 0) {
+            if (!isset($this->numbers[$content])) {
                 return [
                     'status' => IPayment_Sms::BAD_NUMBER,
                     'tariff' => null,
                 ];
             }
 
-            if ($this->numbers[$response] != $number) {
+            if ($this->numbers[$content] != $number) {
                 return [
                     'status' => IPayment_Sms::BAD_NUMBER,
-                    'tariff' => $this->getTariffByNumber($this->numbers[$response])->getId(),
+                    'tariff' => $this->getTariffByNumber($this->numbers[$content])->getId(),
                 ];
             }
 

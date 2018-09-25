@@ -21,28 +21,26 @@ class PaymentModule_Pukawka extends PaymentModule implements IPayment_Sms
         $this->api = $this->data['api'];
         $this->sms_code = $this->data['sms_text'];
 
-        $this->stawki = json_decode(
-            $this->requester->get('https://admin.pukawka.pl/api', [
-                'keyapi' => $this->api,
-                'type'   => 'sms_table',
-            ]),
-            true
-        );
+        $response = $this->requester->get('https://admin.pukawka.pl/api', [
+            'keyapi' => $this->api,
+            'type'   => 'sms_table',
+        ]);
+        $this->stawki = $response->json();
     }
 
     public function verify_sms($return_code, $number)
     {
-        $get = $this->requester->get('https://admin.pukawka.pl/api', [
+        $response = $this->requester->get('https://admin.pukawka.pl/api', [
             'keyapi' => $this->api,
             'type'   => 'sms',
             'code'   => $return_code,
         ]);
 
-        if (!$get) {
+        if (!$response) {
             return IPayment_Sms::NO_CONNECTION;
         }
 
-        $get = json_decode($get, true);
+        $get = $response->json();
 
         if (!empty($get)) {
             if ($get['error']) {

@@ -12,6 +12,9 @@ class PaymentModuleHostplay extends PaymentModule implements IPayment_Sms
     /** @var  string */
     protected $sms_code;
 
+    /** @var array */
+    protected $rates_number;
+
     public function __construct()
     {
         parent::__construct();
@@ -46,10 +49,10 @@ class PaymentModuleHostplay extends PaymentModule implements IPayment_Sms
             'code'    => $return_code,
         ]);
 
-        $response = json_decode($response, true);
-        $response_number = $this->rates_number[number_format(floatval($response['kwota']), 2)];
+        $content = $response->json();
+        $response_number = $this->rates_number[number_format(floatval($content['kwota']), 2)];
 
-        if (strtoupper($response['status']) == 'OK') {
+        if (strtoupper($content['status']) == 'OK') {
             if ($response_number == $number) {
                 return IPayment_Sms::OK;
             }
@@ -60,20 +63,20 @@ class PaymentModuleHostplay extends PaymentModule implements IPayment_Sms
             ];
         }
 
-        if (strtoupper($response['status']) == 'FAIL') {
-            if (strtoupper($response['error']) == "BAD_CODE") {
+        if (strtoupper($content['status']) == 'FAIL') {
+            if (strtoupper($content['error']) == "BAD_CODE") {
                 return IPayment_Sms::BAD_CODE;
             }
 
-            if (strtoupper($response['error']) == "BAD_CODE[1]") {
+            if (strtoupper($content['error']) == "BAD_CODE[1]") {
                 return IPayment_Sms::BAD_CODE;
             }
 
-            if (strtoupper($response['error']) == "BAD_AMOUNT") {
+            if (strtoupper($content['error']) == "BAD_AMOUNT") {
                 return IPayment_Sms::BAD_NUMBER;
             }
 
-            if (strtoupper($response['error']) == "BAD_AMOUNT2") {
+            if (strtoupper($content['error']) == "BAD_AMOUNT2") {
                 return IPayment_Sms::BAD_NUMBER;
             }
         }
@@ -85,5 +88,4 @@ class PaymentModuleHostplay extends PaymentModule implements IPayment_Sms
     {
         return $this->sms_code;
     }
-
 }

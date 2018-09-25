@@ -4,6 +4,7 @@ namespace App;
 use App\Cache\CachingRequester;
 use App\Exceptions\LicenseException;
 use App\Exceptions\RequestException;
+use App\Requesting\Requester;
 
 class License
 {
@@ -109,6 +110,6 @@ class License
             'language' => $this->lang->getCurrentLanguage(),
         ]);
 
-        return json_decode($response, true);
+        return $response->json();
     }
 }

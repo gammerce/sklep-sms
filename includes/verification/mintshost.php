@@ -22,15 +22,17 @@ class PaymentModule_Mintshost extends PaymentModule implements IPayment_Sms
 
     public function verify_sms($return_code, $number)
     {
-        $status = $this->requester->get('https://mintshost.pl/sms2.php', [
+        $response = $this->requester->get('https://mintshost.pl/sms2.php', [
             'kod'   => $return_code,
             'sms'   => $number,
             'email' => $this->email,
         ]);
 
-        if ($status === false) {
+        if ($response === false) {
             return IPayment_Sms::NO_CONNECTION;
         }
+
+        $status = $response->getBody();
 
         if ($status === "1") {
             return IPayment_Sms::OK;
