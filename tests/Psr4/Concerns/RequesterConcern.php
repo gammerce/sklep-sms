@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Psr4\Concerns;
 
-use App\Requester;
+use App\Requesting\Requester;
 use Mockery\MockInterface;
 
 trait RequesterConcern

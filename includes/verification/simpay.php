@@ -40,21 +40,21 @@ class PaymentModule_Simpay extends PaymentModule implements IPayment_Sms
             'code'       => $sms_code,
         ]);
 
-        if (!strlen($response)) {
+        if (!$response) {
             return IPayment_Sms::NO_CONNECTION;
         }
 
-        $response = json_decode($response, true);
+        $content = $response->json();
 
-        if (isset($response['respond']['status']) && $response['respond']['status'] == 'OK') {
+        if (isset($content['respond']['status']) && $content['respond']['status'] == 'OK') {
             return [
                 'status' => IPayment_Sms::OK,
-                'free'   => $response['respond']['test'],
+                'free'   => $content['respond']['test'],
             ];
         }
 
-        if (isset($response['error'][0]) && is_array($response['error'][0])) {
-            switch (intval($response['error'][0]['error_code'])) {
+        if (isset($content['error'][0]) && is_array($content['error'][0])) {
+            switch (intval($content['error'][0]['error_code'])) {
                 case 103:
                 case 104:
                     return IPayment_Sms::BAD_API;
@@ -66,7 +66,7 @@ class PaymentModule_Simpay extends PaymentModule implements IPayment_Sms
 
             return [
                 'status' => IPayment_Sms::UNKNOWN,
-                'text'   => $response['error'][0]['error_name'],
+                'text'   => $content['error'][0]['error_name'],
             ];
         }
 

@@ -26,15 +26,16 @@ class PaymentModule_Bizneshost extends PaymentModule implements IPayment_Sms
             return IPayment_Sms::BAD_DATA;
         }
 
-        $status = $this->requester->get('http://biznes-host.pl/api/sprawdzkod_v2.php', [
+        $response = $this->requester->get('http://biznes-host.pl/api/sprawdzkod_v2.php', [
             'uid' => $this->uid,
             'kod' => $return_code,
         ]);
 
-        if ($status === false) {
+        if ($response === false) {
             return IPayment_Sms::NO_CONNECTION;
         }
 
+        $status = $response->getBody();
         $status_exploded = explode(':', $status);
 
         // Bad code

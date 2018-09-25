@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Feature;
 
+use App\Requesting\Response;
 use App\Settings;
 use ExtraFlagType;
 use IPayment_Sms;
@@ -76,10 +77,10 @@ class PurchaseServiceFromServerTest extends ServerTestCase
         $this->requesterMock
             ->shouldReceive('get')
             ->withArgs(['https://gosetti.pl/Api/SmsApiV2GetData.php'])
-            ->andReturn(json_encode([
+            ->andReturn(new Response(200, json_encode([
                 'Code'    => 'abc123',
                 'Numbers' => [],
-            ]));
+            ])));
 
         $gosetti = Mockery::mock(new PaymentModule_Gosetti())->makePartial();
         $gosetti->shouldReceive('verify_sms')->andReturn(IPayment_Sms::OK);

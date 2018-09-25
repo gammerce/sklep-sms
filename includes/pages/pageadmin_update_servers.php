@@ -1,6 +1,7 @@
 <?php
 
-use App\Requester;
+
+use App\Requesting\Requester;
 
 class PageAdminUpdateServers extends PageAdmin
 {
@@ -22,13 +23,11 @@ class PageAdminUpdateServers extends PageAdmin
     {
         $lang = $this->lang;
 
-        $newest_versions = json_decode(
-            trim($this->requester->get('https://sklep-sms.pl/version.php', [
-                'action' => 'get_newest',
-                'type'   => 'engines',
-            ])),
-            true
-        );
+        $response = $this->requester->get('https://sklep-sms.pl/version.php', [
+            'action' => 'get_newest',
+            'type'   => 'engines',
+        ]);
+        $newest_versions = $response ? $response->json() : null;
 
         $version_bricks = $servers_versions = "";
         foreach ($this->heart->get_servers() as $server) {
@@ -40,11 +39,15 @@ class PageAdminUpdateServers extends PageAdmin
 
             $name = htmlspecialchars($server['name']);
             $current_version = $server['version'];
-            $next_version = trim($this->requester->get('https://sklep-sms.pl/version.php', [
-                'action'  => 'get_next',
-                'type'    => $engine,
-                'version' => $server['version'],
-            ]));
+            $next_version = trim(
+                $this->requester
+                    ->get('https://sklep-sms.pl/version.php', [
+                        'action'  => 'get_next',
+                        'type'    => $engine,
+                        'version' => $server['version'],
+                    ])
+                    ->getBody()
+            );
             $newest_version = $newest_versions[$engine];
 
             // Nie ma kolejnej wersji

@@ -1,6 +1,8 @@
 <?php
 namespace App;
 
+use App\Requesting\Requester;
+
 class LocaleService
 {
     /** @var TranslationManager */
@@ -29,7 +31,8 @@ class LocaleService
             return $_COOKIE['language'];
         }
 
-        $details = json_decode($this->requester->get("http://ipinfo.io/" . get_ip() . "/json"));
+        $response = $this->requester->get("http://ipinfo.io/" . get_ip() . "/json");
+        $details = json_decode($response->getBody());
         if (isset($details->country)) {
             $locale = $this->translationManager->user()->getLanguageByShort($details->country);
             if (strlen($locale)) {

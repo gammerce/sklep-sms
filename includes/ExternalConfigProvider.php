@@ -3,6 +3,7 @@ namespace App;
 
 use App\Cache\CacheEnum;
 use App\Cache\CachingRequester;
+use App\Requesting\Requester;
 
 class ExternalConfigProvider
 {
@@ -48,7 +49,7 @@ class ExternalConfigProvider
     protected function request()
     {
         $response = $this->requester->get('http://license.sklep-sms.pl/config');
-        return json_decode($response, true);
+        return $response ? $response->json() : null;
     }
 
     protected function fetched()
