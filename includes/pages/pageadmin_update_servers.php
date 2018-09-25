@@ -27,7 +27,7 @@ class PageAdminUpdateServers extends PageAdmin
             'action' => 'get_newest',
             'type'   => 'engines',
         ]);
-        $newest_versions = $response->json();
+        $newest_versions = $response ? $response->json() : null;
 
         $version_bricks = $servers_versions = "";
         foreach ($this->heart->get_servers() as $server) {

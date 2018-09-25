@@ -20,7 +20,7 @@ class PaymentModule_Cssetti extends PaymentModule implements IPayment_Sms
         parent::__construct();
 
         $response = $this->requester->get('http://cssetti.pl/Api/SmsApiV2GetData.php');
-        $data = $response->json();
+        $data = $response ? $response->json() : null;
 
         // CSSetti dostarcza w feedzie kod sms
         $this->sms_code = $data['Code'];

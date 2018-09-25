@@ -49,6 +49,10 @@ class PaymentModuleHostplay extends PaymentModule implements IPayment_Sms
             'code'    => $return_code,
         ]);
 
+        if (!$response) {
+            return IPayment_Sms::NO_CONNECTION;
+        }
+
         $content = $response->json();
         $response_number = $this->rates_number[number_format(floatval($content['kwota']), 2)];
 

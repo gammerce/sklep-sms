@@ -20,7 +20,7 @@ class PaymentModule_Gosetti extends PaymentModule implements IPayment_Sms
         parent::__construct();
 
         $response = $this->requester->get('https://gosetti.pl/Api/SmsApiV2GetData.php');
-        $data = $response->json();
+        $data = $response ? $response->json() : null;
 
         // GOsetti dostarcza w feedzie kod sms
         $this->sms_code = $data['Code'];
@@ -39,11 +39,11 @@ class PaymentModule_Gosetti extends PaymentModule implements IPayment_Sms
             'Code'   => $return_code,
         ]);
 
-        $content = $response->getBody();
-
-        if ($content === false) {
+        if ($response === false) {
             return IPayment_Sms::NO_CONNECTION;
         }
+
+        $content = $response->getBody();
 
         if (!is_numeric($content)) {
             return IPayment_Sms::ERROR;

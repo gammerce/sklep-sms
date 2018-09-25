@@ -20,7 +20,7 @@ class Version
     public function getNewestWeb()
     {
         $response = $this->requester->get('https://api.github.com/repos/gammerce/sklep-sms/releases/latest');
-        $content = $response->json();
+        $content = $response ? $response->json() : null;
 
         return array_get($content, 'tag_name');
     }

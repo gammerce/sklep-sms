@@ -25,7 +25,7 @@ class PaymentModule_Pukawka extends PaymentModule implements IPayment_Sms
             'keyapi' => $this->api,
             'type'   => 'sms_table',
         ]);
-        $this->stawki = $response->json();
+        $this->stawki = $response ? $response->json() : null;
     }
 
     public function verify_sms($return_code, $number)

@@ -49,7 +49,7 @@ class ExternalConfigProvider
     protected function request()
     {
         $response = $this->requester->get('http://license.sklep-sms.pl/config');
-        return $response->json();
+        return $response ? $response->json() : null;
     }
 
     protected function fetched()

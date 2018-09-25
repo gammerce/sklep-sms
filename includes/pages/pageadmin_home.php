@@ -65,7 +65,7 @@ class PageAdminMain extends PageAdmin
             'action' => 'get_newest',
             'type'   => 'engines',
         ]);
-        $newest_versions = $response->json();
+        $newest_versions = $response ? $response->json() : null;
         foreach ($this->heart->get_servers() as $server) {
             $engine = "engine_{$server['type']}";
             if (strlen($newest_versions[$engine]) && $server['version'] != $newest_versions[$engine]) {

@@ -110,6 +110,6 @@ class License
             'language' => $this->lang->getCurrentLanguage(),
         ]);
 
-        return $response->json();
+        return $response ? $response->json() : null;
     }
 }
