@@ -3,7 +3,7 @@ namespace App;
 
 use App\Cache\CacheEnum;
 use App\Cache\CachingRequester;
-use App\Exceptions\LicenseException;
+use App\Exceptions\InvalidResponse;
 use App\Exceptions\RequestException;
 use App\Requesting\Requester;
 
@@ -17,23 +17,20 @@ class License
     /** @var Settings */
     protected $settings;
 
-    /** @var string */
-    protected $message;
-
-    /** @var string */
-    protected $expires;
-
-    /** @var string */
-    protected $page;
-
-    /** @var string */
-    protected $footer;
-
     /** @var Requester */
     protected $requester;
 
     /** @var CachingRequester */
     protected $cachingRequester;
+
+    /** @var int */
+    protected $externalLicenseId;
+
+    /** @var string */
+    protected $expiresAt;
+
+    /** @var string */
+    protected $footer;
 
     public function __construct(
         Translator $translator,
@@ -48,30 +45,21 @@ class License
     }
 
     /**
-     * @throws LicenseException
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws InvalidResponse
+     * @throws RequestException
      */
     public function validate()
     {
-        try {
-            $response = $this->loadLicense();
-        } catch (RequestException $e) {
-            throw new LicenseException('', 0, $e);
-        }
+        $response = $this->loadLicense();
 
-        if (!isset($response['text'])) {
-            throw new LicenseException();
-        }
-
-        $this->message = $response['text'];
-        $this->expires = array_get($response, 'expire');
-        $this->page = array_get($response, 'page');
+        $this->externalLicenseId = array_get($response, 'id');
+        $this->expiresAt = array_get($response, 'expires_at');
         $this->footer = array_get($response, 'f');
     }
 
     public function isValid()
     {
-        return $this->message === "logged_in";
+        return $this->externalLicenseId !== null;
     }
 
     public function getExpires()
@@ -80,17 +68,12 @@ class License
             return $this->lang->translate('never');
         }
 
-        return date($this->settings['date_format'], $this->expires);
+        return date($this->settings['date_format'], $this->expiresAt);
     }
 
     public function isForever()
     {
-        return $this->expires == -1;
-    }
-
-    public function getPage()
-    {
-        return $this->page;
+        return $this->expiresAt === null;
     }
 
     public function getFooter()
@@ -99,9 +82,9 @@ class License
     }
 
     /**
-     * @return mixed
+     * @return array
+     * @throws InvalidResponse
      * @throws RequestException
-     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     protected function loadLicense()
     {
@@ -110,6 +93,11 @@ class License
         });
     }
 
+    /**
+     * @return array
+     * @throws InvalidResponse
+     * @throws RequestException
+     */
     protected function request()
     {
         $response = $this->requester->get(
@@ -125,8 +113,12 @@ class License
             ]
         );
 
-        if (!$response || !$response->is2xx()) {
-            return null;
+        if (!$response) {
+            throw new RequestException('Could not connect to the license server.');
+        }
+
+        if (!$response->isOk()) {
+            throw new InvalidResponse($response);
         }
 
         return $response->json();
