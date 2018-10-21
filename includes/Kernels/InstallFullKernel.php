@@ -107,9 +107,7 @@ class InstallFullKernel extends Kernel
 
         $installManager->start();
 
-        $migrator->install(
-            $_POST['license_id'], $_POST['license_password'], $_POST['admin_username'], $_POST['admin_password']
-        );
+        $migrator->install($_POST['license_token'], $_POST['admin_username'], $_POST['admin_password']);
 
         $envCreator->create($_POST['db_host'], $_POST['db_port'], $_POST['db_db'], $_POST['db_user'], $_POST['db_password']);
 

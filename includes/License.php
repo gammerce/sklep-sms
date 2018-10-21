@@ -1,6 +1,7 @@
 <?php
 namespace App;
 
+use App\Cache\CacheEnum;
 use App\Cache\CachingRequester;
 use App\Exceptions\LicenseException;
 use App\Exceptions\RequestException;
@@ -46,6 +47,10 @@ class License
         $this->cachingRequester = $cachingRequester;
     }
 
+    /**
+     * @throws LicenseException
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     */
     public function validate()
     {
         try {
@@ -93,23 +98,37 @@ class License
         return $this->footer;
     }
 
+    /**
+     * @return mixed
+     * @throws RequestException
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     */
     protected function loadLicense()
     {
-        // TODO Cache successful response
-        return $this->request();
+        return $this->cachingRequester->load(CacheEnum::LICENSE, static::CACHE_TTL, function () {
+            return $this->request();
+        });
     }
 
     protected function request()
     {
-        $response = $this->requester->get('http://license.sklep-sms.pl/license.php', [
-            'action'   => 'login_web',
-            'lid'      => $this->settings['license_login'],
-            'lpa'      => $this->settings['license_password'],
-            'name'     => $this->settings['shop_url'],
-            'version'  => app()->version(),
-            'language' => $this->lang->getCurrentLanguage(),
-        ]);
+        $response = $this->requester->get(
+            'http://license.sklep-sms.pl/v1/authorization/web',
+            [
+                'url'      => $this->settings['shop_url'],
+                'name'     => $this->settings['shop_name'] ?: $this->settings['shop_url'],
+                'version'  => app()->version(),
+                'language' => $this->lang->getCurrentLanguage(),
+            ],
+            [
+                'Authorization' => $this->settings['license_password'],
+            ]
+        );
 
-        return $response ? $response->json() : null;
+        if (!$response || !$response->is2xx()) {
+            return null;
+        }
+
+        return $response->json();
     }
 }
