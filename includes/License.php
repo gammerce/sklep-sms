@@ -6,6 +6,7 @@ use App\Cache\CachingRequester;
 use App\Exceptions\InvalidResponse;
 use App\Exceptions\RequestException;
 use App\Requesting\Requester;
+use Symfony\Component\HttpFoundation\Request;
 
 class License
 {
@@ -93,8 +94,8 @@ class License
      */
     protected function loadLicense()
     {
+        return $this->request();
         return $this->cachingRequester->load(CacheEnum::LICENSE, static::CACHE_TTL, function () {
-            return $this->request();
         });
     }
 
@@ -105,11 +106,13 @@ class License
      */
     protected function request()
     {
+        $shopUrl = $this->getShopUrl();
+
         $response = $this->requester->post(
             'http://license2.sklep-sms.pl/v1/authorization/web',
             [
-                'url'      => $this->settings['shop_url'],
-                'name'     => $this->settings['shop_name'] ?: $this->settings['shop_url'],
+                'url'      => $shopUrl,
+                'name'     => $this->settings['shop_name'] ?: $shopUrl,
                 'version'  => app()->version(),
                 'language' => $this->lang->getCurrentLanguage(),
             ],
@@ -127,5 +130,17 @@ class License
         }
 
         return $response->json();
+    }
+
+    private function getShopUrl()
+    {
+        if ($this->settings['shop_url']) {
+            return $this->settings['shop_url'];
+        }
+
+        /** @var Request $request */
+        $request = app()->make(Request::class);
+
+        return $request->getSchemeAndHttpHost();
     }
 }

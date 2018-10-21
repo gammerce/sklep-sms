@@ -11,7 +11,6 @@ class LoadSettings implements MiddlewareContract
     {
         /** @var Settings $settings */
         $settings = $app->make(Settings::class);
-        $settings['shop_url'] = $request->getUri();
         $settings->load();
 
         return null;

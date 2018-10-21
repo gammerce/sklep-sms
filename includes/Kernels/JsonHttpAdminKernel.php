@@ -768,8 +768,9 @@ class JsonHttpAdminKernel extends Kernel
             if ($action == "server_add") {
                 /** @var ServerRepository $serverRepository */
                 $serverRepository = $this->app->make(ServerRepository::class);
-                $server = $serverRepository->create($_POST['name'], $_POST['ip'], $_POST['port'],
-                    $_POST['sms_service']);
+                $server = $serverRepository->create(
+                    $_POST['name'], $_POST['ip'], $_POST['port'], $_POST['sms_service']
+                );
                 $server_id = $server->getId();
             } elseif ($action == "server_edit") {
                 $db->query($db->prepare(

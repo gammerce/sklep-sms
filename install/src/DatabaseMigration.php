@@ -36,7 +36,7 @@ class DatabaseMigration
             $this->db->prepare(
                 "UPDATE `" . TABLE_PREFIX . "settings` " .
                 "SET `value`='%s' WHERE `key`='license_password';",
-                [md5($token)]
+                [$token]
             ),
             $this->db->prepare(
                 "INSERT INTO `" . TABLE_PREFIX . "users` " .
