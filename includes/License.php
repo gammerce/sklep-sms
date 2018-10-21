@@ -71,6 +71,11 @@ class License
         return date($this->settings['date_format'], $this->expiresAt);
     }
 
+    public function getExternalId()
+    {
+        return $this->externalLicenseId;
+    }
+
     public function isForever()
     {
         return $this->expiresAt === null;
@@ -100,8 +105,8 @@ class License
      */
     protected function request()
     {
-        $response = $this->requester->get(
-            'http://license.sklep-sms.pl/v1/authorization/web',
+        $response = $this->requester->post(
+            'http://license2.sklep-sms.pl/v1/authorization/web',
             [
                 'url'      => $this->settings['shop_url'],
                 'name'     => $this->settings['shop_name'] ?: $this->settings['shop_url'],
@@ -114,7 +119,7 @@ class License
         );
 
         if (!$response) {
-            throw new RequestException('Could not connect to the license server.');
+            throw new RequestException();
         }
 
         if (!$response->isOk()) {

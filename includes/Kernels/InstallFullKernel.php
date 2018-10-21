@@ -49,13 +49,8 @@ class InstallFullKernel extends Kernel
         $warnings = [];
 
         // Licencja ID
-        if (!strlen($_POST['license_id'])) {
-            $warnings['license_id'][] = "Nie podano ID licencji.";
-        }
-
-        // Licencja hasło
-        if (!strlen($_POST['license_password'])) {
-            $warnings['license_password'][] = "Nie podano hasła licencji.";
+        if (!strlen($_POST['license_token'])) {
+            $warnings['license_token'][] = "Nie podano tokenu licencji.";
         }
 
         // Admin nick

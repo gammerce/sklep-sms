@@ -3,7 +3,6 @@ namespace App\Middlewares;
 
 use App\Application;
 use App\Settings;
-use Raven_Client;
 use Symfony\Component\HttpFoundation\Request;
 
 class LoadSettings implements MiddlewareContract
@@ -12,13 +11,8 @@ class LoadSettings implements MiddlewareContract
     {
         /** @var Settings $settings */
         $settings = $app->make(Settings::class);
+        $settings['shop_url'] = $request->getUri();
         $settings->load();
-
-        /** @var Raven_Client $ravenClient */
-        $ravenClient = $app->make(Raven_Client::class);
-        $ravenClient->tags_context([
-            'license_id' => $settings['license_login'],
-        ]);
 
         return null;
     }

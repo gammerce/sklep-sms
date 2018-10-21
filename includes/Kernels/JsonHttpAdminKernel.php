@@ -377,7 +377,7 @@ class JsonHttpAdminKernel extends Kernel
             }
 
             // Email dla automatu
-            if ($warning = check_for_warnings("email", $sender_email)) {
+            if (strlen($sender_email) && $warning = check_for_warnings("email", $sender_email)) {
                 $warnings['sender_email'] = array_merge((array)$warnings['sender_email'], $warning);
             }
 
@@ -427,7 +427,7 @@ class JsonHttpAdminKernel extends Kernel
             }
 
             if ($licenseToken) {
-                $setLicenseToken = $db->prepare("WHEN 'license_password' THEN '%s' ", [md5($licenseToken)]);
+                $setLicenseToken = $db->prepare("WHEN 'license_password' THEN '%s' ", [$licenseToken]);
                 $keyLicenseToken = ",'license_password'";
             }
 

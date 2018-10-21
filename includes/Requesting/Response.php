@@ -4,14 +4,14 @@ namespace App\Requesting;
 class Response
 {
     /** @var int */
-    protected $responseCode;
+    protected $statusCode;
 
     /** @var string */
     protected $body;
 
-    public function __construct($responseCode, $body)
+    public function __construct($statusCode, $body)
     {
-        $this->responseCode = $responseCode;
+        $this->statusCode = $statusCode;
         $this->body = $body;
     }
 
@@ -44,7 +44,7 @@ class Response
      */
     public function is2xx()
     {
-        return $this->responseCode >= 200 && $this->responseCode < 300;
+        return $this->statusCode >= 200 && $this->statusCode < 300;
     }
 
     /**
@@ -52,7 +52,7 @@ class Response
      */
     public function is3xx()
     {
-        return $this->responseCode >= 300 && $this->responseCode < 400;
+        return $this->statusCode >= 300 && $this->statusCode < 400;
     }
 
     /**
@@ -60,7 +60,7 @@ class Response
      */
     public function is4xx()
     {
-        return $this->responseCode >= 400 && $this->responseCode < 500;
+        return $this->statusCode >= 400 && $this->statusCode < 500;
     }
 
     /**
@@ -68,15 +68,15 @@ class Response
      */
     public function is5xx()
     {
-        return $this->responseCode >= 500 && $this->responseCode < 600;
+        return $this->statusCode >= 500 && $this->statusCode < 600;
     }
 
     /**
      * @return int
      */
-    public function getResponseCode()
+    public function getStatusCode()
     {
-        return $this->responseCode;
+        return $this->statusCode;
     }
 
     /**

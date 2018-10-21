@@ -2,6 +2,7 @@
 namespace App;
 
 use ArrayAccess;
+use Symfony\Component\HttpFoundation\Request;
 
 class Settings implements ArrayAccess
 {
@@ -17,7 +18,7 @@ class Settings implements ArrayAccess
     /** @var bool */
     protected $loaded = false;
 
-    public function __construct(Application $app, Database $database)
+    public function __construct(Application $app, Database $database, Request $request)
     {
         $this->app = $app;
         $this->db = $database;
@@ -69,7 +70,7 @@ class Settings implements ArrayAccess
         // Pozyskanie ustawień sklepu
         $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "settings`");
         while ($row = $this->db->fetch_array_assoc($result)) {
-            $this->settings[$row['key']] = $row['value'];
+            $this->settings[$row['key']] = $this->prepareValue($row['key'], $row['value']);
         }
 
         // Poprawiamy adres URL sklepu
@@ -127,5 +128,10 @@ LEFT JOIN `" . TABLE_PREFIX . "payment_code` AS pc ON bs.payment = 'service_code
         $this->settings['theme'] = file_exists($this->app->path("themes/{$this->settings['theme']}")) ? $this->settings['theme'] : "default";
 
         $this->loaded = true;
+    }
+
+    private function prepareValue($key, $value)
+    {
+        return strlen($value) ? $value : array_get($this->settings, $key, '');
     }
 }
