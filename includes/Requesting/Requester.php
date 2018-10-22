@@ -89,13 +89,12 @@ class Requester
             CURLOPT_USERAGENT      => 'gammerce/sklep-sms',
         ]);
 
-        if (!empty($headers)) {
-            $formattedHeaders = $this->formatHeaders($headers);
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $formattedHeaders);
-        }
+        $headers['Content-Type'] = 'application/json';
+        $formattedHeaders = $this->formatHeaders($headers);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $formattedHeaders);
 
         if (!empty($body)) {
-            curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode(['params' => $body]));
+            curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($body));
         }
 
         $response = curl_exec($curl);

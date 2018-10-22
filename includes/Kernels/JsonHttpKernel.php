@@ -571,13 +571,9 @@ class JsonHttpKernel extends Kernel
             }
 
             if ($settings['user_edit_service'] && object_implements($service_module, "IService_UserOwnServicesEdit")) {
-                $button_edit = create_dom_element("img", "", [
-                    'class' => "edit_row",
-                    'src'   => "images/pencil.png",
-                    'title' => $lang->translate('edit'),
-                    'style' => [
-                        'height' => '24px',
-                    ],
+                $button_edit = create_dom_element("button", $lang->translate('edit'), [
+                    'class' => "button edit_row",
+                    'type'  => 'button',
                 ]);
             }
 

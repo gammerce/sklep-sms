@@ -216,6 +216,7 @@ return [
     'settings_edit'                         => 'Ustawienia zostały prawidłowo wyedytowane.',
     'settings_no_edit'                      => 'Nie wyedytowano ustawień.',
     'shop_address'                          => 'Adres sklepu',
+    'shop_name'                             => 'Nazwa sklepu',
     'short_description'                     => 'Krótki Opis',
     'signature'                             => 'Podpis',
     'sm_server'                             => 'Serwer gry (SM)',

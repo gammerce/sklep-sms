@@ -255,7 +255,27 @@ hr, .line {
     height: calc(100% - 100px)
 }
 
-[id^=edit_row_], .edit_row, [id^=delete_row_], .delete_row {
+.button {
+    border: 1px solid black;
+    cursor: pointer;
+    text-transform: uppercase;
+    color: #ffffff;
+    height: 24px;
+    opacity: 0.6;
+    box-shadow: -4px 2px 11px 0 rgba(53, 53, 50, 0.61);
+    vertical-align: top;
+}
+
+.button:hover {
+    opacity: 1.0;
+}
+
+.button.edit_row {
+    background: #F7D358;
+    color: #212121;
+}
+
+[id^=edit_row_], [id^=delete_row_], .delete_row {
     cursor: pointer;
     opacity: 0.6;
 }

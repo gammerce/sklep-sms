@@ -18,8 +18,8 @@ class CachingRequester
     }
 
     /**
-     * @param string  $cacheKey
-     * @param int     $ttl
+     * @param string $cacheKey
+     * @param int $ttl
      * @param Closure $requestCaller
      * @return mixed
      * @throws \Psr\SimpleCache\InvalidArgumentException
@@ -45,6 +45,13 @@ class CachingRequester
         return $entity->value;
     }
 
+    /**
+     * @param string $cacheKey
+     * @param callable $requestCaller
+     * @return mixed
+     * @throws RequestException
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     */
     protected function fetchAndCache($cacheKey, $requestCaller)
     {
         $response = $this->fetch($requestCaller);
@@ -52,6 +59,11 @@ class CachingRequester
         return $response;
     }
 
+    /**
+     * @param callable $requestCaller
+     * @return mixed
+     * @throws RequestException
+     */
     protected function fetch($requestCaller)
     {
         $response = call_user_func($requestCaller);

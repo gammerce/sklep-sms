@@ -88,8 +88,8 @@ class TestCase extends BaseTestCase
     {
         $license = Mockery::mock(License::class);
         $license->shouldReceive('validate')->andReturn();
-        $license->shouldReceive('getPage')->andReturn('');
         $license->shouldReceive('getExpires')->andReturn('');
+        $license->shouldReceive('getExternalId')->andReturn(2);
         $license->shouldReceive('isForever')->andReturn(true);
         $license->shouldReceive('isValid')->andReturn(true);
         $license->shouldReceive('getFooter')->andReturn('');

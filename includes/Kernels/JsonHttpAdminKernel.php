@@ -333,6 +333,7 @@ class JsonHttpAdminKernel extends Kernel
             $sms_service = $_POST['sms_service'];
             $transfer_service = $_POST['transfer_service'];
             $currency = $_POST['currency'];
+            $shopName = $_POST['shop_name'];
             $shop_url = $_POST['shop_url'];
             $sender_email = $_POST['sender_email'];
             $sender_email_name = $_POST['sender_email_name'];
@@ -340,8 +341,7 @@ class JsonHttpAdminKernel extends Kernel
             $vat = $_POST['vat'];
             $contact = $_POST['contact'];
             $row_limit = $_POST['row_limit'];
-            $license_login = $_POST['license_login'];
-            $license_password = $_POST['license_password'];
+            $licenseToken = $_POST['license_token'];
             $cron = $_POST['cron'];
             $language = escape_filename($_POST['language']);
             $theme = escape_filename($_POST['theme']);
@@ -377,7 +377,7 @@ class JsonHttpAdminKernel extends Kernel
             }
 
             // Email dla automatu
-            if ($warning = check_for_warnings("email", $sender_email)) {
+            if (strlen($sender_email) && $warning = check_for_warnings("email", $sender_email)) {
                 $warnings['sender_email'] = array_merge((array)$warnings['sender_email'], $warning);
             }
 
@@ -426,9 +426,9 @@ class JsonHttpAdminKernel extends Kernel
                 json_output("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
-            if ($license_password) {
-                $set_license_password = $db->prepare("WHEN 'license_password' THEN '%s' ", [md5($license_password)]);
-                $key_license_password = ",'license_password'";
+            if ($licenseToken) {
+                $setLicenseToken = $db->prepare("WHEN 'license_password' THEN '%s' ", [$licenseToken]);
+                $keyLicenseToken = ",'license_password'";
             }
 
             // Edytuj ustawienia
@@ -438,6 +438,7 @@ class JsonHttpAdminKernel extends Kernel
                 "WHEN 'sms_service' THEN '%s' " .
                 "WHEN 'transfer_service' THEN '%s' " .
                 "WHEN 'currency' THEN '%s' " .
+                "WHEN 'shop_name' THEN '%s' " .
                 "WHEN 'shop_url' THEN '%s' " .
                 "WHEN 'sender_email' THEN '%s' " .
                 "WHEN 'sender_email_name' THEN '%s' " .
@@ -445,7 +446,6 @@ class JsonHttpAdminKernel extends Kernel
                 "WHEN 'vat' THEN '%.2f' " .
                 "WHEN 'contact' THEN '%s' " .
                 "WHEN 'row_limit' THEN '%s' " .
-                "WHEN 'license_login' THEN '%s' " .
                 "WHEN 'cron_each_visit' THEN '%d' " .
                 "WHEN 'user_edit_service' THEN '%d' " .
                 "WHEN 'theme' THEN '%s' " .
@@ -454,15 +454,16 @@ class JsonHttpAdminKernel extends Kernel
                 "WHEN 'delete_logs' THEN '%d' " .
                 "WHEN 'google_analytics' THEN '%s' " .
                 "WHEN 'gadugadu' THEN '%s' " .
-                $set_license_password .
+                $setLicenseToken .
                 "END " .
-                "WHERE `key` IN ( 'sms_service','transfer_service','currency','shop_url','sender_email','sender_email_name','signature','vat'," .
-                "'contact','row_limit','license_login','cron_each_visit','user_edit_service','theme','language','date_format','delete_logs'," .
-                "'google_analytics','gadugadu'{$key_license_password} )",
+                "WHERE `key` IN ( 'sms_service','transfer_service','currency','shop_name','shop_url','sender_email','sender_email_name','signature','vat'," .
+                "'contact','row_limit','cron_each_visit','user_edit_service','theme','language','date_format','delete_logs'," .
+                "'google_analytics','gadugadu'{$keyLicenseToken} )",
                 [
                     $sms_service,
                     $transfer_service,
                     $currency,
+                    $shopName,
                     $shop_url,
                     $sender_email,
                     $sender_email_name,
@@ -470,7 +471,6 @@ class JsonHttpAdminKernel extends Kernel
                     $vat,
                     $contact,
                     $row_limit,
-                    $license_login,
                     $cron,
                     $_POST['user_edit_service'],
                     $theme,
@@ -768,7 +768,9 @@ class JsonHttpAdminKernel extends Kernel
             if ($action == "server_add") {
                 /** @var ServerRepository $serverRepository */
                 $serverRepository = $this->app->make(ServerRepository::class);
-                $server = $serverRepository->create($_POST['name'], $_POST['ip'], $_POST['port'], $_POST['sms_service']);
+                $server = $serverRepository->create(
+                    $_POST['name'], $_POST['ip'], $_POST['port'], $_POST['sms_service']
+                );
                 $server_id = $server->getId();
             } elseif ($action == "server_edit") {
                 $db->query($db->prepare(

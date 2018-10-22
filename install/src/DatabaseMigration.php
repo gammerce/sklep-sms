@@ -20,7 +20,7 @@ class DatabaseMigration
         $this->migrationFiles = $migrationFiles;
     }
 
-    public function install($licenseId, $licensePassword, $adminUsername, $adminPassword)
+    public function install($token, $adminUsername, $adminPassword)
     {
         foreach ($this->migrationFiles->getMigrations() as $migration) {
             $this->migrate($migration);
@@ -35,13 +35,8 @@ class DatabaseMigration
             ),
             $this->db->prepare(
                 "UPDATE `" . TABLE_PREFIX . "settings` " .
-                "SET `value`='%s' WHERE `key`='license_login';",
-                [$licenseId]
-            ),
-            $this->db->prepare(
-                "UPDATE `" . TABLE_PREFIX . "settings` " .
                 "SET `value`='%s' WHERE `key`='license_password';",
-                [md5($licensePassword)]
+                [$token]
             ),
             $this->db->prepare(
                 "INSERT INTO `" . TABLE_PREFIX . "users` " .

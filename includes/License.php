@@ -1,14 +1,16 @@
 <?php
 namespace App;
 
+use App\Cache\CacheEnum;
 use App\Cache\CachingRequester;
-use App\Exceptions\LicenseException;
+use App\Exceptions\InvalidResponse;
 use App\Exceptions\RequestException;
 use App\Requesting\Requester;
+use Symfony\Component\HttpFoundation\Request;
 
 class License
 {
-    const CACHE_TTL = 20 * 60;
+    const CACHE_TTL = 10 * 60;
 
     /** @var Translator */
     protected $lang;
@@ -16,23 +18,20 @@ class License
     /** @var Settings */
     protected $settings;
 
-    /** @var string */
-    protected $message;
-
-    /** @var string */
-    protected $expires;
-
-    /** @var string */
-    protected $page;
-
-    /** @var string */
-    protected $footer;
-
     /** @var Requester */
     protected $requester;
 
     /** @var CachingRequester */
     protected $cachingRequester;
+
+    /** @var int */
+    protected $externalLicenseId;
+
+    /** @var int */
+    protected $expiresAt;
+
+    /** @var string */
+    protected $footer;
 
     public function __construct(
         Translator $translator,
@@ -46,27 +45,22 @@ class License
         $this->cachingRequester = $cachingRequester;
     }
 
+    /**
+     * @throws InvalidResponse
+     * @throws RequestException
+     */
     public function validate()
     {
-        try {
-            $response = $this->loadLicense();
-        } catch (RequestException $e) {
-            throw new LicenseException('', 0, $e);
-        }
+        $response = $this->loadLicense();
 
-        if (!isset($response['text'])) {
-            throw new LicenseException();
-        }
-
-        $this->message = $response['text'];
-        $this->expires = array_get($response, 'expire');
-        $this->page = array_get($response, 'page');
+        $this->externalLicenseId = array_get($response, 'id');
+        $this->expiresAt = array_get($response, 'expires_at');
         $this->footer = array_get($response, 'f');
     }
 
     public function isValid()
     {
-        return $this->message === "logged_in";
+        return $this->externalLicenseId !== null;
     }
 
     public function getExpires()
@@ -75,17 +69,17 @@ class License
             return $this->lang->translate('never');
         }
 
-        return date($this->settings['date_format'], $this->expires);
+        return date($this->settings['date_format'], $this->expiresAt);
+    }
+
+    public function getExternalId()
+    {
+        return $this->externalLicenseId;
     }
 
     public function isForever()
     {
-        return $this->expires == -1;
-    }
-
-    public function getPage()
-    {
-        return $this->page;
+        return $this->expiresAt === null;
     }
 
     public function getFooter()
@@ -93,23 +87,60 @@ class License
         return $this->footer;
     }
 
+    /**
+     * @return array
+     * @throws InvalidResponse
+     * @throws RequestException
+     */
     protected function loadLicense()
     {
-        // TODO Cache successful response
-        return $this->request();
+        return $this->cachingRequester->load(CacheEnum::LICENSE, static::CACHE_TTL, function () {
+            return $this->request();
+        });
     }
 
+    /**
+     * @return array
+     * @throws InvalidResponse
+     * @throws RequestException
+     */
     protected function request()
     {
-        $response = $this->requester->get('http://license.sklep-sms.pl/license.php', [
-            'action'   => 'login_web',
-            'lid'      => $this->settings['license_login'],
-            'lpa'      => $this->settings['license_password'],
-            'name'     => $this->settings['shop_url'],
-            'version'  => app()->version(),
-            'language' => $this->lang->getCurrentLanguage(),
-        ]);
+        $shopUrl = $this->getShopUrl();
 
-        return $response ? $response->json() : null;
+        $response = $this->requester->post(
+            'http://license.sklep-sms.pl/v1/authorization/web',
+            [
+                'url'      => $shopUrl,
+                'name'     => $this->settings['shop_name'] ?: $shopUrl,
+                'version'  => app()->version(),
+                'language' => $this->lang->getCurrentLanguage(),
+            ],
+            [
+                'Authorization' => $this->settings['license_password'],
+            ]
+        );
+
+        if (!$response) {
+            throw new RequestException();
+        }
+
+        if (!$response->isOk()) {
+            throw new InvalidResponse($response);
+        }
+
+        return $response->json();
+    }
+
+    private function getShopUrl()
+    {
+        if ($this->settings['shop_url']) {
+            return $this->settings['shop_url'];
+        }
+
+        /** @var Request $request */
+        $request = app()->make(Request::class);
+
+        return $request->getSchemeAndHttpHost();
     }
 }

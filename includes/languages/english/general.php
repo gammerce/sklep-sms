@@ -101,6 +101,7 @@ return [
     'sth_went_wrong'                    => 'Something went wrong :/',
     'surname'                           => 'Surname',
     'tariff'                            => 'Tariff',
+    'token'                             => 'Token',
     'type'                              => 'Type',
     'user'                              => 'User',
     'user_id'                           => 'User ID',

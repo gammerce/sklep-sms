@@ -214,6 +214,7 @@ return [
     'settings_edit'                         => 'Settings edited successfully.',
     'settings_no_edit'                      => 'Settings not edited.',
     'shop_address'                          => 'Shop Address',
+    'shop_name'                             => 'Shop Name',
     'short_description'                     => 'Short description',
     'signature'                             => 'Signature',
     'sm_server'                             => 'Game server (SM)',

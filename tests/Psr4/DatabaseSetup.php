@@ -24,6 +24,6 @@ class DatabaseSetup
         $this->db->createDatabaseIfNotExists('sklep_sms_test');
         $this->db->selectDb('sklep_sms_test');
         $this->db->dropAllTables();
-        $this->databaseMigration->install('lic_000', 'abc123', 'admin', 'abc123');
+        $this->databaseMigration->install('abc123', 'admin', 'abc123');
     }
 }
