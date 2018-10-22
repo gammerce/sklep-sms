@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class License
 {
-    const CACHE_TTL = 20 * 60;
+    const CACHE_TTL = 10 * 60;
 
     /** @var Translator */
     protected $lang;
@@ -27,7 +27,7 @@ class License
     /** @var int */
     protected $externalLicenseId;
 
-    /** @var string */
+    /** @var int */
     protected $expiresAt;
 
     /** @var string */
@@ -94,8 +94,8 @@ class License
      */
     protected function loadLicense()
     {
-        return $this->request();
         return $this->cachingRequester->load(CacheEnum::LICENSE, static::CACHE_TTL, function () {
+            return $this->request();
         });
     }
 
@@ -109,7 +109,7 @@ class License
         $shopUrl = $this->getShopUrl();
 
         $response = $this->requester->post(
-            'http://license2.sklep-sms.pl/v1/authorization/web',
+            'http://license.sklep-sms.pl/v1/authorization/web',
             [
                 'url'      => $shopUrl,
                 'name'     => $this->settings['shop_name'] ?: $shopUrl,
