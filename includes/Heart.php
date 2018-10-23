@@ -592,6 +592,8 @@ class Heart
 
     public function getGoogleAnalytics()
     {
-        return strlen($this->settings['google_analytics']) ? eval($this->template->render('google_analytics')) : '';
+        return strlen($this->settings['google_analytics'])
+            ? $this->template->render2('google_analytics', ['settings' => $this->settings])
+            : '';
     }
 }
