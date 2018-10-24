@@ -14,6 +14,13 @@ class PurchaseServiceFromServerTest extends ServerTestCase
 {
     use RequesterConcern;
 
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->mockRequester();
+    }
+
     /** @test */
     public function player_can_purchase_service()
     {

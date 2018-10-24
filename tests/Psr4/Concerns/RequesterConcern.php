@@ -9,7 +9,6 @@ trait RequesterConcern
     /** @var Requester|MockInterface */
     private $requesterMock;
 
-    /** @before */
     public function mockRequester()
     {
         $requester = $this->app->make(Requester::class);
