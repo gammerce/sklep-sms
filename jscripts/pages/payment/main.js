@@ -111,6 +111,8 @@ function purchase_service(method) {
                     redirectToTransferWithPost(jsonObj);
                 } else {
                     console.error('Invalid method specified by PaymentModule');
+                    infobox.show_info(lang['sth_went_wrong'], false);
+                    return;
                 }
             }
             else if (!jsonObj.return_id) {
