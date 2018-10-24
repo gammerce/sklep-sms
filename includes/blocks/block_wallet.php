@@ -30,7 +30,7 @@ class BlockWallet extends Block implements I_BeLoggedMust
 
         $amount = number_format($user->getWallet() / 100, 2);
 
-        return $template->render('wallet', compact('amount', 'settings'));
+        return $template->render2('wallet', compact('amount', 'settings'));
     }
 
     public function get_content_enveloped($get, $post)
