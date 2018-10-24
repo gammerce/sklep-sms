@@ -32,11 +32,16 @@ class LocaleService
         }
 
         $response = $this->requester->get("http://ipinfo.io/" . get_ip() . "/json");
-        $details = json_decode($response->getBody());
-        if (isset($details->country)) {
-            $locale = $this->translationManager->user()->getLanguageByShort($details->country);
-            if (strlen($locale)) {
-                return $locale;
+
+        if ($response && $response->isOk()) {
+            $details = $response->json();
+
+            if (isset($details['country'])) {
+                $locale = $this->translationManager->user()->getLanguageByShort($details['country']);
+
+                if (strlen($locale)) {
+                    return $locale;
+                }
             }
         }
 

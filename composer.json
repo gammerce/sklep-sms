@@ -13,6 +13,7 @@
     "php": ">=5.6",
     "ext-curl": "*",
     "ext-json": "*",
+    "ext-calendar": "*",
     "vlucas/phpdotenv": "^2.4",
     "illuminate/container": "^5.4",
     "symfony/console": "^3.4",
