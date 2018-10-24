@@ -63,7 +63,7 @@ class PaymentModule_Cashbill extends PaymentModule implements IPayment_Sms, IPay
 
     /**
      * @param \App\Models\Purchase $purchase_data
-     * @param string $data_filename
+     * @param string               $data_filename
      * @return array
      */
     public function prepare_transfer($purchase_data, $data_filename)
@@ -73,6 +73,7 @@ class PaymentModule_Cashbill extends PaymentModule implements IPayment_Sms, IPay
 
         return [
             'url'      => 'https://pay.cashbill.pl/form/pay.php',
+            'method'   => 'POST',
             'service'  => $this->getService(),
             'desc'     => $purchase_data->getDesc(),
             'forname'  => $purchase_data->user->getForename(false),

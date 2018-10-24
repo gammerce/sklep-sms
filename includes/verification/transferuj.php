@@ -34,7 +34,7 @@ class PaymentModuleTransferuj extends PaymentModule implements IPayment_Transfer
 
     /**
      * @param Purchase $purchase_data
-     * @param string $data_filename
+     * @param string   $data_filename
      * @return array
      */
     public function prepare_transfer($purchase_data, $data_filename)
@@ -44,6 +44,7 @@ class PaymentModuleTransferuj extends PaymentModule implements IPayment_Transfer
 
         return [
             'url'          => 'https://secure.transferuj.pl',
+            'method'       => 'POST',
             'id'           => $this->account_id,
             'kwota'        => $cost,
             'opis'         => $purchase_data->getDesc(),
