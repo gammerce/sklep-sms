@@ -125,6 +125,6 @@ abstract class PageSimple extends Page
     {
         $lang = $this->lang;
         $settings = $this->settings;
-        return eval($this->template->render($this->templateName));
+        return $this->template->render2($this->templateName, compact('lang', 'settings'));
     }
 }

@@ -22,7 +22,8 @@ class Template
     public function render2($template, array $data = [], $eslashes = true, $htmlcomments = true)
     {
         extract($data);
-        return eval('return "' . $this->get_template($template, $eslashes, $htmlcomments) . '";');
+        $content = $this->get_template($template, $eslashes, $htmlcomments);
+        return eval('return "' . $content . '";');
     }
 
     public function render($template, $eslashes = true, $htmlcomments = true)
@@ -30,31 +31,34 @@ class Template
         return 'return "' . $this->get_template($template, $eslashes, $htmlcomments) . '";';
     }
 
-    public function install_render($template)
+    public function install_render($template, array $data = [])
     {
-        $template = $this->get_install_template($template, function ($filename) {
+        $content = $this->get_install_template($template, function ($filename) {
             return $this->app->path("install/templates/{$filename}.html");
         });
 
-        return 'return "' . $template . '";';
+        extract($data);
+        return 'return "' . $content . '";';
     }
 
-    public function install_full_render($template)
+    public function install_full_render($template, array $data = [])
     {
-        $template = $this->get_install_template($template, function ($filename) {
+        $content = $this->get_install_template($template, function ($filename) {
             return $this->app->path("install/templates/full/{$filename}.html");
         });
 
-        return 'return "' . $template . '";';
+        extract($data);
+        return 'return "' . $content . '";';
     }
 
-    public function install_update_render($template)
+    public function install_update_render($template, array $data = [])
     {
-        $template = $this->get_install_template($template, function ($filename) {
+        $content = $this->get_install_template($template, function ($filename) {
             return $this->app->path("install/templates/update/{$filename}.html");
         });
 
-        return 'return "' . $template . '";';
+        extract($data);
+        return 'return "' . $content . '";';
     }
 
     /**
