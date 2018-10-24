@@ -22,43 +22,44 @@ class Template
     public function render2($template, array $data = [], $eslashes = true, $htmlcomments = true)
     {
         extract($data);
-        $content = $this->get_template($template, $eslashes, $htmlcomments);
-        return eval('return "' . $content . '";');
+        $__content = $this->get_template($template, $eslashes, $htmlcomments);
+        return eval('return "' . $__content . '";');
     }
 
     public function render($template, $eslashes = true, $htmlcomments = true)
     {
-        return 'return "' . $this->get_template($template, $eslashes, $htmlcomments) . '";';
+        $__content = $this->get_template($template, $eslashes, $htmlcomments);
+        return 'return "' . $__content . '";';
     }
 
     public function install_render($template, array $data = [])
     {
-        $content = $this->get_install_template($template, function ($filename) {
+        $__content = $this->get_install_template($template, function ($filename) {
             return $this->app->path("install/templates/{$filename}.html");
         });
 
         extract($data);
-        return 'return "' . $content . '";';
+        return 'return "' . $__content . '";';
     }
 
     public function install_full_render($template, array $data = [])
     {
-        $content = $this->get_install_template($template, function ($filename) {
+        $__content = $this->get_install_template($template, function ($filename) {
             return $this->app->path("install/templates/full/{$filename}.html");
         });
 
         extract($data);
-        return 'return "' . $content . '";';
+        return 'return "' . $__content . '";';
     }
 
     public function install_update_render($template, array $data = [])
     {
-        $content = $this->get_install_template($template, function ($filename) {
+        $__content = $this->get_install_template($template, function ($filename) {
             return $this->app->path("install/templates/update/{$filename}.html");
         });
 
         extract($data);
-        return 'return "' . $content . '";';
+        return 'return "' . $__content . '";';
     }
 
     /**
