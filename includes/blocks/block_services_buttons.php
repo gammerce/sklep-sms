@@ -48,6 +48,6 @@ class BlockServicesButtons extends Block
             ]));
         }
 
-        return eval($template->render("services_buttons"));
+        return $template->render2("services_buttons", compact('services', 'lang'));
     }
 }

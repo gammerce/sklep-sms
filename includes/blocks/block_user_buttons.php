@@ -34,7 +34,7 @@ class BlockUserButtons extends Block
         $heart = app()->make(Heart::class);
 
         if (!$auth->check()) {
-            return eval($template->render("loginarea"));
+            return $template->render2("loginarea", compact('lang'));
         }
 
         // Panel Admina
@@ -52,6 +52,9 @@ class BlockUserButtons extends Block
                 ]));
         }
 
-        return eval($template->render("user_buttons"));
+        return $template->render2(
+            "user_buttons",
+            compact('acp_button', 'charge_wallet_button', 'lang')
+        );
     }
 }
