@@ -79,10 +79,10 @@ class PageAdminIncome extends PageAdmin
             ]);
         }
 
-        $buttons = eval($this->template->render("admin/income_button"));
+        $buttons = $this->template->render2("admin/income_button", compact('years', 'months', 'lang'));
 
         // Pobranie nagłówka tabeli
-        $thead = eval($this->template->render("admin/income_thead"));
+        $thead = $this->template->render2("admin/income_thead", compact('lang', 'table_row'));
 
         //
         // Pobranie danych do tabeli
@@ -121,7 +121,10 @@ class PageAdminIncome extends PageAdmin
             // Zaokraglenie do dowch miejsc po przecinku zarobku w danym dniu
             $day_income = number_format($day_income / 100.0, 2);
 
-            $tbody .= eval($this->template->render("admin/income_trow"));
+            $tbody .= $this->template->render2(
+                "admin/income_trow",
+                compact('date', 'table_row', 'day_income', 'settings')
+            );
         }
 
         // Pobranie podliczenia tabeli
@@ -136,15 +139,19 @@ class PageAdminIncome extends PageAdmin
         // Jeżeli coś się policzyło, są jakieś dane
         if (strlen($tbody)) {
             $total_income = number_format($total_income / 100.0, 2);
-            $tbody .= eval($this->template->render("admin/income_trow2"));
+            $tbody .= $this->template->render2("admin/income_trow2", compact('table_row', 'total_income', 'settings'));
         } else // Brak danych
         {
-            $tbody = eval($this->template->render("admin/no_records"));
+            $tbody = $this->template->render2("admin/no_records", compact('lang'));
         }
 
         // Pobranie wygladu strony
         $tfoot_class = '';
         $pagination = '';
-        return eval($this->template->render("admin/table_structure"));
+        $title = $this->title;
+        return $this->template->render2(
+            "admin/table_structure",
+            compact('buttons', 'thead', 'tbody', 'pagination', 'tfoot_class', 'title')
+        );
     }
 }
