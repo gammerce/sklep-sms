@@ -105,7 +105,7 @@ class PagePurchase extends Page
         // Dodajemy długi opis
         $show_more = '';
         if (strlen($service_module->description_full_get())) {
-            $show_more = $template->render2("services/show_more", compact('lang'));
+            $show_more = $template->render2("services/show_more");
         }
 
         $output = $template->render2(

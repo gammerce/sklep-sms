@@ -66,7 +66,7 @@ class PagePaymentLog extends Page implements I_BeLoggedMust
             $row['auth_data'] = htmlspecialchars($row['auth_data']);
             $row['email'] = htmlspecialchars($row['email']);
 
-            $payment_log_brick = $template->render2("payment_log_brick", compact('lang', 'date', 'cost', 'desc'));
+            $payment_log_brick = $template->render2("payment_log_brick", compact('date', 'cost', 'desc'));
             $payment_logs .= create_dom_element("div", $payment_log_brick, $data = [
                 'class' => "brick " . $class,
             ]);

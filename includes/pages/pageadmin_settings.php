@@ -16,8 +16,6 @@ class PageAdminSettings extends PageAdmin
 
     protected function content($get, $post)
     {
-        $settings = $this->settings;
-
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $lang = $translationManager->user();
@@ -73,6 +71,9 @@ class PageAdminSettings extends PageAdmin
         }
 
         // Pobranie wyglądu strony
-        return eval($this->template->render("admin/settings"));
+        return $this->template->render2(
+            "admin/settings",
+            compact('user_edit_service', 'themes_list', 'cron') + ['title' => $this->title]
+        );
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
 use App\Auth;
-use App\Settings;
 use App\Template;
 
 class BlockWallet extends Block implements I_BeLoggedMust
@@ -25,12 +24,9 @@ class BlockWallet extends Block implements I_BeLoggedMust
         /** @var Template $template */
         $template = app()->make(Template::class);
 
-        /** @var Settings $settings */
-        $settings = app()->make(Settings::class);
-
         $amount = number_format($user->getWallet() / 100, 2);
 
-        return $template->render2('wallet', compact('amount', 'settings'));
+        return $template->render2('wallet', compact('amount'));
     }
 
     public function get_content_enveloped($get, $post)

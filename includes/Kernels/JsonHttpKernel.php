@@ -288,7 +288,7 @@ class JsonHttpKernel extends Kernel
             ));
 
             $link = $settings['shop_url_slash'] . "index.php?pid=reset_password&code=" . htmlspecialchars($key);
-            $text = $templates->render2("emails/forgotten_password", compact('user2', 'link', 'settings'));
+            $text = $templates->render2("emails/forgotten_password", compact('user2', 'link'));
             $ret = $mailer->send($user2->getEmail(), $user2->getUsername(), "Reset Hasła", $text);
 
             if ($ret == "not_sent") {
@@ -542,7 +542,7 @@ class JsonHttpKernel extends Kernel
                 output_page($lang->translate('service_cant_be_modified'));
             }
 
-            $buttons = $templates->render2("services/my_services_savencancel", compact('lang'));
+            $buttons = $templates->render2("services/my_services_savencancel");
 
             output_page($buttons . $service_module->user_own_service_edit_form_get($user_service));
         } elseif ($action == "get_user_service_brick") {

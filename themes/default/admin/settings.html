@@ -1,4 +1,4 @@
-<div class="title">{$this->title}</div>
+<div class="title">{$title}</div>
 
 <form id="form_settings_edit">
   <div class="settings-brick">
@@ -89,8 +89,10 @@
         <td>{$lang->translate('user_service_edit')}</td>
         <td>
           <select name="user_edit_service">
-            <option value="1" {$user_edit_service['yes']}>{$lang->translate('yes')}</option>
-            <option value="0" {$user_edit_service['no']}>{$lang->translate('no')}</option>
+            <option value="1" {$user_edit_service[
+            'yes']}>{$lang->translate('yes')}</option>
+            <option value="0" {$user_edit_service[
+            'no']}>{$lang->translate('no')}</option>
           </select>
         </td>
       </tr>

@@ -123,8 +123,6 @@ abstract class PageSimple extends Page
 
     protected function content($get, $post)
     {
-        $lang = $this->lang;
-        $settings = $this->settings;
-        return $this->template->render2($this->templateName, compact('lang', 'settings'));
+        return $this->template->render2($this->templateName);
     }
 }

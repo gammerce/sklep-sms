@@ -82,7 +82,7 @@ class AdminKernel extends Kernel
             }
 
             // Pobranie headera
-            $header = $template->render2("admin/header", compact('lang', 'heart', 'settings'));
+            $header = $template->render2("admin/header", compact('heart'));
 
             $get_data = "";
             // Fromatujemy dane get
@@ -91,7 +91,7 @@ class AdminKernel extends Kernel
             }
 
             // Pobranie szablonu logowania
-            return new Response($template->render2("admin/login", compact('header', 'lang', 'warning')));
+            return new Response($template->render2("admin/login", compact('header', 'warning')));
         }
 
         $content = get_content("admincontent", $request);
@@ -184,12 +184,12 @@ class AdminKernel extends Kernel
         }
 
         // Pobranie headera
-        $header = $template->render2("admin/header", compact('lang', 'heart', 'settings'));
+        $header = $template->render2("admin/header", compact('heart'));
 
         // Pobranie ostatecznego szablonu
         return new Response($template->render2(
             "admin/index",
-            compact('header', 'lang', 'license', 'user', 'settings_link', 'antispam_questions_link',
+            compact('header', 'license', 'user', 'settings_link', 'antispam_questions_link',
                 'transaction_services_link', 'services_link', 'servers_link', 'tariffs_link', 'pricelist_link',
                 'user_service_link', 'players_flags_link', 'users_link', 'groups_link', 'income_link',
                 'service_codes_link', 'sms_codes_link', 'logs_link', 'content')

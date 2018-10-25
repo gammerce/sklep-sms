@@ -31,9 +31,6 @@ class PageAdminIncome extends PageAdmin
 
     protected function content($get, $post)
     {
-        $settings = $this->settings;
-        $lang = $this->lang;
-
         $G_MONTH = isset($get['month']) ? $get['month'] : date("m");
         $G_YEAR = isset($get['year']) ? $get['year'] : date("Y");
 
@@ -79,10 +76,10 @@ class PageAdminIncome extends PageAdmin
             ]);
         }
 
-        $buttons = $this->template->render2("admin/income_button", compact('years', 'months', 'lang'));
+        $buttons = $this->template->render2("admin/income_button", compact('years', 'months'));
 
         // Pobranie nagłówka tabeli
-        $thead = $this->template->render2("admin/income_thead", compact('lang', 'table_row'));
+        $thead = $this->template->render2("admin/income_thead", compact('table_row'));
 
         //
         // Pobranie danych do tabeli
@@ -121,10 +118,7 @@ class PageAdminIncome extends PageAdmin
             // Zaokraglenie do dowch miejsc po przecinku zarobku w danym dniu
             $day_income = number_format($day_income / 100.0, 2);
 
-            $tbody .= $this->template->render2(
-                "admin/income_trow",
-                compact('date', 'table_row', 'day_income', 'settings')
-            );
+            $tbody .= $this->template->render2("admin/income_trow", compact('date', 'table_row', 'day_income'));
         }
 
         // Pobranie podliczenia tabeli
@@ -139,10 +133,10 @@ class PageAdminIncome extends PageAdmin
         // Jeżeli coś się policzyło, są jakieś dane
         if (strlen($tbody)) {
             $total_income = number_format($total_income / 100.0, 2);
-            $tbody .= $this->template->render2("admin/income_trow2", compact('table_row', 'total_income', 'settings'));
+            $tbody .= $this->template->render2("admin/income_trow2", compact('table_row', 'total_income'));
         } else // Brak danych
         {
-            $tbody = $this->template->render2("admin/no_records", compact('lang'));
+            $tbody = $this->template->render2("admin/no_records");
         }
 
         // Pobranie wygladu strony
