@@ -73,7 +73,8 @@ class PageAdminSettings extends PageAdmin
         // Pobranie wyglądu strony
         return $this->template->render2(
             "admin/settings",
-            compact('user_edit_service', 'sms_services', 'transfer_services', 'themes_list', 'cron') + ['title' => $this->title]
+            compact('user_edit_service', 'sms_services', 'transfer_services', 'languages_list', 'themes_list', 'cron')
+            + ['title' => $this->title]
         );
     }
 }
