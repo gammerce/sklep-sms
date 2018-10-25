@@ -29,10 +29,6 @@ class PageAdminMain extends PageAdmin
 
     protected function content($get, $post)
     {
-        $settings = $this->settings;
-        $lang = $this->lang;
-        $license = $this->license;
-
         //
         // Ogloszenia
 
@@ -65,7 +61,7 @@ class PageAdminMain extends PageAdmin
             'action' => 'get_newest',
             'type'   => 'engines',
         ]);
-        $newest_versions = $response ? $response->json() : null;
+        $newest_versions = $response && $response->isOk() ? $response->json() : null;
         foreach ($this->heart->get_servers() as $server) {
             $engine = "engine_{$server['type']}";
             if (strlen($newest_versions[$engine]) && $server['version'] != $newest_versions[$engine]) {
@@ -112,7 +108,7 @@ class PageAdminMain extends PageAdmin
             "brick_pa_main");
 
         // Pobranie wyglądu strony
-        return eval($this->template->render("admin/home"));
+        return $this->template->render2("admin/home", compact('notes', 'bricks'));
     }
 
     private function add_note($text, $class, &$notes)

@@ -13,9 +13,6 @@ class PageTakeOverService extends Page implements I_BeLoggedMust
 
     protected function content($get, $post)
     {
-        $lang = $this->lang;
-        $settings = $this->settings;
-
         $services_options = "";
         $services = $this->heart->get_services();
         foreach ($services as $service) {
@@ -33,6 +30,6 @@ class PageTakeOverService extends Page implements I_BeLoggedMust
             ]);
         }
 
-        return eval($this->template->render("service_take_over"));
+        return $this->template->render2("service_take_over", compact('services_options'));
     }
 }

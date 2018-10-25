@@ -99,8 +99,6 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
 
     public function get_action_box($box_id, $data)
     {
-        $lang = $this->lang;
-
         if (!get_privilages("manage_service_codes")) {
             return [
                 'status' => "not_logged_in",
@@ -123,8 +121,11 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
                     ]);
                 }
 
-                $output = eval($this->template->render("admin/action_boxes/service_code_add"));
+                $output = $this->template->render2("admin/action_boxes/service_code_add", compact('services'));
                 break;
+
+            default:
+                $output = '';
         }
 
         return [

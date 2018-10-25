@@ -21,8 +21,11 @@ class Template
 
     public function render2($template, array $data = [], $eslashes = true, $htmlcomments = true)
     {
-        extract($data);
         $__content = $this->get_template($template, $eslashes, $htmlcomments);
+
+        $data = $this->addDefaultVariables($data);
+        extract($data);
+
         return eval('return "' . $__content . '";');
     }
 
@@ -38,8 +41,10 @@ class Template
             return $this->app->path("install/templates/{$filename}.html");
         });
 
+        $data = $this->addDefaultVariables($data);
         extract($data);
-        return 'return "' . $__content . '";';
+
+        return eval('return "' . $__content . '";');
     }
 
     public function install_full_render($template, array $data = [])
@@ -48,8 +53,10 @@ class Template
             return $this->app->path("install/templates/full/{$filename}.html");
         });
 
+        $data = $this->addDefaultVariables($data);
         extract($data);
-        return 'return "' . $__content . '";';
+
+        return eval('return "' . $__content . '";');
     }
 
     public function install_update_render($template, array $data = [])
@@ -58,16 +65,18 @@ class Template
             return $this->app->path("install/templates/update/{$filename}.html");
         });
 
+        $data = $this->addDefaultVariables($data);
         extract($data);
-        return 'return "' . $__content . '";';
+
+        return eval('return "' . $__content . '";');
     }
 
     /**
      * Pobranie szablonu.
      *
      * @param string $title Nazwa szablonu
-     * @param bool $eslashes Prawda, jeżeli zawartość szablonu ma być "escaped".
-     * @param bool $htmlcomments Prawda, jeżeli chcemy dodać komentarze o szablonie.
+     * @param bool   $eslashes Prawda, jeżeli zawartość szablonu ma być "escaped".
+     * @param bool   $htmlcomments Prawda, jeżeli chcemy dodać komentarze o szablonie.
      *
      * @return string|bool Szablon.
      */
@@ -146,5 +155,18 @@ class Template
         $template = str_replace("{__VERSION__}", $this->app->version(), $template);
 
         return $template;
+    }
+
+    public function addDefaultVariables(array $data)
+    {
+        if (!array_key_exists('lang', $data)) {
+            $data['lang'] = $this->lang;
+        }
+
+        if (!array_key_exists('settings', $data)) {
+            $data['settings'] = $this->settings;
+        }
+
+        return $data;
     }
 }

@@ -81,8 +81,6 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
 
     public function get_action_box($box_id, $data)
     {
-        $lang = $this->lang;
-
         if (!get_privilages("manage_settings")) {
             return [
                 'status' => "not_logged_in",
@@ -130,12 +128,21 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
 
         switch ($box_id) {
             case "price_add":
-                $output = eval($this->template->render("admin/action_boxes/price_add"));
+                $output = $this->template->render2(
+                    "admin/action_boxes/price_add",
+                    compact('services', 'servers', 'tariffs')
+                );
                 break;
 
             case "price_edit":
-                $output = eval($this->template->render("admin/action_boxes/price_edit"));
+                $output = $this->template->render2(
+                    "admin/action_boxes/price_edit",
+                    compact('services', 'servers', 'tariffs', 'price', 'all_servers')
+                );
                 break;
+
+            default:
+                $output = '';
         }
 
         return [
