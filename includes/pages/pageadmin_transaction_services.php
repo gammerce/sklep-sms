@@ -62,8 +62,6 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
 
     public function get_action_box($box_id, $data)
     {
-        $lang = $this->lang;
-
         if (!get_privilages("manage_settings")) {
             return [
                 'status' => "not_logged_in",
@@ -98,11 +96,17 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
                             $text = $this->lang->strtoupper($name);
                             break;
                     }
-                    $data_values .= eval($this->template->render("tr_name_input"));
+                    $data_values .= $this->template->render2("tr_name_input", compact('text', 'name', 'value'));
                 }
 
-                $output = eval($this->template->render("admin/action_boxes/transaction_service_edit"));
+                $output = $this->template->render2(
+                    "admin/action_boxes/transaction_service_edit",
+                    compact('transaction_service', 'data_values')
+                );
                 break;
+
+            default:
+                $output = '';
         }
 
         return [

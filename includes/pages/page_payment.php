@@ -16,10 +16,6 @@ class PagePayment extends Page
 
     protected function content($get, $post)
     {
-        $lang = $this->lang;
-        $settings = $this->settings;
-        $heart = $this->heart;
-
         // Sprawdzanie hashu danych przesłanych przez formularz
         if (!isset($post['sign']) || $post['sign'] != md5($post['data'] . $this->settings['random_key'])) {
             return $this->lang->translate('wrong_sign');
