@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 
+// TODO Use marking transfer as a test
 class TransferFinalize
 {
     /**
@@ -45,6 +46,13 @@ class TransferFinalize
      * @var string
      */
     private $output = '';
+
+    /**
+     * Czy to płatność testowa
+     *
+     * @var boolean
+     */
+    private $test = false;
 
     /**
      * @return boolean
@@ -140,5 +148,15 @@ class TransferFinalize
     public function setOutput($output)
     {
         $this->output = (string)$output;
+    }
+
+    public function markAsTest()
+    {
+        $this->test = true;
+    }
+
+    public function isTest()
+    {
+        return $this->test;
     }
 }
