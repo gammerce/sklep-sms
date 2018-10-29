@@ -5,7 +5,7 @@ use App\PaymentModule;
 use App\Settings;
 
 // https://microsms.pl/documents/dokumentacja_przelewy_microsms.pdf
-class PaymentModule_Microsms extends PaymentModule implements IPayment_Sms
+class PaymentModule_Microsms extends PaymentModule implements IPayment_Sms, IPayment_Transfer
 {
     const SERVICE_ID = "microsms";
 
