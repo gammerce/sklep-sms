@@ -86,8 +86,12 @@ class ServiceExtraFlagsSimple extends Service implements IService_AdminManage, I
             $flags = $this->service['flags_hsafe'];
         }
 
-        $lang = $this->lang;
-        return eval($this->template->render("services/" . $this::MODULE_ID . "/extra_fields", true, false));
+        return $this->template->render2(
+            "services/extra_flags/extra_fields",
+            compact('web_sel_no', 'web_sel_yes', 'types', 'flags') + ['moduleId' => $this->get_module_id()],
+            true,
+            false
+        );
     }
 
     public function service_admin_manage_pre($data)
@@ -329,7 +333,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
         for ($i = 0, $value = 1; $i < 3; $value = 1 << ++$i) {
             if ($this->service['types'] & $value) {
                 $type = ExtraFlagType::get_type_name($value);
-                $types .= eval($this->template->render("services/" . $this::MODULE_ID . "/service_type"));
+                $types .= eval($this->template->render("services/extra_flags/service_type"));
             }
         }
 
@@ -346,7 +350,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
             ]);
         }
 
-        return eval($this->template->render("services/" . $this::MODULE_ID . "/purchase_form"));
+        return eval($this->template->render("services/extra_flags/purchase_form"));
     }
 
     public function purchase_form_validate($data)
@@ -527,7 +531,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
         $heart = $this->heart;
         $lang = $this->lang;
-        return eval($this->template->render("services/" . $this::MODULE_ID . "/order_details", true, false));
+        return eval($this->template->render("services/extra_flags/order_details", true, false));
     }
 
     public function purchase($purchase_data)
@@ -742,12 +746,12 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
         $lang = $this->lang;
 
         if ($action == "email") {
-            return eval($this->template->render("services/" . $this::MODULE_ID . "/purchase_info_email", true,
+            return eval($this->template->render("services/extra_flags/purchase_info_email", true,
                 false));
         }
 
         if ($action == "web") {
-            return eval($this->template->render("services/" . $this::MODULE_ID . "/purchase_info_web", true, false));
+            return eval($this->template->render("services/extra_flags/purchase_info_web", true, false));
         }
 
         if ($action == "payment_log") {
@@ -789,7 +793,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
         $heart = $this->heart;
         $settings = $this->settings;
         $lang = $this->lang;
-        return eval($this->template->render("services/" . $this::MODULE_ID . "/user_service_admin_add", true, false));
+        return eval($this->template->render("services/extra_flags/user_service_admin_add", true, false));
     }
 
     //
@@ -805,7 +809,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
         $data['auth_data'] = $this->get_auth_data($data);
 
         // Sprawdzamy hasło, jeżeli podano nick albo ip
-        if ($data['type'] & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP) && $warning = check_for_warnings("password", $data['password'])) {
+        if ($data['type'] & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP) && $warning = check_for_warnings("password",
+                $data['password'])) {
             $warnings['password'] = array_merge((array)$warnings['password'], $warning);
         }
 
@@ -948,7 +953,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
         $heart = $this->heart;
         $settings = $this->settings;
         $lang = $this->lang;
-        return eval($this->template->render("services/" . $this::MODULE_ID . "/user_service_admin_edit", true, false));
+        return eval($this->template->render("services/extra_flags/user_service_admin_edit", true, false));
     }
 
     //
@@ -1022,11 +1027,13 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
             } else {
                 if ($data['type'] & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)) {
                     // Nick
-                    if ($data['type'] == ExtraFlagType::TYPE_NICK && $warning = check_for_warnings("nick", $data['auth_data'])) {
+                    if ($data['type'] == ExtraFlagType::TYPE_NICK && $warning = check_for_warnings("nick",
+                            $data['auth_data'])) {
                         $warnings['nick'] = array_merge((array)$warnings['nick'], $warning);
                     } // IP
                     else {
-                        if ($data['type'] == ExtraFlagType::TYPE_IP && $warning = check_for_warnings("ip", $data['auth_data'])) {
+                        if ($data['type'] == ExtraFlagType::TYPE_IP && $warning = check_for_warnings("ip",
+                                $data['auth_data'])) {
                             $warnings['ip'] = array_merge((array)$warnings['ip'], $warning);
                         }
                     }
@@ -1131,7 +1138,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
         $heart = $this->heart;
         $settings = $this->settings;
         $lang = $this->lang;
-        return eval($this->template->render("services/" . $this::MODULE_ID . "/user_own_service_edit"));
+        return eval($this->template->render("services/extra_flags/user_own_service_edit"));
     }
 
     public function user_own_service_info_get($user_service, $button_edit)
@@ -1149,7 +1156,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
         $heart = $this->heart;
         $settings = $this->settings;
         $lang = $this->lang;
-        return eval($this->template->render("services/" . $this::MODULE_ID . "/user_own_service"));
+        return eval($this->template->render("services/extra_flags/user_own_service"));
     }
 
     public function user_own_service_edit($data, $user_service)
@@ -1373,7 +1380,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
         $heart = $this->heart;
         $lang = $this->lang;
-        return eval($this->template->render("services/" . $this::MODULE_ID . "/service_take_over"));
+        return eval($this->template->render("services/extra_flags/service_take_over"));
     }
 
     public function service_take_over($data)
@@ -1594,10 +1601,10 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
             $sms_cost = strlen($row['sms_number']) ? number_format(get_sms_cost($row['sms_number']) / 100 * $this->settings['vat'],
                 2) : 0;
             $amount = $row['amount'] != -1 ? "{$row['amount']} {$this->service['tag']}" : $this->lang->translate('forever');
-            $values .= eval($this->template->render("services/" . $this::MODULE_ID . "/purchase_value", true, false));
+            $values .= eval($this->template->render("services/extra_flags/purchase_value", true, false));
         }
 
-        return eval($this->template->render("services/" . $this::MODULE_ID . "/tariffs_for_server"));
+        return eval($this->template->render("services/extra_flags/tariffs_for_server"));
     }
 
     public function action_execute($action, $data)
@@ -1631,7 +1638,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
 
         $heart = $this->heart;
         $lang = $this->lang;
-        return eval($this->template->render("services/" . $this::MODULE_ID . "/service_code_admin_add", true, false));
+        return eval($this->template->render("services/extra_flags/service_code_admin_add", true, false));
     }
 
     public function service_code_admin_add_validate($data)
