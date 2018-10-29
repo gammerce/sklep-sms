@@ -324,8 +324,6 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
     public function purchase_form_get()
     {
         $heart = $this->heart;
-        $lang = $this->lang;
-        $settings = $this->settings;
         $user = $this->auth->user();
 
         // Generujemy typy usługi
@@ -333,7 +331,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
         for ($i = 0, $value = 1; $i < 3; $value = 1 << ++$i) {
             if ($this->service['types'] & $value) {
                 $type = ExtraFlagType::get_type_name($value);
-                $types .= eval($this->template->render("services/extra_flags/service_type"));
+                $types .= $this->template->render2("services/extra_flags/service_type", compact('value', 'type'));
             }
         }
 
@@ -350,7 +348,10 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
             ]);
         }
 
-        return eval($this->template->render("services/extra_flags/purchase_form"));
+        return $this->template->render2(
+            "services/extra_flags/purchase_form",
+            compact('types', 'user', 'servers') + ['serviceId' => $this->service['id']]
+        );
     }
 
     public function purchase_form_validate($data)
@@ -529,9 +530,13 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
         $auth_data = htmlspecialchars($purchase_data->getOrder('auth_data'));
         $amount = !$purchase_data->getOrder('forever') ? ($purchase_data->getOrder('amount') . " " . $this->service['tag']) : $this->lang->translate('forever');
 
-        $heart = $this->heart;
-        $lang = $this->lang;
-        return eval($this->template->render("services/extra_flags/order_details", true, false));
+        return $this->template->render2(
+            "services/extra_flags/order_details",
+            compact('server', 'amount', 'type_name', 'auth_data', 'password', 'email') +
+            ['serviceName' => $this->service['name']],
+            true,
+            false
+        );
     }
 
     public function purchase($purchase_data)
