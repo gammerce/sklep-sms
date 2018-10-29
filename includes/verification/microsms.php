@@ -22,7 +22,7 @@ class PaymentModule_Microsms extends PaymentModule implements IPayment_Sms, IPay
     private $shopId;
 
     /** @var string */
-    private $userId;
+    private $accountId;
 
     /** @var string */
     private $hash;
@@ -36,14 +36,14 @@ class PaymentModule_Microsms extends PaymentModule implements IPayment_Sms, IPay
         $this->serviceId = $this->data['service_id'];
         $this->smsCode = $this->data['sms_text'];
         $this->shopId = $this->data['shop_id'];
-        $this->userId = $this->data['user_id'];
+        $this->accountId = $this->data['user_id'];
         $this->hash = $this->data['hash'];
     }
 
     public function verify_sms($return_code, $number)
     {
         $response = $this->requester->get("http://microsms.pl/api/v2/index.php", [
-            "userid"    => $this->userId,
+            "userid"    => $this->accountId,
             "number"    => $number,
             "code"      => $return_code,
             "serviceid" => $this->serviceId,
@@ -123,7 +123,7 @@ class PaymentModule_Microsms extends PaymentModule implements IPayment_Sms, IPay
             return false;
         }
 
-        if ($post['userid'] != $this->userId) {
+        if ($post['userid'] != $this->accountId) {
             return false;
         }
 
