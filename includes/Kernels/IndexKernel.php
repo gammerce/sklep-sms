@@ -70,10 +70,10 @@ class IndexKernel extends Kernel
         $user_buttons = get_content("user_buttons", $request);
 
         // Pobranie headera
-        $header = $template->render2("header", compact('heart', 'license'));
+        $header = $template->render("header", compact('heart', 'license'));
 
         // Pobranie ostatecznego szablonu
-        $output = $template->render2(
+        $output = $template->render(
             "index",
             compact("header", "heart", "logged_info", "wallet", "services_buttons", "content", "user_buttons")
         );

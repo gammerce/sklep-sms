@@ -60,7 +60,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
             $mybb_groups = htmlspecialchars($this->service['data']['mybb_groups']);
         }
 
-        return $this->template->render2(
+        return $this->template->render(
             "services/mybb_extra_groups/extra_fields",
             compact('web_sel_no', 'web_sel_yes', 'mybb_groups', 'db_host', 'db_user', 'db_password', 'db_name')
             + ['moduleId' => $this->get_module_id()],
@@ -310,7 +310,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
                 : 0;
             $amount = $row['amount'] != -1 ? $row['amount'] . " " . $this->service['tag'] : $this->lang->translate('forever');
             $provision = number_format($row['provision'] / 100, 2);
-            $amounts .= $this->template->render2(
+            $amounts .= $this->template->render(
                 "services/mybb_extra_groups/purchase_value",
                 compact('provision', 'sms_cost', 'row', 'amount'),
                 true,
@@ -318,7 +318,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
             );
         }
 
-        return $this->template->render2(
+        return $this->template->render(
             "services/mybb_extra_groups/purchase_form",
             compact('amounts', 'user') + ['serviceId' => $this->service['id']]
         );
@@ -428,7 +428,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
             ? ($purchase_data->getOrder('amount') . " " . $this->service['tag'])
             : $this->lang->translate('forever');
 
-        return $this->template->render2(
+        return $this->template->render(
             "services/mybb_extra_groups/order_details",
             compact('amount', 'username', 'email') + ['serviceName' => $this->service['name']],
             true,
@@ -501,7 +501,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
             : $this->lang->translate('none');
 
         if ($action == "email") {
-            return $this->template->render2(
+            return $this->template->render(
                 "services/mybb_extra_groups/purchase_info_email",
                 compact('username', 'amount', 'cost') + ['serviceName' => $this->service['name']],
                 true,
@@ -510,7 +510,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
         }
 
         if ($action == "web") {
-            return $this->template->render2(
+            return $this->template->render(
                 "services/mybb_extra_groups/purchase_info_web",
                 compact('cost', 'username', 'amount', 'email') + ['serviceName' => $this->service['name']],
                 true,
@@ -649,7 +649,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
      */
     public function user_service_admin_add_form_get()
     {
-        return $this->template->render2(
+        return $this->template->render(
             "services/mybb_extra_groups/user_service_admin_add",
             ['moduleId' => $this->get_module_id()],
             true,
@@ -765,7 +765,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
         $service = $this->service['name'];
         $mybb_uid = htmlspecialchars($username . " ({$user_service['mybb_uid']})");
 
-        return $this->template->render2(
+        return $this->template->render(
             "services/mybb_extra_groups/user_own_service",
             compact('user_service', 'service', 'mybb_uid', 'expire') + ['moduleId' => $this->get_module_id()]
         );

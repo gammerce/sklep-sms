@@ -1406,7 +1406,7 @@ class JsonHttpAdminKernel extends Kernel
             }
 
             if (!isset($data['template'])) {
-                $data['template'] = eval($templates->render("jsonhttp/" . $template));
+                $data['template'] = $templates->render("jsonhttp/" . $template, compact('user2'));
             }
 
             output_page(json_encode($data), 1);

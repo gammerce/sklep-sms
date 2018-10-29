@@ -115,17 +115,17 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
             $name = htmlspecialchars($service['id']);
             $text = htmlspecialchars("{$service['name']} ( {$service['id']} )");
 
-            $services .= $this->template->render2("tr_text_select", compact('name', 'text', 'values'));
+            $services .= $this->template->render("tr_text_select", compact('name', 'text', 'values'));
         }
 
         switch ($box_id) {
             case "server_add":
-                $output = $this->template->render2("admin/action_boxes/server_add",
+                $output = $this->template->render("admin/action_boxes/server_add",
                     compact('sms_services', 'services'));
                 break;
 
             case "server_edit":
-                $output = $this->template->render2(
+                $output = $this->template->render(
                     "admin/action_boxes/server_edit",
                     compact('server', 'sms_services', 'services')
                 );

@@ -69,14 +69,14 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
 
         switch ($box_id) {
             case "tariff_add":
-                $output = $this->template->render2("admin/action_boxes/tariff_add");
+                $output = $this->template->render("admin/action_boxes/tariff_add");
                 break;
 
             case "tariff_edit":
                 $tariff = $this->heart->getTariff($data['id']);
                 $provision = number_format($tariff->getProvision() / 100.0, 2);
 
-                $output = $this->template->render2("admin/action_boxes/tariff_edit", compact('provision', 'tariff'));
+                $output = $this->template->render("admin/action_boxes/tariff_edit", compact('provision', 'tariff'));
                 break;
 
             default:

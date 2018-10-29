@@ -30,6 +30,6 @@ class PageTakeOverService extends Page implements I_BeLoggedMust
             ]);
         }
 
-        return $this->template->render2("service_take_over", compact('services_options'));
+        return $this->template->render("service_take_over", compact('services_options'));
     }
 }

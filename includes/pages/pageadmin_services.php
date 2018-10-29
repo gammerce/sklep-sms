@@ -119,7 +119,7 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
 
         switch ($box_id) {
             case "service_add":
-                $output = $this->template->render2(
+                $output = $this->template->render(
                     "admin/action_boxes/service_add",
                     compact('groups', 'services_modules')
                 );
@@ -128,7 +128,7 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
             case "service_edit":
                 $service_module_name = $this->heart->get_service_module_name($service['module']);
 
-                $output = $this->template->render2(
+                $output = $this->template->render(
                     "admin/action_boxes/service_edit",
                     compact('service', 'groups', 'service_module_name', 'extra_fields')
                 );

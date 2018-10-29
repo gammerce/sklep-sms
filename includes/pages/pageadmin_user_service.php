@@ -90,7 +90,7 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
                     ]);
                 }
 
-                $output = $this->template->render2("admin/action_boxes/user_service_add", compact('services'));
+                $output = $this->template->render("admin/action_boxes/user_service_add", compact('services'));
                 break;
 
             case "user_service_edit":
@@ -105,7 +105,7 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
                     $form_data = $service_module->user_service_admin_edit_form_get($user_service);
                 }
 
-                $output = $this->template->render2(
+                $output = $this->template->render(
                     "admin/action_boxes/user_service_edit",
                     compact('service_module_id', 'form_data')
                 );

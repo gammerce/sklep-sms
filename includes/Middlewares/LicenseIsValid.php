@@ -102,6 +102,6 @@ class LicenseIsValid implements MiddlewareContract
 
     private function renderErrorPage($message)
     {
-        return new Response($this->template->render2("license/error", compact('message')));
+        return new Response($this->template->render("license/error", compact('message')));
     }
 }

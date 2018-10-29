@@ -115,16 +115,16 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
             $name = htmlspecialchars($row['Field']);
             $text = $this->lang->translate('privilage_' . $row['Field']);
 
-            $privilages .= $this->template->render2("tr_text_select", compact('name', 'text', 'values'));
+            $privilages .= $this->template->render("tr_text_select", compact('name', 'text', 'values'));
         }
 
         switch ($box_id) {
             case "group_add":
-                $output = $this->template->render2("admin/action_boxes/group_add", compact('privilages'));
+                $output = $this->template->render("admin/action_boxes/group_add", compact('privilages'));
                 break;
 
             case "group_edit":
-                $output = $this->template->render2("admin/action_boxes/group_edit", compact('privilages', 'group'));
+                $output = $this->template->render("admin/action_boxes/group_edit", compact('privilages', 'group'));
                 break;
 
             default:

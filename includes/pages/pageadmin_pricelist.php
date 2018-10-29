@@ -128,14 +128,14 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
 
         switch ($box_id) {
             case "price_add":
-                $output = $this->template->render2(
+                $output = $this->template->render(
                     "admin/action_boxes/price_add",
                     compact('services', 'servers', 'tariffs')
                 );
                 break;
 
             case "price_edit":
-                $output = $this->template->render2(
+                $output = $this->template->render(
                     "admin/action_boxes/price_edit",
                     compact('services', 'servers', 'tariffs', 'price', 'all_servers')
                 );

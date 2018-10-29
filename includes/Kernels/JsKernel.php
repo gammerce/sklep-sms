@@ -28,7 +28,7 @@ class JsKernel extends Kernel
         $output = '';
 
         if ($_GET['script'] == "language") {
-            $output = $template->render2("js/language.js", [], true, false);
+            $output = $template->render("js/language.js", [], true, false);
         }
 
         return new Response($output, 200, [

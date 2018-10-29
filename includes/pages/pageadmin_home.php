@@ -108,7 +108,7 @@ class PageAdminMain extends PageAdmin
             "brick_pa_main");
 
         // Pobranie wyglądu strony
-        return $this->template->render2("admin/home", compact('notes', 'bricks'));
+        return $this->template->render("admin/home", compact('notes', 'bricks'));
     }
 
     private function add_note($text, $class, &$notes)

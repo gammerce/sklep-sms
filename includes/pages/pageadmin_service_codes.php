@@ -121,7 +121,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
                     ]);
                 }
 
-                $output = $this->template->render2("admin/action_boxes/service_code_add", compact('services'));
+                $output = $this->template->render("admin/action_boxes/service_code_add", compact('services'));
                 break;
 
             default:

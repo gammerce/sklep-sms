@@ -47,7 +47,7 @@ class PagePayment extends Page
         // Sprawdzamy, czy płatność za pomocą SMS jest możliwa
         if ($purchase_data->getPayment('sms_service') && $purchase_data->getTariff() !== null && !$purchase_data->getPayment('no_sms')) {
             $payment_sms = new Payment($purchase_data->getPayment('sms_service'));
-            $payment_methods .= $this->template->render2('payment_method_sms', compact('purchase_data', 'payment_sms'));
+            $payment_methods .= $this->template->render('payment_method_sms', compact('purchase_data', 'payment_sms'));
         }
 
         $cost_transfer = $purchase_data->getPayment('cost') !== null
@@ -57,21 +57,21 @@ class PagePayment extends Page
         if (strlen($this->settings['transfer_service']) && $purchase_data->getPayment('cost') !== null
             && $purchase_data->getPayment('cost') > 1 && !$purchase_data->getPayment('no_transfer')
         ) {
-            $payment_methods .= $this->template->render2("payment_method_transfer", compact('cost_transfer'));
+            $payment_methods .= $this->template->render("payment_method_transfer", compact('cost_transfer'));
         }
 
         if (is_logged() && $purchase_data->getPayment('cost') !== null && !$purchase_data->getPayment('no_wallet')) {
-            $payment_methods .= $this->template->render2("payment_method_wallet", compact('cost_transfer'));
+            $payment_methods .= $this->template->render("payment_method_wallet", compact('cost_transfer'));
         }
 
         if (!$purchase_data->getPayment('no_code') && object_implements($service_module, "IService_ServiceCode")) {
-            $payment_methods .= $this->template->render2("payment_method_code");
+            $payment_methods .= $this->template->render("payment_method_code");
         }
 
         $purchase_data = htmlspecialchars($post['data']);
         $purchase_sign = htmlspecialchars($post['sign']);
 
-        return $this->template->render2(
+        return $this->template->render(
             "payment_form",
             compact('order_details', 'payment_methods', 'purchase_data', 'purchase_sign')
         );

@@ -54,7 +54,7 @@ class PageAdminUpdateServers extends PageAdmin
             }
 
             // Pobieramy informacje o danym serwerze, jego obecnej wersji i nastepnej wersji
-            $version_bricks .= $this->template->render2(
+            $version_bricks .= $this->template->render(
                 "admin/update_version_block",
                 compact('name', 'current_version', 'next_version', 'newest_version')
             );
@@ -63,15 +63,15 @@ class PageAdminUpdateServers extends PageAdmin
             $file_data['type'] = "update";
             $file_data['platform'] = $engine;
             $file_data['version'] = $next_version;
-            $next_package = $this->template->render2("admin/update_file", compact('file_data'));
+            $next_package = $this->template->render("admin/update_file", compact('file_data'));
 
             // Pobieramy plik najnowszej wersji full
             $file_data['type'] = "full";
             $file_data['platform'] = $engine;
             $file_data['version'] = $newest_version;
-            $newest_package = $this->template->render2("admin/update_file", compact('file_data'));
+            $newest_package = $this->template->render("admin/update_file", compact('file_data'));
 
-            $servers_versions .= $this->template->render2(
+            $servers_versions .= $this->template->render(
                 "admin/update_server_version",
                 compact('name', 'next_package', 'newest_package')
             );
@@ -79,13 +79,13 @@ class PageAdminUpdateServers extends PageAdmin
 
         // Brak aktualizacji
         if (!strlen($version_bricks)) {
-            $output = $this->template->render2("admin/no_update");
+            $output = $this->template->render("admin/no_update");
 
             return $output;
         }
 
         // Pobranie wyglądu całej strony
-        return $this->template->render2(
+        return $this->template->render(
             "admin/update_server",
             compact('version_bricks', 'servers_versions') + ['title' => $this->title]
         );

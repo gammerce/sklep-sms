@@ -45,7 +45,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
             $payment_sms = new Payment($this->settings['sms_service']);
 
             // Pobieramy opcję wyboru doładowania za pomocą SMS
-            $option_sms = $this->template->render2("services/charge_wallet/option_sms");
+            $option_sms = $this->template->render("services/charge_wallet/option_sms");
 
             $sms_list = "";
             foreach ($payment_sms->getPaymentModule()->getTariffs() AS $tariff) {
@@ -60,17 +60,17 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
                 );
             }
 
-            $sms_body = $this->template->render2("services/charge_wallet/sms_body", compact('sms_list'));
+            $sms_body = $this->template->render("services/charge_wallet/sms_body", compact('sms_list'));
         }
 
         if (strlen($this->settings['transfer_service'])) {
             // Pobieramy opcję wyboru doładowania za pomocą przelewu
-            $option_transfer = $this->template->render2("services/charge_wallet/option_transfer");
+            $option_transfer = $this->template->render("services/charge_wallet/option_transfer");
 
-            $transfer_body = $this->template->render2("services/charge_wallet/transfer_body");
+            $transfer_body = $this->template->render("services/charge_wallet/transfer_body");
         }
 
-        return $this->template->render2(
+        return $this->template->render(
             "services/charge_wallet/purchase_form",
             compact('option_sms', 'option_transfer', 'sms_body', 'transfer_body') +
             ['serviceId' => $this->service['id']]
@@ -161,7 +161,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
     {
         $amount = number_format($purchase_data->getOrder('amount') / 100, 2);
 
-        return $this->template->render2("services/charge_wallet/order_details", compact('amount'), true, false);
+        return $this->template->render("services/charge_wallet/order_details", compact('amount'), true, false);
     }
 
     public function purchase($purchase_data)
@@ -191,7 +191,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
         if ($action == "web") {
             if ($data['payment'] == "sms") {
                 $desc = $this->lang->sprintf($this->lang->translate('wallet_was_charged'), $data['amount']);
-                return $this->template->render2(
+                return $this->template->render(
                     "services/charge_wallet/web_purchase_info_sms",
                     compact('desc', 'data'),
                     true,
@@ -199,7 +199,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements IService_
                 );
             }
             if ($data['payment'] == "transfer") {
-                return $this->template->render2(
+                return $this->template->render(
                     "services/charge_wallet/web_purchase_info_transfer",
                     compact('data'),
                     true,

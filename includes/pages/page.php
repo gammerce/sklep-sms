@@ -123,6 +123,6 @@ abstract class PageSimple extends Page
 
     protected function content($get, $post)
     {
-        return $this->template->render2($this->templateName);
+        return $this->template->render($this->templateName);
     }
 }

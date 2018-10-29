@@ -76,6 +76,6 @@ abstract class BlockSimple extends Block
         /** @var Template $template */
         $template = app()->make(Template::class);
 
-        return $template->render2($this->template, compact('auth', 'user'));
+        return $template->render($this->template, compact('auth', 'user'));
     }
 }

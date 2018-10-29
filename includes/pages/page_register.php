@@ -20,6 +20,6 @@ class PageRegister extends Page implements I_BeLoggedCannot
         ));
         $_SESSION['asid'] = $antispam_question['id'];
 
-        return $this->template->render2("register", compact('antispam_question'));
+        return $this->template->render("register", compact('antispam_question'));
     }
 }

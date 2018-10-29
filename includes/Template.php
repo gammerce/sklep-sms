@@ -19,7 +19,7 @@ class Template
         $this->lang = $lang;
     }
 
-    public function render2($template, array $data = [], $eslashes = true, $htmlcomments = true)
+    public function render($template, array $data = [], $eslashes = true, $htmlcomments = true)
     {
         $__content = $this->get_template($template, $eslashes, $htmlcomments);
 
@@ -27,12 +27,6 @@ class Template
         extract($data);
 
         return eval('return "' . $__content . '";');
-    }
-
-    public function render($template, $eslashes = true, $htmlcomments = true)
-    {
-        $__content = $this->get_template($template, $eslashes, $htmlcomments);
-        return 'return "' . $__content . '";';
     }
 
     public function install_render($template, array $data = [])

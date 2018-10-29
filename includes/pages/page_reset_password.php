@@ -32,6 +32,6 @@ class PageResetPassword extends Page implements I_BeLoggedCannot
         $row = $this->db->fetch_array_assoc($result);
         $sign = md5($row['uid'] . $this->settings['random_key']);
 
-        return $this->template->render2("reset_password", compact('row', 'sign'));
+        return $this->template->render("reset_password", compact('row', 'sign'));
     }
 }

@@ -96,10 +96,10 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
                             $text = $this->lang->strtoupper($name);
                             break;
                     }
-                    $data_values .= $this->template->render2("tr_name_input", compact('text', 'name', 'value'));
+                    $data_values .= $this->template->render("tr_name_input", compact('text', 'name', 'value'));
                 }
 
-                $output = $this->template->render2(
+                $output = $this->template->render(
                     "admin/action_boxes/transaction_service_edit",
                     compact('transaction_service', 'data_values')
                 );

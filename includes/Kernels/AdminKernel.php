@@ -71,18 +71,18 @@ class AdminKernel extends Kernel
             if (isset($_SESSION['info'])) {
                 if ($_SESSION['info'] == "wrong_data") {
                     $text = $lang->translate('wrong_login_data');
-                    $warning = $template->render2("admin/login_warning", compact('text'));
+                    $warning = $template->render("admin/login_warning", compact('text'));
                 } else {
                     if ($_SESSION['info'] == "no_privilages") {
                         $text = $lang->translate('no_access');
-                        $warning = $template->render2("admin/login_warning", compact('text'));
+                        $warning = $template->render("admin/login_warning", compact('text'));
                     }
                 }
                 unset($_SESSION['info']);
             }
 
             // Pobranie headera
-            $header = $template->render2("admin/header", compact('heart'));
+            $header = $template->render("admin/header", compact('heart'));
 
             $get_data = "";
             // Fromatujemy dane get
@@ -91,7 +91,7 @@ class AdminKernel extends Kernel
             }
 
             // Pobranie szablonu logowania
-            return new Response($template->render2("admin/login", compact('header', 'warning')));
+            return new Response($template->render("admin/login", compact('header', 'warning')));
         }
 
         $content = get_content("admincontent", $request);
@@ -100,7 +100,7 @@ class AdminKernel extends Kernel
         if (get_privilages("view_player_flags")) {
             $pid = "players_flags";
             $name = $lang->translate($pid);;
-            $players_flags_link = $template->render2("admin/page_link", compact('pid', 'name'));
+            $players_flags_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privilages("view_user_services")) {
             $pid = '';
@@ -111,83 +111,83 @@ class AdminKernel extends Kernel
                 }
             };
             $name = $lang->translate('users_services');
-            $user_service_link = $template->render2("admin/page_link", compact('pid', 'name'));
+            $user_service_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privilages("view_income")) {
             $pid = "income";
             $name = $lang->translate($pid);;
-            $income_link = $template->render2("admin/page_link", compact('pid', 'name'));
+            $income_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privilages("manage_settings")) {
             // Ustawienia sklepu
             $pid = "settings";
             $name = $lang->translate($pid);;
-            $settings_link = $template->render2("admin/page_link", compact('pid', 'name'));
+            $settings_link = $template->render("admin/page_link", compact('pid', 'name'));
 
             // Płatności
             $pid = "transaction_services";
             $name = $lang->translate($pid);;
-            $transaction_services_link = $template->render2("admin/page_link", compact('pid', 'name'));
+            $transaction_services_link = $template->render("admin/page_link", compact('pid', 'name'));
 
             // Taryfy
             $pid = "tariffs";
             $name = $lang->translate($pid);;
-            $tariffs_link = $template->render2("admin/page_link", compact('pid', 'name'));
+            $tariffs_link = $template->render("admin/page_link", compact('pid', 'name'));
 
             // Cennik
             $pid = "pricelist";
             $name = $lang->translate($pid);;
-            $pricelist_link = $template->render2("admin/page_link", compact('pid', 'name'));
+            $pricelist_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privilages("view_users")) {
             $pid = "users";
             $name = $lang->translate($pid);;
-            $users_link = $template->render2("admin/page_link", compact('pid', 'name'));
+            $users_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privilages("view_groups")) {
             $pid = "groups";
             $name = $lang->translate($pid);;
-            $groups_link = $template->render2("admin/page_link", compact('pid', 'name'));
+            $groups_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privilages("view_servers")) {
             $pid = "servers";
             $name = $lang->translate($pid);;
-            $servers_link = $template->render2("admin/page_link", compact('pid', 'name'));
+            $servers_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privilages("view_services")) {
             $pid = "services";
             $name = $lang->translate($pid);;
-            $services_link = $template->render2("admin/page_link", compact('pid', 'name'));
+            $services_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privilages("view_sms_codes")) {
             // Kody SMS
             $pid = "sms_codes";
             $name = $lang->translate($pid);;
-            $sms_codes_link = $template->render2("admin/page_link", compact('pid', 'name'));
+            $sms_codes_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privilages("view_service_codes")) {
             $pid = "service_codes";
             $name = $lang->translate($pid);;
-            $service_codes_link = $template->render2("admin/page_link", compact('pid', 'name'));
+            $service_codes_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privilages("view_antispam_questions")) {
             // Pytania bezpieczeństwa
             $pid = "antispam_questions";
             $name = $lang->translate($pid);;
-            $antispam_questions_link = $template->render2("admin/page_link", compact('pid', 'name'));
+            $antispam_questions_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privilages("view_logs")) {
             // Pytania bezpieczeństwa
             $pid = "logs";
             $name = $lang->translate($pid);;
-            $logs_link = $template->render2("admin/page_link", compact('pid', 'name'));
+            $logs_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
 
         // Pobranie headera
-        $header = $template->render2("admin/header", compact('heart'));
+        $header = $template->render("admin/header", compact('heart'));
 
         // Pobranie ostatecznego szablonu
-        return new Response($template->render2(
+        return new Response($template->render(
             "admin/index",
             compact('header', 'license', 'user', 'settings_link', 'antispam_questions_link',
                 'transaction_services_link', 'services_link', 'servers_link', 'tariffs_link', 'pricelist_link',

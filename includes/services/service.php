@@ -86,7 +86,7 @@ abstract class Service
     public function description_full_get()
     {
         $file = "services/" . escape_filename($this->service['id']) . "_desc";
-        return $this->template->render2($file, [], true, false);
+        return $this->template->render($file, [], true, false);
     }
 
     public function description_short_get()

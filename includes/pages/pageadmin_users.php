@@ -121,12 +121,12 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
                     ]);
                 }
 
-                $output = $this->template->render2("admin/action_boxes/user_edit", compact('user', 'groups'));
+                $output = $this->template->render("admin/action_boxes/user_edit", compact('user', 'groups'));
                 break;
 
             case "charge_wallet":
                 $user = $this->heart->get_user($data['uid']);
-                $output = $this->template->render2("admin/action_boxes/user_charge_wallet", compact('user'));
+                $output = $this->template->render("admin/action_boxes/user_charge_wallet", compact('user'));
                 break;
 
             default:

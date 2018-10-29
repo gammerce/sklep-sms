@@ -78,7 +78,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
 
         switch ($box_id) {
             case "antispam_question_add":
-                $output = $this->template->render2("admin/action_boxes/antispam_question_add");
+                $output = $this->template->render("admin/action_boxes/antispam_question_add");
                 break;
 
             case "antispam_question_edit":
@@ -90,7 +90,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
                 $row['question'] = htmlspecialchars($row['question']);
                 $row['answers'] = htmlspecialchars($row['answers']);
 
-                $output = $this->template->render2("admin/action_boxes/antispam_question_edit", compact('row'));
+                $output = $this->template->render("admin/action_boxes/antispam_question_edit", compact('row'));
                 break;
 
             default:

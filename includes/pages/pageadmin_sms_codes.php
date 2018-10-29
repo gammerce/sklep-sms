@@ -86,7 +86,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
                     ]);
                 }
 
-                $output = $this->template->render2("admin/action_boxes/sms_code_add", compact('tariffs'));
+                $output = $this->template->render("admin/action_boxes/sms_code_add", compact('tariffs'));
                 break;
 
             default:
