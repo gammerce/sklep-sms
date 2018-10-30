@@ -64,17 +64,14 @@ class PaymentModule_Cssetti extends PaymentModule implements IPayment_Sms
         }
 
         if (floatval($content) > 0) {
-            if (!isset($this->numbers[$content])) {
-                return [
-                    'status' => IPayment_Sms::BAD_NUMBER,
-                    'tariff' => null,
-                ];
-            }
+            $expectedNumber = array_get($this->numbers, $content);
 
-            if ($this->numbers[$content] != $number) {
+            if ($expectedNumber === null || $expectedNumber != $number) {
+                $tariff = $this->getTariffByNumber($expectedNumber);
+
                 return [
                     'status' => IPayment_Sms::BAD_NUMBER,
-                    'tariff' => $this->getTariffByNumber($this->numbers[$content])->getId(),
+                    'tariff' => $tariff ? $tariff->getId() : null,
                 ];
             }
 
