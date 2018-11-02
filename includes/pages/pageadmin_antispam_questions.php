@@ -69,8 +69,6 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
 
     public function get_action_box($box_id, $data)
     {
-        $lang = $this->lang;
-
         if (!get_privilages("manage_antispam_questions")) {
             return [
                 'status' => "not_logged_in",
@@ -80,7 +78,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
 
         switch ($box_id) {
             case "antispam_question_add":
-                $output = eval($this->template->render("admin/action_boxes/antispam_question_add"));
+                $output = $this->template->render("admin/action_boxes/antispam_question_add");
                 break;
 
             case "antispam_question_edit":
@@ -92,8 +90,11 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
                 $row['question'] = htmlspecialchars($row['question']);
                 $row['answers'] = htmlspecialchars($row['answers']);
 
-                $output = eval($this->template->render("admin/action_boxes/antispam_question_edit"));
+                $output = $this->template->render("admin/action_boxes/antispam_question_edit", compact('row'));
                 break;
+
+            default:
+                $output = '';
         }
 
         return [

@@ -67,8 +67,6 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
 
     public function get_action_box($box_id, $data)
     {
-        $lang = $this->lang;
-
         if (!get_privilages("manage_groups")) {
             return [
                 'status' => "not_logged_in",
@@ -117,17 +115,20 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
             $name = htmlspecialchars($row['Field']);
             $text = $this->lang->translate('privilage_' . $row['Field']);
 
-            $privilages .= eval($this->template->render("tr_text_select"));
+            $privilages .= $this->template->render("tr_text_select", compact('name', 'text', 'values'));
         }
 
         switch ($box_id) {
             case "group_add":
-                $output = eval($this->template->render("admin/action_boxes/group_add"));
+                $output = $this->template->render("admin/action_boxes/group_add", compact('privilages'));
                 break;
 
             case "group_edit":
-                $output = eval($this->template->render("admin/action_boxes/group_edit"));
+                $output = $this->template->render("admin/action_boxes/group_edit", compact('privilages', 'group'));
                 break;
+
+            default:
+                $output = '';
         }
 
         return [

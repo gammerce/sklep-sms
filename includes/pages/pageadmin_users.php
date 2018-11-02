@@ -101,9 +101,6 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 
     public function get_action_box($box_id, $data)
     {
-        $settings = $this->settings;
-        $lang = $this->lang;
-
         if (!get_privilages("manage_users")) {
             return [
                 'status' => "not_logged_in",
@@ -124,14 +121,16 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
                     ]);
                 }
 
-                $output = eval($this->template->render("admin/action_boxes/user_edit"));
+                $output = $this->template->render("admin/action_boxes/user_edit", compact('user', 'groups'));
                 break;
 
             case "charge_wallet":
                 $user = $this->heart->get_user($data['uid']);
-
-                $output = eval($this->template->render("admin/action_boxes/user_charge_wallet"));
+                $output = $this->template->render("admin/action_boxes/user_charge_wallet", compact('user'));
                 break;
+
+            default:
+                $output = '';
         }
 
         return [

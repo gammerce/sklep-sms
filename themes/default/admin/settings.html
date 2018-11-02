@@ -1,4 +1,4 @@
-<div class="title">{$this->title}</div>
+<div class="title">{$title}</div>
 
 <form id="form_settings_edit">
   <div class="settings-brick">
@@ -125,10 +125,8 @@
         <td>{$lang->translate('cron_page_start')}</td>
         <td>
           <select name="cron">
-            <option value="1" {$cron[
-            'yes']}>{$lang->translate('yes')}</option>
-            <option value="0" {$cron[
-            'no']}>{$lang->translate('no')}</option>
+            <option value="1" {$cron['yes']}>{$lang->translate('yes')}</option>
+            <option value="0" {$cron['no']}>{$lang->translate('no')}</option>
           </select>
         </td>
       </tr>

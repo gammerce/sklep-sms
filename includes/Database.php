@@ -34,29 +34,40 @@ class Database
         $this->close();
     }
 
+    /**
+     * @throws SqlQueryException
+     */
     public function connect()
     {
         $this->connectWithoutDb();
         $this->selectDb($this->name);
     }
 
+    /**
+     * @throws SqlQueryException
+     */
     public function connectWithoutDb()
     {
         $this->link = mysqli_connect($this->host, $this->user, $this->pass, '', $this->port);
         if (!$this->link) {
             $this->error = mysqli_connect_error();
             $this->errno = mysqli_connect_errno();
-            $this->exception("no_server_connection");
+            throw $this->exception("no_server_connection");
         }
 
         $this->query("SET NAMES utf8");
     }
 
+
+    /**
+     * @param string $name
+     * @throws SqlQueryException
+     */
     public function selectDb($name)
     {
         $result = mysqli_select_db($this->link, $name);
         if (!$result) {
-            $this->exception("no_db_connection");
+            throw $this->exception("no_db_connection");
         }
     }
 
@@ -81,6 +92,11 @@ class Database
         return vsprintf($query, $values);
     }
 
+    /**
+     * @param $query
+     * @return \mysqli_result
+     * @throws SqlQueryException
+     */
     public function query($query)
     {
         if (!$this->isConnected()) {
@@ -89,15 +105,19 @@ class Database
 
         $this->counter += 1;
         $this->query = $query;
+
         if ($this->result = mysqli_query($this->link, $query)) {
             return $this->result;
-        } else {
-            $this->exception("query_error");
-
-            return false;
         }
+
+        throw $this->exception("query_error");
     }
 
+    /**
+     * @param string $query
+     * @return bool
+     * @throws SqlQueryException
+     */
     public function multi_query($query)
     {
         if (!$this->isConnected()) {
@@ -107,13 +127,17 @@ class Database
         $this->query = $query;
         if ($this->result = mysqli_multi_query($this->link, $query)) {
             return $this->result;
-        } else {
-            $this->exception("query_error");
-
-            return false;
         }
+
+        throw $this->exception("query_error");
     }
 
+    /**
+     * @param string $query
+     * @param string $column
+     * @return mixed|null
+     * @throws SqlQueryException
+     */
     public function get_column($query, $column)
     {
         $this->query = $query;
@@ -131,41 +155,46 @@ class Database
         return $row[$column];
     }
 
+    /**
+     * @param \mysqli_result $result
+     * @return int
+     * @throws SqlQueryException
+     */
     public function num_rows($result)
     {
         if (empty($result)) {
-            $this->exception("no_query_num_rows");
-
-            return false;
-        } else {
-            return mysqli_num_rows($result);
+            throw $this->exception("no_query_num_rows");
         }
+
+        return mysqli_num_rows($result);
     }
 
+    /**
+     * @param \mysqli_result $result
+     * @return array|null
+     * @throws SqlQueryException
+     */
     public function fetch_array_assoc($result)
     {
         if (empty($result)) {
-            $this->exception("no_query_fetch_array_assoc");
-
-            return false;
-        } else {
-            $data = mysqli_fetch_assoc($result);
+            throw $this->exception("no_query_fetch_array_assoc");
         }
 
-        return $data;
+        return mysqli_fetch_assoc($result);
     }
 
+    /**
+     * @param \mysqli_result $result
+     * @return array|null
+     * @throws SqlQueryException
+     */
     public function fetch_array($result)
     {
         if (empty($result)) {
-            $this->exception("no_query_fetch_array");
-
-            return false;
-        } else {
-            $data = mysqli_fetch_array($result);
+            throw $this->exception("no_query_fetch_array");
         }
 
-        return $data;
+        return mysqli_fetch_array($result);
     }
 
     public function last_id()
@@ -239,6 +268,10 @@ class Database
         $this->query("CREATE DATABASE IF NOT EXISTS $database");
     }
 
+    /**
+     * @param string $message_id
+     * @return SqlQueryException
+     */
     private function exception($message_id)
     {
         $exception = new SqlQueryException($message_id);
@@ -252,7 +285,7 @@ class Database
         $exception->setErrorno($this->errno);
         $exception->setQuery($this->query);
 
-        throw $exception;
+        return $exception;
     }
 
     public function isConnected()

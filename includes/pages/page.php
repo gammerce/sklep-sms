@@ -100,8 +100,8 @@ abstract class Page
     /**
      * Zwraca treść danej strony
      *
-     * @param string $get
-     * @param string $post
+     * @param array $get
+     * @param array $post
      *
      * @return string
      */
@@ -123,8 +123,6 @@ abstract class PageSimple extends Page
 
     protected function content($get, $post)
     {
-        $lang = $this->lang;
-        $settings = $this->settings;
-        return eval($this->template->render($this->templateName));
+        return $this->template->render($this->templateName);
     }
 }

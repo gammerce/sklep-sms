@@ -68,8 +68,6 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
 
     public function get_action_box($box_id, $data)
     {
-        $lang = $this->lang;
-
         if (!get_privilages("manage_user_services")) {
             return [
                 'status' => "not_logged_in",
@@ -92,7 +90,7 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
                     ]);
                 }
 
-                $output = eval($this->template->render("admin/action_boxes/user_service_add"));
+                $output = $this->template->render("admin/action_boxes/user_service_add", compact('services'));
                 break;
 
             case "user_service_edit":
@@ -107,7 +105,10 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
                     $form_data = $service_module->user_service_admin_edit_form_get($user_service);
                 }
 
-                $output = eval($this->template->render("admin/action_boxes/user_service_edit"));
+                $output = $this->template->render(
+                    "admin/action_boxes/user_service_edit",
+                    compact('service_module_id', 'form_data')
+                );
                 break;
         }
 

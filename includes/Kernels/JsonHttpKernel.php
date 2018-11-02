@@ -288,7 +288,7 @@ class JsonHttpKernel extends Kernel
             ));
 
             $link = $settings['shop_url_slash'] . "index.php?pid=reset_password&code=" . htmlspecialchars($key);
-            $text = eval($templates->render("emails/forgotten_password"));
+            $text = $templates->render("emails/forgotten_password", compact('user2', 'link'));
             $ret = $mailer->send($user2->getEmail(), $user2->getUsername(), "Reset Hasła", $text);
 
             if ($ret == "not_sent") {
@@ -542,7 +542,7 @@ class JsonHttpKernel extends Kernel
                 output_page($lang->translate('service_cant_be_modified'));
             }
 
-            $buttons = eval($templates->render("services/my_services_savencancel"));
+            $buttons = $templates->render("services/my_services_savencancel");
 
             output_page($buttons . $service_module->user_own_service_edit_form_get($user_service));
         } elseif ($action == "get_user_service_brick") {
@@ -670,14 +670,12 @@ class JsonHttpKernel extends Kernel
             if ($template == "register_registered") {
                 $username = htmlspecialchars($_POST['username']);
                 $email = htmlspecialchars($_POST['email']);
-            } else {
-                if ($template == "forgotten_password_sent") {
-                    $username = htmlspecialchars($_POST['username']);
-                }
+            } elseif ($template == "forgotten_password_sent") {
+                $username = htmlspecialchars($_POST['username']);
             }
 
             if (!isset($data['template'])) {
-                $data['template'] = eval($templates->render("jsonhttp/" . $template));
+                $data['template'] = $templates->render("jsonhttp/" . $template, compact('username', 'email'));
             }
 
             output_page(json_encode($data), 1);

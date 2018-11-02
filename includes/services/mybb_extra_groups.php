@@ -60,8 +60,13 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
             $mybb_groups = htmlspecialchars($this->service['data']['mybb_groups']);
         }
 
-        $lang = $this->lang;
-        return eval($this->template->render("services/" . $this::MODULE_ID . "/extra_fields", true, false));
+        return $this->template->render(
+            "services/mybb_extra_groups/extra_fields",
+            compact('web_sel_no', 'web_sel_yes', 'mybb_groups', 'db_host', 'db_user', 'db_password', 'db_name')
+            + ['moduleId' => $this->get_module_id()],
+            true,
+            false
+        );
     }
 
     /**
@@ -286,8 +291,6 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
     public function purchase_form_get()
     {
         $user = $this->auth->user();
-        $settings = $this->settings;
-        $lang = $this->lang;
 
         // Pozyskujemy taryfy
         $result = $this->db->query($this->db->prepare(
@@ -307,10 +310,18 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
                 : 0;
             $amount = $row['amount'] != -1 ? $row['amount'] . " " . $this->service['tag'] : $this->lang->translate('forever');
             $provision = number_format($row['provision'] / 100, 2);
-            $amounts .= eval($this->template->render("services/" . $this::MODULE_ID . "/purchase_value", true, false));
+            $amounts .= $this->template->render(
+                "services/mybb_extra_groups/purchase_value",
+                compact('provision', 'sms_cost', 'row', 'amount'),
+                true,
+                false
+            );
         }
 
-        return eval($this->template->render("services/" . $this::MODULE_ID . "/purchase_form"));
+        return $this->template->render(
+            "services/mybb_extra_groups/purchase_form",
+            compact('amounts', 'user') + ['serviceId' => $this->service['id']]
+        );
     }
 
     /**
@@ -417,8 +428,12 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
             ? ($purchase_data->getOrder('amount') . " " . $this->service['tag'])
             : $this->lang->translate('forever');
 
-        $lang = $this->lang;
-        return eval($this->template->render("services/" . $this::MODULE_ID . "/order_details", true, false));
+        return $this->template->render(
+            "services/mybb_extra_groups/order_details",
+            compact('amount', 'username', 'email') + ['serviceName' => $this->service['name']],
+            true,
+            false
+        );
     }
 
     /**
@@ -485,14 +500,25 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
             ? (number_format($data['cost'] / 100.0, 2) . " " . $this->settings['currency'])
             : $this->lang->translate('none');
 
-        $lang = $this->lang;
-        $settings = $this->settings;
-
         if ($action == "email") {
-            return eval($this->template->render("services/" . $this::MODULE_ID . "/purchase_info_email", true, false));
-        } elseif ($action == "web") {
-            return eval($this->template->render("services/" . $this::MODULE_ID . "/purchase_info_web", true, false));
-        } elseif ($action == "payment_log") {
+            return $this->template->render(
+                "services/mybb_extra_groups/purchase_info_email",
+                compact('username', 'amount', 'cost') + ['serviceName' => $this->service['name']],
+                true,
+                false
+            );
+        }
+
+        if ($action == "web") {
+            return $this->template->render(
+                "services/mybb_extra_groups/purchase_info_web",
+                compact('cost', 'username', 'amount', 'email') + ['serviceName' => $this->service['name']],
+                true,
+                false
+            );
+        }
+
+        if ($action == "payment_log") {
             return [
                 'text'  => $output = $this->lang->sprintf(
                     $this->lang->translate('mybb_group_bought'), $this->service['name'], $username
@@ -500,6 +526,8 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
                 'class' => "outcome",
             ];
         }
+
+        return '';
     }
 
     public function user_service_delete($user_service, $who)
@@ -621,8 +649,12 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
      */
     public function user_service_admin_add_form_get()
     {
-        $lang = $this->lang;
-        return eval($this->template->render("services/" . $this::MODULE_ID . "/user_service_admin_add", true, false));
+        return $this->template->render(
+            "services/mybb_extra_groups/user_service_admin_add",
+            ['moduleId' => $this->get_module_id()],
+            true,
+            false
+        );
     }
 
     public function user_service_admin_add($post)
@@ -733,14 +765,14 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
         $service = $this->service['name'];
         $mybb_uid = htmlspecialchars($username . " ({$user_service['mybb_uid']})");
 
-        $settings = $this->settings;
-        $lang = $this->lang;
-        return eval($this->template->render("services/" . $this::MODULE_ID . "/user_own_service"));
+        return $this->template->render(
+            "services/mybb_extra_groups/user_own_service",
+            compact('user_service', 'service', 'mybb_uid', 'expire') + ['moduleId' => $this->get_module_id()]
+        );
     }
 
     /**
      * @param string|int $user_id Int - by uid, String - by username
-     *
      * @return null|MybbUser
      */
     private function createMybbUser($user_id)
@@ -828,13 +860,16 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
         ));
     }
 
+    /**
+     * @throws SqlQueryException
+     */
     private function connectMybb()
     {
         if ($this->db_mybb !== null) {
             return;
         }
 
-        $this->db_mybb = new Database($this->db_host, $this->db_user, $this->db_password, $this->db_name);
+        $this->db_mybb = new Database($this->db_host, 3306, $this->db_user, $this->db_password, $this->db_name);
         $this->db_mybb->query("SET NAMES utf8");
     }
 }

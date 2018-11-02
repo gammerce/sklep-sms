@@ -13,9 +13,6 @@ class PageRegister extends Page implements I_BeLoggedCannot
 
     protected function content($get, $post)
     {
-        $settings = $this->settings;
-        $lang = $this->lang;
-
         $antispam_question = $this->db->fetch_array_assoc($this->db->query(
             "SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " .
             "ORDER BY RAND() " .
@@ -23,6 +20,6 @@ class PageRegister extends Page implements I_BeLoggedCannot
         ));
         $_SESSION['asid'] = $antispam_question['id'];
 
-        return eval($this->template->render("register"));
+        return $this->template->render("register", compact('antispam_question'));
     }
 }

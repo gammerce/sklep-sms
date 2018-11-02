@@ -70,8 +70,6 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
 
     public function get_action_box($box_id, $data)
     {
-        $lang = $this->lang;
-
         if (!get_privilages("manage_sms_codes")) {
             return [
                 'status' => "not_logged_in",
@@ -88,8 +86,11 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
                     ]);
                 }
 
-                $output = eval($this->template->render("admin/action_boxes/sms_code_add"));
+                $output = $this->template->render("admin/action_boxes/sms_code_add", compact('tariffs'));
                 break;
+
+            default:
+                $output = '';
         }
 
         return [
