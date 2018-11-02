@@ -427,8 +427,8 @@ class JsonHttpAdminKernel extends Kernel
             }
 
             if ($licenseToken) {
-                $setLicenseToken = $db->prepare("WHEN 'license_password' THEN '%s' ", [$licenseToken]);
-                $keyLicenseToken = ",'license_password'";
+                $setLicenseToken = $db->prepare("WHEN 'license_password' THEN '%s' WHEN 'license_login' THEN 'license' ", [$licenseToken]);
+                $keyLicenseToken = ",'license_password', 'license_login'";
             }
 
             // Edytuj ustawienia

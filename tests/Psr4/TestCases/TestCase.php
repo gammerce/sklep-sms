@@ -24,6 +24,9 @@ class TestCase extends BaseTestCase
     /** @var array */
     protected $afterApplicationCreatedCallbacks = [];
 
+    /** @var boolean */
+    protected $mockLocale = true;
+
     protected function setUp()
     {
         if (!$this->app) {
@@ -32,7 +35,10 @@ class TestCase extends BaseTestCase
 
         $this->factory = $this->app->make(Factory::class);
         $this->mockLicense();
-        $this->mockLocale();
+
+        if ($this->mockLocale) {
+            $this->mockLocale();
+        }
 
         /** @var Settings $settings */
         $settings = $this->app->make(Settings::class);

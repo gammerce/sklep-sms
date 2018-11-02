@@ -24,6 +24,38 @@ $(document).delegate("#pay_service_code", "click", function () {
     purchase_service("service_code");
 });
 
+function redirectToTransferWithPost(jsonObj) {
+    var form = $('<form>', {
+        action: jsonObj.data.url,
+        method: "POST"
+    });
+
+    $.each(jsonObj.data, function (key, value) {
+        if (key === "url")
+            return true; // continue
+
+        form.append($('<input>', {
+            type: "hidden",
+            name: key,
+            value: value
+        }));
+    });
+
+    // Bez tego nie dziala pod firefoxem
+    $('body').append(form);
+
+    // Wysyłamy formularz zakupu
+    form.submit();
+}
+
+function redirectToTransferWithGet(jsonObj) {
+    var url = jsonObj.data.url;
+    delete jsonObj.data.url;
+    var urlWithPath = url + '?' + $.param(jsonObj.data);
+
+    window.location.href = urlWithPath;
+}
+
 function purchase_service(method) {
     if (loader.blocked)
         return;
@@ -46,6 +78,7 @@ function purchase_service(method) {
         success: function (content) {
             $(".form_warning").remove(); // Usuniecie komunikatow o blednym wypelnieniu formualarza
 
+            var jsonObj;
             if (!(jsonObj = json_parse(content)))
                 return;
 
@@ -69,27 +102,18 @@ function purchase_service(method) {
                 });
             }
             else if (jsonObj.return_id == "transfer") {
-                var form = $('<form>', {
-                    action: jsonObj.data.url,
-                    method: "POST"
-                });
+                var method = jsonObj.data.method;
+                delete jsonObj.data.method;
 
-                $.each(jsonObj.data, function (key, value) {
-                    if (key == "url")
-                        return true; // continue
-
-                    form.append($('<input>', {
-                        type: "hidden",
-                        name: key,
-                        value: value
-                    }));
-                });
-
-                // Bez tego nie dziala pod firefoxem
-                $('body').append(form);
-
-                // Wysyłamy formularz zakupu
-                form.submit();
+                if (method === "GET") {
+                    redirectToTransferWithGet(jsonObj);
+                } else if (method === "POST") {
+                    redirectToTransferWithPost(jsonObj);
+                } else {
+                    console.error('Invalid method specified by PaymentModule');
+                    infobox.show_info(lang['sth_went_wrong'], false);
+                    return;
+                }
             }
             else if (!jsonObj.return_id) {
                 infobox.show_info(lang['sth_went_wrong'], false);

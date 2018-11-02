@@ -21,7 +21,7 @@ class SetLanguage implements MiddlewareContract
         /** @var LocaleService $localeService */
         $localeService = $app->make(LocaleService::class);
 
-        $locale = $localeService->getLocale();
+        $locale = $localeService->getLocale($request);
 
         $translationManager->user()->setLanguage($locale);
         $translationManager->shop()->setLanguage($settings['language']);
