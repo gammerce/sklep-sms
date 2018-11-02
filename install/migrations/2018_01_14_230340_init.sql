@@ -250,7 +250,7 @@ INSERT INTO `ss_sms_numbers` (`number`, `tariff`, `service`) VALUES
   ('71480', 1, 'pukawka'),
   ('71480', 1, 'zabijaka'),
   ('7155', 1, 'homepay'),
-  ('71624', 1, 'cssetti'),
+  ('7155', 1, 'cssetti'),
   ('72480', 2, 'cashbill'),
   ('72480', 2, 'pukawka'),
   ('72480', 2, 'zabijaka'),

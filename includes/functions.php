@@ -1282,6 +1282,10 @@ function log_to_file($file, $message)
     file_put_contents($file, $text);
 }
 
+function log_error($message) {
+    log_to_file(app()->errorsLogPath(), $message);
+}
+
 function array_get($array, $key, $default = null)
 {
     if (is_null($key)) {
