@@ -100,8 +100,8 @@ abstract class Page
     /**
      * Zwraca treść danej strony
      *
-     * @param string $get
-     * @param string $post
+     * @param array $get
+     * @param array $post
      *
      * @return string
      */

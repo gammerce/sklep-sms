@@ -1597,10 +1597,6 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements IService_Purc
      */
     private function tariffs_for_server($server_id)
     {
-        $heart = $this->heart;
-        $settings = $this->settings;
-        $lang = $this->lang;
-
         $server = $this->heart->get_server($server_id);
         $sms_service = if_strlen($server['sms_service'], $this->settings['sms_service']);
 

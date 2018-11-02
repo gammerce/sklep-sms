@@ -30,8 +30,8 @@ abstract class Block
     /**
      * Zwraca treść danego bloku
      *
-     * @param string $get
-     * @param string $post
+     * @param array $get
+     * @param array $post
      *
      * @return string
      */

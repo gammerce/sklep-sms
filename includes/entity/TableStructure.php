@@ -517,10 +517,6 @@ class Wrapper extends Div
         /** @var Template $template */
         $template = app()->make(Template::class);
 
-        /** @var TranslationManager $translationManager */
-        $translationManager = app()->make(TranslationManager::class);
-        $lang = $translationManager->user();
-
         /** @var Request $request */
         $request = app()->make(Request::class);
 
