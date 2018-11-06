@@ -108,6 +108,6 @@ class Page_UserOIwnServices extends Page implements I_BeLoggedMust
         $pagination = get_pagination($rows_count, $this->currentPage->getPageNumber(), "index.php", $get, 4);
         $pagination_class = strlen($pagination) ? "" : "display_none";
 
-        return eval($template->render("user_own_services"));
+        return $template->render("user_own_services", compact('user_own_services', 'pagination_class', 'pagination'));
     }
 }

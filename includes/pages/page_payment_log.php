@@ -66,7 +66,7 @@ class PagePaymentLog extends Page implements I_BeLoggedMust
             $row['auth_data'] = htmlspecialchars($row['auth_data']);
             $row['email'] = htmlspecialchars($row['email']);
 
-            $payment_log_brick = eval($template->render("payment_log_brick"));
+            $payment_log_brick = $template->render("payment_log_brick", compact('date', 'cost', 'desc'));
             $payment_logs .= create_dom_element("div", $payment_log_brick, $data = [
                 'class' => "brick " . $class,
             ]);
@@ -75,6 +75,6 @@ class PagePaymentLog extends Page implements I_BeLoggedMust
         $pagination = get_pagination($rows_count, $this->currentPage->getPageNumber(), "index.php", $get, 10);
         $pagination_class = strlen($pagination) ? "" : "display_none";
 
-        return eval($template->render("payment_log"));
+        return $template->render("payment_log", compact('payment_logs', 'pagination_class', 'pagination'));
     }
 }

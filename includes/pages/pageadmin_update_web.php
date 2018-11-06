@@ -1,6 +1,5 @@
 <?php
 
-use App\Template;
 use App\Version;
 
 class PageAdminUpdateWeb extends PageAdmin
@@ -11,7 +10,7 @@ class PageAdminUpdateWeb extends PageAdmin
     /** @var Version */
     private $version;
 
-    public function __construct(Version $version, Template $template)
+    public function __construct(Version $version)
     {
         parent::__construct();
 
@@ -25,10 +24,9 @@ class PageAdminUpdateWeb extends PageAdmin
 
         // Mamy najnowszą wersję
         if ($this->app->version() === $newestVersion) {
-            $lang = $this->lang;
-            return eval($this->template->render("admin/no_update"));
+            return $this->template->render("admin/no_update");
         }
 
-        return eval($this->template->render("admin/update_web"));
+        return $this->template->render("admin/update_web", compact('newestVersion') + ['title' => $this->title]);
     }
 }

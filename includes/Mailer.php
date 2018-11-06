@@ -49,7 +49,6 @@ class Mailer
             $mail->isSMTP();
             $mail->XMailer = ' ';
             $mail->CharSet = 'UTF-8';
-            $mail->Hostname = $this->config['Hostname'];
             $mail->Host = $this->config['Host'];
             $mail->SMTPAuth = true;
             $mail->Username = $sender_email;

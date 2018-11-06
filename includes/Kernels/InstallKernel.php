@@ -62,7 +62,7 @@ class InstallKernel extends Kernel
                 $privilage = "bad";
             }
 
-            $files_privilages .= eval($template->install_full_render('file_privilages'));
+            $files_privilages .= $template->install_full_render('file_privilages', compact('file', 'privilage'));
         }
 
         $server_modules = '';
@@ -75,13 +75,16 @@ class InstallKernel extends Kernel
                 $title = "Nieprawidłowo";
             }
 
-            $server_modules .= eval($template->install_full_render('module'));
+            $server_modules .= $template->install_full_render('module', compact('module', 'status', 'title'));
         }
 
         $notifyHttpServer = $this->generateHttpServerNotification();
 
         // Pobranie ostatecznego szablonu
-        $output = eval($template->install_full_render('index'));
+        $output = $template->install_full_render(
+            'index',
+            compact('notifyHttpServer', 'files_privilages', 'server_modules')
+        );
 
         return new Response($output);
     }
@@ -101,13 +104,13 @@ class InstallKernel extends Kernel
 
         $everything_ok = true;
         // Pobieramy informacje o plikach ktore sa git i te ktore sa be
-        $update_info = $updateInfo->updateInfo($everything_ok, $files_priv, $files_del, $modules);
+        $filesModulesStatus = $updateInfo->updateInfo($everything_ok, $files_priv, $files_del, $modules);
         $class = $everything_ok ? "ok" : "bad";
 
         $notifyHttpServer = $this->generateHttpServerNotification();
 
         // Pobranie ostatecznego szablonu
-        $output = eval($template->install_update_render('index'));
+        $output = $template->install_update_render('index', compact('notifyHttpServer', 'filesModulesStatus', 'class'));
 
         return new Response($output);
     }
@@ -121,6 +124,6 @@ class InstallKernel extends Kernel
             return '';
         }
 
-        return eval($template->install_render('http_server_notification'));
+        return $template->install_render('http_server_notification');
     }
 }

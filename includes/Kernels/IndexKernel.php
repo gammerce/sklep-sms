@@ -11,9 +11,7 @@ use App\Middlewares\ManageAuthentication;
 use App\Middlewares\RunCron;
 use App\Middlewares\SetLanguage;
 use App\Middlewares\UpdateUserActivity;
-use App\Settings;
 use App\Template;
-use App\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -33,13 +31,6 @@ class IndexKernel extends Kernel
     {
         /** @var Heart $heart */
         $heart = $this->app->make(Heart::class);
-
-        /** @var TranslationManager $translationManager */
-        $translationManager = $this->app->make(TranslationManager::class);
-        $lang = $translationManager->user();
-
-        /** @var Settings $settings */
-        $settings = $this->app->make(Settings::class);
 
         /** @var License $license */
         $license = $this->app->make(License::class);
@@ -70,10 +61,13 @@ class IndexKernel extends Kernel
         $user_buttons = get_content("user_buttons", $request);
 
         // Pobranie headera
-        $header = eval($template->render("header"));
+        $header = $template->render("header", compact('heart', 'license'));
 
         // Pobranie ostatecznego szablonu
-        $output = eval($template->render("index"));
+        $output = $template->render(
+            "index",
+            compact("header", "heart", "logged_info", "wallet", "services_buttons", "content", "user_buttons")
+        );
 
         return new Response($output);
     }

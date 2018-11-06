@@ -14,6 +14,9 @@ abstract class PaymentModule
     /** @var Requester */
     protected $requester;
 
+    /** @var Translator */
+    protected $langShop;
+
     /** @var  string */
     protected $name;
 
@@ -37,6 +40,10 @@ abstract class PaymentModule
     {
         $this->db = app()->make(Database::class);
         $this->requester = app()->make(Requester::class);
+
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $this->langShop = $translationManager->shop();
 
         $result = $this->db->query($this->db->prepare(
             "SELECT `name`, `data`, `data_hidden`, `sms`, `transfer` " .

@@ -62,7 +62,7 @@ class ExceptionHandler implements ExceptionHandlerContract
 
         $exceptionDetails = $this->getExceptionDetails($e);
 
-        log_to_file($this->app->errorsLogPath(), json_encode($exceptionDetails, JSON_PRETTY_PRINT));
+        log_error(json_encode($exceptionDetails, JSON_PRETTY_PRINT));
 
         if ($this->app->bound(Raven_Client::class)) {
             $this->reportToSentry($e);

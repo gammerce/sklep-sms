@@ -60,16 +60,12 @@ class PaymentModule_Microsms extends PaymentModule implements IPayment_Sms, IPay
         $content = $response->json();
 
         if (strlen(array_get($content, 'error'))) {
-            log_to_file(
-                app()->errorsLogPath(), "Kod błędu: {$content['error']['errorCode']} - {$content['error']['message']}"
-            );
+            log_error("Kod błędu: {$content['error']['errorCode']} - {$content['error']['message']}");
             return IPayment_Sms::ERROR;
         }
 
         if ($content['connect'] === false) {
-            log_to_file(
-                app()->errorsLogPath(), "Kod błędu: {$content['data']['errorCode']} - {$content['data']['message']}"
-            );
+            log_error("Kod błędu: {$content['data']['errorCode']} - {$content['data']['message']}");
             return IPayment_Sms::ERROR;
         }
 

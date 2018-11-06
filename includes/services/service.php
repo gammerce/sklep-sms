@@ -45,7 +45,7 @@ abstract class Service
     /**
      * Metoda wywoływana przy usuwaniu usługi użytkownika.
      *
-     * @param array $user_service Dane o usłudze z bazy danych
+     * @param array  $user_service Dane o usłudze z bazy danych
      * @param string $who Kto wywołał akcję ( admin, task )
      *
      * @return bool
@@ -86,7 +86,7 @@ abstract class Service
     public function description_full_get()
     {
         $file = "services/" . escape_filename($this->service['id']) . "_desc";
-        return eval($this->template->render($file, true, false));
+        return $this->template->render($file, [], true, false);
     }
 
     public function description_short_get()
@@ -102,7 +102,7 @@ abstract class Service
     /**
      * Aktualizuje usługę gracza
      *
-     * @param array $set (column, value, data)
+     * @param array  $set (column, value, data)
      * @param string $where1 Where dla update na tabeli user_service
      * @param string $where2 Where dla update na tabeli modułu
      *

@@ -1,9 +1,7 @@
 <?php
 
 use App\Auth;
-use App\Settings;
 use App\Template;
-use App\TranslationManager;
 
 abstract class Block
 {
@@ -32,8 +30,8 @@ abstract class Block
     /**
      * Zwraca treść danego bloku
      *
-     * @param string $get
-     * @param string $post
+     * @param array $get
+     * @param array $post
      *
      * @return string
      */
@@ -75,16 +73,9 @@ abstract class BlockSimple extends Block
         $auth = app()->make(Auth::class);
         $user = $auth->user();
 
-        /** @var TranslationManager $translationManager */
-        $translationManager = app()->make(TranslationManager::class);
-        $lang = $translationManager->user();
-
-        /** @var Settings $settings */
-        $settings = app()->make(Settings::class);
-
         /** @var Template $template */
         $template = app()->make(Template::class);
 
-        return eval($template->render($this->template));
+        return $template->render($this->template, compact('auth', 'user'));
     }
 }

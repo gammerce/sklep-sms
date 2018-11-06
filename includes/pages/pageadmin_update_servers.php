@@ -21,8 +21,6 @@ class PageAdminUpdateServers extends PageAdmin
 
     protected function content($get, $post)
     {
-        $lang = $this->lang;
-
         $response = $this->requester->get('https://sklep-sms.pl/version.php', [
             'action' => 'get_newest',
             'type'   => 'engines',
@@ -56,31 +54,40 @@ class PageAdminUpdateServers extends PageAdmin
             }
 
             // Pobieramy informacje o danym serwerze, jego obecnej wersji i nastepnej wersji
-            $version_bricks .= eval($this->template->render("admin/update_version_block"));
+            $version_bricks .= $this->template->render(
+                "admin/update_version_block",
+                compact('name', 'current_version', 'next_version', 'newest_version')
+            );
 
             // Pobieramy plik kolejnej wersji update
             $file_data['type'] = "update";
             $file_data['platform'] = $engine;
             $file_data['version'] = $next_version;
-            $next_package = eval($this->template->render("admin/update_file"));
+            $next_package = $this->template->render("admin/update_file", compact('file_data'));
 
             // Pobieramy plik najnowszej wersji full
             $file_data['type'] = "full";
             $file_data['platform'] = $engine;
             $file_data['version'] = $newest_version;
-            $newest_package = eval($this->template->render("admin/update_file"));
+            $newest_package = $this->template->render("admin/update_file", compact('file_data'));
 
-            $servers_versions .= eval($this->template->render("admin/update_server_version"));
+            $servers_versions .= $this->template->render(
+                "admin/update_server_version",
+                compact('name', 'next_package', 'newest_package')
+            );
         }
 
         // Brak aktualizacji
         if (!strlen($version_bricks)) {
-            $output = eval($this->template->render("admin/no_update"));
+            $output = $this->template->render("admin/no_update");
 
             return $output;
         }
 
         // Pobranie wyglądu całej strony
-        return eval($this->template->render("admin/update_server"));
+        return $this->template->render(
+            "admin/update_server",
+            compact('version_bricks', 'servers_versions') + ['title' => $this->title]
+        );
     }
 }

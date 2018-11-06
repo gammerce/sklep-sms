@@ -11,9 +11,11 @@
   ],
   "require": {
     "php": ">=5.6",
+    "ext-calendar": "*",
     "ext-curl": "*",
     "ext-json": "*",
-    "ext-calendar": "*",
+    "ext-mysqli": "*",
+    "ext-simplexml": "*",
     "vlucas/phpdotenv": "^2.4",
     "illuminate/container": "^5.4",
     "symfony/console": "^3.4",

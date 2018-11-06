@@ -69,8 +69,6 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
 
     public function get_action_box($box_id, $data)
     {
-        $lang = $this->lang;
-
         if (!get_privilages("manage_services")) {
             return [
                 'status' => "not_logged_in",
@@ -121,14 +119,23 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
 
         switch ($box_id) {
             case "service_add":
-                $output = eval($this->template->render("admin/action_boxes/service_add"));
+                $output = $this->template->render(
+                    "admin/action_boxes/service_add",
+                    compact('groups', 'services_modules')
+                );
                 break;
 
             case "service_edit":
                 $service_module_name = $this->heart->get_service_module_name($service['module']);
 
-                $output = eval($this->template->render("admin/action_boxes/service_edit"));
+                $output = $this->template->render(
+                    "admin/action_boxes/service_edit",
+                    compact('service', 'groups', 'service_module_name', 'extra_fields')
+                );
                 break;
+
+            default:
+                $output = '';
         }
 
         return [

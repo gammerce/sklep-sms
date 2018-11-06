@@ -13,9 +13,6 @@ class PageResetPassword extends Page implements I_BeLoggedCannot
 
     protected function content($get, $post)
     {
-        $settings = $this->settings;
-        $lang = $this->lang;
-
         // Brak podanego kodu
         if (!strlen($get['code'])) {
             return $this->lang->translate('no_reset_key');
@@ -35,6 +32,6 @@ class PageResetPassword extends Page implements I_BeLoggedCannot
         $row = $this->db->fetch_array_assoc($result);
         $sign = md5($row['uid'] . $this->settings['random_key']);
 
-        return eval($this->template->render("reset_password"));
+        return $this->template->render("reset_password", compact('row', 'sign'));
     }
 }
