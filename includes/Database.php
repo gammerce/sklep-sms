@@ -269,23 +269,17 @@ class Database
     }
 
     /**
-     * @param string $message_id
+     * @param string $messageId
      * @return SqlQueryException
      */
-    private function exception($message_id)
+    private function exception($messageId)
     {
-        $exception = new SqlQueryException($message_id);
-
         if ($this->link) {
             $this->error = mysqli_error($this->link);
             $this->errno = mysqli_errno($this->link);
         }
 
-        $exception->setError($this->error);
-        $exception->setErrorno($this->errno);
-        $exception->setQuery($this->query);
-
-        return $exception;
+        return new SqlQueryException($messageId, $this->query, $this->error, $this->errno);
     }
 
     public function isConnected()

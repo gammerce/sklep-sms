@@ -5,17 +5,27 @@ use Exception;
 
 class SqlQueryException extends Exception
 {
-    /** @var  string */
+    /** @var string */
     private $query;
 
-    /** @var  string */
-    private $message_id;
+    /** @var string */
+    private $messageId;
 
-    /** @var  string */
+    /** @var string */
     private $error;
 
-    /** @var  int */
+    /** @var int */
     private $errorno;
+
+    public function __construct($messageId, $query, $error, $errorno)
+    {
+        parent::__construct("[$messageId] $query");
+
+        $this->messageId = $messageId;
+        $this->query = $query;
+        $this->error = $error;
+        $this->errorno = $errorno;
+    }
 
     /**
      * @param bool $escape
@@ -30,33 +40,9 @@ class SqlQueryException extends Exception
     /**
      * @return string
      */
-    public function getMessageId()
-    {
-        return $this->message_id;
-    }
-
-    /**
-     * @return string
-     */
     public function getError()
     {
         return $this->error;
-    }
-
-    /**
-     * @param string $query
-     */
-    public function setQuery($query)
-    {
-        $this->query = $query;
-    }
-
-    /**
-     * @param string $error
-     */
-    public function setError($error)
-    {
-        $this->error = $error;
     }
 
     /**
@@ -65,13 +51,5 @@ class SqlQueryException extends Exception
     public function getErrorno()
     {
         return $this->errorno;
-    }
-
-    /**
-     * @param int $errorno
-     */
-    public function setErrorno($errorno)
-    {
-        $this->errorno = $errorno;
     }
 }
