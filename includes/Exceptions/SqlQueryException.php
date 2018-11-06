@@ -19,7 +19,7 @@ class SqlQueryException extends Exception
 
     public function __construct($messageId, $query, $error, $errorno)
     {
-        parent::__construct("[$messageId] $query");
+        parent::__construct("[$messageId][$error] $query");
 
         $this->messageId = $messageId;
         $this->query = $query;
