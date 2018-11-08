@@ -84,12 +84,13 @@ class PaymentModule_Microsms extends PaymentModule implements IPayment_Sms, IPay
     public function prepare_transfer($purchase_data, $data_filename)
     {
         $cost = round($purchase_data->getPayment('cost') / 100, 2);
+        $signature = hash('sha256', $this->shopId . $this->hash . $cost);
 
         return [
             'url'         => 'https://microsms.pl/api/bankTransfer/',
             'method'      => 'GET',
             'shopid'      => $this->shopId,
-            'signature'   => md5($this->shopId . $this->hash . $cost),
+            'signature'   => $signature,
             'amount'      => $cost,
             'control'     => $data_filename,
             'return_urlc' => $this->settings['shop_url_slash'] . 'transfer_finalize.php?service=microsms',
