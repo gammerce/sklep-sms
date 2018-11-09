@@ -56,6 +56,7 @@ return [
     'delete_old_logs'                       => 'Delete logs older than',
     'delete_price'                          => 'Price removed successfully.',
     'delete_server'                         => 'Server removed successfully.',
+    'delete_server_constraint_fails'        => 'This server cannot be deleted, because there are some connected services.',
     'delete_service'                        => 'Service removed successfully.',
     'delete_service_er_row_is_referenced_2' => 'This service cannot be deleted, there are still users\' services.',
     'delete_sms_code'                       => 'SMS code removed successfully.',

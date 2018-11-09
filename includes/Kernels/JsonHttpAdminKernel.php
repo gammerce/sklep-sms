@@ -820,11 +820,21 @@ class JsonHttpAdminKernel extends Kernel
                 json_output("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
             }
 
-            $db->query($db->prepare(
-                "DELETE FROM `" . TABLE_PREFIX . "servers` " .
-                "WHERE `id` = '%s'",
-                [$_POST['id']]
-            ));
+            try {
+                $db->query($db->prepare(
+                    "DELETE FROM `" . TABLE_PREFIX . "servers` " .
+                    "WHERE `id` = '%s'",
+                    [$_POST['id']]
+                ));
+            } catch (SqlQueryException $e) {
+                if ($e->getErrorno() == 1451) // Istnieją powiązania
+                {
+                    return json_output("error", $lang->translate('delete_server_constraint_fails'), 0);
+                }
+
+                throw $e;
+            }
+
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
             if ($db->affected_rows()) {

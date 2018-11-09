@@ -56,6 +56,7 @@ return [
     'delete_old_logs'                       => 'Usuwaj logi starsze niż',
     'delete_price'                          => 'Cena została prawidłowo usunięta.',
     'delete_server'                         => 'Serwer został prawidłowo usunięty.',
+    'delete_server_constraint_fails'        => 'Nie można usunąć tego serwera, ponieważ wciąz istnieją powiązane z nim usługi.',
     'delete_service'                        => 'Usługa została prawidłowo usunięta.',
     'delete_service_er_row_is_referenced_2' => 'Nie można usunąć tej usługi, ponieważ wciąz istnieją usługi graczy.',
     'delete_sms_code'                       => 'Kod SMS został prawidłowo usunięty.',
