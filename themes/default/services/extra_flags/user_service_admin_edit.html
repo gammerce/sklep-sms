@@ -20,7 +20,7 @@
     <tr>
       <td>Nick</td>
       <td>
-        <input type="text" name="nick" maxlength="32" value="{$nick}"/>
+        <input type="text" name="nick" maxlength="32" value="{$nick}" autocomplete="off"/>
       </td>
     </tr>
   </tbody>
@@ -28,7 +28,7 @@
     <tr>
       <td>IP</td>
       <td>
-        <input type="text" name="ip" maxlength="21" style="width: 100px;" value="{$ip}"/>
+        <input type="text" name="ip" maxlength="21" style="width: 100px;" value="{$ip}" autocomplete="off"/>
       </td>
     </tr>
   </tbody>
@@ -36,7 +36,7 @@
     <tr>
       <td>SteamID</td>
       <td>
-        <input type="text" name="sid" maxlength="32" value="{$sid}"/>
+        <input type="text" name="sid" maxlength="32" value="{$sid}" autocomplete="off" />
       </td>
     </tr>
   </tbody>
@@ -44,7 +44,7 @@
     <tr>
       <td>{$lang->translate('password')}</td>
       <td>
-        <input type="text" name="password" maxlength="32" placeholder="{$password}"/>
+        <input type="text" name="password" maxlength="32" placeholder="{$password}" autocomplete="off"/>
       </td>
     </tr>
   </tbody>
@@ -71,7 +71,7 @@
     <tr>
       <td>{$lang->translate('expires')}</td>
       <td>
-        <input type="text" name="expire" value="{$user_service['expire']}" {$disabled}/><br/>
+        <input type="text" name="expire" value="{$user_service['expire']}" autocomplete="off" {$disabled}/><br/>
         <input type="checkbox" name="forever" {$checked}/>{$lang->translate('forever')}
       </td>
     </tr>

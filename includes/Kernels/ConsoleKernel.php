@@ -23,8 +23,16 @@ class ConsoleKernel implements ConsoleKernelContract
         if ($command === 'test:setup') {
             /** @var DatabaseSetup $databaseSetup */
             $databaseSetup = $this->app->make(DatabaseSetup::class);
+            $databaseSetup->runForTests();
+            $output->writeln('Test environment set up.');
+            return 0;
+        }
+
+        if ($command === 'shop:setup') {
+            /** @var DatabaseSetup $databaseSetup */
+            $databaseSetup = $this->app->make(DatabaseSetup::class);
             $databaseSetup->run();
-            $output->writeln('Test environment setup.');
+            $output->writeln('Environment set up.');
             return 0;
         }
 
