@@ -57,14 +57,14 @@ class RoutesManager
         $r->addRoute(
             ['GET', 'POST'], '/transfer_finalize.php',
             [
-                'uses' => TransferController::class . '@oldGet',
+                'uses' => TransferController::class . '@oldAction',
             ]
         );
 
         $r->addRoute(
             ['GET', 'POST'], '/transfer/{transferService}',
             [
-                'uses' => TransferController::class . '@get',
+                'uses' => TransferController::class . '@action',
             ]
         );
 

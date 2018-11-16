@@ -17,7 +17,7 @@ class TransferController
         $this->langShop = $translationManager->shop();
     }
 
-    public function get(Request $request, $transferService)
+    public function action(Request $request, $transferService)
     {
         $payment = new Payment($transferService);
         $transferFinalize = $payment
@@ -40,8 +40,8 @@ class TransferController
         ]);
     }
 
-    public function oldGet(Request $request)
+    public function oldAction(Request $request)
     {
-        return $this->get($request, $request->query->get('service'));
+        return $this->action($request, $request->query->get('service'));
     }
 }
