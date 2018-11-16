@@ -104,12 +104,13 @@ class PaymentModuleMicrosms extends PaymentModule implements IPayment_Sms, IPaym
         $transferFinalize = new TransferFinalize();
 
         if ($this->isPaymentValid($post)) {
-            $transferFinalize->setOutput('OK');
+            $transferFinalize->setStatus(true);
         }
 
         $transferFinalize->setOrderid($post['orderID']);
         $transferFinalize->setAmount($post['amountPay']);
         $transferFinalize->setDataFilename($post['control']);
+        $transferFinalize->setOutput('OK');
 
         return $transferFinalize;
     }
