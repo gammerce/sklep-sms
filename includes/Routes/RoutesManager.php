@@ -26,7 +26,7 @@ class RoutesManager
     private function defineRoutes(RouteCollector $r)
     {
         $r->addRoute(
-            'GET', '/',
+            ['GET', 'POST'], '/',
             [
                 'middlewares' => [
                     UpdateUserActivity::class,
@@ -37,7 +37,7 @@ class RoutesManager
         );
 
         $r->addRoute(
-            'GET', '/index.php',
+            ['GET', 'POST'], '/index.php',
             [
                 'middlewares' => [
                     UpdateUserActivity::class,
@@ -55,14 +55,14 @@ class RoutesManager
         );
 
         $r->addRoute(
-            'GET', '/transfer_finalize.php',
+            ['GET', 'POST'], '/transfer_finalize.php',
             [
                 'uses' => TransferController::class . '@oldGet',
             ]
         );
 
         $r->addRoute(
-            'GET', '/transfer/{transferService}',
+            ['GET', 'POST'], '/transfer/{transferService}',
             [
                 'uses' => TransferController::class . '@get',
             ]
