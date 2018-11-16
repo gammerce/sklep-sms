@@ -93,8 +93,8 @@ class PaymentModule_Microsms extends PaymentModule implements IPayment_Sms, IPay
             'signature'   => $signature,
             'amount'      => $cost,
             'control'     => $data_filename,
-            'return_urlc' => $this->settings['shop_url_slash'] . 'transfer_finalize.php?service=microsms',
-            'return_url'  => $this->settings['shop_url_slash'] . 'index.php?pid=microsms_ok',
+            'return_urlc' => $this->settings['shop_url_slash'] . '/transfer/microsms',
+            'return_url'  => $this->settings['shop_url_slash'] . '/page/transferuj_ok',
             'description' => $purchase_data->getDesc(),
         ];
     }

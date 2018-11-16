@@ -5,9 +5,7 @@ use App\Middlewares\IsUpToDate;
 use App\Middlewares\LicenseIsValid;
 use App\Middlewares\LoadSettings;
 use App\Middlewares\ManageAuthentication;
-use App\Middlewares\RunCron;
 use App\Middlewares\SetLanguage;
-use App\Middlewares\UpdateUserActivity;
 use App\Routes\RoutesManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -18,9 +16,7 @@ class IndexKernel extends Kernel
         LoadSettings::class,
         SetLanguage::class,
         ManageAuthentication::class,
-        LicenseIsValid::class,
-        UpdateUserActivity::class,
-        RunCron::class,
+//        LicenseIsValid::class,
     ];
 
     public function run(Request $request)

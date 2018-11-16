@@ -3,7 +3,11 @@ namespace App\Routes;
 
 use App\Application;
 use App\Controllers\IndexController;
+use App\Controllers\JsController;
 use App\Controllers\TransferController;
+use App\Middlewares\MiddlewareContract;
+use App\Middlewares\RunCron;
+use App\Middlewares\UpdateUserActivity;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,17 +27,52 @@ class RoutesManager
     {
         $r->addRoute(
             'GET', '/',
-            IndexController::class . '@get'
+            [
+                'middlewares' => [
+                    UpdateUserActivity::class,
+                    RunCron::class,
+                ],
+                'uses'        => IndexController::class . '@oldGet',
+            ]
         );
 
         $r->addRoute(
             'GET', '/index.php',
-            IndexController::class . '@get'
+            [
+                'middlewares' => [
+                    UpdateUserActivity::class,
+                    RunCron::class,
+                ],
+                'uses'        => IndexController::class . '@oldGet',
+            ]
+        );
+
+        $r->addRoute(
+            'GET', '/js.php',
+            [
+                'uses' => JsController::class . '@get',
+            ]
+        );
+
+        $r->addRoute(
+            'GET', '/transfer_finalize.php',
+            [
+                'uses' => TransferController::class . '@oldGet',
+            ]
         );
 
         $r->addRoute(
             'GET', '/transfer/{transferService}',
-            TransferController::class . '@get'
+            [
+                'uses' => TransferController::class . '@get',
+            ]
+        );
+
+        $r->addRoute(
+            'GET', '/page/{pageId}',
+            [
+                'uses' => IndexController::class . '@get',
+            ]
         );
     }
 
@@ -47,10 +86,10 @@ class RoutesManager
         $uri = '/' . trim($request->getPathInfo(), '/');
 
         $routeInfo = $this->createDispatcher()->dispatch($method, $uri);
-        return $this->handleDispatcherResponse($routeInfo);
+        return $this->handleDispatcherResponse($routeInfo, $request);
     }
 
-    private function handleDispatcherResponse($routeInfo)
+    private function handleDispatcherResponse($routeInfo, Request $request)
     {
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
@@ -58,13 +97,27 @@ class RoutesManager
             case Dispatcher::METHOD_NOT_ALLOWED:
                 return new Response('', 405);
             case Dispatcher::FOUND:
-                return $this->handleFoundRoute($routeInfo);
+                return $this->handleFoundRoute($routeInfo, $request);
         }
     }
 
-    private function handleFoundRoute($routeInfo)
+    private function handleFoundRoute($routeInfo, Request $request)
     {
-        return $this->app->call($routeInfo[1], $routeInfo[2]);
+        /** @var string[] $middlewares */
+        $middlewares = $routeInfo[1]['middlewares'];
+        $uses = $routeInfo[1]['uses'];
+
+        foreach ($middlewares as $middlewareClass) {
+            /** @var MiddlewareContract $middleware */
+            $middleware = $this->app->make($middlewareClass);
+
+            $response = $middleware->handle($request, $this->app);
+            if ($response) {
+                return $response;
+            }
+        }
+
+        return $this->app->call($uses, $routeInfo[2]);
     }
 
     private function createDispatcher()
