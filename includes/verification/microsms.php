@@ -42,7 +42,7 @@ class PaymentModuleMicrosms extends PaymentModule implements IPayment_Sms, IPaym
 
     public function verify_sms($return_code, $number)
     {
-        $response = $this->requester->get("http://microsms.pl/api/v2/index.php", [
+        $response = $this->requester->get("https://microsms.pl/api/v2/index.php", [
             "userid"    => $this->userId,
             "number"    => $number,
             "code"      => $return_code,
@@ -65,7 +65,13 @@ class PaymentModuleMicrosms extends PaymentModule implements IPayment_Sms, IPaym
         }
 
         if ($content['connect'] === false) {
-            log_error("Kod błędu: {$content['data']['errorCode']} - {$content['data']['message']}");
+            $errorCode = $content['data']['errorCode'];
+
+            if ($errorCode == 1) {
+                return IPayment_Sms::BAD_CODE;
+            }
+
+            log_error("Kod błędu: $errorCode - {$content['data']['message']}");
             return IPayment_Sms::ERROR;
         }
 
@@ -73,7 +79,7 @@ class PaymentModuleMicrosms extends PaymentModule implements IPayment_Sms, IPaym
             return IPayment_Sms::OK;
         }
 
-        return IPayment_Sms::BAD_CODE;
+        return IPayment_Sms::ERROR;
     }
 
     /**
