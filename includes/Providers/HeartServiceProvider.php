@@ -52,7 +52,7 @@ use PaymentModule_Bizneshost;
 use PaymentModule_Cashbill;
 use PaymentModule_Cssetti;
 use PaymentModule_Gosetti;
-use PaymentModule_Microsms;
+use PaymentModuleMicrosms;
 use PaymentModule_Mintshost;
 use PaymentModule_Profitsms;
 use PaymentModule_Pukawka;
@@ -90,7 +90,7 @@ class HeartServiceProvider
         $heart->register_payment_module('gosetti', PaymentModule_Gosetti::class);
         $heart->register_payment_module('homepay', PaymentModuleHomepay::class);
         $heart->register_payment_module('hostplay', PaymentModuleHostplay::class);
-        $heart->register_payment_module('microsms', PaymentModule_Microsms::class);
+        $heart->register_payment_module('microsms', PaymentModuleMicrosms::class);
         $heart->register_payment_module('mintshost', PaymentModule_Mintshost::class);
         $heart->register_payment_module('profitsms', PaymentModule_Profitsms::class);
         $heart->register_payment_module('pukawka', PaymentModule_Pukawka::class);
