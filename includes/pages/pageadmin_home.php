@@ -57,7 +57,6 @@ class PageAdminMain extends PageAdmin
         $newestAmxxVersion = $this->version->getNewestAmxmodx();
         $newestSmVersion = $this->version->getNewestSourcemod();
 
-        // Sprawdzanie wersji skryptu
         if ($this->app->version() !== $newestVersion) {
             $this->add_note(
                 $this->lang->sprintf(
@@ -69,7 +68,6 @@ class PageAdminMain extends PageAdmin
             );
         }
 
-        // Sprawdzanie wersji serwerów
         $serversCount = 0;
         foreach ($this->heart->get_servers() as $server) {
             if (!$this->isServerNewest($server, $newestAmxxVersion, $newestSmVersion)) {
@@ -136,7 +134,6 @@ class PageAdminMain extends PageAdmin
             "brick_pa_main"
         );
 
-        // Pobranie wyglądu strony
         return $this->template->render("admin/home", compact('notes', 'bricks'));
     }
 
