@@ -1,12 +1,14 @@
 <?php
 
 use App\License;
+use App\Models\Server;
 use App\Requesting\Requester;
 use App\Version;
 
 class PageAdminMain extends PageAdmin
 {
     const PAGE_ID = "home";
+    const EXPIRE_THRESHOLD = 4 * 24 * 60 * 60;
 
     /** @var Version */
     protected $version;
@@ -40,38 +42,50 @@ class PageAdminMain extends PageAdmin
         }
 
         $expireSeconds = strtotime($this->license->getExpires()) - time();
-        if (!$this->license->isForever() && $expireSeconds >= 0 && $expireSeconds < 4 * 24 * 60 * 60) {
-            $this->add_note($this->lang->sprintf($this->lang->translate('license_soon_expire'),
-                secondsToTime(strtotime($this->license->getExpires()) - time())), "negative", $notes);
+        if (!$this->license->isForever() && $expireSeconds >= 0 && $expireSeconds < self::EXPIRE_THRESHOLD) {
+            $this->add_note(
+                $this->lang->sprintf(
+                    $this->lang->translate('license_soon_expire'),
+                    secondsToTime(strtotime($this->license->getExpires()) - time())
+                ),
+                "negative",
+                $notes
+            );
         }
 
-        // Sprawdzanie wersji skryptu
         $newestVersion = $this->version->getNewestWeb();
+        $newestAmxxVersion = $this->version->getNewestAmxmodx();
+        $newestSmVersion = $this->version->getNewestSourcemod();
+
         if ($this->app->version() !== $newestVersion) {
             $this->add_note(
-                $this->lang->sprintf($this->lang->translate('update_available'), htmlspecialchars($newestVersion)),
+                $this->lang->sprintf(
+                    $this->lang->translate('update_available'),
+                    htmlspecialchars($newestVersion)
+                ),
                 "positive",
                 $notes
             );
         }
 
-        // Sprawdzanie wersji serwerów
-        $amount = 0;
-        $response = $this->requester->get('https://sklep-sms.pl/version.php', [
-            'action' => 'get_newest',
-            'type'   => 'engines',
-        ]);
-        $newest_versions = $response && $response->isOk() ? $response->json() : null;
+        $serversCount = 0;
         foreach ($this->heart->get_servers() as $server) {
-            $engine = "engine_{$server['type']}";
-            if (strlen($newest_versions[$engine]) && $server['version'] != $newest_versions[$engine]) {
-                $amount += 1;
+            if (!$this->isServerNewest($server, $newestAmxxVersion, $newestSmVersion)) {
+                $serversCount += 1;
             }
         }
 
-        if ($amount) {
-            $this->add_note($this->lang->sprintf($this->lang->translate('update_available_servers'), $amount,
-                $this->heart->get_servers_amount(), htmlspecialchars($newestVersion)), "positive", $notes);
+        if ($serversCount) {
+            $this->add_note(
+                $this->lang->sprintf(
+                    $this->lang->translate('update_available_servers'),
+                    $serversCount,
+                    $this->heart->get_servers_amount(),
+                    htmlspecialchars($newestVersion)
+                ),
+                "positive",
+                $notes
+            );
         }
 
         //
@@ -80,13 +94,22 @@ class PageAdminMain extends PageAdmin
         $bricks = "";
 
         // Info o serwerach
-        $bricks .= create_brick($this->lang->sprintf($this->lang->translate('amount_of_servers'),
-            $this->heart->get_servers_amount()),
-            "brick_pa_main");
+        $bricks .= create_brick(
+            $this->lang->sprintf(
+                $this->lang->translate('amount_of_servers'),
+                $this->heart->get_servers_amount()
+            ),
+            "brick_pa_main"
+        );
 
         // Info o użytkownikach
-        $bricks .= create_brick($this->lang->sprintf($this->lang->translate('amount_of_users'),
-            $this->db->get_column("SELECT COUNT(*) FROM `" . TABLE_PREFIX . "users`", "COUNT(*)")), "brick_pa_main");
+        $bricks .= create_brick(
+            $this->lang->sprintf(
+                $this->lang->translate('amount_of_users'),
+                $this->db->get_column("SELECT COUNT(*) FROM `" . TABLE_PREFIX . "users`", "COUNT(*)")
+            ),
+            "brick_pa_main"
+        );
 
         // Info o kupionych usługach
         $amount = $this->db->get_column(
@@ -94,8 +117,10 @@ class PageAdminMain extends PageAdmin
             "FROM ({$this->settings['transactions_query']}) AS t",
             "COUNT(*)"
         );
-        $bricks .= create_brick($this->lang->sprintf($this->lang->translate('amount_of_bought_services'), $amount),
-            "brick_pa_main");
+        $bricks .= create_brick(
+            $this->lang->sprintf($this->lang->translate('amount_of_bought_services'), $amount),
+            "brick_pa_main"
+        );
 
         // Info o wysłanych smsach
         $amount = $this->db->get_column(
@@ -104,11 +129,31 @@ class PageAdminMain extends PageAdmin
             "WHERE t.payment = 'sms' AND t.free='0'",
             "amount"
         );
-        $bricks .= create_brick($this->lang->sprintf($this->lang->translate('amount_of_sent_smses'), $amount),
-            "brick_pa_main");
+        $bricks .= create_brick(
+            $this->lang->sprintf($this->lang->translate('amount_of_sent_smses'), $amount),
+            "brick_pa_main"
+        );
 
-        // Pobranie wyglądu strony
         return $this->template->render("admin/home", compact('notes', 'bricks'));
+    }
+
+    /**
+     * @param array $server
+     * @param string $newestAmxxVersion
+     * @param string $newestSmVersion
+     * @return bool
+     */
+    private function isServerNewest($server, $newestAmxxVersion, $newestSmVersion)
+    {
+        if ($server['type'] === Server::TYPE_AMXMODX && $server['version'] !== $newestAmxxVersion) {
+            return false;
+        }
+
+        if ($server['type'] === Server::TYPE_SOURCEMOD && $server['version'] !== $newestSmVersion) {
+            return false;
+        }
+
+        return true;
     }
 
     private function add_note($text, $class, &$notes)

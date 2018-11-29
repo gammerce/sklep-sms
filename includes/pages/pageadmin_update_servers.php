@@ -1,7 +1,9 @@
 <?php
 
 
+use App\Models\Server;
 use App\Requesting\Requester;
+use App\Version;
 
 class PageAdminUpdateServers extends PageAdmin
 {
@@ -9,85 +11,80 @@ class PageAdminUpdateServers extends PageAdmin
     protected $privilage = 'update';
 
     /** @var Requester */
-    protected $requester;
+    private $requester;
 
-    public function __construct(Requester $requester)
+    /** @var Version */
+    private $version;
+
+    public function __construct(Requester $requester, Version $version)
     {
         parent::__construct();
 
         $this->requester = $requester;
         $this->heart->page_title = $this->title = $this->lang->translate('update_servers');
+        $this->version = $version;
     }
 
     protected function content($get, $post)
     {
-        $response = $this->requester->get('https://sklep-sms.pl/version.php', [
-            'action' => 'get_newest',
-            'type'   => 'engines',
-        ]);
-        $newest_versions = $response ? $response->json() : null;
+        $newestAmxxVersion = $this->version->getNewestAmxmodx();
+        $newestSmVersion = $this->version->getNewestSourcemod();
 
-        $version_bricks = $servers_versions = "";
+        $versionBricks = "";
         foreach ($this->heart->get_servers() as $server) {
-            $engine = "engine_{$server['type']}";
-            // Mamy najnowszą wersję
-            if ($server['version'] == $newest_versions[$engine]) {
+            if ($server['type'] === Server::TYPE_AMXMODX) {
+                $newestVersion = $newestAmxxVersion;
+                $link = "https://github.com/gammerce/plugin-amxmodx/releases/tag/{$newestAmxxVersion}";
+            } elseif ($server['type'] === Server::TYPE_SOURCEMOD) {
+                $newestVersion = $newestSmVersion;
+                $link = "https://github.com/gammerce/plugin-sourcemod/releases/tag/{$newestSmVersion}";
+            } else {
                 continue;
             }
 
-            $name = htmlspecialchars($server['name']);
-            $current_version = $server['version'];
-            $next_version = trim(
-                $this->requester
-                    ->get('https://sklep-sms.pl/version.php', [
-                        'action'  => 'get_next',
-                        'type'    => $engine,
-                        'version' => $server['version'],
-                    ])
-                    ->getBody()
-            );
-            $newest_version = $newest_versions[$engine];
-
-            // Nie ma kolejnej wersji
-            if (!strlen($next_version)) {
+            if ($server['version'] === $newestVersion) {
                 continue;
             }
 
-            // Pobieramy informacje o danym serwerze, jego obecnej wersji i nastepnej wersji
-            $version_bricks .= $this->template->render(
+            $versionBricks .= $this->template->render(
                 "admin/update_version_block",
-                compact('name', 'current_version', 'next_version', 'newest_version')
-            );
-
-            // Pobieramy plik kolejnej wersji update
-            $file_data['type'] = "update";
-            $file_data['platform'] = $engine;
-            $file_data['version'] = $next_version;
-            $next_package = $this->template->render("admin/update_file", compact('file_data'));
-
-            // Pobieramy plik najnowszej wersji full
-            $file_data['type'] = "full";
-            $file_data['platform'] = $engine;
-            $file_data['version'] = $newest_version;
-            $newest_package = $this->template->render("admin/update_file", compact('file_data'));
-
-            $servers_versions .= $this->template->render(
-                "admin/update_server_version",
-                compact('name', 'next_package', 'newest_package')
+                [
+                    'name' => htmlspecialchars($server['name']),
+                    'currentVersion' => $server['version'],
+                    'newestVersion' => $newestVersion,
+                    'link' => $link,
+                ]
             );
         }
 
-        // Brak aktualizacji
-        if (!strlen($version_bricks)) {
+        if (!strlen($versionBricks)) {
             $output = $this->template->render("admin/no_update");
 
             return $output;
         }
 
-        // Pobranie wyglądu całej strony
         return $this->template->render(
             "admin/update_server",
-            compact('version_bricks', 'servers_versions') + ['title' => $this->title]
+            compact('versionBricks') + ['title' => $this->title]
         );
+    }
+
+    /**
+     * @param array $server
+     * @param string $newestAmxxVersion
+     * @param string $newestSmVersion
+     * @return bool
+     */
+    private function isServerNewest($server, $newestAmxxVersion, $newestSmVersion)
+    {
+        if ($server['type'] === Server::TYPE_AMXMODX && $server['version'] !== $newestAmxxVersion) {
+            return false;
+        }
+
+        if ($server['type'] === Server::TYPE_SOURCEMOD && $server['version'] !== $newestSmVersion) {
+            return false;
+        }
+
+        return true;
     }
 }
