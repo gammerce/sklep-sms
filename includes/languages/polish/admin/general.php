@@ -108,7 +108,6 @@ return [
     'main'                                  => 'Główne',
     'module'                                => 'Moduł',
     'module_to_operate_service'             => 'Jaki moduł ma obsługiwać daną usługę.',
-    'next_version'                          => 'Kolejna wersja',
     'nick_taken'                            => 'Podana nazwa użytkownika jest już zajęta.',
     'no_action_box_support'                 => 'Strona nie wspiera action boxów.',
     'no_add_method'                         => 'Moduł usługi nie posiada metody dodawania usługi przez admina.',
@@ -197,10 +196,6 @@ return [
     'server_admin_delete'                   => 'Admin {1}({2}) usunął serwer. ID: {3}',
     'server_admin_edit'                     => 'Admin {1}({2}) wyedytował serwer. ID: {3}',
     'server_edit'                           => 'Serwer został prawidłowo wyedytowany.',
-    'server_first_possibility'              => 'Mamy dwie możliwości. Pobieramy paczkę z najnowszą wersją pluginów w wersji FULL, albo aktualizujemy stopniowo,
-		z jednej wersji na drugą, za pomocą paczek w wersji UPDATE.',
-    'server_second_possibility'             => 'Pobieramy cały sklepik w najnowszej wersji <em>(full)</em> lub tylko zmienione pliki <em>(update)</em>
-				kolejnej wersji:',
     'servers'                               => 'Serwery',
     'service_added'                         => 'Usługa została prawidłowo dodana.<br />Ustaw teraz ceny usługi w zakładce <strong>Cennik</strong><br />
 		Natomiast w zakładce <strong>Serwery</strong> ustal na których serwerach będzie można tę usługę zakupić.<br />',

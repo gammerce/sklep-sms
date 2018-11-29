@@ -108,7 +108,6 @@ return [
     'main'                                  => 'Main',
     'module'                                => 'Module',
     'module_to_operate_service'             => 'Which module shoul operate this specific service.',
-    'next_version'                          => 'Next version',
     'nick_taken'                            => 'Given nickname is already taken.',
     'no_action_box_support'                 => 'Page does not support action boxes.',
     'no_add_method'                         => 'Service module doesn\'t operate admin service adding method.',
@@ -196,9 +195,6 @@ return [
     'server_admin_delete'                   => 'Admin {1}({2}) removed server. ID: {3}',
     'server_admin_edit'                     => 'Admin {1}({2}) edited server. ID: {3}',
     'server_edit'                           => 'Server edited successfully.',
-    'server_first_possibility'              => 'We have two possibilities. To download package with latest version of plugins in FULL version, or to update gradually,
-		from one version to the next one, using packages with UPDATE version.',
-    'server_second_possibility'             => 'We download whole shop in the latest version <em>(full)</em> or modified files only <em>(update)</em> of the next version:',
     'servers'                               => 'Servers',
     'service_added'                         => 'Service added successfully.<br />Set service prices in tab <strong>Pricelist</strong><br />
 	Whereas in tab <strong>Servers</strong> set servers on which you can buy this service.<br />',
