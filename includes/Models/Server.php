@@ -3,6 +3,9 @@ namespace App\Models;
 
 class Server
 {
+    const TYPE_AMXMODX = 'amxx';
+    const TYPE_SOURCEMOD = 'sm';
+
     /** @var int */
     private $id;
 
@@ -16,15 +19,19 @@ class Server
     private $port;
 
     /** @var string */
+    private $type;
+
+    /** @var string */
     private $smsService;
 
-    public function __construct($id, $name, $ip, $port, $smsService = '')
+    public function __construct($id, $name, $ip, $port, $smsService = '', $type = '')
     {
         $this->id = $id;
         $this->name = $name;
         $this->ip = $ip;
         $this->port = $port;
         $this->smsService = $smsService;
+        $this->type = $type;
     }
 
     public function getId()
@@ -45,6 +52,11 @@ class Server
     public function getPort()
     {
         return $this->port;
+    }
+
+    public function getType()
+    {
+        return $this->type;
     }
 
     public function getSmsService()

@@ -5,16 +5,12 @@ use App\Requesting\Requester;
 
 class Version
 {
-    /** @var Application */
-    protected $app;
-
     /** @var Requester */
     protected $requester;
 
-    public function __construct(Application $application, Requester $requester)
+    public function __construct(Requester $requester)
     {
         $this->requester = $requester;
-        $this->app = $application;
     }
 
     public function getNewestWeb()
@@ -25,8 +21,19 @@ class Version
         return array_get($content, 'tag_name');
     }
 
-    public function isUpToDate()
+    public function getNewestAmxmodx()
     {
-        return $this->app->version() === $this->getNewestWeb();
+        $response = $this->requester->get('https://api.github.com/repos/gammerce/plugin-amxmodx/releases/latest');
+        $content = $response ? $response->json() : null;
+
+        return array_get($content, 'tag_name');
+    }
+
+    public function getNewestSourcemod()
+    {
+        $response = $this->requester->get('https://api.github.com/repos/gammerce/plugin-sourcemod/releases/latest');
+        $content = $response ? $response->json() : null;
+
+        return array_get($content, 'tag_name');
     }
 }
