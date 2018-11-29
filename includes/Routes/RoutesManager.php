@@ -104,7 +104,7 @@ class RoutesManager
     private function handleFoundRoute($routeInfo, Request $request)
     {
         /** @var string[] $middlewares */
-        $middlewares = $routeInfo[1]['middlewares'];
+        $middlewares = array_get($routeInfo[1], 'middlewares', []);
         $uses = $routeInfo[1]['uses'];
 
         foreach ($middlewares as $middlewareClass) {
