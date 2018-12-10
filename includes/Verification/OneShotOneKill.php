@@ -13,7 +13,7 @@ use App\Verification\Exceptions\WrongCredentialsException;
 
 class OneShotOneKill extends PaymentModule implements SupportSms
 {
-    const SERVICE_ID = "1s1k";
+    protected $serviceId = "1s1k";
 
     private $rates = [
         '0.65'  => '7136',
@@ -57,7 +57,7 @@ class OneShotOneKill extends PaymentModule implements SupportSms
         switch ($content['status']) {
             case 'ok':
                 if ($responseNumber == $number) {
-                    return SupportSms::OK;
+                    return;
                 }
 
                 throw new BadNumberException($this->getTariffByNumber($responseNumber)->getId());
@@ -75,10 +75,7 @@ class OneShotOneKill extends PaymentModule implements SupportSms
                         throw new WrongCredentialsException();
                 }
 
-                return [
-                    'status' => SupportSms::UNKNOWN,
-                    'text'   => $content['desc'],
-                ];
+                throw new UnknownException($content['desc']);
 
             default:
                 throw new UnknownException();

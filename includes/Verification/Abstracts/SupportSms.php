@@ -22,10 +22,6 @@ interface SupportSms
      *
      * @param string $returnCode kod zwrotny
      * @param string $number numer na który powinien zostać wysłany SMS
-     *
-     * @return int | array
-     *  status => zwracany status sms
-     *  number => numer na który został wysłany SMS
      * @throws SmsPaymentException
      */
     public function verifySms($returnCode, $number);

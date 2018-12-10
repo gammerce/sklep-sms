@@ -48,7 +48,7 @@ use PageTakeOverService;
 use PageTransferujBad;
 use PageTransferujOk;
 use PaymentModule_1s1k;
-use PaymentModule_Bizneshost;
+use Bizneshost;
 use PaymentModule_Cashbill;
 use PaymentModule_Cssetti;
 use PaymentModule_Gosetti;
@@ -84,7 +84,7 @@ class HeartServiceProvider
     protected function registerPaymentModules(Heart $heart)
     {
         $heart->register_payment_module('1s1k', PaymentModule_1s1k::class);
-        $heart->register_payment_module('bizneshost', PaymentModule_Bizneshost::class);
+        $heart->register_payment_module('bizneshost', Bizneshost::class);
         $heart->register_payment_module('cashbill', PaymentModule_Cashbill::class);
         $heart->register_payment_module('cssetti', PaymentModule_Cssetti::class);
         $heart->register_payment_module('gosetti', PaymentModule_Gosetti::class);
