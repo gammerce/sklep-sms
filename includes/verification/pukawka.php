@@ -21,7 +21,7 @@ class PaymentModule_Pukawka extends PaymentModule implements IPayment_Sms
         $this->api = $this->data['api'];
         $this->sms_code = $this->data['sms_text'];
 
-        $response = $this->requester->get('https://admin.pukawka.pl/api', [
+        $response = $this->requester->get('https://admin.pukawka.pl/api/', [
             'keyapi' => $this->api,
             'type'   => 'sms_table',
         ]);
@@ -30,7 +30,7 @@ class PaymentModule_Pukawka extends PaymentModule implements IPayment_Sms
 
     public function verify_sms($return_code, $number)
     {
-        $response = $this->requester->get('https://admin.pukawka.pl/api', [
+        $response = $this->requester->get('https://admin.pukawka.pl/api/', [
             'keyapi' => $this->api,
             'type'   => 'sms',
             'code'   => $return_code,
