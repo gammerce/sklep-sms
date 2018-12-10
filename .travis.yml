@@ -31,7 +31,7 @@ install:
 
 before_deploy:
   - rm -Rf vendor
-  - composer install --no-dev --no-interaction
+  - composer install --no-dev --no-interaction --prefer-dist
   - |
    zip -r \
    --exclude='.git*' \
