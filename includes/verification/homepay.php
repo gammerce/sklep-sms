@@ -20,13 +20,13 @@ class PaymentModuleHomepay extends PaymentModule implements SupportSms
         $this->api = $this->data['api'];
     }
 
-    public function verify_sms($return_code, $number)
+    public function verifySms($returnCode, $number)
     {
         $handle = fopen(
             'http://homepay.pl/API/check_code.php' .
             '?usr_id=' . urlencode($this->api) .
             '&acc_id=' . urlencode($this->data[$number]) .
-            '&code=' . urlencode($return_code),
+            '&code=' . urlencode($returnCode),
             'r'
         );
 

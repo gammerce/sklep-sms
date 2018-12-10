@@ -5,8 +5,9 @@ use App\Models\Purchase;
 use App\Models\Tariff;
 use App\Models\TransferFinalize;
 use App\Models\User;
-use SupportSms;
-use SupportTransfer;
+use App\Verification\Abstracts\PaymentModule;
+use App\Verification\Abstracts\SupportSms;
+use App\Verification\Abstracts\SupportTransfer;
 
 class Payment
 {
@@ -75,7 +76,7 @@ class Payment
 
         if (object_implements($this->getPaymentModule(), "IPayment_Sms")) {
             $sms_number = $tariff->getNumber();
-            $sms_return = $this->getPaymentModule()->verify_sms($sms_code, $sms_number);
+            $sms_return = $this->getPaymentModule()->verifySms($sms_code, $sms_number);
 
             if (!is_array($sms_return)) {
                 $sms_return = [

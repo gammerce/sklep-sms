@@ -20,11 +20,11 @@ class PaymentModule_Profitsms extends PaymentModule implements SupportSms
         $this->sms_code = $this->data['sms_text'];
     }
 
-    public function verify_sms($return_code, $number)
+    public function verifySms($returnCode, $number)
     {
         $response = $this->requester->get('http://profitsms.pl/check.php', [
             'apiKey' => $this->api,
-            'code'   => $return_code,
+            'code'   => $returnCode,
             'smsNr'  => $number,
         ]);
 

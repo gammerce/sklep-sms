@@ -32,11 +32,11 @@ class PaymentModule_Cssetti extends PaymentModule implements SupportSms
         $this->account_id = $this->data['account_id'];
     }
 
-    public function verify_sms($return_code, $number)
+    public function verifySms($returnCode, $number)
     {
         $response = $this->requester->get('http://cssetti.pl/Api/SmsApiV2CheckCode.php', [
             'UserId' => $this->account_id,
-            'Code'   => $return_code,
+            'Code'   => $returnCode,
         ]);
 
         if ($response === false) {

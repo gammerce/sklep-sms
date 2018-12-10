@@ -24,11 +24,11 @@ abstract class PaymentModule
     /** @var  string */
     protected $name;
 
-    /** @var  bool */
-    protected $supportSms = false;
-
-    /** @var  bool */
-    protected $supportTransfer = false;
+//    /** @var  bool */
+//    protected $supportSms = false;
+//
+//    /** @var  bool */
+//    protected $supportTransfer = false;
 
     /**
      * Data from columns: data & data_hidden
@@ -55,15 +55,15 @@ abstract class PaymentModule
 
         if (!$this->db->num_rows($result)) {
             // TODO Output should not happen here
-            output_page("An error occured in class: " . get_class($this) . " constructor. There is no " . $this::SERVICE_ID . " payment service in database.");
+            output_page("An error occured in class: " . get_class($this) . " constructor. There is no " . $this->serviceId . " payment service in database.");
         }
 
         $row = $this->db->fetch_array_assoc($result);
 
         $this->name = $row['name'];
         // TODO Verification class should set those values
-        $this->supportSms = (bool)$row['sms'];
-        $this->supportTransfer = (bool)$row['transfer'];
+//        $this->supportSms = (bool)$row['sms'];
+//        $this->supportTransfer = (bool)$row['transfer'];
 
         $data = (array)json_decode($row['data'], true);
         foreach ($data as $key => $value) {
@@ -100,7 +100,7 @@ abstract class PaymentModule
      */
     public function supportTransfer()
     {
-        return $this->supportTransfer;
+        return $this instanceof SupportTransfer;
     }
 
     /**
@@ -108,7 +108,7 @@ abstract class PaymentModule
      */
     public function supportSms()
     {
-        return $this->supportSms;
+        return $this instanceof SupportSms;
     }
 
     /**

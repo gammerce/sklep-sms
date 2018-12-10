@@ -28,7 +28,7 @@ class PaymentModule_Simpay extends PaymentModule implements SupportSms
         $this->sms_code = $this->data['sms_text'];
     }
 
-    public function verify_sms($sms_code, $sms_number)
+    public function verifySms($sms_code, $sms_number)
     {
         $response = $this->requester->post('https://simpay.pl/api/1/status', [
             'params' => [

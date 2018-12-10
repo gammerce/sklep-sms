@@ -49,7 +49,7 @@ use PageTransferujBad;
 use PageTransferujOk;
 use PaymentModule_1s1k;
 use Bizneshost;
-use PaymentModule_Cashbill;
+use Cashbill;
 use PaymentModule_Cssetti;
 use PaymentModule_Gosetti;
 use PaymentModuleMicrosms;
@@ -85,7 +85,7 @@ class HeartServiceProvider
     {
         $heart->register_payment_module('1s1k', PaymentModule_1s1k::class);
         $heart->register_payment_module('bizneshost', Bizneshost::class);
-        $heart->register_payment_module('cashbill', PaymentModule_Cashbill::class);
+        $heart->register_payment_module('cashbill', Cashbill::class);
         $heart->register_payment_module('cssetti', PaymentModule_Cssetti::class);
         $heart->register_payment_module('gosetti', PaymentModule_Gosetti::class);
         $heart->register_payment_module('homepay', PaymentModuleHomepay::class);

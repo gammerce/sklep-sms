@@ -90,7 +90,7 @@ class PurchaseServiceFromServerTest extends ServerTestCase
             ])));
 
         $gosetti = Mockery::mock(new PaymentModule_Gosetti())->makePartial();
-        $gosetti->shouldReceive('verify_sms')->andReturn(SupportSms::OK);
+        $gosetti->shouldReceive('verifySms')->andReturn(SupportSms::OK);
         $this->app->instance(PaymentModule_Gosetti::class, $gosetti);
     }
 }

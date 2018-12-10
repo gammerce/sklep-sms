@@ -40,12 +40,12 @@ class PaymentModuleMicrosms extends PaymentModule implements SupportSms, Support
         $this->hash = $this->data['hash'];
     }
 
-    public function verify_sms($return_code, $number)
+    public function verifySms($returnCode, $number)
     {
         $response = $this->requester->get("https://microsms.pl/api/v2/index.php", [
             "userid"    => $this->userId,
             "number"    => $number,
-            "code"      => $return_code,
+            "code"      => $returnCode,
             "serviceid" => $this->serviceId,
         ]);
 

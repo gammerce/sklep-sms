@@ -40,13 +40,13 @@ class PaymentModuleHostplay extends PaymentModule implements SupportSms
         ];
     }
 
-    public function verify_sms($return_code, $number)
+    public function verifySms($returnCode, $number)
     {
         $response = $this->requester->get('http://hostplay.pl/api/payment/api_code_verify.php', [
             'payment' => 'homepay_sms',
             'userid'  => $this->userId,
             'comment' => 'SklepSMS',
-            'code'    => $return_code,
+            'code'    => $returnCode,
         ]);
 
         if (!$response) {

@@ -20,14 +20,14 @@ class PaymentModule_Zabijaka extends PaymentModule implements SupportSms
         $this->sms_code = $this->data['sms_text'];
     }
 
-    public function verify_sms($return_code, $number)
+    public function verifySms($returnCode, $number)
     {
         $xml = simplexml_load_file(
             'http://api.zabijaka.pl/1.1' .
             '/' . urlencode($this->api) .
             '/sms' .
             '/' . round(get_sms_cost($number) / 100) .
-            '/' . urlencode($return_code) .
+            '/' . urlencode($returnCode) .
             '/sms.xml/add'
         );
 

@@ -55,7 +55,7 @@ class Bizneshost extends PaymentModule implements SupportSms
             throw new BadCodeException();
         }
 
-        // No code - $return_code is empty
+        // No code - $returnCode is empty
         if ($status_exploded[0] == '-1') {
             throw new BadCodeException();
         }

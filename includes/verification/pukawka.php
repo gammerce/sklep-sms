@@ -28,12 +28,12 @@ class PaymentModule_Pukawka extends PaymentModule implements SupportSms
         $this->stawki = $response ? $response->json() : null;
     }
 
-    public function verify_sms($return_code, $number)
+    public function verifySms($returnCode, $number)
     {
         $response = $this->requester->get('https://admin.pukawka.pl/api/', [
             'keyapi' => $this->api,
             'type'   => 'sms',
-            'code'   => $return_code,
+            'code'   => $returnCode,
         ]);
 
         if (!$response) {
