@@ -450,7 +450,7 @@ function validate_payment($purchase_data)
         );
         $payment_id = $sms_return['payment_id'];
 
-        if ($sms_return['status'] != IPayment_Sms::OK) {
+        if ($sms_return['status'] != SupportSms::OK) {
             return [
                 'status'   => $sms_return['status'],
                 'text'     => $sms_return['text'],

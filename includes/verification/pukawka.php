@@ -2,7 +2,7 @@
 
 use App\PaymentModule;
 
-class PaymentModule_Pukawka extends PaymentModule implements IPayment_Sms
+class PaymentModule_Pukawka extends PaymentModule implements SupportSms
 {
     const SERVICE_ID = "pukawka";
 
@@ -37,7 +37,7 @@ class PaymentModule_Pukawka extends PaymentModule implements IPayment_Sms
         ]);
 
         if (!$response) {
-            return IPayment_Sms::NO_CONNECTION;
+            return SupportSms::NO_CONNECTION;
         }
 
         $get = $response->json();
@@ -45,7 +45,7 @@ class PaymentModule_Pukawka extends PaymentModule implements IPayment_Sms
         if (!empty($get)) {
             if ($get['error']) {
                 return [
-                    'status' => IPayment_Sms::UNKNOWN,
+                    'status' => SupportSms::UNKNOWN,
                     'text'   => $get['error'],
                 ];
             }
@@ -58,24 +58,24 @@ class PaymentModule_Pukawka extends PaymentModule implements IPayment_Sms
                     }
 
                     if ($s['numer'] == $number) {
-                        return IPayment_Sms::OK;
+                        return SupportSms::OK;
                     }
 
                     $tariff = $this->getTariffByNumber($s['numer']);
 
                     return [
-                        'status' => IPayment_Sms::BAD_NUMBER,
+                        'status' => SupportSms::BAD_NUMBER,
                         'tariff' => !is_null($tariff) ? $tariff->getId() : null,
                     ];
                 }
 
-                return IPayment_Sms::ERROR;
+                return SupportSms::ERROR;
             }
 
-            return IPayment_Sms::BAD_CODE;
+            return SupportSms::BAD_CODE;
         }
 
-        return IPayment_Sms::ERROR;
+        return SupportSms::ERROR;
     }
 
     public function getSmsCode()

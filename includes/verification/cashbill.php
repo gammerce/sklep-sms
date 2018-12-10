@@ -3,7 +3,7 @@
 use App\Models\TransferFinalize;
 use App\PaymentModule;
 
-class PaymentModule_Cashbill extends PaymentModule implements IPayment_Sms, IPayment_Transfer
+class PaymentModule_Cashbill extends PaymentModule implements SupportSms, SupportTransfer
 {
     const SERVICE_ID = "cashbill";
 
@@ -45,20 +45,20 @@ class PaymentModule_Cashbill extends PaymentModule implements IPayment_Sms, IPay
             fclose($handle);
 
             if ($status == '0') {
-                return IPayment_Sms::BAD_CODE;
+                return SupportSms::BAD_CODE;
             }
 
             if ($number !== $bramka) {
                 return [
-                    'status' => IPayment_Sms::BAD_NUMBER,
+                    'status' => SupportSms::BAD_NUMBER,
                     'tariff' => $this->getTariffByNumber($bramka)->getId(),
                 ];
             }
 
-            return IPayment_Sms::OK;
+            return SupportSms::OK;
         }
 
-        return IPayment_Sms::NO_CONNECTION;
+        return SupportSms::NO_CONNECTION;
     }
 
     /**

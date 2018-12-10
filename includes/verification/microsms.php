@@ -5,7 +5,7 @@ use App\PaymentModule;
 use App\Settings;
 
 // https://microsms.pl/documents/dokumentacja_przelewy_microsms.pdf
-class PaymentModuleMicrosms extends PaymentModule implements IPayment_Sms, IPayment_Transfer
+class PaymentModuleMicrosms extends PaymentModule implements SupportSms, SupportTransfer
 {
     const SERVICE_ID = "microsms";
 
@@ -50,36 +50,36 @@ class PaymentModuleMicrosms extends PaymentModule implements IPayment_Sms, IPaym
         ]);
 
         if (!$response) {
-            return IPayment_Sms::NO_CONNECTION;
+            return SupportSms::NO_CONNECTION;
         }
 
         if ($response->isBadResponse()) {
-            return IPayment_Sms::BAD_API;
+            return SupportSms::BAD_API;
         }
 
         $content = $response->json();
 
         if (strlen(array_get($content, 'error'))) {
             log_error("Kod błędu: {$content['error']['errorCode']} - {$content['error']['message']}");
-            return IPayment_Sms::ERROR;
+            return SupportSms::ERROR;
         }
 
         if ($content['connect'] === false) {
             $errorCode = $content['data']['errorCode'];
 
             if ($errorCode == 1) {
-                return IPayment_Sms::BAD_CODE;
+                return SupportSms::BAD_CODE;
             }
 
             log_error("Kod błędu: $errorCode - {$content['data']['message']}");
-            return IPayment_Sms::ERROR;
+            return SupportSms::ERROR;
         }
 
         if ($content['data']['status'] == 1) {
-            return IPayment_Sms::OK;
+            return SupportSms::OK;
         }
 
-        return IPayment_Sms::ERROR;
+        return SupportSms::ERROR;
     }
 
     /**

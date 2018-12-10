@@ -2,7 +2,7 @@
 
 use App\PaymentModule;
 
-class PaymentModule_Profitsms extends PaymentModule implements IPayment_Sms
+class PaymentModule_Profitsms extends PaymentModule implements SupportSms
 {
     const SERVICE_ID = "profitsms";
 
@@ -29,7 +29,7 @@ class PaymentModule_Profitsms extends PaymentModule implements IPayment_Sms
         ]);
 
         if ($response === false) {
-            return IPayment_Sms::NO_CONNECTION;
+            return SupportSms::NO_CONNECTION;
         }
 
         $content = $response->getBody();
@@ -37,13 +37,13 @@ class PaymentModule_Profitsms extends PaymentModule implements IPayment_Sms
 
         switch ($raport['0']) {
             case 1:
-                return IPayment_Sms::OK;
+                return SupportSms::OK;
 
             case 0:
-                return IPayment_Sms::BAD_CODE;
+                return SupportSms::BAD_CODE;
         }
 
-        return IPayment_Sms::ERROR;
+        return SupportSms::ERROR;
     }
 
     public function getSmsCode()

@@ -2,7 +2,7 @@
 
 use App\PaymentModule;
 
-class PaymentModule_Zabijaka extends PaymentModule implements IPayment_Sms
+class PaymentModule_Zabijaka extends PaymentModule implements SupportSms
 {
     const SERVICE_ID = "zabijaka";
 
@@ -32,22 +32,22 @@ class PaymentModule_Zabijaka extends PaymentModule implements IPayment_Sms
         );
 
         if (!$xml) {
-            return IPayment_Sms::NO_CONNECTION;
+            return SupportSms::NO_CONNECTION;
         }
 
         if ($xml->error == '2') {
-            return IPayment_Sms::BAD_CODE;
+            return SupportSms::BAD_CODE;
         }
 
         if ($xml->error == '1') {
-            return IPayment_Sms::BAD_API;
+            return SupportSms::BAD_API;
         }
 
         if ($xml->success == '1') {
-            return IPayment_Sms::OK;
+            return SupportSms::OK;
         }
 
-        return IPayment_Sms::ERROR;
+        return SupportSms::ERROR;
     }
 
     public function getSmsCode()

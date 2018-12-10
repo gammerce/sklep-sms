@@ -2,7 +2,7 @@
 
 use App\PaymentModule;
 
-class PaymentModule_Gosetti extends PaymentModule implements IPayment_Sms
+class PaymentModule_Gosetti extends PaymentModule implements SupportSms
 {
     const SERVICE_ID = "gosetti";
 
@@ -40,27 +40,27 @@ class PaymentModule_Gosetti extends PaymentModule implements IPayment_Sms
         ]);
 
         if ($response === false) {
-            return IPayment_Sms::NO_CONNECTION;
+            return SupportSms::NO_CONNECTION;
         }
 
         $content = $response->getBody();
 
         if (!is_numeric($content)) {
-            return IPayment_Sms::ERROR;
+            return SupportSms::ERROR;
         }
 
         $content = strval(floatval($content));
 
         if ($content == '0') {
-            return IPayment_Sms::BAD_CODE;
+            return SupportSms::BAD_CODE;
         }
 
         if ($content == '-1') {
-            return IPayment_Sms::BAD_API;
+            return SupportSms::BAD_API;
         }
 
         if ($content == '-2' || $content == '-3') {
-            return IPayment_Sms::SERVER_ERROR;
+            return SupportSms::SERVER_ERROR;
         }
 
         if (floatval($content) > 0) {
@@ -70,15 +70,15 @@ class PaymentModule_Gosetti extends PaymentModule implements IPayment_Sms
                 $tariff = $this->getTariffByNumber($expectedNumber);
 
                 return [
-                    'status' => IPayment_Sms::BAD_NUMBER,
+                    'status' => SupportSms::BAD_NUMBER,
                     'tariff' => $tariff ? $tariff->getId() : null,
                 ];
             }
 
-            return IPayment_Sms::OK;
+            return SupportSms::OK;
         }
 
-        return IPayment_Sms::ERROR;
+        return SupportSms::ERROR;
     }
 
     protected function numberByAmount($amount)

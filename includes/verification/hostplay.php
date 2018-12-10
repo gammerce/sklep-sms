@@ -2,7 +2,7 @@
 
 use App\PaymentModule;
 
-class PaymentModuleHostplay extends PaymentModule implements IPayment_Sms
+class PaymentModuleHostplay extends PaymentModule implements SupportSms
 {
     const SERVICE_ID = "hostplay";
 
@@ -50,7 +50,7 @@ class PaymentModuleHostplay extends PaymentModule implements IPayment_Sms
         ]);
 
         if (!$response) {
-            return IPayment_Sms::NO_CONNECTION;
+            return SupportSms::NO_CONNECTION;
         }
 
         $content = $response->json();
@@ -58,34 +58,34 @@ class PaymentModuleHostplay extends PaymentModule implements IPayment_Sms
 
         if (strtoupper($content['status']) == 'OK') {
             if ($response_number == $number) {
-                return IPayment_Sms::OK;
+                return SupportSms::OK;
             }
 
             return [
-                'status' => IPayment_Sms::BAD_NUMBER,
+                'status' => SupportSms::BAD_NUMBER,
                 'tariff' => $this->getTariffByNumber($response_number)->getId(),
             ];
         }
 
         if (strtoupper($content['status']) == 'FAIL') {
             if (strtoupper($content['error']) == "BAD_CODE") {
-                return IPayment_Sms::BAD_CODE;
+                return SupportSms::BAD_CODE;
             }
 
             if (strtoupper($content['error']) == "BAD_CODE[1]") {
-                return IPayment_Sms::BAD_CODE;
+                return SupportSms::BAD_CODE;
             }
 
             if (strtoupper($content['error']) == "BAD_AMOUNT") {
-                return IPayment_Sms::BAD_NUMBER;
+                return SupportSms::BAD_NUMBER;
             }
 
             if (strtoupper($content['error']) == "BAD_AMOUNT2") {
-                return IPayment_Sms::BAD_NUMBER;
+                return SupportSms::BAD_NUMBER;
             }
         }
 
-        return IPayment_Sms::SERVER_ERROR;
+        return SupportSms::SERVER_ERROR;
     }
 
     public function getSmsCode()

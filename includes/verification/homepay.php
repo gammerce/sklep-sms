@@ -2,7 +2,7 @@
 
 use App\PaymentModule;
 
-class PaymentModuleHomepay extends PaymentModule implements IPayment_Sms
+class PaymentModuleHomepay extends PaymentModule implements SupportSms
 {
     const SERVICE_ID = "homepay";
 
@@ -35,17 +35,17 @@ class PaymentModuleHomepay extends PaymentModule implements IPayment_Sms
             fclose($handle);
 
             if ($status == '0') {
-                return IPayment_Sms::BAD_CODE;
+                return SupportSms::BAD_CODE;
             }
 
             if ($status == '1') {
-                return IPayment_Sms::OK;
+                return SupportSms::OK;
             }
 
-            return IPayment_Sms::SERVER_ERROR;
+            return SupportSms::SERVER_ERROR;
         }
 
-        return IPayment_Sms::NO_CONNECTION;
+        return SupportSms::NO_CONNECTION;
     }
 
     public function getSmsCode()

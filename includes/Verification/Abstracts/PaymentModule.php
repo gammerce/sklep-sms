@@ -1,13 +1,14 @@
 <?php
-namespace App;
+namespace App\Verification\Abstracts;
 
+use App\Database;
 use App\Models\Tariff;
 use App\Requesting\Requester;
+use App\TranslationManager;
+use App\Translator;
 
 abstract class PaymentModule
 {
-    const SERVICE_ID = '';
-
     /** @var Database */
     protected $db;
 
@@ -17,14 +18,17 @@ abstract class PaymentModule
     /** @var Translator */
     protected $langShop;
 
+    /** @var string */
+    protected $serviceId;
+
     /** @var  string */
     protected $name;
 
     /** @var  bool */
-    protected $support_sms = false;
+    protected $supportSms = false;
 
     /** @var  bool */
-    protected $support_transfer = false;
+    protected $supportTransfer = false;
 
     /**
      * Data from columns: data & data_hidden
@@ -36,31 +40,30 @@ abstract class PaymentModule
     /** @var Tariff[] */
     protected $tariffs = [];
 
-    public function __construct()
+    public function __construct(Database $database, Requester $requester, TranslationManager $translationManager)
     {
-        $this->db = app()->make(Database::class);
-        $this->requester = app()->make(Requester::class);
-
-        /** @var TranslationManager $translationManager */
-        $translationManager = app()->make(TranslationManager::class);
+        $this->db = $database;
+        $this->requester = $requester;
         $this->langShop = $translationManager->shop();
 
         $result = $this->db->query($this->db->prepare(
             "SELECT `name`, `data`, `data_hidden`, `sms`, `transfer` " .
             "FROM `" . TABLE_PREFIX . "transaction_services` " .
             "WHERE `id` = '%s' ",
-            [$this::SERVICE_ID]
+            [$this->serviceId]
         ));
 
         if (!$this->db->num_rows($result)) {
+            // TODO Output should not happen here
             output_page("An error occured in class: " . get_class($this) . " constructor. There is no " . $this::SERVICE_ID . " payment service in database.");
         }
 
         $row = $this->db->fetch_array_assoc($result);
 
         $this->name = $row['name'];
-        $this->support_sms = (bool)$row['sms'];
-        $this->support_transfer = (bool)$row['transfer'];
+        // TODO Verification class should set those values
+        $this->supportSms = (bool)$row['sms'];
+        $this->supportTransfer = (bool)$row['transfer'];
 
         $data = (array)json_decode($row['data'], true);
         foreach ($data as $key => $value) {
@@ -78,7 +81,7 @@ abstract class PaymentModule
             "FROM `" . TABLE_PREFIX . "tariffs` AS t " .
             "LEFT JOIN `" . TABLE_PREFIX . "sms_numbers` AS sn ON t.id = sn.tariff " .
             "WHERE sn.service = '%s' ",
-            [$this::SERVICE_ID]
+            [$this->serviceId]
         ));
 
         while ($row = $this->db->fetch_array_assoc($result)) {
@@ -97,7 +100,7 @@ abstract class PaymentModule
      */
     public function supportTransfer()
     {
-        return $this->support_transfer;
+        return $this->supportTransfer;
     }
 
     /**
@@ -105,7 +108,7 @@ abstract class PaymentModule
      */
     public function supportSms()
     {
-        return $this->support_sms;
+        return $this->supportSms;
     }
 
     /**
@@ -117,23 +120,23 @@ abstract class PaymentModule
     }
 
     /**
-     * @param int $tariff_id
+     * @param int $tariffId
      *
-     * @return Tariff
+     * @return Tariff|null
      */
-    public function getTariffById($tariff_id)
+    public function getTariffById($tariffId)
     {
-        return if_isset($this->tariffs[$tariff_id], null);
+        return array_get($this->tariffs, $tariffId);
     }
 
     /**
      * @param string $number
      *
-     * @return Tariff
+     * @return Tariff|null
      */
     public function getTariffByNumber($number)
     {
-        return if_isset($this->tariffs[$number], null);
+        return array_get($this->tariffs, $number);
     }
 
     /**

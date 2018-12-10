@@ -10,7 +10,7 @@ use App\Models\TransferFinalize;
 use App\PaymentModule;
 use App\Settings;
 
-class PaymentModuleTransferuj extends PaymentModule implements IPayment_Transfer
+class PaymentModuleTransferuj extends PaymentModule implements SupportTransfer
 {
     const SERVICE_ID = "transferuj";
 

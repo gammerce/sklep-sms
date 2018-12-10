@@ -2,7 +2,7 @@
 
 use App\PaymentModule;
 
-class PaymentModule_Simpay extends PaymentModule implements IPayment_Sms
+class PaymentModule_Simpay extends PaymentModule implements SupportSms
 {
     const SERVICE_ID = "simpay";
 
@@ -43,14 +43,14 @@ class PaymentModule_Simpay extends PaymentModule implements IPayment_Sms
         ]);
 
         if (!$response) {
-            return IPayment_Sms::NO_CONNECTION;
+            return SupportSms::NO_CONNECTION;
         }
 
         $content = $response->json();
 
         if (isset($content['respond']['status']) && $content['respond']['status'] == 'OK') {
             return [
-                'status' => IPayment_Sms::OK,
+                'status' => SupportSms::OK,
                 'free'   => $content['respond']['test'],
             ];
         }
@@ -59,20 +59,20 @@ class PaymentModule_Simpay extends PaymentModule implements IPayment_Sms
             switch (intval($content['error'][0]['error_code'])) {
                 case 103:
                 case 104:
-                    return IPayment_Sms::BAD_API;
+                    return SupportSms::BAD_API;
 
                 case 404:
                 case 405:
-                    return IPayment_Sms::BAD_CODE;
+                    return SupportSms::BAD_CODE;
             }
 
             return [
-                'status' => IPayment_Sms::UNKNOWN,
+                'status' => SupportSms::UNKNOWN,
                 'text'   => $content['error'][0]['error_name'],
             ];
         }
 
-        return IPayment_Sms::ERROR;
+        return SupportSms::ERROR;
     }
 
     public function getSmsCode()

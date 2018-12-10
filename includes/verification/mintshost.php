@@ -2,7 +2,7 @@
 
 use App\PaymentModule;
 
-class PaymentModule_Mintshost extends PaymentModule implements IPayment_Sms
+class PaymentModule_Mintshost extends PaymentModule implements SupportSms
 {
     const SERVICE_ID = "mintshost";
 
@@ -29,28 +29,28 @@ class PaymentModule_Mintshost extends PaymentModule implements IPayment_Sms
         ]);
 
         if ($response === false) {
-            return IPayment_Sms::NO_CONNECTION;
+            return SupportSms::NO_CONNECTION;
         }
 
         $status = $response->getBody();
 
         if ($status === "1") {
-            return IPayment_Sms::OK;
+            return SupportSms::OK;
         }
 
         if ($status === "0") {
-            return IPayment_Sms::BAD_CODE;
+            return SupportSms::BAD_CODE;
         }
 
         if ($status === "2") {
-            return IPayment_Sms::BAD_EMAIL;
+            return SupportSms::BAD_EMAIL;
         }
 
         if ($status === "3") {
-            return IPayment_Sms::BAD_DATA;
+            return SupportSms::BAD_DATA;
         }
 
-        return IPayment_Sms::ERROR;
+        return SupportSms::ERROR;
     }
 
     public function getSmsCode()

@@ -1,9 +1,10 @@
 <?php
+namespace App\Verification\Abstracts;
 
 use App\Models\Purchase;
 use App\Models\TransferFinalize;
 
-interface IPayment_Transfer
+interface SupportTransfer
 {
     /**
      * Przygotowanie zapytania POST w celu płatności przelewem

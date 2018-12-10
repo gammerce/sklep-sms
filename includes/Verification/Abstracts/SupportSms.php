@@ -1,6 +1,9 @@
 <?php
+namespace App\Verification\Abstracts;
 
-interface IPayment_Sms
+use App\Verification\Exceptions\SmsPaymentException;
+
+interface SupportSms
 {
     const OK = 'ok';
     const BAD_CODE = 'bad_code';
@@ -17,14 +20,15 @@ interface IPayment_Sms
     /**
      * Weryfikacja kodu zwrotnego otrzymanego poprzez wyslanie SMSa na dany numer
      *
-     * @param string $return_code kod zwrotny
-     * @param string $number numer na który powinien był zostać wysłany SMS
+     * @param string $returnCode kod zwrotny
+     * @param string $number numer na który powinien zostać wysłany SMS
      *
      * @return int | array
      *  status => zwracany status sms
      *  number => numer na który został wysłany SMS
+     * @throws SmsPaymentException
      */
-    public function verify_sms($return_code, $number);
+    public function verifySms($returnCode, $number);
 
     /**
      * Zwraca kod sms, który należy wpisać w wiadomości sms
