@@ -6,6 +6,7 @@ use App\Models\TransferFinalize;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
+use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\BadNumberException;
 use App\Verification\Exceptions\NoConnectionException;
 
@@ -33,14 +34,14 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
             fclose($handle);
 
             if ($status == '0') {
-                return SupportSms::BAD_CODE;
+                throw new BadCodeException();
             }
 
             if ($number !== $bramka) {
                 throw new BadNumberException($this->getTariffByNumber($bramka)->getId());
             }
 
-            return SupportSms::OK;
+            return;
         }
 
         throw new NoConnectionException();

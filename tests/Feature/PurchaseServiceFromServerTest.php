@@ -6,7 +6,7 @@ use App\Settings;
 use ExtraFlagType;
 use SupportSms;
 use Mockery;
-use PaymentModule_Gosetti;
+use Gosetti;
 use Tests\Psr4\Concerns\RequesterConcern;
 use Tests\Psr4\TestCases\ServerTestCase;
 
@@ -89,8 +89,8 @@ class PurchaseServiceFromServerTest extends ServerTestCase
                 'Numbers' => [],
             ])));
 
-        $gosetti = Mockery::mock(new PaymentModule_Gosetti())->makePartial();
+        $gosetti = Mockery::mock(new Gosetti())->makePartial();
         $gosetti->shouldReceive('verifySms')->andReturn(SupportSms::OK);
-        $this->app->instance(PaymentModule_Gosetti::class, $gosetti);
+        $this->app->instance(Gosetti::class, $gosetti);
     }
 }
