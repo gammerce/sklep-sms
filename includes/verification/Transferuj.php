@@ -1,58 +1,57 @@
 <?php
+namespace App\Verification;
+
+use App\Database;
+use App\Models\Purchase;
+use App\Models\TransferFinalize;
+use App\Requesting\Requester;
+use App\Settings;
+use App\TranslationManager;
+use App\Verification\Abstracts\PaymentModule;
+use App\Verification\Abstracts\SupportTransfer;
 
 /**
  * Created by MilyGosc.
- * URL: https://forum.sklep-sms.pl/showthread.php?tid=88
+ * @see https://forum.sklep-sms.pl/showthread.php?tid=88
  */
-
-use App\Models\Purchase;
-use App\Models\TransferFinalize;
-use App\PaymentModule;
-use App\Settings;
-
-class PaymentModuleTransferuj extends PaymentModule implements SupportTransfer
+class Transferuj extends PaymentModule implements SupportTransfer
 {
-    const SERVICE_ID = "transferuj";
-
-    /** @var string */
-    private $account_id;
-
-    /** @var string */
-    private $key;
+    protected $id = "transferuj";
 
     /** @var Settings */
     private $settings;
 
-    public function __construct()
-    {
-        parent::__construct();
+    /** @var string */
+    private $accountId;
 
-        $this->settings = app()->make(Settings::class);
+    /** @var string */
+    private $key;
+
+    public function __construct(Database $database, Requester $requester, TranslationManager $translationManager, Settings $settings)
+    {
+        parent::__construct($database, $requester, $translationManager);
+
+        $this->settings = $settings;
         $this->key = $this->data['key'];
-        $this->account_id = $this->data['account_id'];
+        $this->accountId = $this->data['account_id'];
     }
 
-    /**
-     * @param Purchase $purchase_data
-     * @param string   $data_filename
-     * @return array
-     */
-    public function prepare_transfer($purchase_data, $data_filename)
+    public function prepareTransfer(Purchase $purchase, $dataFilename)
     {
         // Zamieniamy grosze na złotówki
-        $cost = round($purchase_data->getPayment('cost') / 100, 2);
+        $cost = round($purchase->getPayment('cost') / 100, 2);
 
         return [
             'url'          => 'https://secure.transferuj.pl',
             'method'       => 'POST',
-            'id'           => $this->account_id,
+            'id'           => $this->accountId,
             'kwota'        => $cost,
-            'opis'         => $purchase_data->getDesc(),
-            'crc'          => $data_filename,
-            'md5sum'       => md5($this->account_id . $cost . $data_filename . $this->key),
-            'imie'         => $purchase_data->user->getForename(false),
-            'nazwisko'     => $purchase_data->user->getSurname(false),
-            'email'        => $purchase_data->getEmail(),
+            'opis'         => $purchase->getDesc(),
+            'crc'          => $dataFilename,
+            'md5sum'       => md5($this->accountId . $cost . $dataFilename . $this->key),
+            'imie'         => $purchase->user->getForename(false),
+            'nazwisko'     => $purchase->user->getSurname(false),
+            'email'        => $purchase->getEmail(),
             'pow_url'      => $this->settings['shop_url_slash'] . "page/transferuj_ok",
             'pow_url_blad' => $this->settings['shop_url_slash'] . "page/transferuj_bad",
             'wyn_url'      => $this->settings['shop_url_slash'] . "transfer/transferuj",
@@ -102,6 +101,6 @@ class PaymentModuleTransferuj extends PaymentModule implements SupportTransfer
             return false;
         }
 
-        return $md5sum === md5($this->account_id . $transactionId . $transactionAmount . $crc . $this->key);
+        return $md5sum === md5($this->accountId . $transactionId . $transactionAmount . $crc . $this->key);
     }
 }

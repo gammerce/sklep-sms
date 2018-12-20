@@ -10,6 +10,7 @@ use App\Translator;
 // TODO Check supportSms and supportTransfer
 // TODO Add description to exceptions
 // TODO Try to minimize exceptions number
+// TODO Response success object
 abstract class PaymentModule
 {
     /** @var Database */

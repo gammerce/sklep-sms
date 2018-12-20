@@ -55,12 +55,12 @@ use Gosetti;
 use Microsms;
 use Mintshost;
 use Profitsms;
-use PaymentModule_Pukawka;
-use PaymentModule_Simpay;
-use PaymentModule_Zabijaka;
+use Pukawka;
+use Simpay;
+use Zabijaka;
 use PaymentModuleHomepay;
 use Hostplay;
-use PaymentModuleTransferuj;
+use Transferuj;
 use ServiceChargeWallet;
 use ServiceChargeWalletSimple;
 use ServiceExtraFlags;
@@ -93,10 +93,10 @@ class HeartServiceProvider
         $heart->register_payment_module('microsms', Microsms::class);
         $heart->register_payment_module('mintshost', Mintshost::class);
         $heart->register_payment_module('profitsms', Profitsms::class);
-        $heart->register_payment_module('pukawka', PaymentModule_Pukawka::class);
-        $heart->register_payment_module('simpay', PaymentModule_Simpay::class);
-        $heart->register_payment_module('transferuj', PaymentModuleTransferuj::class);
-        $heart->register_payment_module('zabijaka', PaymentModule_Zabijaka::class);
+        $heart->register_payment_module('pukawka', Pukawka::class);
+        $heart->register_payment_module('simpay', Simpay::class);
+        $heart->register_payment_module('transferuj', Transferuj::class);
+        $heart->register_payment_module('zabijaka', Zabijaka::class);
     }
 
     protected function registerPages(Heart $heart)
