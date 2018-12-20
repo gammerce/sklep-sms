@@ -11,7 +11,7 @@ use App\Verification\Exceptions\UnknownException;
 
 class Bizneshost extends PaymentModule implements SupportSms
 {
-    protected $serviceId = "bizneshost";
+    protected $id = "bizneshost";
 
     public function verifySms($returnCode, $number)
     {

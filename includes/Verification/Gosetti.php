@@ -1,7 +1,6 @@
 <?php
 namespace App\Verification;
 
-
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\BadCodeException;

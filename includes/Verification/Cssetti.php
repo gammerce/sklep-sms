@@ -12,7 +12,7 @@ use App\Verification\Exceptions\WrongCredentialsException;
 
 class Cssetti extends PaymentModule implements SupportSms
 {
-    protected $serviceId = "cssetti";
+    protected $id = "cssetti";
 
     /** @var string */
     private $smsCode;

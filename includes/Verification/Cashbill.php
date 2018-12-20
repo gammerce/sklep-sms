@@ -12,7 +12,7 @@ use App\Verification\Exceptions\NoConnectionException;
 
 class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
 {
-    protected $serviceId = "cashbill";
+    protected $id = "cashbill";
 
     public function verifySms($returnCode, $number)
     {

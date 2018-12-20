@@ -13,7 +13,7 @@ use App\Verification\Exceptions\WrongCredentialsException;
 
 class OneShotOneKill extends PaymentModule implements SupportSms
 {
-    protected $serviceId = "1s1k";
+    protected $id = "1s1k";
 
     private $rates = [
         '0.65'  => '7136',

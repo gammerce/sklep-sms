@@ -19,7 +19,7 @@ abstract class PaymentModule
     protected $langShop;
 
     /** @var string */
-    protected $serviceId;
+    protected $id;
 
     /** @var  string */
     protected $name;
@@ -50,12 +50,12 @@ abstract class PaymentModule
             "SELECT `name`, `data`, `data_hidden`, `sms`, `transfer` " .
             "FROM `" . TABLE_PREFIX . "transaction_services` " .
             "WHERE `id` = '%s' ",
-            [$this->serviceId]
+            [$this->id]
         ));
 
         if (!$this->db->num_rows($result)) {
             // TODO Output should not happen here
-            output_page("An error occured in class: " . get_class($this) . " constructor. There is no " . $this->serviceId . " payment service in database.");
+            output_page("An error occured in class: " . get_class($this) . " constructor. There is no " . $this->id . " payment service in database.");
         }
 
         $row = $this->db->fetch_array_assoc($result);
@@ -81,7 +81,7 @@ abstract class PaymentModule
             "FROM `" . TABLE_PREFIX . "tariffs` AS t " .
             "LEFT JOIN `" . TABLE_PREFIX . "sms_numbers` AS sn ON t.id = sn.tariff " .
             "WHERE sn.service = '%s' ",
-            [$this->serviceId]
+            [$this->id]
         ));
 
         while ($row = $this->db->fetch_array_assoc($result)) {

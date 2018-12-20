@@ -3,7 +3,7 @@ namespace App\Verification\Exceptions;
 
 class BadNumberException extends SmsPaymentException
 {
-    /** @var int */
+    /** @var int|null */
     public $tariffId;
 
     public function __construct($tariffId)
