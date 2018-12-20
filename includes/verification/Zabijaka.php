@@ -7,6 +7,7 @@ use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Exceptions\WrongCredentialsException;
+use App\Verification\Results\SmsSuccessResult;
 
 class Zabijaka extends PaymentModule implements SupportSms
 {
@@ -36,7 +37,7 @@ class Zabijaka extends PaymentModule implements SupportSms
         }
 
         if ($xml->success == '1') {
-            return;
+            return new SmsSuccessResult();
         }
 
         throw new UnknownErrorException();

@@ -7,6 +7,7 @@ use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\BadNumberException;
 use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\ServerErrorException;
+use App\Verification\Results\SmsSuccessResult;
 
 class Hostplay extends PaymentModule implements SupportSms
 {
@@ -48,7 +49,7 @@ class Hostplay extends PaymentModule implements SupportSms
 
         if (strtoupper($content['status']) === 'OK') {
             if ($responseNumber == $number) {
-                return;
+                return new SmsSuccessResult();
             }
 
             $tariffId = $this->getTariffByNumber($responseNumber)->getId();

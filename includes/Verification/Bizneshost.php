@@ -8,6 +8,7 @@ use App\Verification\Exceptions\BadDataException;
 use App\Verification\Exceptions\BadNumberException;
 use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\UnknownErrorException;
+use App\Verification\Results\SmsSuccessResult;
 
 class Bizneshost extends PaymentModule implements SupportSms
 {
@@ -42,7 +43,7 @@ class Bizneshost extends PaymentModule implements SupportSms
         if ($status_exploded[0] == '1') {
             // Check whether prices are equal
             if (abs(get_sms_cost_brutto($number) / 100 - floatval($status_exploded[1])) < 0.1) {
-                return;
+                return new SmsSuccessResult();
             }
 
             $tariff = $this->getTariffBySmsCostBrutto($status_exploded[1]);

@@ -6,6 +6,7 @@ use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\UnknownErrorException;
+use App\Verification\Results\SmsSuccessResult;
 
 class Profitsms extends PaymentModule implements SupportSms
 {
@@ -28,7 +29,7 @@ class Profitsms extends PaymentModule implements SupportSms
 
         switch ($raport['0']) {
             case 1:
-                return;
+                return new SmsSuccessResult();
 
             case 0:
                 throw new BadCodeException();

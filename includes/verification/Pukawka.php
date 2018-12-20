@@ -7,6 +7,7 @@ use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\BadNumberException;
 use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\UnknownErrorException;
+use App\Verification\Results\SmsSuccessResult;
 
 class Pukawka extends PaymentModule implements SupportSms
 {
@@ -42,7 +43,7 @@ class Pukawka extends PaymentModule implements SupportSms
                     }
 
                     if ($s['numer'] == $number) {
-                        return SupportSms::OK;
+                        return new SmsSuccessResult();
                     }
 
                     $tariff = $this->getTariffByNumber($s['numer']);

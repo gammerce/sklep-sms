@@ -6,6 +6,7 @@ use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\ServerErrorException;
+use App\Verification\Results\SmsSuccessResult;
 
 class Homepay extends PaymentModule implements SupportSms
 {
@@ -30,7 +31,7 @@ class Homepay extends PaymentModule implements SupportSms
             }
 
             if ($status == '1') {
-                return;
+                return new SmsSuccessResult();
             }
 
             throw new ServerErrorException();

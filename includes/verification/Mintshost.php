@@ -8,6 +8,7 @@ use App\Verification\Exceptions\InsufficientDataException;
 use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Exceptions\WrongCredentialsException;
+use App\Verification\Results\SmsSuccessResult;
 
 class Mintshost extends PaymentModule implements SupportSms
 {
@@ -28,7 +29,7 @@ class Mintshost extends PaymentModule implements SupportSms
         $status = $response->getBody();
 
         if ($status === "1") {
-            return;
+            return new SmsSuccessResult();
         }
 
         if ($status === "0") {

@@ -7,6 +7,7 @@ use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Exceptions\WrongCredentialsException;
+use App\Verification\Results\SmsSuccessResult;
 
 class Simpay extends PaymentModule implements SupportSms
 {
@@ -33,9 +34,7 @@ class Simpay extends PaymentModule implements SupportSms
         $content = $response->json();
 
         if (isset($content['respond']['status']) && $content['respond']['status'] == 'OK') {
-            return [
-                'free' => !!$content['respond']['test'],
-            ];
+            return new SmsSuccessResult(!!$content['respond']['test']);
         }
 
         if (isset($content['error'][0]) && is_array($content['error'][0])) {

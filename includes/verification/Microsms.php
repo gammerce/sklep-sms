@@ -15,6 +15,7 @@ use App\Verification\Exceptions\ExternalApiException;
 use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\ServerErrorException;
 use App\Verification\Exceptions\UnknownErrorException;
+use App\Verification\Results\SmsSuccessResult;
 
 /**
  * @see https://microsms.pl/documents/dokumentacja_przelewy_microsms.pdf
@@ -94,7 +95,7 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
         }
 
         if ($content['data']['status'] == 1) {
-            return;
+            return new SmsSuccessResult();
         }
 
         throw new ServerErrorException();

@@ -10,6 +10,7 @@ use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\ServerErrorException;
 use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Exceptions\WrongCredentialsException;
+use App\Verification\Results\SmsSuccessResult;
 
 class OneShotOneKill extends PaymentModule implements SupportSms
 {
@@ -57,7 +58,7 @@ class OneShotOneKill extends PaymentModule implements SupportSms
         switch ($content['status']) {
             case 'ok':
                 if ($responseNumber == $number) {
-                    return;
+                    return new SmsSuccessResult();
                 }
 
                 throw new BadNumberException($this->getTariffByNumber($responseNumber)->getId());

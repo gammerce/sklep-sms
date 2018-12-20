@@ -2,6 +2,7 @@
 namespace App\Verification\Abstracts;
 
 use App\Verification\Exceptions\SmsPaymentException;
+use App\Verification\Results\SmsSuccessResult;
 
 interface SupportSms
 {
@@ -22,7 +23,7 @@ interface SupportSms
      *
      * @param string $returnCode kod zwrotny
      * @param string $number numer na który powinien zostać wysłany SMS
-     * @return array|null
+     * @return SmsSuccessResult
      * @throws SmsPaymentException
      */
     public function verifySms($returnCode, $number);

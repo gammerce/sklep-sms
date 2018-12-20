@@ -9,6 +9,7 @@ use App\Verification\Exceptions\ExternalApiException;
 use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\ServerErrorException;
 use App\Verification\Exceptions\WrongCredentialsException;
+use App\Verification\Results\SmsSuccessResult;
 
 class Gosetti extends PaymentModule implements SupportSms
 {
@@ -63,7 +64,7 @@ class Gosetti extends PaymentModule implements SupportSms
                 throw new BadNumberException($tariffId);
             }
 
-            return;
+            return new SmsSuccessResult();
         }
 
         throw new ExternalApiException();
