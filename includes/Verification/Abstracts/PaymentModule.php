@@ -7,6 +7,9 @@ use App\Requesting\Requester;
 use App\TranslationManager;
 use App\Translator;
 
+// TODO Check supportSms and supportTransfer
+// TODO Add description to exceptions
+// TODO Try to minimize exceptions number
 abstract class PaymentModule
 {
     /** @var Database */

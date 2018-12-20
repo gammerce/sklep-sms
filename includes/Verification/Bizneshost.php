@@ -7,7 +7,7 @@ use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\BadDataException;
 use App\Verification\Exceptions\BadNumberException;
 use App\Verification\Exceptions\NoConnectionException;
-use App\Verification\Exceptions\UnknownException;
+use App\Verification\Exceptions\UnknownErrorException;
 
 class Bizneshost extends PaymentModule implements SupportSms
 {
@@ -65,7 +65,7 @@ class Bizneshost extends PaymentModule implements SupportSms
             throw new BadDataException();
         }
 
-        throw new UnknownException();
+        throw new UnknownErrorException();
     }
 
     public function getSmsCode()

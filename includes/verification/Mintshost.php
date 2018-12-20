@@ -6,7 +6,7 @@ use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\InsufficientDataException;
 use App\Verification\Exceptions\NoConnectionException;
-use App\Verification\Exceptions\UnknownException;
+use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Exceptions\WrongCredentialsException;
 
 class Mintshost extends PaymentModule implements SupportSms
@@ -43,7 +43,7 @@ class Mintshost extends PaymentModule implements SupportSms
             throw new InsufficientDataException();
         }
 
-        throw new UnknownException();
+        throw new UnknownErrorException();
     }
 
     public function getSmsCode()

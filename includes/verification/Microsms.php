@@ -14,7 +14,7 @@ use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\ExternalApiException;
 use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\ServerErrorException;
-use App\Verification\Exceptions\UnknownException;
+use App\Verification\Exceptions\UnknownErrorException;
 
 /**
  * @see https://microsms.pl/documents/dokumentacja_przelewy_microsms.pdf
@@ -79,7 +79,7 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
 
         if (strlen(array_get($content, 'error'))) {
             log_error("Kod błędu: {$content['error']['errorCode']} - {$content['error']['message']}");
-            throw new UnknownException();
+            throw new UnknownErrorException();
         }
 
         if ($content['connect'] === false) {
@@ -90,7 +90,7 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
             }
 
             log_error("Kod błędu: $errorCode - {$content['data']['message']}");
-            throw new UnknownException();
+            throw new UnknownErrorException();
         }
 
         if ($content['data']['status'] == 1) {

@@ -1,7 +1,7 @@
 <?php
 namespace App\Verification\Exceptions;
 
-class UnknownException extends SmsPaymentException
+class UnknownErrorException extends SmsPaymentException
 {
     //
 }

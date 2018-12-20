@@ -54,7 +54,7 @@ use Cssetti;
 use Gosetti;
 use Microsms;
 use Mintshost;
-use PaymentModule_Profitsms;
+use Profitsms;
 use PaymentModule_Pukawka;
 use PaymentModule_Simpay;
 use PaymentModule_Zabijaka;
@@ -92,7 +92,7 @@ class HeartServiceProvider
         $heart->register_payment_module('hostplay', Hostplay::class);
         $heart->register_payment_module('microsms', Microsms::class);
         $heart->register_payment_module('mintshost', Mintshost::class);
-        $heart->register_payment_module('profitsms', PaymentModule_Profitsms::class);
+        $heart->register_payment_module('profitsms', Profitsms::class);
         $heart->register_payment_module('pukawka', PaymentModule_Pukawka::class);
         $heart->register_payment_module('simpay', PaymentModule_Simpay::class);
         $heart->register_payment_module('transferuj', PaymentModuleTransferuj::class);
