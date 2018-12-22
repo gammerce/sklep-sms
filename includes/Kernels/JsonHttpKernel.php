@@ -13,6 +13,7 @@ use App\Middlewares\SetLanguage;
 use App\Middlewares\UpdateUserActivity;
 use App\Models\Purchase;
 use App\Payment;
+use App\Repositories\UserRepository;
 use App\Settings;
 use App\Template;
 use App\TranslationManager;
@@ -58,6 +59,9 @@ class JsonHttpKernel extends Kernel
 
         /** @var Mailer $mailer */
         $mailer = app()->make(Mailer::class);
+
+        /** @var UserRepository $userRepository */
+        $userRepository = app()->make(UserRepository::class);
 
         // Pobranie akcji
         $action = $_POST['action'];
@@ -207,16 +211,17 @@ class JsonHttpKernel extends Kernel
                 json_output("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
-            $salt = get_random_string(8);
-            $db->query($db->prepare(
-                "INSERT INTO `" . TABLE_PREFIX . "users` (`username`, `password`, `salt`, `email`, `forename`, `surname`, `regip`) " .
-                "VALUES ('%s','%s','%s','%s','%s','%s','%s')",
-                [$username, hash_password($password, $salt), $salt, $email, $forename, $surname, $user->getLastIp()]
-            ));
+            $createdUser = $userRepository->create(
+                $username, $password, $email, $forename, $surname, $user->getLastIp()
+            );
 
             // LOGING
-            log_info($langShop->sprintf($langShop->translate('new_account'), $db->last_id(), $username,
-                $user->getLastIp()));
+            log_info($langShop->sprintf(
+                $langShop->translate('new_account'),
+                $createdUser->getUid(),
+                $username,
+                $createdUser->getRegip()
+            ));
 
             json_output("registered", $lang->translate('register_success'), 1, $data);
         } elseif ($action == "forgotten_password") {
