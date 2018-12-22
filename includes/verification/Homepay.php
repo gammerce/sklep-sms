@@ -5,7 +5,7 @@ use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\NoConnectionException;
-use App\Verification\Exceptions\ServerErrorException;
+use App\Verification\Exceptions\ExternalErrorException;
 use App\Verification\Results\SmsSuccessResult;
 
 class Homepay extends PaymentModule implements SupportSms
@@ -34,7 +34,7 @@ class Homepay extends PaymentModule implements SupportSms
                 return new SmsSuccessResult();
             }
 
-            throw new ServerErrorException();
+            throw new ExternalErrorException();
         }
 
         throw new NoConnectionException();

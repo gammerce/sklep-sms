@@ -7,9 +7,6 @@ use App\Requesting\Requester;
 use App\TranslationManager;
 use App\Translator;
 
-// TODO Check supportSms and supportTransfer
-// TODO Add description to exceptions
-// TODO Try to minimize exceptions number
 abstract class PaymentModule
 {
     /** @var Database */
@@ -26,12 +23,6 @@ abstract class PaymentModule
 
     /** @var  string */
     protected $name;
-
-//    /** @var  bool */
-//    protected $supportSms = false;
-//
-//    /** @var  bool */
-//    protected $supportTransfer = false;
 
     /**
      * Data from columns: data & data_hidden
@@ -64,9 +55,6 @@ abstract class PaymentModule
         $row = $this->db->fetch_array_assoc($result);
 
         $this->name = $row['name'];
-        // TODO Verification class should set those values
-//        $this->supportSms = (bool)$row['sms'];
-//        $this->supportTransfer = (bool)$row['transfer'];
 
         $data = (array)json_decode($row['data'], true);
         foreach ($data as $key => $value) {

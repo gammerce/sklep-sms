@@ -5,9 +5,10 @@ use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\BadNumberException;
-use App\Verification\Exceptions\ExternalApiException;
-use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\ServerErrorException;
+use App\Verification\Exceptions\NoConnectionException;
+use App\Verification\Exceptions\ExternalErrorException;
+use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Exceptions\WrongCredentialsException;
 use App\Verification\Results\SmsSuccessResult;
 
@@ -37,7 +38,7 @@ class Gosetti extends PaymentModule implements SupportSms
         $content = $response->getBody();
 
         if (!is_numeric($content)) {
-            throw new ExternalApiException();
+            throw new ServerErrorException();
         }
 
         $content = strval(floatval($content));
@@ -51,7 +52,7 @@ class Gosetti extends PaymentModule implements SupportSms
         }
 
         if ($content == '-2' || $content == '-3') {
-            throw new ServerErrorException();
+            throw new ExternalErrorException();
         }
 
         if (floatval($content) > 0) {
@@ -67,7 +68,7 @@ class Gosetti extends PaymentModule implements SupportSms
             return new SmsSuccessResult();
         }
 
-        throw new ExternalApiException();
+        throw new UnknownErrorException();
     }
 
     public function getSmsCode()

@@ -206,6 +206,10 @@ class Payment
 
     protected function getSmsExceptionMessage(SmsPaymentException $e)
     {
+        if ($e->getMessage()) {
+            return $e->getMessage();
+        }
+
         $text = $this->lang->translate('sms_info_' . $e->getCode());
 
         if (strlen($text)) {

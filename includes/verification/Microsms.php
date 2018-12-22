@@ -11,9 +11,9 @@ use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
 use App\Verification\Exceptions\BadCodeException;
-use App\Verification\Exceptions\ExternalApiException;
-use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\ServerErrorException;
+use App\Verification\Exceptions\NoConnectionException;
+use App\Verification\Exceptions\ExternalErrorException;
 use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Results\SmsSuccessResult;
 
@@ -73,7 +73,7 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
         }
 
         if ($response->isBadResponse()) {
-            throw new ExternalApiException();
+            throw new ServerErrorException();
         }
 
         $content = $response->json();
@@ -98,7 +98,7 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
             return new SmsSuccessResult();
         }
 
-        throw new ServerErrorException();
+        throw new UnknownErrorException();
     }
 
     public function prepareTransfer(Purchase $purchase, $dataFilename)

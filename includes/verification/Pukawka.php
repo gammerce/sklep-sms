@@ -5,6 +5,7 @@ use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\BadNumberException;
+use App\Verification\Exceptions\ExternalErrorException;
 use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Results\SmsSuccessResult;
@@ -32,7 +33,7 @@ class Pukawka extends PaymentModule implements SupportSms
 
         if (!empty($get)) {
             if ($get['error']) {
-                throw new UnknownErrorException($get['error']);
+                throw new ExternalErrorException($get['error']);
             }
 
             if ($get['status'] == 'ok') {

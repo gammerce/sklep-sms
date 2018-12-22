@@ -6,6 +6,7 @@ use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\BadDataException;
 use App\Verification\Exceptions\BadNumberException;
+use App\Verification\Exceptions\InsufficientDataException;
 use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Results\SmsSuccessResult;
@@ -19,7 +20,7 @@ class Bizneshost extends PaymentModule implements SupportSms
         $uid = $this->getUid();
 
         if (!strlen($uid)) {
-            throw new BadDataException();
+            throw new InsufficientDataException();
         }
 
         $response = $this->requester->get("http://biznes-host.pl/api/sprawdzkod_v2.php", [
@@ -63,7 +64,7 @@ class Bizneshost extends PaymentModule implements SupportSms
 
         // No uid
         if ($status_exploded[0] == '-2') {
-            throw new BadDataException();
+            throw new InsufficientDataException();
         }
 
         throw new UnknownErrorException();

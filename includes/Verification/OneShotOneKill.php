@@ -5,9 +5,9 @@ use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\BadNumberException;
-use App\Verification\Exceptions\ExternalApiException;
-use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\ServerErrorException;
+use App\Verification\Exceptions\NoConnectionException;
+use App\Verification\Exceptions\ExternalErrorException;
 use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Exceptions\WrongCredentialsException;
 use App\Verification\Results\SmsSuccessResult;
@@ -50,7 +50,7 @@ class OneShotOneKill extends PaymentModule implements SupportSms
 
         $content = $response->json();
         if (!is_array($content)) {
-            throw new ExternalApiException();
+            throw new ServerErrorException();
         }
 
         $responseNumber = $this->rates[number_format(floatval($content['amount']), 2)];
@@ -69,7 +69,7 @@ class OneShotOneKill extends PaymentModule implements SupportSms
             case 'error':
                 switch ($content['desc']) {
                     case 'internal api error':
-                        throw new ServerErrorException();
+                        throw new ExternalErrorException();
 
                     case 'wrong api type':
                     case 'wrong api key':

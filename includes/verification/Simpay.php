@@ -4,6 +4,7 @@ namespace App\Verification;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\BadCodeException;
+use App\Verification\Exceptions\ExternalErrorException;
 use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Exceptions\WrongCredentialsException;
@@ -48,7 +49,7 @@ class Simpay extends PaymentModule implements SupportSms
                     throw new BadCodeException();
             }
 
-            throw new UnknownErrorException($content['error'][0]['error_name']);
+            throw new ExternalErrorException($content['error'][0]['error_name']);
         }
 
         throw new UnknownErrorException();
