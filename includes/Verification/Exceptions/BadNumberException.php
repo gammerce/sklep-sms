@@ -8,6 +8,7 @@ class BadNumberException extends SmsPaymentException
 
     public function __construct($tariffId)
     {
+        parent::__construct("", "bad_number");
         $this->tariffId = $tariffId;
     }
 }

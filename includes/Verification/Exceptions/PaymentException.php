@@ -3,7 +3,7 @@ namespace App\Verification\Exceptions;
 
 use Exception;
 
-class PaymentException extends Exception
+abstract class PaymentException extends Exception
 {
     //
 }

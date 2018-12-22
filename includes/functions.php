@@ -445,7 +445,7 @@ function validate_payment($purchase_data)
 
     if ($purchase_data->getPayment('method') == "sms") {
         // Sprawdzamy kod zwrotny
-        $sms_return = $payment->pay_sms(
+        $sms_return = $payment->paySms(
             $purchase_data->getPayment('sms_code'), $purchase_data->getTariff(), $purchase_data->user
         );
         $payment_id = $sms_return['payment_id'];
@@ -488,7 +488,9 @@ function validate_payment($purchase_data)
             'positive' => true,
             'data'     => ['bsid' => $bought_service_id],
         ];
-    } elseif ($purchase_data->getPayment('method') == "transfer") {
+    }
+
+    if ($purchase_data->getPayment('method') == "transfer") {
         $purchase_data->setDesc(
             $lang->sprintf($lang->translate('payment_for_service'), $service_module->service['name'])
         );

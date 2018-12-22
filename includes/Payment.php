@@ -8,11 +8,12 @@ use App\Models\User;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
+use App\Verification\Exceptions\BadNumberException;
 use App\Verification\Exceptions\SmsPaymentException;
+use App\Verification\Results\SmsSuccessResult;
 
 class Payment
 {
-    const SMS_NOT_SUPPORTED = 'sms_not_supported';
     const TRANSFER_NOT_SUPPORTED = 'transfer_not_supported';
 
     /** @var PaymentModule|SupportSms|SupportTransfer */
@@ -55,146 +56,161 @@ class Payment
 
         // API podanej usługi nie istnieje.
         if ($this->payment_module === null) {
-            output_page($this->lang->sprintf($this->lang->translate('payment_bad_service'), $paymentModuleId));
+            output_page($this->lang->sprintf($this->lang->translate('payment_bad_service'),
+                $paymentModuleId));
         }
     }
 
     /**
-     * @param string $sms_code
+     * @param string $code
      * @param Tariff $tariff
      * @param User $user
      *
      * @return array
      */
-    public function pay_sms($sms_code, $tariff, $user)
+    public function paySms($code, Tariff $tariff, User $user)
     {
+        $smsNumber = $tariff->getNumber();
+
+        $result = $this->tryToUseSmsCode($code, $tariff);
+
+        if ($result) {
+            return $this->storePaymentSms($result, $code, $smsNumber, $user);
+        }
+
         if (!$this->getPaymentModule()->supportSms()) {
             return [
-                'status' => Payment::SMS_NOT_SUPPORTED,
-                'text'   => $this->lang->translate('sms_info_' . Payment::SMS_NOT_SUPPORTED),
+                'status' => 'sms_not_supported',
+                'text'   => $this->lang->translate('sms_info_sms_not_supported'),
             ];
         }
 
-        if ($this->getPaymentModule()->supportSms()) {
-            $smsNumber = $tariff->getNumber();
+        try {
+            $result = $this->getPaymentModule()->verifySms($code, $smsNumber);
+        } catch (BadNumberException $e) {
+            if ($e->tariffId !== null) {
+                $this->addSmsCode($code, $e->tariffId, $tariff, $user);
+            }
 
-            try {
-                $smsReturn = $this->getPaymentModule()->verifySms($sms_code, $smsNumber);
-            } catch (SmsPaymentException $e) {
+            return [
                 // TODO
-            }
-
-            if (!is_array($smsReturn)) {
-                $smsReturn = [
-                    'status' => $smsReturn,
-                ];
-            }
-        } else {
-            $smsReturn['status'] = Payment::SMS_NOT_SUPPORTED;
-            // Nie przerywamy jeszcze, bo chcemy sprawdzic czy nie ma takiego SMSa do wykorzystania w bazie
-        }
-
-        // Jezeli weryfikacja smsa nie zwrocila, ze kod zostal prawidlowo zweryfikowany
-        // ani, że sms został wysłany na błędny numer,
-        // to sprawdzamy czy kod jest w bazie kodów do wykorzystania
-        if (!isset($smsReturn) || !in_array($smsReturn['status'], [SupportSms::BAD_NUMBER, SupportSms::OK])) {
-            $result = $this->db->query($this->db->prepare(
-                "SELECT * FROM `" . TABLE_PREFIX . "sms_codes` " .
-                "WHERE `code` = '%s' AND `tariff` = '%d'",
-                [$sms_code, $tariff->getId()]
-            ));
-
-            // Jest taki kod w bazie
-            if ($this->db->num_rows($result)) {
-                $db_code = $this->db->fetch_array_assoc($result);
-
-                // Usuwamy kod z listy kodow do wykorzystania
-                $this->db->query($this->db->prepare(
-                    "DELETE FROM `" . TABLE_PREFIX . "sms_codes` " .
-                    "WHERE `id` = '%d'",
-                    [$db_code['id']]
-                ));
-                // Ustawienie wartości, jakby kod był prawidłowy
-                $smsReturn['status'] = SupportSms::OK;
-
-                log_info($this->langShop->sprintf(
-                    $this->langShop->translate('payment_remove_code_from_db'), $db_code['code'], $db_code['tariff']
-                ));
-            }
-        }
-
-        // Dodanie informacji o płatności sms
-        if ($smsReturn['status'] == SupportSms::OK) {
-            if (isset($smsReturn['free'])) {
-                $free = (bool)$smsReturn['free'];
-            } elseif (isset($db_code)) {
-                $free = (bool)$db_code['free'];
-            } else {
-                $free = false;
-            }
-
-            $this->db->query($this->db->prepare(
-                "INSERT INTO `" . TABLE_PREFIX . "payment_sms` (`code`, `income`, `cost`, `text`, `number`, `ip`, `platform`, `free`) " .
-                "VALUES ('%s','%d','%d','%s','%s','%s','%s','%d')",
-                [
-                    $sms_code,
-                    get_sms_cost($smsNumber) / 2,
-                    ceil(get_sms_cost($smsNumber) * $this->settings['vat']),
-                    $this->getPaymentModule()->getSmsCode(),
-                    $smsNumber,
-                    $user->getLastIp(),
-                    $user->getPlatform(),
-                    $free,
-                ]
-            ));
-
-            $payment_id = $this->db->last_id();
-        } // SMS został wysłany na błędny numer
-        elseif ($smsReturn['status'] == SupportSms::BAD_NUMBER && isset($smsReturn['tariff'])) {
-            // Dodajemy kod do listy kodów do wykorzystania
-            $this->db->query($this->db->prepare(
-                "INSERT INTO `" . TABLE_PREFIX . "sms_codes` " .
-                "SET `code` = '%s', `tariff` = '%d', `free` = '0'",
-                [$sms_code, $smsReturn['tariff']]
-            ));
-
-            log_info($this->langShop->sprintf(
-                $this->langShop->translate('add_code_to_reuse'),
-                $sms_code,
-                $smsReturn['tariff'],
-                $user->getUsername(),
-                $user->getUid(),
-                $user->getLastIp(),
-                $tariff->getId()
-            ));
-        } elseif ($smsReturn['status'] != Payment::SMS_NOT_SUPPORTED) {
+            ];
+        } catch (SmsPaymentException $e) {
             log_info($this->langShop->sprintf(
                 $this->langShop->translate('bad_sms_code_used'),
                 $user->getUsername(),
-                $user->getUid(), $user->getLastIp(),
-                $sms_code, $this->getPaymentModule()->getSmsCode(), $smsNumber, $smsReturn['status']
+                $user->getUid(),
+                $user->getLastIp(),
+                $code,
+                $this->getPaymentModule()->getSmsCode(),
+                $smsNumber,
+                $e->getCode()
             ));
+
+            return [
+                "status" => $e->getCode(),
+                "text"   => $this->getSmsExceptionMessage($e),
+            ];
         }
 
+        return $this->storePaymentSms($result, $code, $smsNumber, $user);
+    }
+
+    protected function storePaymentSms(SmsSuccessResult $result, $code, $smsNumber, User $user)
+    {
+        $this->db->query($this->db->prepare(
+            "INSERT INTO `" . TABLE_PREFIX . "payment_sms` (`code`, `income`, `cost`, `text`, `number`, `ip`, `platform`, `free`) " .
+            "VALUES ('%s','%d','%d','%s','%s','%s','%s','%d')",
+            [
+                $code,
+                get_sms_cost($smsNumber) / 2,
+                ceil(get_sms_cost($smsNumber) * $this->settings['vat']),
+                $this->getPaymentModule()->getSmsCode(),
+                $smsNumber,
+                $user->getLastIp(),
+                $user->getPlatform(),
+                $result->free,
+            ]
+        ));
+
+        $paymentId = $this->db->last_id();
+
         return [
-            'status'     => $smsReturn['status'],
-            'text'       => $this->getSmsText($smsReturn),
-            'payment_id' => isset($payment_id) ? $payment_id : null,
+            'status'     => 'ok',
+            'text'       => $this->lang->translate('sms_info_ok'),
+            'payment_id' => $paymentId,
         ];
     }
 
-    protected function getSmsText($smsReturn)
+    /**
+     * @param string $smsCode
+     * @param Tariff $tariff
+     * @return SmsSuccessResult|null
+     */
+    protected function tryToUseSmsCode($smsCode, Tariff $tariff)
     {
-        if (isset($smsReturn['text']) && strlen($smsReturn['text'])) {
-            return $smsReturn['text'];
+        $result = $this->db->query($this->db->prepare(
+            "SELECT * FROM `" . TABLE_PREFIX . "sms_codes` " .
+            "WHERE `code` = '%s' AND `tariff` = '%d'",
+            [$smsCode, $tariff->getId()]
+        ));
+
+        if (!$this->db->num_rows($result)) {
+            return null;
         }
 
-        $text = $this->lang->translate('sms_info_' . $smsReturn['status']);
+        $dbCode = $this->db->fetch_array_assoc($result);
+
+        // Usuwamy kod z listy kodow do wykorzystania
+        $this->db->query($this->db->prepare(
+            "DELETE FROM `" . TABLE_PREFIX . "sms_codes` " .
+            "WHERE `id` = '%d'",
+            [$dbCode['id']]
+        ));
+
+        log_info($this->langShop->sprintf(
+            $this->langShop->translate('payment_remove_code_from_db'), $dbCode['code'],
+            $dbCode['tariff']
+        ));
+
+        return new SmsSuccessResult(!!$dbCode['free']);
+    }
+
+    /**
+     * @param string $code
+     * @param int $tariffId
+     * @param Tariff $expectedTariff
+     * @param User $user
+     */
+    protected function addSmsCode($code, $tariffId, Tariff $expectedTariff, User $user)
+    {
+        // Dodajemy kod do listy kodów do wykorzystania
+        $this->db->query($this->db->prepare(
+            "INSERT INTO `" . TABLE_PREFIX . "sms_codes` " .
+            "SET `code` = '%s', `tariff` = '%d', `free` = '0'",
+            [$code, $tariffId]
+        ));
+
+        log_info($this->langShop->sprintf(
+            $this->langShop->translate('add_code_to_reuse'),
+            $code,
+            $tariffId,
+            $user->getUsername(),
+            $user->getUid(),
+            $user->getLastIp(),
+            $expectedTariff->getId()
+        ));
+    }
+
+    protected function getSmsExceptionMessage(SmsPaymentException $e)
+    {
+        $text = $this->lang->translate('sms_info_' . $e->getCode());
+
         if (strlen($text)) {
             return $text;
         }
 
-        return $smsReturn['status'];
+        return $e->getCode();
     }
 
     /**
@@ -222,7 +238,10 @@ class Payment
             'status'   => "transfer",
             'text'     => $this->lang->translate('transfer_prepared'),
             'positive' => true,
-            'data'     => ['data' => $this->getPaymentModule()->prepare_transfer($purchase_data, $data_filename)]
+            'data'     => [
+                'data' => $this->getPaymentModule()->prepare_transfer($purchase_data,
+                    $data_filename),
+            ]
             // Przygotowuje dane płatności transferem
         ];
     }
@@ -248,7 +267,8 @@ class Payment
         // Nie znaleziono pliku z danymi
         if (!$transfer_finalize->getDataFilename() || !file_exists($this->app->path('data/transfers/' . $transfer_finalize->getDataFilename()))) {
             log_info($this->langShop->sprintf(
-                $this->langShop->translate('transfer_no_data_file'), $transfer_finalize->getOrderid()
+                $this->langShop->translate('transfer_no_data_file'),
+                $transfer_finalize->getOrderid()
             ));
 
             return false;
@@ -332,5 +352,4 @@ class Payment
     {
         return $this->payment_module;
     }
-
 }

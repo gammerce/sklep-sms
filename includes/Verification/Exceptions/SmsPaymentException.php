@@ -1,7 +1,7 @@
 <?php
 namespace App\Verification\Exceptions;
 
-class SmsPaymentException extends PaymentException
+abstract class SmsPaymentException extends PaymentException
 {
     //
 }
