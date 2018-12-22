@@ -3,10 +3,10 @@ namespace Tests\Feature;
 
 use App\Requesting\Response;
 use App\Settings;
+use App\Verification\Abstracts\SupportSms;
+use App\Verification\Gosetti;
 use ExtraFlagType;
-use SupportSms;
 use Mockery;
-use Gosetti;
 use Tests\Psr4\Concerns\RequesterConcern;
 use Tests\Psr4\TestCases\ServerTestCase;
 
@@ -89,8 +89,8 @@ class PurchaseServiceFromServerTest extends ServerTestCase
                 'Numbers' => [],
             ])));
 
-        $gosetti = Mockery::mock(new Gosetti())->makePartial();
-        $gosetti->shouldReceive('verifySms')->andReturn(SupportSms::OK);
+        $gosetti = Mockery::mock($this->app->make(Gosetti::class))->makePartial();
+        $gosetti->shouldReceive('verifySms')->andReturn('ok');
         $this->app->instance(Gosetti::class, $gosetti);
     }
 }

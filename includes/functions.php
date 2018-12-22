@@ -445,40 +445,40 @@ function validate_payment($purchase_data)
 
     if ($purchase_data->getPayment('method') == "sms") {
         // Sprawdzamy kod zwrotny
-        $sms_return = $payment->paySms(
+        $result = $payment->paySms(
             $purchase_data->getPayment('sms_code'), $purchase_data->getTariff(), $purchase_data->user
         );
-        $payment_id = $sms_return['payment_id'];
+        $paymentId = $result['payment_id'];
 
-        if ($sms_return['status'] != SupportSms::OK) {
+        if ($result['status'] = 'ok') {
             return [
-                'status'   => $sms_return['status'],
-                'text'     => $sms_return['text'],
+                'status'   => $result['status'],
+                'text'     => $result['text'],
                 'positive' => false,
             ];
         }
     } elseif ($purchase_data->getPayment('method') == "wallet") {
         // Dodanie informacji o płatności z portfela
-        $payment_id = pay_wallet($purchase_data->getPayment('cost'), $purchase_data->user);
+        $paymentId = pay_wallet($purchase_data->getPayment('cost'), $purchase_data->user);
 
         // Metoda pay_wallet zwróciła błąd.
-        if (is_array($payment_id)) {
-            return $payment_id;
+        if (is_array($paymentId)) {
+            return $paymentId;
         }
     } elseif ($purchase_data->getPayment('method') == "service_code") {
         // Dodanie informacji o płatności z portfela
-        $payment_id = pay_service_code($purchase_data, $service_module);
+        $paymentId = pay_service_code($purchase_data, $service_module);
 
         // Funkcja pay_service_code zwróciła błąd.
-        if (is_array($payment_id)) {
-            return $payment_id;
+        if (is_array($paymentId)) {
+            return $paymentId;
         }
     }
 
     if (in_array($purchase_data->getPayment('method'), ["wallet", "sms", "service_code"])) {
         // Dokonujemy zakupu usługi
         $purchase_data->setPayment([
-            'payment_id' => $payment_id,
+            'payment_id' => $paymentId,
         ]);
         $bought_service_id = $service_module->purchase($purchase_data);
 

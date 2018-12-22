@@ -17,7 +17,7 @@ class Payment
     const TRANSFER_NOT_SUPPORTED = 'transfer_not_supported';
 
     /** @var PaymentModule|SupportSms|SupportTransfer */
-    protected $payment_module = null;
+    protected $paymentModule = null;
 
     /** @var Application */
     protected $app;
@@ -51,13 +51,14 @@ class Payment
         // Tworzymy obiekt obslugujacy stricte weryfikacje
         $className = $this->heart->get_payment_module($paymentModuleId);
         if ($className !== null) {
-            $this->payment_module = $this->app->make($className);
+            $this->paymentModule = $this->app->make($className);
         }
 
         // API podanej usługi nie istnieje.
-        if ($this->payment_module === null) {
-            output_page($this->lang->sprintf($this->lang->translate('payment_bad_service'),
-                $paymentModuleId));
+        if ($this->paymentModule === null) {
+            output_page($this->lang->sprintf(
+                $this->lang->translate('payment_bad_service'), $paymentModuleId
+            ));
         }
     }
 
@@ -93,7 +94,8 @@ class Payment
             }
 
             return [
-                // TODO
+                "status" => $e->getCode(),
+                "text"   => $this->getSmsExceptionMessage($e),
             ];
         } catch (SmsPaymentException $e) {
             log_info($this->langShop->sprintf(
@@ -350,6 +352,6 @@ class Payment
      */
     public function getPaymentModule()
     {
-        return $this->payment_module;
+        return $this->paymentModule;
     }
 }
