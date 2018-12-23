@@ -4,7 +4,6 @@ namespace App\Verification;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\BadCodeException;
-use App\Verification\Exceptions\BadDataException;
 use App\Verification\Exceptions\BadNumberException;
 use App\Verification\Exceptions\InsufficientDataException;
 use App\Verification\Exceptions\NoConnectionException;
