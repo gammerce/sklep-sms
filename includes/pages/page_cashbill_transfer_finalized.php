@@ -1,6 +1,7 @@
 <?php
 
 use App\Payment;
+use App\Verification\Cashbill;
 
 class PageCashbillTransferFinalized extends Page
 {
@@ -16,9 +17,11 @@ class PageCashbillTransferFinalized extends Page
     protected function content($get, $post)
     {
         $payment = new Payment($this->settings['transfer_service']);
-        if ($payment->getPaymentModule()->check_sign($get, $payment->getPaymentModule()->getKey(), $get['sign'])
-            && $get['service'] != $payment->getPaymentModule()->getService()
-        ) {
+        /** @var Cashbill $paymentModule */
+        $paymentModule = $payment->getPaymentModule();
+
+        if ($paymentModule->checkSign($get, $paymentModule->getKey(), $get['sign'])
+            && $get['service'] != $paymentModule->getService()) {
             return $this->lang->translate('transfer_unverified');
         }
 

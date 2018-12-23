@@ -3,10 +3,10 @@ namespace Tests\Feature;
 
 use App\Requesting\Response;
 use App\Settings;
+use App\Verification\Gosetti;
+use App\Verification\Results\SmsSuccessResult;
 use ExtraFlagType;
-use IPayment_Sms;
 use Mockery;
-use PaymentModule_Gosetti;
 use Tests\Psr4\Concerns\RequesterConcern;
 use Tests\Psr4\TestCases\ServerTestCase;
 
@@ -89,8 +89,8 @@ class PurchaseServiceFromServerTest extends ServerTestCase
                 'Numbers' => [],
             ])));
 
-        $gosetti = Mockery::mock(new PaymentModule_Gosetti())->makePartial();
-        $gosetti->shouldReceive('verify_sms')->andReturn(IPayment_Sms::OK);
-        $this->app->instance(PaymentModule_Gosetti::class, $gosetti);
+        $gosetti = Mockery::mock($this->app->make(Gosetti::class))->makePartial();
+        $gosetti->shouldReceive('verifySms')->andReturn(new SmsSuccessResult());
+        $this->app->instance(Gosetti::class, $gosetti);
     }
 }

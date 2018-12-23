@@ -1,21 +1,22 @@
 <?php
+namespace App\Verification\Abstracts;
 
 use App\Models\Purchase;
 use App\Models\TransferFinalize;
 
-interface IPayment_Transfer
+interface SupportTransfer
 {
     /**
      * Przygotowanie zapytania POST w celu płatności przelewem
      *
-     * @param Purchase $purchase_data
-     * @param string   $data_filename
+     * @param Purchase $purchase
+     * @param string   $dataFilename
      *
      * @return array
      *  string url => adres url strony do ktorej wysylamy dane POST
      *  ... - wysyłane pola POST
      */
-    public function prepare_transfer($purchase_data, $data_filename);
+    public function prepareTransfer(Purchase $purchase, $dataFilename);
 
     /**
      * Finalizuje zakup usługi podczas zakupu poprzez przelew

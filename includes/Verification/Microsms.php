@@ -1,13 +1,27 @@
 <?php
+namespace App\Verification;
 
+use App\Database;
+use App\Models\Purchase;
 use App\Models\TransferFinalize;
-use App\PaymentModule;
+use App\Requesting\Requester;
 use App\Settings;
+use App\TranslationManager;
+use App\Verification\Abstracts\PaymentModule;
+use App\Verification\Abstracts\SupportSms;
+use App\Verification\Abstracts\SupportTransfer;
+use App\Verification\Exceptions\BadCodeException;
+use App\Verification\Exceptions\NoConnectionException;
+use App\Verification\Exceptions\ServerErrorException;
+use App\Verification\Exceptions\UnknownErrorException;
+use App\Verification\Results\SmsSuccessResult;
 
-// https://microsms.pl/documents/dokumentacja_przelewy_microsms.pdf
-class PaymentModuleMicrosms extends PaymentModule implements IPayment_Sms, IPayment_Transfer
+/**
+ * @see https://microsms.pl/documents/dokumentacja_przelewy_microsms.pdf
+ */
+class Microsms extends PaymentModule implements SupportSms, SupportTransfer
 {
-    const SERVICE_ID = "microsms";
+    protected $id = "microsms";
 
     /** @var Settings */
     private $settings;
@@ -27,9 +41,13 @@ class PaymentModuleMicrosms extends PaymentModule implements IPayment_Sms, IPaym
     /** @var string */
     private $hash;
 
-    public function __construct(Settings $settings)
-    {
-        parent::__construct();
+    public function __construct(
+        Database $database,
+        Requester $requester,
+        TranslationManager $translationManager,
+        Settings $settings
+    ) {
+        parent::__construct($database, $requester, $translationManager);
 
         $this->settings = $settings;
 
@@ -40,56 +58,51 @@ class PaymentModuleMicrosms extends PaymentModule implements IPayment_Sms, IPaym
         $this->hash = $this->data['hash'];
     }
 
-    public function verify_sms($return_code, $number)
+    public function verifySms($returnCode, $number)
     {
         $response = $this->requester->get("https://microsms.pl/api/v2/index.php", [
             "userid"    => $this->userId,
             "number"    => $number,
-            "code"      => $return_code,
+            "code"      => $returnCode,
             "serviceid" => $this->serviceId,
         ]);
 
         if (!$response) {
-            return IPayment_Sms::NO_CONNECTION;
+            throw new NoConnectionException();
         }
 
         if ($response->isBadResponse()) {
-            return IPayment_Sms::BAD_API;
+            throw new ServerErrorException();
         }
 
         $content = $response->json();
 
         if (strlen(array_get($content, 'error'))) {
             log_error("Kod błędu: {$content['error']['errorCode']} - {$content['error']['message']}");
-            return IPayment_Sms::ERROR;
+            throw new UnknownErrorException();
         }
 
         if ($content['connect'] === false) {
             $errorCode = $content['data']['errorCode'];
 
             if ($errorCode == 1) {
-                return IPayment_Sms::BAD_CODE;
+                throw new BadCodeException();
             }
 
             log_error("Kod błędu: $errorCode - {$content['data']['message']}");
-            return IPayment_Sms::ERROR;
+            throw new UnknownErrorException();
         }
 
         if ($content['data']['status'] == 1) {
-            return IPayment_Sms::OK;
+            return new SmsSuccessResult();
         }
 
-        return IPayment_Sms::ERROR;
+        throw new UnknownErrorException();
     }
 
-    /**
-     * @param \App\Models\Purchase $purchase_data
-     * @param string $data_filename
-     * @return array
-     */
-    public function prepare_transfer($purchase_data, $data_filename)
+    public function prepareTransfer(Purchase $purchase, $dataFilename)
     {
-        $cost = round($purchase_data->getPayment('cost') / 100, 2);
+        $cost = round($purchase->getPayment('cost') / 100, 2);
         $signature = hash('sha256', $this->shopId . $this->hash . $cost);
 
         return [
@@ -98,10 +111,10 @@ class PaymentModuleMicrosms extends PaymentModule implements IPayment_Sms, IPaym
             'shopid'      => $this->shopId,
             'signature'   => $signature,
             'amount'      => $cost,
-            'control'     => $data_filename,
+            'control'     => $dataFilename,
             'return_urlc' => $this->settings['shop_url_slash'] . 'transfer/microsms',
             'return_url'  => $this->settings['shop_url_slash'] . 'page/transferuj_ok',
-            'description' => $purchase_data->getDesc(),
+            'description' => $purchase->getDesc(),
         ];
     }
 

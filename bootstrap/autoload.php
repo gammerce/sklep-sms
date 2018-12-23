@@ -20,20 +20,6 @@ foreach (scandir("$scriptRoot/includes/interfaces") as $file) {
     }
 }
 
-// Dodajemy klasy wszystkich modulow platnosci
-foreach (scandir("$scriptRoot/includes/verification/interfaces") as $file) {
-    if (ends_at($file, ".php")) {
-        require_once "$scriptRoot/includes/verification/interfaces/" . $file;
-    }
-}
-
-foreach (scandir("$scriptRoot/includes/verification") as $file) {
-    if (ends_at($file, ".php")) {
-        require_once "$scriptRoot/includes/verification/" . $file;
-    }
-}
-
-
 // Dodajemy klasy wszystkich usług
 require_once "$scriptRoot/includes/services/service.php";
 
