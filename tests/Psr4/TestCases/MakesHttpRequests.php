@@ -25,5 +25,10 @@ trait MakesHttpRequests
         return $this->call('GET', $uri, $query);
     }
 
+    protected function post($uri, array $body = [])
+    {
+        return $this->call('POST', $uri, $body);
+    }
+
     abstract protected function prepareUrlForRequest($uri);
 }

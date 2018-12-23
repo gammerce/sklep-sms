@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `ss_users` (
   `groups`             VARCHAR(32)
                        CHARACTER SET utf8
                        COLLATE utf8_bin   NOT NULL DEFAULT '1',
-  `regdate`            TIMESTAMP          NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `regdate`            TIMESTAMP          NOT NULL,
   `lastactiv`          TIMESTAMP          NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `wallet`             INT(11)            NOT NULL DEFAULT '0',
   `regip`              VARCHAR(64)        NOT NULL DEFAULT '',

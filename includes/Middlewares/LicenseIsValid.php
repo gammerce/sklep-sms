@@ -15,6 +15,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LicenseIsValid implements MiddlewareContract
 {
+    /** @var Application */
+    private $app;
+
     /** @var Template */
     private $template;
 
@@ -24,19 +27,16 @@ class LicenseIsValid implements MiddlewareContract
     /** @var Auth */
     private $auth;
 
-    /** @var Raven_Client */
-    private $raven;
-
     public function __construct(
+        Application $app,
         Template $template,
         TranslationManager $translationManager,
-        Auth $auth,
-        Raven_Client $raven
+        Auth $auth
     ) {
+        $this->app = $app;
         $this->template = $template;
         $this->lang = $translationManager->user();
         $this->auth = $auth;
-        $this->raven = $raven;
     }
 
     public function handle(Request $request, Application $app)
@@ -67,9 +67,11 @@ class LicenseIsValid implements MiddlewareContract
 
         // Let's pass some additional info to sentry logger
         // so that it would be easier for us to debug any potential exceptions
-        $this->raven->tags_context([
-            'license_id' => $license->getExternalId(),
-        ]);
+        if ($this->app->bound(Raven_Client::class)) {
+            $this->app->make(Raven_Client::class)->tags_context([
+                'license_id' => $license->getExternalId(),
+            ]);
+        }
 
         return null;
     }

@@ -78,6 +78,8 @@ class TestCase extends BaseTestCase
 
             Mockery::close();
         }
+
+        $_SESSION = [];
     }
 
     protected function createApplication()

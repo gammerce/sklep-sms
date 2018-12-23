@@ -40,7 +40,7 @@ class DatabaseMigration
             ),
             $this->db->prepare(
                 "INSERT INTO `" . TABLE_PREFIX . "users` " .
-                "SET `username` = '%s', `password` = '%s', `salt` = '%s', `regip` = '%s', `groups` = '2';",
+                "SET `username` = '%s', `password` = '%s', `salt` = '%s', `regip` = '%s', `groups` = '2', `regdate` = NOW();",
                 [$adminUsername, hash_password($adminPassword, $salt), $salt, get_ip()]
             ),
         ];
