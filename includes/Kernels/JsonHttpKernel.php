@@ -1,6 +1,7 @@
 <?php
 namespace App\Kernels;
 
+use App\ApiResponse;
 use App\Auth;
 use App\Database;
 use App\Heart;
@@ -64,37 +65,36 @@ class JsonHttpKernel extends Kernel
         $userRepository = app()->make(UserRepository::class);
 
         // Pobranie akcji
-        $action = $_POST['action'];
+        $action = $request->request->get("action");
 
         $warnings = [];
-
-        // Send no cache headers
-        header("Expires: Sat, 1 Jan 2000 01:00:00 GMT");
-        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-        header("Cache-Control: no-cache, must-revalidate");
-        header("Pragma: no-cache");
 
         $data = [];
         if ($action == "login") {
             if (is_logged()) {
-                json_output("already_logged_in");
+                return new ApiResponse("already_logged_in");
             }
 
-            if (!$_POST['username'] || !$_POST['password']) {
-                json_output("no_data", $lang->translate('no_login_password'), 0);
+            $username = $request->request->get("username");
+            $password = $request->request->get("password");
+
+            if (!$username || !$password) {
+                return new ApiResponse("no_data", $lang->translate('no_login_password'), 0);
             }
 
-            $user = $heart->get_user(0, $_POST['username'], $_POST['password']);
+            $user = $heart->get_user(0, $username, $password);
             if ($user->isLogged()) {
                 $_SESSION['uid'] = $user->getUid();
                 $user->updateActivity();
-                json_output("logged_in", $lang->translate('login_success'), 1);
+                return new ApiResponse("logged_in", $lang->translate('login_success'), 1);
             }
 
-            json_output("not_logged", $lang->translate('bad_pass_nick'), 0);
-        } elseif ($action == "logout") {
+            return new ApiResponse("not_logged", $lang->translate('bad_pass_nick'), 0);
+        }
+
+        if ($action == "logout") {
             if (!is_logged()) {
-                json_output("already_logged_out");
+                return new ApiResponse("already_logged_out");
             }
 
             // Unset all of the session variables.
@@ -113,24 +113,28 @@ class JsonHttpKernel extends Kernel
             // Finally, destroy the session.
             session_destroy();
 
-            json_output("logged_out", $lang->translate('logout_success'), 1);
-        } elseif ($action == "set_session_language") {
-            setcookie("language", escape_filename($_POST['language']), time() + (86400 * 30), "/"); // 86400 = 1 day
+            return new ApiResponse("logged_out", $lang->translate('logout_success'), 1);
+        }
+
+        if ($action == "set_session_language") {
+            setcookie("language", escape_filename($request->request->get('language')), time() + (86400 * 30), "/"); // 86400 = 1 day
             exit;
-        } elseif ($action == "register") {
+        }
+
+        if ($action == "register") {
             if (is_logged()) {
-                json_output("logged_in", $lang->translate('logged'), 0);
+                return new ApiResponse("logged_in", $lang->translate('logged'), 0);
             }
 
-            $username = trim($_POST['username']);
-            $password = $_POST['password'];
-            $passwordr = $_POST['password_repeat'];
-            $email = trim($_POST['email']);
-            $emailr = trim($_POST['email_repeat']);
-            $forename = trim($_POST['forename']);
-            $surname = trim($_POST['surname']);
-            $as_id = $_POST['as_id'];
-            $as_answer = $_POST['as_answer'];
+            $username = trim($request->request->get('username'));
+            $password = $request->request->get('password');
+            $passwordr = $request->request->get('password_repeat');
+            $email = trim($request->request->get('email'));
+            $emailr = trim($request->request->get('email_repeat'));
+            $forename = trim($request->request->get('forename'));
+            $surname = trim($request->request->get('surname'));
+            $as_id = $request->request->get('as_id');
+            $as_answer = $request->request->get('as_answer');
 
             // Pobranie nowego pytania antyspamowego
             $antispam_question = $db->fetch_array_assoc($db->query(
@@ -208,7 +212,7 @@ class JsonHttpKernel extends Kernel
                     ]);
                     $data['warnings'][$brick] = $warning;
                 }
-                json_output("warnings", $lang->translate('form_wrong_filled'), 0, $data);
+                return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
             $createdUser = $userRepository->create(
@@ -219,12 +223,14 @@ class JsonHttpKernel extends Kernel
             log_info($langShop->sprintf(
                 $langShop->translate('new_account'),
                 $createdUser->getUid(),
-                $username,
+                $createdUser->getUsername(false),
                 $createdUser->getRegip()
             ));
 
-            json_output("registered", $lang->translate('register_success'), 1, $data);
-        } elseif ($action == "forgotten_password") {
+            return new ApiResponse("registered", $lang->translate('register_success'), 1, $data);
+        }
+
+        if ($action == "forgotten_password") {
             if (is_logged()) {
                 json_output("logged_in", $lang->translate('logged'), 0);
             }
@@ -686,6 +692,6 @@ class JsonHttpKernel extends Kernel
             output_page(json_encode($data), 1);
         }
 
-        json_output("script_error", "An error occured: no action.");
+        return new ApiResponse("script_error", "An error occured: no action.");
     }
 }
