@@ -61,8 +61,8 @@ abstract class PaymentModule
             $this->data[$key] = $value;
         }
 
-        $data_hidden = (array)json_decode($row['data_hidden'], true);
-        foreach ($data_hidden as $key => $value) {
+        $dataHidden = (array)json_decode($row['data_hidden'], true);
+        foreach ($dataHidden as $key => $value) {
             $this->data[$key] = $value;
         }
 

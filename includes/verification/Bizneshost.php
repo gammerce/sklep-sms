@@ -32,37 +32,37 @@ class Bizneshost extends PaymentModule implements SupportSms
         }
 
         $status = $response->getBody();
-        $status_exploded = explode(':', $status);
+        $statusExploded = explode(':', $status);
 
         // Bad code
-        if ($status_exploded[0] == 'E') {
+        if ($statusExploded[0] == 'E') {
             throw new BadCodeException();
         }
 
         // Code is correct
-        if ($status_exploded[0] == '1') {
+        if ($statusExploded[0] == '1') {
             // Check whether prices are equal
-            if (abs(get_sms_cost_brutto($number) / 100 - floatval($status_exploded[1])) < 0.1) {
+            if (abs(get_sms_cost_brutto($number) / 100 - floatval($statusExploded[1])) < 0.1) {
                 return new SmsSuccessResult();
             }
 
-            $tariff = $this->getTariffBySmsCostBrutto($status_exploded[1]);
+            $tariff = $this->getTariffBySmsCostBrutto($statusExploded[1]);
 
             throw new BadNumberException(!is_null($tariff) ? $tariff->getId() : null);
         }
 
         // Code used
-        if ($status_exploded[0] == '2') {
+        if ($statusExploded[0] == '2') {
             throw new BadCodeException();
         }
 
         // No code - $returnCode is empty
-        if ($status_exploded[0] == '-1') {
+        if ($statusExploded[0] == '-1') {
             throw new BadCodeException();
         }
 
         // No uid
-        if ($status_exploded[0] == '-2') {
+        if ($statusExploded[0] == '-2') {
             throw new InsufficientDataException();
         }
 
