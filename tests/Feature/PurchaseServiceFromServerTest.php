@@ -4,6 +4,7 @@ namespace Tests\Feature;
 use App\Requesting\Response;
 use App\Settings;
 use App\Verification\Gosetti;
+use App\Verification\Results\SmsSuccessResult;
 use ExtraFlagType;
 use Mockery;
 use Tests\Psr4\Concerns\RequesterConcern;
@@ -89,7 +90,7 @@ class PurchaseServiceFromServerTest extends ServerTestCase
             ])));
 
         $gosetti = Mockery::mock($this->app->make(Gosetti::class))->makePartial();
-        $gosetti->shouldReceive('verifySms')->andReturn('ok');
+        $gosetti->shouldReceive('verifySms')->andReturn(new SmsSuccessResult());
         $this->app->instance(Gosetti::class, $gosetti);
     }
 }
