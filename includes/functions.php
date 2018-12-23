@@ -448,21 +448,21 @@ function validate_payment($purchase_data)
         ];
     }
 
-    if ($purchase_data->getPayment('method') == "sms") {
+    if ($purchase_data->getPayment('method') === "sms") {
         // Sprawdzamy kod zwrotny
         $result = $payment->paySms(
             $purchase_data->getPayment('sms_code'), $purchase_data->getTariff(), $purchase_data->user
         );
         $paymentId = $result['payment_id'];
 
-        if ($result['status'] = 'ok') {
+        if ($result['status'] !== 'ok') {
             return [
                 'status'   => $result['status'],
                 'text'     => $result['text'],
                 'positive' => false,
             ];
         }
-    } elseif ($purchase_data->getPayment('method') == "wallet") {
+    } elseif ($purchase_data->getPayment('method') === "wallet") {
         // Dodanie informacji o płatności z portfela
         $paymentId = pay_wallet($purchase_data->getPayment('cost'), $purchase_data->user);
 
@@ -470,7 +470,7 @@ function validate_payment($purchase_data)
         if (is_array($paymentId)) {
             return $paymentId;
         }
-    } elseif ($purchase_data->getPayment('method') == "service_code") {
+    } elseif ($purchase_data->getPayment('method') === "service_code") {
         // Dodanie informacji o płatności z portfela
         $paymentId = pay_service_code($purchase_data, $service_module);
 
