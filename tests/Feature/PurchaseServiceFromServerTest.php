@@ -3,7 +3,6 @@ namespace Tests\Feature;
 
 use App\Requesting\Response;
 use App\Settings;
-use App\Verification\Abstracts\SupportSms;
 use App\Verification\Gosetti;
 use ExtraFlagType;
 use Mockery;

@@ -2,6 +2,20 @@
 namespace App\Providers;
 
 use App\Heart;
+use App\Verification\Bizneshost;
+use App\Verification\Cashbill;
+use App\Verification\Cssetti;
+use App\Verification\Gosetti;
+use App\Verification\Homepay;
+use App\Verification\Hostplay;
+use App\Verification\Microsms;
+use App\Verification\Mintshost;
+use App\Verification\OneShotOneKill;
+use App\Verification\Profitsms;
+use App\Verification\Pukawka;
+use App\Verification\Simpay;
+use App\Verification\Transferuj;
+use App\Verification\Zabijaka;
 use BlockAdminContent;
 use BlockContent;
 use BlockLoggedInfo;
@@ -47,20 +61,6 @@ use PageResetPassword;
 use PageTakeOverService;
 use PageTransferujBad;
 use PageTransferujOk;
-use PaymentModule_1s1k;
-use Bizneshost;
-use Cashbill;
-use Cssetti;
-use Gosetti;
-use Microsms;
-use Mintshost;
-use Profitsms;
-use Pukawka;
-use Simpay;
-use Zabijaka;
-use PaymentModuleHomepay;
-use Hostplay;
-use Transferuj;
 use ServiceChargeWallet;
 use ServiceChargeWalletSimple;
 use ServiceExtraFlags;
@@ -83,12 +83,12 @@ class HeartServiceProvider
 
     protected function registerPaymentModules(Heart $heart)
     {
-        $heart->register_payment_module('1s1k', PaymentModule_1s1k::class);
+        $heart->register_payment_module('1s1k', OneShotOneKill::class);
         $heart->register_payment_module('bizneshost', Bizneshost::class);
         $heart->register_payment_module('cashbill', Cashbill::class);
         $heart->register_payment_module('cssetti', Cssetti::class);
         $heart->register_payment_module('gosetti', Gosetti::class);
-        $heart->register_payment_module('homepay', PaymentModuleHomepay::class);
+        $heart->register_payment_module('homepay', Homepay::class);
         $heart->register_payment_module('hostplay', Hostplay::class);
         $heart->register_payment_module('microsms', Microsms::class);
         $heart->register_payment_module('mintshost', Mintshost::class);
@@ -159,11 +159,13 @@ class HeartServiceProvider
     protected function registerServices(Heart $heart)
     {
         $heart->register_service_module(
-            'charge_wallet', 'Doładowanie Portfela', ServiceChargeWallet::class, ServiceChargeWalletSimple::class
+            'charge_wallet', 'Doładowanie Portfela', ServiceChargeWallet::class,
+            ServiceChargeWalletSimple::class
         );
 
         $heart->register_service_module(
-            'extra_flags', 'Dodatkowe Uprawnienia / Flagi', ServiceExtraFlags::class, ServiceExtraFlagsSimple::class
+            'extra_flags', 'Dodatkowe Uprawnienia / Flagi', ServiceExtraFlags::class,
+            ServiceExtraFlagsSimple::class
         );
 
         $heart->register_service_module(
@@ -173,6 +175,8 @@ class HeartServiceProvider
             ServiceMybbExtraGroupsSimple::class
         );
 
-        $heart->register_service_module('other', 'Inne', ServiceOther::class, ServiceOtherSimple::class);
+        $heart->register_service_module(
+            'other', 'Inne', ServiceOther::class, ServiceOtherSimple::class
+        );
     }
 }
