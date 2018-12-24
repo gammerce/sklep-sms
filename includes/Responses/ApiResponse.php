@@ -20,7 +20,7 @@ class ApiResponse extends Response
             "Last-Modified" => gmdate("D, d M Y H:i:s") . " GMT",
             "Cache-Control" => "no-cache, must-revalidate",
             "Pragma"        => "no-cache",
-            "Content-Type"  => "application/json; charset=\"UTF-8\"",
+            "Content-Type"  => "text/plain; charset=\"UTF-8\"",
         ]);
     }
 }
