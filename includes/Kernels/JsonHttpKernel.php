@@ -1,7 +1,7 @@
 <?php
 namespace App\Kernels;
 
-use App\ApiResponse;
+use App\Responses\ApiResponse;
 use App\Auth;
 use App\Database;
 use App\Heart;
@@ -20,6 +20,7 @@ use App\Template;
 use App\TranslationManager;
 use PageAdminIncome;
 use Symfony\Component\HttpFoundation\Request;
+use UnexpectedValueException;
 
 class JsonHttpKernel extends Kernel
 {
@@ -147,7 +148,7 @@ class JsonHttpKernel extends Kernel
 
             // Sprawdzanie czy podane id pytania antyspamowego jest prawidlowe
             if (!isset($_SESSION['asid']) || $as_id != $_SESSION['asid']) {
-                json_output("wrong_sign", $lang->translate('wrong_sign'), 0, $data);
+                return new ApiResponse("wrong_sign", $lang->translate('wrong_sign'), 0, $data);
             }
 
             // Zapisujemy id pytania antyspamowego
@@ -232,7 +233,7 @@ class JsonHttpKernel extends Kernel
 
         if ($action == "forgotten_password") {
             if (is_logged()) {
-                json_output("logged_in", $lang->translate('logged'), 0);
+                return new ApiResponse("logged_in", $lang->translate('logged'), 0);
             }
 
             $username = trim($_POST['username']);
@@ -284,7 +285,7 @@ class JsonHttpKernel extends Kernel
                     ]);
                     $data['warnings'][$brick] = $warning;
                 }
-                json_output("warnings", $lang->translate('form_wrong_filled'), 0, $data);
+                return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
             // Pobranie danych użytkownika
@@ -303,18 +304,32 @@ class JsonHttpKernel extends Kernel
             $ret = $mailer->send($user2->getEmail(), $user2->getUsername(), "Reset Hasła", $text);
 
             if ($ret == "not_sent") {
-                json_output("not_sent", $lang->translate('keyreset_error'), 0);
-            } elseif ($ret == "wrong_email") {
-                json_output("wrong_sender_email", $lang->translate('wrong_email'), 0);
-            } elseif ($ret == "sent") {
-                log_info($langShop->sprintf($langShop->translate('reset_key_email'), $user2->getUsername(),
-                    $user2->getUid(), $user2->getEmail(), $username, $email));
-                $data['username'] = $user2->getUsername();
-                json_output("sent", $lang->translate('email_sent'), 1, $data);
+                return new ApiResponse("not_sent", $lang->translate('keyreset_error'), 0);
             }
-        } elseif ($action == "reset_password") {
+
+            if ($ret == "wrong_email") {
+                return new ApiResponse("wrong_sender_email", $lang->translate('wrong_email'), 0);
+            }
+
+            if ($ret == "sent") {
+                log_info($langShop->sprintf(
+                    $langShop->translate('reset_key_email'),
+                    $user2->getUsername(),
+                    $user2->getUid(),
+                    $user2->getEmail(),
+                    $username,
+                    $email
+                ));
+                $data['username'] = $user2->getUsername();
+                return new ApiResponse("sent", $lang->translate('email_sent'), 1, $data);
+            }
+
+            throw new UnexpectedValueException("Invalid ret value");
+        }
+
+        if ($action == "reset_password") {
             if (is_logged()) {
-                json_output("logged_in", $lang->translate('logged'), 0);
+                return new ApiResponse("logged_in", $lang->translate('logged'), 0);
             }
 
             $uid = $_POST['uid'];
@@ -324,7 +339,7 @@ class JsonHttpKernel extends Kernel
 
             // Sprawdzanie hashu najwazniejszych danych
             if (!$sign || $sign != md5($uid . $settings['random_key'])) {
-                json_output("wrong_sign", $lang->translate('wrong_sign'), 0);
+                return new ApiResponse("wrong_sign", $lang->translate('wrong_sign'), 0);
             }
 
             if ($warning = check_for_warnings("password", $pass)) {
@@ -342,7 +357,7 @@ class JsonHttpKernel extends Kernel
                     ]);
                     $data['warnings'][$brick] = $warning;
                 }
-                json_output("warnings", $lang->translate('form_wrong_filled'), 0, $data);
+                return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
             // Zmień hasło
@@ -358,10 +373,12 @@ class JsonHttpKernel extends Kernel
             // LOGING
             log_info($langShop->sprintf($langShop->translate('reset_pass'), $uid));
 
-            json_output("password_changed", $lang->translate('password_changed'), 1);
-        } elseif ($action == "change_password") {
+            return new ApiResponse("password_changed", $lang->translate('password_changed'), 1);
+        }
+
+        if ($action == "change_password") {
             if (!is_logged()) {
-                json_output("logged_in", $lang->translate('not_logged'), 0);
+                return new ApiResponse("logged_in", $lang->translate('not_logged'), 0);
             }
 
             $oldpass = $_POST['old_pass'];
@@ -387,7 +404,7 @@ class JsonHttpKernel extends Kernel
                     ]);
                     $data['warnings'][$brick] = $warning;
                 }
-                json_output("warnings", $lang->translate('form_wrong_filled'), 0, $data);
+                return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
             // Zmień hasło
             $salt = get_random_string(8);
@@ -402,17 +419,19 @@ class JsonHttpKernel extends Kernel
             // LOGING
             log_info("Zmieniono hasło. ID użytkownika: {$user->getUid()}.");
 
-            json_output("password_changed", $lang->translate('password_changed'), 1);
-        } elseif ($action == "purchase_form_validate") {
+            return new ApiResponse("password_changed", $lang->translate('password_changed'), 1);
+        }
+
+        if ($action == "purchase_form_validate") {
             if (($service_module = $heart->get_service_module($_POST['service'])) === null
                 || !object_implements($service_module, "IService_PurchaseWeb")
             ) {
-                json_output("wrong_module", $lang->translate('bad_module'), 0);
+                return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
             }
 
             // Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
             if (!$heart->user_can_use_service($user->getUid(), $service_module->service)) {
-                json_output("no_permission", $lang->translate('service_no_permission'), 0);
+                return new ApiResponse("no_permission", $lang->translate('service_no_permission'), 0);
             }
 
             // Przeprowadzamy walidację danych wprowadzonych w formularzu
@@ -466,11 +485,13 @@ class JsonHttpKernel extends Kernel
                 ];
             }
 
-            json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
-        } elseif ($action == "payment_form_validate") {
+            return new ApiResponse($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
+        }
+
+        if ($action == "payment_form_validate") {
             // Sprawdzanie hashu danych przesłanych przez formularz
             if (!isset($_POST['purchase_sign']) || $_POST['purchase_sign'] != md5($_POST['purchase_data'] . $settings['random_key'])) {
-                json_output("wrong_sign", $lang->translate('wrong_sign'), 0);
+                return new ApiResponse("wrong_sign", $lang->translate('wrong_sign'), 0);
             }
 
             /** @var Purchase $purchase_data */
@@ -487,10 +508,12 @@ class JsonHttpKernel extends Kernel
             ]);
 
             $return_payment = validate_payment($purchase_data);
-            json_output(
+            return new ApiResponse(
                 $return_payment['status'], $return_payment['text'], $return_payment['positive'], $return_payment['data']
             );
-        } elseif ($action == "refresh_blocks") {
+        }
+
+        if ($action == "refresh_blocks") {
             $data = [];
             if (isset($_POST['bricks'])) {
                 $bricks = explode(";", $_POST['bricks']);
@@ -511,19 +534,25 @@ class JsonHttpKernel extends Kernel
             }
 
             output_page(json_encode($data), 1);
-        } elseif ($action == "get_service_long_description") {
+        }
+
+        if ($action == "get_service_long_description") {
             $output = "";
             if (($service_module = $heart->get_service_module($_POST['service'])) !== null) {
                 $output = $service_module->description_full_get();
             }
 
             output_page($output, 1);
-        } elseif ($action == "get_purchase_info") {
+        }
+
+        if ($action == "get_purchase_info") {
             output_page(purchase_info([
                 'purchase_id' => $_POST['purchase_id'],
                 'action'      => "web",
             ]), 1);
-        } elseif ($action == "form_user_service_edit") {
+        }
+
+        if ($action == "form_user_service_edit") {
             if (!is_logged()) {
                 output_page($lang->translate('service_cant_be_modified'));
             }
@@ -556,7 +585,9 @@ class JsonHttpKernel extends Kernel
             $buttons = $templates->render("services/my_services_savencancel");
 
             output_page($buttons . $service_module->user_own_service_edit_form_get($user_service));
-        } elseif ($action == "get_user_service_brick") {
+        }
+
+        if ($action == "get_user_service_brick") {
             if (!is_logged()) {
                 output_page($lang->translate('not_logged'));
             }
@@ -589,31 +620,33 @@ class JsonHttpKernel extends Kernel
             }
 
             output_page($service_module->user_own_service_info_get($user_service, $button_edit));
-        } elseif ($action == "user_service_edit") {
+        }
+
+        if ($action == "user_service_edit") {
             if (!is_logged()) {
-                json_output("not_logged", $lang->translate('not_logged'), 0);
+                return new ApiResponse("not_logged", $lang->translate('not_logged'), 0);
             }
 
             $user_service = get_users_services($_POST['id']);
 
             // Brak takiej usługi w bazie
             if (empty($user_service)) {
-                json_output("dont_play_games", $lang->translate('dont_play_games'), 0);
+                return new ApiResponse("dont_play_games", $lang->translate('dont_play_games'), 0);
             }
 
             // Dany użytkownik nie jest właścicielem usługi o danym id
             if ($user_service['uid'] != $user->getUid()) {
-                json_output("dont_play_games", $lang->translate('dont_play_games'), 0);
+                return new ApiResponse("dont_play_games", $lang->translate('dont_play_games'), 0);
             }
 
             if (($service_module = $heart->get_service_module($user_service['service'])) === null) {
-                json_output("wrong_module", $lang->translate('bad_module'), 0);
+                return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
             }
 
             // Wykonujemy metode edycji usługi użytkownika na module, który ją obsługuje
             if (!$settings['user_edit_service'] || !object_implements($service_module,
                     "IService_UserOwnServicesEdit")) {
-                json_output("service_cant_be_modified", $lang->translate('service_cant_be_modified'), 0);
+                return new ApiResponse("service_cant_be_modified", $lang->translate('service_cant_be_modified'), 0);
             }
 
             $return_data = $service_module->user_own_service_edit($_POST, $user_service);
@@ -628,15 +661,19 @@ class JsonHttpKernel extends Kernel
                 }
             }
 
-            json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
-        } elseif ($action == "service_take_over_form_get") {
+            return new ApiResponse($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
+        }
+
+        if ($action == "service_take_over_form_get") {
             if (($service_module = $heart->get_service_module($_POST['service'])) === null || !object_implements($service_module,
                     "IService_TakeOver")) {
                 output_page($lang->translate('bad_module'), 1);
             }
 
             output_page($service_module->service_take_over_form_get(), 1);
-        } elseif ($action == "service_take_over") {
+        }
+
+        if ($action == "service_take_over") {
             if (($service_module = $heart->get_service_module($_POST['service'])) === null || !object_implements($service_module,
                     "IService_TakeOver")) {
                 output_page($lang->translate('bad_module'), 1);
@@ -654,8 +691,10 @@ class JsonHttpKernel extends Kernel
                 }
             }
 
-            json_output($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
-        } elseif ($_GET['action'] == "get_income") {
+            return new ApiResponse($return_data['status'], $return_data['text'], $return_data['positive'], $return_data['data']);
+        }
+
+        if ($_GET['action'] == "get_income") {
             $user->setPrivilages([
                 'acp'         => true,
                 'view_income' => true,
@@ -663,7 +702,9 @@ class JsonHttpKernel extends Kernel
             $page = new PageAdminIncome();
 
             output_page($page->get_content($_GET, $_POST), 1);
-        } elseif ($action == "service_action_execute") {
+        }
+
+        if ($action == "service_action_execute") {
             if (($service_module = $heart->get_service_module($_POST['service'])) === null
                 || !object_implements($service_module, "IService_ActionExecute")
             ) {
@@ -671,7 +712,9 @@ class JsonHttpKernel extends Kernel
             }
 
             output_page($service_module->action_execute($_POST['service_action'], $_POST), 1);
-        } elseif ($action == "get_template") {
+        }
+
+        if ($action == "get_template") {
             $template = $_POST['template'];
             // Zabezpieczanie wszystkich wartości post
             foreach ($_POST as $key => $value) {
