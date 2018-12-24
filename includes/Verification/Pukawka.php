@@ -8,6 +8,7 @@ use App\Verification\Exceptions\BadNumberException;
 use App\Verification\Exceptions\ExternalErrorException;
 use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\UnknownErrorException;
+use App\Verification\Exceptions\WrongCredentialsException;
 use App\Verification\Results\SmsSuccessResult;
 
 class Pukawka extends PaymentModule implements SupportSms
@@ -33,6 +34,10 @@ class Pukawka extends PaymentModule implements SupportSms
 
         if (!empty($get)) {
             if ($get['error']) {
+                if ($get['error'] === "wrong_api_key") {
+                    throw new WrongCredentialsException();
+                }
+
                 throw new ExternalErrorException($get['error']);
             }
 
