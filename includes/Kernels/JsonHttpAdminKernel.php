@@ -16,6 +16,7 @@ use App\Models\Purchase;
 use App\Repositories\PricelistRepository;
 use App\Repositories\ServerRepository;
 use App\Responses\ApiResponse;
+use App\Responses\PlainResponse;
 use App\Settings;
 use App\Template;
 use App\TranslationManager;
@@ -300,7 +301,7 @@ class JsonHttpAdminKernel extends Kernel
                 $output = $service_module->user_service_admin_add_form_get();
             }
 
-            output_page($output, 1);
+            return new PlainResponse($output);
         }
 
         if ($action == "antispam_question_add" || $action == "antispam_question_edit") {
@@ -848,7 +849,7 @@ class JsonHttpAdminKernel extends Kernel
                 $output = $service_module->service_admin_extra_fields_get();
             }
 
-            output_page($output, 1);
+            return new PlainResponse($output);
         }
 
         if ($action == "server_add" || $action == "server_edit") {
@@ -1671,7 +1672,7 @@ class JsonHttpAdminKernel extends Kernel
                 $output = $service_module->service_code_admin_add_form_get();
             }
 
-            output_page($output, 1);
+            return new PlainResponse($output);
         }
 
         if ($action == "delete_log") {
@@ -1714,7 +1715,7 @@ class JsonHttpAdminKernel extends Kernel
                 }
             }
 
-            output_page(json_encode($data), 1);
+            return new PlainResponse(json_encode($data));
         }
 
         if ($action == "get_action_box") {
@@ -1758,17 +1759,19 @@ class JsonHttpAdminKernel extends Kernel
                 $data['template'] = $templates->render("jsonhttp/" . $template, compact('user2'));
             }
 
-            output_page(json_encode($data), 1);
+            return new PlainResponse(json_encode($data));
         }
 
         if ($action == "service_action_execute") {
             if (($service_module = $heart->get_service_module($_POST['service'])) === null
                 || !object_implements($service_module, "IService_ActionExecute")
             ) {
-                output_page($lang->translate('bad_module'), 1);
+                return new PlainResponse($lang->translate('bad_module'));
             }
 
-            output_page($service_module->action_execute($_POST['service_action'], $_POST), 1);
+            return new PlainResponse(
+                $service_module->action_execute($_POST['service_action'], $_POST)
+            );
         }
 
         return new ApiResponse("script_error", "An error occured: no action.");
