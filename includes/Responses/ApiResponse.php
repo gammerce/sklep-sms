@@ -1,9 +1,9 @@
 <?php
-namespace App;
+namespace App\Responses;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
-class ApiResponse extends JsonResponse
+class ApiResponse extends Response
 {
     public function __construct($id, $text = "", $positive = false, $data = [])
     {
@@ -15,11 +15,12 @@ class ApiResponse extends JsonResponse
             $output = array_merge($output, $data);
         }
 
-        parent::__construct($output, 200, [
+        parent::__construct(json_encode($output), 200, [
             "Expires"       => "Sat, 1 Jan 2000 01:00:00 GMT",
             "Last-Modified" => gmdate("D, d M Y H:i:s") . " GMT",
             "Cache-Control" => "no-cache, must-revalidate",
             "Pragma"        => "no-cache",
+            "Content-Type"  => "application/json; charset=\"UTF-8\"",
         ]);
     }
 }
