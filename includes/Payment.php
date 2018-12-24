@@ -94,7 +94,7 @@ class Payment
             }
 
             return [
-                "status" => $e->getCode(),
+                "status" => $e->getErrorCode(),
                 "text"   => $this->getSmsExceptionMessage($e),
             ];
         } catch (SmsPaymentException $e) {
@@ -106,11 +106,11 @@ class Payment
                 $code,
                 $this->getPaymentModule()->getSmsCode(),
                 $smsNumber,
-                $e->getCode()
+                $e->getErrorCode()
             ));
 
             return [
-                "status" => $e->getCode(),
+                "status" => $e->getErrorCode(),
                 "text"   => $this->getSmsExceptionMessage($e),
             ];
         }
@@ -210,13 +210,13 @@ class Payment
             return $e->getMessage();
         }
 
-        $text = $this->lang->translate('sms_info_' . $e->getCode());
+        $text = $this->lang->translate('sms_info_' . $e->getErrorCode());
 
         if (strlen($text)) {
             return $text;
         }
 
-        return $e->getCode();
+        return $e->getErrorCode();
     }
 
     /**
@@ -245,8 +245,8 @@ class Payment
             'text'     => $this->lang->translate('transfer_prepared'),
             'positive' => true,
             'data'     => [
-                'data' => $this->getPaymentModule()->prepare_transfer($purchase_data,
-                    $data_filename),
+                'data' => $this->getPaymentModule()
+                    ->prepareTransfer($purchase_data, $data_filename),
             ]
             // Przygotowuje dane płatności transferem
         ];

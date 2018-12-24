@@ -27,7 +27,7 @@ class TransferFinalize
 
     /**
      * Nazwa pliku z danymi zakupu
-     * ( parametr $data_filename z metody prepare_transfer )
+     * ( parametr $data_filename z metody prepareTransfer )
      *
      * @var string
      */
