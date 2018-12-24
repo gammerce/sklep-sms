@@ -6,8 +6,5 @@ namespace App\Verification\Exceptions;
  */
 class ExternalErrorException extends SmsPaymentException
 {
-    public function __construct($message = "")
-    {
-        parent::__construct($message, "external_error");
-    }
+    protected $errorCode = "external_error";
 }

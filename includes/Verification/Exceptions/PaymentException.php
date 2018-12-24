@@ -5,5 +5,10 @@ use Exception;
 
 abstract class PaymentException extends Exception
 {
-    //
+    protected $errorCode;
+
+    public function getErrorCode()
+    {
+        return $this->errorCode;
+    }
 }

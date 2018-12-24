@@ -7,12 +7,14 @@ namespace App\Verification\Exceptions;
  */
 class BadNumberException extends SmsPaymentException
 {
+    protected $errorCode = "bad_number";
+
     /** @var int|null */
     public $tariffId;
 
     public function __construct($tariffId)
     {
-        parent::__construct("", "bad_number");
+        parent::__construct();
         $this->tariffId = $tariffId;
     }
 }
