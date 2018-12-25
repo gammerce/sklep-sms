@@ -1,4 +1,14 @@
-INSERT INTO `ss_settings` (`key`, `value`) VALUES ('shop_name', '');
+<?php
+
+use Install\Migration;
+
+class AddShopName extends Migration
+{
+    public function up()
+    {
+        $this->db->query("INSERT INTO `ss_settings` (`key`, `value`) VALUES ('shop_name', '');");
+        $this->db->query(
+            <<<EOF
 UPDATE `ss_settings`
 SET `value` =(
     CASE
@@ -7,4 +17,8 @@ SET `value` =(
     END
 )
 WHERE `key` = 'license_password';
-UPDATE `ss_settings` SET `value` = 'license' WHERE `key` = 'license_login';
+EOF
+        );
+        $this->db->query("UPDATE `ss_settings` SET `value` = 'license' WHERE `key` = 'license_login';");
+    }
+}

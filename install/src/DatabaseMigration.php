@@ -1,21 +1,25 @@
 <?php
 namespace Install;
 
+use App\Application;
 use App\Database;
 use App\Exceptions\SqlQueryException;
 use App\MigrationFiles;
-use InvalidArgumentException;
 
 class DatabaseMigration
 {
+    /** @var Application */
+    protected $app;
+
     /** @var Database */
     protected $db;
 
     /** @var MigrationFiles */
     protected $migrationFiles;
 
-    public function __construct(Database $db, MigrationFiles $migrationFiles)
+    public function __construct(Application $app, Database $db, MigrationFiles $migrationFiles)
     {
+        $this->app = $app;
         $this->db = $db;
         $this->migrationFiles = $migrationFiles;
     }
@@ -88,8 +92,7 @@ class DatabaseMigration
     protected function migrate($migration)
     {
         $path = $this->migrationFiles->getMigrationPath($migration);
-        $queries = $this->splitSQLFile($path);
-        $this->executeQueries($queries);
+        $this->executeMigration($path);
         $this->saveExecutedMigration($migration);
     }
 
@@ -100,6 +103,21 @@ class DatabaseMigration
         }
     }
 
+    protected function executeMigration($path)
+    {
+        $classes = get_declared_classes();
+        include $path;
+        $diff = array_diff(get_declared_classes(), $classes);
+
+        foreach ($diff as $class) {
+            if (is_subclass_of($class, Migration::class)) {
+                /** @var Migration $migrationObject */
+                $migrationObject = $this->app->make($class);
+                $migrationObject->up();
+            }
+        }
+    }
+
     protected function saveExecutedMigration($name)
     {
         $this->db->query($this->db->prepare(
@@ -107,37 +125,5 @@ class DatabaseMigration
             "SET `name` = '%s'",
             [$name]
         ));
-    }
-
-    protected function splitSQLFile($path, $delimiter = ';')
-    {
-        $queries = [];
-
-        $path = fopen($path, 'r');
-
-        if (is_resource($path) !== true) {
-            throw new InvalidArgumentException('Invalid path to queries');
-        }
-
-        $query = [];
-
-        while (feof($path) === false) {
-            $query[] = fgets($path);
-
-            if (preg_match('~' . preg_quote($delimiter, '~') . '\s*$~iS', end($query)) === 1) {
-                $query = trim(implode('', $query));
-                $queries[] = $query;
-            }
-
-            if (is_string($query) === true) {
-                $query = [];
-            }
-        }
-
-        fclose($path);
-
-        return array_filter($queries, function ($query) {
-            return strlen($query);
-        });
     }
 }

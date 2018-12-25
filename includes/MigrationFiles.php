@@ -19,11 +19,11 @@ class MigrationFiles
         $dir = new DirectoryIterator($this->migrationsPath);
 
         foreach ($dir as $fileinfo) {
-            if (!preg_match("/^.+\.sql$/", $fileinfo->getFilename())) {
+            if (!preg_match("/^.+\.php$/", $fileinfo->getFilename())) {
                 continue;
             }
 
-            $migrations[] = $fileinfo->getBasename('.sql');
+            $migrations[] = $fileinfo->getBasename('.php');
         }
 
         sort($migrations);
@@ -40,6 +40,11 @@ class MigrationFiles
 
     public function getMigrationPath($migration)
     {
-        return $this->migrationsPath . $migration . '.sql';
+        return $this->migrationsPath . $migration . '.php';
+    }
+
+    public function path($file)
+    {
+        return $this->migrationsPath . $file;
     }
 }
