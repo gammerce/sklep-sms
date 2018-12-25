@@ -22,7 +22,26 @@ class ChangeCssettiNumbers extends Migration
             "UPDATE `ss_sms_numbers` SET `number` = '92521' WHERE `tariff` = 25 AND `service` = 'cssetti';",
             "INSERT IGNORE INTO `ss_sms_numbers` SET `number` = '92022', `tariff` = 20 AND `service` = 'cssetti';",
         ];
-
         $this->executeQueries($queries);
+
+        $this->changeSmsText();
+    }
+
+    private function changeSmsText()
+    {
+        $result = $this->db->query("SELECT * FROM `ss_transaction_services` WHERE `id` = 'cssetti';");
+        $transactionService = $this->db->fetch_array_assoc($result);
+
+        if (!$transactionService) {
+            return;
+        }
+
+        $data = json_decode($transactionService["data"], true);
+        $data["sms_text"] = "SKLEP";
+
+        $this->db->query($this->db->prepare(
+            "UPDATE `ss_transaction_services` SET `data` = '%s' WHERE `id` = 'cssetti';",
+            [json_encode($data)]
+        ));
     }
 }
