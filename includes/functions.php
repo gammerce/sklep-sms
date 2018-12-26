@@ -500,7 +500,7 @@ function validate_payment($purchase_data)
             $lang->sprintf($lang->translate('payment_for_service'), $service_module->service['name'])
         );
 
-        return $payment->pay_transfer($purchase_data);
+        return $payment->payTransfer($purchase_data);
     }
 }
 

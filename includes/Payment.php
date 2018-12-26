@@ -224,12 +224,9 @@ class Payment
      *
      * @return array
      */
-    public function pay_transfer($purchase_data)
+    public function payTransfer($purchase_data)
     {
-        if (
-            !$this->getPaymentModule()->supportTransfer()
-            || !object_implements($this->getPaymentModule(), "IPayment_Transfer")
-        ) {
+        if (!$this->getPaymentModule()->supportTransfer()) {
             return [
                 'status' => Payment::TRANSFER_NOT_SUPPORTED,
                 'text'   => $this->lang->translate('transfer_' . Payment::TRANSFER_NOT_SUPPORTED),
