@@ -5,9 +5,9 @@ use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\BadNumberException;
-use App\Verification\Exceptions\ServerErrorException;
-use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\ExternalErrorException;
+use App\Verification\Exceptions\NoConnectionException;
+use App\Verification\Exceptions\ServerErrorException;
 use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Exceptions\WrongCredentialsException;
 use App\Verification\Results\SmsSuccessResult;
@@ -24,7 +24,7 @@ class Cssetti extends PaymentModule implements SupportSms
 
     public function verifySms($returnCode, $number)
     {
-        $this->tryToFetch();
+        $this->tryToFetchSmsData();
 
         $response = $this->requester->get('https://cssetti.pl/Api/SmsApiV2CheckCode.php', [
             'UserId' => $this->getAccountId(),
@@ -58,7 +58,11 @@ class Cssetti extends PaymentModule implements SupportSms
         if (floatval($content) > 0) {
             $expectedNumber = array_get($this->numbers, $content);
 
-            if ($expectedNumber === null || $expectedNumber != $number) {
+            if ($expectedNumber === null) {
+                throw new BadNumberException(null);
+            }
+
+            if ($expectedNumber != $number) {
                 $tariff = $this->getTariffByNumber($expectedNumber);
                 $tariffId = $tariff ? $tariff->getId() : null;
 
@@ -73,6 +77,8 @@ class Cssetti extends PaymentModule implements SupportSms
 
     public function getSmsCode()
     {
+        $this->tryToFetchSmsData();
+
         return $this->smsCode;
     }
 
@@ -81,13 +87,14 @@ class Cssetti extends PaymentModule implements SupportSms
         return $this->data['account_id'];
     }
 
-    private function tryToFetch() {
-        if (empty($this->numbers)) {
-            $this->fetchNumbers();
+    private function tryToFetchSmsData()
+    {
+        if (empty($this->numbers) || !strlen($this->smsCode)) {
+            $this->fetchSmsData();
         }
     }
 
-    private function fetchNumbers()
+    private function fetchSmsData()
     {
         $response = $this->requester->get('https://cssetti.pl/Api/SmsApiV2GetData.php');
         $data = $response ? $response->json() : null;
