@@ -6,9 +6,9 @@ use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\BadNumberException;
-use App\Verification\Exceptions\ServerErrorException;
-use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\ExternalErrorException;
+use App\Verification\Exceptions\NoConnectionException;
+use App\Verification\Exceptions\ServerErrorException;
 use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Exceptions\WrongCredentialsException;
 use App\Verification\Results\SmsSuccessResult;
@@ -74,6 +74,8 @@ class Gosetti extends PaymentModule implements SupportSms
 
     public function getSmsCode()
     {
+        $this->tryToFetchSmsData();
+
         return $this->smsCode;
     }
 
