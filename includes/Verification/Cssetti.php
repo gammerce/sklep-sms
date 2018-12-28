@@ -58,7 +58,11 @@ class Cssetti extends PaymentModule implements SupportSms
         if (floatval($content) > 0) {
             $expectedNumber = array_get($this->numbers, $content);
 
-            if ($expectedNumber === null || $expectedNumber != $number) {
+            if ($expectedNumber === null) {
+                throw new BadNumberException(null);
+            }
+
+            if ($expectedNumber != $number) {
                 $tariff = $this->getTariffByNumber($expectedNumber);
                 $tariffId = $tariff ? $tariff->getId() : null;
 

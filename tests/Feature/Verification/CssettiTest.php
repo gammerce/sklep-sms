@@ -96,6 +96,38 @@ class CssettiTest extends ServerTestCase
         $this->cssetti->verifySms("foobar", "72480");
     }
 
+    /**
+     * @test
+     * @expectedException \App\Verification\Exceptions\BadNumberException
+     */
+    public function throw_bad_number_on_not_existing_amount_in_the_response()
+    {
+        // given
+        $this->requesterMock
+            ->shouldReceive('get')
+            ->withArgs(['https://cssetti.pl/Api/SmsApiV2CheckCode.php', Mockery::any()])
+            ->andReturn(new Response(200, "5"));
+
+        // when
+        $this->cssetti->verifySms("foobar", "72480");
+    }
+
+    /**
+     * @test
+     * @expectedException \App\Verification\Exceptions\BadNumberException
+     */
+    public function throw_bad_number_on_invalid_amount_in_the_response()
+    {
+        // given
+        $this->requesterMock
+            ->shouldReceive('get')
+            ->withArgs(['https://cssetti.pl/Api/SmsApiV2CheckCode.php', Mockery::any()])
+            ->andReturn(new Response(200, "3"));
+
+        // when
+        $this->cssetti->verifySms("foobar", "72480");
+    }
+
     /** @test */
     public function returns_sms_code()
     {
