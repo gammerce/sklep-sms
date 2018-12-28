@@ -25,7 +25,7 @@ class Gosetti extends PaymentModule implements SupportSms
 
     public function verifySms($returnCode, $number)
     {
-        $this->tryToFetch();
+        $this->tryToFetchSmsData();
 
         $response = $this->requester->get('https://gosetti.pl/Api/SmsApiV2CheckCode.php', [
             'UserId' => $this->getAccountId(),
@@ -82,13 +82,14 @@ class Gosetti extends PaymentModule implements SupportSms
         return $this->data['account_id'];
     }
 
-    private function tryToFetch() {
-        if (empty($this->numbers)) {
-            $this->fetchNumbers();
+    private function tryToFetchSmsData()
+    {
+        if (empty($this->numbers) || !strlen($this->smsCode)) {
+            $this->fetchSmsData();
         }
     }
 
-    private function fetchNumbers()
+    private function fetchSmsData()
     {
         $response = $this->requester->get('https://gosetti.pl/Api/SmsApiV2GetData.php');
         $data = $response ? $response->json() : null;
