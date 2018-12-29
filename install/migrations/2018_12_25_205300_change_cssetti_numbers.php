@@ -20,7 +20,7 @@ class ChangeCssettiNumbers extends Migration
             "UPDATE `ss_sms_numbers` SET `number` = '91400' WHERE `tariff` = 14 AND `service` = 'cssetti';",
             "UPDATE `ss_sms_numbers` SET `number` = '91900' WHERE `tariff` = 19 AND `service` = 'cssetti';",
             "UPDATE `ss_sms_numbers` SET `number` = '92521' WHERE `tariff` = 25 AND `service` = 'cssetti';",
-            "INSERT IGNORE INTO `ss_sms_numbers` SET `number` = '92022', `tariff` = 20 AND `service` = 'cssetti';",
+            "INSERT IGNORE INTO `ss_sms_numbers` SET `number` = '92022', `tariff` = 20, `service` = 'cssetti';",
         ];
         $this->executeQueries($queries);
 
