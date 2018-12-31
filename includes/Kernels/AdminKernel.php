@@ -57,7 +57,8 @@ class AdminKernel extends Kernel
         /** @var License $license */
         $license = $this->app->make(License::class);
 
-        if ($currentPage->getPid() !== 'login' && !$heart->page_exists($currentPage->getPid(), 'admin')) {
+        if ($currentPage->getPid() !== 'login' && !$heart->page_exists($currentPage->getPid(),
+                'admin')) {
             $currentPage->setPid('home');
         }
 
@@ -105,7 +106,8 @@ class AdminKernel extends Kernel
         if (get_privilages("view_user_services")) {
             $pid = '';
             foreach ($heart->get_services_modules() as $module_data) {
-                if (in_array('IService_UserServiceAdminDisplay', class_implements($module_data['class']))) {
+                if (in_array('IService_UserServiceAdminDisplay',
+                    class_implements($module_data['class']))) {
                     $pid = "user_service&subpage=" . urlencode($module_data['id']);
                     break;
                 }
@@ -127,7 +129,8 @@ class AdminKernel extends Kernel
             // Płatności
             $pid = "transaction_services";
             $name = $lang->translate($pid);;
-            $transaction_services_link = $template->render("admin/page_link", compact('pid', 'name'));
+            $transaction_services_link = $template->render("admin/page_link",
+                compact('pid', 'name'));
 
             // Taryfy
             $pid = "tariffs";
@@ -186,13 +189,16 @@ class AdminKernel extends Kernel
         // Pobranie headera
         $header = $template->render("admin/header", compact('heart'));
 
+        $currentVersion = $this->app->version();
+
         // Pobranie ostatecznego szablonu
         return new Response($template->render(
             "admin/index",
-            compact('header', 'license', 'user', 'settings_link', 'antispam_questions_link',
-                'transaction_services_link', 'services_link', 'servers_link', 'tariffs_link', 'pricelist_link',
-                'user_service_link', 'players_flags_link', 'users_link', 'groups_link', 'income_link',
-                'service_codes_link', 'sms_codes_link', 'logs_link', 'content')
+            compact('header', 'license', 'user', 'settings_link',
+                'antispam_questions_link', 'transaction_services_link', 'services_link',
+                'servers_link', 'tariffs_link', 'pricelist_link', 'user_service_link',
+                'players_flags_link', 'users_link', 'groups_link', 'income_link',
+                'service_codes_link', 'sms_codes_link', 'logs_link', 'content', 'currentVersion')
         ));
     }
 }

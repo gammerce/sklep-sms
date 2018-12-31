@@ -11,10 +11,15 @@
     <td>{$logged_info}{$wallet}</td>
     <td>
       <div id="language_choice">
-        <img src="{$settings['shop_url_slash']}images/polish.jpg" id="language_polish"
-             title="{$lang->translate('language_polish')}"/>&nbsp;
-        <img src="{$settings['shop_url_slash']}images/english.jpg" id="language_english"
-             title="{$lang->translate('language_english')}"/>
+        <img id="language_polish"
+             src="{$url->to('images/polish.jpg')}"
+             title="{$lang->translate('language_polish')}"
+        />
+        &nbsp;
+        <img id="language_english"
+             src="{$url->to('images/english.jpg')}"
+             title="{$lang->translate('language_english')}"
+        />
       </div>
     </td>
   </tr>
@@ -27,7 +32,11 @@
             <div class="content_title">{$heart->page_title}</div>
           </td>
           <td class="right">
-            <a href="index.php"><img src="https://sklep-sms.pl/images/logo_medium.png" alt="sklep-sms"/></a>
+            <a href="{$url->to('index.php')}">
+              <img src="https://sklep-sms.pl/images/logo_medium.png"
+                   alt="{$lang->translate('shop_sms')}"
+              />
+            </a>
           </td>
         </tr>
       </table>

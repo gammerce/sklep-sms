@@ -111,7 +111,10 @@ class PageAdminBoughtServices extends PageAdmin
             // Pobranie linku płatności
             $payment_link = new DOMElement();
             $payment_link->setName('a');
-            $payment_link->setParam('href', "admin.php?pid=payment_{$row['payment']}&payid={$row['payment_id']}");
+            $payment_link->setParam(
+                'href',
+                $this->url->to("admin.php?pid=payment_{$row['payment']}&payid={$row['payment_id']}")
+            );
             $payment_link->setParam('target', '_blank');
 
             $payment_img = new Img();

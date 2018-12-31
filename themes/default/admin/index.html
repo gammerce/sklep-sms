@@ -7,12 +7,12 @@
   <table>
     <tr>
       <td style="width: 360px">
-        <a href="index.php">
+        <a href="{$url->to('index.php')}">
           <img class="logo" src="https://sklep-sms.pl/images/logo_medium.png" alt="{$lang->translate('shop_sms')}">
         </a>
       </td>
       <td class="center">
-        {$lang->translate('acp')} (&nbsp;v{__VERSION__}&nbsp;)
+        {$lang->translate('acp')} (&nbsp;v{$currentVersion}&nbsp;)
         <div class="hint">{$lang->translate('license_expires')}: {$license->getExpires()}</div>
       </td>
       <td style="width: 360px; text-align: right;">
@@ -28,7 +28,7 @@
 <div class="sidebar">
   <h3>{$lang->translate('main')}</h3>
   <ul>
-    <a href="admin.php?pid=home">
+    <a href="{$url->versioned('admin.php?pid=home')}">
       <li>&#8594; {$lang->translate('main_page')}</li>
     </a>
     {$settings_link}
@@ -57,22 +57,22 @@
   </ul>
   <h3>{$lang->translate('logs')}</h3>
   <ul>
-    <a href="admin.php?pid=bought_services">
+    <a href="{$url->versioned('admin.php?pid=bought_services')}">
       <li>&#8594; {$lang->translate('bought_services')}</li>
     </a>
-    <a href="admin.php?pid=payment_sms">
+    <a href="{$url->versioned('admin.php?pid=payment_sms')}">
       <li>&#8594; {$lang->translate('payments_sms')}</li>
     </a>
-    <a href="admin.php?pid=payment_transfer">
+    <a href="{$url->versioned('admin.php?pid=payment_transfer')}">
       <li>&#8594; {$lang->translate('payments_transfer')}</li>
     </a>
-    <a href="admin.php?pid=payment_wallet">
+    <a href="{$url->versioned('admin.php?pid=payment_wallet')}">
       <li>&#8594; {$lang->translate('payments_wallet')}</li>
     </a>
-    <a href="admin.php?pid=payment_admin">
+    <a href="{$url->versioned('admin.php?pid=payment_admin')}">
       <li>&#8594; {$lang->translate('payments_admin')}</li>
     </a>
-    <a href="admin.php?pid=payment_service_code">
+    <a href="{$url->versioned('admin.php?pid=payment_service_code')}">
       <li>&#8594; {$lang->translate('payments_service_code')}</li>
     </a>
     {$logs_link}

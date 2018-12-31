@@ -1,4 +1,4 @@
-<a href="index.php?pid=register">
+<a href="{$url->to('index.php?pid=register')}">
   <div id="register_redirect_button">{$lang->translate('register_vert')}</div>
 </a>
 <table>
@@ -9,7 +9,9 @@
         <input type="text" name="username"/><br/>
         {$lang->translate('password')}<br/>
         <input type="password" name="password"/><br/>
-        <a href="index.php?pid=forgotten_password">{$lang->translate('forgot_password')}</a>
+        <a href="{$url->to('index.php?pid=forgotten_password')}">
+          {$lang->translate('forgot_password')}
+        </a>
 
         <div class="submit_wraper">
           <input type="submit" value="{$lang->translate('sign_in')}"/>

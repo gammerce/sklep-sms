@@ -24,6 +24,17 @@ class UrlGenerator
         return rtrim($this->getShopUrl(), '/') . '/' . $path;
     }
 
+    public function versioned($path)
+    {
+        $url = $this->to($path);
+
+        if (str_contains($url, '?')) {
+            return $url . "&version={$this->app->version()}";
+        }
+
+        return $url . "?version={$this->app->version()}";
+    }
+
     public function getShopUrl()
     {
         if ($this->settings['shop_url']) {

@@ -4,6 +4,7 @@ use App\Application;
 use App\CurrentPage;
 use App\Database;
 use App\Heart;
+use App\Routes\UrlGenerator;
 use App\Settings;
 use App\Template;
 use App\TranslationManager;
@@ -35,6 +36,9 @@ abstract class Page
     /** @var Database */
     protected $db;
 
+    /** @var UrlGenerator */
+    protected $url;
+
     public function __construct()
     {
         $this->app = app();
@@ -46,6 +50,7 @@ abstract class Page
         $this->currentPage = $this->app->make(CurrentPage::class);
         $this->template = $this->app->make(Template::class);
         $this->db = $this->app->make(Database::class);
+        $this->url = $this->app->make(UrlGenerator::class);
     }
 
     /**
@@ -79,7 +84,8 @@ abstract class Page
         }
 
         // Globalne jsy cssy konkretnych modułów usług
-        if (in_array($this::PAGE_ID, ["purchase", "user_own_services", "service_take_over", "payment_log"])) {
+        if (in_array($this::PAGE_ID,
+            ["purchase", "user_own_services", "service_take_over", "payment_log"])) {
             foreach ($this->heart->get_services_modules() as $module_info) {
                 $path = "styles/services/" . $module_info['id'] . ".css";
                 if (file_exists($this->app->path($path))) {

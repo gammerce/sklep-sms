@@ -1,6 +1,8 @@
 <?php
 namespace App;
 
+use App\Routes\UrlGenerator;
+
 class Template
 {
     /** @var Application */
@@ -12,53 +14,57 @@ class Template
     /** @var Translator */
     protected $lang;
 
-    public function __construct(Application $app, Settings $settings, Translator $lang)
-    {
+    /** @var UrlGenerator */
+    protected $urlGenerator;
+
+    public function __construct(
+        Application $app,
+        Settings $settings,
+        Translator $lang,
+        UrlGenerator $urlGenerator
+    ) {
         $this->app = $app;
         $this->settings = $settings;
         $this->lang = $lang;
+        $this->urlGenerator = $urlGenerator;
     }
 
     public function render($template, array $data = [], $eslashes = true, $htmlcomments = true)
     {
-        $__content = $this->get_template($template, $eslashes, $htmlcomments);
+        $__content = $this->getTemplate($template, $eslashes, $htmlcomments);
 
-        $data = $this->addDefaultVariables($data);
-        extract($data);
-
-        return eval('return "' . $__content . '";');
+        return $this->evalTemplate($__content, $data);
     }
 
-    public function install_render($template, array $data = [])
+    public function installRender($template, array $data = [])
     {
-        $__content = $this->get_install_template($template, function ($filename) {
+        $__content = $this->getInstallTemplate($template, function ($filename) {
             return $this->app->path("install/templates/{$filename}.html");
         });
 
-        $data = $this->addDefaultVariables($data);
-        extract($data);
-
-        return eval('return "' . $__content . '";');
+        return $this->evalTemplate($__content, $data);
     }
 
-    public function install_full_render($template, array $data = [])
+    public function installFullRender($template, array $data = [])
     {
-        $__content = $this->get_install_template($template, function ($filename) {
+        $__content = $this->getInstallTemplate($template, function ($filename) {
             return $this->app->path("install/templates/full/{$filename}.html");
         });
 
-        $data = $this->addDefaultVariables($data);
-        extract($data);
-
-        return eval('return "' . $__content . '";');
+        return $this->evalTemplate($__content, $data);
     }
 
-    public function install_update_render($template, array $data = [])
+    public function installUpdateRender($template, array $data = [])
     {
-        $__content = $this->get_install_template($template, function ($filename) {
+        $__content = $this->getInstallTemplate($template, function ($filename) {
             return $this->app->path("install/templates/update/{$filename}.html");
         });
 
+        return $this->evalTemplate($__content, $data);
+    }
+
+    private function evalTemplate($__content, array $data)
+    {
         $data = $this->addDefaultVariables($data);
         extract($data);
 
@@ -69,12 +75,12 @@ class Template
      * Pobranie szablonu.
      *
      * @param string $title Nazwa szablonu
-     * @param bool   $eslashes Prawda, jeżeli zawartość szablonu ma być "escaped".
-     * @param bool   $htmlcomments Prawda, jeżeli chcemy dodać komentarze o szablonie.
+     * @param bool $eslashes Prawda, jeżeli zawartość szablonu ma być "escaped".
+     * @param bool $htmlcomments Prawda, jeżeli chcemy dodać komentarze o szablonie.
      *
      * @return string|bool Szablon.
      */
-    private function get_template($title, $eslashes = true, $htmlcomments = true)
+    private function getTemplate($title, $eslashes = true, $htmlcomments = true)
     {
         if (strlen($this->lang->getCurrentLanguageShort())) {
             $filename = $title . "." . $this->lang->getCurrentLanguageShort();
@@ -106,10 +112,10 @@ class Template
             return false;
         }
 
-        return $this->read_template($path, $title, $htmlcomments, $eslashes);
+        return $this->readTemplate($path, $title, $htmlcomments, $eslashes);
     }
 
-    private function get_install_template($title, callable $pathResolver)
+    private function getInstallTemplate($title, callable $pathResolver)
     {
         if (strlen($this->lang->getCurrentLanguageShort())) {
             $filename = $title . "." . $this->lang->getCurrentLanguageShort();
@@ -131,10 +137,10 @@ class Template
             return false;
         }
 
-        return $this->read_template($path, $title, true, true);
+        return $this->readTemplate($path, $title, true, true);
     }
 
-    private function read_template($path, $title, $htmlcomments, $eslashes)
+    private function readTemplate($path, $title, $htmlcomments, $eslashes)
     {
         $template = file_get_contents($path);
 
@@ -145,8 +151,6 @@ class Template
         if ($eslashes) {
             $template = str_replace("\\'", "'", addslashes($template));
         }
-
-        $template = str_replace("{__VERSION__}", $this->app->version(), $template);
 
         return $template;
     }
@@ -159,6 +163,10 @@ class Template
 
         if (!array_key_exists('settings', $data)) {
             $data['settings'] = $this->settings;
+        }
+
+        if (!array_key_exists('url', $data)) {
+            $data['url'] = $this->urlGenerator;
         }
 
         return $data;

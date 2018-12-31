@@ -45,7 +45,7 @@ class LicenseIsValid implements MiddlewareContract
         $license = $app->make(License::class);
 
         try {
-            $license->validate();
+            //$license->validate();
         } catch (RequestException $e) {
             return $this->renderErrorPage($this->lang->translate('verification_error'));
         } catch (InvalidResponse $e) {
