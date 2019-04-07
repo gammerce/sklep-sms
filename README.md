@@ -1,15 +1,16 @@
-# [Sklep SMS](https://sklep-sms.pl/) [![Build Status](https://travis-ci.org/gammerce/sklep-sms.svg?branch=master)](https://travis-ci.org/gammerce/sklep-sms)
+# Sklep SMS
 
 Sklep SMS ułatwia zarabianie realnych pieniędzy na własnych serwerach gier!
 
-## Demo - wersja live
-Dostępna jest pod adresem: https://demo.sklep-sms.pl/
-
 ## Instalacja
-Instrukcję instalacji krok po kroku można znaleźć tutaj: https://sklep-sms.pl/index.php?page=config
+Pobierz [build.zip](https://github.com/TheDoctor0/sklep-sms/releases/latest).
+Postępuj zgodnie z instrukcją dostępną tutaj: https://sklep-sms.pl/index.php?page=config
+Po instalacji pobierz [amxx.zip](https://github.com/TheDoctor0/sklep-sms/releases/latest), skompiluj plugin sklep_sms.sma i wgraj go na serwer.
+
+# Kompatybilność
+Na ten moment plugin sklepu napisany został jedynie w AMXX i wymaga go w wersji 1.8.3 lub wyższej.
 
 ## Licencja
-W celu zakupu licencji należy udać się pod adres: https://sklep.sklep-sms.pl/
+Ten fork domyślnie posiada wyłączony system licencyjny, więc ze sklepu można korzystać całkowicie za darmo.
 
-## Społeczność
-Dostępne jest także forum dla społeczności klientów sklepu: https://forum.sklep-sms.pl/
+Jeśli chcesz wesprzeć autora, rozważ zakup licencji pod adresem: https://sklep.sklep-sms.pl/
