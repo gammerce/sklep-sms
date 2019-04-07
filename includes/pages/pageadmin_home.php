@@ -57,7 +57,7 @@ class PageAdminMain extends PageAdmin
         $newestAmxxVersion = $this->version->getNewestAmxmodx();
         $newestSmVersion = $this->version->getNewestSourcemod();
 
-        if ($this->app->version() !== $newestVersion) {
+        if ($newestVersion !== null && $this->app->version() !== $newestVersion) {
             $this->add_note(
                 $this->lang->sprintf(
                     $this->lang->translate('update_available'),

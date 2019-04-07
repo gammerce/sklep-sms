@@ -51,15 +51,21 @@ class License
      */
     public function validate()
     {
-        $response = $this->loadLicense();
+        if (getenv('LICENSE')) {
+            $response = $this->loadLicense();
 
-        $this->externalLicenseId = array_get($response, 'id');
-        $this->expiresAt = array_get($response, 'expires_at');
-        $this->footer = array_get($response, 'f');
+            $this->externalLicenseId = array_get($response, 'id');
+            $this->expiresAt = array_get($response, 'expires_at');
+            $this->footer = array_get($response, 'f');
+        }
     }
 
     public function isValid()
     {
+        if (!getenv('LICENSE')) {
+            return true;
+        }
+
         return $this->externalLicenseId !== null;
     }
 

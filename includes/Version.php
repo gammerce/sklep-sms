@@ -15,6 +15,10 @@ class Version
 
     public function getNewestWeb()
     {
+        if (getenv('LICENSE')) {
+            return null;
+        }
+
         $response = $this->requester->get('https://api.github.com/repos/gammerce/sklep-sms/releases/latest');
         $content = $response ? $response->json() : null;
 
@@ -23,6 +27,10 @@ class Version
 
     public function getNewestAmxmodx()
     {
+        if (getenv('LICENSE')) {
+            return null;
+        }
+
         $response = $this->requester->get('https://api.github.com/repos/gammerce/plugin-amxmodx/releases/latest');
         $content = $response ? $response->json() : null;
 
@@ -31,6 +39,10 @@ class Version
 
     public function getNewestSourcemod()
     {
+        if (getenv('LICENSE')) {
+            return null;
+        }
+
         $response = $this->requester->get('https://api.github.com/repos/gammerce/plugin-sourcemod/releases/latest');
         $content = $response ? $response->json() : null;
 

@@ -68,7 +68,7 @@ class CachingRequester
     {
         $response = call_user_func($requestCaller);
 
-        if ($response === null) {
+        if ($response === null && getenv('LICENSE')) {
             throw new RequestException('Could not connect to the license server.');
         }
 

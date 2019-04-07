@@ -15,7 +15,7 @@ class SentryServiceProvider
 
         $dsn = getenv('SENTRY_DSN') ?: $configProvider->sentryDSN();
 
-        if (class_exists(Raven_Client::class) && strlen($dsn)) {
+        if (getenv('LICENSE') && class_exists(Raven_Client::class) && strlen($dsn)) {
             $app->singleton(Raven_Client::class, function () use ($dsn, $app) {
                 return new Raven_Client([
                     'dsn'     => $dsn,
