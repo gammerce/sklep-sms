@@ -5,7 +5,7 @@ Sklep SMS ułatwia zarabianie realnych pieniędzy na własnych serwerach gier!
 ## Instalacja
 Pobierz [build.zip](https://github.com/TheDoctor0/sklep-sms/releases/latest).
 Postępuj zgodnie z instrukcją dostępną tutaj: https://sklep-sms.pl/index.php?page=config
-Po instalacji pobierz [amxx.zip](https://github.com/TheDoctor0/sklep-sms/releases/latest), skompiluj plugin sklep_sms.sma i wgraj go na serwer.
+Po instalacji pobierz [amxx.zip](https://github.com/TheDoctor0/sklep-sms/releases/latest) i wgraj na swój serwer.
 
 # Kompatybilność
 Na ten moment plugin sklepu napisany został jedynie w AMXX i wymaga go w wersji 1.8.3 lub wyższej.
