@@ -4,7 +4,9 @@ Sklep SMS ułatwia zarabianie realnych pieniędzy na własnych serwerach gier!
 
 ## Instalacja
 Pobierz [build.zip](https://github.com/TheDoctor0/sklep-sms/releases/latest).
+
 Postępuj zgodnie z instrukcją dostępną tutaj: https://sklep-sms.pl/index.php?page=config
+
 Po instalacji pobierz [amxx.zip](https://github.com/TheDoctor0/sklep-sms/releases/latest) i wgraj na swój serwer.
 
 # Kompatybilność
