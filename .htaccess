@@ -5,6 +5,10 @@
 
     RewriteEngine On
 
+    RewriteCond %{REQUEST_URI} !^/servers_stuff.php$
+    RewriteCond %{HTTPS} off
+    RewriteRule (.*) https://%{SERVER_NAME}/$1 [R,L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
