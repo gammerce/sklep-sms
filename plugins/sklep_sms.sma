@@ -2,9 +2,9 @@
 #include <sqlx>
 #include <sockets>
 #include <unixtime>
+#include <shop_sms>
 
 #define PLUGIN "Sklep SMS"
-#define VERSION "3.6.6"
 #define AUTHOR "O'Zone"
 
 #define TASK_SOCKET 4435
@@ -12,18 +12,7 @@
 
 #define DELIMITER 13
 
-#define SS_OK -1
-#define SS_ERROR -2
-#define SS_STOP -3
-#define SS_BAD_ARGS -4
-
-#define TYPE_NICK 1<<0
-#define TYPE_IP 1<<1
-#define TYPE_SID 1<<2
-
-#define ADMIN_FLAG_V (1<<21)
-#define ADMIN_FLAG_W (1<<22)
-#define ADMIN_FLAG_X (1<<23)
+#define LOG_FILE "sklep_sms.log"
 
 new const commandShop[][] = { "sklepsms", "say /sklepsms", "say_team /sklepsms", "say /shopsms", "say_team /shopsms", "say /sms", "say_team /sms" };
 new const commandServices[][] = { "uslugi", "say /uslugi", "say_team /uslugi", "say /services", "say_team /services" };
@@ -36,7 +25,7 @@ enum _:serviceData { SERVICE_ID[32], SERVICE_NAME[32], SERVICE_TYPES, Array:SERV
 enum _:tariffData { SERVICE_NUMBER[16], SERVICE_TARIFF, SERVICE_AMOUNT };
 enum _:serverData { SERVER_ID, SERVER_SERVICE[32], SERVER_CODE[32], SERVER_CURRENCY[32], SERVER_KEY[34], SERVER_URL[64], Float:SERVER_VAT };
 
-new socketData[1024], cvarHost[32], cvarUser[32], cvarPassword[32], cvarDatabase[32], cvarProvider, serverIP[32], serverPort[16], forwardAdminConnect,
+new cvarHost[32], cvarUser[32], cvarPassword[32], cvarDatabase[32], cvarProvider, serverIP[32], serverPort[16], forwardAdminConnect,
 	server[serverData], Handle:sql, Handle:connection, Array:registeredServices, Array:shopServices, Array:playerServices, playerBuy[MAX_PLAYERS + 1][playerData];
 
 public plugin_init()
@@ -91,8 +80,8 @@ public plugin_cfg()
 
 public plugin_end()
 {
-	SQL_FreeHandle(sql);
-	SQL_FreeHandle(connection);
+	if (sql != Empty_Handle) SQL_FreeHandle(sql);
+	if (connection != Empty_Handle) SQL_FreeHandle(connection);
 
 	ArrayDestroy(shopServices);
 	ArrayDestroy(playerServices);
@@ -145,7 +134,7 @@ public show_services_menu(failState, Handle:query, error[], errorNum, playerId[]
 	new id = playerId[0];
 
 	if (failState) {
-		log_to_file("sklep_sms.log", "SQL Error (Services): %s (%d)", error, errorNum);
+		log_to_file(LOG_FILE, "[ERROR] SQL Error (Services): %s (%d)", error, errorNum);
 
 		client_print_color(id, id, "^x04[SKLEP-SMS]^x01 Wystapil blad podczas ladowania twoich uslug. Sprobuj ponownie pozniej.");
 
@@ -227,7 +216,7 @@ public shop_menu(id)
 		menu_display(id, menu);
 	} else client_print_color(id, id, "^x04[SKLEP-SMS]^x01 Nie ma zadnych dostepnych do kupienia uslug.");
 
-	return PLUGIN_CONTINUE;
+	return PLUGIN_HANDLED;
 }
 
 public shop_menu_callback(id, menu, item)
@@ -473,7 +462,7 @@ public service_password_validate(failState, Handle:query, error[], errorNum, tem
 	new id = tempData[0];
 
 	if (failState) {
-		log_to_file("sklep_sms.log", "SQL Error (Password): %s (%d)", error, errorNum);
+		log_to_file(LOG_FILE, "[ERROR] SQL Error (Password): %s (%d)", error, errorNum);
 
 		client_print_color(id, id, "^x04[SKLEP-SMS]^x01 Wystapil blad podczas sprawdzania hasla. Sprobuj ponownie pozniej.");
 
@@ -556,6 +545,10 @@ public service_code_validate(id, code[])
 		client_print_color(id, id, "^x04[SKLEP-SMS]^x01 Nie podano adresu URL sklepu. Skontaktuj sie z administratorem.");
 
 		return;
+	} else if (!strlen(server[SERVER_SERVICE])) {
+		client_print_color(id, id, "^x04[SKLEP-SMS]^x01 Nie wybrano serwisu uslug SMS. Skontaktuj sie z administratorem.");
+
+		return;
 	}
 
 	new socketError, host[64], tempUrl[64], url[32], bool:error;
@@ -571,45 +564,41 @@ public service_code_validate(id, code[])
 
 	playerBuy[id][PLAYER_SOCKET] = socket_open(host, 80, SOCKET_TCP, socketError);
 
-	switch(socketError) {
+	switch (socketError) {
 		case 1: {
 			client_print_color(id, id, "^x04[SKLEP-SMS]^x01 Wystapil blad poczas weryfikacji kodu. Sprobuj ponownie pozniej.");
 
-			log_to_file("sklep_sms.log", "Nie udalo sie utworzyc socketa.");
+			log_to_file(LOG_FILE, "[ERROR] Nie udalo sie utworzyc socketa.");
 
 			error = true;
 		} case 2: {
 			client_print_color(id, id, "^x04[SKLEP-SMS]^x01 Wystapil blad poczas weryfikacji kodu. Sprobuj ponownie pozniej.");
 
-			log_to_file("sklep_sms.log", "Nie udalo sie znalezc hosta.");
+			log_to_file(LOG_FILE, "[ERROR] Nie udalo sie znalezc hosta.");
 
 			error = true;
 		} case 3: {
 			client_print_color(id, id, "^x04[SKLEP-SMS]^x01 Wystapil blad poczas weryfikacji kodu. Sprobuj ponownie pozniej.");
 
-			log_to_file("sklep_sms.log", "Nie udalo sie utworzyc polaczenia.");
+			log_to_file(LOG_FILE, "[ERROR] Nie udalo sie utworzyc polaczenia.");
 
 			error = true;
 		}
 	}
 
-	new service[serviceData], tariff[tariffData], safeAuth[64], safePassword[32], safeCode[32];
+	new service[serviceData], tariff[tariffData], socketData[1024], safeAuth[64], safePassword[32], safeCode[32];
 
 	ArrayGetArray(shopServices, playerBuy[id][PLAYER_SERVICE], service);
 	ArrayGetArray(service[SERVICES_DATA], playerBuy[id][PLAYER_TARIFF], tariff);
 
-	copy(safeAuth, charsmax(safeAuth), playerBuy[id][PLAYER_AUTH]);
-	copy(safePassword, charsmax(safePassword), playerBuy[id][PLAYER_PASSWORD]);
-	copy(safeCode, charsmax(safeCode), code);
-
-	replace_all(safeAuth, charsmax(safeAuth), " ", "%20");
-	replace_all(safePassword, charsmax(safePassword), " ", "%20");
-	replace_all(safeCode, charsmax(safeCode), " ", "%20");
+	url_encode(playerBuy[id][PLAYER_AUTH], safeAuth, charsmax(safeAuth));
+	url_encode(playerBuy[id][PLAYER_PASSWORD], safePassword, charsmax(safePassword));
+	url_encode(code, safeCode, charsmax(safeCode));
 
 	formatex(socketData, charsmax(socketData), "GET %s/servers_stuff.php?key=%s&action=purchase_service&platform=engine_amxx&service=%s&type=%d&auth_data=%s&password=%s&method=sms&server=%d&transaction_service=%s&sms_code=%s&tariff=%d&uid=0&ip=%s&language=polish HTTP/1.1^nHost: %s^r^n^r^n",
 		url, server[SERVER_KEY], service[SERVICE_ID], playerBuy[id][PLAYER_TYPE], safeAuth, safePassword, server[SERVER_ID], server[SERVER_SERVICE], safeCode, tariff[SERVICE_TARIFF], playerBuy[id][PLAYER_IP], host);
 
-	if (error) log_to_file("sklep_sms.log", socketData);
+	if (error) log_to_file(LOG_FILE, "[ERROR] Data: %s", socketData);
 	else {
 		socket_send(playerBuy[id][PLAYER_SOCKET], socketData, charsmax(socketData));
 
@@ -627,7 +616,7 @@ public service_socket_timeout(id)
 
 	remove_task(id + TASK_SOCKET);
 
-	log_to_file("sklep_sms.log", "Zakup nie zostal sfinalizowany z powodu przekroczenia limitu czasu polaczenia.");
+	log_to_file(LOG_FILE, "Zakup nie zostal sfinalizowany z powodu przekroczenia limitu czasu polaczenia.");
 
 	new motdData[1024];
 
@@ -657,8 +646,7 @@ public service_code_verified(id)
 		new httpCode = str_to_num(httpTempCode), dataLength = strlen(socketResponse), length = 4;
 
 		if (httpCode >= 300 || httpCode < 200) {
-			log_to_file("sklep_sms.log", socketData);
-			log_to_file("sklep_sms.log", socketResponse);
+			log_to_file(LOG_FILE, "[ERROR] %s", socketResponse);
 
 			new motdData[1024];
 
@@ -721,8 +709,7 @@ public service_code_verified(id)
 			} else client_print_color(id, id, "^x04[SKLEP-SMS]^x01 Zakupiles^x04 %s^x01:^x03 %i %s^x01.", service[SERVICE_NAME], tariff[SERVICE_AMOUNT], service[SERVICE_TAG]);
 		} else if (equal(responseReturnValue, "bad_code") || equal(responseReturnValue, "bad_data") || equal(responseReturnValue, "bad_email") || equal(responseReturnValue, "bad_number")) client_print_color(id, id, "^x04[SKLEP-SMS]^x01 %s", responseText);
 		else {
-			log_to_file("sklep_sms.log", socketData);
-			log_to_file("sklep_sms.log", socketResponse);
+			log_to_file(LOG_FILE, "[ERROR] %s", socketResponse);
 
 			new motdData[1024];
 
@@ -746,7 +733,7 @@ public sql_init()
 	connection = SQL_Connect(sql, errorNum, error, charsmax(error));
 
 	if (errorNum) {
-		log_to_file("sklep_sms.log", "Error: %s (%d)", error, errorNum);
+		log_to_file(LOG_FILE, "[ERROR] SQL Error (Init): %s (%d)", error, errorNum);
 
 		set_task(5.0, "sql_init");
 
@@ -783,7 +770,7 @@ public load_players_services()
 public load_players_services_handle(failState, Handle:query, error[], errorNum, playerId[], dataSize)
 {
 	if (failState) {
-		log_to_file("sklep_sms.log", "SQL Error (Players): %s (%d)", error, errorNum);
+		log_to_file(LOG_FILE, "[ERROR] SQL Error (Players): %s (%d)", error, errorNum);
 
 		set_fail_state("Wystapil blad podczas ladowania danych SklepuSMS. Sprawdz logi bledow!");
 
@@ -825,13 +812,13 @@ public load_shop_data()
 	LEFT JOIN `ss_servers_services` AS b ON a.id = b.server_id \
 	LEFT JOIN `ss_transaction_services` AS c ON a.sms_service = c.id \
 	LEFT JOIN `ss_services` AS d ON b.service_id = d.id \
-	LEFT JOIN `ss_pricelist` AS e ON b.service_id = e.service \
+	LEFT JOIN `ss_pricelist` AS e ON (b.service_id = e.service AND (e.server = b.server_id OR e.server = '-1')) \
 	LEFT JOIN `ss_sms_numbers` AS f ON (e.tariff = f.tariff AND a.sms_service = f.service) \
 	JOIN `ss_settings` g \
 	JOIN `ss_settings` h \
 	JOIN `ss_settings` i \
 	JOIN `ss_settings` j \
-	WHERE g.key = 'shop_url' AND h.key = 'vat' AND i.key = 'random_key' AND j.key = 'currency' AND c.sms = '1' AND a.ip = '%s' AND a.port = '%s' ORDER BY d.order, e.amount", serverIP, serverPort);
+	WHERE g.key = 'shop_url' AND h.key = 'vat' AND i.key = 'random_key' AND j.key = 'currency' AND c.sms = '1' AND a.ip = '%s' AND a.port = '%s' ORDER BY d.order, e.tariff, e.server DESC", serverIP, serverPort);
 
 	SQL_ThreadQuery(sql, "load_shop_data_handle", queryData);
 }
@@ -839,7 +826,7 @@ public load_shop_data()
 public load_shop_data_handle(failState, Handle:query, error[], errorNum, playerId[], dataSize)
 {
 	if (failState) {
-		log_to_file("sklep_sms.log", "SQL Error (Shop): %s (%d)", error, errorNum);
+		log_to_file(LOG_FILE, "[ERROR] SQL Error (Shop): %s (%d)", error, errorNum);
 
 		set_fail_state("Wystapil blad podczas ladowania danych SklepuSMS. Sprawdz logi bledow!");
 
@@ -907,8 +894,9 @@ public load_shop_data_handle(failState, Handle:query, error[], errorNum, playerI
 		tariff[SERVICE_TARIFF] = SQL_ReadResult(query, SQL_FieldNameToNum(query, "tariff"));
 		tariff[SERVICE_AMOUNT] = SQL_ReadResult(query, SQL_FieldNameToNum(query, "amount"));
 
-		if (strlen(tariff[SERVICE_NUMBER])) ArrayPushArray(service[SERVICES_DATA], tariff);
-		else log_to_file("sklep_sms.log", "Blad! Nieprawidlowy cennik uslugi %s (%i %s).", service[SERVICE_NAME], tariff[SERVICE_AMOUNT], service[SERVICE_TAG]);
+		if (strlen(tariff[SERVICE_NUMBER])) {
+			if (!tariff_defined(service[SERVICES_DATA], tariff[SERVICE_TARIFF])) ArrayPushArray(service[SERVICES_DATA], tariff);
+		} else log_to_file(LOG_FILE, "[ERROR] Nieprawidlowy cennik uslugi %s (%i %s).", service[SERVICE_NAME], tariff[SERVICE_AMOUNT], service[SERVICE_TAG]);
 
 		SQL_NextRow(query);
 
@@ -988,7 +976,7 @@ public check_service_unlimited(id, service[], flags[])
 	} else {
 		errorNum = SQL_QueryError(query, error, charsmax(error));
 
-		log_to_file("sklep_sms.log", "SQL Query Error: [%d] %s", errorNum, error);
+		log_to_file(LOG_FILE, "[ERROR] SQL Query Error: [%d] %s", errorNum, error);
 	}
 
 	SQL_FreeHandle(query);
@@ -1062,6 +1050,19 @@ stock get_value(const input[], const tag[] = "", output[], length, type = 0)
 	copy(output, length, value);
 }
 
+stock bool:tariff_defined(Array:service, tariff)
+{
+	new serviceTariff[tariffData];
+
+	for (new i = 0; i < ArraySize(service); i++) {
+		ArrayGetArray(service, i, serviceTariff);
+
+		if (serviceTariff[SERVICE_TARIFF] == tariff) return true;
+	}
+
+	return false;
+}
+
 stock bool:is_user_steam(id)
 {
 	server_cmd("dp_clientinfo %d", id);
@@ -1102,4 +1103,43 @@ stock mysql_escape_string(const source[], dest[], length)
 	replace_all(dest, length, "'", "\'");
 	replace_all(dest, length, "`", "\`");
 	replace_all(dest, length, "^"", "\^"");
+}
+
+stock url_encode(const source[], dest[], length)
+{
+	static const hexChars[16] = {
+        0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
+        0x38, 0x39, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66
+	};
+
+	new urlPos, urlChar, urlLength;
+
+	while ((urlChar = source[urlPos]) && urlLength < length) {
+        if (urlChar == 0x20) {
+            dest[urlLength++] = 0x2B;
+        } else if (
+        	!(0x41 <= urlChar <= 0x5A)
+        	&& !(0x61 <= urlChar <= 0x7A)
+        	&& !(0x30 <= urlChar <= 0x39)
+        	&& urlChar != 0x2D
+        	&& urlChar != 0x2E
+        	&& urlChar != 0x5F
+        ) {
+            if((urlLength + 3) > length) {
+                break;
+            } else if(urlChar > 0xFF || urlChar < 0x00) {
+                urlChar = 0x2A;
+            }
+
+            dest[urlLength++] = 0x25;
+            dest[urlLength++] = hexChars[urlChar >> 4];
+            dest[urlLength++] = hexChars[urlChar & 15];
+        } else {
+            dest[urlLength++] = urlChar;
+        }
+
+        urlPos++;
+	}
+
+	dest[urlLength] = 0;
 }
