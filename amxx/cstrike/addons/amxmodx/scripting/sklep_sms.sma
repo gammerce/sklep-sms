@@ -2,7 +2,7 @@
 #include <sqlx>
 #include <sockets>
 #include <unixtime>
-#include <shop_sms>
+#include <sklep_sms>
 
 #define PLUGIN "Sklep SMS"
 #define AUTHOR "O'Zone"

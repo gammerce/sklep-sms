@@ -1,5 +1,5 @@
 #include <amxmodx>
-#include <shop_sms>
+#include <sklep_sms>
 
 #define PLUGIN "SklepSMS: Usluga ZP Exp"
 #define AUTHOR "O'Zone"
