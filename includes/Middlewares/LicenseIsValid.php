@@ -67,7 +67,7 @@ class LicenseIsValid implements MiddlewareContract
 
         // Let's pass some additional info to sentry logger
         // so that it would be easier for us to debug any potential exceptions
-        if (getenv('LICENSE') && $this->app->bound(Raven_Client::class)) {
+        if (getenv('LICENSE') !== "false" && $this->app->bound(Raven_Client::class)) {
             $this->app->make(Raven_Client::class)->tags_context([
                 'license_id' => $license->getExternalId(),
             ]);

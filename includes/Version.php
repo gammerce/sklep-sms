@@ -15,7 +15,7 @@ class Version
 
     public function getNewestWeb()
     {
-        if (getenv('LICENSE')) {
+        if (getenv('LICENSE') == "false") {
             return null;
         }
 
@@ -27,7 +27,7 @@ class Version
 
     public function getNewestAmxmodx()
     {
-        if (getenv('LICENSE')) {
+        if (getenv('LICENSE') == "false") {
             return null;
         }
 
@@ -39,7 +39,7 @@ class Version
 
     public function getNewestSourcemod()
     {
-        if (getenv('LICENSE')) {
+        if (getenv('LICENSE') === "false") {
             return null;
         }
 

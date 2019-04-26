@@ -27,7 +27,8 @@ class EnvCreator
             "DB_PORT=$port" . PHP_EOL .
             "DB_DATABASE=$db" . PHP_EOL .
             "DB_USERNAME=$user" . PHP_EOL .
-            "DB_PASSWORD=$password" . PHP_EOL;
+            "DB_PASSWORD=$password" . PHP_EOL .
+            "LICENSE=false" . PHP_EOL;
     }
 
     protected function path()

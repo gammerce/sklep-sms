@@ -51,7 +51,7 @@ class License
      */
     public function validate()
     {
-        if (getenv('LICENSE')) {
+        if (getenv('LICENSE') !== "false") {
             $response = $this->loadLicense();
 
             $this->externalLicenseId = array_get($response, 'id');
@@ -62,7 +62,7 @@ class License
 
     public function isValid()
     {
-        if (!getenv('LICENSE')) {
+        if (getenv('LICENSE') === "false") {
             return true;
         }
 
