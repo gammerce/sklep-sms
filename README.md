@@ -3,18 +3,24 @@
 Sklep SMS ułatwia zarabianie realnych pieniędzy na własnych serwerach gier!
 
 ## Instalacja
-Pobierz [build.zip](https://github.com/TheDoctor0/sklep-sms/releases/latest).
+Pobierz najnowszy [build.zip](https://github.com/TheDoctor0/sklep-sms/releases/latest).
 
-Postępuj zgodnie z instrukcją dostępną tutaj: https://sklep-sms.pl/index.php?page=config.
+Postępuj zgodnie z instrukcją dostępną [tutaj](https://sklep-sms.pl/index.php?page=config) pomijając instalację na serwerze.
 
-Po zakończeniu instalacji pobierz [amxx.zip](https://github.com/TheDoctor0/sklep-sms/releases/latest) i wgraj na swój serwer.
+Następnie pobierz [amxx-182.zip](https://github.com/TheDoctor0/sklep-sms/releases/latest) (dla AMXX 1.8.1-1.8.2) lub [amxx-183.zip](https://github.com/TheDoctor0/sklep-sms/releases/latest) (dla AMXX 1.8.3+) i wgraj na swój serwer.
 
 ## Kompatybilność
-Na ten moment plugin działający jako silnik sklepu na serwerze napisany został jedynie pod AmxModX - wymaga AMXX w wersji 1.8.3 lub wyższej.
+Na ten moment sklep posiada jedynie plugin AMXX, więc nie jest dostępny na serwery CS:GO (SourceMod).
 
-Plugin ten jest w pełni kompatybilny z API i bazą sklepu, a dodatkowo posiada kilka autorskich usprawnień jak chociażby możliwość sprawdzenia aktywnych usług wraz z datą ich wygaśnięcia.
+Sklep był testowany na wersjach:
+- AMX Mod X 1.8.1.3746
+- AMX Mod X 1.8.2.61
+- AMX Mod X 1.9.0.5241
+
+Własna implementacja pluginu stanowiącego silnik sklepu jest w pełni kompatybilna z oryginalnym API i bazą sklepu.
+Dodatkowo posiada kilka autorskich usprawnień jak chociażby możliwość sprawdzenia aktywnych usług wraz z datą ich wygaśnięcia z poziomu serwera.
 
 ## Licencja
-Ten fork domyślnie posiada wyłączony system licencyjny, więc ze sklepu można korzystać całkowicie za darmo.
+System licencyjny jest domyślnie wyłączony, więc ze sklepu można korzystać całkowicie za darmo.
 
 Jeśli chcesz wesprzeć autora, rozważ zakup licencji pod adresem: https://sklep.sklep-sms.pl/
