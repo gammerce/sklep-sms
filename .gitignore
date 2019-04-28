@@ -1,4 +1,5 @@
 .idea
+.phpintel
 /install/error
 /install/block
 /install/progress

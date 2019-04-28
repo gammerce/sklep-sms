@@ -11,6 +11,7 @@
 #define TASK_TIMEOUT 5432
 
 #define DELIMITER 13
+#define NONE -1
 
 #define MENU_SERVICES "SERVICE"
 
@@ -31,6 +32,10 @@ enum _:dataType { TYPE_XML, TYPE_JSON };
 new cvarHost[32], cvarUser[32], cvarPassword[32], cvarDatabase[32], cvarProvider, serverIP[32], serverPort[16], forwardAdminConnect,
 	server[serverData], Handle:sql, Handle:connection, Array:registeredServices, Array:shopServices, Array:playerServices, playerBuy[MAX_PLAYERS + 1][playerData];
 
+#if AMXX_VERSION_NUM < 183
+new pcvarHost, pcvarUser, pcvarPassword, pcvarDatabase;
+#endif
+
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
@@ -41,10 +46,17 @@ public plugin_init()
 	shopServices = ArrayCreate(serviceData);
 	playerServices = ArrayCreate(flagsData);
 
+	#if AMXX_VERSION_NUM < 183
+	pcvarHost = register_cvar("sklepsms_sql_host", "localhost", FCVAR_SPONLY|FCVAR_PROTECTED);
+	pcvarUser = register_cvar("sklepsms_sql_user", "user", FCVAR_SPONLY|FCVAR_PROTECTED);
+	pcvarPassword = register_cvar("sklepsms_sql_pass", "password", FCVAR_SPONLY|FCVAR_PROTECTED);
+	pcvarDatabase = register_cvar("sklepsms_sql_db", "database", FCVAR_SPONLY|FCVAR_PROTECTED);
+	#else
 	bind_pcvar_string(create_cvar("sklepsms_sql_host", "localhost", FCVAR_SPONLY|FCVAR_PROTECTED), cvarHost, charsmax(cvarHost));
 	bind_pcvar_string(create_cvar("sklepsms_sql_user", "user", FCVAR_SPONLY|FCVAR_PROTECTED), cvarUser, charsmax(cvarUser));
 	bind_pcvar_string(create_cvar("sklepsms_sql_pass", "password", FCVAR_SPONLY|FCVAR_PROTECTED), cvarPassword, charsmax(cvarPassword));
 	bind_pcvar_string(create_cvar("sklepsms_sql_db", "database", FCVAR_SPONLY|FCVAR_PROTECTED), cvarDatabase, charsmax(cvarDatabase));
+	#endif
 
 	cvarProvider = get_cvar_pointer("dp_r_id_provider");
 
@@ -101,7 +113,11 @@ public plugin_natives()
 public client_authorized(id)
 	load_flags(id);
 
+#if AMXX_VERSION_NUM < 183
+public client_disconnect(id)
+#else
 public client_disconnected(id)
+#endif
 {
 	playerBuy[id][PLAYER_AUTH] = "";
 	playerBuy[id][PLAYER_FLAGS] = "";
@@ -154,7 +170,7 @@ public show_services_menu(failState, Handle:query, error[], errorNum, playerId[]
 
 		expire = SQL_ReadResult(query, SQL_FieldNameToNum(query, "expire"));
 
-		if (expire != -1) {
+		if (expire != NONE) {
 			UnixToTime(expire, year, month, day, hour, minute, second, UT_TIMEZONE_SERVER);
 
 			format(menuData, charsmax(menuData), "%s \y(Wygasa: %i/%i/%i %i:%i)", menuData, day, month, year, hour, minute);
@@ -410,7 +426,7 @@ public service_buy(id)
 	formatex(menuData, charsmax(menuData), "\rSKLEP SMS^n^nWybrales/as opcje zakupu %s^n\wIlosc: \y%i %s^n^n\rW celu dokonania zakupu, wyslij SMSa^n\wO tresci: \y%s^n\wNa numer: \y%s^n\wKoszt: \y%.2f %s + VAT \d( %.2f %s )^n^n\wPo wyslaniu SMSa poczekaj na kod zwrotny.^nW celu wprowadzenia go wcisnij: \y1^n^n\wAby wyjsc, wcisnij: \y0",
 		service[SERVICE_NAME], tariff[SERVICE_AMOUNT], service[SERVICE_TAG], server[SERVER_CODE], tariff[SERVICE_NUMBER], servicePrice, server[SERVER_CURRENCY], servicePrice * server[SERVER_VAT], server[SERVER_CURRENCY]);
 
-	show_menu(id, (MENU_KEY_1 | MENU_KEY_0), menuData, -1, "SMS_Info");
+	show_menu(id, (MENU_KEY_1 | MENU_KEY_0), menuData, NONE, "SMS_Info");
 
 	set_task(1.0, "service_buy", id, .flags = "b");
 
@@ -642,7 +658,12 @@ public service_code_verified(id)
 {
 	id -= TASK_SOCKET;
 
-	if (socket_is_readable(playerBuy[id][PLAYER_SOCKET])) {
+	#if AMXX_VERSION_NUM < 183
+	if (socket_change(playerBuy[id][PLAYER_SOCKET]))
+	#else
+	if (socket_is_readable(playerBuy[id][PLAYER_SOCKET]))
+	#endif
+	{
 		remove_task(id + TASK_SOCKET);
 		remove_task(id + TASK_TIMEOUT);
 
@@ -739,6 +760,13 @@ public sql_init()
 {
 	new error[64], errorNum;
 
+	#if AMXX_VERSION_NUM < 183
+	get_pcvar_string(pcvarHost, cvarHost, charsmax(cvarHost));
+	get_pcvar_string(pcvarUser, cvarUser, charsmax(cvarUser));
+	get_pcvar_string(pcvarPassword, cvarPassword, charsmax(cvarPassword));
+	get_pcvar_string(pcvarDatabase, cvarDatabase, charsmax(cvarDatabase));
+	#endif
+
 	sql = SQL_MakeDbTuple(cvarHost, cvarUser, cvarPassword, cvarDatabase);
 
 	connection = SQL_Connect(sql, errorNum, error, charsmax(error));
@@ -803,15 +831,23 @@ public load_shop_data_handle(failState, Handle:query, error[], errorNum, playerI
 		} else if (equal(key, "random_key")) {
 			SQL_ReadResult(query, SQL_FieldNameToNum(query, "value"), server[SERVER_KEY], charsmax(server[SERVER_KEY]));
 
+			#if AMXX_VERSION_NUM < 183
+			new serverKey[34];
+			md5(server[SERVER_KEY], serverKey);
+			copy(server[SERVER_KEY], charsmax(server[SERVER_KEY]), serverKey)
+			#else
 			hash_string(server[SERVER_KEY], Hash_Md5, server[SERVER_KEY], charsmax(server[SERVER_KEY]));
+			#endif
 		} else if (equal(key, "sms_service")) {
 			new defaultService[16], codeData[128];
 
 			SQL_ReadResult(query, SQL_FieldNameToNum(query, "sms_service"), server[SERVER_SERVICE], charsmax(server[SERVER_SERVICE]));
-			SQL_ReadResult(query, SQL_FieldNameToNum(query, "default"), defaultService, defaultService);
+			SQL_ReadResult(query, SQL_FieldNameToNum(query, "default"), defaultService, charsmax(defaultService));
 
 			if (!server[SERVER_SERVICE][0]) {
 				formatex(server[SERVER_SERVICE], charsmax(server[SERVER_SERVICE]), defaultService);
+
+				if (!server[SERVER_SERVICE][0]) set_fail_state("Serwer nie posiada zdefiniowanej uslugi platnosci SMS!");
 			} else if (!equal(server[SERVER_SERVICE], defaultService)) {
 				SQL_NextRow(query);
 
@@ -839,16 +875,17 @@ public load_shop_data_handle(failState, Handle:query, error[], errorNum, playerI
 
 public load_shop_services()
 {
-	new queryData[512];
+	new queryData[1024];
 
 	ArrayClear(shopServices);
 
 	formatex(queryData, charsmax(queryData), "SELECT a.service_id, b.name as service, b.types, c.tariff, d.number, b.flags, c.amount, b.tag \
 		FROM `ss_servers_services` a \
 		LEFT JOIN `ss_services` AS b ON a.service_id = b.id \
-		LEFT JOIN `ss_pricelist` AS c ON (a.service_id = c.service AND (c.server = a.server_id OR c.server = '-1')) \
+		LEFT JOIN `ss_pricelist` AS c ON (a.service_id = c.service AND (c.server = a.server_id OR c.server = '%i')) \
 		LEFT JOIN `ss_sms_numbers` AS d ON (c.tariff = d.tariff AND d.service = '%s') \
-		WHERE a.server_id = '%i' ORDER BY b.order, a.service_id, c.server DESC, c.tariff DESC", server[SERVER_SERVICE], server[SERVER_ID]);
+		WHERE a.server_id = '%i' ORDER BY b.order, a.service_id, c.server DESC, c.tariff DESC",
+		NONE, server[SERVER_SERVICE], server[SERVER_ID]);
 
 	SQL_ThreadQuery(sql, "load_shop_services_handle", queryData);
 }
@@ -889,7 +926,7 @@ public load_shop_services_handle(failState, Handle:query, error[], errorNum, pla
 
 				if (service[SERVICE_DATA]) ExecuteForward(service[SERVICE_DATA], ret, service[SERVICE_NAME], service[SERVICE_FLAGS]);
 
-				service[SERVICES_DATA] = ArrayCreate(tariffData);
+				service[SERVICES_DATA] = _:ArrayCreate(tariffData);
 			}
 
 			SQL_ReadResult(query, SQL_FieldNameToNum(query, "number"), tariff[SERVICE_NUMBER], charsmax(tariff[SERVICE_NUMBER]));
@@ -934,8 +971,10 @@ public load_players_services_handle(failState, Handle:query, error[], errorNum, 
 		return;
 	}
 
+	new const allFlags[][] = { "a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","y","v","w","x","z" };
+
 	while (SQL_MoreResults(query)) {
-		new flags[flagsData], flagTimestamp, allFlags[][] = { "a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","y","v","w","x","z" };
+		new flags[flagsData], flagTimestamp;
 
 		SQL_ReadResult(query, SQL_FieldNameToNum(query, "auth_data"), flags[FLAGS_AUTH], charsmax(flags[FLAGS_AUTH]));
 		SQL_ReadResult(query, SQL_FieldNameToNum(query, "password"), flags[FLAGS_PASSWORD], charsmax(flags[FLAGS_PASSWORD]));
@@ -945,7 +984,7 @@ public load_players_services_handle(failState, Handle:query, error[], errorNum, 
 		for (new i = 0; i < sizeof(allFlags); i++) {
 			flagTimestamp = SQL_ReadResult(query, SQL_FieldNameToNum(query, allFlags[i]));
 
-			if (flagTimestamp != 0) add(flags[FLAGS_FLAGS], charsmax(flags[FLAGS_FLAGS]), allFlags[i], charsmax(allFlags[]));
+			if (flagTimestamp != 0) add(flags[FLAGS_FLAGS], charsmax(flags[FLAGS_FLAGS]), allFlags[i], 1);
 		}
 
 		ArrayPushArray(playerServices, flags);
@@ -1024,7 +1063,7 @@ public check_service_unlimited(id, service[], flags[])
 	query = SQL_PrepareQuery(connection, queryData);
 
 	if (SQL_Execute(query)) {
-		if ((!SQL_NumResults(query) && get_user_flags(id) & read_flags(flags)) || (SQL_NumResults(query) && SQL_ReadResult(query, 0) == -1)) unlimited = true;
+		if ((!SQL_NumResults(query) && get_user_flags(id) & read_flags(flags)) || (SQL_NumResults(query) && SQL_ReadResult(query, 0) == NONE)) unlimited = true;
 	} else {
 		errorNum = SQL_QueryError(query, error, charsmax(error));
 
