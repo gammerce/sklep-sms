@@ -1,12 +1,16 @@
 {
-  "name": "gammerce/sklep-sms",
-  "description": "Shop SMS makes it easier to earn money on your game servers.",
+  "name": "TheDoctor0/sklep-sms",
+  "description": "Free Shop SMS for your CS 1.6 servers.",
   "type": "project",
   "license": "GPL-3.0",
   "authors": [
     {
       "name": "Michał Budziak",
       "email": "michal.mariusz.b@gmail.com"
+    },
+    {
+      "name": "Dawid Janik",
+      "email": "dawid.janik95@gmail.com"
     }
   ],
   "require": {
