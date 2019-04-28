@@ -12,6 +12,8 @@
 
 #define DELIMITER 13
 
+#define MENU_SERVICES "SERVICE"
+
 #define LOG_FILE "sklep_sms.log"
 
 new const commandShop[][] = { "sklepsms", "say /sklepsms", "say_team /sklepsms", "say /shopsms", "say_team /shopsms", "say /sms", "say_team /sms" };
@@ -24,6 +26,7 @@ enum _:serviceData { SERVICE_ID[32], SERVICE_NAME[32], SERVICE_TYPES, Array:SERV
 	SERVICE_TAG[16], SERVICE_PLUGIN, SERVICE_DATA, SERVICE_ADDTOLISTING, SERVICE_CHOSEN, SERVICE_BOUGHT };
 enum _:tariffData { SERVICE_NUMBER[16], SERVICE_TARIFF, SERVICE_AMOUNT };
 enum _:serverData { SERVER_ID, SERVER_SERVICE[32], SERVER_CODE[32], SERVER_CURRENCY[32], SERVER_KEY[34], SERVER_URL[64], Float:SERVER_VAT };
+enum _:dataType { TYPE_XML, TYPE_JSON };
 
 new cvarHost[32], cvarUser[32], cvarPassword[32], cvarDatabase[32], cvarProvider, serverIP[32], serverPort[16], forwardAdminConnect,
 	server[serverData], Handle:sql, Handle:connection, Array:registeredServices, Array:shopServices, Array:playerServices, playerBuy[MAX_PLAYERS + 1][playerData];
@@ -121,7 +124,9 @@ public show_services(id)
 
 	mysql_escape_string(playerBuy[id][PLAYER_NAME], safeName, charsmax(safeName));
 
-	formatex(queryData, charsmax(queryData), "SELECT a.type, b.expire, c.name FROM `ss_user_service_extra_flags` a JOIN `ss_user_service` b ON a.us_id = b.id JOIN `ss_services` c ON a.service = c.id WHERE a.server = '%i' AND (a.auth_data = '%s' OR a.auth_data = '%s' OR a.auth_data = '%s')",
+	formatex(queryData, charsmax(queryData), "SELECT a.type, b.expire, c.name FROM `ss_user_service_extra_flags` a \
+		JOIN `ss_user_service` b ON a.us_id = b.id JOIN `ss_services` c ON a.service = c.id \
+		WHERE a.server = '%i' AND (a.auth_data = '%s' OR a.auth_data = '%s' OR a.auth_data = '%s')",
 		server[SERVER_ID], safeName, playerBuy[id][PLAYER_IP], playerBuy[id][PLAYER_SID]);
 
 	SQL_ThreadQuery(sql, "show_services_menu", queryData, playerId, sizeof(playerId));
@@ -141,7 +146,8 @@ public show_services_menu(failState, Handle:query, error[], errorNum, playerId[]
 		return;
 	}
 
-	new menuData[128], menu = menu_create("\rSKLEP SMS^n\yTwoje aktywne uslugi:\w", "show_services_menu_handle"), count = 0, type, expire, year, month, day, hour, minute, second;
+	new menuData[128], menu = menu_create("\rSKLEP SMS^n\yTwoje aktywne uslugi:\w", "show_services_menu_handle"),
+		count = 0, type, expire, year, month, day, hour, minute, second;
 
 	while (SQL_MoreResults(query)) {
 		SQL_ReadResult(query, SQL_FieldNameToNum(query, "name"), menuData, charsmax(menuData));
@@ -207,7 +213,7 @@ public shop_menu(id)
 
 		menu_addblank(menu, 0);
 
-		menu_additem(menu, "Aktywne \yUslugi");
+		menu_additem(menu, "Aktywne \yUslugi \r(/uslugi)", MENU_SERVICES);
 
 		menu_setprop(menu, MPROP_EXITNAME, "Wyjdz");
 		menu_setprop(menu, MPROP_BACKNAME, "Wroc");
@@ -244,9 +250,13 @@ public shop_menu_handle(id, menu, item)
 		return PLUGIN_HANDLED;
 	}
 
+	new itemData[8], itemAccess, menuCallback;
+
+	menu_item_getinfo(menu, item, itemAccess, itemData, charsmax(itemData), _, _, menuCallback);
+
 	menu_destroy(menu);
 
-	if (item == ArraySize(shopServices)) {
+	if (equal(itemData, MENU_SERVICES)) {
 		show_services(id);
 
 		return PLUGIN_HANDLED;
@@ -276,7 +286,8 @@ public shop_menu_handle(id, menu, item)
 
 			servicePrice = float(tariff[SERVICE_TARIFF]);
 
-			formatex(menuData, charsmax(menuData), "\y%i %s\w za %.2f %s + VAT \d( %.2f %s )", tariff[SERVICE_AMOUNT], service[SERVICE_TAG], servicePrice, server[SERVER_CURRENCY], servicePrice * server[SERVER_VAT], server[SERVER_CURRENCY]);
+			formatex(menuData, charsmax(menuData), "\y%i %s\w za %.2f %s + VAT \d( %.2f %s )",
+				tariff[SERVICE_AMOUNT], service[SERVICE_TAG], servicePrice, server[SERVER_CURRENCY], servicePrice * server[SERVER_VAT], server[SERVER_CURRENCY]);
 
 			menu_additem(menu, menuData);
 		}
@@ -750,9 +761,155 @@ public sql_init()
 
 	SQL_FreeHandle(query);
 
-	load_players_services();
-
 	load_shop_data();
+}
+
+public load_shop_data()
+{
+	new queryData[512];
+
+	formatex(queryData, charsmax(queryData), "SELECT a.id, a.sms_service, b.*, c.data, c.id AS 'default' \
+		FROM `ss_servers` AS a \
+		LEFT JOIN `ss_settings` AS b ON 1=1 \
+		LEFT JOIN `ss_transaction_services` AS c ON (b.value = c.id OR a.sms_service = c.id) \
+		WHERE b.key IN ('shop_url', 'random_key', 'sms_service', 'vat', 'currency') AND a.ip = '%s' AND a.port = '%s';", serverIP, serverPort);
+
+	SQL_ThreadQuery(sql, "load_shop_data_handle", queryData);
+}
+
+public load_shop_data_handle(failState, Handle:query, error[], errorNum, playerId[], dataSize)
+{
+	if (failState) {
+		log_to_file(LOG_FILE, "[ERROR] SQL Error (Shop): %s (%d)", error, errorNum);
+
+		set_fail_state("Wystapil blad podczas ladowania danych SklepuSMS. Sprawdz logi bledow!");
+
+		return;
+	}
+
+	new key[16];
+
+	while (SQL_MoreResults(query)) {
+		if (!server[SERVER_ID]) {
+			server[SERVER_ID] = SQL_ReadResult(query, SQL_FieldNameToNum(query, "id"));
+		}
+
+		SQL_ReadResult(query, SQL_FieldNameToNum(query, "key"), key, charsmax(key));
+
+		if (equal(key, "shop_url")) {
+			SQL_ReadResult(query, SQL_FieldNameToNum(query, "value"), server[SERVER_URL], charsmax(server[SERVER_URL]));
+
+			if (!server[SERVER_URL][0]) set_fail_state("Sklep nie posiada zdefiniowanego adresu URL!");
+		} else if (equal(key, "random_key")) {
+			SQL_ReadResult(query, SQL_FieldNameToNum(query, "value"), server[SERVER_KEY], charsmax(server[SERVER_KEY]));
+
+			hash_string(server[SERVER_KEY], Hash_Md5, server[SERVER_KEY], charsmax(server[SERVER_KEY]));
+		} else if (equal(key, "sms_service")) {
+			new defaultService[16], codeData[128];
+
+			SQL_ReadResult(query, SQL_FieldNameToNum(query, "sms_service"), server[SERVER_SERVICE], charsmax(server[SERVER_SERVICE]));
+			SQL_ReadResult(query, SQL_FieldNameToNum(query, "default"), defaultService, defaultService);
+
+			if (!server[SERVER_SERVICE][0]) {
+				formatex(server[SERVER_SERVICE], charsmax(server[SERVER_SERVICE]), defaultService);
+			} else if (!equal(server[SERVER_SERVICE], defaultService)) {
+				SQL_NextRow(query);
+
+				continue;
+			}
+
+			SQL_ReadResult(query, SQL_FieldNameToNum(query, "data"), codeData, charsmax(codeData));
+
+			get_value(codeData, _, server[SERVER_CODE], charsmax(server[SERVER_CODE]), TYPE_JSON);
+
+			if (!server[SERVER_CODE][0]) set_fail_state("Metoda platnosci serwera nie posiada podanej tresci SMS!");
+		} else if (equal(key, "vat")) {
+			SQL_ReadResult(query, SQL_FieldNameToNum(query, "value"), server[SERVER_VAT]);
+		} else if (equal(key, "currency")) {
+			SQL_ReadResult(query, SQL_FieldNameToNum(query, "value"), server[SERVER_CURRENCY], charsmax(server[SERVER_CURRENCY]));
+		}
+
+		SQL_NextRow(query);
+	}
+
+	if (!server[SERVER_ID]) set_fail_state("Ten serwer nie znajduje sie w bazie danych SklepuSMS.");
+
+	load_shop_services();
+}
+
+public load_shop_services()
+{
+	new queryData[512];
+
+	ArrayClear(shopServices);
+
+	formatex(queryData, charsmax(queryData), "SELECT a.service_id, b.name as service, b.types, c.tariff, d.number, b.flags, c.amount, b.tag \
+		FROM `ss_servers_services` a \
+		LEFT JOIN `ss_services` AS b ON a.service_id = b.id \
+		LEFT JOIN `ss_pricelist` AS c ON (a.service_id = c.service AND (c.server = a.server_id OR c.server = '-1')) \
+		LEFT JOIN `ss_sms_numbers` AS d ON (c.tariff = d.tariff AND d.service = '%s') \
+		WHERE a.server_id = '%i' ORDER BY b.order, a.service_id, c.server DESC, c.tariff DESC", server[SERVER_SERVICE], server[SERVER_ID]);
+
+	SQL_ThreadQuery(sql, "load_shop_services_handle", queryData);
+}
+
+public load_shop_services_handle(failState, Handle:query, error[], errorNum, playerId[], dataSize)
+{
+	if (failState) {
+		log_to_file(LOG_FILE, "[ERROR] SQL Error (Services): %s (%d)", error, errorNum);
+
+		set_fail_state("Wystapil blad podczas ladowania danych SklepuSMS. Sprawdz logi bledow!");
+
+		return;
+	}
+
+	new service[serviceData], tariff[tariffData], serviceId[32], ret;
+
+	while (SQL_MoreResults(query)) {
+		SQL_ReadResult(query, SQL_FieldNameToNum(query, "service_id"), serviceId, charsmax(serviceId));
+
+		service[SERVICE_PLUGIN] = get_service_plugin(serviceId);
+
+		if (service[SERVICE_PLUGIN]) {
+			if (!equal(serviceId, service[SERVICE_ID])) {
+				if (service[SERVICE_ID][0]) ArrayPushArray(shopServices, service);
+
+				copy(service[SERVICE_ID], charsmax(service[SERVICE_ID]), serviceId);
+
+				SQL_ReadResult(query, SQL_FieldNameToNum(query, "service"), service[SERVICE_NAME], charsmax(service[SERVICE_NAME]));
+				SQL_ReadResult(query, SQL_FieldNameToNum(query, "flags"), service[SERVICE_FLAGS], charsmax(service[SERVICE_FLAGS]));
+				SQL_ReadResult(query, SQL_FieldNameToNum(query, "tag"), service[SERVICE_TAG], charsmax(service[SERVICE_TAG]));
+
+				service[SERVICE_TYPES] = SQL_ReadResult(query, SQL_FieldNameToNum(query, "types"));
+
+				service[SERVICE_DATA] = CreateOneForward(service[SERVICE_PLUGIN], "ss_service_data", FP_STRING, FP_STRING);
+				service[SERVICE_ADDTOLISTING] = CreateOneForward(service[SERVICE_PLUGIN], "ss_service_addingtolist", FP_CELL, FP_STRING);
+				service[SERVICE_CHOSEN] = CreateOneForward(service[SERVICE_PLUGIN], "ss_service_chosen", FP_CELL, FP_CELL);
+				service[SERVICE_BOUGHT] = CreateOneForward(service[SERVICE_PLUGIN], "ss_service_bought", FP_CELL, FP_CELL);
+
+				if (service[SERVICE_DATA]) ExecuteForward(service[SERVICE_DATA], ret, service[SERVICE_NAME], service[SERVICE_FLAGS]);
+
+				service[SERVICES_DATA] = ArrayCreate(tariffData);
+			}
+
+			SQL_ReadResult(query, SQL_FieldNameToNum(query, "number"), tariff[SERVICE_NUMBER], charsmax(tariff[SERVICE_NUMBER]));
+
+			tariff[SERVICE_TARIFF] = SQL_ReadResult(query, SQL_FieldNameToNum(query, "tariff"));
+			tariff[SERVICE_AMOUNT] = SQL_ReadResult(query, SQL_FieldNameToNum(query, "amount"));
+
+			if (strlen(tariff[SERVICE_NUMBER])) {
+				if (!tariff_defined(service[SERVICES_DATA], tariff[SERVICE_TARIFF])) ArrayPushArray(service[SERVICES_DATA], tariff);
+			} else log_to_file(LOG_FILE, "[ERROR] Nieprawidlowy cennik uslugi %s (%i %s).", service[SERVICE_NAME], tariff[SERVICE_AMOUNT], service[SERVICE_TAG]);
+		}
+
+		SQL_NextRow(query);
+
+		if (!SQL_MoreResults(query)) ArrayPushArray(shopServices, service);
+	}
+
+	log_amx("Zaladowano %i uslug do kupienia.", ArraySize(shopServices));
+
+	load_players_services();
 }
 
 public load_players_services()
@@ -799,113 +956,6 @@ public load_players_services_handle(failState, Handle:query, error[], errorNum, 
 	log_amx("Zaladowano %i uslug graczy.", ArraySize(playerServices));
 
 	reload_players_flags();
-}
-
-public load_shop_data()
-{
-	new queryData[1024];
-
-	ArrayClear(shopServices);
-
-	formatex(queryData, charsmax(queryData), "SELECT a.id, a.sms_service, c.data as sms_code, c.sms, b.service_id, d.name as service, d.types, e.tariff, f.number, d.flags, e.amount, d.tag, g.value as url, h.value as vat, i.value as random_key, j.value as currency \
-	FROM `ss_servers` AS a \
-	LEFT JOIN `ss_servers_services` AS b ON a.id = b.server_id \
-	LEFT JOIN `ss_transaction_services` AS c ON a.sms_service = c.id \
-	LEFT JOIN `ss_services` AS d ON b.service_id = d.id \
-	LEFT JOIN `ss_pricelist` AS e ON (b.service_id = e.service AND (e.server = b.server_id OR e.server = '-1')) \
-	LEFT JOIN `ss_sms_numbers` AS f ON (e.tariff = f.tariff AND a.sms_service = f.service) \
-	JOIN `ss_settings` g \
-	JOIN `ss_settings` h \
-	JOIN `ss_settings` i \
-	JOIN `ss_settings` j \
-	WHERE g.key = 'shop_url' AND h.key = 'vat' AND i.key = 'random_key' AND j.key = 'currency' AND c.sms = '1' AND a.ip = '%s' AND a.port = '%s' ORDER BY d.order, e.tariff, e.server DESC", serverIP, serverPort);
-
-	SQL_ThreadQuery(sql, "load_shop_data_handle", queryData);
-}
-
-public load_shop_data_handle(failState, Handle:query, error[], errorNum, playerId[], dataSize)
-{
-	if (failState) {
-		log_to_file(LOG_FILE, "[ERROR] SQL Error (Shop): %s (%d)", error, errorNum);
-
-		set_fail_state("Wystapil blad podczas ladowania danych SklepuSMS. Sprawdz logi bledow!");
-
-		return;
-	}
-
-	new service[serviceData], tariff[tariffData], codeData[64], serviceId[32], ret;
-
-	while (SQL_MoreResults(query)) {
-		if (!server[SERVER_ID]) {
-			if (!SQL_ReadResult(query, SQL_FieldNameToNum(query, "sms"))) set_fail_state("Metoda platnosci wybrana dla serwera nie obsluguje SMSow!");
-
-			SQL_ReadResult(query, SQL_FieldNameToNum(query, "sms_code"), codeData, charsmax(codeData));
-
-			get_value(codeData, _, server[SERVER_CODE], charsmax(server[SERVER_CODE]), 1);
-
-			if (!server[SERVER_CODE][0]) set_fail_state("Metoda platnosci wybrana dla serwera nie posiada podanej tresci SMS!");
-
-			server[SERVER_ID] = SQL_ReadResult(query, SQL_FieldNameToNum(query, "id"));
-
-			SQL_ReadResult(query, SQL_FieldNameToNum(query, "sms_service"), server[SERVER_SERVICE], charsmax(server[SERVER_SERVICE]));
-			SQL_ReadResult(query, SQL_FieldNameToNum(query, "url"), server[SERVER_URL], charsmax(server[SERVER_URL]));
-			SQL_ReadResult(query, SQL_FieldNameToNum(query, "currency"), server[SERVER_CURRENCY], charsmax(server[SERVER_CURRENCY]));
-			SQL_ReadResult(query, SQL_FieldNameToNum(query, "random_key"), server[SERVER_KEY], charsmax(server[SERVER_KEY]));
-			SQL_ReadResult(query, SQL_FieldNameToNum(query, "vat"), server[SERVER_VAT]);
-
-			hash_string(server[SERVER_KEY], Hash_Md5, server[SERVER_KEY], charsmax(server[SERVER_KEY]));
-		}
-
-		SQL_ReadResult(query, SQL_FieldNameToNum(query, "service_id"), serviceId, charsmax(serviceId));
-
-		service[SERVICE_PLUGIN] = get_service_plugin(serviceId);
-
-		if (!service[SERVICE_PLUGIN]) {
-			SQL_NextRow(query);
-
-			if (!SQL_MoreResults(query)) ArrayPushArray(shopServices, service);
-
-			continue;
-		}
-
-		if (!equal(serviceId, service[SERVICE_ID])) {
-			if (service[SERVICE_ID][0]) ArrayPushArray(shopServices, service);
-
-			copy(service[SERVICE_ID], charsmax(service[SERVICE_ID]), serviceId);
-
-			SQL_ReadResult(query, SQL_FieldNameToNum(query, "service"), service[SERVICE_NAME], charsmax(service[SERVICE_NAME]));
-			SQL_ReadResult(query, SQL_FieldNameToNum(query, "flags"), service[SERVICE_FLAGS], charsmax(service[SERVICE_FLAGS]));
-			SQL_ReadResult(query, SQL_FieldNameToNum(query, "tag"), service[SERVICE_TAG], charsmax(service[SERVICE_TAG]));
-
-			service[SERVICE_TYPES] = SQL_ReadResult(query, SQL_FieldNameToNum(query, "types"));
-
-			service[SERVICE_DATA] = CreateOneForward(service[SERVICE_PLUGIN], "ss_service_data", FP_STRING, FP_STRING);
-			service[SERVICE_ADDTOLISTING] = CreateOneForward(service[SERVICE_PLUGIN], "ss_service_addingtolist", FP_CELL, FP_STRING);
-			service[SERVICE_CHOSEN] = CreateOneForward(service[SERVICE_PLUGIN], "ss_service_chosen", FP_CELL, FP_CELL);
-			service[SERVICE_BOUGHT] = CreateOneForward(service[SERVICE_PLUGIN], "ss_service_bought", FP_CELL, FP_CELL);
-
-			if (service[SERVICE_DATA]) ExecuteForward(service[SERVICE_DATA], ret, service[SERVICE_NAME], service[SERVICE_FLAGS]);
-
-			service[SERVICES_DATA] = ArrayCreate(tariffData);
-		}
-
-		SQL_ReadResult(query, SQL_FieldNameToNum(query, "number"), tariff[SERVICE_NUMBER], charsmax(tariff[SERVICE_NUMBER]));
-
-		tariff[SERVICE_TARIFF] = SQL_ReadResult(query, SQL_FieldNameToNum(query, "tariff"));
-		tariff[SERVICE_AMOUNT] = SQL_ReadResult(query, SQL_FieldNameToNum(query, "amount"));
-
-		if (strlen(tariff[SERVICE_NUMBER])) {
-			if (!tariff_defined(service[SERVICES_DATA], tariff[SERVICE_TARIFF])) ArrayPushArray(service[SERVICES_DATA], tariff);
-		} else log_to_file(LOG_FILE, "[ERROR] Nieprawidlowy cennik uslugi %s (%i %s).", service[SERVICE_NAME], tariff[SERVICE_AMOUNT], service[SERVICE_TAG]);
-
-		SQL_NextRow(query);
-
-		if (!SQL_MoreResults(query)) ArrayPushArray(shopServices, service);
-	}
-
-	if (!server[SERVER_ID]) set_fail_state("Ten serwer nie znajduje sie w bazie danych SklepuSMS.");
-
-	log_amx("Zaladowano %i uslug do kupienia.", ArraySize(shopServices));
 }
 
 public load_flags(id)
@@ -964,7 +1014,9 @@ public check_service_unlimited(id, service[], flags[])
 
 	strtolower(serviceName);
 
-	formatex(queryData, charsmax(queryData), "SELECT b.expire FROM `ss_user_service_extra_flags` a JOIN `ss_user_service` b ON a.us_id = b.id JOIN `ss_services` c ON a.service = c.id WHERE a.server = '%i' AND (a.auth_data = '%s' OR a.auth_data = '%s' OR a.auth_data = '%s') AND a.service = '%s'",
+	formatex(queryData, charsmax(queryData), "SELECT b.expire FROM `ss_user_service_extra_flags` a \
+		JOIN `ss_user_service` b ON a.us_id = b.id JOIN `ss_services` c ON a.service = c.id \
+		WHERE a.server = '%i' AND (a.auth_data = '%s' OR a.auth_data = '%s' OR a.auth_data = '%s') AND a.service = '%s'",
 		server[SERVER_ID], safeName, playerBuy[id][PLAYER_IP], playerBuy[id][PLAYER_SID], serviceName);
 
 	new error[128], errorNum, Handle:query;
@@ -1030,7 +1082,7 @@ stock get_service_plugin(serviceId[])
 	return 0;
 }
 
-stock get_value(const input[], const tag[] = "", output[], length, type = 0)
+stock get_value(const input[], const tag[] = "", output[], length, type = TYPE_XML)
 {
 	new tempData[128], value[64], startTag[32], endTag[32];
 
