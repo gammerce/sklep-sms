@@ -66,6 +66,10 @@ class CachingRequester
      */
     protected function fetch($requestCaller)
     {
+        if (!getenv('LICENSE')) {
+            return null;
+        }
+
         $response = call_user_func($requestCaller);
 
         if ($response === null && getenv('LICENSE') !== "false") {
