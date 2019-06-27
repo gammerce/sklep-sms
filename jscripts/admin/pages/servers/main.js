@@ -22,7 +22,7 @@ $(document).delegate(".table_structure .delete_row", "click", function () {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp_admin.php",
+        url: buildUrl("jsonhttp_admin.php"),
         data: {
             action: "delete_server",
             id: row_id.children("td[headers=id]").text()
@@ -63,7 +63,7 @@ $(document).delegate("#form_server_add", "submit", function (e) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp_admin.php",
+        url: buildUrl("jsonhttp_admin.php"),
         data: $(this).serialize() + "&action=server_add",
         complete: function () {
             loader.hide();
@@ -111,7 +111,7 @@ $(document).delegate("#form_server_edit", "submit", function (e) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp_admin.php",
+        url: buildUrl("jsonhttp_admin.php"),
         data: $(this).serialize() + "&action=server_edit",
         complete: function () {
             loader.hide();

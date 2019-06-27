@@ -17,7 +17,7 @@ $(document).delegate(".table_structure .delete_row", "click", function () {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp_admin.php",
+        url: buildUrl("jsonhttp_admin.php"),
         data: {
             action: "delete_antispam_question",
             id: row_id.children("td[headers=id]").text()
@@ -58,7 +58,7 @@ $(document).delegate("#form_antispam_question_add", "submit", function (e) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp_admin.php",
+        url: buildUrl("jsonhttp_admin.php"),
         data: $(this).serialize() + "&action=antispam_question_add",
         complete: function () {
             loader.hide();
@@ -106,7 +106,7 @@ $(document).delegate("#form_antispam_question_edit", "submit", function (e) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp_admin.php",
+        url: buildUrl("jsonhttp_admin.php"),
         data: $(this).serialize() + "&action=antispam_question_edit",
         complete: function () {
             loader.hide();

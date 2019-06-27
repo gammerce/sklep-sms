@@ -45,7 +45,7 @@ class LicenseIsValid implements MiddlewareContract
         $license = $app->make(License::class);
 
         try {
-            //$license->validate();
+            $license->validate();
         } catch (RequestException $e) {
             return $this->renderErrorPage($this->lang->translate('verification_error'));
         } catch (InvalidResponse $e) {
@@ -56,7 +56,7 @@ class LicenseIsValid implements MiddlewareContract
                 return $this->renderErrorPage($message);
             }
 
-            if (in_array(SCRIPT_NAME, ["jsonhttp", "servers_stuff", "extra_stuff"])) {
+            if (in_array(SCRIPT_NAME, ["servers_stuff", "extra_stuff"])) {
                 return new Response();
             }
 

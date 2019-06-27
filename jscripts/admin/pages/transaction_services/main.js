@@ -10,7 +10,7 @@ $(document).delegate("#form_transaction_service_edit", "submit", function (e) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp_admin.php",
+        url: buildUrl("jsonhttp_admin.php"),
         data: $(this).serialize() + "&action=transaction_service_edit",
         complete: function () {
             loader.hide();

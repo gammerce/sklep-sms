@@ -3,7 +3,7 @@ $(document).delegate("#form_settings_edit", "submit", function (e) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp_admin.php",
+        url: buildUrl("jsonhttp_admin.php"),
         data: $(this).serialize() + "&action=settings_edit",
         complete: function () {
             loader.hide();

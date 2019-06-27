@@ -10,7 +10,7 @@ $(document).delegate("#go_to_payment", "click", function () {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp.php",
+        url: buildUrl("jsonhttp.php"),
         data: $("#form_purchase").serialize() + "&action=purchase_form_validate",
         complete: function () {
             loader.hide();
@@ -53,7 +53,7 @@ $(document).delegate("#show_service_desc", "click", function () {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp.php",
+        url: buildUrl("jsonhttp.php"),
         data: {
             action: "get_service_long_description",
             service: $("#form_purchase [name=service]").val()

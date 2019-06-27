@@ -63,7 +63,7 @@ function purchase_service(method) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp.php",
+        url: buildUrl("jsonhttp.php"),
         data: {
             action: "payment_form_validate",
             method: method,

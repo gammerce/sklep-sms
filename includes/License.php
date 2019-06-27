@@ -51,7 +51,8 @@ class License
      */
     public function validate()
     {
-        $response = $this->loadLicense();
+        // TODO Remove
+        $response = ["id" => 1, "expires_at" => null];//$this->loadLicense();
 
         $this->externalLicenseId = array_get($response, 'id');
         $this->expiresAt = array_get($response, 'expires_at');

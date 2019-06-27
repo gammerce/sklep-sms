@@ -1,20 +1,15 @@
 <?php
-namespace App\Kernels;
+namespace App\Controllers;
 
-use App\Responses\ApiResponse;
 use App\Auth;
 use App\Database;
 use App\Heart;
+use App\License;
 use App\Mailer;
-use App\Middlewares\IsUpToDate;
-use App\Middlewares\LicenseIsValid;
-use App\Middlewares\LoadSettings;
-use App\Middlewares\ManageAuthentication;
-use App\Middlewares\SetLanguage;
-use App\Middlewares\UpdateUserActivity;
 use App\Models\Purchase;
 use App\Payment;
 use App\Repositories\UserRepository;
+use App\Responses\ApiResponse;
 use App\Responses\HtmlResponse;
 use App\Responses\PlainResponse;
 use App\Settings;
@@ -22,50 +17,31 @@ use App\Template;
 use App\TranslationManager;
 use PageAdminIncome;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use UnexpectedValueException;
 
-class JsonHttpKernel extends Kernel
+class JsonHttpController
 {
-    protected $middlewares = [
-        IsUpToDate::class,
-        LoadSettings::class,
-        SetLanguage::class,
-        ManageAuthentication::class,
-        LicenseIsValid::class,
-        UpdateUserActivity::class,
-    ];
+    public function action(
+        Request $request,
+        TranslationManager $translationManager,
+        Heart $heart,
+        Auth $auth,
+        Template $templates,
+        Settings $settings,
+        Database $db,
+        Mailer $mailer,
+        UserRepository $userRepository,
+        License $license
+    ) {
+        if (!$license->isValid()) {
+            return new Response();
+        }
 
-    public function run(Request $request)
-    {
-        /** @var TranslationManager $translationManager */
-        $translationManager = $this->app->make(TranslationManager::class);
         $langShop = $translationManager->shop();
-
-        /** @var Heart $heart */
-        $heart = $this->app->make(Heart::class);
-
-        /** @var Auth $auth */
-        $auth = $this->app->make(Auth::class);
-        $user = $auth->user();
-
-        /** @var Template $templates */
-        $templates = $this->app->make(Template::class);
-
-        /** @var TranslationManager $translationManager */
-        $translationManager = $this->app->make(TranslationManager::class);
         $lang = $translationManager->user();
 
-        /** @var Settings $settings */
-        $settings = $this->app->make(Settings::class);
-
-        /** @var Database $db */
-        $db = $this->app->make(Database::class);
-
-        /** @var Mailer $mailer */
-        $mailer = app()->make(Mailer::class);
-
-        /** @var UserRepository $userRepository */
-        $userRepository = app()->make(UserRepository::class);
+        $user = $auth->user();
 
         // Pobranie akcji
         $action = $request->request->get("action");
@@ -708,7 +684,7 @@ class JsonHttpKernel extends Kernel
                 $return_data['positive'], $return_data['data']);
         }
 
-        if ($_GET['action'] == "get_income") {
+        if ($action == "get_income") {
             $user->setPrivilages([
                 'acp'         => true,
                 'view_income' => true,

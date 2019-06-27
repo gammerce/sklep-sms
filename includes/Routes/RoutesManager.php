@@ -4,6 +4,8 @@ namespace App\Routes;
 use App\Application;
 use App\Controllers\IndexController;
 use App\Controllers\JsController;
+use App\Controllers\JsonHttpAdminController;
+use App\Controllers\JsonHttpController;
 use App\Controllers\TransferController;
 use App\Middlewares\MiddlewareContract;
 use App\Middlewares\RunCron;
@@ -51,6 +53,16 @@ class RoutesManager
             'GET', '/js.php',
             [
                 'uses' => JsController::class . '@get',
+            ]
+        );
+
+        $r->addRoute(
+            ['GET', 'POST'], '/jsonhttp.php',
+            [
+                'middlewares' => [
+                    UpdateUserActivity::class,
+                ],
+                'uses' => JsonHttpController::class . '@action',
             ]
         );
 

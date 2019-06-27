@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Psr4\TestCases;
 
-use App\Kernels\JsonHttpKernel;
+use App\Kernels\IndexKernel;
 use App\Kernels\KernelContract;
 
 class JsonHttpTestCase extends TestCase
@@ -15,13 +15,13 @@ class JsonHttpTestCase extends TestCase
         }
 
         $app = require __DIR__ . '/../../../bootstrap/app.php';
-        $app->singleton(KernelContract::class, JsonHttpKernel::class);
+        $app->singleton(KernelContract::class, IndexKernel::class);
 
         return $app;
     }
 
     protected function prepareUrlForRequest($uri)
     {
-        return 'http://localhost/jsonhttp.php' . $uri;
+        return 'http://localhost/index.php' . $uri;
     }
 }

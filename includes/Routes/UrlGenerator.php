@@ -21,7 +21,7 @@ class UrlGenerator
 
     public function to($path)
     {
-        return rtrim($this->getShopUrl(), '/') . '/' . $path;
+        return rtrim($this->getShopUrl(), '/') . '/' . trim($path, "/");
     }
 
     public function versioned($path)

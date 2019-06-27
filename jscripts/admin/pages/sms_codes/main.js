@@ -15,7 +15,7 @@ $(document).delegate(".table_structure .delete_row", "click", function () {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp_admin.php",
+        url: buildUrl("jsonhttp_admin.php"),
         data: {
             action: "delete_sms_code",
             id: row_id.children("td[headers=id]").text()
@@ -55,7 +55,7 @@ $(document).delegate("#form_sms_code_add", "submit", function (e) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp_admin.php",
+        url: buildUrl("jsonhttp_admin.php"),
         data: $(this).serialize() + "&action=sms_code_add",
         complete: function () {
             loader.hide();
