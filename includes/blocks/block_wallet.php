@@ -40,7 +40,7 @@ class BlockWallet extends Block implements I_BeLoggedMust
         return create_dom_element("a", $content, [
             'id'    => $this->get_content_id(),
             'class' => $content !== null ? $this->get_content_class() : "",
-            'href'  => $url->to("index.php?pid=payment_log"),
+            'href'  => $url->to("/page/payment_log"),
         ]);
     }
 }

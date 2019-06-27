@@ -278,7 +278,7 @@ class JsonHttpController
                 [$key, $user2->getUid()]
             ));
 
-            $link = $settings['shop_url_slash'] . "index.php?pid=reset_password&code=" . htmlspecialchars($key);
+            $link = $settings['shop_url_slash'] . "/page/reset_password?code=" . htmlspecialchars($key);
             $text = $templates->render("emails/forgotten_password", compact('user2', 'link'));
             $ret = $mailer->send($user2->getEmail(), $user2->getUsername(), "Reset Hasła", $text);
 

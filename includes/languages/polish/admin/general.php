@@ -101,7 +101,7 @@ return [
     'license_error'                         => 'Licencja wygasła lub jest błędna. Przejdź do <a href="{1}">ustawień</a>, w celu wprowadzenia prawidłowych danych licencji.',
     'license_expires'                       => 'Licencja wygasa',
     'license_id'                            => 'ID licencji',
-    'license_soon_expire'                   => 'Licencja wygaśnie za: {1} Możesz ją przedłużyć już teraz: <a href="https://sklep.sklep-sms.pl/index.php?pid=purchase&service=ss_license_plong" target="_blank">Przedłuż Licencję</a>.',
+    'license_soon_expire'                   => 'Licencja wygaśnie za: {1} Możesz ją przedłużyć już teraz: <a href="https://sklep.sklep-sms.pl/page/purchase?service=ss_license_plong" target="_blank">Przedłuż Licencję</a>.',
     'lines_per_page'                        => 'Ilość wierszy na stronę',
     'logs'                                  => 'Logi',
     'long_service_id'                       => 'Wprowadzone ID usługi jest zbyt długie. Maksymalnie 16 znaków.',

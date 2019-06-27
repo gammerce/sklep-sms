@@ -43,7 +43,7 @@ class BlockServicesButtons extends Block
             }
 
             $services .= create_dom_element("li", create_dom_element("a", $service['name'], [
-                'href' => $url->to("index.php?pid=purchase&service=" . urlencode($service['id'])),
+                'href' => $url->to("/page/purchase?service=" . urlencode($service['id'])),
             ]));
         }
 
