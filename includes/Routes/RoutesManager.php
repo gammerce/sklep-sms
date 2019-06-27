@@ -4,7 +4,6 @@ namespace App\Routes;
 use App\Application;
 use App\Controllers\IndexController;
 use App\Controllers\JsController;
-use App\Controllers\JsonHttpAdminController;
 use App\Controllers\JsonHttpController;
 use App\Controllers\TransferController;
 use App\Middlewares\MiddlewareContract;
