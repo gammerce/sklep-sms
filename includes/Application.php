@@ -10,7 +10,7 @@ use Illuminate\Container\Container;
 
 class Application extends Container
 {
-    const VERSION = '3.6.4';
+    const VERSION = '3.6.5';
 
     protected $providers = [
         AppServiceProvider::class,
