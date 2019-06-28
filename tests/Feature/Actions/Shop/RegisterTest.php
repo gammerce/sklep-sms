@@ -2,9 +2,9 @@
 namespace Tests\Feature\Actions\Shop;
 
 use App\Models\User;
-use Tests\Psr4\TestCases\JsonHttpTestCase;
+use Tests\Psr4\TestCases\IndexTestCase;
 
-class RegisterTest extends JsonHttpTestCase
+class RegisterTest extends IndexTestCase
 {
     /** @test */
     public function can_register()
@@ -18,7 +18,7 @@ class RegisterTest extends JsonHttpTestCase
         $_SESSION['asid'] = 1;
 
         // when
-        $response = $this->post('/', [
+        $response = $this->post('/jsonhttp.php', [
             'action'          => 'register',
             'username'        => $username,
             'password'        => $password,
