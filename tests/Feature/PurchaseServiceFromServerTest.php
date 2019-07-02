@@ -8,16 +8,15 @@ use App\Verification\Results\SmsSuccessResult;
 use ExtraFlagType;
 use Mockery;
 use Tests\Psr4\Concerns\RequesterConcern;
-use Tests\Psr4\TestCases\ServerTestCase;
+use Tests\Psr4\TestCases\IndexTestCase;
 
-class PurchaseServiceFromServerTest extends ServerTestCase
+class PurchaseServiceFromServerTest extends IndexTestCase
 {
     use RequesterConcern;
 
     protected function setUp()
     {
         parent::setUp();
-
         $this->mockRequester();
     }
 

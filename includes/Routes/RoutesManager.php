@@ -2,9 +2,11 @@
 namespace App\Routes;
 
 use App\Application;
+use App\Controllers\ExtraStuffController;
 use App\Controllers\IndexController;
 use App\Controllers\JsController;
 use App\Controllers\JsonHttpController;
+use App\Controllers\ServerStuffController;
 use App\Controllers\TransferController;
 use App\Middlewares\MiddlewareContract;
 use App\Middlewares\RunCron;
@@ -52,6 +54,23 @@ class RoutesManager
             'GET', '/js.php',
             [
                 'uses' => JsController::class . '@get',
+            ]
+        );
+
+        $r->addRoute(
+            ['GET', 'POST'], '/extra_stuff.php',
+            [
+                'middlewares' => [
+                    RunCron::class,
+                ],
+                'uses' => ExtraStuffController::class . '@action',
+            ]
+        );
+
+        $r->addRoute(
+            ['GET', 'POST'], '/servers_stuff.php',
+            [
+                'uses' => ServerStuffController::class . '@action',
             ]
         );
 

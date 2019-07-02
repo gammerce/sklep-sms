@@ -51,13 +51,10 @@ class LicenseIsValid implements MiddlewareContract
         } catch (InvalidResponse $e) {
             $this->limitPrivileges();
 
+            // TODO Move it to index controller
             if (SCRIPT_NAME == "index") {
                 $message = $this->getMessageFromInvalidResponse($e->response);
                 return $this->renderErrorPage($message);
-            }
-
-            if (in_array(SCRIPT_NAME, ["servers_stuff", "extra_stuff"])) {
-                return new Response();
             }
 
             // We want to continue because e.g. we want user to be able

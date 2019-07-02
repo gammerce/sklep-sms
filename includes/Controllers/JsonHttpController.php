@@ -43,7 +43,6 @@ class JsonHttpController
 
         $user = $auth->user();
 
-        // Pobranie akcji
         $action = $request->request->get("action");
 
         $warnings = [];

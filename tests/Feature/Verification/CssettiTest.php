@@ -7,9 +7,9 @@ use App\Verification\Results\SmsSuccessResult;
 use Mockery;
 use Tests\Psr4\Concerns\FixtureConcern;
 use Tests\Psr4\Concerns\RequesterConcern;
-use Tests\Psr4\TestCases\ServerTestCase;
+use Tests\Psr4\TestCases\IndexTestCase;
 
-class CssettiTest extends ServerTestCase
+class CssettiTest extends IndexTestCase
 {
     use RequesterConcern;
     use FixtureConcern;
