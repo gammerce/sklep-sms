@@ -69,7 +69,7 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
         if (!get_privilages("manage_servers")) {
             return [
                 'status' => "not_logged_in",
-                'text' => $this->lang->translate('not_logged_or_no_perm')
+                'text' => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
@@ -91,7 +91,7 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
 
             $sms_services .= create_dom_element("option", $row['name'], [
                 'value' => $row['id'],
-                'selected' => $row['id'] == $server['sms_service'] ? "selected" : ""
+                'selected' => $row['id'] == $server['sms_service'] ? "selected" : "",
             ]);
         }
 
@@ -112,7 +112,7 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
                     'value' => 0,
                     'selected' => $this->heart->server_service_linked($server['id'], $service['id'])
                         ? ""
-                        : "selected"
+                        : "selected",
                 ]
             );
 
@@ -123,7 +123,7 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
                     'value' => 1,
                     'selected' => $this->heart->server_service_linked($server['id'], $service['id'])
                         ? "selected"
-                        : ""
+                        : "",
                 ]
             );
 
@@ -157,7 +157,7 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
 
         return [
             'status' => 'ok',
-            'template' => $output
+            'template' => $output,
         ];
     }
 }

@@ -58,7 +58,7 @@ class LocaleService
     {
         $mapping = [
             'us' => 'en',
-            'gb' => 'en'
+            'gb' => 'en',
         ];
 
         return array_get($mapping, strtolower($country), $country);

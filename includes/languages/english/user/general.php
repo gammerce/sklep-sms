@@ -150,5 +150,5 @@ You can now profit from many add-ons.',
     'wrong_reset_key' => 'Reset key incorrect.<br />
 Contact our service administrator to receive more information.',
     'wrong_sender_email' =>
-        'E-mail assigned you your account is incorrect. Report it to the shop owner.'
+        'E-mail assigned you your account is incorrect. Report it to the shop owner.',
 ];

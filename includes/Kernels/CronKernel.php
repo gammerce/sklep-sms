@@ -17,7 +17,7 @@ class CronKernel extends Kernel
         IsUpToDate::class,
         LoadSettings::class,
         SetLanguage::class,
-        ValidateLicense::class
+        ValidateLicense::class,
     ];
 
     public function run(Request $request)

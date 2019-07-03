@@ -19,7 +19,7 @@ class SentryServiceProvider
             $app->singleton(Raven_Client::class, function () use ($dsn, $app) {
                 return new Raven_Client([
                     'dsn' => $dsn,
-                    'release' => $app->version()
+                    'release' => $app->version(),
                 ]);
             });
         }

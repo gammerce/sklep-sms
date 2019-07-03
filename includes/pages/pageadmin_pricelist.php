@@ -87,7 +87,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
         if (!get_privilages("manage_settings")) {
             return [
                 'status' => "not_logged_in",
-                'text' => $this->lang->translate('not_logged_or_no_perm')
+                'text' => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
@@ -112,7 +112,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
                 [
                     'value' => $service['id'],
                     'selected' =>
-                        isset($price) && $price['service'] == $service['id'] ? "selected" : ""
+                        isset($price) && $price['service'] == $service['id'] ? "selected" : "",
                 ]
             );
         }
@@ -122,7 +122,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
         foreach ($this->heart->get_servers() as $server_id => $server) {
             $servers .= create_dom_element("option", $server['name'], [
                 'value' => $server['id'],
-                'selected' => isset($price) && $price['server'] == $server['id'] ? "selected" : ""
+                'selected' => isset($price) && $price['server'] == $server['id'] ? "selected" : "",
             ]);
         }
 
@@ -132,7 +132,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
             $tariffs .= create_dom_element("option", $tariff->getId(), [
                 'value' => $tariff->getId(),
                 'selected' =>
-                    isset($price) && $price['tariff'] == $tariff->getId() ? "selected" : ""
+                    isset($price) && $price['tariff'] == $tariff->getId() ? "selected" : "",
             ]);
         }
 
@@ -157,7 +157,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
 
         return [
             'status' => 'ok',
-            'template' => $output
+            'template' => $output,
         ];
     }
 }

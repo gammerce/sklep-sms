@@ -122,5 +122,5 @@ return [
     'wrong_sid' => 'Given Steam ID is incorrect.',
     'wrong_sign' => 'Something is wrong, data verification ended up an IT failure.',
     'yes' => 'Yes',
-    'you_arent_logged' => 'Something is wrong, you are not logged in oO'
+    'you_arent_logged' => 'Something is wrong, you are not logged in oO',
 ];

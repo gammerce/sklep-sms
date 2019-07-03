@@ -108,7 +108,7 @@ class Page_UserOIwnServices extends Page implements I_BeLoggedMust
             ) {
                 $button_edit = create_dom_element("button", $lang->translate('edit'), [
                     'class' => "button edit_row",
-                    'type' => 'button'
+                    'type' => 'button',
                 ]);
             }
 

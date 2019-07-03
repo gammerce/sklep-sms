@@ -30,14 +30,14 @@ class PageAdminSettings extends PageAdmin
             if ($row['sms']) {
                 $sms_services .= create_dom_element("option", $row['name'], [
                     'value' => $row['id'],
-                    'selected' => $row['id'] == $this->settings['sms_service'] ? "selected" : ""
+                    'selected' => $row['id'] == $this->settings['sms_service'] ? "selected" : "",
                 ]);
             }
             if ($row['transfer']) {
                 $transfer_services .= create_dom_element("option", $row['name'], [
                     'value' => $row['id'],
                     'selected' =>
-                        $row['id'] == $this->settings['transfer_service'] ? "selected" : ""
+                        $row['id'] == $this->settings['transfer_service'] ? "selected" : "",
                 ]);
             }
         }
@@ -53,7 +53,7 @@ class PageAdminSettings extends PageAdmin
             if ($dir_name[0] != '.' && is_dir($this->app->path("themes/$dir_name"))) {
                 $themes_list .= create_dom_element("option", $dir_name, [
                     'value' => $dir_name,
-                    'selected' => $dir_name == $this->settings['theme'] ? "selected" : ""
+                    'selected' => $dir_name == $this->settings['theme'] ? "selected" : "",
                 ]);
             }
         }
@@ -68,7 +68,8 @@ class PageAdminSettings extends PageAdmin
                     $lang->translate('language_' . $dir_name),
                     [
                         'value' => $dir_name,
-                        'selected' => $dir_name == $langShop->getCurrentLanguage() ? "selected" : ""
+                        'selected' =>
+                            $dir_name == $langShop->getCurrentLanguage() ? "selected" : "",
                     ]
                 );
             }

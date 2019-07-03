@@ -39,5 +39,5 @@ you have just made purchase in our shop.',
     'wrong_date_format' => 'Wrong date format.',
     'wrong_service_description_file' => 'Service description file was not created correctly. </br>
 Probably folder <strong>themes/{1}/services/</strong> has no permission to write.',
-    'wrong_type_chosen' => 'Wrong type was chosen.'
+    'wrong_type_chosen' => 'Wrong type was chosen.',
 ];

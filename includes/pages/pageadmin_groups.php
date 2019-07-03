@@ -73,7 +73,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
         if (!get_privilages("manage_groups")) {
             return [
                 'status' => "not_logged_in",
-                'text' => $this->lang->translate('not_logged_or_no_perm')
+                'text' => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
@@ -93,8 +93,8 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
                         'class' => 'action_box',
                         'style' => [
                             'padding' => "20px",
-                            'color' => "white"
-                        ]
+                            'color' => "white",
+                        ],
                     ]
                 );
             } else {
@@ -115,7 +115,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
                 $this->lang->strtoupper($this->lang->translate('no')),
                 [
                     'value' => 0,
-                    'selected' => $group[$row['Field']] ? "" : "selected"
+                    'selected' => $group[$row['Field']] ? "" : "selected",
                 ]
             );
 
@@ -124,7 +124,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
                 $this->lang->strtoupper($this->lang->translate('yes')),
                 [
                     'value' => 1,
-                    'selected' => $group[$row['Field']] ? "selected" : ""
+                    'selected' => $group[$row['Field']] ? "selected" : "",
                 ]
             );
 
@@ -158,7 +158,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
 
         return [
             'status' => 'ok',
-            'template' => $output
+            'template' => $output,
         ];
     }
 }

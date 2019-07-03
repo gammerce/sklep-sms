@@ -8,5 +8,5 @@ return [
     'choose_charge_method' => 'Wybierz sposób doładowania',
     'choose_sms_value' => 'Wybierz wartość SMSa',
     'type_amount' => 'Podaj kwotę',
-    'wrong_charge_method' => 'Wybrano błędną metodę doładowania.'
+    'wrong_charge_method' => 'Wybrano błędną metodę doładowania.',
 ];

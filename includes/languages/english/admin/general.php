@@ -266,5 +266,5 @@ return [
         'We need to visit <a href="https://github.com/gammerce/sklep-sms/releases/latest" target="_blank">shop\'s repository</a> and download the file <strong>build.zip</strong>',
     'wrong_group' => 'Wrong group was chosen.',
     'wrong_module' => 'Wrong module was chosen.',
-    'wrong_page_id' => 'Wrong page ID was given.'
+    'wrong_page_id' => 'Wrong page ID was given.',
 ];

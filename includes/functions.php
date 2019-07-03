@@ -199,7 +199,7 @@ function get_pagination($all, $current_page, $script, $get, $row_limit = 0)
 
                 $output .=
                     create_dom_element("a", "...", [
-                        'href' => $href
+                        'href' => $href,
                     ]) . "&nbsp;";
                 $dots = true;
             }
@@ -210,7 +210,7 @@ function get_pagination($all, $current_page, $script, $get, $row_limit = 0)
             create_dom_element("a", $i, [
                 'href' => ($href =
                     $script . $get_string . (strlen($get_string) ? "&" : "?") . "page=" . $i),
-                'class' => $current_page == $i ? "current" : ""
+                'class' => $current_page == $i ? "current" : "",
             ]) . "&nbsp;";
         $dots = false;
     }
@@ -274,7 +274,7 @@ function get_privilages($which, $user = null)
             "manage_servers",
             "view_logs",
             "manage_logs",
-            "update"
+            "update",
         ])
     ) {
         return $user->getPrivilages('acp') && $user->getPrivilages($which);
@@ -322,7 +322,7 @@ function update_servers_services($data)
         } else {
             $delete[] = $db->prepare("(`server_id` = '%d' AND `service_id` = '%s')", [
                 $arr['server'],
-                $arr['service']
+                $arr['service'],
             ]);
         }
     }
@@ -372,7 +372,7 @@ function validate_payment($purchase_data)
         return [
             'status' => "wrong_module",
             'text' => $lang->translate('bad_module'),
-            'positive' => false
+            'positive' => false,
         ];
     }
 
@@ -381,13 +381,13 @@ function validate_payment($purchase_data)
             "sms",
             "transfer",
             "wallet",
-            "service_code"
+            "service_code",
         ])
     ) {
         return [
             'status' => "wrong_method",
             'text' => $lang->translate('wrong_payment_method'),
-            'positive' => false
+            'positive' => false,
         ];
     }
 
@@ -411,7 +411,7 @@ function validate_payment($purchase_data)
     // Pobieramy ile kosztuje ta usługa dla przelewu / portfela
     if ($purchase_data->getPayment('cost') === null) {
         $purchase_data->setPayment([
-            'cost' => $purchase_data->getTariff()->getProvision()
+            'cost' => $purchase_data->getTariff()->getProvision(),
         ]);
     }
 
@@ -420,7 +420,7 @@ function validate_payment($purchase_data)
         return [
             'status' => "wallet_not_logged",
             'text' => $lang->translate('no_login_no_wallet'),
-            'positive' => false
+            'positive' => false,
         ];
     } elseif ($purchase_data->getPayment('method') == "transfer") {
         if ($purchase_data->getPayment('cost') <= 1) {
@@ -430,7 +430,7 @@ function validate_payment($purchase_data)
                     $lang->translate('transfer_above_amount'),
                     $settings['currency']
                 ),
-                'positive' => false
+                'positive' => false,
             ];
         }
 
@@ -438,7 +438,7 @@ function validate_payment($purchase_data)
             return [
                 'status' => "transfer_unavailable",
                 'text' => $lang->translate('transfer_unavailable'),
-                'positive' => false
+                'positive' => false,
             ];
         }
     } elseif (
@@ -448,7 +448,7 @@ function validate_payment($purchase_data)
         return [
             'status' => "sms_unavailable",
             'text' => $lang->translate('sms_unavailable'),
-            'positive' => false
+            'positive' => false,
         ];
     } elseif (
         $purchase_data->getPayment('method') == "sms" &&
@@ -457,13 +457,13 @@ function validate_payment($purchase_data)
         return [
             'status' => "no_sms_option",
             'text' => $lang->translate('no_sms_payment'),
-            'positive' => false
+            'positive' => false,
         ];
     }
 
     // Kod SMS
     $purchase_data->setPayment([
-        'sms_code' => trim($purchase_data->getPayment('sms_code'))
+        'sms_code' => trim($purchase_data->getPayment('sms_code')),
     ]);
     if (
         $purchase_data->getPayment('method') == "sms" &&
@@ -484,7 +484,7 @@ function validate_payment($purchase_data)
         $warning_data = [];
         foreach ($warnings as $brick => $warning) {
             $warning = create_dom_element("div", implode("<br />", $warning), [
-                'class' => "form_warning"
+                'class' => "form_warning",
             ]);
             $warning_data['warnings'][$brick] = $warning;
         }
@@ -493,7 +493,7 @@ function validate_payment($purchase_data)
             'status' => "warnings",
             'text' => $lang->translate('form_wrong_filled'),
             'positive' => false,
-            'data' => $warning_data
+            'data' => $warning_data,
         ];
     }
 
@@ -510,7 +510,7 @@ function validate_payment($purchase_data)
             return [
                 'status' => $result['status'],
                 'text' => $result['text'],
-                'positive' => false
+                'positive' => false,
             ];
         }
     } elseif ($purchase_data->getPayment('method') === "wallet") {
@@ -534,7 +534,7 @@ function validate_payment($purchase_data)
     if (in_array($purchase_data->getPayment('method'), ["wallet", "sms", "service_code"])) {
         // Dokonujemy zakupu usługi
         $purchase_data->setPayment([
-            'payment_id' => $paymentId
+            'payment_id' => $paymentId,
         ]);
         $bought_service_id = $service_module->purchase($purchase_data);
 
@@ -542,7 +542,7 @@ function validate_payment($purchase_data)
             'status' => "purchased",
             'text' => $lang->translate('purchase_success'),
             'positive' => true,
-            'data' => ['bsid' => $bought_service_id]
+            'data' => ['bsid' => $bought_service_id],
         ];
     }
 
@@ -602,7 +602,7 @@ function pay_wallet($cost, $user)
         return [
             'status' => "no_money",
             'text' => $lang->translate('not_enough_money'),
-            'positive' => false
+            'positive' => false,
         ];
     }
 
@@ -654,7 +654,7 @@ function pay_service_code($purchase_data, $service_module)
                 $purchase_data->getService(),
                 $purchase_data->getOrder('server'),
                 $purchase_data->getTariff(),
-                $purchase_data->user->getUid()
+                $purchase_data->user->getUid(),
             ]
         )
     );
@@ -679,7 +679,7 @@ function pay_service_code($purchase_data, $service_module)
                     [
                         $purchase_data->getPayment('service_code'),
                         $purchase_data->user->getLastip(),
-                        $purchase_data->user->getPlatform()
+                        $purchase_data->user->getPlatform(),
                     ]
                 )
             );
@@ -702,7 +702,7 @@ function pay_service_code($purchase_data, $service_module)
     return [
         'status' => "wrong_service_code",
         'text' => $lang->translate('bad_service_code'),
-        'positive' => false
+        'positive' => false,
     ];
 }
 
@@ -766,7 +766,7 @@ function add_bought_service_info(
                 $amount,
                 $auth_data,
                 $email,
-                json_encode($extra_data)
+                json_encode($extra_data),
             ]
         )
     );
@@ -776,7 +776,7 @@ function add_bought_service_info(
     if (strlen($email)) {
         $message = purchase_info([
             'purchase_id' => $bougt_service_id,
-            'action' => "email"
+            'action' => "email",
         ]);
         if (strlen($message)) {
             $title =
@@ -844,7 +844,7 @@ function purchase_info($data)
         if (isset($data['payment']) && isset($data['payment_id'])) {
             $where = $db->prepare("t.payment = '%s' AND t.payment_id = '%s'", [
                 $data['payment'],
-                $data['payment_id']
+                $data['payment_id'],
             ]);
         } else {
             return "";
@@ -1064,8 +1064,8 @@ function create_brick($text, $class = "", $alpha = 0.2)
         'class' => "brick" . ($class ? " {$class}" : ""),
         'style' => [
             'border-color' => "rgb({$brick_r},{$brick_g},{$brick_b})",
-            'background-color' => "rgba({$brick_r},{$brick_g},{$brick_b},{$alpha})"
-        ]
+            'background-color' => "rgba({$brick_r},{$brick_g},{$brick_b},{$alpha})",
+        ],
     ]);
 }
 
@@ -1106,7 +1106,7 @@ function get_ip()
             '188.114.96.0/20',
             '190.93.240.0/20',
             '197.234.240.0/22',
-            '198.41.128.0/17'
+            '198.41.128.0/17',
         ];
 
         foreach ($cf_ip_ranges as $range) {

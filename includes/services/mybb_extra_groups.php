@@ -163,7 +163,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements
             'db_host' => $data['db_host'],
             'db_user' => $data['db_user'],
             'db_password' => if_strlen($data['db_password'], $this->service['data']['db_password']),
-            'db_name' => $data['db_name']
+            'db_name' => $data['db_name'],
         ];
 
         return [
@@ -171,9 +171,9 @@ class ServiceMybbExtraGroupsSimple extends Service implements
                 [
                     'type' => '%s',
                     'column' => 'data',
-                    'value' => json_encode($extra_data)
-                ]
-            ]
+                    'value' => json_encode($extra_data),
+                ],
+            ],
         ];
     }
 
@@ -411,7 +411,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                 return [
                     'status' => "no_option",
                     'text' => $this->lang->translate('service_not_affordable'),
-                    'positive' => false
+                    'positive' => false,
                 ];
             }
 
@@ -426,7 +426,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
 
             $result = $this->db_mybb->query(
                 $this->db_mybb->prepare("SELECT 1 FROM `mybb_users` " . "WHERE `username` = '%s'", [
-                    $data['username']
+                    $data['username'],
                 ])
             );
 
@@ -446,7 +446,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                 'status' => "warnings",
                 'text' => $this->lang->translate('form_wrong_filled'),
                 'positive' => false,
-                'data' => ['warnings' => $warnings]
+                'data' => ['warnings' => $warnings],
             ];
         }
 
@@ -455,7 +455,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         $purchase_data->setOrder([
             'username' => $data['username'],
             'amount' => $price['amount'],
-            'forever' => $price['amount'] == -1 ? true : false
+            'forever' => $price['amount'] == -1 ? true : false,
         ]);
         $purchase_data->setEmail($data['email']);
         $purchase_data->setTariff($this->heart->getTariff($tariff));
@@ -464,7 +464,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             'status' => "ok",
             'text' => $this->lang->translate('purchase_form_validated'),
             'positive' => true,
-            'purchase_data' => $purchase_data
+            'purchase_data' => $purchase_data,
         ];
     }
 
@@ -538,7 +538,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             $purchase_data->getEmail(),
             [
                 'uid' => $mybb_user->getUid(),
-                'groups' => implode(',', $this->groups)
+                'groups' => implode(',', $this->groups),
             ]
         );
     }
@@ -579,7 +579,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             return $this->template->render(
                 "services/mybb_extra_groups/purchase_info_web",
                 compact('cost', 'username', 'amount', 'email') + [
-                    'serviceName' => $this->service['name']
+                    'serviceName' => $this->service['name'],
                 ],
                 true,
                 false
@@ -593,7 +593,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                     $this->service['name'],
                     $username
                 )),
-                'class' => "outcome"
+                'class' => "outcome",
             ];
         }
 
@@ -704,18 +704,18 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                     [
                         'column' => 'uid',
                         'value' => "'%d'",
-                        'data' => [$uid]
+                        'data' => [$uid],
                     ],
                     [
                         'column' => 'mybb_uid',
                         'value' => "'%d'",
-                        'data' => [$mybb_uid]
+                        'data' => [$mybb_uid],
                     ],
                     [
                         'column' => 'expire',
                         'value' => "IF('%d' = '1', -1, `expire` + '%d')",
-                        'data' => [$forever, $days * 24 * 60 * 60]
-                    ]
+                        'data' => [$forever, $days * 24 * 60 * 60],
+                    ],
                 ],
                 $user_service_id,
                 $user_service_id
@@ -799,7 +799,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
 
             $result = $this->db_mybb->query(
                 $this->db_mybb->prepare("SELECT 1 FROM `mybb_users` " . "WHERE `username` = '%s'", [
-                    $post['mybb_username']
+                    $post['mybb_username'],
                 ])
             );
 
@@ -818,7 +818,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                 'status' => "warnings",
                 'text' => $this->lang->translate('form_wrong_filled'),
                 'positive' => false,
-                'data' => ['warnings' => $warnings]
+                'data' => ['warnings' => $warnings],
             ];
         }
 
@@ -830,12 +830,12 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         $purchase_data->user = $this->heart->get_user($post['uid']);
         $purchase_data->setPayment([
             'method' => "admin",
-            'payment_id' => $payment_id
+            'payment_id' => $payment_id,
         ]);
         $purchase_data->setOrder([
             'username' => $post['mybb_username'],
             'amount' => $post['amount'],
-            'forever' => (bool) $post['forever']
+            'forever' => (bool) $post['forever'],
         ]);
         $purchase_data->setEmail($post['email']);
         $bought_service_id = $this->purchase($purchase_data);
@@ -852,7 +852,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         return [
             'status' => "ok",
             'text' => $this->lang->translate('service_added_correctly'),
-            'positive' => true
+            'positive' => true,
         ];
     }
 
@@ -862,7 +862,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
 
         $username = $this->db_mybb->get_column(
             $this->db_mybb->prepare("SELECT `username` FROM `mybb_users` " . "WHERE `uid` = '%d'", [
-                $user_service['mybb_uid']
+                $user_service['mybb_uid'],
             ]),
             'username'
         );
@@ -877,7 +877,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         return $this->template->render(
             "services/mybb_extra_groups/user_own_service",
             compact('user_service', 'service', 'mybb_uid', 'expire') + [
-                'moduleId' => $this->get_module_id()
+                'moduleId' => $this->get_module_id(),
             ]
         );
     }
@@ -925,7 +925,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         while ($row = $this->db->fetch_array_assoc($result)) {
             $mybb_user->setShopGroup($row['gid'], [
                 'expire' => $row['expire'],
-                'was_before' => $row['was_before']
+                'was_before' => $row['was_before'],
             ]);
         }
 

@@ -81,7 +81,7 @@ class Heart
         $this->services_classes[$id] = [
             'name' => $name,
             'class' => $class,
-            'classsimple' => $classsimple
+            'classsimple' => $classsimple,
         ];
     }
 
@@ -154,7 +154,7 @@ class Heart
                 'id' => $id,
                 'name' => $data['name'],
                 'class' => $data['class'],
-                'classsimple' => $data['classsimple']
+                'classsimple' => $data['classsimple'],
             ];
         }
 

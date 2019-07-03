@@ -31,7 +31,7 @@ class UserRepository
                     $forename,
                     $surname,
                     $ip,
-                    $groups
+                    $groups,
                 ]
             )
         );

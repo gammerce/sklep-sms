@@ -47,7 +47,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
                     "`surname`",
                     "`email`",
                     "`groups`",
-                    "`wallet`"
+                    "`wallet`",
                 ],
                 $get['search'],
                 $where
@@ -122,7 +122,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
         if (!get_privilages("manage_users")) {
             return [
                 'status' => "not_logged_in",
-                'text' => $this->lang->translate('not_logged_or_no_perm')
+                'text' => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
@@ -135,7 +135,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
                 foreach ($this->heart->get_groups() as $group) {
                     $groups .= create_dom_element("option", "{$group['name']} ( {$group['id']} )", [
                         'value' => $group['id'],
-                        'selected' => in_array($group['id'], $user->getGroups()) ? "selected" : ""
+                        'selected' => in_array($group['id'], $user->getGroups()) ? "selected" : "",
                     ]);
                 }
 
@@ -159,7 +159,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 
         return [
             'status' => 'ok',
-            'template' => $output
+            'template' => $output,
         ];
     }
 }

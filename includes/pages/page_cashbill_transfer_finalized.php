@@ -35,7 +35,7 @@ class PageCashbillTransferFinalized extends Page
         return purchase_info([
             'payment' => 'transfer',
             'payment_id' => $get['orderid'],
-            'action' => 'web'
+            'action' => 'web',
         ]);
     }
 }

@@ -64,7 +64,7 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
             "userid" => $this->userId,
             "number" => $number,
             "code" => $returnCode,
-            "serviceid" => $this->serviceId
+            "serviceid" => $this->serviceId,
         ]);
 
         if (!$response) {
@@ -116,7 +116,7 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
             'control' => $dataFilename,
             'return_urlc' => $this->settings['shop_url_slash'] . 'transfer/microsms',
             'return_url' => $this->settings['shop_url_slash'] . 'page/transferuj_ok',
-            'description' => $purchase->getDesc()
+            'description' => $purchase->getDesc(),
         ];
     }
 

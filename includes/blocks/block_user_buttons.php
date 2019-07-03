@@ -46,7 +46,7 @@ class BlockUserButtons extends Block
             $acp_button = create_dom_element(
                 "li",
                 create_dom_element("a", $lang->translate('acp'), [
-                    'href' => $url->to("admin.php")
+                    'href' => $url->to("admin.php"),
                 ])
             );
         }
@@ -56,7 +56,7 @@ class BlockUserButtons extends Block
             $charge_wallet_button = create_dom_element(
                 "li",
                 create_dom_element("a", $lang->translate('charge_wallet'), [
-                    'href' => $url->to("/page/purchase?service=charge_wallet")
+                    'href' => $url->to("/page/purchase?service=charge_wallet"),
                 ])
             );
         }

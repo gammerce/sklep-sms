@@ -83,7 +83,7 @@ class ServiceExtraFlagsSimple extends Service implements
                 'selected' =>
                     $this->service !== null && $this->service['types'] & $option_id
                         ? "selected"
-                        : ""
+                        : "",
             ]);
         }
 
@@ -96,7 +96,7 @@ class ServiceExtraFlagsSimple extends Service implements
         return $this->template->render(
             "services/extra_flags/extra_fields",
             compact('web_sel_no', 'web_sel_yes', 'types', 'flags') + [
-                'moduleId' => $this->get_module_id()
+                'moduleId' => $this->get_module_id(),
             ],
             true,
             false
@@ -187,19 +187,19 @@ class ServiceExtraFlagsSimple extends Service implements
                 [
                     'type' => '%d',
                     'column' => 'types',
-                    'value' => $types
+                    'value' => $types,
                 ],
                 [
                     'type' => '%s',
                     'column' => 'flags',
-                    'value' => $data['flags']
+                    'value' => $data['flags'],
                 ],
                 [
                     'type' => '%s',
                     'column' => 'data',
-                    'value' => json_encode($extra_data)
-                ]
-            ]
+                    'value' => json_encode($extra_data),
+                ],
+            ],
         ];
     }
 
@@ -406,7 +406,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             }
 
             $servers .= create_dom_element("option", $row['name'], [
-                'value' => $row['id']
+                'value' => $row['id'],
             ]);
         }
 
@@ -430,7 +430,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             'type' => $data['type'],
             'auth_data' => trim($auth_data),
             'password' => $data['password'],
-            'passwordr' => $data['password_repeat']
+            'passwordr' => $data['password_repeat'],
         ]);
         $purchase_data->setTariff($this->heart->getTariff($value[2]));
         $purchase_data->setEmail($data['email']);
@@ -478,7 +478,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 return [
                     'status' => "no_option",
                     'text' => $this->lang->translate('service_not_affordable'),
-                    'positive' => false
+                    'positive' => false,
                 ];
             }
 
@@ -522,7 +522,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                             [
                                 ExtraFlagType::TYPE_NICK,
                                 $purchase_data->getOrder('auth_data'),
-                                $server['id']
+                                $server['id'],
                             ]
                         );
                     }
@@ -548,7 +548,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                                 [
                                     ExtraFlagType::TYPE_IP,
                                     $purchase_data->getOrder('auth_data'),
-                                    $server['id']
+                                    $server['id'],
                                 ]
                             );
                         }
@@ -616,18 +616,18 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 'status' => "warnings",
                 'text' => $this->lang->translate('form_wrong_filled'),
                 'positive' => false,
-                'data' => ['warnings' => $warnings]
+                'data' => ['warnings' => $warnings],
             ];
         }
 
         $purchase_data->setOrder([
             'amount' => $price['amount'],
-            'forever' => $price['amount'] == -1 ? true : false
+            'forever' => $price['amount'] == -1 ? true : false,
         ]);
 
         if (strlen($server['sms_service'])) {
             $purchase_data->setPayment([
-                'sms_service' => $server['sms_service']
+                'sms_service' => $server['sms_service'],
             ]);
         }
 
@@ -635,7 +635,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             'status' => "ok",
             'text' => $this->lang->translate('purchase_form_validated'),
             'positive' => true,
-            'purchase_data' => $purchase_data
+            'purchase_data' => $purchase_data,
         ];
     }
 
@@ -660,7 +660,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         return $this->template->render(
             "services/extra_flags/order_details",
             compact('server', 'amount', 'type_name', 'auth_data', 'password', 'email') + [
-                'serviceName' => $this->service['name']
+                'serviceName' => $this->service['name'],
             ],
             true,
             false
@@ -692,7 +692,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             $purchase_data->getEmail(),
             [
                 'type' => $purchase_data->getOrder('type'),
-                'password' => $purchase_data->getOrder('password')
+                'password' => $purchase_data->getOrder('password'),
             ]
         );
     }
@@ -738,18 +738,18 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     [
                         'column' => 'uid',
                         'value' => "'%d'",
-                        'data' => [$uid]
+                        'data' => [$uid],
                     ],
                     [
                         'column' => 'password',
                         'value' => "'%s'",
-                        'data' => [$password]
+                        'data' => [$password],
                     ],
                     [
                         'column' => 'expire',
                         'value' => "IF('%d' = '1', -1, `expire` + '%d')",
-                        'data' => [$forever, $days * 24 * 60 * 60]
-                    ]
+                        'data' => [$forever, $days * 24 * 60 * 60],
+                    ],
                 ],
                 $user_service_id,
                 $user_service_id
@@ -780,7 +780,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                         $this->service['id'],
                         $type,
                         $auth_data,
-                        $password
+                        $password,
                     ]
                 )
             );
@@ -954,7 +954,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             return $this->template->render(
                 "services/extra_flags/purchase_info_email",
                 compact('data', 'amount', 'server', 'password', 'setinfo') + [
-                    'serviceName' => $this->service['name']
+                    'serviceName' => $this->service['name'],
                 ],
                 true,
                 false
@@ -965,7 +965,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             return $this->template->render(
                 "services/extra_flags/purchase_info_web",
                 compact('cost', 'server', 'amount', 'data', 'password', 'setinfo') + [
-                    'serviceName' => $this->service['name']
+                    'serviceName' => $this->service['name'],
                 ],
                 true,
                 false
@@ -979,7 +979,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     $this->service['name'],
                     $server['name']
                 )),
-                'class' => "outcome"
+                'class' => "outcome",
             ];
         }
 
@@ -996,7 +996,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         for ($i = 0, $option_id = 1; $i < 3; $option_id = 1 << ++$i) {
             if ($this->service['types'] & $option_id) {
                 $types .= create_dom_element("option", $this->get_type_name($option_id), [
-                    'value' => $option_id
+                    'value' => $option_id,
                 ]);
             }
         }
@@ -1009,7 +1009,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             }
 
             $servers .= create_dom_element("option", $row['name'], [
-                'value' => $row['id']
+                'value' => $row['id'],
             ]);
         }
 
@@ -1076,7 +1076,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $purchase_data->user = $this->heart->get_user($data['uid']); // Pobieramy dane o użytkowniku na które jego wykupiona usługa
         $purchase_data->setPayment([
             'method' => "admin",
-            'payment_id' => $payment_id
+            'payment_id' => $payment_id,
         ]);
         $purchase_data->setOrder([
             'server' => $data['server'],
@@ -1084,7 +1084,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             'auth_data' => trim($data['auth_data']),
             'password' => $data['password'],
             'amount' => $data['amount'],
-            'forever' => (bool) $data['forever']
+            'forever' => (bool) $data['forever'],
         ]);
         $purchase_data->setEmail($data['email']);
         $bought_service_id = $this->purchase($purchase_data);
@@ -1101,7 +1101,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         return [
             'status' => "ok",
             'text' => $this->lang->translate('service_added_correctly'),
-            'positive' => true
+            'positive' => true,
         ];
     }
 
@@ -1122,7 +1122,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
             $services .= create_dom_element("option", $row['name'], [
                 'value' => $row['id'],
-                'selected' => $user_service['service'] == $row['id'] ? "selected" : ""
+                'selected' => $user_service['service'] == $row['id'] ? "selected" : "",
             ]);
         }
 
@@ -1132,7 +1132,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             if ($this->service['types'] & $option_id) {
                 $types .= create_dom_element("option", $this->get_type_name($option_id), [
                     'value' => $option_id,
-                    'selected' => $option_id == $user_service['type'] ? "selected" : ""
+                    'selected' => $option_id == $user_service['type'] ? "selected" : "",
                 ]);
             }
         }
@@ -1161,7 +1161,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
             $servers .= create_dom_element("option", $row['name'], [
                 'value' => $row['id'],
-                'selected' => $user_service['server'] == $row['id'] ? "selected" : ""
+                'selected' => $user_service['server'] == $row['id'] ? "selected" : "",
             ]);
         }
 
@@ -1333,7 +1333,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 'status' => "warnings",
                 'text' => $this->lang->translate('form_wrong_filled'),
                 'positive' => false,
-                'data' => ['warnings' => $warnings]
+                'data' => ['warnings' => $warnings],
             ];
         }
     }
@@ -1367,7 +1367,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 $this->get_type_name($option_id),
                 [
                     'value' => $option_id,
-                    'selected' => $option_id == $user_service['type'] ? "selected" : ""
+                    'selected' => $option_id == $user_service['type'] ? "selected" : "",
                 ]
             );
 
@@ -1432,7 +1432,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         return $this->template->render(
             "services/extra_flags/user_own_service",
             compact('user_service', 'button_edit', 'service_info') + [
-                'moduleId' => $this->get_module_id()
+                'moduleId' => $this->get_module_id(),
             ]
         );
     }
@@ -1467,7 +1467,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $edit_return = $this->user_service_edit($user_service, [
             'type' => $data['type'],
             'auth_data' => $data['auth_data'],
-            'password' => $data['password']
+            'password' => $data['password'],
         ]);
 
         if ($edit_return['status'] == 'ok') {
@@ -1495,7 +1495,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             $set[] = [
                 'column' => 'password',
                 'value' => "'%s'",
-                'data' => [$data['password']]
+                'data' => [$data['password']],
             ];
         }
 
@@ -1504,7 +1504,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             $set[] = [
                 'column' => 'uid',
                 'value' => "'%d'",
-                'data' => [$data['uid']]
+                'data' => [$data['uid']],
             ];
         }
 
@@ -1512,7 +1512,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         if ($data['forever']) {
             $set[] = [
                 'column' => 'expire',
-                'value' => "-1"
+                'value' => "-1",
             ];
         }
 
@@ -1532,7 +1532,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     if_isset($data['server'], $user_service['server']),
                     if_isset($data['type'], $user_service['type']),
                     if_isset($data['auth_data'], $user_service['auth_data']),
-                    $user_service['id']
+                    $user_service['id'],
                 ]
             )
         );
@@ -1546,7 +1546,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 return [
                     'status' => "service_exists",
                     'text' => $this->lang->translate('service_isnt_yours'),
-                    'positive' => false
+                    'positive' => false,
                 ];
             }
 
@@ -1563,7 +1563,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 $set[] = [
                     'column' => 'expire',
                     'value' => "( `expire` - UNIX_TIMESTAMP() + '%d' )",
-                    'data' => [if_isset($data['expire'], $user_service['expire'])]
+                    'data' => [if_isset($data['expire'], $user_service['expire'])],
                 ];
             }
 
@@ -1577,14 +1577,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             $set[] = [
                 'column' => 'service',
                 'value' => "'%s'",
-                'data' => [$this->service['id']]
+                'data' => [$this->service['id']],
             ];
 
             if (!$data['forever'] && isset($data['expire'])) {
                 $set[] = [
                     'column' => 'expire',
                     'value' => "'%d'",
-                    'data' => [$data['expire']]
+                    'data' => [$data['expire']],
                 ];
             }
 
@@ -1592,7 +1592,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 $set[] = [
                     'column' => 'server',
                     'value' => "'%d'",
-                    'data' => [$data['server']]
+                    'data' => [$data['server']],
                 ];
             }
 
@@ -1600,7 +1600,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 $set[] = [
                     'column' => 'type',
                     'value' => "'%d'",
-                    'data' => [$data['type']]
+                    'data' => [$data['type']],
                 ];
             }
 
@@ -1608,7 +1608,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 $set[] = [
                     'column' => 'auth_data',
                     'value' => "'%s'",
-                    'data' => [$data['auth_data']]
+                    'data' => [$data['auth_data']],
                 ];
             }
 
@@ -1630,7 +1630,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                         $data['password'],
                         if_isset($data['server'], $user_service['server']),
                         if_isset($data['type'], $user_service['type']),
-                        if_isset($data['auth_data'], $user_service['auth_data'])
+                        if_isset($data['auth_data'], $user_service['auth_data']),
                     ]
                 )
             );
@@ -1641,7 +1641,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             return [
                 'status' => "not_edited",
                 'text' => $this->lang->translate('not_edited_user_service'),
-                'positive' => false
+                'positive' => false,
             ];
         }
 
@@ -1662,7 +1662,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         return [
             'status' => 'ok',
             'text' => $this->lang->translate('edited_user_service'),
-            'positive' => true
+            'positive' => true,
         ];
     }
 
@@ -1674,7 +1674,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             $value = 1 << $i;
             if ($this->service['types'] & $value) {
                 $types .= create_dom_element("option", $this->get_type_name($value), [
-                    'value' => $value
+                    'value' => $value,
                 ]);
             }
         }
@@ -1683,7 +1683,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         // Pobieranie listy serwerów
         foreach ($this->heart->get_servers() as $id => $row) {
             $servers .= create_dom_element("option", $row['name'], [
-                'value' => $row['id']
+                'value' => $row['id'],
             ]);
         }
 
@@ -1763,7 +1763,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 'status' => "warnings",
                 'text' => $this->lang->translate('form_wrong_filled'),
                 'positive' => false,
-                'data' => ['warnings' => $warnings]
+                'data' => ['warnings' => $warnings],
             ];
         }
 
@@ -1780,7 +1780,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 return [
                     'status' => "no_service",
                     'text' => $this->lang->translate('no_user_service'),
-                    'positive' => false
+                    'positive' => false,
                 ];
             }
         } else {
@@ -1797,7 +1797,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     return [
                         'status' => "no_service",
                         'text' => $this->lang->translate('no_user_service'),
-                        'positive' => false
+                        'positive' => false,
                     ];
                 }
             }
@@ -1820,7 +1820,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     $data['type'],
                     $auth_data,
                     $data['password'],
-                    md5($data['password'])
+                    md5($data['password']),
                 ]
             )
         );
@@ -1829,7 +1829,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             return [
                 'status' => "no_service",
                 'text' => $this->lang->translate('no_user_service'),
-                'positive' => false
+                'positive' => false,
             ];
         }
 
@@ -1850,14 +1850,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             return [
                 'status' => "service_not_taken_over",
                 'text' => $this->lang->translate('service_not_taken_over'),
-                'positive' => false
+                'positive' => false,
             ];
         }
 
         return [
             'status' => "ok",
             'text' => $this->lang->translate('service_taken_over'),
-            'positive' => true
+            'positive' => true,
         ];
     }
 
@@ -1886,7 +1886,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
             $servers .= create_dom_element("option", $row['name'], [
                 'value' => $row['id'],
-                'selected' => $server == $row['id'] ? "selected" : ""
+                'selected' => $server == $row['id'] ? "selected" : "",
             ]);
         }
 
@@ -1978,7 +1978,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             }
 
             $servers .= create_dom_element("option", $row['name'], [
-                'value' => $row['id']
+                'value' => $row['id'],
             ]);
         }
 
@@ -2022,7 +2022,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         return [
             'tariff' => $tariff,
-            'server' => $data['server']
+            'server' => $data['server'],
         ];
     }
 

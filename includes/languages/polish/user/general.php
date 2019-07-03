@@ -154,5 +154,5 @@ Możesz teraz skorzystać z wielu przydatnych dodatków.',
     'wrong_reset_key' => 'Kod resetowania hasła jest błędny.<br />
 Skontaktuj się z administratorem serwisu w celu uzyskania dodatkowych informacji.',
     'wrong_sender_email' =>
-        'E-mail przypisany do Twojego konta jest błędny. Zgłoś to właścicielowi sklepu.'
+        'E-mail przypisany do Twojego konta jest błędny. Zgłoś to właścicielowi sklepu.',
 ];

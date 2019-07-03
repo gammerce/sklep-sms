@@ -58,7 +58,7 @@ class Transferuj extends PaymentModule implements SupportTransfer
             'email' => $purchase->getEmail(),
             'pow_url' => $this->settings['shop_url_slash'] . "page/transferuj_ok",
             'pow_url_blad' => $this->settings['shop_url_slash'] . "page/transferuj_bad",
-            'wyn_url' => $this->settings['shop_url_slash'] . "transfer/transferuj"
+            'wyn_url' => $this->settings['shop_url_slash'] . "transfer/transferuj",
         ];
     }
 

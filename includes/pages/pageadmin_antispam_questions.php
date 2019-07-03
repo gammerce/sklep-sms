@@ -75,7 +75,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
         if (!get_privilages("manage_antispam_questions")) {
             return [
                 'status' => "not_logged_in",
-                'text' => $this->lang->translate('not_logged_or_no_perm')
+                'text' => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
@@ -111,7 +111,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
 
         return [
             'status' => 'ok',
-            'template' => $output
+            'template' => $output,
         ];
     }
 }

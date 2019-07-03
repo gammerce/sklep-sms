@@ -85,7 +85,7 @@ class Payment
         if (!$this->getPaymentModule()->supportSms()) {
             return [
                 'status' => 'sms_not_supported',
-                'text' => $this->lang->translate('sms_info_sms_not_supported')
+                'text' => $this->lang->translate('sms_info_sms_not_supported'),
             ];
         }
 
@@ -98,7 +98,7 @@ class Payment
 
             return [
                 "status" => $e->getErrorCode(),
-                "text" => $this->getSmsExceptionMessage($e)
+                "text" => $this->getSmsExceptionMessage($e),
             ];
         } catch (SmsPaymentException $e) {
             log_info(
@@ -116,7 +116,7 @@ class Payment
 
             return [
                 "status" => $e->getErrorCode(),
-                "text" => $this->getSmsExceptionMessage($e)
+                "text" => $this->getSmsExceptionMessage($e),
             ];
         }
 
@@ -139,7 +139,7 @@ class Payment
                     $smsNumber,
                     $user->getLastIp(),
                     $user->getPlatform(),
-                    $result->free
+                    $result->free,
                 ]
             )
         );
@@ -149,7 +149,7 @@ class Payment
         return [
             'status' => 'ok',
             'text' => $this->lang->translate('sms_info_ok'),
-            'payment_id' => $paymentId
+            'payment_id' => $paymentId,
         ];
     }
 
@@ -252,7 +252,7 @@ class Payment
         if (!$this->getPaymentModule()->supportTransfer()) {
             return [
                 'status' => Payment::TRANSFER_NOT_SUPPORTED,
-                'text' => $this->lang->translate('transfer_' . Payment::TRANSFER_NOT_SUPPORTED)
+                'text' => $this->lang->translate('transfer_' . Payment::TRANSFER_NOT_SUPPORTED),
             ];
         }
 
@@ -265,8 +265,11 @@ class Payment
             'text' => $this->lang->translate('transfer_prepared'),
             'positive' => true,
             'data' => [
-                'data' => $this->getPaymentModule()->prepareTransfer($purchase_data, $data_filename)
-            ]
+                'data' => $this->getPaymentModule()->prepareTransfer(
+                    $purchase_data,
+                    $data_filename
+                ),
+            ],
             // Przygotowuje dane płatności transferem
         ];
     }
@@ -329,7 +332,7 @@ class Payment
                     $purchase_data->getPayment('cost'),
                     $transfer_finalize->getTransferService(),
                     $purchase_data->user->getLastIp(),
-                    $purchase_data->user->getPlatform()
+                    $purchase_data->user->getPlatform(),
                 ]
             )
         );
@@ -366,7 +369,7 @@ class Payment
         // Dokonujemy zakupu
         $purchase_data->setPayment([
             'method' => 'transfer',
-            'payment_id' => $transfer_finalize->getOrderid()
+            'payment_id' => $transfer_finalize->getOrderid(),
         ]);
         $bought_service_id = $service_module->purchase($purchase_data);
 

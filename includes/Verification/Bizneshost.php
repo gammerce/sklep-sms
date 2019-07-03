@@ -24,7 +24,7 @@ class Bizneshost extends PaymentModule implements SupportSms
 
         $response = $this->requester->get("http://biznes-host.pl/api/sprawdzkod_v2.php", [
             "uid" => $uid,
-            "kod" => $returnCode
+            "kod" => $returnCode,
         ]);
 
         if ($response === false) {

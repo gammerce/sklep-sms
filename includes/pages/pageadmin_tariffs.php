@@ -63,7 +63,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
         if (!get_privilages("manage_settings")) {
             return [
                 'status' => "not_logged_in",
-                'text' => $this->lang->translate('not_logged_or_no_perm')
+                'text' => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
@@ -88,7 +88,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
 
         return [
             'status' => 'ok',
-            'template' => $output
+            'template' => $output,
         ];
     }
 }

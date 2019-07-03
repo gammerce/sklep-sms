@@ -61,7 +61,7 @@ class PageAdminBoughtServices extends PageAdmin
                     "t.ip",
                     "t.email",
                     "t.auth_data",
-                    "CAST(t.timestamp as CHAR)"
+                    "CAST(t.timestamp as CHAR)",
                 ],
                 $get['search'],
                 $where

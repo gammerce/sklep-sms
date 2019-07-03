@@ -8,5 +8,5 @@ return [
     'choose_charge_method' => 'Choose charging type',
     'choose_sms_value' => 'Choose SMS value',
     'type_amount' => 'Enter amount',
-    'wrong_charge_method' => 'Wrong charging method was chosen.'
+    'wrong_charge_method' => 'Wrong charging method was chosen.',
 ];

@@ -37,7 +37,7 @@ class ExtraStuffController
                 "script",
                 'window.open("' . str_replace('"', '\"', $url) . '", "", "height=720,width=1280");',
                 [
-                    'type' => "text/javascript"
+                    'type' => "text/javascript",
                 ]
             );
 

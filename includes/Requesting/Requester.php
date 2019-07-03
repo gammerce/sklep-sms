@@ -86,7 +86,7 @@ class Requester
             CURLOPT_URL => $url,
             CURLOPT_CUSTOMREQUEST => $method,
             CURLOPT_TIMEOUT => $timeout,
-            CURLOPT_USERAGENT => 'gammerce/sklep-sms'
+            CURLOPT_USERAGENT => 'gammerce/sklep-sms',
         ]);
 
         $headers['Content-Type'] = 'application/json';

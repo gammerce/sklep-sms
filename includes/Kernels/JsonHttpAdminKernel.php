@@ -32,7 +32,7 @@ class JsonHttpAdminKernel extends Kernel
         SetLanguage::class,
         ManageAdminAuthentication::class,
         ValidateLicense::class,
-        UpdateUserActivity::class
+        UpdateUserActivity::class,
     ];
 
     public function run(Request $request)
@@ -101,7 +101,7 @@ class JsonHttpAdminKernel extends Kernel
             if (!empty($warnings)) {
                 foreach ($warnings as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning"
+                        'class' => "form_warning",
                     ]);
                     $data['warnings'][$brick] = $warning;
                 }
@@ -124,10 +124,10 @@ class JsonHttpAdminKernel extends Kernel
             $purchase_data->user = $user2;
             $purchase_data->setPayment([
                 'method' => "admin",
-                'payment_id' => $payment_id
+                'payment_id' => $payment_id,
             ]);
             $purchase_data->setOrder([
-                'amount' => $amount
+                'amount' => $amount,
             ]);
             $purchase_data->setEmail($user2->getEmail());
 
@@ -184,7 +184,7 @@ class JsonHttpAdminKernel extends Kernel
             if ($return_data['status'] == "warnings") {
                 foreach ($return_data['data']['warnings'] as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning"
+                        'class' => "form_warning",
                     ]);
                     $return_data['data']['warnings'][$brick] = $warning;
                 }
@@ -234,7 +234,7 @@ class JsonHttpAdminKernel extends Kernel
             if ($return_data['status'] == "warnings") {
                 foreach ($return_data['data']['warnings'] as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning"
+                        'class' => "form_warning",
                     ]);
                     $return_data['data']['warnings'][$brick] = $warning;
                 }
@@ -346,7 +346,7 @@ class JsonHttpAdminKernel extends Kernel
             if (!empty($warnings)) {
                 foreach ($warnings as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning"
+                        'class' => "form_warning",
                     ]);
                     $data['warnings'][$brick] = $warning;
                 }
@@ -542,7 +542,7 @@ class JsonHttpAdminKernel extends Kernel
             if (!empty($warnings)) {
                 foreach ($warnings as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning"
+                        'class' => "form_warning",
                     ]);
                     $data['warnings'][$brick] = $warning;
                 }
@@ -607,7 +607,7 @@ class JsonHttpAdminKernel extends Kernel
                         $date_format,
                         $delete_logs,
                         $google_analytics,
-                        $gadugadu
+                        $gadugadu,
                     ]
                 )
             );
@@ -762,7 +762,7 @@ class JsonHttpAdminKernel extends Kernel
             if (!empty($warnings)) {
                 foreach ($warnings as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning"
+                        'class' => "form_warning",
                     ]);
                     $data['warnings'][$brick] = $warning;
                 }
@@ -786,7 +786,7 @@ class JsonHttpAdminKernel extends Kernel
 
                         $set .= $db->prepare("`%s` = '{$element['type']}'", [
                             $element['column'],
-                            $element['value']
+                            $element['value'],
                         ]);
                     }
                 }
@@ -813,7 +813,7 @@ class JsonHttpAdminKernel extends Kernel
                             $_POST['tag'],
                             $_POST['module'],
                             implode(";", $_POST['groups']),
-                            trim($_POST['order'])
+                            trim($_POST['order']),
                         ]
                     )
                 );
@@ -827,7 +827,7 @@ class JsonHttpAdminKernel extends Kernel
                     )
                 );
                 return new ApiResponse('ok', $lang->translate('service_added'), 1, [
-                    'length' => 10000
+                    'length' => 10000,
                 ]);
             }
 
@@ -849,7 +849,7 @@ class JsonHttpAdminKernel extends Kernel
                             $_POST['tag'],
                             implode(";", $_POST['groups']),
                             $_POST['order'],
-                            $_POST['id2']
+                            $_POST['id2'],
                         ]
                     )
                 );
@@ -1003,7 +1003,7 @@ class JsonHttpAdminKernel extends Kernel
             if (!empty($warnings)) {
                 foreach ($warnings as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning"
+                        'class' => "form_warning",
                     ]);
                     $data['warnings'][$brick] = $warning;
                 }
@@ -1033,7 +1033,7 @@ class JsonHttpAdminKernel extends Kernel
                             $_POST['ip'],
                             $_POST['port'],
                             $_POST['sms_service'],
-                            $_POST['id']
+                            $_POST['id'],
                         ]
                     )
                 );
@@ -1056,7 +1056,7 @@ class JsonHttpAdminKernel extends Kernel
                     $servers_services[] = [
                         'service' => $service['id'],
                         'server' => $server_id,
-                        'status' => (bool) $_POST[$service['id']]
+                        'status' => (bool) $_POST[$service['id']],
                     ];
                 }
 
@@ -1203,7 +1203,7 @@ class JsonHttpAdminKernel extends Kernel
             if (!empty($warnings)) {
                 foreach ($warnings as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning"
+                        'class' => "form_warning",
                     ]);
                     $data['warnings'][$brick] = $warning;
                 }
@@ -1224,7 +1224,7 @@ class JsonHttpAdminKernel extends Kernel
                         $_POST['email'],
                         implode(";", $_POST['groups']),
                         ceil($_POST['wallet'] * 100),
-                        $_POST['uid']
+                        $_POST['uid'],
                     ]
                 )
             );
@@ -1256,7 +1256,7 @@ class JsonHttpAdminKernel extends Kernel
 
             $db->query(
                 $db->prepare("DELETE FROM `" . TABLE_PREFIX . "users` " . "WHERE `uid` = '%d'", [
-                    $_POST['uid']
+                    $_POST['uid'],
                 ])
             );
 
@@ -1358,7 +1358,7 @@ class JsonHttpAdminKernel extends Kernel
 
             $db->query(
                 $db->prepare("DELETE FROM `" . TABLE_PREFIX . "groups` " . "WHERE `id` = '%d'", [
-                    $_POST['id']
+                    $_POST['id'],
                 ])
             );
 
@@ -1404,7 +1404,7 @@ class JsonHttpAdminKernel extends Kernel
             if (!empty($warnings)) {
                 foreach ($warnings as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning"
+                        'class' => "form_warning",
                     ]);
                     $data['warnings'][$brick] = $warning;
                 }
@@ -1451,7 +1451,7 @@ class JsonHttpAdminKernel extends Kernel
             if (!empty($warnings)) {
                 foreach ($warnings as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning"
+                        'class' => "form_warning",
                     ]);
                     $data['warnings'][$brick] = $warning;
                 }
@@ -1554,7 +1554,7 @@ class JsonHttpAdminKernel extends Kernel
             if (!empty($warnings)) {
                 foreach ($warnings as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning"
+                        'class' => "form_warning",
                     ]);
                     $data['warnings'][$brick] = $warning;
                 }
@@ -1593,7 +1593,7 @@ class JsonHttpAdminKernel extends Kernel
                             $_POST['tariff'],
                             $_POST['amount'],
                             $_POST['server'],
-                            $_POST['id']
+                            $_POST['id'],
                         ]
                     )
                 );
@@ -1628,7 +1628,7 @@ class JsonHttpAdminKernel extends Kernel
 
             $db->query(
                 $db->prepare("DELETE FROM `" . TABLE_PREFIX . "pricelist` " . "WHERE `id` = '%d'", [
-                    $_POST['id']
+                    $_POST['id'],
                 ])
             );
 
@@ -1671,7 +1671,7 @@ class JsonHttpAdminKernel extends Kernel
             if (!empty($warnings)) {
                 foreach ($warnings as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning"
+                        'class' => "form_warning",
                     ]);
                     $data['warnings'][$brick] = $warning;
                 }
@@ -1712,7 +1712,7 @@ class JsonHttpAdminKernel extends Kernel
 
             $result = $db->query(
                 $db->prepare("DELETE FROM `" . TABLE_PREFIX . "sms_codes` " . "WHERE `id` = '%d'", [
-                    $_POST['id']
+                    $_POST['id'],
                 ])
             );
 
@@ -1774,7 +1774,7 @@ class JsonHttpAdminKernel extends Kernel
             if (!empty($warnings)) {
                 foreach ($warnings as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning"
+                        'class' => "form_warning",
                     ]);
                     $data['warnings'][$brick] = $warning;
                 }
@@ -1797,7 +1797,7 @@ class JsonHttpAdminKernel extends Kernel
                         if_isset($code_data['server'], 0),
                         if_isset($code_data['amount'], 0),
                         if_isset($code_data['tariff'], 0),
-                        $code_data['data']
+                        $code_data['data'],
                     ]
                 )
             );
@@ -1878,7 +1878,7 @@ class JsonHttpAdminKernel extends Kernel
 
             $db->query(
                 $db->prepare("DELETE FROM `" . TABLE_PREFIX . "logs` " . "WHERE `id` = '%d'", [
-                    $_POST['id']
+                    $_POST['id'],
                 ])
             );
 

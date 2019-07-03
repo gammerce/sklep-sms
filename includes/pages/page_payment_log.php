@@ -82,7 +82,7 @@ class PagePaymentLog extends Page implements I_BeLoggedMust
                 "div",
                 $payment_log_brick,
                 $data = [
-                    'class' => "brick " . $class
+                    'class' => "brick " . $class,
                 ]
             );
         }

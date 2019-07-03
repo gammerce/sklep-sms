@@ -101,7 +101,7 @@ abstract class Page
                 "purchase",
                 "user_own_services",
                 "service_take_over",
-                "payment_log"
+                "payment_log",
             ])
         ) {
             foreach ($this->heart->get_services_modules() as $module_info) {

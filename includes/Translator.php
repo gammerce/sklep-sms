@@ -27,7 +27,7 @@ class Translator
      */
     protected $langList = [
         'polish' => 'pl',
-        'english' => 'en'
+        'english' => 'en',
     ];
 
     /**

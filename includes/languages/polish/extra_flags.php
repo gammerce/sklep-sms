@@ -39,5 +39,5 @@ przed chwilą dokonałeś/aś zakupu w naszym sklepie.',
     'wrong_date_format' => 'Błędny format daty.',
     'wrong_service_description_file' => 'Plik z opisem usługi nie został prawidłowo utworzony. <br />
 Prawdopodobnie folder <strong>themes/{1}/services/</strong> nie ma uprawnień do zapisu.',
-    'wrong_type_chosen' => 'Wybrano błędny typ.'
+    'wrong_type_chosen' => 'Wybrano błędny typ.',
 ];

@@ -27,7 +27,7 @@ class Settings implements ArrayAccess
             'date_format' => 'Y-m-d H:i',
             'theme' => 'default',
             'shop_url' => '',
-            'shop_url_slash' => ''
+            'shop_url_slash' => '',
         ];
     }
 

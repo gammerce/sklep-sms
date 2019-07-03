@@ -28,7 +28,7 @@ class Gosetti extends PaymentModule implements SupportSms
 
         $response = $this->requester->get('https://gosetti.pl/Api/SmsApiV2CheckCode.php', [
             'UserId' => $this->getAccountId(),
-            'Code' => $returnCode
+            'Code' => $returnCode,
         ]);
 
         if ($response === false) {

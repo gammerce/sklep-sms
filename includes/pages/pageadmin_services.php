@@ -72,7 +72,7 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
         if (!get_privilages("manage_services")) {
             return [
                 'status' => "not_logged_in",
-                'text' => $this->lang->translate('not_logged_or_no_perm')
+                'text' => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
@@ -90,7 +90,7 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
                         "tbody",
                         $service_module->service_admin_extra_fields_get(),
                         [
-                            'class' => 'extra_fields'
+                            'class' => 'extra_fields',
                         ]
                     );
                 }
@@ -114,7 +114,7 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
                     'selected' =>
                         isset($service['module']) && $service['module'] == $module['id']
                             ? "selected"
-                            : ""
+                            : "",
                 ]);
             }
         }
@@ -127,7 +127,7 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
                 'selected' =>
                     isset($service['groups']) && in_array($group['id'], $service['groups'])
                         ? "selected"
-                        : ""
+                        : "",
             ]);
         }
 
@@ -154,7 +154,7 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
 
         return [
             'status' => 'ok',
-            'template' => $output
+            'template' => $output,
         ];
     }
 }

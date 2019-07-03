@@ -32,7 +32,7 @@ class OneShotOneKill extends PaymentModule implements SupportSms
         '10.40' => '91664',
         '12.35' => '91955',
         '13.00' => '92055',
-        '16.25' => '92555'
+        '16.25' => '92555',
     ];
 
     public function verifySms($returnCode, $number)
@@ -41,7 +41,7 @@ class OneShotOneKill extends PaymentModule implements SupportSms
             'type' => 'sms',
             'key' => $this->getApi(),
             'sms_code' => $returnCode,
-            'comment' => ''
+            'comment' => '',
         ]);
 
         if ($response === false) {

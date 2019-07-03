@@ -63,7 +63,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
                         $this->settings['currency']
                     ),
                     [
-                        'value' => $tariff->getId()
+                        'value' => $tariff->getId(),
                     ]
                 );
             }
@@ -84,7 +84,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         return $this->template->render(
             "services/charge_wallet/purchase_form",
             compact('option_sms', 'option_transfer', 'sms_body', 'transfer_body') + [
-                'serviceId' => $this->service['id']
+                'serviceId' => $this->service['id'],
             ]
         );
     }
@@ -95,7 +95,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
             return [
                 'status' => "not_logged_in",
                 'text' => $this->lang->translate('you_arent_logged'),
-                'positive' => false
+                'positive' => false,
             ];
         }
 
@@ -104,7 +104,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
             return [
                 'status' => "wrong_method",
                 'text' => $this->lang->translate('wrong_charge_method'),
-                'positive' => false
+                'positive' => false,
             ];
         }
 
@@ -138,7 +138,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
                 'status' => "warnings",
                 'text' => $this->lang->translate('form_wrong_filled'),
                 'positive' => false,
-                'data' => ['warnings' => $warnings]
+                'data' => ['warnings' => $warnings],
             ];
         }
 
@@ -146,23 +146,23 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         $purchase_data->setService($this->service['id']);
         $purchase_data->setTariff($this->heart->getTariff($data['tariff']));
         $purchase_data->setPayment([
-            'no_wallet' => true
+            'no_wallet' => true,
         ]);
 
         if ($data['method'] == "sms") {
             $purchase_data->setPayment([
-                'no_transfer' => true
+                'no_transfer' => true,
             ]);
             $purchase_data->setOrder([
-                'amount' => $this->heart->getTariff($data['tariff'])->getProvision()
+                'amount' => $this->heart->getTariff($data['tariff'])->getProvision(),
             ]);
         } elseif ($data['method'] == "transfer") {
             $purchase_data->setPayment([
                 'cost' => $data['transfer_amount'] * 100,
-                'no_sms' => true
+                'no_sms' => true,
             ]);
             $purchase_data->setOrder([
-                'amount' => $data['transfer_amount'] * 100
+                'amount' => $data['transfer_amount'] * 100,
             ]);
         }
 
@@ -170,7 +170,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
             'status' => "ok",
             'text' => $this->lang->translate('purchase_form_validated'),
             'positive' => true,
-            'purchase_data' => $purchase_data
+            'purchase_data' => $purchase_data,
         ];
     }
 
@@ -247,7 +247,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
                     $this->lang->translate('wallet_was_charged'),
                     $data['amount']
                 ),
-                'class' => "income"
+                'class' => "income",
             ];
         }
 

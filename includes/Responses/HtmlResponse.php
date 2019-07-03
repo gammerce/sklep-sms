@@ -12,7 +12,7 @@ class HtmlResponse extends Response
             "Last-Modified" => gmdate("D, d M Y H:i:s") . " GMT",
             "Cache-Control" => "no-cache, must-revalidate",
             "Pragma" => "no-cache",
-            "Content-Type" => "text/html; charset=\"UTF-8\""
+            "Content-Type" => "text/html; charset=\"UTF-8\"",
         ]);
     }
 }

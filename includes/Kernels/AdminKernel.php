@@ -29,7 +29,7 @@ class AdminKernel extends Kernel
         ManageAdminAuthentication::class,
         ValidateLicense::class,
         UpdateUserActivity::class,
-        RunCron::class
+        RunCron::class,
     ];
 
     public function run(Request $request)

@@ -76,7 +76,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
         if (!get_privilages("manage_sms_codes")) {
             return [
                 'status' => "not_logged_in",
-                'text' => $this->lang->translate('not_logged_or_no_perm')
+                'text' => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
@@ -85,7 +85,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
                 $tariffs = "";
                 foreach ($this->heart->getTariffs() as $tariff) {
                     $tariffs .= create_dom_element("option", $tariff->getId(), [
-                        'value' => $tariff->getId()
+                        'value' => $tariff->getId(),
                     ]);
                 }
 
@@ -101,7 +101,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
 
         return [
             'status' => 'ok',
-            'template' => $output
+            'template' => $output,
         ];
     }
 }

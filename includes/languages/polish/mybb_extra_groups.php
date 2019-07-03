@@ -15,5 +15,5 @@ Wejdź do panelu użytkownika <i>(na forum)</i> -> Kliknij <b>Grupy użytkownik�
     'mybb_purchase_no_user' =>
         'W trakcie zakupu został usunięty użytkownik z bazy MyBB. Płatność: {1}',
     'mybb_user' => 'Użytkownik MyBB',
-    'no_user' => 'Nie ma użytkownika o takiej nazwie.'
+    'no_user' => 'Nie ma użytkownika o takiej nazwie.',
 ];

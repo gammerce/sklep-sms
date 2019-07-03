@@ -47,12 +47,12 @@ class ServerStuffController
                 'type' => $request->get('type'),
                 'auth_data' => $request->get('auth_data'),
                 'password' => $request->get('password'),
-                'passwordr' => $request->get('password')
+                'passwordr' => $request->get('password'),
             ]);
             $purchaseData->setPayment([
                 'method' => $request->get('method'),
                 'sms_code' => $request->get('sms_code'),
-                'sms_service' => $request->get('transaction_service')
+                'sms_service' => $request->get('transaction_service'),
             ]);
 
             // Ustawiamy taryfę z numerem
@@ -93,7 +93,7 @@ class ServerStuffController
             $purchaseData->setPayment([
                 'method' => $request->get('method'),
                 'sms_code' => $request->get('sms_code'),
-                'sms_service' => $request->get('transaction_service')
+                'sms_service' => $request->get('transaction_service'),
             ]);
             $returnPayment = validate_payment($purchaseData);
 
@@ -133,7 +133,7 @@ class ServerStuffController
         $output .= $extra_data;
 
         return new Response($output, 200, [
-            'Content-type' => 'text/plain; charset="UTF-8"'
+            'Content-type' => 'text/plain; charset="UTF-8"',
         ]);
     }
 }

@@ -34,7 +34,7 @@ class ValidateLicense implements MiddlewareContract
         // so that it would be easier for us to debug any potential exceptions
         if ($app->bound(Raven_Client::class)) {
             $app->make(Raven_Client::class)->tags_context([
-                'license_id' => $license->getExternalId()
+                'license_id' => $license->getExternalId(),
             ]);
         }
 
@@ -49,7 +49,7 @@ class ValidateLicense implements MiddlewareContract
             $user->removePrivilages();
             $user->setPrivilages([
                 "acp" => true,
-                "manage_settings" => true
+                "manage_settings" => true,
             ]);
         }
     }

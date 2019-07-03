@@ -19,7 +19,7 @@ class PageAdminIncome extends PageAdmin
         "september",
         "october",
         "november",
-        "december"
+        "december",
     ];
 
     public function __construct()
@@ -66,7 +66,7 @@ class PageAdminIncome extends PageAdmin
         for ($i = 1; $i <= 12; $i++) {
             $months .= create_dom_element("option", $this->lang->translate($this->months[$i]), [
                 'value' => str_pad($i, 2, 0, STR_PAD_LEFT),
-                'selected' => $G_MONTH == $i ? "selected" : ""
+                'selected' => $G_MONTH == $i ? "selected" : "",
             ]);
         }
 
@@ -75,7 +75,7 @@ class PageAdminIncome extends PageAdmin
         for ($i = 2014; $i <= intval(date("Y")); $i++) {
             $years .= create_dom_element("option", $i, [
                 'value' => $i,
-                'selected' => $G_YEAR == $i ? "selected" : ""
+                'selected' => $G_YEAR == $i ? "selected" : "",
             ]);
         }
 

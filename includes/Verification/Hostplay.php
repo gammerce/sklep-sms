@@ -28,7 +28,7 @@ class Hostplay extends PaymentModule implements SupportSms
         '9.47' => '91455',
         '12.85' => '91955',
         '13.53' => '92055',
-        '16.91' => '92555'
+        '16.91' => '92555',
     ];
 
     public function verifySms($returnCode, $number)
@@ -37,7 +37,7 @@ class Hostplay extends PaymentModule implements SupportSms
             'payment' => 'homepay_sms',
             'userid' => $this->getUserId(),
             'comment' => 'SklepSMS',
-            'code' => $returnCode
+            'code' => $returnCode,
         ]);
 
         if (!$response) {

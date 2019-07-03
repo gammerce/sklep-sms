@@ -175,7 +175,7 @@ class PageAdminMain extends PageAdmin
     private function add_note($text, $class, &$notes)
     {
         $notes .= create_dom_element("div", $text, [
-            'class' => "note " . $class
+            'class' => "note " . $class,
         ]);
     }
 }

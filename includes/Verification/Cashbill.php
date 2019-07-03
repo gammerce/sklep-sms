@@ -79,7 +79,7 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
                     $purchase->user->getSurname(false) .
                     $purchase->getEmail() .
                     $this->getKey()
-            )
+            ),
         ];
     }
 

@@ -53,7 +53,7 @@ abstract class Block
 
         return create_dom_element("div", $content, [
             'id' => $this->get_content_id(),
-            'class' => $content !== null ? $this->get_content_class() : ""
+            'class' => $content !== null ? $this->get_content_class() : "",
         ]);
     }
 }

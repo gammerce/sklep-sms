@@ -19,7 +19,7 @@ class Mintshost extends PaymentModule implements SupportSms
         $response = $this->requester->get('https://mintshost.pl/sms2.php', [
             'kod' => $returnCode,
             'sms' => $number,
-            'email' => $this->getEmail()
+            'email' => $this->getEmail(),
         ]);
 
         if ($response === false) {

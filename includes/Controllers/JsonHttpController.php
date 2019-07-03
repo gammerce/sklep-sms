@@ -202,7 +202,7 @@ class JsonHttpController
             if (!empty($warnings)) {
                 foreach ($warnings as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning"
+                        'class' => "form_warning",
                     ]);
                     $data['warnings'][$brick] = $warning;
                 }
@@ -289,7 +289,7 @@ class JsonHttpController
             if (!empty($warnings)) {
                 foreach ($warnings as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning"
+                        'class' => "form_warning",
                     ]);
                     $data['warnings'][$brick] = $warning;
                 }
@@ -368,7 +368,7 @@ class JsonHttpController
             if (!empty($warnings)) {
                 foreach ($warnings as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning"
+                        'class' => "form_warning",
                     ]);
                     $data['warnings'][$brick] = $warning;
                 }
@@ -419,7 +419,7 @@ class JsonHttpController
             if (!empty($warnings)) {
                 foreach ($warnings as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning"
+                        'class' => "form_warning",
                     ]);
                     $data['warnings'][$brick] = $warning;
                 }
@@ -469,7 +469,7 @@ class JsonHttpController
             if ($return_data['status'] == "warnings") {
                 foreach ($return_data['data']['warnings'] as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning"
+                        'class' => "form_warning",
                     ]);
                     $return_data['data']['warnings'][$brick] = $warning;
                 }
@@ -485,7 +485,7 @@ class JsonHttpController
 
                 if (!$purchase_data->getPayment('cost') && $purchase_data->getTariff() !== null) {
                     $purchase_data->setPayment([
-                        'cost' => $purchase_data->getTariff()->getProvision()
+                        'cost' => $purchase_data->getTariff()->getProvision(),
                     ]);
                 }
 
@@ -495,7 +495,7 @@ class JsonHttpController
                     strlen($settings['sms_service'])
                 ) {
                     $purchase_data->setPayment([
-                        'sms_service' => $settings['sms_service']
+                        'sms_service' => $settings['sms_service'],
                     ]);
                 }
 
@@ -517,7 +517,7 @@ class JsonHttpController
                 $return_data['data'] = [
                     'length' => 8000,
                     'data' => $purchase_data_encoded,
-                    'sign' => md5($purchase_data_encoded . $settings['random_key'])
+                    'sign' => md5($purchase_data_encoded . $settings['random_key']),
                 ];
             }
 
@@ -548,7 +548,7 @@ class JsonHttpController
             $purchase_data->setPayment([
                 'method' => $_POST['method'],
                 'sms_code' => $_POST['sms_code'],
-                'service_code' => $_POST['service_code']
+                'service_code' => $_POST['service_code'],
             ]);
 
             $return_payment = validate_payment($purchase_data);
@@ -596,7 +596,7 @@ class JsonHttpController
             return new PlainResponse(
                 purchase_info([
                     'purchase_id' => $_POST['purchase_id'],
-                    'action' => "web"
+                    'action' => "web",
                 ])
             );
         }
@@ -671,7 +671,7 @@ class JsonHttpController
             ) {
                 $button_edit = create_dom_element("button", $lang->translate('edit'), [
                     'class' => "button edit_row",
-                    'type' => 'button'
+                    'type' => 'button',
                 ]);
             }
 
@@ -719,7 +719,7 @@ class JsonHttpController
             if ($return_data['status'] == "warnings") {
                 foreach ($return_data['data']['warnings'] as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning"
+                        'class' => "form_warning",
                     ]);
                     $return_data['data']['warnings'][$brick] = $warning;
                 }
@@ -758,7 +758,7 @@ class JsonHttpController
             if ($return_data['status'] == "warnings") {
                 foreach ($return_data['data']['warnings'] as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning"
+                        'class' => "form_warning",
                     ]);
                     $return_data['data']['warnings'][$brick] = $warning;
                 }
@@ -775,7 +775,7 @@ class JsonHttpController
         if ($request->query->get("action") === "get_income") {
             $user->setPrivilages([
                 'acp' => true,
-                'view_income' => true
+                'view_income' => true,
             ]);
             $page = new PageAdminIncome();
 

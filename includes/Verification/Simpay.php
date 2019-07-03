@@ -20,12 +20,12 @@ class Simpay extends PaymentModule implements SupportSms
             'params' => [
                 'auth' => [
                     'key' => $this->getKey(),
-                    'secret' => $this->getSecret()
+                    'secret' => $this->getSecret(),
                 ],
                 'service_id' => $this->getServiceId(),
                 'number' => $sms_number,
-                'code' => $sms_code
-            ]
+                'code' => $sms_code,
+            ],
         ]);
 
         if (!$response) {

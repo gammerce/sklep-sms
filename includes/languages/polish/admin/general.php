@@ -269,5 +269,5 @@ return [
         'Wchodzimy na stronę <a href="https://github.com/gammerce/sklep-sms/releases/latest" target="_blank">repozytorium sklepu</a> i pobieramy plik <strong>build.zip</strong>',
     'wrong_group' => 'Wybrano błędną grupę.',
     'wrong_module' => 'Wybrano nieprawidłowy moduł.',
-    'wrong_page_id' => 'Podano błędne id strony.'
+    'wrong_page_id' => 'Podano błędne id strony.',
 ];

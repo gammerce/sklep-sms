@@ -31,7 +31,7 @@ install:
   - php artisan test:setup
 
 script:
-  - prettier "includes/**" --check
+  - prettier "includes/**" "jscripts/**" "styles/**" "install/**" --check
   - ./vendor/bin/phpunit
 
 before_deploy:

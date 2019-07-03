@@ -87,7 +87,7 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
                 return [
                     'status' => "no_option",
                     'text' => $this->lang->translate('service_not_affordable'),
-                    'positive' => false
+                    'positive' => false,
                 ];
             }
 
@@ -108,24 +108,24 @@ class ServiceOther extends ServiceOtherSimple implements IService_Purchase, ISer
                 'status' => "warnings",
                 'text' => $this->lang->translate('form_wrong_filled'),
                 'positive' => false,
-                'data' => ['warnings' => $warnings]
+                'data' => ['warnings' => $warnings],
             ];
         }
 
         $purchase_data->setOrder([
             'amount' => $price['amount'],
-            'forever' => $price['amount'] == -1 ? true : false
+            'forever' => $price['amount'] == -1 ? true : false,
         ]);
 
         $purchase_data->setPayment([
-            'cost' => $purchase_data->getTariff()->getProvision()
+            'cost' => $purchase_data->getTariff()->getProvision(),
         ]);
 
         return [
             'status' => "ok",
             'text' => $this->lang->translate('purchase_form_validated'),
             'positive' => true,
-            'purchase_data' => $purchase_data
+            'purchase_data' => $purchase_data,
         ];
     }
 

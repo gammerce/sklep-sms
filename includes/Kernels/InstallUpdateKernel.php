@@ -38,7 +38,7 @@ class InstallUpdateKernel extends Kernel
                 "Aktualizacja nie mogła zostać przeprowadzona. Nie wszystkie warunki są spełnione.",
                 false,
                 [
-                    'update_info' => $update_info
+                    'update_info' => $update_info,
                 ]
             );
         }

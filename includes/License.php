@@ -132,10 +132,10 @@ class License
                 'url' => $shopUrl,
                 'name' => $this->settings['shop_name'] ?: $shopUrl,
                 'version' => app()->version(),
-                'language' => $this->lang->getCurrentLanguage()
+                'language' => $this->lang->getCurrentLanguage(),
             ],
             [
-                'Authorization' => $this->settings['license_password']
+                'Authorization' => $this->settings['license_password'],
             ]
         );
 

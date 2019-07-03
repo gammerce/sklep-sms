@@ -49,7 +49,7 @@ class PageAdminUpdateServers extends PageAdmin
                 'name' => htmlspecialchars($server['name']),
                 'currentVersion' => $server['version'],
                 'newestVersion' => $newestVersion,
-                'link' => $link
+                'link' => $link,
             ]);
         }
 

@@ -115,7 +115,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
         if (!get_privilages("manage_service_codes")) {
             return [
                 'status' => "not_logged_in",
-                'text' => $this->lang->translate('not_logged_or_no_perm')
+                'text' => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
@@ -132,7 +132,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
                     }
 
                     $services .= create_dom_element("option", $row['name'], [
-                        'value' => $row['id']
+                        'value' => $row['id'],
                     ]);
                 }
 
@@ -148,7 +148,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
 
         return [
             'status' => 'ok',
-            'template' => $output
+            'template' => $output,
         ];
     }
 }

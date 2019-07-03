@@ -38,7 +38,7 @@ class TransferController
         }
 
         return new Response($transferFinalize->getOutput(), 200, [
-            'Content-type' => 'text/plaint; charset="UTF-8"'
+            'Content-type' => 'text/plaint; charset="UTF-8"',
         ]);
     }
 

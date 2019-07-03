@@ -124,5 +124,5 @@ return [
     'wrong_sid' => 'Wprowadzony Steam ID jest nieprawidłowy.',
     'wrong_sign' => 'Coś tu nie gra, weryfikacja danych zakończyła się informatyczną klęską.',
     'yes' => 'Tak',
-    'you_arent_logged' => 'Coś tu nie gra, nie jesteś zalogowany/a oO'
+    'you_arent_logged' => 'Coś tu nie gra, nie jesteś zalogowany/a oO',
 ];

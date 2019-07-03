@@ -86,7 +86,7 @@ class ExceptionHandler implements ExceptionHandlerContract
             'file' => $e->getFile(),
             'line' => $e->getLine(),
             'code' => $e->getCode(),
-            'trace' => $e->getTrace()
+            'trace' => $e->getTrace(),
         ];
     }
 

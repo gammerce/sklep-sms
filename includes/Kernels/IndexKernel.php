@@ -16,7 +16,7 @@ class IndexKernel extends Kernel
         LoadSettings::class,
         SetLanguage::class,
         ManageAuthentication::class,
-        ValidateLicense::class
+        ValidateLicense::class,
     ];
 
     public function run(Request $request)

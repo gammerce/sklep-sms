@@ -97,7 +97,7 @@ class InstallFullKernel extends Kernel
 
                 if ($brick != "general") {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning"
+                        'class' => "form_warning",
                     ]);
                 }
 
