@@ -6,7 +6,7 @@ use App\CurrentPage;
 use App\Heart;
 use App\License;
 use App\Middlewares\IsUpToDate;
-use App\Middlewares\LicenseIsValid;
+use App\Middlewares\ValidateLicense;
 use App\Middlewares\LoadSettings;
 use App\Middlewares\ManageAdminAuthentication;
 use App\Middlewares\RunCron;
@@ -27,7 +27,7 @@ class AdminKernel extends Kernel
         LoadSettings::class,
         SetLanguage::class,
         ManageAdminAuthentication::class,
-        LicenseIsValid::class,
+        ValidateLicense::class,
         UpdateUserActivity::class,
         RunCron::class,
     ];

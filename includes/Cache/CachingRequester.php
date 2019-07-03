@@ -1,7 +1,7 @@
 <?php
 namespace App\Cache;
 
-use App\Exceptions\RequestException;
+use App\Exceptions\LicenseRequestException;
 use Closure;
 use Psr\SimpleCache\CacheInterface;
 
@@ -23,7 +23,7 @@ class CachingRequester
      * @param Closure $requestCaller
      * @return mixed
      * @throws \Psr\SimpleCache\InvalidArgumentException
-     * @throws RequestException
+     * @throws LicenseRequestException
      */
     public function load($cacheKey, $ttl, $requestCaller)
     {
@@ -37,7 +37,7 @@ class CachingRequester
         if ($entity->olderThan($ttl)) {
             try {
                 return $this->fetchAndCache($cacheKey, $requestCaller);
-            } catch (RequestException $e) {
+            } catch (LicenseRequestException $e) {
                 return $entity->value;
             }
         }
@@ -49,7 +49,7 @@ class CachingRequester
      * @param string $cacheKey
      * @param callable $requestCaller
      * @return mixed
-     * @throws RequestException
+     * @throws LicenseRequestException
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     protected function fetchAndCache($cacheKey, $requestCaller)
@@ -62,14 +62,14 @@ class CachingRequester
     /**
      * @param callable $requestCaller
      * @return mixed
-     * @throws RequestException
+     * @throws LicenseRequestException
      */
     protected function fetch($requestCaller)
     {
         $response = call_user_func($requestCaller);
 
         if ($response === null) {
-            throw new RequestException('Could not connect to the license server.');
+            throw new LicenseRequestException('Could not connect to the license server.');
         }
 
         return $response;

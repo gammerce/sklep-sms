@@ -3,9 +3,9 @@ namespace App;
 
 use App\Cache\CacheEnum;
 use App\Cache\CachingRequester;
-use App\Exceptions\InvalidResponse;
-use App\Exceptions\RequestException;
+use App\Exceptions\LicenseRequestException;
 use App\Requesting\Requester;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 
 class License
@@ -33,6 +33,9 @@ class License
     /** @var string */
     protected $footer;
 
+    /** @var LicenseRequestException */
+    protected $loadingException;
+
     public function __construct(
         Translator $translator,
         Settings $settings,
@@ -46,13 +49,17 @@ class License
     }
 
     /**
-     * @throws InvalidResponse
-     * @throws RequestException
+     * @throws LicenseRequestException
      */
     public function validate()
     {
-        // TODO Remove
-        $response = ["id" => 1, "expires_at" => null];//$this->loadLicense();
+        try {
+            // TODO Remove
+            $response = ["id" => 1, "expires_at" => null];//$this->loadLicense();
+        } catch (LicenseRequestException $e) {
+            $this->loadingException = $e;
+            throw $e;
+        }
 
         $this->externalLicenseId = array_get($response, 'id');
         $this->expiresAt = array_get($response, 'expires_at');
@@ -62,6 +69,11 @@ class License
     public function isValid()
     {
         return $this->externalLicenseId !== null;
+    }
+
+    public function getLoadingException()
+    {
+        return $this->loadingException;
     }
 
     public function getExpires()
@@ -90,8 +102,7 @@ class License
 
     /**
      * @return array
-     * @throws InvalidResponse
-     * @throws RequestException
+     * @throws LicenseRequestException
      */
     protected function loadLicense()
     {
@@ -102,8 +113,7 @@ class License
 
     /**
      * @return array
-     * @throws InvalidResponse
-     * @throws RequestException
+     * @throws LicenseRequestException
      */
     protected function request()
     {
@@ -123,11 +133,11 @@ class License
         );
 
         if (!$response) {
-            throw new RequestException();
+            throw new LicenseRequestException();
         }
 
         if (!$response->isOk()) {
-            throw new InvalidResponse($response);
+            throw new LicenseRequestException($response);
         }
 
         return $response->json();
