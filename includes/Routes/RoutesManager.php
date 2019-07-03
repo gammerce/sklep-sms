@@ -8,6 +8,7 @@ use App\Controllers\JsController;
 use App\Controllers\JsonHttpController;
 use App\Controllers\ServerStuffController;
 use App\Controllers\TransferController;
+use App\Middlewares\BlockOnInvalidLicense;
 use App\Middlewares\MiddlewareContract;
 use App\Middlewares\RunCron;
 use App\Middlewares\UpdateUserActivity;
@@ -34,8 +35,21 @@ class RoutesManager
                 'middlewares' => [
                     UpdateUserActivity::class,
                     RunCron::class,
+                    BlockOnInvalidLicense::class,
                 ],
                 'uses'        => IndexController::class . '@oldGet',
+            ]
+        );
+
+        $r->addRoute(
+            'GET', '/page/{pageId}',
+            [
+                'middlewares' => [
+                    UpdateUserActivity::class,
+                    RunCron::class,
+                    BlockOnInvalidLicense::class,
+                ],
+                'uses' => IndexController::class . '@get',
             ]
         );
 
@@ -45,8 +59,16 @@ class RoutesManager
                 'middlewares' => [
                     UpdateUserActivity::class,
                     RunCron::class,
+                    BlockOnInvalidLicense::class,
                 ],
                 'uses'        => IndexController::class . '@oldGet',
+            ]
+        );
+
+        $r->addRoute(
+            ['GET', 'POST'], '/transfer/{transferService}',
+            [
+                'uses' => TransferController::class . '@action',
             ]
         );
 
@@ -62,6 +84,7 @@ class RoutesManager
             [
                 'middlewares' => [
                     RunCron::class,
+                    BlockOnInvalidLicense::class,
                 ],
                 'uses' => ExtraStuffController::class . '@action',
             ]
@@ -70,6 +93,9 @@ class RoutesManager
         $r->addRoute(
             ['GET', 'POST'], '/servers_stuff.php',
             [
+                'middlewares' => [
+                    BlockOnInvalidLicense::class,
+                ],
                 'uses' => ServerStuffController::class . '@action',
             ]
         );
@@ -87,21 +113,10 @@ class RoutesManager
         $r->addRoute(
             ['GET', 'POST'], '/transfer_finalize.php',
             [
+                'middlewares' => [
+                    BlockOnInvalidLicense::class,
+                ],
                 'uses' => TransferController::class . '@oldAction',
-            ]
-        );
-
-        $r->addRoute(
-            ['GET', 'POST'], '/transfer/{transferService}',
-            [
-                'uses' => TransferController::class . '@action',
-            ]
-        );
-
-        $r->addRoute(
-            'GET', '/page/{pageId}',
-            [
-                'uses' => IndexController::class . '@get',
             ]
         );
     }

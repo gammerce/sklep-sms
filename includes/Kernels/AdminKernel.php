@@ -85,14 +85,14 @@ class AdminKernel extends Kernel
             // Pobranie headera
             $header = $template->render("admin/header", compact('heart'));
 
-            $get_data = "";
+            $getData = "";
             // Fromatujemy dane get
-            foreach ($_GET as $key => $value) {
-                $get_data .= (!strlen($get_data) ? '?' : '&') . "{$key}={$value}";
+            foreach ($request->query->all() as $key => $value) {
+                $getData .= (!strlen($getData) ? '?' : '&') . "{$key}={$value}";
             }
 
             // Pobranie szablonu logowania
-            return new Response($template->render("admin/login", compact('header', 'warning')));
+            return new Response($template->render("admin/login", compact('header', 'warning', 'getData')));
         }
 
         $content = get_content("admincontent", $request);

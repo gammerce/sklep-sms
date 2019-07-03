@@ -10,7 +10,6 @@ use App\Translator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-// TODO Use it
 class BlockOnInvalidLicense implements MiddlewareContract
 {
     /** @var Template */

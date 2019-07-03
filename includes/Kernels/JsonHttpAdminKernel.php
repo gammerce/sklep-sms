@@ -1314,6 +1314,7 @@ class JsonHttpAdminKernel extends Kernel
                 "WHERE `id` = '%d'",
                 [$_POST['provision'] * 100, $_POST['id']]
             ));
+            $affected = $db->affected_rows();
 
             // Zwróć info o prawidłowej edycji
             if ($affected || $db->affected_rows()) {

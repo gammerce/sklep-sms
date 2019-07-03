@@ -21,10 +21,6 @@ class ExtraStuffController
         Settings $settings,
         License $license
     ) {
-        if (!$license->isValid()) {
-            return new Response();
-        }
-
         $lang = $translationManager->user();
 
         // Jezeli jest popup, to wyswietl info w nowym oknie
