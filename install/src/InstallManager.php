@@ -20,7 +20,9 @@ class InstallManager
 
     public function showError()
     {
-        output_page('Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie na forum sklepu. Do wątku załącz plik errors/install.log');
+        output_page(
+            'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie na forum sklepu. Do wątku załącz plik errors/install.log'
+        );
     }
 
     public function finish()

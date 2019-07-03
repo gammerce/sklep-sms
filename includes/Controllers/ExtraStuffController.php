@@ -33,11 +33,13 @@ class ExtraStuffController
                 $request->server->get('REQUEST_URI')
             );
 
-            $output = create_dom_element("script",
+            $output = create_dom_element(
+                "script",
                 'window.open("' . str_replace('"', '\"', $url) . '", "", "height=720,width=1280");',
                 [
                     'type' => "text/javascript",
-                ]);
+                ]
+            );
 
             return new Response($output);
         }
@@ -53,10 +55,13 @@ class ExtraStuffController
                     $output = $service_module->description_full_get();
                 }
 
-                $heart->page_title = $lang->translate('description') . ": " . $service_module->service['name'];
+                $heart->page_title =
+                    $lang->translate('description') . ": " . $service_module->service['name'];
 
                 $heart->style_add(
-                    $settings['shop_url_slash'] . "styles/extra_stuff/long_desc.css?version=" . $app->version()
+                    $settings['shop_url_slash'] .
+                        "styles/extra_stuff/long_desc.css?version=" .
+                        $app->version()
                 );
                 $header = $template->render("header", compact('heart', 'license'));
 

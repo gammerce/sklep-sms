@@ -1,6 +1,5 @@
 <?php
 
-
 use App\Models\Server;
 use App\Requesting\Requester;
 use App\Version;
@@ -46,15 +45,12 @@ class PageAdminUpdateServers extends PageAdmin
                 continue;
             }
 
-            $versionBricks .= $this->template->render(
-                "admin/update_version_block",
-                [
-                    'name' => htmlspecialchars($server['name']),
-                    'currentVersion' => $server['version'],
-                    'newestVersion' => $newestVersion,
-                    'link' => $link,
-                ]
-            );
+            $versionBricks .= $this->template->render("admin/update_version_block", [
+                'name' => htmlspecialchars($server['name']),
+                'currentVersion' => $server['version'],
+                'newestVersion' => $newestVersion,
+                'link' => $link,
+            ]);
         }
 
         if (!strlen($versionBricks)) {

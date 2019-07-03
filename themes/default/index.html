@@ -1,59 +1,63 @@
 <!DOCTYPE html>
 <html>
-<head>
-  {$header}
-</head>
-<body>
-{$heart->getGoogleAnalytics()}
-<table class="contentwraper">
-  <tr>
-    <td></td>
-    <td>{$logged_info}{$wallet}</td>
-    <td>
-      <div id="language_choice">
-        <img id="language_polish"
-             src="{$url->to('images/polish.jpg')}"
-             title="{$lang->translate('language_polish')}"
-        />
-        &nbsp;
-        <img id="language_english"
-             src="{$url->to('images/english.jpg')}"
-             title="{$lang->translate('language_english')}"
-        />
-      </div>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td class="header_wraper_td">
-      <table>
-        <tr>
-          <td>
-            <div class="content_title">{$heart->page_title}</div>
-          </td>
-          <td class="right">
-            <a href="{$url->to('/')}">
-              <img src="https://sklep-sms.pl/images/logo_medium.png"
-                   alt="{$lang->translate('shop_sms')}"
-              />
-            </a>
-          </td>
-        </tr>
-      </table>
-    </td>
-    <td></td>
-  </tr>
-  <tr>
-    <td class="services_buttons_td">{$services_buttons}</td>
-    <td class="content_td">{$content}</td>
-    <td class="user_buttons_td">{$user_buttons}</td>
-  </tr>
-</table>
-<br/><br/>
+    <head>
+        {$header}
+    </head>
+    <body>
+        {$heart->getGoogleAnalytics()}
+        <table class="contentwraper">
+            <tr>
+                <td></td>
+                <td>{$logged_info}{$wallet}</td>
+                <td>
+                    <div id="language_choice">
+                        <img
+                            id="language_polish"
+                            src="{$url->to('images/polish.jpg')}"
+                            title="{$lang->translate('language_polish')}"
+                        />
+                        &nbsp;
+                        <img
+                            id="language_english"
+                            src="{$url->to('images/english.jpg')}"
+                            title="{$lang->translate('language_english')}"
+                        />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td class="header_wraper_td">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="content_title">{$heart->page_title}</div>
+                            </td>
+                            <td class="right">
+                                <a href="{$url->to('/')}">
+                                    <img
+                                        src="https://sklep-sms.pl/images/logo_medium.png"
+                                        alt="{$lang->translate('shop_sms')}"
+                                    />
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="services_buttons_td">{$services_buttons}</td>
+                <td class="content_td">{$content}</td>
+                <td class="user_buttons_td">{$user_buttons}</td>
+            </tr>
+        </table>
 
-<!-- Do testowania tła
+        <br /><br />
+
+        <!-- Do testowania tła
 <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
 <input type="text" id="bck" style="width: 500px" />
 -->
-</body>
+    </body>
 </html>

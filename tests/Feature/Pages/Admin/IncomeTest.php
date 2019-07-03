@@ -21,6 +21,6 @@ class IncomeTest extends AdminTestCase
         // then
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertContains('Panel Admina', $response->getContent());
-        $this->assertContains('<title>PA: Przychód - Sklep SMS</title>', $response->getContent());
+        $this->assertContains('PA: Przychód - Sklep SMS', $response->getContent());
     }
 }

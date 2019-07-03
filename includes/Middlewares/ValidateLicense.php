@@ -13,7 +13,8 @@ class ValidateLicense implements MiddlewareContract
     /** @var Auth */
     private $auth;
 
-    public function __construct(Auth $auth) {
+    public function __construct(Auth $auth)
+    {
         $this->auth = $auth;
     }
 
@@ -47,7 +48,7 @@ class ValidateLicense implements MiddlewareContract
         if (get_privilages("manage_settings", $user)) {
             $user->removePrivilages();
             $user->setPrivilages([
-                "acp"             => true,
+                "acp" => true,
                 "manage_settings" => true,
             ]);
         }

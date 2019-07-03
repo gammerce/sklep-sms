@@ -22,8 +22,8 @@ class Pukawka extends PaymentModule implements SupportSms
 
         $response = $this->requester->get('https://admin.pukawka.pl/api/', [
             'keyapi' => $this->getApi(),
-            'type'   => 'sms',
-            'code'   => $returnCode,
+            'type' => 'sms',
+            'code' => $returnCode,
         ]);
 
         if (!$response) {
@@ -88,7 +88,7 @@ class Pukawka extends PaymentModule implements SupportSms
     {
         $response = $this->requester->get('https://admin.pukawka.pl/api/', [
             'keyapi' => $this->getApi(),
-            'type'   => 'sms_table',
+            'type' => 'sms_table',
         ]);
         $this->stawki = $response ? $response->json() : null;
     }

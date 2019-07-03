@@ -67,7 +67,7 @@ class TransferFinalize
      */
     public function setStatus($status)
     {
-        $this->status = (bool)$status;
+        $this->status = (bool) $status;
     }
 
     /**
@@ -83,7 +83,7 @@ class TransferFinalize
      */
     public function setOrderid($orderid)
     {
-        $this->orderid = (string)$orderid;
+        $this->orderid = (string) $orderid;
     }
 
     /**
@@ -99,7 +99,7 @@ class TransferFinalize
      */
     public function setAmount($amount)
     {
-        $this->amount = (double)$amount;
+        $this->amount = (float) $amount;
     }
 
     /**
@@ -115,7 +115,7 @@ class TransferFinalize
      */
     public function setDataFilename($data_filename)
     {
-        $this->data_filename = (string)$data_filename;
+        $this->data_filename = (string) $data_filename;
     }
 
     /**
@@ -131,7 +131,7 @@ class TransferFinalize
      */
     public function setTransferService($transfer_service)
     {
-        $this->transfer_service = (string)$transfer_service;
+        $this->transfer_service = (string) $transfer_service;
     }
 
     /**
@@ -147,7 +147,7 @@ class TransferFinalize
      */
     public function setOutput($output)
     {
-        $this->output = (string)$output;
+        $this->output = (string) $output;
     }
 
     public function markAsTest()

@@ -19,6 +19,8 @@ SET `value` =(
 WHERE `key` = 'license_password';
 EOF
         );
-        $this->db->query("UPDATE `ss_settings` SET `value` = 'license' WHERE `key` = 'license_login';");
+        $this->db->query(
+            "UPDATE `ss_settings` SET `value` = 'license' WHERE `key` = 'license_login';"
+        );
     }
 }

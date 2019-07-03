@@ -13,9 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class InstallKernel extends Kernel
 {
-    protected $middlewares = [
-        RequireNotInstalledOrNotUpdated::class,
-    ];
+    protected $middlewares = [RequireNotInstalledOrNotUpdated::class];
 
     public function run(Request $request)
     {
@@ -33,7 +31,9 @@ class InstallKernel extends Kernel
             return $this->update();
         }
 
-        return new Response("Sklep nie wymaga aktualizacji. Przejdź na stronę sklepu usuwająć z paska adresu /install");
+        return new Response(
+            "Sklep nie wymaga aktualizacji. Przejdź na stronę sklepu usuwająć z paska adresu /install"
+        );
     }
 
     protected function full()
@@ -62,7 +62,10 @@ class InstallKernel extends Kernel
                 $privilage = "bad";
             }
 
-            $files_privilages .= $template->installFullRender('file_privilages', compact('file', 'privilage'));
+            $files_privilages .= $template->installFullRender(
+                'file_privilages',
+                compact('file', 'privilage')
+            );
         }
 
         $server_modules = '';
@@ -75,7 +78,10 @@ class InstallKernel extends Kernel
                 $title = "Nieprawidłowo";
             }
 
-            $server_modules .= $template->installFullRender('module', compact('module', 'status', 'title'));
+            $server_modules .= $template->installFullRender(
+                'module',
+                compact('module', 'status', 'title')
+            );
         }
 
         $notifyHttpServer = $this->generateHttpServerNotification();
@@ -104,13 +110,21 @@ class InstallKernel extends Kernel
 
         $everything_ok = true;
         // Pobieramy informacje o plikach ktore sa git i te ktore sa be
-        $filesModulesStatus = $updateInfo->updateInfo($everything_ok, $files_priv, $files_del, $modules);
+        $filesModulesStatus = $updateInfo->updateInfo(
+            $everything_ok,
+            $files_priv,
+            $files_del,
+            $modules
+        );
         $class = $everything_ok ? "ok" : "bad";
 
         $notifyHttpServer = $this->generateHttpServerNotification();
 
         // Pobranie ostatecznego szablonu
-        $output = $template->installUpdateRender('index', compact('notifyHttpServer', 'filesModulesStatus', 'class'));
+        $output = $template->installUpdateRender(
+            'index',
+            compact('notifyHttpServer', 'filesModulesStatus', 'class')
+        );
 
         return new Response($output);
     }

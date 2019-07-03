@@ -18,13 +18,13 @@ class Simpay extends PaymentModule implements SupportSms
     {
         $response = $this->requester->post('https://simpay.pl/api/1/status', [
             'params' => [
-                'auth'       => [
-                    'key'    => $this->getKey(),
+                'auth' => [
+                    'key' => $this->getKey(),
                     'secret' => $this->getSecret(),
                 ],
                 'service_id' => $this->getServiceId(),
-                'number'     => $sms_number,
-                'code'       => $sms_code,
+                'number' => $sms_number,
+                'code' => $sms_code,
             ],
         ]);
 

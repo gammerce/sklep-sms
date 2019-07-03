@@ -33,18 +33,24 @@ class DatabaseMigration
         $salt = get_random_string(8);
         $queries = [
             $this->db->prepare(
-                "UPDATE `" . TABLE_PREFIX . "settings` " .
-                "SET `value`='%s' WHERE `key`='random_key';",
+                "UPDATE `" .
+                    TABLE_PREFIX .
+                    "settings` " .
+                    "SET `value`='%s' WHERE `key`='random_key';",
                 [get_random_string(16)]
             ),
             $this->db->prepare(
-                "UPDATE `" . TABLE_PREFIX . "settings` " .
-                "SET `value`='%s' WHERE `key`='license_password';",
+                "UPDATE `" .
+                    TABLE_PREFIX .
+                    "settings` " .
+                    "SET `value`='%s' WHERE `key`='license_password';",
                 [$token]
             ),
             $this->db->prepare(
-                "INSERT INTO `" . TABLE_PREFIX . "users` " .
-                "SET `username` = '%s', `password` = '%s', `salt` = '%s', `regip` = '%s', `groups` = '2', `regdate` = NOW();",
+                "INSERT INTO `" .
+                    TABLE_PREFIX .
+                    "users` " .
+                    "SET `username` = '%s', `password` = '%s', `salt` = '%s', `regip` = '%s', `groups` = '2', `regdate` = NOW();",
                 [$adminUsername, hash_password($adminPassword, $salt), $salt, get_ip()]
             ),
         ];
@@ -69,9 +75,11 @@ class DatabaseMigration
     {
         try {
             return $this->db->get_column(
-                "SELECT `name` FROM `" . TABLE_PREFIX . "migrations` " .
-                "ORDER BY id DESC " .
-                "LIMIT 1",
+                "SELECT `name` FROM `" .
+                    TABLE_PREFIX .
+                    "migrations` " .
+                    "ORDER BY id DESC " .
+                    "LIMIT 1",
                 'name'
             );
         } catch (SqlQueryException $e) {
@@ -120,10 +128,11 @@ class DatabaseMigration
 
     protected function saveExecutedMigration($name)
     {
-        $this->db->query($this->db->prepare(
-            "INSERT INTO `" . TABLE_PREFIX . "migrations` " .
-            "SET `name` = '%s'",
-            [$name]
-        ));
+        $this->db->query(
+            $this->db->prepare(
+                "INSERT INTO `" . TABLE_PREFIX . "migrations` " . "SET `name` = '%s'",
+                [$name]
+            )
+        );
     }
 }

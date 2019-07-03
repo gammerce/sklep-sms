@@ -33,9 +33,16 @@ class LocaleServiceTest extends TestCase
     public function resolves_locale_from_ip()
     {
         // given
-        $request = Request::create('', '', [], [], [], [
-            'REMOTE_ADDR' => '8.8.8.8',
-        ]);
+        $request = Request::create(
+            '',
+            '',
+            [],
+            [],
+            [],
+            [
+                'REMOTE_ADDR' => '8.8.8.8',
+            ]
+        );
         $this->app->instance(Request::class, $request);
 
         /** @var LocaleService $localeService */
@@ -88,9 +95,16 @@ class LocaleServiceTest extends TestCase
         // given
         $this->mockRequester();
         $this->requesterMock->shouldReceive('get')->andReturnNull();
-        $request = Request::create('', '', [], [], [], [
-            'REMOTE_ADDR' => '8.8.8.8',
-        ]);
+        $request = Request::create(
+            '',
+            '',
+            [],
+            [],
+            [],
+            [
+                'REMOTE_ADDR' => '8.8.8.8',
+            ]
+        );
         $this->app->instance(Request::class, $request);
 
         /** @var LocaleService $localeService */

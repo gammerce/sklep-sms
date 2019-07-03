@@ -19,8 +19,10 @@ abstract class Block
      */
     public function get_content($get, $post)
     {
-        if ((object_implements($this, "I_BeLoggedMust") && !is_logged()) || (object_implements($this,
-                    "I_BeLoggedCannot") && is_logged())) {
+        if (
+            (object_implements($this, "I_BeLoggedMust") && !is_logged()) ||
+            (object_implements($this, "I_BeLoggedCannot") && is_logged())
+        ) {
             return null;
         }
 
@@ -50,7 +52,7 @@ abstract class Block
         $content = $this->get_content($get, $post);
 
         return create_dom_element("div", $content, [
-            'id'    => $this->get_content_id(),
+            'id' => $this->get_content_id(),
             'class' => $content !== null ? $this->get_content_class() : "",
         ]);
     }
@@ -63,7 +65,11 @@ abstract class BlockSimple extends Block
     public function __construct()
     {
         if (!isset($this->template)) {
-            throw new Exception('Class ' . get_class($this) . ' has to have field $template because it extends class BlockSimple');
+            throw new Exception(
+                'Class ' .
+                    get_class($this) .
+                    ' has to have field $template because it extends class BlockSimple'
+            );
         }
     }
 

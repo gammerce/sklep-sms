@@ -1,10 +1,12 @@
-jQuery(document).ready(function ($) {
+jQuery(document).ready(function($) {
     // Aby żadna opcja nie była zaznaczona w przypadku użycia "cofnij"
-    $("#form_purchase").find("#purchase_value").val("0");
+    $("#form_purchase")
+        .find("#purchase_value")
+        .val("0");
 });
 
 // Zmiana typu zakupu
-$(document).delegate("#form_purchase input[name=type]", "change", function () {
+$(document).delegate("#form_purchase input[name=type]", "change", function() {
     var form = $(this).closest("form");
 
     form.find("#type_nick").hide();
@@ -12,48 +14,55 @@ $(document).delegate("#form_purchase input[name=type]", "change", function () {
     form.find("#type_sid").hide();
     form.find("#type_password").hide();
     form.find("#type_" + get_type_name($(this).val())).show();
-    if ($(this).val() == "1" || $(this).val() == "2")
-        form.find("#type_password").show();
+    if ($(this).val() == "1" || $(this).val() == "2") form.find("#type_password").show();
 });
 
 // Zmiana wartości zakupu
-$(document).delegate("#form_purchase [name=value]", "change", function () {
+$(document).delegate("#form_purchase [name=value]", "change", function() {
     var form = $(this).closest("form");
 
-    if ($(this).val().length)
-        form.find("#cost_wraper").slideDown('slow');
+    if ($(this).val().length) form.find("#cost_wraper").slideDown("slow");
     else {
-        form.find("#cost_wraper").slideUp('slow');
+        form.find("#cost_wraper").slideUp("slow");
         return;
     }
 
-    var values = $(this).val().split(';');
+    var values = $(this)
+        .val()
+        .split(";");
     form.find("#cost_transfer").text(parseFloat(values[0]).toFixed(2));
     if (values[1] != "0") {
         form.find("#cost_sms").text(parseFloat(values[1]).toFixed(2));
         form.find("#currency_sms").show();
-    }
-    else {
-        form.find("#cost_sms").text(lang['none']);
+    } else {
+        form.find("#cost_sms").text(lang["none"]);
         form.find("#currency_sms").hide();
     }
 });
 
 // Zmiana serwera
-$(document).delegate("#form_purchase [name=server]", "change", function () {
+$(document).delegate("#form_purchase [name=server]", "change", function() {
     var form = $(this).closest("form");
 
     form.find("#cost_wraper").slideUp();
     if ($(this).val() == "") {
-        form.find("[name=value]").children().not("[value='']").remove();
+        form.find("[name=value]")
+            .children()
+            .not("[value='']")
+            .remove();
         return;
     }
 
-    fetch_data("service_action_execute", false, {
-        service_action: "tariffs_for_server",
-        server: $(this).val(),
-        service: form.find("[name=service]").val()
-    }, function (html) {
-        form.find("[name=value]").html(html);
-    });
+    fetch_data(
+        "service_action_execute",
+        false,
+        {
+            service_action: "tariffs_for_server",
+            server: $(this).val(),
+            service: form.find("[name=service]").val(),
+        },
+        function(html) {
+            form.find("[name=value]").html(html);
+        }
+    );
 });

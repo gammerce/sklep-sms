@@ -16,11 +16,15 @@ class ServerRepository
 
     public function create($name, $ip, $port, $smsService = '')
     {
-        $this->db->query($this->db->prepare(
-            "INSERT INTO `" . TABLE_PREFIX . "servers` " .
-            "SET `name`='%s', `ip`='%s', `port`='%s', `sms_service`='%s'",
-            [$name, $ip, $port, $smsService]
-        ));
+        $this->db->query(
+            $this->db->prepare(
+                "INSERT INTO `" .
+                    TABLE_PREFIX .
+                    "servers` " .
+                    "SET `name`='%s', `ip`='%s', `port`='%s', `sms_service`='%s'",
+                [$name, $ip, $port, $smsService]
+            )
+        );
 
         $id = $this->db->last_id();
 

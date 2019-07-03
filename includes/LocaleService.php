@@ -15,8 +15,11 @@ class LocaleService
     /** @var Requester */
     private $requester;
 
-    public function __construct(TranslationManager $translationManager, Settings $settings, Requester $requester)
-    {
+    public function __construct(
+        TranslationManager $translationManager,
+        Settings $settings,
+        Requester $requester
+    ) {
         $this->translationManager = $translationManager;
         $this->settings = $settings;
         $this->requester = $requester;

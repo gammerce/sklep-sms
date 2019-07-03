@@ -1,48 +1,47 @@
 //Kliknięcie na płacenie portfelem
-$(document).delegate("#pay_wallet", "click", function () {
+$(document).delegate("#pay_wallet", "click", function() {
     $("#sms_details").slideUp();
     purchase_service("wallet");
 });
 
 // Kliknięcie na płacenie przelewem
-$(document).delegate("#pay_transfer", "click", function () {
+$(document).delegate("#pay_transfer", "click", function() {
     $("#sms_details").slideUp();
     purchase_service("transfer");
 });
 
 // Kliknięcie na płacenie smsem
-$(document).delegate("#pay_sms", "click", function () {
-    if ($("#sms_details").css("display") == "none")
-        $("#sms_details").slideDown('slow');
-    else
-        purchase_service("sms");
+$(document).delegate("#pay_sms", "click", function() {
+    if ($("#sms_details").css("display") == "none") $("#sms_details").slideDown("slow");
+    else purchase_service("sms");
 });
 
 // Kliknięcie na płacenie kodem
-$(document).delegate("#pay_service_code", "click", function () {
+$(document).delegate("#pay_service_code", "click", function() {
     $("#sms_details").slideUp();
     purchase_service("service_code");
 });
 
 function redirectToTransferWithPost(jsonObj) {
-    var form = $('<form>', {
+    var form = $("<form>", {
         action: jsonObj.data.url,
-        method: "POST"
+        method: "POST",
     });
 
-    $.each(jsonObj.data, function (key, value) {
-        if (key === "url")
-            return true; // continue
+    $.each(jsonObj.data, function(key, value) {
+        if (key === "url") return true; // continue
 
-        form.append($('<input>', {
-            type: "hidden",
-            name: key,
-            value: value
-        }));
+        form.append(
+            $("<input>", {
+                type: "hidden",
+                name: key,
+                value: value,
+            })
+        );
     });
 
     // Bez tego nie dziala pod firefoxem
-    $('body').append(form);
+    $("body").append(form);
 
     // Wysyłamy formularz zakupu
     form.submit();
@@ -51,14 +50,13 @@ function redirectToTransferWithPost(jsonObj) {
 function redirectToTransferWithGet(jsonObj) {
     var url = jsonObj.data.url;
     delete jsonObj.data.url;
-    var urlWithPath = url + '?' + $.param(jsonObj.data);
+    var urlWithPath = url + "?" + $.param(jsonObj.data);
 
     window.location.href = urlWithPath;
 }
 
 function purchase_service(method) {
-    if (loader.blocked)
-        return;
+    if (loader.blocked) return;
 
     loader.show();
     $.ajax({
@@ -70,38 +68,37 @@ function purchase_service(method) {
             sms_code: $("#sms_code").val(),
             service_code: $("#service_code").val(),
             purchase_data: $("#payment [name=purchase_data]").val(),
-            purchase_sign: $("#payment [name=purchase_sign]").val()
+            purchase_sign: $("#payment [name=purchase_sign]").val(),
         },
-        complete: function () {
+        complete: function() {
             loader.hide();
         },
-        success: function (content) {
+        success: function(content) {
             $(".form_warning").remove(); // Usuniecie komunikatow o blednym wypelnieniu formualarza
 
             var jsonObj;
-            if (!(jsonObj = json_parse(content)))
-                return;
+            if (!(jsonObj = json_parse(content))) return;
 
             // Wyświetlenie błędów w formularzu
             if (jsonObj.return_id == "warnings") {
-                $.each(jsonObj.warnings, function (name, text) {
-                    var id = $("#payment [name=\"" + name + "\"]");
+                $.each(jsonObj.warnings, function(name, text) {
+                    var id = $('#payment [name="' + name + '"]');
                     id.parent().append(text);
                     id.effect("highlight", 1000);
                 });
-            }
-            else if (jsonObj.return_id == "purchased") {
+            } else if (jsonObj.return_id == "purchased") {
                 // Zmiana zawartosci okienka content na info o zakupie
-                fetch_data("get_purchase_info", false, {purchase_id: jsonObj.bsid}, function (message) {
+                fetch_data("get_purchase_info", false, { purchase_id: jsonObj.bsid }, function(
+                    message
+                ) {
                     $("#content").html(message);
                 });
 
                 // Odswieżenie stanu portfela
-                refresh_blocks("wallet", false, function () {
+                refresh_blocks("wallet", false, function() {
                     $("#wallet").effect("highlight", "slow");
                 });
-            }
-            else if (jsonObj.return_id == "transfer") {
+            } else if (jsonObj.return_id == "transfer") {
                 var method = jsonObj.data.method;
                 delete jsonObj.data.method;
 
@@ -110,21 +107,20 @@ function purchase_service(method) {
                 } else if (method === "POST") {
                     redirectToTransferWithPost(jsonObj);
                 } else {
-                    console.error('Invalid method specified by PaymentModule');
-                    infobox.show_info(lang['sth_went_wrong'], false);
+                    console.error("Invalid method specified by PaymentModule");
+                    infobox.show_info(lang["sth_went_wrong"], false);
                     return;
                 }
-            }
-            else if (!jsonObj.return_id) {
-                infobox.show_info(lang['sth_went_wrong'], false);
+            } else if (!jsonObj.return_id) {
+                infobox.show_info(lang["sth_went_wrong"], false);
                 return;
             }
 
             // Wyświetlenie zwróconego info
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
-        error: function (error) {
-            infobox.show_info(lang['ajax_error'], false);
-        }
+        error: function(error) {
+            infobox.show_info(lang["ajax_error"], false);
+        },
     });
 }

@@ -12,7 +12,10 @@ use App\Settings;
 use App\TranslationManager;
 use App\Translator;
 
-class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminManage, IService_Create, IService_UserServiceAdminDisplay
+class ServiceMybbExtraGroupsSimple extends Service implements
+    IService_AdminManage,
+    IService_Create,
+    IService_UserServiceAdminDisplay
 {
     const MODULE_ID = "mybb_extra_groups";
     const USER_SERVICE_TABLE = "user_service_mybb_extra_groups";
@@ -62,8 +65,15 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 
         return $this->template->render(
             "services/mybb_extra_groups/extra_fields",
-            compact('web_sel_no', 'web_sel_yes', 'mybb_groups', 'db_host', 'db_user', 'db_password', 'db_name')
-            + ['moduleId' => $this->get_module_id()],
+            compact(
+                'web_sel_no',
+                'web_sel_yes',
+                'mybb_groups',
+                'db_host',
+                'db_user',
+                'db_password',
+                'db_name'
+            ) + ['moduleId' => $this->get_module_id()],
             true,
             false
         );
@@ -149,19 +159,19 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 
         $extra_data = [
             'mybb_groups' => implode(",", $mybb_groups),
-            'web'         => $data['web'],
-            'db_host'     => $data['db_host'],
-            'db_user'     => $data['db_user'],
+            'web' => $data['web'],
+            'db_host' => $data['db_host'],
+            'db_user' => $data['db_user'],
             'db_password' => if_strlen($data['db_password'], $this->service['data']['db_password']),
-            'db_name'     => $data['db_name'],
+            'db_name' => $data['db_name'],
         ];
 
         return [
             'query_set' => [
                 [
-                    'type'   => '%s',
+                    'type' => '%s',
                     'column' => 'data',
-                    'value'  => json_encode($extra_data),
+                    'value' => json_encode($extra_data),
                 ],
             ],
         ];
@@ -196,7 +206,11 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
         // Wyszukujemy dane ktore spelniaja kryteria
         $where = '';
         if (isset($get['search'])) {
-            searchWhere(["us.id", "us.uid", "u.username", "s.name", "usmeg.mybb_uid"], $get['search'], $where);
+            searchWhere(
+                ["us.id", "us.uid", "u.username", "s.name", "usmeg.mybb_uid"],
+                $get['search'],
+                $where
+            );
         }
         // Jezeli jest jakis where, to dodajemy WHERE
         if (strlen($where)) {
@@ -205,14 +219,24 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
 
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS us.id, us.uid, u.username, " .
-            "s.id AS `service_id`, s.name AS `service`, us.expire, usmeg.mybb_uid " .
-            "FROM `" . TABLE_PREFIX . "user_service` AS us " .
-            "INNER JOIN `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` AS usmeg ON usmeg.us_id = us.id " .
-            "LEFT JOIN `" . TABLE_PREFIX . "services` AS s ON s.id = usmeg.service " .
-            "LEFT JOIN `" . TABLE_PREFIX . "users` AS u ON u.uid = us.uid " .
-            $where .
-            "ORDER BY us.id DESC " .
-            "LIMIT " . get_row_limit($pageNumber)
+                "s.id AS `service_id`, s.name AS `service`, us.expire, usmeg.mybb_uid " .
+                "FROM `" .
+                TABLE_PREFIX .
+                "user_service` AS us " .
+                "INNER JOIN `" .
+                TABLE_PREFIX .
+                $this::USER_SERVICE_TABLE .
+                "` AS usmeg ON usmeg.us_id = us.id " .
+                "LEFT JOIN `" .
+                TABLE_PREFIX .
+                "services` AS s ON s.id = usmeg.service " .
+                "LEFT JOIN `" .
+                TABLE_PREFIX .
+                "users` AS u ON u.uid = us.uid " .
+                $where .
+                "ORDER BY us.id DESC " .
+                "LIMIT " .
+                get_row_limit($pageNumber)
         );
 
         $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
@@ -221,12 +245,22 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
             $body_row = new Table\BodyRow();
 
             $body_row->setDbId($row['id']);
-            $body_row->addCell(new Table\Cell($row['uid'] ? $row['username'] . " ({$row['uid']})" : $this->lang->translate('none')));
+            $body_row->addCell(
+                new Table\Cell(
+                    $row['uid']
+                        ? $row['username'] . " ({$row['uid']})"
+                        : $this->lang->translate('none')
+                )
+            );
             $body_row->addCell(new Table\Cell($row['service']));
             $body_row->addCell(new Table\Cell($row['mybb_uid']));
-            $body_row->addCell(new Table\Cell($row['expire'] == '-1'
-                ? $this->lang->translate('never')
-                : date($this->settings['date_format'], $row['expire'])));
+            $body_row->addCell(
+                new Table\Cell(
+                    $row['expire'] == '-1'
+                        ? $this->lang->translate('never')
+                        : date($this->settings['date_format'], $row['expire'])
+                )
+            );
             if (get_privilages("manage_user_services")) {
                 $body_row->setButtonDelete(true);
                 $body_row->setButtonEdit(false);
@@ -241,7 +275,10 @@ class ServiceMybbExtraGroupsSimple extends Service implements IService_AdminMana
     }
 }
 
-class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements IService_Purchase, IService_PurchaseWeb, IService_UserServiceAdminAdd,
+class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
+    IService_Purchase,
+    IService_PurchaseWeb,
+    IService_UserServiceAdminAdd,
     IService_UserOwnServices
 {
     /**
@@ -293,22 +330,36 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
         $user = $this->auth->user();
 
         // Pozyskujemy taryfy
-        $result = $this->db->query($this->db->prepare(
-            "SELECT sn.number AS `sms_number`, t.provision AS `provision`, t.id AS `tariff`, p.amount AS `amount` " .
-            "FROM `" . TABLE_PREFIX . "pricelist` AS p " .
-            "INNER JOIN `" . TABLE_PREFIX . "tariffs` AS t ON t.id = p.tariff " .
-            "LEFT JOIN `" . TABLE_PREFIX . "sms_numbers` AS sn ON sn.tariff = p.tariff AND sn.service = '%s' " .
-            "WHERE p.service = '%s' " .
-            "ORDER BY t.provision ASC",
-            [$this->settings['sms_service'], $this->service['id']]
-        ));
+        $result = $this->db->query(
+            $this->db->prepare(
+                "SELECT sn.number AS `sms_number`, t.provision AS `provision`, t.id AS `tariff`, p.amount AS `amount` " .
+                    "FROM `" .
+                    TABLE_PREFIX .
+                    "pricelist` AS p " .
+                    "INNER JOIN `" .
+                    TABLE_PREFIX .
+                    "tariffs` AS t ON t.id = p.tariff " .
+                    "LEFT JOIN `" .
+                    TABLE_PREFIX .
+                    "sms_numbers` AS sn ON sn.tariff = p.tariff AND sn.service = '%s' " .
+                    "WHERE p.service = '%s' " .
+                    "ORDER BY t.provision ASC",
+                [$this->settings['sms_service'], $this->service['id']]
+            )
+        );
 
         $amounts = "";
         while ($row = $this->db->fetch_array_assoc($result)) {
             $sms_cost = strlen($row['sms_number'])
-                ? number_format(get_sms_cost($row['sms_number']) / 100 * $this->settings['vat'], 2)
+                ? number_format(
+                    (get_sms_cost($row['sms_number']) / 100) * $this->settings['vat'],
+                    2
+                )
                 : 0;
-            $amount = $row['amount'] != -1 ? $row['amount'] . " " . $this->service['tag'] : $this->lang->translate('forever');
+            $amount =
+                $row['amount'] != -1
+                    ? $row['amount'] . " " . $this->service['tag']
+                    : $this->lang->translate('forever');
             $provision = number_format($row['provision'] / 100, 2);
             $amounts .= $this->template->render(
                 "services/mybb_extra_groups/purchase_value",
@@ -345,17 +396,21 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
             $warnings['amount'][] = $this->lang->translate('must_choose_amount');
         } else {
             // Wyszukiwanie usługi o konkretnej cenie
-            $result = $this->db->query($this->db->prepare(
-                "SELECT * FROM `" . TABLE_PREFIX . "pricelist` " .
-                "WHERE `service` = '%s' AND `tariff` = '%d'",
-                [$this->service['id'], $tariff]
-            ));
+            $result = $this->db->query(
+                $this->db->prepare(
+                    "SELECT * FROM `" .
+                        TABLE_PREFIX .
+                        "pricelist` " .
+                        "WHERE `service` = '%s' AND `tariff` = '%d'",
+                    [$this->service['id'], $tariff]
+                )
+            );
 
-            if (!$this->db->num_rows($result)) // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
-            {
+            if (!$this->db->num_rows($result)) {
+                // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
                 return [
-                    'status'   => "no_option",
-                    'text'     => $this->lang->translate('service_not_affordable'),
+                    'status' => "no_option",
+                    'text' => $this->lang->translate('service_not_affordable'),
                     'positive' => false,
                 ];
             }
@@ -369,11 +424,11 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
         } else {
             $this->connectMybb();
 
-            $result = $this->db_mybb->query($this->db_mybb->prepare(
-                "SELECT 1 FROM `mybb_users` " .
-                "WHERE `username` = '%s'",
-                [$data['username']]
-            ));
+            $result = $this->db_mybb->query(
+                $this->db_mybb->prepare("SELECT 1 FROM `mybb_users` " . "WHERE `username` = '%s'", [
+                    $data['username'],
+                ])
+            );
 
             if (!$this->db_mybb->num_rows($result)) {
                 $warnings['username'][] = $this->lang->translate('no_user');
@@ -382,16 +437,16 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 
         // E-mail
         if ($warning = check_for_warnings("email", $data['email'])) {
-            $warnings['email'] = array_merge((array)$warnings['email'], $warning);
+            $warnings['email'] = array_merge((array) $warnings['email'], $warning);
         }
 
         // Jeżeli są jakieś błedy, to je zwróć
         if (!empty($warnings)) {
             return [
-                'status'   => "warnings",
-                'text'     => $this->lang->translate('form_wrong_filled'),
+                'status' => "warnings",
+                'text' => $this->lang->translate('form_wrong_filled'),
                 'positive' => false,
-                'data'     => ['warnings' => $warnings],
+                'data' => ['warnings' => $warnings],
             ];
         }
 
@@ -399,16 +454,16 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
         $purchase_data->setService($this->service['id']);
         $purchase_data->setOrder([
             'username' => $data['username'],
-            'amount'   => $price['amount'],
-            'forever'  => $price['amount'] == -1 ? true : false,
+            'amount' => $price['amount'],
+            'forever' => $price['amount'] == -1 ? true : false,
         ]);
         $purchase_data->setEmail($data['email']);
         $purchase_data->setTariff($this->heart->getTariff($tariff));
 
         return [
-            'status'        => "ok",
-            'text'          => $this->lang->translate('purchase_form_validated'),
-            'positive'      => true,
+            'status' => "ok",
+            'text' => $this->lang->translate('purchase_form_validated'),
+            'positive' => true,
             'purchase_data' => $purchase_data,
         ];
     }
@@ -422,11 +477,14 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
      */
     public function order_details($purchase_data)
     {
-        $email = $purchase_data->getEmail() ? htmlspecialchars($purchase_data->getEmail()) : $this->lang->translate('none');
+        $email = $purchase_data->getEmail()
+            ? htmlspecialchars($purchase_data->getEmail())
+            : $this->lang->translate('none');
         $username = htmlspecialchars($purchase_data->getOrder('username'));
-        $amount = $purchase_data->getOrder('amount') != -1
-            ? ($purchase_data->getOrder('amount') . " " . $this->service['tag'])
-            : $this->lang->translate('forever');
+        $amount =
+            $purchase_data->getOrder('amount') != -1
+                ? $purchase_data->getOrder('amount') . " " . $this->service['tag']
+                : $this->lang->translate('forever');
 
         return $this->template->render(
             "services/mybb_extra_groups/order_details",
@@ -447,9 +505,12 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
     {
         // Nie znaleziono użytkownika o takich danych jak podane podczas zakupu
         if (($mybb_user = $this->createMybbUser($purchase_data->getOrder('username'))) === null) {
-            log_info($this->langShop->sprintf(
-                $this->langShop->translate('mybb_purchase_no_user'), json_encode($purchase_data->getPayment())
-            ));
+            log_info(
+                $this->langShop->sprintf(
+                    $this->langShop->translate('mybb_purchase_no_user'),
+                    json_encode($purchase_data->getPayment())
+                )
+            );
             die("Critical error occured");
         }
 
@@ -473,8 +534,10 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
             $this->service['id'],
             0,
             $purchase_data->getOrder('amount'),
-            $purchase_data->getOrder('username') . " ({$mybb_user->getUid()})", $purchase_data->getEmail(), [
-                'uid'    => $mybb_user->getUid(),
+            $purchase_data->getOrder('username') . " ({$mybb_user->getUid()})",
+            $purchase_data->getEmail(),
+            [
+                'uid' => $mybb_user->getUid(),
                 'groups' => implode(',', $this->groups),
             ]
         );
@@ -494,10 +557,13 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
     public function purchase_info($action, $data)
     {
         $username = htmlspecialchars($data['auth_data']);
-        $amount = $data['amount'] != -1 ? ($data['amount'] . " " . $this->service['tag']) : $this->lang->translate('forever');
+        $amount =
+            $data['amount'] != -1
+                ? $data['amount'] . " " . $this->service['tag']
+                : $this->lang->translate('forever');
         $email = htmlspecialchars($data['email']);
         $cost = $data['cost']
-            ? (number_format($data['cost'] / 100.0, 2) . " " . $this->settings['currency'])
+            ? number_format($data['cost'] / 100.0, 2) . " " . $this->settings['currency']
             : $this->lang->translate('none');
 
         if ($action == "email") {
@@ -512,7 +578,9 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
         if ($action == "web") {
             return $this->template->render(
                 "services/mybb_extra_groups/purchase_info_web",
-                compact('cost', 'username', 'amount', 'email') + ['serviceName' => $this->service['name']],
+                compact('cost', 'username', 'amount', 'email') + [
+                    'serviceName' => $this->service['name'],
+                ],
                 true,
                 false
             );
@@ -520,9 +588,11 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 
         if ($action == "payment_log") {
             return [
-                'text'  => $output = $this->lang->sprintf(
-                    $this->lang->translate('mybb_group_bought'), $this->service['name'], $username
-                ),
+                'text' => ($output = $this->lang->sprintf(
+                    $this->lang->translate('mybb_group_bought'),
+                    $this->service['name'],
+                    $username
+                )),
                 'class' => "outcome",
             ];
         }
@@ -558,13 +628,22 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
         $mybb_user->removeShopGroup();
 
         // Dodajemy uzytkownikowi grupy na podstawie USER_SERVICE_TABLE
-        $result = $this->db->query($this->db->prepare(
-            "SELECT us.expire - UNIX_TIMESTAMP() AS `expire`, s.data AS `extra_data` FROM `" . TABLE_PREFIX . "user_service` AS us " .
-            "INNER JOIN `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` AS m ON us.id = m.us_id " .
-            "INNER JOIN `" . TABLE_PREFIX . "services` AS s ON us.service = s.id " .
-            "WHERE m.mybb_uid = '%d'",
-            [$user_service['mybb_uid']]
-        ));
+        $result = $this->db->query(
+            $this->db->prepare(
+                "SELECT us.expire - UNIX_TIMESTAMP() AS `expire`, s.data AS `extra_data` FROM `" .
+                    TABLE_PREFIX .
+                    "user_service` AS us " .
+                    "INNER JOIN `" .
+                    TABLE_PREFIX .
+                    $this::USER_SERVICE_TABLE .
+                    "` AS m ON us.id = m.us_id " .
+                    "INNER JOIN `" .
+                    TABLE_PREFIX .
+                    "services` AS s ON us.service = s.id " .
+                    "WHERE m.mybb_uid = '%d'",
+                [$user_service['mybb_uid']]
+            )
+        );
 
         while ($row = $this->db->fetch_array_assoc($result)) {
             $row['extra_data'] = json_decode($row['extra_data'], true);
@@ -574,11 +653,17 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
         }
 
         // Użytkownik nie może mieć takiej displaygroup
-        if (!in_array($mybb_user->getMybbDisplayGroup(), array_unique(array_merge(
-            array_keys($mybb_user->getShopGroup()),
-            $mybb_user->getMybbAddGroups(),
-            [$mybb_user->getMybbUserGroup()]
-        )))
+        if (
+            !in_array(
+                $mybb_user->getMybbDisplayGroup(),
+                array_unique(
+                    array_merge(
+                        array_keys($mybb_user->getShopGroup()),
+                        $mybb_user->getMybbAddGroups(),
+                        [$mybb_user->getMybbUserGroup()]
+                    )
+                )
+            )
         ) {
             $mybb_user->setMybbDisplayGroup(0);
         }
@@ -598,46 +683,66 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
     {
         // Dodajemy usługę gracza do listy usług
         // Jeżeli już istnieje dokładnie taka sama, to ją przedłużamy
-        $result = $this->db->query($this->db->prepare(
-            "SELECT `us_id` FROM `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` " .
-            "WHERE `service` = '%s' AND `mybb_uid` = '%d'",
-            [$this->service['id'], $mybb_uid]
-        ));
+        $result = $this->db->query(
+            $this->db->prepare(
+                "SELECT `us_id` FROM `" .
+                    TABLE_PREFIX .
+                    $this::USER_SERVICE_TABLE .
+                    "` " .
+                    "WHERE `service` = '%s' AND `mybb_uid` = '%d'",
+                [$this->service['id'], $mybb_uid]
+            )
+        );
 
-        if ($this->db->num_rows($result)) { // Aktualizujemy
+        if ($this->db->num_rows($result)) {
+            // Aktualizujemy
             $row = $this->db->fetch_array_assoc($result);
             $user_service_id = $row['us_id'];
 
-            $this->update_user_service([
+            $this->update_user_service(
                 [
-                    'column' => 'uid',
-                    'value'  => "'%d'",
-                    'data'   => [$uid],
+                    [
+                        'column' => 'uid',
+                        'value' => "'%d'",
+                        'data' => [$uid],
+                    ],
+                    [
+                        'column' => 'mybb_uid',
+                        'value' => "'%d'",
+                        'data' => [$mybb_uid],
+                    ],
+                    [
+                        'column' => 'expire',
+                        'value' => "IF('%d' = '1', -1, `expire` + '%d')",
+                        'data' => [$forever, $days * 24 * 60 * 60],
+                    ],
                 ],
-                [
-                    'column' => 'mybb_uid',
-                    'value'  => "'%d'",
-                    'data'   => [$mybb_uid],
-                ],
-                [
-                    'column' => 'expire',
-                    'value'  => "IF('%d' = '1', -1, `expire` + '%d')",
-                    'data'   => [$forever, $days * 24 * 60 * 60],
-                ],
-            ], $user_service_id, $user_service_id);
-        } else { // Wstawiamy
-            $this->db->query($this->db->prepare(
-                "INSERT INTO `" . TABLE_PREFIX . "user_service` (`uid`, `service`, `expire`) " .
-                "VALUES ('%d', '%s', IF('%d' = '1', '-1', UNIX_TIMESTAMP() + '%d')) ",
-                [$uid, $this->service['id'], $forever, $days * 24 * 60 * 60]
-            ));
+                $user_service_id,
+                $user_service_id
+            );
+        } else {
+            // Wstawiamy
+            $this->db->query(
+                $this->db->prepare(
+                    "INSERT INTO `" .
+                        TABLE_PREFIX .
+                        "user_service` (`uid`, `service`, `expire`) " .
+                        "VALUES ('%d', '%s', IF('%d' = '1', '-1', UNIX_TIMESTAMP() + '%d')) ",
+                    [$uid, $this->service['id'], $forever, $days * 24 * 60 * 60]
+                )
+            );
             $user_service_id = $this->db->last_id();
 
-            $this->db->query($this->db->prepare(
-                "INSERT INTO `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` (`us_id`, `service`, `mybb_uid`) " .
-                "VALUES ('%d', '%s', '%d')",
-                [$user_service_id, $this->service['id'], $mybb_uid]
-            ));
+            $this->db->query(
+                $this->db->prepare(
+                    "INSERT INTO `" .
+                        TABLE_PREFIX .
+                        $this::USER_SERVICE_TABLE .
+                        "` (`us_id`, `service`, `mybb_uid`) " .
+                        "VALUES ('%d', '%s', '%d')",
+                    [$user_service_id, $this->service['id'], $mybb_uid]
+                )
+            );
         }
     }
 
@@ -666,7 +771,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
         // Amount
         if (!$post['forever']) {
             if ($warning = check_for_warnings("number", $post['amount'])) {
-                $warnings['amount'] = array_merge((array)$warnings['amount'], $warning);
+                $warnings['amount'] = array_merge((array) $warnings['amount'], $warning);
             } else {
                 if ($post['amount'] < 0) {
                     $warnings['amount'][] = $this->lang->translate('days_quantity_positive');
@@ -677,7 +782,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
         // ID użytkownika
         if (strlen($post['uid'])) {
             if ($warning = check_for_warnings('uid', $post['uid'])) {
-                $warnings['uid'] = array_merge((array)$warnings['uid'], $warning);
+                $warnings['uid'] = array_merge((array) $warnings['uid'], $warning);
             } else {
                 $user2 = $this->heart->get_user($post['uid']);
                 if (!$user2->isLogged()) {
@@ -692,11 +797,11 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
         } else {
             $this->connectMybb();
 
-            $result = $this->db_mybb->query($this->db_mybb->prepare(
-                "SELECT 1 FROM `mybb_users` " .
-                "WHERE `username` = '%s'",
-                [$post['mybb_username']]
-            ));
+            $result = $this->db_mybb->query(
+                $this->db_mybb->prepare("SELECT 1 FROM `mybb_users` " . "WHERE `username` = '%s'", [
+                    $post['mybb_username'],
+                ])
+            );
 
             if (!$this->db_mybb->num_rows($result)) {
                 $warnings['mybb_username'][] = $this->lang->translate('no_user');
@@ -704,16 +809,16 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
         }
 
         // E-mail
-        if (strlen($post['email']) && $warning = check_for_warnings("email", $post['email'])) {
-            $warnings['email'] = array_merge((array)$warnings['email'], $warning);
+        if (strlen($post['email']) && ($warning = check_for_warnings("email", $post['email']))) {
+            $warnings['email'] = array_merge((array) $warnings['email'], $warning);
         }
 
         if (!empty($warnings)) {
             return [
-                'status'   => "warnings",
-                'text'     => $this->lang->translate('form_wrong_filled'),
+                'status' => "warnings",
+                'text' => $this->lang->translate('form_wrong_filled'),
                 'positive' => false,
-                'data'     => ['warnings' => $warnings],
+                'data' => ['warnings' => $warnings],
             ];
         }
 
@@ -724,27 +829,29 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
         $purchase_data->setService($this->service['id']);
         $purchase_data->user = $this->heart->get_user($post['uid']);
         $purchase_data->setPayment([
-            'method'     => "admin",
+            'method' => "admin",
             'payment_id' => $payment_id,
         ]);
         $purchase_data->setOrder([
             'username' => $post['mybb_username'],
-            'amount'   => $post['amount'],
-            'forever'  => (boolean)$post['forever'],
+            'amount' => $post['amount'],
+            'forever' => (bool) $post['forever'],
         ]);
         $purchase_data->setEmail($post['email']);
         $bought_service_id = $this->purchase($purchase_data);
 
-        log_info($this->langShop->sprintf(
-            $this->langShop->translate('admin_added_user_service'),
-            $user->getUsername(),
-            $user->getUid(),
-            $bought_service_id
-        ));
+        log_info(
+            $this->langShop->sprintf(
+                $this->langShop->translate('admin_added_user_service'),
+                $user->getUsername(),
+                $user->getUid(),
+                $bought_service_id
+            )
+        );
 
         return [
-            'status'   => "ok",
-            'text'     => $this->lang->translate('service_added_correctly'),
+            'status' => "ok",
+            'text' => $this->lang->translate('service_added_correctly'),
             'positive' => true,
         ];
     }
@@ -753,21 +860,25 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
     {
         $this->connectMybb();
 
-        $username = $this->db_mybb->get_column($this->db_mybb->prepare(
-            "SELECT `username` FROM `mybb_users` " .
-            "WHERE `uid` = '%d'",
-            [$user_service['mybb_uid']]
-        ), 'username');
+        $username = $this->db_mybb->get_column(
+            $this->db_mybb->prepare("SELECT `username` FROM `mybb_users` " . "WHERE `uid` = '%d'", [
+                $user_service['mybb_uid'],
+            ]),
+            'username'
+        );
 
-        $expire = $user_service['expire'] == -1
-            ? $this->lang->translate('never')
-            : date($this->settings['date_format'], $user_service['expire']);
+        $expire =
+            $user_service['expire'] == -1
+                ? $this->lang->translate('never')
+                : date($this->settings['date_format'], $user_service['expire']);
         $service = $this->service['name'];
         $mybb_uid = htmlspecialchars($username . " ({$user_service['mybb_uid']})");
 
         return $this->template->render(
             "services/mybb_extra_groups/user_own_service",
-            compact('user_service', 'service', 'mybb_uid', 'expire') + ['moduleId' => $this->get_module_id()]
+            compact('user_service', 'service', 'mybb_uid', 'expire') + [
+                'moduleId' => $this->get_module_id(),
+            ]
         );
     }
 
@@ -782,16 +893,13 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
         if (is_integer($user_id)) {
             $where = "`uid` = {$user_id}";
         } else {
-            $where = $this->db_mybb->prepare(
-                "`username` = '%s'",
-                [$user_id]
-            );
+            $where = $this->db_mybb->prepare("`username` = '%s'", [$user_id]);
         }
 
         $result = $this->db_mybb->query(
             "SELECT `uid`, `additionalgroups`, `displaygroup`, `usergroup` " .
-            "FROM `mybb_users` " .
-            "WHERE {$where}"
+                "FROM `mybb_users` " .
+                "WHERE {$where}"
         );
 
         if (!$this->db_mybb->num_rows($result)) {
@@ -804,15 +912,19 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
         $mybb_user->setMybbAddGroups(explode(",", $row_mybb['additionalgroups']));
         $mybb_user->setMybbDisplayGroup($row_mybb['displaygroup']);
 
-        $result = $this->db->query($this->db->prepare(
-            "SELECT `gid`, UNIX_TIMESTAMP(`expire`) - UNIX_TIMESTAMP() AS `expire`, `was_before` FROM `" . TABLE_PREFIX . "mybb_user_group` " .
-            "WHERE `uid` = '%d'",
-            [$row_mybb['uid']]
-        ));
+        $result = $this->db->query(
+            $this->db->prepare(
+                "SELECT `gid`, UNIX_TIMESTAMP(`expire`) - UNIX_TIMESTAMP() AS `expire`, `was_before` FROM `" .
+                    TABLE_PREFIX .
+                    "mybb_user_group` " .
+                    "WHERE `uid` = '%d'",
+                [$row_mybb['uid']]
+            )
+        );
 
         while ($row = $this->db->fetch_array_assoc($result)) {
             $mybb_user->setShopGroup($row['gid'], [
-                'expire'     => $row['expire'],
+                'expire' => $row['expire'],
                 'was_before' => $row['was_before'],
             ]);
         }
@@ -829,11 +941,12 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
     {
         $this->connectMybb();
 
-        $this->db->query($this->db->prepare(
-            "DELETE FROM `" . TABLE_PREFIX . "mybb_user_group` " .
-            "WHERE `uid` = '%d'",
-            [$mybb_user->getUid()]
-        ));
+        $this->db->query(
+            $this->db->prepare(
+                "DELETE FROM `" . TABLE_PREFIX . "mybb_user_group` " . "WHERE `uid` = '%d'",
+                [$mybb_user->getUid()]
+            )
+        );
 
         $values = [];
         foreach ($mybb_user->getShopGroup() as $gid => $group_data) {
@@ -845,19 +958,26 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
 
         if (!empty($values)) {
             $this->db->query(
-                "INSERT INTO `" . TABLE_PREFIX . "mybb_user_group` (`uid`, `gid`, `expire`, `was_before`) " .
-                "VALUES " . implode(", ", $values)
+                "INSERT INTO `" .
+                    TABLE_PREFIX .
+                    "mybb_user_group` (`uid`, `gid`, `expire`, `was_before`) " .
+                    "VALUES " .
+                    implode(", ", $values)
             );
         }
 
-        $addgroups = array_unique(array_merge(array_keys($mybb_user->getShopGroup()), $mybb_user->getMybbAddGroups()));
+        $addgroups = array_unique(
+            array_merge(array_keys($mybb_user->getShopGroup()), $mybb_user->getMybbAddGroups())
+        );
 
-        $this->db_mybb->query($this->db_mybb->prepare(
-            "UPDATE `mybb_users` " .
-            "SET `additionalgroups` = '%s', `displaygroup` = '%d' " .
-            "WHERE `uid` = '%d'",
-            [implode(',', $addgroups), $mybb_user->getMybbDisplayGroup(), $mybb_user->getUid()]
-        ));
+        $this->db_mybb->query(
+            $this->db_mybb->prepare(
+                "UPDATE `mybb_users` " .
+                    "SET `additionalgroups` = '%s', `displaygroup` = '%d' " .
+                    "WHERE `uid` = '%d'",
+                [implode(',', $addgroups), $mybb_user->getMybbDisplayGroup(), $mybb_user->getUid()]
+            )
+        );
     }
 
     /**
@@ -869,7 +989,13 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements ISe
             return;
         }
 
-        $this->db_mybb = new Database($this->db_host, 3306, $this->db_user, $this->db_password, $this->db_name);
+        $this->db_mybb = new Database(
+            $this->db_host,
+            3306,
+            $this->db_user,
+            $this->db_password,
+            $this->db_name
+        );
         $this->db_mybb->query("SET NAMES utf8");
     }
 }

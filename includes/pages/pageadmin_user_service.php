@@ -11,21 +11,29 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
     {
         $className = '';
         foreach (get_declared_classes() as $class) {
-            if (in_array('IService_UserServiceAdminDisplay',
-                    class_implements($class)) && $class::MODULE_ID == $get['subpage']) {
+            if (
+                in_array('IService_UserServiceAdminDisplay', class_implements($class)) &&
+                $class::MODULE_ID == $get['subpage']
+            ) {
                 $className = $class;
                 break;
             }
         }
 
         if (!strlen($className)) {
-            return $this->lang->sprintf($this->lang->translate('no_subpage'), htmlspecialchars($get['subpage']));
+            return $this->lang->sprintf(
+                $this->lang->translate('no_subpage'),
+                htmlspecialchars($get['subpage'])
+            );
         }
 
         /** @var IService_UserServiceAdminDisplay $service_module_simple */
         $service_module_simple = $this->app->make($className);
 
-        $this->title = $this->lang->translate('users_services') . ': ' . $service_module_simple->user_service_admin_display_title_get();
+        $this->title =
+            $this->lang->translate('users_services') .
+            ': ' .
+            $service_module_simple->user_service_admin_display_title_get();
         $this->heart->page_title = $this->title;
         $wrapper = $service_module_simple->user_service_admin_display_get($get, $post);
 
@@ -39,7 +47,12 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
         $button = new Table\Select();
         $button->setParam('id', 'user_service_display_module');
         foreach ($this->heart->get_services_modules() as $service_module_data) {
-            if (!in_array('IService_UserServiceAdminDisplay', class_implements($service_module_data['classsimple']))) {
+            if (
+                !in_array(
+                    'IService_UserServiceAdminDisplay',
+                    class_implements($service_module_data['classsimple'])
+                )
+            ) {
                 continue;
             }
 
@@ -71,7 +84,7 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
         if (!get_privilages("manage_user_services")) {
             return [
                 'status' => "not_logged_in",
-                'text'   => $this->lang->translate('not_logged_or_no_perm'),
+                'text' => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
@@ -80,8 +93,10 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
                 // Pobranie usług
                 $services = "";
                 foreach ($this->heart->get_services() as $id => $row) {
-                    if (($service_module = $this->heart->get_service_module($id)) === null || !object_implements($service_module,
-                            "IService_UserServiceAdminAdd")) {
+                    if (
+                        ($service_module = $this->heart->get_service_module($id)) === null ||
+                        !object_implements($service_module, "IService_UserServiceAdminAdd")
+                    ) {
                         continue;
                     }
 
@@ -90,14 +105,21 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
                     ]);
                 }
 
-                $output = $this->template->render("admin/action_boxes/user_service_add", compact('services'));
+                $output = $this->template->render(
+                    "admin/action_boxes/user_service_add",
+                    compact('services')
+                );
                 break;
 
             case "user_service_edit":
                 $user_service = get_users_services($data['id']);
 
-                if (empty($user_service) || ($service_module = $this->heart->get_service_module($user_service['service'])) === null
-                    || !object_implements($service_module, "IService_UserServiceAdminEdit")
+                if (
+                    empty($user_service) ||
+                    ($service_module = $this->heart->get_service_module(
+                        $user_service['service']
+                    )) === null ||
+                    !object_implements($service_module, "IService_UserServiceAdminEdit")
                 ) {
                     $form_data = $this->lang->translate('service_edit_unable');
                 } else {
@@ -113,7 +135,7 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
         }
 
         return [
-            'status'   => isset($output) ? 'ok' : 'no_output',
+            'status' => isset($output) ? 'ok' : 'no_output',
             'template' => if_isset($output, ''),
         ];
     }

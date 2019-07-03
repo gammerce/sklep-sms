@@ -39,8 +39,19 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 
         $where = '';
         if (isset($get['search'])) {
-            searchWhere(["`uid`", "`username`", "`forename`", "`surname`", "`email`", "`groups`", "`wallet`"],
-                $get['search'], $where);
+            searchWhere(
+                [
+                    "`uid`",
+                    "`username`",
+                    "`forename`",
+                    "`surname`",
+                    "`email`",
+                    "`groups`",
+                    "`wallet`",
+                ],
+                $get['search'],
+                $where
+            );
         }
 
         // Jezeli jest jakis where, to dodajemy WHERE
@@ -50,9 +61,12 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS `uid`, `username`, `forename`, `surname`, `email`, `groups`, `wallet` " .
-            "FROM `" . TABLE_PREFIX . "users` " .
-            $where .
-            "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
+                "FROM `" .
+                TABLE_PREFIX .
+                "users` " .
+                $where .
+                "LIMIT " .
+                get_row_limit($this->currentPage->getPageNumber())
         );
 
         $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
@@ -75,14 +89,18 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
             $body_row->addCell(new Cell(htmlspecialchars($row['email'])));
             $body_row->addCell(new Cell($groups));
 
-            $cell = new Cell(number_format($row['wallet'] / 100.0, 2) . ' ' . $this->settings['currency']);
+            $cell = new Cell(
+                number_format($row['wallet'] / 100.0, 2) . ' ' . $this->settings['currency']
+            );
             $cell->setParam('headers', 'wallet');
             $body_row->addCell($cell);
 
             $button_charge = new Img();
             $button_charge->setParam('class', 'charge_wallet');
-            $button_charge->setParam('title',
-                $this->lang->translate('charge') . ' ' . htmlspecialchars($row['username']));
+            $button_charge->setParam(
+                'title',
+                $this->lang->translate('charge') . ' ' . htmlspecialchars($row['username'])
+            );
             $button_charge->setParam('src', 'images/dollar.png');
             $body_row->addAction($button_charge);
 
@@ -104,7 +122,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
         if (!get_privilages("manage_users")) {
             return [
                 'status' => "not_logged_in",
-                'text'   => $this->lang->translate('not_logged_or_no_perm'),
+                'text' => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
@@ -116,17 +134,23 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
                 $groups = '';
                 foreach ($this->heart->get_groups() as $group) {
                     $groups .= create_dom_element("option", "{$group['name']} ( {$group['id']} )", [
-                        'value'    => $group['id'],
+                        'value' => $group['id'],
                         'selected' => in_array($group['id'], $user->getGroups()) ? "selected" : "",
                     ]);
                 }
 
-                $output = $this->template->render("admin/action_boxes/user_edit", compact('user', 'groups'));
+                $output = $this->template->render(
+                    "admin/action_boxes/user_edit",
+                    compact('user', 'groups')
+                );
                 break;
 
             case "charge_wallet":
                 $user = $this->heart->get_user($data['uid']);
-                $output = $this->template->render("admin/action_boxes/user_charge_wallet", compact('user'));
+                $output = $this->template->render(
+                    "admin/action_boxes/user_charge_wallet",
+                    compact('user')
+                );
                 break;
 
             default:
@@ -134,9 +158,8 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
         }
 
         return [
-            'status'   => 'ok',
+            'status' => 'ok',
             'template' => $output,
         ];
     }
-
 }

@@ -1,7 +1,6 @@
 <?php
 namespace App\Verification;
 
-
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\BadCodeException;
@@ -29,7 +28,7 @@ class Gosetti extends PaymentModule implements SupportSms
 
         $response = $this->requester->get('https://gosetti.pl/Api/SmsApiV2CheckCode.php', [
             'UserId' => $this->getAccountId(),
-            'Code'   => $returnCode,
+            'Code' => $returnCode,
         ]);
 
         if ($response === false) {
@@ -104,7 +103,9 @@ class Gosetti extends PaymentModule implements SupportSms
         $this->smsCode = $data['Code'];
 
         foreach ($data['Numbers'] as $number_data) {
-            $this->numbers[strval(floatval($number_data['TopUpAmount']))] = strval($number_data['Number']);
+            $this->numbers[strval(floatval($number_data['TopUpAmount']))] = strval(
+                $number_data['Number']
+            );
         }
     }
 }

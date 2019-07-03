@@ -26,7 +26,7 @@ class Translator
      * @var array
      */
     protected $langList = [
-        'polish'  => 'pl',
+        'polish' => 'pl',
         'english' => 'en',
     ];
 
@@ -151,13 +151,17 @@ class Translator
         if (admin_session()) {
             foreach (scandir($this->app->path("includes/languages/{$language}/admin")) as $file) {
                 if (ends_at($file, ".php")) {
-                    $filesToInclude[] = $this->app->path("includes/languages/{$language}/admin/{$file}");
+                    $filesToInclude[] = $this->app->path(
+                        "includes/languages/{$language}/admin/{$file}"
+                    );
                 }
             }
         } else {
             foreach (scandir($this->app->path("includes/languages/{$language}/user")) as $file) {
                 if (ends_at($file, ".php")) {
-                    $filesToInclude[] = $this->app->path("includes/languages/{$language}/user/{$file}");
+                    $filesToInclude[] = $this->app->path(
+                        "includes/languages/{$language}/user/{$file}"
+                    );
                 }
             }
         }

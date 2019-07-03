@@ -14,7 +14,8 @@ class CachingRequesterTest extends TestCase
     {
         // given
         $cache = Mockery::mock(CacheInterface::class);
-        $cache->shouldReceive('get')
+        $cache
+            ->shouldReceive('get')
             ->withArgs(['test'])
             ->andReturn(new CacheEntity('value'))
             ->once();
@@ -35,8 +36,15 @@ class CachingRequesterTest extends TestCase
     {
         // given
         $cache = Mockery::mock(CacheInterface::class);
-        $cache->shouldReceive('get')->withArgs(['test'])->andReturnNull()->once();
-        $cache->shouldReceive('set')->withArgs(['test', 'foobar', Mockery::any()])->once();
+        $cache
+            ->shouldReceive('get')
+            ->withArgs(['test'])
+            ->andReturnNull()
+            ->once();
+        $cache
+            ->shouldReceive('set')
+            ->withArgs(['test', 'foobar', Mockery::any()])
+            ->once();
 
         $requester = new CachingRequester($cache);
 
@@ -54,12 +62,14 @@ class CachingRequesterTest extends TestCase
     {
         // given
         $cache = Mockery::mock(CacheInterface::class);
-        $cache->shouldReceive('get')
+        $cache
+            ->shouldReceive('get')
             ->withArgs(['test'])
             ->andReturn(new CacheEntity('value', time() - 2 * 60 * 60))
             ->once();
 
-        $cache->shouldReceive('set')
+        $cache
+            ->shouldReceive('set')
             ->withArgs(['test', 'foobar', Mockery::any()])
             ->once();
 
@@ -79,7 +89,8 @@ class CachingRequesterTest extends TestCase
     {
         // given
         $cache = Mockery::mock(CacheInterface::class);
-        $cache->shouldReceive('get')
+        $cache
+            ->shouldReceive('get')
             ->withArgs(['test'])
             ->andReturn(new CacheEntity('value', time() - 2 * 60 * 60))
             ->once();

@@ -31,15 +31,24 @@ class PageAdminPlayersFlags extends PageAdmin
         $table->addHeadCell($cell);
 
         $table->addHeadCell(new Cell($this->lang->translate('server')));
-        $table->addHeadCell(new Cell("{$this->lang->translate('nick')}/{$this->lang->translate('ip')}/{$this->lang->translate('sid')}"));
+        $table->addHeadCell(
+            new Cell(
+                "{$this->lang->translate('nick')}/{$this->lang->translate(
+                    'ip'
+                )}/{$this->lang->translate('sid')}"
+            )
+        );
         foreach (str_split($this->flags) as $flag) {
             $table->addHeadCell(new Cell($flag));
         }
 
         $result = $this->db->query(
-            "SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "players_flags` " .
-            "ORDER BY `id` DESC " .
-            "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
+            "SELECT SQL_CALC_FOUND_ROWS * FROM `" .
+                TABLE_PREFIX .
+                "players_flags` " .
+                "ORDER BY `id` DESC " .
+                "LIMIT " .
+                get_row_limit($this->currentPage->getPageNumber())
         );
 
         $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));

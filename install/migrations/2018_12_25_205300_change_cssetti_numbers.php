@@ -29,7 +29,9 @@ class ChangeCssettiNumbers extends Migration
 
     private function changeSmsText()
     {
-        $result = $this->db->query("SELECT * FROM `ss_transaction_services` WHERE `id` = 'cssetti';");
+        $result = $this->db->query(
+            "SELECT * FROM `ss_transaction_services` WHERE `id` = 'cssetti';"
+        );
         $transactionService = $this->db->fetch_array_assoc($result);
 
         if (!$transactionService) {
@@ -39,9 +41,11 @@ class ChangeCssettiNumbers extends Migration
         $data = json_decode($transactionService["data"], true);
         $data["sms_text"] = "SKLEP";
 
-        $this->db->query($this->db->prepare(
-            "UPDATE `ss_transaction_services` SET `data` = '%s' WHERE `id` = 'cssetti';",
-            [json_encode($data)]
-        ));
+        $this->db->query(
+            $this->db->prepare(
+                "UPDATE `ss_transaction_services` SET `data` = '%s' WHERE `id` = 'cssetti';",
+                [json_encode($data)]
+            )
+        );
     }
 }

@@ -18,14 +18,18 @@ class PageResetPassword extends Page implements I_BeLoggedCannot
             return $this->lang->translate('no_reset_key');
         }
 
-        $result = $this->db->query($this->db->prepare(
-            "SELECT `uid` FROM `" . TABLE_PREFIX . "users` " .
-            "WHERE `reset_password_key` = '%s'",
-            [$get['code']]
-        ));
+        $result = $this->db->query(
+            $this->db->prepare(
+                "SELECT `uid` FROM `" .
+                    TABLE_PREFIX .
+                    "users` " .
+                    "WHERE `reset_password_key` = '%s'",
+                [$get['code']]
+            )
+        );
 
-        if (!$this->db->num_rows($result)) // Nie znalazło użytkownika z takim kodem
-        {
+        if (!$this->db->num_rows($result)) {
+            // Nie znalazło użytkownika z takim kodem
             return $this->lang->translate('wrong_reset_key');
         }
 

@@ -43,21 +43,23 @@ class ServerStuffController
             $purchaseData->user->setPlatform($request->get('platform'));
             $purchaseData->user->setLastip($request->get('ip'));
             $purchaseData->setOrder([
-                'server'    => $request->get('server'),
-                'type'      => $request->get('type'),
+                'server' => $request->get('server'),
+                'type' => $request->get('type'),
                 'auth_data' => $request->get('auth_data'),
-                'password'  => $request->get('password'),
+                'password' => $request->get('password'),
                 'passwordr' => $request->get('password'),
             ]);
             $purchaseData->setPayment([
-                'method'      => $request->get('method'),
-                'sms_code'    => $request->get('sms_code'),
+                'method' => $request->get('method'),
+                'sms_code' => $request->get('sms_code'),
                 'sms_service' => $request->get('transaction_service'),
             ]);
 
             // Ustawiamy taryfę z numerem
             $payment = new Payment($purchaseData->getPayment('sms_service'));
-            $purchaseData->setTariff($payment->getPaymentModule()->getTariffById($request->get('tariff')));
+            $purchaseData->setTariff(
+                $payment->getPaymentModule()->getTariffById($request->get('tariff'))
+            );
 
             $returnValidation = $service_module->purchase_data_validate($purchaseData);
 
@@ -67,7 +69,10 @@ class ServerStuffController
                 if (!empty($returnValidation['data']['warnings'])) {
                     $warnings = '';
                     foreach ($returnValidation['data']['warnings'] as $what => $warning) {
-                        $warnings .= "<strong>{$what}</strong><br />" . implode("<br />", $warning) . "<br />";
+                        $warnings .=
+                            "<strong>{$what}</strong><br />" .
+                            implode("<br />", $warning) .
+                            "<br />";
                     }
 
                     if (strlen($warnings)) {
@@ -76,15 +81,18 @@ class ServerStuffController
                 }
 
                 return $this->xmlOutput(
-                    $returnValidation['status'], $returnValidation['text'], $returnValidation['positive'], $extraData
+                    $returnValidation['status'],
+                    $returnValidation['text'],
+                    $returnValidation['positive'],
+                    $extraData
                 );
             }
 
             /** @var Purchase $purchaseData */
             $purchaseData = $returnValidation['purchase_data'];
             $purchaseData->setPayment([
-                'method'      => $request->get('method'),
-                'sms_code'    => $request->get('sms_code'),
+                'method' => $request->get('method'),
+                'sms_code' => $request->get('sms_code'),
                 'sms_service' => $request->get('transaction_service'),
             ]);
             $returnPayment = validate_payment($purchaseData);
@@ -107,7 +115,10 @@ class ServerStuffController
             }
 
             return $this->xmlOutput(
-                $returnPayment['status'], $returnPayment['text'], $returnPayment['positive'], $extraData
+                $returnPayment['status'],
+                $returnPayment['text'],
+                $returnPayment['positive'],
+                $extraData
             );
         }
 

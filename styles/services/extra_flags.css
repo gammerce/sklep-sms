@@ -1,7 +1,13 @@
-#type_nick, #type_ip, #type_sid, #type_password {
+#type_nick,
+#type_ip,
+#type_sid,
+#type_password {
     display: none;
 }
 
-.type_nick, .type_ip, .type_sid, .type_password {
+.type_nick,
+.type_ip,
+.type_sid,
+.type_password {
     display: none;
 }

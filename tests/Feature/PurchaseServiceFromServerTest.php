@@ -39,32 +39,32 @@ class PurchaseServiceFromServerTest extends IndexTestCase
 
         $server = $this->factory->server();
         $this->factory->serverService([
-            'server_id'  => $server->getId(),
+            'server_id' => $server->getId(),
             'service_id' => $serviceId,
         ]);
         $this->factory->pricelist([
             'service_id' => $serviceId,
-            'tariff'     => $tariff,
-            'server_id'  => $server->getId(),
+            'tariff' => $tariff,
+            'server_id' => $server->getId(),
         ]);
 
         /** @var Settings $settings */
         $settings = $this->app->make(Settings::class);
 
         $query = [
-            'key'                 => md5($settings->get('random_key')),
-            'action'              => 'purchase_service',
-            'service'             => $serviceId,
+            'key' => md5($settings->get('random_key')),
+            'action' => 'purchase_service',
+            'service' => $serviceId,
             'transaction_service' => $transactionService,
-            'server'              => $server->getId(),
-            'type'                => $type,
-            'auth_data'           => $authData,
-            'password'            => $password,
-            'sms_code'            => $smsCode,
-            'method'              => $method,
-            'tariff'              => $tariff,
-            'uid'                 => $uid,
-            'platform'            => $platform,
+            'server' => $server->getId(),
+            'type' => $type,
+            'auth_data' => $authData,
+            'password' => $password,
+            'sms_code' => $smsCode,
+            'method' => $method,
+            'tariff' => $tariff,
+            'uid' => $uid,
+            'platform' => $platform,
         ];
 
         $this->mockGoSetti();
@@ -104,10 +104,15 @@ class PurchaseServiceFromServerTest extends IndexTestCase
         $this->requesterMock
             ->shouldReceive('get')
             ->withArgs(['https://gosetti.pl/Api/SmsApiV2GetData.php'])
-            ->andReturn(new Response(200, json_encode([
-                'Code'    => 'abc123',
-                'Numbers' => [],
-            ])));
+            ->andReturn(
+                new Response(
+                    200,
+                    json_encode([
+                        'Code' => 'abc123',
+                        'Numbers' => [],
+                    ])
+                )
+            );
 
         $gosetti = Mockery::mock($this->app->make(Gosetti::class))->makePartial();
         $gosetti->shouldReceive('verifySms')->andReturn(new SmsSuccessResult());

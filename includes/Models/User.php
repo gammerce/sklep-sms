@@ -114,12 +114,16 @@ class User
             return;
         }
 
-        $result = $this->db->query($this->db->prepare(
-            "SELECT * FROM `" . TABLE_PREFIX . "users` " .
-            "WHERE `uid` = '%d' " .
-            "OR ((`username` = '%s' OR `email` = '%s') AND `password` = md5(CONCAT(md5('%s'), md5(`salt`))))",
-            [$uid, $username, $username, $password]
-        ));
+        $result = $this->db->query(
+            $this->db->prepare(
+                "SELECT * FROM `" .
+                    TABLE_PREFIX .
+                    "users` " .
+                    "WHERE `uid` = '%d' " .
+                    "OR ((`username` = '%s' OR `email` = '%s') AND `password` = md5(CONCAT(md5('%s'), md5(`salt`))))",
+                [$uid, $username, $username, $password]
+            )
+        );
 
         if ($this->db->num_rows($result)) {
             $row = $this->db->fetch_array_assoc($result);
@@ -155,12 +159,16 @@ class User
             return;
         }
 
-        $this->db->query($this->db->prepare(
-            "UPDATE `" . TABLE_PREFIX . "users` " .
-            "SET `lastactiv` = NOW(), `lastip` = '%s' " .
-            "WHERE `uid` = '%d'",
-            [$this->getLastip(), $this->getUid()]
-        ));
+        $this->db->query(
+            $this->db->prepare(
+                "UPDATE `" .
+                    TABLE_PREFIX .
+                    "users` " .
+                    "SET `lastactiv` = NOW(), `lastip` = '%s' " .
+                    "WHERE `uid` = '%d'",
+                [$this->getLastip(), $this->getUid()]
+            )
+        );
     }
 
     public function isLogged()

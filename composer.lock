@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "41b7075b0c420469799745b7214c6455",
+    "content-hash": "4a5867047e7dc5fb192aad2b666abbdc",
     "packages": [
         {
             "name": "barryvdh/composer-cleanup-plugin",
-            "version": "v0.1.0",
+            "version": "v0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/barryvdh/composer-cleanup-plugin.git",
-                "reference": "0cd554a71e8e1516dbf389ec95357f4e0d57fb72"
+                "reference": "1efa5ce0aa415f1e7bc7fccfbedfe43d8f0941b0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/composer-cleanup-plugin/zipball/0cd554a71e8e1516dbf389ec95357f4e0d57fb72",
-                "reference": "0cd554a71e8e1516dbf389ec95357f4e0d57fb72",
+                "url": "https://api.github.com/repos/barryvdh/composer-cleanup-plugin/zipball/1efa5ce0aa415f1e7bc7fccfbedfe43d8f0941b0",
+                "reference": "1efa5ce0aa415f1e7bc7fccfbedfe43d8f0941b0",
                 "shasum": ""
             },
             "require": {
@@ -46,7 +46,7 @@
                 }
             ],
             "description": "A composer cleanup plugin, to remove tests and documentation to save space",
-            "time": "2015-06-18T08:00:53+00:00"
+            "time": "2018-05-14T08:32:22+00:00"
         },
         {
             "name": "illuminate/container",
@@ -1661,6 +1661,7 @@
                 "mock",
                 "xunit"
             ],
+            "abandoned": true,
             "time": "2017-06-30T09:13:00+00:00"
         },
         {

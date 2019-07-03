@@ -19,9 +19,11 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
     {
         $handle = fopen(
             'http://sms.cashbill.pl/backcode_check_singleuse_noip.php' .
-            '?id=' .
-            '&code=' . urlencode($this->getSmsCode()) .
-            '&check=' . urlencode($returnCode),
+                '?id=' .
+                '&code=' .
+                urlencode($this->getSmsCode()) .
+                '&check=' .
+                urlencode($returnCode),
             'r'
         );
 
@@ -59,24 +61,24 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
         $cost = round($purchase->getPayment('cost') / 100, 2);
 
         return [
-            'url'      => 'https://pay.cashbill.pl/form/pay.php',
-            'method'   => 'POST',
-            'service'  => $this->getService(),
-            'desc'     => $purchase->getDesc(),
-            'forname'  => $purchase->user->getForename(false),
-            'surname'  => $purchase->user->getSurname(false),
-            'email'    => $purchase->getEmail(),
-            'amount'   => $cost,
+            'url' => 'https://pay.cashbill.pl/form/pay.php',
+            'method' => 'POST',
+            'service' => $this->getService(),
+            'desc' => $purchase->getDesc(),
+            'forname' => $purchase->user->getForename(false),
+            'surname' => $purchase->user->getSurname(false),
+            'email' => $purchase->getEmail(),
+            'amount' => $cost,
             'userdata' => $dataFilename,
-            'sign'     => md5(
+            'sign' => md5(
                 $this->getService() .
-                $cost .
-                $purchase->getDesc() .
-                $dataFilename .
-                $purchase->user->getForename(false) .
-                $purchase->user->getSurname(false) .
-                $purchase->getEmail() .
-                $this->getKey()
+                    $cost .
+                    $purchase->getDesc() .
+                    $dataFilename .
+                    $purchase->user->getForename(false) .
+                    $purchase->user->getSurname(false) .
+                    $purchase->getEmail() .
+                    $this->getKey()
             ),
         ];
     }
@@ -85,9 +87,11 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
     {
         $transferFinalize = new TransferFinalize();
 
-        if ($this->checkSign($post, $this->getKey(), $post['sign'])
-            && strtoupper($post['status']) == 'OK'
-            && $post['service'] == $this->getService()) {
+        if (
+            $this->checkSign($post, $this->getKey(), $post['sign']) &&
+            strtoupper($post['status']) == 'OK' &&
+            $post['service'] == $this->getService()
+        ) {
             $transferFinalize->setStatus(true);
         }
 
@@ -112,7 +116,14 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
      */
     public function checkSign($data, $key, $sign)
     {
-        return md5($data['service'] . $data['orderid'] . $data['amount'] . $data['userdata'] . $data['status'] . $key) == $sign;
+        return md5(
+            $data['service'] .
+                $data['orderid'] .
+                $data['amount'] .
+                $data['userdata'] .
+                $data['status'] .
+                $key
+        ) == $sign;
     }
 
     public function getSmsCode()

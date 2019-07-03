@@ -1,10 +1,10 @@
 sudo: false
-dist: precise
+dist: xenial
 
 language: php
 php:
   - '5.6'
-  - '7.0'
+  - '7.3'
 
 cache:
   directories:
@@ -22,12 +22,17 @@ env:
     - DB_PASSWORD=
 
 before_install:
-  - composer self-update
+  - nvm install stable
   - mysql -e 'CREATE DATABASE sklep_sms_test;'
 
 install:
   - composer install --no-interaction
+  - npm install --global prettier @prettier/plugin-php
   - php artisan test:setup
+
+script:
+  - prettier "{includes,jscripts,styles,install,tests,themes}/**/*.{php,js,css,html}" --check
+  - ./vendor/bin/phpunit
 
 before_deploy:
   - rm -Rf vendor

@@ -159,12 +159,16 @@ class HeartServiceProvider
     protected function registerServices(Heart $heart)
     {
         $heart->register_service_module(
-            'charge_wallet', 'Doładowanie Portfela', ServiceChargeWallet::class,
+            'charge_wallet',
+            'Doładowanie Portfela',
+            ServiceChargeWallet::class,
             ServiceChargeWalletSimple::class
         );
 
         $heart->register_service_module(
-            'extra_flags', 'Dodatkowe Uprawnienia / Flagi', ServiceExtraFlags::class,
+            'extra_flags',
+            'Dodatkowe Uprawnienia / Flagi',
+            ServiceExtraFlags::class,
             ServiceExtraFlagsSimple::class
         );
 
@@ -176,7 +180,10 @@ class HeartServiceProvider
         );
 
         $heart->register_service_module(
-            'other', 'Inne', ServiceOther::class, ServiceOtherSimple::class
+            'other',
+            'Inne',
+            ServiceOther::class,
+            ServiceOtherSimple::class
         );
     }
 }

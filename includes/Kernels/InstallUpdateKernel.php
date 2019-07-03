@@ -10,9 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class InstallUpdateKernel extends Kernel
 {
-    protected $middlewares = [
-        RequireInstalledAndNotUpdated::class,
-    ];
+    protected $middlewares = [RequireInstalledAndNotUpdated::class];
 
     public function run(Request $request)
     {

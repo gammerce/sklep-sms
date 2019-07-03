@@ -68,7 +68,7 @@ class DOMElement implements I_ToHtml
         $old_params = $this->params;
 
         $style = [];
-        foreach ((array)$this->getParam('style') as $key => $value) {
+        foreach ((array) $this->getParam('style') as $key => $value) {
             if (!strlen($value)) {
                 continue;
             }
@@ -321,7 +321,7 @@ class BodyRow extends Row
      */
     public function setButtonEdit($button_edit = true)
     {
-        $this->button_edit = (bool)$button_edit;
+        $this->button_edit = (bool) $button_edit;
     }
 
     /**
@@ -329,7 +329,7 @@ class BodyRow extends Row
      */
     public function setButtonDelete($button_delete = true)
     {
-        $this->button_delete = (bool)$button_delete;
+        $this->button_delete = (bool) $button_delete;
     }
 
     /**
@@ -530,9 +530,9 @@ class Wrapper extends Div
 
         if ($this->search) {
             $search_text = $request->get('search');
-            $buttons->addContent(new SimpleText(
-                $template->render("admin/form_search", compact('search_text'))
-            ));
+            $buttons->addContent(
+                new SimpleText($template->render("admin/form_search", compact('search_text')))
+            );
         }
 
         foreach ($this->buttons as $button) {

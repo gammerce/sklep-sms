@@ -17,18 +17,18 @@ class OneShotOneKill extends PaymentModule implements SupportSms
     protected $id = "1s1k";
 
     private $rates = [
-        '0.65'  => '7136',
-        '1.30'  => '7255',
-        '1.95'  => '7355',
-        '2.60'  => '7455',
-        '3.25'  => '7555',
-        '3.90'  => '7636',
-        '4.55'  => '77464',
-        '5.20'  => '78464',
-        '5.85'  => '7936',
-        '6.50'  => '91055',
-        '7.15'  => '91155',
-        '9.10'  => '91455',
+        '0.65' => '7136',
+        '1.30' => '7255',
+        '1.95' => '7355',
+        '2.60' => '7455',
+        '3.25' => '7555',
+        '3.90' => '7636',
+        '4.55' => '77464',
+        '5.20' => '78464',
+        '5.85' => '7936',
+        '6.50' => '91055',
+        '7.15' => '91155',
+        '9.10' => '91455',
         '10.40' => '91664',
         '12.35' => '91955',
         '13.00' => '92055',
@@ -38,10 +38,10 @@ class OneShotOneKill extends PaymentModule implements SupportSms
     public function verifySms($returnCode, $number)
     {
         $response = $this->requester->get('http://www.1shot1kill.pl/api', [
-            'type'     => 'sms',
-            'key'      => $this->getApi(),
+            'type' => 'sms',
+            'key' => $this->getApi(),
             'sms_code' => $returnCode,
-            'comment'  => '',
+            'comment' => '',
         ]);
 
         if ($response === false) {

@@ -21,6 +21,9 @@ class SmsCodesTest extends AdminTestCase
         // then
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertContains('Panel Admina', $response->getContent());
-        $this->assertContains('<div class="title">Kody SMS do wykorzystania', $response->getContent());
+        $this->assertContains(
+            '<div class="title">Kody SMS do wykorzystania',
+            $response->getContent()
+        );
     }
 }

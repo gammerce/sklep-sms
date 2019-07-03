@@ -16,8 +16,8 @@ class Profitsms extends PaymentModule implements SupportSms
     {
         $response = $this->requester->get('http://profitsms.pl/check.php', [
             'apiKey' => $this->getApi(),
-            'code'   => $returnCode,
-            'smsNr'  => $number,
+            'code' => $returnCode,
+            'smsNr' => $number,
         ]);
 
         if ($response === false) {

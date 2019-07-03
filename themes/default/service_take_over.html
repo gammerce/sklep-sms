@@ -1,24 +1,22 @@
 <div class="service_main_info">
-  {$lang->translate('service_takeover')}
+    {$lang->translate('service_takeover')}
 </div>
 
 <form id="form_service_take_over">
+    <div class="center">
+        <span style="text-transform: uppercase;">{$lang->translate('service')}</span>
+        <select name="service">
+            <option value="">{$lang->translate('choose_service')}</option>
+            {$services_options}
+        </select>
+    </div>
 
-  <div class="center">
-    <span style="text-transform: uppercase;">{$lang->translate('service')}</span>
-    <select name="service">
-      <option value="">{$lang->translate('choose_service')}</option>
-      {$services_options}
-    </select>
-  </div>
+    <hr />
 
-  <hr/>
+    <div class="extra_data"></div>
 
-  <div class="extra_data"></div>
-
-  <div class="take_over center">
-    <hr/>
-    <input type="submit" value="{$lang->translate('take_over')}"/>
-  </div>
-
+    <div class="take_over center">
+        <hr />
+        <input type="submit" value="{$lang->translate('take_over')}" />
+    </div>
 </form>

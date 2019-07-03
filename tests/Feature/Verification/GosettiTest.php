@@ -96,8 +96,6 @@ class GosettiTest extends IndexTestCase
         $this->gosetti->verifySms("foobar", "72480");
     }
 
-
-
     /**
      * @test
      * @expectedException \App\Verification\Exceptions\BadNumberException

@@ -64,7 +64,7 @@ class MybbUser
 
         if (!isset($this->shop_groups[$group_id])) {
             $this->setShopGroup($group_id, [
-                'expire'     => 0,
+                'expire' => 0,
                 'was_before' => in_array($group_id, $this->getMybbAddGroups()),
             ]);
         }
@@ -118,7 +118,10 @@ class MybbUser
                 continue;
             }
 
-            if (isset($this->shop_groups[intval($group_id)]) && !$this->shop_groups[intval($group_id)]['was_before']) {
+            if (
+                isset($this->shop_groups[intval($group_id)]) &&
+                !$this->shop_groups[intval($group_id)]['was_before']
+            ) {
                 continue;
             }
 

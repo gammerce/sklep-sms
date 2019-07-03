@@ -25,7 +25,8 @@ abstract class Service
         $this->template = $this->app->make(Template::class);
         $this->db = $this->app->make(Database::class);
 
-        if (!is_array($service)) { // Podano błędne dane usługi
+        if (!is_array($service)) {
+            // Podano błędne dane usługi
             $this->service = null;
             return;
         }
@@ -149,18 +150,27 @@ abstract class Service
         $affected = 0;
         if (!empty($set_data1)) {
             $this->db->query(
-                "UPDATE `" . TABLE_PREFIX . "user_service` " .
-                "SET " . implode(', ', $set_data1) . " " .
-                $where1
+                "UPDATE `" .
+                    TABLE_PREFIX .
+                    "user_service` " .
+                    "SET " .
+                    implode(', ', $set_data1) .
+                    " " .
+                    $where1
             );
             $affected = max($affected, $this->db->affected_rows());
         }
 
         if (!empty($set_data2)) {
             $this->db->query(
-                "UPDATE `" . TABLE_PREFIX . $this::USER_SERVICE_TABLE . "` " .
-                "SET " . implode(', ', $set_data2) . " " .
-                $where2
+                "UPDATE `" .
+                    TABLE_PREFIX .
+                    $this::USER_SERVICE_TABLE .
+                    "` " .
+                    "SET " .
+                    implode(', ', $set_data2) .
+                    " " .
+                    $where2
             );
             $affected = max($affected, $this->db->affected_rows());
         }

@@ -25,12 +25,14 @@ class TransferController
             ->finalizeTransfer($request->query->all(), $request->request->all());
 
         if ($transferFinalize->getStatus() === false) {
-            log_info($this->langShop->sprintf(
-                $this->langShop->translate('payment_not_accepted'),
-                $transferFinalize->getOrderid(),
-                $transferFinalize->getAmount(),
-                $transferFinalize->getTransferService()
-            ));
+            log_info(
+                $this->langShop->sprintf(
+                    $this->langShop->translate('payment_not_accepted'),
+                    $transferFinalize->getOrderid(),
+                    $transferFinalize->getAmount(),
+                    $transferFinalize->getTransferService()
+                )
+            );
         } else {
             $payment->transferFinalize($transferFinalize);
         }

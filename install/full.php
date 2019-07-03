@@ -10,10 +10,7 @@ require __DIR__ . '/../bootstrap/autoload.php';
 
 $app = require __DIR__ . '/../bootstrap/install.php';
 
-$app->singleton(
-    App\Kernels\KernelContract::class,
-    App\Kernels\InstallFullKernel::class
-);
+$app->singleton(App\Kernels\KernelContract::class, App\Kernels\InstallFullKernel::class);
 
 /** @var App\Kernels\KernelContract $kernel */
 $kernel = $app->make(App\Kernels\KernelContract::class);

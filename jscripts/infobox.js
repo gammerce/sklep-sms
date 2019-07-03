@@ -4,8 +4,7 @@ var infobox = {
 
     // Wyświetlanie informacji
     show_info: function show_info(message, positive, length) {
-        if (!message)
-            return;
+        if (!message) return;
 
         // Usuwamy poprzedniego boxa
         infobox.element.remove();
@@ -21,26 +20,26 @@ var infobox = {
 
         infobox.element = $("<div>", {
             html: message,
-            class: "infobox " + (positive == "1" ? "positive" : "negative")
+            class: "infobox " + (positive == "1" ? "positive" : "negative"),
         }).hide();
 
         // Dodajemy element do body
-        infobox.element.appendTo('body').fadeIn("slow");
+        infobox.element.appendTo("body").fadeIn("slow");
 
         // Dodajemy uchwyt kliknięcia
-        infobox.element.click(function () {
+        infobox.element.click(function() {
             infobox.element.remove();
         });
 
         // Tworzymy task usuwajacy info po length milisekundach
-        infobox.hide_task = setTimeout(function () {
+        infobox.hide_task = setTimeout(function() {
             infobox.remove();
         }, length); // <-- time in milliseconds
     },
 
-    remove: function () {
-        infobox.element.stop().fadeOut('slow', function () {
+    remove: function() {
+        infobox.element.stop().fadeOut("slow", function() {
             $(this).remove();
         });
-    }
+    },
 };

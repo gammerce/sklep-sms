@@ -14,9 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class InstallFullKernel extends Kernel
 {
-    protected $middlewares = [
-        RequireNotInstalled::class,
-    ];
+    protected $middlewares = [RequireNotInstalled::class];
 
     public function run(Request $request)
     {
@@ -30,11 +28,19 @@ class InstallFullKernel extends Kernel
         $lang = $translationManager->user();
 
         try {
-            $db = new Database($_POST['db_host'], $_POST['db_port'], $_POST['db_user'], $_POST['db_password'], $_POST['db_db']);
+            $db = new Database(
+                $_POST['db_host'],
+                $_POST['db_port'],
+                $_POST['db_user'],
+                $_POST['db_password'],
+                $_POST['db_db']
+            );
             $db->query("SET NAMES utf8");
             $this->app->instance(Database::class, $db);
         } catch (SqlQueryException $e) {
-            return new Response($lang->translate('mysqli_' . $e->getMessage()) . "\n\n" . $e->getError());
+            return new Response(
+                $lang->translate('mysqli_' . $e->getMessage()) . "\n\n" . $e->getError()
+            );
         }
 
         /** @var InstallManager $installManager */
@@ -69,7 +75,8 @@ class InstallFullKernel extends Kernel
             }
 
             if (!is_writable($this->app->path($file))) {
-                $warnings['general'][] = "Ścieżka <b>" . htmlspecialchars($file) . "</b> nie posiada praw do zapisu.";
+                $warnings['general'][] =
+                    "Ścieżka <b>" . htmlspecialchars($file) . "</b> nie posiada praw do zapisu.";
             }
         }
 
@@ -102,9 +109,19 @@ class InstallFullKernel extends Kernel
 
         $installManager->start();
 
-        $migrator->install($_POST['license_token'], $_POST['admin_username'], $_POST['admin_password']);
+        $migrator->install(
+            $_POST['license_token'],
+            $_POST['admin_username'],
+            $_POST['admin_password']
+        );
 
-        $envCreator->create($_POST['db_host'], $_POST['db_port'], $_POST['db_db'], $_POST['db_user'], $_POST['db_password']);
+        $envCreator->create(
+            $_POST['db_host'],
+            $_POST['db_port'],
+            $_POST['db_db'],
+            $_POST['db_user'],
+            $_POST['db_password']
+        );
 
         $installManager->finish();
 

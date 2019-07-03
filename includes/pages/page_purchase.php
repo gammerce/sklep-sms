@@ -44,12 +44,16 @@ class PagePurchase extends Page
             $path = "jscripts/pages/" . $this::PAGE_ID . "/";
             $path_file = $path . "main.js";
             if (file_exists($this->app->path($path_file))) {
-                $heart->script_add($settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version());
+                $heart->script_add(
+                    $settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version()
+                );
             }
 
             $path_file = $path . $service_module->get_module_id() . ".js";
             if (file_exists($this->app->path($path_file))) {
-                $heart->script_add($settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version());
+                $heart->script_add(
+                    $settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version()
+                );
             }
         }
 
@@ -58,12 +62,16 @@ class PagePurchase extends Page
             $path = "styles/pages/" . $this::PAGE_ID . "/";
             $path_file = $path . "main.css";
             if (file_exists($this->app->path($path_file))) {
-                $heart->style_add($settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version());
+                $heart->style_add(
+                    $settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version()
+                );
             }
 
             $path_file = $path . $service_module->get_module_id() . ".css";
             if (file_exists($this->app->path($path_file))) {
-                $heart->style_add($settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version());
+                $heart->style_add(
+                    $settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version()
+                );
             }
         }
 
@@ -72,12 +80,16 @@ class PagePurchase extends Page
             if ($module_info['id'] == $service_module->get_module_id()) {
                 $path = "styles/services/" . $module_info['id'] . ".css";
                 if (file_exists($this->app->path($path))) {
-                    $heart->style_add($settings['shop_url_slash'] . $path . "?version=" . $this->app->version());
+                    $heart->style_add(
+                        $settings['shop_url_slash'] . $path . "?version=" . $this->app->version()
+                    );
                 }
 
                 $path = "jscripts/services/" . $module_info['id'] . ".js";
                 if (file_exists($this->app->path($path))) {
-                    $heart->script_add($settings['shop_url_slash'] . $path . "?version=" . $this->app->version());
+                    $heart->script_add(
+                        $settings['shop_url_slash'] . $path . "?version=" . $this->app->version()
+                    );
                 }
 
                 break;

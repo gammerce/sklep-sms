@@ -1,39 +1,43 @@
 <form id="form_service_code_add" class="action_box">
-  <div class="service_main_info">
-    {$lang->translate('add_code_for_service')}
-  </div>
-  <table>
-    <tbody class="ftbody">
-      <tr>
-        <td>{$lang->translate('code')}</td>
-        <td>
-          <input type="text" name="code" style="width: 100px;"/>&nbsp;
-          <input type="button" name="random_code" value="{$lang->translate('generate')}"/>
-        </td>
-      </tr>
-      <tr>
-        <td>{$lang->translate('service')}</td>
-        <td>
-          <select name="service">
-            <option value="">{$lang->translate('choose_service')}</option>
-            {$services}
-          </select>
-        </td>
-      </tr>
-      <tr>
-        <td>{$lang->translate('user_id')}</td>
-        <td><input type="text" name="uid" style="width: 60px;"/></td>
-      </tr>
-    </tbody>
-    <tbody>
-      <tr>
-        <td colspan="2" class="line"></td>
-      </tr>
-      <tr>
-        <td colspan="2">
-          <input type="submit" value="{$lang->translate('add')}" style="width: 100%;"/>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+    <div class="service_main_info">
+        {$lang->translate('add_code_for_service')}
+    </div>
+    <table>
+        <tbody class="ftbody">
+            <tr>
+                <td>{$lang->translate('code')}</td>
+                <td>
+                    <input type="text" name="code" style="width: 100px;" />&nbsp;
+                    <input
+                        type="button"
+                        name="random_code"
+                        value="{$lang->translate('generate')}"
+                    />
+                </td>
+            </tr>
+            <tr>
+                <td>{$lang->translate('service')}</td>
+                <td>
+                    <select name="service">
+                        <option value="">{$lang->translate('choose_service')}</option>
+                        {$services}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>{$lang->translate('user_id')}</td>
+                <td><input type="text" name="uid" style="width: 60px;" /></td>
+            </tr>
+        </tbody>
+        <tbody>
+            <tr>
+                <td colspan="2" class="line"></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" value="{$lang->translate('add')}" style="width: 100%;" />
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </form>

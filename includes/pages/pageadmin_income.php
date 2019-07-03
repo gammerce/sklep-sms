@@ -42,27 +42,30 @@ class PageAdminIncome extends PageAdmin
         }
         $obejcts_ids[] = 0;
 
-        $result = $this->db->query($this->db->prepare(
-            "SELECT t.income, t.timestamp, t.server " .
-            "FROM ({$this->settings['transactions_query']}) as t " .
-            "WHERE t.free = '0' AND IFNULL(t.income,'') != '' AND t.payment != 'wallet' AND t.timestamp LIKE '%s-%s-%%' " .
-            "ORDER BY t.timestamp ASC",
-            [$G_YEAR, $G_MONTH]
-        ));
+        $result = $this->db->query(
+            $this->db->prepare(
+                "SELECT t.income, t.timestamp, t.server " .
+                    "FROM ({$this->settings['transactions_query']}) as t " .
+                    "WHERE t.free = '0' AND IFNULL(t.income,'') != '' AND t.payment != 'wallet' AND t.timestamp LIKE '%s-%s-%%' " .
+                    "ORDER BY t.timestamp ASC",
+                [$G_YEAR, $G_MONTH]
+            )
+        );
 
         // Sumujemy dochód po dacie (z dokładnością do dnia) i po serwerze
         $data = [];
         while ($row = $this->db->fetch_array_assoc($result)) {
             $temp = explode(" ", $row['timestamp']);
 
-            $data[$temp[0]][in_array($row['server'], $obejcts_ids) ? $row['server'] : 0] += $row['income'];
+            $data[$temp[0]][in_array($row['server'], $obejcts_ids) ? $row['server'] : 0] +=
+                $row['income'];
         }
 
         // Dodanie wyboru miesiąca
         $months = '';
         for ($i = 1; $i <= 12; $i++) {
             $months .= create_dom_element("option", $this->lang->translate($this->months[$i]), [
-                'value'    => str_pad($i, 2, 0, STR_PAD_LEFT),
+                'value' => str_pad($i, 2, 0, STR_PAD_LEFT),
                 'selected' => $G_MONTH == $i ? "selected" : "",
             ]);
         }
@@ -71,7 +74,7 @@ class PageAdminIncome extends PageAdmin
         $years = "";
         for ($i = 2014; $i <= intval(date("Y")); $i++) {
             $years .= create_dom_element("option", $i, [
-                'value'    => $i,
+                'value' => $i,
                 'selected' => $G_YEAR == $i ? "selected" : "",
             ]);
         }
@@ -92,7 +95,12 @@ class PageAdminIncome extends PageAdmin
         // Lecimy pętla po każdym dniu
         for ($i = 1; $i <= $num; ++$i) {
             // Tworzymy wygląd daty
-            $date = $G_YEAR . "-" . str_pad($G_MONTH, 2, 0, STR_PAD_LEFT) . "-" . str_pad($i, 2, 0, STR_PAD_LEFT);
+            $date =
+                $G_YEAR .
+                "-" .
+                str_pad($G_MONTH, 2, 0, STR_PAD_LEFT) .
+                "-" .
+                str_pad($i, 2, 0, STR_PAD_LEFT);
 
             // Jeżeli jest to dzień z przyszłości
             if ($date > date("Y-m-d")) {
@@ -118,7 +126,10 @@ class PageAdminIncome extends PageAdmin
             // Zaokraglenie do dowch miejsc po przecinku zarobku w danym dniu
             $day_income = number_format($day_income / 100.0, 2);
 
-            $tbody .= $this->template->render("admin/income_trow", compact('date', 'table_row', 'day_income'));
+            $tbody .= $this->template->render(
+                "admin/income_trow",
+                compact('date', 'table_row', 'day_income')
+            );
         }
 
         // Pobranie podliczenia tabeli
@@ -133,9 +144,13 @@ class PageAdminIncome extends PageAdmin
         // Jeżeli coś się policzyło, są jakieś dane
         if (strlen($tbody)) {
             $total_income = number_format($total_income / 100.0, 2);
-            $tbody .= $this->template->render("admin/income_trow2", compact('table_row', 'total_income'));
-        } else // Brak danych
-        {
+            $tbody .= $this->template->render(
+                "admin/income_trow2",
+                compact('table_row', 'total_income')
+            );
+        }
+        // Brak danych
+        else {
             $tbody = $this->template->render("admin/no_records");
         }
 

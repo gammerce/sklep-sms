@@ -45,10 +45,13 @@ class PageAdminLogs extends PageAdmin
         }
 
         $result = $this->db->query(
-            "SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "logs` " .
-            $where .
-            "ORDER BY `id` DESC " .
-            "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
+            "SELECT SQL_CALC_FOUND_ROWS * FROM `" .
+                TABLE_PREFIX .
+                "logs` " .
+                $where .
+                "ORDER BY `id` DESC " .
+                "LIMIT " .
+                get_row_limit($this->currentPage->getPageNumber())
         );
 
         $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));

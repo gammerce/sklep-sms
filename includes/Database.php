@@ -58,7 +58,6 @@ class Database
         $this->query("SET NAMES utf8");
     }
 
-
     /**
      * @param string $name
      * @throws SqlQueryException
@@ -246,7 +245,7 @@ class Database
         $result = $this->query('SHOW FULL TABLES WHERE table_type = \'BASE TABLE\'');
 
         while ($row = $this->fetch_array_assoc($result)) {
-            $row = (array)$row;
+            $row = (array) $row;
             $tables[] = reset($row);
         }
 
