@@ -22,8 +22,7 @@ env:
     - DB_PASSWORD=
 
 before_install:
-  - composer self-update
-  - nvm install 12
+  - nvm install stable
   - mysql -e 'CREATE DATABASE sklep_sms_test;'
 
 install:
