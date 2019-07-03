@@ -1,5 +1,7 @@
 <?php
 
+use Admin\Table\Option;
+use Admin\Table\Select;
 use App\TranslationManager;
 
 class PageAdminSettings extends PageAdmin
@@ -18,7 +20,7 @@ class PageAdminSettings extends PageAdmin
     {
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
-        $lang = $translationManager->user();
+        $lang = $this->lang;
         $langShop = $translationManager->shop();
 
         // Pobranie listy serwisów transakcyjnych
@@ -41,10 +43,9 @@ class PageAdminSettings extends PageAdmin
                 ]);
             }
         }
-        $cron[$this->settings['cron_each_visit'] ? "yes" : "no"] = "selected";
-        $cron[$this->settings['cron_each_visit'] ? "no" : "yes"] = "";
-        $user_edit_service[$this->settings['user_edit_service'] ? "yes" : "no"] = "selected";
-        $user_edit_service[$this->settings['user_edit_service'] ? "no" : "yes"] = "";
+
+        $cronSelect = $this->createCronSelect();
+        $userEditServiceSelect = $this->createUserEditServiceSelect();
 
         // Pobieranie listy dostępnych szablonów
         $dirlist = scandir($this->app->path('themes'));
@@ -79,13 +80,57 @@ class PageAdminSettings extends PageAdmin
         return $this->template->render(
             "admin/settings",
             compact(
-                'user_edit_service',
-                'sms_services',
-                'transfer_services',
-                'languages_list',
-                'themes_list',
-                'cron'
-            ) + ['title' => $this->title]
+                "userEditServiceSelect",
+                "sms_services",
+                "transfer_services",
+                "languages_list",
+                "themes_list",
+                "cronSelect"
+            ) + ["title" => $this->title]
         );
+    }
+
+    protected function createUserEditServiceSelect()
+    {
+        $yesOption = new Option($this->lang->translate("yes"));
+        $yesOption->setParam("value", "1");
+        if ($this->settings["user_edit_service"]) {
+            $yesOption->setParam("selected", "selected");
+        }
+
+        $noOption = new Option($this->lang->translate("no"));
+        $noOption->setParam("value", "0");
+        if (!$this->settings["user_edit_service"]) {
+            $noOption->setParam("selected", "selected");
+        }
+
+        $userEditServiceSelect = new Select();
+        $userEditServiceSelect->setParam("name", "user_edit_service");
+        $userEditServiceSelect->addContent($yesOption);
+        $userEditServiceSelect->addContent($noOption);
+
+        return $userEditServiceSelect;
+    }
+
+    protected function createCronSelect()
+    {
+        $yesOption = new Option($this->lang->translate("yes"));
+        $yesOption->setParam("value", "1");
+        if ($this->settings["cron_each_visit"]) {
+            $yesOption->setParam("selected", "selected");
+        }
+
+        $noOption = new Option($this->lang->translate("no"));
+        $noOption->setParam("value", "0");
+        if (!$this->settings["cron_each_visit"]) {
+            $noOption->setParam("selected", "selected");
+        }
+
+        $cronSelect = new Select();
+        $cronSelect->setParam("name", "cron");
+        $cronSelect->addContent($yesOption);
+        $cronSelect->addContent($noOption);
+
+        return $cronSelect;
     }
 }
