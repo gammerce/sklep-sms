@@ -133,5 +133,6 @@ function trimSlashes(text) {
 }
 
 function buildUrl(path) {
-    return trimSlashes(baseUrl) + "/" + trimSlashes(path);
+    var prefix = typeof baseUrl !== 'undefined' ? trimSlashes(baseUrl) + "/" : "";
+    return prefix + trimSlashes(path);
 }
