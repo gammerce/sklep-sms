@@ -24,7 +24,7 @@ class ExtraStuffController
         $lang = $translationManager->user();
 
         // Jezeli jest popup, to wyswietl info w nowym oknie
-        $popup = $request->request->get("action");
+        $popup = $request->query->get("action");
         if ($popup) {
             // Usuwamy napis popup z linku
             $url = preg_replace(
@@ -42,12 +42,12 @@ class ExtraStuffController
             return new Response($output);
         }
 
-        $action = $request->request->get("action");
+        $action = $request->query->get("action");
 
         switch ($action) {
             case "service_long_description":
                 $output = "";
-                $service = $request->request->get("service");
+                $service = $request->query->get("service");
 
                 if (($service_module = $heart->get_service_module($service)) !== null) {
                     $output = $service_module->description_full_get();

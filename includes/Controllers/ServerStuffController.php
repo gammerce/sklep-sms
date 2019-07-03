@@ -16,13 +16,8 @@ class ServerStuffController
         Request $request,
         Heart $heart,
         TranslationManager $translationManager,
-        Settings $settings,
-        License $license
+        Settings $settings
     ) {
-        if (!$license->isValid()) {
-            return new Response();
-        }
-
         $lang = $translationManager->user();
 
         // Musi byc podany hash random_keya

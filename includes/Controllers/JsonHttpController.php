@@ -42,12 +42,11 @@ class JsonHttpController
         $lang = $translationManager->user();
 
         $user = $auth->user();
-
         $action = $request->request->get("action");
 
         $warnings = [];
-
         $data = [];
+
         if ($action == "login") {
             if (is_logged()) {
                 return new ApiResponse("already_logged_in");
@@ -683,14 +682,14 @@ class JsonHttpController
                 $return_data['positive'], $return_data['data']);
         }
 
-        if ($action == "get_income") {
+        if ($request->query->get("action") === "get_income") {
             $user->setPrivilages([
                 'acp'         => true,
                 'view_income' => true,
             ]);
             $page = new PageAdminIncome();
 
-            return new PlainResponse($page->get_content($_GET, $_POST));
+            return new HtmlResponse($page->get_content($_GET, $_POST));
         }
 
         if ($action == "service_action_execute") {
@@ -704,7 +703,7 @@ class JsonHttpController
                 $_POST));
         }
 
-        if ($action == "get_template") {
+        if ($action === "get_template") {
             $template = $_POST['template'];
             // Zabezpieczanie wszystkich wartości post
             foreach ($_POST as $key => $value) {
