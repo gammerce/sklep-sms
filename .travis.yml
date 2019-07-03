@@ -24,7 +24,6 @@ env:
 before_install:
   - composer self-update
   - nvm install 12
-  - npm update -g npm
   - mysql -e 'CREATE DATABASE sklep_sms_test;'
 
 install:
