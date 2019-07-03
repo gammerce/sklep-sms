@@ -1,28 +1,28 @@
 <form id="form_transaction_service_edit" class="action_box">
-  <div class="service_main_info">
-    {$lang->translate('edit_payment_method')}
-  </div>
-  <table>
-    <tr>
-      <td>{$lang->translate('id')}</td>
-      <td>{$transaction_service['id']}</td>
-    </tr>
-    <tr>
-      <td>{$lang->strtoupper($lang->translate('name'))}</td>
-      <td>{$transaction_service['name']}</td>
-    </tr>
-    <tr>
-      <td colspan="2" class="line"></td>
-    </tr>
-    {$data_values}
-    <tr>
-      <td colspan="2" class="line"></td>
-    </tr>
-    <tr>
-      <td colspan="2">
-        <input type="hidden" name="id" value="{$transaction_service['id']}"/>
-        <input type="submit" value="{$lang->translate('confirm')}" style="width: 100%;"/>
-      </td>
-    </tr>
-  </table>
+    <div class="service_main_info">
+        {$lang->translate('edit_payment_method')}
+    </div>
+    <table>
+        <tr>
+            <td>{$lang->translate('id')}</td>
+            <td>{$transaction_service['id']}</td>
+        </tr>
+        <tr>
+            <td>{$lang->strtoupper($lang->translate('name'))}</td>
+            <td>{$transaction_service['name']}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="line"></td>
+        </tr>
+        {$data_values}
+        <tr>
+            <td colspan="2" class="line"></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="hidden" name="id" value="{$transaction_service['id']}" />
+                <input type="submit" value="{$lang->translate('confirm')}" style="width: 100%;" />
+            </td>
+        </tr>
+    </table>
 </form>

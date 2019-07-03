@@ -1,10 +1,15 @@
 <div class="payment_type_wraper">
-  <div class="payment_type transfer header">
-    {$lang->translate('payment_transfer')}
-  </div>
-  <div class="payment_type transfer">
-    <strong>{$lang->translate('price')}</strong>: {$cost_transfer} {$settings['currency']}<br/>
-    <br/>
-    <input type="button" id="pay_transfer" value="{$lang->translate('pay_transfer')}" class="purchase_button"/>
-  </div>
+    <div class="payment_type transfer header">
+        {$lang->translate('payment_transfer')}
+    </div>
+    <div class="payment_type transfer">
+        <strong>{$lang->translate('price')}</strong>: {$cost_transfer} {$settings['currency']}<br />
+        <br />
+        <input
+            type="button"
+            id="pay_transfer"
+            value="{$lang->translate('pay_transfer')}"
+            class="purchase_button"
+        />
+    </div>
 </div>

@@ -11,8 +11,11 @@ td {
     padding: 0;
 }
 
-select, input[type=text], input[type=password], textarea {
-    background-color: #4E4C4C;
+select,
+input[type="text"],
+input[type="password"],
+textarea {
+    background-color: #4e4c4c;
     color: #fff;
     box-shadow: inset 1px 1px 0 black;
     border: none;
@@ -20,18 +23,34 @@ select, input[type=text], input[type=password], textarea {
     margin: 1px;
 }
 
-select:disabled, input[type=text]:disabled, input[type=password]:disabled, textarea:disabled {
+select:disabled,
+input[type="text"]:disabled,
+input[type="password"]:disabled,
+textarea:disabled {
     background-color: #323232;
 }
 
-select:focus, input[type=text]:focus, input[type=password]:focus, textarea:focus {
-    box-shadow: 0 0 2px #1F9ACF;
-    border: 1px solid #1F9ACF;
+select:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+textarea:focus {
+    box-shadow: 0 0 2px #1f9acf;
+    border: 1px solid #1f9acf;
 }
 
-input[type=button], input[type=submit], input[type=reset] {
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
     text-align: center;
-    background: linear-gradient(45deg, rgba(131, 131, 131, 1) 0%, rgba(140, 140, 140, 1) 12%, rgba(149, 149, 149, 1) 25%, rgba(109, 109, 109, 1) 76%, rgba(98, 98, 98, 1) 91%, rgba(92, 92, 92, 1) 100%);
+    background: linear-gradient(
+        45deg,
+        rgba(131, 131, 131, 1) 0%,
+        rgba(140, 140, 140, 1) 12%,
+        rgba(149, 149, 149, 1) 25%,
+        rgba(109, 109, 109, 1) 76%,
+        rgba(98, 98, 98, 1) 91%,
+        rgba(92, 92, 92, 1) 100%
+    );
     padding: 1px 7px;
     border: none;
     color: #000;
@@ -39,13 +58,14 @@ input[type=button], input[type=submit], input[type=reset] {
     cursor: pointer;
 }
 
-input[type=button]:hover, input[type=submit]:hover {
-    box-shadow: 0 0 5px #6B0000;
+input[type="button"]:hover,
+input[type="submit"]:hover {
+    box-shadow: 0 0 5px #6b0000;
 }
 
 a {
     cursor: pointer;
-    color: #147ABB;
+    color: #147abb;
     text-decoration: none;
 }
 
@@ -53,8 +73,9 @@ a:hover {
     text-decoration: underline;
 }
 
-hr, .line {
-    border: 1px inset #5F5F5F !important;
+hr,
+.line {
+    border: 1px inset #5f5f5f !important;
     padding: 0 !important;
 }
 
@@ -104,14 +125,15 @@ hr, .line {
 }
 
 .hint {
-    color: #AAA;
+    color: #aaa;
     font-style: italic;
     font-size: 12px;
     font-weight: normal;
 }
 
 /* Div ładowania i akcji */
-.loader, .action_box_wraper {
+.loader,
+.action_box_wraper {
     position: fixed;
     z-index: 100;
     top: 0;
@@ -147,7 +169,7 @@ hr, .line {
     box-shadow: 0 0 10px #000;
     min-width: 200px;
     margin-top: 20px;
-    color: #FFF;
+    color: #fff;
 }
 
 .action_box .exit {
@@ -155,22 +177,22 @@ hr, .line {
     top: 0;
     right: 0;
     padding: 0 2px;
-    color: #FF0000;
+    color: #ff0000;
     text-shadow: 1px 1px 1px #000;
     cursor: pointer;
 }
 
 .action_box .exit:hover {
-    color: #FFF;
-    text-shadow: 0 0 10px #FF0000;
+    color: #fff;
+    text-shadow: 0 0 10px #ff0000;
 }
 
 .action_box .h2 {
     padding: 6px;
     background: rgba(255, 255, 255, 0.1);
-    border: 2px solid #346BC0;
+    border: 2px solid #346bc0;
     font-size: 17px;
-    color: #FFF;
+    color: #fff;
     text-shadow: 2px 2px 2px #000;
 }
 
@@ -180,27 +202,28 @@ hr, .line {
 }
 
 .action_box table td {
-    color: #FFF;
+    color: #fff;
     padding: 0;
 }
 
 .action_box td:nth-child(2) {
-    color: #CCC;
+    color: #ccc;
 }
 
 .form_warning {
-    color: #FF2B00;
+    color: #ff2b00;
     font-size: 16px;
     text-shadow: 1px 1px 1px #000;
 }
 
 /* Opisy usług */
-.short_description, .service_main_info {
+.short_description,
+.service_main_info {
     margin-bottom: 6px;
     padding: 1em;
     background: rgba(255, 255, 255, 0.1);
     box-shadow: 0 0 10px #000;
-    color: #FFF;
+    color: #fff;
     text-shadow: 2px 2px 2px #000;
 }
 
@@ -210,7 +233,7 @@ hr, .line {
     margin: 12px 6px;
     box-shadow: 0 0 10px #000;
     line-height: 1.4;
-    color: #BBB;
+    color: #bbb;
 }
 
 /* Okno wyświetlające różne informacje */
@@ -219,7 +242,7 @@ hr, .line {
     border: 2px solid #000;
     box-shadow: 0 0 20px #000;
     border-radius: 5px;
-    color: #CCC;
+    color: #ccc;
     font-size: 18px;
 
     padding: 18px;
@@ -230,29 +253,29 @@ hr, .line {
     top: 0;
     right: 0;
     padding: 0 6px;
-    color: #FF0000;
+    color: #ff0000;
     text-shadow: 1px 1px 1px #000;
     cursor: pointer;
     font-size: 26px;
 }
 
 .window_info .exit:hover {
-    color: #FFF;
-    text-shadow: 0 0 10px #FF0000;
+    color: #fff;
+    text-shadow: 0 0 10px #ff0000;
 }
 
 /*.window_info */
 .description_title {
     text-align: center;
     font-weight: bold;
-    color: #FFF;
+    color: #fff;
     font-size: 22px;
     margin-bottom: 20px;
 }
 
 .window_info .description_content {
     overflow: auto;
-    height: calc(100% - 100px)
+    height: calc(100% - 100px);
 }
 
 .button {
@@ -267,21 +290,26 @@ hr, .line {
 }
 
 .button:hover {
-    opacity: 1.0;
+    opacity: 1;
 }
 
 .button.edit_row {
-    background: #F7D358;
+    background: #f7d358;
     color: #212121;
 }
 
-[id^=edit_row_], [id^=delete_row_], .delete_row {
+[id^="edit_row_"],
+[id^="delete_row_"],
+.delete_row {
     cursor: pointer;
     opacity: 0.6;
 }
 
-[id^=edit_row_]:hover, .edit_row:hover, [id^=delete_row_]:hover, .delete_row:hover {
-    opacity: 1.0;
+[id^="edit_row_"]:hover,
+.edit_row:hover,
+[id^="delete_row_"]:hover,
+.delete_row:hover {
+    opacity: 1;
 }
 
 .column_left {
@@ -315,6 +343,6 @@ hr, .line {
     text-transform: uppercase;
 }
 
-input[name=email] {
+input[name="email"] {
     width: 200px;
 }

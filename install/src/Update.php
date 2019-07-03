@@ -24,7 +24,9 @@ class Update
         }
 
         if (file_exists($this->app->path('install/block'))) {
-            output_page("Aktualizacja została już przeprowadzona. Jeżeli chcesz dokonać jej ponownie, usuń plik 'block' z folderu install.");
+            output_page(
+                "Aktualizacja została już przeprowadzona. Jeżeli chcesz dokonać jej ponownie, usuń plik 'block' z folderu install."
+            );
         }
 
         if (file_exists($this->app->path('install/progress'))) {
@@ -36,7 +38,11 @@ class Update
         if (file_exists($this->app->path('install/storage/update/files_priv.txt'))) {
             $files_priv = explode(
                 "\n",
-                str_replace("\n\r", "\n", file_get_contents($this->app->path('install/storage/update/files_priv.txt')))
+                str_replace(
+                    "\n\r",
+                    "\n",
+                    file_get_contents($this->app->path('install/storage/update/files_priv.txt'))
+                )
             );
         }
         $files_priv[] = "install";
@@ -44,7 +50,11 @@ class Update
         if (file_exists($this->app->path('install/storage/update/files_del.txt'))) {
             $files_del = explode(
                 "\n",
-                str_replace("\n\r", "\n", file_get_contents($this->app->path('install/storage/update/files_del.txt')))
+                str_replace(
+                    "\n\r",
+                    "\n",
+                    file_get_contents($this->app->path('install/storage/update/files_del.txt'))
+                )
             );
         }
 

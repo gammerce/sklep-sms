@@ -1,47 +1,47 @@
 <form id="form_price_add" class="action_box">
-  <div class="service_main_info">
-    {$lang->translate('add_price')}
-  </div>
-  <table>
-    <tr>
-      <td>{$lang->strtoupper($lang->translate('service'))}</td>
-      <td>
-        <select name="service">
-          <option value="">{$lang->translate('choose_service')}</option>
-          {$services}
-        </select>
-      </td>
-    </tr>
-    <tr>
-      <td>{$lang->strtoupper($lang->translate('server'))}</td>
-      <td>
-        <select name="server">
-          <option value="">{$lang->translate('choose_server')}</option>
-          <option value="-1">{$lang->translate('all')}</option>
-          {$servers}
-        </select>
-      </td>
-    </tr>
-    <tr>
-      <td>{$lang->strtoupper($lang->translate('tariff'))}</td>
-      <td>
-        <select name="tariff">
-          <option value="">{$lang->translate('choose_tariff')}</option>
-          {$tariffs}
-        </select>
-      </td>
-    </tr>
-    <tr>
-      <td>{$lang->strtoupper($lang->translate('amount'))}</td>
-      <td><input type="text" name="amount" style="width: 100px;"/></td>
-    </tr>
-    <tr>
-      <td colspan="2" class="line"></td>
-    </tr>
-    <tr>
-      <td colspan="2">
-        <input type="submit" value="{$lang->translate('add')}" style="width: 100%;"/>
-      </td>
-    </tr>
-  </table>
+    <div class="service_main_info">
+        {$lang->translate('add_price')}
+    </div>
+    <table>
+        <tr>
+            <td>{$lang->strtoupper($lang->translate('service'))}</td>
+            <td>
+                <select name="service">
+                    <option value="">{$lang->translate('choose_service')}</option>
+                    {$services}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>{$lang->strtoupper($lang->translate('server'))}</td>
+            <td>
+                <select name="server">
+                    <option value="">{$lang->translate('choose_server')}</option>
+                    <option value="-1">{$lang->translate('all')}</option>
+                    {$servers}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>{$lang->strtoupper($lang->translate('tariff'))}</td>
+            <td>
+                <select name="tariff">
+                    <option value="">{$lang->translate('choose_tariff')}</option>
+                    {$tariffs}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>{$lang->strtoupper($lang->translate('amount'))}</td>
+            <td><input type="text" name="amount" style="width: 100px;" /></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="line"></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="submit" value="{$lang->translate('add')}" style="width: 100%;" />
+            </td>
+        </tr>
+    </table>
 </form>

@@ -1,64 +1,64 @@
 <tbody data-module="{$moduleId}">
-  <tr>
-    <td>{$lang->translate('user_id')}</td>
-    <td><input type="text" name="uid" style="width: 60px;"/></td>
-  </tr>
-  <tr>
-    <td>{$lang->translate('type')}</td>
-    <td>
-      <select name="type">
-        <option value="">{$lang->translate('choose_type')}</option>
-        {$types}
-      </select>
-    </td>
-  </tr>
-  <tr id="type_nick">
-    <td>Nick</td>
-    <td>
-      <input type="text" name="nick" maxlength="32"/>
-    </td>
-  </tr>
-  <tr id="type_ip">
-    <td>IP</td>
-    <td>
-      <input type="text" name="ip" maxlength="21" style="width: 100px;"/>
-    </td>
-  </tr>
-  <tr id="type_sid">
-    <td>SteamID</td>
-    <td>
-      <input type="text" name="sid" maxlength="32"/>
-    </td>
-  </tr>
-  <tr id="type_password">
-    <td>{$lang->translate('password')}</td>
-    <td>
-      <input type="text" name="password" maxlength="32"/>
-    </td>
-  </tr>
-  <tr>
-    <td>E-mail</td>
-    <td>
-      <input type="text" name="email" maxlength="128"/>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2" class="line"></td>
-  </tr>
-  <tr>
-    <td>{$lang->translate('server')}</td>
-    <td>
-      <select name="server">
-        <option value="">{$lang->translate('choose_server')}</option>
-        {$servers}
-      </select>
-    </td>
-  </tr>
-  <tr>
-    <td>{$lang->translate('days_amount')}</td>
-    <td>
-      <input type="text" name="amount"/><br/>
-      <input type="checkbox" name="forever"/>{$lang->translate('forever')}
-    </td>
-  </tr>
+    <tr>
+        <td>{$lang->translate('user_id')}</td>
+        <td><input type="text" name="uid" style="width: 60px;" /></td>
+    </tr>
+    <tr>
+        <td>{$lang->translate('type')}</td>
+        <td>
+            <select name="type">
+                <option value="">{$lang->translate('choose_type')}</option>
+                {$types}
+            </select>
+        </td>
+    </tr>
+    <tr id="type_nick">
+        <td>Nick</td>
+        <td>
+            <input type="text" name="nick" maxlength="32" />
+        </td>
+    </tr>
+    <tr id="type_ip">
+        <td>IP</td>
+        <td>
+            <input type="text" name="ip" maxlength="21" style="width: 100px;" />
+        </td>
+    </tr>
+    <tr id="type_sid">
+        <td>SteamID</td>
+        <td>
+            <input type="text" name="sid" maxlength="32" />
+        </td>
+    </tr>
+    <tr id="type_password">
+        <td>{$lang->translate('password')}</td>
+        <td>
+            <input type="text" name="password" maxlength="32" />
+        </td>
+    </tr>
+    <tr>
+        <td>E-mail</td>
+        <td>
+            <input type="text" name="email" maxlength="128" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="line"></td>
+    </tr>
+    <tr>
+        <td>{$lang->translate('server')}</td>
+        <td>
+            <select name="server">
+                <option value="">{$lang->translate('choose_server')}</option>
+                {$servers}
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td>{$lang->translate('days_amount')}</td>
+        <td>
+            <input type="text" name="amount" /><br />
+            <input type="checkbox" name="forever" />{$lang->translate('forever')}
+        </td>
+    </tr>
 </tbody>

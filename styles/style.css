@@ -1,5 +1,5 @@
 body {
-    background: url('../images/3.3.0-witcher3.jpg') no-repeat fixed;
+    background: url("../images/3.3.0-witcher3.jpg") no-repeat fixed;
     background-size: cover;
 }
 
@@ -25,19 +25,20 @@ body {
     vertical-align: bottom;
 }
 
-.wallet_status, .logged_info {
+.wallet_status,
+.logged_info {
     float: left;
     margin-top: -1px;
     padding: 15px 10px;
-    color: #FFF;
+    color: #fff;
     box-shadow: 1px 1px 1px black;
     background-repeat: no-repeat !important;
 }
 
 .wallet_status {
     padding-left: 55px;
-    background-image: url('../images/wallet.png') !important;
-    background-color: #AE0A0E;
+    background-image: url("../images/wallet.png") !important;
+    background-color: #ae0a0e;
     background-position: 10px center !important;
     text-align: right;
     font-weight: bold;
@@ -47,7 +48,16 @@ body {
 .logged_info {
     padding-left: 45px;
     margin-right: 5px;
-    background-image: url('../images/user.png'), linear-gradient(45deg, rgba(131, 131, 131, 1) 0%, rgba(140, 140, 140, 1) 12%, rgba(149, 149, 149, 1) 25%, rgba(109, 109, 109, 1) 76%, rgba(98, 98, 98, 1) 91%, rgba(92, 92, 92, 1) 100%);
+    background-image: url("../images/user.png"),
+        linear-gradient(
+            45deg,
+            rgba(131, 131, 131, 1) 0%,
+            rgba(140, 140, 140, 1) 12%,
+            rgba(149, 149, 149, 1) 25%,
+            rgba(109, 109, 109, 1) 76%,
+            rgba(98, 98, 98, 1) 91%,
+            rgba(92, 92, 92, 1) 100%
+        );
     background-position: 0 center;
 }
 
@@ -77,7 +87,7 @@ body {
 .content {
     padding: 1em;
     text-align: left;
-    color: #CCC;
+    color: #ccc;
     font-size: 15px;
 }
 
@@ -98,7 +108,7 @@ body {
 }
 
 .services_buttons li a {
-    background-color: #3D0001;
+    background-color: #3d0001;
     box-shadow: -4px 2px 11px 0 rgba(53, 53, 50, 0.61);
 }
 
@@ -126,27 +136,37 @@ body {
     text-align: left;
 }
 
-.user_buttons li a, #loginarea_roll_button, #register_redirect_button, #logout {
-    background-color: #2E555A;
+.user_buttons li a,
+#loginarea_roll_button,
+#register_redirect_button,
+#logout {
+    background-color: #2e555a;
     box-shadow: 4px 3px 11px 0 rgba(53, 53, 50, 0.61);
 }
 
 .user_buttons li:nth-child(2n) a {
-    background-color: #3F3C41;
+    background-color: #3f3c41;
 }
 
-.user_buttons li a:hover, #loginarea_roll_button:hover, #logout:hover {
-    color: #6D9782;
+.user_buttons li a:hover,
+#loginarea_roll_button:hover,
+#logout:hover {
+    color: #6d9782;
 }
 
 /* Wspólne klasy dla przycisków po lewej i po prawej stronie */
-.services_buttons ul, .user_buttons ul {
+.services_buttons ul,
+.user_buttons ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
 
-.services_buttons li a, .user_buttons li a, #loginarea_roll_button, #register_redirect_button, #logout {
+.services_buttons li a,
+.user_buttons li a,
+#loginarea_roll_button,
+#register_redirect_button,
+#logout {
     font-size: 20px;
     color: white;
     line-height: 45px;
@@ -158,11 +178,14 @@ body {
 }
 
 .services_buttons li a:hover {
-    background: #FFF;
+    background: #fff;
 }
 
-.user_buttons li a:hover, #loginarea_roll_button:hover, #register_redirect_button:hover, #logout:hover {
-    background: #F8FFE2;
+.user_buttons li a:hover,
+#loginarea_roll_button:hover,
+#register_redirect_button:hover,
+#logout:hover {
+    background: #f8ffe2;
 }
 
 /* Pole logowania */
@@ -202,16 +225,18 @@ body {
 }
 
 /* Przycisk do wysuwania formy logowania */
-#loginarea_roll_button, #register_redirect_button {
+#loginarea_roll_button,
+#register_redirect_button {
     padding: 5px 15px;
     text-align: center;
     line-height: inherit;
     font-size: 17px;
 }
 
-#loginarea_roll_button, #logout {
+#loginarea_roll_button,
+#logout {
     vertical-align: middle;
-    background-color: #5B9931;
+    background-color: #5b9931;
 }
 
 #register_redirect_button {
@@ -233,7 +258,7 @@ body {
 }
 
 .pagination .current {
-    color: #F7D358;
+    color: #f7d358;
 }
 
 #language_choice {

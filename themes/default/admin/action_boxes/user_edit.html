@@ -1,56 +1,68 @@
 <form id="form_user_edit" class="action_box">
-  <div class="service_main_info">
-    {$lang->translate('edit_user')}
-  </div>
-  <table>
-    <tr>
-      <td>{$lang->translate('id')}</td>
-      <td>{$user->getUid()}</td>
-    </tr>
-    <tr>
-      <td colspan="2" class="line"></td>
-    </tr>
-    <tr>
-      <td>{$lang->strtoupper($lang->translate('username'))}</td>
-      <td><input type="text" name="username" maxlength="64" value="{$user->getUsername()}"/></td>
-    </tr>
-    <tr>
-      <td>{$lang->strtoupper($lang->translate('firstname'))}</td>
-      <td><input type="text" name="forename" maxlength="32" value="{$user->getForename()}"/></td>
-    </tr>
-    <tr>
-      <td>{$lang->strtoupper($lang->translate('surname'))}</td>
-      <td><input type="text" name="surname" maxlength="64" value="{$user->getSurname()}"/></td>
-    </tr>
-    <tr>
-      <td>{$lang->strtoupper($lang->translate('email'))}</td>
-      <td><input type="text" name="email" maxlength="128" value="{$user->getEmail()}"/></td>
-    </tr>
-    <tr>
-      <td colspan="2" class="line"></td>
-    </tr>
-    <tr>
-      <td>{$lang->strtoupper($lang->translate('groups'))}</td>
-      <td>
-        <select name="groups[]" multiple>
-          {$groups}
-        </select>
-      </td>
-    </tr>
-    <tr>
-      <td>{$lang->strtoupper($lang->translate('wallet'))}</td>
-      <td style="vertical-align: middle">
-        <input type="text" name="wallet" style="width: 60px" maxlength="32" value="{$user->getWallet(true)}"/>&nbsp;{$settings['currency']}
-      </td>
-    </tr>
-    <tr>
-      <td colspan="2" class="line"></td>
-    </tr>
-    <tr>
-      <td colspan="2">
-        <input type="hidden" name="uid" value="{$user->getUid()}"/>
-        <input type="submit" value="{$lang->translate('edit')}" style="width: 100%;"/>
-      </td>
-    </tr>
-  </table>
+    <div class="service_main_info">
+        {$lang->translate('edit_user')}
+    </div>
+    <table>
+        <tr>
+            <td>{$lang->translate('id')}</td>
+            <td>{$user->getUid()}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="line"></td>
+        </tr>
+        <tr>
+            <td>{$lang->strtoupper($lang->translate('username'))}</td>
+            <td>
+                <input type="text" name="username" maxlength="64" value="{$user->getUsername()}" />
+            </td>
+        </tr>
+        <tr>
+            <td>{$lang->strtoupper($lang->translate('firstname'))}</td>
+            <td>
+                <input type="text" name="forename" maxlength="32" value="{$user->getForename()}" />
+            </td>
+        </tr>
+        <tr>
+            <td>{$lang->strtoupper($lang->translate('surname'))}</td>
+            <td>
+                <input type="text" name="surname" maxlength="64" value="{$user->getSurname()}" />
+            </td>
+        </tr>
+        <tr>
+            <td>{$lang->strtoupper($lang->translate('email'))}</td>
+            <td><input type="text" name="email" maxlength="128" value="{$user->getEmail()}" /></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="line"></td>
+        </tr>
+        <tr>
+            <td>{$lang->strtoupper($lang->translate('groups'))}</td>
+            <td>
+                <select name="groups[]" multiple>
+                    {$groups}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>{$lang->strtoupper($lang->translate('wallet'))}</td>
+            <td style="vertical-align: middle">
+                <input
+                    type="text"
+                    name="wallet"
+                    style="width: 60px"
+                    maxlength="32"
+                    value="{$user->getWallet(true)}"
+                />&nbsp;{$settings['currency']}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="line"></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="hidden" name="uid" value="{$user->getUid()}" />
+                <input type="submit" value="{$lang->translate('edit')}" style="width: 100%;" />
+            </td>
+        </tr>
+    </table>
 </form>

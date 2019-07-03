@@ -1,17 +1,24 @@
 <div class="payment_type_wraper">
-  <div class="payment_type service_code header">
-    {$lang->translate('got_code')}
-  </div>
-  <div class="payment_type service_code">
-    <div>
-      <input type="text"
-             id="service_code"
-             name="service_code"
-             style="width: 100px;"
-             maxlength="16"
-             placeholder="{$lang->translate('type_code')}"/>
+    <div class="payment_type service_code header">
+        {$lang->translate('got_code')}
     </div>
-    <br/>
-    <input type="button" id="pay_service_code" value="{$lang->translate('got_code')}" class="purchase_button"/>
-  </div>
+    <div class="payment_type service_code">
+        <div>
+            <input
+                type="text"
+                id="service_code"
+                name="service_code"
+                style="width: 100px;"
+                maxlength="16"
+                placeholder="{$lang->translate('type_code')}"
+            />
+        </div>
+        <br />
+        <input
+            type="button"
+            id="pay_service_code"
+            value="{$lang->translate('got_code')}"
+            class="purchase_button"
+        />
+    </div>
 </div>

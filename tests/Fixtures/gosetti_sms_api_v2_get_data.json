@@ -1,72 +1,72 @@
 {
-  "Code": "CSGO",
-  "ComplainUrl": "https://gosetti.pl/kontakt",
-  "Numbers": [
-    {
-      "Number": 71480,
-      "NettoPrice": 1,
-      "BruttoPrice": 1.23,
-      "TopUpAmount": 0.62
-    },
-    {
-      "Number": 72480,
-      "NettoPrice": 2,
-      "BruttoPrice": 2.46,
-      "TopUpAmount": 1.23
-    },
-    {
-      "Number": 73480,
-      "NettoPrice": 3,
-      "BruttoPrice": 3.69,
-      "TopUpAmount": 1.85
-    },
-    {
-      "Number": 74480,
-      "NettoPrice": 4,
-      "BruttoPrice": 4.92,
-      "TopUpAmount": 2.46
-    },
-    {
-      "Number": 75480,
-      "NettoPrice": 5,
-      "BruttoPrice": 6.15,
-      "TopUpAmount": 3.08
-    },
-    {
-      "Number": 76480,
-      "NettoPrice": 6,
-      "BruttoPrice": 7.38,
-      "TopUpAmount": 3.69
-    },
-    {
-      "Number": 79480,
-      "NettoPrice": 9,
-      "BruttoPrice": 11.07,
-      "TopUpAmount": 5.54
-    },
-    {
-      "Number": 91400,
-      "NettoPrice": 14,
-      "BruttoPrice": 17.22,
-      "TopUpAmount": 8.61
-    },
-    {
-      "Number": 91900,
-      "NettoPrice": 19,
-      "BruttoPrice": 23.37,
-      "TopUpAmount": 11.69
-    },
-    {
-      "Number": 92022,
-      "NettoPrice": 20,
-      "BruttoPrice": 24.6,
-      "TopUpAmount": 12.3
-    },
-    {
-      "Number": 92521,
-      "NettoPrice": 25,
-      "BruttoPrice": 30.75,
-      "TopUpAmount": 15.38
-    }
-  ]
+    "Code": "CSGO",
+    "ComplainUrl": "https://gosetti.pl/kontakt",
+    "Numbers": [
+        {
+            "Number": 71480,
+            "NettoPrice": 1,
+            "BruttoPrice": 1.23,
+            "TopUpAmount": 0.62
+        },
+        {
+            "Number": 72480,
+            "NettoPrice": 2,
+            "BruttoPrice": 2.46,
+            "TopUpAmount": 1.23
+        },
+        {
+            "Number": 73480,
+            "NettoPrice": 3,
+            "BruttoPrice": 3.69,
+            "TopUpAmount": 1.85
+        },
+        {
+            "Number": 74480,
+            "NettoPrice": 4,
+            "BruttoPrice": 4.92,
+            "TopUpAmount": 2.46
+        },
+        {
+            "Number": 75480,
+            "NettoPrice": 5,
+            "BruttoPrice": 6.15,
+            "TopUpAmount": 3.08
+        },
+        {
+            "Number": 76480,
+            "NettoPrice": 6,
+            "BruttoPrice": 7.38,
+            "TopUpAmount": 3.69
+        },
+        {
+            "Number": 79480,
+            "NettoPrice": 9,
+            "BruttoPrice": 11.07,
+            "TopUpAmount": 5.54
+        },
+        {
+            "Number": 91400,
+            "NettoPrice": 14,
+            "BruttoPrice": 17.22,
+            "TopUpAmount": 8.61
+        },
+        {
+            "Number": 91900,
+            "NettoPrice": 19,
+            "BruttoPrice": 23.37,
+            "TopUpAmount": 11.69
+        },
+        {
+            "Number": 92022,
+            "NettoPrice": 20,
+            "BruttoPrice": 24.6,
+            "TopUpAmount": 12.3
+        },
+        {
+            "Number": 92521,
+            "NettoPrice": 25,
+            "BruttoPrice": 30.75,
+            "TopUpAmount": 15.38
+        }
+    ]
 }

@@ -1,4 +1,8 @@
-#register[name=username], #register[name=pass], #register[name=password_repeat], #register[name=email], #register[name=email_repeat] {
+#register[name="username"],
+#register[name="pass"],
+#register[name="password_repeat"],
+#register[name="email"],
+#register[name="email_repeat"] {
     width: 100%;
 }
 
@@ -9,6 +13,6 @@
 #register dt {
     font-size: 18px;
     font-weight: bold;
-    color: #AAA;
+    color: #aaa;
     text-shadow: 1px 1px 1px #000;
 }

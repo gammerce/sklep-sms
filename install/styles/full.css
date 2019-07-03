@@ -2,7 +2,7 @@ body {
     margin: 0;
     padding: 0;
     text-align: center;
-    background-color: #EEE;
+    background-color: #eee;
 }
 
 .window {
@@ -13,7 +13,7 @@ body {
     text-align: left;
     border: 1px solid #222;
     box-shadow: 0 0 10px #000;
-    background-color: #CCC;
+    background-color: #ccc;
 }
 
 h1 {
@@ -21,14 +21,14 @@ h1 {
     margin-bottom: 12px;
     padding: 6px;
     box-shadow: 0 0 10px #000;
-    background-color: #81BEF7;
+    background-color: #81bef7;
 }
 
 .content {
     padding: 12px;
 }
 
-.content [type=submit] {
+.content [type="submit"] {
     width: 100%;
 }
 
@@ -46,8 +46,8 @@ h1 {
 .warnings {
     padding: 6px;
     margin-bottom: 12px;
-    border: 2px solid #A51B1B;
-    color: #C81717;
+    border: 2px solid #a51b1b;
+    color: #c81717;
 }
 
 h2 {
@@ -85,7 +85,8 @@ h2 {
     color: red;
 }
 
-.ok, .bad {
+.ok,
+.bad {
     font-weight: bold;
     text-transform: uppercase;
 }
@@ -116,7 +117,7 @@ h2 {
 }
 
 .form_warning {
-    color: #FF2B00;
+    color: #ff2b00;
     font-size: 16px;
 }
 
@@ -140,6 +141,6 @@ h2 {
 }
 
 .notify.apache2 {
-    border: 2px solid #F9FF00;
+    border: 2px solid #f9ff00;
     background: rgba(255, 255, 0, 0.1);
 }

@@ -19,16 +19,16 @@ class RegisterTest extends IndexTestCase
 
         // when
         $response = $this->post('/jsonhttp.php', [
-            'action'          => 'register',
-            'username'        => $username,
-            'password'        => $password,
+            'action' => 'register',
+            'username' => $username,
+            'password' => $password,
             'password_repeat' => $password,
-            'email'           => $email,
-            'email_repeat'    => $email,
-            'forename'        => $forename,
-            'surname'         => $surname,
-            'as_id'           => 1,
-            'as_answer'       => 'e',
+            'email' => $email,
+            'email_repeat' => $email,
+            'forename' => $forename,
+            'surname' => $surname,
+            'as_id' => 1,
+            'as_answer' => 'e',
         ]);
 
         // then

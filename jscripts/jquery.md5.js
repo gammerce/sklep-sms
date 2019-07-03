@@ -7,7 +7,7 @@
  *
  * Licensed under the MIT license:
  * http://creativecommons.org/licenses/MIT/
- * 
+ *
  * Based on
  * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
  * Digest Algorithm, as defined in RFC 1321.
@@ -20,17 +20,17 @@
 /*jslint bitwise: true */
 /*global unescape, jQuery */
 
-(function ($) {
-    'use strict';
+(function($) {
+    "use strict";
 
     /*
      * Add integers, wrapping at 2^32. This uses 16-bit operations internally
      * to work around bugs in some JS interpreters.
      */
     function safe_add(x, y) {
-        var lsw = (x & 0xFFFF) + (y & 0xFFFF),
+        var lsw = (x & 0xffff) + (y & 0xffff),
             msw = (x >> 16) + (y >> 16) + (lsw >> 16);
-        return (msw << 16) | (lsw & 0xFFFF);
+        return (msw << 16) | (lsw & 0xffff);
     }
 
     /*
@@ -48,11 +48,11 @@
     }
 
     function md5_ff(a, b, c, d, x, s, t) {
-        return md5_cmn((b & c) | ((~b) & d), a, b, x, s, t);
+        return md5_cmn((b & c) | (~b & d), a, b, x, s, t);
     }
 
     function md5_gg(a, b, c, d, x, s, t) {
-        return md5_cmn((b & d) | (c & (~d)), a, b, x, s, t);
+        return md5_cmn((b & d) | (c & ~d), a, b, x, s, t);
     }
 
     function md5_hh(a, b, c, d, x, s, t) {
@@ -60,7 +60,7 @@
     }
 
     function md5_ii(a, b, c, d, x, s, t) {
-        return md5_cmn(c ^ (b | (~d)), a, b, x, s, t);
+        return md5_cmn(c ^ (b | ~d), a, b, x, s, t);
     }
 
     /*
@@ -68,10 +68,14 @@
      */
     function binl_md5(x, len) {
         /* append padding */
-        x[len >> 5] |= 0x80 << ((len) % 32);
+        x[len >> 5] |= 0x80 << len % 32;
         x[(((len + 64) >>> 9) << 4) + 14] = len;
 
-        var i, olda, oldb, oldc, oldd,
+        var i,
+            olda,
+            oldb,
+            oldc,
+            oldd,
             a = 1732584193,
             b = -271733879,
             c = -1732584194,
@@ -164,9 +168,9 @@
      */
     function binl2rstr(input) {
         var i,
-            output = '';
+            output = "";
         for (i = 0; i < input.length * 32; i += 8) {
-            output += String.fromCharCode((input[i >> 5] >>> (i % 32)) & 0xFF);
+            output += String.fromCharCode((input[i >> 5] >>> i % 32) & 0xff);
         }
         return output;
     }
@@ -183,7 +187,7 @@
             output[i] = 0;
         }
         for (i = 0; i < input.length * 8; i += 8) {
-            output[i >> 5] |= (input.charCodeAt(i / 8) & 0xFF) << (i % 32);
+            output[i >> 5] |= (input.charCodeAt(i / 8) & 0xff) << i % 32;
         }
         return output;
     }
@@ -210,7 +214,7 @@
         }
         for (i = 0; i < 16; i += 1) {
             ipad[i] = bkey[i] ^ 0x36363636;
-            opad[i] = bkey[i] ^ 0x5C5C5C5C;
+            opad[i] = bkey[i] ^ 0x5c5c5c5c;
         }
         hash = binl_md5(ipad.concat(rstr2binl(data)), 512 + data.length * 8);
         return binl2rstr(binl_md5(opad.concat(hash), 512 + 128));
@@ -220,14 +224,13 @@
      * Convert a raw string to a hex string
      */
     function rstr2hex(input) {
-        var hex_tab = '0123456789abcdef',
-            output = '',
+        var hex_tab = "0123456789abcdef",
+            output = "",
             x,
             i;
         for (i = 0; i < input.length; i += 1) {
             x = input.charCodeAt(i);
-            output += hex_tab.charAt((x >>> 4) & 0x0F) +
-                hex_tab.charAt(x & 0x0F);
+            output += hex_tab.charAt((x >>> 4) & 0x0f) + hex_tab.charAt(x & 0x0f);
         }
         return output;
     }
@@ -258,7 +261,7 @@
         return rstr2hex(raw_hmac_md5(k, d));
     }
 
-    $.md5 = function (string, key, raw) {
+    $.md5 = function(string, key, raw) {
         if (!key) {
             if (!raw) {
                 return hex_md5(string);
@@ -272,5 +275,4 @@
             return raw_hmac_md5(key, string);
         }
     };
-
-}(typeof jQuery === 'function' ? jQuery : this));
+})(typeof jQuery === "function" ? jQuery : this);

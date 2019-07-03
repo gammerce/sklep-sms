@@ -32,7 +32,8 @@ class ExceptionHandler implements ExceptionHandlerContract
 
     public function render(Request $request, Exception $e)
     {
-        $message = 'Wystąpił błąd podczas aktualizacji.<br />Poinformuj o swoim problemie na forum sklepu. Do wątku załącz plik errors/install.log';
+        $message =
+            'Wystąpił błąd podczas aktualizacji.<br />Poinformuj o swoim problemie na forum sklepu. Do wątku załącz plik errors/install.log';
         json_output('error', $message, false);
     }
 

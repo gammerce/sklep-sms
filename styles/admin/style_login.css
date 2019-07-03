@@ -1,5 +1,5 @@
 body {
-    background-color: #F2F2F2;
+    background-color: #f2f2f2;
 }
 
 #form_admin_login {
@@ -7,7 +7,7 @@ body {
     display: inline-block;
     margin: 100px auto;
     padding: 10px;
-    background-color: #DDD;
+    background-color: #ddd;
     border: 1px solid #222;
     box-shadow: 0 0 10px #000;
     text-align: left;
@@ -18,15 +18,15 @@ h2 {
     margin: -10px;
     margin-bottom: 10px;
     padding: 8px;
-    color: #FFF;
+    color: #fff;
     text-shadow: 1px 1px 1px #000;
 }
 
 #form_admin_login .warning {
     padding: 6px;
     margin-bottom: 8px;
-    border: 2px solid #A51B1B;
-    color: #C81717;
+    border: 2px solid #a51b1b;
+    color: #c81717;
     font-weight: bold;
 }
 
@@ -38,12 +38,13 @@ h2 {
 #form_admin_login .field {
 }
 
-#form_admin_login .field, #form_admin_login .label {
+#form_admin_login .field,
+#form_admin_login .label {
     float: left;
     margin: 5px 0;
 }
 
-#form_admin_login [type=submit] {
+#form_admin_login [type="submit"] {
     width: 100%;
     margin-top: 10px;
 }

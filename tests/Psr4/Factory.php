@@ -40,30 +40,46 @@ class Factory
 
     public function server(array $attributes = [])
     {
-        $attributes = array_merge([
-            'name' => $this->faker->sentence,
-            'ip'   => $this->faker->ipv4,
-            'port' => $this->faker->numberBetween(1000, 20000),
-        ], $attributes);
+        $attributes = array_merge(
+            [
+                'name' => $this->faker->sentence,
+                'ip' => $this->faker->ipv4,
+                'port' => $this->faker->numberBetween(1000, 20000),
+            ],
+            $attributes
+        );
 
-        return $this->serverRepository->create($attributes['name'], $attributes['ip'], $attributes['port']);
+        return $this->serverRepository->create(
+            $attributes['name'],
+            $attributes['ip'],
+            $attributes['port']
+        );
     }
 
     public function serverService(array $attributes = [])
     {
-        $attributes = array_merge([
-            'service_id' => 'gosetti',
-        ], $attributes);
+        $attributes = array_merge(
+            [
+                'service_id' => 'gosetti',
+            ],
+            $attributes
+        );
 
-        return $this->serverServiceRepository->create($attributes['server_id'], $attributes['service_id']);
+        return $this->serverServiceRepository->create(
+            $attributes['server_id'],
+            $attributes['service_id']
+        );
     }
 
     public function pricelist(array $attributes = [])
     {
-        $attributes = array_merge([
-            'service_id' => 'gosetti',
-            'amount'     => $this->faker->numberBetween(1, 100),
-        ], $attributes);
+        $attributes = array_merge(
+            [
+                'service_id' => 'gosetti',
+                'amount' => $this->faker->numberBetween(1, 100),
+            ],
+            $attributes
+        );
 
         return $this->pricelistRepository->create(
             $attributes['service_id'],
@@ -75,15 +91,18 @@ class Factory
 
     public function user(array $attributes = [])
     {
-        $attributes = array_merge([
-            'username' => $this->faker->userName,
-            'password' => $this->faker->password,
-            'email'    => $this->faker->email,
-            'forename' => $this->faker->firstName,
-            'surname'  => $this->faker->lastName,
-            'ip'       => $this->faker->ipv4,
-            'groups'   => '2',
-        ], $attributes);
+        $attributes = array_merge(
+            [
+                'username' => $this->faker->userName,
+                'password' => $this->faker->password,
+                'email' => $this->faker->email,
+                'forename' => $this->faker->firstName,
+                'surname' => $this->faker->lastName,
+                'ip' => $this->faker->ipv4,
+                'groups' => '2',
+            ],
+            $attributes
+        );
 
         return $this->userRepository->create(
             $attributes['username'],
