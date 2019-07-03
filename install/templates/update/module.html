@@ -1,2 +1,4 @@
 <div class="label">{$module['text']}</div>
-<div class="field"><img src="images/{$status}.png" title="{$title}" alt="{$status}"/></div>
+<div class="field">
+  <img src="{$url->versioned('images/{$status}.png')}" title="{$title}" alt="{$status}"/>
+</div>

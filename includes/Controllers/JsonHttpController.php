@@ -1,20 +1,15 @@
 <?php
-namespace App\Kernels;
+namespace App\Controllers;
 
-use App\Responses\ApiResponse;
 use App\Auth;
 use App\Database;
 use App\Heart;
+use App\License;
 use App\Mailer;
-use App\Middlewares\IsUpToDate;
-use App\Middlewares\LicenseIsValid;
-use App\Middlewares\LoadSettings;
-use App\Middlewares\ManageAuthentication;
-use App\Middlewares\SetLanguage;
-use App\Middlewares\UpdateUserActivity;
 use App\Models\Purchase;
 use App\Payment;
 use App\Repositories\UserRepository;
+use App\Responses\ApiResponse;
 use App\Responses\HtmlResponse;
 use App\Responses\PlainResponse;
 use App\Settings;
@@ -22,57 +17,36 @@ use App\Template;
 use App\TranslationManager;
 use PageAdminIncome;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use UnexpectedValueException;
 
-class JsonHttpKernel extends Kernel
+class JsonHttpController
 {
-    protected $middlewares = [
-        IsUpToDate::class,
-        LoadSettings::class,
-        SetLanguage::class,
-        ManageAuthentication::class,
-        LicenseIsValid::class,
-        UpdateUserActivity::class,
-    ];
+    public function action(
+        Request $request,
+        TranslationManager $translationManager,
+        Heart $heart,
+        Auth $auth,
+        Template $templates,
+        Settings $settings,
+        Database $db,
+        Mailer $mailer,
+        UserRepository $userRepository,
+        License $license
+    ) {
+        if (!$license->isValid()) {
+            return new Response();
+        }
 
-    public function run(Request $request)
-    {
-        /** @var TranslationManager $translationManager */
-        $translationManager = $this->app->make(TranslationManager::class);
         $langShop = $translationManager->shop();
-
-        /** @var Heart $heart */
-        $heart = $this->app->make(Heart::class);
-
-        /** @var Auth $auth */
-        $auth = $this->app->make(Auth::class);
-        $user = $auth->user();
-
-        /** @var Template $templates */
-        $templates = $this->app->make(Template::class);
-
-        /** @var TranslationManager $translationManager */
-        $translationManager = $this->app->make(TranslationManager::class);
         $lang = $translationManager->user();
 
-        /** @var Settings $settings */
-        $settings = $this->app->make(Settings::class);
-
-        /** @var Database $db */
-        $db = $this->app->make(Database::class);
-
-        /** @var Mailer $mailer */
-        $mailer = app()->make(Mailer::class);
-
-        /** @var UserRepository $userRepository */
-        $userRepository = app()->make(UserRepository::class);
-
-        // Pobranie akcji
+        $user = $auth->user();
         $action = $request->request->get("action");
 
         $warnings = [];
-
         $data = [];
+
         if ($action == "login") {
             if (is_logged()) {
                 return new ApiResponse("already_logged_in");
@@ -302,7 +276,7 @@ class JsonHttpKernel extends Kernel
                 [$key, $user2->getUid()]
             ));
 
-            $link = $settings['shop_url_slash'] . "index.php?pid=reset_password&code=" . htmlspecialchars($key);
+            $link = $settings['shop_url_slash'] . "/page/reset_password?code=" . htmlspecialchars($key);
             $text = $templates->render("emails/forgotten_password", compact('user2', 'link'));
             $ret = $mailer->send($user2->getEmail(), $user2->getUsername(), "Reset Hasła", $text);
 
@@ -708,14 +682,14 @@ class JsonHttpKernel extends Kernel
                 $return_data['positive'], $return_data['data']);
         }
 
-        if ($_GET['action'] == "get_income") {
+        if ($request->query->get("action") === "get_income") {
             $user->setPrivilages([
                 'acp'         => true,
                 'view_income' => true,
             ]);
             $page = new PageAdminIncome();
 
-            return new PlainResponse($page->get_content($_GET, $_POST));
+            return new HtmlResponse($page->get_content($_GET, $_POST));
         }
 
         if ($action == "service_action_execute") {
@@ -729,7 +703,7 @@ class JsonHttpKernel extends Kernel
                 $_POST));
         }
 
-        if ($action == "get_template") {
+        if ($action === "get_template") {
             $template = $_POST['template'];
             // Zabezpieczanie wszystkich wartości post
             foreach ($_POST as $key => $value) {

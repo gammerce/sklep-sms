@@ -21,12 +21,15 @@ class PageAdminUpdateWeb extends PageAdmin
     protected function content($get, $post)
     {
         $newestVersion = $this->version->getNewestWeb();
+        $currentVersion = $this->app->version();
 
-        // Mamy najnowszą wersję
-        if ($this->app->version() === $newestVersion) {
+        if ($currentVersion === $newestVersion) {
             return $this->template->render("admin/no_update");
         }
 
-        return $this->template->render("admin/update_web", compact('newestVersion') + ['title' => $this->title]);
+        return $this->template->render(
+            "admin/update_web",
+            compact('currentVersion', 'newestVersion') + ['title' => $this->title]
+        );
     }
 }

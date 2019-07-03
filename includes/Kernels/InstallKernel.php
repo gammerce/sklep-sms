@@ -62,7 +62,7 @@ class InstallKernel extends Kernel
                 $privilage = "bad";
             }
 
-            $files_privilages .= $template->install_full_render('file_privilages', compact('file', 'privilage'));
+            $files_privilages .= $template->installFullRender('file_privilages', compact('file', 'privilage'));
         }
 
         $server_modules = '';
@@ -75,13 +75,13 @@ class InstallKernel extends Kernel
                 $title = "Nieprawidłowo";
             }
 
-            $server_modules .= $template->install_full_render('module', compact('module', 'status', 'title'));
+            $server_modules .= $template->installFullRender('module', compact('module', 'status', 'title'));
         }
 
         $notifyHttpServer = $this->generateHttpServerNotification();
 
         // Pobranie ostatecznego szablonu
-        $output = $template->install_full_render(
+        $output = $template->installFullRender(
             'index',
             compact('notifyHttpServer', 'files_privilages', 'server_modules')
         );
@@ -110,7 +110,7 @@ class InstallKernel extends Kernel
         $notifyHttpServer = $this->generateHttpServerNotification();
 
         // Pobranie ostatecznego szablonu
-        $output = $template->install_update_render('index', compact('notifyHttpServer', 'filesModulesStatus', 'class'));
+        $output = $template->installUpdateRender('index', compact('notifyHttpServer', 'filesModulesStatus', 'class'));
 
         return new Response($output);
     }
@@ -124,6 +124,6 @@ class InstallKernel extends Kernel
             return '';
         }
 
-        return $template->install_render('http_server_notification');
+        return $template->installRender('http_server_notification');
     }
 }

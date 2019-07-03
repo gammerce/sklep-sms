@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `ss_users` (
                        CHARACTER SET utf8
                        COLLATE utf8_bin   NOT NULL DEFAULT '1',
   `lastactiv`          TIMESTAMP          NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `regdate`            TIMESTAMP          NOT NULL,
+  `regdate`            TIMESTAMP          NULL DEFAULT NULL,
   `wallet`             INT(11)            NOT NULL DEFAULT '0',
   `regip`              VARCHAR(64)        NOT NULL DEFAULT '',
   `lastip`             VARCHAR(64)        NOT NULL DEFAULT '',

@@ -17,7 +17,7 @@ $(document).delegate(".table_structure .delete_row", "click", function () {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp_admin.php",
+        url: buildUrl("jsonhttp_admin.php"),
         data: {
             action: "delete_tariff",
             id: row_id.children("td[headers=id]").text()
@@ -58,7 +58,7 @@ $(document).delegate("#form_tariff_add", "submit", function (e) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp_admin.php",
+        url: buildUrl("jsonhttp_admin.php"),
         data: $(this).serialize() + "&action=tariff_add",
         complete: function () {
             loader.hide();
@@ -106,7 +106,7 @@ $(document).delegate("#form_tariff_edit", "submit", function (e) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp_admin.php",
+        url: buildUrl("jsonhttp_admin.php"),
         data: $(this).serialize() + "&action=tariff_edit",
         complete: function () {
             loader.hide();

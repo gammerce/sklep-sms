@@ -3,7 +3,7 @@ namespace App\Kernels;
 
 use App\CronExecutor;
 use App\Middlewares\IsUpToDate;
-use App\Middlewares\LicenseIsValid;
+use App\Middlewares\ValidateLicense;
 use App\Middlewares\LoadSettings;
 use App\Middlewares\SetLanguage;
 use App\Settings;
@@ -17,7 +17,7 @@ class CronKernel extends Kernel
         IsUpToDate::class,
         LoadSettings::class,
         SetLanguage::class,
-        LicenseIsValid::class,
+        ValidateLicense::class,
     ];
 
     public function run(Request $request)

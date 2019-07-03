@@ -2,7 +2,7 @@
 namespace App\Kernels;
 
 use App\Middlewares\IsUpToDate;
-use App\Middlewares\LicenseIsValid;
+use App\Middlewares\ValidateLicense;
 use App\Middlewares\LoadSettings;
 use App\Middlewares\ManageAuthentication;
 use App\Middlewares\SetLanguage;
@@ -16,7 +16,7 @@ class IndexKernel extends Kernel
         LoadSettings::class,
         SetLanguage::class,
         ManageAuthentication::class,
-        LicenseIsValid::class,
+        ValidateLicense::class,
     ];
 
     public function run(Request $request)

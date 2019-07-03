@@ -67,7 +67,7 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp_admin.php",
+        url: buildUrl("jsonhttp_admin.php"),
         data: {
             action: "user_service_delete",
             id: row_id.children("td[headers=id]").text()
@@ -111,7 +111,7 @@ $(document).delegate(".table_structure .delete_row", "click", function () {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp_admin.php",
+        url: buildUrl("jsonhttp_admin.php"),
         data: {
             action: "user_service_delete",
             id: row_id.children("td[headers=id]").text()
@@ -151,7 +151,7 @@ $(document).delegate("#form_user_service_add", "submit", function (e) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp_admin.php",
+        url: buildUrl("jsonhttp_admin.php"),
         data: $(this).serialize() + "&action=user_service_add",
         complete: function () {
             loader.hide();
@@ -198,7 +198,7 @@ $(document).delegate("#form_user_service_edit", "submit", function (e) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp_admin.php",
+        url: buildUrl("jsonhttp_admin.php"),
         data: $(this).serialize() + "&action=user_service_edit",
         complete: function () {
             loader.hide();

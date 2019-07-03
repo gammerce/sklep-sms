@@ -5,7 +5,7 @@ $(document).delegate("#register", "submit", function (e) {
 
     $.ajax({
         type: "POST",
-        url: "jsonhttp.php",
+        url: buildUrl("jsonhttp.php"),
         data: $(this).serialize() + "&action=register",
         complete: function () {
             loader.hide();

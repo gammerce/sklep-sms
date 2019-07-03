@@ -17,7 +17,7 @@ $(document).delegate(".table_structure .delete_row", "click", function () {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp_admin.php",
+        url: buildUrl("jsonhttp_admin.php"),
         data: {
             action: "delete_group",
             id: row_id.children("td[headers=id]").text()
@@ -58,7 +58,7 @@ $(document).delegate("#form_group_add", "submit", function (e) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp_admin.php",
+        url: buildUrl("jsonhttp_admin.php"),
         data: $(this).serialize() + "&action=group_add",
         complete: function () {
             loader.hide();
@@ -96,7 +96,7 @@ $(document).delegate("#form_group_edit", "submit", function (e) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp_admin.php",
+        url: buildUrl("jsonhttp_admin.php"),
         data: $(this).serialize() + "&action=group_edit",
         complete: function () {
             loader.hide();

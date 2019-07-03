@@ -22,6 +22,6 @@ class IndexTestCase extends TestCase
 
     protected function prepareUrlForRequest($uri)
     {
-        return 'http://localhost/index.php' . $uri;
+        return 'http://localhost/' . ltrim($uri, "/");
     }
 }

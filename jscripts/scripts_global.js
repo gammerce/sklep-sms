@@ -13,7 +13,7 @@ function getnset_template(element, template, admin, data, onSuccessFunction) {
 
     $.ajax({
         type: "POST",
-        url: admin ? "jsonhttp_admin.php" : "jsonhttp.php",
+        url: buildUrl(admin ? "jsonhttp_admin.php" : "jsonhttp.php"),
         data: data,
         complete: function () {
             loader.hide();
@@ -51,7 +51,7 @@ function fetch_data(action, admin, data, onSuccessFunction) {
 
     $.ajax({
         type: "POST",
-        url: admin ? "jsonhttp_admin.php" : "jsonhttp.php",
+        url: buildUrl(admin ? "jsonhttp_admin.php" : "jsonhttp.php"),
         data: data,
         complete: function () {
             loader.hide();
@@ -74,7 +74,7 @@ function refresh_blocks(bricks, admin, onSuccessFunction) {
 
     $.ajax({
         type: "POST",
-        url: (admin ? "jsonhttp_admin.php" : "jsonhttp.php") + "?" + document.URL.split("?").pop(),
+        url: buildUrl(admin ? "jsonhttp_admin.php" : "jsonhttp.php") + "?" + document.URL.split("?").pop(),
         data: {
             action: 'refresh_blocks',
             bricks: bricks
@@ -130,4 +130,12 @@ function changeUrl(data) {
     });
 
     window.location.href = url[0] + '?' + strparams.join('&');
+}
+
+function trimSlashes(text) {
+    return text.replace(/^\/|\/$/g, '');
+}
+
+function buildUrl(path) {
+    return trimSlashes(baseUrl) + '/' + trimSlashes(path);
 }

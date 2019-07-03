@@ -18,7 +18,7 @@ $(document).ready(function () {
  */
 function go_to_payment(data, sign) {
     var form = $('<form>', {
-        action: "index.php?pid=payment",
+        action: buildUrl("/page/payment"),
         method: "POST"
     });
 
@@ -50,7 +50,7 @@ $(document).delegate("#form_login", "submit", function (e) {
 
     $.ajax({
         type: "POST",
-        url: "jsonhttp.php",
+        url: buildUrl("jsonhttp.php"),
         data: $(this).serialize() + "&action=login",
         complete: function () {
             loader.hide();
@@ -87,7 +87,7 @@ $(document).delegate("#logout", "click", function (e) {
 
     $.ajax({
         type: "POST",
-        url: "jsonhttp.php",
+        url: buildUrl("jsonhttp.php"),
         data: {
             action: 'logout'
         },

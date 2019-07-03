@@ -4,7 +4,7 @@ $(document).delegate("#form_change_password", "submit", function (e) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: "jsonhttp.php",
+        url: buildUrl("jsonhttp.php"),
         data: $(this).serialize() + "&action=change_password",
         complete: function () {
             loader.hide();

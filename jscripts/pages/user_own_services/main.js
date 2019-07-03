@@ -31,7 +31,7 @@ $(document).delegate("#user_own_services .row", "submit", function (e) {
     var temp_this = $(this);
     $.ajax({
         type: "POST",
-        url: "jsonhttp.php",
+        url: buildUrl("jsonhttp.php"),
         data: $(this).serialize() + "&action=user_service_edit&id=" + temp_this.data('row'),
         complete: function () {
             loader.hide();

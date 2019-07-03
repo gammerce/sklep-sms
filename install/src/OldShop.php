@@ -24,6 +24,6 @@ class OldShop
             return;
         }
 
-        output_page($this->template->install_render('missing_env'));
+        output_page($this->template->installRender('missing_env'));
     }
 }

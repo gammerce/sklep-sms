@@ -2,6 +2,7 @@
 
 use App\Auth;
 use App\Heart;
+use App\Routes\UrlGenerator;
 use App\Template;
 
 class BlockServicesButtons extends Block
@@ -28,6 +29,9 @@ class BlockServicesButtons extends Block
         /** @var Heart $heart */
         $heart = app()->make(Heart::class);
 
+        /** @var UrlGenerator $url */
+        $url = app()->make(UrlGenerator::class);
+
         $services = "";
         foreach ($heart->get_services() as $service) {
             if (($service_module = $heart->get_service_module($service['id'])) === null || !$service_module->show_on_web()) {
@@ -39,7 +43,7 @@ class BlockServicesButtons extends Block
             }
 
             $services .= create_dom_element("li", create_dom_element("a", $service['name'], [
-                'href' => "index.php?pid=purchase&service=" . urlencode($service['id']),
+                'href' => $url->to("/page/purchase?service=" . urlencode($service['id'])),
             ]));
         }
 

@@ -2,6 +2,7 @@
 
 use App\Auth;
 use App\Heart;
+use App\Routes\UrlGenerator;
 use App\Template;
 use App\TranslationManager;
 
@@ -33,22 +34,28 @@ class BlockUserButtons extends Block
         /** @var Heart $heart */
         $heart = app()->make(Heart::class);
 
+        /** @var UrlGenerator $url */
+        $url = app()->make(UrlGenerator::class);
+
         if (!$auth->check()) {
             return $template->render("loginarea");
         }
 
         // Panel Admina
         if (get_privilages("acp", $user)) {
-            $acp_button = create_dom_element("li", create_dom_element("a", $lang->translate('acp'), [
-                'href' => "admin.php",
-            ]));
+            $acp_button = create_dom_element(
+                "li",
+                create_dom_element("a", $lang->translate('acp'), [
+                    'href' => $url->to("admin.php"),
+                ])
+            );
         }
 
         // Doładowanie portfela
         if ($heart->user_can_use_service($user->getUid(), $heart->get_service("charge_wallet"))) {
             $charge_wallet_button = create_dom_element("li",
                 create_dom_element("a", $lang->translate('charge_wallet'), [
-                    'href' => "index.php?pid=purchase&service=charge_wallet",
+                    'href' => $url->to("/page/purchase?service=charge_wallet"),
                 ]));
         }
 

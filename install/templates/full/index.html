@@ -3,12 +3,12 @@
     <meta http-equiv="Content-Type" content="text/plain" charset="UTF-8"/>
     <title>Instalacja - Sklep SMS</title>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script type="text/javascript" src="jscripts/full.js?version={__VERSION__}"></script>
-    <script type="text/javascript" src="../jscripts/infobox.js?version={__VERSION__}"></script>
-    <script type="text/javascript" src="../jscripts/stocks.js?version={__VERSION__}"></script>
-    <script type="text/javascript" src="../js.php?script=language&version={__VERSION__}"></script>
-    <link href="styles/full.css?version={__VERSION__}" rel="stylesheet"/>
-    <link href="../styles/infobox.css?version={__VERSION__}" rel="stylesheet"/>
+    <script type="text/javascript" src="{$url->versioned('install/jscripts/full.js')}"></script>
+    <script type="text/javascript" src="{$url->versioned('jscripts/infobox.js')}"></script>
+    <script type="text/javascript" src="{$url->versioned('jscripts/stocks.js')}"></script>
+    <script type="text/javascript" src="{$url->versioned('js.php?script=language')}"></script>
+    <link href="{$url->versioned('install/styles/full.css')}" rel="stylesheet"/>
+    <link href="{$url->versioned('styles/infobox.css')}" rel="stylesheet"/>
 </head>
 <body>
 <div class="window">

@@ -1,12 +1,8 @@
 <?php
-namespace App\Kernels;
+namespace App\Controllers;
 
 use App\Heart;
-use App\Middlewares\IsUpToDate;
-use App\Middlewares\LicenseIsValid;
-use App\Middlewares\LoadSettings;
-use App\Middlewares\ManageAuthentication;
-use App\Middlewares\SetLanguage;
+use App\License;
 use App\Models\Purchase;
 use App\Payment;
 use App\Settings;
@@ -14,26 +10,14 @@ use App\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ServersStuffKernel extends Kernel
+class ServerStuffController
 {
-    protected $middlewares = [
-        IsUpToDate::class,
-        LoadSettings::class,
-        SetLanguage::class,
-        ManageAuthentication::class,
-        LicenseIsValid::class,
-    ];
-
-    public function run(Request $request)
-    {
-        /** @var Heart $heart */
-        $heart = $this->app->make(Heart::class);
-
-        /** @var Settings $settings */
-        $settings = $this->app->make(Settings::class);
-
-        /** @var TranslationManager $translationManager */
-        $translationManager = $this->app->make(TranslationManager::class);
+    public function action(
+        Request $request,
+        Heart $heart,
+        TranslationManager $translationManager,
+        Settings $settings
+    ) {
         $lang = $translationManager->user();
 
         // Musi byc podany hash random_keya

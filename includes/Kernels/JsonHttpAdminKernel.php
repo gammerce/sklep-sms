@@ -6,7 +6,7 @@ use App\Database;
 use App\Exceptions\SqlQueryException;
 use App\Heart;
 use App\Middlewares\IsUpToDate;
-use App\Middlewares\LicenseIsValid;
+use App\Middlewares\ValidateLicense;
 use App\Middlewares\LoadSettings;
 use App\Middlewares\ManageAdminAuthentication;
 use App\Middlewares\SetAdminSession;
@@ -31,7 +31,7 @@ class JsonHttpAdminKernel extends Kernel
         LoadSettings::class,
         SetLanguage::class,
         ManageAdminAuthentication::class,
-        LicenseIsValid::class,
+        ValidateLicense::class,
         UpdateUserActivity::class,
     ];
 
@@ -1314,6 +1314,7 @@ class JsonHttpAdminKernel extends Kernel
                 "WHERE `id` = '%d'",
                 [$_POST['provision'] * 100, $_POST['id']]
             ));
+            $affected = $db->affected_rows();
 
             // Zwróć info o prawidłowej edycji
             if ($affected || $db->affected_rows()) {

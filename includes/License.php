@@ -3,7 +3,7 @@ namespace App;
 
 use App\Cache\CacheEnum;
 use App\Cache\CachingRequester;
-use App\Exceptions\InvalidResponse;
+use App\Exceptions\LicenseRequestException;
 use App\Exceptions\RequestException;
 use App\Requesting\Requester;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,6 +33,9 @@ class License
     /** @var string */
     protected $footer;
 
+    /** @var LicenseRequestException */
+    protected $loadingException;
+
     public function __construct(
         Translator $translator,
         Settings $settings,
@@ -46,12 +49,16 @@ class License
     }
 
     /**
-     * @throws InvalidResponse
-     * @throws RequestException
+     * @throws LicenseRequestException
      */
     public function validate()
     {
-        $response = $this->loadLicense();
+        try {
+            $response = $this->loadLicense();
+        } catch (LicenseRequestException $e) {
+            $this->loadingException = $e;
+            throw $e;
+        }
 
         $this->externalLicenseId = array_get($response, 'id');
         $this->expiresAt = array_get($response, 'expires_at');
@@ -61,6 +68,11 @@ class License
     public function isValid()
     {
         return $this->externalLicenseId !== null;
+    }
+
+    public function getLoadingException()
+    {
+        return $this->loadingException;
     }
 
     public function getExpires()
@@ -89,20 +101,23 @@ class License
 
     /**
      * @return array
-     * @throws InvalidResponse
-     * @throws RequestException
+     * @throws LicenseRequestException
      */
     protected function loadLicense()
     {
-        return $this->cachingRequester->load(CacheEnum::LICENSE, static::CACHE_TTL, function () {
-            return $this->request();
-        });
+        try {
+            return $this->cachingRequester->load(CacheEnum::LICENSE, static::CACHE_TTL,
+                function () {
+                    return $this->request();
+                });
+        } catch (RequestException $e) {
+            throw new LicenseRequestException(null, $e);
+        }
     }
 
     /**
      * @return array
-     * @throws InvalidResponse
-     * @throws RequestException
+     * @throws LicenseRequestException
      */
     protected function request()
     {
@@ -122,11 +137,11 @@ class License
         );
 
         if (!$response) {
-            throw new RequestException();
+            throw new LicenseRequestException();
         }
 
         if (!$response->isOk()) {
-            throw new InvalidResponse($response);
+            throw new LicenseRequestException($response);
         }
 
         return $response->json();

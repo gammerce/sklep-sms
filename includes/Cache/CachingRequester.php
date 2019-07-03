@@ -2,8 +2,8 @@
 namespace App\Cache;
 
 use App\Exceptions\RequestException;
-use Closure;
 use Psr\SimpleCache\CacheInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class CachingRequester
 {
@@ -20,9 +20,9 @@ class CachingRequester
     /**
      * @param string $cacheKey
      * @param int $ttl
-     * @param Closure $requestCaller
+     * @param callable $requestCaller
      * @return mixed
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws InvalidArgumentException
      * @throws RequestException
      */
     public function load($cacheKey, $ttl, $requestCaller)
@@ -50,7 +50,7 @@ class CachingRequester
      * @param callable $requestCaller
      * @return mixed
      * @throws RequestException
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function fetchAndCache($cacheKey, $requestCaller)
     {
@@ -69,7 +69,7 @@ class CachingRequester
         $response = call_user_func($requestCaller);
 
         if ($response === null) {
-            throw new RequestException('Could not connect to the license server.');
+            throw new RequestException();
         }
 
         return $response;
