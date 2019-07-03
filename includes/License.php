@@ -4,8 +4,8 @@ namespace App;
 use App\Cache\CacheEnum;
 use App\Cache\CachingRequester;
 use App\Exceptions\LicenseRequestException;
+use App\Exceptions\RequestException;
 use App\Requesting\Requester;
-use Exception;
 use Symfony\Component\HttpFoundation\Request;
 
 class License
@@ -54,8 +54,7 @@ class License
     public function validate()
     {
         try {
-            // TODO Remove
-            $response = ["id" => 1, "expires_at" => null];//$this->loadLicense();
+            $response = $this->loadLicense();
         } catch (LicenseRequestException $e) {
             $this->loadingException = $e;
             throw $e;
@@ -106,9 +105,14 @@ class License
      */
     protected function loadLicense()
     {
-        return $this->cachingRequester->load(CacheEnum::LICENSE, static::CACHE_TTL, function () {
-            return $this->request();
-        });
+        try {
+            return $this->cachingRequester->load(CacheEnum::LICENSE, static::CACHE_TTL,
+                function () {
+                    return $this->request();
+                });
+        } catch (RequestException $e) {
+            throw new LicenseRequestException(null, $e);
+        }
     }
 
     /**

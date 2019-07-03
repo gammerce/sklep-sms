@@ -7,6 +7,7 @@ use App\Requesting\Response as CustomResponse;
 use App\Template;
 use App\TranslationManager;
 use App\Translator;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -38,7 +39,7 @@ class BlockOnInvalidLicense implements MiddlewareContract
 
             if (in_array($executedScript, $jsonScripts)) {
                 // TODO Check if this works
-                return new Response(compact('message'));
+                return new JsonResponse(compact('message'));
             }
 
             return $this->renderErrorPage($message);

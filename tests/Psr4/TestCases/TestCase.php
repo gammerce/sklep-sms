@@ -99,7 +99,8 @@ class TestCase extends BaseTestCase
         $license->shouldReceive('getExpires')->andReturn('');
         $license->shouldReceive('getExternalId')->andReturn(2);
         $license->shouldReceive('isForever')->andReturn(true);
-        $license->shouldReceive('isValid')->andReturn(true);
+        $license->shouldReceive('isValid')->andReturn(true)->byDefault();
+        $license->shouldReceive('getLoadingException')->andReturn(null)->byDefault();
         $license->shouldReceive('getFooter')->andReturn('');
         $this->app->instance(License::class, $license);
     }

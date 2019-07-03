@@ -1,6 +1,8 @@
 <?php
 namespace Tests\Feature;
 
+use App\Exceptions\LicenseRequestException;
+use App\License;
 use App\Requesting\Response;
 use App\Settings;
 use App\Verification\Gosetti;
@@ -68,7 +70,7 @@ class PurchaseServiceFromServerTest extends IndexTestCase
         $this->mockGoSetti();
 
         // when
-        $response = $this->get('/', $query);
+        $response = $this->get('/servers_stuff.php', $query);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());
@@ -76,6 +78,25 @@ class PurchaseServiceFromServerTest extends IndexTestCase
             '#<return_value>purchased</return_value><text>Usługa została prawidłowo zakupiona.</text><positive>1</positive><bsid>\d+</bsid>#',
             $response->getContent()
         );
+    }
+
+    /** @test */
+    public function player_cannot_make_a_purchase_if_license_is_invalid()
+    {
+        // given
+        $license = $this->app->make(License::class);
+        $license->shouldReceive('isValid')->andReturn(false);
+        $license->shouldReceive('getLoadingException')->andReturn(new LicenseRequestException());
+
+        // when
+        $response = $this->get('/servers_stuff.php');
+
+        // then
+        $this->assertEquals(200, $response->getStatusCode());
+        $json = json_decode($response->getContent(), true);
+        $this->assertEquals($json, [
+            "message" => "Coś poszło nie tak podczas łączenia się z serwerem weryfikacyjnym.",
+        ]);
     }
 
     protected function mockGoSetti()
