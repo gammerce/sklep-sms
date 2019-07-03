@@ -15,8 +15,11 @@ class Mailer
     /** @var Translator */
     protected $langShop;
 
-    public function __construct(Settings $settings, TranslationManager $translationManager, array $config = [])
-    {
+    public function __construct(
+        Settings $settings,
+        TranslationManager $translationManager,
+        array $config = []
+    ) {
         $this->settings = $settings;
         $this->config = $config;
         $this->langShop = $translationManager->shop();
@@ -34,7 +37,7 @@ class Mailer
     public function signedSend($email, $name, $subject, $text)
     {
         ////////// USTAWIENIA //////////
-        $email = filter_var($email, FILTER_VALIDATE_EMAIL);    // Adres e-mail adresata
+        $email = filter_var($email, FILTER_VALIDATE_EMAIL); // Adres e-mail adresata
         $name = htmlspecialchars($name);
         $sender_email = $this->settings['sender_email'];
         $sender_name = $this->settings['sender_email_name'];
@@ -67,7 +70,13 @@ class Mailer
 
             $mail->send();
 
-            log_info($this->langShop->sprintf($this->langShop->translate('email_was_sent'), $email, $text));
+            log_info(
+                $this->langShop->sprintf(
+                    $this->langShop->translate('email_was_sent'),
+                    $email,
+                    $text
+                )
+            );
 
             return "sent";
         } catch (Exception $e) {
@@ -81,7 +90,7 @@ class Mailer
         $settings = app()->make(Settings::class);
 
         ////////// USTAWIENIA //////////
-        $email = filter_var($email, FILTER_VALIDATE_EMAIL);    // Adres e-mail adresata
+        $email = filter_var($email, FILTER_VALIDATE_EMAIL); // Adres e-mail adresata
         $name = htmlspecialchars($name);
         $sender_email = $settings['sender_email'];
         $sender_name = $settings['sender_email_name'];
@@ -105,7 +114,9 @@ class Mailer
             return "not_sent";
         }
 
-        log_info($this->langShop->sprintf($this->langShop->translate('email_was_sent'), $email, $text));
+        log_info(
+            $this->langShop->sprintf($this->langShop->translate('email_was_sent'), $email, $text)
+        );
 
         return "sent";
     }

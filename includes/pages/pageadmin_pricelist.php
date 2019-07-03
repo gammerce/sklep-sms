@@ -36,9 +36,12 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
 
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * " .
-            "FROM `" . TABLE_PREFIX . "pricelist` " .
-            "ORDER BY `service`, `server`, `tariff` " .
-            "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
+                "FROM `" .
+                TABLE_PREFIX .
+                "pricelist` " .
+                "ORDER BY `service`, `server`, `tariff` " .
+                "LIMIT " .
+                get_row_limit($this->currentPage->getPageNumber())
         );
 
         $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
@@ -84,16 +87,17 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
         if (!get_privilages("manage_settings")) {
             return [
                 'status' => "not_logged_in",
-                'text'   => $this->lang->translate('not_logged_or_no_perm'),
+                'text' => $this->lang->translate('not_logged_or_no_perm')
             ];
         }
 
         if ($box_id == "price_edit") {
-            $result = $this->db->query($this->db->prepare(
-                "SELECT * FROM `" . TABLE_PREFIX . "pricelist` " .
-                "WHERE `id` = '%d'",
-                [$data['id']]
-            ));
+            $result = $this->db->query(
+                $this->db->prepare(
+                    "SELECT * FROM `" . TABLE_PREFIX . "pricelist` " . "WHERE `id` = '%d'",
+                    [$data['id']]
+                )
+            );
             $price = $this->db->fetch_array_assoc($result);
 
             $all_servers = $price['server'] == -1 ? "selected" : "";
@@ -102,18 +106,23 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
         // Pobranie usług
         $services = "";
         foreach ($this->heart->get_services() as $service_id => $service) {
-            $services .= create_dom_element("option", $service['name'] . " ( " . $service['id'] . " )", [
-                'value'    => $service['id'],
-                'selected' => isset($price) && $price['service'] == $service['id'] ? "selected" : "",
-            ]);
+            $services .= create_dom_element(
+                "option",
+                $service['name'] . " ( " . $service['id'] . " )",
+                [
+                    'value' => $service['id'],
+                    'selected' =>
+                        isset($price) && $price['service'] == $service['id'] ? "selected" : ""
+                ]
+            );
         }
 
         // Pobranie serwerów
         $servers = "";
         foreach ($this->heart->get_servers() as $server_id => $server) {
             $servers .= create_dom_element("option", $server['name'], [
-                'value'    => $server['id'],
-                'selected' => isset($price) && $price['server'] == $server['id'] ? "selected" : "",
+                'value' => $server['id'],
+                'selected' => isset($price) && $price['server'] == $server['id'] ? "selected" : ""
             ]);
         }
 
@@ -121,8 +130,9 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
         $tariffs = "";
         foreach ($this->heart->getTariffs() as $tariff) {
             $tariffs .= create_dom_element("option", $tariff->getId(), [
-                'value'    => $tariff->getId(),
-                'selected' => isset($price) && $price['tariff'] == $tariff->getId() ? "selected" : "",
+                'value' => $tariff->getId(),
+                'selected' =>
+                    isset($price) && $price['tariff'] == $tariff->getId() ? "selected" : ""
             ]);
         }
 
@@ -146,8 +156,8 @@ class PageAdminPriceList extends PageAdmin implements IPageAdmin_ActionBox
         }
 
         return [
-            'status'   => 'ok',
-            'template' => $output,
+            'status' => 'ok',
+            'template' => $output
         ];
     }
 }

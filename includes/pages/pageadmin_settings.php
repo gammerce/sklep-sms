@@ -23,21 +23,21 @@ class PageAdminSettings extends PageAdmin
 
         // Pobranie listy serwisów transakcyjnych
         $result = $this->db->query(
-            "SELECT id, name, sms, transfer " .
-            "FROM `" . TABLE_PREFIX . "transaction_services`"
+            "SELECT id, name, sms, transfer " . "FROM `" . TABLE_PREFIX . "transaction_services`"
         );
         $sms_services = $transfer_services = "";
         while ($row = $this->db->fetch_array_assoc($result)) {
             if ($row['sms']) {
                 $sms_services .= create_dom_element("option", $row['name'], [
-                    'value'    => $row['id'],
-                    'selected' => $row['id'] == $this->settings['sms_service'] ? "selected" : "",
+                    'value' => $row['id'],
+                    'selected' => $row['id'] == $this->settings['sms_service'] ? "selected" : ""
                 ]);
             }
             if ($row['transfer']) {
                 $transfer_services .= create_dom_element("option", $row['name'], [
-                    'value'    => $row['id'],
-                    'selected' => $row['id'] == $this->settings['transfer_service'] ? "selected" : "",
+                    'value' => $row['id'],
+                    'selected' =>
+                        $row['id'] == $this->settings['transfer_service'] ? "selected" : ""
                 ]);
             }
         }
@@ -52,8 +52,8 @@ class PageAdminSettings extends PageAdmin
         foreach ($dirlist as $dir_name) {
             if ($dir_name[0] != '.' && is_dir($this->app->path("themes/$dir_name"))) {
                 $themes_list .= create_dom_element("option", $dir_name, [
-                    'value'    => $dir_name,
-                    'selected' => $dir_name == $this->settings['theme'] ? "selected" : "",
+                    'value' => $dir_name,
+                    'selected' => $dir_name == $this->settings['theme'] ? "selected" : ""
                 ]);
             }
         }
@@ -63,18 +63,28 @@ class PageAdminSettings extends PageAdmin
         $languages_list = "";
         foreach ($dirlist as $dir_name) {
             if ($dir_name[0] != '.' && is_dir($this->app->path("includes/languages/{$dir_name}"))) {
-                $languages_list .= create_dom_element("option", $lang->translate('language_' . $dir_name), [
-                    'value'    => $dir_name,
-                    'selected' => $dir_name == $langShop->getCurrentLanguage() ? "selected" : "",
-                ]);
+                $languages_list .= create_dom_element(
+                    "option",
+                    $lang->translate('language_' . $dir_name),
+                    [
+                        'value' => $dir_name,
+                        'selected' => $dir_name == $langShop->getCurrentLanguage() ? "selected" : ""
+                    ]
+                );
             }
         }
 
         // Pobranie wyglądu strony
         return $this->template->render(
             "admin/settings",
-            compact('user_edit_service', 'sms_services', 'transfer_services', 'languages_list', 'themes_list', 'cron')
-            + ['title' => $this->title]
+            compact(
+                'user_edit_service',
+                'sms_services',
+                'transfer_services',
+                'languages_list',
+                'themes_list',
+                'cron'
+            ) + ['title' => $this->title]
         );
     }
 }

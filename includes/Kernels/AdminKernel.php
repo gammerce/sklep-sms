@@ -29,7 +29,7 @@ class AdminKernel extends Kernel
         ManageAdminAuthentication::class,
         ValidateLicense::class,
         UpdateUserActivity::class,
-        RunCron::class,
+        RunCron::class
     ];
 
     public function run(Request $request)
@@ -57,8 +57,10 @@ class AdminKernel extends Kernel
         /** @var License $license */
         $license = $this->app->make(License::class);
 
-        if ($currentPage->getPid() !== 'login' && !$heart->page_exists($currentPage->getPid(),
-                'admin')) {
+        if (
+            $currentPage->getPid() !== 'login' &&
+            !$heart->page_exists($currentPage->getPid(), 'admin')
+        ) {
             $currentPage->setPid('home');
         }
 
@@ -66,7 +68,9 @@ class AdminKernel extends Kernel
         if ($currentPage->getPid() == "login") {
             $heart->page_title = "Login";
             $heart->style_add(
-                $settings['shop_url_slash'] . "styles/admin/style_login.css?version=" . $this->app->version()
+                $settings['shop_url_slash'] .
+                    "styles/admin/style_login.css?version=" .
+                    $this->app->version()
             );
 
             if (isset($_SESSION['info'])) {
@@ -92,7 +96,9 @@ class AdminKernel extends Kernel
             }
 
             // Pobranie szablonu logowania
-            return new Response($template->render("admin/login", compact('header', 'warning', 'getData')));
+            return new Response(
+                $template->render("admin/login", compact('header', 'warning', 'getData'))
+            );
         }
 
         $content = get_content("admincontent", $request);
@@ -100,89 +106,95 @@ class AdminKernel extends Kernel
         // Pobranie przycisków do sidebaru
         if (get_privilages("view_player_flags")) {
             $pid = "players_flags";
-            $name = $lang->translate($pid);;
+            $name = $lang->translate($pid);
             $players_flags_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privilages("view_user_services")) {
             $pid = '';
             foreach ($heart->get_services_modules() as $module_data) {
-                if (in_array('IService_UserServiceAdminDisplay',
-                    class_implements($module_data['class']))) {
+                if (
+                    in_array(
+                        'IService_UserServiceAdminDisplay',
+                        class_implements($module_data['class'])
+                    )
+                ) {
                     $pid = "user_service&subpage=" . urlencode($module_data['id']);
                     break;
                 }
-            };
+            }
             $name = $lang->translate('users_services');
             $user_service_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privilages("view_income")) {
             $pid = "income";
-            $name = $lang->translate($pid);;
+            $name = $lang->translate($pid);
             $income_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privilages("manage_settings")) {
             // Ustawienia sklepu
             $pid = "settings";
-            $name = $lang->translate($pid);;
+            $name = $lang->translate($pid);
             $settings_link = $template->render("admin/page_link", compact('pid', 'name'));
 
             // Płatności
             $pid = "transaction_services";
-            $name = $lang->translate($pid);;
-            $transaction_services_link = $template->render("admin/page_link",
-                compact('pid', 'name'));
+            $name = $lang->translate($pid);
+            $transaction_services_link = $template->render(
+                "admin/page_link",
+                compact('pid', 'name')
+            );
 
             // Taryfy
             $pid = "tariffs";
-            $name = $lang->translate($pid);;
+            $name = $lang->translate($pid);
             $tariffs_link = $template->render("admin/page_link", compact('pid', 'name'));
 
             // Cennik
             $pid = "pricelist";
-            $name = $lang->translate($pid);;
+            $name = $lang->translate($pid);
             $pricelist_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privilages("view_users")) {
             $pid = "users";
-            $name = $lang->translate($pid);;
+            $name = $lang->translate($pid);
             $users_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privilages("view_groups")) {
             $pid = "groups";
-            $name = $lang->translate($pid);;
+            $name = $lang->translate($pid);
             $groups_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privilages("view_servers")) {
             $pid = "servers";
-            $name = $lang->translate($pid);;
+            $name = $lang->translate($pid);
             $servers_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privilages("view_services")) {
             $pid = "services";
-            $name = $lang->translate($pid);;
+            $name = $lang->translate($pid);
             $services_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privilages("view_sms_codes")) {
             // Kody SMS
             $pid = "sms_codes";
-            $name = $lang->translate($pid);;
+            $name = $lang->translate($pid);
             $sms_codes_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privilages("view_service_codes")) {
             $pid = "service_codes";
-            $name = $lang->translate($pid);;
+            $name = $lang->translate($pid);
             $service_codes_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privilages("view_antispam_questions")) {
             // Pytania bezpieczeństwa
             $pid = "antispam_questions";
-            $name = $lang->translate($pid);;
+            $name = $lang->translate($pid);
             $antispam_questions_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privilages("view_logs")) {
             // Pytania bezpieczeństwa
             $pid = "logs";
-            $name = $lang->translate($pid);;
+            $name = $lang->translate($pid);
             $logs_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
 
@@ -192,13 +204,32 @@ class AdminKernel extends Kernel
         $currentVersion = $this->app->version();
 
         // Pobranie ostatecznego szablonu
-        return new Response($template->render(
-            "admin/index",
-            compact('header', 'license', 'user', 'settings_link',
-                'antispam_questions_link', 'transaction_services_link', 'services_link',
-                'servers_link', 'tariffs_link', 'pricelist_link', 'user_service_link',
-                'players_flags_link', 'users_link', 'groups_link', 'income_link',
-                'service_codes_link', 'sms_codes_link', 'logs_link', 'content', 'currentVersion')
-        ));
+        return new Response(
+            $template->render(
+                "admin/index",
+                compact(
+                    'header',
+                    'license',
+                    'user',
+                    'settings_link',
+                    'antispam_questions_link',
+                    'transaction_services_link',
+                    'services_link',
+                    'servers_link',
+                    'tariffs_link',
+                    'pricelist_link',
+                    'user_service_link',
+                    'players_flags_link',
+                    'users_link',
+                    'groups_link',
+                    'income_link',
+                    'service_codes_link',
+                    'sms_codes_link',
+                    'logs_link',
+                    'content',
+                    'currentVersion'
+                )
+            )
+        );
     }
 }

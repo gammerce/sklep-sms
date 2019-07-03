@@ -16,11 +16,15 @@ class PricelistRepository
 
     public function create($service, $tariff, $amount, $server)
     {
-        $this->db->query($this->db->prepare(
-            "INSERT INTO `" . TABLE_PREFIX . "pricelist` (`service`, `tariff`, `amount`, `server`) " .
-            "VALUES( '%s', '%d', '%d', '%d' )",
-            [$service, $tariff, $amount, $server]
-        ));
+        $this->db->query(
+            $this->db->prepare(
+                "INSERT INTO `" .
+                    TABLE_PREFIX .
+                    "pricelist` (`service`, `tariff`, `amount`, `server`) " .
+                    "VALUES( '%s', '%d', '%d', '%d' )",
+                [$service, $tariff, $amount, $server]
+            )
+        );
 
         $id = $this->db->last_id();
 

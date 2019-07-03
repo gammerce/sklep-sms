@@ -16,7 +16,7 @@ class JsController
         }
 
         return new Response($output, 200, [
-            'Content-type' => 'text/plain; charset="UTF-8"',
+            'Content-type' => 'text/plain; charset="UTF-8"'
         ]);
     }
 }

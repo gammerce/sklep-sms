@@ -17,7 +17,10 @@ class PagePayment extends Page
     protected function content($get, $post)
     {
         // Sprawdzanie hashu danych przesłanych przez formularz
-        if (!isset($post['sign']) || $post['sign'] != md5($post['data'] . $this->settings['random_key'])) {
+        if (
+            !isset($post['sign']) ||
+            $post['sign'] != md5($post['data'] . $this->settings['random_key'])
+        ) {
             return $this->lang->translate('wrong_sign');
         }
 
@@ -31,8 +34,10 @@ class PagePayment extends Page
             return $this->lang->translate('error_occured');
         }
 
-        if (($service_module = $this->heart->get_service_module($purchase_data->getService())) === null
-            || !object_implements($service_module, "IService_PurchaseWeb")
+        if (
+            ($service_module = $this->heart->get_service_module($purchase_data->getService())) ===
+                null ||
+            !object_implements($service_module, "IService_PurchaseWeb")
         ) {
             return $this->lang->translate('bad_module');
         }
@@ -45,26 +50,50 @@ class PagePayment extends Page
 
         $payment_methods = '';
         // Sprawdzamy, czy płatność za pomocą SMS jest możliwa
-        if ($purchase_data->getPayment('sms_service') && $purchase_data->getTariff() !== null && !$purchase_data->getPayment('no_sms')) {
-            $payment_sms = new Payment($purchase_data->getPayment('sms_service'));
-            $payment_methods .= $this->template->render('payment_method_sms', compact('purchase_data', 'payment_sms'));
-        }
-
-        $cost_transfer = $purchase_data->getPayment('cost') !== null
-            ? number_format($purchase_data->getPayment('cost') / 100.0, 2)
-            : "0.00";
-
-        if (strlen($this->settings['transfer_service']) && $purchase_data->getPayment('cost') !== null
-            && $purchase_data->getPayment('cost') > 1 && !$purchase_data->getPayment('no_transfer')
+        if (
+            $purchase_data->getPayment('sms_service') &&
+            $purchase_data->getTariff() !== null &&
+            !$purchase_data->getPayment('no_sms')
         ) {
-            $payment_methods .= $this->template->render("payment_method_transfer", compact('cost_transfer'));
+            $payment_sms = new Payment($purchase_data->getPayment('sms_service'));
+            $payment_methods .= $this->template->render(
+                'payment_method_sms',
+                compact('purchase_data', 'payment_sms')
+            );
         }
 
-        if (is_logged() && $purchase_data->getPayment('cost') !== null && !$purchase_data->getPayment('no_wallet')) {
-            $payment_methods .= $this->template->render("payment_method_wallet", compact('cost_transfer'));
+        $cost_transfer =
+            $purchase_data->getPayment('cost') !== null
+                ? number_format($purchase_data->getPayment('cost') / 100.0, 2)
+                : "0.00";
+
+        if (
+            strlen($this->settings['transfer_service']) &&
+            $purchase_data->getPayment('cost') !== null &&
+            $purchase_data->getPayment('cost') > 1 &&
+            !$purchase_data->getPayment('no_transfer')
+        ) {
+            $payment_methods .= $this->template->render(
+                "payment_method_transfer",
+                compact('cost_transfer')
+            );
         }
 
-        if (!$purchase_data->getPayment('no_code') && object_implements($service_module, "IService_ServiceCode")) {
+        if (
+            is_logged() &&
+            $purchase_data->getPayment('cost') !== null &&
+            !$purchase_data->getPayment('no_wallet')
+        ) {
+            $payment_methods .= $this->template->render(
+                "payment_method_wallet",
+                compact('cost_transfer')
+            );
+        }
+
+        if (
+            !$purchase_data->getPayment('no_code') &&
+            object_implements($service_module, "IService_ServiceCode")
+        ) {
             $payment_methods .= $this->template->render("payment_method_code");
         }
 

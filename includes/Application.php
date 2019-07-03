@@ -15,7 +15,7 @@ class Application extends Container
     protected $providers = [
         AppServiceProvider::class,
         HeartServiceProvider::class,
-        SentryServiceProvider::class,
+        SentryServiceProvider::class
     ];
 
     /** @var string */

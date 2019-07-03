@@ -16,9 +16,12 @@ class Homepay extends PaymentModule implements SupportSms
     {
         $handle = fopen(
             'http://homepay.pl/API/check_code.php' .
-            '?usr_id=' . urlencode($this->getApi()) .
-            '&acc_id=' . urlencode($this->data[$number]) .
-            '&code=' . urlencode($returnCode),
+                '?usr_id=' .
+                urlencode($this->getApi()) .
+                '&acc_id=' .
+                urlencode($this->data[$number]) .
+                '&code=' .
+                urlencode($returnCode),
             'r'
         );
 

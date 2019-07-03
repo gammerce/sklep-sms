@@ -73,13 +73,15 @@ class Heart
     public function register_service_module($id, $name, $class, $classsimple)
     {
         if (isset($this->services_classes[$id])) {
-            throw new Exception("There is a service with such an id: " . htmlspecialchars($id) . " already.");
+            throw new Exception(
+                "There is a service with such an id: " . htmlspecialchars($id) . " already."
+            );
         }
 
         $this->services_classes[$id] = [
-            'name'        => $name,
-            'class'       => $class,
-            'classsimple' => $classsimple,
+            'name' => $name,
+            'class' => $class,
+            'classsimple' => $classsimple
         ];
     }
 
@@ -149,10 +151,10 @@ class Heart
         $modules = [];
         foreach ($this->services_classes as $id => $data) {
             $modules[] = [
-                'id'          => $id,
-                'name'        => $data['name'],
-                'class'       => $data['class'],
-                'classsimple' => $data['classsimple'],
+                'id' => $id,
+                'name' => $data['name'],
+                'class' => $data['class'],
+                'classsimple' => $data['classsimple']
             ];
         }
 
@@ -166,7 +168,9 @@ class Heart
     public function register_payment_module($id, $class)
     {
         if (isset($this->payment_module_classes[$id])) {
-            throw new Exception("There is a payment api with id: " . htmlspecialchars($id) . " already.");
+            throw new Exception(
+                "There is a payment api with id: " . htmlspecialchars($id) . " already."
+            );
         }
 
         $this->payment_module_classes[$id] = $class;
@@ -174,7 +178,9 @@ class Heart
 
     public function get_payment_module($id)
     {
-        return isset($this->payment_module_classes[$id]) ? $this->payment_module_classes[$id] : null;
+        return isset($this->payment_module_classes[$id])
+            ? $this->payment_module_classes[$id]
+            : null;
     }
 
     //
@@ -192,7 +198,9 @@ class Heart
     public function register_block($block_id, $class)
     {
         if ($this->block_exists($block_id)) {
-            throw new Exception("There is a block with such an id: " . htmlspecialchars($block_id) . " already.");
+            throw new Exception(
+                "There is a block with such an id: " . htmlspecialchars($block_id) . " already."
+            );
         }
 
         $this->blocks_classes[$block_id] = $class;
@@ -219,7 +227,9 @@ class Heart
      */
     public function get_block($block_id)
     {
-        return $this->block_exists($block_id) ? app()->make($this->blocks_classes[$block_id]) : null;
+        return $this->block_exists($block_id)
+            ? app()->make($this->blocks_classes[$block_id])
+            : null;
     }
 
     //
@@ -238,7 +248,9 @@ class Heart
     public function register_page($page_id, $class, $type = "user")
     {
         if ($this->page_exists($page_id, $type)) {
-            throw new Exception("There is a page with such an id: " . htmlspecialchars($page_id) . " already.");
+            throw new Exception(
+                "There is a page with such an id: " . htmlspecialchars($page_id) . " already."
+            );
         }
 
         $this->pages_classes[$type][$page_id] = $class;
@@ -323,8 +335,7 @@ class Heart
     private function fetch_services()
     {
         $result = $this->db->query(
-            "SELECT * FROM `" . TABLE_PREFIX . "services` " .
-            "ORDER BY `order` ASC"
+            "SELECT * FROM `" . TABLE_PREFIX . "services` " . "ORDER BY `order` ASC"
         );
         while ($row = $this->db->fetch_array_assoc($result)) {
             $row['id_hsafe'] = htmlspecialchars($row['id']);
@@ -450,7 +461,11 @@ class Heart
     {
         $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "tariffs`");
         while ($row = $this->db->fetch_array_assoc($result)) {
-            $this->tariffs[$row['id']] = new Tariff($row['id'], $row['provision'], $row['predefined']);
+            $this->tariffs[$row['id']] = new Tariff(
+                $row['id'],
+                $row['provision'],
+                $row['predefined']
+            );
         }
 
         $this->tariffs_fetched = true;

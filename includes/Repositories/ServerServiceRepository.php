@@ -16,11 +16,15 @@ class ServerServiceRepository
 
     public function create($serverId, $serviceId)
     {
-        $this->db->query($this->db->prepare(
-            "INSERT INTO `" . TABLE_PREFIX . "servers_services` " .
-            "SET `server_id`='%d', `service_id`='%s'",
-            [$serverId, $serviceId]
-        ));
+        $this->db->query(
+            $this->db->prepare(
+                "INSERT INTO `" .
+                    TABLE_PREFIX .
+                    "servers_services` " .
+                    "SET `server_id`='%d', `service_id`='%s'",
+                [$serverId, $serviceId]
+            )
+        );
 
         return new ServerService($serverId, $serviceId);
     }

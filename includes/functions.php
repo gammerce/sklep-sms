@@ -88,7 +88,9 @@ function get_content($element, Request $request, $withenvelope = true)
     $get = $request->query->all();
     $post = $request->request->all();
 
-    return $withenvelope ? $block->get_content_enveloped($get, $post) : $block->get_content($get, $post);
+    return $withenvelope
+        ? $block->get_content_enveloped($get, $post)
+        : $block->get_content($get, $post);
 }
 
 function get_row_limit($page, $row_limit = 0)
@@ -171,28 +173,44 @@ function get_pagination($all, $current_page, $script, $get, $row_limit = 0)
     $output = "";
     $lp = 2;
     for ($i = 1, $dots = false; $i <= $pages_amount; ++$i) {
-        if ($i != 1 && $i != $pages_amount && ($i < $current_page - $lp || $i > $current_page + $lp)) {
+        if (
+            $i != 1 &&
+            $i != $pages_amount &&
+            ($i < $current_page - $lp || $i > $current_page + $lp)
+        ) {
             if (!$dots) {
                 if ($i < $current_page - $lp) {
-                    $href = $script . $get_string . (strlen($get_string) ? "&" : "?") . "page=" . round(((1 + $current_page - $lp) / 2));
+                    $href =
+                        $script .
+                        $get_string .
+                        (strlen($get_string) ? "&" : "?") .
+                        "page=" .
+                        round((1 + $current_page - $lp) / 2);
                 } else {
                     if ($i > $current_page + $lp) {
-                        $href = $script . $get_string . (strlen($get_string) ? "&" : "?") . "page=" . round((($current_page + $lp + $pages_amount) / 2));
+                        $href =
+                            $script .
+                            $get_string .
+                            (strlen($get_string) ? "&" : "?") .
+                            "page=" .
+                            round(($current_page + $lp + $pages_amount) / 2);
                     }
                 }
 
-                $output .= create_dom_element("a", "...", [
-                        'href' => $href,
+                $output .=
+                    create_dom_element("a", "...", [
+                        'href' => $href
                     ]) . "&nbsp;";
                 $dots = true;
             }
             continue;
         }
 
-        $output .= create_dom_element("a", $i, [
-                'href'  => $href = $script . $get_string . (strlen($get_string) ? "&" : "?") .
-                    "page=" . $i,
-                'class' => $current_page == $i ? "current" : "",
+        $output .=
+            create_dom_element("a", $i, [
+                'href' => ($href =
+                    $script . $get_string . (strlen($get_string) ? "&" : "?") . "page=" . $i),
+                'class' => $current_page == $i ? "current" : ""
             ]) . "&nbsp;";
         $dots = false;
     }
@@ -233,7 +251,8 @@ function get_privilages($which, $user = null)
         return false;
     }
 
-    if (in_array($which, [
+    if (
+        in_array($which, [
             "manage_settings",
             "view_groups",
             "manage_groups",
@@ -255,9 +274,9 @@ function get_privilages($which, $user = null)
             "manage_servers",
             "view_logs",
             "manage_logs",
-            "update",
-        ]
-    )) {
+            "update"
+        ])
+    ) {
         return $user->getPrivilages('acp') && $user->getPrivilages($which);
     }
 
@@ -273,12 +292,16 @@ function charge_wallet($uid, $amount)
     /** @var Database $db */
     $db = app()->make(Database::class);
 
-    $db->query($db->prepare(
-        "UPDATE `" . TABLE_PREFIX . "users` " .
-        "SET `wallet` = `wallet` + '%d' " .
-        "WHERE `uid` = '%d'",
-        [$amount, $uid]
-    ));
+    $db->query(
+        $db->prepare(
+            "UPDATE `" .
+                TABLE_PREFIX .
+                "users` " .
+                "SET `wallet` = `wallet` + '%d' " .
+                "WHERE `uid` = '%d'",
+            [$amount, $uid]
+        )
+    );
 }
 
 /**
@@ -295,29 +318,32 @@ function update_servers_services($data)
     $add = [];
     foreach ($data as $arr) {
         if ($arr['status']) {
-            $add[] = $db->prepare(
-                "('%d', '%s')",
-                [$arr['server'], $arr['service']]
-            );
+            $add[] = $db->prepare("('%d', '%s')", [$arr['server'], $arr['service']]);
         } else {
-            $delete[] = $db->prepare(
-                "(`server_id` = '%d' AND `service_id` = '%s')",
-                [$arr['server'], $arr['service']]
-            );
+            $delete[] = $db->prepare("(`server_id` = '%d' AND `service_id` = '%s')", [
+                $arr['server'],
+                $arr['service']
+            ]);
         }
     }
 
     if (!empty($add)) {
         $db->query(
-            "INSERT IGNORE INTO `" . TABLE_PREFIX . "servers_services` (`server_id`, `service_id`) " .
-            "VALUES " . implode(", ", $add)
+            "INSERT IGNORE INTO `" .
+                TABLE_PREFIX .
+                "servers_services` (`server_id`, `service_id`) " .
+                "VALUES " .
+                implode(", ", $add)
         );
     }
 
     if (!empty($delete)) {
         $db->query(
-            "DELETE FROM `" . TABLE_PREFIX . "servers_services` " .
-            "WHERE " . implode(" OR ", $delete)
+            "DELETE FROM `" .
+                TABLE_PREFIX .
+                "servers_services` " .
+                "WHERE " .
+                implode(" OR ", $delete)
         );
     }
 }
@@ -344,28 +370,40 @@ function validate_payment($purchase_data)
     // Tworzymy obiekt usługi którą kupujemy
     if (($service_module = $heart->get_service_module($purchase_data->getService())) === null) {
         return [
-            'status'   => "wrong_module",
-            'text'     => $lang->translate('bad_module'),
-            'positive' => false,
+            'status' => "wrong_module",
+            'text' => $lang->translate('bad_module'),
+            'positive' => false
         ];
     }
 
-    if (!in_array($purchase_data->getPayment('method'), ["sms", "transfer", "wallet", "service_code"])) {
+    if (
+        !in_array($purchase_data->getPayment('method'), [
+            "sms",
+            "transfer",
+            "wallet",
+            "service_code"
+        ])
+    ) {
         return [
-            'status'   => "wrong_method",
-            'text'     => $lang->translate('wrong_payment_method'),
-            'positive' => false,
+            'status' => "wrong_method",
+            'text' => $lang->translate('wrong_payment_method'),
+            'positive' => false
         ];
     }
 
     // Tworzymy obiekt, który będzie nam obsługiwał proces płatności
     if ($purchase_data->getPayment('method') == "sms") {
-        $transaction_service = if_strlen2($purchase_data->getPayment('sms_service'), $settings['sms_service']);
+        $transaction_service = if_strlen2(
+            $purchase_data->getPayment('sms_service'),
+            $settings['sms_service']
+        );
         $payment = new Payment($transaction_service);
     } else {
         if ($purchase_data->getPayment('method') == "transfer") {
-            $transaction_service = if_strlen2($purchase_data->getPayment('transfer_service'),
-                $settings['transfer_service']);
+            $transaction_service = if_strlen2(
+                $purchase_data->getPayment('transfer_service'),
+                $settings['transfer_service']
+            );
             $payment = new Payment($transaction_service);
         }
     }
@@ -373,54 +411,65 @@ function validate_payment($purchase_data)
     // Pobieramy ile kosztuje ta usługa dla przelewu / portfela
     if ($purchase_data->getPayment('cost') === null) {
         $purchase_data->setPayment([
-            'cost' => $purchase_data->getTariff()->getProvision(),
+            'cost' => $purchase_data->getTariff()->getProvision()
         ]);
     }
 
     // Metoda płatności
     if ($purchase_data->getPayment('method') == "wallet" && !is_logged()) {
         return [
-            'status'   => "wallet_not_logged",
-            'text'     => $lang->translate('no_login_no_wallet'),
-            'positive' => false,
+            'status' => "wallet_not_logged",
+            'text' => $lang->translate('no_login_no_wallet'),
+            'positive' => false
         ];
     } elseif ($purchase_data->getPayment('method') == "transfer") {
         if ($purchase_data->getPayment('cost') <= 1) {
             return [
-                'status'   => "too_little_for_transfer",
-                'text'     => $lang->sprintf($lang->translate('transfer_above_amount'), $settings['currency']),
-                'positive' => false,
+                'status' => "too_little_for_transfer",
+                'text' => $lang->sprintf(
+                    $lang->translate('transfer_above_amount'),
+                    $settings['currency']
+                ),
+                'positive' => false
             ];
         }
 
         if (!$payment->getPaymentModule()->supportTransfer()) {
             return [
-                'status'   => "transfer_unavailable",
-                'text'     => $lang->translate('transfer_unavailable'),
-                'positive' => false,
+                'status' => "transfer_unavailable",
+                'text' => $lang->translate('transfer_unavailable'),
+                'positive' => false
             ];
         }
-    } elseif ($purchase_data->getPayment('method') == "sms" && !$payment->getPaymentModule()->supportSms()) {
+    } elseif (
+        $purchase_data->getPayment('method') == "sms" &&
+        !$payment->getPaymentModule()->supportSms()
+    ) {
         return [
-            'status'   => "sms_unavailable",
-            'text'     => $lang->translate('sms_unavailable'),
-            'positive' => false,
+            'status' => "sms_unavailable",
+            'text' => $lang->translate('sms_unavailable'),
+            'positive' => false
         ];
-    } elseif ($purchase_data->getPayment('method') == "sms" && $purchase_data->getTariff() === null) {
+    } elseif (
+        $purchase_data->getPayment('method') == "sms" &&
+        $purchase_data->getTariff() === null
+    ) {
         return [
-            'status'   => "no_sms_option",
-            'text'     => $lang->translate('no_sms_payment'),
-            'positive' => false,
+            'status' => "no_sms_option",
+            'text' => $lang->translate('no_sms_payment'),
+            'positive' => false
         ];
     }
 
     // Kod SMS
     $purchase_data->setPayment([
-        'sms_code' => trim($purchase_data->getPayment('sms_code')),
+        'sms_code' => trim($purchase_data->getPayment('sms_code'))
     ]);
-    if ($purchase_data->getPayment('method') == "sms" && $warning = check_for_warnings("sms_code",
-            $purchase_data->getPayment('sms_code'))) {
-        $warnings['sms_code'] = array_merge((array)$warnings['sms_code'], $warning);
+    if (
+        $purchase_data->getPayment('method') == "sms" &&
+        ($warning = check_for_warnings("sms_code", $purchase_data->getPayment('sms_code')))
+    ) {
+        $warnings['sms_code'] = array_merge((array) $warnings['sms_code'], $warning);
     }
 
     // Kod na usługę
@@ -435,31 +484,33 @@ function validate_payment($purchase_data)
         $warning_data = [];
         foreach ($warnings as $brick => $warning) {
             $warning = create_dom_element("div", implode("<br />", $warning), [
-                'class' => "form_warning",
+                'class' => "form_warning"
             ]);
             $warning_data['warnings'][$brick] = $warning;
         }
 
         return [
-            'status'   => "warnings",
-            'text'     => $lang->translate('form_wrong_filled'),
+            'status' => "warnings",
+            'text' => $lang->translate('form_wrong_filled'),
             'positive' => false,
-            'data'     => $warning_data,
+            'data' => $warning_data
         ];
     }
 
     if ($purchase_data->getPayment('method') === "sms") {
         // Sprawdzamy kod zwrotny
         $result = $payment->paySms(
-            $purchase_data->getPayment('sms_code'), $purchase_data->getTariff(), $purchase_data->user
+            $purchase_data->getPayment('sms_code'),
+            $purchase_data->getTariff(),
+            $purchase_data->user
         );
         $paymentId = $result['payment_id'];
 
         if ($result['status'] !== 'ok') {
             return [
-                'status'   => $result['status'],
-                'text'     => $result['text'],
-                'positive' => false,
+                'status' => $result['status'],
+                'text' => $result['text'],
+                'positive' => false
             ];
         }
     } elseif ($purchase_data->getPayment('method') === "wallet") {
@@ -483,21 +534,24 @@ function validate_payment($purchase_data)
     if (in_array($purchase_data->getPayment('method'), ["wallet", "sms", "service_code"])) {
         // Dokonujemy zakupu usługi
         $purchase_data->setPayment([
-            'payment_id' => $paymentId,
+            'payment_id' => $paymentId
         ]);
         $bought_service_id = $service_module->purchase($purchase_data);
 
         return [
-            'status'   => "purchased",
-            'text'     => $lang->translate('purchase_success'),
+            'status' => "purchased",
+            'text' => $lang->translate('purchase_success'),
             'positive' => true,
-            'data'     => ['bsid' => $bought_service_id],
+            'data' => ['bsid' => $bought_service_id]
         ];
     }
 
     if ($purchase_data->getPayment('method') == "transfer") {
         $purchase_data->setDesc(
-            $lang->sprintf($lang->translate('payment_for_service'), $service_module->service['name'])
+            $lang->sprintf(
+                $lang->translate('payment_for_service'),
+                $service_module->service['name']
+            )
         );
 
         return $payment->payTransfer($purchase_data);
@@ -515,11 +569,15 @@ function pay_by_admin($user_admin)
     $db = app()->make(Database::class);
 
     // Dodawanie informacji o płatności
-    $db->query($db->prepare(
-        "INSERT INTO `" . TABLE_PREFIX . "payment_admin` (`aid`, `ip`, `platform`) " .
-        "VALUES ('%d', '%s', '%s')",
-        [$user_admin->getUid(), $user_admin->getLastIp(), $user_admin->getPlatform()]
-    ));
+    $db->query(
+        $db->prepare(
+            "INSERT INTO `" .
+                TABLE_PREFIX .
+                "payment_admin` (`aid`, `ip`, `platform`) " .
+                "VALUES ('%d', '%s', '%s')",
+            [$user_admin->getUid(), $user_admin->getLastIp(), $user_admin->getPlatform()]
+        )
+    );
 
     return $db->last_id();
 }
@@ -542,9 +600,9 @@ function pay_wallet($cost, $user)
     // Sprawdzanie, czy jest wystarczająca ilość kasy w portfelu
     if ($cost > $user->getWallet()) {
         return [
-            'status'   => "no_money",
-            'text'     => $lang->translate('not_enough_money'),
-            'positive' => false,
+            'status' => "no_money",
+            'text' => $lang->translate('not_enough_money'),
+            'positive' => false
         ];
     }
 
@@ -552,11 +610,15 @@ function pay_wallet($cost, $user)
     charge_wallet($user->getUid(), -$cost);
 
     // Dodajemy informacje o płatności portfelem
-    $db->query($db->prepare(
-        "INSERT INTO `" . TABLE_PREFIX . "payment_wallet` " .
-        "SET `cost` = '%d', `ip` = '%s', `platform` = '%s'",
-        [$cost, $user->getLastIp(), $user->getPlatform()]
-    ));
+    $db->query(
+        $db->prepare(
+            "INSERT INTO `" .
+                TABLE_PREFIX .
+                "payment_wallet` " .
+                "SET `cost` = '%d', `ip` = '%s', `platform` = '%s'",
+            [$cost, $user->getLastIp(), $user->getPlatform()]
+        )
+    );
 
     return $db->last_id();
 }
@@ -577,54 +639,70 @@ function pay_service_code($purchase_data, $service_module)
     /** @var Database $db */
     $db = app()->make(Database::class);
 
-    $result = $db->query($db->prepare(
-        "SELECT * FROM `" . TABLE_PREFIX . "service_codes` " .
-        "WHERE `code` = '%s' " .
-        "AND `service` = '%s' " .
-        "AND (`server` = '0' OR `server` = '%s') " .
-        "AND (`tariff` = '0' OR `tariff` = '%d') " .
-        "AND (`uid` = '0' OR `uid` = '%s')",
-        [
-            $purchase_data->getPayment('service_code'),
-            $purchase_data->getService(),
-            $purchase_data->getOrder('server'),
-            $purchase_data->getTariff(),
-            $purchase_data->user->getUid(),
-        ]
-    ));
+    $result = $db->query(
+        $db->prepare(
+            "SELECT * FROM `" .
+                TABLE_PREFIX .
+                "service_codes` " .
+                "WHERE `code` = '%s' " .
+                "AND `service` = '%s' " .
+                "AND (`server` = '0' OR `server` = '%s') " .
+                "AND (`tariff` = '0' OR `tariff` = '%d') " .
+                "AND (`uid` = '0' OR `uid` = '%s')",
+            [
+                $purchase_data->getPayment('service_code'),
+                $purchase_data->getService(),
+                $purchase_data->getOrder('server'),
+                $purchase_data->getTariff(),
+                $purchase_data->user->getUid()
+            ]
+        )
+    );
 
     while ($row = $db->fetch_array_assoc($result)) {
-        if ($service_module->service_code_validate($purchase_data, $row)) { // Znalezlismy odpowiedni kod
-            $db->query($db->prepare(
-                "DELETE FROM `" . TABLE_PREFIX . "service_codes` " .
-                "WHERE `id` = '%d'",
-                [$row['id']]
-            ));
+        if ($service_module->service_code_validate($purchase_data, $row)) {
+            // Znalezlismy odpowiedni kod
+            $db->query(
+                $db->prepare(
+                    "DELETE FROM `" . TABLE_PREFIX . "service_codes` " . "WHERE `id` = '%d'",
+                    [$row['id']]
+                )
+            );
 
             // Dodajemy informacje o płatności kodem
-            $db->query($db->prepare(
-                "INSERT INTO `" . TABLE_PREFIX . "payment_code` " .
-                "SET `code` = '%s', `ip` = '%s', `platform` = '%s'",
-                [
-                    $purchase_data->getPayment('service_code'),
-                    $purchase_data->user->getLastip(),
-                    $purchase_data->user->getPlatform(),
-                ]
-            ));
+            $db->query(
+                $db->prepare(
+                    "INSERT INTO `" .
+                        TABLE_PREFIX .
+                        "payment_code` " .
+                        "SET `code` = '%s', `ip` = '%s', `platform` = '%s'",
+                    [
+                        $purchase_data->getPayment('service_code'),
+                        $purchase_data->user->getLastip(),
+                        $purchase_data->user->getPlatform()
+                    ]
+                )
+            );
             $payment_id = $db->last_id();
 
-            log_info($langShop->sprintf($langShop->translate('purchase_code'),
-                $purchase_data->getPayment('service_code'),
-                $purchase_data->user->getUsername(), $purchase_data->user->getUid(), $payment_id));
+            log_info(
+                $langShop->sprintf(
+                    $langShop->translate('purchase_code'),
+                    $purchase_data->getPayment('service_code'),
+                    $purchase_data->user->getUsername(),
+                    $purchase_data->user->getUid(),
+                    $payment_id
+                )
+            );
 
             return $payment_id;
         }
     }
 
     return [
-        'status'   => "wrong_service_code",
-        'text'     => $lang->translate('bad_service_code'),
-        'positive' => false,
+        'status' => "wrong_service_code",
+        'text' => $lang->translate('bad_service_code'),
+        'positive' => false
     ];
 }
 
@@ -672,22 +750,39 @@ function add_bought_service_info(
     $mailer = app()->make(Mailer::class);
 
     // Dodajemy informacje o kupionej usludze do bazy danych
-    $db->query($db->prepare(
-        "INSERT INTO `" . TABLE_PREFIX . "bought_services` " .
-        "SET `uid` = '%d', `payment` = '%s', `payment_id` = '%s', `service` = '%s', " .
-        "`server` = '%d', `amount` = '%s', `auth_data` = '%s', `email` = '%s', `extra_data` = '%s'",
-        [$uid, $method, $payment_id, $service, $server, $amount, $auth_data, $email, json_encode($extra_data)]
-    ));
+    $db->query(
+        $db->prepare(
+            "INSERT INTO `" .
+                TABLE_PREFIX .
+                "bought_services` " .
+                "SET `uid` = '%d', `payment` = '%s', `payment_id` = '%s', `service` = '%s', " .
+                "`server` = '%d', `amount` = '%s', `auth_data` = '%s', `email` = '%s', `extra_data` = '%s'",
+            [
+                $uid,
+                $method,
+                $payment_id,
+                $service,
+                $server,
+                $amount,
+                $auth_data,
+                $email,
+                json_encode($extra_data)
+            ]
+        )
+    );
     $bougt_service_id = $db->last_id();
 
     $ret = $lang->translate('none');
     if (strlen($email)) {
         $message = purchase_info([
             'purchase_id' => $bougt_service_id,
-            'action'      => "email",
+            'action' => "email"
         ]);
         if (strlen($message)) {
-            $title = ($service == 'charge_wallet' ? $lang->translate('charge_wallet') : $lang->translate('purchase'));
+            $title =
+                $service == 'charge_wallet'
+                    ? $lang->translate('charge_wallet')
+                    : $lang->translate('purchase');
             $ret = $mailer->send($email, $auth_data, $title, $message);
         }
 
@@ -703,18 +798,20 @@ function add_bought_service_info(
     $temp_service = $heart->get_service($service);
     $temp_server = $heart->get_server($server);
     $amount = $amount != -1 ? "{$amount} {$temp_service['tag']}" : $lang->translate('forever');
-    log_info($langShop->sprintf(
-        $langShop->translate('bought_service_info'),
-        $service,
-        $auth_data,
-        $amount,
-        $temp_server['name'],
-        $payment_id,
-        $ret,
-        $user_name,
-        $uid,
-        $ip
-    ));
+    log_info(
+        $langShop->sprintf(
+            $langShop->translate('bought_service_info'),
+            $service,
+            $auth_data,
+            $amount,
+            $temp_server['name'],
+            $payment_id,
+            $ret,
+            $user_name,
+            $uid,
+            $ip
+        )
+    );
     unset($temp_server);
 
     return $bougt_service_id;
@@ -741,22 +838,22 @@ function purchase_info($data)
     // Wyszukujemy po id zakupu
     if (isset($data['purchase_id'])) {
         $where = $db->prepare("t.id = '%d'", [$data['purchase_id']]);
-    } // Wyszukujemy po id płatności
+    }
+    // Wyszukujemy po id płatności
     else {
         if (isset($data['payment']) && isset($data['payment_id'])) {
-            $where = $db->prepare(
-                "t.payment = '%s' AND t.payment_id = '%s'",
-                [$data['payment'], $data['payment_id']]
-            );
+            $where = $db->prepare("t.payment = '%s' AND t.payment_id = '%s'", [
+                $data['payment'],
+                $data['payment_id']
+            ]);
         } else {
             return "";
         }
     }
 
-    $pbs = $db->fetch_array_assoc($db->query(
-        "SELECT * FROM ({$settings['transactions_query']}) as t " .
-        "WHERE {$where}"
-    ));
+    $pbs = $db->fetch_array_assoc(
+        $db->query("SELECT * FROM ({$settings['transactions_query']}) as t " . "WHERE {$where}")
+    );
 
     // Brak wynikow
     if (empty($pbs)) {
@@ -765,8 +862,9 @@ function purchase_info($data)
 
     $service_module = $heart->get_service_module($pbs['service']);
 
-    return $service_module !== null && object_implements($service_module,
-        "IService_PurchaseWeb") ? $service_module->purchase_info($data['action'], $pbs) : "";
+    return $service_module !== null && object_implements($service_module, "IService_PurchaseWeb")
+        ? $service_module->purchase_info($data['action'], $pbs)
+        : "";
 }
 
 /**
@@ -798,10 +896,15 @@ function get_users_services($conditions = '', $take_out = true)
         }
 
         $result = $db->query(
-            "SELECT us.*, m.*, UNIX_TIMESTAMP() AS `now` FROM `" . TABLE_PREFIX . "user_service` AS us " .
-            "INNER JOIN `" . TABLE_PREFIX . $table . "` AS m ON m.us_id = us.id " .
-            $conditions .
-            " ORDER BY us.id DESC "
+            "SELECT us.*, m.*, UNIX_TIMESTAMP() AS `now` FROM `" .
+                TABLE_PREFIX .
+                "user_service` AS us " .
+                "INNER JOIN `" .
+                TABLE_PREFIX .
+                $table .
+                "` AS m ON m.us_id = us.id " .
+                $conditions .
+                " ORDER BY us.id DESC "
         );
 
         while ($row = $db->fetch_array_assoc($result)) {
@@ -835,7 +938,10 @@ function delete_users_old_services()
     // Potem wywolujemy akcje na module, potem je usuwamy, a następnie wywołujemy akcje na module
 
     $delete_ids = $users_services = [];
-    foreach (get_users_services("WHERE `expire` != '-1' AND `expire` < UNIX_TIMESTAMP()") as $user_service) {
+    foreach (
+        get_users_services("WHERE `expire` != '-1' AND `expire` < UNIX_TIMESTAMP()")
+        as $user_service
+    ) {
         if (($service_module = $heart->get_service_module($user_service['service'])) === null) {
             continue;
         }
@@ -853,15 +959,24 @@ function delete_users_old_services()
                 $user_service_desc .= ucfirst(strtolower($key)) . ': ' . $value;
             }
 
-            log_info($langShop->sprintf($langShop->translate('expired_service_delete'), $user_service_desc));
+            log_info(
+                $langShop->sprintf(
+                    $langShop->translate('expired_service_delete'),
+                    $user_service_desc
+                )
+            );
         }
     }
 
     // Usuwamy usugi ktre zwróciły true
     if (!empty($delete_ids)) {
         $db->query(
-            "DELETE FROM `" . TABLE_PREFIX . "user_service` " .
-            "WHERE `id` IN (" . implode(", ", $delete_ids) . ")"
+            "DELETE FROM `" .
+                TABLE_PREFIX .
+                "user_service` " .
+                "WHERE `id` IN (" .
+                implode(", ", $delete_ids) .
+                ")"
         );
     }
 
@@ -880,11 +995,9 @@ function log_info($string)
     /** @var Database $db */
     $db = app()->make(Database::class);
 
-    $db->query($db->prepare(
-        "INSERT INTO `" . TABLE_PREFIX . "logs` " .
-        "SET `text` = '%s'",
-        [$string]
-    ));
+    $db->query(
+        $db->prepare("INSERT INTO `" . TABLE_PREFIX . "logs` " . "SET `text` = '%s'", [$string])
+    );
 }
 
 /**
@@ -910,7 +1023,8 @@ function create_dom_element($name, $text = "", $data = [])
             continue;
         }
 
-        $features .= (strlen($features) ? " " : "") . $key . '="' . str_replace('"', '\"', $value) . '"';
+        $features .=
+            (strlen($features) ? " " : "") . $key . '="' . str_replace('"', '\"', $value) . '"';
     }
 
     if (isset($data['style'])) {
@@ -949,9 +1063,9 @@ function create_brick($text, $class = "", $alpha = 0.2)
     return create_dom_element("div", $text, [
         'class' => "brick" . ($class ? " {$class}" : ""),
         'style' => [
-            'border-color'     => "rgb({$brick_r},{$brick_g},{$brick_b})",
-            'background-color' => "rgba({$brick_r},{$brick_g},{$brick_b},{$alpha})",
-        ],
+            'border-color' => "rgb({$brick_r},{$brick_g},{$brick_b})",
+            'background-color' => "rgba({$brick_r},{$brick_g},{$brick_b},{$alpha})"
+        ]
     ]);
 }
 
@@ -992,7 +1106,7 @@ function get_ip()
             '188.114.96.0/20',
             '190.93.240.0/20',
             '197.234.240.0/22',
-            '198.41.128.0/17',
+            '198.41.128.0/17'
         ];
 
         foreach ($cf_ip_ranges as $range) {
@@ -1105,7 +1219,11 @@ function secondsToTime($seconds)
     $dtF = new DateTime("@0");
     $dtT = new DateTime("@$seconds");
 
-    return $dtF->diff($dtT)->format("%a {$lang->translate('days')} {$lang->translate('and')} %h {$lang->translate('hours')}");
+    return $dtF
+        ->diff($dtT)
+        ->format(
+            "%a {$lang->translate('days')} {$lang->translate('and')} %h {$lang->translate('hours')}"
+        );
 }
 
 function if_isset(&$isset, $default)
@@ -1170,7 +1288,7 @@ function ip_in_range($ip, $range)
             $netmask = str_replace('*', '0', $netmask);
             $netmask_dec = ip2long($netmask);
 
-            return ((ip2long($ip) & $netmask_dec) == (ip2long($range) & $netmask_dec));
+            return (ip2long($ip) & $netmask_dec) == (ip2long($range) & $netmask_dec);
         } else {
             // $netmask is a CIDR size block
             // fix the range argument
@@ -1179,8 +1297,13 @@ function ip_in_range($ip, $range)
                 $x[] = '0';
             }
             list($a, $b, $c, $d) = $x;
-            $range = sprintf("%u.%u.%u.%u", empty($a) ? '0' : $a, empty($b) ? '0' : $b, empty($c) ? '0' : $c,
-                empty($d) ? '0' : $d);
+            $range = sprintf(
+                "%u.%u.%u.%u",
+                empty($a) ? '0' : $a,
+                empty($b) ? '0' : $b,
+                empty($c) ? '0' : $c,
+                empty($d) ? '0' : $d
+            );
             $range_dec = ip2long($range);
             $ip_dec = ip2long($ip);
 
@@ -1188,27 +1311,29 @@ function ip_in_range($ip, $range)
             #$netmask_dec = bindec(str_pad('', $netmask, '1') . str_pad('', 32-$netmask, '0'));
 
             # Strategy 2 - Use math to create it
-            $wildcard_dec = pow(2, (32 - $netmask)) - 1;
+            $wildcard_dec = pow(2, 32 - $netmask) - 1;
             $netmask_dec = ~$wildcard_dec;
 
-            return (($ip_dec & $netmask_dec) == ($range_dec & $netmask_dec));
+            return ($ip_dec & $netmask_dec) == ($range_dec & $netmask_dec);
         }
     } else {
         // range might be 255.255.*.* or 1.2.3.0-1.2.3.255
-        if (strpos($range, '*') !== false) { // a.b.*.* format
+        if (strpos($range, '*') !== false) {
+            // a.b.*.* format
             // Just convert to A-B format by setting * to 0 for A and 255 for B
             $lower = str_replace('*', '0', $range);
             $upper = str_replace('*', '255', $range);
             $range = "$lower-$upper";
         }
 
-        if (strpos($range, '-') !== false) { // A-B format
+        if (strpos($range, '-') !== false) {
+            // A-B format
             list($lower, $upper) = explode('-', $range, 2);
-            $lower_dec = (float)sprintf("%u", ip2long($lower));
-            $upper_dec = (float)sprintf("%u", ip2long($upper));
-            $ip_dec = (float)sprintf("%u", ip2long($ip));
+            $lower_dec = (float) sprintf("%u", ip2long($lower));
+            $upper_dec = (float) sprintf("%u", ip2long($upper));
+            $ip_dec = (float) sprintf("%u", ip2long($ip));
 
-            return (($ip_dec >= $lower_dec) && ($ip_dec <= $upper_dec));
+            return $ip_dec >= $lower_dec && $ip_dec <= $upper_dec;
         }
 
         return false;
@@ -1222,7 +1347,7 @@ function ends_at($string, $end)
 
 function starts_with($haystack, $needle)
 {
-    return substr($haystack, 0, strlen($needle)) === (string)$needle;
+    return substr($haystack, 0, strlen($needle)) === (string) $needle;
 }
 
 function str_contains($string, $needle)
@@ -1289,7 +1414,8 @@ function log_to_file($file, $message)
     file_put_contents($file, $text);
 }
 
-function log_error($message) {
+function log_error($message)
+{
     log_to_file(app()->errorsLogPath(), $message);
 }
 

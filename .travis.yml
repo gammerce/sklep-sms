@@ -27,7 +27,12 @@ before_install:
 
 install:
   - composer install --no-interaction
+  - npm install --global prettier @prettier/plugin-php
   - php artisan test:setup
+
+script:
+  - prettier "includes/**" --check
+  - phpunit
 
 before_deploy:
   - rm -Rf vendor

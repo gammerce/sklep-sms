@@ -15,29 +15,29 @@ class Hostplay extends PaymentModule implements SupportSms
 
     /** @var array */
     protected $ratesNumber = [
-        '0.34'  => '7055',
-        '0.67'  => '7155',
-        '1.35'  => '7255',
-        '2.02'  => '7355',
-        '2.7'   => '7455',
-        '3.38'  => '7555',
-        '4.05'  => '76660',
-        '6.08'  => '7955',
-        '6.76'  => '91055',
-        '7.43'  => '91155',
-        '9.47'  => '91455',
+        '0.34' => '7055',
+        '0.67' => '7155',
+        '1.35' => '7255',
+        '2.02' => '7355',
+        '2.7' => '7455',
+        '3.38' => '7555',
+        '4.05' => '76660',
+        '6.08' => '7955',
+        '6.76' => '91055',
+        '7.43' => '91155',
+        '9.47' => '91455',
         '12.85' => '91955',
         '13.53' => '92055',
-        '16.91' => '92555',
+        '16.91' => '92555'
     ];
 
     public function verifySms($returnCode, $number)
     {
         $response = $this->requester->get('http://hostplay.pl/api/payment/api_code_verify.php', [
             'payment' => 'homepay_sms',
-            'userid'  => $this->getUserId(),
+            'userid' => $this->getUserId(),
             'comment' => 'SklepSMS',
-            'code'    => $returnCode,
+            'code' => $returnCode
         ]);
 
         if (!$response) {

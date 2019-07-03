@@ -34,9 +34,12 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
 
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * " .
-            "FROM `" . TABLE_PREFIX . "sms_codes` " .
-            "WHERE `free` = '1' " .
-            "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
+                "FROM `" .
+                TABLE_PREFIX .
+                "sms_codes` " .
+                "WHERE `free` = '1' " .
+                "LIMIT " .
+                get_row_limit($this->currentPage->getPageNumber())
         );
 
         $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
@@ -73,7 +76,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
         if (!get_privilages("manage_sms_codes")) {
             return [
                 'status' => "not_logged_in",
-                'text'   => $this->lang->translate('not_logged_or_no_perm'),
+                'text' => $this->lang->translate('not_logged_or_no_perm')
             ];
         }
 
@@ -82,11 +85,14 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
                 $tariffs = "";
                 foreach ($this->heart->getTariffs() as $tariff) {
                     $tariffs .= create_dom_element("option", $tariff->getId(), [
-                        'value' => $tariff->getId(),
+                        'value' => $tariff->getId()
                     ]);
                 }
 
-                $output = $this->template->render("admin/action_boxes/sms_code_add", compact('tariffs'));
+                $output = $this->template->render(
+                    "admin/action_boxes/sms_code_add",
+                    compact('tariffs')
+                );
                 break;
 
             default:
@@ -94,8 +100,8 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdmin_ActionBox
         }
 
         return [
-            'status'   => 'ok',
-            'template' => $output,
+            'status' => 'ok',
+            'template' => $output
         ];
     }
 }

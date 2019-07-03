@@ -63,7 +63,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
         if (!get_privilages("manage_settings")) {
             return [
                 'status' => "not_logged_in",
-                'text'   => $this->lang->translate('not_logged_or_no_perm'),
+                'text' => $this->lang->translate('not_logged_or_no_perm')
             ];
         }
 
@@ -76,7 +76,10 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
                 $tariff = $this->heart->getTariff($data['id']);
                 $provision = number_format($tariff->getProvision() / 100.0, 2);
 
-                $output = $this->template->render("admin/action_boxes/tariff_edit", compact('provision', 'tariff'));
+                $output = $this->template->render(
+                    "admin/action_boxes/tariff_edit",
+                    compact('provision', 'tariff')
+                );
                 break;
 
             default:
@@ -84,8 +87,8 @@ class PageAdminTariffs extends PageAdmin implements IPageAdmin_ActionBox
         }
 
         return [
-            'status'   => 'ok',
-            'template' => $output,
+            'status' => 'ok',
+            'template' => $output
         ];
     }
 }

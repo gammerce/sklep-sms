@@ -81,9 +81,14 @@ class JsonHttpController
             // Note: This will destroy the session, and not just the session data!
             if (ini_get("session.use_cookies")) {
                 $params = session_get_cookie_params();
-                setcookie(session_name(), '', time() - 42000,
-                    $params["path"], $params["domain"],
-                    $params["secure"], $params["httponly"]
+                setcookie(
+                    session_name(),
+                    '',
+                    time() - 42000,
+                    $params["path"],
+                    $params["domain"],
+                    $params["secure"],
+                    $params["httponly"]
                 );
             }
 
@@ -94,9 +99,13 @@ class JsonHttpController
         }
 
         if ($action == "set_session_language") {
-            setcookie("language", escape_filename($request->request->get('language')),
-                time() + (86400 * 30), "/"); // 86400 = 1 day
-            exit;
+            setcookie(
+                "language",
+                escape_filename($request->request->get('language')),
+                time() + 86400 * 30,
+                "/"
+            ); // 86400 = 1 day
+            exit();
         }
 
         if ($action == "register") {
@@ -115,11 +124,15 @@ class JsonHttpController
             $as_answer = $request->request->get('as_answer');
 
             // Pobranie nowego pytania antyspamowego
-            $antispam_question = $db->fetch_array_assoc($db->query(
-                "SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " .
-                "ORDER BY RAND() " .
-                "LIMIT 1"
-            ));
+            $antispam_question = $db->fetch_array_assoc(
+                $db->query(
+                    "SELECT * FROM `" .
+                        TABLE_PREFIX .
+                        "antispam_questions` " .
+                        "ORDER BY RAND() " .
+                        "LIMIT 1"
+                )
+            );
             $data['antispam']['question'] = $antispam_question['question'];
             $data['antispam']['id'] = $antispam_question['id'];
 
@@ -133,36 +146,38 @@ class JsonHttpController
 
             // Nazwa użytkownika
             if ($warning = check_for_warnings("username", $username)) {
-                $warnings['username'] = array_merge((array)$warnings['username'], $warning);
+                $warnings['username'] = array_merge((array) $warnings['username'], $warning);
             }
 
-            $result = $db->query($db->prepare(
-                "SELECT `uid` FROM `" . TABLE_PREFIX . "users` " .
-                "WHERE `username` = '%s'",
-                [$username]
-            ));
+            $result = $db->query(
+                $db->prepare(
+                    "SELECT `uid` FROM `" . TABLE_PREFIX . "users` " . "WHERE `username` = '%s'",
+                    [$username]
+                )
+            );
             if ($db->num_rows($result)) {
                 $warnings['username'][] = $lang->translate('nick_occupied');
             }
 
             // Hasło
             if ($warning = check_for_warnings("password", $password)) {
-                $warnings['password'] = array_merge((array)$warnings['password'], $warning);
+                $warnings['password'] = array_merge((array) $warnings['password'], $warning);
             }
             if ($password != $passwordr) {
                 $warnings['password_repeat'][] = $lang->translate('different_pass');
             }
 
             if ($warning = check_for_warnings("email", $email)) {
-                $warnings['email'] = array_merge((array)$warnings['email'], $warning);
+                $warnings['email'] = array_merge((array) $warnings['email'], $warning);
             }
 
             // Email
-            $result = $db->query($db->prepare(
-                "SELECT `uid` FROM `" . TABLE_PREFIX . "users` " .
-                "WHERE `email` = '%s'",
-                [$email]
-            ));
+            $result = $db->query(
+                $db->prepare(
+                    "SELECT `uid` FROM `" . TABLE_PREFIX . "users` " . "WHERE `email` = '%s'",
+                    [$email]
+                )
+            );
             if ($db->num_rows($result)) {
                 $warnings['email'][] = $lang->translate('email_occupied');
             }
@@ -172,11 +187,12 @@ class JsonHttpController
             }
 
             // Pobranie z bazy pytania antyspamowego
-            $result = $db->query($db->prepare(
-                "SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " .
-                "WHERE `id` = '%d'",
-                [$as_id]
-            ));
+            $result = $db->query(
+                $db->prepare(
+                    "SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " . "WHERE `id` = '%d'",
+                    [$as_id]
+                )
+            );
             $antispam_question = $db->fetch_array_assoc($result);
             if (!in_array(strtolower($as_answer), explode(";", $antispam_question['answers']))) {
                 $warnings['as_answer'][] = $lang->translate('wrong_anti_answer');
@@ -186,7 +202,7 @@ class JsonHttpController
             if (!empty($warnings)) {
                 foreach ($warnings as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
+                        'class' => "form_warning"
                     ]);
                     $data['warnings'][$brick] = $warning;
                 }
@@ -194,16 +210,23 @@ class JsonHttpController
             }
 
             $createdUser = $userRepository->create(
-                $username, $password, $email, $forename, $surname, $user->getLastIp()
+                $username,
+                $password,
+                $email,
+                $forename,
+                $surname,
+                $user->getLastIp()
             );
 
             // LOGING
-            log_info($langShop->sprintf(
-                $langShop->translate('new_account'),
-                $createdUser->getUid(),
-                $createdUser->getUsername(false),
-                $createdUser->getRegip()
-            ));
+            log_info(
+                $langShop->sprintf(
+                    $langShop->translate('new_account'),
+                    $createdUser->getUid(),
+                    $createdUser->getUsername(false),
+                    $createdUser->getRegip()
+                )
+            );
 
             return new ApiResponse("registered", $lang->translate('register_success'), 1, $data);
         }
@@ -218,14 +241,18 @@ class JsonHttpController
 
             if ($username || (!$username && !$email)) {
                 if ($warning = check_for_warnings("username", $username)) {
-                    $warnings['username'] = array_merge((array)$warnings['username'], $warning);
+                    $warnings['username'] = array_merge((array) $warnings['username'], $warning);
                 }
                 if (strlen($username)) {
-                    $result = $db->query($db->prepare(
-                        "SELECT `uid` FROM `" . TABLE_PREFIX . "users` " .
-                        "WHERE `username` = '%s'",
-                        [$username]
-                    ));
+                    $result = $db->query(
+                        $db->prepare(
+                            "SELECT `uid` FROM `" .
+                                TABLE_PREFIX .
+                                "users` " .
+                                "WHERE `username` = '%s'",
+                            [$username]
+                        )
+                    );
 
                     if (!$db->num_rows($result)) {
                         $warnings['username'][] = $lang->translate('nick_no_account');
@@ -237,14 +264,18 @@ class JsonHttpController
 
             if (!strlen($username)) {
                 if ($warning = check_for_warnings("email", $email)) {
-                    $warnings['email'] = array_merge((array)$warnings['email'], $warning);
+                    $warnings['email'] = array_merge((array) $warnings['email'], $warning);
                 }
                 if (strlen($email)) {
-                    $result = $db->query($db->prepare(
-                        "SELECT `uid` FROM `" . TABLE_PREFIX . "users` " .
-                        "WHERE `email` = '%s'",
-                        [$email]
-                    ));
+                    $result = $db->query(
+                        $db->prepare(
+                            "SELECT `uid` FROM `" .
+                                TABLE_PREFIX .
+                                "users` " .
+                                "WHERE `email` = '%s'",
+                            [$email]
+                        )
+                    );
 
                     if (!$db->num_rows($result)) {
                         $warnings['email'][] = $lang->translate('email_no_account');
@@ -258,7 +289,7 @@ class JsonHttpController
             if (!empty($warnings)) {
                 foreach ($warnings as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
+                        'class' => "form_warning"
                     ]);
                     $data['warnings'][$brick] = $warning;
                 }
@@ -269,14 +300,19 @@ class JsonHttpController
             $user2 = $heart->get_user($row['uid']);
 
             $key = get_random_string(32);
-            $db->query($db->prepare(
-                "UPDATE `" . TABLE_PREFIX . "users` " .
-                "SET `reset_password_key`='%s' " .
-                "WHERE `uid`='%d'",
-                [$key, $user2->getUid()]
-            ));
+            $db->query(
+                $db->prepare(
+                    "UPDATE `" .
+                        TABLE_PREFIX .
+                        "users` " .
+                        "SET `reset_password_key`='%s' " .
+                        "WHERE `uid`='%d'",
+                    [$key, $user2->getUid()]
+                )
+            );
 
-            $link = $settings['shop_url_slash'] . "/page/reset_password?code=" . htmlspecialchars($key);
+            $link =
+                $settings['shop_url_slash'] . "/page/reset_password?code=" . htmlspecialchars($key);
             $text = $templates->render("emails/forgotten_password", compact('user2', 'link'));
             $ret = $mailer->send($user2->getEmail(), $user2->getUsername(), "Reset Hasła", $text);
 
@@ -289,14 +325,16 @@ class JsonHttpController
             }
 
             if ($ret == "sent") {
-                log_info($langShop->sprintf(
-                    $langShop->translate('reset_key_email'),
-                    $user2->getUsername(),
-                    $user2->getUid(),
-                    $user2->getEmail(),
-                    $username,
-                    $email
-                ));
+                log_info(
+                    $langShop->sprintf(
+                        $langShop->translate('reset_key_email'),
+                        $user2->getUsername(),
+                        $user2->getUid(),
+                        $user2->getEmail(),
+                        $username,
+                        $email
+                    )
+                );
                 $data['username'] = $user2->getUsername();
                 return new ApiResponse("sent", $lang->translate('email_sent'), 1, $data);
             }
@@ -320,7 +358,7 @@ class JsonHttpController
             }
 
             if ($warning = check_for_warnings("password", $pass)) {
-                $warnings['pass'] = array_merge((array)$warnings['pass'], $warning);
+                $warnings['pass'] = array_merge((array) $warnings['pass'], $warning);
             }
             if ($pass != $passr) {
                 $warnings['pass_repeat'][] = $lang->translate('different_pass');
@@ -330,7 +368,7 @@ class JsonHttpController
             if (!empty($warnings)) {
                 foreach ($warnings as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
+                        'class' => "form_warning"
                     ]);
                     $data['warnings'][$brick] = $warning;
                 }
@@ -340,12 +378,16 @@ class JsonHttpController
             // Zmień hasło
             $salt = get_random_string(8);
 
-            $db->query($db->prepare(
-                "UPDATE `" . TABLE_PREFIX . "users` " .
-                "SET `password` = '%s', `salt` = '%s', `reset_password_key` = '' " .
-                "WHERE `uid` = '%d'",
-                [hash_password($pass, $salt), $salt, $uid]
-            ));
+            $db->query(
+                $db->prepare(
+                    "UPDATE `" .
+                        TABLE_PREFIX .
+                        "users` " .
+                        "SET `password` = '%s', `salt` = '%s', `reset_password_key` = '' " .
+                        "WHERE `uid` = '%d'",
+                    [hash_password($pass, $salt), $salt, $uid]
+                )
+            );
 
             // LOGING
             log_info($langShop->sprintf($langShop->translate('reset_pass'), $uid));
@@ -363,7 +405,7 @@ class JsonHttpController
             $passr = $_POST['pass_repeat'];
 
             if ($warning = check_for_warnings("password", $pass)) {
-                $warnings['pass'] = array_merge((array)$warnings['pass'], $warning);
+                $warnings['pass'] = array_merge((array) $warnings['pass'], $warning);
             }
             if ($pass != $passr) {
                 $warnings['pass_repeat'][] = $lang->translate('different_pass');
@@ -377,7 +419,7 @@ class JsonHttpController
             if (!empty($warnings)) {
                 foreach ($warnings as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
+                        'class' => "form_warning"
                     ]);
                     $data['warnings'][$brick] = $warning;
                 }
@@ -386,12 +428,16 @@ class JsonHttpController
             // Zmień hasło
             $salt = get_random_string(8);
 
-            $db->query($db->prepare(
-                "UPDATE `" . TABLE_PREFIX . "users` " .
-                "SET password='%s', salt='%s'" .
-                "WHERE uid='%d'",
-                [hash_password($pass, $salt), $salt, $user->getUid()]
-            ));
+            $db->query(
+                $db->prepare(
+                    "UPDATE `" .
+                        TABLE_PREFIX .
+                        "users` " .
+                        "SET password='%s', salt='%s'" .
+                        "WHERE uid='%d'",
+                    [hash_password($pass, $salt), $salt, $user->getUid()]
+                )
+            );
 
             // LOGING
             log_info("Zmieniono hasło. ID użytkownika: {$user->getUid()}.");
@@ -400,16 +446,20 @@ class JsonHttpController
         }
 
         if ($action == "purchase_form_validate") {
-            if (($service_module = $heart->get_service_module($_POST['service'])) === null
-                || !object_implements($service_module, "IService_PurchaseWeb")
+            if (
+                ($service_module = $heart->get_service_module($_POST['service'])) === null ||
+                !object_implements($service_module, "IService_PurchaseWeb")
             ) {
                 return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
             }
 
             // Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
             if (!$heart->user_can_use_service($user->getUid(), $service_module->service)) {
-                return new ApiResponse("no_permission", $lang->translate('service_no_permission'),
-                    0);
+                return new ApiResponse(
+                    "no_permission",
+                    $lang->translate('service_no_permission'),
+                    0
+                );
             }
 
             // Przeprowadzamy walidację danych wprowadzonych w formularzu
@@ -419,7 +469,7 @@ class JsonHttpController
             if ($return_data['status'] == "warnings") {
                 foreach ($return_data['data']['warnings'] as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
+                        'class' => "form_warning"
                     ]);
                     $return_data['data']['warnings'][$brick] = $warning;
                 }
@@ -435,20 +485,28 @@ class JsonHttpController
 
                 if (!$purchase_data->getPayment('cost') && $purchase_data->getTariff() !== null) {
                     $purchase_data->setPayment([
-                        'cost' => $purchase_data->getTariff()->getProvision(),
+                        'cost' => $purchase_data->getTariff()->getProvision()
                     ]);
                 }
 
-                if ($purchase_data->getPayment('sms_service') === null && !$purchase_data->getPayment("no_sms") && strlen($settings['sms_service'])) {
+                if (
+                    $purchase_data->getPayment('sms_service') === null &&
+                    !$purchase_data->getPayment("no_sms") &&
+                    strlen($settings['sms_service'])
+                ) {
                     $purchase_data->setPayment([
-                        'sms_service' => $settings['sms_service'],
+                        'sms_service' => $settings['sms_service']
                     ]);
                 }
 
                 // Ustawiamy taryfe z numerem
                 if ($purchase_data->getPayment('sms_service') !== null) {
                     $payment = new Payment($purchase_data->getPayment('sms_service'));
-                    $purchase_data->setTariff($payment->getPaymentModule()->getTariffById($purchase_data->getTariff()->getId()));
+                    $purchase_data->setTariff(
+                        $payment
+                            ->getPaymentModule()
+                            ->getTariffById($purchase_data->getTariff()->getId())
+                    );
                 }
 
                 if ($purchase_data->getEmail() === null && strlen($user->getEmail())) {
@@ -458,18 +516,25 @@ class JsonHttpController
                 $purchase_data_encoded = base64_encode(serialize($purchase_data));
                 $return_data['data'] = [
                     'length' => 8000,
-                    'data'   => $purchase_data_encoded,
-                    'sign'   => md5($purchase_data_encoded . $settings['random_key']),
+                    'data' => $purchase_data_encoded,
+                    'sign' => md5($purchase_data_encoded . $settings['random_key'])
                 ];
             }
 
-            return new ApiResponse($return_data['status'], $return_data['text'],
-                $return_data['positive'], $return_data['data']);
+            return new ApiResponse(
+                $return_data['status'],
+                $return_data['text'],
+                $return_data['positive'],
+                $return_data['data']
+            );
         }
 
         if ($action == "payment_form_validate") {
             // Sprawdzanie hashu danych przesłanych przez formularz
-            if (!isset($_POST['purchase_sign']) || $_POST['purchase_sign'] != md5($_POST['purchase_data'] . $settings['random_key'])) {
+            if (
+                !isset($_POST['purchase_sign']) ||
+                $_POST['purchase_sign'] != md5($_POST['purchase_data'] . $settings['random_key'])
+            ) {
                 return new ApiResponse("wrong_sign", $lang->translate('wrong_sign'), 0);
             }
 
@@ -481,14 +546,16 @@ class JsonHttpController
 
             // Dodajemy dane płatności
             $purchase_data->setPayment([
-                'method'       => $_POST['method'],
-                'sms_code'     => $_POST['sms_code'],
-                'service_code' => $_POST['service_code'],
+                'method' => $_POST['method'],
+                'sms_code' => $_POST['sms_code'],
+                'service_code' => $_POST['service_code']
             ]);
 
             $return_payment = validate_payment($purchase_data);
             return new ApiResponse(
-                $return_payment['status'], $return_payment['text'], $return_payment['positive'],
+                $return_payment['status'],
+                $return_payment['text'],
+                $return_payment['positive'],
                 $return_payment['data']
             );
         }
@@ -529,7 +596,7 @@ class JsonHttpController
             return new PlainResponse(
                 purchase_info([
                     'purchase_id' => $_POST['purchase_id'],
-                    'action'      => "web",
+                    'action' => "web"
                 ])
             );
         }
@@ -559,14 +626,18 @@ class JsonHttpController
                 return new HtmlResponse($lang->translate('service_cant_be_modified'));
             }
 
-            if (!$settings['user_edit_service'] || !object_implements($service_module,
-                    "IService_UserOwnServicesEdit")) {
+            if (
+                !$settings['user_edit_service'] ||
+                !object_implements($service_module, "IService_UserOwnServicesEdit")
+            ) {
                 return new HtmlResponse($lang->translate('service_cant_be_modified'));
             }
 
             $buttons = $templates->render("services/my_services_savencancel");
 
-            return new HtmlResponse($buttons . $service_module->user_own_service_edit_form_get($user_service));
+            return new HtmlResponse(
+                $buttons . $service_module->user_own_service_edit_form_get($user_service)
+            );
         }
 
         if ($action == "get_user_service_brick") {
@@ -594,11 +665,13 @@ class JsonHttpController
                 return new HtmlResponse($lang->translate('service_not_displayed'));
             }
 
-            if ($settings['user_edit_service'] && object_implements($service_module,
-                    "IService_UserOwnServicesEdit")) {
+            if (
+                $settings['user_edit_service'] &&
+                object_implements($service_module, "IService_UserOwnServicesEdit")
+            ) {
                 $button_edit = create_dom_element("button", $lang->translate('edit'), [
                     'class' => "button edit_row",
-                    'type'  => 'button',
+                    'type' => 'button'
                 ]);
             }
 
@@ -629,10 +702,15 @@ class JsonHttpController
             }
 
             // Wykonujemy metode edycji usługi użytkownika na module, który ją obsługuje
-            if (!$settings['user_edit_service'] || !object_implements($service_module,
-                    "IService_UserOwnServicesEdit")) {
-                return new ApiResponse("service_cant_be_modified",
-                    $lang->translate('service_cant_be_modified'), 0);
+            if (
+                !$settings['user_edit_service'] ||
+                !object_implements($service_module, "IService_UserOwnServicesEdit")
+            ) {
+                return new ApiResponse(
+                    "service_cant_be_modified",
+                    $lang->translate('service_cant_be_modified'),
+                    0
+                );
             }
 
             $return_data = $service_module->user_own_service_edit($_POST, $user_service);
@@ -641,19 +719,25 @@ class JsonHttpController
             if ($return_data['status'] == "warnings") {
                 foreach ($return_data['data']['warnings'] as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
+                        'class' => "form_warning"
                     ]);
                     $return_data['data']['warnings'][$brick] = $warning;
                 }
             }
 
-            return new ApiResponse($return_data['status'], $return_data['text'],
-                $return_data['positive'], $return_data['data']);
+            return new ApiResponse(
+                $return_data['status'],
+                $return_data['text'],
+                $return_data['positive'],
+                $return_data['data']
+            );
         }
 
         if ($action == "service_take_over_form_get") {
-            if (($service_module = $heart->get_service_module($_POST['service'])) === null || !object_implements($service_module,
-                    "IService_TakeOver")) {
+            if (
+                ($service_module = $heart->get_service_module($_POST['service'])) === null ||
+                !object_implements($service_module, "IService_TakeOver")
+            ) {
                 return new PlainResponse($lang->translate('bad_module'));
             }
 
@@ -661,8 +745,10 @@ class JsonHttpController
         }
 
         if ($action == "service_take_over") {
-            if (($service_module = $heart->get_service_module($_POST['service'])) === null || !object_implements($service_module,
-                    "IService_TakeOver")) {
+            if (
+                ($service_module = $heart->get_service_module($_POST['service'])) === null ||
+                !object_implements($service_module, "IService_TakeOver")
+            ) {
                 return new PlainResponse($lang->translate('bad_module'));
             }
 
@@ -672,20 +758,24 @@ class JsonHttpController
             if ($return_data['status'] == "warnings") {
                 foreach ($return_data['data']['warnings'] as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
+                        'class' => "form_warning"
                     ]);
                     $return_data['data']['warnings'][$brick] = $warning;
                 }
             }
 
-            return new ApiResponse($return_data['status'], $return_data['text'],
-                $return_data['positive'], $return_data['data']);
+            return new ApiResponse(
+                $return_data['status'],
+                $return_data['text'],
+                $return_data['positive'],
+                $return_data['data']
+            );
         }
 
         if ($request->query->get("action") === "get_income") {
             $user->setPrivilages([
-                'acp'         => true,
-                'view_income' => true,
+                'acp' => true,
+                'view_income' => true
             ]);
             $page = new PageAdminIncome();
 
@@ -693,14 +783,16 @@ class JsonHttpController
         }
 
         if ($action == "service_action_execute") {
-            if (($service_module = $heart->get_service_module($_POST['service'])) === null
-                || !object_implements($service_module, "IService_ActionExecute")
+            if (
+                ($service_module = $heart->get_service_module($_POST['service'])) === null ||
+                !object_implements($service_module, "IService_ActionExecute")
             ) {
                 return new PlainResponse($lang->translate('bad_module'));
             }
 
-            return new PlainResponse($service_module->action_execute($_POST['service_action'],
-                $_POST));
+            return new PlainResponse(
+                $service_module->action_execute($_POST['service_action'], $_POST)
+            );
         }
 
         if ($action === "get_template") {
@@ -718,8 +810,10 @@ class JsonHttpController
             }
 
             if (!isset($data['template'])) {
-                $data['template'] = $templates->render("jsonhttp/" . $template,
-                    compact('username', 'email'));
+                $data['template'] = $templates->render(
+                    "jsonhttp/" . $template,
+                    compact('username', 'email')
+                );
             }
 
             return new PlainResponse(json_encode($data));

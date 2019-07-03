@@ -42,8 +42,15 @@ class IndexController
         // Pobranie ostatecznego szablonu
         $output = $template->render(
             "index",
-            compact("header", "heart", "logged_info", "wallet", "services_buttons", "content",
-                "user_buttons")
+            compact(
+                "header",
+                "heart",
+                "logged_info",
+                "wallet",
+                "services_buttons",
+                "content",
+                "user_buttons"
+            )
         );
 
         return new Response($output);

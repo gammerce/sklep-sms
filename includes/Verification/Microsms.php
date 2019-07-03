@@ -61,10 +61,10 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
     public function verifySms($returnCode, $number)
     {
         $response = $this->requester->get("https://microsms.pl/api/v2/index.php", [
-            "userid"    => $this->userId,
-            "number"    => $number,
-            "code"      => $returnCode,
-            "serviceid" => $this->serviceId,
+            "userid" => $this->userId,
+            "number" => $number,
+            "code" => $returnCode,
+            "serviceid" => $this->serviceId
         ]);
 
         if (!$response) {
@@ -78,7 +78,9 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
         $content = $response->json();
 
         if (strlen(array_get($content, 'error'))) {
-            log_error("Kod błędu: {$content['error']['errorCode']} - {$content['error']['message']}");
+            log_error(
+                "Kod błędu: {$content['error']['errorCode']} - {$content['error']['message']}"
+            );
             throw new UnknownErrorException();
         }
 
@@ -106,15 +108,15 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
         $signature = hash('sha256', $this->shopId . $this->hash . $cost);
 
         return [
-            'url'         => 'https://microsms.pl/api/bankTransfer/',
-            'method'      => 'GET',
-            'shopid'      => $this->shopId,
-            'signature'   => $signature,
-            'amount'      => $cost,
-            'control'     => $dataFilename,
+            'url' => 'https://microsms.pl/api/bankTransfer/',
+            'method' => 'GET',
+            'shopid' => $this->shopId,
+            'signature' => $signature,
+            'amount' => $cost,
+            'control' => $dataFilename,
             'return_urlc' => $this->settings['shop_url_slash'] . 'transfer/microsms',
-            'return_url'  => $this->settings['shop_url_slash'] . 'page/transferuj_ok',
-            'description' => $purchase->getDesc(),
+            'return_url' => $this->settings['shop_url_slash'] . 'page/transferuj_ok',
+            'description' => $purchase->getDesc()
         ];
     }
 

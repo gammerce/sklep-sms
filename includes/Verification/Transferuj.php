@@ -27,8 +27,12 @@ class Transferuj extends PaymentModule implements SupportTransfer
     /** @var string */
     private $key;
 
-    public function __construct(Database $database, Requester $requester, TranslationManager $translationManager, Settings $settings)
-    {
+    public function __construct(
+        Database $database,
+        Requester $requester,
+        TranslationManager $translationManager,
+        Settings $settings
+    ) {
         parent::__construct($database, $requester, $translationManager);
 
         $this->settings = $settings;
@@ -42,19 +46,19 @@ class Transferuj extends PaymentModule implements SupportTransfer
         $cost = round($purchase->getPayment('cost') / 100, 2);
 
         return [
-            'url'          => 'https://secure.transferuj.pl',
-            'method'       => 'POST',
-            'id'           => $this->accountId,
-            'kwota'        => $cost,
-            'opis'         => $purchase->getDesc(),
-            'crc'          => $dataFilename,
-            'md5sum'       => md5($this->accountId . $cost . $dataFilename . $this->key),
-            'imie'         => $purchase->user->getForename(false),
-            'nazwisko'     => $purchase->user->getSurname(false),
-            'email'        => $purchase->getEmail(),
-            'pow_url'      => $this->settings['shop_url_slash'] . "page/transferuj_ok",
+            'url' => 'https://secure.transferuj.pl',
+            'method' => 'POST',
+            'id' => $this->accountId,
+            'kwota' => $cost,
+            'opis' => $purchase->getDesc(),
+            'crc' => $dataFilename,
+            'md5sum' => md5($this->accountId . $cost . $dataFilename . $this->key),
+            'imie' => $purchase->user->getForename(false),
+            'nazwisko' => $purchase->user->getSurname(false),
+            'email' => $purchase->getEmail(),
+            'pow_url' => $this->settings['shop_url_slash'] . "page/transferuj_ok",
             'pow_url_blad' => $this->settings['shop_url_slash'] . "page/transferuj_bad",
-            'wyn_url'      => $this->settings['shop_url_slash'] . "transfer/transferuj",
+            'wyn_url' => $this->settings['shop_url_slash'] . "transfer/transferuj"
         ];
     }
 
@@ -101,6 +105,7 @@ class Transferuj extends PaymentModule implements SupportTransfer
             return false;
         }
 
-        return $md5sum === md5($this->accountId . $transactionId . $transactionAmount . $crc . $this->key);
+        return $md5sum ===
+            md5($this->accountId . $transactionId . $transactionAmount . $crc . $this->key);
     }
 }

@@ -20,10 +20,7 @@ class ExceptionHandler implements ExceptionHandlerContract
     /** @var Translator */
     private $lang;
 
-    protected $dontReport = [
-        RequireInstallationException::class,
-        LicenseException::class,
-    ];
+    protected $dontReport = [RequireInstallationException::class, LicenseException::class];
 
     public function __construct(Application $app, Translator $lang)
     {
@@ -51,7 +48,9 @@ class ExceptionHandler implements ExceptionHandlerContract
             return new RedirectResponse('/install');
         }
 
-        return new Response('Coś się popsuło. Więcej informacji znajdziesz w pliku errors/errors.log');
+        return new Response(
+            'Coś się popsuło. Więcej informacji znajdziesz w pliku errors/errors.log'
+        );
     }
 
     public function report(Exception $e)
@@ -84,10 +83,10 @@ class ExceptionHandler implements ExceptionHandlerContract
     {
         return [
             'message' => $e->getMessage(),
-            'file'    => $e->getFile(),
-            'line'    => $e->getLine(),
-            'code'    => $e->getCode(),
-            'trace'   => $e->getTrace(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'code' => $e->getCode(),
+            'trace' => $e->getTrace()
         ];
     }
 

@@ -47,7 +47,11 @@ class PageAdminMain extends PageAdmin
         }
 
         $expireSeconds = strtotime($this->license->getExpires()) - time();
-        if (!$this->license->isForever() && $expireSeconds >= 0 && $expireSeconds < self::EXPIRE_THRESHOLD) {
+        if (
+            !$this->license->isForever() &&
+            $expireSeconds >= 0 &&
+            $expireSeconds < self::EXPIRE_THRESHOLD
+        ) {
             $this->add_note(
                 $this->lang->sprintf(
                     $this->lang->translate('license_soon_expire'),
@@ -116,15 +120,17 @@ class PageAdminMain extends PageAdmin
         $bricks .= create_brick(
             $this->lang->sprintf(
                 $this->lang->translate('amount_of_users'),
-                $this->db->get_column("SELECT COUNT(*) FROM `" . TABLE_PREFIX . "users`", "COUNT(*)")
+                $this->db->get_column(
+                    "SELECT COUNT(*) FROM `" . TABLE_PREFIX . "users`",
+                    "COUNT(*)"
+                )
             ),
             "brick_pa_main"
         );
 
         // Info o kupionych usługach
         $amount = $this->db->get_column(
-            "SELECT COUNT(*) " .
-            "FROM ({$this->settings['transactions_query']}) AS t",
+            "SELECT COUNT(*) " . "FROM ({$this->settings['transactions_query']}) AS t",
             "COUNT(*)"
         );
         $bricks .= create_brick(
@@ -135,8 +141,8 @@ class PageAdminMain extends PageAdmin
         // Info o wysłanych smsach
         $amount = $this->db->get_column(
             "SELECT COUNT(*) AS `amount` " .
-            "FROM ({$this->settings['transactions_query']}) as t " .
-            "WHERE t.payment = 'sms' AND t.free='0'",
+                "FROM ({$this->settings['transactions_query']}) as t " .
+                "WHERE t.payment = 'sms' AND t.free='0'",
             "amount"
         );
         $bricks .= create_brick(
@@ -169,7 +175,7 @@ class PageAdminMain extends PageAdmin
     private function add_note($text, $class, &$notes)
     {
         $notes .= create_dom_element("div", $text, [
-            'class' => "note " . $class,
+            'class' => "note " . $class
         ]);
     }
 }

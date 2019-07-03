@@ -10,9 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class InstallUpdateKernel extends Kernel
 {
-    protected $middlewares = [
-        RequireInstalledAndNotUpdated::class,
-    ];
+    protected $middlewares = [RequireInstalledAndNotUpdated::class];
 
     public function run(Request $request)
     {
@@ -40,7 +38,7 @@ class InstallUpdateKernel extends Kernel
                 "Aktualizacja nie mogła zostać przeprowadzona. Nie wszystkie warunki są spełnione.",
                 false,
                 [
-                    'update_info' => $update_info,
+                    'update_info' => $update_info
                 ]
             );
         }

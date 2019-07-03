@@ -17,11 +17,14 @@ class Zabijaka extends PaymentModule implements SupportSms
     {
         $xml = simplexml_load_file(
             'http://api.zabijaka.pl/1.1' .
-            '/' . urlencode($this->getApi()) .
-            '/sms' .
-            '/' . round(get_sms_cost($number) / 100) .
-            '/' . urlencode($returnCode) .
-            '/sms.xml/add'
+                '/' .
+                urlencode($this->getApi()) .
+                '/sms' .
+                '/' .
+                round(get_sms_cost($number) / 100) .
+                '/' .
+                urlencode($returnCode) .
+                '/sms.xml/add'
         );
 
         if (!$xml) {

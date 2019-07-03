@@ -28,7 +28,7 @@ class Cssetti extends PaymentModule implements SupportSms
 
         $response = $this->requester->get('https://cssetti.pl/Api/SmsApiV2CheckCode.php', [
             'UserId' => $this->getAccountId(),
-            'Code'   => $returnCode,
+            'Code' => $returnCode
         ]);
 
         if ($response === false) {
@@ -103,7 +103,9 @@ class Cssetti extends PaymentModule implements SupportSms
         $this->smsCode = $data['Code'];
 
         foreach ($data['Numbers'] as $numberData) {
-            $this->numbers[strval(floatval($numberData['TopUpAmount']))] = strval($numberData['Number']);
+            $this->numbers[strval(floatval($numberData['TopUpAmount']))] = strval(
+                $numberData['Number']
+            );
         }
     }
 }

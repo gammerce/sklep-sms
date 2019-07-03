@@ -59,7 +59,7 @@ class Purchase
 
     public function setService($service)
     {
-        $this->service = (string)$service;
+        $this->service = (string) $service;
     }
 
     public function setOrder($order)
@@ -79,7 +79,7 @@ class Purchase
 
     public function setEmail($email)
     {
-        $this->email = (string)$email;
+        $this->email = (string) $email;
     }
 
     public function setPayment($payment)

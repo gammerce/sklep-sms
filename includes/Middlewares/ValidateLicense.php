@@ -13,7 +13,8 @@ class ValidateLicense implements MiddlewareContract
     /** @var Auth */
     private $auth;
 
-    public function __construct(Auth $auth) {
+    public function __construct(Auth $auth)
+    {
         $this->auth = $auth;
     }
 
@@ -33,7 +34,7 @@ class ValidateLicense implements MiddlewareContract
         // so that it would be easier for us to debug any potential exceptions
         if ($app->bound(Raven_Client::class)) {
             $app->make(Raven_Client::class)->tags_context([
-                'license_id' => $license->getExternalId(),
+                'license_id' => $license->getExternalId()
             ]);
         }
 
@@ -47,8 +48,8 @@ class ValidateLicense implements MiddlewareContract
         if (get_privilages("manage_settings", $user)) {
             $user->removePrivilages();
             $user->setPrivilages([
-                "acp"             => true,
-                "manage_settings" => true,
+                "acp" => true,
+                "manage_settings" => true
             ]);
         }
     }

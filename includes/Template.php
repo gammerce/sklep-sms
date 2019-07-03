@@ -145,7 +145,12 @@ class Template
         $template = file_get_contents($path);
 
         if ($htmlcomments) {
-            $template = "<!-- start: " . htmlspecialchars($title) . " -->\n{$template}\n<!-- end: " . htmlspecialchars($title) . " -->";
+            $template =
+                "<!-- start: " .
+                htmlspecialchars($title) .
+                " -->\n{$template}\n<!-- end: " .
+                htmlspecialchars($title) .
+                " -->";
         }
 
         if ($eslashes) {

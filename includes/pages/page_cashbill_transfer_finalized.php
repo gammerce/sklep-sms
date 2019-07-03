@@ -20,8 +20,10 @@ class PageCashbillTransferFinalized extends Page
         /** @var Cashbill $paymentModule */
         $paymentModule = $payment->getPaymentModule();
 
-        if ($paymentModule->checkSign($get, $paymentModule->getKey(), $get['sign'])
-            && $get['service'] != $paymentModule->getService()) {
+        if (
+            $paymentModule->checkSign($get, $paymentModule->getKey(), $get['sign']) &&
+            $get['service'] != $paymentModule->getService()
+        ) {
             return $this->lang->translate('transfer_unverified');
         }
 
@@ -31,9 +33,9 @@ class PageCashbillTransferFinalized extends Page
         }
 
         return purchase_info([
-            'payment'    => 'transfer',
+            'payment' => 'transfer',
             'payment_id' => $get['orderid'],
-            'action'     => 'web',
+            'action' => 'web'
         ]);
     }
 }

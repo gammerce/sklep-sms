@@ -36,7 +36,13 @@ class PageAdminBoughtServices extends PageAdmin
         $table->addHeadCell(new Cell($this->lang->translate('server')));
         $table->addHeadCell(new Cell($this->lang->translate('service')));
         $table->addHeadCell(new Cell($this->lang->translate('amount')));
-        $table->addHeadCell(new Cell("{$this->lang->translate('nick')}/{$this->lang->translate('ip')}/{$this->lang->translate('sid')}"));
+        $table->addHeadCell(
+            new Cell(
+                "{$this->lang->translate('nick')}/{$this->lang->translate(
+                    'ip'
+                )}/{$this->lang->translate('sid')}"
+            )
+        );
         $table->addHeadCell(new Cell($this->lang->translate('additional')));
         $table->addHeadCell(new Cell($this->lang->translate('email')));
         $table->addHeadCell(new Cell($this->lang->translate('ip')));
@@ -46,16 +52,20 @@ class PageAdminBoughtServices extends PageAdmin
         $where = '';
 
         if (isset($get['search'])) {
-            searchWhere([
-                "t.id",
-                "t.payment",
-                "t.payment_id",
-                "t.uid",
-                "t.ip",
-                "t.email",
-                "t.auth_data",
-                "CAST(t.timestamp as CHAR)",
-            ], $get['search'], $where);
+            searchWhere(
+                [
+                    "t.id",
+                    "t.payment",
+                    "t.payment_id",
+                    "t.uid",
+                    "t.ip",
+                    "t.email",
+                    "t.auth_data",
+                    "CAST(t.timestamp as CHAR)"
+                ],
+                $get['search'],
+                $where
+            );
         }
 
         // Jezeli jest jakis where, to dodajemy WHERE
@@ -65,10 +75,11 @@ class PageAdminBoughtServices extends PageAdmin
 
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * " .
-            "FROM ({$this->settings['transactions_query']}) as t " .
-            $where .
-            "ORDER BY t.timestamp DESC " .
-            "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
+                "FROM ({$this->settings['transactions_query']}) as t " .
+                $where .
+                "ORDER BY t.timestamp DESC " .
+                "LIMIT " .
+                get_row_limit($this->currentPage->getPageNumber())
         );
 
         $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
@@ -82,10 +93,15 @@ class PageAdminBoughtServices extends PageAdmin
             // Pobranie danych o serwerze na ktorym zostala wykupiona usługa
             $server = $this->heart->get_server($row['server']);
 
-            $username = $row['uid'] ? htmlspecialchars($row['username']) . " ({$row['uid']})" : $this->lang->translate('none');
+            $username = $row['uid']
+                ? htmlspecialchars($row['username']) . " ({$row['uid']})"
+                : $this->lang->translate('none');
 
             // Przerobienie ilosci
-            $amount = $row['amount'] != -1 ? $row['amount'] . ' ' . $service['tag'] : $this->lang->translate('forever');
+            $amount =
+                $row['amount'] != -1
+                    ? $row['amount'] . ' ' . $service['tag']
+                    : $this->lang->translate('forever');
 
             // Rozkulbaczenie extra daty
             $row['extra_data'] = json_decode($row['extra_data'], true);

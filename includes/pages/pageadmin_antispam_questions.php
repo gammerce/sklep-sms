@@ -34,8 +34,11 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
 
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * " .
-            "FROM `" . TABLE_PREFIX . "antispam_questions` " .
-            "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
+                "FROM `" .
+                TABLE_PREFIX .
+                "antispam_questions` " .
+                "LIMIT " .
+                get_row_limit($this->currentPage->getPageNumber())
         );
 
         $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
@@ -72,7 +75,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
         if (!get_privilages("manage_antispam_questions")) {
             return [
                 'status' => "not_logged_in",
-                'text'   => $this->lang->translate('not_logged_or_no_perm'),
+                'text' => $this->lang->translate('not_logged_or_no_perm')
             ];
         }
 
@@ -82,15 +85,24 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
                 break;
 
             case "antispam_question_edit":
-                $row = $this->db->fetch_array_assoc($this->db->query($this->db->prepare(
-                    "SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " .
-                    "WHERE `id` = '%d'",
-                    [$data['id']]
-                )));
+                $row = $this->db->fetch_array_assoc(
+                    $this->db->query(
+                        $this->db->prepare(
+                            "SELECT * FROM `" .
+                                TABLE_PREFIX .
+                                "antispam_questions` " .
+                                "WHERE `id` = '%d'",
+                            [$data['id']]
+                        )
+                    )
+                );
                 $row['question'] = htmlspecialchars($row['question']);
                 $row['answers'] = htmlspecialchars($row['answers']);
 
-                $output = $this->template->render("admin/action_boxes/antispam_question_edit", compact('row'));
+                $output = $this->template->render(
+                    "admin/action_boxes/antispam_question_edit",
+                    compact('row')
+                );
                 break;
 
             default:
@@ -98,8 +110,8 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionB
         }
 
         return [
-            'status'   => 'ok',
-            'template' => $output,
+            'status' => 'ok',
+            'template' => $output
         ];
     }
 }

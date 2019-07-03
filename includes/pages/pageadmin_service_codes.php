@@ -39,13 +39,24 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.name AS `service`, srv.name AS `server`, sc.tariff, pl.amount AS `tariff_amount`,
 			u.username, u.uid, sc.amount, sc.data, sc.timestamp, s.tag " .
-            "FROM `" . TABLE_PREFIX . "service_codes` AS sc " .
-            "LEFT JOIN `" . TABLE_PREFIX . "services` AS s ON sc.service = s.id " .
-            "LEFT JOIN `" . TABLE_PREFIX . "servers` AS srv ON sc.server = srv.id " .
-            "LEFT JOIN `" . TABLE_PREFIX . "users` AS u ON sc.uid = u.uid " .
-            "LEFT JOIN `" . TABLE_PREFIX . "pricelist` AS pl ON sc.tariff = pl.tariff AND sc.service = pl.service
+                "FROM `" .
+                TABLE_PREFIX .
+                "service_codes` AS sc " .
+                "LEFT JOIN `" .
+                TABLE_PREFIX .
+                "services` AS s ON sc.service = s.id " .
+                "LEFT JOIN `" .
+                TABLE_PREFIX .
+                "servers` AS srv ON sc.server = srv.id " .
+                "LEFT JOIN `" .
+                TABLE_PREFIX .
+                "users` AS u ON sc.uid = u.uid " .
+                "LEFT JOIN `" .
+                TABLE_PREFIX .
+                "pricelist` AS pl ON sc.tariff = pl.tariff AND sc.service = pl.service
 			AND (pl.server = '-1' OR sc.server = pl.server) " .
-            "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
+                "LIMIT " .
+                get_row_limit($this->currentPage->getPageNumber())
         );
 
         $table->setDbRowsAmount($this->db->get_column('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
@@ -53,7 +64,9 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
         while ($row = $this->db->fetch_array_assoc($result)) {
             $body_row = new BodyRow();
 
-            $username = $row['uid'] ? $row['username'] . " ({$row['uid']})" : $this->lang->translate('none');
+            $username = $row['uid']
+                ? $row['username'] . " ({$row['uid']})"
+                : $this->lang->translate('none');
 
             if ($row['tariff_amount']) {
                 $amount = $row['tariff_amount'] . ' ' . $row['tag'];
@@ -102,7 +115,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
         if (!get_privilages("manage_service_codes")) {
             return [
                 'status' => "not_logged_in",
-                'text'   => $this->lang->translate('not_logged_or_no_perm'),
+                'text' => $this->lang->translate('not_logged_or_no_perm')
             ];
         }
 
@@ -111,17 +124,22 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
                 // Pobranie usług
                 $services = "";
                 foreach ($this->heart->get_services() as $id => $row) {
-                    if (($service_module = $this->heart->get_service_module($id)) === null || !object_implements($service_module,
-                            "IService_ServiceCodeAdminManage")) {
+                    if (
+                        ($service_module = $this->heart->get_service_module($id)) === null ||
+                        !object_implements($service_module, "IService_ServiceCodeAdminManage")
+                    ) {
                         continue;
                     }
 
                     $services .= create_dom_element("option", $row['name'], [
-                        'value' => $row['id'],
+                        'value' => $row['id']
                     ]);
                 }
 
-                $output = $this->template->render("admin/action_boxes/service_code_add", compact('services'));
+                $output = $this->template->render(
+                    "admin/action_boxes/service_code_add",
+                    compact('services')
+                );
                 break;
 
             default:
@@ -129,8 +147,8 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
         }
 
         return [
-            'status'   => 'ok',
-            'template' => $output,
+            'status' => 'ok',
+            'template' => $output
         ];
     }
 }

@@ -54,10 +54,15 @@ class PageAdminPaymentSms extends PageAdmin
 
             // Podświetlenie konkretnej płatności
             //$row['class'] = "highlighted";
-        } // Wyszukujemy dane ktore spelniaja kryteria
+        }
+        // Wyszukujemy dane ktore spelniaja kryteria
         else {
             if (isset($get['search'])) {
-                searchWhere(["t.payment_id", "t.sms_text", "t.sms_code", "t.sms_number"], $get['search'], $where);
+                searchWhere(
+                    ["t.payment_id", "t.sms_text", "t.sms_code", "t.sms_number"],
+                    $get['search'],
+                    $where
+                );
             }
         }
 
@@ -72,10 +77,11 @@ class PageAdminPaymentSms extends PageAdmin
 
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * " .
-            "FROM ({$this->settings['transactions_query']}) as t " .
-            $where .
-            "ORDER BY t.timestamp DESC " .
-            "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
+                "FROM ({$this->settings['transactions_query']}) as t " .
+                $where .
+                "ORDER BY t.timestamp DESC " .
+                "LIMIT " .
+                get_row_limit($this->currentPage->getPageNumber())
         );
 
         $table->setDbRowsAmount($this->db->get_column('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
@@ -87,10 +93,15 @@ class PageAdminPaymentSms extends PageAdmin
                 $body_row->setParam('class', 'highlighted');
             }
 
-            $free = $row['free'] ? $this->lang->strtoupper($this->lang->translate('yes')) : $this->lang->strtoupper($this->lang->translate('no'));
-            $income = $row['income'] ? number_format($row['income'] / 100.0,
-                    2) . " " . $this->settings['currency'] : "";
-            $cost = $row['cost'] ? number_format($row['cost'] / 100.0, 2) . " " . $this->settings['currency'] : "";
+            $free = $row['free']
+                ? $this->lang->strtoupper($this->lang->translate('yes'))
+                : $this->lang->strtoupper($this->lang->translate('no'));
+            $income = $row['income']
+                ? number_format($row['income'] / 100.0, 2) . " " . $this->settings['currency']
+                : "";
+            $cost = $row['cost']
+                ? number_format($row['cost'] / 100.0, 2) . " " . $this->settings['currency']
+                : "";
 
             $body_row->setDbId($row['payment_id']);
             $body_row->addCell(new Cell($row['sms_text']));

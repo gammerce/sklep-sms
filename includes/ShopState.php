@@ -28,7 +28,8 @@ class ShopState
 
     public function isUpToDate()
     {
-        return $this->databaseMigration->getLastExecutedMigration() === $this->migrationFiles->getLastMigration();
+        return $this->databaseMigration->getLastExecutedMigration() ===
+            $this->migrationFiles->getLastMigration();
     }
 
     public function getFileVersion()

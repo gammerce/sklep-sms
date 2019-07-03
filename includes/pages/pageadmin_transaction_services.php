@@ -33,8 +33,11 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
         $table->addHeadCell(new Cell($this->lang->translate('transfer_service')));
 
         $result = $this->db->query(
-            "SELECT SQL_CALC_FOUND_ROWS * FROM `" . TABLE_PREFIX . "transaction_services` " .
-            "LIMIT " . get_row_limit($this->currentPage->getPageNumber())
+            "SELECT SQL_CALC_FOUND_ROWS * FROM `" .
+                TABLE_PREFIX .
+                "transaction_services` " .
+                "LIMIT " .
+                get_row_limit($this->currentPage->getPageNumber())
         );
 
         $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
@@ -42,8 +45,12 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
         while ($row = $this->db->fetch_array_assoc($result)) {
             $body_row = new BodyRow();
 
-            $sms_service = $row['sms'] ? $this->lang->strtoupper($this->lang->translate('yes')) : $this->lang->strtoupper($this->lang->translate('no'));
-            $transfer_service = $row['transfer'] ? $this->lang->strtoupper($this->lang->translate('yes')) : $this->lang->strtoupper($this->lang->translate('no'));
+            $sms_service = $row['sms']
+                ? $this->lang->strtoupper($this->lang->translate('yes'))
+                : $this->lang->strtoupper($this->lang->translate('no'));
+            $transfer_service = $row['transfer']
+                ? $this->lang->strtoupper($this->lang->translate('yes'))
+                : $this->lang->strtoupper($this->lang->translate('no'));
 
             $body_row->setDbId($row['id']);
             $body_row->addCell(new Cell($row['name']));
@@ -65,18 +72,22 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
         if (!get_privilages("manage_settings")) {
             return [
                 'status' => "not_logged_in",
-                'text'   => $this->lang->translate('not_logged_or_no_perm'),
+                'text' => $this->lang->translate('not_logged_or_no_perm')
             ];
         }
 
         switch ($box_id) {
             case "transaction_service_edit":
                 // Pobranie danych o metodzie płatności
-                $result = $this->db->query($this->db->prepare(
-                    "SELECT * FROM `" . TABLE_PREFIX . "transaction_services` " .
-                    "WHERE `id` = '%s'",
-                    [$data['id']]
-                ));
+                $result = $this->db->query(
+                    $this->db->prepare(
+                        "SELECT * FROM `" .
+                            TABLE_PREFIX .
+                            "transaction_services` " .
+                            "WHERE `id` = '%s'",
+                        [$data['id']]
+                    )
+                );
                 $transaction_service = $this->db->fetch_array_assoc($result);
 
                 $transaction_service['id'] = htmlspecialchars($transaction_service['id']);
@@ -96,7 +107,10 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
                             $text = $this->lang->strtoupper($name);
                             break;
                     }
-                    $data_values .= $this->template->render("tr_name_input", compact('text', 'name', 'value'));
+                    $data_values .= $this->template->render(
+                        "tr_name_input",
+                        compact('text', 'name', 'value')
+                    );
                 }
 
                 $output = $this->template->render(
@@ -110,8 +124,8 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdmin_Actio
         }
 
         return [
-            'status'   => 'ok',
-            'template' => $output,
+            'status' => 'ok',
+            'template' => $output
         ];
     }
 }

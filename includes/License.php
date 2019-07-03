@@ -106,10 +106,13 @@ class License
     protected function loadLicense()
     {
         try {
-            return $this->cachingRequester->load(CacheEnum::LICENSE, static::CACHE_TTL,
+            return $this->cachingRequester->load(
+                CacheEnum::LICENSE,
+                static::CACHE_TTL,
                 function () {
                     return $this->request();
-                });
+                }
+            );
         } catch (RequestException $e) {
             throw new LicenseRequestException(null, $e);
         }
@@ -126,13 +129,13 @@ class License
         $response = $this->requester->post(
             'http://license.sklep-sms.pl/v1/authorization/web',
             [
-                'url'      => $shopUrl,
-                'name'     => $this->settings['shop_name'] ?: $shopUrl,
-                'version'  => app()->version(),
-                'language' => $this->lang->getCurrentLanguage(),
+                'url' => $shopUrl,
+                'name' => $this->settings['shop_name'] ?: $shopUrl,
+                'version' => app()->version(),
+                'language' => $this->lang->getCurrentLanguage()
             ],
             [
-                'Authorization' => $this->settings['license_password'],
+                'Authorization' => $this->settings['license_password']
             ]
         );
 

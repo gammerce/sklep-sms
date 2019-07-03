@@ -26,7 +26,7 @@ class PageTakeOverService extends Page implements I_BeLoggedMust
             }
 
             $services_options .= create_dom_element("option", $service['name'], [
-                'value' => $service['id'],
+                'value' => $service['id']
             ]);
         }
 

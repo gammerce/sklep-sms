@@ -24,10 +24,10 @@ class Settings implements ArrayAccess
         $this->db = $database;
 
         $this->settings = [
-            'date_format'    => 'Y-m-d H:i',
-            'theme'          => 'default',
-            'shop_url'       => '',
-            'shop_url_slash' => '',
+            'date_format' => 'Y-m-d H:i',
+            'theme' => 'default',
+            'shop_url' => '',
+            'shop_url_slash' => ''
         ];
     }
 
@@ -75,8 +75,10 @@ class Settings implements ArrayAccess
 
         // Poprawiamy adres URL sklepu
         if (strlen($this->settings['shop_url'])) {
-            if (strpos($this->settings['shop_url'], "http://") !== 0 && strpos($this->settings['shop_url'],
-                    "https://") !== 0) {
+            if (
+                strpos($this->settings['shop_url'], "http://") !== 0 &&
+                strpos($this->settings['shop_url'], "https://") !== 0
+            ) {
                 $this->settings['shop_url'] = "http://" . $this->settings['shop_url'];
             }
 
@@ -85,7 +87,8 @@ class Settings implements ArrayAccess
         }
 
         $this->settings['currency'] = htmlspecialchars($this->settings['currency']);
-        $this->settings['transactions_query'] = "(SELECT bs.id AS `id`,
+        $this->settings['transactions_query'] =
+            "(SELECT bs.id AS `id`,
 bs.uid AS `uid`,
 u.username AS `username`,
 bs.payment AS `payment`,
@@ -108,24 +111,46 @@ ps.number AS `sms_number`,
 IFNULL(ps.free,0) AS `free`,
 pc.code AS `service_code`,
 bs.timestamp AS `timestamp`
-FROM `" . TABLE_PREFIX . "bought_services` AS bs
-LEFT JOIN `" . TABLE_PREFIX . "users` AS u ON u.uid = bs.uid
-LEFT JOIN `" . TABLE_PREFIX . "payment_admin` AS pa ON bs.payment = 'admin' AND pa.id = bs.payment_id
-LEFT JOIN `" . TABLE_PREFIX . "users` AS u2 ON u2.uid = pa.aid
-LEFT JOIN `" . TABLE_PREFIX . "payment_sms` AS ps ON bs.payment = 'sms' AND ps.id = bs.payment_id
-LEFT JOIN `" . TABLE_PREFIX . "payment_transfer` AS pt ON bs.payment = 'transfer' AND pt.id = bs.payment_id
-LEFT JOIN `" . TABLE_PREFIX . "payment_wallet` AS pw ON bs.payment = 'wallet' AND pw.id = bs.payment_id
-LEFT JOIN `" . TABLE_PREFIX . "payment_code` AS pc ON bs.payment = 'service_code' AND pc.id = bs.payment_id)";
+FROM `" .
+            TABLE_PREFIX .
+            "bought_services` AS bs
+LEFT JOIN `" .
+            TABLE_PREFIX .
+            "users` AS u ON u.uid = bs.uid
+LEFT JOIN `" .
+            TABLE_PREFIX .
+            "payment_admin` AS pa ON bs.payment = 'admin' AND pa.id = bs.payment_id
+LEFT JOIN `" .
+            TABLE_PREFIX .
+            "users` AS u2 ON u2.uid = pa.aid
+LEFT JOIN `" .
+            TABLE_PREFIX .
+            "payment_sms` AS ps ON bs.payment = 'sms' AND ps.id = bs.payment_id
+LEFT JOIN `" .
+            TABLE_PREFIX .
+            "payment_transfer` AS pt ON bs.payment = 'transfer' AND pt.id = bs.payment_id
+LEFT JOIN `" .
+            TABLE_PREFIX .
+            "payment_wallet` AS pw ON bs.payment = 'wallet' AND pw.id = bs.payment_id
+LEFT JOIN `" .
+            TABLE_PREFIX .
+            "payment_code` AS pc ON bs.payment = 'service_code' AND pc.id = bs.payment_id)";
 
         // Ustawianie strefy
         if ($this->settings['timezone']) {
             date_default_timezone_set($this->settings['timezone']);
         }
 
-        $this->settings['date_format'] = strlen($this->settings['date_format']) ? $this->settings['date_format'] : "Y-m-d H:i";
+        $this->settings['date_format'] = strlen($this->settings['date_format'])
+            ? $this->settings['date_format']
+            : "Y-m-d H:i";
 
         // Sprawdzanie czy taki szablon istnieje, jak nie to ustaw defaultowy
-        $this->settings['theme'] = file_exists($this->app->path("themes/{$this->settings['theme']}")) ? $this->settings['theme'] : "default";
+        $this->settings['theme'] = file_exists(
+            $this->app->path("themes/{$this->settings['theme']}")
+        )
+            ? $this->settings['theme']
+            : "default";
 
         $this->loaded = true;
     }

@@ -13,11 +13,15 @@ class PageRegister extends Page implements I_BeLoggedCannot
 
     protected function content($get, $post)
     {
-        $antispam_question = $this->db->fetch_array_assoc($this->db->query(
-            "SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " .
-            "ORDER BY RAND() " .
-            "LIMIT 1"
-        ));
+        $antispam_question = $this->db->fetch_array_assoc(
+            $this->db->query(
+                "SELECT * FROM `" .
+                    TABLE_PREFIX .
+                    "antispam_questions` " .
+                    "ORDER BY RAND() " .
+                    "LIMIT 1"
+            )
+        );
         $_SESSION['asid'] = $antispam_question['id'];
 
         return $this->template->render("register", compact('antispam_question'));
