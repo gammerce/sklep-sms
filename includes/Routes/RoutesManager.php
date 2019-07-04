@@ -38,7 +38,7 @@ class RoutesManager
             'uses' => IndexController::class . '@oldGet',
         ]);
 
-        $r->addRoute('GET', '/page/{pageId}', [
+        $r->addRoute(['GET', 'POST'], '/page/{pageId}', [
             'middlewares' => [
                 UpdateUserActivity::class,
                 RunCron::class,
