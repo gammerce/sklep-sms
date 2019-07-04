@@ -1,6 +1,8 @@
 <?php
 
-class PageTakeOverService extends Page implements I_BeLoggedMust
+use App\Interfaces\IBeLoggedMust;
+
+class PageTakeOverService extends Page implements IBeLoggedMust
 {
     const PAGE_ID = 'service_take_over';
 
@@ -21,7 +23,7 @@ class PageTakeOverService extends Page implements I_BeLoggedMust
             }
 
             // Moduł danej usługi nie zezwala na jej przejmowanie
-            if (!object_implements($service_module, "IService_TakeOver")) {
+            if (!($service_module instanceof IService_TakeOver)) {
                 continue;
             }
 

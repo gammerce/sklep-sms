@@ -1,6 +1,8 @@
 <?php
 
-class PageResetPassword extends Page implements I_BeLoggedCannot
+use App\Interfaces\IBeLoggedCannot;
+
+class PageResetPassword extends Page implements IBeLoggedCannot
 {
     const PAGE_ID = 'reset_password';
 

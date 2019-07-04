@@ -1,13 +1,14 @@
 <?php
 
 use App\Heart;
+use App\Interfaces\IBeLoggedMust;
 use App\Models\Purchase;
 use App\Payment;
 use App\Settings;
 use App\TranslationManager;
 use App\Translator;
 
-class ServiceChargeWalletSimple extends Service implements I_BeLoggedMust
+class ServiceChargeWalletSimple extends Service implements IBeLoggedMust
 {
     const MODULE_ID = "charge_wallet";
 }

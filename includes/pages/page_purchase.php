@@ -1,6 +1,7 @@
 <?php
 
 use App\Auth;
+use App\Interfaces\IBeLoggedMust;
 use App\Settings;
 use App\Template;
 
@@ -100,7 +101,7 @@ class PagePurchase extends Page
 
         // Sprawdzamy, czy usluga wymaga, by użytkownik był zalogowany
         // Jeżeli wymaga, to to sprawdzamy
-        if (object_implements($service_module, "I_BeLoggedMust") && !is_logged()) {
+        if ($service_module instanceof IBeLoggedMust && !is_logged()) {
             return $lang->translate('must_be_logged_in');
         }
 
@@ -110,7 +111,7 @@ class PagePurchase extends Page
         }
 
         // Nie ma formularza zakupu, to tak jakby strona nie istniała
-        if (!object_implements($service_module, "IService_PurchaseWeb")) {
+        if (!($service_module instanceof IService_PurchaseWeb)) {
             return $lang->translate('site_not_exists');
         }
 

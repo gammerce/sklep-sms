@@ -1,6 +1,8 @@
 <?php
 
-class PageChangePassword extends PageSimple implements I_BeLoggedMust
+use App\Interfaces\IBeLoggedMust;
+
+class PageChangePassword extends PageSimple implements IBeLoggedMust
 {
     const PAGE_ID = 'change_password';
     protected $templateName = 'change_password';

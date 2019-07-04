@@ -1,6 +1,8 @@
 <?php
 
 use App\Auth;
+use App\Interfaces\IBeLoggedCannot;
+use App\Interfaces\IBeLoggedMust;
 use App\Template;
 
 abstract class Block
@@ -20,8 +22,8 @@ abstract class Block
     public function get_content($get, $post)
     {
         if (
-            (object_implements($this, "I_BeLoggedMust") && !is_logged()) ||
-            (object_implements($this, "I_BeLoggedCannot") && is_logged())
+            ($this instanceof IBeLoggedMust && !is_logged()) ||
+            ($this instanceof IBeLoggedCannot && is_logged())
         ) {
             return null;
         }

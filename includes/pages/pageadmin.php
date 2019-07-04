@@ -1,6 +1,8 @@
 <?php
 
-abstract class PageAdmin extends Page implements I_BeLoggedMust
+use App\Interfaces\IBeLoggedMust;
+
+abstract class PageAdmin extends Page implements IBeLoggedMust
 {
     protected $privilage = 'acp';
 

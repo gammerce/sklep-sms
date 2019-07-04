@@ -2,6 +2,8 @@
 
 use App\CurrentPage;
 use App\Heart;
+use App\Interfaces\IBeLoggedCannot;
+use App\Interfaces\IBeLoggedMust;
 use App\Translator;
 
 class BlockContent extends Block
@@ -42,11 +44,11 @@ class BlockContent extends Block
             return null;
         }
 
-        if (object_implements($this->page, "I_BeLoggedMust") && !is_logged()) {
+        if ($this->page instanceof IBeLoggedMust && !is_logged()) {
             return $this->lang->translate('must_be_logged_in');
         }
 
-        if (object_implements($this->page, "I_BeLoggedCannot") && is_logged()) {
+        if ($this->page instanceof IBeLoggedCannot && is_logged()) {
             return $this->lang->translate('must_be_logged_out');
         }
 

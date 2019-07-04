@@ -84,7 +84,7 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
             if (strlen($service['module'])) {
                 if (
                     ($service_module = $this->heart->get_service_module($service['id'])) !== null &&
-                    object_implements($service_module, "IService_AdminManage")
+                    $service_module instanceof IService_AdminManage
                 ) {
                     $extra_fields = create_dom_element(
                         "tbody",
@@ -104,7 +104,7 @@ class PageAdminServices extends PageAdmin implements IPageAdmin_ActionBox
                 if (
                     ($service_module = $this->heart->get_service_module_s($module['id'])) ===
                         null ||
-                    !object_implements($service_module, "IService_Create")
+                    !($service_module instanceof IService_Create)
                 ) {
                     continue;
                 }

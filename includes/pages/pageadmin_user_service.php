@@ -95,7 +95,7 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
                 foreach ($this->heart->get_services() as $id => $row) {
                     if (
                         ($service_module = $this->heart->get_service_module($id)) === null ||
-                        !object_implements($service_module, "IService_UserServiceAdminAdd")
+                        !($service_module instanceof IService_UserServiceAdminAdd)
                     ) {
                         continue;
                     }
@@ -119,7 +119,7 @@ class PageAdmin_UserService extends PageAdmin implements IPageAdmin_ActionBox
                     ($service_module = $this->heart->get_service_module(
                         $user_service['service']
                     )) === null ||
-                    !object_implements($service_module, "IService_UserServiceAdminEdit")
+                    !($service_module instanceof IService_UserServiceAdminEdit)
                 ) {
                     $form_data = $this->lang->translate('service_edit_unable');
                 } else {

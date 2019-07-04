@@ -2,10 +2,11 @@
 
 use App\Auth;
 use App\Database;
+use App\Interfaces\IBeLoggedMust;
 use App\Settings;
 use App\Template;
 
-class Page_UserOIwnServices extends Page implements I_BeLoggedMust
+class Page_UserOIwnServices extends Page implements IBeLoggedMust
 {
     const PAGE_ID = 'user_own_services';
 
@@ -98,13 +99,13 @@ class Page_UserOIwnServices extends Page implements I_BeLoggedMust
                 continue;
             }
 
-            if (!object_implements($service_module, "IService_UserOwnServices")) {
+            if (!($service_module instanceof IService_UserOwnServices)) {
                 continue;
             }
 
             if (
                 $settings['user_edit_service'] &&
-                object_implements($service_module, "IService_UserOwnServicesEdit")
+                $service_module instanceof IService_UserOwnServicesEdit
             ) {
                 $button_edit = create_dom_element("button", $lang->translate('edit'), [
                     'class' => "button edit_row",
