@@ -13,6 +13,13 @@ if (!defined('PHP_VERSION_ID')) {
     define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
 }
 
+// Te interfejsy są potrzebne do klas różnego rodzajów
+foreach (scandir("$scriptRoot/includes/interfaces") as $file) {
+    if (ends_at($file, ".php")) {
+        require_once "$scriptRoot/includes/interfaces/" . $file;
+    }
+}
+
 // Dodajemy klasy wszystkich usług
 require_once "$scriptRoot/includes/services/service.php";
 
