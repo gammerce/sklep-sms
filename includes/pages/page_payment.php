@@ -37,7 +37,7 @@ class PagePayment extends Page
         if (
             ($service_module = $this->heart->get_service_module($purchase_data->getService())) ===
                 null ||
-            !object_implements($service_module, "IService_PurchaseWeb")
+            !($service_module instanceof IService_PurchaseWeb)
         ) {
             return $this->lang->translate('bad_module');
         }
@@ -92,7 +92,7 @@ class PagePayment extends Page
 
         if (
             !$purchase_data->getPayment('no_code') &&
-            object_implements($service_module, "IService_ServiceCode")
+           $service_module instanceof IService_ServiceCode
         ) {
             $payment_methods .= $this->template->render("payment_method_code");
         }

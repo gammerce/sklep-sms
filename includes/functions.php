@@ -862,7 +862,7 @@ function purchase_info($data)
 
     $service_module = $heart->get_service_module($pbs['service']);
 
-    return $service_module !== null && object_implements($service_module, "IService_PurchaseWeb")
+    return $service_module !== null && $service_module instanceof IService_PurchaseWeb
         ? $service_module->purchase_info($data['action'], $pbs)
         : "";
 }
@@ -998,21 +998,6 @@ function log_info($string)
     $db->query(
         $db->prepare("INSERT INTO `" . TABLE_PREFIX . "logs` " . "SET `text` = '%s'", [$string])
     );
-}
-
-/**
- * Sprawdza, czy dany obiekt implementuje odpowiedni interfejs
- *
- * @param $class
- * @param $interface
- *
- * @return bool
- */
-function object_implements($class, $interface)
-{
-    $interfaces = class_implements($class);
-
-    return in_array($interface, $interfaces);
 }
 
 function create_dom_element($name, $text = "", $data = [])

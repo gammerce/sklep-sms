@@ -1,6 +1,8 @@
 <?php
 
-class PageForgottenPassword extends PageSimple implements I_BeLoggedCannot
+use App\Interfaces\IBeLoggedCannot;
+
+class PageForgottenPassword extends PageSimple implements IBeLoggedCannot
 {
     const PAGE_ID = 'forgotten_password';
     protected $templateName = 'forgotten_password';

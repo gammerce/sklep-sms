@@ -1,6 +1,8 @@
 <?php
 
-class BlockLoggedInfo extends BlockSimple implements I_BeLoggedMust
+use App\Interfaces\IBeLoggedMust;
+
+class BlockLoggedInfo extends BlockSimple implements IBeLoggedMust
 {
     protected $template = "logged_in_informations";
 

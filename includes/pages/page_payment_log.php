@@ -2,10 +2,11 @@
 
 use App\Auth;
 use App\Database;
+use App\Interfaces\IBeLoggedMust;
 use App\Settings;
 use App\Template;
 
-class PagePaymentLog extends Page implements I_BeLoggedMust
+class PagePaymentLog extends Page implements IBeLoggedMust
 {
     const PAGE_ID = 'payment_log';
 
@@ -53,7 +54,7 @@ class PagePaymentLog extends Page implements I_BeLoggedMust
 
             if (
                 ($service_module = $heart->get_service_module($row['service'])) !== null &&
-                object_implements($service_module, "IService_PurchaseWeb")
+               $service_module instanceof IService_PurchaseWeb
             ) {
                 $log_info = $service_module->purchase_info("payment_log", $row);
                 $desc = $log_info['text'];

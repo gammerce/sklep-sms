@@ -7,6 +7,7 @@ use App\Models\Purchase;
 use App\Payment;
 use App\Settings;
 use App\TranslationManager;
+use IService_PurchaseOutside;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -32,7 +33,7 @@ class ServerStuffController
                 return $this->xmlOutput("bad_module", $lang->translate('bad_module'), 0);
             }
 
-            if (!object_implements($service_module, "IService_PurchaseOutside")) {
+            if (!($service_module instanceof IService_PurchaseOutside)) {
                 return $this->xmlOutput("bad_module", $lang->translate('bad_module'), 0);
             }
 

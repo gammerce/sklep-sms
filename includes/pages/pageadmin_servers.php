@@ -100,7 +100,7 @@ class PageAdminServers extends PageAdmin implements IPageAdmin_ActionBox
             // Dana usługa nie może być kupiona na serwerze
             if (
                 ($service_module = $this->heart->get_service_module($service['id'])) === null ||
-                !object_implements($service_module, "IService_AvailableOnServers")
+                !($service_module instanceof IService_AvailableOnServers)
             ) {
                 continue;
             }

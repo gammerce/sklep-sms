@@ -20,6 +20,12 @@ use App\Responses\PlainResponse;
 use App\Settings;
 use App\Template;
 use App\TranslationManager;
+use IPageAdmin_ActionBox;
+use IService_ActionExecute;
+use IService_AdminManage;
+use IService_AvailableOnServers;
+use IService_ServiceCodeAdminManage;
+use IService_UserServiceAdminAdd;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 
@@ -173,7 +179,7 @@ class JsonHttpAdminKernel extends Kernel
 
             if (
                 ($service_module = $heart->get_service_module($_POST['service'])) === null ||
-                !object_implements($service_module, "IService_UserServiceAdminAdd")
+                !($service_module instanceof IService_UserServiceAdminAdd)
             ) {
                 return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
             }
@@ -752,7 +758,7 @@ class JsonHttpAdminKernel extends Kernel
             // Przed błędami
             if (
                 $service_module !== null &&
-                object_implements($service_module, "IService_AdminManage")
+               $service_module instanceof IService_AdminManage
             ) {
                 $additional_warnings = $service_module->service_admin_manage_pre($_POST);
                 $warnings = array_merge((array) $warnings, (array) $additional_warnings);
@@ -772,7 +778,7 @@ class JsonHttpAdminKernel extends Kernel
             // Po błędach wywołujemy metodę modułu
             if (
                 $service_module !== null &&
-                object_implements($service_module, "IService_AdminManage")
+               $service_module instanceof IService_AdminManage
             ) {
                 $module_data = $service_module->service_admin_manage_post($_POST);
 
@@ -945,7 +951,7 @@ class JsonHttpAdminKernel extends Kernel
 
             if (
                 $service_module !== null &&
-                object_implements($service_module, "IService_AdminManage")
+               $service_module instanceof IService_AdminManage
             ) {
                 $output = $service_module->service_admin_extra_fields_get();
             }
@@ -1048,7 +1054,7 @@ class JsonHttpAdminKernel extends Kernel
                     // Dana usługa nie może być kupiona na serwerze
                     if (
                         !is_null($service_module = $heart->get_service_module($service['id'])) &&
-                        !object_implements($service_module, "IService_AvailableOnServers")
+                        !($service_module instanceof IService_AvailableOnServers)
                     ) {
                         continue;
                     }
@@ -1859,7 +1865,7 @@ class JsonHttpAdminKernel extends Kernel
             $output = "";
             if (
                 ($service_module = $heart->get_service_module($_POST['service'])) !== null &&
-                object_implements($service_module, "IService_ServiceCodeAdminManage")
+               $service_module instanceof IService_ServiceCodeAdminManage
             ) {
                 $output = $service_module->service_code_admin_add_form_get();
             }
@@ -1921,7 +1927,7 @@ class JsonHttpAdminKernel extends Kernel
                 return new ApiResponse("wrong_page", $lang->translate('wrong_page_id'), 0);
             }
 
-            if (!object_implements($page, "IPageAdmin_ActionBox")) {
+            if (!($page instanceof IPageAdmin_ActionBox)) {
                 return new ApiResponse(
                     "page_no_action_box",
                     $lang->translate('no_action_box_support'),
@@ -1963,7 +1969,7 @@ class JsonHttpAdminKernel extends Kernel
         if ($action == "service_action_execute") {
             if (
                 ($service_module = $heart->get_service_module($_POST['service'])) === null ||
-                !object_implements($service_module, "IService_ActionExecute")
+                !($service_module instanceof IService_ActionExecute)
             ) {
                 return new PlainResponse($lang->translate('bad_module'));
             }

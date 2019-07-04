@@ -126,7 +126,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdmin_ActionBox
                 foreach ($this->heart->get_services() as $id => $row) {
                     if (
                         ($service_module = $this->heart->get_service_module($id)) === null ||
-                        !object_implements($service_module, "IService_ServiceCodeAdminManage")
+                        !($service_module instanceof IService_ServiceCodeAdminManage)
                     ) {
                         continue;
                     }

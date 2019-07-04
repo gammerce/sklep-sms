@@ -1,6 +1,7 @@
 <?php
+namespace App\Interfaces;
 
-interface I_Cronjob
+interface ICronjob
 {
     /**
      * Metoda wywoływana na początku cronjoba

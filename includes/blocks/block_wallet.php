@@ -1,10 +1,11 @@
 <?php
 
 use App\Auth;
+use App\Interfaces\IBeLoggedMust;
 use App\Routes\UrlGenerator;
 use App\Template;
 
-class BlockWallet extends Block implements I_BeLoggedMust
+class BlockWallet extends Block implements IBeLoggedMust
 {
     public function get_content_class()
     {
