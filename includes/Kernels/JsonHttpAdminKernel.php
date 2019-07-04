@@ -756,10 +756,7 @@ class JsonHttpAdminKernel extends Kernel
             }
 
             // Przed błędami
-            if (
-                $service_module !== null &&
-               $service_module instanceof IService_AdminManage
-            ) {
+            if ($service_module !== null && $service_module instanceof IService_AdminManage) {
                 $additional_warnings = $service_module->service_admin_manage_pre($_POST);
                 $warnings = array_merge((array) $warnings, (array) $additional_warnings);
             }
@@ -776,10 +773,7 @@ class JsonHttpAdminKernel extends Kernel
             }
 
             // Po błędach wywołujemy metodę modułu
-            if (
-                $service_module !== null &&
-               $service_module instanceof IService_AdminManage
-            ) {
+            if ($service_module !== null && $service_module instanceof IService_AdminManage) {
                 $module_data = $service_module->service_admin_manage_post($_POST);
 
                 // Tworzymy elementy SET zapytania
@@ -949,10 +943,7 @@ class JsonHttpAdminKernel extends Kernel
                 $service_module = $heart->get_service_module_s($_POST['module']);
             }
 
-            if (
-                $service_module !== null &&
-               $service_module instanceof IService_AdminManage
-            ) {
+            if ($service_module !== null && $service_module instanceof IService_AdminManage) {
                 $output = $service_module->service_admin_extra_fields_get();
             }
 
@@ -1865,7 +1856,7 @@ class JsonHttpAdminKernel extends Kernel
             $output = "";
             if (
                 ($service_module = $heart->get_service_module($_POST['service'])) !== null &&
-               $service_module instanceof IService_ServiceCodeAdminManage
+                $service_module instanceof IService_ServiceCodeAdminManage
             ) {
                 $output = $service_module->service_code_admin_add_form_get();
             }

@@ -92,7 +92,7 @@ class PagePayment extends Page
 
         if (
             !$purchase_data->getPayment('no_code') &&
-           $service_module instanceof IService_ServiceCode
+            $service_module instanceof IService_ServiceCode
         ) {
             $payment_methods .= $this->template->render("payment_method_code");
         }

@@ -21,15 +21,6 @@ class CronExecutor
 
     public function run()
     {
-        // Pozyskujemy wszystkie klasy implementujące interface cronjob
-        $classes = array_filter(get_declared_classes(), function ($className) {
-            return in_array('ICronjob', class_implements($className));
-        });
-
-        foreach ($classes as $class) {
-            $class::cronjob_pre();
-        }
-
         // Usuwamy przestarzałe usługi użytkowników
         delete_users_old_services();
 
@@ -49,14 +40,11 @@ class CronExecutor
         // Remove files older than 30 days from data/transfers
         $path = $this->app->path('data/transfers');
         foreach (scandir($path) as $file) {
-            if (filectime($path . $file) < time() - 60 * 60 * 24 * 30) {
-                unlink($path . $file);
+            $filepath = rtrim($path, "/") . "/" . ltrim($file, "/");
+            if (filectime($filepath) < time() - 60 * 60 * 24 * 30) {
+                unlink($filepath);
             }
         }
         unset($path);
-
-        foreach ($classes as $class) {
-            $class::cronjob_post();
-        }
     }
 }

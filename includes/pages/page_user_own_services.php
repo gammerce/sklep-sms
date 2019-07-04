@@ -105,7 +105,7 @@ class Page_UserOIwnServices extends Page implements IBeLoggedMust
 
             if (
                 $settings['user_edit_service'] &&
-               $service_module instanceof IService_UserOwnServicesEdit
+                $service_module instanceof IService_UserOwnServicesEdit
             ) {
                 $button_edit = create_dom_element("button", $lang->translate('edit'), [
                     'class' => "button edit_row",
