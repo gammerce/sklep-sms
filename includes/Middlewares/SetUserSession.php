@@ -9,10 +9,10 @@ class SetUserSession implements MiddlewareContract
 {
     public function handle(Request $request, Application $app)
     {
-        $session = new Session();
+        /** @var Session $session */
+        $session = $app->make(Session::class);
         $session->setName("user");
         $session->start();
-        $request->setSession($session);
 
         return null;
     }

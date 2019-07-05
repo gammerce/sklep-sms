@@ -14,7 +14,7 @@ class IndexTestCase extends TestCase
             define('IN_SCRIPT', '1');
         }
 
-        $app = require __DIR__ . '/../../../bootstrap/app.php';
+        $app = parent::createApplication();
         $app->singleton(KernelContract::class, IndexKernel::class);
 
         return $app;

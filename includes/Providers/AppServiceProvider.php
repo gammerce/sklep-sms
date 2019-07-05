@@ -13,6 +13,7 @@ use App\License;
 use App\Settings;
 use App\TranslationManager;
 use Psr\SimpleCache\CacheInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class AppServiceProvider
 {
@@ -21,6 +22,7 @@ class AppServiceProvider
         $this->registerDatabase($app);
         $this->registerCache($app);
 
+        $app->singleton(Session::class);
         $app->singleton(Heart::class);
         $app->singleton(Auth::class);
         $app->singleton(Settings::class);

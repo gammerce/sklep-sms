@@ -17,7 +17,8 @@ class RegisterTest extends IndexTestCase
         $forename = 'Jan';
         $surname = 'Nowak';
 
-        $session = new Session();
+        /** @var Session $session */
+        $session = $this->app->make(Session::class);
         $session->setName("user");
         $session->start();
         $session->set("asid", 1);

@@ -9,6 +9,8 @@ use App\Settings;
 use Mockery;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Tests\Psr4\Factory;
 
 class TestCase extends BaseTestCase
@@ -90,7 +92,11 @@ class TestCase extends BaseTestCase
 
     protected function createApplication()
     {
-        return require __DIR__ . '/../../../bootstrap/app.php';
+        $app = require __DIR__ . '/../../../bootstrap/app.php';
+        $app->singleton(Session::class, function () {
+            return new Session(new MockArraySessionStorage());
+        });
+        return $app;
     }
 
     public function afterApplicationCreated(callable $callback)

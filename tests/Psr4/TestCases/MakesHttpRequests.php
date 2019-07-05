@@ -12,7 +12,6 @@ trait MakesHttpRequests
         $kernel = $this->app->make(KernelContract::class);
 
         $request = Request::create($this->prepareUrlForRequest($uri), $method, $parameters);
-        $this->app->instance(Request::class, $request);
 
         $response = $kernel->handle($request);
         $kernel->terminate($request, $response);

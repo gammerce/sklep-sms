@@ -8,6 +8,7 @@ use Exception;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Throwable;
 
 abstract class Kernel implements KernelContract
@@ -27,6 +28,7 @@ abstract class Kernel implements KernelContract
     {
         try {
             $this->app->instance(Request::class, $request);
+            $request->setSession($this->app->make(Session::class));
             $response = $this->runMiddlewares($request);
 
             if ($response) {

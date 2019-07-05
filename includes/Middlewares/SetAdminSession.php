@@ -9,10 +9,10 @@ class SetAdminSession implements MiddlewareContract
 {
     public function handle(Request $request, Application $app)
     {
-        $session = new Session();
+        /** @var Session $session */
+        $session = $app->make(Session::class);
         $session->setName("admin");
         $session->start();
-        $request->setSession($session);
 
         $app->setAdminSession();
 
