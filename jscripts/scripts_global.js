@@ -71,15 +71,16 @@ function refresh_blocks(bricks, admin, onSuccessFunction) {
     onSuccessFunction =
         typeof onSuccessFunction !== "undefined" ? onSuccessFunction : function() {};
 
+    const splittedUrl = document.URL.split("?");
+    const query = splittedUrl.length > 1 ? splittedUrl.pop() : "";
+
     $.ajax({
         type: "POST",
-        url:
-            buildUrl(admin ? "jsonhttp_admin.php" : "jsonhttp.php") +
-            "?" +
-            document.URL.split("?").pop(),
+        url: buildUrl(admin ? "jsonhttp_admin.php" : "jsonhttp.php") + "?" + query,
         data: {
             action: "refresh_blocks",
             bricks: bricks,
+            pid: typeof currentPage !== "undefined" ? currentPage : undefined,
         },
         complete: function() {
             loader.hide();

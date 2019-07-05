@@ -10,7 +10,19 @@ use Symfony\Component\HttpFoundation\Response;
 
 class IndexController
 {
-    public function oldGet(
+    public function action(
+        $pageId,
+        Request $request,
+        Heart $heart,
+        License $license,
+        CurrentPage $currentPage,
+        Template $template
+    ) {
+        $currentPage->setPid($pageId);
+        return $this->oldAction($request, $heart, $license, $currentPage, $template);
+    }
+
+    public function oldAction(
         Request $request,
         Heart $heart,
         License $license,
@@ -37,7 +49,7 @@ class IndexController
         $user_buttons = get_content("user_buttons", $request);
 
         // Pobranie headera
-        $header = $template->render("header", compact('heart', 'license'));
+        $header = $template->render("header", compact('currentPage', 'heart', 'license'));
 
         // Pobranie ostatecznego szablonu
         $output = $template->render(
@@ -54,17 +66,5 @@ class IndexController
         );
 
         return new Response($output);
-    }
-
-    public function get(
-        $pageId,
-        Request $request,
-        Heart $heart,
-        License $license,
-        CurrentPage $currentPage,
-        Template $template
-    ) {
-        $currentPage->setPid($pageId);
-        return $this->oldGet($request, $heart, $license, $currentPage, $template);
     }
 }

@@ -5,6 +5,7 @@ use App\Database;
 use App\Interfaces\IBeLoggedMust;
 use App\Settings;
 use App\Template;
+use Symfony\Component\HttpFoundation\Request;
 
 class Page_UserOIwnServices extends Page implements IBeLoggedMust
 {
@@ -34,6 +35,9 @@ class Page_UserOIwnServices extends Page implements IBeLoggedMust
 
         /** @var Database $db */
         $db = $this->app->make(Database::class);
+
+        /** @var Request $request */
+        $request = $this->app->make(Request::class);
 
         // Ktore moduly wspieraja usługi użytkowników
         $classes = array_filter(get_declared_classes(), function ($className) {
@@ -129,7 +133,7 @@ class Page_UserOIwnServices extends Page implements IBeLoggedMust
         $pagination = get_pagination(
             $rows_count,
             $this->currentPage->getPageNumber(),
-            "index.php",
+            $request->getPathInfo(),
             $get,
             4
         );

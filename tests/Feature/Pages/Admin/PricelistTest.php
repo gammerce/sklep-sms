@@ -2,9 +2,9 @@
 namespace Tests\Feature\Pages\Admin;
 
 use Tests\Psr4\Concerns\AuthConcern;
-use Tests\Psr4\TestCases\AdminTestCase;
+use Tests\Psr4\TestCases\IndexTestCase;
 
-class PricelistTest extends AdminTestCase
+class PricelistTest extends IndexTestCase
 {
     use AuthConcern;
 
@@ -16,7 +16,7 @@ class PricelistTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/', ['pid' => 'pricelist']);
+        $response = $this->get('/admin.php', ['pid' => 'pricelist']);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

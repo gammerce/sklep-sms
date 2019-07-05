@@ -6,6 +6,7 @@ use Admin\Table\DOMElement;
 use Admin\Table\Img;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
+use App\Routes\UrlGenerator;
 
 class PageAdminBoughtServices extends PageAdmin
 {
@@ -20,6 +21,9 @@ class PageAdminBoughtServices extends PageAdmin
 
     protected function content($get, $post)
     {
+        /** @var UrlGenerator $url */
+        $url = $this->app->make(UrlGenerator::class);
+
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
         $wrapper->setSearch();
@@ -129,12 +133,12 @@ class PageAdminBoughtServices extends PageAdmin
             $payment_link->setName('a');
             $payment_link->setParam(
                 'href',
-                $this->url->to("admin.php?pid=payment_{$row['payment']}&payid={$row['payment_id']}")
+                $this->url->to("/admin/payment_{$row['payment']}?payid={$row['payment_id']}")
             );
             $payment_link->setParam('target', '_blank');
 
             $payment_img = new Img();
-            $payment_img->setParam('src', 'images/go.png');
+            $payment_img->setParam('src', $url->to('images/go.png'));
             $payment_img->setParam('title', $this->lang->translate('see_payment'));
             $payment_link->addContent($payment_img);
 

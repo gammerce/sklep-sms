@@ -2,6 +2,7 @@
 namespace Admin\Table;
 
 use App\CurrentPage;
+use App\Routes\UrlGenerator;
 use App\Template;
 use App\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -267,6 +268,8 @@ class BodyRow extends Row
 
     public function toHtml()
     {
+        /** @var UrlGenerator $url */
+        $url = app()->make(UrlGenerator::class);
         /** @var TranslationManager $translationManager */
         $translationManager = app()->make(TranslationManager::class);
         $lang = $translationManager->user();
@@ -284,7 +287,7 @@ class BodyRow extends Row
             $button = new DOMElement();
             $button->setName('img');
             $button->setParam('class', "edit_row");
-            $button->setParam('src', 'images/edit.png');
+            $button->setParam('src', $url->to('images/edit.png'));
             $button->setParam('title', $lang->translate('edit') . ' ' . $this->db_id);
             $actions->addContent($button);
         }
@@ -293,7 +296,7 @@ class BodyRow extends Row
             $button = new DOMElement();
             $button->setName('img');
             $button->setParam('class', "delete_row");
-            $button->setParam('src', 'images/bin.png');
+            $button->setParam('src', $url->to('images/bin.png'));
             $button->setParam('title', $lang->translate('delete') . ' ' . $this->db_id);
             $actions->addContent($button);
         }
@@ -472,11 +475,18 @@ class Structure extends DOMElement
     {
         /** @var CurrentPage $currentPage */
         $currentPage = app()->make(CurrentPage::class);
+        /** @var Request $request */
+        $request = app()->make(Request::class);
 
         $pageNumber = $currentPage->getPageNumber();
         $this->db_rows_amount = intval($amount);
 
-        $pagination_txt = get_pagination($this->db_rows_amount, $pageNumber, "admin.php", $_GET);
+        $pagination_txt = get_pagination(
+            $this->db_rows_amount,
+            $pageNumber,
+            $request->getPathInfo(),
+            $request->query->all()
+        );
         if (strlen($pagination_txt)) {
             $this->foot = new DOMElement();
             $this->foot->setName('tfoot');

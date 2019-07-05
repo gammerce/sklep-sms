@@ -38,7 +38,7 @@ class PageAdminMain extends PageAdmin
 
         // Info o braku licki
         if (!$this->license->isValid()) {
-            $settingsUrl = $this->url->to("admin.php?pid=settings");
+            $settingsUrl = $this->url->to("/admin/settings");
             $this->add_note(
                 $this->lang->sprintf($this->lang->translate('license_error'), $settingsUrl),
                 "negative",
@@ -67,7 +67,7 @@ class PageAdminMain extends PageAdmin
         $newestSmVersion = $this->version->getNewestSourcemod();
 
         if ($this->app->version() !== $newestVersion) {
-            $updateWebLink = $this->url->to("admin.php?pid=update_web");
+            $updateWebLink = $this->url->to("/admin/update_web");
 
             $this->add_note(
                 $this->lang->sprintf(
@@ -88,7 +88,7 @@ class PageAdminMain extends PageAdmin
         }
 
         if ($serversCount) {
-            $updateServersLink = $this->url->to("admin.php?pid=update_servers");
+            $updateServersLink = $this->url->to("/admin/update_servers");
 
             $this->add_note(
                 $this->lang->sprintf(
