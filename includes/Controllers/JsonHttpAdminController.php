@@ -1865,7 +1865,10 @@ class JsonHttpAdminController
                     continue;
                 }
 
-                $data[$block->get_content_id()]['content'] = $block->get_content($request->query->all(), $request->request->all());
+                $data[$block->get_content_id()]['content'] = $block->get_content(
+                    $request->query->all(),
+                    $request->request->all()
+                );
                 if ($data[$block->get_content_id()]['content'] !== null) {
                     $data[$block->get_content_id()]['class'] = $block->get_content_class();
                 } else {

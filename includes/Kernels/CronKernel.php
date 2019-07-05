@@ -35,7 +35,10 @@ class CronKernel extends Kernel
         $cronExecutor = $this->app->make(CronExecutor::class);
 
         // Sprawdzenie random stringu
-        if ($request->query->get('key') != $settings['random_key'] && $argv[1] != $settings['random_key']) {
+        if (
+            $request->query->get('key') != $settings['random_key'] &&
+            $argv[1] != $settings['random_key']
+        ) {
             return new Response($lang->translate('wrong_cron_key'));
         }
 

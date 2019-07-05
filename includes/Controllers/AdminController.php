@@ -89,7 +89,10 @@ class AdminController
             // Pobranie headera
             $header = $template->render("admin/header", compact('heart'));
 
-            $action = rtrim($request->getPathInfo() . "?" . http_build_query($request->query->all()), "?");
+            $action = rtrim(
+                $request->getPathInfo() . "?" . http_build_query($request->query->all()),
+                "?"
+            );
 
             // Pobranie szablonu logowania
             return new Response(

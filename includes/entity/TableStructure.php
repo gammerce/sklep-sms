@@ -481,7 +481,12 @@ class Structure extends DOMElement
         $pageNumber = $currentPage->getPageNumber();
         $this->db_rows_amount = intval($amount);
 
-        $pagination_txt = get_pagination($this->db_rows_amount, $pageNumber, $request->getPathInfo(), $request->query->all());
+        $pagination_txt = get_pagination(
+            $this->db_rows_amount,
+            $pageNumber,
+            $request->getPathInfo(),
+            $request->query->all()
+        );
         if (strlen($pagination_txt)) {
             $this->foot = new DOMElement();
             $this->foot->setName('tfoot');

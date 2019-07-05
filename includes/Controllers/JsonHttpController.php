@@ -576,7 +576,10 @@ class JsonHttpController
                         continue;
                     }
 
-                    $data[$block->get_content_id()]['content'] = $block->get_content($request->query->all(), $request->request->all());
+                    $data[$block->get_content_id()]['content'] = $block->get_content(
+                        $request->query->all(),
+                        $request->request->all()
+                    );
                     if ($data[$block->get_content_id()]['content'] !== null) {
                         $data[$block->get_content_id()]['class'] = $block->get_content_class();
                     } else {
@@ -784,7 +787,9 @@ class JsonHttpController
             ]);
             $page = new PageAdminIncome();
 
-            return new HtmlResponse($page->get_content($request->query->all(), $request->request->all()));
+            return new HtmlResponse(
+                $page->get_content($request->query->all(), $request->request->all())
+            );
         }
 
         if ($action == "service_action_execute") {
