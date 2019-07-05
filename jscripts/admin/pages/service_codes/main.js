@@ -1,6 +1,6 @@
 // Kliknięcie dodania kodu na usługę
 $(document).delegate("#service_code_button_add", "click", function() {
-    show_action_box(get_get_param("pid"), "code_add");
+    show_action_box(currentPage, "code_add");
 });
 
 // Kliknięcie przycisku generuj kod

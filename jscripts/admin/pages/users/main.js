@@ -2,14 +2,14 @@
 var row_id = 0;
 $(document).delegate(".table_structure .charge_wallet", "click", function() {
     row_id = $(this).closest("tr");
-    show_action_box(get_get_param("pid"), "charge_wallet", {
+    show_action_box(currentPage, "charge_wallet", {
         uid: row_id.children("td[headers=id]").text(),
     });
 });
 
 // Kliknięcie edycji użytkownika
 $(document).delegate(".table_structure .edit_row", "click", function() {
-    show_action_box(get_get_param("pid"), "user_edit", {
+    show_action_box(currentPage, "user_edit", {
         uid: $(this)
             .closest("tr")
             .find("td[headers=id]")

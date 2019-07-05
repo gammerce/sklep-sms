@@ -1,11 +1,11 @@
 // Kliknięcie dodania serwera
 $(document).delegate("#server_button_add", "click", function() {
-    show_action_box(get_get_param("pid"), "server_add");
+    show_action_box(currentPage, "server_add");
 });
 
 // Kliknięcie edycji serwera
 $(document).delegate(".table_structure .edit_row", "click", function() {
-    show_action_box(get_get_param("pid"), "server_edit", {
+    show_action_box(currentPage, "server_edit", {
         id: $(this)
             .closest("tr")
             .find("td[headers=id]")

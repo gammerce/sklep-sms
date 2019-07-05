@@ -19,6 +19,7 @@ use App\Middlewares\MiddlewareContract;
 use App\Middlewares\RunCron;
 use App\Middlewares\SetAdminSession;
 use App\Middlewares\SetLanguage;
+use App\Middlewares\SetUserSession;
 use App\Middlewares\UpdateUserActivity;
 use App\Middlewares\ValidateLicense;
 use FastRoute\Dispatcher;
@@ -41,6 +42,7 @@ class RoutesManager
         $r->addGroup(
             [
                 "middlewares" => [
+                    SetUserSession::class,
                     IsUpToDate::class,
                     LoadSettings::class,
                     SetLanguage::class,

@@ -1,6 +1,6 @@
 // Kliknięcie dodania usługi użytkownika
 $(document).delegate("#user_service_button_add", "click", function() {
-    show_action_box(get_get_param("pid"), "user_service_add");
+    show_action_box(currentPage, "user_service_add");
 });
 
 // Kliknięcie edycji usługi użytkownika
@@ -11,12 +11,12 @@ $(document).delegate("[id^=edit_row_]", "click", function() {
                 .attr("id")
                 .replace("edit_row_", "row_")
     );
-    show_action_box(get_get_param("pid"), "user_service_edit", {
+    show_action_box(currentPage, "user_service_edit", {
         id: row_id.children("td[headers=id]").text(),
     });
 });
 $(document).delegate(".table_structure .edit_row", "click", function() {
-    show_action_box(get_get_param("pid"), "user_service_edit", {
+    show_action_box(currentPage, "user_service_edit", {
         id: $(this)
             .closest("tr")
             .find("td[headers=id]")

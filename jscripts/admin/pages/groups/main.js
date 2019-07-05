@@ -1,11 +1,11 @@
 // Kliknięcie dodania grupy
 $(document).delegate("#group_button_add", "click", function() {
-    show_action_box(get_get_param("pid"), "group_add");
+    show_action_box(currentPage, "group_add");
 });
 
 // Kliknięcie edycji grupy
 $(document).delegate(".table_structure .edit_row", "click", function() {
-    show_action_box(get_get_param("pid"), "group_edit", {
+    show_action_box(currentPage, "group_edit", {
         id: $(this)
             .closest("tr")
             .find("td[headers=id]")

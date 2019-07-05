@@ -1,11 +1,11 @@
 // Kliknięcie dodania pytania antyspamowego
 $(document).delegate("#antispam_question_button_add", "click", function() {
-    show_action_box(get_get_param("pid"), "antispam_question_add");
+    show_action_box(currentPage, "antispam_question_add");
 });
 
 // Kliknięcie edycji pytania antyspamowego
 $(document).delegate(".table_structure .edit_row", "click", function() {
-    show_action_box(get_get_param("pid"), "antispam_question_edit", {
+    show_action_box(currentPage, "antispam_question_edit", {
         id: $(this)
             .closest("tr")
             .find("td[headers=id]")
