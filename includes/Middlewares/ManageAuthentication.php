@@ -11,10 +11,11 @@ class ManageAuthentication implements MiddlewareContract
     {
         /** @var Auth $auth */
         $auth = $app->make(Auth::class);
+        $session = $request->getSession();
 
         // Pozyskujemy dane uzytkownika, jeżeli jeszcze ich nie ma
-        if (!$auth->check() && isset($_SESSION['uid'])) {
-            $auth->loginUserUsingId($_SESSION['uid']);
+        if (!$auth->check() && $session->has('uid')) {
+            $auth->loginUserUsingId($session->get('uid'));
         }
 
         return null;

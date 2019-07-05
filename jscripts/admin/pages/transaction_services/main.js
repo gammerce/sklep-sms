@@ -1,5 +1,5 @@
 $(document).delegate(".table_structure .edit_row", "click", function() {
-    show_action_box(get_get_param("pid"), "transaction_service_edit", {
+    show_action_box(currentPage, "transaction_service_edit", {
         id: $(this)
             .closest("tr")
             .find("td[headers=id]")

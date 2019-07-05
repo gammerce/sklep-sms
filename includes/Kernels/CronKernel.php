@@ -3,9 +3,10 @@ namespace App\Kernels;
 
 use App\CronExecutor;
 use App\Middlewares\IsUpToDate;
-use App\Middlewares\ValidateLicense;
 use App\Middlewares\LoadSettings;
 use App\Middlewares\SetLanguage;
+use App\Middlewares\SetUserSession;
+use App\Middlewares\ValidateLicense;
 use App\Settings;
 use App\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 class CronKernel extends Kernel
 {
     protected $middlewares = [
+        SetUserSession::class,
         IsUpToDate::class,
         LoadSettings::class,
         SetLanguage::class,

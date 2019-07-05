@@ -54,6 +54,7 @@ class AdminController
         Template $template,
         TranslationManager $translationManager
     ) {
+        $session = $request->getSession();
         $user = $auth->user();
         $lang = $translationManager->user();
 
@@ -73,17 +74,17 @@ class AdminController
                     $app->version()
             );
 
-            if (isset($_SESSION['info'])) {
-                if ($_SESSION['info'] == "wrong_data") {
+            if ($session->has("info")) {
+                if ($session->get("info") == "wrong_data") {
                     $text = $lang->translate('wrong_login_data');
                     $warning = $template->render("admin/login_warning", compact('text'));
                 } else {
-                    if ($_SESSION['info'] == "no_privilages") {
+                    if ($session->get("info") == "no_privilages") {
                         $text = $lang->translate('no_access');
                         $warning = $template->render("admin/login_warning", compact('text'));
                     }
                 }
-                unset($_SESSION['info']);
+                $session->remove("info");
             }
 
             // Pobranie headera
@@ -117,7 +118,7 @@ class AdminController
                         class_implements($module_data['class'])
                     )
                 ) {
-                    $pid = "user_service&subpage=" . urlencode($module_data['id']);
+                    $pid = "user_service?subpage=" . urlencode($module_data['id']);
                     break;
                 }
             }

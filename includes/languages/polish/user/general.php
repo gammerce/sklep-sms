@@ -96,7 +96,7 @@ W kolejnym etapie, zostanie do Ciebie wysłany e-mail z linkiem do zresetowania 
     'service_was_bought' => 'Zakupiono usługę {1} na serwerze {2}',
     'show_more' => 'Pokaż więcej',
     'sign_up_info' => 'Twoje konto zostało prawidłowo zarejestrowane na adres email: {1}.<br/>
-Możesz teraz skorzystać z wielu przydatnych dodatków.',
+Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
     'site_not_exists' => 'Strona nie istnieje.',
     'sms_cost' => 'Koszt SMS',
     'sms_info_bad_code' => 'Wprowadzono błędny kod zwrotny.',

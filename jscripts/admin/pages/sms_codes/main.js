@@ -1,6 +1,6 @@
 // Kliknięcie dodania kodu SMS
 $(document).delegate("#sms_code_button_add", "click", function() {
-    show_action_box(get_get_param("pid"), "sms_code_add");
+    show_action_box(currentPage, "sms_code_add");
 });
 
 // Kliknięcie przycisku generuj kod

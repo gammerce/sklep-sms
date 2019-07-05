@@ -61,19 +61,6 @@ function json_parse(text, show) {
     }
 }
 
-function get_get_param(key) {
-    var prmstr = window.location.search.substr(1);
-    if (prmstr == null || prmstr == "") return null;
-
-    var prmarr = prmstr.split("&");
-    for (var i = 0; i < prmarr.length; i++) {
-        var tmparr = prmarr[i].split("=");
-        if (tmparr[0] == key) return tmparr[1];
-    }
-
-    return null;
-}
-
 function get_random_string(length) {
     length = get_value(length, 8);
     var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";

@@ -2,6 +2,7 @@
 namespace Tests\Feature\Actions\Shop;
 
 use App\Models\User;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Tests\Psr4\TestCases\IndexTestCase;
 
 class RegisterTest extends IndexTestCase
@@ -15,7 +16,12 @@ class RegisterTest extends IndexTestCase
         $username = 'janek';
         $forename = 'Jan';
         $surname = 'Nowak';
-        $_SESSION['asid'] = 1;
+
+        /** @var Session $session */
+        $session = $this->app->make(Session::class);
+        $session->setName("user");
+        $session->start();
+        $session->set("asid", 1);
 
         // when
         $response = $this->post('/jsonhttp.php', [

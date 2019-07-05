@@ -1,11 +1,11 @@
 // Kliknięcie dodania usługi
 $(document).delegate("#service_button_add", "click", function() {
-    show_action_box(get_get_param("pid"), "service_add");
+    show_action_box(currentPage, "service_add");
 });
 
 // Kliknięcie edycji usługi
 $(document).delegate(".table_structure .edit_row", "click", function() {
-    show_action_box(get_get_param("pid"), "service_edit", {
+    show_action_box(currentPage, "service_edit", {
         id: $(this)
             .closest("tr")
             .find("td[headers=id]")

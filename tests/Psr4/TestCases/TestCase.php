@@ -8,6 +8,9 @@ use App\LocaleService;
 use App\Settings;
 use Mockery;
 use PHPUnit\Framework\TestCase as BaseTestCase;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Tests\Psr4\Factory;
 
 class TestCase extends BaseTestCase
@@ -61,11 +64,18 @@ class TestCase extends BaseTestCase
             /** @var Database $db */
             $db = $this->app->make(Database::class);
 
+            /** @var Request $request */
+            $request = $this->app->make(Request::class);
+
             if ($this->wrapInTransaction) {
                 $db->rollback();
             }
 
             $db->close();
+
+            if ($request->hasSession()) {
+                $request->getSession()->invalidate();
+            }
 
             $this->app->flush();
             $this->app = null;
@@ -78,13 +88,15 @@ class TestCase extends BaseTestCase
 
             Mockery::close();
         }
-
-        $_SESSION = [];
     }
 
     protected function createApplication()
     {
-        return require __DIR__ . '/../../../bootstrap/app.php';
+        $app = require __DIR__ . '/../../../bootstrap/app.php';
+        $app->singleton(Session::class, function () {
+            return new Session(new MockArraySessionStorage());
+        });
+        return $app;
     }
 
     public function afterApplicationCreated(callable $callback)

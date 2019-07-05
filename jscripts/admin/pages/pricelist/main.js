@@ -1,11 +1,11 @@
 // Kliknięcie dodania ceny
 $(document).delegate("#price_button_add", "click", function() {
-    show_action_box(get_get_param("pid"), "price_add");
+    show_action_box(currentPage, "price_add");
 });
 
 // Kliknięcie edycji ceny
 $(document).delegate(".table_structure .edit_row", "click", function() {
-    show_action_box(get_get_param("pid"), "price_edit", {
+    show_action_box(currentPage, "price_edit", {
         id: $(this)
             .closest("tr")
             .find("td[headers=id]")
