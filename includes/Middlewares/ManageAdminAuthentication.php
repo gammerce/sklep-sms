@@ -12,6 +12,7 @@ class ManageAdminAuthentication implements MiddlewareContract
     {
         /** @var Auth $auth */
         $auth = $app->make(Auth::class);
+        $session = $request->getSession();
 
         // Logowanie się do panelu admina
         if (isset($_POST['username']) && isset($_POST['password'])) {
@@ -21,8 +22,8 @@ class ManageAdminAuthentication implements MiddlewareContract
         }
 
         // Pozyskujemy dane gracza, jeżeli jeszcze ich nie ma
-        if (!$auth->check() && isset($_SESSION['uid'])) {
-            $auth->loginUserUsingId($_SESSION['uid']);
+        if (!$auth->check() && $session->has("uid")) {
+            $auth->loginUserUsingId($session->get("uid"));
         }
 
         // Jeżeli próbujemy wejść do PA i nie jesteśmy zalogowani, to zmień stronę
@@ -33,7 +34,7 @@ class ManageAdminAuthentication implements MiddlewareContract
 
             // Jeżeli jest zalogowany, ale w międzyczasie odebrano mu dostęp do PA
             if ($auth->check()) {
-                $_SESSION['info'] = "no_privilages";
+                $session->set("info", "no_privilages");
             }
         }
 

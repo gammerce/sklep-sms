@@ -1,6 +1,7 @@
 <?php
 
 use App\Interfaces\IBeLoggedCannot;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageRegister extends Page implements IBeLoggedCannot
 {
@@ -15,6 +16,10 @@ class PageRegister extends Page implements IBeLoggedCannot
 
     protected function content($get, $post)
     {
+        /** @var Request $request */
+        $request = $this->app->make(Request::class);
+        $session = $request->getSession();
+
         $antispam_question = $this->db->fetch_array_assoc(
             $this->db->query(
                 "SELECT * FROM `" .
@@ -24,7 +29,7 @@ class PageRegister extends Page implements IBeLoggedCannot
                     "LIMIT 1"
             )
         );
-        $_SESSION['asid'] = $antispam_question['id'];
+        $session->set("asid", $antispam_question['id']);
 
         return $this->template->render("register", compact('antispam_question'));
     }

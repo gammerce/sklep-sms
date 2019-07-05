@@ -97,7 +97,7 @@ class RoutesManager
                 ]);
 
                 $r->addRoute(['GET', 'POST'], '/jsonhttp.php', [
-                    'middlewares' => [UpdateUserActivity::class],
+                    'middlewares' => [BlockOnInvalidLicense::class, UpdateUserActivity::class],
                     'uses' => JsonHttpController::class . '@action',
                 ]);
 

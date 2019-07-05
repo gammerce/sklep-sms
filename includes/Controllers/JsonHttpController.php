@@ -36,12 +36,9 @@ class JsonHttpController
         Settings $settings,
         Database $db,
         Mailer $mailer,
-        UserRepository $userRepository,
-        License $license
+        UserRepository $userRepository
     ) {
-        if (!$license->isValid()) {
-            return new Response();
-        }
+        $session = $request->getSession();
 
         $langShop = $translationManager->shop();
         $lang = $translationManager->user();
@@ -66,7 +63,7 @@ class JsonHttpController
 
             $user = $heart->get_user(0, $username, $password);
             if ($user->isLogged()) {
-                $_SESSION['uid'] = $user->getUid();
+                $session->set("uid", $user->getUid());
                 $user->updateActivity();
                 return new ApiResponse("logged_in", $lang->translate('login_success'), 1);
             }
@@ -79,26 +76,7 @@ class JsonHttpController
                 return new ApiResponse("already_logged_out");
             }
 
-            // Unset all of the session variables.
-            $_SESSION = [];
-
-            // If it's desired to kill the session, also delete the session cookie.
-            // Note: This will destroy the session, and not just the session data!
-            if (ini_get("session.use_cookies")) {
-                $params = session_get_cookie_params();
-                setcookie(
-                    session_name(),
-                    '',
-                    time() - 42000,
-                    $params["path"],
-                    $params["domain"],
-                    $params["secure"],
-                    $params["httponly"]
-                );
-            }
-
-            // Finally, destroy the session.
-            session_destroy();
+            $session->invalidate();
 
             return new ApiResponse("logged_out", $lang->translate('logout_success'), 1);
         }
@@ -142,12 +120,12 @@ class JsonHttpController
             $data['antispam']['id'] = $antispam_question['id'];
 
             // Sprawdzanie czy podane id pytania antyspamowego jest prawidlowe
-            if (!isset($_SESSION['asid']) || $as_id != $_SESSION['asid']) {
+            if (!$session->has("asid") || $as_id != $session->get("asid")) {
                 return new ApiResponse("wrong_sign", $lang->translate('wrong_sign'), 0, $data);
             }
 
             // Zapisujemy id pytania antyspamowego
-            $_SESSION['asid'] = $antispam_question['id'];
+            $session->set("asid", $antispam_question['id']);
 
             // Nazwa użytkownika
             if ($warning = check_for_warnings("username", $username)) {
