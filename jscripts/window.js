@@ -50,7 +50,7 @@ var loader = {
 
             loader.element.prepend(
                 $("<img>", {
-                    src: "images/ajax-loader.gif",
+                    src: buildUrl("images/ajax-loader.gif"),
                     title: "Ładowanie...",
                     class: "centered",
                 })

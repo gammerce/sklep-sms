@@ -87,7 +87,7 @@ class AdminController
             }
 
             // Pobranie headera
-            $header = $template->render("admin/header", compact('heart'));
+            $header = $template->render("admin/header", compact('currentPage', 'heart'));
 
             $action = rtrim(
                 $request->getPathInfo() . "?" . http_build_query($request->query->all()),
@@ -198,7 +198,7 @@ class AdminController
         }
 
         // Pobranie headera
-        $header = $template->render("admin/header", compact('heart'));
+        $header = $template->render("admin/header", compact('currentPage', 'heart'));
 
         $currentVersion = $app->version();
 

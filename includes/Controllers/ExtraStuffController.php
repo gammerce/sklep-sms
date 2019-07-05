@@ -2,6 +2,7 @@
 namespace App\Controllers;
 
 use App\Application;
+use App\CurrentPage;
 use App\Heart;
 use App\License;
 use App\Settings;
@@ -17,6 +18,7 @@ class ExtraStuffController
         Application $app,
         Template $template,
         Heart $heart,
+        CurrentPage $currentPage,
         TranslationManager $translationManager,
         Settings $settings,
         License $license
@@ -63,7 +65,7 @@ class ExtraStuffController
                         "styles/extra_stuff/long_desc.css?version=" .
                         $app->version()
                 );
-                $header = $template->render("header", compact('heart', 'license'));
+                $header = $template->render("header", compact('currentPage', 'heart', 'license'));
 
                 $output = create_dom_element(
                     "html",

@@ -49,7 +49,7 @@ class IndexController
         $user_buttons = get_content("user_buttons", $request);
 
         // Pobranie headera
-        $header = $template->render("header", compact('heart', 'license'));
+        $header = $template->render("header", compact('currentPage', 'heart', 'license'));
 
         // Pobranie ostatecznego szablonu
         $output = $template->render(
