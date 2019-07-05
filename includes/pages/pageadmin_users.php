@@ -5,6 +5,7 @@ use Admin\Table\Cell;
 use Admin\Table\Img;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
+use App\Routes\UrlGenerator;
 
 class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 {
@@ -20,6 +21,9 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
 
     protected function content($get, $post)
     {
+        /** @var UrlGenerator $url */
+        $url = $this->app->make(UrlGenerator::class);
+
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
         $wrapper->setSearch();
@@ -101,7 +105,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdmin_ActionBox
                 'title',
                 $this->lang->translate('charge') . ' ' . htmlspecialchars($row['username'])
             );
-            $button_charge->setParam('src', 'images/dollar.png');
+            $button_charge->setParam('src', $url->to('images/dollar.png'));
             $body_row->addAction($button_charge);
 
             if (get_privilages('manage_users')) {

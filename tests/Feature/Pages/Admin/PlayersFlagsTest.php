@@ -2,9 +2,9 @@
 namespace Tests\Feature\Pages\Admin;
 
 use Tests\Psr4\Concerns\AuthConcern;
-use Tests\Psr4\TestCases\AdminTestCase;
+use Tests\Psr4\TestCases\IndexTestCase;
 
-class ExtraFlagsTest extends AdminTestCase
+class ExtraFlagsTest extends IndexTestCase
 {
     use AuthConcern;
 
@@ -16,7 +16,7 @@ class ExtraFlagsTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/', ['pid' => 'players_flags']);
+        $response = $this->get('/admin.php', ['pid' => 'players_flags']);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

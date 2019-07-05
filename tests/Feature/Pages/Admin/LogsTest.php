@@ -2,9 +2,9 @@
 namespace Tests\Feature\Pages\Admin;
 
 use Tests\Psr4\Concerns\AuthConcern;
-use Tests\Psr4\TestCases\AdminTestCase;
+use Tests\Psr4\TestCases\IndexTestCase;
 
-class LogsTest extends AdminTestCase
+class LogsTest extends IndexTestCase
 {
     use AuthConcern;
 
@@ -16,7 +16,7 @@ class LogsTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/', ['pid' => 'logs']);
+        $response = $this->get('/admin.php', ['pid' => 'logs']);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

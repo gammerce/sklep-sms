@@ -2,9 +2,9 @@
 namespace Tests\Feature\Pages\Admin;
 
 use Tests\Psr4\Concerns\AuthConcern;
-use Tests\Psr4\TestCases\AdminTestCase;
+use Tests\Psr4\TestCases\IndexTestCase;
 
-class IncomeTest extends AdminTestCase
+class IncomeTest extends IndexTestCase
 {
     use AuthConcern;
 
@@ -16,7 +16,7 @@ class IncomeTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/', ['pid' => 'income']);
+        $response = $this->get('/admin.php', ['pid' => 'income']);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

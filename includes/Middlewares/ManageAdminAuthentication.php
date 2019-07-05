@@ -29,7 +29,7 @@ class ManageAdminAuthentication implements MiddlewareContract
         if (!$auth->check() || !get_privilages("acp")) {
             /** @var CurrentPage $currentPage */
             $currentPage = $app->make(CurrentPage::class);
-            $currentPage->setPid('login');
+            $currentPage->setPid("login");
 
             // Jeżeli jest zalogowany, ale w międzyczasie odebrano mu dostęp do PA
             if ($auth->check()) {

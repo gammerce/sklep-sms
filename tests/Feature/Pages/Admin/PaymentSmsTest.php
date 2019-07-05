@@ -2,9 +2,9 @@
 namespace Tests\Feature\Pages\Admin;
 
 use Tests\Psr4\Concerns\AuthConcern;
-use Tests\Psr4\TestCases\AdminTestCase;
+use Tests\Psr4\TestCases\IndexTestCase;
 
-class PaymentSmsTest extends AdminTestCase
+class PaymentSmsTest extends IndexTestCase
 {
     use AuthConcern;
 
@@ -16,7 +16,7 @@ class PaymentSmsTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/', ['pid' => 'payment_sms']);
+        $response = $this->get('/admin.php', ['pid' => 'payment_sms']);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

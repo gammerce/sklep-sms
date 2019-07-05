@@ -1,64 +1,64 @@
 <?php
-namespace App\Kernels;
+namespace App\Controllers;
 
+use App\Application;
 use App\Auth;
 use App\CurrentPage;
 use App\Heart;
 use App\License;
-use App\Middlewares\IsUpToDate;
-use App\Middlewares\ValidateLicense;
-use App\Middlewares\LoadSettings;
-use App\Middlewares\ManageAdminAuthentication;
-use App\Middlewares\RunCron;
-use App\Middlewares\SetAdminSession;
-use App\Middlewares\SetLanguage;
-use App\Middlewares\UpdateUserActivity;
 use App\Settings;
 use App\Template;
 use App\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminKernel extends Kernel
+class AdminController
 {
-    protected $middlewares = [
-        SetAdminSession::class,
-        IsUpToDate::class,
-        LoadSettings::class,
-        SetLanguage::class,
-        ManageAdminAuthentication::class,
-        ValidateLicense::class,
-        UpdateUserActivity::class,
-        RunCron::class,
-    ];
+    public function action(
+        $pageId = null,
+        Request $request,
+        Application $app,
+        Heart $heart,
+        Auth $auth,
+        License $license,
+        CurrentPage $currentPage,
+        Settings $settings,
+        Template $template,
+        TranslationManager $translationManager
+    ) {
+        if ($currentPage->getPid() !== "login") {
+            $currentPage->setPid($pageId);
+        }
 
-    public function run(Request $request)
-    {
-        /** @var Heart $heart */
-        $heart = $this->app->make(Heart::class);
+        return $this->oldAction(
+            $request,
+            $app,
+            $heart,
+            $auth,
+            $license,
+            $currentPage,
+            $settings,
+            $template,
+            $translationManager
+        );
+    }
 
-        /** @var Auth $auth */
-        $auth = $this->app->make(Auth::class);
+    public function oldAction(
+        Request $request,
+        Application $app,
+        Heart $heart,
+        Auth $auth,
+        License $license,
+        CurrentPage $currentPage,
+        Settings $settings,
+        Template $template,
+        TranslationManager $translationManager
+    ) {
         $user = $auth->user();
-
-        /** @var CurrentPage $currentPage */
-        $currentPage = $this->app->make(CurrentPage::class);
-
-        /** @var Template $template */
-        $template = $this->app->make(Template::class);
-
-        /** @var TranslationManager $translationManager */
-        $translationManager = $this->app->make(TranslationManager::class);
         $lang = $translationManager->user();
 
-        /** @var Settings $settings */
-        $settings = $this->app->make(Settings::class);
-
-        /** @var License $license */
-        $license = $this->app->make(License::class);
-
         if (
-            $currentPage->getPid() !== 'login' &&
+            $currentPage->getPid() !== "login" &&
             !$heart->page_exists($currentPage->getPid(), 'admin')
         ) {
             $currentPage->setPid('home');
@@ -70,7 +70,7 @@ class AdminKernel extends Kernel
             $heart->style_add(
                 $settings['shop_url_slash'] .
                     "styles/admin/style_login.css?version=" .
-                    $this->app->version()
+                    $app->version()
             );
 
             if (isset($_SESSION['info'])) {
@@ -89,15 +89,11 @@ class AdminKernel extends Kernel
             // Pobranie headera
             $header = $template->render("admin/header", compact('heart'));
 
-            $getData = "";
-            // Fromatujemy dane get
-            foreach ($request->query->all() as $key => $value) {
-                $getData .= (!strlen($getData) ? '?' : '&') . "{$key}={$value}";
-            }
+            $action = rtrim($request->getPathInfo() . "?" . http_build_query($request->query->all()), "?");
 
             // Pobranie szablonu logowania
             return new Response(
-                $template->render("admin/login", compact('header', 'warning', 'getData'))
+                $template->render("admin/login", compact('header', 'warning', 'action'))
             );
         }
 
@@ -201,7 +197,7 @@ class AdminKernel extends Kernel
         // Pobranie headera
         $header = $template->render("admin/header", compact('heart'));
 
-        $currentVersion = $this->app->version();
+        $currentVersion = $app->version();
 
         // Pobranie ostatecznego szablonu
         return new Response(

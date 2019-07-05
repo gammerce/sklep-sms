@@ -2,18 +2,22 @@
 namespace App\Routes;
 
 use App\Application;
+use App\Controllers\AdminController;
 use App\Controllers\ExtraStuffController;
 use App\Controllers\IndexController;
 use App\Controllers\JsController;
+use App\Controllers\JsonHttpAdminController;
 use App\Controllers\JsonHttpController;
 use App\Controllers\ServerStuffController;
 use App\Controllers\TransferController;
 use App\Middlewares\BlockOnInvalidLicense;
 use App\Middlewares\IsUpToDate;
 use App\Middlewares\LoadSettings;
+use App\Middlewares\ManageAdminAuthentication;
 use App\Middlewares\ManageAuthentication;
 use App\Middlewares\MiddlewareContract;
 use App\Middlewares\RunCron;
+use App\Middlewares\SetAdminSession;
 use App\Middlewares\SetLanguage;
 use App\Middlewares\UpdateUserActivity;
 use App\Middlewares\ValidateLicense;
@@ -34,68 +38,102 @@ class RoutesManager
 
     private function defineRoutes(RouteCollector $r)
     {
-        $r->addGroup(["middlewares" => [
-            IsUpToDate::class,
-            LoadSettings::class,
-            SetLanguage::class,
-            ManageAuthentication::class,
-            ValidateLicense::class,
-        ]], function (RouteCollector $r) {
-            $r->addRoute(['GET', 'POST'], '/', [
-                'middlewares' => [
-                    UpdateUserActivity::class,
-                    RunCron::class,
-                    BlockOnInvalidLicense::class,
+        $r->addGroup(
+            [
+                "middlewares" => [
+                    IsUpToDate::class,
+                    LoadSettings::class,
+                    SetLanguage::class,
+                    ManageAuthentication::class,
+                    ValidateLicense::class,
                 ],
-                'uses' => IndexController::class . '@oldGet',
-            ]);
+            ],
+            function (RouteCollector $r) {
+                $r->addRoute(['GET', 'POST'], '/', [
+                    'middlewares' => [
+                        UpdateUserActivity::class,
+                        RunCron::class,
+                        BlockOnInvalidLicense::class,
+                    ],
+                    'uses' => IndexController::class . '@oldAction',
+                ]);
 
-            $r->addRoute(['GET', 'POST'], '/page/{pageId}', [
-                'middlewares' => [
+                $r->addRoute(['GET', 'POST'], '/page/{pageId}', [
+                    'middlewares' => [
+                        UpdateUserActivity::class,
+                        RunCron::class,
+                        BlockOnInvalidLicense::class,
+                    ],
+                    'uses' => IndexController::class . '@action',
+                ]);
+
+                $r->addRoute(['GET', 'POST'], '/index.php', [
+                    'middlewares' => [
+                        UpdateUserActivity::class,
+                        RunCron::class,
+                        BlockOnInvalidLicense::class,
+                    ],
+                    'uses' => IndexController::class . '@oldAction',
+                ]);
+
+                $r->addRoute(['GET', 'POST'], '/transfer/{transferService}', [
+                    'uses' => TransferController::class . '@action',
+                ]);
+
+                $r->addRoute('GET', '/js.php', [
+                    'uses' => JsController::class . '@get',
+                ]);
+
+                $r->addRoute(['GET', 'POST'], '/extra_stuff.php', [
+                    'middlewares' => [RunCron::class, BlockOnInvalidLicense::class],
+                    'uses' => ExtraStuffController::class . '@action',
+                ]);
+
+                $r->addRoute(['GET', 'POST'], '/servers_stuff.php', [
+                    'middlewares' => [BlockOnInvalidLicense::class],
+                    'uses' => ServerStuffController::class . '@action',
+                ]);
+
+                $r->addRoute(['GET', 'POST'], '/jsonhttp.php', [
+                    'middlewares' => [UpdateUserActivity::class],
+                    'uses' => JsonHttpController::class . '@action',
+                ]);
+
+                $r->addRoute(['GET', 'POST'], '/transfer_finalize.php', [
+                    'middlewares' => [BlockOnInvalidLicense::class],
+                    'uses' => TransferController::class . '@oldAction',
+                ]);
+            }
+        );
+
+        $r->addGroup(
+            [
+                "middlewares" => [
+                    SetAdminSession::class,
+                    IsUpToDate::class,
+                    LoadSettings::class,
+                    SetLanguage::class,
+                    ManageAdminAuthentication::class,
+                    ValidateLicense::class,
                     UpdateUserActivity::class,
-                    RunCron::class,
-                    BlockOnInvalidLicense::class,
                 ],
-                'uses' => IndexController::class . '@get',
-            ]);
+            ],
+            function (RouteCollector $r) {
+                $r->addRoute(['GET', 'POST'], '/admin[/{pageId}]', [
+                    'middlewares' => [RunCron::class],
+                    'uses' => AdminController::class . '@action',
+                ]);
 
-            $r->addRoute(['GET', 'POST'], '/index.php', [
-                'middlewares' => [
-                    UpdateUserActivity::class,
-                    RunCron::class,
-                    BlockOnInvalidLicense::class,
-                ],
-                'uses' => IndexController::class . '@oldGet',
-            ]);
+                $r->addRoute(['GET', 'POST'], '/admin.php', [
+                    'middlewares' => [RunCron::class],
+                    'uses' => AdminController::class . '@oldAction',
+                ]);
 
-            $r->addRoute(['GET', 'POST'], '/transfer/{transferService}', [
-                'uses' => TransferController::class . '@action',
-            ]);
-
-            $r->addRoute('GET', '/js.php', [
-                'uses' => JsController::class . '@get',
-            ]);
-
-            $r->addRoute(['GET', 'POST'], '/extra_stuff.php', [
-                'middlewares' => [RunCron::class, BlockOnInvalidLicense::class],
-                'uses' => ExtraStuffController::class . '@action',
-            ]);
-
-            $r->addRoute(['GET', 'POST'], '/servers_stuff.php', [
-                'middlewares' => [BlockOnInvalidLicense::class],
-                'uses' => ServerStuffController::class . '@action',
-            ]);
-
-            $r->addRoute(['GET', 'POST'], '/jsonhttp.php', [
-                'middlewares' => [UpdateUserActivity::class],
-                'uses' => JsonHttpController::class . '@action',
-            ]);
-
-            $r->addRoute(['GET', 'POST'], '/transfer_finalize.php', [
-                'middlewares' => [BlockOnInvalidLicense::class],
-                'uses' => TransferController::class . '@oldAction',
-            ]);
-        });
+                $r->addRoute(['GET', 'POST'], '/jsonhttp_admin.php', [
+                    'uses' => JsonHttpAdminController::class . '@action',
+                ]);
+            }
+        );
     }
 
     /**

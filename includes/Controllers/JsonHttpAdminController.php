@@ -1,17 +1,11 @@
 <?php
-namespace App\Kernels;
+namespace App\Controllers;
 
+use App\Application;
 use App\Auth;
 use App\Database;
 use App\Exceptions\SqlQueryException;
 use App\Heart;
-use App\Middlewares\IsUpToDate;
-use App\Middlewares\ValidateLicense;
-use App\Middlewares\LoadSettings;
-use App\Middlewares\ManageAdminAuthentication;
-use App\Middlewares\SetAdminSession;
-use App\Middlewares\SetLanguage;
-use App\Middlewares\UpdateUserActivity;
 use App\Models\Purchase;
 use App\Repositories\PricelistRepository;
 use App\Repositories\ServerRepository;
@@ -29,46 +23,26 @@ use IService_UserServiceAdminAdd;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 
-class JsonHttpAdminKernel extends Kernel
+class JsonHttpAdminController
 {
-    protected $middlewares = [
-        SetAdminSession::class,
-        IsUpToDate::class,
-        LoadSettings::class,
-        SetLanguage::class,
-        ManageAdminAuthentication::class,
-        ValidateLicense::class,
-        UpdateUserActivity::class,
-    ];
-
-    public function run(Request $request)
-    {
-        /** @var TranslationManager $translationManager */
-        $translationManager = $this->app->make(TranslationManager::class);
+    public function action(
+        Request $request,
+        Application $app,
+        Database $db,
+        Heart $heart,
+        Auth $auth,
+        Settings $settings,
+        Template $templates,
+        TranslationManager $translationManager,
+        ServerRepository $serverRepository,
+        PricelistRepository $pricelistRepository
+    ) {
         $langShop = $translationManager->shop();
-
-        /** @var Heart $heart */
-        $heart = $this->app->make(Heart::class);
-
-        /** @var Auth $auth */
-        $auth = $this->app->make(Auth::class);
+        $lang = $translationManager->user();
         $user = $auth->user();
 
-        /** @var Template $templates */
-        $templates = $this->app->make(Template::class);
-
-        /** @var TranslationManager $translationManager */
-        $translationManager = $this->app->make(TranslationManager::class);
-        $lang = $translationManager->user();
-
-        /** @var Settings $settings */
-        $settings = $this->app->make(Settings::class);
-
-        /** @var Database $db */
-        $db = $this->app->make(Database::class);
-
         // Pobranie akcji
-        $action = $_POST['action'];
+        $action = $request->request->get("action");
 
         $warnings = [];
 
@@ -533,15 +507,12 @@ class JsonHttpAdminKernel extends Kernel
             }
 
             // Motyw
-            if (!is_dir($this->app->path("themes/{$theme}")) || $theme[0] == '.') {
+            if (!is_dir($app->path("themes/{$theme}")) || $theme[0] == '.') {
                 $warnings['theme'][] = $lang->translate('no_theme');
             }
 
             // Język
-            if (
-                !is_dir($this->app->path("includes/languages/{$language}")) ||
-                $language[0] == '.'
-            ) {
+            if (!is_dir($app->path("includes/languages/{$language}")) || $language[0] == '.') {
                 $warnings['language'][] = $lang->translate('no_language');
             }
 
@@ -1008,8 +979,6 @@ class JsonHttpAdminKernel extends Kernel
             }
 
             if ($action == "server_add") {
-                /** @var ServerRepository $serverRepository */
-                $serverRepository = $this->app->make(ServerRepository::class);
                 $server = $serverRepository->create(
                     $_POST['name'],
                     $_POST['ip'],
@@ -1559,8 +1528,6 @@ class JsonHttpAdminKernel extends Kernel
             }
 
             if ($action == "price_add") {
-                /** @var PricelistRepository $pricelistRepository */
-                $pricelistRepository = $this->app->make(PricelistRepository::class);
                 $pricelistRepository->create(
                     $_POST['service'],
                     $_POST['tariff'],
@@ -1898,7 +1865,7 @@ class JsonHttpAdminKernel extends Kernel
                     continue;
                 }
 
-                $data[$block->get_content_id()]['content'] = $block->get_content($_GET, $_POST);
+                $data[$block->get_content_id()]['content'] = $block->get_content($request->query->all(), $request->request->all());
                 if ($data[$block->get_content_id()]['content'] !== null) {
                     $data[$block->get_content_id()]['class'] = $block->get_content_class();
                 } else {

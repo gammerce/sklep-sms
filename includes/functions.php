@@ -7,6 +7,7 @@ use App\Mailer;
 use App\Models\Purchase;
 use App\Models\User;
 use App\Payment;
+use App\Routes\UrlGenerator;
 use App\Settings;
 use App\TranslationManager;
 use Illuminate\Container\Container;
@@ -108,6 +109,9 @@ function get_pagination($all, $current_page, $script, $get, $row_limit = 0)
     /** @var Settings $settings */
     $settings = app()->make(Settings::class);
 
+    /** @var UrlGenerator $url */
+    $url = app()->make(UrlGenerator::class);
+
     $row_limit = $row_limit ? $row_limit : $settings['row_limit'];
 
     // Wszystkich elementow jest mniej niz wymagana ilsoc na jednej stronie
@@ -180,20 +184,22 @@ function get_pagination($all, $current_page, $script, $get, $row_limit = 0)
         ) {
             if (!$dots) {
                 if ($i < $current_page - $lp) {
-                    $href =
+                    $href = $url->to(
                         $script .
-                        $get_string .
-                        (strlen($get_string) ? "&" : "?") .
-                        "page=" .
-                        round((1 + $current_page - $lp) / 2);
-                } else {
-                    if ($i > $current_page + $lp) {
-                        $href =
-                            $script .
                             $get_string .
                             (strlen($get_string) ? "&" : "?") .
                             "page=" .
-                            round(($current_page + $lp + $pages_amount) / 2);
+                            round((1 + $current_page - $lp) / 2)
+                    );
+                } else {
+                    if ($i > $current_page + $lp) {
+                        $href = $url->to(
+                            $script .
+                                $get_string .
+                                (strlen($get_string) ? "&" : "?") .
+                                "page=" .
+                                round(($current_page + $lp + $pages_amount) / 2)
+                        );
                     }
                 }
 
@@ -208,8 +214,9 @@ function get_pagination($all, $current_page, $script, $get, $row_limit = 0)
 
         $output .=
             create_dom_element("a", $i, [
-                'href' => ($href =
-                    $script . $get_string . (strlen($get_string) ? "&" : "?") . "page=" . $i),
+                'href' => ($href = $url->to(
+                    $script . $get_string . (strlen($get_string) ? "&" : "?") . "page=" . $i
+                )),
                 'class' => $current_page == $i ? "current" : "",
             ]) . "&nbsp;";
         $dots = false;

@@ -4,9 +4,9 @@ namespace Tests\Feature\Pages\Admin;
 use App\Exceptions\LicenseRequestException;
 use App\License;
 use Tests\Psr4\Concerns\AuthConcern;
-use Tests\Psr4\TestCases\AdminTestCase;
+use Tests\Psr4\TestCases\IndexTestCase;
 
-class HomepageTest extends AdminTestCase
+class HomepageTest extends IndexTestCase
 {
     use AuthConcern;
 
@@ -18,7 +18,7 @@ class HomepageTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/');
+        $response = $this->get('/admin.php');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());
@@ -38,7 +38,7 @@ class HomepageTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/');
+        $response = $this->get('/admin.php');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());
@@ -51,7 +51,7 @@ class HomepageTest extends AdminTestCase
         // given
 
         // when
-        $response = $this->get('/');
+        $response = $this->get('/admin.php');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

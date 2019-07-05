@@ -34,7 +34,10 @@ class RouteCollector extends BaseRouteCollector
 
     public function addRoute($httpMethod, $route, $handler)
     {
-        $handler["middlewares"] = array_merge($this->currentGroupMiddlewares, array_get($handler, "middlewares", []));
+        $handler["middlewares"] = array_merge(
+            $this->currentGroupMiddlewares,
+            array_get($handler, "middlewares", [])
+        );
         parent::addRoute($httpMethod, $route, $handler);
     }
 }

@@ -2,9 +2,9 @@
 namespace Tests\Feature\Pages\Admin;
 
 use Tests\Psr4\Concerns\AuthConcern;
-use Tests\Psr4\TestCases\AdminTestCase;
+use Tests\Psr4\TestCases\IndexTestCase;
 
-class AntispamQuestionsTest extends AdminTestCase
+class AntispamQuestionsTest extends IndexTestCase
 {
     use AuthConcern;
 
@@ -16,7 +16,7 @@ class AntispamQuestionsTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/', ['pid' => 'antispam_questions']);
+        $response = $this->get('/admin.php', ['pid' => 'antispam_questions']);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

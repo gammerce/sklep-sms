@@ -2,9 +2,9 @@
 namespace Tests\Feature\Pages\Admin;
 
 use Tests\Psr4\Concerns\AuthConcern;
-use Tests\Psr4\TestCases\AdminTestCase;
+use Tests\Psr4\TestCases\IndexTestCase;
 
-class TransactionServicesTest extends AdminTestCase
+class TransactionServicesTest extends IndexTestCase
 {
     use AuthConcern;
 
@@ -16,7 +16,7 @@ class TransactionServicesTest extends AdminTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/', ['pid' => 'transaction_services']);
+        $response = $this->get('/admin.php', ['pid' => 'transaction_services']);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

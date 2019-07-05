@@ -10,7 +10,19 @@ use Symfony\Component\HttpFoundation\Response;
 
 class IndexController
 {
-    public function oldGet(
+    public function action(
+        $pageId,
+        Request $request,
+        Heart $heart,
+        License $license,
+        CurrentPage $currentPage,
+        Template $template
+    ) {
+        $currentPage->setPid($pageId);
+        return $this->oldAction($request, $heart, $license, $currentPage, $template);
+    }
+
+    public function oldAction(
         Request $request,
         Heart $heart,
         License $license,
@@ -54,17 +66,5 @@ class IndexController
         );
 
         return new Response($output);
-    }
-
-    public function get(
-        $pageId,
-        Request $request,
-        Heart $heart,
-        License $license,
-        CurrentPage $currentPage,
-        Template $template
-    ) {
-        $currentPage->setPid($pageId);
-        return $this->oldGet($request, $heart, $license, $currentPage, $template);
     }
 }
