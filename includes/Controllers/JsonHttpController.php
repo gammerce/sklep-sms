@@ -4,9 +4,9 @@ namespace App\Controllers;
 use App\Auth;
 use App\Database;
 use App\Heart;
-use App\License;
 use App\Mailer;
 use App\Models\Purchase;
+use App\Pages\PageAdminIncome;
 use App\Payment;
 use App\Repositories\UserRepository;
 use App\Responses\ApiResponse;
@@ -20,9 +20,7 @@ use IService_PurchaseWeb;
 use IService_TakeOver;
 use IService_UserOwnServices;
 use IService_UserOwnServicesEdit;
-use PageAdminIncome;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use UnexpectedValueException;
 
 class JsonHttpController

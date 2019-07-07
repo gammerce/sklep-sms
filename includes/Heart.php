@@ -1,14 +1,14 @@
 <?php
 namespace App;
 
-use App\Models\Tariff;
-use App\Models\User;
 use App\Blocks\Block;
 use App\Blocks\BlockSimple;
+use App\Models\Tariff;
+use App\Models\User;
+use App\Pages\Interfaces\IPageAdminActionBox;
+use App\Pages\Page;
+use App\Pages\PageSimple;
 use Exception;
-use IPageAdmin_ActionBox;
-use Page;
-use PageSimple;
 use Service;
 use ServiceChargeWallet;
 use ServiceExtraFlags;
@@ -275,7 +275,7 @@ class Heart
      * @param string $page_id
      * @param string $type
      *
-     * @return null|Page|PageSimple|IPageAdmin_ActionBox
+     * @return null|Page|PageSimple|IPageAdminActionBox
      */
     public function get_page($page_id, $type = "user")
     {

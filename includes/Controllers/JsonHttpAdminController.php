@@ -7,6 +7,7 @@ use App\Database;
 use App\Exceptions\SqlQueryException;
 use App\Heart;
 use App\Models\Purchase;
+use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Repositories\PricelistRepository;
 use App\Repositories\ServerRepository;
 use App\Responses\ApiResponse;
@@ -14,7 +15,6 @@ use App\Responses\PlainResponse;
 use App\Settings;
 use App\Template;
 use App\TranslationManager;
-use IPageAdmin_ActionBox;
 use IService_ActionExecute;
 use IService_AdminManage;
 use IService_AvailableOnServers;
@@ -1888,7 +1888,7 @@ class JsonHttpAdminController
                 return new ApiResponse("wrong_page", $lang->translate('wrong_page_id'), 0);
             }
 
-            if (!($page instanceof IPageAdmin_ActionBox)) {
+            if (!($page instanceof IPageAdminActionBox)) {
                 return new ApiResponse(
                     "page_no_action_box",
                     $lang->translate('no_action_box_support'),

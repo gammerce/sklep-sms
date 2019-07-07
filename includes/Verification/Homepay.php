@@ -4,8 +4,8 @@ namespace App\Verification;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\BadCodeException;
-use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\ExternalErrorException;
+use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Results\SmsSuccessResult;
 
 class Homepay extends PaymentModule implements SupportSms

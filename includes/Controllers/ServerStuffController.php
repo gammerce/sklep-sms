@@ -2,7 +2,6 @@
 namespace App\Controllers;
 
 use App\Heart;
-use App\License;
 use App\Models\Purchase;
 use App\Payment;
 use App\Settings;
