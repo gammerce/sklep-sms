@@ -2,7 +2,7 @@
 namespace App\Pages;
 
 use App\Interfaces\IBeLoggedMust;
-use IService_TakeOver;
+use App\Services\Interfaces\IServiceTakeOver;
 
 class PageTakeOverService extends Page implements IBeLoggedMust
 {
@@ -25,7 +25,7 @@ class PageTakeOverService extends Page implements IBeLoggedMust
             }
 
             // Moduł danej usługi nie zezwala na jej przejmowanie
-            if (!($service_module instanceof IService_TakeOver)) {
+            if (!($service_module instanceof IServiceTakeOver)) {
                 continue;
             }
 

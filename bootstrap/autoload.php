@@ -21,20 +21,20 @@ if (!defined('PHP_VERSION_ID')) {
 //}
 
 // Dodajemy klasy wszystkich usług
-require_once "$scriptRoot/includes/services/service.php";
-
-// Pierwsze ładujemy interfejsy
-foreach (scandir("$scriptRoot/includes/services/interfaces") as $file) {
-    if (ends_at($file, ".php")) {
-        require_once "$scriptRoot/includes/services/interfaces/" . $file;
-    }
-}
-
-foreach (scandir("$scriptRoot/includes/services") as $file) {
-    if (ends_at($file, ".php")) {
-        require_once "$scriptRoot/includes/services/" . $file;
-    }
-}
+//require_once "$scriptRoot/includes/services/Service.php";
+//
+//// Pierwsze ładujemy interfejsy
+//foreach (scandir("$scriptRoot/includes/services/interfaces") as $file) {
+//    if (ends_at($file, ".php")) {
+//        require_once "$scriptRoot/includes/services/interfaces/" . $file;
+//    }
+//}
+//
+//foreach (scandir("$scriptRoot/includes/services") as $file) {
+//    if (ends_at($file, ".php")) {
+//        require_once "$scriptRoot/includes/services/" . $file;
+//    }
+//}
 
 
 //// Dodajemy klasy wszystkich bloków

@@ -1,6 +1,7 @@
 <?php
+namespace App\Services\Interfaces;
 
-interface IService_ActionExecute
+interface IServiceActionExecute
 {
     /**
      * Wykonuje jakąś akcję, przydatne przy pobieraniu danych przez jQuery

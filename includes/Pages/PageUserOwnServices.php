@@ -6,8 +6,8 @@ use App\Database;
 use App\Interfaces\IBeLoggedMust;
 use App\Settings;
 use App\Template;
-use IService_UserOwnServices;
-use IService_UserOwnServicesEdit;
+use App\Services\Interfaces\IServiceUserOwnServices;
+use App\Services\Interfaces\IServiceUserOwnServicesEdit;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageUserOwnServices extends Page implements IBeLoggedMust
@@ -44,7 +44,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
 
         // Ktore moduly wspieraja usługi użytkowników
         $classes = array_filter(get_declared_classes(), function ($className) {
-            return in_array('IService_UserOwnServices', class_implements($className));
+            return in_array('IServiceUserOwnServices', class_implements($className));
         });
 
         $modules = [];
@@ -106,13 +106,13 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
                 continue;
             }
 
-            if (!($service_module instanceof IService_UserOwnServices)) {
+            if (!($service_module instanceof IServiceUserOwnServices)) {
                 continue;
             }
 
             if (
                 $settings['user_edit_service'] &&
-                $service_module instanceof IService_UserOwnServicesEdit
+                $service_module instanceof IServiceUserOwnServicesEdit
             ) {
                 $button_edit = create_dom_element("button", $lang->translate('edit'), [
                     'class' => "button edit_row",

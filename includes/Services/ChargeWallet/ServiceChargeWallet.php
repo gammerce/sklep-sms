@@ -1,21 +1,18 @@
 <?php
+namespace App\Services\ChargeWallet;
 
 use App\Heart;
-use App\Interfaces\IBeLoggedMust;
 use App\Models\Purchase;
 use App\Payment;
+use App\Services\Interfaces\IServicePurchase;
+use App\Services\Interfaces\IServicePurchaseWeb;
 use App\Settings;
 use App\TranslationManager;
 use App\Translator;
 
-class ServiceChargeWalletSimple extends Service implements IBeLoggedMust
-{
-    const MODULE_ID = "charge_wallet";
-}
-
 class ServiceChargeWallet extends ServiceChargeWalletSimple implements
-    IService_Purchase,
-    IService_PurchaseWeb
+    IServicePurchase,
+    IServicePurchaseWeb
 {
     /** @var Heart */
     protected $heart;

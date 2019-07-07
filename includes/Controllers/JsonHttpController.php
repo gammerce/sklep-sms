@@ -15,11 +15,11 @@ use App\Responses\PlainResponse;
 use App\Settings;
 use App\Template;
 use App\TranslationManager;
-use IService_ActionExecute;
-use IService_PurchaseWeb;
-use IService_TakeOver;
-use IService_UserOwnServices;
-use IService_UserOwnServicesEdit;
+use App\Services\Interfaces\IServiceActionExecute;
+use App\Services\Interfaces\IServicePurchaseWeb;
+use App\Services\Interfaces\IServiceTakeOver;
+use App\Services\Interfaces\IServiceUserOwnServices;
+use App\Services\Interfaces\IServiceUserOwnServicesEdit;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 
@@ -429,7 +429,7 @@ class JsonHttpController
         if ($action == "purchase_form_validate") {
             if (
                 ($service_module = $heart->get_service_module($_POST['service'])) === null ||
-                !($service_module instanceof IService_PurchaseWeb)
+                !($service_module instanceof IServicePurchaseWeb)
             ) {
                 return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
             }
@@ -612,7 +612,7 @@ class JsonHttpController
 
             if (
                 !$settings['user_edit_service'] ||
-                !($service_module instanceof IService_UserOwnServicesEdit)
+                !($service_module instanceof IServiceUserOwnServicesEdit)
             ) {
                 return new HtmlResponse($lang->translate('service_cant_be_modified'));
             }
@@ -645,13 +645,13 @@ class JsonHttpController
                 return new HtmlResponse($lang->translate('service_not_displayed'));
             }
 
-            if (!($service_module instanceof IService_UserOwnServices)) {
+            if (!($service_module instanceof IServiceUserOwnServices)) {
                 return new HtmlResponse($lang->translate('service_not_displayed'));
             }
 
             if (
                 $settings['user_edit_service'] &&
-                $service_module instanceof IService_UserOwnServicesEdit
+                $service_module instanceof IServiceUserOwnServicesEdit
             ) {
                 $button_edit = create_dom_element("button", $lang->translate('edit'), [
                     'class' => "button edit_row",
@@ -688,7 +688,7 @@ class JsonHttpController
             // Wykonujemy metode edycji usługi użytkownika na module, który ją obsługuje
             if (
                 !$settings['user_edit_service'] ||
-                !($service_module instanceof IService_UserOwnServicesEdit)
+                !($service_module instanceof IServiceUserOwnServicesEdit)
             ) {
                 return new ApiResponse(
                     "service_cant_be_modified",
@@ -720,7 +720,7 @@ class JsonHttpController
         if ($action == "service_take_over_form_get") {
             if (
                 ($service_module = $heart->get_service_module($_POST['service'])) === null ||
-                !($service_module instanceof IService_TakeOver)
+                !($service_module instanceof IServiceTakeOver)
             ) {
                 return new PlainResponse($lang->translate('bad_module'));
             }
@@ -731,7 +731,7 @@ class JsonHttpController
         if ($action == "service_take_over") {
             if (
                 ($service_module = $heart->get_service_module($_POST['service'])) === null ||
-                !($service_module instanceof IService_TakeOver)
+                !($service_module instanceof IServiceTakeOver)
             ) {
                 return new PlainResponse($lang->translate('bad_module'));
             }
@@ -771,7 +771,7 @@ class JsonHttpController
         if ($action == "service_action_execute") {
             if (
                 ($service_module = $heart->get_service_module($_POST['service'])) === null ||
-                !($service_module instanceof IService_ActionExecute)
+                !($service_module instanceof IServiceActionExecute)
             ) {
                 return new PlainResponse($lang->translate('bad_module'));
             }

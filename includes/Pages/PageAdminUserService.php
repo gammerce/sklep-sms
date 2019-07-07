@@ -3,9 +3,9 @@ namespace App\Pages;
 
 use Admin\Table;
 use App\Pages\Interfaces\IPageAdminActionBox;
-use IService_UserServiceAdminAdd;
-use IService_UserServiceAdminDisplay;
-use IService_UserServiceAdminEdit;
+use App\Services\Interfaces\IServiceUserServiceAdminAdd;
+use App\Services\Interfaces\IServiceUserServiceAdminDisplay;
+use App\Services\Interfaces\IServiceUserServiceAdminEdit;
 
 class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 {
@@ -17,7 +17,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         $className = '';
         foreach (get_declared_classes() as $class) {
             if (
-                in_array('IService_UserServiceAdminDisplay', class_implements($class)) &&
+                in_array('IServiceUserServiceAdminDisplay', class_implements($class)) &&
                 $class::MODULE_ID == $get['subpage']
             ) {
                 $className = $class;
@@ -32,7 +32,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
             );
         }
 
-        /** @var IService_UserServiceAdminDisplay $service_module_simple */
+        /** @var IServiceUserServiceAdminDisplay $service_module_simple */
         $service_module_simple = $this->app->make($className);
 
         $this->title =
@@ -54,7 +54,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         foreach ($this->heart->get_services_modules() as $service_module_data) {
             if (
                 !in_array(
-                    'IService_UserServiceAdminDisplay',
+                    'IServiceUserServiceAdminDisplay',
                     class_implements($service_module_data['classsimple'])
                 )
             ) {
@@ -100,7 +100,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
                 foreach ($this->heart->get_services() as $id => $row) {
                     if (
                         ($service_module = $this->heart->get_service_module($id)) === null ||
-                        !($service_module instanceof IService_UserServiceAdminAdd)
+                        !($service_module instanceof IServiceUserServiceAdminAdd)
                     ) {
                         continue;
                     }
@@ -124,7 +124,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
                     ($service_module = $this->heart->get_service_module(
                         $user_service['service']
                     )) === null ||
-                    !($service_module instanceof IService_UserServiceAdminEdit)
+                    !($service_module instanceof IServiceUserServiceAdminEdit)
                 ) {
                     $form_data = $this->lang->translate('service_edit_unable');
                 } else {

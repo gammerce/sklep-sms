@@ -1,14 +1,14 @@
 <?php
+namespace App\Services\Interfaces;
 
 use App\Models\Purchase;
 
 /**
  * Możliwość zakupu usługi przez stronę WWWW
  * Implementacja tego interfejsu powinna pociągnąć za sobą implementacje interfejsu:
- *    IService_Purchase
- * Interface IService_PurchaseWeb
+ *    IServicePurchase
  */
-interface IService_PurchaseWeb
+interface IServicePurchaseWeb extends IServicePurchase
 {
     /**
      * Metoda powinna zwracać formularz zakupu w postaci stringa

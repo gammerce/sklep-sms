@@ -3,8 +3,8 @@ namespace App\Pages;
 
 use App\Models\Purchase;
 use App\Payment;
-use IService_PurchaseWeb;
-use IService_ServiceCode;
+use App\Services\Interfaces\IServicePurchaseWeb;
+use App\Services\Interfaces\IServiceServiceCode;
 
 class PagePayment extends Page
 {
@@ -40,7 +40,7 @@ class PagePayment extends Page
         if (
             ($service_module = $this->heart->get_service_module($purchase_data->getService())) ===
                 null ||
-            !($service_module instanceof IService_PurchaseWeb)
+            !($service_module instanceof IServicePurchaseWeb)
         ) {
             return $this->lang->translate('bad_module');
         }
@@ -95,7 +95,7 @@ class PagePayment extends Page
 
         if (
             !$purchase_data->getPayment('no_code') &&
-            $service_module instanceof IService_ServiceCode
+            $service_module instanceof IServiceServiceCode
         ) {
             $payment_methods .= $this->template->render("payment_method_code");
         }

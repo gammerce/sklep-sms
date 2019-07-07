@@ -1,14 +1,14 @@
 <?php
+namespace App\Services\Interfaces;
 
 use App\Models\Purchase;
 
 /**
  * Możliwość zakupu usługi z zewnątrz ( np. z serwera )
  * Implementacja tego interfejsu powinna pociągnąć za sobą implementacje interfejsu:
- *    IService_Purchase
- * Interface IService_PurchaseOutside
+ *    IServicePurchase
  */
-interface IService_PurchaseOutside
+interface IServicePurchaseOutside extends IServicePurchase
 {
     /**
      * Metoda która sprawdza poprawność wprowadzonych danych zakupu,

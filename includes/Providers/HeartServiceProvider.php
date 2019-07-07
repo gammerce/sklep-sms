@@ -47,6 +47,13 @@ use App\Pages\PageTakeOverService;
 use App\Pages\PageTransferujBad;
 use App\Pages\PageTransferujOk;
 use App\Pages\PageUserOwnServices;
+use App\Services\ChargeWallet\ServiceChargeWallet;
+use App\Services\ExtraFlags\ServiceExtraFlags;
+use App\Services\ExtraFlags\ServiceExtraFlagsSimple;
+use App\Services\MybbExtraGroups\ServiceMybbExtraGroups;
+use App\Services\MybbExtraGroups\ServiceMybbExtraGroupsSimple;
+use App\Services\Other\ServiceOther;
+use App\Services\Other\ServiceOtherSimple;
 use App\Verification\Bizneshost;
 use App\Verification\Cashbill;
 use App\Verification\Cssetti;
@@ -61,14 +68,7 @@ use App\Verification\Pukawka;
 use App\Verification\Simpay;
 use App\Verification\Transferuj;
 use App\Verification\Zabijaka;
-use ServiceChargeWallet;
-use ServiceChargeWalletSimple;
-use ServiceExtraFlags;
-use ServiceExtraFlagsSimple;
-use ServiceMybbExtraGroups;
-use ServiceMybbExtraGroupsSimple;
-use ServiceOther;
-use ServiceOtherSimple;
+use App\Services\ChargeWallet\ServiceChargeWalletSimple;
 
 class HeartServiceProvider
 {

@@ -1,10 +1,10 @@
 <?php
+namespace App\Services\Interfaces;
 
 /**
  * Obsługa przejmowania usług przez użytkowników
- * Interface IService_TakeOver
  */
-interface IService_TakeOver
+interface IServiceTakeOver
 {
     /**
      * Zwraca formularz przejęcia usługi

@@ -5,7 +5,7 @@ use App\Auth;
 use App\Interfaces\IBeLoggedMust;
 use App\Settings;
 use App\Template;
-use IService_PurchaseWeb;
+use App\Services\Interfaces\IServicePurchaseWeb;
 
 class PagePurchase extends Page
 {
@@ -113,7 +113,7 @@ class PagePurchase extends Page
         }
 
         // Nie ma formularza zakupu, to tak jakby strona nie istniała
-        if (!($service_module instanceof IService_PurchaseWeb)) {
+        if (!($service_module instanceof IServicePurchaseWeb)) {
             return $lang->translate('site_not_exists');
         }
 

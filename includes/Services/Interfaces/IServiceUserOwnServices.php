@@ -1,10 +1,10 @@
 <?php
+namespace App\Services\Interfaces;
 
 /**
  * Obsługa wyświetlania użytkownikowi jego usług
- * Interface IService_UserOwnServices
  */
-interface IService_UserOwnServices
+interface IServiceUserOwnServices
 {
     /**
      * Metoda powinna zwrócić informacje o usłudze użytkownika.

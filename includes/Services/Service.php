@@ -1,4 +1,5 @@
 <?php
+namespace App\Services;
 
 use App\Application;
 use App\Database;

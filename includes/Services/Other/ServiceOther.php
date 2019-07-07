@@ -1,34 +1,14 @@
 <?php
+namespace App\Services\Other;
 
 use App\Heart;
 use App\Models\Purchase;
+use App\Services\Interfaces\IServicePurchase;
+use App\Services\Interfaces\IServicePurchaseOutside;
 use App\TranslationManager;
 use App\Translator;
 
-class ServiceOtherSimple extends Service implements
-    IService_Create,
-    IService_AdminManage,
-    IService_AvailableOnServers
-{
-    const MODULE_ID = "other";
-
-    public function service_admin_manage_post($data)
-    {
-        return [];
-    }
-
-    public function service_admin_extra_fields_get()
-    {
-        return '';
-    }
-
-    public function service_admin_manage_pre($data)
-    {
-        return [];
-    }
-}
-
-class ServiceOther extends ServiceOtherSimple implements IService_Purchase, IService_PurchaseOutside
+class ServiceOther extends ServiceOtherSimple implements IServicePurchase, IServicePurchaseOutside
 {
     /** @var Heart */
     protected $heart;

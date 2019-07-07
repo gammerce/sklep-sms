@@ -1,11 +1,11 @@
 <?php
+namespace App\Services\Interfaces;
 
 /**
  * Obsługa dodawania nowych usług w PA
  * (Ten interfejs powinien być implementowany w klasie *Simple modułu usługi)
- * Interface IService_AdminManage
  */
-interface IService_AdminManage
+interface IServiceAdminManage
 {
     /**
      * Metoda wywoływana przy edytowaniu lub dodawaniu usługi w PA

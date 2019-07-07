@@ -7,7 +7,7 @@ use Admin\Table\Input;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 use App\Pages\Interfaces\IPageAdminActionBox;
-use IService_AvailableOnServers;
+use App\Services\Interfaces\IServiceAvailableOnServers;
 
 class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 {
@@ -103,7 +103,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             // Dana usługa nie może być kupiona na serwerze
             if (
                 ($service_module = $this->heart->get_service_module($service['id'])) === null ||
-                !($service_module instanceof IService_AvailableOnServers)
+                !($service_module instanceof IServiceAvailableOnServers)
             ) {
                 continue;
             }

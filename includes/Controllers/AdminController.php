@@ -114,7 +114,7 @@ class AdminController
             foreach ($heart->get_services_modules() as $module_data) {
                 if (
                     in_array(
-                        'IService_UserServiceAdminDisplay',
+                        'IServiceUserServiceAdminDisplay',
                         class_implements($module_data['class'])
                     )
                 ) {

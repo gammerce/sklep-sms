@@ -869,7 +869,7 @@ function purchase_info($data)
 
     $service_module = $heart->get_service_module($pbs['service']);
 
-    return $service_module !== null && $service_module instanceof IService_PurchaseWeb
+    return $service_module !== null && $service_module instanceof IServicePurchaseWeb
         ? $service_module->purchase_info($data['action'], $pbs)
         : "";
 }

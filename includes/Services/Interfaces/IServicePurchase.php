@@ -1,12 +1,12 @@
 <?php
+namespace App\Services\Interfaces;
 
 use App\Models\Purchase;
 
 /**
  * Możliwość zakupu usługi
- * Interface IService_Purchase
  */
-interface IService_Purchase
+interface IServicePurchase
 {
     /**
      * Metoda wywoływana, gdy usługa została prawidłowo zakupiona

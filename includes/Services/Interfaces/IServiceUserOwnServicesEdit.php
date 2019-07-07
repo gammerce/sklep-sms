@@ -1,10 +1,10 @@
 <?php
+namespace App\Services\Interfaces;
 
 /**
  * Obsluga edycji usług użytkownika przez użytkownika
- * Interface IService_UserOwnServicesEdit
  */
-interface IService_UserOwnServicesEdit
+interface IServiceUserOwnServicesEdit
 {
     /**
      * Metoda powinna zwrócić formularz do edycji danych usługi przez użytkownika.

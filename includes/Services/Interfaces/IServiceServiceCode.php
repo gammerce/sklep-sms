@@ -1,12 +1,12 @@
 <?php
+namespace App\Services\Interfaces;
 
 use App\Models\Purchase;
 
 /**
  * Obsługa płatności za pomocą kodu na usługę
- * Interface IService_ServiceCode
  */
-interface IService_ServiceCode
+interface IServiceServiceCode
 {
     /**
      * Sprawdza czy dany zakup może być zrealizowany ( opłacony ) przez dany kod na usługę

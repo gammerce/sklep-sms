@@ -7,8 +7,8 @@ use Admin\Table\Input;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 use App\Pages\Interfaces\IPageAdminActionBox;
-use IService_AdminManage;
-use IService_Create;
+use App\Services\Interfaces\IServiceAdminManage;
+use App\Services\Interfaces\IServiceCreate;
 
 class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 {
@@ -88,7 +88,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             if (strlen($service['module'])) {
                 if (
                     ($service_module = $this->heart->get_service_module($service['id'])) !== null &&
-                    $service_module instanceof IService_AdminManage
+                    $service_module instanceof IServiceAdminManage
                 ) {
                     $extra_fields = create_dom_element(
                         "tbody",
@@ -108,7 +108,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
                 if (
                     ($service_module = $this->heart->get_service_module_s($module['id'])) ===
                         null ||
-                    !($service_module instanceof IService_Create)
+                    !($service_module instanceof IServiceCreate)
                 ) {
                     continue;
                 }

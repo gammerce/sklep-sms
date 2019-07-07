@@ -15,11 +15,11 @@ use App\Responses\PlainResponse;
 use App\Settings;
 use App\Template;
 use App\TranslationManager;
-use IService_ActionExecute;
-use IService_AdminManage;
-use IService_AvailableOnServers;
-use IService_ServiceCodeAdminManage;
-use IService_UserServiceAdminAdd;
+use App\Services\Interfaces\IServiceActionExecute;
+use App\Services\Interfaces\IServiceAdminManage;
+use App\Services\Interfaces\IServiceAvailableOnServers;
+use App\Services\Interfaces\IServiceServiceCodeAdminManage;
+use App\Services\Interfaces\IServiceUserServiceAdminAdd;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 
@@ -153,7 +153,7 @@ class JsonHttpAdminController
 
             if (
                 ($service_module = $heart->get_service_module($_POST['service'])) === null ||
-                !($service_module instanceof IService_UserServiceAdminAdd)
+                !($service_module instanceof IServiceUserServiceAdminAdd)
             ) {
                 return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
             }
@@ -727,7 +727,7 @@ class JsonHttpAdminController
             }
 
             // Przed błędami
-            if ($service_module !== null && $service_module instanceof IService_AdminManage) {
+            if ($service_module !== null && $service_module instanceof IServiceAdminManage) {
                 $additional_warnings = $service_module->service_admin_manage_pre($_POST);
                 $warnings = array_merge((array) $warnings, (array) $additional_warnings);
             }
@@ -744,7 +744,7 @@ class JsonHttpAdminController
             }
 
             // Po błędach wywołujemy metodę modułu
-            if ($service_module !== null && $service_module instanceof IService_AdminManage) {
+            if ($service_module !== null && $service_module instanceof IServiceAdminManage) {
                 $module_data = $service_module->service_admin_manage_post($_POST);
 
                 // Tworzymy elementy SET zapytania
@@ -914,7 +914,7 @@ class JsonHttpAdminController
                 $service_module = $heart->get_service_module_s($_POST['module']);
             }
 
-            if ($service_module !== null && $service_module instanceof IService_AdminManage) {
+            if ($service_module !== null && $service_module instanceof IServiceAdminManage) {
                 $output = $service_module->service_admin_extra_fields_get();
             }
 
@@ -1014,7 +1014,7 @@ class JsonHttpAdminController
                     // Dana usługa nie może być kupiona na serwerze
                     if (
                         !is_null($service_module = $heart->get_service_module($service['id'])) &&
-                        !($service_module instanceof IService_AvailableOnServers)
+                        !($service_module instanceof IServiceAvailableOnServers)
                     ) {
                         continue;
                     }
@@ -1823,7 +1823,7 @@ class JsonHttpAdminController
             $output = "";
             if (
                 ($service_module = $heart->get_service_module($_POST['service'])) !== null &&
-                $service_module instanceof IService_ServiceCodeAdminManage
+                $service_module instanceof IServiceServiceCodeAdminManage
             ) {
                 $output = $service_module->service_code_admin_add_form_get();
             }
@@ -1930,7 +1930,7 @@ class JsonHttpAdminController
         if ($action == "service_action_execute") {
             if (
                 ($service_module = $heart->get_service_module($_POST['service'])) === null ||
-                !($service_module instanceof IService_ActionExecute)
+                !($service_module instanceof IServiceActionExecute)
             ) {
                 return new PlainResponse($lang->translate('bad_module'));
             }

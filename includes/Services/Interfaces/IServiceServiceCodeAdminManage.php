@@ -1,10 +1,10 @@
 <?php
+namespace App\Services\Interfaces;
 
 /**
  * Obsługa dodawania nowych kodów na usługę w PA
- * Interface IService_ServiceCodeAdminManage
  */
-interface IService_ServiceCodeAdminManage
+interface IServiceServiceCodeAdminManage
 {
     /**
      * Metoda sprawdza dane formularza podczas dodawania kodu na usługę w PA
