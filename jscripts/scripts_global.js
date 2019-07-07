@@ -111,7 +111,7 @@ function changeUrl(data) {
     var params = {};
 
     if (query) {
-        $.each(query.split("&"), function (key, value) {
+        $.each(query.split("&"), function(key, value) {
             var param = value.split("=");
 
             if (param[1].length) params[param[0]] = param[1];
