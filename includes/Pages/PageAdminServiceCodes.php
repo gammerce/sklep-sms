@@ -7,6 +7,7 @@ use Admin\Table\Input;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 use App\Pages\Interfaces\IPageAdminActionBox;
+use App\Services\Interfaces\IServiceServiceCodeAdminManage;
 
 class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 {
@@ -128,7 +129,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
                 foreach ($this->heart->get_services() as $id => $row) {
                     if (
                         ($service_module = $this->heart->get_service_module($id)) === null ||
-                        !($service_module instanceof IService_ServiceCodeAdminManage)
+                        !($service_module instanceof IServiceServiceCodeAdminManage)
                     ) {
                         continue;
                     }

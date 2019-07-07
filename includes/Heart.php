@@ -269,6 +269,11 @@ class Heart
         return isset($this->pages_classes[$type][$page_id]);
     }
 
+    public function get_pages($type = "user")
+    {
+        return $this->pages_classes[$type];
+    }
+
     /**
      * Zwraca obiekt strony
      *

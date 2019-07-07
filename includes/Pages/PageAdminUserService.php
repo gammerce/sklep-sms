@@ -15,9 +15,10 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
     protected function content($get, $post)
     {
         $className = '';
-        foreach (get_declared_classes() as $class) {
+        foreach ($this->heart->get_services_modules() as $module) {
+            $class = $module['classsimple'];
             if (
-                in_array('IServiceUserServiceAdminDisplay', class_implements($class)) &&
+                in_array(IServiceUserServiceAdminDisplay::class, class_implements($class)) &&
                 $class::MODULE_ID == $get['subpage']
             ) {
                 $className = $class;
@@ -51,20 +52,20 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         // Lista z wyborem modułów
         $button = new Table\Select();
         $button->setParam('id', 'user_service_display_module');
-        foreach ($this->heart->get_services_modules() as $service_module_data) {
+        foreach ($this->heart->get_services_modules() as $serviceModuleData) {
             if (
                 !in_array(
-                    'IServiceUserServiceAdminDisplay',
-                    class_implements($service_module_data['classsimple'])
+                    IServiceUserServiceAdminDisplay::class,
+                    class_implements($serviceModuleData['classsimple'])
                 )
             ) {
                 continue;
             }
 
-            $option = new Table\Option($service_module_data['name']);
-            $option->setParam('value', $service_module_data['id']);
+            $option = new Table\Option($serviceModuleData['name']);
+            $option->setParam('value', $serviceModuleData['id']);
 
-            if ($service_module_data['id'] == $get['subpage']) {
+            if ($serviceModuleData['id'] == $get['subpage']) {
                 $option->setParam('selected', 'selected');
             }
 
