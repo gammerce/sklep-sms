@@ -47,21 +47,21 @@ foreach (scandir("$scriptRoot/includes/services") as $file) {
 
 
 // Dodajemy klasy wszystkich stron
-require_once "$scriptRoot/includes/pages/Page.php";
-require_once "$scriptRoot/includes/pages/PageAdmin.php";
-
-// Pierwsze ładujemy interfejsy
-foreach (scandir("$scriptRoot/includes/pages/interfaces") as $file) {
-    if (ends_at($file, ".php")) {
-        require_once "$scriptRoot/includes/pages/interfaces/" . $file;
-    }
-}
-
-foreach (scandir("$scriptRoot/includes/pages") as $file) {
-    if (ends_at($file, ".php")) {
-        require_once "$scriptRoot/includes/pages/" . $file;
-    }
-}
+//require_once "$scriptRoot/includes/pages/Page.php";
+//require_once "$scriptRoot/includes/pages/PageAdmin.php";
+//
+//// Pierwsze ładujemy interfejsy
+//foreach (scandir("$scriptRoot/includes/pages/interfaces") as $file) {
+//    if (ends_at($file, ".php")) {
+//        require_once "$scriptRoot/includes/pages/interfaces/" . $file;
+//    }
+//}
+//
+//foreach (scandir("$scriptRoot/includes/pages") as $file) {
+//    if (ends_at($file, ".php")) {
+//        require_once "$scriptRoot/includes/pages/" . $file;
+//    }
+//}
 
 foreach (scandir("$scriptRoot/includes/entity") as $file) {
     if (ends_at($file, ".php")) {
