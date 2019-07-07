@@ -71,8 +71,8 @@ function refresh_blocks(bricks, admin, onSuccessFunction) {
     onSuccessFunction =
         typeof onSuccessFunction !== "undefined" ? onSuccessFunction : function() {};
 
-    const splittedUrl = document.URL.split("?");
-    const query = splittedUrl.length > 1 ? splittedUrl.pop() : "";
+    var splittedUrl = document.URL.split("?");
+    var query = splittedUrl.length > 1 ? splittedUrl.pop() : "";
 
     $.ajax({
         type: "POST",
@@ -104,17 +104,20 @@ function refresh_blocks(bricks, admin, onSuccessFunction) {
 
 function changeUrl(data) {
     data = get_value(data, {});
-    var url = window.location.href.split("?");
-
-    if (url[1].length == 0) return;
+    var splittedUrl = document.URL.split("?");
+    var url = splittedUrl[0];
+    var query = splittedUrl.length > 1 ? splittedUrl.pop() : "";
 
     var params = {};
-    $.each(url[1].split("&"), function(key, value) {
-        var param = value.split("=");
 
-        if (param[1].length) params[param[0]] = param[1];
-        else delete params[param[0]];
-    });
+    if (query) {
+        $.each(query.split("&"), function (key, value) {
+            var param = value.split("=");
+
+            if (param[1].length) params[param[0]] = param[1];
+            else delete params[param[0]];
+        });
+    }
 
     $.each(data, function(key, value) {
         if (value.length) params[key] = encodeURIComponent(value);
@@ -126,7 +129,7 @@ function changeUrl(data) {
         strparams.push(encodeURIComponent(key) + "=" + encodeURIComponent(value));
     });
 
-    window.location.href = url[0] + "?" + strparams.join("&");
+    window.location.href = url + "?" + strparams.join("&");
 }
 
 function trimSlashes(text) {
