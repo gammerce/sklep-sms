@@ -13,56 +13,6 @@ if (!defined('PHP_VERSION_ID')) {
     define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
 }
 
-//// Te interfejsy są potrzebne do klas różnego rodzajów
-//foreach (scandir("$scriptRoot/includes/interfaces") as $file) {
-//    if (ends_at($file, ".php")) {
-//        require_once "$scriptRoot/includes/interfaces/" . $file;
-//    }
-//}
-
-// Dodajemy klasy wszystkich usług
-//require_once "$scriptRoot/includes/services/Service.php";
-//
-//// Pierwsze ładujemy interfejsy
-//foreach (scandir("$scriptRoot/includes/services/interfaces") as $file) {
-//    if (ends_at($file, ".php")) {
-//        require_once "$scriptRoot/includes/services/interfaces/" . $file;
-//    }
-//}
-//
-//foreach (scandir("$scriptRoot/includes/services") as $file) {
-//    if (ends_at($file, ".php")) {
-//        require_once "$scriptRoot/includes/services/" . $file;
-//    }
-//}
-
-
-//// Dodajemy klasy wszystkich bloków
-//require_once "$scriptRoot/includes/blocks/Block.php";
-//foreach (scandir("$scriptRoot/includes/blocks") as $file) {
-//    if (ends_at($file, ".php")) {
-//        require_once "$scriptRoot/includes/blocks/" . $file;
-//    }
-//}
-
-
-// Dodajemy klasy wszystkich stron
-//require_once "$scriptRoot/includes/pages/Page.php";
-//require_once "$scriptRoot/includes/pages/PageAdmin.php";
-//
-//// Pierwsze ładujemy interfejsy
-//foreach (scandir("$scriptRoot/includes/pages/interfaces") as $file) {
-//    if (ends_at($file, ".php")) {
-//        require_once "$scriptRoot/includes/pages/interfaces/" . $file;
-//    }
-//}
-//
-//foreach (scandir("$scriptRoot/includes/pages") as $file) {
-//    if (ends_at($file, ".php")) {
-//        require_once "$scriptRoot/includes/pages/" . $file;
-//    }
-//}
-
 foreach (scandir("$scriptRoot/includes/entity") as $file) {
     if (ends_at($file, ".php")) {
         require_once "$scriptRoot/includes/entity/" . $file;
