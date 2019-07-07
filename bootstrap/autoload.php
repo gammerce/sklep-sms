@@ -38,7 +38,7 @@ foreach (scandir("$scriptRoot/includes/services") as $file) {
 
 
 // Dodajemy klasy wszystkich bloków
-require_once "$scriptRoot/includes/blocks/block.php";
+require_once "$scriptRoot/includes/blocks/Block.php";
 foreach (scandir("$scriptRoot/includes/blocks") as $file) {
     if (ends_at($file, ".php")) {
         require_once "$scriptRoot/includes/blocks/" . $file;

@@ -1,24 +1,30 @@
 <?php
+namespace App\Blocks;
 
 use App\CurrentPage;
 use App\Heart;
+use App\Interfaces\IBeLoggedCannot;
+use App\Interfaces\IBeLoggedMust;
 use App\Translator;
 
-class BlockAdminContent extends Block
+class BlockContent extends Block
 {
     /** @var Heart */
     protected $heart;
 
     /** @var CurrentPage */
-    protected $page;
+    protected $currentPage;
 
     /** @var Translator */
     protected $lang;
 
-    public function __construct(Heart $heart, CurrentPage $page, Translator $lang)
+    /** @var Page */
+    protected $page;
+
+    public function __construct(Heart $heart, CurrentPage $currentPage, Translator $lang)
     {
         $this->heart = $heart;
-        $this->page = $page;
+        $this->currentPage = $currentPage;
         $this->lang = $lang;
     }
 
@@ -35,8 +41,16 @@ class BlockAdminContent extends Block
     // Nadpisujemy get_content, aby wyswieltac info gdy nie jest zalogowany lub jest zalogowany, lecz nie powinien
     public function get_content($get, $post)
     {
-        if (!is_logged()) {
+        if (($this->page = $this->heart->get_page($this->currentPage->getPid())) === null) {
+            return null;
+        }
+
+        if ($this->page instanceof IBeLoggedMust && !is_logged()) {
             return $this->lang->translate('must_be_logged_in');
+        }
+
+        if ($this->page instanceof IBeLoggedCannot && is_logged()) {
+            return $this->lang->translate('must_be_logged_out');
         }
 
         return $this->content($get, $post);
@@ -44,10 +58,6 @@ class BlockAdminContent extends Block
 
     protected function content($get, $post)
     {
-        if (($page = $this->heart->get_page($this->page->getPid(), "admin")) === null) {
-            return null;
-        }
-
-        return $page->get_content($get, $post);
+        return $this->page->get_content($get, $post);
     }
 }

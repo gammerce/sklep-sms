@@ -1,4 +1,5 @@
 <?php
+namespace App\Blocks;
 
 use App\Interfaces\IBeLoggedMust;
 

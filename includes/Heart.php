@@ -3,8 +3,8 @@ namespace App;
 
 use App\Models\Tariff;
 use App\Models\User;
-use Block;
-use BlockSimple;
+use App\Blocks\Block;
+use App\Blocks\BlockSimple;
 use Exception;
 use IPageAdmin_ActionBox;
 use Page;
