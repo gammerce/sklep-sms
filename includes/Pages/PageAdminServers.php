@@ -7,6 +7,7 @@ use Admin\Table\Input;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 use App\Pages\Interfaces\IPageAdminActionBox;
+use IService_AvailableOnServers;
 
 class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 {

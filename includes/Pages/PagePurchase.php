@@ -5,6 +5,7 @@ use App\Auth;
 use App\Interfaces\IBeLoggedMust;
 use App\Settings;
 use App\Template;
+use IService_PurchaseWeb;
 
 class PagePurchase extends Page
 {

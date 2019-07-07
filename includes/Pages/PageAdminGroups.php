@@ -6,8 +6,9 @@ use Admin\Table\Cell;
 use Admin\Table\Input;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
+use App\Pages\Interfaces\IPageAdminActionBox;
 
-class PageAdminGroups extends PageAdmin implements IPageAdmin_ActionBox
+class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = 'groups';
     protected $privilage = 'view_groups';

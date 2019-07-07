@@ -2,6 +2,10 @@
 namespace App\Pages;
 
 use Admin\Table;
+use App\Pages\Interfaces\IPageAdminActionBox;
+use IService_UserServiceAdminAdd;
+use IService_UserServiceAdminDisplay;
+use IService_UserServiceAdminEdit;
 
 class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 {

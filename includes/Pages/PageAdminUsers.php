@@ -6,6 +6,7 @@ use Admin\Table\Cell;
 use Admin\Table\Img;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
+use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Routes\UrlGenerator;
 
 class PageAdminUsers extends PageAdmin implements IPageAdminActionBox

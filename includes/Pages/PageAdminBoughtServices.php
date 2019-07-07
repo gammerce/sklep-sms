@@ -8,6 +8,7 @@ use Admin\Table\Img;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 use App\Routes\UrlGenerator;
+use ExtraFlagType;
 
 class PageAdminBoughtServices extends PageAdmin
 {

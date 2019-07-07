@@ -5,6 +5,7 @@ use Admin\Table\BodyRow;
 use Admin\Table\Cell;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
+use App\Pages\Interfaces\IPageAdminActionBox;
 
 class PageAdminTransactionServices extends PageAdmin implements IPageAdminActionBox
 {

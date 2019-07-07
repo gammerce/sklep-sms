@@ -6,6 +6,7 @@ use App\Database;
 use App\Interfaces\IBeLoggedMust;
 use App\Settings;
 use App\Template;
+use IService_PurchaseWeb;
 use Symfony\Component\HttpFoundation\Request;
 
 class PagePaymentLog extends Page implements IBeLoggedMust

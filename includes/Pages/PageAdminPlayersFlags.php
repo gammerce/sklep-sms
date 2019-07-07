@@ -73,7 +73,9 @@ class PageAdminPlayersFlags extends PageAdmin
                     if ($row[$flag] == -1) {
                         $body_row->addCell(new Cell($this->lang->translate('never')));
                     } else {
-                        $body_row->addCell(new Cell(date($settings['date_format'], $row[$flag])));
+                        $body_row->addCell(
+                            new Cell(date($this->settings['date_format'], $row[$flag]))
+                        );
                     }
                 }
             }

@@ -6,6 +6,8 @@ use App\Database;
 use App\Interfaces\IBeLoggedMust;
 use App\Settings;
 use App\Template;
+use IService_UserOwnServices;
+use IService_UserOwnServicesEdit;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageUserOwnServices extends Page implements IBeLoggedMust

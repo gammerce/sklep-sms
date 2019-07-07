@@ -6,8 +6,9 @@ use Admin\Table\Cell;
 use Admin\Table\Input;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
+use App\Pages\Interfaces\IPageAdminActionBox;
 
-class PageAdminAntispamQuestions extends PageAdmin implements IPageAdmin_ActionBox
+class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = 'antispam_questions';
     protected $privilage = 'view_antispam_questions';
