@@ -1,18 +1,18 @@
 <?php
 namespace App;
 
+use App\Blocks\Block;
+use App\Blocks\BlockSimple;
 use App\Models\Tariff;
 use App\Models\User;
-use Block;
-use BlockSimple;
+use App\Pages\Interfaces\IPageAdminActionBox;
+use App\Pages\Page;
+use App\Pages\PageSimple;
+use App\Services\ExtraFlags\ServiceExtraFlags;
+use App\Services\Other\ServiceOther;
+use App\Services\Service;
 use Exception;
-use IPageAdmin_ActionBox;
-use Page;
-use PageSimple;
-use Service;
-use ServiceChargeWallet;
-use ServiceExtraFlags;
-use ServiceOther;
+use App\Services\ChargeWallet\ServiceChargeWallet;
 
 class Heart
 {
@@ -269,13 +269,18 @@ class Heart
         return isset($this->pages_classes[$type][$page_id]);
     }
 
+    public function get_pages($type = "user")
+    {
+        return $this->pages_classes[$type];
+    }
+
     /**
      * Zwraca obiekt strony
      *
      * @param string $page_id
      * @param string $type
      *
-     * @return null|Page|PageSimple|IPageAdmin_ActionBox
+     * @return null|Page|PageSimple|IPageAdminActionBox
      */
     public function get_page($page_id, $type = "user")
     {

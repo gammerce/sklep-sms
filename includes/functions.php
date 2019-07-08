@@ -8,6 +8,10 @@ use App\Models\Purchase;
 use App\Models\User;
 use App\Payment;
 use App\Routes\UrlGenerator;
+use App\Services\ChargeWallet\ServiceChargeWallet;
+use App\Services\ExtraFlags\ServiceExtraFlags;
+use App\Services\Other\ServiceOther;
+use App\Services\Service;
 use App\Settings;
 use App\TranslationManager;
 use Illuminate\Container\Container;
@@ -869,7 +873,7 @@ function purchase_info($data)
 
     $service_module = $heart->get_service_module($pbs['service']);
 
-    return $service_module !== null && $service_module instanceof IService_PurchaseWeb
+    return $service_module !== null && $service_module instanceof IServicePurchaseWeb
         ? $service_module->purchase_info($data['action'], $pbs)
         : "";
 }

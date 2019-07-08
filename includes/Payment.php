@@ -11,7 +11,7 @@ use App\Verification\Abstracts\SupportTransfer;
 use App\Verification\Exceptions\BadNumberException;
 use App\Verification\Exceptions\SmsPaymentException;
 use App\Verification\Results\SmsSuccessResult;
-use IService_Purchase;
+use App\Services\Interfaces\IServicePurchase;
 
 class Payment
 {
@@ -355,7 +355,7 @@ class Payment
             return false;
         }
 
-        if (!($service_module instanceof IService_Purchase)) {
+        if (!($service_module instanceof IServicePurchase)) {
             log_info(
                 $this->langShop->sprintf(
                     $this->langShop->translate('transfer_no_purchase'),

@@ -2,12 +2,11 @@
 namespace App\Controllers;
 
 use App\Heart;
-use App\License;
 use App\Models\Purchase;
 use App\Payment;
 use App\Settings;
 use App\TranslationManager;
-use IService_PurchaseOutside;
+use App\Services\Interfaces\IServicePurchaseOutside;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -33,7 +32,7 @@ class ServerStuffController
                 return $this->xmlOutput("bad_module", $lang->translate('bad_module'), 0);
             }
 
-            if (!($service_module instanceof IService_PurchaseOutside)) {
+            if (!($service_module instanceof IServicePurchaseOutside)) {
                 return $this->xmlOutput("bad_module", $lang->translate('bad_module'), 0);
             }
 

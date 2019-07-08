@@ -128,7 +128,7 @@ You can now profit from many add-ons.',
     'transfer_no_data_file' =>
         'Transfer payment: {1} was accepted, but there was no file with purchase data.',
     'transfer_no_purchase' =>
-        'Transfer payment: {1} was accepted, but service module {2} doesn\'t implement IService_Purchase interface.',
+        'Transfer payment: {1} was accepted, but service module {2} doesn\'t implement IServicePurchase interface.',
     'transfer_prepared' =>
         'Payment preparation successful.<br />In a minute you will be send to transaction service.',
     'transfer_transfer' => 'Transfer',

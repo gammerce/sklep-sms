@@ -23,9 +23,9 @@ use App\Middlewares\SetUserSession;
 use App\Middlewares\UpdateUserActivity;
 use App\Middlewares\ValidateLicense;
 use FastRoute\Dispatcher;
-use function FastRoute\simpleDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use function FastRoute\simpleDispatcher;
 
 class RoutesManager
 {

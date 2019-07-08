@@ -131,7 +131,7 @@ Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
     'transfer_no_data_file' =>
         'Płatność przelewem: {1} została zaakceptowana, jednakże nie znaleziono pliku z danymi zakupu',
     'transfer_no_purchase' =>
-        'Płatność przelewem: {1} została zaakceptowana, jednakże moduł usługi {2} nie implementuje interfejsu IService_Purchase.',
+        'Płatność przelewem: {1} została zaakceptowana, jednakże moduł usługi {2} nie implementuje interfejsu IServicePurchase.',
     'transfer_prepared' =>
         'Przygotowanie płatności przebiegło pomyślnie.<br />Za chwilę nastąpi przekierowanie do serwisu transakcyjnego.',
     'transfer_transfer' => 'Przelew',

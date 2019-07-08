@@ -6,6 +6,7 @@ use App\Auth;
 use App\CurrentPage;
 use App\Heart;
 use App\License;
+use App\Services\Interfaces\IServiceUserServiceAdminDisplay;
 use App\Settings;
 use App\Template;
 use App\TranslationManager;
@@ -111,14 +112,14 @@ class AdminController
         }
         if (get_privilages("view_user_services")) {
             $pid = '';
-            foreach ($heart->get_services_modules() as $module_data) {
+            foreach ($heart->get_services_modules() as $moduleData) {
                 if (
                     in_array(
-                        'IService_UserServiceAdminDisplay',
-                        class_implements($module_data['class'])
+                        IServiceUserServiceAdminDisplay::class,
+                        class_implements($moduleData['class'])
                     )
                 ) {
-                    $pid = "user_service?subpage=" . urlencode($module_data['id']);
+                    $pid = "user_service?subpage=" . urlencode($moduleData['id']);
                     break;
                 }
             }
