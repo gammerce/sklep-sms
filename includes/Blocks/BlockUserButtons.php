@@ -4,6 +4,7 @@ namespace App\Blocks;
 use App\Auth;
 use App\Heart;
 use App\Routes\UrlGenerator;
+use App\Services\ChargeWallet\ServiceChargeWalletSimple;
 use App\Template;
 use App\TranslationManager;
 
@@ -53,7 +54,7 @@ class BlockUserButtons extends Block
         }
 
         // Doładowanie portfela
-        if ($heart->user_can_use_service($user->getUid(), $heart->get_service("charge_wallet"))) {
+        if ($heart->user_can_use_service($user->getUid(), $heart->get_service(ServiceChargeWalletSimple::MODULE_ID))) {
             $charge_wallet_button = create_dom_element(
                 "li",
                 create_dom_element("a", $lang->translate('charge_wallet'), [

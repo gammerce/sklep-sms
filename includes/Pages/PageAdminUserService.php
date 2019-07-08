@@ -2,6 +2,7 @@
 namespace App\Pages;
 
 use Admin\Table;
+use Admin\Table\Wrapper;
 use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Services\Interfaces\IServiceUserServiceAdminAdd;
 use App\Services\Interfaces\IServiceUserServiceAdminDisplay;
@@ -19,7 +20,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
             $class = $module['classsimple'];
             if (
                 in_array(IServiceUserServiceAdminDisplay::class, class_implements($class)) &&
-                $class::MODULE_ID == $get['subpage']
+                $module['id'] == $get['subpage']
             ) {
                 $className = $class;
                 break;
@@ -33,17 +34,17 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
             );
         }
 
-        /** @var IServiceUserServiceAdminDisplay $service_module_simple */
-        $service_module_simple = $this->app->make($className);
+        /** @var IServiceUserServiceAdminDisplay $serviceModuleSimple */
+        $serviceModuleSimple = $this->app->make($className);
 
         $this->title =
             $this->lang->translate('users_services') .
             ': ' .
-            $service_module_simple->user_service_admin_display_title_get();
+            $serviceModuleSimple->user_service_admin_display_title_get();
         $this->heart->page_title = $this->title;
-        $wrapper = $service_module_simple->user_service_admin_display_get($get, $post);
+        $wrapper = $serviceModuleSimple->user_service_admin_display_get($get, $post);
 
-        if (get_class($wrapper) !== 'Admin\Table\Wrapper') {
+        if (get_class($wrapper) !== Wrapper::class) {
             return $wrapper;
         }
 
@@ -56,7 +57,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
             if (
                 !in_array(
                     IServiceUserServiceAdminDisplay::class,
-                    class_implements($serviceModuleData['classsimple'])
+                    class_implements($serviceModuleData['class'])
                 )
             ) {
                 continue;
@@ -100,8 +101,8 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
                 $services = "";
                 foreach ($this->heart->get_services() as $id => $row) {
                     if (
-                        ($service_module = $this->heart->get_service_module($id)) === null ||
-                        !($service_module instanceof IServiceUserServiceAdminAdd)
+                        ($serviceModule = $this->heart->get_service_module($id)) === null ||
+                        !($serviceModule instanceof IServiceUserServiceAdminAdd)
                     ) {
                         continue;
                     }
@@ -122,15 +123,15 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 
                 if (
                     empty($user_service) ||
-                    ($service_module = $this->heart->get_service_module(
+                    ($serviceModule = $this->heart->get_service_module(
                         $user_service['service']
                     )) === null ||
-                    !($service_module instanceof IServiceUserServiceAdminEdit)
+                    !($serviceModule instanceof IServiceUserServiceAdminEdit)
                 ) {
                     $form_data = $this->lang->translate('service_edit_unable');
                 } else {
-                    $service_module_id = htmlspecialchars($service_module::MODULE_ID);
-                    $form_data = $service_module->user_service_admin_edit_form_get($user_service);
+                    $service_module_id = htmlspecialchars($serviceModule->get_module_id());
+                    $form_data = $serviceModule->user_service_admin_edit_form_get($user_service);
                 }
 
                 $output = $this->template->render(

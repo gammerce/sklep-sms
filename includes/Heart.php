@@ -111,9 +111,14 @@ class Heart
         return strlen($className) ? app()->makeWith($className, ['service' => $service]) : null;
     }
 
-    // Funkcja zwraca klasę modułu przez jego id
-    // Moduł jest pusty, nie ma danych o usłudze
-    // s - simple
+    /**
+     * Funkcja zwraca klasę modułu przez jego id
+     * Moduł jest pusty, nie ma danych o usłudze
+     * s - simple
+     *
+     * @param $module_id
+     * @return Service|null
+     */
     public function get_service_module_s($module_id)
     {
         // Brak takiego modułu

@@ -43,24 +43,24 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         $request = $this->app->make(Request::class);
 
         // Ktore moduly wspieraja usługi użytkowników
-        $classes = array_filter($this->heart->get_services_modules(), function ($module) {
+        $modules = array_filter($this->heart->get_services_modules(), function ($module) {
             return in_array(
                 IServiceUserOwnServices::class,
-                class_implements($module['classsimple'])
+                class_implements($module["class"])
             );
         });
 
-        $modules = [];
-        foreach ($classes as $class) {
-            $modules[] = $class::MODULE_ID;
+        $moduleIds = [];
+        foreach ($modules as $module) {
+            $moduleIds[] = $module["id"];
         }
 
-        $users_services = [];
-        $rows_count = 0;
-        if (!empty($modules)) {
-            $modules = implode_esc(', ', $modules);
+        $usersServices = [];
+        $rowsCount = 0;
+        if (!empty($moduleIds)) {
+            $moduleIds = implode_esc(', ', $moduleIds);
 
-            $rows_count = $db->get_column(
+            $rowsCount = $db->get_column(
                 $db->prepare(
                     "SELECT COUNT(*) as `amount` FROM `" .
                         TABLE_PREFIX .
@@ -68,7 +68,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
                         "INNER JOIN `" .
                         TABLE_PREFIX .
                         "services` AS s ON us.service = s.id " .
-                        "WHERE us.uid = '%d' AND s.module IN ({$modules}) ",
+                        "WHERE us.uid = '%d' AND s.module IN ({$moduleIds}) ",
                     [$user->getUid()]
                 ),
                 'amount'
@@ -82,7 +82,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
                         "INNER JOIN `" .
                         TABLE_PREFIX .
                         "services` AS s ON us.service = s.id " .
-                        "WHERE us.uid = '%d' AND s.module IN ({$modules}) " .
+                        "WHERE us.uid = '%d' AND s.module IN ({$moduleIds}) " .
                         "ORDER BY us.id DESC " .
                         "LIMIT " .
                         get_row_limit($this->currentPage->getPageNumber(), 4),
@@ -96,7 +96,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             }
 
             if (!empty($user_service_ids)) {
-                $users_services = get_users_services(
+                $usersServices = get_users_services(
                     "WHERE us.id IN (" . implode(', ', $user_service_ids) . ")",
                     false
                 );
@@ -104,7 +104,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         }
 
         $user_own_services = '';
-        foreach ($users_services as $user_service) {
+        foreach ($usersServices as $user_service) {
             if (($service_module = $heart->get_service_module($user_service['service'])) === null) {
                 continue;
             }
@@ -137,7 +137,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         }
 
         $pagination = get_pagination(
-            $rows_count,
+            $rowsCount,
             $this->currentPage->getPageNumber(),
             $request->getPathInfo(),
             $get,

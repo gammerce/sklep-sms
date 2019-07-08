@@ -775,13 +775,13 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         // Pobranie usług
         $services = "";
         foreach ($this->heart->get_services() as $id => $row) {
-            if (($service_module = $this->heart->get_service_module_s($row['module'])) === null) {
+            if (($serviceModule = $this->heart->get_service_module_s($row['module'])) === null) {
                 continue;
             }
 
             // Usługę możemy zmienić tylko na taka, która korzysta z tego samego modułu.
             // Inaczej to nie ma sensu, lepiej ją usunąć i dodać nową
-            if ($this::MODULE_ID != $service_module::MODULE_ID) {
+            if ($this->get_module_id() != $serviceModule->get_module_id()) {
                 continue;
             }
 
@@ -793,11 +793,11 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         // Dodajemy typ uslugi, (1<<2) ostatni typ
         $types = "";
-        for ($i = 0, $option_id = 1; $i < 3; $option_id = 1 << ++$i) {
-            if ($this->service['types'] & $option_id) {
-                $types .= create_dom_element("option", $this->get_type_name($option_id), [
-                    'value' => $option_id,
-                    'selected' => $option_id == $user_service['type'] ? "selected" : "",
+        for ($i = 0, $optionId = 1; $i < 3; $optionId = 1 << ++$i) {
+            if ($this->service['types'] & $optionId) {
+                $types .= create_dom_element("option", $this->get_type_name($optionId), [
+                    'value' => $optionId,
+                    'selected' => $optionId == $user_service['type'] ? "selected" : "",
                 ]);
             }
         }
