@@ -38,7 +38,6 @@ class BlockOnInvalidLicense implements MiddlewareContract
             $executedScript = trim($request->getPathInfo(), "/");
 
             if (in_array($executedScript, $jsonScripts)) {
-                // TODO Check if this works
                 return new JsonResponse(compact('message'));
             }
 
