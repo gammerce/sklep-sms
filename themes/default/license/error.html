@@ -5,8 +5,12 @@
         <title>BŁĄD LICENCJI</title>
     </head>
     <body style="height: 100%; margin: 0; padding: 0;">
-        <div style="height: 100%; display: flex; justify-content: center; align-items: center">
+        <div
+            style="height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column"
+        >
             <h1>{$message}</h1>
+            <br />
+            <h2><a href="{$url->to('/admin')}">{$lang->translate('acp')}</a></h2>
         </div>
     </body>
 </html>
