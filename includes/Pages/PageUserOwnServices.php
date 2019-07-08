@@ -44,10 +44,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
 
         // Ktore moduly wspieraja usługi użytkowników
         $modules = array_filter($this->heart->get_services_modules(), function ($module) {
-            return in_array(
-                IServiceUserOwnServices::class,
-                class_implements($module["class"])
-            );
+            return in_array(IServiceUserOwnServices::class, class_implements($module["class"]));
         });
 
         $moduleIds = [];
