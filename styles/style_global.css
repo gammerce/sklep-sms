@@ -350,14 +350,6 @@ hr,
 [id^="delete_row_"],
 .delete_row {
     cursor: pointer;
-    opacity: 0.6;
-}
-
-[id^="edit_row_"]:hover,
-.edit_row:hover,
-[id^="delete_row_"]:hover,
-.delete_row:hover {
-    opacity: 1;
 }
 
 .column_left {
