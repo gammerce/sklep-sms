@@ -38,29 +38,57 @@ textarea:focus {
     border: 1px solid #1f9acf;
 }
 
-input[type="button"],
-input[type="submit"],
-input[type="reset"] {
-    text-align: center;
-    background: linear-gradient(
-        45deg,
-        rgba(131, 131, 131, 1) 0%,
-        rgba(140, 140, 140, 1) 12%,
-        rgba(149, 149, 149, 1) 25%,
-        rgba(109, 109, 109, 1) 76%,
-        rgba(98, 98, 98, 1) 91%,
-        rgba(92, 92, 92, 1) 100%
-    );
-    padding: 1px 7px;
-    border: none;
-    color: #000;
-    box-shadow: 1px 1px 4px black;
-    cursor: pointer;
+.button {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    align-items: center;
+    border: 1px solid transparent;
+    box-shadow: none;
+    display: inline-flex;
+    justify-content: flex-start;
+    padding: calc(0.375em - 1px) calc(0.625em - 1px);
+    position: relative;
 }
 
-input[type="button"]:hover,
-input[type="submit"]:hover {
-    box-shadow: 0 0 5px #6b0000;
+.button {
+    background-color: #4a4a4a;
+    border-color: transparent;
+    color: whitesmoke;
+    border-width: 1px;
+    cursor: pointer;
+    justify-content: center;
+    padding: calc(.375em - 1px) .75em;
+    text-align: center;
+    white-space: nowrap;
+    outline: none;
+}
+
+.button:hover {
+    background-color: #2f2f2f;
+    border-color: transparent;
+    color: whitesmoke;
+}
+
+.button:focus {
+    border-color: transparent;
+    color: whitesmoke;
+}
+
+.button:focus:not(:active) {
+    box-shadow: 0 0 0 0.125em rgba(54, 54, 54, 0.25);
+}
+
+.button:active, .button.is-active {
+    background-color: #292929;
+    border-color: transparent;
+    color: whitesmoke;
+}
+
+.button[disabled],
+fieldset[disabled] .button {
+    background-color: #363636;
+    border-color: transparent;
+    box-shadow: none;
 }
 
 a {
@@ -276,21 +304,6 @@ hr,
 .window_info .description_content {
     overflow: auto;
     height: calc(100% - 100px);
-}
-
-.button {
-    border: 1px solid black;
-    cursor: pointer;
-    text-transform: uppercase;
-    color: #ffffff;
-    height: 24px;
-    opacity: 0.6;
-    box-shadow: -4px 2px 11px 0 rgba(53, 53, 50, 0.61);
-    vertical-align: top;
-}
-
-.button:hover {
-    opacity: 1;
 }
 
 .button.edit_row {
