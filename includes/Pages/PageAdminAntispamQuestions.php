@@ -65,6 +65,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
             $button = new Input();
             $button->setParam('id', 'antispam_question_button_add');
             $button->setParam('type', 'button');
+            $button->setParam('class', 'button');
             $button->setParam('value', $this->lang->translate('add_antispam_question'));
             $wrapper->addButton($button);
         }

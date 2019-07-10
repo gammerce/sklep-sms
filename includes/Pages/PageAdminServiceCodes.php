@@ -106,6 +106,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
             $button = new Input();
             $button->setParam('id', 'service_code_button_add');
             $button->setParam('type', 'button');
+            $button->setParam('class', 'button');
             $button->setParam('value', $this->lang->translate('add_code'));
             $wrapper->addButton($button);
         }
