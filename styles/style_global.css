@@ -64,7 +64,7 @@ textarea:focus {
 }
 
 .button:hover {
-    background-color: #2f2f2f;
+    background-color: #444444;
     border-color: transparent;
     color: whitesmoke;
 }
@@ -75,19 +75,53 @@ textarea:focus {
 }
 
 .button:focus:not(:active) {
-    box-shadow: 0 0 0 0.125em rgba(54, 54, 54, 0.25);
+    box-shadow: 0 0 0 0.125em rgba(74, 74, 74, 0.25);
 }
 
 .button:active,
 .button.is-active {
-    background-color: #292929;
+    background-color: #3d3d3d;
     border-color: transparent;
     color: whitesmoke;
 }
 
 .button[disabled],
 fieldset[disabled] .button {
-    background-color: #363636;
+    background-color: #4a4a4a;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.button.is-success {
+    background-color: #5b9931;
+    border-color: transparent;
+    color: #fff;
+}
+
+.button.is-success:hover {
+    background-color: #558f2e;
+    border-color: transparent;
+    color: #fff;
+}
+
+.button.is-success:focus {
+    border-color: transparent;
+    color: #fff;
+}
+
+.button.is-success:focus:not(:active) {
+    box-shadow: 0 0 0 0.125em rgba(91, 153, 49, 0.25);
+}
+
+.button.is-success:active {
+    background-color: #50862b;
+    border-color: transparent;
+    color: #fff;
+}
+
+.button.is-success[disabled],
+fieldset[disabled] .button.is-success {
+    background-color: #5b9931;
     border-color: transparent;
     box-shadow: none;
 }
