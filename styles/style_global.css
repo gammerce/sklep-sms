@@ -57,7 +57,7 @@ textarea:focus {
     border-width: 1px;
     cursor: pointer;
     justify-content: center;
-    padding: calc(.375em - 1px) .75em;
+    padding: calc(0.375em - 1px) 0.75em;
     text-align: center;
     white-space: nowrap;
     outline: none;
@@ -78,7 +78,8 @@ textarea:focus {
     box-shadow: 0 0 0 0.125em rgba(54, 54, 54, 0.25);
 }
 
-.button:active, .button.is-active {
+.button:active,
+.button.is-active {
     background-color: #292929;
     border-color: transparent;
     color: whitesmoke;
