@@ -7,6 +7,15 @@ $(document).delegate(".table_structure .charge_wallet", "click", function() {
     });
 });
 
+$(document).delegate(".table_structure .change_password", "click", function() {
+    show_action_box(currentPage, "change_password", {
+        uid: $(this)
+            .closest("tr")
+            .find("td[headers=id]")
+            .text(),
+    });
+});
+
 // Kliknięcie edycji użytkownika
 $(document).delegate(".table_structure .edit_row", "click", function() {
     show_action_box(currentPage, "user_edit", {

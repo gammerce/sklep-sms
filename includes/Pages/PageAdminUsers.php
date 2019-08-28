@@ -23,9 +23,6 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
     protected function content($get, $post)
     {
-        /** @var UrlGenerator $url */
-        $url = $this->app->make(UrlGenerator::class);
-
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
         $wrapper->setSearch();
@@ -78,7 +75,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
         while ($row = $this->db->fetch_array_assoc($result)) {
-            $body_row = new BodyRow();
+            $bodyRow = new BodyRow();
 
             $row['groups'] = explode(";", $row['groups']);
             $groups = [];
@@ -88,39 +85,60 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             }
             $groups = implode("; ", $groups);
 
-            $body_row->setDbId($row['uid']);
-            $body_row->addCell(new Cell(htmlspecialchars($row['username'])));
-            $body_row->addCell(new Cell(htmlspecialchars($row['forename'])));
-            $body_row->addCell(new Cell(htmlspecialchars($row['surname'])));
-            $body_row->addCell(new Cell(htmlspecialchars($row['email'])));
-            $body_row->addCell(new Cell($groups));
+            $bodyRow->setDbId($row['uid']);
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['username'])));
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['forename'])));
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['surname'])));
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['email'])));
+            $bodyRow->addCell(new Cell($groups));
 
             $cell = new Cell(
                 number_format($row['wallet'] / 100.0, 2) . ' ' . $this->settings['currency']
             );
             $cell->setParam('headers', 'wallet');
-            $body_row->addCell($cell);
+            $bodyRow->addCell($cell);
 
-            $button_charge = new Img();
-            $button_charge->setParam('class', 'charge_wallet');
-            $button_charge->setParam(
-                'title',
-                $this->lang->translate('charge') . ' ' . htmlspecialchars($row['username'])
-            );
-            $button_charge->setParam('src', $url->to('images/dollar.png'));
-            $body_row->addAction($button_charge);
+            $buttonCharge = $this->createChargeButton($row['username']);
+            $bodyRow->addAction($buttonCharge);
+
+            $changePasswordCharge = $this->createPasswordButton($row['username']);
+            $bodyRow->addAction($changePasswordCharge);
 
             if (get_privilages('manage_users')) {
-                $body_row->setButtonDelete(true);
-                $body_row->setButtonEdit(true);
+                $bodyRow->setButtonDelete(true);
+                $bodyRow->setButtonEdit(true);
             }
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);
 
         return $wrapper->toHtml();
+    }
+
+    protected function createChargeButton($username)
+    {
+        $button = new Img();
+        $button->setParam('class', 'charge_wallet clickable');
+        $button->setParam(
+            'title',
+            $this->lang->translate('charge') . ' ' . htmlspecialchars($username)
+        );
+        $button->setParam('src', $this->url->to('images/dollar.png'));
+        return $button;
+    }
+
+    protected function createPasswordButton($username)
+    {
+        $button = new Img();
+        $button->setParam('class', 'change_password clickable');
+        $button->setParam(
+            'title',
+            $this->lang->translate('change_password') . ' ' . htmlspecialchars($username)
+        );
+        $button->setParam('src', $this->url->to('images/key.png'));
+        return $button;
     }
 
     public function get_action_box($box_id, $data)
@@ -155,6 +173,14 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                 $user = $this->heart->get_user($data['uid']);
                 $output = $this->template->render(
                     "admin/action_boxes/user_charge_wallet",
+                    compact('user')
+                );
+                break;
+
+            case "change_password":
+                $user = $this->heart->get_user($data['uid']);
+                $output = $this->template->render(
+                    "admin/action_boxes/user_change_password",
                     compact('user')
                 );
                 break;

@@ -347,6 +347,7 @@ hr,
 }
 
 [id^="edit_row_"],
+.edit_row,
 [id^="delete_row_"],
 .delete_row {
     cursor: pointer;
@@ -385,4 +386,8 @@ hr,
 
 input[name="email"] {
     width: 200px;
+}
+
+.clickable {
+    cursor: pointer;
 }
