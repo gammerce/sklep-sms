@@ -54,7 +54,6 @@
     $(document).delegate(".table_structure .delete_row", "click", function() {
         var row_id = $(this).closest("tr");
 
-        // Czy na pewno?
         if (
             !confirm(
                 "Czy na pewno chcesz usunąć konto o ID " +
@@ -91,7 +90,6 @@
                     row_id.fadeOut("slow");
                     row_id.css({ background: "#FFF4BA" });
 
-                    // Odśwież stronę
                     refresh_blocks("admincontent", true);
                 }
 
@@ -124,15 +122,17 @@
                 }
 
                 if (jsonObj.return_id === "warnings") {
-                    showWarnings($("#form_charge_wallet"), jsonObj.warnings);
+                    showWarnings($(this), jsonObj.warnings);
                 } else if (jsonObj.return_id === "charged") {
-                    // Zmień stan portfela
+                    // Change wallet state
                     getnset_template(
                         row_id.children("td[headers=wallet]"),
                         "admin_user_wallet",
                         true,
                         {
-                            uid: $("#form_charge_wallet input[name=uid]").val(),
+                            uid: $(this)
+                                .find("input[name=uid]")
+                                .val(),
                         },
                         function() {
                             // Podświetl row
@@ -140,9 +140,7 @@
                         }
                     );
 
-                    // Ukryj i wyczyść action box
-                    action_box.hide();
-                    $("#action_box_wraper_td").html("");
+                    clearAndHideActionBox();
                 }
 
                 infobox.show_info(jsonObj.text, jsonObj.positive);
@@ -154,10 +152,15 @@
     $(document).delegate("#form_change_password", "submit", function(e) {
         e.preventDefault();
         loader.show();
+
+        var userId = $(this)
+            .find("input[name=uid]")
+            .val();
+
         $.ajax({
-            type: "POST",
-            url: buildUrl("jsonhttp_admin.php"),
-            data: $(this).serialize() + "&action=change_password",
+            type: "PUT",
+            url: buildUrl("/admin/users/" + userId + "/password"),
+            data: $(this).serialize(),
             complete: function() {
                 loader.hide();
             },
@@ -174,7 +177,7 @@
                 }
 
                 if (jsonObj.return_id === "warnings") {
-                    showWarnings($("#form_charge_wallet"), jsonObj.warnings);
+                    showWarnings($(this), jsonObj.warnings);
                 } else if (jsonObj.return_id === "ok") {
                     clearAndHideActionBox();
                 }
@@ -208,13 +211,9 @@
                 }
 
                 if (jsonObj.return_id === "warnings") {
-                    showWarnings($("#form_user_edit"), jsonObj.warnings);
+                    showWarnings($(this), jsonObj.warnings);
                 } else if (jsonObj.return_id === "ok") {
-                    // Ukryj i wyczyść action box
-                    action_box.hide();
-                    $("#action_box_wraper_td").html("");
-
-                    // Odśwież stronę
+                    clearAndHideActionBox();
                     refresh_blocks("admincontent", true);
                 }
 

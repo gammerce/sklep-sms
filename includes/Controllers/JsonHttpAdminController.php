@@ -65,7 +65,7 @@ class JsonHttpAdminController
                 $warnings['uid'] = array_merge((array) $warnings['uid'], $warning);
             } else {
                 $user2 = $heart->get_user($uid);
-                if (!$user2->isLogged()) {
+                if (!$user2->exists()) {
                     $warnings['uid'][] = $lang->translate('noaccount_id');
                 }
             }

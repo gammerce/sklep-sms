@@ -10,6 +10,7 @@ use App\Controllers\JsonHttpAdminController;
 use App\Controllers\JsonHttpController;
 use App\Controllers\ServerStuffController;
 use App\Controllers\TransferController;
+use App\Controllers\UserPasswordResource;
 use App\Middlewares\BlockOnInvalidLicense;
 use App\Middlewares\IsUpToDate;
 use App\Middlewares\LoadSettings;
@@ -124,6 +125,10 @@ class RoutesManager
                 $r->addRoute(['GET', 'POST'], '/admin[/{pageId}]', [
                     'middlewares' => [RunCron::class],
                     'uses' => AdminController::class . '@action',
+                ]);
+
+                $r->addRoute("PUT", '/admin/users/{userId}/password', [
+                    'uses' => UserPasswordResource::class . '@put',
                 ]);
 
                 $r->addRoute(['GET', 'POST'], '/admin.php', [

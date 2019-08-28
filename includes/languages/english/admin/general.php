@@ -35,6 +35,7 @@ return [
     'bought_services' => 'Purchased services',
     'bring_it_on' => 'Bring it on!',
     'change_password' => 'Change password',
+    'change_password_success' => "Password has been changed",
     'charge' => 'Charge',
     'charge_number' => 'Charge value must be a number.',
     'choose_tariff' => 'Choose tariff',
