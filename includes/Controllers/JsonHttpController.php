@@ -746,7 +746,7 @@ class JsonHttpController
         }
 
         if ($request->query->get("action") === "get_income") {
-            $user->setPrivilages([
+            $user->setPrivileges([
                 'acp' => true,
                 'view_income' => true,
             ]);

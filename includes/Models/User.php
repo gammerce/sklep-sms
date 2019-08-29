@@ -82,7 +82,7 @@ class User
     /**
      * @var array
      */
-    private $privilages = [];
+    private $privileges = [];
 
     /**
      * @var string
@@ -143,11 +143,11 @@ class User
             $this->reset_password_key = $row['reset_password_key'];
         }
 
-        foreach ($this->groups as $group_id) {
-            $privilages = $heart->get_group_privilages($group_id);
-            foreach ($privilages as $privilage => $value) {
-                if (strlen($privilage)) {
-                    $this->privilages[$privilage] = $value ? true : false;
+        foreach ($this->groups as $groupId) {
+            $privileges = $heart->getGroupPrivileges($groupId);
+            foreach ($privileges as $privilege => $value) {
+                if (strlen($privilege)) {
+                    $this->privileges[$privilege] = $value ? true : false;
                 }
             }
         }
@@ -335,27 +335,27 @@ class User
      *
      * @return boolean
      */
-    public function getPrivilages($key)
+    public function getPrivileges($key)
     {
-        return if_isset($this->privilages[$key], false);
+        return if_isset($this->privileges[$key], false);
     }
 
     /**
-     * @param array $privilages
+     * @param array $privileges
      */
-    public function setPrivilages($privilages)
+    public function setPrivileges($privileges)
     {
-        foreach ($privilages as $key => $value) {
-            $this->privilages[$key] = $value;
+        foreach ($privileges as $key => $value) {
+            $this->privileges[$key] = $value;
         }
     }
 
     /**
-     * Removes all privilages
+     * Removes all privileges
      */
-    public function removePrivilages()
+    public function removePrivileges()
     {
-        $this->privilages = [];
+        $this->privileges = [];
     }
 
     /**

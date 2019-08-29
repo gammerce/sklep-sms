@@ -288,10 +288,10 @@ function get_privileges($privilege, $user = null)
     ];
 
     if (in_array($privilege, $adminPrivileges)) {
-        return $user->getPrivilages('acp') && $user->getPrivilages($privilege);
+        return $user->getPrivileges('acp') && $user->getPrivileges($privilege);
     }
 
-    return $user->getPrivilages($privilege);
+    return $user->getPrivileges($privilege);
 }
 
 /**

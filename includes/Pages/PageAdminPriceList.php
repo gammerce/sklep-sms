@@ -11,7 +11,7 @@ use App\Pages\Interfaces\IPageAdminActionBox;
 class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = 'pricelist';
-    protected $privilage = 'manage_settings';
+    protected $privilege = 'manage_settings';
 
     public function __construct()
     {

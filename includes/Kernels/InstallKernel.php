@@ -50,21 +50,21 @@ class InstallKernel extends Kernel
         // ##########    Wyświetl dane    ##########
         // #########################################
 
-        $files_privilages = '';
+        $files_privileges = '';
         foreach ($files_priv as $file) {
             if ($file == "") {
                 continue;
             }
 
             if (is_writable($this->app->path($file))) {
-                $privilage = "ok";
+                $privilege = "ok";
             } else {
-                $privilage = "bad";
+                $privilege = "bad";
             }
 
-            $files_privilages .= $template->installFullRender(
-                'file_privilages',
-                compact('file', 'privilage')
+            $files_privileges .= $template->installFullRender(
+                'file_privileges',
+                compact('file', 'privilege')
             );
         }
 
@@ -89,7 +89,7 @@ class InstallKernel extends Kernel
         // Pobranie ostatecznego szablonu
         $output = $template->installFullRender(
             'index',
-            compact('notifyHttpServer', 'files_privilages', 'server_modules')
+            compact('notifyHttpServer', 'files_privileges', 'server_modules')
         );
 
         return new Response($output);

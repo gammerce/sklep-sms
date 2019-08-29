@@ -6,7 +6,7 @@ use App\Version;
 class PageAdminUpdateWeb extends PageAdmin
 {
     const PAGE_ID = "update_web";
-    protected $privilage = "update";
+    protected $privilege = "update";
 
     /** @var Version */
     private $version;

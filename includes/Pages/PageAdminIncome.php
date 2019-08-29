@@ -5,7 +5,7 @@ class PageAdminIncome extends PageAdmin
 {
     const PAGE_ID = 'income';
 
-    protected $privilage = 'view_income';
+    protected $privilege = 'view_income';
 
     protected $months = [
         '',

@@ -12,7 +12,7 @@ use App\Routes\UrlGenerator;
 class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = 'users';
-    protected $privilage = 'view_users';
+    protected $privilege = 'view_users';
 
     public function __construct()
     {

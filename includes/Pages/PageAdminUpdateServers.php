@@ -8,7 +8,7 @@ use App\Version;
 class PageAdminUpdateServers extends PageAdmin
 {
     const PAGE_ID = 'update_servers';
-    protected $privilage = 'update';
+    protected $privilege = 'update';
 
     /** @var Requester */
     private $requester;

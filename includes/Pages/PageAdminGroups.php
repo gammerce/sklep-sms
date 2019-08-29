@@ -11,7 +11,7 @@ use App\Pages\Interfaces\IPageAdminActionBox;
 class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = 'groups';
-    protected $privilage = 'view_groups';
+    protected $privilege = 'view_groups';
 
     public function __construct()
     {
@@ -106,7 +106,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
             }
         }
 
-        $privilages = "";
+        $privileges = "";
         $result = $this->db->query("DESCRIBE " . TABLE_PREFIX . "groups");
         while ($row = $this->db->fetchArrayAssoc($result)) {
             if (in_array($row['Field'], ["id", "name"])) {
@@ -132,9 +132,9 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
             );
 
             $name = htmlspecialchars($row['Field']);
-            $text = $this->lang->translate('privilage_' . $row['Field']);
+            $text = $this->lang->translate('privilege_' . $row['Field']);
 
-            $privilages .= $this->template->render(
+            $privileges .= $this->template->render(
                 "tr_text_select",
                 compact('name', 'text', 'values')
             );
@@ -144,14 +144,14 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
             case "group_add":
                 $output = $this->template->render(
                     "admin/action_boxes/group_add",
-                    compact('privilages')
+                    compact('privileges')
                 );
                 break;
 
             case "group_edit":
                 $output = $this->template->render(
                     "admin/action_boxes/group_edit",
-                    compact('privilages', 'group')
+                    compact('privileges', 'group')
                 );
                 break;
 

@@ -11,7 +11,7 @@ use App\Pages\Interfaces\IPageAdminActionBox;
 class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = 'sms_codes';
-    protected $privilage = 'view_sms_codes';
+    protected $privilege = 'view_sms_codes';
 
     public function __construct()
     {

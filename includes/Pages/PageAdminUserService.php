@@ -11,7 +11,7 @@ use App\Services\Interfaces\IServiceUserServiceAdminEdit;
 class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = 'user_service';
-    protected $privilage = 'view_user_services';
+    protected $privilege = 'view_user_services';
 
     protected function content($get, $post)
     {

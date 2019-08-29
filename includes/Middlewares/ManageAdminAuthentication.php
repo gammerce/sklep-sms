@@ -34,7 +34,7 @@ class ManageAdminAuthentication implements MiddlewareContract
 
             // Jeżeli jest zalogowany, ale w międzyczasie odebrano mu dostęp do PA
             if ($auth->check()) {
-                $session->set("info", "no_privilages");
+                $session->set("info", "no_privileges");
             }
         }
 

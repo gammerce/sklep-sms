@@ -5,12 +5,12 @@ use App\Interfaces\IBeLoggedMust;
 
 abstract class PageAdmin extends Page implements IBeLoggedMust
 {
-    protected $privilage = 'acp';
+    protected $privilege = 'acp';
 
     public function get_content($get, $post)
     {
-        if (!get_privileges($this->privilage)) {
-            return $this->lang->translate('no_privilages');
+        if (!get_privileges($this->privilege)) {
+            return $this->lang->translate('no_privileges');
         }
 
         // Dodajemy wszystkie skrypty

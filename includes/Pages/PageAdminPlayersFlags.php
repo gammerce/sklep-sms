@@ -9,7 +9,7 @@ use Admin\Table\Wrapper;
 class PageAdminPlayersFlags extends PageAdmin
 {
     const PAGE_ID = 'players_flags';
-    protected $privilage = 'view_player_flags';
+    protected $privilege = 'view_player_flags';
 
     protected $flags = 'abcdefghijklmnopqrstuyvwxz';
 

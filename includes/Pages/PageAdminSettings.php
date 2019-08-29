@@ -8,7 +8,7 @@ use App\TranslationManager;
 class PageAdminSettings extends PageAdmin
 {
     const PAGE_ID = 'settings';
-    protected $privilage = 'manage_settings';
+    protected $privilege = 'manage_settings';
 
     public function __construct()
     {

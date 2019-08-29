@@ -11,7 +11,7 @@ use App\Pages\Interfaces\IPageAdminActionBox;
 class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = 'antispam_questions';
-    protected $privilage = 'view_antispam_questions';
+    protected $privilege = 'view_antispam_questions';
 
     public function __construct()
     {

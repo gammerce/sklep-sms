@@ -49,7 +49,7 @@ class UpdateInfo
             );
         }
 
-        $files_privilages = '';
+        $files_privileges = '';
         foreach ($files_priv as $file) {
             if (!strlen($file)) {
                 continue;
@@ -62,15 +62,15 @@ class UpdateInfo
                 $everything_ok = false;
             }
 
-            $files_privilages .= $this->template->installUpdateRender(
+            $files_privileges .= $this->template->installUpdateRender(
                 'file',
                 compact('file', 'status')
             );
         }
-        if (strlen($files_privilages)) {
+        if (strlen($files_privileges)) {
             $text = "Uprawnienia do zapisu";
-            $data = $files_privilages;
-            $files_privilages = $this->template->installUpdateRender(
+            $data = $files_privileges;
+            $files_privileges = $this->template->installUpdateRender(
                 'update_info_brick',
                 compact('text', 'data')
             );
@@ -105,7 +105,7 @@ class UpdateInfo
 
         return $this->template->installUpdateRender(
             'update_info',
-            compact('server_modules', 'files_privilages', 'files_delete')
+            compact('server_modules', 'files_privileges', 'files_delete')
         );
     }
 }

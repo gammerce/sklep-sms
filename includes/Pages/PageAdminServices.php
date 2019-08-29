@@ -13,7 +13,7 @@ use App\Services\Interfaces\IServiceCreate;
 class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = 'services';
-    protected $privilage = 'view_services';
+    protected $privilege = 'view_services';
 
     public function __construct()
     {

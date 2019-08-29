@@ -10,7 +10,7 @@ use App\Pages\Interfaces\IPageAdminActionBox;
 class PageAdminTransactionServices extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = 'transaction_services';
-    protected $privilage = 'manage_settings';
+    protected $privilege = 'manage_settings';
 
     public function __construct()
     {

@@ -12,7 +12,7 @@ use App\Services\Interfaces\IServiceServiceCodeAdminManage;
 class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = 'service_codes';
-    protected $privilage = 'view_service_codes';
+    protected $privilege = 'view_service_codes';
 
     public function __construct()
     {

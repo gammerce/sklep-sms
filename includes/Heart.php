@@ -538,7 +538,7 @@ class Heart
         return if_isset($this->groups[$id], null);
     }
 
-    public function get_group_privilages($id)
+    public function getGroupPrivileges($id)
     {
         if (!$this->groups_fetched) {
             $this->fetch_groups();

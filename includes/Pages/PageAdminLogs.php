@@ -10,7 +10,7 @@ use Admin\Table\Wrapper;
 class PageAdminLogs extends PageAdmin
 {
     const PAGE_ID = 'logs';
-    protected $privilage = 'view_logs';
+    protected $privilege = 'view_logs';
 
     public function __construct()
     {

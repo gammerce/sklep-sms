@@ -80,7 +80,7 @@ class AdminController
                     $text = $lang->translate('wrong_login_data');
                     $warning = $template->render("admin/login_warning", compact('text'));
                 } else {
-                    if ($session->get("info") == "no_privilages") {
+                    if ($session->get("info") == "no_privileges") {
                         $text = $lang->translate('no_access');
                         $warning = $template->render("admin/login_warning", compact('text'));
                     }

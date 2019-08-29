@@ -12,7 +12,7 @@ use App\Services\Interfaces\IServiceAvailableOnServers;
 class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = 'servers';
-    protected $privilage = 'manage_servers';
+    protected $privilege = 'manage_servers';
 
     public function __construct()
     {
