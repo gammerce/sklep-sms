@@ -17,7 +17,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('antispam_questions');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('antispam_questions');
     }
 
     protected function content($get, $post)

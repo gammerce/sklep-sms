@@ -86,7 +86,7 @@ function get_content($element, Request $request, $withenvelope = true)
     /** @var Heart $heart */
     $heart = app()->make(Heart::class);
 
-    if (($block = $heart->get_block($element)) === null) {
+    if (($block = $heart->getBlock($element)) === null) {
         return "";
     }
 
@@ -379,7 +379,7 @@ function validate_payment($purchaseData)
     $warnings = [];
 
     // Tworzymy obiekt usługi którą kupujemy
-    if (($serviceModule = $heart->get_service_module($purchaseData->getService())) === null) {
+    if (($serviceModule = $heart->getServiceModule($purchaseData->getService())) === null) {
         return [
             'status' => "wrong_module",
             'text' => $lang->translate('bad_module'),
@@ -806,8 +806,8 @@ function add_bought_service_info(
         }
     }
 
-    $temp_service = $heart->get_service($service);
-    $temp_server = $heart->get_server($server);
+    $temp_service = $heart->getService($service);
+    $temp_server = $heart->getServer($server);
     $amount = $amount != -1 ? "{$amount} {$temp_service['tag']}" : $lang->translate('forever');
     log_info(
         $langShop->sprintf(
@@ -871,7 +871,7 @@ function purchase_info($data)
         return "Brak zakupu w bazie.";
     }
 
-    $service_module = $heart->get_service_module($pbs['service']);
+    $service_module = $heart->getServiceModule($pbs['service']);
 
     return $service_module !== null && $service_module instanceof IServicePurchaseWeb
         ? $service_module->purchase_info($data['action'], $pbs)
@@ -900,7 +900,7 @@ function get_users_services($conditions = '', $take_out = true)
 
     $output = $used_table = [];
     // Niestety dla każdego modułu musimy wykonać osobne zapytanie :-(
-    foreach ($heart->get_services_modules() as $service_module_data) {
+    foreach ($heart->getServicesModules() as $service_module_data) {
         $table = $service_module_data['classsimple']::USER_SERVICE_TABLE;
         if (!strlen($table) || array_key_exists($table, $used_table)) {
             continue;
@@ -953,7 +953,7 @@ function delete_users_old_services()
         get_users_services("WHERE `expire` != '-1' AND `expire` < UNIX_TIMESTAMP()")
         as $user_service
     ) {
-        if (($service_module = $heart->get_service_module($user_service['service'])) === null) {
+        if (($service_module = $heart->getServiceModule($user_service['service'])) === null) {
             continue;
         }
 
@@ -993,7 +993,7 @@ function delete_users_old_services()
 
     // Wywołujemy akcje po usunieciu
     foreach ($users_services as $user_service) {
-        if (($service_module = $heart->get_service_module($user_service['service'])) === null) {
+        if (($service_module = $heart->getServiceModule($user_service['service'])) === null) {
             continue;
         }
 

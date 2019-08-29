@@ -18,7 +18,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('service_codes');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('service_codes');
     }
 
     protected function content($get, $post)
@@ -127,9 +127,9 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
             case "code_add":
                 // Pobranie usług
                 $services = "";
-                foreach ($this->heart->get_services() as $id => $row) {
+                foreach ($this->heart->getServices() as $id => $row) {
                     if (
-                        ($service_module = $this->heart->get_service_module($id)) === null ||
+                        ($service_module = $this->heart->getServiceModule($id)) === null ||
                         !($service_module instanceof IServiceServiceCodeAdminManage)
                     ) {
                         continue;

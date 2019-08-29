@@ -69,7 +69,7 @@ abstract class Page
         if (strlen($this::PAGE_ID) && file_exists($this->app->path($path))) {
             foreach (scandir($this->app->path($path)) as $file) {
                 if (ends_at($file, ".js")) {
-                    $this->heart->script_add(
+                    $this->heart->scriptAdd(
                         $this->settings['shop_url_slash'] .
                             $path .
                             $file .
@@ -85,7 +85,7 @@ abstract class Page
         if (strlen($this::PAGE_ID) && file_exists($this->app->path($path))) {
             foreach (scandir($this->app->path($path)) as $file) {
                 if (ends_at($file, ".css")) {
-                    $this->heart->style_add(
+                    $this->heart->styleAdd(
                         $this->settings['shop_url_slash'] .
                             $path .
                             $file .
@@ -105,10 +105,10 @@ abstract class Page
                 "payment_log",
             ])
         ) {
-            foreach ($this->heart->get_services_modules() as $module_info) {
+            foreach ($this->heart->getServicesModules() as $module_info) {
                 $path = "styles/services/" . $module_info['id'] . ".css";
                 if (file_exists($this->app->path($path))) {
-                    $this->heart->style_add(
+                    $this->heart->styleAdd(
                         $this->settings['shop_url_slash'] .
                             $path .
                             "?version=" .
@@ -118,7 +118,7 @@ abstract class Page
 
                 $path = "jscripts/services/" . $module_info['id'] . ".js";
                 if (file_exists($this->app->path($path))) {
-                    $this->heart->script_add(
+                    $this->heart->scriptAdd(
                         $this->settings['shop_url_slash'] .
                             $path .
                             "?version=" .

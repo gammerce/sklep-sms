@@ -17,7 +17,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('groups');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('groups');
     }
 
     protected function content($get, $post)

@@ -29,7 +29,7 @@ class IndexController
         CurrentPage $currentPage,
         Template $template
     ) {
-        if (!$heart->page_exists($currentPage->getPid())) {
+        if (!$heart->pageExists($currentPage->getPid())) {
             $currentPage->setPid('home');
         }
 

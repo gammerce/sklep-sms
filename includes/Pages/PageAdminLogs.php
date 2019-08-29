@@ -16,7 +16,7 @@ class PageAdminLogs extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('logs');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('logs');
     }
 
     protected function content($get, $post)

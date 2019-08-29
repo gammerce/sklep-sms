@@ -50,7 +50,7 @@ class Payment
         $this->db = $this->app->make(Database::class);
 
         // Tworzymy obiekt obslugujacy stricte weryfikacje
-        $className = $this->heart->get_payment_module($paymentModuleId);
+        $className = $this->heart->getPaymentModule($paymentModuleId);
         if ($className !== null) {
             $this->paymentModule = $this->app->make($className);
         }
@@ -319,7 +319,7 @@ class Payment
         );
 
         // Fix: get user data again to avoid bugs linked with user wallet
-        $purchase_data->user = $this->heart->get_user($purchase_data->user->getUid());
+        $purchase_data->user = $this->heart->getUser($purchase_data->user->getUid());
 
         // Dodanie informacji do bazy danych
         $this->db->query(
@@ -341,7 +341,7 @@ class Payment
 
         // Błędny moduł
         if (
-            ($service_module = $this->heart->get_service_module($purchase_data->getService())) ===
+            ($service_module = $this->heart->getServiceModule($purchase_data->getService())) ===
             null
         ) {
             log_info(

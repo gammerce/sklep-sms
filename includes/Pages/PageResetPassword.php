@@ -11,7 +11,7 @@ class PageResetPassword extends Page implements IBeLoggedCannot
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('reset_password');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('reset_password');
     }
 
     protected function content($get, $post)

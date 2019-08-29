@@ -12,7 +12,7 @@ class PageRegister extends Page implements IBeLoggedCannot
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('register');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('register');
     }
 
     protected function content($get, $post)

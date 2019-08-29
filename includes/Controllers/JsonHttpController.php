@@ -61,7 +61,7 @@ class JsonHttpController
                 return new ApiResponse("no_data", $lang->translate('no_login_password'), 0);
             }
 
-            $user = $heart->get_user(0, $username, $password);
+            $user = $heart->getUser(0, $username, $password);
             if ($user->exists()) {
                 $session->set("uid", $user->getUid());
                 $user->updateActivity();
@@ -280,7 +280,7 @@ class JsonHttpController
             }
 
             // Pobranie danych użytkownika
-            $user2 = $heart->get_user($row['uid']);
+            $user2 = $heart->getUser($row['uid']);
 
             $key = get_random_string(32);
             $db->query(
@@ -417,14 +417,14 @@ class JsonHttpController
 
         if ($action == "purchase_form_validate") {
             if (
-                ($service_module = $heart->get_service_module($_POST['service'])) === null ||
+                ($service_module = $heart->getServiceModule($_POST['service'])) === null ||
                 !($service_module instanceof IServicePurchaseWeb)
             ) {
                 return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
             }
 
             // Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
-            if (!$heart->user_can_use_service($user->getUid(), $service_module->service)) {
+            if (!$heart->userCanUseService($user->getUid(), $service_module->service)) {
                 return new ApiResponse(
                     "no_permission",
                     $lang->translate('service_no_permission'),
@@ -512,7 +512,7 @@ class JsonHttpController
             $purchase_data = unserialize(base64_decode($_POST['purchase_data']));
 
             // Fix: get user data again to avoid bugs linked with user wallet
-            $purchase_data->user = $heart->get_user($purchase_data->user->getUid());
+            $purchase_data->user = $heart->getUser($purchase_data->user->getUid());
 
             // Dodajemy dane płatności
             $purchase_data->setPayment([
@@ -537,7 +537,7 @@ class JsonHttpController
 
                 foreach ($bricks as $brick) {
                     // Nie ma takiego bloku do odświeżenia
-                    if (($block = $heart->get_block($brick)) === null) {
+                    if (($block = $heart->getBlock($brick)) === null) {
                         continue;
                     }
 
@@ -558,7 +558,7 @@ class JsonHttpController
 
         if ($action == "get_service_long_description") {
             $output = "";
-            if (($service_module = $heart->get_service_module($_POST['service'])) !== null) {
+            if (($service_module = $heart->getServiceModule($_POST['service'])) !== null) {
                 $output = $service_module->description_full_get();
             }
 
@@ -595,7 +595,7 @@ class JsonHttpController
                 return new HtmlResponse($lang->translate('dont_play_games'));
             }
 
-            if (($service_module = $heart->get_service_module($user_service['service'])) === null) {
+            if (($service_module = $heart->getServiceModule($user_service['service'])) === null) {
                 return new HtmlResponse($lang->translate('service_cant_be_modified'));
             }
 
@@ -630,7 +630,7 @@ class JsonHttpController
                 return new HtmlResponse($lang->translate('dont_play_games'));
             }
 
-            if (($service_module = $heart->get_service_module($user_service['service'])) === null) {
+            if (($service_module = $heart->getServiceModule($user_service['service'])) === null) {
                 return new HtmlResponse($lang->translate('service_not_displayed'));
             }
 
@@ -670,7 +670,7 @@ class JsonHttpController
                 return new ApiResponse("dont_play_games", $lang->translate('dont_play_games'), 0);
             }
 
-            if (($service_module = $heart->get_service_module($user_service['service'])) === null) {
+            if (($service_module = $heart->getServiceModule($user_service['service'])) === null) {
                 return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
             }
 
@@ -708,7 +708,7 @@ class JsonHttpController
 
         if ($action == "service_take_over_form_get") {
             if (
-                ($service_module = $heart->get_service_module($_POST['service'])) === null ||
+                ($service_module = $heart->getServiceModule($_POST['service'])) === null ||
                 !($service_module instanceof IServiceTakeOver)
             ) {
                 return new PlainResponse($lang->translate('bad_module'));
@@ -719,7 +719,7 @@ class JsonHttpController
 
         if ($action == "service_take_over") {
             if (
-                ($service_module = $heart->get_service_module($_POST['service'])) === null ||
+                ($service_module = $heart->getServiceModule($_POST['service'])) === null ||
                 !($service_module instanceof IServiceTakeOver)
             ) {
                 return new PlainResponse($lang->translate('bad_module'));
@@ -759,7 +759,7 @@ class JsonHttpController
 
         if ($action == "service_action_execute") {
             if (
-                ($service_module = $heart->get_service_module($_POST['service'])) === null ||
+                ($service_module = $heart->getServiceModule($_POST['service'])) === null ||
                 !($service_module instanceof IServiceActionExecute)
             ) {
                 return new PlainResponse($lang->translate('bad_module'));

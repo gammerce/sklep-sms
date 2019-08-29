@@ -18,7 +18,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('servers');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('servers');
     }
 
     protected function content($get, $post)
@@ -38,7 +38,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
         );
         $table->addHeadCell(new Cell($this->lang->translate('version')));
 
-        foreach ($this->heart->get_servers() as $row) {
+        foreach ($this->heart->getServers() as $row) {
             $body_row = new BodyRow();
 
             $body_row->setDbId($row['id']);
@@ -78,7 +78,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
         }
 
         if ($box_id == "server_edit") {
-            $server = $this->heart->get_server($data['id']);
+            $server = $this->heart->getServer($data['id']);
             $server['ip'] = htmlspecialchars($server['ip']);
             $server['port'] = htmlspecialchars($server['port']);
         }
@@ -100,10 +100,10 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
         }
 
         $services = "";
-        foreach ($this->heart->get_services() as $service) {
+        foreach ($this->heart->getServices() as $service) {
             // Dana usługa nie może być kupiona na serwerze
             if (
-                ($service_module = $this->heart->get_service_module($service['id'])) === null ||
+                ($service_module = $this->heart->getServiceModule($service['id'])) === null ||
                 !($service_module instanceof IServiceAvailableOnServers)
             ) {
                 continue;
@@ -114,7 +114,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                 $this->lang->strtoupper($this->lang->translate('no')),
                 [
                     'value' => 0,
-                    'selected' => $this->heart->server_service_linked($server['id'], $service['id'])
+                    'selected' => $this->heart->serverServiceLinked($server['id'], $service['id'])
                         ? ""
                         : "selected",
                 ]
@@ -125,7 +125,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                 $this->lang->strtoupper($this->lang->translate('yes')),
                 [
                     'value' => 1,
-                    'selected' => $this->heart->server_service_linked($server['id'], $service['id'])
+                    'selected' => $this->heart->serverServiceLinked($server['id'], $service['id'])
                         ? "selected"
                         : "",
                 ]

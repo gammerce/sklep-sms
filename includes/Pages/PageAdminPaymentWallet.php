@@ -15,7 +15,7 @@ class PageAdminPaymentWallet extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('payments_wallet');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('payments_wallet');
     }
 
     protected function content($get, $post)

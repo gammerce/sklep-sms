@@ -18,7 +18,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('users');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('users');
     }
 
     protected function content($get, $post)
@@ -80,7 +80,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             $row['groups'] = explode(";", $row['groups']);
             $groups = [];
             foreach ($row['groups'] as $gid) {
-                $group = $this->heart->get_group($gid);
+                $group = $this->heart->getGroup($gid);
                 $groups[] = "{$group['name']} ({$group['id']})";
             }
             $groups = implode("; ", $groups);
@@ -153,10 +153,10 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         switch ($box_id) {
             case "user_edit":
                 // Pobranie użytkownika
-                $user = $this->heart->get_user($data['uid']);
+                $user = $this->heart->getUser($data['uid']);
 
                 $groups = '';
-                foreach ($this->heart->get_groups() as $group) {
+                foreach ($this->heart->getGroups() as $group) {
                     $groups .= create_dom_element("option", "{$group['name']} ( {$group['id']} )", [
                         'value' => $group['id'],
                         'selected' => in_array($group['id'], $user->getGroups()) ? "selected" : "",
@@ -170,7 +170,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                 break;
 
             case "charge_wallet":
-                $user = $this->heart->get_user($data['uid']);
+                $user = $this->heart->getUser($data['uid']);
                 $output = $this->template->render(
                     "admin/action_boxes/user_charge_wallet",
                     compact('user')
@@ -178,7 +178,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                 break;
 
             case "change_password":
-                $user = $this->heart->get_user($data['uid']);
+                $user = $this->heart->getUser($data['uid']);
                 $output = $this->template->render(
                     "admin/action_boxes/user_change_password",
                     compact('user')

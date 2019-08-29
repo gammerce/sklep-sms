@@ -83,103 +83,103 @@ class HeartServiceProvider
 
     protected function registerPaymentModules(Heart $heart)
     {
-        $heart->register_payment_module('1s1k', OneShotOneKill::class);
-        $heart->register_payment_module('bizneshost', Bizneshost::class);
-        $heart->register_payment_module('cashbill', Cashbill::class);
-        $heart->register_payment_module('cssetti', Cssetti::class);
-        $heart->register_payment_module('gosetti', Gosetti::class);
-        $heart->register_payment_module('homepay', Homepay::class);
-        $heart->register_payment_module('hostplay', Hostplay::class);
-        $heart->register_payment_module('microsms', Microsms::class);
-        $heart->register_payment_module('mintshost', Mintshost::class);
-        $heart->register_payment_module('profitsms', Profitsms::class);
-        $heart->register_payment_module('pukawka', Pukawka::class);
-        $heart->register_payment_module('simpay', Simpay::class);
-        $heart->register_payment_module('transferuj', Transferuj::class);
-        $heart->register_payment_module('zabijaka', Zabijaka::class);
+        $heart->registerPaymentModule('1s1k', OneShotOneKill::class);
+        $heart->registerPaymentModule('bizneshost', Bizneshost::class);
+        $heart->registerPaymentModule('cashbill', Cashbill::class);
+        $heart->registerPaymentModule('cssetti', Cssetti::class);
+        $heart->registerPaymentModule('gosetti', Gosetti::class);
+        $heart->registerPaymentModule('homepay', Homepay::class);
+        $heart->registerPaymentModule('hostplay', Hostplay::class);
+        $heart->registerPaymentModule('microsms', Microsms::class);
+        $heart->registerPaymentModule('mintshost', Mintshost::class);
+        $heart->registerPaymentModule('profitsms', Profitsms::class);
+        $heart->registerPaymentModule('pukawka', Pukawka::class);
+        $heart->registerPaymentModule('simpay', Simpay::class);
+        $heart->registerPaymentModule('transferuj', Transferuj::class);
+        $heart->registerPaymentModule('zabijaka', Zabijaka::class);
     }
 
     protected function registerPages(Heart $heart)
     {
-        $heart->register_page('transfer_finalized', PageCashbillTransferFinalized::class);
-        $heart->register_page('change_password', PageChangePassword::class);
-        $heart->register_page('contact', PageContact::class);
-        $heart->register_page('forgotten_password', PageForgottenPassword::class);
-        $heart->register_page('home', PageMain::class);
-        $heart->register_page('payment', PagePayment::class);
-        $heart->register_page('payment_log', PagePaymentLog::class);
-        $heart->register_page('purchase', PagePurchase::class);
-        $heart->register_page('register', PageRegister::class);
-        $heart->register_page('regulations', PageRegulations::class);
-        $heart->register_page('reset_password', PageResetPassword::class);
-        $heart->register_page('service_take_over', PageTakeOverService::class);
-        $heart->register_page('transferuj_bad', PageTransferujBad::class);
-        $heart->register_page('transferuj_ok', PageTransferujOk::class);
-        $heart->register_page('user_own_services', PageUserOwnServices::class);
+        $heart->registerPage('transfer_finalized', PageCashbillTransferFinalized::class);
+        $heart->registerPage('change_password', PageChangePassword::class);
+        $heart->registerPage('contact', PageContact::class);
+        $heart->registerPage('forgotten_password', PageForgottenPassword::class);
+        $heart->registerPage('home', PageMain::class);
+        $heart->registerPage('payment', PagePayment::class);
+        $heart->registerPage('payment_log', PagePaymentLog::class);
+        $heart->registerPage('purchase', PagePurchase::class);
+        $heart->registerPage('register', PageRegister::class);
+        $heart->registerPage('regulations', PageRegulations::class);
+        $heart->registerPage('reset_password', PageResetPassword::class);
+        $heart->registerPage('service_take_over', PageTakeOverService::class);
+        $heart->registerPage('transferuj_bad', PageTransferujBad::class);
+        $heart->registerPage('transferuj_ok', PageTransferujOk::class);
+        $heart->registerPage('user_own_services', PageUserOwnServices::class);
     }
 
     protected function registerAdminPages(Heart $heart)
     {
-        $heart->register_page('antispam_questions', PageAdminAntispamQuestions::class, 'admin');
-        $heart->register_page('bought_services', PageAdminBoughtServices::class, 'admin');
-        $heart->register_page('groups', PageAdminGroups::class, 'admin');
-        $heart->register_page('home', PageAdminMain::class, 'admin');
-        $heart->register_page('income', PageAdminIncome::class, 'admin');
-        $heart->register_page('logs', PageAdminLogs::class, 'admin');
-        $heart->register_page('payment_admin', PageAdminPaymentAdmin::class, 'admin');
-        $heart->register_page('payment_service_code', PageAdminPaymentServiceCode::class, 'admin');
-        $heart->register_page('payment_sms', PageAdminPaymentSms::class, 'admin');
-        $heart->register_page('payment_transfer', PageAdminPaymentTransfer::class, 'admin');
-        $heart->register_page('payment_wallet', PageAdminPaymentWallet::class, 'admin');
-        $heart->register_page('players_flags', PageAdminPlayersFlags::class, 'admin');
-        $heart->register_page('pricelist', PageAdminPriceList::class, 'admin');
-        $heart->register_page('servers', PageAdminServers::class, 'admin');
-        $heart->register_page('service_codes', PageAdminServiceCodes::class, 'admin');
-        $heart->register_page('services', PageAdminServices::class, 'admin');
-        $heart->register_page('settings', PageAdminSettings::class, 'admin');
-        $heart->register_page('sms_codes', PageAdminSmsCodes::class, 'admin');
-        $heart->register_page('tariffs', PageAdminTariffs::class, 'admin');
-        $heart->register_page('transaction_services', PageAdminTransactionServices::class, 'admin');
-        $heart->register_page('update_servers', PageAdminUpdateServers::class, 'admin');
-        $heart->register_page('update_web', PageAdminUpdateWeb::class, 'admin');
-        $heart->register_page('user_service', PageAdminUserService::class, 'admin');
-        $heart->register_page('users', PageAdminUsers::class, 'admin');
+        $heart->registerPage('antispam_questions', PageAdminAntispamQuestions::class, 'admin');
+        $heart->registerPage('bought_services', PageAdminBoughtServices::class, 'admin');
+        $heart->registerPage('groups', PageAdminGroups::class, 'admin');
+        $heart->registerPage('home', PageAdminMain::class, 'admin');
+        $heart->registerPage('income', PageAdminIncome::class, 'admin');
+        $heart->registerPage('logs', PageAdminLogs::class, 'admin');
+        $heart->registerPage('payment_admin', PageAdminPaymentAdmin::class, 'admin');
+        $heart->registerPage('payment_service_code', PageAdminPaymentServiceCode::class, 'admin');
+        $heart->registerPage('payment_sms', PageAdminPaymentSms::class, 'admin');
+        $heart->registerPage('payment_transfer', PageAdminPaymentTransfer::class, 'admin');
+        $heart->registerPage('payment_wallet', PageAdminPaymentWallet::class, 'admin');
+        $heart->registerPage('players_flags', PageAdminPlayersFlags::class, 'admin');
+        $heart->registerPage('pricelist', PageAdminPriceList::class, 'admin');
+        $heart->registerPage('servers', PageAdminServers::class, 'admin');
+        $heart->registerPage('service_codes', PageAdminServiceCodes::class, 'admin');
+        $heart->registerPage('services', PageAdminServices::class, 'admin');
+        $heart->registerPage('settings', PageAdminSettings::class, 'admin');
+        $heart->registerPage('sms_codes', PageAdminSmsCodes::class, 'admin');
+        $heart->registerPage('tariffs', PageAdminTariffs::class, 'admin');
+        $heart->registerPage('transaction_services', PageAdminTransactionServices::class, 'admin');
+        $heart->registerPage('update_servers', PageAdminUpdateServers::class, 'admin');
+        $heart->registerPage('update_web', PageAdminUpdateWeb::class, 'admin');
+        $heart->registerPage('user_service', PageAdminUserService::class, 'admin');
+        $heart->registerPage('users', PageAdminUsers::class, 'admin');
     }
 
     protected function registerBlocks(Heart $heart)
     {
-        $heart->register_block('admincontent', BlockAdminContent::class);
-        $heart->register_block('content', BlockContent::class);
-        $heart->register_block('logged_info', BlockLoggedInfo::class);
-        $heart->register_block('services_buttons', BlockServicesButtons::class);
-        $heart->register_block('user_buttons', BlockUserButtons::class);
-        $heart->register_block('wallet', BlockWallet::class);
+        $heart->registerBlock('admincontent', BlockAdminContent::class);
+        $heart->registerBlock('content', BlockContent::class);
+        $heart->registerBlock('logged_info', BlockLoggedInfo::class);
+        $heart->registerBlock('services_buttons', BlockServicesButtons::class);
+        $heart->registerBlock('user_buttons', BlockUserButtons::class);
+        $heart->registerBlock('wallet', BlockWallet::class);
     }
 
     protected function registerServices(Heart $heart)
     {
-        $heart->register_service_module(
+        $heart->registerServiceModule(
             ServiceChargeWalletSimple::MODULE_ID,
             'Doładowanie Portfela',
             ServiceChargeWallet::class,
             ServiceChargeWalletSimple::class
         );
 
-        $heart->register_service_module(
+        $heart->registerServiceModule(
             ServiceExtraFlagsSimple::MODULE_ID,
             'Dodatkowe Uprawnienia / Flagi',
             ServiceExtraFlags::class,
             ServiceExtraFlagsSimple::class
         );
 
-        $heart->register_service_module(
+        $heart->registerServiceModule(
             ServiceMybbExtraGroupsSimple::MODULE_ID,
             'Dodatkowe Grupy (MyBB)',
             ServiceMybbExtraGroups::class,
             ServiceMybbExtraGroupsSimple::class
         );
 
-        $heart->register_service_module(
+        $heart->registerServiceModule(
             ServiceOtherSimple::MODULE_ID,
             'Inne',
             ServiceOther::class,

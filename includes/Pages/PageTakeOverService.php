@@ -12,15 +12,15 @@ class PageTakeOverService extends Page implements IBeLoggedMust
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('take_over_service');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('take_over_service');
     }
 
     protected function content($get, $post)
     {
         $services_options = "";
-        $services = $this->heart->get_services();
+        $services = $this->heart->getServices();
         foreach ($services as $service) {
-            if (($service_module = $this->heart->get_service_module($service['id'])) === null) {
+            if (($service_module = $this->heart->getServiceModule($service['id'])) === null) {
                 continue;
             }
 

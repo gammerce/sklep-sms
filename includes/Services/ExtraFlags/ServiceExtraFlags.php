@@ -64,9 +64,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         // Pobieranie serwerów na których można zakupić daną usługę
         $servers = "";
-        foreach ($heart->get_servers() as $id => $row) {
+        foreach ($heart->getServers() as $id => $row) {
             // Usługi nie mozna kupic na tym serwerze
-            if (!$heart->server_service_linked($id, $this->service['id'])) {
+            if (!$heart->serverServiceLinked($id, $this->service['id'])) {
                 continue;
             }
 
@@ -116,9 +116,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             $warnings['server'][] = $this->lang->translate('must_choose_server');
         } else {
             // Sprawdzanie czy serwer o danym id istnieje w bazie
-            $server = $this->heart->get_server($purchase_data->getOrder('server'));
+            $server = $this->heart->getServer($purchase_data->getOrder('server'));
 
-            if (!$this->heart->server_service_linked($server['id'], $this->service['id'])) {
+            if (!$this->heart->serverServiceLinked($server['id'], $this->service['id'])) {
                 $warnings['server'][] = $this->lang->translate('chosen_incorrect_server');
             }
         }
@@ -306,7 +306,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
     public function order_details($purchase_data)
     {
-        $server = $this->heart->get_server($purchase_data->getOrder('server'));
+        $server = $this->heart->getServer($purchase_data->getOrder('server'));
         $type_name = $this->get_type_name2($purchase_data->getOrder('type'));
         if (strlen($purchase_data->getOrder('password'))) {
             $password =
@@ -545,7 +545,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             // Pobranie hasła, bierzemy je tylko raz na początku
             $password = $password ? $password : $row['password'];
 
-            $service = $this->heart->get_service($row['service']);
+            $service = $this->heart->getService($row['service']);
             for ($i = 0; $i < strlen($service['flags']); ++$i) {
                 // Bierzemy maksa, ponieważ inaczej robią się problemy.
                 // A tak to jak wygaśnie jakaś usługa, to wykona się cron, usunie ją i przeliczy flagi jeszcze raz
@@ -606,7 +606,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             $data['sms_number'] = htmlspecialchars($data['sms_number']);
         }
 
-        $server = $this->heart->get_server($data['server']);
+        $server = $this->heart->getServer($data['server']);
 
         if ($data['extra_data']['type'] & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)) {
             $setinfo = $this->lang->sprintf(
@@ -668,8 +668,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         // Pobieramy listę serwerów
         $servers = "";
-        foreach ($this->heart->get_servers() as $id => $row) {
-            if (!$this->heart->server_service_linked($id, $this->service['id'])) {
+        foreach ($this->heart->getServers() as $id => $row) {
+            if (!$this->heart->serverServiceLinked($id, $this->service['id'])) {
                 continue;
             }
 
@@ -738,7 +738,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         $purchase_data = new Purchase();
         $purchase_data->setService($this->service['id']);
-        $purchase_data->user = $this->heart->get_user($data['uid']); // Pobieramy dane o użytkowniku na które jego wykupiona usługa
+        $purchase_data->user = $this->heart->getUser($data['uid']); // Pobieramy dane o użytkowniku na które jego wykupiona usługa
         $purchase_data->setPayment([
             'method' => "admin",
             'payment_id' => $payment_id,
@@ -774,8 +774,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     {
         // Pobranie usług
         $services = "";
-        foreach ($this->heart->get_services() as $id => $row) {
-            if (($serviceModule = $this->heart->get_service_module_s($row['module'])) === null) {
+        foreach ($this->heart->getServices() as $id => $row) {
+            if (($serviceModule = $this->heart->getServiceModuleS($row['module'])) === null) {
                 continue;
             }
 
@@ -819,8 +819,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         // Pobranie serwerów
         $servers = "";
-        foreach ($this->heart->get_servers() as $id => $row) {
-            if (!$this->heart->server_service_linked($id, $this->service['id'])) {
+        foreach ($this->heart->getServers() as $id => $row) {
+            if (!$this->heart->serverServiceLinked($id, $this->service['id'])) {
                 continue;
             }
 
@@ -924,7 +924,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             if ($warning = check_for_warnings("uid", $data['uid'])) {
                 $warnings['uid'] = array_merge((array) $warnings['uid'], $warning);
             } else {
-                $user2 = $this->heart->get_user($data['uid']);
+                $user2 = $this->heart->getUser($data['uid']);
                 if (!$user2->exists()) {
                     $warnings['uid'][] = $this->lang->translate('no_account_id');
                 }
@@ -987,7 +987,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 $warnings['server'][] = $this->lang->translate('choose_server_for_service');
             }
             // Wyszukiwanie serwera o danym id
-            elseif (($server = $this->heart->get_server($data['server'])) === null) {
+            elseif (($server = $this->heart->getServer($data['server'])) === null) {
                 $warnings['server'][] = $this->lang->translate('no_server_id');
             }
         }
@@ -1062,7 +1062,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         }
 
         // Serwer
-        $temp_server = $this->heart->get_server($user_service['server']);
+        $temp_server = $this->heart->getServer($user_service['server']);
         $service_info['server'] = $temp_server['name'];
         unset($temp_server);
 
@@ -1087,7 +1087,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             $user_service['expire'] == -1
                 ? $this->lang->translate('never')
                 : date($this->settings['date_format'], $user_service['expire']);
-        $temp_server = $this->heart->get_server($user_service['server']);
+        $temp_server = $this->heart->getServer($user_service['server']);
         $service_info['server'] = $temp_server['name'];
         $service_info['service'] = $this->service['name'];
         $service_info['type'] = $this->get_type_name2($user_service['type']);
@@ -1346,7 +1346,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         $servers = "";
         // Pobieranie listy serwerów
-        foreach ($this->heart->get_servers() as $id => $row) {
+        foreach ($this->heart->getServers() as $id => $row) {
             $servers .= create_dom_element("option", $row['name'], [
                 'value' => $row['id'],
             ]);
@@ -1544,8 +1544,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         $servers = "";
         // Pobieranie serwerów na których można zakupić daną usługę
-        foreach ($this->heart->get_servers() as $id => $row) {
-            if (!$this->heart->server_service_linked($id, $this->service['id'])) {
+        foreach ($this->heart->getServers() as $id => $row) {
+            if (!$this->heart->serverServiceLinked($id, $this->service['id'])) {
                 continue;
             }
 
@@ -1567,7 +1567,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
      */
     private function tariffs_for_server($server_id)
     {
-        $server = $this->heart->get_server($server_id);
+        $server = $this->heart->getServer($server_id);
         $sms_service = if_strlen($server['sms_service'], $this->settings['sms_service']);
 
         // Pobieranie kwot za które można zakupić daną usługę na danym serwerze
@@ -1637,8 +1637,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     {
         // Pobieramy listę serwerów
         $servers = "";
-        foreach ($this->heart->get_servers() as $id => $row) {
-            if (!$this->heart->server_service_linked($id, $this->service['id'])) {
+        foreach ($this->heart->getServers() as $id => $row) {
+            if (!$this->heart->serverServiceLinked($id, $this->service['id'])) {
                 continue;
             }
 
@@ -1664,7 +1664,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             $warnings['server'][] = $this->lang->translate('have_to_choose_server');
         }
         // Wyszukiwanie serwera o danym id
-        elseif (($server = $this->heart->get_server($data['server'])) === null) {
+        elseif (($server = $this->heart->getServer($data['server'])) === null) {
             $warnings['server'][] = $this->lang->translate('no_server_id');
         }
 

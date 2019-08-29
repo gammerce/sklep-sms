@@ -16,7 +16,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('transaction_services');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('transaction_services');
     }
 
     protected function content($get, $post)

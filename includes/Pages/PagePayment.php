@@ -14,7 +14,7 @@ class PagePayment extends Page
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('title_payment');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('title_payment');
     }
 
     protected function content($get, $post)
@@ -31,14 +31,14 @@ class PagePayment extends Page
         $purchase_data = unserialize(base64_decode($post['data']));
 
         // Fix: get user data again to avoid bugs linked with user wallet
-        $purchase_data->user = $this->heart->get_user($purchase_data->user->getUid());
+        $purchase_data->user = $this->heart->getUser($purchase_data->user->getUid());
 
         if (!($purchase_data instanceof Purchase)) {
             return $this->lang->translate('error_occured');
         }
 
         if (
-            ($service_module = $this->heart->get_service_module($purchase_data->getService())) ===
+            ($service_module = $this->heart->getServiceModule($purchase_data->getService())) ===
                 null ||
             !($service_module instanceof IServicePurchaseWeb)
         ) {

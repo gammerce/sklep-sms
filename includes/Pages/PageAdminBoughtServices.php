@@ -18,7 +18,7 @@ class PageAdminBoughtServices extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('bought_services');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('bought_services');
     }
 
     protected function content($get, $post)
@@ -94,10 +94,10 @@ class PageAdminBoughtServices extends PageAdmin
             $body_row = new BodyRow();
 
             // Pobranie danych o usłudze, która została kupiona
-            $service = $this->heart->get_service($row['service']);
+            $service = $this->heart->getService($row['service']);
 
             // Pobranie danych o serwerze na ktorym zostala wykupiona usługa
-            $server = $this->heart->get_server($row['server']);
+            $server = $this->heart->getServer($row['server']);
 
             $username = $row['uid']
                 ? htmlspecialchars($row['username']) . " ({$row['uid']})"

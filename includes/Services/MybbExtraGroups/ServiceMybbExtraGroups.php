@@ -523,7 +523,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             if ($warning = check_for_warnings('uid', $post['uid'])) {
                 $warnings['uid'] = array_merge((array) $warnings['uid'], $warning);
             } else {
-                $user2 = $this->heart->get_user($post['uid']);
+                $user2 = $this->heart->getUser($post['uid']);
                 if (!$user2->exists()) {
                     $warnings['uid'][] = $this->lang->translate('no_account_id');
                 }
@@ -566,7 +566,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
 
         $purchase_data = new Purchase();
         $purchase_data->setService($this->service['id']);
-        $purchase_data->user = $this->heart->get_user($post['uid']);
+        $purchase_data->user = $this->heart->getUser($post['uid']);
         $purchase_data->setPayment([
             'method' => "admin",
             'payment_id' => $payment_id,

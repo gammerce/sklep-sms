@@ -17,7 +17,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('payment_log');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('payment_log');
     }
 
     protected function content($get, $post)
@@ -59,15 +59,15 @@ class PagePaymentLog extends Page implements IBeLoggedMust
             $cost = number_format($row['cost'] / 100.0, 2) . " " . $settings['currency'];
 
             if (
-                ($service_module = $heart->get_service_module($row['service'])) !== null &&
+                ($service_module = $heart->getServiceModule($row['service'])) !== null &&
                 $service_module instanceof IServicePurchaseWeb
             ) {
                 $log_info = $service_module->purchase_info("payment_log", $row);
                 $desc = $log_info['text'];
                 $class = $log_info['class'];
             } else {
-                $temp_service = $heart->get_service($row['service']);
-                $temp_server = $heart->get_server($row['server']);
+                $temp_service = $heart->getService($row['service']);
+                $temp_server = $heart->getServer($row['server']);
                 $desc = $lang->sprintf(
                     $lang->translate('service_was_bought'),
                     $temp_service['name'],

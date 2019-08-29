@@ -24,7 +24,7 @@ class PageAdminMain extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('main_page');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('main_page');
         $this->version = $version;
         $this->license = $license;
         $this->requester = $requester;
@@ -82,7 +82,7 @@ class PageAdminMain extends PageAdmin
         }
 
         $serversCount = 0;
-        foreach ($this->heart->get_servers() as $server) {
+        foreach ($this->heart->getServers() as $server) {
             if (!$this->isServerNewest($server, $newestAmxxVersion, $newestSmVersion)) {
                 $serversCount += 1;
             }
@@ -95,7 +95,7 @@ class PageAdminMain extends PageAdmin
                 $this->lang->sprintf(
                     $this->lang->translate('update_available_servers'),
                     $serversCount,
-                    $this->heart->get_servers_amount(),
+                    $this->heart->getServersAmount(),
                     $updateServersLink
                 ),
                 "positive",
@@ -112,7 +112,7 @@ class PageAdminMain extends PageAdmin
         $bricks .= create_brick(
             $this->lang->sprintf(
                 $this->lang->translate('amount_of_servers'),
-                $this->heart->get_servers_amount()
+                $this->heart->getServersAmount()
             ),
             "brick_pa_main"
         );

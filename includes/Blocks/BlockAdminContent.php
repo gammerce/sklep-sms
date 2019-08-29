@@ -45,7 +45,7 @@ class BlockAdminContent extends Block
 
     protected function content($get, $post)
     {
-        if (($page = $this->heart->get_page($this->page->getPid(), "admin")) === null) {
+        if (($page = $this->heart->getPage($this->page->getPid(), "admin")) === null) {
             return null;
         }
 

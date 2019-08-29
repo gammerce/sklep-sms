@@ -28,7 +28,7 @@ class ServerStuffController
         $action = $request->get('action');
 
         if ($action == "purchase_service") {
-            if (($service_module = $heart->get_service_module($request->get('service'))) === null) {
+            if (($service_module = $heart->getServiceModule($request->get('service'))) === null) {
                 return $this->xmlOutput("bad_module", $lang->translate('bad_module'), 0);
             }
 
@@ -39,7 +39,7 @@ class ServerStuffController
             // Sprawdzamy dane zakupu
             $purchaseData = new Purchase();
             $purchaseData->setService($service_module->service['id']);
-            $purchaseData->user = $heart->get_user($request->get('uid'));
+            $purchaseData->user = $heart->getUser($request->get('uid'));
             $purchaseData->user->setPlatform($request->get('platform'));
             $purchaseData->user->setLastip($request->get('ip'));
             $purchaseData->setOrder([

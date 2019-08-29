@@ -17,7 +17,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('tariffs');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('tariffs');
     }
 
     protected function content($get, $post)

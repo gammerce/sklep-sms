@@ -34,15 +34,15 @@ class BlockServicesButtons extends Block
         $url = app()->make(UrlGenerator::class);
 
         $services = "";
-        foreach ($heart->get_services() as $service) {
+        foreach ($heart->getServices() as $service) {
             if (
-                ($service_module = $heart->get_service_module($service['id'])) === null ||
+                ($service_module = $heart->getServiceModule($service['id'])) === null ||
                 !$service_module->show_on_web()
             ) {
                 continue;
             }
 
-            if (!$heart->user_can_use_service($user->getUid(), $service)) {
+            if (!$heart->userCanUseService($user->getUid(), $service)) {
                 continue;
             }
 

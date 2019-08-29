@@ -61,15 +61,15 @@ class AdminController
 
         if (
             $currentPage->getPid() !== "login" &&
-            !$heart->page_exists($currentPage->getPid(), 'admin')
+            !$heart->pageExists($currentPage->getPid(), 'admin')
         ) {
             $currentPage->setPid('home');
         }
 
         // Uzytkownik nie jest zalogowany
         if ($currentPage->getPid() == "login") {
-            $heart->page_title = "Login";
-            $heart->style_add(
+            $heart->pageTitle = "Login";
+            $heart->styleAdd(
                 $settings['shop_url_slash'] .
                     "styles/admin/style_login.css?version=" .
                     $app->version()
@@ -112,7 +112,7 @@ class AdminController
         }
         if (get_privileges("view_user_services")) {
             $pid = '';
-            foreach ($heart->get_services_modules() as $moduleData) {
+            foreach ($heart->getServicesModules() as $moduleData) {
                 if (
                     in_array(
                         IServiceUserServiceAdminDisplay::class,

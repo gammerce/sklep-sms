@@ -17,7 +17,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('pricelist');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('pricelist');
     }
 
     protected function content($get, $post)
@@ -51,10 +51,10 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
         while ($row = $this->db->fetchArrayAssoc($result)) {
             $body_row = new BodyRow();
 
-            $service = $this->heart->get_service($row['service']);
+            $service = $this->heart->getService($row['service']);
 
             if ($row['server'] != -1) {
-                $temp_server = $this->heart->get_server($row['server']);
+                $temp_server = $this->heart->getServer($row['server']);
                 $server_name = $temp_server['name'];
                 unset($temp_server);
             } else {
@@ -108,7 +108,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
 
         // Pobranie usług
         $services = "";
-        foreach ($this->heart->get_services() as $service_id => $service) {
+        foreach ($this->heart->getServices() as $service_id => $service) {
             $services .= create_dom_element(
                 "option",
                 $service['name'] . " ( " . $service['id'] . " )",
@@ -122,7 +122,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
 
         // Pobranie serwerów
         $servers = "";
-        foreach ($this->heart->get_servers() as $server_id => $server) {
+        foreach ($this->heart->getServers() as $server_id => $server) {
             $servers .= create_dom_element("option", $server['name'], [
                 'value' => $server['id'],
                 'selected' => isset($price) && $price['server'] == $server['id'] ? "selected" : "",

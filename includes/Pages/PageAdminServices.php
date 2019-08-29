@@ -19,7 +19,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('services');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('services');
     }
 
     protected function content($get, $post)
@@ -38,7 +38,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
         $table->addHeadCell(new Cell($this->lang->translate('description')));
         $table->addHeadCell(new Cell($this->lang->translate('order')));
 
-        foreach ($this->heart->get_services() as $row) {
+        foreach ($this->heart->getServices() as $row) {
             $body_row = new BodyRow();
 
             $body_row->setDbId(htmlspecialchars($row['id']));
@@ -82,13 +82,13 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
         }
 
         if ($box_id == "service_edit") {
-            $service = $this->heart->get_service($data['id']);
+            $service = $this->heart->getService($data['id']);
             $service['tag'] = htmlspecialchars($service['tag']);
 
             // Pobieramy pola danego modułu
             if (strlen($service['module'])) {
                 if (
-                    ($service_module = $this->heart->get_service_module($service['id'])) !== null &&
+                    ($service_module = $this->heart->getServiceModule($service['id'])) !== null &&
                     $service_module instanceof IServiceAdminManage
                 ) {
                     $extra_fields = create_dom_element(
@@ -104,10 +104,10 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
         // Pobranie dostępnych modułów usług
         elseif ($box_id == "service_add") {
             $services_modules = "";
-            foreach ($this->heart->get_services_modules() as $module) {
+            foreach ($this->heart->getServicesModules() as $module) {
                 // Sprawdzamy czy dany moduł zezwala na tworzenie nowych usług, które będzie obsługiwał
                 if (
-                    ($service_module = $this->heart->get_service_module_s($module['id'])) ===
+                    ($service_module = $this->heart->getServiceModuleS($module['id'])) ===
                         null ||
                     !($service_module instanceof IServiceCreate)
                 ) {
@@ -126,7 +126,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
         // Grupy
         $groups = "";
-        foreach ($this->heart->get_groups() as $group) {
+        foreach ($this->heart->getGroups() as $group) {
             $groups .= create_dom_element("option", "{$group['name']} ( {$group['id']} )", [
                 'value' => $group['id'],
                 'selected' =>
@@ -145,7 +145,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
                 break;
 
             case "service_edit":
-                $service_module_name = $this->heart->get_service_module_name($service['module']);
+                $service_module_name = $this->heart->getServiceModuleName($service['module']);
 
                 $output = $this->template->render(
                     "admin/action_boxes/service_edit",

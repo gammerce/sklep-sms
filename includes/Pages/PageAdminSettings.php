@@ -14,7 +14,7 @@ class PageAdminSettings extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('settings');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('settings');
     }
 
     protected function content($get, $post)

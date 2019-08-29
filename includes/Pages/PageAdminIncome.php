@@ -27,7 +27,7 @@ class PageAdminIncome extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('income');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('income');
     }
 
     protected function content($get, $post)
@@ -37,7 +37,7 @@ class PageAdminIncome extends PageAdmin
 
         $table_row = "";
         // Uzyskanie wszystkich serwerów
-        foreach ($this->heart->get_servers() as $id => $server) {
+        foreach ($this->heart->getServers() as $id => $server) {
             $obejcts_ids[] = $id;
             $table_row .= create_dom_element("td", $server['name']);
         }

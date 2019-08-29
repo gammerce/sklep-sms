@@ -18,7 +18,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('user_own_services');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('user_own_services');
     }
 
     protected function content($get, $post)
@@ -43,7 +43,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         $request = $this->app->make(Request::class);
 
         // Ktore moduly wspieraja usługi użytkowników
-        $modules = array_filter($this->heart->get_services_modules(), function ($module) {
+        $modules = array_filter($this->heart->getServicesModules(), function ($module) {
             return in_array(IServiceUserOwnServices::class, class_implements($module["class"]));
         });
 
@@ -102,7 +102,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
 
         $user_own_services = '';
         foreach ($usersServices as $user_service) {
-            if (($service_module = $heart->get_service_module($user_service['service'])) === null) {
+            if (($service_module = $heart->getServiceModule($user_service['service'])) === null) {
                 continue;
             }
 

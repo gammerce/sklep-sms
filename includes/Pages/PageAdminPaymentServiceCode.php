@@ -15,7 +15,7 @@ class PageAdminPaymentServiceCode extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('payments_service_code');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('payments_service_code');
     }
 
     protected function content($get, $post)

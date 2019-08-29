@@ -17,7 +17,7 @@ class PageAdminPlayersFlags extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('players_flags');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('players_flags');
     }
 
     protected function content($get, $post)
@@ -58,7 +58,7 @@ class PageAdminPlayersFlags extends PageAdmin
             $body_row = new BodyRow();
 
             // Pozyskanie danych serwera
-            $temp_server = $this->heart->get_server($row['server']);
+            $temp_server = $this->heart->getServer($row['server']);
             $server_name = $temp_server['name'];
             unset($temp_server);
 

@@ -15,7 +15,7 @@ class PageAdminPaymentSms extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('payments_sms');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('payments_sms');
     }
 
     protected function content($get, $post)

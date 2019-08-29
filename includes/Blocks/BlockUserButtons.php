@@ -55,9 +55,9 @@ class BlockUserButtons extends Block
 
         // Doładowanie portfela
         if (
-            $heart->user_can_use_service(
+            $heart->userCanUseService(
                 $user->getUid(),
-                $heart->get_service(ServiceChargeWalletSimple::MODULE_ID)
+                $heart->getService(ServiceChargeWalletSimple::MODULE_ID)
             )
         ) {
             $charge_wallet_button = create_dom_element(

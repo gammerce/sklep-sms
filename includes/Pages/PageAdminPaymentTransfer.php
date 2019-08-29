@@ -15,7 +15,7 @@ class PageAdminPaymentTransfer extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('payments_transfer');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('payments_transfer');
     }
 
     protected function content($get, $post)

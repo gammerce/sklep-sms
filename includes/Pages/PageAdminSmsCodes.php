@@ -17,7 +17,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('sms_codes');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('sms_codes');
     }
 
     protected function content($get, $post)
