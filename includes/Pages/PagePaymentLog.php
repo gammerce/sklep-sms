@@ -53,7 +53,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         );
         $rows_count = $db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
-        $payment_logs = "";
+        $paymentLogs = "";
         while ($row = $db->fetchArrayAssoc($result)) {
             $date = htmlspecialchars($row['timestamp']);
             $cost = number_format($row['cost'] / 100.0, 2) . " " . $settings['currency'];
@@ -85,7 +85,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
                 "payment_log_brick",
                 compact('date', 'cost', 'desc')
             );
-            $payment_logs .= create_dom_element(
+            $paymentLogs .= create_dom_element(
                 "div",
                 $payment_log_brick,
                 $data = [
@@ -101,11 +101,11 @@ class PagePaymentLog extends Page implements IBeLoggedMust
             $query,
             10
         );
-        $pagination_class = strlen($pagination) ? "" : "display_none";
+        $paginationClass = strlen($pagination) ? "" : "display_none";
 
         return $template->render(
             "payment_log",
-            compact('payment_logs', 'pagination_class', 'pagination')
+            compact('paymentLogs', 'paginationClass', 'pagination')
         );
     }
 }

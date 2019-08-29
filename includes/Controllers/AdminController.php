@@ -190,7 +190,7 @@ class AdminController
             // Pytania bezpieczeństwa
             $pid = "antispam_questions";
             $name = $lang->translate($pid);
-            $antispam_questions_link = $template->render("admin/page_link", compact('pid', 'name'));
+            $antispamQuestionsLink = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privileges("view_logs")) {
             // Pytania bezpieczeństwa
@@ -213,7 +213,7 @@ class AdminController
                     'license',
                     'user',
                     'settings_link',
-                    'antispam_questions_link',
+                    'antispamQuestionsLink',
                     'transaction_services_link',
                     'services_link',
                     'servers_link',

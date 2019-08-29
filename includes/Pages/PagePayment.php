@@ -65,7 +65,7 @@ class PagePayment extends Page
             );
         }
 
-        $cost_transfer =
+        $costTransfer =
             $purchaseData->getPayment('cost') !== null
                 ? number_format($purchaseData->getPayment('cost') / 100.0, 2)
                 : "0.00";
@@ -78,7 +78,7 @@ class PagePayment extends Page
         ) {
             $paymentMethods .= $this->template->render(
                 "payment_method_transfer",
-                compact('cost_transfer')
+                compact('costTransfer')
             );
         }
 
@@ -89,7 +89,7 @@ class PagePayment extends Page
         ) {
             $paymentMethods .= $this->template->render(
                 "payment_method_wallet",
-                compact('cost_transfer')
+                compact('costTransfer')
             );
         }
 

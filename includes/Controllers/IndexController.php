@@ -34,7 +34,7 @@ class IndexController
         }
 
         // Pobranie miejsca logowania
-        $logged_info = get_content("logged_info", $request);
+        $loggedInfo = get_content("logged_info", $request);
 
         // Pobranie portfela
         $wallet = get_content("wallet", $request);
@@ -43,10 +43,10 @@ class IndexController
         $content = get_content("content", $request);
 
         // Pobranie przycisków usług
-        $services_buttons = get_content("services_buttons", $request);
+        $servicesButtons = get_content("services_buttons", $request);
 
         // Pobranie przycisków użytkownika
-        $user_buttons = get_content("user_buttons", $request);
+        $userButtons = get_content("user_buttons", $request);
 
         // Pobranie headera
         $header = $template->render("header", compact('currentPage', 'heart', 'license'));
@@ -57,11 +57,11 @@ class IndexController
             compact(
                 "header",
                 "heart",
-                "logged_info",
+                "loggedInfo",
                 "wallet",
-                "services_buttons",
+                "servicesButtons",
                 "content",
-                "user_buttons"
+                "userButtons"
             )
         );
 

@@ -104,10 +104,10 @@ class JsonHttpController
             $forename = trim($request->request->get('forename'));
             $surname = trim($request->request->get('surname'));
             $as_id = $request->request->get('as_id');
-            $as_answer = $request->request->get('as_answer');
+            $asAnswer = $request->request->get('as_answer');
 
             // Pobranie nowego pytania antyspamowego
-            $antispam_question = $db->fetchArrayAssoc(
+            $antispamQuestion = $db->fetchArrayAssoc(
                 $db->query(
                     "SELECT * FROM `" .
                         TABLE_PREFIX .
@@ -116,8 +116,8 @@ class JsonHttpController
                         "LIMIT 1"
                 )
             );
-            $data['antispam']['question'] = $antispam_question['question'];
-            $data['antispam']['id'] = $antispam_question['id'];
+            $data['antispam']['question'] = $antispamQuestion['question'];
+            $data['antispam']['id'] = $antispamQuestion['id'];
 
             // Sprawdzanie czy podane id pytania antyspamowego jest prawidlowe
             if (!$session->has("asid") || $as_id != $session->get("asid")) {
@@ -125,7 +125,7 @@ class JsonHttpController
             }
 
             // Zapisujemy id pytania antyspamowego
-            $session->set("asid", $antispam_question['id']);
+            $session->set("asid", $antispamQuestion['id']);
 
             // Nazwa użytkownika
             if ($warning = check_for_warnings("username", $username)) {
@@ -176,8 +176,8 @@ class JsonHttpController
                     [$as_id]
                 )
             );
-            $antispam_question = $db->fetchArrayAssoc($result);
-            if (!in_array(strtolower($as_answer), explode(";", $antispam_question['answers']))) {
+            $antispamQuestion = $db->fetchArrayAssoc($result);
+            if (!in_array(strtolower($asAnswer), explode(";", $antispamQuestion['answers']))) {
                 $warnings['as_answer'][] = $lang->translate('wrong_anti_answer');
             }
 

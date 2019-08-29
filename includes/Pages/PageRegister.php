@@ -21,7 +21,7 @@ class PageRegister extends Page implements IBeLoggedCannot
         $request = $this->app->make(Request::class);
         $session = $request->getSession();
 
-        $antispam_question = $this->db->fetchArrayAssoc(
+        $antispamQuestion = $this->db->fetchArrayAssoc(
             $this->db->query(
                 "SELECT * FROM `" .
                     TABLE_PREFIX .
@@ -30,8 +30,8 @@ class PageRegister extends Page implements IBeLoggedCannot
                     "LIMIT 1"
             )
         );
-        $session->set("asid", $antispam_question['id']);
+        $session->set("asid", $antispamQuestion['id']);
 
-        return $this->template->render("register", compact('antispam_question'));
+        return $this->template->render("register", compact('antispamQuestion'));
     }
 }

@@ -45,7 +45,7 @@ class BlockUserButtons extends Block
 
         // Panel Admina
         if (get_privileges("acp", $user)) {
-            $acp_button = create_dom_element(
+            $acpButton = create_dom_element(
                 "li",
                 create_dom_element("a", $lang->translate('acp'), [
                     'href' => $url->to("/admin"),
@@ -60,7 +60,7 @@ class BlockUserButtons extends Block
                 $heart->getService(ServiceChargeWalletSimple::MODULE_ID)
             )
         ) {
-            $charge_wallet_button = create_dom_element(
+            $chargeWalletButton = create_dom_element(
                 "li",
                 create_dom_element("a", $lang->translate('charge_wallet'), [
                     'href' => $url->to("/page/purchase?service=charge_wallet"),
@@ -68,6 +68,6 @@ class BlockUserButtons extends Block
             );
         }
 
-        return $template->render("user_buttons", compact('acp_button', 'charge_wallet_button'));
+        return $template->render("user_buttons", compact('acpButton', 'chargeWalletButton'));
     }
 }

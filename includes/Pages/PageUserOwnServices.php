@@ -100,7 +100,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             }
         }
 
-        $user_own_services = '';
+        $userOwnServices = '';
         foreach ($usersServices as $userService) {
             if (($serviceModule = $heart->getServiceModule($userService['service'])) === null) {
                 continue;
@@ -120,14 +120,14 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
                 ]);
             }
 
-            $user_own_services .= create_brick(
+            $userOwnServices .= create_brick(
                 $serviceModule->userOwnServiceInfoGet($userService, if_isset($buttonEdit, ''))
             );
         }
 
         // Nie znalazło żadnych usług danego użytkownika
-        if (!strlen($user_own_services)) {
-            $user_own_services = $lang->translate('no_data');
+        if (!strlen($userOwnServices)) {
+            $userOwnServices = $lang->translate('no_data');
         }
 
         $pagination = get_pagination(
@@ -137,11 +137,11 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             $query,
             4
         );
-        $pagination_class = strlen($pagination) ? "" : "display_none";
+        $paginationClass = strlen($pagination) ? "" : "display_none";
 
         return $template->render(
             "user_own_services",
-            compact('user_own_services', 'pagination_class', 'pagination')
+            compact('userOwnServices', 'paginationClass', 'pagination')
         );
     }
 }
