@@ -34,7 +34,7 @@ class BlockAdminContent extends Block
     }
 
     // Nadpisujemy getContent, aby wyswieltac info gdy nie jest zalogowany lub jest zalogowany, lecz nie powinien
-    public function getContent($query, $body)
+    public function getContent(array $query, array $body)
     {
         if (!is_logged()) {
             return $this->lang->translate('must_be_logged_in');
@@ -43,7 +43,7 @@ class BlockAdminContent extends Block
         return $this->content($query, $body);
     }
 
-    protected function content($query, $body)
+    protected function content(array $query, array $body)
     {
         if (($page = $this->heart->getPage($this->page->getPid(), "admin")) === null) {
             return null;

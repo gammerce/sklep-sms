@@ -20,7 +20,7 @@ abstract class PageSimple extends Page
         parent::__construct();
     }
 
-    protected function content($query, $body)
+    protected function content(array $query, array $body)
     {
         return $this->template->render($this->templateName);
     }

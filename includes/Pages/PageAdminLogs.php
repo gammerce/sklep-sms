@@ -19,7 +19,7 @@ class PageAdminLogs extends PageAdmin
         $this->heart->pageTitle = $this->title = $this->lang->translate('logs');
     }
 
-    protected function content($query, $body)
+    protected function content(array $query, array $body)
     {
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);

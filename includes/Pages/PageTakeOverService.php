@@ -15,7 +15,7 @@ class PageTakeOverService extends Page implements IBeLoggedMust
         $this->heart->pageTitle = $this->title = $this->lang->translate('take_over_service');
     }
 
-    protected function content($query, $body)
+    protected function content(array $query, array $body)
     {
         $services_options = "";
         $services = $this->heart->getServices();

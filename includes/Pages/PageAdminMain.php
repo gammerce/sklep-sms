@@ -30,7 +30,7 @@ class PageAdminMain extends PageAdmin
         $this->requester = $requester;
     }
 
-    protected function content($query, $body)
+    protected function content(array $query, array $body)
     {
         //
         // Ogloszenia

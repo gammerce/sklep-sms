@@ -20,7 +20,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         $this->heart->pageTitle = $this->title = $this->lang->translate('payment_log');
     }
 
-    protected function content($query, $body)
+    protected function content(array $query, array $body)
     {
         $heart = $this->heart;
         $lang = $this->lang;

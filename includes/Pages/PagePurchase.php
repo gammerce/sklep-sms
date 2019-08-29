@@ -18,12 +18,12 @@ class PagePurchase extends Page
         $this->heart->pageTitle = $this->title = $this->lang->translate('purchase');
     }
 
-    public function getContent($query, $body)
+    public function getContent(array $query, array $body)
     {
         return $this->content($query, $body);
     }
 
-    protected function content($query, $body)
+    protected function content(array $query, array $body)
     {
         $heart = $this->heart;
         $lang = $this->lang;

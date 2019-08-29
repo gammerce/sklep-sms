@@ -83,7 +83,7 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
         ];
     }
 
-    public function finalizeTransfer($query, $body)
+    public function finalizeTransfer(array $query, array $body)
     {
         $transferFinalize = new TransferFinalize();
 

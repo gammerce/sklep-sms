@@ -26,5 +26,5 @@ interface SupportTransfer
      *
      * @return TransferFinalize
      */
-    public function finalizeTransfer($query, $body);
+    public function finalizeTransfer(array $query, array $body);
 }

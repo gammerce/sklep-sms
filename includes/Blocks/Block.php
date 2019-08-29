@@ -18,7 +18,7 @@ abstract class Block
      *
      * @return string|null - zawartość do wyświetlenia
      */
-    public function getContent($query, $body)
+    public function getContent(array $query, array $body)
     {
         if (
             ($this instanceof IBeLoggedMust && !is_logged()) ||
@@ -38,7 +38,7 @@ abstract class Block
      *
      * @return string
      */
-    abstract protected function content($query, $body);
+    abstract protected function content(array $query, array $body);
 
     /**
      * Zwraca treść danego bloku w otoczce
@@ -48,7 +48,7 @@ abstract class Block
      *
      * @return string|null
      */
-    public function getContentEnveloped($query, $body)
+    public function getContentEnveloped(array $query, array $body)
     {
         $content = $this->getContent($query, $body);
 

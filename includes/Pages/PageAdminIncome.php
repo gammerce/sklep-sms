@@ -30,7 +30,7 @@ class PageAdminIncome extends PageAdmin
         $this->heart->pageTitle = $this->title = $this->lang->translate('income');
     }
 
-    protected function content($query, $body)
+    protected function content(array $query, array $body)
     {
         $G_MONTH = isset($query['month']) ? $query['month'] : date("m");
         $G_YEAR = isset($query['year']) ? $query['year'] : date("Y");

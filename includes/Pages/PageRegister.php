@@ -15,7 +15,7 @@ class PageRegister extends Page implements IBeLoggedCannot
         $this->heart->pageTitle = $this->title = $this->lang->translate('register');
     }
 
-    protected function content($query, $body)
+    protected function content(array $query, array $body)
     {
         /** @var Request $request */
         $request = $this->app->make(Request::class);

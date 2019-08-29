@@ -181,7 +181,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements
         return $this->lang->translate('mybb_groups');
     }
 
-    public function userServiceAdminDisplayGet($query, $body)
+    public function userServiceAdminDisplayGet(array $query, array $body)
     {
         /** @var CurrentPage $currentPage */
         $currentPage = $this->app->make(CurrentPage::class);

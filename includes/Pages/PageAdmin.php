@@ -7,7 +7,7 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
 {
     protected $privilege = 'acp';
 
-    public function getContent($query, $body)
+    public function getContent(array $query, array $body)
     {
         if (!get_privileges($this->privilege)) {
             return $this->lang->translate('no_privileges');

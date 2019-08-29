@@ -21,7 +21,7 @@ class PageAdminBoughtServices extends PageAdmin
         $this->heart->pageTitle = $this->title = $this->lang->translate('bought_services');
     }
 
-    protected function content($query, $body)
+    protected function content(array $query, array $body)
     {
         /** @var UrlGenerator $url */
         $url = $this->app->make(UrlGenerator::class);

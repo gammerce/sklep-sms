@@ -24,5 +24,5 @@ interface IServiceUserServiceAdminDisplay
      *
      * @return Wrapper | string
      */
-    public function userServiceAdminDisplayGet($query, $body);
+    public function userServiceAdminDisplayGet(array $query, array $body);
 }

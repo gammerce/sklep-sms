@@ -17,7 +17,7 @@ class PagePayment extends Page
         $this->heart->pageTitle = $this->title = $this->lang->translate('title_payment');
     }
 
-    protected function content($query, $body)
+    protected function content(array $query, array $body)
     {
         // Sprawdzanie hashu danych przesłanych przez formularz
         if (

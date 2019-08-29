@@ -21,7 +21,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         $this->heart->pageTitle = $this->title = $this->lang->translate('user_own_services');
     }
 
-    protected function content($query, $body)
+    protected function content(array $query, array $body)
     {
         $heart = $this->heart;
         $lang = $this->lang;

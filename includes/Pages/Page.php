@@ -62,7 +62,7 @@ abstract class Page
      *
      * @return string - zawartość do wyświetlenia
      */
-    public function getContent($query, $body)
+    public function getContent(array $query, array $body)
     {
         // Dodajemy wszystkie skrypty
         $path = "jscripts/pages/" . $this::PAGE_ID . "/";
@@ -139,5 +139,5 @@ abstract class Page
      *
      * @return string
      */
-    abstract protected function content($query, $body);
+    abstract protected function content(array $query, array $body);
 }

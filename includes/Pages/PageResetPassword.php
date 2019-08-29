@@ -14,7 +14,7 @@ class PageResetPassword extends Page implements IBeLoggedCannot
         $this->heart->pageTitle = $this->title = $this->lang->translate('reset_password');
     }
 
-    protected function content($query, $body)
+    protected function content(array $query, array $body)
     {
         // Brak podanego kodu
         if (!strlen($query['code'])) {

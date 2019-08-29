@@ -18,7 +18,7 @@ class PageAdminPaymentWallet extends PageAdmin
         $this->heart->pageTitle = $this->title = $this->lang->translate('payments_wallet');
     }
 
-    protected function content($query, $body)
+    protected function content(array $query, array $body)
     {
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);

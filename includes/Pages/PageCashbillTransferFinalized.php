@@ -15,7 +15,7 @@ class PageCashbillTransferFinalized extends Page
         $this->heart->pageTitle = $this->title = $this->lang->translate('transfer_finalized');
     }
 
-    protected function content($query, $body)
+    protected function content(array $query, array $body)
     {
         $payment = new Payment($this->settings['transfer_service']);
         /** @var Cashbill $paymentModule */

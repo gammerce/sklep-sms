@@ -62,7 +62,7 @@ class Transferuj extends PaymentModule implements SupportTransfer
         ];
     }
 
-    public function finalizeTransfer($query, $body)
+    public function finalizeTransfer(array $query, array $body)
     {
         $transferFinalize = new TransferFinalize();
 

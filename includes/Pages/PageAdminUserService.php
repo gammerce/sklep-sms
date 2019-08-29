@@ -13,7 +13,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
     const PAGE_ID = 'user_service';
     protected $privilege = 'view_user_services';
 
-    protected function content($query, $body)
+    protected function content(array $query, array $body)
     {
         $className = '';
         foreach ($this->heart->getServicesModules() as $module) {

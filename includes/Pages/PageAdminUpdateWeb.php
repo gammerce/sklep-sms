@@ -19,7 +19,7 @@ class PageAdminUpdateWeb extends PageAdmin
         $this->version = $version;
     }
 
-    protected function content($query, $body)
+    protected function content(array $query, array $body)
     {
         $newestVersion = $this->version->getNewestWeb();
         $currentVersion = $this->app->version();
