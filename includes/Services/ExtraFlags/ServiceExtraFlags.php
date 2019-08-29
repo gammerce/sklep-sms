@@ -1538,7 +1538,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
      */
     private function servers_for_service($server)
     {
-        if (!get_privilages("manage_user_services")) {
+        if (!get_privileges("manage_user_services")) {
             json_output("not_logged_in", $this->lang->translate('no_access'), 0);
         }
 

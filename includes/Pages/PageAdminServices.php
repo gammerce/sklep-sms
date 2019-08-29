@@ -50,7 +50,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             $body_row->addCell(new Cell(htmlspecialchars($row['description'])));
             $body_row->addCell(new Cell($row['order']));
 
-            if (get_privilages('manage_services')) {
+            if (get_privileges('manage_services')) {
                 $body_row->setButtonDelete(true);
                 $body_row->setButtonEdit(true);
             }
@@ -60,7 +60,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
         $wrapper->setTable($table);
 
-        if (get_privilages('manage_services')) {
+        if (get_privileges('manage_services')) {
             $button = new Input();
             $button->setParam('id', 'service_button_add');
             $button->setParam('type', 'button');
@@ -74,7 +74,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
     public function get_action_box($box_id, $data)
     {
-        if (!get_privilages("manage_services")) {
+        if (!get_privileges("manage_services")) {
             return [
                 'status' => "not_logged_in",
                 'text' => $this->lang->translate('not_logged_or_no_perm'),

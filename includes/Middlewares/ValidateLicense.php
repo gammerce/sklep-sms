@@ -45,7 +45,7 @@ class ValidateLicense implements MiddlewareContract
     {
         $user = $this->auth->user();
 
-        if (get_privilages("manage_settings", $user)) {
+        if (get_privileges("manage_settings", $user)) {
             $user->removePrivilages();
             $user->setPrivilages([
                 "acp" => true,

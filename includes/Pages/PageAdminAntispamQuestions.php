@@ -51,7 +51,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
             $body_row->setDbId($row['id']);
             $body_row->addCell(new Cell($row['question']));
             $body_row->addCell(new Cell($row['answers']));
-            if (get_privilages("manage_antispam_questions")) {
+            if (get_privileges("manage_antispam_questions")) {
                 $body_row->setButtonDelete(true);
                 $body_row->setButtonEdit(true);
             }
@@ -61,7 +61,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
 
         $wrapper->setTable($table);
 
-        if (get_privilages("manage_antispam_questions")) {
+        if (get_privileges("manage_antispam_questions")) {
             $button = new Input();
             $button->setParam('id', 'antispam_question_button_add');
             $button->setParam('type', 'button');
@@ -75,7 +75,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
 
     public function get_action_box($box_id, $data)
     {
-        if (!get_privilages("manage_antispam_questions")) {
+        if (!get_privileges("manage_antispam_questions")) {
             return [
                 'status' => "not_logged_in",
                 'text' => $this->lang->translate('not_logged_or_no_perm'),

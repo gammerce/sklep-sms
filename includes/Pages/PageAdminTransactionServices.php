@@ -71,7 +71,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
 
     public function get_action_box($box_id, $data)
     {
-        if (!get_privilages("manage_settings")) {
+        if (!get_privileges("manage_settings")) {
             return [
                 'status' => "not_logged_in",
                 'text' => $this->lang->translate('not_logged_or_no_perm'),

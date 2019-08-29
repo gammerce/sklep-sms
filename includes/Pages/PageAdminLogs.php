@@ -72,7 +72,7 @@ class PageAdminLogs extends PageAdmin
             $cell->setParam('headers', 'date');
             $body_row->addCell($cell);
 
-            if (get_privilages("manage_logs")) {
+            if (get_privileges("manage_logs")) {
                 $body_row->setButtonDelete(true);
             }
 

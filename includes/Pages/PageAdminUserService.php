@@ -75,7 +75,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         $wrapper->addButton($button);
 
         // Przycisk dodajacy nowa usluge użytkownikowi
-        if (get_privilages("manage_user_services")) {
+        if (get_privileges("manage_user_services")) {
             $button = new Table\Input();
             $button->setParam('id', 'user_service_button_add');
             $button->setParam('type', 'button');
@@ -89,7 +89,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 
     public function get_action_box($box_id, $data)
     {
-        if (!get_privilages("manage_user_services")) {
+        if (!get_privileges("manage_user_services")) {
             return [
                 'status' => "not_logged_in",
                 'text' => $this->lang->translate('not_logged_or_no_perm'),

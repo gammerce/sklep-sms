@@ -46,7 +46,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             $body_row->addCell(new Cell(htmlspecialchars($row['ip'] . ':' . $row['port'])));
             $body_row->addCell(new Cell(htmlspecialchars($row['version'])));
 
-            if (get_privilages("manage_servers")) {
+            if (get_privileges("manage_servers")) {
                 $body_row->setButtonDelete(true);
                 $body_row->setButtonEdit(true);
             }
@@ -56,7 +56,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
         $wrapper->setTable($table);
 
-        if (get_privilages("manage_servers")) {
+        if (get_privileges("manage_servers")) {
             $button = new Input();
             $button->setParam('id', 'server_button_add');
             $button->setParam('type', 'button');
@@ -70,7 +70,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
     public function get_action_box($box_id, $data)
     {
-        if (!get_privilages("manage_servers")) {
+        if (!get_privileges("manage_servers")) {
             return [
                 'status' => "not_logged_in",
                 'text' => $this->lang->translate('not_logged_or_no_perm'),

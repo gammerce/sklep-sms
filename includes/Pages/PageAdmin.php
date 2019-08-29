@@ -9,7 +9,7 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
 
     public function get_content($get, $post)
     {
-        if (!get_privilages($this->privilage)) {
+        if (!get_privileges($this->privilage)) {
             return $this->lang->translate('no_privilages');
         }
 

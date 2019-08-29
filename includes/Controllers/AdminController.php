@@ -105,12 +105,12 @@ class AdminController
         $content = get_content("admincontent", $request);
 
         // Pobranie przycisków do sidebaru
-        if (get_privilages("view_player_flags")) {
+        if (get_privileges("view_player_flags")) {
             $pid = "players_flags";
             $name = $lang->translate($pid);
             $players_flags_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
-        if (get_privilages("view_user_services")) {
+        if (get_privileges("view_user_services")) {
             $pid = '';
             foreach ($heart->get_services_modules() as $moduleData) {
                 if (
@@ -126,12 +126,12 @@ class AdminController
             $name = $lang->translate('users_services');
             $user_service_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
-        if (get_privilages("view_income")) {
+        if (get_privileges("view_income")) {
             $pid = "income";
             $name = $lang->translate($pid);
             $income_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
-        if (get_privilages("manage_settings")) {
+        if (get_privileges("manage_settings")) {
             // Ustawienia sklepu
             $pid = "settings";
             $name = $lang->translate($pid);
@@ -155,44 +155,44 @@ class AdminController
             $name = $lang->translate($pid);
             $pricelist_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
-        if (get_privilages("view_users")) {
+        if (get_privileges("view_users")) {
             $pid = "users";
             $name = $lang->translate($pid);
             $users_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
-        if (get_privilages("view_groups")) {
+        if (get_privileges("view_groups")) {
             $pid = "groups";
             $name = $lang->translate($pid);
             $groups_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
-        if (get_privilages("view_servers")) {
+        if (get_privileges("view_servers")) {
             $pid = "servers";
             $name = $lang->translate($pid);
             $servers_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
-        if (get_privilages("view_services")) {
+        if (get_privileges("view_services")) {
             $pid = "services";
             $name = $lang->translate($pid);
             $services_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
-        if (get_privilages("view_sms_codes")) {
+        if (get_privileges("view_sms_codes")) {
             // Kody SMS
             $pid = "sms_codes";
             $name = $lang->translate($pid);
             $sms_codes_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
-        if (get_privilages("view_service_codes")) {
+        if (get_privileges("view_service_codes")) {
             $pid = "service_codes";
             $name = $lang->translate($pid);
             $service_codes_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
-        if (get_privilages("view_antispam_questions")) {
+        if (get_privileges("view_antispam_questions")) {
             // Pytania bezpieczeństwa
             $pid = "antispam_questions";
             $name = $lang->translate($pid);
             $antispam_questions_link = $template->render("admin/page_link", compact('pid', 'name'));
         }
-        if (get_privilages("view_logs")) {
+        if (get_privileges("view_logs")) {
             // Pytania bezpieczeństwa
             $pid = "logs";
             $name = $lang->translate($pid);

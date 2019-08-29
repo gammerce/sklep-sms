@@ -260,7 +260,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements
                         : date($this->settings['date_format'], $row['expire'])
                 )
             );
-            if (get_privilages("manage_user_services")) {
+            if (get_privileges("manage_user_services")) {
                 $body_row->setButtonDelete(true);
                 $body_row->setButtonEdit(false);
             }

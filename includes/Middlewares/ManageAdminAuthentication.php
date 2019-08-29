@@ -27,7 +27,7 @@ class ManageAdminAuthentication implements MiddlewareContract
         }
 
         // Jeżeli próbujemy wejść do PA i nie jesteśmy zalogowani, to zmień stronę
-        if (!$auth->check() || !get_privilages("acp")) {
+        if (!$auth->check() || !get_privileges("acp")) {
             /** @var CurrentPage $currentPage */
             $currentPage = $app->make(CurrentPage::class);
             $currentPage->setPid("login");

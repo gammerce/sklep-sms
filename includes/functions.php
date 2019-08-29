@@ -249,7 +249,7 @@ function is_logged()
  *
  * @return bool
  */
-function get_privilages($privilege, $user = null)
+function get_privileges($privilege, $user = null)
 {
     // Jeżeli nie podano użytkownika
     if ($user === null) {
@@ -360,11 +360,11 @@ function update_servers_services($data)
 }
 
 /**
- * @param Purchase $purchase_data
+ * @param Purchase $purchaseData
  *
  * @return array
  */
-function validate_payment($purchase_data)
+function validate_payment($purchaseData)
 {
     /** @var TranslationManager $translationManager */
     $translationManager = app()->make(TranslationManager::class);
@@ -379,7 +379,7 @@ function validate_payment($purchase_data)
     $warnings = [];
 
     // Tworzymy obiekt usługi którą kupujemy
-    if (($service_module = $heart->get_service_module($purchase_data->getService())) === null) {
+    if (($serviceModule = $heart->get_service_module($purchaseData->getService())) === null) {
         return [
             'status' => "wrong_module",
             'text' => $lang->translate('bad_module'),
@@ -388,7 +388,7 @@ function validate_payment($purchase_data)
     }
 
     if (
-        !in_array($purchase_data->getPayment('method'), [
+        !in_array($purchaseData->getPayment('method'), [
             "sms",
             "transfer",
             "wallet",
@@ -403,38 +403,38 @@ function validate_payment($purchase_data)
     }
 
     // Tworzymy obiekt, który będzie nam obsługiwał proces płatności
-    if ($purchase_data->getPayment('method') == "sms") {
-        $transaction_service = if_strlen2(
-            $purchase_data->getPayment('sms_service'),
+    if ($purchaseData->getPayment('method') == "sms") {
+        $transactionService = if_strlen2(
+            $purchaseData->getPayment('sms_service'),
             $settings['sms_service']
         );
-        $payment = new Payment($transaction_service);
+        $payment = new Payment($transactionService);
     } else {
-        if ($purchase_data->getPayment('method') == "transfer") {
-            $transaction_service = if_strlen2(
-                $purchase_data->getPayment('transfer_service'),
+        if ($purchaseData->getPayment('method') == "transfer") {
+            $transactionService = if_strlen2(
+                $purchaseData->getPayment('transfer_service'),
                 $settings['transfer_service']
             );
-            $payment = new Payment($transaction_service);
+            $payment = new Payment($transactionService);
         }
     }
 
     // Pobieramy ile kosztuje ta usługa dla przelewu / portfela
-    if ($purchase_data->getPayment('cost') === null) {
-        $purchase_data->setPayment([
-            'cost' => $purchase_data->getTariff()->getProvision(),
+    if ($purchaseData->getPayment('cost') === null) {
+        $purchaseData->setPayment([
+            'cost' => $purchaseData->getTariff()->getProvision(),
         ]);
     }
 
     // Metoda płatności
-    if ($purchase_data->getPayment('method') == "wallet" && !is_logged()) {
+    if ($purchaseData->getPayment('method') == "wallet" && !is_logged()) {
         return [
             'status' => "wallet_not_logged",
             'text' => $lang->translate('no_login_no_wallet'),
             'positive' => false,
         ];
-    } elseif ($purchase_data->getPayment('method') == "transfer") {
-        if ($purchase_data->getPayment('cost') <= 1) {
+    } elseif ($purchaseData->getPayment('method') == "transfer") {
+        if ($purchaseData->getPayment('cost') <= 1) {
             return [
                 'status' => "too_little_for_transfer",
                 'text' => $lang->sprintf(
@@ -453,7 +453,7 @@ function validate_payment($purchase_data)
             ];
         }
     } elseif (
-        $purchase_data->getPayment('method') == "sms" &&
+        $purchaseData->getPayment('method') == "sms" &&
         !$payment->getPaymentModule()->supportSms()
     ) {
         return [
@@ -462,8 +462,8 @@ function validate_payment($purchase_data)
             'positive' => false,
         ];
     } elseif (
-        $purchase_data->getPayment('method') == "sms" &&
-        $purchase_data->getTariff() === null
+        $purchaseData->getPayment('method') == "sms" &&
+        $purchaseData->getTariff() === null
     ) {
         return [
             'status' => "no_sms_option",
@@ -473,47 +473,47 @@ function validate_payment($purchase_data)
     }
 
     // Kod SMS
-    $purchase_data->setPayment([
-        'sms_code' => trim($purchase_data->getPayment('sms_code')),
+    $purchaseData->setPayment([
+        'sms_code' => trim($purchaseData->getPayment('sms_code')),
     ]);
     if (
-        $purchase_data->getPayment('method') == "sms" &&
-        ($warning = check_for_warnings("sms_code", $purchase_data->getPayment('sms_code')))
+        $purchaseData->getPayment('method') == "sms" &&
+        ($warning = check_for_warnings("sms_code", $purchaseData->getPayment('sms_code')))
     ) {
         $warnings['sms_code'] = array_merge((array) $warnings['sms_code'], $warning);
     }
 
     // Kod na usługę
-    if ($purchase_data->getPayment('method') == "service_code") {
-        if (!strlen($purchase_data->getPayment('service_code'))) {
+    if ($purchaseData->getPayment('method') == "service_code") {
+        if (!strlen($purchaseData->getPayment('service_code'))) {
             $warnings['service_code'][] = $lang->translate('field_no_empty');
         }
     }
 
     // Błędy
     if (!empty($warnings)) {
-        $warning_data = [];
+        $warningData = [];
         foreach ($warnings as $brick => $warning) {
             $warning = create_dom_element("div", implode("<br />", $warning), [
                 'class' => "form_warning",
             ]);
-            $warning_data['warnings'][$brick] = $warning;
+            $warningData['warnings'][$brick] = $warning;
         }
 
         return [
             'status' => "warnings",
             'text' => $lang->translate('form_wrong_filled'),
             'positive' => false,
-            'data' => $warning_data,
+            'data' => $warningData,
         ];
     }
 
-    if ($purchase_data->getPayment('method') === "sms") {
+    if ($purchaseData->getPayment('method') === "sms") {
         // Sprawdzamy kod zwrotny
         $result = $payment->paySms(
-            $purchase_data->getPayment('sms_code'),
-            $purchase_data->getTariff(),
-            $purchase_data->user
+            $purchaseData->getPayment('sms_code'),
+            $purchaseData->getTariff(),
+            $purchaseData->user
         );
         $paymentId = $result['payment_id'];
 
@@ -524,17 +524,17 @@ function validate_payment($purchase_data)
                 'positive' => false,
             ];
         }
-    } elseif ($purchase_data->getPayment('method') === "wallet") {
+    } elseif ($purchaseData->getPayment('method') === "wallet") {
         // Dodanie informacji o płatności z portfela
-        $paymentId = pay_wallet($purchase_data->getPayment('cost'), $purchase_data->user);
+        $paymentId = pay_wallet($purchaseData->getPayment('cost'), $purchaseData->user);
 
         // Metoda pay_wallet zwróciła błąd.
         if (is_array($paymentId)) {
             return $paymentId;
         }
-    } elseif ($purchase_data->getPayment('method') === "service_code") {
+    } elseif ($purchaseData->getPayment('method') === "service_code") {
         // Dodanie informacji o płatności z portfela
-        $paymentId = pay_service_code($purchase_data, $service_module);
+        $paymentId = pay_service_code($purchaseData, $serviceModule);
 
         // Funkcja pay_service_code zwróciła błąd.
         if (is_array($paymentId)) {
@@ -542,12 +542,12 @@ function validate_payment($purchase_data)
         }
     }
 
-    if (in_array($purchase_data->getPayment('method'), ["wallet", "sms", "service_code"])) {
+    if (in_array($purchaseData->getPayment('method'), ["wallet", "sms", "service_code"])) {
         // Dokonujemy zakupu usługi
-        $purchase_data->setPayment([
+        $purchaseData->setPayment([
             'payment_id' => $paymentId,
         ]);
-        $bought_service_id = $service_module->purchase($purchase_data);
+        $bought_service_id = $serviceModule->purchase($purchaseData);
 
         return [
             'status' => "purchased",
@@ -557,15 +557,15 @@ function validate_payment($purchase_data)
         ];
     }
 
-    if ($purchase_data->getPayment('method') == "transfer") {
-        $purchase_data->setDesc(
+    if ($purchaseData->getPayment('method') == "transfer") {
+        $purchaseData->setDesc(
             $lang->sprintf(
                 $lang->translate('payment_for_service'),
-                $service_module->service['name']
+                $serviceModule->service['name']
             )
         );
 
-        return $payment->payTransfer($purchase_data);
+        return $payment->payTransfer($purchaseData);
     }
 }
 

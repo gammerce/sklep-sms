@@ -93,7 +93,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
             $body_row->addCell(new Cell($username));
             $body_row->addCell(new Cell(convertDate($row['timestamp'])));
 
-            if (get_privilages('manage_service_codes')) {
+            if (get_privileges('manage_service_codes')) {
                 $body_row->setButtonDelete(true);
             }
 
@@ -102,7 +102,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 
         $wrapper->setTable($table);
 
-        if (get_privilages('manage_service_codes')) {
+        if (get_privileges('manage_service_codes')) {
             $button = new Input();
             $button->setParam('id', 'service_code_button_add');
             $button->setParam('type', 'button');
@@ -116,7 +116,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 
     public function get_action_box($box_id, $data)
     {
-        if (!get_privilages("manage_service_codes")) {
+        if (!get_privileges("manage_service_codes")) {
             return [
                 'status' => "not_logged_in",
                 'text' => $this->lang->translate('not_logged_or_no_perm'),

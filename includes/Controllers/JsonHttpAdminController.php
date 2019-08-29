@@ -49,7 +49,7 @@ class JsonHttpAdminController
 
         $data = [];
         if ($action == "charge_wallet") {
-            if (!get_privilages("manage_users")) {
+            if (!get_privileges("manage_users")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -139,7 +139,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "user_service_add") {
-            if (!get_privilages("manage_user_services")) {
+            if (!get_privileges("manage_user_services")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -180,7 +180,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "user_service_edit") {
-            if (!get_privilages("manage_user_services")) {
+            if (!get_privileges("manage_user_services")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -230,7 +230,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "user_service_delete") {
-            if (!get_privilages("manage_user_services")) {
+            if (!get_privileges("manage_user_services")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -288,7 +288,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "user_service_add_form_get") {
-            if (!get_privilages("manage_user_services")) {
+            if (!get_privileges("manage_user_services")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -305,7 +305,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "antispam_question_add" || $action == "antispam_question_edit") {
-            if (!get_privilages("manage_antispam_questions")) {
+            if (!get_privileges("manage_antispam_questions")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -380,7 +380,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "delete_antispam_question") {
-            if (!get_privilages("manage_antispam_questions")) {
+            if (!get_privileges("manage_antispam_questions")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -412,7 +412,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "settings_edit") {
-            if (!get_privilages("manage_settings")) {
+            if (!get_privileges("manage_settings")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -607,7 +607,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "transaction_service_edit") {
-            if (!get_privilages("manage_settings")) {
+            if (!get_privileges("manage_settings")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -662,7 +662,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "service_add" || $action == "service_edit") {
-            if (!get_privilages("manage_services")) {
+            if (!get_privileges("manage_services")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -845,7 +845,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "delete_service") {
-            if (!get_privilages("manage_services")) {
+            if (!get_privileges("manage_services")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -897,7 +897,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "get_service_module_extra_fields") {
-            if (!get_privilages("manage_user_services")) {
+            if (!get_privileges("manage_user_services")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -923,7 +923,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "server_add" || $action == "server_edit") {
-            if (!get_privilages("manage_servers")) {
+            if (!get_privileges("manage_servers")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1058,7 +1058,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "delete_server") {
-            if (!get_privilages("manage_servers")) {
+            if (!get_privileges("manage_servers")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1103,7 +1103,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "user_edit") {
-            if (!get_privilages("manage_users")) {
+            if (!get_privileges("manage_users")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1213,7 +1213,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "delete_user") {
-            if (!get_privilages("manage_users")) {
+            if (!get_privileges("manage_users")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1244,7 +1244,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "group_add" || $action == "group_edit") {
-            if (!get_privilages("manage_groups")) {
+            if (!get_privileges("manage_groups")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1315,7 +1315,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "delete_group") {
-            if (!get_privilages("manage_groups")) {
+            if (!get_privileges("manage_groups")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1346,7 +1346,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "tariff_add") {
-            if (!get_privilages("manage_settings")) {
+            if (!get_privileges("manage_settings")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1401,7 +1401,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "tariff_edit") {
-            if (!get_privilages("manage_settings")) {
+            if (!get_privileges("manage_settings")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1454,7 +1454,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "delete_tariff") {
-            if (!get_privilages("manage_settings")) {
+            if (!get_privileges("manage_settings")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1489,7 +1489,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "price_add" || $action == "price_edit") {
-            if (!get_privilages("manage_settings")) {
+            if (!get_privileges("manage_settings")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1583,7 +1583,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "delete_price") {
-            if (!get_privilages("manage_settings")) {
+            if (!get_privileges("manage_settings")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1614,7 +1614,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "sms_code_add") {
-            if (!get_privilages("manage_sms_codes")) {
+            if (!get_privileges("manage_sms_codes")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1667,7 +1667,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "delete_sms_code") {
-            if (!get_privilages("manage_sms_codes")) {
+            if (!get_privileges("manage_sms_codes")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1698,7 +1698,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "service_code_add") {
-            if (!get_privilages("manage_service_codes")) {
+            if (!get_privileges("manage_service_codes")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1781,7 +1781,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "delete_service_code") {
-            if (!get_privilages("manage_service_codes")) {
+            if (!get_privileges("manage_service_codes")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1813,7 +1813,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "service_code_add_form_get") {
-            if (!get_privilages("manage_service_codes")) {
+            if (!get_privileges("manage_service_codes")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1833,7 +1833,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "delete_log") {
-            if (!get_privilages("manage_logs")) {
+            if (!get_privileges("manage_logs")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1910,7 +1910,7 @@ class JsonHttpAdminController
             }
 
             if ($template == "admin_user_wallet") {
-                if (!get_privilages("manage_users")) {
+                if (!get_privileges("manage_users")) {
                     return new ApiResponse(
                         "not_logged_in",
                         $lang->translate('not_logged_or_no_perm'),

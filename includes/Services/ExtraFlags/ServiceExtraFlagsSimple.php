@@ -312,7 +312,7 @@ class ServiceExtraFlagsSimple extends Service implements
                         : date($this->settings['date_format'], $row['expire'])
                 )
             );
-            if (get_privilages("manage_user_services")) {
+            if (get_privileges("manage_user_services")) {
                 $body_row->setButtonDelete();
                 $body_row->setButtonEdit();
             }

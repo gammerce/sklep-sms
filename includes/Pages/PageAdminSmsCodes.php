@@ -53,7 +53,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
             $body_row->addCell(new Cell(htmlspecialchars($row['code'])));
             $body_row->addCell(new Cell(htmlspecialchars($row['tariff'])));
 
-            if (get_privilages('manage_sms_codes')) {
+            if (get_privileges('manage_sms_codes')) {
                 $body_row->setButtonDelete(true);
             }
 
@@ -62,7 +62,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 
         $wrapper->setTable($table);
 
-        if (get_privilages('manage_sms_codes')) {
+        if (get_privileges('manage_sms_codes')) {
             $button = new Input();
             $button->setParam('id', 'sms_code_button_add');
             $button->setParam('type', 'button');
@@ -76,7 +76,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 
     public function get_action_box($box_id, $data)
     {
-        if (!get_privilages("manage_sms_codes")) {
+        if (!get_privileges("manage_sms_codes")) {
             return [
                 'status' => "not_logged_in",
                 'text' => $this->lang->translate('not_logged_or_no_perm'),

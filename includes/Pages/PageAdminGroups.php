@@ -49,7 +49,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
             $body_row->setDbId($row['id']);
             $body_row->addCell(new Cell($row['name']));
 
-            if (get_privilages('manage_groups')) {
+            if (get_privileges('manage_groups')) {
                 $body_row->setButtonDelete(true);
                 $body_row->setButtonEdit(true);
             }
@@ -59,7 +59,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 
         $wrapper->setTable($table);
 
-        if (get_privilages('manage_groups')) {
+        if (get_privileges('manage_groups')) {
             $button = new Input();
             $button->setParam('id', 'group_button_add');
             $button->setParam('type', 'button');
@@ -73,7 +73,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 
     public function get_action_box($box_id, $data)
     {
-        if (!get_privilages("manage_groups")) {
+        if (!get_privileges("manage_groups")) {
             return [
                 'status' => "not_logged_in",
                 'text' => $this->lang->translate('not_logged_or_no_perm'),
