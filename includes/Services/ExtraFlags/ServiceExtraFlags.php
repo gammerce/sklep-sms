@@ -1011,7 +1011,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     public function user_own_service_edit_form_get($userService)
     {
         // Dodajemy typ uslugi, (1<<2) ostatni typ
-        $service_info = [];
+        $serviceInfo = [];
         $styles['nick'] = $styles['ip'] = $styles['sid'] = $styles['password'] = "display: none";
         for ($i = 0, $option_id = 1; $i < 3; $option_id = 1 << ++$i) {
             // Kiedy dana usługa nie wspiera danego typu i wykupiona usługa nie ma tego typu
@@ -1019,7 +1019,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 continue;
             }
 
-            $service_info['types'] .= create_dom_element(
+            $serviceInfo['types'] .= create_dom_element(
                 "option",
                 $this->get_type_name($option_id),
                 [
@@ -1031,17 +1031,17 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             if ($option_id == $userService['type']) {
                 switch ($option_id) {
                     case ExtraFlagType::TYPE_NICK:
-                        $service_info['player_nick'] = htmlspecialchars($userService['auth_data']);
+                        $serviceInfo['player_nick'] = htmlspecialchars($userService['auth_data']);
                         $styles['nick'] = $styles['password'] = "display: table-row";
                         break;
 
                     case ExtraFlagType::TYPE_IP:
-                        $service_info['player_ip'] = htmlspecialchars($userService['auth_data']);
+                        $serviceInfo['player_ip'] = htmlspecialchars($userService['auth_data']);
                         $styles['ip'] = $styles['password'] = "display: table-row";
                         break;
 
                     case ExtraFlagType::TYPE_SID:
-                        $service_info['player_sid'] = htmlspecialchars($userService['auth_data']);
+                        $serviceInfo['player_sid'] = htmlspecialchars($userService['auth_data']);
                         $styles['sid'] = "display: table-row";
                         break;
                 }
@@ -1050,26 +1050,26 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         // Hasło
         if (strlen($userService['password']) && $userService['password'] != md5("")) {
-            $service_info['password'] = "********";
+            $serviceInfo['password'] = "********";
         }
 
         // Serwer
         $temp_server = $this->heart->getServer($userService['server']);
-        $service_info['server'] = $temp_server['name'];
+        $serviceInfo['server'] = $temp_server['name'];
         unset($temp_server);
 
         // Wygasa
-        $service_info['expire'] =
+        $serviceInfo['expire'] =
             $userService['expire'] == -1
                 ? $this->lang->translate('never')
                 : date($this->settings['date_format'], $userService['expire']);
 
         // Usługa
-        $service_info['service'] = $this->service['name'];
+        $serviceInfo['service'] = $this->service['name'];
 
         return $this->template->render(
             "services/extra_flags/user_own_service_edit",
-            compact('service_info', 'styles')
+            compact('serviceInfo', 'styles')
         );
     }
 
