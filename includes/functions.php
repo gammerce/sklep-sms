@@ -590,7 +590,7 @@ function pay_by_admin($user_admin)
         )
     );
 
-    return $db->last_id();
+    return $db->lastId();
 }
 
 /**
@@ -631,16 +631,16 @@ function pay_wallet($cost, $user)
         )
     );
 
-    return $db->last_id();
+    return $db->lastId();
 }
 
 /**
- * @param Purchase                                                   $purchase_data
- * @param Service|ServiceChargeWallet|ServiceExtraFlags|ServiceOther $service_module
+ * @param Purchase                                                   $purchaseData
+ * @param Service|ServiceChargeWallet|ServiceExtraFlags|ServiceOther $serviceModule
  *
  * @return array|int|string
  */
-function pay_service_code($purchase_data, $service_module)
+function pay_service_code($purchaseData, $serviceModule)
 {
     /** @var TranslationManager $translationManager */
     $translationManager = app()->make(TranslationManager::class);
@@ -661,17 +661,17 @@ function pay_service_code($purchase_data, $service_module)
                 "AND (`tariff` = '0' OR `tariff` = '%d') " .
                 "AND (`uid` = '0' OR `uid` = '%s')",
             [
-                $purchase_data->getPayment('service_code'),
-                $purchase_data->getService(),
-                $purchase_data->getOrder('server'),
-                $purchase_data->getTariff(),
-                $purchase_data->user->getUid(),
+                $purchaseData->getPayment('service_code'),
+                $purchaseData->getService(),
+                $purchaseData->getOrder('server'),
+                $purchaseData->getTariff(),
+                $purchaseData->user->getUid(),
             ]
         )
     );
 
-    while ($row = $db->fetch_array_assoc($result)) {
-        if ($service_module->service_code_validate($purchase_data, $row)) {
+    while ($row = $db->fetchArrayAssoc($result)) {
+        if ($serviceModule->service_code_validate($purchaseData, $row)) {
             // Znalezlismy odpowiedni kod
             $db->query(
                 $db->prepare(
@@ -688,20 +688,20 @@ function pay_service_code($purchase_data, $service_module)
                         "payment_code` " .
                         "SET `code` = '%s', `ip` = '%s', `platform` = '%s'",
                     [
-                        $purchase_data->getPayment('service_code'),
-                        $purchase_data->user->getLastip(),
-                        $purchase_data->user->getPlatform(),
+                        $purchaseData->getPayment('service_code'),
+                        $purchaseData->user->getLastip(),
+                        $purchaseData->user->getPlatform(),
                     ]
                 )
             );
-            $payment_id = $db->last_id();
+            $payment_id = $db->lastId();
 
             log_info(
                 $langShop->sprintf(
                     $langShop->translate('purchase_code'),
-                    $purchase_data->getPayment('service_code'),
-                    $purchase_data->user->getUsername(),
-                    $purchase_data->user->getUid(),
+                    $purchaseData->getPayment('service_code'),
+                    $purchaseData->user->getUsername(),
+                    $purchaseData->user->getUid(),
                     $payment_id
                 )
             );
@@ -781,7 +781,7 @@ function add_bought_service_info(
             ]
         )
     );
-    $bougt_service_id = $db->last_id();
+    $bougt_service_id = $db->lastId();
 
     $ret = $lang->translate('none');
     if (strlen($email)) {
@@ -862,7 +862,7 @@ function purchase_info($data)
         }
     }
 
-    $pbs = $db->fetch_array_assoc(
+    $pbs = $db->fetchArrayAssoc(
         $db->query("SELECT * FROM ({$settings['transactions_query']}) as t " . "WHERE {$where}")
     );
 
@@ -918,7 +918,7 @@ function get_users_services($conditions = '', $take_out = true)
                 " ORDER BY us.id DESC "
         );
 
-        while ($row = $db->fetch_array_assoc($result)) {
+        while ($row = $db->fetchArrayAssoc($result)) {
             unset($row['us_id']);
             $output[$row['id']] = $row;
         }

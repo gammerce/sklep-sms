@@ -264,7 +264,7 @@ class JsonHttpAdminController
                     [$user_service['id']]
                 )
             );
-            $affected = $db->affected_rows();
+            $affected = $db->affectedRows();
 
             if ($serviceModule !== null) {
                 $serviceModule->user_service_delete_post($user_service);
@@ -361,7 +361,7 @@ class JsonHttpAdminController
                 );
 
                 // Zwróć info o prawidłowej lub błędnej edycji
-                if ($db->affected_rows()) {
+                if ($db->affectedRows()) {
                     log_info(
                         $langShop->sprintf(
                             $langShop->translate('question_edit'),
@@ -396,7 +396,7 @@ class JsonHttpAdminController
             );
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
                         $langShop->translate('question_delete'),
@@ -452,7 +452,7 @@ class JsonHttpAdminController
                         [$sms_service]
                     )
                 );
-                if (!$db->num_rows($result)) {
+                if (!$db->numRows($result)) {
                     $warnings['sms_service'][] = $lang->translate('no_sms_service');
                 }
             }
@@ -469,7 +469,7 @@ class JsonHttpAdminController
                         [$transfer_service]
                     )
                 );
-                if (!$db->num_rows($result)) {
+                if (!$db->numRows($result)) {
                     $warnings['transfer_service'][] = $lang->translate('no_net_service');
                 }
             }
@@ -591,7 +591,7 @@ class JsonHttpAdminController
             );
 
             // Zwróć info o prawidłowej lub błędnej edycji
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
                         $langShop->translate('settings_admin_edit'),
@@ -626,7 +626,7 @@ class JsonHttpAdminController
                     [$_POST['id']]
                 )
             );
-            $transaction_service = $db->fetch_array_assoc($result);
+            $transaction_service = $db->fetchArrayAssoc($result);
             $transaction_service['data'] = json_decode($transaction_service['data']);
             foreach ($transaction_service['data'] as $key => $value) {
                 $arr[$key] = $_POST[$key];
@@ -644,7 +644,7 @@ class JsonHttpAdminController
             );
 
             // Zwróć info o prawidłowej lub błędnej edycji
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 // LOGGING
                 log_info(
                     $langShop->sprintf(
@@ -827,7 +827,7 @@ class JsonHttpAdminController
                 );
 
                 // Zwróć info o prawidłowej lub błędnej edycji
-                if ($db->affected_rows()) {
+                if ($db->affectedRows()) {
                     log_info(
                         $langShop->sprintf(
                             $langShop->translate('service_admin_edit'),
@@ -878,7 +878,7 @@ class JsonHttpAdminController
 
                 throw $e;
             }
-            $affected = $db->affected_rows();
+            $affected = $db->affectedRows();
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
             if ($affected) {
@@ -963,7 +963,7 @@ class JsonHttpAdminController
                         [$_POST['sms_service']]
                     )
                 );
-                if (!$db->num_rows($result)) {
+                if (!$db->numRows($result)) {
                     $warnings['sms_service'][] = $lang->translate('no_sms_service');
                 }
             }
@@ -1087,7 +1087,7 @@ class JsonHttpAdminController
             }
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
                         $langShop->translate('server_admin_delete'),
@@ -1128,7 +1128,7 @@ class JsonHttpAdminController
                         [$_POST['username']]
                     )
                 );
-                if ($db->num_rows($result)) {
+                if ($db->numRows($result)) {
                     $warnings['username'][] = $lang->translate('nick_taken');
                 }
             }
@@ -1148,7 +1148,7 @@ class JsonHttpAdminController
                         [$_POST['email']]
                     )
                 );
-                if ($db->num_rows($result)) {
+                if ($db->numRows($result)) {
                     $warnings['email'][] = $lang->translate('email_taken');
                 }
             }
@@ -1197,7 +1197,7 @@ class JsonHttpAdminController
             );
 
             // Zwróć info o prawidłowej lub błędnej edycji
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 // LOGGING
                 log_info(
                     $langShop->sprintf(
@@ -1228,7 +1228,7 @@ class JsonHttpAdminController
             );
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
                         $langShop->translate('user_admin_delete'),
@@ -1254,7 +1254,7 @@ class JsonHttpAdminController
 
             $set = "";
             $result = $db->query("DESCRIBE " . TABLE_PREFIX . "groups");
-            while ($row = $db->fetch_array_assoc($result)) {
+            while ($row = $db->fetchArrayAssoc($result)) {
                 if (in_array($row['Field'], ["id", "name"])) {
                     continue;
                 }
@@ -1275,7 +1275,7 @@ class JsonHttpAdminController
                         $langShop->translate('group_admin_add'),
                         $user->getUsername(),
                         $user->getUid(),
-                        $db->last_id()
+                        $db->lastId()
                     )
                 );
                 // Zwróć info o prawidłowym zakończeniu dodawania
@@ -1295,7 +1295,7 @@ class JsonHttpAdminController
                 );
 
                 // Zwróć info o prawidłowej lub błędnej edycji
-                if ($db->affected_rows()) {
+                if ($db->affectedRows()) {
                     // LOGGING
                     log_info(
                         $langShop->sprintf(
@@ -1330,7 +1330,7 @@ class JsonHttpAdminController
             );
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
                         $langShop->translate('group_admin_delete'),
@@ -1393,7 +1393,7 @@ class JsonHttpAdminController
                     $langShop->translate('tariff_admin_add'),
                     $user->getUsername(),
                     $user->getUid(),
-                    $db->last_id()
+                    $db->lastId()
                 )
             );
 
@@ -1435,10 +1435,10 @@ class JsonHttpAdminController
                     [$_POST['provision'] * 100, $_POST['id']]
                 )
             );
-            $affected = $db->affected_rows();
+            $affected = $db->affectedRows();
 
             // Zwróć info o prawidłowej edycji
-            if ($affected || $db->affected_rows()) {
+            if ($affected || $db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
                         $langShop->translate('tariff_admin_edit'),
@@ -1473,7 +1473,7 @@ class JsonHttpAdminController
             );
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
                         $langShop->translate('tariff_admin_delete'),
@@ -1538,7 +1538,7 @@ class JsonHttpAdminController
 
                 log_info(
                     "Admin {$user->getUsername()}({$user->getUid()}) dodał cenę. ID: " .
-                        $db->last_id()
+                        $db->lastId()
                 );
 
                 // Zwróć info o prawidłowym dodaniu
@@ -1564,7 +1564,7 @@ class JsonHttpAdminController
                 );
 
                 // Zwróć info o prawidłowej lub błędnej edycji
-                if ($db->affected_rows()) {
+                if ($db->affectedRows()) {
                     log_info(
                         $langShop->sprintf(
                             $langShop->translate('price_admin_edit'),
@@ -1598,7 +1598,7 @@ class JsonHttpAdminController
             );
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
                         $langShop->translate('price_admin_delete'),
@@ -1682,7 +1682,7 @@ class JsonHttpAdminController
             );
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
                         $langShop->translate('sms_code_admin_delete'),
@@ -1797,7 +1797,7 @@ class JsonHttpAdminController
             );
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
                         $langShop->translate('code_deleted_admin'),
@@ -1848,7 +1848,7 @@ class JsonHttpAdminController
             );
 
             // Zwróć info o prawidłowym lub błędnym usunieciu
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 return new ApiResponse('ok', $lang->translate('delete_log'), 1);
             }
 

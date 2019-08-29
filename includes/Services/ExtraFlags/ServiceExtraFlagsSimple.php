@@ -289,9 +289,9 @@ class ServiceExtraFlagsSimple extends Service implements
                 get_row_limit($pageNumber)
         );
 
-        $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+        $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
-        while ($row = $this->db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetchArrayAssoc($result)) {
             $body_row = new Table\BodyRow();
 
             $body_row->setDbId($row['id']);

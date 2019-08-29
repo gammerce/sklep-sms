@@ -347,7 +347,7 @@ class Heart
         $result = $this->db->query(
             "SELECT * FROM `" . TABLE_PREFIX . "services` " . "ORDER BY `order` ASC"
         );
-        while ($row = $this->db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetchArrayAssoc($result)) {
             $row['id_hsafe'] = htmlspecialchars($row['id']);
             $row['name'] = htmlspecialchars($row['name']);
             $row['groups'] = $row['groups'] ? explode(";", $row['groups']) : [];
@@ -395,7 +395,7 @@ class Heart
     private function fetch_servers()
     {
         $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "servers`");
-        while ($row = $this->db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetchArrayAssoc($result)) {
             $row['name'] = htmlspecialchars($row['name']);
             $this->servers[$row['id']] = $row;
         }
@@ -426,7 +426,7 @@ class Heart
     private function fetch_servers_services()
     {
         $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "servers_services`");
-        while ($row = $this->db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetchArrayAssoc($result)) {
             $this->servers_services[$row['server_id']][$row['service_id']] = true;
         }
         $this->servers_services_fetched = true;
@@ -470,7 +470,7 @@ class Heart
     private function fetch_tariffs()
     {
         $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "tariffs`");
-        while ($row = $this->db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetchArrayAssoc($result)) {
             $this->tariffs[$row['id']] = new Tariff(
                 $row['id'],
                 $row['provision'],
@@ -563,7 +563,7 @@ class Heart
     private function fetch_groups()
     {
         $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "groups`");
-        while ($row = $this->db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetchArrayAssoc($result)) {
             $row['name'] = htmlspecialchars($row['name']);
             $this->groups[$row['id']] = $row;
         }

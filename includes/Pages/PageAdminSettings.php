@@ -29,7 +29,7 @@ class PageAdminSettings extends PageAdmin
             "SELECT id, name, sms, transfer " . "FROM `" . TABLE_PREFIX . "transaction_services`"
         );
         $sms_services = $transfer_services = "";
-        while ($row = $this->db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetchArrayAssoc($result)) {
             if ($row['sms']) {
                 $sms_services .= create_dom_element("option", $row['name'], [
                     'value' => $row['id'],

@@ -21,7 +21,7 @@ class PageRegister extends Page implements IBeLoggedCannot
         $request = $this->app->make(Request::class);
         $session = $request->getSession();
 
-        $antispam_question = $this->db->fetch_array_assoc(
+        $antispam_question = $this->db->fetchArrayAssoc(
             $this->db->query(
                 "SELECT * FROM `" .
                     TABLE_PREFIX .

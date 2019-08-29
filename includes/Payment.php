@@ -145,7 +145,7 @@ class Payment
             )
         );
 
-        $paymentId = $this->db->last_id();
+        $paymentId = $this->db->lastId();
 
         return [
             'status' => 'ok',
@@ -171,11 +171,11 @@ class Payment
             )
         );
 
-        if (!$this->db->num_rows($result)) {
+        if (!$this->db->numRows($result)) {
             return null;
         }
 
-        $dbCode = $this->db->fetch_array_assoc($result);
+        $dbCode = $this->db->fetchArrayAssoc($result);
 
         // Usuwamy kod z listy kodow do wykorzystania
         $this->db->query(
@@ -290,7 +290,7 @@ class Payment
         );
 
         // Próba ponownej autoryzacji
-        if ($this->db->num_rows($result)) {
+        if ($this->db->numRows($result)) {
             return false;
         }
 

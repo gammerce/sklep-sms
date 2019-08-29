@@ -36,7 +36,7 @@ class UserRepository
             )
         );
 
-        $id = $this->db->last_id();
+        $id = $this->db->lastId();
 
         return new User($id);
     }

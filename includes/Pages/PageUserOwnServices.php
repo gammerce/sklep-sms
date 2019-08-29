@@ -57,7 +57,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         if (!empty($moduleIds)) {
             $moduleIds = implode_esc(', ', $moduleIds);
 
-            $rowsCount = $db->get_column(
+            $rowsCount = $db->getColumn(
                 $db->prepare(
                     "SELECT COUNT(*) as `amount` FROM `" .
                         TABLE_PREFIX .
@@ -88,7 +88,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             );
 
             $user_service_ids = [];
-            while ($row = $db->fetch_array_assoc($result)) {
+            while ($row = $db->fetchArrayAssoc($result)) {
                 $user_service_ids[] = $row['id'];
             }
 

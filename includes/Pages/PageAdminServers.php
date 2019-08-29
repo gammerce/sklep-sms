@@ -88,7 +88,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             "SELECT `id`, `name`, `sms` " . "FROM `" . TABLE_PREFIX . "transaction_services`"
         );
         $sms_services = "";
-        while ($row = $this->db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetchArrayAssoc($result)) {
             if (!$row['sms']) {
                 continue;
             }

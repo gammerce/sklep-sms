@@ -55,7 +55,7 @@ class PageAdminIncome extends PageAdmin
 
         // Sumujemy dochód po dacie (z dokładnością do dnia) i po serwerze
         $data = [];
-        while ($row = $this->db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetchArrayAssoc($result)) {
             $temp = explode(" ", $row['timestamp']);
 
             $data[$temp[0]][in_array($row['server'], $obejcts_ids) ? $row['server'] : 0] +=

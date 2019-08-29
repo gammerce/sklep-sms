@@ -125,8 +125,8 @@ class User
             )
         );
 
-        if ($this->db->num_rows($result)) {
-            $row = $this->db->fetch_array_assoc($result);
+        if ($this->db->numRows($result)) {
+            $row = $this->db->fetchArrayAssoc($result);
             $this->uid = intval($row['uid']);
             $this->username = $row['username'];
             $this->password = $row['password'];

@@ -107,7 +107,7 @@ class JsonHttpController
             $as_answer = $request->request->get('as_answer');
 
             // Pobranie nowego pytania antyspamowego
-            $antispam_question = $db->fetch_array_assoc(
+            $antispam_question = $db->fetchArrayAssoc(
                 $db->query(
                     "SELECT * FROM `" .
                         TABLE_PREFIX .
@@ -138,7 +138,7 @@ class JsonHttpController
                     [$username]
                 )
             );
-            if ($db->num_rows($result)) {
+            if ($db->numRows($result)) {
                 $warnings['username'][] = $lang->translate('nick_occupied');
             }
 
@@ -161,7 +161,7 @@ class JsonHttpController
                     [$email]
                 )
             );
-            if ($db->num_rows($result)) {
+            if ($db->numRows($result)) {
                 $warnings['email'][] = $lang->translate('email_occupied');
             }
 
@@ -176,7 +176,7 @@ class JsonHttpController
                     [$as_id]
                 )
             );
-            $antispam_question = $db->fetch_array_assoc($result);
+            $antispam_question = $db->fetchArrayAssoc($result);
             if (!in_array(strtolower($as_answer), explode(";", $antispam_question['answers']))) {
                 $warnings['as_answer'][] = $lang->translate('wrong_anti_answer');
             }
@@ -237,10 +237,10 @@ class JsonHttpController
                         )
                     );
 
-                    if (!$db->num_rows($result)) {
+                    if (!$db->numRows($result)) {
                         $warnings['username'][] = $lang->translate('nick_no_account');
                     } else {
-                        $row = $db->fetch_array_assoc($result);
+                        $row = $db->fetchArrayAssoc($result);
                     }
                 }
             }
@@ -260,10 +260,10 @@ class JsonHttpController
                         )
                     );
 
-                    if (!$db->num_rows($result)) {
+                    if (!$db->numRows($result)) {
                         $warnings['email'][] = $lang->translate('email_no_account');
                     } else {
-                        $row = $db->fetch_array_assoc($result);
+                        $row = $db->fetchArrayAssoc($result);
                     }
                 }
             }

@@ -121,7 +121,7 @@ class PageAdminMain extends PageAdmin
         $bricks .= create_brick(
             $this->lang->sprintf(
                 $this->lang->translate('amount_of_users'),
-                $this->db->get_column(
+                $this->db->getColumn(
                     "SELECT COUNT(*) FROM `" . TABLE_PREFIX . "users`",
                     "COUNT(*)"
                 )
@@ -130,7 +130,7 @@ class PageAdminMain extends PageAdmin
         );
 
         // Info o kupionych usługach
-        $amount = $this->db->get_column(
+        $amount = $this->db->getColumn(
             "SELECT COUNT(*) " . "FROM ({$this->settings['transactions_query']}) AS t",
             "COUNT(*)"
         );
@@ -140,7 +140,7 @@ class PageAdminMain extends PageAdmin
         );
 
         // Info o wysłanych smsach
-        $amount = $this->db->get_column(
+        $amount = $this->db->getColumn(
             "SELECT COUNT(*) AS `amount` " .
                 "FROM ({$this->settings['transactions_query']}) as t " .
                 "WHERE t.payment = 'sms' AND t.free='0'",

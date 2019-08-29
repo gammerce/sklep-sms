@@ -54,7 +54,7 @@ abstract class PaymentModule
             )
         );
 
-        if (!$this->db->num_rows($result)) {
+        if (!$this->db->numRows($result)) {
             // TODO Output should not happen here
             output_page(
                 "An error occured in class: " .
@@ -65,7 +65,7 @@ abstract class PaymentModule
             );
         }
 
-        $row = $this->db->fetch_array_assoc($result);
+        $row = $this->db->fetchArrayAssoc($result);
 
         $this->name = $row['name'];
 
@@ -94,7 +94,7 @@ abstract class PaymentModule
             )
         );
 
-        while ($row = $this->db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetchArrayAssoc($result)) {
             $tariff = new Tariff($row['id'], $row['provision'], $row['predefined'], $row['number']);
 
             $this->tariffs[$tariff->getId()] = $tariff;

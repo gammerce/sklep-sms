@@ -138,7 +138,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 )
             );
 
-            if (!$this->db->num_rows($result)) {
+            if (!$this->db->numRows($result)) {
                 // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
                 return [
                     'status' => "no_option",
@@ -147,7 +147,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 ];
             }
 
-            $price = $this->db->fetch_array_assoc($result);
+            $price = $this->db->fetchArrayAssoc($result);
         }
 
         // Typ usługi
@@ -241,7 +241,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     }
 
                     // Sprawdzanie czy istnieje już taka usługa
-                    if ($temp_password = $this->db->get_column($query, 'password')) {
+                    if ($temp_password = $this->db->getColumn($query, 'password')) {
                         // TODO: Usunąć md5 w przyszłości
                         if (
                             $temp_password != $purchase_data->getOrder('password') &&
@@ -393,9 +393,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             )
         );
 
-        if ($this->db->num_rows($result)) {
+        if ($this->db->numRows($result)) {
             // Aktualizujemy
-            $row = $this->db->fetch_array_assoc($result);
+            $row = $this->db->fetchArrayAssoc($result);
             $user_service_id = $row['us_id'];
 
             $this->update_user_service(
@@ -430,7 +430,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     [$uid, $this->service['id'], $forever, $days * 24 * 60 * 60]
                 )
             );
-            $user_service_id = $this->db->last_id();
+            $user_service_id = $this->db->lastId();
 
             $this->db->query(
                 $this->db->prepare(
@@ -541,7 +541,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         // Wyliczanie za jaki czas dana flaga ma wygasnąć
         $flags = [];
         $password = "";
-        while ($row = $this->db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetchArrayAssoc($result)) {
             // Pobranie hasła, bierzemy je tylko raz na początku
             $password = $password ? $password : $row['password'];
 
@@ -1203,9 +1203,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         );
 
         // Jeżeli istnieje usługa o identycznych danych jak te, na które będziemy zmieniać obecną usługę
-        if ($this->db->num_rows($result)) {
+        if ($this->db->numRows($result)) {
             // Pobieramy tę drugą usługę
-            $user_service2 = $this->db->fetch_array_assoc($result);
+            $user_service2 = $this->db->fetchArrayAssoc($result);
 
             if (!isset($data['uid']) && $user_service['uid'] != $user_service2['uid']) {
                 return [
@@ -1441,7 +1441,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 )
             );
 
-            if (!$this->db->num_rows($result)) {
+            if (!$this->db->numRows($result)) {
                 return [
                     'status' => "no_service",
                     'text' => $this->lang->translate('no_user_service'),
@@ -1458,7 +1458,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     )
                 );
 
-                if (!$this->db->num_rows($result)) {
+                if (!$this->db->numRows($result)) {
                     return [
                         'status' => "no_service",
                         'text' => $this->lang->translate('no_user_service'),
@@ -1490,7 +1490,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             )
         );
 
-        if (!$this->db->num_rows($result)) {
+        if (!$this->db->numRows($result)) {
             return [
                 'status' => "no_service",
                 'text' => $this->lang->translate('no_user_service'),
@@ -1498,7 +1498,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             ];
         }
 
-        $row = $this->db->fetch_array_assoc($result);
+        $row = $this->db->fetchArrayAssoc($result);
 
         $this->db->query(
             $this->db->prepare(
@@ -1511,7 +1511,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             )
         );
 
-        if (!$this->db->affected_rows()) {
+        if (!$this->db->affectedRows()) {
             return [
                 'status' => "service_not_taken_over",
                 'text' => $this->lang->translate('service_not_taken_over'),
@@ -1590,7 +1590,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         );
 
         $values = '';
-        while ($row = $this->db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetchArrayAssoc($result)) {
             $provision = number_format($row['provision'] / 100, 2);
             $sms_cost = strlen($row['sms_number'])
                 ? number_format(

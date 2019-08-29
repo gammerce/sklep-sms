@@ -51,10 +51,10 @@ class PagePaymentLog extends Page implements IBeLoggedMust
                 [$user->getUid()]
             )
         );
-        $rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
+        $rows_count = $db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
         $payment_logs = "";
-        while ($row = $db->fetch_array_assoc($result)) {
+        while ($row = $db->fetchArrayAssoc($result)) {
             $date = htmlspecialchars($row['timestamp']);
             $cost = number_format($row['cost'] / 100.0, 2) . " " . $settings['currency'];
 

@@ -41,9 +41,9 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                 get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($this->db->get_column('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
+        $table->setDbRowsAmount($this->db->getColumn('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
 
-        while ($row = $this->db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetchArrayAssoc($result)) {
             $body_row = new BodyRow();
 
             $body_row->setDbId($row['id']);
@@ -88,7 +88,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                 )
             );
 
-            if (!$this->db->num_rows($result)) {
+            if (!$this->db->numRows($result)) {
                 $data['template'] = create_dom_element(
                     "form",
                     $this->lang->translate('no_such_group'),
@@ -101,14 +101,14 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                     ]
                 );
             } else {
-                $group = $this->db->fetch_array_assoc($result);
+                $group = $this->db->fetchArrayAssoc($result);
                 $group['name'] = htmlspecialchars($group['name']);
             }
         }
 
         $privilages = "";
         $result = $this->db->query("DESCRIBE " . TABLE_PREFIX . "groups");
-        while ($row = $this->db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetchArrayAssoc($result)) {
             if (in_array($row['Field'], ["id", "name"])) {
                 continue;
             }

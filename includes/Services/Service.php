@@ -159,7 +159,7 @@ abstract class Service
                     " " .
                     $where1
             );
-            $affected = max($affected, $this->db->affected_rows());
+            $affected = max($affected, $this->db->affectedRows());
         }
 
         if (!empty($set_data2)) {
@@ -173,7 +173,7 @@ abstract class Service
                     " " .
                     $where2
             );
-            $affected = max($affected, $this->db->affected_rows());
+            $affected = max($affected, $this->db->affectedRows());
         }
 
         return $affected;
