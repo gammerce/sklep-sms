@@ -36,20 +36,19 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
 
     public function purchaseFormGet()
     {
-        $option_sms = '';
-        $option_transfer = '';
-        $sms_body = '';
-        $transfer_body = '';
+        $optionSms = '';
+        $optionTransfer = '';
+        $smsBody = '';
+        $transferBody = '';
 
         if (strlen($this->settings['sms_service'])) {
-            // TODO Refactor
-            $payment_sms = new Payment($this->settings['sms_service']);
+            $paymentSms = new Payment($this->settings['sms_service']);
 
             // Pobieramy opcję wyboru doładowania za pomocą SMS
-            $option_sms = $this->template->render("services/charge_wallet/option_sms");
+            $optionSms = $this->template->render("services/charge_wallet/option_sms");
 
             $sms_list = "";
-            foreach ($payment_sms->getPaymentModule()->getTariffs() as $tariff) {
+            foreach ($paymentSms->getPaymentModule()->getTariffs() as $tariff) {
                 $provision = number_format($tariff->getProvision() / 100.0, 2);
                 // Przygotowuje opcje wyboru
                 $sms_list .= create_dom_element(
@@ -67,7 +66,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
                 );
             }
 
-            $sms_body = $this->template->render(
+            $smsBody = $this->template->render(
                 "services/charge_wallet/sms_body",
                 compact('sms_list')
             );
@@ -75,14 +74,14 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
 
         if (strlen($this->settings['transfer_service'])) {
             // Pobieramy opcję wyboru doładowania za pomocą przelewu
-            $option_transfer = $this->template->render("services/charge_wallet/option_transfer");
-            $transfer_body = $this->template->render("services/charge_wallet/transfer_body");
+            $optionTransfer = $this->template->render("services/charge_wallet/option_transfer");
+            $transferBody = $this->template->render("services/charge_wallet/transfer_body");
         }
 
         // TODO Refactor
         return $this->template->render(
             "services/charge_wallet/purchase_form",
-            compact('option_sms', 'option_transfer', 'sms_body', 'transfer_body') + [
+            compact('optionSms', 'optionTransfer', 'smsBody', 'transferBody') + [
                 'serviceId' => $this->service['id'],
             ]
         );

@@ -58,10 +58,10 @@ class PagePayment extends Page
             $purchaseData->getTariff() !== null &&
             !$purchaseData->getPayment('no_sms')
         ) {
-            $payment_sms = new Payment($purchaseData->getPayment('sms_service'));
+            $paymentSms = new Payment($purchaseData->getPayment('sms_service'));
             $paymentMethods .= $this->template->render(
                 'payment_method_sms',
-                compact('purchaseData', 'payment_sms')
+                compact('purchaseData', 'paymentSms')
             );
         }
 
