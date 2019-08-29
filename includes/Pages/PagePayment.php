@@ -46,12 +46,12 @@ class PagePayment extends Page
         }
 
         // Pobieramy szczegóły zamówienia
-        $order_details = $serviceModule->orderDetails($purchaseData);
+        $orderDetails = $serviceModule->orderDetails($purchaseData);
 
         //
         // Pobieramy sposoby płatności
 
-        $payment_methods = '';
+        $paymentMethods = '';
         // Sprawdzamy, czy płatność za pomocą SMS jest możliwa
         if (
             $purchaseData->getPayment('sms_service') &&
@@ -59,7 +59,7 @@ class PagePayment extends Page
             !$purchaseData->getPayment('no_sms')
         ) {
             $payment_sms = new Payment($purchaseData->getPayment('sms_service'));
-            $payment_methods .= $this->template->render(
+            $paymentMethods .= $this->template->render(
                 'payment_method_sms',
                 compact('purchaseData', 'payment_sms')
             );
@@ -76,7 +76,7 @@ class PagePayment extends Page
             $purchaseData->getPayment('cost') > 1 &&
             !$purchaseData->getPayment('no_transfer')
         ) {
-            $payment_methods .= $this->template->render(
+            $paymentMethods .= $this->template->render(
                 "payment_method_transfer",
                 compact('cost_transfer')
             );
@@ -87,7 +87,7 @@ class PagePayment extends Page
             $purchaseData->getPayment('cost') !== null &&
             !$purchaseData->getPayment('no_wallet')
         ) {
-            $payment_methods .= $this->template->render(
+            $paymentMethods .= $this->template->render(
                 "payment_method_wallet",
                 compact('cost_transfer')
             );
@@ -97,17 +97,15 @@ class PagePayment extends Page
             !$purchaseData->getPayment('no_code') &&
             $serviceModule instanceof IServiceServiceCode
         ) {
-            $payment_methods .= $this->template->render("payment_method_code");
+            $paymentMethods .= $this->template->render("payment_method_code");
         }
 
         $purchaseData = htmlspecialchars($post['data']);
-        $purchase_sign = htmlspecialchars($post['sign']);
-
-        // TODO Refactor
+        $purchaseSign = htmlspecialchars($post['sign']);
 
         return $this->template->render(
             "payment_form",
-            compact('order_details', 'payment_methods', 'purchaseData', 'purchase_sign')
+            compact('orderDetails', 'paymentMethods', 'purchaseData', 'purchaseSign')
         );
     }
 }
