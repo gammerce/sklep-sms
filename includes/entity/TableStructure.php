@@ -260,11 +260,11 @@ class BodyRow extends Row
     /** @var I_ToHtml[] */
     private $actions = [];
 
-    /** @var bool $button_edit */
-    private $button_edit = false;
+    /** @var bool $buttonEdit */
+    private $buttonEdit = false;
 
-    /** @var bool $button_delete */
-    private $button_delete = false;
+    /** @var bool $buttonDelete */
+    private $buttonDelete = false;
 
     public function toHtml()
     {
@@ -283,7 +283,7 @@ class BodyRow extends Row
             $actions->addContent($action);
         }
 
-        if ($this->button_edit) {
+        if ($this->buttonEdit) {
             $button = new DOMElement();
             $button->setName('img');
             $button->setParam('class', "edit_row");
@@ -292,7 +292,7 @@ class BodyRow extends Row
             $actions->addContent($button);
         }
 
-        if ($this->button_delete) {
+        if ($this->buttonDelete) {
             $button = new DOMElement();
             $button->setName('img');
             $button->setParam('class', "delete_row");
@@ -320,19 +320,19 @@ class BodyRow extends Row
     }
 
     /**
-     * @param boolean $button_edit
+     * @param boolean $buttonEdit
      */
-    public function setButtonEdit($button_edit = true)
+    public function setButtonEdit($buttonEdit = true)
     {
-        $this->button_edit = (bool) $button_edit;
+        $this->buttonEdit = (bool) $buttonEdit;
     }
 
     /**
-     * @param boolean $button_delete
+     * @param boolean $buttonDelete
      */
-    public function setButtonDelete($button_delete = true)
+    public function setButtonDelete($buttonDelete = true)
     {
-        $this->button_delete = (bool) $button_delete;
+        $this->buttonDelete = (bool) $buttonDelete;
     }
 
     /**

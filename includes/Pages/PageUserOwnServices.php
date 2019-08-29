@@ -114,7 +114,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
                 $settings['user_edit_service'] &&
                 $serviceModule instanceof IServiceUserOwnServicesEdit
             ) {
-                $button_edit = create_dom_element("button", $lang->translate('edit'), [
+                $buttonEdit = create_dom_element("button", $lang->translate('edit'), [
                     'class' => "button edit_row",
                     'type' => 'button',
                 ]);
@@ -123,8 +123,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             $user_own_services .= create_brick(
                 $serviceModule->userOwnServiceInfoGet(
                     $userService,
-                    // TODO Refactor
-                    if_isset($button_edit, '')
+                    if_isset($buttonEdit, '')
                 )
             );
         }

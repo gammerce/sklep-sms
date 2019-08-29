@@ -642,14 +642,14 @@ class JsonHttpController
                 $settings['user_edit_service'] &&
                 $serviceModule instanceof IServiceUserOwnServicesEdit
             ) {
-                $button_edit = create_dom_element("button", $lang->translate('edit'), [
+                $buttonEdit = create_dom_element("button", $lang->translate('edit'), [
                     'class' => "button edit_row",
                     'type' => 'button',
                 ]);
             }
 
             return new HtmlResponse(
-                $serviceModule->userOwnServiceInfoGet($userService, $button_edit)
+                $serviceModule->userOwnServiceInfoGet($userService, $buttonEdit)
             );
         }
 
