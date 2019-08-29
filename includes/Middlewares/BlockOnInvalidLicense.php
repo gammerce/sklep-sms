@@ -33,7 +33,7 @@ class BlockOnInvalidLicense implements MiddlewareContract
         $this->url = $url;
     }
 
-    public function handle(Request $request, Application $app)
+    public function handle(Request $request, Application $app, $args = null)
     {
         /** @var License $license */
         $license = $app->make(License::class);

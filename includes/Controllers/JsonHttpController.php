@@ -20,6 +20,7 @@ use App\Services\Interfaces\IServicePurchaseWeb;
 use App\Services\Interfaces\IServiceTakeOver;
 use App\Services\Interfaces\IServiceUserOwnServices;
 use App\Services\Interfaces\IServiceUserOwnServicesEdit;
+use App\User\UserPasswordService;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 
@@ -34,7 +35,8 @@ class JsonHttpController
         Settings $settings,
         Database $db,
         Mailer $mailer,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        UserPasswordService $userPasswordService
     ) {
         $session = $request->getSession();
 
@@ -60,7 +62,7 @@ class JsonHttpController
             }
 
             $user = $heart->get_user(0, $username, $password);
-            if ($user->isLogged()) {
+            if ($user->exists()) {
                 $session->set("uid", $user->getUid());
                 $user->updateActivity();
                 return new ApiResponse("logged_in", $lang->translate('login_success'), 1);
@@ -356,21 +358,8 @@ class JsonHttpController
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
-            // Zmień hasło
-            $salt = get_random_string(8);
+            $userPasswordService->change($uid, $pass);
 
-            $db->query(
-                $db->prepare(
-                    "UPDATE `" .
-                        TABLE_PREFIX .
-                        "users` " .
-                        "SET `password` = '%s', `salt` = '%s', `reset_password_key` = '' " .
-                        "WHERE `uid` = '%d'",
-                    [hash_password($pass, $salt), $salt, $uid]
-                )
-            );
-
-            // LOGING
             log_info($langShop->sprintf($langShop->translate('reset_pass'), $uid));
 
             return new ApiResponse("password_changed", $lang->translate('password_changed'), 1);

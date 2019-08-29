@@ -18,7 +18,7 @@ class ValidateLicense implements MiddlewareContract
         $this->auth = $auth;
     }
 
-    public function handle(Request $request, Application $app)
+    public function handle(Request $request, Application $app, $args = null)
     {
         /** @var License $license */
         $license = $app->make(License::class);

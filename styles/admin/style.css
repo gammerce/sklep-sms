@@ -196,15 +196,6 @@ h4 {
     white-space: nowrap;
 }
 
-.table_structure .charge_wallet {
-    cursor: pointer;
-    opacity: 0.6;
-}
-
-.table_structure .charge_wallet:hover {
-    opacity: 1;
-}
-
 #charge_amount {
     display: inline-block;
 }

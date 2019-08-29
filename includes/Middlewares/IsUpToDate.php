@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class IsUpToDate implements MiddlewareContract
 {
-    public function handle(Request $request, Application $app)
+    public function handle(Request $request, Application $app, $args = null)
     {
         if (!ShopState::isInstalled()) {
             return new RedirectResponse('/install/');

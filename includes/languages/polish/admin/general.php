@@ -34,6 +34,8 @@ return [
     'auto_email' => 'E-mail dla automatu',
     'bought_services' => 'Kupione usługi',
     'bring_it_on' => 'Dajesz!',
+    'change_password' => 'Zmień hasło',
+    'change_password_success' => "Hasło zostało zmienione",
     'charge' => 'Doładuj',
     'charge_number' => 'Wartość doładowania musi być liczbą.',
     'choose_tariff' => 'Wybierz taryfę',

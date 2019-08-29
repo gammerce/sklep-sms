@@ -155,7 +155,7 @@ class User
 
     public function updateActivity()
     {
-        if (!$this->isLogged()) {
+        if (!$this->exists()) {
             return;
         }
 
@@ -171,7 +171,7 @@ class User
         );
     }
 
-    public function isLogged()
+    public function exists()
     {
         return $this->getUid() ? true : false;
     }
@@ -333,7 +333,7 @@ class User
     /**
      * @param string $key
      *
-     * @return array
+     * @return boolean
      */
     public function getPrivilages($key)
     {
