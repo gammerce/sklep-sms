@@ -101,10 +101,10 @@ class InstallFullKernel extends Kernel
                     ]);
                 }
 
-                $return_data['warnings'][$brick] = $warning;
+                $returnData['warnings'][$brick] = $warning;
             }
 
-            json_output("warnings", $lang->translate('form_wrong_filled'), false, $return_data);
+            json_output("warnings", $lang->translate('form_wrong_filled'), false, $returnData);
         }
 
         $installManager->start();

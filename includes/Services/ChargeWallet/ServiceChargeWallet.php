@@ -42,6 +42,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         $transfer_body = '';
 
         if (strlen($this->settings['sms_service'])) {
+            // TODO Refactor
             $payment_sms = new Payment($this->settings['sms_service']);
 
             // Pobieramy opcję wyboru doładowania za pomocą SMS
@@ -75,10 +76,10 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         if (strlen($this->settings['transfer_service'])) {
             // Pobieramy opcję wyboru doładowania za pomocą przelewu
             $option_transfer = $this->template->render("services/charge_wallet/option_transfer");
-
             $transfer_body = $this->template->render("services/charge_wallet/transfer_body");
         }
 
+        // TODO Refactor
         return $this->template->render(
             "services/charge_wallet/purchase_form",
             compact('option_sms', 'option_transfer', 'sms_body', 'transfer_body') + [

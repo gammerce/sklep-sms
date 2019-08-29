@@ -432,23 +432,22 @@ class JsonHttpController
                 );
             }
 
-            // TODO Refactor
             // Przeprowadzamy walidację danych wprowadzonych w formularzu
-            $return_data = $serviceModule->purchaseFormValidate($_POST);
+            $returnData = $serviceModule->purchaseFormValidate($_POST);
 
             // Przerabiamy ostrzeżenia, aby lepiej wyglądały
-            if ($return_data['status'] == "warnings") {
-                foreach ($return_data['data']['warnings'] as $brick => $warning) {
+            if ($returnData['status'] == "warnings") {
+                foreach ($returnData['data']['warnings'] as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
                         'class' => "form_warning",
                     ]);
-                    $return_data['data']['warnings'][$brick] = $warning;
+                    $returnData['data']['warnings'][$brick] = $warning;
                 }
             } else {
                 //
                 // Uzupełniamy brakujące dane
                 /** @var Purchase $purchaseData */
-                $purchaseData = $return_data['purchase_data'];
+                $purchaseData = $returnData['purchase_data'];
 
                 if ($purchaseData->getService() === null) {
                     $purchaseData->setService($serviceModule->service['id']);
@@ -485,7 +484,7 @@ class JsonHttpController
                 }
 
                 $purchaseDataEncoded = base64_encode(serialize($purchaseData));
-                $return_data['data'] = [
+                $returnData['data'] = [
                     'length' => 8000,
                     'data' => $purchaseDataEncoded,
                     'sign' => md5($purchaseDataEncoded . $settings['random_key']),
@@ -493,10 +492,10 @@ class JsonHttpController
             }
 
             return new ApiResponse(
-                $return_data['status'],
-                $return_data['text'],
-                $return_data['positive'],
-                $return_data['data']
+                $returnData['status'],
+                $returnData['text'],
+                $returnData['positive'],
+                $returnData['data']
             );
         }
 
@@ -687,23 +686,23 @@ class JsonHttpController
                 );
             }
 
-            $return_data = $serviceModule->user_own_service_edit($_POST, $userService);
+            $returnData = $serviceModule->user_own_service_edit($_POST, $userService);
 
             // Przerabiamy ostrzeżenia, aby lepiej wyglądały
-            if ($return_data['status'] == "warnings") {
-                foreach ($return_data['data']['warnings'] as $brick => $warning) {
+            if ($returnData['status'] == "warnings") {
+                foreach ($returnData['data']['warnings'] as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
                         'class' => "form_warning",
                     ]);
-                    $return_data['data']['warnings'][$brick] = $warning;
+                    $returnData['data']['warnings'][$brick] = $warning;
                 }
             }
 
             return new ApiResponse(
-                $return_data['status'],
-                $return_data['text'],
-                $return_data['positive'],
-                $return_data['data']
+                $returnData['status'],
+                $returnData['text'],
+                $returnData['positive'],
+                $returnData['data']
             );
         }
 
@@ -726,23 +725,23 @@ class JsonHttpController
                 return new PlainResponse($lang->translate('bad_module'));
             }
 
-            $return_data = $serviceModule->serviceTakeOver($_POST);
+            $returnData = $serviceModule->serviceTakeOver($_POST);
 
             // Przerabiamy ostrzeżenia, aby lepiej wyglądały
-            if ($return_data['status'] == "warnings") {
-                foreach ($return_data['data']['warnings'] as $brick => $warning) {
+            if ($returnData['status'] == "warnings") {
+                foreach ($returnData['data']['warnings'] as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
                         'class' => "form_warning",
                     ]);
-                    $return_data['data']['warnings'][$brick] = $warning;
+                    $returnData['data']['warnings'][$brick] = $warning;
                 }
             }
 
             return new ApiResponse(
-                $return_data['status'],
-                $return_data['text'],
-                $return_data['positive'],
-                $return_data['data']
+                $returnData['status'],
+                $returnData['text'],
+                $returnData['positive'],
+                $returnData['data']
             );
         }
 

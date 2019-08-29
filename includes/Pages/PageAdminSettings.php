@@ -28,16 +28,16 @@ class PageAdminSettings extends PageAdmin
         $result = $this->db->query(
             "SELECT id, name, sms, transfer " . "FROM `" . TABLE_PREFIX . "transaction_services`"
         );
-        $sms_services = $transfer_services = "";
+        $smsServices = $transferServices = "";
         while ($row = $this->db->fetchArrayAssoc($result)) {
             if ($row['sms']) {
-                $sms_services .= create_dom_element("option", $row['name'], [
+                $smsServices .= create_dom_element("option", $row['name'], [
                     'value' => $row['id'],
                     'selected' => $row['id'] == $this->settings['sms_service'] ? "selected" : "",
                 ]);
             }
             if ($row['transfer']) {
-                $transfer_services .= create_dom_element("option", $row['name'], [
+                $transferServices .= create_dom_element("option", $row['name'], [
                     'value' => $row['id'],
                     'selected' =>
                         $row['id'] == $this->settings['transfer_service'] ? "selected" : "",
@@ -82,8 +82,8 @@ class PageAdminSettings extends PageAdmin
             "admin/settings",
             compact(
                 "userEditServiceSelect",
-                "sms_services",
-                "transfer_services",
+                "smsServices",
+                "transferServices",
                 "languages_list",
                 "themes_list",
                 "cronSelect"

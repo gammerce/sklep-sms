@@ -1568,7 +1568,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     private function tariffs_for_server($server_id)
     {
         $server = $this->heart->getServer($server_id);
-        $sms_service = if_strlen($server['sms_service'], $this->settings['sms_service']);
+        $smsService = if_strlen($server['sms_service'], $this->settings['sms_service']);
 
         // Pobieranie kwot za które można zakupić daną usługę na danym serwerze
         $result = $this->db->query(
@@ -1585,7 +1585,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     "sms_numbers` AS sn ON sn.tariff = p.tariff AND sn.service = '%s' " .
                     "WHERE p.service = '%s' AND ( p.server = '%d' OR p.server = '-1' ) " .
                     "ORDER BY t.provision ASC",
-                [$sms_service, $this->service['id'], $server_id]
+                [$smsService, $this->service['id'], $server_id]
             )
         );
 

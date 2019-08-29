@@ -159,23 +159,23 @@ class JsonHttpAdminController
                 return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
             }
 
-            $return_data = $serviceModule->userServiceAdminAdd($_POST);
+            $returnData = $serviceModule->userServiceAdminAdd($_POST);
 
             // Przerabiamy ostrzeżenia, aby lepiej wyglądały
-            if ($return_data['status'] == "warnings") {
-                foreach ($return_data['data']['warnings'] as $brick => $warning) {
+            if ($returnData['status'] == "warnings") {
+                foreach ($returnData['data']['warnings'] as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
                         'class' => "form_warning",
                     ]);
-                    $return_data['data']['warnings'][$brick] = $warning;
+                    $returnData['data']['warnings'][$brick] = $warning;
                 }
             }
 
             return new ApiResponse(
-                $return_data['status'],
-                $return_data['text'],
-                $return_data['positive'],
-                $return_data['data']
+                $returnData['status'],
+                $returnData['text'],
+                $returnData['positive'],
+                $returnData['data']
             );
         }
 
@@ -205,27 +205,27 @@ class JsonHttpAdminController
             }
 
             // Wykonujemy metode edycji usługi użytkownika przez admina na odpowiednim module
-            $return_data = $serviceModule->userServiceAdminEdit($_POST, $userService);
+            $returnData = $serviceModule->userServiceAdminEdit($_POST, $userService);
 
-            if ($return_data === false) {
+            if ($returnData === false) {
                 return new ApiResponse("missing_method", $lang->translate('no_edit_method'), 0);
             }
 
             // Przerabiamy ostrzeżenia, aby lepiej wyglądały
-            if ($return_data['status'] == "warnings") {
-                foreach ($return_data['data']['warnings'] as $brick => $warning) {
+            if ($returnData['status'] == "warnings") {
+                foreach ($returnData['data']['warnings'] as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
                         'class' => "form_warning",
                     ]);
-                    $return_data['data']['warnings'][$brick] = $warning;
+                    $returnData['data']['warnings'][$brick] = $warning;
                 }
             }
 
             return new ApiResponse(
-                $return_data['status'],
-                $return_data['text'],
-                $return_data['positive'],
-                $return_data['data']
+                $returnData['status'],
+                $returnData['text'],
+                $returnData['positive'],
+                $returnData['data']
             );
         }
 
@@ -420,8 +420,8 @@ class JsonHttpAdminController
                 );
             }
 
-            $sms_service = $_POST['sms_service'];
-            $transfer_service = $_POST['transfer_service'];
+            $smsService = $_POST['sms_service'];
+            $transferService = $_POST['transfer_service'];
             $currency = $_POST['currency'];
             $shopName = $_POST['shop_name'];
             $shop_url = $_POST['shop_url'];
@@ -441,7 +441,7 @@ class JsonHttpAdminController
             $gadugadu = $_POST['gadugadu'];
 
             // Serwis płatności SMS
-            if (strlen($sms_service)) {
+            if (strlen($smsService)) {
                 $result = $db->query(
                     $db->prepare(
                         "SELECT id " .
@@ -449,7 +449,7 @@ class JsonHttpAdminController
                             TABLE_PREFIX .
                             "transaction_services` " .
                             "WHERE `id` = '%s' AND sms = '1'",
-                        [$sms_service]
+                        [$smsService]
                     )
                 );
                 if (!$db->numRows($result)) {
@@ -458,7 +458,7 @@ class JsonHttpAdminController
             }
 
             // Serwis płatności internetowej
-            if (strlen($transfer_service)) {
+            if (strlen($transferService)) {
                 $result = $db->query(
                     $db->prepare(
                         "SELECT id " .
@@ -466,7 +466,7 @@ class JsonHttpAdminController
                             TABLE_PREFIX .
                             "transaction_services` " .
                             "WHERE `id` = '%s' AND transfer = '1'",
-                        [$transfer_service]
+                        [$transferService]
                     )
                 );
                 if (!$db->numRows($result)) {
@@ -567,8 +567,8 @@ class JsonHttpAdminController
                         "'contact','row_limit','cron_each_visit','user_edit_service','theme','language','date_format','delete_logs'," .
                         "'google_analytics','gadugadu'{$keyLicenseToken} )",
                     [
-                        $sms_service,
-                        $transfer_service,
+                        $smsService,
+                        $transferService,
                         $currency,
                         $shopName,
                         $shop_url,

@@ -87,14 +87,13 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
         $result = $this->db->query(
             "SELECT `id`, `name`, `sms` " . "FROM `" . TABLE_PREFIX . "transaction_services`"
         );
-        $sms_services = "";
+        $smsServices = "";
         while ($row = $this->db->fetchArrayAssoc($result)) {
             if (!$row['sms']) {
                 continue;
             }
 
-            // TODO Refactor
-            $sms_services .= create_dom_element("option", $row['name'], [
+            $smsServices .= create_dom_element("option", $row['name'], [
                 'value' => $row['id'],
                 'selected' => $row['id'] == $server['sms_service'] ? "selected" : "",
             ]);
@@ -145,14 +144,14 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             case "server_add":
                 $output = $this->template->render(
                     "admin/action_boxes/server_add",
-                    compact('sms_services', 'services')
+                    compact('smsServices', 'services')
                 );
                 break;
 
             case "server_edit":
                 $output = $this->template->render(
                     "admin/action_boxes/server_edit",
-                    compact('server', 'sms_services', 'services')
+                    compact('server', 'smsServices', 'services')
                 );
                 break;
 

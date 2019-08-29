@@ -38,7 +38,7 @@ class TransferFinalize
      *
      * @var string
      */
-    private $transfer_service = '';
+    private $transferService = '';
 
     /**
      * Co ma zostać wyświetlone na stronie
@@ -123,15 +123,15 @@ class TransferFinalize
      */
     public function getTransferService()
     {
-        return $this->transfer_service;
+        return $this->transferService;
     }
 
     /**
-     * @param string $transfer_service
+     * @param string $transferService
      */
-    public function setTransferService($transfer_service)
+    public function setTransferService($transferService)
     {
-        $this->transfer_service = (string) $transfer_service;
+        $this->transferService = (string) $transferService;
     }
 
     /**

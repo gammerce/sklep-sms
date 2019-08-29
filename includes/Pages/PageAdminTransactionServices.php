@@ -47,17 +47,17 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
         while ($row = $this->db->fetchArrayAssoc($result)) {
             $body_row = new BodyRow();
 
-            $sms_service = $row['sms']
+            $smsService = $row['sms']
                 ? $this->lang->strtoupper($this->lang->translate('yes'))
                 : $this->lang->strtoupper($this->lang->translate('no'));
-            $transfer_service = $row['transfer']
+            $transferService = $row['transfer']
                 ? $this->lang->strtoupper($this->lang->translate('yes'))
                 : $this->lang->strtoupper($this->lang->translate('no'));
 
             $body_row->setDbId($row['id']);
             $body_row->addCell(new Cell($row['name']));
-            $body_row->addCell(new Cell($sms_service));
-            $body_row->addCell(new Cell($transfer_service));
+            $body_row->addCell(new Cell($smsService));
+            $body_row->addCell(new Cell($transferService));
 
             $body_row->setButtonEdit(true);
 
