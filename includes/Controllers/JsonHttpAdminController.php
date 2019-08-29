@@ -197,15 +197,15 @@ class JsonHttpAdminController
                 return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
             }
 
-            $user_service = get_users_services($_POST['id']);
+            $userService = get_users_services($_POST['id']);
 
             // Brak takiej usługi w bazie
-            if (empty($user_service)) {
+            if (empty($userService)) {
                 return new ApiResponse("no_service", $lang->translate('no_service'), 0);
             }
 
             // Wykonujemy metode edycji usługi użytkownika przez admina na odpowiednim module
-            $return_data = $serviceModule->userServiceAdminEdit($_POST, $user_service);
+            $return_data = $serviceModule->userServiceAdminEdit($_POST, $userService);
 
             if ($return_data === false) {
                 return new ApiResponse("missing_method", $lang->translate('no_edit_method'), 0);
@@ -238,17 +238,17 @@ class JsonHttpAdminController
                 );
             }
 
-            $user_service = get_users_services($_POST['id']);
+            $userService = get_users_services($_POST['id']);
 
             // Brak takiej usługi
-            if (empty($user_service)) {
+            if (empty($userService)) {
                 return new ApiResponse("no_service", $lang->translate('no_service'), 0);
             }
 
             // Wywolujemy akcje przy usuwaniu
             if (
-                ($serviceModule = $heart->getServiceModule($user_service['service'])) !== null &&
-                !$serviceModule->userServiceDelete($user_service, 'admin')
+                ($serviceModule = $heart->getServiceModule($userService['service'])) !== null &&
+                !$serviceModule->userServiceDelete($userService, 'admin')
             ) {
                 return new ApiResponse(
                     "user_service_cannot_be_deleted",
@@ -261,13 +261,13 @@ class JsonHttpAdminController
             $db->query(
                 $db->prepare(
                     "DELETE FROM `" . TABLE_PREFIX . "user_service` " . "WHERE `id` = '%d'",
-                    [$user_service['id']]
+                    [$userService['id']]
                 )
             );
             $affected = $db->affectedRows();
 
             if ($serviceModule !== null) {
-                $serviceModule->userServiceDeletePost($user_service);
+                $serviceModule->userServiceDeletePost($userService);
             }
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
@@ -277,7 +277,7 @@ class JsonHttpAdminController
                         $langShop->translate('user_service_admin_delete'),
                         $user->getUsername(),
                         $user->getUid(),
-                        $user_service['id']
+                        $userService['id']
                     )
                 );
 

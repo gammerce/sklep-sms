@@ -124,7 +124,7 @@ class AdminController
                 }
             }
             $name = $lang->translate('users_services');
-            $user_service_link = $template->render("admin/page_link", compact('pid', 'name'));
+            $userServiceLink = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privileges("view_income")) {
             $pid = "income";
@@ -219,7 +219,7 @@ class AdminController
                     'servers_link',
                     'tariffs_link',
                     'pricelist_link',
-                    'user_service_link',
+                    'userServiceLink',
                     'players_flags_link',
                     'users_link',
                     'groups_link',

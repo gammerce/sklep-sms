@@ -396,7 +396,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         if ($this->db->numRows($result)) {
             // Aktualizujemy
             $row = $this->db->fetchArrayAssoc($result);
-            $user_service_id = $row['us_id'];
+            $userServiceId = $row['us_id'];
 
             $this->updateUserService(
                 [
@@ -416,8 +416,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                         'data' => [$forever, $days * 24 * 60 * 60],
                     ],
                 ],
-                $user_service_id,
-                $user_service_id
+                $userServiceId,
+                $userServiceId
             );
         } else {
             // Wstawiamy
@@ -430,7 +430,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     [$uid, $this->service['id'], $forever, $days * 24 * 60 * 60]
                 )
             );
-            $user_service_id = $this->db->lastId();
+            $userServiceId = $this->db->lastId();
 
             $this->db->query(
                 $this->db->prepare(
@@ -440,7 +440,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                         "` (`us_id`, `server`, `service`, `type`, `auth_data`, `password`) " .
                         "VALUES ('%d', '%d', '%s', '%d', '%s', '%s')",
                     [
-                        $user_service_id,
+                        $userServiceId,
                         $server_id,
                         $this->service['id'],
                         $type,
@@ -770,7 +770,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         ];
     }
 
-    public function userServiceAdminEditFormGet($user_service)
+    public function userServiceAdminEditFormGet($userService)
     {
         // Pobranie usług
         $services = "";
@@ -787,7 +787,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
             $services .= create_dom_element("option", $row['name'], [
                 'value' => $row['id'],
-                'selected' => $user_service['service'] == $row['id'] ? "selected" : "",
+                'selected' => $userService['service'] == $row['id'] ? "selected" : "",
             ]);
         }
 
@@ -797,21 +797,21 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             if ($this->service['types'] & $optionId) {
                 $types .= create_dom_element("option", $this->get_type_name($optionId), [
                     'value' => $optionId,
-                    'selected' => $optionId == $user_service['type'] ? "selected" : "",
+                    'selected' => $optionId == $userService['type'] ? "selected" : "",
                 ]);
             }
         }
 
-        if ($user_service['type'] == ExtraFlagType::TYPE_NICK) {
-            $nick = htmlspecialchars($user_service['auth_data']);
+        if ($userService['type'] == ExtraFlagType::TYPE_NICK) {
+            $nick = htmlspecialchars($userService['auth_data']);
             $styles['nick'] = $styles['password'] = "display: table-row-group";
         } else {
-            if ($user_service['type'] == ExtraFlagType::TYPE_IP) {
-                $ip = htmlspecialchars($user_service['auth_data']);
+            if ($userService['type'] == ExtraFlagType::TYPE_IP) {
+                $ip = htmlspecialchars($userService['auth_data']);
                 $styles['ip'] = $styles['password'] = "display: table-row-group";
             } else {
-                if ($user_service['type'] == ExtraFlagType::TYPE_SID) {
-                    $sid = htmlspecialchars($user_service['auth_data']);
+                if ($userService['type'] == ExtraFlagType::TYPE_SID) {
+                    $sid = htmlspecialchars($userService['auth_data']);
                     $styles['sid'] = "display: table-row-group";
                 }
             }
@@ -826,28 +826,28 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
             $servers .= create_dom_element("option", $row['name'], [
                 'value' => $row['id'],
-                'selected' => $user_service['server'] == $row['id'] ? "selected" : "",
+                'selected' => $userService['server'] == $row['id'] ? "selected" : "",
             ]);
         }
 
         // Pobranie hasła
-        if (strlen($user_service['password'])) {
+        if (strlen($userService['password'])) {
             $password = "********";
         }
 
         // Zamiana daty
-        if ($user_service['expire'] == -1) {
+        if ($userService['expire'] == -1) {
             $checked = "checked";
             $disabled = "disabled";
-            $user_service['expire'] = "";
+            $userService['expire'] = "";
         } else {
-            $user_service['expire'] = date($this->settings['date_format'], $user_service['expire']);
+            $userService['expire'] = date($this->settings['date_format'], $userService['expire']);
         }
 
         return $this->template->render(
             "services/extra_flags/user_service_admin_edit",
             compact(
-                'user_service',
+                'userService',
                 'types',
                 'styles',
                 'nick',
@@ -867,7 +867,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     //
     // Funkcja edytowania usługi przez admina z PA
     //
-    public function userServiceAdminEdit($data, $user_service)
+    public function userServiceAdminEdit($data, $userService)
     {
         $user = $this->auth->user();
 
@@ -882,7 +882,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         if (
             !strlen($data['password']) &&
             $data['type'] & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP) &&
-            !strlen($user_service['password'])
+            !strlen($userService['password'])
         ) {
             $warnings['password'][] = $this->lang->translate('field_no_empty');
         }
@@ -897,7 +897,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         //
         // Aktualizujemy usługę
-        $edit_return = $this->user_service_edit($user_service, $data);
+        $edit_return = $this->userServiceEdit($userService, $data);
 
         if ($edit_return['status'] == 'ok') {
             log_info(
@@ -905,7 +905,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     $this->langShop->translate('admin_edited_user_service'),
                     $user->getUsername(),
                     $user->getUid(),
-                    $user_service['id']
+                    $userService['id']
                 )
             );
         }
@@ -1016,14 +1016,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     // ----------------------------------------------------------------------------------
     // ### Edytowanie usług przez użytkownika
 
-    public function user_own_service_edit_form_get($user_service)
+    public function user_own_service_edit_form_get($userService)
     {
         // Dodajemy typ uslugi, (1<<2) ostatni typ
         $service_info = [];
         $styles['nick'] = $styles['ip'] = $styles['sid'] = $styles['password'] = "display: none";
         for ($i = 0, $option_id = 1; $i < 3; $option_id = 1 << ++$i) {
             // Kiedy dana usługa nie wspiera danego typu i wykupiona usługa nie ma tego typu
-            if (!($this->service['types'] & $option_id) && $option_id != $user_service['type']) {
+            if (!($this->service['types'] & $option_id) && $option_id != $userService['type']) {
                 continue;
             }
 
@@ -1032,24 +1032,24 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 $this->get_type_name($option_id),
                 [
                     'value' => $option_id,
-                    'selected' => $option_id == $user_service['type'] ? "selected" : "",
+                    'selected' => $option_id == $userService['type'] ? "selected" : "",
                 ]
             );
 
-            if ($option_id == $user_service['type']) {
+            if ($option_id == $userService['type']) {
                 switch ($option_id) {
                     case ExtraFlagType::TYPE_NICK:
-                        $service_info['player_nick'] = htmlspecialchars($user_service['auth_data']);
+                        $service_info['player_nick'] = htmlspecialchars($userService['auth_data']);
                         $styles['nick'] = $styles['password'] = "display: table-row";
                         break;
 
                     case ExtraFlagType::TYPE_IP:
-                        $service_info['player_ip'] = htmlspecialchars($user_service['auth_data']);
+                        $service_info['player_ip'] = htmlspecialchars($userService['auth_data']);
                         $styles['ip'] = $styles['password'] = "display: table-row";
                         break;
 
                     case ExtraFlagType::TYPE_SID:
-                        $service_info['player_sid'] = htmlspecialchars($user_service['auth_data']);
+                        $service_info['player_sid'] = htmlspecialchars($userService['auth_data']);
                         $styles['sid'] = "display: table-row";
                         break;
                 }
@@ -1057,20 +1057,20 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         }
 
         // Hasło
-        if (strlen($user_service['password']) && $user_service['password'] != md5("")) {
+        if (strlen($userService['password']) && $userService['password'] != md5("")) {
             $service_info['password'] = "********";
         }
 
         // Serwer
-        $temp_server = $this->heart->getServer($user_service['server']);
+        $temp_server = $this->heart->getServer($userService['server']);
         $service_info['server'] = $temp_server['name'];
         unset($temp_server);
 
         // Wygasa
         $service_info['expire'] =
-            $user_service['expire'] == -1
+            $userService['expire'] == -1
                 ? $this->lang->translate('never')
-                : date($this->settings['date_format'], $user_service['expire']);
+                : date($this->settings['date_format'], $userService['expire']);
 
         // Usługa
         $service_info['service'] = $this->service['name'];
@@ -1102,7 +1102,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         );
     }
 
-    public function user_own_service_edit($data, $user_service)
+    public function user_own_service_edit($data, $userService)
     {
         $user = $this->auth->user();
 
@@ -1113,7 +1113,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         if (
             !strlen($data['password']) &&
             $data['type'] & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP) &&
-            !strlen($user_service['password'])
+            !strlen($userService['password'])
         ) {
             $warnings['password'][] = $this->lang->translate('field_no_empty');
         }
@@ -1129,7 +1129,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         //
         // Aktualizujemy usługę
 
-        $edit_return = $this->user_service_edit($user_service, [
+        $edit_return = $this->userServiceEdit($userService, [
             'type' => $data['type'],
             'auth_data' => $data['auth_data'],
             'password' => $data['password'],
@@ -1141,7 +1141,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     $this->langShop->translate('user_edited_service'),
                     $user->getUsername(),
                     $user->getUid(),
-                    $user_service['id']
+                    $userService['id']
                 )
             );
         }
@@ -1152,7 +1152,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     // ----------------------------------------------------------------------------------
     // ### Dodatkowe funkcje przydatne przy zarządzaniu usługami użytkowników
 
-    private function user_service_edit($user_service, $data)
+    private function userServiceEdit($userService, $data)
     {
         $set = [];
         // Dodanie hasła do zapytania
@@ -1194,10 +1194,10 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     "WHERE us.service = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND `id` != '%d'",
                 [
                     $this->service['id'],
-                    if_isset($data['server'], $user_service['server']),
-                    if_isset($data['type'], $user_service['type']),
-                    if_isset($data['auth_data'], $user_service['auth_data']),
-                    $user_service['id'],
+                    if_isset($data['server'], $userService['server']),
+                    if_isset($data['type'], $userService['type']),
+                    if_isset($data['auth_data'], $userService['auth_data']),
+                    $userService['id'],
                 ]
             )
         );
@@ -1205,9 +1205,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         // Jeżeli istnieje usługa o identycznych danych jak te, na które będziemy zmieniać obecną usługę
         if ($this->db->numRows($result)) {
             // Pobieramy tę drugą usługę
-            $user_service2 = $this->db->fetchArrayAssoc($result);
+            $userService2 = $this->db->fetchArrayAssoc($result);
 
-            if (!isset($data['uid']) && $user_service['uid'] != $user_service2['uid']) {
+            if (!isset($data['uid']) && $userService['uid'] != $userService2['uid']) {
                 return [
                     'status' => "service_exists",
                     'text' => $this->lang->translate('service_isnt_yours'),
@@ -1219,7 +1219,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             $this->db->query(
                 $this->db->prepare(
                     "DELETE FROM `" . TABLE_PREFIX . "user_service` " . "WHERE `id` = '%d'",
-                    [$user_service['id']]
+                    [$userService['id']]
                 )
             );
 
@@ -1228,15 +1228,15 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 $set[] = [
                     'column' => 'expire',
                     'value' => "( `expire` - UNIX_TIMESTAMP() + '%d' )",
-                    'data' => [if_isset($data['expire'], $user_service['expire'])],
+                    'data' => [if_isset($data['expire'], $userService['expire'])],
                 ];
             }
 
             // Aktualizujemy usługę, która już istnieje w bazie i ma takie same dane jak nasze nowe
             $affected = $this->updateUserService(
                 $set,
-                $user_service2['id'],
-                $user_service2['id']
+                $userService2['id'],
+                $userService2['id']
             );
         } else {
             $set[] = [
@@ -1277,7 +1277,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 ];
             }
 
-            $affected = $this->updateUserService($set, $user_service['id'], $user_service['id']);
+            $affected = $this->updateUserService($set, $userService['id'], $userService['id']);
         }
 
         // Ustaw jednakowe hasła
@@ -1293,9 +1293,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                         "WHERE `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s'",
                     [
                         $data['password'],
-                        if_isset($data['server'], $user_service['server']),
-                        if_isset($data['type'], $user_service['type']),
-                        if_isset($data['auth_data'], $user_service['auth_data']),
+                        if_isset($data['server'], $userService['server']),
+                        if_isset($data['type'], $userService['type']),
+                        if_isset($data['auth_data'], $userService['auth_data']),
                     ]
                 )
             );
@@ -1312,16 +1312,16 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         // Odśwież flagi gracza ( przed zmiana danych )
         $this->recalculate_player_flags(
-            $user_service['server'],
-            $user_service['type'],
-            $user_service['auth_data']
+            $userService['server'],
+            $userService['type'],
+            $userService['auth_data']
         );
 
         // Odśwież flagi gracza ( już po edycji )
         $this->recalculate_player_flags(
-            if_isset($data['server'], $user_service['server']),
-            if_isset($data['type'], $user_service['type']),
-            if_isset($data['auth_data'], $user_service['auth_data'])
+            if_isset($data['server'], $userService['server']),
+            if_isset($data['type'], $userService['type']),
+            if_isset($data['auth_data'], $userService['auth_data'])
         );
 
         return [
@@ -1536,7 +1536,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
      *
      * @return string            Lista serwerów w postaci <option value="id_serwera">Nazwa</option>
      */
-    private function servers_for_service($server)
+    private function serversForService($server)
     {
         if (!get_privileges("manage_user_services")) {
             json_output("not_logged_in", $this->lang->translate('no_access'), 0);
@@ -1622,7 +1622,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             case "tariffs_for_server":
                 return $this->tariffs_for_server(intval($data['server']));
             case "servers_for_service":
-                return $this->servers_for_service(intval($data['server']));
+                return $this->serversForService(intval($data['server']));
             default:
                 return '';
         }

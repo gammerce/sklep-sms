@@ -81,6 +81,8 @@ class HeartServiceProvider
         $this->registerServices($heart);
     }
 
+    // TODO Get id from class
+
     protected function registerPaymentModules(Heart $heart)
     {
         $heart->registerPaymentModule('1s1k', OneShotOneKill::class);

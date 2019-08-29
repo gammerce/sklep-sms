@@ -120,19 +120,19 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
                 break;
 
             case "user_service_edit":
-                $user_service = get_users_services($data['id']);
+                $userService = get_users_services($data['id']);
 
                 if (
-                    empty($user_service) ||
+                    empty($userService) ||
                     ($serviceModule = $this->heart->getServiceModule(
-                        $user_service['service']
+                        $userService['service']
                     )) === null ||
                     !($serviceModule instanceof IServiceUserServiceAdminEdit)
                 ) {
                     $form_data = $this->lang->translate('service_edit_unable');
                 } else {
                     $service_module_id = htmlspecialchars($serviceModule->getModuleId());
-                    $form_data = $serviceModule->userServiceAdminEditFormGet($user_service);
+                    $form_data = $serviceModule->userServiceAdminEditFormGet($userService);
                 }
 
                 $output = $this->template->render(

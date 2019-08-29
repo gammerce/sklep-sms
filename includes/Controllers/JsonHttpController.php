@@ -584,18 +584,18 @@ class JsonHttpController
                 return new HtmlResponse($lang->translate('not_logged'));
             }
 
-            $user_service = get_users_services($_POST['id']);
+            $userService = get_users_services($_POST['id']);
 
-            if (empty($user_service)) {
+            if (empty($userService)) {
                 return new HtmlResponse($lang->translate('dont_play_games'));
             }
 
             // Dany użytkownik nie jest właścicielem usługi o danym id
-            if ($user_service['uid'] != $user->getUid()) {
+            if ($userService['uid'] != $user->getUid()) {
                 return new HtmlResponse($lang->translate('dont_play_games'));
             }
 
-            if (($service_module = $heart->getServiceModule($user_service['service'])) === null) {
+            if (($service_module = $heart->getServiceModule($userService['service'])) === null) {
                 return new HtmlResponse($lang->translate('service_cant_be_modified'));
             }
 
@@ -609,7 +609,7 @@ class JsonHttpController
             $buttons = $templates->render("services/my_services_savencancel");
 
             return new HtmlResponse(
-                $buttons . $service_module->user_own_service_edit_form_get($user_service)
+                $buttons . $service_module->user_own_service_edit_form_get($userService)
             );
         }
 
@@ -618,19 +618,19 @@ class JsonHttpController
                 return new HtmlResponse($lang->translate('not_logged'));
             }
 
-            $user_service = get_users_services($_POST['id']);
+            $userService = get_users_services($_POST['id']);
 
             // Brak takiej usługi w bazie
-            if (empty($user_service)) {
+            if (empty($userService)) {
                 return new HtmlResponse($lang->translate('dont_play_games'));
             }
 
             // Dany użytkownik nie jest właścicielem usługi o danym id
-            if ($user_service['uid'] != $user->getUid()) {
+            if ($userService['uid'] != $user->getUid()) {
                 return new HtmlResponse($lang->translate('dont_play_games'));
             }
 
-            if (($service_module = $heart->getServiceModule($user_service['service'])) === null) {
+            if (($service_module = $heart->getServiceModule($userService['service'])) === null) {
                 return new HtmlResponse($lang->translate('service_not_displayed'));
             }
 
@@ -649,7 +649,7 @@ class JsonHttpController
             }
 
             return new HtmlResponse(
-                $service_module->userOwnServiceInfoGet($user_service, $button_edit)
+                $service_module->userOwnServiceInfoGet($userService, $button_edit)
             );
         }
 
@@ -658,19 +658,19 @@ class JsonHttpController
                 return new ApiResponse("not_logged", $lang->translate('not_logged'), 0);
             }
 
-            $user_service = get_users_services($_POST['id']);
+            $userService = get_users_services($_POST['id']);
 
             // Brak takiej usługi w bazie
-            if (empty($user_service)) {
+            if (empty($userService)) {
                 return new ApiResponse("dont_play_games", $lang->translate('dont_play_games'), 0);
             }
 
             // Dany użytkownik nie jest właścicielem usługi o danym id
-            if ($user_service['uid'] != $user->getUid()) {
+            if ($userService['uid'] != $user->getUid()) {
                 return new ApiResponse("dont_play_games", $lang->translate('dont_play_games'), 0);
             }
 
-            if (($service_module = $heart->getServiceModule($user_service['service'])) === null) {
+            if (($service_module = $heart->getServiceModule($userService['service'])) === null) {
                 return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
             }
 
@@ -686,7 +686,7 @@ class JsonHttpController
                 );
             }
 
-            $return_data = $service_module->user_own_service_edit($_POST, $user_service);
+            $return_data = $service_module->user_own_service_edit($_POST, $userService);
 
             // Przerabiamy ostrzeżenia, aby lepiej wyglądały
             if ($return_data['status'] == "warnings") {

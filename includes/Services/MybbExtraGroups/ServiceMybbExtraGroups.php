@@ -436,7 +436,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         if ($this->db->numRows($result)) {
             // Aktualizujemy
             $row = $this->db->fetchArrayAssoc($result);
-            $user_service_id = $row['us_id'];
+            $userServiceId = $row['us_id'];
 
             $this->updateUserService(
                 [
@@ -456,8 +456,8 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                         'data' => [$forever, $days * 24 * 60 * 60],
                     ],
                 ],
-                $user_service_id,
-                $user_service_id
+                $userServiceId,
+                $userServiceId
             );
         } else {
             // Wstawiamy
@@ -470,7 +470,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                     [$uid, $this->service['id'], $forever, $days * 24 * 60 * 60]
                 )
             );
-            $user_service_id = $this->db->lastId();
+            $userServiceId = $this->db->lastId();
 
             $this->db->query(
                 $this->db->prepare(
@@ -479,7 +479,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                         $this::USER_SERVICE_TABLE .
                         "` (`us_id`, `service`, `mybb_uid`) " .
                         "VALUES ('%d', '%s', '%d')",
-                    [$user_service_id, $this->service['id'], $mybb_uid]
+                    [$userServiceId, $this->service['id'], $mybb_uid]
                 )
             );
         }

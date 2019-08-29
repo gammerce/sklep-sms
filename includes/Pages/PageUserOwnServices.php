@@ -87,22 +87,22 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
                 )
             );
 
-            $user_service_ids = [];
+            $userServiceIds = [];
             while ($row = $db->fetchArrayAssoc($result)) {
-                $user_service_ids[] = $row['id'];
+                $userServiceIds[] = $row['id'];
             }
 
-            if (!empty($user_service_ids)) {
+            if (!empty($userServiceIds)) {
                 $usersServices = get_users_services(
-                    "WHERE us.id IN (" . implode(', ', $user_service_ids) . ")",
+                    "WHERE us.id IN (" . implode(', ', $userServiceIds) . ")",
                     false
                 );
             }
         }
 
         $user_own_services = '';
-        foreach ($usersServices as $user_service) {
-            if (($service_module = $heart->getServiceModule($user_service['service'])) === null) {
+        foreach ($usersServices as $userService) {
+            if (($service_module = $heart->getServiceModule($userService['service'])) === null) {
                 continue;
             }
 
@@ -122,7 +122,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
 
             $user_own_services .= create_brick(
                 $service_module->userOwnServiceInfoGet(
-                    $user_service,
+                    $userService,
                     if_isset($button_edit, '')
                 )
             );

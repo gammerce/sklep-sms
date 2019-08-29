@@ -948,56 +948,56 @@ function delete_users_old_services()
     // Pierwsze pobieramy te, które usuniemy
     // Potem wywolujemy akcje na module, potem je usuwamy, a następnie wywołujemy akcje na module
 
-    $delete_ids = $users_services = [];
+    $deleteIds = $usersServices = [];
     foreach (
         get_users_services("WHERE `expire` != '-1' AND `expire` < UNIX_TIMESTAMP()")
-        as $user_service
+        as $userService
     ) {
-        if (($service_module = $heart->getServiceModule($user_service['service'])) === null) {
+        if (($service_module = $heart->getServiceModule($userService['service'])) === null) {
             continue;
         }
 
-        if ($service_module->userServiceDelete($user_service, 'task')) {
-            $delete_ids[] = $user_service['id'];
-            $users_services[] = $user_service;
+        if ($service_module->userServiceDelete($userService, 'task')) {
+            $deleteIds[] = $userService['id'];
+            $usersServices[] = $userService;
 
-            $user_service_desc = '';
-            foreach ($user_service as $key => $value) {
-                if (strlen($user_service_desc)) {
-                    $user_service_desc .= ' ; ';
+            $userServiceDesc = '';
+            foreach ($userService as $key => $value) {
+                if (strlen($userServiceDesc)) {
+                    $userServiceDesc .= ' ; ';
                 }
 
-                $user_service_desc .= ucfirst(strtolower($key)) . ': ' . $value;
+                $userServiceDesc .= ucfirst(strtolower($key)) . ': ' . $value;
             }
 
             log_info(
                 $langShop->sprintf(
                     $langShop->translate('expired_service_delete'),
-                    $user_service_desc
+                    $userServiceDesc
                 )
             );
         }
     }
 
     // Usuwamy usugi ktre zwróciły true
-    if (!empty($delete_ids)) {
+    if (!empty($deleteIds)) {
         $db->query(
             "DELETE FROM `" .
                 TABLE_PREFIX .
                 "user_service` " .
                 "WHERE `id` IN (" .
-                implode(", ", $delete_ids) .
+                implode(", ", $deleteIds) .
                 ")"
         );
     }
 
     // Wywołujemy akcje po usunieciu
-    foreach ($users_services as $user_service) {
-        if (($service_module = $heart->getServiceModule($user_service['service'])) === null) {
+    foreach ($usersServices as $userService) {
+        if (($service_module = $heart->getServiceModule($userService['service'])) === null) {
             continue;
         }
 
-        $service_module->userServiceDeletePost($user_service);
+        $service_module->userServiceDeletePost($userService);
     }
 }
 
