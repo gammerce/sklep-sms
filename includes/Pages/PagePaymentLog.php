@@ -59,10 +59,10 @@ class PagePaymentLog extends Page implements IBeLoggedMust
             $cost = number_format($row['cost'] / 100.0, 2) . " " . $settings['currency'];
 
             if (
-                ($service_module = $heart->getServiceModule($row['service'])) !== null &&
-                $service_module instanceof IServicePurchaseWeb
+                ($serviceModule = $heart->getServiceModule($row['service'])) !== null &&
+                $serviceModule instanceof IServicePurchaseWeb
             ) {
-                $log_info = $service_module->purchaseInfo("payment_log", $row);
+                $log_info = $serviceModule->purchaseInfo("payment_log", $row);
                 $desc = $log_info['text'];
                 $class = $log_info['class'];
             } else {

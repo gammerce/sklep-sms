@@ -36,8 +36,8 @@ class BlockServicesButtons extends Block
         $services = "";
         foreach ($heart->getServices() as $service) {
             if (
-                ($service_module = $heart->getServiceModule($service['id'])) === null ||
-                !$service_module->showOnWeb()
+                ($serviceModule = $heart->getServiceModule($service['id'])) === null ||
+                !$serviceModule->showOnWeb()
             ) {
                 continue;
             }

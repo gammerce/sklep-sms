@@ -10,6 +10,7 @@ use App\Payment;
 use App\Routes\UrlGenerator;
 use App\Services\ChargeWallet\ServiceChargeWallet;
 use App\Services\ExtraFlags\ServiceExtraFlags;
+use App\Services\Interfaces\IServicePurchaseWeb;
 use App\Services\Other\ServiceOther;
 use App\Services\Service;
 use App\Settings;
@@ -871,10 +872,10 @@ function purchase_info($data)
         return "Brak zakupu w bazie.";
     }
 
-    $service_module = $heart->getServiceModule($pbs['service']);
+    $serviceModule = $heart->getServiceModule($pbs['service']);
 
-    return $service_module !== null && $service_module instanceof IServicePurchaseWeb
-        ? $service_module->purchaseInfo($data['action'], $pbs)
+    return $serviceModule !== null && $serviceModule instanceof IServicePurchaseWeb
+        ? $serviceModule->purchaseInfo($data['action'], $pbs)
         : "";
 }
 
@@ -900,8 +901,8 @@ function get_users_services($conditions = '', $take_out = true)
 
     $output = $used_table = [];
     // Niestety dla każdego modułu musimy wykonać osobne zapytanie :-(
-    foreach ($heart->getServicesModules() as $service_module_data) {
-        $table = $service_module_data['classsimple']::USER_SERVICE_TABLE;
+    foreach ($heart->getServicesModules() as $serviceModuleData) {
+        $table = $serviceModuleData['classsimple']::USER_SERVICE_TABLE;
         if (!strlen($table) || array_key_exists($table, $used_table)) {
             continue;
         }
@@ -953,11 +954,11 @@ function delete_users_old_services()
         get_users_services("WHERE `expire` != '-1' AND `expire` < UNIX_TIMESTAMP()")
         as $userService
     ) {
-        if (($service_module = $heart->getServiceModule($userService['service'])) === null) {
+        if (($serviceModule = $heart->getServiceModule($userService['service'])) === null) {
             continue;
         }
 
-        if ($service_module->userServiceDelete($userService, 'task')) {
+        if ($serviceModule->userServiceDelete($userService, 'task')) {
             $deleteIds[] = $userService['id'];
             $usersServices[] = $userService;
 
@@ -993,11 +994,11 @@ function delete_users_old_services()
 
     // Wywołujemy akcje po usunieciu
     foreach ($usersServices as $userService) {
-        if (($service_module = $heart->getServiceModule($userService['service'])) === null) {
+        if (($serviceModule = $heart->getServiceModule($userService['service'])) === null) {
             continue;
         }
 
-        $service_module->userServiceDeletePost($userService);
+        $serviceModule->userServiceDeletePost($userService);
     }
 }
 

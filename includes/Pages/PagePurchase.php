@@ -38,7 +38,7 @@ class PagePurchase extends Page
         /** @var Settings $settings */
         $settings = $this->app->make(Settings::class);
 
-        if (($service_module = $heart->getServiceModule($get['service'])) === null) {
+        if (($serviceModule = $heart->getServiceModule($get['service'])) === null) {
             return $lang->translate('site_not_exists');
         }
 
@@ -52,7 +52,7 @@ class PagePurchase extends Page
                 );
             }
 
-            $path_file = $path . $service_module->getModuleId() . ".js";
+            $path_file = $path . $serviceModule->getModuleId() . ".js";
             if (file_exists($this->app->path($path_file))) {
                 $heart->scriptAdd(
                     $settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version()
@@ -70,7 +70,7 @@ class PagePurchase extends Page
                 );
             }
 
-            $path_file = $path . $service_module->getModuleId() . ".css";
+            $path_file = $path . $serviceModule->getModuleId() . ".css";
             if (file_exists($this->app->path($path_file))) {
                 $heart->styleAdd(
                     $settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version()
@@ -80,7 +80,7 @@ class PagePurchase extends Page
 
         // Globalne jsy cssy konkretnych modułów usług
         foreach ($heart->getServicesModules() as $module_info) {
-            if ($module_info['id'] == $service_module->getModuleId()) {
+            if ($module_info['id'] == $serviceModule->getModuleId()) {
                 $path = "styles/services/" . $module_info['id'] . ".css";
                 if (file_exists($this->app->path($path))) {
                     $heart->styleAdd(
@@ -99,35 +99,35 @@ class PagePurchase extends Page
             }
         }
 
-        $heart->pageTitle .= " - " . $service_module->service['name'];
+        $heart->pageTitle .= " - " . $serviceModule->service['name'];
 
         // Sprawdzamy, czy usluga wymaga, by użytkownik był zalogowany
         // Jeżeli wymaga, to to sprawdzamy
-        if ($service_module instanceof IBeLoggedMust && !is_logged()) {
+        if ($serviceModule instanceof IBeLoggedMust && !is_logged()) {
             return $lang->translate('must_be_logged_in');
         }
 
         // Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
-        if (!$heart->userCanUseService($user->getUid(), $service_module->service)) {
+        if (!$heart->userCanUseService($user->getUid(), $serviceModule->service)) {
             return $lang->translate('service_no_permission');
         }
 
         // Nie ma formularza zakupu, to tak jakby strona nie istniała
-        if (!($service_module instanceof IServicePurchaseWeb)) {
+        if (!($serviceModule instanceof IServicePurchaseWeb)) {
             return $lang->translate('site_not_exists');
         }
 
         // Dodajemy długi opis
         $show_more = '';
-        if (strlen($service_module->descriptionFullGet())) {
+        if (strlen($serviceModule->descriptionFullGet())) {
             $show_more = $template->render("services/show_more");
         }
 
         $output = $template->render(
             "services/short_description",
-            compact('service_module', 'show_more')
+            compact('serviceModule', 'show_more')
         );
 
-        return $output . $service_module->purchaseFormGet();
+        return $output . $serviceModule->purchaseFormGet();
     }
 }

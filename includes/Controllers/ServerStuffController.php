@@ -28,17 +28,17 @@ class ServerStuffController
         $action = $request->get('action');
 
         if ($action == "purchase_service") {
-            if (($service_module = $heart->getServiceModule($request->get('service'))) === null) {
+            if (($serviceModule = $heart->getServiceModule($request->get('service'))) === null) {
                 return $this->xmlOutput("bad_module", $lang->translate('bad_module'), 0);
             }
 
-            if (!($service_module instanceof IServicePurchaseOutside)) {
+            if (!($serviceModule instanceof IServicePurchaseOutside)) {
                 return $this->xmlOutput("bad_module", $lang->translate('bad_module'), 0);
             }
 
             // Sprawdzamy dane zakupu
             $purchaseData = new Purchase();
-            $purchaseData->setService($service_module->service['id']);
+            $purchaseData->setService($serviceModule->service['id']);
             $purchaseData->user = $heart->getUser($request->get('uid'));
             $purchaseData->user->setPlatform($request->get('platform'));
             $purchaseData->user->setLastip($request->get('ip'));
@@ -61,7 +61,7 @@ class ServerStuffController
                 $payment->getPaymentModule()->getTariffById($request->get('tariff'))
             );
 
-            $returnValidation = $service_module->purchaseDataValidate($purchaseData);
+            $returnValidation = $serviceModule->purchaseDataValidate($purchaseData);
 
             // Są jakieś błędy przy sprawdzaniu danych
             if ($returnValidation['status'] != "ok") {

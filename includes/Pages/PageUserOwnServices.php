@@ -102,17 +102,17 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
 
         $user_own_services = '';
         foreach ($usersServices as $userService) {
-            if (($service_module = $heart->getServiceModule($userService['service'])) === null) {
+            if (($serviceModule = $heart->getServiceModule($userService['service'])) === null) {
                 continue;
             }
 
-            if (!($service_module instanceof IServiceUserOwnServices)) {
+            if (!($serviceModule instanceof IServiceUserOwnServices)) {
                 continue;
             }
 
             if (
                 $settings['user_edit_service'] &&
-                $service_module instanceof IServiceUserOwnServicesEdit
+                $serviceModule instanceof IServiceUserOwnServicesEdit
             ) {
                 $button_edit = create_dom_element("button", $lang->translate('edit'), [
                     'class' => "button edit_row",
@@ -121,8 +121,9 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             }
 
             $user_own_services .= create_brick(
-                $service_module->userOwnServiceInfoGet(
+                $serviceModule->userOwnServiceInfoGet(
                     $userService,
+                    // TODO Refactor
                     if_isset($button_edit, '')
                 )
             );

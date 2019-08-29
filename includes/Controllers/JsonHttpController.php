@@ -417,14 +417,14 @@ class JsonHttpController
 
         if ($action == "purchase_form_validate") {
             if (
-                ($service_module = $heart->getServiceModule($_POST['service'])) === null ||
-                !($service_module instanceof IServicePurchaseWeb)
+                ($serviceModule = $heart->getServiceModule($_POST['service'])) === null ||
+                !($serviceModule instanceof IServicePurchaseWeb)
             ) {
                 return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
             }
 
             // Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
-            if (!$heart->userCanUseService($user->getUid(), $service_module->service)) {
+            if (!$heart->userCanUseService($user->getUid(), $serviceModule->service)) {
                 return new ApiResponse(
                     "no_permission",
                     $lang->translate('service_no_permission'),
@@ -432,8 +432,9 @@ class JsonHttpController
                 );
             }
 
+            // TODO Refactor
             // Przeprowadzamy walidację danych wprowadzonych w formularzu
-            $return_data = $service_module->purchaseFormValidate($_POST);
+            $return_data = $serviceModule->purchaseFormValidate($_POST);
 
             // Przerabiamy ostrzeżenia, aby lepiej wyglądały
             if ($return_data['status'] == "warnings") {
@@ -450,7 +451,7 @@ class JsonHttpController
                 $purchaseData = $return_data['purchase_data'];
 
                 if ($purchaseData->getService() === null) {
-                    $purchaseData->setService($service_module->service['id']);
+                    $purchaseData->setService($serviceModule->service['id']);
                 }
 
                 if (!$purchaseData->getPayment('cost') && $purchaseData->getTariff() !== null) {
@@ -558,8 +559,8 @@ class JsonHttpController
 
         if ($action == "get_service_long_description") {
             $output = "";
-            if (($service_module = $heart->getServiceModule($_POST['service'])) !== null) {
-                $output = $service_module->descriptionFullGet();
+            if (($serviceModule = $heart->getServiceModule($_POST['service'])) !== null) {
+                $output = $serviceModule->descriptionFullGet();
             }
 
             return new PlainResponse($output);
@@ -595,13 +596,13 @@ class JsonHttpController
                 return new HtmlResponse($lang->translate('dont_play_games'));
             }
 
-            if (($service_module = $heart->getServiceModule($userService['service'])) === null) {
+            if (($serviceModule = $heart->getServiceModule($userService['service'])) === null) {
                 return new HtmlResponse($lang->translate('service_cant_be_modified'));
             }
 
             if (
                 !$settings['user_edit_service'] ||
-                !($service_module instanceof IServiceUserOwnServicesEdit)
+                !($serviceModule instanceof IServiceUserOwnServicesEdit)
             ) {
                 return new HtmlResponse($lang->translate('service_cant_be_modified'));
             }
@@ -609,7 +610,7 @@ class JsonHttpController
             $buttons = $templates->render("services/my_services_savencancel");
 
             return new HtmlResponse(
-                $buttons . $service_module->user_own_service_edit_form_get($userService)
+                $buttons . $serviceModule->user_own_service_edit_form_get($userService)
             );
         }
 
@@ -630,17 +631,17 @@ class JsonHttpController
                 return new HtmlResponse($lang->translate('dont_play_games'));
             }
 
-            if (($service_module = $heart->getServiceModule($userService['service'])) === null) {
+            if (($serviceModule = $heart->getServiceModule($userService['service'])) === null) {
                 return new HtmlResponse($lang->translate('service_not_displayed'));
             }
 
-            if (!($service_module instanceof IServiceUserOwnServices)) {
+            if (!($serviceModule instanceof IServiceUserOwnServices)) {
                 return new HtmlResponse($lang->translate('service_not_displayed'));
             }
 
             if (
                 $settings['user_edit_service'] &&
-                $service_module instanceof IServiceUserOwnServicesEdit
+                $serviceModule instanceof IServiceUserOwnServicesEdit
             ) {
                 $button_edit = create_dom_element("button", $lang->translate('edit'), [
                     'class' => "button edit_row",
@@ -649,7 +650,7 @@ class JsonHttpController
             }
 
             return new HtmlResponse(
-                $service_module->userOwnServiceInfoGet($userService, $button_edit)
+                $serviceModule->userOwnServiceInfoGet($userService, $button_edit)
             );
         }
 
@@ -670,14 +671,14 @@ class JsonHttpController
                 return new ApiResponse("dont_play_games", $lang->translate('dont_play_games'), 0);
             }
 
-            if (($service_module = $heart->getServiceModule($userService['service'])) === null) {
+            if (($serviceModule = $heart->getServiceModule($userService['service'])) === null) {
                 return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
             }
 
             // Wykonujemy metode edycji usługi użytkownika na module, który ją obsługuje
             if (
                 !$settings['user_edit_service'] ||
-                !($service_module instanceof IServiceUserOwnServicesEdit)
+                !($serviceModule instanceof IServiceUserOwnServicesEdit)
             ) {
                 return new ApiResponse(
                     "service_cant_be_modified",
@@ -686,7 +687,7 @@ class JsonHttpController
                 );
             }
 
-            $return_data = $service_module->user_own_service_edit($_POST, $userService);
+            $return_data = $serviceModule->user_own_service_edit($_POST, $userService);
 
             // Przerabiamy ostrzeżenia, aby lepiej wyglądały
             if ($return_data['status'] == "warnings") {
@@ -708,24 +709,24 @@ class JsonHttpController
 
         if ($action == "service_take_over_form_get") {
             if (
-                ($service_module = $heart->getServiceModule($_POST['service'])) === null ||
-                !($service_module instanceof IServiceTakeOver)
+                ($serviceModule = $heart->getServiceModule($_POST['service'])) === null ||
+                !($serviceModule instanceof IServiceTakeOver)
             ) {
                 return new PlainResponse($lang->translate('bad_module'));
             }
 
-            return new PlainResponse($service_module->serviceTakeOverFormGet());
+            return new PlainResponse($serviceModule->serviceTakeOverFormGet());
         }
 
         if ($action == "service_take_over") {
             if (
-                ($service_module = $heart->getServiceModule($_POST['service'])) === null ||
-                !($service_module instanceof IServiceTakeOver)
+                ($serviceModule = $heart->getServiceModule($_POST['service'])) === null ||
+                !($serviceModule instanceof IServiceTakeOver)
             ) {
                 return new PlainResponse($lang->translate('bad_module'));
             }
 
-            $return_data = $service_module->serviceTakeOver($_POST);
+            $return_data = $serviceModule->serviceTakeOver($_POST);
 
             // Przerabiamy ostrzeżenia, aby lepiej wyglądały
             if ($return_data['status'] == "warnings") {
@@ -759,14 +760,14 @@ class JsonHttpController
 
         if ($action == "service_action_execute") {
             if (
-                ($service_module = $heart->getServiceModule($_POST['service'])) === null ||
-                !($service_module instanceof IServiceActionExecute)
+                ($serviceModule = $heart->getServiceModule($_POST['service'])) === null ||
+                !($serviceModule instanceof IServiceActionExecute)
             ) {
                 return new PlainResponse($lang->translate('bad_module'));
             }
 
             return new PlainResponse(
-                $service_module->actionExecute($_POST['service_action'], $_POST)
+                $serviceModule->actionExecute($_POST['service_action'], $_POST)
             );
         }
 

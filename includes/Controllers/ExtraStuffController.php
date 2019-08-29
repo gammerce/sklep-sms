@@ -53,12 +53,12 @@ class ExtraStuffController
                 $output = "";
                 $service = $request->query->get("service");
 
-                if (($service_module = $heart->getServiceModule($service)) !== null) {
-                    $output = $service_module->descriptionFullGet();
+                if (($serviceModule = $heart->getServiceModule($service)) !== null) {
+                    $output = $serviceModule->descriptionFullGet();
                 }
 
                 $heart->pageTitle =
-                    $lang->translate('description') . ": " . $service_module->service['name'];
+                    $lang->translate('description') . ": " . $serviceModule->service['name'];
 
                 $heart->styleAdd(
                     $settings['shop_url_slash'] .

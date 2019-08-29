@@ -88,12 +88,12 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             // Pobieramy pola danego modułu
             if (strlen($service['module'])) {
                 if (
-                    ($service_module = $this->heart->getServiceModule($service['id'])) !== null &&
-                    $service_module instanceof IServiceAdminManage
+                    ($serviceModule = $this->heart->getServiceModule($service['id'])) !== null &&
+                    $serviceModule instanceof IServiceAdminManage
                 ) {
                     $extra_fields = create_dom_element(
                         "tbody",
-                        $service_module->serviceAdminExtraFieldsGet(),
+                        $serviceModule->serviceAdminExtraFieldsGet(),
                         [
                             'class' => 'extra_fields',
                         ]
@@ -107,9 +107,9 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             foreach ($this->heart->getServicesModules() as $module) {
                 // Sprawdzamy czy dany moduł zezwala na tworzenie nowych usług, które będzie obsługiwał
                 if (
-                    ($service_module = $this->heart->getServiceModuleS($module['id'])) ===
+                    ($serviceModule = $this->heart->getServiceModuleS($module['id'])) ===
                         null ||
-                    !($service_module instanceof IServiceCreate)
+                    !($serviceModule instanceof IServiceCreate)
                 ) {
                     continue;
                 }
@@ -145,11 +145,11 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
                 break;
 
             case "service_edit":
-                $service_module_name = $this->heart->getServiceModuleName($service['module']);
+                $serviceModuleName = $this->heart->getServiceModuleName($service['module']);
 
                 $output = $this->template->render(
                     "admin/action_boxes/service_edit",
-                    compact('service', 'groups', 'service_module_name', 'extra_fields')
+                    compact('service', 'groups', 'serviceModuleName', 'extra_fields')
                 );
                 break;
 

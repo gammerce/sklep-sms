@@ -341,7 +341,7 @@ class Payment
 
         // Błędny moduł
         if (
-            ($service_module = $this->heart->getServiceModule($purchaseData->getService())) ===
+            ($serviceModule = $this->heart->getServiceModule($purchaseData->getService())) ===
             null
         ) {
             log_info(
@@ -355,7 +355,7 @@ class Payment
             return false;
         }
 
-        if (!($service_module instanceof IServicePurchase)) {
+        if (!($serviceModule instanceof IServicePurchase)) {
             log_info(
                 $this->langShop->sprintf(
                     $this->langShop->translate('transfer_no_purchase'),
@@ -372,7 +372,7 @@ class Payment
             'method' => 'transfer',
             'payment_id' => $transfer_finalize->getOrderid(),
         ]);
-        $bought_service_id = $service_module->purchase($purchaseData);
+        $bought_service_id = $serviceModule->purchase($purchaseData);
 
         log_info(
             $this->langShop->sprintf(

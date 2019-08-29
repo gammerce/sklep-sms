@@ -20,12 +20,12 @@ class PageTakeOverService extends Page implements IBeLoggedMust
         $services_options = "";
         $services = $this->heart->getServices();
         foreach ($services as $service) {
-            if (($service_module = $this->heart->getServiceModule($service['id'])) === null) {
+            if (($serviceModule = $this->heart->getServiceModule($service['id'])) === null) {
                 continue;
             }
 
             // Moduł danej usługi nie zezwala na jej przejmowanie
-            if (!($service_module instanceof IServiceTakeOver)) {
+            if (!($serviceModule instanceof IServiceTakeOver)) {
                 continue;
             }
 

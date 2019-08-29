@@ -93,6 +93,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                 continue;
             }
 
+            // TODO Refactor
             $sms_services .= create_dom_element("option", $row['name'], [
                 'value' => $row['id'],
                 'selected' => $row['id'] == $server['sms_service'] ? "selected" : "",
@@ -103,8 +104,8 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
         foreach ($this->heart->getServices() as $service) {
             // Dana usługa nie może być kupiona na serwerze
             if (
-                ($service_module = $this->heart->getServiceModule($service['id'])) === null ||
-                !($service_module instanceof IServiceAvailableOnServers)
+                ($serviceModule = $this->heart->getServiceModule($service['id'])) === null ||
+                !($serviceModule instanceof IServiceAvailableOnServers)
             ) {
                 continue;
             }

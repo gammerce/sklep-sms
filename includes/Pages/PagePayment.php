@@ -38,15 +38,15 @@ class PagePayment extends Page
         }
 
         if (
-            ($service_module = $this->heart->getServiceModule($purchaseData->getService())) ===
+            ($serviceModule = $this->heart->getServiceModule($purchaseData->getService())) ===
                 null ||
-            !($service_module instanceof IServicePurchaseWeb)
+            !($serviceModule instanceof IServicePurchaseWeb)
         ) {
             return $this->lang->translate('bad_module');
         }
 
         // Pobieramy szczegóły zamówienia
-        $order_details = $service_module->orderDetails($purchaseData);
+        $order_details = $serviceModule->orderDetails($purchaseData);
 
         //
         // Pobieramy sposoby płatności
@@ -95,13 +95,15 @@ class PagePayment extends Page
 
         if (
             !$purchaseData->getPayment('no_code') &&
-            $service_module instanceof IServiceServiceCode
+            $serviceModule instanceof IServiceServiceCode
         ) {
             $payment_methods .= $this->template->render("payment_method_code");
         }
 
         $purchaseData = htmlspecialchars($post['data']);
         $purchase_sign = htmlspecialchars($post['sign']);
+
+        // TODO Refactor
 
         return $this->template->render(
             "payment_form",
