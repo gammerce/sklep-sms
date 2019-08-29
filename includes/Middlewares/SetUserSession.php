@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 class SetUserSession implements MiddlewareContract
 {
-    public function handle(Request $request, Application $app)
+    public function handle(Request $request, Application $app, $args = null)
     {
         /** @var Session $session */
         $session = $app->make(Session::class);

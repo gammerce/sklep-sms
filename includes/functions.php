@@ -244,12 +244,12 @@ function is_logged()
 }
 
 /**
- * @param string $which
+ * @param string $privilege
  * @param User   $user
  *
  * @return bool
  */
-function get_privilages($which, $user = null)
+function get_privilages($privilege, $user = null)
 {
     // Jeżeli nie podano użytkownika
     if ($user === null) {
@@ -262,36 +262,36 @@ function get_privilages($which, $user = null)
         return false;
     }
 
-    if (
-        in_array($which, [
-            "manage_settings",
-            "view_groups",
-            "manage_groups",
-            "view_player_flags",
-            "view_user_services",
-            "manage_user_services",
-            "view_income",
-            "view_users",
-            "manage_users",
-            "view_sms_codes",
-            "manage_sms_codes",
-            "view_service_codes",
-            "manage_service_codes",
-            "view_antispam_questions",
-            "manage_antispam_questions",
-            "view_services",
-            "manage_services",
-            "view_servers",
-            "manage_servers",
-            "view_logs",
-            "manage_logs",
-            "update",
-        ])
-    ) {
-        return $user->getPrivilages('acp') && $user->getPrivilages($which);
+    $adminPrivileges = [
+        "manage_settings",
+        "view_groups",
+        "manage_groups",
+        "view_player_flags",
+        "view_user_services",
+        "manage_user_services",
+        "view_income",
+        "view_users",
+        "manage_users",
+        "view_sms_codes",
+        "manage_sms_codes",
+        "view_service_codes",
+        "manage_service_codes",
+        "view_antispam_questions",
+        "manage_antispam_questions",
+        "view_services",
+        "manage_services",
+        "view_servers",
+        "manage_servers",
+        "view_logs",
+        "manage_logs",
+        "update",
+    ];
+
+    if (in_array($privilege, $adminPrivileges)) {
+        return $user->getPrivilages('acp') && $user->getPrivilages($privilege);
     }
 
-    return $user->getPrivilages($which);
+    return $user->getPrivilages($privilege);
 }
 
 /**

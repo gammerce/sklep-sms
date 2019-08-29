@@ -17,6 +17,7 @@ use App\Middlewares\LoadSettings;
 use App\Middlewares\ManageAdminAuthentication;
 use App\Middlewares\ManageAuthentication;
 use App\Middlewares\MiddlewareContract;
+use App\Middlewares\RequireAuthorization;
 use App\Middlewares\RunCron;
 use App\Middlewares\SetAdminSession;
 use App\Middlewares\SetLanguage;
@@ -128,6 +129,7 @@ class RoutesManager
                 ]);
 
                 $r->addRoute("PUT", '/admin/users/{userId}/password', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_users"]],
                     'uses' => UserPasswordResource::class . '@put',
                 ]);
 
@@ -174,7 +176,16 @@ class RoutesManager
         $middlewares = array_get($routeInfo[1], 'middlewares', []);
         $uses = $routeInfo[1]['uses'];
 
-        foreach ($middlewares as $middlewareClass) {
+        foreach ($middlewares as $middlewareData) {
+            if (is_array($middlewareData)) {
+                $middlewareClass = $middlewareData[0];
+                $args = $middlewareData[1];
+            } else {
+                $middlewareClass = $middlewareData;
+                $args = [];
+            }
+
+
             /** @var MiddlewareContract $middleware */
             $middleware = $this->app->make($middlewareClass);
 

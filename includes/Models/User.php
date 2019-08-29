@@ -333,7 +333,7 @@ class User
     /**
      * @param string $key
      *
-     * @return array
+     * @return boolean
      */
     public function getPrivilages($key)
     {

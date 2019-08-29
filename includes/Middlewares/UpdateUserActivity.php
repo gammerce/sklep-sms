@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class UpdateUserActivity implements MiddlewareContract
 {
-    public function handle(Request $request, Application $app)
+    public function handle(Request $request, Application $app, $args = null)
     {
         /** @var Auth $auth */
         $auth = $app->make(Auth::class);

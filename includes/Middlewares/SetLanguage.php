@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class SetLanguage implements MiddlewareContract
 {
-    public function handle(Request $request, Application $app)
+    public function handle(Request $request, Application $app, $args = null)
     {
         /** @var TranslationManager $translationManager */
         $translationManager = $app->make(TranslationManager::class);
