@@ -73,7 +73,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
         return $wrapper->toHtml();
     }
 
-    public function get_action_box($box_id, $data)
+    public function getActionBox($boxId, $data)
     {
         if (!get_privileges("manage_antispam_questions")) {
             return [
@@ -82,7 +82,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
             ];
         }
 
-        switch ($box_id) {
+        switch ($boxId) {
             case "antispam_question_add":
                 $output = $this->template->render("admin/action_boxes/antispam_question_add");
                 break;

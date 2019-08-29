@@ -433,7 +433,7 @@ class JsonHttpController
             }
 
             // Przeprowadzamy walidację danych wprowadzonych w formularzu
-            $return_data = $service_module->purchase_form_validate($_POST);
+            $return_data = $service_module->purchaseFormValidate($_POST);
 
             // Przerabiamy ostrzeżenia, aby lepiej wyglądały
             if ($return_data['status'] == "warnings") {
@@ -446,48 +446,48 @@ class JsonHttpController
             } else {
                 //
                 // Uzupełniamy brakujące dane
-                /** @var Purchase $purchase_data */
-                $purchase_data = $return_data['purchase_data'];
+                /** @var Purchase $purchaseData */
+                $purchaseData = $return_data['purchase_data'];
 
-                if ($purchase_data->getService() === null) {
-                    $purchase_data->setService($service_module->service['id']);
+                if ($purchaseData->getService() === null) {
+                    $purchaseData->setService($service_module->service['id']);
                 }
 
-                if (!$purchase_data->getPayment('cost') && $purchase_data->getTariff() !== null) {
-                    $purchase_data->setPayment([
-                        'cost' => $purchase_data->getTariff()->getProvision(),
+                if (!$purchaseData->getPayment('cost') && $purchaseData->getTariff() !== null) {
+                    $purchaseData->setPayment([
+                        'cost' => $purchaseData->getTariff()->getProvision(),
                     ]);
                 }
 
                 if (
-                    $purchase_data->getPayment('sms_service') === null &&
-                    !$purchase_data->getPayment("no_sms") &&
+                    $purchaseData->getPayment('sms_service') === null &&
+                    !$purchaseData->getPayment("no_sms") &&
                     strlen($settings['sms_service'])
                 ) {
-                    $purchase_data->setPayment([
+                    $purchaseData->setPayment([
                         'sms_service' => $settings['sms_service'],
                     ]);
                 }
 
                 // Ustawiamy taryfe z numerem
-                if ($purchase_data->getPayment('sms_service') !== null) {
-                    $payment = new Payment($purchase_data->getPayment('sms_service'));
-                    $purchase_data->setTariff(
+                if ($purchaseData->getPayment('sms_service') !== null) {
+                    $payment = new Payment($purchaseData->getPayment('sms_service'));
+                    $purchaseData->setTariff(
                         $payment
                             ->getPaymentModule()
-                            ->getTariffById($purchase_data->getTariff()->getId())
+                            ->getTariffById($purchaseData->getTariff()->getId())
                     );
                 }
 
-                if ($purchase_data->getEmail() === null && strlen($user->getEmail())) {
-                    $purchase_data->setEmail($user->getEmail());
+                if ($purchaseData->getEmail() === null && strlen($user->getEmail())) {
+                    $purchaseData->setEmail($user->getEmail());
                 }
 
-                $purchase_data_encoded = base64_encode(serialize($purchase_data));
+                $purchaseDataEncoded = base64_encode(serialize($purchaseData));
                 $return_data['data'] = [
                     'length' => 8000,
-                    'data' => $purchase_data_encoded,
-                    'sign' => md5($purchase_data_encoded . $settings['random_key']),
+                    'data' => $purchaseDataEncoded,
+                    'sign' => md5($purchaseDataEncoded . $settings['random_key']),
                 ];
             }
 
@@ -508,20 +508,20 @@ class JsonHttpController
                 return new ApiResponse("wrong_sign", $lang->translate('wrong_sign'), 0);
             }
 
-            /** @var Purchase $purchase_data */
-            $purchase_data = unserialize(base64_decode($_POST['purchase_data']));
+            /** @var Purchase $purchaseData */
+            $purchaseData = unserialize(base64_decode($_POST['purchase_data']));
 
             // Fix: get user data again to avoid bugs linked with user wallet
-            $purchase_data->user = $heart->getUser($purchase_data->user->getUid());
+            $purchaseData->user = $heart->getUser($purchaseData->user->getUid());
 
             // Dodajemy dane płatności
-            $purchase_data->setPayment([
+            $purchaseData->setPayment([
                 'method' => $_POST['method'],
                 'sms_code' => $_POST['sms_code'],
                 'service_code' => $_POST['service_code'],
             ]);
 
-            $return_payment = validate_payment($purchase_data);
+            $return_payment = validate_payment($purchaseData);
             return new ApiResponse(
                 $return_payment['status'],
                 $return_payment['text'],
@@ -541,14 +541,14 @@ class JsonHttpController
                         continue;
                     }
 
-                    $data[$block->get_content_id()]['content'] = $block->get_content(
+                    $data[$block->getContentId()]['content'] = $block->getContent(
                         $request->query->all(),
                         $request->request->all()
                     );
-                    if ($data[$block->get_content_id()]['content'] !== null) {
-                        $data[$block->get_content_id()]['class'] = $block->get_content_class();
+                    if ($data[$block->getContentId()]['content'] !== null) {
+                        $data[$block->getContentId()]['class'] = $block->getContentClass();
                     } else {
-                        $data[$block->get_content_id()]['class'] = "";
+                        $data[$block->getContentId()]['class'] = "";
                     }
                 }
             }
@@ -559,7 +559,7 @@ class JsonHttpController
         if ($action == "get_service_long_description") {
             $output = "";
             if (($service_module = $heart->getServiceModule($_POST['service'])) !== null) {
-                $output = $service_module->description_full_get();
+                $output = $service_module->descriptionFullGet();
             }
 
             return new PlainResponse($output);
@@ -649,7 +649,7 @@ class JsonHttpController
             }
 
             return new HtmlResponse(
-                $service_module->user_own_service_info_get($user_service, $button_edit)
+                $service_module->userOwnServiceInfoGet($user_service, $button_edit)
             );
         }
 
@@ -714,7 +714,7 @@ class JsonHttpController
                 return new PlainResponse($lang->translate('bad_module'));
             }
 
-            return new PlainResponse($service_module->service_take_over_form_get());
+            return new PlainResponse($service_module->serviceTakeOverFormGet());
         }
 
         if ($action == "service_take_over") {
@@ -725,7 +725,7 @@ class JsonHttpController
                 return new PlainResponse($lang->translate('bad_module'));
             }
 
-            $return_data = $service_module->service_take_over($_POST);
+            $return_data = $service_module->serviceTakeOver($_POST);
 
             // Przerabiamy ostrzeżenia, aby lepiej wyglądały
             if ($return_data['status'] == "warnings") {
@@ -753,7 +753,7 @@ class JsonHttpController
             $page = new PageAdminIncome();
 
             return new HtmlResponse(
-                $page->get_content($request->query->all(), $request->request->all())
+                $page->getContent($request->query->all(), $request->request->all())
             );
         }
 
@@ -766,7 +766,7 @@ class JsonHttpController
             }
 
             return new PlainResponse(
-                $service_module->action_execute($_POST['service_action'], $_POST)
+                $service_module->actionExecute($_POST['service_action'], $_POST)
             );
         }
 

@@ -3,6 +3,7 @@ namespace App\Services\ExtraFlags;
 
 use Admin\Table;
 use App\CurrentPage;
+use App\Models\Purchase;
 use App\Services\Interfaces\IServiceAdminManage;
 use App\Services\Interfaces\IServiceAvailableOnServers;
 use App\Services\Interfaces\IServiceCreate;
@@ -41,10 +42,10 @@ class ServiceExtraFlagsSimple extends Service implements
         $this->settings = $this->app->make(Settings::class);
     }
 
-    public function service_admin_extra_fields_get()
+    public function serviceAdminExtraFieldsGet()
     {
         // WEB
-        if ($this->show_on_web()) {
+        if ($this->showOnWeb()) {
             $web_sel_yes = "selected";
         } else {
             $web_sel_no = "selected";
@@ -71,14 +72,14 @@ class ServiceExtraFlagsSimple extends Service implements
         return $this->template->render(
             "services/extra_flags/extra_fields",
             compact('web_sel_no', 'web_sel_yes', 'types', 'flags') + [
-                'moduleId' => $this->get_module_id(),
+                'moduleId' => $this->getModuleId(),
             ],
             true,
             false
         );
     }
 
-    public function service_admin_manage_pre($data)
+    public function serviceAdminManagePre($data)
     {
         $warnings = [];
 
@@ -121,7 +122,7 @@ class ServiceExtraFlagsSimple extends Service implements
         return $warnings;
     }
 
-    public function service_admin_manage_post($data)
+    public function serviceAdminManagePost($data)
     {
         // Przygotowujemy do zapisu ( suma bitowa ), które typy zostały wybrane
         $types = 0;
@@ -216,12 +217,12 @@ class ServiceExtraFlagsSimple extends Service implements
     // ----------------------------------------------------------------------------------
     // ### Wyświetlanie usług użytkowników w PA
 
-    public function user_service_admin_display_title_get()
+    public function userServiceAdminDisplayTitleGet()
     {
         return $this->lang->translate('extra_flags');
     }
 
-    public function user_service_admin_display_get($get, $post)
+    public function userServiceAdminDisplayGet($get, $post)
     {
         /** @var CurrentPage $currentPage */
         $currentPage = $this->app->make(CurrentPage::class);
@@ -328,20 +329,20 @@ class ServiceExtraFlagsSimple extends Service implements
     /**
      * Metoda wywoływana, gdy usługa została prawidłowo zakupiona
      *
-     * @param \App\Models\Purchase $purchase_data
+     * @param \App\Models\Purchase $purchaseData
      *
      * @return integer        value returned by function add_bought_service_info
      */
-    public function purchase($purchase_data)
+    public function purchase(Purchase $purchaseData)
     {
-        // TODO: Implement purchase() method.
+        //
     }
 
     /**
      * Metoda która sprawdza poprawność wprowadzonych danych zakupu,
      * wywoływana gdy zakup został przeprowadzony z zewnątrz, nie przez formularz na stronie WWW.
      *
-     * @param \App\Models\Purchase $purchase_data
+     * @param \App\Models\Purchase $purchaseData
      *
      * @return array
      *  status => string id wiadomości,
@@ -350,8 +351,8 @@ class ServiceExtraFlagsSimple extends Service implements
      *  [data => array('warnings' => array())]
      *  [purchase_data => Entity_Purchase dane zakupu]
      */
-    public function purchase_data_validate($purchase_data)
+    public function purchaseDataValidate($purchaseData)
     {
-        // TODO: Implement purchase_data_validate() method.
+        //
     }
 }

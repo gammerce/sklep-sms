@@ -40,9 +40,9 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         $this->title =
             $this->lang->translate('users_services') .
             ': ' .
-            $serviceModuleSimple->user_service_admin_display_title_get();
+            $serviceModuleSimple->userServiceAdminDisplayTitleGet();
         $this->heart->pageTitle = $this->title;
-        $wrapper = $serviceModuleSimple->user_service_admin_display_get($get, $post);
+        $wrapper = $serviceModuleSimple->userServiceAdminDisplayGet($get, $post);
 
         if (get_class($wrapper) !== Wrapper::class) {
             return $wrapper;
@@ -87,7 +87,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    public function get_action_box($box_id, $data)
+    public function getActionBox($boxId, $data)
     {
         if (!get_privileges("manage_user_services")) {
             return [
@@ -96,7 +96,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
             ];
         }
 
-        switch ($box_id) {
+        switch ($boxId) {
             case "user_service_add":
                 // Pobranie usług
                 $services = "";
@@ -131,8 +131,8 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
                 ) {
                     $form_data = $this->lang->translate('service_edit_unable');
                 } else {
-                    $service_module_id = htmlspecialchars($serviceModule->get_module_id());
-                    $form_data = $serviceModule->user_service_admin_edit_form_get($user_service);
+                    $service_module_id = htmlspecialchars($serviceModule->getModuleId());
+                    $form_data = $serviceModule->userServiceAdminEditFormGet($user_service);
                 }
 
                 $output = $this->template->render(

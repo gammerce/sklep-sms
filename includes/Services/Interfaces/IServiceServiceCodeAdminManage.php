@@ -9,11 +9,11 @@ interface IServiceServiceCodeAdminManage
     /**
      * Metoda sprawdza dane formularza podczas dodawania kodu na usługę w PA
      *
-     * @param array $post Dane $_POST
+     * @param array $body Dane $_POST
      *
      * @return array 'key' (DOM element name) => 'value'
      */
-    public function service_code_admin_add_validate($post);
+    public function serviceCodeAdminAddValidate($body);
 
     /**
      * Metoda powinna zwrócić dodatkowe pola do uzupełnienia przez admina
@@ -21,7 +21,7 @@ interface IServiceServiceCodeAdminManage
      *
      * @return string
      */
-    public function service_code_admin_add_form_get();
+    public function serviceCodeAdminAddFormGet();
 
     /**
      * Metoda powinna zwrócić tablicę z danymi które zostaną dodane do bazy wraz z kodem na usługę
@@ -36,5 +36,5 @@ interface IServiceServiceCodeAdminManage
      *        'data'        - string
      * )
      */
-    public function service_code_admin_add_insert($data);
+    public function serviceCodeAdminAddInsert($data);
 }

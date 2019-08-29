@@ -61,7 +61,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    public function get_action_box($box_id, $data)
+    public function getActionBox($boxId, $data)
     {
         if (!get_privileges("manage_settings")) {
             return [
@@ -70,7 +70,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
             ];
         }
 
-        switch ($box_id) {
+        switch ($boxId) {
             case "tariff_add":
                 $output = $this->template->render("admin/action_boxes/tariff_add");
                 break;

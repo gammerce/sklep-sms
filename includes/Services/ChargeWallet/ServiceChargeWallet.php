@@ -34,7 +34,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         $this->settings = $this->app->make(Settings::class);
     }
 
-    public function purchase_form_get()
+    public function purchaseFormGet()
     {
         $option_sms = '';
         $option_transfer = '';
@@ -87,7 +87,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         );
     }
 
-    public function purchase_form_validate($data)
+    public function purchaseFormValidate($data)
     {
         if (!is_logged()) {
             return [
@@ -140,26 +140,26 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
             ];
         }
 
-        $purchase_data = new Purchase();
-        $purchase_data->setService($this->service['id']);
-        $purchase_data->setTariff($this->heart->getTariff($data['tariff']));
-        $purchase_data->setPayment([
+        $purchaseData = new Purchase();
+        $purchaseData->setService($this->service['id']);
+        $purchaseData->setTariff($this->heart->getTariff($data['tariff']));
+        $purchaseData->setPayment([
             'no_wallet' => true,
         ]);
 
         if ($data['method'] == "sms") {
-            $purchase_data->setPayment([
+            $purchaseData->setPayment([
                 'no_transfer' => true,
             ]);
-            $purchase_data->setOrder([
+            $purchaseData->setOrder([
                 'amount' => $this->heart->getTariff($data['tariff'])->getProvision(),
             ]);
         } elseif ($data['method'] == "transfer") {
-            $purchase_data->setPayment([
+            $purchaseData->setPayment([
                 'cost' => $data['transfer_amount'] * 100,
                 'no_sms' => true,
             ]);
-            $purchase_data->setOrder([
+            $purchaseData->setOrder([
                 'amount' => $data['transfer_amount'] * 100,
             ]);
         }
@@ -168,13 +168,13 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
             'status' => "ok",
             'text' => $this->lang->translate('purchase_form_validated'),
             'positive' => true,
-            'purchase_data' => $purchase_data,
+            'purchase_data' => $purchaseData,
         ];
     }
 
-    public function order_details($purchase_data)
+    public function orderDetails($purchaseData)
     {
-        $amount = number_format($purchase_data->getOrder('amount') / 100, 2);
+        $amount = number_format($purchaseData->getOrder('amount') / 100, 2);
 
         return $this->template->render(
             "services/charge_wallet/order_details",
@@ -184,26 +184,26 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         );
     }
 
-    public function purchase($purchase_data)
+    public function purchase(Purchase $purchaseData)
     {
         // Aktualizacja stanu portfela
-        $this->charge_wallet($purchase_data->user->getUid(), $purchase_data->getOrder('amount'));
+        $this->charge_wallet($purchaseData->user->getUid(), $purchaseData->getOrder('amount'));
 
         return add_bought_service_info(
-            $purchase_data->user->getUid(),
-            $purchase_data->user->getUsername(),
-            $purchase_data->user->getLastip(),
-            $purchase_data->getPayment('method'),
-            $purchase_data->getPayment('payment_id'),
+            $purchaseData->user->getUid(),
+            $purchaseData->user->getUsername(),
+            $purchaseData->user->getLastip(),
+            $purchaseData->getPayment('method'),
+            $purchaseData->getPayment('payment_id'),
             $this->service['id'],
             0,
-            number_format($purchase_data->getOrder('amount') / 100, 2),
-            $purchase_data->user->getUsername(),
-            $purchase_data->getEmail()
+            number_format($purchaseData->getOrder('amount') / 100, 2),
+            $purchaseData->user->getUsername(),
+            $purchaseData->getEmail()
         );
     }
 
-    public function purchase_info($action, $data)
+    public function purchaseInfo($action, $data)
     {
         $data['amount'] .= ' ' . $this->settings['currency'];
         $data['cost'] = number_format($data['cost'] / 100, 2) . ' ' . $this->settings['currency'];
@@ -252,7 +252,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         return '';
     }
 
-    public function description_short_get()
+    public function descriptionShortGet()
     {
         return $this->service['description'];
     }

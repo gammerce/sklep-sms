@@ -61,7 +61,7 @@ class ServerStuffController
                 $payment->getPaymentModule()->getTariffById($request->get('tariff'))
             );
 
-            $returnValidation = $service_module->purchase_data_validate($purchaseData);
+            $returnValidation = $service_module->purchaseDataValidate($purchaseData);
 
             // Są jakieś błędy przy sprawdzaniu danych
             if ($returnValidation['status'] != "ok") {

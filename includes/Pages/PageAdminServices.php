@@ -72,7 +72,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    public function get_action_box($box_id, $data)
+    public function getActionBox($boxId, $data)
     {
         if (!get_privileges("manage_services")) {
             return [
@@ -81,7 +81,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             ];
         }
 
-        if ($box_id == "service_edit") {
+        if ($boxId == "service_edit") {
             $service = $this->heart->getService($data['id']);
             $service['tag'] = htmlspecialchars($service['tag']);
 
@@ -93,7 +93,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
                 ) {
                     $extra_fields = create_dom_element(
                         "tbody",
-                        $service_module->service_admin_extra_fields_get(),
+                        $service_module->serviceAdminExtraFieldsGet(),
                         [
                             'class' => 'extra_fields',
                         ]
@@ -102,7 +102,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             }
         }
         // Pobranie dostępnych modułów usług
-        elseif ($box_id == "service_add") {
+        elseif ($boxId == "service_add") {
             $services_modules = "";
             foreach ($this->heart->getServicesModules() as $module) {
                 // Sprawdzamy czy dany moduł zezwala na tworzenie nowych usług, które będzie obsługiwał
@@ -136,7 +136,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             ]);
         }
 
-        switch ($box_id) {
+        switch ($boxId) {
             case "service_add":
                 $output = $this->template->render(
                     "admin/action_boxes/service_add",

@@ -94,8 +94,8 @@ function get_content($element, Request $request, $withenvelope = true)
     $post = $request->request->all();
 
     return $withenvelope
-        ? $block->get_content_enveloped($get, $post)
-        : $block->get_content($get, $post);
+        ? $block->getContentEnveloped($get, $post)
+        : $block->getContent($get, $post);
 }
 
 function get_row_limit($page, $row_limit = 0)
@@ -671,7 +671,7 @@ function pay_service_code($purchaseData, $serviceModule)
     );
 
     while ($row = $db->fetchArrayAssoc($result)) {
-        if ($serviceModule->service_code_validate($purchaseData, $row)) {
+        if ($serviceModule->serviceCodeValidate($purchaseData, $row)) {
             // Znalezlismy odpowiedni kod
             $db->query(
                 $db->prepare(
@@ -874,7 +874,7 @@ function purchase_info($data)
     $service_module = $heart->getServiceModule($pbs['service']);
 
     return $service_module !== null && $service_module instanceof IServicePurchaseWeb
-        ? $service_module->purchase_info($data['action'], $pbs)
+        ? $service_module->purchaseInfo($data['action'], $pbs)
         : "";
 }
 
@@ -957,7 +957,7 @@ function delete_users_old_services()
             continue;
         }
 
-        if ($service_module->user_service_delete($user_service, 'task')) {
+        if ($service_module->userServiceDelete($user_service, 'task')) {
             $delete_ids[] = $user_service['id'];
             $users_services[] = $user_service;
 
@@ -997,7 +997,7 @@ function delete_users_old_services()
             continue;
         }
 
-        $service_module->user_service_delete_post($user_service);
+        $service_module->userServiceDeletePost($user_service);
     }
 }
 

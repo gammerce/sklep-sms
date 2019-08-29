@@ -18,7 +18,7 @@ class PagePurchase extends Page
         $this->heart->pageTitle = $this->title = $this->lang->translate('purchase');
     }
 
-    public function get_content($get, $post)
+    public function getContent($get, $post)
     {
         return $this->content($get, $post);
     }
@@ -52,7 +52,7 @@ class PagePurchase extends Page
                 );
             }
 
-            $path_file = $path . $service_module->get_module_id() . ".js";
+            $path_file = $path . $service_module->getModuleId() . ".js";
             if (file_exists($this->app->path($path_file))) {
                 $heart->scriptAdd(
                     $settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version()
@@ -70,7 +70,7 @@ class PagePurchase extends Page
                 );
             }
 
-            $path_file = $path . $service_module->get_module_id() . ".css";
+            $path_file = $path . $service_module->getModuleId() . ".css";
             if (file_exists($this->app->path($path_file))) {
                 $heart->styleAdd(
                     $settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version()
@@ -80,7 +80,7 @@ class PagePurchase extends Page
 
         // Globalne jsy cssy konkretnych modułów usług
         foreach ($heart->getServicesModules() as $module_info) {
-            if ($module_info['id'] == $service_module->get_module_id()) {
+            if ($module_info['id'] == $service_module->getModuleId()) {
                 $path = "styles/services/" . $module_info['id'] . ".css";
                 if (file_exists($this->app->path($path))) {
                     $heart->styleAdd(
@@ -119,7 +119,7 @@ class PagePurchase extends Page
 
         // Dodajemy długi opis
         $show_more = '';
-        if (strlen($service_module->description_full_get())) {
+        if (strlen($service_module->descriptionFullGet())) {
             $show_more = $template->render("services/show_more");
         }
 
@@ -128,6 +128,6 @@ class PagePurchase extends Page
             compact('service_module', 'show_more')
         );
 
-        return $output . $service_module->purchase_form_get();
+        return $output . $service_module->purchaseFormGet();
     }
 }

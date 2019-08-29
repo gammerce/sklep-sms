@@ -68,7 +68,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    public function get_action_box($box_id, $data)
+    public function getActionBox($boxId, $data)
     {
         if (!get_privileges("manage_servers")) {
             return [
@@ -77,7 +77,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             ];
         }
 
-        if ($box_id == "server_edit") {
+        if ($boxId == "server_edit") {
             $server = $this->heart->getServer($data['id']);
             $server['ip'] = htmlspecialchars($server['ip']);
             $server['port'] = htmlspecialchars($server['port']);
@@ -140,7 +140,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             );
         }
 
-        switch ($box_id) {
+        switch ($boxId) {
             case "server_add":
                 $output = $this->template->render(
                     "admin/action_boxes/server_add",

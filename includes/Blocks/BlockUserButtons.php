@@ -10,12 +10,12 @@ use App\TranslationManager;
 
 class BlockUserButtons extends Block
 {
-    public function get_content_class()
+    public function getContentClass()
     {
         return is_logged() ? "user_buttons" : "loginarea";
     }
 
-    public function get_content_id()
+    public function getContentId()
     {
         return "user_buttons";
     }

@@ -27,20 +27,20 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase, IServ
     }
 
     /**
-     * @param Purchase $purchase_data
+     * @param Purchase $purchaseData
      * @return array
      */
-    public function purchase_data_validate($purchase_data)
+    public function purchaseDataValidate($purchaseData)
     {
         $warnings = [];
 
         // Serwer
         $server = [];
-        if (!strlen($purchase_data->getOrder('server'))) {
+        if (!strlen($purchaseData->getOrder('server'))) {
             $warnings['server'][] = $this->lang->translate('must_choose_server');
         } else {
             // Sprawdzanie czy serwer o danym id istnieje w bazie
-            $server = $this->heart->getServer($purchase_data->getOrder('server'));
+            $server = $this->heart->getServer($purchaseData->getOrder('server'));
             if (!$this->heart->serverServiceLinked($server['id'], $this->service['id'])) {
                 $warnings['server'][] = $this->lang->translate('chosen_incorrect_server');
             }
@@ -48,7 +48,7 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase, IServ
 
         // Wartość usługi
         $price = [];
-        if (!strlen($purchase_data->getTariff())) {
+        if (!strlen($purchaseData->getTariff())) {
             $warnings['value'][] = $this->lang->translate('must_choose_amount');
         } else {
             // Wyszukiwanie usługi o konkretnej cenie
@@ -58,7 +58,7 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase, IServ
                         TABLE_PREFIX .
                         "pricelist` " .
                         "WHERE `service` = '%s' AND `tariff` = '%d' AND ( `server` = '%d' OR `server` = '-1' )",
-                    [$this->service['id'], $purchase_data->getTariff(), $server['id']]
+                    [$this->service['id'], $purchaseData->getTariff(), $server['id']]
                 )
             );
 
@@ -76,8 +76,8 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase, IServ
 
         // E-mail
         if (
-            strlen($purchase_data->getEmail()) &&
-            ($warning = check_for_warnings("email", $purchase_data->getEmail()))
+            strlen($purchaseData->getEmail()) &&
+            ($warning = check_for_warnings("email", $purchaseData->getEmail()))
         ) {
             $warnings['email'] = array_merge((array) $warnings['email'], $warning);
         }
@@ -92,36 +92,36 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase, IServ
             ];
         }
 
-        $purchase_data->setOrder([
+        $purchaseData->setOrder([
             'amount' => $price['amount'],
             'forever' => $price['amount'] == -1 ? true : false,
         ]);
 
-        $purchase_data->setPayment([
-            'cost' => $purchase_data->getTariff()->getProvision(),
+        $purchaseData->setPayment([
+            'cost' => $purchaseData->getTariff()->getProvision(),
         ]);
 
         return [
             'status' => "ok",
             'text' => $this->lang->translate('purchase_form_validated'),
             'positive' => true,
-            'purchase_data' => $purchase_data,
+            'purchase_data' => $purchaseData,
         ];
     }
 
-    public function purchase($purchase_data)
+    public function purchase(Purchase $purchaseData)
     {
         return add_bought_service_info(
-            $purchase_data->user->getUid(),
-            $purchase_data->user->getUsername(),
-            $purchase_data->user->getLastip(),
-            $purchase_data->getPayment('method'),
-            $purchase_data->getPayment('payment_id'),
+            $purchaseData->user->getUid(),
+            $purchaseData->user->getUsername(),
+            $purchaseData->user->getLastip(),
+            $purchaseData->getPayment('method'),
+            $purchaseData->getPayment('payment_id'),
             $this->service['id'],
-            $purchase_data->getOrder('server'),
-            $purchase_data->getOrder('amount'),
-            $purchase_data->getOrder('auth_data'),
-            $purchase_data->getEmail()
+            $purchaseData->getOrder('server'),
+            $purchaseData->getOrder('amount'),
+            $purchaseData->getOrder('auth_data'),
+            $purchaseData->getEmail()
         );
     }
 }

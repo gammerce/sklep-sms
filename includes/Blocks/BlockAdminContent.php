@@ -23,18 +23,18 @@ class BlockAdminContent extends Block
         $this->lang = $lang;
     }
 
-    public function get_content_class()
+    public function getContentClass()
     {
         return "content";
     }
 
-    public function get_content_id()
+    public function getContentId()
     {
         return "content";
     }
 
-    // Nadpisujemy get_content, aby wyswieltac info gdy nie jest zalogowany lub jest zalogowany, lecz nie powinien
-    public function get_content($get, $post)
+    // Nadpisujemy getContent, aby wyswieltac info gdy nie jest zalogowany lub jest zalogowany, lecz nie powinien
+    public function getContent($get, $post)
     {
         if (!is_logged()) {
             return $this->lang->translate('must_be_logged_in');
@@ -49,6 +49,6 @@ class BlockAdminContent extends Block
             return null;
         }
 
-        return $page->get_content($get, $post);
+        return $page->getContent($get, $post);
     }
 }

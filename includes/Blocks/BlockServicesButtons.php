@@ -8,12 +8,12 @@ use App\Template;
 
 class BlockServicesButtons extends Block
 {
-    public function get_content_class()
+    public function getContentClass()
     {
         return "services_buttons";
     }
 
-    public function get_content_id()
+    public function getContentId()
     {
         return "services_buttons";
     }
@@ -37,7 +37,7 @@ class BlockServicesButtons extends Block
         foreach ($heart->getServices() as $service) {
             if (
                 ($service_module = $heart->getServiceModule($service['id'])) === null ||
-                !$service_module->show_on_web()
+                !$service_module->showOnWeb()
             ) {
                 continue;
             }

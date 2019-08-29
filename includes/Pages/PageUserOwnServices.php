@@ -121,7 +121,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             }
 
             $user_own_services .= create_brick(
-                $service_module->user_own_service_info_get(
+                $service_module->userOwnServiceInfoGet(
                     $user_service,
                     if_isset($button_edit, '')
                 )

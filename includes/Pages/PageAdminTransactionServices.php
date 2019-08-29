@@ -69,7 +69,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
         return $wrapper->toHtml();
     }
 
-    public function get_action_box($box_id, $data)
+    public function getActionBox($boxId, $data)
     {
         if (!get_privileges("manage_settings")) {
             return [
@@ -78,7 +78,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
             ];
         }
 
-        switch ($box_id) {
+        switch ($boxId) {
             case "transaction_service_edit":
                 // Pobranie danych o metodzie płatności
                 $result = $this->db->query(

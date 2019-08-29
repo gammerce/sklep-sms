@@ -29,18 +29,18 @@ class BlockContent extends Block
         $this->lang = $lang;
     }
 
-    public function get_content_class()
+    public function getContentClass()
     {
         return "content";
     }
 
-    public function get_content_id()
+    public function getContentId()
     {
         return "content";
     }
 
     // Nadpisujemy get_content, aby wyswieltac info gdy nie jest zalogowany lub jest zalogowany, lecz nie powinien
-    public function get_content($get, $post)
+    public function getContent($get, $post)
     {
         if (($this->page = $this->heart->getPage($this->currentPage->getPid())) === null) {
             return null;
@@ -59,6 +59,6 @@ class BlockContent extends Block
 
     protected function content($get, $post)
     {
-        return $this->page->get_content($get, $post);
+        return $this->page->getContent($get, $post);
     }
 }

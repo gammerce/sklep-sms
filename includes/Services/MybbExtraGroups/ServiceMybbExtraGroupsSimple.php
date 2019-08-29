@@ -41,10 +41,10 @@ class ServiceMybbExtraGroupsSimple extends Service implements
      *
      * @return string
      */
-    public function service_admin_extra_fields_get()
+    public function serviceAdminExtraFieldsGet()
     {
         // WEB
-        if ($this->show_on_web()) {
+        if ($this->showOnWeb()) {
             $web_sel_yes = "selected";
         } else {
             $web_sel_no = "selected";
@@ -72,7 +72,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements
                 'db_user',
                 'db_password',
                 'db_name'
-            ) + ['moduleId' => $this->get_module_id()],
+            ) + ['moduleId' => $this->getModuleId()],
             true,
             false
         );
@@ -87,7 +87,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements
      * @return array        'key' => DOM Element name
      *                      'value' => Array of error messages
      */
-    public function service_admin_manage_pre($data)
+    public function serviceAdminManagePre($data)
     {
         $warnings = [];
 
@@ -146,7 +146,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements
      *            'value'    => wartość kolumny
      *        )
      */
-    public function service_admin_manage_post($data)
+    public function serviceAdminManagePost($data)
     {
         $mybb_groups = explode(",", $data['mybb_groups']);
         foreach ($mybb_groups as $key => $group) {
@@ -176,12 +176,12 @@ class ServiceMybbExtraGroupsSimple extends Service implements
         ];
     }
 
-    public function user_service_admin_display_title_get()
+    public function userServiceAdminDisplayTitleGet()
     {
         return $this->lang->translate('mybb_groups');
     }
 
-    public function user_service_admin_display_get($get, $post)
+    public function userServiceAdminDisplayGet($get, $post)
     {
         /** @var CurrentPage $currentPage */
         $currentPage = $this->app->make(CurrentPage::class);

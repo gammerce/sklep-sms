@@ -85,7 +85,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    public function get_action_box($box_id, $data)
+    public function getActionBox($boxId, $data)
     {
         if (!get_privileges("manage_settings")) {
             return [
@@ -94,7 +94,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
             ];
         }
 
-        if ($box_id == "price_edit") {
+        if ($boxId == "price_edit") {
             $result = $this->db->query(
                 $this->db->prepare(
                     "SELECT * FROM `" . TABLE_PREFIX . "pricelist` " . "WHERE `id` = '%d'",
@@ -139,7 +139,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
             ]);
         }
 
-        switch ($box_id) {
+        switch ($boxId) {
             case "price_add":
                 $output = $this->template->render(
                     "admin/action_boxes/price_add",

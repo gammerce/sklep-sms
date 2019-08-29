@@ -244,11 +244,11 @@ class Payment
     }
 
     /**
-     * @param Purchase $purchase_data
+     * @param Purchase $purchaseData
      *
      * @return array
      */
-    public function payTransfer($purchase_data)
+    public function payTransfer($purchaseData)
     {
         if (!$this->getPaymentModule()->supportTransfer()) {
             return [
@@ -257,7 +257,7 @@ class Payment
             ];
         }
 
-        $serialized = serialize($purchase_data);
+        $serialized = serialize($purchaseData);
         $data_filename = time() . "-" . md5($serialized);
         file_put_contents($this->app->path('data/transfers/' . $data_filename), $serialized);
 
@@ -267,7 +267,7 @@ class Payment
             'positive' => true,
             'data' => [
                 'data' => $this->getPaymentModule()->prepareTransfer(
-                    $purchase_data,
+                    $purchaseData,
                     $data_filename
                 ),
             ],
@@ -311,15 +311,15 @@ class Payment
             return false;
         }
 
-        /** @var Purchase $purchase_data */
-        $purchase_data = unserialize(
+        /** @var Purchase $purchaseData */
+        $purchaseData = unserialize(
             file_get_contents(
                 $this->app->path('data/transfers/' . $transfer_finalize->getDataFilename())
             )
         );
 
         // Fix: get user data again to avoid bugs linked with user wallet
-        $purchase_data->user = $this->heart->getUser($purchase_data->user->getUid());
+        $purchaseData->user = $this->heart->getUser($purchaseData->user->getUid());
 
         // Dodanie informacji do bazy danych
         $this->db->query(
@@ -330,10 +330,10 @@ class Payment
                     "SET `id` = '%s', `income` = '%d', `transfer_service` = '%s', `ip` = '%s', `platform` = '%s' ",
                 [
                     $transfer_finalize->getOrderid(),
-                    $purchase_data->getPayment('cost'),
+                    $purchaseData->getPayment('cost'),
                     $transfer_finalize->getTransferService(),
-                    $purchase_data->user->getLastIp(),
-                    $purchase_data->user->getPlatform(),
+                    $purchaseData->user->getLastIp(),
+                    $purchaseData->user->getPlatform(),
                 ]
             )
         );
@@ -341,14 +341,14 @@ class Payment
 
         // Błędny moduł
         if (
-            ($service_module = $this->heart->getServiceModule($purchase_data->getService())) ===
+            ($service_module = $this->heart->getServiceModule($purchaseData->getService())) ===
             null
         ) {
             log_info(
                 $this->langShop->sprintf(
                     $this->langShop->translate('transfer_bad_module'),
                     $transfer_finalize->getOrderid(),
-                    $purchase_data->getService()
+                    $purchaseData->getService()
                 )
             );
 
@@ -360,7 +360,7 @@ class Payment
                 $this->langShop->sprintf(
                     $this->langShop->translate('transfer_no_purchase'),
                     $transfer_finalize->getOrderid(),
-                    $purchase_data->getService()
+                    $purchaseData->getService()
                 )
             );
 
@@ -368,11 +368,11 @@ class Payment
         }
 
         // Dokonujemy zakupu
-        $purchase_data->setPayment([
+        $purchaseData->setPayment([
             'method' => 'transfer',
             'payment_id' => $transfer_finalize->getOrderid(),
         ]);
-        $bought_service_id = $service_module->purchase($purchase_data);
+        $bought_service_id = $service_module->purchase($purchaseData);
 
         log_info(
             $this->langShop->sprintf(
@@ -381,9 +381,9 @@ class Payment
                 $transfer_finalize->getOrderid(),
                 $transfer_finalize->getAmount(),
                 $transfer_finalize->getTransferService(),
-                $purchase_data->user->getUsername(),
-                $purchase_data->user->getUid(),
-                $purchase_data->user->getLastIp()
+                $purchaseData->user->getUsername(),
+                $purchaseData->user->getUid(),
+                $purchaseData->user->getLastIp()
             )
         );
 

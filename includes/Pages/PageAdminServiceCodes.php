@@ -114,7 +114,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    public function get_action_box($box_id, $data)
+    public function getActionBox($boxId, $data)
     {
         if (!get_privileges("manage_service_codes")) {
             return [
@@ -123,7 +123,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
             ];
         }
 
-        switch ($box_id) {
+        switch ($boxId) {
             case "code_add":
                 // Pobranie usług
                 $services = "";

@@ -98,21 +98,21 @@ class JsonHttpAdminController
             }
 
             // Dodawanie informacji o płatności do bazy
-            $payment_id = pay_by_admin($user);
+            $paymentId = pay_by_admin($user);
 
             // Kupujemy usługę
-            $purchase_data = new Purchase();
-            $purchase_data->user = $user2;
-            $purchase_data->setPayment([
+            $purchaseData = new Purchase();
+            $purchaseData->user = $user2;
+            $purchaseData->setPayment([
                 'method' => "admin",
-                'payment_id' => $payment_id,
+                'payment_id' => $paymentId,
             ]);
-            $purchase_data->setOrder([
+            $purchaseData->setOrder([
                 'amount' => $amount,
             ]);
-            $purchase_data->setEmail($user2->getEmail());
+            $purchaseData->setEmail($user2->getEmail());
 
-            $purchase_return = $serviceModule->purchase($purchase_data);
+            $purchaseReturn = $serviceModule->purchase($purchaseData);
 
             log_info(
                 $langShop->sprintf(
@@ -159,7 +159,7 @@ class JsonHttpAdminController
                 return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
             }
 
-            $return_data = $serviceModule->user_service_admin_add($_POST);
+            $return_data = $serviceModule->userServiceAdminAdd($_POST);
 
             // Przerabiamy ostrzeżenia, aby lepiej wyglądały
             if ($return_data['status'] == "warnings") {
@@ -205,7 +205,7 @@ class JsonHttpAdminController
             }
 
             // Wykonujemy metode edycji usługi użytkownika przez admina na odpowiednim module
-            $return_data = $serviceModule->user_service_admin_edit($_POST, $user_service);
+            $return_data = $serviceModule->userServiceAdminEdit($_POST, $user_service);
 
             if ($return_data === false) {
                 return new ApiResponse("missing_method", $lang->translate('no_edit_method'), 0);
@@ -248,7 +248,7 @@ class JsonHttpAdminController
             // Wywolujemy akcje przy usuwaniu
             if (
                 ($serviceModule = $heart->getServiceModule($user_service['service'])) !== null &&
-                !$serviceModule->user_service_delete($user_service, 'admin')
+                !$serviceModule->userServiceDelete($user_service, 'admin')
             ) {
                 return new ApiResponse(
                     "user_service_cannot_be_deleted",
@@ -267,7 +267,7 @@ class JsonHttpAdminController
             $affected = $db->affectedRows();
 
             if ($serviceModule !== null) {
-                $serviceModule->user_service_delete_post($user_service);
+                $serviceModule->userServiceDeletePost($user_service);
             }
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
@@ -298,7 +298,7 @@ class JsonHttpAdminController
 
             $output = "";
             if (($serviceModule = $heart->getServiceModule($_POST['service'])) !== null) {
-                $output = $serviceModule->user_service_admin_add_form_get();
+                $output = $serviceModule->userServiceAdminAddFormGet();
             }
 
             return new PlainResponse($output);
@@ -729,7 +729,7 @@ class JsonHttpAdminController
 
             // Przed błędami
             if ($serviceModule !== null && $serviceModule instanceof IServiceAdminManage) {
-                $additional_warnings = $serviceModule->service_admin_manage_pre($_POST);
+                $additional_warnings = $serviceModule->serviceAdminManagePre($_POST);
                 $warnings = array_merge((array) $warnings, (array) $additional_warnings);
             }
 
@@ -746,7 +746,7 @@ class JsonHttpAdminController
 
             // Po błędach wywołujemy metodę modułu
             if ($serviceModule !== null && $serviceModule instanceof IServiceAdminManage) {
-                $module_data = $serviceModule->service_admin_manage_post($_POST);
+                $module_data = $serviceModule->serviceAdminManagePost($_POST);
 
                 // Tworzymy elementy SET zapytania
                 if (isset($module_data['query_set'])) {
@@ -856,7 +856,7 @@ class JsonHttpAdminController
             // Wywolujemy akcje przy uninstalacji
             $serviceModule = $heart->getServiceModule($_POST['id']);
             if (!is_null($serviceModule)) {
-                $serviceModule->service_delete($_POST['id']);
+                $serviceModule->serviceDelete($_POST['id']);
             }
 
             try {
@@ -910,13 +910,13 @@ class JsonHttpAdminController
             // W przeciwnym razie pobieramy wybrany moduł
             if (
                 is_null($serviceModule = $heart->getServiceModule($_POST['service'])) ||
-                $serviceModule->get_module_id() != $_POST['module']
+                $serviceModule->getModuleId() != $_POST['module']
             ) {
                 $serviceModule = $heart->getServiceModuleS($_POST['module']);
             }
 
             if ($serviceModule !== null && $serviceModule instanceof IServiceAdminManage) {
-                $output = $serviceModule->service_admin_extra_fields_get();
+                $output = $serviceModule->serviceAdminExtraFieldsGet();
             }
 
             return new PlainResponse($output);
@@ -1732,7 +1732,7 @@ class JsonHttpAdminController
             // Łączymy zwrócone błędy
             $warnings = array_merge(
                 (array) $warnings,
-                (array) $serviceModule->service_code_admin_add_validate($_POST)
+                (array) $serviceModule->serviceCodeAdminAddValidate($_POST)
             );
 
             // Przerabiamy ostrzeżenia, aby lepiej wyglądały
@@ -1747,7 +1747,7 @@ class JsonHttpAdminController
             }
 
             // Pozyskujemy dane kodu do dodania
-            $code_data = $serviceModule->service_code_admin_add_insert($_POST);
+            $code_data = $serviceModule->serviceCodeAdminAddInsert($_POST);
 
             $db->query(
                 $db->prepare(
@@ -1826,7 +1826,7 @@ class JsonHttpAdminController
                 ($serviceModule = $heart->getServiceModule($_POST['service'])) !== null &&
                 $serviceModule instanceof IServiceServiceCodeAdminManage
             ) {
-                $output = $serviceModule->service_code_admin_add_form_get();
+                $output = $serviceModule->serviceCodeAdminAddFormGet();
             }
 
             return new PlainResponse($output);
@@ -1866,14 +1866,14 @@ class JsonHttpAdminController
                     continue;
                 }
 
-                $data[$block->get_content_id()]['content'] = $block->get_content(
+                $data[$block->getContentId()]['content'] = $block->getContent(
                     $request->query->all(),
                     $request->request->all()
                 );
-                if ($data[$block->get_content_id()]['content'] !== null) {
-                    $data[$block->get_content_id()]['class'] = $block->get_content_class();
+                if ($data[$block->getContentId()]['content'] !== null) {
+                    $data[$block->getContentId()]['class'] = $block->getContentClass();
                 } else {
-                    $data[$block->get_content_id()]['class'] = "";
+                    $data[$block->getContentId()]['class'] = "";
                 }
             }
 
@@ -1897,7 +1897,7 @@ class JsonHttpAdminController
                 );
             }
 
-            $action_box = $page->get_action_box($_POST['box_id'], $_POST);
+            $action_box = $page->getActionBox($_POST['box_id'], $_POST);
 
             actionbox_output($action_box['status'], $action_box['text'], $action_box['template']);
         }
@@ -1937,7 +1937,7 @@ class JsonHttpAdminController
             }
 
             return new PlainResponse(
-                $serviceModule->action_execute($_POST['service_action'], $_POST)
+                $serviceModule->actionExecute($_POST['service_action'], $_POST)
             );
         }
 

@@ -141,7 +141,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         return $button;
     }
 
-    public function get_action_box($box_id, $data)
+    public function getActionBox($boxId, $data)
     {
         if (!get_privileges("manage_users")) {
             return [
@@ -150,7 +150,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             ];
         }
 
-        switch ($box_id) {
+        switch ($boxId) {
             case "user_edit":
                 // Pobranie użytkownika
                 $user = $this->heart->getUser($data['uid']);

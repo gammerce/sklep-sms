@@ -38,21 +38,22 @@ abstract class Service
     /**
      * Metoda wywoływana, gdy usługa jest usuwana.
      *
-     * @param integer $service_id ID usługi
+     * @param integer $serviceId ID usługi
      */
-    public function service_delete($service_id)
+    public function serviceDelete($serviceId)
     {
+        //
     }
 
     /**
      * Metoda wywoływana przy usuwaniu usługi użytkownika.
      *
-     * @param array  $user_service Dane o usłudze z bazy danych
+     * @param array  $userService Dane o usłudze z bazy danych
      * @param string $who Kto wywołał akcję ( admin, task )
      *
      * @return bool
      */
-    public function user_service_delete($user_service, $who)
+    public function userServiceDelete($userService, $who)
     {
         return true;
     }
@@ -60,16 +61,16 @@ abstract class Service
     /**
      * Metoda wywoływana po usunięciu usługi użytkownika.
      *
-     * @param array $user_service Dane o usłudze z bazy danych
+     * @param array $userService Dane o usłudze z bazy danych
      */
-    public function user_service_delete_post($user_service)
+    public function userServiceDeletePost($userService)
     {
     }
 
     /**
      * Metoda powinna zwrócić, czy usługa ma być wyświetlana na stronie WWW.
      */
-    public function show_on_web()
+    public function showOnWeb()
     {
         if ($this->service !== null) {
             return $this->service['data']['web'];
@@ -85,18 +86,18 @@ abstract class Service
      *
      * @return string    Description
      */
-    public function description_full_get()
+    public function descriptionFullGet()
     {
         $file = "services/" . escape_filename($this->service['id']) . "_desc";
         return $this->template->render($file, [], true, false);
     }
 
-    public function description_short_get()
+    public function descriptionShortGet()
     {
         return $this->service['description'];
     }
 
-    public function get_module_id()
+    public function getModuleId()
     {
         return $this::MODULE_ID;
     }
@@ -110,9 +111,9 @@ abstract class Service
      *
      * @return int Ilosc wierszy które zostały zaktualizowane
      */
-    protected function update_user_service($set, $where1, $where2)
+    protected function updateUserService($set, $where1, $where2)
     {
-        $set_data1 = $set_data2 = $where_data = $where_data2 = [];
+        $setData1 = $setData2 = $whereData = $whereData2 = [];
 
         foreach ($set as $data) {
             $set_data = $this->db->prepare(
@@ -121,14 +122,14 @@ abstract class Service
             );
 
             if (in_array($data['column'], ['uid', 'service', 'expire'])) {
-                $set_data1[] = $set_data;
+                $setData1[] = $set_data;
             } else {
-                $set_data2[] = $set_data;
+                $setData2[] = $set_data;
             }
 
             // Service jest w obu tabelach
             if ($data['column'] == 'service') {
-                $set_data2[] = $set_data;
+                $setData2[] = $set_data;
             }
         }
 
@@ -149,27 +150,27 @@ abstract class Service
         }
 
         $affected = 0;
-        if (!empty($set_data1)) {
+        if (!empty($setData1)) {
             $this->db->query(
                 "UPDATE `" .
                     TABLE_PREFIX .
                     "user_service` " .
                     "SET " .
-                    implode(', ', $set_data1) .
+                    implode(', ', $setData1) .
                     " " .
                     $where1
             );
             $affected = max($affected, $this->db->affectedRows());
         }
 
-        if (!empty($set_data2)) {
+        if (!empty($setData2)) {
             $this->db->query(
                 "UPDATE `" .
                     TABLE_PREFIX .
                     $this::USER_SERVICE_TABLE .
                     "` " .
                     "SET " .
-                    implode(', ', $set_data2) .
+                    implode(', ', $setData2) .
                     " " .
                     $where2
             );

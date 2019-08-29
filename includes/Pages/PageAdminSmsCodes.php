@@ -74,7 +74,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    public function get_action_box($box_id, $data)
+    public function getActionBox($boxId, $data)
     {
         if (!get_privileges("manage_sms_codes")) {
             return [
@@ -83,7 +83,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
             ];
         }
 
-        switch ($box_id) {
+        switch ($boxId) {
             case "sms_code_add":
                 $tariffs = "";
                 foreach ($this->heart->getTariffs() as $tariff) {

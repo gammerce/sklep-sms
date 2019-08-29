@@ -71,7 +71,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    public function get_action_box($box_id, $data)
+    public function getActionBox($boxId, $data)
     {
         if (!get_privileges("manage_groups")) {
             return [
@@ -80,7 +80,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
             ];
         }
 
-        if ($box_id == "group_edit") {
+        if ($boxId == "group_edit") {
             $result = $this->db->query(
                 $this->db->prepare(
                     "SELECT * FROM `" . TABLE_PREFIX . "groups` " . "WHERE `id` = '%d'",
@@ -140,7 +140,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
             );
         }
 
-        switch ($box_id) {
+        switch ($boxId) {
             case "group_add":
                 $output = $this->template->render(
                     "admin/action_boxes/group_add",

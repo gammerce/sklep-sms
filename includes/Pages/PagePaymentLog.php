@@ -62,7 +62,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
                 ($service_module = $heart->getServiceModule($row['service'])) !== null &&
                 $service_module instanceof IServicePurchaseWeb
             ) {
-                $log_info = $service_module->purchase_info("payment_log", $row);
+                $log_info = $service_module->purchaseInfo("payment_log", $row);
                 $desc = $log_info['text'];
                 $class = $log_info['class'];
             } else {

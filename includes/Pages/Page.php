@@ -62,7 +62,7 @@ abstract class Page
      *
      * @return string - zawartość do wyświetlenia
      */
-    public function get_content($get, $post)
+    public function getContent($get, $post)
     {
         // Dodajemy wszystkie skrypty
         $path = "jscripts/pages/" . $this::PAGE_ID . "/";

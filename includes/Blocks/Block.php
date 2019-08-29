@@ -6,9 +6,9 @@ use App\Interfaces\IBeLoggedMust;
 
 abstract class Block
 {
-    abstract public function get_content_class();
+    abstract public function getContentClass();
 
-    abstract public function get_content_id();
+    abstract public function getContentId();
 
     /**
      * Zwraca treść danego bloku po przejściu wszystkich filtrów
@@ -18,7 +18,7 @@ abstract class Block
      *
      * @return string|null - zawartość do wyświetlenia
      */
-    public function get_content($get, $post)
+    public function getContent($get, $post)
     {
         if (
             ($this instanceof IBeLoggedMust && !is_logged()) ||
@@ -48,13 +48,13 @@ abstract class Block
      *
      * @return string|null
      */
-    public function get_content_enveloped($get, $post)
+    public function getContentEnveloped($get, $post)
     {
-        $content = $this->get_content($get, $post);
+        $content = $this->getContent($get, $post);
 
         return create_dom_element("div", $content, [
-            'id' => $this->get_content_id(),
-            'class' => $content !== null ? $this->get_content_class() : "",
+            'id' => $this->getContentId(),
+            'class' => $content !== null ? $this->getContentClass() : "",
         ]);
     }
 }
