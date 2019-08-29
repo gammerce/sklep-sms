@@ -19,11 +19,7 @@ class RequireAuthorization implements MiddlewareContract
         $lang = $translationManager->user();
 
         if (!$auth->check() || ($privilege && !get_privilages($privilege, $auth->user()))) {
-            return new ApiResponse(
-                "not_logged_in",
-                $lang->translate('not_logged_or_no_perm'),
-                0
-            );
+            return new ApiResponse("not_logged_in", $lang->translate('not_logged_or_no_perm'), 0);
         }
 
         return null;

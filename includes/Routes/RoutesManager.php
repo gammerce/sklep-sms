@@ -185,7 +185,6 @@ class RoutesManager
                 $args = [];
             }
 
-
             /** @var MiddlewareContract $middleware */
             $middleware = $this->app->make($middlewareClass);
 
