@@ -118,14 +118,14 @@ class PagePurchase extends Page
         }
 
         // Dodajemy długi opis
-        $show_more = '';
+        $showMore = '';
         if (strlen($serviceModule->descriptionFullGet())) {
-            $show_more = $template->render("services/show_more");
+            $showMore = $template->render("services/show_more");
         }
 
         $output = $template->render(
             "services/short_description",
-            compact('serviceModule', 'show_more')
+            compact('serviceModule', 'showMore')
         );
 
         return $output . $serviceModule->purchaseFormGet();

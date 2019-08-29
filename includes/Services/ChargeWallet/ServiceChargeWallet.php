@@ -186,7 +186,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
     public function purchase(Purchase $purchaseData)
     {
         // Aktualizacja stanu portfela
-        $this->charge_wallet($purchaseData->user->getUid(), $purchaseData->getOrder('amount'));
+        $this->chargeWallet($purchaseData->user->getUid(), $purchaseData->getOrder('amount'));
 
         return add_bought_service_info(
             $purchaseData->user->getUid(),
@@ -260,7 +260,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
      * @param int $uid
      * @param int $amount
      */
-    private function charge_wallet($uid, $amount)
+    private function chargeWallet($uid, $amount)
     {
         $this->db->query(
             $this->db->prepare(
