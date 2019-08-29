@@ -129,19 +129,3 @@ function json_output($id, $text = "", $positive = false, $data = [])
 
     output_page(json_encode($output), 1);
 }
-
-/**
- * @param string $id
- * @param string $text
- * @param string $template
- */
-function actionbox_output($id, $text = "", $template = "")
-{
-    $output['return_id'] = $id;
-    $output['text'] = $text;
-    if (strlen($template)) {
-        $output['template'] = $template;
-    }
-
-    output_page(json_encode($output), 1);
-}

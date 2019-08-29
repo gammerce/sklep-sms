@@ -78,7 +78,6 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
             $transferBody = $this->template->render("services/charge_wallet/transfer_body");
         }
 
-        // TODO Refactor
         return $this->template->render(
             "services/charge_wallet/purchase_form",
             compact('optionSms', 'optionTransfer', 'smsBody', 'transferBody') + [

@@ -181,9 +181,7 @@ class Heart
 
     public function getPaymentModule($id)
     {
-        return isset($this->paymentModuleClasses[$id])
-            ? $this->paymentModuleClasses[$id]
-            : null;
+        return isset($this->paymentModuleClasses[$id]) ? $this->paymentModuleClasses[$id] : null;
     }
 
     //
@@ -230,9 +228,7 @@ class Heart
      */
     public function getBlock($blockId)
     {
-        return $this->blockExists($blockId)
-            ? app()->make($this->blocksClasses[$blockId])
-            : null;
+        return $this->blockExists($blockId) ? app()->make($this->blocksClasses[$blockId]) : null;
     }
 
     //

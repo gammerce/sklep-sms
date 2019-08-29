@@ -121,10 +121,7 @@ class PageAdminMain extends PageAdmin
         $bricks .= create_brick(
             $this->lang->sprintf(
                 $this->lang->translate('amount_of_users'),
-                $this->db->getColumn(
-                    "SELECT COUNT(*) FROM `" . TABLE_PREFIX . "users`",
-                    "COUNT(*)"
-                )
+                $this->db->getColumn("SELECT COUNT(*) FROM `" . TABLE_PREFIX . "users`", "COUNT(*)")
             ),
             "brick_pa_main"
         );

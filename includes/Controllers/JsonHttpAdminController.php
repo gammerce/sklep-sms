@@ -1897,9 +1897,14 @@ class JsonHttpAdminController
                 );
             }
 
-            $action_box = $page->getActionBox($_POST['box_id'], $_POST);
+            $actionBox = $page->getActionBox($_POST['box_id'], $_POST);
 
-            actionbox_output($action_box['status'], $action_box['text'], $action_box['template']);
+            $data = [];
+            if (strlen($actionBox['template'])) {
+                $data['template'] = $actionBox['template'];
+            }
+
+            return new ApiResponse($actionBox['status'], $actionBox['text'], 0, $data);
         }
 
         if ($action == "get_template") {

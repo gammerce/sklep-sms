@@ -462,10 +462,7 @@ function validate_payment($purchaseData)
             'text' => $lang->translate('sms_unavailable'),
             'positive' => false,
         ];
-    } elseif (
-        $purchaseData->getPayment('method') == "sms" &&
-        $purchaseData->getTariff() === null
-    ) {
+    } elseif ($purchaseData->getPayment('method') == "sms" && $purchaseData->getTariff() === null) {
         return [
             'status' => "no_sms_option",
             'text' => $lang->translate('no_sms_payment'),
@@ -560,10 +557,7 @@ function validate_payment($purchaseData)
 
     if ($purchaseData->getPayment('method') == "transfer") {
         $purchaseData->setDesc(
-            $lang->sprintf(
-                $lang->translate('payment_for_service'),
-                $serviceModule->service['name']
-            )
+            $lang->sprintf($lang->translate('payment_for_service'), $serviceModule->service['name'])
         );
 
         return $payment->payTransfer($purchaseData);
@@ -972,10 +966,7 @@ function delete_users_old_services()
             }
 
             log_info(
-                $langShop->sprintf(
-                    $langShop->translate('expired_service_delete'),
-                    $userServiceDesc
-                )
+                $langShop->sprintf($langShop->translate('expired_service_delete'), $userServiceDesc)
             );
         }
     }

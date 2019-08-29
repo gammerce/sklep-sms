@@ -266,10 +266,7 @@ class Payment
             'text' => $this->lang->translate('transfer_prepared'),
             'positive' => true,
             'data' => [
-                'data' => $this->getPaymentModule()->prepareTransfer(
-                    $purchaseData,
-                    $data_filename
-                ),
+                'data' => $this->getPaymentModule()->prepareTransfer($purchaseData, $data_filename),
             ],
             // Przygotowuje dane płatności transferem
         ];
@@ -341,8 +338,7 @@ class Payment
 
         // Błędny moduł
         if (
-            ($serviceModule = $this->heart->getServiceModule($purchaseData->getService())) ===
-            null
+            ($serviceModule = $this->heart->getServiceModule($purchaseData->getService())) === null
         ) {
             log_info(
                 $this->langShop->sprintf(

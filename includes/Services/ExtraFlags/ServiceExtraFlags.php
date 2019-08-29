@@ -232,8 +232,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                         );
                     }
                     if (
-                        $purchaseData->getOrder('password') !=
-                        $purchaseData->getOrder('passwordr')
+                        $purchaseData->getOrder('password') != $purchaseData->getOrder('passwordr')
                     ) {
                         $warnings['password_repeat'][] = $this->lang->translate(
                             'passwords_not_match'
@@ -439,14 +438,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                         $this::USER_SERVICE_TABLE .
                         "` (`us_id`, `server`, `service`, `type`, `auth_data`, `password`) " .
                         "VALUES ('%d', '%d', '%s', '%d', '%s', '%s')",
-                    [
-                        $userServiceId,
-                        $server_id,
-                        $this->service['id'],
-                        $type,
-                        $auth_data,
-                        $password,
-                    ]
+                    [$userServiceId, $server_id, $this->service['id'], $type, $auth_data, $password]
                 )
             );
         }
@@ -1233,11 +1225,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             }
 
             // Aktualizujemy usługę, która już istnieje w bazie i ma takie same dane jak nasze nowe
-            $affected = $this->updateUserService(
-                $set,
-                $userService2['id'],
-                $userService2['id']
-            );
+            $affected = $this->updateUserService($set, $userService2['id'], $userService2['id']);
         } else {
             $set[] = [
                 'column' => 'service',

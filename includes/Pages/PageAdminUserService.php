@@ -124,9 +124,8 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 
                 if (
                     empty($userService) ||
-                    ($serviceModule = $this->heart->getServiceModule(
-                        $userService['service']
-                    )) === null ||
+                    ($serviceModule = $this->heart->getServiceModule($userService['service'])) ===
+                        null ||
                     !($serviceModule instanceof IServiceUserServiceAdminEdit)
                 ) {
                     $form_data = $this->lang->translate('service_edit_unable');
