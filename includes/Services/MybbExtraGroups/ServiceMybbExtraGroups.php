@@ -214,7 +214,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
      *
      * @return string        Szczegóły zamówienia
      */
-    public function orderDetails($purchaseData)
+    public function orderDetails(Purchase $purchaseData)
     {
         $email = $purchaseData->getEmail()
             ? htmlspecialchars($purchaseData->getEmail())

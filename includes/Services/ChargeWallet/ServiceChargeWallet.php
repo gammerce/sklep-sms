@@ -171,7 +171,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         ];
     }
 
-    public function orderDetails($purchaseData)
+    public function orderDetails(Purchase $purchaseData)
     {
         $amount = number_format($purchaseData->getOrder('amount') / 100, 2);
 

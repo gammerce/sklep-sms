@@ -351,7 +351,7 @@ class ServiceExtraFlagsSimple extends Service implements
      *  [data => array('warnings' => array())]
      *  [purchase_data => Entity_Purchase dane zakupu]
      */
-    public function purchaseDataValidate($purchaseData)
+    public function purchaseDataValidate(Purchase $purchaseData)
     {
         //
     }

@@ -365,7 +365,7 @@ function update_servers_services($data)
  *
  * @return array
  */
-function validate_payment($purchaseData)
+function validate_payment(Purchase $purchaseData)
 {
     /** @var TranslationManager $translationManager */
     $translationManager = app()->make(TranslationManager::class);
@@ -545,13 +545,13 @@ function validate_payment($purchaseData)
         $purchaseData->setPayment([
             'payment_id' => $paymentId,
         ]);
-        $bought_service_id = $serviceModule->purchase($purchaseData);
+        $boughtServiceId = $serviceModule->purchase($purchaseData);
 
         return [
             'status' => "purchased",
             'text' => $lang->translate('purchase_success'),
             'positive' => true,
-            'data' => ['bsid' => $bought_service_id],
+            'data' => ['bsid' => $boughtServiceId],
         ];
     }
 
@@ -635,7 +635,7 @@ function pay_wallet($cost, $user)
  *
  * @return array|int|string
  */
-function pay_service_code($purchaseData, $serviceModule)
+function pay_service_code(Purchase $purchaseData, $serviceModule)
 {
     /** @var TranslationManager $translationManager */
     $translationManager = app()->make(TranslationManager::class);

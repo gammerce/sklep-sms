@@ -30,7 +30,7 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase, IServ
      * @param Purchase $purchaseData
      * @return array
      */
-    public function purchaseDataValidate($purchaseData)
+    public function purchaseDataValidate(Purchase $purchaseData)
     {
         $warnings = [];
 

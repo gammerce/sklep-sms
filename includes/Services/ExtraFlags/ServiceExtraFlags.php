@@ -107,7 +107,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
      * @param Purchase $purchaseData
      * @return array
      */
-    public function purchaseDataValidate($purchaseData)
+    public function purchaseDataValidate(Purchase $purchaseData)
     {
         $warnings = [];
 
@@ -303,7 +303,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         ];
     }
 
-    public function orderDetails($purchaseData)
+    public function orderDetails(Purchase $purchaseData)
     {
         $server = $this->heart->getServer($purchaseData->getOrder('server'));
         $type_name = $this->get_type_name2($purchaseData->getOrder('type'));
@@ -1008,7 +1008,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     // ----------------------------------------------------------------------------------
     // ### Edytowanie usług przez użytkownika
 
-    public function user_own_service_edit_form_get($userService)
+    public function userOwnServiceEditFormGet($userService)
     {
         // Dodajemy typ uslugi, (1<<2) ostatni typ
         $serviceInfo = [];
@@ -1094,7 +1094,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         );
     }
 
-    public function user_own_service_edit($data, $userService)
+    public function userOwnServiceSdit($data, $userService)
     {
         $user = $this->auth->user();
 
@@ -1616,7 +1616,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         }
     }
 
-    public function serviceCodeValidate($purchaseData, $code)
+    public function serviceCodeValidate(Purchase $purchaseData, $code)
     {
         return true;
     }

@@ -13,7 +13,7 @@ interface IServiceUserOwnServicesEdit
      *
      * @return string
      */
-    public function user_own_service_edit_form_get($userService);
+    public function userOwnServiceEditFormGet($userService);
 
     /**
      * Metoda sprawdza dane formularza, podczas edycji usługi użytkownika przez użytkownika
@@ -26,5 +26,5 @@ interface IServiceUserOwnServicesEdit
      *                        'text'        => treść wiadomości
      *                        'positive'    => czy udało się wyedytować usługę
      */
-    public function user_own_service_edit($body, $userService);
+    public function userOwnServiceSdit($body, $userService);
 }

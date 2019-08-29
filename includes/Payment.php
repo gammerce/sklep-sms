@@ -248,7 +248,7 @@ class Payment
      *
      * @return array
      */
-    public function payTransfer($purchaseData)
+    public function payTransfer(Purchase $purchaseData)
     {
         if (!$this->getPaymentModule()->supportTransfer()) {
             return [

@@ -609,7 +609,7 @@ class JsonHttpController
             $buttons = $templates->render("services/my_services_savencancel");
 
             return new HtmlResponse(
-                $buttons . $serviceModule->user_own_service_edit_form_get($userService)
+                $buttons . $serviceModule->userOwnServiceEditFormGet($userService)
             );
         }
 
@@ -686,7 +686,7 @@ class JsonHttpController
                 );
             }
 
-            $returnData = $serviceModule->user_own_service_edit($_POST, $userService);
+            $returnData = $serviceModule->userOwnServiceSdit($_POST, $userService);
 
             // Przerabiamy ostrzeżenia, aby lepiej wyglądały
             if ($returnData['status'] == "warnings") {

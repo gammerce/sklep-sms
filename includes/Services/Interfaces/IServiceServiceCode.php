@@ -16,5 +16,5 @@ interface IServiceServiceCode
      *
      * @return bool
      */
-    public function serviceCodeValidate($purchaseData, $code);
+    public function serviceCodeValidate(Purchase $purchaseData, $code);
 }

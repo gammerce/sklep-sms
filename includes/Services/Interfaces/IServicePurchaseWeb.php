@@ -39,7 +39,7 @@ interface IServicePurchaseWeb extends IServicePurchase
      *
      * @return string Szczegóły zamówienia
      */
-    public function orderDetails($purchaseData);
+    public function orderDetails(Purchase $purchaseData);
 
     /**
      * Metoda formatuje i zwraca informacje o zakupionej usłudze, zaraz po jej zakupie.
