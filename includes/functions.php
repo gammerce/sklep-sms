@@ -78,11 +78,11 @@ function output_page($output, $header = 0)
  *
  * @param string  $element
  * @param Request $request
- * @param bool    $withenvelope
+ * @param bool    $withEnvelope
  *
  * @return string
  */
-function get_content($element, Request $request, $withenvelope = true)
+function get_content($element, Request $request, $withEnvelope = true)
 {
     /** @var Heart $heart */
     $heart = app()->make(Heart::class);
@@ -91,12 +91,12 @@ function get_content($element, Request $request, $withenvelope = true)
         return "";
     }
 
-    $get = $request->query->all();
-    $post = $request->request->all();
+    $query = $request->query->all();
+    $body = $request->request->all();
 
-    return $withenvelope
-        ? $block->getContentEnveloped($get, $post)
-        : $block->getContent($get, $post);
+    return $withEnvelope
+        ? $block->getContentEnveloped($query, $body)
+        : $block->getContent($query, $body);
 }
 
 function get_row_limit($page, $row_limit = 0)
@@ -109,7 +109,7 @@ function get_row_limit($page, $row_limit = 0)
     return ($page - 1) * $row_limit . "," . $row_limit;
 }
 
-function get_pagination($all, $current_page, $script, $get, $row_limit = 0)
+function get_pagination($all, $current_page, $script, $query, $rowLimit = 0)
 {
     /** @var Settings $settings */
     $settings = app()->make(Settings::class);
@@ -117,15 +117,15 @@ function get_pagination($all, $current_page, $script, $get, $row_limit = 0)
     /** @var UrlGenerator $url */
     $url = app()->make(UrlGenerator::class);
 
-    $row_limit = $row_limit ? $row_limit : $settings['row_limit'];
+    $rowLimit = $rowLimit ? $rowLimit : $settings['row_limit'];
 
     // Wszystkich elementow jest mniej niz wymagana ilsoc na jednej stronie
-    if ($all <= $row_limit) {
+    if ($all <= $rowLimit) {
         return;
     }
 
     // Pobieramy ilosc stron
-    $pages_amount = floor(max($all - 1, 0) / $row_limit) + 1;
+    $pages_amount = floor(max($all - 1, 0) / $rowLimit) + 1;
 
     // Poprawiamy obecna strone, gdyby byla bledna
     if ($current_page > $pages_amount) {
@@ -133,24 +133,24 @@ function get_pagination($all, $current_page, $script, $get, $row_limit = 0)
     }
 
     // Usuwamy index "page"
-    unset($get['page']);
-    $get_string = "";
+    unset($query['page']);
+    $queryString = "";
 
-    // Tworzymy stringa z danych get
-    foreach ($get as $key => $value) {
-        if (strlen($get_string)) {
-            $get_string .= "&";
+    // Tworzymy stringa z danych query
+    foreach ($query as $key => $value) {
+        if (strlen($queryString)) {
+            $queryString .= "&";
         }
 
-        $get_string .= urlencode($key) . "=" . urlencode($value);
+        $queryString .= urlencode($key) . "=" . urlencode($value);
     }
-    if (strlen($get_string)) {
-        $get_string = "?" . $get_string;
+    if (strlen($queryString)) {
+        $queryString = "?" . $queryString;
     }
 
     /*// Pierwsza strona
     $output = create_dom_element("a",1,array(
-        'href'	=> $script.$get_string.($get_string != "" ? "&" : "?")."page=1",
+        'href'	=> $script.$queryString.($queryString != "" ? "&" : "?")."page=1",
         'class'	=> $current_page == 1 ? "current" : ""
     ))."&nbsp;";
 
@@ -159,13 +159,13 @@ function get_pagination($all, $current_page, $script, $get, $row_limit = 0)
         // 2 3
         for($i = 2; $i <= 3; ++$i) {
             $output .= create_dom_element("a",$i,array(
-                'href'	=> $script.$get_string.($get_string != "" ? "&" : "?")."page={$i}"
+                'href'	=> $script.$queryString.($queryString != "" ? "&" : "?")."page={$i}"
             ))."&nbsp;";
         }
 
         // Trzy kropki
         $output .= create_dom_element("a","...",array(
-                'href'	=> $script.$get_string.($get_string != "" ? "&" : "?")."page=".round(($pages_amount-3)/2)
+                'href'	=> $script.$queryString.($queryString != "" ? "&" : "?")."page=".round(($pages_amount-3)/2)
         ))."&nbsp;";
     }
     // ...
@@ -175,7 +175,7 @@ function get_pagination($all, $current_page, $script, $get, $row_limit = 0)
 
     // Ostatnia strona
     $output .= create_dom_element("a",$pages_amount,array(
-        'href'	=> $script.$get_string.($get_string != "" ? "&" : "?")."page=".$pages_amount,
+        'href'	=> $script.$queryString.($queryString != "" ? "&" : "?")."page=".$pages_amount,
         'class'	=> $current_page == $pages_amount ? "current" : ""
     ))."&nbsp;";*/
 
@@ -191,8 +191,8 @@ function get_pagination($all, $current_page, $script, $get, $row_limit = 0)
                 if ($i < $current_page - $lp) {
                     $href = $url->to(
                         $script .
-                            $get_string .
-                            (strlen($get_string) ? "&" : "?") .
+                            $queryString .
+                            (strlen($queryString) ? "&" : "?") .
                             "page=" .
                             round((1 + $current_page - $lp) / 2)
                     );
@@ -200,8 +200,8 @@ function get_pagination($all, $current_page, $script, $get, $row_limit = 0)
                     if ($i > $current_page + $lp) {
                         $href = $url->to(
                             $script .
-                                $get_string .
-                                (strlen($get_string) ? "&" : "?") .
+                                $queryString .
+                                (strlen($queryString) ? "&" : "?") .
                                 "page=" .
                                 round(($current_page + $lp + $pages_amount) / 2)
                         );
@@ -220,7 +220,7 @@ function get_pagination($all, $current_page, $script, $get, $row_limit = 0)
         $output .=
             create_dom_element("a", $i, [
                 'href' => ($href = $url->to(
-                    $script . $get_string . (strlen($get_string) ? "&" : "?") . "page=" . $i
+                    $script . $queryString . (strlen($queryString) ? "&" : "?") . "page=" . $i
                 )),
                 'class' => $current_page == $i ? "current" : "",
             ]) . "&nbsp;";

@@ -18,12 +18,12 @@ class PagePurchase extends Page
         $this->heart->pageTitle = $this->title = $this->lang->translate('purchase');
     }
 
-    public function getContent($get, $post)
+    public function getContent($query, $body)
     {
-        return $this->content($get, $post);
+        return $this->content($query, $body);
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         $heart = $this->heart;
         $lang = $this->lang;
@@ -38,7 +38,7 @@ class PagePurchase extends Page
         /** @var Settings $settings */
         $settings = $this->app->make(Settings::class);
 
-        if (($serviceModule = $heart->getServiceModule($get['service'])) === null) {
+        if (($serviceModule = $heart->getServiceModule($query['service'])) === null) {
             return $lang->translate('site_not_exists');
         }
 

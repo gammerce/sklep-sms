@@ -19,12 +19,12 @@ interface IServiceUserOwnServicesEdit
      * Metoda sprawdza dane formularza, podczas edycji usługi użytkownika przez użytkownika
      * i gdy wszystko jest okej, to ją edytuje.
      *
-     * @param array $post Dane $_POST
+     * @param array $body
      * @param array $userService Obecne dane edytowanej usługi
      *
      * @return array        'status'    => id wiadomości,
      *                        'text'        => treść wiadomości
      *                        'positive'    => czy udało się wyedytować usługę
      */
-    public function user_own_service_edit($post, $userService);
+    public function user_own_service_edit($body, $userService);
 }

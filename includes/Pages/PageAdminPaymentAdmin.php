@@ -18,7 +18,7 @@ class PageAdminPaymentAdmin extends PageAdmin
         $this->heart->pageTitle = $this->title = $this->lang->translate('payments_admin');
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
@@ -52,7 +52,7 @@ class PageAdminPaymentAdmin extends PageAdmin
         while ($row = $this->db->fetchArrayAssoc($result)) {
             $body_row = new BodyRow();
 
-            if ($get['highlight'] && $get['payid'] == $row['payment_id']) {
+            if ($query['highlight'] && $query['payid'] == $row['payment_id']) {
                 $body_row->setParam('class', 'highlighted');
             }
 

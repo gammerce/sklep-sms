@@ -20,7 +20,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
         $this->heart->pageTitle = $this->title = $this->lang->translate('antispam_questions');
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);

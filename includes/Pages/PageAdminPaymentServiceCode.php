@@ -18,7 +18,7 @@ class PageAdminPaymentServiceCode extends PageAdmin
         $this->heart->pageTitle = $this->title = $this->lang->translate('payments_service_code');
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
@@ -39,8 +39,8 @@ class PageAdminPaymentServiceCode extends PageAdmin
         $table->addHeadCell(new Cell($this->lang->translate('date')));
 
         $where = "";
-        if (isset($get['payid'])) {
-            $where .= $this->db->prepare(" AND `payment_id` = '%d' ", [$get['payid']]);
+        if (isset($query['payid'])) {
+            $where .= $this->db->prepare(" AND `payment_id` = '%d' ", [$query['payid']]);
         }
 
         $result = $this->db->query(
@@ -58,7 +58,7 @@ class PageAdminPaymentServiceCode extends PageAdmin
         while ($row = $this->db->fetchArrayAssoc($result)) {
             $body_row = new BodyRow();
 
-            if ($get['highlight'] && $get['payid'] == $row['payment_id']) {
+            if ($query['highlight'] && $query['payid'] == $row['payment_id']) {
                 $body_row->setParam('class', 'highlighted');
             }
 

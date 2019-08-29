@@ -7,7 +7,7 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
 {
     protected $privilege = 'acp';
 
-    public function getContent($get, $post)
+    public function getContent($query, $body)
     {
         if (!get_privileges($this->privilege)) {
             return $this->lang->translate('no_privileges');
@@ -70,6 +70,6 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
             }
         }
 
-        return $this->content($get, $post);
+        return $this->content($query, $body);
     }
 }

@@ -57,12 +57,12 @@ abstract class Page
     /**
      * Zwraca treść danej strony po przejściu wszystkich filtrów
      *
-     * @param array $get - dane get
-     * @param array $post - dane post
+     * @param array $query
+     * @param array $body
      *
      * @return string - zawartość do wyświetlenia
      */
-    public function getContent($get, $post)
+    public function getContent($query, $body)
     {
         // Dodajemy wszystkie skrypty
         $path = "jscripts/pages/" . $this::PAGE_ID . "/";
@@ -128,16 +128,16 @@ abstract class Page
             }
         }
 
-        return $this->content($get, $post);
+        return $this->content($query, $body);
     }
 
     /**
      * Zwraca treść danej strony
      *
-     * @param array $get
-     * @param array $post
+     * @param array $query
+     * @param array $body
      *
      * @return string
      */
-    abstract protected function content($get, $post);
+    abstract protected function content($query, $body);
 }

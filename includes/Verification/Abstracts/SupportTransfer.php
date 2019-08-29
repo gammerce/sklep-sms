@@ -21,10 +21,10 @@ interface SupportTransfer
     /**
      * Finalizuje zakup usługi podczas zakupu poprzez przelew
      *
-     * @param $get
-     * @param $post
+     * @param array $query
+     * @param array $body
      *
      * @return TransferFinalize
      */
-    public function finalizeTransfer($get, $post);
+    public function finalizeTransfer($query, $body);
 }

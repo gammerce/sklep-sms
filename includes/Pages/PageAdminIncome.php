@@ -30,10 +30,10 @@ class PageAdminIncome extends PageAdmin
         $this->heart->pageTitle = $this->title = $this->lang->translate('income');
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
-        $G_MONTH = isset($get['month']) ? $get['month'] : date("m");
-        $G_YEAR = isset($get['year']) ? $get['year'] : date("Y");
+        $G_MONTH = isset($query['month']) ? $query['month'] : date("m");
+        $G_YEAR = isset($query['year']) ? $query['year'] : date("Y");
 
         $table_row = "";
         // Uzyskanie wszystkich serwerów

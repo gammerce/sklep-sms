@@ -40,7 +40,7 @@ class BlockContent extends Block
     }
 
     // Nadpisujemy get_content, aby wyswieltac info gdy nie jest zalogowany lub jest zalogowany, lecz nie powinien
-    public function getContent($get, $post)
+    public function getContent($query, $body)
     {
         if (($this->page = $this->heart->getPage($this->currentPage->getPid())) === null) {
             return null;
@@ -54,11 +54,11 @@ class BlockContent extends Block
             return $this->lang->translate('must_be_logged_out');
         }
 
-        return $this->content($get, $post);
+        return $this->content($query, $body);
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
-        return $this->page->getContent($get, $post);
+        return $this->page->getContent($query, $body);
     }
 }

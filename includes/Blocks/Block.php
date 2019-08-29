@@ -13,12 +13,12 @@ abstract class Block
     /**
      * Zwraca treść danego bloku po przejściu wszystkich filtrów
      *
-     * @param array $get - dane get
-     * @param array $post - dane post
+     * @param array $query
+     * @param array $body
      *
      * @return string|null - zawartość do wyświetlenia
      */
-    public function getContent($get, $post)
+    public function getContent($query, $body)
     {
         if (
             ($this instanceof IBeLoggedMust && !is_logged()) ||
@@ -27,30 +27,30 @@ abstract class Block
             return null;
         }
 
-        return $this->content($get, $post);
+        return $this->content($query, $body);
     }
 
     /**
      * Zwraca treść danego bloku
      *
-     * @param array $get
-     * @param array $post
+     * @param array $query
+     * @param array $body
      *
      * @return string
      */
-    abstract protected function content($get, $post);
+    abstract protected function content($query, $body);
 
     /**
      * Zwraca treść danego bloku w otoczce
      *
-     * @param array $get
-     * @param array $post
+     * @param array $query
+     * @param array $body
      *
      * @return string|null
      */
-    public function getContentEnveloped($get, $post)
+    public function getContentEnveloped($query, $body)
     {
-        $content = $this->getContent($get, $post);
+        $content = $this->getContent($query, $body);
 
         return create_dom_element("div", $content, [
             'id' => $this->getContentId(),

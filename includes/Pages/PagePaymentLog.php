@@ -20,7 +20,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         $this->heart->pageTitle = $this->title = $this->lang->translate('payment_log');
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         $heart = $this->heart;
         $lang = $this->lang;
@@ -98,7 +98,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
             $rows_count,
             $this->currentPage->getPageNumber(),
             $request->getPathInfo(),
-            $get,
+            $query,
             10
         );
         $pagination_class = strlen($pagination) ? "" : "display_none";

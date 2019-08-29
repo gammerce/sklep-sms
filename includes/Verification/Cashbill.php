@@ -83,22 +83,22 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
         ];
     }
 
-    public function finalizeTransfer($get, $post)
+    public function finalizeTransfer($query, $body)
     {
         $transferFinalize = new TransferFinalize();
 
         if (
-            $this->checkSign($post, $this->getKey(), $post['sign']) &&
-            strtoupper($post['status']) == 'OK' &&
-            $post['service'] == $this->getService()
+            $this->checkSign($body, $this->getKey(), $body['sign']) &&
+            strtoupper($body['status']) == 'OK' &&
+            $body['service'] == $this->getService()
         ) {
             $transferFinalize->setStatus(true);
         }
 
-        $transferFinalize->setOrderid($post['orderid']);
-        $transferFinalize->setAmount($post['amount']);
-        $transferFinalize->setDataFilename($post['userdata']);
-        $transferFinalize->setTransferService($post['service']);
+        $transferFinalize->setOrderid($body['orderid']);
+        $transferFinalize->setAmount($body['amount']);
+        $transferFinalize->setDataFilename($body['userdata']);
+        $transferFinalize->setTransferService($body['service']);
         $transferFinalize->setOutput('OK');
 
         return $transferFinalize;

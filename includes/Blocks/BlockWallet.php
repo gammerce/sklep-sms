@@ -18,7 +18,7 @@ class BlockWallet extends Block implements IBeLoggedMust
         return "wallet";
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         /** @var Auth $auth */
         $auth = app()->make(Auth::class);
@@ -32,12 +32,12 @@ class BlockWallet extends Block implements IBeLoggedMust
         return $template->render('wallet', compact('amount'));
     }
 
-    public function getContentEnveloped($get, $post)
+    public function getContentEnveloped($query, $body)
     {
         /** @var UrlGenerator $url */
         $url = app()->make(UrlGenerator::class);
 
-        $content = $this->getContent($get, $post);
+        $content = $this->getContent($query, $body);
 
         return create_dom_element("a", $content, [
             'id' => $this->getContentId(),

@@ -14,10 +14,10 @@ class PageResetPassword extends Page implements IBeLoggedCannot
         $this->heart->pageTitle = $this->title = $this->lang->translate('reset_password');
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         // Brak podanego kodu
-        if (!strlen($get['code'])) {
+        if (!strlen($query['code'])) {
             return $this->lang->translate('no_reset_key');
         }
 
@@ -27,7 +27,7 @@ class PageResetPassword extends Page implements IBeLoggedCannot
                     TABLE_PREFIX .
                     "users` " .
                     "WHERE `reset_password_key` = '%s'",
-                [$get['code']]
+                [$query['code']]
             )
         );
 

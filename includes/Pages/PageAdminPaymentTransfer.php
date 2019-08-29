@@ -18,7 +18,7 @@ class PageAdminPaymentTransfer extends PageAdmin
         $this->heart->pageTitle = $this->title = $this->lang->translate('payments_transfer');
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
@@ -41,12 +41,12 @@ class PageAdminPaymentTransfer extends PageAdmin
         $where = "( t.payment = 'transfer' ) ";
 
         // Wyszukujemy dane ktore spelniaja kryteria
-        if (isset($get['search'])) {
-            searchWhere(["t.payment_id", "t.income", "t.ip"], $get['search'], $where);
+        if (isset($query['search'])) {
+            searchWhere(["t.payment_id", "t.income", "t.ip"], $query['search'], $where);
         }
 
-        if (isset($get['payid'])) {
-            $where .= $this->db->prepare(" AND `payment_id` = '%s' ", [$get['payid']]);
+        if (isset($query['payid'])) {
+            $where .= $this->db->prepare(" AND `payment_id` = '%s' ", [$query['payid']]);
         }
 
         // Jezeli jest jakis where, to dodajemy WHERE
@@ -69,7 +69,7 @@ class PageAdminPaymentTransfer extends PageAdmin
         while ($row = $this->db->fetchArrayAssoc($result)) {
             $body_row = new BodyRow();
 
-            if ($get['highlight'] && $get['payid'] == $row['payment_id']) {
+            if ($query['highlight'] && $query['payid'] == $row['payment_id']) {
                 $body_row->setParam('class', 'highlighted');
             }
 

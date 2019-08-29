@@ -21,7 +21,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
         $this->heart->pageTitle = $this->title = $this->lang->translate('service_codes');
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);

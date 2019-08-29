@@ -19,10 +19,10 @@ interface IServiceUserServiceAdminDisplay
     /**
      * Zwraca listę usług użytkowników ubraną w ładny obiekt.
      *
-     * @param array $get
-     * @param array $post
+     * @param array $query
+     * @param array $body
      *
      * @return Wrapper | string
      */
-    public function userServiceAdminDisplayGet($get, $post);
+    public function userServiceAdminDisplayGet($query, $body);
 }

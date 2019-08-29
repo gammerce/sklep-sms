@@ -18,7 +18,7 @@ class BlockServicesButtons extends Block
         return "services_buttons";
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         /** @var Auth $auth */
         $auth = app()->make(Auth::class);

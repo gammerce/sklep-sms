@@ -13,14 +13,14 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
     const PAGE_ID = 'user_service';
     protected $privilege = 'view_user_services';
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         $className = '';
         foreach ($this->heart->getServicesModules() as $module) {
             $class = $module['classsimple'];
             if (
                 in_array(IServiceUserServiceAdminDisplay::class, class_implements($class)) &&
-                $module['id'] == $get['subpage']
+                $module['id'] == $query['subpage']
             ) {
                 $className = $class;
                 break;
@@ -30,7 +30,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         if (!strlen($className)) {
             return $this->lang->sprintf(
                 $this->lang->translate('no_subpage'),
-                htmlspecialchars($get['subpage'])
+                htmlspecialchars($query['subpage'])
             );
         }
 
@@ -42,7 +42,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
             ': ' .
             $serviceModuleSimple->userServiceAdminDisplayTitleGet();
         $this->heart->pageTitle = $this->title;
-        $wrapper = $serviceModuleSimple->userServiceAdminDisplayGet($get, $post);
+        $wrapper = $serviceModuleSimple->userServiceAdminDisplayGet($query, $body);
 
         if (get_class($wrapper) !== Wrapper::class) {
             return $wrapper;
@@ -66,7 +66,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
             $option = new Table\Option($serviceModuleData['name']);
             $option->setParam('value', $serviceModuleData['id']);
 
-            if ($serviceModuleData['id'] == $get['subpage']) {
+            if ($serviceModuleData['id'] == $query['subpage']) {
                 $option->setParam('selected', 'selected');
             }
 

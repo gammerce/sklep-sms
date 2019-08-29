@@ -25,7 +25,7 @@ class PageAdminUpdateServers extends PageAdmin
         $this->version = $version;
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         $newestAmxxVersion = $this->version->getNewestAmxmodx();
         $newestSmVersion = $this->version->getNewestSourcemod();

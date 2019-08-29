@@ -20,7 +20,7 @@ class BlockUserButtons extends Block
         return "user_buttons";
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         /** @var Auth $auth */
         $auth = app()->make(Auth::class);

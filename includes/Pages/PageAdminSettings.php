@@ -17,7 +17,7 @@ class PageAdminSettings extends PageAdmin
         $this->heart->pageTitle = $this->title = $this->lang->translate('settings');
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);

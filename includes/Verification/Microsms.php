@@ -120,29 +120,29 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
         ];
     }
 
-    public function finalizeTransfer($get, $post)
+    public function finalizeTransfer($query, $body)
     {
         $transferFinalize = new TransferFinalize();
 
-        if ($this->isPaymentValid($post)) {
+        if ($this->isPaymentValid($body)) {
             $transferFinalize->setStatus(true);
         }
 
-        $transferFinalize->setOrderid($post['orderID']);
-        $transferFinalize->setAmount($post['amountPay']);
-        $transferFinalize->setDataFilename($post['control']);
+        $transferFinalize->setOrderid($body['orderID']);
+        $transferFinalize->setAmount($body['amountPay']);
+        $transferFinalize->setDataFilename($body['control']);
         $transferFinalize->setOutput('OK');
 
         return $transferFinalize;
     }
 
-    private function isPaymentValid(array $post)
+    private function isPaymentValid(array $body)
     {
-        if ($post['status'] != true) {
+        if ($body['status'] != true) {
             return false;
         }
 
-        if ($post['userid'] != $this->userId) {
+        if ($body['userid'] != $this->userId) {
             return false;
         }
 

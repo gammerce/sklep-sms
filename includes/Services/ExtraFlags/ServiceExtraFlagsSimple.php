@@ -222,7 +222,7 @@ class ServiceExtraFlagsSimple extends Service implements
         return $this->lang->translate('extra_flags');
     }
 
-    public function userServiceAdminDisplayGet($get, $post)
+    public function userServiceAdminDisplayGet($query, $body)
     {
         /** @var CurrentPage $currentPage */
         $currentPage = $this->app->make(CurrentPage::class);
@@ -252,10 +252,10 @@ class ServiceExtraFlagsSimple extends Service implements
 
         // Wyszukujemy dane ktore spelniaja kryteria
         $where = '';
-        if (isset($get['search'])) {
+        if (isset($query['search'])) {
             searchWhere(
                 ["us.id", "us.uid", "u.username", "srv.name", "s.name", "usef.auth_data"],
-                $get['search'],
+                $query['search'],
                 $where
             );
         }

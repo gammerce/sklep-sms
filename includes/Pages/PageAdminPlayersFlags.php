@@ -20,7 +20,7 @@ class PageAdminPlayersFlags extends PageAdmin
         $this->heart->pageTitle = $this->title = $this->lang->translate('players_flags');
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);

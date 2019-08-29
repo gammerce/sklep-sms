@@ -21,7 +21,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         $this->heart->pageTitle = $this->title = $this->lang->translate('user_own_services');
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         $heart = $this->heart;
         $lang = $this->lang;
@@ -134,7 +134,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             $rowsCount,
             $this->currentPage->getPageNumber(),
             $request->getPathInfo(),
-            $get,
+            $query,
             4
         );
         $pagination_class = strlen($pagination) ? "" : "display_none";

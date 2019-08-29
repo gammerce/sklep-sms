@@ -18,7 +18,7 @@ class PageAdminPaymentSms extends PageAdmin
         $this->heart->pageTitle = $this->title = $this->lang->translate('payments_sms');
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
@@ -46,29 +46,29 @@ class PageAdminPaymentSms extends PageAdmin
         $where = "( t.payment = 'sms' ) ";
 
         // Wyszukujemy platnosci o konkretnym ID
-        if (isset($get['payid'])) {
+        if (isset($query['payid'])) {
             if (strlen($where)) {
                 $where .= " AND ";
             }
 
-            $where .= $this->db->prepare("( t.payment_id = '%s' ) ", [$get['payid']]);
+            $where .= $this->db->prepare("( t.payment_id = '%s' ) ", [$query['payid']]);
 
             // Podświetlenie konkretnej płatności
             //$row['class'] = "highlighted";
         }
         // Wyszukujemy dane ktore spelniaja kryteria
         else {
-            if (isset($get['search'])) {
+            if (isset($query['search'])) {
                 searchWhere(
                     ["t.payment_id", "t.sms_text", "t.sms_code", "t.sms_number"],
-                    $get['search'],
+                    $query['search'],
                     $where
                 );
             }
         }
 
-        if (isset($get['payid'])) {
-            $where .= $this->db->prepare(" AND `payment_id` = '%d' ", [$get['payid']]);
+        if (isset($query['payid'])) {
+            $where .= $this->db->prepare(" AND `payment_id` = '%d' ", [$query['payid']]);
         }
 
         // Jezeli jest jakis where, to dodajemy WHERE
@@ -90,7 +90,7 @@ class PageAdminPaymentSms extends PageAdmin
         while ($row = $this->db->fetchArrayAssoc($result)) {
             $body_row = new BodyRow();
 
-            if ($get['highlight'] && $get['payid'] == $row['payment_id']) {
+            if ($query['highlight'] && $query['payid'] == $row['payment_id']) {
                 $body_row->setParam('class', 'highlighted');
             }
 

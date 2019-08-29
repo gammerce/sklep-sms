@@ -19,7 +19,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
         $this->heart->pageTitle = $this->title = $this->lang->translate('transaction_services');
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);

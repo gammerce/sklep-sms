@@ -17,18 +17,18 @@ class PagePayment extends Page
         $this->heart->pageTitle = $this->title = $this->lang->translate('title_payment');
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         // Sprawdzanie hashu danych przesłanych przez formularz
         if (
-            !isset($post['sign']) ||
-            $post['sign'] != md5($post['data'] . $this->settings['random_key'])
+            !isset($body['sign']) ||
+            $body['sign'] != md5($body['data'] . $this->settings['random_key'])
         ) {
             return $this->lang->translate('wrong_sign');
         }
 
         /** @var Purchase $purchaseData */
-        $purchaseData = unserialize(base64_decode($post['data']));
+        $purchaseData = unserialize(base64_decode($body['data']));
 
         // Fix: get user data again to avoid bugs linked with user wallet
         $purchaseData->user = $this->heart->getUser($purchaseData->user->getUid());
@@ -100,8 +100,8 @@ class PagePayment extends Page
             $paymentMethods .= $this->template->render("payment_method_code");
         }
 
-        $purchaseData = htmlspecialchars($post['data']);
-        $purchaseSign = htmlspecialchars($post['sign']);
+        $purchaseData = htmlspecialchars($body['data']);
+        $purchaseSign = htmlspecialchars($body['sign']);
 
         return $this->template->render(
             "payment_form",

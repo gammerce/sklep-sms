@@ -15,27 +15,27 @@ class PageCashbillTransferFinalized extends Page
         $this->heart->pageTitle = $this->title = $this->lang->translate('transfer_finalized');
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         $payment = new Payment($this->settings['transfer_service']);
         /** @var Cashbill $paymentModule */
         $paymentModule = $payment->getPaymentModule();
 
         if (
-            $paymentModule->checkSign($get, $paymentModule->getKey(), $get['sign']) &&
-            $get['service'] != $paymentModule->getService()
+            $paymentModule->checkSign($query, $paymentModule->getKey(), $query['sign']) &&
+            $query['service'] != $paymentModule->getService()
         ) {
             return $this->lang->translate('transfer_unverified');
         }
 
         // prawidlowa sygnatura, w zaleznosci od statusu odpowiednia informacja dla klienta
-        if (strtoupper($get['status']) != 'OK') {
+        if (strtoupper($query['status']) != 'OK') {
             return $this->lang->translate('transfer_error');
         }
 
         return purchase_info([
             'payment' => 'transfer',
-            'payment_id' => $get['orderid'],
+            'payment_id' => $query['orderid'],
             'action' => 'web',
         ]);
     }

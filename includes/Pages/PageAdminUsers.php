@@ -21,7 +21,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         $this->heart->pageTitle = $this->title = $this->lang->translate('users');
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
@@ -41,7 +41,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         $table->addHeadCell(new Cell($this->lang->translate('wallet')));
 
         $where = '';
-        if (isset($get['search'])) {
+        if (isset($query['search'])) {
             searchWhere(
                 [
                     "`uid`",
@@ -52,7 +52,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                     "`groups`",
                     "`wallet`",
                 ],
-                $get['search'],
+                $query['search'],
                 $where
             );
         }

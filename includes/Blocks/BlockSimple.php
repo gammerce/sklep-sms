@@ -20,7 +20,7 @@ abstract class BlockSimple extends Block
         }
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         /** @var Auth $auth */
         $auth = app()->make(Auth::class);

@@ -19,19 +19,19 @@ interface IServiceAdminManage
      * Metoda testuje dane przesłane przez formularz podczas dodawania nowej usługi w PA
      * jak coś się jej nie spodoba to zwraca o tym info w tablicy
      *
-     * @param array $post Dane $_POST
+     * @param array $body
      *
      * @return array
      *  'key' => DOM Element name
      *  'value' => Array of error messages
      */
-    public function serviceAdminManagePre($post);
+    public function serviceAdminManagePre($body);
 
     /**
      * Metoda zostaje wywołana po tym, jak  weryfikacja danych
      * przesłanych w formularzu dodania nowej usługi w PA przebiegła bezproblemowo
      *
-     * @param array $body Dane $_POST
+     * @param array $body
      *
      * @return array (
      *    'query_set' - array of query SET elements:

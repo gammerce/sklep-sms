@@ -20,7 +20,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
         $this->heart->pageTitle = $this->title = $this->lang->translate('pricelist');
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);

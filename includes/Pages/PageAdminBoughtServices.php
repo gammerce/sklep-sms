@@ -21,7 +21,7 @@ class PageAdminBoughtServices extends PageAdmin
         $this->heart->pageTitle = $this->title = $this->lang->translate('bought_services');
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         /** @var UrlGenerator $url */
         $url = $this->app->make(UrlGenerator::class);
@@ -57,7 +57,7 @@ class PageAdminBoughtServices extends PageAdmin
         // Wyszukujemy dane ktore spelniaja kryteria
         $where = '';
 
-        if (isset($get['search'])) {
+        if (isset($query['search'])) {
             searchWhere(
                 [
                     "t.id",
@@ -69,7 +69,7 @@ class PageAdminBoughtServices extends PageAdmin
                     "t.auth_data",
                     "CAST(t.timestamp as CHAR)",
                 ],
-                $get['search'],
+                $query['search'],
                 $where
             );
         }

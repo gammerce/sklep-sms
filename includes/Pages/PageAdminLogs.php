@@ -19,7 +19,7 @@ class PageAdminLogs extends PageAdmin
         $this->heart->pageTitle = $this->title = $this->lang->translate('logs');
     }
 
-    protected function content($get, $post)
+    protected function content($query, $body)
     {
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
@@ -36,8 +36,8 @@ class PageAdminLogs extends PageAdmin
 
         // Wyszukujemy dane ktore spelniaja kryteria
         $where = '';
-        if (isset($get['search'])) {
-            searchWhere(["`id`", "`text`", "CAST(`timestamp` as CHAR)"], $get['search'], $where);
+        if (isset($query['search'])) {
+            searchWhere(["`id`", "`text`", "CAST(`timestamp` as CHAR)"], $query['search'], $where);
         }
 
         // Jezeli jest jakis where, to dodajemy WHERE
