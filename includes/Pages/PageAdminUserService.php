@@ -128,15 +128,15 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
                         null ||
                     !($serviceModule instanceof IServiceUserServiceAdminEdit)
                 ) {
-                    $form_data = $this->lang->translate('service_edit_unable');
+                    $formData = $this->lang->translate('service_edit_unable');
                 } else {
                     $serviceModuleId = htmlspecialchars($serviceModule->getModuleId());
-                    $form_data = $serviceModule->userServiceAdminEditFormGet($userService);
+                    $formData = $serviceModule->userServiceAdminEditFormGet($userService);
                 }
 
                 $output = $this->template->render(
                     "admin/action_boxes/user_service_edit",
-                    compact('serviceModuleId', 'form_data')
+                    compact('serviceModuleId', 'formData')
                 );
                 break;
         }

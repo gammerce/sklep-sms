@@ -89,7 +89,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
 
         $amounts = "";
         while ($row = $this->db->fetchArrayAssoc($result)) {
-            $sms_cost = strlen($row['sms_number'])
+            $smsCost = strlen($row['sms_number'])
                 ? number_format(
                     (get_sms_cost($row['sms_number']) / 100) * $this->settings['vat'],
                     2
@@ -102,7 +102,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             $provision = number_format($row['provision'] / 100, 2);
             $amounts .= $this->template->render(
                 "services/mybb_extra_groups/purchase_value",
-                compact('provision', 'sms_cost', 'row', 'amount'),
+                compact('provision', 'smsCost', 'row', 'amount'),
                 true,
                 false
             );
@@ -611,28 +611,28 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                 ? $this->lang->translate('never')
                 : date($this->settings['date_format'], $userService['expire']);
         $service = $this->service['name'];
-        $mybb_uid = htmlspecialchars($username . " ({$userService['mybb_uid']})");
+        $mybbUid = htmlspecialchars($username . " ({$userService['mybb_uid']})");
 
         return $this->template->render(
             "services/mybb_extra_groups/user_own_service",
-            compact('userService', 'service', 'mybb_uid', 'expire') + [
+            compact('userService', 'service', 'mybbUid', 'expire') + [
                 'moduleId' => $this->getModuleId(),
             ]
         );
     }
 
     /**
-     * @param string|int $user_id Int - by uid, String - by username
+     * @param string|int $userId Int - by uid, String - by username
      * @return null|MybbUser
      */
-    private function createMybbUser($user_id)
+    private function createMybbUser($userId)
     {
         $this->connectMybb();
 
-        if (is_integer($user_id)) {
-            $where = "`uid` = {$user_id}";
+        if (is_integer($userId)) {
+            $where = "`uid` = {$userId}";
         } else {
-            $where = $this->db_mybb->prepare("`username` = '%s'", [$user_id]);
+            $where = $this->db_mybb->prepare("`username` = '%s'", [$userId]);
         }
 
         $result = $this->db_mybb->query(

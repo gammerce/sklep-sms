@@ -50,10 +50,10 @@ class PageAdminSettings extends PageAdmin
 
         // Pobieranie listy dostępnych szablonów
         $dirlist = scandir($this->app->path('themes'));
-        $themes_list = "";
+        $themesList = "";
         foreach ($dirlist as $dir_name) {
             if ($dir_name[0] != '.' && is_dir($this->app->path("themes/$dir_name"))) {
-                $themes_list .= create_dom_element("option", $dir_name, [
+                $themesList .= create_dom_element("option", $dir_name, [
                     'value' => $dir_name,
                     'selected' => $dir_name == $this->settings['theme'] ? "selected" : "",
                 ]);
@@ -62,10 +62,10 @@ class PageAdminSettings extends PageAdmin
 
         // Pobieranie listy dostępnych języków
         $dirlist = scandir($this->app->path('includes/languages'));
-        $languages_list = "";
+        $languagesList = "";
         foreach ($dirlist as $dir_name) {
             if ($dir_name[0] != '.' && is_dir($this->app->path("includes/languages/{$dir_name}"))) {
-                $languages_list .= create_dom_element(
+                $languagesList .= create_dom_element(
                     "option",
                     $lang->translate('language_' . $dir_name),
                     [
@@ -84,8 +84,8 @@ class PageAdminSettings extends PageAdmin
                 "userEditServiceSelect",
                 "smsServices",
                 "transferServices",
-                "languages_list",
-                "themes_list",
+                "languagesList",
+                "themesList",
                 "cronSelect"
             ) + ["title" => $this->title]
         );

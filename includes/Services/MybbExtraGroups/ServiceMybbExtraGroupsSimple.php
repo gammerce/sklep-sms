@@ -45,33 +45,33 @@ class ServiceMybbExtraGroupsSimple extends Service implements
     {
         // WEB
         if ($this->showOnWeb()) {
-            $web_sel_yes = "selected";
+            $webSelYes = "selected";
         } else {
-            $web_sel_no = "selected";
+            $webSelNo = "selected";
         }
 
         // Jeżeli edytujemy
         if ($this->service !== null) {
             // DB
-            $db_password = strlen($this->service['data']['db_password']) ? "********" : "";
-            $db_host = htmlspecialchars($this->service['data']['db_host']);
-            $db_user = htmlspecialchars($this->service['data']['db_user']);
-            $db_name = htmlspecialchars($this->service['data']['db_name']);
+            $dbPassword = strlen($this->service['data']['db_password']) ? "********" : "";
+            $dbHost = htmlspecialchars($this->service['data']['db_host']);
+            $dbUser = htmlspecialchars($this->service['data']['db_user']);
+            $dbName = htmlspecialchars($this->service['data']['db_name']);
 
             // MyBB groups
-            $mybb_groups = htmlspecialchars($this->service['data']['mybb_groups']);
+            $mybbGroups = htmlspecialchars($this->service['data']['mybb_groups']);
         }
 
         return $this->template->render(
             "services/mybb_extra_groups/extra_fields",
             compact(
-                'web_sel_no',
-                'web_sel_yes',
-                'mybb_groups',
-                'db_host',
-                'db_user',
-                'db_password',
-                'db_name'
+                'webSelNo',
+                'webSelYes',
+                'mybbGroups',
+                'dbHost',
+                'dbUser',
+                'dbPassword',
+                'dbName'
             ) + ['moduleId' => $this->getModuleId()],
             true,
             false

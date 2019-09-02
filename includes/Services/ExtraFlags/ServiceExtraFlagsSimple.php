@@ -46,9 +46,9 @@ class ServiceExtraFlagsSimple extends Service implements
     {
         // WEB
         if ($this->showOnWeb()) {
-            $web_sel_yes = "selected";
+            $webSelYes = "selected";
         } else {
-            $web_sel_no = "selected";
+            $webSelNo = "selected";
         }
 
         // Nick, IP, SID
@@ -71,7 +71,7 @@ class ServiceExtraFlagsSimple extends Service implements
 
         return $this->template->render(
             "services/extra_flags/extra_fields",
-            compact('web_sel_no', 'web_sel_yes', 'types', 'flags') + [
+            compact('webSelNo', 'webSelYes', 'types', 'flags') + [
                 'moduleId' => $this->getModuleId(),
             ],
             true,

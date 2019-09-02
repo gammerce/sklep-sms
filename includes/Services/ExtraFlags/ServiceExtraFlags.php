@@ -306,7 +306,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     public function orderDetails(Purchase $purchaseData)
     {
         $server = $this->heart->getServer($purchaseData->getOrder('server'));
-        $type_name = $this->get_type_name2($purchaseData->getOrder('type'));
+        $typeName = $this->get_type_name2($purchaseData->getOrder('type'));
         if (strlen($purchaseData->getOrder('password'))) {
             $password =
                 "<strong>{$this->lang->translate('password')}</strong>: " .
@@ -316,14 +316,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $email = strlen($purchaseData->getEmail())
             ? htmlspecialchars($purchaseData->getEmail())
             : $this->lang->translate('none');
-        $auth_data = htmlspecialchars($purchaseData->getOrder('auth_data'));
+        $authData = htmlspecialchars($purchaseData->getOrder('auth_data'));
         $amount = !$purchaseData->getOrder('forever')
             ? $purchaseData->getOrder('amount') . " " . $this->service['tag']
             : $this->lang->translate('forever');
 
         return $this->template->render(
             "services/extra_flags/order_details",
-            compact('server', 'amount', 'type_name', 'auth_data', 'password', 'email') + [
+            compact('server', 'amount', 'typeName', 'authData', 'password', 'email') + [
                 'serviceName' => $this->service['name'],
             ],
             true,
@@ -1580,7 +1580,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $values = '';
         while ($row = $this->db->fetchArrayAssoc($result)) {
             $provision = number_format($row['provision'] / 100, 2);
-            $sms_cost = strlen($row['sms_number'])
+            $smsCost = strlen($row['sms_number'])
                 ? number_format(
                     (get_sms_cost($row['sms_number']) / 100) * $this->settings['vat'],
                     2
@@ -1592,7 +1592,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     : $this->lang->translate('forever');
             $values .= $this->template->render(
                 "services/extra_flags/purchase_value",
-                compact('provision', 'sms_cost', 'row', 'amount'),
+                compact('provision', 'smsCost', 'row', 'amount'),
                 true,
                 false
             );

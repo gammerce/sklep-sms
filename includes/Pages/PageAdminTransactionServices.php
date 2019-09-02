@@ -90,14 +90,14 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
                         [$data['id']]
                     )
                 );
-                $transaction_service = $this->db->fetchArrayAssoc($result);
+                $transactionService = $this->db->fetchArrayAssoc($result);
 
-                $transaction_service['id'] = htmlspecialchars($transaction_service['id']);
-                $transaction_service['name'] = htmlspecialchars($transaction_service['name']);
-                $transaction_service['data'] = json_decode($transaction_service['data']);
+                $transactionService['id'] = htmlspecialchars($transactionService['id']);
+                $transactionService['name'] = htmlspecialchars($transactionService['name']);
+                $transactionService['data'] = json_decode($transactionService['data']);
 
-                $data_values = "";
-                foreach ($transaction_service['data'] as $name => $value) {
+                $dataValues = "";
+                foreach ($transactionService['data'] as $name => $value) {
                     switch ($name) {
                         case 'sms_text':
                             $text = $this->lang->strtoupper($this->lang->translate('sms_code'));
@@ -109,7 +109,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
                             $text = $this->lang->strtoupper($name);
                             break;
                     }
-                    $data_values .= $this->template->render(
+                    $dataValues .= $this->template->render(
                         "tr_name_input",
                         compact('text', 'name', 'value')
                     );
@@ -117,7 +117,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
 
                 $output = $this->template->render(
                     "admin/action_boxes/transaction_service_edit",
-                    compact('transaction_service', 'data_values')
+                    compact('transactionService', 'dataValues')
                 );
                 break;
 

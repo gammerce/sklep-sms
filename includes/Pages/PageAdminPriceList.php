@@ -103,7 +103,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
             );
             $price = $this->db->fetchArrayAssoc($result);
 
-            $all_servers = $price['server'] == -1 ? "selected" : "";
+            $allServers = $price['server'] == -1 ? "selected" : "";
         }
 
         // Pobranie usług
@@ -150,7 +150,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
             case "price_edit":
                 $output = $this->template->render(
                     "admin/action_boxes/price_edit",
-                    compact('services', 'servers', 'tariffs', 'price', 'all_servers')
+                    compact('services', 'servers', 'tariffs', 'price', 'allServers')
                 );
                 break;
 

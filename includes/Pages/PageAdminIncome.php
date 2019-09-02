@@ -35,11 +35,11 @@ class PageAdminIncome extends PageAdmin
         $G_MONTH = isset($query['month']) ? $query['month'] : date("m");
         $G_YEAR = isset($query['year']) ? $query['year'] : date("Y");
 
-        $table_row = "";
+        $tableRow = "";
         // Uzyskanie wszystkich serwerów
         foreach ($this->heart->getServers() as $id => $server) {
             $obejcts_ids[] = $id;
-            $table_row .= create_dom_element("td", $server['name']);
+            $tableRow .= create_dom_element("td", $server['name']);
         }
         $obejcts_ids[] = 0;
 
@@ -83,7 +83,7 @@ class PageAdminIncome extends PageAdmin
         $buttons = $this->template->render("admin/income_button", compact('years', 'months'));
 
         // Pobranie nagłówka tabeli
-        $thead = $this->template->render("admin/income_thead", compact('table_row'));
+        $thead = $this->template->render("admin/income_thead", compact('tableRow'));
 
         //
         // Pobranie danych do tabeli
@@ -109,8 +109,8 @@ class PageAdminIncome extends PageAdmin
             }
 
             // Zerujemy dochód w danym dniu na danym serwerze
-            $day_income = 0;
-            $table_row = "";
+            $dayIncome = 0;
+            $tableRow = "";
 
             // Lecimy po każdym obiekcie, niezależnie, czy zarobiliśmy na nim czy nie
             foreach ($obejcts_ids as $object_id) {
@@ -119,35 +119,35 @@ class PageAdminIncome extends PageAdmin
                 }
 
                 $income = array_get($data, "$date.$object_id", 0);
-                $day_income += $income;
+                $dayIncome += $income;
                 $servers_incomes[$object_id] += $income;
-                $table_row .= create_dom_element("td", number_format($income / 100.0, 2));
+                $tableRow .= create_dom_element("td", number_format($income / 100.0, 2));
             }
 
             // Zaokraglenie do dowch miejsc po przecinku zarobku w danym dniu
-            $day_income = number_format($day_income / 100.0, 2);
+            $dayIncome = number_format($dayIncome / 100.0, 2);
 
             $tbody .= $this->template->render(
                 "admin/income_trow",
-                compact('date', 'table_row', 'day_income')
+                compact('date', 'tableRow', 'dayIncome')
             );
         }
 
         // Pobranie podliczenia tabeli
-        $table_row = "";
-        $total_income = 0;
+        $tableRow = "";
+        $totalIncome = 0;
         // Lecimy po wszystkich obiektach na których zarobiliśmy kasę
         foreach ($servers_incomes as $server_income) {
-            $total_income += $server_income; // Całk przychód
-            $table_row .= create_dom_element("td", number_format($server_income / 100.0, 2));
+            $totalIncome += $server_income; // Całk przychód
+            $tableRow .= create_dom_element("td", number_format($server_income / 100.0, 2));
         }
 
         // Jeżeli coś się policzyło, są jakieś dane
         if (strlen($tbody)) {
-            $total_income = number_format($total_income / 100.0, 2);
+            $totalIncome = number_format($totalIncome / 100.0, 2);
             $tbody .= $this->template->render(
                 "admin/income_trow2",
-                compact('table_row', 'total_income')
+                compact('tableRow', 'totalIncome')
             );
         }
         // Brak danych
@@ -156,12 +156,12 @@ class PageAdminIncome extends PageAdmin
         }
 
         // Pobranie wygladu strony
-        $tfoot_class = '';
+        $tfootClass = '';
         $pagination = '';
         $title = $this->title;
         return $this->template->render(
             "admin/table_structure",
-            compact('buttons', 'thead', 'tbody', 'pagination', 'tfoot_class', 'title')
+            compact('buttons', 'thead', 'tbody', 'pagination', 'tfootClass', 'title')
         );
     }
 }

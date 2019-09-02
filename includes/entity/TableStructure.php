@@ -539,9 +539,9 @@ class Wrapper extends Div
         $buttons->setStyle('float', 'right');
 
         if ($this->search) {
-            $search_text = $request->get('search');
+            $searchText = $request->get('search');
             $buttons->addContent(
-                new SimpleText($template->render("admin/form_search", compact('search_text')))
+                new SimpleText($template->render("admin/form_search", compact('searchText')))
             );
         }
 

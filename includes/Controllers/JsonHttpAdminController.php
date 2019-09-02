@@ -626,9 +626,9 @@ class JsonHttpAdminController
                     [$_POST['id']]
                 )
             );
-            $transaction_service = $db->fetchArrayAssoc($result);
-            $transaction_service['data'] = json_decode($transaction_service['data']);
-            foreach ($transaction_service['data'] as $key => $value) {
+            $transactionService = $db->fetchArrayAssoc($result);
+            $transactionService['data'] = json_decode($transactionService['data']);
+            foreach ($transactionService['data'] as $key => $value) {
                 $arr[$key] = $_POST[$key];
             }
 
