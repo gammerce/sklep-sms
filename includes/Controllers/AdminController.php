@@ -140,10 +140,7 @@ class AdminController
             // Płatności
             $pid = "transaction_services";
             $name = $lang->translate($pid);
-            $transactionServicesLink = $template->render(
-                "admin/page_link",
-                compact('pid', 'name')
-            );
+            $transactionServicesLink = $template->render("admin/page_link", compact('pid', 'name'));
 
             // Taryfy
             $pid = "tariffs";
