@@ -89,10 +89,7 @@ class UpdateInfo
                 $everythingOk = false;
             }
 
-            $filesDelete .= $this->template->installUpdateRender(
-                'file',
-                compact('file', 'status')
-            );
+            $filesDelete .= $this->template->installUpdateRender('file', compact('file', 'status'));
         }
         if (strlen($filesDelete)) {
             $text = "Pliki do usunięcia";

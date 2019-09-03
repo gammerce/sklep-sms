@@ -1019,14 +1019,10 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 continue;
             }
 
-            $serviceInfo['types'] .= create_dom_element(
-                "option",
-                $this->getTypeName($optionId),
-                [
-                    'value' => $optionId,
-                    'selected' => $optionId == $userService['type'] ? "selected" : "",
-                ]
-            );
+            $serviceInfo['types'] .= create_dom_element("option", $this->getTypeName($optionId), [
+                'value' => $optionId,
+                'selected' => $optionId == $userService['type'] ? "selected" : "",
+            ]);
 
             if ($optionId == $userService['type']) {
                 switch ($optionId) {

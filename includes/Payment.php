@@ -293,9 +293,7 @@ class Payment
         // Nie znaleziono pliku z danymi
         if (
             !$transferFinalize->getDataFilename() ||
-            !file_exists(
-                $this->app->path('data/transfers/' . $transferFinalize->getDataFilename())
-            )
+            !file_exists($this->app->path('data/transfers/' . $transferFinalize->getDataFilename()))
         ) {
             log_info(
                 $this->langShop->sprintf(

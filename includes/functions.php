@@ -182,11 +182,7 @@ function get_pagination($all, $currentPage, $script, $query, $rowLimit = 0)
     $output = "";
     $lp = 2;
     for ($i = 1, $dots = false; $i <= $pagesAmount; ++$i) {
-        if (
-            $i != 1 &&
-            $i != $pagesAmount &&
-            ($i < $currentPage - $lp || $i > $currentPage + $lp)
-        ) {
+        if ($i != 1 && $i != $pagesAmount && ($i < $currentPage - $lp || $i > $currentPage + $lp)) {
             if (!$dots) {
                 if ($i < $currentPage - $lp) {
                     $href = $url->to(

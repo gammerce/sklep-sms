@@ -70,8 +70,7 @@ class PageAdminSettings extends PageAdmin
                     $lang->translate('language_' . $dirName),
                     [
                         'value' => $dirName,
-                        'selected' =>
-                            $dirName == $langShop->getCurrentLanguage() ? "selected" : "",
+                        'selected' => $dirName == $langShop->getCurrentLanguage() ? "selected" : "",
                     ]
                 );
             }
