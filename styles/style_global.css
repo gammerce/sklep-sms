@@ -1,6 +1,8 @@
+html {
+    height: 100%;
+}
+
 body {
-    margin: 0;
-    padding: 0;
     color: black;
     font-size: 16px;
     height: 100%;
@@ -10,6 +12,12 @@ td {
     vertical-align: top;
     padding: 0;
 }
+
+strong {
+    color: inherit;
+}
+
+/* INPUT */
 
 select,
 input[type="text"],
@@ -37,6 +45,8 @@ textarea:focus {
     box-shadow: 0 0 2px #1f9acf;
     border: 1px solid #1f9acf;
 }
+
+/* BUTTON */
 
 .button {
     -moz-appearance: none;
@@ -125,6 +135,8 @@ fieldset[disabled] .button.is-success {
     border-color: transparent;
     box-shadow: none;
 }
+
+/* OTHER */
 
 a {
     cursor: pointer;

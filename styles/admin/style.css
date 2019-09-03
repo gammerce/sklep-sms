@@ -1,8 +1,3 @@
-body {
-    margin: 0;
-    padding: 0;
-}
-
 table {
     border-collapse: separate;
     border-spacing: 0;
@@ -39,7 +34,7 @@ h4 {
 }
 
 .header {
-    height: 90px;
+    height: 130px;
     background: #222;
     padding: 10px 20px;
 }
@@ -65,7 +60,7 @@ h4 {
 }
 
 .sidebar,
-.content {
+.custom_content {
     padding: 10px;
     height: calc(100% - 130px);
 }
@@ -102,7 +97,7 @@ h4 {
     box-shadow: inset 0 0 4px #c7c7c7;
 }
 
-.content {
+.custom_content {
     width: auto;
     overflow: auto;
     background: #ccc;
