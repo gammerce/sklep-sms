@@ -209,31 +209,25 @@ h4 {
     background: #f5f6ce;
 }
 
-.form_update {
-    display: inline-block;
-    padding: 6px;
-    min-width: 30%;
+#form_settings_edit {
+    margin: 24px;
 }
 
-#form_settings_edit > table,
-.form_update > table {
-    border-spacing: 15px 5px;
+#form_settings_edit .field-body {
+    flex-grow: 3;
 }
 
-#form_settings_edit select,
-#form_settings_edit input[type="text"],
-#form_settings_edit input[type="password"],
-#form_settings_edit textarea {
+#form_settings_edit .select select,
+#form_settings_edit .input,
+#form_settings_edit .textarea {
     color: #000;
     background-color: #aaa;
 }
 
-#form_settings_edit .settings-brick {
-    display: inline-block;
-    margin: 24px;
-}
-
 .form_update {
+    display: inline-block;
+    padding: 6px;
+    min-width: 30%;
     font-family: monospace;
     line-height: 1.6;
 }
