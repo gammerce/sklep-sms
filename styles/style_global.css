@@ -19,32 +19,32 @@ strong {
 
 /* INPUT */
 
-select,
-input[type="text"],
-input[type="password"],
-textarea {
-    background-color: #4e4c4c;
-    color: #fff;
-    box-shadow: inset 1px 1px 0 black;
-    border: none;
-    padding: 4px 6px;
-    margin: 1px;
-}
+/*select,*/
+/*input[type="text"],*/
+/*input[type="password"],*/
+/*textarea {*/
+/*    background-color: #4e4c4c;*/
+/*    color: #fff;*/
+/*    box-shadow: inset 1px 1px 0 black;*/
+/*    border: none;*/
+/*    padding: 4px 6px;*/
+/*    margin: 1px;*/
+/*}*/
 
-select:disabled,
-input[type="text"]:disabled,
-input[type="password"]:disabled,
-textarea:disabled {
-    background-color: #323232;
-}
+/*select:disabled,*/
+/*input[type="text"]:disabled,*/
+/*input[type="password"]:disabled,*/
+/*textarea:disabled {*/
+/*    background-color: #323232;*/
+/*}*/
 
-select:focus,
-input[type="text"]:focus,
-input[type="password"]:focus,
-textarea:focus {
-    box-shadow: 0 0 2px #1f9acf;
-    border: 1px solid #1f9acf;
-}
+/*select:focus,*/
+/*input[type="text"]:focus,*/
+/*input[type="password"]:focus,*/
+/*textarea:focus {*/
+/*    box-shadow: 0 0 2px #1f9acf;*/
+/*    border: 1px solid #1f9acf;*/
+/*}*/
 
 /* BUTTON */
 
