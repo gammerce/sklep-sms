@@ -41,38 +41,38 @@ class ServiceMybbExtraGroupsSimple extends Service implements
      *
      * @return string
      */
-    public function service_admin_extra_fields_get()
+    public function serviceAdminExtraFieldsGet()
     {
         // WEB
-        if ($this->show_on_web()) {
-            $web_sel_yes = "selected";
+        if ($this->showOnWeb()) {
+            $webSelYes = "selected";
         } else {
-            $web_sel_no = "selected";
+            $webSelNo = "selected";
         }
 
         // Jeżeli edytujemy
         if ($this->service !== null) {
             // DB
-            $db_password = strlen($this->service['data']['db_password']) ? "********" : "";
-            $db_host = htmlspecialchars($this->service['data']['db_host']);
-            $db_user = htmlspecialchars($this->service['data']['db_user']);
-            $db_name = htmlspecialchars($this->service['data']['db_name']);
+            $dbPassword = strlen($this->service['data']['db_password']) ? "********" : "";
+            $dbHost = htmlspecialchars($this->service['data']['db_host']);
+            $dbUser = htmlspecialchars($this->service['data']['db_user']);
+            $dbName = htmlspecialchars($this->service['data']['db_name']);
 
             // MyBB groups
-            $mybb_groups = htmlspecialchars($this->service['data']['mybb_groups']);
+            $mybbGroups = htmlspecialchars($this->service['data']['mybb_groups']);
         }
 
         return $this->template->render(
             "services/mybb_extra_groups/extra_fields",
             compact(
-                'web_sel_no',
-                'web_sel_yes',
-                'mybb_groups',
-                'db_host',
-                'db_user',
-                'db_password',
-                'db_name'
-            ) + ['moduleId' => $this->get_module_id()],
+                'webSelNo',
+                'webSelYes',
+                'mybbGroups',
+                'dbHost',
+                'dbUser',
+                'dbPassword',
+                'dbName'
+            ) + ['moduleId' => $this->getModuleId()],
             true,
             false
         );
@@ -87,7 +87,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements
      * @return array        'key' => DOM Element name
      *                      'value' => Array of error messages
      */
-    public function service_admin_manage_pre($data)
+    public function serviceAdminManagePre($data)
     {
         $warnings = [];
 
@@ -146,18 +146,18 @@ class ServiceMybbExtraGroupsSimple extends Service implements
      *            'value'    => wartość kolumny
      *        )
      */
-    public function service_admin_manage_post($data)
+    public function serviceAdminManagePost($data)
     {
-        $mybb_groups = explode(",", $data['mybb_groups']);
-        foreach ($mybb_groups as $key => $group) {
-            $mybb_groups[$key] = trim($group);
-            if (!strlen($mybb_groups[$key])) {
-                unset($mybb_groups[$key]);
+        $mybbGroups = explode(",", $data['mybb_groups']);
+        foreach ($mybbGroups as $key => $group) {
+            $mybbGroups[$key] = trim($group);
+            if (!strlen($mybbGroups[$key])) {
+                unset($mybbGroups[$key]);
             }
         }
 
-        $extra_data = [
-            'mybb_groups' => implode(",", $mybb_groups),
+        $extraData = [
+            'mybb_groups' => implode(",", $mybbGroups),
             'web' => $data['web'],
             'db_host' => $data['db_host'],
             'db_user' => $data['db_user'],
@@ -170,18 +170,18 @@ class ServiceMybbExtraGroupsSimple extends Service implements
                 [
                     'type' => '%s',
                     'column' => 'data',
-                    'value' => json_encode($extra_data),
+                    'value' => json_encode($extraData),
                 ],
             ],
         ];
     }
 
-    public function user_service_admin_display_title_get()
+    public function userServiceAdminDisplayTitleGet()
     {
         return $this->lang->translate('mybb_groups');
     }
 
-    public function user_service_admin_display_get($get, $post)
+    public function userServiceAdminDisplayGet(array $query, array $body)
     {
         /** @var CurrentPage $currentPage */
         $currentPage = $this->app->make(CurrentPage::class);
@@ -204,10 +204,10 @@ class ServiceMybbExtraGroupsSimple extends Service implements
 
         // Wyszukujemy dane ktore spelniaja kryteria
         $where = '';
-        if (isset($get['search'])) {
+        if (isset($query['search'])) {
             searchWhere(
                 ["us.id", "us.uid", "u.username", "s.name", "usmeg.mybb_uid"],
-                $get['search'],
+                $query['search'],
                 $where
             );
         }
@@ -238,34 +238,34 @@ class ServiceMybbExtraGroupsSimple extends Service implements
                 get_row_limit($pageNumber)
         );
 
-        $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+        $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
-        while ($row = $this->db->fetch_array_assoc($result)) {
-            $body_row = new Table\BodyRow();
+        while ($row = $this->db->fetchArrayAssoc($result)) {
+            $bodyRow = new Table\BodyRow();
 
-            $body_row->setDbId($row['id']);
-            $body_row->addCell(
+            $bodyRow->setDbId($row['id']);
+            $bodyRow->addCell(
                 new Table\Cell(
                     $row['uid']
                         ? $row['username'] . " ({$row['uid']})"
                         : $this->lang->translate('none')
                 )
             );
-            $body_row->addCell(new Table\Cell($row['service']));
-            $body_row->addCell(new Table\Cell($row['mybb_uid']));
-            $body_row->addCell(
+            $bodyRow->addCell(new Table\Cell($row['service']));
+            $bodyRow->addCell(new Table\Cell($row['mybb_uid']));
+            $bodyRow->addCell(
                 new Table\Cell(
                     $row['expire'] == '-1'
                         ? $this->lang->translate('never')
                         : date($this->settings['date_format'], $row['expire'])
                 )
             );
-            if (get_privilages("manage_user_services")) {
-                $body_row->setButtonDelete(true);
-                $body_row->setButtonEdit(false);
+            if (get_privileges("manage_user_services")) {
+                $bodyRow->setButtonDelete(true);
+                $bodyRow->setButtonEdit(false);
             }
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);

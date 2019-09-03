@@ -26,7 +26,7 @@ class ServerRepository
             )
         );
 
-        $id = $this->db->last_id();
+        $id = $this->db->lastId();
 
         return new Server($id, $name, $ip, $port, $smsService);
     }

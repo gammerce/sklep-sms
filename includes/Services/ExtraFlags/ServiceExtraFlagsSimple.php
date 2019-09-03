@@ -3,6 +3,7 @@ namespace App\Services\ExtraFlags;
 
 use Admin\Table;
 use App\CurrentPage;
+use App\Models\Purchase;
 use App\Services\Interfaces\IServiceAdminManage;
 use App\Services\Interfaces\IServiceAvailableOnServers;
 use App\Services\Interfaces\IServiceCreate;
@@ -41,22 +42,22 @@ class ServiceExtraFlagsSimple extends Service implements
         $this->settings = $this->app->make(Settings::class);
     }
 
-    public function service_admin_extra_fields_get()
+    public function serviceAdminExtraFieldsGet()
     {
         // WEB
-        if ($this->show_on_web()) {
-            $web_sel_yes = "selected";
+        if ($this->showOnWeb()) {
+            $webSelYes = "selected";
         } else {
-            $web_sel_no = "selected";
+            $webSelNo = "selected";
         }
 
         // Nick, IP, SID
         $types = "";
-        for ($i = 0, $option_id = 1; $i < 3; $option_id = 1 << ++$i) {
-            $types .= create_dom_element("option", $this->get_type_name($option_id), [
-                'value' => $option_id,
+        for ($i = 0, $optionId = 1; $i < 3; $optionId = 1 << ++$i) {
+            $types .= create_dom_element("option", $this->getTypeName($optionId), [
+                'value' => $optionId,
                 'selected' =>
-                    $this->service !== null && $this->service['types'] & $option_id
+                    $this->service !== null && $this->service['types'] & $optionId
                         ? "selected"
                         : "",
             ]);
@@ -70,15 +71,15 @@ class ServiceExtraFlagsSimple extends Service implements
 
         return $this->template->render(
             "services/extra_flags/extra_fields",
-            compact('web_sel_no', 'web_sel_yes', 'types', 'flags') + [
-                'moduleId' => $this->get_module_id(),
+            compact('webSelNo', 'webSelYes', 'types', 'flags') + [
+                'moduleId' => $this->getModuleId(),
             ],
             true,
             false
         );
     }
 
-    public function service_admin_manage_pre($data)
+    public function serviceAdminManagePre($data)
     {
         $warnings = [];
 
@@ -121,7 +122,7 @@ class ServiceExtraFlagsSimple extends Service implements
         return $warnings;
     }
 
-    public function service_admin_manage_post($data)
+    public function serviceAdminManagePost($data)
     {
         // Przygotowujemy do zapisu ( suma bitowa ), które typy zostały wybrane
         $types = 0;
@@ -129,8 +130,8 @@ class ServiceExtraFlagsSimple extends Service implements
             $types |= $type;
         }
 
-        $extra_data = $this->service['data'];
-        $extra_data['web'] = $data['web'];
+        $extraData = $this->service['data'];
+        $extraData['web'] = $data['web'];
 
         // Tworzymy plik z opisem usługi
         $file = $this->app->path(
@@ -172,14 +173,13 @@ class ServiceExtraFlagsSimple extends Service implements
                 [
                     'type' => '%s',
                     'column' => 'data',
-                    'value' => json_encode($extra_data),
+                    'value' => json_encode($extraData),
                 ],
             ],
         ];
     }
 
-    // Zwraca nazwę typu
-    protected function get_type_name($value)
+    protected function getTypeName($value)
     {
         if ($value == ExtraFlagType::TYPE_NICK) {
             return $this->lang->translate('nickpass');
@@ -196,7 +196,7 @@ class ServiceExtraFlagsSimple extends Service implements
         return "";
     }
 
-    protected function get_type_name2($value)
+    protected function getTypeName2($value)
     {
         if ($value == ExtraFlagType::TYPE_NICK) {
             return $this->lang->translate('nick');
@@ -216,12 +216,12 @@ class ServiceExtraFlagsSimple extends Service implements
     // ----------------------------------------------------------------------------------
     // ### Wyświetlanie usług użytkowników w PA
 
-    public function user_service_admin_display_title_get()
+    public function userServiceAdminDisplayTitleGet()
     {
         return $this->lang->translate('extra_flags');
     }
 
-    public function user_service_admin_display_get($get, $post)
+    public function userServiceAdminDisplayGet(array $query, array $body)
     {
         /** @var CurrentPage $currentPage */
         $currentPage = $this->app->make(CurrentPage::class);
@@ -251,10 +251,10 @@ class ServiceExtraFlagsSimple extends Service implements
 
         // Wyszukujemy dane ktore spelniaja kryteria
         $where = '';
-        if (isset($get['search'])) {
+        if (isset($query['search'])) {
             searchWhere(
                 ["us.id", "us.uid", "u.username", "srv.name", "s.name", "usef.auth_data"],
-                $get['search'],
+                $query['search'],
                 $where
             );
         }
@@ -289,35 +289,35 @@ class ServiceExtraFlagsSimple extends Service implements
                 get_row_limit($pageNumber)
         );
 
-        $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+        $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
-        while ($row = $this->db->fetch_array_assoc($result)) {
-            $body_row = new Table\BodyRow();
+        while ($row = $this->db->fetchArrayAssoc($result)) {
+            $bodyRow = new Table\BodyRow();
 
-            $body_row->setDbId($row['id']);
-            $body_row->addCell(
+            $bodyRow->setDbId($row['id']);
+            $bodyRow->addCell(
                 new Table\Cell(
                     $row['uid']
                         ? $row['username'] . " ({$row['uid']})"
                         : $this->lang->translate('none')
                 )
             );
-            $body_row->addCell(new Table\Cell($row['server']));
-            $body_row->addCell(new Table\Cell($row['service']));
-            $body_row->addCell(new Table\Cell($row['auth_data']));
-            $body_row->addCell(
+            $bodyRow->addCell(new Table\Cell($row['server']));
+            $bodyRow->addCell(new Table\Cell($row['service']));
+            $bodyRow->addCell(new Table\Cell($row['auth_data']));
+            $bodyRow->addCell(
                 new Table\Cell(
                     $row['expire'] == '-1'
                         ? $this->lang->translate('never')
                         : date($this->settings['date_format'], $row['expire'])
                 )
             );
-            if (get_privilages("manage_user_services")) {
-                $body_row->setButtonDelete();
-                $body_row->setButtonEdit();
+            if (get_privileges("manage_user_services")) {
+                $bodyRow->setButtonDelete();
+                $bodyRow->setButtonEdit();
             }
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);
@@ -328,20 +328,20 @@ class ServiceExtraFlagsSimple extends Service implements
     /**
      * Metoda wywoływana, gdy usługa została prawidłowo zakupiona
      *
-     * @param \App\Models\Purchase $purchase_data
+     * @param \App\Models\Purchase $purchaseData
      *
      * @return integer        value returned by function add_bought_service_info
      */
-    public function purchase($purchase_data)
+    public function purchase(Purchase $purchaseData)
     {
-        // TODO: Implement purchase() method.
+        //
     }
 
     /**
      * Metoda która sprawdza poprawność wprowadzonych danych zakupu,
      * wywoływana gdy zakup został przeprowadzony z zewnątrz, nie przez formularz na stronie WWW.
      *
-     * @param \App\Models\Purchase $purchase_data
+     * @param \App\Models\Purchase $purchaseData
      *
      * @return array
      *  status => string id wiadomości,
@@ -350,8 +350,8 @@ class ServiceExtraFlagsSimple extends Service implements
      *  [data => array('warnings' => array())]
      *  [purchase_data => Entity_Purchase dane zakupu]
      */
-    public function purchase_data_validate($purchase_data)
+    public function purchaseDataValidate(Purchase $purchaseData)
     {
-        // TODO: Implement purchase_data_validate() method.
+        //
     }
 }

@@ -8,16 +8,16 @@ use App\TranslationManager;
 class PageAdminSettings extends PageAdmin
 {
     const PAGE_ID = 'settings';
-    protected $privilage = 'manage_settings';
+    protected $privilege = 'manage_settings';
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('settings');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('settings');
     }
 
-    protected function content($get, $post)
+    protected function content(array $query, array $body)
     {
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
@@ -28,16 +28,16 @@ class PageAdminSettings extends PageAdmin
         $result = $this->db->query(
             "SELECT id, name, sms, transfer " . "FROM `" . TABLE_PREFIX . "transaction_services`"
         );
-        $sms_services = $transfer_services = "";
-        while ($row = $this->db->fetch_array_assoc($result)) {
+        $smsServices = $transferServices = "";
+        while ($row = $this->db->fetchArrayAssoc($result)) {
             if ($row['sms']) {
-                $sms_services .= create_dom_element("option", $row['name'], [
+                $smsServices .= create_dom_element("option", $row['name'], [
                     'value' => $row['id'],
                     'selected' => $row['id'] == $this->settings['sms_service'] ? "selected" : "",
                 ]);
             }
             if ($row['transfer']) {
-                $transfer_services .= create_dom_element("option", $row['name'], [
+                $transferServices .= create_dom_element("option", $row['name'], [
                     'value' => $row['id'],
                     'selected' =>
                         $row['id'] == $this->settings['transfer_service'] ? "selected" : "",
@@ -50,28 +50,27 @@ class PageAdminSettings extends PageAdmin
 
         // Pobieranie listy dostępnych szablonów
         $dirlist = scandir($this->app->path('themes'));
-        $themes_list = "";
-        foreach ($dirlist as $dir_name) {
-            if ($dir_name[0] != '.' && is_dir($this->app->path("themes/$dir_name"))) {
-                $themes_list .= create_dom_element("option", $dir_name, [
-                    'value' => $dir_name,
-                    'selected' => $dir_name == $this->settings['theme'] ? "selected" : "",
+        $themesList = "";
+        foreach ($dirlist as $dirName) {
+            if ($dirName[0] != '.' && is_dir($this->app->path("themes/$dirName"))) {
+                $themesList .= create_dom_element("option", $dirName, [
+                    'value' => $dirName,
+                    'selected' => $dirName == $this->settings['theme'] ? "selected" : "",
                 ]);
             }
         }
 
         // Pobieranie listy dostępnych języków
         $dirlist = scandir($this->app->path('includes/languages'));
-        $languages_list = "";
-        foreach ($dirlist as $dir_name) {
-            if ($dir_name[0] != '.' && is_dir($this->app->path("includes/languages/{$dir_name}"))) {
-                $languages_list .= create_dom_element(
+        $languagesList = "";
+        foreach ($dirlist as $dirName) {
+            if ($dirName[0] != '.' && is_dir($this->app->path("includes/languages/{$dirName}"))) {
+                $languagesList .= create_dom_element(
                     "option",
-                    $lang->translate('language_' . $dir_name),
+                    $lang->translate('language_' . $dirName),
                     [
-                        'value' => $dir_name,
-                        'selected' =>
-                            $dir_name == $langShop->getCurrentLanguage() ? "selected" : "",
+                        'value' => $dirName,
+                        'selected' => $dirName == $langShop->getCurrentLanguage() ? "selected" : "",
                     ]
                 );
             }
@@ -82,10 +81,10 @@ class PageAdminSettings extends PageAdmin
             "admin/settings",
             compact(
                 "userEditServiceSelect",
-                "sms_services",
-                "transfer_services",
-                "languages_list",
-                "themes_list",
+                "smsServices",
+                "transferServices",
+                "languagesList",
+                "themesList",
                 "cronSelect"
             ) + ["title" => $this->title]
         );

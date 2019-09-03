@@ -15,10 +15,10 @@ class PageAdminPaymentSms extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('payments_sms');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('payments_sms');
     }
 
-    protected function content($get, $post)
+    protected function content(array $query, array $body)
     {
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
@@ -46,29 +46,29 @@ class PageAdminPaymentSms extends PageAdmin
         $where = "( t.payment = 'sms' ) ";
 
         // Wyszukujemy platnosci o konkretnym ID
-        if (isset($get['payid'])) {
+        if (isset($query['payid'])) {
             if (strlen($where)) {
                 $where .= " AND ";
             }
 
-            $where .= $this->db->prepare("( t.payment_id = '%s' ) ", [$get['payid']]);
+            $where .= $this->db->prepare("( t.payment_id = '%s' ) ", [$query['payid']]);
 
             // Podświetlenie konkretnej płatności
             //$row['class'] = "highlighted";
         }
         // Wyszukujemy dane ktore spelniaja kryteria
         else {
-            if (isset($get['search'])) {
+            if (isset($query['search'])) {
                 searchWhere(
                     ["t.payment_id", "t.sms_text", "t.sms_code", "t.sms_number"],
-                    $get['search'],
+                    $query['search'],
                     $where
                 );
             }
         }
 
-        if (isset($get['payid'])) {
-            $where .= $this->db->prepare(" AND `payment_id` = '%d' ", [$get['payid']]);
+        if (isset($query['payid'])) {
+            $where .= $this->db->prepare(" AND `payment_id` = '%d' ", [$query['payid']]);
         }
 
         // Jezeli jest jakis where, to dodajemy WHERE
@@ -85,13 +85,13 @@ class PageAdminPaymentSms extends PageAdmin
                 get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($this->db->get_column('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
+        $table->setDbRowsAmount($this->db->getColumn('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
 
-        while ($row = $this->db->fetch_array_assoc($result)) {
-            $body_row = new BodyRow();
+        while ($row = $this->db->fetchArrayAssoc($result)) {
+            $bodyRow = new BodyRow();
 
-            if ($get['highlight'] && $get['payid'] == $row['payment_id']) {
-                $body_row->setParam('class', 'highlighted');
+            if ($query['highlight'] && $query['payid'] == $row['payment_id']) {
+                $bodyRow->setParam('class', 'highlighted');
             }
 
             $free = $row['free']
@@ -104,24 +104,24 @@ class PageAdminPaymentSms extends PageAdmin
                 ? number_format($row['cost'] / 100.0, 2) . " " . $this->settings['currency']
                 : "";
 
-            $body_row->setDbId($row['payment_id']);
-            $body_row->addCell(new Cell($row['sms_text']));
-            $body_row->addCell(new Cell($row['sms_number']));
-            $body_row->addCell(new Cell($row['sms_code']));
-            $body_row->addCell(new Cell($income));
-            $body_row->addCell(new Cell($cost));
-            $body_row->addCell(new Cell($free));
-            $body_row->addCell(new Cell(htmlspecialchars($row['ip'])));
+            $bodyRow->setDbId($row['payment_id']);
+            $bodyRow->addCell(new Cell($row['sms_text']));
+            $bodyRow->addCell(new Cell($row['sms_number']));
+            $bodyRow->addCell(new Cell($row['sms_code']));
+            $bodyRow->addCell(new Cell($income));
+            $bodyRow->addCell(new Cell($cost));
+            $bodyRow->addCell(new Cell($free));
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['ip'])));
 
             $cell = new Cell();
             $div = new Div(get_platform($row['platform']));
             $div->setParam('class', 'one_line');
             $cell->addContent($div);
-            $body_row->addCell($cell);
+            $bodyRow->addCell($cell);
 
-            $body_row->addCell(new Cell(convertDate($row['timestamp'])));
+            $bodyRow->addCell(new Cell(convertDate($row['timestamp'])));
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);

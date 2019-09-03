@@ -30,19 +30,19 @@ class Pukawka extends PaymentModule implements SupportSms
             throw new NoConnectionException();
         }
 
-        $get = $response->json();
+        $body = $response->json();
 
-        if (!empty($get)) {
-            if ($get['error']) {
-                if ($get['error'] === "wrong_api_key") {
+        if (!empty($body)) {
+            if ($body['error']) {
+                if ($body['error'] === "wrong_api_key") {
                     throw new WrongCredentialsException();
                 }
 
-                throw new ExternalErrorException($get['error']);
+                throw new ExternalErrorException($body['error']);
             }
 
-            if ($get['status'] == 'ok') {
-                $kwota = str_replace(',', '.', $get['kwota']);
+            if ($body['status'] == 'ok') {
+                $kwota = str_replace(',', '.', $body['kwota']);
                 foreach ($this->stawki as $s) {
                     if (str_replace(',', '.', $s['wartosc']) != $kwota) {
                         continue;

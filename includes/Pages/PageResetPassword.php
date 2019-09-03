@@ -11,13 +11,13 @@ class PageResetPassword extends Page implements IBeLoggedCannot
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('reset_password');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('reset_password');
     }
 
-    protected function content($get, $post)
+    protected function content(array $query, array $body)
     {
         // Brak podanego kodu
-        if (!strlen($get['code'])) {
+        if (!strlen($query['code'])) {
             return $this->lang->translate('no_reset_key');
         }
 
@@ -27,16 +27,16 @@ class PageResetPassword extends Page implements IBeLoggedCannot
                     TABLE_PREFIX .
                     "users` " .
                     "WHERE `reset_password_key` = '%s'",
-                [$get['code']]
+                [$query['code']]
             )
         );
 
-        if (!$this->db->num_rows($result)) {
+        if (!$this->db->numRows($result)) {
             // Nie znalazło użytkownika z takim kodem
             return $this->lang->translate('wrong_reset_key');
         }
 
-        $row = $this->db->fetch_array_assoc($result);
+        $row = $this->db->fetchArrayAssoc($result);
         $sign = md5($row['uid'] . $this->settings['random_key']);
 
         return $this->template->render("reset_password", compact('row', 'sign'));

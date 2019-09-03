@@ -14,7 +14,7 @@ class Simpay extends PaymentModule implements SupportSms
 {
     protected $id = "simpay";
 
-    public function verifySms($sms_code, $sms_number)
+    public function verifySms($returnCode, $number)
     {
         $response = $this->requester->post('https://simpay.pl/api/1/status', [
             'params' => [
@@ -23,8 +23,8 @@ class Simpay extends PaymentModule implements SupportSms
                     'secret' => $this->getSecret(),
                 ],
                 'service_id' => $this->getServiceId(),
-                'number' => $sms_number,
-                'code' => $sms_code,
+                'number' => $number,
+                'code' => $returnCode,
             ],
         ]);
 

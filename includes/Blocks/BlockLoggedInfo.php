@@ -7,12 +7,12 @@ class BlockLoggedInfo extends BlockSimple implements IBeLoggedMust
 {
     protected $template = "logged_in_informations";
 
-    public function get_content_class()
+    public function getContentClass()
     {
         return "logged_info";
     }
 
-    public function get_content_id()
+    public function getContentId()
     {
         return "logged_info";
     }

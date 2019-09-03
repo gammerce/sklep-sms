@@ -39,8 +39,8 @@ class Mailer
         ////////// USTAWIENIA //////////
         $email = filter_var($email, FILTER_VALIDATE_EMAIL); // Adres e-mail adresata
         $name = htmlspecialchars($name);
-        $sender_email = $this->settings['sender_email'];
-        $sender_name = $this->settings['sender_email_name'];
+        $senderEmail = $this->settings['sender_email'];
+        $senderName = $this->settings['sender_email_name'];
 
         if (!strlen($email)) {
             return "wrong_email";
@@ -54,13 +54,13 @@ class Mailer
             $mail->CharSet = 'UTF-8';
             $mail->Host = $this->config['Host'];
             $mail->SMTPAuth = true;
-            $mail->Username = $sender_email;
+            $mail->Username = $senderEmail;
             $mail->Password = $this->config['Password'];
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
 
             //Recipients
-            $mail->setFrom($sender_email, $sender_name);
+            $mail->setFrom($senderEmail, $senderName);
             $mail->addAddress($email, $name);
 
             //Content
@@ -92,8 +92,8 @@ class Mailer
         ////////// USTAWIENIA //////////
         $email = filter_var($email, FILTER_VALIDATE_EMAIL); // Adres e-mail adresata
         $name = htmlspecialchars($name);
-        $sender_email = $settings['sender_email'];
-        $sender_name = $settings['sender_email_name'];
+        $senderEmail = $settings['sender_email'];
+        $senderName = $settings['sender_email_name'];
 
         if (!strlen($email)) {
             return "wrong_email";
@@ -101,14 +101,14 @@ class Mailer
 
         $header = "MIME-Version: 1.0\r\n";
         $header .= "Content-Type: text/html; charset=UTF-8\n";
-        $header .= "From: {$sender_name} < {$sender_email} >\n";
+        $header .= "From: {$senderName} < {$senderEmail} >\n";
         $header .= "To: {$name} < {$email} >\n";
-        $header .= "X-Sender: {$sender_name} < {$sender_email} >\n";
+        $header .= "X-Sender: {$senderName} < {$senderEmail} >\n";
         $header .= 'X-Mailer: PHP/' . phpversion();
         $header .= "X-Priority: 1 (Highest)\n";
         $header .= "X-MSMail-Priority: High\n";
         $header .= "Importance: High\n";
-        $header .= "Return-Path: {$sender_email}\n"; // Return path for errors
+        $header .= "Return-Path: {$senderEmail}\n"; // Return path for errors
 
         if (!mail($email, $subject, $text, $header)) {
             return "not_sent";

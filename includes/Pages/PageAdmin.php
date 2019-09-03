@@ -5,12 +5,12 @@ use App\Interfaces\IBeLoggedMust;
 
 abstract class PageAdmin extends Page implements IBeLoggedMust
 {
-    protected $privilage = 'acp';
+    protected $privilege = 'acp';
 
-    public function get_content($get, $post)
+    public function getContent(array $query, array $body)
     {
-        if (!get_privilages($this->privilage)) {
-            return $this->lang->translate('no_privilages');
+        if (!get_privileges($this->privilege)) {
+            return $this->lang->translate('no_privileges');
         }
 
         // Dodajemy wszystkie skrypty
@@ -18,7 +18,7 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
         if (strlen($this::PAGE_ID) && file_exists($this->app->path($path))) {
             foreach (scandir($this->app->path($path)) as $file) {
                 if (ends_at($file, ".js")) {
-                    $this->heart->script_add(
+                    $this->heart->scriptAdd(
                         $this->settings['shop_url_slash'] .
                             $path .
                             $file .
@@ -34,7 +34,7 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
         if (strlen($this::PAGE_ID) && file_exists($this->app->path($path))) {
             foreach (scandir($this->app->path($path)) as $file) {
                 if (ends_at($file, ".css")) {
-                    $this->heart->style_add(
+                    $this->heart->styleAdd(
                         $this->settings['shop_url_slash'] .
                             $path .
                             $file .
@@ -47,10 +47,10 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
 
         // Globalne jsy cssy konkretnych modułów usług
         if (in_array($this::PAGE_ID, ["service_codes", "services", "user_service"])) {
-            foreach ($this->heart->get_services_modules() as $module_info) {
-                $path = "styles/services/" . $module_info['id'] . ".css";
+            foreach ($this->heart->getServicesModules() as $moduleInfo) {
+                $path = "styles/services/" . $moduleInfo['id'] . ".css";
                 if (file_exists($this->app->path($path))) {
-                    $this->heart->style_add(
+                    $this->heart->styleAdd(
                         $this->settings['shop_url_slash'] .
                             $path .
                             "?version=" .
@@ -58,9 +58,9 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
                     );
                 }
 
-                $path = "jscripts/services/" . $module_info['id'] . ".js";
+                $path = "jscripts/services/" . $moduleInfo['id'] . ".js";
                 if (file_exists($this->app->path($path))) {
-                    $this->heart->script_add(
+                    $this->heart->scriptAdd(
                         $this->settings['shop_url_slash'] .
                             $path .
                             "?version=" .
@@ -70,6 +70,6 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
             }
         }
 
-        return $this->content($get, $post);
+        return $this->content($query, $body);
     }
 }

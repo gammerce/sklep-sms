@@ -11,16 +11,16 @@ use App\Pages\Interfaces\IPageAdminActionBox;
 class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = 'tariffs';
-    protected $privilage = 'manage_settings';
+    protected $privilege = 'manage_settings';
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('tariffs');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('tariffs');
     }
 
-    protected function content($get, $post)
+    protected function content(array $query, array $body)
     {
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
@@ -34,19 +34,19 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
         $table->addHeadCell(new Cell($this->lang->translate('provision')));
 
         foreach ($this->heart->getTariffs() as $tariff) {
-            $body_row = new BodyRow();
+            $bodyRow = new BodyRow();
 
             $provision = number_format($tariff->getProvision() / 100.0, 2);
 
-            $body_row->setDbId($tariff->getId());
-            $body_row->addCell(new Cell("{$provision} {$this->settings['currency']}"));
+            $bodyRow->setDbId($tariff->getId());
+            $bodyRow->addCell(new Cell("{$provision} {$this->settings['currency']}"));
 
-            $body_row->setButtonEdit(true);
+            $bodyRow->setButtonEdit(true);
             if (!$tariff->isPredefined()) {
-                $body_row->setButtonDelete(true);
+                $bodyRow->setButtonDelete(true);
             }
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);
@@ -61,16 +61,16 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    public function get_action_box($box_id, $data)
+    public function getActionBox($boxId, $data)
     {
-        if (!get_privilages("manage_settings")) {
+        if (!get_privileges("manage_settings")) {
             return [
                 'status' => "not_logged_in",
                 'text' => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
-        switch ($box_id) {
+        switch ($boxId) {
             case "tariff_add":
                 $output = $this->template->render("admin/action_boxes/tariff_add");
                 break;

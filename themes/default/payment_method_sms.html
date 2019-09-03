@@ -4,7 +4,7 @@
     </div>
     <div class="payment_type sms">
         <strong>{$lang->translate('price')}</strong>:
-        {$purchase_data->getTariff()->getSmsCostBrutto()} {$settings['currency']}<br />
+        {$purchaseData->getTariff()->getSmsCostBrutto()} {$settings['currency']}<br />
         <br />
 
         <div id="sms_details">
@@ -20,12 +20,12 @@
                 <tr>
                     <td class="right">{$lang->translate('sms_text')}</td>
                     <td style="width: 20px;"></td>
-                    <td class="left">{$payment_sms->getSmsCode(true)}</td>
+                    <td class="left">{$paymentSms->getSmsCode(true)}</td>
                 </tr>
                 <tr>
                     <td class="right">{$lang->translate('sms_number')}</td>
                     <td></td>
-                    <td class="left">{$purchase_data->getTariff()->getNumber()}</td>
+                    <td class="left">{$purchaseData->getTariff()->getNumber()}</td>
                 </tr>
                 <tr>
                     <td class="right">{$lang->translate('sms_return_code')}</td>

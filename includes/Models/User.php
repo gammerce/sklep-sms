@@ -7,86 +7,52 @@ use Symfony\Component\HttpFoundation\Request;
 
 class User
 {
-    const TEST = 1;
-
-    /**
-     * @var integer
-     */
+    /** @var integer */
     private $uid;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $username;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $password;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $salt;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $email;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $forename;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $surname;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $groups = [];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $regdate;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $lastactiv;
 
-    /**
-     * @var integer
-     */
+    /** @var integer */
     private $wallet;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $regip;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $lastip;
 
-    /**
-     * @var string
-     */
-    private $reset_password_key;
+    /** @var string */
+    private $resetPasswordKey;
 
-    /**
-     * @var array
-     */
-    private $privilages = [];
+    /** @var array */
+    private $privileges = [];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $platform;
 
     /** @var Database */
@@ -125,8 +91,8 @@ class User
             )
         );
 
-        if ($this->db->num_rows($result)) {
-            $row = $this->db->fetch_array_assoc($result);
+        if ($this->db->numRows($result)) {
+            $row = $this->db->fetchArrayAssoc($result);
             $this->uid = intval($row['uid']);
             $this->username = $row['username'];
             $this->password = $row['password'];
@@ -140,14 +106,14 @@ class User
             $this->wallet = intval($row['wallet']);
             $this->regip = $row['regip'];
             $this->lastip = $row['lastip'];
-            $this->reset_password_key = $row['reset_password_key'];
+            $this->resetPasswordKey = $row['reset_password_key'];
         }
 
-        foreach ($this->groups as $group_id) {
-            $privilages = $heart->get_group_privilages($group_id);
-            foreach ($privilages as $privilage => $value) {
-                if (strlen($privilage)) {
-                    $this->privilages[$privilage] = $value ? true : false;
+        foreach ($this->groups as $groupId) {
+            $privileges = $heart->getGroupPrivileges($groupId);
+            foreach ($privileges as $privilege => $value) {
+                if (strlen($privilege)) {
+                    $this->privileges[$privilege] = $value ? true : false;
                 }
             }
         }
@@ -319,15 +285,15 @@ class User
      */
     public function getResetPasswordKey()
     {
-        return $this->reset_password_key;
+        return $this->resetPasswordKey;
     }
 
     /**
-     * @param string $reset_password_key
+     * @param string $resetPasswordKey
      */
-    public function setResetPasswordKey($reset_password_key)
+    public function setResetPasswordKey($resetPasswordKey)
     {
-        $this->reset_password_key = $reset_password_key;
+        $this->resetPasswordKey = $resetPasswordKey;
     }
 
     /**
@@ -335,27 +301,27 @@ class User
      *
      * @return boolean
      */
-    public function getPrivilages($key)
+    public function getPrivileges($key)
     {
-        return if_isset($this->privilages[$key], false);
+        return if_isset($this->privileges[$key], false);
     }
 
     /**
-     * @param array $privilages
+     * @param array $privileges
      */
-    public function setPrivilages($privilages)
+    public function setPrivileges($privileges)
     {
-        foreach ($privilages as $key => $value) {
-            $this->privilages[$key] = $value;
+        foreach ($privileges as $key => $value) {
+            $this->privileges[$key] = $value;
         }
     }
 
     /**
-     * Removes all privilages
+     * Removes all privileges
      */
-    public function removePrivilages()
+    public function removePrivileges()
     {
-        $this->privilages = [];
+        $this->privileges = [];
     }
 
     /**

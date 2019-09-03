@@ -24,13 +24,13 @@ class PageAdminMain extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('main_page');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('main_page');
         $this->version = $version;
         $this->license = $license;
         $this->requester = $requester;
     }
 
-    protected function content($get, $post)
+    protected function content(array $query, array $body)
     {
         //
         // Ogloszenia
@@ -40,7 +40,7 @@ class PageAdminMain extends PageAdmin
         // Info o braku licki
         if (!$this->license->isValid()) {
             $settingsUrl = $this->url->to("/admin/settings");
-            $this->add_note(
+            $this->addNote(
                 $this->lang->sprintf($this->lang->translate('license_error'), $settingsUrl),
                 "negative",
                 $notes
@@ -53,7 +53,7 @@ class PageAdminMain extends PageAdmin
             $expireSeconds >= 0 &&
             $expireSeconds < self::EXPIRE_THRESHOLD
         ) {
-            $this->add_note(
+            $this->addNote(
                 $this->lang->sprintf(
                     $this->lang->translate('license_soon_expire'),
                     secondsToTime(strtotime($this->license->getExpires()) - time())
@@ -70,7 +70,7 @@ class PageAdminMain extends PageAdmin
         if ($this->app->version() !== $newestVersion) {
             $updateWebLink = $this->url->to("/admin/update_web");
 
-            $this->add_note(
+            $this->addNote(
                 $this->lang->sprintf(
                     $this->lang->translate('update_available'),
                     htmlspecialchars($newestVersion),
@@ -82,7 +82,7 @@ class PageAdminMain extends PageAdmin
         }
 
         $serversCount = 0;
-        foreach ($this->heart->get_servers() as $server) {
+        foreach ($this->heart->getServers() as $server) {
             if (!$this->isServerNewest($server, $newestAmxxVersion, $newestSmVersion)) {
                 $serversCount += 1;
             }
@@ -91,11 +91,11 @@ class PageAdminMain extends PageAdmin
         if ($serversCount) {
             $updateServersLink = $this->url->to("/admin/update_servers");
 
-            $this->add_note(
+            $this->addNote(
                 $this->lang->sprintf(
                     $this->lang->translate('update_available_servers'),
                     $serversCount,
-                    $this->heart->get_servers_amount(),
+                    $this->heart->getServersAmount(),
                     $updateServersLink
                 ),
                 "positive",
@@ -112,7 +112,7 @@ class PageAdminMain extends PageAdmin
         $bricks .= create_brick(
             $this->lang->sprintf(
                 $this->lang->translate('amount_of_servers'),
-                $this->heart->get_servers_amount()
+                $this->heart->getServersAmount()
             ),
             "brick_pa_main"
         );
@@ -121,16 +121,13 @@ class PageAdminMain extends PageAdmin
         $bricks .= create_brick(
             $this->lang->sprintf(
                 $this->lang->translate('amount_of_users'),
-                $this->db->get_column(
-                    "SELECT COUNT(*) FROM `" . TABLE_PREFIX . "users`",
-                    "COUNT(*)"
-                )
+                $this->db->getColumn("SELECT COUNT(*) FROM `" . TABLE_PREFIX . "users`", "COUNT(*)")
             ),
             "brick_pa_main"
         );
 
         // Info o kupionych usługach
-        $amount = $this->db->get_column(
+        $amount = $this->db->getColumn(
             "SELECT COUNT(*) " . "FROM ({$this->settings['transactions_query']}) AS t",
             "COUNT(*)"
         );
@@ -140,7 +137,7 @@ class PageAdminMain extends PageAdmin
         );
 
         // Info o wysłanych smsach
-        $amount = $this->db->get_column(
+        $amount = $this->db->getColumn(
             "SELECT COUNT(*) AS `amount` " .
                 "FROM ({$this->settings['transactions_query']}) as t " .
                 "WHERE t.payment = 'sms' AND t.free='0'",
@@ -173,7 +170,7 @@ class PageAdminMain extends PageAdmin
         return true;
     }
 
-    private function add_note($text, $class, &$notes)
+    private function addNote($text, $class, &$notes)
     {
         $notes .= create_dom_element("div", $text, [
             'class' => "note " . $class,

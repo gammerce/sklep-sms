@@ -61,7 +61,7 @@ class JsonHttpController
                 return new ApiResponse("no_data", $lang->translate('no_login_password'), 0);
             }
 
-            $user = $heart->get_user(0, $username, $password);
+            $user = $heart->getUser(0, $username, $password);
             if ($user->exists()) {
                 $session->set("uid", $user->getUid());
                 $user->updateActivity();
@@ -103,11 +103,11 @@ class JsonHttpController
             $emailr = trim($request->request->get('email_repeat'));
             $forename = trim($request->request->get('forename'));
             $surname = trim($request->request->get('surname'));
-            $as_id = $request->request->get('as_id');
-            $as_answer = $request->request->get('as_answer');
+            $asId = $request->request->get('as_id');
+            $asAnswer = $request->request->get('as_answer');
 
             // Pobranie nowego pytania antyspamowego
-            $antispam_question = $db->fetch_array_assoc(
+            $antispamQuestion = $db->fetchArrayAssoc(
                 $db->query(
                     "SELECT * FROM `" .
                         TABLE_PREFIX .
@@ -116,16 +116,16 @@ class JsonHttpController
                         "LIMIT 1"
                 )
             );
-            $data['antispam']['question'] = $antispam_question['question'];
-            $data['antispam']['id'] = $antispam_question['id'];
+            $data['antispam']['question'] = $antispamQuestion['question'];
+            $data['antispam']['id'] = $antispamQuestion['id'];
 
             // Sprawdzanie czy podane id pytania antyspamowego jest prawidlowe
-            if (!$session->has("asid") || $as_id != $session->get("asid")) {
+            if (!$session->has("asid") || $asId != $session->get("asid")) {
                 return new ApiResponse("wrong_sign", $lang->translate('wrong_sign'), 0, $data);
             }
 
             // Zapisujemy id pytania antyspamowego
-            $session->set("asid", $antispam_question['id']);
+            $session->set("asid", $antispamQuestion['id']);
 
             // Nazwa użytkownika
             if ($warning = check_for_warnings("username", $username)) {
@@ -138,7 +138,7 @@ class JsonHttpController
                     [$username]
                 )
             );
-            if ($db->num_rows($result)) {
+            if ($db->numRows($result)) {
                 $warnings['username'][] = $lang->translate('nick_occupied');
             }
 
@@ -161,7 +161,7 @@ class JsonHttpController
                     [$email]
                 )
             );
-            if ($db->num_rows($result)) {
+            if ($db->numRows($result)) {
                 $warnings['email'][] = $lang->translate('email_occupied');
             }
 
@@ -173,11 +173,11 @@ class JsonHttpController
             $result = $db->query(
                 $db->prepare(
                     "SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " . "WHERE `id` = '%d'",
-                    [$as_id]
+                    [$asId]
                 )
             );
-            $antispam_question = $db->fetch_array_assoc($result);
-            if (!in_array(strtolower($as_answer), explode(";", $antispam_question['answers']))) {
+            $antispamQuestion = $db->fetchArrayAssoc($result);
+            if (!in_array(strtolower($asAnswer), explode(";", $antispamQuestion['answers']))) {
                 $warnings['as_answer'][] = $lang->translate('wrong_anti_answer');
             }
 
@@ -237,10 +237,10 @@ class JsonHttpController
                         )
                     );
 
-                    if (!$db->num_rows($result)) {
+                    if (!$db->numRows($result)) {
                         $warnings['username'][] = $lang->translate('nick_no_account');
                     } else {
-                        $row = $db->fetch_array_assoc($result);
+                        $row = $db->fetchArrayAssoc($result);
                     }
                 }
             }
@@ -260,10 +260,10 @@ class JsonHttpController
                         )
                     );
 
-                    if (!$db->num_rows($result)) {
+                    if (!$db->numRows($result)) {
                         $warnings['email'][] = $lang->translate('email_no_account');
                     } else {
-                        $row = $db->fetch_array_assoc($result);
+                        $row = $db->fetchArrayAssoc($result);
                     }
                 }
             }
@@ -280,7 +280,7 @@ class JsonHttpController
             }
 
             // Pobranie danych użytkownika
-            $user2 = $heart->get_user($row['uid']);
+            $user2 = $heart->getUser($row['uid']);
 
             $key = get_random_string(32);
             $db->query(
@@ -417,14 +417,14 @@ class JsonHttpController
 
         if ($action == "purchase_form_validate") {
             if (
-                ($service_module = $heart->get_service_module($_POST['service'])) === null ||
-                !($service_module instanceof IServicePurchaseWeb)
+                ($serviceModule = $heart->getServiceModule($_POST['service'])) === null ||
+                !($serviceModule instanceof IServicePurchaseWeb)
             ) {
                 return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
             }
 
             // Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
-            if (!$heart->user_can_use_service($user->getUid(), $service_module->service)) {
+            if (!$heart->userCanUseService($user->getUid(), $serviceModule->service)) {
                 return new ApiResponse(
                     "no_permission",
                     $lang->translate('service_no_permission'),
@@ -433,69 +433,69 @@ class JsonHttpController
             }
 
             // Przeprowadzamy walidację danych wprowadzonych w formularzu
-            $return_data = $service_module->purchase_form_validate($_POST);
+            $returnData = $serviceModule->purchaseFormValidate($_POST);
 
             // Przerabiamy ostrzeżenia, aby lepiej wyglądały
-            if ($return_data['status'] == "warnings") {
-                foreach ($return_data['data']['warnings'] as $brick => $warning) {
+            if ($returnData['status'] == "warnings") {
+                foreach ($returnData['data']['warnings'] as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
                         'class' => "form_warning",
                     ]);
-                    $return_data['data']['warnings'][$brick] = $warning;
+                    $returnData['data']['warnings'][$brick] = $warning;
                 }
             } else {
                 //
                 // Uzupełniamy brakujące dane
-                /** @var Purchase $purchase_data */
-                $purchase_data = $return_data['purchase_data'];
+                /** @var Purchase $purchaseData */
+                $purchaseData = $returnData['purchase_data'];
 
-                if ($purchase_data->getService() === null) {
-                    $purchase_data->setService($service_module->service['id']);
+                if ($purchaseData->getService() === null) {
+                    $purchaseData->setService($serviceModule->service['id']);
                 }
 
-                if (!$purchase_data->getPayment('cost') && $purchase_data->getTariff() !== null) {
-                    $purchase_data->setPayment([
-                        'cost' => $purchase_data->getTariff()->getProvision(),
+                if (!$purchaseData->getPayment('cost') && $purchaseData->getTariff() !== null) {
+                    $purchaseData->setPayment([
+                        'cost' => $purchaseData->getTariff()->getProvision(),
                     ]);
                 }
 
                 if (
-                    $purchase_data->getPayment('sms_service') === null &&
-                    !$purchase_data->getPayment("no_sms") &&
+                    $purchaseData->getPayment('sms_service') === null &&
+                    !$purchaseData->getPayment("no_sms") &&
                     strlen($settings['sms_service'])
                 ) {
-                    $purchase_data->setPayment([
+                    $purchaseData->setPayment([
                         'sms_service' => $settings['sms_service'],
                     ]);
                 }
 
                 // Ustawiamy taryfe z numerem
-                if ($purchase_data->getPayment('sms_service') !== null) {
-                    $payment = new Payment($purchase_data->getPayment('sms_service'));
-                    $purchase_data->setTariff(
+                if ($purchaseData->getPayment('sms_service') !== null) {
+                    $payment = new Payment($purchaseData->getPayment('sms_service'));
+                    $purchaseData->setTariff(
                         $payment
                             ->getPaymentModule()
-                            ->getTariffById($purchase_data->getTariff()->getId())
+                            ->getTariffById($purchaseData->getTariff()->getId())
                     );
                 }
 
-                if ($purchase_data->getEmail() === null && strlen($user->getEmail())) {
-                    $purchase_data->setEmail($user->getEmail());
+                if ($purchaseData->getEmail() === null && strlen($user->getEmail())) {
+                    $purchaseData->setEmail($user->getEmail());
                 }
 
-                $purchase_data_encoded = base64_encode(serialize($purchase_data));
-                $return_data['data'] = [
+                $purchaseDataEncoded = base64_encode(serialize($purchaseData));
+                $returnData['data'] = [
                     'length' => 8000,
-                    'data' => $purchase_data_encoded,
-                    'sign' => md5($purchase_data_encoded . $settings['random_key']),
+                    'data' => $purchaseDataEncoded,
+                    'sign' => md5($purchaseDataEncoded . $settings['random_key']),
                 ];
             }
 
             return new ApiResponse(
-                $return_data['status'],
-                $return_data['text'],
-                $return_data['positive'],
-                $return_data['data']
+                $returnData['status'],
+                $returnData['text'],
+                $returnData['positive'],
+                $returnData['data']
             );
         }
 
@@ -508,25 +508,25 @@ class JsonHttpController
                 return new ApiResponse("wrong_sign", $lang->translate('wrong_sign'), 0);
             }
 
-            /** @var Purchase $purchase_data */
-            $purchase_data = unserialize(base64_decode($_POST['purchase_data']));
+            /** @var Purchase $purchaseData */
+            $purchaseData = unserialize(base64_decode($_POST['purchase_data']));
 
             // Fix: get user data again to avoid bugs linked with user wallet
-            $purchase_data->user = $heart->get_user($purchase_data->user->getUid());
+            $purchaseData->user = $heart->getUser($purchaseData->user->getUid());
 
             // Dodajemy dane płatności
-            $purchase_data->setPayment([
+            $purchaseData->setPayment([
                 'method' => $_POST['method'],
                 'sms_code' => $_POST['sms_code'],
                 'service_code' => $_POST['service_code'],
             ]);
 
-            $return_payment = validate_payment($purchase_data);
+            $returnPayment = validate_payment($purchaseData);
             return new ApiResponse(
-                $return_payment['status'],
-                $return_payment['text'],
-                $return_payment['positive'],
-                $return_payment['data']
+                $returnPayment['status'],
+                $returnPayment['text'],
+                $returnPayment['positive'],
+                $returnPayment['data']
             );
         }
 
@@ -537,18 +537,18 @@ class JsonHttpController
 
                 foreach ($bricks as $brick) {
                     // Nie ma takiego bloku do odświeżenia
-                    if (($block = $heart->get_block($brick)) === null) {
+                    if (($block = $heart->getBlock($brick)) === null) {
                         continue;
                     }
 
-                    $data[$block->get_content_id()]['content'] = $block->get_content(
+                    $data[$block->getContentId()]['content'] = $block->getContent(
                         $request->query->all(),
                         $request->request->all()
                     );
-                    if ($data[$block->get_content_id()]['content'] !== null) {
-                        $data[$block->get_content_id()]['class'] = $block->get_content_class();
+                    if ($data[$block->getContentId()]['content'] !== null) {
+                        $data[$block->getContentId()]['class'] = $block->getContentClass();
                     } else {
-                        $data[$block->get_content_id()]['class'] = "";
+                        $data[$block->getContentId()]['class'] = "";
                     }
                 }
             }
@@ -558,8 +558,8 @@ class JsonHttpController
 
         if ($action == "get_service_long_description") {
             $output = "";
-            if (($service_module = $heart->get_service_module($_POST['service'])) !== null) {
-                $output = $service_module->description_full_get();
+            if (($serviceModule = $heart->getServiceModule($_POST['service'])) !== null) {
+                $output = $serviceModule->descriptionFullGet();
             }
 
             return new PlainResponse($output);
@@ -584,24 +584,24 @@ class JsonHttpController
                 return new HtmlResponse($lang->translate('not_logged'));
             }
 
-            $user_service = get_users_services($_POST['id']);
+            $userService = get_users_services($_POST['id']);
 
-            if (empty($user_service)) {
+            if (empty($userService)) {
                 return new HtmlResponse($lang->translate('dont_play_games'));
             }
 
             // Dany użytkownik nie jest właścicielem usługi o danym id
-            if ($user_service['uid'] != $user->getUid()) {
+            if ($userService['uid'] != $user->getUid()) {
                 return new HtmlResponse($lang->translate('dont_play_games'));
             }
 
-            if (($service_module = $heart->get_service_module($user_service['service'])) === null) {
+            if (($serviceModule = $heart->getServiceModule($userService['service'])) === null) {
                 return new HtmlResponse($lang->translate('service_cant_be_modified'));
             }
 
             if (
                 !$settings['user_edit_service'] ||
-                !($service_module instanceof IServiceUserOwnServicesEdit)
+                !($serviceModule instanceof IServiceUserOwnServicesEdit)
             ) {
                 return new HtmlResponse($lang->translate('service_cant_be_modified'));
             }
@@ -609,7 +609,7 @@ class JsonHttpController
             $buttons = $templates->render("services/my_services_savencancel");
 
             return new HtmlResponse(
-                $buttons . $service_module->user_own_service_edit_form_get($user_service)
+                $buttons . $serviceModule->userOwnServiceEditFormGet($userService)
             );
         }
 
@@ -618,38 +618,38 @@ class JsonHttpController
                 return new HtmlResponse($lang->translate('not_logged'));
             }
 
-            $user_service = get_users_services($_POST['id']);
+            $userService = get_users_services($_POST['id']);
 
             // Brak takiej usługi w bazie
-            if (empty($user_service)) {
+            if (empty($userService)) {
                 return new HtmlResponse($lang->translate('dont_play_games'));
             }
 
             // Dany użytkownik nie jest właścicielem usługi o danym id
-            if ($user_service['uid'] != $user->getUid()) {
+            if ($userService['uid'] != $user->getUid()) {
                 return new HtmlResponse($lang->translate('dont_play_games'));
             }
 
-            if (($service_module = $heart->get_service_module($user_service['service'])) === null) {
+            if (($serviceModule = $heart->getServiceModule($userService['service'])) === null) {
                 return new HtmlResponse($lang->translate('service_not_displayed'));
             }
 
-            if (!($service_module instanceof IServiceUserOwnServices)) {
+            if (!($serviceModule instanceof IServiceUserOwnServices)) {
                 return new HtmlResponse($lang->translate('service_not_displayed'));
             }
 
             if (
                 $settings['user_edit_service'] &&
-                $service_module instanceof IServiceUserOwnServicesEdit
+                $serviceModule instanceof IServiceUserOwnServicesEdit
             ) {
-                $button_edit = create_dom_element("button", $lang->translate('edit'), [
+                $buttonEdit = create_dom_element("button", $lang->translate('edit'), [
                     'class' => "button edit_row",
                     'type' => 'button',
                 ]);
             }
 
             return new HtmlResponse(
-                $service_module->user_own_service_info_get($user_service, $button_edit)
+                $serviceModule->userOwnServiceInfoGet($userService, $buttonEdit)
             );
         }
 
@@ -658,26 +658,26 @@ class JsonHttpController
                 return new ApiResponse("not_logged", $lang->translate('not_logged'), 0);
             }
 
-            $user_service = get_users_services($_POST['id']);
+            $userService = get_users_services($_POST['id']);
 
             // Brak takiej usługi w bazie
-            if (empty($user_service)) {
+            if (empty($userService)) {
                 return new ApiResponse("dont_play_games", $lang->translate('dont_play_games'), 0);
             }
 
             // Dany użytkownik nie jest właścicielem usługi o danym id
-            if ($user_service['uid'] != $user->getUid()) {
+            if ($userService['uid'] != $user->getUid()) {
                 return new ApiResponse("dont_play_games", $lang->translate('dont_play_games'), 0);
             }
 
-            if (($service_module = $heart->get_service_module($user_service['service'])) === null) {
+            if (($serviceModule = $heart->getServiceModule($userService['service'])) === null) {
                 return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
             }
 
             // Wykonujemy metode edycji usługi użytkownika na module, który ją obsługuje
             if (
                 !$settings['user_edit_service'] ||
-                !($service_module instanceof IServiceUserOwnServicesEdit)
+                !($serviceModule instanceof IServiceUserOwnServicesEdit)
             ) {
                 return new ApiResponse(
                     "service_cant_be_modified",
@@ -686,87 +686,87 @@ class JsonHttpController
                 );
             }
 
-            $return_data = $service_module->user_own_service_edit($_POST, $user_service);
+            $returnData = $serviceModule->userOwnServiceSdit($_POST, $userService);
 
             // Przerabiamy ostrzeżenia, aby lepiej wyglądały
-            if ($return_data['status'] == "warnings") {
-                foreach ($return_data['data']['warnings'] as $brick => $warning) {
+            if ($returnData['status'] == "warnings") {
+                foreach ($returnData['data']['warnings'] as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
                         'class' => "form_warning",
                     ]);
-                    $return_data['data']['warnings'][$brick] = $warning;
+                    $returnData['data']['warnings'][$brick] = $warning;
                 }
             }
 
             return new ApiResponse(
-                $return_data['status'],
-                $return_data['text'],
-                $return_data['positive'],
-                $return_data['data']
+                $returnData['status'],
+                $returnData['text'],
+                $returnData['positive'],
+                $returnData['data']
             );
         }
 
         if ($action == "service_take_over_form_get") {
             if (
-                ($service_module = $heart->get_service_module($_POST['service'])) === null ||
-                !($service_module instanceof IServiceTakeOver)
+                ($serviceModule = $heart->getServiceModule($_POST['service'])) === null ||
+                !($serviceModule instanceof IServiceTakeOver)
             ) {
                 return new PlainResponse($lang->translate('bad_module'));
             }
 
-            return new PlainResponse($service_module->service_take_over_form_get());
+            return new PlainResponse($serviceModule->serviceTakeOverFormGet());
         }
 
         if ($action == "service_take_over") {
             if (
-                ($service_module = $heart->get_service_module($_POST['service'])) === null ||
-                !($service_module instanceof IServiceTakeOver)
+                ($serviceModule = $heart->getServiceModule($_POST['service'])) === null ||
+                !($serviceModule instanceof IServiceTakeOver)
             ) {
                 return new PlainResponse($lang->translate('bad_module'));
             }
 
-            $return_data = $service_module->service_take_over($_POST);
+            $returnData = $serviceModule->serviceTakeOver($_POST);
 
             // Przerabiamy ostrzeżenia, aby lepiej wyglądały
-            if ($return_data['status'] == "warnings") {
-                foreach ($return_data['data']['warnings'] as $brick => $warning) {
+            if ($returnData['status'] == "warnings") {
+                foreach ($returnData['data']['warnings'] as $brick => $warning) {
                     $warning = create_dom_element("div", implode("<br />", $warning), [
                         'class' => "form_warning",
                     ]);
-                    $return_data['data']['warnings'][$brick] = $warning;
+                    $returnData['data']['warnings'][$brick] = $warning;
                 }
             }
 
             return new ApiResponse(
-                $return_data['status'],
-                $return_data['text'],
-                $return_data['positive'],
-                $return_data['data']
+                $returnData['status'],
+                $returnData['text'],
+                $returnData['positive'],
+                $returnData['data']
             );
         }
 
         if ($request->query->get("action") === "get_income") {
-            $user->setPrivilages([
+            $user->setPrivileges([
                 'acp' => true,
                 'view_income' => true,
             ]);
             $page = new PageAdminIncome();
 
             return new HtmlResponse(
-                $page->get_content($request->query->all(), $request->request->all())
+                $page->getContent($request->query->all(), $request->request->all())
             );
         }
 
         if ($action == "service_action_execute") {
             if (
-                ($service_module = $heart->get_service_module($_POST['service'])) === null ||
-                !($service_module instanceof IServiceActionExecute)
+                ($serviceModule = $heart->getServiceModule($_POST['service'])) === null ||
+                !($serviceModule instanceof IServiceActionExecute)
             ) {
                 return new PlainResponse($lang->translate('bad_module'));
             }
 
             return new PlainResponse(
-                $service_module->action_execute($_POST['service_action'], $_POST)
+                $serviceModule->actionExecute($_POST['service_action'], $_POST)
             );
         }
 

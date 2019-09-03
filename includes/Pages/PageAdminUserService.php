@@ -11,16 +11,16 @@ use App\Services\Interfaces\IServiceUserServiceAdminEdit;
 class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = 'user_service';
-    protected $privilage = 'view_user_services';
+    protected $privilege = 'view_user_services';
 
-    protected function content($get, $post)
+    protected function content(array $query, array $body)
     {
         $className = '';
-        foreach ($this->heart->get_services_modules() as $module) {
+        foreach ($this->heart->getServicesModules() as $module) {
             $class = $module['classsimple'];
             if (
                 in_array(IServiceUserServiceAdminDisplay::class, class_implements($class)) &&
-                $module['id'] == $get['subpage']
+                $module['id'] == $query['subpage']
             ) {
                 $className = $class;
                 break;
@@ -30,7 +30,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         if (!strlen($className)) {
             return $this->lang->sprintf(
                 $this->lang->translate('no_subpage'),
-                htmlspecialchars($get['subpage'])
+                htmlspecialchars($query['subpage'])
             );
         }
 
@@ -40,9 +40,9 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         $this->title =
             $this->lang->translate('users_services') .
             ': ' .
-            $serviceModuleSimple->user_service_admin_display_title_get();
-        $this->heart->page_title = $this->title;
-        $wrapper = $serviceModuleSimple->user_service_admin_display_get($get, $post);
+            $serviceModuleSimple->userServiceAdminDisplayTitleGet();
+        $this->heart->pageTitle = $this->title;
+        $wrapper = $serviceModuleSimple->userServiceAdminDisplayGet($query, $body);
 
         if (get_class($wrapper) !== Wrapper::class) {
             return $wrapper;
@@ -53,7 +53,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         // Lista z wyborem modułów
         $button = new Table\Select();
         $button->setParam('id', 'user_service_display_module');
-        foreach ($this->heart->get_services_modules() as $serviceModuleData) {
+        foreach ($this->heart->getServicesModules() as $serviceModuleData) {
             if (
                 !in_array(
                     IServiceUserServiceAdminDisplay::class,
@@ -66,7 +66,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
             $option = new Table\Option($serviceModuleData['name']);
             $option->setParam('value', $serviceModuleData['id']);
 
-            if ($serviceModuleData['id'] == $get['subpage']) {
+            if ($serviceModuleData['id'] == $query['subpage']) {
                 $option->setParam('selected', 'selected');
             }
 
@@ -75,7 +75,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         $wrapper->addButton($button);
 
         // Przycisk dodajacy nowa usluge użytkownikowi
-        if (get_privilages("manage_user_services")) {
+        if (get_privileges("manage_user_services")) {
             $button = new Table\Input();
             $button->setParam('id', 'user_service_button_add');
             $button->setParam('type', 'button');
@@ -87,22 +87,22 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    public function get_action_box($box_id, $data)
+    public function getActionBox($boxId, $data)
     {
-        if (!get_privilages("manage_user_services")) {
+        if (!get_privileges("manage_user_services")) {
             return [
                 'status' => "not_logged_in",
                 'text' => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
-        switch ($box_id) {
+        switch ($boxId) {
             case "user_service_add":
                 // Pobranie usług
                 $services = "";
-                foreach ($this->heart->get_services() as $id => $row) {
+                foreach ($this->heart->getServices() as $id => $row) {
                     if (
-                        ($serviceModule = $this->heart->get_service_module($id)) === null ||
+                        ($serviceModule = $this->heart->getServiceModule($id)) === null ||
                         !($serviceModule instanceof IServiceUserServiceAdminAdd)
                     ) {
                         continue;
@@ -120,24 +120,23 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
                 break;
 
             case "user_service_edit":
-                $user_service = get_users_services($data['id']);
+                $userService = get_users_services($data['id']);
 
                 if (
-                    empty($user_service) ||
-                    ($serviceModule = $this->heart->get_service_module(
-                        $user_service['service']
-                    )) === null ||
+                    empty($userService) ||
+                    ($serviceModule = $this->heart->getServiceModule($userService['service'])) ===
+                        null ||
                     !($serviceModule instanceof IServiceUserServiceAdminEdit)
                 ) {
-                    $form_data = $this->lang->translate('service_edit_unable');
+                    $formData = $this->lang->translate('service_edit_unable');
                 } else {
-                    $service_module_id = htmlspecialchars($serviceModule->get_module_id());
-                    $form_data = $serviceModule->user_service_admin_edit_form_get($user_service);
+                    $serviceModuleId = htmlspecialchars($serviceModule->getModuleId());
+                    $formData = $serviceModule->userServiceAdminEditFormGet($userService);
                 }
 
                 $output = $this->template->render(
                     "admin/action_boxes/user_service_edit",
-                    compact('service_module_id', 'form_data')
+                    compact('serviceModuleId', 'formData')
                 );
                 break;
         }

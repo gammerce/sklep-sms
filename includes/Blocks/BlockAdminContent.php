@@ -23,32 +23,32 @@ class BlockAdminContent extends Block
         $this->lang = $lang;
     }
 
-    public function get_content_class()
+    public function getContentClass()
     {
         return "content";
     }
 
-    public function get_content_id()
+    public function getContentId()
     {
         return "content";
     }
 
-    // Nadpisujemy get_content, aby wyswieltac info gdy nie jest zalogowany lub jest zalogowany, lecz nie powinien
-    public function get_content($get, $post)
+    // Nadpisujemy getContent, aby wyswieltac info gdy nie jest zalogowany lub jest zalogowany, lecz nie powinien
+    public function getContent(array $query, array $body)
     {
         if (!is_logged()) {
             return $this->lang->translate('must_be_logged_in');
         }
 
-        return $this->content($get, $post);
+        return $this->content($query, $body);
     }
 
-    protected function content($get, $post)
+    protected function content(array $query, array $body)
     {
-        if (($page = $this->heart->get_page($this->page->getPid(), "admin")) === null) {
+        if (($page = $this->heart->getPage($this->page->getPid(), "admin")) === null) {
             return null;
         }
 
-        return $page->get_content($get, $post);
+        return $page->getContent($query, $body);
     }
 }

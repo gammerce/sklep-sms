@@ -6,10 +6,10 @@ interface IPageAdminActionBox
     /**
      * Zwraca html action boxa
      *
-     * @param       $box_id
-     * @param array $post Dane $_POST
+     * @param       $boxId
+     * @param array $body Dane $_POST
      *
      * @return string|null mixed
      */
-    public function get_action_box($box_id, $post);
+    public function getActionBox($boxId, $body);
 }

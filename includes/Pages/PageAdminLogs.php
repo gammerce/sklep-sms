@@ -10,16 +10,16 @@ use Admin\Table\Wrapper;
 class PageAdminLogs extends PageAdmin
 {
     const PAGE_ID = 'logs';
-    protected $privilage = 'view_logs';
+    protected $privilege = 'view_logs';
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('logs');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('logs');
     }
 
-    protected function content($get, $post)
+    protected function content(array $query, array $body)
     {
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
@@ -36,8 +36,8 @@ class PageAdminLogs extends PageAdmin
 
         // Wyszukujemy dane ktore spelniaja kryteria
         $where = '';
-        if (isset($get['search'])) {
-            searchWhere(["`id`", "`text`", "CAST(`timestamp` as CHAR)"], $get['search'], $where);
+        if (isset($query['search'])) {
+            searchWhere(["`id`", "`text`", "CAST(`timestamp` as CHAR)"], $query['search'], $where);
         }
 
         // Jezeli jest jakis where, to dodajemy WHERE
@@ -55,28 +55,28 @@ class PageAdminLogs extends PageAdmin
                 get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+        $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
-        while ($row = $this->db->fetch_array_assoc($result)) {
-            $body_row = new BodyRow();
+        while ($row = $this->db->fetchArrayAssoc($result)) {
+            $bodyRow = new BodyRow();
 
-            $body_row->setDbId($row['id']);
+            $bodyRow->setDbId($row['id']);
 
             $cell = new Cell();
             $div = new Div(htmlspecialchars($row['text']));
             $div->setParam('class', 'one_line');
             $cell->addContent($div);
-            $body_row->addCell($cell);
+            $bodyRow->addCell($cell);
 
             $cell = new Cell(convertDate($row['timestamp']));
             $cell->setParam('headers', 'date');
-            $body_row->addCell($cell);
+            $bodyRow->addCell($cell);
 
-            if (get_privilages("manage_logs")) {
-                $body_row->setButtonDelete(true);
+            if (get_privileges("manage_logs")) {
+                $bodyRow->setButtonDelete(true);
             }
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);

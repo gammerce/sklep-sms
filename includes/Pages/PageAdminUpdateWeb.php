@@ -6,7 +6,7 @@ use App\Version;
 class PageAdminUpdateWeb extends PageAdmin
 {
     const PAGE_ID = "update_web";
-    protected $privilage = "update";
+    protected $privilege = "update";
 
     /** @var Version */
     private $version;
@@ -15,11 +15,11 @@ class PageAdminUpdateWeb extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('update_web');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('update_web');
         $this->version = $version;
     }
 
-    protected function content($get, $post)
+    protected function content(array $query, array $body)
     {
         $newestVersion = $this->version->getNewestWeb();
         $currentVersion = $this->app->version();

@@ -17,10 +17,10 @@ class PagePaymentLog extends Page implements IBeLoggedMust
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('payment_log');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('payment_log');
     }
 
-    protected function content($get, $post)
+    protected function content(array $query, array $body)
     {
         $heart = $this->heart;
         $lang = $this->lang;
@@ -51,43 +51,43 @@ class PagePaymentLog extends Page implements IBeLoggedMust
                 [$user->getUid()]
             )
         );
-        $rows_count = $db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()");
+        $rowsCount = $db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
-        $payment_logs = "";
-        while ($row = $db->fetch_array_assoc($result)) {
+        $paymentLogs = "";
+        while ($row = $db->fetchArrayAssoc($result)) {
             $date = htmlspecialchars($row['timestamp']);
             $cost = number_format($row['cost'] / 100.0, 2) . " " . $settings['currency'];
 
             if (
-                ($service_module = $heart->get_service_module($row['service'])) !== null &&
-                $service_module instanceof IServicePurchaseWeb
+                ($serviceModule = $heart->getServiceModule($row['service'])) !== null &&
+                $serviceModule instanceof IServicePurchaseWeb
             ) {
-                $log_info = $service_module->purchase_info("payment_log", $row);
-                $desc = $log_info['text'];
-                $class = $log_info['class'];
+                $logInfo = $serviceModule->purchaseInfo("payment_log", $row);
+                $desc = $logInfo['text'];
+                $class = $logInfo['class'];
             } else {
-                $temp_service = $heart->get_service($row['service']);
-                $temp_server = $heart->get_server($row['server']);
+                $tmpService = $heart->getService($row['service']);
+                $tmpServer = $heart->getServer($row['server']);
                 $desc = $lang->sprintf(
                     $lang->translate('service_was_bought'),
-                    $temp_service['name'],
-                    $temp_server['name']
+                    $tmpService['name'],
+                    $tmpServer['name']
                 );
                 $class = "outcome";
-                unset($temp_service);
-                unset($temp_server);
+                unset($tmpService);
+                unset($tmpServer);
             }
 
             $row['auth_data'] = htmlspecialchars($row['auth_data']);
             $row['email'] = htmlspecialchars($row['email']);
 
-            $payment_log_brick = $template->render(
+            $paymentLogBrick = $template->render(
                 "payment_log_brick",
                 compact('date', 'cost', 'desc')
             );
-            $payment_logs .= create_dom_element(
+            $paymentLogs .= create_dom_element(
                 "div",
-                $payment_log_brick,
+                $paymentLogBrick,
                 $data = [
                     'class' => "brick " . $class,
                 ]
@@ -95,17 +95,17 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         }
 
         $pagination = get_pagination(
-            $rows_count,
+            $rowsCount,
             $this->currentPage->getPageNumber(),
             $request->getPathInfo(),
-            $get,
+            $query,
             10
         );
-        $pagination_class = strlen($pagination) ? "" : "display_none";
+        $paginationClass = strlen($pagination) ? "" : "display_none";
 
         return $template->render(
             "payment_log",
-            compact('payment_logs', 'pagination_class', 'pagination')
+            compact('paymentLogs', 'paginationClass', 'pagination')
         );
     }
 }

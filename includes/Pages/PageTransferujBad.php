@@ -14,6 +14,6 @@ class PageTransferujBad extends PageSimple
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = 'Płatność Odrzucona';
+        $this->heart->pageTitle = $this->title = 'Płatność Odrzucona';
     }
 }

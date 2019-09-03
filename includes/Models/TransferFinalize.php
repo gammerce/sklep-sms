@@ -27,18 +27,18 @@ class TransferFinalize
 
     /**
      * Nazwa pliku z danymi zakupu
-     * ( parametr $data_filename z metody prepareTransfer )
+     * ( parametr $dataFilename z metody prepareTransfer )
      *
      * @var string
      */
-    private $data_filename = '';
+    private $dataFilename = '';
 
     /**
      * Id usługi w danym serwisie
      *
      * @var string
      */
-    private $transfer_service = '';
+    private $transferService = '';
 
     /**
      * Co ma zostać wyświetlone na stronie
@@ -107,15 +107,15 @@ class TransferFinalize
      */
     public function getDataFilename()
     {
-        return $this->data_filename;
+        return $this->dataFilename;
     }
 
     /**
-     * @param string $data_filename
+     * @param string $dataFilename
      */
-    public function setDataFilename($data_filename)
+    public function setDataFilename($dataFilename)
     {
-        $this->data_filename = (string) $data_filename;
+        $this->dataFilename = (string) $dataFilename;
     }
 
     /**
@@ -123,15 +123,15 @@ class TransferFinalize
      */
     public function getTransferService()
     {
-        return $this->transfer_service;
+        return $this->transferService;
     }
 
     /**
-     * @param string $transfer_service
+     * @param string $transferService
      */
-    public function setTransferService($transfer_service)
+    public function setTransferService($transferService)
     {
-        $this->transfer_service = (string) $transfer_service;
+        $this->transferService = (string) $transferService;
     }
 
     /**

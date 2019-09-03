@@ -28,18 +28,18 @@ class ServerStuffController
         $action = $request->get('action');
 
         if ($action == "purchase_service") {
-            if (($service_module = $heart->get_service_module($request->get('service'))) === null) {
+            if (($serviceModule = $heart->getServiceModule($request->get('service'))) === null) {
                 return $this->xmlOutput("bad_module", $lang->translate('bad_module'), 0);
             }
 
-            if (!($service_module instanceof IServicePurchaseOutside)) {
+            if (!($serviceModule instanceof IServicePurchaseOutside)) {
                 return $this->xmlOutput("bad_module", $lang->translate('bad_module'), 0);
             }
 
             // Sprawdzamy dane zakupu
             $purchaseData = new Purchase();
-            $purchaseData->setService($service_module->service['id']);
-            $purchaseData->user = $heart->get_user($request->get('uid'));
+            $purchaseData->setService($serviceModule->service['id']);
+            $purchaseData->user = $heart->getUser($request->get('uid'));
             $purchaseData->user->setPlatform($request->get('platform'));
             $purchaseData->user->setLastip($request->get('ip'));
             $purchaseData->setOrder([
@@ -61,7 +61,7 @@ class ServerStuffController
                 $payment->getPaymentModule()->getTariffById($request->get('tariff'))
             );
 
-            $returnValidation = $service_module->purchase_data_validate($purchaseData);
+            $returnValidation = $serviceModule->purchaseDataValidate($purchaseData);
 
             // Są jakieś błędy przy sprawdzaniu danych
             if ($returnValidation['status'] != "ok") {
@@ -125,12 +125,12 @@ class ServerStuffController
         return $this->xmlOutput("script_error", "An error occured: no action.", false);
     }
 
-    protected function xmlOutput($return_value, $text, $positive, $extra_data = "")
+    protected function xmlOutput($returnValue, $text, $positive, $extraData = "")
     {
-        $output = "<return_value>{$return_value}</return_value>";
+        $output = "<return_value>{$returnValue}</return_value>";
         $output .= "<text>{$text}</text>";
         $output .= "<positive>{$positive}</positive>";
-        $output .= $extra_data;
+        $output .= $extraData;
 
         return new Response($output, 200, [
             'Content-type' => 'text/plain; charset="UTF-8"',

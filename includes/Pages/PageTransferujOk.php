@@ -14,6 +14,6 @@ class PageTransferujOk extends PageSimple
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = 'Płatność Zaakceptowana';
+        $this->heart->pageTitle = $this->title = 'Płatność Zaakceptowana';
     }
 }

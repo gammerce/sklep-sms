@@ -62,18 +62,18 @@ class Transferuj extends PaymentModule implements SupportTransfer
         ];
     }
 
-    public function finalizeTransfer($get, $post)
+    public function finalizeTransfer(array $query, array $body)
     {
         $transferFinalize = new TransferFinalize();
 
-        if ($this->isPaymentValid($post)) {
+        if ($this->isPaymentValid($body)) {
             $transferFinalize->setStatus(true);
         }
 
-        $transferFinalize->setOrderid($post['tr_id']);
-        $transferFinalize->setAmount($post['tr_amount']);
-        $transferFinalize->setDataFilename($post['tr_crc']);
-        $transferFinalize->setTransferService($post['id']);
+        $transferFinalize->setOrderid($body['tr_id']);
+        $transferFinalize->setAmount($body['tr_amount']);
+        $transferFinalize->setDataFilename($body['tr_crc']);
+        $transferFinalize->setTransferService($body['id']);
         $transferFinalize->setOutput('TRUE');
 
         return $transferFinalize;

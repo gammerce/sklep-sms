@@ -10,6 +10,6 @@ class PageMain extends PageSimple
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('main_page');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('main_page');
     }
 }

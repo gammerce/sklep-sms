@@ -33,10 +33,10 @@ class Update
             output_page("Aktualizacja trwa, lub została błędnie przeprowadzona.");
         }
 
-        $files_priv = $files_del = [];
+        $filesPriv = $filesDel = [];
 
         if (file_exists($this->app->path('install/storage/update/files_priv.txt'))) {
-            $files_priv = explode(
+            $filesPriv = explode(
                 "\n",
                 str_replace(
                     "\n\r",
@@ -45,10 +45,10 @@ class Update
                 )
             );
         }
-        $files_priv[] = "install";
+        $filesPriv[] = "install";
 
         if (file_exists($this->app->path('install/storage/update/files_del.txt'))) {
-            $files_del = explode(
+            $filesDel = explode(
                 "\n",
                 str_replace(
                     "\n\r",
@@ -61,6 +61,6 @@ class Update
         // Wymagane moduły
         $modules = [];
 
-        return [$modules, $files_priv, $files_del];
+        return [$modules, $filesPriv, $filesDel];
     }
 }

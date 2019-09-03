@@ -1,7 +1,7 @@
 <input type="password" class="display_none" /> <strong>{$lang->translate('service')}</strong>:
-{$service_info['service']}<br />
-<strong>{$lang->translate('server')}</strong>: {$service_info['server']}<br />
-<strong>{$lang->translate('expire')}</strong>: {$service_info['expire']}<br />
+{$serviceInfo['service']}<br />
+<strong>{$lang->translate('server')}</strong>: {$serviceInfo['server']}<br />
+<strong>{$lang->translate('expire')}</strong>: {$serviceInfo['expire']}<br />
 <hr />
 
 <div class="table_form">
@@ -9,7 +9,7 @@
         <div class="cell">{$lang->translate('type')}</div>
         <div class="cell">
             <select name="type"
-                >{$service_info['types']}</select
+                >{$serviceInfo['types']}</select
             >
         </div>
     </div>
@@ -17,21 +17,21 @@
     <div class="row type_nick" style="{$styles['nick']}">
         <div class="cell">{$lang->translate('nick')}</div>
         <div class="cell">
-            <input type="text" name="nick" maxlength="32" value="{$service_info['player_nick']}" />
+            <input type="text" name="nick" maxlength="32" value="{$serviceInfo['player_nick']}" />
         </div>
     </div>
 
     <div class="row type_ip" style="{$styles['ip']}">
         <div class="cell">{$lang->translate('ip')}</div>
         <div class="cell">
-            <input type="text" name="ip" maxlength="21" value="{$service_info['player_ip']}" />
+            <input type="text" name="ip" maxlength="21" value="{$serviceInfo['player_ip']}" />
         </div>
     </div>
 
     <div class="row type_sid" style="{$styles['sid']}">
         <div class="cell">{$lang->translate('sid')}</div>
         <div class="cell">
-            <input type="text" name="sid" maxlength="32" value="{$service_info['player_sid']}" />
+            <input type="text" name="sid" maxlength="32" value="{$serviceInfo['player_sid']}" />
         </div>
     </div>
 
@@ -42,7 +42,7 @@
                 type="password"
                 name="password"
                 maxlength="32"
-                placeholder="{$service_info['password']}"
+                placeholder="{$serviceInfo['password']}"
             />
         </div>
     </div>

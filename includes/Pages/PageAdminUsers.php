@@ -12,16 +12,16 @@ use App\Routes\UrlGenerator;
 class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = 'users';
-    protected $privilage = 'view_users';
+    protected $privilege = 'view_users';
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('users');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('users');
     }
 
-    protected function content($get, $post)
+    protected function content(array $query, array $body)
     {
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
@@ -41,7 +41,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         $table->addHeadCell(new Cell($this->lang->translate('wallet')));
 
         $where = '';
-        if (isset($get['search'])) {
+        if (isset($query['search'])) {
             searchWhere(
                 [
                     "`uid`",
@@ -52,7 +52,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                     "`groups`",
                     "`wallet`",
                 ],
-                $get['search'],
+                $query['search'],
                 $where
             );
         }
@@ -72,15 +72,15 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                 get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+        $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
-        while ($row = $this->db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetchArrayAssoc($result)) {
             $bodyRow = new BodyRow();
 
             $row['groups'] = explode(";", $row['groups']);
             $groups = [];
             foreach ($row['groups'] as $gid) {
-                $group = $this->heart->get_group($gid);
+                $group = $this->heart->getGroup($gid);
                 $groups[] = "{$group['name']} ({$group['id']})";
             }
             $groups = implode("; ", $groups);
@@ -104,7 +104,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             $changePasswordCharge = $this->createPasswordButton($row['username']);
             $bodyRow->addAction($changePasswordCharge);
 
-            if (get_privilages('manage_users')) {
+            if (get_privileges('manage_users')) {
                 $bodyRow->setButtonDelete(true);
                 $bodyRow->setButtonEdit(true);
             }
@@ -141,22 +141,22 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         return $button;
     }
 
-    public function get_action_box($box_id, $data)
+    public function getActionBox($boxId, $data)
     {
-        if (!get_privilages("manage_users")) {
+        if (!get_privileges("manage_users")) {
             return [
                 'status' => "not_logged_in",
                 'text' => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
-        switch ($box_id) {
+        switch ($boxId) {
             case "user_edit":
                 // Pobranie użytkownika
-                $user = $this->heart->get_user($data['uid']);
+                $user = $this->heart->getUser($data['uid']);
 
                 $groups = '';
-                foreach ($this->heart->get_groups() as $group) {
+                foreach ($this->heart->getGroups() as $group) {
                     $groups .= create_dom_element("option", "{$group['name']} ( {$group['id']} )", [
                         'value' => $group['id'],
                         'selected' => in_array($group['id'], $user->getGroups()) ? "selected" : "",
@@ -170,7 +170,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                 break;
 
             case "charge_wallet":
-                $user = $this->heart->get_user($data['uid']);
+                $user = $this->heart->getUser($data['uid']);
                 $output = $this->template->render(
                     "admin/action_boxes/user_charge_wallet",
                     compact('user')
@@ -178,7 +178,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                 break;
 
             case "change_password":
-                $user = $this->heart->get_user($data['uid']);
+                $user = $this->heart->getUser($data['uid']);
                 $output = $this->template->render(
                     "admin/action_boxes/user_change_password",
                     compact('user')

@@ -6,10 +6,10 @@
         </td>
         <td>
             <select name="web">
-                <option value="0" {$web_sel_no}>{$lang->strtoupper($lang->translate('no'))}</option>
-                <option value="1" {$web_sel_yes}
-                    >{$lang->strtoupper($lang->translate('yes'))}</option
-                >
+                <option value="0" {$webSelNo}>{$lang->strtoupper($lang->translate('no'))}</option>
+                <option value="1" {$webSelYes}>
+                    {$lang->strtoupper($lang->translate('yes'))}
+                </option>
             </select>
         </td>
     </tr>
@@ -18,7 +18,7 @@
             {$lang->strtoupper($lang->translate('mybb_groups'))}
             <div class="hint">{$lang->translate('coma_separated')}</div>
         </td>
-        <td><input type="text" name="mybb_groups" value="{$mybb_groups}" /></td>
+        <td><input type="text" name="mybb_groups" value="{$mybbGroups}" /></td>
     </tr>
     <tr>
         <td colspan="2" class="line"></td>
@@ -28,18 +28,18 @@
     </tr>
     <tr>
         <td>{$lang->translate('db_host')}</td>
-        <td><input type="text" name="db_host" value="{$db_host}" /></td>
+        <td><input type="text" name="db_host" value="{$dbHost}" /></td>
     </tr>
     <tr>
         <td>{$lang->translate('db_user')}</td>
-        <td><input type="text" name="db_user" value="{$db_user}" /></td>
+        <td><input type="text" name="db_user" value="{$dbUser}" /></td>
     </tr>
     <tr>
         <td>{$lang->translate('db_password')}</td>
-        <td><input type="password" name="db_password" placeholder="{$db_password}" /></td>
+        <td><input type="password" name="db_password" placeholder="{$dbPassword}" /></td>
     </tr>
     <tr>
         <td>{$lang->translate('db_name')}</td>
-        <td><input type="text" name="db_name" value="{$db_name}" /></td>
+        <td><input type="text" name="db_name" value="{$dbName}" /></td>
     </tr>
 </tbody>

@@ -12,6 +12,6 @@ class PageForgottenPassword extends PageSimple implements IBeLoggedCannot
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('forgotten_password');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('forgotten_password');
     }
 }

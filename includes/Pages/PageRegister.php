@@ -12,16 +12,16 @@ class PageRegister extends Page implements IBeLoggedCannot
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('register');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('register');
     }
 
-    protected function content($get, $post)
+    protected function content(array $query, array $body)
     {
         /** @var Request $request */
         $request = $this->app->make(Request::class);
         $session = $request->getSession();
 
-        $antispam_question = $this->db->fetch_array_assoc(
+        $antispamQuestion = $this->db->fetchArrayAssoc(
             $this->db->query(
                 "SELECT * FROM `" .
                     TABLE_PREFIX .
@@ -30,8 +30,8 @@ class PageRegister extends Page implements IBeLoggedCannot
                     "LIMIT 1"
             )
         );
-        $session->set("asid", $antispam_question['id']);
+        $session->set("asid", $antispamQuestion['id']);
 
-        return $this->template->render("register", compact('antispam_question'));
+        return $this->template->render("register", compact('antispamQuestion'));
     }
 }

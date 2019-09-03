@@ -11,16 +11,16 @@ use App\Pages\Interfaces\IPageAdminActionBox;
 class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = 'groups';
-    protected $privilage = 'view_groups';
+    protected $privilege = 'view_groups';
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('groups');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('groups');
     }
 
-    protected function content($get, $post)
+    protected function content(array $query, array $body)
     {
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
@@ -41,25 +41,25 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                 get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($this->db->get_column('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
+        $table->setDbRowsAmount($this->db->getColumn('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
 
-        while ($row = $this->db->fetch_array_assoc($result)) {
-            $body_row = new BodyRow();
+        while ($row = $this->db->fetchArrayAssoc($result)) {
+            $bodyRow = new BodyRow();
 
-            $body_row->setDbId($row['id']);
-            $body_row->addCell(new Cell($row['name']));
+            $bodyRow->setDbId($row['id']);
+            $bodyRow->addCell(new Cell($row['name']));
 
-            if (get_privilages('manage_groups')) {
-                $body_row->setButtonDelete(true);
-                $body_row->setButtonEdit(true);
+            if (get_privileges('manage_groups')) {
+                $bodyRow->setButtonDelete(true);
+                $bodyRow->setButtonEdit(true);
             }
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);
 
-        if (get_privilages('manage_groups')) {
+        if (get_privileges('manage_groups')) {
             $button = new Input();
             $button->setParam('id', 'group_button_add');
             $button->setParam('type', 'button');
@@ -71,16 +71,16 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    public function get_action_box($box_id, $data)
+    public function getActionBox($boxId, $data)
     {
-        if (!get_privilages("manage_groups")) {
+        if (!get_privileges("manage_groups")) {
             return [
                 'status' => "not_logged_in",
                 'text' => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
-        if ($box_id == "group_edit") {
+        if ($boxId == "group_edit") {
             $result = $this->db->query(
                 $this->db->prepare(
                     "SELECT * FROM `" . TABLE_PREFIX . "groups` " . "WHERE `id` = '%d'",
@@ -88,7 +88,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                 )
             );
 
-            if (!$this->db->num_rows($result)) {
+            if (!$this->db->numRows($result)) {
                 $data['template'] = create_dom_element(
                     "form",
                     $this->lang->translate('no_such_group'),
@@ -101,14 +101,14 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                     ]
                 );
             } else {
-                $group = $this->db->fetch_array_assoc($result);
+                $group = $this->db->fetchArrayAssoc($result);
                 $group['name'] = htmlspecialchars($group['name']);
             }
         }
 
-        $privilages = "";
+        $privileges = "";
         $result = $this->db->query("DESCRIBE " . TABLE_PREFIX . "groups");
-        while ($row = $this->db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetchArrayAssoc($result)) {
             if (in_array($row['Field'], ["id", "name"])) {
                 continue;
             }
@@ -132,26 +132,26 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
             );
 
             $name = htmlspecialchars($row['Field']);
-            $text = $this->lang->translate('privilage_' . $row['Field']);
+            $text = $this->lang->translate('privilege_' . $row['Field']);
 
-            $privilages .= $this->template->render(
+            $privileges .= $this->template->render(
                 "tr_text_select",
                 compact('name', 'text', 'values')
             );
         }
 
-        switch ($box_id) {
+        switch ($boxId) {
             case "group_add":
                 $output = $this->template->render(
                     "admin/action_boxes/group_add",
-                    compact('privilages')
+                    compact('privileges')
                 );
                 break;
 
             case "group_edit":
                 $output = $this->template->render(
                     "admin/action_boxes/group_edit",
-                    compact('privilages', 'group')
+                    compact('privileges', 'group')
                 );
                 break;
 

@@ -26,19 +26,19 @@ class InstallUpdateKernel extends Kernel
         /** @var Update $update */
         $update = $this->app->make(Update::class);
 
-        list($modules, $files_priv, $files_del) = $update->get();
+        list($modules, $filesPriv, $filesDel) = $update->get();
 
-        $everything_ok = true;
-        $update_info = $updateInfo->updateInfo($everything_ok, $files_priv, $files_del, $modules);
+        $everythingOk = true;
+        $updateBody = $updateInfo->updateInfo($everythingOk, $filesPriv, $filesDel, $modules);
 
         // Nie wszystko jest git
-        if (!$everything_ok) {
+        if (!$everythingOk) {
             json_output(
                 "warnings",
                 "Aktualizacja nie mogła zostać przeprowadzona. Nie wszystkie warunki są spełnione.",
                 false,
                 [
-                    'update_info' => $update_info,
+                    'update_info' => $updateBody,
                 ]
             );
         }

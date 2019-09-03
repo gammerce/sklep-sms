@@ -5,22 +5,22 @@
     <table>
         <tr>
             <td>{$lang->translate('id')}</td>
-            <td>{$transaction_service['id']}</td>
+            <td>{$transactionService['id']}</td>
         </tr>
         <tr>
             <td>{$lang->strtoupper($lang->translate('name'))}</td>
-            <td>{$transaction_service['name']}</td>
+            <td>{$transactionService['name']}</td>
         </tr>
         <tr>
             <td colspan="2" class="line"></td>
         </tr>
-        {$data_values}
+        {$dataValues}
         <tr>
             <td colspan="2" class="line"></td>
         </tr>
         <tr>
             <td colspan="2">
-                <input type="hidden" name="id" value="{$transaction_service['id']}" />
+                <input type="hidden" name="id" value="{$transactionService['id']}" />
                 <input type="submit" value="{$lang->translate('confirm')}" class="button w100" />
             </td>
         </tr>

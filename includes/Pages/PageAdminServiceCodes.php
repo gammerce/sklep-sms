@@ -12,16 +12,16 @@ use App\Services\Interfaces\IServiceServiceCodeAdminManage;
 class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = 'service_codes';
-    protected $privilage = 'view_service_codes';
+    protected $privilege = 'view_service_codes';
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('service_codes');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('service_codes');
     }
 
-    protected function content($get, $post)
+    protected function content(array $query, array $body)
     {
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
@@ -62,10 +62,10 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
                 get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($this->db->get_column('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
+        $table->setDbRowsAmount($this->db->getColumn('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
 
-        while ($row = $this->db->fetch_array_assoc($result)) {
-            $body_row = new BodyRow();
+        while ($row = $this->db->fetchArrayAssoc($result)) {
+            $bodyRow = new BodyRow();
 
             $username = $row['uid']
                 ? $row['username'] . " ({$row['uid']})"
@@ -85,24 +85,24 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
                 }
             }
 
-            $body_row->setDbId($row['id']);
-            $body_row->addCell(new Cell(htmlspecialchars($row['code'])));
-            $body_row->addCell(new Cell(htmlspecialchars($row['service'])));
-            $body_row->addCell(new Cell(htmlspecialchars($row['server'])));
-            $body_row->addCell(new Cell($amount));
-            $body_row->addCell(new Cell($username));
-            $body_row->addCell(new Cell(convertDate($row['timestamp'])));
+            $bodyRow->setDbId($row['id']);
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['code'])));
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['service'])));
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['server'])));
+            $bodyRow->addCell(new Cell($amount));
+            $bodyRow->addCell(new Cell($username));
+            $bodyRow->addCell(new Cell(convertDate($row['timestamp'])));
 
-            if (get_privilages('manage_service_codes')) {
-                $body_row->setButtonDelete(true);
+            if (get_privileges('manage_service_codes')) {
+                $bodyRow->setButtonDelete(true);
             }
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);
 
-        if (get_privilages('manage_service_codes')) {
+        if (get_privileges('manage_service_codes')) {
             $button = new Input();
             $button->setParam('id', 'service_code_button_add');
             $button->setParam('type', 'button');
@@ -114,23 +114,23 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    public function get_action_box($box_id, $data)
+    public function getActionBox($boxId, $data)
     {
-        if (!get_privilages("manage_service_codes")) {
+        if (!get_privileges("manage_service_codes")) {
             return [
                 'status' => "not_logged_in",
                 'text' => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
-        switch ($box_id) {
+        switch ($boxId) {
             case "code_add":
                 // Pobranie usług
                 $services = "";
-                foreach ($this->heart->get_services() as $id => $row) {
+                foreach ($this->heart->getServices() as $id => $row) {
                     if (
-                        ($service_module = $this->heart->get_service_module($id)) === null ||
-                        !($service_module instanceof IServiceServiceCodeAdminManage)
+                        ($serviceModule = $this->heart->getServiceModule($id)) === null ||
+                        !($serviceModule instanceof IServiceServiceCodeAdminManage)
                     ) {
                         continue;
                     }

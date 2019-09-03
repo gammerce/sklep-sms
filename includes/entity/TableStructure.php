@@ -66,7 +66,7 @@ class DOMElement implements I_ToHtml
 
     public function toHtml()
     {
-        $old_params = $this->params;
+        $oldParams = $this->params;
 
         $style = [];
         foreach ((array) $this->getParam('style') as $key => $value) {
@@ -100,7 +100,7 @@ class DOMElement implements I_ToHtml
             $output .= "</{$this->getName(true)}>";
         }
 
-        $this->params = $old_params;
+        $this->params = $oldParams;
 
         return $output;
     }
@@ -255,16 +255,16 @@ class Line extends Row
 class BodyRow extends Row
 {
     /** @var string */
-    private $db_id = null;
+    private $dbId = null;
 
     /** @var I_ToHtml[] */
     private $actions = [];
 
-    /** @var bool $button_edit */
-    private $button_edit = false;
+    /** @var bool $buttonEdit */
+    private $buttonEdit = false;
 
-    /** @var bool $button_delete */
-    private $button_delete = false;
+    /** @var bool $buttonDelete */
+    private $buttonDelete = false;
 
     public function toHtml()
     {
@@ -275,7 +275,7 @@ class BodyRow extends Row
         $lang = $translationManager->user();
 
         // Zachowujemy poprzedni stan, aby go przywrocic
-        $old_contents = $this->contents;
+        $oldContents = $this->contents;
 
         $actions = new Cell();
 
@@ -283,21 +283,21 @@ class BodyRow extends Row
             $actions->addContent($action);
         }
 
-        if ($this->button_edit) {
+        if ($this->buttonEdit) {
             $button = new DOMElement();
             $button->setName('img');
             $button->setParam('class', "edit_row");
             $button->setParam('src', $url->to('images/edit.png'));
-            $button->setParam('title', $lang->translate('edit') . ' ' . $this->db_id);
+            $button->setParam('title', $lang->translate('edit') . ' ' . $this->dbId);
             $actions->addContent($button);
         }
 
-        if ($this->button_delete) {
+        if ($this->buttonDelete) {
             $button = new DOMElement();
             $button->setName('img');
             $button->setParam('class', "delete_row");
             $button->setParam('src', $url->to('images/bin.png'));
-            $button->setParam('title', $lang->translate('delete') . ' ' . $this->db_id);
+            $button->setParam('title', $lang->translate('delete') . ' ' . $this->dbId);
             $actions->addContent($button);
         }
 
@@ -306,7 +306,7 @@ class BodyRow extends Row
         $output = parent::toHtml();
 
         // Przywracamy poczatkowy stan
-        $this->contents = $old_contents;
+        $this->contents = $oldContents;
 
         return $output;
     }
@@ -320,19 +320,19 @@ class BodyRow extends Row
     }
 
     /**
-     * @param boolean $button_edit
+     * @param boolean $buttonEdit
      */
-    public function setButtonEdit($button_edit = true)
+    public function setButtonEdit($buttonEdit = true)
     {
-        $this->button_edit = (bool) $button_edit;
+        $this->buttonEdit = (bool) $buttonEdit;
     }
 
     /**
-     * @param boolean $button_delete
+     * @param boolean $buttonDelete
      */
-    public function setButtonDelete($button_delete = true)
+    public function setButtonDelete($buttonDelete = true)
     {
-        $this->button_delete = (bool) $button_delete;
+        $this->buttonDelete = (bool) $buttonDelete;
     }
 
     /**
@@ -344,14 +344,14 @@ class BodyRow extends Row
     }
 
     /**
-     * @param string $db_id
+     * @param string $dbId
      */
-    public function setDbId($db_id)
+    public function setDbId($dbId)
     {
-        $this->db_id = strval($db_id);
+        $this->dbId = strval($dbId);
 
         // Dodajemy kolumne z id
-        $cell = new Cell($this->db_id);
+        $cell = new Cell($this->dbId);
         $cell->setParam('headers', 'id');
         $this->addCell($cell);
     }
@@ -361,7 +361,7 @@ class BodyRow extends Row
      */
     public function getDbId()
     {
-        return $this->db_id;
+        return $this->dbId;
     }
 }
 
@@ -370,10 +370,10 @@ class Structure extends DOMElement
     protected $name = 'table';
 
     /** @var DOMElement[] */
-    private $head_cells = [];
+    private $headCells = [];
 
     /** @var BodyRow[] */
-    private $body_rows = [];
+    private $bodyRows = [];
 
     /**
      * Ilość elementów w bazie danych
@@ -381,7 +381,7 @@ class Structure extends DOMElement
      *
      * @var int
      */
-    private $db_rows_amount;
+    private $dbRowsAmount;
 
     /** @var DOMElement */
     public $foot = null;
@@ -396,22 +396,22 @@ class Structure extends DOMElement
         $head = new DOMElement();
         $head->setName('thead');
 
-        $head_row = new Row();
-        foreach ($this->head_cells as $cell) {
-            $head_row->addContent($cell);
+        $headRow = new Row();
+        foreach ($this->headCells as $cell) {
+            $headRow->addContent($cell);
         }
         $actions = new Cell($lang->translate('actions'));
         $actions->setStyle('width', '4%');
-        $head_row->addContent($actions);
+        $headRow->addContent($actions);
 
         $head->addContent(new Line());
-        $head->addContent($head_row);
+        $head->addContent($headRow);
         $head->addContent(new Line());
 
         // Tworzymy tbody
         $body = new DOMElement();
         $body->setName('tbody');
-        foreach ($this->body_rows as $row) {
+        foreach ($this->bodyRows as $row) {
             $body->addContent($row);
         }
 
@@ -436,28 +436,28 @@ class Structure extends DOMElement
     }
 
     /**
-     * @param DOMElement $head_cell
+     * @param DOMElement $headCell
      */
-    public function addHeadCell($head_cell)
+    public function addHeadCell($headCell)
     {
-        $this->head_cells[] = $head_cell;
+        $this->headCells[] = $headCell;
     }
 
     /**
      * @param string     $key
-     * @param DOMElement $head_cell
+     * @param DOMElement $headCell
      */
-    public function setHeadCell($key, $head_cell)
+    public function setHeadCell($key, $headCell)
     {
-        $this->head_cells[$key] = $head_cell;
+        $this->headCells[$key] = $headCell;
     }
 
     /**
-     * @param BodyRow $body_row
+     * @param BodyRow $bodyRow
      */
-    public function addBodyRow($body_row)
+    public function addBodyRow($bodyRow)
     {
-        $this->body_rows[] = $body_row;
+        $this->bodyRows[] = $bodyRow;
     }
 
     /**
@@ -465,7 +465,7 @@ class Structure extends DOMElement
      */
     public function getDbRowsAmount()
     {
-        return $this->db_rows_amount;
+        return $this->dbRowsAmount;
     }
 
     /**
@@ -479,22 +479,22 @@ class Structure extends DOMElement
         $request = app()->make(Request::class);
 
         $pageNumber = $currentPage->getPageNumber();
-        $this->db_rows_amount = intval($amount);
+        $this->dbRowsAmount = intval($amount);
 
-        $pagination_txt = get_pagination(
-            $this->db_rows_amount,
+        $paginationTxt = get_pagination(
+            $this->dbRowsAmount,
             $pageNumber,
             $request->getPathInfo(),
             $request->query->all()
         );
-        if (strlen($pagination_txt)) {
+        if (strlen($paginationTxt)) {
             $this->foot = new DOMElement();
             $this->foot->setName('tfoot');
             $this->foot->setParam('class', 'display_tfoot');
 
             $row = new Row();
 
-            $cell = new Cell($pagination_txt);
+            $cell = new Cell($paginationTxt);
             $cell->setParam('colspan', '31');
 
             $row->addContent($cell);
@@ -530,7 +530,7 @@ class Wrapper extends Div
         /** @var Request $request */
         $request = app()->make(Request::class);
 
-        $old_contets = $this->contents;
+        $oldContets = $this->contents;
 
         $title = new Div();
         $title->setParam('class', 'title');
@@ -539,9 +539,9 @@ class Wrapper extends Div
         $buttons->setStyle('float', 'right');
 
         if ($this->search) {
-            $search_text = $request->get('search');
+            $searchText = $request->get('search');
             $buttons->addContent(
-                new SimpleText($template->render("admin/form_search", compact('search_text')))
+                new SimpleText($template->render("admin/form_search", compact('searchText')))
             );
         }
 
@@ -558,7 +558,7 @@ class Wrapper extends Div
         $this->addContent($this->getTable());
 
         $output = parent::toHtml();
-        $this->contents = $old_contets;
+        $this->contents = $oldContets;
 
         return $output;
     }

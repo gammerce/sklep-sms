@@ -74,7 +74,7 @@ class DatabaseMigration
     public function getLastExecutedMigration()
     {
         try {
-            return $this->db->get_column(
+            return $this->db->getColumn(
                 "SELECT `name` FROM `" .
                     TABLE_PREFIX .
                     "migrations` " .

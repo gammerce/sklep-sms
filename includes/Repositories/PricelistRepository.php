@@ -26,7 +26,7 @@ class PricelistRepository
             )
         );
 
-        $id = $this->db->last_id();
+        $id = $this->db->lastId();
 
         return new Pricelist($id, $service, $tariff, $amount, $server);
     }
