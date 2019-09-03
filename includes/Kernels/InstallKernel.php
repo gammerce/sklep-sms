@@ -44,14 +44,14 @@ class InstallKernel extends Kernel
         /** @var Full $full */
         $full = $this->app->make(Full::class);
 
-        list($modules, $files_priv) = $full->get();
+        list($modules, $filesPriv) = $full->get();
 
         // #########################################
         // ##########    Wyświetl dane    ##########
         // #########################################
 
-        $files_privileges = '';
-        foreach ($files_priv as $file) {
+        $filesPrivileges = '';
+        foreach ($filesPriv as $file) {
             if ($file == "") {
                 continue;
             }
@@ -62,13 +62,13 @@ class InstallKernel extends Kernel
                 $privilege = "bad";
             }
 
-            $files_privileges .= $template->installFullRender(
+            $filesPrivileges .= $template->installFullRender(
                 'file_privileges',
                 compact('file', 'privilege')
             );
         }
 
-        $server_modules = '';
+        $serverModules = '';
         foreach ($modules as $module) {
             if ($module['value']) {
                 $status = "correct";
@@ -78,7 +78,7 @@ class InstallKernel extends Kernel
                 $title = "Nieprawidłowo";
             }
 
-            $server_modules .= $template->installFullRender(
+            $serverModules .= $template->installFullRender(
                 'module',
                 compact('module', 'status', 'title')
             );
@@ -89,7 +89,7 @@ class InstallKernel extends Kernel
         // Pobranie ostatecznego szablonu
         $output = $template->installFullRender(
             'index',
-            compact('notifyHttpServer', 'files_privileges', 'server_modules')
+            compact('notifyHttpServer', 'filesPrivileges', 'serverModules')
         );
 
         return new Response($output);
@@ -106,17 +106,17 @@ class InstallKernel extends Kernel
         /** @var Update $update */
         $update = $this->app->make(Update::class);
 
-        list($modules, $files_priv, $files_del) = $update->get();
+        list($modules, $filesPriv, $filesDel) = $update->get();
 
-        $everything_ok = true;
+        $everythingOk = true;
         // Pobieramy informacje o plikach ktore sa git i te ktore sa be
         $filesModulesStatus = $updateInfo->updateInfo(
-            $everything_ok,
-            $files_priv,
-            $files_del,
+            $everythingOk,
+            $filesPriv,
+            $filesDel,
             $modules
         );
-        $class = $everything_ok ? "ok" : "bad";
+        $class = $everythingOk ? "ok" : "bad";
 
         $notifyHttpServer = $this->generateHttpServerNotification();
 

@@ -424,20 +424,20 @@ class JsonHttpAdminController
             $transferService = $_POST['transfer_service'];
             $currency = $_POST['currency'];
             $shopName = $_POST['shop_name'];
-            $shop_url = $_POST['shop_url'];
-            $sender_email = $_POST['sender_email'];
-            $sender_email_name = $_POST['sender_email_name'];
+            $shopUrl = $_POST['shop_url'];
+            $senderEmail = $_POST['sender_email'];
+            $senderEmailName = $_POST['sender_email_name'];
             $signature = $_POST['signature'];
             $vat = $_POST['vat'];
             $contact = $_POST['contact'];
-            $row_limit = $_POST['row_limit'];
+            $rowLimit = $_POST['row_limit'];
             $licenseToken = $_POST['license_token'];
             $cron = $_POST['cron'];
             $language = escape_filename($_POST['language']);
             $theme = escape_filename($_POST['theme']);
-            $date_format = $_POST['date_format'];
-            $delete_logs = $_POST['delete_logs'];
-            $google_analytics = trim($_POST['google_analytics']);
+            $dateFormat = $_POST['date_format'];
+            $deleteLogs = $_POST['delete_logs'];
+            $googleAnalytics = trim($_POST['google_analytics']);
             $gadugadu = $_POST['gadugadu'];
 
             // Serwis płatności SMS
@@ -475,7 +475,7 @@ class JsonHttpAdminController
             }
 
             // Email dla automatu
-            if (strlen($sender_email) && ($warning = check_for_warnings("email", $sender_email))) {
+            if (strlen($senderEmail) && ($warning = check_for_warnings("email", $senderEmail))) {
                 $warnings['sender_email'] = array_merge(
                     (array) $warnings['sender_email'],
                     $warning
@@ -488,12 +488,12 @@ class JsonHttpAdminController
             }
 
             // Usuwanie logów
-            if ($warning = check_for_warnings("number", $delete_logs)) {
+            if ($warning = check_for_warnings("number", $deleteLogs)) {
                 $warnings['delete_logs'] = array_merge((array) $warnings['delete_logs'], $warning);
             }
 
             // Wierszy na stronę
-            if ($warning = check_for_warnings("number", $row_limit)) {
+            if ($warning = check_for_warnings("number", $rowLimit)) {
                 $warnings['row_limit'] = array_merge((array) $warnings['row_limit'], $warning);
             }
 
@@ -571,20 +571,20 @@ class JsonHttpAdminController
                         $transferService,
                         $currency,
                         $shopName,
-                        $shop_url,
-                        $sender_email,
-                        $sender_email_name,
+                        $shopUrl,
+                        $senderEmail,
+                        $senderEmailName,
                         $signature,
                         $vat,
                         $contact,
-                        $row_limit,
+                        $rowLimit,
                         $cron,
                         $_POST['user_edit_service'],
                         $theme,
                         $language,
-                        $date_format,
-                        $delete_logs,
-                        $google_analytics,
+                        $dateFormat,
+                        $deleteLogs,
+                        $googleAnalytics,
                         $gadugadu,
                     ]
                 )
@@ -729,8 +729,8 @@ class JsonHttpAdminController
 
             // Przed błędami
             if ($serviceModule !== null && $serviceModule instanceof IServiceAdminManage) {
-                $additional_warnings = $serviceModule->serviceAdminManagePre($_POST);
-                $warnings = array_merge((array) $warnings, (array) $additional_warnings);
+                $additionalWarnings = $serviceModule->serviceAdminManagePre($_POST);
+                $warnings = array_merge((array) $warnings, (array) $additionalWarnings);
             }
 
             // Błędy
@@ -746,12 +746,12 @@ class JsonHttpAdminController
 
             // Po błędach wywołujemy metodę modułu
             if ($serviceModule !== null && $serviceModule instanceof IServiceAdminManage) {
-                $module_data = $serviceModule->serviceAdminManagePost($_POST);
+                $moduleData = $serviceModule->serviceAdminManagePost($_POST);
 
                 // Tworzymy elementy SET zapytania
-                if (isset($module_data['query_set'])) {
+                if (isset($moduleData['query_set'])) {
                     $set = '';
-                    foreach ($module_data['query_set'] as $element) {
+                    foreach ($moduleData['query_set'] as $element) {
                         if (strlen($set)) {
                             $set .= ", ";
                         }
@@ -986,7 +986,7 @@ class JsonHttpAdminController
                     $_POST['port'],
                     $_POST['sms_service']
                 );
-                $server_id = $server->getId();
+                $serverId = $server->getId();
             } elseif ($action == "server_edit") {
                 $db->query(
                     $db->prepare(
@@ -1005,12 +1005,12 @@ class JsonHttpAdminController
                     )
                 );
 
-                $server_id = $_POST['id'];
+                $serverId = $_POST['id'];
             }
 
             // Aktualizujemy powiazania serwerow z uslugami
-            if ($server_id) {
-                $servers_services = [];
+            if ($serverId) {
+                $serversServices = [];
                 foreach ($heart->getServices() as $service) {
                     // Dana usługa nie może być kupiona na serwerze
                     if (
@@ -1020,14 +1020,14 @@ class JsonHttpAdminController
                         continue;
                     }
 
-                    $servers_services[] = [
+                    $serversServices[] = [
                         'service' => $service['id'],
-                        'server' => $server_id,
+                        'server' => $serverId,
                         'status' => (bool) $_POST[$service['id']],
                     ];
                 }
 
-                update_servers_services($servers_services);
+                update_servers_services($serversServices);
             }
 
             if ($action == "server_add") {
@@ -1036,7 +1036,7 @@ class JsonHttpAdminController
                         $langShop->translate('server_admin_add'),
                         $user->getUsername(),
                         $user->getUid(),
-                        $server_id
+                        $serverId
                     )
                 );
                 return new ApiResponse('ok', $lang->translate('server_added'), 1);
@@ -1048,7 +1048,7 @@ class JsonHttpAdminController
                         $langShop->translate('server_admin_edit'),
                         $user->getUsername(),
                         $user->getUid(),
-                        $server_id
+                        $serverId
                     )
                 );
                 return new ApiResponse('ok', $lang->translate('server_edit'), 1);
@@ -1747,7 +1747,7 @@ class JsonHttpAdminController
             }
 
             // Pozyskujemy dane kodu do dodania
-            $code_data = $serviceModule->serviceCodeAdminAddInsert($_POST);
+            $codeData = $serviceModule->serviceCodeAdminAddInsert($_POST);
 
             $db->query(
                 $db->prepare(
@@ -1759,10 +1759,10 @@ class JsonHttpAdminController
                         $_POST['code'],
                         $serviceModule->service['id'],
                         if_strlen($_POST['uid'], 0),
-                        if_isset($code_data['server'], 0),
-                        if_isset($code_data['amount'], 0),
-                        if_isset($code_data['tariff'], 0),
-                        $code_data['data'],
+                        if_isset($codeData['server'], 0),
+                        if_isset($codeData['amount'], 0),
+                        if_isset($codeData['tariff'], 0),
+                        $codeData['data'],
                     ]
                 )
             );

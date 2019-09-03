@@ -21,7 +21,7 @@ class InstallFullKernel extends Kernel
         /** @var Full $full */
         $full = $this->app->make(Full::class);
 
-        list($modules, $files_priv) = $full->get();
+        list($modules, $filesPriv) = $full->get();
 
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
@@ -69,7 +69,7 @@ class InstallFullKernel extends Kernel
             $warnings['admin_password'][] = "Nie podano hasła dla użytkownika admin.";
         }
 
-        foreach ($files_priv as $file) {
+        foreach ($filesPriv as $file) {
             if (!strlen($file)) {
                 continue;
             }

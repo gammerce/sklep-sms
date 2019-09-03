@@ -13,7 +13,7 @@ interface IServicePurchase
      *
      * @param Purchase $purchaseData
      *
-     * @return integer        value returned by function add_bought_service_info
+     * @return integer        value returned by function addBoughtServiceInfo
      */
     public function purchase(Purchase $purchaseData);
 }

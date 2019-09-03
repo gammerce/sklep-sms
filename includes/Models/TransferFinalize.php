@@ -27,11 +27,11 @@ class TransferFinalize
 
     /**
      * Nazwa pliku z danymi zakupu
-     * ( parametr $data_filename z metody prepareTransfer )
+     * ( parametr $dataFilename z metody prepareTransfer )
      *
      * @var string
      */
-    private $data_filename = '';
+    private $dataFilename = '';
 
     /**
      * Id usługi w danym serwisie
@@ -107,15 +107,15 @@ class TransferFinalize
      */
     public function getDataFilename()
     {
-        return $this->data_filename;
+        return $this->dataFilename;
     }
 
     /**
-     * @param string $data_filename
+     * @param string $dataFilename
      */
-    public function setDataFilename($data_filename)
+    public function setDataFilename($dataFilename)
     {
-        $this->data_filename = (string) $data_filename;
+        $this->dataFilename = (string) $dataFilename;
     }
 
     /**

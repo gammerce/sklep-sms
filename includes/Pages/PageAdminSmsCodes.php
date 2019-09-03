@@ -47,17 +47,17 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
         $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
         while ($row = $this->db->fetchArrayAssoc($result)) {
-            $body_row = new BodyRow();
+            $bodyRow = new BodyRow();
 
-            $body_row->setDbId($row['id']);
-            $body_row->addCell(new Cell(htmlspecialchars($row['code'])));
-            $body_row->addCell(new Cell(htmlspecialchars($row['tariff'])));
+            $bodyRow->setDbId($row['id']);
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['code'])));
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['tariff'])));
 
             if (get_privileges('manage_sms_codes')) {
-                $body_row->setButtonDelete(true);
+                $bodyRow->setButtonDelete(true);
             }
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);

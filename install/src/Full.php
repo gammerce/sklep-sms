@@ -34,9 +34,9 @@ class Full
         }
 
         // Którym plikom / folderom trzeba nadać uprawnienia do zapisywania
-        $files_priv = [];
+        $filesPriv = [];
         if (file_exists($this->app->path('install/storage/full/files_priv.txt'))) {
-            $files_priv = explode(
+            $filesPriv = explode(
                 "\n",
                 str_replace(
                     "\n\r",
@@ -45,7 +45,7 @@ class Full
                 )
             );
         }
-        $files_priv[] = "install";
+        $filesPriv[] = "install";
 
         // Wymagane moduły
         $modules = [
@@ -62,6 +62,6 @@ class Full
             ],
         ];
 
-        return [$modules, $files_priv];
+        return [$modules, $filesPriv];
     }
 }

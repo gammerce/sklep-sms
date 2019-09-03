@@ -34,19 +34,19 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
         $table->addHeadCell(new Cell($this->lang->translate('provision')));
 
         foreach ($this->heart->getTariffs() as $tariff) {
-            $body_row = new BodyRow();
+            $bodyRow = new BodyRow();
 
             $provision = number_format($tariff->getProvision() / 100.0, 2);
 
-            $body_row->setDbId($tariff->getId());
-            $body_row->addCell(new Cell("{$provision} {$this->settings['currency']}"));
+            $bodyRow->setDbId($tariff->getId());
+            $bodyRow->addCell(new Cell("{$provision} {$this->settings['currency']}"));
 
-            $body_row->setButtonEdit(true);
+            $bodyRow->setButtonEdit(true);
             if (!$tariff->isPredefined()) {
-                $body_row->setButtonDelete(true);
+                $bodyRow->setButtonDelete(true);
             }
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);

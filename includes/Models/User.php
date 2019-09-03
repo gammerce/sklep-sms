@@ -7,86 +7,52 @@ use Symfony\Component\HttpFoundation\Request;
 
 class User
 {
-    const TEST = 1;
-
-    /**
-     * @var integer
-     */
+    /** @var integer */
     private $uid;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $username;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $password;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $salt;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $email;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $forename;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $surname;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $groups = [];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $regdate;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $lastactiv;
 
-    /**
-     * @var integer
-     */
+    /** @var integer */
     private $wallet;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $regip;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $lastip;
 
-    /**
-     * @var string
-     */
-    private $reset_password_key;
+    /** @var string */
+    private $resetPasswordKey;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $privileges = [];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $platform;
 
     /** @var Database */
@@ -140,7 +106,7 @@ class User
             $this->wallet = intval($row['wallet']);
             $this->regip = $row['regip'];
             $this->lastip = $row['lastip'];
-            $this->reset_password_key = $row['reset_password_key'];
+            $this->resetPasswordKey = $row['reset_password_key'];
         }
 
         foreach ($this->groups as $groupId) {
@@ -319,15 +285,15 @@ class User
      */
     public function getResetPasswordKey()
     {
-        return $this->reset_password_key;
+        return $this->resetPasswordKey;
     }
 
     /**
-     * @param string $reset_password_key
+     * @param string $resetPasswordKey
      */
-    public function setResetPasswordKey($reset_password_key)
+    public function setResetPasswordKey($resetPasswordKey)
     {
-        $this->reset_password_key = $reset_password_key;
+        $this->resetPasswordKey = $resetPasswordKey;
     }
 
     /**

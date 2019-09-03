@@ -20,18 +20,16 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
     IServiceUserServiceAdminAdd,
     IServiceUserOwnServices
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     private $groups;
 
-    private $db_host;
-    private $db_user;
-    private $db_password;
-    private $db_name;
+    private $dbHost;
+    private $dbUser;
+    private $dbPassword;
+    private $dbName;
 
     /** @var Database */
-    protected $db_mybb = null;
+    protected $dbMybb = null;
 
     /** @var Translator */
     protected $langShop;
@@ -53,10 +51,10 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         $this->heart = $this->app->make(Heart::class);
 
         $this->groups = explode(",", $this->service['data']['mybb_groups']);
-        $this->db_host = if_isset($this->service['data']['db_host'], '');
-        $this->db_user = if_isset($this->service['data']['db_user'], '');
-        $this->db_password = if_isset($this->service['data']['db_password'], '');
-        $this->db_name = if_isset($this->service['data']['db_name'], '');
+        $this->dbHost = if_isset($this->service['data']['db_host'], '');
+        $this->dbUser = if_isset($this->service['data']['db_user'], '');
+        $this->dbPassword = if_isset($this->service['data']['db_password'], '');
+        $this->dbName = if_isset($this->service['data']['db_name'], '');
     }
 
     /**
@@ -163,13 +161,13 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         } else {
             $this->connectMybb();
 
-            $result = $this->db_mybb->query(
-                $this->db_mybb->prepare("SELECT 1 FROM `mybb_users` " . "WHERE `username` = '%s'", [
+            $result = $this->dbMybb->query(
+                $this->dbMybb->prepare("SELECT 1 FROM `mybb_users` " . "WHERE `username` = '%s'", [
                     $data['username'],
                 ])
             );
 
-            if (!$this->db_mybb->numRows($result)) {
+            if (!$this->dbMybb->numRows($result)) {
                 $warnings['username'][] = $this->lang->translate('no_user');
             }
         }
@@ -238,12 +236,12 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
      *
      * @param Purchase $purchaseData
      *
-     * @return integer        value returned by function add_bought_service_info
+     * @return integer        value returned by function addBoughtServiceInfo
      */
     public function purchase(Purchase $purchaseData)
     {
         // Nie znaleziono użytkownika o takich danych jak podane podczas zakupu
-        if (($mybb_user = $this->createMybbUser($purchaseData->getOrder('username'))) === null) {
+        if (($mybbUser = $this->createMybbUser($purchaseData->getOrder('username'))) === null) {
             log_info(
                 $this->langShop->sprintf(
                     $this->langShop->translate('mybb_purchase_no_user'),
@@ -253,16 +251,16 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             die("Critical error occured");
         }
 
-        $this->user_service_add(
+        $this->userServiceAdd(
             $purchaseData->user->getUid(),
-            $mybb_user->getUid(),
+            $mybbUser->getUid(),
             $purchaseData->getOrder('amount'),
             $purchaseData->getOrder('forever')
         );
         foreach ($this->groups as $group) {
-            $mybb_user->prolongShopGroup($group, $purchaseData->getOrder('amount') * 24 * 60 * 60);
+            $mybbUser->prolongShopGroup($group, $purchaseData->getOrder('amount') * 24 * 60 * 60);
         }
-        $this->saveMybbUser($mybb_user);
+        $this->saveMybbUser($mybbUser);
 
         return add_bought_service_info(
             $purchaseData->user->getUid(),
@@ -273,10 +271,10 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             $this->service['id'],
             0,
             $purchaseData->getOrder('amount'),
-            $purchaseData->getOrder('username') . " ({$mybb_user->getUid()})",
+            $purchaseData->getOrder('username') . " ({$mybbUser->getUid()})",
             $purchaseData->getEmail(),
             [
-                'uid' => $mybb_user->getUid(),
+                'uid' => $mybbUser->getUid(),
                 'groups' => implode(',', $this->groups),
             ]
         );
@@ -356,15 +354,15 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
 
     public function userServiceDeletePost($userService)
     {
-        $mybb_user = $this->createMybbUser(intval($userService['mybb_uid']));
+        $mybbUser = $this->createMybbUser(intval($userService['mybb_uid']));
 
         // Usuwamy wszystkie shopGroups oraz z mybbGroups te grupy, które maja was_before = false
-        foreach ($mybb_user->getShopGroup() as $gid => $group_data) {
-            if (!$group_data['was_before']) {
-                $mybb_user->removeMybbAddGroup($gid);
+        foreach ($mybbUser->getShopGroup() as $gid => $groupData) {
+            if (!$groupData['was_before']) {
+                $mybbUser->removeMybbAddGroup($gid);
             }
         }
-        $mybb_user->removeShopGroup();
+        $mybbUser->removeShopGroup();
 
         // Dodajemy uzytkownikowi grupy na podstawie USER_SERVICE_TABLE
         $result = $this->db->query(
@@ -386,39 +384,39 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
 
         while ($row = $this->db->fetchArrayAssoc($result)) {
             $row['extra_data'] = json_decode($row['extra_data'], true);
-            foreach (explode(',', $row['extra_data']['mybb_groups']) as $group_id) {
-                $mybb_user->prolongShopGroup($group_id, $row['expire']);
+            foreach (explode(',', $row['extra_data']['mybb_groups']) as $groupId) {
+                $mybbUser->prolongShopGroup($groupId, $row['expire']);
             }
         }
 
         // Użytkownik nie może mieć takiej displaygroup
         if (
             !in_array(
-                $mybb_user->getMybbDisplayGroup(),
+                $mybbUser->getMybbDisplayGroup(),
                 array_unique(
                     array_merge(
-                        array_keys($mybb_user->getShopGroup()),
-                        $mybb_user->getMybbAddGroups(),
-                        [$mybb_user->getMybbUserGroup()]
+                        array_keys($mybbUser->getShopGroup()),
+                        $mybbUser->getMybbAddGroups(),
+                        [$mybbUser->getMybbUserGroup()]
                     )
                 )
             )
         ) {
-            $mybb_user->setMybbDisplayGroup(0);
+            $mybbUser->setMybbDisplayGroup(0);
         }
 
-        $this->saveMybbUser($mybb_user);
+        $this->saveMybbUser($mybbUser);
     }
 
     /**
      * Dodaje graczowi usłguę
      *
      * @param $uid
-     * @param $mybb_uid
+     * @param $mybbUid
      * @param $days
      * @param $forever
      */
-    private function user_service_add($uid, $mybb_uid, $days, $forever)
+    private function userServiceAdd($uid, $mybbUid, $days, $forever)
     {
         // Dodajemy usługę gracza do listy usług
         // Jeżeli już istnieje dokładnie taka sama, to ją przedłużamy
@@ -429,7 +427,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                     $this::USER_SERVICE_TABLE .
                     "` " .
                     "WHERE `service` = '%s' AND `mybb_uid` = '%d'",
-                [$this->service['id'], $mybb_uid]
+                [$this->service['id'], $mybbUid]
             )
         );
 
@@ -448,7 +446,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                     [
                         'column' => 'mybb_uid',
                         'value' => "'%d'",
-                        'data' => [$mybb_uid],
+                        'data' => [$mybbUid],
                     ],
                     [
                         'column' => 'expire',
@@ -479,7 +477,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                         $this::USER_SERVICE_TABLE .
                         "` (`us_id`, `service`, `mybb_uid`) " .
                         "VALUES ('%d', '%s', '%d')",
-                    [$userServiceId, $this->service['id'], $mybb_uid]
+                    [$userServiceId, $this->service['id'], $mybbUid]
                 )
             );
         }
@@ -536,13 +534,13 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         } else {
             $this->connectMybb();
 
-            $result = $this->db_mybb->query(
-                $this->db_mybb->prepare("SELECT 1 FROM `mybb_users` " . "WHERE `username` = '%s'", [
+            $result = $this->dbMybb->query(
+                $this->dbMybb->prepare("SELECT 1 FROM `mybb_users` " . "WHERE `username` = '%s'", [
                     $body['mybb_username'],
                 ])
             );
 
-            if (!$this->db_mybb->numRows($result)) {
+            if (!$this->dbMybb->numRows($result)) {
                 $warnings['mybb_username'][] = $this->lang->translate('no_user');
             }
         }
@@ -562,14 +560,14 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         }
 
         // Dodawanie informacji o płatności
-        $payment_id = pay_by_admin($user);
+        $paymentId = pay_by_admin($user);
 
         $purchaseData = new Purchase();
         $purchaseData->setService($this->service['id']);
         $purchaseData->user = $this->heart->getUser($body['uid']);
         $purchaseData->setPayment([
             'method' => "admin",
-            'payment_id' => $payment_id,
+            'payment_id' => $paymentId,
         ]);
         $purchaseData->setOrder([
             'username' => $body['mybb_username'],
@@ -577,14 +575,14 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             'forever' => (bool) $body['forever'],
         ]);
         $purchaseData->setEmail($body['email']);
-        $bought_service_id = $this->purchase($purchaseData);
+        $boughtServiceId = $this->purchase($purchaseData);
 
         log_info(
             $this->langShop->sprintf(
                 $this->langShop->translate('admin_added_user_service'),
                 $user->getUsername(),
                 $user->getUid(),
-                $bought_service_id
+                $boughtServiceId
             )
         );
 
@@ -599,8 +597,8 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
     {
         $this->connectMybb();
 
-        $username = $this->db_mybb->getColumn(
-            $this->db_mybb->prepare("SELECT `username` FROM `mybb_users` " . "WHERE `uid` = '%d'", [
+        $username = $this->dbMybb->getColumn(
+            $this->dbMybb->prepare("SELECT `username` FROM `mybb_users` " . "WHERE `uid` = '%d'", [
                 $userService['mybb_uid'],
             ]),
             'username'
@@ -632,24 +630,24 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         if (is_integer($userId)) {
             $where = "`uid` = {$userId}";
         } else {
-            $where = $this->db_mybb->prepare("`username` = '%s'", [$userId]);
+            $where = $this->dbMybb->prepare("`username` = '%s'", [$userId]);
         }
 
-        $result = $this->db_mybb->query(
+        $result = $this->dbMybb->query(
             "SELECT `uid`, `additionalgroups`, `displaygroup`, `usergroup` " .
                 "FROM `mybb_users` " .
                 "WHERE {$where}"
         );
 
-        if (!$this->db_mybb->numRows($result)) {
+        if (!$this->dbMybb->numRows($result)) {
             return null;
         }
 
-        $row_mybb = $this->db_mybb->fetchArrayAssoc($result);
+        $rowMybb = $this->dbMybb->fetchArrayAssoc($result);
 
-        $mybb_user = new MybbUser($row_mybb['uid'], $row_mybb['usergroup']);
-        $mybb_user->setMybbAddGroups(explode(",", $row_mybb['additionalgroups']));
-        $mybb_user->setMybbDisplayGroup($row_mybb['displaygroup']);
+        $mybbUser = new MybbUser($rowMybb['uid'], $rowMybb['usergroup']);
+        $mybbUser->setMybbAddGroups(explode(",", $rowMybb['additionalgroups']));
+        $mybbUser->setMybbDisplayGroup($rowMybb['displaygroup']);
 
         $result = $this->db->query(
             $this->db->prepare(
@@ -657,41 +655,41 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                     TABLE_PREFIX .
                     "mybb_user_group` " .
                     "WHERE `uid` = '%d'",
-                [$row_mybb['uid']]
+                [$rowMybb['uid']]
             )
         );
 
         while ($row = $this->db->fetchArrayAssoc($result)) {
-            $mybb_user->setShopGroup($row['gid'], [
+            $mybbUser->setShopGroup($row['gid'], [
                 'expire' => $row['expire'],
                 'was_before' => $row['was_before'],
             ]);
         }
 
-        return $mybb_user;
+        return $mybbUser;
     }
 
     /**
      * Zapisuje dane o użytkowniku
      *
-     * @param MybbUser $mybb_user
+     * @param MybbUser $mybbUser
      */
-    private function saveMybbUser($mybb_user)
+    private function saveMybbUser($mybbUser)
     {
         $this->connectMybb();
 
         $this->db->query(
             $this->db->prepare(
                 "DELETE FROM `" . TABLE_PREFIX . "mybb_user_group` " . "WHERE `uid` = '%d'",
-                [$mybb_user->getUid()]
+                [$mybbUser->getUid()]
             )
         );
 
         $values = [];
-        foreach ($mybb_user->getShopGroup() as $gid => $group_data) {
+        foreach ($mybbUser->getShopGroup() as $gid => $groupData) {
             $values[] = $this->db->prepare(
                 "('%d', '%d', FROM_UNIXTIME(UNIX_TIMESTAMP() + %d), '%d')",
-                [$mybb_user->getUid(), $gid, $group_data['expire'], $group_data['was_before']]
+                [$mybbUser->getUid(), $gid, $groupData['expire'], $groupData['was_before']]
             );
         }
 
@@ -706,15 +704,15 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         }
 
         $addgroups = array_unique(
-            array_merge(array_keys($mybb_user->getShopGroup()), $mybb_user->getMybbAddGroups())
+            array_merge(array_keys($mybbUser->getShopGroup()), $mybbUser->getMybbAddGroups())
         );
 
-        $this->db_mybb->query(
-            $this->db_mybb->prepare(
+        $this->dbMybb->query(
+            $this->dbMybb->prepare(
                 "UPDATE `mybb_users` " .
                     "SET `additionalgroups` = '%s', `displaygroup` = '%d' " .
                     "WHERE `uid` = '%d'",
-                [implode(',', $addgroups), $mybb_user->getMybbDisplayGroup(), $mybb_user->getUid()]
+                [implode(',', $addgroups), $mybbUser->getMybbDisplayGroup(), $mybbUser->getUid()]
             )
         );
     }
@@ -724,17 +722,17 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
      */
     private function connectMybb()
     {
-        if ($this->db_mybb !== null) {
+        if ($this->dbMybb !== null) {
             return;
         }
 
-        $this->db_mybb = new Database(
-            $this->db_host,
+        $this->dbMybb = new Database(
+            $this->dbHost,
             3306,
-            $this->db_user,
-            $this->db_password,
-            $this->db_name
+            $this->dbUser,
+            $this->dbPassword,
+            $this->dbName
         );
-        $this->db_mybb->query("SET NAMES utf8");
+        $this->dbMybb->query("SET NAMES utf8");
     }
 }

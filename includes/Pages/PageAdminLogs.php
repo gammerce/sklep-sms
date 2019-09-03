@@ -58,25 +58,25 @@ class PageAdminLogs extends PageAdmin
         $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
         while ($row = $this->db->fetchArrayAssoc($result)) {
-            $body_row = new BodyRow();
+            $bodyRow = new BodyRow();
 
-            $body_row->setDbId($row['id']);
+            $bodyRow->setDbId($row['id']);
 
             $cell = new Cell();
             $div = new Div(htmlspecialchars($row['text']));
             $div->setParam('class', 'one_line');
             $cell->addContent($div);
-            $body_row->addCell($cell);
+            $bodyRow->addCell($cell);
 
             $cell = new Cell(convertDate($row['timestamp']));
             $cell->setParam('headers', 'date');
-            $body_row->addCell($cell);
+            $bodyRow->addCell($cell);
 
             if (get_privileges("manage_logs")) {
-                $body_row->setButtonDelete(true);
+                $bodyRow->setButtonDelete(true);
             }
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);

@@ -44,17 +44,17 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
         $table->setDbRowsAmount($this->db->getColumn('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
 
         while ($row = $this->db->fetchArrayAssoc($result)) {
-            $body_row = new BodyRow();
+            $bodyRow = new BodyRow();
 
-            $body_row->setDbId($row['id']);
-            $body_row->addCell(new Cell($row['name']));
+            $bodyRow->setDbId($row['id']);
+            $bodyRow->addCell(new Cell($row['name']));
 
             if (get_privileges('manage_groups')) {
-                $body_row->setButtonDelete(true);
-                $body_row->setButtonEdit(true);
+                $bodyRow->setButtonDelete(true);
+                $bodyRow->setButtonEdit(true);
             }
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);

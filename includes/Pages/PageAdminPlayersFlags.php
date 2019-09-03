@@ -55,32 +55,32 @@ class PageAdminPlayersFlags extends PageAdmin
         $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
         while ($row = $this->db->fetchArrayAssoc($result)) {
-            $body_row = new BodyRow();
+            $bodyRow = new BodyRow();
 
             // Pozyskanie danych serwera
-            $temp_server = $this->heart->getServer($row['server']);
-            $server_name = $temp_server['name'];
-            unset($temp_server);
+            $tempServer = $this->heart->getServer($row['server']);
+            $serverName = $tempServer['name'];
+            unset($tempServer);
 
-            $body_row->setDbId($row['id']);
-            $body_row->addCell(new Cell($server_name));
-            $body_row->addCell(new Cell(htmlspecialchars($row['auth_data'])));
+            $bodyRow->setDbId($row['id']);
+            $bodyRow->addCell(new Cell($serverName));
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['auth_data'])));
 
             foreach (str_split($this->flags) as $flag) {
                 if (!$row[$flag]) {
-                    $body_row->addCell(new Cell(' '));
+                    $bodyRow->addCell(new Cell(' '));
                 } else {
                     if ($row[$flag] == -1) {
-                        $body_row->addCell(new Cell($this->lang->translate('never')));
+                        $bodyRow->addCell(new Cell($this->lang->translate('never')));
                     } else {
-                        $body_row->addCell(
+                        $bodyRow->addCell(
                             new Cell(date($this->settings['date_format'], $row[$flag]))
                         );
                     }
                 }
             }
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);

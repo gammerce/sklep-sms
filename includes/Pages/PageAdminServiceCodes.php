@@ -65,7 +65,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
         $table->setDbRowsAmount($this->db->getColumn('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
 
         while ($row = $this->db->fetchArrayAssoc($result)) {
-            $body_row = new BodyRow();
+            $bodyRow = new BodyRow();
 
             $username = $row['uid']
                 ? $row['username'] . " ({$row['uid']})"
@@ -85,19 +85,19 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
                 }
             }
 
-            $body_row->setDbId($row['id']);
-            $body_row->addCell(new Cell(htmlspecialchars($row['code'])));
-            $body_row->addCell(new Cell(htmlspecialchars($row['service'])));
-            $body_row->addCell(new Cell(htmlspecialchars($row['server'])));
-            $body_row->addCell(new Cell($amount));
-            $body_row->addCell(new Cell($username));
-            $body_row->addCell(new Cell(convertDate($row['timestamp'])));
+            $bodyRow->setDbId($row['id']);
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['code'])));
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['service'])));
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['server'])));
+            $bodyRow->addCell(new Cell($amount));
+            $bodyRow->addCell(new Cell($username));
+            $bodyRow->addCell(new Cell(convertDate($row['timestamp'])));
 
             if (get_privileges('manage_service_codes')) {
-                $body_row->setButtonDelete(true);
+                $bodyRow->setButtonDelete(true);
             }
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);

@@ -102,16 +102,15 @@ class Translator
 
     /**
      * @param $string
-     *
      * @return mixed
      */
     public function sprintf($string)
     {
-        $arg_list = func_get_args();
-        $num_args = count($arg_list);
+        $argList = func_get_args();
+        $numArgs = count($argList);
 
-        for ($i = 1; $i < $num_args; $i++) {
-            $string = str_replace('{' . $i . '}', $arg_list[$i], $string);
+        for ($i = 1; $i < $numArgs; $i++) {
+            $string = str_replace('{' . $i . '}', $argList[$i], $string);
         }
 
         return $string;
@@ -121,7 +120,6 @@ class Translator
      * Strtoupper function
      *
      * @param $string
-     *
      * @return string
      */
     public function strtoupper($string)

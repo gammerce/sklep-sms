@@ -99,17 +99,17 @@ function get_content($element, Request $request, $withEnvelope = true)
         : $block->getContent($query, $body);
 }
 
-function get_row_limit($page, $row_limit = 0)
+function get_row_limit($page, $rowLimit = 0)
 {
     /** @var Settings $settings */
     $settings = app()->make(Settings::class);
 
-    $row_limit = $row_limit ? $row_limit : $settings['row_limit'];
+    $rowLimit = $rowLimit ? $rowLimit : $settings['row_limit'];
 
-    return ($page - 1) * $row_limit . "," . $row_limit;
+    return ($page - 1) * $rowLimit . "," . $rowLimit;
 }
 
-function get_pagination($all, $current_page, $script, $query, $rowLimit = 0)
+function get_pagination($all, $currentPage, $script, $query, $rowLimit = 0)
 {
     /** @var Settings $settings */
     $settings = app()->make(Settings::class);
@@ -125,11 +125,11 @@ function get_pagination($all, $current_page, $script, $query, $rowLimit = 0)
     }
 
     // Pobieramy ilosc stron
-    $pages_amount = floor(max($all - 1, 0) / $rowLimit) + 1;
+    $pagesAmount = floor(max($all - 1, 0) / $rowLimit) + 1;
 
     // Poprawiamy obecna strone, gdyby byla bledna
-    if ($current_page > $pages_amount) {
-        $current_page = -1;
+    if ($currentPage > $pagesAmount) {
+        $currentPage = -1;
     }
 
     // Usuwamy index "page"
@@ -151,11 +151,11 @@ function get_pagination($all, $current_page, $script, $query, $rowLimit = 0)
     /*// Pierwsza strona
     $output = create_dom_element("a",1,array(
         'href'	=> $script.$queryString.($queryString != "" ? "&" : "?")."page=1",
-        'class'	=> $current_page == 1 ? "current" : ""
+        'class'	=> $currentPage == 1 ? "current" : ""
     ))."&nbsp;";
 
     // 2 3 ...
-    if( $current_page < 5 ) {
+    if( $currentPage < 5 ) {
         // 2 3
         for($i = 2; $i <= 3; ++$i) {
             $output .= create_dom_element("a",$i,array(
@@ -165,7 +165,7 @@ function get_pagination($all, $current_page, $script, $query, $rowLimit = 0)
 
         // Trzy kropki
         $output .= create_dom_element("a","...",array(
-                'href'	=> $script.$queryString.($queryString != "" ? "&" : "?")."page=".round(($pages_amount-3)/2)
+                'href'	=> $script.$queryString.($queryString != "" ? "&" : "?")."page=".round(($pagesAmount-3)/2)
         ))."&nbsp;";
     }
     // ...
@@ -174,36 +174,36 @@ function get_pagination($all, $current_page, $script, $query, $rowLimit = 0)
     }
 
     // Ostatnia strona
-    $output .= create_dom_element("a",$pages_amount,array(
-        'href'	=> $script.$queryString.($queryString != "" ? "&" : "?")."page=".$pages_amount,
-        'class'	=> $current_page == $pages_amount ? "current" : ""
+    $output .= create_dom_element("a",$pagesAmount,array(
+        'href'	=> $script.$queryString.($queryString != "" ? "&" : "?")."page=".$pagesAmount,
+        'class'	=> $currentPage == $pagesAmount ? "current" : ""
     ))."&nbsp;";*/
 
     $output = "";
     $lp = 2;
-    for ($i = 1, $dots = false; $i <= $pages_amount; ++$i) {
+    for ($i = 1, $dots = false; $i <= $pagesAmount; ++$i) {
         if (
             $i != 1 &&
-            $i != $pages_amount &&
-            ($i < $current_page - $lp || $i > $current_page + $lp)
+            $i != $pagesAmount &&
+            ($i < $currentPage - $lp || $i > $currentPage + $lp)
         ) {
             if (!$dots) {
-                if ($i < $current_page - $lp) {
+                if ($i < $currentPage - $lp) {
                     $href = $url->to(
                         $script .
                             $queryString .
                             (strlen($queryString) ? "&" : "?") .
                             "page=" .
-                            round((1 + $current_page - $lp) / 2)
+                            round((1 + $currentPage - $lp) / 2)
                     );
                 } else {
-                    if ($i > $current_page + $lp) {
+                    if ($i > $currentPage + $lp) {
                         $href = $url->to(
                             $script .
                                 $queryString .
                                 (strlen($queryString) ? "&" : "?") .
                                 "page=" .
-                                round(($current_page + $lp + $pages_amount) / 2)
+                                round(($currentPage + $lp + $pagesAmount) / 2)
                         );
                     }
                 }
@@ -222,7 +222,7 @@ function get_pagination($all, $current_page, $script, $query, $rowLimit = 0)
                 'href' => ($href = $url->to(
                     $script . $queryString . (strlen($queryString) ? "&" : "?") . "page=" . $i
                 )),
-                'class' => $current_page == $i ? "current" : "",
+                'class' => $currentPage == $i ? "current" : "",
             ]) . "&nbsp;";
         $dots = false;
     }
@@ -565,11 +565,10 @@ function validate_payment(Purchase $purchaseData)
 }
 
 /**
- * @param User $user_admin
- *
+ * @param User $userAdmin
  * @return int|string
  */
-function pay_by_admin($user_admin)
+function pay_by_admin($userAdmin)
 {
     /** @var Database $db */
     $db = app()->make(Database::class);
@@ -581,7 +580,7 @@ function pay_by_admin($user_admin)
                 TABLE_PREFIX .
                 "payment_admin` (`aid`, `ip`, `platform`) " .
                 "VALUES ('%d', '%s', '%s')",
-            [$user_admin->getUid(), $user_admin->getLastIp(), $user_admin->getPlatform()]
+            [$userAdmin->getUid(), $userAdmin->getLastIp(), $userAdmin->getPlatform()]
         )
     );
 
@@ -591,7 +590,6 @@ function pay_by_admin($user_admin)
 /**
  * @param int  $cost
  * @param User $user
- *
  * @return array|int|string
  */
 function pay_wallet($cost, $user)
@@ -689,7 +687,7 @@ function pay_service_code(Purchase $purchaseData, $serviceModule)
                     ]
                 )
             );
-            $payment_id = $db->lastId();
+            $paymentId = $db->lastId();
 
             log_info(
                 $langShop->sprintf(
@@ -697,11 +695,11 @@ function pay_service_code(Purchase $purchaseData, $serviceModule)
                     $purchaseData->getPayment('service_code'),
                     $purchaseData->user->getUsername(),
                     $purchaseData->user->getUid(),
-                    $payment_id
+                    $paymentId
                 )
             );
 
-            return $payment_id;
+            return $paymentId;
         }
     }
 
@@ -716,31 +714,31 @@ function pay_service_code(Purchase $purchaseData, $serviceModule)
  * Add information about purchasing a service
  *
  * @param integer $uid
- * @param string  $user_name
+ * @param string  $userName
  * @param string  $ip
  * @param string  $method
- * @param string  $payment_id
+ * @param string  $paymentId
  * @param string  $service
  * @param integer $server
  * @param string  $amount
- * @param string  $auth_data
+ * @param string  $authData
  * @param string  $email
- * @param array   $extra_data
+ * @param array   $extraData
  *
  * @return int|string
  */
 function add_bought_service_info(
     $uid,
-    $user_name,
+    $userName,
     $ip,
     $method,
-    $payment_id,
+    $paymentId,
     $service,
     $server,
     $amount,
-    $auth_data,
+    $authData,
     $email,
-    $extra_data = []
+    $extraData = []
 ) {
     /** @var Database $db */
     $db = app()->make(Database::class);
@@ -766,22 +764,22 @@ function add_bought_service_info(
             [
                 $uid,
                 $method,
-                $payment_id,
+                $paymentId,
                 $service,
                 $server,
                 $amount,
-                $auth_data,
+                $authData,
                 $email,
-                json_encode($extra_data),
+                json_encode($extraData),
             ]
         )
     );
-    $bougt_service_id = $db->lastId();
+    $bougtServiceId = $db->lastId();
 
     $ret = $lang->translate('none');
     if (strlen($email)) {
         $message = purchase_info([
-            'purchase_id' => $bougt_service_id,
+            'purchase_id' => $bougtServiceId,
             'action' => "email",
         ]);
         if (strlen($message)) {
@@ -789,7 +787,7 @@ function add_bought_service_info(
                 $service == 'charge_wallet'
                     ? $lang->translate('charge_wallet')
                     : $lang->translate('purchase');
-            $ret = $mailer->send($email, $auth_data, $title, $message);
+            $ret = $mailer->send($email, $authData, $title, $message);
         }
 
         if ($ret == "not_sent") {
@@ -801,26 +799,26 @@ function add_bought_service_info(
         }
     }
 
-    $temp_service = $heart->getService($service);
-    $temp_server = $heart->getServer($server);
-    $amount = $amount != -1 ? "{$amount} {$temp_service['tag']}" : $lang->translate('forever');
+    $tempService = $heart->getService($service);
+    $tempServer = $heart->getServer($server);
+    $amount = $amount != -1 ? "{$amount} {$tempService['tag']}" : $lang->translate('forever');
     log_info(
         $langShop->sprintf(
             $langShop->translate('bought_service_info'),
             $service,
-            $auth_data,
+            $authData,
             $amount,
-            $temp_server['name'],
-            $payment_id,
+            $tempServer['name'],
+            $paymentId,
             $ret,
-            $user_name,
+            $userName,
             $uid,
             $ip
         )
     );
-    unset($temp_server);
+    unset($tempServer);
 
-    return $bougt_service_id;
+    return $bougtServiceId;
 }
 
 //
@@ -877,11 +875,11 @@ function purchase_info($data)
  * Pozyskuje z bazy wszystkie usługi użytkowników
  *
  * @param string|int $conditions Jezeli jest tylko jeden element w tablicy, to zwroci ten element zamiast tablicy
- * @param bool       $take_out
+ * @param bool       $takeOut
  *
  * @return array
  */
-function get_users_services($conditions = '', $take_out = true)
+function get_users_services($conditions = '', $takeOut = true)
 {
     /** @var Database $db */
     $db = app()->make(Database::class);
@@ -893,11 +891,11 @@ function get_users_services($conditions = '', $take_out = true)
         $conditions = "WHERE `id` = " . intval($conditions);
     }
 
-    $output = $used_table = [];
+    $output = $usedTable = [];
     // Niestety dla każdego modułu musimy wykonać osobne zapytanie :-(
     foreach ($heart->getServicesModules() as $serviceModuleData) {
         $table = $serviceModuleData['classsimple']::USER_SERVICE_TABLE;
-        if (!strlen($table) || array_key_exists($table, $used_table)) {
+        if (!strlen($table) || array_key_exists($table, $usedTable)) {
             continue;
         }
 
@@ -918,13 +916,13 @@ function get_users_services($conditions = '', $take_out = true)
             $output[$row['id']] = $row;
         }
 
-        $used_table[$table] = true;
+        $usedTable[$table] = true;
     }
 
     ksort($output);
     $output = array_reverse($output);
 
-    return $take_out && count($output) == 1 ? $output[0] : $output;
+    return $takeOut && count($output) == 1 ? $output[0] : $output;
 }
 
 function delete_users_old_services()
@@ -1029,14 +1027,14 @@ function create_dom_element($name, $text = "", $data = [])
         }
     }
 
-    $name_hsafe = htmlspecialchars($name);
-    $output = "<{$name_hsafe} {$features}>";
+    $nameHsafe = htmlspecialchars($name);
+    $output = "<{$nameHsafe} {$features}>";
     if (strlen($text)) {
         $output .= $text;
     }
 
     if (!in_array($name, ["input", "img"])) {
-        $output .= "</{$name_hsafe}>";
+        $output .= "</{$nameHsafe}>";
     }
 
     return $output;
@@ -1044,15 +1042,15 @@ function create_dom_element($name, $text = "", $data = [])
 
 function create_brick($text, $class = "", $alpha = 0.2)
 {
-    $brick_r = rand(0, 255);
-    $brick_g = rand(0, 255);
-    $brick_b = rand(0, 255);
+    $brickR = rand(0, 255);
+    $brickG = rand(0, 255);
+    $brickB = rand(0, 255);
 
     return create_dom_element("div", $text, [
         'class' => "brick" . ($class ? " {$class}" : ""),
         'style' => [
-            'border-color' => "rgb({$brick_r},{$brick_g},{$brick_b})",
-            'background-color' => "rgba({$brick_r},{$brick_g},{$brick_b},{$alpha})",
+            'border-color' => "rgb({$brickR},{$brickG},{$brickB})",
+            'background-color' => "rgba({$brickR},{$brickG},{$brickB},{$alpha})",
         ],
     ]);
 }
@@ -1080,24 +1078,24 @@ function get_ip()
     $request = app()->make(Request::class);
 
     if ($request->server->has('HTTP_CF_CONNECTING_IP')) {
-        $cf_ip_ranges = [
-            '103.21.244.0/22',
-            '103.22.200.0/22',
-            '103.31.4.0/22',
-            '104.16.0.0/12',
-            '108.162.192.0/18',
-            '131.0.72.0/22',
-            '141.101.64.0/18',
-            '162.158.0.0/15',
-            '172.64.0.0/13',
-            '173.245.48.0/20',
-            '188.114.96.0/20',
-            '190.93.240.0/20',
-            '197.234.240.0/22',
-            '198.41.128.0/17',
+        $cfIpRanges = [
+            "103.21.244.0/22",
+            "103.22.200.0/22",
+            "103.31.4.0/22",
+            "104.16.0.0/12",
+            "108.162.192.0/18",
+            "131.0.72.0/22",
+            "141.101.64.0/18",
+            "162.158.0.0/15",
+            "172.64.0.0/13",
+            "173.245.48.0/20",
+            "188.114.96.0/20",
+            "190.93.240.0/20",
+            "197.234.240.0/22",
+            "198.41.128.0/17",
         ];
 
-        foreach ($cf_ip_ranges as $range) {
+        foreach ($cfIpRanges as $range) {
             if (ip_in_range($request->server->get('REMOTE_ADDR'), $range)) {
                 return $request->server->get('HTTP_CF_CONNECTING_IP');
             }
@@ -1185,12 +1183,12 @@ function escape_filename($filename)
 function get_random_string($length)
 {
     $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"; //length:36
-    $final_rand = "";
+    $finalRand = "";
     for ($i = 0; $i < $length; $i++) {
-        $final_rand .= $chars[rand(0, strlen($chars) - 1)];
+        $finalRand .= $chars[rand(0, strlen($chars) - 1)];
     }
 
-    return $final_rand;
+    return $finalRand;
 }
 
 function valid_steam($steamid)
@@ -1234,25 +1232,25 @@ function mb_str_split($string)
     return preg_split('/(?<!^)(?!$)/u', $string);
 }
 
-function searchWhere($search_ids, $search, &$where)
+function searchWhere($searchIds, $search, &$where)
 {
     /** @var Database $db */
     $db = app()->make(Database::class);
 
-    $search_where = [];
-    $search_like = $db->escape('%' . implode('%', mb_str_split($search)) . '%');
+    $searchWhere = [];
+    $searchLike = $db->escape('%' . implode('%', mb_str_split($search)) . '%');
 
-    foreach ($search_ids as $search_id) {
-        $search_where[] = "{$search_id} LIKE '{$search_like}'";
+    foreach ($searchIds as $searchId) {
+        $searchWhere[] = "{$searchId} LIKE '{$searchLike}'";
     }
 
-    if (!empty($search_where)) {
-        $search_where = implode(" OR ", $search_where);
+    if (!empty($searchWhere)) {
+        $searchWhere = implode(" OR ", $searchWhere);
         if (strlen($where)) {
             $where .= " AND ";
         }
 
-        $where .= "( {$search_where} )";
+        $where .= "( {$searchWhere} )";
     }
 }
 
@@ -1274,9 +1272,9 @@ function ip_in_range($ip, $range)
         if (strpos($netmask, '.') !== false) {
             // $netmask is a 255.255.0.0 format
             $netmask = str_replace('*', '0', $netmask);
-            $netmask_dec = ip2long($netmask);
+            $netmaskDec = ip2long($netmask);
 
-            return (ip2long($ip) & $netmask_dec) == (ip2long($range) & $netmask_dec);
+            return (ip2long($ip) & $netmaskDec) == (ip2long($range) & $netmaskDec);
         } else {
             // $netmask is a CIDR size block
             // fix the range argument
@@ -1292,17 +1290,17 @@ function ip_in_range($ip, $range)
                 empty($c) ? '0' : $c,
                 empty($d) ? '0' : $d
             );
-            $range_dec = ip2long($range);
-            $ip_dec = ip2long($ip);
+            $rangeDec = ip2long($range);
+            $ipDec = ip2long($ip);
 
             # Strategy 1 - Create the netmask with 'netmask' 1s and then fill it to 32 with 0s
-            #$netmask_dec = bindec(str_pad('', $netmask, '1') . str_pad('', 32-$netmask, '0'));
+            #$netmaskDec = bindec(str_pad('', $netmask, '1') . str_pad('', 32-$netmask, '0'));
 
             # Strategy 2 - Use math to create it
-            $wildcard_dec = pow(2, 32 - $netmask) - 1;
-            $netmask_dec = ~$wildcard_dec;
+            $wildcardDec = pow(2, 32 - $netmask) - 1;
+            $netmaskDec = ~$wildcardDec;
 
-            return ($ip_dec & $netmask_dec) == ($range_dec & $netmask_dec);
+            return ($ipDec & $netmaskDec) == ($rangeDec & $netmaskDec);
         }
     } else {
         // range might be 255.255.*.* or 1.2.3.0-1.2.3.255
@@ -1317,11 +1315,11 @@ function ip_in_range($ip, $range)
         if (strpos($range, '-') !== false) {
             // A-B format
             list($lower, $upper) = explode('-', $range, 2);
-            $lower_dec = (float) sprintf("%u", ip2long($lower));
-            $upper_dec = (float) sprintf("%u", ip2long($upper));
-            $ip_dec = (float) sprintf("%u", ip2long($ip));
+            $lowerDec = (float) sprintf("%u", ip2long($lower));
+            $upperDec = (float) sprintf("%u", ip2long($upper));
+            $ipDec = (float) sprintf("%u", ip2long($ip));
 
-            return $ip_dec >= $lower_dec && $ip_dec <= $upper_dec;
+            return $ipDec >= $lowerDec && $ipDec <= $upperDec;
         }
 
         return false;

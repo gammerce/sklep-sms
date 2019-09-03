@@ -103,7 +103,7 @@ class JsonHttpController
             $emailr = trim($request->request->get('email_repeat'));
             $forename = trim($request->request->get('forename'));
             $surname = trim($request->request->get('surname'));
-            $as_id = $request->request->get('as_id');
+            $asId = $request->request->get('as_id');
             $asAnswer = $request->request->get('as_answer');
 
             // Pobranie nowego pytania antyspamowego
@@ -120,7 +120,7 @@ class JsonHttpController
             $data['antispam']['id'] = $antispamQuestion['id'];
 
             // Sprawdzanie czy podane id pytania antyspamowego jest prawidlowe
-            if (!$session->has("asid") || $as_id != $session->get("asid")) {
+            if (!$session->has("asid") || $asId != $session->get("asid")) {
                 return new ApiResponse("wrong_sign", $lang->translate('wrong_sign'), 0, $data);
             }
 
@@ -173,7 +173,7 @@ class JsonHttpController
             $result = $db->query(
                 $db->prepare(
                     "SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " . "WHERE `id` = '%d'",
-                    [$as_id]
+                    [$asId]
                 )
             );
             $antispamQuestion = $db->fetchArrayAssoc($result);
@@ -521,12 +521,12 @@ class JsonHttpController
                 'service_code' => $_POST['service_code'],
             ]);
 
-            $return_payment = validate_payment($purchaseData);
+            $returnPayment = validate_payment($purchaseData);
             return new ApiResponse(
-                $return_payment['status'],
-                $return_payment['text'],
-                $return_payment['positive'],
-                $return_payment['data']
+                $returnPayment['status'],
+                $returnPayment['text'],
+                $returnPayment['positive'],
+                $returnPayment['data']
             );
         }
 

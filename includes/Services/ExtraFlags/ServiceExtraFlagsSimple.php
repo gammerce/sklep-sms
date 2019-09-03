@@ -53,11 +53,11 @@ class ServiceExtraFlagsSimple extends Service implements
 
         // Nick, IP, SID
         $types = "";
-        for ($i = 0, $option_id = 1; $i < 3; $option_id = 1 << ++$i) {
-            $types .= create_dom_element("option", $this->get_type_name($option_id), [
-                'value' => $option_id,
+        for ($i = 0, $optionId = 1; $i < 3; $optionId = 1 << ++$i) {
+            $types .= create_dom_element("option", $this->getTypeName($optionId), [
+                'value' => $optionId,
                 'selected' =>
-                    $this->service !== null && $this->service['types'] & $option_id
+                    $this->service !== null && $this->service['types'] & $optionId
                         ? "selected"
                         : "",
             ]);
@@ -130,8 +130,8 @@ class ServiceExtraFlagsSimple extends Service implements
             $types |= $type;
         }
 
-        $extra_data = $this->service['data'];
-        $extra_data['web'] = $data['web'];
+        $extraData = $this->service['data'];
+        $extraData['web'] = $data['web'];
 
         // Tworzymy plik z opisem usługi
         $file = $this->app->path(
@@ -173,14 +173,13 @@ class ServiceExtraFlagsSimple extends Service implements
                 [
                     'type' => '%s',
                     'column' => 'data',
-                    'value' => json_encode($extra_data),
+                    'value' => json_encode($extraData),
                 ],
             ],
         ];
     }
 
-    // Zwraca nazwę typu
-    protected function get_type_name($value)
+    protected function getTypeName($value)
     {
         if ($value == ExtraFlagType::TYPE_NICK) {
             return $this->lang->translate('nickpass');
@@ -197,7 +196,7 @@ class ServiceExtraFlagsSimple extends Service implements
         return "";
     }
 
-    protected function get_type_name2($value)
+    protected function getTypeName2($value)
     {
         if ($value == ExtraFlagType::TYPE_NICK) {
             return $this->lang->translate('nick');
@@ -293,20 +292,20 @@ class ServiceExtraFlagsSimple extends Service implements
         $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
         while ($row = $this->db->fetchArrayAssoc($result)) {
-            $body_row = new Table\BodyRow();
+            $bodyRow = new Table\BodyRow();
 
-            $body_row->setDbId($row['id']);
-            $body_row->addCell(
+            $bodyRow->setDbId($row['id']);
+            $bodyRow->addCell(
                 new Table\Cell(
                     $row['uid']
                         ? $row['username'] . " ({$row['uid']})"
                         : $this->lang->translate('none')
                 )
             );
-            $body_row->addCell(new Table\Cell($row['server']));
-            $body_row->addCell(new Table\Cell($row['service']));
-            $body_row->addCell(new Table\Cell($row['auth_data']));
-            $body_row->addCell(
+            $bodyRow->addCell(new Table\Cell($row['server']));
+            $bodyRow->addCell(new Table\Cell($row['service']));
+            $bodyRow->addCell(new Table\Cell($row['auth_data']));
+            $bodyRow->addCell(
                 new Table\Cell(
                     $row['expire'] == '-1'
                         ? $this->lang->translate('never')
@@ -314,11 +313,11 @@ class ServiceExtraFlagsSimple extends Service implements
                 )
             );
             if (get_privileges("manage_user_services")) {
-                $body_row->setButtonDelete();
-                $body_row->setButtonEdit();
+                $bodyRow->setButtonDelete();
+                $bodyRow->setButtonEdit();
             }
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);

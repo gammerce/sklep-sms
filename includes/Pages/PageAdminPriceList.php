@@ -49,28 +49,28 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
         $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
         while ($row = $this->db->fetchArrayAssoc($result)) {
-            $body_row = new BodyRow();
+            $bodyRow = new BodyRow();
 
             $service = $this->heart->getService($row['service']);
 
             if ($row['server'] != -1) {
-                $temp_server = $this->heart->getServer($row['server']);
-                $server_name = $temp_server['name'];
-                unset($temp_server);
+                $tmpServer = $this->heart->getServer($row['server']);
+                $serverName = $tmpServer['name'];
+                unset($tmpServer);
             } else {
-                $server_name = $this->lang->translate('all_servers');
+                $serverName = $this->lang->translate('all_servers');
             }
 
-            $body_row->setDbId($row['id']);
-            $body_row->addCell(new Cell("{$service['name']} ( {$service['id']} )"));
-            $body_row->addCell(new Cell($row['tariff']));
-            $body_row->addCell(new Cell($row['amount']));
-            $body_row->addCell(new Cell($server_name));
+            $bodyRow->setDbId($row['id']);
+            $bodyRow->addCell(new Cell("{$service['name']} ( {$service['id']} )"));
+            $bodyRow->addCell(new Cell($row['tariff']));
+            $bodyRow->addCell(new Cell($row['amount']));
+            $bodyRow->addCell(new Cell($serverName));
 
-            $body_row->setButtonDelete(true);
-            $body_row->setButtonEdit(true);
+            $bodyRow->setButtonDelete(true);
+            $bodyRow->setButtonEdit(true);
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);
@@ -108,7 +108,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
 
         // Pobranie usług
         $services = "";
-        foreach ($this->heart->getServices() as $service_id => $service) {
+        foreach ($this->heart->getServices() as $serviceId => $service) {
             $services .= create_dom_element(
                 "option",
                 $service['name'] . " ( " . $service['id'] . " )",
@@ -122,7 +122,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
 
         // Pobranie serwerów
         $servers = "";
-        foreach ($this->heart->getServers() as $server_id => $server) {
+        foreach ($this->heart->getServers() as $serverId => $server) {
             $servers .= create_dom_element("option", $server['name'], [
                 'value' => $server['id'],
                 'selected' => isset($price) && $price['server'] == $server['id'] ? "selected" : "",

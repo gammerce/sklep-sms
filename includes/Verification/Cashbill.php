@@ -29,9 +29,8 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
 
         if ($handle) {
             $status = fgets($handle, 8);
-            /*$czas_zycia = */
+            // lifetime
             fgets($handle, 24);
-            /*$foo = */
             fgets($handle, 96);
             $bramka = fgets($handle, 96);
             fclose($handle);

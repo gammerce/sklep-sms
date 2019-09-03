@@ -125,12 +125,12 @@ class ServerStuffController
         return $this->xmlOutput("script_error", "An error occured: no action.", false);
     }
 
-    protected function xmlOutput($return_value, $text, $positive, $extra_data = "")
+    protected function xmlOutput($returnValue, $text, $positive, $extraData = "")
     {
-        $output = "<return_value>{$return_value}</return_value>";
+        $output = "<return_value>{$returnValue}</return_value>";
         $output .= "<text>{$text}</text>";
         $output .= "<positive>{$positive}</positive>";
-        $output .= $extra_data;
+        $output .= $extraData;
 
         return new Response($output, 200, [
             'Content-type' => 'text/plain; charset="UTF-8"',

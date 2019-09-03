@@ -56,29 +56,29 @@ class PageAdminPaymentWallet extends PageAdmin
         $table->setDbRowsAmount($this->db->getColumn('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
 
         while ($row = $this->db->fetchArrayAssoc($result)) {
-            $body_row = new BodyRow();
+            $bodyRow = new BodyRow();
 
             if ($query['highlight'] && $query['payid'] == $row['payment_id']) {
-                $body_row->setParam('class', 'highlighted');
+                $bodyRow->setParam('class', 'highlighted');
             }
 
             $cost = $row['cost']
                 ? number_format($row['cost'] / 100.0, 2) . " " . $this->settings['currency']
                 : "";
 
-            $body_row->setDbId($row['payment_id']);
-            $body_row->addCell(new Cell($cost));
-            $body_row->addCell(new Cell(htmlspecialchars($row['ip'])));
+            $bodyRow->setDbId($row['payment_id']);
+            $bodyRow->addCell(new Cell($cost));
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['ip'])));
 
             $cell = new Cell();
             $div = new Div(get_platform($row['platform']));
             $div->setParam('class', 'one_line');
             $cell->addContent($div);
-            $body_row->addCell($cell);
+            $bodyRow->addCell($cell);
 
-            $body_row->addCell(new Cell(convertDate($row['timestamp'])));
+            $bodyRow->addCell(new Cell(convertDate($row['timestamp'])));
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);

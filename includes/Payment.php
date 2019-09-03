@@ -258,31 +258,30 @@ class Payment
         }
 
         $serialized = serialize($purchaseData);
-        $data_filename = time() . "-" . md5($serialized);
-        file_put_contents($this->app->path('data/transfers/' . $data_filename), $serialized);
+        $dataFilename = time() . "-" . md5($serialized);
+        file_put_contents($this->app->path('data/transfers/' . $dataFilename), $serialized);
 
         return [
             'status' => "transfer",
             'text' => $this->lang->translate('transfer_prepared'),
             'positive' => true,
             'data' => [
-                'data' => $this->getPaymentModule()->prepareTransfer($purchaseData, $data_filename),
+                'data' => $this->getPaymentModule()->prepareTransfer($purchaseData, $dataFilename),
             ],
             // Przygotowuje dane płatności transferem
         ];
     }
 
     /**
-     * @param TransferFinalize $transfer_finalize
-     *
+     * @param TransferFinalize $transferFinalize
      * @return bool
      */
-    public function transferFinalize($transfer_finalize)
+    public function transferFinalize(TransferFinalize $transferFinalize)
     {
         $result = $this->db->query(
             $this->db->prepare(
                 "SELECT * FROM `" . TABLE_PREFIX . "payment_transfer` " . "WHERE `id` = '%d'",
-                [$transfer_finalize->getOrderid()]
+                [$transferFinalize->getOrderid()]
             )
         );
 
@@ -293,15 +292,15 @@ class Payment
 
         // Nie znaleziono pliku z danymi
         if (
-            !$transfer_finalize->getDataFilename() ||
+            !$transferFinalize->getDataFilename() ||
             !file_exists(
-                $this->app->path('data/transfers/' . $transfer_finalize->getDataFilename())
+                $this->app->path('data/transfers/' . $transferFinalize->getDataFilename())
             )
         ) {
             log_info(
                 $this->langShop->sprintf(
                     $this->langShop->translate('transfer_no_data_file'),
-                    $transfer_finalize->getOrderid()
+                    $transferFinalize->getOrderid()
                 )
             );
 
@@ -311,7 +310,7 @@ class Payment
         /** @var Purchase $purchaseData */
         $purchaseData = unserialize(
             file_get_contents(
-                $this->app->path('data/transfers/' . $transfer_finalize->getDataFilename())
+                $this->app->path('data/transfers/' . $transferFinalize->getDataFilename())
             )
         );
 
@@ -326,15 +325,15 @@ class Payment
                     "payment_transfer` " .
                     "SET `id` = '%s', `income` = '%d', `transfer_service` = '%s', `ip` = '%s', `platform` = '%s' ",
                 [
-                    $transfer_finalize->getOrderid(),
+                    $transferFinalize->getOrderid(),
                     $purchaseData->getPayment('cost'),
-                    $transfer_finalize->getTransferService(),
+                    $transferFinalize->getTransferService(),
                     $purchaseData->user->getLastIp(),
                     $purchaseData->user->getPlatform(),
                 ]
             )
         );
-        unlink($this->app->path('data/transfers/' . $transfer_finalize->getDataFilename()));
+        unlink($this->app->path('data/transfers/' . $transferFinalize->getDataFilename()));
 
         // Błędny moduł
         if (
@@ -343,7 +342,7 @@ class Payment
             log_info(
                 $this->langShop->sprintf(
                     $this->langShop->translate('transfer_bad_module'),
-                    $transfer_finalize->getOrderid(),
+                    $transferFinalize->getOrderid(),
                     $purchaseData->getService()
                 )
             );
@@ -355,7 +354,7 @@ class Payment
             log_info(
                 $this->langShop->sprintf(
                     $this->langShop->translate('transfer_no_purchase'),
-                    $transfer_finalize->getOrderid(),
+                    $transferFinalize->getOrderid(),
                     $purchaseData->getService()
                 )
             );
@@ -366,17 +365,17 @@ class Payment
         // Dokonujemy zakupu
         $purchaseData->setPayment([
             'method' => 'transfer',
-            'payment_id' => $transfer_finalize->getOrderid(),
+            'payment_id' => $transferFinalize->getOrderid(),
         ]);
-        $bought_service_id = $serviceModule->purchase($purchaseData);
+        $boughtServiceId = $serviceModule->purchase($purchaseData);
 
         log_info(
             $this->langShop->sprintf(
                 $this->langShop->translate('payment_transfer_accepted'),
-                $bought_service_id,
-                $transfer_finalize->getOrderid(),
-                $transfer_finalize->getAmount(),
-                $transfer_finalize->getTransferService(),
+                $boughtServiceId,
+                $transferFinalize->getOrderid(),
+                $transferFinalize->getAmount(),
+                $transferFinalize->getTransferService(),
                 $purchaseData->user->getUsername(),
                 $purchaseData->user->getUid(),
                 $purchaseData->user->getLastIp()

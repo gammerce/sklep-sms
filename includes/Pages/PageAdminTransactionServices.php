@@ -45,7 +45,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
         $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
         while ($row = $this->db->fetchArrayAssoc($result)) {
-            $body_row = new BodyRow();
+            $bodyRow = new BodyRow();
 
             $smsService = $row['sms']
                 ? $this->lang->strtoupper($this->lang->translate('yes'))
@@ -54,14 +54,14 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
                 ? $this->lang->strtoupper($this->lang->translate('yes'))
                 : $this->lang->strtoupper($this->lang->translate('no'));
 
-            $body_row->setDbId($row['id']);
-            $body_row->addCell(new Cell($row['name']));
-            $body_row->addCell(new Cell($smsService));
-            $body_row->addCell(new Cell($transferService));
+            $bodyRow->setDbId($row['id']);
+            $bodyRow->addCell(new Cell($row['name']));
+            $bodyRow->addCell(new Cell($smsService));
+            $bodyRow->addCell(new Cell($transferService));
 
-            $body_row->setButtonEdit(true);
+            $bodyRow->setButtonEdit(true);
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);

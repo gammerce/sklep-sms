@@ -8,9 +8,7 @@ use App\Auth;
  */
 class Purchase
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $service = null;
 
     /**
@@ -20,19 +18,13 @@ class Purchase
      */
     private $order = null;
 
-    /**
-     * @var User
-     */
+    /** @var User */
     public $user;
 
-    /**
-     * @var Tariff
-     */
+    /** @var Tariff */
     private $tariff = null;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $email = null;
 
     /**

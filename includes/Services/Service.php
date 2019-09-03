@@ -116,20 +116,20 @@ abstract class Service
         $setData1 = $setData2 = $whereData = $whereData2 = [];
 
         foreach ($set as $data) {
-            $set_data = $this->db->prepare(
+            $setData = $this->db->prepare(
                 "`{$data['column']}` = {$data['value']}",
                 if_isset($data['data'], [])
             );
 
             if (in_array($data['column'], ['uid', 'service', 'expire'])) {
-                $setData1[] = $set_data;
+                $setData1[] = $setData;
             } else {
-                $setData2[] = $set_data;
+                $setData2[] = $setData;
             }
 
             // Service jest w obu tabelach
             if ($data['column'] == 'service') {
-                $setData2[] = $set_data;
+                $setData2[] = $setData;
             }
         }
 

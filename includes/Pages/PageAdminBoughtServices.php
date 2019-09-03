@@ -91,7 +91,7 @@ class PageAdminBoughtServices extends PageAdmin
         $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
         while ($row = $this->db->fetchArrayAssoc($result)) {
-            $body_row = new BodyRow();
+            $bodyRow = new BodyRow();
 
             // Pobranie danych o usłudze, która została kupiona
             $service = $this->heart->getService($row['service']);
@@ -111,7 +111,7 @@ class PageAdminBoughtServices extends PageAdmin
 
             // Rozkulbaczenie extra daty
             $row['extra_data'] = json_decode($row['extra_data'], true);
-            $extra_data = [];
+            $extraData = [];
             foreach ($row['extra_data'] as $key => $value) {
                 if (!strlen($value)) {
                     continue;
@@ -123,46 +123,46 @@ class PageAdminBoughtServices extends PageAdmin
                     $key = $this->lang->translate('password');
                 } elseif ($key == "type") {
                     $key = $this->lang->translate('type');
-                    $value = ExtraFlagType::get_type_name($value);
+                    $value = ExtraFlagType::getTypeName($value);
                 }
 
-                $extra_data[] = $key . ': ' . $value;
+                $extraData[] = $key . ': ' . $value;
             }
-            $extra_data = implode('<br />', $extra_data);
+            $extraData = implode('<br />', $extraData);
 
             // Pobranie linku płatności
-            $payment_link = new DOMElement();
-            $payment_link->setName('a');
-            $payment_link->setParam(
+            $paymentLink = new DOMElement();
+            $paymentLink->setName('a');
+            $paymentLink->setParam(
                 'href',
                 $this->url->to("/admin/payment_{$row['payment']}?payid={$row['payment_id']}")
             );
-            $payment_link->setParam('target', '_blank');
+            $paymentLink->setParam('target', '_blank');
 
-            $payment_img = new Img();
-            $payment_img->setParam('src', $url->to('images/go.png'));
-            $payment_img->setParam('title', $this->lang->translate('see_payment'));
-            $payment_link->addContent($payment_img);
+            $paymentImg = new Img();
+            $paymentImg->setParam('src', $url->to('images/go.png'));
+            $paymentImg->setParam('title', $this->lang->translate('see_payment'));
+            $paymentLink->addContent($paymentImg);
 
-            $body_row->addAction($payment_link);
+            $bodyRow->addAction($paymentLink);
 
-            $body_row->setDbId($row['id']);
-            $body_row->addCell(new Cell($row['payment']));
-            $body_row->addCell(new Cell($row['payment_id']));
-            $body_row->addCell(new Cell($username));
-            $body_row->addCell(new Cell($server['name']));
-            $body_row->addCell(new Cell($service['name']));
-            $body_row->addCell(new Cell($amount));
-            $body_row->addCell(new Cell(htmlspecialchars($row['auth_data'])));
-            $body_row->addCell(new Cell($extra_data));
-            $body_row->addCell(new Cell(htmlspecialchars($row['email'])));
-            $body_row->addCell(new Cell($row['ip']));
+            $bodyRow->setDbId($row['id']);
+            $bodyRow->addCell(new Cell($row['payment']));
+            $bodyRow->addCell(new Cell($row['payment_id']));
+            $bodyRow->addCell(new Cell($username));
+            $bodyRow->addCell(new Cell($server['name']));
+            $bodyRow->addCell(new Cell($service['name']));
+            $bodyRow->addCell(new Cell($amount));
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['auth_data'])));
+            $bodyRow->addCell(new Cell($extraData));
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['email'])));
+            $bodyRow->addCell(new Cell($row['ip']));
 
             $cell = new Cell(convertDate($row['timestamp']));
             $cell->setParam('headers', 'date');
-            $body_row->addCell($cell);
+            $bodyRow->addCell($cell);
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);

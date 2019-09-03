@@ -32,16 +32,16 @@ class PageAdminIncome extends PageAdmin
 
     protected function content(array $query, array $body)
     {
-        $G_MONTH = isset($query['month']) ? $query['month'] : date("m");
-        $G_YEAR = isset($query['year']) ? $query['year'] : date("Y");
+        $queryMonth = isset($query['month']) ? $query['month'] : date("m");
+        $queryYear = isset($query['year']) ? $query['year'] : date("Y");
 
         $tableRow = "";
         // Uzyskanie wszystkich serwerów
         foreach ($this->heart->getServers() as $id => $server) {
-            $obejcts_ids[] = $id;
+            $obejctsIds[] = $id;
             $tableRow .= create_dom_element("td", $server['name']);
         }
-        $obejcts_ids[] = 0;
+        $obejctsIds[] = 0;
 
         $result = $this->db->query(
             $this->db->prepare(
@@ -49,7 +49,7 @@ class PageAdminIncome extends PageAdmin
                     "FROM ({$this->settings['transactions_query']}) as t " .
                     "WHERE t.free = '0' AND IFNULL(t.income,'') != '' AND t.payment != 'wallet' AND t.timestamp LIKE '%s-%s-%%' " .
                     "ORDER BY t.timestamp ASC",
-                [$G_YEAR, $G_MONTH]
+                [$queryYear, $queryMonth]
             )
         );
 
@@ -58,7 +58,7 @@ class PageAdminIncome extends PageAdmin
         while ($row = $this->db->fetchArrayAssoc($result)) {
             $temp = explode(" ", $row['timestamp']);
 
-            $data[$temp[0]][in_array($row['server'], $obejcts_ids) ? $row['server'] : 0] +=
+            $data[$temp[0]][in_array($row['server'], $obejctsIds) ? $row['server'] : 0] +=
                 $row['income'];
         }
 
@@ -67,7 +67,7 @@ class PageAdminIncome extends PageAdmin
         for ($i = 1; $i <= 12; $i++) {
             $months .= create_dom_element("option", $this->lang->translate($this->months[$i]), [
                 'value' => str_pad($i, 2, 0, STR_PAD_LEFT),
-                'selected' => $G_MONTH == $i ? "selected" : "",
+                'selected' => $queryMonth == $i ? "selected" : "",
             ]);
         }
 
@@ -76,7 +76,7 @@ class PageAdminIncome extends PageAdmin
         for ($i = 2014; $i <= intval(date("Y")); $i++) {
             $years .= create_dom_element("option", $i, [
                 'value' => $i,
-                'selected' => $G_YEAR == $i ? "selected" : "",
+                'selected' => $queryYear == $i ? "selected" : "",
             ]);
         }
 
@@ -89,17 +89,17 @@ class PageAdminIncome extends PageAdmin
         // Pobranie danych do tabeli
 
         // Pobieramy ilość dni w danym miesiącu
-        $num = cal_days_in_month(CAL_GREGORIAN, $G_MONTH, $G_YEAR);
+        $num = cal_days_in_month(CAL_GREGORIAN, $queryMonth, $queryYear);
 
         $tbody = "";
-        $servers_incomes = [];
+        $serversIncomes = [];
         // Lecimy pętla po każdym dniu
         for ($i = 1; $i <= $num; ++$i) {
             // Tworzymy wygląd daty
             $date =
-                $G_YEAR .
+                $queryYear .
                 "-" .
-                str_pad($G_MONTH, 2, 0, STR_PAD_LEFT) .
+                str_pad($queryMonth, 2, 0, STR_PAD_LEFT) .
                 "-" .
                 str_pad($i, 2, 0, STR_PAD_LEFT);
 
@@ -113,14 +113,14 @@ class PageAdminIncome extends PageAdmin
             $tableRow = "";
 
             // Lecimy po każdym obiekcie, niezależnie, czy zarobiliśmy na nim czy nie
-            foreach ($obejcts_ids as $object_id) {
-                if (!isset($servers_incomes[$object_id])) {
-                    $servers_incomes[$object_id] = 0;
+            foreach ($obejctsIds as $objectId) {
+                if (!isset($serversIncomes[$objectId])) {
+                    $serversIncomes[$objectId] = 0;
                 }
 
-                $income = array_get($data, "$date.$object_id", 0);
+                $income = array_get($data, "$date.$objectId", 0);
                 $dayIncome += $income;
-                $servers_incomes[$object_id] += $income;
+                $serversIncomes[$objectId] += $income;
                 $tableRow .= create_dom_element("td", number_format($income / 100.0, 2));
             }
 
@@ -137,9 +137,9 @@ class PageAdminIncome extends PageAdmin
         $tableRow = "";
         $totalIncome = 0;
         // Lecimy po wszystkich obiektach na których zarobiliśmy kasę
-        foreach ($servers_incomes as $server_income) {
-            $totalIncome += $server_income; // Całk przychód
-            $tableRow .= create_dom_element("td", number_format($server_income / 100.0, 2));
+        foreach ($serversIncomes as $serverIncome) {
+            $totalIncome += $serverIncome; // Całk przychód
+            $tableRow .= create_dom_element("td", number_format($serverIncome / 100.0, 2));
         }
 
         // Jeżeli coś się policzyło, są jakieś dane

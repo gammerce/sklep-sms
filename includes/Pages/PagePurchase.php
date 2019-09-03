@@ -45,17 +45,17 @@ class PagePurchase extends Page
         // Dodajemy wszystkie skrypty
         if (strlen($this::PAGE_ID)) {
             $path = "jscripts/pages/" . $this::PAGE_ID . "/";
-            $path_file = $path . "main.js";
-            if (file_exists($this->app->path($path_file))) {
+            $pathFile = $path . "main.js";
+            if (file_exists($this->app->path($pathFile))) {
                 $heart->scriptAdd(
-                    $settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version()
+                    $settings['shop_url_slash'] . $pathFile . "?version=" . $this->app->version()
                 );
             }
 
-            $path_file = $path . $serviceModule->getModuleId() . ".js";
-            if (file_exists($this->app->path($path_file))) {
+            $pathFile = $path . $serviceModule->getModuleId() . ".js";
+            if (file_exists($this->app->path($pathFile))) {
                 $heart->scriptAdd(
-                    $settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version()
+                    $settings['shop_url_slash'] . $pathFile . "?version=" . $this->app->version()
                 );
             }
         }
@@ -63,32 +63,32 @@ class PagePurchase extends Page
         // Dodajemy wszystkie css
         if (strlen($this::PAGE_ID)) {
             $path = "styles/pages/" . $this::PAGE_ID . "/";
-            $path_file = $path . "main.css";
-            if (file_exists($this->app->path($path_file))) {
+            $pathFile = $path . "main.css";
+            if (file_exists($this->app->path($pathFile))) {
                 $heart->styleAdd(
-                    $settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version()
+                    $settings['shop_url_slash'] . $pathFile . "?version=" . $this->app->version()
                 );
             }
 
-            $path_file = $path . $serviceModule->getModuleId() . ".css";
-            if (file_exists($this->app->path($path_file))) {
+            $pathFile = $path . $serviceModule->getModuleId() . ".css";
+            if (file_exists($this->app->path($pathFile))) {
                 $heart->styleAdd(
-                    $settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version()
+                    $settings['shop_url_slash'] . $pathFile . "?version=" . $this->app->version()
                 );
             }
         }
 
         // Globalne jsy cssy konkretnych modułów usług
-        foreach ($heart->getServicesModules() as $module_info) {
-            if ($module_info['id'] == $serviceModule->getModuleId()) {
-                $path = "styles/services/" . $module_info['id'] . ".css";
+        foreach ($heart->getServicesModules() as $moduleInfo) {
+            if ($moduleInfo['id'] == $serviceModule->getModuleId()) {
+                $path = "styles/services/" . $moduleInfo['id'] . ".css";
                 if (file_exists($this->app->path($path))) {
                     $heart->styleAdd(
                         $settings['shop_url_slash'] . $path . "?version=" . $this->app->version()
                     );
                 }
 
-                $path = "jscripts/services/" . $module_info['id'] . ".js";
+                $path = "jscripts/services/" . $moduleInfo['id'] . ".js";
                 if (file_exists($this->app->path($path))) {
                     $heart->scriptAdd(
                         $settings['shop_url_slash'] . $path . "?version=" . $this->app->version()

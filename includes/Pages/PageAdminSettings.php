@@ -51,11 +51,11 @@ class PageAdminSettings extends PageAdmin
         // Pobieranie listy dostępnych szablonów
         $dirlist = scandir($this->app->path('themes'));
         $themesList = "";
-        foreach ($dirlist as $dir_name) {
-            if ($dir_name[0] != '.' && is_dir($this->app->path("themes/$dir_name"))) {
-                $themesList .= create_dom_element("option", $dir_name, [
-                    'value' => $dir_name,
-                    'selected' => $dir_name == $this->settings['theme'] ? "selected" : "",
+        foreach ($dirlist as $dirName) {
+            if ($dirName[0] != '.' && is_dir($this->app->path("themes/$dirName"))) {
+                $themesList .= create_dom_element("option", $dirName, [
+                    'value' => $dirName,
+                    'selected' => $dirName == $this->settings['theme'] ? "selected" : "",
                 ]);
             }
         }
@@ -63,15 +63,15 @@ class PageAdminSettings extends PageAdmin
         // Pobieranie listy dostępnych języków
         $dirlist = scandir($this->app->path('includes/languages'));
         $languagesList = "";
-        foreach ($dirlist as $dir_name) {
-            if ($dir_name[0] != '.' && is_dir($this->app->path("includes/languages/{$dir_name}"))) {
+        foreach ($dirlist as $dirName) {
+            if ($dirName[0] != '.' && is_dir($this->app->path("includes/languages/{$dirName}"))) {
                 $languagesList .= create_dom_element(
                     "option",
-                    $lang->translate('language_' . $dir_name),
+                    $lang->translate('language_' . $dirName),
                     [
-                        'value' => $dir_name,
+                        'value' => $dirName,
                         'selected' =>
-                            $dir_name == $langShop->getCurrentLanguage() ? "selected" : "",
+                            $dirName == $langShop->getCurrentLanguage() ? "selected" : "",
                     ]
                 );
             }

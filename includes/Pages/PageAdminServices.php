@@ -39,23 +39,23 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
         $table->addHeadCell(new Cell($this->lang->translate('order')));
 
         foreach ($this->heart->getServices() as $row) {
-            $body_row = new BodyRow();
+            $bodyRow = new BodyRow();
 
-            $body_row->setDbId(htmlspecialchars($row['id']));
+            $bodyRow->setDbId(htmlspecialchars($row['id']));
 
             $cell = new Cell(htmlspecialchars($row['name']));
             $cell->setParam('headers', 'name');
-            $body_row->addCell($cell);
-            $body_row->addCell(new Cell(htmlspecialchars($row['short_description'])));
-            $body_row->addCell(new Cell(htmlspecialchars($row['description'])));
-            $body_row->addCell(new Cell($row['order']));
+            $bodyRow->addCell($cell);
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['short_description'])));
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['description'])));
+            $bodyRow->addCell(new Cell($row['order']));
 
             if (get_privileges('manage_services')) {
-                $body_row->setButtonDelete(true);
-                $body_row->setButtonEdit(true);
+                $bodyRow->setButtonDelete(true);
+                $bodyRow->setButtonEdit(true);
             }
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);

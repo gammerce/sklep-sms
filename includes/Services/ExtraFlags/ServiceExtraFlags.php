@@ -54,7 +54,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $types = "";
         for ($i = 0, $value = 1; $i < 3; $value = 1 << ++$i) {
             if ($this->service['types'] & $value) {
-                $type = ExtraFlagType::get_type_name($value);
+                $type = ExtraFlagType::getTypeName($value);
                 $types .= $this->template->render(
                     "services/extra_flags/service_type",
                     compact('value', 'type')
@@ -87,13 +87,13 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $value = explode(';', $data['value']);
 
         // Pobieramy auth_data
-        $auth_data = $this->get_auth_data($data);
+        $authData = $this->getAuthData($data);
 
         $purchaseData = new Purchase();
         $purchaseData->setOrder([
             'server' => $data['server'],
             'type' => $data['type'],
-            'auth_data' => trim($auth_data),
+            'auth_data' => trim($authData),
             'password' => $data['password'],
             'passwordr' => $data['password_repeat'],
         ]);
@@ -240,11 +240,11 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     }
 
                     // Sprawdzanie czy istnieje już taka usługa
-                    if ($temp_password = $this->db->getColumn($query, 'password')) {
+                    if ($tmpPassword = $this->db->getColumn($query, 'password')) {
                         // TODO: Usunąć md5 w przyszłości
                         if (
-                            $temp_password != $purchaseData->getOrder('password') &&
-                            $temp_password != md5($purchaseData->getOrder('password'))
+                            $tmpPassword != $purchaseData->getOrder('password') &&
+                            $tmpPassword != md5($purchaseData->getOrder('password'))
                         ) {
                             $warnings['password'][] = $this->lang->translate(
                                 'existing_service_has_different_password'
@@ -252,7 +252,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                         }
                     }
 
-                    unset($temp_password);
+                    unset($tmpPassword);
                 }
                 // SteamID
                 else {
@@ -306,7 +306,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     public function orderDetails(Purchase $purchaseData)
     {
         $server = $this->heart->getServer($purchaseData->getOrder('server'));
-        $typeName = $this->get_type_name2($purchaseData->getOrder('type'));
+        $typeName = $this->getTypeName2($purchaseData->getOrder('type'));
         if (strlen($purchaseData->getOrder('password'))) {
             $password =
                 "<strong>{$this->lang->translate('password')}</strong>: " .
@@ -333,7 +333,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
     public function purchase(Purchase $purchaseData)
     {
-        $this->add_player_flags(
+        $this->addPlayerFlags(
             $purchaseData->user->getUid(),
             $purchaseData->getOrder('type'),
             $purchaseData->getOrder('auth_data'),
@@ -361,23 +361,23 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         );
     }
 
-    private function add_player_flags(
+    private function addPlayerFlags(
         $uid,
         $type,
-        $auth_data,
+        $authData,
         $password,
         $days,
-        $server_id,
+        $serverId,
         $forever = false
     ) {
-        $auth_data = trim($auth_data);
+        $authData = trim($authData);
 
         // Usunięcie przestarzałych usług gracza
         delete_users_old_services();
 
         // Usunięcie przestarzałych flag graczy
         // Tak jakby co
-        $this->delete_old_flags();
+        $this->deleteOldFlags();
 
         // Dodajemy usługę gracza do listy usług
         // Jeżeli już istnieje dokładnie taka sama, to ją przedłużamy
@@ -388,7 +388,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     $this::USER_SERVICE_TABLE .
                     "` " .
                     "WHERE `service` = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s'",
-                [$this->service['id'], $server_id, $type, $auth_data]
+                [$this->service['id'], $serverId, $type, $authData]
             )
         );
 
@@ -438,7 +438,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                         $this::USER_SERVICE_TABLE .
                         "` (`us_id`, `server`, `service`, `type`, `auth_data`, `password`) " .
                         "VALUES ('%d', '%d', '%s', '%d', '%s', '%s')",
-                    [$userServiceId, $server_id, $this->service['id'], $type, $auth_data, $password]
+                    [$userServiceId, $serverId, $this->service['id'], $type, $authData, $password]
                 )
             );
         }
@@ -452,15 +452,15 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     "` " .
                     "SET `password` = '%s' " .
                     "WHERE `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s'",
-                [$password, $server_id, $type, $auth_data]
+                [$password, $serverId, $type, $authData]
             )
         );
 
         // Przeliczamy flagi gracza, ponieważ dodaliśmy nową usługę
-        $this->recalculate_player_flags($server_id, $type, $auth_data);
+        $this->recalculate_player_flags($serverId, $type, $authData);
     }
 
-    private function delete_old_flags()
+    private function deleteOldFlags()
     {
         $this->db->query(
             "DELETE FROM `" .
@@ -495,7 +495,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         );
     }
 
-    private function recalculate_player_flags($server_id, $type, $auth_data)
+    private function recalculate_player_flags($serverId, $type, $authData)
     {
         // Musi byc podany typ, bo inaczej nam wywali wszystkie usługi bez typu
         // Bez serwera oraz auth_data, skrypt po prostu nic nie zrobi
@@ -511,7 +511,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     TABLE_PREFIX .
                     "players_flags` " .
                     "WHERE `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s'",
-                [$server_id, $type, $auth_data]
+                [$serverId, $type, $authData]
             )
         );
 
@@ -526,7 +526,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     $this::USER_SERVICE_TABLE .
                     "` AS usef ON us.id = usef.us_id " .
                     "WHERE `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND ( `expire` > UNIX_TIMESTAMP() OR `expire` = -1 )",
-                [$server_id, $type, $auth_data]
+                [$serverId, $type, $authData]
             )
         );
 
@@ -543,7 +543,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 // A tak to jak wygaśnie jakaś usługa, to wykona się cron, usunie ją i przeliczy flagi jeszcze raz
                 // I znowu weźmie maksa
                 // Czyli stan w tabeli players flags nie jest do końca odzwierciedleniem rzeczywistości :)
-                $flags[$service['flags'][$i]] = $this->max_minus(
+                $flags[$service['flags'][$i]] = $this->maxMinus(
                     array_get($flags, $service['flags'][$i]),
                     $row['expire']
                 );
@@ -564,7 +564,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                         TABLE_PREFIX .
                         "players_flags` " .
                         "SET `server` = '%d', `type` = '%d', `auth_data` = '%s', `password` = '%s'{$set}",
-                    [$server_id, $type, $auth_data, $password]
+                    [$serverId, $type, $authData, $password]
                 )
             );
         }
@@ -573,7 +573,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     public function purchaseInfo($action, $data)
     {
         $data['extra_data'] = json_decode($data['extra_data'], true);
-        $data['extra_data']['type_name'] = $this->get_type_name2($data['extra_data']['type']);
+        $data['extra_data']['type_name'] = $this->getTypeName2($data['extra_data']['type']);
         if (strlen($data['extra_data']['password'])) {
             $password =
                 "<strong>{$this->lang->translate('password')}</strong>: " .
@@ -650,10 +650,10 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     {
         // Pobieramy listę typów usługi, (1<<2) ostatni typ
         $types = "";
-        for ($i = 0, $option_id = 1; $i < 3; $option_id = 1 << ++$i) {
-            if ($this->service['types'] & $option_id) {
-                $types .= create_dom_element("option", $this->get_type_name($option_id), [
-                    'value' => $option_id,
+        for ($i = 0, $optionId = 1; $i < 3; $optionId = 1 << ++$i) {
+            if ($this->service['types'] & $optionId) {
+                $types .= create_dom_element("option", $this->getTypeName($optionId), [
+                    'value' => $optionId,
                 ]);
             }
         }
@@ -688,7 +688,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $warnings = [];
 
         // Pobieramy auth_data
-        $data['auth_data'] = $this->get_auth_data($data);
+        $data['auth_data'] = $this->getAuthData($data);
 
         // Sprawdzamy hasło, jeżeli podano nick albo ip
         if (
@@ -715,25 +715,25 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         }
 
         // Sprawdzamy poprawność wprowadzonych danych
-        $verify_data = $this->verify_user_service_data($data, $warnings);
+        $verifyData = $this->verifyUserServiceData($data, $warnings);
 
         // Jeżeli są jakieś błędy, to je zwracamy
-        if (!empty($verify_data)) {
-            return $verify_data;
+        if (!empty($verifyData)) {
+            return $verifyData;
         }
 
         //
         // Dodajemy usługę
 
         // Dodawanie informacji o płatności
-        $payment_id = pay_by_admin($user);
+        $paymentId = pay_by_admin($user);
 
         $purchaseData = new Purchase();
         $purchaseData->setService($this->service['id']);
         $purchaseData->user = $this->heart->getUser($data['uid']); // Pobieramy dane o użytkowniku na które jego wykupiona usługa
         $purchaseData->setPayment([
             'method' => "admin",
-            'payment_id' => $payment_id,
+            'payment_id' => $paymentId,
         ]);
         $purchaseData->setOrder([
             'server' => $data['server'],
@@ -744,14 +744,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             'forever' => (bool) $data['forever'],
         ]);
         $purchaseData->setEmail($data['email']);
-        $bought_service_id = $this->purchase($purchaseData);
+        $boughtServiceId = $this->purchase($purchaseData);
 
         log_info(
             $this->langShop->sprintf(
                 $this->langShop->translate('admin_added_user_service'),
                 $user->getUsername(),
                 $user->getUid(),
-                $bought_service_id
+                $boughtServiceId
             )
         );
 
@@ -787,7 +787,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $types = "";
         for ($i = 0, $optionId = 1; $i < 3; $optionId = 1 << ++$i) {
             if ($this->service['types'] & $optionId) {
-                $types .= create_dom_element("option", $this->get_type_name($optionId), [
+                $types .= create_dom_element("option", $this->getTypeName($optionId), [
                     'value' => $optionId,
                     'selected' => $optionId == $userService['type'] ? "selected" : "",
                 ]);
@@ -864,7 +864,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $user = $this->auth->user();
 
         // Pobieramy auth_data
-        $data['auth_data'] = $this->get_auth_data($data);
+        $data['auth_data'] = $this->getAuthData($data);
 
         // Expire
         if (!$data['forever'] && ($data['expire'] = strtotime($data['expire'])) === false) {
@@ -880,18 +880,18 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         }
 
         // Sprawdzamy poprawność wprowadzonych danych
-        $verify_data = $this->verify_user_service_data($data, $warnings);
+        $verifyData = $this->verifyUserServiceData($data, $warnings);
 
         // Jeżeli są jakieś błędy, to je zwracamy
-        if (!empty($verify_data)) {
-            return $verify_data;
+        if (!empty($verifyData)) {
+            return $verifyData;
         }
 
         //
         // Aktualizujemy usługę
-        $edit_return = $this->userServiceEdit($userService, $data);
+        $editReturn = $this->userServiceEdit($userService, $data);
 
-        if ($edit_return['status'] == 'ok') {
+        if ($editReturn['status'] == 'ok') {
             log_info(
                 $this->langShop->sprintf(
                     $this->langShop->translate('admin_edited_user_service'),
@@ -902,14 +902,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             );
         }
 
-        return $edit_return;
+        return $editReturn;
     }
 
     //
     // Weryfikacja danych przy dodawaniu i przy edycji usługi gracza
     // Zebrane w jednej funkcji, aby nie mnożyć kodu
     //
-    private function verify_user_service_data($data, $warnings, $server = true)
+    private function verifyUserServiceData($data, $warnings, $server = true)
     {
         // ID użytkownika
         if ($data['uid']) {
@@ -1013,23 +1013,23 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         // Dodajemy typ uslugi, (1<<2) ostatni typ
         $serviceInfo = [];
         $styles['nick'] = $styles['ip'] = $styles['sid'] = $styles['password'] = "display: none";
-        for ($i = 0, $option_id = 1; $i < 3; $option_id = 1 << ++$i) {
+        for ($i = 0, $optionId = 1; $i < 3; $optionId = 1 << ++$i) {
             // Kiedy dana usługa nie wspiera danego typu i wykupiona usługa nie ma tego typu
-            if (!($this->service['types'] & $option_id) && $option_id != $userService['type']) {
+            if (!($this->service['types'] & $optionId) && $optionId != $userService['type']) {
                 continue;
             }
 
             $serviceInfo['types'] .= create_dom_element(
                 "option",
-                $this->get_type_name($option_id),
+                $this->getTypeName($optionId),
                 [
-                    'value' => $option_id,
-                    'selected' => $option_id == $userService['type'] ? "selected" : "",
+                    'value' => $optionId,
+                    'selected' => $optionId == $userService['type'] ? "selected" : "",
                 ]
             );
 
-            if ($option_id == $userService['type']) {
-                switch ($option_id) {
+            if ($optionId == $userService['type']) {
+                switch ($optionId) {
                     case ExtraFlagType::TYPE_NICK:
                         $serviceInfo['player_nick'] = htmlspecialchars($userService['auth_data']);
                         $styles['nick'] = $styles['password'] = "display: table-row";
@@ -1054,9 +1054,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         }
 
         // Serwer
-        $temp_server = $this->heart->getServer($userService['server']);
-        $serviceInfo['server'] = $temp_server['name'];
-        unset($temp_server);
+        $tmpServer = $this->heart->getServer($userService['server']);
+        $serviceInfo['server'] = $tmpServer['name'];
+        unset($tmpServer);
 
         // Wygasa
         $serviceInfo['expire'] =
@@ -1079,12 +1079,12 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             $userService['expire'] == -1
                 ? $this->lang->translate('never')
                 : date($this->settings['date_format'], $userService['expire']);
-        $temp_server = $this->heart->getServer($userService['server']);
-        $serviceInfo['server'] = $temp_server['name'];
+        $tmpServer = $this->heart->getServer($userService['server']);
+        $serviceInfo['server'] = $tmpServer['name'];
         $serviceInfo['service'] = $this->service['name'];
-        $serviceInfo['type'] = $this->get_type_name2($userService['type']);
+        $serviceInfo['type'] = $this->getTypeName2($userService['type']);
         $serviceInfo['auth_data'] = htmlspecialchars($userService['auth_data']);
-        unset($temp_server);
+        unset($tmpServer);
 
         return $this->template->render(
             "services/extra_flags/user_own_service",
@@ -1099,7 +1099,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $user = $this->auth->user();
 
         // Pobieramy auth_data
-        $data['auth_data'] = $this->get_auth_data($data);
+        $data['auth_data'] = $this->getAuthData($data);
 
         // Sprawdzamy, czy ustawiono hasło, gdy hasła nie ma w bazie i dana usługa wymaga hasła
         if (
@@ -1111,23 +1111,23 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         }
 
         // Sprawdzamy poprawność wprowadzonych danych
-        $verify_data = $this->verify_user_service_data($data, $warnings, false);
+        $verifyData = $this->verifyUserServiceData($data, $warnings, false);
 
         // Jeżeli są jakieś błędy, to je zwracamy
-        if (!empty($verify_data)) {
-            return $verify_data;
+        if (!empty($verifyData)) {
+            return $verifyData;
         }
 
         //
         // Aktualizujemy usługę
 
-        $edit_return = $this->userServiceEdit($userService, [
+        $editReturn = $this->userServiceEdit($userService, [
             'type' => $data['type'],
             'auth_data' => $data['auth_data'],
             'password' => $data['password'],
         ]);
 
-        if ($edit_return['status'] == 'ok') {
+        if ($editReturn['status'] == 'ok') {
             log_info(
                 $this->langShop->sprintf(
                     $this->langShop->translate('user_edited_service'),
@@ -1138,7 +1138,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             );
         }
 
-        return $edit_return;
+        return $editReturn;
     }
 
     // ----------------------------------------------------------------------------------
@@ -1326,7 +1326,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         for ($i = 0; $i < 3; $i++) {
             $value = 1 << $i;
             if ($this->service['types'] & $value) {
-                $types .= create_dom_element("option", $this->get_type_name($value), [
+                $types .= create_dom_element("option", $this->getTypeName($value), [
                     'value' => $value,
                 ]);
             }
@@ -1372,7 +1372,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     $warnings['password'][] = $this->lang->translate('field_no_empty');
                 }
 
-                $auth_data = $data['nick'];
+                $authData = $data['nick'];
                 break;
 
             case "2":
@@ -1386,7 +1386,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     $warnings['password'][] = $this->lang->translate('field_no_empty');
                 }
 
-                $auth_data = $data['ip'];
+                $authData = $data['ip'];
                 break;
 
             case "4":
@@ -1395,7 +1395,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     $warnings['sid'][] = $this->lang->translate('field_no_empty');
                 }
 
-                $auth_data = $data['sid'];
+                $authData = $data['sid'];
                 break;
         }
 
@@ -1425,7 +1425,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 $this->db->prepare(
                     "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
                         "WHERE t.payment = 'transfer' AND t.payment_id = '%s' AND `service` = '%s' AND `server` = '%d' AND `auth_data` = '%s'",
-                    [$data['payment_id'], $this->service['id'], $data['server'], $auth_data]
+                    [$data['payment_id'], $this->service['id'], $data['server'], $authData]
                 )
             );
 
@@ -1442,7 +1442,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     $this->db->prepare(
                         "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
                             "WHERE t.payment = 'sms' AND t.sms_code = '%s' AND `service` = '%s' AND `server` = '%d' AND `auth_data` = '%s'",
-                        [$data['payment_id'], $this->service['id'], $data['server'], $auth_data]
+                        [$data['payment_id'], $this->service['id'], $data['server'], $authData]
                     )
                 );
 
@@ -1471,7 +1471,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     $this->service['id'],
                     $data['server'],
                     $data['type'],
-                    $auth_data,
+                    $authData,
                     $data['password'],
                     md5($data['password']),
                 ]
@@ -1549,13 +1549,13 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     /**
      * Funkcja zwraca listę dostępnych taryf danej usługi na danym serwerze
      *
-     * @param integer $server_id
+     * @param integer $serverId
      *
      * @return string
      */
-    private function tariffs_for_server($server_id)
+    private function tariffs_for_server($serverId)
     {
-        $server = $this->heart->getServer($server_id);
+        $server = $this->heart->getServer($serverId);
         $smsService = if_strlen($server['sms_service'], $this->settings['sms_service']);
 
         // Pobieranie kwot za które można zakupić daną usługę na danym serwerze
@@ -1573,7 +1573,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     "sms_numbers` AS sn ON sn.tariff = p.tariff AND sn.service = '%s' " .
                     "WHERE p.service = '%s' AND ( p.server = '%d' OR p.server = '-1' ) " .
                     "ORDER BY t.provision ASC",
-                [$smsService, $this->service['id'], $server_id]
+                [$smsService, $this->service['id'], $serverId]
             )
         );
 
@@ -1680,7 +1680,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     }
 
     // Zwraca wartość w zależności od typu
-    private function get_auth_data($data)
+    private function getAuthData($data)
     {
         if ($data['type'] == ExtraFlagType::TYPE_NICK) {
             return $data['nick'];
@@ -1695,7 +1695,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         }
     }
 
-    private function max_minus($a, $b)
+    private function maxMinus($a, $b)
     {
         if ($a == -1 || $b == -1) {
             return -1;

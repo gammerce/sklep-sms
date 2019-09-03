@@ -47,8 +47,8 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
 
         // Globalne jsy cssy konkretnych modułów usług
         if (in_array($this::PAGE_ID, ["service_codes", "services", "user_service"])) {
-            foreach ($this->heart->getServicesModules() as $module_info) {
-                $path = "styles/services/" . $module_info['id'] . ".css";
+            foreach ($this->heart->getServicesModules() as $moduleInfo) {
+                $path = "styles/services/" . $moduleInfo['id'] . ".css";
                 if (file_exists($this->app->path($path))) {
                     $this->heart->styleAdd(
                         $this->settings['shop_url_slash'] .
@@ -58,7 +58,7 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
                     );
                 }
 
-                $path = "jscripts/services/" . $module_info['id'] . ".js";
+                $path = "jscripts/services/" . $moduleInfo['id'] . ".js";
                 if (file_exists($this->app->path($path))) {
                     $this->heart->scriptAdd(
                         $this->settings['shop_url_slash'] .

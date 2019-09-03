@@ -51,7 +51,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
                 [$user->getUid()]
             )
         );
-        $rows_count = $db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()");
+        $rowsCount = $db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()");
 
         $paymentLogs = "";
         while ($row = $db->fetchArrayAssoc($result)) {
@@ -62,32 +62,32 @@ class PagePaymentLog extends Page implements IBeLoggedMust
                 ($serviceModule = $heart->getServiceModule($row['service'])) !== null &&
                 $serviceModule instanceof IServicePurchaseWeb
             ) {
-                $log_info = $serviceModule->purchaseInfo("payment_log", $row);
-                $desc = $log_info['text'];
-                $class = $log_info['class'];
+                $logInfo = $serviceModule->purchaseInfo("payment_log", $row);
+                $desc = $logInfo['text'];
+                $class = $logInfo['class'];
             } else {
-                $temp_service = $heart->getService($row['service']);
-                $temp_server = $heart->getServer($row['server']);
+                $tmpService = $heart->getService($row['service']);
+                $tmpServer = $heart->getServer($row['server']);
                 $desc = $lang->sprintf(
                     $lang->translate('service_was_bought'),
-                    $temp_service['name'],
-                    $temp_server['name']
+                    $tmpService['name'],
+                    $tmpServer['name']
                 );
                 $class = "outcome";
-                unset($temp_service);
-                unset($temp_server);
+                unset($tmpService);
+                unset($tmpServer);
             }
 
             $row['auth_data'] = htmlspecialchars($row['auth_data']);
             $row['email'] = htmlspecialchars($row['email']);
 
-            $payment_log_brick = $template->render(
+            $paymentLogBrick = $template->render(
                 "payment_log_brick",
                 compact('date', 'cost', 'desc')
             );
             $paymentLogs .= create_dom_element(
                 "div",
-                $payment_log_brick,
+                $paymentLogBrick,
                 $data = [
                     'class' => "brick " . $class,
                 ]
@@ -95,7 +95,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         }
 
         $pagination = get_pagination(
-            $rows_count,
+            $rowsCount,
             $this->currentPage->getPageNumber(),
             $request->getPathInfo(),
             $query,

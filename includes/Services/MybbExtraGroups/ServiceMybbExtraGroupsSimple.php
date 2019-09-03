@@ -148,16 +148,16 @@ class ServiceMybbExtraGroupsSimple extends Service implements
      */
     public function serviceAdminManagePost($data)
     {
-        $mybb_groups = explode(",", $data['mybb_groups']);
-        foreach ($mybb_groups as $key => $group) {
-            $mybb_groups[$key] = trim($group);
-            if (!strlen($mybb_groups[$key])) {
-                unset($mybb_groups[$key]);
+        $mybbGroups = explode(",", $data['mybb_groups']);
+        foreach ($mybbGroups as $key => $group) {
+            $mybbGroups[$key] = trim($group);
+            if (!strlen($mybbGroups[$key])) {
+                unset($mybbGroups[$key]);
             }
         }
 
-        $extra_data = [
-            'mybb_groups' => implode(",", $mybb_groups),
+        $extraData = [
+            'mybb_groups' => implode(",", $mybbGroups),
             'web' => $data['web'],
             'db_host' => $data['db_host'],
             'db_user' => $data['db_user'],
@@ -170,7 +170,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements
                 [
                     'type' => '%s',
                     'column' => 'data',
-                    'value' => json_encode($extra_data),
+                    'value' => json_encode($extraData),
                 ],
             ],
         ];
@@ -241,19 +241,19 @@ class ServiceMybbExtraGroupsSimple extends Service implements
         $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
         while ($row = $this->db->fetchArrayAssoc($result)) {
-            $body_row = new Table\BodyRow();
+            $bodyRow = new Table\BodyRow();
 
-            $body_row->setDbId($row['id']);
-            $body_row->addCell(
+            $bodyRow->setDbId($row['id']);
+            $bodyRow->addCell(
                 new Table\Cell(
                     $row['uid']
                         ? $row['username'] . " ({$row['uid']})"
                         : $this->lang->translate('none')
                 )
             );
-            $body_row->addCell(new Table\Cell($row['service']));
-            $body_row->addCell(new Table\Cell($row['mybb_uid']));
-            $body_row->addCell(
+            $bodyRow->addCell(new Table\Cell($row['service']));
+            $bodyRow->addCell(new Table\Cell($row['mybb_uid']));
+            $bodyRow->addCell(
                 new Table\Cell(
                     $row['expire'] == '-1'
                         ? $this->lang->translate('never')
@@ -261,11 +261,11 @@ class ServiceMybbExtraGroupsSimple extends Service implements
                 )
             );
             if (get_privileges("manage_user_services")) {
-                $body_row->setButtonDelete(true);
-                $body_row->setButtonEdit(false);
+                $bodyRow->setButtonDelete(true);
+                $bodyRow->setButtonEdit(false);
             }
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);
