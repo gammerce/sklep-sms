@@ -38,12 +38,38 @@
         <dd>
             <table class="register_names">
                 <tr>
-                    <td>{$lang->translate('firstname')}:</td>
-                    <td><input name="forename" type="text" maxlength="32" /></td>
+                    <td><label for="forename">{$lang->translate('firstname')}:</label></td>
+                    <td>
+                        <div class="field">
+                            <div class="control">
+                                <input
+                                    id="forename"
+                                    name="forename"
+                                    type="text"
+                                    class="input is-small"
+                                    maxlength="32"
+                                    required
+                                />
+                            </div>
+                        </div>
+                    </td>
                 </tr>
                 <tr>
-                    <td>{$lang->translate('surname')}:</td>
-                    <td><input name="surname" type="text" maxlength="64" /></td>
+                    <td><label for="surname">{$lang->translate('surname')}:</label></td>
+                    <td>
+                        <div class="field">
+                            <div class="control">
+                                <input
+                                    id="surname"
+                                    name="surname"
+                                    type="text"
+                                    class="input is-small"
+                                    maxlength="64"
+                                    required
+                                />
+                            </div>
+                        </div>
+                    </td>
                 </tr>
             </table>
         </dd>
@@ -51,13 +77,20 @@
         <dd>
             <table class="register_antispam">
                 <tr>
-                    <td>{$lang->translate('question')}</td>
+                    <td><label>{$lang->translate('question')}</label></td>
                     <td headers="as_question">{$antispamQuestion['question']}</td>
                 </tr>
                 <tr>
-                    <td>{$lang->translate('answer')}</td>
+                    <td><label for="as_answer">{$lang->translate('answer')}</label></td>
                     <td>
-                        <input name="as_answer" type="text" maxlength="64" />
+                        <input
+                            id="as_answer"
+                            name="as_answer"
+                            type="text"
+                            class="input is-small"
+                            maxlength="64"
+                            required
+                        />
                         <input name="as_id" type="hidden" value="{$antispamQuestion['id']}" />
                     </td>
                 </tr>

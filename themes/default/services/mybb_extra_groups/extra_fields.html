@@ -1,24 +1,44 @@
 <tbody data-module="{$moduleId}">
     <tr>
         <td>
-            WEB
+            <label for="web">WEB</label>
             <div class="hint">{$lang->translate('if_displayed_in_shop')}</div>
         </td>
         <td>
-            <select name="web">
-                <option value="0" {$webSelNo}>{$lang->strtoupper($lang->translate('no'))}</option>
-                <option value="1" {$webSelYes}>
-                    {$lang->strtoupper($lang->translate('yes'))}
-                </option>
-            </select>
+            <div class="field">
+                <div class="control">
+                    <div class="select is-small">
+                        <select id="web" name="web">
+                            <option value="0" {$webSelNo}>
+                                {$lang->strtoupper($lang->translate('no'))}
+                            </option>
+                            <option value="1" {$webSelYes}>
+                                {$lang->strtoupper($lang->translate('yes'))}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
         </td>
     </tr>
     <tr>
         <td>
-            {$lang->strtoupper($lang->translate('mybb_groups'))}
+            <label for="mybb_groups">{$lang->strtoupper($lang->translate('mybb_groups'))}</label>
             <div class="hint">{$lang->translate('coma_separated')}</div>
         </td>
-        <td><input type="text" name="mybb_groups" value="{$mybbGroups}" /></td>
+        <td>
+            <div class="field">
+                <div class="control">
+                    <input
+                        type="text"
+                        id="mybb_groups"
+                        name="mybb_groups"
+                        class="input is-small"
+                        value="{$mybbGroups}"
+                    />
+                </div>
+            </div>
+        </td>
     </tr>
     <tr>
         <td colspan="2" class="line"></td>
@@ -27,19 +47,75 @@
         <td colspan="2" class="h2 center">{$lang->translate('mybb_db_data')}</td>
     </tr>
     <tr>
-        <td>{$lang->translate('db_host')}</td>
-        <td><input type="text" name="db_host" value="{$dbHost}" /></td>
+        <td>
+            <label for="db_host">{$lang->translate('db_host')}</label>
+        </td>
+        <td>
+            <div class="field">
+                <div class="control">
+                    <input
+                        type="text"
+                        id="db_host"
+                        name="db_host"
+                        class="input is-small"
+                        value="{$dbHost}"
+                    />
+                </div>
+            </div>
+        </td>
     </tr>
     <tr>
-        <td>{$lang->translate('db_user')}</td>
-        <td><input type="text" name="db_user" value="{$dbUser}" /></td>
+        <td>
+            <label for="db_user">{$lang->translate('db_user')}</label>
+        </td>
+        <td>
+            <div class="field">
+                <div class="control">
+                    <input
+                        type="text"
+                        id="db_user"
+                        name="db_user"
+                        class="input is-small"
+                        value="{$dbUser}"
+                    />
+                </div>
+            </div>
+        </td>
     </tr>
     <tr>
-        <td>{$lang->translate('db_password')}</td>
-        <td><input type="password" name="db_password" placeholder="{$dbPassword}" /></td>
+        <td>
+            <label for="db_password">{$lang->translate('db_password')}</label>
+        </td>
+        <td>
+            <div class="field">
+                <div class="control">
+                    <input
+                        type="password"
+                        id="db_password"
+                        name="db_password"
+                        class="input is-small"
+                        placeholder="{$dbPassword}"
+                    />
+                </div>
+            </div>
+        </td>
     </tr>
     <tr>
-        <td>{$lang->translate('db_name')}</td>
-        <td><input type="text" name="db_name" value="{$dbName}" /></td>
+        <td>
+            <label for="db_name">{$lang->translate('db_name')}</label>
+        </td>
+        <td>
+            <div class="field">
+                <div class="control">
+                    <input
+                        type="text"
+                        id="db_name"
+                        name="db_name"
+                        class="input is-small"
+                        value="{$dbName}"
+                    />
+                </div>
+            </div>
+        </td>
     </tr>
 </tbody>

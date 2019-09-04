@@ -8,19 +8,62 @@
             <form id="form_admin_login" action="{$action}" method="POST">
                 <h2>{$lang->translate('sign_in')}</h2>
                 {$warning}
-                <div class="label">{$lang->translate('username')}</div>
-                <div class="field">
-                    <input type="text" name="username" />
-                </div>
-                <br class="clear" />
 
-                <div class="label">{$lang->translate('password')}</div>
-                <div class="field">
-                    <input type="password" name="password" />
-                </div>
-                <br class="clear" />
-                <input type="submit" value="{$lang->translate('sign_in')}" class="button" />
-                <br class="clear" />
+                <table>
+                    <tr>
+                        <td>
+                            <label for="username" class="label"
+                                >{$lang->translate('username')}</label
+                            >
+                        </td>
+                        <td>
+                            <div class="field">
+                                <p class="control">
+                                    <input
+                                        id="username"
+                                        name="username"
+                                        type="text"
+                                        class="input is-small"
+                                        maxlength="256"
+                                        required
+                                    />
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label for="password" class="label"
+                                >{$lang->translate('password')}</label
+                            >
+                        </td>
+                        <td>
+                            <div class="field">
+                                <p class="control">
+                                    <input
+                                        id="password"
+                                        name="password"
+                                        type="password"
+                                        class="input is-small"
+                                        maxlength="256"
+                                        required
+                                    />
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2">
+                            <input
+                                type="submit"
+                                value="{$lang->translate('sign_in')}"
+                                class="button is-small w100"
+                            />
+                        </td>
+                    </tr>
+                </table>
             </form>
         </div>
     </body>

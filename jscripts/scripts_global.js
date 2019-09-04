@@ -148,8 +148,6 @@ function removeFormWarnings() {
 function showWarnings(form, warnings) {
     $.each(warnings, function(name, element) {
         var inputElement = form.find('[name="' + name + '"]');
-        // TODO Remove it
-        console.log(element, inputElement, inputElement.closest(".field"));
         inputElement.closest(".field").append(element);
         inputElement.effect("highlight", 1000);
     });

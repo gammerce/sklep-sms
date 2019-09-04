@@ -19,9 +19,9 @@ jQuery(document).ready(function($) {
                 if (!(jsonObj = json_parse(content))) return;
 
                 // Wyświetlenie błędów w formularzu
-                if (jsonObj.return_id == "warnings") {
+                if (jsonObj.return_id === "warnings") {
                     $.each(jsonObj.warnings, function(name, element) {
-                        if (name == "general") {
+                        if (name === "general") {
                             $("<div>", {
                                 class: "warnings",
                                 html: element.join("<br>"),
@@ -29,10 +29,8 @@ jQuery(document).ready(function($) {
                             return true;
                         }
 
-                        var fieldElement = $('#form_install [name="' + name + '"]:first').closest(
-                            ".field"
-                        );
-                        fieldElement.append(element);
+                        var fieldElement = $('#form_install [name="' + name + '"]');
+                        fieldElement.closest(".field").append(element);
                     });
                 } else if (jsonObj.return_id == "ok") {
                     $("body").addClass("installed");

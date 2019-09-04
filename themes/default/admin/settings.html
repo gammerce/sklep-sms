@@ -4,7 +4,7 @@
     <div class="column is-one-third">
         <h4>{$lang->translate('license')}</h4>
         <div class="field is-horizontal">
-            <div class="field-label is-normal">
+            <div class="field-label is-small">
                 <label for="license_token" class="label">{$lang->translate('token')}</label>
             </div>
             <div class="field-body">
@@ -13,7 +13,7 @@
                         <input
                             id="license_token"
                             name="license_token"
-                            class="input"
+                            class="input is-small"
                             type="text"
                             maxlength="256"
                             placeholder="Wprowadź aby zmienić"
@@ -28,7 +28,7 @@
         <h4>{$lang->translate('information')}</h4>
 
         <div class="field is-horizontal">
-            <div class="field-label is-normal">
+            <div class="field-label is-small">
                 <label for="shop_name" class="label">{$lang->translate('shop_name')}</label>
             </div>
             <div class="field-body">
@@ -39,7 +39,7 @@
                             name="shop_name"
                             type="text"
                             value="{$settings['shop_name']}"
-                            class="input"
+                            class="input is-small"
                             maxlength="256"
                         />
                     </p>
@@ -48,7 +48,7 @@
         </div>
 
         <div class="field is-horizontal">
-            <div class="field-label is-normal">
+            <div class="field-label is-small">
                 <label for="shop_url" class="label">{$lang->translate('shop_address')}</label>
             </div>
             <div class="field-body">
@@ -59,7 +59,7 @@
                             name="shop_url"
                             type="text"
                             value="{$settings['shop_url']}"
-                            class="input"
+                            class="input is-small"
                             maxlength="256"
                         />
                     </p>
@@ -68,7 +68,7 @@
         </div>
 
         <div class="field is-horizontal">
-            <div class="field-label is-normal">
+            <div class="field-label is-small">
                 <label for="contact" class="label">{$lang->translate('contact')}</label>
             </div>
             <div class="field-body">
@@ -79,7 +79,7 @@
                             name="contact"
                             type="text"
                             value="{$settings['contact']}"
-                            class="input"
+                            class="input is-small"
                             maxlength="256"
                         />
                     </p>
@@ -88,7 +88,7 @@
         </div>
 
         <div class="field is-horizontal">
-            <div class="field-label is-normal">
+            <div class="field-label is-small">
                 <label for="sender_email" class="label">{$lang->translate('auto_email')}</label>
             </div>
             <div class="field-body">
@@ -99,7 +99,7 @@
                             name="sender_email"
                             type="text"
                             value="{$settings['sender_email']}"
-                            class="input"
+                            class="input is-small"
                             maxlength="256"
                         />
                     </p>
@@ -108,7 +108,7 @@
         </div>
 
         <div class="field is-horizontal">
-            <div class="field-label is-normal">
+            <div class="field-label is-small">
                 <label for="sender_email_name" class="label"
                     >{$lang->translate('email_sender_name')}</label
                 >
@@ -121,7 +121,7 @@
                             name="sender_email_name"
                             type="text"
                             value="{$settings['sender_email_name']}"
-                            class="input"
+                            class="input is-small"
                             maxlength="256"
                         />
                     </p>
@@ -130,7 +130,7 @@
         </div>
 
         <div class="field is-horizontal">
-            <div class="field-label is-normal">
+            <div class="field-label is-small">
                 <label for="signature" class="label">
                     {$lang->translate('signature')} <em>{$lang->translate('eg_emails')}</em>
                 </label>
@@ -141,12 +141,11 @@
                         <textarea
                             id="signature"
                             name="signature"
-                            type="textarea"
-                            class="textarea"
+                            class="textarea is-small"
                             maxlength="256"
                         >
-    {$settings['signature']}
-                        </textarea>
+{$settings['signature']}</textarea
+                        >
                     </p>
                 </div>
             </div>
@@ -157,7 +156,7 @@
         <h4>{$lang->translate('payments')}</h4>
 
         <div class="field is-horizontal">
-            <div class="field-label is-normal">
+            <div class="field-label is-small">
                 <label for="sms_service" class="label"
                     >{$lang->translate('sms_payment_service')}</label
                 >
@@ -165,7 +164,7 @@
             <div class="field-body">
                 <div class="field">
                     <div class="control">
-                        <div class="select">
+                        <div class="select is-small">
                             <select id="sms_service" name="sms_service">
                                 <option value="">{$lang->translate('none_such')}</option>
                                 {$smsServices}
@@ -177,7 +176,7 @@
         </div>
 
         <div class="field is-horizontal">
-            <div class="field-label is-normal">
+            <div class="field-label is-small">
                 <label for="transfer_service" class="label"
                     >{$lang->translate('transfer_payment_service')}</label
                 >
@@ -185,7 +184,7 @@
             <div class="field-body">
                 <div class="field">
                     <div class="control">
-                        <div class="select">
+                        <div class="select is-small">
                             <select id="transfer_service" name="transfer_service">
                                 <option value="">{$lang->translate('none_such')}</option>
                                 {$transferServices}
@@ -197,7 +196,7 @@
         </div>
 
         <div class="field is-horizontal">
-            <div class="field-label is-normal">
+            <div class="field-label is-small">
                 <label for="currency" class="label">
                     {$lang->translate('transfer_payment_service')}
                 </label>
@@ -210,7 +209,7 @@
                             name="currency"
                             type="text"
                             value="{$settings['currency']}"
-                            class="input"
+                            class="input is-small"
                             maxlength="256"
                         />
                     </p>
@@ -219,7 +218,7 @@
         </div>
 
         <div class="field is-horizontal">
-            <div class="field-label is-normal">
+            <div class="field-label is-small">
                 <label for="vat" class="label">
                     {$lang->translate('vat')}
                 </label>
@@ -232,7 +231,7 @@
                             name="vat"
                             type="text"
                             value="{$settings['vat']}"
-                            class="input"
+                            class="input is-small"
                             maxlength="256"
                         />
                     </p>
@@ -245,7 +244,7 @@
         <h4>{$lang->translate('users')}</h4>
 
         <div class="field is-horizontal">
-            <div class="field-label is-normal">
+            <div class="field-label is-small">
                 <label for="user_edit_service" class="label">
                     {$lang->translate('user_service_edit')}
                 </label>
@@ -253,7 +252,7 @@
             <div class="field-body">
                 <div class="field">
                     <div class="control">
-                        <div class="select">
+                        <div class="select is-small">
                             {$userEditServiceSelect->toHtml()}
                         </div>
                     </div>
@@ -266,7 +265,7 @@
         <h4>{$lang->translate('global')}</h4>
 
         <div class="field is-horizontal">
-            <div class="field-label is-normal">
+            <div class="field-label is-small">
                 <label for="language" class="label">
                     {$lang->translate('language')}
                 </label>
@@ -274,7 +273,7 @@
             <div class="field-body">
                 <div class="field">
                     <div class="control">
-                        <div class="select">
+                        <div class="select is-small">
                             <select id="language" name="language">
                                 {$languagesList}
                             </select>
@@ -285,7 +284,7 @@
         </div>
 
         <div class="field is-horizontal">
-            <div class="field-label is-normal">
+            <div class="field-label is-small">
                 <label for="theme" class="label">
                     {$lang->translate('theme')}
                 </label>
@@ -293,7 +292,7 @@
             <div class="field-body">
                 <div class="field">
                     <div class="control">
-                        <div class="select">
+                        <div class="select is-small">
                             <select id="theme" name="theme">
                                 {$themesList}
                             </select>
@@ -304,7 +303,7 @@
         </div>
 
         <div class="field is-horizontal">
-            <div class="field-label is-normal">
+            <div class="field-label is-small">
                 <label for="date_format" class="label">
                     {$lang->translate('date_format')}
                 </label>
@@ -317,7 +316,7 @@
                             name="date_format"
                             type="text"
                             value="{$settings['date_format']}"
-                            class="input"
+                            class="input is-small"
                             maxlength="256"
                         />
                     </p>
@@ -326,7 +325,7 @@
         </div>
 
         <div class="field is-horizontal">
-            <div class="field-label is-normal">
+            <div class="field-label is-small">
                 <label for="cron" class="label">
                     {$lang->translate('cron_page_start')}
                 </label>
@@ -334,7 +333,7 @@
             <div class="field-body">
                 <div class="field">
                     <div class="control">
-                        <div class="select">
+                        <div class="select is-small">
                             {$cronSelect->toHtml()}
                         </div>
                     </div>
@@ -343,7 +342,7 @@
         </div>
 
         <div class="field is-horizontal">
-            <div class="field-label is-normal">
+            <div class="field-label is-small">
                 <label for="google_analytics" class="label">
                     Google Analytics
                 </label>
@@ -356,7 +355,7 @@
                             name="google_analytics"
                             type="text"
                             value="{$settings['google_analytics']}"
-                            class="input"
+                            class="input is-small"
                             maxlength="256"
                         />
                     </p>
@@ -365,7 +364,7 @@
         </div>
 
         <div class="field is-horizontal">
-            <div class="field-label is-normal">
+            <div class="field-label is-small">
                 <label for="gadugadu" class="label">
                     Gadu Gadu
                 </label>
@@ -378,7 +377,7 @@
                             name="gadugadu"
                             type="text"
                             value="{$settings['gadugadu']}"
-                            class="input"
+                            class="input is-small"
                             maxlength="256"
                         />
                     </p>
@@ -391,7 +390,7 @@
         <h4>{$lang->translate('other')}</h4>
 
         <div class="field is-horizontal">
-            <div class="field-label is-normal">
+            <div class="field-label is-small">
                 <label for="delete_logs" class="label">
                     {$lang->translate('delete_old_logs')} <em>{$lang->translate('dont_delete')}</em>
                 </label>
@@ -404,12 +403,12 @@
                             name="delete_logs"
                             type="number"
                             value="{$settings['delete_logs']}"
-                            class="input"
+                            class="input is-small"
                             maxlength="256"
                         />
                     </p>
                     <p class="control">
-                        <a class="button is-static has-background-grey has-text-black">
+                        <a class="button is-static is-small has-background-grey has-text-black">
                             {$lang->translate('days')}
                         </a>
                     </p>
@@ -418,7 +417,7 @@
         </div>
 
         <div class="field is-horizontal">
-            <div class="field-label is-normal">
+            <div class="field-label is-small">
                 <label for="row_limit" class="label">
                     {$lang->translate('lines_per_page')}
                 </label>
@@ -431,7 +430,7 @@
                             name="row_limit"
                             type="number"
                             value="{$settings['row_limit']}"
-                            class="input"
+                            class="input is-small"
                             maxlength="256"
                         />
                     </p>
