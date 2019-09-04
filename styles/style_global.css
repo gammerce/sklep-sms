@@ -46,6 +46,12 @@ table {
     color: #ccc;
 }
 
+.button.input-suffix {
+    border-color: #000;
+    color: #fff;
+    background-color: #4e4c4c;
+}
+
 .label {
     color: #fff;
 }
