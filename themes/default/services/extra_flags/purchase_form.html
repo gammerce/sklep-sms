@@ -27,7 +27,14 @@
                         <tr>
                             <td><label for="nick">{$lang->translate('nick')}</label></td>
                             <td>
-                                <input type="text" id="nick" name="nick" class="input is-small" maxlength="32" autocomplete="off" />
+                                <input
+                                    type="text"
+                                    id="nick"
+                                    name="nick"
+                                    class="input is-small"
+                                    maxlength="32"
+                                    autocomplete="off"
+                                />
                             </td>
                         </tr>
                     </tbody>
@@ -87,7 +94,14 @@
                                 </label>
                             </td>
                             <td>
-                                <input type="text" id="sid" name="sid" class="input is-small" maxlength="32" autocomplete="off" />
+                                <input
+                                    type="text"
+                                    id="sid"
+                                    name="sid"
+                                    class="input is-small"
+                                    maxlength="32"
+                                    autocomplete="off"
+                                />
                             </td>
                         </tr>
                     </tbody>
@@ -99,7 +113,13 @@
                                 </label>
                             </td>
                             <td>
-                                <input type="email" id="email" name="email" class="input is-small" value="{$user->getEmail()}" />
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    class="input is-small"
+                                    value="{$user->getEmail()}"
+                                />
                             </td>
                         </tr>
                     </tbody>
@@ -126,7 +146,9 @@
                             <td>
                                 <div class="select is-small">
                                     <select id="server" name="server">
-                                        <option value="">{$lang->translate('choose_server')}</option>
+                                        <option value=""
+                                            >{$lang->translate('choose_server')}</option
+                                        >
                                         {$servers}
                                     </select>
                                 </div>
@@ -142,7 +164,9 @@
                             <td>
                                 <div class="select is-small">
                                     <select id="value" name="value">
-                                        <option value="">{$lang->translate('choose_amount')}</option>
+                                        <option value=""
+                                            >{$lang->translate('choose_amount')}</option
+                                        >
                                     </select>
                                 </div>
                             </td>

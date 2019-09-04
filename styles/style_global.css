@@ -22,17 +22,23 @@ table {
 }
 
 /* INPUT */
-.input, .select select, .textarea {
+.input,
+.select select,
+.textarea {
     background-color: #4e4c4c;
     border-color: #000;
     color: #fff;
 }
 
-.input:hover, .select select:hover, .textarea:hover {
+.input:hover,
+.select select:hover,
+.textarea:hover {
     border-color: #3273dc;
 }
 
-.input:disabled, .select select:disabled, .textarea:disabled {
+.input:disabled,
+.select select:disabled,
+.textarea:disabled {
     background-color: #323232;
 }
 

@@ -73,10 +73,7 @@ class InstallKernel extends Kernel
             $status = $module['value'] ? "ok" : "bad";
             $title = $module['text'];
 
-            $serverModules .= $template->installFullRender(
-                'module',
-                compact('title', 'status')
-            );
+            $serverModules .= $template->installFullRender('module', compact('title', 'status'));
         }
 
         $notifyHttpServer = $this->generateHttpServerNotification();
