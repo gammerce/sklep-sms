@@ -4,3 +4,4 @@
 - [ ] Check install flow
 - [ ] Checkbox label hover color
 - [ ] Change input placeholder color
+- [ ] Fix multiple select

@@ -136,10 +136,10 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 
         foreach ($this->heart->getServicesModules() as $serviceModuleData) {
             if (
-            !in_array(
-                IServiceUserServiceAdminDisplay::class,
-                class_implements($serviceModuleData['class'])
-            )
+                !in_array(
+                    IServiceUserServiceAdminDisplay::class,
+                    class_implements($serviceModuleData['class'])
+                )
             ) {
                 continue;
             }
