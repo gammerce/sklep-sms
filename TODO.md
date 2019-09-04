@@ -1,3 +1,4 @@
 - [ ] Fix loader
 - [ ] Refactor input fields
 - [ ] Fix select input warnings
+- [ ] Check install flow

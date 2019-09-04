@@ -27,14 +27,18 @@
                         <tr>
                             <td><label for="nick">{$lang->translate('nick')}</label></td>
                             <td>
-                                <input
-                                    type="text"
-                                    id="nick"
-                                    name="nick"
-                                    class="input is-small"
-                                    maxlength="32"
-                                    autocomplete="off"
-                                />
+                                <div class="field">
+                                    <div class="control">
+                                        <input
+                                            type="text"
+                                            id="nick"
+                                            name="nick"
+                                            class="input is-small"
+                                            maxlength="32"
+                                            autocomplete="off"
+                                        />
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -42,15 +46,19 @@
                         <tr>
                             <td><label for="ip">{$lang->translate('ip')}</label></td>
                             <td>
-                                <input
-                                    type="text"
-                                    id="ip"
-                                    name="ip"
-                                    value="{$user->getLastIp()}"
-                                    class="input is-small"
-                                    maxlength="16"
-                                    autocomplete="off"
-                                />
+                                <div class="field">
+                                    <div class="control">
+                                        <input
+                                            type="text"
+                                            id="ip"
+                                            name="ip"
+                                            value="{$user->getLastIp()}"
+                                            class="input is-small"
+                                            maxlength="16"
+                                            autocomplete="off"
+                                        />
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -58,14 +66,18 @@
                         <tr>
                             <td><label for="password">{$lang->translate('password')}</label></td>
                             <td>
-                                <input
-                                    type="password"
-                                    id="password"
-                                    name="password"
-                                    class="input is-small"
-                                    maxlength="32"
-                                    autocomplete="off"
-                                />
+                                <div class="field">
+                                    <div class="control">
+                                        <input
+                                            type="password"
+                                            id="password"
+                                            name="password"
+                                            class="input is-small"
+                                            maxlength="32"
+                                            autocomplete="off"
+                                        />
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                         <tr>
@@ -75,14 +87,18 @@
                                 </label>
                             </td>
                             <td>
-                                <input
-                                    type="password"
-                                    id="password_repeat"
-                                    name="password_repeat"
-                                    class="input is-small"
-                                    maxlength="32"
-                                    autocomplete="off"
-                                />
+                                <div class="field">
+                                    <div class="control">
+                                        <input
+                                            type="password"
+                                            id="password_repeat"
+                                            name="password_repeat"
+                                            class="input is-small"
+                                            maxlength="32"
+                                            autocomplete="off"
+                                        />
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -94,14 +110,18 @@
                                 </label>
                             </td>
                             <td>
-                                <input
-                                    type="text"
-                                    id="sid"
-                                    name="sid"
-                                    class="input is-small"
-                                    maxlength="32"
-                                    autocomplete="off"
-                                />
+                                <div class="field">
+                                    <div class="control">
+                                        <input
+                                            type="text"
+                                            id="sid"
+                                            name="sid"
+                                            class="input is-small"
+                                            maxlength="32"
+                                            autocomplete="off"
+                                        />
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -113,13 +133,17 @@
                                 </label>
                             </td>
                             <td>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    class="input is-small"
-                                    value="{$user->getEmail()}"
-                                />
+                                <div class="field">
+                                    <div class="control">
+                                        <input
+                                            type="email"
+                                            id="email"
+                                            name="email"
+                                            class="input is-small"
+                                            value="{$user->getEmail()}"
+                                        />
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -144,13 +168,17 @@
                                 <label for="server">{$lang->translate('server')}</label>
                             </td>
                             <td>
-                                <div class="select is-small">
-                                    <select id="server" name="server">
-                                        <option value=""
-                                            >{$lang->translate('choose_server')}</option
-                                        >
-                                        {$servers}
-                                    </select>
+                                <div class="field">
+                                    <div class="control">
+                                        <div class="select is-small">
+                                            <select id="server" name="server">
+                                                <option value="">
+                                                    {$lang->translate('choose_server')}
+                                                </option>
+                                                {$servers}
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -164,9 +192,9 @@
                             <td>
                                 <div class="select is-small">
                                     <select id="value" name="value">
-                                        <option value=""
-                                            >{$lang->translate('choose_amount')}</option
-                                        >
+                                        <option value="">
+                                            {$lang->translate('choose_amount')}
+                                        </option>
                                     </select>
                                 </div>
                             </td>

@@ -260,12 +260,6 @@ hr,
     color: #ccc;
 }
 
-.form_warning {
-    color: #ff2b00;
-    font-size: 16px;
-    text-shadow: 1px 1px 1px #000;
-}
-
 /* Opisy usług */
 .short_description,
 .service_main_info {

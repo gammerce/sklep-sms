@@ -13,7 +13,7 @@ jQuery(document).ready(function($) {
                 loader.hide();
             },
             success: function(content) {
-                $(".form_warning").remove(); // Usuniecie komunikatow o blednym wypelnieniu formualarza
+                removeFormWarnings();
                 $(".warnings").remove();
 
                 if (!(jsonObj = json_parse(content))) return;

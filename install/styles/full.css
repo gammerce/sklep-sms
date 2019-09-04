@@ -86,11 +86,6 @@ h2 {
     max-height: 20%;
 }
 
-.form_warning {
-    color: #ff2b00;
-    font-size: 16px;
-}
-
 .installed {
     position: fixed;
     z-index: 101;
