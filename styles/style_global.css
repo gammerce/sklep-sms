@@ -37,30 +37,10 @@ table {
 }
 
 /* BUTTON */
-
-.button {
-    -moz-appearance: none;
-    -webkit-appearance: none;
-    align-items: center;
-    border: 1px solid transparent;
-    box-shadow: none;
-    display: inline-flex;
-    justify-content: flex-start;
-    padding: calc(0.375em - 1px) calc(0.625em - 1px);
-    position: relative;
-}
-
 .button {
     background-color: #4a4a4a;
     border-color: transparent;
     color: whitesmoke;
-    border-width: 1px;
-    cursor: pointer;
-    justify-content: center;
-    padding: calc(0.375em - 1px) 0.75em;
-    text-align: center;
-    white-space: nowrap;
-    outline: none;
 }
 
 .button:hover {
@@ -89,7 +69,6 @@ table {
 fieldset[disabled] .button {
     background-color: #4a4a4a;
     border-color: transparent;
-    box-shadow: none;
 }
 
 .button.is-success {
