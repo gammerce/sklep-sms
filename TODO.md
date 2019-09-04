@@ -1,0 +1,3 @@
+- [ ] Fix loader
+- [ ] Refactor input fields
+- [ ] Fix select input warnings
