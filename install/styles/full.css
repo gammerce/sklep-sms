@@ -1,46 +1,31 @@
+html {
+    height: 100%;
+}
+
 body {
-    margin: 0;
-    padding: 0;
+    height: 100%;
     text-align: center;
     background-color: #eee;
 }
 
+h1 {
+    padding: 1rem;
+    box-shadow: 0 0 10px #000;
+    background-color: #81bef7;
+}
+
+.field-body {
+    flex-grow: 2;
+}
+
 .window {
     display: inline-block;
-    min-width: 600px;
-    max-width: 80%;
+    width: 800px;
     margin-top: 100px;
     text-align: left;
     border: 1px solid #222;
     box-shadow: 0 0 10px #000;
     background-color: #ccc;
-}
-
-h1 {
-    margin: 0;
-    margin-bottom: 12px;
-    padding: 6px;
-    box-shadow: 0 0 10px #000;
-    background-color: #81bef7;
-}
-
-.content {
-    padding: 12px;
-}
-
-.content [type="submit"] {
-    width: 100%;
-}
-
-.content > .left {
-    float: left;
-    overflow: auto;
-    margin-right: 30px;
-}
-
-.content > .right {
-    width: auto;
-    overflow: auto;
 }
 
 .warnings {
@@ -55,26 +40,11 @@ h2 {
 }
 
 .data {
-    padding: 16px;
+    margin-bottom: 2rem;
 }
 
-.label {
-    float: left;
-    overflow: hidden;
-    margin-right: 16px;
-}
-
-.content > .left .label {
-    min-width: 80px;
-}
-
-.content > .right .label {
-    min-width: 160px;
-}
-
-.field {
-    width: auto;
-    overflow: hidden;
+#form_install {
+    margin: 2rem 1rem;
 }
 
 .ok {
@@ -137,7 +107,6 @@ h2 {
 .notify {
     margin: 0 8px 8px 8px;
     padding: 12px;
-    width: 580px;
 }
 
 .notify.apache2 {

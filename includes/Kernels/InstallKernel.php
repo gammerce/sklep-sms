@@ -70,17 +70,12 @@ class InstallKernel extends Kernel
 
         $serverModules = '';
         foreach ($modules as $module) {
-            if ($module['value']) {
-                $status = "correct";
-                $title = "Prawidłowo";
-            } else {
-                $status = "incorrect";
-                $title = "Nieprawidłowo";
-            }
+            $status = $module['value'] ? "ok" : "bad";
+            $title = $module['text'];
 
             $serverModules .= $template->installFullRender(
                 'module',
-                compact('module', 'status', 'title')
+                compact('title', 'status')
             );
         }
 
@@ -116,7 +111,7 @@ class InstallKernel extends Kernel
             $filesDel,
             $modules
         );
-        $class = $everythingOk ? "ok" : "bad";
+        $class = $everythingOk ? "success" : "danger";
 
         $notifyHttpServer = $this->generateHttpServerNotification();
 
