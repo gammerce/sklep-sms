@@ -11,10 +11,24 @@
             <td colspan="2" class="line"></td>
         </tr>
         <tr>
-            <td>{$lang->strtoupper($lang->translate('provision'))}</td>
             <td>
-                <input type="text" name="provision" value="{$provision}" style="width: 60px;" />
-                {$settings['currency']}
+                <label class="label" for="provision">
+                    {$lang->strtoupper($lang->translate('provision'))}
+                </label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <input
+                            type="number"
+                            id="provision"
+                            name="provision"
+                            value="{$provision}"
+                            required
+                        />
+                        {$settings['currency']}
+                    </div>
+                </div>
             </td>
         </tr>
         <tr>

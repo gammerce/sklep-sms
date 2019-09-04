@@ -45,7 +45,8 @@
                             maxlength="128"
                             required
                         >
-{$row['answers']}</textarea>
+{$row['answers']}</textarea
+                        >
                     </div>
                 </div>
             </td>
@@ -56,11 +57,7 @@
         <tr>
             <td colspan="2">
                 <input type="hidden" name="id" value="{$row['id']}" />
-                <input
-                    type="submit"
-                    value="{$lang->translate('edit')}"
-                    class="button w100"
-                />
+                <input type="submit" value="{$lang->translate('edit')}" class="button w100" />
             </td>
         </tr>
     </table>
