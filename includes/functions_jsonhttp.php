@@ -129,3 +129,18 @@ function json_output($id, $text = "", $positive = false, $data = [])
 
     output_page(json_encode($output), 1);
 }
+
+function format_warnings(array $warnings)
+{
+    $output = [];
+
+    foreach ($warnings as $brick => $warning) {
+        if ($warning) {
+            $output[$brick] = create_dom_element("div", implode("<br />", $warning), [
+                'class' => "form_warning help is-danger",
+            ]);
+        }
+    }
+
+    return $output;
+}

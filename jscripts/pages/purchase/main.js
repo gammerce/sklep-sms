@@ -19,13 +19,8 @@ $(document).delegate("#go_to_payment", "click", function() {
 
             if (!(jsonObj = json_parse(content))) return;
 
-            // Wyświetlenie błędów w formularzu
-            if (jsonObj.return_id == "warnings") {
-                $.each(jsonObj.warnings, function(name, text) {
-                    var id = $('#form_purchase [name="' + name + '"]:first');
-                    id.parent().append(text);
-                    id.effect("highlight", 1000);
-                });
+            if (jsonObj.return_id === "warnings") {
+                showWarnings($("#form_purchase"), jsonObj.warnings);
             } else if (jsonObj.return_id == "ok") {
                 // Przechodzimy do płatności
                 go_to_payment(jsonObj.data, jsonObj.sign);

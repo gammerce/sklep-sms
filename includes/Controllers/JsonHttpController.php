@@ -183,12 +183,7 @@ class JsonHttpController
 
             // Błędy
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
@@ -268,14 +263,8 @@ class JsonHttpController
                 }
             }
 
-            // Błędy
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
@@ -347,14 +336,8 @@ class JsonHttpController
                 $warnings['pass_repeat'][] = $lang->translate('different_pass');
             }
 
-            // Błędy
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
@@ -385,16 +368,11 @@ class JsonHttpController
                 $warnings['old_pass'][] = $lang->translate('old_pass_wrong');
             }
 
-            // Błędy
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
+
             // Zmień hasło
             $salt = get_random_string(8);
 
@@ -437,12 +415,7 @@ class JsonHttpController
 
             // Przerabiamy ostrzeżenia, aby lepiej wyglądały
             if ($returnData['status'] == "warnings") {
-                foreach ($returnData['data']['warnings'] as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $returnData['data']['warnings'][$brick] = $warning;
-                }
+                $returnData["data"]["warnings"] = format_warnings($returnData["data"]["warnings"]);
             } else {
                 //
                 // Uzupełniamy brakujące dane
@@ -688,14 +661,8 @@ class JsonHttpController
 
             $returnData = $serviceModule->userOwnServiceSdit($_POST, $userService);
 
-            // Przerabiamy ostrzeżenia, aby lepiej wyglądały
             if ($returnData['status'] == "warnings") {
-                foreach ($returnData['data']['warnings'] as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $returnData['data']['warnings'][$brick] = $warning;
-                }
+                $returnData["data"]["warnings"] = format_warnings($returnData["data"]["warnings"]);
             }
 
             return new ApiResponse(
@@ -727,14 +694,8 @@ class JsonHttpController
 
             $returnData = $serviceModule->serviceTakeOver($_POST);
 
-            // Przerabiamy ostrzeżenia, aby lepiej wyglądały
             if ($returnData['status'] == "warnings") {
-                foreach ($returnData['data']['warnings'] as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $returnData['data']['warnings'][$brick] = $warning;
-                }
+                $returnData["data"]["warnings"] = format_warnings($returnData["data"]["warnings"]);
             }
 
             return new ApiResponse(

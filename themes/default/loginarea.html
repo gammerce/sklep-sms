@@ -5,10 +5,25 @@
     <tr>
         <td class="td1">
             <form id="form_login">
-                {$lang->translate('username')}<br />
-                <input type="text" name="username" /><br />
-                {$lang->translate('password')}<br />
-                <input type="password" name="password" /><br />
+                <div class="field">
+                    <label for="username" class="label">{$lang->translate('username')}</label>
+                    <div class="control">
+                        <input type="text" id="username" name="username" class="input is-small" />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="password" class="label">{$lang->translate('password')}</label>
+                    <div class="control">
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="input is-small"
+                        />
+                    </div>
+                </div>
+
                 <a href="{$url->to('/page/forgotten_password')}">
                     {$lang->translate('forgot_password')}
                 </a>

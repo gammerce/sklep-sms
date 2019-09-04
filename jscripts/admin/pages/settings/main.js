@@ -13,13 +13,8 @@ $(document).delegate("#form_settings_edit", "submit", function(e) {
 
             if (!(jsonObj = json_parse(content))) return;
 
-            // Wyświetlenie błędów w formularzu
-            if (jsonObj.return_id == "warnings") {
-                $.each(jsonObj.warnings, function(name, text) {
-                    var id = $('#form_settings_edit [name="' + name + '"]');
-                    id.parent("td").append(text);
-                    id.effect("highlight", 1000);
-                });
+            if (jsonObj.return_id === "warnings") {
+                showWarnings($("#form_settings_edit"), jsonObj.warnings);
             } else if (jsonObj.return_id == "ok") {
                 // Odśwież stronę
                 refresh_blocks("admincontent", true);

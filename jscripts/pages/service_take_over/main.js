@@ -36,13 +36,8 @@ $(document).delegate("#form_service_take_over", "submit", function(e) {
 
             if (!(jsonObj = json_parse(content))) return;
 
-            // Wyświetlenie błędów w formularzu
-            if (jsonObj.return_id == "warnings") {
-                $.each(jsonObj.warnings, function(name, text) {
-                    var id = $('#form_service_take_over [name="' + name + '"]:first');
-                    id.parent().append(text);
-                    id.effect("highlight", 1000);
-                });
+            if (jsonObj.return_id === "warnings") {
+                showWarnings($("#form_service_take_over"), jsonObj.warnings);
             } else if (jsonObj.return_id == "ok") {
                 // Przejdź do strony user_own_services
                 setTimeout(function() {

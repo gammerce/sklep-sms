@@ -20,17 +20,19 @@ jQuery(document).ready(function($) {
 
                 // Wyświetlenie błędów w formularzu
                 if (jsonObj.return_id == "warnings") {
-                    $.each(jsonObj.warnings, function(name, text) {
+                    $.each(jsonObj.warnings, function(name, element) {
                         if (name == "general") {
                             $("<div>", {
                                 class: "warnings",
-                                html: text.join("<br>"),
+                                html: element.join("<br>"),
                             }).insertBefore("#form_install");
                             return true;
                         }
 
-                        var id = $('#form_install [name="' + name + '"]:first');
-                        id.parent().append(text);
+                        var fieldElement = $('#form_install [name="' + name + '"]:first').closest(
+                            ".field"
+                        );
+                        fieldElement.append(element);
                     });
                 } else if (jsonObj.return_id == "ok") {
                     $("body").addClass("installed");

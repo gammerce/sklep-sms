@@ -14,13 +14,8 @@ $(document).delegate("#form_reset_password", "submit", function(e) {
 
             if (!(jsonObj = json_parse(content))) return;
 
-            // Wyświetlenie błędów w formularzu
-            if (jsonObj.return_id == "warnings") {
-                $.each(jsonObj.warnings, function(name, text) {
-                    var id = $('#form_reset_password [name="' + name + '"]');
-                    id.parent("td").append(text);
-                    id.effect("highlight", 1000);
-                });
+            if (jsonObj.return_id === "warnings") {
+                showWarnings($("#form_reset_password"), jsonObj.warnings);
             } else if (jsonObj.return_id == "password_changed") {
                 // Wyświetl informacje o zmianie hasła
                 getnset_template($("#content"), "reset_password_changed", false);

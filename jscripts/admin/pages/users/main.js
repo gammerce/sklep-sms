@@ -1,16 +1,4 @@
 (function() {
-    function removeFormWarnings() {
-        $(".form_warning").remove();
-    }
-
-    function showWarnings(form, warnings) {
-        $.each(warnings, function(name, text) {
-            var id = form.find('[name="' + name + '"]');
-            id.parent("td").append(text);
-            id.effect("highlight", 1000);
-        });
-    }
-
     function clearAndHideActionBox() {
         action_box.hide();
         $("#action_box_wraper_td").html("");

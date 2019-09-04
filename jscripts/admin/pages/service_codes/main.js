@@ -93,13 +93,8 @@ $(document).delegate("#form_service_code_add", "submit", function(e) {
 
             if (!(jsonObj = json_parse(content))) return;
 
-            // Wyświetlenie błędów w formularzu
-            if (jsonObj.return_id == "warnings") {
-                $.each(jsonObj.warnings, function(name, text) {
-                    var id = $('#form_service_code_add [name="' + name + '"]');
-                    id.parent("td").append(text);
-                    id.effect("highlight", 1000);
-                });
+            if (jsonObj.return_id === "warnings") {
+                showWarnings($("#form_service_code_add"), jsonObj.warnings);
             } else if (jsonObj.return_id == "ok") {
                 // Ukryj i wyczyść action box
                 action_box.hide();
