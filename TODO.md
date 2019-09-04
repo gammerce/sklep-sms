@@ -2,3 +2,5 @@
 - [ ] Refactor input fields
 - [ ] Fix select input warnings
 - [ ] Check install flow
+- [ ] Checkbox label hover color
+- [ ] Change input placeholder color

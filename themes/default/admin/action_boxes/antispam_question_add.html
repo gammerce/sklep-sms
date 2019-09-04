@@ -5,24 +5,36 @@
     <table>
         <tr>
             <td>
-                {$lang->strtoupper($lang->translate('question'))}<br />
-                <span class="hint">{$lang->translate('html_allowed')}</span>
+                <label for="question">{$lang->strtoupper($lang->translate('question'))}</label>
+                <div class="hint">{$lang->translate('html_allowed')}</div>
             </td>
-            <td><textarea name="question" style="width: 300px" maxlength="128"></textarea></td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                    <textarea id="question" name="question" class="textarea is-small" style="width: 300px" maxlength="128" required></textarea>
+                    </div>
+                </div>
+            </td>
         </tr>
         <tr>
             <td>
-                {$lang->strtoupper($lang->translate('answers'))}<br />
-                <span class="hint">{$lang->translate('separated')}</span>
+                <label for="answers">{$lang->strtoupper($lang->translate('answers'))}</label>
+                <div class="hint">{$lang->translate('separated')}</div>
             </td>
-            <td><textarea name="answers" style="width: 300px" maxlength="128"></textarea></td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                <textarea id="answers" name="answers" class="textarea is-small" style="width: 300px" maxlength="128" required></textarea>
+                    </div>
+                </div>
+            </td>
         </tr>
         <tr>
             <td colspan="2" class="line"></td>
         </tr>
         <tr>
             <td colspan="2">
-                <input type="submit" value="{$lang->translate('add')}" class="button w100" />
+                <input type="submit" value="{$lang->translate('add')}" class="button is-small w100" />
             </td>
         </tr>
     </table>

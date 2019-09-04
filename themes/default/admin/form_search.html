@@ -1,18 +1,20 @@
 <form class="search">
-    <div style="display: inline-block;">
-        <input
-            type="text"
-            class="search_text"
-            placeholder="{$lang->translate('type_to_search')}"
-            value="{$searchText}"
-        />
-    </div>
-
-    <div style="display: inline-block;">
-        <input
-            type="submit"
-            value="{$lang->translate('bring_it_on')}"
-            class="button search_button"
-        />
+    <div class="field has-addons">
+        <div class="control">
+            <input
+                type="text"
+                class="input is-small search_text"
+                placeholder="{$lang->translate('type_to_search')}"
+                value="{$searchText}"
+                required
+            />
+        </div>
+        <div class="control">
+            <input
+                type="submit"
+                value="{$lang->translate('bring_it_on')}"
+                class="button is-small search_button"
+            />
+        </div>
     </div>
 </form>
