@@ -46,6 +46,10 @@ table {
     color: #ccc;
 }
 
+.label {
+    color: #fff;
+}
+
 /* BUTTON */
 .button {
     background-color: #4a4a4a;
