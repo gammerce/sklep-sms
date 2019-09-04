@@ -70,22 +70,6 @@ h2 {
     margin: auto auto;
 }
 
-.loader {
-    position: fixed;
-    z-index: 100;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background: rgba(0, 0, 0, 0.3);
-}
-
-.loader img {
-    z-index: 101;
-    max-height: 20%;
-}
-
 .installed {
     position: fixed;
     z-index: 101;

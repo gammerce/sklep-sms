@@ -5,3 +5,4 @@
 - [ ] Checkbox label hover color
 - [ ] Change input placeholder color
 - [ ] Fix multiple select
+- [ ] Copy loader to install

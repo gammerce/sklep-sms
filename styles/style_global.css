@@ -185,8 +185,6 @@ hr,
     font-weight: normal;
 }
 
-/* Div ładowania i akcji */
-.loader,
 .action_box_wraper {
     position: fixed;
     z-index: 100;
@@ -196,11 +194,6 @@ hr,
     height: 100%;
     overflow: auto;
     background: rgba(255, 255, 255, 0.3);
-}
-
-.loader img {
-    z-index: 101;
-    max-height: 20%;
 }
 
 .action_box_wraper2 {

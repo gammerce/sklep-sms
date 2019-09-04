@@ -21,6 +21,6 @@ class PaymentAdminTest extends IndexTestCase
         // then
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertContains('Panel Admina', $response->getContent());
-        $this->assertContains('<div class="title">Płatności admina', $response->getContent());
+        $this->assertContains('<div class="title is-4">Płatności admina', $response->getContent());
     }
 }
