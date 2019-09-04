@@ -32,7 +32,7 @@ $(document).delegate("#form_service_take_over", "submit", function(e) {
             loader.hide();
         },
         success: function(content) {
-            $(".form_warning").remove(); // Usuniecie komunikatow o blednym wypelnieniu formualarza
+            removeFormWarnings();
 
             if (!(jsonObj = json_parse(content))) return;
 

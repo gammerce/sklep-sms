@@ -65,7 +65,7 @@ $(document).delegate("#form_price_add", "submit", function(e) {
             loader.hide();
         },
         success: function(content) {
-            $(".form_warning").remove(); // Usuniecie komuniktow o blednym wypelnieniu formularza
+            removeFormWarnings();
 
             if (!(jsonObj = json_parse(content))) return;
 
@@ -105,7 +105,7 @@ $(document).delegate("#form_price_edit", "submit", function(e) {
             loader.hide();
         },
         success: function(content) {
-            $(".form_warning").remove(); // Usuniecie komuniaktow o blednym wypelnieniu formualarza
+            removeFormWarnings();
 
             if (!(jsonObj = json_parse(content))) return;
 

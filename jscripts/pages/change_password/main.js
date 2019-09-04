@@ -10,7 +10,7 @@ $(document).delegate("#form_change_password", "submit", function(e) {
             loader.hide();
         },
         success: function(content) {
-            $(".form_warning").remove(); // Usuniecie komuniaktow o blednym wypelnieniu formualarza
+            removeFormWarnings();
 
             if (!(jsonObj = json_parse(content))) return;
 

@@ -74,7 +74,7 @@ function purchase_service(method) {
             loader.hide();
         },
         success: function(content) {
-            $(".form_warning").remove(); // Usuniecie komunikatow o blednym wypelnieniu formualarza
+            removeFormWarnings();
 
             var jsonObj;
             if (!(jsonObj = json_parse(content))) return;

@@ -15,7 +15,7 @@ $(document).delegate("#go_to_payment", "click", function() {
             loader.hide();
         },
         success: function(content) {
-            $(".form_warning").remove(); // Usuniecie komunikatow o blednym wypelnieniu formualarza
+            removeFormWarnings();
 
             if (!(jsonObj = json_parse(content))) return;
 

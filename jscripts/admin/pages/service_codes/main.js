@@ -89,7 +89,7 @@ $(document).delegate("#form_service_code_add", "submit", function(e) {
             loader.hide();
         },
         success: function(content) {
-            $(".form_warning").remove(); // Usuniecie komuniaktow o blednym wypelnieniu formualarza
+            removeFormWarnings();
 
             if (!(jsonObj = json_parse(content))) return;
 

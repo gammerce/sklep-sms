@@ -54,8 +54,7 @@ $(document).delegate("#user_own_services .row", "submit", function(e) {
             if (!jsonObj.return_id) {
                 infobox.show_info(lang["sth_went_wrong"], false);
                 return;
-            }
-            else if (jsonObj.return_id === "warnings") {
+            } else if (jsonObj.return_id === "warnings") {
                 showWarnings(temp_this, jsonObj.warnings);
             } else if (jsonObj.return_id == "ok") {
                 refresh_blocks("content");

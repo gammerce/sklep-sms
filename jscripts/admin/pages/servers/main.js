@@ -75,7 +75,7 @@ $(document).delegate("#form_server_add", "submit", function(e) {
             loader.hide();
         },
         success: function(content) {
-            $(".form_warning").remove(); // Usuniecie komuniaktow o blednym wypelnieniu formualarza
+            removeFormWarnings();
 
             if (!(jsonObj = json_parse(content))) return;
 
@@ -115,7 +115,7 @@ $(document).delegate("#form_server_edit", "submit", function(e) {
             loader.hide();
         },
         success: function(content) {
-            $(".form_warning").remove(); // Usuniecie komuniaktow o blednym wypelnieniu formualarza
+            removeFormWarnings();
 
             if (!(jsonObj = json_parse(content))) return;
 
