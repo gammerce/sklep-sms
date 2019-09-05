@@ -1,6 +1,6 @@
-- [ ] Fix loader
+- [ ] Fix loader - done
 - [ ] Refactor input fields
-- [ ] Fix select input warnings
+- [ ] Fix select input warnings - done
 - [ ] Check install flow
 - [ ] Checkbox label hover color
 - [ ] Change input placeholder color
