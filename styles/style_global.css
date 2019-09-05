@@ -43,7 +43,7 @@ table {
 }
 
 .input::placeholder {
-    color: #ccc;
+    color: #333;
 }
 
 .button.input-suffix {
