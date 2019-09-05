@@ -9,9 +9,9 @@
                 <div class="control">
                     <div class="select is-small">
                         <select id="web" name="web">
-                            <option value="0" {$webSelNo}
-                                >{$lang->strtoupper($lang->translate('no'))}</option
-                            >
+                            <option value="0" {$webSelNo}>
+                                {$lang->strtoupper($lang->translate('no'))}
+                            </option>
                             <option value="1" {$webSelYes}>
                                 {$lang->strtoupper($lang->translate('yes'))}
                             </option>
@@ -28,7 +28,7 @@
         <td>
             <div class="field">
                 <div class="control">
-                    <div class="select is-small">
+                    <div class="select is-multiple is-small">
                         <select id="type" name="type[]" multiple>
                             {$types}
                         </select>
@@ -42,6 +42,8 @@
             <label for="flags">{$lang->strtoupper($lang->translate('flags'))}</label>
         </td>
         <td>
+            <div class="field">
+                <div class="control">
             <input
                 type="text"
                 id="flags"
@@ -50,6 +52,8 @@
                 maxlength="25"
                 class="input is-small"
             />
+                </div>
+            </div>
         </td>
     </tr>
 </tbody>
