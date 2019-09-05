@@ -25,8 +25,8 @@ table {
 .input,
 .select select,
 .textarea {
-    background-color: #4e4c4c;
-    border-color: #000;
+    background-color: #5a5858;
+    border-color: transparent;
     color: #fff;
 }
 
@@ -47,9 +47,9 @@ table {
 }
 
 .button.input-suffix {
-    border-color: #000;
+    /*border-color: #000;*/
     color: #fff;
-    background-color: #4e4c4c;
+    background-color: #4a4a4a;
 }
 
 .label {

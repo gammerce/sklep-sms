@@ -6,24 +6,54 @@
     <table>
         <tbody class="ftbody">
             <tr>
-                <td>{$lang->translate('id')}</td>
                 <td>
-                    <input type="text" name="id" value="{$service['id_hsafe']}" maxlength="16" />
+                    <label for="id">{$lang->translate('id')}</label>
+                </td>
+                <td>
+                    <div class="field">
+                        <div class="control">
+                            <input
+                                type="text"
+                                id="id"
+                                name="id"
+                                class="input is-small"
+                                value="{$service['id_hsafe']}"
+                                maxlength="16"
+                                required
+                            />
+                        </div>
+                    </div>
                 </td>
             </tr>
             <tr>
-                <td>{$lang->strtoupper($lang->translate('name'))}</td>
-                <td><input type="text" name="name" value="{$service['name']}" maxlength="32" /></td>
-            </tr>
-            <tr>
                 <td>
-                    {$lang->strtoupper($lang->translate('short_description'))}<br />
-                    <span class="hint">{$lang->translate('description_on_server')}</span>
+                    <label for="name">{$lang->strtoupper($lang->translate('name'))}</label>
                 </td>
                 <td>
                     <input
                         type="text"
+                        id="name"
+                        name="name"
+                        class="input is-small"
+                        value="{$service['name']}"
+                        maxlength="32"
+                        required
+                    />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="short_description">
+                        {$lang->strtoupper($lang->translate('short_description'))}
+                    </label>
+                    <div class="hint">{$lang->translate('description_on_server')}</div>
+                </td>
+                <td>
+                    <input
+                        type="text"
+                        id="short_description"
                         name="short_description"
+                        class="input is-small"
                         maxlength="28"
                         value="{$service['short_description']}"
                     />
@@ -31,30 +61,58 @@
             </tr>
             <tr>
                 <td>
-                    {$lang->strtoupper($lang->translate('description'))}<br />
-                    <span class="hint">{$lang->translate('description_on_www')}</span>
+                    <label for="description">
+                        {$lang->strtoupper($lang->translate('description'))}
+                    </label>
+                    <div class="hint">{$lang->translate('description_on_www')}</div>
                 </td>
                 <td>
-                    <textarea name="description" style="width: 400px; height: 80px;">
+                    <textarea
+                        id="description"
+                        name="description"
+                        class="textarea is-small"
+                        style="height: 80px;"
+                    >
 {$service['description']}</textarea
                     >
                 </td>
             </tr>
             <tr>
-                <td>{$lang->strtoupper($lang->translate('tag'))}</td>
-                <td><input type="text" name="tag" value="{$service['tag']}" maxlength="16" /></td>
-            </tr>
-            <tr>
-                <td>{$lang->strtoupper($lang->translate('order'))}</td>
-                <td><input type="text" name="order" value="{$service['order']}" /></td>
+                <td>
+                    <label for="tag">{$lang->strtoupper($lang->translate('tag'))}</label>
+                </td>
+                <td>
+                    <input
+                        type="text"
+                        id="tag"
+                        name="tag"
+                        class="input is-small"
+                        value="{$service['tag']}"
+                        maxlength="16"
+                    />
+                </td>
             </tr>
             <tr>
                 <td>
-                    {$lang->strtoupper($lang->translate('groups'))}
+                    <label for="order">{$lang->strtoupper($lang->translate('order'))}</label>
+                </td>
+                <td>
+                    <input
+                        type="text"
+                        id="order"
+                        name="order"
+                        class="input is-small"
+                        value="{$service['order']}"
+                    />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="group">{$lang->strtoupper($lang->translate('groups'))}</label>
                     <div class="hint">{$lang->translate('groups_to_buy_service')}</div>
                 </td>
                 <td>
-                    <select name="groups[]" multiple>
+                    <select id="group" name="groups[]" multiple>
                         {$groups}
                     </select>
                 </td>
@@ -63,11 +121,15 @@
                 <td colspan="2" class="line"></td>
             </tr>
             <tr>
-                <td>{$lang->strtoupper($lang->translate('module'))}</td>
+                <td>
+                    <label>{$lang->strtoupper($lang->translate('module'))}</label>
+                </td>
                 <td>{$serviceModuleName}</td>
             </tr>
         </tbody>
+
         {$extraFields}
+
         <tbody>
             <tr>
                 <td colspan="2" class="line"></td>
