@@ -11,48 +11,123 @@
             <td colspan="2" class="line"></td>
         </tr>
         <tr>
-            <td>{$lang->strtoupper($lang->translate('username'))}</td>
             <td>
-                <input type="text" name="username" maxlength="64" value="{$user->getUsername()}" />
+                <label for="username">{$lang->strtoupper($lang->translate('username'))}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            class="input is-small"
+                            maxlength="64"
+                            value="{$user->getUsername()}"
+                        />
+                    </div>
+                </div>
             </td>
         </tr>
         <tr>
-            <td>{$lang->strtoupper($lang->translate('firstname'))}</td>
             <td>
-                <input type="text" name="forename" maxlength="32" value="{$user->getForename()}" />
+                <label for="forename">{$lang->strtoupper($lang->translate('firstname'))}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <input
+                            type="text"
+                            id="forename"
+                            name="forename"
+                            class="input is-small"
+                            maxlength="32"
+                            value="{$user->getForename()}"
+                        />
+                    </div>
+                </div>
             </td>
         </tr>
         <tr>
-            <td>{$lang->strtoupper($lang->translate('surname'))}</td>
             <td>
-                <input type="text" name="surname" maxlength="64" value="{$user->getSurname()}" />
+                <label for="surname">{$lang->strtoupper($lang->translate('surname'))}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <input
+                            type="text"
+                            id="surname"
+                            name="surname"
+                            class="input is-small"
+                            maxlength="64"
+                            value="{$user->getSurname()}"
+                        />
+                    </div>
+                </div>
             </td>
         </tr>
         <tr>
-            <td>{$lang->strtoupper($lang->translate('email'))}</td>
-            <td><input type="text" name="email" maxlength="128" value="{$user->getEmail()}" /></td>
+            <td>
+                <label for="email">{$lang->strtoupper($lang->translate('email'))}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            class="input is-small"
+                            maxlength="128"
+                            value="{$user->getEmail()}"
+                        />
+                    </div>
+                </div>
+            </td>
         </tr>
         <tr>
             <td colspan="2" class="line"></td>
         </tr>
         <tr>
-            <td>{$lang->strtoupper($lang->translate('groups'))}</td>
             <td>
-                <select name="groups[]" multiple>
-                    {$groups}
-                </select>
+                <label for="groups">{$lang->strtoupper($lang->translate('groups'))}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-multiple is-small">
+                            <select id="groups" name="groups[]" multiple>
+                                {$groups}
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </td>
         </tr>
         <tr>
-            <td>{$lang->strtoupper($lang->translate('wallet'))}</td>
+            <td>
+                <label for="wallet">{$lang->strtoupper($lang->translate('wallet'))}</label>
+            </td>
             <td style="vertical-align: middle">
-                <input
-                    type="text"
-                    name="wallet"
-                    style="width: 60px"
-                    maxlength="32"
-                    value="{$user->getWallet(true)}"
-                />&nbsp;{$settings['currency']}
+                <div class="field has-addons">
+                    <div class="control">
+                        <input
+                            type="number"
+                            id="wallet"
+                            name="wallet"
+                            class="input is-small"
+                            maxlength="32"
+                            step="0.01"
+                            value="{$user->getWallet(true)}"
+                        />
+                    </div>
+                    <div class="control">
+                        <a class="button is-static is-small input-suffix">
+                            {$settings['currency']}
+                        </a>
+                    </div>
+                </div>
             </td>
         </tr>
         <tr>

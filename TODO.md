@@ -6,3 +6,4 @@
 - [ ] Change input placeholder color
 - [ ] Fix multiple select
 - [ ] Copy loader to install
+- [ ] Actions in one line
