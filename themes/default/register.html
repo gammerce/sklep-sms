@@ -1,3 +1,5 @@
+<!-- TODO INPUT -->
+
 <form id="register">
     <dl>
         <dt>{$lang->translate('required_data')}</dt>
@@ -77,12 +79,14 @@
         <dd>
             <table class="register_antispam">
                 <tr>
-                    <td><label>{$lang->translate('question')}</label></td>
+                    <td>{$lang->translate('question')}</td>
                     <td headers="as_question">{$antispamQuestion['question']}</td>
                 </tr>
                 <tr>
                     <td><label for="as_answer">{$lang->translate('answer')}</label></td>
                     <td>
+                        <div class="field">
+                            <div class="control">
                         <input
                             id="as_answer"
                             name="as_answer"
@@ -91,6 +95,8 @@
                             maxlength="64"
                             required
                         />
+                            </div>
+                        </div>
                         <input name="as_id" type="hidden" value="{$antispamQuestion['id']}" />
                     </td>
                 </tr>

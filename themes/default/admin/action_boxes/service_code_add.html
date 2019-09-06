@@ -32,13 +32,13 @@
             </tr>
             <tr>
                 <td>
-                    <label>{$lang->translate('service')}</label>
+                    <label for="service">{$lang->translate('service')}</label>
                 </td>
                 <td>
                     <div class="field">
                         <div class="control">
                             <div class="select is-small">
-                                <select name="service">
+                                <select id="service" name="service">
                                     <option value="">{$lang->translate('choose_service')}</option>
                                     {$services}
                                 </select>

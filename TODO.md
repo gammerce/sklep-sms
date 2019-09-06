@@ -3,6 +3,7 @@
 - [ ] Fix select input warnings - done
 - [ ] Check install flow
 - [ ] Checkbox label hover color
+- [ ] Radio label hover color
 - [ ] Change input placeholder color
 - [ ] Fix multiple select
 - [ ] Copy loader to install

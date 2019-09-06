@@ -1,13 +1,19 @@
 <tbody id="charge_sms">
     <tr>
         <td>
-            <span>{$lang->translate('choose_sms_value')}</span>
+            <label for="tariff">{$lang->translate('choose_sms_value')}</label>
         </td>
         <td>
-            <select name="tariff">
+            <div class="field">
+                <div class="control">
+                    <div class="select is-small">
+            <select id="tariff" name="tariff">
                 <option value="">{$lang->translate('choose_option')}</option>
                 {$smsList}
             </select>
+                    </div>
+                </div>
+            </div>
         </td>
     </tr>
 </tbody>
