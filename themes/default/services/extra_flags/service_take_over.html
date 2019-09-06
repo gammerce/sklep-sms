@@ -1,132 +1,145 @@
 <div data-module="{$moduleId}">
-  <div class="column_left">
-    <div class="table_form">
-      <div class="row">
-        <div class="cell">
-          <label for="server">{$lang->translate('server')}</label>
-        </div>
-        <div class="cell">
-          <div class="field">
-            <div class="control">
-              <div class="select is-small">
-                <select id="server" name="server">
-                  <option value="">{$lang->translate('choose_server')}</option>
-                  {$servers}
-                </select>
-              </div>
+    <div class="column_left">
+        <div class="table_form">
+            <div class="row">
+                <div class="cell">
+                    <label for="server">{$lang->translate('server')}</label>
+                </div>
+                <div class="cell">
+                    <div class="field">
+                        <div class="control">
+                            <div class="select is-small">
+                                <select id="server" name="server">
+                                    <option value="">{$lang->translate('choose_server')}</option>
+                                    {$servers}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="row">
-        <div class="cell">
-          <label for="type">{$lang->translate('type')}</label>
-        </div>
-        <div class="cell">
-          <div class="field">
-            <div class="control">
-              <div class="select is-small">
-                <select id="type" name="type">
-                  <option value="">{$lang->translate('choose_type')}</option>
-                  {$types}
-                </select>
-              </div>
+            <div class="row">
+                <div class="cell">
+                    <label for="type">{$lang->translate('type')}</label>
+                </div>
+                <div class="cell">
+                    <div class="field">
+                        <div class="control">
+                            <div class="select is-small">
+                                <select id="type" name="type">
+                                    <option value="">{$lang->translate('choose_type')}</option>
+                                    {$types}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="row" style="display: none" data-type="nick">
-        <div class="cell">
-          <label for="nick">{$lang->translate('nick')}</label>
-        </div>
-        <div class="cell">
-          <div class="field">
-            <div class="control">
-              <input type="text" id="nick" name="nick" class="input is-small"/>
+            <div class="row" style="display: none" data-type="nick">
+                <div class="cell">
+                    <label for="nick">{$lang->translate('nick')}</label>
+                </div>
+                <div class="cell">
+                    <div class="field">
+                        <div class="control">
+                            <input type="text" id="nick" name="nick" class="input is-small" />
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="row" style="display: none" data-type="ip">
-        <div class="cell">
-          <label for="ip">{$lang->translate('ip')}</label>
-        </div>
-        <div class="cell">
-          <div class="field">
-            <div class="control">
-              <input type="text" id="ip" name="ip" class="input is-small"/>
+            <div class="row" style="display: none" data-type="ip">
+                <div class="cell">
+                    <label for="ip">{$lang->translate('ip')}</label>
+                </div>
+                <div class="cell">
+                    <div class="field">
+                        <div class="control">
+                            <input type="text" id="ip" name="ip" class="input is-small" />
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="row" style="display: none" data-type="sid">
-        <div class="cell">
-          <label for="sid">{$lang->translate('sid')}</label>
-        </div>
-        <div class="cell">
-          <div class="field">
-            <div class="control">
-              <input type="text" id="sid" name="sid" class="input is-small"/>
+            <div class="row" style="display: none" data-type="sid">
+                <div class="cell">
+                    <label for="sid">{$lang->translate('sid')}</label>
+                </div>
+                <div class="cell">
+                    <div class="field">
+                        <div class="control">
+                            <input type="text" id="sid" name="sid" class="input is-small" />
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="row" style="display: none" data-type="password">
-        <div class="cell">
-          <label for="password">{$lang->translate('password')}</label>
-        </div>
-        <div class="cell">
-          <div class="field">
-            <div class="control">
-              <input type="password" id="password" name="password" class="input is-small"/>
+            <div class="row" style="display: none" data-type="password">
+                <div class="cell">
+                    <label for="password">{$lang->translate('password')}</label>
+                </div>
+                <div class="cell">
+                    <div class="field">
+                        <div class="control">
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="input is-small"
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
 
-  <div class="column_right">
-    <div class="table_form">
-      <div class="row">
-        <div class="cell">
-          <label for="payment">{$lang->translate('way_of_payment')}</label>
-        </div>
-        <div class="cell">
-          <div class="field">
-            <div class="control">
-              <div class="select is-small">
-                <select id="payment" name="payment">
-                  <option value="">{$lang->translate('choose_payment')}</option>
-                  <option value="wallet">{$lang->translate('wallet')}</option>
-                  <option value="sms">SMS</option>
-                  <option value="transfer">{$lang->translate('transfer_transfer')}</option>
-                  <option value="admin">{$lang->translate('admin')}</option>
-                </select>
-              </div>
+    <div class="column_right">
+        <div class="table_form">
+            <div class="row">
+                <div class="cell">
+                    <label for="payment">{$lang->translate('way_of_payment')}</label>
+                </div>
+                <div class="cell">
+                    <div class="field">
+                        <div class="control">
+                            <div class="select is-small">
+                                <select id="payment" name="payment">
+                                    <option value="">{$lang->translate('choose_payment')}</option>
+                                    <option value="wallet">{$lang->translate('wallet')}</option>
+                                    <option value="sms">SMS</option>
+                                    <option value="transfer"
+                                        >{$lang->translate('transfer_transfer')}</option
+                                    >
+                                    <option value="admin">{$lang->translate('admin')}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="row" style="display: none" data-name="payment_id">
-        <div class="cell">
-          <label for="payment_id">{$lang->translate('payment_id')}</label>
-          <div class="hint">{$lang->translate('sms_code_transfer_id')}</div>
-        </div>
-        <div class="cell">
-          <div class="field">
-            <div class="control">
-              <input type="text" id="payment_id" name="payment_id" class="input is-small" autocomplete="off"/>
+            <div class="row" style="display: none" data-name="payment_id">
+                <div class="cell">
+                    <label for="payment_id">{$lang->translate('payment_id')}</label>
+                    <div class="hint">{$lang->translate('sms_code_transfer_id')}</div>
+                </div>
+                <div class="cell">
+                    <div class="field">
+                        <div class="control">
+                            <input
+                                type="text"
+                                id="payment_id"
+                                name="payment_id"
+                                class="input is-small"
+                                autocomplete="off"
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
