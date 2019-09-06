@@ -8,3 +8,4 @@
 - [ ] Fix multiple select
 - [ ] Copy loader to install
 - [ ] Actions in one line
+- [ ] Purchase details /page/payment
