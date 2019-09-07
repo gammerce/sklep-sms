@@ -6,44 +6,99 @@
 
 <div class="table_form">
     <div class="row">
-        <div class="cell">{$lang->translate('type')}</div>
         <div class="cell">
-            <select name="type">
-                {$serviceInfo['types']}
-            </select>
+            <label for="type">{$lang->translate('type')}</label>
+        </div>
+        <div class="cell">
+            <div class="field">
+                <div class="control">
+                    <div class="select is-small">
+                        <select id="type" name="type">
+                            {$serviceInfo['types']}
+                        </select>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="row type_nick" style="{$styles['nick']}">
-        <div class="cell">{$lang->translate('nick')}</div>
         <div class="cell">
-            <input type="text" name="nick" maxlength="32" value="{$serviceInfo['player_nick']}" />
+            <label for="nick">{$lang->translate('nick')}</label>
+        </div>
+        <div class="cell">
+            <div class="field">
+                <div class="control">
+                    <input
+                        type="text"
+                        id="nick"
+                        name="nick"
+                        class="input is-small"
+                        maxlength="32"
+                        value="{$serviceInfo['player_nick']}"
+                    />
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="row type_ip" style="{$styles['ip']}">
-        <div class="cell">{$lang->translate('ip')}</div>
         <div class="cell">
-            <input type="text" name="ip" maxlength="21" value="{$serviceInfo['player_ip']}" />
+            <label for="ip">{$lang->translate('ip')}</label>
+        </div>
+        <div class="cell">
+            <div class="field">
+                <div class="control">
+                    <input
+                        type="text"
+                        id="ip"
+                        name="ip"
+                        class="input is-small"
+                        maxlength="21"
+                        value="{$serviceInfo['player_ip']}"
+                    />
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="row type_sid" style="{$styles['sid']}">
-        <div class="cell">{$lang->translate('sid')}</div>
         <div class="cell">
-            <input type="text" name="sid" maxlength="32" value="{$serviceInfo['player_sid']}" />
+            <label for="sid">{$lang->translate('sid')}</label>
+        </div>
+        <div class="cell">
+            <div class="field">
+                <div class="control">
+                    <input
+                        type="text"
+                        id="sid"
+                        name="sid"
+                        class="input is-small"
+                        maxlength="32"
+                        value="{$serviceInfo['player_sid']}"
+                    />
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="row type_password" style="{$styles['password']}">
-        <div class="cell">{$lang->translate('password')}</div>
         <div class="cell">
-            <input
-                type="password"
-                name="password"
-                maxlength="32"
-                placeholder="{$serviceInfo['password']}"
-            />
+            <label for="password">{$lang->translate('password')}</label>
+        </div>
+        <div class="cell">
+            <div class="field">
+                <div class="control">
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="input is-small"
+                        maxlength="32"
+                        placeholder="{$serviceInfo['password']}"
+                    />
+                </div>
+            </div>
         </div>
     </div>
 </div>
