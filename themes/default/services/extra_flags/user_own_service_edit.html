@@ -1,5 +1,3 @@
-<!-- TODO INPUT -->
-
 <input type="password" class="display_none" /> <strong>{$lang->translate('service')}</strong>:
 {$serviceInfo['service']}<br />
 <strong>{$lang->translate('server')}</strong>: {$serviceInfo['server']}<br />
@@ -10,9 +8,9 @@
     <div class="row">
         <div class="cell">{$lang->translate('type')}</div>
         <div class="cell">
-            <select name="type"
-                >{$serviceInfo['types']}</select
-            >
+            <select name="type">
+                {$serviceInfo['types']}
+            </select>
         </div>
     </div>
 
