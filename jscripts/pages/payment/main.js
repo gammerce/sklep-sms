@@ -12,7 +12,7 @@ $(document).delegate("#pay_transfer", "click", function() {
 
 // Kliknięcie na płacenie smsem
 $(document).delegate("#pay_sms", "click", function() {
-    if ($("#sms_details").css("display") == "none") $("#sms_details").slideDown("slow");
+    if ($("#sms_details").css("display") === "none") $("#sms_details").slideDown("slow");
     else purchase_service("sms");
 });
 
