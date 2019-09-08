@@ -1,0 +1,19 @@
+{
+  "name": "shop-sms",
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "pretty": "prettier '{includes,install,src,tests,themes}/**/*.{php,js,css,scss,html}' --check",
+    "pretty:fix": "yarn pretty --write",
+    "watch": "webpack --watch --config webpack.config.js"
+  },
+  "dependencies": {
+    "bulma": "^0.7.5",
+    "css-loader": "^3.2.0",
+    "extract-text-webpack-plugin": "4.0.0-beta.0",
+    "node-sass": "^4.12.0",
+    "sass-loader": "^8.0.0",
+    "style-loader": "^1.0.0",
+    "webpack": "^4.39.3",
+    "webpack-cli": "^3.3.8"
+  }
+}
