@@ -49,7 +49,6 @@ before_deploy:
     confidential/ \
     data/ \
     errors/ \
-    images/ \
     includes/ \
     install/ \
     themes/ \

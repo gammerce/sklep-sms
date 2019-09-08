@@ -125,7 +125,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             'title',
             $this->lang->translate('charge') . ' ' . htmlspecialchars($username)
         );
-        $button->setParam('src', $this->url->to('images/dollar.png'));
+        $button->setParam('src', $this->url->to('build/images/dollar.png'));
         return $button;
     }
 
@@ -137,7 +137,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             'title',
             $this->lang->translate('change_password') . ' ' . htmlspecialchars($username)
         );
-        $button->setParam('src', $this->url->to('images/key.png'));
+        $button->setParam('src', $this->url->to('build/images/key.png'));
         return $button;
     }
 

@@ -287,7 +287,7 @@ class BodyRow extends Row
             $button = new DOMElement();
             $button->setName('img');
             $button->setParam('class', "edit_row");
-            $button->setParam('src', $url->to('images/edit.png'));
+            $button->setParam('src', $url->to('build/images/edit.png'));
             $button->setParam('title', $lang->translate('edit') . ' ' . $this->dbId);
             $actions->addContent($button);
         }
@@ -296,7 +296,7 @@ class BodyRow extends Row
             $button = new DOMElement();
             $button->setName('img');
             $button->setParam('class', "delete_row");
-            $button->setParam('src', $url->to('images/bin.png'));
+            $button->setParam('src', $url->to('build/images/bin.png'));
             $button->setParam('title', $lang->translate('delete') . ' ' . $this->dbId);
             $actions->addContent($button);
         }

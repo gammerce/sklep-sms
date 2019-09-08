@@ -18,6 +18,14 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.(png|jpg|svg|gif)$/,
+                loader: 'file-loader',
+                options: {
+                    name: '[name].[ext]',
+                    outputPath: 'images/'
+                }
+            },
+            {
                 test: /\.css$/,
                 use: [
                     'style-loader',
@@ -48,6 +56,7 @@ module.exports = {
     },
     plugins: [
         new CopyWebpackPlugin([
+            {from: './src/images/', to: './images/'},
             {from: './src/oldjs/', to: './oldjs/'},
             {from: './src/oldcss/', to: './oldcss/'}
         ]),

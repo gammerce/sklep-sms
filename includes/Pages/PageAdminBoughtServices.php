@@ -140,7 +140,7 @@ class PageAdminBoughtServices extends PageAdmin
             $paymentLink->setParam('target', '_blank');
 
             $paymentImg = new Img();
-            $paymentImg->setParam('src', $url->to('images/go.png'));
+            $paymentImg->setParam('src', $url->to('build/images/go.png'));
             $paymentImg->setParam('title', $this->lang->translate('see_payment'));
             $paymentLink->addContent($paymentImg);
 
