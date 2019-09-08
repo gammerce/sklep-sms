@@ -14,7 +14,7 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
         }
 
         // Dodajemy wszystkie skrypty
-        $path = "jscripts/admin/pages/" . $this::PAGE_ID . "/";
+        $path = "build/oldjs/admin/pages/" . $this::PAGE_ID . "/";
         if (strlen($this::PAGE_ID) && file_exists($this->app->path($path))) {
             foreach (scandir($this->app->path($path)) as $file) {
                 if (ends_at($file, ".js")) {
@@ -30,7 +30,7 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
         }
 
         // Dodajemy wszystkie css
-        $path = "styles/admin/pages/" . $this::PAGE_ID . "/";
+        $path = "build/oldcss/admin/pages/" . $this::PAGE_ID . "/";
         if (strlen($this::PAGE_ID) && file_exists($this->app->path($path))) {
             foreach (scandir($this->app->path($path)) as $file) {
                 if (ends_at($file, ".css")) {
@@ -48,7 +48,7 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
         // Globalne jsy cssy konkretnych modułów usług
         if (in_array($this::PAGE_ID, ["service_codes", "services", "user_service"])) {
             foreach ($this->heart->getServicesModules() as $moduleInfo) {
-                $path = "styles/services/" . $moduleInfo['id'] . ".css";
+                $path = "build/oldcss/services/" . $moduleInfo['id'] . ".css";
                 if (file_exists($this->app->path($path))) {
                     $this->heart->styleAdd(
                         $this->settings['shop_url_slash'] .
@@ -58,7 +58,7 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
                     );
                 }
 
-                $path = "jscripts/services/" . $moduleInfo['id'] . ".js";
+                $path = "build/oldjs/services/" . $moduleInfo['id'] . ".js";
                 if (file_exists($this->app->path($path))) {
                     $this->heart->scriptAdd(
                         $this->settings['shop_url_slash'] .

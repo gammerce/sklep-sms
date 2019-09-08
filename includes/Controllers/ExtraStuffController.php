@@ -62,7 +62,7 @@ class ExtraStuffController
 
                 $heart->styleAdd(
                     $settings['shop_url_slash'] .
-                        "styles/extra_stuff/long_desc.css?version=" .
+                        "build/oldcss/extra_stuff/long_desc.css?version=" .
                         $app->version()
                 );
                 $header = $template->render("header", compact('currentPage', 'heart', 'license'));

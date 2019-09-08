@@ -65,7 +65,7 @@ abstract class Page
     public function getContent(array $query, array $body)
     {
         // Dodajemy wszystkie skrypty
-        $path = "jscripts/pages/" . $this::PAGE_ID . "/";
+        $path = "build/oldjs/pages/" . $this::PAGE_ID . "/";
         if (strlen($this::PAGE_ID) && file_exists($this->app->path($path))) {
             foreach (scandir($this->app->path($path)) as $file) {
                 if (ends_at($file, ".js")) {
@@ -81,7 +81,7 @@ abstract class Page
         }
 
         // Dodajemy wszystkie css
-        $path = "styles/pages/" . $this::PAGE_ID . "/";
+        $path = "build/oldcss/pages/" . $this::PAGE_ID . "/";
         if (strlen($this::PAGE_ID) && file_exists($this->app->path($path))) {
             foreach (scandir($this->app->path($path)) as $file) {
                 if (ends_at($file, ".css")) {
@@ -106,7 +106,7 @@ abstract class Page
             ])
         ) {
             foreach ($this->heart->getServicesModules() as $moduleInfo) {
-                $path = "styles/services/" . $moduleInfo['id'] . ".css";
+                $path = "build/oldcss/services/" . $moduleInfo['id'] . ".css";
                 if (file_exists($this->app->path($path))) {
                     $this->heart->styleAdd(
                         $this->settings['shop_url_slash'] .
@@ -116,7 +116,7 @@ abstract class Page
                     );
                 }
 
-                $path = "jscripts/services/" . $moduleInfo['id'] . ".js";
+                $path = "build/oldjs/services/" . $moduleInfo['id'] . ".js";
                 if (file_exists($this->app->path($path))) {
                     $this->heart->scriptAdd(
                         $this->settings['shop_url_slash'] .

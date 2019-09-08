@@ -1,4 +1,5 @@
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     mode: process.env.NODE_ENV || "development",
@@ -46,6 +47,10 @@ module.exports = {
         ]
     },
     plugins: [
+        new CopyWebpackPlugin([
+            {from: './src/oldjs/', to: './oldjs/'},
+            {from: './src/oldcss/', to: './oldcss/'}
+        ]),
         new ExtractTextPlugin({
             filename: 'css/[name].css'
         })
