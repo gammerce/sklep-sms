@@ -12,11 +12,13 @@
                 <table>
                     <tr>
                         <td>
-                            <label for="username">{$lang->translate('username')}</label>
+                            <label class="label has-text-black" for="username">
+                                {$lang->translate('username')}
+                            </label>
                         </td>
                         <td>
                             <div class="field">
-                                <p class="control">
+                                <div class="control">
                                     <input
                                         id="username"
                                         name="username"
@@ -25,18 +27,20 @@
                                         maxlength="256"
                                         required
                                     />
-                                </p>
+                                </div>
                             </div>
                         </td>
                     </tr>
 
                     <tr>
                         <td>
-                            <label for="password">{$lang->translate('password')}</label>
+                            <label class="label has-text-black" for="password">
+                                {$lang->translate('password')}
+                            </label>
                         </td>
                         <td>
                             <div class="field">
-                                <p class="control">
+                                <div class="control">
                                     <input
                                         id="password"
                                         name="password"
@@ -45,17 +49,17 @@
                                         maxlength="256"
                                         required
                                     />
-                                </p>
+                                </div>
                             </div>
                         </td>
                     </tr>
 
                     <tr>
-                        <td colspan="2">
+                        <td colspan="2" class="action-buttons">
                             <input
                                 type="submit"
                                 value="{$lang->translate('sign_in')}"
-                                class="button is-small w100"
+                                class="button w100"
                             />
                         </td>
                     </tr>
