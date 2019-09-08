@@ -7,6 +7,7 @@
             type="text/javascript"
             src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"
         ></script>
+        <script type="text/javascript" src="{$url->versioned('build/js/install.js')}"></script>
         <script
             type="text/javascript"
             src="{$url->versioned('install/jscripts/update.js')}"
@@ -16,12 +17,7 @@
         <script type="text/javascript" src="{$url->versioned('build/oldjs/stocks.js')}"></script>
         <script type="text/javascript" src="{$url->versioned('js.php?script=language')}"></script>
 
-        <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css"
-            integrity="sha256-vK3UTo/8wHbaUn+dTQD0X6dzidqc5l7gczvH+Bnowwk="
-            crossorigin="anonymous"
-        />
+        <link href="{$url->versioned('build/css/install.css')}" rel="stylesheet" />
         <link href="{$url->versioned('install/styles/update.css')}" rel="stylesheet" />
         <link href="{$url->versioned('build/oldcss/loader.css')}" rel="stylesheet" />
         <link href="{$url->versioned('build/oldcss/infobox.css')}" rel="stylesheet" />

@@ -6,6 +6,7 @@
     src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"
 ></script>
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="{$url->versioned('build/js/shop.js')}"></script>
 <script type="text/javascript" src="{$url->versioned('build/oldjs/scripts.js')}"></script>
 <script type="text/javascript" src="{$url->versioned('build/oldjs/scripts_global.js')}"></script>
 <script type="text/javascript" src="{$url->versioned('build/oldjs/stocks.js')}"></script>
@@ -21,12 +22,7 @@
 </script>
 {$heart->scriptsGet()}
 
-<link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css"
-    integrity="sha256-vK3UTo/8wHbaUn+dTQD0X6dzidqc5l7gczvH+Bnowwk="
-    crossorigin="anonymous"
-/>
+<link href="{$url->versioned('build/css/shop.css')}" rel="stylesheet" />
 <link href="{$url->versioned('build/oldcss/style_global.css')}" rel="stylesheet" />
 <link href="{$url->versioned('build/oldcss/style.css')}" rel="stylesheet" />
 <link href="{$url->versioned('build/oldcss/loader.css')}" rel="stylesheet" />
