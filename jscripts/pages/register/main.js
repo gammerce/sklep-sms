@@ -11,7 +11,7 @@ $(document).delegate("#register", "submit", function(e) {
             loader.hide();
         },
         success: function(content) {
-            $(".form_warning").remove(); // Usuniecie komuniaktow o blednym wypelnieniu formualarza
+            removeFormWarnings();
 
             if (!(jsonObj = json_parse(content))) return;
 
@@ -32,13 +32,8 @@ $(document).delegate("#register", "submit", function(e) {
                     $("#form_login").trigger("submit");
                 }, 3000);
             } else {
-                // Wyświetlenie błędów w formularzu
-                if (jsonObj.return_id == "warnings") {
-                    $.each(jsonObj.warnings, function(name, text) {
-                        var id = $('#register [name="' + name + '"]');
-                        id.parent("td").append(text);
-                        id.effect("highlight", 1000);
-                    });
+                if (jsonObj.return_id === "warnings") {
+                    showWarnings($("#register"), jsonObj.warnings);
                 } else if (!jsonObj.return_id) {
                     infobox.show_info(lang["sth_went_wrong"], false);
                 }

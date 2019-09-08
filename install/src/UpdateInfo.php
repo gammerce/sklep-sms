@@ -23,17 +23,12 @@ class UpdateInfo
         // Sprawdzamy ustawienia modułuów
         $serverModules = '';
         foreach ($modules as $module) {
-            if ($module['value']) {
-                $status = "correct";
-                $title = "Prawidłowo";
-            } else {
-                $status = "incorrect";
-                $title = "Nieprawidłowo";
-            }
+            $title = $module['text'];
+            $status = $module['value'] ? "ok" : "bad";
 
             $serverModules .= $this->template->installUpdateRender(
                 'module',
-                compact('module', 'status', 'title')
+                compact('title', 'status')
             );
 
             if (!$module['value'] && $module['must-be']) {

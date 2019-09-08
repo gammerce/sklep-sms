@@ -21,6 +21,6 @@ class TransactionServicesTest extends IndexTestCase
         // then
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertContains('Panel Admina', $response->getContent());
-        $this->assertContains('<div class="title">Metody płatności', $response->getContent());
+        $this->assertContains('<div class="title is-4">Metody płatności', $response->getContent());
     }
 }

@@ -47,21 +47,15 @@ $(document).delegate("#user_own_services .row", "submit", function(e) {
             loader.hide();
         },
         success: function(content) {
-            temp_this.find(".form_warning").remove(); // Usuniecie komuniaktow o blednym wypelnieniu formualarza
+            removeFormWarnings();
 
             if (!(jsonObj = json_parse(content))) return;
 
             if (!jsonObj.return_id) {
                 infobox.show_info(lang["sth_went_wrong"], false);
                 return;
-            }
-            // Wyświetlenie błędów w formularzu
-            else if (jsonObj.return_id == "warnings") {
-                $.each(jsonObj.warnings, function(name, text) {
-                    var id = temp_this.find('[name="' + name + '"]');
-                    id.after(text);
-                    id.effect("highlight", 1000);
-                });
+            } else if (jsonObj.return_id === "warnings") {
+                showWarnings(temp_this, jsonObj.warnings);
             } else if (jsonObj.return_id == "ok") {
                 refresh_blocks("content");
             } else if (jsonObj.return_id == "payment") {

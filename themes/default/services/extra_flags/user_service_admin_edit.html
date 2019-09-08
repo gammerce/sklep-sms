@@ -8,62 +8,126 @@
             <td colspan="2" class="line"></td>
         </tr>
         <tr>
-            <td>{$lang->translate('user_id')}</td>
             <td>
-                <input type="text" name="uid" style="width: 60px;" value="{$userService['uid']}" />
+                <label for="uid">{$lang->translate('user_id')}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <input
+                            type="text"
+                            id="uid"
+                            name="uid"
+                            value="{$userService['uid']}"
+                            class="input is-small"
+                            required
+                        />
+                    </div>
+                </div>
             </td>
         </tr>
         <tr>
-            <td>{$lang->translate('type')}</td>
             <td>
-                <select name="type"
-                    >{$types}</select
-                >
+                <label for="type">{$lang->translate('type')}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-small">
+                            <select id="type" name="type">
+                                {$types}
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </td>
         </tr>
     </tbody>
     <tbody id="type_nick" style="{$styles['nick']}">
         <tr>
-            <td>Nick</td>
             <td>
-                <input type="text" name="nick" maxlength="32" value="{$nick}" autocomplete="off" />
+                <label for="nick">Nick</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <input
+                            type="text"
+                            id="nick"
+                            name="nick"
+                            class="input is-small"
+                            maxlength="32"
+                            value="{$nick}"
+                            autocomplete="off"
+                        />
+                    </div>
+                </div>
             </td>
         </tr>
     </tbody>
     <tbody id="type_ip" style="{$styles['ip']}">
         <tr>
-            <td>IP</td>
             <td>
-                <input
-                    type="text"
-                    name="ip"
-                    maxlength="21"
-                    style="width: 100px;"
-                    value="{$ip}"
-                    autocomplete="off"
-                />
+                <label for="ip">IP</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <input
+                            type="text"
+                            id="ip"
+                            name="ip"
+                            class="input is-small"
+                            maxlength="21"
+                            value="{$ip}"
+                            autocomplete="off"
+                        />
+                    </div>
+                </div>
             </td>
         </tr>
     </tbody>
     <tbody id="type_sid" style="{$styles['sid']}">
         <tr>
-            <td>SteamID</td>
             <td>
-                <input type="text" name="sid" maxlength="32" value="{$sid}" autocomplete="off" />
+                <label for="sid">SteamID</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <input
+                            type="text"
+                            id="sid"
+                            name="sid"
+                            class="input is-small"
+                            maxlength="32"
+                            value="{$sid}"
+                            autocomplete="off"
+                        />
+                    </div>
+                </div>
             </td>
         </tr>
     </tbody>
     <tbody id="type_password" style="{$styles['password']}">
         <tr>
-            <td>{$lang->translate('password')}</td>
             <td>
-                <input
-                    type="text"
-                    name="password"
-                    maxlength="32"
-                    placeholder="{$password}"
-                    autocomplete="off"
-                />
+                <label for="password">{$lang->translate('password')}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <input
+                            type="text"
+                            id="password"
+                            name="password"
+                            class="input is-small"
+                            maxlength="32"
+                            placeholder="{$password}"
+                            autocomplete="off"
+                        />
+                    </div>
+                </div>
             </td>
         </tr>
     </tbody>
@@ -72,32 +136,59 @@
             <td colspan="2" class="line"></td>
         </tr>
         <tr>
-            <td>{$lang->translate('service')}</td>
             <td>
-                <select name="service">
-                    {$services}
-                </select>
+                <label for="service">{$lang->translate('service')}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-small">
+                            <select id="service" name="service">
+                                {$services}
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </td>
         </tr>
         <tr>
-            <td>{$lang->translate('server')}</td>
             <td>
-                <select name="server">
-                    {$servers}
-                </select>
+                <label for="server">{$lang->translate('server')}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-small">
+                            <select id="server" name="server">
+                                {$servers}
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </td>
         </tr>
         <tr>
-            <td>{$lang->translate('expires')}</td>
             <td>
-                <input
-                    type="text"
-                    name="expire"
-                    value="{$userService['expire']}"
-                    autocomplete="off"
-                    {$disabled}
-                /><br />
-                <input type="checkbox" name="forever" {$checked} />{$lang->translate('forever')}
+                <label for="expire">{$lang->translate('expires')}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <input
+                            type="text"
+                            id="expire"
+                            name="expire"
+                            class="input is-small"
+                            value="{$userService['expire']}"
+                            autocomplete="off"
+                            {$disabled}
+                        />
+                    </div>
+                </div>
+                <label class="checkbox">
+                    <input type="checkbox" name="forever" {$checked} />
+                    {$lang->translate('forever')}
+                </label>
             </td>
         </tr>
         <tr>

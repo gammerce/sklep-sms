@@ -2,21 +2,51 @@
     <div class="inputs">
         <table>
             <tr>
-                <td><strong>{$lang->translate('username')}</strong></td>
-                <td><input type="text" name="username" /></td>
-            </tr>
-            <tr>
-                <td><strong>{$lang->translate('amount')}</strong></td>
+                <td><label for="username">{$lang->translate('username')}</label></td>
                 <td>
-                    <select name="amount">
-                        <option value="">{$lang->translate('choose_amount')}</option>
-                        {$amounts}
-                    </select>
+                    <div class="field">
+                        <div class="control">
+                            <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                class="input is-small"
+                                required
+                            />
+                        </div>
+                    </div>
                 </td>
             </tr>
             <tr>
-                <td><strong>{$lang->translate('email')}</strong></td>
-                <td><input type="text" name="email" value="{$user->getEmail()}" /></td>
+                <td><label for="amount">{$lang->translate('amount')}</label></td>
+                <td>
+                    <div class="field">
+                        <div class="control">
+                            <div class="select is-small">
+                                <select id="amount" name="amount">
+                                    <option value="">{$lang->translate('choose_amount')}</option>
+                                    {$amounts}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="email">{$lang->translate('email')}</label></td>
+                <td>
+                    <div class="field">
+                        <div class="control">
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                value="{$user->getEmail()}"
+                                class="input is-small"
+                            />
+                        </div>
+                    </div>
+                </td>
             </tr>
         </table>
     </div>

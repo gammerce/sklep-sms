@@ -25,7 +25,7 @@ class BlockAdminContent extends Block
 
     public function getContentClass()
     {
-        return "content";
+        return "custom_content";
     }
 
     public function getContentId()

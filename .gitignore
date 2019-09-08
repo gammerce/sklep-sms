@@ -11,3 +11,4 @@
 /data/cache/*
 !/data/cache/.gitkeep
 /vendor
+/node_modules

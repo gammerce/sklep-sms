@@ -23,7 +23,7 @@ class HomepageTest extends IndexTestCase
         // then
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertContains('Panel Admina', $response->getContent());
-        $this->assertContains('<div class="title">Strona główna', $response->getContent());
+        $this->assertContains('<div class="title is-4">Strona główna', $response->getContent());
     }
 
     /** @test */

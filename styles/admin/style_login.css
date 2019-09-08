@@ -3,7 +3,6 @@ body {
 }
 
 #form_admin_login {
-    /*width: 345px;*/
     display: inline-block;
     margin: 100px auto;
     padding: 10px;
@@ -28,23 +27,4 @@ h2 {
     border: 2px solid #a51b1b;
     color: #c81717;
     font-weight: bold;
-}
-
-#form_admin_login .label {
-    width: 160px;
-    font-weight: bold;
-}
-
-#form_admin_login .field {
-}
-
-#form_admin_login .field,
-#form_admin_login .label {
-    float: left;
-    margin: 5px 0;
-}
-
-#form_admin_login [type="submit"] {
-    width: 100%;
-    margin-top: 10px;
 }

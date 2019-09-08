@@ -39,20 +39,26 @@ before_deploy:
   - rm -Rf vendor
   - composer install --no-dev --no-interaction --prefer-dist
   - |
-   zip -r \
-   --exclude='.git*' \
-   --exclude='tests/*' \
-   --exclude='docker-compose.yml' \
-   --exclude='docker/*' \
-   --exclude='data/cache/**' \
-   --exclude='data/transfers/**' \
-   --exclude='errors/**' \
-   --exclude='phpunit.xml' \
-   --exclude='.travis.yml' \
-   --exclude='composer.json' \
-   --exclude='composer.lock' \
-   --exclude='README.md' \
-   build.zip .
+    zip -r \
+    --exclude='data/cache/**' \
+    --exclude='data/transfers/**' \
+    --exclude='errors/**' \
+    build.zip \
+    bootstrap/ \
+    confidential/ \
+    data/ \
+    errors/ \
+    images/ \
+    includes/ \
+    install/ \
+    jscripts/ \
+    styles/ \
+    themes/ \
+    .htaccess \
+    cron.php \
+    favicon.ico \
+    index.php \
+    README.md
 
 deploy:
   provider: releases

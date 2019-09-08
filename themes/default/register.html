@@ -5,28 +5,82 @@
             <table class="register_names">
                 <tr>
                     <td colspan="2">
-                        {$lang->translate('username')}:
-                        <input name="username" type="text" />
+                        <div class="field">
+                            <label for="username">{$lang->translate('username')}</label>
+                            <div class="control">
+                                <input
+                                    id="username"
+                                    name="username"
+                                    type="text"
+                                    class="input is-small"
+                                    required
+                                />
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        {$lang->translate('password')}:<br />
-                        <input name="password" type="password" autocomplete="off" />
+                        <div class="field">
+                            <label for="password">{$lang->translate('password')}</label>
+                            <div class="control">
+                                <input
+                                    id="password"
+                                    name="password"
+                                    type="password"
+                                    class="input is-small"
+                                    autocomplete="off"
+                                    required
+                                />
+                            </div>
+                        </div>
                     </td>
                     <td>
-                        {$lang->translate('password_repeat')}:<br />
-                        <input name="password_repeat" type="password" autocomplete="off" />
+                        <div class="field">
+                            <label for="password_repeat">
+                                {$lang->translate('password_repeat')}
+                            </label>
+                            <div class="control">
+                                <input
+                                    id="password_repeat"
+                                    name="password_repeat"
+                                    type="password"
+                                    class="input is-small"
+                                    autocomplete="off"
+                                    required
+                                />
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        E-mail:<br />
-                        <input name="email" type="text" />
+                        <div class="field">
+                            <label for="email">E-mail</label>
+                            <div class="control">
+                                <input
+                                    id="email"
+                                    name="email"
+                                    type="email"
+                                    class="input is-small"
+                                    required
+                                />
+                            </div>
+                        </div>
                     </td>
                     <td>
-                        {$lang->translate('email_repeat')}:<br />
-                        <input name="email_repeat" type="text" />
+                        <div class="field">
+                            <label for="email_repeat">{$lang->translate('email_repeat')}</label>
+                            <div class="control">
+                                <input
+                                    id="email_repeat"
+                                    name="email_repeat"
+                                    type="email"
+                                    class="input is-small"
+                                    required
+                                />
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -34,16 +88,47 @@
                 </tr>
             </table>
         </dd>
+
         <dt>{$lang->translate('optional_data')} *</dt>
         <dd>
             <table class="register_names">
                 <tr>
-                    <td>{$lang->translate('firstname')}:</td>
-                    <td><input name="forename" type="text" maxlength="32" /></td>
+                    <td>
+                        <label for="forename">{$lang->translate('firstname')}</label>
+                    </td>
+                    <td>
+                        <div class="field">
+                            <div class="control">
+                                <input
+                                    id="forename"
+                                    name="forename"
+                                    type="text"
+                                    class="input is-small"
+                                    maxlength="32"
+                                    required
+                                />
+                            </div>
+                        </div>
+                    </td>
                 </tr>
                 <tr>
-                    <td>{$lang->translate('surname')}:</td>
-                    <td><input name="surname" type="text" maxlength="64" /></td>
+                    <td>
+                        <label for="surname">{$lang->translate('surname')}</label>
+                    </td>
+                    <td>
+                        <div class="field">
+                            <div class="control">
+                                <input
+                                    id="surname"
+                                    name="surname"
+                                    type="text"
+                                    class="input is-small"
+                                    maxlength="64"
+                                    required
+                                />
+                            </div>
+                        </div>
+                    </td>
                 </tr>
             </table>
         </dd>
@@ -55,19 +140,29 @@
                     <td headers="as_question">{$antispamQuestion['question']}</td>
                 </tr>
                 <tr>
-                    <td>{$lang->translate('answer')}</td>
                     <td>
-                        <input name="as_answer" type="text" maxlength="64" />
+                        <label for="as_answer">{$lang->translate('answer')}</label>
+                    </td>
+                    <td>
+                        <div class="field">
+                            <div class="control">
+                                <input
+                                    id="as_answer"
+                                    name="as_answer"
+                                    type="text"
+                                    class="input is-small"
+                                    maxlength="64"
+                                    required
+                                />
+                            </div>
+                        </div>
                         <input name="as_id" type="hidden" value="{$antispamQuestion['id']}" />
                     </td>
                 </tr>
             </table>
         </dd>
     </dl>
-    <input type="reset" value="{$lang->translate('clear')}" class="button register_buttons" />
-    <input
-        type="submit"
-        value="{$lang->translate('create_account')}"
-        class="button register_buttons"
-    />
+
+    <input type="reset" value="{$lang->translate('clear')}" class="button" />
+    <input type="submit" value="{$lang->translate('create_account')}" class="button is-success" />
 </form>

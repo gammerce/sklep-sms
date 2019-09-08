@@ -80,12 +80,7 @@ class JsonHttpAdminController
             }
 
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
@@ -163,12 +158,7 @@ class JsonHttpAdminController
 
             // Przerabiamy ostrzeżenia, aby lepiej wyglądały
             if ($returnData['status'] == "warnings") {
-                foreach ($returnData['data']['warnings'] as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $returnData['data']['warnings'][$brick] = $warning;
-                }
+                $returnData["data"]["warnings"] = format_warnings($returnData["data"]["warnings"]);
             }
 
             return new ApiResponse(
@@ -211,14 +201,8 @@ class JsonHttpAdminController
                 return new ApiResponse("missing_method", $lang->translate('no_edit_method'), 0);
             }
 
-            // Przerabiamy ostrzeżenia, aby lepiej wyglądały
             if ($returnData['status'] == "warnings") {
-                foreach ($returnData['data']['warnings'] as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $returnData['data']['warnings'][$brick] = $warning;
-                }
+                $returnData["data"]["warnings"] = format_warnings($returnData["data"]["warnings"]);
             }
 
             return new ApiResponse(
@@ -323,14 +307,8 @@ class JsonHttpAdminController
                 $warnings['answers'][] = $lang->translate('field_no_empty');
             }
 
-            // Błędy
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
@@ -518,12 +496,7 @@ class JsonHttpAdminController
             }
 
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
@@ -735,12 +708,7 @@ class JsonHttpAdminController
 
             // Błędy
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
@@ -970,12 +938,7 @@ class JsonHttpAdminController
 
             // Błędy
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
@@ -1166,14 +1129,8 @@ class JsonHttpAdminController
                 $warnings['wallet'] = array_merge((array) $warnings['wallet'], $warning);
             }
 
-            // Błędy
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
@@ -1367,14 +1324,8 @@ class JsonHttpAdminController
                 $warnings['provision'] = array_merge((array) $warnings['provision'], $warning);
             }
 
-            // Błędy
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
@@ -1414,14 +1365,8 @@ class JsonHttpAdminController
                 $warnings['provision'] = array_merge((array) $warnings['provision'], $warning);
             }
 
-            // Błędy
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
@@ -1517,14 +1462,8 @@ class JsonHttpAdminController
                 $warnings['amount'] = array_merge((array) $warnings['amount'], $warning);
             }
 
-            // Błędy
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
@@ -1632,14 +1571,8 @@ class JsonHttpAdminController
                 $warnings['code'] = array_merge((array) $warnings['code'], $warning);
             }
 
-            // Błędy
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
@@ -1735,14 +1668,8 @@ class JsonHttpAdminController
                 (array) $serviceModule->serviceCodeAdminAddValidate($_POST)
             );
 
-            // Przerabiamy ostrzeżenia, aby lepiej wyglądały
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 

@@ -7,53 +7,102 @@
             <td>{$lang->translate('id')}</td>
             <td>{$server['id']}</td>
         </tr>
+
         <tr>
             <td colspan="2" class="line"></td>
         </tr>
+
         <tr>
-            <td>{$lang->strtoupper($lang->translate('name'))}</td>
-            <td><input type="text" name="name" maxlength="64" value="{$server['name']}" /></td>
-        </tr>
-        <tr>
-            <td>{$lang->translate('ip')}</td>
             <td>
-                <input
-                    type="text"
-                    name="ip"
-                    style="width: 120px"
-                    maxlength="16"
-                    value="{$server['ip']}"
-                />
+                <label for="name">{$lang->strtoupper($lang->translate('name'))}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            class="input is-small"
+                            maxlength="64"
+                            value="{$server['name']}"
+                            required
+                        />
+                    </div>
+                </div>
             </td>
         </tr>
+
         <tr>
-            <td>{$lang->strtoupper($lang->translate('port'))}</td>
             <td>
-                <input
-                    type="text"
-                    name="port"
-                    style="width: 60px"
-                    maxlength="8"
-                    value="{$server['port']}"
-                />
+                <label for="ip">{$lang->translate('ip')}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <input
+                            type="text"
+                            id="ip"
+                            name="ip"
+                            class="input is-small"
+                            maxlength="16"
+                            value="{$server['ip']}"
+                            required
+                        />
+                    </div>
+                </div>
             </td>
         </tr>
+
         <tr>
-            <td>{$lang->translate('sms_payment_service')}</td>
             <td>
-                <select name="sms_service">
-                    <option value="">{$lang->translate('default')}</option>
-                    {$smsServices}
-                </select>
+                <label for="port">{$lang->strtoupper($lang->translate('port'))}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <input
+                            type="number"
+                            id="port"
+                            name="port"
+                            class="input is-small"
+                            maxlength="8"
+                            value="{$server['port']}"
+                            required
+                        />
+                    </div>
+                </div>
             </td>
         </tr>
+
+        <tr>
+            <td>
+                <label for="sms_service">{$lang->translate('sms_payment_service')}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-small">
+                            <select id="sms_service" name="sms_service">
+                                <option value="">{$lang->translate('default')}</option>
+                                {$smsServices}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
         <tr>
             <td colspan="2" class="line"></td>
         </tr>
+
         {$services}
+
         <tr>
             <td colspan="2" class="line"></td>
         </tr>
+
         <tr>
             <td colspan="2">
                 <input type="hidden" name="id" value="{$server['id']}" />

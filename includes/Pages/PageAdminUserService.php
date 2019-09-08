@@ -49,37 +49,14 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         }
 
         $wrapper->setTitle($this->title);
-
-        // Lista z wyborem modułów
-        $button = new Table\Select();
-        $button->setParam('id', 'user_service_display_module');
-        foreach ($this->heart->getServicesModules() as $serviceModuleData) {
-            if (
-                !in_array(
-                    IServiceUserServiceAdminDisplay::class,
-                    class_implements($serviceModuleData['class'])
-                )
-            ) {
-                continue;
-            }
-
-            $option = new Table\Option($serviceModuleData['name']);
-            $option->setParam('value', $serviceModuleData['id']);
-
-            if ($serviceModuleData['id'] == $query['subpage']) {
-                $option->setParam('selected', 'selected');
-            }
-
-            $button->addContent($option);
-        }
-        $wrapper->addButton($button);
+        $wrapper->addButton($this->createModuleSelectBox($query['subpage']));
 
         // Przycisk dodajacy nowa usluge użytkownikowi
         if (get_privileges("manage_user_services")) {
             $button = new Table\Input();
             $button->setParam('id', 'user_service_button_add');
             $button->setParam('type', 'button');
-            $button->setParam('class', 'button');
+            $button->setParam('class', 'button is-small');
             $button->setParam('value', $this->lang->translate('add_service'));
             $wrapper->addButton($button);
         }
@@ -145,5 +122,38 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
             'status' => isset($output) ? 'ok' : 'no_output',
             'template' => if_isset($output, ''),
         ];
+    }
+
+    protected function createModuleSelectBox($subpage)
+    {
+        $button = new Table\Select();
+        $button->setParam('id', 'user_service_display_module');
+        $button->setParam("class", "select is-small");
+
+        $selectWrapper = new Table\Div();
+        $selectWrapper->setParam("class", "select is-small");
+        $selectWrapper->addContent($button);
+
+        foreach ($this->heart->getServicesModules() as $serviceModuleData) {
+            if (
+                !in_array(
+                    IServiceUserServiceAdminDisplay::class,
+                    class_implements($serviceModuleData['class'])
+                )
+            ) {
+                continue;
+            }
+
+            $option = new Table\Option($serviceModuleData['name']);
+            $option->setParam('value', $serviceModuleData['id']);
+
+            if ($serviceModuleData['id'] == $subpage) {
+                $option->setParam('selected', 'selected');
+            }
+
+            $button->addContent($option);
+        }
+
+        return $selectWrapper;
     }
 }

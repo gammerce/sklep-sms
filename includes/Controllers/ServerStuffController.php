@@ -66,9 +66,9 @@ class ServerStuffController
             // Są jakieś błędy przy sprawdzaniu danych
             if ($returnValidation['status'] != "ok") {
                 $extraData = '';
-                if (!empty($returnValidation['data']['warnings'])) {
+                if (!empty($returnValidation["data"]["warnings"])) {
                     $warnings = '';
-                    foreach ($returnValidation['data']['warnings'] as $what => $warning) {
+                    foreach ($returnValidation["data"]["warnings"] as $what => $warning) {
                         $warnings .=
                             "<strong>{$what}</strong><br />" .
                             implode("<br />", $warning) .
@@ -103,9 +103,9 @@ class ServerStuffController
                 $extraData .= "<bsid>{$returnPayment['data']['bsid']}</bsid>";
             }
 
-            if (isset($returnPayment['data']['warnings'])) {
+            if (isset($returnPayment["data"]["warnings"])) {
                 $warnings = "";
-                foreach ($returnPayment['data']['warnings'] as $what => $text) {
+                foreach ($returnPayment["data"]["warnings"] as $what => $text) {
                     $warnings .= "<strong>{$what}</strong><br />{$text}<br />";
                 }
 

@@ -533,7 +533,7 @@ class Wrapper extends Div
         $oldContets = $this->contents;
 
         $title = new Div();
-        $title->setParam('class', 'title');
+        $title->setParam('class', 'title is-4');
 
         $buttons = new Div();
         $buttons->setStyle('float', 'right');

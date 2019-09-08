@@ -11,10 +11,29 @@
             <td colspan="2" class="line"></td>
         </tr>
         <tr>
-            <td>{$lang->strtoupper($lang->translate('provision'))}</td>
             <td>
-                <input type="text" name="provision" value="{$provision}" style="width: 60px;" />
-                {$settings['currency']}
+                <label for="provision">
+                    {$lang->strtoupper($lang->translate('provision'))}
+                </label>
+            </td>
+            <td>
+                <div class="field has-addons">
+                    <div class="control">
+                        <input
+                            type="number"
+                            id="provision"
+                            name="provision"
+                            class="input is-small"
+                            value="{$provision}"
+                            required
+                        />
+                    </div>
+                    <div class="control">
+                        <a class="button is-static is-small input-suffix">
+                            {$settings['currency']}
+                        </a>
+                    </div>
+                </div>
             </td>
         </tr>
         <tr>

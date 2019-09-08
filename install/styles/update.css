@@ -1,8 +1,21 @@
+html {
+    height: 100%;
+}
+
 body {
-    margin: 0;
-    padding: 0;
+    height: 100%;
     text-align: center;
     background-color: #eee;
+}
+
+h1 {
+    padding: 1rem;
+    box-shadow: 0 0 10px #000;
+    background-color: #81bef7;
+}
+
+h2 {
+    margin: 0;
 }
 
 .window {
@@ -16,42 +29,12 @@ body {
     width: 50%;
 }
 
-.window.ok {
+.window.success {
     border: 3px solid greenyellow;
 }
 
-.window.bad {
+.window.danger {
     border: 3px solid #d62226;
-}
-
-h1 {
-    margin: 0 0 12px;
-    padding: 6px;
-    box-shadow: 0 0 10px #000;
-    background-color: #81bef7;
-}
-
-.center {
-    text-align: center;
-}
-
-.content {
-    padding: 12px;
-}
-
-.content [type="submit"] {
-    width: 100%;
-}
-
-.content > .left {
-    float: left;
-    overflow: auto;
-    margin-right: 30px;
-}
-
-.content > .right {
-    width: auto;
-    overflow: auto;
 }
 
 .warnings {
@@ -61,45 +44,17 @@ h1 {
     color: #c81717;
 }
 
-h2 {
-    margin: 0;
+#form_update {
+    margin: 2rem 1rem;
 }
 
-.data {
-    padding: 16px;
+#form_update .column {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
 }
 
-.label {
-    float: left;
-    overflow: hidden;
-    margin-right: 16px;
-}
-
-.content > .left .label {
-    min-width: 80px;
-}
-
-.content > .right .label {
-    min-width: 150px;
-}
-
-.field {
-    width: auto;
-    overflow: hidden;
-}
-
-.field.ok {
-    color: green;
-}
-
-.field.bad {
-    color: red;
-}
-
-.field.ok,
-.field.bad {
-    font-weight: bold;
-    text-transform: uppercase;
+#form_update .data {
+    margin-bottom: 2rem;
 }
 
 .warning {
@@ -142,27 +97,6 @@ h2 {
     margin: auto auto;
 }
 
-.loader {
-    position: fixed;
-    z-index: 100;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background: rgba(0, 0, 0, 0.3);
-}
-
-.loader img {
-    z-index: 101;
-    max-height: 20%;
-}
-
-.form_warning {
-    color: #ff2b00;
-    font-size: 16px;
-}
-
 .updated {
     position: fixed;
     z-index: 101;
@@ -174,4 +108,18 @@ h2 {
     text-align: center;
     font-weight: bold;
     font-size: 18px;
+}
+
+.ok {
+    color: green;
+}
+
+.bad {
+    color: red;
+}
+
+.ok,
+.bad {
+    font-weight: bold;
+    text-transform: uppercase;
 }

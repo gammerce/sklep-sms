@@ -3,12 +3,24 @@
 </div>
 
 <form id="form_service_take_over">
-    <div class="center">
-        <span style="text-transform: uppercase;">{$lang->translate('service')}</span>
-        <select name="service">
-            <option value="">{$lang->translate('choose_service')}</option>
-            {$servicesOptions}
-        </select>
+    <div class="table_form" style="margin: auto">
+        <div class="row">
+            <div class="cell">
+                <label for="service">{$lang->translate('service')}</label>
+            </div>
+            <div class="cell">
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-small">
+                            <select id="service" name="service">
+                                <option value="">{$lang->translate('choose_service')}</option>
+                                {$servicesOptions}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <hr />

@@ -89,21 +89,7 @@ class InstallFullKernel extends Kernel
 
         // Jeżeli są jakieś błedy, to je zwróć
         if (!empty($warnings)) {
-            // Przerabiamy ostrzeżenia, aby lepiej wyglądały
-            foreach ($warnings as $brick => $warning) {
-                if (empty($warning)) {
-                    continue;
-                }
-
-                if ($brick != "general") {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                }
-
-                $returnData['warnings'][$brick] = $warning;
-            }
-
+            $returnData['warnings'] = format_warnings($warnings);
             json_output("warnings", $lang->translate('form_wrong_filled'), false, $returnData);
         }
 

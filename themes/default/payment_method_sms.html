@@ -2,9 +2,12 @@
     <div class="payment_type sms header">
         {$lang->translate('payment_sms')}
     </div>
+
     <div class="payment_type sms">
-        <strong>{$lang->translate('price')}</strong>:
-        {$purchaseData->getTariff()->getSmsCostBrutto()} {$settings['currency']}<br />
+        <div>
+            <strong>{$lang->translate('price')}</strong>:
+            {$purchaseData->getTariff()->getSmsCostBrutto()} {$settings['currency']}
+        </div>
         <br />
 
         <div id="sms_details">
@@ -28,16 +31,22 @@
                     <td class="left">{$purchaseData->getTariff()->getNumber()}</td>
                 </tr>
                 <tr>
-                    <td class="right">{$lang->translate('sms_return_code')}</td>
+                    <td class="right">
+                        <label for="sms_code">{$lang->translate('sms_return_code')}</label>
+                    </td>
                     <td></td>
                     <td class="left">
-                        <input
-                            type="text"
-                            id="sms_code"
-                            name="sms_code"
-                            style="width: 100px;"
-                            maxlength="16"
-                        />
+                        <div class="field">
+                            <div class="control">
+                                <input
+                                    type="text"
+                                    id="sms_code"
+                                    name="sms_code"
+                                    class="input is-small"
+                                    maxlength="16"
+                                />
+                            </div>
+                        </div>
                     </td>
                 </tr>
             </table>

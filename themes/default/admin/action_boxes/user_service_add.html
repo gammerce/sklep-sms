@@ -5,12 +5,20 @@
     <table>
         <tbody class="ftbody">
             <tr>
-                <td>{$lang->translate('service')}</td>
                 <td>
-                    <select name="service">
-                        <option value="">{$lang->translate('choose_service')}</option>
-                        {$services}
-                    </select>
+                    <label for="service">{$lang->translate('service')}</label>
+                </td>
+                <td>
+                    <div class="field">
+                        <div class="control">
+                            <div class="select is-small">
+                                <select id="service" name="service">
+                                    <option value="">{$lang->translate('choose_service')}</option>
+                                    {$services}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </td>
             </tr>
         </tbody>

@@ -65,17 +65,12 @@ $(document).delegate("#form_price_add", "submit", function(e) {
             loader.hide();
         },
         success: function(content) {
-            $(".form_warning").remove(); // Usuniecie komuniktow o blednym wypelnieniu formularza
+            removeFormWarnings();
 
             if (!(jsonObj = json_parse(content))) return;
 
-            // Wyświetlenie błędów w formularzu
-            if (jsonObj.return_id == "warnings") {
-                $.each(jsonObj.warnings, function(name, text) {
-                    var id = $('#form_price_add [name="' + name + '"]');
-                    id.parent("td").append(text);
-                    id.effect("highlight", 1000);
-                });
+            if (jsonObj.return_id === "warnings") {
+                showWarnings($("#form_price_add"), jsonObj.warnings);
             } else if (jsonObj.return_id == "ok") {
                 // Ukryj i wyczyść action box
                 action_box.hide();
@@ -110,17 +105,12 @@ $(document).delegate("#form_price_edit", "submit", function(e) {
             loader.hide();
         },
         success: function(content) {
-            $(".form_warning").remove(); // Usuniecie komuniaktow o blednym wypelnieniu formualarza
+            removeFormWarnings();
 
             if (!(jsonObj = json_parse(content))) return;
 
-            // Wyświetlenie błędów w formularzu
-            if (jsonObj.return_id == "warnings") {
-                $.each(jsonObj.warnings, function(name, text) {
-                    var id = $('#form_price_edit [name="' + name + '"]');
-                    id.parent("td").append(text);
-                    id.effect("highlight", 1000);
-                });
+            if (jsonObj.return_id === "warnings") {
+                showWarnings($("#form_price_edit"), jsonObj.warnings);
             } else if (jsonObj.return_id == "ok") {
                 // Ukryj i wyczyść action box
                 action_box.hide();

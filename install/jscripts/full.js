@@ -13,24 +13,24 @@ jQuery(document).ready(function($) {
                 loader.hide();
             },
             success: function(content) {
-                $(".form_warning").remove(); // Usuniecie komunikatow o blednym wypelnieniu formualarza
+                removeFormWarnings();
                 $(".warnings").remove();
 
                 if (!(jsonObj = json_parse(content))) return;
 
                 // Wyświetlenie błędów w formularzu
-                if (jsonObj.return_id == "warnings") {
-                    $.each(jsonObj.warnings, function(name, text) {
-                        if (name == "general") {
+                if (jsonObj.return_id === "warnings") {
+                    $.each(jsonObj.warnings, function(name, element) {
+                        if (name === "general") {
                             $("<div>", {
                                 class: "warnings",
-                                html: text.join("<br>"),
+                                html: element.join("<br>"),
                             }).insertBefore("#form_install");
                             return true;
                         }
 
-                        var id = $('#form_install [name="' + name + '"]:first');
-                        id.parent().append(text);
+                        var fieldElement = $('#form_install [name="' + name + '"]');
+                        fieldElement.closest(".field").append(element);
                     });
                 } else if (jsonObj.return_id == "ok") {
                     $("body").addClass("installed");
@@ -64,44 +64,3 @@ jQuery(document).ready(function($) {
         });
     });
 });
-
-var loader = {
-    element: $(""),
-    show_task: 0,
-    blocked: false,
-
-    show: function() {
-        loader.blocked = true;
-        // Usuwamy poprzedni task pokazujacy ladowanie
-        if (loader.show_task) {
-            clearTimeout(loader.show_task);
-            loader.show_task = 0;
-        }
-
-        loader.show_task = setTimeout(function() {
-            loader.element = $("<div>", {
-                class: "loader",
-            }).hide();
-
-            loader.element.prepend(
-                $("<img>", {
-                    src: "../images/ajax-loader.gif",
-                    title: "Instalowanie...",
-                    class: "centered",
-                })
-            );
-
-            loader.element.appendTo("body").fadeIn("slow");
-            loader.show_task = 0;
-        }, 300);
-    },
-
-    hide: function() {
-        loader.blocked = false;
-        if (loader.show_task) {
-            clearTimeout(loader.show_task);
-            loader.show_task = 0;
-        }
-        loader.element.remove();
-    },
-};

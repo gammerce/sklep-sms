@@ -105,6 +105,7 @@ class PageAdminSettings extends PageAdmin
         }
 
         $userEditServiceSelect = new Select();
+        $userEditServiceSelect->setParam("id", "user_edit_service");
         $userEditServiceSelect->setParam("name", "user_edit_service");
         $userEditServiceSelect->addContent($yesOption);
         $userEditServiceSelect->addContent($noOption);
@@ -127,6 +128,7 @@ class PageAdminSettings extends PageAdmin
         }
 
         $cronSelect = new Select();
+        $cronSelect->setParam("id", "cron");
         $cronSelect->setParam("name", "cron");
         $cronSelect->addContent($yesOption);
         $cronSelect->addContent($noOption);

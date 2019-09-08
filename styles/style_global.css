@@ -1,6 +1,8 @@
+html {
+    height: 100%;
+}
+
 body {
-    margin: 0;
-    padding: 0;
     color: black;
     font-size: 16px;
     height: 100%;
@@ -11,56 +13,54 @@ td {
     padding: 0;
 }
 
-select,
-input[type="text"],
-input[type="password"],
-textarea {
-    background-color: #4e4c4c;
-    color: #fff;
-    box-shadow: inset 1px 1px 0 black;
-    border: none;
-    padding: 4px 6px;
-    margin: 1px;
+strong {
+    color: inherit;
 }
 
-select:disabled,
-input[type="text"]:disabled,
-input[type="password"]:disabled,
-textarea:disabled {
+table {
+    border-collapse: initial;
+}
+
+/* INPUT */
+.input,
+.select select,
+.textarea {
+    background-color: #5a5858;
+    border-color: transparent;
+    color: #fff;
+}
+
+.input:hover,
+.select select:hover,
+.textarea:hover {
+    border-color: #3273dc;
+}
+
+.input:disabled,
+.select select:disabled,
+.textarea:disabled {
     background-color: #323232;
 }
 
-select:focus,
-input[type="text"]:focus,
-input[type="password"]:focus,
-textarea:focus {
-    box-shadow: 0 0 2px #1f9acf;
-    border: 1px solid #1f9acf;
+.input::placeholder {
+    color: #ccc;
 }
 
-.button {
-    -moz-appearance: none;
-    -webkit-appearance: none;
-    align-items: center;
-    border: 1px solid transparent;
-    box-shadow: none;
-    display: inline-flex;
-    justify-content: flex-start;
-    padding: calc(0.375em - 1px) calc(0.625em - 1px);
-    position: relative;
+.button.input-suffix {
+    border-color: transparent;
+    color: #fff;
+    background-color: #4a4a4a;
 }
 
+.label {
+    color: #fff;
+}
+
+/* BUTTON */
 .button {
     background-color: #4a4a4a;
     border-color: transparent;
     color: whitesmoke;
-    border-width: 1px;
-    cursor: pointer;
-    justify-content: center;
-    padding: calc(0.375em - 1px) 0.75em;
-    text-align: center;
-    white-space: nowrap;
-    outline: none;
 }
 
 .button:hover {
@@ -89,7 +89,6 @@ textarea:focus {
 fieldset[disabled] .button {
     background-color: #4a4a4a;
     border-color: transparent;
-    box-shadow: none;
 }
 
 .button.is-success {
@@ -125,6 +124,8 @@ fieldset[disabled] .button.is-success {
     border-color: transparent;
     box-shadow: none;
 }
+
+/* OTHER */
 
 a {
     cursor: pointer;
@@ -194,8 +195,6 @@ hr,
     font-weight: normal;
 }
 
-/* Div ładowania i akcji */
-.loader,
 .action_box_wraper {
     position: fixed;
     z-index: 100;
@@ -205,11 +204,6 @@ hr,
     height: 100%;
     overflow: auto;
     background: rgba(255, 255, 255, 0.3);
-}
-
-.loader img {
-    z-index: 101;
-    max-height: 20%;
 }
 
 .action_box_wraper2 {
@@ -271,12 +265,6 @@ hr,
 
 .action_box td:nth-child(2) {
     color: #ccc;
-}
-
-.form_warning {
-    color: #ff2b00;
-    font-size: 16px;
-    text-shadow: 1px 1px 1px #000;
 }
 
 /* Opisy usług */

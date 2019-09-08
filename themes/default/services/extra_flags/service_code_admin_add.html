@@ -3,20 +3,36 @@
         <td colspan="2" class="line"></td>
     </tr>
     <tr>
-        <td>{$lang->translate('server')}</td>
         <td>
-            <select name="server">
-                <option value="">{$lang->translate('choose_server')}</option>
-                {$servers}
-            </select>
+            <label for="server">{$lang->translate('server')}</label>
+        </td>
+        <td>
+            <div class="field">
+                <div class="control">
+                    <div class="select is-small">
+                        <select id="server" name="server">
+                            <option value="">{$lang->translate('choose_server')}</option>
+                            {$servers}
+                        </select>
+                    </div>
+                </div>
+            </div>
         </td>
     </tr>
     <tr>
-        <td>{$lang->translate('amount')}</td>
         <td>
-            <select name="amount">
-                <option value="">{$lang->translate('choose_amount')}</option>
-            </select>
+            <label for="amount">{$lang->translate('amount')}</label>
+        </td>
+        <td>
+            <div class="field">
+                <div class="control">
+                    <div class="select is-small">
+                        <select id="amount" name="amount">
+                            <option value="">{$lang->translate('choose_amount')}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
         </td>
     </tr>
 </tbody>

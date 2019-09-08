@@ -1,28 +1,59 @@
 <tbody data-module="{$moduleId}">
     <tr>
         <td>
-            WEB
+            <label for="web">WEB</label>
             <div class="hint">{$lang->translate('if_displayed_in_shop')}</div>
         </td>
         <td>
-            <select name="web">
-                <option value="0" {$webSelNo}>{$lang->strtoupper($lang->translate('no'))}</option>
-                <option value="1" {$webSelYes}>
-                    {$lang->strtoupper($lang->translate('yes'))}
-                </option>
-            </select>
+            <div class="field">
+                <div class="control">
+                    <div class="select is-small">
+                        <select id="web" name="web">
+                            <option value="0" {$webSelNo}>
+                                {$lang->strtoupper($lang->translate('no'))}
+                            </option>
+                            <option value="1" {$webSelYes}>
+                                {$lang->strtoupper($lang->translate('yes'))}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
         </td>
     </tr>
     <tr>
-        <td>{$lang->strtoupper($lang->translate('types'))}</td>
         <td>
-            <select name="type[]" multiple>
-                {$types}
-            </select>
+            <label for="type">{$lang->strtoupper($lang->translate('types'))}</label>
+        </td>
+        <td>
+            <div class="field">
+                <div class="control">
+                    <div class="select is-multiple is-small">
+                        <select id="type" name="type[]" multiple>
+                            {$types}
+                        </select>
+                    </div>
+                </div>
+            </div>
         </td>
     </tr>
     <tr>
-        <td>{$lang->strtoupper($lang->translate('flags'))}</td>
-        <td><input type="text" name="flags" value="{$flags}" maxlength="25" /></td>
+        <td>
+            <label for="flags">{$lang->strtoupper($lang->translate('flags'))}</label>
+        </td>
+        <td>
+            <div class="field">
+                <div class="control">
+                    <input
+                        type="text"
+                        id="flags"
+                        name="flags"
+                        value="{$flags}"
+                        maxlength="25"
+                        class="input is-small"
+                    />
+                </div>
+            </div>
+        </td>
     </tr>
 </tbody>

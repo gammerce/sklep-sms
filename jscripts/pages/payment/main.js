@@ -12,7 +12,7 @@ $(document).delegate("#pay_transfer", "click", function() {
 
 // Kliknięcie na płacenie smsem
 $(document).delegate("#pay_sms", "click", function() {
-    if ($("#sms_details").css("display") == "none") $("#sms_details").slideDown("slow");
+    if ($("#sms_details").css("display") === "none") $("#sms_details").slideDown("slow");
     else purchase_service("sms");
 });
 
@@ -74,18 +74,13 @@ function purchase_service(method) {
             loader.hide();
         },
         success: function(content) {
-            $(".form_warning").remove(); // Usuniecie komunikatow o blednym wypelnieniu formualarza
+            removeFormWarnings();
 
             var jsonObj;
             if (!(jsonObj = json_parse(content))) return;
 
-            // Wyświetlenie błędów w formularzu
-            if (jsonObj.return_id == "warnings") {
-                $.each(jsonObj.warnings, function(name, text) {
-                    var id = $('#payment [name="' + name + '"]');
-                    id.parent().append(text);
-                    id.effect("highlight", 1000);
-                });
+            if (jsonObj.return_id === "warnings") {
+                showWarnings($("#payment"), jsonObj.warnings);
             } else if (jsonObj.return_id == "purchased") {
                 // Zmiana zawartosci okienka content na info o zakupie
                 fetch_data("get_purchase_info", false, { purchase_id: jsonObj.bsid }, function(

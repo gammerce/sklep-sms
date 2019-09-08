@@ -84,7 +84,7 @@ body {
     box-shadow: 0 3px 3px rgba(0, 0, 0, 0.7);
 }
 
-.content {
+.custom_content {
     padding: 1em;
     text-align: left;
     color: #ccc;
@@ -201,7 +201,7 @@ body {
 
 .loginarea table tr .td1 {
     vertical-align: middle;
-    width: 180px;
+    width: 220px;
     background: rgba(255, 255, 255, 0.5);
     padding: 0 20px;
 }

@@ -484,15 +484,9 @@ function validate_payment(Purchase $purchaseData)
         }
     }
 
-    // Błędy
     if (!empty($warnings)) {
         $warningData = [];
-        foreach ($warnings as $brick => $warning) {
-            $warning = create_dom_element("div", implode("<br />", $warning), [
-                'class' => "form_warning",
-            ]);
-            $warningData['warnings'][$brick] = $warning;
-        }
+        $warningData['warnings'] = format_warnings($warnings);
 
         return [
             'status' => "warnings",

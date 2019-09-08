@@ -140,3 +140,15 @@ function buildUrl(path) {
     var prefix = typeof baseUrl !== "undefined" ? trimSlashes(baseUrl) + "/" : "";
     return prefix + trimSlashes(path);
 }
+
+function removeFormWarnings() {
+    $(".form_warning").remove();
+}
+
+function showWarnings(form, warnings) {
+    $.each(warnings, function(name, element) {
+        var inputElement = form.find('[name="' + name + '"]');
+        inputElement.closest(".field").append(element);
+        inputElement.effect("highlight", 1000);
+    });
+}

@@ -60,7 +60,6 @@ $(document).delegate("#form_login", "submit", function(e) {
         success: function(content) {
             if (!(jsonObj = json_parse(content))) return;
 
-            // Wyświetlenie błędów w formularzu
             if (jsonObj.return_id == "logged_in") {
                 $("#user_buttons").css({ overflow: "hidden" }); // Znikniecie pola do logowania
                 refresh_blocks(
@@ -100,7 +99,6 @@ $(document).delegate("#logout", "click", function(e) {
         success: function(content) {
             if (!(jsonObj = json_parse(content))) return;
 
-            // Wyświetlenie błędów w formularzu
             if (jsonObj.return_id == "logged_out") {
                 //$("#user_buttons").css({"overflow": "hidden"}); // Znikniecie pola do logowania
                 refresh_blocks("logged_info;wallet;user_buttons;services_buttons;content");

@@ -7,69 +7,189 @@
             src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"
         ></script>
         <script type="text/javascript" src="{$url->versioned('install/jscripts/full.js')}"></script>
+        <script type="text/javascript" src="{$url->versioned('jscripts/loader.js')}"></script>
         <script type="text/javascript" src="{$url->versioned('jscripts/infobox.js')}"></script>
         <script type="text/javascript" src="{$url->versioned('jscripts/stocks.js')}"></script>
         <script type="text/javascript" src="{$url->versioned('js.php?script=language')}"></script>
+
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css"
+            integrity="sha256-vK3UTo/8wHbaUn+dTQD0X6dzidqc5l7gczvH+Bnowwk="
+            crossorigin="anonymous"
+        />
         <link href="{$url->versioned('install/styles/full.css')}" rel="stylesheet" />
+        <link href="{$url->versioned('styles/loader.css')}" rel="stylesheet" />
         <link href="{$url->versioned('styles/infobox.css')}" rel="stylesheet" />
     </head>
     <body>
         <div class="window">
-            <h1>Instalator Sklepu SMS</h1>
+            <h1 class="title is-4">Instalator Sklepu SMS</h1>
 
             {$notifyHttpServer}
 
-            <form id="form_install" class="content">
-                <div class="left" style="width: auto">
-                    <h2>Dane do bazy danych</h2>
-
+            <form id="form_install" class="columns is-multiline">
+                <div class="column is-half">
+                    <h2 class="title is-5">Dane do bazy danych</h2>
                     <div class="data">
-                        <div class="label">Host</div>
-                        <div class="field"><input type="text" name="db_host" /></div>
+                        <div class="field is-horizontal">
+                            <div class="field-label is-normal">
+                                <label for="db_host">Host</label>
+                            </div>
+                            <div class="field-body">
+                                <div class="field">
+                                    <p class="control">
+                                        <input
+                                            id="db_host"
+                                            name="db_host"
+                                            type="text"
+                                            class="input"
+                                        />
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
 
-                        <div class="label">Port</div>
-                        <div class="field"><input type="number" name="db_port" value="3306" /></div>
+                        <div class="field is-horizontal">
+                            <div class="field-label is-normal">
+                                <label for="db_port">Port</label>
+                            </div>
+                            <div class="field-body">
+                                <div class="field">
+                                    <p class="control">
+                                        <input
+                                            id="db_port"
+                                            name="db_port"
+                                            type="number"
+                                            value="3306"
+                                            class="input"
+                                        />
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
 
-                        <div class="label">Użytkownik</div>
-                        <div class="field"><input type="text" name="db_user" /></div>
+                        <div class="field is-horizontal">
+                            <div class="field-label is-normal">
+                                <label for="db_user">Użytkownik</label>
+                            </div>
+                            <div class="field-body">
+                                <div class="field">
+                                    <p class="control">
+                                        <input
+                                            id="db_user"
+                                            name="db_user"
+                                            class="input"
+                                            type="text"
+                                        />
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
 
-                        <div class="label">Hasło</div>
-                        <div class="field"><input type="password" name="db_password" /></div>
+                        <div class="field is-horizontal">
+                            <div class="field-label is-normal">
+                                <label for="db_password">Hasło</label>
+                            </div>
+                            <div class="field-body">
+                                <div class="field">
+                                    <p class="control">
+                                        <input
+                                            id="db_password"
+                                            name="db_password"
+                                            class="input"
+                                            type="password"
+                                        />
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
 
-                        <div class="label">Nazwa bazy</div>
-                        <div class="field"><input type="text" name="db_db" /></div>
+                        <div class="field is-horizontal">
+                            <div class="field-label is-normal">
+                                <label for="db_db">Nazwa bazy</label>
+                            </div>
+                            <div class="field-body">
+                                <div class="field">
+                                    <p class="control">
+                                        <input id="db_db" name="db_db" class="input" type="text" />
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <h2>Dane Licencji</h2>
-
+                    <h2 class="title is-5">Dane Licencji</h2>
                     <div class="data">
-                        <div class="label">Token</div>
-                        <div class="field"><input type="text" name="license_token" /></div>
+                        <div class="field is-horizontal">
+                            <div class="field-label is-normal">
+                                <label for="license_token">Token</label>
+                            </div>
+                            <div class="field-body">
+                                <div class="field">
+                                    <p class="control">
+                                        <input
+                                            id="license_token"
+                                            name="license_token"
+                                            class="input"
+                                            type="text"
+                                        />
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <h2>Dane Administratora</h2>
-
+                    <h2 class="title is-5">Dane Administratora</h2>
                     <div class="data">
-                        <div class="label">Login</div>
-                        <div class="field"><input type="text" name="admin_username" /></div>
+                        <div class="field is-horizontal">
+                            <div class="field-label is-normal">
+                                <label for="admin_username">Login</label>
+                            </div>
+                            <div class="field-body">
+                                <div class="field">
+                                    <p class="control">
+                                        <input
+                                            id="admin_username"
+                                            name="admin_username"
+                                            class="input"
+                                            type="text"
+                                        />
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
 
-                        <div class="label">Hasło</div>
-                        <div class="field"><input type="password" name="admin_password" /></div>
+                        <div class="field is-horizontal">
+                            <div class="field-label is-normal">
+                                <label for="admin_password">Hasło</label>
+                            </div>
+                            <div class="field-body">
+                                <div class="field">
+                                    <p class="control">
+                                        <input
+                                            id="admin_password"
+                                            name="admin_password"
+                                            class="input"
+                                            type="password"
+                                        />
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="right">
-                    <h2>Uprawnienia do zapisu</h2>
 
+                <div class="column is-half">
+                    <h2 class="title is-5">Uprawnienia do zapisu</h2>
                     <div class="data">{$filesPrivileges}</div>
 
-                    <h2>Moduły na serwerze</h2>
-
+                    <h2 class="title is-5">Moduły na serwerze</h2>
                     <div class="data">{$serverModules}</div>
                 </div>
-                <br style="clear: both" />
 
-                <div style="text-align: center;">
-                    <input type="submit" value="Instaluj" class="button" />
+                <div class="column is-full has-text-centered">
+                    <input type="submit" value="Instaluj" class="button is-fullwidth" />
                 </div>
             </form>
         </div>

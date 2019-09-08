@@ -1,252 +1,446 @@
-<div class="title">{$title}</div>
+<div class="title is-4">{$title}</div>
 
-<form id="form_settings_edit">
-    <div class="settings-brick">
+<form id="form_settings_edit" class="columns is-multiline">
+    <div class="column is-one-third">
         <h4>{$lang->translate('license')}</h4>
-        <table>
-            <tr>
-                <td>{$lang->translate('token')}</td>
-                <td><input name="license_token" type="text" maxlength="256" /></td>
-            </tr>
-        </table>
+        <div class="field is-horizontal">
+            <div class="field-label is-small">
+                <label for="license_token">{$lang->translate('token')}</label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <p class="control">
+                        <input
+                            id="license_token"
+                            name="license_token"
+                            class="input is-small"
+                            type="text"
+                            maxlength="256"
+                            placeholder="Wprowadź aby zmienić"
+                        />
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="settings-brick">
+    <div class="column is-two-thirds">
         <h4>{$lang->translate('information')}</h4>
-        <table>
-            <tr>
-                <td>{$lang->translate('shop_name')}</td>
-                <td>
-                    <input
-                        name="shop_name"
-                        type="text"
-                        value="{$settings['shop_name']}"
-                        style="width: 200px"
-                        maxlength="256"
-                    />
-                </td>
-            </tr>
-            <tr>
-                <td>{$lang->translate('shop_address')}</td>
-                <td>
-                    <input
-                        name="shop_url"
-                        type="text"
-                        value="{$settings['shop_url']}"
-                        style="width: 200px"
-                        maxlength="256"
-                    />
-                </td>
-            </tr>
-            <tr>
-                <td>{$lang->translate('contact')}</td>
-                <td>
-                    <input
-                        name="contact"
-                        type="text"
-                        value="{$settings['contact']}"
-                        style="width: 200px"
-                        maxlength="256"
-                    />
-                </td>
-            </tr>
-            <tr>
-                <td>{$lang->translate('auto_email')}</td>
-                <td>
-                    <input
-                        name="sender_email"
-                        type="text"
-                        value="{$settings['sender_email']}"
-                        style="width: 200px"
-                        maxlength="256"
-                    />
-                </td>
-            </tr>
-            <tr>
-                <td>{$lang->translate('email_sender_name')}</td>
-                <td>
-                    <input
-                        name="sender_email_name"
-                        type="text"
-                        value="{$settings['sender_email_name']}"
-                        style="width: 200px"
-                        maxlength="256"
-                    />
-                </td>
-            </tr>
-            <tr>
-                <td>{$lang->translate('signature')} <em>{$lang->translate('eg_emails')}</em></td>
-                <td>
-                    <textarea
-                        name="signature"
-                        type="textarea"
-                        style="width: 300px; height: 100px;"
-                        maxlength="256"
-                    >
-{$settings['signature']}
-                    </textarea>
-                </td>
-            </tr>
-        </table>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-small">
+                <label for="shop_name">{$lang->translate('shop_name')}</label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <p class="control">
+                        <input
+                            id="shop_name"
+                            name="shop_name"
+                            type="text"
+                            value="{$settings['shop_name']}"
+                            class="input is-small"
+                            maxlength="256"
+                        />
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-small">
+                <label for="shop_url">{$lang->translate('shop_address')}</label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <p class="control">
+                        <input
+                            id="shop_url"
+                            name="shop_url"
+                            type="text"
+                            value="{$settings['shop_url']}"
+                            class="input is-small"
+                            maxlength="256"
+                        />
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-small">
+                <label for="contact">{$lang->translate('contact')}</label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <p class="control">
+                        <input
+                            id="contact"
+                            name="contact"
+                            type="text"
+                            value="{$settings['contact']}"
+                            class="input is-small"
+                            maxlength="256"
+                        />
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-small">
+                <label for="sender_email">{$lang->translate('auto_email')}</label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <p class="control">
+                        <input
+                            id="sender_email"
+                            name="sender_email"
+                            type="text"
+                            value="{$settings['sender_email']}"
+                            class="input is-small"
+                            maxlength="256"
+                        />
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-small">
+                <label for="sender_email_name">{$lang->translate('email_sender_name')}</label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <p class="control">
+                        <input
+                            id="sender_email_name"
+                            name="sender_email_name"
+                            type="text"
+                            value="{$settings['sender_email_name']}"
+                            class="input is-small"
+                            maxlength="256"
+                        />
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-small">
+                <label for="signature">
+                    {$lang->translate('signature')} <em>{$lang->translate('eg_emails')}</em>
+                </label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <p class="control">
+                        <textarea
+                            id="signature"
+                            name="signature"
+                            class="textarea is-small"
+                            maxlength="256"
+                        >
+{$settings['signature']}</textarea
+                        >
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="settings-brick">
+    <div class="column is-half">
         <h4>{$lang->translate('payments')}</h4>
-        <table>
-            <tr>
-                <td>{$lang->translate('sms_payment_service')}</td>
-                <td>
-                    <select name="sms_service">
-                        <option value="">{$lang->translate('none_such')}</option>
-                        {$smsServices}
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>{$lang->translate('transfer_payment_service')}</td>
-                <td>
-                    <select name="transfer_service">
-                        <option value="">{$lang->translate('none_such')}</option>
-                        {$transferServices}
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>{$lang->translate('currency')}</td>
-                <td>
-                    <input
-                        name="currency"
-                        type="text"
-                        value="{$settings['currency']}"
-                        style="width: 60px"
-                        maxlength="256"
-                    />
-                </td>
-            </tr>
-            <tr>
-                <td>{$lang->translate('vat')}</td>
-                <td>
-                    <input
-                        name="vat"
-                        type="text"
-                        value="{$settings['vat']}"
-                        style="width: 60px"
-                        maxlength="256"
-                    />
-                </td>
-            </tr>
-        </table>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-small">
+                <label for="sms_service">{$lang->translate('sms_payment_service')}</label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-small">
+                            <select id="sms_service" name="sms_service">
+                                <option value="">{$lang->translate('none_such')}</option>
+                                {$smsServices}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-small">
+                <label for="transfer_service">{$lang->translate('transfer_payment_service')}</label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-small">
+                            <select id="transfer_service" name="transfer_service">
+                                <option value="">{$lang->translate('none_such')}</option>
+                                {$transferServices}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-small">
+                <label for="currency">
+                    {$lang->translate('transfer_payment_service')}
+                </label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <p class="control">
+                        <input
+                            id="currency"
+                            name="currency"
+                            type="text"
+                            value="{$settings['currency']}"
+                            class="input is-small"
+                            maxlength="256"
+                        />
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-small">
+                <label for="vat">
+                    {$lang->translate('vat')}
+                </label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <p class="control">
+                        <input
+                            id="vat"
+                            name="vat"
+                            type="text"
+                            value="{$settings['vat']}"
+                            class="input is-small"
+                            maxlength="256"
+                        />
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="settings-brick">
+    <div class="column is-half">
         <h4>{$lang->translate('users')}</h4>
-        <table>
-            <tr>
-                <td>{$lang->translate('user_service_edit')}</td>
-                <td>
-                    {$userEditServiceSelect->toHtml()}
-                </td>
-            </tr>
-        </table>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-small">
+                <label for="user_edit_service">
+                    {$lang->translate('user_service_edit')}
+                </label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-small">
+                            {$userEditServiceSelect->toHtml()}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="settings-brick">
+    <div class="column is-half">
         <h4>{$lang->translate('global')}</h4>
-        <table>
-            <tr>
-                <td>{$lang->translate('language')}</td>
-                <td>
-                    <select name="language">
-                        {$languagesList}
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>{$lang->translate('theme')}</td>
-                <td>
-                    <select name="theme">
-                        {$themesList}
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>{$lang->translate('date_format')}</td>
-                <td>
-                    <input
-                        name="date_format"
-                        type="text"
-                        value="{$settings['date_format']}"
-                        style="width: 100px"
-                        maxlength="256"
-                    />
-                </td>
-            </tr>
-            <tr>
-                <td>{$lang->translate('cron_page_start')}</td>
-                <td>
-                    {$cronSelect->toHtml()}
-                </td>
-            </tr>
-            <tr>
-                <td>Google Analytics</td>
-                <td>
-                    <input
-                        type="text"
-                        value="{$settings['google_analytics']}"
-                        name="google_analytics"
-                    />
-                </td>
-            </tr>
-            <tr>
-                <td>Gadu Gadu</td>
-                <td>
-                    <input type="text" value="{$settings['gadugadu']}" name="gadugadu" />
-                </td>
-            </tr>
-        </table>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-small">
+                <label for="language">
+                    {$lang->translate('language')}
+                </label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-small">
+                            <select id="language" name="language">
+                                {$languagesList}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-small">
+                <label for="theme">
+                    {$lang->translate('theme')}
+                </label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-small">
+                            <select id="theme" name="theme">
+                                {$themesList}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-small">
+                <label for="date_format">
+                    {$lang->translate('date_format')}
+                </label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <p class="control">
+                        <input
+                            id="date_format"
+                            name="date_format"
+                            type="text"
+                            value="{$settings['date_format']}"
+                            class="input is-small"
+                            maxlength="256"
+                        />
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-small">
+                <label for="cron">
+                    {$lang->translate('cron_page_start')}
+                </label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-small">
+                            {$cronSelect->toHtml()}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-small">
+                <label for="google_analytics">
+                    Google Analytics
+                </label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <p class="control">
+                        <input
+                            id="google_analytics"
+                            name="google_analytics"
+                            type="text"
+                            value="{$settings['google_analytics']}"
+                            class="input is-small"
+                            maxlength="256"
+                        />
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-small">
+                <label for="gadugadu">
+                    Gadu Gadu
+                </label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <p class="control">
+                        <input
+                            id="gadugadu"
+                            name="gadugadu"
+                            type="text"
+                            value="{$settings['gadugadu']}"
+                            class="input is-small"
+                            maxlength="256"
+                        />
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="settings-brick">
+    <div class="column is-half">
         <h4>{$lang->translate('other')}</h4>
-        <table>
-            <tr>
-                <td>
-                    {$lang->translate('delete_old_logs')} <em>{$lang->translate('dont_delete')}</em>
-                </td>
-                <td>
-                    <input
-                        name="delete_logs"
-                        type="text"
-                        value="{$settings['delete_logs']}"
-                        maxlength="256"
-                        style="width: 50px"
-                    />
-                    <span class="vcenter">{$lang->translate('days')}</span>
-                </td>
-            </tr>
 
-            <tr>
-                <td>{$lang->translate('lines_per_page')}</td>
-                <td>
-                    <input
-                        name="row_limit"
-                        type="text"
-                        value="{$settings['row_limit']}"
-                        style="width: 40px"
-                        maxlength="256"
-                    />
-                </td>
-            </tr>
-        </table>
+        <div class="field is-horizontal">
+            <div class="field-label is-small">
+                <label for="delete_logs">
+                    {$lang->translate('delete_old_logs')} <em>{$lang->translate('dont_delete')}</em>
+                </label>
+            </div>
+            <div class="field-body">
+                <div class="field has-addons">
+                    <div class="control">
+                        <input
+                            id="delete_logs"
+                            name="delete_logs"
+                            type="number"
+                            value="{$settings['delete_logs']}"
+                            class="input is-small"
+                            maxlength="256"
+                        />
+                    </div>
+                    <div class="control">
+                        <a class="button is-static is-small input-suffix">
+                            {$lang->translate('days')}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-small">
+                <label for="row_limit">
+                    {$lang->translate('lines_per_page')}
+                </label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <p class="control">
+                        <input
+                            id="row_limit"
+                            name="row_limit"
+                            type="number"
+                            value="{$settings['row_limit']}"
+                            class="input is-small"
+                            maxlength="256"
+                        />
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <hr />
-    <div class="center" style="margin-top: 12px;">
+    <div class="column is-full has-text-centered">
+        <hr />
+
         <input
             type="submit"
             value="{$lang->translate('save')}"
             class="button"
-            style="width: 50%; margin: 0 auto;"
+            style="width: 50%;"
         />
     </div>
 </form>

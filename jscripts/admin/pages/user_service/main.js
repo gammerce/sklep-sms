@@ -167,17 +167,12 @@ $(document).delegate("#form_user_service_add", "submit", function(e) {
             loader.hide();
         },
         success: function(content) {
-            $(".form_warning").remove(); // Usuniecie komunikatow o blednym wypelnieniu formualarza
+            removeFormWarnings();
 
             if (!(jsonObj = json_parse(content))) return;
 
-            // Wyświetlenie błędów w formularzu
-            if (jsonObj.return_id == "warnings") {
-                $.each(jsonObj.warnings, function(name, text) {
-                    var id = $('#form_user_service_add [name="' + name + '"]');
-                    id.parent("td").append(text);
-                    id.effect("highlight", 1000);
-                });
+            if (jsonObj.return_id === "warnings") {
+                showWarnings($("#form_user_service_add"), jsonObj.warnings);
             } else if (jsonObj.return_id == "ok") {
                 // Ukryj i wyczyść action box
                 action_box.hide();
@@ -211,17 +206,12 @@ $(document).delegate("#form_user_service_edit", "submit", function(e) {
             loader.hide();
         },
         success: function(content) {
-            $(".form_warning").remove(); // Usuniecie komuniaktow o blednym wypelnieniu formualarza
+            removeFormWarnings();
 
             if (!(jsonObj = json_parse(content))) return;
 
-            // Wyświetlenie błędów w formularzu
-            if (jsonObj.return_id == "warnings") {
-                $.each(jsonObj.warnings, function(name, text) {
-                    var id = $('#form_user_service_edit [name="' + name + '"]');
-                    id.parent("td").append(text);
-                    id.effect("highlight", 1000);
-                });
+            if (jsonObj.return_id === "warnings") {
+                showWarnings($("#form_user_service_edit"), jsonObj.warnings);
             } else if (jsonObj.return_id == "ok") {
                 // Ukryj i wyczyść action box
                 action_box.hide();

@@ -23,19 +23,23 @@ $(document).delegate(".table_structure .search", "submit", function(e) {
 /**
  * Tworzy okienko akcji danej strony
  *
- * @param string page_id
- * @param string box_id
+ * @param {string} pageId
+ * @param {string} boxId
+ * @param {object} data
  */
-function show_action_box(page_id, box_id, data) {
+function show_action_box(pageId, boxId, data) {
     data = typeof data !== "undefined" ? data : {};
 
-    data["page_id"] = page_id;
-    data["box_id"] = box_id;
+    data["page_id"] = pageId;
+    data["box_id"] = boxId;
     fetch_data("get_action_box", true, data, function(content) {
-        if (!(jsonObj = json_parse(content))) return;
+        var jsonObj = json_parse(content);
+        if (!jsonObj) {
+            return;
+        }
 
         // Nie udalo sie prawidlowo pozyskac danych
-        if (jsonObj.return_id != "ok") {
+        if (jsonObj.return_id !== "ok") {
             alert(jsonObj.text);
             location.reload();
         }

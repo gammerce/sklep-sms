@@ -11,15 +11,25 @@
             type="text/javascript"
             src="{$url->versioned('install/jscripts/update.js')}"
         ></script>
+        <script type="text/javascript" src="{$url->versioned('jscripts/loader.js')}"></script>
         <script type="text/javascript" src="{$url->versioned('jscripts/infobox.js')}"></script>
         <script type="text/javascript" src="{$url->versioned('jscripts/stocks.js')}"></script>
         <script type="text/javascript" src="{$url->versioned('js.php?script=language')}"></script>
+
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css"
+            integrity="sha256-vK3UTo/8wHbaUn+dTQD0X6dzidqc5l7gczvH+Bnowwk="
+            crossorigin="anonymous"
+        />
         <link href="{$url->versioned('install/styles/update.css')}" rel="stylesheet" />
+        <link href="{$url->versioned('styles/loader.css')}" rel="stylesheet" />
         <link href="{$url->versioned('styles/infobox.css')}" rel="stylesheet" />
     </head>
+
     <body>
         <div class="window {$class}">
-            <h1>Aktualizator Sklepu</h1>
+            <h1 class="title is-4">Aktualizator Sklepu</h1>
 
             {$notifyHttpServer}
 
@@ -34,14 +44,14 @@
                     <li>Plików znajdujących się na FTP strony WWW</li>
                 </ul>
             </div>
-            <form id="form_update" class="content">
+            <form id="form_update">
                 <div class="update_info">
                     {$filesModulesStatus}
                 </div>
                 <br style="clear: both" />
 
                 <div style="text-align: center;">
-                    <input type="submit" value="Aktualizuj" class="button" />
+                    <input type="submit" value="Aktualizuj" class="button is-fullwidth" />
                 </div>
             </form>
         </div>

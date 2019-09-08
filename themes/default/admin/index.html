@@ -15,7 +15,7 @@
                             />
                         </a>
                     </td>
-                    <td class="center">
+                    <td class="has-text-centered">
                         {$lang->translate('acp')} (&nbsp;v{$currentVersion}&nbsp;)
                         <div class="hint">
                             {$lang->translate('license_expires')}: {$license->getExpires()}
@@ -26,9 +26,9 @@
                         <form method="POST" class="form_logout">
                             <input type="hidden" name="action" value="logout" />
                             (
-                            <a href="#" onclick="$(this).parents('form').submit()"
-                                >{$lang->translate('logout')}</a
-                            >
+                            <a href="#" onclick="$(this).parents('form').submit()">
+                                {$lang->translate('logout')}
+                            </a>
                             )
                         </form>
                     </td>
