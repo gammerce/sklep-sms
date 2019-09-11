@@ -2,9 +2,9 @@
 - [ ] Refactor input fields - done
 - [ ] Fix select input warnings - done
 - [ ] Check install flow
-- [ ] Checkbox label hover color
-- [ ] Radio label hover color
-- [ ] Change input placeholder color
+- [ ] Checkbox label hover color - done
+- [ ] Radio label hover color - done
+- [ ] Change input placeholder color - done
 - [ ] Fix multiple select
 - [ ] Copy loader to install
 - [ ] Actions in one line
