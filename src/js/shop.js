@@ -2,6 +2,8 @@ require("../stylesheets/shop.scss");
 require("./partials/global.js");
 require("./partials/stocks.js");
 require("./partials/window.js");
+require("./partials/loader.js");
+require("./partials/infobox.js");
 
 $(document).ready(function() {
     if (typeof f !== "undefined") $(".content_td").append(atob(f));

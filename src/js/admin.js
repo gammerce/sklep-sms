@@ -2,6 +2,8 @@ require("../stylesheets/admin.scss");
 require("./partials/global.js");
 require("./partials/stocks.js");
 require("./partials/window.js");
+require("./partials/loader.js");
+require("./partials/infobox.js");
 
 jQuery.fn.scrollTo = function(elem, speed) {
     $(this).animate(
