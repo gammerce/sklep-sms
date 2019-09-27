@@ -1,0 +1,98 @@
+@import "partials/all";
+@import "partials/loader";
+@import "partials/infobox";
+
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  text-align: center;
+  background-color: #eee;
+}
+
+h1 {
+  padding: 1rem;
+  box-shadow: 0 0 10px #000;
+  background-color: #81bef7;
+}
+
+.field-body {
+  flex-grow: 2;
+}
+
+.window {
+  display: inline-block;
+  width: 800px;
+  margin-top: 100px;
+  text-align: left;
+  border: 1px solid #222;
+  box-shadow: 0 0 10px #000;
+  background-color: #ccc;
+}
+
+.warnings {
+  padding: 6px;
+  margin-bottom: 12px;
+  border: 2px solid #a51b1b;
+  color: #c81717;
+}
+
+h2 {
+  margin: 0;
+}
+
+.data {
+  margin-bottom: 2rem;
+}
+
+#form_install {
+  margin: 2rem 1rem;
+}
+
+.ok {
+  color: green;
+}
+
+.bad {
+  color: red;
+}
+
+.ok,
+.bad {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.centered {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto auto;
+}
+
+.installed {
+  position: fixed;
+  z-index: 101;
+  top: 40%;
+  transform: translate(0, -40%);
+  width: 100%;
+  max-height: 100%;
+
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.notify {
+  margin: 0 8px 8px 8px;
+  padding: 12px;
+}
+
+.notify.apache2 {
+  border: 2px solid #f9ff00;
+  background: rgba(255, 255, 0, 0.1);
+}
