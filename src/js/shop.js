@@ -71,7 +71,7 @@ $(document).delegate("#form_login", "submit", function(e) {
                 $("#user_buttons").css({ overflow: "hidden" }); // Znikniecie pola do logowania
                 refresh_blocks(
                     "logged_info;wallet;user_buttons;services_buttons" +
-                    ($("#form_login_reload_content").val() == "0" ? "" : ";content")
+                        ($("#form_login_reload_content").val() == "0" ? "" : ";content")
                 );
             }
             if (jsonObj.return_id == "already_logged_in") {
