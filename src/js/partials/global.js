@@ -1,4 +1,4 @@
-function getnset_template(element, template, admin, data, onSuccessFunction) {
+window.getnset_template = function(element, template, admin, data, onSuccessFunction) {
     // Sprawdzenie czy data została przesłana
     data = typeof data !== "undefined" ? data : {};
     onSuccessFunction =
@@ -34,9 +34,9 @@ function getnset_template(element, template, admin, data, onSuccessFunction) {
             location.reload();
         },
     });
-}
+};
 
-function fetch_data(action, admin, data, onSuccessFunction) {
+window.fetch_data = function(action, admin, data, onSuccessFunction) {
     // Sprawdzenie czy data została przesłana
     data = typeof data !== "undefined" ? data : {};
     onSuccessFunction =
@@ -62,9 +62,9 @@ function fetch_data(action, admin, data, onSuccessFunction) {
             infobox.show_info(lang["ajax_error"], false);
         },
     });
-}
+};
 
-function refresh_blocks(bricks, admin, onSuccessFunction) {
+window.refresh_blocks = function(bricks, admin, onSuccessFunction) {
     // Wyswietlenie ładowacza
     loader.show();
 
@@ -100,9 +100,9 @@ function refresh_blocks(bricks, admin, onSuccessFunction) {
             location.reload();
         },
     });
-}
+};
 
-function changeUrl(data) {
+window.changeUrl = function(data) {
     data = get_value(data, {});
     var splittedUrl = document.URL.split("?");
     var url = splittedUrl[0];
@@ -130,25 +130,25 @@ function changeUrl(data) {
     });
 
     window.location.href = url + "?" + strparams.join("&");
-}
+};
 
-function trimSlashes(text) {
+window.trimSlashes = function(text) {
     return text.replace(/^\/|\/$/g, "");
-}
+};
 
-function buildUrl(path) {
+window.buildUrl = function(path) {
     var prefix = typeof baseUrl !== "undefined" ? trimSlashes(baseUrl) + "/" : "";
     return prefix + trimSlashes(path);
-}
+};
 
-function removeFormWarnings() {
+window.removeFormWarnings = function() {
     $(".form_warning").remove();
-}
+};
 
-function showWarnings(form, warnings) {
+window.showWarnings = function(form, warnings) {
     $.each(warnings, function(name, element) {
         var inputElement = form.find('[name="' + name + '"]');
         inputElement.closest(".field").append(element);
         inputElement.effect("highlight", 1000);
     });
-}
+};

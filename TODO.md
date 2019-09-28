@@ -1,10 +1,10 @@
-- [ ] Fix loader - done
-- [ ] Refactor input fields - done
-- [ ] Fix select input warnings - done
+- [x] Fix loader
+- [x] Refactor input fields
+- [x] Fix select input warnings
 - [ ] Check install flow
-- [ ] Checkbox label hover color - done
-- [ ] Radio label hover color - done
-- [ ] Change input placeholder color - done
+- [x] Checkbox label hover color
+- [x] Radio label hover color
+- [x] Change input placeholder color
 - [ ] Fix multiple select
 - [ ] Copy loader to install
 - [ ] Actions in one line

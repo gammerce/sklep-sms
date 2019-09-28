@@ -35,25 +35,25 @@ class Update
 
         $filesPriv = $filesDel = [];
 
-        if (file_exists($this->app->path('install/storage/update/files_priv.txt'))) {
+        if (file_exists($this->app->path('_install/storage/update/files_priv.txt'))) {
             $filesPriv = explode(
                 "\n",
                 str_replace(
                     "\n\r",
                     "\n",
-                    file_get_contents($this->app->path('install/storage/update/files_priv.txt'))
+                    file_get_contents($this->app->path('_install/storage/update/files_priv.txt'))
                 )
             );
         }
         $filesPriv[] = "install";
 
-        if (file_exists($this->app->path('install/storage/update/files_del.txt'))) {
+        if (file_exists($this->app->path('_install/storage/update/files_del.txt'))) {
             $filesDel = explode(
                 "\n",
                 str_replace(
                     "\n\r",
                     "\n",
-                    file_get_contents($this->app->path('install/storage/update/files_del.txt'))
+                    file_get_contents($this->app->path('_install/storage/update/files_del.txt'))
                 )
             );
         }

@@ -1,4 +1,4 @@
-var window_info = {
+window.window_info = {
     element: $(""),
     exit: $(""),
 
@@ -30,7 +30,7 @@ var window_info = {
     },
 };
 
-var action_box = {
+window.action_box = {
     element: $(""),
     box: $(""),
     exit: $(""),

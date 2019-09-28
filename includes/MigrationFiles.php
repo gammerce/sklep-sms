@@ -10,7 +10,7 @@ class MigrationFiles
 
     public function __construct(Application $app)
     {
-        $this->migrationsPath = $app->path('install/migrations/');
+        $this->migrationsPath = $app->path('_install/migrations/');
     }
 
     public function getMigrations()

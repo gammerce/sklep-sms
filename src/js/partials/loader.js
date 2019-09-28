@@ -1,4 +1,4 @@
-var loader = {
+window.loader = {
     element: $(""),
     show_task: 0,
     blocked: false,

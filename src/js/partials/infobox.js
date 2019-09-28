@@ -1,4 +1,4 @@
-var infobox = {
+window.infobox = {
     element: $(""),
     hide_task: 0,
 

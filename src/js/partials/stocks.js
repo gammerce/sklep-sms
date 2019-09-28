@@ -1,4 +1,4 @@
-function htmlspecialchars(string, quote_style, charset, double_encode) {
+window.htmlspecialchars = function(string, quote_style, charset, double_encode) {
     var optTemp = 0,
         i = 0,
         noquotes = false;
@@ -44,13 +44,13 @@ function htmlspecialchars(string, quote_style, charset, double_encode) {
     }
 
     return string;
-}
+};
 
-function get_value(obj, default_value) {
+window.get_value = function(obj, default_value) {
     return typeof obj !== "undefined" ? obj : default_value;
-}
+};
 
-function json_parse(text, show) {
+window.json_parse = function(text, show) {
     show = typeof show !== "undefined" ? show : true;
 
     try {
@@ -59,9 +59,9 @@ function json_parse(text, show) {
         if (show) alert(text);
         return false;
     }
-}
+};
 
-function get_random_string(length) {
+window.get_random_string = function(length) {
     length = get_value(length, 8);
     var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     var final_rand = "";
@@ -69,15 +69,15 @@ function get_random_string(length) {
         final_rand += chars[Math.floor(Math.random() * (chars.length - 1))];
 
     return final_rand;
-}
+};
 
-function element_with_data_module(a) {
+window.element_with_data_module = function(a) {
     if (typeof a.attr("data-module") !== "undefined") return a;
 
     if (typeof a.prop("tagName") === "undefined") return null;
 
     return element_with_data_module(a.parent());
-}
+};
 
 /**
  * Sprawdza, czy działa na elemencie stworzonym przez moduł extra_flags
@@ -86,7 +86,7 @@ function element_with_data_module(a) {
  * @param a
  * @returns {*}
  */
-function service_module_act_can(name, a) {
+window.service_module_act_can = function(name, a) {
     var element = element_with_data_module(a);
     return element !== null && element.data("module") == name ? element : false;
-}
+};
