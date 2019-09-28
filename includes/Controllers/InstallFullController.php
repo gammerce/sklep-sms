@@ -15,8 +15,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class InstallFullController
 {
-    public function post(Request $request, Full $full, TranslationManager $translationManager, Application $app)
-    {
+    public function post(
+        Request $request,
+        Full $full,
+        TranslationManager $translationManager,
+        Application $app
+    ) {
         list($modules, $filesPriv) = $full->get();
         $lang = $translationManager->user();
 
@@ -83,7 +87,12 @@ class InstallFullController
         // Jeżeli są jakieś błedy, to je zwróć
         if (!empty($warnings)) {
             $returnData['warnings'] = format_warnings($warnings);
-            return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), false, $returnData);
+            return new ApiResponse(
+                "warnings",
+                $lang->translate('form_wrong_filled'),
+                false,
+                $returnData
+            );
         }
 
         $installManager->start();

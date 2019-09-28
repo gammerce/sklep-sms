@@ -79,7 +79,10 @@ class InstallController
             $status = $module['value'] ? "ok" : "bad";
             $title = $module['text'];
 
-            $serverModules .= $this->template->render('install/full/module', compact('title', 'status'));
+            $serverModules .= $this->template->render(
+                'install/full/module',
+                compact('title', 'status')
+            );
         }
 
         $notifyHttpServer = $this->generateHttpServerNotification();

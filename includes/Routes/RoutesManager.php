@@ -152,17 +152,17 @@ class RoutesManager
 
         $r->addRoute("GET", "/install", [
             'middlewares' => [RequireNotInstalledOrNotUpdated::class],
-            'uses' => InstallController::class . "@get"
+            'uses' => InstallController::class . "@get",
         ]);
 
         $r->addRoute("POST", "/install/full.php", [
             'middlewares' => [RequireNotInstalled::class],
-            'uses' => InstallFullController::class . "@post"
+            'uses' => InstallFullController::class . "@post",
         ]);
 
         $r->addRoute("POST", "/install/update.php", [
             'middlewares' => [RequireInstalledAndNotUpdated::class],
-            'uses' => InstallUpdateController::class . "@post"
+            'uses' => InstallUpdateController::class . "@post",
         ]);
     }
 

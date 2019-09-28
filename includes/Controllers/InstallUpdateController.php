@@ -10,8 +10,13 @@ use Symfony\Component\HttpFoundation\Request;
 
 class InstallUpdateController
 {
-    public function post(Request $request, InstallManager $installManager, DatabaseMigration $migrator, UpdateInfo $updateInfo, Update $update)
-    {
+    public function post(
+        Request $request,
+        InstallManager $installManager,
+        DatabaseMigration $migrator,
+        UpdateInfo $updateInfo,
+        Update $update
+    ) {
         list($modules, $filesPriv, $filesDel) = $update->get();
 
         $everythingOk = true;
