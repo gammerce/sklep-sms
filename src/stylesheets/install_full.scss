@@ -7,7 +7,7 @@ html {
 }
 
 body {
-    height: 100%;
+    height: initial;
     text-align: center;
     background-color: #eee;
 }
@@ -25,7 +25,7 @@ h1 {
 .window {
     display: inline-block;
     width: 800px;
-    margin-top: 100px;
+    margin: 100px 1rem;
     text-align: left;
     border: 1px solid #222;
     box-shadow: 0 0 10px #000;

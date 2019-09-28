@@ -1,4 +1,5 @@
 require("../stylesheets/install_full.scss");
+require("./partials/global.js");
 require("./partials/stocks.js");
 require("./partials/loader.js");
 require("./partials/infobox.js");
@@ -12,7 +13,7 @@ jQuery(document).ready(function($) {
         loader.show();
         $.ajax({
             type: "POST",
-            url: "full.php",
+            url: buildUrl("install/full.php"),
             data: $(this).serialize(),
             complete: function() {
                 loader.hide();
@@ -29,7 +30,7 @@ jQuery(document).ready(function($) {
                         if (name === "general") {
                             $("<div>", {
                                 class: "warnings",
-                                html: element.join("<br>"),
+                                html: Array.isArray(element) ? element.join("<br>") : element,
                             }).insertBefore("#form_install");
                             return true;
                         }

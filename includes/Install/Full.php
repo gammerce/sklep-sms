@@ -45,7 +45,7 @@ class Full
                 )
             );
         }
-        $filesPriv[] = "install";
+        $filesPriv[] = "_install";
 
         // Wymagane moduły
         $modules = [

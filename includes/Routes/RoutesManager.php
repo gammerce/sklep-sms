@@ -47,6 +47,10 @@ class RoutesManager
 
     private function defineRoutes(RouteCollector $r)
     {
+        $r->addRoute('GET', '/js.php', [
+            'uses' => JsController::class . '@get',
+        ]);
+
         $r->addGroup(
             [
                 "middlewares" => [
@@ -88,10 +92,6 @@ class RoutesManager
 
                 $r->addRoute(['GET', 'POST'], '/transfer/{transferService}', [
                     'uses' => TransferController::class . '@action',
-                ]);
-
-                $r->addRoute('GET', '/js.php', [
-                    'uses' => JsController::class . '@get',
                 ]);
 
                 $r->addRoute(['GET', 'POST'], '/extra_stuff.php', [

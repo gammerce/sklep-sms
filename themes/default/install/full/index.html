@@ -6,7 +6,7 @@
             type="text/javascript"
             src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"
         ></script>
-        <script type="text/javascript" src="{$url->versioned('build/js/install.js')}"></script>
+        <script type="text/javascript" src="{$url->versioned('build/js/install_full.js')}"></script>
         <script type="text/javascript" src="{$url->versioned('js.php?script=language')}"></script>
 
         <link href="{$url->versioned('build/css/install_full.css')}" rel="stylesheet" />
@@ -33,6 +33,7 @@
                                             name="db_host"
                                             type="text"
                                             class="input"
+                                            required
                                         />
                                     </p>
                                 </div>
@@ -52,6 +53,7 @@
                                             type="number"
                                             value="3306"
                                             class="input"
+                                            required
                                         />
                                     </p>
                                 </div>
@@ -70,6 +72,7 @@
                                             name="db_user"
                                             class="input"
                                             type="text"
+                                            required
                                         />
                                     </p>
                                 </div>
@@ -88,6 +91,7 @@
                                             name="db_password"
                                             class="input"
                                             type="password"
+                                            required
                                         />
                                     </p>
                                 </div>
@@ -101,7 +105,13 @@
                             <div class="field-body">
                                 <div class="field">
                                     <p class="control">
-                                        <input id="db_db" name="db_db" class="input" type="text" />
+                                        <input
+                                            id="db_db"
+                                            name="db_db"
+                                            class="input"
+                                            type="text"
+                                            required
+                                        />
                                     </p>
                                 </div>
                             </div>
@@ -122,6 +132,7 @@
                                             name="license_token"
                                             class="input"
                                             type="text"
+                                            required
                                         />
                                     </p>
                                 </div>
@@ -143,6 +154,7 @@
                                             name="admin_username"
                                             class="input"
                                             type="text"
+                                            required
                                         />
                                     </p>
                                 </div>
@@ -161,6 +173,7 @@
                                             name="admin_password"
                                             class="input"
                                             type="password"
+                                            required
                                         />
                                     </p>
                                 </div>

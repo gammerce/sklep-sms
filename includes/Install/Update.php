@@ -45,7 +45,7 @@ class Update
                 )
             );
         }
-        $filesPriv[] = "install";
+        $filesPriv[] = "_install";
 
         if (file_exists($this->app->path('_install/storage/update/files_del.txt'))) {
             $filesDel = explode(

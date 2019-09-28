@@ -1,4 +1,5 @@
 require("../stylesheets/install_update.scss");
+require("./partials/global.js");
 require("./partials/stocks.js");
 require("./partials/loader.js");
 require("./partials/infobox.js");
@@ -12,7 +13,7 @@ $(document).ready(function($) {
         loader.show();
         $.ajax({
             type: "POST",
-            url: "update.php",
+            url: buildUrl("install/update.php"),
             data: $(this).serialize(),
             complete: function() {
                 loader.hide();
