@@ -33,6 +33,7 @@ install:
 
 script:
   - yarn pretty
+  - yarn build
   - ./vendor/bin/phpunit
 
 before_deploy:
