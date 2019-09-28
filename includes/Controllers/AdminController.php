@@ -71,7 +71,7 @@ class AdminController
             $heart->pageTitle = "Login";
             $heart->styleAdd(
                 $settings['shop_url_slash'] .
-                    "build/oldcss/admin/style_login.css?version=" .
+                    "build/stylesheets_old/admin/style_login.css?version=" .
                     $app->version()
             );
 
