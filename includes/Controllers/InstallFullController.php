@@ -1,30 +1,23 @@
 <?php
-namespace App\Kernels;
+namespace App\Controllers;
 
+use App\Application;
 use App\Database;
 use App\Exceptions\SqlQueryException;
-use App\Middlewares\RequireNotInstalled;
+use App\Responses\ApiResponse;
 use App\TranslationManager;
-use Install\DatabaseMigration;
-use Install\EnvCreator;
-use Install\Full;
-use Install\InstallManager;
+use App\Install\DatabaseMigration;
+use App\Install\EnvCreator;
+use App\Install\Full;
+use App\Install\InstallManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class InstallFullKernel extends Kernel
+class InstallFullController
 {
-    protected $middlewares = [RequireNotInstalled::class];
-
-    public function run(Request $request)
+    public function post(Request $request, Full $full, TranslationManager $translationManager, Application $app)
     {
-        /** @var Full $full */
-        $full = $this->app->make(Full::class);
-
         list($modules, $filesPriv) = $full->get();
-
-        /** @var TranslationManager $translationManager */
-        $translationManager = $this->app->make(TranslationManager::class);
         $lang = $translationManager->user();
 
         try {
@@ -36,7 +29,7 @@ class InstallFullKernel extends Kernel
                 $_POST['db_db']
             );
             $db->query("SET NAMES utf8");
-            $this->app->instance(Database::class, $db);
+            $app->instance(Database::class, $db);
         } catch (SqlQueryException $e) {
             return new Response(
                 $lang->translate('mysqli_' . $e->getMessage()) . "\n\n" . $e->getError()
@@ -44,13 +37,13 @@ class InstallFullKernel extends Kernel
         }
 
         /** @var InstallManager $installManager */
-        $installManager = $this->app->make(InstallManager::class);
+        $installManager = $app->make(InstallManager::class);
 
         /** @var DatabaseMigration $migrator */
-        $migrator = $this->app->make(DatabaseMigration::class);
+        $migrator = $app->make(DatabaseMigration::class);
 
         /** @var EnvCreator $envCreator */
-        $envCreator = $this->app->make(EnvCreator::class);
+        $envCreator = $app->make(EnvCreator::class);
 
         $warnings = [];
 
@@ -74,7 +67,7 @@ class InstallFullKernel extends Kernel
                 continue;
             }
 
-            if (!is_writable($this->app->path($file))) {
+            if (!is_writable($app->path($file))) {
                 $warnings['general'][] =
                     "Ścieżka <b>" . htmlspecialchars($file) . "</b> nie posiada praw do zapisu.";
             }
@@ -90,7 +83,7 @@ class InstallFullKernel extends Kernel
         // Jeżeli są jakieś błedy, to je zwróć
         if (!empty($warnings)) {
             $returnData['warnings'] = format_warnings($warnings);
-            json_output("warnings", $lang->translate('form_wrong_filled'), false, $returnData);
+            return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), false, $returnData);
         }
 
         $installManager->start();
@@ -111,6 +104,6 @@ class InstallFullKernel extends Kernel
 
         $installManager->finish();
 
-        json_output("ok", "Instalacja przebiegła pomyślnie.", true);
+        return new ApiResponse("ok", "Instalacja przebiegła pomyślnie.", true);
     }
 }

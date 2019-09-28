@@ -1,6 +1,6 @@
 <?php
 
-use Install\Migration;
+use App\Install\Migration;
 
 class ChangeMicrosmsNumbers extends Migration
 {

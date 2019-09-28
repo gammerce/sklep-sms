@@ -1,5 +1,5 @@
 <?php
-namespace Install;
+namespace App\Install;
 
 use App\Application;
 use App\Template;
@@ -24,6 +24,6 @@ class OldShop
             return;
         }
 
-        output_page($this->template->installRender('missing_env'));
+        output_page($this->template->render('install/missing_env'));
     }
 }

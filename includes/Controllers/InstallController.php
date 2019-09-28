@@ -1,34 +1,46 @@
 <?php
-namespace App\Kernels;
+namespace App\Controllers;
 
-use App\Middlewares\RequireNotInstalledOrNotUpdated;
+use App\Application;
 use App\ShopState;
 use App\Template;
-use Install\Full;
-use Install\OldShop;
-use Install\Update;
-use Install\UpdateInfo;
+use App\Install\Full;
+use App\Install\OldShop;
+use App\Install\Update;
+use App\Install\UpdateInfo;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class InstallKernel extends Kernel
+class InstallController
 {
-    protected $middlewares = [RequireNotInstalledOrNotUpdated::class];
+    /** @var Application */
+    private $app;
 
-    public function run(Request $request)
+    /** @var Template */
+    private $template;
+
+    public function __construct(Application $app, Template $template)
     {
-        /** @var OldShop $oldShop */
-        $oldShop = $this->app->make(OldShop::class);
+        $this->template = $template;
+        $this->app = $app;
+    }
+
+    public function get(
+        Request $request,
+        OldShop $oldShop,
+        ShopState $shopState,
+        Full $full,
+        UpdateInfo $updateInfo,
+        Update $update
+    ) {
         $oldShop->checkForConfigFile();
 
         if (!ShopState::isInstalled()) {
-            return $this->full();
+            return $this->full($full);
         }
 
-        /** @var ShopState $shopState */
-        $shopState = $this->app->make(ShopState::class);
         if (!$shopState->isUpToDate()) {
-            return $this->update();
+            return $this->update($updateInfo, $update);
         }
 
         return new Response(
@@ -36,14 +48,8 @@ class InstallKernel extends Kernel
         );
     }
 
-    protected function full()
+    protected function full(Full $full)
     {
-        /** @var Template $template */
-        $template = $this->app->make(Template::class);
-
-        /** @var Full $full */
-        $full = $this->app->make(Full::class);
-
         list($modules, $filesPriv) = $full->get();
 
         // #########################################
@@ -62,8 +68,8 @@ class InstallKernel extends Kernel
                 $privilege = "bad";
             }
 
-            $filesPrivileges .= $template->installFullRender(
-                'file_privileges',
+            $filesPrivileges .= $this->template->render(
+                'install/full/file_privileges',
                 compact('file', 'privilege')
             );
         }
@@ -73,31 +79,22 @@ class InstallKernel extends Kernel
             $status = $module['value'] ? "ok" : "bad";
             $title = $module['text'];
 
-            $serverModules .= $template->installFullRender('module', compact('title', 'status'));
+            $serverModules .= $this->template->render('install/full/module', compact('title', 'status'));
         }
 
         $notifyHttpServer = $this->generateHttpServerNotification();
 
         // Pobranie ostatecznego szablonu
-        $output = $template->installFullRender(
-            'index',
+        $output = $this->template->render(
+            'install/full/index',
             compact('notifyHttpServer', 'filesPrivileges', 'serverModules')
         );
 
         return new Response($output);
     }
 
-    protected function update()
+    protected function update(UpdateInfo $updateInfo, Update $update)
     {
-        /** @var Template $template */
-        $template = $this->app->make(Template::class);
-
-        /** @var UpdateInfo $updateInfo */
-        $updateInfo = $this->app->make(UpdateInfo::class);
-
-        /** @var Update $update */
-        $update = $this->app->make(Update::class);
-
         list($modules, $filesPriv, $filesDel) = $update->get();
 
         $everythingOk = true;
@@ -113,8 +110,8 @@ class InstallKernel extends Kernel
         $notifyHttpServer = $this->generateHttpServerNotification();
 
         // Pobranie ostatecznego szablonu
-        $output = $template->installUpdateRender(
-            'index',
+        $output = $this->template->render(
+            'install/update/index',
             compact('notifyHttpServer', 'filesModulesStatus', 'class')
         );
 
@@ -123,13 +120,10 @@ class InstallKernel extends Kernel
 
     protected function generateHttpServerNotification()
     {
-        /** @var Template $template */
-        $template = $this->app->make(Template::class);
-
         if (str_contains(strtolower($_SERVER["SERVER_SOFTWARE"]), 'apache')) {
             return '';
         }
 
-        return $template->installRender('http_server_notification');
+        return $this->template->render('install/http_server_notification');
     }
 }

@@ -2,7 +2,7 @@
 namespace Tests\Psr4;
 
 use App\Database;
-use Install\DatabaseMigration;
+use App\Install\DatabaseMigration;
 
 class DatabaseSetup
 {

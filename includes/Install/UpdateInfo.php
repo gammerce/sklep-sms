@@ -1,5 +1,5 @@
 <?php
-namespace Install;
+namespace App\Install;
 
 use App\Application;
 use App\Template;
@@ -26,8 +26,8 @@ class UpdateInfo
             $title = $module['text'];
             $status = $module['value'] ? "ok" : "bad";
 
-            $serverModules .= $this->template->installUpdateRender(
-                'module',
+            $serverModules .= $this->template->render(
+                'install/update/module',
                 compact('title', 'status')
             );
 
@@ -38,8 +38,8 @@ class UpdateInfo
         if (strlen($serverModules)) {
             $text = "Moduły na serwerze";
             $data = $serverModules;
-            $serverModules = $this->template->installUpdateRender(
-                'update_info_brick',
+            $serverModules = $this->template->render(
+                'install/update/update_info_brick',
                 compact('text', 'data')
             );
         }
@@ -57,16 +57,16 @@ class UpdateInfo
                 $everythingOk = false;
             }
 
-            $filesPrivileges .= $this->template->installUpdateRender(
-                'file',
+            $filesPrivileges .= $this->template->render(
+                'install/update/file',
                 compact('file', 'status')
             );
         }
         if (strlen($filesPrivileges)) {
             $text = "Uprawnienia do zapisu";
             $data = $filesPrivileges;
-            $filesPrivileges = $this->template->installUpdateRender(
-                'update_info_brick',
+            $filesPrivileges = $this->template->render(
+                'install/update/update_info_brick',
                 compact('text', 'data')
             );
         }
@@ -84,19 +84,19 @@ class UpdateInfo
                 $everythingOk = false;
             }
 
-            $filesDelete .= $this->template->installUpdateRender('file', compact('file', 'status'));
+            $filesDelete .= $this->template->render('install/update/file', compact('file', 'status'));
         }
         if (strlen($filesDelete)) {
             $text = "Pliki do usunięcia";
             $data = $filesDelete;
-            $filesDelete = $this->template->installUpdateRender(
-                'update_info_brick',
+            $filesDelete = $this->template->render(
+                'install/update/update_info_brick',
                 compact('text', 'data')
             );
         }
 
-        return $this->template->installUpdateRender(
-            'update_info',
+        return $this->template->render(
+            'install/update/update_info',
             compact('serverModules', 'filesPrivileges', 'filesDelete')
         );
     }

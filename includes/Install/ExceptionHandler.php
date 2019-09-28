@@ -1,5 +1,5 @@
 <?php
-namespace Install;
+namespace App\Install;
 
 use App\Application;
 use App\ExceptionHandlerContract;

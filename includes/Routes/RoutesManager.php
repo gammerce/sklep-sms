@@ -5,6 +5,9 @@ use App\Application;
 use App\Controllers\AdminController;
 use App\Controllers\ExtraStuffController;
 use App\Controllers\IndexController;
+use App\Controllers\InstallController;
+use App\Controllers\InstallFullController;
+use App\Controllers\InstallUpdateController;
 use App\Controllers\JsController;
 use App\Controllers\JsonHttpAdminController;
 use App\Controllers\JsonHttpController;
@@ -18,6 +21,9 @@ use App\Middlewares\ManageAdminAuthentication;
 use App\Middlewares\ManageAuthentication;
 use App\Middlewares\MiddlewareContract;
 use App\Middlewares\RequireAuthorization;
+use App\Middlewares\RequireInstalledAndNotUpdated;
+use App\Middlewares\RequireNotInstalled;
+use App\Middlewares\RequireNotInstalledOrNotUpdated;
 use App\Middlewares\RunCron;
 use App\Middlewares\SetAdminSession;
 use App\Middlewares\SetLanguage;
@@ -143,6 +149,21 @@ class RoutesManager
                 ]);
             }
         );
+
+        $r->addRoute("GET", "/install", [
+            'middlewares' => [RequireNotInstalledOrNotUpdated::class],
+            'uses' => InstallController::class . "@get"
+        ]);
+
+        $r->addRoute("POST", "/install/full.php", [
+            'middlewares' => [RequireNotInstalled::class],
+            'uses' => InstallFullController::class . "@post"
+        ]);
+
+        $r->addRoute("POST", "/install/update.php", [
+            'middlewares' => [RequireInstalledAndNotUpdated::class],
+            'uses' => InstallUpdateController::class . "@post"
+        ]);
     }
 
     /**
