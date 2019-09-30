@@ -261,8 +261,8 @@ class ServiceMybbExtraGroupsSimple extends Service implements
                 )
             );
             if (get_privileges("manage_user_services")) {
-                $bodyRow->setButtonDelete(true);
-                $bodyRow->setButtonEdit(false);
+                $bodyRow->setDeleteAction(true);
+                $bodyRow->setEditAction(false);
             }
 
             $table->addBodyRow($bodyRow);

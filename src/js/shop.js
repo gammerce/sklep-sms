@@ -21,7 +21,7 @@ $(document).ready(function() {
  * @param data
  * @param sign
  */
-function go_to_payment(data, sign) {
+window.go_to_payment = function (data, sign) {
     var form = $("<form>", {
         action: buildUrl("/page/payment"),
         method: "POST",
@@ -50,7 +50,7 @@ function go_to_payment(data, sign) {
 
     // Wysyłamy formularz zakupu
     form.submit();
-}
+};
 
 // Logowanie
 $(document).delegate("#form_login", "submit", function(e) {

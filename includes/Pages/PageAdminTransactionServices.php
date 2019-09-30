@@ -59,7 +59,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
             $bodyRow->addCell(new Cell($smsService));
             $bodyRow->addCell(new Cell($transferService));
 
-            $bodyRow->setButtonEdit(true);
+            $bodyRow->setEditAction(true);
 
             $table->addBodyRow($bodyRow);
         }

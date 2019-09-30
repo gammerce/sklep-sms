@@ -50,8 +50,8 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
             $bodyRow->addCell(new Cell($row['name']));
 
             if (get_privileges('manage_groups')) {
-                $bodyRow->setButtonDelete(true);
-                $bodyRow->setButtonEdit(true);
+                $bodyRow->setDeleteAction(true);
+                $bodyRow->setEditAction(true);
             }
 
             $table->addBodyRow($bodyRow);

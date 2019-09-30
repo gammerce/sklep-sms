@@ -47,8 +47,8 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             $bodyRow->addCell(new Cell(htmlspecialchars($row['version'])));
 
             if (get_privileges("manage_servers")) {
-                $bodyRow->setButtonDelete(true);
-                $bodyRow->setButtonEdit(true);
+                $bodyRow->setDeleteAction(true);
+                $bodyRow->setEditAction(true);
             }
 
             $table->addBodyRow($bodyRow);

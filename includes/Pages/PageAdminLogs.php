@@ -73,7 +73,7 @@ class PageAdminLogs extends PageAdmin
             $bodyRow->addCell($cell);
 
             if (get_privileges("manage_logs")) {
-                $bodyRow->setButtonDelete(true);
+                $bodyRow->setDeleteAction(true);
             }
 
             $table->addBodyRow($bodyRow);

@@ -41,9 +41,9 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
             $bodyRow->setDbId($tariff->getId());
             $bodyRow->addCell(new Cell("{$provision} {$this->settings['currency']}"));
 
-            $bodyRow->setButtonEdit(true);
+            $bodyRow->setEditAction(true);
             if (!$tariff->isPredefined()) {
-                $bodyRow->setButtonDelete(true);
+                $bodyRow->setDeleteAction(true);
             }
 
             $table->addBodyRow($bodyRow);

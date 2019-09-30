@@ -5,6 +5,8 @@ use Admin\Table\BodyRow;
 use Admin\Table\Cell;
 use Admin\Table\DOMElement;
 use Admin\Table\Img;
+use Admin\Table\Link;
+use Admin\Table\SimpleText;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 use App\Routes\UrlGenerator;
@@ -131,18 +133,14 @@ class PageAdminBoughtServices extends PageAdmin
             $extraData = implode('<br />', $extraData);
 
             // Pobranie linku płatności
-            $paymentLink = new DOMElement();
-            $paymentLink->setName('a');
+            $paymentLink = new Link();
+            $paymentLink->setParam("class", "dropdown-item");
             $paymentLink->setParam(
                 'href',
                 $this->url->to("/admin/payment_{$row['payment']}?payid={$row['payment_id']}")
             );
             $paymentLink->setParam('target', '_blank');
-
-            $paymentImg = new Img();
-            $paymentImg->setParam('src', $url->to('build/images/go.png'));
-            $paymentImg->setParam('title', $this->lang->translate('see_payment'));
-            $paymentLink->addContent($paymentImg);
+            $paymentLink->addContent(new SimpleText($this->lang->translate('see_payment')));
 
             $bodyRow->addAction($paymentLink);
 

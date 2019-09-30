@@ -34,7 +34,7 @@ $(document).delegate(".table_structure .search", "submit", function(e) {
  * @param {string} boxId
  * @param {object} data
  */
-function show_action_box(pageId, boxId, data) {
+window.show_action_box = function (pageId, boxId, data) {
     data = typeof data !== "undefined" ? data : {};
 
     data["page_id"] = pageId;
@@ -53,4 +53,4 @@ function show_action_box(pageId, boxId, data) {
 
         action_box.show(jsonObj.template);
     });
-}
+};

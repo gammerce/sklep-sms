@@ -3,7 +3,10 @@ namespace App\Pages;
 
 use Admin\Table\BodyRow;
 use Admin\Table\Cell;
+use Admin\Table\DOMElement;
 use Admin\Table\Img;
+use Admin\Table\Link;
+use Admin\Table\SimpleText;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 use App\Pages\Interfaces\IPageAdminActionBox;
@@ -105,8 +108,8 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             $bodyRow->addAction($changePasswordCharge);
 
             if (get_privileges('manage_users')) {
-                $bodyRow->setButtonDelete(true);
-                $bodyRow->setButtonEdit(true);
+                $bodyRow->setDeleteAction(true);
+                $bodyRow->setEditAction(true);
             }
 
             $table->addBodyRow($bodyRow);
@@ -119,25 +122,23 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
     protected function createChargeButton($username)
     {
-        $button = new Img();
-        $button->setParam('class', 'charge_wallet clickable');
-        $button->setParam(
-            'title',
-            $this->lang->translate('charge') . ' ' . htmlspecialchars($username)
+        $button = new Link();
+        $button->setParam('class', 'dropdown-item charge_wallet');
+        $button->addContent(
+            new SimpleText($this->lang->translate('charge') . ' ' . htmlspecialchars($username))
         );
-        $button->setParam('src', $this->url->to('build/images/dollar.png'));
         return $button;
     }
 
     protected function createPasswordButton($username)
     {
-        $button = new Img();
-        $button->setParam('class', 'change_password clickable');
-        $button->setParam(
-            'title',
+        $button = new Link();
+        $button->setParam('class', 'dropdown-item change_password');
+        $button->addContent(
+            new SimpleText(
             $this->lang->translate('change_password') . ' ' . htmlspecialchars($username)
+            )
         );
-        $button->setParam('src', $this->url->to('build/images/key.png'));
         return $button;
     }
 

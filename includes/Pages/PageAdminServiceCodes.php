@@ -94,7 +94,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
             $bodyRow->addCell(new Cell(convertDate($row['timestamp'])));
 
             if (get_privileges('manage_service_codes')) {
-                $bodyRow->setButtonDelete(true);
+                $bodyRow->setDeleteAction(true);
             }
 
             $table->addBodyRow($bodyRow);

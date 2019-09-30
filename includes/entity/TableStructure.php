@@ -2,7 +2,6 @@
 namespace Admin\Table;
 
 use App\CurrentPage;
-use App\Routes\UrlGenerator;
 use App\Template;
 use App\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -150,17 +149,20 @@ class DOMElement implements I_ToHtml
         return $this->contents[$key];
     }
 
-    /**
-     * @return int
-     */
+    /** @return int */
     public function getContentsAmount()
     {
         return count($this->contents);
     }
 
+    /** @return bool */
+    public function isEmpty()
+    {
+        return $this->getContentsAmount() === 0;
+    }
+
     /**
      * @param $key
-     *
      * @return string|array
      */
     public function getParam($key)
@@ -196,12 +198,15 @@ class DOMElement implements I_ToHtml
         return $escape ? htmlspecialchars($this->name) : $this->name;
     }
 
-    /**
-     * @param string $name
-     */
+    /** @param string $name */
     public function setName($name)
     {
         $this->name = strval($name);
+    }
+
+    public function __toString()
+    {
+        return $this->toHtml();
     }
 }
 
@@ -228,6 +233,11 @@ class Div extends DOMElement
 class Img extends DOMElement
 {
     protected $name = 'img';
+}
+
+class Link extends DOMElement
+{
+    protected $name = 'a';
 }
 
 class Row extends DOMElement
@@ -260,48 +270,21 @@ class BodyRow extends Row
     /** @var I_ToHtml[] */
     private $actions = [];
 
-    /** @var bool $buttonEdit */
-    private $buttonEdit = false;
+    /** @var bool */
+    private $editAction = false;
 
-    /** @var bool $buttonDelete */
-    private $buttonDelete = false;
+    /** @var bool */
+    private $deleteAction = false;
 
     public function toHtml()
     {
-        /** @var UrlGenerator $url */
-        $url = app()->make(UrlGenerator::class);
-        /** @var TranslationManager $translationManager */
-        $translationManager = app()->make(TranslationManager::class);
-        $lang = $translationManager->user();
-
         // Zachowujemy poprzedni stan, aby go przywrocic
         $oldContents = $this->contents;
 
-        $actions = new Cell();
-
-        foreach ($this->actions as $action) {
-            $actions->addContent($action);
+        $actions = $this->renderActions();
+        if ($actions) {
+            $this->addContent($actions);
         }
-
-        if ($this->buttonEdit) {
-            $button = new DOMElement();
-            $button->setName('img');
-            $button->setParam('class', "edit_row");
-            $button->setParam('src', $url->to('build/images/edit.png'));
-            $button->setParam('title', $lang->translate('edit') . ' ' . $this->dbId);
-            $actions->addContent($button);
-        }
-
-        if ($this->buttonDelete) {
-            $button = new DOMElement();
-            $button->setName('img');
-            $button->setParam('class', "delete_row");
-            $button->setParam('src', $url->to('build/images/bin.png'));
-            $button->setParam('title', $lang->translate('delete') . ' ' . $this->dbId);
-            $actions->addContent($button);
-        }
-
-        $this->addContent($actions);
 
         $output = parent::toHtml();
 
@@ -320,19 +303,19 @@ class BodyRow extends Row
     }
 
     /**
-     * @param boolean $buttonEdit
+     * @param boolean $editAction
      */
-    public function setButtonEdit($buttonEdit = true)
+    public function setEditAction($editAction = true)
     {
-        $this->buttonEdit = (bool) $buttonEdit;
+        $this->editAction = (bool) $editAction;
     }
 
     /**
-     * @param boolean $buttonDelete
+     * @param boolean $deleteAction
      */
-    public function setButtonDelete($buttonDelete = true)
+    public function setDeleteAction($deleteAction = true)
     {
-        $this->buttonDelete = (bool) $buttonDelete;
+        $this->deleteAction = (bool) $deleteAction;
     }
 
     /**
@@ -356,12 +339,48 @@ class BodyRow extends Row
         $this->addCell($cell);
     }
 
-    /**
-     * @return string
-     */
+    /** @return string */
     public function getDbId()
     {
         return $this->dbId;
+    }
+
+    private function renderActions()
+    {
+        /** @var Template $template */
+        $template = app()->make(Template::class);
+
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $lang = $translationManager->user();
+
+        $actions = new Div();
+
+        foreach ($this->actions as $action) {
+            $actions->addContent($action);
+        }
+
+        if ($this->editAction) {
+            $editAction = new Link();
+            $editAction->setParam('class', "dropdown-item edit_row");
+            $editAction->addContent(new SimpleText($lang->translate('edit') . ' ' . $this->dbId));
+            $actions->addContent($editAction);
+        }
+
+        if ($this->deleteAction) {
+            $deleteAction = new Link();
+            $deleteAction->setParam('class', "dropdown-item delete_row has-text-danger");
+            $deleteAction->addContent(new SimpleText($lang->translate('delete') . ' ' . $this->dbId));
+            $actions->addContent($deleteAction);
+        }
+
+        if ($actions->isEmpty()) {
+            return null;
+        }
+
+        return new Cell(
+            $template->render("more_actions", compact("actions"))
+        );
     }
 }
 
@@ -415,7 +434,7 @@ class Structure extends DOMElement
             $body->addContent($row);
         }
 
-        if (!$body->getContentsAmount()) {
+        if ($body->isEmpty()) {
             $row = new Row();
             $cell = new Cell($lang->translate('no_data'));
             $cell->setParam('colspan', '30');

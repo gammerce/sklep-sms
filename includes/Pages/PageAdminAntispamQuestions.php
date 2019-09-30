@@ -52,8 +52,8 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
             $bodyRow->addCell(new Cell($row['question']));
             $bodyRow->addCell(new Cell($row['answers']));
             if (get_privileges("manage_antispam_questions")) {
-                $bodyRow->setButtonDelete(true);
-                $bodyRow->setButtonEdit(true);
+                $bodyRow->setDeleteAction(true);
+                $bodyRow->setEditAction(true);
             }
 
             $table->addBodyRow($bodyRow);

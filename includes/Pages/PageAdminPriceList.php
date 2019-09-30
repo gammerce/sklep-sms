@@ -67,8 +67,8 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
             $bodyRow->addCell(new Cell($row['amount']));
             $bodyRow->addCell(new Cell($serverName));
 
-            $bodyRow->setButtonDelete(true);
-            $bodyRow->setButtonEdit(true);
+            $bodyRow->setDeleteAction(true);
+            $bodyRow->setEditAction(true);
 
             $table->addBodyRow($bodyRow);
         }

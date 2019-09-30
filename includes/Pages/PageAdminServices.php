@@ -51,8 +51,8 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             $bodyRow->addCell(new Cell($row['order']));
 
             if (get_privileges('manage_services')) {
-                $bodyRow->setButtonDelete(true);
-                $bodyRow->setButtonEdit(true);
+                $bodyRow->setDeleteAction(true);
+                $bodyRow->setEditAction(true);
             }
 
             $table->addBodyRow($bodyRow);

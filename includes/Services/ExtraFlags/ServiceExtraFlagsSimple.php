@@ -313,8 +313,8 @@ class ServiceExtraFlagsSimple extends Service implements
                 )
             );
             if (get_privileges("manage_user_services")) {
-                $bodyRow->setButtonDelete();
-                $bodyRow->setButtonEdit();
+                $bodyRow->setDeleteAction();
+                $bodyRow->setEditAction();
             }
 
             $table->addBodyRow($bodyRow);
