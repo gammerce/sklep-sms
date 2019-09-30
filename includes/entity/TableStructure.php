@@ -378,9 +378,7 @@ class BodyRow extends Row
             return null;
         }
 
-        return new Cell(
-            $template->render("more_actions", compact("actions"))
-        );
+        return new Cell($template->render("more_actions", compact("actions")));
     }
 }
 

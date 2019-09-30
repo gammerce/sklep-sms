@@ -21,7 +21,7 @@ $(document).ready(function() {
  * @param data
  * @param sign
  */
-window.go_to_payment = function (data, sign) {
+window.go_to_payment = function(data, sign) {
     var form = $("<form>", {
         action: buildUrl("/page/payment"),
         method: "POST",

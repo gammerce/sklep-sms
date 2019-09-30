@@ -124,9 +124,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
     {
         $button = new Link();
         $button->setParam('class', 'dropdown-item charge_wallet');
-        $button->addContent(
-            new SimpleText($this->lang->translate('charge'))
-        );
+        $button->addContent(new SimpleText($this->lang->translate('charge')));
         return $button;
     }
 
