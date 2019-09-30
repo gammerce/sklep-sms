@@ -101,10 +101,10 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             $cell->setParam('headers', 'wallet');
             $bodyRow->addCell($cell);
 
-            $buttonCharge = $this->createChargeButton($row['username']);
+            $buttonCharge = $this->createChargeButton();
             $bodyRow->addAction($buttonCharge);
 
-            $changePasswordCharge = $this->createPasswordButton($row['username']);
+            $changePasswordCharge = $this->createPasswordButton();
             $bodyRow->addAction($changePasswordCharge);
 
             if (get_privileges('manage_users')) {
@@ -120,25 +120,21 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    protected function createChargeButton($username)
+    protected function createChargeButton()
     {
         $button = new Link();
         $button->setParam('class', 'dropdown-item charge_wallet');
         $button->addContent(
-            new SimpleText($this->lang->translate('charge') . ' ' . htmlspecialchars($username))
+            new SimpleText($this->lang->translate('charge'))
         );
         return $button;
     }
 
-    protected function createPasswordButton($username)
+    protected function createPasswordButton()
     {
         $button = new Link();
         $button->setParam('class', 'dropdown-item change_password');
-        $button->addContent(
-            new SimpleText(
-            $this->lang->translate('change_password') . ' ' . htmlspecialchars($username)
-            )
-        );
+        $button->addContent(new SimpleText($this->lang->translate('change_password')));
         return $button;
     }
 

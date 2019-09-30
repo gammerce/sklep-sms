@@ -90,6 +90,7 @@
     $(document).delegate("#form_charge_wallet", "submit", function(e) {
         e.preventDefault();
         loader.show();
+        var that = this;
         $.ajax({
             type: "POST",
             url: buildUrl("jsonhttp_admin.php"),
@@ -110,7 +111,7 @@
                 }
 
                 if (jsonObj.return_id === "warnings") {
-                    showWarnings($(this), jsonObj.warnings);
+                    showWarnings($(that), jsonObj.warnings);
                 } else if (jsonObj.return_id === "charged") {
                     // Change wallet state
                     getnset_template(
@@ -118,7 +119,7 @@
                         "admin_user_wallet",
                         true,
                         {
-                            uid: $(this)
+                            uid: $(that)
                                 .find("input[name=uid]")
                                 .val(),
                         },
@@ -140,6 +141,7 @@
     $(document).delegate("#form_change_password", "submit", function(e) {
         e.preventDefault();
         loader.show();
+        var that = this;
 
         var userId = $(this)
             .find("input[name=uid]")
@@ -165,7 +167,7 @@
                 }
 
                 if (jsonObj.return_id === "warnings") {
-                    showWarnings($(this), jsonObj.warnings);
+                    showWarnings($(that), jsonObj.warnings);
                 } else if (jsonObj.return_id === "ok") {
                     clearAndHideActionBox();
                 }
@@ -179,6 +181,8 @@
     $(document).delegate("#form_user_edit", "submit", function(e) {
         e.preventDefault();
         loader.show();
+        var that = this;
+
         $.ajax({
             type: "POST",
             url: buildUrl("jsonhttp_admin.php"),
@@ -199,7 +203,7 @@
                 }
 
                 if (jsonObj.return_id === "warnings") {
-                    showWarnings($(this), jsonObj.warnings);
+                    showWarnings($(that), jsonObj.warnings);
                 } else if (jsonObj.return_id === "ok") {
                     clearAndHideActionBox();
                     refresh_blocks("admincontent", true);
