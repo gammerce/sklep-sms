@@ -254,6 +254,8 @@ class Line extends Row
 {
     public function __construct()
     {
+        parent::__construct();
+
         $cell = new Cell();
         $cell->setParam('colspan', '31');
         $cell->setParam('class', 'line');
@@ -536,6 +538,7 @@ class Wrapper extends Div
 
     public function __construct()
     {
+        parent::__construct();
         $this->setParam('class', 'table_structure');
     }
 

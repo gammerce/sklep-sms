@@ -3,14 +3,11 @@ namespace App\Pages;
 
 use Admin\Table\BodyRow;
 use Admin\Table\Cell;
-use Admin\Table\DOMElement;
-use Admin\Table\Img;
 use Admin\Table\Link;
 use Admin\Table\SimpleText;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 use App\Pages\Interfaces\IPageAdminActionBox;
-use App\Routes\UrlGenerator;
 
 class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 {

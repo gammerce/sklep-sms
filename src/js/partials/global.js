@@ -153,3 +153,14 @@ window.showWarnings = function(form, warnings) {
         inputElement.effect("highlight", 1000);
     });
 };
+
+document.addEventListener("click", function(e) {
+    // Do not remove class if user clicked dropdown element
+    if (!$(e.target).closest(".dropdown").length) {
+        $(".dropdown").removeClass("is-active");
+    }
+});
+
+$(document).delegate(".dropdown", "click", function() {
+    $(this).toggleClass("is-active");
+});

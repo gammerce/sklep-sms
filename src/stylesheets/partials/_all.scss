@@ -41,6 +41,9 @@ $button-static-color: $white-ter;
 $button-static-background-color: $grey;
 $button-static-border-color: $grey-darker;
 
+// Dropdown
+$dropdown-content-background-color: $grey-lighter;
+
 @import "~bulma";
 
 .action-buttons {
