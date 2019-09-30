@@ -7,5 +7,5 @@
 - [x] Change input placeholder color
 - [ ] Fix multiple select
 - [x] Copy loader to install
-- [ ] Actions in one line
+- [x] Actions in one line
 - [ ] Purchase details /page/payment
