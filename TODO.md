@@ -8,4 +8,4 @@
 - [ ] Fix multiple select
 - [x] Copy loader to install
 - [x] Actions in one line
-- [ ] Purchase details /page/payment
+- [x] Purchase details /page/payment
