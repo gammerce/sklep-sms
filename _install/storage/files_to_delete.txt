@@ -1,7 +1,0 @@
-admin.php
-extra_stuff.php
-js.php
-jsonhttp.php
-jsonhttp_admin.php
-servers_stuff.php
-transfer_finalize.php
