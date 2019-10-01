@@ -25,7 +25,9 @@ class InstallUpdateController
         }
 
         if ($installManager->isInProgress()) {
-            return new HtmlResponse("Instalacja/Aktualizacja trwa, lub została błędnie przeprowadzona.");
+            return new HtmlResponse(
+                "Instalacja/Aktualizacja trwa, lub została błędnie przeprowadzona."
+            );
         }
 
         $modules = [];
@@ -33,7 +35,12 @@ class InstallUpdateController
         $filesToDelete = $requirementsStore->getFilesToDelete();
 
         $everythingOk = true;
-        $updateBody = $updateInfo->updateInfo($everythingOk, $filesWithWritePermission, $filesToDelete, $modules);
+        $updateBody = $updateInfo->updateInfo(
+            $everythingOk,
+            $filesWithWritePermission,
+            $filesToDelete,
+            $modules
+        );
 
         // Nie wszystko jest git
         if (!$everythingOk) {

@@ -44,7 +44,9 @@ class InstallController
         }
 
         if ($installManager->isInProgress()) {
-            return new HtmlResponse("Instalacja/Aktualizacja trwa, lub została błędnie przeprowadzona.");
+            return new HtmlResponse(
+                "Instalacja/Aktualizacja trwa, lub została błędnie przeprowadzona."
+            );
         }
 
         if (!ShopState::isInstalled()) {

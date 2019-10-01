@@ -30,7 +30,9 @@ class InstallFullController
         }
 
         if ($installManager->isInProgress()) {
-            return new HtmlResponse("Instalacja/Aktualizacja trwa, lub została błędnie przeprowadzona.");
+            return new HtmlResponse(
+                "Instalacja/Aktualizacja trwa, lub została błędnie przeprowadzona."
+            );
         }
 
         $modules = $requirementsStore->getModules();
