@@ -37,11 +37,11 @@ class InstallManager
 
     private function putInProgress()
     {
-        file_put_contents($this->app->path('install/progress'), "");
+        file_put_contents($this->app->path('_install/progress'), "");
     }
 
     public function removeInProgress()
     {
-        unlink($this->app->path('install/progress'));
+        unlink($this->app->path('_install/progress'));
     }
 }
