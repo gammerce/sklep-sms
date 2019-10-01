@@ -5,7 +5,7 @@
 - [x] Checkbox label hover color
 - [x] Radio label hover color
 - [x] Change input placeholder color
-- [ ] Fix multiple select
+- [x] Fix multiple select
 - [x] Copy loader to install
 - [x] Actions in one line
 - [x] Purchase details /page/payment
