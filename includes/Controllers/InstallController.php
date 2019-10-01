@@ -2,12 +2,14 @@
 namespace App\Controllers;
 
 use App\Application;
+use App\Install\RequirementsStore;
+use App\Install\Full;
+use App\Install\InstallManager;
+use App\Install\OldShop;
+use App\Install\UpdateInfo;
+use App\Responses\HtmlResponse;
 use App\ShopState;
 use App\Template;
-use App\Install\Full;
-use App\Install\OldShop;
-use App\Install\Update;
-use App\Install\UpdateInfo;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -29,18 +31,28 @@ class InstallController
         Request $request,
         OldShop $oldShop,
         ShopState $shopState,
-        Full $full,
         UpdateInfo $updateInfo,
-        Update $update
+        RequirementsStore $requirementsStore,
+        InstallManager $installManager
     ) {
         $oldShop->checkForConfigFile();
 
+        if ($installManager->hasFailed()) {
+            return new HtmlResponse(
+                'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku errors/install.log'
+            );
+        }
+
+        if ($installManager->isInProgress()) {
+            return new HtmlResponse("Instalacja/Aktualizacja trwa, lub została błędnie przeprowadzona.");
+        }
+
         if (!ShopState::isInstalled()) {
-            return $this->full($full);
+            return $this->full($requirementsStore);
         }
 
         if (!$shopState->isUpToDate()) {
-            return $this->update($updateInfo, $update);
+            return $this->update($updateInfo, $requirementsStore);
         }
 
         return new Response(
@@ -48,9 +60,10 @@ class InstallController
         );
     }
 
-    protected function full(Full $full)
+    protected function full(RequirementsStore $requirementsStore)
     {
-        list($modules, $filesPriv) = $full->get();
+        $modules = $requirementsStore->getModules();
+        $filesPriv = $requirementsStore->getFilesWithWritePermission();
 
         // #########################################
         // ##########    Wyświetl dane    ##########
@@ -96,9 +109,11 @@ class InstallController
         return new Response($output);
     }
 
-    protected function update(UpdateInfo $updateInfo, Update $update)
+    protected function update(UpdateInfo $updateInfo, RequirementsStore $requirementsStore)
     {
-        list($modules, $filesPriv, $filesDel) = $update->get();
+        $modules = [];
+        $filesPriv = $requirementsStore->getFilesWithWritePermission();
+        $filesDel = $requirementsStore->getFilesToDelete();
 
         $everythingOk = true;
         // Pobieramy informacje o plikach ktore sa git i te ktore sa be

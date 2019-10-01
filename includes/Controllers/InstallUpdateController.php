@@ -1,11 +1,12 @@
 <?php
 namespace App\Controllers;
 
-use App\Responses\ApiResponse;
 use App\Install\DatabaseMigration;
+use App\Install\RequirementsStore;
 use App\Install\InstallManager;
-use App\Install\Update;
 use App\Install\UpdateInfo;
+use App\Responses\ApiResponse;
+use App\Responses\HtmlResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class InstallUpdateController
@@ -15,9 +16,21 @@ class InstallUpdateController
         InstallManager $installManager,
         DatabaseMigration $migrator,
         UpdateInfo $updateInfo,
-        Update $update
+        RequirementsStore $requirementsStore
     ) {
-        list($modules, $filesPriv, $filesDel) = $update->get();
+        if ($installManager->hasFailed()) {
+            return new HtmlResponse(
+                'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku errors/install.log'
+            );
+        }
+
+        if ($installManager->isInProgress()) {
+            return new HtmlResponse("Instalacja/Aktualizacja trwa, lub została błędnie przeprowadzona.");
+        }
+
+        $modules = [];
+        $filesPriv = $requirementsStore->getFilesWithWritePermission();
+        $filesDel = $requirementsStore->getFilesToDelete();
 
         $everythingOk = true;
         $updateBody = $updateInfo->updateInfo($everythingOk, $filesPriv, $filesDel, $modules);

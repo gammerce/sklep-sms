@@ -4,12 +4,13 @@ namespace App\Controllers;
 use App\Application;
 use App\Database;
 use App\Exceptions\SqlQueryException;
-use App\Responses\ApiResponse;
-use App\TranslationManager;
 use App\Install\DatabaseMigration;
 use App\Install\EnvCreator;
-use App\Install\Full;
 use App\Install\InstallManager;
+use App\Install\RequirementsStore;
+use App\Responses\ApiResponse;
+use App\Responses\HtmlResponse;
+use App\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -17,11 +18,23 @@ class InstallFullController
 {
     public function post(
         Request $request,
-        Full $full,
+        RequirementsStore $requirementsStore,
         TranslationManager $translationManager,
+        InstallManager $installManager,
         Application $app
     ) {
-        list($modules, $filesPriv) = $full->get();
+        if ($installManager->hasFailed()) {
+            return new HtmlResponse(
+                'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku errors/install.log'
+            );
+        }
+
+        if ($installManager->isInProgress()) {
+            return new HtmlResponse("Instalacja/Aktualizacja trwa, lub została błędnie przeprowadzona.");
+        }
+
+        $modules = $requirementsStore->getModules();
+        $filesPriv = $requirementsStore->getFilesWithWritePermission();
         $lang = $translationManager->user();
 
         try {
