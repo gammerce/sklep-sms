@@ -20,7 +20,7 @@ class InstallUpdateController
     ) {
         if ($installManager->hasFailed()) {
             return new HtmlResponse(
-                'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku errors/install.log'
+                'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku data/logs/install.log'
             );
         }
 

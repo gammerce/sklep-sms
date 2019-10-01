@@ -23,18 +23,19 @@ class RequirementsStore
     public function getFilesWithWritePermission()
     {
         return [
-            "errors/",
             "confidential/",
-            "themes/default/services/",
             "data/",
-            "data/transfers/",
             "data/cache/",
+            "data/logs/",
+            "data/transfers/",
+            "themes/default/services/",
         ];
     }
 
     public function getFilesToDelete()
     {
         return [
+            "errors",
             "images",
             "install",
             "jscripts",

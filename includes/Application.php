@@ -98,12 +98,12 @@ class Application extends Container
 
     public function sqlLogPath()
     {
-        return $this->path('errors/sql.log');
+        return $this->path('data/logs/sql.log');
     }
 
     public function errorsLogPath()
     {
-        return $this->path('errors/errors.log');
+        return $this->path('data/logs/errors.log');
     }
 
     public function terminate()

@@ -33,7 +33,7 @@ class ExceptionHandler implements ExceptionHandlerContract
     public function render(Request $request, Exception $e)
     {
         $message =
-            'Wystąpił błąd podczas aktualizacji.<br />Poinformuj o swoim problemie na forum sklepu. Do wątku załącz plik errors/install.log';
+            'Wystąpił błąd podczas aktualizacji.<br />Poinformuj o swoim problemie na forum sklepu. Do wątku załącz plik data/logs/install.log';
         json_output('error', $message, false);
     }
 
@@ -66,7 +66,7 @@ class ExceptionHandler implements ExceptionHandlerContract
 
     public function logError($message)
     {
-        file_put_contents($this->app->path('errors/install.log'), $message);
+        file_put_contents($this->app->path('data/logs/install.log'), $message);
         $this->installManager->markAsFailed();
         $this->installManager->removeInProgress();
     }
