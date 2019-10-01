@@ -8,8 +8,7 @@
 !/data/transfers/.gitkeep
 /errors/*
 !/errors/.htaccess
-/install/error
-/install/block
-/install/progress
+/_install/error
+/_install/progress
 /node_modules
 /vendor

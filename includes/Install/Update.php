@@ -19,14 +19,8 @@ class Update
 
     public function get()
     {
-        if (file_exists($this->app->path('_install/error'))) {
-            $this->installManager->showError();
-        }
-
-        if (file_exists($this->app->path('_install/block'))) {
-            output_page(
-                "Aktualizacja została już przeprowadzona. Jeżeli chcesz dokonać jej ponownie, usuń plik 'block' z folderu install."
-            );
+        if ($this->installManager->hasFailed()) {
+            return $this->installManager->createErrorResponse();
         }
 
         if (file_exists($this->app->path('_install/progress'))) {

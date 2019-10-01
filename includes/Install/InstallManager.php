@@ -2,6 +2,8 @@
 namespace App\Install;
 
 use App\Application;
+use App\Responses\ApiResponse;
+use App\Responses\HtmlResponse;
 use App\Translator;
 
 class InstallManager
@@ -18,11 +20,16 @@ class InstallManager
         $this->lang = $translator;
     }
 
-    public function showError()
+    public function createErrorResponse()
     {
-        output_page(
-            'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie na forum sklepu. Do wątku załącz plik errors/install.log'
+        return new HtmlResponse(
+            'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku errors/install.log'
         );
+    }
+
+    public function start()
+    {
+        $this->putInProgress();
     }
 
     public function finish()
@@ -30,9 +37,15 @@ class InstallManager
         $this->removeInProgress();
     }
 
-    public function start()
+    public function markAsFailed()
     {
-        $this->putInProgress();
+        file_put_contents($this->app->path('_install/error'), '');
+    }
+
+    /** @return bool */
+    public function hasFailed()
+    {
+        return file_exists($this->app->path('_install/error'));
     }
 
     private function putInProgress()

@@ -67,7 +67,7 @@ class ExceptionHandler implements ExceptionHandlerContract
     public function logError($message)
     {
         file_put_contents($this->app->path('errors/install.log'), $message);
-        file_put_contents($this->app->path('_install/error'), '');
+        $this->installManager->markAsFailed();
         $this->installManager->removeInProgress();
     }
 }
