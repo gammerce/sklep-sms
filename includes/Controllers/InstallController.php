@@ -112,15 +112,15 @@ class InstallController
     protected function update(UpdateInfo $updateInfo, RequirementsStore $requirementsStore)
     {
         $modules = [];
-        $filesPriv = $requirementsStore->getFilesWithWritePermission();
-        $filesDel = $requirementsStore->getFilesToDelete();
+        $filesWithWritePermission = $requirementsStore->getFilesWithWritePermission();
+        $filesToDelete = $requirementsStore->getFilesToDelete();
 
         $everythingOk = true;
         // Pobieramy informacje o plikach ktore sa git i te ktore sa be
         $filesModulesStatus = $updateInfo->updateInfo(
             $everythingOk,
-            $filesPriv,
-            $filesDel,
+            $filesWithWritePermission,
+            $filesToDelete,
             $modules
         );
         $class = $everythingOk ? "success" : "danger";

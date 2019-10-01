@@ -23,10 +23,10 @@ class RequirementsStore
     public function getFilesWithWritePermission()
     {
         return [
-            "_install",
             "errors/",
             "confidential/",
             "themes/default/services/",
+            "data/",
             "data/transfers/",
             "data/cache/",
         ];
@@ -35,6 +35,10 @@ class RequirementsStore
     public function getFilesToDelete()
     {
         return [
+            "images",
+            "install",
+            "jscripts",
+            "styles",
             "admin.php",
             "extra_stuff.php",
             "js.php",

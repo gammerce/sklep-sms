@@ -6,9 +6,9 @@
 !/data/cache/.gitkeep
 /data/transfers/*
 !/data/transfers/.gitkeep
+/data/install_error
+/data/install_progress
 /errors/*
 !/errors/.htaccess
-/_install/error
-/_install/progress
 /node_modules
 /vendor

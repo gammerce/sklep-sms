@@ -29,11 +29,11 @@ class InstallUpdateController
         }
 
         $modules = [];
-        $filesPriv = $requirementsStore->getFilesWithWritePermission();
-        $filesDel = $requirementsStore->getFilesToDelete();
+        $filesWithWritePermission = $requirementsStore->getFilesWithWritePermission();
+        $filesToDelete = $requirementsStore->getFilesToDelete();
 
         $everythingOk = true;
-        $updateBody = $updateInfo->updateInfo($everythingOk, $filesPriv, $filesDel, $modules);
+        $updateBody = $updateInfo->updateInfo($everythingOk, $filesWithWritePermission, $filesToDelete, $modules);
 
         // Nie wszystko jest git
         if (!$everythingOk) {

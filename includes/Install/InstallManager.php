@@ -30,28 +30,28 @@ class InstallManager
 
     public function markAsFailed()
     {
-        file_put_contents($this->app->path('_install/error'), '');
+        file_put_contents($this->app->path('data/install_error'), '');
     }
 
     /** @return bool */
     public function hasFailed()
     {
-        return file_exists($this->app->path('_install/error'));
+        return file_exists($this->app->path('data/install_error'));
     }
 
     /** @return bool */
     public function isInProgress()
     {
-        return file_exists($this->app->path('_install/progress'));
+        return file_exists($this->app->path('data/install_progress'));
     }
 
     private function putInProgress()
     {
-        file_put_contents($this->app->path('_install/progress'), "");
+        file_put_contents($this->app->path('data/install_progress'), "");
     }
 
     public function removeInProgress()
     {
-        unlink($this->app->path('_install/progress'));
+        unlink($this->app->path('data/install_progress'));
     }
 }
