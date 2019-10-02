@@ -4,22 +4,22 @@
 @import "partials/loader";
 @import "partials/infobox";
 
-table {
-    border-collapse: separate;
-    border-spacing: 0;
-}
+//table {
+//    border-collapse: separate;
+//    border-spacing: 0;
+//}
+//
+//td {
+//    padding: 5px 2px;
+//}
 
-td {
-    padding: 5px 2px;
-}
-
-a {
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
+//a {
+//    text-decoration: none;
+//}
+//
+//a:hover {
+//    text-decoration: underline;
+//}
 
 h3 {
     color: $grey-lighter;
@@ -109,47 +109,60 @@ h4 {
     background: $grey-lighter;
 }
 
-.table_structure > table {
-    width: 100%;
-}
+.table_structure {
+    //& > table {
+    //    width: 100%;
+    //
+    //    thead {
+    //        background-color: #aaa;
+    //        color: #000;
+    //        font-weight: bold;
+    //    }
+    //
+    //    tbody tr:hover {
+    //        background: #777;
+    //        color: #fff;
+    //    }
+    //
+    //    td {
+    //        text-align: left;
+    //        vertical-align: middle;
+    //    }
+    //
+    //    tfoot {
+    //        display: none;
+    //
+    //        tr td .current {
+    //            color: #f7d358;
+    //        }
+    //
+    //        td {
+    //            border-top: 2px solid #fff;
+    //            background-color: #666;
+    //            text-align: center;
+    //        }
+    //
+    //        td, td a {
+    //            color: #fff;
+    //        }
+    //    }
+    //}
 
-.table_structure > table thead {
-    background-color: #aaa;
-    color: #000;
-    font-weight: bold;
-}
+    [headers="id"] {
+        width: 4%;
+    }
 
-.table_structure > table tbody tr:hover {
-    background: #777;
-    color: #fff;
-}
+    [headers="platform"] {
+        width: 30%;
+    }
 
-.table_structure td {
-    text-align: left;
-    vertical-align: middle;
-}
+    [headers="date"] {
+        white-space: nowrap;
+    }
 
-.table_structure .summary tr td {
-    border-top: 1px dashed #222;
-}
-
-.table_structure > table tfoot {
-    display: none;
-}
-
-.table_structure > table tfoot td {
-    border-top: 2px solid #fff;
-    background-color: #666;
-    text-align: center;
-}
-
-.table_structure > table tfoot td,
-.table_structure > table tfoot td a {
-    color: #fff;
-}
-
-.table_structure > table tfoot tr td .current {
-    color: #f7d358;
+    .summary tr td {
+        border-top: 1px dashed #222;
+    }
 }
 
 .title {
@@ -162,18 +175,6 @@ h4 {
     font-size: 18px;
     padding: 5px;
     text-shadow: 1px 1px 10px #000;
-}
-
-.table_structure [headers="id"] {
-    width: 4%;
-}
-
-.table_structure [headers="platform"] {
-    width: 30%;
-}
-
-.table_structure [headers="date"] {
-    white-space: nowrap;
 }
 
 #charge_amount {

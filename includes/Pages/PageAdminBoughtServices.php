@@ -3,13 +3,11 @@ namespace App\Pages;
 
 use Admin\Table\BodyRow;
 use Admin\Table\Cell;
-use Admin\Table\DOMElement;
-use Admin\Table\Img;
+use Admin\Table\HeadCell;
 use Admin\Table\Link;
 use Admin\Table\SimpleText;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
-use App\Routes\UrlGenerator;
 use App\Services\ExtraFlags\ExtraFlagType;
 
 class PageAdminBoughtServices extends PageAdmin
@@ -25,36 +23,29 @@ class PageAdminBoughtServices extends PageAdmin
 
     protected function content(array $query, array $body)
     {
-        /** @var UrlGenerator $url */
-        $url = $this->app->make(UrlGenerator::class);
-
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
         $wrapper->setSearch();
 
         $table = new Structure();
-
-        $cell = new Cell($this->lang->translate('id'));
-        $cell->setParam('headers', 'id');
-        $table->addHeadCell($cell);
-
-        $table->addHeadCell(new Cell($this->lang->translate('payment_admin')));
-        $table->addHeadCell(new Cell($this->lang->translate('payment_id')));
-        $table->addHeadCell(new Cell($this->lang->translate('user')));
-        $table->addHeadCell(new Cell($this->lang->translate('server')));
-        $table->addHeadCell(new Cell($this->lang->translate('service')));
-        $table->addHeadCell(new Cell($this->lang->translate('amount')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->translate('payment_admin')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('payment_id')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('user')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('server')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('service')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('amount')));
         $table->addHeadCell(
-            new Cell(
+            new HeadCell(
                 "{$this->lang->translate('nick')}/{$this->lang->translate(
                     'ip'
                 )}/{$this->lang->translate('sid')}"
             )
         );
-        $table->addHeadCell(new Cell($this->lang->translate('additional')));
-        $table->addHeadCell(new Cell($this->lang->translate('email')));
-        $table->addHeadCell(new Cell($this->lang->translate('ip')));
-        $table->addHeadCell(new Cell($this->lang->translate('date')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('additional')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('email')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('ip')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('date')));
 
         // Wyszukujemy dane ktore spelniaja kryteria
         $where = '';

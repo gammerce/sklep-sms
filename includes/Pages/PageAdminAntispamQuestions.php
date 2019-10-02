@@ -3,6 +3,7 @@ namespace App\Pages;
 
 use Admin\Table\BodyRow;
 use Admin\Table\Cell;
+use Admin\Table\HeadCell;
 use Admin\Table\Input;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
@@ -26,13 +27,9 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
-
-        $cell = new Cell($this->lang->translate('id'));
-        $cell->setParam('headers', 'id');
-        $table->addHeadCell($cell);
-
-        $table->addHeadCell(new Cell($this->lang->translate('question')));
-        $table->addHeadCell(new Cell($this->lang->translate('answers')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->translate('question')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('answers')));
 
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * " .

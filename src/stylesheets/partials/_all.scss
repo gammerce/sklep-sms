@@ -44,6 +44,10 @@ $button-static-border-color: $grey-darker;
 // Dropdown
 $dropdown-content-background-color: lighten($grey-lighter, 5%);
 
+// Table
+$table-background-color: transparent;
+$table-cell-border: 1px solid $grey-light;
+
 @import "~bulma";
 
 html {

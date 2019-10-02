@@ -3,6 +3,7 @@ namespace App\Pages;
 
 use Admin\Table\BodyRow;
 use Admin\Table\Cell;
+use Admin\Table\HeadCell;
 use Admin\Table\Input;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
@@ -27,11 +28,8 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 
         $table = new Structure();
 
-        $cell = new Cell($this->lang->translate('id'));
-        $cell->setParam('headers', 'id');
-        $table->addHeadCell($cell);
-
-        $table->addHeadCell(new Cell($this->lang->translate('name')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->translate('name')));
 
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `" .

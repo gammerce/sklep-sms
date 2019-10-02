@@ -1,7 +1,11 @@
 <?php
 namespace App\Services\ExtraFlags;
 
-use Admin\Table;
+use Admin\Table\BodyRow;
+use Admin\Table\Cell;
+use Admin\Table\HeadCell;
+use Admin\Table\Structure;
+use Admin\Table\Wrapper;
 use App\CurrentPage;
 use App\Models\Purchase;
 use App\Services\Interfaces\IServiceAdminManage;
@@ -228,26 +232,22 @@ class ServiceExtraFlagsSimple extends Service implements
 
         $pageNumber = $currentPage->getPageNumber();
 
-        $wrapper = new Table\Wrapper();
+        $wrapper = new Wrapper();
         $wrapper->setSearch();
 
-        $table = new Table\Structure();
-
-        $cell = new Table\Cell($this->lang->translate('id'));
-        $cell->setParam('headers', 'id');
-        $table->addHeadCell($cell);
-
-        $table->addHeadCell(new Table\Cell($this->lang->translate('user')));
-        $table->addHeadCell(new Table\Cell($this->lang->translate('server')));
-        $table->addHeadCell(new Table\Cell($this->lang->translate('service')));
+        $table = new Structure();
+        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->translate('user')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('server')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('service')));
         $table->addHeadCell(
-            new Table\Cell(
+            new HeadCell(
                 "{$this->lang->translate('nick')}/{$this->lang->translate(
                     'ip'
                 )}/{$this->lang->translate('sid')}"
             )
         );
-        $table->addHeadCell(new Table\Cell($this->lang->translate('expires')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('expires')));
 
         // Wyszukujemy dane ktore spelniaja kryteria
         $where = '';
@@ -292,21 +292,21 @@ class ServiceExtraFlagsSimple extends Service implements
         $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
         while ($row = $this->db->fetchArrayAssoc($result)) {
-            $bodyRow = new Table\BodyRow();
+            $bodyRow = new BodyRow();
 
             $bodyRow->setDbId($row['id']);
             $bodyRow->addCell(
-                new Table\Cell(
+                new Cell(
                     $row['uid']
                         ? $row['username'] . " ({$row['uid']})"
                         : $this->lang->translate('none')
                 )
             );
-            $bodyRow->addCell(new Table\Cell($row['server']));
-            $bodyRow->addCell(new Table\Cell($row['service']));
-            $bodyRow->addCell(new Table\Cell($row['auth_data']));
+            $bodyRow->addCell(new Cell($row['server']));
+            $bodyRow->addCell(new Cell($row['service']));
+            $bodyRow->addCell(new Cell($row['auth_data']));
             $bodyRow->addCell(
-                new Table\Cell(
+                new Cell(
                     $row['expire'] == '-1'
                         ? $this->lang->translate('never')
                         : date($this->settings['date_format'], $row['expire'])

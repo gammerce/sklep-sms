@@ -250,17 +250,17 @@ class Cell extends DOMElement
     protected $name = 'td';
 }
 
-class Line extends Row
+class HeadCell extends DOMElement
 {
-    public function __construct()
+    protected $name = 'th';
+
+    public function __construct($value = null, $headers = null)
     {
-        parent::__construct();
+        parent::__construct($value);
 
-        $cell = new Cell();
-        $cell->setParam('colspan', '31');
-        $cell->setParam('class', 'line');
-
-        $this->addContent($cell);
+        if ($headers) {
+            $this->setParam('headers', $headers);
+        }
     }
 }
 
@@ -388,6 +388,10 @@ class Structure extends DOMElement
 {
     protected $name = 'table';
 
+    protected $params = [
+        "class" => "table"
+    ];
+
     /** @var DOMElement[] */
     private $headCells = [];
 
@@ -423,9 +427,7 @@ class Structure extends DOMElement
         $actions->setStyle('width', '4%');
         $headRow->addContent($actions);
 
-        $head->addContent(new Line());
         $head->addContent($headRow);
-        $head->addContent(new Line());
 
         // Tworzymy tbody
         $body = new DOMElement();

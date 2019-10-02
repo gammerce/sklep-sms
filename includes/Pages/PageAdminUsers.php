@@ -3,6 +3,7 @@ namespace App\Pages;
 
 use Admin\Table\BodyRow;
 use Admin\Table\Cell;
+use Admin\Table\HeadCell;
 use Admin\Table\Link;
 use Admin\Table\SimpleText;
 use Admin\Table\Structure;
@@ -28,17 +29,13 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         $wrapper->setSearch();
 
         $table = new Structure();
-
-        $cell = new Cell($this->lang->translate('id'));
-        $cell->setParam('headers', 'id');
-        $table->addHeadCell($cell);
-
-        $table->addHeadCell(new Cell($this->lang->translate('username')));
-        $table->addHeadCell(new Cell($this->lang->translate('firstname')));
-        $table->addHeadCell(new Cell($this->lang->translate('surname')));
-        $table->addHeadCell(new Cell($this->lang->translate('email')));
-        $table->addHeadCell(new Cell($this->lang->translate('groups')));
-        $table->addHeadCell(new Cell($this->lang->translate('wallet')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->translate('username')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('firstname')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('surname')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('email')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('groups')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('wallet')));
 
         $where = '';
         if (isset($query['search'])) {
