@@ -69,29 +69,17 @@ abstract class Page
         if (strlen($this::PAGE_ID) && file_exists($this->app->path($path))) {
             foreach (scandir($this->app->path($path)) as $file) {
                 if (ends_at($file, ".js")) {
-                    $this->heart->scriptAdd(
-                        $this->settings['shop_url_slash'] .
-                            $path .
-                            $file .
-                            "?version=" .
-                            $this->app->version()
-                    );
+                    $this->heart->scriptAdd($this->url->versioned($path . $file));
                 }
             }
         }
 
-        // Dodajemy wszystkie css
+        // Let's add all css
         $path = "build/stylesheets_old/pages/" . $this::PAGE_ID . "/";
         if (strlen($this::PAGE_ID) && file_exists($this->app->path($path))) {
             foreach (scandir($this->app->path($path)) as $file) {
                 if (ends_at($file, ".css")) {
-                    $this->heart->styleAdd(
-                        $this->settings['shop_url_slash'] .
-                            $path .
-                            $file .
-                            "?version=" .
-                            $this->app->version()
-                    );
+                    $this->heart->styleAdd($this->url->versioned($path . $file));
                 }
             }
         }
@@ -108,22 +96,12 @@ abstract class Page
             foreach ($this->heart->getServicesModules() as $moduleInfo) {
                 $path = "build/stylesheets_old/services/" . $moduleInfo['id'] . ".css";
                 if (file_exists($this->app->path($path))) {
-                    $this->heart->styleAdd(
-                        $this->settings['shop_url_slash'] .
-                            $path .
-                            "?version=" .
-                            $this->app->version()
-                    );
+                    $this->heart->styleAdd($this->url->versioned($path));
                 }
 
                 $path = "build/js_old/services/" . $moduleInfo['id'] . ".js";
                 if (file_exists($this->app->path($path))) {
-                    $this->heart->scriptAdd(
-                        $this->settings['shop_url_slash'] .
-                            $path .
-                            "?version=" .
-                            $this->app->version()
-                    );
+                    $this->heart->scriptAdd($this->url->versioned($path));
                 }
             }
         }

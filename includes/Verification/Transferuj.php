@@ -5,6 +5,7 @@ use App\Database;
 use App\Models\Purchase;
 use App\Models\TransferFinalize;
 use App\Requesting\Requester;
+use App\Routes\UrlGenerator;
 use App\Settings;
 use App\TranslationManager;
 use App\Verification\Abstracts\PaymentModule;
@@ -21,6 +22,9 @@ class Transferuj extends PaymentModule implements SupportTransfer
     /** @var Settings */
     private $settings;
 
+    /** @var UrlGenerator */
+    private $url;
+
     /** @var string */
     private $accountId;
 
@@ -30,12 +34,14 @@ class Transferuj extends PaymentModule implements SupportTransfer
     public function __construct(
         Database $database,
         Requester $requester,
+        UrlGenerator $urlGenerator,
         TranslationManager $translationManager,
         Settings $settings
     ) {
         parent::__construct($database, $requester, $translationManager);
 
         $this->settings = $settings;
+        $this->url = $urlGenerator;
         $this->key = $this->data['key'];
         $this->accountId = $this->data['account_id'];
     }
@@ -56,9 +62,9 @@ class Transferuj extends PaymentModule implements SupportTransfer
             'imie' => $purchase->user->getForename(false),
             'nazwisko' => $purchase->user->getSurname(false),
             'email' => $purchase->getEmail(),
-            'pow_url' => $this->settings['shop_url_slash'] . "page/transferuj_ok",
-            'pow_url_blad' => $this->settings['shop_url_slash'] . "page/transferuj_bad",
-            'wyn_url' => $this->settings['shop_url_slash'] . "transfer/transferuj",
+            'pow_url' => $this->url->to("page/transferuj_ok"),
+            'pow_url_blad' => $this->url->to("page/transferuj_bad"),
+            'wyn_url' => $this->url->to("transfer/transferuj"),
         ];
     }
 

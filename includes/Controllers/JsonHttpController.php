@@ -12,6 +12,7 @@ use App\Repositories\UserRepository;
 use App\Responses\ApiResponse;
 use App\Responses\HtmlResponse;
 use App\Responses\PlainResponse;
+use App\Routes\UrlGenerator;
 use App\Settings;
 use App\Template;
 use App\TranslationManager;
@@ -36,6 +37,7 @@ class JsonHttpController
         Database $db,
         Mailer $mailer,
         UserRepository $userRepository,
+        UrlGenerator $url,
         UserPasswordService $userPasswordService
     ) {
         $session = $request->getSession();
@@ -283,8 +285,7 @@ class JsonHttpController
                 )
             );
 
-            $link =
-                $settings['shop_url_slash'] . "/page/reset_password?code=" . htmlspecialchars($key);
+            $link = $url->to("/page/reset_password?code=" . htmlspecialchars($key));
             $text = $templates->render("emails/forgotten_password", compact('user2', 'link'));
             $ret = $mailer->send($user2->getEmail(), $user2->getUsername(), "Reset Hasła", $text);
 
