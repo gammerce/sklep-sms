@@ -40,7 +40,7 @@ $(document).ready(function($) {
                     );
 
                     setTimeout(function() {
-                        location.reload();
+                        window.location.href = window.location.href + "/..";
                     }, 4000);
 
                     return;
