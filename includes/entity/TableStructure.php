@@ -389,7 +389,7 @@ class Structure extends DOMElement
     protected $name = 'table';
 
     protected $params = [
-        "class" => "table"
+        "class" => "table is-fullwidth is-hoverable",
     ];
 
     /** @var DOMElement[] */
@@ -423,7 +423,7 @@ class Structure extends DOMElement
         foreach ($this->headCells as $cell) {
             $headRow->addContent($cell);
         }
-        $actions = new Cell($lang->translate('actions'));
+        $actions = new HeadCell($lang->translate('actions'));
         $actions->setStyle('width', '4%');
         $headRow->addContent($actions);
 
@@ -552,13 +552,9 @@ class Wrapper extends Div
         /** @var Request $request */
         $request = app()->make(Request::class);
 
-        $oldContets = $this->contents;
-
-        $title = new Div();
-        $title->setParam('class', 'title is-4');
+        $oldContent = $this->contents;
 
         $buttons = new Div();
-        $buttons->setStyle('float', 'right');
 
         if ($this->search) {
             $searchText = $request->get('search');
@@ -572,15 +568,19 @@ class Wrapper extends Div
             $buttons->addContent(new SimpleText(' '));
         }
 
-        $title->addContent(new SimpleText($this->getTitle()));
-        $title->addContent($buttons);
-        $title->addContent(new SimpleText('<br class="clear" />'));
+        $title = new Div($this->getTitle());
+        $title->setParam("class", "title is-4");
 
-        $this->addContent($title);
+        $pageTitle = new Div();
+        $pageTitle->setParam('class', 'page-title');
+        $pageTitle->addContent($title);
+        $pageTitle->addContent($buttons);
+
+        $this->addContent($pageTitle);
         $this->addContent($this->getTable());
 
         $output = parent::toHtml();
-        $this->contents = $oldContets;
+        $this->contents = $oldContent;
 
         return $output;
     }

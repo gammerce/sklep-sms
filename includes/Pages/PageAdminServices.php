@@ -29,11 +29,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
-
-        $cell = new HeadCell($this->lang->translate('id'));
-        $cell->setParam('headers', 'id');
-        $table->addHeadCell($cell);
-
+        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
         $table->addHeadCell(new HeadCell($this->lang->translate('name')));
         $table->addHeadCell(new HeadCell($this->lang->translate('short_description')));
         $table->addHeadCell(new HeadCell($this->lang->translate('description')));

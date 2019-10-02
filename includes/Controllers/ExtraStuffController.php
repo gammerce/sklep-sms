@@ -37,7 +37,9 @@ class ExtraStuffController
 
             $output = create_dom_element(
                 "script",
-                'window.open("' . str_replace('"', '\"', $link) . '", "", "height=720,width=1280");',
+                'window.open("' .
+                    str_replace('"', '\"', $link) .
+                    '", "", "height=720,width=1280");',
                 [
                     'type' => "text/javascript",
                 ]
@@ -60,7 +62,9 @@ class ExtraStuffController
                 $heart->pageTitle =
                     $lang->translate('description') . ": " . $serviceModule->service['name'];
 
-                $heart->styleAdd($url->versioned("build/stylesheets_old/extra_stuff/long_desc.css"));
+                $heart->styleAdd(
+                    $url->versioned("build/stylesheets_old/extra_stuff/long_desc.css")
+                );
                 $header = $template->render("header", compact('currentPage', 'heart', 'license'));
 
                 $output = create_dom_element(

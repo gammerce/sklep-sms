@@ -4,23 +4,6 @@
 @import "partials/loader";
 @import "partials/infobox";
 
-//table {
-//    border-collapse: separate;
-//    border-spacing: 0;
-//}
-//
-//td {
-//    padding: 5px 2px;
-//}
-
-//a {
-//    text-decoration: none;
-//}
-//
-//a:hover {
-//    text-decoration: underline;
-//}
-
 h3 {
     color: $grey-lighter;
     padding: 2px 5px;
@@ -43,22 +26,22 @@ h4 {
     height: 130px;
     background: $black-ter;
     padding: 10px 20px;
-}
 
-.header table {
-    width: 100%;
-    height: 100%;
-}
+    table {
+        width: 100%;
+        height: 100%;
+    }
 
-.header td {
-    vertical-align: middle;
-    color: #fff;
-    font-size: 18px;
-    font-weight: bold;
-}
+    td {
+        vertical-align: middle;
+        color: #fff;
+        font-size: 18px;
+        font-weight: bold;
+    }
 
-.header .hint {
-    margin-top: 8px;
+    .hint {
+        margin-top: 8px;
+    }
 }
 
 .form_logout {
@@ -79,28 +62,28 @@ h4 {
     margin: 0;
     padding: 0 0 20px 0;
     overflow: auto;
-}
 
-.sidebar ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
 
-.sidebar a li {
-    margin: 2px;
-    padding: 3px;
-    background: $grey-dark;
-}
+    a {
+        color: $grey-lighter;
+        text-shadow: 2px 2px 2px black;
+        text-decoration: none !important;
 
-.sidebar a {
-    color: $grey-lighter;
-    text-shadow: 2px 2px 2px black;
-    text-decoration: none !important;
-}
+        li {
+            margin: 2px;
+            padding: 3px;
+            background: $grey-dark;
 
-.sidebar a li:hover {
-    box-shadow: inset 0 0 4px #c7c7c7;
+            &:hover {
+                box-shadow: inset 0 0 4px #c7c7c7;
+            }
+        }
+    }
 }
 
 .custom_content {
@@ -110,44 +93,6 @@ h4 {
 }
 
 .table_structure {
-    //& > table {
-    //    width: 100%;
-    //
-    //    thead {
-    //        background-color: #aaa;
-    //        color: #000;
-    //        font-weight: bold;
-    //    }
-    //
-    //    tbody tr:hover {
-    //        background: #777;
-    //        color: #fff;
-    //    }
-    //
-    //    td {
-    //        text-align: left;
-    //        vertical-align: middle;
-    //    }
-    //
-    //    tfoot {
-    //        display: none;
-    //
-    //        tr td .current {
-    //            color: #f7d358;
-    //        }
-    //
-    //        td {
-    //            border-top: 2px solid #fff;
-    //            background-color: #666;
-    //            text-align: center;
-    //        }
-    //
-    //        td, td a {
-    //            color: #fff;
-    //        }
-    //    }
-    //}
-
     [headers="id"] {
         width: 4%;
     }
@@ -165,16 +110,21 @@ h4 {
     }
 }
 
-.title {
+.page-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background: linear-gradient(to right, rgba(67, 67, 67, 1) 0%, rgba(204, 204, 204, 1) 92%);
-    color: #fff;
-    text-decoration: none;
     margin-left: -10px;
-    margin-bottom: 16px;
-    text-align: left;
-    font-size: 18px;
-    padding: 5px;
-    text-shadow: 1px 1px 10px #000;
+    margin-right: -10px;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+
+    .title {
+        color: #fff;
+        text-shadow: 1px 1px 10px #000;
+        margin: 0
+    }
 }
 
 #charge_amount {
@@ -197,17 +147,21 @@ h4 {
 
 #form_settings_edit {
     margin: 24px;
-}
 
-#form_settings_edit .field-body {
-    flex-grow: 3;
-}
+    .field-body {
+        flex-grow: 3;
+    }
 
-#form_settings_edit .select select,
-#form_settings_edit .input,
-#form_settings_edit .textarea {
-    color: #000;
-    background-color: #aaa;
+    .select select,
+    .input,
+    .textarea {
+        color: #000;
+        background-color: #aaa;
+
+        @include placeholder {
+            color: $grey-dark;
+        }
+    }
 }
 
 .form_update {
@@ -216,33 +170,33 @@ h4 {
     min-width: 30%;
     font-family: monospace;
     line-height: 1.6;
-}
 
-.form_update a {
-    color: #adff00;
-    font-weight: bold;
-    text-shadow: 1px 1px 1px #000;
-}
+    a {
+        color: #adff00;
+        font-weight: bold;
+        text-shadow: 1px 1px 1px #000;
+    }
 
-.form_update img {
-    vertical-align: middle;
-}
+    img {
+        vertical-align: middle;
+    }
 
-.form_update .version_block {
-    display: inline-block;
-    padding: 6px;
-}
+    .version_block {
+        display: inline-block;
+        padding: 6px;
+    }
 
-.form_update .info {
-    margin: 5px 15px;
+    .info {
+        margin: 5px 15px;
+    }
 }
 
 .search {
     display: inline-block;
     position: relative;
     vertical-align: top;
-}
 
-.search .search_button {
-    border-left: 1px solid #898989;
+    .search_button {
+        border-left: 1px solid #898989;
+    }
 }
