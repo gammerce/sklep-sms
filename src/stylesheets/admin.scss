@@ -23,9 +23,9 @@ h4 {
 }
 
 .header {
-    height: 130px;
+    height: 100px;
     background: $black-ter;
-    padding: 10px 20px;
+    padding: 0 20px;
 
     table {
         width: 100%;
@@ -51,7 +51,7 @@ h4 {
 .sidebar,
 .custom_content {
     padding: 10px;
-    height: calc(100% - 130px);
+    height: calc(100% - 100px);
 }
 
 .sidebar {
