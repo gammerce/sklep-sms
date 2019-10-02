@@ -20,29 +20,32 @@
         <div class="window {$class}">
             <h1 class="title is-4">Aktualizator Sklepu</h1>
 
-            {$notifyHttpServer}
+            <div class="section is-small">
+                {$notifyHttpServer}
 
-            <div class="notify backup">
-                <div style="font-weight: bold;">
-                    Pamiętaj, aby przed wykonaniem aktualizacji zadbać o backup
-                    <i>( kopię zapasową )</i>
+                <div class="notification is-danger">
+                    <strong>
+                        Pamiętaj, aby przed wykonaniem aktualizacji zadbać o backup
+                        <i>( kopię zapasową )</i>
+                    </strong>
+                    <ul>
+                        <li>Bazy danych sklepu</li>
+                        <li>Plików znajdujących się na FTP serwerów gier</li>
+                        <li>Plików znajdujących się na FTP strony WWW</li>
+                    </ul>
                 </div>
-                <ul>
-                    <li>Bazy danych sklepu</li>
-                    <li>Plików znajdujących się na FTP serwerów gier</li>
-                    <li>Plików znajdujących się na FTP strony WWW</li>
-                </ul>
+
+                <form id="form_update">
+                    <div class="update_info">
+                        {$filesModulesStatus}
+                    </div>
+                    <br style="clear: both" />
+
+                    <div style="text-align: center;">
+                        <input type="submit" value="Aktualizuj" class="button is-fullwidth" />
+                    </div>
+                </form>
             </div>
-            <form id="form_update">
-                <div class="update_info">
-                    {$filesModulesStatus}
-                </div>
-                <br style="clear: both" />
-
-                <div style="text-align: center;">
-                    <input type="submit" value="Aktualizuj" class="button is-fullwidth" />
-                </div>
-            </form>
         </div>
         <br /><br />
     </body>
