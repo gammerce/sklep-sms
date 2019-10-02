@@ -42,7 +42,7 @@ class PageAdminMain extends PageAdmin
             $settingsUrl = $this->url->to("/admin/settings");
             $this->addNote(
                 $this->lang->sprintf($this->lang->translate('license_error'), $settingsUrl),
-                "negative",
+                "is-danger",
                 $notes
             );
         }
@@ -58,7 +58,7 @@ class PageAdminMain extends PageAdmin
                     $this->lang->translate('license_soon_expire'),
                     secondsToTime(strtotime($this->license->getExpires()) - time())
                 ),
-                "negative",
+                "is-danger",
                 $notes
             );
         }
@@ -76,7 +76,7 @@ class PageAdminMain extends PageAdmin
                     htmlspecialchars($newestVersion),
                     $updateWebLink
                 ),
-                "positive",
+                "is-success",
                 $notes
             );
         }
@@ -98,7 +98,7 @@ class PageAdminMain extends PageAdmin
                     $this->heart->getServersAmount(),
                     $updateServersLink
                 ),
-                "positive",
+                "is-success",
                 $notes
             );
         }
@@ -173,7 +173,7 @@ class PageAdminMain extends PageAdmin
     private function addNote($text, $class, &$notes)
     {
         $notes .= create_dom_element("div", $text, [
-            'class' => "note " . $class,
+            'class' => "notification " . $class,
         ]);
     }
 }

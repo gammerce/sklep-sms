@@ -109,27 +109,6 @@ h4 {
     background: $grey-lighter;
 }
 
-#notes .note {
-    padding: 6px;
-    margin: 6px;
-    border: 2px solid;
-}
-
-#notes .positive {
-    border-color: #61a50b;
-    box-shadow: 0 0 4px #61a50b;
-    background: #c6e2b3;
-}
-
-#notes .negative {
-    border-color: #a50b0b;
-    box-shadow: 0 0 4px #a50b0b;
-    background: #ffc7c7;
-}
-
-#notes .neutral {
-}
-
 .table_structure > table {
     width: 100%;
 }
