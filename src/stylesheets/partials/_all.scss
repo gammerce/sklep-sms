@@ -46,6 +46,10 @@ $dropdown-content-background-color: lighten($grey-lighter, 5%);
 
 @import "~bulma";
 
+html {
+    overflow-y: auto;
+}
+
 .action-buttons {
     padding-top: 1rem;
 }
