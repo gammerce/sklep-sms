@@ -1037,7 +1037,7 @@ function create_brick($text, $class = "", $alpha = 0.2)
     $brickB = rand(0, 255);
 
     return create_dom_element("div", $text, [
-        'class' => "brick" . ($class ? " {$class}" : ""),
+        'class' => "notification" . ($class ? " {$class}" : ""),
         'style' => [
             'border-color' => "rgb({$brickR},{$brickG},{$brickB})",
             'background-color' => "rgba({$brickR},{$brickG},{$brickB},{$alpha})",

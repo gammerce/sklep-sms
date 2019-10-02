@@ -22,7 +22,7 @@ a:hover {
 }
 
 h3 {
-    color: #ccc;
+    color: $grey-lighter;
     padding: 2px 5px;
     box-shadow: 0 0 1px #fff;
     margin: 12px 2px 5px 2px;
@@ -41,7 +41,7 @@ h4 {
 
 .header {
     height: 130px;
-    background: #222;
+    background: $black-ter;
     padding: 10px 20px;
 }
 
@@ -74,7 +74,7 @@ h4 {
 .sidebar {
     float: left;
     min-width: 280px;
-    background: #333;
+    background: $grey-darker;
     white-space: nowrap;
     margin: 0;
     padding: 0 0 20px 0;
@@ -90,11 +90,11 @@ h4 {
 .sidebar a li {
     margin: 2px;
     padding: 3px;
-    background: #4b4b4b;
+    background: $grey-dark;
 }
 
 .sidebar a {
-    color: #ccc;
+    color: $grey-lighter;
     text-shadow: 2px 2px 2px black;
     text-decoration: none !important;
 }
@@ -106,7 +106,7 @@ h4 {
 .custom_content {
     width: auto;
     overflow: auto;
-    background: #ccc;
+    background: $grey-lighter;
 }
 
 #notes .note {
