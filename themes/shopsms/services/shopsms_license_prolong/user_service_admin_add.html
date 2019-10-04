@@ -1,17 +1,41 @@
 <tbody data-module="{$moduleId}">
     <tr>
-        <td>{$lang->translate('identifier')}</td>
         <td>
-            <input type="text" name="identifier" />
+            <label for="identifier">{$lang->translate('identifier')}</label>
+        </td>
+        <td>
+            <div class="field">
+                <div class="control">
+                    <input
+                        type="text"
+                        id="identifier"
+                        name="identifier"
+                        class="input is-small"
+                        required
+                    />
+                </div>
+            </div>
         </td>
     </tr>
     <tr>
         <td colspan="2" class="line"></td>
     </tr>
     <tr>
-        <td>{$lang->translate('days_amount')}</td>
         <td>
-            <input type="text" name="amount" />
+            <label for="amount">{$lang->translate('days_amount')}</label>
+        </td>
+        <td>
+            <div class="field">
+                <div class="control">
+                    <input
+                        type="number"
+                        id="amount"
+                        name="amount"
+                        class="input is-small"
+                        required
+                    />
+                </div>
+            </div>
         </td>
     </tr>
 </tbody>

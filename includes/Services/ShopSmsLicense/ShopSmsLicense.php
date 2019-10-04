@@ -142,9 +142,9 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         $this->db->query(
             $this->db->prepare(
                 "INSERT INTO `" .
-                TABLE_PREFIX .
-                "user_service` " .
-                "SET `uid` = '%d', `service` = '%s', `expire` = '%d'",
+                    TABLE_PREFIX .
+                    "user_service` " .
+                    "SET `uid` = '%d', `service` = '%s', `expire` = '%d'",
                 [$purchaseData->user->getUid(), $this->service['id'], $expiresAt]
             )
         );
@@ -153,17 +153,17 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         $this->db->query(
             $this->db->prepare(
                 "INSERT INTO `" .
-                TABLE_PREFIX .
-                $this::USER_SERVICE_TABLE .
-                "` " .
-                "SET `us_id` = '%d', " .
-                "`service` = '%s', " .
-                "`identifier` = '%s', " .
-                "`external_license_id` = '%d', " .
-                "`cost_daily` = '%s', " .
-                "`email` = '%s', " .
-                "`platform_amxmodx` = '%d', " .
-                "`platform_sourcemod` = '%d'",
+                    TABLE_PREFIX .
+                    $this::USER_SERVICE_TABLE .
+                    "` " .
+                    "SET `us_id` = '%d', " .
+                    "`service` = '%s', " .
+                    "`identifier` = '%s', " .
+                    "`external_license_id` = '%d', " .
+                    "`cost_daily` = '%s', " .
+                    "`email` = '%s', " .
+                    "`platform_amxmodx` = '%d', " .
+                    "`platform_sourcemod` = '%d'",
                 [
                     $userServiceId,
                     $this->service['id'],
@@ -461,10 +461,10 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         $result = $this->db->query(
             $this->db->prepare(
                 "SELECT `us_id` FROM `" .
-                TABLE_PREFIX .
-                $this::USER_SERVICE_TABLE .
-                "` " .
-                "WHERE `service` = '%s' AND `external_license_id` = '%s'",
+                    TABLE_PREFIX .
+                    $this::USER_SERVICE_TABLE .
+                    "` " .
+                    "WHERE `service` = '%s' AND `external_license_id` = '%s'",
                 [$body['service'], $response['id']]
             )
         );
@@ -476,10 +476,10 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         $this->db->query(
             $this->db->prepare(
                 "UPDATE `" .
-                TABLE_PREFIX .
-                "user_service` " .
-                "SET `uid` = '%d' " .
-                "WHERE `id` = '%d'",
+                    TABLE_PREFIX .
+                    "user_service` " .
+                    "SET `uid` = '%d' " .
+                    "WHERE `id` = '%d'",
                 [$user->getUid(), $userServiceId]
             )
         );
@@ -523,18 +523,15 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
             }
 
             return number_format(
-                    $this->getCost($this->getCostDaily($body), $body['amount'], true) / 100,
-                    2
-                ) .
+                $this->getCost($this->getCostDaily($body), $body['amount'], true) / 100,
+                2
+            ) .
                 ' ' .
                 $this->settings['currency'];
         }
 
         if ($action === "get_cost_user_edit") {
-            $costData = $this->getCostUserEdit(
-                $body,
-                get_users_services($body['user_service_id'])
-            );
+            $costData = $this->getCostUserEdit($body, get_users_services($body['user_service_id']));
 
             $costData['surcharge'] =
                 number_format(($costData['surcharge'] * $costData['bargain']) / 100, 2) .
@@ -558,10 +555,10 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
             $result = $this->db->query(
                 $this->db->prepare(
                     "SELECT `external_license_id` FROM `" .
-                    TABLE_PREFIX .
-                    $this::USER_SERVICE_TABLE .
-                    "` " .
-                    "WHERE `identifier` = '%s'",
+                        TABLE_PREFIX .
+                        $this::USER_SERVICE_TABLE .
+                        "` " .
+                        "WHERE `identifier` = '%s'",
                     [$identifier]
                 )
             );

@@ -8,10 +8,20 @@
             <div class="table_form" style="margin-left: 20px;" name="license_data">
                 <div class="row">
                     <div class="cell">
-                        <b>{$lang->translate('identifier')}</b>
+                        <label for="identifier">{$lang->translate('identifier')}</label>
                     </div>
                     <div class="cell">
-                        <input type="text" name="identifier" value="{$identifier}" />
+                        <div class="field">
+                            <div class="control">
+                                <input
+                                    type="text"
+                                    id="identifier"
+                                    name="identifier"
+                                    value="{$identifier}"
+                                    class="input is-small"
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -21,11 +31,20 @@
     <div class="column_right">
         <div class="piece">
             <div class="header1">
-                <b>{$lang->translate('license_prolong_time')}</b><br />
+                <label for="amount">{$lang->translate('license_prolong_time')}</label><br />
                 <span class="hint">{$lang->translate('license_price')}</span>
             </div>
             <div class="center">
-                <input type="text" name="amount" style="width: 40px" />&nbsp;{$serviceTag}
+                <div class="field">
+                    <div class="control">
+                        <input
+                            type="text"
+                            id="amount"
+                            name="amount"
+                            class="input is-small"
+                        />&nbsp;{$serviceTag}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -33,7 +52,7 @@
     <div class="column_bottom">
         <div class="center">
             <img
-                src="{$settings['shop_url_slash']}images/reload.png"
+                src="{$url->to('build/images/reload.jpg')}"
                 id="cost_reload"
                 title="{$lang->translate('reload')}"
             />

@@ -105,12 +105,12 @@
                 <td>
                     <div id="language_choice">
                         <img
-                            src="{$settings['shop_url']}/images/polish.jpg"
+                            src="{$url->to('build/images/polish.jpg')}"
                             id="language_polish"
                             title="{$lang->languages['polish']}"
                         />&nbsp;
                         <img
-                            src="{$settings['shop_url']}/images/english.jpg"
+                            src="{$url->to('build/images/english.jpg')}"
                             id="language_english"
                             title="{$lang->languages['english']}"
                         />
@@ -127,7 +127,7 @@
                                 <div class="content_title">{$heart->pageTitle}</div>
                             </td>
                             <td class="right">
-                                <a href="index.php"
+                                <a href="{$url->to('/')}"
                                     ><img
                                         src="https://sklep-sms.pl/images/logo_medium.png"
                                         alt="sklep-sms"

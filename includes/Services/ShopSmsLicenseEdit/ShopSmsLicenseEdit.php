@@ -49,10 +49,10 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
         $identifier = $this->db->getColumn(
             $this->db->prepare(
                 "SELECT `identifier` FROM `" .
-                TABLE_PREFIX .
-                $this::USER_SERVICE_TABLE .
-                "` " .
-                "WHERE `us_id` = '%d'",
+                    TABLE_PREFIX .
+                    $this::USER_SERVICE_TABLE .
+                    "` " .
+                    "WHERE `us_id` = '%d'",
                 [$purchaseData->getOrder('user_service_id')]
             ),
             'identifier'

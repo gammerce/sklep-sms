@@ -6,9 +6,21 @@
 <div class="shopsms_user_edit">
     <div class="table_form">
         <div class="row">
-            <div class="cell">{$lang->translate('email')}</div>
             <div class="cell">
-                <input type="text" name="email" value="{$email}" />
+                <label for="email">{$lang->translate('email')}</label>
+            </div>
+            <div class="cell">
+                <div class="field">
+                    <div class="control">
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            class="input is-small"
+                            value="{$email}"
+                        />
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -55,7 +67,7 @@
     <hr />
     <div class="center">
         <img
-            src="{$settings['shop_url_slash']}images/reload.png"
+            src="{$url->to('build/images/reload.jpg')}"
             id="cost_reload"
             title="{$lang->translate('reload')}"
         />

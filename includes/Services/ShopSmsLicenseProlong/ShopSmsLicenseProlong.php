@@ -89,13 +89,13 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         $result = $this->db->query(
             $this->db->prepare(
                 "SELECT 1 FROM `" .
-                TABLE_PREFIX .
-                "user_service` AS us " .
-                "INNER JOIN `" .
-                TABLE_PREFIX .
-                $this::USER_SERVICE_TABLE .
-                "` AS m ON m.us_id = us.id " .
-                "WHERE m.identifier = '%s' AND us.expire != '-1'",
+                    TABLE_PREFIX .
+                    "user_service` AS us " .
+                    "INNER JOIN `" .
+                    TABLE_PREFIX .
+                    $this::USER_SERVICE_TABLE .
+                    "` AS m ON m.us_id = us.id " .
+                    "WHERE m.identifier = '%s' AND us.expire != '-1'",
                 [$identifier]
             )
         );
@@ -152,13 +152,13 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         $result = $this->db->query(
             $this->db->prepare(
                 "SELECT * FROM `" .
-                TABLE_PREFIX .
-                "user_service` AS us " .
-                "INNER JOIN `" .
-                TABLE_PREFIX .
-                $this::USER_SERVICE_TABLE .
-                "` AS m ON m.us_id = us.id " .
-                "WHERE m.identifier = '%s'",
+                    TABLE_PREFIX .
+                    "user_service` AS us " .
+                    "INNER JOIN `" .
+                    TABLE_PREFIX .
+                    $this::USER_SERVICE_TABLE .
+                    "` AS m ON m.us_id = us.id " .
+                    "WHERE m.identifier = '%s'",
                 [$purchaseData->getOrder('identifier')]
             )
         );
@@ -176,10 +176,10 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         $this->db->query(
             $this->db->prepare(
                 "UPDATE `" .
-                TABLE_PREFIX .
-                "user_service` " .
-                "SET `uid` = %s, `expire` = '%d'" .
-                "WHERE `id` = '%d'",
+                    TABLE_PREFIX .
+                    "user_service` " .
+                    "SET `uid` = %s, `expire` = '%d'" .
+                    "WHERE `id` = '%d'",
                 [
                     $purchaseData->user->getUid() != 0 ? $purchaseData->user->getUid() : '`uid`',
                     $expiresAt,
@@ -275,13 +275,13 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         $result = $this->db->query(
             $this->db->prepare(
                 "SELECT * FROM `" .
-                TABLE_PREFIX .
-                "user_service` AS us " .
-                "INNER JOIN `" .
-                TABLE_PREFIX .
-                $this::USER_SERVICE_TABLE .
-                "` AS m ON m.us_id = us.id " .
-                "WHERE m.identifier = '%s' AND us.expire != '-1'",
+                    TABLE_PREFIX .
+                    "user_service` AS us " .
+                    "INNER JOIN `" .
+                    TABLE_PREFIX .
+                    $this::USER_SERVICE_TABLE .
+                    "` AS m ON m.us_id = us.id " .
+                    "WHERE m.identifier = '%s' AND us.expire != '-1'",
                 [$body['identifier']]
             )
         );
@@ -370,10 +370,10 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         $costDaily = $this->db->getColumn(
             $this->db->prepare(
                 "SELECT `cost_daily` FROM `" .
-                TABLE_PREFIX .
-                $this::USER_SERVICE_TABLE .
-                "` " .
-                "WHERE `identifier` = '%s'",
+                    TABLE_PREFIX .
+                    $this::USER_SERVICE_TABLE .
+                    "` " .
+                    "WHERE `identifier` = '%s'",
                 [$body['identifier']]
             ),
             "cost_daily"

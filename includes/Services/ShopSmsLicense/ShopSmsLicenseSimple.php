@@ -99,24 +99,24 @@ class ShopSmsLicenseSimple extends Service implements IServiceUserServiceAdminDi
 
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS us.id, us.uid, u.username, s.id AS `service_id`, " .
-            "s.name AS `service`, us.expire, m.identifier, m.external_license_id, m.cost_daily " .
-            "FROM `" .
-            TABLE_PREFIX .
-            "user_service` AS us " .
-            "INNER JOIN `" .
-            TABLE_PREFIX .
-            $this::USER_SERVICE_TABLE .
-            "` AS m ON m.us_id = us.id " .
-            "LEFT JOIN `" .
-            TABLE_PREFIX .
-            "services` AS s ON s.id = m.service " .
-            "LEFT JOIN `" .
-            TABLE_PREFIX .
-            "users` AS u ON u.uid = us.uid " .
-            $where .
-            "ORDER BY us.id DESC " .
-            "LIMIT " .
-            get_row_limit($this->currentPage->getPageNumber())
+                "s.name AS `service`, us.expire, m.identifier, m.external_license_id, m.cost_daily " .
+                "FROM `" .
+                TABLE_PREFIX .
+                "user_service` AS us " .
+                "INNER JOIN `" .
+                TABLE_PREFIX .
+                $this::USER_SERVICE_TABLE .
+                "` AS m ON m.us_id = us.id " .
+                "LEFT JOIN `" .
+                TABLE_PREFIX .
+                "services` AS s ON s.id = m.service " .
+                "LEFT JOIN `" .
+                TABLE_PREFIX .
+                "users` AS u ON u.uid = us.uid " .
+                $where .
+                "ORDER BY us.id DESC " .
+                "LIMIT " .
+                get_row_limit($this->currentPage->getPageNumber())
         );
 
         $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
