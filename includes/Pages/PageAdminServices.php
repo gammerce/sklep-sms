@@ -3,6 +3,7 @@ namespace App\Pages;
 
 use Admin\Table\BodyRow;
 use Admin\Table\Cell;
+use Admin\Table\HeadCell;
 use Admin\Table\Input;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
@@ -28,15 +29,11 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
-
-        $cell = new Cell($this->lang->translate('id'));
-        $cell->setParam('headers', 'id');
-        $table->addHeadCell($cell);
-
-        $table->addHeadCell(new Cell($this->lang->translate('name')));
-        $table->addHeadCell(new Cell($this->lang->translate('short_description')));
-        $table->addHeadCell(new Cell($this->lang->translate('description')));
-        $table->addHeadCell(new Cell($this->lang->translate('order')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->translate('name')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('short_description')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('description')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('order')));
 
         foreach ($this->heart->getServices() as $row) {
             $bodyRow = new BodyRow();
@@ -51,8 +48,8 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             $bodyRow->addCell(new Cell($row['order']));
 
             if (get_privileges('manage_services')) {
-                $bodyRow->setButtonDelete(true);
-                $bodyRow->setButtonEdit(true);
+                $bodyRow->setDeleteAction(true);
+                $bodyRow->setEditAction(true);
             }
 
             $table->addBodyRow($bodyRow);

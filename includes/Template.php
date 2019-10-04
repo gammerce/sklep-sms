@@ -36,33 +36,6 @@ class Template
         return $this->evalTemplate($__content, $data);
     }
 
-    public function installRender($template, array $data = [])
-    {
-        $__content = $this->getInstallTemplate($template, function ($filename) {
-            return $this->app->path("install/templates/{$filename}.html");
-        });
-
-        return $this->evalTemplate($__content, $data);
-    }
-
-    public function installFullRender($template, array $data = [])
-    {
-        $__content = $this->getInstallTemplate($template, function ($filename) {
-            return $this->app->path("install/templates/full/{$filename}.html");
-        });
-
-        return $this->evalTemplate($__content, $data);
-    }
-
-    public function installUpdateRender($template, array $data = [])
-    {
-        $__content = $this->getInstallTemplate($template, function ($filename) {
-            return $this->app->path("install/templates/update/{$filename}.html");
-        });
-
-        return $this->evalTemplate($__content, $data);
-    }
-
     private function evalTemplate($__content, array $data)
     {
         $data = $this->addDefaultVariables($data);
@@ -113,31 +86,6 @@ class Template
         }
 
         return $this->readTemplate($path, $title, $htmlcomments, $eslashes);
-    }
-
-    private function getInstallTemplate($title, callable $pathResolver)
-    {
-        if (strlen($this->lang->getCurrentLanguageShort())) {
-            $filename = $title . "." . $this->lang->getCurrentLanguageShort();
-            $temp = call_user_func($pathResolver, $filename);
-            if (file_exists($temp)) {
-                $path = $temp;
-            }
-        }
-
-        if (!isset($path)) {
-            $filename = $title;
-            $temp = call_user_func($pathResolver, $filename);
-            if (file_exists($temp)) {
-                $path = $temp;
-            }
-        }
-
-        if (!isset($path)) {
-            return false;
-        }
-
-        return $this->readTemplate($path, $title, true, true);
     }
 
     private function readTemplate($path, $title, $htmlcomments, $eslashes)

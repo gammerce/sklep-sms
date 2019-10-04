@@ -3,11 +3,12 @@ namespace App\Pages;
 
 use Admin\Table\BodyRow;
 use Admin\Table\Cell;
-use Admin\Table\Img;
+use Admin\Table\HeadCell;
+use Admin\Table\Link;
+use Admin\Table\SimpleText;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 use App\Pages\Interfaces\IPageAdminActionBox;
-use App\Routes\UrlGenerator;
 
 class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 {
@@ -28,17 +29,13 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         $wrapper->setSearch();
 
         $table = new Structure();
-
-        $cell = new Cell($this->lang->translate('id'));
-        $cell->setParam('headers', 'id');
-        $table->addHeadCell($cell);
-
-        $table->addHeadCell(new Cell($this->lang->translate('username')));
-        $table->addHeadCell(new Cell($this->lang->translate('firstname')));
-        $table->addHeadCell(new Cell($this->lang->translate('surname')));
-        $table->addHeadCell(new Cell($this->lang->translate('email')));
-        $table->addHeadCell(new Cell($this->lang->translate('groups')));
-        $table->addHeadCell(new Cell($this->lang->translate('wallet')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->translate('username')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('firstname')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('surname')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('email')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('groups')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('wallet')));
 
         $where = '';
         if (isset($query['search'])) {
@@ -98,15 +95,15 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             $cell->setParam('headers', 'wallet');
             $bodyRow->addCell($cell);
 
-            $buttonCharge = $this->createChargeButton($row['username']);
+            $buttonCharge = $this->createChargeButton();
             $bodyRow->addAction($buttonCharge);
 
-            $changePasswordCharge = $this->createPasswordButton($row['username']);
+            $changePasswordCharge = $this->createPasswordButton();
             $bodyRow->addAction($changePasswordCharge);
 
             if (get_privileges('manage_users')) {
-                $bodyRow->setButtonDelete(true);
-                $bodyRow->setButtonEdit(true);
+                $bodyRow->setDeleteAction(true);
+                $bodyRow->setEditAction(true);
             }
 
             $table->addBodyRow($bodyRow);
@@ -117,27 +114,19 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    protected function createChargeButton($username)
+    protected function createChargeButton()
     {
-        $button = new Img();
-        $button->setParam('class', 'charge_wallet clickable');
-        $button->setParam(
-            'title',
-            $this->lang->translate('charge') . ' ' . htmlspecialchars($username)
-        );
-        $button->setParam('src', $this->url->to('images/dollar.png'));
+        $button = new Link();
+        $button->setParam('class', 'dropdown-item charge_wallet');
+        $button->addContent(new SimpleText($this->lang->translate('charge')));
         return $button;
     }
 
-    protected function createPasswordButton($username)
+    protected function createPasswordButton()
     {
-        $button = new Img();
-        $button->setParam('class', 'change_password clickable');
-        $button->setParam(
-            'title',
-            $this->lang->translate('change_password') . ' ' . htmlspecialchars($username)
-        );
-        $button->setParam('src', $this->url->to('images/key.png'));
+        $button = new Link();
+        $button->setParam('class', 'dropdown-item change_password');
+        $button->addContent(new SimpleText($this->lang->translate('change_password')));
         return $button;
     }
 

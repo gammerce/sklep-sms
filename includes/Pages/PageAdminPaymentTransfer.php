@@ -4,6 +4,7 @@ namespace App\Pages;
 use Admin\Table\BodyRow;
 use Admin\Table\Cell;
 use Admin\Table\Div;
+use Admin\Table\HeadCell;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 
@@ -25,18 +26,11 @@ class PageAdminPaymentTransfer extends PageAdmin
 
         $table = new Structure();
 
-        $cell = new Cell($this->lang->translate('id'));
-        $cell->setParam('headers', 'id');
-        $table->addHeadCell($cell);
-
-        $table->addHeadCell(new Cell($this->lang->translate('cost')));
-        $table->addHeadCell(new Cell($this->lang->translate('ip')));
-
-        $cell = new Cell($this->lang->translate('platform'));
-        $cell->setParam('headers', 'platform');
-        $table->addHeadCell($cell);
-
-        $table->addHeadCell(new Cell($this->lang->translate('date')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->translate('cost')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('ip')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('platform'), "platform"));
+        $table->addHeadCell(new HeadCell($this->lang->translate('date')));
 
         $where = "( t.payment = 'transfer' ) ";
 

@@ -3,6 +3,7 @@ namespace App\Pages;
 
 use Admin\Table\BodyRow;
 use Admin\Table\Cell;
+use Admin\Table\HeadCell;
 use Admin\Table\Input;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
@@ -26,13 +27,9 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
-
-        $cell = new Cell($this->lang->translate('id'));
-        $cell->setParam('headers', 'id');
-        $table->addHeadCell($cell);
-
-        $table->addHeadCell(new Cell($this->lang->translate('sms_code')));
-        $table->addHeadCell(new Cell($this->lang->translate('tariff')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->translate('sms_code')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('tariff')));
 
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * " .
@@ -54,7 +51,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
             $bodyRow->addCell(new Cell(htmlspecialchars($row['tariff'])));
 
             if (get_privileges('manage_sms_codes')) {
-                $bodyRow->setButtonDelete(true);
+                $bodyRow->setDeleteAction(true);
             }
 
             $table->addBodyRow($bodyRow);

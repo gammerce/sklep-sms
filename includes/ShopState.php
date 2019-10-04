@@ -2,7 +2,7 @@
 namespace App;
 
 use App\Exceptions\SqlQueryException;
-use Install\DatabaseMigration;
+use App\Install\DatabaseMigration;
 use InvalidArgumentException;
 
 class ShopState

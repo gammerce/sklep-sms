@@ -28,11 +28,12 @@ before_install:
 install:
   - composer install --no-interaction
   - composer dump
-  - npm install --global prettier @prettier/plugin-php
+  - yarn install
   - php artisan test:setup
 
 script:
-  - prettier "{includes,jscripts,styles,install,tests,themes}/**/*.{php,js,css,html}" --check
+  - yarn pretty
+  - yarn build
   - ./vendor/bin/phpunit
 
 before_deploy:
@@ -41,18 +42,15 @@ before_deploy:
   - |
     zip -r \
     --exclude='data/cache/**' \
+    --exclude='data/errors/**' \
     --exclude='data/transfers/**' \
-    --exclude='errors/**' \
     build.zip \
+    build/ \
     bootstrap/ \
     confidential/ \
     data/ \
-    errors/ \
-    images/ \
     includes/ \
-    install/ \
-    jscripts/ \
-    styles/ \
+    migrations/ \
     themes/ \
     .htaccess \
     cron.php \

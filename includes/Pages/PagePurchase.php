@@ -3,6 +3,7 @@ namespace App\Pages;
 
 use App\Auth;
 use App\Interfaces\IBeLoggedMust;
+use App\Routes\UrlGenerator;
 use App\Settings;
 use App\Template;
 use App\Services\Interfaces\IServicePurchaseWeb;
@@ -35,8 +36,8 @@ class PagePurchase extends Page
         /** @var Template $template */
         $template = $this->app->make(Template::class);
 
-        /** @var Settings $settings */
-        $settings = $this->app->make(Settings::class);
+        /** @var UrlGenerator $url */
+        $url = $this->app->make(UrlGenerator::class);
 
         if (($serviceModule = $heart->getServiceModule($query['service'])) === null) {
             return $lang->translate('site_not_exists');
@@ -44,55 +45,43 @@ class PagePurchase extends Page
 
         // Dodajemy wszystkie skrypty
         if (strlen($this::PAGE_ID)) {
-            $path = "jscripts/pages/" . $this::PAGE_ID . "/";
+            $path = "build/js_old/pages/" . $this::PAGE_ID . "/";
             $pathFile = $path . "main.js";
             if (file_exists($this->app->path($pathFile))) {
-                $heart->scriptAdd(
-                    $settings['shop_url_slash'] . $pathFile . "?version=" . $this->app->version()
-                );
+                $heart->scriptAdd($url->versioned($pathFile));
             }
 
             $pathFile = $path . $serviceModule->getModuleId() . ".js";
             if (file_exists($this->app->path($pathFile))) {
-                $heart->scriptAdd(
-                    $settings['shop_url_slash'] . $pathFile . "?version=" . $this->app->version()
-                );
+                $heart->scriptAdd($url->to($pathFile));
             }
         }
 
         // Dodajemy wszystkie css
         if (strlen($this::PAGE_ID)) {
-            $path = "styles/pages/" . $this::PAGE_ID . "/";
+            $path = "build/stylesheets_old/pages/" . $this::PAGE_ID . "/";
             $pathFile = $path . "main.css";
             if (file_exists($this->app->path($pathFile))) {
-                $heart->styleAdd(
-                    $settings['shop_url_slash'] . $pathFile . "?version=" . $this->app->version()
-                );
+                $heart->styleAdd($url->to($pathFile));
             }
 
             $pathFile = $path . $serviceModule->getModuleId() . ".css";
             if (file_exists($this->app->path($pathFile))) {
-                $heart->styleAdd(
-                    $settings['shop_url_slash'] . $pathFile . "?version=" . $this->app->version()
-                );
+                $heart->styleAdd($url->to($pathFile));
             }
         }
 
         // Globalne jsy cssy konkretnych modułów usług
         foreach ($heart->getServicesModules() as $moduleInfo) {
             if ($moduleInfo['id'] == $serviceModule->getModuleId()) {
-                $path = "styles/services/" . $moduleInfo['id'] . ".css";
+                $path = "build/stylesheets_old/services/" . $moduleInfo['id'] . ".css";
                 if (file_exists($this->app->path($path))) {
-                    $heart->styleAdd(
-                        $settings['shop_url_slash'] . $path . "?version=" . $this->app->version()
-                    );
+                    $heart->styleAdd($url->to($path));
                 }
 
-                $path = "jscripts/services/" . $moduleInfo['id'] . ".js";
+                $path = "build/js_old/services/" . $moduleInfo['id'] . ".js";
                 if (file_exists($this->app->path($path))) {
-                    $heart->scriptAdd(
-                        $settings['shop_url_slash'] . $path . "?version=" . $this->app->version()
-                    );
+                    $heart->scriptAdd($url->to($path));
                 }
 
                 break;

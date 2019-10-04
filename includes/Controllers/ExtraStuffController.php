@@ -5,6 +5,7 @@ use App\Application;
 use App\CurrentPage;
 use App\Heart;
 use App\License;
+use App\Routes\UrlGenerator;
 use App\Settings;
 use App\Template;
 use App\TranslationManager;
@@ -15,12 +16,11 @@ class ExtraStuffController
 {
     public function action(
         Request $request,
-        Application $app,
         Template $template,
         Heart $heart,
         CurrentPage $currentPage,
         TranslationManager $translationManager,
-        Settings $settings,
+        UrlGenerator $url,
         License $license
     ) {
         $lang = $translationManager->user();
@@ -29,7 +29,7 @@ class ExtraStuffController
         $popup = $request->query->get("action");
         if ($popup) {
             // Usuwamy napis popup z linku
-            $url = preg_replace(
+            $link = preg_replace(
                 '/' . preg_quote("&popup={$popup}", '/') . '$/',
                 '',
                 $request->server->get('REQUEST_URI')
@@ -37,7 +37,9 @@ class ExtraStuffController
 
             $output = create_dom_element(
                 "script",
-                'window.open("' . str_replace('"', '\"', $url) . '", "", "height=720,width=1280");',
+                'window.open("' .
+                    str_replace('"', '\"', $link) .
+                    '", "", "height=720,width=1280");',
                 [
                     'type' => "text/javascript",
                 ]
@@ -61,9 +63,7 @@ class ExtraStuffController
                     $lang->translate('description') . ": " . $serviceModule->service['name'];
 
                 $heart->styleAdd(
-                    $settings['shop_url_slash'] .
-                        "styles/extra_stuff/long_desc.css?version=" .
-                        $app->version()
+                    $url->versioned("build/stylesheets_old/extra_stuff/long_desc.css")
                 );
                 $header = $template->render("header", compact('currentPage', 'heart', 'license'));
 

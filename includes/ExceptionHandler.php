@@ -54,7 +54,7 @@ class ExceptionHandler implements ExceptionHandlerContract
         }
 
         return new Response(
-            'Coś się popsuło. Więcej informacji znajdziesz w pliku errors/errors.log'
+            'Coś się popsuło. Więcej informacji znajdziesz w pliku data/logs/errors.log'
         );
     }
 

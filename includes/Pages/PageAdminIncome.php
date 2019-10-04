@@ -1,6 +1,8 @@
 <?php
 namespace App\Pages;
 
+use Admin\Table\HeadCell;
+
 class PageAdminIncome extends PageAdmin
 {
     const PAGE_ID = 'income';
@@ -39,7 +41,7 @@ class PageAdminIncome extends PageAdmin
         // Uzyskanie wszystkich serwerów
         foreach ($this->heart->getServers() as $id => $server) {
             $obejctsIds[] = $id;
-            $tableRow .= create_dom_element("td", $server['name']);
+            $tableRow .= new HeadCell($server['name']);
         }
         $obejctsIds[] = 0;
 

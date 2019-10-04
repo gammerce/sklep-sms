@@ -3,11 +3,11 @@ namespace App\Pages;
 
 use Admin\Table\BodyRow;
 use Admin\Table\Cell;
-use Admin\Table\DOMElement;
-use Admin\Table\Img;
+use Admin\Table\HeadCell;
+use Admin\Table\Link;
+use Admin\Table\SimpleText;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
-use App\Routes\UrlGenerator;
 use App\Services\ExtraFlags\ExtraFlagType;
 
 class PageAdminBoughtServices extends PageAdmin
@@ -23,36 +23,29 @@ class PageAdminBoughtServices extends PageAdmin
 
     protected function content(array $query, array $body)
     {
-        /** @var UrlGenerator $url */
-        $url = $this->app->make(UrlGenerator::class);
-
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
         $wrapper->setSearch();
 
         $table = new Structure();
-
-        $cell = new Cell($this->lang->translate('id'));
-        $cell->setParam('headers', 'id');
-        $table->addHeadCell($cell);
-
-        $table->addHeadCell(new Cell($this->lang->translate('payment_admin')));
-        $table->addHeadCell(new Cell($this->lang->translate('payment_id')));
-        $table->addHeadCell(new Cell($this->lang->translate('user')));
-        $table->addHeadCell(new Cell($this->lang->translate('server')));
-        $table->addHeadCell(new Cell($this->lang->translate('service')));
-        $table->addHeadCell(new Cell($this->lang->translate('amount')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->translate('payment_admin')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('payment_id')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('user')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('server')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('service')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('amount')));
         $table->addHeadCell(
-            new Cell(
+            new HeadCell(
                 "{$this->lang->translate('nick')}/{$this->lang->translate(
                     'ip'
                 )}/{$this->lang->translate('sid')}"
             )
         );
-        $table->addHeadCell(new Cell($this->lang->translate('additional')));
-        $table->addHeadCell(new Cell($this->lang->translate('email')));
-        $table->addHeadCell(new Cell($this->lang->translate('ip')));
-        $table->addHeadCell(new Cell($this->lang->translate('date')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('additional')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('email')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('ip')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('date')));
 
         // Wyszukujemy dane ktore spelniaja kryteria
         $where = '';
@@ -131,18 +124,14 @@ class PageAdminBoughtServices extends PageAdmin
             $extraData = implode('<br />', $extraData);
 
             // Pobranie linku płatności
-            $paymentLink = new DOMElement();
-            $paymentLink->setName('a');
+            $paymentLink = new Link();
+            $paymentLink->setParam("class", "dropdown-item");
             $paymentLink->setParam(
                 'href',
                 $this->url->to("/admin/payment_{$row['payment']}?payid={$row['payment_id']}")
             );
             $paymentLink->setParam('target', '_blank');
-
-            $paymentImg = new Img();
-            $paymentImg->setParam('src', $url->to('images/go.png'));
-            $paymentImg->setParam('title', $this->lang->translate('see_payment'));
-            $paymentLink->addContent($paymentImg);
+            $paymentLink->addContent(new SimpleText($this->lang->translate('see_payment')));
 
             $bodyRow->addAction($paymentLink);
 

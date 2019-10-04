@@ -3,6 +3,7 @@ namespace App\Pages;
 
 use Admin\Table\BodyRow;
 use Admin\Table\Cell;
+use Admin\Table\HeadCell;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 
@@ -26,12 +27,8 @@ class PageAdminPlayersFlags extends PageAdmin
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
-
-        $cell = new Cell($this->lang->translate('id'));
-        $cell->setParam('headers', 'id');
-        $table->addHeadCell($cell);
-
-        $table->addHeadCell(new Cell($this->lang->translate('server')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->translate('server')));
         $table->addHeadCell(
             new Cell(
                 "{$this->lang->translate('nick')}/{$this->lang->translate(
@@ -39,8 +36,9 @@ class PageAdminPlayersFlags extends PageAdmin
                 )}/{$this->lang->translate('sid')}"
             )
         );
+
         foreach (str_split($this->flags) as $flag) {
-            $table->addHeadCell(new Cell($flag));
+            $table->addHeadCell(new HeadCell($flag));
         }
 
         $result = $this->db->query(

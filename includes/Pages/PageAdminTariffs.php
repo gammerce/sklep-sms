@@ -3,6 +3,7 @@ namespace App\Pages;
 
 use Admin\Table\BodyRow;
 use Admin\Table\Cell;
+use Admin\Table\HeadCell;
 use Admin\Table\Input;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
@@ -26,12 +27,8 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
-
-        $cell = new Cell($this->lang->translate('tariff'));
-        $cell->setParam('headers', 'id');
-        $table->addHeadCell($cell);
-
-        $table->addHeadCell(new Cell($this->lang->translate('provision')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('tariff'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->translate('provision')));
 
         foreach ($this->heart->getTariffs() as $tariff) {
             $bodyRow = new BodyRow();
@@ -41,9 +38,9 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
             $bodyRow->setDbId($tariff->getId());
             $bodyRow->addCell(new Cell("{$provision} {$this->settings['currency']}"));
 
-            $bodyRow->setButtonEdit(true);
+            $bodyRow->setEditAction(true);
             if (!$tariff->isPredefined()) {
-                $bodyRow->setButtonDelete(true);
+                $bodyRow->setDeleteAction(true);
             }
 
             $table->addBodyRow($bodyRow);

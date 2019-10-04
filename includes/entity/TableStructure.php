@@ -2,7 +2,6 @@
 namespace Admin\Table;
 
 use App\CurrentPage;
-use App\Routes\UrlGenerator;
 use App\Template;
 use App\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -150,17 +149,20 @@ class DOMElement implements I_ToHtml
         return $this->contents[$key];
     }
 
-    /**
-     * @return int
-     */
+    /** @return int */
     public function getContentsAmount()
     {
         return count($this->contents);
     }
 
+    /** @return bool */
+    public function isEmpty()
+    {
+        return $this->getContentsAmount() === 0;
+    }
+
     /**
      * @param $key
-     *
      * @return string|array
      */
     public function getParam($key)
@@ -196,12 +198,15 @@ class DOMElement implements I_ToHtml
         return $escape ? htmlspecialchars($this->name) : $this->name;
     }
 
-    /**
-     * @param string $name
-     */
+    /** @param string $name */
     public function setName($name)
     {
         $this->name = strval($name);
+    }
+
+    public function __toString()
+    {
+        return $this->toHtml();
     }
 }
 
@@ -230,6 +235,11 @@ class Img extends DOMElement
     protected $name = 'img';
 }
 
+class Link extends DOMElement
+{
+    protected $name = 'a';
+}
+
 class Row extends DOMElement
 {
     protected $name = 'tr';
@@ -240,15 +250,17 @@ class Cell extends DOMElement
     protected $name = 'td';
 }
 
-class Line extends Row
+class HeadCell extends DOMElement
 {
-    public function __construct()
-    {
-        $cell = new Cell();
-        $cell->setParam('colspan', '31');
-        $cell->setParam('class', 'line');
+    protected $name = 'th';
 
-        $this->addContent($cell);
+    public function __construct($value = null, $headers = null)
+    {
+        parent::__construct($value);
+
+        if ($headers) {
+            $this->setParam('headers', $headers);
+        }
     }
 }
 
@@ -260,48 +272,21 @@ class BodyRow extends Row
     /** @var I_ToHtml[] */
     private $actions = [];
 
-    /** @var bool $buttonEdit */
-    private $buttonEdit = false;
+    /** @var bool */
+    private $editAction = false;
 
-    /** @var bool $buttonDelete */
-    private $buttonDelete = false;
+    /** @var bool */
+    private $deleteAction = false;
 
     public function toHtml()
     {
-        /** @var UrlGenerator $url */
-        $url = app()->make(UrlGenerator::class);
-        /** @var TranslationManager $translationManager */
-        $translationManager = app()->make(TranslationManager::class);
-        $lang = $translationManager->user();
-
         // Zachowujemy poprzedni stan, aby go przywrocic
         $oldContents = $this->contents;
 
-        $actions = new Cell();
-
-        foreach ($this->actions as $action) {
-            $actions->addContent($action);
+        $actions = $this->renderActions();
+        if ($actions) {
+            $this->addContent($actions);
         }
-
-        if ($this->buttonEdit) {
-            $button = new DOMElement();
-            $button->setName('img');
-            $button->setParam('class', "edit_row");
-            $button->setParam('src', $url->to('images/edit.png'));
-            $button->setParam('title', $lang->translate('edit') . ' ' . $this->dbId);
-            $actions->addContent($button);
-        }
-
-        if ($this->buttonDelete) {
-            $button = new DOMElement();
-            $button->setName('img');
-            $button->setParam('class', "delete_row");
-            $button->setParam('src', $url->to('images/bin.png'));
-            $button->setParam('title', $lang->translate('delete') . ' ' . $this->dbId);
-            $actions->addContent($button);
-        }
-
-        $this->addContent($actions);
 
         $output = parent::toHtml();
 
@@ -320,19 +305,19 @@ class BodyRow extends Row
     }
 
     /**
-     * @param boolean $buttonEdit
+     * @param boolean $editAction
      */
-    public function setButtonEdit($buttonEdit = true)
+    public function setEditAction($editAction = true)
     {
-        $this->buttonEdit = (bool) $buttonEdit;
+        $this->editAction = (bool) $editAction;
     }
 
     /**
-     * @param boolean $buttonDelete
+     * @param boolean $deleteAction
      */
-    public function setButtonDelete($buttonDelete = true)
+    public function setDeleteAction($deleteAction = true)
     {
-        $this->buttonDelete = (bool) $buttonDelete;
+        $this->deleteAction = (bool) $deleteAction;
     }
 
     /**
@@ -356,18 +341,56 @@ class BodyRow extends Row
         $this->addCell($cell);
     }
 
-    /**
-     * @return string
-     */
+    /** @return string */
     public function getDbId()
     {
         return $this->dbId;
+    }
+
+    private function renderActions()
+    {
+        /** @var Template $template */
+        $template = app()->make(Template::class);
+
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
+        $lang = $translationManager->user();
+
+        $actions = new Div();
+
+        foreach ($this->actions as $action) {
+            $actions->addContent($action);
+        }
+
+        if ($this->editAction) {
+            $editAction = new Link();
+            $editAction->setParam('class', "dropdown-item edit_row");
+            $editAction->addContent(new SimpleText($lang->translate('edit')));
+            $actions->addContent($editAction);
+        }
+
+        if ($this->deleteAction) {
+            $deleteAction = new Link();
+            $deleteAction->setParam('class', "dropdown-item delete_row has-text-danger");
+            $deleteAction->addContent(new SimpleText($lang->translate('delete')));
+            $actions->addContent($deleteAction);
+        }
+
+        if ($actions->isEmpty()) {
+            return null;
+        }
+
+        return new Cell($template->render("more_actions", compact("actions")));
     }
 }
 
 class Structure extends DOMElement
 {
     protected $name = 'table';
+
+    protected $params = [
+        "class" => "table is-fullwidth is-hoverable",
+    ];
 
     /** @var DOMElement[] */
     private $headCells = [];
@@ -400,13 +423,11 @@ class Structure extends DOMElement
         foreach ($this->headCells as $cell) {
             $headRow->addContent($cell);
         }
-        $actions = new Cell($lang->translate('actions'));
+        $actions = new HeadCell($lang->translate('actions'));
         $actions->setStyle('width', '4%');
         $headRow->addContent($actions);
 
-        $head->addContent(new Line());
         $head->addContent($headRow);
-        $head->addContent(new Line());
 
         // Tworzymy tbody
         $body = new DOMElement();
@@ -415,7 +436,7 @@ class Structure extends DOMElement
             $body->addContent($row);
         }
 
-        if (!$body->getContentsAmount()) {
+        if ($body->isEmpty()) {
             $row = new Row();
             $cell = new Cell($lang->translate('no_data'));
             $cell->setParam('colspan', '30');
@@ -519,6 +540,7 @@ class Wrapper extends Div
 
     public function __construct()
     {
+        parent::__construct();
         $this->setParam('class', 'table_structure');
     }
 
@@ -530,13 +552,9 @@ class Wrapper extends Div
         /** @var Request $request */
         $request = app()->make(Request::class);
 
-        $oldContets = $this->contents;
-
-        $title = new Div();
-        $title->setParam('class', 'title is-4');
+        $oldContent = $this->contents;
 
         $buttons = new Div();
-        $buttons->setStyle('float', 'right');
 
         if ($this->search) {
             $searchText = $request->get('search');
@@ -550,15 +568,19 @@ class Wrapper extends Div
             $buttons->addContent(new SimpleText(' '));
         }
 
-        $title->addContent(new SimpleText($this->getTitle()));
-        $title->addContent($buttons);
-        $title->addContent(new SimpleText('<br class="clear" />'));
+        $title = new Div($this->getTitle());
+        $title->setParam("class", "title is-4");
 
-        $this->addContent($title);
+        $pageTitle = new Div();
+        $pageTitle->setParam('class', 'page-title');
+        $pageTitle->addContent($title);
+        $pageTitle->addContent($buttons);
+
+        $this->addContent($pageTitle);
         $this->addContent($this->getTable());
 
         $output = parent::toHtml();
-        $this->contents = $oldContets;
+        $this->contents = $oldContent;
 
         return $output;
     }

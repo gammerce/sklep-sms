@@ -1,7 +1,11 @@
 <?php
 namespace App\Services\MybbExtraGroups;
 
-use Admin\Table;
+use Admin\Table\BodyRow;
+use Admin\Table\Cell;
+use Admin\Table\HeadCell;
+use Admin\Table\Structure;
+use Admin\Table\Wrapper;
 use App\CurrentPage;
 use App\Services\Interfaces\IServiceAdminManage;
 use App\Services\Interfaces\IServiceCreate;
@@ -188,19 +192,15 @@ class ServiceMybbExtraGroupsSimple extends Service implements
 
         $pageNumber = $currentPage->getPageNumber();
 
-        $wrapper = new Table\Wrapper();
+        $wrapper = new Wrapper();
         $wrapper->setSearch();
 
-        $table = new Table\Structure();
-
-        $cell = new Table\Cell($this->lang->translate('id'));
-        $cell->setParam('headers', 'id');
-        $table->addHeadCell($cell);
-
-        $table->addHeadCell(new Table\Cell($this->lang->translate('user')));
-        $table->addHeadCell(new Table\Cell($this->lang->translate('service')));
-        $table->addHeadCell(new Table\Cell($this->lang->translate('mybb_user')));
-        $table->addHeadCell(new Table\Cell($this->lang->translate('expires')));
+        $table = new Structure();
+        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->translate('user')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('service')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('mybb_user')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('expires')));
 
         // Wyszukujemy dane ktore spelniaja kryteria
         $where = '';
@@ -241,28 +241,28 @@ class ServiceMybbExtraGroupsSimple extends Service implements
         $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
         while ($row = $this->db->fetchArrayAssoc($result)) {
-            $bodyRow = new Table\BodyRow();
+            $bodyRow = new BodyRow();
 
             $bodyRow->setDbId($row['id']);
             $bodyRow->addCell(
-                new Table\Cell(
+                new Cell(
                     $row['uid']
                         ? $row['username'] . " ({$row['uid']})"
                         : $this->lang->translate('none')
                 )
             );
-            $bodyRow->addCell(new Table\Cell($row['service']));
-            $bodyRow->addCell(new Table\Cell($row['mybb_uid']));
+            $bodyRow->addCell(new Cell($row['service']));
+            $bodyRow->addCell(new Cell($row['mybb_uid']));
             $bodyRow->addCell(
-                new Table\Cell(
+                new Cell(
                     $row['expire'] == '-1'
                         ? $this->lang->translate('never')
                         : date($this->settings['date_format'], $row['expire'])
                 )
             );
             if (get_privileges("manage_user_services")) {
-                $bodyRow->setButtonDelete(true);
-                $bodyRow->setButtonEdit(false);
+                $bodyRow->setDeleteAction(true);
+                $bodyRow->setEditAction(false);
             }
 
             $table->addBodyRow($bodyRow);

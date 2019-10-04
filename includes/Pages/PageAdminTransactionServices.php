@@ -3,6 +3,7 @@ namespace App\Pages;
 
 use Admin\Table\BodyRow;
 use Admin\Table\Cell;
+use Admin\Table\HeadCell;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 use App\Pages\Interfaces\IPageAdminActionBox;
@@ -25,14 +26,10 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
-
-        $cell = new Cell($this->lang->translate('id'));
-        $cell->setParam('headers', 'id');
-        $table->addHeadCell($cell);
-
-        $table->addHeadCell(new Cell($this->lang->translate('name')));
-        $table->addHeadCell(new Cell($this->lang->translate('sms_service')));
-        $table->addHeadCell(new Cell($this->lang->translate('transfer_service')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->translate('name')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('sms_service')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('transfer_service')));
 
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `" .
@@ -59,7 +56,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
             $bodyRow->addCell(new Cell($smsService));
             $bodyRow->addCell(new Cell($transferService));
 
-            $bodyRow->setButtonEdit(true);
+            $bodyRow->setEditAction(true);
 
             $table->addBodyRow($bodyRow);
         }

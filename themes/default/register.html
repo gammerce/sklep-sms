@@ -6,7 +6,9 @@
                 <tr>
                     <td colspan="2">
                         <div class="field">
-                            <label for="username">{$lang->translate('username')}</label>
+                            <label for="username" class="label"
+                                >{$lang->translate('username')}</label
+                            >
                             <div class="control">
                                 <input
                                     id="username"
@@ -22,7 +24,9 @@
                 <tr>
                     <td>
                         <div class="field">
-                            <label for="password">{$lang->translate('password')}</label>
+                            <label for="password" class="label"
+                                >{$lang->translate('password')}</label
+                            >
                             <div class="control">
                                 <input
                                     id="password"
@@ -37,7 +41,7 @@
                     </td>
                     <td>
                         <div class="field">
-                            <label for="password_repeat">
+                            <label for="password_repeat" class="label">
                                 {$lang->translate('password_repeat')}
                             </label>
                             <div class="control">
@@ -56,7 +60,7 @@
                 <tr>
                     <td>
                         <div class="field">
-                            <label for="email">E-mail</label>
+                            <label for="email" class="label">E-mail</label>
                             <div class="control">
                                 <input
                                     id="email"
@@ -70,7 +74,9 @@
                     </td>
                     <td>
                         <div class="field">
-                            <label for="email_repeat">{$lang->translate('email_repeat')}</label>
+                            <label for="email_repeat" class="label"
+                                >{$lang->translate('email_repeat')}</label
+                            >
                             <div class="control">
                                 <input
                                     id="email_repeat"
@@ -94,7 +100,7 @@
             <table class="register_names">
                 <tr>
                     <td>
-                        <label for="forename">{$lang->translate('firstname')}</label>
+                        <label for="forename" class="label">{$lang->translate('firstname')}</label>
                     </td>
                     <td>
                         <div class="field">
@@ -105,7 +111,6 @@
                                     type="text"
                                     class="input is-small"
                                     maxlength="32"
-                                    required
                                 />
                             </div>
                         </div>
@@ -113,7 +118,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <label for="surname">{$lang->translate('surname')}</label>
+                        <label for="surname" class="label">{$lang->translate('surname')}</label>
                     </td>
                     <td>
                         <div class="field">
@@ -124,7 +129,6 @@
                                     type="text"
                                     class="input is-small"
                                     maxlength="64"
-                                    required
                                 />
                             </div>
                         </div>
@@ -136,12 +140,14 @@
         <dd>
             <table class="register_antispam">
                 <tr>
-                    <td>{$lang->translate('question')}</td>
+                    <td>
+                        <label class="label">{$lang->translate('question')}</label>
+                    </td>
                     <td headers="as_question">{$antispamQuestion['question']}</td>
                 </tr>
                 <tr>
                     <td>
-                        <label for="as_answer">{$lang->translate('answer')}</label>
+                        <label for="as_answer" class="label">{$lang->translate('answer')}</label>
                     </td>
                     <td>
                         <div class="field">
@@ -151,6 +157,7 @@
                                     name="as_answer"
                                     type="text"
                                     class="input is-small"
+                                    value="adasda sadasd asd"
                                     maxlength="64"
                                     required
                                 />
