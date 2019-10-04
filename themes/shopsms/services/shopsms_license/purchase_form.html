@@ -25,17 +25,16 @@
                 <label for="amount">{$lang->translate('license_duration')}</label><br />
                 <span class="hint">{$lang->translate('license_price')}</span>
             </div>
-            <div class="center">
-                <div class="field">
-                    <div class="control">
-                        <input
-                            type="number"
-                            id="amount"
-                            name="amount"
-                            min="0"
-                            class="input is-small"
-                        />&nbsp;{$serviceTag}
-                    </div>
+            <div class="field">
+                <div class="control center">
+                    <input
+                        type="number"
+                        id="amount"
+                        name="amount"
+                        min="0"
+                        class="input is-small"
+                        style="width: 40px"
+                    />&nbsp;{$serviceTag}
                 </div>
             </div>
         </div>
