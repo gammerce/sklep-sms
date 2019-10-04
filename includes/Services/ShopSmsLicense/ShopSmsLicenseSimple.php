@@ -1,7 +1,11 @@
 <?php
 namespace App\Services\ShopSmsLicense;
 
-use Admin\Table;
+use Admin\Table\BodyRow;
+use Admin\Table\Cell;
+use Admin\Table\HeadCell;
+use Admin\Table\Structure;
+use Admin\Table\Wrapper;
 use App\Auth;
 use App\CurrentPage;
 use App\LicenseServerService;
@@ -52,32 +56,28 @@ class ShopSmsLicenseSimple extends Service implements IServiceUserServiceAdminDi
      *
      * @return string
      */
-    public function user_service_admin_display_title_get()
+    public function userServiceAdminDisplayTitleGet()
     {
         return $this->lang->translate('licenses');
     }
 
-    public function user_service_admin_display_get($get, $post)
+    public function userServiceAdminDisplayGet(array $query, array $body)
     {
-        $wrapper = new Table\Wrapper();
+        $wrapper = new Wrapper();
         $wrapper->setSearch();
 
-        $table = new Table\Structure();
-
-        $cell = new Table\Cell($this->lang->translate('id'));
-        $cell->setParam('headers', 'id');
-        $table->addHeadCell($cell);
-
-        $table->addHeadCell(new Table\Cell($this->lang->translate('user')));
-        $table->addHeadCell(new Table\Cell($this->lang->translate('service')));
-        $table->addHeadCell(new Table\Cell($this->lang->translate('identifier')));
-        $table->addHeadCell(new Table\Cell($this->lang->translate('external_license_id')));
-        $table->addHeadCell(new Table\Cell($this->lang->translate('cost_daily')));
-        $table->addHeadCell(new Table\Cell($this->lang->translate('expires')));
+        $table = new Structure();
+        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->translate('user')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('service')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('identifier')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('external_license_id')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('cost_daily')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('expires')));
 
         // Wyszukujemy dane ktore spelniaja kryteria
         $where = '';
-        if (isset($get['search'])) {
+        if (isset($query['search'])) {
             searchWhere(
                 [
                     "us.id",
@@ -88,7 +88,7 @@ class ShopSmsLicenseSimple extends Service implements IServiceUserServiceAdminDi
                     "m.identifier",
                     'm.cost_daily',
                 ],
-                urldecode($get['search']),
+                urldecode($query['search']),
                 $where
             );
         }
@@ -122,37 +122,37 @@ class ShopSmsLicenseSimple extends Service implements IServiceUserServiceAdminDi
         $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
         while ($row = $this->db->fetch_array_assoc($result)) {
-            $body_row = new Table\BodyRow();
+            $bodyRow = new BodyRow();
 
-            $body_row->setDbId($row['id']);
-            $body_row->addCell(
-                new Table\Cell(
+            $bodyRow->setDbId($row['id']);
+            $bodyRow->addCell(
+                new Cell(
                     $row['uid']
                         ? $row['username'] . " ({$row['uid']})"
                         : $this->lang->translate('none')
                 )
             );
-            $body_row->addCell(new Table\Cell($row['service']));
-            $body_row->addCell(new Table\Cell($row['identifier']));
-            $body_row->addCell(new Table\Cell($row['external_license_id']));
-            $body_row->addCell(
-                new Table\Cell(
+            $bodyRow->addCell(new Cell($row['service']));
+            $bodyRow->addCell(new Cell($row['identifier']));
+            $bodyRow->addCell(new Cell($row['external_license_id']));
+            $bodyRow->addCell(
+                new Cell(
                     number_format($row['cost_daily'] / 100, 2) . ' ' . $this->settings['currency']
                 )
             );
-            $body_row->addCell(
-                new Table\Cell(
+            $bodyRow->addCell(
+                new Cell(
                     $row['expire'] == '-1'
                         ? $this->lang->translate('never')
                         : date($this->settings['date_format'], $row['expire'])
                 )
             );
-            if (get_privilages("manage_user_services")) {
-                $body_row->setButtonDelete(true);
-                $body_row->setButtonEdit(false);
+            if (get_privileges("manage_user_services")) {
+                $bodyRow->setDeleteAction(true);
+                $bodyRow->setEditAction(false);
             }
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);

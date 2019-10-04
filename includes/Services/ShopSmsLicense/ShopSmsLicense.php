@@ -21,7 +21,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
     IServiceUserOwnServicesEdit,
     IServiceUserServiceAdminAdd
 {
-    public function purchase_form_get()
+    public function purchaseFormGet()
     {
         return $this->template->render("services/shopsms_license/purchase_form", [
             'user' => $this->auth->user(),
@@ -30,7 +30,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         ]);
     }
 
-    public function purchase_form_validate($post)
+    public function purchaseFormValidate($post)
     {
         // Wybranie przynajmniej jednego silnika gry
         if ($post['platform_amxmodx'] == "0" && $post['platform_sourcemod'] == "0") {
@@ -87,10 +87,10 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         ];
     }
 
-    public function order_details($purchase_data)
+    public function orderDetails(Purchase $purchaseData)
     {
         $engines = [];
-        $tmp_engines = $purchase_data->getOrder('engines');
+        $tmp_engines = $purchaseData->getOrder('engines');
         if ($tmp_engines['amxx']) {
             $engines[] = "AMX Mod X";
         }
@@ -104,17 +104,17 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
             $engines = implode(", ", $engines);
         }
 
-        $email = strlen($purchase_data->getEmail())
-            ? htmlspecialchars($purchase_data->getEmail())
+        $email = strlen($purchaseData->getEmail())
+            ? htmlspecialchars($purchaseData->getEmail())
             : $this->lang->translate('none');
         $cost_monthly =
-            number_format(($purchase_data->getOrder('cost_daily') * 30) / 100, 2) .
+            number_format(($purchaseData->getOrder('cost_daily') * 30) / 100, 2) .
             " " .
             $this->settings['currency'];
 
         return $this->template->render(
             "services/shopsms_license/order_details",
-            compact('purchase_data', 'engines', 'cost_monthly', 'email') + [
+            compact('purchaseData', 'engines', 'cost_monthly', 'email') + [
                 'serviceName' => $this->service['name'],
                 'serviceTag' => $this->service['tag'],
             ],
@@ -123,10 +123,10 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         );
     }
 
-    public function purchase($purchase_data)
+    public function purchase(Purchase $purchaseData)
     {
-        $tmp_engines = $purchase_data->getOrder('engines');
-        $lifetime = $purchase_data->getOrder('amount') * 24 * 60 * 60;
+        $tmp_engines = $purchaseData->getOrder('engines');
+        $lifetime = $purchaseData->getOrder('amount') * 24 * 60 * 60;
 
         $result = $this->licenseServerService->create(
             $lifetime,
@@ -145,7 +145,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
                 TABLE_PREFIX .
                 "user_service` " .
                 "SET `uid` = '%d', `service` = '%s', `expire` = '%d'",
-                [$purchase_data->user->getUid(), $this->service['id'], $expiresAt]
+                [$purchaseData->user->getUid(), $this->service['id'], $expiresAt]
             )
         );
         $userServiceId = $this->db->last_id();
@@ -169,8 +169,8 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
                     $this->service['id'],
                     $identifier,
                     $externalLicenseId,
-                    $purchase_data->getOrder('cost_daily'),
-                    $purchase_data->getEmail(),
+                    $purchaseData->getOrder('cost_daily'),
+                    $purchaseData->getEmail(),
                     $tmp_engines['amxx'],
                     $tmp_engines['sm'],
                 ]
@@ -193,16 +193,16 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         }
 
         return add_bought_service_info(
-            $purchase_data->user->getUid(),
-            $purchase_data->user->getUsername(),
-            $purchase_data->user->getLastIp(),
-            $purchase_data->getPayment('method'),
-            $purchase_data->getPayment('payment_id'),
+            $purchaseData->user->getUid(),
+            $purchaseData->user->getUsername(),
+            $purchaseData->user->getLastIp(),
+            $purchaseData->getPayment('method'),
+            $purchaseData->getPayment('payment_id'),
             $this->service['id'],
             0,
-            $purchase_data->getOrder('amount'),
+            $purchaseData->getOrder('amount'),
             $identifier,
-            $purchase_data->getEmail(),
+            $purchaseData->getEmail(),
             [
                 'token' => $token,
                 'identifier' => $identifier,
@@ -212,7 +212,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         );
     }
 
-    public function purchase_info($action, $data)
+    public function purchaseInfo($action, $data)
     {
         $data['extra_data'] = json_decode($data['extra_data'], true);
         $engines = htmlspecialchars($data['extra_data']['engines']);
@@ -255,12 +255,12 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
      *
      * @return string
      */
-    public function user_service_admin_add_form_get()
+    public function userServiceAdminAddFormGet()
     {
         return $this->template->render(
             "services/shopsms_license/user_service_admin_add",
             [
-                'moduleId' => $this->get_module_id(),
+                'moduleId' => $this->getModuleId(),
             ],
             true,
             false
@@ -271,13 +271,13 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
      * Metoda sprawdza dane formularza podczas dodawania użytkownikowi usługi w PA
      * i gdy wszystko jest okej, to ją dodaje.
      *
-     * @param array $post Dane $_POST
+     * @param array $body Dane $_POST
      * @return array
      *  status => id wiadomości
      *  text => treść wiadomości
      *  positive => czy udało się dodać usługę
      */
-    public function user_service_admin_add($post)
+    public function userServiceAdminAdd($body)
     {
         return [
             'status' => 'ok',
@@ -288,24 +288,24 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
 
     // ------------------- My Current Services --------------------
 
-    public function user_own_service_info_get($user_service, $button_edit)
+    public function userOwnServiceInfoGet($userService, $buttonEdit)
     {
-        $identifier = htmlspecialchars($user_service['identifier']);
+        $identifier = htmlspecialchars($userService['identifier']);
         $expire =
-            $user_service['expire'] != '-1'
-                ? date($this->settings['date_format'], $user_service['expire'])
+            $userService['expire'] != '-1'
+                ? date($this->settings['date_format'], $userService['expire'])
                 : $this->lang->translate('never');
-        $email = strlen($user_service['email'])
-            ? htmlspecialchars($user_service['email'])
+        $email = strlen($userService['email'])
+            ? htmlspecialchars($userService['email'])
             : $this->lang->translate('none');
-        $cost_monthly = number_format(($user_service['cost_daily'] * 30) / 100, 2);
+        $cost_monthly = number_format(($userService['cost_daily'] * 30) / 100, 2);
 
         // Dostępne silniki
         $engines = [];
-        if ($user_service['platform_amxmodx']) {
+        if ($userService['platform_amxmodx']) {
             $engines[] = "AMX Mod X";
         }
-        if ($user_service['platform_sourcemod']) {
+        if ($userService['platform_sourcemod']) {
             $engines[] = "SOURCEMOD";
         }
 
@@ -318,38 +318,38 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         return $this->template->render(
             "services/shopsms_license/user_own_service",
             compact(
-                'user_service',
+                'userService',
                 'identifier',
                 'engines',
                 'email',
                 'expire',
                 'cost_monthly',
-                'button_edit'
+                'buttonEdit'
             ) + [
-                'moduleId' => $this->get_module_id(),
+                'moduleId' => $this->getModuleId(),
                 'serviceName' => $this->service['name'],
             ]
         );
     }
 
-    public function user_own_service_edit_form_get($user_service)
+    public function userOwnServiceEditFormGet($userService)
     {
-        $identifier = htmlspecialchars($user_service['identifier']);
+        $identifier = htmlspecialchars($userService['identifier']);
         $expire =
-            $user_service['expire'] != '-1'
-                ? date($this->settings['date_format'], $user_service['expire'])
+            $userService['expire'] != '-1'
+                ? date($this->settings['date_format'], $userService['expire'])
                 : $this->lang->translate('never');
-        $email = htmlspecialchars($user_service['email']);
-        $cost_monthly = number_format(($user_service['cost_daily'] * 30) / 100, 2);
+        $email = htmlspecialchars($userService['email']);
+        $cost_monthly = number_format(($userService['cost_daily'] * 30) / 100, 2);
 
         $engines = [
             'amxx' => [
-                'input' => $user_service['platform_amxmodx'] ? "1" : "0",
-                'div' => $user_service['platform_amxmodx'] ? "active" : "",
+                'input' => $userService['platform_amxmodx'] ? "1" : "0",
+                'div' => $userService['platform_amxmodx'] ? "active" : "",
             ],
             'sm' => [
-                'input' => $user_service['platform_sourcemod'] ? "1" : "0",
-                'div' => $user_service['platform_sourcemod'] ? "active" : "",
+                'input' => $userService['platform_sourcemod'] ? "1" : "0",
+                'div' => $userService['platform_sourcemod'] ? "active" : "",
             ],
         ];
 
@@ -362,7 +362,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         );
     }
 
-    public function user_own_service_edit($post, $user_service)
+    public function userOwnServiceEdit($post, $userService)
     {
         // Wybranie przynajmniej jednego silnika gry
         if ($post['platform_amxmodx'] == "0" && $post['platform_sourcemod'] == '0') {
@@ -383,7 +383,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
             $warnings['password'] = array_merge((array) $warnings['password'], $warning);
         }
 
-        $cost_data = $this->getCostUserEdit($post, $user_service);
+        $cost_data = $this->getCostUserEdit($post, $userService);
 
         // Jeżeli są jakieś błedy, to je zwróć
         if (!empty($warnings)) {
@@ -426,12 +426,12 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         ];
     }
 
-    public function service_take_over_form_get()
+    public function serviceTakeOverFormGet()
     {
         return $this->template->render("services/shopsms_license/service_take_over");
     }
 
-    public function service_take_over($post)
+    public function serviceTakeOver($post)
     {
         // ID
         if (!strlen($post['token'])) {
@@ -499,31 +499,31 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         ];
     }
 
-    public function user_service_delete($user_service, $who)
+    public function userServiceDelete($userService, $who)
     {
         // Nie usuwaj, jezeli jest mniej niz 30 dni po wygasnieciu
         if (
             $who != 'admin' &&
-            isset($user_service['now']) &&
-            $user_service['expire'] + 60 * 60 * 24 * 30 > $user_service['now']
+            isset($userService['now']) &&
+            $userService['expire'] + 60 * 60 * 24 * 30 > $userService['now']
         ) {
             return false;
         }
 
-        $this->licenseServerService->delete($user_service['external_license_id']);
+        $this->licenseServerService->delete($userService['external_license_id']);
 
         return true;
     }
 
-    public function action_execute($action, $post)
+    public function actionExecute($action, $body)
     {
         if ($action === "get_cost") {
-            if ($post['amount'] < 30) {
+            if ($body['amount'] < 30) {
                 return $this->lang->translate('none');
             }
 
             return number_format(
-                    $this->getCost($this->getCostDaily($post), $post['amount'], true) / 100,
+                    $this->getCost($this->getCostDaily($body), $body['amount'], true) / 100,
                     2
                 ) .
                 ' ' .
@@ -532,8 +532,8 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
 
         if ($action === "get_cost_user_edit") {
             $cost_data = $this->getCostUserEdit(
-                $post,
-                get_users_services($post['user_service_id'])
+                $body,
+                get_users_services($body['user_service_id'])
             );
 
             $cost_data['surcharge'] =
@@ -553,7 +553,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         }
 
         if ($action === "regenerate_token") {
-            $identifier = $post['identifier'];
+            $identifier = $body['identifier'];
 
             $result = $this->db->query(
                 $this->db->prepare(
@@ -587,9 +587,9 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         return 'no_action';
     }
 
-    private function getCost($cost_daily, $days_amount, $bargain = true)
+    private function getCost($costDaily, $daysAmount, $bargain = true)
     {
-        return ceil($cost_daily * $days_amount * ($bargain ? $this->getBargain($days_amount) : 1));
+        return ceil($costDaily * $daysAmount * ($bargain ? $this->getBargain($daysAmount) : 1));
     }
 
     /**
@@ -617,24 +617,24 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
 
     /**
      * @param array $post Dane $_POST
-     * @param array $user_service Dane o usludze użytkownika
+     * @param array $userService Dane o usludze użytkownika
      * @return array
      */
-    private function getCostUserEdit($post, $user_service)
+    private function getCostUserEdit($post, $userService)
     {
-        if (empty($user_service)) {
+        if (empty($userService)) {
             return null;
         }
 
-        $daysLeft = ($user_service['expire'] - time()) / (24 * 60 * 60);
+        $daysLeft = ($userService['expire'] - time()) / (24 * 60 * 60);
 
         $engines = [
             'amxx' => [
-                'old' => $user_service['platform_amxmodx'],
+                'old' => $userService['platform_amxmodx'],
                 'new' => $post['platform_amxmodx'],
             ],
             'sm' => [
-                'old' => $user_service['platform_sourcemod'],
+                'old' => $userService['platform_sourcemod'],
                 'new' => $post['platform_sourcemod'],
             ],
         ];
@@ -656,11 +656,11 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         }
 
         if (!isset($costDaily)) {
-            $costDaily = $user_service['cost_daily'] + $additionalCost;
+            $costDaily = $userService['cost_daily'] + $additionalCost;
         }
 
         return [
-            'surcharge' => max(0, ($costDaily - $user_service['cost_daily']) * $daysLeft),
+            'surcharge' => max(0, ($costDaily - $userService['cost_daily']) * $daysLeft),
             'cost_daily' => $costDaily,
             'cost_monthly' => $costDaily * 30,
             'bargain' => $this->getBargain($daysLeft),
@@ -680,7 +680,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         return 1.0;
     }
 
-    public function show_on_web()
+    public function showOnWeb()
     {
         return true;
     }

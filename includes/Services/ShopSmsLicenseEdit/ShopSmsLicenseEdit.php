@@ -84,10 +84,10 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
         );
     }
 
-    public function purchase($purchase_data)
+    public function purchase($purchaseData)
     {
-        $user_service = get_users_services($purchase_data->getOrder('user_service_id'));
-        $tmp_engines = $purchase_data->getOrder('engines');
+        $user_service = get_users_services($purchaseData->getOrder('user_service_id'));
+        $tmp_engines = $purchaseData->getOrder('engines');
 
         $this->licenseServerService->updatePlatforms(
             $user_service['external_license_id'],
@@ -100,12 +100,12 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
             [
                 'column' => 'cost_daily',
                 'value' => "'%d'",
-                'data' => [$purchase_data->getOrder('cost_daily')],
+                'data' => [$purchaseData->getOrder('cost_daily')],
             ],
             [
                 'column' => 'email',
                 'value' => "'%s'",
-                'data' => [$purchase_data->getEmail()],
+                'data' => [$purchaseData->getEmail()],
             ],
             [
                 'column' => 'platform_amxmodx',
@@ -120,8 +120,8 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
         ];
         $this->update_user_service(
             $update_data,
-            $purchase_data->getOrder('user_service_id'),
-            $purchase_data->getOrder('user_service_id')
+            $purchaseData->getOrder('user_service_id'),
+            $purchaseData->getOrder('user_service_id')
         );
 
         // Dodanie informacji o zakupie usługi
@@ -136,16 +136,16 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
         $engines = !empty($engines) ? implode(", ", $engines) : $this->lang->translate('none');
 
         return add_bought_service_info(
-            $purchase_data->user->getUid(),
-            $purchase_data->user->getUsername(),
-            $purchase_data->user->getLastIp(),
-            $purchase_data->getPayment('method'),
-            $purchase_data->getPayment('payment_id'),
+            $purchaseData->user->getUid(),
+            $purchaseData->user->getUsername(),
+            $purchaseData->user->getLastIp(),
+            $purchaseData->getPayment('method'),
+            $purchaseData->getPayment('payment_id'),
             $this->service['id'],
             0,
             0,
             $user_service['identifier'],
-            $purchase_data->getEmail(),
+            $purchaseData->getEmail(),
             ['engines' => $engines]
         );
     }

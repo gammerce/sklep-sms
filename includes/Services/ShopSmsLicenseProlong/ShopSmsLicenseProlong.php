@@ -147,7 +147,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         );
     }
 
-    public function purchase($purchase_data)
+    public function purchase($purchaseData)
     {
         $result = $this->db->query(
             $this->db->prepare(
@@ -159,13 +159,13 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
                 $this::USER_SERVICE_TABLE .
                 "` AS m ON m.us_id = us.id " .
                 "WHERE m.identifier = '%s'",
-                [$purchase_data->getOrder('identifier')]
+                [$purchaseData->getOrder('identifier')]
             )
         );
 
         $user_service = $this->db->fetch_array_assoc($result);
 
-        $lifetime = $purchase_data->getOrder('amount') * 24 * 60 * 60;
+        $lifetime = $purchaseData->getOrder('amount') * 24 * 60 * 60;
         $result = $this->licenseServerService->prolong(
             $user_service['external_license_id'],
             $lifetime
@@ -181,7 +181,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
                 "SET `uid` = %s, `expire` = '%d'" .
                 "WHERE `id` = '%d'",
                 [
-                    $purchase_data->user->getUid() != 0 ? $purchase_data->user->getUid() : '`uid`',
+                    $purchaseData->user->getUid() != 0 ? $purchaseData->user->getUid() : '`uid`',
                     $expiresAt,
                     $user_service['us_id'],
                 ]
@@ -189,14 +189,14 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         );
 
         return add_bought_service_info(
-            $purchase_data->user->getUid(),
-            $purchase_data->user->getUsername(),
-            $purchase_data->user->getLastIp(),
-            $purchase_data->getPayment('method'),
-            $purchase_data->getPayment('payment_id'),
+            $purchaseData->user->getUid(),
+            $purchaseData->user->getUsername(),
+            $purchaseData->user->getLastIp(),
+            $purchaseData->getPayment('method'),
+            $purchaseData->getPayment('payment_id'),
             $this->service['id'],
             0,
-            $purchase_data->getOrder('amount'),
+            $purchaseData->getOrder('amount'),
             $user_service['identifier'],
             $user_service['email'],
             [
