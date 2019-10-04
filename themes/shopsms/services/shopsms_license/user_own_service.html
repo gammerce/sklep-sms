@@ -2,11 +2,15 @@
     <div class="brick regenerated_token_box">Nowy token: <strong class="token_value"></strong></div>
 
     <div class="fright">
-        <a href="{$url->to('/page/purchase?service=ss_license_plong&identifier=' . $identifier)}">
+        <a
+            href="{$url->to('/page/purchase?service=ss_license_plong&identifier=' . $identifier)}"
+            style="text-decoration: none;"
+        >
             <button class="button is-small prolong_license" type="button">
                 {$lang->translate('prolong_license')}
             </button>
         </a>
+
         <button
             class="button is-small regenerate_token"
             type="button"
@@ -14,8 +18,10 @@
         >
             {$lang->translate('regenerate_token')}
         </button>
+
         {$buttonEdit}
     </div>
+
     <b>{$lang->translate('service')}</b>: {$serviceName}<br />
     <b>{$lang->translate('identifier')}</b>: {$identifier}<br />
     <b>{$lang->translate('engines')}</b>: {$engines}<br />
