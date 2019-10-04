@@ -3,12 +3,12 @@
 
     <div class="fright">
         <a href="{$url->to('/page/purchase?service=ss_license_plong&identifier=' . $identifier)}">
-            <button class="button prolong_license" type="button">
+            <button class="button is-small prolong_license" type="button">
                 {$lang->translate('prolong_license')}
             </button>
         </a>
         <button
-            class="button regenerate_token"
+            class="button is-small regenerate_token"
             type="button"
             onClick="regenerate_token('{$identifier}', this)"
         >
