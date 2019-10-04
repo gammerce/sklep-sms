@@ -8,7 +8,6 @@ use App\Heart;
 use App\License;
 use App\Routes\UrlGenerator;
 use App\Services\Interfaces\IServiceUserServiceAdminDisplay;
-use App\Settings;
 use App\Template;
 use App\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -72,15 +71,14 @@ class AdminController
             $heart->pageTitle = "Login";
             $heart->styleAdd($url->versioned("build/stylesheets_old/admin/style_login.css"));
 
+            $warning = "";
             if ($session->has("info")) {
                 if ($session->get("info") == "wrong_data") {
                     $text = $lang->translate('wrong_login_data');
                     $warning = $template->render("admin/login_warning", compact('text'));
-                } else {
-                    if ($session->get("info") == "no_privileges") {
-                        $text = $lang->translate('no_access');
-                        $warning = $template->render("admin/login_warning", compact('text'));
-                    }
+                } elseif ($session->get("info") == "no_privileges") {
+                    $text = $lang->translate('no_access');
+                    $warning = $template->render("admin/login_warning", compact('text'));
                 }
                 $session->remove("info");
             }
