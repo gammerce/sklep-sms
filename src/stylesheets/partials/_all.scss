@@ -51,15 +51,3 @@ $table-color: $black;
 $table-row-hover-background-color: lighten($grey-lighter, 5%);
 
 @import "~bulma";
-
-html {
-    overflow-y: auto;
-}
-
-form {
-    margin-bottom: 0;
-}
-
-.action-buttons {
-    padding-top: 1rem;
-}
