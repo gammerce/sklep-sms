@@ -6,7 +6,6 @@ $(document).ready(function($) {
 
 // Zaznaczamy jakas gre
 $(document).delegate(".shopsms_license_purchase .engine", "click", function() {
-    console.log("amxx");
     var form = $(this).closest("form");
 
     var toggle_value = false;
