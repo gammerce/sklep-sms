@@ -37,21 +37,21 @@ class LicenseServiceProvider
 
     public function boot(Heart $heart)
     {
-        $heart->register_service_module(
+        $heart->registerServiceModule(
             "shopsms_license",
             "Licencja Sklep-SMS",
             ShopSmsLicense::class,
             ShopSmsLicenseSimple::class
         );
 
-        $heart->register_service_module(
+        $heart->registerServiceModule(
             "shopsms_license_edit",
             "Edycja Licencji Sklep-SMS",
             ShopSmsLicenseEdit::class,
             ShopSmsLicenseEditSimple::class
         );
 
-        $heart->register_service_module(
+        $heart->registerServiceModule(
             "shopsms_license_prolong",
             "Przedłużenie Licencji Sklep-SMS",
             ShopSmsLicenseProlong::class,

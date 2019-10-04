@@ -457,7 +457,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         );
 
         // Przeliczamy flagi gracza, ponieważ dodaliśmy nową usługę
-        $this->recalculate_player_flags($serverId, $type, $authData);
+        $this->recalculatePlayerFlags($serverId, $type, $authData);
     }
 
     private function deleteOldFlags()
@@ -495,7 +495,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         );
     }
 
-    private function recalculate_player_flags($serverId, $type, $authData)
+    private function recalculatePlayerFlags($serverId, $type, $authData)
     {
         // Musi byc podany typ, bo inaczej nam wywali wszystkie usługi bez typu
         // Bez serwera oraz auth_data, skrypt po prostu nic nie zrobi
@@ -998,7 +998,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     public function userServiceDeletePost($userService)
     {
         // Odśwież flagi gracza
-        $this->recalculate_player_flags(
+        $this->recalculatePlayerFlags(
             $userService['server'],
             $userService['type'],
             $userService['auth_data']
@@ -1295,14 +1295,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         }
 
         // Odśwież flagi gracza ( przed zmiana danych )
-        $this->recalculate_player_flags(
+        $this->recalculatePlayerFlags(
             $userService['server'],
             $userService['type'],
             $userService['auth_data']
         );
 
         // Odśwież flagi gracza ( już po edycji )
-        $this->recalculate_player_flags(
+        $this->recalculatePlayerFlags(
             if_isset($data['server'], $userService['server']),
             if_isset($data['type'], $userService['type']),
             if_isset($data['auth_data'], $userService['auth_data'])
@@ -1549,7 +1549,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
      *
      * @return string
      */
-    private function tariffs_for_server($serverId)
+    private function tariffsForServer($serverId)
     {
         $server = $this->heart->getServer($serverId);
         $smsService = if_strlen($server['sms_service'], $this->settings['sms_service']);
@@ -1604,7 +1604,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     {
         switch ($action) {
             case "tariffs_for_server":
-                return $this->tariffs_for_server(intval($data['server']));
+                return $this->tariffsForServer(intval($data['server']));
             case "servers_for_service":
                 return $this->serversForService(intval($data['server']));
             default:

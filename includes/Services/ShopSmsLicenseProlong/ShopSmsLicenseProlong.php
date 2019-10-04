@@ -54,7 +54,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
     }
 
     // Formularz pokazywany podczas zakupu licencji
-    public function purchase_form_get()
+    public function purchaseFormGet()
     {
         /** @var Request $request */
         $request = $this->app->make(Request::class);
@@ -70,15 +70,15 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         );
     }
 
-    public function purchase_form_validate($post)
+    public function purchaseFormValidate($body)
     {
-        $identifier = $post['identifier'];
+        $identifier = $body['identifier'];
         $warnings = [];
 
         // Ilość
-        if ($warning = check_for_warnings("number", $post['amount'])) {
+        if ($warning = check_for_warnings("number", $body['amount'])) {
             $warnings['amount'] = array_merge((array) $warnings['amount'], $warning);
-        } elseif ($post['amount'] < 30) {
+        } elseif ($body['amount'] < 30) {
             $warnings['amount'][] = $this->lang->sprintf(
                 $this->lang->translate('value_must_be_ge_than'),
                 30
@@ -100,7 +100,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
             )
         );
 
-        if (!$this->db->num_rows($result)) {
+        if (!$this->db->numRows($result)) {
             $warnings['license_data'][] = $this->lang->translate('wrong_license_data');
         }
 
@@ -114,13 +114,13 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
             ];
         }
 
-        $purchase_data = new Purchase();
-        $purchase_data->setOrder([
-            'amount' => $post['amount'],
+        $purchaseData = new Purchase();
+        $purchaseData->setOrder([
+            'amount' => $body['amount'],
             'identifier' => $identifier,
         ]);
-        $purchase_data->setPayment([
-            'cost' => $this->getCost($post) * $post['amount'],
+        $purchaseData->setPayment([
+            'cost' => $this->getCost($body) * $body['amount'],
             'no_sms' => true,
         ]);
 
@@ -128,17 +128,17 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
             'status' => "ok",
             'text' => $this->lang->translate('purchase_form_validated'),
             'positive' => true,
-            'purchase_data' => $purchase_data,
+            'purchase_data' => $purchaseData,
         ];
     }
 
-    public function order_details($purchase_data)
+    public function orderDetails(Purchase $purchaseData)
     {
-        $identifier = htmlspecialchars($purchase_data->getOrder('identifier'));
+        $identifier = htmlspecialchars($purchaseData->getOrder('identifier'));
 
         return $this->template->render(
             "services/shopsms_license_prolong/order_details",
-            compact('purchase_data', 'identifier') + [
+            compact('purchaseData', 'identifier') + [
                 'serviceName' => $this->service['name'],
                 'serviceTag' => $this->service['tag'],
             ],
@@ -147,7 +147,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         );
     }
 
-    public function purchase($purchaseData)
+    public function purchase(Purchase $purchaseData)
     {
         $result = $this->db->query(
             $this->db->prepare(
@@ -163,11 +163,11 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
             )
         );
 
-        $user_service = $this->db->fetch_array_assoc($result);
+        $userService = $this->db->fetchArrayAssoc($result);
 
         $lifetime = $purchaseData->getOrder('amount') * 24 * 60 * 60;
         $result = $this->licenseServerService->prolong(
-            $user_service['external_license_id'],
+            $userService['external_license_id'],
             $lifetime
         );
         $expiresAt = $result['expires_at'];
@@ -183,7 +183,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
                 [
                     $purchaseData->user->getUid() != 0 ? $purchaseData->user->getUid() : '`uid`',
                     $expiresAt,
-                    $user_service['us_id'],
+                    $userService['us_id'],
                 ]
             )
         );
@@ -197,15 +197,15 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
             $this->service['id'],
             0,
             $purchaseData->getOrder('amount'),
-            $user_service['identifier'],
-            $user_service['email'],
+            $userService['identifier'],
+            $userService['email'],
             [
                 'expire' => date($this->settings['date_format'], $expiresAt),
             ]
         );
     }
 
-    public function purchase_info($action, $data)
+    public function purchaseInfo($action, $data)
     {
         $data['extra_data'] = json_decode($data['extra_data'], true);
         $identifier = htmlspecialchars($data['auth_data']);
@@ -245,12 +245,12 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         throw new UnexpectedValueException();
     }
 
-    public function user_service_admin_add_form_get()
+    public function userServiceAdminAddFormGet()
     {
         return $this->template->render(
             "services/shopsms_license_prolong/user_service_admin_add",
             [
-                'moduleId' => $this->get_module_id(),
+                'moduleId' => $this->getModuleId(),
             ],
             true,
             false
@@ -261,13 +261,13 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
      * Metoda sprawdza dane formularza podczas dodawania użytkownikowi usługi w PA
      * i gdy wszystko jest okej, to ją dodaje.
      *
-     * @param array $post Dane $_POST
+     * @param array $body Dane $_POST
      * @return array
      *  status => id wiadomości
      *  text => treść wiadomości
      *  positive => czy udało się dodać usługę
      */
-    public function user_service_admin_add($post)
+    public function userServiceAdminAdd($body)
     {
         $warnings = [];
 
@@ -282,21 +282,21 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
                 $this::USER_SERVICE_TABLE .
                 "` AS m ON m.us_id = us.id " .
                 "WHERE m.identifier = '%s' AND us.expire != '-1'",
-                [$post['identifier']]
+                [$body['identifier']]
             )
         );
 
-        $user_service = [];
-        if (!$this->db->num_rows($result)) {
+        $userService = [];
+        if (!$this->db->numRows($result)) {
             $warnings['identifier'][] = $this->lang->translate('wrong_license_data');
         } else {
-            $user_service = $this->db->fetch_array_assoc($result);
+            $userService = $this->db->fetchArrayAssoc($result);
         }
 
         // Amount
-        if ($warning = check_for_warnings("number", $post['amount'])) {
+        if ($warning = check_for_warnings("number", $body['amount'])) {
             $warnings['amount'] = array_merge((array) $warnings['amount'], $warning);
-        } elseif ($post['amount'] < 0) {
+        } elseif ($body['amount'] < 0) {
             $warnings['amount'][] = $this->lang->translate('days_quantity_positive');
         }
 
@@ -312,27 +312,27 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         $user = $this->auth->user();
 
         // Dodawanie informacji o płatności
-        $payment_id = pay_by_admin($user);
+        $paymentId = pay_by_admin($user);
 
-        $purchase_data = new Purchase();
-        $purchase_data->setService($this->service['id']);
-        $purchase_data->user = $this->heart->get_user($user_service['uid']);
-        $purchase_data->setPayment([
+        $purchaseData = new Purchase();
+        $purchaseData->setService($this->service['id']);
+        $purchaseData->user = $this->heart->getUser($userService['uid']);
+        $purchaseData->setPayment([
             'method' => 'admin',
-            'payment_id' => $payment_id,
+            'payment_id' => $paymentId,
         ]);
-        $purchase_data->setOrder([
-            'identifier' => $post['identifier'],
-            'amount' => $post['amount'],
+        $purchaseData->setOrder([
+            'identifier' => $body['identifier'],
+            'amount' => $body['amount'],
         ]);
-        $bought_service_id = $this->purchase($purchase_data);
+        $boughtServiceId = $this->purchase($purchaseData);
 
         log_info(
             $this->langShop->sprintf(
                 $this->langShop->translate('admin_added_user_service'),
                 $user->getUsername(),
                 $user->getUid(),
-                $bought_service_id
+                $boughtServiceId
             )
         );
 
@@ -343,10 +343,10 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         ];
     }
 
-    public function action_execute($action, $post)
+    public function actionExecute($action, $body)
     {
         if ($action === "get_cost") {
-            $cost = $this->getCost($post) * $post['amount'];
+            $cost = $this->getCost($body) * $body['amount'];
             return $cost !== null
                 ? number_format($cost / 100, 2) . " " . $this->settings['currency']
                 : $this->lang->translate('none');
@@ -358,48 +358,48 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
     /**
      * Zwraca dzienny
      *
-     * @param array $post Dane $_POST formularza zakupu
+     * @param array $body
      * @return int
      */
-    private function getCost($post)
+    private function getCost(array $body)
     {
-        if (!my_is_integer($post['amount']) || $post['amount'] < 30) {
+        if (!my_is_integer($body['amount']) || $body['amount'] < 30) {
             return null;
         }
 
-        $cost_daily = $this->db->get_column(
+        $costDaily = $this->db->getColumn(
             $this->db->prepare(
                 "SELECT `cost_daily` FROM `" .
                 TABLE_PREFIX .
                 $this::USER_SERVICE_TABLE .
                 "` " .
                 "WHERE `identifier` = '%s'",
-                [$post['identifier']]
+                [$body['identifier']]
             ),
             "cost_daily"
         );
 
-        if ($cost_daily === null) {
+        if ($costDaily === null) {
             return null;
         }
 
-        return ceil($cost_daily * $this->getBargain($post['amount']));
+        return ceil($costDaily * $this->getBargain($body['amount']));
     }
 
-    private function getBargain($days_amount)
+    private function getBargain($daysAmount)
     {
-        if ($days_amount >= 730) {
+        if ($daysAmount >= 730) {
             return 0.6;
         }
 
-        if ($days_amount >= 365) {
+        if ($daysAmount >= 365) {
             return 0.8;
         }
 
         return 1.0;
     }
 
-    public function show_on_web()
+    public function showOnWeb()
     {
         return true;
     }

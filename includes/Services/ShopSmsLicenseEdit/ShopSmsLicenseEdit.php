@@ -2,6 +2,7 @@
 namespace App\Services\ShopSmsLicenseEdit;
 
 use App\LicenseServerService;
+use App\Models\Purchase;
 use App\Services\Interfaces\IServicePurchase;
 use App\Services\Interfaces\IServicePurchaseWeb;
 use App\Settings;
@@ -33,42 +34,42 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
         $this->licenseServerService = $this->app->make(LicenseServerService::class);
     }
 
-    public function purchase_form_get()
+    public function purchaseFormGet()
     {
         //
     }
 
-    public function purchase_form_validate($data)
+    public function purchaseFormValidate($data)
     {
         //
     }
 
-    public function order_details($purchase_data)
+    public function orderDetails(Purchase $purchaseData)
     {
-        $identifier = $this->db->get_column(
+        $identifier = $this->db->getColumn(
             $this->db->prepare(
                 "SELECT `identifier` FROM `" .
                 TABLE_PREFIX .
                 $this::USER_SERVICE_TABLE .
                 "` " .
                 "WHERE `us_id` = '%d'",
-                [$purchase_data->getOrder('user_service_id')]
+                [$purchaseData->getOrder('user_service_id')]
             ),
             'identifier'
         );
 
-        $email = if_strlen2($purchase_data->getEmail(true), $this->lang->translate('none'));
-        $cost_monthly =
-            number_format(($purchase_data->getOrder('cost_daily') * 30) / 100, 2) .
+        $email = if_strlen2($purchaseData->getEmail(true), $this->lang->translate('none'));
+        $costMonthly =
+            number_format(($purchaseData->getOrder('cost_daily') * 30) / 100, 2) .
             " " .
             $this->settings['currency'];
 
         $engines = [];
-        $tmp_engines = $purchase_data->getOrder('engines');
-        if ($tmp_engines['amxx']) {
+        $tmpEngines = $purchaseData->getOrder('engines');
+        if ($tmpEngines['amxx']) {
             $engines[] = "AMX Mod X";
         }
-        if ($tmp_engines['sm']) {
+        if ($tmpEngines['sm']) {
             $engines[] = "SOURCEMOD";
         }
 
@@ -76,7 +77,7 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
 
         return $this->template->render(
             "services/shopsms_license_edit/order_details",
-            compact('identifier', 'engines', 'cost_monthly', 'email') + [
+            compact('identifier', 'engines', 'costMonthly', 'email') + [
                 'serviceName' => $this->service['name'],
             ],
             true,
@@ -84,19 +85,19 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
         );
     }
 
-    public function purchase($purchaseData)
+    public function purchase(Purchase $purchaseData)
     {
-        $user_service = get_users_services($purchaseData->getOrder('user_service_id'));
-        $tmp_engines = $purchaseData->getOrder('engines');
+        $userService = get_users_services($purchaseData->getOrder('user_service_id'));
+        $tmpEngines = $purchaseData->getOrder('engines');
 
         $this->licenseServerService->updatePlatforms(
-            $user_service['external_license_id'],
-            $tmp_engines['amxx'],
-            $tmp_engines['sm']
+            $userService['external_license_id'],
+            $tmpEngines['amxx'],
+            $tmpEngines['sm']
         );
 
         // Aktualizujemy dane licencji w liscie uslug graczy
-        $update_data = [
+        $updateData = [
             [
                 'column' => 'cost_daily',
                 'value' => "'%d'",
@@ -110,26 +111,26 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
             [
                 'column' => 'platform_amxmodx',
                 'value' => "'%d'",
-                'data' => [$tmp_engines['amxx']],
+                'data' => [$tmpEngines['amxx']],
             ],
             [
                 'column' => 'platform_sourcemod',
                 'value' => "'%d'",
-                'data' => [$tmp_engines['sm']],
+                'data' => [$tmpEngines['sm']],
             ],
         ];
-        $this->update_user_service(
-            $update_data,
+        $this->updateUserService(
+            $updateData,
             $purchaseData->getOrder('user_service_id'),
             $purchaseData->getOrder('user_service_id')
         );
 
         // Dodanie informacji o zakupie usługi
         $engines = [];
-        if ($tmp_engines['amxx']) {
+        if ($tmpEngines['amxx']) {
             $engines[] = "AMX Mod X";
         }
-        if ($tmp_engines['sm']) {
+        if ($tmpEngines['sm']) {
             $engines[] = "SOURCEMOD";
         }
 
@@ -144,13 +145,13 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
             $this->service['id'],
             0,
             0,
-            $user_service['identifier'],
+            $userService['identifier'],
             $purchaseData->getEmail(),
             ['engines' => $engines]
         );
     }
 
-    public function purchase_info($action, $data)
+    public function purchaseInfo($action, $data)
     {
         $data['extra_data'] = json_decode($data['extra_data'], true);
         $engines = htmlspecialchars($data['extra_data']['engines']);
