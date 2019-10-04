@@ -20,12 +20,12 @@ class Template
     public function __construct(
         Application $app,
         Settings $settings,
-        Translator $lang,
+        TranslationManager $translationManager,
         UrlGenerator $urlGenerator
     ) {
         $this->app = $app;
         $this->settings = $settings;
-        $this->lang = $lang;
+        $this->lang = $translationManager->user();
         $this->urlGenerator = $urlGenerator;
     }
 

@@ -23,10 +23,10 @@ class ExceptionHandler implements ExceptionHandlerContract
 
     protected $dontReport = [RequireInstallationException::class, LicenseException::class];
 
-    public function __construct(Application $app, Translator $lang)
+    public function __construct(Application $app, TranslationManager $translationManager)
     {
         $this->app = $app;
-        $this->lang = $lang;
+        $this->lang = $translationManager->shop();
     }
 
     public function render(Request $request, Exception $e)
