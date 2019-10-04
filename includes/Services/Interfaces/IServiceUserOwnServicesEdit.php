@@ -26,5 +26,5 @@ interface IServiceUserOwnServicesEdit
      *                        'text'        => treść wiadomości
      *                        'positive'    => czy udało się wyedytować usługę
      */
-    public function userOwnServiceSdit($body, $userService);
+    public function userOwnServiceEdit(array $body, $userService);
 }

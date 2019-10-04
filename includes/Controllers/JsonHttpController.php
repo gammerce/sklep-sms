@@ -660,7 +660,7 @@ class JsonHttpController
                 );
             }
 
-            $returnData = $serviceModule->userOwnServiceSdit($_POST, $userService);
+            $returnData = $serviceModule->userOwnServiceEdit($_POST, $userService);
 
             if ($returnData['status'] == "warnings") {
                 $returnData["data"]["warnings"] = format_warnings($returnData["data"]["warnings"]);

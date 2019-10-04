@@ -1090,7 +1090,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         );
     }
 
-    public function userOwnServiceSdit($data, $userService)
+    public function userOwnServiceEdit(array $data, $userService)
     {
         $user = $this->auth->user();
 
