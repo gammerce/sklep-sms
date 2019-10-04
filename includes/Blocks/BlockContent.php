@@ -6,6 +6,7 @@ use App\Heart;
 use App\Interfaces\IBeLoggedCannot;
 use App\Interfaces\IBeLoggedMust;
 use App\Pages\Page;
+use App\TranslationManager;
 use App\Translator;
 
 class BlockContent extends Block
@@ -22,11 +23,14 @@ class BlockContent extends Block
     /** @var Page */
     protected $page;
 
-    public function __construct(Heart $heart, CurrentPage $currentPage, Translator $lang)
-    {
+    public function __construct(
+        Heart $heart,
+        CurrentPage $currentPage,
+        TranslationManager $translationManager
+    ) {
         $this->heart = $heart;
         $this->currentPage = $currentPage;
-        $this->lang = $lang;
+        $this->lang = $translationManager->user();
     }
 
     public function getContentClass()

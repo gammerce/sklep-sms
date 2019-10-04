@@ -2,6 +2,7 @@
 namespace App\Install;
 
 use App\Application;
+use App\TranslationManager;
 use App\Translator;
 
 class InstallManager
@@ -12,10 +13,10 @@ class InstallManager
     /** @var Translator */
     private $lang;
 
-    public function __construct(Application $app, Translator $translator)
+    public function __construct(Application $app, TranslationManager $translationManager)
     {
         $this->app = $app;
-        $this->lang = $translator;
+        $this->lang = $translationManager->user();
     }
 
     public function start()

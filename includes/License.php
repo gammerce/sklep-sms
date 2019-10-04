@@ -37,12 +37,12 @@ class License
     protected $loadingException;
 
     public function __construct(
-        Translator $translator,
+        TranslationManager $translationManager,
         Settings $settings,
         Requester $requester,
         CachingRequester $cachingRequester
     ) {
-        $this->lang = $translator;
+        $this->lang = $translationManager->user();
         $this->settings = $settings;
         $this->requester = $requester;
         $this->cachingRequester = $cachingRequester;

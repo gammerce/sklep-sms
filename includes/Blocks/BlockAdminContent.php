@@ -3,6 +3,7 @@ namespace App\Blocks;
 
 use App\CurrentPage;
 use App\Heart;
+use App\TranslationManager;
 use App\Translator;
 
 class BlockAdminContent extends Block
@@ -16,11 +17,14 @@ class BlockAdminContent extends Block
     /** @var Translator */
     protected $lang;
 
-    public function __construct(Heart $heart, CurrentPage $page, Translator $lang)
-    {
+    public function __construct(
+        Heart $heart,
+        CurrentPage $page,
+        TranslationManager $translationManager
+    ) {
         $this->heart = $heart;
         $this->page = $page;
-        $this->lang = $lang;
+        $this->lang = $translationManager->user();
     }
 
     public function getContentClass()
