@@ -21,6 +21,9 @@ class PaymentWalletTest extends IndexTestCase
         // then
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertContains('Panel Admina', $response->getContent());
-        $this->assertContains('<div class="title">Płatności z portfela', $response->getContent());
+        $this->assertContains(
+            '<div class="title is-4">Płatności z portfela',
+            $response->getContent()
+        );
     }
 }

@@ -102,9 +102,9 @@ class Gosetti extends PaymentModule implements SupportSms
         // CSSetti dostarcza w feedzie kod sms
         $this->smsCode = $data['Code'];
 
-        foreach ($data['Numbers'] as $number_data) {
-            $this->numbers[strval(floatval($number_data['TopUpAmount']))] = strval(
-                $number_data['Number']
+        foreach ($data['Numbers'] as $numberData) {
+            $this->numbers[strval(floatval($numberData['TopUpAmount']))] = strval(
+                $numberData['Number']
             );
         }
     }

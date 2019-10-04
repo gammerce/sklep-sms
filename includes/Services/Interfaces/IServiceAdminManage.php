@@ -13,25 +13,25 @@ interface IServiceAdminManage
      *
      * @return string
      */
-    public function service_admin_extra_fields_get();
+    public function serviceAdminExtraFieldsGet();
 
     /**
      * Metoda testuje dane przesłane przez formularz podczas dodawania nowej usługi w PA
      * jak coś się jej nie spodoba to zwraca o tym info w tablicy
      *
-     * @param array $post Dane $_POST
+     * @param array $body
      *
      * @return array
      *  'key' => DOM Element name
      *  'value' => Array of error messages
      */
-    public function service_admin_manage_pre($post);
+    public function serviceAdminManagePre($body);
 
     /**
      * Metoda zostaje wywołana po tym, jak  weryfikacja danych
      * przesłanych w formularzu dodania nowej usługi w PA przebiegła bezproblemowo
      *
-     * @param array $post Dane $_POST
+     * @param array $body
      *
      * @return array (
      *    'query_set' - array of query SET elements:
@@ -41,5 +41,5 @@ interface IServiceAdminManage
      *            'value'    => wartość kolumny
      *        )
      */
-    public function service_admin_manage_post($post);
+    public function serviceAdminManagePost($body);
 }

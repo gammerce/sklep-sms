@@ -57,41 +57,29 @@ abstract class Page
     /**
      * Zwraca treść danej strony po przejściu wszystkich filtrów
      *
-     * @param array $get - dane get
-     * @param array $post - dane post
+     * @param array $query
+     * @param array $body
      *
      * @return string - zawartość do wyświetlenia
      */
-    public function get_content($get, $post)
+    public function getContent(array $query, array $body)
     {
         // Dodajemy wszystkie skrypty
-        $path = "jscripts/pages/" . $this::PAGE_ID . "/";
+        $path = "build/js_old/pages/" . $this::PAGE_ID . "/";
         if (strlen($this::PAGE_ID) && file_exists($this->app->path($path))) {
             foreach (scandir($this->app->path($path)) as $file) {
                 if (ends_at($file, ".js")) {
-                    $this->heart->script_add(
-                        $this->settings['shop_url_slash'] .
-                            $path .
-                            $file .
-                            "?version=" .
-                            $this->app->version()
-                    );
+                    $this->heart->scriptAdd($this->url->versioned($path . $file));
                 }
             }
         }
 
-        // Dodajemy wszystkie css
-        $path = "styles/pages/" . $this::PAGE_ID . "/";
+        // Let's add all css
+        $path = "build/stylesheets_old/pages/" . $this::PAGE_ID . "/";
         if (strlen($this::PAGE_ID) && file_exists($this->app->path($path))) {
             foreach (scandir($this->app->path($path)) as $file) {
                 if (ends_at($file, ".css")) {
-                    $this->heart->style_add(
-                        $this->settings['shop_url_slash'] .
-                            $path .
-                            $file .
-                            "?version=" .
-                            $this->app->version()
-                    );
+                    $this->heart->styleAdd($this->url->versioned($path . $file));
                 }
             }
         }
@@ -105,39 +93,29 @@ abstract class Page
                 "payment_log",
             ])
         ) {
-            foreach ($this->heart->get_services_modules() as $module_info) {
-                $path = "styles/services/" . $module_info['id'] . ".css";
+            foreach ($this->heart->getServicesModules() as $moduleInfo) {
+                $path = "build/stylesheets_old/services/" . $moduleInfo['id'] . ".css";
                 if (file_exists($this->app->path($path))) {
-                    $this->heart->style_add(
-                        $this->settings['shop_url_slash'] .
-                            $path .
-                            "?version=" .
-                            $this->app->version()
-                    );
+                    $this->heart->styleAdd($this->url->versioned($path));
                 }
 
-                $path = "jscripts/services/" . $module_info['id'] . ".js";
+                $path = "build/js_old/services/" . $moduleInfo['id'] . ".js";
                 if (file_exists($this->app->path($path))) {
-                    $this->heart->script_add(
-                        $this->settings['shop_url_slash'] .
-                            $path .
-                            "?version=" .
-                            $this->app->version()
-                    );
+                    $this->heart->scriptAdd($this->url->versioned($path));
                 }
             }
         }
 
-        return $this->content($get, $post);
+        return $this->content($query, $body);
     }
 
     /**
      * Zwraca treść danej strony
      *
-     * @param array $get
-     * @param array $post
+     * @param array $query
+     * @param array $body
      *
      * @return string
      */
-    abstract protected function content($get, $post);
+    abstract protected function content(array $query, array $body);
 }

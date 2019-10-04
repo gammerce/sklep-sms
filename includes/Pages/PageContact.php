@@ -10,6 +10,6 @@ class PageContact extends PageSimple
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('contact');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('contact');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Pages;
 use Admin\Table\BodyRow;
 use Admin\Table\Cell;
 use Admin\Table\Div;
+use Admin\Table\HeadCell;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 
@@ -15,32 +16,24 @@ class PageAdminPaymentWallet extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('payments_wallet');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('payments_wallet');
     }
 
-    protected function content($get, $post)
+    protected function content(array $query, array $body)
     {
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
-
-        $cell = new Cell($this->lang->translate('id'));
-        $cell->setParam('headers', 'id');
-        $table->addHeadCell($cell);
-
-        $table->addHeadCell(new Cell($this->lang->translate('cost')));
-        $table->addHeadCell(new Cell($this->lang->translate('ip')));
-
-        $cell = new Cell($this->lang->translate('platform'));
-        $cell->setParam('headers', 'platform');
-        $table->addHeadCell($cell);
-
-        $table->addHeadCell(new Cell($this->lang->translate('date')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->translate('cost')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('ip')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('platform'), "platform"));
+        $table->addHeadCell(new HeadCell($this->lang->translate('date')));
 
         $where = "";
-        if (isset($get['payid'])) {
-            $where .= $this->db->prepare(" AND `payment_id` = '%d' ", [$get['payid']]);
+        if (isset($query['payid'])) {
+            $where .= $this->db->prepare(" AND `payment_id` = '%d' ", [$query['payid']]);
         }
 
         $result = $this->db->query(
@@ -53,32 +46,32 @@ class PageAdminPaymentWallet extends PageAdmin
                 get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($this->db->get_column('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
+        $table->setDbRowsAmount($this->db->getColumn('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
 
-        while ($row = $this->db->fetch_array_assoc($result)) {
-            $body_row = new BodyRow();
+        while ($row = $this->db->fetchArrayAssoc($result)) {
+            $bodyRow = new BodyRow();
 
-            if ($get['highlight'] && $get['payid'] == $row['payment_id']) {
-                $body_row->setParam('class', 'highlighted');
+            if ($query['highlight'] && $query['payid'] == $row['payment_id']) {
+                $bodyRow->setParam('class', 'highlighted');
             }
 
             $cost = $row['cost']
                 ? number_format($row['cost'] / 100.0, 2) . " " . $this->settings['currency']
                 : "";
 
-            $body_row->setDbId($row['payment_id']);
-            $body_row->addCell(new Cell($cost));
-            $body_row->addCell(new Cell(htmlspecialchars($row['ip'])));
+            $bodyRow->setDbId($row['payment_id']);
+            $bodyRow->addCell(new Cell($cost));
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['ip'])));
 
             $cell = new Cell();
             $div = new Div(get_platform($row['platform']));
             $div->setParam('class', 'one_line');
             $cell->addContent($div);
-            $body_row->addCell($cell);
+            $bodyRow->addCell($cell);
 
-            $body_row->addCell(new Cell(convertDate($row['timestamp'])));
+            $bodyRow->addCell(new Cell(convertDate($row['timestamp'])));
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);

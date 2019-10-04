@@ -13,17 +13,17 @@ class ServiceOtherSimple extends Service implements
 {
     const MODULE_ID = "other";
 
-    public function service_admin_manage_post($data)
+    public function serviceAdminManagePost($data)
     {
         return [];
     }
 
-    public function service_admin_extra_fields_get()
+    public function serviceAdminExtraFieldsGet()
     {
         return '';
     }
 
-    public function service_admin_manage_pre($data)
+    public function serviceAdminManagePre($data)
     {
         return [];
     }

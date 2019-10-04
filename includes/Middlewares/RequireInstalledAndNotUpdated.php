@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RequireInstalledAndNotUpdated implements MiddlewareContract
 {
-    public function handle(Request $request, Application $app)
+    public function handle(Request $request, Application $app, $args = null)
     {
         if (!ShopState::isInstalled()) {
             return new Response('Shop needs to be installed first');

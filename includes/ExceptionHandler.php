@@ -1,6 +1,7 @@
 <?php
 namespace App;
 
+use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\LicenseException;
 use App\Exceptions\LicenseRequestException;
 use App\Exceptions\RequireInstallationException;
@@ -44,12 +45,16 @@ class ExceptionHandler implements ExceptionHandlerContract
             return new Response($e->getMessage());
         }
 
+        if ($e instanceof EntityNotFoundException) {
+            return new Response($e->getMessage(), 404);
+        }
+
         if ($e instanceof RequireInstallationException) {
             return new RedirectResponse('/install');
         }
 
         return new Response(
-            'Coś się popsuło. Więcej informacji znajdziesz w pliku errors/errors.log'
+            'Coś się popsuło. Więcej informacji znajdziesz w pliku data/logs/errors.log'
         );
     }
 

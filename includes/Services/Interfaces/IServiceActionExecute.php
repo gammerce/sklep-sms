@@ -8,9 +8,9 @@ interface IServiceActionExecute
      * i funkcję fetch_data
      *
      * @param string $action Akcja do wykonania
-     * @param array  $post Dane $_POST
+     * @param array  $body Dane $_POST
      *
      * @return string
      */
-    public function action_execute($action, $post);
+    public function actionExecute($action, $body);
 }

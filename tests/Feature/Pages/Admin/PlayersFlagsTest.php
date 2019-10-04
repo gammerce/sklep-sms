@@ -21,6 +21,6 @@ class ExtraFlagsTest extends IndexTestCase
         // then
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertContains('Panel Admina', $response->getContent());
-        $this->assertContains('<div class="title">Flagi graczy', $response->getContent());
+        $this->assertContains('<div class="title is-4">Flagi graczy', $response->getContent());
     }
 }

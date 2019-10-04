@@ -5,29 +5,65 @@
     <table>
         <tbody class="ftbody">
             <tr>
-                <td>{$lang->translate('code')}</td>
                 <td>
-                    <input type="text" name="code" style="width: 100px;" />&nbsp;
-                    <input
-                        type="button"
-                        name="random_code"
-                        value="{$lang->translate('generate')}"
-                        class="button"
-                    />
+                    <label for="code">{$lang->translate('code')}</label>
+                </td>
+                <td>
+                    <div class="field has-addons">
+                        <div class="control">
+                            <input
+                                type="text"
+                                id="code"
+                                name="code"
+                                class="input is-small"
+                                required
+                            />
+                        </div>
+                        <div class="control">
+                            <input
+                                type="button"
+                                name="random_code"
+                                value="{$lang->translate('generate')}"
+                                class="button is-small"
+                            />
+                        </div>
+                    </div>
                 </td>
             </tr>
             <tr>
-                <td>{$lang->translate('service')}</td>
                 <td>
-                    <select name="service">
-                        <option value="">{$lang->translate('choose_service')}</option>
-                        {$services}
-                    </select>
+                    <label for="service">{$lang->translate('service')}</label>
+                </td>
+                <td>
+                    <div class="field">
+                        <div class="control">
+                            <div class="select is-small">
+                                <select id="service" name="service">
+                                    <option value="">{$lang->translate('choose_service')}</option>
+                                    {$services}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </td>
             </tr>
             <tr>
-                <td>{$lang->translate('user_id')}</td>
-                <td><input type="text" name="uid" style="width: 60px;" /></td>
+                <td>
+                    <label for="uid">{$lang->translate('user_id')}</label>
+                </td>
+                <td>
+                    <div class="field">
+                        <div class="control">
+                            <input
+                                type="text"
+                                id="uid"
+                                name="uid"
+                                class="input is-small"
+                                required
+                            />
+                        </div>
+                    </div>
+                </td>
             </tr>
         </tbody>
         <tbody>

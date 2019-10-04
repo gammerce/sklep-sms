@@ -18,7 +18,7 @@ class ValidateLicense implements MiddlewareContract
         $this->auth = $auth;
     }
 
-    public function handle(Request $request, Application $app)
+    public function handle(Request $request, Application $app, $args = null)
     {
         /** @var License $license */
         $license = $app->make(License::class);
@@ -45,9 +45,9 @@ class ValidateLicense implements MiddlewareContract
     {
         $user = $this->auth->user();
 
-        if (get_privilages("manage_settings", $user)) {
-            $user->removePrivilages();
-            $user->setPrivilages([
+        if (get_privileges("manage_settings", $user)) {
+            $user->removePrivileges();
+            $user->setPrivileges([
                 "acp" => true,
                 "manage_settings" => true,
             ]);

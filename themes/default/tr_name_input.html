@@ -1,4 +1,18 @@
 <tr>
-    <td>{$text}</td>
-    <td><input type="text" name="{$name}" value="{$value}" /></td>
+    <td>
+        <label for="{$name}">{$text}</label>
+    </td>
+    <td>
+        <div class="field">
+            <div class="control">
+                <input
+                    type="text"
+                    id="{$name}"
+                    name="{$name}"
+                    value="{$value}"
+                    class="input is-small"
+                />
+            </div>
+        </div>
+    </td>
 </tr>

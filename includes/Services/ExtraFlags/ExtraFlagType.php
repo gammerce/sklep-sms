@@ -9,7 +9,7 @@ class ExtraFlagType
     const TYPE_IP = 1 << 1;
     const TYPE_SID = 1 << 2;
 
-    public static function get_type_name($value)
+    public static function getTypeName($value)
     {
         /** @var TranslationManager $translationManager */
         $translationManager = app()->make(TranslationManager::class);

@@ -1,0 +1,65 @@
+$green: #5b9931;
+
+@import "~bulma/sass/utilities/_all";
+
+$label-color: $grey-lighter;
+
+// INPUT
+$input-color: $white-bis;
+$input-background-color: $grey-dark;
+$input-border-color: $grey-darker;
+$input-placeholder-color: $grey-light;
+
+$input-hover-color: $white-bis;
+$input-hover-border-color: $link;
+
+$input-focus-color: $white-bis;
+$input-focus-border-color: $link;
+
+$input-disabled-color: $grey-lighter;
+$input-disabled-background-color: $grey;
+$input-disabled-border-color: $grey;
+
+// BUTTON
+$button-color: $white-ter;
+$button-background-color: $grey-dark;
+$button-border-color: $grey-darker;
+
+$button-hover-color: $white;
+$button-hover-border-color: $grey-light;
+
+$button-focus-color: $white;
+$button-focus-border-color: $grey;
+
+$button-active-color: $white;
+$button-active-border-color: $grey;
+
+$button-disabled-background-color: $grey;
+$button-disabled-border-color: $grey;
+
+$button-static-color: $white-ter;
+$button-static-background-color: $grey;
+$button-static-border-color: $grey-darker;
+
+// Dropdown
+$dropdown-content-background-color: lighten($grey-lighter, 5%);
+
+// Table
+$table-background-color: transparent;
+$table-cell-border: 1px solid $grey-light;
+$table-color: $black;
+$table-row-hover-background-color: lighten($grey-lighter, 5%);
+
+@import "~bulma";
+
+html {
+    overflow-y: auto;
+}
+
+form {
+    margin-bottom: 0;
+}
+
+.action-buttons {
+    padding-top: 1rem;
+}

@@ -18,10 +18,10 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('user_own_services');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('user_own_services');
     }
 
-    protected function content($get, $post)
+    protected function content(array $query, array $body)
     {
         $heart = $this->heart;
         $lang = $this->lang;
@@ -43,7 +43,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         $request = $this->app->make(Request::class);
 
         // Ktore moduly wspieraja usługi użytkowników
-        $modules = array_filter($this->heart->get_services_modules(), function ($module) {
+        $modules = array_filter($this->heart->getServicesModules(), function ($module) {
             return in_array(IServiceUserOwnServices::class, class_implements($module["class"]));
         });
 
@@ -57,7 +57,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         if (!empty($moduleIds)) {
             $moduleIds = implode_esc(', ', $moduleIds);
 
-            $rowsCount = $db->get_column(
+            $rowsCount = $db->getColumn(
                 $db->prepare(
                     "SELECT COUNT(*) as `amount` FROM `" .
                         TABLE_PREFIX .
@@ -87,64 +87,61 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
                 )
             );
 
-            $user_service_ids = [];
-            while ($row = $db->fetch_array_assoc($result)) {
-                $user_service_ids[] = $row['id'];
+            $userServiceIds = [];
+            while ($row = $db->fetchArrayAssoc($result)) {
+                $userServiceIds[] = $row['id'];
             }
 
-            if (!empty($user_service_ids)) {
+            if (!empty($userServiceIds)) {
                 $usersServices = get_users_services(
-                    "WHERE us.id IN (" . implode(', ', $user_service_ids) . ")",
+                    "WHERE us.id IN (" . implode(', ', $userServiceIds) . ")",
                     false
                 );
             }
         }
 
-        $user_own_services = '';
-        foreach ($usersServices as $user_service) {
-            if (($service_module = $heart->get_service_module($user_service['service'])) === null) {
+        $userOwnServices = '';
+        foreach ($usersServices as $userService) {
+            if (($serviceModule = $heart->getServiceModule($userService['service'])) === null) {
                 continue;
             }
 
-            if (!($service_module instanceof IServiceUserOwnServices)) {
+            if (!($serviceModule instanceof IServiceUserOwnServices)) {
                 continue;
             }
 
             if (
                 $settings['user_edit_service'] &&
-                $service_module instanceof IServiceUserOwnServicesEdit
+                $serviceModule instanceof IServiceUserOwnServicesEdit
             ) {
-                $button_edit = create_dom_element("button", $lang->translate('edit'), [
+                $buttonEdit = create_dom_element("button", $lang->translate('edit'), [
                     'class' => "button edit_row",
                     'type' => 'button',
                 ]);
             }
 
-            $user_own_services .= create_brick(
-                $service_module->user_own_service_info_get(
-                    $user_service,
-                    if_isset($button_edit, '')
-                )
+            $userOwnServices .= create_brick(
+                $serviceModule->userOwnServiceInfoGet($userService, if_isset($buttonEdit, ''))
             );
         }
 
         // Nie znalazło żadnych usług danego użytkownika
-        if (!strlen($user_own_services)) {
-            $user_own_services = $lang->translate('no_data');
+        if (!strlen($userOwnServices)) {
+            $userOwnServices = $lang->translate('no_data');
         }
 
         $pagination = get_pagination(
             $rowsCount,
             $this->currentPage->getPageNumber(),
             $request->getPathInfo(),
-            $get,
+            $query,
             4
         );
-        $pagination_class = strlen($pagination) ? "" : "display_none";
+        $paginationClass = strlen($pagination) ? "" : "display_none";
 
         return $template->render(
             "user_own_services",
-            compact('user_own_services', 'pagination_class', 'pagination')
+            compact('userOwnServices', 'paginationClass', 'pagination')
         );
     }
 }

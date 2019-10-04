@@ -25,62 +25,126 @@
                     </tbody>
                     <tbody id="type_nick">
                         <tr>
-                            <td>{$lang->translate('nick')}</td>
+                            <td><label for="nick">{$lang->translate('nick')}</label></td>
                             <td>
-                                <input type="text" name="nick" maxlength="32" autocomplete="off" />
+                                <div class="field">
+                                    <div class="control">
+                                        <input
+                                            type="text"
+                                            id="nick"
+                                            name="nick"
+                                            class="input is-small"
+                                            maxlength="32"
+                                            autocomplete="off"
+                                        />
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
                     <tbody id="type_ip">
                         <tr>
-                            <td>{$lang->translate('ip')}</td>
+                            <td><label for="ip">{$lang->translate('ip')}</label></td>
                             <td>
-                                <input
-                                    type="text"
-                                    name="ip"
-                                    value="{$user->getLastIp()}"
-                                    maxlength="16"
-                                    autocomplete="off"
-                                />
+                                <div class="field">
+                                    <div class="control">
+                                        <input
+                                            type="text"
+                                            id="ip"
+                                            name="ip"
+                                            value="{$user->getLastIp()}"
+                                            class="input is-small"
+                                            maxlength="16"
+                                            autocomplete="off"
+                                        />
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
                     <tbody id="type_password">
                         <tr>
-                            <td>{$lang->translate('password')}</td>
+                            <td><label for="password">{$lang->translate('password')}</label></td>
                             <td>
-                                <input
-                                    type="password"
-                                    name="password"
-                                    maxlength="32"
-                                    autocomplete="off"
-                                />
+                                <div class="field">
+                                    <div class="control">
+                                        <input
+                                            type="password"
+                                            id="password"
+                                            name="password"
+                                            class="input is-small"
+                                            maxlength="32"
+                                            autocomplete="off"
+                                        />
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                         <tr>
-                            <td>{$lang->translate('password_repeat')}</td>
                             <td>
-                                <input
-                                    type="password"
-                                    name="password_repeat"
-                                    maxlength="32"
-                                    autocomplete="off"
-                                />
+                                <label for="password_repeat">
+                                    {$lang->translate('password_repeat')}
+                                </label>
+                            </td>
+                            <td>
+                                <div class="field">
+                                    <div class="control">
+                                        <input
+                                            type="password"
+                                            id="password_repeat"
+                                            name="password_repeat"
+                                            class="input is-small"
+                                            maxlength="32"
+                                            autocomplete="off"
+                                        />
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
                     <tbody id="type_sid">
                         <tr>
-                            <td>{$lang->translate('sid')}</td>
                             <td>
-                                <input type="text" name="sid" maxlength="32" autocomplete="off" />
+                                <label for="sid">
+                                    {$lang->translate('sid')}
+                                </label>
+                            </td>
+                            <td>
+                                <div class="field">
+                                    <div class="control">
+                                        <input
+                                            type="text"
+                                            id="sid"
+                                            name="sid"
+                                            class="input is-small"
+                                            maxlength="32"
+                                            autocomplete="off"
+                                        />
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
                     <tbody>
                         <tr>
-                            <td>{$lang->translate('email')}</td>
-                            <td><input type="text" name="email" value="{$user->getEmail()}" /></td>
+                            <td>
+                                <label for="email">
+                                    {$lang->translate('email')}
+                                </label>
+                            </td>
+                            <td>
+                                <div class="field">
+                                    <div class="control">
+                                        <input
+                                            type="email"
+                                            id="email"
+                                            name="email"
+                                            class="input is-small"
+                                            value="{$user->getEmail()}"
+                                        />
+                                    </div>
+                                </div>
+                            </td>
                         </tr>
                     </tbody>
                     <tbody>
@@ -97,33 +161,53 @@
                             <td colspan="2" class="line"></td>
                         </tr>
                     </tbody>
+
                     <tbody>
                         <tr>
-                            <td>{$lang->translate('server')}</td>
                             <td>
-                                <select name="server">
-                                    <option value="">{$lang->translate('choose_server')}</option>
-                                    {$servers}
-                                </select>
+                                <label for="server">{$lang->translate('server')}</label>
+                            </td>
+                            <td>
+                                <div class="field">
+                                    <div class="control">
+                                        <div class="select is-small">
+                                            <select id="server" name="server">
+                                                <option value="">
+                                                    {$lang->translate('choose_server')}
+                                                </option>
+                                                {$servers}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
+
                     <tbody>
                         <tr>
-                            <td>{$lang->translate('amount')}</td>
                             <td>
-                                <select name="value">
-                                    <option value="">{$lang->translate('choose_amount')}</option>
-                                </select>
+                                <label for="value">{$lang->translate('amount')}</label>
+                            </td>
+                            <td>
+                                <div class="select is-small">
+                                    <select id="value" name="value">
+                                        <option value="">
+                                            {$lang->translate('choose_amount')}
+                                        </option>
+                                    </select>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
+
                     <tbody>
                         <tr>
                             <td colspan="2" class="line"></td>
                         </tr>
                     </tbody>
                 </table>
+
                 <div id="cost_wraper">
                     <div>
                         <strong>{$lang->translate('transfer_wallet_cost')}</strong>:

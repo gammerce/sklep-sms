@@ -14,15 +14,15 @@ interface IServiceUserServiceAdminDisplay
      *
      * @return string
      */
-    public function user_service_admin_display_title_get();
+    public function userServiceAdminDisplayTitleGet();
 
     /**
      * Zwraca listę usług użytkowników ubraną w ładny obiekt.
      *
-     * @param array $get
-     * @param array $post
+     * @param array $query
+     * @param array $body
      *
      * @return Wrapper | string
      */
-    public function user_service_admin_display_get($get, $post);
+    public function userServiceAdminDisplayGet(array $query, array $body);
 }

@@ -6,19 +6,19 @@ use App\Interfaces\IBeLoggedMust;
 
 abstract class Block
 {
-    abstract public function get_content_class();
+    abstract public function getContentClass();
 
-    abstract public function get_content_id();
+    abstract public function getContentId();
 
     /**
      * Zwraca treść danego bloku po przejściu wszystkich filtrów
      *
-     * @param array $get - dane get
-     * @param array $post - dane post
+     * @param array $query
+     * @param array $body
      *
      * @return string|null - zawartość do wyświetlenia
      */
-    public function get_content($get, $post)
+    public function getContent(array $query, array $body)
     {
         if (
             ($this instanceof IBeLoggedMust && !is_logged()) ||
@@ -27,34 +27,34 @@ abstract class Block
             return null;
         }
 
-        return $this->content($get, $post);
+        return $this->content($query, $body);
     }
 
     /**
      * Zwraca treść danego bloku
      *
-     * @param array $get
-     * @param array $post
+     * @param array $query
+     * @param array $body
      *
      * @return string
      */
-    abstract protected function content($get, $post);
+    abstract protected function content(array $query, array $body);
 
     /**
      * Zwraca treść danego bloku w otoczce
      *
-     * @param array $get
-     * @param array $post
+     * @param array $query
+     * @param array $body
      *
      * @return string|null
      */
-    public function get_content_enveloped($get, $post)
+    public function getContentEnveloped(array $query, array $body)
     {
-        $content = $this->get_content($get, $post);
+        $content = $this->getContent($query, $body);
 
         return create_dom_element("div", $content, [
-            'id' => $this->get_content_id(),
-            'class' => $content !== null ? $this->get_content_class() : "",
+            'id' => $this->getContentId(),
+            'class' => $content !== null ? $this->getContentClass() : "",
         ]);
     }
 }

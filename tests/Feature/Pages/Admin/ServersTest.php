@@ -21,6 +21,6 @@ class ServersTest extends IndexTestCase
         // then
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertContains('Panel Admina', $response->getContent());
-        $this->assertContains('<div class="title">Serwery', $response->getContent());
+        $this->assertContains('<div class="title is-4">Serwery', $response->getContent());
     }
 }

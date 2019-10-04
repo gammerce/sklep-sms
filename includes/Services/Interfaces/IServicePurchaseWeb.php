@@ -15,13 +15,13 @@ interface IServicePurchaseWeb extends IServicePurchase
      *
      * @return string   - Formularz zakupu
      */
-    public function purchase_form_get();
+    public function purchaseFormGet();
 
     /**
      * Metoda wywoływana, gdy użytkownik wprowadzi dane w formularzu zakupu
      * i trzeba sprawdzić, czy są one prawidłowe
      *
-     * @param array $post Dane $_POST
+     * @param array $body Dane $_POST
      *
      * @return array
      *  status => string id wiadomości,
@@ -30,16 +30,16 @@ interface IServicePurchaseWeb extends IServicePurchase
      *  [data => array('warnings' => array())]
      *  [purchase_data => Entity_Purchase dane zakupu]
      */
-    public function purchase_form_validate($post);
+    public function purchaseFormValidate($body);
 
     /**
      * Metoda zwraca szczegóły zamówienia, wyświetlane podczas zakupu usługi, przed płatnością.
      *
-     * @param Purchase $purchase_data
+     * @param Purchase $purchaseData
      *
      * @return string Szczegóły zamówienia
      */
-    public function order_details($purchase_data);
+    public function orderDetails(Purchase $purchaseData);
 
     /**
      * Metoda formatuje i zwraca informacje o zakupionej usłudze, zaraz po jej zakupie.
@@ -52,5 +52,5 @@ interface IServicePurchaseWeb extends IServicePurchase
      *
      * @return string|array Informacje o zakupionej usłudze
      */
-    public function purchase_info($action, $data);
+    public function purchaseInfo($action, $data);
 }

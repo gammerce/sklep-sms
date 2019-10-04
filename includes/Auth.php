@@ -26,7 +26,7 @@ class Auth
             return $this->user;
         }
 
-        return $this->user = $this->heart->get_user();
+        return $this->user = $this->heart->getUser();
     }
 
     public function setUser(User $user)
@@ -36,19 +36,19 @@ class Auth
 
     public function check()
     {
-        return $this->user !== null && $this->user->isLogged();
+        return $this->user !== null && $this->user->exists();
     }
 
     public function loginUserUsingId($uid)
     {
-        $this->user = $this->heart->get_user($uid);
+        $this->user = $this->heart->getUser($uid);
     }
 
     public function loginAdminUsingCredentials($username, $password)
     {
-        $user = $this->heart->get_user(0, $username, $password);
+        $user = $this->heart->getUser(0, $username, $password);
 
-        if ($user->isLogged() && get_privilages("acp", $user)) {
+        if ($user->exists() && get_privileges("acp", $user)) {
             $this->getSession()->set("uid", $user->getUid());
         } else {
             $this->getSession()->set("info", "wrong_data");

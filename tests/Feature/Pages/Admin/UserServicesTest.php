@@ -22,7 +22,7 @@ class UserServicesTest extends IndexTestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertContains('Panel Admina', $response->getContent());
         $this->assertContains(
-            '<div class="title">Czasowe usługi użytkowników: Dodatkowe flagi',
+            '<div class="title is-4">Czasowe usługi użytkowników: Dodatkowe flagi',
             $response->getContent()
         );
     }

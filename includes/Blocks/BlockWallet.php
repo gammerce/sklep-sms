@@ -8,17 +8,17 @@ use App\Template;
 
 class BlockWallet extends Block implements IBeLoggedMust
 {
-    public function get_content_class()
+    public function getContentClass()
     {
         return "wallet_status";
     }
 
-    public function get_content_id()
+    public function getContentId()
     {
         return "wallet";
     }
 
-    protected function content($get, $post)
+    protected function content(array $query, array $body)
     {
         /** @var Auth $auth */
         $auth = app()->make(Auth::class);
@@ -32,16 +32,16 @@ class BlockWallet extends Block implements IBeLoggedMust
         return $template->render('wallet', compact('amount'));
     }
 
-    public function get_content_enveloped($get, $post)
+    public function getContentEnveloped(array $query, array $body)
     {
         /** @var UrlGenerator $url */
         $url = app()->make(UrlGenerator::class);
 
-        $content = $this->get_content($get, $post);
+        $content = $this->getContent($query, $body);
 
         return create_dom_element("a", $content, [
-            'id' => $this->get_content_id(),
-            'class' => $content !== null ? $this->get_content_class() : "",
+            'id' => $this->getContentId(),
+            'class' => $content !== null ? $this->getContentClass() : "",
             'href' => $url->to("/page/payment_log"),
         ]);
     }

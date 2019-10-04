@@ -5,17 +5,25 @@ use App\Application;
 use App\Controllers\AdminController;
 use App\Controllers\ExtraStuffController;
 use App\Controllers\IndexController;
+use App\Controllers\InstallController;
+use App\Controllers\InstallFullController;
+use App\Controllers\InstallUpdateController;
 use App\Controllers\JsController;
 use App\Controllers\JsonHttpAdminController;
 use App\Controllers\JsonHttpController;
 use App\Controllers\ServerStuffController;
 use App\Controllers\TransferController;
+use App\Controllers\UserPasswordResource;
 use App\Middlewares\BlockOnInvalidLicense;
 use App\Middlewares\IsUpToDate;
 use App\Middlewares\LoadSettings;
 use App\Middlewares\ManageAdminAuthentication;
 use App\Middlewares\ManageAuthentication;
 use App\Middlewares\MiddlewareContract;
+use App\Middlewares\RequireAuthorization;
+use App\Middlewares\RequireInstalledAndNotUpdated;
+use App\Middlewares\RequireNotInstalled;
+use App\Middlewares\RequireNotInstalledOrNotUpdated;
 use App\Middlewares\RunCron;
 use App\Middlewares\SetAdminSession;
 use App\Middlewares\SetLanguage;
@@ -39,6 +47,10 @@ class RoutesManager
 
     private function defineRoutes(RouteCollector $r)
     {
+        $r->addRoute('GET', '/js.php', [
+            'uses' => JsController::class . '@get',
+        ]);
+
         $r->addGroup(
             [
                 "middlewares" => [
@@ -82,10 +94,6 @@ class RoutesManager
                     'uses' => TransferController::class . '@action',
                 ]);
 
-                $r->addRoute('GET', '/js.php', [
-                    'uses' => JsController::class . '@get',
-                ]);
-
                 $r->addRoute(['GET', 'POST'], '/extra_stuff.php', [
                     'middlewares' => [RunCron::class, BlockOnInvalidLicense::class],
                     'uses' => ExtraStuffController::class . '@action',
@@ -126,6 +134,11 @@ class RoutesManager
                     'uses' => AdminController::class . '@action',
                 ]);
 
+                $r->addRoute("PUT", '/admin/users/{userId}/password', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_users"]],
+                    'uses' => UserPasswordResource::class . '@put',
+                ]);
+
                 $r->addRoute(['GET', 'POST'], '/admin.php', [
                     'middlewares' => [RunCron::class],
                     'uses' => AdminController::class . '@oldAction',
@@ -136,6 +149,21 @@ class RoutesManager
                 ]);
             }
         );
+
+        $r->addRoute("GET", "/install", [
+            'middlewares' => [RequireNotInstalledOrNotUpdated::class],
+            'uses' => InstallController::class . "@get",
+        ]);
+
+        $r->addRoute("POST", "/install/full.php", [
+            'middlewares' => [RequireNotInstalled::class],
+            'uses' => InstallFullController::class . "@post",
+        ]);
+
+        $r->addRoute("POST", "/install/update.php", [
+            'middlewares' => [RequireInstalledAndNotUpdated::class],
+            'uses' => InstallUpdateController::class . "@post",
+        ]);
     }
 
     /**
@@ -169,7 +197,15 @@ class RoutesManager
         $middlewares = array_get($routeInfo[1], 'middlewares', []);
         $uses = $routeInfo[1]['uses'];
 
-        foreach ($middlewares as $middlewareClass) {
+        foreach ($middlewares as $middlewareData) {
+            if (is_array($middlewareData)) {
+                $middlewareClass = $middlewareData[0];
+                $args = $middlewareData[1];
+            } else {
+                $middlewareClass = $middlewareData;
+                $args = [];
+            }
+
             /** @var MiddlewareContract $middleware */
             $middleware = $this->app->make($middlewareClass);
 

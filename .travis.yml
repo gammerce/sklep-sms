@@ -28,31 +28,35 @@ before_install:
 install:
   - composer install --no-interaction
   - composer dump
-  - npm install --global prettier @prettier/plugin-php
+  - yarn install
   - php artisan test:setup
 
 script:
-  - prettier "{includes,jscripts,styles,install,tests,themes}/**/*.{php,js,css,html}" --check
+  - yarn pretty
+  - yarn build
   - ./vendor/bin/phpunit
 
 before_deploy:
   - rm -Rf vendor
   - composer install --no-dev --no-interaction --prefer-dist
   - |
-   zip -r \
-   --exclude='.git*' \
-   --exclude='tests/*' \
-   --exclude='docker-compose.yml' \
-   --exclude='docker/*' \
-   --exclude='data/cache/**' \
-   --exclude='data/transfers/**' \
-   --exclude='errors/**' \
-   --exclude='phpunit.xml' \
-   --exclude='.travis.yml' \
-   --exclude='composer.json' \
-   --exclude='composer.lock' \
-   --exclude='README.md' \
-   build.zip .
+    zip -r \
+    --exclude='data/cache/**' \
+    --exclude='data/errors/**' \
+    --exclude='data/transfers/**' \
+    build.zip \
+    build/ \
+    bootstrap/ \
+    confidential/ \
+    data/ \
+    includes/ \
+    migrations/ \
+    themes/ \
+    .htaccess \
+    cron.php \
+    favicon.ico \
+    index.php \
+    README.md
 
 deploy:
   provider: releases

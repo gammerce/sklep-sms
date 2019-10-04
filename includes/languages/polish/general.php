@@ -73,7 +73,7 @@ return [
     'no' => 'Nie',
     'no_access' => 'Nie masz odpowiednich uprawnień.',
     'no_data' => 'Brak danych',
-    'no_privilages' => 'Nie masz dostępu do tego miejsca, więc tu nie zerkaj!',
+    'no_privileges' => 'Nie masz dostępu do tego miejsca, więc tu nie zerkaj!',
     'no_service' => 'Nie ma usługi o takim id.',
     'none' => 'Brak',
     'not_edited_user_service' => 'Nie udało się wyedytować usługi.',

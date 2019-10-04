@@ -22,7 +22,7 @@ class SmsCodesTest extends IndexTestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertContains('Panel Admina', $response->getContent());
         $this->assertContains(
-            '<div class="title">Kody SMS do wykorzystania',
+            '<div class="title is-4">Kody SMS do wykorzystania',
             $response->getContent()
         );
     }

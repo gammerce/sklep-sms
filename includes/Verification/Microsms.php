@@ -5,6 +5,7 @@ use App\Database;
 use App\Models\Purchase;
 use App\Models\TransferFinalize;
 use App\Requesting\Requester;
+use App\Routes\UrlGenerator;
 use App\Settings;
 use App\TranslationManager;
 use App\Verification\Abstracts\PaymentModule;
@@ -26,6 +27,9 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
     /** @var Settings */
     private $settings;
 
+    /** @var UrlGenerator */
+    private $url;
+
     /** @var string */
     private $serviceId;
 
@@ -45,11 +49,13 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
         Database $database,
         Requester $requester,
         TranslationManager $translationManager,
+        UrlGenerator $urlGenerator,
         Settings $settings
     ) {
         parent::__construct($database, $requester, $translationManager);
 
         $this->settings = $settings;
+        $this->url = $urlGenerator;
 
         $this->userId = $this->data['api'];
         $this->smsCode = $this->data['sms_text'];
@@ -114,35 +120,35 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
             'signature' => $signature,
             'amount' => $cost,
             'control' => $dataFilename,
-            'return_urlc' => $this->settings['shop_url_slash'] . 'transfer/microsms',
-            'return_url' => $this->settings['shop_url_slash'] . 'page/transferuj_ok',
+            'return_urlc' => $this->url->to('transfer/microsms'),
+            'return_url' => $this->url->to('page/transferuj_ok'),
             'description' => $purchase->getDesc(),
         ];
     }
 
-    public function finalizeTransfer($get, $post)
+    public function finalizeTransfer(array $query, array $body)
     {
         $transferFinalize = new TransferFinalize();
 
-        if ($this->isPaymentValid($post)) {
+        if ($this->isPaymentValid($body)) {
             $transferFinalize->setStatus(true);
         }
 
-        $transferFinalize->setOrderid($post['orderID']);
-        $transferFinalize->setAmount($post['amountPay']);
-        $transferFinalize->setDataFilename($post['control']);
+        $transferFinalize->setOrderid($body['orderID']);
+        $transferFinalize->setAmount($body['amountPay']);
+        $transferFinalize->setDataFilename($body['control']);
         $transferFinalize->setOutput('OK');
 
         return $transferFinalize;
     }
 
-    private function isPaymentValid(array $post)
+    private function isPaymentValid(array $body)
     {
-        if ($post['status'] != true) {
+        if ($body['status'] != true) {
             return false;
         }
 
-        if ($post['userid'] != $this->userId) {
+        if ($body['userid'] != $this->userId) {
             return false;
         }
 

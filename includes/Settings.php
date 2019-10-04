@@ -27,7 +27,6 @@ class Settings implements ArrayAccess
             'date_format' => 'Y-m-d H:i',
             'theme' => 'default',
             'shop_url' => '',
-            'shop_url_slash' => '',
         ];
     }
 
@@ -69,7 +68,7 @@ class Settings implements ArrayAccess
     {
         // Pozyskanie ustawień sklepu
         $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "settings`");
-        while ($row = $this->db->fetch_array_assoc($result)) {
+        while ($row = $this->db->fetchArrayAssoc($result)) {
             $this->settings[$row['key']] = $this->prepareValue($row['key'], $row['value']);
         }
 
@@ -83,7 +82,6 @@ class Settings implements ArrayAccess
             }
 
             $this->settings['shop_url'] = rtrim($this->settings['shop_url'], "/");
-            $this->settings['shop_url_slash'] = $this->settings['shop_url'] . "/";
         }
 
         $this->settings['currency'] = htmlspecialchars($this->settings['currency']);

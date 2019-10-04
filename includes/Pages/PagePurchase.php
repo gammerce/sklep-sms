@@ -3,6 +3,7 @@ namespace App\Pages;
 
 use App\Auth;
 use App\Interfaces\IBeLoggedMust;
+use App\Routes\UrlGenerator;
 use App\Settings;
 use App\Template;
 use App\Services\Interfaces\IServicePurchaseWeb;
@@ -15,15 +16,15 @@ class PagePurchase extends Page
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('purchase');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('purchase');
     }
 
-    public function get_content($get, $post)
+    public function getContent(array $query, array $body)
     {
-        return $this->content($get, $post);
+        return $this->content($query, $body);
     }
 
-    protected function content($get, $post)
+    protected function content(array $query, array $body)
     {
         $heart = $this->heart;
         $lang = $this->lang;
@@ -35,99 +36,87 @@ class PagePurchase extends Page
         /** @var Template $template */
         $template = $this->app->make(Template::class);
 
-        /** @var Settings $settings */
-        $settings = $this->app->make(Settings::class);
+        /** @var UrlGenerator $url */
+        $url = $this->app->make(UrlGenerator::class);
 
-        if (($service_module = $heart->get_service_module($get['service'])) === null) {
+        if (($serviceModule = $heart->getServiceModule($query['service'])) === null) {
             return $lang->translate('site_not_exists');
         }
 
         // Dodajemy wszystkie skrypty
         if (strlen($this::PAGE_ID)) {
-            $path = "jscripts/pages/" . $this::PAGE_ID . "/";
-            $path_file = $path . "main.js";
-            if (file_exists($this->app->path($path_file))) {
-                $heart->script_add(
-                    $settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version()
-                );
+            $path = "build/js_old/pages/" . $this::PAGE_ID . "/";
+            $pathFile = $path . "main.js";
+            if (file_exists($this->app->path($pathFile))) {
+                $heart->scriptAdd($url->versioned($pathFile));
             }
 
-            $path_file = $path . $service_module->get_module_id() . ".js";
-            if (file_exists($this->app->path($path_file))) {
-                $heart->script_add(
-                    $settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version()
-                );
+            $pathFile = $path . $serviceModule->getModuleId() . ".js";
+            if (file_exists($this->app->path($pathFile))) {
+                $heart->scriptAdd($url->to($pathFile));
             }
         }
 
         // Dodajemy wszystkie css
         if (strlen($this::PAGE_ID)) {
-            $path = "styles/pages/" . $this::PAGE_ID . "/";
-            $path_file = $path . "main.css";
-            if (file_exists($this->app->path($path_file))) {
-                $heart->style_add(
-                    $settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version()
-                );
+            $path = "build/stylesheets_old/pages/" . $this::PAGE_ID . "/";
+            $pathFile = $path . "main.css";
+            if (file_exists($this->app->path($pathFile))) {
+                $heart->styleAdd($url->to($pathFile));
             }
 
-            $path_file = $path . $service_module->get_module_id() . ".css";
-            if (file_exists($this->app->path($path_file))) {
-                $heart->style_add(
-                    $settings['shop_url_slash'] . $path_file . "?version=" . $this->app->version()
-                );
+            $pathFile = $path . $serviceModule->getModuleId() . ".css";
+            if (file_exists($this->app->path($pathFile))) {
+                $heart->styleAdd($url->to($pathFile));
             }
         }
 
         // Globalne jsy cssy konkretnych modułów usług
-        foreach ($heart->get_services_modules() as $module_info) {
-            if ($module_info['id'] == $service_module->get_module_id()) {
-                $path = "styles/services/" . $module_info['id'] . ".css";
+        foreach ($heart->getServicesModules() as $moduleInfo) {
+            if ($moduleInfo['id'] == $serviceModule->getModuleId()) {
+                $path = "build/stylesheets_old/services/" . $moduleInfo['id'] . ".css";
                 if (file_exists($this->app->path($path))) {
-                    $heart->style_add(
-                        $settings['shop_url_slash'] . $path . "?version=" . $this->app->version()
-                    );
+                    $heart->styleAdd($url->to($path));
                 }
 
-                $path = "jscripts/services/" . $module_info['id'] . ".js";
+                $path = "build/js_old/services/" . $moduleInfo['id'] . ".js";
                 if (file_exists($this->app->path($path))) {
-                    $heart->script_add(
-                        $settings['shop_url_slash'] . $path . "?version=" . $this->app->version()
-                    );
+                    $heart->scriptAdd($url->to($path));
                 }
 
                 break;
             }
         }
 
-        $heart->page_title .= " - " . $service_module->service['name'];
+        $heart->pageTitle .= " - " . $serviceModule->service['name'];
 
         // Sprawdzamy, czy usluga wymaga, by użytkownik był zalogowany
         // Jeżeli wymaga, to to sprawdzamy
-        if ($service_module instanceof IBeLoggedMust && !is_logged()) {
+        if ($serviceModule instanceof IBeLoggedMust && !is_logged()) {
             return $lang->translate('must_be_logged_in');
         }
 
         // Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
-        if (!$heart->user_can_use_service($user->getUid(), $service_module->service)) {
+        if (!$heart->userCanUseService($user->getUid(), $serviceModule->service)) {
             return $lang->translate('service_no_permission');
         }
 
         // Nie ma formularza zakupu, to tak jakby strona nie istniała
-        if (!($service_module instanceof IServicePurchaseWeb)) {
+        if (!($serviceModule instanceof IServicePurchaseWeb)) {
             return $lang->translate('site_not_exists');
         }
 
         // Dodajemy długi opis
-        $show_more = '';
-        if (strlen($service_module->description_full_get())) {
-            $show_more = $template->render("services/show_more");
+        $showMore = '';
+        if (strlen($serviceModule->descriptionFullGet())) {
+            $showMore = $template->render("services/show_more");
         }
 
         $output = $template->render(
             "services/short_description",
-            compact('service_module', 'show_more')
+            compact('serviceModule', 'showMore')
         );
 
-        return $output . $service_module->purchase_form_get();
+        return $output . $serviceModule->purchaseFormGet();
     }
 }

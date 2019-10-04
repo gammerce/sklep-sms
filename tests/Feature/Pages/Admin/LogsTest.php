@@ -21,6 +21,6 @@ class LogsTest extends IndexTestCase
         // then
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertContains('Panel Admina', $response->getContent());
-        $this->assertContains('<div class="title">Logi', $response->getContent());
+        $this->assertContains('<div class="title is-4">Logi', $response->getContent());
     }
 }

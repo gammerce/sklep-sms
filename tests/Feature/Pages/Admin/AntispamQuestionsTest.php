@@ -21,6 +21,9 @@ class AntispamQuestionsTest extends IndexTestCase
         // then
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertContains('Panel Admina', $response->getContent());
-        $this->assertContains('<div class="title">Pytania antyspamowe', $response->getContent());
+        $this->assertContains(
+            '<div class="title is-4">Pytania antyspamowe',
+            $response->getContent()
+        );
     }
 }

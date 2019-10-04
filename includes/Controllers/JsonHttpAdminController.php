@@ -49,7 +49,7 @@ class JsonHttpAdminController
 
         $data = [];
         if ($action == "charge_wallet") {
-            if (!get_privilages("manage_users")) {
+            if (!get_privileges("manage_users")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -64,8 +64,8 @@ class JsonHttpAdminController
             if ($warning = check_for_warnings("uid", $uid)) {
                 $warnings['uid'] = array_merge((array) $warnings['uid'], $warning);
             } else {
-                $user2 = $heart->get_user($uid);
-                if (!$user2->isLogged()) {
+                $user2 = $heart->getUser($uid);
+                if (!$user2->exists()) {
                     $warnings['uid'][] = $lang->translate('noaccount_id');
                 }
             }
@@ -80,39 +80,34 @@ class JsonHttpAdminController
             }
 
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
             // Zmiana wartości amount, aby stan konta nie zszedł poniżej zera
             $amount = max($amount, -$user2->getWallet());
 
-            $serviceModule = $heart->get_service_module(ServiceChargeWalletSimple::MODULE_ID);
+            $serviceModule = $heart->getServiceModule(ServiceChargeWalletSimple::MODULE_ID);
             if (is_null($serviceModule)) {
                 return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
             }
 
             // Dodawanie informacji o płatności do bazy
-            $payment_id = pay_by_admin($user);
+            $paymentId = pay_by_admin($user);
 
             // Kupujemy usługę
-            $purchase_data = new Purchase();
-            $purchase_data->user = $user2;
-            $purchase_data->setPayment([
+            $purchaseData = new Purchase();
+            $purchaseData->user = $user2;
+            $purchaseData->setPayment([
                 'method' => "admin",
-                'payment_id' => $payment_id,
+                'payment_id' => $paymentId,
             ]);
-            $purchase_data->setOrder([
+            $purchaseData->setOrder([
                 'amount' => $amount,
             ]);
-            $purchase_data->setEmail($user2->getEmail());
+            $purchaseData->setEmail($user2->getEmail());
 
-            $purchase_return = $serviceModule->purchase($purchase_data);
+            $purchaseReturn = $serviceModule->purchase($purchaseData);
 
             log_info(
                 $langShop->sprintf(
@@ -139,7 +134,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "user_service_add") {
-            if (!get_privilages("manage_user_services")) {
+            if (!get_privileges("manage_user_services")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -153,34 +148,29 @@ class JsonHttpAdminController
             }
 
             if (
-                ($serviceModule = $heart->get_service_module($_POST['service'])) === null ||
+                ($serviceModule = $heart->getServiceModule($_POST['service'])) === null ||
                 !($serviceModule instanceof IServiceUserServiceAdminAdd)
             ) {
                 return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
             }
 
-            $return_data = $serviceModule->user_service_admin_add($_POST);
+            $returnData = $serviceModule->userServiceAdminAdd($_POST);
 
             // Przerabiamy ostrzeżenia, aby lepiej wyglądały
-            if ($return_data['status'] == "warnings") {
-                foreach ($return_data['data']['warnings'] as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $return_data['data']['warnings'][$brick] = $warning;
-                }
+            if ($returnData['status'] == "warnings") {
+                $returnData["data"]["warnings"] = format_warnings($returnData["data"]["warnings"]);
             }
 
             return new ApiResponse(
-                $return_data['status'],
-                $return_data['text'],
-                $return_data['positive'],
-                $return_data['data']
+                $returnData['status'],
+                $returnData['text'],
+                $returnData['positive'],
+                $returnData['data']
             );
         }
 
         if ($action == "user_service_edit") {
-            if (!get_privilages("manage_user_services")) {
+            if (!get_privileges("manage_user_services")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -193,44 +183,38 @@ class JsonHttpAdminController
                 return new ApiResponse("no_service", "Nie wybrano usługi.", 0);
             }
 
-            if (is_null($serviceModule = $heart->get_service_module($_POST['service']))) {
+            if (is_null($serviceModule = $heart->getServiceModule($_POST['service']))) {
                 return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
             }
 
-            $user_service = get_users_services($_POST['id']);
+            $userService = get_users_services($_POST['id']);
 
             // Brak takiej usługi w bazie
-            if (empty($user_service)) {
+            if (empty($userService)) {
                 return new ApiResponse("no_service", $lang->translate('no_service'), 0);
             }
 
             // Wykonujemy metode edycji usługi użytkownika przez admina na odpowiednim module
-            $return_data = $serviceModule->user_service_admin_edit($_POST, $user_service);
+            $returnData = $serviceModule->userServiceAdminEdit($_POST, $userService);
 
-            if ($return_data === false) {
+            if ($returnData === false) {
                 return new ApiResponse("missing_method", $lang->translate('no_edit_method'), 0);
             }
 
-            // Przerabiamy ostrzeżenia, aby lepiej wyglądały
-            if ($return_data['status'] == "warnings") {
-                foreach ($return_data['data']['warnings'] as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $return_data['data']['warnings'][$brick] = $warning;
-                }
+            if ($returnData['status'] == "warnings") {
+                $returnData["data"]["warnings"] = format_warnings($returnData["data"]["warnings"]);
             }
 
             return new ApiResponse(
-                $return_data['status'],
-                $return_data['text'],
-                $return_data['positive'],
-                $return_data['data']
+                $returnData['status'],
+                $returnData['text'],
+                $returnData['positive'],
+                $returnData['data']
             );
         }
 
         if ($action == "user_service_delete") {
-            if (!get_privilages("manage_user_services")) {
+            if (!get_privileges("manage_user_services")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -238,17 +222,17 @@ class JsonHttpAdminController
                 );
             }
 
-            $user_service = get_users_services($_POST['id']);
+            $userService = get_users_services($_POST['id']);
 
             // Brak takiej usługi
-            if (empty($user_service)) {
+            if (empty($userService)) {
                 return new ApiResponse("no_service", $lang->translate('no_service'), 0);
             }
 
             // Wywolujemy akcje przy usuwaniu
             if (
-                ($serviceModule = $heart->get_service_module($user_service['service'])) !== null &&
-                !$serviceModule->user_service_delete($user_service, 'admin')
+                ($serviceModule = $heart->getServiceModule($userService['service'])) !== null &&
+                !$serviceModule->userServiceDelete($userService, 'admin')
             ) {
                 return new ApiResponse(
                     "user_service_cannot_be_deleted",
@@ -261,13 +245,13 @@ class JsonHttpAdminController
             $db->query(
                 $db->prepare(
                     "DELETE FROM `" . TABLE_PREFIX . "user_service` " . "WHERE `id` = '%d'",
-                    [$user_service['id']]
+                    [$userService['id']]
                 )
             );
-            $affected = $db->affected_rows();
+            $affected = $db->affectedRows();
 
             if ($serviceModule !== null) {
-                $serviceModule->user_service_delete_post($user_service);
+                $serviceModule->userServiceDeletePost($userService);
             }
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
@@ -277,7 +261,7 @@ class JsonHttpAdminController
                         $langShop->translate('user_service_admin_delete'),
                         $user->getUsername(),
                         $user->getUid(),
-                        $user_service['id']
+                        $userService['id']
                     )
                 );
 
@@ -288,7 +272,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "user_service_add_form_get") {
-            if (!get_privilages("manage_user_services")) {
+            if (!get_privileges("manage_user_services")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -297,15 +281,15 @@ class JsonHttpAdminController
             }
 
             $output = "";
-            if (($serviceModule = $heart->get_service_module($_POST['service'])) !== null) {
-                $output = $serviceModule->user_service_admin_add_form_get();
+            if (($serviceModule = $heart->getServiceModule($_POST['service'])) !== null) {
+                $output = $serviceModule->userServiceAdminAddFormGet();
             }
 
             return new PlainResponse($output);
         }
 
         if ($action == "antispam_question_add" || $action == "antispam_question_edit") {
-            if (!get_privilages("manage_antispam_questions")) {
+            if (!get_privileges("manage_antispam_questions")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -323,14 +307,8 @@ class JsonHttpAdminController
                 $warnings['answers'][] = $lang->translate('field_no_empty');
             }
 
-            // Błędy
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
@@ -361,7 +339,7 @@ class JsonHttpAdminController
                 );
 
                 // Zwróć info o prawidłowej lub błędnej edycji
-                if ($db->affected_rows()) {
+                if ($db->affectedRows()) {
                     log_info(
                         $langShop->sprintf(
                             $langShop->translate('question_edit'),
@@ -380,7 +358,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "delete_antispam_question") {
-            if (!get_privilages("manage_antispam_questions")) {
+            if (!get_privileges("manage_antispam_questions")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -396,7 +374,7 @@ class JsonHttpAdminController
             );
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
                         $langShop->translate('question_delete'),
@@ -412,7 +390,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "settings_edit") {
-            if (!get_privilages("manage_settings")) {
+            if (!get_privileges("manage_settings")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -420,28 +398,28 @@ class JsonHttpAdminController
                 );
             }
 
-            $sms_service = $_POST['sms_service'];
-            $transfer_service = $_POST['transfer_service'];
+            $smsService = $_POST['sms_service'];
+            $transferService = $_POST['transfer_service'];
             $currency = $_POST['currency'];
             $shopName = $_POST['shop_name'];
-            $shop_url = $_POST['shop_url'];
-            $sender_email = $_POST['sender_email'];
-            $sender_email_name = $_POST['sender_email_name'];
+            $shopUrl = $_POST['shop_url'];
+            $senderEmail = $_POST['sender_email'];
+            $senderEmailName = $_POST['sender_email_name'];
             $signature = $_POST['signature'];
             $vat = $_POST['vat'];
             $contact = $_POST['contact'];
-            $row_limit = $_POST['row_limit'];
+            $rowLimit = $_POST['row_limit'];
             $licenseToken = $_POST['license_token'];
             $cron = $_POST['cron'];
             $language = escape_filename($_POST['language']);
             $theme = escape_filename($_POST['theme']);
-            $date_format = $_POST['date_format'];
-            $delete_logs = $_POST['delete_logs'];
-            $google_analytics = trim($_POST['google_analytics']);
+            $dateFormat = $_POST['date_format'];
+            $deleteLogs = $_POST['delete_logs'];
+            $googleAnalytics = trim($_POST['google_analytics']);
             $gadugadu = $_POST['gadugadu'];
 
             // Serwis płatności SMS
-            if (strlen($sms_service)) {
+            if (strlen($smsService)) {
                 $result = $db->query(
                     $db->prepare(
                         "SELECT id " .
@@ -449,16 +427,16 @@ class JsonHttpAdminController
                             TABLE_PREFIX .
                             "transaction_services` " .
                             "WHERE `id` = '%s' AND sms = '1'",
-                        [$sms_service]
+                        [$smsService]
                     )
                 );
-                if (!$db->num_rows($result)) {
+                if (!$db->numRows($result)) {
                     $warnings['sms_service'][] = $lang->translate('no_sms_service');
                 }
             }
 
             // Serwis płatności internetowej
-            if (strlen($transfer_service)) {
+            if (strlen($transferService)) {
                 $result = $db->query(
                     $db->prepare(
                         "SELECT id " .
@@ -466,16 +444,16 @@ class JsonHttpAdminController
                             TABLE_PREFIX .
                             "transaction_services` " .
                             "WHERE `id` = '%s' AND transfer = '1'",
-                        [$transfer_service]
+                        [$transferService]
                     )
                 );
-                if (!$db->num_rows($result)) {
+                if (!$db->numRows($result)) {
                     $warnings['transfer_service'][] = $lang->translate('no_net_service');
                 }
             }
 
             // Email dla automatu
-            if (strlen($sender_email) && ($warning = check_for_warnings("email", $sender_email))) {
+            if (strlen($senderEmail) && ($warning = check_for_warnings("email", $senderEmail))) {
                 $warnings['sender_email'] = array_merge(
                     (array) $warnings['sender_email'],
                     $warning
@@ -488,12 +466,12 @@ class JsonHttpAdminController
             }
 
             // Usuwanie logów
-            if ($warning = check_for_warnings("number", $delete_logs)) {
+            if ($warning = check_for_warnings("number", $deleteLogs)) {
                 $warnings['delete_logs'] = array_merge((array) $warnings['delete_logs'], $warning);
             }
 
             // Wierszy na stronę
-            if ($warning = check_for_warnings("number", $row_limit)) {
+            if ($warning = check_for_warnings("number", $rowLimit)) {
                 $warnings['row_limit'] = array_merge((array) $warnings['row_limit'], $warning);
             }
 
@@ -518,12 +496,7 @@ class JsonHttpAdminController
             }
 
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
@@ -567,31 +540,31 @@ class JsonHttpAdminController
                         "'contact','row_limit','cron_each_visit','user_edit_service','theme','language','date_format','delete_logs'," .
                         "'google_analytics','gadugadu'{$keyLicenseToken} )",
                     [
-                        $sms_service,
-                        $transfer_service,
+                        $smsService,
+                        $transferService,
                         $currency,
                         $shopName,
-                        $shop_url,
-                        $sender_email,
-                        $sender_email_name,
+                        $shopUrl,
+                        $senderEmail,
+                        $senderEmailName,
                         $signature,
                         $vat,
                         $contact,
-                        $row_limit,
+                        $rowLimit,
                         $cron,
                         $_POST['user_edit_service'],
                         $theme,
                         $language,
-                        $date_format,
-                        $delete_logs,
-                        $google_analytics,
+                        $dateFormat,
+                        $deleteLogs,
+                        $googleAnalytics,
                         $gadugadu,
                     ]
                 )
             );
 
             // Zwróć info o prawidłowej lub błędnej edycji
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
                         $langShop->translate('settings_admin_edit'),
@@ -607,7 +580,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "transaction_service_edit") {
-            if (!get_privilages("manage_settings")) {
+            if (!get_privileges("manage_settings")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -626,9 +599,9 @@ class JsonHttpAdminController
                     [$_POST['id']]
                 )
             );
-            $transaction_service = $db->fetch_array_assoc($result);
-            $transaction_service['data'] = json_decode($transaction_service['data']);
-            foreach ($transaction_service['data'] as $key => $value) {
+            $transactionService = $db->fetchArrayAssoc($result);
+            $transactionService['data'] = json_decode($transactionService['data']);
+            foreach ($transactionService['data'] as $key => $value) {
                 $arr[$key] = $_POST[$key];
             }
 
@@ -644,7 +617,7 @@ class JsonHttpAdminController
             );
 
             // Zwróć info o prawidłowej lub błędnej edycji
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 // LOGGING
                 log_info(
                     $langShop->sprintf(
@@ -662,7 +635,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "service_add" || $action == "service_edit") {
-            if (!get_privilages("manage_services")) {
+            if (!get_privileges("manage_services")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -687,7 +660,7 @@ class JsonHttpAdminController
                 ($action == "service_edit" && $_POST['id'] !== $_POST['id2'])
             ) {
                 // Sprawdzanie czy usługa o takim ID już istnieje
-                if ($heart->get_service($_POST['id']) !== null) {
+                if ($heart->getService($_POST['id']) !== null) {
                     $warnings['id'][] = $lang->translate('id_exist');
                 }
             }
@@ -712,7 +685,7 @@ class JsonHttpAdminController
 
             // Grupy
             foreach ($_POST['groups'] as $group) {
-                if (is_null($heart->get_group($group))) {
+                if (is_null($heart->getGroup($group))) {
                     $warnings['groups[]'][] = $lang->translate('wrong_group');
                     break;
                 }
@@ -720,38 +693,33 @@ class JsonHttpAdminController
 
             // Moduł usługi
             if ($action == "service_add") {
-                if (($serviceModule = $heart->get_service_module_s($_POST['module'])) === null) {
+                if (($serviceModule = $heart->getServiceModuleS($_POST['module'])) === null) {
                     $warnings['module'][] = $lang->translate('wrong_module');
                 }
             } else {
-                $serviceModule = $heart->get_service_module($_POST['id2']);
+                $serviceModule = $heart->getServiceModule($_POST['id2']);
             }
 
             // Przed błędami
             if ($serviceModule !== null && $serviceModule instanceof IServiceAdminManage) {
-                $additional_warnings = $serviceModule->service_admin_manage_pre($_POST);
-                $warnings = array_merge((array) $warnings, (array) $additional_warnings);
+                $additionalWarnings = $serviceModule->serviceAdminManagePre($_POST);
+                $warnings = array_merge((array) $warnings, (array) $additionalWarnings);
             }
 
             // Błędy
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
             // Po błędach wywołujemy metodę modułu
             if ($serviceModule !== null && $serviceModule instanceof IServiceAdminManage) {
-                $module_data = $serviceModule->service_admin_manage_post($_POST);
+                $moduleData = $serviceModule->serviceAdminManagePost($_POST);
 
                 // Tworzymy elementy SET zapytania
-                if (isset($module_data['query_set'])) {
+                if (isset($moduleData['query_set'])) {
                     $set = '';
-                    foreach ($module_data['query_set'] as $element) {
+                    foreach ($moduleData['query_set'] as $element) {
                         if (strlen($set)) {
                             $set .= ", ";
                         }
@@ -827,7 +795,7 @@ class JsonHttpAdminController
                 );
 
                 // Zwróć info o prawidłowej lub błędnej edycji
-                if ($db->affected_rows()) {
+                if ($db->affectedRows()) {
                     log_info(
                         $langShop->sprintf(
                             $langShop->translate('service_admin_edit'),
@@ -845,7 +813,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "delete_service") {
-            if (!get_privilages("manage_services")) {
+            if (!get_privileges("manage_services")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -854,9 +822,9 @@ class JsonHttpAdminController
             }
 
             // Wywolujemy akcje przy uninstalacji
-            $serviceModule = $heart->get_service_module($_POST['id']);
+            $serviceModule = $heart->getServiceModule($_POST['id']);
             if (!is_null($serviceModule)) {
-                $serviceModule->service_delete($_POST['id']);
+                $serviceModule->serviceDelete($_POST['id']);
             }
 
             try {
@@ -878,7 +846,7 @@ class JsonHttpAdminController
 
                 throw $e;
             }
-            $affected = $db->affected_rows();
+            $affected = $db->affectedRows();
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
             if ($affected) {
@@ -897,7 +865,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "get_service_module_extra_fields") {
-            if (!get_privilages("manage_user_services")) {
+            if (!get_privileges("manage_user_services")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -909,21 +877,21 @@ class JsonHttpAdminController
             // Pobieramy moduł obecnie edytowanej usługi, jeżeli powróciliśmy do pierwotnego modułu
             // W przeciwnym razie pobieramy wybrany moduł
             if (
-                is_null($serviceModule = $heart->get_service_module($_POST['service'])) ||
-                $serviceModule->get_module_id() != $_POST['module']
+                is_null($serviceModule = $heart->getServiceModule($_POST['service'])) ||
+                $serviceModule->getModuleId() != $_POST['module']
             ) {
-                $serviceModule = $heart->get_service_module_s($_POST['module']);
+                $serviceModule = $heart->getServiceModuleS($_POST['module']);
             }
 
             if ($serviceModule !== null && $serviceModule instanceof IServiceAdminManage) {
-                $output = $serviceModule->service_admin_extra_fields_get();
+                $output = $serviceModule->serviceAdminExtraFieldsGet();
             }
 
             return new PlainResponse($output);
         }
 
         if ($action == "server_add" || $action == "server_edit") {
-            if (!get_privilages("manage_servers")) {
+            if (!get_privileges("manage_servers")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -963,19 +931,14 @@ class JsonHttpAdminController
                         [$_POST['sms_service']]
                     )
                 );
-                if (!$db->num_rows($result)) {
+                if (!$db->numRows($result)) {
                     $warnings['sms_service'][] = $lang->translate('no_sms_service');
                 }
             }
 
             // Błędy
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
@@ -986,7 +949,7 @@ class JsonHttpAdminController
                     $_POST['port'],
                     $_POST['sms_service']
                 );
-                $server_id = $server->getId();
+                $serverId = $server->getId();
             } elseif ($action == "server_edit") {
                 $db->query(
                     $db->prepare(
@@ -1005,29 +968,29 @@ class JsonHttpAdminController
                     )
                 );
 
-                $server_id = $_POST['id'];
+                $serverId = $_POST['id'];
             }
 
             // Aktualizujemy powiazania serwerow z uslugami
-            if ($server_id) {
-                $servers_services = [];
-                foreach ($heart->get_services() as $service) {
+            if ($serverId) {
+                $serversServices = [];
+                foreach ($heart->getServices() as $service) {
                     // Dana usługa nie może być kupiona na serwerze
                     if (
-                        !is_null($serviceModule = $heart->get_service_module($service['id'])) &&
+                        !is_null($serviceModule = $heart->getServiceModule($service['id'])) &&
                         !($serviceModule instanceof IServiceAvailableOnServers)
                     ) {
                         continue;
                     }
 
-                    $servers_services[] = [
+                    $serversServices[] = [
                         'service' => $service['id'],
-                        'server' => $server_id,
+                        'server' => $serverId,
                         'status' => (bool) $_POST[$service['id']],
                     ];
                 }
 
-                update_servers_services($servers_services);
+                update_servers_services($serversServices);
             }
 
             if ($action == "server_add") {
@@ -1036,7 +999,7 @@ class JsonHttpAdminController
                         $langShop->translate('server_admin_add'),
                         $user->getUsername(),
                         $user->getUid(),
-                        $server_id
+                        $serverId
                     )
                 );
                 return new ApiResponse('ok', $lang->translate('server_added'), 1);
@@ -1048,7 +1011,7 @@ class JsonHttpAdminController
                         $langShop->translate('server_admin_edit'),
                         $user->getUsername(),
                         $user->getUid(),
-                        $server_id
+                        $serverId
                     )
                 );
                 return new ApiResponse('ok', $lang->translate('server_edit'), 1);
@@ -1058,7 +1021,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "delete_server") {
-            if (!get_privilages("manage_servers")) {
+            if (!get_privileges("manage_servers")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1087,7 +1050,7 @@ class JsonHttpAdminController
             }
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
                         $langShop->translate('server_admin_delete'),
@@ -1103,7 +1066,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "user_edit") {
-            if (!get_privilages("manage_users")) {
+            if (!get_privileges("manage_users")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1111,7 +1074,7 @@ class JsonHttpAdminController
                 );
             }
 
-            $user2 = $heart->get_user($_POST['uid']);
+            $user2 = $heart->getUser($_POST['uid']);
 
             // Nazwa użytkownika
             if ($user2->getUsername() != $_POST['username']) {
@@ -1128,7 +1091,7 @@ class JsonHttpAdminController
                         [$_POST['username']]
                     )
                 );
-                if ($db->num_rows($result)) {
+                if ($db->numRows($result)) {
                     $warnings['username'][] = $lang->translate('nick_taken');
                 }
             }
@@ -1148,14 +1111,14 @@ class JsonHttpAdminController
                         [$_POST['email']]
                     )
                 );
-                if ($db->num_rows($result)) {
+                if ($db->numRows($result)) {
                     $warnings['email'][] = $lang->translate('email_taken');
                 }
             }
 
             // Grupy
             foreach ($_POST['groups'] as $gid) {
-                if (is_null($heart->get_group($gid))) {
+                if (is_null($heart->getGroup($gid))) {
                     $warnings['groups[]'][] = $lang->translate('wrong_group');
                     break;
                 }
@@ -1166,14 +1129,8 @@ class JsonHttpAdminController
                 $warnings['wallet'] = array_merge((array) $warnings['wallet'], $warning);
             }
 
-            // Błędy
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
@@ -1197,7 +1154,7 @@ class JsonHttpAdminController
             );
 
             // Zwróć info o prawidłowej lub błędnej edycji
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 // LOGGING
                 log_info(
                     $langShop->sprintf(
@@ -1213,7 +1170,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "delete_user") {
-            if (!get_privilages("manage_users")) {
+            if (!get_privileges("manage_users")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1228,7 +1185,7 @@ class JsonHttpAdminController
             );
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
                         $langShop->translate('user_admin_delete'),
@@ -1244,7 +1201,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "group_add" || $action == "group_edit") {
-            if (!get_privilages("manage_groups")) {
+            if (!get_privileges("manage_groups")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1254,7 +1211,7 @@ class JsonHttpAdminController
 
             $set = "";
             $result = $db->query("DESCRIBE " . TABLE_PREFIX . "groups");
-            while ($row = $db->fetch_array_assoc($result)) {
+            while ($row = $db->fetchArrayAssoc($result)) {
                 if (in_array($row['Field'], ["id", "name"])) {
                     continue;
                 }
@@ -1275,7 +1232,7 @@ class JsonHttpAdminController
                         $langShop->translate('group_admin_add'),
                         $user->getUsername(),
                         $user->getUid(),
-                        $db->last_id()
+                        $db->lastId()
                     )
                 );
                 // Zwróć info o prawidłowym zakończeniu dodawania
@@ -1295,7 +1252,7 @@ class JsonHttpAdminController
                 );
 
                 // Zwróć info o prawidłowej lub błędnej edycji
-                if ($db->affected_rows()) {
+                if ($db->affectedRows()) {
                     // LOGGING
                     log_info(
                         $langShop->sprintf(
@@ -1315,7 +1272,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "delete_group") {
-            if (!get_privilages("manage_groups")) {
+            if (!get_privileges("manage_groups")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1330,7 +1287,7 @@ class JsonHttpAdminController
             );
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
                         $langShop->translate('group_admin_delete'),
@@ -1346,7 +1303,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "tariff_add") {
-            if (!get_privilages("manage_settings")) {
+            if (!get_privileges("manage_settings")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1367,14 +1324,8 @@ class JsonHttpAdminController
                 $warnings['provision'] = array_merge((array) $warnings['provision'], $warning);
             }
 
-            // Błędy
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
@@ -1393,7 +1344,7 @@ class JsonHttpAdminController
                     $langShop->translate('tariff_admin_add'),
                     $user->getUsername(),
                     $user->getUid(),
-                    $db->last_id()
+                    $db->lastId()
                 )
             );
 
@@ -1401,7 +1352,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "tariff_edit") {
-            if (!get_privilages("manage_settings")) {
+            if (!get_privileges("manage_settings")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1414,14 +1365,8 @@ class JsonHttpAdminController
                 $warnings['provision'] = array_merge((array) $warnings['provision'], $warning);
             }
 
-            // Błędy
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
@@ -1435,10 +1380,10 @@ class JsonHttpAdminController
                     [$_POST['provision'] * 100, $_POST['id']]
                 )
             );
-            $affected = $db->affected_rows();
+            $affected = $db->affectedRows();
 
             // Zwróć info o prawidłowej edycji
-            if ($affected || $db->affected_rows()) {
+            if ($affected || $db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
                         $langShop->translate('tariff_admin_edit'),
@@ -1454,7 +1399,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "delete_tariff") {
-            if (!get_privilages("manage_settings")) {
+            if (!get_privileges("manage_settings")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1473,7 +1418,7 @@ class JsonHttpAdminController
             );
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
                         $langShop->translate('tariff_admin_delete'),
@@ -1489,7 +1434,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "price_add" || $action == "price_edit") {
-            if (!get_privilages("manage_settings")) {
+            if (!get_privileges("manage_settings")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1498,12 +1443,12 @@ class JsonHttpAdminController
             }
 
             // Usługa
-            if (is_null($heart->get_service($_POST['service']))) {
+            if (is_null($heart->getService($_POST['service']))) {
                 $warnings['service'][] = $lang->translate('no_such_service');
             }
 
             // Serwer
-            if ($_POST['server'] != -1 && $heart->get_server($_POST['server']) === null) {
+            if ($_POST['server'] != -1 && $heart->getServer($_POST['server']) === null) {
                 $warnings['server'][] = $lang->translate('no_such_server');
             }
 
@@ -1517,14 +1462,8 @@ class JsonHttpAdminController
                 $warnings['amount'] = array_merge((array) $warnings['amount'], $warning);
             }
 
-            // Błędy
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
@@ -1538,7 +1477,7 @@ class JsonHttpAdminController
 
                 log_info(
                     "Admin {$user->getUsername()}({$user->getUid()}) dodał cenę. ID: " .
-                        $db->last_id()
+                        $db->lastId()
                 );
 
                 // Zwróć info o prawidłowym dodaniu
@@ -1564,7 +1503,7 @@ class JsonHttpAdminController
                 );
 
                 // Zwróć info o prawidłowej lub błędnej edycji
-                if ($db->affected_rows()) {
+                if ($db->affectedRows()) {
                     log_info(
                         $langShop->sprintf(
                             $langShop->translate('price_admin_edit'),
@@ -1583,7 +1522,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "delete_price") {
-            if (!get_privilages("manage_settings")) {
+            if (!get_privileges("manage_settings")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1598,7 +1537,7 @@ class JsonHttpAdminController
             );
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
                         $langShop->translate('price_admin_delete'),
@@ -1614,7 +1553,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "sms_code_add") {
-            if (!get_privilages("manage_sms_codes")) {
+            if (!get_privileges("manage_sms_codes")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1632,14 +1571,8 @@ class JsonHttpAdminController
                 $warnings['code'] = array_merge((array) $warnings['code'], $warning);
             }
 
-            // Błędy
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
@@ -1667,7 +1600,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "delete_sms_code") {
-            if (!get_privilages("manage_sms_codes")) {
+            if (!get_privileges("manage_sms_codes")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1682,7 +1615,7 @@ class JsonHttpAdminController
             );
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
                         $langShop->translate('sms_code_admin_delete'),
@@ -1698,7 +1631,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "service_code_add") {
-            if (!get_privilages("manage_service_codes")) {
+            if (!get_privileges("manage_service_codes")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1711,7 +1644,7 @@ class JsonHttpAdminController
                 return new ApiResponse("no_service", $lang->translate('no_service_chosen'), 0);
             }
 
-            if (($serviceModule = $heart->get_service_module($_POST['service'])) === null) {
+            if (($serviceModule = $heart->getServiceModule($_POST['service'])) === null) {
                 return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
             }
 
@@ -1732,22 +1665,16 @@ class JsonHttpAdminController
             // Łączymy zwrócone błędy
             $warnings = array_merge(
                 (array) $warnings,
-                (array) $serviceModule->service_code_admin_add_validate($_POST)
+                (array) $serviceModule->serviceCodeAdminAddValidate($_POST)
             );
 
-            // Przerabiamy ostrzeżenia, aby lepiej wyglądały
             if (!empty($warnings)) {
-                foreach ($warnings as $brick => $warning) {
-                    $warning = create_dom_element("div", implode("<br />", $warning), [
-                        'class' => "form_warning",
-                    ]);
-                    $data['warnings'][$brick] = $warning;
-                }
+                $data['warnings'] = format_warnings($warnings);
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
             // Pozyskujemy dane kodu do dodania
-            $code_data = $serviceModule->service_code_admin_add_insert($_POST);
+            $codeData = $serviceModule->serviceCodeAdminAddInsert($_POST);
 
             $db->query(
                 $db->prepare(
@@ -1759,10 +1686,10 @@ class JsonHttpAdminController
                         $_POST['code'],
                         $serviceModule->service['id'],
                         if_strlen($_POST['uid'], 0),
-                        if_isset($code_data['server'], 0),
-                        if_isset($code_data['amount'], 0),
-                        if_isset($code_data['tariff'], 0),
-                        $code_data['data'],
+                        if_isset($codeData['server'], 0),
+                        if_isset($codeData['amount'], 0),
+                        if_isset($codeData['tariff'], 0),
+                        $codeData['data'],
                     ]
                 )
             );
@@ -1781,7 +1708,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "delete_service_code") {
-            if (!get_privilages("manage_service_codes")) {
+            if (!get_privileges("manage_service_codes")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1797,7 +1724,7 @@ class JsonHttpAdminController
             );
 
             // Zwróć info o prawidłowym lub błędnym usunięciu
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
                         $langShop->translate('code_deleted_admin'),
@@ -1813,7 +1740,7 @@ class JsonHttpAdminController
         }
 
         if ($action == "service_code_add_form_get") {
-            if (!get_privilages("manage_service_codes")) {
+            if (!get_privileges("manage_service_codes")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1823,17 +1750,17 @@ class JsonHttpAdminController
 
             $output = "";
             if (
-                ($serviceModule = $heart->get_service_module($_POST['service'])) !== null &&
+                ($serviceModule = $heart->getServiceModule($_POST['service'])) !== null &&
                 $serviceModule instanceof IServiceServiceCodeAdminManage
             ) {
-                $output = $serviceModule->service_code_admin_add_form_get();
+                $output = $serviceModule->serviceCodeAdminAddFormGet();
             }
 
             return new PlainResponse($output);
         }
 
         if ($action == "delete_log") {
-            if (!get_privilages("manage_logs")) {
+            if (!get_privileges("manage_logs")) {
                 return new ApiResponse(
                     "not_logged_in",
                     $lang->translate('not_logged_or_no_perm'),
@@ -1848,7 +1775,7 @@ class JsonHttpAdminController
             );
 
             // Zwróć info o prawidłowym lub błędnym usunieciu
-            if ($db->affected_rows()) {
+            if ($db->affectedRows()) {
                 return new ApiResponse('ok', $lang->translate('delete_log'), 1);
             }
 
@@ -1862,18 +1789,18 @@ class JsonHttpAdminController
 
             foreach ($bricks as $brick) {
                 // Nie ma takiego bloku do odświeżenia
-                if (($block = $heart->get_block($brick)) === null) {
+                if (($block = $heart->getBlock($brick)) === null) {
                     continue;
                 }
 
-                $data[$block->get_content_id()]['content'] = $block->get_content(
+                $data[$block->getContentId()]['content'] = $block->getContent(
                     $request->query->all(),
                     $request->request->all()
                 );
-                if ($data[$block->get_content_id()]['content'] !== null) {
-                    $data[$block->get_content_id()]['class'] = $block->get_content_class();
+                if ($data[$block->getContentId()]['content'] !== null) {
+                    $data[$block->getContentId()]['class'] = $block->getContentClass();
                 } else {
-                    $data[$block->get_content_id()]['class'] = "";
+                    $data[$block->getContentId()]['class'] = "";
                 }
             }
 
@@ -1885,7 +1812,7 @@ class JsonHttpAdminController
                 return new ApiResponse("no_data", $lang->translate('not_all_data'), 0);
             }
 
-            if (($page = $heart->get_page($_POST['page_id'], "admin")) === null) {
+            if (($page = $heart->getPage($_POST['page_id'], "admin")) === null) {
                 return new ApiResponse("wrong_page", $lang->translate('wrong_page_id'), 0);
             }
 
@@ -1897,9 +1824,14 @@ class JsonHttpAdminController
                 );
             }
 
-            $action_box = $page->get_action_box($_POST['box_id'], $_POST);
+            $actionBox = $page->getActionBox($_POST['box_id'], $_POST);
 
-            actionbox_output($action_box['status'], $action_box['text'], $action_box['template']);
+            $data = [];
+            if (strlen($actionBox['template'])) {
+                $data['template'] = $actionBox['template'];
+            }
+
+            return new ApiResponse($actionBox['status'], $actionBox['text'], 0, $data);
         }
 
         if ($action == "get_template") {
@@ -1910,7 +1842,7 @@ class JsonHttpAdminController
             }
 
             if ($template == "admin_user_wallet") {
-                if (!get_privilages("manage_users")) {
+                if (!get_privileges("manage_users")) {
                     return new ApiResponse(
                         "not_logged_in",
                         $lang->translate('not_logged_or_no_perm'),
@@ -1918,7 +1850,7 @@ class JsonHttpAdminController
                     );
                 }
 
-                $user2 = $heart->get_user($_POST['uid']);
+                $user2 = $heart->getUser($_POST['uid']);
             }
 
             if (!isset($data['template'])) {
@@ -1930,14 +1862,14 @@ class JsonHttpAdminController
 
         if ($action == "service_action_execute") {
             if (
-                ($serviceModule = $heart->get_service_module($_POST['service'])) === null ||
+                ($serviceModule = $heart->getServiceModule($_POST['service'])) === null ||
                 !($serviceModule instanceof IServiceActionExecute)
             ) {
                 return new PlainResponse($lang->translate('bad_module'));
             }
 
             return new PlainResponse(
-                $serviceModule->action_execute($_POST['service_action'], $_POST)
+                $serviceModule->actionExecute($_POST['service_action'], $_POST)
             );
         }
 

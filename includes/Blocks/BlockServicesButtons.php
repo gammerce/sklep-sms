@@ -8,17 +8,17 @@ use App\Template;
 
 class BlockServicesButtons extends Block
 {
-    public function get_content_class()
+    public function getContentClass()
     {
         return "services_buttons";
     }
 
-    public function get_content_id()
+    public function getContentId()
     {
         return "services_buttons";
     }
 
-    protected function content($get, $post)
+    protected function content(array $query, array $body)
     {
         /** @var Auth $auth */
         $auth = app()->make(Auth::class);
@@ -34,15 +34,15 @@ class BlockServicesButtons extends Block
         $url = app()->make(UrlGenerator::class);
 
         $services = "";
-        foreach ($heart->get_services() as $service) {
+        foreach ($heart->getServices() as $service) {
             if (
-                ($service_module = $heart->get_service_module($service['id'])) === null ||
-                !$service_module->show_on_web()
+                ($serviceModule = $heart->getServiceModule($service['id'])) === null ||
+                !$serviceModule->showOnWeb()
             ) {
                 continue;
             }
 
-            if (!$heart->user_can_use_service($user->getUid(), $service)) {
+            if (!$heart->userCanUseService($user->getUid(), $service)) {
                 continue;
             }
 

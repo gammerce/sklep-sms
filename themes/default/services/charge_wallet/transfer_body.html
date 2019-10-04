@@ -1,10 +1,25 @@
 <tbody id="charge_transfer">
     <tr>
         <td>
-            <span class="charging">{$lang->translate('type_amount')}</span>
+            <label for="transfer_amount" class="charging">{$lang->translate('type_amount')}</label>
         </td>
         <td style="vertical-align: middle">
-            <input type="text" name="transfer_amount" style="width: 60px" /> {$settings['currency']}
+            <div class="field has-addons">
+                <div class="control">
+                    <input
+                        type="number"
+                        id="transfer_amount"
+                        name="transfer_amount"
+                        class="input is-small"
+                        required
+                    />
+                </div>
+                <div class="control">
+                    <a class="button is-static is-small input-suffix">
+                        {$settings['currency']}
+                    </a>
+                </div>
+            </div>
         </td>
     </tr>
 </tbody>

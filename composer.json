@@ -38,8 +38,7 @@
       "includes/functions_jsonhttp.php"
     ],
     "psr-4": {
-      "App\\": "includes/",
-      "Install\\": "install/src/"
+      "App\\": "includes/"
     }
   },
   "autoload-dev": {

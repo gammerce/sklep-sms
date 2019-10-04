@@ -3,48 +3,42 @@ namespace App\Pages;
 
 use Admin\Table\BodyRow;
 use Admin\Table\Cell;
-use Admin\Table\Img;
+use Admin\Table\HeadCell;
+use Admin\Table\Link;
+use Admin\Table\SimpleText;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 use App\Pages\Interfaces\IPageAdminActionBox;
-use App\Routes\UrlGenerator;
 
 class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = 'users';
-    protected $privilage = 'view_users';
+    protected $privilege = 'view_users';
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('users');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('users');
     }
 
-    protected function content($get, $post)
+    protected function content(array $query, array $body)
     {
-        /** @var UrlGenerator $url */
-        $url = $this->app->make(UrlGenerator::class);
-
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
         $wrapper->setSearch();
 
         $table = new Structure();
-
-        $cell = new Cell($this->lang->translate('id'));
-        $cell->setParam('headers', 'id');
-        $table->addHeadCell($cell);
-
-        $table->addHeadCell(new Cell($this->lang->translate('username')));
-        $table->addHeadCell(new Cell($this->lang->translate('firstname')));
-        $table->addHeadCell(new Cell($this->lang->translate('surname')));
-        $table->addHeadCell(new Cell($this->lang->translate('email')));
-        $table->addHeadCell(new Cell($this->lang->translate('groups')));
-        $table->addHeadCell(new Cell($this->lang->translate('wallet')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->translate('username')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('firstname')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('surname')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('email')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('groups')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('wallet')));
 
         $where = '';
-        if (isset($get['search'])) {
+        if (isset($query['search'])) {
             searchWhere(
                 [
                     "`uid`",
@@ -55,7 +49,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                     "`groups`",
                     "`wallet`",
                 ],
-                $get['search'],
+                $query['search'],
                 $where
             );
         }
@@ -75,47 +69,44 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                 get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+        $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
-        while ($row = $this->db->fetch_array_assoc($result)) {
-            $body_row = new BodyRow();
+        while ($row = $this->db->fetchArrayAssoc($result)) {
+            $bodyRow = new BodyRow();
 
             $row['groups'] = explode(";", $row['groups']);
             $groups = [];
             foreach ($row['groups'] as $gid) {
-                $group = $this->heart->get_group($gid);
+                $group = $this->heart->getGroup($gid);
                 $groups[] = "{$group['name']} ({$group['id']})";
             }
             $groups = implode("; ", $groups);
 
-            $body_row->setDbId($row['uid']);
-            $body_row->addCell(new Cell(htmlspecialchars($row['username'])));
-            $body_row->addCell(new Cell(htmlspecialchars($row['forename'])));
-            $body_row->addCell(new Cell(htmlspecialchars($row['surname'])));
-            $body_row->addCell(new Cell(htmlspecialchars($row['email'])));
-            $body_row->addCell(new Cell($groups));
+            $bodyRow->setDbId($row['uid']);
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['username'])));
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['forename'])));
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['surname'])));
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['email'])));
+            $bodyRow->addCell(new Cell($groups));
 
             $cell = new Cell(
                 number_format($row['wallet'] / 100.0, 2) . ' ' . $this->settings['currency']
             );
             $cell->setParam('headers', 'wallet');
-            $body_row->addCell($cell);
+            $bodyRow->addCell($cell);
 
-            $button_charge = new Img();
-            $button_charge->setParam('class', 'charge_wallet');
-            $button_charge->setParam(
-                'title',
-                $this->lang->translate('charge') . ' ' . htmlspecialchars($row['username'])
-            );
-            $button_charge->setParam('src', $url->to('images/dollar.png'));
-            $body_row->addAction($button_charge);
+            $buttonCharge = $this->createChargeButton();
+            $bodyRow->addAction($buttonCharge);
 
-            if (get_privilages('manage_users')) {
-                $body_row->setButtonDelete(true);
-                $body_row->setButtonEdit(true);
+            $changePasswordCharge = $this->createPasswordButton();
+            $bodyRow->addAction($changePasswordCharge);
+
+            if (get_privileges('manage_users')) {
+                $bodyRow->setDeleteAction(true);
+                $bodyRow->setEditAction(true);
             }
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);
@@ -123,22 +114,38 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    public function get_action_box($box_id, $data)
+    protected function createChargeButton()
     {
-        if (!get_privilages("manage_users")) {
+        $button = new Link();
+        $button->setParam('class', 'dropdown-item charge_wallet');
+        $button->addContent(new SimpleText($this->lang->translate('charge')));
+        return $button;
+    }
+
+    protected function createPasswordButton()
+    {
+        $button = new Link();
+        $button->setParam('class', 'dropdown-item change_password');
+        $button->addContent(new SimpleText($this->lang->translate('change_password')));
+        return $button;
+    }
+
+    public function getActionBox($boxId, $data)
+    {
+        if (!get_privileges("manage_users")) {
             return [
                 'status' => "not_logged_in",
                 'text' => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }
 
-        switch ($box_id) {
+        switch ($boxId) {
             case "user_edit":
                 // Pobranie użytkownika
-                $user = $this->heart->get_user($data['uid']);
+                $user = $this->heart->getUser($data['uid']);
 
                 $groups = '';
-                foreach ($this->heart->get_groups() as $group) {
+                foreach ($this->heart->getGroups() as $group) {
                     $groups .= create_dom_element("option", "{$group['name']} ( {$group['id']} )", [
                         'value' => $group['id'],
                         'selected' => in_array($group['id'], $user->getGroups()) ? "selected" : "",
@@ -152,9 +159,17 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                 break;
 
             case "charge_wallet":
-                $user = $this->heart->get_user($data['uid']);
+                $user = $this->heart->getUser($data['uid']);
                 $output = $this->template->render(
                     "admin/action_boxes/user_charge_wallet",
+                    compact('user')
+                );
+                break;
+
+            case "change_password":
+                $user = $this->heart->getUser($data['uid']);
+                $output = $this->template->render(
+                    "admin/action_boxes/user_change_password",
                     compact('user')
                 );
                 break;

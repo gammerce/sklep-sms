@@ -3,13 +3,14 @@ namespace App\Pages;
 
 use Admin\Table\BodyRow;
 use Admin\Table\Cell;
+use Admin\Table\HeadCell;
 use Admin\Table\Structure;
 use Admin\Table\Wrapper;
 
 class PageAdminPlayersFlags extends PageAdmin
 {
     const PAGE_ID = 'players_flags';
-    protected $privilage = 'view_player_flags';
+    protected $privilege = 'view_player_flags';
 
     protected $flags = 'abcdefghijklmnopqrstuyvwxz';
 
@@ -17,21 +18,17 @@ class PageAdminPlayersFlags extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('players_flags');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('players_flags');
     }
 
-    protected function content($get, $post)
+    protected function content(array $query, array $body)
     {
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
-
-        $cell = new Cell($this->lang->translate('id'));
-        $cell->setParam('headers', 'id');
-        $table->addHeadCell($cell);
-
-        $table->addHeadCell(new Cell($this->lang->translate('server')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->translate('server')));
         $table->addHeadCell(
             new Cell(
                 "{$this->lang->translate('nick')}/{$this->lang->translate(
@@ -39,8 +36,9 @@ class PageAdminPlayersFlags extends PageAdmin
                 )}/{$this->lang->translate('sid')}"
             )
         );
+
         foreach (str_split($this->flags) as $flag) {
-            $table->addHeadCell(new Cell($flag));
+            $table->addHeadCell(new HeadCell($flag));
         }
 
         $result = $this->db->query(
@@ -52,35 +50,35 @@ class PageAdminPlayersFlags extends PageAdmin
                 get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($this->db->get_column("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+        $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
 
-        while ($row = $this->db->fetch_array_assoc($result)) {
-            $body_row = new BodyRow();
+        while ($row = $this->db->fetchArrayAssoc($result)) {
+            $bodyRow = new BodyRow();
 
             // Pozyskanie danych serwera
-            $temp_server = $this->heart->get_server($row['server']);
-            $server_name = $temp_server['name'];
-            unset($temp_server);
+            $tempServer = $this->heart->getServer($row['server']);
+            $serverName = $tempServer['name'];
+            unset($tempServer);
 
-            $body_row->setDbId($row['id']);
-            $body_row->addCell(new Cell($server_name));
-            $body_row->addCell(new Cell(htmlspecialchars($row['auth_data'])));
+            $bodyRow->setDbId($row['id']);
+            $bodyRow->addCell(new Cell($serverName));
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['auth_data'])));
 
             foreach (str_split($this->flags) as $flag) {
                 if (!$row[$flag]) {
-                    $body_row->addCell(new Cell(' '));
+                    $bodyRow->addCell(new Cell(' '));
                 } else {
                     if ($row[$flag] == -1) {
-                        $body_row->addCell(new Cell($this->lang->translate('never')));
+                        $bodyRow->addCell(new Cell($this->lang->translate('never')));
                     } else {
-                        $body_row->addCell(
+                        $bodyRow->addCell(
                             new Cell(date($this->settings['date_format'], $row[$flag]))
                         );
                     }
                 }
             }
 
-            $table->addBodyRow($body_row);
+            $table->addBodyRow($bodyRow);
         }
 
         $wrapper->setTable($table);

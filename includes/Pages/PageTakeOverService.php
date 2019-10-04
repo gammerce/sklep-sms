@@ -12,28 +12,28 @@ class PageTakeOverService extends Page implements IBeLoggedMust
     {
         parent::__construct();
 
-        $this->heart->page_title = $this->title = $this->lang->translate('take_over_service');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('take_over_service');
     }
 
-    protected function content($get, $post)
+    protected function content(array $query, array $body)
     {
-        $services_options = "";
-        $services = $this->heart->get_services();
+        $servicesOptions = "";
+        $services = $this->heart->getServices();
         foreach ($services as $service) {
-            if (($service_module = $this->heart->get_service_module($service['id'])) === null) {
+            if (($serviceModule = $this->heart->getServiceModule($service['id'])) === null) {
                 continue;
             }
 
             // Moduł danej usługi nie zezwala na jej przejmowanie
-            if (!($service_module instanceof IServiceTakeOver)) {
+            if (!($serviceModule instanceof IServiceTakeOver)) {
                 continue;
             }
 
-            $services_options .= create_dom_element("option", $service['name'], [
+            $servicesOptions .= create_dom_element("option", $service['name'], [
                 'value' => $service['id'],
             ]);
         }
 
-        return $this->template->render("service_take_over", compact('services_options'));
+        return $this->template->render("service_take_over", compact('servicesOptions'));
     }
 }

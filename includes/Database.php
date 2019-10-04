@@ -117,7 +117,7 @@ class Database
      * @return bool
      * @throws SqlQueryException
      */
-    public function multi_query($query)
+    public function multiQuery($query)
     {
         if (!$this->isConnected()) {
             $this->connect();
@@ -137,16 +137,16 @@ class Database
      * @return mixed|null
      * @throws SqlQueryException
      */
-    public function get_column($query, $column)
+    public function getColumn($query, $column)
     {
         $this->query = $query;
         $result = $this->query($query);
 
-        if (!$this->num_rows($result)) {
+        if (!$this->numRows($result)) {
             return null;
         }
 
-        $row = $this->fetch_array_assoc($result);
+        $row = $this->fetchArrayAssoc($result);
         if (!isset($row[$column])) {
             return null;
         }
@@ -159,7 +159,7 @@ class Database
      * @return int
      * @throws SqlQueryException
      */
-    public function num_rows($result)
+    public function numRows($result)
     {
         if (empty($result)) {
             throw $this->exception("no_query_num_rows");
@@ -173,7 +173,7 @@ class Database
      * @return array|null
      * @throws SqlQueryException
      */
-    public function fetch_array_assoc($result)
+    public function fetchArrayAssoc($result)
     {
         if (empty($result)) {
             throw $this->exception("no_query_fetch_array_assoc");
@@ -187,7 +187,7 @@ class Database
      * @return array|null
      * @throws SqlQueryException
      */
-    public function fetch_array($result)
+    public function fetchArray($result)
     {
         if (empty($result)) {
             throw $this->exception("no_query_fetch_array");
@@ -196,12 +196,12 @@ class Database
         return mysqli_fetch_array($result);
     }
 
-    public function last_id()
+    public function lastId()
     {
         return mysqli_insert_id($this->link);
     }
 
-    public function affected_rows()
+    public function affectedRows()
     {
         return mysqli_affected_rows($this->link);
     }
@@ -211,7 +211,7 @@ class Database
         return mysqli_real_escape_string($this->link, $str);
     }
 
-    public function get_last_query()
+    public function getLastQuery()
     {
         return $this->query;
     }
@@ -244,7 +244,7 @@ class Database
         $tables = [];
         $result = $this->query('SHOW FULL TABLES WHERE table_type = \'BASE TABLE\'');
 
-        while ($row = $this->fetch_array_assoc($result)) {
+        while ($row = $this->fetchArrayAssoc($result)) {
             $row = (array) $row;
             $tables[] = reset($row);
         }

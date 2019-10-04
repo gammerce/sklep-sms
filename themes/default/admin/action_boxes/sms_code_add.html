@@ -4,24 +4,40 @@
     </div>
     <table>
         <tr>
-            <td>{$lang->strtoupper($lang->translate('sms_code'))}</td>
             <td>
-                <input type="text" name="code" style="width: 100px;" />&nbsp;
-                <input
-                    type="button"
-                    name="random_code"
-                    value="{$lang->translate('generate')}"
-                    class="button"
-                />
+                <label for="code">{$lang->strtoupper($lang->translate('sms_code'))}</label>
+            </td>
+            <td>
+                <div class="field has-addons">
+                    <div class="control">
+                        <input type="text" id="code" name="code" class="input is-small" />&nbsp;
+                    </div>
+                    <div class="control">
+                        <input
+                            type="button"
+                            name="random_code"
+                            value="{$lang->translate('generate')}"
+                            class="button is-small"
+                        />
+                    </div>
+                </div>
             </td>
         </tr>
         <tr>
-            <td>{$lang->strtoupper($lang->translate('tariff'))}</td>
             <td>
-                <select name="tariff">
-                    <option value="">{$lang->translate('choose_tariff')}</option>
-                    {$tariffs}
-                </select>
+                <label for="tariff">{$lang->strtoupper($lang->translate('tariff'))}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-small">
+                            <select id="tariff" name="tariff">
+                                <option value="">{$lang->translate('choose_tariff')}</option>
+                                {$tariffs}
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </td>
         </tr>
         <tr>

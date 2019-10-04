@@ -8,7 +8,7 @@ use App\Version;
 class PageAdminUpdateServers extends PageAdmin
 {
     const PAGE_ID = 'update_servers';
-    protected $privilage = 'update';
+    protected $privilege = 'update';
 
     /** @var Requester */
     private $requester;
@@ -21,17 +21,17 @@ class PageAdminUpdateServers extends PageAdmin
         parent::__construct();
 
         $this->requester = $requester;
-        $this->heart->page_title = $this->title = $this->lang->translate('update_servers');
+        $this->heart->pageTitle = $this->title = $this->lang->translate('update_servers');
         $this->version = $version;
     }
 
-    protected function content($get, $post)
+    protected function content(array $query, array $body)
     {
         $newestAmxxVersion = $this->version->getNewestAmxmodx();
         $newestSmVersion = $this->version->getNewestSourcemod();
 
         $versionBricks = "";
-        foreach ($this->heart->get_servers() as $server) {
+        foreach ($this->heart->getServers() as $server) {
             if ($server['type'] === Server::TYPE_AMXMODX) {
                 $newestVersion = $newestAmxxVersion;
                 $link = "https://github.com/gammerce/plugin-amxmodx/releases/tag/{$newestAmxxVersion}";

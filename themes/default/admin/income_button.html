@@ -1,11 +1,17 @@
 <form method="GET">
     <input type="hidden" name="pid" value="income" />
-    <select name="year">
-        {$years}
-    </select>
-    &nbsp;
-    <select name="month">
-        {$months}
-    </select>
-    <input type="submit" value="{$lang->translate('go')}" class="button" />
+
+    <div class="select is-small">
+        <select name="year">
+            {$years}
+        </select>
+    </div>
+
+    <div class="select is-small">
+        <select name="month">
+            {$months}
+        </select>
+    </div>
+
+    <input type="submit" value="{$lang->translate('go')}" class="button is-small" />
 </form>

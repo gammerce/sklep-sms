@@ -71,7 +71,7 @@ return [
     'no' => 'No',
     'no_access' => 'You have no proper powers.',
     'no_data' => 'No data',
-    'no_privilages' => 'You have no access to this place, so don\'t peek in here!',
+    'no_privileges' => 'You have no access to this place, so don\'t peek in here!',
     'no_service' => 'There is no service with such ID.',
     'none' => 'None',
     'not_edited_user_service' => 'Could not edit service.',

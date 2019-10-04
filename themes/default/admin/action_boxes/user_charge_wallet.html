@@ -8,9 +8,26 @@
             <td>{$user->getUsername()}</td>
         </tr>
         <tr>
-            <td>{$lang->translate('amount')}</td>
             <td>
-                <input type="text" name="amount" style="width: 60px;" /> {$settings['currency']}
+                <label for="amount">{$lang->translate('amount')}</label>
+            </td>
+            <td>
+                <div class="field has-addons">
+                    <div class="control">
+                        <input
+                            type="number"
+                            id="amount"
+                            name="amount"
+                            class="input is-small"
+                            required
+                        />
+                    </div>
+                    <div class="control">
+                        <a class="button is-static is-small input-suffix">
+                            {$settings['currency']}
+                        </a>
+                    </div>
+                </div>
             </td>
         </tr>
         <tr>

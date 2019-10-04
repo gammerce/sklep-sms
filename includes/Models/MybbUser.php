@@ -7,25 +7,25 @@ class MybbUser
     private $uid;
 
     /** @var array */
-    private $shop_groups = [];
+    private $shopGroups = [];
 
     /** @var int */
-    private $mybb_user_group;
+    private $mybbUserGroup;
 
     /** @var int[] */
-    private $mybb_addgroups = [];
+    private $mybbAddGroups = [];
 
-    /** @var  int */
-    private $mybb_display_group;
+    /** @var int */
+    private $mybbDisplayGroup;
 
     /**
      * @param int $uid
-     * @param int $mybb_user_group
+     * @param int $mybbUserGroup
      */
-    public function __construct($uid, $mybb_user_group)
+    public function __construct($uid, $mybbUserGroup)
     {
         $this->uid = intval($uid);
-        $this->mybb_user_group = intval($mybb_user_group);
+        $this->mybbUserGroup = intval($mybbUserGroup);
     }
 
     public function getUid()
@@ -34,42 +34,42 @@ class MybbUser
     }
 
     /**
-     * @param int   $group_id
+     * @param int   $groupId
      * @param array $group
      */
-    public function setShopGroup($group_id, $group)
+    public function setShopGroup($groupId, $group)
     {
-        if (!is_numeric($group_id)) {
+        if (!is_numeric($groupId)) {
             return;
         }
 
         $group['expire'] = intval($group['expire']);
-        $this->shop_groups[intval($group_id)] = $group;
+        $this->shopGroups[intval($groupId)] = $group;
 
         // To nie jest grupa przydzielona przez MyBB, wiec usunmy ja stamtąd
         if (!$group['was_before']) {
-            $this->removeMybbAddGroup($group_id);
+            $this->removeMybbAddGroup($groupId);
         }
     }
 
     /**
-     * @param integer $group_id
+     * @param integer $groupId
      * @param integer $seconds
      */
-    public function prolongShopGroup($group_id, $seconds)
+    public function prolongShopGroup($groupId, $seconds)
     {
-        if (!is_numeric($group_id)) {
+        if (!is_numeric($groupId)) {
             return;
         }
 
-        if (!isset($this->shop_groups[$group_id])) {
-            $this->setShopGroup($group_id, [
+        if (!isset($this->shopGroups[$groupId])) {
+            $this->setShopGroup($groupId, [
                 'expire' => 0,
-                'was_before' => in_array($group_id, $this->getMybbAddGroups()),
+                'was_before' => in_array($groupId, $this->getMybbAddGroups()),
             ]);
         }
 
-        $this->shop_groups[$group_id]['expire'] += intval($seconds);
+        $this->shopGroups[$groupId]['expire'] += intval($seconds);
     }
 
     /**
@@ -82,21 +82,21 @@ class MybbUser
     public function getShopGroup($key = null)
     {
         if ($key === null) {
-            return $this->shop_groups;
+            return $this->shopGroups;
         }
 
-        return if_isset($this->shop_groups[$key], null);
+        return if_isset($this->shopGroups[$key], null);
     }
 
     /**
-     * @param int|null $group_id
+     * @param int|null $groupId
      */
-    public function removeShopGroup($group_id = null)
+    public function removeShopGroup($groupId = null)
     {
-        if ($group_id === null) {
-            $this->shop_groups = [];
+        if ($groupId === null) {
+            $this->shopGroups = [];
         } else {
-            unset($this->shop_groups[$group_id]);
+            unset($this->shopGroups[$groupId]);
         }
     }
 
@@ -105,7 +105,7 @@ class MybbUser
      */
     public function getMybbAddGroups()
     {
-        return $this->mybb_addgroups;
+        return $this->mybbAddGroups;
     }
 
     /**
@@ -113,29 +113,29 @@ class MybbUser
      */
     public function setMybbAddGroups($groups)
     {
-        foreach ($groups as $group_id) {
-            if (!is_numeric($group_id)) {
+        foreach ($groups as $groupId) {
+            if (!is_numeric($groupId)) {
                 continue;
             }
 
             if (
-                isset($this->shop_groups[intval($group_id)]) &&
-                !$this->shop_groups[intval($group_id)]['was_before']
+                isset($this->shopGroups[intval($groupId)]) &&
+                !$this->shopGroups[intval($groupId)]['was_before']
             ) {
                 continue;
             }
 
-            $this->mybb_addgroups[] = intval($group_id);
+            $this->mybbAddGroups[] = intval($groupId);
         }
     }
 
     /**
-     * @param int $group_id
+     * @param int $groupId
      */
-    public function removeMybbAddGroup($group_id)
+    public function removeMybbAddGroup($groupId)
     {
-        if (($key = array_search($group_id, $this->mybb_addgroups)) !== false) {
-            unset($this->mybb_addgroups[$key]);
+        if (($key = array_search($groupId, $this->mybbAddGroups)) !== false) {
+            unset($this->mybbAddGroups[$key]);
         }
     }
 
@@ -144,7 +144,7 @@ class MybbUser
      */
     public function getMybbUserGroup()
     {
-        return $this->mybb_user_group;
+        return $this->mybbUserGroup;
     }
 
     /**
@@ -152,14 +152,14 @@ class MybbUser
      */
     public function getMybbDisplayGroup()
     {
-        return $this->mybb_display_group;
+        return $this->mybbDisplayGroup;
     }
 
     /**
-     * @param int $mybb_display_group
+     * @param int $mybbDisplayGroup
      */
-    public function setMybbDisplayGroup($mybb_display_group)
+    public function setMybbDisplayGroup($mybbDisplayGroup)
     {
-        $this->mybb_display_group = intval($mybb_display_group);
+        $this->mybbDisplayGroup = intval($mybbDisplayGroup);
     }
 }

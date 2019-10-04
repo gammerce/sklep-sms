@@ -130,18 +130,17 @@ function json_output($id, $text = "", $positive = false, $data = [])
     output_page(json_encode($output), 1);
 }
 
-/**
- * @param string $id
- * @param string $text
- * @param string $template
- */
-function actionbox_output($id, $text = "", $template = "")
+function format_warnings(array $warnings)
 {
-    $output['return_id'] = $id;
-    $output['text'] = $text;
-    if (strlen($template)) {
-        $output['template'] = $template;
+    $output = [];
+
+    foreach ($warnings as $brick => $warning) {
+        if ($warning) {
+            $output[$brick] = create_dom_element("div", implode("<br />", $warning), [
+                'class' => "form_warning help is-danger",
+            ]);
+        }
     }
 
-    output_page(json_encode($output), 1);
+    return $output;
 }
