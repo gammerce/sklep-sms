@@ -36,7 +36,7 @@ class InstallController
         }
 
         $modules = $requirementsStore->getModules();
-        $filesPriv = $requirementsStore->getFilesWithWritePermission();
+        $filesWithWritePermission = $requirementsStore->getFilesWithWritePermission();
         $lang = $translationManager->user();
 
         try {
@@ -81,7 +81,7 @@ class InstallController
             $warnings['admin_password'][] = "Nie podano hasła dla użytkownika admin.";
         }
 
-        foreach ($filesPriv as $file) {
+        foreach ($filesWithWritePermission as $file) {
             if (!strlen($file)) {
                 continue;
             }

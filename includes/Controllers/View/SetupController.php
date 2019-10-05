@@ -62,14 +62,14 @@ class SetupController
     protected function install(RequirementsStore $requirementsStore)
     {
         $modules = $requirementsStore->getModules();
-        $filesPriv = $requirementsStore->getFilesWithWritePermission();
+        $filesWithWritePermission = $requirementsStore->getFilesWithWritePermission();
 
         // #########################################
         // ##########    Wyświetl dane    ##########
         // #########################################
 
         $filesPrivileges = '';
-        foreach ($filesPriv as $file) {
+        foreach ($filesWithWritePermission as $file) {
             if ($file == "") {
                 continue;
             }
