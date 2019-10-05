@@ -61,7 +61,7 @@ class Structure extends DOMElement
             $row = new Row();
             $cell = new Cell($lang->translate('no_data'));
             $cell->setParam('colspan', '30');
-            $cell->setStyle('text-align', 'center');
+            $cell->setParam("class", "has-text-centered");
             $cell->setStyle('padding', '40px');
             $row->addContent($cell);
             $body->addContent($row);
