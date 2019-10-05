@@ -1,9 +1,8 @@
 <?php
-namespace App\Controllers;
+namespace App\Controllers\View;
 
 use App\Application;
 use App\Install\RequirementsStore;
-use App\Install\Full;
 use App\Install\InstallManager;
 use App\Install\OldShop;
 use App\Install\UpdateInfo;
@@ -13,7 +12,7 @@ use App\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class InstallController
+class SetupController
 {
     /** @var Application */
     private $app;

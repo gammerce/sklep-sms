@@ -2,18 +2,18 @@
 namespace App\Routes;
 
 use App\Application;
-use App\Controllers\AdminController;
-use App\Controllers\ExtraStuffController;
-use App\Controllers\IndexController;
-use App\Controllers\InstallController;
-use App\Controllers\InstallFullController;
-use App\Controllers\InstallUpdateController;
-use App\Controllers\JsController;
-use App\Controllers\JsonHttpAdminController;
-use App\Controllers\JsonHttpController;
-use App\Controllers\ServerStuffController;
-use App\Controllers\TransferController;
-use App\Controllers\UserPasswordResource;
+use App\Controllers\View\AdminController;
+use App\Controllers\View\ExtraStuffController;
+use App\Controllers\View\IndexController;
+use App\Controllers\View\SetupController;
+use App\Controllers\Api\InstallController;
+use App\Controllers\Api\UpdateController;
+use App\Controllers\View\JsController;
+use App\Controllers\Api\JsonHttpAdminController;
+use App\Controllers\Api\JsonHttpController;
+use App\Controllers\View\ServerStuffController;
+use App\Controllers\Api\TransferController;
+use App\Controllers\Api\UserPasswordResource;
 use App\Middlewares\BlockOnInvalidLicense;
 use App\Middlewares\IsUpToDate;
 use App\Middlewares\LoadSettings;
@@ -152,17 +152,17 @@ class RoutesManager
 
         $r->addRoute("GET", "/install", [
             'middlewares' => [RequireNotInstalledOrNotUpdated::class],
-            'uses' => InstallController::class . "@get",
+            'uses' => SetupController::class . "@get",
         ]);
 
         $r->addRoute("POST", "/install/full.php", [
             'middlewares' => [RequireNotInstalled::class],
-            'uses' => InstallFullController::class . "@post",
+            'uses' => InstallController::class . "@post",
         ]);
 
         $r->addRoute("POST", "/install/update.php", [
             'middlewares' => [RequireInstalledAndNotUpdated::class],
-            'uses' => InstallUpdateController::class . "@post",
+            'uses' => UpdateController::class . "@post",
         ]);
     }
 

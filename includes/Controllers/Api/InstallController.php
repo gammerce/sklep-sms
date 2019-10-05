@@ -1,5 +1,5 @@
 <?php
-namespace App\Controllers;
+namespace App\Controllers\Api;
 
 use App\Application;
 use App\Database;
@@ -14,7 +14,7 @@ use App\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class InstallFullController
+class InstallController
 {
     public function post(
         Request $request,

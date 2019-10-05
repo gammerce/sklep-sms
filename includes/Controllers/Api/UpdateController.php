@@ -1,5 +1,5 @@
 <?php
-namespace App\Controllers;
+namespace App\Controllers\Api;
 
 use App\Install\DatabaseMigration;
 use App\Install\RequirementsStore;
@@ -9,7 +9,7 @@ use App\Responses\ApiResponse;
 use App\Responses\HtmlResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class InstallUpdateController
+class UpdateController
 {
     public function post(
         Request $request,

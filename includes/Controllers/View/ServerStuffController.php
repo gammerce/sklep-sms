@@ -1,5 +1,5 @@
 <?php
-namespace App\Controllers;
+namespace App\Controllers\View;
 
 use App\Heart;
 use App\Models\Purchase;
