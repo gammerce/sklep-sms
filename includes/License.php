@@ -6,6 +6,7 @@ use App\Cache\CachingRequester;
 use App\Exceptions\LicenseRequestException;
 use App\Exceptions\RequestException;
 use App\Requesting\Requester;
+use App\Routes\UrlGenerator;
 use Symfony\Component\HttpFoundation\Request;
 
 class License
@@ -13,39 +14,44 @@ class License
     const CACHE_TTL = 10 * 60;
 
     /** @var Translator */
-    protected $lang;
+    private $lang;
 
     /** @var Settings */
-    protected $settings;
+    private $settings;
 
     /** @var Requester */
-    protected $requester;
+    private $requester;
 
     /** @var CachingRequester */
-    protected $cachingRequester;
+    private $cachingRequester;
+
+    /** @var UrlGenerator */
+    private $urlGenerator;
 
     /** @var int */
-    protected $externalLicenseId;
+    private $externalLicenseId;
 
     /** @var int */
-    protected $expiresAt;
+    private $expiresAt;
 
     /** @var string */
-    protected $footer;
+    private $footer;
 
     /** @var LicenseRequestException */
-    protected $loadingException;
+    private $loadingException;
 
     public function __construct(
         TranslationManager $translationManager,
         Settings $settings,
         Requester $requester,
-        CachingRequester $cachingRequester
+        CachingRequester $cachingRequester,
+        UrlGenerator $urlGenerator
     ) {
         $this->lang = $translationManager->user();
         $this->settings = $settings;
         $this->requester = $requester;
         $this->cachingRequester = $cachingRequester;
+        $this->urlGenerator = $urlGenerator;
     }
 
     /**
@@ -124,7 +130,7 @@ class License
      */
     protected function request()
     {
-        $shopUrl = $this->getShopUrl();
+        $shopUrl = $this->urlGenerator->getShopUrl();
 
         $response = $this->requester->post(
             'https://license.sklep-sms.pl/v1/authorization/web',
@@ -148,17 +154,5 @@ class License
         }
 
         return $response->json();
-    }
-
-    private function getShopUrl()
-    {
-        if ($this->settings['shop_url']) {
-            return $this->settings['shop_url'];
-        }
-
-        /** @var Request $request */
-        $request = app()->make(Request::class);
-
-        return $request->getSchemeAndHttpHost();
     }
 }

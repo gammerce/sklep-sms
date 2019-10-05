@@ -1,8 +1,8 @@
 <?php
 namespace App\Pages;
 
-use Admin\Table\Option;
-use Admin\Table\Select;
+use App\Html\Option;
+use App\Html\Select;
 use App\TranslationManager;
 
 class PageAdminSettings extends PageAdmin
@@ -61,10 +61,10 @@ class PageAdminSettings extends PageAdmin
         }
 
         // Pobieranie listy dostępnych języków
-        $dirlist = scandir($this->app->path('includes/languages'));
+        $dirlist = scandir($this->app->path('translations'));
         $languagesList = "";
         foreach ($dirlist as $dirName) {
-            if ($dirName[0] != '.' && is_dir($this->app->path("includes/languages/{$dirName}"))) {
+            if ($dirName[0] != '.' && is_dir($this->app->path("translations/{$dirName}"))) {
                 $languagesList .= create_dom_element(
                     "option",
                     $lang->translate('language_' . $dirName),

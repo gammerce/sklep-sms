@@ -78,7 +78,7 @@ class Translator
             !strlen($language) ||
             !isset($this->langList[$language]) ||
             $this->getCurrentLanguage() == $language ||
-            !is_dir($this->app->path("includes/languages/" . $language))
+            !is_dir($this->app->path("translations/" . $language))
         ) {
             return;
         }
@@ -136,30 +136,26 @@ class Translator
         $filesToInclude = [];
 
         // Ładujemy ogólną bibliotekę językową
-        $filesToInclude[] = $this->app->path("includes/languages/general.php");
+        $filesToInclude[] = $this->app->path("translations/general.php");
 
         // Ładujemy ogólne biblioteki językowe języka
-        foreach (scandir($this->app->path("includes/languages/{$language}")) as $file) {
+        foreach (scandir($this->app->path("translations/{$language}")) as $file) {
             if (ends_at($file, ".php")) {
-                $filesToInclude[] = $this->app->path("includes/languages/{$language}/{$file}");
+                $filesToInclude[] = $this->app->path("translations/{$language}/{$file}");
             }
         }
 
         // Ładujemy bilioteki dla PA
         if (admin_session()) {
-            foreach (scandir($this->app->path("includes/languages/{$language}/admin")) as $file) {
+            foreach (scandir($this->app->path("translations/{$language}/admin")) as $file) {
                 if (ends_at($file, ".php")) {
-                    $filesToInclude[] = $this->app->path(
-                        "includes/languages/{$language}/admin/{$file}"
-                    );
+                    $filesToInclude[] = $this->app->path("translations/{$language}/admin/{$file}");
                 }
             }
         } else {
-            foreach (scandir($this->app->path("includes/languages/{$language}/user")) as $file) {
+            foreach (scandir($this->app->path("translations/{$language}/user")) as $file) {
                 if (ends_at($file, ".php")) {
-                    $filesToInclude[] = $this->app->path(
-                        "includes/languages/{$language}/user/{$file}"
-                    );
+                    $filesToInclude[] = $this->app->path("translations/{$language}/user/{$file}");
                 }
             }
         }

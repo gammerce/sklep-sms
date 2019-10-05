@@ -1,7 +1,7 @@
 <?php
 namespace App\Pages;
 
-use Admin\Table\HeadCell;
+use App\Html\HeadCell;
 
 class PageAdminIncome extends PageAdmin
 {

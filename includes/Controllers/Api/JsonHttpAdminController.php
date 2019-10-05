@@ -491,7 +491,7 @@ class JsonHttpAdminController
             }
 
             // Język
-            if (!is_dir($app->path("includes/languages/{$language}")) || $language[0] == '.') {
+            if (!is_dir($app->path("translations/{$language}")) || $language[0] == '.') {
                 $warnings['language'][] = $lang->translate('no_language');
             }
 
