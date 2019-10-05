@@ -5,7 +5,7 @@ module.exports = {
     mode: process.env.NODE_ENV || "development",
     entry: {
         admin: './src/js/admin.js',
-        install: './src/js/full.js',
+        install: './src/js/install.js',
         update: './src/js/update.js',
         shop: './src/js/shop.js'
     },

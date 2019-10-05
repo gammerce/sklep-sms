@@ -49,7 +49,7 @@ class SetupController
         }
 
         if (!ShopState::isInstalled()) {
-            return $this->full($requirementsStore);
+            return $this->install($requirementsStore);
         }
 
         if (!$shopState->isUpToDate()) {
@@ -59,7 +59,7 @@ class SetupController
         return new Response("Sklep nie wymaga aktualizacji.");
     }
 
-    protected function full(RequirementsStore $requirementsStore)
+    protected function install(RequirementsStore $requirementsStore)
     {
         $modules = $requirementsStore->getModules();
         $filesPriv = $requirementsStore->getFilesWithWritePermission();
