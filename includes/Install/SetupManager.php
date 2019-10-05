@@ -5,7 +5,7 @@ use App\Application;
 use App\TranslationManager;
 use App\Translator;
 
-class InstallManager
+class SetupManager
 {
     /** @var Application */
     private $app;
@@ -31,28 +31,28 @@ class InstallManager
 
     public function markAsFailed()
     {
-        file_put_contents($this->app->path('data/install_error'), '');
+        file_put_contents($this->app->path('data/setup_error'), '');
     }
 
     /** @return bool */
     public function hasFailed()
     {
-        return file_exists($this->app->path('data/install_error'));
+        return file_exists($this->app->path('data/setup_error'));
     }
 
     /** @return bool */
     public function isInProgress()
     {
-        return file_exists($this->app->path('data/install_progress'));
+        return file_exists($this->app->path('data/setup_progress'));
     }
 
     private function putInProgress()
     {
-        file_put_contents($this->app->path('data/install_progress'), "");
+        file_put_contents($this->app->path('data/setup_progress'), "");
     }
 
     public function removeInProgress()
     {
-        unlink($this->app->path('data/install_progress'));
+        unlink($this->app->path('data/setup_progress'));
     }
 }

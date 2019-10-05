@@ -194,7 +194,6 @@ return [
     'provision' => 'Prowizja',
     'question_delete' => 'Admin {1}({2}) usunął pytanie anty-spamowe. ID: {3}',
     'question_edit' => 'Admin {1}({2}) wyedytował pytanie anty-spamowe. ID: {3}',
-    'remove_install' => 'Usuń folder install !',
     'return_code' => 'Kod Zwrotny',
     'script_updated' => 'Skrypt sklepu jest zaktualizowany do najnowszej wersji.',
     'see_payment' => 'Zobacz płatność',

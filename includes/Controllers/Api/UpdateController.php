@@ -3,7 +3,7 @@ namespace App\Controllers\Api;
 
 use App\Install\DatabaseMigration;
 use App\Install\RequirementsStore;
-use App\Install\InstallManager;
+use App\Install\SetupManager;
 use App\Install\UpdateInfo;
 use App\Responses\ApiResponse;
 use App\Responses\HtmlResponse;
@@ -13,18 +13,18 @@ class UpdateController
 {
     public function post(
         Request $request,
-        InstallManager $installManager,
+        SetupManager $setupManager,
         DatabaseMigration $migrator,
         UpdateInfo $updateInfo,
         RequirementsStore $requirementsStore
     ) {
-        if ($installManager->hasFailed()) {
+        if ($setupManager->hasFailed()) {
             return new HtmlResponse(
                 'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku data/logs/install.log'
             );
         }
 
-        if ($installManager->isInProgress()) {
+        if ($setupManager->isInProgress()) {
             return new HtmlResponse(
                 "Instalacja/Aktualizacja trwa, lub została błędnie przeprowadzona."
             );
@@ -56,9 +56,9 @@ class UpdateController
 
         // -------------------- INSTALACJA --------------------
 
-        $installManager->start();
+        $setupManager->start();
         $migrator->update();
-        $installManager->finish();
+        $setupManager->finish();
 
         return new ApiResponse('ok', "Instalacja przebiegła pomyślnie.", true);
     }

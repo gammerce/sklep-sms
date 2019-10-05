@@ -1,4 +1,4 @@
-require("../stylesheets/install_full.scss");
+require("../stylesheets/install.scss");
 require("./partials/global.js");
 require("./partials/stocks.js");
 require("./partials/loader.js");
@@ -13,7 +13,7 @@ jQuery(document).ready(function($) {
         loader.show();
         $.ajax({
             type: "POST",
-            url: buildUrl("install/full.php"),
+            url: buildUrl("/api/install"),
             data: $(this).serialize(),
             complete: function() {
                 loader.hide();

@@ -192,7 +192,6 @@ return [
     'provision' => 'Provision',
     'question_delete' => 'Admin {1}({2}) removed antispam question. ID: {3}',
     'question_edit' => 'Admin {1}({2}) edited antispam question. ID: {3}',
-    'remove_install' => 'Remove install folder!',
     'script_updated' => 'Shop script is updated to the latest version.',
     'see_payment' => 'See payment',
     'separated' => '( separated with semicolon \';\' )',

@@ -3,7 +3,7 @@ namespace App\Controllers\View;
 
 use App\Application;
 use App\Install\RequirementsStore;
-use App\Install\InstallManager;
+use App\Install\SetupManager;
 use App\Install\OldShop;
 use App\Install\UpdateInfo;
 use App\Responses\HtmlResponse;
@@ -32,17 +32,17 @@ class SetupController
         ShopState $shopState,
         UpdateInfo $updateInfo,
         RequirementsStore $requirementsStore,
-        InstallManager $installManager
+        SetupManager $setupManager
     ) {
         $oldShop->checkForConfigFile();
 
-        if ($installManager->hasFailed()) {
+        if ($setupManager->hasFailed()) {
             return new HtmlResponse(
                 'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku data/logs/install.log'
             );
         }
 
-        if ($installManager->isInProgress()) {
+        if ($setupManager->isInProgress()) {
             return new HtmlResponse(
                 "Instalacja/Aktualizacja trwa, lub została błędnie przeprowadzona."
             );
@@ -56,9 +56,7 @@ class SetupController
             return $this->update($updateInfo, $requirementsStore);
         }
 
-        return new Response(
-            "Sklep nie wymaga aktualizacji. Przejdź na stronę sklepu usuwająć z paska adresu /install"
-        );
+        return new Response("Sklep nie wymaga aktualizacji.");
     }
 
     protected function full(RequirementsStore $requirementsStore)
@@ -83,7 +81,7 @@ class SetupController
             }
 
             $filesPrivileges .= $this->template->render(
-                'install/full/file_privileges',
+                'setup/install/file_privileges',
                 compact('file', 'privilege')
             );
         }
@@ -94,7 +92,7 @@ class SetupController
             $title = $module['text'];
 
             $serverModules .= $this->template->render(
-                'install/full/module',
+                'setup/install/module',
                 compact('title', 'status')
             );
         }
@@ -103,7 +101,7 @@ class SetupController
 
         // Pobranie ostatecznego szablonu
         $output = $this->template->render(
-            'install/full/index',
+            'setup/install/index',
             compact('notifyHttpServer', 'filesPrivileges', 'serverModules')
         );
 
@@ -130,7 +128,7 @@ class SetupController
 
         // Pobranie ostatecznego szablonu
         $output = $this->template->render(
-            'install/update/index',
+            'setup/update/index',
             compact('notifyHttpServer', 'filesModulesStatus', 'class')
         );
 
@@ -143,6 +141,6 @@ class SetupController
             return '';
         }
 
-        return $this->template->render('install/http_server_notification');
+        return $this->template->render('setup/http_server_notification');
     }
 }

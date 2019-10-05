@@ -6,7 +6,7 @@ use App\Database;
 use App\Exceptions\SqlQueryException;
 use App\Install\DatabaseMigration;
 use App\Install\EnvCreator;
-use App\Install\InstallManager;
+use App\Install\SetupManager;
 use App\Install\RequirementsStore;
 use App\Responses\ApiResponse;
 use App\Responses\HtmlResponse;
@@ -20,16 +20,16 @@ class InstallController
         Request $request,
         RequirementsStore $requirementsStore,
         TranslationManager $translationManager,
-        InstallManager $installManager,
+        SetupManager $setupManager,
         Application $app
     ) {
-        if ($installManager->hasFailed()) {
+        if ($setupManager->hasFailed()) {
             return new HtmlResponse(
                 'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku data/logs/install.log'
             );
         }
 
-        if ($installManager->isInProgress()) {
+        if ($setupManager->isInProgress()) {
             return new HtmlResponse(
                 "Instalacja/Aktualizacja trwa, lub została błędnie przeprowadzona."
             );
@@ -55,8 +55,8 @@ class InstallController
             );
         }
 
-        /** @var InstallManager $installManager */
-        $installManager = $app->make(InstallManager::class);
+        /** @var SetupManager $setupManager */
+        $setupManager = $app->make(SetupManager::class);
 
         /** @var DatabaseMigration $migrator */
         $migrator = $app->make(DatabaseMigration::class);
@@ -110,9 +110,9 @@ class InstallController
             );
         }
 
-        $installManager->start();
+        $setupManager->start();
 
-        $migrator->install(
+        $migrator->setup(
             $_POST['license_token'],
             $_POST['admin_username'],
             $_POST['admin_password']
@@ -126,7 +126,7 @@ class InstallController
             $_POST['db_password']
         );
 
-        $installManager->finish();
+        $setupManager->finish();
 
         return new ApiResponse("ok", "Instalacja przebiegła pomyślnie.", true);
     }
