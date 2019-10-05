@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/plain" charset="UTF-8" />
+        <title>Aktualizacja - Sklep SMS</title>
+        <script
+            type="text/javascript"
+            src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"
+        ></script>
+        <script type="text/javascript" src="{$url->versioned('build/js/update.js')}"></script>
+        <script type="text/javascript" src="{$url->versioned('js.php?script=language')}"></script>
+
+        <link href="{$url->versioned('build/css/update.css')}" rel="stylesheet" />
+    </head>
+
+    <body>
+        <div class="window {$class}">
+            <h1 class="title is-4">Aktualizator Sklepu</h1>
+
+            <div class="section is-small">
+                {$notifyHttpServer}
+
+                <div class="notification is-danger">
+                    <strong>
+                        Pamiętaj, aby przed wykonaniem aktualizacji zadbać o backup
+                        <i>( kopię zapasową )</i>
+                    </strong>
+                    <ul>
+                        <li>Bazy danych sklepu</li>
+                        <li>Plików znajdujących się na FTP serwerów gier</li>
+                        <li>Plików znajdujących się na FTP strony WWW</li>
+                    </ul>
+                </div>
+
+                <form id="form_update">
+                    <div class="update_info">
+                        {$filesModulesStatus}
+                    </div>
+                    <br style="clear: both" />
+
+                    <div class="has-text-centered">
+                        <input type="submit" value="Aktualizuj" class="button is-fullwidth" />
+                    </div>
+                </form>
+            </div>
+        </div>
+        <br /><br />
+    </body>
+</html>

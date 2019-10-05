@@ -24,7 +24,7 @@ class DatabaseSetup
         $this->db->createDatabaseIfNotExists('sklep_sms_test');
         $this->db->selectDb('sklep_sms_test');
         $this->db->dropAllTables();
-        $this->databaseMigration->install('abc123', 'admin', 'abc123');
+        $this->databaseMigration->setup('abc123', 'admin', 'abc123');
     }
 
     public function run()
@@ -33,6 +33,6 @@ class DatabaseSetup
         $this->db->createDatabaseIfNotExists('sklep_sms');
         $this->db->selectDb('sklep_sms');
         $this->db->dropAllTables();
-        $this->databaseMigration->install('abc123', 'admin', 'abc123');
+        $this->databaseMigration->setup('abc123', 'admin', 'abc123');
     }
 }

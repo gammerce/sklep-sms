@@ -21,21 +21,21 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="right">{$lang->translate('sms_text')}</td>
+                    <td class="has-text-right">{$lang->translate('sms_text')}</td>
                     <td style="width: 20px;"></td>
-                    <td class="left">{$paymentSms->getSmsCode(true)}</td>
+                    <td class="has-text-left">{$paymentSms->getSmsCode(true)}</td>
                 </tr>
                 <tr>
-                    <td class="right">{$lang->translate('sms_number')}</td>
+                    <td class="has-text-right">{$lang->translate('sms_number')}</td>
                     <td></td>
-                    <td class="left">{$purchaseData->getTariff()->getNumber()}</td>
+                    <td class="has-text-left">{$purchaseData->getTariff()->getNumber()}</td>
                 </tr>
                 <tr>
-                    <td class="right">
+                    <td class="has-text-right">
                         <label for="sms_code">{$lang->translate('sms_return_code')}</label>
                     </td>
                     <td></td>
-                    <td class="left">
+                    <td class="has-text-left">
                         <div class="field">
                             <div class="control">
                                 <input

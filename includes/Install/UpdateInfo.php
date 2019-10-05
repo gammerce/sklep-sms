@@ -27,7 +27,7 @@ class UpdateInfo
             $status = $module['value'] ? "ok" : "bad";
 
             $serverModules .= $this->template->render(
-                'install/update/module',
+                'setup/update/module',
                 compact('title', 'status')
             );
 
@@ -39,7 +39,7 @@ class UpdateInfo
             $text = "Moduły na serwerze";
             $data = $serverModules;
             $serverModules = $this->template->render(
-                'install/update/update_info_brick',
+                'setup/update/update_info_brick',
                 compact('text', 'data')
             );
         }
@@ -58,7 +58,7 @@ class UpdateInfo
             }
 
             $filesPrivileges .= $this->template->render(
-                'install/update/file',
+                'setup/update/file',
                 compact('file', 'status')
             );
         }
@@ -66,7 +66,7 @@ class UpdateInfo
             $text = "Uprawnienia do zapisu";
             $data = $filesPrivileges;
             $filesPrivileges = $this->template->render(
-                'install/update/update_info_brick',
+                'setup/update/update_info_brick',
                 compact('text', 'data')
             );
         }
@@ -84,22 +84,19 @@ class UpdateInfo
                 $everythingOk = false;
             }
 
-            $filesDelete .= $this->template->render(
-                'install/update/file',
-                compact('file', 'status')
-            );
+            $filesDelete .= $this->template->render('setup/update/file', compact('file', 'status'));
         }
         if (strlen($filesDelete)) {
             $text = "Pliki do usunięcia";
             $data = $filesDelete;
             $filesDelete = $this->template->render(
-                'install/update/update_info_brick',
+                'setup/update/update_info_brick',
                 compact('text', 'data')
             );
         }
 
         return $this->template->render(
-            'install/update/update_info',
+            'setup/update/update_info',
             compact('serverModules', 'filesPrivileges', 'filesDelete')
         );
     }

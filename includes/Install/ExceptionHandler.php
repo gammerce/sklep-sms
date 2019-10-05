@@ -4,6 +4,7 @@ namespace App\Install;
 use App\Application;
 use App\ExceptionHandlerContract;
 use App\Exceptions\SqlQueryException;
+use App\Responses\ApiResponse;
 use App\TranslationManager;
 use App\Translator;
 use Exception;
@@ -14,8 +15,8 @@ class ExceptionHandler implements ExceptionHandlerContract
     /** @var Translator */
     private $lang;
 
-    /** @var InstallManager */
-    private $installManager;
+    /** @var SetupManager */
+    private $setupManager;
 
     /** @var Application */
     private $app;
@@ -23,10 +24,10 @@ class ExceptionHandler implements ExceptionHandlerContract
     public function __construct(
         Application $app,
         TranslationManager $translationManager,
-        InstallManager $installManager
+        SetupManager $setupManager
     ) {
         $this->lang = $translationManager->user();
-        $this->installManager = $installManager;
+        $this->setupManager = $setupManager;
         $this->app = $app;
     }
 
@@ -34,7 +35,7 @@ class ExceptionHandler implements ExceptionHandlerContract
     {
         $message =
             'Wystąpił błąd podczas aktualizacji.<br />Poinformuj o swoim problemie na forum sklepu. Do wątku załącz plik data/logs/install.log';
-        json_output('error', $message, false);
+        return new ApiResponse('error', $message, false);
     }
 
     public function report(Exception $e)
@@ -67,7 +68,7 @@ class ExceptionHandler implements ExceptionHandlerContract
     public function logError($message)
     {
         file_put_contents($this->app->path('data/logs/install.log'), $message);
-        $this->installManager->markAsFailed();
-        $this->installManager->removeInProgress();
+        $this->setupManager->markAsFailed();
+        $this->setupManager->removeInProgress();
     }
 }
