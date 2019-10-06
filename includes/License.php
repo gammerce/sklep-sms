@@ -7,7 +7,6 @@ use App\Exceptions\LicenseRequestException;
 use App\Exceptions\RequestException;
 use App\Requesting\Requester;
 use App\Routes\UrlGenerator;
-use Symfony\Component\HttpFoundation\Request;
 
 class License
 {

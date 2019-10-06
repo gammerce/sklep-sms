@@ -107,7 +107,7 @@ class JsonHttpAdminController
             ]);
             $purchaseData->setEmail($user2->getEmail());
 
-            $purchaseReturn = $serviceModule->purchase($purchaseData);
+            $serviceModule->purchase($purchaseData);
 
             log_info(
                 $langShop->sprintf(
@@ -1608,7 +1608,7 @@ class JsonHttpAdminController
                 );
             }
 
-            $result = $db->query(
+            $db->query(
                 $db->prepare("DELETE FROM `" . TABLE_PREFIX . "sms_codes` " . "WHERE `id` = '%d'", [
                     $_POST['id'],
                 ])
@@ -1716,7 +1716,7 @@ class JsonHttpAdminController
                 );
             }
 
-            $result = $db->query(
+            $db->query(
                 $db->prepare(
                     "DELETE FROM `" . TABLE_PREFIX . "service_codes` " . "WHERE `id` = '%d'",
                     [$_POST['id']]

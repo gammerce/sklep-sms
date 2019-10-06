@@ -209,7 +209,7 @@ class RoutesManager
             /** @var MiddlewareContract $middleware */
             $middleware = $this->app->make($middlewareClass);
 
-            $response = $middleware->handle($request, $this->app);
+            $response = $middleware->handle($request, $this->app, $args);
             if ($response) {
                 return $response;
             }

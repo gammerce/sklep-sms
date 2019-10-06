@@ -18,7 +18,7 @@ class Settings implements ArrayAccess
     /** @var bool */
     protected $loaded = false;
 
-    public function __construct(Application $app, Database $database, Request $request)
+    public function __construct(Application $app, Database $database)
     {
         $this->app = $app;
         $this->db = $database;

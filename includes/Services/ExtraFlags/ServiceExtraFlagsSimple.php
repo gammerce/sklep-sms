@@ -328,7 +328,7 @@ class ServiceExtraFlagsSimple extends Service implements
     /**
      * Metoda wywoływana, gdy usługa została prawidłowo zakupiona
      *
-     * @param \App\Models\Purchase $purchaseData
+     * @param Purchase $purchaseData
      *
      * @return integer        value returned by function add_bought_service_info
      */
@@ -341,7 +341,7 @@ class ServiceExtraFlagsSimple extends Service implements
      * Metoda która sprawdza poprawność wprowadzonych danych zakupu,
      * wywoływana gdy zakup został przeprowadzony z zewnątrz, nie przez formularz na stronie WWW.
      *
-     * @param \App\Models\Purchase $purchaseData
+     * @param Purchase $purchaseData
      *
      * @return array
      *  status => string id wiadomości,

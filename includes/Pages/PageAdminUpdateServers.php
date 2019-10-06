@@ -65,23 +65,4 @@ class PageAdminUpdateServers extends PageAdmin
             compact('versionBricks') + ['title' => $this->title]
         );
     }
-
-    /**
-     * @param array $server
-     * @param string $newestAmxxVersion
-     * @param string $newestSmVersion
-     * @return bool
-     */
-    private function isServerNewest($server, $newestAmxxVersion, $newestSmVersion)
-    {
-        if ($server['type'] === Server::TYPE_AMXMODX && $server['version'] !== $newestAmxxVersion) {
-            return false;
-        }
-
-        if ($server['type'] === Server::TYPE_SOURCEMOD && $server['version'] !== $newestSmVersion) {
-            return false;
-        }
-
-        return true;
-    }
 }
