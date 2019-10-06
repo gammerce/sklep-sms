@@ -63,7 +63,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
             $button = new Input();
             $button->setParam('id', 'sms_code_button_add');
             $button->setParam('type', 'button');
-            $button->setParam('class', 'button');
+            $button->addClass('button');
             $button->setParam('value', $this->lang->translate('add_code'));
             $wrapper->addButton($button);
         }

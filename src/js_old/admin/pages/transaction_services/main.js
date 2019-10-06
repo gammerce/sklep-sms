@@ -1,4 +1,4 @@
-$(document).delegate(".table_structure .edit_row", "click", function() {
+$(document).delegate(".table-structure .edit_row", "click", function() {
     show_action_box(currentPage, "transaction_service_edit", {
         id: $(this)
             .closest("tr")

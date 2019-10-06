@@ -117,7 +117,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
     protected function createChargeButton()
     {
         $button = new Link();
-        $button->setParam('class', 'dropdown-item charge_wallet');
+        $button->addClass('dropdown-item charge_wallet');
         $button->addContent(new SimpleText($this->lang->translate('charge')));
         return $button;
     }
@@ -125,7 +125,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
     protected function createPasswordButton()
     {
         $button = new Link();
-        $button->setParam('class', 'dropdown-item change_password');
+        $button->addClass('dropdown-item change_password');
         $button->addContent(new SimpleText($this->lang->translate('change_password')));
         return $button;
     }

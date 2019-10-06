@@ -16,7 +16,7 @@ jQuery.fn.scrollTo = function(elem, speed) {
 };
 
 // Wyszukiwanie usługi
-$(document).delegate(".table_structure .search", "submit", function(e) {
+$(document).delegate(".table-structure .search", "submit", function(e) {
     e.preventDefault();
 
     changeUrl({

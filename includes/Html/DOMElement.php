@@ -13,15 +13,15 @@ class DOMElement implements I_ToHtml
     protected $params;
 
     /**
-     * @param string|null $value
+     * @param DOMElement|string|null $value
      */
     public function __construct($value = null)
     {
-        if ($value !== null) {
+        if ($value instanceof DOMElement) {
+            $this->addContent($value);
+        } elseif ($value !== null) {
             $this->addContent(new SimpleText($value));
         }
-
-        return $this;
     }
 
     public function toHtml()
@@ -138,6 +138,18 @@ class DOMElement implements I_ToHtml
     public function setParam($key, $value)
     {
         $this->params[$key] = $value;
+    }
+
+    /**
+     * @param string $value
+     */
+    public function addClass($value)
+    {
+        if (empty($this->params['class'])) {
+            $this->params['class'] = strval($value);
+        } else {
+            $this->params['class'] .= " $value";
+        }
     }
 
     /**

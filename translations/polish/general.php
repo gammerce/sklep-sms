@@ -66,6 +66,7 @@ return [
     'mysqli_no_server_connection' => 'Nie można utworzyć połączenia z serwerem bazy danych!',
     'mysqli_query_error' => 'Wystąpił błąd w zapytaniu do bazy danych.',
     'name' => 'Nazwa',
+    'next' => 'Dalej',
     'never' => 'Nigdy',
     'new_password' => 'Nowe Hasło',
     'nick' => 'Nick',
@@ -90,6 +91,7 @@ return [
     'payment_id' => 'ID płatności',
     'payment_remove_code_from_db' =>
         'Usunięto kod z tabeli kodów do wykorzystania. Kod: {1} Taryfa: {2}',
+    'previous' => 'Wcześniej',
     'question' => 'Pytanie',
     'regards' => 'Pozdrawiamy',
     'return_code_length_warn' => 'Wprowadzony kod zwrotny jest nieco przydługaśny.',

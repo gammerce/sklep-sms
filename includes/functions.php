@@ -3,6 +3,11 @@
 use App\Auth;
 use App\Database;
 use App\Heart;
+use App\Html\Div;
+use App\Html\DOMElement;
+use App\Html\Li;
+use App\Html\Link;
+use App\Html\Ul;
 use App\Mailer;
 use App\Models\Purchase;
 use App\Models\User;
@@ -117,11 +122,16 @@ function get_pagination($all, $currentPage, $script, $query, $rowLimit = 0)
     /** @var UrlGenerator $url */
     $url = app()->make(UrlGenerator::class);
 
+    /** @var TranslationManager $translationManager */
+    $translationManager = app()->make(TranslationManager::class);
+
+    $lang = $translationManager->user();
+
     $rowLimit = $rowLimit ? $rowLimit : $settings['row_limit'];
 
     // Wszystkich elementow jest mniej niz wymagana ilsoc na jednej stronie
     if ($all <= $rowLimit) {
-        return;
+        return null;
     }
 
     // Pobieramy ilosc stron
@@ -132,96 +142,79 @@ function get_pagination($all, $currentPage, $script, $query, $rowLimit = 0)
         $currentPage = -1;
     }
 
-    // Usuwamy index "page"
-    unset($query['page']);
-    $queryString = "";
+    $paginationList = new Ul();
+    $paginationList->addClass("pagination-list");
 
-    // Tworzymy stringa z danych query
-    foreach ($query as $key => $value) {
-        if (strlen($queryString)) {
-            $queryString .= "&";
-        }
-
-        $queryString .= urlencode($key) . "=" . urlencode($value);
-    }
-    if (strlen($queryString)) {
-        $queryString = "?" . $queryString;
-    }
-
-    /*// Pierwsza strona
-    $output = create_dom_element("a",1,array(
-        'href'	=> $script.$queryString.($queryString != "" ? "&" : "?")."page=1",
-        'class'	=> $currentPage == 1 ? "current" : ""
-    ))."&nbsp;";
-
-    // 2 3 ...
-    if( $currentPage < 5 ) {
-        // 2 3
-        for($i = 2; $i <= 3; ++$i) {
-            $output .= create_dom_element("a",$i,array(
-                'href'	=> $script.$queryString.($queryString != "" ? "&" : "?")."page={$i}"
-            ))."&nbsp;";
-        }
-
-        // Trzy kropki
-        $output .= create_dom_element("a","...",array(
-                'href'	=> $script.$queryString.($queryString != "" ? "&" : "?")."page=".round(($pagesAmount-3)/2)
-        ))."&nbsp;";
-    }
-    // ...
-    else {
-
-    }
-
-    // Ostatnia strona
-    $output .= create_dom_element("a",$pagesAmount,array(
-        'href'	=> $script.$queryString.($queryString != "" ? "&" : "?")."page=".$pagesAmount,
-        'class'	=> $currentPage == $pagesAmount ? "current" : ""
-    ))."&nbsp;";*/
-
-    $output = "";
     $lp = 2;
     for ($i = 1, $dots = false; $i <= $pagesAmount; ++$i) {
         if ($i != 1 && $i != $pagesAmount && ($i < $currentPage - $lp || $i > $currentPage + $lp)) {
             if (!$dots) {
                 if ($i < $currentPage - $lp) {
                     $href = $url->to(
-                        $script .
-                            $queryString .
-                            (strlen($queryString) ? "&" : "?") .
-                            "page=" .
-                            round((1 + $currentPage - $lp) / 2)
+                        $script,
+                        array_merge($query, ["page" => round((1 + $currentPage - $lp) / 2)])
                     );
                 } elseif ($i > $currentPage + $lp) {
                     $href = $url->to(
-                        $script .
-                            $queryString .
-                            (strlen($queryString) ? "&" : "?") .
-                            "page=" .
-                            round(($currentPage + $lp + $pagesAmount) / 2)
+                        $script,
+                        array_merge($query, [
+                            "page" => round(($currentPage + $lp + $pagesAmount) / 2),
+                        ])
                     );
                 }
 
-                $output .=
-                    create_dom_element("a", "...", [
-                        'href' => $href,
-                    ]) . "&nbsp;";
+                $paginationLink = new Link("...");
+                $paginationLink->addClass("pagination-link");
+                $paginationLink->setParam("href", $href);
+                $paginationList->addContent(new Li($paginationLink));
+
                 $dots = true;
             }
             continue;
         }
 
-        $output .=
-            create_dom_element("a", $i, [
-                'href' => ($href = $url->to(
-                    $script . $queryString . (strlen($queryString) ? "&" : "?") . "page=" . $i
-                )),
-                'class' => $currentPage == $i ? "current" : "",
-            ]) . "&nbsp;";
+        $href = $url->to($script, array_merge($query, ["page" => $i]));
+        $paginationLink = new Link($i);
+        $paginationLink->addClass("pagination-link");
+        if ($currentPage == $i) {
+            $paginationLink->addClass("is-current");
+        }
+        $paginationLink->setParam("href", $href);
+        $paginationList->addContent(new Li($paginationLink));
+
         $dots = false;
     }
 
-    return $output;
+    $pagination = new Div();
+    $pagination->addClass("pagination is-centered");
+
+    $previousButton = new Link($lang->translate("previous"));
+    $previousButton->addClass("pagination-previous");
+    if ($currentPage - 1 < 1) {
+        $previousButton->setParam("disabled", true);
+    } else {
+        $previousButton->setParam(
+            "href",
+            $url->to($script, array_merge($query, ["page" => $currentPage - 1]))
+        );
+    }
+
+    $nextButton = new Link($lang->translate("next"));
+    $nextButton->addClass("pagination-next");
+    if ($currentPage + 1 > $pagesAmount) {
+        $nextButton->setParam("disabled", true);
+    } else {
+        $nextButton->setParam(
+            "href",
+            $url->to($script, array_merge($query, ["page" => $currentPage + 1]))
+        );
+    }
+
+    $pagination->addContent($previousButton);
+    $pagination->addContent($nextButton);
+    $pagination->addContent($paginationList);
+
+    return $pagination;
 }
 
 /* User functions */

@@ -19,9 +19,16 @@ class UrlGenerator
         $this->app = $app;
     }
 
-    public function to($path)
+    public function to($path, array $query = [])
     {
-        return rtrim($this->getShopUrl(), '/') . '/' . trim($path, "/");
+        $url = rtrim($this->getShopUrl(), '/') . '/' . trim($path, "/");
+
+        if (!empty($query)) {
+            $queryString = http_build_query($query);
+            $url .= "?$queryString";
+        }
+
+        return $url;
     }
 
     public function versioned($path)

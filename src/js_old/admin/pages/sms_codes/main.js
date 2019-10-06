@@ -12,7 +12,7 @@ $(document).delegate("#form_sms_code_add [name=random_code]", "click", function(
 });
 
 // Usuwanie kodu SMS
-$(document).delegate(".table_structure .delete_row", "click", function() {
+$(document).delegate(".table-structure .delete_row", "click", function() {
     var row_id = $(this).closest("tr");
 
     loader.show();

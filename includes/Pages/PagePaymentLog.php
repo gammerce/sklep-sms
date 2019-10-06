@@ -101,7 +101,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
             $query,
             10
         );
-        $paginationClass = strlen($pagination) ? "" : "display_none";
+        $paginationClass = $pagination ? "" : "display_none";
 
         return $template->render(
             "payment_log",
