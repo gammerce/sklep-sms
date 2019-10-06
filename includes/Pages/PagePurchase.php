@@ -4,7 +4,6 @@ namespace App\Pages;
 use App\Auth;
 use App\Interfaces\IBeLoggedMust;
 use App\Routes\UrlGenerator;
-use App\Settings;
 use App\Template;
 use App\Services\Interfaces\IServicePurchaseWeb;
 

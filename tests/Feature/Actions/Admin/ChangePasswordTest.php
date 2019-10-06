@@ -11,7 +11,7 @@ class ChangePasswordTest extends IndexTestCase
     {
         // given
         $newPassword = "foobar";
-        $admin = $this->factory->user(["groups" => 1]);
+        $admin = $this->factory->user(["groups" => 2]);
         $user = $this->factory->user();
 
         $this->actAs($admin);

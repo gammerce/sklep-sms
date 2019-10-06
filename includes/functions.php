@@ -31,7 +31,7 @@ function app($abstract = null, array $parameters = [])
         return Container::getInstance();
     }
 
-    return Container::getInstance()->make($abstract, $parameters);
+    return Container::getInstance()->makeWith($abstract, $parameters);
 }
 
 /**
@@ -192,16 +192,14 @@ function get_pagination($all, $currentPage, $script, $query, $rowLimit = 0)
                             "page=" .
                             round((1 + $currentPage - $lp) / 2)
                     );
-                } else {
-                    if ($i > $currentPage + $lp) {
-                        $href = $url->to(
-                            $script .
-                                $queryString .
-                                (strlen($queryString) ? "&" : "?") .
-                                "page=" .
-                                round(($currentPage + $lp + $pagesAmount) / 2)
-                        );
-                    }
+                } elseif ($i > $currentPage + $lp) {
+                    $href = $url->to(
+                        $script .
+                            $queryString .
+                            (strlen($queryString) ? "&" : "?") .
+                            "page=" .
+                            round(($currentPage + $lp + $pagesAmount) / 2)
+                    );
                 }
 
                 $output .=
@@ -406,14 +404,12 @@ function validate_payment(Purchase $purchaseData)
             $settings['sms_service']
         );
         $payment = new Payment($transactionService);
-    } else {
-        if ($purchaseData->getPayment('method') == "transfer") {
-            $transactionService = if_strlen2(
-                $purchaseData->getPayment('transfer_service'),
-                $settings['transfer_service']
-            );
-            $payment = new Payment($transactionService);
-        }
+    } elseif ($purchaseData->getPayment('method') == "transfer") {
+        $transactionService = if_strlen2(
+            $purchaseData->getPayment('transfer_service'),
+            $settings['transfer_service']
+        );
+        $payment = new Payment($transactionService);
     }
 
     // Pobieramy ile kosztuje ta usługa dla przelewu / portfela
@@ -430,7 +426,9 @@ function validate_payment(Purchase $purchaseData)
             'text' => $lang->translate('no_login_no_wallet'),
             'positive' => false,
         ];
-    } elseif ($purchaseData->getPayment('method') == "transfer") {
+    }
+
+    if ($purchaseData->getPayment('method') == "transfer") {
         if ($purchaseData->getPayment('cost') <= 1) {
             return [
                 'status' => "too_little_for_transfer",
@@ -470,6 +468,7 @@ function validate_payment(Purchase $purchaseData)
     $purchaseData->setPayment([
         'sms_code' => trim($purchaseData->getPayment('sms_code')),
     ]);
+
     if (
         $purchaseData->getPayment('method') == "sms" &&
         ($warning = check_for_warnings("sms_code", $purchaseData->getPayment('sms_code')))
