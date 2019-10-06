@@ -145,10 +145,10 @@ class DOMElement implements I_ToHtml
      */
     public function addClass($value)
     {
-        if ($this->params['class']) {
-            $this->params['class'] .= " $value";
-        } else {
+        if (empty($this->params['class'])) {
             $this->params['class'] = strval($value);
+        } else {
+            $this->params['class'] .= " $value";
         }
     }
 
