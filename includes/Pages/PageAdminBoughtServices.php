@@ -125,7 +125,7 @@ class PageAdminBoughtServices extends PageAdmin
 
             // Pobranie linku płatności
             $paymentLink = new Link();
-            $paymentLink->setParam("class", "dropdown-item");
+            $paymentLink->addClass("dropdown-item");
             $paymentLink->setParam(
                 'href',
                 $this->url->to("/admin/payment_{$row['payment']}?payid={$row['payment_id']}")

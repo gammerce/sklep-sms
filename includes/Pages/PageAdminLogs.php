@@ -61,7 +61,7 @@ class PageAdminLogs extends PageAdmin
 
             $cell = new Cell();
             $div = new Div(htmlspecialchars($row['text']));
-            $div->setParam('class', 'one_line');
+            $div->addClass('one_line');
             $cell->addContent($div);
             $bodyRow->addCell($cell);
 

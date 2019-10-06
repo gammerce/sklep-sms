@@ -59,7 +59,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
             $button = new Input();
             $button->setParam('id', 'user_service_button_add');
             $button->setParam('type', 'button');
-            $button->setParam('class', 'button is-small');
+            $button->addClass('button is-small');
             $button->setParam('value', $this->lang->translate('add_service'));
             $wrapper->addButton($button);
         }
@@ -131,10 +131,10 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
     {
         $button = new Select();
         $button->setParam('id', 'user_service_display_module');
-        $button->setParam("class", "select is-small");
+        $button->addClass("select is-small");
 
         $selectWrapper = new Div();
-        $selectWrapper->setParam("class", "select is-small");
+        $selectWrapper->addClass("select is-small");
         $selectWrapper->addContent($button);
 
         foreach ($this->heart->getServicesModules() as $serviceModuleData) {

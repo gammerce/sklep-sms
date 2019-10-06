@@ -61,7 +61,7 @@ class Structure extends DOMElement
             $row = new Row();
             $cell = new Cell($lang->translate('no_data'));
             $cell->setParam('colspan', '30');
-            $cell->setParam("class", "has-text-centered");
+            $cell->addClass("has-text-centered");
             $cell->setStyle('padding', '40px');
             $row->addContent($cell);
             $body->addContent($row);
@@ -133,7 +133,7 @@ class Structure extends DOMElement
         if ($pagination) {
             $this->foot = new DOMElement();
             $this->foot->setName('tfoot');
-            $this->foot->setParam('class', 'display_tfoot');
+            $this->foot->addClass('display_tfoot');
 
             $row = new Row();
 

@@ -61,7 +61,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             $button = new Input();
             $button->setParam('id', 'service_button_add');
             $button->setParam('type', 'button');
-            $button->setParam('class', 'button');
+            $button->addClass('button');
             $button->setParam('value', $this->lang->translate('add_service'));
             $wrapper->addButton($button);
         }
