@@ -64,6 +64,7 @@ return [
     'mysqli_no_server_connection' => 'Could not create database connection!',
     'mysqli_query_error' => 'Could not query database!',
     'name' => 'Name',
+    'next' => 'Next',
     'never' => 'Never',
     'new_password' => 'New Password',
     'nick' => 'Nickname',
@@ -88,6 +89,7 @@ return [
     'payment_id' => 'Payment ID',
     'payment_remove_code_from_db' =>
         'Code was removed from the list of codes to be used. Code: {1} Tariff: {2}',
+    'previous' => 'Previous',
     'question' => 'Question',
     'regards' => 'Regards',
     'return_code_length_warn' => 'Given return code is a little bit too long.',
