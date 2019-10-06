@@ -14,14 +14,14 @@
 
     // This is used later when action is done
     var row_id = 0;
-    $(document).delegate(".table_structure .charge_wallet", "click", function() {
+    $(document).delegate(".table-structure .charge_wallet", "click", function() {
         row_id = $(this).closest("tr");
         show_action_box(currentPage, "charge_wallet", {
             uid: row_id.children("td[headers=id]").text(),
         });
     });
 
-    $(document).delegate(".table_structure .change_password", "click", function() {
+    $(document).delegate(".table-structure .change_password", "click", function() {
         show_action_box(currentPage, "change_password", {
             uid: $(this)
                 .closest("tr")
@@ -30,7 +30,7 @@
         });
     });
 
-    $(document).delegate(".table_structure .edit_row", "click", function() {
+    $(document).delegate(".table-structure .edit_row", "click", function() {
         show_action_box(currentPage, "user_edit", {
             uid: $(this)
                 .closest("tr")
@@ -39,7 +39,7 @@
         });
     });
 
-    $(document).delegate(".table_structure .delete_row", "click", function() {
+    $(document).delegate(".table-structure .delete_row", "click", function() {
         var row_id = $(this).closest("tr");
 
         if (
