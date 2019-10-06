@@ -57,7 +57,7 @@ class Wrapper extends Div
         $pageTitle->addContent($buttons);
 
         $this->addContent($pageTitle);
-        $this->addContent($this->getTableStructure());
+        $this->addContent($this->getTableContainer());
 
         $output = parent::toHtml();
         $this->contents = $oldContent;
@@ -116,11 +116,11 @@ class Wrapper extends Div
     /**
      * @return DOMElement
      */
-    public function getTableStructure()
+    public function getTableContainer()
     {
-        $structure = new Div();
-        $structure->addClass("table-structure");
-        $structure->addContent($this->getTable());
-        return $structure;
+        $container = new Div();
+        $container->addClass("table-container");
+        $container->addContent($this->getTable());
+        return $container;
     }
 }
