@@ -1,8 +1,11 @@
 <?php
 namespace App\Pages;
 
-use Admin\Table;
-use Admin\Table\Wrapper;
+use App\Html\Div;
+use App\Html\Input;
+use App\Html\Option;
+use App\Html\Select;
+use App\Html\Wrapper;
 use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Services\Interfaces\IServiceUserServiceAdminAdd;
 use App\Services\Interfaces\IServiceUserServiceAdminDisplay;
@@ -53,7 +56,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 
         // Przycisk dodajacy nowa usluge użytkownikowi
         if (get_privileges("manage_user_services")) {
-            $button = new Table\Input();
+            $button = new Input();
             $button->setParam('id', 'user_service_button_add');
             $button->setParam('type', 'button');
             $button->setParam('class', 'button is-small');
@@ -126,11 +129,11 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 
     protected function createModuleSelectBox($subpage)
     {
-        $button = new Table\Select();
+        $button = new Select();
         $button->setParam('id', 'user_service_display_module');
         $button->setParam("class", "select is-small");
 
-        $selectWrapper = new Table\Div();
+        $selectWrapper = new Div();
         $selectWrapper->setParam("class", "select is-small");
         $selectWrapper->addContent($button);
 
@@ -144,7 +147,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
                 continue;
             }
 
-            $option = new Table\Option($serviceModuleData['name']);
+            $option = new Option($serviceModuleData['name']);
             $option->setParam('value', $serviceModuleData['id']);
 
             if ($serviceModuleData['id'] == $subpage) {

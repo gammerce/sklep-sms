@@ -50,7 +50,7 @@ class ExceptionHandler implements ExceptionHandlerContract
         }
 
         if ($e instanceof RequireInstallationException) {
-            return new RedirectResponse('/install');
+            return new RedirectResponse('/setup');
         }
 
         return new Response(

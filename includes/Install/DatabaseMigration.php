@@ -24,7 +24,7 @@ class DatabaseMigration
         $this->migrationFiles = $migrationFiles;
     }
 
-    public function install($token, $adminUsername, $adminPassword)
+    public function setup($token, $adminUsername, $adminPassword)
     {
         foreach ($this->migrationFiles->getMigrations() as $migration) {
             $this->migrate($migration);
@@ -84,7 +84,7 @@ class DatabaseMigration
             );
         } catch (SqlQueryException $e) {
             if (preg_match("/Table .*ss_migrations.* doesn't exist/", $e->getError())) {
-                // It means that user has installed shop sms but using old codebase,
+                // It means that user has installed shop sms using old codebase,
                 // that is why we want to create migration table for him and also
                 // fake init migration so as not to overwrite his database
                 $this->migrate('2018_01_14_224424_create_migrations');

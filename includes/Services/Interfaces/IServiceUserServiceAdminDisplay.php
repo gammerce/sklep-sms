@@ -1,7 +1,7 @@
 <?php
 namespace App\Services\Interfaces;
 
-use Admin\Table\Wrapper;
+use App\Html\Wrapper;
 
 /**
  * Obsługa wyświetlania trwających usług użytkowników w PA

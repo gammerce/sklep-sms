@@ -51,6 +51,7 @@ before_deploy:
     data/ \
     includes/ \
     migrations/ \
+    translations/ \
     themes/ \
     .htaccess \
     cron.php \

@@ -1,13 +1,13 @@
 <?php
 namespace App\Pages;
 
-use Admin\Table\BodyRow;
-use Admin\Table\Cell;
-use Admin\Table\HeadCell;
-use Admin\Table\Link;
-use Admin\Table\SimpleText;
-use Admin\Table\Structure;
-use Admin\Table\Wrapper;
+use App\Html\BodyRow;
+use App\Html\Cell;
+use App\Html\HeadCell;
+use App\Html\Link;
+use App\Html\SimpleText;
+use App\Html\Structure;
+use App\Html\Wrapper;
 use App\Services\ExtraFlags\ExtraFlagType;
 
 class PageAdminBoughtServices extends PageAdmin
