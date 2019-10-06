@@ -15,7 +15,7 @@ $(document).delegate("[id^=edit_row_]", "click", function() {
         id: row_id.children("td[headers=id]").text(),
     });
 });
-$(document).delegate(".table_structure .edit_row", "click", function() {
+$(document).delegate(".table-structure .edit_row", "click", function() {
     show_action_box(currentPage, "user_service_edit", {
         id: $(this)
             .closest("tr")
@@ -113,7 +113,7 @@ $(document).delegate("[id^=delete_row_]", "click", function() {
     });
 });
 
-$(document).delegate(".table_structure .delete_row", "click", function() {
+$(document).delegate(".table-structure .delete_row", "click", function() {
     var row_id = $(this).closest("tr");
 
     var confirm_info =

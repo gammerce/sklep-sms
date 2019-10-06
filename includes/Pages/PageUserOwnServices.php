@@ -137,7 +137,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             $query,
             4
         );
-        $paginationClass = strlen($pagination) ? "" : "display_none";
+        $paginationClass = $pagination ? "" : "display_none";
 
         return $template->render(
             "user_own_services",

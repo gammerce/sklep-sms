@@ -39,7 +39,7 @@ $(document).delegate("#form_service_code_add [name=service]", "change", function
 });
 
 // Usuwanie kodu na usługę
-$(document).delegate(".table_structure .delete_row", "click", function() {
+$(document).delegate(".table-structure .delete_row", "click", function() {
     var row_id = $(this).closest("tr");
 
     loader.show();

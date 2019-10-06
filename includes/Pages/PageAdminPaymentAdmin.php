@@ -46,7 +46,7 @@ class PageAdminPaymentAdmin extends PageAdmin
             $bodyRow = new BodyRow();
 
             if ($query['highlight'] && $query['payid'] == $row['payment_id']) {
-                $bodyRow->setParam('class', 'highlighted');
+                $bodyRow->addClass('highlighted');
             }
 
             $adminname = $row['aid']
@@ -59,7 +59,7 @@ class PageAdminPaymentAdmin extends PageAdmin
 
             $cell = new Cell();
             $div = new Div(get_platform($row['platform']));
-            $div->setParam('class', 'one_line');
+            $div->addClass('one_line');
             $cell->addContent($div);
             $bodyRow->addCell($cell);
 

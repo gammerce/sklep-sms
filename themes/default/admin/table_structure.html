@@ -1,22 +1,24 @@
-<div class="table_structure">
+<div class="table-structure">
     <div class="page-title">
         <div class="title is-4">{$title}</div>
         {$buttons}
     </div>
 
-    <table class="table is-hoverable is-fullwidth">
-        <thead>
-            <tr>
-                {$thead}
-            </tr>
-        </thead>
-        <tbody>
-            {$tbody}
-        </tbody>
-        <tfoot class="{$tfootClass}">
-            <tr>
-                <td colspan="31">{$pagination}</td>
-            </tr>
-        </tfoot>
-    </table>
+    <div class="table-container">
+        <table class="table is-hoverable is-fullwidth">
+            <thead>
+                <tr>
+                    {$thead}
+                </tr>
+            </thead>
+            <tbody>
+                {$tbody}
+            </tbody>
+            <tfoot class="{$tfootClass}">
+                <tr>
+                    <td colspan="31">{$pagination}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
 </div>

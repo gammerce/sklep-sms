@@ -4,7 +4,7 @@ $(document).delegate("#antispam_question_button_add", "click", function() {
 });
 
 // Kliknięcie edycji pytania antyspamowego
-$(document).delegate(".table_structure .edit_row", "click", function() {
+$(document).delegate(".table-structure .edit_row", "click", function() {
     show_action_box(currentPage, "antispam_question_edit", {
         id: $(this)
             .closest("tr")
@@ -14,7 +14,7 @@ $(document).delegate(".table_structure .edit_row", "click", function() {
 });
 
 // Usuwanie pytania antyspamowego
-$(document).delegate(".table_structure .delete_row", "click", function() {
+$(document).delegate(".table-structure .delete_row", "click", function() {
     var row_id = $(this).closest("tr");
 
     loader.show();

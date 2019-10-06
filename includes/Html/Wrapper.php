@@ -21,7 +21,7 @@ class Wrapper extends Div
     public function __construct()
     {
         parent::__construct();
-        $this->setParam('class', 'table_structure');
+        $this->addClass('table-structure');
     }
 
     public function toHtml()
@@ -49,15 +49,15 @@ class Wrapper extends Div
         }
 
         $title = new Div($this->getTitle());
-        $title->setParam("class", "title is-4");
+        $title->addClass("title is-4");
 
         $pageTitle = new Div();
-        $pageTitle->setParam('class', 'page-title');
+        $pageTitle->addClass('page-title');
         $pageTitle->addContent($title);
         $pageTitle->addContent($buttons);
 
         $this->addContent($pageTitle);
-        $this->addContent($this->getTable());
+        $this->addContent($this->getTableStructure());
 
         $output = parent::toHtml();
         $this->contents = $oldContent;
@@ -111,5 +111,16 @@ class Wrapper extends Div
     public function setTable($table)
     {
         $this->table = $table;
+    }
+
+    /**
+     * @return DOMElement
+     */
+    public function getTableStructure()
+    {
+        $structure = new Div();
+        $structure->addClass("table-structure");
+        $structure->addContent($this->getTable());
+        return $structure;
     }
 }
