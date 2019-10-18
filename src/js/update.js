@@ -28,8 +28,8 @@ $(document).ready(function($) {
                 if (jsonObj.return_id == "warnings") {
                     $(".update_info").html(jsonObj.update_info);
                     $(".window")
-                        .removeClass("ok")
-                        .addClass("bad");
+                        .removeClass("success")
+                        .addClass("danger");
                 } else if (jsonObj.return_id == "ok") {
                     $("body").addClass("updated");
                     $("body").html(
