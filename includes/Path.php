@@ -8,7 +8,7 @@ class Path
 
     public function __construct($basePath)
     {
-        $this->basePath = realpath(rtrim($basePath, '\/'));
+        $this->basePath = realpath($basePath);
     }
 
     public function to($path = '')
@@ -17,11 +17,7 @@ class Path
             return $this->basePath;
         }
 
-        if (starts_with($path, DIRECTORY_SEPARATOR)) {
-            return realpath($this->basePath . $path);
-        }
-
-        return realpath($this->basePath . DIRECTORY_SEPARATOR . $path);
+        return $this->basePath . DIRECTORY_SEPARATOR . ltrim($path, "/");
     }
 
     public function sqlLogPath()

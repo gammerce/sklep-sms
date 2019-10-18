@@ -30,7 +30,7 @@ abstract class Migration
 
     protected function executeSqlFile($file)
     {
-        $path = $this->migrationFiles->path($file);
+        $path = $this->migrationFiles->buildPath($file);
         $queries = $this->splitSQLFile($path);
         $this->executeQueries($queries);
     }

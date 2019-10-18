@@ -6,18 +6,18 @@ use DirectoryIterator;
 
 class MigrationFiles
 {
-    /** @var string */
-    protected $migrationsPath;
+    /** @var Path */
+    private $path;
 
     public function __construct(Path $path)
     {
-        $this->migrationsPath = $path->to('migrations/');
+        $this->path = $path;
     }
 
     public function getMigrations()
     {
         $migrations = [];
-        $dir = new DirectoryIterator($this->migrationsPath);
+        $dir = new DirectoryIterator($this->buildPath(""));
 
         foreach ($dir as $fileinfo) {
             if (!preg_match("/^.+\.php$/", $fileinfo->getFilename())) {
@@ -41,11 +41,11 @@ class MigrationFiles
 
     public function getMigrationPath($migration)
     {
-        return $this->migrationsPath . $migration . '.php';
+        return $this->buildPath($migration . ".php");
     }
 
-    public function path($file)
+    public function buildPath($file)
     {
-        return $this->migrationsPath . $file;
+        return $this->path->to("migrations" . DIRECTORY_SEPARATOR . $file);
     }
 }
