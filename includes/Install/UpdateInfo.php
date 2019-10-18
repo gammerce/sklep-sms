@@ -1,20 +1,20 @@
 <?php
 namespace App\Install;
 
-use App\Application;
+use App\Path;
 use App\Template;
 
 class UpdateInfo
 {
-    /** @var Application */
-    private $app;
+    /** @var Path */
+    private $path;
 
     /** @var Template */
     private $template;
 
-    public function __construct(Application $app, Template $template)
+    public function __construct(Path $path, Template $template)
     {
-        $this->app = $app;
+        $this->path = $path;
         $this->template = $template;
     }
 
@@ -50,7 +50,7 @@ class UpdateInfo
                 continue;
             }
 
-            if (is_writable($this->app->path($file))) {
+            if (is_writable($this->path->to($file))) {
                 $status = "ok";
             } else {
                 $status = "bad";
@@ -77,7 +77,7 @@ class UpdateInfo
                 continue;
             }
 
-            if (!file_exists($this->app->path($file))) {
+            if (!file_exists($this->path->to($file))) {
                 $status = "ok";
             } else {
                 $status = "bad";

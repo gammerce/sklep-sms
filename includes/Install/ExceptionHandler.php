@@ -4,6 +4,7 @@ namespace App\Install;
 use App\Application;
 use App\ExceptionHandlerContract;
 use App\Exceptions\SqlQueryException;
+use App\Path;
 use App\Responses\ApiResponse;
 use App\TranslationManager;
 use App\Translator;
@@ -18,17 +19,17 @@ class ExceptionHandler implements ExceptionHandlerContract
     /** @var SetupManager */
     private $setupManager;
 
-    /** @var Application */
-    private $app;
+    /** @var Path */
+    private $path;
 
     public function __construct(
-        Application $app,
+        Application $path,
         TranslationManager $translationManager,
         SetupManager $setupManager
     ) {
         $this->lang = $translationManager->user();
         $this->setupManager = $setupManager;
-        $this->app = $app;
+        $this->path = $path;
     }
 
     public function render(Request $request, Exception $e)
@@ -67,7 +68,7 @@ class ExceptionHandler implements ExceptionHandlerContract
 
     public function logError($message)
     {
-        file_put_contents($this->app->path('data/logs/install.log'), $message);
+        file_put_contents($this->path->to('data/logs/install.log'), $message);
         $this->setupManager->markAsFailed();
         $this->setupManager->removeInProgress();
     }

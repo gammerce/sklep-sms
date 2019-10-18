@@ -10,6 +10,7 @@ use App\ExternalConfigProvider;
 use App\Filesystem;
 use App\Heart;
 use App\License;
+use App\Path;
 use App\Settings;
 use App\TranslationManager;
 use Psr\SimpleCache\CacheInterface;
@@ -32,7 +33,7 @@ class AppServiceProvider
         $app->singleton(ExternalConfigProvider::class);
     }
 
-    protected function registerDatabase(Application $app)
+    private function registerDatabase(Application $app)
     {
         $app->singleton(Database::class, function () {
             return new Database(
@@ -45,10 +46,13 @@ class AppServiceProvider
         });
     }
 
-    protected function registerCache(Application $app)
+    private function registerCache(Application $app)
     {
         $app->bind(FileCache::class, function () use ($app) {
-            return new FileCache($app->make(Filesystem::class), $app->path('data/cache'));
+            /** @var Path $path */
+            $path = $app->make(Path::class);
+
+            return new FileCache($app->make(Filesystem::class), $path->to('data/cache'));
         });
         $app->bind(CacheInterface::class, FileCache::class);
     }

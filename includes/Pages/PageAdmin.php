@@ -15,8 +15,8 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
 
         // Dodajemy wszystkie skrypty
         $path = "build/js_old/admin/pages/" . $this::PAGE_ID . "/";
-        if (strlen($this::PAGE_ID) && file_exists($this->app->path($path))) {
-            foreach (scandir($this->app->path($path)) as $file) {
+        if (strlen($this::PAGE_ID) && file_exists($this->path->to($path))) {
+            foreach (scandir($this->path->to($path)) as $file) {
                 if (ends_at($file, ".js")) {
                     $this->heart->scriptAdd($this->url->versioned($path . $file));
                 }
@@ -25,8 +25,8 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
 
         // Dodajemy wszystkie css
         $path = "build/stylesheets_old/admin/pages/" . $this::PAGE_ID . "/";
-        if (strlen($this::PAGE_ID) && file_exists($this->app->path($path))) {
-            foreach (scandir($this->app->path($path)) as $file) {
+        if (strlen($this::PAGE_ID) && file_exists($this->path->to($path))) {
+            foreach (scandir($this->path->to($path)) as $file) {
                 if (ends_at($file, ".css")) {
                     $this->heart->styleAdd($this->url->versioned($path . $file));
                 }
@@ -37,12 +37,12 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
         if (in_array($this::PAGE_ID, ["service_codes", "services", "user_service"])) {
             foreach ($this->heart->getServicesModules() as $moduleInfo) {
                 $path = "build/stylesheets_old/services/" . $moduleInfo['id'] . ".css";
-                if (file_exists($this->app->path($path))) {
+                if (file_exists($this->path->to($path))) {
                     $this->heart->styleAdd($this->url->versioned($path));
                 }
 
                 $path = "build/js_old/services/" . $moduleInfo['id'] . ".js";
-                if (file_exists($this->app->path($path))) {
+                if (file_exists($this->path->to($path))) {
                     $this->heart->scriptAdd($this->url->versioned($path));
                 }
             }

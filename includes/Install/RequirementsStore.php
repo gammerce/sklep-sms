@@ -1,8 +1,18 @@
 <?php
 namespace App\Install;
 
+use App\Path;
+
 class RequirementsStore
 {
+    /** @var Path */
+    private $path;
+
+    public function __construct(Path $path)
+    {
+        $this->path = $path;
+    }
+
     public function getModules()
     {
         return [
@@ -48,5 +58,27 @@ class RequirementsStore
             "servers_stuff.php",
             "transfer_finalize.php",
         ];
+    }
+
+    /**
+     * @return bool
+     */
+    public function areFilesInCorrectState()
+    {
+        foreach ($this->getFilesWithWritePermission() as $path) {
+            $fullPath = $this->path->to($path);
+            if (!is_writable($fullPath)) {
+                return false;
+            }
+        }
+
+        foreach ($this->getFilesToDelete() as $path) {
+            $fullPath = $this->path->to($path);
+            if (file_exists($fullPath)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
