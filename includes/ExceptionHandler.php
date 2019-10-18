@@ -21,12 +21,19 @@ class ExceptionHandler implements ExceptionHandlerContract
     /** @var Translator */
     private $lang;
 
-    protected $dontReport = [RequireInstallationException::class, LicenseException::class];
+    /** @var Path */
+    private $path;
 
-    public function __construct(Application $app, TranslationManager $translationManager)
-    {
+    private $dontReport = [RequireInstallationException::class, LicenseException::class];
+
+    public function __construct(
+        Application $app,
+        Path $path,
+        TranslationManager $translationManager
+    ) {
         $this->app = $app;
         $this->lang = $translationManager->shop();
+        $this->path = $path;
     }
 
     public function render(Request $request, Exception $e)
@@ -98,7 +105,7 @@ class ExceptionHandler implements ExceptionHandlerContract
     protected function reportSqlException(SqlQueryException $e)
     {
         if (strlen($e->getQuery())) {
-            log_to_file($this->app->sqlLogPath(), $e->getQuery(false));
+            log_to_file($this->path->sqlLogPath(), $e->getQuery(false));
         }
     }
 

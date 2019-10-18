@@ -1,16 +1,16 @@
 <?php
 namespace App\Install;
 
-use App\Application;
+use App\Path;
 
 class EnvCreator
 {
-    /** @var Application */
-    private $app;
+    /** @var Path */
+    private $path;
 
-    public function __construct(Application $app)
+    public function __construct(Path $path)
     {
-        $this->app = $app;
+        $this->path = $path;
     }
 
     public function create($host, $port, $db, $user, $password)
@@ -37,6 +37,6 @@ class EnvCreator
 
     protected function path()
     {
-        return $this->app->path('confidential/.env');
+        return $this->path->to('confidential/.env');
     }
 }

@@ -1,29 +1,25 @@
 <?php
 namespace App\Controllers\View;
 
-use App\Application;
+use App\Install\OldShop;
 use App\Install\RequirementsStore;
 use App\Install\SetupManager;
-use App\Install\OldShop;
+use App\Install\ShopState;
 use App\Install\UpdateInfo;
+use App\Path;
 use App\Responses\HtmlResponse;
-use App\ShopState;
 use App\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class SetupController
 {
-    /** @var Application */
-    private $app;
-
     /** @var Template */
     private $template;
 
-    public function __construct(Application $app, Template $template)
+    public function __construct(Template $template)
     {
         $this->template = $template;
-        $this->app = $app;
     }
 
     public function get(
@@ -32,7 +28,8 @@ class SetupController
         ShopState $shopState,
         UpdateInfo $updateInfo,
         RequirementsStore $requirementsStore,
-        SetupManager $setupManager
+        SetupManager $setupManager,
+        Path $path
     ) {
         $oldShop->checkForConfigFile();
 
@@ -49,7 +46,7 @@ class SetupController
         }
 
         if (!ShopState::isInstalled()) {
-            return $this->install($requirementsStore);
+            return $this->install($requirementsStore, $path);
         }
 
         if (!$shopState->isUpToDate()) {
@@ -59,7 +56,7 @@ class SetupController
         return new Response("Sklep nie wymaga aktualizacji.");
     }
 
-    protected function install(RequirementsStore $requirementsStore)
+    protected function install(RequirementsStore $requirementsStore, Path $path)
     {
         $modules = $requirementsStore->getModules();
         $filesWithWritePermission = $requirementsStore->getFilesWithWritePermission();
@@ -74,7 +71,7 @@ class SetupController
                 continue;
             }
 
-            if (is_writable($this->app->path($file))) {
+            if (is_writable($path->to($file))) {
                 $privilege = "ok";
             } else {
                 $privilege = "bad";

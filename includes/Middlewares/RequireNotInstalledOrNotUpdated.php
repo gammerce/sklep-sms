@@ -2,7 +2,7 @@
 namespace App\Middlewares;
 
 use App\Application;
-use App\ShopState;
+use App\Install\ShopState;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

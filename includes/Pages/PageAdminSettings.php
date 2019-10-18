@@ -3,6 +3,7 @@ namespace App\Pages;
 
 use App\Html\Option;
 use App\Html\Select;
+use App\Path;
 use App\TranslationManager;
 
 class PageAdminSettings extends PageAdmin
@@ -19,6 +20,9 @@ class PageAdminSettings extends PageAdmin
 
     protected function content(array $query, array $body)
     {
+        /** @var Path $path */
+        $path = $this->app->make(Path::class);
+
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $lang = $this->lang;
@@ -49,10 +53,10 @@ class PageAdminSettings extends PageAdmin
         $userEditServiceSelect = $this->createUserEditServiceSelect();
 
         // Pobieranie listy dostępnych szablonów
-        $dirlist = scandir($this->app->path('themes'));
+        $dirlist = scandir($path->to('themes'));
         $themesList = "";
         foreach ($dirlist as $dirName) {
-            if ($dirName[0] != '.' && is_dir($this->app->path("themes/$dirName"))) {
+            if ($dirName[0] != '.' && is_dir($path->to("themes/$dirName"))) {
                 $themesList .= create_dom_element("option", $dirName, [
                     'value' => $dirName,
                     'selected' => $dirName == $this->settings['theme'] ? "selected" : "",
@@ -61,10 +65,10 @@ class PageAdminSettings extends PageAdmin
         }
 
         // Pobieranie listy dostępnych języków
-        $dirlist = scandir($this->app->path('translations'));
+        $dirlist = scandir($path->to('translations'));
         $languagesList = "";
         foreach ($dirlist as $dirName) {
-            if ($dirName[0] != '.' && is_dir($this->app->path("translations/{$dirName}"))) {
+            if ($dirName[0] != '.' && is_dir($path->to("translations/{$dirName}"))) {
                 $languagesList .= create_dom_element(
                     "option",
                     $lang->translate('language_' . $dirName),

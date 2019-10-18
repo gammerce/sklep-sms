@@ -5,25 +5,25 @@ use App\Routes\UrlGenerator;
 
 class Template
 {
-    /** @var Application */
-    protected $app;
+    /** @var Path */
+    private $path;
 
     /** @var Settings */
-    protected $settings;
+    private $settings;
 
     /** @var Translator */
-    protected $lang;
+    private $lang;
 
     /** @var UrlGenerator */
-    protected $urlGenerator;
+    private $urlGenerator;
 
     public function __construct(
-        Application $app,
+        Path $path,
         Settings $settings,
         TranslationManager $translationManager,
         UrlGenerator $urlGenerator
     ) {
-        $this->app = $app;
+        $this->path = $path;
         $this->settings = $settings;
         $this->lang = $translationManager->user();
         $this->urlGenerator = $urlGenerator;
@@ -57,11 +57,11 @@ class Template
     {
         if (strlen($this->lang->getCurrentLanguageShort())) {
             $filename = $title . "." . $this->lang->getCurrentLanguageShort();
-            $temp = $this->app->path("themes/{$this->settings['theme']}/{$filename}.html");
+            $temp = $this->path->to("themes/{$this->settings['theme']}/{$filename}.html");
             if (file_exists($temp)) {
                 $path = $temp;
             } else {
-                $temp = $this->app->path("themes/default/{$filename}.html");
+                $temp = $this->path->to("themes/default/{$filename}.html");
                 if (file_exists($temp)) {
                     $path = $temp;
                 }
@@ -70,11 +70,11 @@ class Template
 
         if (!isset($path)) {
             $filename = $title;
-            $temp = $this->app->path("themes/{$this->settings['theme']}/{$filename}.html");
+            $temp = $this->path->to("themes/{$this->settings['theme']}/{$filename}.html");
             if (file_exists($temp)) {
                 $path = $temp;
             } else {
-                $temp = $this->app->path("themes/default/{$filename}.html");
+                $temp = $this->path->to("themes/default/{$filename}.html");
                 if (file_exists($temp)) {
                     $path = $temp;
                 }

@@ -13,7 +13,7 @@ class Application extends Container
 {
     const VERSION = '3.8.0';
 
-    protected $providers = [
+    private $providers = [
         AppServiceProvider::class,
         LicenseServiceProvider::class,
         HeartServiceProvider::class,
@@ -21,14 +21,14 @@ class Application extends Container
     ];
 
     /** @var string */
-    protected $basePath;
+    private $basePath;
 
     /** @var bool */
-    protected $isAdminSession = false;
+    private $isAdminSession = false;
 
     public function __construct($basePath)
     {
-        $this->setBasePath($basePath);
+        $this->basePath = $basePath;
 
         static::setInstance($this);
         $this->registerBindings();
@@ -44,6 +44,9 @@ class Application extends Container
     {
         $this->instance(Container::class, $this);
         $this->instance(Application::class, $this);
+        $this->bind(Path::class, function () {
+            return new Path($this->basePath);
+        });
     }
 
     protected function bootstrap()
@@ -55,8 +58,11 @@ class Application extends Container
 
     protected function loadEnvironmentVariables()
     {
+        /** @var Path $path */
+        $path = $this->make(Path::class);
+
         try {
-            (new Dotenv($this->path('confidential')))->load();
+            (new Dotenv($path->to('confidential')))->load();
         } catch (InvalidPathException $e) {
             //
         }
@@ -78,34 +84,6 @@ class Application extends Container
                 $this->call("$provider@boot");
             }
         }
-    }
-
-    public function setBasePath($basePath)
-    {
-        $this->basePath = rtrim($basePath, '\/');
-    }
-
-    public function path($path = '')
-    {
-        if (!strlen($path)) {
-            return $this->basePath;
-        }
-
-        if (starts_with($path, DIRECTORY_SEPARATOR)) {
-            return $this->basePath . $path;
-        }
-
-        return $this->basePath . DIRECTORY_SEPARATOR . $path;
-    }
-
-    public function sqlLogPath()
-    {
-        return $this->path('data/logs/sql.log');
-    }
-
-    public function errorsLogPath()
-    {
-        return $this->path('data/logs/errors.log');
     }
 
     public function terminate()

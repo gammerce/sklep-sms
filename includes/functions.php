@@ -11,6 +11,7 @@ use App\Html\Ul;
 use App\Mailer;
 use App\Models\Purchase;
 use App\Models\User;
+use App\Path;
 use App\Payment;
 use App\Routes\UrlGenerator;
 use App\Services\ChargeWallet\ServiceChargeWallet;
@@ -1384,7 +1385,9 @@ function log_to_file($file, $message)
 
 function log_error($message)
 {
-    log_to_file(app()->errorsLogPath(), $message);
+    /** @var Path $path */
+    $path = app()->make(Path::class);
+    log_to_file($path->errorsLogPath(), $message);
 }
 
 function array_get($array, $key, $default = null)

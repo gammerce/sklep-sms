@@ -1,7 +1,7 @@
 <?php
 namespace App\Install;
 
-use App\Application;
+use App\Path;
 use App\Template;
 
 class OldShop
@@ -9,18 +9,18 @@ class OldShop
     /** @var Template */
     private $template;
 
-    /** @var Application */
-    private $app;
+    /** @var Path */
+    private $path;
 
-    public function __construct(Application $app, Template $template)
+    public function __construct(Path $path, Template $template)
     {
         $this->template = $template;
-        $this->app = $app;
+        $this->path = $path;
     }
 
     public function checkForConfigFile()
     {
-        if (!file_exists($this->app->path('/includes/config.php'))) {
+        if (!file_exists($this->path->to('/includes/config.php'))) {
             return;
         }
 

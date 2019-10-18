@@ -1,10 +1,20 @@
 <?php
 namespace Tests\Unit\Application;
 
+use App\Path;
 use Tests\Psr4\TestCases\TestCase;
 
 class PathTest extends TestCase
 {
+    /** @var Path */
+    private $path;
+
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->path = new Path("/test");
+    }
+
     /** @test */
     public function it_returns_absolute_path_for_relative_path_prefixed_with_slash()
     {
@@ -12,10 +22,10 @@ class PathTest extends TestCase
         $relativePath = '/foo/bar.sql';
 
         // when
-        $absolutePath = $this->app->path($relativePath);
+        $absolutePath = $this->path->to($relativePath);
 
         // then
-        $this->assertEquals($this->app->path() . '/foo/bar.sql', $absolutePath);
+        $this->assertEquals($this->path->to() . '/foo/bar.sql', $absolutePath);
     }
 
     /** @test */
@@ -25,9 +35,9 @@ class PathTest extends TestCase
         $relativePath = 'foo/bar.sql';
 
         // when
-        $absolutePath = $this->app->path($relativePath);
+        $absolutePath = $this->path->to($relativePath);
 
         // then
-        $this->assertEquals($this->app->path() . '/foo/bar.sql', $absolutePath);
+        $this->assertEquals($this->path->to() . '/foo/bar.sql', $absolutePath);
     }
 }

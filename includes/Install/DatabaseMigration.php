@@ -4,7 +4,6 @@ namespace App\Install;
 use App\Application;
 use App\Database;
 use App\Exceptions\SqlQueryException;
-use App\MigrationFiles;
 
 class DatabaseMigration
 {

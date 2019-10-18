@@ -8,6 +8,7 @@ use App\Exceptions\SqlQueryException;
 use App\Heart;
 use App\Models\Purchase;
 use App\Pages\Interfaces\IPageAdminActionBox;
+use App\Path;
 use App\Repositories\PricelistRepository;
 use App\Repositories\ServerRepository;
 use App\Responses\ApiResponse;
@@ -28,10 +29,10 @@ class JsonHttpAdminController
 {
     public function action(
         Request $request,
-        Application $app,
         Database $db,
         Heart $heart,
         Auth $auth,
+        Path $path,
         Settings $settings,
         Template $templates,
         TranslationManager $translationManager,
@@ -486,12 +487,12 @@ class JsonHttpAdminController
             }
 
             // Motyw
-            if (!is_dir($app->path("themes/{$theme}")) || $theme[0] == '.') {
+            if (!is_dir($path->to("themes/{$theme}")) || $theme[0] == '.') {
                 $warnings['theme'][] = $lang->translate('no_theme');
             }
 
             // Język
-            if (!is_dir($app->path("translations/{$language}")) || $language[0] == '.') {
+            if (!is_dir($path->to("translations/{$language}")) || $language[0] == '.') {
                 $warnings['language'][] = $lang->translate('no_language');
             }
 

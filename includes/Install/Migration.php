@@ -2,7 +2,7 @@
 namespace App\Install;
 
 use App\Database;
-use App\MigrationFiles;
+use App\Install\MigrationFiles;
 use InvalidArgumentException;
 
 abstract class Migration
@@ -30,7 +30,7 @@ abstract class Migration
 
     protected function executeSqlFile($file)
     {
-        $path = $this->migrationFiles->path($file);
+        $path = $this->migrationFiles->buildPath($file);
         $queries = $this->splitSQLFile($path);
         $this->executeQueries($queries);
     }

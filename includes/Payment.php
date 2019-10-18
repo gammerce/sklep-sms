@@ -38,6 +38,9 @@ class Payment
     /** @var Database */
     protected $db;
 
+    /** @var Path */
+    protected $path;
+
     public function __construct($paymentModuleId)
     {
         $this->app = app();
@@ -48,6 +51,7 @@ class Payment
         $this->heart = $this->app->make(Heart::class);
         $this->settings = $this->app->make(Settings::class);
         $this->db = $this->app->make(Database::class);
+        $this->path = $this->app->make(Path::class);
 
         // Tworzymy obiekt obslugujacy stricte weryfikacje
         $className = $this->heart->getPaymentModule($paymentModuleId);
@@ -259,7 +263,7 @@ class Payment
 
         $serialized = serialize($purchaseData);
         $dataFilename = time() . "-" . md5($serialized);
-        file_put_contents($this->app->path('data/transfers/' . $dataFilename), $serialized);
+        file_put_contents($this->path->to('data/transfers/' . $dataFilename), $serialized);
 
         return [
             'status' => "transfer",
@@ -293,7 +297,7 @@ class Payment
         // Nie znaleziono pliku z danymi
         if (
             !$transferFinalize->getDataFilename() ||
-            !file_exists($this->app->path('data/transfers/' . $transferFinalize->getDataFilename()))
+            !file_exists($this->path->to('data/transfers/' . $transferFinalize->getDataFilename()))
         ) {
             log_info(
                 $this->langShop->sprintf(
@@ -308,7 +312,7 @@ class Payment
         /** @var Purchase $purchaseData */
         $purchaseData = unserialize(
             file_get_contents(
-                $this->app->path('data/transfers/' . $transferFinalize->getDataFilename())
+                $this->path->to('data/transfers/' . $transferFinalize->getDataFilename())
             )
         );
 
@@ -331,7 +335,7 @@ class Payment
                 ]
             )
         );
-        unlink($this->app->path('data/transfers/' . $transferFinalize->getDataFilename()));
+        unlink($this->path->to('data/transfers/' . $transferFinalize->getDataFilename()));
 
         // Błędny moduł
         if (
