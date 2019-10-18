@@ -1,6 +1,7 @@
 <?php
-namespace App;
+namespace App\Install;
 
+use App\Path;
 use DirectoryIterator;
 
 class MigrationFiles
@@ -8,9 +9,9 @@ class MigrationFiles
     /** @var string */
     protected $migrationsPath;
 
-    public function __construct(Application $app)
+    public function __construct(Path $path)
     {
-        $this->migrationsPath = $app->path('migrations/');
+        $this->migrationsPath = $path->to('migrations/');
     }
 
     public function getMigrations()

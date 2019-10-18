@@ -1,16 +1,16 @@
 <?php
 namespace App\Install;
 
-use App\Application;
+use App\Path;
 
 class RequirementsStore
 {
-    /** @var Application */
-    private $app;
+    /** @var Path */
+    private $path;
 
-    public function __construct(Application $app)
+    public function __construct(Path $path)
     {
-        $this->app = $app;
+        $this->path = $path;
     }
 
     public function getModules()
@@ -66,14 +66,14 @@ class RequirementsStore
     public function areFilesInCorrectState()
     {
         foreach ($this->getFilesWithWritePermission() as $path) {
-            $fullPath = $this->app->path($path);
+            $fullPath = $this->path->to($path);
             if (!is_writable($fullPath)) {
                 return false;
             }
         }
 
         foreach ($this->getFilesToDelete() as $path) {
-            $fullPath = $this->app->path($path);
+            $fullPath = $this->path->to($path);
             if (file_exists($fullPath)) {
                 return false;
             }

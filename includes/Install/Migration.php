@@ -2,7 +2,7 @@
 namespace App\Install;
 
 use App\Database;
-use App\MigrationFiles;
+use App\Install\MigrationFiles;
 use InvalidArgumentException;
 
 abstract class Migration

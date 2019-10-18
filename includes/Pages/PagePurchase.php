@@ -3,8 +3,6 @@ namespace App\Pages;
 
 use App\Auth;
 use App\Interfaces\IBeLoggedMust;
-use App\Routes\UrlGenerator;
-use App\Template;
 use App\Services\Interfaces\IServicePurchaseWeb;
 
 class PagePurchase extends Page
@@ -32,12 +30,6 @@ class PagePurchase extends Page
         $auth = $this->app->make(Auth::class);
         $user = $auth->user();
 
-        /** @var Template $template */
-        $template = $this->app->make(Template::class);
-
-        /** @var UrlGenerator $url */
-        $url = $this->app->make(UrlGenerator::class);
-
         if (($serviceModule = $heart->getServiceModule($query['service'])) === null) {
             return $lang->translate('site_not_exists');
         }
@@ -46,13 +38,13 @@ class PagePurchase extends Page
         if (strlen($this::PAGE_ID)) {
             $path = "build/js_old/pages/" . $this::PAGE_ID . "/";
             $pathFile = $path . "main.js";
-            if (file_exists($this->app->path($pathFile))) {
-                $heart->scriptAdd($url->versioned($pathFile));
+            if (file_exists($this->path->to($pathFile))) {
+                $heart->scriptAdd($this->url->versioned($pathFile));
             }
 
             $pathFile = $path . $serviceModule->getModuleId() . ".js";
-            if (file_exists($this->app->path($pathFile))) {
-                $heart->scriptAdd($url->to($pathFile));
+            if (file_exists($this->path->to($pathFile))) {
+                $heart->scriptAdd($this->url->to($pathFile));
             }
         }
 
@@ -60,13 +52,13 @@ class PagePurchase extends Page
         if (strlen($this::PAGE_ID)) {
             $path = "build/stylesheets_old/pages/" . $this::PAGE_ID . "/";
             $pathFile = $path . "main.css";
-            if (file_exists($this->app->path($pathFile))) {
-                $heart->styleAdd($url->to($pathFile));
+            if (file_exists($this->path->to($pathFile))) {
+                $heart->styleAdd($this->url->to($pathFile));
             }
 
             $pathFile = $path . $serviceModule->getModuleId() . ".css";
-            if (file_exists($this->app->path($pathFile))) {
-                $heart->styleAdd($url->to($pathFile));
+            if (file_exists($this->path->to($pathFile))) {
+                $heart->styleAdd($this->url->to($pathFile));
             }
         }
 
@@ -74,13 +66,13 @@ class PagePurchase extends Page
         foreach ($heart->getServicesModules() as $moduleInfo) {
             if ($moduleInfo['id'] == $serviceModule->getModuleId()) {
                 $path = "build/stylesheets_old/services/" . $moduleInfo['id'] . ".css";
-                if (file_exists($this->app->path($path))) {
-                    $heart->styleAdd($url->to($path));
+                if (file_exists($this->path->to($path))) {
+                    $heart->styleAdd($this->url->to($path));
                 }
 
                 $path = "build/js_old/services/" . $moduleInfo['id'] . ".js";
-                if (file_exists($this->app->path($path))) {
-                    $heart->scriptAdd($url->to($path));
+                if (file_exists($this->path->to($path))) {
+                    $heart->scriptAdd($this->url->to($path));
                 }
 
                 break;
@@ -108,10 +100,10 @@ class PagePurchase extends Page
         // Dodajemy długi opis
         $showMore = '';
         if (strlen($serviceModule->descriptionFullGet())) {
-            $showMore = $template->render("services/show_more");
+            $showMore = $this->template->render("services/show_more");
         }
 
-        $output = $template->render(
+        $output = $this->template->render(
             "services/short_description",
             compact('serviceModule', 'showMore')
         );

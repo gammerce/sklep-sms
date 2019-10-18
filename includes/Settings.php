@@ -6,22 +6,22 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Settings implements ArrayAccess
 {
-    /** @var Application */
-    protected $app;
-
     /** @var array */
     protected $settings;
 
     /** @var Database */
     protected $db;
 
+    /** @var Path */
+    protected $path;
+
     /** @var bool */
     protected $loaded = false;
 
-    public function __construct(Application $app, Database $database)
+    public function __construct(Path $path, Database $database)
     {
-        $this->app = $app;
         $this->db = $database;
+        $this->path = $path;
 
         $this->settings = [
             'date_format' => 'Y-m-d H:i',
@@ -145,7 +145,7 @@ LEFT JOIN `" .
 
         // Sprawdzanie czy taki szablon istnieje, jak nie to ustaw defaultowy
         $this->settings['theme'] = file_exists(
-            $this->app->path("themes/{$this->settings['theme']}")
+            $this->path->to("themes/{$this->settings['theme']}")
         )
             ? $this->settings['theme']
             : "default";

@@ -1,9 +1,9 @@
 <?php
-namespace App;
+namespace App\Install;
 
+use App\Application;
+use App\Database;
 use App\Exceptions\SqlQueryException;
-use App\Install\DatabaseMigration;
-use App\Install\RequirementsStore;
 use InvalidArgumentException;
 
 class ShopState

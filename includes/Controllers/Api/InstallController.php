@@ -8,6 +8,7 @@ use App\Install\DatabaseMigration;
 use App\Install\EnvCreator;
 use App\Install\SetupManager;
 use App\Install\RequirementsStore;
+use App\Path;
 use App\Responses\ApiResponse;
 use App\Responses\HtmlResponse;
 use App\TranslationManager;
@@ -21,6 +22,7 @@ class InstallController
         RequirementsStore $requirementsStore,
         TranslationManager $translationManager,
         SetupManager $setupManager,
+        Path $path,
         Application $app
     ) {
         if ($setupManager->hasFailed()) {
@@ -86,7 +88,7 @@ class InstallController
                 continue;
             }
 
-            if (!is_writable($app->path($file))) {
+            if (!is_writable($path->to($file))) {
                 $warnings['general'][] =
                     "Ścieżka <b>" . htmlspecialchars($file) . "</b> nie posiada praw do zapisu.";
             }

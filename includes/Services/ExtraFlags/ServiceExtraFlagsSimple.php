@@ -8,6 +8,7 @@ use App\Html\Structure;
 use App\Html\Wrapper;
 use App\CurrentPage;
 use App\Models\Purchase;
+use App\Path;
 use App\Services\Interfaces\IServiceAdminManage;
 use App\Services\Interfaces\IServiceAvailableOnServers;
 use App\Services\Interfaces\IServiceCreate;
@@ -35,6 +36,9 @@ class ServiceExtraFlagsSimple extends Service implements
     /** @var Settings */
     protected $settings;
 
+    /** @var Path */
+    protected $path;
+
     public function __construct($service = null)
     {
         parent::__construct($service);
@@ -44,6 +48,7 @@ class ServiceExtraFlagsSimple extends Service implements
         $this->lang = $translationManager->user();
         $this->langShop = $translationManager->shop();
         $this->settings = $this->app->make(Settings::class);
+        $this->path = $this->app->make(Path::class);
     }
 
     public function serviceAdminExtraFieldsGet()
@@ -138,7 +143,7 @@ class ServiceExtraFlagsSimple extends Service implements
         $extraData['web'] = $data['web'];
 
         // Tworzymy plik z opisem usługi
-        $file = $this->app->path(
+        $file = $this->path->to(
             "themes/{$this->settings['theme']}/services/" .
                 escape_filename($data['id']) .
                 "_desc.html"

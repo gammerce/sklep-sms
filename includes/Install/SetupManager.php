@@ -1,21 +1,21 @@
 <?php
 namespace App\Install;
 
-use App\Application;
+use App\Path;
 use App\TranslationManager;
 use App\Translator;
 
 class SetupManager
 {
-    /** @var Application */
-    private $app;
+    /** @var Path */
+    private $path;
 
     /** @var Translator */
     private $lang;
 
-    public function __construct(Application $app, TranslationManager $translationManager)
+    public function __construct(Path $path, TranslationManager $translationManager)
     {
-        $this->app = $app;
+        $this->path = $path;
         $this->lang = $translationManager->user();
     }
 
@@ -31,28 +31,28 @@ class SetupManager
 
     public function markAsFailed()
     {
-        file_put_contents($this->app->path('data/setup_error'), '');
+        file_put_contents($this->path->to('data/setup_error'), '');
     }
 
     /** @return bool */
     public function hasFailed()
     {
-        return file_exists($this->app->path('data/setup_error'));
+        return file_exists($this->path->to('data/setup_error'));
     }
 
     /** @return bool */
     public function isInProgress()
     {
-        return file_exists($this->app->path('data/setup_progress'));
+        return file_exists($this->path->to('data/setup_progress'));
     }
 
     private function putInProgress()
     {
-        file_put_contents($this->app->path('data/setup_progress'), "");
+        file_put_contents($this->path->to('data/setup_progress'), "");
     }
 
     public function removeInProgress()
     {
-        unlink($this->app->path('data/setup_progress'));
+        unlink($this->path->to('data/setup_progress'));
     }
 }
