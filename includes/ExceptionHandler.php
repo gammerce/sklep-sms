@@ -30,8 +30,7 @@ class ExceptionHandler implements ExceptionHandlerContract
         Application $app,
         Path $path,
         TranslationManager $translationManager
-    )
-    {
+    ) {
         $this->app = $app;
         $this->lang = $translationManager->shop();
         $this->path = $path;

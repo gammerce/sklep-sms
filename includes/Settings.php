@@ -144,9 +144,7 @@ LEFT JOIN `" .
             : "Y-m-d H:i";
 
         // Sprawdzanie czy taki szablon istnieje, jak nie to ustaw defaultowy
-        $this->settings['theme'] = file_exists(
-            $this->path->to("themes/{$this->settings['theme']}")
-        )
+        $this->settings['theme'] = file_exists($this->path->to("themes/{$this->settings['theme']}"))
             ? $this->settings['theme']
             : "default";
 

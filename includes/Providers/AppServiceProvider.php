@@ -52,10 +52,7 @@ class AppServiceProvider
             /** @var Path $path */
             $path = $app->make(Path::class);
 
-            return new FileCache(
-                $app->make(Filesystem::class),
-                $path->to('data/cache')
-            );
+            return new FileCache($app->make(Filesystem::class), $path->to('data/cache'));
         });
         $app->bind(CacheInterface::class, FileCache::class);
     }
