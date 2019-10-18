@@ -1,13 +1,13 @@
 <?php
 namespace App\Services\ShopSmsLicense;
 
-use Admin\Table\BodyRow;
-use Admin\Table\Cell;
-use Admin\Table\HeadCell;
-use Admin\Table\Structure;
-use Admin\Table\Wrapper;
 use App\Auth;
 use App\CurrentPage;
+use App\Html\BodyRow;
+use App\Html\Cell;
+use App\Html\HeadCell;
+use App\Html\Structure;
+use App\Html\Wrapper;
 use App\LicenseServerService;
 use App\Services\Interfaces\IServiceUserServiceAdminDisplay;
 use App\Services\Service;
