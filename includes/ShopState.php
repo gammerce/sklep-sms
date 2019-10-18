@@ -3,33 +3,40 @@ namespace App;
 
 use App\Exceptions\SqlQueryException;
 use App\Install\DatabaseMigration;
+use App\Install\RequirementsStore;
 use InvalidArgumentException;
 
 class ShopState
 {
     /** @var MigrationFiles */
-    protected $migrationFiles;
+    private $migrationFiles;
 
     /** @var DatabaseMigration */
-    protected $databaseMigration;
+    private $databaseMigration;
 
     /** @var Application */
-    protected $app;
+    private $app;
+
+    /** @var RequirementsStore */
+    private $requirementsStore;
 
     public function __construct(
         Application $application,
         MigrationFiles $migrationFiles,
-        DatabaseMigration $databaseMigration
+        DatabaseMigration $databaseMigration,
+        RequirementsStore $requirementsStore
     ) {
         $this->migrationFiles = $migrationFiles;
         $this->databaseMigration = $databaseMigration;
         $this->app = $application;
+        $this->requirementsStore = $requirementsStore;
     }
 
     public function isUpToDate()
     {
         return $this->databaseMigration->getLastExecutedMigration() ===
-            $this->migrationFiles->getLastMigration();
+            $this->migrationFiles->getLastMigration() &&
+            $this->requirementsStore->areFilesInCorrectState();
     }
 
     public function getFileVersion()
