@@ -70,7 +70,7 @@ abstract class Page
     public function getContent(array $query, array $body)
     {
         // Dodajemy wszystkie skrypty
-        $path = "build/js_old/pages/" . $this::PAGE_ID . "/";
+        $path = "build/js/static/pages/" . $this::PAGE_ID . "/";
         if (strlen($this::PAGE_ID) && file_exists($this->path->to($path))) {
             foreach (scandir($this->path->to($path)) as $file) {
                 if (ends_at($file, ".js")) {
@@ -80,7 +80,7 @@ abstract class Page
         }
 
         // Let's add all css
-        $path = "build/stylesheets_old/pages/" . $this::PAGE_ID . "/";
+        $path = "build/stylesheets/static/pages/" . $this::PAGE_ID . "/";
         if (strlen($this::PAGE_ID) && file_exists($this->path->to($path))) {
             foreach (scandir($this->path->to($path)) as $file) {
                 if (ends_at($file, ".css")) {
@@ -99,12 +99,12 @@ abstract class Page
             ])
         ) {
             foreach ($this->heart->getServicesModules() as $moduleInfo) {
-                $path = "build/stylesheets_old/services/" . $moduleInfo['id'] . ".css";
+                $path = "build/stylesheets/static/services/" . $moduleInfo['id'] . ".css";
                 if (file_exists($this->path->to($path))) {
                     $this->heart->styleAdd($this->url->versioned($path));
                 }
 
-                $path = "build/js_old/services/" . $moduleInfo['id'] . ".js";
+                $path = "build/js/static/services/" . $moduleInfo['id'] . ".js";
                 if (file_exists($this->path->to($path))) {
                     $this->heart->scriptAdd($this->url->versioned($path));
                 }

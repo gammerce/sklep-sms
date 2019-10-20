@@ -36,7 +36,7 @@ class PagePurchase extends Page
 
         // Dodajemy wszystkie skrypty
         if (strlen($this::PAGE_ID)) {
-            $path = "build/js_old/pages/" . $this::PAGE_ID . "/";
+            $path = "build/js/static/pages/" . $this::PAGE_ID . "/";
             $pathFile = $path . "main.js";
             if (file_exists($this->path->to($pathFile))) {
                 $heart->scriptAdd($this->url->versioned($pathFile));
@@ -50,7 +50,7 @@ class PagePurchase extends Page
 
         // Dodajemy wszystkie css
         if (strlen($this::PAGE_ID)) {
-            $path = "build/stylesheets_old/pages/" . $this::PAGE_ID . "/";
+            $path = "build/stylesheets/static/pages/" . $this::PAGE_ID . "/";
             $pathFile = $path . "main.css";
             if (file_exists($this->path->to($pathFile))) {
                 $heart->styleAdd($this->url->to($pathFile));
@@ -65,12 +65,12 @@ class PagePurchase extends Page
         // Globalne jsy cssy konkretnych modułów usług
         foreach ($heart->getServicesModules() as $moduleInfo) {
             if ($moduleInfo['id'] == $serviceModule->getModuleId()) {
-                $path = "build/stylesheets_old/services/" . $moduleInfo['id'] . ".css";
+                $path = "build/stylesheets/static/services/" . $moduleInfo['id'] . ".css";
                 if (file_exists($this->path->to($path))) {
                     $heart->styleAdd($this->url->to($path));
                 }
 
-                $path = "build/js_old/services/" . $moduleInfo['id'] . ".js";
+                $path = "build/js/static/services/" . $moduleInfo['id'] . ".js";
                 if (file_exists($this->path->to($path))) {
                     $heart->scriptAdd($this->url->to($path));
                 }

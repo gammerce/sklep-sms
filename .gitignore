@@ -12,5 +12,5 @@
 !/data/logs/.gitkeep
 /data/transfers/*
 !/data/transfers/.gitkeep
-/data/install_error
-/data/install_progress
+/data/setup_error
+/data/setup_progress
