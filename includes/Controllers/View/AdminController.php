@@ -69,7 +69,7 @@ class AdminController
         // Uzytkownik nie jest zalogowany
         if ($currentPage->getPid() == "login") {
             $heart->pageTitle = "Login";
-            $heart->styleAdd($url->versioned("build/stylesheets_old/admin/style_login.css"));
+            $heart->styleAdd($url->versioned("build/stylesheets/static/admin/style_login.css"));
 
             $warning = "";
             if ($session->has("info")) {
