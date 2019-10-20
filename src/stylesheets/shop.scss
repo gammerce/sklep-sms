@@ -12,6 +12,8 @@
 body {
     background: url("../images/background.jpg") no-repeat fixed;
     background-size: cover;
+    height: initial;
+    min-height: 100%;
 }
 
 #content table {
