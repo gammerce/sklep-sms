@@ -33,7 +33,7 @@ install:
 
 script:
   - yarn pretty
-  - yarn build
+  - NODE_ENV=production yarn build
   - ./vendor/bin/phpunit
 
 before_deploy:
