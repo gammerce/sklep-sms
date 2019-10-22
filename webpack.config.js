@@ -1,8 +1,11 @@
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
+var environment = process.env.NODE_ENV || "development";
+var isProduction = environment === "production";
+
 module.exports = {
-    mode: process.env.NODE_ENV || "development",
+    mode: environment,
     entry: {
         admin: './src/js/admin.js',
         install: './src/js/install.js',
@@ -15,7 +18,7 @@ module.exports = {
         pathinfo: false,
         path: __dirname + "/build"
     },
-    devtool: 'source-map',
+    devtool: isProduction ? undefined : 'source-map',
     module: {
         rules: [
             {
