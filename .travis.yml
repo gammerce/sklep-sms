@@ -53,6 +53,7 @@ before_deploy:
     migrations/ \
     translations/ \
     themes/ \
+    vendor/ \
     .htaccess \
     cron.php \
     favicon.ico \
