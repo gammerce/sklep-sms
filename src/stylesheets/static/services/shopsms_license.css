@@ -74,7 +74,7 @@
 
 .shopsms_license_purchase .engine.active:after,
 .shopsms_user_edit .engine.active:after {
-    content: url("../../images/tick.png");
+    content: url("../../../images/tick.png");
     margin-left: 8px;
     vertical-align: middle;
 }

@@ -35,7 +35,7 @@
                 <span class="hint">{$lang->translate('license_price')}</span>
             </div>
             <div class="field">
-                <div class="control center">
+                <div class="control">
                     <input
                         type="number"
                         min="0"
@@ -50,11 +50,12 @@
     </div>
 
     <div class="column_bottom">
-        <div class="center">
+        <div class="has-text-centered">
             <img
                 src="{$url->to('build/images/reload.png')}"
                 id="cost_reload"
                 title="{$lang->translate('reload')}"
+                alt="reload"
             />
             <span style="text-transform: uppercase;">{$lang->translate('price')}:</span>
             <span id="cost">{$lang->translate('none')}</span><br />
