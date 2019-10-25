@@ -60,9 +60,7 @@ class ExtraStuffController
                 $heart->pageTitle =
                     $lang->translate('description') . ": " . $serviceModule->service['name'];
 
-                $heart->styleAdd(
-                    $url->versioned("build/css/static/extra_stuff/long_desc.css")
-                );
+                $heart->styleAdd($url->versioned("build/css/static/extra_stuff/long_desc.css"));
                 $header = $template->render("header", compact('currentPage', 'heart', 'license'));
 
                 $output = create_dom_element(
