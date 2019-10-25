@@ -1,6 +1,6 @@
 <form id="form_purchase" class="shopsms_license_purchase">
-    <div class="column_left">
-        <div class="piece">
+    <div class="columns is-multiline">
+        <div class="column is-half">
             <div class="header1">
                 <b>{$lang->translate('engines_for_shop')}</b><br />
                 <span class="hint">{$lang->translate('price_per_option')}</span>
@@ -20,7 +20,7 @@
             </div>
         </div>
 
-        <div class="piece">
+        <div class="column is-half">
             <div class="header1">
                 <label for="amount">{$lang->translate('license_duration')}</label><br />
                 <span class="hint">{$lang->translate('license_price')}</span>
@@ -38,10 +38,8 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="column_right">
-        <div class="piece">
+        <div class="column is-full">
             <div class="header1">
                 <label for="email">{$lang->translate('give_email')}</label>
             </div>
@@ -59,28 +57,31 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="column_bottom">
-        <div class="has-text-centered">
-            <img
-                src="{$url->to('build/images/reload.png')}"
-                id="cost_reload"
-                title="{$lang->translate('reload')}"
-            />
-            <span style="text-transform: uppercase;">{$lang->translate('price')}:</span>
-            <span id="cost">{$lang->translate('none')}</span><br />
+        <div class="column is-full">
+            <div class="column_bottom">
+                <div class="has-text-centered">
+                    <img
+                        src="{$url->to('build/images/reload.png')}"
+                        id="cost_reload"
+                        title="{$lang->translate('reload')}"
+                        alt="reload"
+                    />
+                    <span style="text-transform: uppercase;">{$lang->translate('price')}:</span>
+                    <span id="cost">{$lang->translate('none')}</span><br />
+                </div>
+            </div>
+            {$lang->translate('sms_payment_conditions')}
         </div>
-    </div>
-    {$lang->translate('sms_payment_conditions')}
 
-    <div class="purchase_button_wraper">
-        <input
-            type="button"
-            id="go_to_payment"
-            value="{$lang->translate('go_to_payment')}"
-            class="button is-success purchase_button"
-        />
+        <div class="column is-full has-text-centered">
+            <input
+                type="button"
+                id="go_to_payment"
+                value="{$lang->translate('go_to_payment')}"
+                class="button is-success purchase_button"
+            />
+        </div>
     </div>
 
     <input type="hidden" name="service" value="{$serviceId}" />
