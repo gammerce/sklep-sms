@@ -5,65 +5,58 @@
     </head>
     <body>
         <div class="has-text-centered">
-            <form id="form_admin_login" action="{$action}" method="POST">
-                <h2>{$lang->translate('sign_in')}</h2>
-                {$warning}
+            <form id="form_admin_login" class="card" action="{$action}" method="POST">
+                <header class="card-header">
+                    <p class="card-header-title title is-4">
+                        {$lang->translate('sign_in')}
+                    </p>
+                </header>
 
-                <table>
-                    <tr>
-                        <td>
-                            <label class="label has-text-black" for="username">
-                                {$lang->translate('username')}
-                            </label>
-                        </td>
-                        <td>
-                            <div class="field">
-                                <div class="control">
-                                    <input
-                                        id="username"
-                                        name="username"
-                                        type="text"
-                                        class="input is-small"
-                                        maxlength="256"
-                                        required
-                                    />
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
+                <div class="card-content">
+                    {$warning}
 
-                    <tr>
-                        <td>
-                            <label class="label has-text-black" for="password">
-                                {$lang->translate('password')}
-                            </label>
-                        </td>
-                        <td>
-                            <div class="field">
-                                <div class="control">
-                                    <input
-                                        id="password"
-                                        name="password"
-                                        type="password"
-                                        class="input is-small"
-                                        maxlength="256"
-                                        required
-                                    />
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
+                    <div class="field">
+                        <label class="label has-text-black" for="username">
+                            {$lang->translate('username')}
+                        </label>
 
-                    <tr>
-                        <td colspan="2" class="action-buttons">
+                        <div class="control">
                             <input
-                                type="submit"
-                                value="{$lang->translate('sign_in')}"
-                                class="button w100"
+                                id="username"
+                                name="username"
+                                type="text"
+                                class="input"
+                                maxlength="256"
+                                required
                             />
-                        </td>
-                    </tr>
-                </table>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label has-text-black" for="password">
+                            {$lang->translate('password')}
+                        </label>
+
+                        <div class="control">
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                class="input"
+                                maxlength="256"
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div class="field action-buttons">
+                        <div class="control is-expanded">
+                            <button class="button w100">
+                                {$lang->translate('sign_in')}
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </form>
         </div>
     </body>

@@ -56,7 +56,6 @@ class PageAdminUpdateServers extends PageAdmin
 
         if (!strlen($versionBricks)) {
             $output = $this->template->render("admin/no_update");
-
             return $output;
         }
 

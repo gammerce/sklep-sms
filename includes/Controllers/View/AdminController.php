@@ -6,7 +6,6 @@ use App\Auth;
 use App\CurrentPage;
 use App\Heart;
 use App\License;
-use App\Routes\UrlGenerator;
 use App\Services\Interfaces\IServiceUserServiceAdminDisplay;
 use App\Template;
 use App\TranslationManager;
@@ -23,7 +22,6 @@ class AdminController
         Auth $auth,
         License $license,
         CurrentPage $currentPage,
-        UrlGenerator $url,
         Template $template,
         TranslationManager $translationManager
     ) {
@@ -39,7 +37,6 @@ class AdminController
             $license,
             $currentPage,
             $template,
-            $url,
             $translationManager
         );
     }
@@ -52,7 +49,6 @@ class AdminController
         License $license,
         CurrentPage $currentPage,
         Template $template,
-        UrlGenerator $url,
         TranslationManager $translationManager
     ) {
         $session = $request->getSession();
@@ -69,7 +65,6 @@ class AdminController
         // Uzytkownik nie jest zalogowany
         if ($currentPage->getPid() == "login") {
             $heart->pageTitle = "Login";
-            $heart->styleAdd($url->versioned("build/stylesheets/static/admin/style_login.css"));
 
             $warning = "";
             if ($session->has("info")) {

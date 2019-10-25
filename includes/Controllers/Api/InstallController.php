@@ -33,7 +33,7 @@ class InstallController
 
         if ($setupManager->isInProgress()) {
             return new HtmlResponse(
-                "Instalacja/Aktualizacja trwa, lub została błędnie przeprowadzona."
+                "Instalacja/Aktualizacja trwa, lub została błędnie przeprowadzona. Usuń plik data/setup_progress, aby przeprowadzić ją ponownie."
             );
         }
 

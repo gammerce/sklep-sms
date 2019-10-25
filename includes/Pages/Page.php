@@ -80,7 +80,7 @@ abstract class Page
         }
 
         // Let's add all css
-        $path = "build/stylesheets/static/pages/" . $this::PAGE_ID . "/";
+        $path = "build/css/static/pages/" . $this::PAGE_ID . "/";
         if (strlen($this::PAGE_ID) && file_exists($this->path->to($path))) {
             foreach (scandir($this->path->to($path)) as $file) {
                 if (ends_at($file, ".css")) {
@@ -99,7 +99,7 @@ abstract class Page
             ])
         ) {
             foreach ($this->heart->getServicesModules() as $moduleInfo) {
-                $path = "build/stylesheets/static/services/" . $moduleInfo['id'] . ".css";
+                $path = "build/css/static/services/" . $moduleInfo['id'] . ".css";
                 if (file_exists($this->path->to($path))) {
                     $this->heart->styleAdd($this->url->versioned($path));
                 }

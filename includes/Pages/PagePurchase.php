@@ -50,7 +50,7 @@ class PagePurchase extends Page
 
         // Dodajemy wszystkie css
         if (strlen($this::PAGE_ID)) {
-            $path = "build/stylesheets/static/pages/" . $this::PAGE_ID . "/";
+            $path = "build/css/static/pages/" . $this::PAGE_ID . "/";
             $pathFile = $path . "main.css";
             if (file_exists($this->path->to($pathFile))) {
                 $heart->styleAdd($this->url->to($pathFile));
@@ -65,7 +65,7 @@ class PagePurchase extends Page
         // Globalne jsy cssy konkretnych modułów usług
         foreach ($heart->getServicesModules() as $moduleInfo) {
             if ($moduleInfo['id'] == $serviceModule->getModuleId()) {
-                $path = "build/stylesheets/static/services/" . $moduleInfo['id'] . ".css";
+                $path = "build/css/static/services/" . $moduleInfo['id'] . ".css";
                 if (file_exists($this->path->to($path))) {
                     $heart->styleAdd($this->url->to($path));
                 }

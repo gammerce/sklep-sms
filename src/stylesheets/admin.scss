@@ -1,8 +1,9 @@
-@import "~@fortawesome/fontawesome-free/css/all.css";
+@import "~@fortawesome/fontawesome-free/css/all.min.css";
 @import "partials/all";
 @import "partials/global";
 @import "partials/loader";
 @import "partials/infobox";
+@import "partials/admin/pages/login";
 
 h3 {
     color: $grey-lighter;
@@ -168,16 +169,6 @@ h4 {
     }
 }
 
-#form_admin_login {
-    td {
-        padding: 5px 2px;
-    }
-
-    .action-buttons {
-        padding-top: 1rem;
-    }
-}
-
 .form_update {
     display: inline-block;
     padding: 6px;
@@ -198,10 +189,6 @@ h4 {
     .version_block {
         display: inline-block;
         padding: 6px;
-    }
-
-    .info {
-        margin: 5px 15px;
     }
 }
 
