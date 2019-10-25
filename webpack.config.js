@@ -70,7 +70,7 @@ module.exports = {
         new CopyWebpackPlugin([
             {from: './src/images/', to: './images/'},
             {from: './src/js/static/', to: './js/static/'},
-            {from: './src/stylesheets/static/', to: './stylesheets/static/'}
+            {from: './src/stylesheets/static/', to: './css/static/'}
         ]),
         new ExtractTextPlugin({
             filename: 'css/[name].css'

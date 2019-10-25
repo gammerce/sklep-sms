@@ -5,49 +5,56 @@
     </head>
     <body>
         <div class="has-text-centered">
-            <form id="form_admin_login" action="{$action}" method="POST">
-                <h2>{$lang->translate('sign_in')}</h2>
-                {$warning}
+            <form id="form_admin_login" class="card" action="{$action}" method="POST">
+                <header class="card-header">
+                    <p class="card-header-title title is-4">
+                        {$lang->translate('sign_in')}
+                    </p>
+                </header>
 
-                <div class="field">
-                    <label class="label has-text-black" for="username">
-                        {$lang->translate('username')}
-                    </label>
+                <div class="card-content">
+                    {$warning}
 
-                    <div class="control">
-                        <input
-                            id="username"
-                            name="username"
-                            type="text"
-                            class="input"
-                            maxlength="256"
-                            required
-                        />
+                    <div class="field">
+                        <label class="label has-text-black" for="username">
+                            {$lang->translate('username')}
+                        </label>
+
+                        <div class="control">
+                            <input
+                                id="username"
+                                name="username"
+                                type="text"
+                                class="input"
+                                maxlength="256"
+                                required
+                            />
+                        </div>
                     </div>
-                </div>
 
-                <div class="field">
-                    <label class="label has-text-black" for="password">
-                        {$lang->translate('password')}
-                    </label>
+                    <div class="field">
+                        <label class="label has-text-black" for="password">
+                            {$lang->translate('password')}
+                        </label>
 
-                    <div class="control">
-                        <input
-                            id="password"
-                            name="password"
-                            type="password"
-                            class="input"
-                            maxlength="256"
-                            required
-                        />
+                        <div class="control">
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                class="input"
+                                maxlength="256"
+                                required
+                            />
+                        </div>
                     </div>
-                </div>
 
-                <div class="field action-buttons">
-                    <div class="control is-expanded">
-                        <button class="button w100">
-                            {$lang->translate('sign_in')}
-                        </button>
+                    <div class="field action-buttons">
+                        <div class="control is-expanded">
+                            <button class="button w100">
+                                {$lang->translate('sign_in')}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </form>

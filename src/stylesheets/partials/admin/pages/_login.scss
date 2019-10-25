@@ -1,0 +1,25 @@
+#form_admin_login {
+    display: inline-block;
+    width: 350px;
+    max-width: 100%;
+    margin: 100px auto;
+    background-color: #ddd;
+    border: 1px solid #222;
+    box-shadow: 0 0 10px #000;
+    text-align: left;
+
+    .card-header-title {
+        background-color: $input-background-color;
+        color: $input-color;
+        justify-content: center;
+        padding: 1.5rem;
+    }
+
+    .warning {
+        padding: 6px;
+        margin-bottom: 8px;
+        border: 2px solid #a51b1b;
+        color: #c81717;
+        font-weight: bold;
+    }
+}
