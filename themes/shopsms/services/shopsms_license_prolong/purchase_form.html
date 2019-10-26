@@ -1,35 +1,26 @@
 <form id="form_purchase" class="shopsms_license_prolong_purchase">
     <input type="password" style="display: none;" />
-    <div class="column_left">
-        <div class="piece">
+    <input type="hidden" name="service" value="{$serviceId}" />
+
+    <div class="columns is-multiline">
+        <div class="column is-half">
             <div class="header1">
-                <b>Podaj dane licencji.</b>
+                <label for="amount">{$lang->translate('identifier')}</label>
             </div>
-            <div class="table_form" style="margin-left: 20px;" name="license_data">
-                <div class="row">
-                    <div class="cell">
-                        <label for="identifier">{$lang->translate('identifier')}</label>
-                    </div>
-                    <div class="cell">
-                        <div class="field">
-                            <div class="control">
-                                <input
-                                    type="text"
-                                    id="identifier"
-                                    name="identifier"
-                                    value="{$identifier}"
-                                    class="input is-small"
-                                />
-                            </div>
-                        </div>
-                    </div>
+            <div class="field">
+                <div class="control">
+                    <input
+                        type="text"
+                        id="identifier"
+                        name="identifier"
+                        value="{$identifier}"
+                        class="input is-small"
+                    />
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="column_right">
-        <div class="piece">
+        <div class="column is-half">
             <div class="header1">
                 <label for="amount">{$lang->translate('license_prolong_time')}</label><br />
                 <span class="hint">{$lang->translate('license_price')}</span>
@@ -47,30 +38,30 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="column_bottom">
-        <div class="has-text-centered">
-            <img
-                src="{$url->to('build/images/reload.png')}"
-                id="cost_reload"
-                title="{$lang->translate('reload')}"
-                alt="reload"
+        <div class="column is-full">
+            <div class="column_bottom">
+                <div class="has-text-centered">
+                    <img
+                        src="{$url->to('build/images/reload.png')}"
+                        id="cost_reload"
+                        title="{$lang->translate('reload')}"
+                        alt="reload"
+                    />
+                    <span style="text-transform: uppercase;">{$lang->translate('price')}:</span>
+                    <span id="cost">{$lang->translate('none')}</span><br />
+                </div>
+            </div>
+            {$lang->translate('sms_payment_conditions')}
+        </div>
+
+        <div class="column is-full has-text-centered">
+            <input
+                type="button"
+                id="go_to_payment"
+                value="{$lang->translate('go_to_payment')}"
+                class="button is-success purchase_button"
             />
-            <span style="text-transform: uppercase;">{$lang->translate('price')}:</span>
-            <span id="cost">{$lang->translate('none')}</span><br />
         </div>
     </div>
-    {$lang->translate('sms_payment_conditions')}
-
-    <div class="purchase_button_wraper">
-        <input
-            type="button"
-            id="go_to_payment"
-            value="{$lang->translate('go_to_payment')}"
-            class="button is-success purchase_button"
-        />
-    </div>
-
-    <input type="hidden" name="service" value="{$serviceId}" />
 </form>
