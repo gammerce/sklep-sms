@@ -665,7 +665,7 @@ function pay_service_code(Purchase $purchaseData, $serviceModule)
                         "SET `code` = '%s', `ip` = '%s', `platform` = '%s'",
                     [
                         $purchaseData->getPayment('service_code'),
-                        $purchaseData->user->getLastip(),
+                        $purchaseData->user->getLastIp(),
                         $purchaseData->user->getPlatform(),
                     ]
                 )

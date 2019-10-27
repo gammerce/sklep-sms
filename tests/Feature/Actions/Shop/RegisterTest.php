@@ -43,6 +43,6 @@ class RegisterTest extends IndexTestCase
         $this->assertEquals($email, $user->getEmail(false));
         $this->assertEquals($forename, $user->getForename(false));
         $this->assertEquals($surname, $user->getSurname(false));
-        $this->assertNotNull($user->getRegdate());
+        $this->assertNotNull($user->getRegDate());
     }
 }

@@ -257,7 +257,6 @@ return [
     'user_admin_delete' => 'Admin {1}({2}) usunął użytkownika. ID: {3}',
     'user_admin_edit' => 'Admin {1}({2}) wyedytował użytkownika. ID: {3}',
     'user_edit' => 'Użytkownik został prawidłowo wyedytowany.',
-    'user_no_edit' => 'Użytkownik nie został prawidłowo wyedytowany.',
     'user_service_admin_delete' => 'Admin {1}({2}) usunął usługę użytkownika. ID: {3}',
     'user_service_edit' => 'Edytowanie usługi przez użytkownika',
     'users' => 'Użytkownicy',

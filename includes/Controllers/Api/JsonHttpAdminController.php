@@ -9,8 +9,9 @@ use App\Heart;
 use App\Models\Purchase;
 use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Path;
-use App\Repositories\PricelistRepository;
+use App\Repositories\PriceListRepository;
 use App\Repositories\ServerRepository;
+use App\Repositories\UserRepository;
 use App\Responses\ApiResponse;
 use App\Responses\PlainResponse;
 use App\Services\ChargeWallet\ServiceChargeWalletSimple;
@@ -37,7 +38,8 @@ class JsonHttpAdminController
         Template $templates,
         TranslationManager $translationManager,
         ServerRepository $serverRepository,
-        PricelistRepository $pricelistRepository
+        PriceListRepository $priceListRepository,
+        UserRepository $userRepository
     ) {
         $langShop = $translationManager->shop();
         $lang = $translationManager->user();
@@ -65,8 +67,8 @@ class JsonHttpAdminController
             if ($warning = check_for_warnings("uid", $uid)) {
                 $warnings['uid'] = array_merge((array) $warnings['uid'], $warning);
             } else {
-                $user2 = $heart->getUser($uid);
-                if (!$user2->exists()) {
+                $editedUser = $heart->getUser($uid);
+                if (!$editedUser->exists()) {
                     $warnings['uid'][] = $lang->translate('noaccount_id');
                 }
             }
@@ -86,7 +88,7 @@ class JsonHttpAdminController
             }
 
             // Zmiana wartości amount, aby stan konta nie zszedł poniżej zera
-            $amount = max($amount, -$user2->getWallet());
+            $amount = max($amount, -$editedUser->getWallet());
 
             $serviceModule = $heart->getServiceModule(ServiceChargeWalletSimple::MODULE_ID);
             if (is_null($serviceModule)) {
@@ -98,7 +100,7 @@ class JsonHttpAdminController
 
             // Kupujemy usługę
             $purchaseData = new Purchase();
-            $purchaseData->user = $user2;
+            $purchaseData->user = $editedUser;
             $purchaseData->setPayment([
                 'method' => "admin",
                 'payment_id' => $paymentId,
@@ -106,7 +108,7 @@ class JsonHttpAdminController
             $purchaseData->setOrder([
                 'amount' => $amount,
             ]);
-            $purchaseData->setEmail($user2->getEmail());
+            $purchaseData->setEmail($editedUser->getEmail());
 
             $serviceModule->purchase($purchaseData);
 
@@ -115,8 +117,8 @@ class JsonHttpAdminController
                     $langShop->translate('account_charge'),
                     $user->getUsername(),
                     $user->getUid(),
-                    $user2->getUsername(),
-                    $user2->getUid(),
+                    $editedUser->getUsername(),
+                    $editedUser->getUid(),
                     number_format($amount / 100.0, 2),
                     $settings['currency']
                 )
@@ -126,7 +128,7 @@ class JsonHttpAdminController
                 "charged",
                 $lang->sprintf(
                     $lang->translate('account_charge_success'),
-                    $user2->getUsername(),
+                    $editedUser->getUsername(),
                     number_format($amount / 100.0, 2),
                     $settings['currency']
                 ),
@@ -1075,11 +1077,18 @@ class JsonHttpAdminController
                 );
             }
 
-            $user2 = $heart->getUser($_POST['uid']);
+            $editedUser = $heart->getUser($request->request->get('uid'));
+
+            $username = $request->request->get('username');
+            $forename = $request->request->get('forename');
+            $surname = $request->request->get('surname');
+            $email = $request->request->get('email');
+            $groups = $request->request->get('groups');
+            $wallet = $request->request->get('wallet');
 
             // Nazwa użytkownika
-            if ($user2->getUsername() != $_POST['username']) {
-                if ($warning = check_for_warnings("username", $_POST['username'])) {
+            if ($editedUser->getUsername() != $username) {
+                if ($warning = check_for_warnings("username", $username)) {
                     $warnings['username'] = array_merge((array) $warnings['username'], $warning);
                 }
                 $result = $db->query(
@@ -1089,7 +1098,7 @@ class JsonHttpAdminController
                             TABLE_PREFIX .
                             "users` " .
                             "WHERE username = '%s'",
-                        [$_POST['username']]
+                        [$username]
                     )
                 );
                 if ($db->numRows($result)) {
@@ -1098,8 +1107,8 @@ class JsonHttpAdminController
             }
 
             // E-mail
-            if ($user2->getEmail() != $_POST['email']) {
-                if ($warning = check_for_warnings("email", $_POST['email'])) {
+            if ($editedUser->getEmail() != $email) {
+                if ($warning = check_for_warnings("email", $email)) {
                     $warnings['email'] = array_merge((array) $warnings['email'], $warning);
                 }
                 $result = $db->query(
@@ -1109,7 +1118,7 @@ class JsonHttpAdminController
                             TABLE_PREFIX .
                             "users` " .
                             "WHERE email = '%s'",
-                        [$_POST['email']]
+                        [$email]
                     )
                 );
                 if ($db->numRows($result)) {
@@ -1118,7 +1127,7 @@ class JsonHttpAdminController
             }
 
             // Grupy
-            foreach ($_POST['groups'] as $gid) {
+            foreach ($groups as $gid) {
                 if (is_null($heart->getGroup($gid))) {
                     $warnings['groups[]'][] = $lang->translate('wrong_group');
                     break;
@@ -1126,7 +1135,7 @@ class JsonHttpAdminController
             }
 
             // Portfel
-            if ($warning = check_for_warnings("number", $_POST['wallet'])) {
+            if ($warning = check_for_warnings("number", $wallet)) {
                 $warnings['wallet'] = array_merge((array) $warnings['wallet'], $warning);
             }
 
@@ -1135,39 +1144,25 @@ class JsonHttpAdminController
                 return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
             }
 
-            $db->query(
-                $db->prepare(
-                    "UPDATE `" .
-                        TABLE_PREFIX .
-                        "users` " .
-                        "SET `username` = '%s', `forename` = '%s', `surname` = '%s', `email` = '%s', `groups` = '%s', `wallet` = '%d' " .
-                        "WHERE `uid` = '%d'",
-                    [
-                        $_POST['username'],
-                        $_POST['forename'],
-                        $_POST['surname'],
-                        $_POST['email'],
-                        implode(";", $_POST['groups']),
-                        ceil($_POST['wallet'] * 100),
-                        $_POST['uid'],
-                    ]
+            $editedUser->setUsername($username);
+            $editedUser->setForename($forename);
+            $editedUser->setSurname($surname);
+            $editedUser->setEmail($email);
+            $editedUser->setGroups($groups);
+            $editedUser->setWallet(ceil($wallet * 100));
+
+            $userRepository->update($editedUser);
+
+            log_info(
+                $langShop->sprintf(
+                    $langShop->translate('user_admin_edit'),
+                    $user->getUsername(),
+                    $user->getUid(),
+                    $_POST['uid']
                 )
             );
 
-            // Zwróć info o prawidłowej lub błędnej edycji
-            if ($db->affectedRows()) {
-                // LOGGING
-                log_info(
-                    $langShop->sprintf(
-                        $langShop->translate('user_admin_edit'),
-                        $user->getUsername(),
-                        $user->getUid(),
-                        $_POST['uid']
-                    )
-                );
-                return new ApiResponse('ok', $lang->translate('user_edit'), 1);
-            }
-            return new ApiResponse("not_edited", $lang->translate('user_no_edit'), 0);
+            return new ApiResponse('ok', $lang->translate('user_edit'), 1);
         }
 
         if ($action == "delete_user") {
@@ -1469,7 +1464,7 @@ class JsonHttpAdminController
             }
 
             if ($action == "price_add") {
-                $pricelistRepository->create(
+                $priceListRepository->create(
                     $_POST['service'],
                     $_POST['tariff'],
                     $_POST['amount'],
@@ -1851,11 +1846,11 @@ class JsonHttpAdminController
                     );
                 }
 
-                $user2 = $heart->getUser($_POST['uid']);
+                $editedUser = $heart->getUser($_POST['uid']);
             }
 
             if (!isset($data['template'])) {
-                $data['template'] = $templates->render("jsonhttp/" . $template, compact('user2'));
+                $data['template'] = $templates->render("jsonhttp/" . $template, compact('editedUser'));
             }
 
             return new PlainResponse(json_encode($data));

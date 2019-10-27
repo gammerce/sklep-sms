@@ -2,9 +2,9 @@
 namespace App\Repositories;
 
 use App\Database;
-use App\Models\Pricelist;
+use App\Models\PriceList;
 
-class PricelistRepository
+class PriceListRepository
 {
     /** @var Database */
     protected $db;
@@ -28,6 +28,6 @@ class PricelistRepository
 
         $id = $this->db->lastId();
 
-        return new Pricelist($id, $service, $tariff, $amount, $server);
+        return new PriceList($id, $service, $tariff, $amount, $server);
     }
 }

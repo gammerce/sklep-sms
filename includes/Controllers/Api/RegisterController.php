@@ -124,7 +124,7 @@ class RegisterController
                 $langShop->translate('new_account'),
                 $createdUser->getUid(),
                 $createdUser->getUsername(false),
-                $createdUser->getRegip()
+                $createdUser->getRegIp()
             )
         );
 
