@@ -34,8 +34,6 @@ class JsonHttpController
         $user = $auth->user();
         $action = $request->request->get("action");
 
-        $data = [];
-
         if ($action == "purchase_form_validate") {
             if (
                 ($serviceModule = $heart->getServiceModule($_POST['service'])) === null ||
@@ -372,30 +370,6 @@ class JsonHttpController
             return new PlainResponse(
                 $serviceModule->actionExecute($_POST['service_action'], $_POST)
             );
-        }
-
-        if ($action === "get_template") {
-            $template = $_POST['template'];
-            // Zabezpieczanie wszystkich wartości post
-            foreach ($_POST as $key => $value) {
-                $_POST[$key] = htmlspecialchars($value);
-            }
-
-            if ($template == "register_registered") {
-                $username = htmlspecialchars($_POST['username']);
-                $email = htmlspecialchars($_POST['email']);
-            } elseif ($template == "forgotten_password_sent") {
-                $username = htmlspecialchars($_POST['username']);
-            }
-
-            if (!isset($data['template'])) {
-                $data['template'] = $templates->render(
-                    "jsonhttp/" . $template,
-                    compact('username', 'email')
-                );
-            }
-
-            return new PlainResponse(json_encode($data));
         }
 
         return new ApiResponse("script_error", "An error occured: no action.");
