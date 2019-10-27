@@ -10,8 +10,13 @@ use Symfony\Component\HttpFoundation\Request;
 
 class TemplateResource
 {
-    public function get($name, Request $request, Template $template, TranslationManager $translationManager, Heart $heart)
-    {
+    public function get(
+        $name,
+        Request $request,
+        Template $template,
+        TranslationManager $translationManager,
+        Heart $heart
+    ) {
         $lang = $translationManager->user();
 
         $templateName = str_replace('/', '_', $name);
@@ -35,7 +40,7 @@ class TemplateResource
             'template' => $template->render(
                 "jsonhttp/" . $templateName,
                 compact('username', 'email', 'editedUser')
-            )
+            ),
         ];
 
         return new PlainResponse(json_encode($data));

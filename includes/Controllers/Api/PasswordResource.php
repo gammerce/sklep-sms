@@ -26,7 +26,7 @@ class PasswordResource
         $passr = $request->request->get('pass_repeat');
 
         if ($warning = check_for_warnings("password", $pass)) {
-            $warnings['pass'] = array_merge((array)$warnings['pass'], $warning);
+            $warnings['pass'] = array_merge((array) $warnings['pass'], $warning);
         }
         if ($pass != $passr) {
             $warnings['pass_repeat'][] = $lang->translate('different_pass');
@@ -45,10 +45,10 @@ class PasswordResource
         $db->query(
             $db->prepare(
                 "UPDATE `" .
-                TABLE_PREFIX .
-                "users` " .
-                "SET password='%s', salt='%s'" .
-                "WHERE uid='%d'",
+                    TABLE_PREFIX .
+                    "users` " .
+                    "SET password='%s', salt='%s'" .
+                    "WHERE uid='%d'",
                 [hash_password($pass, $salt), $salt, $user->getUid()]
             )
         );

@@ -10,8 +10,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PasswordResetController
 {
-    public function post(Request $request, TranslationManager $translationManager, Settings $settings, UserPasswordService $userPasswordService)
-    {
+    public function post(
+        Request $request,
+        TranslationManager $translationManager,
+        Settings $settings,
+        UserPasswordService $userPasswordService
+    ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
 
@@ -32,7 +36,7 @@ class PasswordResetController
         }
 
         if ($warning = check_for_warnings("password", $pass)) {
-            $warnings['pass'] = array_merge((array)$warnings['pass'], $warning);
+            $warnings['pass'] = array_merge((array) $warnings['pass'], $warning);
         }
         if ($pass != $passr) {
             $warnings['pass_repeat'][] = $lang->translate('different_pass');
