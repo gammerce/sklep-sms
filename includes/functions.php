@@ -477,7 +477,7 @@ function validate_payment(Purchase $purchaseData)
         }
     }
 
-    if (!empty($warnings)) {
+    if ($warnings) {
         $warningData = [];
         $warningData['warnings'] = format_warnings($warnings);
 

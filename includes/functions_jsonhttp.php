@@ -1,5 +1,6 @@
 <?php
 
+use App\Html\Div;
 use App\TranslationManager;
 
 /**
@@ -136,9 +137,9 @@ function format_warnings(array $warnings)
 
     foreach ($warnings as $brick => $warning) {
         if ($warning) {
-            $output[$brick] = create_dom_element("div", implode("<br />", $warning), [
-                'class' => "form_warning help is-danger",
-            ]);
+            $help = new Div(implode("<br />", $warning));
+            $help->addClass("form_warning help is-danger");
+            $output[$brick] = $help;
         }
     }
 

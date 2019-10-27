@@ -3,6 +3,7 @@ namespace App\Controllers\Api;
 
 use App\Auth;
 use App\Database;
+use App\Exceptions\ValidationException;
 use App\Repositories\UserRepository;
 use App\Responses\ApiResponse;
 use App\TranslationManager;
@@ -39,9 +40,8 @@ class UserProfileResource
             $warnings['steam_id'] = array_merge((array)$warnings['steam_id'], $warning);
         }
 
-        if (!empty($warnings)) {
-            $data['warnings'] = format_warnings($warnings);
-            return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
+        if ($warnings) {
+            throw new ValidationException($warnings);
         }
 
         $user = $auth->user();

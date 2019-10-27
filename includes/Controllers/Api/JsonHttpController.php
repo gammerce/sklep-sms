@@ -3,24 +3,24 @@ namespace App\Controllers\Api;
 
 use App\Auth;
 use App\Database;
+use App\Exceptions\ValidationException;
 use App\Heart;
 use App\Mailer;
 use App\Models\Purchase;
 use App\Pages\PageAdminIncome;
 use App\Payment;
-use App\Repositories\UserRepository;
 use App\Responses\ApiResponse;
 use App\Responses\HtmlResponse;
 use App\Responses\PlainResponse;
 use App\Routes\UrlGenerator;
-use App\Settings;
-use App\Template;
-use App\TranslationManager;
 use App\Services\Interfaces\IServiceActionExecute;
 use App\Services\Interfaces\IServicePurchaseWeb;
 use App\Services\Interfaces\IServiceTakeOver;
 use App\Services\Interfaces\IServiceUserOwnServices;
 use App\Services\Interfaces\IServiceUserOwnServicesEdit;
+use App\Settings;
+use App\Template;
+use App\TranslationManager;
 use App\User\UserPasswordService;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
@@ -36,7 +36,6 @@ class JsonHttpController
         Settings $settings,
         Database $db,
         Mailer $mailer,
-        UserRepository $userRepository,
         UrlGenerator $url,
         UserPasswordService $userPasswordService
     ) {
@@ -147,13 +146,12 @@ class JsonHttpController
                 }
             }
 
-            if (!empty($warnings)) {
-                $data['warnings'] = format_warnings($warnings);
-                return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
+            if ($warnings) {
+                throw new ValidationException($warnings);
             }
 
             // Pobranie danych użytkownika
-            $user2 = $heart->getUser($row['uid']);
+            $editedUser = $heart->getUser($row['uid']);
 
             $key = get_random_string(32);
             $db->query(
@@ -163,13 +161,13 @@ class JsonHttpController
                         "users` " .
                         "SET `reset_password_key`='%s' " .
                         "WHERE `uid`='%d'",
-                    [$key, $user2->getUid()]
+                    [$key, $editedUser->getUid()]
                 )
             );
 
             $link = $url->to("/page/reset_password?code=" . htmlspecialchars($key));
-            $text = $templates->render("emails/forgotten_password", compact('user2', 'link'));
-            $ret = $mailer->send($user2->getEmail(), $user2->getUsername(), "Reset Hasła", $text);
+            $text = $templates->render("emails/forgotten_password", compact('editedUser', 'link'));
+            $ret = $mailer->send($editedUser->getEmail(), $editedUser->getUsername(), "Reset Hasła", $text);
 
             if ($ret == "not_sent") {
                 return new ApiResponse("not_sent", $lang->translate('keyreset_error'), 0);
@@ -183,14 +181,14 @@ class JsonHttpController
                 log_info(
                     $langShop->sprintf(
                         $langShop->translate('reset_key_email'),
-                        $user2->getUsername(),
-                        $user2->getUid(),
-                        $user2->getEmail(),
+                        $editedUser->getUsername(),
+                        $editedUser->getUid(),
+                        $editedUser->getEmail(),
                         $username,
                         $email
                     )
                 );
-                $data['username'] = $user2->getUsername();
+                $data['username'] = $editedUser->getUsername();
                 return new ApiResponse("sent", $lang->translate('email_sent'), 1, $data);
             }
 
@@ -219,9 +217,8 @@ class JsonHttpController
                 $warnings['pass_repeat'][] = $lang->translate('different_pass');
             }
 
-            if (!empty($warnings)) {
-                $data['warnings'] = format_warnings($warnings);
-                return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
+            if ($warnings) {
+                throw new ValidationException($warnings);
             }
 
             $userPasswordService->change($uid, $pass);
@@ -251,9 +248,8 @@ class JsonHttpController
                 $warnings['old_pass'][] = $lang->translate('old_pass_wrong');
             }
 
-            if (!empty($warnings)) {
-                $data['warnings'] = format_warnings($warnings);
-                return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
+            if ($warnings) {
+                throw new ValidationException($warnings);
             }
 
             // Zmień hasło
