@@ -46,10 +46,10 @@ class UserRepository
         $this->db->query(
             $this->db->prepare(
                 "UPDATE `" .
-                TABLE_PREFIX .
-                "users` " .
-                "SET `username` = '%s', `forename` = '%s', `surname` = '%s', `email` = '%s', `groups` = '%s', `wallet` = '%d' " .
-                "WHERE `uid` = '%d'",
+                    TABLE_PREFIX .
+                    "users` " .
+                    "SET `username` = '%s', `forename` = '%s', `surname` = '%s', `email` = '%s', `groups` = '%s', `wallet` = '%d' " .
+                    "WHERE `uid` = '%d'",
                 [
                     $user->getUsername(false),
                     $user->getForename(false),

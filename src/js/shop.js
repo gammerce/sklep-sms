@@ -154,8 +154,7 @@ $(document).delegate("#language_choice img", "click", function() {
         .attr("id")
         .replace("language_", "");
 
-    rest_request(
-        "PUT", "/api/session/language", false, { language: lang_clicked }, function() {
+    rest_request("PUT", "/api/session/language", false, { language: lang_clicked }, function() {
         location.reload();
     });
 });

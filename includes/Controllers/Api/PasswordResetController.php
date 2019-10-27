@@ -14,8 +14,15 @@ use UnexpectedValueException;
 
 class PasswordResetController
 {
-    public function post(Request $request, TranslationManager $translationManager, Database $db, Heart $heart, UrlGenerator $url, Template $template, Mailer $mailer)
-    {
+    public function post(
+        Request $request,
+        TranslationManager $translationManager,
+        Database $db,
+        Heart $heart,
+        UrlGenerator $url,
+        Template $template,
+        Mailer $mailer
+    ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
 
@@ -30,15 +37,15 @@ class PasswordResetController
 
         if ($username || (!$username && !$email)) {
             if ($warning = check_for_warnings("username", $username)) {
-                $warnings['username'] = array_merge((array)$warnings['username'], $warning);
+                $warnings['username'] = array_merge((array) $warnings['username'], $warning);
             }
             if (strlen($username)) {
                 $result = $db->query(
                     $db->prepare(
                         "SELECT `uid` FROM `" .
-                        TABLE_PREFIX .
-                        "users` " .
-                        "WHERE `username` = '%s'",
+                            TABLE_PREFIX .
+                            "users` " .
+                            "WHERE `username` = '%s'",
                         [$username]
                     )
                 );
@@ -53,15 +60,12 @@ class PasswordResetController
 
         if (!strlen($username)) {
             if ($warning = check_for_warnings("email", $email)) {
-                $warnings['email'] = array_merge((array)$warnings['email'], $warning);
+                $warnings['email'] = array_merge((array) $warnings['email'], $warning);
             }
             if (strlen($email)) {
                 $result = $db->query(
                     $db->prepare(
-                        "SELECT `uid` FROM `" .
-                        TABLE_PREFIX .
-                        "users` " .
-                        "WHERE `email` = '%s'",
+                        "SELECT `uid` FROM `" . TABLE_PREFIX . "users` " . "WHERE `email` = '%s'",
                         [$email]
                     )
                 );
@@ -85,10 +89,10 @@ class PasswordResetController
         $db->query(
             $db->prepare(
                 "UPDATE `" .
-                TABLE_PREFIX .
-                "users` " .
-                "SET `reset_password_key`='%s' " .
-                "WHERE `uid`='%d'",
+                    TABLE_PREFIX .
+                    "users` " .
+                    "SET `reset_password_key`='%s' " .
+                    "WHERE `uid`='%d'",
                 [$key, $editedUser->getUid()]
             )
         );
@@ -96,7 +100,10 @@ class PasswordResetController
         $link = $url->to("/page/reset_password?code=" . htmlspecialchars($key));
         $text = $template->render("emails/forgotten_password", compact('editedUser', 'link'));
         $ret = $mailer->send(
-            $editedUser->getEmail(), $editedUser->getUsername(), "Reset Hasła", $text
+            $editedUser->getEmail(),
+            $editedUser->getUsername(),
+            "Reset Hasła",
+            $text
         );
 
         if ($ret == "not_sent") {

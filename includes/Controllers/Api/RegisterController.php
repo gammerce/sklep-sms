@@ -11,8 +11,13 @@ use Symfony\Component\HttpFoundation\Request;
 
 class RegisterController
 {
-    public function post(Request $request, Auth $auth, TranslationManager $translationManager, Database $db, UserRepository $userRepository)
-    {
+    public function post(
+        Request $request,
+        Auth $auth,
+        TranslationManager $translationManager,
+        Database $db,
+        UserRepository $userRepository
+    ) {
         $session = $request->getSession();
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
@@ -37,10 +42,10 @@ class RegisterController
         $antispamQuestion = $db->fetchArrayAssoc(
             $db->query(
                 "SELECT * FROM `" .
-                TABLE_PREFIX .
-                "antispam_questions` " .
-                "ORDER BY RAND() " .
-                "LIMIT 1"
+                    TABLE_PREFIX .
+                    "antispam_questions` " .
+                    "ORDER BY RAND() " .
+                    "LIMIT 1"
             )
         );
         $data['antispam']['question'] = $antispamQuestion['question'];
@@ -55,7 +60,7 @@ class RegisterController
         $session->set("asid", $antispamQuestion['id']);
 
         if ($warning = check_for_warnings("username", $username)) {
-            $warnings['username'] = array_merge((array)$warnings['username'], $warning);
+            $warnings['username'] = array_merge((array) $warnings['username'], $warning);
         }
 
         $result = $db->query(
@@ -70,14 +75,14 @@ class RegisterController
 
         // Password
         if ($warning = check_for_warnings("password", $password)) {
-            $warnings['password'] = array_merge((array)$warnings['password'], $warning);
+            $warnings['password'] = array_merge((array) $warnings['password'], $warning);
         }
         if ($password != $passwordr) {
             $warnings['password_repeat'][] = $lang->translate('different_pass');
         }
 
         if ($warning = check_for_warnings("email", $email)) {
-            $warnings['email'] = array_merge((array)$warnings['email'], $warning);
+            $warnings['email'] = array_merge((array) $warnings['email'], $warning);
         }
 
         // Email

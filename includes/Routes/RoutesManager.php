@@ -180,7 +180,7 @@ class RoutesManager
             'uses' => SetupController::class . "@get",
         ]);
 
-        $r->post( "/api/install", [
+        $r->post("/api/install", [
             'middlewares' => [RequireNotInstalled::class],
             'uses' => InstallController::class . "@post",
         ]);

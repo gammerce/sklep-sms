@@ -11,8 +11,13 @@ use Symfony\Component\HttpFoundation\Request;
 
 class UserProfileResource
 {
-    public function put(Request $request, Database $db, TranslationManager $translationManager, UserRepository $userRepository, Auth $auth)
-    {
+    public function put(
+        Request $request,
+        Database $db,
+        TranslationManager $translationManager,
+        UserRepository $userRepository,
+        Auth $auth
+    ) {
         $lang = $translationManager->user();
 
         $username = trim($request->request->get('username'));
@@ -23,7 +28,7 @@ class UserProfileResource
         $warnings = [];
 
         if ($warning = check_for_warnings("username", $username)) {
-            $warnings['username'] = array_merge((array)$warnings['username'], $warning);
+            $warnings['username'] = array_merge((array) $warnings['username'], $warning);
         }
 
         $result = $db->query(
@@ -37,7 +42,7 @@ class UserProfileResource
         }
 
         if ($warning = check_for_warnings("sid", $steamId)) {
-            $warnings['steam_id'] = array_merge((array)$warnings['steam_id'], $warning);
+            $warnings['steam_id'] = array_merge((array) $warnings['steam_id'], $warning);
         }
 
         if ($warnings) {
