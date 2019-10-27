@@ -24,8 +24,7 @@ class RegisterTest extends IndexTestCase
         $session->set("asid", 1);
 
         // when
-        $response = $this->post('/jsonhttp.php', [
-            'action' => 'register',
+        $response = $this->post('/api/register', [
             'username' => $username,
             'password' => $password,
             'password_repeat' => $password,

@@ -1055,10 +1055,9 @@ function get_platform($platform)
     return htmlspecialchars($platform);
 }
 
-function get_ip()
+function get_ip(Request $request = null)
 {
-    /** @var Request $request */
-    $request = app()->make(Request::class);
+    $request = $request ?: app()->make(Request::class);
 
     if ($request->server->has('HTTP_CF_CONNECTING_IP')) {
         $cfIpRanges = [

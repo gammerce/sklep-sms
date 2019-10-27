@@ -1,12 +1,11 @@
-// Wysłanie formularza rejestracyjnego
 $(document).delegate("#register", "submit", function(e) {
     e.preventDefault();
     loader.show();
 
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp.php"),
-        data: $(this).serialize() + "&action=register",
+        url: buildUrl("/api/register"),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },

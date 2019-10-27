@@ -2,6 +2,7 @@
 namespace App\Routes;
 
 use App\Application;
+use App\Controllers\Api\RegisterController;
 use App\Controllers\View\AdminController;
 use App\Controllers\View\ExtraStuffController;
 use App\Controllers\View\IndexController;
@@ -47,7 +48,7 @@ class RoutesManager
 
     private function defineRoutes(RouteCollector $r)
     {
-        $r->addRoute('GET', '/js.php', [
+        $r->get('/js.php', [
             'uses' => JsController::class . '@get',
         ]);
 
@@ -63,33 +64,6 @@ class RoutesManager
                 ],
             ],
             function (RouteCollector $r) {
-                $r->addRoute(['GET', 'POST'], '/', [
-                    'middlewares' => [
-                        UpdateUserActivity::class,
-                        RunCron::class,
-                        BlockOnInvalidLicense::class,
-                    ],
-                    'uses' => IndexController::class . '@oldAction',
-                ]);
-
-                $r->addRoute(['GET', 'POST'], '/page/{pageId}', [
-                    'middlewares' => [
-                        UpdateUserActivity::class,
-                        RunCron::class,
-                        BlockOnInvalidLicense::class,
-                    ],
-                    'uses' => IndexController::class . '@action',
-                ]);
-
-                $r->addRoute(['GET', 'POST'], '/index.php', [
-                    'middlewares' => [
-                        UpdateUserActivity::class,
-                        RunCron::class,
-                        BlockOnInvalidLicense::class,
-                    ],
-                    'uses' => IndexController::class . '@oldAction',
-                ]);
-
                 $r->addRoute(['GET', 'POST'], '/transfer/{transferService}', [
                     'uses' => TransferController::class . '@action',
                 ]);
@@ -104,15 +78,40 @@ class RoutesManager
                     'uses' => ServerStuffController::class . '@action',
                 ]);
 
-                $r->addRoute(['GET', 'POST'], '/jsonhttp.php', [
-                    'middlewares' => [BlockOnInvalidLicense::class, UpdateUserActivity::class],
-                    'uses' => JsonHttpController::class . '@action',
-                ]);
-
                 $r->addRoute(['GET', 'POST'], '/transfer_finalize.php', [
                     'middlewares' => [BlockOnInvalidLicense::class],
                     'uses' => TransferController::class . '@oldAction',
                 ]);
+
+                $r->addGroup(
+                    [
+                        "middlewares" => [BlockOnInvalidLicense::class, UpdateUserActivity::class],
+                    ],
+                    function (RouteCollector $r) {
+                        $r->addRoute(['GET', 'POST'], '/', [
+                            'middlewares' => [RunCron::class],
+                            'uses' => IndexController::class . '@oldAction',
+                        ]);
+
+                        $r->addRoute(['GET', 'POST'], '/page/{pageId}', [
+                            'middlewares' => [RunCron::class],
+                            'uses' => IndexController::class . '@action',
+                        ]);
+
+                        $r->addRoute(['GET', 'POST'], '/index.php', [
+                            'middlewares' => [RunCron::class],
+                            'uses' => IndexController::class . '@oldAction',
+                        ]);
+
+                        $r->addRoute(['GET', 'POST'], '/jsonhttp.php', [
+                            'uses' => JsonHttpController::class . '@action',
+                        ]);
+
+                        $r->post('/api/register', [
+                            'uses' => RegisterController::class . '@post',
+                        ]);
+                    }
+                );
             }
         );
 
@@ -134,7 +133,7 @@ class RoutesManager
                     'uses' => AdminController::class . '@action',
                 ]);
 
-                $r->addRoute("PUT", '/admin/users/{userId}/password', [
+                $r->put('/admin/users/{userId}/password', [
                     'middlewares' => [[RequireAuthorization::class, "manage_users"]],
                     'uses' => UserPasswordResource::class . '@put',
                 ]);
@@ -150,17 +149,17 @@ class RoutesManager
             }
         );
 
-        $r->addRoute("GET", "/setup", [
+        $r->get("/setup", [
             'middlewares' => [RequireNotInstalledOrNotUpdated::class],
             'uses' => SetupController::class . "@get",
         ]);
 
-        $r->addRoute("POST", "/api/install", [
+        $r->post( "/api/install", [
             'middlewares' => [RequireNotInstalled::class],
             'uses' => InstallController::class . "@post",
         ]);
 
-        $r->addRoute("POST", "/api/update", [
+        $r->post("/api/update", [
             'middlewares' => [RequireInstalledAndNotUpdated::class],
             'uses' => UpdateController::class . "@post",
         ]);
