@@ -1,11 +1,10 @@
-// Wysłanie formularza o odzyskanie hasła
 $(document).delegate("#form_forgotten_password", "submit", function(e) {
     e.preventDefault();
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp.php"),
-        data: $(this).serialize() + "&action=forgotten_password",
+        url: buildUrl("/api/password/reset"),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },

@@ -59,8 +59,8 @@ $(document).delegate("#form_login", "submit", function(e) {
 
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp.php"),
-        data: $(this).serialize() + "&action=login",
+        url: buildUrl("/api/login"),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },
@@ -96,10 +96,7 @@ $(document).delegate("#logout", "click", function(e) {
 
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp.php"),
-        data: {
-            action: "logout",
-        },
+        url: buildUrl("/api/logout"),
         complete: function() {
             loader.hide();
         },
@@ -157,7 +154,8 @@ $(document).delegate("#language_choice img", "click", function() {
         .attr("id")
         .replace("language_", "");
 
-    fetch_data("set_session_language", false, { language: lang_clicked }, function() {
+    rest_request(
+        "PUT", "/api/session/language", false, { language: lang_clicked }, function() {
         location.reload();
     });
 });

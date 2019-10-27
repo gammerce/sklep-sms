@@ -5,14 +5,12 @@ use App\Auth;
 use App\Database;
 use App\Exceptions\ValidationException;
 use App\Heart;
-use App\Mailer;
 use App\Models\Purchase;
 use App\Pages\PageAdminIncome;
 use App\Payment;
 use App\Responses\ApiResponse;
 use App\Responses\HtmlResponse;
 use App\Responses\PlainResponse;
-use App\Routes\UrlGenerator;
 use App\Services\Interfaces\IServiceActionExecute;
 use App\Services\Interfaces\IServicePurchaseWeb;
 use App\Services\Interfaces\IServiceTakeOver;
@@ -23,7 +21,6 @@ use App\Template;
 use App\TranslationManager;
 use App\User\UserPasswordService;
 use Symfony\Component\HttpFoundation\Request;
-use UnexpectedValueException;
 
 class JsonHttpController
 {
@@ -35,12 +32,8 @@ class JsonHttpController
         Template $templates,
         Settings $settings,
         Database $db,
-        Mailer $mailer,
-        UrlGenerator $url,
         UserPasswordService $userPasswordService
     ) {
-        $session = $request->getSession();
-
         $langShop = $translationManager->shop();
         $lang = $translationManager->user();
 
@@ -49,151 +42,6 @@ class JsonHttpController
 
         $warnings = [];
         $data = [];
-
-        if ($action == "login") {
-            if (is_logged()) {
-                return new ApiResponse("already_logged_in");
-            }
-
-            $username = $request->request->get("username");
-            $password = $request->request->get("password");
-
-            if (!$username || !$password) {
-                return new ApiResponse("no_data", $lang->translate('no_login_password'), 0);
-            }
-
-            $user = $heart->getUser(0, $username, $password);
-            if ($user->exists()) {
-                $session->set("uid", $user->getUid());
-                $user->updateActivity();
-                return new ApiResponse("logged_in", $lang->translate('login_success'), 1);
-            }
-
-            return new ApiResponse("not_logged", $lang->translate('bad_pass_nick'), 0);
-        }
-
-        if ($action == "logout") {
-            if (!is_logged()) {
-                return new ApiResponse("already_logged_out");
-            }
-
-            $session->invalidate();
-
-            return new ApiResponse("logged_out", $lang->translate('logout_success'), 1);
-        }
-
-        if ($action == "set_session_language") {
-            setcookie(
-                "language",
-                escape_filename($request->request->get('language')),
-                time() + 86400 * 30,
-                "/"
-            ); // 86400 = 1 day
-            exit();
-        }
-
-        if ($action == "forgotten_password") {
-            if (is_logged()) {
-                return new ApiResponse("logged_in", $lang->translate('logged'), 0);
-            }
-
-            $username = trim($_POST['username']);
-            $email = trim($_POST['email']);
-
-            if ($username || (!$username && !$email)) {
-                if ($warning = check_for_warnings("username", $username)) {
-                    $warnings['username'] = array_merge((array) $warnings['username'], $warning);
-                }
-                if (strlen($username)) {
-                    $result = $db->query(
-                        $db->prepare(
-                            "SELECT `uid` FROM `" .
-                                TABLE_PREFIX .
-                                "users` " .
-                                "WHERE `username` = '%s'",
-                            [$username]
-                        )
-                    );
-
-                    if (!$db->numRows($result)) {
-                        $warnings['username'][] = $lang->translate('nick_no_account');
-                    } else {
-                        $row = $db->fetchArrayAssoc($result);
-                    }
-                }
-            }
-
-            if (!strlen($username)) {
-                if ($warning = check_for_warnings("email", $email)) {
-                    $warnings['email'] = array_merge((array) $warnings['email'], $warning);
-                }
-                if (strlen($email)) {
-                    $result = $db->query(
-                        $db->prepare(
-                            "SELECT `uid` FROM `" .
-                                TABLE_PREFIX .
-                                "users` " .
-                                "WHERE `email` = '%s'",
-                            [$email]
-                        )
-                    );
-
-                    if (!$db->numRows($result)) {
-                        $warnings['email'][] = $lang->translate('email_no_account');
-                    } else {
-                        $row = $db->fetchArrayAssoc($result);
-                    }
-                }
-            }
-
-            if ($warnings) {
-                throw new ValidationException($warnings);
-            }
-
-            // Pobranie danych użytkownika
-            $editedUser = $heart->getUser($row['uid']);
-
-            $key = get_random_string(32);
-            $db->query(
-                $db->prepare(
-                    "UPDATE `" .
-                        TABLE_PREFIX .
-                        "users` " .
-                        "SET `reset_password_key`='%s' " .
-                        "WHERE `uid`='%d'",
-                    [$key, $editedUser->getUid()]
-                )
-            );
-
-            $link = $url->to("/page/reset_password?code=" . htmlspecialchars($key));
-            $text = $templates->render("emails/forgotten_password", compact('editedUser', 'link'));
-            $ret = $mailer->send($editedUser->getEmail(), $editedUser->getUsername(), "Reset Hasła", $text);
-
-            if ($ret == "not_sent") {
-                return new ApiResponse("not_sent", $lang->translate('keyreset_error'), 0);
-            }
-
-            if ($ret == "wrong_email") {
-                return new ApiResponse("wrong_sender_email", $lang->translate('wrong_email'), 0);
-            }
-
-            if ($ret == "sent") {
-                log_info(
-                    $langShop->sprintf(
-                        $langShop->translate('reset_key_email'),
-                        $editedUser->getUsername(),
-                        $editedUser->getUid(),
-                        $editedUser->getEmail(),
-                        $username,
-                        $email
-                    )
-                );
-                $data['username'] = $editedUser->getUsername();
-                return new ApiResponse("sent", $lang->translate('email_sent'), 1, $data);
-            }
-
-            throw new UnexpectedValueException("Invalid ret value");
-        }
 
         if ($action == "reset_password") {
             if (is_logged()) {

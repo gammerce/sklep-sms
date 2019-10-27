@@ -2,7 +2,12 @@
 namespace App\Routes;
 
 use App\Application;
+use App\Controllers\Api\LogInController;
+use App\Controllers\Api\LogOutController;
+use App\Controllers\Api\PasswordResetController;
 use App\Controllers\Api\RegisterController;
+use App\Controllers\Api\SessionLanguageResource;
+use App\Controllers\Api\UserProfileResource;
 use App\Controllers\View\AdminController;
 use App\Controllers\View\ExtraStuffController;
 use App\Controllers\View\IndexController;
@@ -109,6 +114,27 @@ class RoutesManager
 
                         $r->post('/api/register', [
                             'uses' => RegisterController::class . '@post',
+                        ]);
+
+                        $r->post('/api/login', [
+                            'uses' => LogInController::class . '@post',
+                        ]);
+
+                        $r->post('/api/logout', [
+                            'uses' => LogOutController::class . '@post',
+                        ]);
+
+                        $r->put('/api/profile', [
+                            "middlewares" => [RequireAuthorization::class],
+                            'uses' => UserProfileResource::class . '@put',
+                        ]);
+
+                        $r->put('/api/session/language', [
+                            'uses' => SessionLanguageResource::class . '@put',
+                        ]);
+
+                        $r->post('/api/password/reset', [
+                            'uses' => PasswordResetController::class . '@post',
                         ]);
                     }
                 );

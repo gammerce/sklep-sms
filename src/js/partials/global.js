@@ -64,6 +64,29 @@ window.fetch_data = function(action, admin, data, onSuccessFunction) {
     });
 };
 
+window.rest_request = function(method, path, data, onSuccessFunction) {
+    onSuccessFunction =
+        typeof onSuccessFunction !== "undefined" ? onSuccessFunction : function() {};
+
+    // Wyswietlenie ładowacza
+    loader.show();
+
+    $.ajax({
+        type: method,
+        url: buildUrl(path),
+        data: data,
+        complete: function() {
+            loader.hide();
+        },
+        success: function(content) {
+            onSuccessFunction(content);
+        },
+        error: function(error) {
+            infobox.show_info(lang["ajax_error"], false);
+        },
+    });
+};
+
 window.refresh_blocks = function(bricks, admin, onSuccessFunction) {
     // Wyswietlenie ładowacza
     loader.show();
