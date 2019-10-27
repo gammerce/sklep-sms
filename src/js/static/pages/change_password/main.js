@@ -17,7 +17,7 @@ $(document).delegate("#form_change_password", "submit", function(e) {
                 showWarnings($("#form_change_password"), jsonObj.warnings);
             } else if (jsonObj.return_id == "password_changed") {
                 // Wyświetl informacje o zmianie hasła
-                getnset_template($("#content"), "reset_password_changed", false);
+                getnset_template($("#content"), "reset_password_changed");
             } else if (!jsonObj.return_id) {
                 infobox.show_info(lang["sth_went_wrong"], false);
             }

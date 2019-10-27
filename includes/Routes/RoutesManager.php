@@ -9,6 +9,7 @@ use App\Controllers\Api\PasswordResetController;
 use App\Controllers\Api\PasswordResource;
 use App\Controllers\Api\RegisterController;
 use App\Controllers\Api\SessionLanguageResource;
+use App\Controllers\Api\TemplateResource;
 use App\Controllers\Api\UserProfileResource;
 use App\Controllers\View\AdminController;
 use App\Controllers\View\ExtraStuffController;
@@ -146,6 +147,10 @@ class RoutesManager
                         $r->put('/api/password', [
                             "middlewares" => [RequireAuthorization::class],
                             'uses' => PasswordResource::class . '@put',
+                        ]);
+
+                        $r->get('/api/template/{name}', [
+                            'uses' => TemplateResource::class . '@get',
                         ]);
                     }
                 );

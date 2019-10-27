@@ -17,7 +17,7 @@ $(document).delegate("#form_forgotten_password", "submit", function(e) {
                 showWarnings($("#form_forgotten_password"), jsonObj.warnings);
             } else if (jsonObj.return_id == "sent") {
                 // Wyświetl informacje o wysłaniu maila
-                getnset_template($("#content"), "forgotten_password_sent", false, {
+                getnset_template($("#content"), "forgotten_password_sent", {
                     username: jsonObj.username,
                 });
             } else if (!jsonObj.return_id) {

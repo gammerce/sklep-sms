@@ -1818,31 +1818,6 @@ class JsonHttpAdminController
             return new ApiResponse($actionBox['status'], $actionBox['text'], 0, $data);
         }
 
-        if ($action == "get_template") {
-            $template = $_POST['template'];
-            // Zabezpieczanie wszystkich wartości post
-            foreach ($_POST as $key => $value) {
-                $_POST[$key] = htmlspecialchars($value);
-            }
-
-            if ($template == "admin_user_wallet") {
-                if (!get_privileges("manage_users")) {
-                    return new ApiResponse(
-                        "not_logged_in",
-                        $lang->translate('not_logged_or_no_perm'),
-                        0
-                    );
-                }
-
-                $editedUser = $heart->getUser($_POST['uid']);
-            }
-
-            $data = [];
-            $data['template'] = $templates->render("jsonhttp/" . $template, compact('editedUser'));
-
-            return new PlainResponse(json_encode($data));
-        }
-
         if ($action == "service_action_execute") {
             if (
                 ($serviceModule = $heart->getServiceModule($_POST['service'])) === null ||

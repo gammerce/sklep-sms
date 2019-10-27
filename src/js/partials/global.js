@@ -1,19 +1,13 @@
-window.getnset_template = function(element, template, admin, data, onSuccessFunction) {
-    // Sprawdzenie czy data została przesłana
-    data = typeof data !== "undefined" ? data : {};
+window.getnset_template = function(element, template, data, onSuccessFunction) {
     onSuccessFunction =
         typeof onSuccessFunction !== "undefined" ? onSuccessFunction : function() {};
-
-    // Dodanie informacji do wysyłanej mapy wartości
-    data["action"] = "get_template";
-    data["template"] = template;
 
     // Wyswietlenie ładowacza
     loader.show();
 
     $.ajax({
-        type: "POST",
-        url: buildUrl(admin ? "jsonhttp_admin.php" : "jsonhttp.php"),
+        type: "GET",
+        url: buildUrl("/api/template/" + template),
         data: data,
         complete: function() {
             loader.hide();

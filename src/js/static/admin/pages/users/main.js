@@ -117,7 +117,6 @@
                     getnset_template(
                         row_id.children("td[headers=wallet]"),
                         "admin_user_wallet",
-                        true,
                         {
                             uid: $(that)
                                 .find("input[name=uid]")
