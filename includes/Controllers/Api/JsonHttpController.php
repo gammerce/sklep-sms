@@ -2,8 +2,6 @@
 namespace App\Controllers\Api;
 
 use App\Auth;
-use App\Database;
-use App\Exceptions\ValidationException;
 use App\Heart;
 use App\Models\Purchase;
 use App\Pages\PageAdminIncome;
@@ -19,7 +17,6 @@ use App\Services\Interfaces\IServiceUserOwnServicesEdit;
 use App\Settings;
 use App\Template;
 use App\TranslationManager;
-use App\User\UserPasswordService;
 use Symfony\Component\HttpFoundation\Request;
 
 class JsonHttpController
@@ -30,95 +27,14 @@ class JsonHttpController
         Heart $heart,
         Auth $auth,
         Template $templates,
-        Settings $settings,
-        Database $db,
-        UserPasswordService $userPasswordService
+        Settings $settings
     ) {
-        $langShop = $translationManager->shop();
         $lang = $translationManager->user();
 
         $user = $auth->user();
         $action = $request->request->get("action");
 
-        $warnings = [];
         $data = [];
-
-        if ($action == "reset_password") {
-            if (is_logged()) {
-                return new ApiResponse("logged_in", $lang->translate('logged'), 0);
-            }
-
-            $uid = $_POST['uid'];
-            $sign = $_POST['sign'];
-            $pass = $_POST['pass'];
-            $passr = $_POST['pass_repeat'];
-
-            // Sprawdzanie hashu najwazniejszych danych
-            if (!$sign || $sign != md5($uid . $settings['random_key'])) {
-                return new ApiResponse("wrong_sign", $lang->translate('wrong_sign'), 0);
-            }
-
-            if ($warning = check_for_warnings("password", $pass)) {
-                $warnings['pass'] = array_merge((array) $warnings['pass'], $warning);
-            }
-            if ($pass != $passr) {
-                $warnings['pass_repeat'][] = $lang->translate('different_pass');
-            }
-
-            if ($warnings) {
-                throw new ValidationException($warnings);
-            }
-
-            $userPasswordService->change($uid, $pass);
-
-            log_info($langShop->sprintf($langShop->translate('reset_pass'), $uid));
-
-            return new ApiResponse("password_changed", $lang->translate('password_changed'), 1);
-        }
-
-        if ($action == "change_password") {
-            if (!is_logged()) {
-                return new ApiResponse("logged_in", $lang->translate('not_logged'), 0);
-            }
-
-            $oldpass = $_POST['old_pass'];
-            $pass = $_POST['pass'];
-            $passr = $_POST['pass_repeat'];
-
-            if ($warning = check_for_warnings("password", $pass)) {
-                $warnings['pass'] = array_merge((array) $warnings['pass'], $warning);
-            }
-            if ($pass != $passr) {
-                $warnings['pass_repeat'][] = $lang->translate('different_pass');
-            }
-
-            if (hash_password($oldpass, $user->getSalt()) != $user->getPassword()) {
-                $warnings['old_pass'][] = $lang->translate('old_pass_wrong');
-            }
-
-            if ($warnings) {
-                throw new ValidationException($warnings);
-            }
-
-            // Zmień hasło
-            $salt = get_random_string(8);
-
-            $db->query(
-                $db->prepare(
-                    "UPDATE `" .
-                        TABLE_PREFIX .
-                        "users` " .
-                        "SET password='%s', salt='%s'" .
-                        "WHERE uid='%d'",
-                    [hash_password($pass, $salt), $salt, $user->getUid()]
-                )
-            );
-
-            // LOGING
-            log_info("Zmieniono hasło. ID użytkownika: {$user->getUid()}.");
-
-            return new ApiResponse("password_changed", $lang->translate('password_changed'), 1);
-        }
 
         if ($action == "purchase_form_validate") {
             if (

@@ -4,7 +4,9 @@ namespace App\Routes;
 use App\Application;
 use App\Controllers\Api\LogInController;
 use App\Controllers\Api\LogOutController;
+use App\Controllers\Api\PasswordForgottenController;
 use App\Controllers\Api\PasswordResetController;
+use App\Controllers\Api\PasswordResource;
 use App\Controllers\Api\RegisterController;
 use App\Controllers\Api\SessionLanguageResource;
 use App\Controllers\Api\UserProfileResource;
@@ -133,8 +135,17 @@ class RoutesManager
                             'uses' => SessionLanguageResource::class . '@put',
                         ]);
 
+                        $r->post('/api/password/forgotten', [
+                            'uses' => PasswordForgottenController::class . '@post',
+                        ]);
+
                         $r->post('/api/password/reset', [
                             'uses' => PasswordResetController::class . '@post',
+                        ]);
+
+                        $r->put('/api/password', [
+                            "middlewares" => [RequireAuthorization::class],
+                            'uses' => PasswordResource::class . '@put',
                         ]);
                     }
                 );

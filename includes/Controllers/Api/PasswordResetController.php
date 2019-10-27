@@ -1,28 +1,17 @@
 <?php
 namespace App\Controllers\Api;
 
-use App\Database;
 use App\Exceptions\ValidationException;
-use App\Heart;
-use App\Mailer;
 use App\Responses\ApiResponse;
-use App\Routes\UrlGenerator;
-use App\Template;
+use App\Settings;
 use App\TranslationManager;
+use App\User\UserPasswordService;
 use Symfony\Component\HttpFoundation\Request;
-use UnexpectedValueException;
 
 class PasswordResetController
 {
-    public function post(
-        Request $request,
-        TranslationManager $translationManager,
-        Database $db,
-        Heart $heart,
-        UrlGenerator $url,
-        Template $template,
-        Mailer $mailer
-    ) {
+    public function post(Request $request, TranslationManager $translationManager, Settings $settings, UserPasswordService $userPasswordService)
+    {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
 
@@ -32,103 +21,31 @@ class PasswordResetController
 
         $warnings = [];
 
-        $username = trim($request->request->get('username'));
-        $email = trim($request->request->get('email'));
+        $uid = $request->request->get('uid');
+        $sign = $request->request->get('sign');
+        $pass = $request->request->get('pass');
+        $passr = $request->request->get('pass_repeat');
 
-        if ($username || (!$username && !$email)) {
-            if ($warning = check_for_warnings("username", $username)) {
-                $warnings['username'] = array_merge((array) $warnings['username'], $warning);
-            }
-            if (strlen($username)) {
-                $result = $db->query(
-                    $db->prepare(
-                        "SELECT `uid` FROM `" .
-                            TABLE_PREFIX .
-                            "users` " .
-                            "WHERE `username` = '%s'",
-                        [$username]
-                    )
-                );
-
-                if (!$db->numRows($result)) {
-                    $warnings['username'][] = $lang->translate('nick_no_account');
-                } else {
-                    $row = $db->fetchArrayAssoc($result);
-                }
-            }
+        // Sprawdzanie hashu najwazniejszych danych
+        if (!$sign || $sign != md5($uid . $settings['random_key'])) {
+            return new ApiResponse("wrong_sign", $lang->translate('wrong_sign'), 0);
         }
 
-        if (!strlen($username)) {
-            if ($warning = check_for_warnings("email", $email)) {
-                $warnings['email'] = array_merge((array) $warnings['email'], $warning);
-            }
-            if (strlen($email)) {
-                $result = $db->query(
-                    $db->prepare(
-                        "SELECT `uid` FROM `" . TABLE_PREFIX . "users` " . "WHERE `email` = '%s'",
-                        [$email]
-                    )
-                );
-
-                if (!$db->numRows($result)) {
-                    $warnings['email'][] = $lang->translate('email_no_account');
-                } else {
-                    $row = $db->fetchArrayAssoc($result);
-                }
-            }
+        if ($warning = check_for_warnings("password", $pass)) {
+            $warnings['pass'] = array_merge((array)$warnings['pass'], $warning);
+        }
+        if ($pass != $passr) {
+            $warnings['pass_repeat'][] = $lang->translate('different_pass');
         }
 
         if ($warnings) {
             throw new ValidationException($warnings);
         }
 
-        // Pobranie danych użytkownika
-        $editedUser = $heart->getUser($row['uid']);
+        $userPasswordService->change($uid, $pass);
 
-        $key = get_random_string(32);
-        $db->query(
-            $db->prepare(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "users` " .
-                    "SET `reset_password_key`='%s' " .
-                    "WHERE `uid`='%d'",
-                [$key, $editedUser->getUid()]
-            )
-        );
+        log_info($langShop->sprintf($langShop->translate('reset_pass'), $uid));
 
-        $link = $url->to("/page/reset_password?code=" . htmlspecialchars($key));
-        $text = $template->render("emails/forgotten_password", compact('editedUser', 'link'));
-        $ret = $mailer->send(
-            $editedUser->getEmail(),
-            $editedUser->getUsername(),
-            "Reset Hasła",
-            $text
-        );
-
-        if ($ret == "not_sent") {
-            return new ApiResponse("not_sent", $lang->translate('keyreset_error'), 0);
-        }
-
-        if ($ret == "wrong_email") {
-            return new ApiResponse("wrong_sender_email", $lang->translate('wrong_email'), 0);
-        }
-
-        if ($ret == "sent") {
-            log_info(
-                $langShop->sprintf(
-                    $langShop->translate('reset_key_email'),
-                    $editedUser->getUsername(),
-                    $editedUser->getUid(),
-                    $editedUser->getEmail(),
-                    $username,
-                    $email
-                )
-            );
-            $data['username'] = $editedUser->getUsername();
-            return new ApiResponse("sent", $lang->translate('email_sent'), 1, $data);
-        }
-
-        throw new UnexpectedValueException("Invalid ret value");
+        return new ApiResponse("password_changed", $lang->translate('password_changed'), 1);
     }
 }

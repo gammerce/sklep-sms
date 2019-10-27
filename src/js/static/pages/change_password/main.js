@@ -1,11 +1,10 @@
-//Wysłanie formularza o zmianę hasła
 $(document).delegate("#form_change_password", "submit", function(e) {
     e.preventDefault();
     loader.show();
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp.php"),
-        data: $(this).serialize() + "&action=change_password",
+        type: "PUT",
+        url: buildUrl("/api/password"),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },

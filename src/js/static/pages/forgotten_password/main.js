@@ -3,7 +3,7 @@ $(document).delegate("#form_forgotten_password", "submit", function(e) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("/api/password/reset"),
+        url: buildUrl("/api/password/forgotten"),
         data: $(this).serialize(),
         complete: function() {
             loader.hide();
