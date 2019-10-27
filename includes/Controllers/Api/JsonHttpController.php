@@ -3,14 +3,11 @@ namespace App\Controllers\Api;
 
 use App\Auth;
 use App\Heart;
-use App\Models\Purchase;
 use App\Pages\PageAdminIncome;
-use App\Payment;
 use App\Responses\ApiResponse;
 use App\Responses\HtmlResponse;
 use App\Responses\PlainResponse;
 use App\Services\Interfaces\IServiceActionExecute;
-use App\Services\Interfaces\IServicePurchaseWeb;
 use App\Services\Interfaces\IServiceTakeOver;
 use App\Services\Interfaces\IServiceUserOwnServices;
 use App\Services\Interfaces\IServiceUserOwnServicesEdit;
@@ -33,116 +30,6 @@ class JsonHttpController
 
         $user = $auth->user();
         $action = $request->request->get("action");
-
-        if ($action == "purchase_form_validate") {
-            if (
-                ($serviceModule = $heart->getServiceModule($_POST['service'])) === null ||
-                !($serviceModule instanceof IServicePurchaseWeb)
-            ) {
-                return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
-            }
-
-            // Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
-            if (!$heart->userCanUseService($user->getUid(), $serviceModule->service)) {
-                return new ApiResponse(
-                    "no_permission",
-                    $lang->translate('service_no_permission'),
-                    0
-                );
-            }
-
-            // Przeprowadzamy walidację danych wprowadzonych w formularzu
-            $returnData = $serviceModule->purchaseFormValidate($_POST);
-
-            // Przerabiamy ostrzeżenia, aby lepiej wyglądały
-            if ($returnData['status'] == "warnings") {
-                $returnData["data"]["warnings"] = format_warnings($returnData["data"]["warnings"]);
-            } else {
-                //
-                // Uzupełniamy brakujące dane
-                /** @var Purchase $purchaseData */
-                $purchaseData = $returnData['purchase_data'];
-
-                if ($purchaseData->getService() === null) {
-                    $purchaseData->setService($serviceModule->service['id']);
-                }
-
-                if (!$purchaseData->getPayment('cost') && $purchaseData->getTariff() !== null) {
-                    $purchaseData->setPayment([
-                        'cost' => $purchaseData->getTariff()->getProvision(),
-                    ]);
-                }
-
-                if (
-                    $purchaseData->getPayment('sms_service') === null &&
-                    !$purchaseData->getPayment("no_sms") &&
-                    strlen($settings['sms_service'])
-                ) {
-                    $purchaseData->setPayment([
-                        'sms_service' => $settings['sms_service'],
-                    ]);
-                }
-
-                // Ustawiamy taryfe z numerem
-                if ($purchaseData->getPayment('sms_service') !== null) {
-                    $payment = new Payment($purchaseData->getPayment('sms_service'));
-                    $purchaseData->setTariff(
-                        $payment
-                            ->getPaymentModule()
-                            ->getTariffById($purchaseData->getTariff()->getId())
-                    );
-                }
-
-                if ($purchaseData->getEmail() === null && strlen($user->getEmail())) {
-                    $purchaseData->setEmail($user->getEmail());
-                }
-
-                $purchaseDataEncoded = base64_encode(serialize($purchaseData));
-                $returnData['data'] = [
-                    'length' => 8000,
-                    'data' => $purchaseDataEncoded,
-                    'sign' => md5($purchaseDataEncoded . $settings['random_key']),
-                ];
-            }
-
-            return new ApiResponse(
-                $returnData['status'],
-                $returnData['text'],
-                $returnData['positive'],
-                $returnData['data']
-            );
-        }
-
-        if ($action == "payment_form_validate") {
-            // Sprawdzanie hashu danych przesłanych przez formularz
-            if (
-                !isset($_POST['purchase_sign']) ||
-                $_POST['purchase_sign'] != md5($_POST['purchase_data'] . $settings['random_key'])
-            ) {
-                return new ApiResponse("wrong_sign", $lang->translate('wrong_sign'), 0);
-            }
-
-            /** @var Purchase $purchaseData */
-            $purchaseData = unserialize(base64_decode($_POST['purchase_data']));
-
-            // Fix: get user data again to avoid bugs linked with user wallet
-            $purchaseData->user = $heart->getUser($purchaseData->user->getUid());
-
-            // Dodajemy dane płatności
-            $purchaseData->setPayment([
-                'method' => $_POST['method'],
-                'sms_code' => $_POST['sms_code'],
-                'service_code' => $_POST['service_code'],
-            ]);
-
-            $returnPayment = validate_payment($purchaseData);
-            return new ApiResponse(
-                $returnPayment['status'],
-                $returnPayment['text'],
-                $returnPayment['positive'],
-                $returnPayment['data']
-            );
-        }
 
         if ($action == "refresh_blocks") {
             $data = [];

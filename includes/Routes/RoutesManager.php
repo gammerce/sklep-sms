@@ -7,6 +7,8 @@ use App\Controllers\Api\LogOutController;
 use App\Controllers\Api\PasswordForgottenController;
 use App\Controllers\Api\PasswordResetController;
 use App\Controllers\Api\PasswordResource;
+use App\Controllers\Api\PaymentValidationResource;
+use App\Controllers\Api\PurchaseValidationResource;
 use App\Controllers\Api\RegisterController;
 use App\Controllers\Api\SessionLanguageResource;
 use App\Controllers\Api\TemplateResource;
@@ -151,6 +153,14 @@ class RoutesManager
 
                         $r->get('/api/template/{name}', [
                             'uses' => TemplateResource::class . '@get',
+                        ]);
+
+                        $r->post('/api/purchase/validation', [
+                            'uses' => PurchaseValidationResource::class . '@post',
+                        ]);
+
+                        $r->post('/api/payment/validation', [
+                            'uses' => PaymentValidationResource::class . '@post',
                         ]);
                     }
                 );

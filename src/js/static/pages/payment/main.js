@@ -61,9 +61,8 @@ function purchase_service(method) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp.php"),
+        url: buildUrl("/api/payment/validation"),
         data: {
-            action: "payment_form_validate",
             method: method,
             sms_code: $("#sms_code").val(),
             service_code: $("#service_code").val(),

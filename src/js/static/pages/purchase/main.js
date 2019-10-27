@@ -9,8 +9,8 @@ $(document).delegate("#go_to_payment", "click", function() {
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp.php"),
-        data: $("#form_purchase").serialize() + "&action=purchase_form_validate",
+        url: buildUrl("/api/purchase/validation"),
+        data: $("#form_purchase").serialize(),
         complete: function() {
             loader.hide();
         },
