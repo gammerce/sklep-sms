@@ -5,6 +5,24 @@
       <div class="columns is-multiline">
         <div class="column is-full">
           <div class="field">
+            <label for="email" class="label">
+              {$lang->translate('email')}
+            </label>
+            <div class="control">
+              <input
+                  id="email"
+                  name="email"
+                  type="text"
+                  class="input is-small"
+                  value="{$email}"
+                  disabled
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="column is-full">
+          <div class="field">
             <label for="username" class="label">
               {$lang->translate('username')}
             </label>
