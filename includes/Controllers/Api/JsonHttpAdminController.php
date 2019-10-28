@@ -15,7 +15,6 @@ use App\Repositories\UserRepository;
 use App\Responses\ApiResponse;
 use App\Responses\PlainResponse;
 use App\Services\ChargeWallet\ServiceChargeWalletSimple;
-use App\Services\Interfaces\IServiceActionExecute;
 use App\Services\Interfaces\IServiceAdminManage;
 use App\Services\Interfaces\IServiceAvailableOnServers;
 use App\Services\Interfaces\IServiceServiceCodeAdminManage;
@@ -1787,19 +1786,6 @@ class JsonHttpAdminController
             }
 
             return new ApiResponse($actionBox['status'], $actionBox['text'], 0, $data);
-        }
-
-        if ($action == "service_action_execute") {
-            if (
-                ($serviceModule = $heart->getServiceModule($_POST['service'])) === null ||
-                !($serviceModule instanceof IServiceActionExecute)
-            ) {
-                return new PlainResponse($lang->translate('bad_module'));
-            }
-
-            return new PlainResponse(
-                $serviceModule->actionExecute($_POST['service_action'], $_POST)
-            );
         }
 
         return new ApiResponse("script_error", "An error occured: no action.");

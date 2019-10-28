@@ -3,6 +3,9 @@ namespace App\Routes;
 
 use App\Application;
 use App\Controllers\Api\BrickResource;
+use App\Controllers\Api\IncomeController;
+use App\Controllers\Api\InstallController;
+use App\Controllers\Api\JsonHttpAdminController;
 use App\Controllers\Api\LogInController;
 use App\Controllers\Api\LogOutController;
 use App\Controllers\Api\PasswordForgottenController;
@@ -12,9 +15,15 @@ use App\Controllers\Api\PaymentValidationResource;
 use App\Controllers\Api\PurchaseResource;
 use App\Controllers\Api\PurchaseValidationResource;
 use App\Controllers\Api\RegisterController;
+use App\Controllers\Api\ServiceActionController;
 use App\Controllers\Api\ServiceLongDescriptionResource;
+use App\Controllers\Api\ServiceTakeOverController;
+use App\Controllers\Api\ServiceTakeOverFormController;
 use App\Controllers\Api\SessionLanguageResource;
 use App\Controllers\Api\TemplateResource;
+use App\Controllers\Api\TransferController;
+use App\Controllers\Api\UpdateController;
+use App\Controllers\Api\UserPasswordResource;
 use App\Controllers\Api\UserProfileResource;
 use App\Controllers\Api\UserServiceBrickController;
 use App\Controllers\Api\UserServiceEditFormController;
@@ -22,15 +31,9 @@ use App\Controllers\Api\UserServiceResource;
 use App\Controllers\View\AdminController;
 use App\Controllers\View\ExtraStuffController;
 use App\Controllers\View\IndexController;
-use App\Controllers\View\SetupController;
-use App\Controllers\Api\InstallController;
-use App\Controllers\Api\UpdateController;
 use App\Controllers\View\JsController;
-use App\Controllers\Api\JsonHttpAdminController;
-use App\Controllers\Api\JsonHttpController;
 use App\Controllers\View\ServerStuffController;
-use App\Controllers\Api\TransferController;
-use App\Controllers\Api\UserPasswordResource;
+use App\Controllers\View\SetupController;
 use App\Middlewares\BlockOnInvalidLicense;
 use App\Middlewares\IsUpToDate;
 use App\Middlewares\LoadSettings;
@@ -119,10 +122,6 @@ class RoutesManager
                             'uses' => IndexController::class . '@oldAction',
                         ]);
 
-                        $r->addRoute(['GET', 'POST'], '/jsonhttp.php', [
-                            'uses' => JsonHttpController::class . '@action',
-                        ]);
-
                         $r->post('/api/register', [
                             'uses' => RegisterController::class . '@post',
                         ]);
@@ -191,6 +190,22 @@ class RoutesManager
 
                         $r->put('/api/user_services/{userServiceId}', [
                             'uses' => UserServiceResource::class . '@put',
+                        ]);
+
+                        $r->get('/api/income', [
+                            'uses' => IncomeController::class . '@get',
+                        ]);
+
+                        $r->post('/api/services/{service}/actions/{action}', [
+                            'uses' => ServiceActionController::class . '@post',
+                        ]);
+
+                        $r->post('/api/services/{service}/take_over', [
+                            'uses' => ServiceTakeOverController::class . '@post',
+                        ]);
+
+                        $r->get('/api/services/{service}/take_over/create_form', [
+                            'uses' => ServiceTakeOverFormController::class . '@get',
                         ]);
                     }
                 );

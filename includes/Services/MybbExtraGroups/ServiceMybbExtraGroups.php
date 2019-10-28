@@ -521,8 +521,8 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             if ($warning = check_for_warnings('uid', $body['uid'])) {
                 $warnings['uid'] = array_merge((array) $warnings['uid'], $warning);
             } else {
-                $user2 = $this->heart->getUser($body['uid']);
-                if (!$user2->exists()) {
+                $editedUser = $this->heart->getUser($body['uid']);
+                if (!$editedUser->exists()) {
                     $warnings['uid'][] = $this->lang->translate('no_account_id');
                 }
             }

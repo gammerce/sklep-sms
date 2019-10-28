@@ -916,8 +916,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             if ($warning = check_for_warnings("uid", $data['uid'])) {
                 $warnings['uid'] = array_merge((array) $warnings['uid'], $warning);
             } else {
-                $user2 = $this->heart->getUser($data['uid']);
-                if (!$user2->exists()) {
+                $editedUser = $this->heart->getUser($data['uid']);
+                if (!$editedUser->exists()) {
                     $warnings['uid'][] = $this->lang->translate('no_account_id');
                 }
             }
