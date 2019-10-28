@@ -139,7 +139,7 @@ function format_warnings(array $warnings)
         if ($warning) {
             $help = new Div(implode("<br />", $warning));
             $help->addClass("form_warning help is-danger");
-            $output[$brick] = $help;
+            $output[$brick] = $help->toHtml();
         }
     }
 

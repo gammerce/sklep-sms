@@ -26,7 +26,11 @@ class ExceptionHandler implements ExceptionHandlerContract
     /** @var Path */
     private $path;
 
-    private $dontReport = [RequireInstallationException::class, LicenseException::class, ValidationException::class];
+    private $dontReport = [
+        RequireInstallationException::class,
+        LicenseException::class,
+        ValidationException::class,
+    ];
 
     public function __construct(
         Application $app,
