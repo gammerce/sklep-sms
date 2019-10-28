@@ -59,9 +59,17 @@ class ExceptionHandler implements ExceptionHandlerContract
         }
 
         if ($e instanceof ValidationException) {
-            return new ApiResponse("warnings", $this->lang->translate('form_wrong_filled'), false, [
-                "warnings" => format_warnings($e->warnings),
-            ]);
+            return new ApiResponse(
+                "warnings",
+                $this->lang->translate('form_wrong_filled'),
+                false,
+                array_merge(
+                    [
+                        "warnings" => format_warnings($e->warnings),
+                    ],
+                    $e->data
+                )
+            );
         }
 
         if ($e instanceof RequireInstallationException) {
