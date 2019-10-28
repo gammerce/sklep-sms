@@ -78,7 +78,7 @@
                     row_id.fadeOut("slow");
                     row_id.css({ background: "#FFF4BA" });
 
-                    refresh_blocks("admincontent", true);
+                    refresh_blocks("admincontent");
                 }
 
                 infobox.show_info(jsonObj.text, jsonObj.positive);
@@ -205,7 +205,7 @@
                     showWarnings($(that), jsonObj.warnings);
                 } else if (jsonObj.return_id === "ok") {
                     clearAndHideActionBox();
-                    refresh_blocks("admincontent", true);
+                    refresh_blocks("admincontent");
                 }
 
                 infobox.show_info(jsonObj.text, jsonObj.positive);

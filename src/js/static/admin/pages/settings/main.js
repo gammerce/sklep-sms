@@ -17,7 +17,7 @@ $(document).delegate("#form_settings_edit", "submit", function(e) {
                 showWarnings($("#form_settings_edit"), jsonObj.warnings);
             } else if (jsonObj.return_id == "ok") {
                 // Odśwież stronę
-                refresh_blocks("admincontent", true);
+                refresh_blocks("admincontent");
             } else if (!jsonObj.return_id) {
                 infobox.show_info(lang["sth_went_wrong"], false);
                 return;

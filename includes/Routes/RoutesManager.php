@@ -2,6 +2,7 @@
 namespace App\Routes;
 
 use App\Application;
+use App\Controllers\Api\BrickResource;
 use App\Controllers\Api\LogInController;
 use App\Controllers\Api\LogOutController;
 use App\Controllers\Api\PasswordForgottenController;
@@ -161,6 +162,10 @@ class RoutesManager
 
                         $r->post('/api/payment/validation', [
                             'uses' => PaymentValidationResource::class . '@post',
+                        ]);
+
+                        $r->get('/api/bricks/{bricks}', [
+                            'uses' => BrickResource::class . '@get',
                         ]);
                     }
                 );

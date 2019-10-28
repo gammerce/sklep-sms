@@ -31,32 +31,6 @@ class JsonHttpController
         $user = $auth->user();
         $action = $request->request->get("action");
 
-        if ($action == "refresh_blocks") {
-            $data = [];
-            if (isset($_POST['bricks'])) {
-                $bricks = explode(";", $_POST['bricks']);
-
-                foreach ($bricks as $brick) {
-                    // Nie ma takiego bloku do odświeżenia
-                    if (($block = $heart->getBlock($brick)) === null) {
-                        continue;
-                    }
-
-                    $data[$block->getContentId()]['content'] = $block->getContent(
-                        $request->query->all(),
-                        $request->request->all()
-                    );
-                    if ($data[$block->getContentId()]['content'] !== null) {
-                        $data[$block->getContentId()]['class'] = $block->getContentClass();
-                    } else {
-                        $data[$block->getContentId()]['class'] = "";
-                    }
-                }
-            }
-
-            return new PlainResponse(json_encode($data));
-        }
-
         if ($action == "get_service_long_description") {
             $output = "";
             if (($serviceModule = $heart->getServiceModule($_POST['service'])) !== null) {

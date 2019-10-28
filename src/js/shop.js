@@ -70,8 +70,8 @@ $(document).delegate("#form_login", "submit", function(e) {
             if (jsonObj.return_id == "logged_in") {
                 $("#user_buttons").css({ overflow: "hidden" }); // Znikniecie pola do logowania
                 refresh_blocks(
-                    "logged_info;wallet;user_buttons;services_buttons" +
-                        ($("#form_login_reload_content").val() == "0" ? "" : ";content")
+                    "logged_info,wallet,user_buttons,services_buttons" +
+                        ($("#form_login_reload_content").val() == "0" ? "" : ",content")
                 );
             }
             if (jsonObj.return_id == "already_logged_in") {
@@ -91,7 +91,6 @@ $(document).delegate("#form_login", "submit", function(e) {
 
 // Wylogowywanie
 $(document).delegate("#logout", "click", function(e) {
-    // Wyswietlenie ładowacza
     loader.show();
 
     $.ajax({
@@ -105,7 +104,7 @@ $(document).delegate("#logout", "click", function(e) {
 
             if (jsonObj.return_id == "logged_out") {
                 //$("#user_buttons").css({"overflow": "hidden"}); // Znikniecie pola do logowania
-                refresh_blocks("logged_info;wallet;user_buttons;services_buttons;content");
+                refresh_blocks("logged_info,wallet,user_buttons,services_buttons,content");
             }
             if (jsonObj.return_id == "already_logged_out") {
                 location.reload();

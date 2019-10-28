@@ -89,7 +89,7 @@ function purchase_service(method) {
                 });
 
                 // Odswieżenie stanu portfela
-                refresh_blocks("wallet", false, function() {
+                refresh_blocks("wallet", function() {
                     $("#wallet").effect("highlight", "slow");
                 });
             } else if (jsonObj.return_id == "transfer") {

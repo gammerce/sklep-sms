@@ -2,7 +2,6 @@ window.getnset_template = function(element, template, data, onSuccessFunction) {
     onSuccessFunction =
         typeof onSuccessFunction !== "undefined" ? onSuccessFunction : function() {};
 
-    // Wyswietlenie ładowacza
     loader.show();
 
     $.ajax({
@@ -39,7 +38,6 @@ window.fetch_data = function(action, admin, data, onSuccessFunction) {
     // Dodanie informacji do wysyłanej mapy wartości
     data["action"] = action;
 
-    // Wyswietlenie ładowacza
     loader.show();
 
     $.ajax({
@@ -62,7 +60,6 @@ window.rest_request = function(method, path, data, onSuccessFunction) {
     onSuccessFunction =
         typeof onSuccessFunction !== "undefined" ? onSuccessFunction : function() {};
 
-    // Wyswietlenie ładowacza
     loader.show();
 
     $.ajax({
@@ -81,8 +78,7 @@ window.rest_request = function(method, path, data, onSuccessFunction) {
     });
 };
 
-window.refresh_blocks = function(bricks, admin, onSuccessFunction) {
-    // Wyswietlenie ładowacza
+window.refresh_blocks = function(bricks, onSuccessFunction) {
     loader.show();
 
     onSuccessFunction =
@@ -92,11 +88,9 @@ window.refresh_blocks = function(bricks, admin, onSuccessFunction) {
     var query = splittedUrl.length > 1 ? splittedUrl.pop() : "";
 
     $.ajax({
-        type: "POST",
-        url: buildUrl(admin ? "jsonhttp_admin.php" : "jsonhttp.php") + "?" + query,
+        type: "GET",
+        url: buildUrl("/api/bricks/" + bricks) + "?" + query,
         data: {
-            action: "refresh_blocks",
-            bricks: bricks,
             pid: typeof currentPage !== "undefined" ? currentPage : undefined,
         },
         complete: function() {
@@ -153,9 +147,17 @@ window.trimSlashes = function(text) {
     return text.replace(/^\/|\/$/g, "");
 };
 
-window.buildUrl = function(path) {
+window.buildUrl = function(path, query = {}) {
     var prefix = typeof baseUrl !== "undefined" ? trimSlashes(baseUrl) + "/" : "";
-    return prefix + trimSlashes(path);
+    var queryString = $.param(query);
+
+    var output = prefix + trimSlashes(path);
+
+    if (queryString) {
+        output += "?" + queryString;
+    }
+
+    return output;
 };
 
 window.removeFormWarnings = function() {

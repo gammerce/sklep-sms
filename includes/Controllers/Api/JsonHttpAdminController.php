@@ -15,14 +15,13 @@ use App\Repositories\UserRepository;
 use App\Responses\ApiResponse;
 use App\Responses\PlainResponse;
 use App\Services\ChargeWallet\ServiceChargeWalletSimple;
-use App\Settings;
-use App\Template;
-use App\TranslationManager;
 use App\Services\Interfaces\IServiceActionExecute;
 use App\Services\Interfaces\IServiceAdminManage;
 use App\Services\Interfaces\IServiceAvailableOnServers;
 use App\Services\Interfaces\IServiceServiceCodeAdminManage;
 use App\Services\Interfaces\IServiceUserServiceAdminAdd;
+use App\Settings;
+use App\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 
@@ -35,7 +34,6 @@ class JsonHttpAdminController
         Auth $auth,
         Path $path,
         Settings $settings,
-        Template $templates,
         TranslationManager $translationManager,
         ServerRepository $serverRepository,
         PriceListRepository $priceListRepository,
@@ -1762,33 +1760,6 @@ class JsonHttpAdminController
             }
 
             return new ApiResponse("not_deleted", $lang->translate('no_delete_log'), 0);
-        }
-
-        if ($action == "refresh_blocks") {
-            if (isset($_POST['bricks'])) {
-                $bricks = explode(";", $_POST['bricks']);
-            }
-
-            $data = [];
-
-            foreach ($bricks as $brick) {
-                // Nie ma takiego bloku do odświeżenia
-                if (($block = $heart->getBlock($brick)) === null) {
-                    continue;
-                }
-
-                $data[$block->getContentId()]['content'] = $block->getContent(
-                    $request->query->all(),
-                    $request->request->all()
-                );
-                if ($data[$block->getContentId()]['content'] !== null) {
-                    $data[$block->getContentId()]['class'] = $block->getContentClass();
-                } else {
-                    $data[$block->getContentId()]['class'] = "";
-                }
-            }
-
-            return new PlainResponse(json_encode($data));
         }
 
         if ($action == "get_action_box") {
