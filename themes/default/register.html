@@ -1,159 +1,148 @@
 <form id="register">
-    <dl>
+    <dl class="form">
         <dt>{$lang->translate('required_data')}</dt>
         <dd>
-            <table class="register_names">
-                <tr>
-                    <td colspan="2">
-                        <div class="field">
-                            <label for="username" class="label">
-                                {$lang->translate('username')}
-                            </label>
-                            <div class="control">
-                                <input
-                                    id="username"
-                                    name="username"
-                                    type="text"
-                                    class="input is-small"
-                                    required
-                                />
-                            </div>
+            <div class="columns is-multiline">
+                <div class="column is-full">
+                    <div class="field">
+                        <label for="username" class="label">
+                            {$lang->translate('username')}
+                        </label>
+                        <div class="control">
+                            <input
+                                id="username"
+                                name="username"
+                                type="text"
+                                class="input is-small"
+                                required
+                            />
                         </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="field">
-                            <label for="password" class="label"
-                                >{$lang->translate('password')}</label
-                            >
-                            <div class="control">
-                                <input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    class="input is-small"
-                                    autocomplete="off"
-                                    required
-                                />
-                            </div>
+                    </div>
+                </div>
+
+                <div class="column is-half">
+                    <div class="field">
+                        <label for="password" class="label">
+                            {$lang->translate('password')}
+                        </label>
+                        <div class="control">
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                class="input is-small"
+                                autocomplete="off"
+                                required
+                            />
                         </div>
-                    </td>
-                    <td>
-                        <div class="field">
-                            <label for="password_repeat" class="label">
-                                {$lang->translate('password_repeat')}
-                            </label>
-                            <div class="control">
-                                <input
-                                    id="password_repeat"
-                                    name="password_repeat"
-                                    type="password"
-                                    class="input is-small"
-                                    autocomplete="off"
-                                    required
-                                />
-                            </div>
+                    </div>
+                </div>
+
+                <div class="column is-half">
+                    <div class="field">
+                        <label for="password_repeat" class="label">
+                            {$lang->translate('password_repeat')}
+                        </label>
+                        <div class="control">
+                            <input
+                                id="password_repeat"
+                                name="password_repeat"
+                                type="password"
+                                class="input is-small"
+                                autocomplete="off"
+                                required
+                            />
                         </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="field">
-                            <label for="email" class="label">E-mail</label>
-                            <div class="control">
-                                <input
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    class="input is-small"
-                                    required
-                                />
-                            </div>
+                    </div>
+                </div>
+
+                <div class="column is-half">
+                    <div class="field">
+                        <label for="email" class="label">E-mail</label>
+                        <div class="control">
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                class="input is-small"
+                                required
+                            />
                         </div>
-                    </td>
-                    <td>
-                        <div class="field">
-                            <label for="email_repeat" class="label"
-                                >{$lang->translate('email_repeat')}</label
-                            >
-                            <div class="control">
-                                <input
-                                    id="email_repeat"
-                                    name="email_repeat"
-                                    type="email"
-                                    class="input is-small"
-                                    required
-                                />
-                            </div>
+                    </div>
+                </div>
+
+                <div class="column is-half">
+                    <div class="field">
+                        <label for="email_repeat" class="label">
+                            {$lang->translate('email_repeat')}
+                        </label>
+                        <div class="control">
+                            <input
+                                id="email_repeat"
+                                name="email_repeat"
+                                type="email"
+                                class="input is-small"
+                                required
+                            />
                         </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="line"></td>
-                </tr>
-            </table>
+                    </div>
+                </div>
+            </div>
         </dd>
 
         <dt>{$lang->translate('optional_data')} *</dt>
         <dd>
-            <table class="register_names">
-                <tr>
-                    <td>
+            <div class="columns is-multiline">
+                <div class="column is-half">
+                    <div class="field">
                         <label for="forename" class="label">{$lang->translate('firstname')}</label>
-                    </td>
-                    <td>
-                        <div class="field">
-                            <div class="control">
-                                <input
-                                    id="forename"
-                                    name="forename"
-                                    type="text"
-                                    class="input is-small"
-                                    maxlength="32"
-                                />
-                            </div>
+
+                        <div class="control">
+                            <input
+                                id="forename"
+                                name="forename"
+                                type="text"
+                                class="input is-small"
+                                maxlength="32"
+                            />
                         </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
+                    </div>
+                </div>
+
+                <div class="column is-half">
+                    <div class="field">
                         <label for="surname" class="label">{$lang->translate('surname')}</label>
-                    </td>
-                    <td>
-                        <div class="field">
-                            <div class="control">
-                                <input
-                                    id="surname"
-                                    name="surname"
-                                    type="text"
-                                    class="input is-small"
-                                    maxlength="64"
-                                />
-                            </div>
+
+                        <div class="control">
+                            <input
+                                id="surname"
+                                name="surname"
+                                type="text"
+                                class="input is-small"
+                                maxlength="64"
+                            />
                         </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
+                    </div>
+                </div>
+
+                <div class="column is-full">
+                    <div class="field">
                         <label for="steam_id" class="label">{$lang->translate('sid')}</label>
-                    </td>
-                    <td>
-                        <div class="field">
-                            <div class="control">
-                                <input
-                                    id="steam_id"
-                                    name="steam_id"
-                                    type="text"
-                                    class="input is-small"
-                                    maxlength="32"
-                                />
-                            </div>
+
+                        <div class="control">
+                            <input
+                                id="steam_id"
+                                name="steam_id"
+                                type="text"
+                                class="input is-small"
+                                maxlength="32"
+                            />
                         </div>
-                    </td>
-                </tr>
-            </table>
+                    </div>
+                </div>
+            </div>
         </dd>
+
         <dt>{$lang->translate('antispam_question')}</dt>
         <dd>
             <table class="register_antispam">

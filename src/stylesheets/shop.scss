@@ -3,12 +3,6 @@
 @import "partials/loader";
 @import "partials/infobox";
 
-//.button.input-suffix {
-//  border-color: transparent;
-//  color: #fff;
-//  background-color: #4a4a4a;
-//}
-
 body {
     background: url("../images/background.jpg") no-repeat fixed;
     background-size: cover;
@@ -278,24 +272,30 @@ body {
     padding-right: 12px;
     padding-top: 6px;
     text-align: right;
+
+    img {
+        max-height: 25px;
+        max-width: 40px;
+        filter: grayscale(100%);
+        -webkit-filter: grayscale(100%);
+
+        &.current {
+            max-height: 28px;
+            max-width: 45px;
+            filter: grayscale(0%) !important;
+            -webkit-filter: grayscale(0%) !important;
+        }
+
+        &:hover {
+            filter: grayscale(0%);
+            -webkit-filter: grayscale(0%);
+            cursor: pointer;
+        }
+    }
 }
 
-#language_choice img {
-    max-height: 25px;
-    max-width: 40px;
-    filter: grayscale(100%);
-    -webkit-filter: grayscale(100%);
-}
-
-#language_choice img.current {
-    max-height: 28px;
-    max-width: 45px;
-    filter: grayscale(0%) !important;
-    -webkit-filter: grayscale(0%) !important;
-}
-
-#language_choice img:hover {
-    filter: grayscale(0%);
-    -webkit-filter: grayscale(0%);
-    cursor: pointer;
+dl.form {
+    dd {
+        padding: 1rem 1rem 2rem;
+    }
 }
