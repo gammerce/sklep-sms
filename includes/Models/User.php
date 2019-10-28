@@ -28,6 +28,9 @@ class User
     /** @var string */
     private $surname;
 
+    /** @var string */
+    private $steamId;
+
     /** @var array */
     private $groups = [];
 
@@ -100,6 +103,7 @@ class User
             $this->email = $row['email'];
             $this->forename = $row['forename'];
             $this->surname = $row['surname'];
+            $this->steamId = $row['steam_id'];
             $this->groups = explode(';', $row['groups']);
             $this->regDate = $row['regdate'];
             $this->lastActive = $row['lastactiv'];
@@ -372,5 +376,21 @@ class User
     public function setPlatform($platform)
     {
         $this->platform = $platform;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSteamId()
+    {
+        return $this->steamId;
+    }
+
+    /**
+     * @param string $steamId
+     */
+    public function setSteamId($steamId)
+    {
+        $this->steamId = $steamId;
     }
 }

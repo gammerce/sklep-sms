@@ -41,7 +41,7 @@ class UserProfileResource
             $warnings['username'][] = $lang->translate('nick_occupied');
         }
 
-        if ($warning = check_for_warnings("sid", $steamId)) {
+        if ($steamId && ($warning = check_for_warnings("sid", $steamId))) {
             $warnings['steam_id'] = array_merge((array) $warnings['steam_id'], $warning);
         }
 
@@ -53,6 +53,7 @@ class UserProfileResource
         $user->setUsername($username);
         $user->setForename($forename);
         $user->setSurname($surname);
+        $user->setSteamId($steamId);
         // TODO Update steamId
 
         $userRepository->update($user);

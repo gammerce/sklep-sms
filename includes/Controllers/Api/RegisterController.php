@@ -33,6 +33,7 @@ class RegisterController
         $emailr = trim($request->request->get('email_repeat'));
         $forename = trim($request->request->get('forename'));
         $surname = trim($request->request->get('surname'));
+        $steamId = trim($request->request->get('steam_id'));
         $asId = $request->request->get('as_id');
         $asAnswer = $request->request->get('as_answer');
 
@@ -71,6 +72,10 @@ class RegisterController
         );
         if ($db->numRows($result)) {
             $warnings['username'][] = $lang->translate('nick_occupied');
+        }
+
+        if ($steamId && ($warning = check_for_warnings("sid", $steamId))) {
+            $warnings['steam_id'] = array_merge((array) $warnings['steam_id'], $warning);
         }
 
         // Password
@@ -121,6 +126,7 @@ class RegisterController
             $email,
             $forename,
             $surname,
+            $steamId,
             get_ip($request)
         );
 
