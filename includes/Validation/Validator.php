@@ -24,10 +24,17 @@ class Validator
         foreach ($this->rules as $attribute => $rules) {
             /** @var Rule $rule */
             foreach ($rules as $rule) {
-                $warnings = $rule->validate($attribute, array_get($this->data, $attribute), $this->data);
+                $warnings = $rule->validate(
+                    $attribute,
+                    array_get($this->data, $attribute),
+                    $this->data
+                );
 
                 if ($warnings) {
-                    $result[$attribute] = array_merge(array_get($result, $attribute, []), $warnings);
+                    $result[$attribute] = array_merge(
+                        array_get($result, $attribute, []),
+                        $warnings
+                    );
                 }
             }
         }
