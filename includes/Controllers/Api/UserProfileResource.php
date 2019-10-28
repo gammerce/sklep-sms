@@ -2,21 +2,24 @@
 namespace App\Controllers\Api;
 
 use App\Auth;
-use App\Database;
-use App\Exceptions\ValidationException;
 use App\Repositories\UserRepository;
 use App\Responses\ApiResponse;
 use App\TranslationManager;
+use App\Validation\Rules\RequiredRule;
+use App\Validation\Rules\SteamIdRule;
+use App\Validation\Rules\UniqueUsernameRule;
+use App\Validation\Validator;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserProfileResource
 {
     public function put(
         Request $request,
-        Database $db,
         TranslationManager $translationManager,
         UserRepository $userRepository,
-        Auth $auth
+        Auth $auth,
+        UniqueUsernameRule $uniqueUsernameRule,
+        RequiredRule $requiredRule
     ) {
         $lang = $translationManager->user();
 
@@ -25,36 +28,24 @@ class UserProfileResource
         $surname = trim($request->request->get('surname'));
         $steamId = trim($request->request->get('steam_id'));
 
-        $warnings = [];
-
-        if ($warning = check_for_warnings("username", $username)) {
-            $warnings['username'] = array_merge((array) $warnings['username'], $warning);
-        }
-
-        $result = $db->query(
-            $db->prepare(
-                "SELECT `uid` FROM `" . TABLE_PREFIX . "users` " . "WHERE `username` = '%s'",
-                [$username]
-            )
+        $validator = new Validator(
+            [
+                "username" => $username,
+                "steam_id" => $steamId,
+            ],
+            [
+                "username" => [$requiredRule, $uniqueUsernameRule],
+                "steam_id" => [new SteamIdRule()],
+            ]
         );
-        if ($db->numRows($result)) {
-            $warnings['username'][] = $lang->translate('nick_occupied');
-        }
 
-        if ($steamId && ($warning = check_for_warnings("sid", $steamId))) {
-            $warnings['steam_id'] = array_merge((array) $warnings['steam_id'], $warning);
-        }
-
-        if ($warnings) {
-            throw new ValidationException($warnings);
-        }
+        $validator->validateOrFail();
 
         $user = $auth->user();
         $user->setUsername($username);
         $user->setForename($forename);
         $user->setSurname($surname);
         $user->setSteamId($steamId);
-        // TODO Update steamId
 
         $userRepository->update($user);
 

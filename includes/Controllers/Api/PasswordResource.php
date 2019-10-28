@@ -29,7 +29,7 @@ class PasswordResource
             $warnings['pass'] = array_merge((array) $warnings['pass'], $warning);
         }
         if ($pass != $passr) {
-            $warnings['pass_repeat'][] = $lang->translate('different_pass');
+            $warnings['pass_repeat'][] = $lang->translate('different_values');
         }
 
         if (hash_password($oldpass, $user->getSalt()) != $user->getPassword()) {
