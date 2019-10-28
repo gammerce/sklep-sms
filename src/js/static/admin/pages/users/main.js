@@ -148,7 +148,7 @@
 
         $.ajax({
             type: "PUT",
-            url: buildUrl("/admin/users/" + userId + "/password"),
+            url: buildUrl("/api/admin/users/" + userId + "/password"),
             data: $(this).serialize(),
             complete: function() {
                 loader.hide();

@@ -23,7 +23,7 @@ use App\Controllers\Api\SessionLanguageResource;
 use App\Controllers\Api\TemplateResource;
 use App\Controllers\Api\TransferController;
 use App\Controllers\Api\UpdateController;
-use App\Controllers\Api\UserPasswordResource;
+use App\Controllers\Api\Admin\UserPasswordResource;
 use App\Controllers\Api\UserProfileResource;
 use App\Controllers\Api\UserServiceBrickController;
 use App\Controllers\Api\UserServiceEditFormController;
@@ -230,7 +230,7 @@ class RoutesManager
                     'uses' => AdminController::class . '@action',
                 ]);
 
-                $r->put('/admin/users/{userId}/password', [
+                $r->put('/api/admin/users/{userId}/password', [
                     'middlewares' => [[RequireAuthorization::class, "manage_users"]],
                     'uses' => UserPasswordResource::class . '@put',
                 ]);
