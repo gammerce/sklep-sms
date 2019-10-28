@@ -16,6 +16,9 @@ use App\Controllers\Api\ServiceLongDescriptionResource;
 use App\Controllers\Api\SessionLanguageResource;
 use App\Controllers\Api\TemplateResource;
 use App\Controllers\Api\UserProfileResource;
+use App\Controllers\Api\UserServiceBrickController;
+use App\Controllers\Api\UserServiceEditFormController;
+use App\Controllers\Api\UserServiceResource;
 use App\Controllers\View\AdminController;
 use App\Controllers\View\ExtraStuffController;
 use App\Controllers\View\IndexController;
@@ -176,6 +179,18 @@ class RoutesManager
 
                         $r->get('/api/services/{serviceId}/long_description', [
                             'uses' => ServiceLongDescriptionResource::class . '@get',
+                        ]);
+
+                        $r->get('/api/user_services/{userServiceId}/edit_form', [
+                            'uses' => UserServiceEditFormController::class . '@get',
+                        ]);
+
+                        $r->get('/api/user_services/{userServiceId}/brick', [
+                            'uses' => UserServiceBrickController::class . '@get',
+                        ]);
+
+                        $r->put('/api/user_services/{userServiceId}', [
+                            'uses' => UserServiceResource::class . '@put',
                         ]);
                     }
                 );
