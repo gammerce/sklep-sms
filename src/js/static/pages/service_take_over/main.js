@@ -10,15 +10,12 @@ $(document).delegate("#form_service_take_over [name=service]", "change", functio
     }
 
     var serviceId = $(this).val();
-    rest_request(
-        "GET",
-        "/api/services/" + serviceId + "/take_over/create_form",
-        {},
-        function(html) {
-            $("#form_service_take_over .extra_data").html(html);
-            $("#form_service_take_over .take_over").show();
-        }
-    );
+    rest_request("GET", "/api/services/" + serviceId + "/take_over/create_form", {}, function(
+        html
+    ) {
+        $("#form_service_take_over .extra_data").html(html);
+        $("#form_service_take_over .take_over").show();
+    });
 });
 
 $(document).delegate("#form_service_take_over", "submit", function(e) {
@@ -27,7 +24,9 @@ $(document).delegate("#form_service_take_over", "submit", function(e) {
     if (loader.blocked) return;
     loader.show();
 
-    var serviceId = $(this).find("[name=service]").val();
+    var serviceId = $(this)
+        .find("[name=service]")
+        .val();
 
     $.ajax({
         type: "POST",

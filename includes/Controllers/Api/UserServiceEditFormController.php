@@ -11,8 +11,14 @@ use App\TranslationManager;
 
 class UserServiceEditFormController
 {
-    public function get($userServiceId, TranslationManager $translationManager, Settings $settings, Auth $auth, Heart $heart, Template $template)
-    {
+    public function get(
+        $userServiceId,
+        TranslationManager $translationManager,
+        Settings $settings,
+        Auth $auth,
+        Heart $heart,
+        Template $template
+    ) {
         $lang = $translationManager->user();
         $user = $auth->user();
 
@@ -49,8 +55,6 @@ class UserServiceEditFormController
 
         $buttons = $template->render("services/my_services_savencancel");
 
-        return new HtmlResponse(
-            $buttons . $serviceModule->userOwnServiceEditFormGet($userService)
-        );
+        return new HtmlResponse($buttons . $serviceModule->userOwnServiceEditFormGet($userService));
     }
 }

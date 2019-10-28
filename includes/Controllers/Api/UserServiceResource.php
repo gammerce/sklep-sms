@@ -11,8 +11,14 @@ use Symfony\Component\HttpFoundation\Request;
 
 class UserServiceResource
 {
-    public function put($userServiceId, Request $request, TranslationManager $translationManager, Heart $heart, Auth $auth, Settings $settings)
-    {
+    public function put(
+        $userServiceId,
+        Request $request,
+        TranslationManager $translationManager,
+        Heart $heart,
+        Auth $auth,
+        Settings $settings
+    ) {
         $lang = $translationManager->user();
         $user = $auth->user();
 

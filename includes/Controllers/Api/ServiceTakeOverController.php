@@ -10,8 +10,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ServiceTakeOverController
 {
-    public function post($service, Request $request, Heart $heart, TranslationManager $translationManager)
-    {
+    public function post(
+        $service,
+        Request $request,
+        Heart $heart,
+        TranslationManager $translationManager
+    ) {
         $lang = $translationManager->user();
 
         if (

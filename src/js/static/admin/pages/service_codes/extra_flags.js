@@ -12,7 +12,10 @@ $(document).delegate("#form_service_code_add [name=server]", "change", function(
         return;
     }
 
-    var serviceId = module.closest("form").find("[name=service]").val();
+    var serviceId = module
+        .closest("form")
+        .find("[name=service]")
+        .val();
 
     rest_request(
         "POST",

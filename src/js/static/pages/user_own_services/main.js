@@ -3,31 +3,23 @@ $(document).delegate("#user_own_services .edit_row", "click", function() {
     var rowId = $(this).parents("form:first");
     var userServiceId = rowId.data("row");
 
-    rest_request(
-        "GET",
-        "/api/user_services/" + userServiceId + "/edit_form",
-        {},
-        function(html) {
-            rowId.html(html);
-            rowId.parents(".brick:first").addClass("active");
+    rest_request("GET", "/api/user_services/" + userServiceId + "/edit_form", {}, function(html) {
+        rowId.html(html);
+        rowId.parents(".brick:first").addClass("active");
 
-            // Dodajemy event, aby powróciło do poprzedniego stanu po kliknięciu "Anuluj"
-            rowId.find(".cancel").click({ row_id: rowId }, function(e) {
-                var rowId = e.data.row_id;
-                var userServiceId = rowId.data("row");
+        // Dodajemy event, aby powróciło do poprzedniego stanu po kliknięciu "Anuluj"
+        rowId.find(".cancel").click({ row_id: rowId }, function(e) {
+            var rowId = e.data.row_id;
+            var userServiceId = rowId.data("row");
 
-                rest_request(
-                    "GET",
-                    "/api/user_services/" + userServiceId + "/brick",
-                    {},
-                    function(html) {
-                        rowId.html(html);
-                        rowId.parents(".brick:first").removeClass("active");
-                    }
-                );
+            rest_request("GET", "/api/user_services/" + userServiceId + "/brick", {}, function(
+                html
+            ) {
+                rowId.html(html);
+                rowId.parents(".brick:first").removeClass("active");
             });
-        }
-    );
+        });
+    });
 });
 
 // Edit service

@@ -9,8 +9,13 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ServiceActionController
 {
-    public function post($service, $action, Request $request, Heart $heart, TranslationManager $translationManager)
-    {
+    public function post(
+        $service,
+        $action,
+        Request $request,
+        Heart $heart,
+        TranslationManager $translationManager
+    ) {
         $lang = $translationManager->user();
 
         if (
@@ -20,8 +25,6 @@ class ServiceActionController
             return new PlainResponse($lang->translate('bad_module'));
         }
 
-        return new PlainResponse(
-            $serviceModule->actionExecute($action, $request->request->all())
-        );
+        return new PlainResponse($serviceModule->actionExecute($action, $request->request->all()));
     }
 }

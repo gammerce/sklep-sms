@@ -11,8 +11,13 @@ use App\TranslationManager;
 
 class UserServiceBrickController
 {
-    public function get($userServiceId, TranslationManager $translationManager, Auth $auth, Settings $settings, Heart $heart)
-    {
+    public function get(
+        $userServiceId,
+        TranslationManager $translationManager,
+        Auth $auth,
+        Settings $settings,
+        Heart $heart
+    ) {
         $lang = $translationManager->user();
         $user = $auth->user();
 
@@ -51,8 +56,6 @@ class UserServiceBrickController
             ]);
         }
 
-        return new HtmlResponse(
-            $serviceModule->userOwnServiceInfoGet($userService, $buttonEdit)
-        );
+        return new HtmlResponse($serviceModule->userOwnServiceInfoGet($userService, $buttonEdit));
     }
 }
