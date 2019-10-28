@@ -43,8 +43,8 @@ class RegisterTest extends IndexTestCase
         $user = new User(0, $username, $password);
         $this->assertNotNull($user->getUid());
         $this->assertEquals($email, $user->getEmail(false));
-        $this->assertEquals($forename, $user->getForename(false));
-        $this->assertEquals($surname, $user->getSurname(false));
+        $this->assertEquals($forename, $user->getForename());
+        $this->assertEquals($surname, $user->getSurname());
         $this->assertEquals($steamId, $user->getSteamId());
         $this->assertNotNull($user->getRegDate());
     }

@@ -64,8 +64,8 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
             'method' => 'POST',
             'service' => $this->getService(),
             'desc' => $purchase->getDesc(),
-            'forname' => $purchase->user->getForename(false),
-            'surname' => $purchase->user->getSurname(false),
+            'forname' => $purchase->user->getForename(),
+            'surname' => $purchase->user->getSurname(),
             'email' => $purchase->getEmail(),
             'amount' => $cost,
             'userdata' => $dataFilename,
@@ -74,8 +74,8 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
                     $cost .
                     $purchase->getDesc() .
                     $dataFilename .
-                    $purchase->user->getForename(false) .
-                    $purchase->user->getSurname(false) .
+                    $purchase->user->getForename() .
+                    $purchase->user->getSurname() .
                     $purchase->getEmail() .
                     $this->getKey()
             ),

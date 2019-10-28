@@ -65,6 +65,7 @@ return [
         'Payment transfer accepted. Purchase ID: {1} Transaction ID: {2} Amount: {3} Service: {4} {5}({6})({7})',
     'payment_wallet' => 'Wallet payment',
     'price' => 'Price',
+    'profile' => 'Profile',
     'purchase' => 'Service purchase',
     'purchase_code' => 'Code {1} was used to purchase service by {2}({3}). Payment ID: {4}',
     'purchase_form_validated' => 'Given data is correct. Now choose payment method.',

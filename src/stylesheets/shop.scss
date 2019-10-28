@@ -295,6 +295,13 @@ body {
 }
 
 dl.form {
+    dt {
+        font-size: 18px;
+        font-weight: bold;
+        color: #aaa;
+        text-shadow: 1px 1px 1px #000;
+    }
+
     dd {
         padding: 1rem 1rem 2rem;
     }

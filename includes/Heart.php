@@ -235,6 +235,16 @@ class Heart
     // Obsługa stron
     //
 
+    public function registerUserPage($pageId, $class)
+    {
+        $this->registerPage($pageId, $class, "user");
+    }
+
+    public function registerAdminPage($pageId, $class)
+    {
+        $this->registerPage($pageId, $class, "admin");
+    }
+
     /**
      * Rejestruje strone
      *
@@ -244,7 +254,7 @@ class Heart
      *
      * @throws Exception
      */
-    public function registerPage($pageId, $class, $type = "user")
+    private function registerPage($pageId, $class, $type)
     {
         if ($this->pageExists($pageId, $type)) {
             throw new Exception(
@@ -266,11 +276,6 @@ class Heart
     public function pageExists($pageId, $type = "user")
     {
         return isset($this->pagesClasses[$type][$pageId]);
-    }
-
-    public function getPages($type = "user")
-    {
-        return $this->pagesClasses[$type];
     }
 
     /**

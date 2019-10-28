@@ -61,8 +61,8 @@ class UserRepository
                     "WHERE `uid` = '%d'",
                 [
                     $user->getUsername(false),
-                    $user->getForename(false),
-                    $user->getSurname(false),
+                    $user->getForename(),
+                    $user->getSurname(),
                     $user->getEmail(false),
                     implode(";", $user->getGroups()),
                     $user->getWallet(),

@@ -207,13 +207,11 @@ class User
     }
 
     /**
-     * @param bool $escape
-     *
      * @return string
      */
-    public function getForename($escape = true)
+    public function getForename()
     {
-        return $escape ? htmlspecialchars($this->forename) : $this->forename;
+        return $this->forename;
     }
 
     /**
@@ -225,13 +223,11 @@ class User
     }
 
     /**
-     * @param bool $escape
-     *
      * @return string
      */
-    public function getSurname($escape = true)
+    public function getSurname()
     {
-        return $escape ? htmlspecialchars($this->surname) : $this->surname;
+        return $this->surname;
     }
 
     /**

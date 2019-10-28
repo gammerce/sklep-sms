@@ -67,6 +67,7 @@ return [
         'Zaakceptowano płatność przelewem. ID zakupu {1} ID transakcji: {2} Kwota: {3} Usługa: {4} {5}({6})({7})',
     'payment_wallet' => 'Płatność portfel',
     'price' => 'Cena',
+    'profile' => 'Profil',
     'purchase' => 'Zakup usługi',
     'purchase_code' => 'Wykorzystano kod {1} do zakupu usługi przez {2}({3}). ID płatności: {4}',
     'purchase_form_validated' => 'Wprowadzone dane są prawidłowe. Wybierz teraz sposób płatności.',

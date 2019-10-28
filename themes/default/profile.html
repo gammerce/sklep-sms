@@ -1,0 +1,86 @@
+<form id="profile-update">
+  <dl class="form">
+    <dt>{$lang->translate('required_data')}</dt>
+    <dd>
+      <div class="columns is-multiline">
+        <div class="column is-full">
+          <div class="field">
+            <label for="username" class="label">
+              {$lang->translate('username')}
+            </label>
+            <div class="control">
+              <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  class="input is-small"
+                  value="{$username}"
+                  required
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </dd>
+
+    <dt>{$lang->translate('optional_data')} *</dt>
+    <dd>
+      <div class="columns is-multiline">
+        <div class="column is-half">
+          <div class="field">
+            <label for="forename" class="label">{$lang->translate('firstname')}</label>
+
+            <div class="control">
+              <input
+                  id="forename"
+                  name="forename"
+                  type="text"
+                  class="input is-small"
+                  maxlength="32"
+                  value="{$forename}"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="column is-half">
+          <div class="field">
+            <label for="surname" class="label">{$lang->translate('surname')}</label>
+
+            <div class="control">
+              <input
+                  id="surname"
+                  name="surname"
+                  type="text"
+                  class="input is-small"
+                  maxlength="64"
+                  value="{$surname}"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="column is-full">
+          <div class="field">
+            <label for="steam_id" class="label">{$lang->translate('sid')}</label>
+
+            <div class="control">
+              <input
+                  id="steam_id"
+                  name="steam_id"
+                  type="text"
+                  class="input is-small"
+                  maxlength="32"
+                  value="{$steamId}"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </dd>
+  </dl>
+
+  <button type="submit" class="button is-success">
+    {$lang->translate('edit')}
+  </button>
+</form>
