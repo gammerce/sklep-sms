@@ -27,7 +27,6 @@ $(document).delegate(".action_box [name=module]", "change", function() {
 
     fetch_data(
         "get_service_module_extra_fields",
-        true,
         {
             module: $(this).val(),
             service: $(".action_box [name=id2]").val(),

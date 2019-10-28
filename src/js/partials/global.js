@@ -29,7 +29,7 @@ window.getnset_template = function(element, template, data, onSuccessFunction) {
     });
 };
 
-window.fetch_data = function(action, admin, data, onSuccessFunction) {
+window.fetch_data = function(action, data, onSuccessFunction) {
     // Sprawdzenie czy data została przesłana
     data = typeof data !== "undefined" ? data : {};
     onSuccessFunction =
@@ -42,7 +42,7 @@ window.fetch_data = function(action, admin, data, onSuccessFunction) {
 
     $.ajax({
         type: "POST",
-        url: buildUrl(admin ? "jsonhttp_admin.php" : "jsonhttp.php"),
+        url: buildUrl("jsonhttp_admin.php"),
         data: data,
         complete: function() {
             loader.hide();

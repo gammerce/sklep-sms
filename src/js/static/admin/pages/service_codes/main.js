@@ -23,7 +23,6 @@ $(document).delegate("#form_service_code_add [name=service]", "change", function
 
     fetch_data(
         "service_code_add_form_get",
-        true,
         {
             service: $(this).val(),
         },

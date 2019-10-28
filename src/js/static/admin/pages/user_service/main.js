@@ -50,7 +50,6 @@ $(document).delegate("#form_user_service_add [name=service]", "change", function
 
     fetch_data(
         "user_service_add_form_get",
-        true,
         {
             service: $(this).val(),
         },
