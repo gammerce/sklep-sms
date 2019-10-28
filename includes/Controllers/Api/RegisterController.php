@@ -112,7 +112,7 @@ class RegisterController
         }
 
         if ($warnings) {
-            throw new ValidationException($warnings);
+            throw new ValidationException($warnings, $data);
         }
 
         $createdUser = $userRepository->create(

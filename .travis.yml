@@ -34,7 +34,10 @@ install:
 script:
   - yarn pretty
   - NODE_ENV=production yarn build
-  - ./vendor/bin/phpunit
+  - ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+
+after_success:
+  - travis_retry php vendor/bin/php-coveralls
 
 before_deploy:
   - rm -Rf vendor
