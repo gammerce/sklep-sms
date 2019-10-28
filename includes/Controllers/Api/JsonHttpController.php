@@ -40,15 +40,6 @@ class JsonHttpController
             return new PlainResponse($output);
         }
 
-        if ($action == "get_purchase_info") {
-            return new PlainResponse(
-                purchase_info([
-                    'purchase_id' => $_POST['purchase_id'],
-                    'action' => "web",
-                ])
-            );
-        }
-
         if ($action == "form_user_service_edit") {
             if (!is_logged()) {
                 return new HtmlResponse($lang->translate('service_cant_be_modified'));

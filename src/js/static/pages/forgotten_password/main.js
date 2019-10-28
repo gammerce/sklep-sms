@@ -24,7 +24,6 @@ $(document).delegate("#form_forgotten_password", "submit", function(e) {
                 infobox.show_info(lang["sth_went_wrong"], false);
             }
 
-            // Wyświetlenie zwróconego info
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
         error: function(error) {

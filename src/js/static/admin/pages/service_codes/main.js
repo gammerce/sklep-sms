@@ -68,7 +68,6 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
                 return;
             }
 
-            // Wyświetlenie zwróconego info
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
         error: function(error) {
@@ -107,7 +106,6 @@ $(document).delegate("#form_service_code_add", "submit", function(e) {
                 return;
             }
 
-            // Wyświetlenie zwróconego info
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
         error: function(error) {

@@ -81,14 +81,12 @@ function purchase_service(method) {
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#payment"), jsonObj.warnings);
             } else if (jsonObj.return_id == "purchased") {
-                // Zmiana zawartosci okienka content na info o zakupie
-                fetch_data("get_purchase_info", false, { purchase_id: jsonObj.bsid }, function(
-                    message
-                ) {
+                // Update content window with purchase details
+                rest_request("GET", "/api/purchases/" + jsonObj.bsid, {}, function(message) {
                     $("#content").html(message);
                 });
 
-                // Odswieżenie stanu portfela
+                // Refresh wallet
                 refresh_blocks("wallet", function() {
                     $("#wallet").effect("highlight", "slow");
                 });
@@ -110,7 +108,6 @@ function purchase_service(method) {
                 return;
             }
 
-            // Wyświetlenie zwróconego info
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
         error: function(error) {

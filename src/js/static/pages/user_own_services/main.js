@@ -63,7 +63,6 @@ $(document).delegate("#user_own_services .row", "submit", function(e) {
                 go_to_payment(jsonObj.data, jsonObj.sign);
             }
 
-            // Wyświetlenie zwróconego info
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
         error: function(error) {

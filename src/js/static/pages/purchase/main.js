@@ -29,7 +29,6 @@ $(document).delegate("#go_to_payment", "click", function() {
                 return;
             }
 
-            // Wyświetlenie zwróconego info
             if (typeof jsonObj.length !== "undefined")
                 infobox.show_info(jsonObj.text, jsonObj.positive, jsonObj.length);
             else infobox.show_info(jsonObj.text, jsonObj.positive);

@@ -48,7 +48,6 @@ $(document).delegate("#form_service_take_over", "submit", function(e) {
                 return;
             }
 
-            // Wyświetlenie zwróconego info
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
         error: function(error) {

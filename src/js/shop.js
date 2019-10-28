@@ -15,11 +15,7 @@ $(document).ready(function() {
 });
 
 /**
- * Funkcja przechodzi do strony płatności
- *
- * @param url
- * @param data
- * @param sign
+ * Go to payment page
  */
 window.go_to_payment = function(data, sign) {
     var form = $("<form>", {
@@ -27,7 +23,7 @@ window.go_to_payment = function(data, sign) {
         method: "POST",
     });
 
-    // Dodajemy dane
+    // Add data
     form.append(
         $("<input>", {
             type: "hidden",
@@ -36,7 +32,7 @@ window.go_to_payment = function(data, sign) {
         })
     );
 
-    // Dodajemy sign danych
+    // Sign data
     form.append(
         $("<input>", {
             type: "hidden",
@@ -45,14 +41,14 @@ window.go_to_payment = function(data, sign) {
         })
     );
 
-    // Bez tego nie dziala pod firefoxem
+    // Required for firefox
     $("body").append(form);
 
-    // Wysyłamy formularz zakupu
+    // Send purchase form
     form.submit();
 };
 
-// Logowanie
+// Login
 $(document).delegate("#form_login", "submit", function(e) {
     e.preventDefault();
     loader.show();
@@ -68,7 +64,7 @@ $(document).delegate("#form_login", "submit", function(e) {
             if (!(jsonObj = json_parse(content))) return;
 
             if (jsonObj.return_id == "logged_in") {
-                $("#user_buttons").css({ overflow: "hidden" }); // Znikniecie pola do logowania
+                $("#user_buttons").css({ overflow: "hidden" }); // Hide login area
                 refresh_blocks(
                     "logged_info,wallet,user_buttons,services_buttons" +
                         ($("#form_login_reload_content").val() == "0" ? "" : ",content")
@@ -80,7 +76,6 @@ $(document).delegate("#form_login", "submit", function(e) {
                 infobox.show_info(lang["sth_went_wrong"], false);
             }
 
-            // Wyświetlenie zwróconego info
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
         error: function(error) {
@@ -89,7 +84,7 @@ $(document).delegate("#form_login", "submit", function(e) {
     });
 });
 
-// Wylogowywanie
+// Logout
 $(document).delegate("#logout", "click", function(e) {
     loader.show();
 
@@ -103,7 +98,6 @@ $(document).delegate("#logout", "click", function(e) {
             if (!(jsonObj = json_parse(content))) return;
 
             if (jsonObj.return_id == "logged_out") {
-                //$("#user_buttons").css({"overflow": "hidden"}); // Znikniecie pola do logowania
                 refresh_blocks("logged_info,wallet,user_buttons,services_buttons,content");
             }
             if (jsonObj.return_id == "already_logged_out") {
@@ -112,7 +106,6 @@ $(document).delegate("#logout", "click", function(e) {
                 infobox.show_info(lang["sth_went_wrong"], false);
             }
 
-            // Wyświetlenie zwróconego info
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
         error: function(error) {
@@ -121,7 +114,7 @@ $(document).delegate("#logout", "click", function(e) {
     });
 });
 
-// Rozwiniecie pola do logowania
+// Expand the login form
 $(document).delegate("#loginarea_roll_button", "click", function() {
     var area = $(".loginarea");
     $(".loginarea table")
@@ -147,13 +140,13 @@ $(document).delegate("#loginarea_roll_button", "click", function() {
         );
 });
 
-// Wybranie języka
+// Choosing a language
 $(document).delegate("#language_choice img", "click", function() {
-    var lang_clicked = $(this)
+    var langClicked = $(this)
         .attr("id")
         .replace("language_", "");
 
-    rest_request("PUT", "/api/session/language", false, { language: lang_clicked }, function() {
+    rest_request("PUT", "/api/session/language", false, { language: langClicked }, function() {
         location.reload();
     });
 });

@@ -23,7 +23,6 @@ $(document).delegate("#form_settings_edit", "submit", function(e) {
                 return;
             }
 
-            // Wyświetlenie zwróconego info
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
         error: function(error) {

@@ -9,6 +9,7 @@ use App\Controllers\Api\PasswordForgottenController;
 use App\Controllers\Api\PasswordResetController;
 use App\Controllers\Api\PasswordResource;
 use App\Controllers\Api\PaymentValidationResource;
+use App\Controllers\Api\PurchaseResource;
 use App\Controllers\Api\PurchaseValidationResource;
 use App\Controllers\Api\RegisterController;
 use App\Controllers\Api\SessionLanguageResource;
@@ -166,6 +167,10 @@ class RoutesManager
 
                         $r->get('/api/bricks/{bricks}', [
                             'uses' => BrickResource::class . '@get',
+                        ]);
+
+                        $r->get('/api/purchases/{purchaseId}', [
+                            'uses' => PurchaseResource::class . '@get',
                         ]);
                     }
                 );
