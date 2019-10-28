@@ -61,7 +61,6 @@ jQuery(document).ready(function($) {
                     return;
                 }
 
-                // Wyświetlenie zwróconego info
                 infobox.show_info(jsonObj.text, jsonObj.positive);
             },
             error: function(error) {

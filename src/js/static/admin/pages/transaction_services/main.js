@@ -30,7 +30,6 @@ $(document).delegate("#form_transaction_service_edit", "submit", function(e) {
                 return;
             }
 
-            // Wyświetlenie zwróconego info
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
         error: function(error) {

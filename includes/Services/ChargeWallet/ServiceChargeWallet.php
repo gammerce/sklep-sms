@@ -191,7 +191,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         return add_bought_service_info(
             $purchaseData->user->getUid(),
             $purchaseData->user->getUsername(),
-            $purchaseData->user->getLastip(),
+            $purchaseData->user->getLastIp(),
             $purchaseData->getPayment('method'),
             $purchaseData->getPayment('payment_id'),
             $this->service['id'],

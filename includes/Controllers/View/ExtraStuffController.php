@@ -54,7 +54,7 @@ class ExtraStuffController
                 $service = $request->query->get("service");
 
                 if (($serviceModule = $heart->getServiceModule($service)) !== null) {
-                    $output = $serviceModule->descriptionFullGet();
+                    $output = $serviceModule->descriptionLongGet();
                 }
 
                 $heart->pageTitle =

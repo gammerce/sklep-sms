@@ -17,7 +17,7 @@ class ChangePasswordTest extends IndexTestCase
         $this->actAs($admin);
 
         // when
-        $response = $this->put("/admin/users/{$user->getUid()}/password", [
+        $response = $this->put("/api/admin/users/{$user->getUid()}/password", [
             "password" => $newPassword,
         ]);
 
@@ -39,7 +39,7 @@ class ChangePasswordTest extends IndexTestCase
         $user = $this->factory->user();
 
         // when
-        $response = $this->put("/admin/users/{$user->getUid()}/password", [
+        $response = $this->put("/api/admin/users/{$user->getUid()}/password", [
             "password" => $password,
         ]);
 

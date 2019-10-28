@@ -2,18 +2,38 @@
 namespace App\Routes;
 
 use App\Application;
+use App\Controllers\Api\BrickResource;
+use App\Controllers\Api\IncomeController;
+use App\Controllers\Api\InstallController;
+use App\Controllers\Api\JsonHttpAdminController;
+use App\Controllers\Api\LogInController;
+use App\Controllers\Api\LogOutController;
+use App\Controllers\Api\PasswordForgottenController;
+use App\Controllers\Api\PasswordResetController;
+use App\Controllers\Api\PasswordResource;
+use App\Controllers\Api\PaymentValidationResource;
+use App\Controllers\Api\PurchaseResource;
+use App\Controllers\Api\PurchaseValidationResource;
+use App\Controllers\Api\RegisterController;
+use App\Controllers\Api\ServiceActionController;
+use App\Controllers\Api\ServiceLongDescriptionResource;
+use App\Controllers\Api\ServiceTakeOverController;
+use App\Controllers\Api\ServiceTakeOverFormController;
+use App\Controllers\Api\SessionLanguageResource;
+use App\Controllers\Api\TemplateResource;
+use App\Controllers\Api\TransferController;
+use App\Controllers\Api\UpdateController;
+use App\Controllers\Api\Admin\UserPasswordResource;
+use App\Controllers\Api\UserProfileResource;
+use App\Controllers\Api\UserServiceBrickController;
+use App\Controllers\Api\UserServiceEditFormController;
+use App\Controllers\Api\UserServiceResource;
 use App\Controllers\View\AdminController;
 use App\Controllers\View\ExtraStuffController;
 use App\Controllers\View\IndexController;
-use App\Controllers\View\SetupController;
-use App\Controllers\Api\InstallController;
-use App\Controllers\Api\UpdateController;
 use App\Controllers\View\JsController;
-use App\Controllers\Api\JsonHttpAdminController;
-use App\Controllers\Api\JsonHttpController;
 use App\Controllers\View\ServerStuffController;
-use App\Controllers\Api\TransferController;
-use App\Controllers\Api\UserPasswordResource;
+use App\Controllers\View\SetupController;
 use App\Middlewares\BlockOnInvalidLicense;
 use App\Middlewares\IsUpToDate;
 use App\Middlewares\LoadSettings;
@@ -47,7 +67,7 @@ class RoutesManager
 
     private function defineRoutes(RouteCollector $r)
     {
-        $r->addRoute('GET', '/js.php', [
+        $r->get('/js.php', [
             'uses' => JsController::class . '@get',
         ]);
 
@@ -63,33 +83,6 @@ class RoutesManager
                 ],
             ],
             function (RouteCollector $r) {
-                $r->addRoute(['GET', 'POST'], '/', [
-                    'middlewares' => [
-                        UpdateUserActivity::class,
-                        RunCron::class,
-                        BlockOnInvalidLicense::class,
-                    ],
-                    'uses' => IndexController::class . '@oldAction',
-                ]);
-
-                $r->addRoute(['GET', 'POST'], '/page/{pageId}', [
-                    'middlewares' => [
-                        UpdateUserActivity::class,
-                        RunCron::class,
-                        BlockOnInvalidLicense::class,
-                    ],
-                    'uses' => IndexController::class . '@action',
-                ]);
-
-                $r->addRoute(['GET', 'POST'], '/index.php', [
-                    'middlewares' => [
-                        UpdateUserActivity::class,
-                        RunCron::class,
-                        BlockOnInvalidLicense::class,
-                    ],
-                    'uses' => IndexController::class . '@oldAction',
-                ]);
-
                 $r->addRoute(['GET', 'POST'], '/transfer/{transferService}', [
                     'uses' => TransferController::class . '@action',
                 ]);
@@ -104,15 +97,118 @@ class RoutesManager
                     'uses' => ServerStuffController::class . '@action',
                 ]);
 
-                $r->addRoute(['GET', 'POST'], '/jsonhttp.php', [
-                    'middlewares' => [BlockOnInvalidLicense::class, UpdateUserActivity::class],
-                    'uses' => JsonHttpController::class . '@action',
-                ]);
-
                 $r->addRoute(['GET', 'POST'], '/transfer_finalize.php', [
                     'middlewares' => [BlockOnInvalidLicense::class],
                     'uses' => TransferController::class . '@oldAction',
                 ]);
+
+                $r->addGroup(
+                    [
+                        "middlewares" => [BlockOnInvalidLicense::class, UpdateUserActivity::class],
+                    ],
+                    function (RouteCollector $r) {
+                        $r->addRoute(['GET', 'POST'], '/', [
+                            'middlewares' => [RunCron::class],
+                            'uses' => IndexController::class . '@oldAction',
+                        ]);
+
+                        $r->addRoute(['GET', 'POST'], '/page/{pageId}', [
+                            'middlewares' => [RunCron::class],
+                            'uses' => IndexController::class . '@action',
+                        ]);
+
+                        $r->addRoute(['GET', 'POST'], '/index.php', [
+                            'middlewares' => [RunCron::class],
+                            'uses' => IndexController::class . '@oldAction',
+                        ]);
+
+                        $r->post('/api/register', [
+                            'uses' => RegisterController::class . '@post',
+                        ]);
+
+                        $r->post('/api/login', [
+                            'uses' => LogInController::class . '@post',
+                        ]);
+
+                        $r->post('/api/logout', [
+                            'uses' => LogOutController::class . '@post',
+                        ]);
+
+                        $r->put('/api/profile', [
+                            "middlewares" => [RequireAuthorization::class],
+                            'uses' => UserProfileResource::class . '@put',
+                        ]);
+
+                        $r->put('/api/session/language', [
+                            'uses' => SessionLanguageResource::class . '@put',
+                        ]);
+
+                        $r->post('/api/password/forgotten', [
+                            'uses' => PasswordForgottenController::class . '@post',
+                        ]);
+
+                        $r->post('/api/password/reset', [
+                            'uses' => PasswordResetController::class . '@post',
+                        ]);
+
+                        $r->put('/api/password', [
+                            "middlewares" => [RequireAuthorization::class],
+                            'uses' => PasswordResource::class . '@put',
+                        ]);
+
+                        $r->get('/api/template/{name}', [
+                            'uses' => TemplateResource::class . '@get',
+                        ]);
+
+                        $r->post('/api/purchase/validation', [
+                            'uses' => PurchaseValidationResource::class . '@post',
+                        ]);
+
+                        $r->post('/api/payment/validation', [
+                            'uses' => PaymentValidationResource::class . '@post',
+                        ]);
+
+                        $r->get('/api/bricks/{bricks}', [
+                            'uses' => BrickResource::class . '@get',
+                        ]);
+
+                        $r->get('/api/purchases/{purchaseId}', [
+                            'uses' => PurchaseResource::class . '@get',
+                        ]);
+
+                        $r->get('/api/services/{serviceId}/long_description', [
+                            'uses' => ServiceLongDescriptionResource::class . '@get',
+                        ]);
+
+                        $r->get('/api/user_services/{userServiceId}/edit_form', [
+                            'uses' => UserServiceEditFormController::class . '@get',
+                        ]);
+
+                        $r->get('/api/user_services/{userServiceId}/brick', [
+                            'uses' => UserServiceBrickController::class . '@get',
+                        ]);
+
+                        $r->put('/api/user_services/{userServiceId}', [
+                            'uses' => UserServiceResource::class . '@put',
+                        ]);
+
+                        $r->get('/api/income', [
+                            'uses' => IncomeController::class . '@get',
+                        ]);
+
+                        $r->post('/api/services/{service}/actions/{action}', [
+                            'uses' => ServiceActionController::class . '@post',
+                        ]);
+
+                        $r->post('/api/services/{service}/take_over', [
+                            'uses' => ServiceTakeOverController::class . '@post',
+                        ]);
+
+                        $r->get('/api/services/{service}/take_over/create_form', [
+                            'uses' => ServiceTakeOverFormController::class . '@get',
+                        ]);
+                    }
+                );
             }
         );
 
@@ -134,7 +230,7 @@ class RoutesManager
                     'uses' => AdminController::class . '@action',
                 ]);
 
-                $r->addRoute("PUT", '/admin/users/{userId}/password', [
+                $r->put('/api/admin/users/{userId}/password', [
                     'middlewares' => [[RequireAuthorization::class, "manage_users"]],
                     'uses' => UserPasswordResource::class . '@put',
                 ]);
@@ -150,17 +246,17 @@ class RoutesManager
             }
         );
 
-        $r->addRoute("GET", "/setup", [
+        $r->get("/setup", [
             'middlewares' => [RequireNotInstalledOrNotUpdated::class],
             'uses' => SetupController::class . "@get",
         ]);
 
-        $r->addRoute("POST", "/api/install", [
+        $r->post("/api/install", [
             'middlewares' => [RequireNotInstalled::class],
             'uses' => InstallController::class . "@post",
         ]);
 
-        $r->addRoute("POST", "/api/update", [
+        $r->post("/api/update", [
             'middlewares' => [RequireInstalledAndNotUpdated::class],
             'uses' => UpdateController::class . "@post",
         ]);

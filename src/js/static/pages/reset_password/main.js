@@ -4,8 +4,8 @@ $(document).delegate("#form_reset_password", "submit", function(e) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp.php"),
-        data: $(this).serialize() + "&action=reset_password",
+        url: buildUrl("/api/password/reset"),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },
@@ -18,12 +18,11 @@ $(document).delegate("#form_reset_password", "submit", function(e) {
                 showWarnings($("#form_reset_password"), jsonObj.warnings);
             } else if (jsonObj.return_id == "password_changed") {
                 // Wyświetl informacje o zmianie hasła
-                getnset_template($("#content"), "reset_password_changed", false);
+                getnset_template($("#content"), "reset_password_changed");
             } else if (!jsonObj.return_id) {
                 infobox.show_info(lang["sth_went_wrong"], false);
             }
 
-            // Wyświetlenie zwróconego info
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
         error: function(error) {

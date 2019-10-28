@@ -1,48 +1,40 @@
-// Kliknięcie edycji usługi
+// Click on edit service
 $(document).delegate("#user_own_services .edit_row", "click", function() {
-    var row_id = $(this).parents("form:first");
+    var rowId = $(this).parents("form:first");
+    var userServiceId = rowId.data("row");
 
-    fetch_data(
-        "form_user_service_edit",
-        false,
-        {
-            id: row_id.data("row"),
-        },
-        function(html) {
-            // Podmieniamy zawartość
-            row_id.html(html);
-            row_id.parents(".brick:first").addClass("active");
+    rest_request("GET", "/api/user_services/" + userServiceId + "/edit_form", {}, function(html) {
+        rowId.html(html);
+        rowId.parents(".brick:first").addClass("active");
 
-            // Dodajemy event, aby powróciło do poprzedniego stanu po kliknięciu "Anuluj"
-            row_id.find(".cancel").click({ row_id: row_id }, function(e) {
-                var row_id = e.data.row_id;
-                fetch_data(
-                    "get_user_service_brick",
-                    false,
-                    {
-                        id: row_id.data("row"),
-                    },
-                    function(html) {
-                        // Podmieniamy zawartość
-                        row_id.html(html);
-                        row_id.parents(".brick:first").removeClass("active");
-                    }
-                );
+        // Dodajemy event, aby powróciło do poprzedniego stanu po kliknięciu "Anuluj"
+        rowId.find(".cancel").click({ row_id: rowId }, function(e) {
+            var rowId = e.data.row_id;
+            var userServiceId = rowId.data("row");
+
+            rest_request("GET", "/api/user_services/" + userServiceId + "/brick", {}, function(
+                html
+            ) {
+                rowId.html(html);
+                rowId.parents(".brick:first").removeClass("active");
             });
-        }
-    );
+        });
+    });
 });
 
-// Wyedytowanie usługi
+// Edit service
 $(document).delegate("#user_own_services .row", "submit", function(e) {
     e.preventDefault();
 
+    var that = $(this);
+    var userServiceId = that.data("row");
+
     loader.show();
-    var temp_this = $(this);
+
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp.php"),
-        data: $(this).serialize() + "&action=user_service_edit&id=" + temp_this.data("row"),
+        type: "PUT",
+        url: buildUrl("/api/user_services/" + userServiceId),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },
@@ -55,15 +47,13 @@ $(document).delegate("#user_own_services .row", "submit", function(e) {
                 infobox.show_info(lang["sth_went_wrong"], false);
                 return;
             } else if (jsonObj.return_id === "warnings") {
-                showWarnings(temp_this, jsonObj.warnings);
+                showWarnings(that, jsonObj.warnings);
             } else if (jsonObj.return_id == "ok") {
                 refresh_blocks("content");
             } else if (jsonObj.return_id == "payment") {
-                // Przechodzimy do płatności
                 go_to_payment(jsonObj.data, jsonObj.sign);
             }
 
-            // Wyświetlenie zwróconego info
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
         error: function(error) {

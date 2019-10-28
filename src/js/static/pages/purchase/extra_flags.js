@@ -53,13 +53,13 @@ $(document).delegate("#form_purchase [name=server]", "change", function() {
         return;
     }
 
-    fetch_data(
-        "service_action_execute",
-        false,
+    var serviceId = form.find("[name=service]").val();
+
+    rest_request(
+        "POST",
+        "/api/service/" + serviceId + "/actions/tariffs_for_server",
         {
-            service_action: "tariffs_for_server",
             server: $(this).val(),
-            service: form.find("[name=service]").val(),
         },
         function(html) {
             form.find("[name=value]").html(html);

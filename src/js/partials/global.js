@@ -1,19 +1,12 @@
-window.getnset_template = function(element, template, admin, data, onSuccessFunction) {
-    // Sprawdzenie czy data została przesłana
-    data = typeof data !== "undefined" ? data : {};
+window.getnset_template = function(element, template, data, onSuccessFunction) {
     onSuccessFunction =
         typeof onSuccessFunction !== "undefined" ? onSuccessFunction : function() {};
 
-    // Dodanie informacji do wysyłanej mapy wartości
-    data["action"] = "get_template";
-    data["template"] = template;
-
-    // Wyswietlenie ładowacza
     loader.show();
 
     $.ajax({
-        type: "POST",
-        url: buildUrl(admin ? "jsonhttp_admin.php" : "jsonhttp.php"),
+        type: "GET",
+        url: buildUrl("/api/template/" + template),
         data: data,
         complete: function() {
             loader.hide();
@@ -36,7 +29,7 @@ window.getnset_template = function(element, template, admin, data, onSuccessFunc
     });
 };
 
-window.fetch_data = function(action, admin, data, onSuccessFunction) {
+window.fetch_data = function(action, data, onSuccessFunction) {
     // Sprawdzenie czy data została przesłana
     data = typeof data !== "undefined" ? data : {};
     onSuccessFunction =
@@ -45,12 +38,11 @@ window.fetch_data = function(action, admin, data, onSuccessFunction) {
     // Dodanie informacji do wysyłanej mapy wartości
     data["action"] = action;
 
-    // Wyswietlenie ładowacza
     loader.show();
 
     $.ajax({
         type: "POST",
-        url: buildUrl(admin ? "jsonhttp_admin.php" : "jsonhttp.php"),
+        url: buildUrl("jsonhttp_admin.php"),
         data: data,
         complete: function() {
             loader.hide();
@@ -64,8 +56,29 @@ window.fetch_data = function(action, admin, data, onSuccessFunction) {
     });
 };
 
-window.refresh_blocks = function(bricks, admin, onSuccessFunction) {
-    // Wyswietlenie ładowacza
+window.rest_request = function(method, path, data, onSuccessFunction) {
+    onSuccessFunction =
+        typeof onSuccessFunction !== "undefined" ? onSuccessFunction : function() {};
+
+    loader.show();
+
+    $.ajax({
+        type: method,
+        url: buildUrl(path),
+        data: data,
+        complete: function() {
+            loader.hide();
+        },
+        success: function(content) {
+            onSuccessFunction(content);
+        },
+        error: function(error) {
+            infobox.show_info(lang["ajax_error"], false);
+        },
+    });
+};
+
+window.refresh_blocks = function(bricks, onSuccessFunction) {
     loader.show();
 
     onSuccessFunction =
@@ -75,11 +88,9 @@ window.refresh_blocks = function(bricks, admin, onSuccessFunction) {
     var query = splittedUrl.length > 1 ? splittedUrl.pop() : "";
 
     $.ajax({
-        type: "POST",
-        url: buildUrl(admin ? "jsonhttp_admin.php" : "jsonhttp.php") + "?" + query,
+        type: "GET",
+        url: buildUrl("/api/bricks/" + bricks) + "?" + query,
         data: {
-            action: "refresh_blocks",
-            bricks: bricks,
             pid: typeof currentPage !== "undefined" ? currentPage : undefined,
         },
         complete: function() {
@@ -136,9 +147,17 @@ window.trimSlashes = function(text) {
     return text.replace(/^\/|\/$/g, "");
 };
 
-window.buildUrl = function(path) {
+window.buildUrl = function(path, query = {}) {
     var prefix = typeof baseUrl !== "undefined" ? trimSlashes(baseUrl) + "/" : "";
-    return prefix + trimSlashes(path);
+    var queryString = $.param(query);
+
+    var output = prefix + trimSlashes(path);
+
+    if (queryString) {
+        output += "?" + queryString;
+    }
+
+    return output;
 };
 
 window.removeFormWarnings = function() {

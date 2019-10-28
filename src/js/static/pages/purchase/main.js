@@ -1,4 +1,4 @@
-// Wysłanie formularza zakupu
+// Send purchase form
 $(document).delegate("#form_purchase", "submit", function(e) {
     e.preventDefault();
 });
@@ -9,8 +9,8 @@ $(document).delegate("#go_to_payment", "click", function() {
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp.php"),
-        data: $("#form_purchase").serialize() + "&action=purchase_form_validate",
+        url: buildUrl("/api/purchase/validation"),
+        data: $("#form_purchase").serialize(),
         complete: function() {
             loader.hide();
         },
@@ -22,14 +22,12 @@ $(document).delegate("#go_to_payment", "click", function() {
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_purchase"), jsonObj.warnings);
             } else if (jsonObj.return_id == "ok") {
-                // Przechodzimy do płatności
                 go_to_payment(jsonObj.data, jsonObj.sign);
             } else if (!jsonObj.return_id) {
                 infobox.show_info(lang["sth_went_wrong"], false);
                 return;
             }
 
-            // Wyświetlenie zwróconego info
             if (typeof jsonObj.length !== "undefined")
                 infobox.show_info(jsonObj.text, jsonObj.positive, jsonObj.length);
             else infobox.show_info(jsonObj.text, jsonObj.positive);
@@ -40,16 +38,15 @@ $(document).delegate("#go_to_payment", "click", function() {
     });
 });
 
-// Pokaż pełny opis usługi
+// Show service long description
 $(document).delegate("#show_service_desc", "click", function() {
+    var serviceId = $("#form_purchase [name=service]").val();
+
     loader.show();
+
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp.php"),
-        data: {
-            action: "get_service_long_description",
-            service: $("#form_purchase [name=service]").val(),
-        },
+        type: "GET",
+        url: buildUrl("/api/services/" + serviceId + "/long_description"),
         complete: function() {
             loader.hide();
         },

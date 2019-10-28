@@ -9,10 +9,10 @@ $(document).delegate("#form_service_take_over [name=service]", "change", functio
         return;
     }
 
-    var data = {
-        service: $(this).val(),
-    };
-    fetch_data("service_take_over_form_get", false, data, function(html) {
+    var serviceId = $(this).val();
+    rest_request("GET", "/api/services/" + serviceId + "/take_over/create_form", {}, function(
+        html
+    ) {
         $("#form_service_take_over .extra_data").html(html);
         $("#form_service_take_over .take_over").show();
     });
@@ -22,12 +22,16 @@ $(document).delegate("#form_service_take_over", "submit", function(e) {
     e.preventDefault();
 
     if (loader.blocked) return;
-
     loader.show();
+
+    var serviceId = $(this)
+        .find("[name=service]")
+        .val();
+
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp.php"),
-        data: $(this).serialize() + "&action=service_take_over",
+        url: buildUrl("/api/services/" + serviceId + "/take_over"),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },
@@ -48,7 +52,6 @@ $(document).delegate("#form_service_take_over", "submit", function(e) {
                 return;
             }
 
-            // Wyświetlenie zwróconego info
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
         error: function(error) {

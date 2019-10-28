@@ -12,16 +12,16 @@ $(document).delegate("#form_service_code_add [name=server]", "change", function(
         return;
     }
 
-    fetch_data(
-        "service_action_execute",
-        true,
+    var serviceId = module
+        .closest("form")
+        .find("[name=service]")
+        .val();
+
+    rest_request(
+        "POST",
+        "/api/service/" + serviceId + "/actions/tariffs_for_server",
         {
-            service_action: "tariffs_for_server",
             server: $(this).val(),
-            service: module
-                .closest("form")
-                .find("[name=service]")
-                .val(),
         },
         function(html) {
             module.find("[name=amount]").html(html);

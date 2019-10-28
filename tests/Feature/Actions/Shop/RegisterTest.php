@@ -24,8 +24,7 @@ class RegisterTest extends IndexTestCase
         $session->set("asid", 1);
 
         // when
-        $response = $this->post('/jsonhttp.php', [
-            'action' => 'register',
+        $response = $this->post('/api/register', [
             'username' => $username,
             'password' => $password,
             'password_repeat' => $password,
@@ -44,6 +43,6 @@ class RegisterTest extends IndexTestCase
         $this->assertEquals($email, $user->getEmail(false));
         $this->assertEquals($forename, $user->getForename(false));
         $this->assertEquals($surname, $user->getSurname(false));
-        $this->assertNotNull($user->getRegdate());
+        $this->assertNotNull($user->getRegDate());
     }
 }

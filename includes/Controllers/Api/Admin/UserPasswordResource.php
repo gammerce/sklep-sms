@@ -1,5 +1,5 @@
 <?php
-namespace App\Controllers\Api;
+namespace App\Controllers\Api\Admin;
 
 use App\Exceptions\EntityNotFoundException;
 use App\Models\User;

@@ -78,7 +78,7 @@
                     row_id.fadeOut("slow");
                     row_id.css({ background: "#FFF4BA" });
 
-                    refresh_blocks("admincontent", true);
+                    refresh_blocks("admincontent");
                 }
 
                 infobox.show_info(jsonObj.text, jsonObj.positive);
@@ -117,7 +117,6 @@
                     getnset_template(
                         row_id.children("td[headers=wallet]"),
                         "admin_user_wallet",
-                        true,
                         {
                             uid: $(that)
                                 .find("input[name=uid]")
@@ -149,7 +148,7 @@
 
         $.ajax({
             type: "PUT",
-            url: buildUrl("/admin/users/" + userId + "/password"),
+            url: buildUrl("/api/admin/users/" + userId + "/password"),
             data: $(this).serialize(),
             complete: function() {
                 loader.hide();
@@ -206,7 +205,7 @@
                     showWarnings($(that), jsonObj.warnings);
                 } else if (jsonObj.return_id === "ok") {
                     clearAndHideActionBox();
-                    refresh_blocks("admincontent", true);
+                    refresh_blocks("admincontent");
                 }
 
                 infobox.show_info(jsonObj.text, jsonObj.positive);

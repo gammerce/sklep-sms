@@ -1,27 +1,26 @@
 <?php
 namespace App\Controllers\Api;
 
-use App\Application;
 use App\Auth;
 use App\Database;
 use App\Exceptions\SqlQueryException;
+use App\Exceptions\ValidationException;
 use App\Heart;
 use App\Models\Purchase;
 use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Path;
-use App\Repositories\PricelistRepository;
+use App\Repositories\PriceListRepository;
 use App\Repositories\ServerRepository;
+use App\Repositories\UserRepository;
 use App\Responses\ApiResponse;
 use App\Responses\PlainResponse;
 use App\Services\ChargeWallet\ServiceChargeWalletSimple;
-use App\Settings;
-use App\Template;
-use App\TranslationManager;
-use App\Services\Interfaces\IServiceActionExecute;
 use App\Services\Interfaces\IServiceAdminManage;
 use App\Services\Interfaces\IServiceAvailableOnServers;
 use App\Services\Interfaces\IServiceServiceCodeAdminManage;
 use App\Services\Interfaces\IServiceUserServiceAdminAdd;
+use App\Settings;
+use App\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 
@@ -34,10 +33,10 @@ class JsonHttpAdminController
         Auth $auth,
         Path $path,
         Settings $settings,
-        Template $templates,
         TranslationManager $translationManager,
         ServerRepository $serverRepository,
-        PricelistRepository $pricelistRepository
+        PriceListRepository $priceListRepository,
+        UserRepository $userRepository
     ) {
         $langShop = $translationManager->shop();
         $lang = $translationManager->user();
@@ -48,7 +47,6 @@ class JsonHttpAdminController
 
         $warnings = [];
 
-        $data = [];
         if ($action == "charge_wallet") {
             if (!get_privileges("manage_users")) {
                 return new ApiResponse(
@@ -65,8 +63,8 @@ class JsonHttpAdminController
             if ($warning = check_for_warnings("uid", $uid)) {
                 $warnings['uid'] = array_merge((array) $warnings['uid'], $warning);
             } else {
-                $user2 = $heart->getUser($uid);
-                if (!$user2->exists()) {
+                $editedUser = $heart->getUser($uid);
+                if (!$editedUser->exists()) {
                     $warnings['uid'][] = $lang->translate('noaccount_id');
                 }
             }
@@ -80,13 +78,12 @@ class JsonHttpAdminController
                 }
             }
 
-            if (!empty($warnings)) {
-                $data['warnings'] = format_warnings($warnings);
-                return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
+            if ($warnings) {
+                throw new ValidationException($warnings);
             }
 
             // Zmiana wartości amount, aby stan konta nie zszedł poniżej zera
-            $amount = max($amount, -$user2->getWallet());
+            $amount = max($amount, -$editedUser->getWallet());
 
             $serviceModule = $heart->getServiceModule(ServiceChargeWalletSimple::MODULE_ID);
             if (is_null($serviceModule)) {
@@ -98,7 +95,7 @@ class JsonHttpAdminController
 
             // Kupujemy usługę
             $purchaseData = new Purchase();
-            $purchaseData->user = $user2;
+            $purchaseData->user = $editedUser;
             $purchaseData->setPayment([
                 'method' => "admin",
                 'payment_id' => $paymentId,
@@ -106,7 +103,7 @@ class JsonHttpAdminController
             $purchaseData->setOrder([
                 'amount' => $amount,
             ]);
-            $purchaseData->setEmail($user2->getEmail());
+            $purchaseData->setEmail($editedUser->getEmail());
 
             $serviceModule->purchase($purchaseData);
 
@@ -115,8 +112,8 @@ class JsonHttpAdminController
                     $langShop->translate('account_charge'),
                     $user->getUsername(),
                     $user->getUid(),
-                    $user2->getUsername(),
-                    $user2->getUid(),
+                    $editedUser->getUsername(),
+                    $editedUser->getUid(),
                     number_format($amount / 100.0, 2),
                     $settings['currency']
                 )
@@ -126,7 +123,7 @@ class JsonHttpAdminController
                 "charged",
                 $lang->sprintf(
                     $lang->translate('account_charge_success'),
-                    $user2->getUsername(),
+                    $editedUser->getUsername(),
                     number_format($amount / 100.0, 2),
                     $settings['currency']
                 ),
@@ -308,9 +305,8 @@ class JsonHttpAdminController
                 $warnings['answers'][] = $lang->translate('field_no_empty');
             }
 
-            if (!empty($warnings)) {
-                $data['warnings'] = format_warnings($warnings);
-                return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
+            if ($warnings) {
+                throw new ValidationException($warnings);
             }
 
             if ($action == "antispam_question_add") {
@@ -496,9 +492,8 @@ class JsonHttpAdminController
                 $warnings['language'][] = $lang->translate('no_language');
             }
 
-            if (!empty($warnings)) {
-                $data['warnings'] = format_warnings($warnings);
-                return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
+            if ($warnings) {
+                throw new ValidationException($warnings);
             }
 
             if ($licenseToken) {
@@ -707,10 +702,8 @@ class JsonHttpAdminController
                 $warnings = array_merge((array) $warnings, (array) $additionalWarnings);
             }
 
-            // Błędy
-            if (!empty($warnings)) {
-                $data['warnings'] = format_warnings($warnings);
-                return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
+            if ($warnings) {
+                throw new ValidationException($warnings);
             }
 
             // Po błędach wywołujemy metodę modułu
@@ -937,10 +930,8 @@ class JsonHttpAdminController
                 }
             }
 
-            // Błędy
-            if (!empty($warnings)) {
-                $data['warnings'] = format_warnings($warnings);
-                return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
+            if ($warnings) {
+                throw new ValidationException($warnings);
             }
 
             if ($action == "server_add") {
@@ -1075,11 +1066,18 @@ class JsonHttpAdminController
                 );
             }
 
-            $user2 = $heart->getUser($_POST['uid']);
+            $editedUser = $heart->getUser($request->request->get('uid'));
+
+            $username = $request->request->get('username');
+            $forename = $request->request->get('forename');
+            $surname = $request->request->get('surname');
+            $email = $request->request->get('email');
+            $groups = $request->request->get('groups');
+            $wallet = $request->request->get('wallet');
 
             // Nazwa użytkownika
-            if ($user2->getUsername() != $_POST['username']) {
-                if ($warning = check_for_warnings("username", $_POST['username'])) {
+            if ($editedUser->getUsername() != $username) {
+                if ($warning = check_for_warnings("username", $username)) {
                     $warnings['username'] = array_merge((array) $warnings['username'], $warning);
                 }
                 $result = $db->query(
@@ -1089,7 +1087,7 @@ class JsonHttpAdminController
                             TABLE_PREFIX .
                             "users` " .
                             "WHERE username = '%s'",
-                        [$_POST['username']]
+                        [$username]
                     )
                 );
                 if ($db->numRows($result)) {
@@ -1098,8 +1096,8 @@ class JsonHttpAdminController
             }
 
             // E-mail
-            if ($user2->getEmail() != $_POST['email']) {
-                if ($warning = check_for_warnings("email", $_POST['email'])) {
+            if ($editedUser->getEmail() != $email) {
+                if ($warning = check_for_warnings("email", $email)) {
                     $warnings['email'] = array_merge((array) $warnings['email'], $warning);
                 }
                 $result = $db->query(
@@ -1109,7 +1107,7 @@ class JsonHttpAdminController
                             TABLE_PREFIX .
                             "users` " .
                             "WHERE email = '%s'",
-                        [$_POST['email']]
+                        [$email]
                     )
                 );
                 if ($db->numRows($result)) {
@@ -1118,7 +1116,7 @@ class JsonHttpAdminController
             }
 
             // Grupy
-            foreach ($_POST['groups'] as $gid) {
+            foreach ($groups as $gid) {
                 if (is_null($heart->getGroup($gid))) {
                     $warnings['groups[]'][] = $lang->translate('wrong_group');
                     break;
@@ -1126,48 +1124,33 @@ class JsonHttpAdminController
             }
 
             // Portfel
-            if ($warning = check_for_warnings("number", $_POST['wallet'])) {
+            if ($warning = check_for_warnings("number", $wallet)) {
                 $warnings['wallet'] = array_merge((array) $warnings['wallet'], $warning);
             }
 
-            if (!empty($warnings)) {
-                $data['warnings'] = format_warnings($warnings);
-                return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
+            if ($warnings) {
+                throw new ValidationException($warnings);
             }
 
-            $db->query(
-                $db->prepare(
-                    "UPDATE `" .
-                        TABLE_PREFIX .
-                        "users` " .
-                        "SET `username` = '%s', `forename` = '%s', `surname` = '%s', `email` = '%s', `groups` = '%s', `wallet` = '%d' " .
-                        "WHERE `uid` = '%d'",
-                    [
-                        $_POST['username'],
-                        $_POST['forename'],
-                        $_POST['surname'],
-                        $_POST['email'],
-                        implode(";", $_POST['groups']),
-                        ceil($_POST['wallet'] * 100),
-                        $_POST['uid'],
-                    ]
+            $editedUser->setUsername($username);
+            $editedUser->setForename($forename);
+            $editedUser->setSurname($surname);
+            $editedUser->setEmail($email);
+            $editedUser->setGroups($groups);
+            $editedUser->setWallet(ceil($wallet * 100));
+
+            $userRepository->update($editedUser);
+
+            log_info(
+                $langShop->sprintf(
+                    $langShop->translate('user_admin_edit'),
+                    $user->getUsername(),
+                    $user->getUid(),
+                    $_POST['uid']
                 )
             );
 
-            // Zwróć info o prawidłowej lub błędnej edycji
-            if ($db->affectedRows()) {
-                // LOGGING
-                log_info(
-                    $langShop->sprintf(
-                        $langShop->translate('user_admin_edit'),
-                        $user->getUsername(),
-                        $user->getUid(),
-                        $_POST['uid']
-                    )
-                );
-                return new ApiResponse('ok', $lang->translate('user_edit'), 1);
-            }
-            return new ApiResponse("not_edited", $lang->translate('user_no_edit'), 0);
+            return new ApiResponse('ok', $lang->translate('user_edit'), 1);
         }
 
         if ($action == "delete_user") {
@@ -1325,9 +1308,8 @@ class JsonHttpAdminController
                 $warnings['provision'] = array_merge((array) $warnings['provision'], $warning);
             }
 
-            if (!empty($warnings)) {
-                $data['warnings'] = format_warnings($warnings);
-                return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
+            if ($warnings) {
+                throw new ValidationException($warnings);
             }
 
             $db->query(
@@ -1366,9 +1348,8 @@ class JsonHttpAdminController
                 $warnings['provision'] = array_merge((array) $warnings['provision'], $warning);
             }
 
-            if (!empty($warnings)) {
-                $data['warnings'] = format_warnings($warnings);
-                return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
+            if ($warnings) {
+                throw new ValidationException($warnings);
             }
 
             $db->query(
@@ -1463,13 +1444,12 @@ class JsonHttpAdminController
                 $warnings['amount'] = array_merge((array) $warnings['amount'], $warning);
             }
 
-            if (!empty($warnings)) {
-                $data['warnings'] = format_warnings($warnings);
-                return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
+            if ($warnings) {
+                throw new ValidationException($warnings);
             }
 
             if ($action == "price_add") {
-                $pricelistRepository->create(
+                $priceListRepository->create(
                     $_POST['service'],
                     $_POST['tariff'],
                     $_POST['amount'],
@@ -1572,9 +1552,8 @@ class JsonHttpAdminController
                 $warnings['code'] = array_merge((array) $warnings['code'], $warning);
             }
 
-            if (!empty($warnings)) {
-                $data['warnings'] = format_warnings($warnings);
-                return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
+            if ($warnings) {
+                throw new ValidationException($warnings);
             }
 
             $db->query(
@@ -1669,9 +1648,8 @@ class JsonHttpAdminController
                 (array) $serviceModule->serviceCodeAdminAddValidate($_POST)
             );
 
-            if (!empty($warnings)) {
-                $data['warnings'] = format_warnings($warnings);
-                return new ApiResponse("warnings", $lang->translate('form_wrong_filled'), 0, $data);
+            if ($warnings) {
+                throw new ValidationException($warnings);
             }
 
             // Pozyskujemy dane kodu do dodania
@@ -1783,31 +1761,6 @@ class JsonHttpAdminController
             return new ApiResponse("not_deleted", $lang->translate('no_delete_log'), 0);
         }
 
-        if ($action == "refresh_blocks") {
-            if (isset($_POST['bricks'])) {
-                $bricks = explode(";", $_POST['bricks']);
-            }
-
-            foreach ($bricks as $brick) {
-                // Nie ma takiego bloku do odświeżenia
-                if (($block = $heart->getBlock($brick)) === null) {
-                    continue;
-                }
-
-                $data[$block->getContentId()]['content'] = $block->getContent(
-                    $request->query->all(),
-                    $request->request->all()
-                );
-                if ($data[$block->getContentId()]['content'] !== null) {
-                    $data[$block->getContentId()]['class'] = $block->getContentClass();
-                } else {
-                    $data[$block->getContentId()]['class'] = "";
-                }
-            }
-
-            return new PlainResponse(json_encode($data));
-        }
-
         if ($action == "get_action_box") {
             if (!isset($_POST['page_id']) || !isset($_POST['box_id'])) {
                 return new ApiResponse("no_data", $lang->translate('not_all_data'), 0);
@@ -1833,45 +1786,6 @@ class JsonHttpAdminController
             }
 
             return new ApiResponse($actionBox['status'], $actionBox['text'], 0, $data);
-        }
-
-        if ($action == "get_template") {
-            $template = $_POST['template'];
-            // Zabezpieczanie wszystkich wartości post
-            foreach ($_POST as $key => $value) {
-                $_POST[$key] = htmlspecialchars($value);
-            }
-
-            if ($template == "admin_user_wallet") {
-                if (!get_privileges("manage_users")) {
-                    return new ApiResponse(
-                        "not_logged_in",
-                        $lang->translate('not_logged_or_no_perm'),
-                        0
-                    );
-                }
-
-                $user2 = $heart->getUser($_POST['uid']);
-            }
-
-            if (!isset($data['template'])) {
-                $data['template'] = $templates->render("jsonhttp/" . $template, compact('user2'));
-            }
-
-            return new PlainResponse(json_encode($data));
-        }
-
-        if ($action == "service_action_execute") {
-            if (
-                ($serviceModule = $heart->getServiceModule($_POST['service'])) === null ||
-                !($serviceModule instanceof IServiceActionExecute)
-            ) {
-                return new PlainResponse($lang->translate('bad_module'));
-            }
-
-            return new PlainResponse(
-                $serviceModule->actionExecute($_POST['service_action'], $_POST)
-            );
         }
 
         return new ApiResponse("script_error", "An error occured: no action.");

@@ -23,7 +23,6 @@ $(document).delegate("#form_service_code_add [name=service]", "change", function
 
     fetch_data(
         "service_code_add_form_get",
-        true,
         {
             service: $(this).val(),
         },
@@ -62,13 +61,12 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
                 row_id.css({ background: "#FFF4BA" });
 
                 // Odśwież stronę
-                refresh_blocks("admincontent", true);
+                refresh_blocks("admincontent");
             } else if (!jsonObj.return_id) {
                 infobox.show_info(lang["sth_went_wrong"], false);
                 return;
             }
 
-            // Wyświetlenie zwróconego info
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
         error: function(error) {
@@ -101,13 +99,12 @@ $(document).delegate("#form_service_code_add", "submit", function(e) {
                 $("#action_box_wraper_td").html("");
 
                 // Odśwież stronę
-                refresh_blocks("admincontent", true);
+                refresh_blocks("admincontent");
             } else if (!jsonObj.return_id) {
                 infobox.show_info(lang["sth_went_wrong"], false);
                 return;
             }
 
-            // Wyświetlenie zwróconego info
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
         error: function(error) {
