@@ -986,42 +986,14 @@ function log_info($string)
 
 function create_dom_element($name, $text = "", $data = [])
 {
-    // TODO Use HTML classes
-    $features = "";
+    $element = new DOMElement($text);
+    $element->setName($name);
+
     foreach ($data as $key => $value) {
-        if (is_array($value) || !strlen($value)) {
-            continue;
-        }
-
-        $features .=
-            (strlen($features) ? " " : "") . $key . '="' . str_replace('"', '\"', $value) . '"';
+        $element->setParam($key, $value);
     }
 
-    if (isset($data['style'])) {
-        $style = '';
-        foreach ($data['style'] as $key => $value) {
-            if (!strlen($value)) {
-                continue;
-            }
-
-            $style .= (strlen($style) ? "; " : "") . "{$key}: {$value}";
-        }
-        if (strlen($style)) {
-            $features .= (strlen($features) ? " " : "") . "style=\"{$style}\"";
-        }
-    }
-
-    $nameHsafe = htmlspecialchars($name);
-    $output = "<{$nameHsafe} {$features}>";
-    if (strlen($text)) {
-        $output .= $text;
-    }
-
-    if (!in_array($name, ["input", "img"])) {
-        $output .= "</{$nameHsafe}>";
-    }
-
-    return $output;
+    return $element->toHtml();
 }
 
 function create_brick($text, $class = "", $alpha = 0.2)
