@@ -986,6 +986,7 @@ function log_info($string)
 
 function create_dom_element($name, $text = "", $data = [])
 {
+    // TODO Use HTML classes
     $features = "";
     foreach ($data as $key => $value) {
         if (is_array($value) || !strlen($value)) {

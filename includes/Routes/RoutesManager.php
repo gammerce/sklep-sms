@@ -12,6 +12,7 @@ use App\Controllers\Api\PaymentValidationResource;
 use App\Controllers\Api\PurchaseResource;
 use App\Controllers\Api\PurchaseValidationResource;
 use App\Controllers\Api\RegisterController;
+use App\Controllers\Api\ServiceLongDescriptionResource;
 use App\Controllers\Api\SessionLanguageResource;
 use App\Controllers\Api\TemplateResource;
 use App\Controllers\Api\UserProfileResource;
@@ -171,6 +172,10 @@ class RoutesManager
 
                         $r->get('/api/purchases/{purchaseId}', [
                             'uses' => PurchaseResource::class . '@get',
+                        ]);
+
+                        $r->get('/api/services/{serviceId}/long_description', [
+                            'uses' => ServiceLongDescriptionResource::class . '@get',
                         ]);
                     }
                 );

@@ -86,7 +86,7 @@ abstract class Service
      *
      * @return string    Description
      */
-    public function descriptionFullGet()
+    public function descriptionLongGet()
     {
         $file = "services/" . escape_filename($this->service['id']) . "_desc";
         return $this->template->render($file, [], true, false);

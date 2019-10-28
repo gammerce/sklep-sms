@@ -31,15 +31,6 @@ class JsonHttpController
         $user = $auth->user();
         $action = $request->request->get("action");
 
-        if ($action == "get_service_long_description") {
-            $output = "";
-            if (($serviceModule = $heart->getServiceModule($_POST['service'])) !== null) {
-                $output = $serviceModule->descriptionFullGet();
-            }
-
-            return new PlainResponse($output);
-        }
-
         if ($action == "form_user_service_edit") {
             if (!is_logged()) {
                 return new HtmlResponse($lang->translate('service_cant_be_modified'));
