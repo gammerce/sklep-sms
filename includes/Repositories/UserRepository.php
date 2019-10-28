@@ -14,8 +14,16 @@ class UserRepository
         $this->db = $db;
     }
 
-    public function create($username, $password, $email, $forename, $surname, $steamId, $ip, $groups = '1')
-    {
+    public function create(
+        $username,
+        $password,
+        $email,
+        $forename,
+        $surname,
+        $steamId,
+        $ip,
+        $groups = '1'
+    ) {
         $salt = get_random_string(8);
         $this->db->query(
             $this->db->prepare(
