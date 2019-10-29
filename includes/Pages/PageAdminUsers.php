@@ -34,6 +34,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         $table->addHeadCell(new HeadCell($this->lang->translate('firstname')));
         $table->addHeadCell(new HeadCell($this->lang->translate('surname')));
         $table->addHeadCell(new HeadCell($this->lang->translate('email')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('sid')));
         $table->addHeadCell(new HeadCell($this->lang->translate('groups')));
         $table->addHeadCell(new HeadCell($this->lang->translate('wallet')));
 
@@ -46,6 +47,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                     "`forename`",
                     "`surname`",
                     "`email`",
+                    "`steam_id`",
                     "`groups`",
                     "`wallet`",
                 ],
@@ -60,7 +62,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         }
 
         $result = $this->db->query(
-            "SELECT SQL_CALC_FOUND_ROWS `uid`, `username`, `forename`, `surname`, `email`, `groups`, `wallet` " .
+            "SELECT SQL_CALC_FOUND_ROWS `uid`, `username`, `forename`, `surname`, `email`, `steam_id`, `groups`, `wallet` " .
                 "FROM `" .
                 TABLE_PREFIX .
                 "users` " .
@@ -87,6 +89,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             $bodyRow->addCell(new Cell(htmlspecialchars($row['forename'])));
             $bodyRow->addCell(new Cell(htmlspecialchars($row['surname'])));
             $bodyRow->addCell(new Cell(htmlspecialchars($row['email'])));
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['steam_id'])));
             $bodyRow->addCell(new Cell($groups));
 
             $cell = new Cell(
@@ -101,6 +104,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             $changePasswordCharge = $this->createPasswordButton();
             $bodyRow->addAction($changePasswordCharge);
 
+            // TODO Add edit steamid via acp
             if (get_privileges('manage_users')) {
                 $bodyRow->setDeleteAction(true);
                 $bodyRow->setEditAction(true);
