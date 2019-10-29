@@ -20,7 +20,7 @@ window.infobox = {
 
         infobox.element = $("<div>", {
             html: message,
-            class: "infobox " + (positive == "1" ? "positive" : "negative"),
+            class: "infobox notification " + (positive ? "is-success" : "is-danger"),
         }).hide();
 
         // Dodajemy element do body
