@@ -75,12 +75,18 @@ function purchase_service(method) {
         success: function(content) {
             removeFormWarnings();
 
-            var jsonObj;
-            if (!(jsonObj = json_parse(content))) return;
+            var jsonObj = json_parse(content);
+            if (!jsonObj) {
+                return;
+            }
+
+            if (!jsonObj.return_id) {
+                return sthWentWrong();
+            }
 
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#payment"), jsonObj.warnings);
-            } else if (jsonObj.return_id == "purchased") {
+            } else if (jsonObj.return_id === "purchased") {
                 // Update content window with purchase details
                 rest_request("GET", "/api/purchases/" + jsonObj.bsid, {}, function(message) {
                     $("#content").html(message);
@@ -90,7 +96,7 @@ function purchase_service(method) {
                 refresh_blocks("wallet", function() {
                     $("#wallet").effect("highlight", "slow");
                 });
-            } else if (jsonObj.return_id == "transfer") {
+            } else if (jsonObj.return_id === "transfer") {
                 var method = jsonObj.data.method;
                 delete jsonObj.data.method;
 
@@ -100,18 +106,13 @@ function purchase_service(method) {
                     redirectToTransferWithPost(jsonObj);
                 } else {
                     console.error("Invalid method specified by PaymentModule");
-                    infobox.show_info(lang["sth_went_wrong"], false);
+                    sthWentWrong();
                     return;
                 }
-            } else if (!jsonObj.return_id) {
-                infobox.show_info(lang["sth_went_wrong"], false);
-                return;
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
-        error: function(error) {
-            infobox.show_info(lang["ajax_error"], false);
-        },
+        error: handleErrorResponse,
     });
 }

@@ -19,21 +19,23 @@ $(document).delegate("#form_transaction_service_edit", "submit", function(e) {
             loader.hide();
         },
         success: function(content) {
-            if (!(jsonObj = json_parse(content))) return;
+            var jsonObj = json_parse(content);
+            if (!jsonObj) {
+                return;
+            }
 
-            if (jsonObj.return_id == "ok") {
+            if (!jsonObj.return_id) {
+                return sthWentWrong();
+            }
+
+            if (jsonObj.return_id === "ok") {
                 // Ukryj i wyczyść action box
                 action_box.hide();
                 $("#action_box_wraper_td").html("");
-            } else if (!jsonObj.return_id) {
-                infobox.show_info(lang["sth_went_wrong"], false);
-                return;
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
-        error: function(error) {
-            infobox.show_info(lang["ajax_error"], false);
-        },
+        error: handleErrorResponse,
     });
 });

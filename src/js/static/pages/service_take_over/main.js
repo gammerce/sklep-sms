@@ -38,24 +38,25 @@ $(document).delegate("#form_service_take_over", "submit", function(e) {
         success: function(content) {
             removeFormWarnings();
 
-            if (!(jsonObj = json_parse(content))) return;
+            var jsonObj = json_parse(content);
+            if (!jsonObj) {
+                return;
+            }
+
+            if (!jsonObj.return_id) {
+                return sthWentWrong();
+            }
 
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_service_take_over"), jsonObj.warnings);
-            } else if (jsonObj.return_id == "ok") {
-                // Przejdź do strony user_own_services
+            } else if (jsonObj.return_id === "ok") {
                 setTimeout(function() {
                     window.location.href = buildUrl("/page/user_own_services");
                 }, 2000);
-            } else if (!jsonObj.return_id) {
-                infobox.show_info(lang["sth_went_wrong"], false);
-                return;
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
-        error: function(error) {
-            infobox.show_info(lang["ajax_error"], false);
-        },
+        error: handleErrorResponse,
     });
 });

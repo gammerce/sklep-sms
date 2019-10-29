@@ -4,14 +4,6 @@
         $("#action_box_wraper_td").html("");
     }
 
-    function handleErrorResponse() {
-        infobox.show_info(lang["ajax_error"], false);
-    }
-
-    function sthWentWrong() {
-        infobox.show_info(lang["sth_went_wrong"], false);
-    }
-
     // This is used later when action is done
     var row_id = 0;
     $(document).delegate(".table-structure .charge_wallet", "click", function() {
@@ -74,7 +66,7 @@
                 }
 
                 if (jsonObj.return_id === "ok") {
-                    // Usuń row
+                    // Delete row
                     row_id.fadeOut("slow");
                     row_id.css({ background: "#FFF4BA" });
 

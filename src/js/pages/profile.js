@@ -1,9 +1,12 @@
-$(document).delegate("#form_forgotten_password", "submit", function(e) {
+$(document).delegate("#form-profile-update", "submit", function(e) {
     e.preventDefault();
+
     loader.show();
+    var that = this;
+
     $.ajax({
-        type: "POST",
-        url: buildUrl("/api/password/forgotten"),
+        type: "PUT",
+        url: buildUrl("/api/profile"),
         data: $(this).serialize(),
         complete: function() {
             loader.hide();
@@ -12,6 +15,7 @@ $(document).delegate("#form_forgotten_password", "submit", function(e) {
             removeFormWarnings();
 
             var jsonObj = json_parse(content);
+
             if (!jsonObj) {
                 return;
             }
@@ -21,12 +25,7 @@ $(document).delegate("#form_forgotten_password", "submit", function(e) {
             }
 
             if (jsonObj.return_id === "warnings") {
-                showWarnings($("#form_forgotten_password"), jsonObj.warnings);
-            } else if (jsonObj.return_id === "sent") {
-                // Wyświetl informacje o wysłaniu maila
-                getnset_template($("#content"), "forgotten_password_sent", {
-                    username: jsonObj.username,
-                });
+                showWarnings($(that), jsonObj.warnings);
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);

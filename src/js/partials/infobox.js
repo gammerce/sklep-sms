@@ -43,3 +43,11 @@ window.infobox = {
         });
     },
 };
+
+window.handleErrorResponse = function() {
+    infobox.show_info(lang["ajax_error"], false);
+};
+
+window.sthWentWrong = function() {
+    infobox.show_info(lang["sth_went_wrong"], false);
+};

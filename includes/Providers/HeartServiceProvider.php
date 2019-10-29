@@ -104,7 +104,10 @@ class HeartServiceProvider
 
     protected function registerPages(Heart $heart)
     {
-        $heart->registerUserPage(PageCashbillTransferFinalized::PAGE_ID, PageCashbillTransferFinalized::class);
+        $heart->registerUserPage(
+            PageCashbillTransferFinalized::PAGE_ID,
+            PageCashbillTransferFinalized::class
+        );
         $heart->registerUserPage(PageChangePassword::PAGE_ID, PageChangePassword::class);
         $heart->registerUserPage(PageContact::PAGE_ID, PageContact::class);
         $heart->registerUserPage(PageForgottenPassword::PAGE_ID, PageForgottenPassword::class);
@@ -124,16 +127,25 @@ class HeartServiceProvider
 
     protected function registerAdminPages(Heart $heart)
     {
-        $heart->registerAdminPage(PageAdminAntispamQuestions::PAGE_ID, PageAdminAntispamQuestions::class);
+        $heart->registerAdminPage(
+            PageAdminAntispamQuestions::PAGE_ID,
+            PageAdminAntispamQuestions::class
+        );
         $heart->registerAdminPage(PageAdminBoughtServices::PAGE_ID, PageAdminBoughtServices::class);
         $heart->registerAdminPage(PageAdminGroups::PAGE_ID, PageAdminGroups::class);
         $heart->registerAdminPage(PageAdminMain::PAGE_ID, PageAdminMain::class);
         $heart->registerAdminPage(PageAdminIncome::PAGE_ID, PageAdminIncome::class);
         $heart->registerAdminPage(PageAdminLogs::PAGE_ID, PageAdminLogs::class);
         $heart->registerAdminPage(PageAdminPaymentAdmin::PAGE_ID, PageAdminPaymentAdmin::class);
-        $heart->registerAdminPage(PageAdminPaymentServiceCode::PAGE_ID, PageAdminPaymentServiceCode::class);
+        $heart->registerAdminPage(
+            PageAdminPaymentServiceCode::PAGE_ID,
+            PageAdminPaymentServiceCode::class
+        );
         $heart->registerAdminPage(PageAdminPaymentSms::PAGE_ID, PageAdminPaymentSms::class);
-        $heart->registerAdminPage(PageAdminPaymentTransfer::PAGE_ID, PageAdminPaymentTransfer::class);
+        $heart->registerAdminPage(
+            PageAdminPaymentTransfer::PAGE_ID,
+            PageAdminPaymentTransfer::class
+        );
         $heart->registerAdminPage(PageAdminPaymentWallet::PAGE_ID, PageAdminPaymentWallet::class);
         $heart->registerAdminPage(PageAdminPlayersFlags::PAGE_ID, PageAdminPlayersFlags::class);
         $heart->registerAdminPage(PageAdminPriceList::PAGE_ID, PageAdminPriceList::class);
@@ -143,7 +155,10 @@ class HeartServiceProvider
         $heart->registerAdminPage(PageAdminSettings::PAGE_ID, PageAdminSettings::class);
         $heart->registerAdminPage(PageAdminSmsCodes::PAGE_ID, PageAdminSmsCodes::class);
         $heart->registerAdminPage(PageAdminTariffs::PAGE_ID, PageAdminTariffs::class);
-        $heart->registerAdminPage(PageAdminTransactionServices::PAGE_ID, PageAdminTransactionServices::class);
+        $heart->registerAdminPage(
+            PageAdminTransactionServices::PAGE_ID,
+            PageAdminTransactionServices::class
+        );
         $heart->registerAdminPage(PageAdminUpdateServers::PAGE_ID, PageAdminUpdateServers::class);
         $heart->registerAdminPage(PageAdminUpdateWeb::PAGE_ID, PageAdminUpdateWeb::class);
         $heart->registerAdminPage(PageAdminUserService::PAGE_ID, PageAdminUserService::class);

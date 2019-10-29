@@ -27,6 +27,9 @@ class PageProfile extends Page implements IBeLoggedMust
         $surname = htmlspecialchars($user->getSurname());
         $steamId = htmlspecialchars($user->getSteamId());
 
-        return $this->template->render("profile", compact("email", "username", "forename", "surname", "steamId"));
+        return $this->template->render(
+            "profile",
+            compact("email", "username", "forename", "surname", "steamId")
+        );
     }
 }

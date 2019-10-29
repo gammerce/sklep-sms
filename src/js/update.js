@@ -40,23 +40,27 @@ $(document).ready(function($) {
                     return markAsUpdate();
                 }
 
-                if (!(jsonObj = json_parse(content))) return;
+                var jsonObj = json_parse(content);
+                if (!jsonObj) {
+                    return;
+                }
+
+                if (!jsonObj.return_id) {
+                    return sthWentWrong();
+                }
 
                 // Wyświetlenie błędów w formularzu
-                if (jsonObj.return_id == "warnings") {
+                if (jsonObj.return_id === "warnings") {
                     $(".update_info").html(jsonObj.update_info);
                     $(".window")
                         .removeClass("success")
                         .addClass("danger");
-                } else if (jsonObj.return_id == "ok") {
+                } else if (jsonObj.return_id === "ok") {
                     return markAsUpdate();
-                } else if (jsonObj.return_id == "error") {
+                } else if (jsonObj.return_id === "error") {
                     setTimeout(function() {
                         location.reload();
                     }, 4000);
-                } else if (!jsonObj.return_id) {
-                    infobox.show_info(lang["sth_went_wrong"], false);
-                    return;
                 }
 
                 infobox.show_info(jsonObj.text, jsonObj.positive);
