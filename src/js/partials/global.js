@@ -143,9 +143,9 @@ window.trimSlashes = function(text) {
     return text.replace(/^\/|\/$/g, "");
 };
 
-window.buildUrl = function(path, query = {}) {
+window.buildUrl = function(path, query) {
     var prefix = typeof baseUrl !== "undefined" ? trimSlashes(baseUrl) + "/" : "";
-    var queryString = $.param(query);
+    var queryString = $.param(query || {});
 
     var output = prefix + trimSlashes(path);
 

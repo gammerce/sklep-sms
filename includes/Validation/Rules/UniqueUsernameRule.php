@@ -14,6 +14,9 @@ class UniqueUsernameRule implements Rule
     /** @var Translator */
     private $lang;
 
+    /** @var int */
+    private $userId = 0;
+
     public function __construct(Database $db, TranslationManager $translationManager)
     {
         $this->db = $db;
@@ -30,8 +33,8 @@ class UniqueUsernameRule implements Rule
 
         $result = $this->db->query(
             $this->db->prepare(
-                "SELECT `uid` FROM `" . TABLE_PREFIX . "users` " . "WHERE `username` = '%s'",
-                [$value]
+                "SELECT `uid` FROM `" . TABLE_PREFIX . "users` WHERE `username` = '%s' AND `uid` != '%d'",
+                [$value, $this->userId]
             )
         );
 
@@ -40,5 +43,15 @@ class UniqueUsernameRule implements Rule
         }
 
         return $warnings;
+    }
+
+    /**
+     * @param int $userId
+     * @return $this
+     */
+    public function setUserId($userId)
+    {
+        $this->userId = $userId;
+        return $this;
     }
 }

@@ -22,6 +22,7 @@ class UserProfileResource
         RequiredRule $requiredRule
     ) {
         $lang = $translationManager->user();
+        $user = $auth->user();
 
         $username = trim($request->request->get('username'));
         $forename = trim($request->request->get('forename'));
@@ -34,14 +35,16 @@ class UserProfileResource
                 "steam_id" => $steamId,
             ],
             [
-                "username" => [$requiredRule, $uniqueUsernameRule],
+                "username" => [
+                    $requiredRule,
+                    $uniqueUsernameRule->setUserId($user->getUid()),
+                ],
                 "steam_id" => [new SteamIdRule()],
             ]
         );
 
         $validator->validateOrFail();
 
-        $user = $auth->user();
         $user->setUsername($username);
         $user->setForename($forename);
         $user->setSurname($surname);
@@ -49,6 +52,6 @@ class UserProfileResource
 
         $userRepository->update($user);
 
-        return new ApiResponse('ok', $lang->translate('user_edit'), 1);
+        return new ApiResponse('ok', $lang->translate('profile_edit'), 1);
     }
 }
