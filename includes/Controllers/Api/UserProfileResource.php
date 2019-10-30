@@ -35,10 +35,7 @@ class UserProfileResource
                 "steam_id" => $steamId,
             ],
             [
-                "username" => [
-                    $requiredRule,
-                    $uniqueUsernameRule->setUserId($user->getUid()),
-                ],
+                "username" => [$requiredRule, $uniqueUsernameRule->setUserId($user->getUid())],
                 "steam_id" => [new SteamIdRule()],
             ]
         );
