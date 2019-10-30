@@ -172,12 +172,16 @@
     $(document).delegate("#form_user_edit", "submit", function(e) {
         e.preventDefault();
         loader.show();
+
         var that = this;
+        var userId = $(that)
+            .find("[name=uid]")
+            .val();
 
         $.ajax({
-            type: "POST",
-            url: buildUrl("jsonhttp_admin.php"),
-            data: $(this).serialize() + "&action=user_edit",
+            type: "PUT",
+            url: buildUrl("/api/admin/users/" + userId),
+            data: $(this).serialize(),
             complete: function() {
                 loader.hide();
             },

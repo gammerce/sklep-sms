@@ -41,16 +41,6 @@ function app($abstract = null, array $parameters = [])
 }
 
 /**
- * Sprawdza czy jesteśmy w adminowskiej części sklepu
- *
- * @return bool
- */
-function admin_session()
-{
-    return app()->isAdminSession();
-}
-
-/**
  * Pobranie szablonu
  *
  * @param string     $output Zwartość do wyświetlenia

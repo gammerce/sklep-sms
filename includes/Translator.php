@@ -135,32 +135,26 @@ class Translator
 
         $filesToInclude = [];
 
-        // Ładujemy ogólną bibliotekę językową
         $filesToInclude[] = $this->path->to("translations/general.php");
 
-        // Ładujemy ogólne biblioteki językowe języka
         foreach (scandir($this->path->to("translations/{$language}")) as $file) {
             if (ends_at($file, ".php")) {
                 $filesToInclude[] = $this->path->to("translations/{$language}/{$file}");
             }
         }
 
-        // Ładujemy bilioteki dla PA
-        if (admin_session()) {
-            foreach (scandir($this->path->to("translations/{$language}/admin")) as $file) {
-                if (ends_at($file, ".php")) {
-                    $filesToInclude[] = $this->path->to("translations/{$language}/admin/{$file}");
-                }
-            }
-        } else {
-            foreach (scandir($this->path->to("translations/{$language}/user")) as $file) {
-                if (ends_at($file, ".php")) {
-                    $filesToInclude[] = $this->path->to("translations/{$language}/user/{$file}");
-                }
+        foreach (scandir($this->path->to("translations/{$language}/admin")) as $file) {
+            if (ends_at($file, ".php")) {
+                $filesToInclude[] = $this->path->to("translations/{$language}/admin/{$file}");
             }
         }
 
-        // Dodajemy translacje
+        foreach (scandir($this->path->to("translations/{$language}/user")) as $file) {
+            if (ends_at($file, ".php")) {
+                $filesToInclude[] = $this->path->to("translations/{$language}/user/{$file}");
+            }
+        }
+
         foreach ($filesToInclude as $path) {
             if (!file_exists($path)) {
                 continue;

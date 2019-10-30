@@ -14,6 +14,9 @@ class UniqueUserEmailRule implements Rule
     /** @var Translator */
     private $lang;
 
+    /** @var int */
+    private $userId = 0;
+
     public function __construct(Database $db, TranslationManager $translationManager)
     {
         $this->db = $db;
@@ -28,8 +31,10 @@ class UniqueUserEmailRule implements Rule
 
         $result = $this->db->query(
             $this->db->prepare(
-                "SELECT `uid` FROM `" . TABLE_PREFIX . "users` " . "WHERE `email` = '%s'",
-                [$value]
+                "SELECT `uid` FROM `" .
+                    TABLE_PREFIX .
+                    "users` WHERE `email` = '%s' AND `uid` != '%d'",
+                [$value, $this->userId]
             )
         );
 
@@ -38,5 +43,15 @@ class UniqueUserEmailRule implements Rule
         }
 
         return [];
+    }
+
+    /**
+     * @param int $userId
+     * @return $this
+     */
+    public function setUserId($userId)
+    {
+        $this->userId = $userId;
+        return $this;
     }
 }

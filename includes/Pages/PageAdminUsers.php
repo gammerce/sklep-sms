@@ -104,7 +104,6 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             $changePasswordCharge = $this->createPasswordButton();
             $bodyRow->addAction($changePasswordCharge);
 
-            // TODO Add edit steamid via acp
             if (get_privileges('manage_users')) {
                 $bodyRow->setDeleteAction(true);
                 $bodyRow->setEditAction(true);
@@ -156,10 +155,16 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                     ]);
                 }
 
-                $output = $this->template->render(
-                    "admin/action_boxes/user_edit",
-                    compact('user', 'groups')
-                );
+                $output = $this->template->render("admin/action_boxes/user_edit", [
+                    "email" => htmlspecialchars($user->getEmail(false)),
+                    "username" => htmlspecialchars($user->getUsername(false)),
+                    "surname" => htmlspecialchars($user->getSurname()),
+                    "forename" => htmlspecialchars($user->getForename()),
+                    "steamId" => htmlspecialchars($user->getSteamId()),
+                    "uid" => $user->getUid(),
+                    "wallet" => $user->getWallet(true),
+                    "groups" => $groups,
+                ]);
                 break;
 
             case "charge_wallet":
