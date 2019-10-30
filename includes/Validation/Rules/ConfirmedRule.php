@@ -21,7 +21,7 @@ class ConfirmedRule implements Rule
             return [];
         }
 
-        if ($value !== array_get($data, "{$value}_repeat")) {
+        if ($value !== array_get($data, "{$attribute}_repeat")) {
             return [$this->lang->translate('different_values')];
         }
 
