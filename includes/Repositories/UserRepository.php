@@ -14,15 +14,23 @@ class UserRepository
         $this->db = $db;
     }
 
-    public function create($username, $password, $email, $forename, $surname, $ip, $groups = '1')
-    {
+    public function create(
+        $username,
+        $password,
+        $email,
+        $forename,
+        $surname,
+        $steamId,
+        $ip,
+        $groups = '1'
+    ) {
         $salt = get_random_string(8);
         $this->db->query(
             $this->db->prepare(
                 "INSERT INTO `" .
                     TABLE_PREFIX .
-                    "users` (`username`, `password`, `salt`, `email`, `forename`, `surname`, `regip`, `groups`, `regdate`) " .
-                    "VALUES ('%s','%s','%s','%s','%s','%s','%s','%s', NOW())",
+                    "users` (`username`, `password`, `salt`, `email`, `forename`, `surname`, `regip`, `groups`, `steam_id`, `regdate`) " .
+                    "VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s',NOW())",
                 [
                     $username,
                     hash_password($password, $salt),
@@ -32,6 +40,7 @@ class UserRepository
                     $surname,
                     $ip,
                     $groups,
+                    $steamId,
                 ]
             )
         );
@@ -48,15 +57,16 @@ class UserRepository
                 "UPDATE `" .
                     TABLE_PREFIX .
                     "users` " .
-                    "SET `username` = '%s', `forename` = '%s', `surname` = '%s', `email` = '%s', `groups` = '%s', `wallet` = '%d' " .
+                    "SET `username` = '%s', `forename` = '%s', `surname` = '%s', `email` = '%s', `groups` = '%s', `wallet` = '%d', `steam_id` = '%s' " .
                     "WHERE `uid` = '%d'",
                 [
                     $user->getUsername(false),
-                    $user->getForename(false),
-                    $user->getSurname(false),
+                    $user->getForename(),
+                    $user->getSurname(),
                     $user->getEmail(false),
                     implode(";", $user->getGroups()),
                     $user->getWallet(),
+                    $user->getSteamId(),
                     $user->getUid(),
                 ]
             )

@@ -22,7 +22,14 @@ jQuery(document).ready(function($) {
                 removeFormWarnings();
                 $(".warnings").remove();
 
-                if (!(jsonObj = json_parse(content))) return;
+                var jsonObj = json_parse(content);
+                if (!jsonObj) {
+                    return;
+                }
+
+                if (!jsonObj.return_id) {
+                    return sthWentWrong();
+                }
 
                 // Wyświetlenie błędów w formularzu
                 if (jsonObj.return_id === "warnings") {
@@ -38,7 +45,7 @@ jQuery(document).ready(function($) {
                         var fieldElement = $('#form_install [name="' + name + '"]');
                         fieldElement.closest(".field").append(element);
                     });
-                } else if (jsonObj.return_id == "ok") {
+                } else if (jsonObj.return_id === "ok") {
                     $("body").addClass("installed");
                     $("body").html(
                         $("<div>", {
@@ -52,13 +59,10 @@ jQuery(document).ready(function($) {
                     }, 4000);
 
                     return;
-                } else if (jsonObj.return_id == "error") {
+                } else if (jsonObj.return_id === "error") {
                     setTimeout(function() {
                         location.reload();
                     }, 4000);
-                } else if (!jsonObj.return_id) {
-                    infobox.show_info(lang["sth_went_wrong"], false);
-                    return;
                 }
 
                 infobox.show_info(jsonObj.text, jsonObj.positive);

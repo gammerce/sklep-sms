@@ -4,6 +4,7 @@ require("./partials/stocks.js");
 require("./partials/window.js");
 require("./partials/loader.js");
 require("./partials/infobox.js");
+require("./pages/profile.js");
 
 $(document).ready(function() {
     if (typeof f !== "undefined") $(".content_td").append(atob(f));
@@ -61,26 +62,31 @@ $(document).delegate("#form_login", "submit", function(e) {
             loader.hide();
         },
         success: function(content) {
-            if (!(jsonObj = json_parse(content))) return;
+            var jsonObj = json_parse(content);
 
-            if (jsonObj.return_id == "logged_in") {
+            if (!jsonObj) {
+                return;
+            }
+
+            if (!jsonObj.return_id) {
+                return sthWentWrong();
+            }
+
+            if (jsonObj.return_id === "logged_in") {
                 $("#user_buttons").css({ overflow: "hidden" }); // Hide login area
                 refresh_blocks(
                     "logged_info,wallet,user_buttons,services_buttons" +
                         ($("#form_login_reload_content").val() == "0" ? "" : ",content")
                 );
             }
-            if (jsonObj.return_id == "already_logged_in") {
+
+            if (jsonObj.return_id === "already_logged_in") {
                 location.reload();
-            } else if (!jsonObj.return_id) {
-                infobox.show_info(lang["sth_went_wrong"], false);
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
-        error: function(error) {
-            infobox.show_info(lang["ajax_error"], false);
-        },
+        error: handleErrorResponse,
     });
 });
 
@@ -95,22 +101,25 @@ $(document).delegate("#logout", "click", function(e) {
             loader.hide();
         },
         success: function(content) {
-            if (!(jsonObj = json_parse(content))) return;
+            var jsonObj = json_parse(content);
+            if (!jsonObj) {
+                return;
+            }
 
-            if (jsonObj.return_id == "logged_out") {
+            if (!jsonObj.return_id) {
+                return sthWentWrong();
+            }
+
+            if (jsonObj.return_id === "logged_out") {
                 refresh_blocks("logged_info,wallet,user_buttons,services_buttons,content");
             }
-            if (jsonObj.return_id == "already_logged_out") {
+            if (jsonObj.return_id === "already_logged_out") {
                 location.reload();
-            } else if (!jsonObj.return_id) {
-                infobox.show_info(lang["sth_went_wrong"], false);
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
-        error: function(error) {
-            infobox.show_info(lang["ajax_error"], false);
-        },
+        error: handleErrorResponse,
     });
 });
 

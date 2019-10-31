@@ -98,6 +98,7 @@ class Factory
                 'email' => $this->faker->email,
                 'forename' => $this->faker->firstName,
                 'surname' => $this->faker->lastName,
+                'steam_id' => null,
                 'ip' => $this->faker->ipv4,
                 'groups' => '2',
             ],
@@ -110,6 +111,7 @@ class Factory
             $attributes['email'],
             $attributes['forename'],
             $attributes['surname'],
+            $attributes['steam_id'],
             $attributes['ip'],
             $attributes['groups']
         );

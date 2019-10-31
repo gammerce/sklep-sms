@@ -2,6 +2,7 @@
 namespace App\Routes;
 
 use App\Application;
+use App\Controllers\Api\Admin\UserResource;
 use App\Controllers\Api\BrickResource;
 use App\Controllers\Api\IncomeController;
 use App\Controllers\Api\InstallController;
@@ -233,6 +234,11 @@ class RoutesManager
                 $r->put('/api/admin/users/{userId}/password', [
                     'middlewares' => [[RequireAuthorization::class, "manage_users"]],
                     'uses' => UserPasswordResource::class . '@put',
+                ]);
+
+                $r->put('/api/admin/users/{userId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_users"]],
+                    'uses' => UserResource::class . '@put',
                 ]);
 
                 $r->addRoute(['GET', 'POST'], '/admin.php', [

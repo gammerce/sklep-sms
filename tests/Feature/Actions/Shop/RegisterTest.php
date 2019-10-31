@@ -16,6 +16,7 @@ class RegisterTest extends IndexTestCase
         $username = 'janek';
         $forename = 'Jan';
         $surname = 'Nowak';
+        $steamId = 'STEAM_1:0:22309350';
 
         /** @var Session $session */
         $session = $this->app->make(Session::class);
@@ -32,6 +33,7 @@ class RegisterTest extends IndexTestCase
             'email_repeat' => $email,
             'forename' => $forename,
             'surname' => $surname,
+            'steam_id' => $steamId,
             'as_id' => 1,
             'as_answer' => 'e',
         ]);
@@ -41,8 +43,9 @@ class RegisterTest extends IndexTestCase
         $user = new User(0, $username, $password);
         $this->assertNotNull($user->getUid());
         $this->assertEquals($email, $user->getEmail(false));
-        $this->assertEquals($forename, $user->getForename(false));
-        $this->assertEquals($surname, $user->getSurname(false));
+        $this->assertEquals($forename, $user->getForename());
+        $this->assertEquals($surname, $user->getSurname());
+        $this->assertEquals($steamId, $user->getSteamId());
         $this->assertNotNull($user->getRegDate());
     }
 }

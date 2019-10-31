@@ -14,7 +14,7 @@ window.getnset_template = function(element, template, data, onSuccessFunction) {
         success: function(content) {
             if (!(jsonObj = json_parse(content))) return;
 
-            if (jsonObj.return_id == "no_access") {
+            if (jsonObj.return_id === "no_access") {
                 alert(jsonObj.text);
                 location.reload();
             }
@@ -23,7 +23,7 @@ window.getnset_template = function(element, template, data, onSuccessFunction) {
             onSuccessFunction();
         },
         error: function(error) {
-            infobox.show_info(lang["ajax_error"], false);
+            handleErrorResponse();
             location.reload();
         },
     });
@@ -50,9 +50,7 @@ window.fetch_data = function(action, data, onSuccessFunction) {
         success: function(content) {
             onSuccessFunction(content);
         },
-        error: function(error) {
-            infobox.show_info(lang["ajax_error"], false);
-        },
+        error: handleErrorResponse,
     });
 };
 
@@ -72,9 +70,7 @@ window.rest_request = function(method, path, data, onSuccessFunction) {
         success: function(content) {
             onSuccessFunction(content);
         },
-        error: function(error) {
-            infobox.show_info(lang["ajax_error"], false);
-        },
+        error: handleErrorResponse,
     });
 };
 
@@ -107,7 +103,7 @@ window.refresh_blocks = function(bricks, onSuccessFunction) {
             onSuccessFunction(content);
         },
         error: function(error) {
-            infobox.show_info(lang["ajax_error"], false);
+            handleErrorResponse();
             location.reload();
         },
     });
@@ -147,9 +143,9 @@ window.trimSlashes = function(text) {
     return text.replace(/^\/|\/$/g, "");
 };
 
-window.buildUrl = function(path, query = {}) {
+window.buildUrl = function(path, query) {
     var prefix = typeof baseUrl !== "undefined" ? trimSlashes(baseUrl) + "/" : "";
-    var queryString = $.param(query);
+    var queryString = $.param(query || {});
 
     var output = prefix + trimSlashes(path);
 

@@ -7,6 +7,15 @@ use App\Exceptions\ValidationException;
 use App\Repositories\UserRepository;
 use App\Responses\ApiResponse;
 use App\TranslationManager;
+use App\Validation\Rules\AntispamQuestionRule;
+use App\Validation\Rules\ConfirmedRule;
+use App\Validation\Rules\EmailRule;
+use App\Validation\Rules\PasswordRule;
+use App\Validation\Rules\RequiredRule;
+use App\Validation\Rules\SteamIdRule;
+use App\Validation\Rules\UniqueUserEmailRule;
+use App\Validation\Rules\UniqueUsernameRule;
+use App\Validation\Validator;
 use Symfony\Component\HttpFoundation\Request;
 
 class RegisterController
@@ -16,7 +25,12 @@ class RegisterController
         Auth $auth,
         TranslationManager $translationManager,
         Database $db,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        UniqueUsernameRule $uniqueUsernameRule,
+        RequiredRule $requiredRule,
+        ConfirmedRule $confirmedRule,
+        UniqueUserEmailRule $uniqueUserEmailRule,
+        AntispamQuestionRule $antispamQuestionRule
     ) {
         $session = $request->getSession();
         $lang = $translationManager->user();
@@ -28,17 +42,17 @@ class RegisterController
 
         $username = trim($request->request->get('username'));
         $password = $request->request->get('password');
-        $passwordr = $request->request->get('password_repeat');
+        $passwordRepeat = $request->request->get('password_repeat');
         $email = trim($request->request->get('email'));
-        $emailr = trim($request->request->get('email_repeat'));
+        $emailRepeat = trim($request->request->get('email_repeat'));
         $forename = trim($request->request->get('forename'));
         $surname = trim($request->request->get('surname'));
+        $steamId = trim($request->request->get('steam_id'));
         $asId = $request->request->get('as_id');
         $asAnswer = $request->request->get('as_answer');
 
-        $warnings = [];
+        // Get new antispam question
         $data = [];
-
         $antispamQuestion = $db->fetchArrayAssoc(
             $db->query(
                 "SELECT * FROM `" .
@@ -59,58 +73,27 @@ class RegisterController
         // Let's store antispam question id in session
         $session->set("asid", $antispamQuestion['id']);
 
-        if ($warning = check_for_warnings("username", $username)) {
-            $warnings['username'] = array_merge((array) $warnings['username'], $warning);
-        }
-
-        $result = $db->query(
-            $db->prepare(
-                "SELECT `uid` FROM `" . TABLE_PREFIX . "users` " . "WHERE `username` = '%s'",
-                [$username]
-            )
+        $validator = new Validator(
+            [
+                "username" => $username,
+                "password" => $password,
+                "password_repeat" => $passwordRepeat,
+                "email" => $email,
+                "email_repeat" => $emailRepeat,
+                "steam_id" => $steamId,
+                "as_answer" => $asAnswer,
+                "as_id" => $asId,
+            ],
+            [
+                "username" => [$requiredRule, $uniqueUsernameRule],
+                "password" => [$requiredRule, $confirmedRule, new PasswordRule()],
+                "email" => [$requiredRule, $confirmedRule, new EmailRule(), $uniqueUserEmailRule],
+                "steam_id" => [new SteamIdRule()],
+                "as_answer" => [$antispamQuestionRule],
+            ]
         );
-        if ($db->numRows($result)) {
-            $warnings['username'][] = $lang->translate('nick_occupied');
-        }
 
-        // Password
-        if ($warning = check_for_warnings("password", $password)) {
-            $warnings['password'] = array_merge((array) $warnings['password'], $warning);
-        }
-        if ($password != $passwordr) {
-            $warnings['password_repeat'][] = $lang->translate('different_pass');
-        }
-
-        if ($warning = check_for_warnings("email", $email)) {
-            $warnings['email'] = array_merge((array) $warnings['email'], $warning);
-        }
-
-        // Email
-        $result = $db->query(
-            $db->prepare(
-                "SELECT `uid` FROM `" . TABLE_PREFIX . "users` " . "WHERE `email` = '%s'",
-                [$email]
-            )
-        );
-        if ($db->numRows($result)) {
-            $warnings['email'][] = $lang->translate('email_occupied');
-        }
-
-        if ($email != $emailr) {
-            $warnings['email_repeat'][] = $lang->translate('different_email');
-        }
-
-        $result = $db->query(
-            $db->prepare(
-                "SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " . "WHERE `id` = '%d'",
-                [$asId]
-            )
-        );
-        $antispamQuestion = $db->fetchArrayAssoc($result);
-        if (!in_array(strtolower($asAnswer), explode(";", $antispamQuestion['answers']))) {
-            $warnings['as_answer'][] = $lang->translate('wrong_anti_answer');
-        }
-
+        $warnings = $validator->validate();
         if ($warnings) {
             throw new ValidationException($warnings, $data);
         }
@@ -121,6 +104,7 @@ class RegisterController
             $email,
             $forename,
             $surname,
+            $steamId,
             get_ip($request)
         );
 

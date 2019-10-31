@@ -34,6 +34,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         $table->addHeadCell(new HeadCell($this->lang->translate('firstname')));
         $table->addHeadCell(new HeadCell($this->lang->translate('surname')));
         $table->addHeadCell(new HeadCell($this->lang->translate('email')));
+        $table->addHeadCell(new HeadCell($this->lang->translate('sid')));
         $table->addHeadCell(new HeadCell($this->lang->translate('groups')));
         $table->addHeadCell(new HeadCell($this->lang->translate('wallet')));
 
@@ -46,6 +47,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                     "`forename`",
                     "`surname`",
                     "`email`",
+                    "`steam_id`",
                     "`groups`",
                     "`wallet`",
                 ],
@@ -60,7 +62,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         }
 
         $result = $this->db->query(
-            "SELECT SQL_CALC_FOUND_ROWS `uid`, `username`, `forename`, `surname`, `email`, `groups`, `wallet` " .
+            "SELECT SQL_CALC_FOUND_ROWS `uid`, `username`, `forename`, `surname`, `email`, `steam_id`, `groups`, `wallet` " .
                 "FROM `" .
                 TABLE_PREFIX .
                 "users` " .
@@ -87,6 +89,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             $bodyRow->addCell(new Cell(htmlspecialchars($row['forename'])));
             $bodyRow->addCell(new Cell(htmlspecialchars($row['surname'])));
             $bodyRow->addCell(new Cell(htmlspecialchars($row['email'])));
+            $bodyRow->addCell(new Cell(htmlspecialchars($row['steam_id'])));
             $bodyRow->addCell(new Cell($groups));
 
             $cell = new Cell(
@@ -152,10 +155,16 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                     ]);
                 }
 
-                $output = $this->template->render(
-                    "admin/action_boxes/user_edit",
-                    compact('user', 'groups')
-                );
+                $output = $this->template->render("admin/action_boxes/user_edit", [
+                    "email" => htmlspecialchars($user->getEmail(false)),
+                    "username" => htmlspecialchars($user->getUsername(false)),
+                    "surname" => htmlspecialchars($user->getSurname()),
+                    "forename" => htmlspecialchars($user->getForename()),
+                    "steamId" => htmlspecialchars($user->getSteamId()),
+                    "uid" => $user->getUid(),
+                    "wallet" => $user->getWallet(true),
+                    "groups" => $groups,
+                ]);
                 break;
 
             case "charge_wallet":
