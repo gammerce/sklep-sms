@@ -44,11 +44,8 @@ function regenerate_token(identifier, button) {
 
         $.ajax({
             type: "POST",
-            url: buildUrl("jsonhttp.php"),
+            url: buildUrl("/api/services/ss_license/actions/regenerate_token"),
             data: {
-                action: "service_action_execute",
-                service: "ss_license",
-                service_action: "regenerate_token",
                 identifier: identifier,
             },
             complete: function() {
