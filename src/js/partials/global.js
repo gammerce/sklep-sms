@@ -29,6 +29,9 @@ window.getnset_template = function(element, template, data, onSuccessFunction) {
     });
 };
 
+/**
+ * @deprecated
+ */
 window.fetch_data = function(action, data, onSuccessFunction) {
     // Sprawdzenie czy data została przesłana
     data = typeof data !== "undefined" ? data : {};
