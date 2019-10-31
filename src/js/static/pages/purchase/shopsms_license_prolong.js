@@ -8,14 +8,14 @@ function ss_prolong_set_cost() {
     }
 
     var tmp_data = $("#form_purchase").serializeArray();
-    var data = {}; // Musi byc, inaczej nie dziala
+    var data = {};
     $.each(tmp_data, function(index, element) {
         data[element.name] = element.value;
     });
-    data["service_action"] = "get_cost";
 
-    // Wywolujemy skrypt php, ktory ustali koszt
-    fetch_data("service_action_execute", false, data, function(html) {
+    var serviceId = $("#form_purchase [name=service]").val();
+
+    rest_request("POST", "/api/service/" + serviceId + "/actions/get_cost", data, function(html) {
         $(".shopsms_license_prolong_purchase #cost").html(html);
     });
 }

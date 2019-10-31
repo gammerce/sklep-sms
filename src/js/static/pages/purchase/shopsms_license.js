@@ -41,15 +41,15 @@ function set_cost() {
         return;
     }
 
-    var tmp_data = $("#form_purchase").serializeArray();
-    var data = {}; // Musi byc, inaczej nie dziala
-    $.each(tmp_data, function(index, element) {
+    var tmpData = $("#form_purchase").serializeArray();
+    var data = {};
+    $.each(tmpData, function(index, element) {
         data[element.name] = element.value;
     });
-    data["service_action"] = "get_cost";
 
-    // Wywolujemy skrypt php, ktory ustali koszt
-    fetch_data("service_action_execute", false, data, function(html) {
+    var serviceId = $("#form_purchase [name=service]").val();
+
+    rest_request("POST", "/api/service/" + serviceId + "/actions/get_cost", data, function(html) {
         $(".shopsms_license_purchase #cost").html(html);
     });
 }

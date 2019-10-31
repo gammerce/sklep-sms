@@ -70,7 +70,7 @@ function regenerate_token(identifier, button) {
                 infobox.show_info("Token został zregenerowany", true);
             },
             error: function(error) {
-                infobox.show_info(lang["ajax_error"], false);
+                handleErrorResponse();
                 location.reload();
             },
         });
@@ -78,29 +78,38 @@ function regenerate_token(identifier, button) {
 }
 
 function ss_user_edit_set_cost(form) {
-    var tmp_data = form.serializeArray();
-    var data = {}; // Musi byc, inaczej nie dziala
-    $.each(tmp_data, function(index, element) {
+    var tmpData = form.serializeArray();
+    var data = {};
+    $.each(tmpData, function(index, element) {
         data[element.name] = element.value;
     });
-    data["service_action"] = "get_cost_user_edit";
     data["user_service_id"] = form.data("row");
 
-    // Wywolujemy skrypt php, ktory ustali koszt
-    var tmp_form = form;
-    fetch_data("service_action_execute", false, data, function(content) {
-        var jsonObj;
-        if (!(jsonObj = json_parse(content))) return;
+    var serviceId = form.find("[name=service]").val();
 
-        var cost = form.find("#cost");
-        var cost_monthly = form.find("#cost_monthly");
+    rest_request(
+        "POST",
+        "/api/service/" + serviceId + "/actions/get_cost_user_edit",
+        data,
+        function(content) {
+            var jsonObj = json_parse(content);
+            if (!jsonObj) {
+                return;
+            }
 
-        if (cost.html() != jsonObj.surcharge)
-            // podswietlamy i zmieniamy zawartosc, gdy ta sie rzeczywiscie zmienila
-            cost.html(jsonObj.surcharge).effect("highlight", 1000);
-        if (cost_monthly.html() != jsonObj.cost_monthly)
-            cost_monthly.html(jsonObj.cost_monthly).effect("highlight", 1000);
-    });
+            var cost = form.find("#cost");
+            var costMonthly = form.find("#cost_monthly");
+
+            if (cost.html() != jsonObj.surcharge) {
+                // podswietlamy i zmieniamy zawartosc, gdy ta sie rzeczywiscie zmienila
+                cost.html(jsonObj.surcharge).effect("highlight", 1000);
+            }
+
+            if (costMonthly.html() != jsonObj.cost_monthly) {
+                costMonthly.html(jsonObj.cost_monthly).effect("highlight", 1000);
+            }
+        }
+    );
 }
 
 // Kliknięcie przeładowania
