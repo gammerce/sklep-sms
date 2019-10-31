@@ -41,7 +41,7 @@ class ServerStuffController
             $purchaseData->setService($serviceModule->service['id']);
             $purchaseData->user = $heart->getUser($request->get('uid'));
             $purchaseData->user->setPlatform($request->get('platform'));
-            $purchaseData->user->setLastip($request->get('ip'));
+            $purchaseData->user->setLastIp($request->get('ip'));
             $purchaseData->setOrder([
                 'server' => $request->get('server'),
                 'type' => $request->get('type'),

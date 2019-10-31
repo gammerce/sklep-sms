@@ -11,23 +11,23 @@ $(document).delegate("#form_settings_edit", "submit", function(e) {
         success: function(content) {
             removeFormWarnings();
 
-            if (!(jsonObj = json_parse(content))) return;
-
-            if (jsonObj.return_id === "warnings") {
-                showWarnings($("#form_settings_edit"), jsonObj.warnings);
-            } else if (jsonObj.return_id == "ok") {
-                // Odśwież stronę
-                refresh_blocks("admincontent", true);
-            } else if (!jsonObj.return_id) {
-                infobox.show_info(lang["sth_went_wrong"], false);
+            var jsonObj = json_parse(content);
+            if (!jsonObj) {
                 return;
             }
 
-            // Wyświetlenie zwróconego info
+            if (!jsonObj.return_id) {
+                return sthWentWrong();
+            }
+
+            if (jsonObj.return_id === "warnings") {
+                showWarnings($("#form_settings_edit"), jsonObj.warnings);
+            } else if (jsonObj.return_id === "ok") {
+                refresh_blocks("admincontent");
+            }
+
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
-        error: function(error) {
-            infobox.show_info(lang["ajax_error"], false);
-        },
+        error: handleErrorResponse,
     });
 });

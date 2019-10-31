@@ -7,27 +7,11 @@
     width: 40%;
     min-width: 400px;
     margin: 15px auto;
-    padding: 10px;
-    border-radius: 10px;
-    border: 2px solid;
     text-align: center;
-
-    color: rgb(255, 255, 255);
-    text-shadow: 1px 1px 1px #000;
     word-wrap: break-word;
 }
 
 .infobox:hover {
     opacity: 0.5;
     cursor: pointer;
-}
-
-.infobox.negative {
-    border-color: rgb(255, 0, 0);
-    background: rgba(150, 9, 9, 0.6);
-}
-
-.infobox.positive {
-    border-color: #b7ff00;
-    background: rgba(100, 180, 5, 0.6);
 }

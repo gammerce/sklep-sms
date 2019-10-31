@@ -1,4 +1,4 @@
-// Wysłanie formularza zakupu
+// Send purchase form
 $(document).delegate("#form_purchase", "submit", function(e) {
     e.preventDefault();
 });
@@ -9,55 +9,52 @@ $(document).delegate("#go_to_payment", "click", function() {
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp.php"),
-        data: $("#form_purchase").serialize() + "&action=purchase_form_validate",
+        url: buildUrl("/api/purchase/validation"),
+        data: $("#form_purchase").serialize(),
         complete: function() {
             loader.hide();
         },
         success: function(content) {
             removeFormWarnings();
 
-            if (!(jsonObj = json_parse(content))) return;
-
-            if (jsonObj.return_id === "warnings") {
-                showWarnings($("#form_purchase"), jsonObj.warnings);
-            } else if (jsonObj.return_id == "ok") {
-                // Przechodzimy do płatności
-                go_to_payment(jsonObj.data, jsonObj.sign);
-            } else if (!jsonObj.return_id) {
-                infobox.show_info(lang["sth_went_wrong"], false);
+            var jsonObj = json_parse(content);
+            if (!jsonObj) {
                 return;
             }
 
-            // Wyświetlenie zwróconego info
+            if (!jsonObj.return_id) {
+                return sthWentWrong();
+            }
+
+            if (jsonObj.return_id === "warnings") {
+                showWarnings($("#form_purchase"), jsonObj.warnings);
+            } else if (jsonObj.return_id === "ok") {
+                go_to_payment(jsonObj.data, jsonObj.sign);
+            }
+
             if (typeof jsonObj.length !== "undefined")
                 infobox.show_info(jsonObj.text, jsonObj.positive, jsonObj.length);
             else infobox.show_info(jsonObj.text, jsonObj.positive);
         },
-        error: function(error) {
-            infobox.show_info(lang["ajax_error"], false);
-        },
+        error: handleErrorResponse,
     });
 });
 
-// Pokaż pełny opis usługi
+// Show service long description
 $(document).delegate("#show_service_desc", "click", function() {
+    var serviceId = $("#form_purchase [name=service]").val();
+
     loader.show();
+
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp.php"),
-        data: {
-            action: "get_service_long_description",
-            service: $("#form_purchase [name=service]").val(),
-        },
+        type: "GET",
+        url: buildUrl("/api/services/" + serviceId + "/long_description"),
         complete: function() {
             loader.hide();
         },
         success: function(content) {
             window_info.create("80%", "80%", content);
         },
-        error: function(error) {
-            infobox.show_info(lang["ajax_error"], false);
-        },
+        error: handleErrorResponse,
     });
 });

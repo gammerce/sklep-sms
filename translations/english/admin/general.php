@@ -254,7 +254,6 @@ return [
     'user_admin_delete' => 'Admin {1}({2}) removed user. ID: {3}',
     'user_admin_edit' => 'Admin {1}({2}) edited user. ID: {3}',
     'user_edit' => 'User edited successfully.',
-    'user_no_edit' => 'Could not edit user.',
     'user_service_admin_delete' => 'Admin {1}({2}) removed user\'s service. ID: {3}',
     'user_service_edit' => 'Player\'s service editing',
     'users' => 'Users',

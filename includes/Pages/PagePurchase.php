@@ -99,7 +99,7 @@ class PagePurchase extends Page
 
         // Dodajemy długi opis
         $showMore = '';
-        if (strlen($serviceModule->descriptionFullGet())) {
+        if (strlen($serviceModule->descriptionLongGet())) {
             $showMore = $this->template->render("services/show_more");
         }
 

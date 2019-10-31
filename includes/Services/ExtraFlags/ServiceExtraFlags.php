@@ -346,7 +346,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         return add_bought_service_info(
             $purchaseData->user->getUid(),
             $purchaseData->user->getUsername(),
-            $purchaseData->user->getLastip(),
+            $purchaseData->user->getLastIp(),
             $purchaseData->getPayment('method'),
             $purchaseData->getPayment('payment_id'),
             $this->service['id'],
@@ -916,8 +916,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             if ($warning = check_for_warnings("uid", $data['uid'])) {
                 $warnings['uid'] = array_merge((array) $warnings['uid'], $warning);
             } else {
-                $user2 = $this->heart->getUser($data['uid']);
-                if (!$user2->exists()) {
+                $editedUser = $this->heart->getUser($data['uid']);
+                if (!$editedUser->exists()) {
                     $warnings['uid'][] = $this->lang->translate('no_account_id');
                 }
             }

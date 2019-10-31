@@ -39,7 +39,7 @@ window.show_action_box = function(pageId, boxId, data) {
 
     data["page_id"] = pageId;
     data["box_id"] = boxId;
-    fetch_data("get_action_box", true, data, function(content) {
+    fetch_data("get_action_box", data, function(content) {
         var jsonObj = json_parse(content);
         if (!jsonObj) {
             return;

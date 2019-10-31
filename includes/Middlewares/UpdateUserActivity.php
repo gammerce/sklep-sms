@@ -13,7 +13,7 @@ class UpdateUserActivity implements MiddlewareContract
         $auth = $app->make(Auth::class);
 
         $user = $auth->user();
-        $user->setLastip(get_ip());
+        $user->setLastIp(get_ip());
         $user->updateActivity();
 
         return null;

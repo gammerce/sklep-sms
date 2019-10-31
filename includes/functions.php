@@ -41,16 +41,6 @@ function app($abstract = null, array $parameters = [])
 }
 
 /**
- * Sprawdza czy jesteśmy w adminowskiej części sklepu
- *
- * @return bool
- */
-function admin_session()
-{
-    return app()->isAdminSession();
-}
-
-/**
  * Pobranie szablonu
  *
  * @param string     $output Zwartość do wyświetlenia
@@ -477,7 +467,7 @@ function validate_payment(Purchase $purchaseData)
         }
     }
 
-    if (!empty($warnings)) {
+    if ($warnings) {
         $warningData = [];
         $warningData['warnings'] = format_warnings($warnings);
 
@@ -665,7 +655,7 @@ function pay_service_code(Purchase $purchaseData, $serviceModule)
                         "SET `code` = '%s', `ip` = '%s', `platform` = '%s'",
                     [
                         $purchaseData->getPayment('service_code'),
-                        $purchaseData->user->getLastip(),
+                        $purchaseData->user->getLastIp(),
                         $purchaseData->user->getPlatform(),
                     ]
                 )
@@ -986,41 +976,14 @@ function log_info($string)
 
 function create_dom_element($name, $text = "", $data = [])
 {
-    $features = "";
+    $element = new DOMElement($text);
+    $element->setName($name);
+
     foreach ($data as $key => $value) {
-        if (is_array($value) || !strlen($value)) {
-            continue;
-        }
-
-        $features .=
-            (strlen($features) ? " " : "") . $key . '="' . str_replace('"', '\"', $value) . '"';
+        $element->setParam($key, $value);
     }
 
-    if (isset($data['style'])) {
-        $style = '';
-        foreach ($data['style'] as $key => $value) {
-            if (!strlen($value)) {
-                continue;
-            }
-
-            $style .= (strlen($style) ? "; " : "") . "{$key}: {$value}";
-        }
-        if (strlen($style)) {
-            $features .= (strlen($features) ? " " : "") . "style=\"{$style}\"";
-        }
-    }
-
-    $nameHsafe = htmlspecialchars($name);
-    $output = "<{$nameHsafe} {$features}>";
-    if (strlen($text)) {
-        $output .= $text;
-    }
-
-    if (!in_array($name, ["input", "img"])) {
-        $output .= "</{$nameHsafe}>";
-    }
-
-    return $output;
+    return $element->toHtml();
 }
 
 function create_brick($text, $class = "", $alpha = 0.2)
@@ -1055,10 +1018,9 @@ function get_platform($platform)
     return htmlspecialchars($platform);
 }
 
-function get_ip()
+function get_ip(Request $request = null)
 {
-    /** @var Request $request */
-    $request = app()->make(Request::class);
+    $request = $request ?: app()->make(Request::class);
 
     if ($request->server->has('HTTP_CF_CONNECTING_IP')) {
         $cfIpRanges = [

@@ -1,7 +1,7 @@
 <?php
 namespace App\Models;
 
-class Pricelist
+class PriceList
 {
     /** @var int */
     private $id;

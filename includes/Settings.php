@@ -7,16 +7,16 @@ use Symfony\Component\HttpFoundation\Request;
 class Settings implements ArrayAccess
 {
     /** @var array */
-    protected $settings;
+    private $settings;
 
     /** @var Database */
-    protected $db;
+    private $db;
 
     /** @var Path */
-    protected $path;
+    private $path;
 
     /** @var bool */
-    protected $loaded = false;
+    private $loaded = false;
 
     public function __construct(Path $path, Database $database)
     {

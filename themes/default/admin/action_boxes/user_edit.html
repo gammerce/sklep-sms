@@ -5,7 +5,7 @@
     <table>
         <tr>
             <td>{$lang->translate('id')}</td>
-            <td>{$user->getUid()}</td>
+            <td>{$uid}</td>
         </tr>
         <tr>
             <td colspan="2" class="line"></td>
@@ -23,7 +23,7 @@
                             name="username"
                             class="input is-small"
                             maxlength="64"
-                            value="{$user->getUsername()}"
+                            value="{$username}"
                         />
                     </div>
                 </div>
@@ -42,7 +42,7 @@
                             name="forename"
                             class="input is-small"
                             maxlength="32"
-                            value="{$user->getForename()}"
+                            value="{$forename}"
                         />
                     </div>
                 </div>
@@ -61,7 +61,7 @@
                             name="surname"
                             class="input is-small"
                             maxlength="64"
-                            value="{$user->getSurname()}"
+                            value="{$surname}"
                         />
                     </div>
                 </div>
@@ -80,7 +80,26 @@
                             name="email"
                             class="input is-small"
                             maxlength="128"
-                            value="{$user->getEmail()}"
+                            value="{$email}"
+                        />
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="steam_id">{$lang->strtoupper($lang->translate('sid'))}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <input
+                            type="text"
+                            id="steam_id"
+                            name="steam_id"
+                            class="input is-small"
+                            maxlength="128"
+                            value="{$steamId}"
                         />
                     </div>
                 </div>
@@ -119,7 +138,7 @@
                             class="input is-small"
                             maxlength="32"
                             step="0.01"
-                            value="{$user->getWallet(true)}"
+                            value="{$wallet}"
                         />
                     </div>
                     <div class="control">
@@ -135,7 +154,7 @@
         </tr>
         <tr>
             <td colspan="2">
-                <input type="hidden" name="uid" value="{$user->getUid()}" />
+                <input type="hidden" name="uid" value="{$uid}" />
                 <input type="submit" value="{$lang->translate('edit')}" class="button w100" />
             </td>
         </tr>

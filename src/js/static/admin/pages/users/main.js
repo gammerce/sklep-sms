@@ -4,14 +4,6 @@
         $("#action_box_wraper_td").html("");
     }
 
-    function handleErrorResponse() {
-        infobox.show_info(lang["ajax_error"], false);
-    }
-
-    function sthWentWrong() {
-        infobox.show_info(lang["sth_went_wrong"], false);
-    }
-
     // This is used later when action is done
     var row_id = 0;
     $(document).delegate(".table-structure .charge_wallet", "click", function() {
@@ -74,11 +66,11 @@
                 }
 
                 if (jsonObj.return_id === "ok") {
-                    // Usuń row
+                    // Delete row
                     row_id.fadeOut("slow");
                     row_id.css({ background: "#FFF4BA" });
 
-                    refresh_blocks("admincontent", true);
+                    refresh_blocks("admincontent");
                 }
 
                 infobox.show_info(jsonObj.text, jsonObj.positive);
@@ -117,7 +109,6 @@
                     getnset_template(
                         row_id.children("td[headers=wallet]"),
                         "admin_user_wallet",
-                        true,
                         {
                             uid: $(that)
                                 .find("input[name=uid]")
@@ -149,7 +140,7 @@
 
         $.ajax({
             type: "PUT",
-            url: buildUrl("/admin/users/" + userId + "/password"),
+            url: buildUrl("/api/admin/users/" + userId + "/password"),
             data: $(this).serialize(),
             complete: function() {
                 loader.hide();
@@ -181,12 +172,16 @@
     $(document).delegate("#form_user_edit", "submit", function(e) {
         e.preventDefault();
         loader.show();
+
         var that = this;
+        var userId = $(that)
+            .find("[name=uid]")
+            .val();
 
         $.ajax({
-            type: "POST",
-            url: buildUrl("jsonhttp_admin.php"),
-            data: $(this).serialize() + "&action=user_edit",
+            type: "PUT",
+            url: buildUrl("/api/admin/users/" + userId),
+            data: $(this).serialize(),
             complete: function() {
                 loader.hide();
             },
@@ -206,7 +201,7 @@
                     showWarnings($(that), jsonObj.warnings);
                 } else if (jsonObj.return_id === "ok") {
                     clearAndHideActionBox();
-                    refresh_blocks("admincontent", true);
+                    refresh_blocks("admincontent");
                 }
 
                 infobox.show_info(jsonObj.text, jsonObj.positive);

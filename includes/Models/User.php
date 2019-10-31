@@ -28,23 +28,26 @@ class User
     /** @var string */
     private $surname;
 
+    /** @var string */
+    private $steamId;
+
     /** @var array */
     private $groups = [];
 
     /** @var string */
-    private $regdate;
+    private $regDate;
 
     /** @var string */
-    private $lastactiv;
+    private $lastActive;
 
     /** @var integer */
     private $wallet;
 
     /** @var string */
-    private $regip;
+    private $regIp;
 
     /** @var string */
-    private $lastip;
+    private $lastIp;
 
     /** @var string */
     private $resetPasswordKey;
@@ -74,7 +77,7 @@ class User
         $request = app()->make(Request::class);
 
         $this->platform = $request->server->get('HTTP_USER_AGENT');
-        $this->lastip = get_ip();
+        $this->lastIp = get_ip();
 
         if (!$uid && (!strlen($username) || !strlen($password))) {
             return;
@@ -100,12 +103,13 @@ class User
             $this->email = $row['email'];
             $this->forename = $row['forename'];
             $this->surname = $row['surname'];
+            $this->steamId = $row['steam_id'];
             $this->groups = explode(';', $row['groups']);
-            $this->regdate = $row['regdate'];
-            $this->lastactiv = $row['lastactiv'];
+            $this->regDate = $row['regdate'];
+            $this->lastActive = $row['lastactiv'];
             $this->wallet = intval($row['wallet']);
-            $this->regip = $row['regip'];
-            $this->lastip = $row['lastip'];
+            $this->regIp = $row['regip'];
+            $this->lastIp = $row['lastip'];
             $this->resetPasswordKey = $row['reset_password_key'];
         }
 
@@ -132,7 +136,7 @@ class User
                     "users` " .
                     "SET `lastactiv` = NOW(), `lastip` = '%s' " .
                     "WHERE `uid` = '%d'",
-                [$this->getLastip(), $this->getUid()]
+                [$this->getLastIp(), $this->getUid()]
             )
         );
     }
@@ -158,6 +162,14 @@ class User
     public function getUsername($escape = true)
     {
         return $escape ? htmlspecialchars($this->username) : $this->username;
+    }
+
+    /**
+     * @param string $username
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
     }
 
     /**
@@ -195,23 +207,35 @@ class User
     }
 
     /**
-     * @param bool $escape
-     *
      * @return string
      */
-    public function getForename($escape = true)
+    public function getForename()
     {
-        return $escape ? htmlspecialchars($this->forename) : $this->forename;
+        return $this->forename;
     }
 
     /**
-     * @param bool $escape
-     *
+     * @param string $forename
+     */
+    public function setForename($forename)
+    {
+        $this->forename = $forename;
+    }
+
+    /**
      * @return string
      */
-    public function getSurname($escape = true)
+    public function getSurname()
     {
-        return $escape ? htmlspecialchars($this->surname) : $this->surname;
+        return $this->surname;
+    }
+
+    /**
+     * @param string $surname
+     */
+    public function setSurname($surname)
+    {
+        $this->surname = $surname;
     }
 
     /**
@@ -223,19 +247,27 @@ class User
     }
 
     /**
-     * @return string
+     * @param array $groups
      */
-    public function getRegdate()
+    public function setGroups(array $groups)
     {
-        return $this->regdate;
+        $this->groups = $groups;
     }
 
     /**
      * @return string
      */
-    public function getLastactiv()
+    public function getRegDate()
     {
-        return $this->lastactiv;
+        return $this->regDate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastActive()
+    {
+        return $this->lastActive;
     }
 
     /**
@@ -259,25 +291,25 @@ class User
     /**
      * @return string
      */
-    public function getRegip()
+    public function getRegIp()
     {
-        return $this->regip;
+        return $this->regIp;
     }
 
     /**
      * @return string
      */
-    public function getLastip()
+    public function getLastIp()
     {
-        return $this->lastip;
+        return $this->lastIp;
     }
 
     /**
-     * @param string $lastip
+     * @param string $lastIp
      */
-    public function setLastip($lastip)
+    public function setLastIp($lastIp)
     {
-        $this->lastip = $lastip;
+        $this->lastIp = $lastIp;
     }
 
     /**
@@ -340,5 +372,21 @@ class User
     public function setPlatform($platform)
     {
         $this->platform = $platform;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSteamId()
+    {
+        return $this->steamId;
+    }
+
+    /**
+     * @param string $steamId
+     */
+    public function setSteamId($steamId)
+    {
+        $this->steamId = $steamId;
     }
 }

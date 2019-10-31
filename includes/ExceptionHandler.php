@@ -6,6 +6,8 @@ use App\Exceptions\LicenseException;
 use App\Exceptions\LicenseRequestException;
 use App\Exceptions\RequireInstallationException;
 use App\Exceptions\SqlQueryException;
+use App\Exceptions\ValidationException;
+use App\Responses\ApiResponse;
 use Exception;
 use Raven_Client;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,7 +26,11 @@ class ExceptionHandler implements ExceptionHandlerContract
     /** @var Path */
     private $path;
 
-    private $dontReport = [RequireInstallationException::class, LicenseException::class];
+    private $dontReport = [
+        RequireInstallationException::class,
+        LicenseException::class,
+        ValidationException::class,
+    ];
 
     public function __construct(
         Application $app,
@@ -32,7 +38,7 @@ class ExceptionHandler implements ExceptionHandlerContract
         TranslationManager $translationManager
     ) {
         $this->app = $app;
-        $this->lang = $translationManager->shop();
+        $this->lang = $translationManager->user();
         $this->path = $path;
     }
 
@@ -54,6 +60,20 @@ class ExceptionHandler implements ExceptionHandlerContract
 
         if ($e instanceof EntityNotFoundException) {
             return new Response($e->getMessage(), 404);
+        }
+
+        if ($e instanceof ValidationException) {
+            return new ApiResponse(
+                "warnings",
+                $this->lang->translate('form_wrong_filled'),
+                false,
+                array_merge(
+                    [
+                        "warnings" => format_warnings($e->warnings),
+                    ],
+                    $e->data
+                )
+            );
         }
 
         if ($e instanceof RequireInstallationException) {

@@ -29,26 +29,26 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
             loader.hide();
         },
         success: function(content) {
-            if (!(jsonObj = json_parse(content))) return;
-
-            if (jsonObj.return_id == "ok") {
-                // Usuń row
-                row_id.fadeOut("slow");
-                row_id.css({ background: "#FFF4BA" });
-
-                // Odśwież stronę
-                refresh_blocks("admincontent", true);
-            } else if (!jsonObj.return_id) {
-                infobox.show_info(lang["sth_went_wrong"], false);
+            var jsonObj = json_parse(content);
+            if (!jsonObj) {
                 return;
             }
 
-            // Wyświetlenie zwróconego info
+            if (!jsonObj.return_id) {
+                return sthWentWrong();
+            }
+
+            if (jsonObj.return_id === "ok") {
+                // Delete row
+                row_id.fadeOut("slow");
+                row_id.css({ background: "#FFF4BA" });
+
+                refresh_blocks("admincontent");
+            }
+
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
-        error: function(error) {
-            infobox.show_info(lang["ajax_error"], false);
-        },
+        error: handleErrorResponse,
     });
 });
 
@@ -67,28 +67,28 @@ $(document).delegate("#form_price_add", "submit", function(e) {
         success: function(content) {
             removeFormWarnings();
 
-            if (!(jsonObj = json_parse(content))) return;
+            var jsonObj = json_parse(content);
+            if (!jsonObj) {
+                return;
+            }
+
+            if (!jsonObj.return_id) {
+                return sthWentWrong();
+            }
 
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_price_add"), jsonObj.warnings);
-            } else if (jsonObj.return_id == "ok") {
+            } else if (jsonObj.return_id === "ok") {
                 // Ukryj i wyczyść action box
                 action_box.hide();
                 $("#action_box_wraper_td").html("");
 
-                // Odśwież stronę
-                refresh_blocks("admincontent", true);
-            } else if (!jsonObj.return_id) {
-                infobox.show_info(lang["sth_went_wrong"], false);
-                return;
+                refresh_blocks("admincontent");
             }
 
-            // Wyświetlenie zwróconego info
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
-        error: function(error) {
-            infobox.show_info(lang["ajax_error"], false);
-        },
+        error: handleErrorResponse,
     });
 });
 
@@ -107,27 +107,27 @@ $(document).delegate("#form_price_edit", "submit", function(e) {
         success: function(content) {
             removeFormWarnings();
 
-            if (!(jsonObj = json_parse(content))) return;
+            var jsonObj = json_parse(content);
+            if (!jsonObj) {
+                return;
+            }
+
+            if (!jsonObj.return_id) {
+                return sthWentWrong();
+            }
 
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_price_edit"), jsonObj.warnings);
-            } else if (jsonObj.return_id == "ok") {
+            } else if (jsonObj.return_id === "ok") {
                 // Ukryj i wyczyść action box
                 action_box.hide();
                 $("#action_box_wraper_td").html("");
 
-                // Odśwież stronę
-                refresh_blocks("admincontent", true);
-            } else if (!jsonObj.return_id) {
-                infobox.show_info(lang["sth_went_wrong"], false);
-                return;
+                refresh_blocks("admincontent");
             }
 
-            // Wyświetlenie zwróconego info
             infobox.show_info(jsonObj.text, jsonObj.positive);
         },
-        error: function(error) {
-            infobox.show_info(lang["ajax_error"], false);
-        },
+        error: handleErrorResponse,
     });
 });

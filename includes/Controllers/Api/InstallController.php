@@ -4,21 +4,20 @@ namespace App\Controllers\Api;
 use App\Application;
 use App\Database;
 use App\Exceptions\SqlQueryException;
+use App\Exceptions\ValidationException;
 use App\Install\DatabaseMigration;
 use App\Install\EnvCreator;
-use App\Install\SetupManager;
 use App\Install\RequirementsStore;
+use App\Install\SetupManager;
 use App\Path;
 use App\Responses\ApiResponse;
 use App\Responses\HtmlResponse;
 use App\TranslationManager;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class InstallController
 {
     public function post(
-        Request $request,
         RequirementsStore $requirementsStore,
         TranslationManager $translationManager,
         SetupManager $setupManager,
@@ -101,15 +100,8 @@ class InstallController
             }
         }
 
-        // Jeżeli są jakieś błedy, to je zwróć
-        if (!empty($warnings)) {
-            $returnData['warnings'] = format_warnings($warnings);
-            return new ApiResponse(
-                "warnings",
-                $lang->translate('form_wrong_filled'),
-                false,
-                $returnData
-            );
+        if ($warnings) {
+            throw new ValidationException($warnings);
         }
 
         $setupManager->start();
