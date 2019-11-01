@@ -1,4 +1,4 @@
-window.getnset_template = function(element, template, data, onSuccessFunction) {
+window.getAndSetTemplate = function(element, template, data, onSuccessFunction) {
     onSuccessFunction =
         typeof onSuccessFunction !== "undefined" ? onSuccessFunction : function() {};
 
@@ -29,35 +29,7 @@ window.getnset_template = function(element, template, data, onSuccessFunction) {
     });
 };
 
-/**
- * @deprecated
- */
-window.fetch_data = function(action, data, onSuccessFunction) {
-    // Sprawdzenie czy data została przesłana
-    data = typeof data !== "undefined" ? data : {};
-    onSuccessFunction =
-        typeof onSuccessFunction !== "undefined" ? onSuccessFunction : function() {};
-
-    // Dodanie informacji do wysyłanej mapy wartości
-    data["action"] = action;
-
-    loader.show();
-
-    $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: data,
-        complete: function() {
-            loader.hide();
-        },
-        success: function(content) {
-            onSuccessFunction(content);
-        },
-        error: handleErrorResponse,
-    });
-};
-
-window.rest_request = function(method, path, data, onSuccessFunction) {
+window.restRequest = function(method, path, data, onSuccessFunction) {
     onSuccessFunction =
         typeof onSuccessFunction !== "undefined" ? onSuccessFunction : function() {};
 

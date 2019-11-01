@@ -17,7 +17,7 @@ $(document).delegate("#form_service_code_add [name=server]", "change", function(
         .find("[name=service]")
         .val();
 
-    rest_request(
+    restRequest(
         "POST",
         "/api/service/" + serviceId + "/actions/tariffs_for_server",
         {

@@ -7,16 +7,13 @@ use App\Exceptions\SqlQueryException;
 use App\Exceptions\ValidationException;
 use App\Heart;
 use App\Models\Purchase;
-use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Path;
 use App\Repositories\PriceListRepository;
 use App\Repositories\ServerRepository;
 use App\Responses\ApiResponse;
-use App\Responses\PlainResponse;
 use App\Services\ChargeWallet\ServiceChargeWalletSimple;
 use App\Services\Interfaces\IServiceAdminManage;
 use App\Services\Interfaces\IServiceAvailableOnServers;
-use App\Services\Interfaces\IServiceServiceCodeAdminManage;
 use App\Services\Interfaces\IServiceUserServiceAdminAdd;
 use App\Settings;
 use App\TranslationManager;
@@ -1598,33 +1595,6 @@ class JsonHttpAdminController
             }
 
             return new ApiResponse("not_deleted", $lang->translate('no_delete_log'), 0);
-        }
-
-        if ($action == "get_action_box") {
-            if (!isset($_POST['page_id']) || !isset($_POST['box_id'])) {
-                return new ApiResponse("no_data", $lang->translate('not_all_data'), 0);
-            }
-
-            if (($page = $heart->getPage($_POST['page_id'], "admin")) === null) {
-                return new ApiResponse("wrong_page", $lang->translate('wrong_page_id'), 0);
-            }
-
-            if (!($page instanceof IPageAdminActionBox)) {
-                return new ApiResponse(
-                    "page_no_action_box",
-                    $lang->translate('no_action_box_support'),
-                    0
-                );
-            }
-
-            $actionBox = $page->getActionBox($_POST['box_id'], $_POST);
-
-            $data = [];
-            if (strlen($actionBox['template'])) {
-                $data['template'] = $actionBox['template'];
-            }
-
-            return new ApiResponse($actionBox['status'], $actionBox['text'], 0, $data);
         }
 
         return new ApiResponse("script_error", "An error occured: no action.");

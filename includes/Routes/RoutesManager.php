@@ -2,8 +2,10 @@
 namespace App\Routes;
 
 use App\Application;
+use App\Controllers\Api\Admin\PageActionBoxResource;
 use App\Controllers\Api\Admin\ServiceCodeAddFormController;
 use App\Controllers\Api\Admin\ServiceModuleExtraFieldsController;
+use App\Controllers\Api\Admin\UserPasswordResource;
 use App\Controllers\Api\Admin\UserResource;
 use App\Controllers\Api\Admin\UserServiceAddFormController;
 use App\Controllers\Api\BrickResource;
@@ -27,7 +29,6 @@ use App\Controllers\Api\SessionLanguageResource;
 use App\Controllers\Api\TemplateResource;
 use App\Controllers\Api\TransferController;
 use App\Controllers\Api\UpdateController;
-use App\Controllers\Api\Admin\UserPasswordResource;
 use App\Controllers\Api\UserProfileResource;
 use App\Controllers\Api\UserServiceBrickController;
 use App\Controllers\Api\UserServiceEditFormController;
@@ -257,6 +258,11 @@ class RoutesManager
                 $r->get('/api/admin/services/{serviceId}/modules/{moduleId}/extra_fields', [
                     'middlewares' => [[RequireAuthorization::class, "manage_user_services"]],
                     'uses' => ServiceModuleExtraFieldsController::class . '@get',
+                ]);
+
+                $r->get('/api/admin/pages/{pageId}/action_boxes/{actionBoxId}', [
+                    'middlewares' => [RequireAuthorization::class],
+                    'uses' => PageActionBoxResource::class . '@get',
                 ]);
 
                 $r->addRoute(['GET', 'POST'], '/admin.php', [

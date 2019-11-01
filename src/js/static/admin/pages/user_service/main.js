@@ -50,7 +50,7 @@ $(document).delegate("#form_user_service_add [name=service]", "change", function
 
     var serviceId = $(this).val();
 
-    rest_request(
+    restRequest(
         "GET",
         "/api/admin/services/" + serviceId + "/user_services/add_form",
         {},

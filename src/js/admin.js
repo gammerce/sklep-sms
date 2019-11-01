@@ -35,22 +35,23 @@ $(document).delegate(".table-structure .search", "submit", function(e) {
  * @param {object} data
  */
 window.show_action_box = function(pageId, boxId, data) {
-    data = typeof data !== "undefined" ? data : {};
+    restRequest(
+        "GET",
+        "/api/admin/pages/" + pageId + "/action_boxes/" + boxId,
+        data,
+        function(content) {
+            var jsonObj = json_parse(content);
+            if (!jsonObj) {
+                return;
+            }
 
-    data["page_id"] = pageId;
-    data["box_id"] = boxId;
-    fetch_data("get_action_box", data, function(content) {
-        var jsonObj = json_parse(content);
-        if (!jsonObj) {
-            return;
+            // Nie udalo sie prawidlowo pozyskac danych
+            if (jsonObj.return_id !== "ok") {
+                alert(jsonObj.text);
+                location.reload();
+            }
+
+            action_box.show(jsonObj.template);
         }
-
-        // Nie udalo sie prawidlowo pozyskac danych
-        if (jsonObj.return_id !== "ok") {
-            alert(jsonObj.text);
-            location.reload();
-        }
-
-        action_box.show(jsonObj.template);
-    });
+    );
 };

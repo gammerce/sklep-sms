@@ -25,7 +25,7 @@ $(document).delegate("#form_service_code_add [name=service]", "change", function
 
     var serviceId = $(this).val();
 
-    rest_request(
+    restRequest(
         "GET",
         "/api/admin/services/" + serviceId + "/service_codes/add_form",
         {},

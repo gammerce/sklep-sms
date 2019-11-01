@@ -3,7 +3,7 @@ $(document).delegate("#user_own_services .edit_row", "click", function() {
     var rowId = $(this).parents("form:first");
     var userServiceId = rowId.data("row");
 
-    rest_request("GET", "/api/user_services/" + userServiceId + "/edit_form", {}, function(html) {
+    restRequest("GET", "/api/user_services/" + userServiceId + "/edit_form", {}, function(html) {
         rowId.html(html);
         rowId.parents(".brick:first").addClass("active");
 
@@ -12,7 +12,7 @@ $(document).delegate("#user_own_services .edit_row", "click", function() {
             var rowId = e.data.row_id;
             var userServiceId = rowId.data("row");
 
-            rest_request("GET", "/api/user_services/" + userServiceId + "/brick", {}, function(
+            restRequest("GET", "/api/user_services/" + userServiceId + "/brick", {}, function(
                 html
             ) {
                 rowId.html(html);

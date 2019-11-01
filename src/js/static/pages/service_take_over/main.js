@@ -10,7 +10,7 @@ $(document).delegate("#form_service_take_over [name=service]", "change", functio
     }
 
     var serviceId = $(this).val();
-    rest_request("GET", "/api/services/" + serviceId + "/take_over/create_form", {}, function(
+    restRequest("GET", "/api/services/" + serviceId + "/take_over/create_form", {}, function(
         html
     ) {
         $("#form_service_take_over .extra_data").html(html);

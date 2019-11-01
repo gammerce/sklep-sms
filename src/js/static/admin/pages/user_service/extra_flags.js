@@ -36,7 +36,7 @@ $(document).delegate("#form_user_service_edit [name=service]", "change", functio
 
     var serviceId = $(this).val();
 
-    rest_request(
+    restRequest(
         "POST",
         "/api/service/" + serviceId + "/actions/servers_for_service",
         {

@@ -106,7 +106,7 @@
                     showWarnings($(that), jsonObj.warnings);
                 } else if (jsonObj.return_id === "charged") {
                     // Change wallet state
-                    getnset_template(
+                    getAndSetTemplate(
                         row_id.children("td[headers=wallet]"),
                         "admin_user_wallet",
                         {
