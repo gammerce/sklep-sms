@@ -50,19 +50,16 @@ $(document).delegate("#form_user_service_add [name=service]", "change", function
 
     var serviceId = $(this).val();
 
-    restRequest(
-        "GET",
-        "/api/admin/services/" + serviceId + "/user_services/add_form",
-        {},
-        function(content) {
-            // Usuwamy dodatkowe pola
-            if (extra_fields) extra_fields.remove();
+    restRequest("GET", "/api/admin/services/" + serviceId + "/user_services/add_form", {}, function(
+        content
+    ) {
+        // Usuwamy dodatkowe pola
+        if (extra_fields) extra_fields.remove();
 
-            // Dodajemy content do action boxa
-            extra_fields = $(content);
-            extra_fields.insertAfter(".action_box .ftbody");
-        }
-    );
+        // Dodajemy content do action boxa
+        extra_fields = $(content);
+        extra_fields.insertAfter(".action_box .ftbody");
+    });
 });
 
 // Usuwanie usługi użytkownika

@@ -25,21 +25,18 @@ $(document).delegate("#form_service_code_add [name=service]", "change", function
 
     var serviceId = $(this).val();
 
-    restRequest(
-        "GET",
-        "/api/admin/services/" + serviceId + "/service_codes/add_form",
-        {},
-        function(content) {
-            // Let's remove additional fields
-            if (extra_fields) {
-                extra_fields.remove();
-            }
-
-            // Add content to the action box
-            extra_fields = $(content);
-            extra_fields.insertAfter(".action_box .ftbody");
+    restRequest("GET", "/api/admin/services/" + serviceId + "/service_codes/add_form", {}, function(
+        content
+    ) {
+        // Let's remove additional fields
+        if (extra_fields) {
+            extra_fields.remove();
         }
-    );
+
+        // Add content to the action box
+        extra_fields = $(content);
+        extra_fields.insertAfter(".action_box .ftbody");
+    });
 });
 
 // Usuwanie kodu na usługę

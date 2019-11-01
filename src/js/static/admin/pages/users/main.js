@@ -82,11 +82,16 @@
     $(document).delegate("#form_charge_wallet", "submit", function(e) {
         e.preventDefault();
         loader.show();
+
         var that = this;
+        var userId = $(this)
+            .find("[name=uid]")
+            .val();
+
         $.ajax({
             type: "POST",
-            url: buildUrl("jsonhttp_admin.php"),
-            data: $(this).serialize() + "&action=charge_wallet",
+            url: buildUrl("/api/admin/users/" + userId + "/wallet/charge"),
+            data: $(this).serialize(),
             complete: function() {
                 loader.hide();
             },

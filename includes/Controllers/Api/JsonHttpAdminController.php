@@ -6,16 +6,13 @@ use App\Database;
 use App\Exceptions\SqlQueryException;
 use App\Exceptions\ValidationException;
 use App\Heart;
-use App\Models\Purchase;
 use App\Path;
 use App\Repositories\PriceListRepository;
 use App\Repositories\ServerRepository;
 use App\Responses\ApiResponse;
-use App\Services\ChargeWallet\ServiceChargeWalletSimple;
 use App\Services\Interfaces\IServiceAdminManage;
 use App\Services\Interfaces\IServiceAvailableOnServers;
 use App\Services\Interfaces\IServiceUserServiceAdminAdd;
-use App\Settings;
 use App\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
@@ -28,7 +25,6 @@ class JsonHttpAdminController
         Heart $heart,
         Auth $auth,
         Path $path,
-        Settings $settings,
         TranslationManager $translationManager,
         ServerRepository $serverRepository,
         PriceListRepository $priceListRepository
@@ -41,90 +37,6 @@ class JsonHttpAdminController
         $action = $request->request->get("action");
 
         $warnings = [];
-
-        if ($action == "charge_wallet") {
-            if (!get_privileges("manage_users")) {
-                return new ApiResponse(
-                    "not_logged_in",
-                    $lang->translate('not_logged_or_no_perm'),
-                    0
-                );
-            }
-
-            $uid = $_POST['uid'];
-            $amount = intval($_POST['amount'] * 100);
-
-            // ID użytkownika
-            if ($warning = check_for_warnings("uid", $uid)) {
-                $warnings['uid'] = array_merge((array) $warnings['uid'], $warning);
-            } else {
-                $editedUser = $heart->getUser($uid);
-                if (!$editedUser->exists()) {
-                    $warnings['uid'][] = $lang->translate('noaccount_id');
-                }
-            }
-
-            // Wartość Doładowania
-            if (!$amount) {
-                $warnings['amount'][] = $lang->translate('no_charge_value');
-            } else {
-                if (!is_numeric($amount)) {
-                    $warnings['amount'][] = $lang->translate('charge_number');
-                }
-            }
-
-            if ($warnings) {
-                throw new ValidationException($warnings);
-            }
-
-            // Zmiana wartości amount, aby stan konta nie zszedł poniżej zera
-            $amount = max($amount, -$editedUser->getWallet());
-
-            $serviceModule = $heart->getServiceModule(ServiceChargeWalletSimple::MODULE_ID);
-            if (is_null($serviceModule)) {
-                return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
-            }
-
-            // Dodawanie informacji o płatności do bazy
-            $paymentId = pay_by_admin($user);
-
-            // Kupujemy usługę
-            $purchaseData = new Purchase();
-            $purchaseData->user = $editedUser;
-            $purchaseData->setPayment([
-                'method' => "admin",
-                'payment_id' => $paymentId,
-            ]);
-            $purchaseData->setOrder([
-                'amount' => $amount,
-            ]);
-            $purchaseData->setEmail($editedUser->getEmail());
-
-            $serviceModule->purchase($purchaseData);
-
-            log_info(
-                $langShop->sprintf(
-                    $langShop->translate('account_charge'),
-                    $user->getUsername(),
-                    $user->getUid(),
-                    $editedUser->getUsername(),
-                    $editedUser->getUid(),
-                    number_format($amount / 100.0, 2),
-                    $settings['currency']
-                )
-            );
-
-            return new ApiResponse(
-                "charged",
-                $lang->sprintf(
-                    $lang->translate('account_charge_success'),
-                    $editedUser->getUsername(),
-                    number_format($amount / 100.0, 2),
-                    $settings['currency']
-                ),
-                1
-            );
-        }
 
         if ($action == "user_service_add") {
             if (!get_privileges("manage_user_services")) {

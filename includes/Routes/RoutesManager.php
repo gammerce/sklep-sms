@@ -8,6 +8,7 @@ use App\Controllers\Api\Admin\ServiceModuleExtraFieldsController;
 use App\Controllers\Api\Admin\UserPasswordResource;
 use App\Controllers\Api\Admin\UserResource;
 use App\Controllers\Api\Admin\UserServiceAddFormController;
+use App\Controllers\Api\Admin\WalletChargeResource;
 use App\Controllers\Api\BrickResource;
 use App\Controllers\Api\IncomeController;
 use App\Controllers\Api\InstallController;
@@ -263,6 +264,11 @@ class RoutesManager
                 $r->get('/api/admin/pages/{pageId}/action_boxes/{actionBoxId}', [
                     'middlewares' => [RequireAuthorization::class],
                     'uses' => PageActionBoxResource::class . '@get',
+                ]);
+
+                $r->post('/api/admin/users/{userId}/wallet/charge', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_users"]],
+                    'uses' => WalletChargeResource::class . '@post',
                 ]);
 
                 $r->addRoute(['GET', 'POST'], '/admin.php', [
