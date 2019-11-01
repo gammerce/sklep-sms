@@ -24,7 +24,7 @@ class TemplateResource
         $email = htmlspecialchars($request->query->get('email'));
         $editedUser = null;
 
-        if ($template == "admin_user_wallet") {
+        if ($templateName == "admin_user_wallet") {
             if (!get_privileges("manage_users")) {
                 return new ApiResponse(
                     "not_logged_in",

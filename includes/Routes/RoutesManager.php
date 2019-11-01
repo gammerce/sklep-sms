@@ -162,7 +162,7 @@ class RoutesManager
                             'uses' => PasswordResource::class . '@put',
                         ]);
 
-                        $r->get('/api/template/{name}', [
+                        $r->get('/api/templates/{name}', [
                             'uses' => TemplateResource::class . '@get',
                         ]);
 
@@ -269,6 +269,14 @@ class RoutesManager
                 $r->post('/api/admin/users/{userId}/wallet/charge', [
                     'middlewares' => [[RequireAuthorization::class, "manage_users"]],
                     'uses' => WalletChargeResource::class . '@post',
+                ]);
+
+                $r->get('/api/admin/bricks/{bricks}', [
+                    'uses' => BrickResource::class . '@get',
+                ]);
+
+                $r->get('/api/admin/templates/{name}', [
+                    'uses' => TemplateResource::class . '@get',
                 ]);
 
                 $r->addRoute(['GET', 'POST'], '/admin.php', [
