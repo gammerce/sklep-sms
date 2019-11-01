@@ -61,7 +61,7 @@ function purchase_service(method) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("/api/payment/validation"),
+        url: buildUrl("/api/payment"),
         data: {
             method: method,
             sms_code: $("#sms_code").val(),

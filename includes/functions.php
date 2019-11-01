@@ -340,10 +340,9 @@ function update_servers_services($data)
 
 /**
  * @param Purchase $purchaseData
- *
  * @return array
  */
-function validate_payment(Purchase $purchaseData)
+function make_payment(Purchase $purchaseData)
 {
     /** @var TranslationManager $translationManager */
     $translationManager = app()->make(TranslationManager::class);

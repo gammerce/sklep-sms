@@ -13,7 +13,7 @@ use App\Controllers\Api\LogOutController;
 use App\Controllers\Api\PasswordForgottenController;
 use App\Controllers\Api\PasswordResetController;
 use App\Controllers\Api\PasswordResource;
-use App\Controllers\Api\PaymentValidationResource;
+use App\Controllers\Api\PaymentResource;
 use App\Controllers\Api\PurchaseResource;
 use App\Controllers\Api\PurchaseValidationResource;
 use App\Controllers\Api\RegisterController;
@@ -166,8 +166,8 @@ class RoutesManager
                             'uses' => PurchaseValidationResource::class . '@post',
                         ]);
 
-                        $r->post('/api/payment/validation', [
-                            'uses' => PaymentValidationResource::class . '@post',
+                        $r->post('/api/payment', [
+                            'uses' => PaymentResource::class . '@post',
                         ]);
 
                         $r->get('/api/bricks/{bricks}', [
