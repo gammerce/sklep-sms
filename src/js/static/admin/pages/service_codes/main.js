@@ -16,21 +16,26 @@ var extra_fields;
 $(document).delegate("#form_service_code_add [name=service]", "change", function() {
     // Brak wybranej usługi
     if (!$(this).val().length) {
-        // Usuwamy dodatkowe pola
-        if (extra_fields) extra_fields.remove();
+        // Let's remove additional fields
+        if (extra_fields) {
+            extra_fields.remove();
+        }
         return;
     }
 
-    fetch_data(
-        "service_code_add_form_get",
-        {
-            service: $(this).val(),
-        },
-        function(content) {
-            // Usuwamy dodatkowe pola
-            if (extra_fields) extra_fields.remove();
+    var serviceId = $(this).val();
 
-            // Dodajemy content do action boxa
+    rest_request(
+        "GET",
+        "/api/admin/services/" + serviceId + "/service_codes/add_form",
+        {},
+        function(content) {
+            // Let's remove additional fields
+            if (extra_fields) {
+                extra_fields.remove();
+            }
+
+            // Add content to the action box
             extra_fields = $(content);
             extra_fields.insertAfter(".action_box .ftbody");
         }
