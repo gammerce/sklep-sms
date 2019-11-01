@@ -11,7 +11,6 @@ use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Path;
 use App\Repositories\PriceListRepository;
 use App\Repositories\ServerRepository;
-use App\Repositories\UserRepository;
 use App\Responses\ApiResponse;
 use App\Responses\PlainResponse;
 use App\Services\ChargeWallet\ServiceChargeWalletSimple;
@@ -35,8 +34,7 @@ class JsonHttpAdminController
         Settings $settings,
         TranslationManager $translationManager,
         ServerRepository $serverRepository,
-        PriceListRepository $priceListRepository,
-        UserRepository $userRepository
+        PriceListRepository $priceListRepository
     ) {
         $langShop = $translationManager->shop();
         $lang = $translationManager->user();
@@ -1620,26 +1618,6 @@ class JsonHttpAdminController
             }
 
             return new ApiResponse("not_deleted", $lang->translate('code_not_deleted'), 0);
-        }
-
-        if ($action == "service_code_add_form_get") {
-            if (!get_privileges("manage_service_codes")) {
-                return new ApiResponse(
-                    "not_logged_in",
-                    $lang->translate('not_logged_or_no_perm'),
-                    0
-                );
-            }
-
-            $output = "";
-            if (
-                ($serviceModule = $heart->getServiceModule($_POST['service'])) !== null &&
-                $serviceModule instanceof IServiceServiceCodeAdminManage
-            ) {
-                $output = $serviceModule->serviceCodeAdminAddFormGet();
-            }
-
-            return new PlainResponse($output);
         }
 
         if ($action == "delete_log") {

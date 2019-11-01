@@ -4,6 +4,7 @@ namespace App\Routes;
 use App\Application;
 use App\Controllers\Api\Admin\ServiceCodeAddFormController;
 use App\Controllers\Api\Admin\UserResource;
+use App\Controllers\Api\Admin\UserServiceAddFormController;
 use App\Controllers\Api\BrickResource;
 use App\Controllers\Api\IncomeController;
 use App\Controllers\Api\InstallController;
@@ -245,6 +246,11 @@ class RoutesManager
                 $r->get('/api/admin/services/{serviceId}/service_codes/add_form', [
                     'middlewares' => [[RequireAuthorization::class, "manage_service_codes"]],
                     'uses' => ServiceCodeAddFormController::class . '@get',
+                ]);
+
+                $r->get('/api/admin/services/{serviceId}/user_services/add_form', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_user_services"]],
+                    'uses' => UserServiceAddFormController::class . '@get',
                 ]);
 
                 $r->addRoute(['GET', 'POST'], '/admin.php', [

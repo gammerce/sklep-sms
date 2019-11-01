@@ -48,11 +48,12 @@ $(document).delegate("#form_user_service_add [name=service]", "change", function
         return;
     }
 
-    fetch_data(
-        "user_service_add_form_get",
-        {
-            service: $(this).val(),
-        },
+    var serviceId = $(this).val();
+
+    rest_request(
+        "GET",
+        "/api/admin/services/" + serviceId + "/user_services/add_form",
+        {},
         function(content) {
             // Usuwamy dodatkowe pola
             if (extra_fields) extra_fields.remove();
