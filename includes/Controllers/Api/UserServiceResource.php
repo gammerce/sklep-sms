@@ -53,7 +53,12 @@ class UserServiceResource
             );
         }
 
-        $returnData = $serviceModule->userOwnServiceEdit($request->request->all(), $userService);
+        $returnData = $serviceModule->userOwnServiceEdit(
+            array_merge($request->request->all(), [
+                "id" => $userServiceId,
+            ]),
+            $userService
+        );
 
         if ($returnData['status'] == "warnings") {
             $returnData["data"]["warnings"] = format_warnings($returnData["data"]["warnings"]);
