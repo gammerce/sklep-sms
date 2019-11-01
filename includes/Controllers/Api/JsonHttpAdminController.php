@@ -267,23 +267,6 @@ class JsonHttpAdminController
             return new ApiResponse("not_deleted", $lang->translate('no_delete_service'), 0);
         }
 
-        if ($action == "user_service_add_form_get") {
-            if (!get_privileges("manage_user_services")) {
-                return new ApiResponse(
-                    "not_logged_in",
-                    $lang->translate('not_logged_or_no_perm'),
-                    0
-                );
-            }
-
-            $output = "";
-            if (($serviceModule = $heart->getServiceModule($_POST['service'])) !== null) {
-                $output = $serviceModule->userServiceAdminAddFormGet();
-            }
-
-            return new PlainResponse($output);
-        }
-
         if ($action == "antispam_question_add" || $action == "antispam_question_edit") {
             if (!get_privileges("manage_antispam_questions")) {
                 return new ApiResponse(
@@ -854,32 +837,6 @@ class JsonHttpAdminController
             }
 
             return new ApiResponse("not_deleted", $lang->translate('no_delete_service'), 0);
-        }
-
-        if ($action == "get_service_module_extra_fields") {
-            if (!get_privileges("manage_user_services")) {
-                return new ApiResponse(
-                    "not_logged_in",
-                    $lang->translate('not_logged_or_no_perm'),
-                    0
-                );
-            }
-
-            $output = "";
-            // Pobieramy moduł obecnie edytowanej usługi, jeżeli powróciliśmy do pierwotnego modułu
-            // W przeciwnym razie pobieramy wybrany moduł
-            if (
-                is_null($serviceModule = $heart->getServiceModule($_POST['service'])) ||
-                $serviceModule->getModuleId() != $_POST['module']
-            ) {
-                $serviceModule = $heart->getServiceModuleS($_POST['module']);
-            }
-
-            if ($serviceModule !== null && $serviceModule instanceof IServiceAdminManage) {
-                $output = $serviceModule->serviceAdminExtraFieldsGet();
-            }
-
-            return new PlainResponse($output);
         }
 
         if ($action == "server_add" || $action == "server_edit") {
