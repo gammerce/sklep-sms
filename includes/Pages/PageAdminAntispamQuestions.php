@@ -70,7 +70,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
         return $wrapper->toHtml();
     }
 
-    public function getActionBox($boxId, $data)
+    public function getActionBox($boxId, array $query)
     {
         if (!get_privileges("manage_antispam_questions")) {
             return [
@@ -92,7 +92,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
                                 TABLE_PREFIX .
                                 "antispam_questions` " .
                                 "WHERE `id` = '%d'",
-                            [$data['id']]
+                            [$query['id']]
                         )
                     )
                 );

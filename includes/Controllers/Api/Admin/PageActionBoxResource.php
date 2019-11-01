@@ -5,10 +5,11 @@ use App\Heart;
 use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Responses\ApiResponse;
 use App\TranslationManager;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageActionBoxResource
 {
-    public function get($pageId, $actionBoxId, TranslationManager $translationManager, Heart $heart)
+    public function get($pageId, $actionBoxId, Request $request, TranslationManager $translationManager, Heart $heart)
     {
         $lang = $translationManager->user();
 
@@ -28,7 +29,7 @@ class PageActionBoxResource
             );
         }
 
-        $actionBox = $page->getActionBox($actionBoxId, $_POST);
+        $actionBox = $page->getActionBox($actionBoxId, $request->query->all());
 
         $data = [];
         if (strlen($actionBox['template'])) {

@@ -20,8 +20,8 @@ class TemplateResource
         $lang = $translationManager->user();
 
         $templateName = str_replace('/', '_', $name);
-        $username = htmlspecialchars($request->request->get('username'));
-        $email = htmlspecialchars($request->request->get('email'));
+        $username = htmlspecialchars($request->query->get('username'));
+        $email = htmlspecialchars($request->query->get('email'));
         $editedUser = null;
 
         if ($template == "admin_user_wallet") {
@@ -33,7 +33,7 @@ class TemplateResource
                 );
             }
 
-            $editedUser = $heart->getUser($request->request->get('uid'));
+            $editedUser = $heart->getUser($request->query->get('uid'));
         }
 
         $data = [

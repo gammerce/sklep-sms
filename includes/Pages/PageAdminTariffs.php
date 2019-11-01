@@ -58,7 +58,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    public function getActionBox($boxId, $data)
+    public function getActionBox($boxId, array $query)
     {
         if (!get_privileges("manage_settings")) {
             return [
@@ -73,7 +73,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
                 break;
 
             case "tariff_edit":
-                $tariff = $this->heart->getTariff($data['id']);
+                $tariff = $this->heart->getTariff($query['id']);
                 $provision = number_format($tariff->getProvision() / 100.0, 2);
 
                 $output = $this->template->render(
