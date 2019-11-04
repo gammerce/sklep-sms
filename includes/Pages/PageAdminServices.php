@@ -69,7 +69,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    public function getActionBox($boxId, $data)
+    public function getActionBox($boxId, array $query)
     {
         if (!get_privileges("manage_services")) {
             return [
@@ -79,7 +79,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
         }
 
         if ($boxId == "service_edit") {
-            $service = $this->heart->getService($data['id']);
+            $service = $this->heart->getService($query['id']);
             $service['tag'] = htmlspecialchars($service['tag']);
 
             // Pobieramy pola danego modułu

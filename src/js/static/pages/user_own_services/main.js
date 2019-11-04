@@ -3,7 +3,7 @@ $(document).delegate("#user_own_services .edit_row", "click", function() {
     var rowId = $(this).parents("form:first");
     var userServiceId = rowId.data("row");
 
-    rest_request("GET", "/api/user_services/" + userServiceId + "/edit_form", {}, function(html) {
+    restRequest("GET", "/api/user_services/" + userServiceId + "/edit_form", {}, function(html) {
         rowId.html(html);
         rowId.parents(".brick:first").addClass("active");
 
@@ -12,7 +12,7 @@ $(document).delegate("#user_own_services .edit_row", "click", function() {
             var rowId = e.data.row_id;
             var userServiceId = rowId.data("row");
 
-            rest_request("GET", "/api/user_services/" + userServiceId + "/brick", {}, function(
+            restRequest("GET", "/api/user_services/" + userServiceId + "/brick", {}, function(
                 html
             ) {
                 rowId.html(html);
@@ -41,12 +41,16 @@ $(document).delegate("#user_own_services .row", "submit", function(e) {
         success: function(content) {
             removeFormWarnings();
 
-            if (!(jsonObj = json_parse(content))) return;
+            var jsonObj = json_parse(content);
+            if (!jsonObj) {
+                return;
+            }
 
             if (!jsonObj.return_id) {
-                infobox.show_info(lang["sth_went_wrong"], false);
-                return;
-            } else if (jsonObj.return_id === "warnings") {
+                return sthWentWrong();
+            }
+
+            if (jsonObj.return_id === "warnings") {
                 showWarnings(that, jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
                 refresh_blocks("content");

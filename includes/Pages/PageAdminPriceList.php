@@ -82,7 +82,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    public function getActionBox($boxId, $data)
+    public function getActionBox($boxId, array $query)
     {
         if (!get_privileges("manage_settings")) {
             return [
@@ -95,7 +95,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
             $result = $this->db->query(
                 $this->db->prepare(
                     "SELECT * FROM `" . TABLE_PREFIX . "pricelist` " . "WHERE `id` = '%d'",
-                    [$data['id']]
+                    [$query['id']]
                 )
             );
             $price = $this->db->fetchArrayAssoc($result);

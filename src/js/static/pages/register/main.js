@@ -26,7 +26,7 @@ $(document).delegate("#register", "submit", function(e) {
                 var password = $("#register [name=password]").val();
                 var email = $("#register [name=email]").val();
                 // Wyświetl informacje o rejestracji
-                getnset_template($("#content"), "register_registered", {
+                getAndSetTemplate($("#content"), "register_registered", {
                     username: username,
                     email: email,
                 });

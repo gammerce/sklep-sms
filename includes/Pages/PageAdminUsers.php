@@ -133,7 +133,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         return $button;
     }
 
-    public function getActionBox($boxId, $data)
+    public function getActionBox($boxId, array $query)
     {
         if (!get_privileges("manage_users")) {
             return [
@@ -145,7 +145,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         switch ($boxId) {
             case "user_edit":
                 // Pobranie użytkownika
-                $user = $this->heart->getUser($data['uid']);
+                $user = $this->heart->getUser($query['uid']);
 
                 $groups = '';
                 foreach ($this->heart->getGroups() as $group) {
@@ -168,7 +168,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                 break;
 
             case "charge_wallet":
-                $user = $this->heart->getUser($data['uid']);
+                $user = $this->heart->getUser($query['uid']);
                 $output = $this->template->render(
                     "admin/action_boxes/user_charge_wallet",
                     compact('user')
@@ -176,7 +176,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                 break;
 
             case "change_password":
-                $user = $this->heart->getUser($data['uid']);
+                $user = $this->heart->getUser($query['uid']);
                 $output = $this->template->render(
                     "admin/action_boxes/user_change_password",
                     compact('user')

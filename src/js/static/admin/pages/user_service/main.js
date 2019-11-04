@@ -48,20 +48,18 @@ $(document).delegate("#form_user_service_add [name=service]", "change", function
         return;
     }
 
-    fetch_data(
-        "user_service_add_form_get",
-        {
-            service: $(this).val(),
-        },
-        function(content) {
-            // Usuwamy dodatkowe pola
-            if (extra_fields) extra_fields.remove();
+    var serviceId = $(this).val();
 
-            // Dodajemy content do action boxa
-            extra_fields = $(content);
-            extra_fields.insertAfter(".action_box .ftbody");
-        }
-    );
+    restRequest("GET", "/api/admin/services/" + serviceId + "/user_services/add_form", {}, function(
+        content
+    ) {
+        // Usuwamy dodatkowe pola
+        if (extra_fields) extra_fields.remove();
+
+        // Dodajemy content do action boxa
+        extra_fields = $(content);
+        extra_fields.insertAfter(".action_box .ftbody");
+    });
 });
 
 // Usuwanie usługi użytkownika

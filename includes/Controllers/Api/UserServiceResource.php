@@ -54,12 +54,9 @@ class UserServiceResource
         }
 
         $returnData = $serviceModule->userOwnServiceEdit(
-            array_merge(
-                $request->request->all(),
-                [
-                    "id" => $userServiceId,
-                ]
-            ),
+            array_merge($request->request->all(), [
+                "id" => $userServiceId,
+            ]),
             $userService
         );
 

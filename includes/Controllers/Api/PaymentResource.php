@@ -8,7 +8,7 @@ use App\Settings;
 use App\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
-class PaymentValidationResource
+class PaymentResource
 {
     public function post(
         Request $request,
@@ -39,7 +39,7 @@ class PaymentValidationResource
             'service_code' => $request->request->get('service_code'),
         ]);
 
-        $returnPayment = validate_payment($purchaseData);
+        $returnPayment = make_payment($purchaseData);
 
         return new ApiResponse(
             $returnPayment['status'],

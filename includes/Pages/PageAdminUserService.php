@@ -67,7 +67,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    public function getActionBox($boxId, $data)
+    public function getActionBox($boxId, array $query)
     {
         if (!get_privileges("manage_user_services")) {
             return [
@@ -100,7 +100,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
                 break;
 
             case "user_service_edit":
-                $userService = get_users_services($data['id']);
+                $userService = get_users_services($query['id']);
 
                 if (
                     empty($userService) ||
