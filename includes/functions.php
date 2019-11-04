@@ -267,10 +267,10 @@ function get_privileges($privilege, $user = null)
     ];
 
     if (in_array($privilege, $adminPrivileges)) {
-        return $user->getPrivileges('acp') && $user->getPrivileges($privilege);
+        return $user->hasPrivilege('acp') && $user->hasPrivilege($privilege);
     }
 
-    return $user->getPrivileges($privilege);
+    return $user->hasPrivilege($privilege);
 }
 
 /**
@@ -340,10 +340,9 @@ function update_servers_services($data)
 
 /**
  * @param Purchase $purchaseData
- *
  * @return array
  */
-function validate_payment(Purchase $purchaseData)
+function make_payment(Purchase $purchaseData)
 {
     /** @var TranslationManager $translationManager */
     $translationManager = app()->make(TranslationManager::class);

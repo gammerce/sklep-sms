@@ -69,7 +69,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    public function getActionBox($boxId, $data)
+    public function getActionBox($boxId, array $query)
     {
         if (!get_privileges("manage_groups")) {
             return [
@@ -82,12 +82,12 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
             $result = $this->db->query(
                 $this->db->prepare(
                     "SELECT * FROM `" . TABLE_PREFIX . "groups` " . "WHERE `id` = '%d'",
-                    [$data['id']]
+                    [$query['id']]
                 )
             );
 
             if (!$this->db->numRows($result)) {
-                $data['template'] = create_dom_element(
+                $query['template'] = create_dom_element(
                     "form",
                     $this->lang->translate('no_such_group'),
                     [

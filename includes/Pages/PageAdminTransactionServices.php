@@ -66,7 +66,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
         return $wrapper->toHtml();
     }
 
-    public function getActionBox($boxId, $data)
+    public function getActionBox($boxId, array $query)
     {
         if (!get_privileges("manage_settings")) {
             return [
@@ -84,7 +84,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
                             TABLE_PREFIX .
                             "transaction_services` " .
                             "WHERE `id` = '%s'",
-                        [$data['id']]
+                        [$query['id']]
                     )
                 );
                 $transactionService = $this->db->fetchArrayAssoc($result);

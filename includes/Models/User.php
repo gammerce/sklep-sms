@@ -333,9 +333,17 @@ class User
      *
      * @return boolean
      */
-    public function getPrivileges($key)
+    public function hasPrivilege($key)
     {
         return if_isset($this->privileges[$key], false);
+    }
+
+    /**
+     * @return array
+     */
+    public function getPrivileges()
+    {
+        return $this->privileges;
     }
 
     /**

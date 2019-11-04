@@ -2,7 +2,13 @@
 namespace App\Routes;
 
 use App\Application;
+use App\Controllers\Api\Admin\PageActionBoxResource;
+use App\Controllers\Api\Admin\ServiceCodeAddFormController;
+use App\Controllers\Api\Admin\ServiceModuleExtraFieldsController;
+use App\Controllers\Api\Admin\UserPasswordResource;
 use App\Controllers\Api\Admin\UserResource;
+use App\Controllers\Api\Admin\UserServiceAddFormController;
+use App\Controllers\Api\Admin\WalletChargeResource;
 use App\Controllers\Api\BrickResource;
 use App\Controllers\Api\IncomeController;
 use App\Controllers\Api\InstallController;
@@ -12,7 +18,7 @@ use App\Controllers\Api\LogOutController;
 use App\Controllers\Api\PasswordForgottenController;
 use App\Controllers\Api\PasswordResetController;
 use App\Controllers\Api\PasswordResource;
-use App\Controllers\Api\PaymentValidationResource;
+use App\Controllers\Api\PaymentResource;
 use App\Controllers\Api\PurchaseResource;
 use App\Controllers\Api\PurchaseValidationResource;
 use App\Controllers\Api\RegisterController;
@@ -24,7 +30,6 @@ use App\Controllers\Api\SessionLanguageResource;
 use App\Controllers\Api\TemplateResource;
 use App\Controllers\Api\TransferController;
 use App\Controllers\Api\UpdateController;
-use App\Controllers\Api\Admin\UserPasswordResource;
 use App\Controllers\Api\UserProfileResource;
 use App\Controllers\Api\UserServiceBrickController;
 use App\Controllers\Api\UserServiceEditFormController;
@@ -157,7 +162,7 @@ class RoutesManager
                             'uses' => PasswordResource::class . '@put',
                         ]);
 
-                        $r->get('/api/template/{name}', [
+                        $r->get('/api/templates/{name}', [
                             'uses' => TemplateResource::class . '@get',
                         ]);
 
@@ -165,8 +170,8 @@ class RoutesManager
                             'uses' => PurchaseValidationResource::class . '@post',
                         ]);
 
-                        $r->post('/api/payment/validation', [
-                            'uses' => PaymentValidationResource::class . '@post',
+                        $r->post('/api/payment', [
+                            'uses' => PaymentResource::class . '@post',
                         ]);
 
                         $r->get('/api/bricks/{bricks}', [
@@ -239,6 +244,39 @@ class RoutesManager
                 $r->put('/api/admin/users/{userId}', [
                     'middlewares' => [[RequireAuthorization::class, "manage_users"]],
                     'uses' => UserResource::class . '@put',
+                ]);
+
+                $r->get('/api/admin/services/{serviceId}/service_codes/add_form', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_service_codes"]],
+                    'uses' => ServiceCodeAddFormController::class . '@get',
+                ]);
+
+                $r->get('/api/admin/services/{serviceId}/user_services/add_form', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_user_services"]],
+                    'uses' => UserServiceAddFormController::class . '@get',
+                ]);
+
+                $r->get('/api/admin/services/{serviceId}/modules/{moduleId}/extra_fields', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_user_services"]],
+                    'uses' => ServiceModuleExtraFieldsController::class . '@get',
+                ]);
+
+                $r->get('/api/admin/pages/{pageId}/action_boxes/{actionBoxId}', [
+                    'middlewares' => [RequireAuthorization::class],
+                    'uses' => PageActionBoxResource::class . '@get',
+                ]);
+
+                $r->post('/api/admin/users/{userId}/wallet/charge', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_users"]],
+                    'uses' => WalletChargeResource::class . '@post',
+                ]);
+
+                $r->get('/api/admin/bricks/{bricks}', [
+                    'uses' => BrickResource::class . '@get',
+                ]);
+
+                $r->get('/api/admin/templates/{name}', [
+                    'uses' => TemplateResource::class . '@get',
                 ]);
 
                 $r->addRoute(['GET', 'POST'], '/admin.php', [

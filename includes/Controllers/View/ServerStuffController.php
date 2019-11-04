@@ -95,7 +95,7 @@ class ServerStuffController
                 'sms_code' => $request->get('sms_code'),
                 'sms_service' => $request->get('transaction_service'),
             ]);
-            $returnPayment = validate_payment($purchaseData);
+            $returnPayment = make_payment($purchaseData);
 
             $extraData = "";
 

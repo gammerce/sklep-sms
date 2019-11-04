@@ -25,12 +25,13 @@ $(document).delegate(".action_box [name=module]", "change", function() {
         return;
     }
 
-    fetch_data(
-        "get_service_module_extra_fields",
-        {
-            module: $(this).val(),
-            service: $(".action_box [name=id2]").val(),
-        },
+    var moduleId = $(this).val();
+    var serviceId = $(".action_box [name=id2]");
+
+    restRequest(
+        "GET",
+        "/api/admin/services/" + serviceId + "/modules/" + moduleId + "/extra_fields",
+        {},
         function(content) {
             // Usuwamy dodatkowe pola
             if (extra_fields) extra_fields.remove();
@@ -46,13 +47,11 @@ $(document).delegate(".action_box [name=module]", "change", function() {
 $(document).delegate(".table-structure .delete_row", "click", function() {
     var row_id = $(this).closest("tr");
 
-    var confirm_info =
-        "Na pewno chcesz usunąć usługę:\n(" +
-        row_id.children("td[headers=id]").text() +
-        ") " +
-        row_id.children("td[headers=name]").text() +
-        " ?";
-    if (confirm(confirm_info) == false) {
+    var serviceId = row_id.children("td[headers=id]").text();
+    var serviceName = row_id.children("td[headers=name]").text();
+
+    var confirmInfo = "Na pewno chcesz usunąć usługę:\n(" + serviceId + ") " + serviceName + " ?";
+    if (confirm(confirmInfo) == false) {
         return;
     }
 

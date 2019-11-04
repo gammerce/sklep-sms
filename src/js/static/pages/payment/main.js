@@ -61,7 +61,7 @@ function purchase_service(method) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("/api/payment/validation"),
+        url: buildUrl("/api/payment"),
         data: {
             method: method,
             sms_code: $("#sms_code").val(),
@@ -88,7 +88,7 @@ function purchase_service(method) {
                 showWarnings($("#payment"), jsonObj.warnings);
             } else if (jsonObj.return_id === "purchased") {
                 // Update content window with purchase details
-                rest_request("GET", "/api/purchases/" + jsonObj.bsid, {}, function(message) {
+                restRequest("GET", "/api/purchases/" + jsonObj.bsid, {}, function(message) {
                     $("#content").html(message);
                 });
 

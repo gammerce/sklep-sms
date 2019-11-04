@@ -82,11 +82,16 @@
     $(document).delegate("#form_charge_wallet", "submit", function(e) {
         e.preventDefault();
         loader.show();
+
         var that = this;
+        var userId = $(this)
+            .find("[name=uid]")
+            .val();
+
         $.ajax({
             type: "POST",
-            url: buildUrl("jsonhttp_admin.php"),
-            data: $(this).serialize() + "&action=charge_wallet",
+            url: buildUrl("/api/admin/users/" + userId + "/wallet/charge"),
+            data: $(this).serialize(),
             complete: function() {
                 loader.hide();
             },
@@ -106,7 +111,7 @@
                     showWarnings($(that), jsonObj.warnings);
                 } else if (jsonObj.return_id === "charged") {
                     // Change wallet state
-                    getnset_template(
+                    getAndSetTemplate(
                         row_id.children("td[headers=wallet]"),
                         "admin_user_wallet",
                         {

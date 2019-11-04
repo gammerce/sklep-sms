@@ -55,7 +55,7 @@ $(document).delegate("#form_purchase [name=server]", "change", function() {
 
     var serviceId = form.find("[name=service]").val();
 
-    rest_request(
+    restRequest(
         "POST",
         "/api/service/" + serviceId + "/actions/tariffs_for_server",
         {
