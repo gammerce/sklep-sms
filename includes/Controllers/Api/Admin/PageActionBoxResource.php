@@ -9,8 +9,13 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PageActionBoxResource
 {
-    public function get($pageId, $actionBoxId, Request $request, TranslationManager $translationManager, Heart $heart)
-    {
+    public function get(
+        $pageId,
+        $actionBoxId,
+        Request $request,
+        TranslationManager $translationManager,
+        Heart $heart
+    ) {
         $lang = $translationManager->user();
 
         if (!isset($pageId) || !isset($actionBoxId)) {
