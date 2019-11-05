@@ -38,42 +38,6 @@ class JsonHttpAdminController
 
         $warnings = [];
 
-        if ($action == "user_service_add") {
-            if (!get_privileges("manage_user_services")) {
-                return new ApiResponse(
-                    "not_logged_in",
-                    $lang->translate('not_logged_or_no_perm'),
-                    0
-                );
-            }
-
-            // Brak usługi
-            if (!strlen($_POST['service'])) {
-                return new ApiResponse("no_service", $lang->translate('no_service_chosen'), 0);
-            }
-
-            if (
-                ($serviceModule = $heart->getServiceModule($_POST['service'])) === null ||
-                !($serviceModule instanceof IServiceUserServiceAdminAdd)
-            ) {
-                return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
-            }
-
-            $returnData = $serviceModule->userServiceAdminAdd($_POST);
-
-            // Przerabiamy ostrzeżenia, aby lepiej wyglądały
-            if ($returnData['status'] == "warnings") {
-                $returnData["data"]["warnings"] = format_warnings($returnData["data"]["warnings"]);
-            }
-
-            return new ApiResponse(
-                $returnData['status'],
-                $returnData['text'],
-                $returnData['positive'],
-                $returnData['data']
-            );
-        }
-
         if ($action == "user_service_edit") {
             if (!get_privileges("manage_user_services")) {
                 return new ApiResponse(

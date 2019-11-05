@@ -8,6 +8,7 @@ use App\Controllers\Api\Admin\ServiceModuleExtraFieldsController;
 use App\Controllers\Api\Admin\UserPasswordResource;
 use App\Controllers\Api\Admin\UserResource;
 use App\Controllers\Api\Admin\UserServiceAddFormController;
+use App\Controllers\Api\Admin\UserServiceCollection;
 use App\Controllers\Api\Admin\WalletChargeResource;
 use App\Controllers\Api\BrickResource;
 use App\Controllers\Api\IncomeController;
@@ -254,6 +255,11 @@ class RoutesManager
                 $r->get('/api/admin/services/{serviceId}/user_services/add_form', [
                     'middlewares' => [[RequireAuthorization::class, "manage_user_services"]],
                     'uses' => UserServiceAddFormController::class . '@get',
+                ]);
+
+                $r->post('/api/admin/services/{serviceId}/user_services', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_user_services"]],
+                    'uses' => UserServiceCollection::class . '@post',
                 ]);
 
                 $r->get('/api/admin/services/{serviceId}/modules/{moduleId}/extra_fields', [

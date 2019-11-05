@@ -156,10 +156,13 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
 $(document).delegate("#form_user_service_add", "submit", function(e) {
     e.preventDefault();
     loader.show();
+
+    var serviceId = $(this).find("[name=service]");
+
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=user_service_add",
+        url: buildUrl("/api/admin/services/" + serviceId + "/user_services"),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },
