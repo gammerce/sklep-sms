@@ -5,6 +5,7 @@ use App\Application;
 use App\Controllers\Api\Admin\PageActionBoxResource;
 use App\Controllers\Api\Admin\ServiceCodeAddFormController;
 use App\Controllers\Api\Admin\ServiceModuleExtraFieldsController;
+use App\Controllers\Api\Admin\SettingsController;
 use App\Controllers\Api\Admin\UserPasswordResource;
 use App\Controllers\Api\Admin\UserResource;
 use App\Controllers\Api\Admin\UserServiceAddFormController;
@@ -286,6 +287,11 @@ class RoutesManager
                 $r->post('/api/admin/users/{userId}/wallet/charge', [
                     'middlewares' => [[RequireAuthorization::class, "manage_users"]],
                     'uses' => WalletChargeResource::class . '@post',
+                ]);
+
+                $r->put('/api/admin/settings', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
+                    'uses' => SettingsController::class . '@put',
                 ]);
 
                 $r->get('/api/admin/bricks/{bricks}', [

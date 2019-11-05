@@ -19,7 +19,7 @@ class TemplateResource
     ) {
         $lang = $translationManager->user();
 
-        $templateName = str_replace('/', '_', $name);
+        $templateName = escape_filename($name);
         $username = htmlspecialchars($request->query->get('username'));
         $email = htmlspecialchars($request->query->get('email'));
         $editedUser = null;
