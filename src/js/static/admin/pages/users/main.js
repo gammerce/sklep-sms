@@ -32,26 +32,17 @@
     });
 
     $(document).delegate(".table-structure .delete_row", "click", function() {
-        var row_id = $(this).closest("tr");
+        var rowId = $(this).closest("tr");
+        var userId = rowId.children("td[headers=id]").text();
 
-        if (
-            !confirm(
-                "Czy na pewno chcesz usunąć konto o ID " +
-                    row_id.children("td[headers=id]").text() +
-                    "?"
-            )
-        ) {
+        if (!confirm("Czy na pewno chcesz usunąć konto o ID " + userId + "?")) {
             return;
         }
 
         loader.show();
         $.ajax({
             type: "POST",
-            url: buildUrl("jsonhttp_admin.php"),
-            data: {
-                action: "delete_user",
-                uid: row_id.children("td[headers=id]").text(),
-            },
+            url: buildUrl("/api/admin/users/" + userId),
             complete: function() {
                 loader.hide();
             },
@@ -67,8 +58,8 @@
 
                 if (jsonObj.return_id === "ok") {
                     // Delete row
-                    row_id.fadeOut("slow");
-                    row_id.css({ background: "#FFF4BA" });
+                    rowId.fadeOut("slow");
+                    rowId.css({ background: "#FFF4BA" });
 
                     refresh_blocks("admincontent");
                 }

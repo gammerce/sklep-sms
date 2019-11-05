@@ -2,6 +2,7 @@
 namespace App\Controllers\Api\Admin;
 
 use App\Auth;
+use App\Database;
 use App\Heart;
 use App\Repositories\UserRepository;
 use App\Responses\ApiResponse;
@@ -45,10 +46,10 @@ class UserResource
 
         $validator = new Validator($request->request->all(), [
             "username" => [$requiredRule, $uniqueUsernameRule->setUserId($editedUser->getUid())],
-            "email" => [$requiredRule, $uniqueUserEmailRule->setUserId($editedUser->getUid())],
+            "email"    => [$requiredRule, $uniqueUserEmailRule->setUserId($editedUser->getUid())],
             "steam_id" => [new SteamIdRule()],
-            "wallet" => [new NumberRule()],
-            "groups" => [$userGroupsRule],
+            "wallet"   => [new NumberRule()],
+            "groups"   => [$userGroupsRule],
         ]);
 
         $validator->validateOrFail();
@@ -73,5 +74,34 @@ class UserResource
         );
 
         return new ApiResponse('ok', $lang->translate('user_edit'), 1);
+    }
+
+    public function destroy($userId, Database $db, TranslationManager $translationManager, Auth $auth)
+    {
+        $lang = $translationManager->user();
+        $langShop = $translationManager->shop();
+        $user = $auth->user();
+
+        $db->query(
+            $db->prepare(
+                "DELETE FROM `" . TABLE_PREFIX . "users` " . "WHERE `uid` = '%d'",
+                [$userId]
+            )
+        );
+
+        // Zwróć info o prawidłowym lub błędnym usunięciu
+        if ($db->affectedRows()) {
+            log_info(
+                $langShop->sprintf(
+                    $langShop->translate('user_admin_delete'),
+                    $user->getUsername(),
+                    $user->getUid(),
+                    $userId
+                )
+            );
+            return new ApiResponse('ok', $lang->translate('delete_user'), 1);
+        }
+
+        return new ApiResponse("not_deleted", $lang->translate('no_delete_user'), 0);
     }
 }

@@ -591,37 +591,6 @@ class JsonHttpAdminController
             return new ApiResponse("not_deleted", $lang->translate('no_delete_server'), 0);
         }
 
-        if ($action == "delete_user") {
-            if (!get_privileges("manage_users")) {
-                return new ApiResponse(
-                    "not_logged_in",
-                    $lang->translate('not_logged_or_no_perm'),
-                    0
-                );
-            }
-
-            $db->query(
-                $db->prepare("DELETE FROM `" . TABLE_PREFIX . "users` " . "WHERE `uid` = '%d'", [
-                    $_POST['uid'],
-                ])
-            );
-
-            // Zwróć info o prawidłowym lub błędnym usunięciu
-            if ($db->affectedRows()) {
-                log_info(
-                    $langShop->sprintf(
-                        $langShop->translate('user_admin_delete'),
-                        $user->getUsername(),
-                        $user->getUid(),
-                        $_POST['uid']
-                    )
-                );
-                return new ApiResponse('ok', $lang->translate('delete_user'), 1);
-            }
-
-            return new ApiResponse("not_deleted", $lang->translate('no_delete_user'), 0);
-        }
-
         if ($action == "group_add" || $action == "group_edit") {
             if (!get_privileges("manage_groups")) {
                 return new ApiResponse(
@@ -1154,29 +1123,6 @@ class JsonHttpAdminController
             }
 
             return new ApiResponse("not_deleted", $lang->translate('code_not_deleted'), 0);
-        }
-
-        if ($action == "delete_log") {
-            if (!get_privileges("manage_logs")) {
-                return new ApiResponse(
-                    "not_logged_in",
-                    $lang->translate('not_logged_or_no_perm'),
-                    0
-                );
-            }
-
-            $db->query(
-                $db->prepare("DELETE FROM `" . TABLE_PREFIX . "logs` " . "WHERE `id` = '%d'", [
-                    $_POST['id'],
-                ])
-            );
-
-            // Zwróć info o prawidłowym lub błędnym usunieciu
-            if ($db->affectedRows()) {
-                return new ApiResponse('ok', $lang->translate('delete_log'), 1);
-            }
-
-            return new ApiResponse("not_deleted", $lang->translate('no_delete_log'), 0);
         }
 
         return new ApiResponse("script_error", "An error occured: no action.");

@@ -2,6 +2,7 @@
 namespace App\Routes;
 
 use App\Application;
+use App\Controllers\Api\Admin\LogResource;
 use App\Controllers\Api\Admin\PageActionBoxResource;
 use App\Controllers\Api\Admin\ServiceCodeAddFormController;
 use App\Controllers\Api\Admin\ServiceModuleExtraFieldsController;
@@ -249,6 +250,11 @@ class RoutesManager
                     'uses' => UserResource::class . '@put',
                 ]);
 
+                $r->delete('/api/admin/users/{userId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_users"]],
+                    'uses' => UserResource::class . '@destroy',
+                ]);
+
                 $r->get('/api/admin/services/{serviceId}/service_codes/add_form', [
                     'middlewares' => [[RequireAuthorization::class, "manage_service_codes"]],
                     'uses' => ServiceCodeAddFormController::class . '@get',
@@ -292,6 +298,11 @@ class RoutesManager
                 $r->put('/api/admin/settings', [
                     'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
                     'uses' => SettingsController::class . '@put',
+                ]);
+
+                $r->delete('/api/admin/logs/{logId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_logs"]],
+                    'uses' => LogResource::class . '@destroy',
                 ]);
 
                 $r->get('/api/admin/bricks/{bricks}', [
