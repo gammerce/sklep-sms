@@ -111,20 +111,19 @@ $(document).delegate("[id^=delete_row_]", "click", function() {
 });
 
 $(document).delegate(".table-structure .delete_row", "click", function() {
-    var row_id = $(this).closest("tr");
+    var rowId = $(this).closest("tr");
+    var userServiceId = rowId.children("td[headers=id]").text();
 
-    var confirm_info =
-        "Na pewno chcesz usunąć usluge o ID: " + row_id.children("td[headers=id]").text() + " ?";
-    if (confirm(confirm_info) == false) return;
+    var confirmInfo = "Na pewno chcesz usunąć usluge o ID: " + userServiceId + " ?";
+    if (confirm(confirmInfo) == false) {
+        return;
+    }
 
     loader.show();
+
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: {
-            action: "user_service_delete",
-            id: row_id.children("td[headers=id]").text(),
-        },
+        type: "DELETE",
+        url: buildUrl("/api/admin/user_services/" + userServiceId),
         complete: function() {
             loader.hide();
         },
@@ -140,8 +139,8 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
 
             if (jsonObj.return_id === "ok") {
                 // Delete row
-                row_id.fadeOut("slow");
-                row_id.css({ background: "#FFF4BA" });
+                rowId.fadeOut("slow");
+                rowId.css({ background: "#FFF4BA" });
 
                 refresh_blocks("admincontent");
             }
@@ -198,10 +197,13 @@ $(document).delegate("#form_user_service_add", "submit", function(e) {
 $(document).delegate("#form_user_service_edit", "submit", function(e) {
     e.preventDefault();
     loader.show();
+
+    var userServiceId = $(this).find("[name=id]");
+
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=user_service_edit",
+        type: "PUT",
+        url: buildUrl("/api/admin/user_services/" + userServiceId),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },

@@ -12,7 +12,6 @@ use App\Repositories\ServerRepository;
 use App\Responses\ApiResponse;
 use App\Services\Interfaces\IServiceAdminManage;
 use App\Services\Interfaces\IServiceAvailableOnServers;
-use App\Services\Interfaces\IServiceUserServiceAdminAdd;
 use App\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
@@ -37,108 +36,6 @@ class JsonHttpAdminController
         $action = $request->request->get("action");
 
         $warnings = [];
-
-        if ($action == "user_service_edit") {
-            if (!get_privileges("manage_user_services")) {
-                return new ApiResponse(
-                    "not_logged_in",
-                    $lang->translate('not_logged_or_no_perm'),
-                    0
-                );
-            }
-
-            // Brak usługi
-            if (!strlen($_POST['service'])) {
-                return new ApiResponse("no_service", "Nie wybrano usługi.", 0);
-            }
-
-            if (is_null($serviceModule = $heart->getServiceModule($_POST['service']))) {
-                return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
-            }
-
-            $userService = get_users_services($_POST['id']);
-
-            // Brak takiej usługi w bazie
-            if (empty($userService)) {
-                return new ApiResponse("no_service", $lang->translate('no_service'), 0);
-            }
-
-            // Wykonujemy metode edycji usługi użytkownika przez admina na odpowiednim module
-            $returnData = $serviceModule->userServiceAdminEdit($_POST, $userService);
-
-            if ($returnData === false) {
-                return new ApiResponse("missing_method", $lang->translate('no_edit_method'), 0);
-            }
-
-            if ($returnData['status'] == "warnings") {
-                $returnData["data"]["warnings"] = format_warnings($returnData["data"]["warnings"]);
-            }
-
-            return new ApiResponse(
-                $returnData['status'],
-                $returnData['text'],
-                $returnData['positive'],
-                $returnData['data']
-            );
-        }
-
-        if ($action == "user_service_delete") {
-            if (!get_privileges("manage_user_services")) {
-                return new ApiResponse(
-                    "not_logged_in",
-                    $lang->translate('not_logged_or_no_perm'),
-                    0
-                );
-            }
-
-            $userService = get_users_services($_POST['id']);
-
-            // Brak takiej usługi
-            if (empty($userService)) {
-                return new ApiResponse("no_service", $lang->translate('no_service'), 0);
-            }
-
-            // Wywolujemy akcje przy usuwaniu
-            if (
-                ($serviceModule = $heart->getServiceModule($userService['service'])) !== null &&
-                !$serviceModule->userServiceDelete($userService, 'admin')
-            ) {
-                return new ApiResponse(
-                    "user_service_cannot_be_deleted",
-                    $lang->translate('user_service_cannot_be_deleted'),
-                    0
-                );
-            }
-
-            // Usunięcie usługi użytkownika
-            $db->query(
-                $db->prepare(
-                    "DELETE FROM `" . TABLE_PREFIX . "user_service` " . "WHERE `id` = '%d'",
-                    [$userService['id']]
-                )
-            );
-            $affected = $db->affectedRows();
-
-            if ($serviceModule !== null) {
-                $serviceModule->userServiceDeletePost($userService);
-            }
-
-            // Zwróć info o prawidłowym lub błędnym usunięciu
-            if ($affected) {
-                log_info(
-                    $langShop->sprintf(
-                        $langShop->translate('user_service_admin_delete'),
-                        $user->getUsername(),
-                        $user->getUid(),
-                        $userService['id']
-                    )
-                );
-
-                return new ApiResponse('ok', $lang->translate('delete_service'), 1);
-            }
-
-            return new ApiResponse("not_deleted", $lang->translate('no_delete_service'), 0);
-        }
 
         if ($action == "antispam_question_add" || $action == "antispam_question_edit") {
             if (!get_privileges("manage_antispam_questions")) {

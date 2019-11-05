@@ -9,6 +9,7 @@ use App\Controllers\Api\Admin\UserPasswordResource;
 use App\Controllers\Api\Admin\UserResource;
 use App\Controllers\Api\Admin\UserServiceAddFormController;
 use App\Controllers\Api\Admin\UserServiceCollection;
+use App\Controllers\Api\Admin\UserServiceResource as AdminUserServiceResource;
 use App\Controllers\Api\Admin\WalletChargeResource;
 use App\Controllers\Api\BrickResource;
 use App\Controllers\Api\IncomeController;
@@ -260,6 +261,16 @@ class RoutesManager
                 $r->post('/api/admin/services/{serviceId}/user_services', [
                     'middlewares' => [[RequireAuthorization::class, "manage_user_services"]],
                     'uses' => UserServiceCollection::class . '@post',
+                ]);
+
+                $r->put('/api/admin/user_services/{userServiceId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_user_services"]],
+                    'uses' => AdminUserServiceResource::class . '@put',
+                ]);
+
+                $r->delete('/api/admin/user_services/{userServiceId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_user_services"]],
+                    'uses' => AdminUserServiceResource::class . '@destroy',
                 ]);
 
                 $r->get('/api/admin/services/{serviceId}/modules/{moduleId}/extra_fields', [
