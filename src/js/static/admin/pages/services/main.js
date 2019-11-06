@@ -45,10 +45,9 @@ $(document).delegate(".action_box [name=module]", "change", function() {
 
 // Usuwanie usługi
 $(document).delegate(".table-structure .delete_row", "click", function() {
-    var row_id = $(this).closest("tr");
-
-    var serviceId = row_id.children("td[headers=id]").text();
-    var serviceName = row_id.children("td[headers=name]").text();
+    var rowId = $(this).closest("tr");
+    var serviceId = rowId.children("td[headers=id]").text();
+    var serviceName = rowId.children("td[headers=name]").text();
 
     var confirmInfo = "Na pewno chcesz usunąć usługę:\n(" + serviceId + ") " + serviceName + " ?";
     if (confirm(confirmInfo) == false) {
@@ -58,11 +57,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: {
-            action: "delete_service",
-            id: row_id.children("td[headers=id]").text(),
-        },
+        url: buildUrl("/api/admin/services/" + serviceId),
         complete: function() {
             loader.hide();
         },
@@ -78,8 +73,8 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
 
             if (jsonObj.return_id === "ok") {
                 // Delete row
-                row_id.fadeOut("slow");
-                row_id.css({ background: "#FFF4BA" });
+                rowId.fadeOut("slow");
+                rowId.css({ background: "#FFF4BA" });
 
                 refresh_blocks("admincontent");
             }

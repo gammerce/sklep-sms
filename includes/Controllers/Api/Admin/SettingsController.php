@@ -186,7 +186,6 @@ class SettingsController
             )
         );
 
-        // Zwróć info o prawidłowej lub błędnej edycji
         if ($db->affectedRows()) {
             log_info(
                 $langShop->sprintf(

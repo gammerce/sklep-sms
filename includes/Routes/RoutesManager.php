@@ -2,15 +2,22 @@
 namespace App\Routes;
 
 use App\Application;
+use App\Controllers\Api\Admin\AntispamQuestionResource;
+use App\Controllers\Api\Admin\GroupResource;
 use App\Controllers\Api\Admin\LogResource;
 use App\Controllers\Api\Admin\PageActionBoxResource;
+use App\Controllers\Api\Admin\PriceResource;
+use App\Controllers\Api\Admin\ServerResource;
 use App\Controllers\Api\Admin\ServiceCodeAddFormController;
 use App\Controllers\Api\Admin\ServiceCodeCollection;
 use App\Controllers\Api\Admin\ServiceCodeResource;
 use App\Controllers\Api\Admin\ServiceModuleExtraFieldsController;
+use App\Controllers\Api\Admin\ServiceResource;
 use App\Controllers\Api\Admin\SettingsController;
 use App\Controllers\Api\Admin\SmsCodeCollection;
 use App\Controllers\Api\Admin\SmsCodeResource;
+use App\Controllers\Api\Admin\TariffResource;
+use App\Controllers\Api\Admin\TransactionServiceResource;
 use App\Controllers\Api\Admin\UserPasswordResource;
 use App\Controllers\Api\Admin\UserResource;
 use App\Controllers\Api\Admin\UserServiceAddFormController;
@@ -319,6 +326,11 @@ class RoutesManager
                     'uses' => SmsCodeResource::class . '@delete',
                 ]);
 
+                $r->put('/api/admin/transaction_services/{transactionServiceId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
+                    'uses' => TransactionServiceResource::class . '@put',
+                ]);
+
                 $r->put('/api/admin/settings', [
                     'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
                     'uses' => SettingsController::class . '@put',
@@ -327,6 +339,36 @@ class RoutesManager
                 $r->delete('/api/admin/logs/{logId}', [
                     'middlewares' => [[RequireAuthorization::class, "manage_logs"]],
                     'uses' => LogResource::class . '@delete',
+                ]);
+
+                $r->delete('/api/admin/groups/{groupId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_groups"]],
+                    'uses' => GroupResource::class . '@delete',
+                ]);
+
+                $r->delete('/api/admin/antispam_questions/{antispamQuestionId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_antispam_questions"]],
+                    'uses' => AntispamQuestionResource::class . '@delete',
+                ]);
+
+                $r->delete('/api/admin/prices/{priceId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
+                    'uses' => PriceResource::class . '@delete',
+                ]);
+
+                $r->delete('/api/admin/servers/{serverId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_servers"]],
+                    'uses' => ServerResource::class . '@delete',
+                ]);
+
+                $r->delete('/api/admin/services/{serviceId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_services"]],
+                    'uses' => ServiceResource::class . '@delete',
+                ]);
+
+                $r->delete('/api/admin/tariffs/{tariffId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
+                    'uses' => TariffResource::class . '@delete',
                 ]);
 
                 $r->get('/api/admin/bricks/{bricks}', [

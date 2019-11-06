@@ -5,14 +5,14 @@ $(document).delegate("#user_service_button_add", "click", function() {
 
 // Kliknięcie edycji usługi użytkownika
 $(document).delegate("[id^=edit_row_]", "click", function() {
-    var row_id = $(
+    var rowId = $(
         "#" +
             $(this)
                 .attr("id")
                 .replace("edit_row_", "row_")
     );
     show_action_box(currentPage, "user_service_edit", {
-        id: row_id.children("td[headers=id]").text(),
+        id: rowId.children("td[headers=id]").text(),
     });
 });
 $(document).delegate(".table-structure .edit_row", "click", function() {
@@ -64,14 +64,14 @@ $(document).delegate("#form_user_service_add [name=service]", "change", function
 
 // Usuwanie usługi użytkownika
 $(document).delegate("[id^=delete_row_]", "click", function() {
-    var row_id = $(
+    var rowId = $(
         "#" +
             $(this)
                 .attr("id")
                 .replace("delete_row_", "row_")
     );
 
-    var userServiceId = row_id.children("td[headers=id]").text();
+    var userServiceId = rowId.children("td[headers=id]").text();
     var confirmInfo = "Na pewno chcesz usunąć usluge o ID: " + userServiceId + " ?";
     if (confirm(confirmInfo) == false) {
         return;
@@ -79,12 +79,8 @@ $(document).delegate("[id^=delete_row_]", "click", function() {
 
     loader.show();
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: {
-            action: "user_service_delete",
-            id: userServiceId,
-        },
+        type: "DELETE",
+        url: buildUrl("/api/admin/user_services/" + userServiceId),
         complete: function() {
             loader.hide();
         },
@@ -100,8 +96,8 @@ $(document).delegate("[id^=delete_row_]", "click", function() {
 
             if (jsonObj.return_id === "ok") {
                 // Delete row
-                row_id.fadeOut("slow");
-                row_id.css({ background: "#FFF4BA" });
+                rowId.fadeOut("slow");
+                rowId.css({ background: "#FFF4BA" });
 
                 refresh_blocks("admincontent");
             }

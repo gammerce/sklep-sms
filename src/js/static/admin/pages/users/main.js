@@ -5,11 +5,11 @@
     }
 
     // This is used later when action is done
-    var row_id = 0;
+    var rowId = 0;
     $(document).delegate(".table-structure .charge_wallet", "click", function() {
-        row_id = $(this).closest("tr");
+        rowId = $(this).closest("tr");
         show_action_box(currentPage, "charge_wallet", {
-            uid: row_id.children("td[headers=id]").text(),
+            uid: rowId.children("td[headers=id]").text(),
         });
     });
 
@@ -103,7 +103,7 @@
                 } else if (jsonObj.return_id === "charged") {
                     // Change wallet state
                     getAndSetTemplate(
-                        row_id.children("td[headers=wallet]"),
+                        rowId.children("td[headers=wallet]"),
                         "admin_user_wallet",
                         {
                             uid: $(that)
@@ -112,7 +112,7 @@
                         },
                         function() {
                             // Podświetl row
-                            row_id.children("td[headers=wallet]").effect("highlight", 1000);
+                            rowId.children("td[headers=wallet]").effect("highlight", 1000);
                         }
                     );
 

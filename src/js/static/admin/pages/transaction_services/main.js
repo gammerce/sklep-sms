@@ -11,10 +11,13 @@ $(document).delegate("#form_transaction_service_edit", "submit", function(e) {
     e.preventDefault();
 
     loader.show();
+
+    var transactionServiceId = $(this).find("[name=id]");
+
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=transaction_service_edit",
+        type: "PUT",
+        url: buildUrl("/api/admin/transaction_services/" + transactionServiceId),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },

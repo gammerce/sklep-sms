@@ -3,7 +3,6 @@ namespace App\Controllers\Api;
 
 use App\Auth;
 use App\Database;
-use App\Exceptions\SqlQueryException;
 use App\Exceptions\ValidationException;
 use App\Heart;
 use App\Repositories\PriceListRepository;
@@ -84,7 +83,6 @@ class JsonHttpAdminController
                     )
                 );
 
-                // Zwróć info o prawidłowej lub błędnej edycji
                 if ($db->affectedRows()) {
                     log_info(
                         $langShop->sprintf(
@@ -101,92 +99,6 @@ class JsonHttpAdminController
             }
 
             throw new UnexpectedValueException();
-        }
-
-        if ($action == "delete_antispam_question") {
-            if (!get_privileges("manage_antispam_questions")) {
-                return new ApiResponse(
-                    "not_logged_in",
-                    $lang->translate('not_logged_or_no_perm'),
-                    0
-                );
-            }
-
-            $db->query(
-                $db->prepare(
-                    "DELETE FROM `" . TABLE_PREFIX . "antispam_questions` " . "WHERE `id` = '%d'",
-                    [$_POST['id']]
-                )
-            );
-
-            if ($db->affectedRows()) {
-                log_info(
-                    $langShop->sprintf(
-                        $langShop->translate('question_delete'),
-                        $user->getUsername(),
-                        $user->getUid(),
-                        $_POST['id']
-                    )
-                );
-                return new ApiResponse('ok', $lang->translate('delete_antispamq'), 1);
-            }
-
-            return new ApiResponse("not_deleted", $lang->translate('no_delete_antispamq'), 0);
-        }
-
-        if ($action == "transaction_service_edit") {
-            if (!get_privileges("manage_settings")) {
-                return new ApiResponse(
-                    "not_logged_in",
-                    $lang->translate('not_logged_or_no_perm'),
-                    0
-                );
-            }
-
-            // Pobieranie danych
-            $result = $db->query(
-                $db->prepare(
-                    "SELECT data " .
-                        "FROM `" .
-                        TABLE_PREFIX .
-                        "transaction_services` " .
-                        "WHERE `id` = '%s'",
-                    [$_POST['id']]
-                )
-            );
-            $transactionService = $db->fetchArrayAssoc($result);
-            $transactionService['data'] = json_decode($transactionService['data']);
-            foreach ($transactionService['data'] as $key => $value) {
-                $arr[$key] = $_POST[$key];
-            }
-
-            $db->query(
-                $db->prepare(
-                    "UPDATE `" .
-                        TABLE_PREFIX .
-                        "transaction_services` " .
-                        "SET `data` = '%s' " .
-                        "WHERE `id` = '%s'",
-                    [json_encode($arr), $_POST['id']]
-                )
-            );
-
-            // Zwróć info o prawidłowej lub błędnej edycji
-            if ($db->affectedRows()) {
-                // LOGGING
-                log_info(
-                    $langShop->sprintf(
-                        $langShop->translate('payment_admin_edit'),
-                        $user->getUsername(),
-                        $user->getUid(),
-                        $_POST['id']
-                    )
-                );
-
-                return new ApiResponse('ok', $lang->translate('payment_edit'), 1);
-            }
-
-            return new ApiResponse("not_edited", $lang->translate('payment_no_edit'), 0);
         }
 
         if ($action == "service_add" || $action == "service_edit") {
@@ -347,7 +259,6 @@ class JsonHttpAdminController
                     )
                 );
 
-                // Zwróć info o prawidłowej lub błędnej edycji
                 if ($db->affectedRows()) {
                     log_info(
                         $langShop->sprintf(
@@ -363,57 +274,6 @@ class JsonHttpAdminController
             }
 
             throw new UnexpectedValueException();
-        }
-
-        if ($action == "delete_service") {
-            if (!get_privileges("manage_services")) {
-                return new ApiResponse(
-                    "not_logged_in",
-                    $lang->translate('not_logged_or_no_perm'),
-                    0
-                );
-            }
-
-            // Wywolujemy akcje przy uninstalacji
-            $serviceModule = $heart->getServiceModule($_POST['id']);
-            if (!is_null($serviceModule)) {
-                $serviceModule->serviceDelete($_POST['id']);
-            }
-
-            try {
-                $db->query(
-                    $db->prepare(
-                        "DELETE FROM `" . TABLE_PREFIX . "services` " . "WHERE `id` = '%s'",
-                        [$_POST['id']]
-                    )
-                );
-            } catch (SqlQueryException $e) {
-                if ($e->getErrorno() == 1451) {
-                    // Istnieją powiązania
-                    return new ApiResponse(
-                        "error",
-                        $lang->translate('delete_service_er_row_is_referenced_2'),
-                        0
-                    );
-                }
-
-                throw $e;
-            }
-            $affected = $db->affectedRows();
-
-            if ($affected) {
-                log_info(
-                    $langShop->sprintf(
-                        $langShop->translate('service_admin_delete'),
-                        $user->getUsername(),
-                        $user->getUid(),
-                        $_POST['id']
-                    )
-                );
-                return new ApiResponse('ok', $lang->translate('delete_service'), 1);
-            }
-
-            return new ApiResponse("not_deleted", $lang->translate('no_delete_service'), 0);
         }
 
         if ($action == "server_add" || $action == "server_edit") {
@@ -544,50 +404,6 @@ class JsonHttpAdminController
             throw new UnexpectedValueException();
         }
 
-        if ($action == "delete_server") {
-            if (!get_privileges("manage_servers")) {
-                return new ApiResponse(
-                    "not_logged_in",
-                    $lang->translate('not_logged_or_no_perm'),
-                    0
-                );
-            }
-
-            try {
-                $db->query(
-                    $db->prepare(
-                        "DELETE FROM `" . TABLE_PREFIX . "servers` " . "WHERE `id` = '%s'",
-                        [$_POST['id']]
-                    )
-                );
-            } catch (SqlQueryException $e) {
-                if ($e->getErrorno() == 1451) {
-                    // Istnieją powiązania
-                    return new ApiResponse(
-                        "error",
-                        $lang->translate('delete_server_constraint_fails'),
-                        0
-                    );
-                }
-
-                throw $e;
-            }
-
-            if ($db->affectedRows()) {
-                log_info(
-                    $langShop->sprintf(
-                        $langShop->translate('server_admin_delete'),
-                        $user->getUsername(),
-                        $user->getUid(),
-                        $_POST['id']
-                    )
-                );
-                return new ApiResponse('ok', $lang->translate('delete_server'), 1);
-            }
-
-            return new ApiResponse("not_deleted", $lang->translate('no_delete_server'), 0);
-        }
-
         if ($action == "group_add" || $action == "group_edit") {
             if (!get_privileges("manage_groups")) {
                 return new ApiResponse(
@@ -639,9 +455,7 @@ class JsonHttpAdminController
                     )
                 );
 
-                // Zwróć info o prawidłowej lub błędnej edycji
                 if ($db->affectedRows()) {
-                    // LOGGING
                     log_info(
                         $langShop->sprintf(
                             $langShop->translate('group_admin_edit'),
@@ -657,36 +471,6 @@ class JsonHttpAdminController
             }
 
             throw new UnexpectedValueException();
-        }
-
-        if ($action == "delete_group") {
-            if (!get_privileges("manage_groups")) {
-                return new ApiResponse(
-                    "not_logged_in",
-                    $lang->translate('not_logged_or_no_perm'),
-                    0
-                );
-            }
-
-            $db->query(
-                $db->prepare("DELETE FROM `" . TABLE_PREFIX . "groups` " . "WHERE `id` = '%d'", [
-                    $_POST['id'],
-                ])
-            );
-
-            if ($db->affectedRows()) {
-                log_info(
-                    $langShop->sprintf(
-                        $langShop->translate('group_admin_delete'),
-                        $user->getUsername(),
-                        $user->getUid(),
-                        $_POST['id']
-                    )
-                );
-                return new ApiResponse('ok', $lang->translate('delete_group'), 1);
-            }
-
-            return new ApiResponse("not_deleted", $lang->translate('no_delete_group'), 0);
         }
 
         if ($action == "tariff_add") {
@@ -783,40 +567,6 @@ class JsonHttpAdminController
             return new ApiResponse("not_edited", $lang->translate('tariff_no_edit'), 0);
         }
 
-        if ($action == "delete_tariff") {
-            if (!get_privileges("manage_settings")) {
-                return new ApiResponse(
-                    "not_logged_in",
-                    $lang->translate('not_logged_or_no_perm'),
-                    0
-                );
-            }
-
-            $db->query(
-                $db->prepare(
-                    "DELETE FROM `" .
-                        TABLE_PREFIX .
-                        "tariffs` " .
-                        "WHERE `id` = '%d' AND `predefined` = '0'",
-                    [$_POST['id']]
-                )
-            );
-
-            if ($db->affectedRows()) {
-                log_info(
-                    $langShop->sprintf(
-                        $langShop->translate('tariff_admin_delete'),
-                        $user->getUsername(),
-                        $user->getUid(),
-                        $_POST['id']
-                    )
-                );
-                return new ApiResponse('ok', $lang->translate('delete_tariff'), 1);
-            }
-
-            return new ApiResponse("not_deleted", $lang->translate('no_delete_tariff'), 0);
-        }
-
         if ($action == "price_add" || $action == "price_edit") {
             if (!get_privileges("manage_settings")) {
                 return new ApiResponse(
@@ -884,7 +634,6 @@ class JsonHttpAdminController
                     )
                 );
 
-                // Zwróć info o prawidłowej lub błędnej edycji
                 if ($db->affectedRows()) {
                     log_info(
                         $langShop->sprintf(
@@ -901,36 +650,6 @@ class JsonHttpAdminController
             }
 
             throw new UnexpectedValueException();
-        }
-
-        if ($action == "delete_price") {
-            if (!get_privileges("manage_settings")) {
-                return new ApiResponse(
-                    "not_logged_in",
-                    $lang->translate('not_logged_or_no_perm'),
-                    0
-                );
-            }
-
-            $db->query(
-                $db->prepare("DELETE FROM `" . TABLE_PREFIX . "pricelist` " . "WHERE `id` = '%d'", [
-                    $_POST['id'],
-                ])
-            );
-
-            if ($db->affectedRows()) {
-                log_info(
-                    $langShop->sprintf(
-                        $langShop->translate('price_admin_delete'),
-                        $user->getUsername(),
-                        $user->getUid(),
-                        $_POST['id']
-                    )
-                );
-                return new ApiResponse('ok', $lang->translate('delete_price'), 1);
-            }
-
-            return new ApiResponse("not_deleted", $lang->translate('no_delete_price'), 0);
         }
 
         return new ApiResponse("script_error", "An error occured: no action.");

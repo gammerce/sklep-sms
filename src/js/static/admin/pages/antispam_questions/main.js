@@ -13,18 +13,15 @@ $(document).delegate(".table-structure .edit_row", "click", function() {
     });
 });
 
-// Usuwanie pytania antyspamowego
+// Delete antispam question
 $(document).delegate(".table-structure .delete_row", "click", function() {
     var rowId = $(this).closest("tr");
+    var antispamQuestionId = rowId.children("td[headers=id]").text();
 
     loader.show();
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: {
-            action: "delete_antispam_question",
-            id: rowId.children("td[headers=id]").text(),
-        },
+        type: "DELETE",
+        url: buildUrl("/api/admin/antispam_questions/" + antispamQuestionId),
         complete: function() {
             loader.hide();
         },
