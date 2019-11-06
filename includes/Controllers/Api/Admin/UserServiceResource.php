@@ -48,7 +48,7 @@ class UserServiceResource
         );
     }
 
-    public function destroy(
+    public function delete(
         $userServiceId,
         Database $db,
         Heart $heart,
@@ -90,7 +90,6 @@ class UserServiceResource
             $serviceModule->userServiceDeletePost($userService);
         }
 
-        // Zwróć info o prawidłowym lub błędnym usunięciu
         if ($affected) {
             log_info(
                 $langShop->sprintf(

@@ -39,18 +39,15 @@ $(document).delegate("#form_service_code_add [name=service]", "change", function
     });
 });
 
-// Usuwanie kodu na usługę
+// Delete service code
 $(document).delegate(".table-structure .delete_row", "click", function() {
-    var row_id = $(this).closest("tr");
+    var rowId = $(this).closest("tr");
+    var serviceCodeId = rowId.children("td[headers=id]").text();
 
     loader.show();
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: {
-            action: "delete_service_code",
-            id: row_id.children("td[headers=id]").text(),
-        },
+        type: "DELETE",
+        url: buildUrl("/api/admin/service_codes/" + serviceCodeId),
         complete: function() {
             loader.hide();
         },
@@ -66,8 +63,8 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
 
             if (jsonObj.return_id === "ok") {
                 // Delete row
-                row_id.fadeOut("slow");
-                row_id.css({ background: "#FFF4BA" });
+                rowId.fadeOut("slow");
+                rowId.css({ background: "#FFF4BA" });
 
                 refresh_blocks("admincontent");
             }
@@ -82,10 +79,13 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
 $(document).delegate("#form_service_code_add", "submit", function(e) {
     e.preventDefault();
     loader.show();
+
+    var serviceId = $(this).find("[name=service]");
+
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=service_code_add",
+        url: buildUrl("/api/admin/services/" + serviceId + "service_codes"),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },

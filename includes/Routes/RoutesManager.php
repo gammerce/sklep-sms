@@ -5,8 +5,12 @@ use App\Application;
 use App\Controllers\Api\Admin\LogResource;
 use App\Controllers\Api\Admin\PageActionBoxResource;
 use App\Controllers\Api\Admin\ServiceCodeAddFormController;
+use App\Controllers\Api\Admin\ServiceCodeCollection;
+use App\Controllers\Api\Admin\ServiceCodeResource;
 use App\Controllers\Api\Admin\ServiceModuleExtraFieldsController;
 use App\Controllers\Api\Admin\SettingsController;
+use App\Controllers\Api\Admin\SmsCodeCollection;
+use App\Controllers\Api\Admin\SmsCodeResource;
 use App\Controllers\Api\Admin\UserPasswordResource;
 use App\Controllers\Api\Admin\UserResource;
 use App\Controllers\Api\Admin\UserServiceAddFormController;
@@ -252,7 +256,7 @@ class RoutesManager
 
                 $r->delete('/api/admin/users/{userId}', [
                     'middlewares' => [[RequireAuthorization::class, "manage_users"]],
-                    'uses' => UserResource::class . '@destroy',
+                    'uses' => UserResource::class . '@delete',
                 ]);
 
                 $r->get('/api/admin/services/{serviceId}/service_codes/add_form', [
@@ -270,6 +274,16 @@ class RoutesManager
                     'uses' => UserServiceCollection::class . '@post',
                 ]);
 
+                $r->post('/api/admin/services/{serviceId}/service_codes', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_service_codes"]],
+                    'uses' => ServiceCodeCollection::class . '@post',
+                ]);
+
+                $r->get('/api/admin/services/{serviceId}/modules/{moduleId}/extra_fields', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_user_services"]],
+                    'uses' => ServiceModuleExtraFieldsController::class . '@get',
+                ]);
+
                 $r->put('/api/admin/user_services/{userServiceId}', [
                     'middlewares' => [[RequireAuthorization::class, "manage_user_services"]],
                     'uses' => AdminUserServiceResource::class . '@put',
@@ -277,12 +291,7 @@ class RoutesManager
 
                 $r->delete('/api/admin/user_services/{userServiceId}', [
                     'middlewares' => [[RequireAuthorization::class, "manage_user_services"]],
-                    'uses' => AdminUserServiceResource::class . '@destroy',
-                ]);
-
-                $r->get('/api/admin/services/{serviceId}/modules/{moduleId}/extra_fields', [
-                    'middlewares' => [[RequireAuthorization::class, "manage_user_services"]],
-                    'uses' => ServiceModuleExtraFieldsController::class . '@get',
+                    'uses' => AdminUserServiceResource::class . '@delete',
                 ]);
 
                 $r->get('/api/admin/pages/{pageId}/action_boxes/{actionBoxId}', [
@@ -295,6 +304,21 @@ class RoutesManager
                     'uses' => WalletChargeResource::class . '@post',
                 ]);
 
+                $r->delete('/api/admin/service_codes/{serviceCodeId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_service_codes"]],
+                    'uses' => ServiceCodeResource::class . '@delete',
+                ]);
+
+                $r->post('/api/admin/sms_codes', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_sms_codes"]],
+                    'uses' => SmsCodeCollection::class . '@post',
+                ]);
+
+                $r->delete('/api/admin/sms_codes/{smsCodeId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_sms_codes"]],
+                    'uses' => SmsCodeResource::class . '@delete',
+                ]);
+
                 $r->put('/api/admin/settings', [
                     'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
                     'uses' => SettingsController::class . '@put',
@@ -302,7 +326,7 @@ class RoutesManager
 
                 $r->delete('/api/admin/logs/{logId}', [
                     'middlewares' => [[RequireAuthorization::class, "manage_logs"]],
-                    'uses' => LogResource::class . '@destroy',
+                    'uses' => LogResource::class . '@delete',
                 ]);
 
                 $r->get('/api/admin/bricks/{bricks}', [

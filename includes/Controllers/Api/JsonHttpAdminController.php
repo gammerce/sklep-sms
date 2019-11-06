@@ -119,7 +119,6 @@ class JsonHttpAdminController
                 )
             );
 
-            // Zwróć info o prawidłowym lub błędnym usunięciu
             if ($db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
@@ -402,7 +401,6 @@ class JsonHttpAdminController
             }
             $affected = $db->affectedRows();
 
-            // Zwróć info o prawidłowym lub błędnym usunięciu
             if ($affected) {
                 log_info(
                     $langShop->sprintf(
@@ -575,7 +573,6 @@ class JsonHttpAdminController
                 throw $e;
             }
 
-            // Zwróć info o prawidłowym lub błędnym usunięciu
             if ($db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
@@ -677,7 +674,6 @@ class JsonHttpAdminController
                 ])
             );
 
-            // Zwróć info o prawidłowym lub błędnym usunięciu
             if ($db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
@@ -806,7 +802,6 @@ class JsonHttpAdminController
                 )
             );
 
-            // Zwróć info o prawidłowym lub błędnym usunięciu
             if ($db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
@@ -868,7 +863,6 @@ class JsonHttpAdminController
                         $db->lastId()
                 );
 
-                // Zwróć info o prawidłowym dodaniu
                 return new ApiResponse('ok', $lang->translate('price_add'), 1);
             }
 
@@ -924,7 +918,6 @@ class JsonHttpAdminController
                 ])
             );
 
-            // Zwróć info o prawidłowym lub błędnym usunięciu
             if ($db->affectedRows()) {
                 log_info(
                     $langShop->sprintf(
@@ -938,191 +931,6 @@ class JsonHttpAdminController
             }
 
             return new ApiResponse("not_deleted", $lang->translate('no_delete_price'), 0);
-        }
-
-        if ($action == "sms_code_add") {
-            if (!get_privileges("manage_sms_codes")) {
-                return new ApiResponse(
-                    "not_logged_in",
-                    $lang->translate('not_logged_or_no_perm'),
-                    0
-                );
-            }
-
-            // Taryfa
-            if ($warning = check_for_warnings("number", $_POST['tariff'])) {
-                $warnings['tariff'] = array_merge((array) $warnings['tariff'], $warning);
-            }
-
-            // Kod SMS
-            if ($warning = check_for_warnings("sms_code", $_POST['code'])) {
-                $warnings['code'] = array_merge((array) $warnings['code'], $warning);
-            }
-
-            if ($warnings) {
-                throw new ValidationException($warnings);
-            }
-
-            $db->query(
-                $db->prepare(
-                    "INSERT INTO `" .
-                        TABLE_PREFIX .
-                        "sms_codes` (`code`, `tariff`) " .
-                        "VALUES( '%s', '%d' )",
-                    [$lang->strtoupper($_POST['code']), $_POST['tariff']]
-                )
-            );
-
-            log_info(
-                $langShop->sprintf(
-                    $langShop->translate('sms_code_admin_add'),
-                    $user->getUsername(),
-                    $user->getUid(),
-                    $_POST['code'],
-                    $_POST['tariff']
-                )
-            );
-            // Zwróć info o prawidłowym dodaniu
-            return new ApiResponse('ok', $lang->translate('sms_code_add'), 1);
-        }
-
-        if ($action == "delete_sms_code") {
-            if (!get_privileges("manage_sms_codes")) {
-                return new ApiResponse(
-                    "not_logged_in",
-                    $lang->translate('not_logged_or_no_perm'),
-                    0
-                );
-            }
-
-            $db->query(
-                $db->prepare("DELETE FROM `" . TABLE_PREFIX . "sms_codes` " . "WHERE `id` = '%d'", [
-                    $_POST['id'],
-                ])
-            );
-
-            // Zwróć info o prawidłowym lub błędnym usunięciu
-            if ($db->affectedRows()) {
-                log_info(
-                    $langShop->sprintf(
-                        $langShop->translate('sms_code_admin_delete'),
-                        $user->getUsername(),
-                        $user->getUid(),
-                        $_POST['id']
-                    )
-                );
-                return new ApiResponse('ok', $lang->translate('delete_sms_code'), 1);
-            }
-
-            return new ApiResponse("not_deleted", $lang->translate('no_delete_sms_code'), 0);
-        }
-
-        if ($action == "service_code_add") {
-            if (!get_privileges("manage_service_codes")) {
-                return new ApiResponse(
-                    "not_logged_in",
-                    $lang->translate('not_logged_or_no_perm'),
-                    0
-                );
-            }
-
-            // Brak usługi
-            if (!strlen($_POST['service'])) {
-                return new ApiResponse("no_service", $lang->translate('no_service_chosen'), 0);
-            }
-
-            if (($serviceModule = $heart->getServiceModule($_POST['service'])) === null) {
-                return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
-            }
-
-            // Id użytkownika
-            if (strlen($_POST['uid']) && ($warning = check_for_warnings("uid", $_POST['uid']))) {
-                $warnings['uid'] = array_merge((array) $warnings['uid'], $warning);
-            }
-
-            // Kod
-            if (!strlen($_POST['code'])) {
-                $warnings['code'][] = $lang->translate('field_no_empty');
-            } else {
-                if (strlen($_POST['code']) > 16) {
-                    $warnings['code'][] = $lang->translate('return_code_length_warn');
-                }
-            }
-
-            // Łączymy zwrócone błędy
-            $warnings = array_merge(
-                (array) $warnings,
-                (array) $serviceModule->serviceCodeAdminAddValidate($_POST)
-            );
-
-            if ($warnings) {
-                throw new ValidationException($warnings);
-            }
-
-            // Pozyskujemy dane kodu do dodania
-            $codeData = $serviceModule->serviceCodeAdminAddInsert($_POST);
-
-            $db->query(
-                $db->prepare(
-                    "INSERT INTO `" .
-                        TABLE_PREFIX .
-                        "service_codes` " .
-                        "SET `code` = '%s', `service` = '%s', `uid` = '%d', `server` = '%d', `amount` = '%d', `tariff` = '%d', `data` = '%s'",
-                    [
-                        $_POST['code'],
-                        $serviceModule->service['id'],
-                        if_strlen($_POST['uid'], 0),
-                        if_isset($codeData['server'], 0),
-                        if_isset($codeData['amount'], 0),
-                        if_isset($codeData['tariff'], 0),
-                        $codeData['data'],
-                    ]
-                )
-            );
-
-            log_info(
-                $langShop->sprintf(
-                    $langShop->translate('code_added_admin'),
-                    $user->getUsername(),
-                    $user->getUid(),
-                    $_POST['code'],
-                    $serviceModule->service['id']
-                )
-            );
-            // Zwróć info o prawidłowym dodaniu
-            return new ApiResponse('ok', $lang->translate('code_added'), 1);
-        }
-
-        if ($action == "delete_service_code") {
-            if (!get_privileges("manage_service_codes")) {
-                return new ApiResponse(
-                    "not_logged_in",
-                    $lang->translate('not_logged_or_no_perm'),
-                    0
-                );
-            }
-
-            $db->query(
-                $db->prepare(
-                    "DELETE FROM `" . TABLE_PREFIX . "service_codes` " . "WHERE `id` = '%d'",
-                    [$_POST['id']]
-                )
-            );
-
-            // Zwróć info o prawidłowym lub błędnym usunięciu
-            if ($db->affectedRows()) {
-                log_info(
-                    $langShop->sprintf(
-                        $langShop->translate('code_deleted_admin'),
-                        $user->getUsername(),
-                        $user->getUid(),
-                        $_POST['id']
-                    )
-                );
-                return new ApiResponse('ok', $lang->translate('code_deleted'), 1);
-            }
-
-            return new ApiResponse("not_deleted", $lang->translate('code_not_deleted'), 0);
         }
 
         return new ApiResponse("script_error", "An error occured: no action.");

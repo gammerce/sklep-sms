@@ -71,9 +71,11 @@ $(document).delegate("[id^=delete_row_]", "click", function() {
                 .replace("delete_row_", "row_")
     );
 
-    var confirm_info =
-        "Na pewno chcesz usunąć usluge o ID: " + row_id.children("td[headers=id]").text() + " ?";
-    if (confirm(confirm_info) == false) return;
+    var userServiceId = row_id.children("td[headers=id]").text();
+    var confirmInfo = "Na pewno chcesz usunąć usluge o ID: " + userServiceId + " ?";
+    if (confirm(confirmInfo) == false) {
+        return;
+    }
 
     loader.show();
     $.ajax({
@@ -81,7 +83,7 @@ $(document).delegate("[id^=delete_row_]", "click", function() {
         url: buildUrl("jsonhttp_admin.php"),
         data: {
             action: "user_service_delete",
-            id: row_id.children("td[headers=id]").text(),
+            id: userServiceId,
         },
         complete: function() {
             loader.hide();

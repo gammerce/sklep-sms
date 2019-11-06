@@ -11,18 +11,15 @@ $(document).delegate("#form_sms_code_add [name=random_code]", "click", function(
         .val(get_random_string());
 });
 
-// Usuwanie kodu SMS
+// Delete sms code
 $(document).delegate(".table-structure .delete_row", "click", function() {
-    var row_id = $(this).closest("tr");
+    var rowId = $(this).closest("tr");
+    var smsCodeId = rowId.children("td[headers=id]").text();
 
     loader.show();
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: {
-            action: "delete_sms_code",
-            id: row_id.children("td[headers=id]").text(),
-        },
+        type: "DELETE",
+        url: buildUrl("/api/admin/sms_codes/" + smsCodeId),
         complete: function() {
             loader.hide();
         },
@@ -38,8 +35,8 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
 
             if (jsonObj.return_id === "ok") {
                 // Delete row
-                row_id.fadeOut("slow");
-                row_id.css({ background: "#FFF4BA" });
+                rowId.fadeOut("slow");
+                rowId.css({ background: "#FFF4BA" });
 
                 refresh_blocks("admincontent");
             }
@@ -56,8 +53,8 @@ $(document).delegate("#form_sms_code_add", "submit", function(e) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=sms_code_add",
+        url: buildUrl("/api/admin/sms_codes"),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },

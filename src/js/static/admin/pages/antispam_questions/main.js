@@ -15,7 +15,7 @@ $(document).delegate(".table-structure .edit_row", "click", function() {
 
 // Usuwanie pytania antyspamowego
 $(document).delegate(".table-structure .delete_row", "click", function() {
-    var row_id = $(this).closest("tr");
+    var rowId = $(this).closest("tr");
 
     loader.show();
     $.ajax({
@@ -23,7 +23,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
         url: buildUrl("jsonhttp_admin.php"),
         data: {
             action: "delete_antispam_question",
-            id: row_id.children("td[headers=id]").text(),
+            id: rowId.children("td[headers=id]").text(),
         },
         complete: function() {
             loader.hide();
@@ -40,8 +40,8 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
 
             if (jsonObj.return_id === "ok") {
                 // Delete row
-                row_id.fadeOut("slow");
-                row_id.css({ background: "#FFF4BA" });
+                rowId.fadeOut("slow");
+                rowId.css({ background: "#FFF4BA" });
 
                 refresh_blocks("admincontent");
             }

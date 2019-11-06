@@ -7,7 +7,7 @@ use App\TranslationManager;
 
 class LogResource
 {
-    public function destroy($logId, Database $db, TranslationManager $translationManager)
+    public function delete($logId, Database $db, TranslationManager $translationManager)
     {
         $lang = $translationManager->user();
 

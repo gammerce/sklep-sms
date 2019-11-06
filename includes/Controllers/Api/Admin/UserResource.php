@@ -76,7 +76,7 @@ class UserResource
         return new ApiResponse('ok', $lang->translate('user_edit'), 1);
     }
 
-    public function destroy($userId, Database $db, TranslationManager $translationManager, Auth $auth)
+    public function delete($userId, Database $db, TranslationManager $translationManager, Auth $auth)
     {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
@@ -89,7 +89,6 @@ class UserResource
             )
         );
 
-        // Zwróć info o prawidłowym lub błędnym usunięciu
         if ($db->affectedRows()) {
             log_info(
                 $langShop->sprintf(
