@@ -8,17 +8,20 @@ use App\TranslationManager;
 
 class AntispamQuestionResource
 {
-    public function delete($antispamQuestionId, Database $db, TranslationManager $translationManager, Auth $auth)
-    {
+    public function delete(
+        $antispamQuestionId,
+        Database $db,
+        TranslationManager $translationManager,
+        Auth $auth
+    ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
         $user = $auth->user();
 
         $db->query(
-            $db->prepare(
-                "DELETE FROM `" . TABLE_PREFIX . "antispam_questions` WHERE `id` = '%d'",
-                [$antispamQuestionId]
-            )
+            $db->prepare("DELETE FROM `" . TABLE_PREFIX . "antispam_questions` WHERE `id` = '%d'", [
+                $antispamQuestionId,
+            ])
         );
 
         if ($db->affectedRows()) {

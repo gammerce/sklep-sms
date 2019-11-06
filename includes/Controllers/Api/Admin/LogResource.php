@@ -12,10 +12,7 @@ class LogResource
         $lang = $translationManager->user();
 
         $db->query(
-            $db->prepare(
-                "DELETE FROM `" . TABLE_PREFIX . "logs` " . "WHERE `id` = '%d'",
-                [$logId]
-            )
+            $db->prepare("DELETE FROM `" . TABLE_PREFIX . "logs` " . "WHERE `id` = '%d'", [$logId])
         );
 
         // Zwróć info o prawidłowym lub błędnym usunieciu

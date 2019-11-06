@@ -8,8 +8,12 @@ use App\TranslationManager;
 
 class PriceResource
 {
-    public function delete($priceId, Database $db, TranslationManager $translationManager, Auth $auth)
-    {
+    public function delete(
+        $priceId,
+        Database $db,
+        TranslationManager $translationManager,
+        Auth $auth
+    ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
         $user = $auth->user();

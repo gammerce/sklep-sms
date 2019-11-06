@@ -8,15 +8,21 @@ use App\TranslationManager;
 
 class TariffResource
 {
-    public function delete($tariffId, Database $db, TranslationManager $translationManager, Auth $auth)
-    {
+    public function delete(
+        $tariffId,
+        Database $db,
+        TranslationManager $translationManager,
+        Auth $auth
+    ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
         $user = $auth->user();
 
         $db->query(
             $db->prepare(
-                "DELETE FROM `" . TABLE_PREFIX . "tariffs` WHERE `id` = '%d' AND `predefined` = '0'",
+                "DELETE FROM `" .
+                    TABLE_PREFIX .
+                    "tariffs` WHERE `id` = '%d' AND `predefined` = '0'",
                 [$tariffId]
             )
         );

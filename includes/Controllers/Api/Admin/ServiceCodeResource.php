@@ -8,17 +8,20 @@ use App\TranslationManager;
 
 class ServiceCodeResource
 {
-    public function delete($serviceCodeId, TranslationManager $translationManager, Database $db, Auth $auth)
-    {
+    public function delete(
+        $serviceCodeId,
+        TranslationManager $translationManager,
+        Database $db,
+        Auth $auth
+    ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
         $user = $auth->user();
 
         $db->query(
-            $db->prepare(
-                "DELETE FROM `" . TABLE_PREFIX . "service_codes` " . "WHERE `id` = '%d'",
-                [$serviceCodeId]
-            )
+            $db->prepare("DELETE FROM `" . TABLE_PREFIX . "service_codes` " . "WHERE `id` = '%d'", [
+                $serviceCodeId,
+            ])
         );
 
         if ($db->affectedRows()) {

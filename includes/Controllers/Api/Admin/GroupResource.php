@@ -8,16 +8,18 @@ use App\TranslationManager;
 
 class GroupResource
 {
-    public function delete($groupId, Database $db, TranslationManager $translationManager, Auth $auth)
-    {
+    public function delete(
+        $groupId,
+        Database $db,
+        TranslationManager $translationManager,
+        Auth $auth
+    ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
         $user = $auth->user();
 
         $db->query(
-            $db->prepare("DELETE FROM `" . TABLE_PREFIX . "groups` WHERE `id` = '%d'", [
-                $groupId,
-            ])
+            $db->prepare("DELETE FROM `" . TABLE_PREFIX . "groups` WHERE `id` = '%d'", [$groupId])
         );
 
         if ($db->affectedRows()) {

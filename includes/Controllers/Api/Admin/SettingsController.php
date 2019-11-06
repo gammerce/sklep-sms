@@ -11,8 +11,13 @@ use Symfony\Component\HttpFoundation\Request;
 
 class SettingsController
 {
-    public function put(Request $request, Database $db, TranslationManager $translationManager, Path $path, Auth $auth)
-    {
+    public function put(
+        Request $request,
+        Database $db,
+        TranslationManager $translationManager,
+        Path $path,
+        Auth $auth
+    ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
         $user = $auth->user();
@@ -45,10 +50,10 @@ class SettingsController
             $result = $db->query(
                 $db->prepare(
                     "SELECT id " .
-                    "FROM `" .
-                    TABLE_PREFIX .
-                    "transaction_services` " .
-                    "WHERE `id` = '%s' AND sms = '1'",
+                        "FROM `" .
+                        TABLE_PREFIX .
+                        "transaction_services` " .
+                        "WHERE `id` = '%s' AND sms = '1'",
                     [$smsService]
                 )
             );
@@ -62,10 +67,10 @@ class SettingsController
             $result = $db->query(
                 $db->prepare(
                     "SELECT id " .
-                    "FROM `" .
-                    TABLE_PREFIX .
-                    "transaction_services` " .
-                    "WHERE `id` = '%s' AND transfer = '1'",
+                        "FROM `" .
+                        TABLE_PREFIX .
+                        "transaction_services` " .
+                        "WHERE `id` = '%s' AND transfer = '1'",
                     [$transferService]
                 )
             );
@@ -76,25 +81,22 @@ class SettingsController
 
         // Email dla automatu
         if (strlen($senderEmail) && ($warning = check_for_warnings("email", $senderEmail))) {
-            $warnings['sender_email'] = array_merge(
-                (array)$warnings['sender_email'],
-                $warning
-            );
+            $warnings['sender_email'] = array_merge((array) $warnings['sender_email'], $warning);
         }
 
         // VAT
         if ($warning = check_for_warnings("number", $vat)) {
-            $warnings['vat'] = array_merge((array)$warnings['vat'], $warning);
+            $warnings['vat'] = array_merge((array) $warnings['vat'], $warning);
         }
 
         // Usuwanie logów
         if ($warning = check_for_warnings("number", $deleteLogs)) {
-            $warnings['delete_logs'] = array_merge((array)$warnings['delete_logs'], $warning);
+            $warnings['delete_logs'] = array_merge((array) $warnings['delete_logs'], $warning);
         }
 
         // Wierszy na stronę
         if ($warning = check_for_warnings("number", $rowLimit)) {
-            $warnings['row_limit'] = array_merge((array)$warnings['row_limit'], $warning);
+            $warnings['row_limit'] = array_merge((array) $warnings['row_limit'], $warning);
         }
 
         // Cron
@@ -135,33 +137,33 @@ class SettingsController
         $db->query(
             $db->prepare(
                 "UPDATE `" .
-                TABLE_PREFIX .
-                "settings` " .
-                "SET value = CASE `key` " .
-                "WHEN 'sms_service' THEN '%s' " .
-                "WHEN 'transfer_service' THEN '%s' " .
-                "WHEN 'currency' THEN '%s' " .
-                "WHEN 'shop_name' THEN '%s' " .
-                "WHEN 'shop_url' THEN '%s' " .
-                "WHEN 'sender_email' THEN '%s' " .
-                "WHEN 'sender_email_name' THEN '%s' " .
-                "WHEN 'signature' THEN '%s' " .
-                "WHEN 'vat' THEN '%.2f' " .
-                "WHEN 'contact' THEN '%s' " .
-                "WHEN 'row_limit' THEN '%s' " .
-                "WHEN 'cron_each_visit' THEN '%d' " .
-                "WHEN 'user_edit_service' THEN '%d' " .
-                "WHEN 'theme' THEN '%s' " .
-                "WHEN 'language' THEN '%s' " .
-                "WHEN 'date_format' THEN '%s' " .
-                "WHEN 'delete_logs' THEN '%d' " .
-                "WHEN 'google_analytics' THEN '%s' " .
-                "WHEN 'gadugadu' THEN '%s' " .
-                $setLicenseToken .
-                "END " .
-                "WHERE `key` IN ( 'sms_service','transfer_service','currency','shop_name','shop_url','sender_email','sender_email_name','signature','vat'," .
-                "'contact','row_limit','cron_each_visit','user_edit_service','theme','language','date_format','delete_logs'," .
-                "'google_analytics','gadugadu'{$keyLicenseToken} )",
+                    TABLE_PREFIX .
+                    "settings` " .
+                    "SET value = CASE `key` " .
+                    "WHEN 'sms_service' THEN '%s' " .
+                    "WHEN 'transfer_service' THEN '%s' " .
+                    "WHEN 'currency' THEN '%s' " .
+                    "WHEN 'shop_name' THEN '%s' " .
+                    "WHEN 'shop_url' THEN '%s' " .
+                    "WHEN 'sender_email' THEN '%s' " .
+                    "WHEN 'sender_email_name' THEN '%s' " .
+                    "WHEN 'signature' THEN '%s' " .
+                    "WHEN 'vat' THEN '%.2f' " .
+                    "WHEN 'contact' THEN '%s' " .
+                    "WHEN 'row_limit' THEN '%s' " .
+                    "WHEN 'cron_each_visit' THEN '%d' " .
+                    "WHEN 'user_edit_service' THEN '%d' " .
+                    "WHEN 'theme' THEN '%s' " .
+                    "WHEN 'language' THEN '%s' " .
+                    "WHEN 'date_format' THEN '%s' " .
+                    "WHEN 'delete_logs' THEN '%d' " .
+                    "WHEN 'google_analytics' THEN '%s' " .
+                    "WHEN 'gadugadu' THEN '%s' " .
+                    $setLicenseToken .
+                    "END " .
+                    "WHERE `key` IN ( 'sms_service','transfer_service','currency','shop_name','shop_url','sender_email','sender_email_name','signature','vat'," .
+                    "'contact','row_limit','cron_each_visit','user_edit_service','theme','language','date_format','delete_logs'," .
+                    "'google_analytics','gadugadu'{$keyLicenseToken} )",
                 [
                     $smsService,
                     $transferService,

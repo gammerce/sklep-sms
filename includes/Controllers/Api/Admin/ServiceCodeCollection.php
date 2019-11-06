@@ -11,8 +11,14 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ServiceCodeCollection
 {
-    public function post($serviceId, Request $request, Database $db, TranslationManager $translationManager, Heart $heart, Auth $auth)
-    {
+    public function post(
+        $serviceId,
+        Request $request,
+        Database $db,
+        TranslationManager $translationManager,
+        Heart $heart,
+        Auth $auth
+    ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
         $user = $auth->user();
@@ -28,7 +34,7 @@ class ServiceCodeCollection
 
         // Id użytkownika
         if (strlen($uid) && ($warning = check_for_warnings("uid", $uid))) {
-            $warnings['uid'] = array_merge((array)$warnings['uid'], $warning);
+            $warnings['uid'] = array_merge((array) $warnings['uid'], $warning);
         }
 
         // Kod
@@ -42,8 +48,8 @@ class ServiceCodeCollection
 
         // Łączymy zwrócone błędy
         $warnings = array_merge(
-            (array)$warnings,
-            (array)$serviceModule->serviceCodeAdminAddValidate($_POST)
+            (array) $warnings,
+            (array) $serviceModule->serviceCodeAdminAddValidate($_POST)
         );
 
         if ($warnings) {
@@ -56,9 +62,9 @@ class ServiceCodeCollection
         $db->query(
             $db->prepare(
                 "INSERT INTO `" .
-                TABLE_PREFIX .
-                "service_codes` " .
-                "SET `code` = '%s', `service` = '%s', `uid` = '%d', `server` = '%d', `amount` = '%d', `tariff` = '%d', `data` = '%s'",
+                    TABLE_PREFIX .
+                    "service_codes` " .
+                    "SET `code` = '%s', `service` = '%s', `uid` = '%d', `server` = '%d', `amount` = '%d', `tariff` = '%d', `data` = '%s'",
                 [
                     $code,
                     $serviceModule->service['id'],

@@ -113,7 +113,7 @@ window.show_action_box = function(pageId, boxId, data) {
     });
 };
 
-window.clearAndHideActionBox = function () {
+window.clearAndHideActionBox = function() {
     action_box.hide();
     $("#action_box_wraper_td").html("");
 };

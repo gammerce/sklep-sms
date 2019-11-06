@@ -9,8 +9,13 @@ use Symfony\Component\HttpFoundation\Request;
 
 class TransactionServiceResource
 {
-    public function put($transactionServiceId, Request $request, Database $db, TranslationManager $translationManager, Auth $auth)
-    {
+    public function put(
+        $transactionServiceId,
+        Request $request,
+        Database $db,
+        TranslationManager $translationManager,
+        Auth $auth
+    ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
         $user = $auth->user();
@@ -18,10 +23,10 @@ class TransactionServiceResource
         $result = $db->query(
             $db->prepare(
                 "SELECT data " .
-                "FROM `" .
-                TABLE_PREFIX .
-                "transaction_services` " .
-                "WHERE `id` = '%s'",
+                    "FROM `" .
+                    TABLE_PREFIX .
+                    "transaction_services` " .
+                    "WHERE `id` = '%s'",
                 [$transactionServiceId]
             )
         );
@@ -35,10 +40,10 @@ class TransactionServiceResource
         $db->query(
             $db->prepare(
                 "UPDATE `" .
-                TABLE_PREFIX .
-                "transaction_services` " .
-                "SET `data` = '%s' " .
-                "WHERE `id` = '%s'",
+                    TABLE_PREFIX .
+                    "transaction_services` " .
+                    "SET `data` = '%s' " .
+                    "WHERE `id` = '%s'",
                 [json_encode($arr), $transactionServiceId]
             )
         );

@@ -9,18 +9,21 @@ use App\TranslationManager;
 
 class ServerResource
 {
-    public function delete($serverId, Database $db, TranslationManager $translationManager, Auth $auth)
-    {
+    public function delete(
+        $serverId,
+        Database $db,
+        TranslationManager $translationManager,
+        Auth $auth
+    ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
         $user = $auth->user();
 
         try {
             $db->query(
-                $db->prepare(
-                    "DELETE FROM `" . TABLE_PREFIX . "servers` WHERE `id` = '%s'",
-                    [$serverId]
-                )
+                $db->prepare("DELETE FROM `" . TABLE_PREFIX . "servers` WHERE `id` = '%s'", [
+                    $serverId,
+                ])
             );
         } catch (SqlQueryException $e) {
             if ($e->getErrorno() == 1451) {

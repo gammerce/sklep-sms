@@ -46,10 +46,10 @@ class UserResource
 
         $validator = new Validator($request->request->all(), [
             "username" => [$requiredRule, $uniqueUsernameRule->setUserId($editedUser->getUid())],
-            "email"    => [$requiredRule, $uniqueUserEmailRule->setUserId($editedUser->getUid())],
+            "email" => [$requiredRule, $uniqueUserEmailRule->setUserId($editedUser->getUid())],
             "steam_id" => [new SteamIdRule()],
-            "wallet"   => [new NumberRule()],
-            "groups"   => [$userGroupsRule],
+            "wallet" => [new NumberRule()],
+            "groups" => [$userGroupsRule],
         ]);
 
         $validator->validateOrFail();
@@ -76,17 +76,20 @@ class UserResource
         return new ApiResponse('ok', $lang->translate('user_edit'), 1);
     }
 
-    public function delete($userId, Database $db, TranslationManager $translationManager, Auth $auth)
-    {
+    public function delete(
+        $userId,
+        Database $db,
+        TranslationManager $translationManager,
+        Auth $auth
+    ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
         $user = $auth->user();
 
         $db->query(
-            $db->prepare(
-                "DELETE FROM `" . TABLE_PREFIX . "users` " . "WHERE `uid` = '%d'",
-                [$userId]
-            )
+            $db->prepare("DELETE FROM `" . TABLE_PREFIX . "users` " . "WHERE `uid` = '%d'", [
+                $userId,
+            ])
         );
 
         if ($db->affectedRows()) {

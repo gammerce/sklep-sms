@@ -10,8 +10,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 class SmsCodeCollection
 {
-    public function post(Request $request, Database $db, TranslationManager $translationManager, Auth $auth)
-    {
+    public function post(
+        Request $request,
+        Database $db,
+        TranslationManager $translationManager,
+        Auth $auth
+    ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
         $user = $auth->user();
@@ -38,9 +42,9 @@ class SmsCodeCollection
         $db->query(
             $db->prepare(
                 "INSERT INTO `" .
-                TABLE_PREFIX .
-                "sms_codes` (`code`, `tariff`) " .
-                "VALUES( '%s', '%d' )",
+                    TABLE_PREFIX .
+                    "sms_codes` (`code`, `tariff`) " .
+                    "VALUES( '%s', '%d' )",
                 [$lang->strtoupper($code), $tariff]
             )
         );

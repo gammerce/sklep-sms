@@ -8,14 +8,20 @@ use App\TranslationManager;
 
 class SmsCodeResource
 {
-    public function delete($smsCodeId, Database $db, TranslationManager $translationManager, Auth $auth)
-    {
+    public function delete(
+        $smsCodeId,
+        Database $db,
+        TranslationManager $translationManager,
+        Auth $auth
+    ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
         $user = $auth->user();
 
         $db->query(
-            $db->prepare("DELETE FROM `" . TABLE_PREFIX . "sms_codes` WHERE `id` = '%d'", [$smsCodeId])
+            $db->prepare("DELETE FROM `" . TABLE_PREFIX . "sms_codes` WHERE `id` = '%d'", [
+                $smsCodeId,
+            ])
         );
 
         if ($db->affectedRows()) {

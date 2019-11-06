@@ -10,8 +10,13 @@ use App\TranslationManager;
 
 class ServiceResource
 {
-    public function delete($serviceId, Database $db, TranslationManager $translationManager, Auth $auth, Heart $heart)
-    {
+    public function delete(
+        $serviceId,
+        Database $db,
+        TranslationManager $translationManager,
+        Auth $auth,
+        Heart $heart
+    ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
         $user = $auth->user();
@@ -23,10 +28,9 @@ class ServiceResource
 
         try {
             $db->query(
-                $db->prepare(
-                    "DELETE FROM `" . TABLE_PREFIX . "services` WHERE `id` = '%s'",
-                    [$serviceId]
-                )
+                $db->prepare("DELETE FROM `" . TABLE_PREFIX . "services` WHERE `id` = '%s'", [
+                    $serviceId,
+                ])
             );
         } catch (SqlQueryException $e) {
             // It is affiliated with something
