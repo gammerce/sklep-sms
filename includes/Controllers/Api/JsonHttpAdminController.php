@@ -29,7 +29,6 @@ class JsonHttpAdminController
         $lang = $translationManager->user();
         $user = $auth->user();
 
-        // Pobranie akcji
         $action = $request->request->get("action");
 
         $warnings = [];

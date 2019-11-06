@@ -5,7 +5,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     loader.show();
 
     $.ajax({
-        type: "POST",
+        type: "DELETE",
         url: buildUrl("/api/admin/logs/" + logId),
         complete: function() {
             loader.hide();

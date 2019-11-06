@@ -1,9 +1,7 @@
-// Kliknięcie dodania pytania antyspamowego
 $(document).delegate("#antispam_question_button_add", "click", function() {
     show_action_box(currentPage, "antispam_question_add");
 });
 
-// Kliknięcie edycji pytania antyspamowego
 $(document).delegate(".table-structure .edit_row", "click", function() {
     show_action_box(currentPage, "antispam_question_edit", {
         id: $(this)
@@ -49,7 +47,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     });
 });
 
-// Dodanie pytania antyspamowego
+// Add antispam question
 $(document).delegate("#form_antispam_question_add", "submit", function(e) {
     e.preventDefault();
 
@@ -76,10 +74,7 @@ $(document).delegate("#form_antispam_question_add", "submit", function(e) {
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_antispam_question_add"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
-                // Ukryj i wyczyść action box
-                action_box.hide();
-                $("#action_box_wraper_td").html("");
-
+                clearAndHideActionBox();
                 refresh_blocks("admincontent");
             }
 
@@ -89,7 +84,7 @@ $(document).delegate("#form_antispam_question_add", "submit", function(e) {
     });
 });
 
-// Edycja pytania antyspamowego
+// Edit antispam question
 $(document).delegate("#form_antispam_question_edit", "submit", function(e) {
     e.preventDefault();
 
@@ -116,10 +111,7 @@ $(document).delegate("#form_antispam_question_edit", "submit", function(e) {
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_antispam_question_edit"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
-                // Ukryj i wyczyść action box
-                action_box.hide();
-                $("#action_box_wraper_td").html("");
-
+                clearAndHideActionBox();
                 refresh_blocks("admincontent");
             }
 

@@ -1,9 +1,4 @@
 (function() {
-    function clearAndHideActionBox() {
-        action_box.hide();
-        $("#action_box_wraper_td").html("");
-    }
-
     // This is used later when action is done
     var rowId = 0;
     $(document).delegate(".table-structure .charge_wallet", "click", function() {

@@ -32,9 +32,7 @@ $(document).delegate("#form_transaction_service_edit", "submit", function(e) {
             }
 
             if (jsonObj.return_id === "ok") {
-                // Ukryj i wyczyść action box
-                action_box.hide();
-                $("#action_box_wraper_td").html("");
+                clearAndHideActionBox();
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);

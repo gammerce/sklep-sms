@@ -1,9 +1,7 @@
-// Kliknięcie dodania serwera
 $(document).delegate("#server_button_add", "click", function() {
     show_action_box(currentPage, "server_add");
 });
 
-// Kliknięcie edycji serwera
 $(document).delegate(".table-structure .edit_row", "click", function() {
     show_action_box(currentPage, "server_edit", {
         id: $(this)
@@ -82,10 +80,7 @@ $(document).delegate("#form_server_add", "submit", function(e) {
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_server_add"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
-                // Ukryj i wyczyść action box
-                action_box.hide();
-                $("#action_box_wraper_td").html("");
-
+                clearAndHideActionBox();
                 refresh_blocks("admincontent");
             }
 
@@ -122,10 +117,7 @@ $(document).delegate("#form_server_edit", "submit", function(e) {
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_server_edit"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
-                // Ukryj i wyczyść action box
-                action_box.hide();
-                $("#action_box_wraper_td").html("");
-
+                clearAndHideActionBox();
                 refresh_blocks("admincontent");
             }
 

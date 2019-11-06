@@ -1,9 +1,7 @@
-// Kliknięcie dodania ceny
 $(document).delegate("#price_button_add", "click", function() {
     show_action_box(currentPage, "price_add");
 });
 
-// Kliknięcie edycji ceny
 $(document).delegate(".table-structure .edit_row", "click", function() {
     show_action_box(currentPage, "price_edit", {
         id: $(this)
@@ -13,7 +11,7 @@ $(document).delegate(".table-structure .edit_row", "click", function() {
     });
 });
 
-// Usuwanie taryfy
+// Delete price
 $(document).delegate(".table-structure .delete_row", "click", function() {
     var rowId = $(this).closest("tr");
     var priceId = rowId.children("td[headers=id]").text();
@@ -49,7 +47,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     });
 });
 
-// Dodanie ceny
+// Add price
 $(document).delegate("#form_price_add", "submit", function(e) {
     e.preventDefault();
 
@@ -76,10 +74,7 @@ $(document).delegate("#form_price_add", "submit", function(e) {
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_price_add"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
-                // Ukryj i wyczyść action box
-                action_box.hide();
-                $("#action_box_wraper_td").html("");
-
+                clearAndHideActionBox();
                 refresh_blocks("admincontent");
             }
 
@@ -89,7 +84,7 @@ $(document).delegate("#form_price_add", "submit", function(e) {
     });
 });
 
-// Edycja taryfy
+// Edit price
 $(document).delegate("#form_price_edit", "submit", function(e) {
     e.preventDefault();
 
@@ -116,10 +111,7 @@ $(document).delegate("#form_price_edit", "submit", function(e) {
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_price_edit"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
-                // Ukryj i wyczyść action box
-                action_box.hide();
-                $("#action_box_wraper_td").html("");
-
+                clearAndHideActionBox();
                 refresh_blocks("admincontent");
             }
 

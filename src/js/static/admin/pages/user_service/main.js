@@ -62,6 +62,8 @@ $(document).delegate("#form_user_service_add [name=service]", "change", function
     });
 });
 
+// TODO Remove duplication
+
 // Usuwanie usługi użytkownika
 $(document).delegate("[id^=delete_row_]", "click", function() {
     var rowId = $(
@@ -108,6 +110,7 @@ $(document).delegate("[id^=delete_row_]", "click", function() {
     });
 });
 
+// Delete user service
 $(document).delegate(".table-structure .delete_row", "click", function() {
     var rowId = $(this).closest("tr");
     var userServiceId = rowId.children("td[headers=id]").text();
@@ -149,7 +152,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     });
 });
 
-// Dodanie usługi użytkownikowi
+// Add user service
 $(document).delegate("#form_user_service_add", "submit", function(e) {
     e.preventDefault();
     loader.show();
@@ -178,10 +181,7 @@ $(document).delegate("#form_user_service_add", "submit", function(e) {
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_user_service_add"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
-                // Ukryj i wyczyść action box
-                action_box.hide();
-                $("#action_box_wraper_td").html("");
-
+                clearAndHideActionBox();
                 refresh_blocks("admincontent");
             }
 
@@ -191,7 +191,7 @@ $(document).delegate("#form_user_service_add", "submit", function(e) {
     });
 });
 
-// Edycja usługi użytkownika
+// Edit user service
 $(document).delegate("#form_user_service_edit", "submit", function(e) {
     e.preventDefault();
     loader.show();
@@ -220,10 +220,7 @@ $(document).delegate("#form_user_service_edit", "submit", function(e) {
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_user_service_edit"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
-                // Ukryj i wyczyść action box
-                action_box.hide();
-                $("#action_box_wraper_td").html("");
-
+                clearAndHideActionBox();
                 refresh_blocks("admincontent");
             }
 
