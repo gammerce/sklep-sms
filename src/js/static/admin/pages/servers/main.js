@@ -60,8 +60,8 @@ $(document).delegate("#form_server_add", "submit", function(e) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=server_add",
+        url: buildUrl("/api/admin/servers"),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },
@@ -94,11 +94,13 @@ $(document).delegate("#form_server_add", "submit", function(e) {
 $(document).delegate("#form_server_edit", "submit", function(e) {
     e.preventDefault();
 
+    var serverId = $(this).find("[name=id]");
+
     loader.show();
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=server_edit",
+        type: "PUT",
+        url: buildUrl("/api/admin/servers/" + serverId),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },

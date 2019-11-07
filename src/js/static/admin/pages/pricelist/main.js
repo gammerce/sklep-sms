@@ -54,8 +54,8 @@ $(document).delegate("#form_price_add", "submit", function(e) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=price_add",
+        url: buildUrl("/api/admin/prices"),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },
@@ -88,11 +88,13 @@ $(document).delegate("#form_price_add", "submit", function(e) {
 $(document).delegate("#form_price_edit", "submit", function(e) {
     e.preventDefault();
 
+    var priceId = $(this).find("[name=id]");
+
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=price_edit",
+        url: buildUrl("/api/admin/prices/" + priceId),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },

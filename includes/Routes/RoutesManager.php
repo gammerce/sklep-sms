@@ -416,10 +416,6 @@ class RoutesManager
                     'middlewares' => [RunCron::class],
                     'uses' => AdminController::class . '@oldAction',
                 ]);
-
-                $r->addRoute(['GET', 'POST'], '/jsonhttp_admin.php', [
-                    'uses' => JsonHttpAdminController::class . '@action',
-                ]);
             }
         );
 

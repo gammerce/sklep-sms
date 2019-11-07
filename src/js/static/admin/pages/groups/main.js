@@ -54,8 +54,8 @@ $(document).delegate("#form_group_add", "submit", function(e) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=group_add",
+        url: buildUrl("/api/admin/groups"),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },
@@ -84,11 +84,13 @@ $(document).delegate("#form_group_add", "submit", function(e) {
 $(document).delegate("#form_group_edit", "submit", function(e) {
     e.preventDefault();
 
+    var groupId = $(this).find("[name=id]");
+
     loader.show();
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=group_edit",
+        type: "PUT",
+        url: buildUrl("/api/admin/groups/" + groupId),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },
