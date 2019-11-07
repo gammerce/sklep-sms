@@ -5,7 +5,7 @@ use App\Application;
 use App\ExceptionHandlerContract;
 use App\Exceptions\SqlQueryException;
 use App\Path;
-use App\Responses\ApiResponse;
+use App\Http\Responses\ApiResponse;
 use App\TranslationManager;
 use App\Translator;
 use Exception;

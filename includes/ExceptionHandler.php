@@ -7,7 +7,7 @@ use App\Exceptions\LicenseRequestException;
 use App\Exceptions\RequireInstallationException;
 use App\Exceptions\SqlQueryException;
 use App\Exceptions\ValidationException;
-use App\Responses\ApiResponse;
+use App\Http\Responses\ApiResponse;
 use Exception;
 use Raven_Client;
 use Symfony\Component\HttpFoundation\JsonResponse;

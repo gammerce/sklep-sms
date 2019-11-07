@@ -2,11 +2,11 @@
 namespace App\Kernels;
 
 use App\CronExecutor;
-use App\Middlewares\IsUpToDate;
-use App\Middlewares\LoadSettings;
-use App\Middlewares\SetLanguage;
-use App\Middlewares\SetUserSession;
-use App\Middlewares\ValidateLicense;
+use App\Http\Middlewares\IsUpToDate;
+use App\Http\Middlewares\LoadSettings;
+use App\Http\Middlewares\SetLanguage;
+use App\Http\Middlewares\SetUserSession;
+use App\Http\Middlewares\ValidateLicense;
 use App\Settings;
 use App\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
