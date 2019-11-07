@@ -54,8 +54,8 @@ $(document).delegate("#form_antispam_question_add", "submit", function(e) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=antispam_question_add",
+        url: buildUrl("/api/admin/antispam_questions"),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },
@@ -88,11 +88,13 @@ $(document).delegate("#form_antispam_question_add", "submit", function(e) {
 $(document).delegate("#form_antispam_question_edit", "submit", function(e) {
     e.preventDefault();
 
+    var antispamQuestionId = $(this).find("[name=id]");
+
     loader.show();
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=antispam_question_edit",
+        type: "PUT",
+        url: buildUrl("/api/admin/antispam_questions/" + antispamQuestionId),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },

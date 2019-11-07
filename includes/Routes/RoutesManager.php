@@ -2,6 +2,7 @@
 namespace App\Routes;
 
 use App\Application;
+use App\Controllers\Api\Admin\AntispamQuestionCollection;
 use App\Controllers\Api\Admin\AntispamQuestionResource;
 use App\Controllers\Api\Admin\GroupResource;
 use App\Controllers\Api\Admin\LogResource;
@@ -345,6 +346,16 @@ class RoutesManager
                 $r->delete('/api/admin/groups/{groupId}', [
                     'middlewares' => [[RequireAuthorization::class, "manage_groups"]],
                     'uses' => GroupResource::class . '@delete',
+                ]);
+
+                $r->post('/api/admin/antispam_questions', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_antispam_questions"]],
+                    'uses' => AntispamQuestionCollection::class . '@post',
+                ]);
+
+                $r->put('/api/admin/antispam_questions/{antispamQuestionId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_antispam_questions"]],
+                    'uses' => AntispamQuestionResource::class . '@put',
                 ]);
 
                 $r->delete('/api/admin/antispam_questions/{antispamQuestionId}', [
