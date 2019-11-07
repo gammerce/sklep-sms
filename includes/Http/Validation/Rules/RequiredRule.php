@@ -1,8 +1,8 @@
 <?php
 namespace App\Http\Validation\Rules;
 
-use App\TranslationManager;
-use App\Translator;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 use App\Http\Validation\Rule;
 
 class RequiredRule implements Rule

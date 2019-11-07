@@ -2,8 +2,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Payment;
-use App\TranslationManager;
-use App\Translator;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

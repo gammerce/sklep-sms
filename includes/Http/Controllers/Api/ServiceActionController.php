@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\Heart;
+use App\System\Heart;
 use App\Http\Responses\PlainResponse;
 use App\Services\Interfaces\IServiceActionExecute;
-use App\TranslationManager;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class ServiceActionController

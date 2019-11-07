@@ -1,16 +1,16 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\Auth;
-use App\Database;
+use App\System\Auth;
+use App\System\Database;
 use App\Exceptions\ValidationException;
-use App\Heart;
+use App\System\Heart;
 use App\Repositories\PriceListRepository;
 use App\Repositories\ServerRepository;
 use App\Http\Responses\ApiResponse;
 use App\Services\Interfaces\IServiceAdminManage;
 use App\Services\Interfaces\IServiceAvailableOnServers;
-use App\TranslationManager;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 
@@ -32,7 +32,6 @@ class JsonHttpAdminController
         $action = $request->request->get("action");
 
         $warnings = [];
-
 
         if ($action == "server_add" || $action == "server_edit") {
             if (!get_privileges("manage_servers")) {

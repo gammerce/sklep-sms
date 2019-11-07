@@ -1,9 +1,9 @@
 <?php
 namespace App\Http\Middlewares;
 
-use App\Application;
-use App\Auth;
-use App\CurrentPage;
+use App\System\Application;
+use App\System\Auth;
+use App\System\CurrentPage;
 use Symfony\Component\HttpFoundation\Request;
 
 class ManageAdminAuthentication implements MiddlewareContract

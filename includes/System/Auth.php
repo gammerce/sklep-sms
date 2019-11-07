@@ -1,5 +1,5 @@
 <?php
-namespace App;
+namespace App\System;
 
 use App\Models\User;
 use Symfony\Component\HttpFoundation\Request;

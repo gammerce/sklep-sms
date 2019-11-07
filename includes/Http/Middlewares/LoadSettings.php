@@ -1,8 +1,8 @@
 <?php
 namespace App\Http\Middlewares;
 
-use App\Application;
-use App\Settings;
+use App\System\Application;
+use App\System\Settings;
 use Symfony\Component\HttpFoundation\Request;
 
 class LoadSettings implements MiddlewareContract

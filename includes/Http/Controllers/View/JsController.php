@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers\View;
 
-use App\Template;
+use App\System\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

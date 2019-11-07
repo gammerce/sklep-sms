@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Heart;
+use App\System\Heart;
 use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Http\Responses\ApiResponse;
-use App\TranslationManager;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageActionBoxResource

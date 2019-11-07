@@ -1,13 +1,13 @@
 <?php
 namespace App\Http\Middlewares;
 
-use App\Application;
-use App\License;
+use App\System\Application;
+use App\System\License;
 use App\Requesting\Response as CustomResponse;
 use App\Routes\UrlGenerator;
-use App\Template;
-use App\TranslationManager;
-use App\Translator;
+use App\System\Template;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

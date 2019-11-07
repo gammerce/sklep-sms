@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Psr4\TestCases;
 
-use App\Auth;
+use App\System\Auth;
 use App\Kernels\IndexKernel;
 use App\Kernels\KernelContract;
 use App\Models\User;

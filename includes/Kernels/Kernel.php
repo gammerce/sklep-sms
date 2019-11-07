@@ -1,8 +1,8 @@
 <?php
 namespace App\Kernels;
 
-use App\Application;
-use App\ExceptionHandlerContract;
+use App\System\Application;
+use App\System\ExceptionHandlerContract;
 use App\Http\Middlewares\MiddlewareContract;
 use Exception;
 use Symfony\Component\Debug\Exception\FatalThrowableError;

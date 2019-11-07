@@ -1,12 +1,12 @@
 <?php
 namespace App\Services\Other;
 
-use App\Heart;
+use App\System\Heart;
 use App\Models\Purchase;
 use App\Services\Interfaces\IServicePurchase;
 use App\Services\Interfaces\IServicePurchaseOutside;
-use App\TranslationManager;
-use App\Translator;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 
 class ServiceOther extends ServiceOtherSimple implements IServicePurchase, IServicePurchaseOutside
 {

@@ -1,17 +1,22 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Auth;
-use App\Database;
+use App\System\Auth;
+use App\System\Database;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
-use App\TranslationManager;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class TariffResource
 {
-    public function put($tariffId, Request $request, Database $db, TranslationManager $translationManager, Auth $auth)
-    {
+    public function put(
+        $tariffId,
+        Request $request,
+        Database $db,
+        TranslationManager $translationManager,
+        Auth $auth
+    ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
         $user = $auth->user();
@@ -32,10 +37,10 @@ class TariffResource
         $db->query(
             $db->prepare(
                 "UPDATE `" .
-                TABLE_PREFIX .
-                "tariffs` " .
-                "SET `provision` = '%d' " .
-                "WHERE `id` = '%d'",
+                    TABLE_PREFIX .
+                    "tariffs` " .
+                    "SET `provision` = '%d' " .
+                    "WHERE `id` = '%d'",
                 [$provision * 100, $tariffId]
             )
         );

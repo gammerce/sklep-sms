@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\Auth;
+use App\System\Auth;
 use App\Repositories\UserRepository;
 use App\Http\Responses\ApiResponse;
-use App\TranslationManager;
+use App\Translation\TranslationManager;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\SteamIdRule;
 use App\Http\Validation\Rules\UniqueUsernameRule;

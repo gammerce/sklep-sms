@@ -1,18 +1,18 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\Application;
-use App\Database;
+use App\System\Application;
+use App\System\Database;
 use App\Exceptions\SqlQueryException;
 use App\Exceptions\ValidationException;
 use App\Install\DatabaseMigration;
 use App\Install\EnvCreator;
 use App\Install\RequirementsStore;
 use App\Install\SetupManager;
-use App\Path;
+use App\System\Path;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\HtmlResponse;
-use App\TranslationManager;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Response;
 
 class InstallController

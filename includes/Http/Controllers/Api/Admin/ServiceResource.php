@@ -1,18 +1,17 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Auth;
-use App\Database;
+use App\System\Auth;
+use App\System\Database;
 use App\Exceptions\SqlQueryException;
-use App\Heart;
+use App\System\Heart;
 use App\Http\Responses\ApiResponse;
-use App\TranslationManager;
+use App\Translation\TranslationManager;
 
 class ServiceResource
 {
     public function put($serviceId)
     {
-
     }
 
     public function delete(

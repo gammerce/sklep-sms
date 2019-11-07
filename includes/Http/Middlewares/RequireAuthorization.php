@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Middlewares;
 
-use App\Application;
-use App\Auth;
+use App\System\Application;
+use App\System\Auth;
 use App\Http\Responses\ApiResponse;
-use App\TranslationManager;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class RequireAuthorization implements MiddlewareContract

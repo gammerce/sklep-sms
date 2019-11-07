@@ -1,11 +1,11 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\Heart;
+use App\System\Heart;
 use App\Models\Purchase;
 use App\Http\Responses\ApiResponse;
-use App\Settings;
-use App\TranslationManager;
+use App\System\Settings;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PaymentResource

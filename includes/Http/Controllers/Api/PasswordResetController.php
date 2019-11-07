@@ -3,8 +3,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
-use App\Settings;
-use App\TranslationManager;
+use App\System\Settings;
+use App\Translation\TranslationManager;
 use App\UserPasswordService;
 use Symfony\Component\HttpFoundation\Request;
 

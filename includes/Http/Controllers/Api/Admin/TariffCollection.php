@@ -1,18 +1,23 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Auth;
-use App\Database;
+use App\System\Auth;
+use App\System\Database;
 use App\Exceptions\ValidationException;
-use App\Heart;
+use App\System\Heart;
 use App\Http\Responses\ApiResponse;
-use App\TranslationManager;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class TariffCollection
 {
-    public function post(Request $request, Database $db, TranslationManager $translationManager, Auth $auth, Heart $heart)
-    {
+    public function post(
+        Request $request,
+        Database $db,
+        TranslationManager $translationManager,
+        Auth $auth,
+        Heart $heart
+    ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
         $user = $auth->user();
@@ -24,7 +29,7 @@ class TariffCollection
 
         // Taryfa
         if ($warning = check_for_warnings("number", $id)) {
-            $warnings['id'] = array_merge((array)$warnings['id'], $warning);
+            $warnings['id'] = array_merge((array) $warnings['id'], $warning);
         }
         if ($heart->getTariff($id) !== null) {
             $warnings['id'][] = $lang->translate('tariff_exist');
@@ -32,7 +37,7 @@ class TariffCollection
 
         // Prowizja
         if ($warning = check_for_warnings("number", $provision)) {
-            $warnings['provision'] = array_merge((array)$warnings['provision'], $warning);
+            $warnings['provision'] = array_merge((array) $warnings['provision'], $warning);
         }
 
         if ($warnings) {
@@ -42,9 +47,9 @@ class TariffCollection
         $db->query(
             $db->prepare(
                 "INSERT INTO `" .
-                TABLE_PREFIX .
-                "tariffs` " .
-                "SET `id` = '%d', `provision` = '%d'",
+                    TABLE_PREFIX .
+                    "tariffs` " .
+                    "SET `id` = '%d', `provision` = '%d'",
                 [$id, $provision * 100]
             )
         );

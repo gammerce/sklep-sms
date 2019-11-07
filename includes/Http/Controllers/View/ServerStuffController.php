@@ -1,11 +1,11 @@
 <?php
 namespace App\Http\Controllers\View;
 
-use App\Heart;
+use App\System\Heart;
 use App\Models\Purchase;
 use App\Payment;
-use App\Settings;
-use App\TranslationManager;
+use App\System\Settings;
+use App\Translation\TranslationManager;
 use App\Services\Interfaces\IServicePurchaseOutside;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

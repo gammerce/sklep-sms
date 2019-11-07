@@ -1,12 +1,12 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\Auth;
-use App\Database;
+use App\System\Auth;
+use App\System\Database;
 use App\Exceptions\ValidationException;
 use App\Repositories\UserRepository;
 use App\Http\Responses\ApiResponse;
-use App\TranslationManager;
+use App\Translation\TranslationManager;
 use App\Http\Validation\Rules\AntispamQuestionRule;
 use App\Http\Validation\Rules\ConfirmedRule;
 use App\Http\Validation\Rules\EmailRule;

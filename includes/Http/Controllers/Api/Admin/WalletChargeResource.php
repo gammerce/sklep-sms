@@ -1,14 +1,14 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Auth;
+use App\System\Auth;
 use App\Exceptions\ValidationException;
-use App\Heart;
+use App\System\Heart;
 use App\Models\Purchase;
 use App\Http\Responses\ApiResponse;
 use App\Services\ChargeWallet\ServiceChargeWalletSimple;
-use App\Settings;
-use App\TranslationManager;
+use App\System\Settings;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class WalletChargeResource

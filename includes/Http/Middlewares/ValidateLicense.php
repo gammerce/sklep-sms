@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Middlewares;
 
-use App\Application;
-use App\Auth;
+use App\System\Application;
+use App\System\Auth;
 use App\Exceptions\LicenseException;
-use App\License;
+use App\System\License;
 use Raven_Client;
 use Symfony\Component\HttpFoundation\Request;
 

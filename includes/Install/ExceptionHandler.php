@@ -1,13 +1,13 @@
 <?php
 namespace App\Install;
 
-use App\Application;
-use App\ExceptionHandlerContract;
+use App\System\Application;
+use App\System\ExceptionHandlerContract;
 use App\Exceptions\SqlQueryException;
-use App\Path;
+use App\System\Path;
 use App\Http\Responses\ApiResponse;
-use App\TranslationManager;
-use App\Translator;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
 

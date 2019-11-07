@@ -6,9 +6,9 @@ use App\Install\RequirementsStore;
 use App\Install\SetupManager;
 use App\Install\ShopState;
 use App\Install\UpdateInfo;
-use App\Path;
+use App\System\Path;
 use App\Http\Responses\HtmlResponse;
-use App\Template;
+use App\System\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

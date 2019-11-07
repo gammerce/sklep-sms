@@ -1,7 +1,7 @@
 <?php
 namespace App\Routes;
 
-use App\Application;
+use App\System\Application;
 use App\Http\Controllers\Api\Admin\AntispamQuestionCollection;
 use App\Http\Controllers\Api\Admin\AntispamQuestionResource;
 use App\Http\Controllers\Api\Admin\GroupResource;

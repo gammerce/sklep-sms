@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Heart;
+use App\System\Heart;
 use App\Http\Responses\PlainResponse;
 use App\Services\Interfaces\IServiceAdminManage;
 

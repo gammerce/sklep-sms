@@ -1,9 +1,9 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Database;
+use App\System\Database;
 use App\Http\Responses\ApiResponse;
-use App\TranslationManager;
+use App\Translation\TranslationManager;
 
 class LogResource
 {

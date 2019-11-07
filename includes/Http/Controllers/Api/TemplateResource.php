@@ -1,11 +1,11 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\Heart;
+use App\System\Heart;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\PlainResponse;
-use App\Template;
-use App\TranslationManager;
+use App\System\Template;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class TemplateResource

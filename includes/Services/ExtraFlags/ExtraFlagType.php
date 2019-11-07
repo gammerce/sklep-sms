@@ -1,7 +1,7 @@
 <?php
 namespace App\Services\ExtraFlags;
 
-use App\TranslationManager;
+use App\Translation\TranslationManager;
 
 class ExtraFlagType
 {

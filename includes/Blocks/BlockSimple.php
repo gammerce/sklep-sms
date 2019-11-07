@@ -1,8 +1,8 @@
 <?php
 namespace App\Blocks;
 
-use App\Auth;
-use App\Template;
+use App\System\Auth;
+use App\System\Template;
 use Exception;
 
 abstract class BlockSimple extends Block

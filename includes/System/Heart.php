@@ -1,5 +1,5 @@
 <?php
-namespace App;
+namespace App\System;
 
 use App\Blocks\Block;
 use App\Blocks\BlockSimple;

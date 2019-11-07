@@ -1,5 +1,5 @@
 <?php
-namespace App;
+namespace App\System;
 
 use Exception;
 use Symfony\Component\HttpFoundation\Request;

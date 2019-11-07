@@ -1,5 +1,5 @@
 <?php
-namespace App;
+namespace App\System;
 
 use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\LicenseException;

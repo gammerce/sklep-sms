@@ -1,14 +1,14 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\Auth;
-use App\Heart;
+use App\System\Auth;
+use App\System\Heart;
 use App\Models\Purchase;
 use App\Payment;
 use App\Http\Responses\ApiResponse;
 use App\Services\Interfaces\IServicePurchaseWeb;
-use App\Settings;
-use App\TranslationManager;
+use App\System\Settings;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PurchaseValidationResource

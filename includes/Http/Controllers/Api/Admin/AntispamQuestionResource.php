@@ -1,11 +1,11 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Auth;
-use App\Database;
+use App\System\Auth;
+use App\System\Database;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
-use App\TranslationManager;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class AntispamQuestionResource
@@ -41,8 +41,13 @@ class AntispamQuestionResource
         return new ApiResponse("not_deleted", $lang->translate('no_delete_antispamq'), 0);
     }
 
-    public function put($antispamQuestionId, Request $request, Database $db, TranslationManager $translationManager, Auth $auth)
-    {
+    public function put(
+        $antispamQuestionId,
+        Request $request,
+        Database $db,
+        TranslationManager $translationManager,
+        Auth $auth
+    ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
         $user = $auth->user();
@@ -69,10 +74,10 @@ class AntispamQuestionResource
         $db->query(
             $db->prepare(
                 "UPDATE `" .
-                TABLE_PREFIX .
-                "antispam_questions` " .
-                "SET `question` = '%s', `answers` = '%s' " .
-                "WHERE `id` = '%d'",
+                    TABLE_PREFIX .
+                    "antispam_questions` " .
+                    "SET `question` = '%s', `answers` = '%s' " .
+                    "WHERE `id` = '%d'",
                 [$question, $answers, $antispamQuestionId]
             )
         );

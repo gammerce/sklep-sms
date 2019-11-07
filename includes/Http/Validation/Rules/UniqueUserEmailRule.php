@@ -1,9 +1,9 @@
 <?php
 namespace App\Http\Validation\Rules;
 
-use App\Database;
-use App\TranslationManager;
-use App\Translator;
+use App\System\Database;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 use App\Http\Validation\Rule;
 
 class UniqueUserEmailRule implements Rule

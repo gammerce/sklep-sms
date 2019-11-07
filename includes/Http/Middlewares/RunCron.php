@@ -1,9 +1,9 @@
 <?php
 namespace App\Http\Middlewares;
 
-use App\Application;
-use App\CronExecutor;
-use App\Settings;
+use App\System\Application;
+use App\System\CronExecutor;
+use App\System\Settings;
 use Symfony\Component\HttpFoundation\Request;
 
 class RunCron implements MiddlewareContract

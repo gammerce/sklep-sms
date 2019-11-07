@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Middlewares;
 
-use App\Application;
+use App\System\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

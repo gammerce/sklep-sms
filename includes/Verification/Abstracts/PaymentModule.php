@@ -1,11 +1,11 @@
 <?php
 namespace App\Verification\Abstracts;
 
-use App\Database;
+use App\System\Database;
 use App\Models\Tariff;
 use App\Requesting\Requester;
-use App\TranslationManager;
-use App\Translator;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 
 abstract class PaymentModule
 {

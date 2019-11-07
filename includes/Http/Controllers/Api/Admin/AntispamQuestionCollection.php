@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Database;
+use App\System\Database;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
-use App\TranslationManager;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class AntispamQuestionCollection
@@ -35,9 +35,9 @@ class AntispamQuestionCollection
         $db->query(
             $db->prepare(
                 "INSERT INTO `" .
-                TABLE_PREFIX .
-                "antispam_questions` ( question, answers ) " .
-                "VALUES ('%s','%s')",
+                    TABLE_PREFIX .
+                    "antispam_questions` ( question, answers ) " .
+                    "VALUES ('%s','%s')",
                 [$question, $answers]
             )
         );

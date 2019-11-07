@@ -1,14 +1,14 @@
 <?php
 namespace App\Kernels;
 
-use App\CronExecutor;
+use App\System\CronExecutor;
 use App\Http\Middlewares\IsUpToDate;
 use App\Http\Middlewares\LoadSettings;
 use App\Http\Middlewares\SetLanguage;
 use App\Http\Middlewares\SetUserSession;
 use App\Http\Middlewares\ValidateLicense;
-use App\Settings;
-use App\TranslationManager;
+use App\System\Settings;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

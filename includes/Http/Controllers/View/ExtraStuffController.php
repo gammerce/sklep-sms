@@ -1,12 +1,12 @@
 <?php
 namespace App\Http\Controllers\View;
 
-use App\CurrentPage;
-use App\Heart;
-use App\License;
+use App\System\CurrentPage;
+use App\System\Heart;
+use App\System\License;
 use App\Routes\UrlGenerator;
-use App\Template;
-use App\TranslationManager;
+use App\System\Template;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

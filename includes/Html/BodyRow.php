@@ -1,8 +1,8 @@
 <?php
 namespace App\Html;
 
-use App\Template;
-use App\TranslationManager;
+use App\System\Template;
+use App\Translation\TranslationManager;
 
 class BodyRow extends Row
 {

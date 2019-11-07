@@ -1,5 +1,5 @@
 <?php
-namespace App;
+namespace App\System;
 
 use App\Cache\CacheEnum;
 use App\Cache\CachingRequester;

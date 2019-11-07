@@ -1,19 +1,24 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Auth;
-use App\Database;
+use App\System\Auth;
+use App\System\Database;
 use App\Exceptions\ValidationException;
-use App\Heart;
+use App\System\Heart;
 use App\Http\Responses\ApiResponse;
 use App\Services\Interfaces\IServiceAdminManage;
-use App\TranslationManager;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class ServiceCollection
 {
-    public function post(Request $request, TranslationManager $translationManager, Auth $auth, Database $db, Heart $heart)
-    {
+    public function post(
+        Request $request,
+        TranslationManager $translationManager,
+        Auth $auth,
+        Database $db,
+        Heart $heart
+    ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
         $user = $auth->user();
@@ -60,7 +65,7 @@ class ServiceCollection
         // Opis
         if ($warning = check_for_warnings("service_description", $shortDescription)) {
             $warnings['short_description'] = array_merge(
-                (array)$warnings['short_description'],
+                (array) $warnings['short_description'],
                 $warning
             );
         }
@@ -90,7 +95,7 @@ class ServiceCollection
         // Przed błędami
         if ($serviceModule !== null && $serviceModule instanceof IServiceAdminManage) {
             $additionalWarnings = $serviceModule->serviceAdminManagePre($_POST);
-            $warnings = array_merge((array)$warnings, (array)$additionalWarnings);
+            $warnings = array_merge((array) $warnings, (array) $additionalWarnings);
         }
 
         if ($warnings) {
@@ -125,11 +130,11 @@ class ServiceCollection
             $db->query(
                 $db->prepare(
                     "INSERT INTO `" .
-                    TABLE_PREFIX .
-                    "services` " .
-                    "SET `id`='%s', `name`='%s', `short_description`='%s', `description`='%s', `tag`='%s', " .
-                    "`module`='%s', `groups`='%s', `order` = '%d' " .
-                    "{$set}",
+                        TABLE_PREFIX .
+                        "services` " .
+                        "SET `id`='%s', `name`='%s', `short_description`='%s', `description`='%s', `tag`='%s', " .
+                        "`module`='%s', `groups`='%s', `order` = '%d' " .
+                        "{$set}",
                     [
                         $id,
                         $name,
@@ -160,12 +165,12 @@ class ServiceCollection
             $db->query(
                 $db->prepare(
                     "UPDATE `" .
-                    TABLE_PREFIX .
-                    "services` " .
-                    "SET `id` = '%s', `name` = '%s', `short_description` = '%s', `description` = '%s', " .
-                    "`tag` = '%s', `groups` = '%s', `order` = '%d' " .
-                    $set .
-                    "WHERE `id` = '%s'",
+                        TABLE_PREFIX .
+                        "services` " .
+                        "SET `id` = '%s', `name` = '%s', `short_description` = '%s', `description` = '%s', " .
+                        "`tag` = '%s', `groups` = '%s', `order` = '%d' " .
+                        $set .
+                        "WHERE `id` = '%s'",
                     [
                         $id,
                         $name,

@@ -1,14 +1,14 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\Database;
+use App\System\Database;
 use App\Exceptions\ValidationException;
-use App\Heart;
-use App\Mailer;
+use App\System\Heart;
+use App\System\Mailer;
 use App\Http\Responses\ApiResponse;
 use App\Routes\UrlGenerator;
-use App\Template;
-use App\TranslationManager;
+use App\System\Template;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 

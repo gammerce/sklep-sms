@@ -1,6 +1,6 @@
 <?php
 
-$app = new App\Application(
+$app = new App\System\Application(
     realpath(__DIR__ . '/../')
 );
 
@@ -10,8 +10,8 @@ $app->singleton(
 );
 
 $app->singleton(
-    App\ExceptionHandlerContract::class,
-    App\ExceptionHandler::class
+    App\System\ExceptionHandlerContract::class,
+    App\System\ExceptionHandler::class
 );
 
 return $app;

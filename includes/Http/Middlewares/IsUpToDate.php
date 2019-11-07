@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Middlewares;
 
-use App\Application;
+use App\System\Application;
 use App\Install\ShopState;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;

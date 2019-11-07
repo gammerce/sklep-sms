@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\Auth;
+use App\System\Auth;
 use App\Pages\PageAdminIncome;
 use App\Http\Responses\HtmlResponse;
 use Symfony\Component\HttpFoundation\Request;

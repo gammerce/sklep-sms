@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Psr4;
 
-use App\Database;
+use App\System\Database;
 use App\Install\DatabaseMigration;
 
 class DatabaseSetup

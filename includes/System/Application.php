@@ -1,5 +1,5 @@
 <?php
-namespace App;
+namespace App\System;
 
 use App\Providers\AppServiceProvider;
 use App\Providers\HeartServiceProvider;

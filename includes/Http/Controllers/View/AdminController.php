@@ -1,14 +1,14 @@
 <?php
 namespace App\Http\Controllers\View;
 
-use App\Application;
-use App\Auth;
-use App\CurrentPage;
-use App\Heart;
-use App\License;
+use App\System\Application;
+use App\System\Auth;
+use App\System\CurrentPage;
+use App\System\Heart;
+use App\System\License;
 use App\Services\Interfaces\IServiceUserServiceAdminDisplay;
-use App\Template;
-use App\TranslationManager;
+use App\System\Template;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

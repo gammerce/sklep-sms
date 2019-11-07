@@ -2,10 +2,10 @@
 
 namespace App\Http\Middlewares;
 
-use App\Application;
+use App\System\Application;
 use App\LocaleService;
-use App\Settings;
-use App\TranslationManager;
+use App\System\Settings;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class SetLanguage implements MiddlewareContract

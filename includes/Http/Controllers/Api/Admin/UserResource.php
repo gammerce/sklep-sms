@@ -1,12 +1,12 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Auth;
-use App\Database;
-use App\Heart;
+use App\System\Auth;
+use App\System\Database;
+use App\System\Heart;
 use App\Repositories\UserRepository;
 use App\Http\Responses\ApiResponse;
-use App\TranslationManager;
+use App\Translation\TranslationManager;
 use App\Http\Validation\Rules\NumberRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\SteamIdRule;

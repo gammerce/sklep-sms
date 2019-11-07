@@ -1,8 +1,8 @@
 <?php
 namespace App\Install;
 
-use App\Path;
-use App\Template;
+use App\System\Path;
+use App\System\Template;
 
 class OldShop
 {

@@ -1,8 +1,8 @@
 <?php
 namespace App\Html;
 
-use App\CurrentPage;
-use App\TranslationManager;
+use App\System\CurrentPage;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class Structure extends DOMElement

@@ -1,5 +1,5 @@
 <?php
-namespace App;
+namespace App\System;
 
 use ArrayAccess;
 use Symfony\Component\HttpFoundation\Request;

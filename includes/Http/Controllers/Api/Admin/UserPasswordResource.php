@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Exceptions\EntityNotFoundException;
 use App\Models\User;
 use App\Http\Responses\ApiResponse;
-use App\TranslationManager;
+use App\Translation\TranslationManager;
 use App\UserPasswordService;
 use Symfony\Component\HttpFoundation\Request;
 
