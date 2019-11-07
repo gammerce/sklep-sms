@@ -10,6 +10,11 @@ use App\TranslationManager;
 
 class ServiceResource
 {
+    public function put($serviceId)
+    {
+
+    }
+
     public function delete(
         $serviceId,
         Database $db,

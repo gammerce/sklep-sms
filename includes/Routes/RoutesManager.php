@@ -12,6 +12,7 @@ use App\Controllers\Api\Admin\ServerResource;
 use App\Controllers\Api\Admin\ServiceCodeAddFormController;
 use App\Controllers\Api\Admin\ServiceCodeCollection;
 use App\Controllers\Api\Admin\ServiceCodeResource;
+use App\Controllers\Api\Admin\ServiceCollection;
 use App\Controllers\Api\Admin\ServiceModuleExtraFieldsController;
 use App\Controllers\Api\Admin\ServiceResource;
 use App\Controllers\Api\Admin\SettingsController;
@@ -371,6 +372,16 @@ class RoutesManager
                 $r->delete('/api/admin/servers/{serverId}', [
                     'middlewares' => [[RequireAuthorization::class, "manage_servers"]],
                     'uses' => ServerResource::class . '@delete',
+                ]);
+
+                $r->post('/api/admin/services', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_services"]],
+                    'uses' => ServiceCollection::class . '@post',
+                ]);
+
+                $r->put('/api/admin/services/{serviceId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_services"]],
+                    'uses' => ServiceResource::class . '@put',
                 ]);
 
                 $r->delete('/api/admin/services/{serviceId}', [
