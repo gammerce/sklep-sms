@@ -16,6 +16,7 @@ use App\Controllers\Api\Admin\ServiceResource;
 use App\Controllers\Api\Admin\SettingsController;
 use App\Controllers\Api\Admin\SmsCodeCollection;
 use App\Controllers\Api\Admin\SmsCodeResource;
+use App\Controllers\Api\Admin\TariffCollection;
 use App\Controllers\Api\Admin\TariffResource;
 use App\Controllers\Api\Admin\TransactionServiceResource;
 use App\Controllers\Api\Admin\UserPasswordResource;
@@ -364,6 +365,16 @@ class RoutesManager
                 $r->delete('/api/admin/services/{serviceId}', [
                     'middlewares' => [[RequireAuthorization::class, "manage_services"]],
                     'uses' => ServiceResource::class . '@delete',
+                ]);
+
+                $r->post('/api/admin/tariffs', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
+                    'uses' => TariffCollection::class . '@post',
+                ]);
+
+                $r->put('/api/admin/tariffs/{tariffId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
+                    'uses' => TariffResource::class . '@put',
                 ]);
 
                 $r->delete('/api/admin/tariffs/{tariffId}', [

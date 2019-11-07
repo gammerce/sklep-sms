@@ -56,8 +56,8 @@ $(document).delegate("#form_tariff_add", "submit", function(e) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=tariff_add",
+        url: buildUrl("/api/admin/tariffs"),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },
@@ -89,12 +89,14 @@ $(document).delegate("#form_tariff_add", "submit", function(e) {
 // Edit tariff
 $(document).delegate("#form_tariff_edit", "submit", function(e) {
     e.preventDefault();
-
     loader.show();
+
+    var tariffId = $(this).find("[name=id]");
+
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=tariff_edit",
+        type: "PUT",
+        url: buildUrl("/api/admin/tariffs/" + tariffId),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },
