@@ -9,6 +9,11 @@ use App\Translation\TranslationManager;
 
 class ServerResource
 {
+    public function put($serverId)
+    {
+        // TODO Implement
+    }
+
     public function delete(
         $serverId,
         Database $db,

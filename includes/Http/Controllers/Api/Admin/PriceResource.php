@@ -8,6 +8,11 @@ use App\Translation\TranslationManager;
 
 class PriceResource
 {
+    public function put($priceId)
+    {
+        // TODO Implement
+    }
+
     public function delete(
         $priceId,
         Database $db,

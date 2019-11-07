@@ -1,6 +1,9 @@
 <?php
 namespace App\Routes;
 
+use App\Http\Controllers\Api\Admin\GroupCollection;
+use App\Http\Controllers\Api\Admin\PriceCollection;
+use App\Http\Controllers\Api\Admin\ServerCollection;
 use App\System\Application;
 use App\Http\Controllers\Api\Admin\AntispamQuestionCollection;
 use App\Http\Controllers\Api\Admin\AntispamQuestionResource;
@@ -344,6 +347,16 @@ class RoutesManager
                     'uses' => LogResource::class . '@delete',
                 ]);
 
+                $r->post('/api/admin/groups', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_groups"]],
+                    'uses' => GroupCollection::class . '@post',
+                ]);
+
+                $r->put('/api/admin/groups/{groupId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_groups"]],
+                    'uses' => GroupResource::class . '@put',
+                ]);
+
                 $r->delete('/api/admin/groups/{groupId}', [
                     'middlewares' => [[RequireAuthorization::class, "manage_groups"]],
                     'uses' => GroupResource::class . '@delete',
@@ -364,9 +377,29 @@ class RoutesManager
                     'uses' => AntispamQuestionResource::class . '@delete',
                 ]);
 
+                $r->post('/api/admin/prices', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
+                    'uses' => PriceCollection::class . '@post',
+                ]);
+
+                $r->put('/api/admin/prices/{priceId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
+                    'uses' => PriceResource::class . '@put',
+                ]);
+
                 $r->delete('/api/admin/prices/{priceId}', [
                     'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
                     'uses' => PriceResource::class . '@delete',
+                ]);
+
+                $r->post('/api/admin/servers', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_servers"]],
+                    'uses' => ServerCollection::class . '@post',
+                ]);
+
+                $r->put('/api/admin/servers/{serverId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_servers"]],
+                    'uses' => ServerResource::class . '@put',
                 ]);
 
                 $r->delete('/api/admin/servers/{serverId}', [

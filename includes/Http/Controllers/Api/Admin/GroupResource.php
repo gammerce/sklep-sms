@@ -8,6 +8,11 @@ use App\Translation\TranslationManager;
 
 class GroupResource
 {
+    public function put()
+    {
+        // TODO Implement
+    }
+
     public function delete(
         $groupId,
         Database $db,
