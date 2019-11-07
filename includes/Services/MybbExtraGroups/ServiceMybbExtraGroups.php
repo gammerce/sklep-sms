@@ -1,18 +1,18 @@
 <?php
 namespace App\Services\MybbExtraGroups;
 
-use App\Auth;
-use App\Database;
+use App\System\Auth;
+use App\System\Database;
 use App\Exceptions\SqlQueryException;
-use App\Heart;
+use App\System\Heart;
 use App\Models\MybbUser;
 use App\Models\Purchase;
 use App\Services\Interfaces\IServicePurchase;
 use App\Services\Interfaces\IServicePurchaseWeb;
 use App\Services\Interfaces\IServiceUserOwnServices;
 use App\Services\Interfaces\IServiceUserServiceAdminAdd;
-use App\TranslationManager;
-use App\Translator;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 
 class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
     IServicePurchase,
@@ -116,7 +116,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
      * Metoda wywoływana, gdy użytkownik wprowadzi dane w formularzu zakupu
      * i trzeba sprawdzić, czy są one prawidłowe
      *
-     * @param array $data Dane $_POST
+     * @param array $data
      *
      * @return array        'status'    => id wiadomości,
      *                        'text'        => treść wiadomości

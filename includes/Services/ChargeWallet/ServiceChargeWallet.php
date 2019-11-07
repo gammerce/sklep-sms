@@ -1,14 +1,14 @@
 <?php
 namespace App\Services\ChargeWallet;
 
-use App\Heart;
+use App\System\Heart;
 use App\Models\Purchase;
 use App\Payment;
 use App\Services\Interfaces\IServicePurchase;
 use App\Services\Interfaces\IServicePurchaseWeb;
-use App\Settings;
-use App\TranslationManager;
-use App\Translator;
+use App\System\Settings;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 
 class ServiceChargeWallet extends ServiceChargeWalletSimple implements
     IServicePurchase,

@@ -1,7 +1,7 @@
 <?php
 namespace App\Install;
 
-use App\Database;
+use App\System\Database;
 use App\Install\MigrationFiles;
 use InvalidArgumentException;
 

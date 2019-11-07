@@ -1,7 +1,7 @@
 <?php
 namespace App\Pages;
 
-use App\Auth;
+use App\System\Auth;
 use App\Interfaces\IBeLoggedMust;
 use App\Services\Interfaces\IServicePurchaseWeb;
 

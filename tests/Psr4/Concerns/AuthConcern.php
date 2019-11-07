@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Psr4\Concerns;
 
-use App\Auth;
+use App\System\Auth;
 use App\Models\User;
 
 trait AuthConcern

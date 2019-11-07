@@ -1,8 +1,8 @@
 <?php
 namespace App\Services\ExtraFlags;
 
-use App\Auth;
-use App\Heart;
+use App\System\Auth;
+use App\System\Heart;
 use App\Models\Purchase;
 use App\Services\Interfaces\IServiceActionExecute;
 use App\Services\Interfaces\IServicePurchase;
@@ -457,7 +457,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         );
 
         // Przeliczamy flagi gracza, ponieważ dodaliśmy nową usługę
-        $this->recalculate_player_flags($serverId, $type, $authData);
+        $this->recalculatePlayerFlags($serverId, $type, $authData);
     }
 
     private function deleteOldFlags()
@@ -495,7 +495,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         );
     }
 
-    private function recalculate_player_flags($serverId, $type, $authData)
+    private function recalculatePlayerFlags($serverId, $type, $authData)
     {
         // Musi byc podany typ, bo inaczej nam wywali wszystkie usługi bez typu
         // Bez serwera oraz auth_data, skrypt po prostu nic nie zrobi
@@ -998,7 +998,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     public function userServiceDeletePost($userService)
     {
         // Odśwież flagi gracza
-        $this->recalculate_player_flags(
+        $this->recalculatePlayerFlags(
             $userService['server'],
             $userService['type'],
             $userService['auth_data']
@@ -1295,14 +1295,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         }
 
         // Odśwież flagi gracza ( przed zmiana danych )
-        $this->recalculate_player_flags(
+        $this->recalculatePlayerFlags(
             $userService['server'],
             $userService['type'],
             $userService['auth_data']
         );
 
         // Odśwież flagi gracza ( już po edycji )
-        $this->recalculate_player_flags(
+        $this->recalculatePlayerFlags(
             if_isset($data['server'], $userService['server']),
             if_isset($data['type'], $userService['type']),
             if_isset($data['auth_data'], $userService['auth_data'])

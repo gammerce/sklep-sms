@@ -1,9 +1,7 @@
-// Kliknięcie dodania serwera
 $(document).delegate("#server_button_add", "click", function() {
     show_action_box(currentPage, "server_add");
 });
 
-// Kliknięcie edycji serwera
 $(document).delegate(".table-structure .edit_row", "click", function() {
     show_action_box(currentPage, "server_edit", {
         id: $(this)
@@ -13,28 +11,21 @@ $(document).delegate(".table-structure .edit_row", "click", function() {
     });
 });
 
-// Usuwanie serwera
+// Delete server
 $(document).delegate(".table-structure .delete_row", "click", function() {
-    var row_id = $(this).closest("tr");
+    var rowId = $(this).closest("tr");
+    var serverId = rowId.children("td[headers=id]").text();
+    var serverName = rowId.children("td[headers=name]").text();
+    var confirmInfo = "Na pewno chcesz usunąć serwer:\n(" + serverId + ") " + serverName + " ?";
 
-    var confirm_info =
-        "Na pewno chcesz usunąć serwer:\n(" +
-        row_id.children("td[headers=id]").text() +
-        ") " +
-        row_id.children("td[headers=name]").text() +
-        " ?";
-    if (confirm(confirm_info) == false) {
+    if (confirm(confirmInfo) == false) {
         return;
     }
 
     loader.show();
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: {
-            action: "delete_server",
-            id: row_id.children("td[headers=id]").text(),
-        },
+        type: "DELETE",
+        url: buildUrl("/api/admin/servers/" + serverId),
         complete: function() {
             loader.hide();
         },
@@ -50,8 +41,8 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
 
             if (jsonObj.return_id === "ok") {
                 // Delete row
-                row_id.fadeOut("slow");
-                row_id.css({ background: "#FFF4BA" });
+                rowId.fadeOut("slow");
+                rowId.css({ background: "#FFF4BA" });
 
                 refresh_blocks("admincontent");
             }
@@ -62,15 +53,15 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     });
 });
 
-// Dodanie serwera
+// Add server
 $(document).delegate("#form_server_add", "submit", function(e) {
     e.preventDefault();
 
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=server_add",
+        url: buildUrl("/api/admin/servers"),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },
@@ -89,10 +80,7 @@ $(document).delegate("#form_server_add", "submit", function(e) {
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_server_add"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
-                // Ukryj i wyczyść action box
-                action_box.hide();
-                $("#action_box_wraper_td").html("");
-
+                clearAndHideActionBox();
                 refresh_blocks("admincontent");
             }
 
@@ -102,15 +90,17 @@ $(document).delegate("#form_server_add", "submit", function(e) {
     });
 });
 
-// Edycja serwera
+// Edit server
 $(document).delegate("#form_server_edit", "submit", function(e) {
     e.preventDefault();
 
+    var serverId = $(this).find("[name=id]");
+
     loader.show();
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=server_edit",
+        type: "PUT",
+        url: buildUrl("/api/admin/servers/" + serverId),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },
@@ -129,10 +119,7 @@ $(document).delegate("#form_server_edit", "submit", function(e) {
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_server_edit"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
-                // Ukryj i wyczyść action box
-                action_box.hide();
-                $("#action_box_wraper_td").html("");
-
+                clearAndHideActionBox();
                 refresh_blocks("admincontent");
             }
 

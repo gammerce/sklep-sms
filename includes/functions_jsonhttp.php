@@ -1,7 +1,7 @@
 <?php
 
 use App\Html\Div;
-use App\TranslationManager;
+use App\Translation\TranslationManager;
 
 /**
  * Sprawdza czy podane dane są prawidłowe dla danego typu

@@ -2,9 +2,9 @@ $(document).delegate("#form_settings_edit", "submit", function(e) {
     e.preventDefault();
     loader.show();
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=settings_edit",
+        type: "PUT",
+        url: buildUrl("/api/admin/settings"),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },

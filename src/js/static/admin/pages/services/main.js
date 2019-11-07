@@ -13,7 +13,7 @@ $(document).delegate(".table-structure .edit_row", "click", function() {
     });
 });
 
-// Zmiana modułu usługi
+// Change service module
 var extra_fields;
 $(document).delegate(".action_box [name=module]", "change", function() {
     // Brak wybranego modułu
@@ -43,12 +43,11 @@ $(document).delegate(".action_box [name=module]", "change", function() {
     );
 });
 
-// Usuwanie usługi
+// Delete service
 $(document).delegate(".table-structure .delete_row", "click", function() {
-    var row_id = $(this).closest("tr");
-
-    var serviceId = row_id.children("td[headers=id]").text();
-    var serviceName = row_id.children("td[headers=name]").text();
+    var rowId = $(this).closest("tr");
+    var serviceId = rowId.children("td[headers=id]").text();
+    var serviceName = rowId.children("td[headers=name]").text();
 
     var confirmInfo = "Na pewno chcesz usunąć usługę:\n(" + serviceId + ") " + serviceName + " ?";
     if (confirm(confirmInfo) == false) {
@@ -58,11 +57,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: {
-            action: "delete_service",
-            id: row_id.children("td[headers=id]").text(),
-        },
+        url: buildUrl("/api/admin/services/" + serviceId),
         complete: function() {
             loader.hide();
         },
@@ -78,8 +73,8 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
 
             if (jsonObj.return_id === "ok") {
                 // Delete row
-                row_id.fadeOut("slow");
-                row_id.css({ background: "#FFF4BA" });
+                rowId.fadeOut("slow");
+                rowId.css({ background: "#FFF4BA" });
 
                 refresh_blocks("admincontent");
             }
@@ -90,14 +85,14 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     });
 });
 
-// Dodanie Usługi
+// Add service
 $(document).delegate("#form_service_add", "submit", function(e) {
     e.preventDefault();
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=service_add",
+        url: buildUrl("/api/admin/services"),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },
@@ -116,10 +111,7 @@ $(document).delegate("#form_service_add", "submit", function(e) {
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_service_add"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
-                // Ukryj i wyczyść action box
-                action_box.hide();
-                $("#action_box_wraper_td").html("");
-
+                clearAndHideActionBox();
                 refresh_blocks("admincontent");
             }
 
@@ -131,14 +123,17 @@ $(document).delegate("#form_service_add", "submit", function(e) {
     });
 });
 
-// Edycja usługi
+// Edit service
 $(document).delegate("#form_service_edit", "submit", function(e) {
     e.preventDefault();
+
+    var serviceId = $(this).find("[name=id]");
+
     loader.show();
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=service_edit",
+        type: "PUT",
+        url: buildUrl("/api/admin/services/" + serviceId),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },
@@ -157,10 +152,7 @@ $(document).delegate("#form_service_edit", "submit", function(e) {
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_service_edit"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
-                // Ukryj i wyczyść action box
-                action_box.hide();
-                $("#action_box_wraper_td").html("");
-
+                clearAndHideActionBox();
                 refresh_blocks("admincontent");
             }
 

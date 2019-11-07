@@ -1,7 +1,7 @@
 <?php
 namespace App\Html;
 
-use App\Template;
+use App\System\Template;
 use Symfony\Component\HttpFoundation\Request;
 
 class Wrapper extends Div

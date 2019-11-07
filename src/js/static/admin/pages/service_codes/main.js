@@ -1,9 +1,8 @@
-// Kliknięcie dodania kodu na usługę
 $(document).delegate("#service_code_button_add", "click", function() {
     show_action_box(currentPage, "code_add");
 });
 
-// Kliknięcie przycisku generuj kod
+// Generate code
 $(document).delegate("#form_service_code_add [name=random_code]", "click", function() {
     $(this)
         .closest("form")
@@ -11,7 +10,7 @@ $(document).delegate("#form_service_code_add [name=random_code]", "click", funct
         .val(get_random_string());
 });
 
-// Wybranie usługi podczas dodawania kodu na usługę
+// Selecting a service while adding service code
 var extra_fields;
 $(document).delegate("#form_service_code_add [name=service]", "change", function() {
     // Brak wybranej usługi
@@ -39,18 +38,15 @@ $(document).delegate("#form_service_code_add [name=service]", "change", function
     });
 });
 
-// Usuwanie kodu na usługę
+// Delete service code
 $(document).delegate(".table-structure .delete_row", "click", function() {
-    var row_id = $(this).closest("tr");
+    var rowId = $(this).closest("tr");
+    var serviceCodeId = rowId.children("td[headers=id]").text();
 
     loader.show();
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: {
-            action: "delete_service_code",
-            id: row_id.children("td[headers=id]").text(),
-        },
+        type: "DELETE",
+        url: buildUrl("/api/admin/service_codes/" + serviceCodeId),
         complete: function() {
             loader.hide();
         },
@@ -66,8 +62,8 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
 
             if (jsonObj.return_id === "ok") {
                 // Delete row
-                row_id.fadeOut("slow");
-                row_id.css({ background: "#FFF4BA" });
+                rowId.fadeOut("slow");
+                rowId.css({ background: "#FFF4BA" });
 
                 refresh_blocks("admincontent");
             }
@@ -78,14 +74,17 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     });
 });
 
-// Dodanie kodu na usługę
+// Add service code
 $(document).delegate("#form_service_code_add", "submit", function(e) {
     e.preventDefault();
     loader.show();
+
+    var serviceId = $(this).find("[name=service]");
+
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=service_code_add",
+        url: buildUrl("/api/admin/services/" + serviceId + "service_codes"),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },
@@ -104,10 +103,7 @@ $(document).delegate("#form_service_code_add", "submit", function(e) {
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_service_code_add"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
-                // Ukryj i wyczyść action box
-                action_box.hide();
-                $("#action_box_wraper_td").html("");
-
+                clearAndHideActionBox();
                 refresh_blocks("admincontent");
             }
 

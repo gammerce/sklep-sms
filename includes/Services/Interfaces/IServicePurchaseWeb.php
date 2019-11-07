@@ -21,7 +21,7 @@ interface IServicePurchaseWeb extends IServicePurchase
      * Metoda wywoływana, gdy użytkownik wprowadzi dane w formularzu zakupu
      * i trzeba sprawdzić, czy są one prawidłowe
      *
-     * @param array $body Dane $_POST
+     * @param array $body
      *
      * @return array
      *  status => string id wiadomości,

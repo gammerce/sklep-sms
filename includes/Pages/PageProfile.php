@@ -1,7 +1,7 @@
 <?php
 namespace App\Pages;
 
-use App\Auth;
+use App\System\Auth;
 use App\Interfaces\IBeLoggedMust;
 
 class PageProfile extends Page implements IBeLoggedMust

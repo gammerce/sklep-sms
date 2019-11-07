@@ -1,7 +1,7 @@
 <?php
 namespace App\Repositories;
 
-use App\Database;
+use App\System\Database;
 use App\Models\PriceList;
 
 class PriceListRepository

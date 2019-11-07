@@ -1,12 +1,12 @@
 <?php
 namespace App\Blocks;
 
-use App\Auth;
-use App\Heart;
+use App\System\Auth;
+use App\System\Heart;
 use App\Routes\UrlGenerator;
 use App\Services\ChargeWallet\ServiceChargeWalletSimple;
-use App\Template;
-use App\TranslationManager;
+use App\System\Template;
+use App\Translation\TranslationManager;
 
 class BlockUserButtons extends Block
 {

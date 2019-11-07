@@ -6,14 +6,14 @@ use App\Html\Cell;
 use App\Html\HeadCell;
 use App\Html\Structure;
 use App\Html\Wrapper;
-use App\CurrentPage;
+use App\System\CurrentPage;
 use App\Services\Interfaces\IServiceAdminManage;
 use App\Services\Interfaces\IServiceCreate;
 use App\Services\Interfaces\IServiceUserServiceAdminDisplay;
 use App\Services\Service;
-use App\Settings;
-use App\TranslationManager;
-use App\Translator;
+use App\System\Settings;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 
 class ServiceMybbExtraGroupsSimple extends Service implements
     IServiceAdminManage,
@@ -86,7 +86,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements
      * Metoda testuje dane przesłane przez formularz podczas dodawania nowej usługi w PA
      * jak coś się jej nie spodoba to zwraca o tym info w tablicy
      *
-     * @param array $data Dane $_POST
+     * @param array $data
      *
      * @return array        'key' => DOM Element name
      *                      'value' => Array of error messages
@@ -140,7 +140,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements
      * Metoda zostaje wywołana po tym, jak  weryfikacja danych
      * przesłanych w formularzu dodania nowej usługi w PA przebiegła bezproblemowo
      *
-     * @param array $data Dane $_POST
+     * @param array $data
      *
      * @return array (
      *    'query_set' - array of query SET elements:

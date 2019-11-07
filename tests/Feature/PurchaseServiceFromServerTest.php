@@ -2,10 +2,10 @@
 namespace Tests\Feature;
 
 use App\Exceptions\LicenseRequestException;
-use App\License;
+use App\System\License;
 use App\Requesting\Response;
 use App\Services\ExtraFlags\ExtraFlagType;
-use App\Settings;
+use App\System\Settings;
 use App\Verification\Gosetti;
 use App\Verification\Results\SmsSuccessResult;
 use Mockery;

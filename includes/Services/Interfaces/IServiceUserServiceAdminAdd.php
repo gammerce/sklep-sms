@@ -10,7 +10,7 @@ interface IServiceUserServiceAdminAdd
      * Metoda sprawdza dane formularza podczas dodawania użytkownikowi usługi w PA
      * i gdy wszystko jest okej, to ją dodaje.
      *
-     * @param array $body Dane $_POST
+     * @param array $body
      *
      * @return array
      *  status => id wiadomości

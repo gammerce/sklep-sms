@@ -1,9 +1,7 @@
-// Kliknięcie dodania grupy
 $(document).delegate("#group_button_add", "click", function() {
     show_action_box(currentPage, "group_add");
 });
 
-// Kliknięcie edycji grupy
 $(document).delegate(".table-structure .edit_row", "click", function() {
     show_action_box(currentPage, "group_edit", {
         id: $(this)
@@ -13,18 +11,15 @@ $(document).delegate(".table-structure .edit_row", "click", function() {
     });
 });
 
-// Usuwanie grupy
+// Delete group
 $(document).delegate(".table-structure .delete_row", "click", function() {
-    var row_id = $(this).closest("tr");
+    var rowId = $(this).closest("tr");
+    var groupId = rowId.children("td[headers=id]").text();
 
     loader.show();
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: {
-            action: "delete_group",
-            id: row_id.children("td[headers=id]").text(),
-        },
+        type: "DELETE",
+        url: buildUrl("/api/admin/groups/" + groupId),
         complete: function() {
             loader.hide();
         },
@@ -40,8 +35,8 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
 
             if (jsonObj.return_id === "ok") {
                 // Delete row
-                row_id.fadeOut("slow");
-                row_id.css({ background: "#FFF4BA" });
+                rowId.fadeOut("slow");
+                rowId.css({ background: "#FFF4BA" });
 
                 refresh_blocks("admincontent");
             }
@@ -52,15 +47,15 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     });
 });
 
-// Dodanie grupy
+// Add group
 $(document).delegate("#form_group_add", "submit", function(e) {
     e.preventDefault();
 
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=group_add",
+        url: buildUrl("/api/admin/groups"),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },
@@ -75,10 +70,7 @@ $(document).delegate("#form_group_add", "submit", function(e) {
             }
 
             if (jsonObj.return_id === "ok") {
-                // Ukryj i wyczyść action box
-                action_box.hide();
-                $("#action_box_wraper_td").html("");
-
+                clearAndHideActionBox();
                 refresh_blocks("admincontent");
             }
 
@@ -88,15 +80,17 @@ $(document).delegate("#form_group_add", "submit", function(e) {
     });
 });
 
-// Edycja grupy
+// Edit group
 $(document).delegate("#form_group_edit", "submit", function(e) {
     e.preventDefault();
 
+    var groupId = $(this).find("[name=id]");
+
     loader.show();
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=group_edit",
+        type: "PUT",
+        url: buildUrl("/api/admin/groups/" + groupId),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },
@@ -111,10 +105,7 @@ $(document).delegate("#form_group_edit", "submit", function(e) {
             }
 
             if (jsonObj.return_id === "ok") {
-                // Ukryj i wyczyść action box
-                action_box.hide();
-                $("#action_box_wraper_td").html("");
-
+                clearAndHideActionBox();
                 refresh_blocks("admincontent");
             }
 

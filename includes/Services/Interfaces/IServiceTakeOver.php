@@ -17,7 +17,7 @@ interface IServiceTakeOver
      * Sprawdza poprawność danych wprowadzonych w formularzu przejęcia usługi
      * a jeżeli wszystko jest ok, to ją przejmuje
      *
-     * @param array $body Dane $_POST
+     * @param array $body
      *
      * @return array
      * status => id wiadomości

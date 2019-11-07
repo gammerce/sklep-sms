@@ -3,8 +3,8 @@ namespace App\Pages;
 
 use App\Html\Option;
 use App\Html\Select;
-use App\Path;
-use App\TranslationManager;
+use App\System\Path;
+use App\Translation\TranslationManager;
 
 class PageAdminSettings extends PageAdmin
 {
