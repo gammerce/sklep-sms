@@ -13,11 +13,13 @@ use App\System\Path;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\HtmlResponse;
 use App\Translation\TranslationManager;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class InstallController
 {
     public function post(
+        Request $request,
         RequirementsStore $requirementsStore,
         TranslationManager $translationManager,
         SetupManager $setupManager,
@@ -40,14 +42,17 @@ class InstallController
         $filesWithWritePermission = $requirementsStore->getFilesWithWritePermission();
         $lang = $translationManager->user();
 
+        $dbHost = $request->request->get('db_host');
+        $dbPort = $request->request->get('db_port');
+        $dbUser = $request->request->get('db_user');
+        $dbPassword = $request->request->get('db_password');
+        $dbDb = $request->request->get('db_db');
+        $licenseToken = $request->request->get('license_token');
+        $adminUsername = $request->request->get('admin_username');
+        $adminPassword = $request->request->get('admin_password');
+
         try {
-            $db = new Database(
-                $_POST['db_host'],
-                $_POST['db_port'],
-                $_POST['db_user'],
-                $_POST['db_password'],
-                $_POST['db_db']
-            );
+            $db = new Database($dbHost, $dbPort, $dbUser, $dbPassword, $dbDb);
             $db->query("SET NAMES utf8");
             $app->instance(Database::class, $db);
         } catch (SqlQueryException $e) {
@@ -68,17 +73,17 @@ class InstallController
         $warnings = [];
 
         // Licencja ID
-        if (!strlen($_POST['license_token'])) {
+        if (!strlen($licenseToken)) {
             $warnings['license_token'][] = "Nie podano tokenu licencji.";
         }
 
         // Admin nick
-        if (!strlen($_POST['admin_username'])) {
+        if (!strlen($adminUsername)) {
             $warnings['admin_username'][] = "Nie podano nazwy dla użytkownika admin.";
         }
 
         // Admin hasło
-        if (!strlen($_POST['admin_password'])) {
+        if (!strlen($adminPassword)) {
             $warnings['admin_password'][] = "Nie podano hasła dla użytkownika admin.";
         }
 
@@ -106,19 +111,9 @@ class InstallController
 
         $setupManager->start();
 
-        $migrator->setup(
-            $_POST['license_token'],
-            $_POST['admin_username'],
-            $_POST['admin_password']
-        );
+        $migrator->setup($licenseToken, $adminUsername, $adminPassword);
 
-        $envCreator->create(
-            $_POST['db_host'],
-            $_POST['db_port'],
-            $_POST['db_db'],
-            $_POST['db_user'],
-            $_POST['db_password']
-        );
+        $envCreator->create($dbHost, $dbPort, $dbDb, $dbUser, $dbPassword);
 
         $setupManager->finish();
 

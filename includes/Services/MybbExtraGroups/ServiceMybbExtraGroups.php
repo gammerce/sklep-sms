@@ -116,7 +116,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
      * Metoda wywoływana, gdy użytkownik wprowadzi dane w formularzu zakupu
      * i trzeba sprawdzić, czy są one prawidłowe
      *
-     * @param array $data Dane $_POST
+     * @param array $data
      *
      * @return array        'status'    => id wiadomości,
      *                        'text'        => treść wiadomości

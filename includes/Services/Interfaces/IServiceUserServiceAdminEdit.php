@@ -10,7 +10,7 @@ interface IServiceUserServiceAdminEdit
      * Metoda sprawdza dane formularza podczas edycji usługi użytkownika w PA
      * i gdy wszystko jest okej, to ją edytuje.
      *
-     * @param array $body Dane $_POST
+     * @param array $body
      * @param array $userService Obecne dane edytowanej usługi
      *
      * @return array

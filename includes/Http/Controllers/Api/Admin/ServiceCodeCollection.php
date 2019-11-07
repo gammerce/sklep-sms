@@ -49,7 +49,7 @@ class ServiceCodeCollection
         // Łączymy zwrócone błędy
         $warnings = array_merge(
             (array) $warnings,
-            (array) $serviceModule->serviceCodeAdminAddValidate($_POST)
+            (array) $serviceModule->serviceCodeAdminAddValidate($request->request->all())
         );
 
         if ($warnings) {
@@ -57,7 +57,7 @@ class ServiceCodeCollection
         }
 
         // Pozyskujemy dane kodu do dodania
-        $codeData = $serviceModule->serviceCodeAdminAddInsert($_POST);
+        $codeData = $serviceModule->serviceCodeAdminAddInsert($request->request->all());
 
         $db->query(
             $db->prepare(

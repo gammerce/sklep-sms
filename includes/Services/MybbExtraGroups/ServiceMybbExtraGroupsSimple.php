@@ -86,7 +86,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements
      * Metoda testuje dane przesłane przez formularz podczas dodawania nowej usługi w PA
      * jak coś się jej nie spodoba to zwraca o tym info w tablicy
      *
-     * @param array $data Dane $_POST
+     * @param array $data
      *
      * @return array        'key' => DOM Element name
      *                      'value' => Array of error messages
@@ -140,7 +140,7 @@ class ServiceMybbExtraGroupsSimple extends Service implements
      * Metoda zostaje wywołana po tym, jak  weryfikacja danych
      * przesłanych w formularzu dodania nowej usługi w PA przebiegła bezproblemowo
      *
-     * @param array $data Dane $_POST
+     * @param array $data
      *
      * @return array (
      *    'query_set' - array of query SET elements:

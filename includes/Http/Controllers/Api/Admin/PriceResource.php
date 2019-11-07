@@ -46,7 +46,7 @@ class PriceResource
                     $langShop->translate('price_admin_edit'),
                     $user->getUsername(),
                     $user->getUid(),
-                    $_POST['id']
+                    $priceId
                 )
             );
             return new ApiResponse('ok', $lang->translate('price_edit'), 1);

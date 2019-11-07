@@ -1,16 +1,15 @@
 <?php
 namespace App\Routes;
 
-use App\Http\Controllers\Api\Admin\GroupCollection;
-use App\Http\Controllers\Api\Admin\PriceCollection;
-use App\Http\Controllers\Api\Admin\ServerCollection;
-use App\System\Application;
 use App\Http\Controllers\Api\Admin\AntispamQuestionCollection;
 use App\Http\Controllers\Api\Admin\AntispamQuestionResource;
+use App\Http\Controllers\Api\Admin\GroupCollection;
 use App\Http\Controllers\Api\Admin\GroupResource;
 use App\Http\Controllers\Api\Admin\LogResource;
 use App\Http\Controllers\Api\Admin\PageActionBoxResource;
+use App\Http\Controllers\Api\Admin\PriceCollection;
 use App\Http\Controllers\Api\Admin\PriceResource;
+use App\Http\Controllers\Api\Admin\ServerCollection;
 use App\Http\Controllers\Api\Admin\ServerResource;
 use App\Http\Controllers\Api\Admin\ServiceCodeAddFormController;
 use App\Http\Controllers\Api\Admin\ServiceCodeCollection;
@@ -33,7 +32,6 @@ use App\Http\Controllers\Api\Admin\WalletChargeResource;
 use App\Http\Controllers\Api\BrickResource;
 use App\Http\Controllers\Api\IncomeController;
 use App\Http\Controllers\Api\InstallController;
-use App\Http\Controllers\Api\JsonHttpAdminController;
 use App\Http\Controllers\Api\LogInController;
 use App\Http\Controllers\Api\LogOutController;
 use App\Http\Controllers\Api\PasswordForgottenController;
@@ -77,6 +75,7 @@ use App\Http\Middlewares\SetLanguage;
 use App\Http\Middlewares\SetUserSession;
 use App\Http\Middlewares\UpdateUserActivity;
 use App\Http\Middlewares\ValidateLicense;
+use App\System\Application;
 use FastRoute\Dispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

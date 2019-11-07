@@ -1,15 +1,14 @@
 <?php
 namespace App\Http\Controllers\View;
 
+use App\Http\Responses\HtmlResponse;
 use App\Install\OldShop;
 use App\Install\RequirementsStore;
 use App\Install\SetupManager;
 use App\Install\ShopState;
 use App\Install\UpdateInfo;
 use App\System\Path;
-use App\Http\Responses\HtmlResponse;
 use App\System\Template;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class SetupController
@@ -23,7 +22,6 @@ class SetupController
     }
 
     public function get(
-        Request $request,
         OldShop $oldShop,
         ShopState $shopState,
         UpdateInfo $updateInfo,

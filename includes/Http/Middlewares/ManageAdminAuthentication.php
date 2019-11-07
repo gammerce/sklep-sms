@@ -15,9 +15,15 @@ class ManageAdminAuthentication implements MiddlewareContract
         $session = $request->getSession();
 
         // Logowanie się do panelu admina
-        if (isset($_POST['username']) && isset($_POST['password'])) {
-            $auth->loginAdminUsingCredentials($_POST['username'], $_POST['password']);
-        } elseif (isset($_POST['action']) && $_POST['action'] == "logout") {
+        if ($request->request->has('username') && $request->request->has('password')) {
+            $auth->loginAdminUsingCredentials(
+                $request->request->get('username'),
+                $request->request->get('password')
+            );
+        } elseif (
+            $request->request->has('action') &&
+            $request->request->get('action') == "logout"
+        ) {
             $auth->logoutAdmin();
         }
 
