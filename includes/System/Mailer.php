@@ -1,6 +1,8 @@
 <?php
 namespace App\System;
 
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 

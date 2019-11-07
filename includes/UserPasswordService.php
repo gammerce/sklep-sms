@@ -1,6 +1,8 @@
 <?php
 namespace App;
 
+use App\System\Database;
+
 class UserPasswordService
 {
     /** @var Database */

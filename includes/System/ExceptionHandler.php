@@ -8,6 +8,8 @@ use App\Exceptions\RequireInstallationException;
 use App\Exceptions\SqlQueryException;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 use Exception;
 use Raven_Client;
 use Symfony\Component\HttpFoundation\JsonResponse;

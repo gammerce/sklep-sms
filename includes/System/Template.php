@@ -2,6 +2,8 @@
 namespace App\System;
 
 use App\Routes\UrlGenerator;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 
 class Template
 {

@@ -2,7 +2,6 @@
 namespace App\System;
 
 use ArrayAccess;
-use Symfony\Component\HttpFoundation\Request;
 
 class Settings implements ArrayAccess
 {
