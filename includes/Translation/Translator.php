@@ -1,5 +1,7 @@
 <?php
-namespace App;
+namespace App\Translation;
+
+use App\System\Path;
 
 class Translator
 {
