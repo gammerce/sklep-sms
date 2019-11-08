@@ -77,10 +77,12 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
 // Add service code
 $(document).delegate("#form_service_code_add", "submit", function(e) {
     e.preventDefault();
+
+    var serviceId = $(this)
+        .find("[name=service]")
+        .val();
+
     loader.show();
-
-    var serviceId = $(this).find("[name=service]");
-
     $.ajax({
         type: "POST",
         url: buildUrl("/api/admin/services/" + serviceId + "service_codes"),

@@ -127,7 +127,9 @@ $(document).delegate("#form_service_add", "submit", function(e) {
 $(document).delegate("#form_service_edit", "submit", function(e) {
     e.preventDefault();
 
-    var serviceId = $(this).find("[name=id]");
+    var serviceId = $(this)
+        .find("[name=id]")
+        .val();
 
     loader.show();
     $.ajax({

@@ -94,7 +94,9 @@ $(document).delegate("#form_server_add", "submit", function(e) {
 $(document).delegate("#form_server_edit", "submit", function(e) {
     e.preventDefault();
 
-    var serverId = $(this).find("[name=id]");
+    var serverId = $(this)
+        .find("[name=id]")
+        .val();
 
     loader.show();
     $.ajax({

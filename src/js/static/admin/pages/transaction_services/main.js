@@ -10,10 +10,11 @@ $(document).delegate(".table-structure .edit_row", "click", function() {
 $(document).delegate("#form_transaction_service_edit", "submit", function(e) {
     e.preventDefault();
 
+    var transactionServiceId = $(this)
+        .find("[name=id]")
+        .val();
+
     loader.show();
-
-    var transactionServiceId = $(this).find("[name=id]");
-
     $.ajax({
         type: "PUT",
         url: buildUrl("/api/admin/transaction_services/" + transactionServiceId),

@@ -155,10 +155,12 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
 // Add user service
 $(document).delegate("#form_user_service_add", "submit", function(e) {
     e.preventDefault();
+
+    var serviceId = $(this)
+        .find("[name=service]")
+        .val();
+
     loader.show();
-
-    var serviceId = $(this).find("[name=service]");
-
     $.ajax({
         type: "POST",
         url: buildUrl("/api/admin/services/" + serviceId + "/user_services"),
@@ -194,10 +196,12 @@ $(document).delegate("#form_user_service_add", "submit", function(e) {
 // Edit user service
 $(document).delegate("#form_user_service_edit", "submit", function(e) {
     e.preventDefault();
+
+    var userServiceId = $(this)
+        .find("[name=id]")
+        .val();
+
     loader.show();
-
-    var userServiceId = $(this).find("[name=id]");
-
     $.ajax({
         type: "PUT",
         url: buildUrl("/api/admin/user_services/" + userServiceId),

@@ -84,7 +84,9 @@ $(document).delegate("#form_group_add", "submit", function(e) {
 $(document).delegate("#form_group_edit", "submit", function(e) {
     e.preventDefault();
 
-    var groupId = $(this).find("[name=id]");
+    var groupId = $(this)
+        .find("[name=id]")
+        .val();
 
     loader.show();
     $.ajax({

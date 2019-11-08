@@ -88,7 +88,9 @@ $(document).delegate("#form_antispam_question_add", "submit", function(e) {
 $(document).delegate("#form_antispam_question_edit", "submit", function(e) {
     e.preventDefault();
 
-    var antispamQuestionId = $(this).find("[name=id]");
+    var antispamQuestionId = $(this)
+        .find("[name=id]")
+        .val();
 
     loader.show();
     $.ajax({
