@@ -89,10 +89,12 @@ $(document).delegate("#form_tariff_add", "submit", function(e) {
 // Edit tariff
 $(document).delegate("#form_tariff_edit", "submit", function(e) {
     e.preventDefault();
+
+    var tariffId = $(this)
+        .find("[name=id]")
+        .val();
+
     loader.show();
-
-    var tariffId = $(this).find("[name=id]");
-
     $.ajax({
         type: "PUT",
         url: buildUrl("/api/admin/tariffs/" + tariffId),

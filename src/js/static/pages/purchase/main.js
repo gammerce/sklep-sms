@@ -45,7 +45,6 @@ $(document).delegate("#show_service_desc", "click", function() {
     var serviceId = $("#form_purchase [name=service]").val();
 
     loader.show();
-
     $.ajax({
         type: "GET",
         url: buildUrl("/api/services/" + serviceId + "/long_description"),

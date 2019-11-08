@@ -88,7 +88,9 @@ $(document).delegate("#form_price_add", "submit", function(e) {
 $(document).delegate("#form_price_edit", "submit", function(e) {
     e.preventDefault();
 
-    var priceId = $(this).find("[name=id]");
+    var priceId = $(this)
+        .find("[name=id]")
+        .val();
 
     loader.show();
     $.ajax({

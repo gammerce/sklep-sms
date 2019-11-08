@@ -67,13 +67,13 @@
 
     $(document).delegate("#form_charge_wallet", "submit", function(e) {
         e.preventDefault();
-        loader.show();
 
         var that = this;
         var userId = $(this)
             .find("[name=uid]")
             .val();
 
+        loader.show();
         $.ajax({
             type: "POST",
             url: buildUrl("/api/admin/users/" + userId + "/wallet/charge"),
@@ -122,13 +122,13 @@
 
     $(document).delegate("#form_change_password", "submit", function(e) {
         e.preventDefault();
-        loader.show();
         var that = this;
 
         var userId = $(this)
             .find("input[name=uid]")
             .val();
 
+        loader.show();
         $.ajax({
             type: "PUT",
             url: buildUrl("/api/admin/users/" + userId + "/password"),
@@ -162,13 +162,13 @@
 
     $(document).delegate("#form_user_edit", "submit", function(e) {
         e.preventDefault();
-        loader.show();
 
         var that = this;
         var userId = $(that)
             .find("[name=uid]")
             .val();
 
+        loader.show();
         $.ajax({
             type: "PUT",
             url: buildUrl("/api/admin/users/" + userId),
