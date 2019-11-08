@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\View;
+namespace App\Http\Controllers\Api\Server;
 
 use App\Http\Responses\XmlResponse;
 use App\Http\Services\PurchaseService;
@@ -10,9 +10,9 @@ use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ServerStuffController
+class PurchaseWalletResource
 {
-    public function action(
+    public function post(
         Request $request,
         Heart $heart,
         TranslationManager $translationManager,
@@ -21,20 +21,17 @@ class ServerStuffController
     ) {
         $lang = $translationManager->user();
 
-        $key = $request->query->get('key');
-        $service = $request->query->get('service');
-
-        if ($key != md5($settings['random_key'])) {
+        if (!$this->isCorrectlySigned($request, $settings['random_key'])) {
             return new Response();
         }
 
-        $serviceModule = $heart->getServiceModule($service);
+        $serviceModule = $heart->getServiceModule($request->request->get('service'));
 
         if ($serviceModule === null || !($serviceModule instanceof IServicePurchaseOutside)) {
             return new XmlResponse("bad_module", $lang->translate('bad_module'), 0);
         }
 
-        $response = $purchaseService->payWithSms($serviceModule, $request->query->all());
+        $response = $purchaseService->payWithWallet($serviceModule, $request->request->all());
 
         return new XmlResponse(
             $response["status"],
@@ -42,5 +39,15 @@ class ServerStuffController
             $response["positive"],
             $response["extraData"]
         );
+    }
+
+    private function isCorrectlySigned(Request $request, $secret)
+    {
+        $sign = $request->request->get("sign");
+        $authData = $request->request->get("auth_data");
+
+        $calculatedSign = md5($authData . "#" . $secret);
+
+        return $sign === $calculatedSign;
     }
 }
