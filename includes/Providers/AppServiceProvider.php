@@ -1,18 +1,18 @@
 <?php
 namespace App\Providers;
 
-use App\Application;
-use App\Auth;
+use App\System\Application;
+use App\System\Auth;
 use App\Cache\FileCache;
-use App\CurrentPage;
-use App\Database;
-use App\ExternalConfigProvider;
-use App\Filesystem;
-use App\Heart;
-use App\License;
-use App\Path;
-use App\Settings;
-use App\TranslationManager;
+use App\System\CurrentPage;
+use App\System\Database;
+use App\System\ExternalConfigProvider;
+use App\System\Filesystem;
+use App\System\Heart;
+use App\System\License;
+use App\System\Path;
+use App\System\Settings;
+use App\Translation\TranslationManager;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 

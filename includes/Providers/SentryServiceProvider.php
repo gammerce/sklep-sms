@@ -1,8 +1,8 @@
 <?php
 namespace App\Providers;
 
-use App\Application;
-use App\ExternalConfigProvider;
+use App\System\Application;
+use App\System\ExternalConfigProvider;
 use Raven_Client;
 
 class SentryServiceProvider

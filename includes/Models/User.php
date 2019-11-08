@@ -1,8 +1,8 @@
 <?php
 namespace App\Models;
 
-use App\Database;
-use App\Heart;
+use App\System\Database;
+use App\System\Heart;
 use Symfony\Component\HttpFoundation\Request;
 
 class User

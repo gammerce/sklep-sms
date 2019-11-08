@@ -9,7 +9,7 @@ interface IServiceServiceCodeAdminManage
     /**
      * Metoda sprawdza dane formularza podczas dodawania kodu na usługę w PA
      *
-     * @param array $body Dane $_POST
+     * @param array $body
      *
      * @return array 'key' (DOM element name) => 'value'
      */

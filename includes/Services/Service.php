@@ -1,9 +1,9 @@
 <?php
 namespace App\Services;
 
-use App\Application;
-use App\Database;
-use App\Template;
+use App\System\Application;
+use App\System\Database;
+use App\System\Template;
 
 abstract class Service
 {

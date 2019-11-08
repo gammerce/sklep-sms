@@ -87,18 +87,6 @@ window.refresh_blocks = function(bricks, onSuccessFunction) {
     });
 };
 
-// Wyszukiwanie usługi
-$(document).delegate(".table-structure .search", "submit", function(e) {
-    e.preventDefault();
-
-    changeUrl({
-        search: $(this)
-            .find(".search_text")
-            .val(),
-        page: "",
-    });
-});
-
 /**
  * Tworzy okienko akcji danej strony
  *
@@ -124,3 +112,20 @@ window.show_action_box = function(pageId, boxId, data) {
         action_box.show(jsonObj.template);
     });
 };
+
+window.clearAndHideActionBox = function() {
+    action_box.hide();
+    $("#action_box_wraper_td").html("");
+};
+
+// Wyszukiwanie usługi
+$(document).delegate(".table-structure .search", "submit", function(e) {
+    e.preventDefault();
+
+    changeUrl({
+        search: $(this)
+            .find(".search_text")
+            .val(),
+        page: "",
+    });
+});

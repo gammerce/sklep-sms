@@ -1,16 +1,16 @@
 <?php
 namespace App\Pages;
 
-use App\Application;
-use App\CurrentPage;
-use App\Database;
-use App\Heart;
-use App\Path;
+use App\System\Application;
+use App\System\CurrentPage;
+use App\System\Database;
+use App\System\Heart;
+use App\System\Path;
 use App\Routes\UrlGenerator;
-use App\Settings;
-use App\Template;
-use App\TranslationManager;
-use App\Translator;
+use App\System\Settings;
+use App\System\Template;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 
 abstract class Page
 {

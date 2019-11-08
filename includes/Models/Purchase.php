@@ -1,7 +1,7 @@
 <?php
 namespace App\Models;
 
-use App\Auth;
+use App\System\Auth;
 
 /**
  * Obiekty tej klasy są używane podczas przeprowadzania zakupu

@@ -1,8 +1,8 @@
 <?php
 namespace App\Services\ExtraFlags;
 
-use App\Auth;
-use App\Heart;
+use App\System\Auth;
+use App\System\Heart;
 use App\Models\Purchase;
 use App\Services\Interfaces\IServiceActionExecute;
 use App\Services\Interfaces\IServicePurchase;

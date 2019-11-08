@@ -1,17 +1,17 @@
 <?php
 
-use App\Auth;
-use App\Database;
-use App\Heart;
+use App\System\Auth;
+use App\System\Database;
+use App\System\Heart;
 use App\Html\Div;
 use App\Html\DOMElement;
 use App\Html\Li;
 use App\Html\Link;
 use App\Html\Ul;
-use App\Mailer;
+use App\System\Mailer;
 use App\Models\Purchase;
 use App\Models\User;
-use App\Path;
+use App\System\Path;
 use App\Payment;
 use App\Routes\UrlGenerator;
 use App\Services\ChargeWallet\ServiceChargeWallet;
@@ -19,8 +19,8 @@ use App\Services\ExtraFlags\ServiceExtraFlags;
 use App\Services\Interfaces\IServicePurchaseWeb;
 use App\Services\Other\ServiceOther;
 use App\Services\Service;
-use App\Settings;
-use App\TranslationManager;
+use App\System\Settings;
+use App\Translation\TranslationManager;
 use Illuminate\Container\Container;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -29,7 +29,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @param string $abstract
  * @param array  $parameters
- * @return mixed|\Illuminate\Container\Container|\App\Application
+ * @return mixed|\Illuminate\Container\Container|\App\System\Application
  */
 function app($abstract = null, array $parameters = [])
 {

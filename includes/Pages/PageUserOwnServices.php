@@ -1,11 +1,11 @@
 <?php
 namespace App\Pages;
 
-use App\Auth;
-use App\Database;
+use App\System\Auth;
+use App\System\Database;
 use App\Interfaces\IBeLoggedMust;
-use App\Settings;
-use App\Template;
+use App\System\Settings;
+use App\System\Template;
 use App\Services\Interfaces\IServiceUserOwnServices;
 use App\Services\Interfaces\IServiceUserOwnServicesEdit;
 use Symfony\Component\HttpFoundation\Request;

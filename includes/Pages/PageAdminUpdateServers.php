@@ -3,7 +3,7 @@ namespace App\Pages;
 
 use App\Models\Server;
 use App\Requesting\Requester;
-use App\Version;
+use App\System\Version;
 
 class PageAdminUpdateServers extends PageAdmin
 {

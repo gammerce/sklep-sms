@@ -1,15 +1,12 @@
-// Usuwanie logu
 $(document).delegate(".table-structure .delete_row", "click", function() {
-    var row_id = $(this).closest("tr");
+    var rowId = $(this).closest("tr");
+    var logId = rowId.children("td[headers=id]").text();
 
     loader.show();
+
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: {
-            action: "delete_log",
-            id: row_id.children("td[headers=id]").text(),
-        },
+        type: "DELETE",
+        url: buildUrl("/api/admin/logs/" + logId),
         complete: function() {
             loader.hide();
         },
@@ -25,8 +22,8 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
 
             if (jsonObj.return_id === "ok") {
                 // Delete row
-                row_id.fadeOut("slow");
-                row_id.css({ background: "#FFF4BA" });
+                rowId.fadeOut("slow");
+                rowId.css({ background: "#FFF4BA" });
 
                 refresh_blocks("admincontent");
             }

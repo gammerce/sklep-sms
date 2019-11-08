@@ -1,7 +1,7 @@
 <?php
 namespace App\Install;
 
-use App\Path;
+use App\System\Path;
 
 class EnvCreator
 {

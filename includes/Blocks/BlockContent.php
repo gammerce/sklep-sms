@@ -1,13 +1,13 @@
 <?php
 namespace App\Blocks;
 
-use App\CurrentPage;
-use App\Heart;
+use App\System\CurrentPage;
+use App\System\Heart;
 use App\Interfaces\IBeLoggedCannot;
 use App\Interfaces\IBeLoggedMust;
 use App\Pages\Page;
-use App\TranslationManager;
-use App\Translator;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 
 class BlockContent extends Block
 {

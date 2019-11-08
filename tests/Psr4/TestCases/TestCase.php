@@ -1,11 +1,11 @@
 <?php
 namespace Tests\Psr4\TestCases;
 
-use App\Application;
-use App\Database;
-use App\License;
+use App\System\Application;
+use App\System\Database;
+use App\System\License;
 use App\LocaleService;
-use App\Settings;
+use App\System\Settings;
 use Mockery;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use Symfony\Component\HttpFoundation\Request;

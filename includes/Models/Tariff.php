@@ -1,7 +1,7 @@
 <?php
 namespace App\Models;
 
-use App\Settings;
+use App\System\Settings;
 
 class Tariff
 {

@@ -1,10 +1,10 @@
 <?php
 namespace App\Blocks;
 
-use App\CurrentPage;
-use App\Heart;
-use App\TranslationManager;
-use App\Translator;
+use App\System\CurrentPage;
+use App\System\Heart;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 
 class BlockAdminContent extends Block
 {

@@ -1,9 +1,7 @@
-// Kliknięcie dodania ceny
 $(document).delegate("#price_button_add", "click", function() {
     show_action_box(currentPage, "price_add");
 });
 
-// Kliknięcie edycji ceny
 $(document).delegate(".table-structure .edit_row", "click", function() {
     show_action_box(currentPage, "price_edit", {
         id: $(this)
@@ -13,18 +11,15 @@ $(document).delegate(".table-structure .edit_row", "click", function() {
     });
 });
 
-// Usuwanie taryfy
+// Delete price
 $(document).delegate(".table-structure .delete_row", "click", function() {
-    var row_id = $(this).closest("tr");
+    var rowId = $(this).closest("tr");
+    var priceId = rowId.children("td[headers=id]").text();
 
     loader.show();
     $.ajax({
-        type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: {
-            action: "delete_price",
-            id: row_id.children("td[headers=id]").text(),
-        },
+        type: "DELETE",
+        url: buildUrl("/api/admin/prices/" + priceId),
         complete: function() {
             loader.hide();
         },
@@ -40,8 +35,8 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
 
             if (jsonObj.return_id === "ok") {
                 // Delete row
-                row_id.fadeOut("slow");
-                row_id.css({ background: "#FFF4BA" });
+                rowId.fadeOut("slow");
+                rowId.css({ background: "#FFF4BA" });
 
                 refresh_blocks("admincontent");
             }
@@ -52,15 +47,15 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     });
 });
 
-// Dodanie ceny
+// Add price
 $(document).delegate("#form_price_add", "submit", function(e) {
     e.preventDefault();
 
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=price_add",
+        url: buildUrl("/api/admin/prices"),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },
@@ -79,10 +74,7 @@ $(document).delegate("#form_price_add", "submit", function(e) {
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_price_add"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
-                // Ukryj i wyczyść action box
-                action_box.hide();
-                $("#action_box_wraper_td").html("");
-
+                clearAndHideActionBox();
                 refresh_blocks("admincontent");
             }
 
@@ -92,15 +84,17 @@ $(document).delegate("#form_price_add", "submit", function(e) {
     });
 });
 
-// Edycja taryfy
+// Edit price
 $(document).delegate("#form_price_edit", "submit", function(e) {
     e.preventDefault();
+
+    var priceId = $(this).find("[name=id]");
 
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("jsonhttp_admin.php"),
-        data: $(this).serialize() + "&action=price_edit",
+        url: buildUrl("/api/admin/prices/" + priceId),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },
@@ -119,10 +113,7 @@ $(document).delegate("#form_price_edit", "submit", function(e) {
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_price_edit"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
-                // Ukryj i wyczyść action box
-                action_box.hide();
-                $("#action_box_wraper_td").html("");
-
+                clearAndHideActionBox();
                 refresh_blocks("admincontent");
             }
 

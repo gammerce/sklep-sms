@@ -1,61 +1,81 @@
 <?php
 namespace App\Routes;
 
-use App\Application;
-use App\Controllers\Api\Admin\PageActionBoxResource;
-use App\Controllers\Api\Admin\ServiceCodeAddFormController;
-use App\Controllers\Api\Admin\ServiceModuleExtraFieldsController;
-use App\Controllers\Api\Admin\UserPasswordResource;
-use App\Controllers\Api\Admin\UserResource;
-use App\Controllers\Api\Admin\UserServiceAddFormController;
-use App\Controllers\Api\Admin\WalletChargeResource;
-use App\Controllers\Api\BrickResource;
-use App\Controllers\Api\IncomeController;
-use App\Controllers\Api\InstallController;
-use App\Controllers\Api\JsonHttpAdminController;
-use App\Controllers\Api\LogInController;
-use App\Controllers\Api\LogOutController;
-use App\Controllers\Api\PasswordForgottenController;
-use App\Controllers\Api\PasswordResetController;
-use App\Controllers\Api\PasswordResource;
-use App\Controllers\Api\PaymentResource;
-use App\Controllers\Api\PurchaseResource;
-use App\Controllers\Api\PurchaseValidationResource;
-use App\Controllers\Api\RegisterController;
-use App\Controllers\Api\ServiceActionController;
-use App\Controllers\Api\ServiceLongDescriptionResource;
-use App\Controllers\Api\ServiceTakeOverController;
-use App\Controllers\Api\ServiceTakeOverFormController;
-use App\Controllers\Api\SessionLanguageResource;
-use App\Controllers\Api\TemplateResource;
-use App\Controllers\Api\TransferController;
-use App\Controllers\Api\UpdateController;
-use App\Controllers\Api\UserProfileResource;
-use App\Controllers\Api\UserServiceBrickController;
-use App\Controllers\Api\UserServiceEditFormController;
-use App\Controllers\Api\UserServiceResource;
-use App\Controllers\View\AdminController;
-use App\Controllers\View\ExtraStuffController;
-use App\Controllers\View\IndexController;
-use App\Controllers\View\JsController;
-use App\Controllers\View\ServerStuffController;
-use App\Controllers\View\SetupController;
-use App\Middlewares\BlockOnInvalidLicense;
-use App\Middlewares\IsUpToDate;
-use App\Middlewares\LoadSettings;
-use App\Middlewares\ManageAdminAuthentication;
-use App\Middlewares\ManageAuthentication;
-use App\Middlewares\MiddlewareContract;
-use App\Middlewares\RequireAuthorization;
-use App\Middlewares\RequireInstalledAndNotUpdated;
-use App\Middlewares\RequireNotInstalled;
-use App\Middlewares\RequireNotInstalledOrNotUpdated;
-use App\Middlewares\RunCron;
-use App\Middlewares\SetAdminSession;
-use App\Middlewares\SetLanguage;
-use App\Middlewares\SetUserSession;
-use App\Middlewares\UpdateUserActivity;
-use App\Middlewares\ValidateLicense;
+use App\Http\Controllers\Api\Admin\AntispamQuestionCollection;
+use App\Http\Controllers\Api\Admin\AntispamQuestionResource;
+use App\Http\Controllers\Api\Admin\GroupCollection;
+use App\Http\Controllers\Api\Admin\GroupResource;
+use App\Http\Controllers\Api\Admin\LogResource;
+use App\Http\Controllers\Api\Admin\PageActionBoxResource;
+use App\Http\Controllers\Api\Admin\PriceCollection;
+use App\Http\Controllers\Api\Admin\PriceResource;
+use App\Http\Controllers\Api\Admin\ServerCollection;
+use App\Http\Controllers\Api\Admin\ServerResource;
+use App\Http\Controllers\Api\Admin\ServiceCodeAddFormController;
+use App\Http\Controllers\Api\Admin\ServiceCodeCollection;
+use App\Http\Controllers\Api\Admin\ServiceCodeResource;
+use App\Http\Controllers\Api\Admin\ServiceCollection;
+use App\Http\Controllers\Api\Admin\ServiceModuleExtraFieldsController;
+use App\Http\Controllers\Api\Admin\ServiceResource;
+use App\Http\Controllers\Api\Admin\SettingsController;
+use App\Http\Controllers\Api\Admin\SmsCodeCollection;
+use App\Http\Controllers\Api\Admin\SmsCodeResource;
+use App\Http\Controllers\Api\Admin\TariffCollection;
+use App\Http\Controllers\Api\Admin\TariffResource;
+use App\Http\Controllers\Api\Admin\TransactionServiceResource;
+use App\Http\Controllers\Api\Admin\UserPasswordResource;
+use App\Http\Controllers\Api\Admin\UserResource;
+use App\Http\Controllers\Api\Admin\UserServiceAddFormController;
+use App\Http\Controllers\Api\Admin\UserServiceCollection;
+use App\Http\Controllers\Api\Admin\UserServiceResource as AdminUserServiceResource;
+use App\Http\Controllers\Api\Admin\WalletChargeResource;
+use App\Http\Controllers\Api\BrickResource;
+use App\Http\Controllers\Api\IncomeController;
+use App\Http\Controllers\Api\InstallController;
+use App\Http\Controllers\Api\LogInController;
+use App\Http\Controllers\Api\LogOutController;
+use App\Http\Controllers\Api\PasswordForgottenController;
+use App\Http\Controllers\Api\PasswordResetController;
+use App\Http\Controllers\Api\PasswordResource;
+use App\Http\Controllers\Api\PaymentResource;
+use App\Http\Controllers\Api\PurchaseResource;
+use App\Http\Controllers\Api\PurchaseValidationResource;
+use App\Http\Controllers\Api\RegisterController;
+use App\Http\Controllers\Api\ServiceActionController;
+use App\Http\Controllers\Api\ServiceLongDescriptionResource;
+use App\Http\Controllers\Api\ServiceTakeOverController;
+use App\Http\Controllers\Api\ServiceTakeOverFormController;
+use App\Http\Controllers\Api\SessionLanguageResource;
+use App\Http\Controllers\Api\TemplateResource;
+use App\Http\Controllers\Api\TransferController;
+use App\Http\Controllers\Api\UpdateController;
+use App\Http\Controllers\Api\UserProfileResource;
+use App\Http\Controllers\Api\UserServiceBrickController;
+use App\Http\Controllers\Api\UserServiceEditFormController;
+use App\Http\Controllers\Api\UserServiceResource;
+use App\Http\Controllers\View\AdminController;
+use App\Http\Controllers\View\ExtraStuffController;
+use App\Http\Controllers\View\IndexController;
+use App\Http\Controllers\View\JsController;
+use App\Http\Controllers\View\ServerStuffController;
+use App\Http\Controllers\View\SetupController;
+use App\Http\Middlewares\BlockOnInvalidLicense;
+use App\Http\Middlewares\IsUpToDate;
+use App\Http\Middlewares\LoadSettings;
+use App\Http\Middlewares\ManageAdminAuthentication;
+use App\Http\Middlewares\ManageAuthentication;
+use App\Http\Middlewares\MiddlewareContract;
+use App\Http\Middlewares\RequireAuthorization;
+use App\Http\Middlewares\RequireInstalledAndNotUpdated;
+use App\Http\Middlewares\RequireNotInstalled;
+use App\Http\Middlewares\RequireNotInstalledOrNotUpdated;
+use App\Http\Middlewares\RunCron;
+use App\Http\Middlewares\SetAdminSession;
+use App\Http\Middlewares\SetLanguage;
+use App\Http\Middlewares\SetUserSession;
+use App\Http\Middlewares\UpdateUserActivity;
+use App\Http\Middlewares\ValidateLicense;
+use App\System\Application;
 use FastRoute\Dispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -246,6 +266,11 @@ class RoutesManager
                     'uses' => UserResource::class . '@put',
                 ]);
 
+                $r->delete('/api/admin/users/{userId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_users"]],
+                    'uses' => UserResource::class . '@delete',
+                ]);
+
                 $r->get('/api/admin/services/{serviceId}/service_codes/add_form', [
                     'middlewares' => [[RequireAuthorization::class, "manage_service_codes"]],
                     'uses' => ServiceCodeAddFormController::class . '@get',
@@ -256,9 +281,29 @@ class RoutesManager
                     'uses' => UserServiceAddFormController::class . '@get',
                 ]);
 
+                $r->post('/api/admin/services/{serviceId}/user_services', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_user_services"]],
+                    'uses' => UserServiceCollection::class . '@post',
+                ]);
+
+                $r->post('/api/admin/services/{serviceId}/service_codes', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_service_codes"]],
+                    'uses' => ServiceCodeCollection::class . '@post',
+                ]);
+
                 $r->get('/api/admin/services/{serviceId}/modules/{moduleId}/extra_fields', [
                     'middlewares' => [[RequireAuthorization::class, "manage_user_services"]],
                     'uses' => ServiceModuleExtraFieldsController::class . '@get',
+                ]);
+
+                $r->put('/api/admin/user_services/{userServiceId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_user_services"]],
+                    'uses' => AdminUserServiceResource::class . '@put',
+                ]);
+
+                $r->delete('/api/admin/user_services/{userServiceId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_user_services"]],
+                    'uses' => AdminUserServiceResource::class . '@delete',
                 ]);
 
                 $r->get('/api/admin/pages/{pageId}/action_boxes/{actionBoxId}', [
@@ -269,6 +314,126 @@ class RoutesManager
                 $r->post('/api/admin/users/{userId}/wallet/charge', [
                     'middlewares' => [[RequireAuthorization::class, "manage_users"]],
                     'uses' => WalletChargeResource::class . '@post',
+                ]);
+
+                $r->delete('/api/admin/service_codes/{serviceCodeId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_service_codes"]],
+                    'uses' => ServiceCodeResource::class . '@delete',
+                ]);
+
+                $r->post('/api/admin/sms_codes', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_sms_codes"]],
+                    'uses' => SmsCodeCollection::class . '@post',
+                ]);
+
+                $r->delete('/api/admin/sms_codes/{smsCodeId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_sms_codes"]],
+                    'uses' => SmsCodeResource::class . '@delete',
+                ]);
+
+                $r->put('/api/admin/transaction_services/{transactionServiceId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
+                    'uses' => TransactionServiceResource::class . '@put',
+                ]);
+
+                $r->put('/api/admin/settings', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
+                    'uses' => SettingsController::class . '@put',
+                ]);
+
+                $r->delete('/api/admin/logs/{logId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_logs"]],
+                    'uses' => LogResource::class . '@delete',
+                ]);
+
+                $r->post('/api/admin/groups', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_groups"]],
+                    'uses' => GroupCollection::class . '@post',
+                ]);
+
+                $r->put('/api/admin/groups/{groupId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_groups"]],
+                    'uses' => GroupResource::class . '@put',
+                ]);
+
+                $r->delete('/api/admin/groups/{groupId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_groups"]],
+                    'uses' => GroupResource::class . '@delete',
+                ]);
+
+                $r->post('/api/admin/antispam_questions', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_antispam_questions"]],
+                    'uses' => AntispamQuestionCollection::class . '@post',
+                ]);
+
+                $r->put('/api/admin/antispam_questions/{antispamQuestionId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_antispam_questions"]],
+                    'uses' => AntispamQuestionResource::class . '@put',
+                ]);
+
+                $r->delete('/api/admin/antispam_questions/{antispamQuestionId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_antispam_questions"]],
+                    'uses' => AntispamQuestionResource::class . '@delete',
+                ]);
+
+                $r->post('/api/admin/prices', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
+                    'uses' => PriceCollection::class . '@post',
+                ]);
+
+                $r->put('/api/admin/prices/{priceId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
+                    'uses' => PriceResource::class . '@put',
+                ]);
+
+                $r->delete('/api/admin/prices/{priceId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
+                    'uses' => PriceResource::class . '@delete',
+                ]);
+
+                $r->post('/api/admin/servers', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_servers"]],
+                    'uses' => ServerCollection::class . '@post',
+                ]);
+
+                $r->put('/api/admin/servers/{serverId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_servers"]],
+                    'uses' => ServerResource::class . '@put',
+                ]);
+
+                $r->delete('/api/admin/servers/{serverId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_servers"]],
+                    'uses' => ServerResource::class . '@delete',
+                ]);
+
+                $r->post('/api/admin/services', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_services"]],
+                    'uses' => ServiceCollection::class . '@post',
+                ]);
+
+                $r->put('/api/admin/services/{serviceId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_services"]],
+                    'uses' => ServiceResource::class . '@put',
+                ]);
+
+                $r->delete('/api/admin/services/{serviceId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_services"]],
+                    'uses' => ServiceResource::class . '@delete',
+                ]);
+
+                $r->post('/api/admin/tariffs', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
+                    'uses' => TariffCollection::class . '@post',
+                ]);
+
+                $r->put('/api/admin/tariffs/{tariffId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
+                    'uses' => TariffResource::class . '@put',
+                ]);
+
+                $r->delete('/api/admin/tariffs/{tariffId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
+                    'uses' => TariffResource::class . '@delete',
                 ]);
 
                 $r->get('/api/admin/bricks/{bricks}', [
@@ -282,10 +447,6 @@ class RoutesManager
                 $r->addRoute(['GET', 'POST'], '/admin.php', [
                     'middlewares' => [RunCron::class],
                     'uses' => AdminController::class . '@oldAction',
-                ]);
-
-                $r->addRoute(['GET', 'POST'], '/jsonhttp_admin.php', [
-                    'uses' => JsonHttpAdminController::class . '@action',
                 ]);
             }
         );

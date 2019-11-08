@@ -1,15 +1,10 @@
 (function() {
-    function clearAndHideActionBox() {
-        action_box.hide();
-        $("#action_box_wraper_td").html("");
-    }
-
     // This is used later when action is done
-    var row_id = 0;
+    var rowId = 0;
     $(document).delegate(".table-structure .charge_wallet", "click", function() {
-        row_id = $(this).closest("tr");
+        rowId = $(this).closest("tr");
         show_action_box(currentPage, "charge_wallet", {
-            uid: row_id.children("td[headers=id]").text(),
+            uid: rowId.children("td[headers=id]").text(),
         });
     });
 
@@ -32,26 +27,17 @@
     });
 
     $(document).delegate(".table-structure .delete_row", "click", function() {
-        var row_id = $(this).closest("tr");
+        var rowId = $(this).closest("tr");
+        var userId = rowId.children("td[headers=id]").text();
 
-        if (
-            !confirm(
-                "Czy na pewno chcesz usunąć konto o ID " +
-                    row_id.children("td[headers=id]").text() +
-                    "?"
-            )
-        ) {
+        if (!confirm("Czy na pewno chcesz usunąć konto o ID " + userId + "?")) {
             return;
         }
 
         loader.show();
         $.ajax({
             type: "POST",
-            url: buildUrl("jsonhttp_admin.php"),
-            data: {
-                action: "delete_user",
-                uid: row_id.children("td[headers=id]").text(),
-            },
+            url: buildUrl("/api/admin/users/" + userId),
             complete: function() {
                 loader.hide();
             },
@@ -67,8 +53,8 @@
 
                 if (jsonObj.return_id === "ok") {
                     // Delete row
-                    row_id.fadeOut("slow");
-                    row_id.css({ background: "#FFF4BA" });
+                    rowId.fadeOut("slow");
+                    rowId.css({ background: "#FFF4BA" });
 
                     refresh_blocks("admincontent");
                 }
@@ -112,7 +98,7 @@
                 } else if (jsonObj.return_id === "charged") {
                     // Change wallet state
                     getAndSetTemplate(
-                        row_id.children("td[headers=wallet]"),
+                        rowId.children("td[headers=wallet]"),
                         "admin_user_wallet",
                         {
                             uid: $(that)
@@ -121,7 +107,7 @@
                         },
                         function() {
                             // Podświetl row
-                            row_id.children("td[headers=wallet]").effect("highlight", 1000);
+                            rowId.children("td[headers=wallet]").effect("highlight", 1000);
                         }
                     );
 

@@ -1,9 +1,9 @@
 <?php
 namespace App\Install;
 
-use App\Path;
-use App\TranslationManager;
-use App\Translator;
+use App\System\Path;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 
 class SetupManager
 {

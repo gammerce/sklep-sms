@@ -7,7 +7,7 @@ use App\Blocks\BlockLoggedInfo;
 use App\Blocks\BlockServicesButtons;
 use App\Blocks\BlockUserButtons;
 use App\Blocks\BlockWallet;
-use App\Heart;
+use App\System\Heart;
 use App\Pages\PageAdminAntispamQuestions;
 use App\Pages\PageAdminBoughtServices;
 use App\Pages\PageAdminGroups;

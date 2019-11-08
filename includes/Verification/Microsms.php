@@ -1,13 +1,13 @@
 <?php
 namespace App\Verification;
 
-use App\Database;
+use App\System\Database;
 use App\Models\Purchase;
 use App\Models\TransferFinalize;
 use App\Requesting\Requester;
 use App\Routes\UrlGenerator;
-use App\Settings;
-use App\TranslationManager;
+use App\System\Settings;
+use App\Translation\TranslationManager;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;

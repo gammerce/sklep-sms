@@ -1,4 +1,4 @@
-// Zmiana serwera
+// Change server
 $(document).delegate("#form_service_code_add [name=server]", "change", function() {
     var module;
     if (!(module = service_module_act_can("extra_flags", $(this)))) return;

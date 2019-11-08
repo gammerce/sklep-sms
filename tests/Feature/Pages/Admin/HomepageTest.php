@@ -2,7 +2,7 @@
 namespace Tests\Feature\Pages\Admin;
 
 use App\Exceptions\LicenseRequestException;
-use App\License;
+use App\System\License;
 use Tests\Psr4\Concerns\AuthConcern;
 use Tests\Psr4\TestCases\IndexTestCase;
 
