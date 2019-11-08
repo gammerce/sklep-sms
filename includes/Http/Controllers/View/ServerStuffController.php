@@ -10,6 +10,9 @@ use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @deprecated
+ */
 class ServerStuffController
 {
     public function action(
