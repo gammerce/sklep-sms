@@ -5,9 +5,9 @@ use App\LicenseServerService;
 use App\Models\Purchase;
 use App\Services\Interfaces\IServicePurchase;
 use App\Services\Interfaces\IServicePurchaseWeb;
-use App\Settings;
-use App\TranslationManager;
-use App\Translator;
+use App\System\Settings;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 use UnexpectedValueException;
 
 class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
@@ -188,7 +188,7 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
         throw new UnexpectedValueException();
     }
 
-    public function show_on_web()
+    public function showOnWeb()
     {
         return false;
     }

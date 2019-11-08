@@ -1,17 +1,17 @@
 <?php
 namespace App\Services\ShopSmsLicenseProlong;
 
-use App\Auth;
-use App\Heart;
+use App\System\Auth;
+use App\System\Heart;
 use App\LicenseServerService;
 use App\Models\Purchase;
 use App\Services\Interfaces\IServiceActionExecute;
 use App\Services\Interfaces\IServicePurchase;
 use App\Services\Interfaces\IServicePurchaseWeb;
 use App\Services\Interfaces\IServiceUserServiceAdminAdd;
-use App\Settings;
-use App\TranslationManager;
-use App\Translator;
+use App\System\Settings;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 

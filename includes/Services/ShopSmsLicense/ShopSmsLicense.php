@@ -32,6 +32,8 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
 
     public function purchaseFormValidate($body)
     {
+        $warnings = [];
+
         // Wybranie przynajmniej jednego silnika gry
         if ($body['platform_amxmodx'] == "0" && $body['platform_sourcemod'] == "0") {
             $warnings['engines'][] = $this->lang->translate('no_engine_choosen');
@@ -364,6 +366,8 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
 
     public function userOwnServiceEdit(array $body, $userService)
     {
+        $warnings = [];
+
         // Wybranie przynajmniej jednego silnika gry
         if ($body['platform_amxmodx'] == "0" && $body['platform_sourcemod'] == '0') {
             $warnings['engines'][] = $this->lang->translate('no_engine_choosen');

@@ -84,29 +84,26 @@ function ss_user_edit_set_cost(form) {
 
     var serviceId = form.find("[name=service]").val();
 
-    rest_request(
-        "POST",
-        "/api/service/" + serviceId + "/actions/get_cost_user_edit",
-        data,
-        function(content) {
-            var jsonObj = json_parse(content);
-            if (!jsonObj) {
-                return;
-            }
-
-            var cost = form.find("#cost");
-            var costMonthly = form.find("#cost_monthly");
-
-            if (cost.html() != jsonObj.surcharge) {
-                // podswietlamy i zmieniamy zawartosc, gdy ta sie rzeczywiscie zmienila
-                cost.html(jsonObj.surcharge).effect("highlight", 1000);
-            }
-
-            if (costMonthly.html() != jsonObj.cost_monthly) {
-                costMonthly.html(jsonObj.cost_monthly).effect("highlight", 1000);
-            }
+    restRequest("POST", "/api/service/" + serviceId + "/actions/get_cost_user_edit", data, function(
+        content
+    ) {
+        var jsonObj = json_parse(content);
+        if (!jsonObj) {
+            return;
         }
-    );
+
+        var cost = form.find("#cost");
+        var costMonthly = form.find("#cost_monthly");
+
+        if (cost.html() != jsonObj.surcharge) {
+            // podswietlamy i zmieniamy zawartosc, gdy ta sie rzeczywiscie zmienila
+            cost.html(jsonObj.surcharge).effect("highlight", 1000);
+        }
+
+        if (costMonthly.html() != jsonObj.cost_monthly) {
+            costMonthly.html(jsonObj.cost_monthly).effect("highlight", 1000);
+        }
+    });
 }
 
 // Kliknięcie przeładowania

@@ -1,8 +1,6 @@
 <?php
 namespace App\Services\ShopSmsLicense;
 
-use App\Auth;
-use App\CurrentPage;
 use App\Html\BodyRow;
 use App\Html\Cell;
 use App\Html\HeadCell;
@@ -11,9 +9,11 @@ use App\Html\Wrapper;
 use App\LicenseServerService;
 use App\Services\Interfaces\IServiceUserServiceAdminDisplay;
 use App\Services\Service;
-use App\Settings;
-use App\TranslationManager;
-use App\Translator;
+use App\System\Auth;
+use App\System\CurrentPage;
+use App\System\Settings;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 
 class ShopSmsLicenseSimple extends Service implements IServiceUserServiceAdminDisplay
 {
