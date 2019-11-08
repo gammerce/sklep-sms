@@ -1,10 +1,10 @@
 <?php
 namespace App\Providers;
 
-use App\Application;
-use App\Heart;
+use App\System\Application;
+use App\System\Heart;
 use App\LicenseServerService;
-use App\Mailer;
+use App\System\Mailer;
 use App\Requesting\Requester;
 use App\Services\ShopSmsLicense\ShopSmsLicense;
 use App\Services\ShopSmsLicense\ShopSmsLicenseSimple;
@@ -12,8 +12,8 @@ use App\Services\ShopSmsLicenseEdit\ShopSmsLicenseEdit;
 use App\Services\ShopSmsLicenseEdit\ShopSmsLicenseEditSimple;
 use App\Services\ShopSmsLicenseProlong\ShopSmsLicenseProlong;
 use App\Services\ShopSmsLicenseProlong\ShopSmsLicenseProlongSimple;
-use App\Settings;
-use App\TranslationManager;
+use App\System\Settings;
+use App\Translation\TranslationManager;
 
 class LicenseServiceProvider
 {
