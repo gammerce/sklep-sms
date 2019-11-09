@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api;
 
+use App\Payment\PaymentService;
 use App\System\Heart;
 use App\Models\Purchase;
 use App\Http\Responses\ApiResponse;
@@ -14,15 +15,12 @@ class PaymentResource
         Request $request,
         TranslationManager $translationManager,
         Settings $settings,
-        Heart $heart
+        Heart $heart,
+        PaymentService $paymentService
     ) {
         $lang = $translationManager->user();
 
-        if (
-            !$request->request->has('purchase_sign') ||
-            $request->request->get('purchase_sign') !=
-                md5($request->request->get('purchase_data') . $settings['random_key'])
-        ) {
+        if (!$this->isCorrectlySigned($request, $settings['random_key'])) {
             return new ApiResponse("wrong_sign", $lang->translate('wrong_sign'), 0);
         }
 
@@ -39,7 +37,7 @@ class PaymentResource
             'service_code' => $request->request->get('service_code'),
         ]);
 
-        $returnPayment = make_payment($purchaseData);
+        $returnPayment = $paymentService->makePayment($purchaseData);
 
         return new ApiResponse(
             $returnPayment['status'],
@@ -47,5 +45,15 @@ class PaymentResource
             $returnPayment['positive'],
             $returnPayment['data']
         );
+    }
+
+    private function isCorrectlySigned(Request $request, $secret)
+    {
+        $sign = $request->request->get('purchase_sign');
+        $purchaseData = $request->request->get("purchase_data");
+
+        $calculatedSign = md5($purchaseData . $secret);
+
+        return $sign === $calculatedSign;
     }
 }

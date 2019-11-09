@@ -3,6 +3,7 @@ namespace App\Http\Services;
 
 use App\Models\Purchase;
 use App\Payment;
+use App\Payment\PaymentService;
 use App\Services\Service;
 use App\System\Heart;
 use App\Translation\TranslationManager;
@@ -16,10 +17,17 @@ class PurchaseService
     /** @var Translator */
     private $lang;
 
-    public function __construct(Heart $heart, TranslationManager $translationManager)
-    {
+    /** @var PaymentService */
+    private $paymentService;
+
+    public function __construct(
+        Heart $heart,
+        TranslationManager $translationManager,
+        PaymentService $paymentService
+    ) {
         $this->heart = $heart;
         $this->lang = $translationManager->user();
+        $this->paymentService = $paymentService;
     }
 
     public function payWithSms(Service $serviceModule, array $body)
@@ -93,7 +101,7 @@ class PurchaseService
             'sms_code' => $smsCode,
             'sms_service' => $transactionService,
         ]);
-        $returnPayment = make_payment($purchaseData);
+        $returnPayment = $this->paymentService->makePayment($purchaseData);
 
         $extraData = "";
 

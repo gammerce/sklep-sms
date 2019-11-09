@@ -42,7 +42,7 @@ class Bizneshost extends PaymentModule implements SupportSms
         // Code is correct
         if ($statusExploded[0] == '1') {
             // Check whether prices are equal
-            if (abs(get_sms_cost_brutto($number) / 100 - floatval($statusExploded[1])) < 0.1) {
+            if (abs(get_sms_cost_gross($number) / 100 - floatval($statusExploded[1])) < 0.1) {
                 return new SmsSuccessResult();
             }
 
