@@ -21,10 +21,6 @@ class UserServiceBrickController
         $lang = $translationManager->user();
         $user = $auth->user();
 
-        if (!is_logged()) {
-            return new HtmlResponse($lang->translate('not_logged'));
-        }
-
         $userService = get_users_services($userServiceId);
 
         // Brak takiej usługi w bazie

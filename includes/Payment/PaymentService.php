@@ -5,6 +5,7 @@ use App\Models\Purchase;
 use App\Models\User;
 use App\Payment;
 use App\Services\Service;
+use App\System\Auth;
 use App\System\Database;
 use App\System\Heart;
 use App\System\Settings;
@@ -29,17 +30,22 @@ class PaymentService
     /** @var Database */
     private $db;
 
+    /** @var Auth */
+    private $auth;
+
     public function __construct(
         Heart $heart,
         TranslationManager $translationManager,
         Settings $settings,
-        Database $db
+        Database $db,
+        Auth $auth
     ) {
         $this->heart = $heart;
         $this->settings = $settings;
         $this->lang = $translationManager->user();
         $this->langShop = $translationManager->shop();
         $this->db = $db;
+        $this->auth = $auth;
     }
 
     public function makePayment(Purchase $purchase)
@@ -93,7 +99,7 @@ class PaymentService
         }
 
         // Metoda płatności
-        if ($purchase->getPayment('method') == "wallet" && !is_logged()) {
+        if ($purchase->getPayment('method') == "wallet" && !$this->auth->check()) {
             return [
                 'status' => "wallet_not_logged",
                 'text' => $this->lang->translate('no_login_no_wallet'),

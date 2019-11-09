@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api;
 
+use App\System\Auth;
 use App\System\Database;
 use App\Exceptions\ValidationException;
 use App\System\Heart;
@@ -21,12 +22,13 @@ class PasswordForgottenController
         Heart $heart,
         UrlGenerator $url,
         Template $template,
-        Mailer $mailer
+        Mailer $mailer,
+        Auth $auth
     ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
 
-        if (is_logged()) {
+        if ($auth->check()) {
             return new ApiResponse("logged_in", $lang->translate('logged'), 0);
         }
 

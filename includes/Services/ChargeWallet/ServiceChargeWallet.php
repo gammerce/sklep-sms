@@ -1,6 +1,7 @@
 <?php
 namespace App\Services\ChargeWallet;
 
+use App\System\Auth;
 use App\System\Heart;
 use App\Models\Purchase;
 use App\Payment;
@@ -14,6 +15,9 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
     IServicePurchase,
     IServicePurchaseWeb
 {
+    /** @var Auth */
+    protected $auth;
+
     /** @var Heart */
     protected $heart;
 
@@ -30,6 +34,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
+        $this->auth = $this->app->make(Auth::class);
         $this->heart = $this->app->make(Heart::class);
         $this->settings = $this->app->make(Settings::class);
     }
@@ -88,7 +93,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
 
     public function purchaseFormValidate($data)
     {
-        if (!is_logged()) {
+        if (!$this->auth->check()) {
             return [
                 'status' => "not_logged_in",
                 'text' => $this->lang->translate('you_arent_logged'),

@@ -11,10 +11,6 @@ class LogOutController
     {
         $lang = $translationManager->user();
 
-        if (!is_logged()) {
-            return new ApiResponse("already_logged_out");
-        }
-
         $request->getSession()->invalidate();
 
         return new ApiResponse("logged_out", $lang->translate('logout_success'), 1);

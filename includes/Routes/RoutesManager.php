@@ -169,6 +169,7 @@ class RoutesManager
                         ]);
 
                         $r->post('/api/logout', [
+                            "middlewares" => [RequireAuthorization::class],
                             'uses' => LogOutController::class . '@post',
                         ]);
 
@@ -219,14 +220,17 @@ class RoutesManager
                         ]);
 
                         $r->get('/api/user_services/{userServiceId}/edit_form', [
+                            "middlewares" => [RequireAuthorization::class],
                             'uses' => UserServiceEditFormController::class . '@get',
                         ]);
 
                         $r->get('/api/user_services/{userServiceId}/brick', [
+                            "middlewares" => [RequireAuthorization::class],
                             'uses' => UserServiceBrickController::class . '@get',
                         ]);
 
                         $r->put('/api/user_services/{userServiceId}', [
+                            "middlewares" => [RequireAuthorization::class],
                             'uses' => UserServiceResource::class . '@put',
                         ]);
 

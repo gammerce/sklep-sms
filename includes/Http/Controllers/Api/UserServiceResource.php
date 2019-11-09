@@ -22,10 +22,6 @@ class UserServiceResource
         $lang = $translationManager->user();
         $user = $auth->user();
 
-        if (!is_logged()) {
-            return new ApiResponse("not_logged", $lang->translate('not_logged'), 0);
-        }
-
         $userService = get_users_services($userServiceId);
 
         // User service was not found
