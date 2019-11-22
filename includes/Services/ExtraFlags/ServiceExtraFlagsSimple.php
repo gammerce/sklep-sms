@@ -1,6 +1,7 @@
 <?php
 namespace App\Services\ExtraFlags;
 
+use App\Exceptions\InvalidConfigException;
 use App\Html\BodyRow;
 use App\Html\Cell;
 use App\Html\HeadCell;
@@ -156,13 +157,11 @@ class ServiceExtraFlagsSimple extends Service implements
 
             // Sprawdzamy czy uprawnienia się dodały
             if (substr(sprintf('%o', fileperms($file)), -4) != "0777") {
-                json_output(
-                    "not_created",
+                throw new InvalidConfigException(
                     $this->lang->sprintf(
                         $this->lang->translate('wrong_service_description_file'),
                         $this->settings['theme']
-                    ),
-                    0
+                    )
                 );
             }
         }

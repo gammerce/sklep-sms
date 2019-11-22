@@ -1,12 +1,12 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\System\Database;
 use App\Exceptions\ValidationException;
-use App\System\Heart;
-use App\System\Mailer;
 use App\Http\Responses\ApiResponse;
 use App\Routes\UrlGenerator;
+use App\System\Database;
+use App\System\Heart;
+use App\System\Mailer;
 use App\System\Template;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,10 +25,6 @@ class PasswordForgottenController
     ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
-
-        if (is_logged()) {
-            return new ApiResponse("logged_in", $lang->translate('logged'), 0);
-        }
 
         $warnings = [];
 

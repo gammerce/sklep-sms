@@ -22,7 +22,6 @@ class RegisterController
 {
     public function post(
         Request $request,
-        Auth $auth,
         TranslationManager $translationManager,
         Database $db,
         UserRepository $userRepository,
@@ -35,10 +34,6 @@ class RegisterController
         $session = $request->getSession();
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
-
-        if ($auth->check()) {
-            return new ApiResponse("logged_in", $lang->translate('logged'), 0);
-        }
 
         $username = trim($request->request->get('username'));
         $password = $request->request->get('password');

@@ -19,10 +19,6 @@ class PasswordResetController
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
 
-        if (is_logged()) {
-            return new ApiResponse("logged_in", $lang->translate('logged'), 0);
-        }
-
         $warnings = [];
 
         $uid = $request->request->get('uid');

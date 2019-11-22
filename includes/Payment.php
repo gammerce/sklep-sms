@@ -1,6 +1,7 @@
 <?php
 namespace App;
 
+use App\Exceptions\InvalidConfigException;
 use App\Models\Purchase;
 use App\Models\Tariff;
 use App\Models\TransferFinalize;
@@ -68,7 +69,7 @@ class Payment
 
         // API podanej usługi nie istnieje.
         if ($this->paymentModule === null) {
-            output_page(
+            throw new InvalidConfigException(
                 $this->lang->sprintf(
                     $this->lang->translate('payment_bad_service'),
                     $paymentModuleId

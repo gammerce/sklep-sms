@@ -74,7 +74,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
     {
         if (!get_privileges("manage_antispam_questions")) {
             return [
-                'status' => "not_logged_in",
+                'status' => "no_access",
                 'text' => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }

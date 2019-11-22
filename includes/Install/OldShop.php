@@ -1,6 +1,7 @@
 <?php
 namespace App\Install;
 
+use App\Exceptions\InvalidConfigException;
 use App\System\Path;
 use App\System\Template;
 
@@ -24,6 +25,6 @@ class OldShop
             return;
         }
 
-        output_page($this->template->render('setup/missing_env'));
+        throw new InvalidConfigException($this->template->render('setup/missing_env'));
     }
 }

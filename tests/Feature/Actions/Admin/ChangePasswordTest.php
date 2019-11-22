@@ -46,7 +46,7 @@ class ChangePasswordTest extends IndexTestCase
         // then
         $this->assertEquals(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertEquals("not_logged_in", $json["return_id"]);
+        $this->assertEquals("no_access", $json["return_id"]);
 
         $freshUser = new User(0, $user->getUsername(), $password);
         $this->assertNull($freshUser->getUid());

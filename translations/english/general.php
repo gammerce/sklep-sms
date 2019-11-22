@@ -77,8 +77,7 @@ return [
     'none' => 'None',
     'not_edited_user_service' => 'Could not edit service.',
     'not_logged' => 'You are not logged in',
-    'not_logged_or_no_perm' =>
-        'Something is wrong, you are not logged in or you have no permission oO',
+    'not_logged_or_no_perm' => 'You are not logged in or you have no permission.',
     'november' => 'November',
     'october' => 'October',
     'old_password' => 'Old Password',
@@ -124,5 +123,4 @@ return [
     'wrong_sid' => 'Given Steam ID is incorrect.',
     'wrong_sign' => 'Something is wrong, data verification ended up an IT failure.',
     'yes' => 'Yes',
-    'you_arent_logged' => 'Something is wrong, you are not logged in oO',
 ];

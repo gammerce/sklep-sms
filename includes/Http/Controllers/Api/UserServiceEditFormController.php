@@ -22,10 +22,6 @@ class UserServiceEditFormController
         $lang = $translationManager->user();
         $user = $auth->user();
 
-        if (!is_logged()) {
-            return new HtmlResponse($lang->translate('service_cant_be_modified'));
-        }
-
         // Użytkownik nie może edytować usługi
         if (!$settings['user_edit_service']) {
             return new HtmlResponse($lang->translate('not_logged'));

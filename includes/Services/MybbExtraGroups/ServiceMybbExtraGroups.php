@@ -1,6 +1,7 @@
 <?php
 namespace App\Services\MybbExtraGroups;
 
+use App\Exceptions\InvalidConfigException;
 use App\System\Auth;
 use App\System\Database;
 use App\Exceptions\SqlQueryException;
@@ -342,8 +343,8 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         try {
             $this->connectMybb();
         } catch (SqlQueryException $e) {
-            if ($who == 'admin') {
-                output_page($e->getError());
+            if ($who === 'admin') {
+                throw new InvalidConfigException($e->getError());
             }
 
             return false;
