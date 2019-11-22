@@ -1,6 +1,7 @@
 <?php
 namespace App\Install;
 
+use App\Exceptions\InvalidConfigException;
 use App\System\Application;
 use App\System\ExceptionHandlerContract;
 use App\Exceptions\SqlQueryException;
@@ -10,6 +11,7 @@ use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class ExceptionHandler implements ExceptionHandlerContract
 {
@@ -34,9 +36,15 @@ class ExceptionHandler implements ExceptionHandlerContract
 
     public function render(Request $request, Exception $e)
     {
-        $message =
-            'Wystąpił błąd podczas aktualizacji.<br />Poinformuj o swoim problemie na forum sklepu. Do wątku załącz plik data/logs/install.log';
-        return new ApiResponse('error', $message, false);
+        if ($e instanceof InvalidConfigException) {
+            return new Response($e->getMessage());
+        }
+
+        return new ApiResponse(
+            'error',
+            'Wystąpił błąd podczas aktualizacji.<br />Poinformuj o swoim problemie na forum sklepu. Do wątku załącz plik data/logs/install.log',
+            false
+        );
     }
 
     public function report(Exception $e)

@@ -69,7 +69,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
     {
         if (!get_privileges("manage_servers")) {
             return [
-                'status' => "not_logged_in",
+                'status' => "no_access",
                 'text' => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }

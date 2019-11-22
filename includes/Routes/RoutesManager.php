@@ -71,6 +71,7 @@ use App\Http\Middlewares\RequireAuthorization;
 use App\Http\Middlewares\RequireInstalledAndNotUpdated;
 use App\Http\Middlewares\RequireNotInstalled;
 use App\Http\Middlewares\RequireNotInstalledOrNotUpdated;
+use App\Http\Middlewares\RequireUnauthorization;
 use App\Http\Middlewares\RunCron;
 use App\Http\Middlewares\SetAdminSession;
 use App\Http\Middlewares\SetLanguage;
@@ -161,6 +162,7 @@ class RoutesManager
                         ]);
 
                         $r->post('/api/register', [
+                            'middlewares' => [RequireUnauthorization::class],
                             'uses' => RegisterController::class . '@post',
                         ]);
 
@@ -169,7 +171,6 @@ class RoutesManager
                         ]);
 
                         $r->post('/api/logout', [
-                            "middlewares" => [RequireAuthorization::class],
                             'uses' => LogOutController::class . '@post',
                         ]);
 
@@ -183,10 +184,12 @@ class RoutesManager
                         ]);
 
                         $r->post('/api/password/forgotten', [
+                            'middlewares' => [RequireUnauthorization::class],
                             'uses' => PasswordForgottenController::class . '@post',
                         ]);
 
                         $r->post('/api/password/reset', [
+                            'middlewares' => [RequireUnauthorization::class],
                             'uses' => PasswordResetController::class . '@post',
                         ]);
 
@@ -220,12 +223,12 @@ class RoutesManager
                         ]);
 
                         $r->get('/api/user_services/{userServiceId}/edit_form', [
-                            "middlewares" => [RequireAuthorization::class],
+                            'middlewares' => [RequireAuthorization::class],
                             'uses' => UserServiceEditFormController::class . '@get',
                         ]);
 
                         $r->get('/api/user_services/{userServiceId}/brick', [
-                            "middlewares" => [RequireAuthorization::class],
+                            'middlewares' => [RequireAuthorization::class],
                             'uses' => UserServiceBrickController::class . '@get',
                         ]);
 

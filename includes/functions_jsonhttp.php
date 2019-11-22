@@ -112,25 +112,6 @@ function check_for_warnings($type, $data)
     return $warnings;
 }
 
-/**
- * @param        $id
- * @param string $text
- * @param bool   $positive
- * @param array  $data
- */
-function json_output($id, $text = "", $positive = false, $data = [])
-{
-    $output['return_id'] = $id;
-    $output['text'] = $text;
-    $output['positive'] = $positive;
-
-    if (is_array($data) && !empty($data)) {
-        $output = array_merge($output, $data);
-    }
-
-    output_page(json_encode($output), 1);
-}
-
 function format_warnings(array $warnings)
 {
     $output = [];

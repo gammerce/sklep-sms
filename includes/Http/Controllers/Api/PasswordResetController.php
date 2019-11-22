@@ -3,7 +3,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
-use App\System\Auth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\UserPasswordService;
@@ -15,15 +14,10 @@ class PasswordResetController
         Request $request,
         TranslationManager $translationManager,
         Settings $settings,
-        UserPasswordService $userPasswordService,
-        Auth $auth
+        UserPasswordService $userPasswordService
     ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
-
-        if ($auth->check()) {
-            return new ApiResponse("logged_in", $lang->translate('logged'), 0);
-        }
 
         $warnings = [];
 

@@ -35,35 +35,6 @@ function app($abstract = null, array $parameters = [])
 }
 
 /**
- * Pobranie szablonu
- *
- * @param string     $output Zwartość do wyświetlenia
- * @param int|string $header String do użycia w funkcji header()
- */
-function output_page($output, $header = 0)
-{
-    if (is_string($header)) {
-        header($header);
-    } else {
-        switch ($header) {
-            case 1:
-                header('Content-type: text/plain; charset="UTF-8"');
-                break;
-
-            default:
-                header('Content-type: text/html; charset="UTF-8"');
-        }
-    }
-
-    header("Expires: Sat, 1 Jan 2000 01:00:00 GMT");
-    header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-    header("Cache-Control: no-cache, must-revalidate");
-    header("Pragma: no-cache");
-
-    die($output);
-}
-
-/**
  * Zwraca treść danego bloku
  *
  * @param string  $element
