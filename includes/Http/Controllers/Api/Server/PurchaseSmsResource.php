@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PurchaseSmsResource
 {
+    // TODO Test against string that requires url encoding
+
     public function post(
         Request $request,
         Heart $heart,
