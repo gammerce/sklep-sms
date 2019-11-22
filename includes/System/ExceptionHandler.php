@@ -31,11 +31,12 @@ class ExceptionHandler implements ExceptionHandlerContract
     private $path;
 
     private $dontReport = [
-        RequireInstallationException::class,
-        LicenseException::class,
-        ValidationException::class,
-        UnauthorizedException::class,
+        EntityNotFoundException::class,
         InvalidConfigException::class,
+        LicenseException::class,
+        RequireInstallationException::class,
+        UnauthorizedException::class,
+        ValidationException::class,
     ];
 
     public function __construct(
@@ -50,20 +51,6 @@ class ExceptionHandler implements ExceptionHandlerContract
 
     public function render(Request $request, Exception $e)
     {
-        if ($this->app->isDebug()) {
-            $exceptionDetails = $this->getExceptionDetails($e);
-
-            return new JsonResponse($exceptionDetails);
-        }
-
-        if ($e instanceof LicenseException) {
-            return new Response($this->lang->translate('verification_error'));
-        }
-
-        if ($e instanceof LicenseRequestException) {
-            return new Response($e->getMessage());
-        }
-
         if ($e instanceof EntityNotFoundException) {
             return new Response($e->getMessage(), 404);
         }
@@ -86,12 +73,25 @@ class ExceptionHandler implements ExceptionHandlerContract
             );
         }
 
-        if ($e instanceof InvalidConfigException) {
+        if ($e instanceof RequireInstallationException) {
+            return new RedirectResponse('/setup');
+        }
+
+        if ($this->app->isDebug()) {
+            $exceptionDetails = $this->getExceptionDetails($e);
+            return new JsonResponse($exceptionDetails);
+        }
+
+        if ($e instanceof LicenseException) {
+            return new Response($this->lang->translate('verification_error'));
+        }
+
+        if ($e instanceof LicenseRequestException) {
             return new Response($e->getMessage());
         }
 
-        if ($e instanceof RequireInstallationException) {
-            return new RedirectResponse('/setup');
+        if ($e instanceof InvalidConfigException) {
+            return new Response($e->getMessage());
         }
 
         return new Response(
