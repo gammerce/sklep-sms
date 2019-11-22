@@ -1,9 +1,10 @@
 <?php
 namespace App\Verification\Abstracts;
 
-use App\System\Database;
+use App\Exceptions\InvalidConfigException;
 use App\Models\Tariff;
 use App\Requesting\Requester;
+use App\System\Database;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
@@ -55,13 +56,9 @@ abstract class PaymentModule
         );
 
         if (!$this->db->numRows($result)) {
-            // TODO Output should not happen here
-            output_page(
-                "An error occured in class: " .
-                    get_class($this) .
-                    " constructor. There is no " .
-                    $this->id .
-                    " payment service in database."
+            $className = get_class($this);
+            throw new InvalidConfigException(
+                "An error occured in class: [$className] constructor. There is no [{$this->id}] payment service in database."
             );
         }
 

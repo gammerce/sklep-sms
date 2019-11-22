@@ -1,6 +1,7 @@
 <?php
 namespace App\Services\ExtraFlags;
 
+use App\Exceptions\UnauthorizedException;
 use App\System\Auth;
 use App\System\Heart;
 use App\Models\Purchase;
@@ -1523,7 +1524,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     private function serversForService($server)
     {
         if (!get_privileges("manage_user_services")) {
-            json_output("not_logged_in", $this->lang->translate('no_access'), 0);
+            throw new UnauthorizedException();
         }
 
         $servers = "";

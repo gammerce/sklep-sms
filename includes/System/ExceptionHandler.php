@@ -2,10 +2,12 @@
 namespace App\System;
 
 use App\Exceptions\EntityNotFoundException;
+use App\Exceptions\InvalidConfigException;
 use App\Exceptions\LicenseException;
 use App\Exceptions\LicenseRequestException;
 use App\Exceptions\RequireInstallationException;
 use App\Exceptions\SqlQueryException;
+use App\Exceptions\UnauthorizedException;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
 use App\Translation\TranslationManager;
@@ -32,6 +34,8 @@ class ExceptionHandler implements ExceptionHandlerContract
         RequireInstallationException::class,
         LicenseException::class,
         ValidationException::class,
+        UnauthorizedException::class,
+        InvalidConfigException::class,
     ];
 
     public function __construct(
@@ -64,6 +68,10 @@ class ExceptionHandler implements ExceptionHandlerContract
             return new Response($e->getMessage(), 404);
         }
 
+        if ($e instanceof UnauthorizedException) {
+            return new ApiResponse("no_access", $this->lang->translate('not_logged_or_no_perm'), 0);
+        }
+
         if ($e instanceof ValidationException) {
             return new ApiResponse(
                 "warnings",
@@ -76,6 +84,10 @@ class ExceptionHandler implements ExceptionHandlerContract
                     $e->data
                 )
             );
+        }
+
+        if ($e instanceof InvalidConfigException) {
+            return new Response($e->getMessage());
         }
 
         if ($e instanceof RequireInstallationException) {
