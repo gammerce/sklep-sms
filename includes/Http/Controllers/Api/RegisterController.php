@@ -100,7 +100,9 @@ class RegisterController
             $forename,
             $surname,
             $steamId,
-            get_ip($request)
+            get_ip($request),
+            '1',
+            0
         );
 
         log_info(

@@ -1,5 +1,5 @@
 <?php
-namespace Tests\Feature;
+namespace Tests\Feature\Http;
 
 use App\Exceptions\LicenseRequestException;
 use App\System\License;

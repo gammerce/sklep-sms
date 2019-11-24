@@ -22,15 +22,16 @@ class UserRepository
         $surname,
         $steamId,
         $ip,
-        $groups = '1'
+        $groups,
+        $wallet = 0
     ) {
         $salt = get_random_string(8);
         $this->db->query(
             $this->db->prepare(
                 "INSERT INTO `" .
                     TABLE_PREFIX .
-                    "users` (`username`, `password`, `salt`, `email`, `forename`, `surname`, `regip`, `groups`, `steam_id`, `regdate`) " .
-                    "VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s',NOW())",
+                    "users` (`username`, `password`, `salt`, `email`, `forename`, `surname`, `regip`, `groups`, `wallet`, `steam_id`, `regdate`) " .
+                    "VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%d','%s',NOW())",
                 [
                     $username,
                     hash_password($password, $salt),
@@ -40,6 +41,7 @@ class UserRepository
                     $surname,
                     $ip,
                     $groups,
+                    $wallet,
                     $steamId,
                 ]
             )
