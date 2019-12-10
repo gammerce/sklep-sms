@@ -36,7 +36,7 @@ return [
     'new_account' => 'Create new account. ID: {1} User name: {2}, IP: {3}',
     'nick_no_account' => 'Given nickname is not assigned to any account.',
     'nick_occupied' => 'Given nickname is already taken.',
-    'no_login_no_wallet' => 'You can\'t pay by Wallet when not logged in.',
+    'no_login_no_wallet' => 'You can\'t pay by wallet when not logged in.',
     'no_login_password' =>
         'Unfortunately, without providing nickname and login, you can\'t log in.',
     'no_reset_key' => 'No reset key was given.',

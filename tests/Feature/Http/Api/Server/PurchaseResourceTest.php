@@ -94,7 +94,7 @@ class PurchaseResourceTest extends IndexTestCase
     }
 
     /** @test */
-    public function cannot_purchase_if_not_enough_money()
+    public function cannot_purchase_using_wallet_if_not_enough_money()
     {
         // given
         $user = $this->factory->user([
@@ -129,5 +129,36 @@ class PurchaseResourceTest extends IndexTestCase
 
         $freshUser = $this->userRepository->get($user->getUid());
         $this->assertEquals(100, $freshUser->getWallet());
+    }
+
+    /** @test */
+    public function cannot_purchase_using_wallet_if_not_authorized()
+    {
+        // given
+        $sign = md5(
+            implode("#", [$this->steamId, $this->steamId, "", $this->settings->get("random_key")])
+        );
+
+        // when
+        $response = $this->post('/api/server/purchase', [
+            'server' => $this->server->getId(),
+            'service' => $this->serviceId,
+            'type' => ExtraFlagType::TYPE_SID,
+            'auth_data' => $this->steamId,
+            'ip' => $this->ip,
+            'platform' => $this->platform,
+            'tariff' => $this->tariff,
+            'method' => Purchase::METHOD_WALLET,
+            'steam_id' => $this->steamId,
+            'sign' => $sign,
+        ]);
+
+        // then
+        $this->assertEquals(200, $response->getStatusCode());
+        // TODO Change error message
+        $this->assertRegExp(
+            "#<return_value>wallet_not_logged</return_value><text>Nie można zapłacić portfelem, gdy nie jesteś zalogowany.</text><positive>0</positive>#",
+            $response->getContent()
+        );
     }
 }
