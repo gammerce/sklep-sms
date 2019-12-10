@@ -27,7 +27,7 @@ class PaymentResource
         /** @var Purchase $purchaseData */
         $purchaseData = unserialize(base64_decode($request->request->get('purchase_data')));
 
-        // Fix: get user data again to avoid bugs linked with user wallet
+        // Fix: Refresh data again to avoid bugs linked with user wallet
         $purchaseData->user = $heart->getUser($purchaseData->user->getUid());
 
         // Add payment details
