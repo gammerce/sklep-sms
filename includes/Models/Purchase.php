@@ -8,6 +8,11 @@ use App\System\Auth;
  */
 class Purchase
 {
+    const METHOD_SMS = "sms";
+    const METHOD_TRANSFER = "transfer";
+    const METHOD_SERVICE_CODE = "service_code";
+    const METHOD_WALLET = "wallet";
+
     /** @var string */
     private $service = null;
 
