@@ -4,6 +4,7 @@ namespace Tests\Feature\Http\Api\Server;
 use App\Models\Purchase;
 use App\Models\User;
 use App\Repositories\BoughtServiceRepository;
+use App\Repositories\UserRepository;
 use App\Services\ExtraFlags\ExtraFlagType;
 use App\System\Settings;
 use Tests\Psr4\TestCases\IndexTestCase;
@@ -19,6 +20,9 @@ class PurchaseResourceTest extends IndexTestCase
 
         /** @var BoughtServiceRepository $boughtServiceRepository */
         $boughtServiceRepository = $this->app->make(BoughtServiceRepository::class);
+
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->app->make(UserRepository::class);
 
         $serviceId = 'vip';
         $type = ExtraFlagType::TYPE_SID;
@@ -74,7 +78,7 @@ class PurchaseResourceTest extends IndexTestCase
         $this->assertNotNull($boughtService);
         $this->assertEquals(Purchase::METHOD_WALLET, $boughtService->getMethod());
 
-        $freshUser = new User($user->getUid());
+        $freshUser = $userRepository->get($user->getUid());
         $this->assertEquals(90, $freshUser->getWallet());
     }
 }

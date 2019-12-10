@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Pages\Page;
 use App\Pages\PageSimple;
+use App\Repositories\UserRepository;
 use App\Services\ExtraFlags\ServiceExtraFlags;
 use App\Services\Other\ServiceOther;
 use App\Services\Service;
@@ -24,6 +25,9 @@ class Heart
 
     /** @var Template */
     private $template;
+
+    /** * @var UserRepository */
+    private $userRepository;
 
     private $servers = [];
 
@@ -53,11 +57,16 @@ class Heart
     private $scripts = [];
     private $styles = [];
 
-    public function __construct(Database $db, Settings $settings, Template $template)
-    {
+    public function __construct(
+        Database $db,
+        Settings $settings,
+        Template $template,
+        UserRepository $userRepository
+    ) {
         $this->db = $db;
         $this->settings = $settings;
         $this->template = $template;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -484,22 +493,36 @@ class Heart
 
     /**
      * @param int    $uid
-     * @param string $login
-     * @param string $password
-     *
      * @return User
      */
-    public function getUser($uid = 0, $login = "", $password = "")
+    public function getUser($uid)
     {
         // Wcześniej już pobraliśmy takiego użytkownika
         if ($uid && isset($this->users[$uid])) {
             return $this->users[$uid];
         }
 
-        if ($uid || (strlen($login) && strlen($password))) {
-            $user = new User($uid, $login, $password);
-            $this->users[$user->getUid()] = $user;
+        $user = $this->userRepository->get($uid);
 
+        if ($user) {
+            $this->users[$user->getUid()] = $user;
+            return $user;
+        }
+
+        return new User();
+    }
+
+    /**
+     * @param string $login
+     * @param string$password
+     * @return User
+     */
+    public function getUserByLogin($login, $password)
+    {
+        $user = $this->userRepository->findByPassword($login, $password);
+
+        if ($user) {
+            $this->users[$user->getUid()] = $user;
             return $user;
         }
 

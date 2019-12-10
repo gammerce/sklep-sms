@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Feature\Http\Api\Shop;
 
-use App\Models\User;
+use App\Repositories\UserRepository;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Tests\Psr4\TestCases\IndexTestCase;
 
@@ -11,6 +11,12 @@ class RegisterTest extends IndexTestCase
     public function can_register()
     {
         // given
+        /** @var Session $session */
+        $session = $this->app->make(Session::class);
+
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->app->make(UserRepository::class);
+
         $email = 'abc123@example.com';
         $password = 'abc123';
         $username = 'janek';
@@ -18,8 +24,6 @@ class RegisterTest extends IndexTestCase
         $surname = 'Nowak';
         $steamId = 'STEAM_1:0:22309350';
 
-        /** @var Session $session */
-        $session = $this->app->make(Session::class);
         $session->setName("user");
         $session->start();
         $session->set("asid", 1);
@@ -40,8 +44,8 @@ class RegisterTest extends IndexTestCase
 
         // then
         $this->assertEquals(200, $response->getStatusCode());
-        $user = new User(0, $username, $password);
-        $this->assertNotNull($user->getUid());
+        $user = $userRepository->findByPassword($username, $password);
+        $this->assertNotNull($user);
         $this->assertEquals($email, $user->getEmail(false));
         $this->assertEquals($forename, $user->getForename());
         $this->assertEquals($surname, $user->getSurname());

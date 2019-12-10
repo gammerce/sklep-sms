@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Feature\Http\Api\Admin;
 
-use App\Models\User;
+use App\Repositories\UserRepository;
 use Tests\Psr4\TestCases\IndexTestCase;
 
 class ChangePasswordTest extends IndexTestCase
@@ -10,6 +10,9 @@ class ChangePasswordTest extends IndexTestCase
     public function changes_a_user_password()
     {
         // given
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->app->make(UserRepository::class);
+
         $newPassword = "foobar";
         $admin = $this->factory->user(["groups" => 2]);
         $user = $this->factory->user();
@@ -26,8 +29,8 @@ class ChangePasswordTest extends IndexTestCase
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals("ok", $json["return_id"]);
 
-        $freshUser = new User(0, $user->getUsername(), $newPassword);
-        $this->assertNotNull($freshUser->getUid());
+        $freshUser = $userRepository->findByPassword($user->getUsername(), $newPassword);
+        $this->assertNotNull($freshUser);
         $this->assertEquals($user->getUid(), $freshUser->getUid());
     }
 
@@ -35,6 +38,9 @@ class ChangePasswordTest extends IndexTestCase
     public function could_not_change_password_if_not_authorized()
     {
         // given
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->app->make(UserRepository::class);
+
         $password = "foobar";
         $user = $this->factory->user();
 
@@ -48,7 +54,7 @@ class ChangePasswordTest extends IndexTestCase
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals("no_access", $json["return_id"]);
 
-        $freshUser = new User(0, $user->getUsername(), $password);
-        $this->assertNull($freshUser->getUid());
+        $freshUser = $userRepository->findByPassword($user->getUsername(), $password);
+        $this->assertNull($freshUser);
     }
 }

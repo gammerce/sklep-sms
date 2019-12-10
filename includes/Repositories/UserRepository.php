@@ -47,9 +47,7 @@ class UserRepository
             )
         );
 
-        $id = $this->db->lastId();
-
-        return new User($id);
+        return $this->get($this->db->lastId());
     }
 
     public function update(User $user)
@@ -78,15 +76,17 @@ class UserRepository
     /**
      * @param int $id
      * @return User|null
-     * @throws \App\Exceptions\SqlQueryException
      */
     public function get($id)
     {
+        if (!$id) {
+            return null;
+        }
+
         $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT * FROM `" . TABLE_PREFIX . "users` WHERE `uid` = '%d'",
-                [$id]
-            )
+            $this->db->prepare("SELECT * FROM `" . TABLE_PREFIX . "users` WHERE `uid` = '%d'", [
+                $id,
+            ])
         );
 
         if ($this->db->numRows($result)) {
@@ -100,7 +100,6 @@ class UserRepository
     /**
      * @param string $steamId
      * @return User|null
-     * @throws \App\Exceptions\SqlQueryException
      */
     public function findBySteamId($steamId)
     {
@@ -123,8 +122,53 @@ class UserRepository
         return null;
     }
 
+    /**
+     * @param string $emailOrUsername
+     * @param string $password
+     * @return User|null
+     */
+    public function findByPassword($emailOrUsername, $password)
+    {
+        if (!strlen($emailOrUsername) || !strlen($password)) {
+            return null;
+        }
+
+        $result = $this->db->query(
+            $this->db->prepare(
+                "SELECT * FROM `" .
+                    TABLE_PREFIX .
+                    "users` " .
+                    "WHERE (`username` = '%s' OR `email` = '%s') AND `password` = md5(CONCAT(md5('%s'), md5(`salt`)))",
+                [$emailOrUsername, $password]
+            )
+        );
+
+        if ($this->db->numRows($result)) {
+            $data = $this->db->fetchArrayAssoc($result);
+            return $this->resultToObject($data);
+        }
+
+        return null;
+    }
+
     private function resultToObject($data)
     {
-        return new User($data['id']);
+        return new User(
+            intval($data['uid']),
+            $data['username'],
+            $data['password'],
+            $data['salt'],
+            $data['email'],
+            $data['forename'],
+            $data['surname'],
+            $data['steam_id'],
+            explode(';', $data['groups']),
+            $data['regdate'],
+            $data['lastactiv'],
+            intval($data['wallet']),
+            $data['regip'],
+            $data['lastip'],
+            $data['reset_password_key']
+        );
     }
 }

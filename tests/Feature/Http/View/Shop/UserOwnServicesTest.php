@@ -26,8 +26,6 @@ class UserOwnServicesTest extends IndexTestCase
     /** @test */
     public function requires_being_logged()
     {
-        // given
-
         // when
         $response = $this->get('/', ['pid' => 'user_own_services']);
 
