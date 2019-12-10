@@ -38,7 +38,7 @@ class PurchaseResource
         return new XmlResponse(
             $response["status"],
             $response["text"],
-            $response["positive"],
+            $response["positive"] ? "1" : "0",
             $response["extraData"]
         );
     }
@@ -46,10 +46,11 @@ class PurchaseResource
     private function isCorrectlySigned(Request $request, $secret)
     {
         $sign = $request->request->get("sign");
+        $steamId = $request->request->get("steam_id");
         $authData = $request->request->get("auth_data");
         $smsCode = $request->request->get("sms_code");
 
-        $calculatedSign = md5($authData . "#" . $smsCode . "#" . $secret);
+        $calculatedSign = md5(implode("#", [$steamId, $authData, $smsCode, $secret]));
 
         return $sign === $calculatedSign;
     }

@@ -2,7 +2,7 @@
 namespace Tests\Feature\Http\Api\Server;
 
 use App\Models\Purchase;
-use App\Models\User;
+use App\Models\Server;
 use App\Repositories\BoughtServiceRepository;
 use App\Repositories\UserRepository;
 use App\Services\ExtraFlags\ExtraFlagType;
@@ -11,74 +11,123 @@ use Tests\Psr4\TestCases\IndexTestCase;
 
 class PurchaseResourceTest extends IndexTestCase
 {
+    /** @var Settings */
+    private $settings;
+
+    /** @var BoughtServiceRepository */
+    private $boughtServiceRepository;
+
+    /** @var UserRepository */
+    private $userRepository;
+
+    /** @var Server */
+    private $server;
+
+    private $serviceId = 'vip';
+    private $tariff = 2;
+    private $ip = "192.0.2.1";
+    private $platform = "engine_amxx";
+    private $steamId = "STEAM_1:0:22309350";
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->settings = $this->app->make(Settings::class);
+        $this->boughtServiceRepository = $this->app->make(BoughtServiceRepository::class);
+        $this->userRepository = $this->app->make(UserRepository::class);
+
+        $this->server = $this->factory->server();
+        $this->factory->serverService([
+            'server_id' => $this->server->getId(),
+            'service_id' => $this->serviceId,
+        ]);
+        $this->factory->pricelist([
+            'service_id' => $this->serviceId,
+            'tariff' => $this->tariff,
+            'server_id' => $this->server->getId(),
+        ]);
+    }
+
     /** @test */
     public function purchase_using_wallet()
     {
         // given
-        /** @var Settings $settings */
-        $settings = $this->app->make(Settings::class);
-
-        /** @var BoughtServiceRepository $boughtServiceRepository */
-        $boughtServiceRepository = $this->app->make(BoughtServiceRepository::class);
-
-        /** @var UserRepository $userRepository */
-        $userRepository = $this->app->make(UserRepository::class);
-
-        $serviceId = 'vip';
-        $type = ExtraFlagType::TYPE_SID;
-        $authData = 'STEAM_1:0:22309350';
-        $ip = "192.0.2.1";
-        $platform = "engine_amxx";
-        $method = Purchase::METHOD_WALLET;
-        $tariff = 2;
-
         $user = $this->factory->user([
-            "steam_id" => $authData,
-            "wallet" => 100,
+            "steam_id" => $this->steamId,
+            "wallet" => 10000,
         ]);
 
-        $server = $this->factory->server();
-        $this->factory->serverService([
-            'server_id' => $server->getId(),
-            'service_id' => $serviceId,
-        ]);
-        $this->factory->pricelist([
-            'service_id' => $serviceId,
-            'tariff' => $tariff,
-            'server_id' => $server->getId(),
-        ]);
-
-        $sign = md5($authData . "#" . "" . "#" . $settings->get("random_key"));
+        $sign = md5(
+            implode("#", [$this->steamId, $this->steamId, "", $this->settings->get("random_key")])
+        );
 
         // when
         $response = $this->post('/api/server/purchase', [
-            'server' => $server->getId(),
-            'service' => $serviceId,
-            'type' => $type,
-            'auth_data' => $authData,
-            'ip' => $ip,
-            'platform' => $platform,
-            'tariff' => $tariff,
-            'method' => $method,
+            'server' => $this->server->getId(),
+            'service' => $this->serviceId,
+            'type' => ExtraFlagType::TYPE_SID,
+            'auth_data' => $this->steamId,
+            'ip' => $this->ip,
+            'platform' => $this->platform,
+            'tariff' => $this->tariff,
+            'method' => Purchase::METHOD_WALLET,
+            'steam_id' => $this->steamId,
             'sign' => $sign,
         ]);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());
-
-        preg_match(
-            "#<return_value>purchased</return_value><text>Usługa została prawidłowo zakupiona.</text><positive>1</positive><bsid>(\d+)</bsid>#",
-            $response->getContent(),
-            $matches
+        $this->assertRegExp(
+            "#<return_value>purchased</return_value><text>Usługa została prawidłowo zakupiona\.</text><positive>1</positive><bsid>(\d+)</bsid>#",
+            $response->getContent()
         );
-        $this->assertCount(2, $matches);
 
+        preg_match("#<bsid>(\d+)</bsid>#", $response->getContent(), $matches);
         $boughtServiceId = intval($matches[1]);
-        $boughtService = $boughtServiceRepository->get($boughtServiceId);
+        $boughtService = $this->boughtServiceRepository->get($boughtServiceId);
         $this->assertNotNull($boughtService);
         $this->assertEquals(Purchase::METHOD_WALLET, $boughtService->getMethod());
 
-        $freshUser = $userRepository->get($user->getUid());
-        $this->assertEquals(90, $freshUser->getWallet());
+        $freshUser = $this->userRepository->get($user->getUid());
+        $this->assertEquals(9860, $freshUser->getWallet());
+    }
+
+    /** @test */
+    public function cannot_purchase_if_not_enough_money()
+    {
+        // given
+        $user = $this->factory->user([
+            "steam_id" => $this->steamId,
+            "wallet" => 100,
+        ]);
+
+        $sign = md5(
+            implode("#", [$this->steamId, $this->steamId, "", $this->settings->get("random_key")])
+        );
+
+        // when
+        $response = $this->post('/api/server/purchase', [
+            'server' => $this->server->getId(),
+            'service' => $this->serviceId,
+            'type' => ExtraFlagType::TYPE_SID,
+            'auth_data' => $this->steamId,
+            'ip' => $this->ip,
+            'platform' => $this->platform,
+            'tariff' => $this->tariff,
+            'method' => Purchase::METHOD_WALLET,
+            'steam_id' => $this->steamId,
+            'sign' => $sign,
+        ]);
+
+        // then
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertRegExp(
+            "#<return_value>no_money</return_value><text>Bida! Nie masz wystarczającej ilości kasy w portfelu\. Doładuj portfel ;-\)</text><positive>0</positive>#",
+            $response->getContent()
+        );
+
+        $freshUser = $this->userRepository->get($user->getUid());
+        $this->assertEquals(100, $freshUser->getWallet());
     }
 }

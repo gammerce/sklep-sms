@@ -290,12 +290,12 @@ class PaymentService
     }
 
     /**
-     * @param Purchase $purchaseData
-     * @param Service $serviceModule
+     * @param Purchase $purchase
+     * @param Service  $serviceModule
      *
      * @return array|int|string
      */
-    private function payServiceCode(Purchase $purchaseData, $serviceModule)
+    private function payServiceCode(Purchase $purchase, $serviceModule)
     {
         $result = $this->db->query(
             $this->db->prepare(
@@ -308,17 +308,17 @@ class PaymentService
                     "AND (`tariff` = '0' OR `tariff` = '%d') " .
                     "AND (`uid` = '0' OR `uid` = '%s')",
                 [
-                    $purchaseData->getPayment('service_code'),
-                    $purchaseData->getService(),
-                    $purchaseData->getOrder('server'),
-                    $purchaseData->getTariff(),
-                    $purchaseData->user->getUid(),
+                    $purchase->getPayment('service_code'),
+                    $purchase->getService(),
+                    $purchase->getOrder('server'),
+                    $purchase->getTariff(),
+                    $purchase->user->getUid(),
                 ]
             )
         );
 
         while ($row = $this->db->fetchArrayAssoc($result)) {
-            if ($serviceModule->serviceCodeValidate($purchaseData, $row)) {
+            if ($serviceModule->serviceCodeValidate($purchase, $row)) {
                 // Znalezlismy odpowiedni kod
                 $this->db->query(
                     $this->db->prepare(
@@ -335,9 +335,9 @@ class PaymentService
                             "payment_code` " .
                             "SET `code` = '%s', `ip` = '%s', `platform` = '%s'",
                         [
-                            $purchaseData->getPayment('service_code'),
-                            $purchaseData->user->getLastIp(),
-                            $purchaseData->user->getPlatform(),
+                            $purchase->getPayment('service_code'),
+                            $purchase->user->getLastIp(),
+                            $purchase->user->getPlatform(),
                         ]
                     )
                 );
@@ -346,9 +346,9 @@ class PaymentService
                 log_info(
                     $this->langShop->sprintf(
                         $this->langShop->translate('purchase_code'),
-                        $purchaseData->getPayment('service_code'),
-                        $purchaseData->user->getUsername(),
-                        $purchaseData->user->getUid(),
+                        $purchase->getPayment('service_code'),
+                        $purchase->user->getUsername(),
+                        $purchase->user->getUid(),
                         $paymentId
                     )
                 );

@@ -7,6 +7,7 @@ use App\Payment;
 use App\Payment\PaymentService;
 use App\Repositories\UserRepository;
 use App\Services\Service;
+use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
@@ -21,14 +22,19 @@ class PurchaseService
     /** @var UserRepository */
     private $userRepository;
 
+    /** @var Heart */
+    private $heart;
+
     public function __construct(
         TranslationManager $translationManager,
         PaymentService $paymentService,
+        Heart $heart,
         UserRepository $userRepository
     ) {
         $this->lang = $translationManager->user();
         $this->paymentService = $paymentService;
         $this->userRepository = $userRepository;
+        $this->heart = $heart;
     }
 
     public function purchase(Service $serviceModule, array $body)
@@ -69,9 +75,12 @@ class PurchaseService
             'sms_service' => $transactionService,
         ]);
 
-        // Set tariff with a number
-        $payment = new Payment($purchase->getPayment('sms_service'));
-        $purchase->setTariff($payment->getPaymentModule()->getTariffById($tariff));
+        $purchase->setTariff($this->heart->getTariff($tariff));
+
+        if ($purchase->getPayment('sms_service')) {
+            $payment = new Payment($purchase->getPayment('sms_service'));
+            $purchase->setTariff($payment->getPaymentModule()->getTariffById($tariff));
+        }
 
         $returnValidation = $serviceModule->purchaseDataValidate($purchase);
 

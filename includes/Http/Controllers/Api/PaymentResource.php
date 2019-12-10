@@ -26,20 +26,20 @@ class PaymentResource
             return new ApiResponse("wrong_sign", $lang->translate('wrong_sign'), 0);
         }
 
-        /** @var Purchase $purchaseData */
-        $purchaseData = unserialize(base64_decode($request->request->get('purchase_data')));
+        /** @var Purchase $purchase */
+        $purchase = unserialize(base64_decode($request->request->get('purchase_data')));
 
         // Fix: Refresh data again to avoid bugs linked with user wallet
-        $purchaseData->user = $heart->getUser($purchaseData->user->getUid());
+        $purchase->user = $heart->getUser($purchase->user->getUid());
 
         // Add payment details
-        $purchaseData->setPayment([
+        $purchase->setPayment([
             'method' => $request->request->get('method'),
             'sms_code' => $request->request->get('sms_code'),
             'service_code' => $request->request->get('service_code'),
         ]);
 
-        $returnPayment = $paymentService->makePayment($purchaseData);
+        $returnPayment = $paymentService->makePayment($purchase);
 
         return new ApiResponse(
             $returnPayment['status'],
@@ -52,9 +52,9 @@ class PaymentResource
     private function isCorrectlySigned(Request $request, $secret)
     {
         $sign = $request->request->get('purchase_sign');
-        $purchaseData = $request->request->get("purchase_data");
+        $purchase = $request->request->get("purchase_data");
 
-        $calculatedSign = md5($purchaseData . $secret);
+        $calculatedSign = md5($purchase . $secret);
 
         return $sign === $calculatedSign;
     }

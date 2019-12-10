@@ -95,18 +95,18 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         // Pobieramy auth_data
         $authData = $this->getAuthData($data);
 
-        $purchaseData = new Purchase($this->auth->user());
-        $purchaseData->setOrder([
+        $purchase = new Purchase($this->auth->user());
+        $purchase->setOrder([
             'server' => $data['server'],
             'type' => $data['type'],
             'auth_data' => trim($authData),
             'password' => $data['password'],
             'passwordr' => $data['password_repeat'],
         ]);
-        $purchaseData->setTariff($this->heart->getTariff($value[2]));
-        $purchaseData->setEmail($data['email']);
+        $purchase->setTariff($this->heart->getTariff($value[2]));
+        $purchase->setEmail($data['email']);
 
-        return $this->purchaseDataValidate($purchaseData);
+        return $this->purchaseDataValidate($purchase);
     }
 
     /**
@@ -598,7 +598,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             : $this->lang->translate('none');
         $data['income'] = number_format($data['income'] / 100.0, 2);
 
-        if ($data['payment'] == "sms") {
+        if ($data['payment'] == Purchase::METHOD_SMS) {
             $data['sms_code'] = htmlspecialchars($data['sms_code']);
             $data['sms_text'] = htmlspecialchars($data['sms_text']);
             $data['sms_number'] = htmlspecialchars($data['sms_number']);
@@ -1406,7 +1406,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             $warnings['payment'][] = $this->lang->translate('field_no_empty');
         }
 
-        if (in_array($data['payment'], ["sms", "transfer"])) {
+        if (in_array($data['payment'], [Purchase::METHOD_SMS, Purchase::METHOD_TRANSFER])) {
             if (!strlen($data['payment_id'])) {
                 $warnings['payment_id'][] = $this->lang->translate('field_no_empty');
             }
@@ -1422,7 +1422,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             ];
         }
 
-        if ($data['payment'] == "transfer") {
+        if ($data['payment'] == Purchase::METHOD_TRANSFER) {
             $result = $this->db->query(
                 $this->db->prepare(
                     "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
@@ -1438,23 +1438,21 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     'positive' => false,
                 ];
             }
-        } else {
-            if ($data['payment'] == "sms") {
-                $result = $this->db->query(
-                    $this->db->prepare(
-                        "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
-                            "WHERE t.payment = 'sms' AND t.sms_code = '%s' AND `service` = '%s' AND `server` = '%d' AND `auth_data` = '%s'",
-                        [$data['payment_id'], $this->service['id'], $data['server'], $authData]
-                    )
-                );
+        } elseif ($data['payment'] == Purchase::METHOD_SMS) {
+            $result = $this->db->query(
+                $this->db->prepare(
+                    "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
+                        "WHERE t.payment = 'sms' AND t.sms_code = '%s' AND `service` = '%s' AND `server` = '%d' AND `auth_data` = '%s'",
+                    [$data['payment_id'], $this->service['id'], $data['server'], $authData]
+                )
+            );
 
-                if (!$this->db->numRows($result)) {
-                    return [
-                        'status' => "no_service",
-                        'text' => $this->lang->translate('no_user_service'),
-                        'positive' => false,
-                    ];
-                }
+            if (!$this->db->numRows($result)) {
+                return [
+                    'status' => "no_service",
+                    'text' => $this->lang->translate('no_user_service'),
+                    'positive' => false,
+                ];
             }
         }
 
