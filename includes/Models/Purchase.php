@@ -1,8 +1,6 @@
 <?php
 namespace App\Models;
 
-use App\System\Auth;
-
 /**
  * Obiekty tej klasy są używane podczas przeprowadzania zakupu
  */
@@ -46,12 +44,9 @@ class Purchase
      */
     private $desc = null;
 
-    public function __construct()
+    public function __construct(User $user)
     {
-        /** @var Auth $auth */
-        $auth = app()->make(Auth::class);
-
-        $this->user = $auth->user();
+        $this->user = $user;
     }
 
     public function setService($service)

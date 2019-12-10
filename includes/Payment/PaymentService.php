@@ -93,7 +93,10 @@ class PaymentService
         }
 
         // Metoda płatności
-        if ($purchase->getPayment('method') == Purchase::METHOD_WALLET && !$purchase->user->exists()) {
+        if (
+            $purchase->getPayment('method') == Purchase::METHOD_WALLET &&
+            !$purchase->user->exists()
+        ) {
             return [
                 'status' => "wallet_not_logged",
                 'text' => $this->lang->translate('no_login_no_wallet'),

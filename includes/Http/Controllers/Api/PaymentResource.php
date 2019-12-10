@@ -9,6 +9,8 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
+// TODO Check making payment using wallet
+
 class PaymentResource
 {
     public function post(

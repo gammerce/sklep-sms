@@ -7,7 +7,6 @@ use App\Payment;
 use App\Payment\PaymentService;
 use App\Repositories\UserRepository;
 use App\Services\Service;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
@@ -23,7 +22,6 @@ class PurchaseService
     private $userRepository;
 
     public function __construct(
-        Heart $heart,
         TranslationManager $translationManager,
         PaymentService $paymentService,
         UserRepository $userRepository
@@ -36,7 +34,6 @@ class PurchaseService
     public function purchase(Service $serviceModule, array $body)
     {
         // TODO Authenticate user using SteamId
-        // TODO Do not use auth->user
         // TODO Pass steamid when calling endpoint
         // TODO Remove uid from body when calling endpoint
 
@@ -56,9 +53,8 @@ class PurchaseService
         $user->setPlatform($platform);
         $user->setLastIp($ip);
 
-        $purchase = new Purchase();
+        $purchase = new Purchase($user);
         $purchase->setService($serviceModule->service['id']);
-        $purchase->user = $user;
 
         $purchase->setOrder([
             'server' => $server,

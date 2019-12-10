@@ -324,7 +324,7 @@ class Payment
             )
         );
 
-        // Fix: get user data again to avoid bugs linked with user wallet
+        // Fix: Refresh user to avoid bugs linked with user wallet
         $purchaseData->user = $this->heart->getUser($purchaseData->user->getUid());
 
         // Dodanie informacji do bazy danych

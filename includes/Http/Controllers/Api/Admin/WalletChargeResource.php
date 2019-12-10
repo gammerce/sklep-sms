@@ -64,8 +64,7 @@ class WalletChargeResource
         $paymentId = pay_by_admin($user);
 
         // Kupujemy usługę
-        $purchaseData = new Purchase();
-        $purchaseData->user = $editedUser;
+        $purchaseData = new Purchase($editedUser);
         $purchaseData->setPayment([
             'method' => "admin",
             'payment_id' => $paymentId,

@@ -149,7 +149,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
             ];
         }
 
-        $purchaseData = new Purchase();
+        $purchaseData = new Purchase($this->auth->user());
         $purchaseData->setService($this->service['id']);
         $purchaseData->setTariff($this->heart->getTariff($data['tariff']));
         $purchaseData->setPayment([

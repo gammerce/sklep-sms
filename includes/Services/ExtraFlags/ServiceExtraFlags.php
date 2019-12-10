@@ -95,7 +95,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         // Pobieramy auth_data
         $authData = $this->getAuthData($data);
 
-        $purchaseData = new Purchase();
+        $purchaseData = new Purchase($this->auth->user());
         $purchaseData->setOrder([
             'server' => $data['server'],
             'type' => $data['type'],
@@ -734,9 +734,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         // Dodawanie informacji o płatności
         $paymentId = pay_by_admin($user);
 
-        $purchaseData = new Purchase();
+        $purchaseUser = $this->heart->getUser($data['uid']); // Pobieramy dane o użytkowniku na które jego wykupiona usługa
+        $purchaseData = new Purchase($purchaseUser);
         $purchaseData->setService($this->service['id']);
-        $purchaseData->user = $this->heart->getUser($data['uid']); // Pobieramy dane o użytkowniku na które jego wykupiona usługa
         $purchaseData->setPayment([
             'method' => "admin",
             'payment_id' => $paymentId,

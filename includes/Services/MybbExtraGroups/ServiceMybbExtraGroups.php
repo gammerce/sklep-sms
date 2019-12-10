@@ -193,7 +193,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             ];
         }
 
-        $purchaseData = new Purchase();
+        $purchaseData = new Purchase($this->auth->user());
         $purchaseData->setService($this->service['id']);
         $purchaseData->setOrder([
             'username' => $data['username'],
@@ -568,9 +568,8 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         // Dodawanie informacji o płatności
         $paymentId = pay_by_admin($user);
 
-        $purchaseData = new Purchase();
+        $purchaseData = new Purchase($this->heart->getUser($body['uid']));
         $purchaseData->setService($this->service['id']);
-        $purchaseData->user = $this->heart->getUser($body['uid']);
         $purchaseData->setPayment([
             'method' => "admin",
             'payment_id' => $paymentId,
