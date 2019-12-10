@@ -46,7 +46,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         $this->auth = $this->app->make(Auth::class);
         $this->heart = $this->app->make(Heart::class);
-        $this->heart = $this->app->make(BoughtServiceService::class);
+        $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
 
         $this->service['flags_hsafe'] = htmlspecialchars($this->service['flags']);
     }

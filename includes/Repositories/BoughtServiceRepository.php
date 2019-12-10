@@ -23,19 +23,23 @@ class BoughtServiceRepository
             )
         );
 
-        $result = $this->db->fetchArrayAssoc($result);
+        if (!$this->db->numRows($result)) {
+            return null;
+        }
+
+        $entity = $this->db->fetchArrayAssoc($result);
 
         return new BoughtService(
-            $result['id'],
-            $result['uid'],
-            $result['method'],
-            $result['payment_id'],
-            $result['service'],
-            $result['server'],
-            $result['amount'],
-            $result['auth_data'],
-            $result['email'],
-            json_decode($result['extra_data'])
+            $entity['id'],
+            $entity['uid'],
+            $entity['payment'],
+            $entity['payment_id'],
+            $entity['service'],
+            $entity['server'],
+            $entity['amount'],
+            $entity['auth_data'],
+            $entity['email'],
+            json_decode($entity['extra_data'])
         );
     }
 

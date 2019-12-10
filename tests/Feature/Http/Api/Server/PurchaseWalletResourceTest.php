@@ -1,7 +1,9 @@
 <?php
 namespace Tests\Feature\Http\Api\Server;
 
+use App\Models\Purchase;
 use App\Models\User;
+use App\Repositories\BoughtServiceRepository;
 use App\Services\ExtraFlags\ExtraFlagType;
 use App\System\Settings;
 use Tests\Psr4\TestCases\IndexTestCase;
@@ -14,6 +16,9 @@ class PurchaseWalletResourceTest extends IndexTestCase
         // given
         /** @var Settings $settings */
         $settings = $this->app->make(Settings::class);
+
+        /** @var BoughtServiceRepository $boughtServiceRepository */
+        $boughtServiceRepository = $this->app->make(BoughtServiceRepository::class);
 
         $serviceId = 'vip';
         $type = ExtraFlagType::TYPE_SID;
@@ -54,10 +59,20 @@ class PurchaseWalletResourceTest extends IndexTestCase
 
         // then
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertRegExp(
-            '#<return_value>purchased</return_value><text>Usługa została prawidłowo zakupiona.</text><positive>1</positive><bsid>\d+</bsid>#',
-            $response->getContent()
+
+        $responsePattern = "#<return_value>purchased</return_value><text>Usługa została prawidłowo zakupiona.</text><positive>1</positive><bsid>(\d+)</bsid>#";
+        preg_match(
+            "#<return_value>purchased</return_value><text>Usługa została prawidłowo zakupiona.</text><positive>1</positive><bsid>(\d+)</bsid>#",
+            $response->getContent(),
+            $matches
         );
+        $this->assertCount(2, $matches);
+
+        $boughtServiceId = intval($matches[1]);
+        $boughtService = $boughtServiceRepository->get($boughtServiceId);
+        $this->assertNotNull($boughtService);
+        $this->assertEquals(Purchase::METHOD_WALLET, $boughtService->getMethod());
+
         $freshUser = new User($user->getUid());
         $this->assertEquals(90, $freshUser->getWallet());
     }

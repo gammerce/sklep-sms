@@ -2,6 +2,8 @@
 namespace Tests\Feature\Http;
 
 use App\Exceptions\LicenseRequestException;
+use App\Models\Purchase;
+use App\Repositories\BoughtServiceRepository;
 use App\System\License;
 use App\Requesting\Response;
 use App\Services\ExtraFlags\ExtraFlagType;
@@ -26,6 +28,9 @@ class PurchaseServiceFromServerTest extends IndexTestCase
     public function player_can_purchase_service()
     {
         // given
+        /** @var BoughtServiceRepository $boughtServiceRepository */
+        $boughtServiceRepository = $this->app->make(BoughtServiceRepository::class);
+
         $serviceId = 'vip';
         $tariff = 2;
         $transactionService = 'gosetti';
@@ -74,10 +79,18 @@ class PurchaseServiceFromServerTest extends IndexTestCase
 
         // then
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertRegExp(
-            '#<return_value>purchased</return_value><text>Usługa została prawidłowo zakupiona.</text><positive>1</positive><bsid>\d+</bsid>#',
-            $response->getContent()
+
+        preg_match(
+            "#<return_value>purchased</return_value><text>Usługa została prawidłowo zakupiona.</text><positive>1</positive><bsid>(\d+)</bsid>#",
+            $response->getContent(),
+            $matches
         );
+        $this->assertCount(2, $matches);
+
+        $boughtServiceId = intval($matches[1]);
+        $boughtService = $boughtServiceRepository->get($boughtServiceId);
+        $this->assertNotNull($boughtService);
+        $this->assertEquals(Purchase::METHOD_SMS, $boughtService->getMethod());
     }
 
     /** @test */
