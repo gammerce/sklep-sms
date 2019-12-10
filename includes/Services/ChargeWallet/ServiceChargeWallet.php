@@ -1,6 +1,7 @@
 <?php
 namespace App\Services\ChargeWallet;
 
+use App\Payment\BoughtServiceService;
 use App\System\Auth;
 use App\System\Heart;
 use App\Models\Purchase;
@@ -16,19 +17,19 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
     IServicePurchaseWeb
 {
     /** @var Auth */
-    protected $auth;
+    private $auth;
 
     /** @var Heart */
-    protected $heart;
+    private $heart;
 
     /** @var Translator */
-    protected $lang;
+    private $lang;
 
     /** @var Settings */
-    protected $settings;
+    private $settings;
 
-    /** @var Auth */
-    protected $auth;
+    /** @var BoughtServiceService */
+    private $boughtServiceService;
 
     public function __construct($service = null)
     {
@@ -40,7 +41,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         $this->auth = $this->app->make(Auth::class);
         $this->heart = $this->app->make(Heart::class);
         $this->settings = $this->app->make(Settings::class);
-        $this->auth = $this->app->make(Auth::class);
+        $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
     }
 
     public function purchaseFormGet()
@@ -197,7 +198,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         // Aktualizacja stanu portfela
         $this->chargeWallet($purchaseData->user->getUid(), $purchaseData->getOrder('amount'));
 
-        return add_bought_service_info(
+        return $this->boughtServiceService->create(
             $purchaseData->user->getUid(),
             $purchaseData->user->getUsername(),
             $purchaseData->user->getLastIp(),

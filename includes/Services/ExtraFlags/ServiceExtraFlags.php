@@ -2,6 +2,7 @@
 namespace App\Services\ExtraFlags;
 
 use App\Exceptions\UnauthorizedException;
+use App\Payment\BoughtServiceService;
 use App\System\Auth;
 use App\System\Heart;
 use App\Models\Purchase;
@@ -36,12 +37,16 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     /** @var Auth */
     private $auth;
 
+    /** @var BoughtServiceService */
+    private $boughtServiceService;
+
     public function __construct($service = null)
     {
         parent::__construct($service);
 
         $this->auth = $this->app->make(Auth::class);
         $this->heart = $this->app->make(Heart::class);
+        $this->heart = $this->app->make(BoughtServiceService::class);
 
         $this->service['flags_hsafe'] = htmlspecialchars($this->service['flags']);
     }
@@ -344,7 +349,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             $purchaseData->getOrder('forever')
         );
 
-        return add_bought_service_info(
+        return $this->boughtServiceService->create(
             $purchaseData->user->getUid(),
             $purchaseData->user->getUsername(),
             $purchaseData->user->getLastIp(),

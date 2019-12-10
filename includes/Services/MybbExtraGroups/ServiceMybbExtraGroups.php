@@ -2,6 +2,7 @@
 namespace App\Services\MybbExtraGroups;
 
 use App\Exceptions\InvalidConfigException;
+use App\Payment\BoughtServiceService;
 use App\System\Auth;
 use App\System\Database;
 use App\Exceptions\SqlQueryException;
@@ -30,16 +31,19 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
     private $dbName;
 
     /** @var Database */
-    protected $dbMybb = null;
+    private $dbMybb = null;
 
     /** @var Translator */
-    protected $langShop;
+    private $langShop;
 
     /** @var Auth */
-    protected $auth;
+    private $auth;
 
     /** @var Heart */
-    protected $heart;
+    private $heart;
+
+    /** @var BoughtServiceService */
+    private $boughtServiceService;
 
     public function __construct($service)
     {
@@ -50,6 +54,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         $this->langShop = $translationManager->shop();
         $this->auth = $this->app->make(Auth::class);
         $this->heart = $this->app->make(Heart::class);
+        $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
 
         $this->groups = explode(",", $this->service['data']['mybb_groups']);
         $this->dbHost = if_isset($this->service['data']['db_host'], '');
@@ -263,7 +268,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         }
         $this->saveMybbUser($mybbUser);
 
-        return add_bought_service_info(
+        return $this->boughtServiceService->create(
             $purchaseData->user->getUid(),
             $purchaseData->user->getUsername(),
             $purchaseData->user->getLastIp(),
