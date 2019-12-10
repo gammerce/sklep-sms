@@ -57,61 +57,61 @@ class BoughtService
         $this->extraData = $extraData;
     }
 
-    /** * @return int */
+    /** @return int */
     public function getId()
     {
         return $this->id;
     }
 
-    /** * @return int */
+    /** @return int */
     public function getUid()
     {
         return $this->uid;
     }
 
-    /** * @return string */
+    /** @return string */
     public function getMethod()
     {
         return $this->method;
     }
 
-    /** * @return string */
+    /** @return string */
     public function getPaymentId()
     {
         return $this->paymentId;
     }
 
-    /** * @return string */
+    /** @return string */
     public function getService()
     {
         return $this->service;
     }
 
-    /** * @return int */
+    /** @return int */
     public function getServer()
     {
         return $this->server;
     }
 
-    /** * @return string */
+    /** @return string */
     public function getAmount()
     {
         return $this->amount;
     }
 
-    /** * @return string */
+    /** @return string */
     public function getAuthData()
     {
         return $this->authData;
     }
 
-    /** * @return string */
+    /** @return string */
     public function getEmail()
     {
         return $this->email;
     }
 
-    /** * @return array */
+    /** @return array */
     public function getExtraData()
     {
         return $this->extraData;

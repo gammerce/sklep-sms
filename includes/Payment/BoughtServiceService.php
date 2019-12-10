@@ -10,22 +10,22 @@ use App\Translation\Translator;
 
 class BoughtServiceService
 {
-    /** * @var Database */
+    /** @var Database */
     private $db;
 
-    /** * @var Heart */
+    /** @var Heart */
     private $heart;
 
-    /** * @var Mailer */
+    /** @var Mailer */
     private $mailer;
 
-    /** * @var Translator */
+    /** @var Translator */
     private $lang;
 
-    /** * @var Translator */
+    /** @var Translator */
     private $langShop;
 
-    /** * @var BoughtServiceRepository */
+    /** @var BoughtServiceRepository */
     private $boughtServiceRepository;
 
     public function __construct(

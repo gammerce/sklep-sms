@@ -26,7 +26,7 @@ class Heart
     /** @var Template */
     private $template;
 
-    /** * @var UserRepository */
+    /** @var UserRepository */
     private $userRepository;
 
     private $servers = [];
