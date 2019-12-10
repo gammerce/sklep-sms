@@ -74,4 +74,13 @@ class UserRepository
             )
         );
     }
+
+    public function findBySteamId($steamId)
+    {
+        if (!strlen($steamId)) {
+            return null;
+        }
+
+        // TODO Implement it
+    }
 }

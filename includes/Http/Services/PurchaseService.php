@@ -2,8 +2,10 @@
 namespace App\Http\Services;
 
 use App\Models\Purchase;
+use App\Models\User;
 use App\Payment;
 use App\Payment\PaymentService;
+use App\Repositories\UserRepository;
 use App\Services\Service;
 use App\System\Heart;
 use App\Translation\TranslationManager;
@@ -11,32 +13,33 @@ use App\Translation\Translator;
 
 class PurchaseService
 {
-    /** @var Heart */
-    private $heart;
-
     /** @var Translator */
     private $lang;
 
     /** @var PaymentService */
     private $paymentService;
 
+    /** @var UserRepository */
+    private $userRepository;
+
     public function __construct(
         Heart $heart,
         TranslationManager $translationManager,
-        PaymentService $paymentService
+        PaymentService $paymentService,
+        UserRepository $userRepository
     ) {
-        $this->heart = $heart;
         $this->lang = $translationManager->user();
         $this->paymentService = $paymentService;
+        $this->userRepository = $userRepository;
     }
 
     public function purchase(Service $serviceModule, array $body)
     {
         // TODO Authenticate user using SteamId
         // TODO Do not use auth->user
-        // TODO Remove uid from body
+        // TODO Pass steamid when calling endpoint
+        // TODO Remove uid from body when calling endpoint
 
-        $uid = array_get($body, 'uid');
         $server = array_get($body, 'server');
         $type = array_get($body, 'type');
         $authData = array_get($body, 'auth_data');
@@ -47,13 +50,15 @@ class PurchaseService
         $smsCode = array_get($body, 'sms_code');
         $transactionService = array_get($body, 'transaction_service');
         $tariff = array_get($body, 'tariff');
+        $steamId = array_get($body, 'steam_id');
 
-        // Sprawdzamy dane zakupu
+        $user = $this->userRepository->findBySteamId($steamId) ?: new User();
+        $user->setPlatform($platform);
+        $user->setLastIp($ip);
+
         $purchase = new Purchase();
         $purchase->setService($serviceModule->service['id']);
-        $purchase->user = $this->heart->getUser($uid);
-        $purchase->user->setPlatform($platform);
-        $purchase->user->setLastIp($ip);
+        $purchase->user = $user;
 
         $purchase->setOrder([
             'server' => $server,

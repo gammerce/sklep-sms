@@ -8,7 +8,7 @@ use App\Services\ExtraFlags\ExtraFlagType;
 use App\System\Settings;
 use Tests\Psr4\TestCases\IndexTestCase;
 
-class PurchaseWalletResourceTest extends IndexTestCase
+class PurchaseResourceTest extends IndexTestCase
 {
     /** @test */
     public function purchase_using_wallet()
@@ -25,6 +25,7 @@ class PurchaseWalletResourceTest extends IndexTestCase
         $authData = 'STEAM_1:0:22309350';
         $ip = "192.0.2.1";
         $platform = "engine_amxx";
+        $method = Purchase::METHOD_WALLET;
         $tariff = 2;
 
         $user = $this->factory->user([
@@ -43,10 +44,10 @@ class PurchaseWalletResourceTest extends IndexTestCase
             'server_id' => $server->getId(),
         ]);
 
-        $sign = md5($authData . "#" . $settings->get("random_key"));
+        $sign = md5($authData . "#" . "" . "#" . $settings->get("random_key"));
 
         // when
-        $response = $this->post('/api/server/purchase/wallet', [
+        $response = $this->post('/api/server/purchase', [
             'server' => $server->getId(),
             'service' => $serviceId,
             'type' => $type,
@@ -54,13 +55,13 @@ class PurchaseWalletResourceTest extends IndexTestCase
             'ip' => $ip,
             'platform' => $platform,
             'tariff' => $tariff,
+            'method' => $method,
             'sign' => $sign,
         ]);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());
 
-        $responsePattern = "#<return_value>purchased</return_value><text>Usługa została prawidłowo zakupiona.</text><positive>1</positive><bsid>(\d+)</bsid>#";
         preg_match(
             "#<return_value>purchased</return_value><text>Usługa została prawidłowo zakupiona.</text><positive>1</positive><bsid>(\d+)</bsid>#",
             $response->getContent(),
