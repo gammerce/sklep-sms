@@ -75,12 +75,56 @@ class UserRepository
         );
     }
 
+    /**
+     * @param int $id
+     * @return User|null
+     * @throws \App\Exceptions\SqlQueryException
+     */
+    public function get($id)
+    {
+        $result = $this->db->query(
+            $this->db->prepare(
+                "SELECT * FROM `" . TABLE_PREFIX . "users` WHERE `uid` = '%d'",
+                [$id]
+            )
+        );
+
+        if ($this->db->numRows($result)) {
+            $data = $this->db->fetchArrayAssoc($result);
+            return $this->resultToObject($data);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $steamId
+     * @return User|null
+     * @throws \App\Exceptions\SqlQueryException
+     */
     public function findBySteamId($steamId)
     {
         if (!strlen($steamId)) {
             return null;
         }
 
-        // TODO Implement it
+        $result = $this->db->query(
+            $this->db->prepare(
+                "SELECT * FROM `" . TABLE_PREFIX . "users` WHERE `steam_id` = '%s'",
+                [$steamId]
+            )
+        );
+
+        if ($this->db->numRows($result)) {
+            $data = $this->db->fetchArrayAssoc($result);
+            return $this->resultToObject($data);
+        }
+
+        return null;
+    }
+
+    private function resultToObject($data)
+    {
+        return new User($data['id']);
     }
 }

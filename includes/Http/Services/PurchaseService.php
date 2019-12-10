@@ -33,7 +33,6 @@ class PurchaseService
 
     public function purchase(Service $serviceModule, array $body)
     {
-        // TODO Authenticate user using SteamId
         // TODO Pass steamid when calling endpoint
         // TODO Remove uid from body when calling endpoint
 
@@ -70,13 +69,12 @@ class PurchaseService
             'sms_service' => $transactionService,
         ]);
 
-        // Ustawiamy taryfę z numerem
+        // Set tariff with a number
         $payment = new Payment($purchase->getPayment('sms_service'));
         $purchase->setTariff($payment->getPaymentModule()->getTariffById($tariff));
 
         $returnValidation = $serviceModule->purchaseDataValidate($purchase);
 
-        // Są jakieś błędy przy sprawdzaniu danych
         if ($returnValidation['status'] !== "ok") {
             $extraData = '';
             if (!empty($returnValidation["data"]["warnings"])) {
