@@ -30,8 +30,12 @@ class PurchaseService
         $this->paymentService = $paymentService;
     }
 
-    public function payWithSms(Service $serviceModule, array $body)
+    public function purchase(Service $serviceModule, array $body)
     {
+        // TODO Authenticate user using SteamId
+        // TODO Do not use auth->user
+        // TODO Remove uid from body
+
         $uid = array_get($body, 'uid');
         $server = array_get($body, 'server');
         $type = array_get($body, 'type');
@@ -45,13 +49,13 @@ class PurchaseService
         $tariff = array_get($body, 'tariff');
 
         // Sprawdzamy dane zakupu
-        $purchaseData = new Purchase();
-        $purchaseData->setService($serviceModule->service['id']);
-        $purchaseData->user = $this->heart->getUser($uid);
-        $purchaseData->user->setPlatform($platform);
-        $purchaseData->user->setLastIp($ip);
+        $purchase = new Purchase();
+        $purchase->setService($serviceModule->service['id']);
+        $purchase->user = $this->heart->getUser($uid);
+        $purchase->user->setPlatform($platform);
+        $purchase->user->setLastIp($ip);
 
-        $purchaseData->setOrder([
+        $purchase->setOrder([
             'server' => $server,
             'type' => $type,
             'auth_data' => $authData,
@@ -59,20 +63,20 @@ class PurchaseService
             'passwordr' => $password,
         ]);
 
-        $purchaseData->setPayment([
+        $purchase->setPayment([
             'method' => $method,
             'sms_code' => $smsCode,
             'sms_service' => $transactionService,
         ]);
 
         // Ustawiamy taryfę z numerem
-        $payment = new Payment($purchaseData->getPayment('sms_service'));
-        $purchaseData->setTariff($payment->getPaymentModule()->getTariffById($tariff));
+        $payment = new Payment($purchase->getPayment('sms_service'));
+        $purchase->setTariff($payment->getPaymentModule()->getTariffById($tariff));
 
-        $returnValidation = $serviceModule->purchaseDataValidate($purchaseData);
+        $returnValidation = $serviceModule->purchaseDataValidate($purchase);
 
         // Są jakieś błędy przy sprawdzaniu danych
-        if ($returnValidation['status'] != "ok") {
+        if ($returnValidation['status'] !== "ok") {
             $extraData = '';
             if (!empty($returnValidation["data"]["warnings"])) {
                 $warnings = '';
@@ -94,14 +98,15 @@ class PurchaseService
             ];
         }
 
-        /** @var Purchase $purchaseData */
-        $purchaseData = $returnValidation['purchase_data'];
-        $purchaseData->setPayment([
+        /** @var Purchase $purchase */
+        $purchase = $returnValidation['purchase_data'];
+        $purchase->setPayment([
             'method' => $method,
             'sms_code' => $smsCode,
             'sms_service' => $transactionService,
         ]);
-        $returnPayment = $this->paymentService->makePayment($purchaseData);
+
+        $returnPayment = $this->paymentService->makePayment($purchase);
 
         $extraData = "";
 
@@ -125,17 +130,6 @@ class PurchaseService
             "text" => $returnPayment['text'],
             "positive" => $returnPayment['positive'],
             "extraData" => $extraData,
-        ];
-    }
-
-    public function payWithWallet(Service $serviceModule, array $body)
-    {
-        // TODO Implement it
-        return [
-            "status" => "",
-            "text" => "",
-            "positive" => "",
-            "extraData" => "",
         ];
     }
 }

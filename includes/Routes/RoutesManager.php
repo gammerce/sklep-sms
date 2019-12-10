@@ -41,8 +41,7 @@ use App\Http\Controllers\Api\PaymentResource;
 use App\Http\Controllers\Api\PurchaseResource;
 use App\Http\Controllers\Api\PurchaseValidationResource;
 use App\Http\Controllers\Api\RegisterController;
-use App\Http\Controllers\Api\Server\PurchaseSmsResource;
-use App\Http\Controllers\Api\Server\PurchaseWalletResource;
+use App\Http\Controllers\Api\Server\PurchaseResource as ServerPurchaseResource;
 use App\Http\Controllers\Api\ServiceActionController;
 use App\Http\Controllers\Api\ServiceLongDescriptionResource;
 use App\Http\Controllers\Api\ServiceTakeOverController;
@@ -116,14 +115,9 @@ class RoutesManager
                     'uses' => TransferController::class . '@action',
                 ]);
 
-                $r->post('/api/server/purchase/sms', [
+                $r->post('/api/server/purchase', [
                     'middlewares' => [BlockOnInvalidLicense::class],
-                    'uses' => PurchaseSmsResource::class . '@post',
-                ]);
-
-                $r->post('/api/server/purchase/wallet', [
-                    'middlewares' => [BlockOnInvalidLicense::class],
-                    'uses' => PurchaseWalletResource::class . '@post',
+                    'uses' => ServerPurchaseResource::class . '@post',
                 ]);
 
                 $r->addRoute(['GET', 'POST'], '/extra_stuff.php', [

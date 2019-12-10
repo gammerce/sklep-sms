@@ -10,8 +10,10 @@ use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class PurchaseWalletResource
+class PurchaseResource
 {
+    // TODO Test against string that requires url encoding
+
     public function post(
         Request $request,
         Heart $heart,
@@ -31,7 +33,7 @@ class PurchaseWalletResource
             return new XmlResponse("bad_module", $lang->translate('bad_module'), 0);
         }
 
-        $response = $purchaseService->payWithWallet($serviceModule, $request->request->all());
+        $response = $purchaseService->purchase($serviceModule, $request->request->all());
 
         return new XmlResponse(
             $response["status"],
@@ -45,8 +47,9 @@ class PurchaseWalletResource
     {
         $sign = $request->request->get("sign");
         $authData = $request->request->get("auth_data");
+        $smsCode = $request->request->get("sms_code");
 
-        $calculatedSign = md5($authData . "#" . $secret);
+        $calculatedSign = md5($authData . "#" . $smsCode . "#" . $secret);
 
         return $sign === $calculatedSign;
     }

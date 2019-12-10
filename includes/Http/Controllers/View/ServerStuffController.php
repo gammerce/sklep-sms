@@ -37,7 +37,7 @@ class ServerStuffController
             return new XmlResponse("bad_module", $lang->translate('bad_module'), 0);
         }
 
-        $response = $purchaseService->payWithSms($serviceModule, $request->query->all());
+        $response = $purchaseService->purchase($serviceModule, $request->query->all());
 
         return new XmlResponse(
             $response["status"],
