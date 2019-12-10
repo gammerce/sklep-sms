@@ -139,7 +139,7 @@ class UserRepository
                     TABLE_PREFIX .
                     "users` " .
                     "WHERE (`username` = '%s' OR `email` = '%s') AND `password` = md5(CONCAT(md5('%s'), md5(`salt`)))",
-                [$emailOrUsername, $password]
+                [$emailOrUsername, $emailOrUsername, $password]
             )
         );
 
