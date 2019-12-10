@@ -7,9 +7,11 @@ class XmlResponse extends Response
 {
     public function __construct($returnValue, $text, $positive, $extraData = "")
     {
+        $positiveText = $positive ? "1" : "0";
+
         $output = "<return_value>{$returnValue}</return_value>";
         $output .= "<text>{$text}</text>";
-        $output .= "<positive>{$positive}</positive>";
+        $output .= "<positive>{$positiveText}</positive>";
         $output .= $extraData;
 
         parent::__construct($output, 200, [

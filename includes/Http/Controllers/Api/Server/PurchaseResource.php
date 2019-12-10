@@ -38,7 +38,7 @@ class PurchaseResource
         return new XmlResponse(
             $response["status"],
             $response["text"],
-            $response["positive"] ? "1" : "0",
+            $response["positive"],
             $response["extraData"]
         );
     }
