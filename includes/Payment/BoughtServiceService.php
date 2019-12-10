@@ -1,6 +1,7 @@
 <?php
 namespace App\Payment;
 
+use App\Repositories\BoughtServiceRepository;
 use App\System\Database;
 use App\System\Heart;
 use App\System\Mailer;
@@ -24,13 +25,22 @@ class BoughtServiceService
     /** * @var Translator */
     private $langShop;
 
-    public function __construct(Database $db, TranslationManager $translationManager, Heart $heart, Mailer $mailer)
-    {
+    /** * @var BoughtServiceRepository */
+    private $boughtServiceRepository;
+
+    public function __construct(
+        Database $db,
+        TranslationManager $translationManager,
+        Heart $heart,
+        Mailer $mailer,
+        BoughtServiceRepository $boughtServiceRepository
+    ) {
         $this->db = $db;
         $this->heart = $heart;
         $this->mailer = $mailer;
         $this->lang = $translationManager->user();
-        $this->langShop= $translationManager->shop();
+        $this->langShop = $translationManager->shop();
+        $this->boughtServiceRepository = $boughtServiceRepository;
     }
 
     /**
@@ -48,7 +58,7 @@ class BoughtServiceService
      * @param string  $email
      * @param array   $extraData
      *
-     * @return int|string
+     * @return int
      */
     public function create(
         $uid,
@@ -63,33 +73,22 @@ class BoughtServiceService
         $email,
         $extraData = []
     ) {
-        // Dodajemy informacje o kupionej usludze do bazy danych
-        $this->db->query(
-            $this->db->prepare(
-                "INSERT INTO `" .
-                TABLE_PREFIX .
-                "bought_services` " .
-                "SET `uid` = '%d', `payment` = '%s', `payment_id` = '%s', `service` = '%s', " .
-                "`server` = '%d', `amount` = '%s', `auth_data` = '%s', `email` = '%s', `extra_data` = '%s'",
-                [
-                    $uid,
-                    $method,
-                    $paymentId,
-                    $service,
-                    $server,
-                    $amount,
-                    $authData,
-                    $email,
-                    json_encode($extraData),
-                ]
-            )
+        $boughtService = $this->boughtServiceRepository->create(
+            $uid,
+            $method,
+            $paymentId,
+            $service,
+            $server,
+            $amount,
+            $authData,
+            $email,
+            $extraData
         );
-        $bougtServiceId = $this->db->lastId();
 
         $ret = $this->lang->translate('none');
         if (strlen($email)) {
             $message = purchase_info([
-                'purchase_id' => $bougtServiceId,
+                'purchase_id' => $boughtService->getId(),
                 'action' => "email",
             ]);
             if (strlen($message)) {
@@ -109,7 +108,8 @@ class BoughtServiceService
 
         $tempService = $this->heart->getService($service);
         $tempServer = $this->heart->getServer($server);
-        $amount = $amount != -1 ? "{$amount} {$tempService['tag']}" : $this->lang->translate('forever');
+        $amount =
+            $amount != -1 ? "{$amount} {$tempService['tag']}" : $this->lang->translate('forever');
         log_info(
             $this->langShop->sprintf(
                 $this->langShop->translate('bought_service_info'),
@@ -126,6 +126,6 @@ class BoughtServiceService
         );
         unset($tempServer);
 
-        return $bougtServiceId;
+        return $boughtService->getId();
     }
 }
