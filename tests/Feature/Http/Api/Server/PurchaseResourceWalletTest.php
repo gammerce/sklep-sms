@@ -9,7 +9,7 @@ use App\Services\ExtraFlags\ExtraFlagType;
 use App\System\Settings;
 use Tests\Psr4\TestCases\IndexTestCase;
 
-class PurchaseResourceTest extends IndexTestCase
+class PurchaseResourceWalletTest extends IndexTestCase
 {
     /** @var Settings */
     private $settings;
@@ -58,7 +58,7 @@ class PurchaseResourceTest extends IndexTestCase
             "wallet" => 10000,
         ]);
 
-        $sign = md5(implode("#", [$this->steamId, "", $this->settings->get("random_key")]));
+        $sign = md5(implode("#", [ExtraFlagType::TYPE_SID, $this->steamId, "", $this->settings->get("random_key")]));
 
         // when
         $response = $this->post(
@@ -72,7 +72,6 @@ class PurchaseResourceTest extends IndexTestCase
                 'platform' => $this->platform,
                 'tariff' => $this->tariff,
                 'method' => Purchase::METHOD_WALLET,
-                'steam_id' => $this->steamId,
                 'sign' => $sign,
             ],
             [
@@ -86,7 +85,7 @@ class PurchaseResourceTest extends IndexTestCase
         // then
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertRegExp(
-            "#<return_value>purchased</return_value><text>Usługa została prawidłowo zakupiona\.</text><positive>1</positive><bsid>(\d+)</bsid>#",
+            "#<return_value>purchased</return_value><text>Usługa została prawidłowo zakupiona\.</text><positive>1</positive><bsid>\d+</bsid>#",
             $response->getContent()
         );
 
@@ -109,7 +108,7 @@ class PurchaseResourceTest extends IndexTestCase
             "wallet" => 100,
         ]);
 
-        $sign = md5(implode("#", [$this->steamId, "", $this->settings->get("random_key")]));
+        $sign = md5(implode("#", [ExtraFlagType::TYPE_SID, $this->steamId, "", $this->settings->get("random_key")]));
 
         // when
         $response = $this->post(
@@ -148,7 +147,7 @@ class PurchaseResourceTest extends IndexTestCase
     public function cannot_purchase_using_wallet_if_not_authorized()
     {
         // given
-        $sign = md5(implode("#", [$this->steamId, "", $this->settings->get("random_key")]));
+        $sign = md5(implode("#", [ExtraFlagType::TYPE_SID, $this->steamId, "", $this->settings->get("random_key")]));
 
         // when
         $response = $this->post(

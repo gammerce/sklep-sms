@@ -22,7 +22,7 @@ class PurchaseResource
         $lang = $translationManager->user();
 
         if (!$this->isCorrectlySigned($request, $settings['random_key'])) {
-            return new Response();
+            return new Response("Invalid body sign");
         }
 
         $serviceModule = $heart->getServiceModule($request->request->get('service'));
@@ -44,10 +44,11 @@ class PurchaseResource
     private function isCorrectlySigned(Request $request, $secret)
     {
         $sign = $request->request->get("sign");
+        $type = $request->request->get("type");
         $authData = $request->request->get("auth_data");
         $smsCode = $request->request->get("sms_code");
 
-        $calculatedSign = md5(implode("#", [$authData, $smsCode, $secret]));
+        $calculatedSign = md5(implode("#", [$type, $authData, $smsCode, $secret]));
 
         return $sign === $calculatedSign;
     }

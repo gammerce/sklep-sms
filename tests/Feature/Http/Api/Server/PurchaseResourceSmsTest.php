@@ -1,10 +1,8 @@
 <?php
 namespace Tests\Feature\Http;
 
-use App\Exceptions\LicenseRequestException;
 use App\Models\Purchase;
 use App\Repositories\BoughtServiceRepository;
-use App\System\License;
 use App\Requesting\Response;
 use App\Services\ExtraFlags\ExtraFlagType;
 use App\System\Settings;
@@ -14,10 +12,7 @@ use Mockery;
 use Tests\Psr4\Concerns\RequesterConcern;
 use Tests\Psr4\TestCases\IndexTestCase;
 
-/**
- * @deprecated
- */
-class PurchaseServiceFromServerTest extends IndexTestCase
+class PurchaseResourceSmsTest extends IndexTestCase
 {
     use RequesterConcern;
 
@@ -28,22 +23,23 @@ class PurchaseServiceFromServerTest extends IndexTestCase
     }
 
     /** @test */
-    public function player_can_purchase_service()
+    public function purchase_using_sms()
     {
         // given
         /** @var BoughtServiceRepository $boughtServiceRepository */
         $boughtServiceRepository = $this->app->make(BoughtServiceRepository::class);
 
+        /** @var Settings $settings */
+        $settings = $this->app->make(Settings::class);
+
         $serviceId = 'vip';
         $tariff = 2;
         $transactionService = 'gosetti';
-        $type = ExtraFlagType::TYPE_NICK;
         $authData = 'test';
         $password = 'test123';
         $smsCode = 'ABCD12EF';
-        $method = 'sms';
-        $uid = 0;
         $platform = 'engine_amxx';
+        $type = ExtraFlagType::TYPE_NICK;
 
         $server = $this->factory->server();
         $this->factory->serverService([
@@ -56,29 +52,31 @@ class PurchaseServiceFromServerTest extends IndexTestCase
             'server_id' => $server->getId(),
         ]);
 
-        /** @var Settings $settings */
-        $settings = $this->app->make(Settings::class);
-
-        $query = [
-            'key' => md5($settings->get('random_key')),
-            'action' => 'purchase_service',
-            'service' => $serviceId,
-            'transaction_service' => $transactionService,
-            'server' => $server->getId(),
-            'type' => $type,
-            'auth_data' => $authData,
-            'password' => $password,
-            'sms_code' => $smsCode,
-            'method' => $method,
-            'tariff' => $tariff,
-            'uid' => $uid,
-            'platform' => $platform,
-        ];
+        $sign = md5(implode("#", [$type, $authData, $smsCode, $settings->get("random_key")]));
 
         $this->mockGoSetti();
 
         // when
-        $response = $this->get('/servers_stuff.php', $query);
+        $response = $this->post(
+            '/api/server/purchase',
+            [
+                'service' => $serviceId,
+                'transaction_service' => $transactionService,
+                'server' => $server->getId(),
+                'type' => $type,
+                'auth_data' => $authData,
+                'password' => $password,
+                'sms_code' => $smsCode,
+                'method' => Purchase::METHOD_SMS,
+                'tariff' => $tariff,
+                'platform' => $platform,
+                'ip' => "192.0.2.1",
+                'sign' => $sign,
+            ],
+            [
+                'key' => md5($settings->get("random_key")),
+            ]
+        );
 
         // then
         $this->assertEquals(200, $response->getStatusCode());
@@ -92,25 +90,6 @@ class PurchaseServiceFromServerTest extends IndexTestCase
         $boughtService = $boughtServiceRepository->get($boughtServiceId);
         $this->assertNotNull($boughtService);
         $this->assertEquals(Purchase::METHOD_SMS, $boughtService->getMethod());
-    }
-
-    /** @test */
-    public function player_cannot_make_a_purchase_if_license_is_invalid()
-    {
-        // given
-        $license = $this->app->make(License::class);
-        $license->shouldReceive('isValid')->andReturn(false);
-        $license->shouldReceive('getLoadingException')->andReturn(new LicenseRequestException());
-
-        // when
-        $response = $this->get('/servers_stuff.php');
-
-        // then
-        $this->assertEquals(200, $response->getStatusCode());
-        $json = json_decode($response->getContent(), true);
-        $this->assertEquals($json, [
-            "message" => "Coś poszło nie tak podczas łączenia się z serwerem weryfikacyjnym.",
-        ]);
     }
 
     protected function mockGoSetti()
