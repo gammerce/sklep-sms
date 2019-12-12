@@ -466,10 +466,10 @@ function get_platform($platform)
 
     if ($platform == "engine_amxx") {
         return $lang->translate('amxx_server');
-    } else {
-        if ($platform == "engine_sm") {
-            return $lang->translate('sm_server');
-        }
+    }
+
+    if ($platform == "engine_sm") {
+        return $lang->translate('sm_server');
     }
 
     return htmlspecialchars($platform);

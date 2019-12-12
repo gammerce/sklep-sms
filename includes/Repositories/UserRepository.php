@@ -127,10 +127,13 @@ class UserRepository
             return null;
         }
 
+        // SID can start with STEAM_0 or STEAM_1. They are used interchangeably.
+        $steamIdSuffix = preg_replace("/^STEAM_(0|1)/", "", $steamId);
+
         $result = $this->db->query(
             $this->db->prepare(
-                "SELECT * FROM `" . TABLE_PREFIX . "users` WHERE `steam_id` = '%s'",
-                [$steamId]
+                "SELECT * FROM `" . TABLE_PREFIX . "users` WHERE `steam_id` IN ('STEAM_0%s', 'STEAM_1%s')",
+                [$steamIdSuffix, $steamIdSuffix]
             )
         );
 
