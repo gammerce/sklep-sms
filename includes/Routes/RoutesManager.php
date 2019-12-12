@@ -42,6 +42,7 @@ use App\Http\Controllers\Api\PurchaseResource;
 use App\Http\Controllers\Api\PurchaseValidationResource;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\Server\PurchaseResource as ServerPurchaseResource;
+use App\Http\Controllers\Api\Server\UsersSteamIdsController;
 use App\Http\Controllers\Api\ServiceActionController;
 use App\Http\Controllers\Api\ServiceLongDescriptionResource;
 use App\Http\Controllers\Api\ServiceTakeOverController;
@@ -115,11 +116,6 @@ class RoutesManager
                     'uses' => TransferController::class . '@action',
                 ]);
 
-                $r->post('/api/server/purchase', [
-                    'middlewares' => [BlockOnInvalidLicense::class],
-                    'uses' => ServerPurchaseResource::class . '@post',
-                ]);
-
                 $r->addRoute(['GET', 'POST'], '/extra_stuff.php', [
                     'middlewares' => [RunCron::class, BlockOnInvalidLicense::class],
                     'uses' => ExtraStuffController::class . '@action',
@@ -134,6 +130,23 @@ class RoutesManager
                     'middlewares' => [BlockOnInvalidLicense::class],
                     'uses' => TransferController::class . '@oldAction',
                 ]);
+
+                $r->addGroup(
+                    [
+                        "middlewares" => [BlockOnInvalidLicense::class],
+                    ],
+                    function (RouteCollector $r) {
+                        $r->post('/api/server/purchase', [
+                            'middlewares' => [BlockOnInvalidLicense::class],
+                            'uses' => ServerPurchaseResource::class . '@post',
+                        ]);
+
+                        $r->get('/api/server/users/steam-ids', [
+                            'middlewares' => [BlockOnInvalidLicense::class],
+                            'uses' => UsersSteamIdsController::class . '@get',
+                        ]);
+                    }
+                );
 
                 $r->addGroup(
                     [
