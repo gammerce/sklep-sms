@@ -132,7 +132,9 @@ class UserRepository
 
         $result = $this->db->query(
             $this->db->prepare(
-                "SELECT * FROM `" . TABLE_PREFIX . "users` WHERE `steam_id` IN ('STEAM_0%s', 'STEAM_1%s')",
+                "SELECT * FROM `" .
+                    TABLE_PREFIX .
+                    "users` WHERE `steam_id` IN ('STEAM_0%s', 'STEAM_1%s')",
                 [$steamIdSuffix, $steamIdSuffix]
             )
         );
