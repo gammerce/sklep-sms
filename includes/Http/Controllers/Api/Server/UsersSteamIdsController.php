@@ -10,12 +10,9 @@ class UsersSteamIdsController
     public function get(UserRepository $userRepository)
     {
         $users = $userRepository->allWithSteamId();
-        $steamIds = array_map(
-            function (User $user) {
-                return $user->getSteamId();
-            },
-            $users
-        );
+        $steamIds = array_map(function (User $user) {
+            return $user->getSteamId();
+        }, $users);
 
         return new Response(implode(";", $steamIds) . ";");
     }

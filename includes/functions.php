@@ -793,7 +793,7 @@ function log_to_file($file, $message, array $data = [])
     /** @var Settings $settings */
     $settings = app()->make(Settings::class);
 
-    $dataText = $data ? (" | " . json_encode($data)) : "";
+    $dataText = $data ? " | " . json_encode($data) : "";
     $text = date($settings['date_format']) . ": " . $message . $dataText;
 
     if (file_exists($file) && strlen(file_get_contents($file))) {
@@ -820,7 +820,8 @@ function log_error($message, array $data = [])
     log_to_file($path->errorLogPath(), $message, $data);
 }
 
-function log_info($message, array $data = []) {
+function log_info($message, array $data = [])
+{
     /** @var Path $path */
     $path = app()->make(Path::class);
     log_to_file($path->infoLogPath(), $message, $data);

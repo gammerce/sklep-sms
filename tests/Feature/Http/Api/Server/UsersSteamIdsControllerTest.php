@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Feature\Http\Api\Server;
 
+use App\System\Settings;
 use Tests\Psr4\TestCases\IndexTestCase;
 
 class UsersSteamIdsControllerTest extends IndexTestCase
@@ -8,8 +9,14 @@ class UsersSteamIdsControllerTest extends IndexTestCase
     /** @test */
     public function list_when_no_users()
     {
+        // given
+        /** @var Settings $settings */
+        $settings = $this->app->make(Settings::class);
+
         // when
-        $response = $this->get('/api/server/users/steam-ids');
+        $response = $this->get('/api/server/users/steam-ids', [
+            'key' => md5($settings->get("random_key")),
+        ]);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());
@@ -20,6 +27,9 @@ class UsersSteamIdsControllerTest extends IndexTestCase
     public function lists_users_steam_ids()
     {
         // given
+        /** @var Settings $settings */
+        $settings = $this->app->make(Settings::class);
+
         $this->factory->user([
             "steam_id" => "STEAM_1",
         ]);
@@ -32,7 +42,9 @@ class UsersSteamIdsControllerTest extends IndexTestCase
         ]);
 
         // when
-        $response = $this->get('/api/server/users/steam-ids');
+        $response = $this->get('/api/server/users/steam-ids', [
+            'key' => md5($settings->get("random_key")),
+        ]);
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

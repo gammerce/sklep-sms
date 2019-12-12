@@ -44,11 +44,10 @@ class PurchaseResource
     private function isCorrectlySigned(Request $request, $secret)
     {
         $sign = $request->request->get("sign");
-        $steamId = $request->request->get("steam_id");
         $authData = $request->request->get("auth_data");
         $smsCode = $request->request->get("sms_code");
 
-        $calculatedSign = md5(implode("#", [$steamId, $authData, $smsCode, $secret]));
+        $calculatedSign = md5(implode("#", [$authData, $smsCode, $secret]));
 
         return $sign === $calculatedSign;
     }

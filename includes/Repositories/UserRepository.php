@@ -87,7 +87,7 @@ class UserRepository
 
         $users = [];
         while ($row = $this->db->fetchArrayAssoc($result)) {
-            $users []= $this->resultToObject($row);
+            $users[] = $this->resultToObject($row);
         }
 
         return $users;

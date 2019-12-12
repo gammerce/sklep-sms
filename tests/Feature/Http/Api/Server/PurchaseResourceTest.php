@@ -58,23 +58,30 @@ class PurchaseResourceTest extends IndexTestCase
             "wallet" => 10000,
         ]);
 
-        $sign = md5(
-            implode("#", [$this->steamId, $this->steamId, "", $this->settings->get("random_key")])
-        );
+        $sign = md5(implode("#", [$this->steamId, "", $this->settings->get("random_key")]));
 
         // when
-        $response = $this->post('/api/server/purchase', [
-            'server' => $this->server->getId(),
-            'service' => $this->serviceId,
-            'type' => ExtraFlagType::TYPE_SID,
-            'auth_data' => $this->steamId,
-            'ip' => $this->ip,
-            'platform' => $this->platform,
-            'tariff' => $this->tariff,
-            'method' => Purchase::METHOD_WALLET,
-            'steam_id' => $this->steamId,
-            'sign' => $sign,
-        ]);
+        $response = $this->post(
+            '/api/server/purchase',
+            [
+                'server' => $this->server->getId(),
+                'service' => $this->serviceId,
+                'type' => ExtraFlagType::TYPE_SID,
+                'auth_data' => $this->steamId,
+                'ip' => $this->ip,
+                'platform' => $this->platform,
+                'tariff' => $this->tariff,
+                'method' => Purchase::METHOD_WALLET,
+                'steam_id' => $this->steamId,
+                'sign' => $sign,
+            ],
+            [
+                'key' => md5($this->settings->get("random_key")),
+            ],
+            [
+                'Authorization' => $this->steamId,
+            ]
+        );
 
         // then
         $this->assertEquals(200, $response->getStatusCode());
@@ -102,23 +109,29 @@ class PurchaseResourceTest extends IndexTestCase
             "wallet" => 100,
         ]);
 
-        $sign = md5(
-            implode("#", [$this->steamId, $this->steamId, "", $this->settings->get("random_key")])
-        );
+        $sign = md5(implode("#", [$this->steamId, "", $this->settings->get("random_key")]));
 
         // when
-        $response = $this->post('/api/server/purchase', [
-            'server' => $this->server->getId(),
-            'service' => $this->serviceId,
-            'type' => ExtraFlagType::TYPE_SID,
-            'auth_data' => $this->steamId,
-            'ip' => $this->ip,
-            'platform' => $this->platform,
-            'tariff' => $this->tariff,
-            'method' => Purchase::METHOD_WALLET,
-            'steam_id' => $this->steamId,
-            'sign' => $sign,
-        ]);
+        $response = $this->post(
+            '/api/server/purchase',
+            [
+                'server' => $this->server->getId(),
+                'service' => $this->serviceId,
+                'type' => ExtraFlagType::TYPE_SID,
+                'auth_data' => $this->steamId,
+                'ip' => $this->ip,
+                'platform' => $this->platform,
+                'tariff' => $this->tariff,
+                'method' => Purchase::METHOD_WALLET,
+                'sign' => $sign,
+            ],
+            [
+                'key' => md5($this->settings->get("random_key")),
+            ],
+            [
+                'Authorization' => $this->steamId,
+            ]
+        );
 
         // then
         $this->assertEquals(200, $response->getStatusCode());
@@ -135,27 +148,32 @@ class PurchaseResourceTest extends IndexTestCase
     public function cannot_purchase_using_wallet_if_not_authorized()
     {
         // given
-        $sign = md5(
-            implode("#", [$this->steamId, $this->steamId, "", $this->settings->get("random_key")])
-        );
+        $sign = md5(implode("#", [$this->steamId, "", $this->settings->get("random_key")]));
 
         // when
-        $response = $this->post('/api/server/purchase', [
-            'server' => $this->server->getId(),
-            'service' => $this->serviceId,
-            'type' => ExtraFlagType::TYPE_SID,
-            'auth_data' => $this->steamId,
-            'ip' => $this->ip,
-            'platform' => $this->platform,
-            'tariff' => $this->tariff,
-            'method' => Purchase::METHOD_WALLET,
-            'steam_id' => $this->steamId,
-            'sign' => $sign,
-        ]);
+        $response = $this->post(
+            '/api/server/purchase',
+            [
+                'server' => $this->server->getId(),
+                'service' => $this->serviceId,
+                'type' => ExtraFlagType::TYPE_SID,
+                'auth_data' => $this->steamId,
+                'ip' => $this->ip,
+                'platform' => $this->platform,
+                'tariff' => $this->tariff,
+                'method' => Purchase::METHOD_WALLET,
+                'sign' => $sign,
+            ],
+            [
+                'key' => md5($this->settings->get("random_key")),
+            ],
+            [
+                'Authorization' => $this->steamId,
+            ]
+        );
 
         // then
         $this->assertEquals(200, $response->getStatusCode());
-        // TODO Change error message
         $this->assertRegExp(
             "#<return_value>wallet_not_logged</return_value><text>Nie można zapłacić portfelem, gdy nie jesteś zalogowany.</text><positive>0</positive>#",
             $response->getContent()

@@ -61,6 +61,7 @@ use App\Http\Controllers\View\IndexController;
 use App\Http\Controllers\View\JsController;
 use App\Http\Controllers\View\ServerStuffController;
 use App\Http\Controllers\View\SetupController;
+use App\Http\Middlewares\AuthorizeServer;
 use App\Http\Middlewares\BlockOnInvalidLicense;
 use App\Http\Middlewares\IsUpToDate;
 use App\Http\Middlewares\LoadSettings;
@@ -131,11 +132,9 @@ class RoutesManager
                     'uses' => TransferController::class . '@oldAction',
                 ]);
 
-                // TODO Add authorization validation
-
                 $r->addGroup(
                     [
-                        "middlewares" => [BlockOnInvalidLicense::class],
+                        "middlewares" => [BlockOnInvalidLicense::class, AuthorizeServer::class],
                     ],
                     function (RouteCollector $r) {
                         $r->post('/api/server/purchase', [
