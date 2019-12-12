@@ -19,7 +19,7 @@ $(document).delegate("#form_service_code_add [name=server]", "change", function(
 
     restRequest(
         "POST",
-        "/api/service/" + serviceId + "/actions/tariffs_for_server",
+        "/api/services/" + serviceId + "/actions/tariffs_for_server",
         {
             server: $(this).val(),
         },
