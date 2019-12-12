@@ -58,7 +58,14 @@ class PurchaseResourceWalletTest extends IndexTestCase
             "wallet" => 10000,
         ]);
 
-        $sign = md5(implode("#", [ExtraFlagType::TYPE_SID, $this->steamId, "", $this->settings->get("random_key")]));
+        $sign = md5(
+            implode("#", [
+                ExtraFlagType::TYPE_SID,
+                $this->steamId,
+                "",
+                $this->settings->get("random_key"),
+            ])
+        );
 
         // when
         $response = $this->post(
@@ -108,7 +115,14 @@ class PurchaseResourceWalletTest extends IndexTestCase
             "wallet" => 100,
         ]);
 
-        $sign = md5(implode("#", [ExtraFlagType::TYPE_SID, $this->steamId, "", $this->settings->get("random_key")]));
+        $sign = md5(
+            implode("#", [
+                ExtraFlagType::TYPE_SID,
+                $this->steamId,
+                "",
+                $this->settings->get("random_key"),
+            ])
+        );
 
         // when
         $response = $this->post(
@@ -147,7 +161,14 @@ class PurchaseResourceWalletTest extends IndexTestCase
     public function cannot_purchase_using_wallet_if_not_authorized()
     {
         // given
-        $sign = md5(implode("#", [ExtraFlagType::TYPE_SID, $this->steamId, "", $this->settings->get("random_key")]));
+        $sign = md5(
+            implode("#", [
+                ExtraFlagType::TYPE_SID,
+                $this->steamId,
+                "",
+                $this->settings->get("random_key"),
+            ])
+        );
 
         // when
         $response = $this->post(
