@@ -131,6 +131,8 @@ class RoutesManager
                     'uses' => TransferController::class . '@oldAction',
                 ]);
 
+                // TODO Add authorization validation
+
                 $r->addGroup(
                     [
                         "middlewares" => [BlockOnInvalidLicense::class],

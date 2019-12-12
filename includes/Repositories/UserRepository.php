@@ -81,9 +81,8 @@ class UserRepository
      */
     public function allWithSteamId()
     {
-        // TODO Check if empty string is allowed
         $result = $this->db->query(
-            "SELECT * FROM `" . TABLE_PREFIX . "users` WHERE `steam_id` != '' AND `steam_id` IS NOT NULL"
+            "SELECT * FROM `" . TABLE_PREFIX . "users` WHERE `steam_id` != ''"
         );
 
         $users = [];
