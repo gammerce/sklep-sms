@@ -38,7 +38,7 @@ $(document).delegate("#form_user_service_edit [name=service]", "change", functio
 
     restRequest(
         "POST",
-        "/api/service/" + serviceId + "/actions/servers_for_service",
+        "/api/services/" + serviceId + "/actions/servers_for_service",
         {
             server: module.find("[name=server]").val(),
         },

@@ -30,7 +30,7 @@ class PagePayment extends Page
         /** @var Purchase $purchaseData */
         $purchaseData = unserialize(base64_decode($body['data']));
 
-        // Fix: get user data again to avoid bugs linked with user wallet
+        // Fix: Refresh user to avoid bugs linked with user wallet
         $purchaseData->user = $this->heart->getUser($purchaseData->user->getUid());
 
         if (!($purchaseData instanceof Purchase)) {

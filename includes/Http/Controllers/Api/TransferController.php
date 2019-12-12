@@ -25,7 +25,7 @@ class TransferController
             ->finalizeTransfer($request->query->all(), $request->request->all());
 
         if ($transferFinalize->getStatus() === false) {
-            log_info(
+            log_to_db(
                 $this->langShop->sprintf(
                     $this->langShop->translate('payment_not_accepted'),
                     $transferFinalize->getOrderid(),

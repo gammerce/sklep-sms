@@ -77,7 +77,7 @@ class ServiceCodeCollection
             )
         );
 
-        log_info(
+        log_to_db(
             $langShop->sprintf(
                 $langShop->translate('code_added_admin'),
                 $user->getUsername(),

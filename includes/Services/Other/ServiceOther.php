@@ -1,6 +1,7 @@
 <?php
 namespace App\Services\Other;
 
+use App\Payment\BoughtServiceService;
 use App\System\Heart;
 use App\Models\Purchase;
 use App\Services\Interfaces\IServicePurchase;
@@ -11,19 +12,23 @@ use App\Translation\Translator;
 class ServiceOther extends ServiceOtherSimple implements IServicePurchase, IServicePurchaseOutside
 {
     /** @var Heart */
-    protected $heart;
+    private $heart;
 
     /** @var Translator */
-    protected $lang;
+    private $lang;
+
+    /** @var BoughtServiceService */
+    private $boughtServiceService;
 
     public function __construct($service = null)
     {
         parent::__construct($service);
 
+        $this->heart = $this->app->make(Heart::class);
+        $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
-        $this->heart = $this->app->make(Heart::class);
     }
 
     /**
@@ -111,7 +116,7 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase, IServ
 
     public function purchase(Purchase $purchaseData)
     {
-        return add_bought_service_info(
+        return $this->boughtServiceService->create(
             $purchaseData->user->getUid(),
             $purchaseData->user->getUsername(),
             $purchaseData->user->getLastIp(),

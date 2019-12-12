@@ -41,6 +41,8 @@ use App\Http\Controllers\Api\PaymentResource;
 use App\Http\Controllers\Api\PurchaseResource;
 use App\Http\Controllers\Api\PurchaseValidationResource;
 use App\Http\Controllers\Api\RegisterController;
+use App\Http\Controllers\Api\Server\PurchaseResource as ServerPurchaseResource;
+use App\Http\Controllers\Api\Server\UsersSteamIdsController;
 use App\Http\Controllers\Api\ServiceActionController;
 use App\Http\Controllers\Api\ServiceLongDescriptionResource;
 use App\Http\Controllers\Api\ServiceTakeOverController;
@@ -59,6 +61,7 @@ use App\Http\Controllers\View\IndexController;
 use App\Http\Controllers\View\JsController;
 use App\Http\Controllers\View\ServerStuffController;
 use App\Http\Controllers\View\SetupController;
+use App\Http\Middlewares\AuthorizeServer;
 use App\Http\Middlewares\BlockOnInvalidLicense;
 use App\Http\Middlewares\IsUpToDate;
 use App\Http\Middlewares\LoadSettings;
@@ -128,6 +131,23 @@ class RoutesManager
                     'middlewares' => [BlockOnInvalidLicense::class],
                     'uses' => TransferController::class . '@oldAction',
                 ]);
+
+                $r->addGroup(
+                    [
+                        "middlewares" => [BlockOnInvalidLicense::class, AuthorizeServer::class],
+                    ],
+                    function (RouteCollector $r) {
+                        $r->post('/api/server/purchase', [
+                            'middlewares' => [BlockOnInvalidLicense::class],
+                            'uses' => ServerPurchaseResource::class . '@post',
+                        ]);
+
+                        $r->get('/api/server/users/steam-ids', [
+                            'middlewares' => [BlockOnInvalidLicense::class],
+                            'uses' => UsersSteamIdsController::class . '@get',
+                        ]);
+                    }
+                );
 
                 $r->addGroup(
                     [
@@ -221,7 +241,7 @@ class RoutesManager
                         ]);
 
                         $r->put('/api/user_services/{userServiceId}', [
-                            'middlewares' => [RequireUnauthorization::class],
+                            "middlewares" => [RequireAuthorization::class],
                             'uses' => UserServiceResource::class . '@put',
                         ]);
 

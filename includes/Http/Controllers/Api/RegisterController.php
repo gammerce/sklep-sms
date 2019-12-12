@@ -100,10 +100,12 @@ class RegisterController
             $forename,
             $surname,
             $steamId,
-            get_ip($request)
+            get_ip($request),
+            '1',
+            0
         );
 
-        log_info(
+        log_to_db(
             $langShop->sprintf(
                 $langShop->translate('new_account'),
                 $createdUser->getUid(),

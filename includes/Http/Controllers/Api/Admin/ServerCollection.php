@@ -33,7 +33,7 @@ class ServerCollection
 
         $serverService->updateServerServiceAffiliations($serverId, $request->request->all());
 
-        log_info(
+        log_to_db(
             $langShop->sprintf(
                 $langShop->translate('server_admin_add'),
                 $user->getUsername(),

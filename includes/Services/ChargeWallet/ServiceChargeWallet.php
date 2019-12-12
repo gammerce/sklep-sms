@@ -1,6 +1,7 @@
 <?php
 namespace App\Services\ChargeWallet;
 
+use App\Payment\BoughtServiceService;
 use App\System\Auth;
 use App\System\Heart;
 use App\Models\Purchase;
@@ -15,17 +16,20 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
     IServicePurchase,
     IServicePurchaseWeb
 {
+    /** @var Auth */
+    private $auth;
+
     /** @var Heart */
-    protected $heart;
+    private $heart;
 
     /** @var Translator */
-    protected $lang;
+    private $lang;
 
     /** @var Settings */
-    protected $settings;
+    private $settings;
 
-    /** @var Auth */
-    protected $auth;
+    /** @var BoughtServiceService */
+    private $boughtServiceService;
 
     public function __construct($service = null)
     {
@@ -34,9 +38,10 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
+        $this->auth = $this->app->make(Auth::class);
         $this->heart = $this->app->make(Heart::class);
         $this->settings = $this->app->make(Settings::class);
-        $this->auth = $this->app->make(Auth::class);
+        $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
     }
 
     public function purchaseFormGet()
@@ -102,7 +107,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         }
 
         // Są tylko dwie metody doładowania portfela
-        if (!in_array($data['method'], ["sms", "transfer"])) {
+        if (!in_array($data['method'], [Purchase::METHOD_SMS, Purchase::METHOD_TRANSFER])) {
             return [
                 'status' => "wrong_method",
                 'text' => $this->lang->translate('wrong_charge_method'),
@@ -112,12 +117,12 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
 
         $warnings = [];
 
-        if ($data['method'] == "sms") {
+        if ($data['method'] == Purchase::METHOD_SMS) {
             if (!strlen($data['tariff'])) {
                 $warnings['tariff'][] = $this->lang->translate('charge_amount_not_chosen');
             }
         } else {
-            if ($data['method'] == "transfer") {
+            if ($data['method'] == Purchase::METHOD_TRANSFER) {
                 // Kwota doładowania
                 if ($warning = check_for_warnings("number", $data['transfer_amount'])) {
                     $warnings['transfer_amount'] = array_merge(
@@ -144,26 +149,26 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
             ];
         }
 
-        $purchaseData = new Purchase();
-        $purchaseData->setService($this->service['id']);
-        $purchaseData->setTariff($this->heart->getTariff($data['tariff']));
-        $purchaseData->setPayment([
+        $purchase = new Purchase($this->auth->user());
+        $purchase->setService($this->service['id']);
+        $purchase->setTariff($this->heart->getTariff($data['tariff']));
+        $purchase->setPayment([
             'no_wallet' => true,
         ]);
 
-        if ($data['method'] == "sms") {
-            $purchaseData->setPayment([
+        if ($data['method'] == Purchase::METHOD_SMS) {
+            $purchase->setPayment([
                 'no_transfer' => true,
             ]);
-            $purchaseData->setOrder([
+            $purchase->setOrder([
                 'amount' => $this->heart->getTariff($data['tariff'])->getProvision(),
             ]);
-        } elseif ($data['method'] == "transfer") {
-            $purchaseData->setPayment([
+        } elseif ($data['method'] == Purchase::METHOD_TRANSFER) {
+            $purchase->setPayment([
                 'cost' => $data['transfer_amount'] * 100,
                 'no_sms' => true,
             ]);
-            $purchaseData->setOrder([
+            $purchase->setOrder([
                 'amount' => $data['transfer_amount'] * 100,
             ]);
         }
@@ -172,7 +177,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
             'status' => "ok",
             'text' => $this->lang->translate('purchase_form_validated'),
             'positive' => true,
-            'purchase_data' => $purchaseData,
+            'purchase_data' => $purchase,
         ];
     }
 
@@ -193,7 +198,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         // Aktualizacja stanu portfela
         $this->chargeWallet($purchaseData->user->getUid(), $purchaseData->getOrder('amount'));
 
-        return add_bought_service_info(
+        return $this->boughtServiceService->create(
             $purchaseData->user->getUid(),
             $purchaseData->user->getUsername(),
             $purchaseData->user->getLastIp(),
@@ -212,14 +217,14 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         $data['amount'] .= ' ' . $this->settings['currency'];
         $data['cost'] = number_format($data['cost'] / 100, 2) . ' ' . $this->settings['currency'];
 
-        if ($data['payment'] == "sms") {
+        if ($data['payment'] == Purchase::METHOD_SMS) {
             $data['sms_code'] = htmlspecialchars($data['sms_code']);
             $data['sms_text'] = htmlspecialchars($data['sms_text']);
             $data['sms_number'] = htmlspecialchars($data['sms_number']);
         }
 
         if ($action == "web") {
-            if ($data['payment'] == "sms") {
+            if ($data['payment'] == Purchase::METHOD_SMS) {
                 $desc = $this->lang->sprintf(
                     $this->lang->translate('wallet_was_charged'),
                     $data['amount']
@@ -231,7 +236,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
                     false
                 );
             }
-            if ($data['payment'] == "transfer") {
+            if ($data['payment'] == Purchase::METHOD_TRANSFER) {
                 return $this->template->render(
                     "services/charge_wallet/web_purchase_info_transfer",
                     compact('data'),

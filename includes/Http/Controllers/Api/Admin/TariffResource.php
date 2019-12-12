@@ -48,7 +48,7 @@ class TariffResource
 
         // Zwróć info o prawidłowej edycji
         if ($affected || $db->affectedRows()) {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('tariff_admin_edit'),
                     $user->getUsername(),
@@ -82,7 +82,7 @@ class TariffResource
         );
 
         if ($db->affectedRows()) {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('tariff_admin_delete'),
                     $user->getUsername(),

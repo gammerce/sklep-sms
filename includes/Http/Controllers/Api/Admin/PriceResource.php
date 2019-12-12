@@ -41,7 +41,7 @@ class PriceResource
         );
 
         if ($db->affectedRows()) {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('price_admin_edit'),
                     $user->getUsername(),
@@ -72,7 +72,7 @@ class PriceResource
         );
 
         if ($db->affectedRows()) {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('price_admin_delete'),
                     $user->getUsername(),

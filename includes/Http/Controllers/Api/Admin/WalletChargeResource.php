@@ -64,20 +64,19 @@ class WalletChargeResource
         $paymentId = pay_by_admin($user);
 
         // Kupujemy usługę
-        $purchaseData = new Purchase();
-        $purchaseData->user = $editedUser;
-        $purchaseData->setPayment([
+        $purchase = new Purchase($editedUser);
+        $purchase->setPayment([
             'method' => "admin",
             'payment_id' => $paymentId,
         ]);
-        $purchaseData->setOrder([
+        $purchase->setOrder([
             'amount' => $amount,
         ]);
-        $purchaseData->setEmail($editedUser->getEmail());
+        $purchase->setEmail($editedUser->getEmail());
 
-        $serviceModule->purchase($purchaseData);
+        $serviceModule->purchase($purchase);
 
-        log_info(
+        log_to_db(
             $langShop->sprintf(
                 $langShop->translate('account_charge'),
                 $user->getUsername(),

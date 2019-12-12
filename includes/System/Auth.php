@@ -22,11 +22,11 @@ class Auth
      */
     public function user()
     {
-        if ($this->user !== null) {
-            return $this->user;
+        if ($this->user === null) {
+            $this->user = new User();
         }
 
-        return $this->user = $this->heart->getUser();
+        return $this->user;
     }
 
     public function setUser(User $user)
@@ -46,7 +46,7 @@ class Auth
 
     public function loginAdminUsingCredentials($username, $password)
     {
-        $user = $this->heart->getUser(0, $username, $password);
+        $user = $this->heart->getUserByLogin($username, $password);
 
         if ($user->exists() && get_privileges("acp", $user)) {
             $this->getSession()->set("uid", $user->getUid());

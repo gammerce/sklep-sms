@@ -71,7 +71,7 @@ class ServiceResource
         );
 
         if ($db->affectedRows()) {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('service_admin_edit'),
                     $user->getUsername(),
@@ -122,7 +122,7 @@ class ServiceResource
         $affected = $db->affectedRows();
 
         if ($affected) {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('service_admin_delete'),
                     $user->getUsername(),
