@@ -629,7 +629,7 @@ function if_strlen2($empty, $default)
     return strlen($empty) ? $empty : $default;
 }
 
-function mb_str_split($string)
+function custom_mb_str_split($string)
 {
     return preg_split('/(?<!^)(?!$)/u', $string);
 }
@@ -640,7 +640,7 @@ function searchWhere($searchIds, $search, &$where)
     $db = app()->make(Database::class);
 
     $searchWhere = [];
-    $searchLike = $db->escape('%' . implode('%', mb_str_split($search)) . '%');
+    $searchLike = $db->escape('%' . implode('%', custom_mb_str_split($search)) . '%');
 
     foreach ($searchIds as $searchId) {
         $searchWhere[] = "{$searchId} LIKE '{$searchLike}'";
