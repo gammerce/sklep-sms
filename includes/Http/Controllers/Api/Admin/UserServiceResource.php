@@ -91,7 +91,7 @@ class UserServiceResource
         }
 
         if ($affected) {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('user_service_admin_delete'),
                     $user->getUsername(),

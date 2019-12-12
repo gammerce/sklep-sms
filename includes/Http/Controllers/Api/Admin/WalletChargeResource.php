@@ -76,7 +76,7 @@ class WalletChargeResource
 
         $serviceModule->purchase($purchase);
 
-        log_info(
+        log_to_db(
             $langShop->sprintf(
                 $langShop->translate('account_charge'),
                 $user->getUsername(),

@@ -53,7 +53,7 @@ class PasswordResource
             )
         );
 
-        log_info("Zmieniono hasło. ID użytkownika: {$user->getUid()}.");
+        log_to_db("Zmieniono hasło. ID użytkownika: {$user->getUid()}.");
 
         return new ApiResponse("password_changed", $lang->translate('password_changed'), 1);
     }

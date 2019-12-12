@@ -189,7 +189,7 @@ class SettingsController
         );
 
         if ($db->affectedRows()) {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('settings_admin_edit'),
                     $user->getUsername(),

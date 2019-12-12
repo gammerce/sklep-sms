@@ -27,7 +27,7 @@ class AntispamQuestionResource
         );
 
         if ($db->affectedRows()) {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('question_delete'),
                     $user->getUsername(),
@@ -83,7 +83,7 @@ class AntispamQuestionResource
         );
 
         if ($db->affectedRows()) {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('question_edit'),
                     $user->getUsername(),

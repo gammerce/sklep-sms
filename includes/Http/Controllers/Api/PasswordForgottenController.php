@@ -111,7 +111,7 @@ class PasswordForgottenController
         }
 
         if ($ret == "sent") {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('reset_key_email'),
                     $editedUser->getUsername(),

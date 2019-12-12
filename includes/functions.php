@@ -403,7 +403,7 @@ function delete_users_old_services()
                 $userServiceDesc .= ucfirst(strtolower($key)) . ': ' . $value;
             }
 
-            log_info(
+            log_to_db(
                 $langShop->sprintf($langShop->translate('expired_service_delete'), $userServiceDesc)
             );
         }
@@ -429,16 +429,6 @@ function delete_users_old_services()
 
         $serviceModule->userServiceDeletePost($userService);
     }
-}
-
-function log_info($string)
-{
-    /** @var Database $db */
-    $db = app()->make(Database::class);
-
-    $db->query(
-        $db->prepare("INSERT INTO `" . TABLE_PREFIX . "logs` " . "SET `text` = '%s'", [$string])
-    );
 }
 
 function create_dom_element($name, $text = "", $data = [])
@@ -798,12 +788,13 @@ function implode_esc($glue, $stack)
     return $output;
 }
 
-function log_to_file($file, $message)
+function log_to_file($file, $message, array $data = [])
 {
     /** @var Settings $settings */
     $settings = app()->make(Settings::class);
 
-    $text = date($settings['date_format']) . ": " . $message;
+    $dataText = $data ? (" | " . json_encode($data)) : "";
+    $text = date($settings['date_format']) . ": " . $message . $dataText;
 
     if (file_exists($file) && strlen(file_get_contents($file))) {
         $text = file_get_contents($file) . "\n" . $text;
@@ -812,11 +803,27 @@ function log_to_file($file, $message)
     file_put_contents($file, $text);
 }
 
-function log_error($message)
+function log_to_db($message)
+{
+    /** @var Database $db */
+    $db = app()->make(Database::class);
+
+    $db->query(
+        $db->prepare("INSERT INTO `" . TABLE_PREFIX . "logs` " . "SET `text` = '%s'", [$message])
+    );
+}
+
+function log_error($message, array $data = [])
 {
     /** @var Path $path */
     $path = app()->make(Path::class);
-    log_to_file($path->errorsLogPath(), $message);
+    log_to_file($path->errorLogPath(), $message, $data);
+}
+
+function log_info($message, array $data = []) {
+    /** @var Path $path */
+    $path = app()->make(Path::class);
+    log_to_file($path->infoLogPath(), $message, $data);
 }
 
 function array_get($array, $key, $default = null)

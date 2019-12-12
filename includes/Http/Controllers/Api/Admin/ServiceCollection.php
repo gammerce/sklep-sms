@@ -72,7 +72,7 @@ class ServiceCollection
             )
         );
 
-        log_info(
+        log_to_db(
             $langShop->sprintf(
                 $langShop->translate('service_admin_add'),
                 $user->getUsername(),

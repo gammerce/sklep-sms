@@ -25,8 +25,13 @@ class Path
         return $this->to('data/logs/sql.log');
     }
 
-    public function errorsLogPath()
+    public function errorLogPath()
     {
         return $this->to('data/logs/errors.log');
+    }
+
+    public function infoLogPath()
+    {
+        return $this->to('data/logs/info.log');
     }
 }

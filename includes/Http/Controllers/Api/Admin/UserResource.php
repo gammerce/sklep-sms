@@ -64,7 +64,7 @@ class UserResource
 
         $userRepository->update($editedUser);
 
-        log_info(
+        log_to_db(
             $langShop->sprintf(
                 $langShop->translate('user_admin_edit'),
                 $user->getUsername(),
@@ -93,7 +93,7 @@ class UserResource
         );
 
         if ($db->affectedRows()) {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('user_admin_delete'),
                     $user->getUsername(),

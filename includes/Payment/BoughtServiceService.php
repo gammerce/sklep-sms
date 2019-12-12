@@ -110,7 +110,7 @@ class BoughtServiceService
         $tempServer = $this->heart->getServer($server);
         $amount =
             $amount != -1 ? "{$amount} {$tempService['tag']}" : $this->lang->translate('forever');
-        log_info(
+        log_to_db(
             $this->langShop->sprintf(
                 $this->langShop->translate('bought_service_info'),
                 $service,

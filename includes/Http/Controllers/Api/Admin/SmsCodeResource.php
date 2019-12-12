@@ -25,7 +25,7 @@ class SmsCodeResource
         );
 
         if ($db->affectedRows()) {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('sms_code_admin_delete'),
                     $user->getUsername(),

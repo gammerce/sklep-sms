@@ -248,7 +248,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
     {
         // Nie znaleziono użytkownika o takich danych jak podane podczas zakupu
         if (($mybbUser = $this->createMybbUser($purchaseData->getOrder('username'))) === null) {
-            log_info(
+            log_to_db(
                 $this->langShop->sprintf(
                     $this->langShop->translate('mybb_purchase_no_user'),
                     json_encode($purchaseData->getPayment())
@@ -582,7 +582,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         $purchaseData->setEmail($body['email']);
         $boughtServiceId = $this->purchase($purchaseData);
 
-        log_info(
+        log_to_db(
             $this->langShop->sprintf(
                 $this->langShop->translate('admin_added_user_service'),
                 $user->getUsername(),

@@ -21,6 +21,8 @@ class PurchaseResource
         Settings $settings,
         PurchaseService $purchaseService
     ) {
+        log_info("Request works");
+
         $lang = $translationManager->user();
 
         if (!$this->isCorrectlySigned($request, $settings['random_key'])) {

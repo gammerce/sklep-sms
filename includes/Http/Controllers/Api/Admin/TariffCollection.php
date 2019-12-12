@@ -54,7 +54,7 @@ class TariffCollection
             )
         );
 
-        log_info(
+        log_to_db(
             $langShop->sprintf(
                 $langShop->translate('tariff_admin_add'),
                 $user->getUsername(),

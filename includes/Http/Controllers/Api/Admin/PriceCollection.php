@@ -31,7 +31,7 @@ class PriceCollection
 
         $priceListRepository->create($service, $tariff, $amount, $server);
 
-        log_info(
+        log_to_db(
             "Admin {$user->getUsername()}({$user->getUid()}) dodał cenę. ID: " . $db->lastId()
         );
 

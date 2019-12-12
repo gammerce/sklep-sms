@@ -343,7 +343,7 @@ class PaymentService
                 );
                 $paymentId = $this->db->lastId();
 
-                log_info(
+                log_to_db(
                     $this->langShop->sprintf(
                         $this->langShop->translate('purchase_code'),
                         $purchase->getPayment('service_code'),

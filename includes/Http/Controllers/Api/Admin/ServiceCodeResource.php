@@ -25,7 +25,7 @@ class ServiceCodeResource
         );
 
         if ($db->affectedRows()) {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('code_deleted_admin'),
                     $user->getUsername(),

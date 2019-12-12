@@ -752,7 +752,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $purchaseData->setEmail($data['email']);
         $boughtServiceId = $this->purchase($purchaseData);
 
-        log_info(
+        log_to_db(
             $this->langShop->sprintf(
                 $this->langShop->translate('admin_added_user_service'),
                 $user->getUsername(),
@@ -898,7 +898,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $editReturn = $this->userServiceEdit($userService, $data);
 
         if ($editReturn['status'] == 'ok') {
-            log_info(
+            log_to_db(
                 $this->langShop->sprintf(
                     $this->langShop->translate('admin_edited_user_service'),
                     $user->getUsername(),
@@ -1130,7 +1130,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         ]);
 
         if ($editReturn['status'] == 'ok') {
-            log_info(
+            log_to_db(
                 $this->langShop->sprintf(
                     $this->langShop->translate('user_edited_service'),
                     $user->getUsername(),

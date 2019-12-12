@@ -114,7 +114,7 @@ class Payment
                 "text" => $this->getSmsExceptionMessage($e),
             ];
         } catch (SmsPaymentException $e) {
-            log_info(
+            log_to_db(
                 $this->langShop->sprintf(
                     $this->langShop->translate('bad_sms_code_used'),
                     $user->getUsername(),
@@ -197,7 +197,7 @@ class Payment
             )
         );
 
-        log_info(
+        log_to_db(
             $this->langShop->sprintf(
                 $this->langShop->translate('payment_remove_code_from_db'),
                 $dbCode['code'],
@@ -227,7 +227,7 @@ class Payment
             )
         );
 
-        log_info(
+        log_to_db(
             $this->langShop->sprintf(
                 $this->langShop->translate('add_code_to_reuse'),
                 $code,
@@ -307,7 +307,7 @@ class Payment
             !$transferFinalize->getDataFilename() ||
             !file_exists($this->path->to('data/transfers/' . $transferFinalize->getDataFilename()))
         ) {
-            log_info(
+            log_to_db(
                 $this->langShop->sprintf(
                     $this->langShop->translate('transfer_no_data_file'),
                     $transferFinalize->getOrderid()
@@ -347,7 +347,7 @@ class Payment
 
         // Błędny moduł
         if (($serviceModule = $this->heart->getServiceModule($purchase->getService())) === null) {
-            log_info(
+            log_to_db(
                 $this->langShop->sprintf(
                     $this->langShop->translate('transfer_bad_module'),
                     $transferFinalize->getOrderid(),
@@ -359,7 +359,7 @@ class Payment
         }
 
         if (!($serviceModule instanceof IServicePurchase)) {
-            log_info(
+            log_to_db(
                 $this->langShop->sprintf(
                     $this->langShop->translate('transfer_no_purchase'),
                     $transferFinalize->getOrderid(),
@@ -377,7 +377,7 @@ class Payment
         ]);
         $boughtServiceId = $serviceModule->purchase($purchase);
 
-        log_info(
+        log_to_db(
             $this->langShop->sprintf(
                 $this->langShop->translate('payment_transfer_accepted'),
                 $boughtServiceId,

@@ -43,7 +43,7 @@ class ServerResource
 
         $serverService->updateServerServiceAffiliations($serverId, $request->request->all());
 
-        log_info(
+        log_to_db(
             $langShop->sprintf(
                 $langShop->translate('server_admin_edit'),
                 $user->getUsername(),
@@ -84,7 +84,7 @@ class ServerResource
         }
 
         if ($db->affectedRows()) {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('server_admin_delete'),
                     $user->getUsername(),

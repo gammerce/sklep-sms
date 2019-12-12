@@ -44,7 +44,7 @@ class PasswordResetController
 
         $userPasswordService->change($uid, $pass);
 
-        log_info($langShop->sprintf($langShop->translate('reset_pass'), $uid));
+        log_to_db($langShop->sprintf($langShop->translate('reset_pass'), $uid));
 
         return new ApiResponse("password_changed", $lang->translate('password_changed'), 1);
     }

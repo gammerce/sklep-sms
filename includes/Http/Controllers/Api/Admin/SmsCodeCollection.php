@@ -49,7 +49,7 @@ class SmsCodeCollection
             )
         );
 
-        log_info(
+        log_to_db(
             $langShop->sprintf(
                 $langShop->translate('sms_code_admin_add'),
                 $user->getUsername(),
