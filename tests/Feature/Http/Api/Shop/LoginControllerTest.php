@@ -46,4 +46,16 @@ class LoginControllerTest extends HttpTestCase
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals("not_logged", $json["return_id"]);
     }
+
+    /** @test */
+    public function fails_if_data_not_provided()
+    {
+        // when
+        $response = $this->post("/api/login");
+
+        // then
+        $this->assertEquals(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertEquals("no_data", $json["return_id"]);
+    }
 }
