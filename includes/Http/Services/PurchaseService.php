@@ -2,8 +2,6 @@
 namespace App\Http\Services;
 
 use App\Models\Purchase;
-use App\Models\User;
-use App\Payment;
 use App\Payment\PaymentService;
 use App\Repositories\UserRepository;
 use App\Services\Service;

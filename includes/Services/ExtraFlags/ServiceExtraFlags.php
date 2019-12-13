@@ -2,10 +2,8 @@
 namespace App\Services\ExtraFlags;
 
 use App\Exceptions\UnauthorizedException;
-use App\Payment\BoughtServiceService;
-use App\System\Auth;
-use App\System\Heart;
 use App\Models\Purchase;
+use App\Payment\BoughtServiceService;
 use App\Services\Interfaces\IServiceActionExecute;
 use App\Services\Interfaces\IServicePurchase;
 use App\Services\Interfaces\IServicePurchaseOutside;
@@ -17,6 +15,8 @@ use App\Services\Interfaces\IServiceUserOwnServices;
 use App\Services\Interfaces\IServiceUserOwnServicesEdit;
 use App\Services\Interfaces\IServiceUserServiceAdminAdd;
 use App\Services\Interfaces\IServiceUserServiceAdminEdit;
+use App\System\Auth;
+use App\System\Heart;
 
 class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     IServicePurchase,

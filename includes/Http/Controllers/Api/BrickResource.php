@@ -1,8 +1,8 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\System\Heart;
 use App\Http\Responses\PlainResponse;
+use App\System\Heart;
 use Symfony\Component\HttpFoundation\Request;
 
 class BrickResource

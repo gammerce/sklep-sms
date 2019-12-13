@@ -2,8 +2,8 @@
 
 namespace App\Http\Middlewares;
 
-use App\System\Application;
 use App\LocaleService;
+use App\System\Application;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;

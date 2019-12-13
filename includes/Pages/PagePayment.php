@@ -2,7 +2,6 @@
 namespace App\Pages;
 
 use App\Models\Purchase;
-use App\Payment;
 use App\Services\Interfaces\IServicePurchaseWeb;
 use App\Services\Interfaces\IServiceServiceCode;
 use App\Verification\Abstracts\SupportSms;

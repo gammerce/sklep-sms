@@ -1,9 +1,9 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Http\Responses\ApiResponse;
 use App\System\Auth;
 use App\System\Database;
-use App\Http\Responses\ApiResponse;
 use App\Translation\TranslationManager;
 
 class SmsCodeResource

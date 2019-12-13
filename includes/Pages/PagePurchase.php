@@ -1,9 +1,9 @@
 <?php
 namespace App\Pages;
 
-use App\System\Auth;
 use App\Interfaces\IBeLoggedMust;
 use App\Services\Interfaces\IServicePurchaseWeb;
+use App\System\Auth;
 
 class PagePurchase extends Page
 {

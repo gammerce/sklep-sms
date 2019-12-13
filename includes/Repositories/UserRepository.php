@@ -1,10 +1,8 @@
 <?php
 namespace App\Repositories;
 
-use App\Html\BodyRow;
-use App\Html\Cell;
-use App\System\Database;
 use App\Models\User;
+use App\System\Database;
 
 class UserRepository
 {

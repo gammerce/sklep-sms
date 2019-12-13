@@ -10,12 +10,12 @@ use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Pages\Page;
 use App\Pages\PageSimple;
 use App\Repositories\UserRepository;
+use App\Services\ChargeWallet\ServiceChargeWallet;
 use App\Services\ExtraFlags\ServiceExtraFlags;
 use App\Services\Other\ServiceOther;
 use App\Services\Service;
 use App\Verification\Abstracts\PaymentModule;
 use Exception;
-use App\Services\ChargeWallet\ServiceChargeWallet;
 
 class Heart
 {
