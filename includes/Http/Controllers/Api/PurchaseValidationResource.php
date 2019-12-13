@@ -70,9 +70,9 @@ class PurchaseValidationResource
 
             // Ustawiamy taryfe z numerem
             if ($purchase->getPayment('sms_service') !== null) {
-                $payment = new Payment($purchase->getPayment('sms_service'));
+                $paymentModule = $heart->getPaymentModuleOrFail($purchase->getPayment('sms_service'));
                 $purchase->setTariff(
-                    $payment->getPaymentModule()->getTariffById($purchase->getTariff()->getId())
+                    $paymentModule->getTariffById($purchase->getTariff()->getId())
                 );
             }
 

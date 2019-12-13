@@ -80,8 +80,8 @@ class PurchaseService
         $purchase->setTariff($this->heart->getTariff($tariff));
 
         if ($purchase->getPayment('sms_service')) {
-            $payment = new Payment($purchase->getPayment('sms_service'));
-            $purchase->setTariff($payment->getPaymentModule()->getTariffById($tariff));
+            $paymentModule = $this->heart->getPaymentModuleOrFail($purchase->getPayment('sms_service'));
+            $purchase->setTariff($paymentModule->getTariffById($tariff));
         }
 
         $returnValidation = $serviceModule->purchaseDataValidate($purchase);

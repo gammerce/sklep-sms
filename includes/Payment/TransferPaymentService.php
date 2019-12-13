@@ -9,6 +9,7 @@ use App\System\Heart;
 use App\System\Path;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use App\Verification\Abstracts\SupportTransfer;
 
 class TransferPaymentService
 {
@@ -22,6 +23,9 @@ class TransferPaymentService
     private $heart;
 
     /** @var Translator */
+    private $lang;
+
+    /** @var Translator */
     private $langShop;
 
     public function __construct(Database $db, Path $path, Heart $heart, TranslationManager $translationManager)
@@ -29,7 +33,31 @@ class TransferPaymentService
         $this->db = $db;
         $this->path = $path;
         $this->heart = $heart;
+        $this->lang = $translationManager->user();
         $this->langShop = $translationManager->shop();
+    }
+
+    /**
+     * Prepares data for transfer payment
+     *
+     * @param SupportTransfer $paymentModule
+     * @param Purchase        $purchase
+     * @return array
+     */
+    public function payTransfer(SupportTransfer $paymentModule, Purchase $purchase)
+    {
+        $serialized = serialize($purchase);
+        $dataFilename = time() . "-" . md5($serialized);
+        file_put_contents($this->path->to('data/transfers/' . $dataFilename), $serialized);
+
+        return [
+            'status' => "transfer",
+            'text' => $this->lang->translate('transfer_prepared'),
+            'positive' => true,
+            'data' => [
+                'data' => $paymentModule->prepareTransfer($purchase, $dataFilename),
+            ],
+        ];
     }
 
     /**

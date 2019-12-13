@@ -3,6 +3,7 @@ namespace App\System;
 
 use App\Blocks\Block;
 use App\Blocks\BlockSimple;
+use App\Exceptions\InvalidConfigException;
 use App\Models\Tariff;
 use App\Models\User;
 use App\Pages\Interfaces\IPageAdminActionBox;
@@ -200,6 +201,21 @@ class Heart
         }
 
         return null;
+    }
+
+    /**
+     * @param string $id
+     * @return PaymentModule
+     */
+    public function getPaymentModuleOrFail($id)
+    {
+        $paymentModule = $this->getPaymentModule($id);
+
+        if ($paymentModule) {
+            return $paymentModule;
+        }
+
+        throw new InvalidConfigException("Invalid payment module [${$id}].");
     }
 
     //

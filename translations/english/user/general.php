@@ -108,8 +108,6 @@ You can now profit from many add-ons.',
     'sms_info_ok' => 'Given return code is correct.',
     'sms_info_server_error' =>
         'Something bad happened on the API side. Report the error to the shop owner.',
-    'sms_info_sms_not_supported' =>
-        'This service does not operate SMS payment. Report the error to the shop owner.',
     'sms_info_unknown_error' => 'An unknown error occured. Report it to the shop owner.',
     'sms_info_wrong_credentials' =>
         'Incorrectly configured payment method. Report it to the shop owner.',
@@ -133,8 +131,6 @@ You can now profit from many add-ons.',
     'transfer_prepared' =>
         'Payment preparation successful.<br />In a minute you will be send to transaction service.',
     'transfer_transfer' => 'Transfer',
-    'transfer_transfer_not_supported' =>
-        'This service does not operate transfer payment. Report the error to the shop owner.',
     'transfer_unavailable' => 'Payment by transfer unavailable.',
     'transfer_unverified' => 'Unfortunately, transfer data failed to be verified correctly.',
     'type_code' => 'Enter the code',

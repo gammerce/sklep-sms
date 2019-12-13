@@ -52,13 +52,13 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         $transferBody = '';
 
         if (strlen($this->settings['sms_service'])) {
-            $paymentSms = new Payment($this->settings['sms_service']);
+            $paymentModule = $this->heart->getPaymentModuleOrFail($this->settings['sms_service']);
 
             // Pobieramy opcję wyboru doładowania za pomocą SMS
             $optionSms = $this->template->render("services/charge_wallet/option_sms");
 
             $smsList = "";
-            foreach ($paymentSms->getPaymentModule()->getTariffs() as $tariff) {
+            foreach ($paymentModule->getTariffs() as $tariff) {
                 $provision = number_format($tariff->getProvision() / 100.0, 2);
                 // Przygotowuje opcje wyboru
                 $smsList .= create_dom_element(

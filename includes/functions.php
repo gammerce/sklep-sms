@@ -11,7 +11,6 @@ use App\Services\Interfaces\IServicePurchaseWeb;
 use App\System\Auth;
 use App\System\Database;
 use App\System\Heart;
-use App\System\Mailer;
 use App\System\Path;
 use App\System\Settings;
 use App\Translation\TranslationManager;
