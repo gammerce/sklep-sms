@@ -28,8 +28,12 @@ class TransferPaymentService
     /** @var Translator */
     private $langShop;
 
-    public function __construct(Database $db, Path $path, Heart $heart, TranslationManager $translationManager)
-    {
+    public function __construct(
+        Database $db,
+        Path $path,
+        Heart $heart,
+        TranslationManager $translationManager
+    ) {
         $this->db = $db;
         $this->path = $path;
         $this->heart = $heart;
@@ -107,9 +111,9 @@ class TransferPaymentService
         $this->db->query(
             $this->db->prepare(
                 "INSERT INTO `" .
-                TABLE_PREFIX .
-                "payment_transfer` " .
-                "SET `id` = '%s', `income` = '%d', `transfer_service` = '%s', `ip` = '%s', `platform` = '%s' ",
+                    TABLE_PREFIX .
+                    "payment_transfer` " .
+                    "SET `id` = '%s', `income` = '%d', `transfer_service` = '%s', `ip` = '%s', `platform` = '%s' ",
                 [
                     $transferFinalize->getOrderid(),
                     $purchase->getPayment('cost'),

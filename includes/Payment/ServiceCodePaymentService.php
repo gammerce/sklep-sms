@@ -18,10 +18,8 @@ class ServiceCodePaymentService
     /** @var Database */
     private $db;
 
-    public function __construct(
-        TranslationManager $translationManager,
-        Database $db
-    ) {
+    public function __construct(TranslationManager $translationManager, Database $db)
+    {
         $this->lang = $translationManager->user();
         $this->langShop = $translationManager->shop();
         $this->db = $db;
@@ -38,13 +36,13 @@ class ServiceCodePaymentService
         $result = $this->db->query(
             $this->db->prepare(
                 "SELECT * FROM `" .
-                TABLE_PREFIX .
-                "service_codes` " .
-                "WHERE `code` = '%s' " .
-                "AND `service` = '%s' " .
-                "AND (`server` = '0' OR `server` = '%s') " .
-                "AND (`tariff` = '0' OR `tariff` = '%d') " .
-                "AND (`uid` = '0' OR `uid` = '%s')",
+                    TABLE_PREFIX .
+                    "service_codes` " .
+                    "WHERE `code` = '%s' " .
+                    "AND `service` = '%s' " .
+                    "AND (`server` = '0' OR `server` = '%s') " .
+                    "AND (`tariff` = '0' OR `tariff` = '%d') " .
+                    "AND (`uid` = '0' OR `uid` = '%s')",
                 [
                     $purchase->getPayment('service_code'),
                     $purchase->getService(),
@@ -69,9 +67,9 @@ class ServiceCodePaymentService
                 $this->db->query(
                     $this->db->prepare(
                         "INSERT INTO `" .
-                        TABLE_PREFIX .
-                        "payment_code` " .
-                        "SET `code` = '%s', `ip` = '%s', `platform` = '%s'",
+                            TABLE_PREFIX .
+                            "payment_code` " .
+                            "SET `code` = '%s', `ip` = '%s', `platform` = '%s'",
                         [
                             $purchase->getPayment('service_code'),
                             $purchase->user->getLastIp(),

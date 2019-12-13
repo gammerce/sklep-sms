@@ -88,14 +88,19 @@ class SmsPaymentService
         return $this->storePaymentSms($paymentModule, $result, $code, $smsNumber, $user);
     }
 
-    private function storePaymentSms(SupportSms $paymentModule, SmsSuccessResult $result, $code, $smsNumber, User $user)
-    {
+    private function storePaymentSms(
+        SupportSms $paymentModule,
+        SmsSuccessResult $result,
+        $code,
+        $smsNumber,
+        User $user
+    ) {
         $this->db->query(
             $this->db->prepare(
                 "INSERT INTO `" .
-                TABLE_PREFIX .
-                "payment_sms` (`code`, `income`, `cost`, `text`, `number`, `ip`, `platform`, `free`) " .
-                "VALUES ('%s','%d','%d','%s','%s','%s','%s','%d')",
+                    TABLE_PREFIX .
+                    "payment_sms` (`code`, `income`, `cost`, `text`, `number`, `ip`, `platform`, `free`) " .
+                    "VALUES ('%s','%d','%d','%s','%s','%s','%s','%d')",
                 [
                     $code,
                     get_sms_cost($smsNumber) / 2,
@@ -128,9 +133,9 @@ class SmsPaymentService
         $result = $this->db->query(
             $this->db->prepare(
                 "SELECT * FROM `" .
-                TABLE_PREFIX .
-                "sms_codes` " .
-                "WHERE `code` = '%s' AND `tariff` = '%d'",
+                    TABLE_PREFIX .
+                    "sms_codes` " .
+                    "WHERE `code` = '%s' AND `tariff` = '%d'",
                 [$smsCode, $tariff->getId()]
             )
         );
@@ -172,9 +177,9 @@ class SmsPaymentService
         $this->db->query(
             $this->db->prepare(
                 "INSERT INTO `" .
-                TABLE_PREFIX .
-                "sms_codes` " .
-                "SET `code` = '%s', `tariff` = '%d', `free` = '0'",
+                    TABLE_PREFIX .
+                    "sms_codes` " .
+                    "SET `code` = '%s', `tariff` = '%d', `free` = '0'",
                 [$code, $tariffId]
             )
         );

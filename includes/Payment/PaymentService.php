@@ -216,7 +216,10 @@ class PaymentService
 
         if ($purchase->getPayment('method') === Purchase::METHOD_WALLET) {
             // Dodanie informacji o płatności z portfela
-            $paymentId = $this->walletPaymentService->payWallet($purchase->getPayment('cost'), $purchase->user);
+            $paymentId = $this->walletPaymentService->payWallet(
+                $purchase->getPayment('cost'),
+                $purchase->user
+            );
 
             // Metoda pay_wallet zwróciła błąd.
             if (is_array($paymentId)) {
@@ -226,7 +229,10 @@ class PaymentService
 
         if ($purchase->getPayment('method') === Purchase::METHOD_SERVICE_CODE) {
             // Dodanie informacji o płatności z portfela
-            $paymentId = $this->serviceCodePaymentService->payServiceCode($purchase, $serviceModule);
+            $paymentId = $this->serviceCodePaymentService->payServiceCode(
+                $purchase,
+                $serviceModule
+            );
 
             // Funkcja pay_service_code zwróciła błąd.
             if (is_array($paymentId)) {

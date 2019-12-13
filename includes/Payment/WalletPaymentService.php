@@ -14,10 +14,8 @@ class WalletPaymentService
     /** @var Database */
     private $db;
 
-    public function __construct(
-        TranslationManager $translationManager,
-        Database $db
-    ) {
+    public function __construct(TranslationManager $translationManager, Database $db)
+    {
         $this->lang = $translationManager->user();
         $this->db = $db;
     }
@@ -32,8 +30,8 @@ class WalletPaymentService
         // Sprawdzanie, czy jest wystarczająca ilość kasy w portfelu
         if ($cost > $user->getWallet()) {
             return [
-                'status'   => "no_money",
-                'text'     => $this->lang->translate('not_enough_money'),
+                'status' => "no_money",
+                'text' => $this->lang->translate('not_enough_money'),
                 'positive' => false,
             ];
         }
@@ -45,9 +43,9 @@ class WalletPaymentService
         $this->db->query(
             $this->db->prepare(
                 "INSERT INTO `" .
-                TABLE_PREFIX .
-                "payment_wallet` " .
-                "SET `cost` = '%d', `ip` = '%s', `platform` = '%s'",
+                    TABLE_PREFIX .
+                    "payment_wallet` " .
+                    "SET `cost` = '%d', `ip` = '%s', `platform` = '%s'",
                 [$cost, $user->getLastIp(), $user->getPlatform()]
             )
         );
@@ -64,10 +62,10 @@ class WalletPaymentService
         $this->db->query(
             $this->db->prepare(
                 "UPDATE `" .
-                TABLE_PREFIX .
-                "users` " .
-                "SET `wallet` = `wallet` + '%d' " .
-                "WHERE `uid` = '%d'",
+                    TABLE_PREFIX .
+                    "users` " .
+                    "SET `wallet` = `wallet` + '%d' " .
+                    "WHERE `uid` = '%d'",
                 [$amount, $uid]
             )
         );

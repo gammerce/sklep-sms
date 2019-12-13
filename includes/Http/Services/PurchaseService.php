@@ -78,7 +78,9 @@ class PurchaseService
         $purchase->setTariff($this->heart->getTariff($tariff));
 
         if ($purchase->getPayment('sms_service')) {
-            $paymentModule = $this->heart->getPaymentModuleOrFail($purchase->getPayment('sms_service'));
+            $paymentModule = $this->heart->getPaymentModuleOrFail(
+                $purchase->getPayment('sms_service')
+            );
             $purchase->setTariff($paymentModule->getTariffById($tariff));
         }
 

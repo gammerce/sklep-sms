@@ -20,8 +20,12 @@ class TransferController
         $this->langShop = $translationManager->shop();
     }
 
-    public function action($transferService, Request $request, Heart $heart, TransferPaymentService $transferPaymentService)
-    {
+    public function action(
+        $transferService,
+        Request $request,
+        Heart $heart,
+        TransferPaymentService $transferPaymentService
+    ) {
         /** @var SupportTransfer $paymentModule */
         $paymentModule = $heart->getPaymentModule($transferService);
 
@@ -29,7 +33,10 @@ class TransferController
             return new PlainResponse("Invalid payment module [${transferService}].");
         }
 
-        $transferFinalize = $paymentModule->finalizeTransfer($request->query->all(), $request->request->all());
+        $transferFinalize = $paymentModule->finalizeTransfer(
+            $request->query->all(),
+            $request->request->all()
+        );
 
         if ($transferFinalize->getStatus() === false) {
             log_to_db(
@@ -49,8 +56,16 @@ class TransferController
         ]);
     }
 
-    public function oldAction(Request $request, Heart $heart, TransferPaymentService $transferPaymentService)
-    {
-        return $this->action($request->query->get('service'), $request, $heart, $transferPaymentService);
+    public function oldAction(
+        Request $request,
+        Heart $heart,
+        TransferPaymentService $transferPaymentService
+    ) {
+        return $this->action(
+            $request->query->get('service'),
+            $request,
+            $heart,
+            $transferPaymentService
+        );
     }
 }

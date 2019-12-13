@@ -58,11 +58,16 @@ class PagePayment extends Page
             $purchaseData->getTariff() !== null &&
             !$purchaseData->getPayment('no_sms')
         ) {
-            $paymentModule = $this->heart->getPaymentModuleOrFail($purchaseData->getPayment('sms_service'));
+            $paymentModule = $this->heart->getPaymentModuleOrFail(
+                $purchaseData->getPayment('sms_service')
+            );
 
             if ($paymentModule instanceof SupportSms) {
                 $smsCode = htmlspecialchars($paymentModule->getSmsCode());
-                $paymentMethods .= $this->template->render('payment_method_sms', compact('purchaseData', 'smsCode'));
+                $paymentMethods .= $this->template->render(
+                    'payment_method_sms',
+                    compact('purchaseData', 'smsCode')
+                );
             }
         }
 
