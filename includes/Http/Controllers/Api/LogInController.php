@@ -5,7 +5,7 @@ use App\Http\Responses\ApiResponse;
 use App\System\Auth;
 use App\System\Heart;
 use App\Translation\TranslationManager;
-use App\UserActivityService;
+use App\User\UserActivityService;
 use Symfony\Component\HttpFoundation\Request;
 
 class LogInController

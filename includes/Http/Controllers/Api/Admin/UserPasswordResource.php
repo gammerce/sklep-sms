@@ -5,7 +5,7 @@ use App\Exceptions\EntityNotFoundException;
 use App\Http\Responses\ApiResponse;
 use App\Repositories\UserRepository;
 use App\Translation\TranslationManager;
-use App\UserPasswordService;
+use App\User\UserPasswordService;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserPasswordResource
