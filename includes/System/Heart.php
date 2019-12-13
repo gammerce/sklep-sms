@@ -197,7 +197,7 @@ class Heart
     public function getPaymentModule($id)
     {
         if (isset($this->paymentModuleClasses[$id])) {
-            app()->make($this->paymentModuleClasses[$id]);
+            return app()->make($this->paymentModuleClasses[$id]);
         }
 
         return null;
@@ -215,7 +215,7 @@ class Heart
             return $paymentModule;
         }
 
-        throw new InvalidConfigException("Invalid payment module [${$id}].");
+        throw new InvalidConfigException("Invalid payment module [$id].");
     }
 
     //
