@@ -11,11 +11,15 @@ class Purchase
     const METHOD_SERVICE_CODE = "service_code";
     const METHOD_WALLET = "wallet";
 
-    /** @var string */
+    /**
+     * ID of row from ss_services table
+     *
+     * @var string|null
+     */
     private $service = null;
 
     /**
-     * Szczegóły zamawianej usługi
+     * Order details like auth_data, password etc.
      *
      * @var array
      */
@@ -31,14 +35,14 @@ class Purchase
     private $email = null;
 
     /**
-     * Szczegóły płatności
+     * Payment details like method, sms_code et.c
      *
      * @var array
      */
     private $payment = null;
 
     /**
-     * Opis zakupu ( przydaje się przy płatności przelewem )
+     * Purchase description ( useful for transfer payments )
      *
      * @var string
      */

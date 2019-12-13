@@ -85,7 +85,7 @@ $(document).delegate("#form_service_code_add", "submit", function(e) {
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("/api/admin/services/" + serviceId + "service_codes"),
+        url: buildUrl("/api/admin/services/" + serviceId + "/service_codes"),
         data: $(this).serialize(),
         complete: function() {
             loader.hide();

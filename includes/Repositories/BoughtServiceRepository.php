@@ -16,31 +16,20 @@ class BoughtServiceRepository
 
     public function get($id)
     {
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT * FROM `" . TABLE_PREFIX . "bought_services` " . "WHERE `id` = '%d'",
-                [$id]
-            )
-        );
+        if ($id) {
+            $result = $this->db->query(
+                $this->db->prepare(
+                    "SELECT * FROM `" . TABLE_PREFIX . "bought_services` WHERE `id` = '%d'",
+                    [$id]
+                )
+            );
 
-        if (!$this->db->numRows($result)) {
-            return null;
+            if ($data = $this->db->fetchArrayAssoc($result)) {
+                return $this->mapToModel($data);
+            }
         }
 
-        $entity = $this->db->fetchArrayAssoc($result);
-
-        return new BoughtService(
-            $entity['id'],
-            $entity['uid'],
-            $entity['payment'],
-            $entity['payment_id'],
-            $entity['service'],
-            $entity['server'],
-            $entity['amount'],
-            $entity['auth_data'],
-            $entity['email'],
-            json_decode($entity['extra_data'])
-        );
+        return null;
     }
 
     public function create(
@@ -75,19 +64,22 @@ class BoughtServiceRepository
             )
         );
 
-        $id = $this->db->lastId();
+        return $this->get($this->db->lastId());
+    }
 
+    private function mapToModel($data)
+    {
         return new BoughtService(
-            $id,
-            $uid,
-            $method,
-            $paymentId,
-            $service,
-            $server,
-            $amount,
-            $authData,
-            $email,
-            $extraData
+            intval($data['id']),
+            $data['uid'],
+            $data['payment'],
+            $data['payment_id'],
+            $data['service'],
+            $data['server'],
+            $data['amount'],
+            $data['auth_data'],
+            $data['email'],
+            json_decode($data['extra_data'])
         );
     }
 }

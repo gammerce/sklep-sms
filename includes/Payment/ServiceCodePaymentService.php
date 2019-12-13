@@ -2,6 +2,8 @@
 namespace App\Payment;
 
 use App\Models\Purchase;
+use App\Repositories\PaymentCodeRespository;
+use App\Repositories\ServiceCodeRepository;
 use App\Services\Service;
 use App\System\Database;
 use App\Translation\TranslationManager;
@@ -18,20 +20,31 @@ class ServiceCodePaymentService
     /** @var Database */
     private $db;
 
-    public function __construct(TranslationManager $translationManager, Database $db)
-    {
+    /** @var ServiceCodeRepository */
+    private $serviceCodeRepository;
+
+    /** @var PaymentCodeRespository */
+    private $paymentCodeRespository;
+
+    public function __construct(
+        TranslationManager $translationManager,
+        Database $db,
+        ServiceCodeRepository $serviceCodeRepository,
+        PaymentCodeRespository $paymentCodeRespository
+    ) {
         $this->lang = $translationManager->user();
         $this->langShop = $translationManager->shop();
         $this->db = $db;
+        $this->serviceCodeRepository = $serviceCodeRepository;
+        $this->paymentCodeRespository = $paymentCodeRespository;
     }
 
     /**
      * @param Purchase $purchase
      * @param Service  $serviceModule
-     *
-     * @return array|int|string
+     * @return array|int
      */
-    public function payServiceCode(Purchase $purchase, $serviceModule)
+    public function payServiceCode(Purchase $purchase, Service $serviceModule)
     {
         $result = $this->db->query(
             $this->db->prepare(
@@ -55,29 +68,13 @@ class ServiceCodePaymentService
 
         while ($row = $this->db->fetchArrayAssoc($result)) {
             if ($serviceModule->serviceCodeValidate($purchase, $row)) {
-                // Znalezlismy odpowiedni kod
-                $this->db->query(
-                    $this->db->prepare(
-                        "DELETE FROM `" . TABLE_PREFIX . "service_codes` " . "WHERE `id` = '%d'",
-                        [$row['id']]
-                    )
-                );
+                $this->serviceCodeRepository->delete($row['id']);
 
-                // Dodajemy informacje o płatności kodem
-                $this->db->query(
-                    $this->db->prepare(
-                        "INSERT INTO `" .
-                            TABLE_PREFIX .
-                            "payment_code` " .
-                            "SET `code` = '%s', `ip` = '%s', `platform` = '%s'",
-                        [
-                            $purchase->getPayment('service_code'),
-                            $purchase->user->getLastIp(),
-                            $purchase->user->getPlatform(),
-                        ]
-                    )
+                $paymentCode = $this->paymentCodeRespository->create(
+                    $purchase->getPayment('service_code'),
+                    $purchase->user->getLastIp(),
+                    $purchase->user->getPlatform()
                 );
-                $paymentId = $this->db->lastId();
 
                 log_to_db(
                     $this->langShop->sprintf(
@@ -85,11 +82,11 @@ class ServiceCodePaymentService
                         $purchase->getPayment('service_code'),
                         $purchase->user->getUsername(),
                         $purchase->user->getUid(),
-                        $paymentId
+                        $paymentCode->getId()
                     )
                 );
 
-                return $paymentId;
+                return $paymentCode->getId();
             }
         }
 
