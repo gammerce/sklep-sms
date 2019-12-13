@@ -2,9 +2,9 @@
 namespace Tests\Feature\Http\View\Shop;
 
 use Tests\Psr4\Concerns\AuthConcern;
-use Tests\Psr4\TestCases\IndexTestCase;
+use Tests\Psr4\TestCases\HttpTestCase;
 
-class ChangePasswordTest extends IndexTestCase
+class ChangePasswordTest extends HttpTestCase
 {
     use AuthConcern;
 

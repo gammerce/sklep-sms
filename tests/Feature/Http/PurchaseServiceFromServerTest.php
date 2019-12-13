@@ -12,12 +12,12 @@ use App\Verification\Gosetti;
 use App\Verification\Results\SmsSuccessResult;
 use Mockery;
 use Tests\Psr4\Concerns\RequesterConcern;
-use Tests\Psr4\TestCases\IndexTestCase;
+use Tests\Psr4\TestCases\HttpTestCase;
 
 /**
  * @deprecated
  */
-class PurchaseServiceFromServerTest extends IndexTestCase
+class PurchaseServiceFromServerTest extends HttpTestCase
 {
     use RequesterConcern;
 

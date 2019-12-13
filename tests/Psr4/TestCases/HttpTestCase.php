@@ -7,7 +7,7 @@ use App\Kernels\KernelContract;
 use App\Models\User;
 use Symfony\Component\HttpFoundation\Response;
 
-class IndexTestCase extends TestCase
+class HttpTestCase extends TestCase
 {
     use MakesHttpRequests;
 
