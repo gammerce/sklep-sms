@@ -3,9 +3,9 @@ namespace Tests\Feature\Http\Api\Shop;
 
 use App\Repositories\UserRepository;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Tests\Psr4\TestCases\IndexTestCase;
+use Tests\Psr4\TestCases\HttpTestCase;
 
-class RegisterTest extends IndexTestCase
+class RegisterTest extends HttpTestCase
 {
     /** @test */
     public function can_register()

@@ -1,8 +1,8 @@
 <?php
 namespace App\Http\Middlewares;
 
-use App\System\Application;
 use App\Install\ShopState;
+use App\System\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

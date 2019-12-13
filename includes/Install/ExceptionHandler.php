@@ -2,11 +2,11 @@
 namespace App\Install;
 
 use App\Exceptions\InvalidConfigException;
+use App\Exceptions\SqlQueryException;
+use App\Http\Responses\ApiResponse;
 use App\System\Application;
 use App\System\ExceptionHandlerContract;
-use App\Exceptions\SqlQueryException;
 use App\System\Path;
-use App\Http\Responses\ApiResponse;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use Exception;

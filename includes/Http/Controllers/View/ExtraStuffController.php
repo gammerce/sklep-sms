@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Controllers\View;
 
+use App\Routes\UrlGenerator;
 use App\System\CurrentPage;
 use App\System\Heart;
 use App\System\License;
-use App\Routes\UrlGenerator;
 use App\System\Template;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;

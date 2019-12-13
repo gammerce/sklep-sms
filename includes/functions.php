@@ -11,7 +11,6 @@ use App\Services\Interfaces\IServicePurchaseWeb;
 use App\System\Auth;
 use App\System\Database;
 use App\System\Heart;
-use App\System\Mailer;
 use App\System\Path;
 use App\System\Settings;
 use App\Translation\TranslationManager;
@@ -859,4 +858,128 @@ function captureRequest()
     $request->query->replace($queryAttributes);
 
     return $request;
+}
+
+/**
+ * Sprawdza czy podane dane są prawidłowe dla danego typu
+ *
+ * @param string $type
+ * @param        $data
+ *
+ * @return array
+ */
+function check_for_warnings($type, $data)
+{
+    /** @var TranslationManager $translationManager */
+    $translationManager = app()->make(TranslationManager::class);
+    $lang = $translationManager->user();
+
+    $warnings = [];
+    switch ($type) {
+        case "username":
+            if (strlen($data) < 2) {
+                $warnings[] = $lang->sprintf($lang->translate('field_length_min_warn'), 2);
+            }
+            if ($data != htmlspecialchars($data)) {
+                $warnings[] = $lang->translate('username_chars_warn');
+            }
+
+            break;
+
+        case "nick":
+            if (strlen($data) < 2) {
+                $warnings[] = $lang->sprintf($lang->translate('field_length_min_warn'), 2);
+            } else {
+                if (strlen($data) > 32) {
+                    $warnings[] = $lang->sprintf($lang->translate('field_length_max_warn'), 32);
+                }
+            }
+
+            break;
+
+        case "password":
+            if (strlen($data) < 6) {
+                $warnings[] = $lang->sprintf($lang->translate('field_length_min_warn'), 6);
+            }
+
+            break;
+
+        case "email":
+            if (!filter_var($data, FILTER_VALIDATE_EMAIL)) {
+                $warnings[] = $lang->translate('wrong_email');
+            }
+
+            break;
+
+        case "ip":
+            if (!filter_var($data, FILTER_VALIDATE_IP)) {
+                $warnings[] = $lang->translate('wrong_ip');
+            }
+
+            break;
+
+        case "sid":
+            if (!valid_steam($data) || strlen($data) > 32) {
+                $warnings[] = $lang->translate('wrong_sid');
+            }
+
+            break;
+
+        case "uid":
+            if (!strlen($data)) {
+                $warnings[] = $lang->translate('field_no_empty');
+            } else {
+                if (!is_numeric($data)) {
+                    $warnings[] = $lang->translate('field_must_be_number');
+                }
+            }
+
+            break;
+
+        case "service_description":
+            if (strlen($data) > 28) {
+                $warnings[] = $lang->sprintf($lang->translate('field_length_max_warn'), 28);
+            }
+
+            break;
+
+        case "sms_code":
+            if (!strlen($data)) {
+                $warnings[] = $lang->translate('field_no_empty');
+            } else {
+                if (strlen($data) > 16) {
+                    $warnings[] = $lang->translate('return_code_length_warn');
+                }
+            }
+
+            break;
+
+        case "number":
+            if (!strlen($data)) {
+                $warnings[] = $lang->translate('field_no_empty');
+            } else {
+                if (!is_numeric($data)) {
+                    $warnings[] = $lang->translate('field_must_be_number');
+                }
+            }
+
+            break;
+    }
+
+    return $warnings;
+}
+
+function format_warnings(array $warnings)
+{
+    $output = [];
+
+    foreach ($warnings as $brick => $warning) {
+        if ($warning) {
+            $help = new Div(implode("<br />", $warning));
+            $help->addClass("form_warning help is-danger");
+            $output[$brick] = $help->toHtml();
+        }
+    }
+
+    return $output;
 }

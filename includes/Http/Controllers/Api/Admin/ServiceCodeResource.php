@@ -1,9 +1,9 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\System\Auth;
-use App\System\Database;
 use App\Http\Responses\ApiResponse;
+use App\Repositories\ServiceCodeRepository;
+use App\System\Auth;
 use App\Translation\TranslationManager;
 
 class ServiceCodeResource
@@ -11,20 +11,16 @@ class ServiceCodeResource
     public function delete(
         $serviceCodeId,
         TranslationManager $translationManager,
-        Database $db,
+        ServiceCodeRepository $serviceCodeRepository,
         Auth $auth
     ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
         $user = $auth->user();
 
-        $db->query(
-            $db->prepare("DELETE FROM `" . TABLE_PREFIX . "service_codes` " . "WHERE `id` = '%d'", [
-                $serviceCodeId,
-            ])
-        );
+        $deleted = $serviceCodeRepository->delete($serviceCodeId);
 
-        if ($db->affectedRows()) {
+        if ($deleted) {
             log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('code_deleted_admin'),

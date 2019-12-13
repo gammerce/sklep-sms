@@ -1,9 +1,12 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\Payment;
+use App\Http\Responses\PlainResponse;
+use App\Payment\TransferPaymentService;
+use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use App\Verification\Abstracts\SupportTransfer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -17,12 +20,23 @@ class TransferController
         $this->langShop = $translationManager->shop();
     }
 
-    public function action(Request $request, $transferService)
-    {
-        $payment = new Payment($transferService);
-        $transferFinalize = $payment
-            ->getPaymentModule()
-            ->finalizeTransfer($request->query->all(), $request->request->all());
+    public function action(
+        $transferService,
+        Request $request,
+        Heart $heart,
+        TransferPaymentService $transferPaymentService
+    ) {
+        /** @var SupportTransfer $paymentModule */
+        $paymentModule = $heart->getPaymentModule($transferService);
+
+        if (!($paymentModule instanceof SupportTransfer)) {
+            return new PlainResponse("Invalid payment module [${transferService}].");
+        }
+
+        $transferFinalize = $paymentModule->finalizeTransfer(
+            $request->query->all(),
+            $request->request->all()
+        );
 
         if ($transferFinalize->getStatus() === false) {
             log_to_db(
@@ -34,16 +48,24 @@ class TransferController
                 )
             );
         } else {
-            $payment->transferFinalize($transferFinalize);
+            $transferPaymentService->transferFinalize($transferFinalize);
         }
 
         return new Response($transferFinalize->getOutput(), 200, [
-            'Content-type' => 'text/plaint; charset="UTF-8"',
+            'Content-type' => 'text/plain; charset="UTF-8"',
         ]);
     }
 
-    public function oldAction(Request $request)
-    {
-        return $this->action($request, $request->query->get('service'));
+    public function oldAction(
+        Request $request,
+        Heart $heart,
+        TransferPaymentService $transferPaymentService
+    ) {
+        return $this->action(
+            $request->query->get('service'),
+            $request,
+            $heart,
+            $transferPaymentService
+        );
     }
 }

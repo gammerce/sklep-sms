@@ -2,9 +2,9 @@
 namespace Tests\Feature\Http\Api\Server;
 
 use App\System\Settings;
-use Tests\Psr4\TestCases\IndexTestCase;
+use Tests\Psr4\TestCases\HttpTestCase;
 
-class UsersSteamIdsControllerTest extends IndexTestCase
+class UsersSteamIdsControllerTest extends HttpTestCase
 {
     /** @test */
     public function list_when_no_users()

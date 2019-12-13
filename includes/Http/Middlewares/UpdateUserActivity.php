@@ -3,7 +3,7 @@ namespace App\Http\Middlewares;
 
 use App\System\Application;
 use App\System\Auth;
-use App\UserActivityService;
+use App\User\UserActivityService;
 use Symfony\Component\HttpFoundation\Request;
 
 class UpdateUserActivity implements MiddlewareContract

@@ -1,8 +1,8 @@
 <?php
 namespace App\Repositories;
 
-use App\System\Database;
 use App\Models\PriceList;
+use App\System\Database;
 
 class PriceListRepository
 {

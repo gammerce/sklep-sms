@@ -2,9 +2,9 @@
 namespace Tests\Feature\Http\Api\Admin;
 
 use App\Repositories\UserRepository;
-use Tests\Psr4\TestCases\IndexTestCase;
+use Tests\Psr4\TestCases\HttpTestCase;
 
-class ChangePasswordTest extends IndexTestCase
+class ChangePasswordTest extends HttpTestCase
 {
     /** @test */
     public function changes_a_user_password()

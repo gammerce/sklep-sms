@@ -2,9 +2,9 @@
 namespace Tests\Feature\Http\View\Shop;
 
 use Tests\Psr4\Concerns\AuthConcern;
-use Tests\Psr4\TestCases\IndexTestCase;
+use Tests\Psr4\TestCases\HttpTestCase;
 
-class UserOwnServicesTest extends IndexTestCase
+class UserOwnServicesTest extends HttpTestCase
 {
     use AuthConcern;
 

@@ -1,13 +1,12 @@
 <?php
 namespace App\Services\ChargeWallet;
 
-use App\Payment\BoughtServiceService;
-use App\System\Auth;
-use App\System\Heart;
 use App\Models\Purchase;
-use App\Payment;
+use App\Payment\BoughtServiceService;
 use App\Services\Interfaces\IServicePurchase;
 use App\Services\Interfaces\IServicePurchaseWeb;
+use App\System\Auth;
+use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -52,13 +51,13 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         $transferBody = '';
 
         if (strlen($this->settings['sms_service'])) {
-            $paymentSms = new Payment($this->settings['sms_service']);
+            $paymentModule = $this->heart->getPaymentModuleOrFail($this->settings['sms_service']);
 
             // Pobieramy opcję wyboru doładowania za pomocą SMS
             $optionSms = $this->template->render("services/charge_wallet/option_sms");
 
             $smsList = "";
-            foreach ($paymentSms->getPaymentModule()->getTariffs() as $tariff) {
+            foreach ($paymentModule->getTariffs() as $tariff) {
                 $provision = number_format($tariff->getProvision() / 100.0, 2);
                 // Przygotowuje opcje wyboru
                 $smsList .= create_dom_element(

@@ -1,7 +1,6 @@
 <?php
 namespace App\Pages;
 
-use App\Payment;
 use App\Verification\Cashbill;
 
 class PageCashbillTransferFinalized extends Page
@@ -17,9 +16,8 @@ class PageCashbillTransferFinalized extends Page
 
     protected function content(array $query, array $body)
     {
-        $payment = new Payment($this->settings['transfer_service']);
         /** @var Cashbill $paymentModule */
-        $paymentModule = $payment->getPaymentModule();
+        $paymentModule = $this->heart->getPaymentModuleOrFail($this->settings['transfer_service']);
 
         if (
             $paymentModule->checkSign($query, $paymentModule->getKey(), $query['sign']) &&

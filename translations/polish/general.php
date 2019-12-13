@@ -85,7 +85,6 @@ return [
     'old_password' => 'Stare Hasło',
     'only_yes_no' => 'Pole może przyjąć tylko wartości: \'TAK\' i \'NIE\'',
     'password' => 'Hasło',
-    'payment_bad_service' => 'API usługi [{1}] nie zostało zaimplemetowane.',
     'payment_bad_type' => 'Błąd w konstruktorze klasy Payment. Niedozwolony typ płatności.',
     'payment_id' => 'ID płatności',
     'payment_remove_code_from_db' =>

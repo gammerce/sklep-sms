@@ -1,10 +1,8 @@
 <?php
 namespace App\Repositories;
 
-use App\Html\BodyRow;
-use App\Html\Cell;
-use App\System\Database;
 use App\Models\User;
+use App\System\Database;
 
 class UserRepository
 {
@@ -87,7 +85,7 @@ class UserRepository
 
         $users = [];
         while ($row = $this->db->fetchArrayAssoc($result)) {
-            $users[] = $this->resultToObject($row);
+            $users[] = $this->mapToModel($row);
         }
 
         return $users;
@@ -99,19 +97,16 @@ class UserRepository
      */
     public function get($id)
     {
-        if (!$id) {
-            return null;
-        }
+        if ($id) {
+            $result = $this->db->query(
+                $this->db->prepare("SELECT * FROM `" . TABLE_PREFIX . "users` WHERE `uid` = '%d'", [
+                    $id,
+                ])
+            );
 
-        $result = $this->db->query(
-            $this->db->prepare("SELECT * FROM `" . TABLE_PREFIX . "users` WHERE `uid` = '%d'", [
-                $id,
-            ])
-        );
-
-        if ($this->db->numRows($result)) {
-            $data = $this->db->fetchArrayAssoc($result);
-            return $this->resultToObject($data);
+            if ($data = $this->db->fetchArrayAssoc($result)) {
+                return $this->mapToModel($data);
+            }
         }
 
         return null;
@@ -141,7 +136,7 @@ class UserRepository
 
         if ($this->db->numRows($result)) {
             $data = $this->db->fetchArrayAssoc($result);
-            return $this->resultToObject($data);
+            return $this->mapToModel($data);
         }
 
         return null;
@@ -168,15 +163,12 @@ class UserRepository
             )
         );
 
-        if ($this->db->numRows($result)) {
-            $data = $this->db->fetchArrayAssoc($result);
-            return $this->resultToObject($data);
-        }
+        $data = $this->db->fetchArrayAssoc($result);
 
-        return null;
+        return $data ? $this->mapToModel($data) : null;
     }
 
-    private function resultToObject($data)
+    private function mapToModel($data)
     {
         return new User(
             intval($data['uid']),

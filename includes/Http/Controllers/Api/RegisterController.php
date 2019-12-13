@@ -1,12 +1,8 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\System\Auth;
-use App\System\Database;
 use App\Exceptions\ValidationException;
-use App\Repositories\UserRepository;
 use App\Http\Responses\ApiResponse;
-use App\Translation\TranslationManager;
 use App\Http\Validation\Rules\AntispamQuestionRule;
 use App\Http\Validation\Rules\ConfirmedRule;
 use App\Http\Validation\Rules\EmailRule;
@@ -16,6 +12,9 @@ use App\Http\Validation\Rules\SteamIdRule;
 use App\Http\Validation\Rules\UniqueUserEmailRule;
 use App\Http\Validation\Rules\UniqueUsernameRule;
 use App\Http\Validation\Validator;
+use App\Repositories\UserRepository;
+use App\System\Database;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class RegisterController

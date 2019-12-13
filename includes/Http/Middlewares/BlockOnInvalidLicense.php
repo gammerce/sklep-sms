@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Middlewares;
 
-use App\System\Application;
-use App\System\License;
 use App\Requesting\Response as CustomResponse;
 use App\Routes\UrlGenerator;
+use App\System\Application;
+use App\System\License;
 use App\System\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;

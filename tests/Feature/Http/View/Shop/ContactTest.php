@@ -1,9 +1,9 @@
 <?php
 namespace Tests\Feature\Http\View\Shop;
 
-use Tests\Psr4\TestCases\IndexTestCase;
+use Tests\Psr4\TestCases\HttpTestCase;
 
-class ContactTest extends IndexTestCase
+class ContactTest extends HttpTestCase
 {
     /** @test */
     public function it_loads()

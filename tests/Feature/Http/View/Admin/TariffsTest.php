@@ -2,9 +2,9 @@
 namespace Tests\Feature\Http\View\Admin;
 
 use Tests\Psr4\Concerns\AuthConcern;
-use Tests\Psr4\TestCases\IndexTestCase;
+use Tests\Psr4\TestCases\HttpTestCase;
 
-class TariffsTest extends IndexTestCase
+class TariffsTest extends HttpTestCase
 {
     use AuthConcern;
 

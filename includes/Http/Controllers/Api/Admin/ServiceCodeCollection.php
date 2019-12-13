@@ -1,11 +1,11 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\System\Auth;
-use App\System\Database;
 use App\Exceptions\ValidationException;
-use App\System\Heart;
 use App\Http\Responses\ApiResponse;
+use App\Repositories\ServiceCodeRepository;
+use App\System\Auth;
+use App\System\Heart;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -14,8 +14,8 @@ class ServiceCodeCollection
     public function post(
         $serviceId,
         Request $request,
-        Database $db,
         TranslationManager $translationManager,
+        ServiceCodeRepository $serviceCodeRepository,
         Heart $heart,
         Auth $auth
     ) {
@@ -59,22 +59,14 @@ class ServiceCodeCollection
         // Pozyskujemy dane kodu do dodania
         $codeData = $serviceModule->serviceCodeAdminAddInsert($request->request->all());
 
-        $db->query(
-            $db->prepare(
-                "INSERT INTO `" .
-                    TABLE_PREFIX .
-                    "service_codes` " .
-                    "SET `code` = '%s', `service` = '%s', `uid` = '%d', `server` = '%d', `amount` = '%d', `tariff` = '%d', `data` = '%s'",
-                [
-                    $code,
-                    $serviceModule->service['id'],
-                    if_strlen($uid, 0),
-                    if_isset($codeData['server'], 0),
-                    if_isset($codeData['amount'], 0),
-                    if_isset($codeData['tariff'], 0),
-                    $codeData['data'],
-                ]
-            )
+        $serviceCodeRepository->create(
+            $code,
+            $serviceModule->service['id'],
+            if_strlen($uid, 0),
+            if_isset($codeData['server'], 0),
+            if_isset($codeData['amount'], 0),
+            if_isset($codeData['tariff'], 0),
+            $codeData['data']
         );
 
         log_to_db(

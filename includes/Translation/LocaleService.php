@@ -1,9 +1,8 @@
 <?php
-namespace App;
+namespace App\Translation;
 
 use App\Requesting\Requester;
 use App\System\Settings;
-use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class LocaleService

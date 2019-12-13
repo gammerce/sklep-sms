@@ -2,8 +2,6 @@
 namespace App\Http\Services;
 
 use App\Models\Purchase;
-use App\Models\User;
-use App\Payment;
 use App\Payment\PaymentService;
 use App\Repositories\UserRepository;
 use App\Services\Service;
@@ -80,8 +78,10 @@ class PurchaseService
         $purchase->setTariff($this->heart->getTariff($tariff));
 
         if ($purchase->getPayment('sms_service')) {
-            $payment = new Payment($purchase->getPayment('sms_service'));
-            $purchase->setTariff($payment->getPaymentModule()->getTariffById($tariff));
+            $paymentModule = $this->heart->getPaymentModuleOrFail(
+                $purchase->getPayment('sms_service')
+            );
+            $purchase->setTariff($paymentModule->getTariffById($tariff));
         }
 
         $returnValidation = $serviceModule->purchaseDataValidate($purchase);

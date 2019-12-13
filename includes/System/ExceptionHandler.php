@@ -10,6 +10,7 @@ use App\Exceptions\SqlQueryException;
 use App\Exceptions\UnauthorizedException;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
+use App\Http\Responses\PlainResponse;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use Exception;
@@ -91,10 +92,10 @@ class ExceptionHandler implements ExceptionHandlerContract
         }
 
         if ($e instanceof InvalidConfigException) {
-            return new Response($e->getMessage());
+            return new PlainResponse($e->getMessage());
         }
 
-        return new Response(
+        return new PlainResponse(
             'Coś się popsuło. Więcej informacji znajdziesz w pliku data/logs/errors.log'
         );
     }

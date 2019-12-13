@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\View;
 
 use App\Http\Responses\HtmlResponse;
+use App\Http\Responses\PlainResponse;
 use App\Install\OldShop;
 use App\Install\RequirementsStore;
 use App\Install\SetupManager;
@@ -29,16 +30,18 @@ class SetupController
         SetupManager $setupManager,
         Path $path
     ) {
-        $oldShop->checkForConfigFile();
+        if (!$oldShop->hasConfigFile()) {
+            return new HtmlResponse($this->template->render('setup/missing_env'));
+        }
 
         if ($setupManager->hasFailed()) {
-            return new HtmlResponse(
+            return new PlainResponse(
                 'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku data/logs/install.log'
             );
         }
 
         if ($setupManager->isInProgress()) {
-            return new HtmlResponse(
+            return new PlainResponse(
                 "Instalacja/Aktualizacja trwa, lub została błędnie przeprowadzona. Usuń plik data/setup_progress, aby przeprowadzić ją ponownie."
             );
         }

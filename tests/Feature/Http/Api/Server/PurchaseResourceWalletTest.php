@@ -7,9 +7,9 @@ use App\Repositories\BoughtServiceRepository;
 use App\Repositories\UserRepository;
 use App\Services\ExtraFlags\ExtraFlagType;
 use App\System\Settings;
-use Tests\Psr4\TestCases\IndexTestCase;
+use Tests\Psr4\TestCases\HttpTestCase;
 
-class PurchaseResourceWalletTest extends IndexTestCase
+class PurchaseResourceWalletTest extends HttpTestCase
 {
     /** @var Settings */
     private $settings;
