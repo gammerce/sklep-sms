@@ -12,6 +12,7 @@ use App\Repositories\UserRepository;
 use App\Services\ExtraFlags\ServiceExtraFlags;
 use App\Services\Other\ServiceOther;
 use App\Services\Service;
+use App\Verification\Abstracts\PaymentModule;
 use Exception;
 use App\Services\ChargeWallet\ServiceChargeWallet;
 
@@ -188,9 +189,17 @@ class Heart
         $this->paymentModuleClasses[$id] = $class;
     }
 
+    /**
+     * @param string $id
+     * @return PaymentModule|null
+     */
     public function getPaymentModule($id)
     {
-        return isset($this->paymentModuleClasses[$id]) ? $this->paymentModuleClasses[$id] : null;
+        if (isset($this->paymentModuleClasses[$id])) {
+            app()->make($this->paymentModuleClasses[$id]);
+        }
+
+        return null;
     }
 
     //
