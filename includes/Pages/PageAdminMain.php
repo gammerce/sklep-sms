@@ -1,9 +1,9 @@
 <?php
 namespace App\Pages;
 
-use App\System\License;
 use App\Models\Server;
 use App\Requesting\Requester;
+use App\System\License;
 use App\System\Version;
 
 class PageAdminMain extends PageAdmin

@@ -94,6 +94,47 @@ class ServerService
             ];
         }
 
-        update_servers_services($serversServices);
+        $this->updateServersServices($serversServices);
+    }
+
+    /**
+     * Aktualizuje tabele servers_services
+     *
+     * @param $data
+     */
+    private function updateServersServices($data)
+    {
+        $delete = [];
+        $add = [];
+        foreach ($data as $arr) {
+            if ($arr['status']) {
+                $add[] = $this->db->prepare("('%d', '%s')", [$arr['server'], $arr['service']]);
+            } else {
+                $delete[] = $this->db->prepare("(`server_id` = '%d' AND `service_id` = '%s')", [
+                    $arr['server'],
+                    $arr['service'],
+                ]);
+            }
+        }
+
+        if (!empty($add)) {
+            $this->db->query(
+                "INSERT IGNORE INTO `" .
+                    TABLE_PREFIX .
+                    "servers_services` (`server_id`, `service_id`) " .
+                    "VALUES " .
+                    implode(", ", $add)
+            );
+        }
+
+        if (!empty($delete)) {
+            $this->db->query(
+                "DELETE FROM `" .
+                    TABLE_PREFIX .
+                    "servers_services` " .
+                    "WHERE " .
+                    implode(" OR ", $delete)
+            );
+        }
     }
 }

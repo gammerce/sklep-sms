@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\System\Auth;
-use App\System\Database;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
+use App\System\Auth;
+use App\System\Database;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -48,7 +48,7 @@ class TariffResource
 
         // Zwróć info o prawidłowej edycji
         if ($affected || $db->affectedRows()) {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('tariff_admin_edit'),
                     $user->getUsername(),
@@ -82,7 +82,7 @@ class TariffResource
         );
 
         if ($db->affectedRows()) {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('tariff_admin_delete'),
                     $user->getUsername(),

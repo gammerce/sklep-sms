@@ -1,12 +1,12 @@
 <?php
 namespace App\Http\Controllers\Api;
 
+use App\Http\Responses\ApiResponse;
+use App\Http\Responses\HtmlResponse;
 use App\Install\DatabaseMigration;
 use App\Install\RequirementsStore;
 use App\Install\SetupManager;
 use App\Install\UpdateInfo;
-use App\Http\Responses\ApiResponse;
-use App\Http\Responses\HtmlResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class UpdateController

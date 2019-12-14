@@ -2,10 +2,10 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\EntityNotFoundException;
-use App\Models\User;
 use App\Http\Responses\ApiResponse;
+use App\Repositories\UserRepository;
 use App\Translation\TranslationManager;
-use App\UserPasswordService;
+use App\User\UserPasswordService;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserPasswordResource
@@ -14,14 +14,15 @@ class UserPasswordResource
         $userId,
         Request $request,
         UserPasswordService $userPasswordService,
+        UserRepository $userRepository,
         TranslationManager $translationManager
     ) {
         $lang = $translationManager->user();
 
         $password = $request->request->get("password");
-        $user = new User($userId);
+        $user = $userRepository->get($userId);
 
-        if (!$user->exists()) {
+        if (!$user) {
             throw new EntityNotFoundException();
         }
 

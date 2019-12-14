@@ -1,19 +1,20 @@
 <?php
 namespace App\Services\ExtraFlags;
 
+use App\Exceptions\InvalidConfigException;
 use App\Html\BodyRow;
 use App\Html\Cell;
 use App\Html\HeadCell;
 use App\Html\Structure;
 use App\Html\Wrapper;
-use App\System\CurrentPage;
 use App\Models\Purchase;
-use App\System\Path;
 use App\Services\Interfaces\IServiceAdminManage;
 use App\Services\Interfaces\IServiceAvailableOnServers;
 use App\Services\Interfaces\IServiceCreate;
 use App\Services\Interfaces\IServiceUserServiceAdminDisplay;
 use App\Services\Service;
+use App\System\CurrentPage;
+use App\System\Path;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -156,13 +157,11 @@ class ServiceExtraFlagsSimple extends Service implements
 
             // Sprawdzamy czy uprawnienia się dodały
             if (substr(sprintf('%o', fileperms($file)), -4) != "0777") {
-                json_output(
-                    "not_created",
+                throw new InvalidConfigException(
                     $this->lang->sprintf(
                         $this->lang->translate('wrong_service_description_file'),
                         $this->settings['theme']
-                    ),
-                    0
+                    )
                 );
             }
         }

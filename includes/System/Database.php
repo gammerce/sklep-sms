@@ -182,20 +182,6 @@ class Database
         return mysqli_fetch_assoc($result);
     }
 
-    /**
-     * @param \mysqli_result $result
-     * @return array|null
-     * @throws SqlQueryException
-     */
-    public function fetchArray($result)
-    {
-        if (empty($result)) {
-            throw $this->exception("no_query_fetch_array");
-        }
-
-        return mysqli_fetch_array($result);
-    }
-
     public function lastId()
     {
         return mysqli_insert_id($this->link);

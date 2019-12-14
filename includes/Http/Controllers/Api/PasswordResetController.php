@@ -5,7 +5,7 @@ use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
 use App\System\Settings;
 use App\Translation\TranslationManager;
-use App\UserPasswordService;
+use App\User\UserPasswordService;
 use Symfony\Component\HttpFoundation\Request;
 
 class PasswordResetController
@@ -18,10 +18,6 @@ class PasswordResetController
     ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
-
-        if (is_logged()) {
-            return new ApiResponse("logged_in", $lang->translate('logged'), 0);
-        }
 
         $warnings = [];
 
@@ -48,7 +44,7 @@ class PasswordResetController
 
         $userPasswordService->change($uid, $pass);
 
-        log_info($langShop->sprintf($langShop->translate('reset_pass'), $uid));
+        log_to_db($langShop->sprintf($langShop->translate('reset_pass'), $uid));
 
         return new ApiResponse("password_changed", $lang->translate('password_changed'), 1);
     }

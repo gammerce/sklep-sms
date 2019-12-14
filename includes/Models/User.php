@@ -1,7 +1,6 @@
 <?php
 namespace App\Models;
 
-use App\System\Database;
 use App\System\Heart;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -58,87 +57,56 @@ class User
     /** @var string */
     private $platform;
 
-    /** @var Database */
-    private $db;
-
-    /**
-     * @param int    $uid
-     * @param string $username
-     * @param string $password
-     */
-    public function __construct($uid = 0, $username = '', $password = '')
-    {
-        $this->db = app()->make(Database::class);
+    public function __construct(
+        $uid = null,
+        $username = null,
+        $password = null,
+        $salt = null,
+        $email = null,
+        $forename = null,
+        $surname = null,
+        $steamId = null,
+        $groups = [],
+        $regDate = null,
+        $lastActive = null,
+        $wallet = null,
+        $regIp = null,
+        $lastIp = null,
+        $resetPasswordKey = null
+    ) {
+        /** @var Request $request */
+        $request = app()->make(Request::class);
 
         /** @var Heart $heart */
         $heart = app()->make(Heart::class);
 
-        /** @var Request $request */
-        $request = app()->make(Request::class);
-
+        $this->uid = $uid;
+        $this->username = $username;
+        $this->password = $password;
+        $this->salt = $salt;
+        $this->email = $email;
+        $this->forename = $forename;
+        $this->surname = $surname;
+        $this->steamId = $steamId;
+        $this->groups = $groups;
+        $this->regDate = $regDate;
+        $this->lastActive = $lastActive;
+        $this->wallet = $wallet;
+        $this->regIp = $regIp;
+        $this->lastIp = $lastIp ?: get_ip();
+        $this->resetPasswordKey = $resetPasswordKey;
         $this->platform = $request->server->get('HTTP_USER_AGENT');
-        $this->lastIp = get_ip();
 
-        if (!$uid && (!strlen($username) || !strlen($password))) {
-            return;
-        }
-
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT * FROM `" .
-                    TABLE_PREFIX .
-                    "users` " .
-                    "WHERE `uid` = '%d' " .
-                    "OR ((`username` = '%s' OR `email` = '%s') AND `password` = md5(CONCAT(md5('%s'), md5(`salt`))))",
-                [$uid, $username, $username, $password]
-            )
-        );
-
-        if ($this->db->numRows($result)) {
-            $row = $this->db->fetchArrayAssoc($result);
-            $this->uid = intval($row['uid']);
-            $this->username = $row['username'];
-            $this->password = $row['password'];
-            $this->salt = $row['salt'];
-            $this->email = $row['email'];
-            $this->forename = $row['forename'];
-            $this->surname = $row['surname'];
-            $this->steamId = $row['steam_id'];
-            $this->groups = explode(';', $row['groups']);
-            $this->regDate = $row['regdate'];
-            $this->lastActive = $row['lastactiv'];
-            $this->wallet = intval($row['wallet']);
-            $this->regIp = $row['regip'];
-            $this->lastIp = $row['lastip'];
-            $this->resetPasswordKey = $row['reset_password_key'];
-        }
-
-        foreach ($this->groups as $groupId) {
-            $privileges = $heart->getGroupPrivileges($groupId);
-            foreach ($privileges as $privilege => $value) {
-                if (strlen($privilege)) {
-                    $this->privileges[$privilege] = $value ? true : false;
+        if ($this->groups) {
+            foreach ($this->groups as $groupId) {
+                $privileges = $heart->getGroupPrivileges($groupId);
+                foreach ($privileges as $privilege => $value) {
+                    if (strlen($privilege)) {
+                        $this->privileges[$privilege] = $value ? true : false;
+                    }
                 }
             }
         }
-    }
-
-    public function updateActivity()
-    {
-        if (!$this->exists()) {
-            return;
-        }
-
-        $this->db->query(
-            $this->db->prepare(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "users` " .
-                    "SET `lastactiv` = NOW(), `lastip` = '%s' " .
-                    "WHERE `uid` = '%d'",
-                [$this->getLastIp(), $this->getUid()]
-            )
-        );
     }
 
     public function exists()

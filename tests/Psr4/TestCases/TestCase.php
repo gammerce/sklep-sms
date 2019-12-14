@@ -4,7 +4,7 @@ namespace Tests\Psr4\TestCases;
 use App\System\Application;
 use App\System\Database;
 use App\System\License;
-use App\LocaleService;
+use App\Translation\LocaleService;
 use App\System\Settings;
 use Mockery;
 use PHPUnit\Framework\TestCase as BaseTestCase;

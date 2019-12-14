@@ -41,6 +41,8 @@ use App\Http\Controllers\Api\PaymentResource;
 use App\Http\Controllers\Api\PurchaseResource;
 use App\Http\Controllers\Api\PurchaseValidationResource;
 use App\Http\Controllers\Api\RegisterController;
+use App\Http\Controllers\Api\Server\PurchaseResource as ServerPurchaseResource;
+use App\Http\Controllers\Api\Server\UsersSteamIdsController;
 use App\Http\Controllers\Api\ServiceActionController;
 use App\Http\Controllers\Api\ServiceLongDescriptionResource;
 use App\Http\Controllers\Api\ServiceTakeOverController;
@@ -59,6 +61,7 @@ use App\Http\Controllers\View\IndexController;
 use App\Http\Controllers\View\JsController;
 use App\Http\Controllers\View\ServerStuffController;
 use App\Http\Controllers\View\SetupController;
+use App\Http\Middlewares\AuthorizeServer;
 use App\Http\Middlewares\BlockOnInvalidLicense;
 use App\Http\Middlewares\IsUpToDate;
 use App\Http\Middlewares\LoadSettings;
@@ -69,6 +72,7 @@ use App\Http\Middlewares\RequireAuthorization;
 use App\Http\Middlewares\RequireInstalledAndNotUpdated;
 use App\Http\Middlewares\RequireNotInstalled;
 use App\Http\Middlewares\RequireNotInstalledOrNotUpdated;
+use App\Http\Middlewares\RequireUnauthorization;
 use App\Http\Middlewares\RunCron;
 use App\Http\Middlewares\SetAdminSession;
 use App\Http\Middlewares\SetLanguage;
@@ -130,6 +134,23 @@ class RoutesManager
 
                 $r->addGroup(
                     [
+                        "middlewares" => [BlockOnInvalidLicense::class, AuthorizeServer::class],
+                    ],
+                    function (RouteCollector $r) {
+                        $r->post('/api/server/purchase', [
+                            'middlewares' => [BlockOnInvalidLicense::class],
+                            'uses' => ServerPurchaseResource::class . '@post',
+                        ]);
+
+                        $r->get('/api/server/users/steam-ids', [
+                            'middlewares' => [BlockOnInvalidLicense::class],
+                            'uses' => UsersSteamIdsController::class . '@get',
+                        ]);
+                    }
+                );
+
+                $r->addGroup(
+                    [
                         "middlewares" => [BlockOnInvalidLicense::class, UpdateUserActivity::class],
                     ],
                     function (RouteCollector $r) {
@@ -149,6 +170,7 @@ class RoutesManager
                         ]);
 
                         $r->post('/api/register', [
+                            'middlewares' => [RequireUnauthorization::class],
                             'uses' => RegisterController::class . '@post',
                         ]);
 
@@ -170,10 +192,12 @@ class RoutesManager
                         ]);
 
                         $r->post('/api/password/forgotten', [
+                            'middlewares' => [RequireUnauthorization::class],
                             'uses' => PasswordForgottenController::class . '@post',
                         ]);
 
                         $r->post('/api/password/reset', [
+                            'middlewares' => [RequireUnauthorization::class],
                             'uses' => PasswordResetController::class . '@post',
                         ]);
 
@@ -207,14 +231,17 @@ class RoutesManager
                         ]);
 
                         $r->get('/api/user_services/{userServiceId}/edit_form', [
+                            'middlewares' => [RequireAuthorization::class],
                             'uses' => UserServiceEditFormController::class . '@get',
                         ]);
 
                         $r->get('/api/user_services/{userServiceId}/brick', [
+                            'middlewares' => [RequireAuthorization::class],
                             'uses' => UserServiceBrickController::class . '@get',
                         ]);
 
                         $r->put('/api/user_services/{userServiceId}', [
+                            "middlewares" => [RequireAuthorization::class],
                             'uses' => UserServiceResource::class . '@put',
                         ]);
 

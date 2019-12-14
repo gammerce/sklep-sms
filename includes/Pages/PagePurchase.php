@@ -1,9 +1,9 @@
 <?php
 namespace App\Pages;
 
-use App\System\Auth;
 use App\Interfaces\IBeLoggedMust;
 use App\Services\Interfaces\IServicePurchaseWeb;
+use App\System\Auth;
 
 class PagePurchase extends Page
 {
@@ -83,7 +83,7 @@ class PagePurchase extends Page
 
         // Sprawdzamy, czy usluga wymaga, by użytkownik był zalogowany
         // Jeżeli wymaga, to to sprawdzamy
-        if ($serviceModule instanceof IBeLoggedMust && !is_logged()) {
+        if ($serviceModule instanceof IBeLoggedMust && !$auth->check()) {
             return $lang->translate('must_be_logged_in');
         }
 

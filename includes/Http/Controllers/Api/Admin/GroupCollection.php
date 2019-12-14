@@ -40,7 +40,7 @@ class GroupCollection
             ])
         );
 
-        log_info(
+        log_to_db(
             $langShop->sprintf(
                 $langShop->translate('group_admin_add'),
                 $user->getUsername(),

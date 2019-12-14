@@ -1,14 +1,14 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\System\Auth;
-use App\Repositories\UserRepository;
 use App\Http\Responses\ApiResponse;
-use App\Translation\TranslationManager;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\SteamIdRule;
 use App\Http\Validation\Rules\UniqueUsernameRule;
 use App\Http\Validation\Validator;
+use App\Repositories\UserRepository;
+use App\System\Auth;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserProfileResource

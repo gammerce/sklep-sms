@@ -1,12 +1,12 @@
 <?php
 namespace App\Pages;
 
+use App\Routes\UrlGenerator;
 use App\System\Application;
 use App\System\CurrentPage;
 use App\System\Database;
 use App\System\Heart;
 use App\System\Path;
-use App\Routes\UrlGenerator;
 use App\System\Settings;
 use App\System\Template;
 use App\Translation\TranslationManager;

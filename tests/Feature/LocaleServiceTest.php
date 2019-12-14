@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Feature;
 
-use App\LocaleService;
+use App\Translation\LocaleService;
 use Symfony\Component\HttpFoundation\Request;
 use Tests\Psr4\Concerns\RequesterConcern;
 use Tests\Psr4\TestCases\TestCase;

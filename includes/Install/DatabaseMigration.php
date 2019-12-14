@@ -1,9 +1,9 @@
 <?php
 namespace App\Install;
 
+use App\Exceptions\SqlQueryException;
 use App\System\Application;
 use App\System\Database;
-use App\Exceptions\SqlQueryException;
 
 class DatabaseMigration
 {

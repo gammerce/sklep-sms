@@ -1,12 +1,12 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Exceptions\SqlQueryException;
+use App\Http\Responses\ApiResponse;
 use App\Http\Services\ServiceService;
 use App\System\Auth;
 use App\System\Database;
-use App\Exceptions\SqlQueryException;
 use App\System\Heart;
-use App\Http\Responses\ApiResponse;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -71,7 +71,7 @@ class ServiceResource
         );
 
         if ($db->affectedRows()) {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('service_admin_edit'),
                     $user->getUsername(),
@@ -122,7 +122,7 @@ class ServiceResource
         $affected = $db->affectedRows();
 
         if ($affected) {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('service_admin_delete'),
                     $user->getUsername(),

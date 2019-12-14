@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\System\Auth;
-use App\System\Database;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
+use App\System\Auth;
+use App\System\Database;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -53,7 +53,7 @@ class PasswordResource
             )
         );
 
-        log_info("Zmieniono hasło. ID użytkownika: {$user->getUid()}.");
+        log_to_db("Zmieniono hasło. ID użytkownika: {$user->getUid()}.");
 
         return new ApiResponse("password_changed", $lang->translate('password_changed'), 1);
     }

@@ -16,7 +16,7 @@ class TransferFinalize
      *
      * @var string
      */
-    private $orderid = '';
+    private $orderId = '';
 
     /**
      * Kwota płatności
@@ -73,17 +73,17 @@ class TransferFinalize
     /**
      * @return string
      */
-    public function getOrderid()
+    public function getOrderId()
     {
-        return $this->orderid;
+        return $this->orderId;
     }
 
     /**
-     * @param string $orderid
+     * @param string $orderId
      */
-    public function setOrderid($orderid)
+    public function setOrderId($orderId)
     {
-        $this->orderid = (string) $orderid;
+        $this->orderId = (string) $orderId;
     }
 
     /**

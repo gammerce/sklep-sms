@@ -1,11 +1,11 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\System\Auth;
-use App\System\Heart;
 use App\Http\Responses\HtmlResponse;
 use App\Services\Interfaces\IServiceUserOwnServices;
 use App\Services\Interfaces\IServiceUserOwnServicesEdit;
+use App\System\Auth;
+use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 
@@ -20,10 +20,6 @@ class UserServiceBrickController
     ) {
         $lang = $translationManager->user();
         $user = $auth->user();
-
-        if (!is_logged()) {
-            return new HtmlResponse($lang->translate('not_logged'));
-        }
 
         $userService = get_users_services($userServiceId);
 

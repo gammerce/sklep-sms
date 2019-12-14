@@ -71,7 +71,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
     {
         if (!get_privileges("manage_user_services")) {
             return [
-                'status' => "not_logged_in",
+                'status' => "no_access",
                 'text' => $this->lang->translate('not_logged_or_no_perm'),
             ];
         }

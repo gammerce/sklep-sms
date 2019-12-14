@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Validation\Rules;
 
+use App\Http\Validation\Rule;
 use App\System\Database;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
-use App\Http\Validation\Rule;
 
 class AntispamQuestionRule implements Rule
 {

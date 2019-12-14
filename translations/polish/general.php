@@ -79,14 +79,12 @@ return [
     'none' => 'Brak',
     'not_edited_user_service' => 'Nie udało się wyedytować usługi.',
     'not_logged' => 'Nie jesteś zalogowany/a',
-    'not_logged_or_no_perm' =>
-        'Coś tu nie gra, nie jesteś zalogowany/a lub nie masz odpowiednich uprawnień oO',
+    'not_logged_or_no_perm' => 'Nie jesteś zalogowany/a lub nie masz odpowiednich uprawnień.',
     'november' => 'Listopad',
     'october' => 'Październik',
     'old_password' => 'Stare Hasło',
     'only_yes_no' => 'Pole może przyjąć tylko wartości: \'TAK\' i \'NIE\'',
     'password' => 'Hasło',
-    'payment_bad_service' => 'API usługi [{1}] nie zostało zaimplemetowane.',
     'payment_bad_type' => 'Błąd w konstruktorze klasy Payment. Niedozwolony typ płatności.',
     'payment_id' => 'ID płatności',
     'payment_remove_code_from_db' =>
@@ -126,5 +124,4 @@ return [
     'wrong_sid' => 'Wprowadzony Steam ID jest nieprawidłowy.',
     'wrong_sign' => 'Coś tu nie gra, weryfikacja danych zakończyła się informatyczną klęską.',
     'yes' => 'Tak',
-    'you_arent_logged' => 'Coś tu nie gra, nie jesteś zalogowany/a oO',
 ];

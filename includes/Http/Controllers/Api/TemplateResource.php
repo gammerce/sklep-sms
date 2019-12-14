@@ -1,9 +1,9 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\System\Heart;
-use App\Http\Responses\ApiResponse;
+use App\Exceptions\UnauthorizedException;
 use App\Http\Responses\PlainResponse;
+use App\System\Heart;
 use App\System\Template;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,11 +26,7 @@ class TemplateResource
 
         if ($templateName == "admin_user_wallet") {
             if (!get_privileges("manage_users")) {
-                return new ApiResponse(
-                    "not_logged_in",
-                    $lang->translate('not_logged_or_no_perm'),
-                    0
-                );
+                throw new UnauthorizedException();
             }
 
             $editedUser = $heart->getUser($request->query->get('uid'));

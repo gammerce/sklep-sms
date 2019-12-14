@@ -62,8 +62,6 @@ $(document).delegate("#form_user_service_add [name=service]", "change", function
     });
 });
 
-// TODO Remove duplication
-
 // Usuwanie usługi użytkownika
 $(document).delegate("[id^=delete_row_]", "click", function() {
     var rowId = $(

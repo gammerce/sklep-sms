@@ -1,9 +1,9 @@
 <?php
 namespace App\Providers;
 
+use App\Cache\FileCache;
 use App\System\Application;
 use App\System\Auth;
-use App\Cache\FileCache;
 use App\System\CurrentPage;
 use App\System\Database;
 use App\System\ExternalConfigProvider;

@@ -1,9 +1,9 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\System\Auth;
-use App\Pages\PageAdminIncome;
 use App\Http\Responses\HtmlResponse;
+use App\Pages\PageAdminIncome;
+use App\System\Auth;
 use Symfony\Component\HttpFoundation\Request;
 
 class IncomeController

@@ -77,14 +77,12 @@ return [
     'none' => 'None',
     'not_edited_user_service' => 'Could not edit service.',
     'not_logged' => 'You are not logged in',
-    'not_logged_or_no_perm' =>
-        'Something is wrong, you are not logged in or you have no permission oO',
+    'not_logged_or_no_perm' => 'You are not logged in or you have no permission.',
     'november' => 'November',
     'october' => 'October',
     'old_password' => 'Old Password',
     'only_yes_no' => 'Field can only accept values: \'YES\' and \'NO\'',
     'password' => 'Password',
-    'payment_bad_service' => 'Service API {1} was not implemented.',
     'payment_bad_type' => 'Error in Payment class constructor. Payment type not allowed.',
     'payment_id' => 'Payment ID',
     'payment_remove_code_from_db' =>
@@ -124,5 +122,4 @@ return [
     'wrong_sid' => 'Given Steam ID is incorrect.',
     'wrong_sign' => 'Something is wrong, data verification ended up an IT failure.',
     'yes' => 'Yes',
-    'you_arent_logged' => 'Something is wrong, you are not logged in oO',
 ];

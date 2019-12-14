@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\System\Auth;
-use App\System\Heart;
 use App\Http\Responses\ApiResponse;
 use App\Services\Interfaces\IServiceUserOwnServicesEdit;
+use App\System\Auth;
+use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,10 +21,6 @@ class UserServiceResource
     ) {
         $lang = $translationManager->user();
         $user = $auth->user();
-
-        if (!is_logged()) {
-            return new ApiResponse("not_logged", $lang->translate('not_logged'), 0);
-        }
 
         $userService = get_users_services($userServiceId);
 

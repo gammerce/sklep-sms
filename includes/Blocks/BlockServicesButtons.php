@@ -1,9 +1,9 @@
 <?php
 namespace App\Blocks;
 
+use App\Routes\UrlGenerator;
 use App\System\Auth;
 use App\System\Heart;
-use App\Routes\UrlGenerator;
 use App\System\Template;
 
 class BlockServicesButtons extends Block

@@ -1,9 +1,9 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Http\Responses\ApiResponse;
 use App\System\Auth;
 use App\System\Database;
-use App\Http\Responses\ApiResponse;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -49,7 +49,7 @@ class TransactionServiceResource
         );
 
         if ($db->affectedRows()) {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('payment_admin_edit'),
                     $user->getUsername(),

@@ -1,12 +1,12 @@
 <?php
 namespace App\Pages;
 
+use App\Interfaces\IBeLoggedMust;
+use App\Services\Interfaces\IServicePurchaseWeb;
 use App\System\Auth;
 use App\System\Database;
-use App\Interfaces\IBeLoggedMust;
 use App\System\Settings;
 use App\System\Template;
-use App\Services\Interfaces\IServicePurchaseWeb;
 use Symfony\Component\HttpFoundation\Request;
 
 class PagePaymentLog extends Page implements IBeLoggedMust

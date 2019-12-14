@@ -111,8 +111,6 @@ Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
     'sms_info_ok' => 'Wprowadzono prawidłowy kod zwrotny.',
     'sms_info_server_error' =>
         'Wystąpił krytyczny błąd po stronie API. Skontaktuj się z właścicielem sklepu.',
-    'sms_info_sms_not_supported' =>
-        'Dany serwis nie obsługuje płatności SMS. Zgłoś błąd właścicielowi sklepu.',
     'sms_info_unknown_error' => 'Wystąpił nieznany błąd. Zgłoś go właścicielowi sklepu.',
     'sms_info_wrong_credentials' =>
         'Nieprawidłowo skonfigurowana metoda płatności. Skontaktuj się z właścicielem sklepu.',
@@ -136,8 +134,6 @@ Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
     'transfer_prepared' =>
         'Przygotowanie płatności przebiegło pomyślnie.<br />Za chwilę nastąpi przekierowanie do serwisu transakcyjnego.',
     'transfer_transfer' => 'Przelew',
-    'transfer_transfer_not_supported' =>
-        'Dany serwis nie obsługuje płatności przelewem. Zgłoś błąd właścicielowi sklepu.',
     'transfer_unavailable' => 'Nie można dokonać płatności za pomocą przelewu.',
     'transfer_unverified' =>
         'Niestety, ale nie udało się zweryfikować poprawności danych przelewu.',

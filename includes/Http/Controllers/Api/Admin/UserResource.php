@@ -1,12 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\System\Auth;
-use App\System\Database;
-use App\System\Heart;
-use App\Repositories\UserRepository;
 use App\Http\Responses\ApiResponse;
-use App\Translation\TranslationManager;
 use App\Http\Validation\Rules\NumberRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\SteamIdRule;
@@ -14,6 +9,11 @@ use App\Http\Validation\Rules\UniqueUserEmailRule;
 use App\Http\Validation\Rules\UniqueUsernameRule;
 use App\Http\Validation\Rules\UserGroupsRule;
 use App\Http\Validation\Validator;
+use App\Repositories\UserRepository;
+use App\System\Auth;
+use App\System\Database;
+use App\System\Heart;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserResource
@@ -64,7 +64,7 @@ class UserResource
 
         $userRepository->update($editedUser);
 
-        log_info(
+        log_to_db(
             $langShop->sprintf(
                 $langShop->translate('user_admin_edit'),
                 $user->getUsername(),
@@ -93,7 +93,7 @@ class UserResource
         );
 
         if ($db->affectedRows()) {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('user_admin_delete'),
                     $user->getUsername(),

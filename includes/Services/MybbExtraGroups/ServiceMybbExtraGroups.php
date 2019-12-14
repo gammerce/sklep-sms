@@ -1,16 +1,18 @@
 <?php
 namespace App\Services\MybbExtraGroups;
 
-use App\System\Auth;
-use App\System\Database;
+use App\Exceptions\InvalidConfigException;
 use App\Exceptions\SqlQueryException;
-use App\System\Heart;
 use App\Models\MybbUser;
 use App\Models\Purchase;
+use App\Payment\BoughtServiceService;
 use App\Services\Interfaces\IServicePurchase;
 use App\Services\Interfaces\IServicePurchaseWeb;
 use App\Services\Interfaces\IServiceUserOwnServices;
 use App\Services\Interfaces\IServiceUserServiceAdminAdd;
+use App\System\Auth;
+use App\System\Database;
+use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
@@ -29,16 +31,19 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
     private $dbName;
 
     /** @var Database */
-    protected $dbMybb = null;
+    private $dbMybb = null;
 
     /** @var Translator */
-    protected $langShop;
+    private $langShop;
 
     /** @var Auth */
-    protected $auth;
+    private $auth;
 
     /** @var Heart */
-    protected $heart;
+    private $heart;
+
+    /** @var BoughtServiceService */
+    private $boughtServiceService;
 
     public function __construct($service)
     {
@@ -49,6 +54,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         $this->langShop = $translationManager->shop();
         $this->auth = $this->app->make(Auth::class);
         $this->heart = $this->app->make(Heart::class);
+        $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
 
         $this->groups = explode(",", $this->service['data']['mybb_groups']);
         $this->dbHost = if_isset($this->service['data']['db_host'], '');
@@ -187,7 +193,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             ];
         }
 
-        $purchaseData = new Purchase();
+        $purchaseData = new Purchase($this->auth->user());
         $purchaseData->setService($this->service['id']);
         $purchaseData->setOrder([
             'username' => $data['username'],
@@ -242,7 +248,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
     {
         // Nie znaleziono użytkownika o takich danych jak podane podczas zakupu
         if (($mybbUser = $this->createMybbUser($purchaseData->getOrder('username'))) === null) {
-            log_info(
+            log_to_db(
                 $this->langShop->sprintf(
                     $this->langShop->translate('mybb_purchase_no_user'),
                     json_encode($purchaseData->getPayment())
@@ -262,7 +268,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         }
         $this->saveMybbUser($mybbUser);
 
-        return add_bought_service_info(
+        return $this->boughtServiceService->create(
             $purchaseData->user->getUid(),
             $purchaseData->user->getUsername(),
             $purchaseData->user->getLastIp(),
@@ -342,8 +348,8 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         try {
             $this->connectMybb();
         } catch (SqlQueryException $e) {
-            if ($who == 'admin') {
-                output_page($e->getError());
+            if ($who === 'admin') {
+                throw new InvalidConfigException($e->getError());
             }
 
             return false;
@@ -562,9 +568,8 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         // Dodawanie informacji o płatności
         $paymentId = pay_by_admin($user);
 
-        $purchaseData = new Purchase();
+        $purchaseData = new Purchase($this->heart->getUser($body['uid']));
         $purchaseData->setService($this->service['id']);
-        $purchaseData->user = $this->heart->getUser($body['uid']);
         $purchaseData->setPayment([
             'method' => "admin",
             'payment_id' => $paymentId,
@@ -577,7 +582,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         $purchaseData->setEmail($body['email']);
         $boughtServiceId = $this->purchase($purchaseData);
 
-        log_info(
+        log_to_db(
             $this->langShop->sprintf(
                 $this->langShop->translate('admin_added_user_service'),
                 $user->getUsername(),

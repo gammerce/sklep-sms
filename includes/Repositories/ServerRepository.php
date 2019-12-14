@@ -1,8 +1,8 @@
 <?php
 namespace App\Repositories;
 
-use App\System\Database;
 use App\Models\Server;
+use App\System\Database;
 
 class ServerRepository
 {

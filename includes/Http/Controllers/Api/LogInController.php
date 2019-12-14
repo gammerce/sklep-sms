@@ -1,16 +1,23 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\System\Heart;
 use App\Http\Responses\ApiResponse;
+use App\System\Auth;
+use App\System\Heart;
 use App\Translation\TranslationManager;
+use App\User\UserActivityService;
 use Symfony\Component\HttpFoundation\Request;
 
 class LogInController
 {
-    public function post(Request $request, TranslationManager $translationManager, Heart $heart)
-    {
-        if (is_logged()) {
+    public function post(
+        Request $request,
+        TranslationManager $translationManager,
+        UserActivityService $activityService,
+        Heart $heart,
+        Auth $auth
+    ) {
+        if ($auth->check()) {
             return new ApiResponse("already_logged_in");
         }
 
@@ -24,10 +31,10 @@ class LogInController
             return new ApiResponse("no_data", $lang->translate('no_login_password'), 0);
         }
 
-        $user = $heart->getUser(0, $username, $password);
+        $user = $heart->getUserByLogin($username, $password);
         if ($user->exists()) {
             $session->set("uid", $user->getUid());
-            $user->updateActivity();
+            $activityService->update($user);
             return new ApiResponse("logged_in", $lang->translate('login_success'), 1);
         }
 

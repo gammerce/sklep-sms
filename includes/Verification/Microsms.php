@@ -1,11 +1,11 @@
 <?php
 namespace App\Verification;
 
-use App\System\Database;
 use App\Models\Purchase;
 use App\Models\TransferFinalize;
 use App\Requesting\Requester;
 use App\Routes\UrlGenerator;
+use App\System\Database;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Verification\Abstracts\PaymentModule;
@@ -134,7 +134,7 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
             $transferFinalize->setStatus(true);
         }
 
-        $transferFinalize->setOrderid($body['orderID']);
+        $transferFinalize->setOrderId($body['orderID']);
         $transferFinalize->setAmount($body['amountPay']);
         $transferFinalize->setDataFilename($body['control']);
         $transferFinalize->setOutput('OK');

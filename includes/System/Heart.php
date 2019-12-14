@@ -3,16 +3,19 @@ namespace App\System;
 
 use App\Blocks\Block;
 use App\Blocks\BlockSimple;
+use App\Exceptions\InvalidConfigException;
 use App\Models\Tariff;
 use App\Models\User;
 use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Pages\Page;
 use App\Pages\PageSimple;
+use App\Repositories\UserRepository;
+use App\Services\ChargeWallet\ServiceChargeWallet;
 use App\Services\ExtraFlags\ServiceExtraFlags;
 use App\Services\Other\ServiceOther;
 use App\Services\Service;
+use App\Verification\Abstracts\PaymentModule;
 use Exception;
-use App\Services\ChargeWallet\ServiceChargeWallet;
 
 class Heart
 {
@@ -24,6 +27,9 @@ class Heart
 
     /** @var Template */
     private $template;
+
+    /** @var UserRepository */
+    private $userRepository;
 
     private $servers = [];
 
@@ -53,11 +59,16 @@ class Heart
     private $scripts = [];
     private $styles = [];
 
-    public function __construct(Database $db, Settings $settings, Template $template)
-    {
+    public function __construct(
+        Database $db,
+        Settings $settings,
+        Template $template,
+        UserRepository $userRepository
+    ) {
         $this->db = $db;
         $this->settings = $settings;
         $this->template = $template;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -179,9 +190,32 @@ class Heart
         $this->paymentModuleClasses[$id] = $class;
     }
 
+    /**
+     * @param string $id
+     * @return PaymentModule|null
+     */
     public function getPaymentModule($id)
     {
-        return isset($this->paymentModuleClasses[$id]) ? $this->paymentModuleClasses[$id] : null;
+        if (isset($this->paymentModuleClasses[$id])) {
+            return app()->make($this->paymentModuleClasses[$id]);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $id
+     * @return PaymentModule
+     */
+    public function getPaymentModuleOrFail($id)
+    {
+        $paymentModule = $this->getPaymentModule($id);
+
+        if ($paymentModule) {
+            return $paymentModule;
+        }
+
+        throw new InvalidConfigException("Invalid payment module [$id].");
     }
 
     //
@@ -484,22 +518,36 @@ class Heart
 
     /**
      * @param int    $uid
-     * @param string $login
-     * @param string $password
-     *
      * @return User
      */
-    public function getUser($uid = 0, $login = "", $password = "")
+    public function getUser($uid)
     {
         // Wcześniej już pobraliśmy takiego użytkownika
         if ($uid && isset($this->users[$uid])) {
             return $this->users[$uid];
         }
 
-        if ($uid || (strlen($login) && strlen($password))) {
-            $user = new User($uid, $login, $password);
-            $this->users[$user->getUid()] = $user;
+        $user = $this->userRepository->get($uid);
 
+        if ($user) {
+            $this->users[$user->getUid()] = $user;
+            return $user;
+        }
+
+        return new User();
+    }
+
+    /**
+     * @param string $login
+     * @param string$password
+     * @return User
+     */
+    public function getUserByLogin($login, $password)
+    {
+        $user = $this->userRepository->findByPassword($login, $password);
+
+        if ($user) {
+            $this->users[$user->getUid()] = $user;
             return $user;
         }
 

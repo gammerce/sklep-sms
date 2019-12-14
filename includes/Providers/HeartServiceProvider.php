@@ -7,7 +7,6 @@ use App\Blocks\BlockLoggedInfo;
 use App\Blocks\BlockServicesButtons;
 use App\Blocks\BlockUserButtons;
 use App\Blocks\BlockWallet;
-use App\System\Heart;
 use App\Pages\PageAdminAntispamQuestions;
 use App\Pages\PageAdminBoughtServices;
 use App\Pages\PageAdminGroups;
@@ -49,12 +48,14 @@ use App\Pages\PageTransferujBad;
 use App\Pages\PageTransferujOk;
 use App\Pages\PageUserOwnServices;
 use App\Services\ChargeWallet\ServiceChargeWallet;
+use App\Services\ChargeWallet\ServiceChargeWalletSimple;
 use App\Services\ExtraFlags\ServiceExtraFlags;
 use App\Services\ExtraFlags\ServiceExtraFlagsSimple;
 use App\Services\MybbExtraGroups\ServiceMybbExtraGroups;
 use App\Services\MybbExtraGroups\ServiceMybbExtraGroupsSimple;
 use App\Services\Other\ServiceOther;
 use App\Services\Other\ServiceOtherSimple;
+use App\System\Heart;
 use App\Verification\Bizneshost;
 use App\Verification\Cashbill;
 use App\Verification\Cssetti;
@@ -69,7 +70,6 @@ use App\Verification\Pukawka;
 use App\Verification\Simpay;
 use App\Verification\Transferuj;
 use App\Verification\Zabijaka;
-use App\Services\ChargeWallet\ServiceChargeWalletSimple;
 
 class HeartServiceProvider
 {

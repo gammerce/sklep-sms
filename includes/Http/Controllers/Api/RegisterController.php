@@ -1,12 +1,8 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\System\Auth;
-use App\System\Database;
 use App\Exceptions\ValidationException;
-use App\Repositories\UserRepository;
 use App\Http\Responses\ApiResponse;
-use App\Translation\TranslationManager;
 use App\Http\Validation\Rules\AntispamQuestionRule;
 use App\Http\Validation\Rules\ConfirmedRule;
 use App\Http\Validation\Rules\EmailRule;
@@ -16,13 +12,15 @@ use App\Http\Validation\Rules\SteamIdRule;
 use App\Http\Validation\Rules\UniqueUserEmailRule;
 use App\Http\Validation\Rules\UniqueUsernameRule;
 use App\Http\Validation\Validator;
+use App\Repositories\UserRepository;
+use App\System\Database;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class RegisterController
 {
     public function post(
         Request $request,
-        Auth $auth,
         TranslationManager $translationManager,
         Database $db,
         UserRepository $userRepository,
@@ -35,10 +33,6 @@ class RegisterController
         $session = $request->getSession();
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
-
-        if ($auth->check()) {
-            return new ApiResponse("logged_in", $lang->translate('logged'), 0);
-        }
 
         $username = trim($request->request->get('username'));
         $password = $request->request->get('password');
@@ -105,10 +99,12 @@ class RegisterController
             $forename,
             $surname,
             $steamId,
-            get_ip($request)
+            get_ip($request),
+            '1',
+            0
         );
 
-        log_info(
+        log_to_db(
             $langShop->sprintf(
                 $langShop->translate('new_account'),
                 $createdUser->getUid(),

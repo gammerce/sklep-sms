@@ -1,12 +1,11 @@
 <?php
 namespace App\Http\Controllers\Api;
 
+use App\Http\Responses\ApiResponse;
+use App\Models\Purchase;
+use App\Services\Interfaces\IServicePurchaseWeb;
 use App\System\Auth;
 use App\System\Heart;
-use App\Models\Purchase;
-use App\Payment;
-use App\Http\Responses\ApiResponse;
-use App\Services\Interfaces\IServicePurchaseWeb;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,46 +44,48 @@ class PurchaseValidationResource
         } else {
             //
             // Uzupełniamy brakujące dane
-            /** @var Purchase $purchaseData */
-            $purchaseData = $returnData['purchase_data'];
+            /** @var Purchase $purchase */
+            $purchase = $returnData['purchase_data'];
 
-            if ($purchaseData->getService() === null) {
-                $purchaseData->setService($serviceModule->service['id']);
+            if ($purchase->getService() === null) {
+                $purchase->setService($serviceModule->service['id']);
             }
 
-            if (!$purchaseData->getPayment('cost') && $purchaseData->getTariff() !== null) {
-                $purchaseData->setPayment([
-                    'cost' => $purchaseData->getTariff()->getProvision(),
+            if (!$purchase->getPayment('cost') && $purchase->getTariff() !== null) {
+                $purchase->setPayment([
+                    'cost' => $purchase->getTariff()->getProvision(),
                 ]);
             }
 
             if (
-                $purchaseData->getPayment('sms_service') === null &&
-                !$purchaseData->getPayment("no_sms") &&
+                $purchase->getPayment('sms_service') === null &&
+                !$purchase->getPayment("no_sms") &&
                 strlen($settings['sms_service'])
             ) {
-                $purchaseData->setPayment([
+                $purchase->setPayment([
                     'sms_service' => $settings['sms_service'],
                 ]);
             }
 
             // Ustawiamy taryfe z numerem
-            if ($purchaseData->getPayment('sms_service') !== null) {
-                $payment = new Payment($purchaseData->getPayment('sms_service'));
-                $purchaseData->setTariff(
-                    $payment->getPaymentModule()->getTariffById($purchaseData->getTariff()->getId())
+            if ($purchase->getPayment('sms_service') !== null) {
+                $paymentModule = $heart->getPaymentModuleOrFail(
+                    $purchase->getPayment('sms_service')
+                );
+                $purchase->setTariff(
+                    $paymentModule->getTariffById($purchase->getTariff()->getId())
                 );
             }
 
-            if ($purchaseData->getEmail() === null && strlen($user->getEmail())) {
-                $purchaseData->setEmail($user->getEmail());
+            if ($purchase->getEmail() === null && strlen($user->getEmail())) {
+                $purchase->setEmail($user->getEmail());
             }
 
-            $purchaseDataEncoded = base64_encode(serialize($purchaseData));
+            $purchaseEncoded = base64_encode(serialize($purchase));
             $returnData['data'] = [
                 'length' => 8000,
-                'data' => $purchaseDataEncoded,
-                'sign' => md5($purchaseDataEncoded . $settings['random_key']),
+                'data' => $purchaseEncoded,
+                'sign' => md5($purchaseEncoded . $settings['random_key']),
             ];
         }
 

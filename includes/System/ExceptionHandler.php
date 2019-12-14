@@ -2,12 +2,15 @@
 namespace App\System;
 
 use App\Exceptions\EntityNotFoundException;
+use App\Exceptions\InvalidConfigException;
 use App\Exceptions\LicenseException;
 use App\Exceptions\LicenseRequestException;
 use App\Exceptions\RequireInstallationException;
 use App\Exceptions\SqlQueryException;
+use App\Exceptions\UnauthorizedException;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
+use App\Http\Responses\PlainResponse;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use Exception;
@@ -29,8 +32,11 @@ class ExceptionHandler implements ExceptionHandlerContract
     private $path;
 
     private $dontReport = [
-        RequireInstallationException::class,
+        EntityNotFoundException::class,
+        InvalidConfigException::class,
         LicenseException::class,
+        RequireInstallationException::class,
+        UnauthorizedException::class,
         ValidationException::class,
     ];
 
@@ -46,22 +52,12 @@ class ExceptionHandler implements ExceptionHandlerContract
 
     public function render(Request $request, Exception $e)
     {
-        if ($this->app->isDebug()) {
-            $exceptionDetails = $this->getExceptionDetails($e);
-
-            return new JsonResponse($exceptionDetails);
-        }
-
-        if ($e instanceof LicenseException) {
-            return new Response($this->lang->translate('verification_error'));
-        }
-
-        if ($e instanceof LicenseRequestException) {
-            return new Response($e->getMessage());
-        }
-
         if ($e instanceof EntityNotFoundException) {
             return new Response($e->getMessage(), 404);
+        }
+
+        if ($e instanceof UnauthorizedException) {
+            return new ApiResponse("no_access", $this->lang->translate('not_logged_or_no_perm'), 0);
         }
 
         if ($e instanceof ValidationException) {
@@ -82,7 +78,24 @@ class ExceptionHandler implements ExceptionHandlerContract
             return new RedirectResponse('/setup');
         }
 
-        return new Response(
+        if ($this->app->isDebug()) {
+            $exceptionDetails = $this->getExceptionDetails($e);
+            return new JsonResponse($exceptionDetails);
+        }
+
+        if ($e instanceof LicenseException) {
+            return new Response($this->lang->translate('verification_error'));
+        }
+
+        if ($e instanceof LicenseRequestException) {
+            return new Response($e->getMessage());
+        }
+
+        if ($e instanceof InvalidConfigException) {
+            return new PlainResponse($e->getMessage());
+        }
+
+        return new PlainResponse(
             'Coś się popsuło. Więcej informacji znajdziesz w pliku data/logs/errors.log'
         );
     }

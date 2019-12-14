@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Http\Responses\ApiResponse;
 use App\System\Auth;
 use App\System\Database;
 use App\System\Heart;
-use App\Http\Responses\ApiResponse;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -91,7 +91,7 @@ class UserServiceResource
         }
 
         if ($affected) {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('user_service_admin_delete'),
                     $user->getUsername(),

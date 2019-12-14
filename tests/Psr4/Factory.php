@@ -101,6 +101,7 @@ class Factory
                 'steam_id' => null,
                 'ip' => $this->faker->ipv4,
                 'groups' => '2',
+                'wallet' => 0,
             ],
             $attributes
         );
@@ -113,7 +114,8 @@ class Factory
             $attributes['surname'],
             $attributes['steam_id'],
             $attributes['ip'],
-            $attributes['groups']
+            $attributes['groups'],
+            $attributes['wallet']
         );
     }
 }

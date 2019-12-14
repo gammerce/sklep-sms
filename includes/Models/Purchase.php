@@ -1,18 +1,25 @@
 <?php
 namespace App\Models;
 
-use App\System\Auth;
-
 /**
  * Obiekty tej klasy są używane podczas przeprowadzania zakupu
  */
 class Purchase
 {
-    /** @var string */
+    const METHOD_SMS = "sms";
+    const METHOD_TRANSFER = "transfer";
+    const METHOD_SERVICE_CODE = "service_code";
+    const METHOD_WALLET = "wallet";
+
+    /**
+     * ID of row from ss_services table
+     *
+     * @var string|null
+     */
     private $service = null;
 
     /**
-     * Szczegóły zamawianej usługi
+     * Order details like auth_data, password etc.
      *
      * @var array
      */
@@ -28,25 +35,22 @@ class Purchase
     private $email = null;
 
     /**
-     * Szczegóły płatności
+     * Payment details like method, sms_code et.c
      *
      * @var array
      */
     private $payment = null;
 
     /**
-     * Opis zakupu ( przydaje się przy płatności przelewem )
+     * Purchase description ( useful for transfer payments )
      *
      * @var string
      */
     private $desc = null;
 
-    public function __construct()
+    public function __construct(User $user)
     {
-        /** @var Auth $auth */
-        $auth = app()->make(Auth::class);
-
-        $this->user = $auth->user();
+        $this->user = $user;
     }
 
     public function setService($service)

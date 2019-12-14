@@ -1,11 +1,11 @@
 <?php
 namespace App\Blocks;
 
-use App\System\CurrentPage;
-use App\System\Heart;
 use App\Interfaces\IBeLoggedCannot;
 use App\Interfaces\IBeLoggedMust;
 use App\Pages\Page;
+use App\System\CurrentPage;
+use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 

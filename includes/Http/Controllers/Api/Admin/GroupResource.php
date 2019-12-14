@@ -47,7 +47,7 @@ class GroupResource
         );
 
         if ($db->affectedRows()) {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('group_admin_edit'),
                     $user->getUsername(),
@@ -76,7 +76,7 @@ class GroupResource
         );
 
         if ($db->affectedRows()) {
-            log_info(
+            log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('group_admin_delete'),
                     $user->getUsername(),

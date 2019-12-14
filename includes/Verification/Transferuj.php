@@ -1,11 +1,11 @@
 <?php
 namespace App\Verification;
 
-use App\System\Database;
 use App\Models\Purchase;
 use App\Models\TransferFinalize;
 use App\Requesting\Requester;
 use App\Routes\UrlGenerator;
+use App\System\Database;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Verification\Abstracts\PaymentModule;
@@ -76,7 +76,7 @@ class Transferuj extends PaymentModule implements SupportTransfer
             $transferFinalize->setStatus(true);
         }
 
-        $transferFinalize->setOrderid($body['tr_id']);
+        $transferFinalize->setOrderId($body['tr_id']);
         $transferFinalize->setAmount($body['tr_amount']);
         $transferFinalize->setDataFilename($body['tr_crc']);
         $transferFinalize->setTransferService($body['id']);

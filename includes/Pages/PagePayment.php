@@ -2,9 +2,9 @@
 namespace App\Pages;
 
 use App\Models\Purchase;
-use App\Payment;
 use App\Services\Interfaces\IServicePurchaseWeb;
 use App\Services\Interfaces\IServiceServiceCode;
+use App\Verification\Abstracts\SupportSms;
 
 class PagePayment extends Page
 {
@@ -30,7 +30,7 @@ class PagePayment extends Page
         /** @var Purchase $purchaseData */
         $purchaseData = unserialize(base64_decode($body['data']));
 
-        // Fix: get user data again to avoid bugs linked with user wallet
+        // Fix: Refresh user to avoid bugs linked with user wallet
         $purchaseData->user = $this->heart->getUser($purchaseData->user->getUid());
 
         if (!($purchaseData instanceof Purchase)) {
@@ -58,11 +58,17 @@ class PagePayment extends Page
             $purchaseData->getTariff() !== null &&
             !$purchaseData->getPayment('no_sms')
         ) {
-            $paymentSms = new Payment($purchaseData->getPayment('sms_service'));
-            $paymentMethods .= $this->template->render(
-                'payment_method_sms',
-                compact('purchaseData', 'paymentSms')
+            $paymentModule = $this->heart->getPaymentModuleOrFail(
+                $purchaseData->getPayment('sms_service')
             );
+
+            if ($paymentModule instanceof SupportSms) {
+                $smsCode = htmlspecialchars($paymentModule->getSmsCode());
+                $paymentMethods .= $this->template->render(
+                    'payment_method_sms',
+                    compact('purchaseData', 'smsCode')
+                );
+            }
         }
 
         $costTransfer =
