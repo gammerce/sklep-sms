@@ -48,7 +48,7 @@ class TransferPaymentServiceTest extends TestCase
             [],
             [
                 'tr_id' => "abc",
-                'tr_amount' => $payResult["kwota"],
+                'tr_amount' => $payResult["data"]["data"]["kwota"],
                 'tr_crc' => $payResult["data"]["data"]["crc"],
                 'id' => "tpay",
                 'md5sum' => "xyz",
