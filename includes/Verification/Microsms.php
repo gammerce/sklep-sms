@@ -134,7 +134,7 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
             $transferFinalize->setStatus(true);
         }
 
-        $transferFinalize->setOrderid($body['orderID']);
+        $transferFinalize->setOrderId($body['orderID']);
         $transferFinalize->setAmount($body['amountPay']);
         $transferFinalize->setDataFilename($body['control']);
         $transferFinalize->setOutput('OK');

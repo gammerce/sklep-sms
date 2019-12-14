@@ -44,7 +44,7 @@ class SmsPaymentService
      * @param User          $user
      * @return array
      */
-    public function paySms(SupportSms $paymentModule, $code, Tariff $tariff, User $user)
+    public function payWithSms(SupportSms $paymentModule, $code, Tariff $tariff, User $user)
     {
         $smsNumber = $tariff->getNumber();
 

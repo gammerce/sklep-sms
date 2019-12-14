@@ -3,6 +3,7 @@ namespace App\Payment;
 
 use App\Models\Purchase;
 use App\Models\TransferFinalize;
+use App\Repositories\PaymentTransferRepository;
 use App\Services\Interfaces\IServicePurchase;
 use App\System\Database;
 use App\System\Heart;
@@ -28,15 +29,20 @@ class TransferPaymentService
     /** @var Translator */
     private $langShop;
 
+    /** @var PaymentTransferRepository */
+    private $paymentTransferRepository;
+
     public function __construct(
         Database $db,
         Path $path,
         Heart $heart,
+        PaymentTransferRepository $paymentTransferRepository,
         TranslationManager $translationManager
     ) {
         $this->db = $db;
         $this->path = $path;
         $this->heart = $heart;
+        $this->paymentTransferRepository = $paymentTransferRepository;
         $this->lang = $translationManager->user();
         $this->langShop = $translationManager->shop();
     }
@@ -48,7 +54,7 @@ class TransferPaymentService
      * @param Purchase        $purchase
      * @return array
      */
-    public function payTransfer(SupportTransfer $paymentModule, Purchase $purchase)
+    public function payWithTransfer(SupportTransfer $paymentModule, Purchase $purchase)
     {
         $serialized = serialize($purchase);
         $dataFilename = time() . "-" . md5($serialized);
@@ -70,19 +76,13 @@ class TransferPaymentService
      */
     public function transferFinalize(TransferFinalize $transferFinalize)
     {
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT * FROM `" . TABLE_PREFIX . "payment_transfer` " . "WHERE `id` = '%d'",
-                [$transferFinalize->getOrderid()]
-            )
-        );
+        $paymentTransfer = $this->paymentTransferRepository->get($transferFinalize->getOrderId());
 
-        // Próba ponownej autoryzacji
-        if ($this->db->numRows($result)) {
+        // Avoid multiple authorization of the same order
+        if ($paymentTransfer) {
             return false;
         }
 
-        // Nie znaleziono pliku z danymi
         if (
             !$transferFinalize->getDataFilename() ||
             !file_exists($this->path->to('data/transfers/' . $transferFinalize->getDataFilename()))
@@ -90,7 +90,7 @@ class TransferPaymentService
             log_to_db(
                 $this->langShop->sprintf(
                     $this->langShop->translate('transfer_no_data_file'),
-                    $transferFinalize->getOrderid()
+                    $transferFinalize->getOrderId()
                 )
             );
 
@@ -107,30 +107,20 @@ class TransferPaymentService
         // Fix: Refresh user to avoid bugs linked with user wallet
         $purchase->user = $this->heart->getUser($purchase->user->getUid());
 
-        // Dodanie informacji do bazy danych
-        $this->db->query(
-            $this->db->prepare(
-                "INSERT INTO `" .
-                    TABLE_PREFIX .
-                    "payment_transfer` " .
-                    "SET `id` = '%s', `income` = '%d', `transfer_service` = '%s', `ip` = '%s', `platform` = '%s' ",
-                [
-                    $transferFinalize->getOrderid(),
-                    $purchase->getPayment('cost'),
-                    $transferFinalize->getTransferService(),
-                    $purchase->user->getLastIp(),
-                    $purchase->user->getPlatform(),
-                ]
-            )
+        $this->paymentTransferRepository->create(
+            $transferFinalize->getOrderId(),
+            $purchase->getPayment('cost'),
+            $transferFinalize->getTransferService(),
+            $purchase->user->getLastIp(),
+            $purchase->user->getPlatform()
         );
         unlink($this->path->to('data/transfers/' . $transferFinalize->getDataFilename()));
 
-        // Błędny moduł
         if (($serviceModule = $this->heart->getServiceModule($purchase->getService())) === null) {
             log_to_db(
                 $this->langShop->sprintf(
                     $this->langShop->translate('transfer_bad_module'),
-                    $transferFinalize->getOrderid(),
+                    $transferFinalize->getOrderId(),
                     $purchase->getService()
                 )
             );
@@ -142,7 +132,7 @@ class TransferPaymentService
             log_to_db(
                 $this->langShop->sprintf(
                     $this->langShop->translate('transfer_no_purchase'),
-                    $transferFinalize->getOrderid(),
+                    $transferFinalize->getOrderId(),
                     $purchase->getService()
                 )
             );
@@ -150,10 +140,9 @@ class TransferPaymentService
             return false;
         }
 
-        // Dokonujemy zakupu
         $purchase->setPayment([
-            'method' => 'transfer',
-            'payment_id' => $transferFinalize->getOrderid(),
+            'method' => Purchase::METHOD_TRANSFER,
+            'payment_id' => $transferFinalize->getOrderId(),
         ]);
         $boughtServiceId = $serviceModule->purchase($purchase);
 
@@ -161,7 +150,7 @@ class TransferPaymentService
             $this->langShop->sprintf(
                 $this->langShop->translate('payment_transfer_accepted'),
                 $boughtServiceId,
-                $transferFinalize->getOrderid(),
+                $transferFinalize->getOrderId(),
                 $transferFinalize->getAmount(),
                 $transferFinalize->getTransferService(),
                 $purchase->user->getUsername(),

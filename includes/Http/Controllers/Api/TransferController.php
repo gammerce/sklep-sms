@@ -42,7 +42,7 @@ class TransferController
             log_to_db(
                 $this->langShop->sprintf(
                     $this->langShop->translate('payment_not_accepted'),
-                    $transferFinalize->getOrderid(),
+                    $transferFinalize->getOrderId(),
                     $transferFinalize->getAmount(),
                     $transferFinalize->getTransferService()
                 )

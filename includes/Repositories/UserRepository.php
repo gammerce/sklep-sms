@@ -168,7 +168,7 @@ class UserRepository
         return $data ? $this->mapToModel($data) : null;
     }
 
-    private function mapToModel($data)
+    private function mapToModel(array $data)
     {
         return new User(
             intval($data['uid']),
