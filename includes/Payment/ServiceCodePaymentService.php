@@ -44,7 +44,7 @@ class ServiceCodePaymentService
      * @param Service  $serviceModule
      * @return array|int
      */
-    public function payServiceCode(Purchase $purchase, Service $serviceModule)
+    public function payWithServiceCode(Purchase $purchase, Service $serviceModule)
     {
         $result = $this->db->query(
             $this->db->prepare(

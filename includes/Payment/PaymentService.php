@@ -197,7 +197,7 @@ class PaymentService
 
         if ($purchase->getPayment('method') === Purchase::METHOD_SMS) {
             // Sprawdzamy kod zwrotny
-            $result = $this->smsPaymentService->paySms(
+            $result = $this->smsPaymentService->payWithSms(
                 $paymentModule,
                 $purchase->getPayment('sms_code'),
                 $purchase->getTariff(),
@@ -216,7 +216,7 @@ class PaymentService
 
         if ($purchase->getPayment('method') === Purchase::METHOD_WALLET) {
             // Dodanie informacji o płatności z portfela
-            $paymentId = $this->walletPaymentService->payWallet(
+            $paymentId = $this->walletPaymentService->payWithWallet(
                 $purchase->getPayment('cost'),
                 $purchase->user
             );
@@ -229,7 +229,7 @@ class PaymentService
 
         if ($purchase->getPayment('method') === Purchase::METHOD_SERVICE_CODE) {
             // Dodanie informacji o płatności z portfela
-            $paymentId = $this->serviceCodePaymentService->payServiceCode(
+            $paymentId = $this->serviceCodePaymentService->payWithServiceCode(
                 $purchase,
                 $serviceModule
             );
@@ -269,7 +269,7 @@ class PaymentService
                 )
             );
 
-            return $this->transferPaymentService->payTransfer($paymentModule, $purchase);
+            return $this->transferPaymentService->payWithTransfer($paymentModule, $purchase);
         }
 
         throw new UnexpectedValueException();

@@ -66,7 +66,7 @@ class ServiceCodeRepository
         return $this->db->affectedRows();
     }
 
-    private function mapToModel($data)
+    private function mapToModel(array $data)
     {
         return new ServiceCode(
             intval($data['id']),

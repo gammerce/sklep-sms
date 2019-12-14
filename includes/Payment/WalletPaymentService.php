@@ -25,7 +25,7 @@ class WalletPaymentService
      * @param User $user
      * @return array|int|string
      */
-    public function payWallet($cost, $user)
+    public function payWithWallet($cost, $user)
     {
         // Sprawdzanie, czy jest wystarczająca ilość kasy w portfelu
         if ($cost > $user->getWallet()) {

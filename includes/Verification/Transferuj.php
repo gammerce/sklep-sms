@@ -76,7 +76,7 @@ class Transferuj extends PaymentModule implements SupportTransfer
             $transferFinalize->setStatus(true);
         }
 
-        $transferFinalize->setOrderid($body['tr_id']);
+        $transferFinalize->setOrderId($body['tr_id']);
         $transferFinalize->setAmount($body['tr_amount']);
         $transferFinalize->setDataFilename($body['tr_crc']);
         $transferFinalize->setTransferService($body['id']);
