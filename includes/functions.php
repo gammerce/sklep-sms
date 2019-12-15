@@ -439,7 +439,7 @@ function create_dom_element($name, $text = "", $data = [])
         $element->setParam($key, $value);
     }
 
-    return $element->toHtml();
+    return $element;
 }
 
 function create_brick($text, $class = "", $alpha = 0.2)

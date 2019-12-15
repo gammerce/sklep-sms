@@ -6,6 +6,7 @@ use App\Html\Cell;
 use App\Html\HeadCell;
 use App\Html\Input;
 use App\Html\Structure;
+use App\Html\UnescapedSimpleText;
 use App\Html\Wrapper;
 use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Services\Interfaces\IServiceAdminManage;
@@ -88,7 +89,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
                 if ($serviceModule instanceof IServiceAdminManage) {
                     $extraFields = create_dom_element(
                         "tbody",
-                        $serviceModule->serviceAdminExtraFieldsGet(),
+                        new UnescapedSimpleText($serviceModule->serviceAdminExtraFieldsGet()),
                         [
                             'class' => 'extra_fields',
                         ]

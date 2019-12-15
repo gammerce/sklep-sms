@@ -1,13 +1,13 @@
-{$lang->sprintf($lang->translate('just_purchased'), $data['auth_data'])}<br />
+{{ $lang->sprintf($lang->translate('just_purchased'), $data['auth_data']) }}<br />
 <br />
-<strong>{$lang->translate('service')}:</strong> {$e($serviceName)}<br />
-<strong>{$lang->translate('amount')}:</strong> {$e($amount)}<br />
-<strong>{$lang->translate('server')}:</strong> {$e($server->getName())}<br />
+<strong>{$lang->translate('service')}:</strong> {{ $serviceName }}<br />
+<strong>{$lang->translate('amount')}:</strong> {{ $amount }}<br />
+<strong>{$lang->translate('server')}:</strong> {{ $server->getName() }}<br />
 <br />
-<strong>{$data['extra_data']['type_name']}:</strong> {$e($data['auth_data'])}<br />
-{$e($password)}
+<strong>{$data['extra_data']['type_name']}:</strong> {{ $data['auth_data'] }}<br />
+{{ $password }}
 <br />
-{$e($setinfo)}<br />
+{{ $setinfo }}<br />
 <br />
-{$lang->translate('regards')},<br />
-{$settings['signature']}
+{{ $lang->translate('regards') }},<br />
+{{ $settings['signature'] }}

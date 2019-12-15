@@ -13,14 +13,14 @@ class DOMElement implements I_ToHtml
     protected $params;
 
     /**
-     * @param DOMElement|string|null $value
+     * @param I_ToHtml|I_ToHtml[]|string|string[]|null $value
      */
     public function __construct($value = null)
     {
-        if ($value instanceof DOMElement) {
-            $this->addContent($value);
-        } elseif ($value !== null) {
-            $this->addContent(new SimpleText($value));
+        $contents = is_array($value) ? $value : [$value];
+
+        foreach ($contents as $content) {
+            $this->addContent($content);
         }
     }
 
@@ -66,38 +66,15 @@ class DOMElement implements I_ToHtml
     }
 
     /**
-     * @param I_ToHtml $element
+     * @param I_ToHtml|string $element
      */
     public function addContent($element)
     {
-        $this->contents[] = $element;
-    }
-
-    /**
-     * @param I_ToHtml $element
-     */
-    public function preaddContent($element)
-    {
-        $this->contents = array_merge([$element], $this->contents);
-    }
-
-    /**
-     * @param string   $key
-     * @param I_ToHtml $element
-     */
-    public function setContent($key, $element)
-    {
-        $this->contents[$key] = $element;
-    }
-
-    /**
-     * @param string   $key
-     * @param I_ToHtml $element
-     */
-    public function presetContent($key, $element)
-    {
-        unset($this->contents[$key]);
-        $this->contents = array_merge([$key => $element], $this->contents);
+        if ($element instanceof I_ToHtml) {
+            $this->contents[] = $element;
+        } elseif ($element !== null) {
+            $this->contents[] = new SimpleText($element);
+        }
     }
 
     /**

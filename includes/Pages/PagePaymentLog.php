@@ -1,6 +1,7 @@
 <?php
 namespace App\Pages;
 
+use App\Html\UnescapedSimpleText;
 use App\Interfaces\IBeLoggedMust;
 use App\Services\Interfaces\IServicePurchaseWeb;
 use App\System\Auth;
@@ -87,7 +88,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
             );
             $paymentLogs .= create_dom_element(
                 "div",
-                $paymentLogBrick,
+                new UnescapedSimpleText($paymentLogBrick),
                 $data = [
                     'class' => "brick " . $class,
                 ]

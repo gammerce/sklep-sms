@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\View;
 
+use App\Html\UnescapedSimpleText;
 use App\Routes\UrlGenerator;
 use App\System\CurrentPage;
 use App\System\Heart;
@@ -33,11 +34,12 @@ class ExtraStuffController
                 $request->server->get('REQUEST_URI')
             );
 
+            $safeLink = str_replace('"', '\"', $link);
             $output = create_dom_element(
                 "script",
-                'window.open("' .
-                    str_replace('"', '\"', $link) .
-                    '", "", "height=720,width=1280");',
+                new UnescapedSimpleText(
+                'window.open("' . $safeLink . '", "", "height=720,width=1280");',
+                ),
                 [
                     'type' => "text/javascript",
                 ]
@@ -65,7 +67,10 @@ class ExtraStuffController
 
                 $output = create_dom_element(
                     "html",
-                    create_dom_element("head", $header) . create_dom_element("body", $output)
+                    [
+                        create_dom_element("head", $header),
+                        create_dom_element("body", $output),
+                    ]
                 );
 
                 return new Response($output);
