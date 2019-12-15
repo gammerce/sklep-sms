@@ -123,13 +123,11 @@ class User
     }
 
     /**
-     * @param bool $escape
-     *
      * @return string
      */
-    public function getUsername($escape = true)
+    public function getUsername()
     {
-        return $escape ? htmlspecialchars($this->username) : $this->username;
+        return $this->username;
     }
 
     /**
@@ -157,13 +155,11 @@ class User
     }
 
     /**
-     * @param bool $escape
-     *
      * @return string
      */
-    public function getEmail($escape = true)
+    public function getEmail()
     {
-        return $escape ? htmlspecialchars($this->email) : $this->email;
+        return $this->email;
     }
 
     /**

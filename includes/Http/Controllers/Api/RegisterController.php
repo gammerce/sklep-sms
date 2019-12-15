@@ -108,7 +108,7 @@ class RegisterController
             $langShop->sprintf(
                 $langShop->translate('new_account'),
                 $createdUser->getUid(),
-                $createdUser->getUsername(false),
+                $createdUser->getUsername(),
                 $createdUser->getRegIp()
             )
         );

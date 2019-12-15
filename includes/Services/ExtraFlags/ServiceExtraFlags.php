@@ -321,15 +321,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         $email = $purchaseData->getEmail() ?: $this->lang->translate('none');
         $authData = $purchaseData->getOrder('auth_data');
+        $serviceName = $this->service->getName();
         $amount = !$purchaseData->getOrder('forever')
             ? $purchaseData->getOrder('amount') . " " . $this->service->getTag()
             : $this->lang->translate('forever');
 
         return $this->template->render(
             "services/extra_flags/order_details",
-            compact('server', 'amount', 'typeName', 'authData', 'password', 'email') + [
-                'serviceName' => $this->service->getName(),
-            ],
+            compact('server', 'amount', 'typeName', 'authData', 'password', 'email', 'serviceName'),
             true,
             false
         );

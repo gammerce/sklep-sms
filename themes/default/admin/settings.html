@@ -1,5 +1,5 @@
 <div class="page-title">
-    <div class="title is-4">{$title}</div>
+    <div class="title is-4">{{ $title }}</div>
 </div>
 
 <form id="form_settings_edit" class="columns is-multiline">
@@ -40,7 +40,7 @@
                             id="shop_name"
                             name="shop_name"
                             type="text"
-                            value="{$settings['shop_name']}"
+                            value="{{ $settings['shop_name'] }}"
                             class="input is-small"
                             maxlength="256"
                         />
@@ -60,7 +60,7 @@
                             id="shop_url"
                             name="shop_url"
                             type="text"
-                            value="{$settings['shop_url']}"
+                            value="{{ $settings['shop_url'] }}"
                             class="input is-small"
                             maxlength="256"
                         />
@@ -80,7 +80,7 @@
                             id="contact"
                             name="contact"
                             type="text"
-                            value="{$settings['contact']}"
+                            value="{{ $settings['contact'] }}"
                             class="input is-small"
                             maxlength="256"
                         />
@@ -100,7 +100,7 @@
                             id="sender_email"
                             name="sender_email"
                             type="text"
-                            value="{$settings['sender_email']}"
+                            value="{{ $settings['sender_email'] }}"
                             class="input is-small"
                             maxlength="256"
                         />
@@ -120,7 +120,7 @@
                             id="sender_email_name"
                             name="sender_email_name"
                             type="text"
-                            value="{$settings['sender_email_name']}"
+                            value="{{ $settings['sender_email_name'] }}"
                             class="input is-small"
                             maxlength="256"
                         />
@@ -144,7 +144,7 @@
                             class="textarea is-small"
                             maxlength="256"
                         >
-{$settings['signature']}</textarea
+{{ $settings['signature'] }}</textarea
                         >
                     </p>
                 </div>
@@ -204,7 +204,7 @@
                             id="currency"
                             name="currency"
                             type="text"
-                            value="{$settings['currency']}"
+                            value="{{ $settings['currency'] }}"
                             class="input is-small"
                             maxlength="256"
                         />
@@ -226,7 +226,7 @@
                             id="vat"
                             name="vat"
                             type="text"
-                            value="{$settings['vat']}"
+                            value="{{ $settings['vat'] }}"
                             class="input is-small"
                             maxlength="256"
                         />
@@ -249,7 +249,7 @@
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
-                            {$userEditServiceSelect->toHtml()}
+                            {$userEditServiceSelect}
                         </div>
                     </div>
                 </div>
@@ -311,7 +311,7 @@
                             id="date_format"
                             name="date_format"
                             type="text"
-                            value="{$settings['date_format']}"
+                            value="{{ $settings['date_format'] }}"
                             class="input is-small"
                             maxlength="256"
                         />
@@ -330,7 +330,7 @@
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
-                            {$cronSelect->toHtml()}
+                            {$cronSelect}
                         </div>
                     </div>
                 </div>
@@ -350,7 +350,7 @@
                             id="google_analytics"
                             name="google_analytics"
                             type="text"
-                            value="{$settings['google_analytics']}"
+                            value="{{ $settings['google_analytics'] }}"
                             class="input is-small"
                             maxlength="256"
                         />
@@ -372,7 +372,7 @@
                             id="gadugadu"
                             name="gadugadu"
                             type="text"
-                            value="{$settings['gadugadu']}"
+                            value="{{ $settings['gadugadu'] }}"
                             class="input is-small"
                             maxlength="256"
                         />
@@ -398,7 +398,7 @@
                             id="delete_logs"
                             name="delete_logs"
                             type="number"
-                            value="{$settings['delete_logs']}"
+                            value="{{ $settings['delete_logs'] }}"
                             class="input is-small"
                             maxlength="256"
                         />
@@ -425,7 +425,7 @@
                             id="row_limit"
                             name="row_limit"
                             type="number"
-                            value="{$settings['row_limit']}"
+                            value="{{ $settings['row_limit'] }}"
                             class="input is-small"
                             maxlength="256"
                         />

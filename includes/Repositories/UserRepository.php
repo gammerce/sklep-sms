@@ -60,10 +60,10 @@ class UserRepository
                     "SET `username` = '%s', `forename` = '%s', `surname` = '%s', `email` = '%s', `groups` = '%s', `wallet` = '%d', `steam_id` = '%s' " .
                     "WHERE `uid` = '%d'",
                 [
-                    $user->getUsername(false),
+                    $user->getUsername(),
                     $user->getForename(),
                     $user->getSurname(),
-                    $user->getEmail(false),
+                    $user->getEmail(),
                     implode(";", $user->getGroups()),
                     $user->getWallet(),
                     $user->getSteamId(),

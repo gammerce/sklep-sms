@@ -144,7 +144,6 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
         switch ($boxId) {
             case "user_edit":
-                // Pobranie użytkownika
                 $user = $this->heart->getUser($query['uid']);
 
                 $groups = '';
@@ -156,11 +155,11 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                 }
 
                 $output = $this->template->render("admin/action_boxes/user_edit", [
-                    "email" => htmlspecialchars($user->getEmail(false)),
-                    "username" => htmlspecialchars($user->getUsername(false)),
-                    "surname" => htmlspecialchars($user->getSurname()),
-                    "forename" => htmlspecialchars($user->getForename()),
-                    "steamId" => htmlspecialchars($user->getSteamId()),
+                    "email" => $user->getEmail(),
+                    "username" => $user->getUsername(),
+                    "surname" => $user->getSurname(),
+                    "forename" => $user->getForename(),
+                    "steamId" => $user->getSteamId(),
                     "uid" => $user->getUid(),
                     "wallet" => $user->getWallet(true),
                     "groups" => $groups,

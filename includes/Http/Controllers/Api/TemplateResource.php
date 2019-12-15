@@ -12,8 +12,8 @@ class TemplateResource
     public function get($name, Request $request, Template $template, Heart $heart)
     {
         $templateName = escape_filename($name);
-        $username = htmlspecialchars($request->query->get('username'));
-        $email = htmlspecialchars($request->query->get('email'));
+        $username = $request->query->get('username');
+        $email = $request->query->get('email');
         $editedUser = null;
 
         if ($templateName == "admin_user_wallet") {

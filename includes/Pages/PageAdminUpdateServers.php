@@ -47,7 +47,7 @@ class PageAdminUpdateServers extends PageAdmin
             }
 
             $versionBricks .= $this->template->render("admin/update_version_block", [
-                'name' => htmlspecialchars($server->getName()),
+                'name' => $server->getName(),
                 'currentVersion' => $server->getVersion(),
                 'newestVersion' => $newestVersion,
                 'link' => $link,
