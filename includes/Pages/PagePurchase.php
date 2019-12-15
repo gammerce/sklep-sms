@@ -44,7 +44,7 @@ class PagePurchase extends Page
 
             $pathFile = $path . $serviceModule->getModuleId() . ".js";
             if (file_exists($this->path->to($pathFile))) {
-                $heart->scriptAdd($this->url->to($pathFile));
+                $heart->scriptAdd($this->url->versioned($pathFile));
             }
         }
 
@@ -53,12 +53,12 @@ class PagePurchase extends Page
             $path = "build/css/static/pages/" . $this::PAGE_ID . "/";
             $pathFile = $path . "main.css";
             if (file_exists($this->path->to($pathFile))) {
-                $heart->styleAdd($this->url->to($pathFile));
+                $heart->styleAdd($this->url->versioned($pathFile));
             }
 
             $pathFile = $path . $serviceModule->getModuleId() . ".css";
             if (file_exists($this->path->to($pathFile))) {
-                $heart->styleAdd($this->url->to($pathFile));
+                $heart->styleAdd($this->url->versioned($pathFile));
             }
         }
 
@@ -67,12 +67,12 @@ class PagePurchase extends Page
             if ($moduleInfo['id'] == $serviceModule->getModuleId()) {
                 $path = "build/css/static/services/" . $moduleInfo['id'] . ".css";
                 if (file_exists($this->path->to($path))) {
-                    $heart->styleAdd($this->url->to($path));
+                    $heart->styleAdd($this->url->versioned($path));
                 }
 
                 $path = "build/js/static/services/" . $moduleInfo['id'] . ".js";
                 if (file_exists($this->path->to($path))) {
-                    $heart->scriptAdd($this->url->to($path));
+                    $heart->scriptAdd($this->url->versioned($path));
                 }
 
                 break;
