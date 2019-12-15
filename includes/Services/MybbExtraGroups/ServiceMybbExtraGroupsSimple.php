@@ -15,7 +15,7 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
-class ServiceMybbExtraGroupsSimple extends Service implements
+abstract class ServiceMybbExtraGroupsSimple extends Service implements
     IServiceAdminManage,
     IServiceCreate,
     IServiceUserServiceAdminDisplay

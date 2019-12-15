@@ -6,7 +6,7 @@ use App\Services\Interfaces\IServiceAvailableOnServers;
 use App\Services\Interfaces\IServiceCreate;
 use App\Services\Service;
 
-class ServiceOtherSimple extends Service implements
+abstract class ServiceOtherSimple extends Service implements
     IServiceCreate,
     IServiceAdminManage,
     IServiceAvailableOnServers

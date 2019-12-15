@@ -333,7 +333,7 @@ function get_users_services($conditions = '', $takeOut = true)
     $output = $usedTable = [];
     // Niestety dla każdego modułu musimy wykonać osobne zapytanie :-(
     foreach ($heart->getServicesModules() as $serviceModuleData) {
-        $table = $serviceModuleData['classsimple']::USER_SERVICE_TABLE;
+        $table = $serviceModuleData['class']::USER_SERVICE_TABLE;
         if (!strlen($table) || array_key_exists($table, $usedTable)) {
             continue;
         }

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
 use App\Models\Purchase;
-use App\Services\ChargeWallet\ServiceChargeWalletSimple;
+use App\Services\ChargeWallet\ServiceChargeWallet;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;
@@ -55,7 +55,7 @@ class WalletChargeResource
         // Zmiana wartości amount, aby stan konta nie zszedł poniżej zera
         $amount = max($amount, -$editedUser->getWallet());
 
-        $serviceModule = $heart->getServiceModule(ServiceChargeWalletSimple::MODULE_ID);
+        $serviceModule = $heart->getServiceModule("charge_wallet");
         if (is_null($serviceModule)) {
             return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
         }

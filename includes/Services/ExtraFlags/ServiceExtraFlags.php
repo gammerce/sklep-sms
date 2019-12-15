@@ -773,7 +773,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         // Pobranie usług
         $services = "";
         foreach ($this->heart->getServices() as $id => $row) {
-            if (($serviceModule = $this->heart->getServiceModuleS($row['module'])) === null) {
+            if (($serviceModule = $this->heart->getEmptyServiceModule($row['module'])) === null) {
                 continue;
             }
 

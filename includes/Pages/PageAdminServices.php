@@ -104,7 +104,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             foreach ($this->heart->getServicesModules() as $module) {
                 // Sprawdzamy czy dany moduł zezwala na tworzenie nowych usług, które będzie obsługiwał
                 if (
-                    ($serviceModule = $this->heart->getServiceModuleS($module['id'])) === null ||
+                    ($serviceModule = $this->heart->getEmptyServiceModule($module['id'])) === null ||
                     !($serviceModule instanceof IServiceCreate)
                 ) {
                     continue;

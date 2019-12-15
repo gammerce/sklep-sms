@@ -75,11 +75,10 @@ class Heart
      * @param string $id
      * @param string $name
      * @param string $class
-     * @param string $classsimple
      *
      * @throws Exception
      */
-    public function registerServiceModule($id, $name, $class, $classsimple)
+    public function registerServiceModule($id, $name, $class)
     {
         if (isset($this->servicesClasses[$id])) {
             throw new Exception(
@@ -90,64 +89,53 @@ class Heart
         $this->servicesClasses[$id] = [
             'name' => $name,
             'class' => $class,
-            'classsimple' => $classsimple,
         ];
     }
 
     /**
-     * Zwraca obiekt modułu usługi
-     * Moduł jest wypełniony, są w nim wszystkie dane
+     * Get service module with service included
      *
-     * @param $serviceId
-     *
+     * @param string $serviceId Service identifier from ss_services
      * @return null|Service|ServiceChargeWallet|ServiceExtraFlags|ServiceOther
      */
     public function getServiceModule($serviceId)
     {
-        // Brak usługi o takim ID
         if (($service = $this->getService($serviceId)) === null) {
             return null;
         }
 
-        // Brak takiego modułu
         if (!isset($this->servicesClasses[$service['module']])) {
             return null;
         }
 
         $className = $this->servicesClasses[$service['module']]['class'];
 
-        // Jeszcze sprawdzamy, czy moduł został prawidłowo stworzony
         return strlen($className) ? app()->makeWith($className, ['service' => $service]) : null;
     }
 
     /**
-     * Funkcja zwraca klasę modułu przez jego id
-     * Moduł jest pusty, nie ma danych o usłudze
-     * s - simple
+     * Get service module without service included
      *
      * @param $moduleId
      * @return Service|null
      */
-    public function getServiceModuleS($moduleId)
+    public function getEmptyServiceModule($moduleId)
     {
-        // Brak takiego modułu
         if (!isset($this->servicesClasses[$moduleId])) {
             return null;
         }
 
-        if (!isset($this->servicesClasses[$moduleId]['classsimple'])) {
+        if (!isset($this->servicesClasses[$moduleId]['class'])) {
             return null;
         }
 
-        $classname = $this->servicesClasses[$moduleId]['classsimple'];
+        $classname = $this->servicesClasses[$moduleId]['class'];
 
-        // Jeszcze sprawdzamy, czy moduł został prawidłowo stworzony
         return app()->make($classname);
     }
 
     public function getServiceModuleName($moduleId)
     {
-        // Brak takiego modułu
         if (!isset($this->servicesClasses[$moduleId])) {
             return null;
         }
@@ -168,7 +156,6 @@ class Heart
                 'id' => $id,
                 'name' => $data['name'],
                 'class' => $data['class'],
-                'classsimple' => $data['classsimple'],
             ];
         }
 

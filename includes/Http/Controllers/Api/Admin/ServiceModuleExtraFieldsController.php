@@ -16,7 +16,7 @@ class ServiceModuleExtraFieldsController
             is_null($serviceModule = $heart->getServiceModule($serviceId)) ||
             $serviceModule->getModuleId() != $moduleId
         ) {
-            $serviceModule = $heart->getServiceModuleS($moduleId);
+            $serviceModule = $heart->getEmptyServiceModule($moduleId);
         }
 
         if ($serviceModule !== null && $serviceModule instanceof IServiceAdminManage) {

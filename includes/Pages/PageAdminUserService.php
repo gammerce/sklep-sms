@@ -20,7 +20,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
     {
         $className = '';
         foreach ($this->heart->getServicesModules() as $module) {
-            $class = $module['classsimple'];
+            $class = $module['class'];
             if (
                 in_array(IServiceUserServiceAdminDisplay::class, class_implements($class)) &&
                 $module['id'] == $query['subpage']

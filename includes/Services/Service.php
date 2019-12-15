@@ -7,9 +7,17 @@ use App\System\Template;
 
 abstract class Service
 {
+    /**
+     * Module identifier defined by inheriting class
+     */
     const MODULE_ID = '';
+
+    /**
+     * Database table where user services are stored
+     */
     const USER_SERVICE_TABLE = '';
-    public $service = [];
+
+    public $service;
 
     /** @var Application */
     protected $app;
@@ -25,14 +33,7 @@ abstract class Service
         $this->app = app();
         $this->template = $this->app->make(Template::class);
         $this->db = $this->app->make(Database::class);
-
-        if (!is_array($service)) {
-            // Podano błędne dane usługi
-            $this->service = null;
-            return;
-        }
-
-        $this->service = $service;
+        $this->service = is_array($service) ? $service : null;
     }
 
     /**

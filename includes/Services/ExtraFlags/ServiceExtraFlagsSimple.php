@@ -7,7 +7,6 @@ use App\Html\Cell;
 use App\Html\HeadCell;
 use App\Html\Structure;
 use App\Html\Wrapper;
-use App\Models\Purchase;
 use App\Services\Interfaces\IServiceAdminManage;
 use App\Services\Interfaces\IServiceAvailableOnServers;
 use App\Services\Interfaces\IServiceCreate;
@@ -19,7 +18,7 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
-class ServiceExtraFlagsSimple extends Service implements
+abstract class ServiceExtraFlagsSimple extends Service implements
     IServiceAdminManage,
     IServiceCreate,
     IServiceAvailableOnServers,
@@ -327,35 +326,5 @@ class ServiceExtraFlagsSimple extends Service implements
         $wrapper->setTable($table);
 
         return $wrapper;
-    }
-
-    /**
-     * Metoda wywoływana, gdy usługa została prawidłowo zakupiona
-     *
-     * @param Purchase $purchaseData
-     *
-     * @return integer        value returned by function add_bought_service_info
-     */
-    public function purchase(Purchase $purchaseData)
-    {
-        //
-    }
-
-    /**
-     * Metoda która sprawdza poprawność wprowadzonych danych zakupu,
-     * wywoływana gdy zakup został przeprowadzony z zewnątrz, nie przez formularz na stronie WWW.
-     *
-     * @param Purchase $purchaseData
-     *
-     * @return array
-     *  status => string id wiadomości,
-     *  text => string treść wiadomości
-     *  positive => bool czy udało się przeprowadzić zakup czy nie
-     *  [data => array('warnings' => array())]
-     *  [purchase_data => Entity_Purchase dane zakupu]
-     */
-    public function purchaseDataValidate(Purchase $purchaseData)
-    {
-        //
     }
 }
