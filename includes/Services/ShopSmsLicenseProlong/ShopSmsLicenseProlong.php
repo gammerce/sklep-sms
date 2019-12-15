@@ -1,6 +1,7 @@
 <?php
 namespace App\Services\ShopSmsLicenseProlong;
 
+use App\Payment\BoughtServiceService;
 use App\System\Auth;
 use App\System\Heart;
 use App\LicenseServerService;
@@ -39,6 +40,9 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
     /** @var LicenseServerService */
     protected $licenseServerService;
 
+    /** @var BoughtServiceService */
+    protected $boughtServiceService;
+
     public function __construct($service = null)
     {
         parent::__construct($service);
@@ -51,6 +55,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         $this->auth = $this->app->make(Auth::class);
         $this->heart = $this->app->make(Heart::class);
         $this->licenseServerService = $this->app->make(LicenseServerService::class);
+        $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
     }
 
     // Formularz pokazywany podczas zakupu licencji
@@ -114,7 +119,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
             ];
         }
 
-        $purchaseData = new Purchase();
+        $purchaseData = new Purchase($this->auth->user());
         $purchaseData->setOrder([
             'amount' => $body['amount'],
             'identifier' => $identifier,
@@ -188,7 +193,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
             )
         );
 
-        return add_bought_service_info(
+        return $this->boughtServiceService->create(
             $purchaseData->user->getUid(),
             $purchaseData->user->getUsername(),
             $purchaseData->user->getLastIp(),
@@ -314,9 +319,8 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         // Dodawanie informacji o płatności
         $paymentId = pay_by_admin($user);
 
-        $purchaseData = new Purchase();
+        $purchaseData = new Purchase($this->heart->getUser($userService['uid']));
         $purchaseData->setService($this->service['id']);
-        $purchaseData->user = $this->heart->getUser($userService['uid']);
         $purchaseData->setPayment([
             'method' => 'admin',
             'payment_id' => $paymentId,

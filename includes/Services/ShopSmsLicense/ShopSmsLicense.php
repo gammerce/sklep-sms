@@ -66,7 +66,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         }
 
         $costDaily = $this->getCostDaily($body);
-        $purchaseData = new Purchase();
+        $purchaseData = new Purchase($this->auth->user());
         $purchaseData->setOrder([
             'amount' => $body['amount'],
             'engines' => [
@@ -194,7 +194,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
             $engines = $this->lang->translate('none');
         }
 
-        return add_bought_service_info(
+        return $this->boughtServiceService->create(
             $purchaseData->user->getUid(),
             $purchaseData->user->getUsername(),
             $purchaseData->user->getLastIp(),
@@ -399,7 +399,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
             ];
         }
 
-        $purchaseData = new Purchase();
+        $purchaseData = new Purchase($this->auth->user());
         $purchaseData->setService('ss_license_edit');
         $purchaseData->setOrder([
             'user_service_id' => $body['id'],

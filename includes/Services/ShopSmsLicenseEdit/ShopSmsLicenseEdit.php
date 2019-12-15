@@ -3,6 +3,7 @@ namespace App\Services\ShopSmsLicenseEdit;
 
 use App\LicenseServerService;
 use App\Models\Purchase;
+use App\Payment\BoughtServiceService;
 use App\Services\Interfaces\IServicePurchase;
 use App\Services\Interfaces\IServicePurchaseWeb;
 use App\System\Settings;
@@ -23,6 +24,9 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
     /** @var LicenseServerService */
     protected $licenseServerService;
 
+    /** @var BoughtServiceService */
+    protected $boughtServiceService;
+
     public function __construct($service = null)
     {
         parent::__construct($service);
@@ -32,6 +36,7 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
         $this->lang = $translationManager->user();
         $this->settings = $this->app->make(Settings::class);
         $this->licenseServerService = $this->app->make(LicenseServerService::class);
+        $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
     }
 
     public function purchaseFormGet()
@@ -136,7 +141,7 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
 
         $engines = !empty($engines) ? implode(", ", $engines) : $this->lang->translate('none');
 
-        return add_bought_service_info(
+        return $this->boughtServiceService->create(
             $purchaseData->user->getUid(),
             $purchaseData->user->getUsername(),
             $purchaseData->user->getLastIp(),

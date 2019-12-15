@@ -7,6 +7,7 @@ use App\Html\HeadCell;
 use App\Html\Structure;
 use App\Html\Wrapper;
 use App\LicenseServerService;
+use App\Payment\BoughtServiceService;
 use App\Services\Interfaces\IServiceUserServiceAdminDisplay;
 use App\Services\Service;
 use App\System\Auth;
@@ -32,6 +33,9 @@ class ShopSmsLicenseSimple extends Service implements IServiceUserServiceAdminDi
     /** @var Auth */
     protected $auth;
 
+    /** @var BoughtServiceService */
+    protected $boughtServiceService;
+
     /** @var CurrentPage */
     protected $currentPage;
 
@@ -47,8 +51,10 @@ class ShopSmsLicenseSimple extends Service implements IServiceUserServiceAdminDi
         $this->lang = $translationManager->user();
         $this->settings = $this->app->make(Settings::class);
         $this->auth = $this->app->make(Auth::class);
+        $this->auth = $this->app->make(Auth::class);
         $this->currentPage = $this->app->make(CurrentPage::class);
         $this->licenseServerService = $this->app->make(LicenseServerService::class);
+        $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
     }
 
     /**
