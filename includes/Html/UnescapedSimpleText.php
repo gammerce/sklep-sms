@@ -1,7 +1,7 @@
 <?php
 namespace App\Html;
 
-class SimpleText implements I_ToHtml
+class UnescapedSimpleText implements I_ToHtml
 {
     /** @var  string */
     private $text;
@@ -16,6 +16,6 @@ class SimpleText implements I_ToHtml
 
     public function toHtml()
     {
-        return htmlspecialchars($this->text);
+        return $this->text;
     }
 }

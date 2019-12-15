@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Pages\Page;
 use App\Pages\PageSimple;
+use App\Repositories\ServiceRepository;
 use App\Repositories\UserRepository;
 use App\Services\ChargeWallet\ServiceChargeWallet;
 use App\Services\ExtraFlags\ServiceExtraFlags;
@@ -30,6 +31,9 @@ class Heart
 
     /** @var UserRepository */
     private $userRepository;
+
+    /** @var ServiceRepository */
+    private $serviceRepository;
 
     private $servers = [];
 
@@ -63,12 +67,14 @@ class Heart
         Database $db,
         Settings $settings,
         Template $template,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        ServiceRepository $serviceRepository
     ) {
         $this->db = $db;
         $this->settings = $settings;
         $this->template = $template;
         $this->userRepository = $userRepository;
+        $this->serviceRepository = $serviceRepository;
     }
 
     /**
@@ -104,11 +110,11 @@ class Heart
             return null;
         }
 
-        if (!isset($this->servicesClasses[$service['module']])) {
+        if (!isset($this->servicesClasses[$service->getModule()])) {
             return null;
         }
 
-        $className = $this->servicesClasses[$service['module']]['class'];
+        $className = $this->servicesClasses[$service->getModule()]['class'];
 
         return strlen($className) ? app()->makeWith($className, ['service' => $service]) : null;
     }
@@ -323,9 +329,9 @@ class Heart
     //
 
     /**
-     * Zwraca wszystkie stworzone usługi do zakupienia
+     * Returns purchasable services
      *
-     * @return array
+     * @return \App\Models\Service[]
      */
     public function getServices()
     {
@@ -339,7 +345,7 @@ class Heart
     /**
      * @param $serviceId
      *
-     * @return mixed
+     * @return \App\Models\Service | null
      */
     public function getService($serviceId)
     {
@@ -350,37 +356,21 @@ class Heart
         return if_isset($this->services[$serviceId], null);
     }
 
-    /**
-     * Number of purchasable services
-     *
-     * @return int
-     */
-    public function getServicesAmount()
-    {
-        return count($this->services);
-    }
-
     private function fetchServices()
     {
-        $result = $this->db->query(
-            "SELECT * FROM `" . TABLE_PREFIX . "services` " . "ORDER BY `order` ASC"
-        );
-        while ($row = $this->db->fetchArrayAssoc($result)) {
-            $row['id_hsafe'] = htmlspecialchars($row['id']);
-            $row['name'] = htmlspecialchars($row['name']);
-            $row['groups'] = $row['groups'] ? explode(";", $row['groups']) : [];
-            $row['data'] = json_decode($row['data'], true);
-            $this->services[$row['id']] = $row;
+        foreach ($this->serviceRepository->all() as $service) {
+            $this->services[$service->getId()] = $service;
         }
+
         $this->servicesFetched = true;
     }
 
-    public function userCanUseService($uid, $service)
+    public function userCanUseService($uid, \App\Models\Service $service)
     {
         $user = $this->getUser($uid);
-        $combined = array_intersect($service['groups'], $user->getGroups());
+        $combined = array_intersect($service->getGroups(), $user->getGroups());
 
-        return empty($service['groups']) || !empty($combined);
+        return empty($service->getGroups()) || !empty($combined);
     }
 
     //

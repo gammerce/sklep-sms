@@ -106,17 +106,17 @@ class BoughtServiceService
             }
         }
 
-        $tempService = $this->heart->getService($service);
-        $tempServer = $this->heart->getServer($server);
+        $tmpService = $this->heart->getService($service);
+        $tmpServer = $this->heart->getServer($server);
         $amount =
-            $amount != -1 ? "{$amount} {$tempService['tag']}" : $this->lang->translate('forever');
+            $amount != -1 ? "{$amount} {$tmpService->getTag()}" : $this->lang->translate('forever');
         log_to_db(
             $this->langShop->sprintf(
                 $this->langShop->translate('bought_service_info'),
                 $service,
                 $authData,
                 $amount,
-                $tempServer['name'],
+                $tmpServer['name'],
                 $paymentId,
                 $ret,
                 $userName,
@@ -124,7 +124,7 @@ class BoughtServiceService
                 $ip
             )
         );
-        unset($tempServer);
+        unset($tmpServer);
 
         return $boughtService->getId();
     }

@@ -56,7 +56,7 @@ class WalletChargeResource
         $amount = max($amount, -$editedUser->getWallet());
 
         $serviceModule = $heart->getServiceModule("charge_wallet");
-        if (is_null($serviceModule)) {
+        if ($serviceModule === null) {
             return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
         }
 

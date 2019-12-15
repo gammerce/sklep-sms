@@ -74,7 +74,6 @@ class UserRepository
     }
 
     /**
-     * @param int $id
      * @return User[]
      */
     public function allWithSteamId()

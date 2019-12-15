@@ -99,7 +99,7 @@ class PageAdminBoughtServices extends PageAdmin
             // Przerobienie ilosci
             $amount =
                 $row['amount'] != -1
-                    ? $row['amount'] . ' ' . $service['tag']
+                    ? $row['amount'] . ' ' . $service->getTag()
                     : $this->lang->translate('forever');
 
             // Rozkulbaczenie extra daty
@@ -140,7 +140,7 @@ class PageAdminBoughtServices extends PageAdmin
             $bodyRow->addCell(new Cell($row['payment_id']));
             $bodyRow->addCell(new Cell($username));
             $bodyRow->addCell(new Cell($server['name']));
-            $bodyRow->addCell(new Cell($service['name']));
+            $bodyRow->addCell(new Cell($service->getName()));
             $bodyRow->addCell(new Cell($amount));
             $bodyRow->addCell(new Cell(htmlspecialchars($row['auth_data'])));
             $bodyRow->addCell(new Cell($extraData));

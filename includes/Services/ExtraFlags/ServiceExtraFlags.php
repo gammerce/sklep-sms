@@ -544,13 +544,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             $password = $password ? $password : $row['password'];
 
             $service = $this->heart->getService($row['service']);
-            for ($i = 0; $i < strlen($service['flags']); ++$i) {
+            $serviceFlags = $service->getFlags();
+            for ($i = 0; $i < strlen($serviceFlags); ++$i) {
                 // Bierzemy maksa, ponieważ inaczej robią się problemy.
                 // A tak to jak wygaśnie jakaś usługa, to wykona się cron, usunie ją i przeliczy flagi jeszcze raz
                 // I znowu weźmie maksa
                 // Czyli stan w tabeli players flags nie jest do końca odzwierciedleniem rzeczywistości :)
-                $flags[$service['flags'][$i]] = $this->maxMinus(
-                    array_get($flags, $service['flags'][$i]),
+                $flags[$serviceFlags[$i]] = $this->maxMinus(
+                    array_get($flags, $serviceFlags[$i]),
                     $row['expire']
                 );
             }

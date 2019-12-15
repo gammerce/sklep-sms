@@ -27,7 +27,7 @@ class UserGroupsRule implements Rule
         }
 
         foreach ($value as $gid) {
-            if (is_null($this->heart->getGroup($gid))) {
+            if ($this->heart->getGroup($gid) === null) {
                 return [$this->lang->translate('wrong_group')];
             }
         }

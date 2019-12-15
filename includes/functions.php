@@ -828,7 +828,7 @@ function log_info($message, array $data = [])
 
 function array_get($array, $key, $default = null)
 {
-    if (is_null($key)) {
+    if ($key === null) {
         return $array;
     }
 

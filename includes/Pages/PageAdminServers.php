@@ -99,10 +99,8 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
         $services = "";
         foreach ($this->heart->getServices() as $service) {
             // Dana usługa nie może być kupiona na serwerze
-            if (
-                ($serviceModule = $this->heart->getServiceModule($service['id'])) === null ||
-                !($serviceModule instanceof IServiceAvailableOnServers)
-            ) {
+            $serviceModule = $this->heart->getServiceModule($service->getId());
+            if (!($serviceModule instanceof IServiceAvailableOnServers)) {
                 continue;
             }
 
@@ -111,7 +109,10 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                 $this->lang->strtoupper($this->lang->translate('no')),
                 [
                     'value' => 0,
-                    'selected' => $this->heart->serverServiceLinked($server['id'], $service['id'])
+                    'selected' => $this->heart->serverServiceLinked(
+                        $server['id'],
+                        $service->getId()
+                    )
                         ? ""
                         : "selected",
                 ]
@@ -122,14 +123,17 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                 $this->lang->strtoupper($this->lang->translate('yes')),
                 [
                     'value' => 1,
-                    'selected' => $this->heart->serverServiceLinked($server['id'], $service['id'])
+                    'selected' => $this->heart->serverServiceLinked(
+                        $server['id'],
+                        $service->getId()
+                    )
                         ? "selected"
                         : "",
                 ]
             );
 
-            $name = htmlspecialchars($service['id']);
-            $text = htmlspecialchars("{$service['name']} ( {$service['id']} )");
+            $name = htmlspecialchars($service->getId());
+            $text = htmlspecialchars("{$service->getName()} ( {$service->getId()} )");
 
             $services .= $this->template->render(
                 "tr_text_select",

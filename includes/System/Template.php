@@ -43,6 +43,10 @@ class Template
         $data = $this->addDefaultVariables($data);
         extract($data);
 
+        $e = function ($value) {
+            return htmlspecialchars($value);
+        };
+
         return eval('return "' . $__content . '";');
     }
 

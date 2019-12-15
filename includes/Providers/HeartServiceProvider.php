@@ -191,10 +191,6 @@ class HeartServiceProvider
             ServiceMybbExtraGroups::class
         );
 
-        $heart->registerServiceModule(
-            ServiceOther::MODULE_ID,
-            'Inne',
-            ServiceOther::class
-        );
+        $heart->registerServiceModule(ServiceOther::MODULE_ID, 'Inne', ServiceOther::class);
     }
 }

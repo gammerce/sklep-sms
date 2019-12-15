@@ -80,14 +80,12 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
         if ($boxId == "service_edit") {
             $service = $this->heart->getService($query['id']);
-            $service['tag'] = htmlspecialchars($service['tag']);
 
             // Pobieramy pola danego modułu
-            if (strlen($service['module'])) {
-                if (
-                    ($serviceModule = $this->heart->getServiceModule($service['id'])) !== null &&
-                    $serviceModule instanceof IServiceAdminManage
-                ) {
+            if (strlen($service->getModule())) {
+                $serviceModule = $this->heart->getServiceModule($service->getId());
+
+                if ($serviceModule instanceof IServiceAdminManage) {
                     $extraFields = create_dom_element(
                         "tbody",
                         $serviceModule->serviceAdminExtraFieldsGet(),
@@ -103,19 +101,13 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             $servicesModules = "";
             foreach ($this->heart->getServicesModules() as $module) {
                 // Sprawdzamy czy dany moduł zezwala na tworzenie nowych usług, które będzie obsługiwał
-                if (
-                    ($serviceModule = $this->heart->getEmptyServiceModule($module['id'])) === null ||
-                    !($serviceModule instanceof IServiceCreate)
-                ) {
+                $serviceModule = $this->heart->getEmptyServiceModule($module['id']);
+                if (!($serviceModule instanceof IServiceCreate)) {
                     continue;
                 }
 
                 $servicesModules .= create_dom_element("option", $module['name'], [
                     'value' => $module['id'],
-                    'selected' =>
-                        isset($service['module']) && $service['module'] == $module['id']
-                            ? "selected"
-                            : "",
                 ]);
             }
         }
@@ -126,7 +118,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             $groups .= create_dom_element("option", "{$group['name']} ( {$group['id']} )", [
                 'value' => $group['id'],
                 'selected' =>
-                    isset($service['groups']) && in_array($group['id'], $service['groups'])
+                    isset($service) && in_array($group['id'], $service->getGroups())
                         ? "selected"
                         : "",
             ]);
@@ -141,7 +133,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
                 break;
 
             case "service_edit":
-                $serviceModuleName = $this->heart->getServiceModuleName($service['module']);
+                $serviceModuleName = $this->heart->getServiceModuleName($service->getModule());
 
                 $output = $this->template->render(
                     "admin/action_boxes/service_edit",

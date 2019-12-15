@@ -48,7 +48,7 @@ class Bizneshost extends PaymentModule implements SupportSms
 
             $tariff = $this->getTariffBySmsCostBrutto($statusExploded[1]);
 
-            throw new BadNumberException(!is_null($tariff) ? $tariff->getId() : null);
+            throw new BadNumberException($tariff !== null ? $tariff->getId() : null);
         }
 
         // Code used

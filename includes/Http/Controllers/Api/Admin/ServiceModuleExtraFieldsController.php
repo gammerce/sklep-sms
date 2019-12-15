@@ -10,16 +10,17 @@ class ServiceModuleExtraFieldsController
     public function get($serviceId, $moduleId, Heart $heart)
     {
         $output = "";
+
         // Pobieramy moduł obecnie edytowanej usługi, jeżeli powróciliśmy do pierwotnego modułu
         // W przeciwnym razie pobieramy wybrany moduł
-        if (
-            is_null($serviceModule = $heart->getServiceModule($serviceId)) ||
-            $serviceModule->getModuleId() != $moduleId
-        ) {
+
+        $serviceModule = $heart->getServiceModule($serviceId);
+
+        if ($serviceModule === null || $serviceModule->getModuleId() != $moduleId) {
             $serviceModule = $heart->getEmptyServiceModule($moduleId);
         }
 
-        if ($serviceModule !== null && $serviceModule instanceof IServiceAdminManage) {
+        if ($serviceModule instanceof IServiceAdminManage) {
             $output = $serviceModule->serviceAdminExtraFieldsGet();
         }
 
