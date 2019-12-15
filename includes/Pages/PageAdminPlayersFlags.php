@@ -57,7 +57,7 @@ class PageAdminPlayersFlags extends PageAdmin
 
             // Pozyskanie danych serwera
             $tempServer = $this->heart->getServer($row['server']);
-            $serverName = $tempServer['name'];
+            $serverName = $tempServer->getName();
             unset($tempServer);
 
             $bodyRow->setDbId($row['id']);

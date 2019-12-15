@@ -71,7 +71,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
                 $desc = $lang->sprintf(
                     $lang->translate('service_was_bought'),
                     $tmpService->getName(),
-                    $tmpServer['name']
+                    $tmpServer->getName()
                 );
                 $class = "outcome";
                 unset($tmpService);

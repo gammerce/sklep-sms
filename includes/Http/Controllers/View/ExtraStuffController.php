@@ -58,7 +58,7 @@ class ExtraStuffController
                 }
 
                 $heart->pageTitle =
-                    $lang->translate('description') . ": " . $serviceModule->service['name'];
+                    $lang->translate('description') . ": " . $serviceModule->service->getName();
 
                 $heart->styleAdd($url->versioned("build/css/static/extra_stuff/long_desc.css"));
                 $header = $template->render("header", compact('currentPage', 'heart', 'license'));

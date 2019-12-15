@@ -152,18 +152,24 @@ class PageAdminMain extends PageAdmin
     }
 
     /**
-     * @param array $server
+     * @param Server $server
      * @param string $newestAmxxVersion
      * @param string $newestSmVersion
      * @return bool
      */
-    private function isServerNewest($server, $newestAmxxVersion, $newestSmVersion)
+    private function isServerNewest(Server $server, $newestAmxxVersion, $newestSmVersion)
     {
-        if ($server['type'] === Server::TYPE_AMXMODX && $server['version'] !== $newestAmxxVersion) {
+        if (
+            $server->getType() === Server::TYPE_AMXMODX &&
+            $server->getVersion() !== $newestAmxxVersion
+        ) {
             return false;
         }
 
-        if ($server['type'] === Server::TYPE_SOURCEMOD && $server['version'] !== $newestSmVersion) {
+        if (
+            $server->getType() === Server::TYPE_SOURCEMOD &&
+            $server->getVersion() !== $newestSmVersion
+        ) {
             return false;
         }
 

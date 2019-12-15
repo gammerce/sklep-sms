@@ -39,7 +39,7 @@ class TransferPaymentServiceTest extends TestCase
             'server' => $server->getId(),
         ]);
         $purchase->setTariff($heart->getTariff(2));
-        $purchase->setService($serviceModule->service['id']);
+        $purchase->setService($serviceModule->service->getId());
         $purchase->setDesc("Description");
 
         // when

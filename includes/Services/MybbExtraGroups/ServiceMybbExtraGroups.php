@@ -56,11 +56,11 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         $this->heart = $this->app->make(Heart::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
 
-        $this->groups = explode(",", $this->service['data']['mybb_groups']);
-        $this->dbHost = if_isset($this->service['data']['db_host'], '');
-        $this->dbUser = if_isset($this->service['data']['db_user'], '');
-        $this->dbPassword = if_isset($this->service['data']['db_password'], '');
-        $this->dbName = if_isset($this->service['data']['db_name'], '');
+        $this->groups = explode(",", $this->service->getData()['mybb_groups']);
+        $this->dbHost = if_isset($this->service->getData()['db_host'], '');
+        $this->dbUser = if_isset($this->service->getData()['db_user'], '');
+        $this->dbPassword = if_isset($this->service->getData()['db_password'], '');
+        $this->dbName = if_isset($this->service->getData()['db_name'], '');
     }
 
     /**
@@ -87,7 +87,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                     "sms_numbers` AS sn ON sn.tariff = p.tariff AND sn.service = '%s' " .
                     "WHERE p.service = '%s' " .
                     "ORDER BY t.provision ASC",
-                [$this->settings['sms_service'], $this->service['id']]
+                [$this->settings['sms_service'], $this->service->getId()]
             )
         );
 
@@ -101,7 +101,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                 : 0;
             $amount =
                 $row['amount'] != -1
-                    ? $row['amount'] . " " . $this->service['tag']
+                    ? $row['amount'] . " " . $this->service->getTag()
                     : $this->lang->translate('forever');
             $provision = number_format($row['provision'] / 100, 2);
             $amounts .= $this->template->render(
@@ -114,7 +114,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
 
         return $this->template->render(
             "services/mybb_extra_groups/purchase_form",
-            compact('amounts', 'user') + ['serviceId' => $this->service['id']]
+            compact('amounts', 'user') + ['serviceId' => $this->service->getId()]
         );
     }
 
@@ -145,7 +145,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                         TABLE_PREFIX .
                         "pricelist` " .
                         "WHERE `service` = '%s' AND `tariff` = '%d'",
-                    [$this->service['id'], $tariff]
+                    [$this->service->getId(), $tariff]
                 )
             );
 
@@ -194,7 +194,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         }
 
         $purchaseData = new Purchase($this->auth->user());
-        $purchaseData->setService($this->service['id']);
+        $purchaseData->setService($this->service->getId());
         $purchaseData->setOrder([
             'username' => $data['username'],
             'amount' => $price['amount'],
@@ -226,12 +226,12 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         $username = htmlspecialchars($purchaseData->getOrder('username'));
         $amount =
             $purchaseData->getOrder('amount') != -1
-                ? $purchaseData->getOrder('amount') . " " . $this->service['tag']
+                ? $purchaseData->getOrder('amount') . " " . $this->service->getTag()
                 : $this->lang->translate('forever');
 
         return $this->template->render(
             "services/mybb_extra_groups/order_details",
-            compact('amount', 'username', 'email') + ['serviceName' => $this->service['name']],
+            compact('amount', 'username', 'email') + ['serviceName' => $this->service->getName()],
             true,
             false
         );
@@ -274,7 +274,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             $purchaseData->user->getLastIp(),
             $purchaseData->getPayment('method'),
             $purchaseData->getPayment('payment_id'),
-            $this->service['id'],
+            $this->service->getId(),
             0,
             $purchaseData->getOrder('amount'),
             $purchaseData->getOrder('username') . " ({$mybbUser->getUid()})",
@@ -302,7 +302,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         $username = htmlspecialchars($data['auth_data']);
         $amount =
             $data['amount'] != -1
-                ? $data['amount'] . " " . $this->service['tag']
+                ? $data['amount'] . " " . $this->service->getTag()
                 : $this->lang->translate('forever');
         $email = htmlspecialchars($data['email']);
         $cost = $data['cost']
@@ -312,7 +312,9 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         if ($action == "email") {
             return $this->template->render(
                 "services/mybb_extra_groups/purchase_info_email",
-                compact('username', 'amount', 'cost') + ['serviceName' => $this->service['name']],
+                compact('username', 'amount', 'cost') + [
+                    'serviceName' => $this->service->getName(),
+                ],
                 true,
                 false
             );
@@ -322,7 +324,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             return $this->template->render(
                 "services/mybb_extra_groups/purchase_info_web",
                 compact('cost', 'username', 'amount', 'email') + [
-                    'serviceName' => $this->service['name'],
+                    'serviceName' => $this->service->getName(),
                 ],
                 true,
                 false
@@ -333,7 +335,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             return [
                 'text' => ($output = $this->lang->sprintf(
                     $this->lang->translate('mybb_group_bought'),
-                    $this->service['name'],
+                    $this->service->getName(),
                     $username
                 )),
                 'class' => "outcome",
@@ -433,7 +435,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                     $this::USER_SERVICE_TABLE .
                     "` " .
                     "WHERE `service` = '%s' AND `mybb_uid` = '%d'",
-                [$this->service['id'], $mybbUid]
+                [$this->service->getId(), $mybbUid]
             )
         );
 
@@ -471,7 +473,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                         TABLE_PREFIX .
                         "user_service` (`uid`, `service`, `expire`) " .
                         "VALUES ('%d', '%s', IF('%d' = '1', '-1', UNIX_TIMESTAMP() + '%d')) ",
-                    [$uid, $this->service['id'], $forever, $days * 24 * 60 * 60]
+                    [$uid, $this->service->getId(), $forever, $days * 24 * 60 * 60]
                 )
             );
             $userServiceId = $this->db->lastId();
@@ -483,7 +485,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                         $this::USER_SERVICE_TABLE .
                         "` (`us_id`, `service`, `mybb_uid`) " .
                         "VALUES ('%d', '%s', '%d')",
-                    [$userServiceId, $this->service['id'], $mybbUid]
+                    [$userServiceId, $this->service->getId(), $mybbUid]
                 )
             );
         }
@@ -569,7 +571,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         $paymentId = pay_by_admin($user);
 
         $purchaseData = new Purchase($this->heart->getUser($body['uid']));
-        $purchaseData->setService($this->service['id']);
+        $purchaseData->setService($this->service->getId());
         $purchaseData->setPayment([
             'method' => "admin",
             'payment_id' => $paymentId,
@@ -613,7 +615,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             $userService['expire'] == -1
                 ? $this->lang->translate('never')
                 : date($this->settings['date_format'], $userService['expire']);
-        $service = $this->service['name'];
+        $service = $this->service->getName();
         $mybbUid = htmlspecialchars($username . " ({$userService['mybb_uid']})");
 
         return $this->template->render(

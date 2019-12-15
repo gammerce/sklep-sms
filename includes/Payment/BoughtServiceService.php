@@ -116,7 +116,7 @@ class BoughtServiceService
                 $service,
                 $authData,
                 $amount,
-                $tmpServer['name'],
+                $tmpServer->getName(),
                 $paymentId,
                 $ret,
                 $userName,

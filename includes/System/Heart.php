@@ -4,11 +4,13 @@ namespace App\System;
 use App\Blocks\Block;
 use App\Blocks\BlockSimple;
 use App\Exceptions\InvalidConfigException;
+use App\Models\Server;
 use App\Models\Tariff;
 use App\Models\User;
 use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Pages\Page;
 use App\Pages\PageSimple;
+use App\Repositories\ServerRepository;
 use App\Repositories\ServiceRepository;
 use App\Repositories\UserRepository;
 use App\Services\ChargeWallet\ServiceChargeWallet;
@@ -35,14 +37,18 @@ class Heart
     /** @var ServiceRepository */
     private $serviceRepository;
 
+    /** @var ServerRepository */
+    private $serverRepository;
+
+    /** @var Server[] */
     private $servers = [];
-
     private $serversFetched = false;
+
+    /** @var \App\Models\Service[] */
     private $services = [];
-
     private $servicesFetched = false;
-    private $serversServices = [];
 
+    private $serversServices = [];
     private $serversServicesFetched = false;
 
     /** @var Tariff[] */
@@ -68,13 +74,15 @@ class Heart
         Settings $settings,
         Template $template,
         UserRepository $userRepository,
-        ServiceRepository $serviceRepository
+        ServiceRepository $serviceRepository,
+        ServerRepository $serverRepository
     ) {
         $this->db = $db;
         $this->settings = $settings;
         $this->template = $template;
         $this->userRepository = $userRepository;
         $this->serviceRepository = $serviceRepository;
+        $this->serverRepository = $serverRepository;
     }
 
     /**
@@ -377,6 +385,9 @@ class Heart
     // SERVERS
     //
 
+    /**
+     * @return Server[]
+     */
     public function getServers()
     {
         if (!$this->serversFetched) {
@@ -386,6 +397,10 @@ class Heart
         return $this->servers;
     }
 
+    /**
+     * @param int $id
+     * @return Server
+     */
     public function getServer($id)
     {
         if (!$this->serversFetched) {
@@ -402,11 +417,10 @@ class Heart
 
     private function fetchServers()
     {
-        $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "servers`");
-        while ($row = $this->db->fetchArrayAssoc($result)) {
-            $row['name'] = htmlspecialchars($row['name']);
-            $this->servers[$row['id']] = $row;
+        foreach ($this->serverRepository->all() as $server) {
+            $this->servers[$server->getId()] = $server;
         }
+
         $this->serversFetched = true;
     }
 

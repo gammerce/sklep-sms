@@ -76,8 +76,6 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
         if ($boxId == "server_edit") {
             $server = $this->heart->getServer($query['id']);
-            $server['ip'] = htmlspecialchars($server['ip']);
-            $server['port'] = htmlspecialchars($server['port']);
         }
 
         // Pobranie listy serwisów transakcyjnych
@@ -92,7 +90,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
             $smsServices .= create_dom_element("option", $row['name'], [
                 'value' => $row['id'],
-                'selected' => $row['id'] == $server['sms_service'] ? "selected" : "",
+                'selected' => $row['id'] == $server->getSmsService() ? "selected" : "",
             ]);
         }
 
@@ -110,7 +108,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                 [
                     'value' => 0,
                     'selected' => $this->heart->serverServiceLinked(
-                        $server['id'],
+                        $server->getId(),
                         $service->getId()
                     )
                         ? ""
@@ -124,7 +122,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                 [
                     'value' => 1,
                     'selected' => $this->heart->serverServiceLinked(
-                        $server['id'],
+                        $server->getId(),
                         $service->getId()
                     )
                         ? "selected"

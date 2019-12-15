@@ -90,7 +90,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         return $this->template->render(
             "services/charge_wallet/purchase_form",
             compact('optionSms', 'optionTransfer', 'smsBody', 'transferBody') + [
-                'serviceId' => $this->service['id'],
+                'serviceId' => $this->service->getId(),
             ]
         );
     }
@@ -149,7 +149,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         }
 
         $purchase = new Purchase($this->auth->user());
-        $purchase->setService($this->service['id']);
+        $purchase->setService($this->service->getId());
         $purchase->setTariff($this->heart->getTariff($data['tariff']));
         $purchase->setPayment([
             'no_wallet' => true,
@@ -203,7 +203,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
             $purchaseData->user->getLastIp(),
             $purchaseData->getPayment('method'),
             $purchaseData->getPayment('payment_id'),
-            $this->service['id'],
+            $this->service->getId(),
             0,
             number_format($purchaseData->getOrder('amount') / 100, 2),
             $purchaseData->user->getUsername(),
@@ -262,7 +262,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
 
     public function descriptionShortGet()
     {
-        return $this->service['description'];
+        return $this->service->getDescription();
     }
 
     /**

@@ -66,7 +66,7 @@ abstract class ServiceExtraFlagsSimple extends Service implements
             $types .= create_dom_element("option", $this->getTypeName($optionId), [
                 'value' => $optionId,
                 'selected' =>
-                    $this->service !== null && $this->service['types'] & $optionId
+                    $this->service !== null && $this->service->getTypes() & $optionId
                         ? "selected"
                         : "",
             ]);
@@ -75,7 +75,7 @@ abstract class ServiceExtraFlagsSimple extends Service implements
         // Pobieramy flagi, jeżeli service nie jest puste
         // czyli kiedy edytujemy, a nie dodajemy usługę
         if ($this->service !== null) {
-            $flags = $this->service['flags_hsafe'];
+            $flags = htmlspecialchars($this->service->getFlags());
         }
 
         return $this->template->render(
@@ -139,7 +139,7 @@ abstract class ServiceExtraFlagsSimple extends Service implements
             $types |= $type;
         }
 
-        $extraData = $this->service['data'];
+        $extraData = $this->service->getData();
         $extraData['web'] = $data['web'];
 
         // Tworzymy plik z opisem usługi

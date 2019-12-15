@@ -52,7 +52,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
 
             if ($row['server'] != -1) {
                 $tmpServer = $this->heart->getServer($row['server']);
-                $serverName = $tmpServer['name'];
+                $serverName = $tmpServer->getName();
                 unset($tmpServer);
             } else {
                 $serverName = $this->lang->translate('all_servers');
@@ -120,9 +120,10 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
         // Pobranie serwerów
         $servers = "";
         foreach ($this->heart->getServers() as $serverId => $server) {
-            $servers .= create_dom_element("option", $server['name'], [
-                'value' => $server['id'],
-                'selected' => isset($price) && $price['server'] == $server['id'] ? "selected" : "",
+            $servers .= create_dom_element("option", $server->getName(), [
+                'value' => $server->getId(),
+                'selected' =>
+                    isset($price) && $price['server'] == $server->getId() ? "selected" : "",
             ]);
         }
 
