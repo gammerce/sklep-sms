@@ -66,7 +66,7 @@ class ServiceRepository
         return new Service(
             $data['id'],
             $data['name'],
-            $data['shortDescription'],
+            $data['short_description'],
             $data['description'],
             $data['types'],
             $data['tag'],
