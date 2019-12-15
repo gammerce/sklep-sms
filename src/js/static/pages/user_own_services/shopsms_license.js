@@ -84,7 +84,7 @@ function ss_user_edit_set_cost(form) {
 
     var serviceId = form.find("[name=service]").val();
 
-    restRequest("POST", "/api/service/" + serviceId + "/actions/get_cost_user_edit", data, function(
+    restRequest("POST", "/api/services/" + serviceId + "/actions/get_cost_user_edit", data, function(
         content
     ) {
         var jsonObj = json_parse(content);

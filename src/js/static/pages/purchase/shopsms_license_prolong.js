@@ -15,7 +15,7 @@ function ss_prolong_set_cost() {
 
     var serviceId = $("#form_purchase [name=service]").val();
 
-    restRequest("POST", "/api/service/" + serviceId + "/actions/get_cost", data, function(html) {
+    restRequest("POST", "/api/services/" + serviceId + "/actions/get_cost", data, function(html) {
         $(".shopsms_license_prolong_purchase #cost").html(html);
     });
 }
