@@ -55,7 +55,7 @@ class PageAdminPaymentAdmin extends PageAdmin
 
             $bodyRow->setDbId($row['id']);
             $bodyRow->addCell(new Cell($adminname));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['ip'])));
+            $bodyRow->addCell(new Cell($row['ip']));
 
             $cell = new Cell();
             $div = new Div(get_platform($row['platform']));

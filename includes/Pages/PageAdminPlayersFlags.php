@@ -62,7 +62,7 @@ class PageAdminPlayersFlags extends PageAdmin
 
             $bodyRow->setDbId($row['id']);
             $bodyRow->addCell(new Cell($serverName));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['auth_data'])));
+            $bodyRow->addCell(new Cell($row['auth_data']));
 
             foreach (str_split($this->flags) as $flag) {
                 if (!$row[$flag]) {

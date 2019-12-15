@@ -68,14 +68,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         // Pobieranie serwerów na których można zakupić daną usługę
         $servers = "";
-        foreach ($heart->getServers() as $id => $row) {
+        foreach ($heart->getServers() as $id => $server) {
             // Usługi nie mozna kupic na tym serwerze
             if (!$heart->serverServiceLinked($id, $this->service->getId())) {
                 continue;
             }
 
-            $servers .= create_dom_element("option", $row['name'], [
-                'value' => $row['id'],
+            $servers .= create_dom_element("option", $server->getName(), [
+                'value' => $server->getId(),
             ]);
         }
 
@@ -311,16 +311,16 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     {
         $server = $this->heart->getServer($purchaseData->getOrder('server'));
         $typeName = $this->getTypeName2($purchaseData->getOrder('type'));
+
         if (strlen($purchaseData->getOrder('password'))) {
             $password =
                 "<strong>{$this->lang->translate('password')}</strong>: " .
                 htmlspecialchars($purchaseData->getOrder('password')) .
                 "<br />";
         }
-        $email = strlen($purchaseData->getEmail())
-            ? htmlspecialchars($purchaseData->getEmail())
-            : $this->lang->translate('none');
-        $authData = htmlspecialchars($purchaseData->getOrder('auth_data'));
+
+        $email = $purchaseData->getEmail() ?: $this->lang->translate('none');
+        $authData = $purchaseData->getOrder('auth_data');
         $amount = !$purchaseData->getOrder('forever')
             ? $purchaseData->getOrder('amount') . " " . $this->service->getTag()
             : $this->lang->translate('forever');
@@ -672,13 +672,13 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         // Pobieramy listę serwerów
         $servers = "";
-        foreach ($this->heart->getServers() as $id => $row) {
+        foreach ($this->heart->getServers() as $id => $server) {
             if (!$this->heart->serverServiceLinked($id, $this->service->getId())) {
                 continue;
             }
 
-            $servers .= create_dom_element("option", $row['name'], [
-                'value' => $row['id'],
+            $servers .= create_dom_element("option", $server->getName(), [
+                'value' => $server->getId(),
             ]);
         }
 
@@ -778,8 +778,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     {
         // Pobranie usług
         $services = "";
-        foreach ($this->heart->getServices() as $id => $row) {
-            if (($serviceModule = $this->heart->getEmptyServiceModule($row['module'])) === null) {
+        foreach ($this->heart->getServices() as $id => $service) {
+            $serviceModule = $this->heart->getEmptyServiceModule($service->getModule());
+            if ($serviceModule === null) {
                 continue;
             }
 
@@ -789,9 +790,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 continue;
             }
 
-            $services .= create_dom_element("option", $row['name'], [
-                'value' => $row['id'],
-                'selected' => $userService['service'] == $row['id'] ? "selected" : "",
+            $services .= create_dom_element("option", $service->getName(), [
+                'value' => $service->getId(),
+                'selected' => $userService['service'] == $service->getId() ? "selected" : "",
             ]);
         }
 
@@ -823,14 +824,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         // Pobranie serwerów
         $servers = "";
-        foreach ($this->heart->getServers() as $id => $row) {
+        foreach ($this->heart->getServers() as $id => $server) {
             if (!$this->heart->serverServiceLinked($id, $this->service->getId())) {
                 continue;
             }
 
-            $servers .= create_dom_element("option", $row['name'], [
-                'value' => $row['id'],
-                'selected' => $userService['server'] == $row['id'] ? "selected" : "",
+            $servers .= create_dom_element("option", $server->getName(), [
+                'value' => $server->getId(),
+                'selected' => $userService['server'] == $server->getId() ? "selected" : "",
             ]);
         }
 
@@ -1342,9 +1343,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         $servers = "";
         // Pobieranie listy serwerów
-        foreach ($this->heart->getServers() as $id => $row) {
-            $servers .= create_dom_element("option", $row['name'], [
-                'value' => $row['id'],
+        foreach ($this->heart->getServers() as $id => $server) {
+            $servers .= create_dom_element("option", $server->getName(), [
+                'value' => $server->getId(),
             ]);
         }
 
@@ -1538,14 +1539,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         $servers = "";
         // Pobieranie serwerów na których można zakupić daną usługę
-        foreach ($this->heart->getServers() as $id => $row) {
+        foreach ($this->heart->getServers() as $id => $server) {
             if (!$this->heart->serverServiceLinked($id, $this->service->getId())) {
                 continue;
             }
 
-            $servers .= create_dom_element("option", $row['name'], [
-                'value' => $row['id'],
-                'selected' => $server == $row['id'] ? "selected" : "",
+            $servers .= create_dom_element("option", $server->getName(), [
+                'value' => $server->getId(),
+                'selected' => $server == $server->getId() ? "selected" : "",
             ]);
         }
 
@@ -1631,13 +1632,13 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     {
         // Pobieramy listę serwerów
         $servers = "";
-        foreach ($this->heart->getServers() as $id => $row) {
+        foreach ($this->heart->getServers() as $id => $server) {
             if (!$this->heart->serverServiceLinked($id, $this->service->getId())) {
                 continue;
             }
 
-            $servers .= create_dom_element("option", $row['name'], [
-                'value' => $row['id'],
+            $servers .= create_dom_element("option", $server->getName(), [
+                'value' => $server->getId(),
             ]);
         }
 

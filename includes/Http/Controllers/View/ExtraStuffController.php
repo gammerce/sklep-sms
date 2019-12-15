@@ -38,7 +38,7 @@ class ExtraStuffController
             $output = create_dom_element(
                 "script",
                 new UnescapedSimpleText(
-                'window.open("' . $safeLink . '", "", "height=720,width=1280");',
+                    'window.open("' . $safeLink . '", "", "height=720,width=1280");'
                 ),
                 [
                     'type' => "text/javascript",
@@ -65,13 +65,10 @@ class ExtraStuffController
                 $heart->styleAdd($url->versioned("build/css/static/extra_stuff/long_desc.css"));
                 $header = $template->render("header", compact('currentPage', 'heart', 'license'));
 
-                $output = create_dom_element(
-                    "html",
-                    [
-                        create_dom_element("head", $header),
-                        create_dom_element("body", $output),
-                    ]
-                );
+                $output = create_dom_element("html", [
+                    create_dom_element("head", $header),
+                    create_dom_element("body", $output),
+                ]);
 
                 return new Response($output);
         }

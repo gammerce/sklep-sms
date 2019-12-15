@@ -80,7 +80,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
             case "user_service_add":
                 // Pobranie usług
                 $services = "";
-                foreach ($this->heart->getServices() as $id => $row) {
+                foreach ($this->heart->getServices() as $id => $service) {
                     if (
                         ($serviceModule = $this->heart->getServiceModule($id)) === null ||
                         !($serviceModule instanceof IServiceUserServiceAdminAdd)
@@ -88,8 +88,8 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
                         continue;
                     }
 
-                    $services .= create_dom_element("option", $row['name'], [
-                        'value' => $row['id'],
+                    $services .= create_dom_element("option", $service->getName(), [
+                        'value' => $service->getId(),
                     ]);
                 }
 
@@ -110,7 +110,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
                 ) {
                     $formData = $this->lang->translate('service_edit_unable');
                 } else {
-                    $serviceModuleId = htmlspecialchars($serviceModule->getModuleId());
+                    $serviceModuleId = $serviceModule->getModuleId();
                     $formData = $serviceModule->userServiceAdminEditFormGet($userService);
                 }
 

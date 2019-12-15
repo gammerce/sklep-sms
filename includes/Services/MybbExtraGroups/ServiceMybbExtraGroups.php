@@ -220,10 +220,9 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
      */
     public function orderDetails(Purchase $purchaseData)
     {
-        $email = $purchaseData->getEmail()
-            ? htmlspecialchars($purchaseData->getEmail())
-            : $this->lang->translate('none');
-        $username = htmlspecialchars($purchaseData->getOrder('username'));
+        $email = $purchaseData->getEmail() ?: $this->lang->translate('none');
+        $username = $purchaseData->getOrder('username');
+        $serviceName = $this->service->getName();
         $amount =
             $purchaseData->getOrder('amount') != -1
                 ? $purchaseData->getOrder('amount') . " " . $this->service->getTag()
@@ -231,7 +230,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
 
         return $this->template->render(
             "services/mybb_extra_groups/order_details",
-            compact('amount', 'username', 'email') + ['serviceName' => $this->service->getName()],
+            compact('amount', 'username', 'email', 'serviceName'),
             true,
             false
         );
@@ -299,12 +298,12 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
      */
     public function purchaseInfo($action, $data)
     {
-        $username = htmlspecialchars($data['auth_data']);
+        $username = $data['auth_data'];
         $amount =
             $data['amount'] != -1
                 ? $data['amount'] . " " . $this->service->getTag()
                 : $this->lang->translate('forever');
-        $email = htmlspecialchars($data['email']);
+        $email = $data['email'];
         $cost = $data['cost']
             ? number_format($data['cost'] / 100.0, 2) . " " . $this->settings['currency']
             : $this->lang->translate('none');

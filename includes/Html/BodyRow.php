@@ -120,6 +120,8 @@ class BodyRow extends Row
             return null;
         }
 
-        return new Cell($template->render("more_actions", compact("actions")));
+        return new Cell(
+            new UnescapedSimpleText($template->render("more_actions", compact("actions")))
+        );
     }
 }

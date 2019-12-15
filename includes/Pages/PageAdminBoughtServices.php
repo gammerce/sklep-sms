@@ -142,9 +142,9 @@ class PageAdminBoughtServices extends PageAdmin
             $bodyRow->addCell(new Cell($server->getName()));
             $bodyRow->addCell(new Cell($service->getName()));
             $bodyRow->addCell(new Cell($amount));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['auth_data'])));
+            $bodyRow->addCell(new Cell($row['auth_data']));
             $bodyRow->addCell(new Cell($extraData));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['email'])));
+            $bodyRow->addCell(new Cell($row['email']));
             $bodyRow->addCell(new Cell($row['ip']));
 
             $cell = new Cell(convertDate($row['timestamp']));

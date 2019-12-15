@@ -35,13 +35,13 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
         );
         $table->addHeadCell(new HeadCell($this->lang->translate('version')));
 
-        foreach ($this->heart->getServers() as $row) {
+        foreach ($this->heart->getServers() as $server) {
             $bodyRow = new BodyRow();
 
-            $bodyRow->setDbId($row['id']);
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['name'])));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['ip'] . ':' . $row['port'])));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['version'])));
+            $bodyRow->setDbId($server->getId());
+            $bodyRow->addCell(new Cell($server->getName()));
+            $bodyRow->addCell(new Cell($server->getIp() . ':' . $server->getPort()));
+            $bodyRow->addCell(new Cell($server->getVersion()));
 
             if (get_privileges("manage_servers")) {
                 $bodyRow->setDeleteAction(true);

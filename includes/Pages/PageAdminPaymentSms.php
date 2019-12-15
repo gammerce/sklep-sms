@@ -104,7 +104,7 @@ class PageAdminPaymentSms extends PageAdmin
             $bodyRow->addCell(new Cell($income));
             $bodyRow->addCell(new Cell($cost));
             $bodyRow->addCell(new Cell($free));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['ip'])));
+            $bodyRow->addCell(new Cell($row['ip']));
 
             $cell = new Cell();
             $div = new Div(get_platform($row['platform']));

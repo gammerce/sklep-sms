@@ -42,11 +42,9 @@ class DOMElement implements I_ToHtml
 
         $params = [];
         foreach ($this->params as $key => $value) {
-            if (!strlen($value)) {
-                continue;
+            if (strlen($value)) {
+                $params[] = htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"';
             }
-
-            $params[] = htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"';
         }
         $params = implode(' ', $params);
 
@@ -88,7 +86,7 @@ class DOMElement implements I_ToHtml
     }
 
     /** @return int */
-    public function getContentsAmount()
+    public function getContentsCount()
     {
         return count($this->contents);
     }
@@ -96,7 +94,7 @@ class DOMElement implements I_ToHtml
     /** @return bool */
     public function isEmpty()
     {
-        return $this->getContentsAmount() === 0;
+        return $this->getContentsCount() === 0;
     }
 
     /**

@@ -85,11 +85,11 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             $groups = implode("; ", $groups);
 
             $bodyRow->setDbId($row['uid']);
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['username'])));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['forename'])));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['surname'])));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['email'])));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['steam_id'])));
+            $bodyRow->addCell(new Cell($row['username']));
+            $bodyRow->addCell(new Cell($row['forename']));
+            $bodyRow->addCell(new Cell($row['surname']));
+            $bodyRow->addCell(new Cell($row['email']));
+            $bodyRow->addCell(new Cell($row['steam_id']));
             $bodyRow->addCell(new Cell($groups));
 
             $cell = new Cell(

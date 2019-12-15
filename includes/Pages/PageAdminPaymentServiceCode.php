@@ -57,7 +57,7 @@ class PageAdminPaymentServiceCode extends PageAdmin
 
             $bodyRow->setDbId($row['payment_id']);
             $bodyRow->addCell(new Cell($row['service_code']));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['ip'])));
+            $bodyRow->addCell(new Cell($row['ip']));
 
             $cell = new Cell();
             $div = new Div(get_platform($row['platform']));

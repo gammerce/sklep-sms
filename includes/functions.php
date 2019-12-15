@@ -5,6 +5,7 @@ use App\Html\DOMElement;
 use App\Html\Li;
 use App\Html\Link;
 use App\Html\Ul;
+use App\Html\UnescapedSimpleText;
 use App\Models\User;
 use App\Routes\UrlGenerator;
 use App\Services\Interfaces\IServicePurchaseWeb;
@@ -448,7 +449,7 @@ function create_brick($text, $class = "", $alpha = 0.2)
     $brickG = rand(0, 255);
     $brickB = rand(0, 255);
 
-    return create_dom_element("div", $text, [
+    return create_dom_element("div", new UnescapedSimpleText($text), [
         'class' => "notification" . ($class ? " {$class}" : ""),
         'style' => [
             'border-color' => "rgb({$brickR},{$brickG},{$brickB})",
