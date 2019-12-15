@@ -123,7 +123,7 @@ class UserRepository
         }
 
         // SID can start with STEAM_0 or STEAM_1. They are used interchangeably.
-        $steamIdSuffix = preg_replace("/^STEAM_(0|1)/", "", $steamId);
+        $steamIdSuffix = preg_replace("/^STEAM_[01]/", "", $steamId);
 
         $result = $this->db->query(
             $this->db->prepare(
