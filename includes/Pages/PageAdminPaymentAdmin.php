@@ -45,7 +45,7 @@ class PageAdminPaymentAdmin extends PageAdmin
         while ($row = $this->db->fetchArrayAssoc($result)) {
             $bodyRow = new BodyRow();
 
-            if ($query['highlight'] && $query['payid'] == $row['payment_id']) {
+            if ($query['payid'] == $row['payment_id']) {
                 $bodyRow->addClass('highlighted');
             }
 
