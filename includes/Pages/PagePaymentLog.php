@@ -67,16 +67,14 @@ class PagePaymentLog extends Page implements IBeLoggedMust
                 $desc = $logInfo['text'];
                 $class = $logInfo['class'];
             } else {
-                $tmpService = $heart->getService($row['service']);
-                $tmpServer = $heart->getServer($row['server']);
+                $service = $heart->getService($row['service']);
+                $server = $heart->getServer($row['server']);
                 $desc = $lang->sprintf(
                     $lang->translate('service_was_bought'),
-                    $tmpService->getName(),
-                    $tmpServer->getName()
+                    $service ? $service->getName() : '',
+                    $server ? $server->getName() : ''
                 );
                 $class = "outcome";
-                unset($tmpService);
-                unset($tmpServer);
             }
 
             $paymentLogBrick = $template->render(

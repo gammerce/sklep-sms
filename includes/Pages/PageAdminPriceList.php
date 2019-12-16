@@ -51,9 +51,8 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
             $service = $this->heart->getService($row['service']);
 
             if ($row['server'] != -1) {
-                $tmpServer = $this->heart->getServer($row['server']);
-                $serverName = $tmpServer->getName();
-                unset($tmpServer);
+                $server = $this->heart->getServer($row['server']);
+                $serverName = $server->getName();
             } else {
                 $serverName = $this->lang->translate('all_servers');
             }
