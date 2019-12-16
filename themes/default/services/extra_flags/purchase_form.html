@@ -52,7 +52,7 @@
                                             type="text"
                                             id="ip"
                                             name="ip"
-                                            value="{$user->getLastIp()}"
+                                            value="{{ $user->getLastIp() }}"
                                             class="input is-small"
                                             maxlength="16"
                                             autocomplete="off"
@@ -235,5 +235,5 @@
         />
     </div>
 
-    <input type="hidden" name="service" value="{$serviceId}" />
+    <input type="hidden" name="service" value="{{ $serviceId }}" />
 </form>

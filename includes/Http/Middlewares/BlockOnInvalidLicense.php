@@ -60,16 +60,14 @@ class BlockOnInvalidLicense implements MiddlewareContract
 
     private function getMessageFromInvalidResponse(CustomResponse $response = null)
     {
-        if (!$response) {
-            return $this->lang->translate('verification_error');
-        }
+        if ($response) {
+            if ($response->getStatusCode() === Response::HTTP_UNAUTHORIZED) {
+                return "Nieprawidłowy token licencji.";
+            }
 
-        if ($response->getStatusCode() === Response::HTTP_UNAUTHORIZED) {
-            return "Nieprawidłowy token licencji.";
-        }
-
-        if ($response->getStatusCode() === Response::HTTP_PAYMENT_REQUIRED) {
-            return "Przekroczono limit stron WWW korzystających z licencji. Odczekaj 60 minut.";
+            if ($response->getStatusCode() === Response::HTTP_PAYMENT_REQUIRED) {
+                return "Przekroczono limit stron WWW korzystających z licencji. Odczekaj 60 minut.";
+            }
         }
 
         return $this->lang->translate('verification_error');
