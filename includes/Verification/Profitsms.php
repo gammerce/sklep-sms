@@ -10,7 +10,7 @@ use App\Verification\Results\SmsSuccessResult;
 
 class Profitsms extends PaymentModule implements SupportSms
 {
-    protected $id = "profitsms";
+    const MODULE_ID = "profitsms";
 
     public function verifySms($returnCode, $number)
     {

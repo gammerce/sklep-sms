@@ -11,7 +11,7 @@ use App\Verification\Results\SmsSuccessResult;
 
 class Zabijaka extends PaymentModule implements SupportSms
 {
-    protected $id = "zabijaka";
+    const MODULE_ID = "zabijaka";
 
     public function verifySms($returnCode, $number)
     {

@@ -40,7 +40,7 @@ class ServiceCodePaymentServiceTest extends TestCase
             'server' => 'blah',
         ]);
         $purchase->setTariff($heart->getTariff(2));
-        $purchase->setService($serviceModule->service['id']);
+        $purchase->setService($serviceModule->service->getId());
 
         // when
         $paymentCodeId = $service->payWithServiceCode($purchase, $serviceModule);

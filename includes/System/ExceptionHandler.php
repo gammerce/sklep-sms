@@ -139,8 +139,10 @@ class ExceptionHandler implements ExceptionHandlerContract
 
     protected function reportSqlException(SqlQueryException $e)
     {
-        if (strlen($e->getQuery())) {
-            log_to_file($this->path->sqlLogPath(), $e->getQuery(false));
+        $query = $e->getQuery();
+
+        if (strlen($query)) {
+            log_to_file($this->path->sqlLogPath(), $query);
         }
     }
 

@@ -13,7 +13,7 @@ use App\Verification\Results\SmsSuccessResult;
 
 class Pukawka extends PaymentModule implements SupportSms
 {
-    protected $id = "pukawka";
+    const MODULE_ID = "pukawka";
     private $stawki = [];
 
     public function verifySms($returnCode, $number)

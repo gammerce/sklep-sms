@@ -18,9 +18,8 @@ class PageTakeOverService extends Page implements IBeLoggedMust
     protected function content(array $query, array $body)
     {
         $servicesOptions = "";
-        $services = $this->heart->getServices();
-        foreach ($services as $service) {
-            if (($serviceModule = $this->heart->getServiceModule($service['id'])) === null) {
+        foreach ($this->heart->getServices() as $service) {
+            if (($serviceModule = $this->heart->getServiceModule($service->getId())) === null) {
                 continue;
             }
 
@@ -29,8 +28,8 @@ class PageTakeOverService extends Page implements IBeLoggedMust
                 continue;
             }
 
-            $servicesOptions .= create_dom_element("option", $service['name'], [
-                'value' => $service['id'],
+            $servicesOptions .= create_dom_element("option", $service->getName(), [
+                'value' => $service->getId(),
             ]);
         }
 

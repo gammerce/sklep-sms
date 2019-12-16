@@ -7,6 +7,7 @@ use App\Html\HeadCell;
 use App\Html\Link;
 use App\Html\SimpleText;
 use App\Html\Structure;
+use App\Html\UnescapedSimpleText;
 use App\Html\Wrapper;
 use App\Services\ExtraFlags\ExtraFlagType;
 
@@ -93,24 +94,21 @@ class PageAdminBoughtServices extends PageAdmin
             $server = $this->heart->getServer($row['server']);
 
             $username = $row['uid']
-                ? htmlspecialchars($row['username']) . " ({$row['uid']})"
+                ? "{$row['username']} ({$row['uid']})"
                 : $this->lang->translate('none');
 
             // Przerobienie ilosci
             $amount =
                 $row['amount'] != -1
-                    ? $row['amount'] . ' ' . $service['tag']
+                    ? $row['amount'] . ' ' . $service->getTag()
                     : $this->lang->translate('forever');
 
-            // Rozkulbaczenie extra daty
             $row['extra_data'] = json_decode($row['extra_data'], true);
             $extraData = [];
             foreach ($row['extra_data'] as $key => $value) {
                 if (!strlen($value)) {
                     continue;
                 }
-
-                $value = htmlspecialchars($value);
 
                 if ($key == "password") {
                     $key = $this->lang->translate('password');
@@ -119,7 +117,7 @@ class PageAdminBoughtServices extends PageAdmin
                     $value = ExtraFlagType::getTypeName($value);
                 }
 
-                $extraData[] = $key . ': ' . $value;
+                $extraData[] = htmlspecialchars("$key: $value");
             }
             $extraData = implode('<br />', $extraData);
 
@@ -131,7 +129,7 @@ class PageAdminBoughtServices extends PageAdmin
                 $this->url->to("/admin/payment_{$row['payment']}?payid={$row['payment_id']}")
             );
             $paymentLink->setParam('target', '_blank');
-            $paymentLink->addContent(new SimpleText($this->lang->translate('see_payment')));
+            $paymentLink->addContent($this->lang->translate('see_payment'));
 
             $bodyRow->addAction($paymentLink);
 
@@ -139,12 +137,16 @@ class PageAdminBoughtServices extends PageAdmin
             $bodyRow->addCell(new Cell($row['payment']));
             $bodyRow->addCell(new Cell($row['payment_id']));
             $bodyRow->addCell(new Cell($username));
-            $bodyRow->addCell(new Cell($server['name']));
-            $bodyRow->addCell(new Cell($service['name']));
+            $bodyRow->addCell(
+                new Cell($server ? $server->getName() : $this->lang->translate('none'))
+            );
+            $bodyRow->addCell(
+                new Cell($service ? $service->getName() : $this->lang->translate('none'))
+            );
             $bodyRow->addCell(new Cell($amount));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['auth_data'])));
-            $bodyRow->addCell(new Cell($extraData));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['email'])));
+            $bodyRow->addCell(new Cell($row['auth_data']));
+            $bodyRow->addCell(new Cell(new UnescapedSimpleText($extraData)));
+            $bodyRow->addCell(new Cell($row['email']));
             $bodyRow->addCell(new Cell($row['ip']));
 
             $cell = new Cell(convertDate($row['timestamp']));

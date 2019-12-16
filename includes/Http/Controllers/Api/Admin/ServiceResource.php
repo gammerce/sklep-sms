@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Exceptions\SqlQueryException;
 use App\Http\Responses\ApiResponse;
 use App\Http\Services\ServiceService;
+use App\Repositories\ServiceRepository;
 use App\System\Auth;
 use App\System\Database;
 use App\System\Heart;
@@ -89,6 +90,7 @@ class ServiceResource
         $serviceId,
         Database $db,
         TranslationManager $translationManager,
+        ServiceRepository $serviceRepository,
         Auth $auth,
         Heart $heart
     ) {
@@ -97,16 +99,12 @@ class ServiceResource
         $user = $auth->user();
 
         $serviceModule = $heart->getServiceModule($serviceId);
-        if (!is_null($serviceModule)) {
+        if ($serviceModule !== null) {
             $serviceModule->serviceDelete($serviceId);
         }
 
         try {
-            $db->query(
-                $db->prepare("DELETE FROM `" . TABLE_PREFIX . "services` WHERE `id` = '%s'", [
-                    $serviceId,
-                ])
-            );
+            $serviceRepository->delete($serviceId);
         } catch (SqlQueryException $e) {
             // It is affiliated with something
             if ($e->getErrorno() == 1451) {

@@ -4,7 +4,7 @@
 
 <div style="padding: 1em;">
     <strong>{$lang->translate('email')}:</strong>
-    <a href="{$settings['contact']}">{$settings['contact']}</a><br /><br />
+    <a href="{{ $settings['contact'] }}">{{ $settings['contact'] }}</a><br /><br />
     <strong>Gadu-Gadu:</strong>
 
     <div style="margin: 0 0 0 1.5em;">
@@ -13,12 +13,12 @@
                 <tr>
                     <td>
                         <img
-                            src="https://status.gadu-gadu.pl/users/status.asp?id={$settings['gadugadu']}&amp;styl=0"
+                            src="https://status.gadu-gadu.pl/users/status.asp?id={{ $settings['gadugadu'] }}&amp;styl=0"
                             alt="gg_status"
                         />&nbsp;
                     </td>
                     <td style="vertical-align: top;">
-                        <a href="GG:{$settings['gadugadu']}">{$settings['gadugadu']}</a>
+                        <a href="GG:{{ $settings['gadugadu'] }}">{{ $settings['gadugadu'] }}</a>
                     </td>
                 </tr>
             </tbody>

@@ -1,16 +1,16 @@
 <div class="page-title">
-    <div class="title is-4">{$title}</div>
+    <div class="title is-4">{{ $title }}</div>
 </div>
 <div class="form_update">
     <h4>Wersje</h4>
 
     <div class="content">
-        <strong>{$lang->translate('latest_version')}</strong> {$newestVersion}<br /><br />
+        <strong>{$lang->translate('latest_version')}</strong> {{ $newestVersion }}<br /><br />
         <table>
             <tr>
                 <td><strong>{$lang->translate('present_version')}</strong></td>
                 <td style="width: 5px;">&nbsp;</td>
-                <td>{$currentVersion}</td>
+                <td>{{ $currentVersion }}</td>
             </tr>
         </table>
     </div>

@@ -5,6 +5,7 @@ use App\Html\DOMElement;
 use App\Html\Li;
 use App\Html\Link;
 use App\Html\Ul;
+use App\Html\UnescapedSimpleText;
 use App\Models\User;
 use App\Routes\UrlGenerator;
 use App\Services\Interfaces\IServicePurchaseWeb;
@@ -333,7 +334,7 @@ function get_users_services($conditions = '', $takeOut = true)
     $output = $usedTable = [];
     // Niestety dla każdego modułu musimy wykonać osobne zapytanie :-(
     foreach ($heart->getServicesModules() as $serviceModuleData) {
-        $table = $serviceModuleData['classsimple']::USER_SERVICE_TABLE;
+        $table = $serviceModuleData['class']::USER_SERVICE_TABLE;
         if (!strlen($table) || array_key_exists($table, $usedTable)) {
             continue;
         }
@@ -439,7 +440,7 @@ function create_dom_element($name, $text = "", $data = [])
         $element->setParam($key, $value);
     }
 
-    return $element->toHtml();
+    return $element;
 }
 
 function create_brick($text, $class = "", $alpha = 0.2)
@@ -448,7 +449,7 @@ function create_brick($text, $class = "", $alpha = 0.2)
     $brickG = rand(0, 255);
     $brickB = rand(0, 255);
 
-    return create_dom_element("div", $text, [
+    return create_dom_element("div", new UnescapedSimpleText($text), [
         'class' => "notification" . ($class ? " {$class}" : ""),
         'style' => [
             'border-color' => "rgb({$brickR},{$brickG},{$brickB})",
@@ -471,7 +472,7 @@ function get_platform($platform)
         return $lang->translate('sm_server');
     }
 
-    return htmlspecialchars($platform);
+    return $platform;
 }
 
 function get_ip(Request $request = null)
@@ -828,7 +829,7 @@ function log_info($message, array $data = [])
 
 function array_get($array, $key, $default = null)
 {
-    if (is_null($key)) {
+    if ($key === null) {
         return $array;
     }
 

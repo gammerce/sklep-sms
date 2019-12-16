@@ -52,14 +52,14 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
 
             if ($row['server'] != -1) {
                 $tmpServer = $this->heart->getServer($row['server']);
-                $serverName = $tmpServer['name'];
+                $serverName = $tmpServer->getName();
                 unset($tmpServer);
             } else {
                 $serverName = $this->lang->translate('all_servers');
             }
 
             $bodyRow->setDbId($row['id']);
-            $bodyRow->addCell(new Cell("{$service['name']} ( {$service['id']} )"));
+            $bodyRow->addCell(new Cell("{$service->getName()} ( {$service->getId()} )"));
             $bodyRow->addCell(new Cell($row['tariff']));
             $bodyRow->addCell(new Cell($row['amount']));
             $bodyRow->addCell(new Cell($serverName));
@@ -108,11 +108,11 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
         foreach ($this->heart->getServices() as $serviceId => $service) {
             $services .= create_dom_element(
                 "option",
-                $service['name'] . " ( " . $service['id'] . " )",
+                $service->getName() . " ( " . $service->getId() . " )",
                 [
-                    'value' => $service['id'],
+                    'value' => $service->getId(),
                     'selected' =>
-                        isset($price) && $price['service'] == $service['id'] ? "selected" : "",
+                        isset($price) && $price['service'] == $service->getId() ? "selected" : "",
                 ]
             );
         }
@@ -120,9 +120,10 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
         // Pobranie serwerów
         $servers = "";
         foreach ($this->heart->getServers() as $serverId => $server) {
-            $servers .= create_dom_element("option", $server['name'], [
-                'value' => $server['id'],
-                'selected' => isset($price) && $price['server'] == $server['id'] ? "selected" : "",
+            $servers .= create_dom_element("option", $server->getName(), [
+                'value' => $server->getId(),
+                'selected' =>
+                    isset($price) && $price['server'] == $server->getId() ? "selected" : "",
             ]);
         }
 

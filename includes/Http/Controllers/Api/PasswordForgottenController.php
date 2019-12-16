@@ -93,7 +93,7 @@ class PasswordForgottenController
             )
         );
 
-        $link = $url->to("/page/reset_password?code=" . htmlspecialchars($key));
+        $link = $url->to("/page/reset_password?code=" . urlencode($key));
         $text = $template->render("emails/forgotten_password", compact('editedUser', 'link'));
         $ret = $mailer->send(
             $editedUser->getEmail(),

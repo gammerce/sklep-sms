@@ -47,8 +47,8 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
             $bodyRow = new BodyRow();
 
             $bodyRow->setDbId($row['id']);
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['code'])));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['tariff'])));
+            $bodyRow->addCell(new Cell($row['code']));
+            $bodyRow->addCell(new Cell($row['tariff']));
 
             if (get_privileges('manage_sms_codes')) {
                 $bodyRow->setDeleteAction(true);

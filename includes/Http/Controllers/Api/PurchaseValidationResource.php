@@ -48,7 +48,7 @@ class PurchaseValidationResource
             $purchase = $returnData['purchase_data'];
 
             if ($purchase->getService() === null) {
-                $purchase->setService($serviceModule->service['id']);
+                $purchase->setService($serviceModule->service->getId());
             }
 
             if (!$purchase->getPayment('cost') && $purchase->getTariff() !== null) {

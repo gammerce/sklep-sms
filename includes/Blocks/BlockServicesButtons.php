@@ -36,7 +36,7 @@ class BlockServicesButtons extends Block
         $services = "";
         foreach ($heart->getServices() as $service) {
             if (
-                ($serviceModule = $heart->getServiceModule($service['id'])) === null ||
+                ($serviceModule = $heart->getServiceModule($service->getId())) === null ||
                 !$serviceModule->showOnWeb()
             ) {
                 continue;
@@ -48,8 +48,8 @@ class BlockServicesButtons extends Block
 
             $services .= create_dom_element(
                 "li",
-                create_dom_element("a", $service['name'], [
-                    'href' => $url->to("/page/purchase?service=" . urlencode($service['id'])),
+                create_dom_element("a", $service->getName(), [
+                    'href' => $url->to("/page/purchase?service=" . urlencode($service->getId())),
                 ])
             );
         }

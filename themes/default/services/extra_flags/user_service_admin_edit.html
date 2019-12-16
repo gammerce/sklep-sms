@@ -1,8 +1,8 @@
-<table data-module="{$moduleId}">
+<table data-module="{{ $moduleId }}">
     <tbody>
         <tr>
             <td>ID</td>
-            <td>{$userService['id']}</td>
+            <td>{{ $userService['id'] }}</td>
         </tr>
         <tr>
             <td colspan="2" class="line"></td>
@@ -18,7 +18,7 @@
                             type="text"
                             id="uid"
                             name="uid"
-                            value="{$userService['uid']}"
+                            value="{{ $userService['uid'] }}"
                             class="input is-small"
                             required
                         />
@@ -43,7 +43,7 @@
             </td>
         </tr>
     </tbody>
-    <tbody id="type_nick" style="{$styles['nick']}">
+    <tbody id="type_nick" style="{{ $styles['nick'] }}">
         <tr>
             <td>
                 <label for="nick">Nick</label>
@@ -57,7 +57,7 @@
                             name="nick"
                             class="input is-small"
                             maxlength="32"
-                            value="{$nick}"
+                            value="{{ $nick }}"
                             autocomplete="off"
                         />
                     </div>
@@ -65,7 +65,7 @@
             </td>
         </tr>
     </tbody>
-    <tbody id="type_ip" style="{$styles['ip']}">
+    <tbody id="type_ip" style="{{ $styles['ip'] }}">
         <tr>
             <td>
                 <label for="ip">IP</label>
@@ -79,7 +79,7 @@
                             name="ip"
                             class="input is-small"
                             maxlength="21"
-                            value="{$ip}"
+                            value="{{ $ip }}"
                             autocomplete="off"
                         />
                     </div>
@@ -87,7 +87,7 @@
             </td>
         </tr>
     </tbody>
-    <tbody id="type_sid" style="{$styles['sid']}">
+    <tbody id="type_sid" style="{{ $styles['sid'] }}">
         <tr>
             <td>
                 <label for="sid">SteamID</label>
@@ -101,7 +101,7 @@
                             name="sid"
                             class="input is-small"
                             maxlength="32"
-                            value="{$sid}"
+                            value="{{ $sid }}"
                             autocomplete="off"
                         />
                     </div>
@@ -109,7 +109,7 @@
             </td>
         </tr>
     </tbody>
-    <tbody id="type_password" style="{$styles['password']}">
+    <tbody id="type_password" style="{{ $styles['password'] }}">
         <tr>
             <td>
                 <label for="password">{$lang->translate('password')}</label>
@@ -123,7 +123,7 @@
                             name="password"
                             class="input is-small"
                             maxlength="32"
-                            placeholder="{$password}"
+                            placeholder="{{ $password }}"
                             autocomplete="off"
                         />
                     </div>
@@ -179,7 +179,7 @@
                             id="expire"
                             name="expire"
                             class="input is-small"
-                            value="{$userService['expire']}"
+                            value="{{ $userService['expire'] }}"
                             autocomplete="off"
                             {$disabled}
                         />
@@ -193,7 +193,7 @@
         </tr>
         <tr>
             <td colspan="2">
-                <input type="hidden" name="id" value="{$userService['id']}" />
+                <input type="hidden" name="id" value="{{ $userService['id'] }}" />
                 <input type="submit" value="{$lang->translate('edit')}" class="button w100" />
             </td>
         </tr>

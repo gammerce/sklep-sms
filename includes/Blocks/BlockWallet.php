@@ -1,6 +1,7 @@
 <?php
 namespace App\Blocks;
 
+use App\Html\UnescapedSimpleText;
 use App\Interfaces\IBeLoggedMust;
 use App\Routes\UrlGenerator;
 use App\System\Auth;
@@ -39,7 +40,7 @@ class BlockWallet extends Block implements IBeLoggedMust
 
         $content = $this->getContent($query, $body);
 
-        return create_dom_element("a", $content, [
+        return create_dom_element("a", new UnescapedSimpleText($content), [
             'id' => $this->getContentId(),
             'class' => $content !== null ? $this->getContentClass() : "",
             'href' => $url->to("/page/payment_log"),

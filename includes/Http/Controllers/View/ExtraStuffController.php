@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\View;
 
+use App\Html\UnescapedSimpleText;
 use App\Routes\UrlGenerator;
 use App\System\CurrentPage;
 use App\System\Heart;
@@ -33,11 +34,12 @@ class ExtraStuffController
                 $request->server->get('REQUEST_URI')
             );
 
+            $safeLink = str_replace('"', '\"', $link);
             $output = create_dom_element(
                 "script",
-                'window.open("' .
-                    str_replace('"', '\"', $link) .
-                    '", "", "height=720,width=1280");',
+                new UnescapedSimpleText(
+                    'window.open("' . $safeLink . '", "", "height=720,width=1280");'
+                ),
                 [
                     'type' => "text/javascript",
                 ]
@@ -58,15 +60,15 @@ class ExtraStuffController
                 }
 
                 $heart->pageTitle =
-                    $lang->translate('description') . ": " . $serviceModule->service['name'];
+                    $lang->translate('description') . ": " . $serviceModule->service->getName();
 
                 $heart->styleAdd($url->versioned("build/css/static/extra_stuff/long_desc.css"));
                 $header = $template->render("header", compact('currentPage', 'heart', 'license'));
 
-                $output = create_dom_element(
-                    "html",
-                    create_dom_element("head", $header) . create_dom_element("body", $output)
-                );
+                $output = create_dom_element("html", [
+                    create_dom_element("head", $header),
+                    create_dom_element("body", $output),
+                ]);
 
                 return new Response($output);
         }

@@ -7,14 +7,17 @@
             type="text/javascript"
             src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"
         ></script>
-        <script type="text/javascript" src="{$url->versioned('build/js/update.js')}"></script>
-        <script type="text/javascript" src="{$url->versioned('js.php?script=language')}"></script>
+        <script type="text/javascript" src="{{ $url->versioned('build/js/update.js') }}"></script>
+        <script
+            type="text/javascript"
+            src="{{ $url->versioned('js.php?script=language') }}"
+        ></script>
 
-        <link href="{$url->versioned('build/css/update.css')}" rel="stylesheet" />
+        <link href="{{ $url->versioned('build/css/update.css') }}" rel="stylesheet" />
     </head>
 
     <body>
-        <div class="window {$class}">
+        <div class="window {{ $class }}">
             <h1 class="title is-4">Aktualizator Sklepu</h1>
 
             <div class="section is-small">

@@ -14,7 +14,7 @@ use App\Verification\Results\SmsSuccessResult;
 
 class Gosetti extends PaymentModule implements SupportSms
 {
-    protected $id = "gosetti";
+    const MODULE_ID = "gosetti";
 
     /** @var  string */
     private $smsCode;

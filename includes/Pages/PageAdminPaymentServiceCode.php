@@ -51,13 +51,13 @@ class PageAdminPaymentServiceCode extends PageAdmin
         while ($row = $this->db->fetchArrayAssoc($result)) {
             $bodyRow = new BodyRow();
 
-            if ($query['highlight'] && $query['payid'] == $row['payment_id']) {
+            if ($query['payid'] == $row['payment_id']) {
                 $bodyRow->addClass('highlighted');
             }
 
             $bodyRow->setDbId($row['payment_id']);
             $bodyRow->addCell(new Cell($row['service_code']));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['ip'])));
+            $bodyRow->addCell(new Cell($row['ip']));
 
             $cell = new Cell();
             $div = new Div(get_platform($row['platform']));
@@ -72,6 +72,6 @@ class PageAdminPaymentServiceCode extends PageAdmin
 
         $wrapper->setTable($table);
 
-        return $wrapper->toHtml();
+        return $wrapper;
     }
 }

@@ -1,4 +1,4 @@
-<a href="{$url->to('/page/register')}">
+<a href="{{ $url->to('/page/register') }}">
     <div id="register_redirect_button">{$lang->translate('register_vert')}</div>
 </a>
 <table>
@@ -29,7 +29,7 @@
                     </div>
                 </div>
 
-                <a href="{$url->to('/page/forgotten_password')}">
+                <a href="{{ $url->to('/page/forgotten_password') }}">
                     {$lang->translate('forgot_password')}
                 </a>
 

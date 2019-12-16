@@ -59,7 +59,7 @@ class PurchaseService
         $user->setLastIp($ip);
 
         $purchase = new Purchase($user);
-        $purchase->setService($serviceModule->service['id']);
+        $purchase->setService($serviceModule->service->getId());
 
         $purchase->setOrder([
             'server' => $server,

@@ -74,7 +74,7 @@ class Tariff
      *
      * @return float
      */
-    public function getSmsCostBrutto()
+    public function getSmsCostGross()
     {
         /** @var Settings $settings */
         $settings = app()->make(Settings::class);

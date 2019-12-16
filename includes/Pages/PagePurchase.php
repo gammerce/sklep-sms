@@ -79,7 +79,7 @@ class PagePurchase extends Page
             }
         }
 
-        $heart->pageTitle .= " - " . $serviceModule->service['name'];
+        $heart->pageTitle .= " - " . $serviceModule->service->getName();
 
         // Sprawdzamy, czy usluga wymaga, by użytkownik był zalogowany
         // Jeżeli wymaga, to to sprawdzamy

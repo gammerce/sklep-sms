@@ -1,6 +1,7 @@
 <?php
 namespace App\Pages;
 
+use App\Html\I_ToHtml;
 use App\Routes\UrlGenerator;
 use App\System\Application;
 use App\System\CurrentPage;
@@ -65,7 +66,7 @@ abstract class Page
      * @param array $query
      * @param array $body
      *
-     * @return string - zawartość do wyświetlenia
+     * @return I_ToHtml|string
      */
     public function getContent(array $query, array $body)
     {
@@ -120,7 +121,7 @@ abstract class Page
      * @param array $query
      * @param array $body
      *
-     * @return string
+     * @return string|I_ToHtml
      */
     abstract protected function content(array $query, array $body);
 }

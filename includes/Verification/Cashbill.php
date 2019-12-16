@@ -13,7 +13,7 @@ use App\Verification\Results\SmsSuccessResult;
 
 class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
 {
-    protected $id = "cashbill";
+    const MODULE_ID = "cashbill";
 
     public function verifySms($returnCode, $number)
     {

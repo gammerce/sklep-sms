@@ -5,23 +5,15 @@ use App\Exceptions\UnauthorizedException;
 use App\Http\Responses\PlainResponse;
 use App\System\Heart;
 use App\System\Template;
-use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class TemplateResource
 {
-    public function get(
-        $name,
-        Request $request,
-        Template $template,
-        TranslationManager $translationManager,
-        Heart $heart
-    ) {
-        $lang = $translationManager->user();
-
+    public function get($name, Request $request, Template $template, Heart $heart)
+    {
         $templateName = escape_filename($name);
-        $username = htmlspecialchars($request->query->get('username'));
-        $email = htmlspecialchars($request->query->get('email'));
+        $username = $request->query->get('username');
+        $email = $request->query->get('email');
         $editedUser = null;
 
         if ($templateName == "admin_user_wallet") {

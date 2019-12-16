@@ -123,13 +123,11 @@ class User
     }
 
     /**
-     * @param bool $escape
-     *
      * @return string
      */
-    public function getUsername($escape = true)
+    public function getUsername()
     {
-        return $escape ? htmlspecialchars($this->username) : $this->username;
+        return $this->username;
     }
 
     /**
@@ -157,13 +155,11 @@ class User
     }
 
     /**
-     * @param bool $escape
-     *
      * @return string
      */
-    public function getEmail($escape = true)
+    public function getEmail()
     {
-        return $escape ? htmlspecialchars($this->email) : $this->email;
+        return $this->email;
     }
 
     /**
@@ -333,13 +329,11 @@ class User
     }
 
     /**
-     * @param bool $escape
-     *
      * @return string
      */
-    public function getPlatform($escape = false)
+    public function getPlatform()
     {
-        return $escape ? htmlspecialchars($this->platform) : $this->platform;
+        return $this->platform;
     }
 
     /**

@@ -40,13 +40,13 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase, IServ
         $warnings = [];
 
         // Serwer
-        $server = [];
+        $server = null;
         if (!strlen($purchaseData->getOrder('server'))) {
             $warnings['server'][] = $this->lang->translate('must_choose_server');
         } else {
             // Sprawdzanie czy serwer o danym id istnieje w bazie
             $server = $this->heart->getServer($purchaseData->getOrder('server'));
-            if (!$this->heart->serverServiceLinked($server['id'], $this->service['id'])) {
+            if (!$this->heart->serverServiceLinked($server->getId(), $this->service->getId())) {
                 $warnings['server'][] = $this->lang->translate('chosen_incorrect_server');
             }
         }
@@ -63,7 +63,7 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase, IServ
                         TABLE_PREFIX .
                         "pricelist` " .
                         "WHERE `service` = '%s' AND `tariff` = '%d' AND ( `server` = '%d' OR `server` = '-1' )",
-                    [$this->service['id'], $purchaseData->getTariff(), $server['id']]
+                    [$this->service->getId(), $purchaseData->getTariff(), $server->getId()]
                 )
             );
 
@@ -122,7 +122,7 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase, IServ
             $purchaseData->user->getLastIp(),
             $purchaseData->getPayment('method'),
             $purchaseData->getPayment('payment_id'),
-            $this->service['id'],
+            $this->service->getId(),
             $purchaseData->getOrder('server'),
             $purchaseData->getOrder('amount'),
             $purchaseData->getOrder('auth_data'),

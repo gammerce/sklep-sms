@@ -25,7 +25,8 @@ class UserServiceResource
             return new ApiResponse("no_service", $lang->translate('no_service'), 0);
         }
 
-        if (is_null($serviceModule = $heart->getServiceModule($userService['service']))) {
+        $serviceModule = $heart->getServiceModule($userService['service']);
+        if ($serviceModule === null) {
             return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
         }
 

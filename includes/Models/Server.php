@@ -24,7 +24,10 @@ class Server
     /** @var string */
     private $smsService;
 
-    public function __construct($id, $name, $ip, $port, $smsService = '', $type = '')
+    /** @var string */
+    private $version;
+
+    public function __construct($id, $name, $ip, $port, $smsService, $type, $version)
     {
         $this->id = $id;
         $this->name = $name;
@@ -32,6 +35,7 @@ class Server
         $this->port = $port;
         $this->smsService = $smsService;
         $this->type = $type;
+        $this->version = $version;
     }
 
     public function getId()
@@ -62,5 +66,13 @@ class Server
     public function getSmsService()
     {
         return $this->smsService;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVersion()
+    {
+        return $this->version;
     }
 }

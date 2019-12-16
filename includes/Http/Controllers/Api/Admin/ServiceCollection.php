@@ -36,7 +36,7 @@ class ServiceCollection
         $warnings = [];
         $set = "";
 
-        if (($serviceModule = $heart->getServiceModuleS($module)) === null) {
+        if (($serviceModule = $heart->getEmptyServiceModule($module)) === null) {
             $warnings['module'][] = $lang->translate('wrong_module');
         }
 

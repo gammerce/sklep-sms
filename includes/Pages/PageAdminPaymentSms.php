@@ -45,19 +45,14 @@ class PageAdminPaymentSms extends PageAdmin
             }
 
             $where .= $this->db->prepare("( t.payment_id = '%s' ) ", [$query['payid']]);
-
-            // Podświetlenie konkretnej płatności
-            //$row['class'] = "highlighted";
         }
         // Wyszukujemy dane ktore spelniaja kryteria
-        else {
-            if (isset($query['search'])) {
-                searchWhere(
-                    ["t.payment_id", "t.sms_text", "t.sms_code", "t.sms_number"],
-                    $query['search'],
-                    $where
-                );
-            }
+        elseif (isset($query['search'])) {
+            searchWhere(
+                ["t.payment_id", "t.sms_text", "t.sms_code", "t.sms_number"],
+                $query['search'],
+                $where
+            );
         }
 
         if (isset($query['payid'])) {
@@ -83,7 +78,7 @@ class PageAdminPaymentSms extends PageAdmin
         while ($row = $this->db->fetchArrayAssoc($result)) {
             $bodyRow = new BodyRow();
 
-            if ($query['highlight'] && $query['payid'] == $row['payment_id']) {
+            if ($query['payid'] == $row['payment_id']) {
                 $bodyRow->addClass('highlighted');
             }
 
@@ -104,7 +99,7 @@ class PageAdminPaymentSms extends PageAdmin
             $bodyRow->addCell(new Cell($income));
             $bodyRow->addCell(new Cell($cost));
             $bodyRow->addCell(new Cell($free));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['ip'])));
+            $bodyRow->addCell(new Cell($row['ip']));
 
             $cell = new Cell();
             $div = new Div(get_platform($row['platform']));

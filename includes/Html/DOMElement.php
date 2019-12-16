@@ -13,14 +13,14 @@ class DOMElement implements I_ToHtml
     protected $params;
 
     /**
-     * @param DOMElement|string|null $value
+     * @param I_ToHtml|I_ToHtml[]|string|string[]|null $value
      */
     public function __construct($value = null)
     {
-        if ($value instanceof DOMElement) {
-            $this->addContent($value);
-        } elseif ($value !== null) {
-            $this->addContent(new SimpleText($value));
+        $contents = is_array($value) ? $value : [$value];
+
+        foreach ($contents as $content) {
+            $this->addContent($content);
         }
     }
 
@@ -42,22 +42,22 @@ class DOMElement implements I_ToHtml
 
         $params = [];
         foreach ($this->params as $key => $value) {
-            if (!strlen($value)) {
-                continue;
+            if (strlen($value)) {
+                $params[] = htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"';
             }
-
-            $params[] = htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"';
         }
         $params = implode(' ', $params);
 
-        $output = "<{$this->getName(true)} {$params}>";
+        $tagName = htmlspecialchars($this->getName());
+
+        $output = "<{$tagName} {$params}>";
 
         if (!in_array($this->getName(), ['input', 'img', 'br', 'hr'])) {
             foreach ($this->contents as $element) {
                 $output .= $element->toHtml();
             }
 
-            $output .= "</{$this->getName(true)}>";
+            $output .= "</{$tagName}>";
         }
 
         $this->params = $oldParams;
@@ -66,38 +66,15 @@ class DOMElement implements I_ToHtml
     }
 
     /**
-     * @param I_ToHtml $element
+     * @param I_ToHtml|string $element
      */
     public function addContent($element)
     {
-        $this->contents[] = $element;
-    }
-
-    /**
-     * @param I_ToHtml $element
-     */
-    public function preaddContent($element)
-    {
-        $this->contents = array_merge([$element], $this->contents);
-    }
-
-    /**
-     * @param string   $key
-     * @param I_ToHtml $element
-     */
-    public function setContent($key, $element)
-    {
-        $this->contents[$key] = $element;
-    }
-
-    /**
-     * @param string   $key
-     * @param I_ToHtml $element
-     */
-    public function presetContent($key, $element)
-    {
-        unset($this->contents[$key]);
-        $this->contents = array_merge([$key => $element], $this->contents);
+        if ($element instanceof I_ToHtml) {
+            $this->contents[] = $element;
+        } elseif ($element !== null) {
+            $this->contents[] = new SimpleText($element);
+        }
     }
 
     /**
@@ -111,7 +88,7 @@ class DOMElement implements I_ToHtml
     }
 
     /** @return int */
-    public function getContentsAmount()
+    public function getContentsCount()
     {
         return count($this->contents);
     }
@@ -119,7 +96,7 @@ class DOMElement implements I_ToHtml
     /** @return bool */
     public function isEmpty()
     {
-        return $this->getContentsAmount() === 0;
+        return $this->getContentsCount() === 0;
     }
 
     /**
@@ -162,13 +139,11 @@ class DOMElement implements I_ToHtml
     }
 
     /**
-     * @param bool $escape
-     *
      * @return string
      */
-    public function getName($escape = false)
+    public function getName()
     {
-        return $escape ? htmlspecialchars($this->name) : $this->name;
+        return $this->name;
     }
 
     /** @param string $name */

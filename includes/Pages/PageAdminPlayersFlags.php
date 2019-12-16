@@ -57,12 +57,12 @@ class PageAdminPlayersFlags extends PageAdmin
 
             // Pozyskanie danych serwera
             $tempServer = $this->heart->getServer($row['server']);
-            $serverName = $tempServer['name'];
+            $serverName = $tempServer->getName();
             unset($tempServer);
 
             $bodyRow->setDbId($row['id']);
             $bodyRow->addCell(new Cell($serverName));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['auth_data'])));
+            $bodyRow->addCell(new Cell($row['auth_data']));
 
             foreach (str_split($this->flags) as $flag) {
                 if (!$row[$flag]) {

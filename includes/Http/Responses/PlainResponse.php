@@ -5,7 +5,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PlainResponse extends Response
 {
-    public function __construct($output)
+    public function __construct($output = '')
     {
         parent::__construct($output, 200, [
             "Expires" => "Sat, 1 Jan 2000 01:00:00 GMT",

@@ -110,11 +110,8 @@ class InstallController
         }
 
         $setupManager->start();
-
         $migrator->setup($licenseToken, $adminUsername, $adminPassword);
-
         $envCreator->create($dbHost, $dbPort, $dbDb, $dbUser, $dbPassword);
-
         $setupManager->finish();
 
         return new ApiResponse("ok", "Instalacja przebiegła pomyślnie.", true);

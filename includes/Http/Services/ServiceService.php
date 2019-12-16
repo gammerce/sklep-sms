@@ -64,14 +64,14 @@ class ServiceService
 
         // Grupy
         foreach ($groups as $group) {
-            if (is_null($this->heart->getGroup($group))) {
+            if ($this->heart->getGroup($group) === null) {
                 $warnings['groups[]'][] = $this->lang->translate('wrong_group');
                 break;
             }
         }
 
         // Przed błędami
-        if ($serviceModule !== null && $serviceModule instanceof IServiceAdminManage) {
+        if ($serviceModule instanceof IServiceAdminManage) {
             $additionalWarnings = $serviceModule->serviceAdminManagePre($body);
             $warnings = array_merge((array) $warnings, (array) $additionalWarnings);
         }
@@ -81,7 +81,7 @@ class ServiceService
         }
 
         // Po błędach wywołujemy metodę modułu
-        if ($serviceModule !== null && $serviceModule instanceof IServiceAdminManage) {
+        if ($serviceModule instanceof IServiceAdminManage) {
             $moduleData = $serviceModule->serviceAdminManagePost($body);
 
             // Tworzymy elementy SET zapytania

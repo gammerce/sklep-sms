@@ -3,21 +3,21 @@
     <head>
         <meta charset="UTF-8" />
         <title>BŁĄD LICENCJI</title>
-        <link href="{$url->versioned('build/css/shop.css')}" rel="stylesheet" />
-        <link rel="shortcut icon" href="{$url->versioned('favicon.ico')}" />
+        <link href="{{ $url->versioned('build/css/shop.css') }}" rel="stylesheet" />
+        <link rel="shortcut icon" href="{{ $url->versioned('favicon.ico') }}" />
     </head>
     <body>
         <section class="hero is-light is-fullheight">
             <div class="hero-body">
                 <div class="container">
                     <h1 class="title">
-                        {$message}
+                        {{ $message }}
                     </h1>
                     <h2 class="subtitle">
                         Możesz go zmienić na prawidłowy korzystając z
-                        <a class="has-text-link" href="{$url->to('/admin')}"
-                            >{$lang->translate('acp')}</a
-                        >
+                        <a class="has-text-link" href="{{ $url->to('/admin') }}">
+                            {$lang->translate('acp')}
+                        </a>
                     </h2>
                 </div>
             </div>

@@ -7,7 +7,6 @@ use App\Html\Cell;
 use App\Html\HeadCell;
 use App\Html\Structure;
 use App\Html\Wrapper;
-use App\Models\Purchase;
 use App\Services\Interfaces\IServiceAdminManage;
 use App\Services\Interfaces\IServiceAvailableOnServers;
 use App\Services\Interfaces\IServiceCreate;
@@ -19,7 +18,7 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
-class ServiceExtraFlagsSimple extends Service implements
+abstract class ServiceExtraFlagsSimple extends Service implements
     IServiceAdminManage,
     IServiceCreate,
     IServiceAvailableOnServers,
@@ -67,7 +66,7 @@ class ServiceExtraFlagsSimple extends Service implements
             $types .= create_dom_element("option", $this->getTypeName($optionId), [
                 'value' => $optionId,
                 'selected' =>
-                    $this->service !== null && $this->service['types'] & $optionId
+                    $this->service !== null && $this->service->getTypes() & $optionId
                         ? "selected"
                         : "",
             ]);
@@ -75,9 +74,7 @@ class ServiceExtraFlagsSimple extends Service implements
 
         // Pobieramy flagi, jeżeli service nie jest puste
         // czyli kiedy edytujemy, a nie dodajemy usługę
-        if ($this->service !== null) {
-            $flags = $this->service['flags_hsafe'];
-        }
+        $flags = $this->service ? $this->service->getFlags() : "";
 
         return $this->template->render(
             "services/extra_flags/extra_fields",
@@ -140,7 +137,7 @@ class ServiceExtraFlagsSimple extends Service implements
             $types |= $type;
         }
 
-        $extraData = $this->service['data'];
+        $extraData = $this->service->getData();
         $extraData['web'] = $data['web'];
 
         // Tworzymy plik z opisem usługi
@@ -302,7 +299,7 @@ class ServiceExtraFlagsSimple extends Service implements
             $bodyRow->addCell(
                 new Cell(
                     $row['uid']
-                        ? $row['username'] . " ({$row['uid']})"
+                        ? "{$row['username']} ({$row['uid']})"
                         : $this->lang->translate('none')
                 )
             );
@@ -327,35 +324,5 @@ class ServiceExtraFlagsSimple extends Service implements
         $wrapper->setTable($table);
 
         return $wrapper;
-    }
-
-    /**
-     * Metoda wywoływana, gdy usługa została prawidłowo zakupiona
-     *
-     * @param Purchase $purchaseData
-     *
-     * @return integer        value returned by function add_bought_service_info
-     */
-    public function purchase(Purchase $purchaseData)
-    {
-        //
-    }
-
-    /**
-     * Metoda która sprawdza poprawność wprowadzonych danych zakupu,
-     * wywoływana gdy zakup został przeprowadzony z zewnątrz, nie przez formularz na stronie WWW.
-     *
-     * @param Purchase $purchaseData
-     *
-     * @return array
-     *  status => string id wiadomości,
-     *  text => string treść wiadomości
-     *  positive => bool czy udało się przeprowadzić zakup czy nie
-     *  [data => array('warnings' => array())]
-     *  [purchase_data => Entity_Purchase dane zakupu]
-     */
-    public function purchaseDataValidate(Purchase $purchaseData)
-    {
-        //
     }
 }

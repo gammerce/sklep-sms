@@ -4,6 +4,7 @@ namespace App\Install;
 use App\Exceptions\InvalidConfigException;
 use App\Exceptions\SqlQueryException;
 use App\Http\Responses\ApiResponse;
+use App\Http\Responses\PlainResponse;
 use App\System\Application;
 use App\System\ExceptionHandlerContract;
 use App\System\Path;
@@ -37,7 +38,7 @@ class ExceptionHandler implements ExceptionHandlerContract
     public function render(Request $request, Exception $e)
     {
         if ($e instanceof InvalidConfigException) {
-            return new Response($e->getMessage());
+            return new PlainResponse($e->getMessage());
         }
 
         return new ApiResponse(
@@ -68,7 +69,7 @@ class ExceptionHandler implements ExceptionHandlerContract
         $input = [
             "Message: " . $this->lang->translate('mysqli_' . $e->getMessage()),
             "Error: " . $e->getError(),
-            "Query: " . $e->getQuery(false),
+            "Query: " . $e->getQuery(),
         ];
 
         $this->logError(implode("\n", $input));

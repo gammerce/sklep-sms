@@ -17,7 +17,7 @@
                                 id="id"
                                 name="id"
                                 class="input is-small"
-                                value="{$service['id_hsafe']}"
+                                value="{{ $service->getId() }}"
                                 maxlength="16"
                                 required
                             />
@@ -37,7 +37,7 @@
                                 id="name"
                                 name="name"
                                 class="input is-small"
-                                value="{$service['name']}"
+                                value="{{ $service->getName() }}"
                                 maxlength="32"
                                 required
                             />
@@ -61,7 +61,7 @@
                                 name="short_description"
                                 class="input is-small"
                                 maxlength="28"
-                                value="{$service['short_description']}"
+                                value="{{ $service->getShortDescription() }}"
                             />
                         </div>
                     </div>
@@ -83,7 +83,7 @@
                                 class="textarea is-small"
                                 style="height: 80px;"
                             >
-{$service['description']}</textarea
+{{ $service->getDescription() }}</textarea
                             >
                         </div>
                     </div>
@@ -101,7 +101,7 @@
                                 id="tag"
                                 name="tag"
                                 class="input is-small"
-                                value="{$service['tag']}"
+                                value="{{ $service->getTag() }}"
                                 maxlength="16"
                             />
                         </div>
@@ -120,7 +120,7 @@
                                 id="order"
                                 name="order"
                                 class="input is-small"
-                                value="{$service['order']}"
+                                value="{{ $service->getOrder() }}"
                             />
                         </div>
                     </div>
@@ -148,7 +148,7 @@
             </tr>
             <tr>
                 <td>{$lang->strtoupper($lang->translate('module'))}</td>
-                <td>{$serviceModuleName}</td>
+                <td>{{ $serviceModuleName }}</td>
             </tr>
         </tbody>
 
@@ -160,7 +160,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <input type="hidden" name="id2" value="{$service['id']}" />
+                    <input type="hidden" name="id2" value="{{ $service->getId() }}" />
                     <input type="submit" value="{$lang->translate('edit')}" class="button w100" />
                 </td>
             </tr>

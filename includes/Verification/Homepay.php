@@ -10,7 +10,7 @@ use App\Verification\Results\SmsSuccessResult;
 
 class Homepay extends PaymentModule implements SupportSms
 {
-    protected $id = 'homepay';
+    const MODULE_ID = 'homepay';
 
     public function verifySms($returnCode, $number)
     {

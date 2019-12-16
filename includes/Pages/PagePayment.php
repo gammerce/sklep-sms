@@ -63,7 +63,7 @@ class PagePayment extends Page
             );
 
             if ($paymentModule instanceof SupportSms) {
-                $smsCode = htmlspecialchars($paymentModule->getSmsCode());
+                $smsCode = $paymentModule->getSmsCode();
                 $paymentMethods .= $this->template->render(
                     'payment_method_sms',
                     compact('purchaseData', 'smsCode')
@@ -106,8 +106,8 @@ class PagePayment extends Page
             $paymentMethods .= $this->template->render("payment_method_code");
         }
 
-        $purchaseData = htmlspecialchars($body['data']);
-        $purchaseSign = htmlspecialchars($body['sign']);
+        $purchaseData = $body['data'];
+        $purchaseSign = $body['sign'];
 
         return $this->template->render(
             "payment_form",
