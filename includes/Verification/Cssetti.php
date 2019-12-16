@@ -14,7 +14,7 @@ use App\Verification\Results\SmsSuccessResult;
 
 class Cssetti extends PaymentModule implements SupportSms
 {
-    protected $id = "cssetti";
+    const MODULE_ID = "cssetti";
 
     /** @var string */
     private $smsCode;

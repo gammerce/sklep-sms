@@ -17,7 +17,7 @@ use App\Verification\Abstracts\SupportTransfer;
  */
 class Transferuj extends PaymentModule implements SupportTransfer
 {
-    protected $id = "transferuj";
+    const MODULE_ID = "transferuj";
 
     /** @var Settings */
     private $settings;

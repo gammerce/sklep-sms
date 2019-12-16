@@ -12,7 +12,7 @@ use App\Verification\Results\SmsSuccessResult;
 
 class Bizneshost extends PaymentModule implements SupportSms
 {
-    protected $id = "bizneshost";
+    const MODULE_ID = "bizneshost";
 
     public function verifySms($returnCode, $number)
     {

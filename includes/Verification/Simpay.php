@@ -12,7 +12,7 @@ use App\Verification\Results\SmsSuccessResult;
 
 class Simpay extends PaymentModule implements SupportSms
 {
-    protected $id = "simpay";
+    const MODULE_ID = "simpay";
 
     public function verifySms($returnCode, $number)
     {

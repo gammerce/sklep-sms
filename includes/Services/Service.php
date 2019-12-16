@@ -29,7 +29,6 @@ abstract class Service
     /** @var Database */
     protected $db;
 
-    // TODO Refactor creating it
     public function __construct(\App\Models\Service $service = null)
     {
         $this->app = app();

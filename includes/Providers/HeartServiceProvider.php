@@ -78,24 +78,22 @@ class HeartServiceProvider
         $this->registerServices($heart);
     }
 
-    // TODO Get id from class
-
     protected function registerPaymentModules(Heart $heart)
     {
-        $heart->registerPaymentModule('1s1k', OneShotOneKill::class);
-        $heart->registerPaymentModule('bizneshost', Bizneshost::class);
-        $heart->registerPaymentModule('cashbill', Cashbill::class);
-        $heart->registerPaymentModule('cssetti', Cssetti::class);
-        $heart->registerPaymentModule('gosetti', Gosetti::class);
-        $heart->registerPaymentModule('homepay', Homepay::class);
-        $heart->registerPaymentModule('hostplay', Hostplay::class);
-        $heart->registerPaymentModule('microsms', Microsms::class);
-        $heart->registerPaymentModule('mintshost', Mintshost::class);
-        $heart->registerPaymentModule('profitsms', Profitsms::class);
-        $heart->registerPaymentModule('pukawka', Pukawka::class);
-        $heart->registerPaymentModule('simpay', Simpay::class);
-        $heart->registerPaymentModule('transferuj', Transferuj::class);
-        $heart->registerPaymentModule('zabijaka', Zabijaka::class);
+        $heart->registerPaymentModule(OneShotOneKill::MODULE_ID, OneShotOneKill::class);
+        $heart->registerPaymentModule(Bizneshost::MODULE_ID, Bizneshost::class);
+        $heart->registerPaymentModule(Cashbill::MODULE_ID, Cashbill::class);
+        $heart->registerPaymentModule(Cssetti::MODULE_ID, Cssetti::class);
+        $heart->registerPaymentModule(Gosetti::MODULE_ID, Gosetti::class);
+        $heart->registerPaymentModule(Homepay::MODULE_ID, Homepay::class);
+        $heart->registerPaymentModule(Hostplay::MODULE_ID, Hostplay::class);
+        $heart->registerPaymentModule(Microsms::MODULE_ID, Microsms::class);
+        $heart->registerPaymentModule(Mintshost::MODULE_ID, Mintshost::class);
+        $heart->registerPaymentModule(Profitsms::MODULE_ID, Profitsms::class);
+        $heart->registerPaymentModule(Pukawka::MODULE_ID, Pukawka::class);
+        $heart->registerPaymentModule(Simpay::MODULE_ID, Simpay::class);
+        $heart->registerPaymentModule(Transferuj::MODULE_ID, Transferuj::class);
+        $heart->registerPaymentModule(Zabijaka::MODULE_ID, Zabijaka::class);
     }
 
     protected function registerPages(Heart $heart)
