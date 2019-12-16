@@ -47,7 +47,7 @@ class Wrapper extends Div
 
         foreach ($this->buttons as $button) {
             $buttons->addContent($button);
-            $buttons->addContent(new SimpleText(' '));
+            $buttons->addContent(' ');
         }
 
         $title = new Div($this->getTitle());

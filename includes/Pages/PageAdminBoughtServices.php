@@ -103,15 +103,12 @@ class PageAdminBoughtServices extends PageAdmin
                     ? $row['amount'] . ' ' . $service->getTag()
                     : $this->lang->translate('forever');
 
-            // Rozkulbaczenie extra daty
             $row['extra_data'] = json_decode($row['extra_data'], true);
             $extraData = [];
             foreach ($row['extra_data'] as $key => $value) {
                 if (!strlen($value)) {
                     continue;
                 }
-
-                $value = htmlspecialchars($value);
 
                 if ($key == "password") {
                     $key = $this->lang->translate('password');
@@ -120,7 +117,7 @@ class PageAdminBoughtServices extends PageAdmin
                     $value = ExtraFlagType::getTypeName($value);
                 }
 
-                $extraData[] = $key . ': ' . $value;
+                $extraData[] = htmlspecialchars("$key: $value");
             }
             $extraData = implode('<br />', $extraData);
 
@@ -132,7 +129,7 @@ class PageAdminBoughtServices extends PageAdmin
                 $this->url->to("/admin/payment_{$row['payment']}?payid={$row['payment_id']}")
             );
             $paymentLink->setParam('target', '_blank');
-            $paymentLink->addContent(new SimpleText($this->lang->translate('see_payment')));
+            $paymentLink->addContent($this->lang->translate('see_payment'));
 
             $bodyRow->addAction($paymentLink);
 

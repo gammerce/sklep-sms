@@ -121,7 +121,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
     {
         $button = new Link();
         $button->addClass('dropdown-item charge_wallet');
-        $button->addContent(new SimpleText($this->lang->translate('charge')));
+        $button->addContent($this->lang->translate('charge'));
         return $button;
     }
 
@@ -129,7 +129,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
     {
         $button = new Link();
         $button->addClass('dropdown-item change_password');
-        $button->addContent(new SimpleText($this->lang->translate('change_password')));
+        $button->addContent($this->lang->translate('change_password'));
         return $button;
     }
 

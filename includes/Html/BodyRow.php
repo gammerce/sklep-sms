@@ -105,14 +105,14 @@ class BodyRow extends Row
         if ($this->editAction) {
             $editAction = new Link();
             $editAction->addClass("dropdown-item edit_row");
-            $editAction->addContent(new SimpleText($lang->translate('edit')));
+            $editAction->addContent($lang->translate('edit'));
             $actions->addContent($editAction);
         }
 
         if ($this->deleteAction) {
             $deleteAction = new Link();
             $deleteAction->addClass("dropdown-item delete_row has-text-danger");
-            $deleteAction->addContent(new SimpleText($lang->translate('delete')));
+            $deleteAction->addContent($lang->translate('delete'));
             $actions->addContent($deleteAction);
         }
 
