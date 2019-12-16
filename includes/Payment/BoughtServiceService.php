@@ -1,6 +1,7 @@
 <?php
 namespace App\Payment;
 
+use App\Models\BoughtService;
 use App\Repositories\BoughtServiceRepository;
 use App\System\Database;
 use App\System\Heart;
@@ -47,16 +48,16 @@ class BoughtServiceService
      * Add information about purchasing a service
      *
      * @param integer $uid
-     * @param string  $userName
-     * @param string  $ip
-     * @param string  $method
-     * @param string  $paymentId
-     * @param string  $service
-     * @param integer $server
-     * @param string  $amount
-     * @param string  $authData
-     * @param string  $email
-     * @param array   $extraData
+     * @param string $userName
+     * @param string $ip
+     * @param string $method
+     * @param string $paymentId
+     * @param string $serviceId
+     * @param integer $serverId
+     * @param string $amount
+     * @param string $authData
+     * @param string $email
+     * @param array $extraData
      *
      * @return int
      */
@@ -66,8 +67,8 @@ class BoughtServiceService
         $ip,
         $method,
         $paymentId,
-        $service,
-        $server,
+        $serviceId,
+        $serverId,
         $amount,
         $authData,
         $email,
@@ -77,55 +78,69 @@ class BoughtServiceService
             $uid,
             $method,
             $paymentId,
-            $service,
-            $server,
+            $serviceId,
+            $serverId,
             $amount,
             $authData,
             $email,
             $extraData
         );
 
-        $ret = $this->lang->translate('none');
-        if (strlen($email)) {
-            $message = purchase_info([
-                'purchase_id' => $boughtService->getId(),
-                'action' => "email",
-            ]);
-            if (strlen($message)) {
-                $title =
-                    $service == 'charge_wallet'
-                        ? $this->lang->translate('charge_wallet')
-                        : $this->lang->translate('purchase');
-                $ret = $this->mailer->send($email, $authData, $title, $message);
-            }
+        $returnMessage = $this->sendEmail($serviceId, $authData, $email, $boughtService);
 
-            if ($ret == "not_sent") {
-                $ret = "nie wysłano";
-            } elseif ($ret == "sent") {
-                $ret = "wysłano";
-            }
-        }
-
-        $tmpService = $this->heart->getService($service);
-        $tmpServer = $this->heart->getServer($server);
+        $service = $this->heart->getService($serviceId);
+        $server = $this->heart->getServer($serverId);
         $amount =
-            $amount != -1 ? "{$amount} {$tmpService->getTag()}" : $this->lang->translate('forever');
+            $amount != -1 ? "{$amount} {$service->getTag()}" : $this->lang->translate('forever');
+
         log_to_db(
             $this->langShop->sprintf(
                 $this->langShop->translate('bought_service_info'),
-                $service,
+                $serviceId,
                 $authData,
                 $amount,
-                $tmpServer->getName(),
+                $server ? $server->getName() : '',
                 $paymentId,
-                $ret,
+                $returnMessage,
                 $userName,
                 $uid,
                 $ip
             )
         );
-        unset($tmpServer);
 
         return $boughtService->getId();
+    }
+
+    private function sendEmail($service, $authData, $email, BoughtService $boughtService): string
+    {
+        if (!strlen($email)) {
+            return $this->lang->translate('none');
+        }
+
+        $message = purchase_info([
+            'purchase_id' => $boughtService->getId(),
+            'action' => "email",
+        ]);
+
+        if (!strlen($message)) {
+            return $this->lang->translate('none');
+        }
+
+        $title =
+            $service == 'charge_wallet'
+                ? $this->lang->translate('charge_wallet')
+                : $this->lang->translate('purchase');
+
+        $ret = $this->mailer->send($email, $authData, $title, $message);
+
+        if ($ret == "not_sent") {
+            return "nie wysłano";
+        }
+
+        if ($ret == "sent") {
+            return "wysłano";
+        }
+
+        return $ret;
     }
 }

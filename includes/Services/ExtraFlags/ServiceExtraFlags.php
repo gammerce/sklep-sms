@@ -323,13 +323,22 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $email = $purchaseData->getEmail() ?: $this->lang->translate('none');
         $authData = $purchaseData->getOrder('auth_data');
         $serviceName = $this->service->getName();
+        $serverName = $server->getName();
         $amount = !$purchaseData->getOrder('forever')
             ? $purchaseData->getOrder('amount') . " " . $this->service->getTag()
             : $this->lang->translate('forever');
 
         return $this->template->render(
             "services/extra_flags/order_details",
-            compact('server', 'amount', 'typeName', 'authData', 'password', 'email', 'serviceName'),
+            compact(
+                'amount',
+                'typeName',
+                'authData',
+                'password',
+                'email',
+                'serviceName',
+                'serverName'
+            ),
             true,
             false
         );
@@ -618,8 +627,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         if ($action == "email") {
             return $this->template->render(
                 "services/extra_flags/purchase_info_email",
-                compact('data', 'amount', 'server', 'password', 'setinfo') + [
+                compact('data', 'amount', 'password', 'setinfo') + [
                     'serviceName' => $this->service->getName(),
+                    'serverName' => $server->getName(),
                 ],
                 true,
                 false
@@ -629,8 +639,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         if ($action == "web") {
             return $this->template->render(
                 "services/extra_flags/purchase_info_web",
-                compact('cost', 'server', 'amount', 'data', 'password', 'setinfo') + [
+                compact('cost', 'amount', 'data', 'password', 'setinfo') + [
                     'serviceName' => $this->service->getName(),
+                    'serverName' => $server->getName(),
                 ],
                 true,
                 false
@@ -1055,9 +1066,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         }
 
         // Serwer
-        $tmpServer = $this->heart->getServer($userService['server']);
-        $serviceInfo['server'] = $tmpServer->getName();
-        unset($tmpServer);
+        $server = $this->heart->getServer($userService['server']);
+        $serviceInfo['server'] = $server->getName();
 
         // Wygasa
         $serviceInfo['expire'] =
@@ -1080,11 +1090,10 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             $userService['expire'] == -1
                 ? $this->lang->translate('never')
                 : date($this->settings['date_format'], $userService['expire']);
-        $tmpServer = $this->heart->getServer($userService['server']);
-        $serviceInfo['server'] = $tmpServer->getName();
+        $server = $this->heart->getServer($userService['server']);
+        $serviceInfo['server'] = $server->getName();
         $serviceInfo['service'] = $this->service->getName();
         $serviceInfo['type'] = $this->getTypeName2($userService['type']);
-        unset($tmpServer);
 
         return $this->template->render(
             "services/extra_flags/user_own_service",
