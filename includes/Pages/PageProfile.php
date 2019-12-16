@@ -21,11 +21,11 @@ class PageProfile extends Page implements IBeLoggedMust
     protected function content(array $query, array $body)
     {
         $user = $this->auth->user();
-        $email = htmlspecialchars($user->getEmail(false));
-        $username = htmlspecialchars($user->getUsername(false));
-        $forename = htmlspecialchars($user->getForename());
-        $surname = htmlspecialchars($user->getSurname());
-        $steamId = htmlspecialchars($user->getSteamId());
+        $email = $user->getEmail();
+        $username = $user->getUsername();
+        $forename = $user->getForename();
+        $surname = $user->getSurname();
+        $steamId = $user->getSteamId();
 
         return $this->template->render(
             "profile",

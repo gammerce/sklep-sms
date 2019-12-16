@@ -1,7 +1,7 @@
-<input type="password" class="display_none" /> <strong>{$lang->translate('service')}</strong>:
-{$serviceInfo['service']}<br />
-<strong>{$lang->translate('server')}</strong>: {$serviceInfo['server']}<br />
-<strong>{$lang->translate('expire')}</strong>: {$serviceInfo['expire']}<br />
+<input type="password" class="display_none" /> <strong>{$lang->translate('service')}</strong>: {{
+$serviceInfo['service'] }}<br />
+<strong>{$lang->translate('server')}</strong>: {{ $serviceInfo['server'] }}<br />
+<strong>{$lang->translate('expire')}</strong>: {{ $serviceInfo['expire'] }}<br />
 <hr />
 
 <div class="table_form">
@@ -22,7 +22,7 @@
         </div>
     </div>
 
-    <div class="row type_nick" style="{$styles['nick']}">
+    <div class="row type_nick" style="{{ $styles['nick'] }}">
         <div class="cell">
             <label for="nick">{$lang->translate('nick')}</label>
         </div>
@@ -35,14 +35,14 @@
                         name="nick"
                         class="input is-small"
                         maxlength="32"
-                        value="{$serviceInfo['player_nick']}"
+                        value="{{ $serviceInfo['player_nick'] }}"
                     />
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row type_ip" style="{$styles['ip']}">
+    <div class="row type_ip" style="{{ $styles['ip'] }}">
         <div class="cell">
             <label for="ip">{$lang->translate('ip')}</label>
         </div>
@@ -55,14 +55,14 @@
                         name="ip"
                         class="input is-small"
                         maxlength="21"
-                        value="{$serviceInfo['player_ip']}"
+                        value="{{ $serviceInfo['player_ip'] }}"
                     />
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row type_sid" style="{$styles['sid']}">
+    <div class="row type_sid" style="{{ $styles['sid'] }}">
         <div class="cell">
             <label for="sid">{$lang->translate('sid')}</label>
         </div>
@@ -75,14 +75,14 @@
                         name="sid"
                         class="input is-small"
                         maxlength="32"
-                        value="{$serviceInfo['player_sid']}"
+                        value="{{ $serviceInfo['player_sid'] }}"
                     />
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row type_password" style="{$styles['password']}">
+    <div class="row type_password" style="{{ $styles['password'] }}">
         <div class="cell">
             <label for="password">{$lang->translate('password')}</label>
         </div>
@@ -95,7 +95,7 @@
                         name="password"
                         class="input is-small"
                         maxlength="32"
-                        placeholder="{$serviceInfo['password']}"
+                        placeholder="{{ $serviceInfo['password'] }}"
                     />
                 </div>
             </div>

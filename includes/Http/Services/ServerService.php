@@ -80,17 +80,15 @@ class ServerService
         $serversServices = [];
         foreach ($this->heart->getServices() as $service) {
             // Dana usługa nie może być kupiona na serwerze
-            if (
-                !is_null($serviceModule = $this->heart->getServiceModule($service['id'])) &&
-                !($serviceModule instanceof IServiceAvailableOnServers)
-            ) {
+            $serviceModule = $this->heart->getServiceModule($service->getId());
+            if (!($serviceModule instanceof IServiceAvailableOnServers)) {
                 continue;
             }
 
             $serversServices[] = [
-                'service' => $service['id'],
+                'service' => $service->getId(),
                 'server' => $serverId,
-                'status' => (bool) $body[$service['id']],
+                'status' => (bool) $body[$service->getId()],
             ];
         }
 

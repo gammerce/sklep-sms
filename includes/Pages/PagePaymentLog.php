@@ -1,6 +1,7 @@
 <?php
 namespace App\Pages;
 
+use App\Html\UnescapedSimpleText;
 use App\Interfaces\IBeLoggedMust;
 use App\Services\Interfaces\IServicePurchaseWeb;
 use App\System\Auth;
@@ -55,7 +56,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
 
         $paymentLogs = "";
         while ($row = $db->fetchArrayAssoc($result)) {
-            $date = htmlspecialchars($row['timestamp']);
+            $date = $row['timestamp'];
             $cost = number_format($row['cost'] / 100.0, 2) . " " . $settings['currency'];
 
             if (
@@ -70,16 +71,13 @@ class PagePaymentLog extends Page implements IBeLoggedMust
                 $tmpServer = $heart->getServer($row['server']);
                 $desc = $lang->sprintf(
                     $lang->translate('service_was_bought'),
-                    $tmpService['name'],
-                    $tmpServer['name']
+                    $tmpService->getName(),
+                    $tmpServer->getName()
                 );
                 $class = "outcome";
                 unset($tmpService);
                 unset($tmpServer);
             }
-
-            $row['auth_data'] = htmlspecialchars($row['auth_data']);
-            $row['email'] = htmlspecialchars($row['email']);
 
             $paymentLogBrick = $template->render(
                 "payment_log_brick",
@@ -87,7 +85,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
             );
             $paymentLogs .= create_dom_element(
                 "div",
-                $paymentLogBrick,
+                new UnescapedSimpleText($paymentLogBrick),
                 $data = [
                     'class' => "brick " . $class,
                 ]

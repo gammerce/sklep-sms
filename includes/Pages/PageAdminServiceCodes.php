@@ -83,9 +83,9 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
             }
 
             $bodyRow->setDbId($row['id']);
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['code'])));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['service'])));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['server'])));
+            $bodyRow->addCell(new Cell($row['code']));
+            $bodyRow->addCell(new Cell($row['service']));
+            $bodyRow->addCell(new Cell($row['server']));
             $bodyRow->addCell(new Cell($amount));
             $bodyRow->addCell(new Cell($username));
             $bodyRow->addCell(new Cell(convertDate($row['timestamp'])));
@@ -124,7 +124,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
             case "code_add":
                 // Pobranie usług
                 $services = "";
-                foreach ($this->heart->getServices() as $id => $row) {
+                foreach ($this->heart->getServices() as $id => $service) {
                     if (
                         ($serviceModule = $this->heart->getServiceModule($id)) === null ||
                         !($serviceModule instanceof IServiceServiceCodeAdminManage)
@@ -132,8 +132,8 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
                         continue;
                     }
 
-                    $services .= create_dom_element("option", $row['name'], [
-                        'value' => $row['id'],
+                    $services .= create_dom_element("option", $service->getName(), [
+                        'value' => $service->getId(),
                     ]);
                 }
 

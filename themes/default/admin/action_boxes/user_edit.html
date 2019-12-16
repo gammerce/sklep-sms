@@ -5,7 +5,7 @@
     <table>
         <tr>
             <td>{$lang->translate('id')}</td>
-            <td>{$uid}</td>
+            <td>{{ $uid }}</td>
         </tr>
         <tr>
             <td colspan="2" class="line"></td>
@@ -23,7 +23,7 @@
                             name="username"
                             class="input is-small"
                             maxlength="64"
-                            value="{$username}"
+                            value="{{ $username }}"
                         />
                     </div>
                 </div>
@@ -42,7 +42,7 @@
                             name="forename"
                             class="input is-small"
                             maxlength="32"
-                            value="{$forename}"
+                            value="{{ $forename }}"
                         />
                     </div>
                 </div>
@@ -61,7 +61,7 @@
                             name="surname"
                             class="input is-small"
                             maxlength="64"
-                            value="{$surname}"
+                            value="{{ $surname }}"
                         />
                     </div>
                 </div>
@@ -80,7 +80,7 @@
                             name="email"
                             class="input is-small"
                             maxlength="128"
-                            value="{$email}"
+                            value="{{ $email }}"
                         />
                     </div>
                 </div>
@@ -99,7 +99,7 @@
                             name="steam_id"
                             class="input is-small"
                             maxlength="128"
-                            value="{$steamId}"
+                            value="{{ $steamId }}"
                         />
                     </div>
                 </div>
@@ -138,12 +138,12 @@
                             class="input is-small"
                             maxlength="32"
                             step="0.01"
-                            value="{$wallet}"
+                            value="{{ $wallet }}"
                         />
                     </div>
                     <div class="control">
                         <a class="button is-static is-small">
-                            {$settings['currency']}
+                            {{ $settings['currency'] }}
                         </a>
                     </div>
                 </div>
@@ -154,7 +154,7 @@
         </tr>
         <tr>
             <td colspan="2">
-                <input type="hidden" name="uid" value="{$uid}" />
+                <input type="hidden" name="uid" value="{{ $uid }}" />
                 <input type="submit" value="{$lang->translate('edit')}" class="button w100" />
             </td>
         </tr>

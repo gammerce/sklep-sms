@@ -15,7 +15,7 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
-class ServiceMybbExtraGroupsSimple extends Service implements
+abstract class ServiceMybbExtraGroupsSimple extends Service implements
     IServiceAdminManage,
     IServiceCreate,
     IServiceUserServiceAdminDisplay
@@ -57,13 +57,13 @@ class ServiceMybbExtraGroupsSimple extends Service implements
         // Jeżeli edytujemy
         if ($this->service !== null) {
             // DB
-            $dbPassword = strlen($this->service['data']['db_password']) ? "********" : "";
-            $dbHost = htmlspecialchars($this->service['data']['db_host']);
-            $dbUser = htmlspecialchars($this->service['data']['db_user']);
-            $dbName = htmlspecialchars($this->service['data']['db_name']);
+            $dbPassword = strlen($this->service->getData()['db_password']) ? "********" : "";
+            $dbHost = $this->service->getData()['db_host'];
+            $dbUser = $this->service->getData()['db_user'];
+            $dbName = $this->service->getData()['db_name'];
 
             // MyBB groups
-            $mybbGroups = htmlspecialchars($this->service['data']['mybb_groups']);
+            $mybbGroups = $this->service->getData()['mybb_groups'];
         }
 
         return $this->template->render(
@@ -165,7 +165,10 @@ class ServiceMybbExtraGroupsSimple extends Service implements
             'web' => $data['web'],
             'db_host' => $data['db_host'],
             'db_user' => $data['db_user'],
-            'db_password' => if_strlen($data['db_password'], $this->service['data']['db_password']),
+            'db_password' => if_strlen(
+                $data['db_password'],
+                $this->service->getData()['db_password']
+            ),
             'db_name' => $data['db_name'],
         ];
 

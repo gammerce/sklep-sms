@@ -100,7 +100,6 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                 );
             } else {
                 $group = $this->db->fetchArrayAssoc($result);
-                $group['name'] = htmlspecialchars($group['name']);
             }
         }
 
@@ -129,7 +128,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                 ]
             );
 
-            $name = htmlspecialchars($row['Field']);
+            $name = $row['Field'];
             $text = $this->lang->translate('privilege_' . $row['Field']);
 
             $privileges .= $this->template->render(

@@ -22,7 +22,7 @@ use App\Verification\Results\SmsSuccessResult;
  */
 class Microsms extends PaymentModule implements SupportSms, SupportTransfer
 {
-    protected $id = "microsms";
+    const MODULE_ID = "microsms";
 
     /** @var Settings */
     private $settings;

@@ -7,9 +7,18 @@ use App\System\Template;
 
 abstract class Service
 {
+    /**
+     * Module identifier defined by inheriting class
+     */
     const MODULE_ID = '';
+
+    /**
+     * Database table where user services are stored
+     */
     const USER_SERVICE_TABLE = '';
-    public $service = [];
+
+    /** @var \App\Models\Service|null */
+    public $service;
 
     /** @var Application */
     protected $app;
@@ -20,18 +29,11 @@ abstract class Service
     /** @var Database */
     protected $db;
 
-    public function __construct($service = null)
+    public function __construct(\App\Models\Service $service = null)
     {
         $this->app = app();
         $this->template = $this->app->make(Template::class);
         $this->db = $this->app->make(Database::class);
-
-        if (!is_array($service)) {
-            // Podano błędne dane usługi
-            $this->service = null;
-            return;
-        }
-
         $this->service = $service;
     }
 
@@ -73,7 +75,7 @@ abstract class Service
     public function showOnWeb()
     {
         if ($this->service !== null) {
-            return $this->service['data']['web'];
+            return $this->service->getData()['web'];
         }
 
         return false;
@@ -88,13 +90,13 @@ abstract class Service
      */
     public function descriptionLongGet()
     {
-        $file = "services/" . escape_filename($this->service['id']) . "_desc";
+        $file = "services/" . escape_filename($this->service->getId()) . "_desc";
         return $this->template->render($file, [], true, false);
     }
 
     public function descriptionShortGet()
     {
-        return $this->service['description'];
+        return $this->service->getDescription();
     }
 
     public function getModuleId()

@@ -1,6 +1,11 @@
-<form class="row" data-module="{$moduleId}" data-row="{$userService['id']}" autocomplete="off">
-    <strong>{$lang->translate('service')}</strong>: {$service}<br />
-    <strong>{$lang->translate('mybb_user')}</strong>: {$mybbUid}<br />
+<form
+    class="row"
+    data-module="{{ $moduleId }}"
+    data-row="{{ $userService['id'] }}"
+    autocomplete="off"
+>
+    <strong>{$lang->translate('service')}</strong>: {{ $service }}<br />
+    <strong>{$lang->translate('mybb_user')}</strong>: {{ $mybbUid }}<br />
     <br />
-    <strong>{$lang->translate('expire')}</strong>: {$expire}
+    <strong>{$lang->translate('expire')}</strong>: {{ $expire }}
 </form>

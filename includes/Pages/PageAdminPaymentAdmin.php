@@ -45,17 +45,17 @@ class PageAdminPaymentAdmin extends PageAdmin
         while ($row = $this->db->fetchArrayAssoc($result)) {
             $bodyRow = new BodyRow();
 
-            if ($query['highlight'] && $query['payid'] == $row['payment_id']) {
+            if ($query['payid'] == $row['payment_id']) {
                 $bodyRow->addClass('highlighted');
             }
 
             $adminname = $row['aid']
-                ? htmlspecialchars($row['adminname']) . " ({$row['aid']})"
+                ? "{$row['adminname']} ({$row['aid']})"
                 : $this->lang->translate('none');
 
             $bodyRow->setDbId($row['id']);
             $bodyRow->addCell(new Cell($adminname));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['ip'])));
+            $bodyRow->addCell(new Cell($row['ip']));
 
             $cell = new Cell();
             $div = new Div(get_platform($row['platform']));

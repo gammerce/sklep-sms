@@ -1,6 +1,6 @@
 <meta http-equiv="Content-Type" content="text/plain" charset="UTF-8" />
 <title>
-    {$lang->translate('acp_short')}: {$heart->pageTitle} - {$lang->translate('shop_sms')}
+    {$lang->translate('acp_short')}: {{ $heart->pageTitle }} - {$lang->translate('shop_sms')}
 </title>
 
 <script
@@ -8,15 +8,15 @@
     src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"
 ></script>
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-<script type="text/javascript" src="{$url->versioned('build/js/admin.js')}"></script>
-<script type="text/javascript" src="{$url->versioned('js.php?script=language')}"></script>
+<script type="text/javascript" src="{{ $url->versioned('build/js/admin.js') }}"></script>
+<script type="text/javascript" src="{{ $url->versioned('js.php?script=language') }}"></script>
 <script type="text/javascript">
-    var language = "{$lang->getCurrentLanguage()}";
-    var baseUrl = "{$url->to('/')}";
-    var currentPage = "{$currentPage->getPid()}";
+    var language = "{{ $lang->getCurrentLanguage() }}";
+    var baseUrl = "{{ $url->to('/') }}";
+    var currentPage = "{{ $currentPage->getPid() }}";
 </script>
 {$heart->scriptsGet()}
 
-<link href="{$url->versioned('build/css/admin.css')}" rel="stylesheet" />
-<link rel="shortcut icon" href="{$url->to('favicon.ico')}" />
+<link href="{{ $url->versioned('build/css/admin.css') }}" rel="stylesheet" />
+<link rel="shortcut icon" href="{{ $url->to('favicon.ico') }}" />
 {$heart->stylesGet()}

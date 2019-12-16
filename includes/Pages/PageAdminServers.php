@@ -35,13 +35,13 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
         );
         $table->addHeadCell(new HeadCell($this->lang->translate('version')));
 
-        foreach ($this->heart->getServers() as $row) {
+        foreach ($this->heart->getServers() as $server) {
             $bodyRow = new BodyRow();
 
-            $bodyRow->setDbId($row['id']);
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['name'])));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['ip'] . ':' . $row['port'])));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['version'])));
+            $bodyRow->setDbId($server->getId());
+            $bodyRow->addCell(new Cell($server->getName()));
+            $bodyRow->addCell(new Cell($server->getIp() . ':' . $server->getPort()));
+            $bodyRow->addCell(new Cell($server->getVersion()));
 
             if (get_privileges("manage_servers")) {
                 $bodyRow->setDeleteAction(true);
@@ -76,8 +76,6 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
         if ($boxId == "server_edit") {
             $server = $this->heart->getServer($query['id']);
-            $server['ip'] = htmlspecialchars($server['ip']);
-            $server['port'] = htmlspecialchars($server['port']);
         }
 
         // Pobranie listy serwisów transakcyjnych
@@ -86,23 +84,19 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
         );
         $smsServices = "";
         while ($row = $this->db->fetchArrayAssoc($result)) {
-            if (!$row['sms']) {
-                continue;
+            if ($row['sms']) {
+                $smsServices .= create_dom_element("option", $row['name'], [
+                    'value' => $row['id'],
+                    'selected' => $row['id'] == $server->getSmsService() ? "selected" : "",
+                ]);
             }
-
-            $smsServices .= create_dom_element("option", $row['name'], [
-                'value' => $row['id'],
-                'selected' => $row['id'] == $server['sms_service'] ? "selected" : "",
-            ]);
         }
 
         $services = "";
         foreach ($this->heart->getServices() as $service) {
             // Dana usługa nie może być kupiona na serwerze
-            if (
-                ($serviceModule = $this->heart->getServiceModule($service['id'])) === null ||
-                !($serviceModule instanceof IServiceAvailableOnServers)
-            ) {
+            $serviceModule = $this->heart->getServiceModule($service->getId());
+            if (!($serviceModule instanceof IServiceAvailableOnServers)) {
                 continue;
             }
 
@@ -111,7 +105,10 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                 $this->lang->strtoupper($this->lang->translate('no')),
                 [
                     'value' => 0,
-                    'selected' => $this->heart->serverServiceLinked($server['id'], $service['id'])
+                    'selected' => $this->heart->serverServiceLinked(
+                        $server->getId(),
+                        $service->getId()
+                    )
                         ? ""
                         : "selected",
                 ]
@@ -122,14 +119,17 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                 $this->lang->strtoupper($this->lang->translate('yes')),
                 [
                     'value' => 1,
-                    'selected' => $this->heart->serverServiceLinked($server['id'], $service['id'])
+                    'selected' => $this->heart->serverServiceLinked(
+                        $server->getId(),
+                        $service->getId()
+                    )
                         ? "selected"
                         : "",
                 ]
             );
 
-            $name = htmlspecialchars($service['id']);
-            $text = htmlspecialchars("{$service['name']} ( {$service['id']} )");
+            $name = $service->getId();
+            $text = "{$service->getName()} ( {$service->getId()} )";
 
             $services .= $this->template->render(
                 "tr_text_select",

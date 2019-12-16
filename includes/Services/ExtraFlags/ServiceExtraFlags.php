@@ -47,8 +47,6 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $this->auth = $this->app->make(Auth::class);
         $this->heart = $this->app->make(Heart::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
-
-        $this->service['flags_hsafe'] = htmlspecialchars($this->service['flags']);
     }
 
     public function purchaseFormGet()
@@ -59,7 +57,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         // Generujemy typy usługi
         $types = "";
         for ($i = 0, $value = 1; $i < 3; $value = 1 << ++$i) {
-            if ($this->service['types'] & $value) {
+            if ($this->service->getTypes() & $value) {
                 $type = ExtraFlagType::getTypeName($value);
                 $types .= $this->template->render(
                     "services/extra_flags/service_type",
@@ -70,20 +68,20 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         // Pobieranie serwerów na których można zakupić daną usługę
         $servers = "";
-        foreach ($heart->getServers() as $id => $row) {
+        foreach ($heart->getServers() as $id => $server) {
             // Usługi nie mozna kupic na tym serwerze
-            if (!$heart->serverServiceLinked($id, $this->service['id'])) {
+            if (!$heart->serverServiceLinked($id, $this->service->getId())) {
                 continue;
             }
 
-            $servers .= create_dom_element("option", $row['name'], [
-                'value' => $row['id'],
+            $servers .= create_dom_element("option", $server->getName(), [
+                'value' => $server->getId(),
             ]);
         }
 
         return $this->template->render(
             "services/extra_flags/purchase_form",
-            compact('types', 'user', 'servers') + ['serviceId' => $this->service['id']]
+            compact('types', 'user', 'servers') + ['serviceId' => $this->service->getId()]
         );
     }
 
@@ -124,7 +122,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             // Sprawdzanie czy serwer o danym id istnieje w bazie
             $server = $this->heart->getServer($purchaseData->getOrder('server'));
 
-            if (!$this->heart->serverServiceLinked($server['id'], $this->service['id'])) {
+            if (!$this->heart->serverServiceLinked($server->getId(), $this->service->getId())) {
                 $warnings['server'][] = $this->lang->translate('chosen_incorrect_server');
             }
         }
@@ -140,7 +138,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                         TABLE_PREFIX .
                         "pricelist` " .
                         "WHERE `service` = '%s' AND `tariff` = '%d' AND ( `server` = '%d' OR `server` = '-1' )",
-                    [$this->service['id'], $purchaseData->getTariff(), $server['id']]
+                    [$this->service->getId(), $purchaseData->getTariff(), $server->getId()]
                 )
             );
 
@@ -165,7 +163,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         ) {
             $warnings['type'][] = $this->lang->translate('must_choose_type');
         } else {
-            if (!($this->service['types'] & $purchaseData->getOrder('type'))) {
+            if (!($this->service->getTypes() & $purchaseData->getOrder('type'))) {
                 $warnings['type'][] = $this->lang->translate('chosen_incorrect_type');
             } else {
                 if (
@@ -193,7 +191,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                             [
                                 ExtraFlagType::TYPE_NICK,
                                 $purchaseData->getOrder('auth_data'),
-                                $server['id'],
+                                $server->getId(),
                             ]
                         );
                     }
@@ -219,7 +217,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                                 [
                                     ExtraFlagType::TYPE_IP,
                                     $purchaseData->getOrder('auth_data'),
-                                    $server['id'],
+                                    $server->getId(),
                                 ]
                             );
                         }
@@ -295,9 +293,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             'forever' => $price['amount'] == -1 ? true : false,
         ]);
 
-        if (strlen($server['sms_service'])) {
+        if (strlen($server->getSmsService())) {
             $purchaseData->setPayment([
-                'sms_service' => $server['sms_service'],
+                'sms_service' => $server->getSmsService(),
             ]);
         }
 
@@ -313,25 +311,25 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     {
         $server = $this->heart->getServer($purchaseData->getOrder('server'));
         $typeName = $this->getTypeName2($purchaseData->getOrder('type'));
+
+        $password = '';
         if (strlen($purchaseData->getOrder('password'))) {
             $password =
                 "<strong>{$this->lang->translate('password')}</strong>: " .
                 htmlspecialchars($purchaseData->getOrder('password')) .
                 "<br />";
         }
-        $email = strlen($purchaseData->getEmail())
-            ? htmlspecialchars($purchaseData->getEmail())
-            : $this->lang->translate('none');
-        $authData = htmlspecialchars($purchaseData->getOrder('auth_data'));
+
+        $email = $purchaseData->getEmail() ?: $this->lang->translate('none');
+        $authData = $purchaseData->getOrder('auth_data');
+        $serviceName = $this->service->getName();
         $amount = !$purchaseData->getOrder('forever')
-            ? $purchaseData->getOrder('amount') . " " . $this->service['tag']
+            ? $purchaseData->getOrder('amount') . " " . $this->service->getTag()
             : $this->lang->translate('forever');
 
         return $this->template->render(
             "services/extra_flags/order_details",
-            compact('server', 'amount', 'typeName', 'authData', 'password', 'email') + [
-                'serviceName' => $this->service['name'],
-            ],
+            compact('server', 'amount', 'typeName', 'authData', 'password', 'email', 'serviceName'),
             true,
             false
         );
@@ -355,7 +353,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             $purchaseData->user->getLastIp(),
             $purchaseData->getPayment('method'),
             $purchaseData->getPayment('payment_id'),
-            $this->service['id'],
+            $this->service->getId(),
             $purchaseData->getOrder('server'),
             $purchaseData->getOrder('amount'),
             $purchaseData->getOrder('auth_data'),
@@ -394,7 +392,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     $this::USER_SERVICE_TABLE .
                     "` " .
                     "WHERE `service` = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s'",
-                [$this->service['id'], $serverId, $type, $authData]
+                [$this->service->getId(), $serverId, $type, $authData]
             )
         );
 
@@ -432,7 +430,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                         TABLE_PREFIX .
                         "user_service` (`uid`, `service`, `expire`) " .
                         "VALUES ('%d', '%s', IF('%d' = '1', '-1', UNIX_TIMESTAMP() + '%d')) ",
-                    [$uid, $this->service['id'], $forever, $days * 24 * 60 * 60]
+                    [$uid, $this->service->getId(), $forever, $days * 24 * 60 * 60]
                 )
             );
             $userServiceId = $this->db->lastId();
@@ -444,7 +442,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                         $this::USER_SERVICE_TABLE .
                         "` (`us_id`, `server`, `service`, `type`, `auth_data`, `password`) " .
                         "VALUES ('%d', '%d', '%s', '%d', '%s', '%s')",
-                    [$userServiceId, $serverId, $this->service['id'], $type, $authData, $password]
+                    [
+                        $userServiceId,
+                        $serverId,
+                        $this->service->getId(),
+                        $type,
+                        $authData,
+                        $password,
+                    ]
                 )
             );
         }
@@ -544,13 +549,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             $password = $password ? $password : $row['password'];
 
             $service = $this->heart->getService($row['service']);
-            for ($i = 0; $i < strlen($service['flags']); ++$i) {
+            $serviceFlags = $service->getFlags();
+            for ($i = 0; $i < strlen($serviceFlags); ++$i) {
                 // Bierzemy maksa, ponieważ inaczej robią się problemy.
                 // A tak to jak wygaśnie jakaś usługa, to wykona się cron, usunie ją i przeliczy flagi jeszcze raz
                 // I znowu weźmie maksa
                 // Czyli stan w tabeli players flags nie jest do końca odzwierciedleniem rzeczywistości :)
-                $flags[$service['flags'][$i]] = $this->maxMinus(
-                    array_get($flags, $service['flags'][$i]),
+                $flags[$serviceFlags[$i]] = $this->maxMinus(
+                    array_get($flags, $serviceFlags[$i]),
                     $row['expire']
                 );
             }
@@ -580,36 +586,32 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     {
         $data['extra_data'] = json_decode($data['extra_data'], true);
         $data['extra_data']['type_name'] = $this->getTypeName2($data['extra_data']['type']);
+
+        $password = '';
         if (strlen($data['extra_data']['password'])) {
             $password =
                 "<strong>{$this->lang->translate('password')}</strong>: " .
                 htmlspecialchars($data['extra_data']['password']) .
                 "<br />";
         }
+
         $amount =
             $data['amount'] != -1
-                ? "{$data['amount']} {$this->service['tag']}"
+                ? "{$data['amount']} {$this->service->getTag()}"
                 : $this->lang->translate('forever');
-        $data['auth_data'] = htmlspecialchars($data['auth_data']);
-        $data['extra_data']['password'] = htmlspecialchars($data['extra_data']['password']);
-        $data['email'] = htmlspecialchars($data['email']);
+
         $cost = $data['cost']
             ? number_format($data['cost'] / 100.0, 2) . " " . $this->settings['currency']
             : $this->lang->translate('none');
-        $data['income'] = number_format($data['income'] / 100.0, 2);
 
-        if ($data['payment'] == Purchase::METHOD_SMS) {
-            $data['sms_code'] = htmlspecialchars($data['sms_code']);
-            $data['sms_text'] = htmlspecialchars($data['sms_text']);
-            $data['sms_number'] = htmlspecialchars($data['sms_number']);
-        }
+        $data['income'] = number_format($data['income'] / 100.0, 2);
 
         $server = $this->heart->getServer($data['server']);
 
         if ($data['extra_data']['type'] & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)) {
             $setinfo = $this->lang->sprintf(
                 $this->lang->translate('type_setinfo'),
-                htmlspecialchars($data['extra_data']['password'])
+                $data['extra_data']['password']
             );
         }
 
@@ -617,7 +619,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             return $this->template->render(
                 "services/extra_flags/purchase_info_email",
                 compact('data', 'amount', 'server', 'password', 'setinfo') + [
-                    'serviceName' => $this->service['name'],
+                    'serviceName' => $this->service->getName(),
                 ],
                 true,
                 false
@@ -628,7 +630,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             return $this->template->render(
                 "services/extra_flags/purchase_info_web",
                 compact('cost', 'server', 'amount', 'data', 'password', 'setinfo') + [
-                    'serviceName' => $this->service['name'],
+                    'serviceName' => $this->service->getName(),
                 ],
                 true,
                 false
@@ -639,8 +641,8 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             return [
                 'text' => ($output = $this->lang->sprintf(
                     $this->lang->translate('service_was_bought'),
-                    $this->service['name'],
-                    $server['name']
+                    $this->service->getName(),
+                    $server->getName()
                 )),
                 'class' => "outcome",
             ];
@@ -657,7 +659,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         // Pobieramy listę typów usługi, (1<<2) ostatni typ
         $types = "";
         for ($i = 0, $optionId = 1; $i < 3; $optionId = 1 << ++$i) {
-            if ($this->service['types'] & $optionId) {
+            if ($this->service->getTypes() & $optionId) {
                 $types .= create_dom_element("option", $this->getTypeName($optionId), [
                     'value' => $optionId,
                 ]);
@@ -666,13 +668,13 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         // Pobieramy listę serwerów
         $servers = "";
-        foreach ($this->heart->getServers() as $id => $row) {
-            if (!$this->heart->serverServiceLinked($id, $this->service['id'])) {
+        foreach ($this->heart->getServers() as $id => $server) {
+            if (!$this->heart->serverServiceLinked($id, $this->service->getId())) {
                 continue;
             }
 
-            $servers .= create_dom_element("option", $row['name'], [
-                'value' => $row['id'],
+            $servers .= create_dom_element("option", $server->getName(), [
+                'value' => $server->getId(),
             ]);
         }
 
@@ -736,7 +738,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         $purchaseUser = $this->heart->getUser($data['uid']); // Pobieramy dane o użytkowniku na które jego wykupiona usługa
         $purchaseData = new Purchase($purchaseUser);
-        $purchaseData->setService($this->service['id']);
+        $purchaseData->setService($this->service->getId());
         $purchaseData->setPayment([
             'method' => "admin",
             'payment_id' => $paymentId,
@@ -772,8 +774,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     {
         // Pobranie usług
         $services = "";
-        foreach ($this->heart->getServices() as $id => $row) {
-            if (($serviceModule = $this->heart->getServiceModuleS($row['module'])) === null) {
+        foreach ($this->heart->getServices() as $id => $service) {
+            $serviceModule = $this->heart->getEmptyServiceModule($service->getModule());
+            if ($serviceModule === null) {
                 continue;
             }
 
@@ -783,16 +786,16 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 continue;
             }
 
-            $services .= create_dom_element("option", $row['name'], [
-                'value' => $row['id'],
-                'selected' => $userService['service'] == $row['id'] ? "selected" : "",
+            $services .= create_dom_element("option", $service->getName(), [
+                'value' => $service->getId(),
+                'selected' => $userService['service'] == $service->getId() ? "selected" : "",
             ]);
         }
 
         // Dodajemy typ uslugi, (1<<2) ostatni typ
         $types = "";
         for ($i = 0, $optionId = 1; $i < 3; $optionId = 1 << ++$i) {
-            if ($this->service['types'] & $optionId) {
+            if ($this->service->getTypes() & $optionId) {
                 $types .= create_dom_element("option", $this->getTypeName($optionId), [
                     'value' => $optionId,
                     'selected' => $optionId == $userService['type'] ? "selected" : "",
@@ -801,30 +804,26 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         }
 
         if ($userService['type'] == ExtraFlagType::TYPE_NICK) {
-            $nick = htmlspecialchars($userService['auth_data']);
+            $nick = $userService['auth_data'];
             $styles['nick'] = $styles['password'] = "display: table-row-group";
-        } else {
-            if ($userService['type'] == ExtraFlagType::TYPE_IP) {
-                $ip = htmlspecialchars($userService['auth_data']);
-                $styles['ip'] = $styles['password'] = "display: table-row-group";
-            } else {
-                if ($userService['type'] == ExtraFlagType::TYPE_SID) {
-                    $sid = htmlspecialchars($userService['auth_data']);
-                    $styles['sid'] = "display: table-row-group";
-                }
-            }
+        } elseif ($userService['type'] == ExtraFlagType::TYPE_IP) {
+            $ip = $userService['auth_data'];
+            $styles['ip'] = $styles['password'] = "display: table-row-group";
+        } elseif ($userService['type'] == ExtraFlagType::TYPE_SID) {
+            $sid = $userService['auth_data'];
+            $styles['sid'] = "display: table-row-group";
         }
 
         // Pobranie serwerów
         $servers = "";
-        foreach ($this->heart->getServers() as $id => $row) {
-            if (!$this->heart->serverServiceLinked($id, $this->service['id'])) {
+        foreach ($this->heart->getServers() as $id => $server) {
+            if (!$this->heart->serverServiceLinked($id, $this->service->getId())) {
                 continue;
             }
 
-            $servers .= create_dom_element("option", $row['name'], [
-                'value' => $row['id'],
-                'selected' => $userService['server'] == $row['id'] ? "selected" : "",
+            $servers .= create_dom_element("option", $server->getName(), [
+                'value' => $server->getId(),
+                'selected' => $userService['server'] == $server->getId() ? "selected" : "",
             ]);
         }
 
@@ -938,7 +937,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         ) {
             $warnings['type'][] = $this->lang->translate('must_choose_service_type');
         } else {
-            if (!($this->service['types'] & $data['type'])) {
+            if (!($this->service->getTypes() & $data['type'])) {
                 $warnings['type'][] = $this->lang->translate('forbidden_purchase_type');
             } else {
                 if ($data['type'] & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)) {
@@ -1021,7 +1020,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $styles['nick'] = $styles['ip'] = $styles['sid'] = $styles['password'] = "display: none";
         for ($i = 0, $optionId = 1; $i < 3; $optionId = 1 << ++$i) {
             // Kiedy dana usługa nie wspiera danego typu i wykupiona usługa nie ma tego typu
-            if (!($this->service['types'] & $optionId) && $optionId != $userService['type']) {
+            if (!($this->service->getTypes() & $optionId) && $optionId != $userService['type']) {
                 continue;
             }
 
@@ -1033,17 +1032,17 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             if ($optionId == $userService['type']) {
                 switch ($optionId) {
                     case ExtraFlagType::TYPE_NICK:
-                        $serviceInfo['player_nick'] = htmlspecialchars($userService['auth_data']);
+                        $serviceInfo['player_nick'] = $userService['auth_data'];
                         $styles['nick'] = $styles['password'] = "display: table-row";
                         break;
 
                     case ExtraFlagType::TYPE_IP:
-                        $serviceInfo['player_ip'] = htmlspecialchars($userService['auth_data']);
+                        $serviceInfo['player_ip'] = $userService['auth_data'];
                         $styles['ip'] = $styles['password'] = "display: table-row";
                         break;
 
                     case ExtraFlagType::TYPE_SID:
-                        $serviceInfo['player_sid'] = htmlspecialchars($userService['auth_data']);
+                        $serviceInfo['player_sid'] = $userService['auth_data'];
                         $styles['sid'] = "display: table-row";
                         break;
                 }
@@ -1057,7 +1056,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         // Serwer
         $tmpServer = $this->heart->getServer($userService['server']);
-        $serviceInfo['server'] = $tmpServer['name'];
+        $serviceInfo['server'] = $tmpServer->getName();
         unset($tmpServer);
 
         // Wygasa
@@ -1067,7 +1066,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 : date($this->settings['date_format'], $userService['expire']);
 
         // Usługa
-        $serviceInfo['service'] = $this->service['name'];
+        $serviceInfo['service'] = $this->service->getName();
 
         return $this->template->render(
             "services/extra_flags/user_own_service_edit",
@@ -1082,10 +1081,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 ? $this->lang->translate('never')
                 : date($this->settings['date_format'], $userService['expire']);
         $tmpServer = $this->heart->getServer($userService['server']);
-        $serviceInfo['server'] = $tmpServer['name'];
-        $serviceInfo['service'] = $this->service['name'];
+        $serviceInfo['server'] = $tmpServer->getName();
+        $serviceInfo['service'] = $this->service->getName();
         $serviceInfo['type'] = $this->getTypeName2($userService['type']);
-        $serviceInfo['auth_data'] = htmlspecialchars($userService['auth_data']);
         unset($tmpServer);
 
         return $this->template->render(
@@ -1187,7 +1185,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     "` AS usef ON us.id = usef.us_id " .
                     "WHERE us.service = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND `id` != '%d'",
                 [
-                    $this->service['id'],
+                    $this->service->getId(),
                     if_isset($data['server'], $userService['server']),
                     if_isset($data['type'], $userService['type']),
                     if_isset($data['auth_data'], $userService['auth_data']),
@@ -1232,7 +1230,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             $set[] = [
                 'column' => 'service',
                 'value' => "'%s'",
-                'data' => [$this->service['id']],
+                'data' => [$this->service->getId()],
             ];
 
             if (!$data['forever'] && isset($data['expire'])) {
@@ -1327,7 +1325,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $types = "";
         for ($i = 0; $i < 3; $i++) {
             $value = 1 << $i;
-            if ($this->service['types'] & $value) {
+            if ($this->service->getTypes() & $value) {
                 $types .= create_dom_element("option", $this->getTypeName($value), [
                     'value' => $value,
                 ]);
@@ -1336,9 +1334,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         $servers = "";
         // Pobieranie listy serwerów
-        foreach ($this->heart->getServers() as $id => $row) {
-            $servers .= create_dom_element("option", $row['name'], [
-                'value' => $row['id'],
+        foreach ($this->heart->getServers() as $id => $server) {
+            $servers .= create_dom_element("option", $server->getName(), [
+                'value' => $server->getId(),
             ]);
         }
 
@@ -1427,7 +1425,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 $this->db->prepare(
                     "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
                         "WHERE t.payment = 'transfer' AND t.payment_id = '%s' AND `service` = '%s' AND `server` = '%d' AND `auth_data` = '%s'",
-                    [$data['payment_id'], $this->service['id'], $data['server'], $authData]
+                    [$data['payment_id'], $this->service->getId(), $data['server'], $authData]
                 )
             );
 
@@ -1443,7 +1441,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 $this->db->prepare(
                     "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
                         "WHERE t.payment = 'sms' AND t.sms_code = '%s' AND `service` = '%s' AND `server` = '%d' AND `auth_data` = '%s'",
-                    [$data['payment_id'], $this->service['id'], $data['server'], $authData]
+                    [$data['payment_id'], $this->service->getId(), $data['server'], $authData]
                 )
             );
 
@@ -1468,7 +1466,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     "` AS usef ON us.id = usef.us_id " .
                     "WHERE us.service = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND ( `password` = '%s' OR `password` = '%s' )",
                 [
-                    $this->service['id'],
+                    $this->service->getId(),
                     $data['server'],
                     $data['type'],
                     $authData,
@@ -1532,14 +1530,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         $servers = "";
         // Pobieranie serwerów na których można zakupić daną usługę
-        foreach ($this->heart->getServers() as $id => $row) {
-            if (!$this->heart->serverServiceLinked($id, $this->service['id'])) {
+        foreach ($this->heart->getServers() as $id => $server) {
+            if (!$this->heart->serverServiceLinked($id, $this->service->getId())) {
                 continue;
             }
 
-            $servers .= create_dom_element("option", $row['name'], [
-                'value' => $row['id'],
-                'selected' => $server == $row['id'] ? "selected" : "",
+            $servers .= create_dom_element("option", $server->getName(), [
+                'value' => $server->getId(),
+                'selected' => $server == $server->getId() ? "selected" : "",
             ]);
         }
 
@@ -1556,7 +1554,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     private function tariffs_for_server($serverId)
     {
         $server = $this->heart->getServer($serverId);
-        $smsService = if_strlen($server['sms_service'], $this->settings['sms_service']);
+        $smsService = if_strlen($server->getSmsService(), $this->settings['sms_service']);
 
         // Pobieranie kwot za które można zakupić daną usługę na danym serwerze
         $result = $this->db->query(
@@ -1573,7 +1571,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     "sms_numbers` AS sn ON sn.tariff = p.tariff AND sn.service = '%s' " .
                     "WHERE p.service = '%s' AND ( p.server = '%d' OR p.server = '-1' ) " .
                     "ORDER BY t.provision ASC",
-                [$smsService, $this->service['id'], $serverId]
+                [$smsService, $this->service->getId(), $serverId]
             )
         );
 
@@ -1588,7 +1586,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 : 0;
             $amount =
                 $row['amount'] != -1
-                    ? "{$row['amount']} {$this->service['tag']}"
+                    ? "{$row['amount']} {$this->service->getTag()}"
                     : $this->lang->translate('forever');
             $values .= $this->template->render(
                 "services/extra_flags/purchase_value",
@@ -1625,13 +1623,13 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     {
         // Pobieramy listę serwerów
         $servers = "";
-        foreach ($this->heart->getServers() as $id => $row) {
-            if (!$this->heart->serverServiceLinked($id, $this->service['id'])) {
+        foreach ($this->heart->getServers() as $id => $server) {
+            if (!$this->heart->serverServiceLinked($id, $this->service->getId())) {
                 continue;
             }
 
-            $servers .= create_dom_element("option", $row['name'], [
-                'value' => $row['id'],
+            $servers .= create_dom_element("option", $server->getName(), [
+                'value' => $server->getId(),
             ]);
         }
 

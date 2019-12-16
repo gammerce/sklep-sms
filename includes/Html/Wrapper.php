@@ -39,13 +39,15 @@ class Wrapper extends Div
         if ($this->search) {
             $searchText = $request->get('search');
             $buttons->addContent(
-                new SimpleText($template->render("admin/form_search", compact('searchText')))
+                new UnescapedSimpleText(
+                    $template->render("admin/form_search", compact('searchText'))
+                )
             );
         }
 
         foreach ($this->buttons as $button) {
             $buttons->addContent($button);
-            $buttons->addContent(new SimpleText(' '));
+            $buttons->addContent(' ');
         }
 
         $title = new Div($this->getTitle());

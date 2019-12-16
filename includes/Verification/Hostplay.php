@@ -11,7 +11,7 @@ use App\Verification\Results\SmsSuccessResult;
 
 class Hostplay extends PaymentModule implements SupportSms
 {
-    protected $id = "hostplay";
+    const MODULE_ID = "hostplay";
 
     /** @var array */
     protected $ratesNumber = [

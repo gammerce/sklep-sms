@@ -85,11 +85,11 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             $groups = implode("; ", $groups);
 
             $bodyRow->setDbId($row['uid']);
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['username'])));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['forename'])));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['surname'])));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['email'])));
-            $bodyRow->addCell(new Cell(htmlspecialchars($row['steam_id'])));
+            $bodyRow->addCell(new Cell($row['username']));
+            $bodyRow->addCell(new Cell($row['forename']));
+            $bodyRow->addCell(new Cell($row['surname']));
+            $bodyRow->addCell(new Cell($row['email']));
+            $bodyRow->addCell(new Cell($row['steam_id']));
             $bodyRow->addCell(new Cell($groups));
 
             $cell = new Cell(
@@ -121,7 +121,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
     {
         $button = new Link();
         $button->addClass('dropdown-item charge_wallet');
-        $button->addContent(new SimpleText($this->lang->translate('charge')));
+        $button->addContent($this->lang->translate('charge'));
         return $button;
     }
 
@@ -129,7 +129,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
     {
         $button = new Link();
         $button->addClass('dropdown-item change_password');
-        $button->addContent(new SimpleText($this->lang->translate('change_password')));
+        $button->addContent($this->lang->translate('change_password'));
         return $button;
     }
 
@@ -144,7 +144,6 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
         switch ($boxId) {
             case "user_edit":
-                // Pobranie użytkownika
                 $user = $this->heart->getUser($query['uid']);
 
                 $groups = '';
@@ -156,11 +155,11 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                 }
 
                 $output = $this->template->render("admin/action_boxes/user_edit", [
-                    "email" => htmlspecialchars($user->getEmail(false)),
-                    "username" => htmlspecialchars($user->getUsername(false)),
-                    "surname" => htmlspecialchars($user->getSurname()),
-                    "forename" => htmlspecialchars($user->getForename()),
-                    "steamId" => htmlspecialchars($user->getSteamId()),
+                    "email" => $user->getEmail(),
+                    "username" => $user->getUsername(),
+                    "surname" => $user->getSurname(),
+                    "forename" => $user->getForename(),
+                    "steamId" => $user->getSteamId(),
                     "uid" => $user->getUid(),
                     "wallet" => $user->getWallet(true),
                     "groups" => $groups,

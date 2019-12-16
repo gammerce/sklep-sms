@@ -32,23 +32,23 @@ class PageAdminUpdateServers extends PageAdmin
 
         $versionBricks = "";
         foreach ($this->heart->getServers() as $server) {
-            if ($server['type'] === Server::TYPE_AMXMODX) {
+            if ($server->getType() === Server::TYPE_AMXMODX) {
                 $newestVersion = $newestAmxxVersion;
                 $link = "https://github.com/gammerce/plugin-amxmodx/releases/tag/{$newestAmxxVersion}";
-            } elseif ($server['type'] === Server::TYPE_SOURCEMOD) {
+            } elseif ($server->getType() === Server::TYPE_SOURCEMOD) {
                 $newestVersion = $newestSmVersion;
                 $link = "https://github.com/gammerce/plugin-sourcemod/releases/tag/{$newestSmVersion}";
             } else {
                 continue;
             }
 
-            if ($server['version'] === $newestVersion) {
+            if ($server->getVersion() === $newestVersion) {
                 continue;
             }
 
             $versionBricks .= $this->template->render("admin/update_version_block", [
-                'name' => htmlspecialchars($server['name']),
-                'currentVersion' => $server['version'],
+                'name' => $server->getName(),
+                'currentVersion' => $server->getVersion(),
                 'newestVersion' => $newestVersion,
                 'link' => $link,
             ]);

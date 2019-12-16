@@ -10,6 +10,8 @@ use App\Translation\Translator;
 
 abstract class PaymentModule
 {
+    const MODULE_ID = '';
+
     /** @var Database */
     protected $db;
 
@@ -18,9 +20,6 @@ abstract class PaymentModule
 
     /** @var Translator */
     protected $langShop;
-
-    /** @var string */
-    protected $id;
 
     /** @var  string */
     protected $name;
@@ -51,14 +50,14 @@ abstract class PaymentModule
                     TABLE_PREFIX .
                     "transaction_services` " .
                     "WHERE `id` = '%s' ",
-                [$this->id]
+                [$this->getModuleId()]
             )
         );
 
         if (!$this->db->numRows($result)) {
             $className = get_class($this);
             throw new InvalidConfigException(
-                "An error occured in class: [$className] constructor. There is no [{$this->id}] payment service in database."
+                "An error occured in class: [$className] constructor. There is no [{$this->getModuleId()}] payment service in database."
             );
         }
 
@@ -87,7 +86,7 @@ abstract class PaymentModule
                     TABLE_PREFIX .
                     "sms_numbers` AS sn ON t.id = sn.tariff " .
                     "WHERE sn.service = '%s' ",
-                [$this->id]
+                [$this->getModuleId()]
             )
         );
 
@@ -100,22 +99,6 @@ abstract class PaymentModule
                 $this->tariffs[$tariff->getNumber()] = $tariff;
             }
         }
-    }
-
-    /**
-     * @return boolean
-     */
-    public function supportTransfer()
-    {
-        return $this instanceof SupportTransfer;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function supportSms()
-    {
-        return $this instanceof SupportSms;
     }
 
     /**
@@ -156,7 +139,7 @@ abstract class PaymentModule
     public function getTariffBySmsCostBrutto($cost)
     {
         foreach ($this->tariffs as $tariff) {
-            if ($tariff->getSmsCostBrutto() == $cost) {
+            if ($tariff->getSmsCostGross() == $cost) {
                 return $tariff;
             }
         }
@@ -170,5 +153,10 @@ abstract class PaymentModule
     public function getTariffs()
     {
         return array_unique($this->tariffs);
+    }
+
+    public function getModuleId()
+    {
+        return $this::MODULE_ID;
     }
 }

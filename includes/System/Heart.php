@@ -4,11 +4,14 @@ namespace App\System;
 use App\Blocks\Block;
 use App\Blocks\BlockSimple;
 use App\Exceptions\InvalidConfigException;
+use App\Models\Server;
 use App\Models\Tariff;
 use App\Models\User;
 use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Pages\Page;
 use App\Pages\PageSimple;
+use App\Repositories\ServerRepository;
+use App\Repositories\ServiceRepository;
 use App\Repositories\UserRepository;
 use App\Services\ChargeWallet\ServiceChargeWallet;
 use App\Services\ExtraFlags\ServiceExtraFlags;
@@ -31,14 +34,21 @@ class Heart
     /** @var UserRepository */
     private $userRepository;
 
+    /** @var ServiceRepository */
+    private $serviceRepository;
+
+    /** @var ServerRepository */
+    private $serverRepository;
+
+    /** @var Server[] */
     private $servers = [];
-
     private $serversFetched = false;
+
+    /** @var \App\Models\Service[] */
     private $services = [];
-
     private $servicesFetched = false;
-    private $serversServices = [];
 
+    private $serversServices = [];
     private $serversServicesFetched = false;
 
     /** @var Tariff[] */
@@ -63,91 +73,81 @@ class Heart
         Database $db,
         Settings $settings,
         Template $template,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        ServiceRepository $serviceRepository,
+        ServerRepository $serverRepository
     ) {
         $this->db = $db;
         $this->settings = $settings;
         $this->template = $template;
         $this->userRepository = $userRepository;
+        $this->serviceRepository = $serviceRepository;
+        $this->serverRepository = $serverRepository;
     }
 
     /**
      * @param string $id
      * @param string $name
      * @param string $class
-     * @param string $classsimple
      *
      * @throws Exception
      */
-    public function registerServiceModule($id, $name, $class, $classsimple)
+    public function registerServiceModule($id, $name, $class)
     {
         if (isset($this->servicesClasses[$id])) {
-            throw new Exception(
-                "There is a service with such an id: " . htmlspecialchars($id) . " already."
-            );
+            throw new InvalidConfigException("There is a service with such an id: [$id] already.");
         }
 
         $this->servicesClasses[$id] = [
             'name' => $name,
             'class' => $class,
-            'classsimple' => $classsimple,
         ];
     }
 
     /**
-     * Zwraca obiekt modułu usługi
-     * Moduł jest wypełniony, są w nim wszystkie dane
+     * Get service module with service included
      *
-     * @param $serviceId
-     *
+     * @param string $serviceId Service identifier from ss_services
      * @return null|Service|ServiceChargeWallet|ServiceExtraFlags|ServiceOther
      */
     public function getServiceModule($serviceId)
     {
-        // Brak usługi o takim ID
         if (($service = $this->getService($serviceId)) === null) {
             return null;
         }
 
-        // Brak takiego modułu
-        if (!isset($this->servicesClasses[$service['module']])) {
+        if (!isset($this->servicesClasses[$service->getModule()])) {
             return null;
         }
 
-        $className = $this->servicesClasses[$service['module']]['class'];
+        $className = $this->servicesClasses[$service->getModule()]['class'];
 
-        // Jeszcze sprawdzamy, czy moduł został prawidłowo stworzony
         return strlen($className) ? app()->makeWith($className, ['service' => $service]) : null;
     }
 
     /**
-     * Funkcja zwraca klasę modułu przez jego id
-     * Moduł jest pusty, nie ma danych o usłudze
-     * s - simple
+     * Get service module without service included
      *
      * @param $moduleId
      * @return Service|null
      */
-    public function getServiceModuleS($moduleId)
+    public function getEmptyServiceModule($moduleId)
     {
-        // Brak takiego modułu
         if (!isset($this->servicesClasses[$moduleId])) {
             return null;
         }
 
-        if (!isset($this->servicesClasses[$moduleId]['classsimple'])) {
+        if (!isset($this->servicesClasses[$moduleId]['class'])) {
             return null;
         }
 
-        $classname = $this->servicesClasses[$moduleId]['classsimple'];
+        $classname = $this->servicesClasses[$moduleId]['class'];
 
-        // Jeszcze sprawdzamy, czy moduł został prawidłowo stworzony
         return app()->make($classname);
     }
 
     public function getServiceModuleName($moduleId)
     {
-        // Brak takiego modułu
         if (!isset($this->servicesClasses[$moduleId])) {
             return null;
         }
@@ -168,7 +168,6 @@ class Heart
                 'id' => $id,
                 'name' => $data['name'],
                 'class' => $data['class'],
-                'classsimple' => $data['classsimple'],
             ];
         }
 
@@ -182,9 +181,7 @@ class Heart
     public function registerPaymentModule($id, $class)
     {
         if (isset($this->paymentModuleClasses[$id])) {
-            throw new Exception(
-                "There is a payment api with id: " . htmlspecialchars($id) . " already."
-            );
+            throw new InvalidConfigException("There is a payment api with id: [$id] already.");
         }
 
         $this->paymentModuleClasses[$id] = $class;
@@ -233,8 +230,8 @@ class Heart
     public function registerBlock($blockId, $class)
     {
         if ($this->blockExists($blockId)) {
-            throw new Exception(
-                "There is a block with such an id: " . htmlspecialchars($blockId) . " already."
+            throw new InvalidConfigException(
+                "There is a block with such an id: [$blockId] already."
             );
         }
 
@@ -291,9 +288,7 @@ class Heart
     private function registerPage($pageId, $class, $type)
     {
         if ($this->pageExists($pageId, $type)) {
-            throw new Exception(
-                "There is a page with such an id: " . htmlspecialchars($pageId) . " already."
-            );
+            throw new InvalidConfigException("There is a page with such an id: [$pageId] already.");
         }
 
         $this->pagesClasses[$type][$pageId] = $class;
@@ -336,9 +331,9 @@ class Heart
     //
 
     /**
-     * Zwraca wszystkie stworzone usługi do zakupienia
+     * Returns purchasable services
      *
-     * @return array
+     * @return \App\Models\Service[]
      */
     public function getServices()
     {
@@ -352,7 +347,7 @@ class Heart
     /**
      * @param $serviceId
      *
-     * @return mixed
+     * @return \App\Models\Service | null
      */
     public function getService($serviceId)
     {
@@ -363,43 +358,30 @@ class Heart
         return if_isset($this->services[$serviceId], null);
     }
 
-    /**
-     * Number of purchasable services
-     *
-     * @return int
-     */
-    public function getServicesAmount()
-    {
-        return count($this->services);
-    }
-
     private function fetchServices()
     {
-        $result = $this->db->query(
-            "SELECT * FROM `" . TABLE_PREFIX . "services` " . "ORDER BY `order` ASC"
-        );
-        while ($row = $this->db->fetchArrayAssoc($result)) {
-            $row['id_hsafe'] = htmlspecialchars($row['id']);
-            $row['name'] = htmlspecialchars($row['name']);
-            $row['groups'] = $row['groups'] ? explode(";", $row['groups']) : [];
-            $row['data'] = json_decode($row['data'], true);
-            $this->services[$row['id']] = $row;
+        foreach ($this->serviceRepository->all() as $service) {
+            $this->services[$service->getId()] = $service;
         }
+
         $this->servicesFetched = true;
     }
 
-    public function userCanUseService($uid, $service)
+    public function userCanUseService($uid, \App\Models\Service $service)
     {
         $user = $this->getUser($uid);
-        $combined = array_intersect($service['groups'], $user->getGroups());
+        $combined = array_intersect($service->getGroups(), $user->getGroups());
 
-        return empty($service['groups']) || !empty($combined);
+        return empty($service->getGroups()) || !empty($combined);
     }
 
     //
     // SERVERS
     //
 
+    /**
+     * @return Server[]
+     */
     public function getServers()
     {
         if (!$this->serversFetched) {
@@ -409,6 +391,10 @@ class Heart
         return $this->servers;
     }
 
+    /**
+     * @param int $id
+     * @return Server
+     */
     public function getServer($id)
     {
         if (!$this->serversFetched) {
@@ -425,11 +411,10 @@ class Heart
 
     private function fetchServers()
     {
-        $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "servers`");
-        while ($row = $this->db->fetchArrayAssoc($result)) {
-            $row['name'] = htmlspecialchars($row['name']);
-            $this->servers[$row['id']] = $row;
+        foreach ($this->serverRepository->all() as $server) {
+            $this->servers[$server->getId()] = $server;
         }
+
         $this->serversFetched = true;
     }
 
@@ -609,7 +594,6 @@ class Heart
     {
         $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "groups`");
         while ($row = $this->db->fetchArrayAssoc($result)) {
-            $row['name'] = htmlspecialchars($row['name']);
             $this->groups[$row['id']] = $row;
         }
 

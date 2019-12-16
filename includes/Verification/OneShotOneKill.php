@@ -14,7 +14,7 @@ use App\Verification\Results\SmsSuccessResult;
 
 class OneShotOneKill extends PaymentModule implements SupportSms
 {
-    protected $id = "1s1k";
+    const MODULE_ID = "1s1k";
 
     private $rates = [
         '0.65' => '7136',

@@ -60,7 +60,7 @@ class PageAdminLogs extends PageAdmin
             $bodyRow->setDbId($row['id']);
 
             $cell = new Cell();
-            $div = new Div(htmlspecialchars($row['text']));
+            $div = new Div($row['text']);
             $div->addClass('one_line');
             $cell->addContent($div);
             $bodyRow->addCell($cell);

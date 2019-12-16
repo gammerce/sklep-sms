@@ -6,6 +6,7 @@ use App\Html\Cell;
 use App\Html\HeadCell;
 use App\Html\Input;
 use App\Html\Structure;
+use App\Html\UnescapedSimpleText;
 use App\Html\Wrapper;
 use App\Pages\Interfaces\IPageAdminActionBox;
 
@@ -46,7 +47,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
             $bodyRow = new BodyRow();
 
             $bodyRow->setDbId($row['id']);
-            $bodyRow->addCell(new Cell($row['question']));
+            $bodyRow->addCell(new Cell(new UnescapedSimpleText($row['question'])));
             $bodyRow->addCell(new Cell($row['answers']));
             if (get_privileges("manage_antispam_questions")) {
                 $bodyRow->setDeleteAction(true);
@@ -96,8 +97,6 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
                         )
                     )
                 );
-                $row['question'] = htmlspecialchars($row['question']);
-                $row['answers'] = htmlspecialchars($row['answers']);
 
                 $output = $this->template->render(
                     "admin/action_boxes/antispam_question_edit",

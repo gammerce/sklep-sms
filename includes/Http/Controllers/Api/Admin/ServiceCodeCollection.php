@@ -61,7 +61,7 @@ class ServiceCodeCollection
 
         $serviceCodeRepository->create(
             $code,
-            $serviceModule->service['id'],
+            $serviceModule->service->getId(),
             if_strlen($uid, 0),
             if_isset($codeData['server'], 0),
             if_isset($codeData['amount'], 0),
@@ -75,7 +75,7 @@ class ServiceCodeCollection
                 $user->getUsername(),
                 $user->getUid(),
                 $code,
-                $serviceModule->service['id']
+                $serviceModule->service->getId()
             )
         );
 

@@ -46,7 +46,6 @@ class TariffResource
         );
         $affected = $db->affectedRows();
 
-        // Zwróć info o prawidłowej edycji
         if ($affected || $db->affectedRows()) {
             log_to_db(
                 $langShop->sprintf(

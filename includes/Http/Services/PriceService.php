@@ -30,7 +30,7 @@ class PriceService
         $warnings = [];
 
         // Usługa
-        if (is_null($this->heart->getService($service))) {
+        if ($this->heart->getService($service) === null) {
             $warnings['service'][] = $this->lang->translate('no_such_service');
         }
 

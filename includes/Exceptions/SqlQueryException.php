@@ -28,13 +28,11 @@ class SqlQueryException extends Exception
     }
 
     /**
-     * @param bool $escape
-     *
      * @return string
      */
-    public function getQuery($escape = true)
+    public function getQuery()
     {
-        return $escape ? htmlspecialchars($this->query) : $this->query;
+        return $this->query;
     }
 
     /**

@@ -31,19 +31,11 @@ class Template
         $this->urlGenerator = $urlGenerator;
     }
 
-    public function render($template, array $data = [], $eslashes = true, $htmlcomments = true)
+    public function render($templateName, array $data = [], $eslashes = true, $htmlcomments = true)
     {
-        $__content = $this->getTemplate($template, $eslashes, $htmlcomments);
-
-        return $this->evalTemplate($__content, $data);
-    }
-
-    private function evalTemplate($__content, array $data)
-    {
-        $data = $this->addDefaultVariables($data);
-        extract($data);
-
-        return eval('return "' . $__content . '";');
+        $template = $this->getTemplate($templateName, $eslashes, $htmlcomments);
+        $compiled = $this->compileTemplate($template);
+        return $this->evalTemplate($compiled, $data);
     }
 
     /**
@@ -57,37 +49,42 @@ class Template
      */
     private function getTemplate($title, $eslashes = true, $htmlcomments = true)
     {
-        if (strlen($this->lang->getCurrentLanguageShort())) {
-            $filename = $title . "." . $this->lang->getCurrentLanguageShort();
-            $temp = $this->path->to("themes/{$this->settings['theme']}/{$filename}.html");
-            if (file_exists($temp)) {
-                $path = $temp;
-            } else {
-                $temp = $this->path->to("themes/default/{$filename}.html");
-                if (file_exists($temp)) {
-                    $path = $temp;
-                }
-            }
-        }
+        $path = $this->resolvePath($title);
 
-        if (!isset($path)) {
-            $filename = $title;
-            $temp = $this->path->to("themes/{$this->settings['theme']}/{$filename}.html");
-            if (file_exists($temp)) {
-                $path = $temp;
-            } else {
-                $temp = $this->path->to("themes/default/{$filename}.html");
-                if (file_exists($temp)) {
-                    $path = $temp;
-                }
-            }
-        }
-
-        if (!isset($path)) {
+        if (!$path) {
             return false;
         }
 
         return $this->readTemplate($path, $title, $htmlcomments, $eslashes);
+    }
+
+    private function resolvePath($title)
+    {
+        if (strlen($this->lang->getCurrentLanguageShort())) {
+            $filename = $title . "." . $this->lang->getCurrentLanguageShort();
+            $path = $this->path->to("themes/{$this->settings['theme']}/{$filename}.html");
+            if (file_exists($path)) {
+                return $path;
+            }
+
+            $path = $this->path->to("themes/default/{$filename}.html");
+            if (file_exists($path)) {
+                return $path;
+            }
+        }
+
+        $filename = $title;
+        $path = $this->path->to("themes/{$this->settings['theme']}/{$filename}.html");
+        if (file_exists($path)) {
+            return $path;
+        }
+
+        $path = $this->path->to("themes/default/{$filename}.html");
+        if (file_exists($path)) {
+            return $path;
+        }
+
+        return null;
     }
 
     private function readTemplate($path, $title, $htmlcomments, $eslashes)
@@ -110,7 +107,19 @@ class Template
         return $template;
     }
 
-    public function addDefaultVariables(array $data)
+    private function evalTemplate($__content, array $data)
+    {
+        $data = $this->addDefaultVariables($data);
+        extract($data);
+
+        $e = function ($value) {
+            return htmlspecialchars($value);
+        };
+
+        return eval('return "' . $__content . '";');
+    }
+
+    private function addDefaultVariables(array $data)
     {
         if (!array_key_exists('lang', $data)) {
             $data['lang'] = $this->lang;
@@ -125,5 +134,10 @@ class Template
         }
 
         return $data;
+    }
+
+    private function compileTemplate($template)
+    {
+        return preg_replace(["/{{\s*/", "/\s*}}/"], ['{$e(', ')}'], $template);
     }
 }

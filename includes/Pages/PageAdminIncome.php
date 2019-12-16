@@ -41,7 +41,7 @@ class PageAdminIncome extends PageAdmin
         // Uzyskanie wszystkich serwerów
         foreach ($this->heart->getServers() as $id => $server) {
             $obejctsIds[] = $id;
-            $tableRow .= new HeadCell($server['name']);
+            $tableRow .= new HeadCell($server->getName());
         }
         $obejctsIds[] = 0;
 

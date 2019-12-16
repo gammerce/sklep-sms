@@ -1,6 +1,7 @@
 <?php
 namespace App\Blocks;
 
+use App\Html\UnescapedSimpleText;
 use App\Interfaces\IBeLoggedCannot;
 use App\Interfaces\IBeLoggedMust;
 
@@ -52,7 +53,7 @@ abstract class Block
     {
         $content = $this->getContent($query, $body);
 
-        return create_dom_element("div", $content, [
+        return create_dom_element("div", new UnescapedSimpleText($content), [
             'id' => $this->getContentId(),
             'class' => $content !== null ? $this->getContentClass() : "",
         ]);

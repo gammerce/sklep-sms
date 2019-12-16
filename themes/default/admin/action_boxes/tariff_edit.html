@@ -5,7 +5,7 @@
     <table>
         <tr>
             <td>{$lang->strtoupper($lang->translate('tariff'))}</td>
-            <td>{$tariff->getId()}</td>
+            <td>{{ $tariff->getId() }}</td>
         </tr>
         <tr>
             <td colspan="2" class="line"></td>
@@ -24,13 +24,13 @@
                             id="provision"
                             name="provision"
                             class="input is-small"
-                            value="{$provision}"
+                            value="{{ $provision }}"
                             required
                         />
                     </div>
                     <div class="control">
                         <a class="button is-static is-small">
-                            {$settings['currency']}
+                            {{ $settings['currency'] }}
                         </a>
                     </div>
                 </div>
@@ -41,7 +41,7 @@
         </tr>
         <tr>
             <td colspan="2">
-                <input type="hidden" name="id" value="{$tariff->getId()}" />
+                <input type="hidden" name="id" value="{{ $tariff->getId() }}" />
                 <input type="submit" value="{$lang->translate('confirm')}" class="button w100" />
             </td>
         </tr>

@@ -5,7 +5,7 @@
     <table>
         <tr>
             <td>{$lang->translate('id')}</td>
-            <td>{$server['id']}</td>
+            <td>{{ $server->getId() }}</td>
         </tr>
 
         <tr>
@@ -25,7 +25,7 @@
                             name="name"
                             class="input is-small"
                             maxlength="64"
-                            value="{$server['name']}"
+                            value="{{ $server->getName() }}"
                             required
                         />
                     </div>
@@ -46,7 +46,7 @@
                             name="ip"
                             class="input is-small"
                             maxlength="16"
-                            value="{$server['ip']}"
+                            value="{{ $server->getIp() }}"
                             required
                         />
                     </div>
@@ -67,7 +67,7 @@
                             name="port"
                             class="input is-small"
                             maxlength="8"
-                            value="{$server['port']}"
+                            value="{{ $server->getPort() }}"
                             required
                         />
                     </div>
@@ -105,7 +105,7 @@
 
         <tr>
             <td colspan="2">
-                <input type="hidden" name="id" value="{$server['id']}" />
+                <input type="hidden" name="id" value="{{ $server->getId() }}" />
                 <input type="submit" value="{$lang->translate('edit')}" class="button w100" />
             </td>
         </tr>

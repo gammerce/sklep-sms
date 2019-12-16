@@ -265,7 +265,7 @@ class PaymentService
             $purchase->setDesc(
                 $this->lang->sprintf(
                     $this->lang->translate('payment_for_service'),
-                    $serviceModule->service['name']
+                    $serviceModule->service->getName()
                 )
             );
 

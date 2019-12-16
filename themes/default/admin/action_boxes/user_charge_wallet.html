@@ -5,7 +5,7 @@
     <table>
         <tr>
             <td>{$lang->translate('username')}</td>
-            <td>{$user->getUsername()}</td>
+            <td>{{ $user->getUsername() }}</td>
         </tr>
         <tr>
             <td>
@@ -24,7 +24,7 @@
                     </div>
                     <div class="control">
                         <a class="button is-static is-small">
-                            {$settings['currency']}
+                            {{ $settings['currency'] }}
                         </a>
                     </div>
                 </div>
@@ -32,7 +32,7 @@
         </tr>
         <tr>
             <td colspan="2">
-                <input type="hidden" name="uid" value="{$user->getUid()}" />
+                <input type="hidden" name="uid" value="{{ $user->getUid() }}" />
                 <input type="submit" value="{$lang->translate('charge')}" class="button w100" />
             </td>
         </tr>
