@@ -137,8 +137,12 @@ class PageAdminBoughtServices extends PageAdmin
             $bodyRow->addCell(new Cell($row['payment']));
             $bodyRow->addCell(new Cell($row['payment_id']));
             $bodyRow->addCell(new Cell($username));
-            $bodyRow->addCell(new Cell($server->getName()));
-            $bodyRow->addCell(new Cell($service->getName()));
+            $bodyRow->addCell(
+                new Cell($server ? $server->getName() : $this->lang->translate('none'))
+            );
+            $bodyRow->addCell(
+                new Cell($service ? $service->getName() : $this->lang->translate('none'))
+            );
             $bodyRow->addCell(new Cell($amount));
             $bodyRow->addCell(new Cell($row['auth_data']));
             $bodyRow->addCell(new Cell(new UnescapedSimpleText($extraData)));
