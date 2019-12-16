@@ -72,6 +72,6 @@ class PageAdminPaymentServiceCode extends PageAdmin
 
         $wrapper->setTable($table);
 
-        return $wrapper->toHtml();
+        return $wrapper;
     }
 }

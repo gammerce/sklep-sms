@@ -89,8 +89,6 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
                 );
                 $transactionService = $this->db->fetchArrayAssoc($result);
 
-                $transactionService['id'] = htmlspecialchars($transactionService['id']);
-                $transactionService['name'] = htmlspecialchars($transactionService['name']);
                 $transactionService['data'] = json_decode($transactionService['data']);
 
                 $dataValues = "";

@@ -67,7 +67,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             $wrapper->addButton($button);
         }
 
-        return $wrapper->toHtml();
+        return $wrapper;
     }
 
     public function getActionBox($boxId, array $query)

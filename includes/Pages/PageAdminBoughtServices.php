@@ -7,6 +7,7 @@ use App\Html\HeadCell;
 use App\Html\Link;
 use App\Html\SimpleText;
 use App\Html\Structure;
+use App\Html\UnescapedSimpleText;
 use App\Html\Wrapper;
 use App\Services\ExtraFlags\ExtraFlagType;
 
@@ -93,7 +94,7 @@ class PageAdminBoughtServices extends PageAdmin
             $server = $this->heart->getServer($row['server']);
 
             $username = $row['uid']
-                ? htmlspecialchars($row['username']) . " ({$row['uid']})"
+                ? "{$row['username']} ({$row['uid']})"
                 : $this->lang->translate('none');
 
             // Przerobienie ilosci
@@ -143,7 +144,7 @@ class PageAdminBoughtServices extends PageAdmin
             $bodyRow->addCell(new Cell($service->getName()));
             $bodyRow->addCell(new Cell($amount));
             $bodyRow->addCell(new Cell($row['auth_data']));
-            $bodyRow->addCell(new Cell($extraData));
+            $bodyRow->addCell(new Cell(new UnescapedSimpleText($extraData)));
             $bodyRow->addCell(new Cell($row['email']));
             $bodyRow->addCell(new Cell($row['ip']));
 

@@ -156,7 +156,7 @@ abstract class PaymentModule
     public function getTariffBySmsCostBrutto($cost)
     {
         foreach ($this->tariffs as $tariff) {
-            if ($tariff->getSmsCostBrutto() == $cost) {
+            if ($tariff->getSmsCostGross() == $cost) {
                 return $tariff;
             }
         }

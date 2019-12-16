@@ -48,14 +48,16 @@ class DOMElement implements I_ToHtml
         }
         $params = implode(' ', $params);
 
-        $output = "<{$this->getName(true)} {$params}>";
+        $tagName = htmlspecialchars($this->getName());
+
+        $output = "<{$tagName} {$params}>";
 
         if (!in_array($this->getName(), ['input', 'img', 'br', 'hr'])) {
             foreach ($this->contents as $element) {
                 $output .= $element->toHtml();
             }
 
-            $output .= "</{$this->getName(true)}>";
+            $output .= "</{$tagName}>";
         }
 
         $this->params = $oldParams;
@@ -137,13 +139,11 @@ class DOMElement implements I_ToHtml
     }
 
     /**
-     * @param bool $escape
-     *
      * @return string
      */
-    public function getName($escape = false)
+    public function getName()
     {
-        return $escape ? htmlspecialchars($this->name) : $this->name;
+        return $this->name;
     }
 
     /** @param string $name */

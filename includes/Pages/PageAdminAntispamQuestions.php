@@ -96,8 +96,6 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
                         )
                     )
                 );
-                $row['question'] = htmlspecialchars($row['question']);
-                $row['answers'] = htmlspecialchars($row['answers']);
 
                 $output = $this->template->render(
                     "admin/action_boxes/antispam_question_edit",

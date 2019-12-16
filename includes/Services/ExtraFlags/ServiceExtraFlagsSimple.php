@@ -74,9 +74,7 @@ abstract class ServiceExtraFlagsSimple extends Service implements
 
         // Pobieramy flagi, jeżeli service nie jest puste
         // czyli kiedy edytujemy, a nie dodajemy usługę
-        if ($this->service !== null) {
-            $flags = htmlspecialchars($this->service->getFlags());
-        }
+        $flags = $this->service ? $this->service->getFlags() : "";
 
         return $this->template->render(
             "services/extra_flags/extra_fields",

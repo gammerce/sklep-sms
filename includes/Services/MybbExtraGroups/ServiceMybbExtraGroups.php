@@ -615,7 +615,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                 ? $this->lang->translate('never')
                 : date($this->settings['date_format'], $userService['expire']);
         $service = $this->service->getName();
-        $mybbUid = htmlspecialchars($username . " ({$userService['mybb_uid']})");
+        $mybbUid = "$username ({$userService['mybb_uid']})";
 
         return $this->template->render(
             "services/mybb_extra_groups/user_own_service",

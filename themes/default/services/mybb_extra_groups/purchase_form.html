@@ -54,9 +54,9 @@
     <div id="cost_wraper">
         <div>
             <strong>{$lang->translate('transfer_wallet_cost')}</strong>:
-            <span id="cost_transfer"></span> {$settings['currency']}<br />
+            <span id="cost_transfer"></span> {{ $settings['currency'] }}<br />
             <strong>{$lang->translate('sms_cost')}</strong>: <span id="cost_sms"></span>
-            <span id="currency_sms">{$settings['currency']}</span>
+            <span id="currency_sms">{{ $settings['currency'] }}</span>
         </div>
     </div>
 

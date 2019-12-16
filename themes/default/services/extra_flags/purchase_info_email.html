@@ -1,11 +1,11 @@
-{{ $lang->sprintf($lang->translate('just_purchased'), $data['auth_data']) }}<br />
+{{ $lang->sprintf($lang->translate('just_purchased'), $e($data['auth_data'])) }}<br />
 <br />
 <strong>{$lang->translate('service')}:</strong> {{ $serviceName }}<br />
 <strong>{$lang->translate('amount')}:</strong> {{ $amount }}<br />
 <strong>{$lang->translate('server')}:</strong> {{ $server->getName() }}<br />
 <br />
-<strong>{$data['extra_data']['type_name']}:</strong> {{ $data['auth_data'] }}<br />
-{{ $password }}
+<strong>{{ $data['extra_data']['type_name'] }}:</strong> {{ $data['auth_data'] }}<br />
+{$password}
 <br />
 {{ $setinfo }}<br />
 <br />

@@ -472,7 +472,7 @@ function get_platform($platform)
         return $lang->translate('sm_server');
     }
 
-    return htmlspecialchars($platform);
+    return $platform;
 }
 
 function get_ip(Request $request = null)

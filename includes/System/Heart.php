@@ -95,9 +95,7 @@ class Heart
     public function registerServiceModule($id, $name, $class)
     {
         if (isset($this->servicesClasses[$id])) {
-            throw new Exception(
-                "There is a service with such an id: " . htmlspecialchars($id) . " already."
-            );
+            throw new InvalidConfigException("There is a service with such an id: [$id] already.");
         }
 
         $this->servicesClasses[$id] = [
@@ -183,9 +181,7 @@ class Heart
     public function registerPaymentModule($id, $class)
     {
         if (isset($this->paymentModuleClasses[$id])) {
-            throw new Exception(
-                "There is a payment api with id: " . htmlspecialchars($id) . " already."
-            );
+            throw new InvalidConfigException("There is a payment api with id: [$id] already.");
         }
 
         $this->paymentModuleClasses[$id] = $class;
@@ -234,8 +230,8 @@ class Heart
     public function registerBlock($blockId, $class)
     {
         if ($this->blockExists($blockId)) {
-            throw new Exception(
-                "There is a block with such an id: " . htmlspecialchars($blockId) . " already."
+            throw new InvalidConfigException(
+                "There is a block with such an id: [$blockId] already."
             );
         }
 
@@ -292,9 +288,7 @@ class Heart
     private function registerPage($pageId, $class, $type)
     {
         if ($this->pageExists($pageId, $type)) {
-            throw new Exception(
-                "There is a page with such an id: " . htmlspecialchars($pageId) . " already."
-            );
+            throw new InvalidConfigException("There is a page with such an id: [$pageId] already.");
         }
 
         $this->pagesClasses[$type][$pageId] = $class;
@@ -600,7 +594,6 @@ class Heart
     {
         $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "groups`");
         while ($row = $this->db->fetchArrayAssoc($result)) {
-            $row['name'] = htmlspecialchars($row['name']);
             $this->groups[$row['id']] = $row;
         }
 

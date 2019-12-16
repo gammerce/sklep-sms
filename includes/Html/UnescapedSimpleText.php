@@ -3,7 +3,7 @@ namespace App\Html;
 
 class UnescapedSimpleText implements I_ToHtml
 {
-    /** @var  string */
+    /** @var string */
     private $text;
 
     /**
@@ -17,5 +17,10 @@ class UnescapedSimpleText implements I_ToHtml
     public function toHtml()
     {
         return $this->text;
+    }
+
+    public function __toString()
+    {
+        return $this->toHtml();
     }
 }

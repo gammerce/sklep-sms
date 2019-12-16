@@ -50,7 +50,7 @@ class PageAdminPaymentAdmin extends PageAdmin
             }
 
             $adminname = $row['aid']
-                ? htmlspecialchars($row['adminname']) . " ({$row['aid']})"
+                ? "{$row['adminname']} ({$row['aid']})"
                 : $this->lang->translate('none');
 
             $bodyRow->setDbId($row['id']);

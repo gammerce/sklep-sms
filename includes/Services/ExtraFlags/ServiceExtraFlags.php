@@ -312,6 +312,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $server = $this->heart->getServer($purchaseData->getOrder('server'));
         $typeName = $this->getTypeName2($purchaseData->getOrder('type'));
 
+        $password = '';
         if (strlen($purchaseData->getOrder('password'))) {
             $password =
                 "<strong>{$this->lang->translate('password')}</strong>: " .
@@ -585,36 +586,32 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     {
         $data['extra_data'] = json_decode($data['extra_data'], true);
         $data['extra_data']['type_name'] = $this->getTypeName2($data['extra_data']['type']);
+
+        $password = '';
         if (strlen($data['extra_data']['password'])) {
             $password =
                 "<strong>{$this->lang->translate('password')}</strong>: " .
                 htmlspecialchars($data['extra_data']['password']) .
                 "<br />";
         }
+
         $amount =
             $data['amount'] != -1
                 ? "{$data['amount']} {$this->service->getTag()}"
                 : $this->lang->translate('forever');
-        $data['auth_data'] = htmlspecialchars($data['auth_data']);
-        $data['extra_data']['password'] = htmlspecialchars($data['extra_data']['password']);
-        $data['email'] = htmlspecialchars($data['email']);
+
         $cost = $data['cost']
             ? number_format($data['cost'] / 100.0, 2) . " " . $this->settings['currency']
             : $this->lang->translate('none');
-        $data['income'] = number_format($data['income'] / 100.0, 2);
 
-        if ($data['payment'] == Purchase::METHOD_SMS) {
-            $data['sms_code'] = htmlspecialchars($data['sms_code']);
-            $data['sms_text'] = htmlspecialchars($data['sms_text']);
-            $data['sms_number'] = htmlspecialchars($data['sms_number']);
-        }
+        $data['income'] = number_format($data['income'] / 100.0, 2);
 
         $server = $this->heart->getServer($data['server']);
 
         if ($data['extra_data']['type'] & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)) {
             $setinfo = $this->lang->sprintf(
                 $this->lang->translate('type_setinfo'),
-                htmlspecialchars($data['extra_data']['password'])
+                $data['extra_data']['password']
             );
         }
 
@@ -807,18 +804,14 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         }
 
         if ($userService['type'] == ExtraFlagType::TYPE_NICK) {
-            $nick = htmlspecialchars($userService['auth_data']);
+            $nick = $userService['auth_data'];
             $styles['nick'] = $styles['password'] = "display: table-row-group";
-        } else {
-            if ($userService['type'] == ExtraFlagType::TYPE_IP) {
-                $ip = htmlspecialchars($userService['auth_data']);
-                $styles['ip'] = $styles['password'] = "display: table-row-group";
-            } else {
-                if ($userService['type'] == ExtraFlagType::TYPE_SID) {
-                    $sid = htmlspecialchars($userService['auth_data']);
-                    $styles['sid'] = "display: table-row-group";
-                }
-            }
+        } elseif ($userService['type'] == ExtraFlagType::TYPE_IP) {
+            $ip = $userService['auth_data'];
+            $styles['ip'] = $styles['password'] = "display: table-row-group";
+        } elseif ($userService['type'] == ExtraFlagType::TYPE_SID) {
+            $sid = $userService['auth_data'];
+            $styles['sid'] = "display: table-row-group";
         }
 
         // Pobranie serwerów
@@ -1039,17 +1032,17 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             if ($optionId == $userService['type']) {
                 switch ($optionId) {
                     case ExtraFlagType::TYPE_NICK:
-                        $serviceInfo['player_nick'] = htmlspecialchars($userService['auth_data']);
+                        $serviceInfo['player_nick'] = $userService['auth_data'];
                         $styles['nick'] = $styles['password'] = "display: table-row";
                         break;
 
                     case ExtraFlagType::TYPE_IP:
-                        $serviceInfo['player_ip'] = htmlspecialchars($userService['auth_data']);
+                        $serviceInfo['player_ip'] = $userService['auth_data'];
                         $styles['ip'] = $styles['password'] = "display: table-row";
                         break;
 
                     case ExtraFlagType::TYPE_SID:
-                        $serviceInfo['player_sid'] = htmlspecialchars($userService['auth_data']);
+                        $serviceInfo['player_sid'] = $userService['auth_data'];
                         $styles['sid'] = "display: table-row";
                         break;
                 }
@@ -1091,7 +1084,6 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $serviceInfo['server'] = $tmpServer->getName();
         $serviceInfo['service'] = $this->service->getName();
         $serviceInfo['type'] = $this->getTypeName2($userService['type']);
-        $serviceInfo['auth_data'] = htmlspecialchars($userService['auth_data']);
         unset($tmpServer);
 
         return $this->template->render(

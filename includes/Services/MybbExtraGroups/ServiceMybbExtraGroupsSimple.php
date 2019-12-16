@@ -58,12 +58,12 @@ abstract class ServiceMybbExtraGroupsSimple extends Service implements
         if ($this->service !== null) {
             // DB
             $dbPassword = strlen($this->service->getData()['db_password']) ? "********" : "";
-            $dbHost = htmlspecialchars($this->service->getData()['db_host']);
-            $dbUser = htmlspecialchars($this->service->getData()['db_user']);
-            $dbName = htmlspecialchars($this->service->getData()['db_name']);
+            $dbHost = $this->service->getData()['db_host'];
+            $dbUser = $this->service->getData()['db_user'];
+            $dbName = $this->service->getData()['db_name'];
 
             // MyBB groups
-            $mybbGroups = htmlspecialchars($this->service->getData()['mybb_groups']);
+            $mybbGroups = $this->service->getData()['mybb_groups'];
         }
 
         return $this->template->render(

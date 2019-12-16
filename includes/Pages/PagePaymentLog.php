@@ -79,9 +79,6 @@ class PagePaymentLog extends Page implements IBeLoggedMust
                 unset($tmpServer);
             }
 
-            $row['auth_data'] = htmlspecialchars($row['auth_data']);
-            $row['email'] = htmlspecialchars($row['email']);
-
             $paymentLogBrick = $template->render(
                 "payment_log_brick",
                 compact('date', 'cost', 'desc')

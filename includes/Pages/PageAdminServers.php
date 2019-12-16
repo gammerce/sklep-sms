@@ -84,14 +84,12 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
         );
         $smsServices = "";
         while ($row = $this->db->fetchArrayAssoc($result)) {
-            if (!$row['sms']) {
-                continue;
+            if ($row['sms']) {
+                $smsServices .= create_dom_element("option", $row['name'], [
+                    'value' => $row['id'],
+                    'selected' => $row['id'] == $server->getSmsService() ? "selected" : "",
+                ]);
             }
-
-            $smsServices .= create_dom_element("option", $row['name'], [
-                'value' => $row['id'],
-                'selected' => $row['id'] == $server->getSmsService() ? "selected" : "",
-            ]);
         }
 
         $services = "";
@@ -130,8 +128,8 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                 ]
             );
 
-            $name = htmlspecialchars($service->getId());
-            $text = htmlspecialchars("{$service->getName()} ( {$service->getId()} )");
+            $name = $service->getId();
+            $text = "{$service->getName()} ( {$service->getId()} )";
 
             $services .= $this->template->render(
                 "tr_text_select",

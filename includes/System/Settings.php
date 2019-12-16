@@ -83,7 +83,6 @@ class Settings implements ArrayAccess
             $this->settings['shop_url'] = rtrim($this->settings['shop_url'], "/");
         }
 
-        $this->settings['currency'] = htmlspecialchars($this->settings['currency']);
         $this->settings['transactions_query'] =
             "(SELECT bs.id AS `id`,
 bs.uid AS `uid`,

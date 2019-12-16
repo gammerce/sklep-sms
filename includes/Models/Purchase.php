@@ -127,13 +127,11 @@ class Purchase
     }
 
     /**
-     * @param bool $escaped
-     *
      * @return string
      */
-    public function getEmail($escaped = false)
+    public function getEmail()
     {
-        return $escaped ? htmlspecialchars($this->email) : $this->email;
+        return $this->email;
     }
 
     /**

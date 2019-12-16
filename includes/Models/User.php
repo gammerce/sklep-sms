@@ -329,13 +329,11 @@ class User
     }
 
     /**
-     * @param bool $escape
-     *
      * @return string
      */
-    public function getPlatform($escape = false)
+    public function getPlatform()
     {
-        return $escape ? htmlspecialchars($this->platform) : $this->platform;
+        return $this->platform;
     }
 
     /**

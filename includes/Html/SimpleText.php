@@ -18,4 +18,9 @@ class SimpleText implements I_ToHtml
     {
         return htmlspecialchars($this->text);
     }
+
+    public function __toString()
+    {
+        return $this->toHtml();
+    }
 }

@@ -64,7 +64,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
                     "option",
                     $this->lang->sprintf(
                         $this->lang->translate('charge_sms_option'),
-                        $tariff->getSmsCostBrutto(),
+                        $tariff->getSmsCostGross(),
                         $this->settings['currency'],
                         $provision,
                         $this->settings['currency']
@@ -216,12 +216,6 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         $data['amount'] .= ' ' . $this->settings['currency'];
         $data['cost'] = number_format($data['cost'] / 100, 2) . ' ' . $this->settings['currency'];
 
-        if ($data['payment'] == Purchase::METHOD_SMS) {
-            $data['sms_code'] = htmlspecialchars($data['sms_code']);
-            $data['sms_text'] = htmlspecialchars($data['sms_text']);
-            $data['sms_number'] = htmlspecialchars($data['sms_number']);
-        }
-
         if ($action == "web") {
             if ($data['payment'] == Purchase::METHOD_SMS) {
                 $desc = $this->lang->sprintf(
@@ -235,6 +229,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
                     false
                 );
             }
+
             if ($data['payment'] == Purchase::METHOD_TRANSFER) {
                 return $this->template->render(
                     "services/charge_wallet/web_purchase_info_transfer",

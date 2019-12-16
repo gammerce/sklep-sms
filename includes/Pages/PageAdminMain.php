@@ -73,7 +73,7 @@ class PageAdminMain extends PageAdmin
             $this->addNote(
                 $this->lang->sprintf(
                     $this->lang->translate('update_available'),
-                    htmlspecialchars($newestVersion),
+                    $newestVersion,
                     $updateWebLink
                 ),
                 "is-success",
