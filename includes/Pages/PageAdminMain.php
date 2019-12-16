@@ -1,6 +1,7 @@
 <?php
 namespace App\Pages;
 
+use App\Html\UnescapedSimpleText;
 use App\Models\Server;
 use App\Requesting\Requester;
 use App\System\License;
@@ -35,15 +36,14 @@ class PageAdminMain extends PageAdmin
         //
         // Ogloszenia
 
-        $notes = "";
+        $notes = [];
 
         // Info o braku licki
         if (!$this->license->isValid()) {
             $settingsUrl = $this->url->to("/admin/settings");
-            $this->addNote(
+            $notes []= $this->addNote(
                 $this->lang->sprintf($this->lang->translate('license_error'), $settingsUrl),
-                "is-danger",
-                $notes
+                "is-danger"
             );
         }
 
@@ -53,13 +53,12 @@ class PageAdminMain extends PageAdmin
             $expireSeconds >= 0 &&
             $expireSeconds < self::EXPIRE_THRESHOLD
         ) {
-            $this->addNote(
+            $notes []= $this->addNote(
                 $this->lang->sprintf(
                     $this->lang->translate('license_soon_expire'),
                     secondsToTime(strtotime($this->license->getExpires()) - time())
                 ),
-                "is-danger",
-                $notes
+                "is-danger"
             );
         }
 
@@ -70,14 +69,13 @@ class PageAdminMain extends PageAdmin
         if ($this->app->version() !== $newestVersion) {
             $updateWebLink = $this->url->to("/admin/update_web");
 
-            $this->addNote(
+            $notes []= $this->addNote(
                 $this->lang->sprintf(
                     $this->lang->translate('update_available'),
-                    $newestVersion,
+                    htmlspecialchars($newestVersion),
                     $updateWebLink
                 ),
-                "is-success",
-                $notes
+                "is-success"
             );
         }
 
@@ -91,15 +89,14 @@ class PageAdminMain extends PageAdmin
         if ($serversCount) {
             $updateServersLink = $this->url->to("/admin/update_servers");
 
-            $this->addNote(
+            $notes []= $this->addNote(
                 $this->lang->sprintf(
                     $this->lang->translate('update_available_servers'),
                     $serversCount,
                     $this->heart->getServersAmount(),
                     $updateServersLink
                 ),
-                "is-success",
-                $notes
+                "is-success"
             );
         }
 
@@ -148,6 +145,7 @@ class PageAdminMain extends PageAdmin
             "brick_pa_main"
         );
 
+        $notes = implode("", $notes);
         return $this->template->render("admin/home", compact('notes', 'bricks'));
     }
 
@@ -176,9 +174,9 @@ class PageAdminMain extends PageAdmin
         return true;
     }
 
-    private function addNote($text, $class, &$notes)
+    private function addNote($text, $class)
     {
-        $notes .= create_dom_element("div", $text, [
+        return create_dom_element("div", new UnescapedSimpleText($text), [
             'class' => "notification " . $class,
         ]);
     }
