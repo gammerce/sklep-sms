@@ -37,15 +37,15 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
             );
         }
 
-        /** @var IServiceUserServiceAdminDisplay $serviceModuleSimple */
-        $serviceModuleSimple = $this->app->make($className);
+        /** @var IServiceUserServiceAdminDisplay $serviceModule */
+        $serviceModule = $this->app->make($className);
 
         $this->title =
             $this->lang->translate('users_services') .
             ': ' .
-            $serviceModuleSimple->userServiceAdminDisplayTitleGet();
+            $serviceModule->userServiceAdminDisplayTitleGet();
         $this->heart->pageTitle = $this->title;
-        $wrapper = $serviceModuleSimple->userServiceAdminDisplayGet($query, $body);
+        $wrapper = $serviceModule->userServiceAdminDisplayGet($query, $body);
 
         if (get_class($wrapper) !== Wrapper::class) {
             return $wrapper;

@@ -299,7 +299,7 @@ abstract class ServiceExtraFlagsSimple extends Service implements
             $bodyRow->addCell(
                 new Cell(
                     $row['uid']
-                        ? $row['username'] . " ({$row['uid']})"
+                        ? "{$row['username']} ({$row['uid']})"
                         : $this->lang->translate('none')
                 )
             );
