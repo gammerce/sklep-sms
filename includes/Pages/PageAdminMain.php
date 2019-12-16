@@ -41,7 +41,7 @@ class PageAdminMain extends PageAdmin
         // Info o braku licki
         if (!$this->license->isValid()) {
             $settingsUrl = $this->url->to("/admin/settings");
-            $notes []= $this->addNote(
+            $notes[] = $this->addNote(
                 $this->lang->sprintf($this->lang->translate('license_error'), $settingsUrl),
                 "is-danger"
             );
@@ -53,7 +53,7 @@ class PageAdminMain extends PageAdmin
             $expireSeconds >= 0 &&
             $expireSeconds < self::EXPIRE_THRESHOLD
         ) {
-            $notes []= $this->addNote(
+            $notes[] = $this->addNote(
                 $this->lang->sprintf(
                     $this->lang->translate('license_soon_expire'),
                     secondsToTime(strtotime($this->license->getExpires()) - time())
@@ -69,7 +69,7 @@ class PageAdminMain extends PageAdmin
         if ($this->app->version() !== $newestVersion) {
             $updateWebLink = $this->url->to("/admin/update_web");
 
-            $notes []= $this->addNote(
+            $notes[] = $this->addNote(
                 $this->lang->sprintf(
                     $this->lang->translate('update_available'),
                     htmlspecialchars($newestVersion),
@@ -89,7 +89,7 @@ class PageAdminMain extends PageAdmin
         if ($serversCount) {
             $updateServersLink = $this->url->to("/admin/update_servers");
 
-            $notes []= $this->addNote(
+            $notes[] = $this->addNote(
                 $this->lang->sprintf(
                     $this->lang->translate('update_available_servers'),
                     $serversCount,
