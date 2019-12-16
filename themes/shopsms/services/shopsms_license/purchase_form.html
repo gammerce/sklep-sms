@@ -34,7 +34,7 @@
                         min="0"
                         class="input is-small"
                         style="width: 100px"
-                    />&nbsp;{$serviceTag}
+                    />&nbsp;{{ $serviceTag }}
                 </div>
             </div>
         </div>
@@ -60,7 +60,7 @@
             <div class="column_bottom">
                 <div class="has-text-centered">
                     <img
-                        src="{$url->to('build/images/reload.png')}"
+                        src="{{ $url->to('build/images/reload.png') }}"
                         id="cost_reload"
                         title="{$lang->translate('reload')}"
                         alt="reload"
@@ -82,5 +82,5 @@
         </div>
     </div>
 
-    <input type="hidden" name="service" value="{$serviceId}" />
+    <input type="hidden" name="service" value="{{ $serviceId }}" />
 </form>

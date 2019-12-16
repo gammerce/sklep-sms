@@ -83,7 +83,7 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
         return $this->template->render(
             "services/shopsms_license_edit/order_details",
             compact('identifier', 'engines', 'costMonthly', 'email') + [
-                'serviceName' => $this->service['name'],
+                'serviceName' => $this->service->getName(),
             ],
             true,
             false
@@ -147,7 +147,7 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
             $purchaseData->user->getLastIp(),
             $purchaseData->getPayment('method'),
             $purchaseData->getPayment('payment_id'),
-            $this->service['id'],
+            $this->service->getId(),
             0,
             0,
             $userService['identifier'],
@@ -159,7 +159,7 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
     public function purchaseInfo($action, $data)
     {
         $data['extra_data'] = json_decode($data['extra_data'], true);
-        $engines = htmlspecialchars($data['extra_data']['engines']);
+        $engines = $data['extra_data']['engines'];
 
         if ($action == "email") {
             return $this->template->render(
@@ -171,7 +171,7 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
         }
 
         if ($action == "web") {
-            $email = htmlspecialchars($data['email']);
+            $email = $data['email'];
             return $this->template->render(
                 "services/shopsms_license_edit/purchase_info_web",
                 compact('data', 'email', 'engines'),

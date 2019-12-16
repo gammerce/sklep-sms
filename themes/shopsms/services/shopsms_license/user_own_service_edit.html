@@ -1,6 +1,6 @@
-<b>{$lang->translate('service')}</b>: {$serviceName}<br />
-<b>{$lang->translate('identifier')}</b>: {$identifier}<br />
-<b>{$lang->translate('expire')}</b>: {$expire}<br />
+<b>{$lang->translate('service')}</b>: {{ $serviceName }}<br />
+<b>{$lang->translate('identifier')}</b>: {{ $identifier }}<br />
+<b>{$lang->translate('expire')}</b>: {{ $expire }}<br />
 <hr />
 
 <div class="shopsms_user_edit">
@@ -17,7 +17,7 @@
                             id="email"
                             name="email"
                             class="input is-small"
-                            value="{$email}"
+                            value="{{ $email }}"
                         />
                     </div>
                 </div>
@@ -31,11 +31,11 @@
                     <input
                         type="hidden"
                         name="platform_amxmodx"
-                        value="{$engines['amxx']['input']}"
+                        value="{{ $engines['amxx']['input'] }}"
                     />
 
                     <div
-                        class="engine amxx {$engines['amxx']['div']}"
+                        class="engine amxx {{ $engines['amxx']['div'] }}"
                         title="Counter Strike 1.6, etc."
                     >
                         AMX Mod X
@@ -43,11 +43,11 @@
                     <input
                         type="hidden"
                         name="platform_sourcemod"
-                        value="{$engines['sm']['input']}"
+                        value="{{ $engines['sm']['input'] }}"
                     />
 
                     <div
-                        class="engine sm {$engines['sm']['div']}"
+                        class="engine sm {{ $engines['sm']['div'] }}"
                         title="Counter Strike: Global Offensive, Team Fortress 2, etc."
                     >
                         SOURCEMOD
@@ -59,7 +59,7 @@
         <div class="row">
             <div class="cell">{$lang->translate('price_monthly')}</div>
             <div class="cell">
-                <span id="cost_monthly">{$costMonthly} {$settings['currency']}</span>
+                <span id="cost_monthly">{{ $costMonthly }} {{ $settings['currency'] }}</span>
             </div>
         </div>
     </div>
@@ -67,13 +67,13 @@
     <hr />
     <div class="has-text-centered">
         <img
-            src="{$url->to('build/images/reload.png')}"
+            src="{{ $url->to('build/images/reload.png') }}"
             id="cost_reload"
             title="{$lang->translate('reload')}"
         />
         <span style="text-transform: uppercase;">{$lang->translate('surcharge')}:</span>
-        <span id="cost">0.00 {$settings['currency']}</span>
+        <span id="cost">0.00 {{ $settings['currency'] }}</span>
     </div>
 </div>
 
-<input type="hidden" name="service" value="{$serviceId}" />
+<input type="hidden" name="service" value="{{ $serviceId }}" />

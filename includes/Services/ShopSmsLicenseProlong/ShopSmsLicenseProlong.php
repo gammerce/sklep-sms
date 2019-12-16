@@ -64,15 +64,12 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         /** @var Request $request */
         $request = $this->app->make(Request::class);
 
-        return $this->template->render(
-            "services/shopsms_license_prolong/purchase_form",
-            compact('user') + [
-                'identifier' => htmlspecialchars($request->query->get("identifier", "")),
-                'serviceId' => $this->service['id'],
-                'serviceTag' => $this->service['tag'],
-                'user' => $this->auth->user(),
-            ]
-        );
+        return $this->template->render("services/shopsms_license_prolong/purchase_form", [
+            'identifier' => $request->query->get("identifier", ""),
+            'serviceId' => $this->service->getId(),
+            'serviceTag' => $this->service->getTag(),
+            'user' => $this->auth->user(),
+        ]);
     }
 
     public function purchaseFormValidate($body)
@@ -139,13 +136,13 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
 
     public function orderDetails(Purchase $purchaseData)
     {
-        $identifier = htmlspecialchars($purchaseData->getOrder('identifier'));
+        $identifier = $purchaseData->getOrder('identifier');
 
         return $this->template->render(
             "services/shopsms_license_prolong/order_details",
             compact('purchaseData', 'identifier') + [
-                'serviceName' => $this->service['name'],
-                'serviceTag' => $this->service['tag'],
+                'serviceName' => $this->service->getName(),
+                'serviceTag' => $this->service->getTag(),
             ],
             true,
             false
@@ -199,7 +196,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
             $purchaseData->user->getLastIp(),
             $purchaseData->getPayment('method'),
             $purchaseData->getPayment('payment_id'),
-            $this->service['id'],
+            $this->service->getId(),
             0,
             $purchaseData->getOrder('amount'),
             $userService['identifier'],
@@ -213,7 +210,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
     public function purchaseInfo($action, $data)
     {
         $data['extra_data'] = json_decode($data['extra_data'], true);
-        $identifier = htmlspecialchars($data['auth_data']);
+        $identifier = $data['auth_data'];
 
         if ($action == "email") {
             return $this->template->render(
@@ -228,7 +225,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
             return $this->template->render(
                 "services/shopsms_license_prolong/purchase_info_web",
                 [
-                    'serviceName' => $this->service['name'],
+                    'serviceName' => $this->service->getName(),
                     'data' => $data,
                 ],
                 true,
@@ -320,7 +317,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         $paymentId = pay_by_admin($user);
 
         $purchaseData = new Purchase($this->heart->getUser($userService['uid']));
-        $purchaseData->setService($this->service['id']);
+        $purchaseData->setService($this->service->getId());
         $purchaseData->setPayment([
             'method' => 'admin',
             'payment_id' => $paymentId,

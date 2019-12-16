@@ -25,8 +25,8 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
     {
         return $this->template->render("services/shopsms_license/purchase_form", [
             'user' => $this->auth->user(),
-            'serviceId' => $this->service['id'],
-            'serviceTag' => $this->service['tag'],
+            'serviceId' => $this->service->getId(),
+            'serviceTag' => $this->service->getTag(),
         ]);
     }
 
@@ -106,9 +106,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
             $engines = implode(", ", $engines);
         }
 
-        $email = strlen($purchaseData->getEmail())
-            ? htmlspecialchars($purchaseData->getEmail())
-            : $this->lang->translate('none');
+        $email = $purchaseData->getEmail() ?: $this->lang->translate('none');
         $costMonthly =
             number_format(($purchaseData->getOrder('cost_daily') * 30) / 100, 2) .
             " " .
@@ -117,8 +115,8 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         return $this->template->render(
             "services/shopsms_license/order_details",
             compact('purchaseData', 'engines', 'costMonthly', 'email') + [
-                'serviceName' => $this->service['name'],
-                'serviceTag' => $this->service['tag'],
+                'serviceName' => $this->service->getName(),
+                'serviceTag' => $this->service->getTag(),
             ],
             true,
             false
@@ -147,7 +145,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
                     TABLE_PREFIX .
                     "user_service` " .
                     "SET `uid` = '%d', `service` = '%s', `expire` = '%d'",
-                [$purchaseData->user->getUid(), $this->service['id'], $expiresAt]
+                [$purchaseData->user->getUid(), $this->service->getId(), $expiresAt]
             )
         );
         $userServiceId = $this->db->lastId();
@@ -168,7 +166,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
                     "`platform_sourcemod` = '%d'",
                 [
                     $userServiceId,
-                    $this->service['id'],
+                    $this->service->getId(),
                     $identifier,
                     $externalLicenseId,
                     $purchaseData->getOrder('cost_daily'),
@@ -200,7 +198,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
             $purchaseData->user->getLastIp(),
             $purchaseData->getPayment('method'),
             $purchaseData->getPayment('payment_id'),
-            $this->service['id'],
+            $this->service->getId(),
             0,
             $purchaseData->getOrder('amount'),
             $identifier,
@@ -217,7 +215,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
     public function purchaseInfo($action, $data)
     {
         $data['extra_data'] = json_decode($data['extra_data'], true);
-        $engines = htmlspecialchars($data['extra_data']['engines']);
+        $engines = $data['extra_data']['engines'];
 
         if ($action == "email") {
             return $this->template->render(
@@ -229,10 +227,10 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         }
 
         if ($action == "web") {
-            $email = htmlspecialchars($data['email']);
+            $email = $data['email'];
             return $this->template->render(
                 "services/shopsms_license/purchase_info_web",
-                compact('data', 'engines', 'email') + ['serviceName' => $this->service['name']],
+                compact('data', 'engines', 'email') + ['serviceName' => $this->service->getName()],
                 true,
                 false
             );
@@ -292,14 +290,12 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
 
     public function userOwnServiceInfoGet($userService, $buttonEdit)
     {
-        $identifier = htmlspecialchars($userService['identifier']);
+        $identifier = $userService['identifier'];
         $expire =
             $userService['expire'] != '-1'
                 ? date($this->settings['date_format'], $userService['expire'])
                 : $this->lang->translate('never');
-        $email = strlen($userService['email'])
-            ? htmlspecialchars($userService['email'])
-            : $this->lang->translate('none');
+        $email = $userService['email'] ?: $this->lang->translate('none');
         $costMonthly = number_format(($userService['cost_daily'] * 30) / 100, 2);
 
         // Dostępne silniki
@@ -329,19 +325,19 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
                 'buttonEdit'
             ) + [
                 'moduleId' => $this->getModuleId(),
-                'serviceName' => $this->service['name'],
+                'serviceName' => $this->service->getName(),
             ]
         );
     }
 
     public function userOwnServiceEditFormGet($userService)
     {
-        $identifier = htmlspecialchars($userService['identifier']);
+        $identifier = $userService['identifier'];
         $expire =
             $userService['expire'] != '-1'
                 ? date($this->settings['date_format'], $userService['expire'])
                 : $this->lang->translate('never');
-        $email = htmlspecialchars($userService['email']);
+        $email = $userService['email'];
         $costMonthly = number_format(($userService['cost_daily'] * 30) / 100, 2);
 
         $engines = [
@@ -358,8 +354,8 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         return $this->template->render(
             "services/shopsms_license/user_own_service_edit",
             compact('identifier', 'expire', 'email', 'engines', 'costMonthly') + [
-                'serviceId' => $this->service['id'],
-                'serviceName' => $this->service['name'],
+                'serviceId' => $this->service->getId(),
+                'serviceName' => $this->service->getName(),
             ]
         );
     }

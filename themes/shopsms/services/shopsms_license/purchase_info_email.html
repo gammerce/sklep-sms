@@ -1,10 +1,10 @@
 {$lang->translate('shopsms_purchase')}<br />
 <br />
 {$lang->translate('license_data')}:<br />
-<b>{$lang->translate('identifier')}</b>: {$data['extra_data']['identifier']}<br />
-<b>{$lang->translate('token')}</b>: {$data['extra_data']['token']}<br />
-<b>{$lang->translate('engines')}</b>: {$engines}<br />
-<b>{$lang->translate('expiration_date')}</b>: {$data['extra_data']['expire']}<br />
+<b>{$lang->translate('identifier')}</b>: {{ $data['extra_data']['identifier'] }}<br />
+<b>{$lang->translate('token')}</b>: {{ $data['extra_data']['token'] }}<br />
+<b>{$lang->translate('engines')}</b>: {{ $engines }}<br />
+<b>{$lang->translate('expiration_date')}</b>: {{ $data['extra_data']['expire'] }}<br />
 <br />
 {$lang->translate('script_instalation')}<a
     href="https://sklep-sms.pl/index.php?page=config"
@@ -20,4 +20,4 @@
 <br />
 {$lang->translate('any_problems')}<br />
 {$lang->translate('regards')},<br />
-{$settings['signature']}
+{{ $settings['signature'] }}

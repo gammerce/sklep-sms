@@ -1,6 +1,6 @@
 <form id="form_purchase" class="shopsms_license_prolong_purchase">
     <input type="password" style="display: none;" />
-    <input type="hidden" name="service" value="{$serviceId}" />
+    <input type="hidden" name="service" value="{{ $serviceId }}" />
 
     <div class="columns is-multiline">
         <div class="column is-half">
@@ -13,7 +13,7 @@
                         type="text"
                         id="identifier"
                         name="identifier"
-                        value="{$identifier}"
+                        value="{{ $identifier }}"
                         class="input is-small"
                     />
                 </div>
@@ -34,7 +34,7 @@
                         name="amount"
                         class="input is-small"
                         style="width: 100px"
-                    />&nbsp;{$serviceTag}
+                    />&nbsp;{{ $serviceTag }}
                 </div>
             </div>
         </div>
@@ -43,7 +43,7 @@
             <div class="column_bottom">
                 <div class="has-text-centered">
                     <img
-                        src="{$url->to('build/images/reload.png')}"
+                        src="{{ $url->to('build/images/reload.png') }}"
                         id="cost_reload"
                         title="{$lang->translate('reload')}"
                         alt="reload"

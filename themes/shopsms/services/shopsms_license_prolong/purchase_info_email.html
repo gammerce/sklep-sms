@@ -1,7 +1,7 @@
-{$lang->sprintf($lang->translate('license_prolong_success'), $identifier)}<br />
+{$lang->sprintf($lang->translate('license_prolong_success'), $e($identifier))}<br />
 <br />
-<b>{$lang->translate('new_expiration_date')}</b>: {$data['extra_data']['expire']}<br />
+<b>{$lang->translate('new_expiration_date')}</b>: {{ $data['extra_data']['expire'] }}<br />
 <br />
 {$lang->translate('any_problems')}<br />
 {$lang->translate('regards')},<br />
-{$settings['signature']}
+{{ $settings['signature'] }}

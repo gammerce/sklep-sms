@@ -104,12 +104,12 @@
                 <td>
                     <div id="language_choice">
                         <img
-                            src="{$url->to('build/images/polish.jpg')}"
+                            src="{{ $url->to('build/images/polish.jpg') }}"
                             id="language_polish"
                             title="{$lang->languages['polish']}"
                         />&nbsp;
                         <img
-                            src="{$url->to('build/images/english.jpg')}"
+                            src="{{ $url->to('build/images/english.jpg') }}"
                             id="language_english"
                             title="{$lang->languages['english']}"
                         />
@@ -123,10 +123,10 @@
                     <table>
                         <tr>
                             <td>
-                                <div class="content_title">{$heart->pageTitle}</div>
+                                <div class="content_title">{{ $heart->pageTitle }}</div>
                             </td>
                             <td class="right">
-                                <a href="{$url->to('/')}"
+                                <a href="{{ $url->to('/') }}"
                                     ><img
                                         src="https://sklep-sms.pl/images/logo_medium.png"
                                         alt="sklep-sms"
