@@ -16,7 +16,7 @@ class ServicesTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/admin.php', ['pid' => 'services']);
+        $response = $this->get('/admin/services');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

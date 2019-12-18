@@ -1,8 +1,8 @@
 <?php
 namespace Tests\Psr4\TestCases;
 
+use App\Kernels\Kernel;
 use App\System\Auth;
-use App\Kernels\IndexKernel;
 use App\Kernels\KernelContract;
 use App\Models\User;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,7 +18,7 @@ class HttpTestCase extends TestCase
         }
 
         $app = parent::createApplication();
-        $app->singleton(KernelContract::class, IndexKernel::class);
+        $app->singleton(KernelContract::class, Kernel::class);
 
         return $app;
     }

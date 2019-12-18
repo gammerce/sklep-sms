@@ -16,7 +16,7 @@ class SettingsTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/admin.php', ['pid' => 'settings']);
+        $response = $this->get('/admin/settings');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

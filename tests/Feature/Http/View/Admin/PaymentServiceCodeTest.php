@@ -16,7 +16,7 @@ class PaymentServiceCodeTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/admin.php', ['pid' => 'payment_service_code']);
+        $response = $this->get('/admin/payment_service_code');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

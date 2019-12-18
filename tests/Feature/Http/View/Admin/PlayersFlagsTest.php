@@ -16,7 +16,7 @@ class ExtraFlagsTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/admin.php', ['pid' => 'players_flags']);
+        $response = $this->get('/admin/players_flags');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

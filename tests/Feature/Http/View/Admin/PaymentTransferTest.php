@@ -16,7 +16,7 @@ class PaymentTransferTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/admin.php', ['pid' => 'payment_transfer']);
+        $response = $this->get('/admin/payment_transfer');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

@@ -51,6 +51,7 @@ class RequirementsStore
             "jscripts",
             "styles",
             "admin.php",
+            "cron.php",
             "extra_stuff.php",
             "js.php",
             "jsonhttp.php",

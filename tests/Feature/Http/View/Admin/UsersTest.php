@@ -16,7 +16,7 @@ class UsersTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/admin.php', ['pid' => 'users']);
+        $response = $this->get('/admin/users');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

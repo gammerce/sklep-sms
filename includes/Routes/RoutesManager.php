@@ -30,6 +30,7 @@ use App\Http\Controllers\Api\Admin\UserServiceCollection;
 use App\Http\Controllers\Api\Admin\UserServiceResource as AdminUserServiceResource;
 use App\Http\Controllers\Api\Admin\WalletChargeResource;
 use App\Http\Controllers\Api\BrickResource;
+use App\Http\Controllers\Api\CronController;
 use App\Http\Controllers\Api\IncomeController;
 use App\Http\Controllers\Api\InstallController;
 use App\Http\Controllers\Api\LogInController;
@@ -99,6 +100,11 @@ class RoutesManager
     {
         $r->get('/js.php', [
             'uses' => JsController::class . '@get',
+        ]);
+
+        $r->get('/cron', [
+            'middlewares' => [IsUpToDate::class, LoadSettings::class, ValidateLicense::class],
+            'uses' => CronController::class . '@get',
         ]);
 
         $r->addGroup(
