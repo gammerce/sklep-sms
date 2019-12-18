@@ -105,7 +105,7 @@ class DOMElement implements I_ToHtml
      */
     public function getParam($key)
     {
-        return if_isset($this->params[$key], '');
+        return array_get($this->params, $key, '');
     }
 
     /**

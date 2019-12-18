@@ -57,10 +57,10 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
 
         $this->groups = explode(",", $this->service->getData()['mybb_groups']);
-        $this->dbHost = if_isset($this->service->getData()['db_host'], '');
-        $this->dbUser = if_isset($this->service->getData()['db_user'], '');
-        $this->dbPassword = if_isset($this->service->getData()['db_password'], '');
-        $this->dbName = if_isset($this->service->getData()['db_name'], '');
+        $this->dbHost = array_get($this->service->getData(), 'db_host', '');
+        $this->dbUser = array_get($this->service->getData(), 'db_user', '');
+        $this->dbPassword = array_get($this->service->getData(), 'db_password', '');
+        $this->dbName = array_get($this->service->getData(), 'db_name', '');
     }
 
     /**

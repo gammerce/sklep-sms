@@ -299,7 +299,7 @@ class User
      */
     public function hasPrivilege($key)
     {
-        return if_isset($this->privileges[$key], false);
+        return array_get($this->privileges, $key, false);
     }
 
     /**

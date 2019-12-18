@@ -355,7 +355,7 @@ class Heart
             $this->fetchServices();
         }
 
-        return if_isset($this->services[$serviceId], null);
+        return array_get($this->services, $serviceId, null);
     }
 
     private function fetchServices()
@@ -401,7 +401,7 @@ class Heart
             $this->fetchServers();
         }
 
-        return if_isset($this->servers[$id], null);
+        return array_get($this->servers, $id, null);
     }
 
     public function getServersAmount()
@@ -475,7 +475,7 @@ class Heart
             $this->fetchTariffs();
         }
 
-        return if_isset($this->tariffs[$id], null);
+        return array_get($this->tariffs, $id, null);
     }
 
     public function getTariffsAmount()
@@ -565,7 +565,7 @@ class Heart
             $this->fetchGroups();
         }
 
-        return if_isset($this->groups[$id], null);
+        return array_get($this->groups, $id, null);
     }
 
     public function getGroupPrivileges($id)

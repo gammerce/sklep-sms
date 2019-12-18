@@ -63,9 +63,9 @@ class ServiceCodeCollection
             $code,
             $serviceModule->service->getId(),
             if_strlen($uid, 0),
-            if_isset($codeData['server'], 0),
-            if_isset($codeData['amount'], 0),
-            if_isset($codeData['tariff'], 0),
+            array_get($codeData, 'server', 0),
+            array_get($codeData, 'amount', 0),
+            array_get($codeData, 'tariff', 0),
             $codeData['data']
         );
 
