@@ -832,15 +832,15 @@ function array_get($array, $key, $default = null)
         return $array[$key];
     }
 
-//    foreach (explode('.', $key) as $segment) {
-//        if (!is_array($array) || !array_key_exists($segment, $array)) {
-//            return $default;
-//        }
-//
-//        $array = $array[$segment];
-//    }
-//
-//    return $array;
+    //    foreach (explode('.', $key) as $segment) {
+    //        if (!is_array($array) || !array_key_exists($segment, $array)) {
+    //            return $default;
+    //        }
+    //
+    //        $array = $array[$segment];
+    //    }
+    //
+    //    return $array;
 
     return $default;
 }
