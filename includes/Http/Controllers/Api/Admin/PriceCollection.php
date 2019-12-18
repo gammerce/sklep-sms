@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Exceptions\SqlQueryException;
 use App\Http\Responses\ApiResponse;
 use App\Http\Services\PriceService;
 use App\Repositories\PriceListRepository;
@@ -29,7 +30,19 @@ class PriceCollection
 
         $priceService->validateBody($request->request->all());
 
-        $priceListRepository->create($service, $tariff, $amount, $server);
+        try {
+            $priceListRepository->create($service, $tariff, $amount, $server);
+        } catch (SqlQueryException $e) {
+            if ($e->getErrorno() == 1451) {
+                return new ApiResponse(
+                    "error",
+                    $lang->translate('create_price_duplication'),
+                    0
+                );
+            }
+
+            throw $e;
+        }
 
         log_to_db(
             "Admin {$user->getUsername()}({$user->getUid()}) dodał cenę. ID: " . $db->lastId()
