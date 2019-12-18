@@ -42,7 +42,7 @@ class ShopSmsLicenseSimple extends Service implements IServiceUserServiceAdminDi
     /** @var LicenseServerService */
     protected $licenseServerService;
 
-    public function __construct($service = null)
+    public function __construct(\App\Models\Service $service = null)
     {
         parent::__construct($service);
 

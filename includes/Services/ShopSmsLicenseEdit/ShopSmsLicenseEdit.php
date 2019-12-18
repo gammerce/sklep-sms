@@ -3,6 +3,7 @@ namespace App\Services\ShopSmsLicenseEdit;
 
 use App\LicenseServerService;
 use App\Models\Purchase;
+use App\Models\Service;
 use App\Payment\BoughtServiceService;
 use App\Services\Interfaces\IServicePurchase;
 use App\Services\Interfaces\IServicePurchaseWeb;
@@ -27,7 +28,7 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
     /** @var BoughtServiceService */
     protected $boughtServiceService;
 
-    public function __construct($service = null)
+    public function __construct(Service $service = null)
     {
         parent::__construct($service);
 

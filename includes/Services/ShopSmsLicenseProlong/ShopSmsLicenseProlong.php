@@ -1,6 +1,7 @@
 <?php
 namespace App\Services\ShopSmsLicenseProlong;
 
+use App\Models\Service;
 use App\Payment\BoughtServiceService;
 use App\System\Auth;
 use App\System\Heart;
@@ -43,7 +44,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
     /** @var BoughtServiceService */
     protected $boughtServiceService;
 
-    public function __construct($service = null)
+    public function __construct(Service $service = null)
     {
         parent::__construct($service);
 
