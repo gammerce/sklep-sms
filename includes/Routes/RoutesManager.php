@@ -102,6 +102,14 @@ class RoutesManager
             'uses' => JsController::class . '@get',
         ]);
 
+        /**
+         * @deprecated
+         */
+        $r->get('/cron.php', [
+            'middlewares' => [IsUpToDate::class, LoadSettings::class, ValidateLicense::class],
+            'uses' => CronController::class . '@get',
+        ]);
+
         $r->get('/cron', [
             'middlewares' => [IsUpToDate::class, LoadSettings::class, ValidateLicense::class],
             'uses' => CronController::class . '@get',
@@ -128,11 +136,17 @@ class RoutesManager
                     'uses' => ExtraStuffController::class . '@action',
                 ]);
 
+                /**
+                 * @deprecated
+                 */
                 $r->addRoute(['GET', 'POST'], '/servers_stuff.php', [
                     'middlewares' => [BlockOnInvalidLicense::class],
                     'uses' => ServerStuffController::class . '@action',
                 ]);
 
+                /**
+                 * @deprecated
+                 */
                 $r->addRoute(['GET', 'POST'], '/transfer_finalize.php', [
                     'middlewares' => [BlockOnInvalidLicense::class],
                     'uses' => TransferController::class . '@oldAction',

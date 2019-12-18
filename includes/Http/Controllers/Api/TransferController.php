@@ -56,6 +56,9 @@ class TransferController
         ]);
     }
 
+    /**
+     * @deprecated
+     */
     public function oldAction(
         Request $request,
         Heart $heart,
