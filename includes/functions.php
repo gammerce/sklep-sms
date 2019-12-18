@@ -614,11 +614,6 @@ function secondsToTime($seconds)
         );
 }
 
-function if_isset(&$isset, $default)
-{
-    return isset($isset) ? $isset : $default;
-}
-
 function if_strlen(&$empty, $default)
 {
     return isset($empty) && strlen($empty) ? $empty : $default;
@@ -837,15 +832,17 @@ function array_get($array, $key, $default = null)
         return $array[$key];
     }
 
-    foreach (explode('.', $key) as $segment) {
-        if (!is_array($array) || !array_key_exists($segment, $array)) {
-            return $default;
-        }
+    //    foreach (explode('.', $key) as $segment) {
+    //        if (!is_array($array) || !array_key_exists($segment, $array)) {
+    //            return $default;
+    //        }
+    //
+    //        $array = $array[$segment];
+    //    }
+    //
+    //    return $array;
 
-        $array = $array[$segment];
-    }
-
-    return $array;
+    return $default;
 }
 
 function captureRequest()

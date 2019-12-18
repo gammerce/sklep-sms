@@ -101,7 +101,7 @@ class Purchase
             return $this->order;
         }
 
-        return if_isset($this->order[$key], null);
+        return array_get($this->order, $key);
     }
 
     /**
@@ -115,7 +115,7 @@ class Purchase
             return $this->payment;
         }
 
-        return if_isset($this->payment[$key], null);
+        return array_get($this->payment, $key);
     }
 
     /**
