@@ -16,7 +16,7 @@ class GroupsTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/admin.php', ['pid' => 'groups']);
+        $response = $this->get('/admin/groups');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

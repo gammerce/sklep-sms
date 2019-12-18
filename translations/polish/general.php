@@ -117,7 +117,6 @@ return [
     'value_must_be_positive' => 'Wartość musi być dodatnia.',
     'verification_error' => 'Coś poszło nie tak podczas łączenia się z serwerem weryfikacyjnym.',
     'wallet' => 'Portfel',
-    'wrong_cron_key' => 'Nie tędy droga hakierze.',
     'wrong_email' => 'Wprowadzony adres e-mail jest nieprawidłowy.',
     'wrong_ip' => 'Wprowadzony adres IP jest nieprawidłowy.',
     'wrong_login_data' => 'Login i/lub hasło są nieprawidłowe.',

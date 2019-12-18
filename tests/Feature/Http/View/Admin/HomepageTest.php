@@ -18,7 +18,7 @@ class HomepageTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/admin.php');
+        $response = $this->get('/');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());
@@ -38,7 +38,7 @@ class HomepageTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/admin.php');
+        $response = $this->get('/');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());
@@ -51,7 +51,7 @@ class HomepageTest extends HttpTestCase
         // given
 
         // when
-        $response = $this->get('/admin.php');
+        $response = $this->get('/');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

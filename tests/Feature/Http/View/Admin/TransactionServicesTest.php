@@ -16,7 +16,7 @@ class TransactionServicesTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/admin.php', ['pid' => 'transaction_services']);
+        $response = $this->get('/admin/transaction_services');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

@@ -16,7 +16,7 @@ class AntispamQuestionsTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/admin.php', ['pid' => 'antispam_questions']);
+        $response = $this->get('/admin/antispam_questions');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());
