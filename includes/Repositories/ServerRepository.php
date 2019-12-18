@@ -62,7 +62,7 @@ class ServerRepository
         return $this->get($this->db->lastId());
     }
 
-    private function mapToModel($data)
+    private function mapToModel(array $data)
     {
         return new Server(
             intval($data['id']),
