@@ -120,7 +120,7 @@ abstract class Service
         foreach ($set as $data) {
             $setData = $this->db->prepare(
                 "`{$data['column']}` = {$data['value']}",
-                if_isset($data['data'], [])
+                array_get($data, 'data', [])
             );
 
             if (in_array($data['column'], ['uid', 'service', 'expire'])) {

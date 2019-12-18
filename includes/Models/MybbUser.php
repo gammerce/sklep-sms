@@ -85,7 +85,7 @@ class MybbUser
             return $this->shopGroups;
         }
 
-        return if_isset($this->shopGroups[$key], null);
+        return array_get($this->shopGroups, $key);
     }
 
     /**

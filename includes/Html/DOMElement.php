@@ -3,14 +3,14 @@ namespace App\Html;
 
 class DOMElement implements I_ToHtml
 {
-    /** @var  string */
+    /** @var string */
     protected $name;
 
-    /** @var  I_ToHtml[] */
+    /** @var I_ToHtml[] */
     protected $contents = [];
 
-    /** @var  array */
-    protected $params;
+    /** @var array */
+    protected $params = [];
 
     /**
      * @param I_ToHtml|I_ToHtml[]|string|string[]|null $value
@@ -105,7 +105,7 @@ class DOMElement implements I_ToHtml
      */
     public function getParam($key)
     {
-        return if_isset($this->params[$key], '');
+        return array_get($this->params, $key, '');
     }
 
     /**

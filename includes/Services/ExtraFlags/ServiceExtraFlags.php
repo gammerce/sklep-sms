@@ -1195,9 +1195,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     "WHERE us.service = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND `id` != '%d'",
                 [
                     $this->service->getId(),
-                    if_isset($data['server'], $userService['server']),
-                    if_isset($data['type'], $userService['type']),
-                    if_isset($data['auth_data'], $userService['auth_data']),
+                    array_get($data, 'server', $userService['server']),
+                    array_get($data, 'type', $userService['type']),
+                    array_get($data, 'auth_data', $userService['auth_data']),
                     $userService['id'],
                 ]
             )
@@ -1229,7 +1229,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 $set[] = [
                     'column' => 'expire',
                     'value' => "( `expire` - UNIX_TIMESTAMP() + '%d' )",
-                    'data' => [if_isset($data['expire'], $userService['expire'])],
+                    'data' => [array_get($data, 'expire', $userService['expire'])],
                 ];
             }
 
@@ -1290,9 +1290,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                         "WHERE `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s'",
                     [
                         $data['password'],
-                        if_isset($data['server'], $userService['server']),
-                        if_isset($data['type'], $userService['type']),
-                        if_isset($data['auth_data'], $userService['auth_data']),
+                        array_get($data, 'server', $userService['server']),
+                        array_get($data, 'type', $userService['type']),
+                        array_get($data, 'auth_data', $userService['auth_data']),
                     ]
                 )
             );
@@ -1316,9 +1316,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         // Odśwież flagi gracza ( już po edycji )
         $this->recalculatePlayerFlags(
-            if_isset($data['server'], $userService['server']),
-            if_isset($data['type'], $userService['type']),
-            if_isset($data['auth_data'], $userService['auth_data'])
+            array_get($data, 'server', $userService['server']),
+            array_get($data, 'type', $userService['type']),
+            array_get($data, 'auth_data', $userService['auth_data'])
         );
 
         return [

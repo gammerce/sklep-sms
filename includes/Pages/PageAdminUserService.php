@@ -123,7 +123,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 
         return [
             'status' => isset($output) ? 'ok' : 'no_output',
-            'template' => if_isset($output, ''),
+            'template' => isset($output) ? $output : '',
         ];
     }
 
