@@ -3,6 +3,7 @@ namespace App\Services\ExtraFlags;
 
 use App\Exceptions\UnauthorizedException;
 use App\Models\Purchase;
+use App\Models\Service;
 use App\Payment\BoughtServiceService;
 use App\Services\Interfaces\IServiceActionExecute;
 use App\Services\Interfaces\IServicePurchase;
@@ -40,7 +41,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     /** @var BoughtServiceService */
     private $boughtServiceService;
 
-    public function __construct($service = null)
+    public function __construct(Service $service = null)
     {
         parent::__construct($service);
 
