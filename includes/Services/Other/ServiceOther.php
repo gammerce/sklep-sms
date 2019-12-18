@@ -2,6 +2,7 @@
 namespace App\Services\Other;
 
 use App\Models\Purchase;
+use App\Models\Service;
 use App\Payment\BoughtServiceService;
 use App\Services\Interfaces\IServicePurchase;
 use App\Services\Interfaces\IServicePurchaseOutside;
@@ -20,7 +21,7 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase, IServ
     /** @var BoughtServiceService */
     private $boughtServiceService;
 
-    public function __construct($service = null)
+    public function __construct(Service $service = null)
     {
         parent::__construct($service);
 

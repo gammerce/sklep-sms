@@ -29,7 +29,7 @@ abstract class ServiceMybbExtraGroupsSimple extends Service implements
     /** @var Settings */
     protected $settings;
 
-    public function __construct($service = null)
+    public function __construct(\App\Models\Service $service = null)
     {
         parent::__construct($service);
 

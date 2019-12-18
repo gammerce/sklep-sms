@@ -53,14 +53,14 @@ class ExtraStuffController
         switch ($action) {
             case "service_long_description":
                 $output = "";
+                $heart->pageTitle = $lang->translate('description') . ": ";
                 $service = $request->query->get("service");
 
-                if (($serviceModule = $heart->getServiceModule($service)) !== null) {
+                $serviceModule = $heart->getServiceModule($service);
+                if ($serviceModule) {
                     $output = $serviceModule->descriptionLongGet();
+                    $heart->pageTitle .= $serviceModule->service->getName();
                 }
-
-                $heart->pageTitle =
-                    $lang->translate('description') . ": " . $serviceModule->service->getName();
 
                 $heart->styleAdd($url->versioned("build/css/static/extra_stuff/long_desc.css"));
                 $header = $template->render("header", compact('currentPage', 'heart', 'license'));

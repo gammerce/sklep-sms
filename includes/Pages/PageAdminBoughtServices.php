@@ -100,7 +100,7 @@ class PageAdminBoughtServices extends PageAdmin
             // Przerobienie ilosci
             $amount =
                 $row['amount'] != -1
-                    ? $row['amount'] . ' ' . $service->getTag()
+                    ? $row['amount'] . ' ' . ($service ? $service->getTag() : '')
                     : $this->lang->translate('forever');
 
             $row['extra_data'] = json_decode($row['extra_data'], true);

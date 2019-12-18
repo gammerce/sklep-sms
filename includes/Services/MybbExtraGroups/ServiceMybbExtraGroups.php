@@ -5,6 +5,7 @@ use App\Exceptions\InvalidConfigException;
 use App\Exceptions\SqlQueryException;
 use App\Models\MybbUser;
 use App\Models\Purchase;
+use App\Models\Service;
 use App\Payment\BoughtServiceService;
 use App\Services\Interfaces\IServicePurchase;
 use App\Services\Interfaces\IServicePurchaseWeb;
@@ -45,7 +46,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
     /** @var BoughtServiceService */
     private $boughtServiceService;
 
-    public function __construct($service)
+    public function __construct(Service $service)
     {
         parent::__construct($service);
 
@@ -614,12 +615,12 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             $userService['expire'] == -1
                 ? $this->lang->translate('never')
                 : date($this->settings['date_format'], $userService['expire']);
-        $service = $this->service->getName();
+        $serviceName = $this->service->getName();
         $mybbUid = "$username ({$userService['mybb_uid']})";
 
         return $this->template->render(
             "services/mybb_extra_groups/user_own_service",
-            compact('userService', 'service', 'mybbUid', 'expire') + [
+            compact('userService', 'serviceName', 'mybbUid', 'expire') + [
                 'moduleId' => $this->getModuleId(),
             ]
         );
