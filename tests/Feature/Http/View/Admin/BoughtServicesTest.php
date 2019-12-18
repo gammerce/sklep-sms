@@ -16,7 +16,7 @@ class BoughtServicesTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/admin.php', ['pid' => 'bought_services']);
+        $response = $this->get('/admin/bought_services');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

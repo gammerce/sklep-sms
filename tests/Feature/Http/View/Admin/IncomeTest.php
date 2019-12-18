@@ -16,7 +16,7 @@ class IncomeTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/admin.php', ['pid' => 'income']);
+        $response = $this->get('/admin/income');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

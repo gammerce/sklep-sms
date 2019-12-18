@@ -111,7 +111,7 @@ class BoughtServiceService
         return $boughtService->getId();
     }
 
-    private function sendEmail($service, $authData, $email, BoughtService $boughtService): string
+    private function sendEmail($service, $authData, $email, BoughtService $boughtService)
     {
         if (!strlen($email)) {
             return $this->lang->translate('none');

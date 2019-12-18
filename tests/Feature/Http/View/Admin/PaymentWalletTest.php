@@ -16,7 +16,7 @@ class PaymentWalletTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/admin.php', ['pid' => 'payment_wallet']);
+        $response = $this->get('/admin/payment_wallet');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

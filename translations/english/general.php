@@ -115,7 +115,6 @@ return [
     'value_must_be_positive' => 'Value must be positive.',
     'verification_error' => 'Something went wrong while connecting to the verification server.',
     'wallet' => 'Wallet',
-    'wrong_cron_key' => 'It\'s not the way you hacker.',
     'wrong_email' => 'Given e-mail is incorrect.',
     'wrong_ip' => 'Given IP address is incorrect.',
     'wrong_login_data' => 'Nickname and/or password are incorrect.',

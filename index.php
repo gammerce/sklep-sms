@@ -11,7 +11,7 @@ $app = require __DIR__ . '/bootstrap/app.php';
 
 $app->singleton(
     App\Kernels\KernelContract::class,
-    App\Kernels\IndexKernel::class
+    App\Kernels\Kernel::class
 );
 
 /** @var App\Kernels\KernelContract $kernel */

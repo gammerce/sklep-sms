@@ -16,7 +16,7 @@ class PaymentSmsTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/admin.php', ['pid' => 'payment_sms']);
+        $response = $this->get('/admin/payment_sms');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

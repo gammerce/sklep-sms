@@ -30,6 +30,7 @@ use App\Http\Controllers\Api\Admin\UserServiceCollection;
 use App\Http\Controllers\Api\Admin\UserServiceResource as AdminUserServiceResource;
 use App\Http\Controllers\Api\Admin\WalletChargeResource;
 use App\Http\Controllers\Api\BrickResource;
+use App\Http\Controllers\Api\CronController;
 use App\Http\Controllers\Api\IncomeController;
 use App\Http\Controllers\Api\InstallController;
 use App\Http\Controllers\Api\LogInController;
@@ -101,6 +102,19 @@ class RoutesManager
             'uses' => JsController::class . '@get',
         ]);
 
+        /**
+         * @deprecated
+         */
+        $r->get('/cron.php', [
+            'middlewares' => [IsUpToDate::class, LoadSettings::class, ValidateLicense::class],
+            'uses' => CronController::class . '@get',
+        ]);
+
+        $r->get('/cron', [
+            'middlewares' => [IsUpToDate::class, LoadSettings::class, ValidateLicense::class],
+            'uses' => CronController::class . '@get',
+        ]);
+
         $r->addGroup(
             [
                 "middlewares" => [
@@ -122,11 +136,17 @@ class RoutesManager
                     'uses' => ExtraStuffController::class . '@action',
                 ]);
 
+                /**
+                 * @deprecated
+                 */
                 $r->addRoute(['GET', 'POST'], '/servers_stuff.php', [
                     'middlewares' => [BlockOnInvalidLicense::class],
                     'uses' => ServerStuffController::class . '@action',
                 ]);
 
+                /**
+                 * @deprecated
+                 */
                 $r->addRoute(['GET', 'POST'], '/transfer_finalize.php', [
                     'middlewares' => [BlockOnInvalidLicense::class],
                     'uses' => TransferController::class . '@oldAction',

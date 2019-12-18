@@ -16,7 +16,7 @@ class SmsCodesTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/admin.php', ['pid' => 'sms_codes']);
+        $response = $this->get('/admin/sms_codes');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

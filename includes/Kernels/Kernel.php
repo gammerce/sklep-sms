@@ -1,7 +1,7 @@
 <?php
 namespace App\Kernels;
 
-use App\Http\Middlewares\MiddlewareContract;
+use App\Routes\RoutesManager;
 use App\System\Application;
 use App\System\ExceptionHandlerContract;
 use Exception;
@@ -11,17 +11,18 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Throwable;
 
-abstract class Kernel implements KernelContract
+class Kernel implements KernelContract
 {
     /** @var Application */
-    protected $app;
+    private $app;
 
-    /** @var array */
-    protected $middlewares = [];
+    /** @var RoutesManager */
+    private $routesManager;
 
-    public function __construct(Application $app)
+    public function __construct(Application $app, RoutesManager $routesManager)
     {
         $this->app = $app;
+        $this->routesManager = $routesManager;
     }
 
     public function handle(Request $request)
@@ -29,13 +30,7 @@ abstract class Kernel implements KernelContract
         try {
             $this->app->instance(Request::class, $request);
             $request->setSession($this->app->make(Session::class));
-            $response = $this->runMiddlewares($request);
-
-            if ($response) {
-                return $response;
-            }
-
-            return $this->run($request);
+            return $this->routesManager->dispatch($request);
         } catch (Exception $e) {
             /** @var ExceptionHandlerContract $handler */
             $handler = $this->app->make(ExceptionHandlerContract::class);
@@ -52,26 +47,8 @@ abstract class Kernel implements KernelContract
         }
     }
 
-    abstract protected function run(Request $request);
-
     public function terminate(Request $request, Response $response)
     {
         $this->app->terminate();
-    }
-
-    protected function runMiddlewares(Request $request)
-    {
-        foreach ($this->middlewares as $middlewareClass) {
-            /** @var MiddlewareContract $middleware */
-            $middleware = $this->app->make($middlewareClass);
-
-            $response = $middleware->handle($request, $this->app, null);
-
-            if ($response) {
-                return $response;
-            }
-        }
-
-        return null;
     }
 }

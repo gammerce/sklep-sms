@@ -16,7 +16,7 @@ class ServersTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/admin.php', ['pid' => 'servers']);
+        $response = $this->get('/admin/servers');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

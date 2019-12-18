@@ -16,7 +16,7 @@ class PaymentAdminTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/admin.php', ['pid' => 'payment_admin']);
+        $response = $this->get('/admin/payment_admin');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

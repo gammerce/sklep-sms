@@ -16,7 +16,7 @@ class LogsTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/admin.php', ['pid' => 'logs']);
+        $response = $this->get('/admin/logs');
 
         // then
         $this->assertEquals(200, $response->getStatusCode());

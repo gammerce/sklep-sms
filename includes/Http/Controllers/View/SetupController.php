@@ -30,7 +30,7 @@ class SetupController
         SetupManager $setupManager,
         Path $path
     ) {
-        if (!$oldShop->hasConfigFile()) {
+        if ($oldShop->hasConfigFile()) {
             return new HtmlResponse($this->template->render('setup/missing_env'));
         }
 
