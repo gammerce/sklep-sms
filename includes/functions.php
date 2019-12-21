@@ -37,27 +37,22 @@ function app($abstract = null, array $parameters = [])
 /**
  * Zwraca treść danego bloku
  *
- * @param string  $element
+ * @param string  $blockId
  * @param Request $request
- * @param bool    $withEnvelope
- *
  * @return string
  */
-function get_content($element, Request $request, $withEnvelope = true)
+function get_content($blockId, Request $request)
 {
     /** @var Heart $heart */
     $heart = app()->make(Heart::class);
 
-    if (($block = $heart->getBlock($element)) === null) {
-        return "";
+    if ($block = $heart->getBlock($blockId)) {
+        $query = $request->query->all();
+        $body = $request->request->all();
+        return $block->getContentEnveloped($query, $body);
     }
 
-    $query = $request->query->all();
-    $body = $request->request->all();
-
-    return $withEnvelope
-        ? $block->getContentEnveloped($query, $body)
-        : $block->getContent($query, $body);
+    return "";
 }
 
 function get_row_limit($page, $rowLimit = 0)
@@ -431,9 +426,9 @@ function delete_users_old_services()
     }
 }
 
-function create_dom_element($name, $text = "", $data = [])
+function create_dom_element($name, $content = "", $data = [])
 {
-    $element = new DOMElement($text);
+    $element = new DOMElement($content);
     $element->setName($name);
 
     foreach ($data as $key => $value) {

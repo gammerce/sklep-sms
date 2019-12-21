@@ -1,6 +1,7 @@
 <?php
 namespace App\Blocks;
 
+use App\Html\I_ToHtml;
 use App\Html\UnescapedSimpleText;
 use App\Interfaces\IBeLoggedCannot;
 use App\Interfaces\IBeLoggedMust;
@@ -17,7 +18,7 @@ abstract class Block
      * @param array $query
      * @param array $body
      *
-     * @return string|null - zawartość do wyświetlenia
+     * @return I_ToHtml|string|null - zawartość do wyświetlenia
      */
     public function getContent(array $query, array $body)
     {
@@ -37,7 +38,7 @@ abstract class Block
      * @param array $query
      * @param array $body
      *
-     * @return string
+     * @return I_ToHtml|string
      */
     abstract protected function content(array $query, array $body);
 
