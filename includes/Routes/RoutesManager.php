@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Admin\GroupCollection;
 use App\Http\Controllers\Api\Admin\GroupResource;
 use App\Http\Controllers\Api\Admin\LogResource;
 use App\Http\Controllers\Api\Admin\PageActionBoxResource;
+use App\Http\Controllers\Api\Admin\PaymentPlatformCollection;
 use App\Http\Controllers\Api\Admin\PriceCollection;
 use App\Http\Controllers\Api\Admin\PriceResource;
 use App\Http\Controllers\Api\Admin\ServerCollection;
@@ -381,6 +382,11 @@ class RoutesManager
                 $r->put('/api/admin/transaction_services/{transactionServiceId}', [
                     'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
                     'uses' => TransactionServiceResource::class . '@put',
+                ]);
+
+                $r->post('/api/admin/payment_platforms/{paymentPlatformId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
+                    'uses' => PaymentPlatformCollection::class . '@post',
                 ]);
 
                 $r->put('/api/admin/settings', [

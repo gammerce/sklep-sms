@@ -151,6 +151,7 @@ return [
     'payment_admin_edit' => 'Admin {1}({2}) edited payment method. ID: {3}',
     'payment_edit' => 'Payment method edited successfully.',
     'payment_no_edit' => 'Could not edit payment method.',
+    'payment_platform_add' => "Payment platform has been added successfully.",
     'payments' => 'Payments',
     'payments_admin' => 'Admin payments',
     'payments_service_code' => 'Code payments',

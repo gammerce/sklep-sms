@@ -153,6 +153,7 @@ return [
     'payment_admin_edit' => 'Admin {1}({2}) wyedytował metodę płatności. ID: {3}',
     'payment_edit' => 'Metoda płatności została prawidłowo wyedytowana.',
     'payment_no_edit' => 'Nie udało się wyedytować metody płatności.',
+    'payment_platform_add' => "Platforma płatności została prawidłowo dodana.",
     'payments' => 'Płatności',
     'payments_admin' => 'Płatności admina',
     'payments_service_code' => 'Płatności kodem',
