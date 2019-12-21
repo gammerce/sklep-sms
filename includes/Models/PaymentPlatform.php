@@ -10,16 +10,16 @@ class PaymentPlatform
     private $name;
 
     /** @var string */
-    private $platform;
+    private $module;
 
     /** @var array */
     private $data;
 
-    public function __construct($id, $name, $platform, array $data)
+    public function __construct($id, $name, $module, array $data)
     {
         $this->id = $id;
         $this->name = $name;
-        $this->platform = $platform;
+        $this->module = $module;
         $this->data = $data;
     }
 
@@ -36,9 +36,9 @@ class PaymentPlatform
     }
 
     /** @return string */
-    public function getPlatform()
+    public function getModule()
     {
-        return $this->platform;
+        return $this->module;
     }
 
     /** @return array */

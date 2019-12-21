@@ -379,11 +379,6 @@ class RoutesManager
                     'uses' => SmsCodeResource::class . '@delete',
                 ]);
 
-                $r->put('/api/admin/transaction_services/{transactionServiceId}', [
-                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
-                    'uses' => TransactionServiceResource::class . '@put',
-                ]);
-
                 $r->post('/api/admin/payment_platforms/{paymentPlatformId}', [
                     'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
                     'uses' => PaymentPlatformCollection::class . '@post',

@@ -3,10 +3,14 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
+use App\Repositories\PaymentPlatformRepository;
 use App\System\Auth;
 use App\System\Database;
+use App\System\Heart;
 use App\System\Path;
 use App\Translation\TranslationManager;
+use App\Verification\Abstracts\SupportSms;
+use App\Verification\Abstracts\SupportTransfer;
 use Symfony\Component\HttpFoundation\Request;
 
 class SettingsController
@@ -15,6 +19,8 @@ class SettingsController
         Request $request,
         Database $db,
         TranslationManager $translationManager,
+        PaymentPlatformRepository $paymentPlatformRepository,
+        Heart $heart,
         Path $path,
         Auth $auth
     ) {
@@ -22,8 +28,8 @@ class SettingsController
         $langShop = $translationManager->shop();
         $user = $auth->user();
 
-        $smsService = $request->request->get('sms_service');
-        $transferService = $request->request->get('transfer_service');
+        $smsPaymentPlatformId = $request->request->get('sms_service');
+        $transferPaymentPlatformId = $request->request->get('transfer_service');
         $currency = $request->request->get('currency');
         $shopName = $request->request->get('shop_name');
         $shopUrl = $request->request->get('shop_url');
@@ -45,37 +51,31 @@ class SettingsController
 
         $warnings = [];
 
-        // Serwis płatności SMS
-        if (strlen($smsService)) {
-            $result = $db->query(
-                $db->prepare(
-                    "SELECT id " .
-                        "FROM `" .
-                        TABLE_PREFIX .
-                        "transaction_services` " .
-                        "WHERE `id` = '%s' AND sms = '1'",
-                    [$smsService]
-                )
-            );
-            if (!$db->numRows($result)) {
+        // TODO Refactor it to use rules
+
+        if (strlen($smsPaymentPlatformId)) {
+            $paymentPlatform = $paymentPlatformRepository->get($smsPaymentPlatformId);
+
+            if (!$paymentPlatform) {
                 $warnings['sms_service'][] = $lang->translate('no_sms_service');
+            } else {
+                $paymentModule = $heart->getPaymentModule($paymentPlatform->getModule());
+                if (!($paymentModule instanceof SupportSms)) {
+                    $warnings['sms_service'][] = $lang->translate('no_sms_service');
+                }
             }
         }
 
-        // Serwis płatności internetowej
-        if (strlen($transferService)) {
-            $result = $db->query(
-                $db->prepare(
-                    "SELECT id " .
-                        "FROM `" .
-                        TABLE_PREFIX .
-                        "transaction_services` " .
-                        "WHERE `id` = '%s' AND transfer = '1'",
-                    [$transferService]
-                )
-            );
-            if (!$db->numRows($result)) {
-                $warnings['transfer_service'][] = $lang->translate('no_net_service');
+        if (strlen($transferPaymentPlatformId)) {
+            $paymentPlatform = $paymentPlatformRepository->get($transferPaymentPlatformId);
+
+            if (!$paymentPlatform) {
+                $warnings['transfer_service'][] = $lang->translate('no_transfer_service');
+            } else {
+                $paymentModule = $heart->getPaymentModule($paymentPlatform->getModule());
+                if (!($paymentModule instanceof SupportTransfer)) {
+                    $warnings['transfer_service'][] = $lang->translate('no_transfer_service');
+                }
             }
         }
 
@@ -165,8 +165,8 @@ class SettingsController
                     "'contact','row_limit','cron_each_visit','user_edit_service','theme','language','date_format','delete_logs'," .
                     "'google_analytics','gadugadu'{$keyLicenseToken} )",
                 [
-                    $smsService,
-                    $transferService,
+                    $smsPaymentPlatformId,
+                    $transferPaymentPlatformId,
                     $currency,
                     $shopName,
                     $shopUrl,

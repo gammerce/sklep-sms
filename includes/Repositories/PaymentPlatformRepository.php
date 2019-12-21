@@ -2,6 +2,7 @@
 namespace App\Repositories;
 
 use App\Models\PaymentPlatform;
+use App\Models\Server;
 use App\System\Database;
 
 class PaymentPlatformRepository
@@ -14,19 +15,34 @@ class PaymentPlatformRepository
         $this->db = $db;
     }
 
-    public function create($name, $platform, array $data = [])
+    public function create($name, $module, array $data = [])
     {
         $this->db->query(
             $this->db->prepare(
                 "INSERT INTO `" .
                     TABLE_PREFIX .
                     "payment_platforms` " .
-                    "SET `name` = '%s', `platform` = '%s', `data` = '%s'",
-                [$name, $platform, json_encode($data)]
+                    "SET `name` = '%s', `module` = '%s', `data` = '%s'",
+                [$name, $module, json_encode($data)]
             )
         );
 
         return $this->get($this->db->lastId());
+    }
+
+    /**
+     * @return PaymentPlatform[]
+     */
+    public function all()
+    {
+        $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "payment_platforms`");
+
+        $platforms = [];
+        while ($row = $this->db->fetchArrayAssoc($result)) {
+            $platforms[] = $this->mapToModel($row);
+        }
+
+        return $platforms;
     }
 
     public function get($id)
@@ -52,7 +68,7 @@ class PaymentPlatformRepository
         return new PaymentPlatform(
             intval($data['id']),
             $data['name'],
-            $data['platform'],
+            $data['module'],
             json_decode($data['data'], true)
         );
     }

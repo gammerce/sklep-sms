@@ -12,7 +12,7 @@ class PaymentPlatformTable extends Migration
 CREATE TABLE IF NOT EXISTS `ss_payment_platforms` (
   `id`          INT(11)          NOT NULL AUTO_INCREMENT,
   `name`        VARCHAR(32)      NOT NULL DEFAULT '',
-  `platform`    VARCHAR(64)      NOT NULL,
+  `module`      VARCHAR(64)      NOT NULL,
   `data`        VARCHAR(512)     NOT NULL DEFAULT ''
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)

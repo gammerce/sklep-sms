@@ -43,6 +43,8 @@ abstract class PaymentModule
         $this->requester = $requester;
         $this->langShop = $translationManager->shop();
 
+        // TODO Move heavy things out from constructor
+
         $result = $this->db->query(
             $this->db->prepare(
                 "SELECT `name`, `data`, `data_hidden`, `sms`, `transfer` " .

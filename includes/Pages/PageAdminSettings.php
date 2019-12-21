@@ -3,8 +3,12 @@ namespace App\Pages;
 
 use App\Html\Option;
 use App\Html\Select;
+use App\Repositories\PaymentPlatformRepository;
+use App\System\Heart;
 use App\System\Path;
 use App\Translation\TranslationManager;
+use App\Verification\Abstracts\SupportSms;
+use App\Verification\Abstracts\SupportTransfer;
 
 class PageAdminSettings extends PageAdmin
 {
@@ -20,6 +24,12 @@ class PageAdminSettings extends PageAdmin
 
     protected function content(array $query, array $body)
     {
+        /** @var PaymentPlatformRepository $paymentPlatformRepository */
+        $paymentPlatformRepository = $this->app->make(PaymentPlatformRepository::class);
+
+        /** @var Heart $heart */
+        $heart = $this->app->make(Heart::class);
+
         /** @var Path $path */
         $path = $this->app->make(Path::class);
 
@@ -28,23 +38,22 @@ class PageAdminSettings extends PageAdmin
         $lang = $this->lang;
         $langShop = $translationManager->shop();
 
-        // Pobranie listy serwisów transakcyjnych
-        $result = $this->db->query(
-            "SELECT id, name, sms, transfer " . "FROM `" . TABLE_PREFIX . "transaction_services`"
-        );
-        $smsServices = $transferServices = "";
-        while ($row = $this->db->fetchArrayAssoc($result)) {
-            if ($row['sms']) {
-                $smsServices .= create_dom_element("option", $row['name'], [
-                    'value' => $row['id'],
-                    'selected' => $row['id'] == $this->settings['sms_service'] ? "selected" : "",
+        $smsServices = [];
+        $transferServices = [];
+        foreach ($paymentPlatformRepository->all() as $paymentPlatform) {
+            $paymentModule = $heart->getPaymentModule($paymentPlatform);
+
+            if ($paymentModule instanceof SupportSms) {
+                $smsServices[] = create_dom_element("option", $paymentPlatform->getName(), [
+                    'value' => $paymentPlatform->getId(),
+                    'selected' => $paymentPlatform->getId() == $this->settings['sms_service'] ? "selected" : "",
                 ]);
             }
-            if ($row['transfer']) {
-                $transferServices .= create_dom_element("option", $row['name'], [
-                    'value' => $row['id'],
-                    'selected' =>
-                        $row['id'] == $this->settings['transfer_service'] ? "selected" : "",
+
+            if ($paymentModule instanceof SupportTransfer) {
+                $transferServices[] = create_dom_element("option", $paymentPlatform->getName(), [
+                    'value' => $paymentPlatform->getId(),
+                    'selected' => $paymentPlatform->getId() == $this->settings['transfer_service'] ? "selected" : "",
                 ]);
             }
         }
