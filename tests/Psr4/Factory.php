@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Psr4;
 
-use App\Repositories\PriceListRepository;
+use App\Repositories\PriceRepository;
 use App\Repositories\ServerRepository;
 use App\Repositories\ServerServiceRepository;
 use App\Repositories\UserRepository;
@@ -19,7 +19,7 @@ class Factory
     /** @var ServerRepository */
     protected $serverRepository;
 
-    /** @var PriceListRepository */
+    /** @var PriceRepository */
     protected $pricelistRepository;
 
     /** @var ServerServiceRepository */
@@ -28,12 +28,12 @@ class Factory
     public function __construct(
         UserRepository $userRepository,
         ServerRepository $serverRepository,
-        PriceListRepository $pricelistRepository,
+        PriceRepository $priceRepository,
         ServerServiceRepository $serverServiceRepository
     ) {
         $this->userRepository = $userRepository;
         $this->serverRepository = $serverRepository;
-        $this->pricelistRepository = $pricelistRepository;
+        $this->pricelistRepository = $priceRepository;
         $this->serverServiceRepository = $serverServiceRepository;
         $this->faker = FakerFactory::create();
     }
