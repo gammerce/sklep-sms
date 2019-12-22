@@ -51,7 +51,7 @@ class PurchaseService
         $method = array_get($body, 'method');
         $platform = array_get($body, 'platform');
         $smsCode = array_get($body, 'sms_code');
-        $transactionService = array_get($body, 'transaction_service');
+        $paymentPlatformId = array_get($body, 'payment_platform');
         $tariff = array_get($body, 'tariff');
 
         $user = $this->auth->user();
@@ -69,10 +69,11 @@ class PurchaseService
             'passwordr' => $password,
         ]);
 
+        // TODO Refactor sms_service usage
         $purchase->setPayment([
             'method' => $method,
             'sms_code' => $smsCode,
-            'sms_service' => $transactionService,
+            'sms_service' => $paymentPlatformId,
         ]);
 
         $purchase->setTariff($this->heart->getTariff($tariff));
@@ -113,7 +114,7 @@ class PurchaseService
         $purchase->setPayment([
             'method' => $method,
             'sms_code' => $smsCode,
-            'sms_service' => $transactionService,
+            'sms_service' => $paymentPlatformId,
         ]);
 
         $returnPayment = $this->paymentService->makePayment($purchase);

@@ -94,7 +94,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
                 }
 
                 return $this->template->render(
-                    "admin/action_boxes/transaction_service_edit",
+                    "admin/action_boxes/payment_platform_edit",
                     compact('paymentPlatform', 'dataValues')
                 );
 

@@ -128,7 +128,7 @@ class AdminController
             $settingsLink = $template->render("admin/page_link", compact('pid', 'name'));
 
             // Płatności
-            $pid = "transaction_services";
+            $pid = "payment_platforms";
             $name = $lang->translate($pid);
             $transactionServicesLink = $template->render("admin/page_link", compact('pid', 'name'));
 

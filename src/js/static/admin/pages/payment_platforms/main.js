@@ -1,5 +1,5 @@
 $(document).delegate(".table-structure .edit_row", "click", function() {
-    show_action_box(currentPage, "transaction_service_edit", {
+    show_action_box(currentPage, "edit", {
         id: $(this)
             .closest("tr")
             .find("td[headers=id]")
@@ -7,17 +7,17 @@ $(document).delegate(".table-structure .edit_row", "click", function() {
     });
 });
 
-$(document).delegate("#form_transaction_service_edit", "submit", function(e) {
+$(document).delegate("#form_payment_platform_edit", "submit", function(e) {
     e.preventDefault();
 
-    var transactionServiceId = $(this)
+    var paymentPlatformId = $(this)
         .find("[name=id]")
         .val();
 
     loader.show();
     $.ajax({
         type: "PUT",
-        url: buildUrl("/api/admin/transaction_services/" + transactionServiceId),
+        url: buildUrl("/api/admin/payment_platforms/" + paymentPlatformId),
         data: $(this).serialize(),
         complete: function() {
             loader.hide();

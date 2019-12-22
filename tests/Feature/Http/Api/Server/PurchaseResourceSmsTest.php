@@ -3,6 +3,7 @@ namespace Tests\Feature\Http;
 
 use App\Models\Purchase;
 use App\Repositories\BoughtServiceRepository;
+use App\Repositories\PaymentPlatformRepository;
 use App\Requesting\Response;
 use App\Services\ExtraFlags\ExtraFlagType;
 use App\System\Settings;
@@ -29,18 +30,21 @@ class PurchaseResourceSmsTest extends HttpTestCase
         /** @var BoughtServiceRepository $boughtServiceRepository */
         $boughtServiceRepository = $this->app->make(BoughtServiceRepository::class);
 
+        /** @var PaymentPlatformRepository $paymentPlatformRepository */
+        $paymentPlatformRepository = $this->app->make(PaymentPlatformRepository::class);
+
         /** @var Settings $settings */
         $settings = $this->app->make(Settings::class);
 
         $serviceId = 'vip';
         $tariff = 2;
-        $transactionService = 'gosetti';
         $authData = 'test';
         $password = 'test123';
         $smsCode = 'ABCD12EF';
         $platform = 'engine_amxx';
         $type = ExtraFlagType::TYPE_NICK;
 
+        $paymentPlatform = $paymentPlatformRepository->create("test", Gosetti::MODULE_ID);
         $server = $this->factory->server();
         $this->factory->serverService([
             'server_id' => $server->getId(),
@@ -61,7 +65,7 @@ class PurchaseResourceSmsTest extends HttpTestCase
             '/api/server/purchase',
             [
                 'service' => $serviceId,
-                'transaction_service' => $transactionService,
+                'payment_platform' => $paymentPlatform->getId(),
                 'server' => $server->getId(),
                 'type' => $type,
                 'auth_data' => $authData,

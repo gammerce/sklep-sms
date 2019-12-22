@@ -4,6 +4,7 @@ namespace Tests\Feature\Http;
 use App\Exceptions\LicenseRequestException;
 use App\Models\Purchase;
 use App\Repositories\BoughtServiceRepository;
+use App\Repositories\PaymentPlatformRepository;
 use App\System\License;
 use App\Requesting\Response;
 use App\Services\ExtraFlags\ExtraFlagType;
@@ -34,9 +35,11 @@ class PurchaseServiceFromServerTest extends HttpTestCase
         /** @var BoughtServiceRepository $boughtServiceRepository */
         $boughtServiceRepository = $this->app->make(BoughtServiceRepository::class);
 
+        /** @var PaymentPlatformRepository $paymentPlatformRepository */
+        $paymentPlatformRepository = $this->app->make(PaymentPlatformRepository::class);
+
         $serviceId = 'vip';
         $tariff = 2;
-        $transactionService = 'gosetti';
         $type = ExtraFlagType::TYPE_NICK;
         $authData = 'test';
         $password = 'test123';
@@ -45,6 +48,7 @@ class PurchaseServiceFromServerTest extends HttpTestCase
         $uid = 0;
         $platform = 'engine_amxx';
 
+        $paymentPlatform = $paymentPlatformRepository->create('test', Gosetti::MODULE_ID);
         $server = $this->factory->server();
         $this->factory->serverService([
             'server_id' => $server->getId(),
@@ -63,7 +67,7 @@ class PurchaseServiceFromServerTest extends HttpTestCase
             'key' => md5($settings->get('random_key')),
             'action' => 'purchase_service',
             'service' => $serviceId,
-            'transaction_service' => $transactionService,
+            'payment_platform' => $paymentPlatform->getId(),
             'server' => $server->getId(),
             'type' => $type,
             'auth_data' => $authData,
