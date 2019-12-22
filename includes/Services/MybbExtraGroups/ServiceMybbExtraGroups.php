@@ -46,7 +46,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
     /** @var BoughtServiceService */
     private $boughtServiceService;
 
-    public function __construct(Service $service)
+    public function __construct(Service $service = null)
     {
         parent::__construct($service);
 
