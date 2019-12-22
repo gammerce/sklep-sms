@@ -15,7 +15,7 @@ class License
     const CACHE_TTL = 10 * 60;
 
     /** @var Translator */
-    private $lang;
+    private $langShop;
 
     /** @var Settings */
     private $settings;
@@ -48,7 +48,7 @@ class License
         CachingRequester $cachingRequester,
         UrlGenerator $urlGenerator
     ) {
-        $this->lang = $translationManager->user();
+        $this->langShop = $translationManager->shop();
         $this->settings = $settings;
         $this->requester = $requester;
         $this->cachingRequester = $cachingRequester;
@@ -85,7 +85,7 @@ class License
     public function getExpires()
     {
         if ($this->isForever()) {
-            return $this->lang->translate('never');
+            return $this->langShop->translate('never');
         }
 
         return date($this->settings['date_format'], $this->expiresAt);
@@ -110,7 +110,7 @@ class License
      * @return array
      * @throws LicenseRequestException
      */
-    protected function loadLicense()
+    private function loadLicense()
     {
         try {
             return $this->cachingRequester->load(
@@ -129,7 +129,7 @@ class License
      * @return array
      * @throws LicenseRequestException
      */
-    protected function request()
+    private function request()
     {
         $shopUrl = $this->urlGenerator->getShopUrl();
 
@@ -139,7 +139,8 @@ class License
                 'url' => $shopUrl,
                 'name' => $this->settings['shop_name'] ?: $shopUrl,
                 'version' => app()->version(),
-                'language' => $this->lang->getCurrentLanguage(),
+                'language' => $this->langShop->getCurrentLanguage(),
+                'php_version' => PHP_VERSION,
             ],
             [
                 'Authorization' => $this->settings['license_password'],
