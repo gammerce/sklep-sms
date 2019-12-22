@@ -26,7 +26,7 @@ use App\Pages\PageAdminServices;
 use App\Pages\PageAdminSettings;
 use App\Pages\PageAdminSmsCodes;
 use App\Pages\PageAdminTariffs;
-use App\Pages\PageAdminTransactionServices;
+use App\Pages\PageAdminPaymentPlatforms;
 use App\Pages\PageAdminUpdateServers;
 use App\Pages\PageAdminUpdateWeb;
 use App\Pages\PageAdminUsers;
@@ -150,8 +150,8 @@ class HeartServiceProvider
         $heart->registerAdminPage(PageAdminSmsCodes::PAGE_ID, PageAdminSmsCodes::class);
         $heart->registerAdminPage(PageAdminTariffs::PAGE_ID, PageAdminTariffs::class);
         $heart->registerAdminPage(
-            PageAdminTransactionServices::PAGE_ID,
-            PageAdminTransactionServices::class
+            PageAdminPaymentPlatforms::PAGE_ID,
+            PageAdminPaymentPlatforms::class
         );
         $heart->registerAdminPage(PageAdminUpdateServers::PAGE_ID, PageAdminUpdateServers::class);
         $heart->registerAdminPage(PageAdminUpdateWeb::PAGE_ID, PageAdminUpdateWeb::class);
