@@ -14,13 +14,12 @@ class PageUsersActionBoxChargeWalletTest extends HttpTestCase
 
         // when
         $response = $this->get("/api/admin/pages/users/action_boxes/charge_wallet", [
-            "id" => $admin->getUid(),
+            "uid" => $admin->getUid(),
         ]);
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        var_dump($json);
         $this->assertEquals('ok', $json['return_id']);
         $this->assertContains("Doładowanie portfela", $json['template']);
     }
@@ -34,7 +33,7 @@ class PageUsersActionBoxChargeWalletTest extends HttpTestCase
 
         // when
         $response = $this->get("/api/admin/pages/servers/action_boxes/charge_wallet", [
-            "id" => $admin->getUid(),
+            "uid" => $admin->getUid(),
         ]);
 
         // then

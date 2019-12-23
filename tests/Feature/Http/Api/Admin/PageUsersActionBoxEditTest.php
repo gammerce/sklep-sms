@@ -14,7 +14,7 @@ class PageUsersActionBoxEditTest extends HttpTestCase
 
         // when
         $response = $this->get("/api/admin/pages/users/action_boxes/user_edit", [
-            "id" => $admin->getUid(),
+            "uid" => $admin->getUid(),
         ]);
 
         // then
@@ -33,7 +33,7 @@ class PageUsersActionBoxEditTest extends HttpTestCase
 
         // when
         $response = $this->get("/api/admin/pages/servers/action_boxes/user_edit", [
-            "id" => $admin->getUid(),
+            "uid" => $admin->getUid(),
         ]);
 
         // then
