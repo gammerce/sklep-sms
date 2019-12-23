@@ -14,7 +14,7 @@ class HomepageTest extends HttpTestCase
     public function it_loads()
     {
         // given
-        $user = $this->factory->user();
+        $user = $this->factory->admin();
         $this->actingAs($user);
 
         // when
@@ -34,7 +34,7 @@ class HomepageTest extends HttpTestCase
         $license->shouldReceive('isValid')->andReturn(false);
         $license->shouldReceive('getLoadingException')->andReturn(new LicenseRequestException());
 
-        $user = $this->factory->user();
+        $user = $this->factory->admin();
         $this->actingAs($user);
 
         // when

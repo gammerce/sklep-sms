@@ -12,7 +12,7 @@ class PaymentServiceCodeTest extends HttpTestCase
     public function it_loads()
     {
         // given
-        $user = $this->factory->user();
+        $user = $this->factory->admin();
         $this->actingAs($user);
 
         // when
