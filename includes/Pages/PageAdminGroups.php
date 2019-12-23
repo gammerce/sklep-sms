@@ -113,7 +113,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                 $this->lang->strtoupper($this->lang->translate('no')),
                 [
                     'value' => 0,
-                    'selected' => $group[$row['Field']] ? "" : "selected",
+                    'selected' => isset($group) && $group[$row['Field']] ? "" : "selected",
                 ]
             );
 
@@ -122,7 +122,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                 $this->lang->strtoupper($this->lang->translate('yes')),
                 [
                     'value' => 1,
-                    'selected' => $group[$row['Field']] ? "selected" : "",
+                    'selected' => isset($group) && $group[$row['Field']] ? "selected" : "",
                 ]
             );
 

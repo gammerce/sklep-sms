@@ -1530,11 +1530,11 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     /**
      * Metoda zwraca listę serwerów na których można zakupić daną usługę
      *
-     * @param integer $server
+     * @param integer $serverId
      *
      * @return string            Lista serwerów w postaci <option value="id_serwera">Nazwa</option>
      */
-    private function serversForService($server)
+    private function serversForService($serverId)
     {
         if (!get_privileges("manage_user_services")) {
             throw new UnauthorizedException();
@@ -1549,7 +1549,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
             $servers .= create_dom_element("option", $server->getName(), [
                 'value' => $server->getId(),
-                'selected' => $server == $server->getId() ? "selected" : "",
+                'selected' => $serverId == $server->getId() ? "selected" : "",
             ]);
         }
 
