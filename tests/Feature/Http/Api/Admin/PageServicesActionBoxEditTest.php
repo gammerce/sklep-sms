@@ -3,39 +3,39 @@ namespace Tests\Feature\Http\Api\Admin;
 
 use Tests\Psr4\TestCases\HttpTestCase;
 
-class PageServersActionBoxEditTest extends HttpTestCase
+class PageServicesActionBoxEditTest extends HttpTestCase
 {
     /** @test */
-    public function get_add_box()
+    public function get_edit_box()
     {
         // give
-        $server = $this->factory->server();
+        $service = $this->factory->service();
         $admin = $this->factory->admin();
         $this->actAs($admin);
 
         // when
-        $response = $this->get("/api/admin/pages/servers/action_boxes/server_edit", [
-            "id" => $server->getId(),
+        $response = $this->get("/api/admin/pages/services/action_boxes/service_edit", [
+            "id" => $service->getId(),
         ]);
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals('ok', $json['return_id']);
-        $this->assertContains("Edytuj serwer", $json['template']);
+        $this->assertContains("Edytuj usługę", $json['template']);
     }
 
     /** @test */
     public function requires_permission_to_get()
     {
         // give
-        $server = $this->factory->server();
+        $service = $this->factory->service();
         $admin = $this->factory->user();
         $this->actAs($admin);
 
         // when
-        $response = $this->get("/api/admin/pages/servers/action_boxes/server_edit", [
-            "id" => $server->getId(),
+        $response = $this->get("/api/admin/pages/services/action_boxes/service_edit", [
+            "id" => $service->getId(),
         ]);
 
         // then

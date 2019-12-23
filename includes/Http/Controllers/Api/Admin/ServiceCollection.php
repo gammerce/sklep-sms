@@ -80,7 +80,7 @@ class ServiceCollection
                 $id
             )
         );
-        return new ApiResponse('ok', $lang->translate('service_added'), 1, [
+        return new ApiResponse('ok', $lang->translate('service_added'), true, [
             'length' => 10000,
         ]);
     }
