@@ -43,6 +43,8 @@ class BlockUserButtons extends Block
             return $template->render("loginarea");
         }
 
+        $acpButton = "";
+
         // Panel Admina
         if (get_privileges("acp", $user)) {
             $acpButton = create_dom_element(

@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Psr4;
 
+use App\Http\Controllers\Api\Admin\AntispamQuestionResource;
 use App\Repositories\PriceRepository;
 use App\Repositories\ServerRepository;
 use App\Repositories\ServerServiceRepository;
