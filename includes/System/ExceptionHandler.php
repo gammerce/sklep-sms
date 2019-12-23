@@ -57,7 +57,7 @@ class ExceptionHandler implements ExceptionHandlerContract
         }
 
         if ($e instanceof UnauthorizedException) {
-            return new ApiResponse("no_access", $this->lang->translate('not_logged_or_no_perm'), 0);
+            return new ApiResponse("no_access", $this->lang->translate('not_logged_or_no_perm'), false);
         }
 
         if ($e instanceof ValidationException) {

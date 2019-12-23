@@ -79,7 +79,7 @@ class PurchaseResourceSmsTest extends HttpTestCase
         );
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertRegExp(
             "#<return_value>purchased</return_value><text>Usługa została prawidłowo zakupiona\.</text><positive>1</positive><bsid>\d+</bsid>#",
             $response->getContent()

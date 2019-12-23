@@ -14,7 +14,7 @@ class RegisterTest extends HttpTestCase
         $response = $this->get('/', ['pid' => 'register']);
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertContains('Rejestracja', $response->getContent());
     }
 }

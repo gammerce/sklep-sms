@@ -43,7 +43,7 @@ class RegisterTest extends HttpTestCase
         ]);
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $user = $userRepository->findByPassword($username, $password);
         $this->assertNotNull($user);
         $this->assertEquals($email, $user->getEmail());

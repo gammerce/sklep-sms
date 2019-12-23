@@ -19,7 +19,7 @@ class PricelistTest extends HttpTestCase
         $response = $this->get('/admin/pricelist');
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertContains('Panel Admina', $response->getContent());
         $this->assertContains('<div class="title is-4">Cennik', $response->getContent());
     }

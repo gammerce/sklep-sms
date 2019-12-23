@@ -81,7 +81,7 @@ class PurchaseServiceFromServerTest extends HttpTestCase
         $response = $this->get('/servers_stuff.php', $query);
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertRegExp(
             "#<return_value>purchased</return_value><text>Usługa została prawidłowo zakupiona\.</text><positive>1</positive><bsid>\d+</bsid>#",
             $response->getContent()
@@ -106,7 +106,7 @@ class PurchaseServiceFromServerTest extends HttpTestCase
         $response = $this->get('/servers_stuff.php');
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $json = json_decode($response->getContent(), true);
         $this->assertEquals($json, [
             "message" => "Coś poszło nie tak podczas łączenia się z serwerem weryfikacyjnym.",

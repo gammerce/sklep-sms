@@ -19,7 +19,7 @@ class PaymentTransferTest extends HttpTestCase
         $response = $this->get('/admin/payment_transfer');
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertContains('Panel Admina', $response->getContent());
         $this->assertContains(
             '<div class="title is-4">Płatności internetowe',

@@ -89,6 +89,11 @@ class Factory
         );
     }
 
+    public function admin(array $attributes = [])
+    {
+        return $this->user(array_merge(["groups" => "2"], $attributes));
+    }
+
     public function user(array $attributes = [])
     {
         $attributes = array_merge(
@@ -100,7 +105,7 @@ class Factory
                 'surname' => $this->faker->lastName,
                 'steam_id' => null,
                 'ip' => $this->faker->ipv4,
-                'groups' => '2',
+                'groups' => '1',
                 'wallet' => 0,
             ],
             $attributes

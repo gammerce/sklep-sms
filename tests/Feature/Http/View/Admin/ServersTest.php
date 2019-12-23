@@ -19,7 +19,7 @@ class ServersTest extends HttpTestCase
         $response = $this->get('/admin/servers');
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertContains('Panel Admina', $response->getContent());
         $this->assertContains('<div class="title is-4">Serwery', $response->getContent());
     }
