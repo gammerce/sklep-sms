@@ -1,6 +1,7 @@
 <?php
 namespace App\Pages;
 
+use App\Exceptions\UnauthorizedException;
 use App\Html\BodyRow;
 use App\Html\Cell;
 use App\Html\HeadCell;
@@ -72,10 +73,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
     public function getActionBox($boxId, array $query)
     {
         if (!get_privileges("manage_groups")) {
-            return [
-                'status' => "no_access",
-                'text' => $this->lang->translate('not_logged_or_no_perm'),
-            ];
+            throw new UnauthorizedException();
         }
 
         if ($boxId == "group_edit") {
@@ -115,7 +113,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                 $this->lang->strtoupper($this->lang->translate('no')),
                 [
                     'value' => 0,
-                    'selected' => $group[$row['Field']] ? "" : "selected",
+                    'selected' => isset($group) && $group[$row['Field']] ? "" : "selected",
                 ]
             );
 
@@ -124,7 +122,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                 $this->lang->strtoupper($this->lang->translate('yes')),
                 [
                     'value' => 1,
-                    'selected' => $group[$row['Field']] ? "selected" : "",
+                    'selected' => isset($group) && $group[$row['Field']] ? "selected" : "",
                 ]
             );
 

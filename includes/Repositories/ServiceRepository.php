@@ -49,6 +49,40 @@ class ServiceRepository
         return null;
     }
 
+    public function create(
+        $id,
+        $name,
+        $shortDescription,
+        $description,
+        $tag,
+        $module,
+        array $groups,
+        $order,
+        array $data = []
+    ) {
+        $this->db->query(
+            $this->db->prepare(
+                "INSERT INTO `" .
+                    TABLE_PREFIX .
+                    "services` " .
+                    "SET `id`='%s', `name`='%s', `short_description`='%s', `description`='%s', `tag`='%s', `module`='%s', `groups`='%s', `order` = '%d', `data`='%s'",
+                [
+                    $id,
+                    $name,
+                    $shortDescription,
+                    $description,
+                    $tag,
+                    $module,
+                    implode(";", $groups),
+                    $order,
+                    json_encode($data),
+                ]
+            )
+        );
+
+        return $this->get($id);
+    }
+
     public function delete($id)
     {
         $this->db->query(

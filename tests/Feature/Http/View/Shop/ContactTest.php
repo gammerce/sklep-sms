@@ -14,7 +14,7 @@ class ContactTest extends HttpTestCase
         $response = $this->get('/', ['pid' => 'contact']);
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertContains('Kontakt', $response->getContent());
     }
 }

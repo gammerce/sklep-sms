@@ -1,11 +1,11 @@
 <?php
 namespace App\Pages;
 
+use App\Exceptions\UnauthorizedException;
 use App\Html\BodyRow;
 use App\Html\Cell;
 use App\Html\HeadCell;
 use App\Html\Link;
-use App\Html\SimpleText;
 use App\Html\Structure;
 use App\Html\Wrapper;
 use App\Pages\Interfaces\IPageAdminActionBox;
@@ -136,10 +136,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
     public function getActionBox($boxId, array $query)
     {
         if (!get_privileges("manage_users")) {
-            return [
-                'status' => "no_access",
-                'text' => $this->lang->translate('not_logged_or_no_perm'),
-            ];
+            throw new UnauthorizedException();
         }
 
         switch ($boxId) {

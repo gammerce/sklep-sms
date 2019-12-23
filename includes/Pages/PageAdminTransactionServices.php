@@ -1,6 +1,7 @@
 <?php
 namespace App\Pages;
 
+use App\Exceptions\UnauthorizedException;
 use App\Html\BodyRow;
 use App\Html\Cell;
 use App\Html\HeadCell;
@@ -69,10 +70,7 @@ class PageAdminTransactionServices extends PageAdmin implements IPageAdminAction
     public function getActionBox($boxId, array $query)
     {
         if (!get_privileges("manage_settings")) {
-            return [
-                'status' => "no_access",
-                'text' => $this->lang->translate('not_logged_or_no_perm'),
-            ];
+            throw new UnauthorizedException();
         }
 
         switch ($boxId) {
