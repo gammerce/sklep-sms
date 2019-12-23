@@ -3,7 +3,7 @@ namespace Tests\Feature\Http\Api\Admin;
 
 use Tests\Psr4\TestCases\HttpTestCase;
 
-class PageAntispamQuestionsActionBoxAddTest extends HttpTestCase
+class PageSmsCodesActionBoxAddTest extends HttpTestCase
 {
     /** @test */
     public function get_add_box()
@@ -13,16 +13,13 @@ class PageAntispamQuestionsActionBoxAddTest extends HttpTestCase
         $this->actAs($admin);
 
         // when
-        $response = $this->get(
-            "/api/admin/pages/antispam_questions/action_boxes/antispam_question_add"
-        );
+        $response = $this->get("/api/admin/pages/sms_codes/action_boxes/sms_code_add");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        var_dump($json);
         $this->assertEquals('ok', $json['return_id']);
-        $this->assertContains("Dodaj pytanie antyspamowe", $json['template']);
+        $this->assertContains("Dodaj kod SMS", $json['template']);
     }
 
     /** @test */
@@ -33,9 +30,7 @@ class PageAntispamQuestionsActionBoxAddTest extends HttpTestCase
         $this->actAs($admin);
 
         // when
-        $response = $this->get(
-            "/api/admin/pages/antispam_questions/action_boxes/antispam_question_add"
-        );
+        $response = $this->get("/api/admin/pages/sms_codes/action_boxes/sms_code_add");
 
         // then
         $this->assertSame(200, $response->getStatusCode());

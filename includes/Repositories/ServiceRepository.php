@@ -57,14 +57,15 @@ class ServiceRepository
         $tag,
         $module,
         array $groups,
-        $order
+        $order,
+        array $data = []
     ) {
         $this->db->query(
             $this->db->prepare(
                 "INSERT INTO `" .
                     TABLE_PREFIX .
                     "services` " .
-                    "SET `id`='%s', `name`='%s', `short_description`='%s', `description`='%s', `tag`='%s', `module`='%s', `groups`='%s', `order` = '%d'",
+                    "SET `id`='%s', `name`='%s', `short_description`='%s', `description`='%s', `tag`='%s', `module`='%s', `groups`='%s', `order` = '%d', `data`='%s'",
                 [
                     $id,
                     $name,
@@ -74,6 +75,7 @@ class ServiceRepository
                     $module,
                     implode(";", $groups),
                     $order,
+                    json_encode($data),
                 ]
             )
         );
