@@ -879,6 +879,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     public function userServiceAdminEdit($data, $userService)
     {
         $user = $this->auth->user();
+        $warnings = [];
 
         // Pobieramy auth_data
         $data['auth_data'] = $this->getAuthData($data);
@@ -1107,6 +1108,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     public function userOwnServiceEdit(array $data, $userService)
     {
         $user = $this->auth->user();
+        $warnings = [];
 
         // Pobieramy auth_data
         $data['auth_data'] = $this->getAuthData($data);
