@@ -137,7 +137,7 @@ abstract class ServiceExtraFlagsSimple extends Service implements
             $types |= $type;
         }
 
-        $extraData = $this->service->getData();
+        $extraData = $this->service ? $this->service->getData() : [];
         $extraData['web'] = $data['web'];
 
         // Tworzymy plik z opisem usługi
