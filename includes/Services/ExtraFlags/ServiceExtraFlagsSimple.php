@@ -54,11 +54,8 @@ abstract class ServiceExtraFlagsSimple extends Service implements
     public function serviceAdminExtraFieldsGet()
     {
         // WEB
-        if ($this->showOnWeb()) {
-            $webSelYes = "selected";
-        } else {
-            $webSelNo = "selected";
-        }
+        $webSelYes = $this->showOnWeb() ? "selected" : "";
+        $webSelNo = $this->showOnWeb() ? "" : "selected";
 
         // Nick, IP, SID
         $types = "";
