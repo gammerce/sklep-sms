@@ -20,7 +20,6 @@ class PageAntispamQuestionsActionBoxAddTest extends HttpTestCase
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        var_dump($json);
         $this->assertEquals('ok', $json['return_id']);
         $this->assertContains("Dodaj pytanie antyspamowe", $json['template']);
     }

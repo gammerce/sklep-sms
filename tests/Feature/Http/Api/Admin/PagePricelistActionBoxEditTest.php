@@ -3,35 +3,46 @@ namespace Tests\Feature\Http\Api\Admin;
 
 use Tests\Psr4\TestCases\HttpTestCase;
 
-class PageGroupsActionBoxAddTest extends HttpTestCase
+class PagePricelistActionBoxEditTest extends HttpTestCase
 {
     /** @test */
-    public function get_add_box()
+    public function get_edit_box()
     {
         // give
+        $server = $this->factory->server();
+        $price = $this->factory->price([
+            'server_id' => $server->getId(),
+        ]);
         $admin = $this->factory->admin();
         $this->actAs($admin);
 
         // when
-        $response = $this->get("/api/admin/pages/groups/action_boxes/group_add");
+        $response = $this->get("/api/admin/pages/pricelist/action_boxes/price_edit", [
+            'id' => $price->getId(),
+        ]);
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        var_dump($json);
         $this->assertEquals('ok', $json['return_id']);
-        $this->assertContains("Dodaj grupę", $json['template']);
+        $this->assertContains("Edytuj cenę", $json['template']);
     }
 
     /** @test */
     public function requires_permission_to_get()
     {
         // give
+        $server = $this->factory->server();
+        $price = $this->factory->price([
+            'server_id' => $server->getId(),
+        ]);
         $admin = $this->factory->user();
         $this->actAs($admin);
 
         // when
-        $response = $this->get("/api/admin/pages/groups/action_boxes/group_add");
+        $response = $this->get("/api/admin/pages/pricelist/action_boxes/price_edit", [
+            'id' => $price->getId(),
+        ]);
 
         // then
         $this->assertSame(200, $response->getStatusCode());

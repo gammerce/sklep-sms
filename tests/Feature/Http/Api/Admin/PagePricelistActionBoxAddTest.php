@@ -30,7 +30,7 @@ class PagePricelistActionBoxAddTest extends HttpTestCase
         $this->actAs($admin);
 
         // when
-        $response = $this->get("/api/admin/pages/tariffs/action_boxes/price_add");
+        $response = $this->get("/api/admin/pages/pricelist/action_boxes/price_add");
 
         // then
         $this->assertSame(200, $response->getStatusCode());

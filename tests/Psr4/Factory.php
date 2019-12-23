@@ -1,13 +1,13 @@
 <?php
 namespace Tests\Psr4;
 
-use App\Http\Controllers\Api\Admin\AntispamQuestionResource;
 use App\Repositories\PriceRepository;
 use App\Repositories\ServerRepository;
 use App\Repositories\ServerServiceRepository;
 use App\Repositories\ServiceRepository;
 use App\Repositories\UserRepository;
 use App\Services\ExtraFlags\ServiceExtraFlags;
+use App\Verification\Cssetti;
 use Faker\Factory as FakerFactory;
 use Faker\Generator;
 
@@ -111,7 +111,8 @@ class Factory
     {
         $attributes = array_merge(
             [
-                'service_id' => 'gosetti',
+                'service_id' => 'vip',
+                'tariff' => 2,
                 'amount' => $this->faker->numberBetween(1, 100),
             ],
             $attributes
