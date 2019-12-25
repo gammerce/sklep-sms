@@ -4,37 +4,45 @@ namespace Tests\Psr4;
 use App\Repositories\PriceRepository;
 use App\Repositories\ServerRepository;
 use App\Repositories\ServerServiceRepository;
+use App\Repositories\ServiceRepository;
 use App\Repositories\UserRepository;
+use App\Services\ExtraFlags\ServiceExtraFlags;
+use App\Verification\Cssetti;
 use Faker\Factory as FakerFactory;
 use Faker\Generator;
 
 class Factory
 {
     /** @var Generator */
-    protected $faker;
+    private $faker;
 
     /** @var UserRepository */
-    protected $userRepository;
+    private $userRepository;
 
     /** @var ServerRepository */
-    protected $serverRepository;
+    private $serverRepository;
 
     /** @var PriceRepository */
-    protected $pricelistRepository;
+    private $priceRepository;
 
     /** @var ServerServiceRepository */
-    protected $serverServiceRepository;
+    private $serverServiceRepository;
+
+    /** @var ServiceRepository */
+    private $serviceRepository;
 
     public function __construct(
         UserRepository $userRepository,
         ServerRepository $serverRepository,
+        ServiceRepository $serviceRepository,
         PriceRepository $priceRepository,
         ServerServiceRepository $serverServiceRepository
     ) {
         $this->userRepository = $userRepository;
         $this->serverRepository = $serverRepository;
-        $this->pricelistRepository = $priceRepository;
+        $this->priceRepository = $priceRepository;
         $this->serverServiceRepository = $serverServiceRepository;
+        $this->serviceRepository = $serviceRepository;
         $this->faker = FakerFactory::create();
     }
 
@@ -56,6 +64,34 @@ class Factory
         );
     }
 
+    public function service(array $attributes = [])
+    {
+        $attributes = array_merge(
+            [
+                'id' => strtolower($this->faker->word),
+                'name' => $this->faker->word,
+                'short_description' => $this->faker->word,
+                'description' => $this->faker->sentence,
+                'tag' => $this->faker->word,
+                'module' => ServiceExtraFlags::MODULE_ID,
+                'groups' => [],
+                'order' => 1,
+            ],
+            $attributes
+        );
+
+        return $this->serviceRepository->create(
+            $attributes['id'],
+            $attributes['name'],
+            $attributes['short_description'],
+            $attributes['description'],
+            $attributes['tag'],
+            $attributes['module'],
+            $attributes['groups'],
+            $attributes['order']
+        );
+    }
+
     public function serverService(array $attributes = [])
     {
         $attributes = array_merge(
@@ -71,22 +107,28 @@ class Factory
         );
     }
 
-    public function pricelist(array $attributes = [])
+    public function price(array $attributes = [])
     {
         $attributes = array_merge(
             [
-                'service_id' => 'gosetti',
+                'service_id' => 'vip',
+                'tariff' => 2,
                 'amount' => $this->faker->numberBetween(1, 100),
             ],
             $attributes
         );
 
-        return $this->pricelistRepository->create(
+        return $this->priceRepository->create(
             $attributes['service_id'],
             $attributes['tariff'],
             $attributes['amount'],
             $attributes['server_id']
         );
+    }
+
+    public function admin(array $attributes = [])
+    {
+        return $this->user(array_merge(["groups" => "2"], $attributes));
     }
 
     public function user(array $attributes = [])
@@ -100,7 +142,7 @@ class Factory
                 'surname' => $this->faker->lastName,
                 'steam_id' => null,
                 'ip' => $this->faker->ipv4,
-                'groups' => '2',
+                'groups' => '1',
                 'wallet' => 0,
             ],
             $attributes

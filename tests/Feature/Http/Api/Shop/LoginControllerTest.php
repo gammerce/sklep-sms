@@ -21,7 +21,7 @@ class LoginControllerTest extends HttpTestCase
         ]);
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals("logged_in", $json["return_id"]);
     }
@@ -42,7 +42,7 @@ class LoginControllerTest extends HttpTestCase
         ]);
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals("not_logged", $json["return_id"]);
     }
@@ -54,7 +54,7 @@ class LoginControllerTest extends HttpTestCase
         $response = $this->post("/api/login");
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals("no_data", $json["return_id"]);
     }

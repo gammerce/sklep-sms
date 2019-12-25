@@ -19,7 +19,7 @@ class PurchaseChargeWalletTest extends HttpTestCase
         $response = $this->get('/', ['pid' => 'purchase', 'service' => 'charge_wallet']);
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertContains('Zakup usługi - Doładowanie Portfela', $response->getContent());
     }
 
@@ -32,7 +32,7 @@ class PurchaseChargeWalletTest extends HttpTestCase
         $response = $this->get('/', ['pid' => 'purchase', 'service' => 'charge_wallet']);
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertContains(
             'Nie możesz przeglądać tej strony. Nie jesteś zalogowany/a.',
             $response->getContent()

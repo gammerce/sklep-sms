@@ -12,7 +12,6 @@ use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class ExceptionHandler implements ExceptionHandlerContract
 {

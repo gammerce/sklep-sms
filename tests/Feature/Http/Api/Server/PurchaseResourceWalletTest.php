@@ -42,7 +42,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
             'server_id' => $this->server->getId(),
             'service_id' => $this->serviceId,
         ]);
-        $this->factory->pricelist([
+        $this->factory->price([
             'service_id' => $this->serviceId,
             'tariff' => $this->tariff,
             'server_id' => $this->server->getId(),
@@ -90,7 +90,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
         );
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertRegExp(
             "#<return_value>purchased</return_value><text>Usługa została prawidłowo zakupiona\.</text><positive>1</positive><bsid>\d+</bsid>#",
             $response->getContent()
@@ -147,7 +147,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
         );
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertRegExp(
             "#<return_value>no_money</return_value><text>Bida! Nie masz wystarczającej ilości kasy w portfelu\. Doładuj portfel ;-\)</text><positive>0</positive>#",
             $response->getContent()
@@ -193,7 +193,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
         );
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertRegExp(
             "#<return_value>wallet_not_logged</return_value><text>Nie można zapłacić portfelem, gdy nie jesteś zalogowany.</text><positive>0</positive>#",
             $response->getContent()

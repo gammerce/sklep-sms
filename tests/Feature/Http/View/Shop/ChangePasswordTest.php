@@ -19,7 +19,7 @@ class ChangePasswordTest extends HttpTestCase
         $response = $this->get('/', ['pid' => 'change_password']);
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertContains('Zmiana hasła', $response->getContent());
     }
 
@@ -32,7 +32,7 @@ class ChangePasswordTest extends HttpTestCase
         $response = $this->get('/', ['pid' => 'change_password']);
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertContains(
             'Nie możesz przeglądać tej strony. Nie jesteś zalogowany/a.',
             $response->getContent()

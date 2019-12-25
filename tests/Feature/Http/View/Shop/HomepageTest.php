@@ -14,7 +14,7 @@ class HomepageTest extends HttpTestCase
         $response = $this->get('/');
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertContains('Strona główna', $response->getContent());
     }
 }

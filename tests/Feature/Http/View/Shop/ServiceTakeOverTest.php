@@ -19,7 +19,7 @@ class ServiceTakeOverTest extends HttpTestCase
         $response = $this->get('/', ['pid' => 'service_take_over']);
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertContains('Przejmij usługę', $response->getContent());
     }
 
@@ -32,7 +32,7 @@ class ServiceTakeOverTest extends HttpTestCase
         $response = $this->get('/', ['pid' => 'service_take_over']);
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertContains(
             'Nie możesz przeglądać tej strony. Nie jesteś zalogowany/a.',
             $response->getContent()

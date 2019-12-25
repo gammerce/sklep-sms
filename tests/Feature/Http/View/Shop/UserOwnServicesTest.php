@@ -19,7 +19,7 @@ class UserOwnServicesTest extends HttpTestCase
         $response = $this->get('/', ['pid' => 'user_own_services']);
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertContains('Moje obecne usługi', $response->getContent());
     }
 
@@ -30,7 +30,7 @@ class UserOwnServicesTest extends HttpTestCase
         $response = $this->get('/', ['pid' => 'user_own_services']);
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertContains(
             'Nie możesz przeglądać tej strony. Nie jesteś zalogowany/a.',
             $response->getContent()

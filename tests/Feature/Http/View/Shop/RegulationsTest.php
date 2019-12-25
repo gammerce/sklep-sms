@@ -14,7 +14,7 @@ class RegulationsTest extends HttpTestCase
         $response = $this->get('/', ['pid' => 'regulations']);
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertContains('Regulamin', $response->getContent());
     }
 }

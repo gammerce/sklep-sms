@@ -19,7 +19,7 @@ class UsersSteamIdsControllerTest extends HttpTestCase
         ]);
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertEquals(";", $response->getContent());
     }
 
@@ -47,7 +47,7 @@ class UsersSteamIdsControllerTest extends HttpTestCase
         ]);
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertEquals("STEAM_1;STEAM_12;STEAM_2;", $response->getContent());
     }
 }

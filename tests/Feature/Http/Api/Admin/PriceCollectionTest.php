@@ -21,7 +21,7 @@ class PriceCollectionTest extends HttpTestCase
     {
         // given
         $server = $this->factory->server();
-        $admin = $this->factory->user(["groups" => 2]);
+        $admin = $this->factory->admin();
         $this->actAs($admin);
 
         // when
@@ -48,7 +48,7 @@ class PriceCollectionTest extends HttpTestCase
     public function cannot_create_twice_the_same_price()
     {
         $server = $this->factory->server();
-        $admin = $this->factory->user(["groups" => 2]);
+        $admin = $this->factory->admin();
         $this->actAs($admin);
 
         $body = [

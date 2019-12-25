@@ -75,7 +75,7 @@ abstract class Service
     public function showOnWeb()
     {
         if ($this->service !== null) {
-            return $this->service->getData()['web'];
+            return array_get($this->service->getData(), 'web', false);
         }
 
         return false;

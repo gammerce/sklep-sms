@@ -12,14 +12,14 @@ class ExtraFlagsTest extends HttpTestCase
     public function it_loads()
     {
         // given
-        $user = $this->factory->user();
+        $user = $this->factory->admin();
         $this->actingAs($user);
 
         // when
         $response = $this->get('/admin/players_flags');
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertContains('Panel Admina', $response->getContent());
         $this->assertContains('<div class="title is-4">Flagi graczy', $response->getContent());
     }
