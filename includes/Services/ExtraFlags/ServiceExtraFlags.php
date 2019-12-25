@@ -50,7 +50,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
     }
 
-    public function purchaseFormGet()
+    public function purchaseFormGet(array $query)
     {
         $heart = $this->heart;
         $user = $this->auth->user();
