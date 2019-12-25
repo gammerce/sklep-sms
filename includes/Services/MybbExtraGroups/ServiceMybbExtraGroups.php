@@ -67,12 +67,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         $this->dbName = array_get($serviceData, 'db_name', '');
     }
 
-    /**
-     * Metoda powinna zwracać formularz zakupu w postaci stringa
-     *
-     * @return string   - Formularz zakupu
-     */
-    public function purchaseFormGet()
+    public function purchaseFormGet(array $query)
     {
         $user = $this->auth->user();
 

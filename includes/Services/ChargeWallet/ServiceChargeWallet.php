@@ -44,7 +44,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
     }
 
-    public function purchaseFormGet()
+    public function purchaseFormGet(array $query)
     {
         $optionSms = '';
         $optionTransfer = '';

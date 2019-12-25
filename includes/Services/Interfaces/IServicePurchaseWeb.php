@@ -13,9 +13,10 @@ interface IServicePurchaseWeb extends IServicePurchase
     /**
      * Metoda powinna zwracać formularz zakupu w postaci stringa
      *
+     * @param array $query
      * @return string   - Formularz zakupu
      */
-    public function purchaseFormGet();
+    public function purchaseFormGet(array $query);
 
     /**
      * Metoda wywoływana, gdy użytkownik wprowadzi dane w formularzu zakupu

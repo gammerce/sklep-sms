@@ -108,6 +108,6 @@ class PagePurchase extends Page
             compact('serviceModule', 'showMore')
         );
 
-        return $output . $serviceModule->purchaseFormGet();
+        return $output . $serviceModule->purchaseFormGet($query);
     }
 }
