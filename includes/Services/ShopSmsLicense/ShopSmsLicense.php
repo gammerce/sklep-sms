@@ -21,12 +21,13 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
     IServiceUserOwnServicesEdit,
     IServiceUserServiceAdminAdd
 {
-    public function purchaseFormGet()
+    public function purchaseFormGet(array $query)
     {
         return $this->template->render("services/shopsms_license/purchase_form", [
             'user' => $this->auth->user(),
             'serviceId' => $this->service->getId(),
             'serviceTag' => $this->service->getTag(),
+            'days' => array_get($query, "days"),
         ]);
     }
 
