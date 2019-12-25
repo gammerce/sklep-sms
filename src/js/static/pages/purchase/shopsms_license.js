@@ -2,6 +2,8 @@ $(document).ready(function($) {
     // Aby żadna opcja nie była zaznaczona w przypadku użycia "cofnij"
     $(".shopsms_license_purchase input[name=platform_sourcemod]").val("0");
     $(".shopsms_license_purchase input[name=platform_amxmodx]").val("0");
+
+    set_cost();
 });
 
 // Zaznaczamy jakas gre
