@@ -60,7 +60,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
     }
 
     // Formularz pokazywany podczas zakupu licencji
-    public function purchaseFormGet()
+    public function purchaseFormGet(array $query)
     {
         /** @var Request $request */
         $request = $this->app->make(Request::class);

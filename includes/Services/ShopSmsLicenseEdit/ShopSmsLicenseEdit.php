@@ -40,7 +40,7 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
     }
 
-    public function purchaseFormGet()
+    public function purchaseFormGet(array $query)
     {
         //
     }
