@@ -2,63 +2,6 @@
 <html>
     <head>
         {$header}
-        <style>
-            .navigation {
-                position: relative;
-                height: 50px;
-                min-width: 900px;
-
-                margin: 0;
-                padding: 4px;
-
-                background: rgba(20, 20, 20, 0.9);
-                box-shadow: 0px 2px 2px black;
-
-                white-space: nowrap;
-            }
-
-            .navigation brick {
-                display: inline-block;
-                height: 100%;
-                vertical-align: top;
-            }
-
-            .navigation brick img {
-                height: 36px;
-            }
-
-            .navigation .vert_line {
-                margin: 0 12px;
-                width: 2px;
-                background: grey;
-            }
-
-            .navigation .options {
-                display: inline-block;
-                height: 100%;
-            }
-
-            .navigation .options brick {
-                font-size: 18px;
-                color: #ccc;
-                cursor: pointer;
-
-                text-align: center;
-                padding: 0 27px;
-                padding-top: 8px;
-            }
-
-            .navigation .options brick.active {
-                background: brown;
-                color: #fff;
-                text-shadow: 0px 0px 10px white;
-
-                height: initial;
-                margin-top: -4px;
-                padding-top: 28px;
-                padding-bottom: 8px;
-            }
-        </style>
     </head>
     <body>
         <script>
@@ -79,23 +22,6 @@
             ga("create", "UA-47484282-1", "sklep-sms.pl");
             ga("send", "pageview");
         </script>
-
-        <div class="navigation">
-            <brick>
-                <img src="https://sklep-sms.pl/images/logo_small.png" alt="sklepsms" />
-            </brick>
-
-            <brick class="vert_line"></brick>
-
-            <div class="options">
-                <a href="https://sklep-sms.pl/"><brick>Info</brick></a>
-                <a href="https://sklep.sklep-sms.pl/"><brick class="active">Kup Licencję</brick></a>
-                <a href="https://sklep-sms.pl/download"><brick>Download</brick></a>
-                <a href="https://sklep-sms.pl/config"><brick>Konfiguracja</brick></a>
-                <a href="https://forum.sklep-sms.pl/"><brick>Forum</brick></a>
-                <a href="https://sklep-sms.pl/contact"><brick>Kontakt</brick></a>
-            </div>
-        </div>
 
         <table class="contentwraper">
             <tr>
