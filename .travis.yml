@@ -59,7 +59,7 @@ before_deploy:
     vendor/ \
     .htaccess \
     cron.php \
-    favicon.ico \
+    favicon.png \
     index.php \
     README.md
 
