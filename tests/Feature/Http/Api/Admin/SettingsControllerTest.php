@@ -22,12 +22,13 @@ class SettingsControllerTest extends HttpTestCase
             'delete_logs' => 1,
             'cron' => 1,
             'user_edit_service' => 1,
+            'theme' => 'default',
+            'language' => 'polish',
         ]);
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        var_dump($json);
         $this->assertSame("ok", $json["return_id"]);
         /** @var Settings $settings */
         $settings = $this->app->make(Settings::class);
@@ -39,5 +40,7 @@ class SettingsControllerTest extends HttpTestCase
         $this->assertSame("1", $settings["delete_logs"]);
         $this->assertSame("1", $settings["cron_each_visit"]);
         $this->assertSame("1", $settings["user_edit_service"]);
+        $this->assertSame("default", $settings["theme"]);
+        $this->assertSame("polish", $settings["language"]);
     }
 }

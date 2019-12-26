@@ -49,7 +49,6 @@ class SettingsController
 
         $warnings = [];
 
-        // Serwis płatności SMS
         if (strlen($smsService)) {
             $result = $db->query(
                 $db->prepare(
@@ -66,7 +65,6 @@ class SettingsController
             }
         }
 
-        // Serwis płatności internetowej
         if (strlen($transferService)) {
             $result = $db->query(
                 $db->prepare(
@@ -83,43 +81,35 @@ class SettingsController
             }
         }
 
-        // Email dla automatu
         if (strlen($senderEmail) && ($warning = check_for_warnings("email", $senderEmail))) {
             $warnings['sender_email'] = array_merge((array) $warnings['sender_email'], $warning);
         }
 
-        // VAT
         if ($warning = check_for_warnings("number", $vat)) {
             $warnings['vat'] = array_merge((array) $warnings['vat'], $warning);
         }
 
-        // Usuwanie logów
         if ($warning = check_for_warnings("number", $deleteLogs)) {
             $warnings['delete_logs'] = array_merge((array) $warnings['delete_logs'], $warning);
         }
 
-        // Wierszy na stronę
         if ($warning = check_for_warnings("number", $rowLimit)) {
             $warnings['row_limit'] = array_merge((array) $warnings['row_limit'], $warning);
         }
 
-        // Cron
         if (!in_array($cron, ["1", "0"])) {
             $warnings['cron'][] = $lang->translate('only_yes_no');
         }
 
-        // Edytowanie usługi przez użytkownika
         if (!in_array($userEditService, ["1", "0"])) {
             $warnings['user_edit_service'][] = $lang->translate('only_yes_no');
         }
 
-        // Motyw
-        if (!is_dir($path->to("themes/{$theme}")) || $theme[0] == '.') {
+        if (!$theme || !is_dir($path->to("themes/{$theme}")) || $theme[0] == '.') {
             $warnings['theme'][] = $lang->translate('no_theme');
         }
 
-        // Język
-        if (!is_dir($path->to("translations/{$language}")) || $language[0] == '.') {
+        if (!$language || !is_dir($path->to("translations/{$language}")) || $language[0] == '.') {
             $warnings['language'][] = $lang->translate('no_language');
         }
 
