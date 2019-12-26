@@ -110,4 +110,9 @@ class Application extends Container
     {
         return getenv('APP_ENV') === 'testing';
     }
+
+    public function isDemo()
+    {
+        return getenv('APP_ENV') === 'demo';
+    }
 }
