@@ -28,9 +28,9 @@ class IncomeService
         $result = $this->db->query(
             $this->db->prepare(
                 "SELECT t.income, t.timestamp, t.server " .
-                "FROM ({$this->settings['transactions_query']}) as t " .
-                "WHERE t.free = '0' AND IFNULL(t.income,'') != '' AND t.payment != 'wallet' AND t.timestamp LIKE '%s-%s-%%' " .
-                "ORDER BY t.timestamp ASC",
+                    "FROM ({$this->settings['transactions_query']}) as t " .
+                    "WHERE t.free = '0' AND IFNULL(t.income,'') != '' AND t.payment != 'wallet' AND t.timestamp LIKE '%s-%s-%%' " .
+                    "ORDER BY t.timestamp ASC",
                 [$year, $month]
             )
         );

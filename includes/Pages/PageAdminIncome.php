@@ -128,8 +128,7 @@ class PageAdminIncome extends PageAdmin
                 "admin/income_trow2",
                 compact('tableRow', 'totalIncome')
             );
-        }
-        else {
+        } else {
             $tbody = $this->template->render("admin/no_records");
         }
 
