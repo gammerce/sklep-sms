@@ -27,8 +27,8 @@ class SettingsControllerTest extends HttpTestCase
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertSame("ok", $json["return_id"]);
         var_dump($json);
+        $this->assertSame("ok", $json["return_id"]);
         /** @var Settings $settings */
         $settings = $this->app->make(Settings::class);
         $settings->load();
