@@ -33,11 +33,11 @@ class ServiceService
         &$set,
         Service $serviceModule = null
     ) {
-        $id = $body['id'];
-        $name = $body['name'];
-        $shortDescription = $body['short_description'];
-        $order = $body['order'];
-        $groups = $body['groups'];
+        $id = array_get($body, 'id');
+        $name = array_get($body, 'name');
+        $shortDescription = array_get($body, 'short_description');
+        $order = array_get($body, 'order');
+        $groups = array_get($body, 'groups', []);
 
         if (!strlen($id)) {
             // Nie podano id usługi

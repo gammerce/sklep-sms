@@ -87,31 +87,31 @@ abstract class ServiceExtraFlagsSimple extends Service implements
     {
         $warnings = [];
 
+        $web = array_get($data, 'web');
+        $flags = array_get($data, 'flags');
+        $types = array_get($data, 'type', []);
+
         // Web
-        if (!in_array($data['web'], ["1", "0"])) {
+        if (!in_array($web, ["1", "0"])) {
             $warnings['web'][] = $this->lang->translate('only_yes_no');
         }
 
         // Flagi
-        if (!strlen($data['flags'])) {
+        if (!strlen($flags)) {
             $warnings['flags'][] = $this->lang->translate('field_no_empty');
-        } else {
-            if (strlen($data['flags']) > 25) {
-                $warnings['flags'][] = $this->lang->translate('too_many_flags');
-            } else {
-                if (implode('', array_unique(str_split($data['flags']))) != $data['flags']) {
-                    $warnings['flags'][] = $this->lang->translate('same_flags');
-                }
-            }
+        } elseif (strlen($flags) > 25) {
+            $warnings['flags'][] = $this->lang->translate('too_many_flags');
+        } elseif (implode('', array_unique(str_split($flags))) != $flags) {
+            $warnings['flags'][] = $this->lang->translate('same_flags');
         }
 
         // Typy
-        if (empty($data['type'])) {
+        if (empty($types)) {
             $warnings['type[]'][] = $this->lang->translate('no_type_chosen');
         }
 
         // Sprawdzamy, czy typy są prawidłowe
-        foreach ($data['type'] as $type) {
+        foreach ($types as $type) {
             if (
                 !(
                     $type &

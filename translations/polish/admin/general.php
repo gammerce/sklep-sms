@@ -48,6 +48,7 @@ return [
     'confirm' => 'Zatwierdź',
     'confirm_remove_server' => 'Na pewno chcesz usunąć serwer\n{0}?',
     'create_price_duplication' => 'Istnieje już cena dla tego serwera i tej taryfy.',
+    'create_service_duplication' => 'Istnieje już serwis o takim ID.',
     'cron_page_start' => 'Cron przy każdym uruchomieniu strony',
     'currency' => 'Waluta',
     'date_format' => 'Format daty',
