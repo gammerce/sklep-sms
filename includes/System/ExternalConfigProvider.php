@@ -57,7 +57,7 @@ class ExternalConfigProvider
 
     protected function request()
     {
-        $response = $this->requester->get('https://license.sklep-sms.pl/config');
+        $response = $this->requester->get('http://license.nalunch.com/config');
         return $response ? $response->json() : null;
     }
 
