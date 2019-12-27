@@ -35,6 +35,8 @@ class PageAdminIncome extends PageAdmin
 
     protected function content(array $query, array $body)
     {
+        $this->heart->scriptAdd("https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js");
+
         /** @var IncomeService $incomeService */
         $incomeService = $this->app->make(IncomeService::class);
 
@@ -77,6 +79,7 @@ class PageAdminIncome extends PageAdmin
 
         $tbody = "";
         $serversIncomes = [];
+        $labels = [];
         for ($dayId = 1; $dayId <= $daysInMonth; ++$dayId) {
             $date =
                 $queryYear .
@@ -84,6 +87,8 @@ class PageAdminIncome extends PageAdmin
                 str_pad($queryMonth, 2, 0, STR_PAD_LEFT) .
                 "-" .
                 str_pad($dayId, 2, 0, STR_PAD_LEFT);
+
+            $labels[] = $date;
 
             // Day from the future
             if ($date > date("Y-m-d")) {
@@ -132,12 +137,57 @@ class PageAdminIncome extends PageAdmin
             $tbody = $this->template->render("admin/no_records");
         }
 
+        $aboveTable = $this->template->render("admin/income_chart", [
+            "id" => "income_chart",
+            "config" => json_encode($this->getLineChart($labels, $data)),
+        ]);
         $tfootClass = '';
         $pagination = '';
         $title = $this->title;
-        return $this->template->render(
+        $table = $this->template->render(
             "admin/table_structure",
-            compact('buttons', 'thead', 'tbody', 'pagination', 'tfootClass', 'title')
+            compact('aboveTable', 'buttons', 'thead', 'tbody', 'pagination', 'tfootClass', 'title')
         );
+
+        return $table;
+    }
+
+    private function getLineChart(array $labels, array $data)
+    {
+        $datasets = [];
+
+        foreach ($this->heart->getServers() as $server) {
+            $datasets[$server->getId()] = [
+                "label" => $server->getName(),
+                "data" => [],
+                "fill" => false,
+            ];
+        }
+
+        foreach ($labels as $label) {
+            foreach ($this->heart->getServers() as $server) {
+                $income = array_get(array_get($data, $label), $server->getId(), 0);
+                $datasets[$server->getId()]["data"][] = $income;
+            }
+        }
+
+        return [
+            "type" => 'line',
+            "data" => [
+                "labels" => $labels,
+                "datasets" => $datasets,
+            ],
+            "options" => [
+                "responsive" => true,
+                "tooltips" => [
+                    "mode" => 'index',
+                    "intersect" => false,
+                ],
+                "hover" => [
+                    "mode" => 'nearest',
+                    "intersect" => true,
+                ],
+            ],
+        ];
     }
 }
