@@ -2,7 +2,7 @@
 
 define('IN_SCRIPT', "1");
 
-error_reporting(E_ERROR | E_CORE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR | E_COMPILE_ERROR);
+error_reporting(E_ERROR | E_CORE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR | E_COMPILE_ERROR | E_PARSE);
 ini_set('display_errors', 1);
 
 require __DIR__ . '/bootstrap/autoload.php';

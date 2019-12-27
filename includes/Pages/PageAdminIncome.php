@@ -2,6 +2,7 @@
 namespace App\Pages;
 
 use App\Html\HeadCell;
+use App\Http\Services\IncomeService;
 
 class PageAdminIncome extends PageAdmin
 {
@@ -9,7 +10,7 @@ class PageAdminIncome extends PageAdmin
 
     protected $privilege = 'view_income';
 
-    protected $months = [
+    private $months = [
         '',
         "january",
         "february",
@@ -34,78 +35,62 @@ class PageAdminIncome extends PageAdmin
 
     protected function content(array $query, array $body)
     {
-        $queryMonth = isset($query['month']) ? $query['month'] : date("m");
-        $queryYear = isset($query['year']) ? $query['year'] : date("Y");
+        $this->heart->scriptAdd("https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js");
+
+        /** @var IncomeService $incomeService */
+        $incomeService = $this->app->make(IncomeService::class);
+
+        $queryYear = array_get($query, 'year', date("Y"));
+        $queryMonth = array_get($query, 'month', date("m"));
 
         $tableRow = "";
-        // Uzyskanie wszystkich serwerów
-        foreach ($this->heart->getServers() as $id => $server) {
-            $obejctsIds[] = $id;
+        $serversIds = [0];
+        foreach ($this->heart->getServers() as $server) {
+            $serversIds[] = $server->getId();
             $tableRow .= new HeadCell($server->getName());
         }
-        $obejctsIds[] = 0;
 
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT t.income, t.timestamp, t.server " .
-                    "FROM ({$this->settings['transactions_query']}) as t " .
-                    "WHERE t.free = '0' AND IFNULL(t.income,'') != '' AND t.payment != 'wallet' AND t.timestamp LIKE '%s-%s-%%' " .
-                    "ORDER BY t.timestamp ASC",
-                [$queryYear, $queryMonth]
-            )
-        );
+        $data = $incomeService->get($queryYear, $queryMonth);
 
-        // Sumujemy dochód po dacie (z dokładnością do dnia) i po serwerze
-        $data = [];
-        while ($row = $this->db->fetchArrayAssoc($result)) {
-            $temp = explode(" ", $row['timestamp']);
-
-            $data[$temp[0]][in_array($row['server'], $obejctsIds) ? $row['server'] : 0] +=
-                $row['income'];
-        }
-
-        // Dodanie wyboru miesiąca
         $months = '';
-        for ($i = 1; $i <= 12; $i++) {
-            $months .= create_dom_element("option", $this->lang->translate($this->months[$i]), [
-                'value' => str_pad($i, 2, 0, STR_PAD_LEFT),
-                'selected' => $queryMonth == $i ? "selected" : "",
+        for ($dayId = 1; $dayId <= 12; $dayId++) {
+            $months .= create_dom_element("option", $this->lang->translate($this->months[$dayId]), [
+                'value' => str_pad($dayId, 2, 0, STR_PAD_LEFT),
+                'selected' => $queryMonth == $dayId ? "selected" : "",
             ]);
         }
 
-        // Dodanie wyboru roku
-        $years = "";
-        for ($i = 2014; $i <= intval(date("Y")); $i++) {
-            $years .= create_dom_element("option", $i, [
-                'value' => $i,
-                'selected' => $queryYear == $i ? "selected" : "",
+        $years = '';
+        for ($dayId = 2014; $dayId <= intval(date("Y")); $dayId++) {
+            $years .= create_dom_element("option", $dayId, [
+                'value' => $dayId,
+                'selected' => $queryYear == $dayId ? "selected" : "",
             ]);
         }
 
         $buttons = $this->template->render("admin/income_button", compact('years', 'months'));
-
-        // Pobranie nagłówka tabeli
         $thead = $this->template->render("admin/income_thead", compact('tableRow'));
 
         //
         // Pobranie danych do tabeli
 
-        // Pobieramy ilość dni w danym miesiącu
-        $num = cal_days_in_month(CAL_GREGORIAN, $queryMonth, $queryYear);
+        // Days amount in a month
+        $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $queryMonth, $queryYear);
 
         $tbody = "";
         $serversIncomes = [];
-        // Lecimy pętla po każdym dniu
-        for ($i = 1; $i <= $num; ++$i) {
-            // Tworzymy wygląd daty
+        $labels = [];
+        for ($dayId = 1; $dayId <= $daysInMonth; ++$dayId) {
             $date =
                 $queryYear .
                 "-" .
                 str_pad($queryMonth, 2, 0, STR_PAD_LEFT) .
                 "-" .
-                str_pad($i, 2, 0, STR_PAD_LEFT);
+                str_pad($dayId, 2, 0, STR_PAD_LEFT);
 
-            // Jeżeli jest to dzień z przyszłości
+            $labels[] = $date;
+
+            // Day from the future
             if ($date > date("Y-m-d")) {
                 continue;
             }
@@ -115,18 +100,17 @@ class PageAdminIncome extends PageAdmin
             $tableRow = "";
 
             // Lecimy po każdym obiekcie, niezależnie, czy zarobiliśmy na nim czy nie
-            foreach ($obejctsIds as $objectId) {
-                if (!isset($serversIncomes[$objectId])) {
-                    $serversIncomes[$objectId] = 0;
+            foreach ($serversIds as $serverId) {
+                if (!isset($serversIncomes[$serverId])) {
+                    $serversIncomes[$serverId] = 0;
                 }
 
-                $income = array_get($data, "$date.$objectId", 0);
+                $income = array_get(array_get($data, $date), $serverId, 0);
                 $dayIncome += $income;
-                $serversIncomes[$objectId] += $income;
+                $serversIncomes[$serverId] += $income;
                 $tableRow .= create_dom_element("td", number_format($income / 100.0, 2));
             }
 
-            // Zaokraglenie do dowch miejsc po przecinku zarobku w danym dniu
             $dayIncome = number_format($dayIncome / 100.0, 2);
 
             $tbody .= $this->template->render(
@@ -135,35 +119,75 @@ class PageAdminIncome extends PageAdmin
             );
         }
 
-        // Pobranie podliczenia tabeli
+        // Table summary
         $tableRow = "";
         $totalIncome = 0;
-        // Lecimy po wszystkich obiektach na których zarobiliśmy kasę
         foreach ($serversIncomes as $serverIncome) {
-            $totalIncome += $serverIncome; // Całk przychód
+            $totalIncome += $serverIncome;
             $tableRow .= create_dom_element("td", number_format($serverIncome / 100.0, 2));
         }
 
-        // Jeżeli coś się policzyło, są jakieś dane
         if (strlen($tbody)) {
             $totalIncome = number_format($totalIncome / 100.0, 2);
             $tbody .= $this->template->render(
                 "admin/income_trow2",
                 compact('tableRow', 'totalIncome')
             );
-        }
-        // Brak danych
-        else {
+        } else {
             $tbody = $this->template->render("admin/no_records");
         }
 
-        // Pobranie wygladu strony
+        $aboveTable = $this->template->render("admin/income_chart", [
+            "id" => "income_chart",
+            "config" => json_encode($this->getLineChart($labels, $data)),
+        ]);
         $tfootClass = '';
         $pagination = '';
         $title = $this->title;
-        return $this->template->render(
+        $table = $this->template->render(
             "admin/table_structure",
-            compact('buttons', 'thead', 'tbody', 'pagination', 'tfootClass', 'title')
+            compact('aboveTable', 'buttons', 'thead', 'tbody', 'pagination', 'tfootClass', 'title')
         );
+
+        return $table;
+    }
+
+    private function getLineChart(array $labels, array $data)
+    {
+        $datasets = [];
+
+        foreach ($this->heart->getServers() as $server) {
+            $datasets[$server->getId()] = [
+                "label" => $server->getName(),
+                "data" => [],
+                "fill" => false,
+            ];
+        }
+
+        foreach ($labels as $label) {
+            foreach ($this->heart->getServers() as $server) {
+                $income = array_get(array_get($data, $label), $server->getId(), 0);
+                $datasets[$server->getId()]["data"][] = $income;
+            }
+        }
+
+        return [
+            "type" => 'line',
+            "data" => [
+                "labels" => $labels,
+                "datasets" => $datasets,
+            ],
+            "options" => [
+                "responsive" => true,
+                "tooltips" => [
+                    "mode" => 'index',
+                    "intersect" => false,
+                ],
+                "hover" => [
+                    "mode" => 'nearest',
+                    "intersect" => true,
+                ],
+            ],
+        ];
     }
 }
