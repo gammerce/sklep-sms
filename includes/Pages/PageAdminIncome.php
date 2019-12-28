@@ -154,7 +154,13 @@ class PageAdminIncome extends PageAdmin
 
     private function getLineChart(array $labels, array $data)
     {
-        $datasets = [];
+        $datasets = [
+            0 => [
+                "label" => $this->lang->translate('other'),
+                "data" => [],
+                "fill" => false,
+            ],
+        ];
 
         foreach ($this->heart->getServers() as $server) {
             $datasets[$server->getId()] = [
@@ -165,9 +171,9 @@ class PageAdminIncome extends PageAdmin
         }
 
         foreach ($labels as $label) {
-            foreach ($this->heart->getServers() as $server) {
-                $income = array_get(array_get($data, $label), $server->getId(), 0);
-                $datasets[$server->getId()]["data"][] = $income;
+            foreach (array_keys($datasets) as $serverId) {
+                $income = array_get(array_get($data, $label), $serverId, 0);
+                $datasets[$serverId]["data"][] = $income;
             }
         }
 
