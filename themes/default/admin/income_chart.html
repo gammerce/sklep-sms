@@ -1,5 +1,5 @@
-<div style="margin-bottom: 3rem;">
-    <canvas id="{{ $id }}" height="50"></canvas>
+<div style="margin-bottom: 3rem; height: 200px;">
+    <canvas id="{{ $id }}"></canvas>
 </div>
 
 <script>
@@ -13,6 +13,7 @@
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 tooltips: {
                     mode: "index",
                     intersect: false,

@@ -2,6 +2,7 @@
 namespace App\Pages;
 
 use App\Html\UnescapedSimpleText;
+use App\Http\Services\IncomeService;
 use App\Models\Server;
 use App\Requesting\Requester;
 use App\System\License;
@@ -10,38 +11,51 @@ use App\System\Version;
 class PageAdminMain extends PageAdmin
 {
     const PAGE_ID = "home";
-    const EXPIRE_THRESHOLD = 4 * 24 * 60 * 60;
+    const LICENSE_EXPIRE_THRESHOLD = 4 * 24 * 60 * 60;
 
     /** @var Version */
-    protected $version;
+    private $version;
 
     /** @var License */
-    protected $license;
+    private $license;
 
     /** @var Requester */
-    protected $requester;
+    private $requester;
 
-    public function __construct(Version $version, License $license, Requester $requester)
-    {
+    /** @var IncomeService */
+    private $incomeService;
+
+    public function __construct(
+        Version $version,
+        License $license,
+        Requester $requester,
+        IncomeService $incomeService
+    ) {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->translate('main_page');
         $this->version = $version;
         $this->license = $license;
         $this->requester = $requester;
+        $this->incomeService = $incomeService;
     }
 
     protected function content(array $query, array $body)
     {
-        //
-        // Ogloszenia
+        $bricks = $this->getBricks();
+        $notes = $this->getNotes();
 
+        return $this->template->render("admin/home", compact('notes', 'bricks'));
+    }
+
+    private function getNotes()
+    {
         $notes = [];
 
-        // Info o braku licki
+        // No license note
         if (!$this->license->isValid()) {
             $settingsUrl = $this->url->to("/admin/settings");
-            $notes[] = $this->addNote(
+            $notes[] = $this->createNote(
                 $this->lang->sprintf($this->lang->translate('license_error'), $settingsUrl),
                 "is-danger"
             );
@@ -51,9 +65,9 @@ class PageAdminMain extends PageAdmin
         if (
             !$this->license->isForever() &&
             $expireSeconds >= 0 &&
-            $expireSeconds < self::EXPIRE_THRESHOLD
+            $expireSeconds < self::LICENSE_EXPIRE_THRESHOLD
         ) {
-            $notes[] = $this->addNote(
+            $notes[] = $this->createNote(
                 $this->lang->sprintf(
                     $this->lang->translate('license_soon_expire'),
                     secondsToTime(strtotime($this->license->getExpires()) - time())
@@ -69,7 +83,7 @@ class PageAdminMain extends PageAdmin
         if ($this->app->version() !== $newestVersion) {
             $updateWebLink = $this->url->to("/admin/update_web");
 
-            $notes[] = $this->addNote(
+            $notes[] = $this->createNote(
                 $this->lang->sprintf(
                     $this->lang->translate('update_available'),
                     htmlspecialchars($newestVersion),
@@ -89,7 +103,7 @@ class PageAdminMain extends PageAdmin
         if ($serversCount) {
             $updateServersLink = $this->url->to("/admin/update_servers");
 
-            $notes[] = $this->addNote(
+            $notes[] = $this->createNote(
                 $this->lang->sprintf(
                     $this->lang->translate('update_available_servers'),
                     $serversCount,
@@ -100,53 +114,61 @@ class PageAdminMain extends PageAdmin
             );
         }
 
-        //
-        // Cegielki informacyjne
+        return implode("", $notes);
+    }
 
-        $bricks = "";
+    private function getBricks()
+    {
+        $bricks = [];
 
-        // Info o serwerach
-        $bricks .= create_brick(
+        // Server
+        $bricks[] = $this->createBrick(
             $this->lang->sprintf(
                 $this->lang->translate('amount_of_servers'),
                 $this->heart->getServersAmount()
-            ),
-            "brick_pa_main"
+            )
         );
 
-        // Info o użytkownikach
-        $bricks .= create_brick(
+        // User
+        $bricks[] = $this->createBrick(
             $this->lang->sprintf(
                 $this->lang->translate('amount_of_users'),
                 $this->db->getColumn("SELECT COUNT(*) FROM `" . TABLE_PREFIX . "users`", "COUNT(*)")
-            ),
-            "brick_pa_main"
+            )
         );
 
-        // Info o kupionych usługach
+        // Bought service
         $amount = $this->db->getColumn(
             "SELECT COUNT(*) " . "FROM ({$this->settings['transactions_query']}) AS t",
             "COUNT(*)"
         );
-        $bricks .= create_brick(
-            $this->lang->sprintf($this->lang->translate('amount_of_bought_services'), $amount),
-            "brick_pa_main"
+        $bricks[] = $this->createBrick(
+            $this->lang->sprintf($this->lang->translate('amount_of_bought_services'), $amount)
         );
 
-        // Info o wysłanych smsach
+        // SMS
         $amount = $this->db->getColumn(
             "SELECT COUNT(*) AS `amount` " .
                 "FROM ({$this->settings['transactions_query']}) as t " .
                 "WHERE t.payment = 'sms' AND t.free='0'",
             "amount"
         );
-        $bricks .= create_brick(
-            $this->lang->sprintf($this->lang->translate('amount_of_sent_smses'), $amount),
-            "brick_pa_main"
+        $bricks[] = $this->createBrick(
+            $this->lang->sprintf($this->lang->translate('amount_of_sent_smses'), $amount)
         );
 
-        $notes = implode("", $notes);
-        return $this->template->render("admin/home", compact('notes', 'bricks'));
+        // Income
+        $incomeData = $this->incomeService->get(date("Y"), date("m"));
+        $income = 0;
+        foreach ($incomeData as $date) {
+            foreach ($date as $value) {
+                $income += $value;
+            }
+        }
+        $incomeText = number_format($income / 100, 2) . " " . $this->settings['currency'];
+        $bricks[] = $this->createBrick($this->lang->t('note_income', $incomeText));
+
+        return implode("", $bricks);
     }
 
     /**
@@ -174,10 +196,15 @@ class PageAdminMain extends PageAdmin
         return true;
     }
 
-    private function addNote($text, $class)
+    private function createNote($text, $class)
     {
         return create_dom_element("div", new UnescapedSimpleText($text), [
             'class' => "notification " . $class,
         ]);
+    }
+
+    private function createBrick($text)
+    {
+        return create_brick($text, "brick_pa_main");
     }
 }
