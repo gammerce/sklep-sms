@@ -5,6 +5,6 @@
 <script>
     window.onload = function() {
         var ctx = document.getElementById("{{ $id }}").getContext("2d");
-        window.myLine = new Chart(ctx, { $config });
+        window.myLine = new Chart(ctx, {!! $config !!});
     };
 </script>

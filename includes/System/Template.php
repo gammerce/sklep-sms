@@ -138,6 +138,10 @@ class Template
 
     private function compileTemplate($template)
     {
-        return preg_replace(["/{{\s*/", "/\s*}}/"], ['{$e(', ')}'], $template);
+        return preg_replace(
+            ["/{{\s*/", "/\s*}}/", "/{!!\s*/", "/\s*!!}/"],
+            ['{$e(', ')}', '{', '}'],
+            $template
+        );
     }
 }
