@@ -145,6 +145,7 @@ return [
     'noaccount_id' => 'Given user\'s ID is not assigned to any account.',
     'none_such' => 'None',
     'not_all_data' => 'Not all necessary data were given.',
+    'note_income' => 'Your income this month is <strong>{1}</strong>.',
     'number' => 'Number',
     'order' => 'Order',
     'other' => 'Other',

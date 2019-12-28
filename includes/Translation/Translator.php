@@ -104,7 +104,7 @@ class Translator
 
     /**
      * @param $string
-     * @return mixed
+     * @return string
      */
     public function sprintf($string)
     {
@@ -116,6 +116,16 @@ class Translator
         }
 
         return $string;
+    }
+
+    /**
+     * @param string $key
+     * @param string ...$args
+     * @return string
+     */
+    public function t($key, ...$args)
+    {
+        return $this->sprintf($this->translate($key), ...$args);
     }
 
     /**

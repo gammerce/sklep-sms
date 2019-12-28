@@ -147,6 +147,7 @@ return [
     'noaccount_id' => 'Podane ID użytkownika nie jest przypisane do żadnego konta.',
     'none_such' => 'Żaden',
     'not_all_data' => 'Nie podano wszystkich potrzebnych danych.',
+    'note_income' => 'Twój dochód w tym miesiącu wynosi <strong>{1}</strong>.',
     'number' => 'Numer',
     'order' => 'Kolejność',
     'other' => 'Inne',
