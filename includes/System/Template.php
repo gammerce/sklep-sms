@@ -116,6 +116,10 @@ class Template
             return htmlspecialchars($value);
         };
 
+        $addSlashes = function ($value) {
+            return addslashes($value);
+        };
+
         return eval('return "' . $__content . '";');
     }
 

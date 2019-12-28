@@ -139,61 +139,64 @@ class PageAdminIncome extends PageAdmin
 
         $aboveTable = $this->template->render("admin/income_chart", [
             "id" => "income_chart",
-            "config" => json_encode($this->getLineChart($labels, $data)),
+            "labels" => json_encode($labels),
+            "dataset" => json_encode($this->getDataset($labels, $data)),
         ]);
         $tfootClass = '';
         $pagination = '';
         $title = $this->title;
-        $table = $this->template->render(
+        return $this->template->render(
             "admin/table_structure",
             compact('aboveTable', 'buttons', 'thead', 'tbody', 'pagination', 'tfootClass', 'title')
         );
-
-        return $table;
     }
 
-    private function getLineChart(array $labels, array $data)
+    private function getDataset(array $labels, array $data)
     {
-        $datasets = [
-            0 => [
-                "label" => $this->lang->translate('other'),
-                "data" => [],
-                "fill" => false,
-            ],
+        $dataset = [
+            0 => $this->createDatasetEntry($this->lang->translate('other'), $this->getColor(0)),
         ];
 
         foreach ($this->heart->getServers() as $server) {
-            $datasets[$server->getId()] = [
-                "label" => $server->getName(),
-                "data" => [],
-                "fill" => false,
-            ];
+            $dataset[$server->getId()] = $this->createDatasetEntry(
+                $server->getName(),
+                $this->getColor(count($dataset))
+            );
         }
 
         foreach ($labels as $label) {
-            foreach (array_keys($datasets) as $serverId) {
+            foreach (array_keys($dataset) as $serverId) {
                 $income = array_get(array_get($data, $label), $serverId, 0);
-                $datasets[$serverId]["data"][] = $income;
+                $dataset[$serverId]["data"][] = $income;
             }
         }
 
+        return array_values($dataset);
+    }
+
+    private function createDatasetEntry($label, $color)
+    {
         return [
-            "type" => 'line',
-            "data" => [
-                "labels" => $labels,
-                "datasets" => array_values($datasets),
-            ],
-            "options" => [
-                "responsive" => true,
-                "tooltips" => [
-                    "mode" => 'index',
-                    "intersect" => false,
-                ],
-                "hover" => [
-                    "mode" => 'nearest',
-                    "intersect" => true,
-                ],
-            ],
+            "label" => $label,
+            "data" => [],
+            "fill" => false,
+            "backgroundColor" => $color,
+            "borderColor" => $color,
         ];
+    }
+
+    private function getColor($number)
+    {
+        $colors = [
+            "rgb(54, 162, 235)",
+            "rgb(75, 192, 192)",
+            "rgb(201, 203, 207)",
+            "rgb(255, 159, 64)",
+            "rgb(153, 102, 255)",
+            "rgb(255, 99, 132)",
+            "rgb(255, 205, 86)",
+        ];
+
+        return $number % count($colors);
     }
 }
