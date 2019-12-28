@@ -134,7 +134,7 @@ class License
         $shopUrl = $this->urlGenerator->getShopUrl();
 
         $response = $this->requester->post(
-            'httpś://license.sklep-sms.pl/v1/authorization/web',
+            'https://license.sklep-sms.pl/v1/authorization/web',
             [
                 'url' => $shopUrl,
                 'name' => $this->settings['shop_name'] ?: $shopUrl,
