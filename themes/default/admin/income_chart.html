@@ -1,0 +1,10 @@
+<div style="margin-bottom: 4rem;">
+    <canvas id="{{ $id }}" height="100"></canvas>
+</div>
+
+<script>
+    window.onload = function() {
+        var ctx = document.getElementById("{{ $id }}").getContext("2d");
+        window.myLine = new Chart(ctx, { $config });
+    };
+</script>

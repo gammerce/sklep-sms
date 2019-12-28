@@ -48,6 +48,7 @@ return [
     'confirm' => 'Confirm',
     'confirm_remove_server' => 'Do you really want to remove server \n{0}?',
     'create_price_duplication' => 'The price for that server and tariff already exists.',
+    'create_service_duplication' => 'The service with such an ID already exists.',
     'cron_page_start' => 'Cron at every page start',
     'currency' => 'Currency',
     'date_format' => 'Date format',

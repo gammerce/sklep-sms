@@ -11,7 +11,7 @@ use Illuminate\Container\Container;
 
 class Application extends Container
 {
-    const VERSION = '3.9.2';
+    const VERSION = '3.9.3';
 
     private $providers = [
         AppServiceProvider::class,
@@ -111,5 +111,10 @@ class Application extends Container
     public function isTesting()
     {
         return getenv('APP_ENV') === 'testing';
+    }
+
+    public function isDemo()
+    {
+        return getenv('APP_ENV') === 'demo';
     }
 }
