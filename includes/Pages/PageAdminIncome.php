@@ -167,7 +167,7 @@ class PageAdminIncome extends PageAdmin
         foreach ($labels as $label) {
             foreach (array_keys($dataset) as $serverId) {
                 $income = array_get(array_get($data, $label), $serverId, 0);
-                $dataset[$serverId]["data"][] = $income;
+                $dataset[$serverId]["data"][] = number_format($income / 100.0, 2);
             }
         }
 
@@ -188,15 +188,15 @@ class PageAdminIncome extends PageAdmin
     private function getColor($number)
     {
         $colors = [
+            "rgb(255, 99, 132)",
             "rgb(54, 162, 235)",
             "rgb(75, 192, 192)",
             "rgb(201, 203, 207)",
             "rgb(255, 159, 64)",
             "rgb(153, 102, 255)",
-            "rgb(255, 99, 132)",
             "rgb(255, 205, 86)",
         ];
 
-        return $number % count($colors);
+        return $colors[$number % count($colors)];
     }
 }
