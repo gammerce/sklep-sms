@@ -40,6 +40,15 @@ class IncomeService
         while ($row = $this->db->fetchArrayAssoc($result)) {
             $date = explode(" ", $row['timestamp'])[0];
             $serverId = $this->heart->getServer($row['server']) ? $row['server'] : 0;
+
+            if (!isset($data[$date])) {
+                $data[$date] = [];
+            }
+
+            if (!isset($data[$date][$serverId])) {
+                $data[$date][$serverId] = 0;
+            }
+
             $data[$date][$serverId] += $row['income'];
         }
 
