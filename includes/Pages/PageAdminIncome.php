@@ -175,7 +175,7 @@ class PageAdminIncome extends PageAdmin
             "type" => 'line',
             "data" => [
                 "labels" => $labels,
-                "datasets" => $datasets,
+                "datasets" => array_values($datasets),
             ],
             "options" => [
                 "responsive" => true,
