@@ -56,7 +56,7 @@ class PageAdminIncome extends PageAdmin
 
         foreach ($labels as $date) {
             if ($date <= date("Y-m-d")) {
-                $tbody[] = $this->renderTRow($date, array_get($incomeFromPeriod, $date));
+                $tbody[] = $this->renderTRow($date, array_get($incomeFromPeriod, $date, []));
             }
         }
 
