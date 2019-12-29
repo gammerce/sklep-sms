@@ -5,8 +5,8 @@ use App\Exceptions\SqlQueryException;
 use App\Http\Responses\ApiResponse;
 use App\Http\Services\ServiceService;
 use App\Repositories\ServiceRepository;
+use App\Services\Interfaces\IServiceAdminManage;
 use App\System\Auth;
-use App\System\Database;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,60 +18,51 @@ class ServiceResource
         Request $request,
         TranslationManager $translationManager,
         Auth $auth,
-        Database $db,
         Heart $heart,
-        ServiceService $serviceService
+        ServiceService $serviceService,
+        ServiceRepository $serviceRepository
     ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
         $user = $auth->user();
 
-        // ID
-        $id2 = $request->request->get('id2');
+        $newId = $request->request->get('new_id');
         $name = $request->request->get('name');
         $shortDescription = $request->request->get('short_description');
         $order = $request->request->get('order');
         $description = $request->request->get('description');
         $tag = $request->request->get('tag');
-        $groups = $request->request->get('groups');
+        $groups = $request->request->get('groups', []);
 
         $warnings = [];
-        $set = "";
 
-        $serviceModule = $heart->getServiceModule($id2);
-
-        $serviceService->validateBody($request->request->all(), $warnings, $set, $serviceModule);
-
-        if ($serviceId !== $id2) {
-            // Sprawdzanie czy usługa o takim ID już istnieje
-            if ($heart->getService($serviceId) !== null) {
-                $warnings['id'][] = $lang->translate('id_exist');
-            }
+        if ($serviceId !== $newId && $heart->getService($newId)) {
+            $warnings['new_id'][] = $lang->translate('id_exist');
         }
 
-        $db->query(
-            $db->prepare(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "services` " .
-                    "SET `id` = '%s', `name` = '%s', `short_description` = '%s', `description` = '%s', " .
-                    "`tag` = '%s', `groups` = '%s', `order` = '%d' " .
-                    $set .
-                    "WHERE `id` = '%s'",
-                [
-                    $id2,
-                    $name,
-                    $shortDescription,
-                    $description,
-                    $tag,
-                    implode(";", $groups),
-                    $order,
-                    $serviceId,
-                ]
-            )
+        $serviceModule = $heart->getServiceModule($newId);
+        $serviceService->validateBody($request->request->all(), $warnings, $serviceModule);
+
+        $additionalData =
+            $serviceModule instanceof IServiceAdminManage
+                ? $serviceModule->serviceAdminManagePost($request->request->all())
+                : [];
+
+        $updated = $serviceRepository->update(
+            $serviceId,
+            $newId,
+            $name,
+            $shortDescription,
+            $description,
+            $tag,
+            $groups,
+            $order,
+            array_get($additionalData, "data", []),
+            array_get($additionalData, "types", 0),
+            array_get($additionalData, "flags", '')
         );
 
-        if ($db->affectedRows()) {
+        if ($updated) {
             log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('service_admin_edit'),
@@ -88,7 +79,6 @@ class ServiceResource
 
     public function delete(
         $serviceId,
-        Database $db,
         TranslationManager $translationManager,
         ServiceRepository $serviceRepository,
         Auth $auth,
@@ -104,22 +94,21 @@ class ServiceResource
         }
 
         try {
-            $serviceRepository->delete($serviceId);
+            $deleted = $serviceRepository->delete($serviceId);
         } catch (SqlQueryException $e) {
             // It is affiliated with something
             if ($e->getErrorno() == 1451) {
                 return new ApiResponse(
                     "error",
-                    $lang->translate('delete_service_er_row_is_referenced_2'),
+                    $lang->translate('delete_service_er_row_is_referenced'),
                     0
                 );
             }
 
             throw $e;
         }
-        $affected = $db->affectedRows();
 
-        if ($affected) {
+        if ($deleted) {
             log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('service_admin_delete'),

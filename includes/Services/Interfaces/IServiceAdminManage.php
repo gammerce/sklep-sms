@@ -25,7 +25,7 @@ interface IServiceAdminManage
      *  'key' => DOM Element name
      *  'value' => Array of error messages
      */
-    public function serviceAdminManagePre($body);
+    public function serviceAdminManagePre(array $body);
 
     /**
      * Metoda zostaje wywołana po tym, jak  weryfikacja danych
@@ -33,13 +33,7 @@ interface IServiceAdminManage
      *
      * @param array $body
      *
-     * @return array (
-     *    'query_set' - array of query SET elements:
-     *        array(
-     *            'type'    => '%s'|'%d'|'%f'|'%c'|etc.
-     *            'column'=> kolumna
-     *            'value'    => wartość kolumny
-     *        )
+     * @return array
      */
-    public function serviceAdminManagePost($body);
+    public function serviceAdminManagePost(array $body);
 }

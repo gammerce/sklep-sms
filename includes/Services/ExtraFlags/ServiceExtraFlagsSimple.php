@@ -83,7 +83,7 @@ abstract class ServiceExtraFlagsSimple extends Service implements
         );
     }
 
-    public function serviceAdminManagePre($data)
+    public function serviceAdminManagePre(array $data)
     {
         $warnings = [];
 
@@ -126,7 +126,7 @@ abstract class ServiceExtraFlagsSimple extends Service implements
         return $warnings;
     }
 
-    public function serviceAdminManagePost($data)
+    public function serviceAdminManagePost(array $data)
     {
         // Przygotowujemy do zapisu ( suma bitowa ), które typy zostały wybrane
         $types = 0;
@@ -161,23 +161,9 @@ abstract class ServiceExtraFlagsSimple extends Service implements
         }
 
         return [
-            'query_set' => [
-                [
-                    'type' => '%d',
-                    'column' => 'types',
-                    'value' => $types,
-                ],
-                [
-                    'type' => '%s',
-                    'column' => 'flags',
-                    'value' => $data['flags'],
-                ],
-                [
-                    'type' => '%s',
-                    'column' => 'data',
-                    'value' => json_encode($extraData),
-                ],
-            ],
+            'types' => $types,
+            'flags' => $data['flags'],
+            'data' => $extraData,
         ];
     }
 
