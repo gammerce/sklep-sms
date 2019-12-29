@@ -35,17 +35,20 @@ class ServiceResource
         $groups = $request->request->get('groups', []);
 
         $warnings = [];
+        $body = $request->request->all();
+        // For backward compatibility. Some service modules use that field.
+        $body["id"] = $serviceId;
 
         if ($serviceId !== $newId && $heart->getService($newId)) {
             $warnings['new_id'][] = $lang->translate('id_exist');
         }
 
-        $serviceModule = $heart->getServiceModule($newId);
-        $serviceService->validateBody($request->request->all(), $warnings, $serviceModule);
+        $serviceModule = $heart->getServiceModule($serviceId);
+        $serviceService->validateBody($body, $warnings, $serviceModule);
 
         $additionalData =
             $serviceModule instanceof IServiceAdminManage
-                ? $serviceModule->serviceAdminManagePost($request->request->all())
+                ? $serviceModule->serviceAdminManagePost($body)
                 : [];
 
         $updated = $serviceRepository->update(

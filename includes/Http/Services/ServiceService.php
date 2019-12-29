@@ -29,15 +29,10 @@ class ServiceService
 
     public function validateBody(array $body, array $warnings, Service $serviceModule = null)
     {
-        $id = array_get($body, 'id');
         $name = array_get($body, 'name');
         $shortDescription = array_get($body, 'short_description');
         $order = array_get($body, 'order');
         $groups = array_get($body, 'groups', []);
-
-        if (!strlen($id)) {
-            $warnings['id'][] = $this->lang->translate('no_service_id');
-        }
 
         if (!strlen($name)) {
             $warnings['name'][] = $this->lang->translate('no_service_name');

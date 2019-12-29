@@ -94,7 +94,6 @@ class ServiceRepository
         $shortDescription,
         $description,
         $tag,
-        $module,
         array $groups,
         $order,
         array $data,
@@ -106,7 +105,7 @@ class ServiceRepository
                 "UPDATE `" .
                     TABLE_PREFIX .
                     "services` " .
-                    "SET `id`='%s', `name`='%s', `short_description`='%s', `description`='%s', `tag`='%s', `module`='%s', `groups`='%s', `order` = '%d', `data`='%s', `types`='%d', `flags`='%s' " .
+                    "SET `id`='%s', `name`='%s', `short_description`='%s', `description`='%s', `tag`='%s', `groups`='%s', `order` = '%d', `data`='%s', `types`='%d', `flags`='%s' " .
                     "WHERE `id` = '%s'",
                 [
                     $newId,
@@ -114,7 +113,6 @@ class ServiceRepository
                     $shortDescription,
                     $description,
                     $tag,
-                    $module,
                     implode(";", $groups),
                     $order,
                     json_encode($data),

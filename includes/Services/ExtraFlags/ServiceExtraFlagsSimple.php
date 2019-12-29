@@ -126,6 +126,8 @@ abstract class ServiceExtraFlagsSimple extends Service implements
         return $warnings;
     }
 
+    // TODO Do not create files during tests
+
     public function serviceAdminManagePost(array $data)
     {
         // Przygotowujemy do zapisu ( suma bitowa ), które typy zostały wybrane

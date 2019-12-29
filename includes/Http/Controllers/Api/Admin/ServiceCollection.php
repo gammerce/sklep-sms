@@ -39,6 +39,10 @@ class ServiceCollection
             $warnings['module'][] = $lang->translate('wrong_module');
         }
 
+        if (!strlen($id)) {
+            $warnings['id'][] = $lang->translate('no_service_id');
+        }
+
         if (strlen($id) > 16) {
             $warnings['id'][] = $lang->translate('long_service_id');
         }
