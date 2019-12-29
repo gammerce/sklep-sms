@@ -44,11 +44,12 @@ class PageAdminIncome extends PageAdmin
         $queryMonth = array_get($query, 'month', date("m"));
 
         $tableRow = "";
-        $serversIds = [0];
+        $serversIds = [];
         foreach ($this->heart->getServers() as $server) {
             $serversIds[] = $server->getId();
             $tableRow .= new HeadCell($server->getName());
         }
+        $serversIds[] = 0;
 
         $data = $incomeService->get($queryYear, $queryMonth);
 
@@ -99,7 +100,6 @@ class PageAdminIncome extends PageAdmin
             $dayIncome = 0;
             $tableRow = "";
 
-            // Lecimy po każdym obiekcie, niezależnie, czy zarobiliśmy na nim czy nie
             foreach ($serversIds as $serverId) {
                 if (!isset($serversIncomes[$serverId])) {
                     $serversIncomes[$serverId] = 0;
