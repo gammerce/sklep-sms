@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Psr4\TestCases;
 
+use App\Services\ExtraFlags\ServiceDescriptionCreator;
 use App\System\Application;
 use App\System\Database;
 use App\System\License;
@@ -38,6 +39,7 @@ class TestCase extends BaseTestCase
 
         $this->factory = $this->app->make(Factory::class);
         $this->mockLicense();
+        $this->mockDescriptionCreator();
 
         if ($this->mockLocale) {
             $this->mockLocale();
@@ -128,5 +130,12 @@ class TestCase extends BaseTestCase
         $localeService = Mockery::mock(LocaleService::class);
         $localeService->shouldReceive('getLocale')->andReturn('pl');
         $this->app->instance(LocaleService::class, $localeService);
+    }
+
+    protected function mockDescriptionCreator()
+    {
+        $descriptionCreator = Mockery::mock(ServiceDescriptionCreator::class);
+        $descriptionCreator->shouldReceive('create')->andReturnNull();
+        $this->app->instance(ServiceDescriptionCreator::class, $descriptionCreator);
     }
 }

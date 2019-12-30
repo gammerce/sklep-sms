@@ -39,6 +39,9 @@ abstract class ServiceExtraFlagsSimple extends Service implements
     /** @var Path */
     protected $path;
 
+    /** @var ServiceDescriptionCreator */
+    protected $serviceDescriptionCreator;
+
     public function __construct(\App\Models\Service $service = null)
     {
         parent::__construct($service);
@@ -49,6 +52,7 @@ abstract class ServiceExtraFlagsSimple extends Service implements
         $this->langShop = $translationManager->shop();
         $this->settings = $this->app->make(Settings::class);
         $this->path = $this->app->make(Path::class);
+        $this->serviceDescriptionCreator = $this->app->make(ServiceDescriptionCreator::class);
     }
 
     public function serviceAdminExtraFieldsGet()
@@ -126,8 +130,6 @@ abstract class ServiceExtraFlagsSimple extends Service implements
         return $warnings;
     }
 
-    // TODO Do not create files during tests
-
     public function serviceAdminManagePost(array $data)
     {
         // Przygotowujemy do zapisu ( suma bitowa ), które typy zostały wybrane
@@ -139,28 +141,7 @@ abstract class ServiceExtraFlagsSimple extends Service implements
         $extraData = $this->service ? $this->service->getData() : [];
         $extraData['web'] = $data['web'];
 
-        // Tworzymy plik z opisem usługi
-        $file = $this->path->to(
-            "themes/{$this->settings['theme']}/services/" .
-                escape_filename($data['id']) .
-                "_desc.html"
-        );
-        if (!file_exists($file)) {
-            file_put_contents($file, "");
-
-            // Dodajemy uprawnienia
-            chmod($file, 0777);
-
-            // Sprawdzamy czy uprawnienia się dodały
-            if (substr(sprintf('%o', fileperms($file)), -4) != "0777") {
-                throw new InvalidConfigException(
-                    $this->lang->sprintf(
-                        $this->lang->translate('wrong_service_description_file'),
-                        $this->settings['theme']
-                    )
-                );
-            }
-        }
+        $this->serviceDescriptionCreator->create($data['id']);
 
         return [
             'types' => $types,
