@@ -53,5 +53,5 @@ interface IServicePurchaseWeb extends IServicePurchase
      *
      * @return string|array Informacje o zakupionej usłudze
      */
-    public function purchaseInfo($action, $data);
+    public function purchaseInfo($action, array $data);
 }
