@@ -212,8 +212,9 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         );
     }
 
-    public function purchaseInfo($action, $data)
+    public function purchaseInfo($action, array $data)
     {
+        var_dump($data);
         $data['amount'] .= ' ' . $this->settings['currency'];
         $data['cost'] = number_format($data['cost'] / 100, 2) . ' ' . $this->settings['currency'];
 

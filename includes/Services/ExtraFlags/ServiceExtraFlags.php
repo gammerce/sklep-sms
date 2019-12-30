@@ -592,7 +592,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         }
     }
 
-    public function purchaseInfo($action, $data)
+    public function purchaseInfo($action, array $data)
     {
         $data['extra_data'] = json_decode($data['extra_data'], true);
         $data['extra_data']['type_name'] = $this->getTypeName2($data['extra_data']['type']);
