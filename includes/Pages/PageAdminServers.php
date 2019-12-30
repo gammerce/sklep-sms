@@ -9,18 +9,24 @@ use App\Html\Input;
 use App\Html\Structure;
 use App\Html\Wrapper;
 use App\Pages\Interfaces\IPageAdminActionBox;
+use App\Repositories\PaymentPlatformRepository;
 use App\Services\Interfaces\IServiceAvailableOnServers;
+use App\Verification\Abstracts\SupportSms;
 
 class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = 'servers';
     protected $privilege = 'manage_servers';
 
-    public function __construct()
+    /** @var PaymentPlatformRepository */
+    private $paymentPlatformRepository;
+
+    public function __construct(PaymentPlatformRepository $paymentPlatformRepository)
     {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->translate('servers');
+        $this->paymentPlatformRepository = $paymentPlatformRepository;
     }
 
     protected function content(array $query, array $body)
@@ -76,17 +82,14 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             $server = $this->heart->getServer($query['id']);
         }
 
-        // Pobranie listy serwisów transakcyjnych
-        $result = $this->db->query(
-            "SELECT `id`, `name`, `sms` " . "FROM `" . TABLE_PREFIX . "transaction_services`"
-        );
         $smsServices = "";
-        while ($row = $this->db->fetchArrayAssoc($result)) {
-            if ($row['sms']) {
-                $smsServices .= create_dom_element("option", $row['name'], [
-                    'value' => $row['id'],
+        foreach ($this->paymentPlatformRepository->all() as $paymentPlatform) {
+            $paymentModule = $this->heart->getPaymentModule($paymentPlatform->getModule());
+            if ($paymentModule instanceof SupportSms) {
+                $smsServices .= create_dom_element("option", $paymentPlatform->getName(), [
+                    'value' => $paymentPlatform->getId(),
                     'selected' =>
-                        isset($server) && $row['id'] == $server->getSmsService() ? "selected" : "",
+                        isset($server) && $paymentPlatform->getId() == $server->getSmsService() ? "selected" : "",
                 ]);
             }
         }
