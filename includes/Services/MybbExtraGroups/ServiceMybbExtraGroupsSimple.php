@@ -82,16 +82,7 @@ abstract class ServiceMybbExtraGroupsSimple extends Service implements
         );
     }
 
-    /**
-     * Metoda testuje dane przesłane przez formularz podczas dodawania nowej usługi w PA
-     * jak coś się jej nie spodoba to zwraca o tym info w tablicy
-     *
-     * @param array $data
-     *
-     * @return array        'key' => DOM Element name
-     *                      'value' => Array of error messages
-     */
-    public function serviceAdminManagePre($data)
+    public function serviceAdminManagePre(array $data)
     {
         $warnings = [];
 
@@ -136,21 +127,7 @@ abstract class ServiceMybbExtraGroupsSimple extends Service implements
         return $warnings;
     }
 
-    /**
-     * Metoda zostaje wywołana po tym, jak  weryfikacja danych
-     * przesłanych w formularzu dodania nowej usługi w PA przebiegła bezproblemowo
-     *
-     * @param array $data
-     *
-     * @return array (
-     *    'query_set' - array of query SET elements:
-     *        array(
-     *            'type'    => '%s'|'%d'|'%f'|'%c'|etc.
-     *            'column'    => kolumna
-     *            'value'    => wartość kolumny
-     *        )
-     */
-    public function serviceAdminManagePost($data)
+    public function serviceAdminManagePost(array $data)
     {
         $mybbGroups = explode(",", $data['mybb_groups']);
         foreach ($mybbGroups as $key => $group) {
@@ -173,13 +150,7 @@ abstract class ServiceMybbExtraGroupsSimple extends Service implements
         ];
 
         return [
-            'query_set' => [
-                [
-                    'type' => '%s',
-                    'column' => 'data',
-                    'value' => json_encode($extraData),
-                ],
-            ],
+            'data' => $extraData,
         ];
     }
 

@@ -1,15 +1,26 @@
 <?php
 namespace Tests\Feature\Http\Api\Admin;
 
+use App\Models\Service;
 use App\Repositories\ServiceRepository;
 use App\Services\ExtraFlags\ExtraFlagType;
 use App\Services\ExtraFlags\ServiceExtraFlags;
 use Tests\Psr4\TestCases\HttpTestCase;
 
-class ServiceCollectionTest extends HttpTestCase
+class ServiceResourceTest extends HttpTestCase
 {
+    /** @var Service */
+    private $service;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->service = $this->factory->service();
+    }
+
     /** @test */
-    public function creates_service()
+    public function updates_service()
     {
         // given
         /** @var ServiceRepository $repository */
@@ -18,8 +29,8 @@ class ServiceCollectionTest extends HttpTestCase
         $this->actAs($admin);
 
         // when
-        $response = $this->post("/api/admin/services", [
-            'id' => 'example',
+        $response = $this->put("/api/admin/services/{$this->service->getId()}", [
+            'new_id' => 'example',
             'name' => 'My Example',
             'module' => ServiceExtraFlags::MODULE_ID,
             'order' => 1,
@@ -48,8 +59,8 @@ class ServiceCollectionTest extends HttpTestCase
         $this->factory->service(compact('id'));
 
         // when
-        $response = $this->post("/api/admin/services", [
-            'id' => $id,
+        $response = $this->put("/api/admin/services/{$this->service->getId()}", [
+            'new_id' => $id,
             'name' => 'My Example',
             'module' => ServiceExtraFlags::MODULE_ID,
             'order' => 1,

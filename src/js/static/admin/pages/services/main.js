@@ -26,7 +26,7 @@ $(document).delegate(".action_box [name=module]", "change", function() {
     }
 
     var moduleId = $(this).val();
-    var serviceId = $(".action_box [name=id2]");
+    var serviceId = $(".action_box [name=id]");
 
     restRequest(
         "GET",
