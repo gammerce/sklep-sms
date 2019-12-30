@@ -24,7 +24,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
     IServiceUserOwnServices
 {
     /** @var array */
-    private $groups;
+    private $groups = [];
 
     private $dbHost;
     private $dbUser;
@@ -46,7 +46,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
     /** @var BoughtServiceService */
     private $boughtServiceService;
 
-    public function __construct(Service $service)
+    public function __construct(Service $service = null)
     {
         parent::__construct($service);
 
@@ -57,19 +57,17 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         $this->heart = $this->app->make(Heart::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
 
-        $this->groups = explode(",", $this->service->getData()['mybb_groups']);
-        $this->dbHost = array_get($this->service->getData(), 'db_host', '');
-        $this->dbUser = array_get($this->service->getData(), 'db_user', '');
-        $this->dbPassword = array_get($this->service->getData(), 'db_password', '');
-        $this->dbName = array_get($this->service->getData(), 'db_name', '');
+        $serviceData = $this->service ? $this->service->getData() : null;
+        if (isset($serviceData['mybb_groups'])) {
+            $this->groups = explode(",", $serviceData['mybb_groups']);
+        }
+        $this->dbHost = array_get($serviceData, 'db_host', '');
+        $this->dbUser = array_get($serviceData, 'db_user', '');
+        $this->dbPassword = array_get($serviceData, 'db_password', '');
+        $this->dbName = array_get($serviceData, 'db_name', '');
     }
 
-    /**
-     * Metoda powinna zwracać formularz zakupu w postaci stringa
-     *
-     * @return string   - Formularz zakupu
-     */
-    public function purchaseFormGet()
+    public function purchaseFormGet(array $query)
     {
         $user = $this->auth->user();
 
@@ -134,6 +132,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         // Amount
         $amount = explode(';', $data['amount']); // Wyłuskujemy taryfę
         $tariff = $amount[2];
+        $warnings = [];
 
         // Tariff
         if (!$tariff) {
@@ -286,18 +285,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         );
     }
 
-    /**
-     * Metoda formatuje i zwraca informacje o zakupionej usłudze, zaraz po jej zakupie.
-     *
-     * @param string $action Do czego zostaną te dane użyte ( email, web, payment_log )
-     *                            email - wiadomość wysłana na maila o zakupie usługi
-     *                            web - informacje wyświetlone na stronie WWW zaraz po zakupie
-     *                            payment_log - wpis w historii płatności
-     * @param array  $data Dane o zakupie usługi, zwrócone przez zapytanie zdefiniowane w global.php
-     *
-     * @return string|array        Informacje o zakupionej usłudze
-     */
-    public function purchaseInfo($action, $data)
+    public function purchaseInfo($action, array $data)
     {
         $username = $data['auth_data'];
         $amount =

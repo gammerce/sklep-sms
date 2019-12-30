@@ -4,7 +4,7 @@
         <meta charset="UTF-8" />
         <title>BŁĄD LICENCJI</title>
         <link href="{{ $url->versioned('build/css/shop.css') }}" rel="stylesheet" />
-        <link rel="shortcut icon" href="{{ $url->versioned('favicon.ico') }}" />
+        <link rel="shortcut icon" href="{{ $url->to('favicon.png') }}" />
     </head>
     <body>
         <section class="hero is-light is-fullheight">
@@ -14,7 +14,7 @@
                         {{ $message }}
                     </h1>
                     <h2 class="subtitle">
-                        Możesz go zmienić na prawidłowy korzystając z
+                        Możesz zmienić token licencji korzystając z
                         <a class="has-text-link" href="{{ $url->to('/admin') }}">
                             {$lang->translate('acp')}
                         </a>

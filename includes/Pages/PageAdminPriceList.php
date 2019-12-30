@@ -49,17 +49,18 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
         while ($row = $this->db->fetchArrayAssoc($result)) {
             $bodyRow = new BodyRow();
 
-            $service = $this->heart->getService($row['service']);
-
             if ($row['server'] != -1) {
                 $server = $this->heart->getServer($row['server']);
-                $serverName = $server->getName();
+                $serverName = $server ? $server->getName() : "n/a";
             } else {
                 $serverName = $this->lang->translate('all_servers');
             }
 
+            $service = $this->heart->getService($row['service']);
+            $serviceName = $service ? "{$service->getName()} ( {$service->getId()} )" : "n/a";
+
             $bodyRow->setDbId($row['id']);
-            $bodyRow->addCell(new Cell("{$service->getName()} ( {$service->getId()} )"));
+            $bodyRow->addCell(new Cell($serviceName));
             $bodyRow->addCell(new Cell($row['tariff']));
             $bodyRow->addCell(new Cell($row['amount']));
             $bodyRow->addCell(new Cell($serverName));

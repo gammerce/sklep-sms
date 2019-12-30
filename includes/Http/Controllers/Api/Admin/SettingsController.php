@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
 use App\Repositories\PaymentPlatformRepository;
+use App\System\Application;
 use App\System\Auth;
 use App\System\Database;
 use App\System\Heart;
 use App\System\Path;
+use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
@@ -22,7 +24,9 @@ class SettingsController
         PaymentPlatformRepository $paymentPlatformRepository,
         Heart $heart,
         Path $path,
-        Auth $auth
+        Auth $auth,
+        Settings $settings,
+        Application $app
     ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
@@ -32,14 +36,14 @@ class SettingsController
         $transferPaymentPlatformId = $request->request->get('transfer_service');
         $currency = $request->request->get('currency');
         $shopName = $request->request->get('shop_name');
-        $shopUrl = $request->request->get('shop_url');
+        $shopUrl = $app->isDemo() ? $settings['shop_url'] : $request->request->get('shop_url');
         $senderEmail = $request->request->get('sender_email');
         $senderEmailName = $request->request->get('sender_email_name');
         $signature = $request->request->get('signature');
         $vat = $request->request->get('vat');
         $contact = $request->request->get('contact');
         $rowLimit = $request->request->get('row_limit');
-        $licenseToken = $request->request->get('license_token');
+        $licenseToken = $app->isDemo() ? null : $request->request->get('license_token');
         $cron = $request->request->get('cron');
         $language = escape_filename($request->request->get('language'));
         $theme = escape_filename($request->request->get('theme'));
@@ -79,43 +83,35 @@ class SettingsController
             }
         }
 
-        // Email dla automatu
         if (strlen($senderEmail) && ($warning = check_for_warnings("email", $senderEmail))) {
             $warnings['sender_email'] = array_merge((array) $warnings['sender_email'], $warning);
         }
 
-        // VAT
         if ($warning = check_for_warnings("number", $vat)) {
             $warnings['vat'] = array_merge((array) $warnings['vat'], $warning);
         }
 
-        // Usuwanie logów
         if ($warning = check_for_warnings("number", $deleteLogs)) {
             $warnings['delete_logs'] = array_merge((array) $warnings['delete_logs'], $warning);
         }
 
-        // Wierszy na stronę
         if ($warning = check_for_warnings("number", $rowLimit)) {
             $warnings['row_limit'] = array_merge((array) $warnings['row_limit'], $warning);
         }
 
-        // Cron
         if (!in_array($cron, ["1", "0"])) {
             $warnings['cron'][] = $lang->translate('only_yes_no');
         }
 
-        // Edytowanie usługi przez użytkownika
         if (!in_array($userEditService, ["1", "0"])) {
             $warnings['user_edit_service'][] = $lang->translate('only_yes_no');
         }
 
-        // Motyw
-        if (!is_dir($path->to("themes/{$theme}")) || $theme[0] == '.') {
+        if (!$theme || !is_dir($path->to("themes/{$theme}")) || $theme[0] == '.') {
             $warnings['theme'][] = $lang->translate('no_theme');
         }
 
-        // Język
-        if (!is_dir($path->to("translations/{$language}")) || $language[0] == '.') {
+        if (!$language || !is_dir($path->to("translations/{$language}")) || $language[0] == '.') {
             $warnings['language'][] = $lang->translate('no_language');
         }
 
@@ -133,7 +129,6 @@ class SettingsController
             $keyLicenseToken = ",'license_password', 'license_login'";
         }
 
-        // Edytuj ustawienia
         $db->query(
             $db->prepare(
                 "UPDATE `" .

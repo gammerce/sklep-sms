@@ -50,7 +50,7 @@ class PurchaseResourceSmsTest extends HttpTestCase
             'server_id' => $server->getId(),
             'service_id' => $serviceId,
         ]);
-        $this->factory->pricelist([
+        $this->factory->price([
             'service_id' => $serviceId,
             'tariff' => $tariff,
             'server_id' => $server->getId(),
@@ -83,7 +83,7 @@ class PurchaseResourceSmsTest extends HttpTestCase
         );
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertRegExp(
             "#<return_value>purchased</return_value><text>Usługa została prawidłowo zakupiona\.</text><positive>1</positive><bsid>\d+</bsid>#",
             $response->getContent()

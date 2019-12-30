@@ -50,7 +50,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
     }
 
-    public function purchaseFormGet()
+    public function purchaseFormGet(array $query)
     {
         $heart = $this->heart;
         $user = $this->auth->user();
@@ -592,7 +592,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         }
     }
 
-    public function purchaseInfo($action, $data)
+    public function purchaseInfo($action, array $data)
     {
         $data['extra_data'] = json_decode($data['extra_data'], true);
         $data['extra_data']['type_name'] = $this->getTypeName2($data['extra_data']['type']);
@@ -879,6 +879,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     public function userServiceAdminEdit($data, $userService)
     {
         $user = $this->auth->user();
+        $warnings = [];
 
         // Pobieramy auth_data
         $data['auth_data'] = $this->getAuthData($data);
@@ -1107,6 +1108,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     public function userOwnServiceEdit(array $data, $userService)
     {
         $user = $this->auth->user();
+        $warnings = [];
 
         // Pobieramy auth_data
         $data['auth_data'] = $this->getAuthData($data);
@@ -1528,11 +1530,11 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     /**
      * Metoda zwraca listę serwerów na których można zakupić daną usługę
      *
-     * @param integer $server
+     * @param integer $serverId
      *
      * @return string            Lista serwerów w postaci <option value="id_serwera">Nazwa</option>
      */
-    private function serversForService($server)
+    private function serversForService($serverId)
     {
         if (!get_privileges("manage_user_services")) {
             throw new UnauthorizedException();
@@ -1547,7 +1549,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
             $servers .= create_dom_element("option", $server->getName(), [
                 'value' => $server->getId(),
-                'selected' => $server == $server->getId() ? "selected" : "",
+                'selected' => $serverId == $server->getId() ? "selected" : "",
             ]);
         }
 

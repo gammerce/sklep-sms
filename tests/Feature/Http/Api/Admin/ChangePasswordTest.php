@@ -14,7 +14,7 @@ class ChangePasswordTest extends HttpTestCase
         $userRepository = $this->app->make(UserRepository::class);
 
         $newPassword = "foobar";
-        $admin = $this->factory->user(["groups" => 2]);
+        $admin = $this->factory->admin();
         $user = $this->factory->user();
 
         $this->actAs($admin);
@@ -25,7 +25,7 @@ class ChangePasswordTest extends HttpTestCase
         ]);
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals("ok", $json["return_id"]);
 
@@ -50,7 +50,7 @@ class ChangePasswordTest extends HttpTestCase
         ]);
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals("no_access", $json["return_id"]);
 

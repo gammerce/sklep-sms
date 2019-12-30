@@ -85,7 +85,8 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             if ($row['sms']) {
                 $smsServices .= create_dom_element("option", $row['name'], [
                     'value' => $row['id'],
-                    'selected' => $row['id'] == $server->getSmsService() ? "selected" : "",
+                    'selected' =>
+                        isset($server) && $row['id'] == $server->getSmsService() ? "selected" : "",
                 ]);
             }
         }
@@ -103,12 +104,11 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                 $this->lang->strtoupper($this->lang->translate('no')),
                 [
                     'value' => 0,
-                    'selected' => $this->heart->serverServiceLinked(
-                        $server->getId(),
-                        $service->getId()
-                    )
-                        ? ""
-                        : "selected",
+                    'selected' =>
+                        isset($server) &&
+                        $this->heart->serverServiceLinked($server->getId(), $service->getId())
+                            ? ""
+                            : "selected",
                 ]
             );
 
@@ -117,12 +117,11 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                 $this->lang->strtoupper($this->lang->translate('yes')),
                 [
                     'value' => 1,
-                    'selected' => $this->heart->serverServiceLinked(
-                        $server->getId(),
-                        $service->getId()
-                    )
-                        ? "selected"
-                        : "",
+                    'selected' =>
+                        isset($server) &&
+                        $this->heart->serverServiceLinked($server->getId(), $service->getId())
+                            ? "selected"
+                            : "",
                 ]
             );
 

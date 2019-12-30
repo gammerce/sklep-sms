@@ -79,7 +79,8 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
         ];
     }
 
-    private function getActionBoxContent($boxId, $paymentPlatformId) {
+    private function getActionBoxContent($boxId, $paymentPlatformId)
+    {
         switch ($boxId) {
             case "edit":
                 $paymentPlatform = $this->paymentPlatformRepository->get($paymentPlatformId);

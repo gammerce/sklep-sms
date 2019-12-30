@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 class UpdateController
 {
     public function post(
-        Request $request,
         SetupManager $setupManager,
         DatabaseMigration $migrator,
         UpdateInfo $updateInfo,

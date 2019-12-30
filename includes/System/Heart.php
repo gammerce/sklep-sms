@@ -414,16 +414,12 @@ class Heart
      */
     public function getServer($id)
     {
-        if (!$this->serversFetched) {
-            $this->fetchServers();
-        }
-
-        return array_get($this->servers, $id, null);
+        return array_get($this->getServers(), $id, null);
     }
 
     public function getServersAmount()
     {
-        return count($this->servers);
+        return count($this->getServers());
     }
 
     private function fetchServers()

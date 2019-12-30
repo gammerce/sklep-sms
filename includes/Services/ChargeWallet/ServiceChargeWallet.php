@@ -44,7 +44,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
     }
 
-    public function purchaseFormGet()
+    public function purchaseFormGet(array $query)
     {
         $optionSms = '';
         $optionTransfer = '';
@@ -212,10 +212,11 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         );
     }
 
-    public function purchaseInfo($action, $data)
+    public function purchaseInfo($action, array $data)
     {
+        $cost = $data['cost'] ?: 0;
         $data['amount'] .= ' ' . $this->settings['currency'];
-        $data['cost'] = number_format($data['cost'] / 100, 2) . ' ' . $this->settings['currency'];
+        $data['cost'] = number_format($cost / 100, 2) . ' ' . $this->settings['currency'];
 
         if ($action == "web") {
             if ($data['payment'] == Purchase::METHOD_SMS) {

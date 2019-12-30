@@ -116,6 +116,10 @@ class Template
             return htmlspecialchars($value);
         };
 
+        $addSlashes = function ($value) {
+            return addslashes($value);
+        };
+
         return eval('return "' . $__content . '";');
     }
 
@@ -138,6 +142,10 @@ class Template
 
     private function compileTemplate($template)
     {
-        return preg_replace(["/{{\s*/", "/\s*}}/"], ['{$e(', ')}'], $template);
+        return preg_replace(
+            ["/{{\s*/", "/\s*}}/", "/{!!\s*/", "/\s*!!}/"],
+            ['{$e(', ')}', '{', '}'],
+            $template
+        );
     }
 }

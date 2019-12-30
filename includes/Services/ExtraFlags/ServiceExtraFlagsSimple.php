@@ -39,6 +39,9 @@ abstract class ServiceExtraFlagsSimple extends Service implements
     /** @var Path */
     protected $path;
 
+    /** @var ServiceDescriptionCreator */
+    protected $serviceDescriptionCreator;
+
     public function __construct(\App\Models\Service $service = null)
     {
         parent::__construct($service);
@@ -49,16 +52,14 @@ abstract class ServiceExtraFlagsSimple extends Service implements
         $this->langShop = $translationManager->shop();
         $this->settings = $this->app->make(Settings::class);
         $this->path = $this->app->make(Path::class);
+        $this->serviceDescriptionCreator = $this->app->make(ServiceDescriptionCreator::class);
     }
 
     public function serviceAdminExtraFieldsGet()
     {
         // WEB
-        if ($this->showOnWeb()) {
-            $webSelYes = "selected";
-        } else {
-            $webSelNo = "selected";
-        }
+        $webSelYes = $this->showOnWeb() ? "selected" : "";
+        $webSelNo = $this->showOnWeb() ? "" : "selected";
 
         // Nick, IP, SID
         $types = "";
@@ -86,35 +87,35 @@ abstract class ServiceExtraFlagsSimple extends Service implements
         );
     }
 
-    public function serviceAdminManagePre($data)
+    public function serviceAdminManagePre(array $data)
     {
         $warnings = [];
 
+        $web = array_get($data, 'web');
+        $flags = array_get($data, 'flags');
+        $types = array_get($data, 'type', []);
+
         // Web
-        if (!in_array($data['web'], ["1", "0"])) {
+        if (!in_array($web, ["1", "0"])) {
             $warnings['web'][] = $this->lang->translate('only_yes_no');
         }
 
         // Flagi
-        if (!strlen($data['flags'])) {
+        if (!strlen($flags)) {
             $warnings['flags'][] = $this->lang->translate('field_no_empty');
-        } else {
-            if (strlen($data['flags']) > 25) {
-                $warnings['flags'][] = $this->lang->translate('too_many_flags');
-            } else {
-                if (implode('', array_unique(str_split($data['flags']))) != $data['flags']) {
-                    $warnings['flags'][] = $this->lang->translate('same_flags');
-                }
-            }
+        } elseif (strlen($flags) > 25) {
+            $warnings['flags'][] = $this->lang->translate('too_many_flags');
+        } elseif (implode('', array_unique(str_split($flags))) != $flags) {
+            $warnings['flags'][] = $this->lang->translate('same_flags');
         }
 
         // Typy
-        if (empty($data['type'])) {
+        if (empty($types)) {
             $warnings['type[]'][] = $this->lang->translate('no_type_chosen');
         }
 
         // Sprawdzamy, czy typy są prawidłowe
-        foreach ($data['type'] as $type) {
+        foreach ($types as $type) {
             if (
                 !(
                     $type &
@@ -129,7 +130,7 @@ abstract class ServiceExtraFlagsSimple extends Service implements
         return $warnings;
     }
 
-    public function serviceAdminManagePost($data)
+    public function serviceAdminManagePost(array $data)
     {
         // Przygotowujemy do zapisu ( suma bitowa ), które typy zostały wybrane
         $types = 0;
@@ -137,50 +138,15 @@ abstract class ServiceExtraFlagsSimple extends Service implements
             $types |= $type;
         }
 
-        $extraData = $this->service->getData();
+        $extraData = $this->service ? $this->service->getData() : [];
         $extraData['web'] = $data['web'];
 
-        // Tworzymy plik z opisem usługi
-        $file = $this->path->to(
-            "themes/{$this->settings['theme']}/services/" .
-                escape_filename($data['id']) .
-                "_desc.html"
-        );
-        if (!file_exists($file)) {
-            file_put_contents($file, "");
-
-            // Dodajemy uprawnienia
-            chmod($file, 0777);
-
-            // Sprawdzamy czy uprawnienia się dodały
-            if (substr(sprintf('%o', fileperms($file)), -4) != "0777") {
-                throw new InvalidConfigException(
-                    $this->lang->sprintf(
-                        $this->lang->translate('wrong_service_description_file'),
-                        $this->settings['theme']
-                    )
-                );
-            }
-        }
+        $this->serviceDescriptionCreator->create($data['id']);
 
         return [
-            'query_set' => [
-                [
-                    'type' => '%d',
-                    'column' => 'types',
-                    'value' => $types,
-                ],
-                [
-                    'type' => '%s',
-                    'column' => 'flags',
-                    'value' => $data['flags'],
-                ],
-                [
-                    'type' => '%s',
-                    'column' => 'data',
-                    'value' => json_encode($extraData),
-                ],
-            ],
+            'types' => $types,
+            'flags' => $data['flags'],
+            'data' => $extraData,
         ];
     }
 

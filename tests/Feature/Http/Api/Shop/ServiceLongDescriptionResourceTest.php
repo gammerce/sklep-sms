@@ -12,7 +12,7 @@ class ServiceLongDescriptionResourceTest extends HttpTestCase
         $response = $this->get("/api/services/vip/long_description");
 
         // then
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
         $this->assertContains("VIP", $response->getContent());
     }
 }

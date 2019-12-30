@@ -46,14 +46,20 @@ class PageAdminSettings extends PageAdmin
             if ($paymentModule instanceof SupportSms) {
                 $smsServices[] = create_dom_element("option", $paymentPlatform->getName(), [
                     'value' => $paymentPlatform->getId(),
-                    'selected' => $paymentPlatform->getId() == $this->settings['sms_service'] ? "selected" : "",
+                    'selected' =>
+                        $paymentPlatform->getId() == $this->settings['sms_service']
+                            ? "selected"
+                            : "",
                 ]);
             }
 
             if ($paymentModule instanceof SupportTransfer) {
                 $transferServices[] = create_dom_element("option", $paymentPlatform->getName(), [
                     'value' => $paymentPlatform->getId(),
-                    'selected' => $paymentPlatform->getId() == $this->settings['transfer_service'] ? "selected" : "",
+                    'selected' =>
+                        $paymentPlatform->getId() == $this->settings['transfer_service']
+                            ? "selected"
+                            : "",
                 ]);
             }
         }

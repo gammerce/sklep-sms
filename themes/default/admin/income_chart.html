@@ -1,0 +1,40 @@
+<div style="margin-bottom: 3rem; height: 200px;">
+    <canvas id="{{ $id }}"></canvas>
+</div>
+
+<script>
+    window.onload = function() {
+        var ctx = document.getElementById("{{ $id }}").getContext("2d");
+        var config = {
+            type: "line",
+            data: {
+                labels: JSON.parse("{$addSlashes($labels)}"),
+                datasets: JSON.parse("{$addSlashes($dataset)}"),
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                tooltips: {
+                    mode: "index",
+                    intersect: false,
+                },
+                hover: {
+                    mode: "nearest",
+                    intersect: true,
+                },
+                scales: {
+                    yAxes: [
+                        {
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: "{{ $settings['currency'] }}",
+                            },
+                        },
+                    ],
+                },
+            },
+        };
+        new Chart(ctx, config);
+    };
+</script>

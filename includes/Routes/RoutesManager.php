@@ -29,7 +29,7 @@ use App\Http\Controllers\Api\Admin\UserResource;
 use App\Http\Controllers\Api\Admin\UserServiceAddFormController;
 use App\Http\Controllers\Api\Admin\UserServiceCollection;
 use App\Http\Controllers\Api\Admin\UserServiceResource as AdminUserServiceResource;
-use App\Http\Controllers\Api\Admin\WalletChargeResource;
+use App\Http\Controllers\Api\Admin\WalletChargeCollection;
 use App\Http\Controllers\Api\BrickResource;
 use App\Http\Controllers\Api\CronController;
 use App\Http\Controllers\Api\IncomeController;
@@ -361,7 +361,7 @@ class RoutesManager
 
                 $r->post('/api/admin/users/{userId}/wallet/charge', [
                     'middlewares' => [[RequireAuthorization::class, "manage_users"]],
-                    'uses' => WalletChargeResource::class . '@post',
+                    'uses' => WalletChargeCollection::class . '@post',
                 ]);
 
                 $r->delete('/api/admin/service_codes/{serviceCodeId}', [

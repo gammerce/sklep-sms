@@ -2,7 +2,6 @@
 namespace App\Blocks;
 
 use App\Routes\UrlGenerator;
-use App\Services\ChargeWallet\ServiceChargeWallet;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\Template;
@@ -42,6 +41,8 @@ class BlockUserButtons extends Block
         if (!$auth->check()) {
             return $template->render("loginarea");
         }
+
+        $acpButton = "";
 
         // Panel Admina
         if (get_privileges("acp", $user)) {

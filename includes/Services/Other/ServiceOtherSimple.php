@@ -13,7 +13,7 @@ abstract class ServiceOtherSimple extends Service implements
 {
     const MODULE_ID = "other";
 
-    public function serviceAdminManagePost($data)
+    public function serviceAdminManagePost(array $data)
     {
         return [];
     }
@@ -23,7 +23,7 @@ abstract class ServiceOtherSimple extends Service implements
         return '';
     }
 
-    public function serviceAdminManagePre($data)
+    public function serviceAdminManagePre(array $data)
     {
         return [];
     }

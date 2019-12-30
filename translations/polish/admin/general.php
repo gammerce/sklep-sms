@@ -62,7 +62,7 @@ return [
     'delete_server_constraint_fails' =>
         'Nie można usunąć tego serwera, ponieważ wciąz istnieją powiązane z nim usługi.',
     'delete_service' => 'Usługa została prawidłowo usunięta.',
-    'delete_service_er_row_is_referenced_2' =>
+    'delete_service_er_row_is_referenced' =>
         'Nie można usunąć tej usługi, ponieważ wciąz istnieją usługi graczy.',
     'delete_sms_code' => 'Kod SMS został prawidłowo usunięty.',
     'delete_tariff' => 'Taryfa została prawidłowo usunięta.',
@@ -146,6 +146,7 @@ return [
     'noaccount_id' => 'Podane ID użytkownika nie jest przypisane do żadnego konta.',
     'none_such' => 'Żaden',
     'not_all_data' => 'Nie podano wszystkich potrzebnych danych.',
+    'note_income' => 'Twój dochód w tym miesiącu wynosi <strong>{1}</strong>.',
     'number' => 'Numer',
     'order' => 'Kolejność',
     'other' => 'Inne',

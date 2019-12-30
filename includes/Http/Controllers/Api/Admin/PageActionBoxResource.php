@@ -41,6 +41,6 @@ class PageActionBoxResource
             $data['template'] = $actionBox['template'];
         }
 
-        return new ApiResponse($actionBox['status'], $actionBox['text'], 0, $data);
+        return new ApiResponse($actionBox['status'], array_get($actionBox, 'text'), true, $data);
     }
 }

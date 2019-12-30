@@ -5,7 +5,6 @@ use App\Html\BodyRow;
 use App\Html\Cell;
 use App\Html\HeadCell;
 use App\Html\Link;
-use App\Html\SimpleText;
 use App\Html\Structure;
 use App\Html\UnescapedSimpleText;
 use App\Html\Wrapper;

@@ -62,7 +62,7 @@ return [
     'delete_server_constraint_fails' =>
         'This server cannot be deleted, because there are some connected services.',
     'delete_service' => 'Service removed successfully.',
-    'delete_service_er_row_is_referenced_2' =>
+    'delete_service_er_row_is_referenced' =>
         'This service cannot be deleted, there are still users\' services.',
     'delete_sms_code' => 'SMS code removed successfully.',
     'delete_tariff' => 'Tariff removed successfully.',
@@ -144,6 +144,7 @@ return [
     'noaccount_id' => 'Given user\'s ID is not assigned to any account.',
     'none_such' => 'None',
     'not_all_data' => 'Not all necessary data were given.',
+    'note_income' => 'Your income this month is <strong>{1}</strong>.',
     'number' => 'Number',
     'order' => 'Order',
     'other' => 'Other',
