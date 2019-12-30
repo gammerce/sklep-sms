@@ -406,6 +406,10 @@ class Heart
 
     public function getServersAmount()
     {
+        if (!$this->serversFetched) {
+            $this->fetchServers();
+        }
+
         return count($this->servers);
     }
 
