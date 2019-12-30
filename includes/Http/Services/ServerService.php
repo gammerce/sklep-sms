@@ -2,6 +2,7 @@
 namespace App\Http\Services;
 
 use App\Exceptions\ValidationException;
+use App\Repositories\PaymentPlatformRepository;
 use App\Services\Interfaces\IServiceAvailableOnServers;
 use App\System\Database;
 use App\System\Heart;
@@ -19,55 +20,44 @@ class ServerService
     /** @var Heart */
     private $heart;
 
-    public function __construct(Database $db, TranslationManager $translationManager, Heart $heart)
-    {
+    /** @var PaymentPlatformRepository */
+    private $paymentPlatformRepository;
+
+    public function __construct(
+        Database $db,
+        TranslationManager $translationManager,
+        Heart $heart,
+        PaymentPlatformRepository $paymentPlatformRepository
+    ) {
         $this->db = $db;
         $this->lang = $translationManager->user();
         $this->heart = $heart;
+        $this->paymentPlatformRepository = $paymentPlatformRepository;
     }
 
     public function validateBody(array $body)
     {
-        $name = $body['name'];
-        $ip = $body['ip'];
-        $port = $body['port'];
-        $smsService = $body['sms_service'];
+        $name = array_get($body, 'name');
+        $ip = array_get($body, 'ip');
+        $port = array_get($body, 'port');
+        $smsService = array_get($body, 'sms_service');
 
         $warnings = [];
 
-        // Nazwa
         if (!$name) {
-            // Nie podano nazwy serwera
             $warnings['name'][] = $this->lang->translate('field_no_empty');
         }
 
-        // IP
         if (!$ip) {
-            // Nie podano nazwy serwera
             $warnings['ip'][] = $this->lang->translate('field_no_empty');
         }
 
-        // Port
         if (!$port) {
-            // Nie podano nazwy serwera
             $warnings['port'][] = $this->lang->translate('field_no_empty');
         }
 
-        // Serwis płatności SMS
-        if ($smsService) {
-            $result = $this->db->query(
-                $this->db->prepare(
-                    "SELECT id " .
-                        "FROM `" .
-                        TABLE_PREFIX .
-                        "transaction_services` " .
-                        "WHERE `id` = '%s' AND sms = '1'",
-                    [$smsService]
-                )
-            );
-            if (!$this->db->numRows($result)) {
-                $warnings['sms_service'][] = $this->lang->translate('no_sms_service');
-            }
+        if ($smsService && $this->paymentPlatformRepository->get($smsService)) {
+            $warnings['sms_service'][] = $this->lang->translate('no_sms_service');
         }
 
         if ($warnings) {

@@ -89,7 +89,9 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                 $smsServices .= create_dom_element("option", $paymentPlatform->getName(), [
                     'value' => $paymentPlatform->getId(),
                     'selected' =>
-                        isset($server) && $paymentPlatform->getId() == $server->getSmsService() ? "selected" : "",
+                        isset($server) && $paymentPlatform->getId() == $server->getSmsService()
+                            ? "selected"
+                            : "",
                 ]);
             }
         }
