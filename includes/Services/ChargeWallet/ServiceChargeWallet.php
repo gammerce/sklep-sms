@@ -214,9 +214,9 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
 
     public function purchaseInfo($action, array $data)
     {
-        var_dump($data);
+        $cost = $data['cost'] ?: 0;
         $data['amount'] .= ' ' . $this->settings['currency'];
-        $data['cost'] = number_format($data['cost'] / 100, 2) . ' ' . $this->settings['currency'];
+        $data['cost'] = number_format($cost / 100, 2) . ' ' . $this->settings['currency'];
 
         if ($action == "web") {
             if ($data['payment'] == Purchase::METHOD_SMS) {
