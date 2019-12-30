@@ -64,7 +64,7 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
             'identifier'
         );
 
-        $email = if_strlen2($purchaseData->getEmail(true), $this->lang->translate('none'));
+        $email = $purchaseData->getEmail() ?: $this->lang->translate('none');
         $costMonthly =
             number_format(($purchaseData->getOrder('cost_daily') * 30) / 100, 2) .
             " " .
