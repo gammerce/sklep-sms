@@ -34,7 +34,7 @@ class PagePayment extends Page
         $purchaseData->user = $this->heart->getUser($purchaseData->user->getUid());
 
         if (!($purchaseData instanceof Purchase)) {
-            return $this->lang->translate('error_occured');
+            return $this->lang->translate('error_occurred');
         }
 
         if (

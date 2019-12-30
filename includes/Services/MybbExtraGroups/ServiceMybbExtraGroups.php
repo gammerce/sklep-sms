@@ -253,7 +253,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                     json_encode($purchaseData->getPayment())
                 )
             );
-            die("Critical error occured");
+            die("Critical error occurred");
         }
 
         $this->userServiceAdd(

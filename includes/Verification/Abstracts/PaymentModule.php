@@ -2,7 +2,9 @@
 namespace App\Verification\Abstracts;
 
 use App\Exceptions\InvalidConfigException;
+use App\Models\PaymentPlatform;
 use App\Models\Tariff;
+use App\Repositories\PaymentPlatformRepository;
 use App\Requesting\Requester;
 use App\System\Database;
 use App\Translation\TranslationManager;
@@ -21,15 +23,11 @@ abstract class PaymentModule
     /** @var Translator */
     protected $langShop;
 
-    /** @var string */
-    private $name;
+    /** @var PaymentPlatformRepository */
+    protected $paymentPlatformRepository;
 
-    /**
-     * Data from columns: data & data_hidden
-     *
-     * @var array
-     */
-    private $data = [];
+    /** @var PaymentPlatform */
+    private $paymentPlatform;
 
     /** @var Tariff[] */
     private $tariffs = [];
@@ -38,28 +36,18 @@ abstract class PaymentModule
     private $areTariffsFetched = false;
 
     /** @var bool */
-    private $isDataFetched = false;
+    private $isPaymentPlatformFetched = false;
 
     public function __construct(
         Database $database,
         Requester $requester,
-        TranslationManager $translationManager
+        TranslationManager $translationManager,
+        PaymentPlatformRepository $paymentPlatformRepository
     ) {
         $this->db = $database;
         $this->requester = $requester;
         $this->langShop = $translationManager->shop();
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        if (!$this->isDataFetched) {
-            $this->fetchData();
-        }
-
-        return $this->name;
+        $this->paymentPlatformRepository = $paymentPlatformRepository;
     }
 
     /**
@@ -68,11 +56,13 @@ abstract class PaymentModule
      */
     public function getData($key = null)
     {
-        if (!$this->isDataFetched) {
-            $this->fetchData();
+        if (!$this->isPaymentPlatformFetched) {
+            $this->fetchPaymentPlatform();
         }
 
-        return $key ? array_get($this->data, $key) : $this->data;
+        $data = $this->paymentPlatform->getData();
+
+        return $key ? array_get($data, $key) : $data;
     }
 
     /**
@@ -159,40 +149,18 @@ abstract class PaymentModule
         $this->areTariffsFetched = true;
     }
 
-    private function fetchData()
+    private function fetchPaymentPlatform()
     {
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT `name`, `data`, `data_hidden`, `sms`, `transfer` " .
-                    "FROM `" .
-                    TABLE_PREFIX .
-                    "transaction_services` " .
-                    "WHERE `id` = '%s' ",
-                [$this->getModuleId()]
-            )
-        );
+        $paymentPlatform = $this->paymentPlatformRepository->get($this->getModuleId());
 
-        if (!$this->db->numRows($result)) {
+        if (!$paymentPlatform) {
             $className = get_class($this);
             throw new InvalidConfigException(
-                "An error occured in class: [$className] constructor. There is no [{$this->getModuleId()}] payment service in database."
+                "An error occurred in class: [$className] constructor. There is no [{$this->getModuleId()}] payment service in database."
             );
         }
 
-        $row = $this->db->fetchArrayAssoc($result);
-
-        $this->name = $row['name'];
-
-        $data = (array) json_decode($row['data'], true);
-        foreach ($data as $key => $value) {
-            $this->data[$key] = $value;
-        }
-
-        $dataHidden = (array) json_decode($row['data_hidden'], true);
-        foreach ($dataHidden as $key => $value) {
-            $this->data[$key] = $value;
-        }
-
-        $this->isDataFetched = true;
+        $this->paymentPlatform = $paymentPlatform;
+        $this->isPaymentPlatformFetched = true;
     }
 }
