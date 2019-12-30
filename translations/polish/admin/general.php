@@ -48,7 +48,6 @@ return [
     'confirm' => 'Zatwierdź',
     'confirm_remove_server' => 'Na pewno chcesz usunąć serwer\n{0}?',
     'create_price_duplication' => 'Istnieje już cena dla tego serwera i tej taryfy.',
-    'create_service_duplication' => 'Istnieje już serwis o takim ID.',
     'cron_page_start' => 'Cron przy każdym uruchomieniu strony',
     'currency' => 'Waluta',
     'date_format' => 'Format daty',
@@ -63,7 +62,7 @@ return [
     'delete_server_constraint_fails' =>
         'Nie można usunąć tego serwera, ponieważ wciąz istnieją powiązane z nim usługi.',
     'delete_service' => 'Usługa została prawidłowo usunięta.',
-    'delete_service_er_row_is_referenced_2' =>
+    'delete_service_er_row_is_referenced' =>
         'Nie można usunąć tej usługi, ponieważ wciąz istnieją usługi graczy.',
     'delete_sms_code' => 'Kod SMS został prawidłowo usunięty.',
     'delete_tariff' => 'Taryfa została prawidłowo usunięta.',
