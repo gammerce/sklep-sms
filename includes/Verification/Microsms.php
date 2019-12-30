@@ -57,11 +57,11 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
         $this->settings = $settings;
         $this->url = $urlGenerator;
 
-        $this->userId = $this->data['api'];
-        $this->smsCode = $this->data['sms_text'];
-        $this->serviceId = $this->data['service_id'];
-        $this->shopId = $this->data['shop_id'];
-        $this->hash = $this->data['hash'];
+        $this->userId = $this->getData('api');
+        $this->smsCode = $this->getData('sms_text');
+        $this->serviceId = $this->getData('service_id');
+        $this->shopId = $this->getData('shop_id');
+        $this->hash = $this->getData('hash');
     }
 
     public function verifySms($returnCode, $number)

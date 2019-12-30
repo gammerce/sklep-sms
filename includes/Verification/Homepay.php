@@ -19,7 +19,7 @@ class Homepay extends PaymentModule implements SupportSms
                 '?usr_id=' .
                 urlencode($this->getApi()) .
                 '&acc_id=' .
-                urlencode($this->data[$number]) .
+                urlencode($this->getData($number)) .
                 '&code=' .
                 urlencode($returnCode),
             'r'
@@ -45,11 +45,11 @@ class Homepay extends PaymentModule implements SupportSms
 
     public function getSmsCode()
     {
-        return $this->data['sms_text'];
+        return $this->getData('sms_text');
     }
 
     private function getApi()
     {
-        return $this->data['api'];
+        return $this->getData('api');
     }
 }

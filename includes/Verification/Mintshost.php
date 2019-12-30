@@ -49,11 +49,11 @@ class Mintshost extends PaymentModule implements SupportSms
 
     public function getSmsCode()
     {
-        return $this->data['sms_text'];
+        return $this->getData('sms_text');
     }
 
     private function getEmail()
     {
-        return $this->data['email'];
+        return $this->getData('email');
     }
 }

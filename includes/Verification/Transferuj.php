@@ -42,8 +42,8 @@ class Transferuj extends PaymentModule implements SupportTransfer
 
         $this->settings = $settings;
         $this->url = $urlGenerator;
-        $this->key = $this->data['key'];
-        $this->accountId = $this->data['account_id'];
+        $this->key = $this->getData('key');
+        $this->accountId = $this->getData('account_id');
     }
 
     public function prepareTransfer(Purchase $purchase, $dataFilename)
@@ -111,7 +111,8 @@ class Transferuj extends PaymentModule implements SupportTransfer
             return false;
         }
 
-        return $md5sum ===
-            md5($this->accountId . $transactionId . $transactionAmount . $crc . $this->key);
+        $sign = md5($this->accountId . $transactionId . $transactionAmount . $crc . $this->key);
+
+        return $md5sum === $sign;
     }
 }

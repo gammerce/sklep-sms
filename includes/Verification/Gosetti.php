@@ -84,7 +84,7 @@ class Gosetti extends PaymentModule implements SupportSms
 
     private function getAccountId()
     {
-        return $this->data['account_id'];
+        return $this->getData('account_id');
     }
 
     private function tryToFetchSmsData()
@@ -99,7 +99,7 @@ class Gosetti extends PaymentModule implements SupportSms
         $response = $this->requester->get('https://gosetti.pl/Api/SmsApiV2GetData.php');
         $data = $response ? $response->json() : null;
 
-        // CSSetti dostarcza w feedzie kod sms
+        // GOSetti dostarcza w feedzie kod sms
         $this->smsCode = $data['Code'];
 
         foreach ($data['Numbers'] as $numberData) {

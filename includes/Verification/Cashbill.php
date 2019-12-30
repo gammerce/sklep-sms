@@ -115,19 +115,20 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
      */
     public function checkSign($data, $key, $sign)
     {
-        return md5(
+        $calculatedSign = md5(
             $data['service'] .
                 $data['orderid'] .
                 $data['amount'] .
                 $data['userdata'] .
                 $data['status'] .
                 $key
-        ) == $sign;
+        );
+        return $calculatedSign == $sign;
     }
 
     public function getSmsCode()
     {
-        return $this->data['sms_text'];
+        return $this->getData('sms_text');
     }
 
     /**
@@ -135,7 +136,7 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
      */
     public function getKey()
     {
-        return $this->data['key'];
+        return $this->getData('key');
     }
 
     /**
@@ -143,6 +144,6 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
      */
     public function getService()
     {
-        return $this->data['service'];
+        return $this->getData('service');
     }
 }

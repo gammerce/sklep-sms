@@ -84,7 +84,7 @@ class Cssetti extends PaymentModule implements SupportSms
 
     private function getAccountId()
     {
-        return $this->data['account_id'];
+        return $this->getData('account_id');
     }
 
     private function tryToFetchSmsData()

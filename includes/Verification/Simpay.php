@@ -57,21 +57,21 @@ class Simpay extends PaymentModule implements SupportSms
 
     public function getSmsCode()
     {
-        return $this->data['sms_text'];
+        return $this->getData('sms_text');
     }
 
     private function getKey()
     {
-        return $this->data['key'];
+        return $this->getData('key');
     }
 
     private function getSecret()
     {
-        return $this->data['secret'];
+        return $this->getData('secret');
     }
 
     private function getServiceId()
     {
-        return $this->data['service_id'];
+        return $this->getData('service_id');
     }
 }

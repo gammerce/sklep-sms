@@ -14,7 +14,7 @@ use App\Verification\Results\SmsSuccessResult;
 class Pukawka extends PaymentModule implements SupportSms
 {
     const MODULE_ID = "pukawka";
-    private $stawki = [];
+    private $rates = [];
 
     public function verifySms($returnCode, $number)
     {
@@ -43,7 +43,7 @@ class Pukawka extends PaymentModule implements SupportSms
 
             if ($body['status'] == 'ok') {
                 $kwota = str_replace(',', '.', $body['kwota']);
-                foreach ($this->stawki as $s) {
+                foreach ($this->rates as $s) {
                     if (str_replace(',', '.', $s['wartosc']) != $kwota) {
                         continue;
                     }
@@ -69,27 +69,27 @@ class Pukawka extends PaymentModule implements SupportSms
 
     public function getSmsCode()
     {
-        return $this->data['sms_text'];
+        return $this->getData('sms_text');
     }
 
     private function getApi()
     {
-        return $this->data['api'];
+        return $this->getData('api');
     }
 
     private function tryToFetch()
     {
-        if (empty($this->stawki)) {
-            $this->fetchStawki();
+        if (empty($this->rates)) {
+            $this->fetchRates();
         }
     }
 
-    private function fetchStawki()
+    private function fetchRates()
     {
         $response = $this->requester->get('https://admin.pukawka.pl/api/', [
             'keyapi' => $this->getApi(),
             'type' => 'sms_table',
         ]);
-        $this->stawki = $response ? $response->json() : null;
+        $this->rates = $response ? $response->json() : null;
     }
 }
