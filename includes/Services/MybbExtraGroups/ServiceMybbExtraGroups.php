@@ -285,18 +285,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         );
     }
 
-    /**
-     * Metoda formatuje i zwraca informacje o zakupionej usłudze, zaraz po jej zakupie.
-     *
-     * @param string $action Do czego zostaną te dane użyte ( email, web, payment_log )
-     *                            email - wiadomość wysłana na maila o zakupie usługi
-     *                            web - informacje wyświetlone na stronie WWW zaraz po zakupie
-     *                            payment_log - wpis w historii płatności
-     * @param array  $data Dane o zakupie usługi, zwrócone przez zapytanie zdefiniowane w global.php
-     *
-     * @return string|array        Informacje o zakupionej usłudze
-     */
-    public function purchaseInfo($action, $data)
+    public function purchaseInfo($action, array $data)
     {
         $username = $data['auth_data'];
         $amount =

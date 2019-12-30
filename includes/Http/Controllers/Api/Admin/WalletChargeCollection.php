@@ -10,7 +10,7 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
-class WalletChargeResource
+class WalletChargeCollection
 {
     public function post(
         $userId,
@@ -41,23 +41,21 @@ class WalletChargeResource
         // Wartość Doładowania
         if (!$amount) {
             $warnings['amount'][] = $lang->translate('no_charge_value');
-        } else {
-            if (!is_numeric($amount)) {
-                $warnings['amount'][] = $lang->translate('charge_number');
-            }
+        } elseif (!is_numeric($amount)) {
+            $warnings['amount'][] = $lang->translate('charge_number');
         }
 
         if ($warnings) {
             throw new ValidationException($warnings);
         }
 
-        // Zmiana wartości amount, aby stan konta nie zszedł poniżej zera
-        $amount = max($amount, -$editedUser->getWallet());
-
         $serviceModule = $heart->getServiceModule("charge_wallet");
         if ($serviceModule === null) {
             return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
         }
+
+        // Zmiana wartości amount, aby stan konta nie zszedł poniżej zera
+        $amount = max($amount, -$editedUser->getWallet());
 
         // Dodawanie informacji o płatności do bazy
         $paymentId = pay_by_admin($user);
