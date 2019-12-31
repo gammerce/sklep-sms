@@ -59,6 +59,7 @@ class Factory
                 'name' => $this->faker->word,
                 'ip' => $this->faker->ipv4,
                 'port' => $this->faker->numberBetween(1000, 20000),
+                'sms_platform' => '',
             ],
             $attributes
         );
@@ -66,7 +67,8 @@ class Factory
         return $this->serverRepository->create(
             $attributes['name'],
             $attributes['ip'],
-            $attributes['port']
+            $attributes['port'],
+            $attributes['sms_platform']
         );
     }
 

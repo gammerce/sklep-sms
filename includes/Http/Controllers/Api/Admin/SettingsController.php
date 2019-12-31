@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
 use App\Repositories\PaymentPlatformRepository;
+use App\Repositories\SettingsRepository;
 use App\System\Application;
 use App\System\Auth;
-use App\System\Database;
 use App\System\Heart;
 use App\System\Path;
 use App\System\Settings;
@@ -19,13 +19,13 @@ class SettingsController
 {
     public function put(
         Request $request,
-        Database $db,
         TranslationManager $translationManager,
         PaymentPlatformRepository $paymentPlatformRepository,
         Heart $heart,
         Path $path,
         Auth $auth,
         Settings $settings,
+        SettingsRepository $settingsRepository,
         Application $app
     ) {
         $lang = $translationManager->user();
@@ -119,71 +119,38 @@ class SettingsController
             throw new ValidationException($warnings);
         }
 
-        $setLicenseToken = "";
-        $keyLicenseToken = "";
+        $values = [
+            'sms_service' => $smsPaymentPlatformId,
+            'transfer_service' => $transferPaymentPlatformId,
+            'currency' => $currency,
+            'shop_name' => $shopName,
+            'shop_url' => $shopUrl,
+            'sender_email' => $senderEmail,
+            'sender_email_name' => $senderEmailName,
+            'signature' => $signature,
+            'vat' =>  $vat,
+            'contact' => $contact,
+            'row_limit' => $rowLimit,
+            'cron_each_visit' => $cron,
+            'user_edit_service' => $userEditService,
+            'theme' => $theme,
+            'language' => $language,
+            'date_format' => $dateFormat,
+            'delete_logs' => $deleteLogs,
+            'google_analytics' => $googleAnalytics,
+            'gadugadu' => $gadugadu,
+        ];
+
         if ($licenseToken) {
-            $setLicenseToken = $db->prepare(
-                "WHEN 'license_password' THEN '%s' WHEN 'license_login' THEN 'license' ",
-                [$licenseToken]
-            );
-            $keyLicenseToken = ",'license_password', 'license_login'";
+            $values = [
+                'license_password' => $licenseToken,
+                'license_login' => 'license',
+            ];
         }
 
-        $db->query(
-            $db->prepare(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "settings` " .
-                    "SET value = CASE `key` " .
-                    "WHEN 'sms_service' THEN '%s' " .
-                    "WHEN 'transfer_service' THEN '%s' " .
-                    "WHEN 'currency' THEN '%s' " .
-                    "WHEN 'shop_name' THEN '%s' " .
-                    "WHEN 'shop_url' THEN '%s' " .
-                    "WHEN 'sender_email' THEN '%s' " .
-                    "WHEN 'sender_email_name' THEN '%s' " .
-                    "WHEN 'signature' THEN '%s' " .
-                    "WHEN 'vat' THEN '%.2f' " .
-                    "WHEN 'contact' THEN '%s' " .
-                    "WHEN 'row_limit' THEN '%s' " .
-                    "WHEN 'cron_each_visit' THEN '%d' " .
-                    "WHEN 'user_edit_service' THEN '%d' " .
-                    "WHEN 'theme' THEN '%s' " .
-                    "WHEN 'language' THEN '%s' " .
-                    "WHEN 'date_format' THEN '%s' " .
-                    "WHEN 'delete_logs' THEN '%d' " .
-                    "WHEN 'google_analytics' THEN '%s' " .
-                    "WHEN 'gadugadu' THEN '%s' " .
-                    $setLicenseToken .
-                    "END " .
-                    "WHERE `key` IN ( 'sms_service','transfer_service','currency','shop_name','shop_url','sender_email','sender_email_name','signature','vat'," .
-                    "'contact','row_limit','cron_each_visit','user_edit_service','theme','language','date_format','delete_logs'," .
-                    "'google_analytics','gadugadu'{$keyLicenseToken} )",
-                [
-                    $smsPaymentPlatformId,
-                    $transferPaymentPlatformId,
-                    $currency,
-                    $shopName,
-                    $shopUrl,
-                    $senderEmail,
-                    $senderEmailName,
-                    $signature,
-                    $vat,
-                    $contact,
-                    $rowLimit,
-                    $cron,
-                    $userEditService,
-                    $theme,
-                    $language,
-                    $dateFormat,
-                    $deleteLogs,
-                    $googleAnalytics,
-                    $gadugadu,
-                ]
-            )
-        );
+        $updated = $settingsRepository->update($values);
 
-        if ($db->affectedRows()) {
+        if ($updated) {
             log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('settings_admin_edit'),

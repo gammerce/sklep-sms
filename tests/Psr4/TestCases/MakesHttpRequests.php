@@ -39,5 +39,10 @@ trait MakesHttpRequests
         return $this->call('PUT', $uri, $query, $body, $headers);
     }
 
+    protected function delete($uri, array $query = [], array $headers = [])
+    {
+        return $this->call('DELETE', $uri, $query, [], $headers);
+    }
+
     abstract protected function prepareUrlForRequest($uri);
 }

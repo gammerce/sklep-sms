@@ -3,6 +3,7 @@ namespace Tests\Feature\Http\Api\Admin;
 
 use App\Models\PaymentPlatform;
 use App\Repositories\PaymentPlatformRepository;
+use App\Repositories\SettingsRepository;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class PaymentPlatformResourceTest extends HttpTestCase
@@ -63,5 +64,61 @@ class PaymentPlatformResourceTest extends HttpTestCase
         $this->assertSame("warnings", $json["return_id"]);
     }
 
-    // TODO Test delete
+    /** @test */
+    public function deletes_payment_platform()
+    {
+        // given
+
+
+        // when
+        $response = $this->delete("/api/admin/payment_platforms/{$this->paymentPlatform->getId()}");
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("ok", $json["return_id"]);
+        $freshPaymentPlatform = $this->paymentPlatformRepository->get($this->paymentPlatform->getId());
+        $this->assertNull($freshPaymentPlatform);
+    }
+
+    /** @test */
+    public function cannot_delete_if_used_in_settings()
+    {
+        // given
+        /** @var SettingsRepository $settingsRepository */
+        $settingsRepository = $this->app->make(SettingsRepository::class);
+        $settingsRepository->update([
+            "sms_service" => $this->paymentPlatform->getId(),
+        ]);
+
+        // when
+        $response = $this->delete("/api/admin/payment_platforms/{$this->paymentPlatform->getId()}");
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("warnings", $json["return_id"]);
+        $freshPaymentPlatform = $this->paymentPlatformRepository->get($this->paymentPlatform->getId());
+        $this->assertNotNull($freshPaymentPlatform);
+
+    }
+
+    /** @test */
+    public function cannot_delete_if_server_uses_it()
+    {
+        // given
+        $this->factory->server([
+            "sms_platform" => $this->paymentPlatform->getId(),
+        ]);
+
+        // when
+        $response = $this->delete("/api/admin/payment_platforms/{$this->paymentPlatform->getId()}");
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("warnings", $json["return_id"]);
+        $freshPaymentPlatform = $this->paymentPlatformRepository->get($this->paymentPlatform->getId());
+        $this->assertNotNull($freshPaymentPlatform);
+    }
 }
