@@ -19,6 +19,7 @@ class PaymentPlatformCollection
         Heart $heart
     ) {
         $lang = $translationManager->user();
+        $langShop = $translationManager->shop();
         $user = $auth->user();
         $name = $request->request->get("name");
         $module = $request->request->get("module");
@@ -37,11 +38,15 @@ class PaymentPlatformCollection
         $paymentPlatform = $repository->create($name, $module, $data);
 
         log_to_db(
-            "Admin {$user->getUsername()}({$user->getUid()}) dodał platformę płatnosci. ID: " .
+            $langShop->t(
+                'log_payment_platform_added',
+                $user->getUsername(),
+                $user->getUid(),
                 $paymentPlatform->getId()
+            )
         );
 
-        return new ApiResponse('ok', $lang->translate('payment_platform_add'), true, [
+        return new ApiResponse('ok', $lang->translate('payment_platform_added'), true, [
             'data' => [
                 'id' => $paymentPlatform->getId(),
             ],

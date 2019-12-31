@@ -128,7 +128,7 @@ class SettingsController
             'sender_email' => $senderEmail,
             'sender_email_name' => $senderEmailName,
             'signature' => $signature,
-            'vat' =>  $vat,
+            'vat' => $vat,
             'contact' => $contact,
             'row_limit' => $rowLimit,
             'cron_each_visit' => $cron,

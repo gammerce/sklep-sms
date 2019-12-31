@@ -110,6 +110,8 @@ return [
     'license_soon_expire' =>
         'License expires in: {1} You can prolong it just now: <a href="https://sklep.sklep-sms.pl/page/purchase?service=ss_license_plong" target="_blank">Prolong License</a>',
     'lines_per_page' => 'Quantity of lines per page',
+    'log_payment_platform_added' => "Admin {1}({2}) has added payment platform. ID: {3}",
+    'log_payment_platform_deleted' => "Admin {1}({2}) has deleted payment platform. ID: {3}",
     'logs' => 'Logs',
     'long_service_id' => 'Supplied service ID is too long. Maximum 16 chars.',
     'main' => 'Main',
@@ -149,7 +151,8 @@ return [
     'order' => 'Order',
     'other' => 'Other',
     'payment_admin' => 'Payment',
-    'payment_platform_add' => "Payment platform has been added successfully.",
+    'payment_platform_added' => "Payment platform has been added successfully.",
+    'payment_platform_deleted' => "Payment platform has been deleted.",
     'payment_platforms' => 'Payment platforms',
     'payments' => 'Payments',
     'payments_admin' => 'Admin payments',

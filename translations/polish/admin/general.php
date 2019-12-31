@@ -111,6 +111,8 @@ return [
     'license_soon_expire' =>
         'Licencja wygaśnie za: {1} Możesz ją przedłużyć już teraz: <a href="https://sklep.sklep-sms.pl/page/purchase?service=ss_license_plong" target="_blank">Przedłuż Licencję</a>.',
     'lines_per_page' => 'Ilość wierszy na stronę',
+    'log_payment_platform_added' => "Admin {1}({2}) dodał platformę płatności. ID: {3}",
+    'log_payment_platform_deleted' => "Admin {1}({2}) usunął platformę płatności. ID: {3}",
     'logs' => 'Logi',
     'long_service_id' => 'Wprowadzone ID usługi jest zbyt długie. Maksymalnie 16 znaków.',
     'main' => 'Główne',
@@ -151,7 +153,8 @@ return [
     'order' => 'Kolejność',
     'other' => 'Inne',
     'payment_admin' => 'Płatność',
-    'payment_platform_add' => "Platforma płatności została prawidłowo dodana.",
+    'payment_platform_added' => "Platforma płatności została prawidłowo dodana.",
+    'payment_platform_deleted' => "Platforma płatności została usunięta.",
     'payment_platforms' => 'Platformy płatności',
     'payments' => 'Płatności',
     'payments_admin' => 'Płatności admina',

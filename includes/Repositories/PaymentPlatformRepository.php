@@ -63,6 +63,18 @@ class PaymentPlatformRepository
         return null;
     }
 
+    public function delete($id)
+    {
+        $this->db->query(
+            $this->db->prepare(
+                "DELETE FROM `" . TABLE_PREFIX . "payment_platforms` " . "WHERE `id` = '%d'",
+                [$id]
+            )
+        );
+
+        return !!$this->db->affectedRows();
+    }
+
     public function mapToModel(array $data)
     {
         return new PaymentPlatform(

@@ -77,6 +77,17 @@ class ServerRepository
         );
     }
 
+    public function delete($id)
+    {
+        $this->db->query(
+            $this->db->prepare("DELETE FROM `" . TABLE_PREFIX . "servers` " . "WHERE `id` = '%d'", [
+                $id,
+            ])
+        );
+
+        return !!$this->db->affectedRows();
+    }
+
     private function mapToModel(array $data)
     {
         return new Server(

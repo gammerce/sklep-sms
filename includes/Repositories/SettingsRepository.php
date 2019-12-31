@@ -29,14 +29,14 @@ class SettingsRepository
 
         $this->db->query(
             "UPDATE `" .
-            TABLE_PREFIX .
-            "settings` " .
-            "SET value = CASE `key` " .
-            implode(" ", $conditions) .
-            "END " .
-            "WHERE `key` IN ( " .
-            implode(" ", $keys) .
-            " )"
+                TABLE_PREFIX .
+                "settings` " .
+                "SET value = CASE `key` " .
+                implode(" ", $conditions) .
+                "END " .
+                "WHERE `key` IN ( " .
+                implode(" ", $keys) .
+                " )"
         );
 
         return !!$this->db->affectedRows();

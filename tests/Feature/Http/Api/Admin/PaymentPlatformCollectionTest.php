@@ -29,7 +29,7 @@ class PaymentPlatformCollectionTest extends HttpTestCase
             "name" => $name,
             "module" => $moduleId,
             "data" => [
-                "account_id" => "example"
+                "account_id" => "example",
             ],
         ]);
 

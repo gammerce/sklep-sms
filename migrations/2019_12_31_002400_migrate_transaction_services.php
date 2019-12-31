@@ -101,5 +101,6 @@ class MigrateTransactionServices extends Migration
         }
 
         // TODO Add server's sms platform foreign key
+        // TODO Modify database schema, remove transaction_services
     }
 }

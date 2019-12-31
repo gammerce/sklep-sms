@@ -32,7 +32,7 @@ class PaymentPlatformResourceTest extends HttpTestCase
         $response = $this->put("/api/admin/payment_platforms/{$this->paymentPlatform->getId()}", [
             "name" => $name,
             "data" => [
-                "account_id" => "example"
+                "account_id" => "example",
             ],
         ]);
 
@@ -40,7 +40,9 @@ class PaymentPlatformResourceTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertSame("ok", $json["return_id"]);
-        $freshPaymentPlatform = $this->paymentPlatformRepository->get($this->paymentPlatform->getId());
+        $freshPaymentPlatform = $this->paymentPlatformRepository->get(
+            $this->paymentPlatform->getId()
+        );
         $this->assertNotNull($freshPaymentPlatform);
         $this->assertSame($name, $freshPaymentPlatform->getName());
         $this->assertSame("example", $freshPaymentPlatform->getData()["account_id"]);
@@ -67,9 +69,6 @@ class PaymentPlatformResourceTest extends HttpTestCase
     /** @test */
     public function deletes_payment_platform()
     {
-        // given
-
-
         // when
         $response = $this->delete("/api/admin/payment_platforms/{$this->paymentPlatform->getId()}");
 
@@ -77,7 +76,9 @@ class PaymentPlatformResourceTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertSame("ok", $json["return_id"]);
-        $freshPaymentPlatform = $this->paymentPlatformRepository->get($this->paymentPlatform->getId());
+        $freshPaymentPlatform = $this->paymentPlatformRepository->get(
+            $this->paymentPlatform->getId()
+        );
         $this->assertNull($freshPaymentPlatform);
     }
 
@@ -98,9 +99,10 @@ class PaymentPlatformResourceTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertSame("warnings", $json["return_id"]);
-        $freshPaymentPlatform = $this->paymentPlatformRepository->get($this->paymentPlatform->getId());
+        $freshPaymentPlatform = $this->paymentPlatformRepository->get(
+            $this->paymentPlatform->getId()
+        );
         $this->assertNotNull($freshPaymentPlatform);
-
     }
 
     /** @test */
@@ -118,7 +120,9 @@ class PaymentPlatformResourceTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertSame("warnings", $json["return_id"]);
-        $freshPaymentPlatform = $this->paymentPlatformRepository->get($this->paymentPlatform->getId());
+        $freshPaymentPlatform = $this->paymentPlatformRepository->get(
+            $this->paymentPlatform->getId()
+        );
         $this->assertNotNull($freshPaymentPlatform);
     }
 }
