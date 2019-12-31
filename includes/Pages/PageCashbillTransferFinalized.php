@@ -1,6 +1,7 @@
 <?php
 namespace App\Pages;
 
+use App\Exceptions\InvalidConfigException;
 use App\Models\Purchase;
 use App\Verification\Cashbill;
 
@@ -17,10 +18,15 @@ class PageCashbillTransferFinalized extends Page
 
     protected function content(array $query, array $body)
     {
-        /** @var Cashbill $paymentModule */
         $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
             $this->settings['transfer_platform']
         );
+
+        if (!($paymentModule instanceof Cashbill)) {
+            throw new InvalidConfigException(
+                "Invalid payment platform in shop settings [{$this->settings['transfer_platform']}]."
+            );
+        }
 
         if (
             $paymentModule->checkSign($query, $paymentModule->getKey(), $query['sign']) &&
