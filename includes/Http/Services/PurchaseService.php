@@ -3,6 +3,7 @@ namespace App\Http\Services;
 
 use App\Models\Purchase;
 use App\Payment\PaymentService;
+use App\Repositories\PaymentPlatformRepository;
 use App\Repositories\UserRepository;
 use App\Services\Service;
 use App\System\Auth;
@@ -27,18 +28,23 @@ class PurchaseService
     /** * @var Auth */
     private $auth;
 
+    /** @var PaymentPlatformRepository */
+    private $paymentPlatformRepository;
+
     public function __construct(
         TranslationManager $translationManager,
         PaymentService $paymentService,
         Heart $heart,
         Auth $auth,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        PaymentPlatformRepository $paymentPlatformRepository
     ) {
         $this->lang = $translationManager->user();
         $this->paymentService = $paymentService;
         $this->userRepository = $userRepository;
         $this->heart = $heart;
         $this->auth = $auth;
+        $this->paymentPlatformRepository = $paymentPlatformRepository;
     }
 
     public function purchase(Service $serviceModule, array $body)
@@ -69,18 +75,17 @@ class PurchaseService
             'passwordr' => $password,
         ]);
 
-        // TODO Refactor sms_service usage
         $purchase->setPayment([
             'method' => $method,
             'sms_code' => $smsCode,
-            'sms_service' => $paymentPlatformId,
+            'sms_platform' => $paymentPlatformId,
         ]);
 
         $purchase->setTariff($this->heart->getTariff($tariff));
 
-        if ($purchase->getPayment('sms_service')) {
-            $paymentModule = $this->heart->getPaymentModuleOrFail(
-                $purchase->getPayment('sms_service')
+        if ($purchase->getPayment('sms_platform')) {
+            $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
+                $purchase->getPayment('sms_platform')
             );
             $purchase->setTariff($paymentModule->getTariffById($tariff));
         }
@@ -114,7 +119,7 @@ class PurchaseService
         $purchase->setPayment([
             'method' => $method,
             'sms_code' => $smsCode,
-            'sms_service' => $paymentPlatformId,
+            'sms_platform' => $paymentPlatformId,
         ]);
 
         $returnPayment = $this->paymentService->makePayment($purchase);

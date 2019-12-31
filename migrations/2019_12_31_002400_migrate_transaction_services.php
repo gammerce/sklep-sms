@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\SqlQueryException;
 use App\Install\Migration;
 use App\Install\MigrationFiles;
 use App\Models\PaymentPlatform;
@@ -35,8 +36,10 @@ class MigrateTransactionServices extends Migration
     public function up()
     {
         $paymentPlatforms = [];
-
-        $requiredPlatforms = [$this->settings["sms_service"], $this->settings["transfer_service"]];
+        $requiredPlatforms = [
+            $this->settings["sms_platform"],
+            $this->settings["transfer_platform"],
+        ];
 
         foreach ($this->serverRepository->all() as $server) {
             $requiredPlatforms[] = $server->getSmsPlatform();
@@ -68,39 +71,61 @@ class MigrateTransactionServices extends Migration
 
         /** @var PaymentPlatform|null $newSmsPlatform */
         $newSmsPlatform = array_get($paymentPlatforms, $this->settings["sms_service"]);
-        if ($newSmsPlatform) {
-            $this->db->query(
-                $this->db->prepare(
-                    "UPDATE `ss_settings` SET `value` = '%d' WHERE `key` = 'sms_service'",
-                    [$newSmsPlatform->getId()]
-                )
-            );
-        }
+        $newSmsPlatformId = $newSmsPlatform ? $newSmsPlatform->getId() : '';
+        $this->db->query(
+            $this->db->prepare(
+                "UPDATE `ss_settings` SET `value` = '%d' WHERE `key` = 'sms_service'",
+                [$newSmsPlatformId]
+            )
+        );
 
         /** @var PaymentPlatform|null $newTransferPlatform */
         $newTransferPlatform = array_get($paymentPlatforms, $this->settings["transfer_service"]);
-        if ($newTransferPlatform) {
+        $newTransferPlatformId = $newTransferPlatform ? $newTransferPlatform->getId() : '';
+        $this->db->query(
+            $this->db->prepare(
+                "UPDATE `ss_settings` SET `value` = '%d' WHERE `key` = 'transfer_service'",
+                [$newTransferPlatformId]
+            )
+        );
+
+        $result = $this->db->query("SELECT * FROM ss_servers");
+        while ($row = $this->db->fetchArrayAssoc($result)) {
+            /** @var PaymentPlatform $smsPlatform */
+            $smsPlatform = array_get($paymentPlatforms, $row["sms_service"]);
+            $smsPlatformId = $smsPlatform ? $smsPlatform->getId() : null;
+
+            // TODO Fix issue with null value. It would be nice to use PDO
             $this->db->query(
                 $this->db->prepare(
-                    "UPDATE `ss_settings` SET `value` = '%d' WHERE `key` = 'transfer_service'",
-                    [$newTransferPlatform->getId()]
+                    "UPDATE `ss_servers` SET `sms_service` = '%d' WHERE `id` = '%d'",
+                    [$smsPlatformId, $row["id"]]
                 )
             );
         }
 
-        foreach ($this->serverRepository->all() as $server) {
-            /** @var PaymentPlatform $smsPlatform */
-            $smsPlatform = array_get($paymentPlatforms, $server->getSmsPlatform());
-            $this->serverRepository->update(
-                $server->getId(),
-                $server->getName(),
-                $server->getIp(),
-                $server->getPort(),
-                $smsPlatform ? $smsPlatform->getId() : ''
+        $this->executeQueries([
+            "UPDATE `ss_settings` SET `key` = 'sms_platform' WHERE `key` = 'sms_service'",
+            "UPDATE `ss_settings` SET `key` = 'transfer_platform' WHERE `key` = 'transfer_service'",
+        ]);
+
+        try {
+            $this->db->query(
+                "ALTER TABLE `ss_servers` CHANGE `sms_service` `sms_platform` INT(11)"
             );
+        } catch (SqlQueryException $e) {
+            // TODO Silent fail in case of specified error id
         }
 
-        // TODO Add server's sms platform foreign key
+        try {
+            $this->db->query(
+                "ALTER TABLE `ss_servers` ADD CONSTRAINT `ss_servers_sms_platform` FOREIGN KEY (`sms_platform`) REFERENCES `ss_payment_platforms` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE"
+            );
+        } catch (SqlQueryException $e) {
+            // TODO Silent fail in case of specified error id
+        }
+
         // TODO Modify database schema, remove transaction_services
+        // TODO Do not allow default payment platform if not set
     }
 }

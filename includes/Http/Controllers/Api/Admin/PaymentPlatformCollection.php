@@ -24,12 +24,10 @@ class PaymentPlatformCollection
         $langShop = $translationManager->shop();
         $user = $auth->user();
         $name = $request->request->get("name");
-        $module = $request->request->get("module");
+        $moduleId = $request->request->get("module");
         $data = $request->request->get("data");
 
-        $paymentModule = $heart->getPaymentModule($module);
-
-        if (!$paymentModule) {
+        if (!$heart->hasPaymentModule($moduleId)) {
             throw new ValidationException([
                 "module" => "Invalid module ID",
             ]);
@@ -37,7 +35,7 @@ class PaymentPlatformCollection
 
         // TODO Validate data
 
-        $paymentPlatform = $repository->create($name, $module, $data);
+        $paymentPlatform = $repository->create($name, $moduleId, $data);
 
         log_to_db(
             $langShop->t(

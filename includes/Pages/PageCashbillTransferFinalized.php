@@ -18,7 +18,9 @@ class PageCashbillTransferFinalized extends Page
     protected function content(array $query, array $body)
     {
         /** @var Cashbill $paymentModule */
-        $paymentModule = $this->heart->getPaymentModuleOrFail($this->settings['transfer_service']);
+        $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
+            $this->settings['transfer_platform']
+        );
 
         if (
             $paymentModule->checkSign($query, $paymentModule->getKey(), $query['sign']) &&

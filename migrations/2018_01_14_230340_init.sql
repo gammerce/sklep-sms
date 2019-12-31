@@ -215,9 +215,7 @@ CREATE TABLE IF NOT EXISTS `ss_servers` (
   `name`        VARCHAR(64)      NOT NULL DEFAULT '',
   `ip`          VARCHAR(16)      NOT NULL DEFAULT '',
   `port`        VARCHAR(8)       NOT NULL DEFAULT '',
-  `sms_service` VARCHAR(32)
-                CHARACTER SET utf8
-                COLLATE utf8_bin NOT NULL,
+  `sms_platform` INT(11),
   `type`        VARCHAR(16)      NOT NULL DEFAULT '',
   `version`     VARCHAR(8)       NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
@@ -670,10 +668,10 @@ INSERT INTO `ss_settings` (`key`, `value`) VALUES
   ('sender_email_name', ''),
   ('shop_url', ''),
   ('signature', ''),
-  ('sms_service', ''),
+  ('sms_platform', ''),
   ('theme', 'default'),
   ('timezone', 'Europe/Warsaw'),
-  ('transfer_service', ''),
+  ('transfer_platform', ''),
   ('user_edit_service', '1'),
   ('vat', '1.23'),
   ('gadugadu', '');
@@ -701,6 +699,11 @@ ALTER TABLE `ss_payment_admin`
 ALTER TABLE `ss_pricelist`
   ADD CONSTRAINT `ss_pricelist_ibfk_1` FOREIGN KEY (`service`) REFERENCES `ss_services` (`id`)
   ON DELETE CASCADE
+  ON UPDATE CASCADE;
+
+ALTER TABLE `ss_servers`
+  ADD CONSTRAINT `ss_servers_sms_platform` FOREIGN KEY (`sms_platform`) REFERENCES `ss_payment_platforms` (`id`)
+  ON DELETE NO ACTION
   ON UPDATE CASCADE;
 
 ALTER TABLE `ss_servers_services`

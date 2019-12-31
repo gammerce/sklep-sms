@@ -82,17 +82,13 @@ class PaymentService
         // Tworzymy obiekt, który będzie nam obsługiwał proces płatności
         $paymentModule = null;
         if ($purchase->getPayment('method') == Purchase::METHOD_SMS) {
-            $transactionService = if_strlen2(
-                $purchase->getPayment('sms_service'),
-                $this->settings['sms_service']
-            );
-            $paymentModule = $this->heart->getPaymentModule($transactionService);
+            $paymentPlatformId =
+                $purchase->getPayment('sms_platform') ?: $this->settings['sms_platform'];
+            $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail($paymentPlatformId);
         } elseif ($purchase->getPayment('method') == Purchase::METHOD_TRANSFER) {
-            $transactionService = if_strlen2(
-                $purchase->getPayment('transfer_service'),
-                $this->settings['transfer_service']
-            );
-            $paymentModule = $this->heart->getPaymentModule($transactionService);
+            $paymentPlatformId =
+                $purchase->getPayment('transfer_platform') ?: $this->settings['transfer_platform'];
+            $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail($paymentPlatformId);
         }
 
         // Pobieramy ile kosztuje ta usługa dla przelewu / portfela

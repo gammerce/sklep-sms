@@ -129,7 +129,7 @@ class RoutesManager
                 ],
             ],
             function (RouteCollector $r) {
-                $r->addRoute(['GET', 'POST'], '/transfer/{transferService}', [
+                $r->addRoute(['GET', 'POST'], '/transfer/{transferPlatform}', [
                     'uses' => TransferController::class . '@action',
                 ]);
 

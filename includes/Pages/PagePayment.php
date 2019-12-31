@@ -54,12 +54,12 @@ class PagePayment extends Page
         $paymentMethods = '';
         // Sprawdzamy, czy płatność za pomocą SMS jest możliwa
         if (
-            $purchaseData->getPayment('sms_service') &&
+            $purchaseData->getPayment('sms_platform') &&
             $purchaseData->getTariff() !== null &&
             !$purchaseData->getPayment('no_sms')
         ) {
-            $paymentModule = $this->heart->getPaymentModuleOrFail(
-                $purchaseData->getPayment('sms_service')
+            $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
+                $purchaseData->getPayment('sms_platform')
             );
 
             if ($paymentModule instanceof SupportSms) {
@@ -77,7 +77,7 @@ class PagePayment extends Page
                 : "0.00";
 
         if (
-            strlen($this->settings['transfer_service']) &&
+            strlen($this->settings['transfer_platform']) &&
             $purchaseData->getPayment('cost') !== null &&
             $purchaseData->getPayment('cost') > 1 &&
             !$purchaseData->getPayment('no_transfer')

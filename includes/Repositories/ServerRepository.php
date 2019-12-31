@@ -55,7 +55,7 @@ class ServerRepository
                 "INSERT INTO `" .
                     TABLE_PREFIX .
                     "servers` " .
-                    "SET `name`='%s', `ip`='%s', `port`='%s', `sms_service`='%s'",
+                    "SET `name`='%s', `ip`='%s', `port`='%s', `sms_platform`='%s'",
                 [$name, $ip, $port, $smsPlatform]
             )
         );
@@ -70,7 +70,7 @@ class ServerRepository
                 "UPDATE `" .
                     TABLE_PREFIX .
                     "servers` " .
-                    "SET `name`='%s', `ip`='%s', `port`='%s', `sms_service`='%s' " .
+                    "SET `name`='%s', `ip`='%s', `port`='%s', `sms_platform`='%s' " .
                     "WHERE `id` = '%d'",
                 [$name, $ip, $port, $smsPlatform, $id]
             )
@@ -95,7 +95,7 @@ class ServerRepository
             $data['name'],
             $data['ip'],
             $data['port'],
-            $data['sms_service'],
+            $data['sms_platform'],
             $data['type'],
             $data['version']
         );

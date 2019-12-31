@@ -89,7 +89,7 @@ class PaymentPlatformResourceTest extends HttpTestCase
         /** @var SettingsRepository $settingsRepository */
         $settingsRepository = $this->app->make(SettingsRepository::class);
         $settingsRepository->update([
-            "sms_service" => $this->paymentPlatform->getId(),
+            "sms_platform" => $this->paymentPlatform->getId(),
         ]);
 
         // when

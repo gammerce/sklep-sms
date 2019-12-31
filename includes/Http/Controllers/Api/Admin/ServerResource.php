@@ -26,12 +26,10 @@ class ServerResource
         $name = $request->request->get('name');
         $ip = trim($request->request->get('ip'));
         $port = trim($request->request->get('port'));
-        $smsPlatform = $request->request->get('sms_service');
+        $smsPlatform = $request->request->get('sms_platform');
 
         $serverService->validateBody($request->request->all());
-
         $serverRepository->update($serverId, $name, $ip, $port, $smsPlatform);
-
         $serverService->updateServerServiceAffiliations($serverId, $request->request->all());
 
         log_to_db(

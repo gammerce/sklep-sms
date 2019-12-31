@@ -38,26 +38,26 @@ class PageAdminSettings extends PageAdmin
         $lang = $this->lang;
         $langShop = $translationManager->shop();
 
-        $smsServices = [];
-        $transferServices = [];
+        $smsPlatforms = [];
+        $transferPlatforms = [];
         foreach ($paymentPlatformRepository->all() as $paymentPlatform) {
             $paymentModule = $heart->getPaymentModule($paymentPlatform);
 
             if ($paymentModule instanceof SupportSms) {
-                $smsServices[] = create_dom_element("option", $paymentPlatform->getName(), [
+                $smsPlatforms[] = create_dom_element("option", $paymentPlatform->getName(), [
                     'value' => $paymentPlatform->getId(),
                     'selected' =>
-                        $paymentPlatform->getId() == $this->settings['sms_service']
+                        $paymentPlatform->getId() == $this->settings['sms_platform']
                             ? "selected"
                             : "",
                 ]);
             }
 
             if ($paymentModule instanceof SupportTransfer) {
-                $transferServices[] = create_dom_element("option", $paymentPlatform->getName(), [
+                $transferPlatforms[] = create_dom_element("option", $paymentPlatform->getName(), [
                     'value' => $paymentPlatform->getId(),
                     'selected' =>
-                        $paymentPlatform->getId() == $this->settings['transfer_service']
+                        $paymentPlatform->getId() == $this->settings['transfer_platform']
                             ? "selected"
                             : "",
                 ]);
@@ -67,24 +67,24 @@ class PageAdminSettings extends PageAdmin
         $cronSelect = $this->createCronSelect();
         $userEditServiceSelect = $this->createUserEditServiceSelect();
 
-        // Pobieranie listy dostępnych szablonów
-        $dirlist = scandir($path->to('themes'));
-        $themesList = "";
-        foreach ($dirlist as $dirName) {
+        // Available themes
+        $dirList = scandir($path->to('themes'));
+        $themesList = [];
+        foreach ($dirList as $dirName) {
             if ($dirName[0] != '.' && is_dir($path->to("themes/$dirName"))) {
-                $themesList .= create_dom_element("option", $dirName, [
+                $themesList[] = create_dom_element("option", $dirName, [
                     'value' => $dirName,
                     'selected' => $dirName == $this->settings['theme'] ? "selected" : "",
                 ]);
             }
         }
 
-        // Pobieranie listy dostępnych języków
-        $dirlist = scandir($path->to('translations'));
-        $languagesList = "";
-        foreach ($dirlist as $dirName) {
+        // Available languages
+        $dirList = scandir($path->to('translations'));
+        $languagesList = [];
+        foreach ($dirList as $dirName) {
             if ($dirName[0] != '.' && is_dir($path->to("translations/{$dirName}"))) {
-                $languagesList .= create_dom_element(
+                $languagesList[] = create_dom_element(
                     "option",
                     $lang->translate('language_' . $dirName),
                     [
@@ -95,17 +95,15 @@ class PageAdminSettings extends PageAdmin
             }
         }
 
-        // Pobranie wyglądu strony
         return $this->template->render(
             "admin/settings",
-            compact(
-                "userEditServiceSelect",
-                "smsServices",
-                "transferServices",
-                "languagesList",
-                "themesList",
-                "cronSelect"
-            ) + ["title" => $this->title]
+            compact("userEditServiceSelect", "cronSelect") + [
+                "title" => $this->title,
+                "smsPlatforms" => implode("", $smsPlatforms),
+                "transferPlatforms" => implode("", $transferPlatforms),
+                "themesList" => implode("", $themesList),
+                "languagesList" => implode("", $languagesList),
+            ]
         );
     }
 

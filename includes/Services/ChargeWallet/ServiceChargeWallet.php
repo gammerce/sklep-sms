@@ -51,8 +51,10 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         $smsBody = '';
         $transferBody = '';
 
-        if (strlen($this->settings['sms_service'])) {
-            $paymentModule = $this->heart->getPaymentModuleOrFail($this->settings['sms_service']);
+        if (strlen($this->settings['sms_platform'])) {
+            $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
+                $this->settings['sms_platform']
+            );
 
             // Pobieramy opcję wyboru doładowania za pomocą SMS
             $optionSms = $this->template->render("services/charge_wallet/option_sms");
@@ -82,7 +84,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
             );
         }
 
-        if (strlen($this->settings['transfer_service'])) {
+        if (strlen($this->settings['transfer_platform'])) {
             // Pobieramy opcję wyboru doładowania za pomocą przelewu
             $optionTransfer = $this->template->render("services/charge_wallet/option_transfer");
             $transferBody = $this->template->render("services/charge_wallet/transfer_body");

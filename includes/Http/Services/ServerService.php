@@ -40,7 +40,7 @@ class ServerService
         $name = array_get($body, 'name');
         $ip = array_get($body, 'ip');
         $port = array_get($body, 'port');
-        $smsService = array_get($body, 'sms_service');
+        $smsPlatform = array_get($body, 'sms_platform');
 
         $warnings = [];
 
@@ -56,8 +56,8 @@ class ServerService
             $warnings['port'][] = $this->lang->translate('field_no_empty');
         }
 
-        if ($smsService && $this->paymentPlatformRepository->get($smsService)) {
-            $warnings['sms_service'][] = $this->lang->translate('no_sms_service');
+        if ($smsPlatform && $this->paymentPlatformRepository->get($smsPlatform)) {
+            $warnings['sms_platform'][] = $this->lang->translate('no_sms_platform');
         }
 
         if ($warnings) {

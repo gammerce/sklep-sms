@@ -5,6 +5,7 @@ use App\Exceptions\UnauthorizedException;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Payment\BoughtServiceService;
+use App\Repositories\PaymentPlatformRepository;
 use App\Services\Interfaces\IServiceActionExecute;
 use App\Services\Interfaces\IServicePurchase;
 use App\Services\Interfaces\IServicePurchaseOutside;
@@ -41,6 +42,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     /** @var BoughtServiceService */
     private $boughtServiceService;
 
+    /** @var PaymentPlatformRepository */
+    private $paymentPlatformRepository;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -48,6 +52,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $this->auth = $this->app->make(Auth::class);
         $this->heart = $this->app->make(Heart::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
+        $this->paymentPlatformRepository = $this->app->make(PaymentPlatformRepository::class);
     }
 
     public function purchaseFormGet(array $query)
@@ -294,9 +299,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             'forever' => $price['amount'] == -1 ? true : false,
         ]);
 
-        if (strlen($server->getSmsPlatform())) {
+        if ($server->getSmsPlatform()) {
             $purchaseData->setPayment([
-                'sms_service' => $server->getSmsPlatform(),
+                'sms_platform' => $server->getSmsPlatform(),
             ]);
         }
 
@@ -1566,7 +1571,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     private function tariffs_for_server($serverId)
     {
         $server = $this->heart->getServer($serverId);
-        $smsService = if_strlen($server->getSmsPlatform(), $this->settings['sms_service']);
+        $smsPlatformId = $server->getSmsPlatform() ?: $this->settings['sms_platform'];
+        $paymentPlatform = $this->paymentPlatformRepository->get($smsPlatformId);
+        $paymentModule = $paymentPlatform ? $paymentPlatform->getModule() : '';
 
         // Pobieranie kwot za które można zakupić daną usługę na danym serwerze
         $result = $this->db->query(
@@ -1583,7 +1590,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     "sms_numbers` AS sn ON sn.tariff = p.tariff AND sn.service = '%s' " .
                     "WHERE p.service = '%s' AND ( p.server = '%d' OR p.server = '-1' ) " .
                     "ORDER BY t.provision ASC",
-                [$smsService, $this->service->getId(), $serverId]
+                [$paymentModule, $this->service->getId(), $serverId]
             )
         );
 

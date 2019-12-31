@@ -157,15 +157,15 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="sms_service">{$lang->translate('sms_payment_service')}</label>
+                <label for="sms_platform">{$lang->translate('sms_payment_platform')}</label>
             </div>
             <div class="field-body">
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
-                            <select id="sms_service" name="sms_service">
+                            <select id="sms_platform" name="sms_platform">
                                 <option value="">{$lang->translate('none_such')}</option>
-                                {$smsServices}
+                                {$smsPlatforms}
                             </select>
                         </div>
                     </div>
@@ -175,15 +175,17 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="transfer_service">{$lang->translate('transfer_payment_service')}</label>
+                <label for="transfer_platform"
+                    >{$lang->translate('transfer_payment_platform')}</label
+                >
             </div>
             <div class="field-body">
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
-                            <select id="transfer_service" name="transfer_service">
+                            <select id="transfer_platform" name="transfer_platform">
                                 <option value="">{$lang->translate('none_such')}</option>
-                                {$transferServices}
+                                {$transferPlatforms}
                             </select>
                         </div>
                     </div>

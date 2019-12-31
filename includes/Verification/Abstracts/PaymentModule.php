@@ -1,10 +1,8 @@
 <?php
 namespace App\Verification\Abstracts;
 
-use App\Exceptions\InvalidConfigException;
 use App\Models\PaymentPlatform;
 use App\Models\Tariff;
-use App\Repositories\PaymentPlatformRepository;
 use App\Requesting\Requester;
 use App\System\Database;
 use App\Translation\TranslationManager;
@@ -23,9 +21,6 @@ abstract class PaymentModule
     /** @var Translator */
     protected $langShop;
 
-    /** @var PaymentPlatformRepository */
-    protected $paymentPlatformRepository;
-
     /** @var PaymentPlatform */
     private $paymentPlatform;
 
@@ -35,19 +30,16 @@ abstract class PaymentModule
     /** @var bool */
     private $areTariffsFetched = false;
 
-    /** @var bool */
-    private $isPaymentPlatformFetched = false;
-
     public function __construct(
         Database $database,
         Requester $requester,
         TranslationManager $translationManager,
-        PaymentPlatformRepository $paymentPlatformRepository
+        PaymentPlatform $paymentPlatform
     ) {
         $this->db = $database;
         $this->requester = $requester;
         $this->langShop = $translationManager->shop();
-        $this->paymentPlatformRepository = $paymentPlatformRepository;
+        $this->paymentPlatform = $paymentPlatform;
     }
 
     /**
@@ -56,10 +48,6 @@ abstract class PaymentModule
      */
     public function getData($key = null)
     {
-        if (!$this->isPaymentPlatformFetched) {
-            $this->fetchPaymentPlatform();
-        }
-
         $data = $this->paymentPlatform->getData();
 
         return $key ? array_get($data, $key) : $data;
@@ -147,20 +135,5 @@ abstract class PaymentModule
         }
 
         $this->areTariffsFetched = true;
-    }
-
-    private function fetchPaymentPlatform()
-    {
-        $paymentPlatform = $this->paymentPlatformRepository->get($this->getModuleId());
-
-        if (!$paymentPlatform) {
-            $className = get_class($this);
-            throw new InvalidConfigException(
-                "An error occurred in class: [$className] constructor. There is no [{$this->getModuleId()}] payment service in database."
-            );
-        }
-
-        $this->paymentPlatform = $paymentPlatform;
-        $this->isPaymentPlatformFetched = true;
     }
 }

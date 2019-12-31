@@ -4,12 +4,14 @@ namespace App\System;
 use App\Blocks\Block;
 use App\Blocks\BlockSimple;
 use App\Exceptions\InvalidConfigException;
+use App\Models\PaymentPlatform;
 use App\Models\Server;
 use App\Models\Tariff;
 use App\Models\User;
 use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Pages\Page;
 use App\Pages\PageSimple;
+use App\Repositories\PaymentPlatformRepository;
 use App\Repositories\ServerRepository;
 use App\Repositories\ServiceRepository;
 use App\Repositories\UserRepository;
@@ -39,6 +41,9 @@ class Heart
 
     /** @var ServerRepository */
     private $serverRepository;
+
+    /** @var PaymentPlatformRepository */
+    private $paymentPlatformRepository;
 
     /** @var Server[] */
     private $servers = [];
@@ -75,7 +80,8 @@ class Heart
         Template $template,
         UserRepository $userRepository,
         ServiceRepository $serviceRepository,
-        ServerRepository $serverRepository
+        ServerRepository $serverRepository,
+        PaymentPlatformRepository $paymentPlatformRepository
     ) {
         $this->db = $db;
         $this->settings = $settings;
@@ -83,6 +89,7 @@ class Heart
         $this->userRepository = $userRepository;
         $this->serviceRepository = $serviceRepository;
         $this->serverRepository = $serverRepository;
+        $this->paymentPlatformRepository = $paymentPlatformRepository;
     }
 
     /**
@@ -122,7 +129,7 @@ class Heart
 
         $className = $this->servicesClasses[$service->getModule()]['class'];
 
-        return strlen($className) ? app()->makeWith($className, ['service' => $service]) : null;
+        return strlen($className) ? app()->makeWith($className, compact('service')) : null;
     }
 
     /**
@@ -178,41 +185,85 @@ class Heart
     // Klasy API płatności
     //
 
-    public function registerPaymentModule($id, $class)
+    public function registerPaymentModule($moduleId, $class)
     {
-        if (isset($this->paymentModuleClasses[$id])) {
-            throw new InvalidConfigException("There is a payment api with id: [$id] already.");
+        if (isset($this->paymentModuleClasses[$moduleId])) {
+            throw new InvalidConfigException(
+                "There is a payment api with id: [$moduleId] already."
+            );
         }
 
-        $this->paymentModuleClasses[$id] = $class;
+        $this->paymentModuleClasses[$moduleId] = $class;
+    }
+
+    public function hasPaymentModule($moduleId)
+    {
+        return array_key_exists($moduleId, $this->paymentModuleClasses);
     }
 
     /**
-     * @param string $id
+     * @param PaymentPlatform $paymentPlatform
      * @return PaymentModule|null
      */
-    public function getPaymentModule($id)
+    public function getPaymentModule(PaymentPlatform $paymentPlatform)
     {
-        if (isset($this->paymentModuleClasses[$id])) {
-            return app()->make($this->paymentModuleClasses[$id]);
+        $paymentModuleClass = array_get($this->paymentModuleClasses, $paymentPlatform->getModule());
+
+        if (!$paymentModuleClass) {
+            return null;
         }
 
-        return null;
+        return app()->makeWith($paymentModuleClass, compact('paymentPlatform'));
     }
 
     /**
-     * @param string $id
+     * @param PaymentPlatform $paymentPlatform
      * @return PaymentModule
      */
-    public function getPaymentModuleOrFail($id)
+    public function getPaymentModuleOrFail(PaymentPlatform $paymentPlatform)
     {
-        $paymentModule = $this->getPaymentModule($id);
+        $paymentModule = $this->getPaymentModule($paymentPlatform);
 
         if ($paymentModule) {
             return $paymentModule;
         }
 
-        throw new InvalidConfigException("Invalid payment module [$id].");
+        throw new InvalidConfigException(
+            "Invalid payment module [{$paymentPlatform->getModule()}]."
+        );
+    }
+
+    /**
+     * @param string $platformId
+     * @return PaymentModule
+     */
+    public function getPaymentModuleByPlatformIdOrFail($platformId)
+    {
+        $paymentPlatform = $this->paymentPlatformRepository->get($platformId);
+        if (!$paymentPlatform) {
+            throw new InvalidConfigException("Invalid payment platform [$platformId].");
+        }
+
+        return $this->getPaymentModuleOrFail($paymentPlatform);
+    }
+
+    /**
+     * @param string $platformId
+     * @return PaymentModule|null
+     */
+    public function getPaymentModuleByPlatformId($platformId)
+    {
+        $paymentPlatform = $this->paymentPlatformRepository->get($platformId);
+        if (!$paymentPlatform) {
+            return null;
+        }
+
+        $paymentModule = $this->getPaymentModule($paymentPlatform);
+        if (!$paymentModule) {
+            return null;
+        }
+
+        return $paymentModule;
     }
 
     //

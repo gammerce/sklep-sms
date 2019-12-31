@@ -58,19 +58,19 @@ class PurchaseValidationResource
             }
 
             if (
-                $purchase->getPayment('sms_service') === null &&
+                $purchase->getPayment('sms_platform') === null &&
                 !$purchase->getPayment("no_sms") &&
-                strlen($settings['sms_service'])
+                strlen($settings['sms_platform'])
             ) {
                 $purchase->setPayment([
-                    'sms_service' => $settings['sms_service'],
+                    'sms_platform' => $settings['sms_platform'],
                 ]);
             }
 
             // Ustawiamy taryfe z numerem
-            if ($purchase->getPayment('sms_service') !== null) {
-                $paymentModule = $heart->getPaymentModuleOrFail(
-                    $purchase->getPayment('sms_service')
+            if ($purchase->getPayment('sms_platform') !== null) {
+                $paymentModule = $heart->getPaymentModuleByPlatformIdOrFail(
+                    $purchase->getPayment('sms_platform')
                 );
                 $purchase->setTariff(
                     $paymentModule->getTariffById($purchase->getTariff()->getId())

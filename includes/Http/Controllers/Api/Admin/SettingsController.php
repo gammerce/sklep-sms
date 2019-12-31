@@ -32,8 +32,8 @@ class SettingsController
         $langShop = $translationManager->shop();
         $user = $auth->user();
 
-        $smsPaymentPlatformId = $request->request->get('sms_service');
-        $transferPaymentPlatformId = $request->request->get('transfer_service');
+        $smsPaymentPlatformId = $request->request->get('sms_platform');
+        $transferPaymentPlatformId = $request->request->get('transfer_platform');
         $currency = $request->request->get('currency');
         $shopName = $request->request->get('shop_name');
         $shopUrl = $app->isDemo() ? $settings['shop_url'] : $request->request->get('shop_url');
@@ -58,28 +58,16 @@ class SettingsController
         // TODO Refactor it to use rules
 
         if (strlen($smsPaymentPlatformId)) {
-            $paymentPlatform = $paymentPlatformRepository->get($smsPaymentPlatformId);
-
-            if (!$paymentPlatform) {
-                $warnings['sms_service'][] = $lang->translate('no_sms_service');
-            } else {
-                $paymentModule = $heart->getPaymentModule($paymentPlatform->getModule());
-                if (!($paymentModule instanceof SupportSms)) {
-                    $warnings['sms_service'][] = $lang->translate('no_sms_service');
-                }
+            $paymentModule = $heart->getPaymentModuleByPlatformId($smsPaymentPlatformId);
+            if (!($paymentModule instanceof SupportSms)) {
+                $warnings['sms_platform'][] = $lang->translate('no_sms_platform');
             }
         }
 
         if (strlen($transferPaymentPlatformId)) {
-            $paymentPlatform = $paymentPlatformRepository->get($transferPaymentPlatformId);
-
-            if (!$paymentPlatform) {
-                $warnings['transfer_service'][] = $lang->translate('no_transfer_service');
-            } else {
-                $paymentModule = $heart->getPaymentModule($paymentPlatform->getModule());
-                if (!($paymentModule instanceof SupportTransfer)) {
-                    $warnings['transfer_service'][] = $lang->translate('no_transfer_service');
-                }
+            $paymentModule = $heart->getPaymentModuleByPlatformId($transferPaymentPlatformId);
+            if (!($paymentModule instanceof SupportTransfer)) {
+                $warnings['transfer_platform'][] = $lang->translate('no_transfer_platform');
             }
         }
 
@@ -120,8 +108,8 @@ class SettingsController
         }
 
         $values = [
-            'sms_service' => $smsPaymentPlatformId,
-            'transfer_service' => $transferPaymentPlatformId,
+            'sms_platform' => $smsPaymentPlatformId,
+            'transfer_platform' => $transferPaymentPlatformId,
             'currency' => $currency,
             'shop_name' => $shopName,
             'shop_url' => $shopUrl,

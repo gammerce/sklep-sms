@@ -82,11 +82,11 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             $server = $this->heart->getServer($query['id']);
         }
 
-        $smsServices = "";
+        $smsPlatforms = "";
         foreach ($this->paymentPlatformRepository->all() as $paymentPlatform) {
-            $paymentModule = $this->heart->getPaymentModule($paymentPlatform->getModule());
+            $paymentModule = $this->heart->getPaymentModule($paymentPlatform);
             if ($paymentModule instanceof SupportSms) {
-                $smsServices .= create_dom_element("option", $paymentPlatform->getName(), [
+                $smsPlatforms .= create_dom_element("option", $paymentPlatform->getName(), [
                     'value' => $paymentPlatform->getId(),
                     'selected' =>
                         isset($server) && $paymentPlatform->getId() == $server->getSmsPlatform()
@@ -143,14 +143,14 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             case "server_add":
                 $output = $this->template->render(
                     "admin/action_boxes/server_add",
-                    compact('smsServices', 'services')
+                    compact('smsPlatforms', 'services')
                 );
                 break;
 
             case "server_edit":
                 $output = $this->template->render(
                     "admin/action_boxes/server_edit",
-                    compact('server', 'smsServices', 'services')
+                    compact('server', 'smsPlatforms', 'services')
                 );
                 break;
 

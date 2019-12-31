@@ -27,13 +27,13 @@ class Server
     /** @var string */
     private $version;
 
-    public function __construct($id, $name, $ip, $port, $smsService, $type, $version)
+    public function __construct($id, $name, $ip, $port, $smsPlatform, $type, $version)
     {
         $this->id = $id;
         $this->name = $name;
         $this->ip = $ip;
         $this->port = $port;
-        $this->smsPlatform = $smsService;
+        $this->smsPlatform = $smsPlatform;
         $this->type = $type;
         $this->version = $version;
     }

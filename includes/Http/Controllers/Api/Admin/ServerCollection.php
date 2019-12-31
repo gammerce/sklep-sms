@@ -24,11 +24,11 @@ class ServerCollection
         $name = $request->request->get('name');
         $ip = trim($request->request->get('ip'));
         $port = trim($request->request->get('port'));
-        $smsService = $request->request->get('sms_service');
+        $smsPlatform = $request->request->get('sms_platform');
 
         $serverService->validateBody($request->request->all());
 
-        $server = $serverRepository->create($name, $ip, $port, $smsService);
+        $server = $serverRepository->create($name, $ip, $port, $smsPlatform);
         $serverId = $server->getId();
 
         $serverService->updateServerServiceAffiliations($serverId, $request->request->all());
