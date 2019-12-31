@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Admin\GroupResource;
 use App\Http\Controllers\Api\Admin\LogResource;
 use App\Http\Controllers\Api\Admin\PageActionBoxResource;
 use App\Http\Controllers\Api\Admin\PaymentPlatformCollection;
+use App\Http\Controllers\Api\Admin\PaymentPlatformResource;
 use App\Http\Controllers\Api\Admin\PriceCollection;
 use App\Http\Controllers\Api\Admin\PriceResource;
 use App\Http\Controllers\Api\Admin\ServerCollection;
@@ -379,9 +380,19 @@ class RoutesManager
                     'uses' => SmsCodeResource::class . '@delete',
                 ]);
 
-                $r->post('/api/admin/payment_platforms/{paymentPlatformId}', [
+                $r->post('/api/admin/payment_platforms', [
                     'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
                     'uses' => PaymentPlatformCollection::class . '@post',
+                ]);
+
+                $r->put('/api/admin/payment_platforms/{paymentPlatformId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
+                    'uses' => PaymentPlatformResource::class . '@put',
+                ]);
+
+                $r->delete('/api/admin/payment_platforms/{paymentPlatformId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
+                    'uses' => PaymentPlatformResource::class . '@delete',
                 ]);
 
                 $r->put('/api/admin/settings', [

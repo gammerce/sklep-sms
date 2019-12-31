@@ -294,9 +294,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             'forever' => $price['amount'] == -1 ? true : false,
         ]);
 
-        if (strlen($server->getSmsService())) {
+        if (strlen($server->getSmsPlatform())) {
             $purchaseData->setPayment([
-                'sms_service' => $server->getSmsService(),
+                'sms_service' => $server->getSmsPlatform(),
             ]);
         }
 
@@ -1566,7 +1566,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     private function tariffs_for_server($serverId)
     {
         $server = $this->heart->getServer($serverId);
-        $smsService = if_strlen($server->getSmsService(), $this->settings['sms_service']);
+        $smsService = if_strlen($server->getSmsPlatform(), $this->settings['sms_service']);
 
         // Pobieranie kwot za które można zakupić daną usługę na danym serwerze
         $result = $this->db->query(

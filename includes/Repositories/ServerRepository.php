@@ -2,6 +2,7 @@
 namespace App\Repositories;
 
 use App\Models\Server;
+use App\Models\User;
 use App\System\Database;
 
 class ServerRepository
@@ -47,7 +48,7 @@ class ServerRepository
         return null;
     }
 
-    public function create($name, $ip, $port, $smsService = '')
+    public function create($name, $ip, $port, $smsPlatform = '')
     {
         $this->db->query(
             $this->db->prepare(
@@ -55,11 +56,25 @@ class ServerRepository
                     TABLE_PREFIX .
                     "servers` " .
                     "SET `name`='%s', `ip`='%s', `port`='%s', `sms_service`='%s'",
-                [$name, $ip, $port, $smsService]
+                [$name, $ip, $port, $smsPlatform]
             )
         );
 
         return $this->get($this->db->lastId());
+    }
+
+    public function update($id, $name, $ip, $port, $smsPlatform = '')
+    {
+        $this->db->query(
+            $this->db->prepare(
+                "UPDATE `" .
+                    TABLE_PREFIX .
+                    "servers` " .
+                    "SET `name`='%s', `ip`='%s', `port`='%s', `sms_service`='%s' " .
+                    "WHERE `id` = '%d'",
+                [$name, $ip, $port, $smsPlatform, $id]
+            )
+        );
     }
 
     private function mapToModel(array $data)

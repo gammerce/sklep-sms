@@ -22,7 +22,7 @@ class Server
     private $type;
 
     /** @var string */
-    private $smsService;
+    private $smsPlatform;
 
     /** @var string */
     private $version;
@@ -33,7 +33,7 @@ class Server
         $this->name = $name;
         $this->ip = $ip;
         $this->port = $port;
-        $this->smsService = $smsService;
+        $this->smsPlatform = $smsService;
         $this->type = $type;
         $this->version = $version;
     }
@@ -63,9 +63,9 @@ class Server
         return $this->type;
     }
 
-    public function getSmsService()
+    public function getSmsPlatform()
     {
-        return $this->smsService;
+        return $this->smsPlatform;
     }
 
     /**
