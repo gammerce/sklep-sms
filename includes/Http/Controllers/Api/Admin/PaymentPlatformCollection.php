@@ -21,18 +21,20 @@ class PaymentPlatformCollection
         $lang = $translationManager->user();
         $user = $auth->user();
         $name = $request->request->get("name");
-        $platform = $request->request->get("platform");
+        $module = $request->request->get("module");
         $data = $request->request->get("data");
 
-        $paymentModulesIds = $heart->getPaymentModulesIds();
+        $paymentModule = $heart->getPaymentModule($module);
 
-        if (!in_array($platform, $paymentModulesIds)) {
+        if (!$paymentModule) {
             throw new ValidationException([
-                "platform" => "Invalid platform ID",
+                "module" => "Invalid module ID",
             ]);
         }
 
-        $paymentPlatform = $repository->create($name, $platform, $data);
+        // TODO Validate data
+
+        $paymentPlatform = $repository->create($name, $module, $data);
 
         log_to_db(
             "Admin {$user->getUsername()}({$user->getUid()}) dodał platformę płatnosci. ID: " .

@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Psr4;
 
+use App\Repositories\PaymentPlatformRepository;
 use App\Repositories\PriceRepository;
 use App\Repositories\ServerRepository;
 use App\Repositories\ServerServiceRepository;
@@ -31,12 +32,16 @@ class Factory
     /** @var ServiceRepository */
     private $serviceRepository;
 
+    /** @var PaymentPlatformRepository */
+    private $paymentPlatformRepository;
+
     public function __construct(
         UserRepository $userRepository,
         ServerRepository $serverRepository,
         ServiceRepository $serviceRepository,
         PriceRepository $priceRepository,
-        ServerServiceRepository $serverServiceRepository
+        ServerServiceRepository $serverServiceRepository,
+        PaymentPlatformRepository $paymentPlatformRepository
     ) {
         $this->userRepository = $userRepository;
         $this->serverRepository = $serverRepository;
@@ -44,6 +49,7 @@ class Factory
         $this->serverServiceRepository = $serverServiceRepository;
         $this->serviceRepository = $serviceRepository;
         $this->faker = FakerFactory::create();
+        $this->paymentPlatformRepository = $paymentPlatformRepository;
     }
 
     public function server(array $attributes = [])
@@ -158,6 +164,26 @@ class Factory
             $attributes['ip'],
             $attributes['groups'],
             $attributes['wallet']
+        );
+    }
+
+    public function paymentPlatform(array $attributes = [])
+    {
+        $attributes = array_merge(
+            [
+                'name' => $this->faker->word,
+                'module' => Cssetti::MODULE_ID,
+                'data' => [
+                    "account_id" => $this->faker->uuid
+                ],
+            ],
+            $attributes
+        );
+
+        return $this->paymentPlatformRepository->create(
+            $attributes['name'],
+            $attributes['module'],
+            $attributes['data']
         );
     }
 }

@@ -188,23 +188,6 @@ class Heart
     }
 
     /**
-     * @return string[]
-     */
-    public function getPaymentModulesIds()
-    {
-        return array_keys($this->paymentModuleClasses);
-    }
-
-    /**
-     * @param string $id
-     * @return bool
-     */
-    public function hasPaymentModule($id)
-    {
-        return isset($this->paymentModuleClasses[$id]);
-    }
-
-    /**
      * @param string $id
      * @return PaymentModule|null
      */
