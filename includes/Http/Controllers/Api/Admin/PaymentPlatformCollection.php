@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PaymentPlatformCollection
 {
+    // TODO Action box for creating/editing model
+
     public function post(
         Request $request,
         PaymentPlatformRepository $repository,
