@@ -142,10 +142,7 @@ abstract class ServiceMybbExtraGroupsSimple extends Service implements
             'web' => $data['web'],
             'db_host' => $data['db_host'],
             'db_user' => $data['db_user'],
-            'db_password' => if_strlen(
-                $data['db_password'],
-                $this->service->getData()['db_password']
-            ),
+            'db_password' => array_get($data, 'db_password', $this->service->getData()['db_password']),
             'db_name' => $data['db_name'],
         ];
 

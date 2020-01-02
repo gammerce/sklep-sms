@@ -62,7 +62,7 @@ class ServiceCodeCollection
         $serviceCodeRepository->create(
             $code,
             $serviceModule->service->getId(),
-            if_strlen($uid, 0),
+            $uid ?: 0,
             array_get($codeData, 'server', 0),
             array_get($codeData, 'amount', 0),
             array_get($codeData, 'tariff', 0),

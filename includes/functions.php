@@ -535,14 +535,14 @@ function get_sms_cost($number)
 {
     if (strlen($number) < 4) {
         return 0;
-    } else {
-        if ($number[0] == "7") {
-            return $number[1] == "0" ? 50 : intval($number[1]) * 100;
-        } else {
-            if ($number[0] == "9") {
-                return intval($number[1] . $number[2]) * 100;
-            }
-        }
+    }
+
+    if ($number[0] == "7") {
+        return $number[1] == "0" ? 50 : intval($number[1]) * 100;
+    }
+
+    if ($number[0] == "9") {
+        return intval($number[1] . $number[2]) * 100;
     }
 
     return 0;
@@ -607,16 +607,6 @@ function secondsToTime($seconds)
         ->format(
             "%a {$lang->translate('days')} {$lang->translate('and')} %h {$lang->translate('hours')}"
         );
-}
-
-function if_strlen(&$empty, $default)
-{
-    return isset($empty) && strlen($empty) ? $empty : $default;
-}
-
-function if_strlen2($empty, $default)
-{
-    return strlen($empty) ? $empty : $default;
 }
 
 function custom_mb_str_split($string)
