@@ -3,6 +3,7 @@ namespace App\Verification\PaymentModules;
 
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
+use App\Verification\DataField;
 use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\ExternalErrorException;
 use App\Verification\Exceptions\NoConnectionException;
@@ -58,6 +59,16 @@ class Simpay extends PaymentModule implements SupportSms
     public function getSmsCode()
     {
         return $this->getData('sms_text');
+    }
+
+    public function getDataFields()
+    {
+        return [
+            new DataField("key"),
+            new DataField("secret"),
+            new DataField("service_id"),
+            new DataField("sms_text"),
+        ];
     }
 
     private function getKey()

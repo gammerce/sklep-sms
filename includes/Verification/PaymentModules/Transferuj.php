@@ -9,6 +9,7 @@ use App\Routes\UrlGenerator;
 use App\System\Database;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportTransfer;
+use App\Verification\DataField;
 
 /**
  * Created by MilyGosc.
@@ -97,6 +98,11 @@ class Transferuj extends PaymentModule implements SupportTransfer
         }
 
         return $response['tr_status'] == 'TRUE' && $response['tr_error'] == 'none';
+    }
+
+    public function getDataFields()
+    {
+        return [new DataField("key"), new DataField("account_id")];
     }
 
     private function isMd5Valid($md5sum, $transactionAmount, $crc, $transactionId)

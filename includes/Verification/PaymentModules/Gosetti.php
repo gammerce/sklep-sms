@@ -3,6 +3,7 @@ namespace App\Verification\PaymentModules;
 
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
+use App\Verification\DataField;
 use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\BadNumberException;
 use App\Verification\Exceptions\ExternalErrorException;
@@ -82,6 +83,11 @@ class Gosetti extends PaymentModule implements SupportSms
         return $this->smsCode;
     }
 
+    public function getDataFields()
+    {
+        return [new DataField("account_id")];
+    }
+
     private function getAccountId()
     {
         return $this->getData('account_id');
@@ -99,7 +105,7 @@ class Gosetti extends PaymentModule implements SupportSms
         $response = $this->requester->get('https://gosetti.pl/Api/SmsApiV2GetData.php');
         $data = $response ? $response->json() : null;
 
-        // GOSetti dostarcza w feedzie kod sms
+        // GOSetti provides SMS code in the response
         $this->smsCode = $data['Code'];
 
         foreach ($data['Numbers'] as $numberData) {

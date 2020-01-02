@@ -5,6 +5,7 @@ use App\Models\PaymentPlatform;
 use App\Models\Tariff;
 use App\Requesting\Requester;
 use App\System\Database;
+use App\Verification\DataField;
 
 abstract class PaymentModule
 {
@@ -44,6 +45,14 @@ abstract class PaymentModule
         $data = $this->paymentPlatform->getData();
 
         return $key ? array_get($data, $key) : $data;
+    }
+
+    /**
+     * @return DataField[]
+     */
+    public function getDataFields()
+    {
+        return [];
     }
 
     /**

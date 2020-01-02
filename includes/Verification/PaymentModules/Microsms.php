@@ -10,6 +10,7 @@ use App\System\Database;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
+use App\Verification\DataField;
 use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\ServerErrorException;
@@ -163,5 +164,16 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
     public function getSmsCode()
     {
         return $this->smsCode;
+    }
+
+    public function getDataFields()
+    {
+        return [
+            new DataField("api"),
+            new DataField("sms_text"),
+            new DataField("service_id"),
+            new DataField("shop_id"),
+            new DataField("hash"),
+        ];
     }
 }

@@ -3,6 +3,7 @@ namespace App\Verification\PaymentModules;
 
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
+use App\Verification\DataField;
 use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\BadNumberException;
 use App\Verification\Exceptions\ExternalErrorException;
@@ -86,6 +87,11 @@ class OneShotOneKill extends PaymentModule implements SupportSms
     public function getSmsCode()
     {
         return $this->getData('sms_text');
+    }
+
+    public function getDataFields()
+    {
+        return [new DataField("api"), new DataField("sms_text")];
     }
 
     private function getApi()

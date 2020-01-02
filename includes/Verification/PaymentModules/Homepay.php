@@ -3,6 +3,7 @@ namespace App\Verification\PaymentModules;
 
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
+use App\Verification\DataField;
 use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\ExternalErrorException;
 use App\Verification\Exceptions\NoConnectionException;
@@ -46,6 +47,15 @@ class Homepay extends PaymentModule implements SupportSms
     public function getSmsCode()
     {
         return $this->getData('sms_text');
+    }
+
+    public function getDataFields()
+    {
+        return [
+            new DataField("sms_text"),
+            new DataField("api"),
+            // TODO Implement it
+        ];
     }
 
     private function getApi()

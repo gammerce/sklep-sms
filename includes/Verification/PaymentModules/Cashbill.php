@@ -6,6 +6,7 @@ use App\Models\TransferFinalize;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
+use App\Verification\DataField;
 use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\BadNumberException;
 use App\Verification\Exceptions\NoConnectionException;
@@ -145,5 +146,10 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
     public function getService()
     {
         return $this->getData('service');
+    }
+
+    public function getDataFields()
+    {
+        return [new DataField("sms_text"), new DataField("key"), new DataField("service")];
     }
 }
