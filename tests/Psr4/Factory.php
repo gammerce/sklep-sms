@@ -8,7 +8,7 @@ use App\Repositories\ServerServiceRepository;
 use App\Repositories\ServiceRepository;
 use App\Repositories\UserRepository;
 use App\Services\ExtraFlags\ServiceExtraFlags;
-use App\Verification\Cssetti;
+use App\Verification\PaymentModules\Cssetti;
 use Faker\Factory as FakerFactory;
 use Faker\Generator;
 

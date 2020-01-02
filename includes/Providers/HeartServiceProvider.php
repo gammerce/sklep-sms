@@ -52,20 +52,20 @@ use App\Services\ExtraFlags\ServiceExtraFlags;
 use App\Services\MybbExtraGroups\ServiceMybbExtraGroups;
 use App\Services\Other\ServiceOther;
 use App\System\Heart;
-use App\Verification\Bizneshost;
-use App\Verification\Cashbill;
-use App\Verification\Cssetti;
-use App\Verification\Gosetti;
-use App\Verification\Homepay;
-use App\Verification\Hostplay;
-use App\Verification\Microsms;
-use App\Verification\Mintshost;
-use App\Verification\OneShotOneKill;
-use App\Verification\Profitsms;
-use App\Verification\Pukawka;
-use App\Verification\Simpay;
-use App\Verification\Transferuj;
-use App\Verification\Zabijaka;
+use App\Verification\PaymentModules\Bizneshost;
+use App\Verification\PaymentModules\Cashbill;
+use App\Verification\PaymentModules\Cssetti;
+use App\Verification\PaymentModules\Gosetti;
+use App\Verification\PaymentModules\Homepay;
+use App\Verification\PaymentModules\Hostplay;
+use App\Verification\PaymentModules\Microsms;
+use App\Verification\PaymentModules\Mintshost;
+use App\Verification\PaymentModules\OneShotOneKill;
+use App\Verification\PaymentModules\Profitsms;
+use App\Verification\PaymentModules\Pukawka;
+use App\Verification\PaymentModules\Simpay;
+use App\Verification\PaymentModules\Transferuj;
+use App\Verification\PaymentModules\Zabijaka;
 
 class HeartServiceProvider
 {

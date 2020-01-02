@@ -1,13 +1,12 @@
 <?php
-namespace App\Verification;
+namespace App\Verification\PaymentModules;
 
+use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Models\TransferFinalize;
 use App\Requesting\Requester;
 use App\Routes\UrlGenerator;
 use App\System\Database;
-use App\System\Settings;
-use App\Translation\TranslationManager;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
@@ -23,9 +22,6 @@ use App\Verification\Results\SmsSuccessResult;
 class Microsms extends PaymentModule implements SupportSms, SupportTransfer
 {
     const MODULE_ID = "microsms";
-
-    /** @var Settings */
-    private $settings;
 
     /** @var UrlGenerator */
     private $url;
@@ -48,13 +44,11 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
     public function __construct(
         Database $database,
         Requester $requester,
-        TranslationManager $translationManager,
         UrlGenerator $urlGenerator,
-        Settings $settings
+        PaymentPlatform $paymentPlatform
     ) {
-        parent::__construct($database, $requester, $translationManager);
+        parent::__construct($database, $requester, $paymentPlatform);
 
-        $this->settings = $settings;
         $this->url = $urlGenerator;
 
         $this->userId = $this->getData('api');

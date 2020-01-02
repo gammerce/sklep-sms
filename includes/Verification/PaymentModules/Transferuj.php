@@ -1,13 +1,12 @@
 <?php
-namespace App\Verification;
+namespace App\Verification\PaymentModules;
 
+use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Models\TransferFinalize;
 use App\Requesting\Requester;
 use App\Routes\UrlGenerator;
 use App\System\Database;
-use App\System\Settings;
-use App\Translation\TranslationManager;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportTransfer;
 
@@ -18,9 +17,6 @@ use App\Verification\Abstracts\SupportTransfer;
 class Transferuj extends PaymentModule implements SupportTransfer
 {
     const MODULE_ID = "transferuj";
-
-    /** @var Settings */
-    private $settings;
 
     /** @var UrlGenerator */
     private $url;
@@ -35,12 +31,10 @@ class Transferuj extends PaymentModule implements SupportTransfer
         Database $database,
         Requester $requester,
         UrlGenerator $urlGenerator,
-        TranslationManager $translationManager,
-        Settings $settings
+        PaymentPlatform $paymentPlatform
     ) {
-        parent::__construct($database, $requester, $translationManager);
+        parent::__construct($database, $requester, $paymentPlatform);
 
-        $this->settings = $settings;
         $this->url = $urlGenerator;
         $this->key = $this->getData('key');
         $this->accountId = $this->getData('account_id');

@@ -7,7 +7,7 @@ use App\Payment\TransferPaymentService;
 use App\Repositories\PaymentTransferRepository;
 use App\System\Heart;
 use App\Verification\Abstracts\SupportTransfer;
-use App\Verification\Transferuj;
+use App\Verification\PaymentModules\Transferuj;
 use Tests\Psr4\TestCases\TestCase;
 
 class TransferPaymentServiceTest extends TestCase

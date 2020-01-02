@@ -3,7 +3,7 @@ namespace App\Pages;
 
 use App\Exceptions\InvalidConfigException;
 use App\Models\Purchase;
-use App\Verification\Cashbill;
+use App\Verification\PaymentModules\Cashbill;
 
 class PageCashbillTransferFinalized extends Page
 {

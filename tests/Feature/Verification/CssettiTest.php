@@ -2,7 +2,7 @@
 namespace Tests\Feature\Verification;
 
 use App\Requesting\Response;
-use App\Verification\Cssetti;
+use App\Verification\PaymentModules\Cssetti;
 use App\Verification\Results\SmsSuccessResult;
 use Mockery;
 use Tests\Psr4\Concerns\FixtureConcern;

@@ -5,21 +5,16 @@ use App\Models\PaymentPlatform;
 use App\Models\Tariff;
 use App\Requesting\Requester;
 use App\System\Database;
-use App\Translation\TranslationManager;
-use App\Translation\Translator;
 
 abstract class PaymentModule
 {
     const MODULE_ID = '';
 
-    /** @var Database */
-    protected $db;
-
     /** @var Requester */
     protected $requester;
 
-    /** @var Translator */
-    protected $langShop;
+    /** @var Database */
+    private $db;
 
     /** @var PaymentPlatform */
     private $paymentPlatform;
@@ -33,12 +28,10 @@ abstract class PaymentModule
     public function __construct(
         Database $database,
         Requester $requester,
-        TranslationManager $translationManager,
         PaymentPlatform $paymentPlatform
     ) {
         $this->db = $database;
         $this->requester = $requester;
-        $this->langShop = $translationManager->shop();
         $this->paymentPlatform = $paymentPlatform;
     }
 
@@ -86,13 +79,13 @@ abstract class PaymentModule
     }
 
     /**
-     * Returns tariff by sms cost brutto
+     * Returns tariff by sms cost gross
      *
      * @param float $cost
      *
      * @return Tariff|null
      */
-    public function getTariffBySmsCostBrutto($cost)
+    public function getTariffBySmsCostGross($cost)
     {
         foreach ($this->getTariffs() as $tariff) {
             if ($tariff->getSmsCostGross() == $cost) {

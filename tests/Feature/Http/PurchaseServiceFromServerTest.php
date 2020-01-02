@@ -9,7 +9,7 @@ use App\System\License;
 use App\Requesting\Response;
 use App\Services\ExtraFlags\ExtraFlagType;
 use App\System\Settings;
-use App\Verification\Gosetti;
+use App\Verification\PaymentModules\Gosetti;
 use App\Verification\Results\SmsSuccessResult;
 use Mockery;
 use Tests\Psr4\Concerns\RequesterConcern;

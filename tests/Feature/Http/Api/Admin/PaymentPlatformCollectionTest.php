@@ -2,7 +2,7 @@
 namespace Tests\Feature\Http\Api\Admin;
 
 use App\Repositories\PaymentPlatformRepository;
-use App\Verification\Cssetti;
+use App\Verification\PaymentModules\Cssetti;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class PaymentPlatformCollectionTest extends HttpTestCase

@@ -1,5 +1,5 @@
 <?php
-namespace App\Verification;
+namespace App\Verification\PaymentModules;
 
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
@@ -46,7 +46,7 @@ class Bizneshost extends PaymentModule implements SupportSms
                 return new SmsSuccessResult();
             }
 
-            $tariff = $this->getTariffBySmsCostBrutto($statusExploded[1]);
+            $tariff = $this->getTariffBySmsCostGross($statusExploded[1]);
 
             throw new BadNumberException($tariff !== null ? $tariff->getId() : null);
         }

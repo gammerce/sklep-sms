@@ -1,5 +1,5 @@
 <?php
-namespace App\Verification;
+namespace App\Verification\PaymentModules;
 
 use App\Models\Purchase;
 use App\Models\TransferFinalize;

@@ -1,5 +1,5 @@
 <?php
-namespace App\Verification;
+namespace App\Verification\PaymentModules;
 
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
@@ -12,11 +12,11 @@ use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Exceptions\WrongCredentialsException;
 use App\Verification\Results\SmsSuccessResult;
 
-class Cssetti extends PaymentModule implements SupportSms
+class Gosetti extends PaymentModule implements SupportSms
 {
-    const MODULE_ID = "cssetti";
+    const MODULE_ID = "gosetti";
 
-    /** @var string */
+    /** @var  string */
     private $smsCode;
 
     /** @var array */
@@ -26,7 +26,7 @@ class Cssetti extends PaymentModule implements SupportSms
     {
         $this->tryToFetchSmsData();
 
-        $response = $this->requester->get('https://cssetti.pl/Api/SmsApiV2CheckCode.php', [
+        $response = $this->requester->get('https://gosetti.pl/Api/SmsApiV2CheckCode.php', [
             'UserId' => $this->getAccountId(),
             'Code' => $returnCode,
         ]);
@@ -96,10 +96,10 @@ class Cssetti extends PaymentModule implements SupportSms
 
     private function fetchSmsData()
     {
-        $response = $this->requester->get('https://cssetti.pl/Api/SmsApiV2GetData.php');
+        $response = $this->requester->get('https://gosetti.pl/Api/SmsApiV2GetData.php');
         $data = $response ? $response->json() : null;
 
-        // CSSetti dostarcza w feedzie kod sms
+        // GOSetti dostarcza w feedzie kod sms
         $this->smsCode = $data['Code'];
 
         foreach ($data['Numbers'] as $numberData) {

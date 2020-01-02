@@ -1,5 +1,5 @@
 <?php
-namespace App\Verification;
+namespace App\Verification\PaymentModules;
 
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
