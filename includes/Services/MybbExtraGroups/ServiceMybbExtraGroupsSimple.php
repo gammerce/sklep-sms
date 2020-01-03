@@ -50,20 +50,24 @@ abstract class ServiceMybbExtraGroupsSimple extends Service implements
         // WEB
         if ($this->showOnWeb()) {
             $webSelYes = "selected";
+            $webSelNo = "";
         } else {
+            $webSelYes = "";
             $webSelNo = "selected";
         }
 
-        // Jeżeli edytujemy
+        // We're in the edit mode
         if ($this->service !== null) {
             // DB
-            $dbPassword = strlen($this->service->getData()['db_password']) ? "********" : "";
-            $dbHost = $this->service->getData()['db_host'];
-            $dbUser = $this->service->getData()['db_user'];
-            $dbName = $this->service->getData()['db_name'];
+            $dbPassword = strlen(array_get($this->service->getData(), 'db_password'))
+                ? "********"
+                : "";
+            $dbHost = array_get($this->service->getData(), 'db_host');
+            $dbUser = array_get($this->service->getData(), 'db_user');
+            $dbName = array_get($this->service->getData(), 'db_name');
 
             // MyBB groups
-            $mybbGroups = $this->service->getData()['mybb_groups'];
+            $mybbGroups = array_get($this->service->getData(), 'mybb_groups');
         }
 
         return $this->template->render(
@@ -145,7 +149,7 @@ abstract class ServiceMybbExtraGroupsSimple extends Service implements
             'db_password' => array_get(
                 $data,
                 'db_password',
-                $this->service->getData()['db_password']
+                array_get($this->service->getData(), 'db_password')
             ),
             'db_name' => $data['db_name'],
         ];

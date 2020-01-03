@@ -7,6 +7,7 @@ use App\Html\Cell;
 use App\Html\HeadCell;
 use App\Html\Structure;
 use App\Html\Wrapper;
+use App\Models\PaymentPlatform;
 use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Repositories\PaymentPlatformRepository;
 
@@ -18,11 +19,11 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
     /** @var PaymentPlatformRepository */
     private $paymentPlatformRepository;
 
-    public function __construct()
+    public function __construct(PaymentPlatformRepository $paymentPlatformRepository)
     {
         parent::__construct();
 
-        $this->paymentPlatformRepository = $this->app->make(PaymentPlatformRepository::class);
+        $this->paymentPlatformRepository = $paymentPlatformRepository;
         $this->heart->pageTitle = $this->title = $this->lang->translate('payment_platforms');
     }
 
@@ -81,27 +82,43 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 
     private function getActionBoxContent($boxId, $paymentPlatformId)
     {
-        switch ($boxId) {
-            case "edit":
-                $paymentPlatform = $this->paymentPlatformRepository->get($paymentPlatformId);
+        $paymentPlatform = $this->paymentPlatformRepository->getOrFail($paymentPlatformId);
 
-                $dataValues = "";
-                foreach ($paymentPlatform->getData() as $name => $value) {
-                    $text = $this->getCustomDataText($name);
-                    $dataValues .= $this->template->render(
-                        "tr_name_input",
-                        compact('text', 'name', 'value')
-                    );
-                }
+        switch ($boxId) {
+            case "create":
+                // TODO Implement it
+                return "";
+
+            case "edit":
+                $dataFields = $this->renderDataFields($paymentPlatform);
 
                 return $this->template->render(
                     "admin/action_boxes/payment_platform_edit",
-                    compact('paymentPlatform', 'dataValues')
+                    compact('paymentPlatform', 'dataFields')
                 );
 
             default:
                 return '';
         }
+    }
+
+    private function renderDataFields(PaymentPlatform $paymentPlatform)
+    {
+        $paymentModule = $this->heart->getPaymentModule($paymentPlatform);
+
+        $dataFields = [];
+        foreach ($paymentModule->getDataFields() as $dataField) {
+            $text = $dataField->getName() ?: $this->getCustomDataText($dataField->getId());
+            $value = array_get($paymentPlatform->getData(), $dataField->getId());
+
+            $dataFields[] = $this->template->render("tr_name_input", [
+                "name" => $dataField->getId(),
+                "value" => $value,
+                "text" => $text,
+            ]);
+        }
+
+        return implode("", $dataFields);
     }
 
     private function getCustomDataText($name)

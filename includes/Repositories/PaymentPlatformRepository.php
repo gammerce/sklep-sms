@@ -1,6 +1,7 @@
 <?php
 namespace App\Repositories;
 
+use App\Exceptions\EntityNotFoundException;
 use App\Models\PaymentPlatform;
 use App\Models\Server;
 use App\System\Database;
@@ -61,6 +62,15 @@ class PaymentPlatformRepository
         }
 
         return null;
+    }
+
+    public function getOrFail($id)
+    {
+        if ($paymentPlatform = $this->get($id)) {
+            return $paymentPlatform;
+        }
+
+        throw new EntityNotFoundException();
     }
 
     public function delete($id)
