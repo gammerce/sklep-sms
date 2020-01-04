@@ -31,5 +31,3 @@ class DataField
         return $this->name;
     }
 }
-
-// TODO Remove biznes host and mintshost
