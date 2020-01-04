@@ -1,6 +1,5 @@
 <?php
 
-use App\Exceptions\SqlQueryException;
 use App\Install\Migration;
 use App\Install\MigrationFiles;
 use App\Models\PaymentPlatform;
@@ -95,13 +94,9 @@ class MigrateTransactionServices extends Migration
             $smsPlatform = array_get($paymentPlatforms, $row["sms_service"]);
             $smsPlatformId = $smsPlatform ? $smsPlatform->getId() : null;
 
-            // TODO Fix issue with null value. It would be nice to use PDO
-            $this->db->query(
-                $this->db->prepare(
-                    "UPDATE `ss_servers` SET `sms_service` = '%d' WHERE `id` = '%d'",
-                    [$smsPlatformId, $row["id"]]
-                )
-            );
+            $this->db
+                ->statement("UPDATE `ss_servers` SET `sms_service` = ? WHERE `id` = ?")
+                ->execute([$smsPlatformId, $row["id"]]);
         }
 
         $this->executeQueries([
@@ -113,16 +108,16 @@ class MigrateTransactionServices extends Migration
             $this->db->query(
                 "ALTER TABLE `ss_servers` CHANGE `sms_service` `sms_platform` INT(11)"
             );
-        } catch (SqlQueryException $e) {
-            // TODO Silent fail in case of specified error id
+        } catch (PDOException $e) {
+            //
         }
 
         try {
             $this->db->query(
                 "ALTER TABLE `ss_servers` ADD CONSTRAINT `ss_servers_sms_platform` FOREIGN KEY (`sms_platform`) REFERENCES `ss_payment_platforms` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE"
             );
-        } catch (SqlQueryException $e) {
-            // TODO Silent fail in case of specified error id
+        } catch (PDOException $e) {
+            //
         }
 
         // TODO Modify database schema, remove transaction_services

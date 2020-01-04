@@ -26,7 +26,8 @@ class ServerResource
         $name = $request->request->get('name');
         $ip = trim($request->request->get('ip'));
         $port = trim($request->request->get('port'));
-        $smsPlatform = $request->request->get('sms_platform');
+        // TODO Check if setting default value works
+        $smsPlatform = $request->request->get('sms_platform') ?: null;
 
         $serverService->validateBody($request->request->all());
         $serverRepository->update($serverId, $name, $ip, $port, $smsPlatform);
@@ -40,6 +41,7 @@ class ServerResource
                 $serverId
             )
         );
+
         return new ApiResponse('ok', $lang->translate('server_edit'), 1);
     }
 

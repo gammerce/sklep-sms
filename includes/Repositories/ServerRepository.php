@@ -63,18 +63,17 @@ class ServerRepository
         return $this->get($this->db->lastId());
     }
 
-    public function update($id, $name, $ip, $port, $smsPlatform = '')
+    public function update($id, $name, $ip, $port, $smsPlatform = null)
     {
-        $this->db->query(
-            $this->db->prepare(
+        $this->db
+            ->statement(
                 "UPDATE `" .
                     TABLE_PREFIX .
                     "servers` " .
-                    "SET `name`='%s', `ip`='%s', `port`='%s', `sms_platform`='%s' " .
-                    "WHERE `id` = '%d'",
-                [$name, $ip, $port, $smsPlatform, $id]
+                    "SET `name` = ?, `ip` = ?, `port` = ?, `sms_platform` = ? " .
+                    "WHERE `id` = ?"
             )
-        );
+            ->execute([$name, $ip, $port, $smsPlatform, $id]);
     }
 
     public function delete($id)
