@@ -120,7 +120,19 @@ class MigrateTransactionServices extends Migration
             //
         }
 
-        // TODO Modify database schema, remove transaction_services
+        try {
+            $this->db->query(
+                "ALTER TABLE `ss_sms_numbers` DROP FOREIGN KEY IF EXISTS `ss_sms_numbers_ibfk_2`"
+            );
+        } catch (PDOException $e) {
+            //
+        }
+
+        $this->db->query(
+            "DROP TABLE IF EXISTS `ss_transaction_services`"
+        );
+
+        // TODO Use data fields from transaction_services
         // TODO Do not allow default payment platform if not set
     }
 }
