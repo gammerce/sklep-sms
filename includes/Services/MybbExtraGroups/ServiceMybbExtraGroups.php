@@ -2,7 +2,6 @@
 namespace App\Services\MybbExtraGroups;
 
 use App\Exceptions\InvalidConfigException;
-use App\Exceptions\SqlQueryException;
 use App\Models\MybbUser;
 use App\Models\Purchase;
 use App\Models\Service;
@@ -16,6 +15,7 @@ use App\System\Database;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use PDOException;
 
 class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
     IServicePurchase,
@@ -342,9 +342,9 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
     {
         try {
             $this->connectMybb();
-        } catch (SqlQueryException $e) {
+        } catch (PDOException $e) {
             if ($who === 'admin') {
-                throw new InvalidConfigException($e->getError());
+                throw new InvalidConfigException($e->getMessage());
             }
 
             return false;
@@ -718,7 +718,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
     }
 
     /**
-     * @throws SqlQueryException
+     * @throws PDOException
      */
     private function connectMybb()
     {
@@ -733,6 +733,6 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             $this->dbPassword,
             $this->dbName
         );
-        $this->dbMybb->query("SET NAMES utf8");
+        $this->dbMybb->connect();
     }
 }

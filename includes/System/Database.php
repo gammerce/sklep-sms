@@ -1,24 +1,29 @@
 <?php
 namespace App\System;
 
-use App\Exceptions\SqlQueryException;
+use PDO;
+use PDOException;
+use PDOStatement;
 
 class Database
 {
+    /** @var string */
     private $host;
+
+    /** @var string */
     private $user;
+
+    /** @var string */
     private $pass;
+
+    /** @var string */
     private $name;
+
+    /** @var string */
     private $port;
 
-    private $link;
-
-    private $error;
-    private $errno;
-
-    private $query;
-    private $result;
-    public $counter = 0;
+    /** @var PDO */
+    private $pdo;
 
     public function __construct($host, $port, $user, $pass, $name)
     {
@@ -29,13 +34,13 @@ class Database
         $this->name = $name;
     }
 
-    function __destruct()
+    public function __destruct()
     {
         $this->close();
     }
 
     /**
-     * @throws SqlQueryException
+     * @throws PDOException
      */
     public function connect()
     {
@@ -44,45 +49,39 @@ class Database
     }
 
     /**
-     * @throws SqlQueryException
+     * @throws PDOException
      */
     public function connectWithoutDb()
     {
-        $this->link = mysqli_connect($this->host, $this->user, $this->pass, '', $this->port);
-        if (!$this->link) {
-            $this->error = mysqli_connect_error();
-            $this->errno = mysqli_connect_errno();
-            throw $this->exception("no_server_connection");
-        }
-
-        $this->query("SET NAMES utf8");
+        $dsn = "mysql:host={$this->host};port={$this->port};charset=utf8";
+        $options = [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
+        ];
+        $this->pdo = new PDO($dsn, $this->user, $this->pass, $options);
     }
 
     /**
      * @param string $name
-     * @throws SqlQueryException
+     * @throws PDOException
      */
     public function selectDb($name)
     {
-        $result = mysqli_select_db($this->link, $name);
-        if (!$result) {
-            throw $this->exception("no_db_connection");
-        }
+        $this->pdo->exec("USE `$name`");
     }
 
     public function close()
     {
-        if (!$this->isConnected()) {
-            return;
-        }
-
-        mysqli_close($this->link);
-        $this->link = null;
+        $this->pdo = null;
     }
 
     public function prepare($query, $values)
     {
-        // Escapeowanie wszystkich argumentów
+        if (!$this->isConnected()) {
+            $this->connect();
+        }
+
         $i = 0;
         foreach ($values as $value) {
             $values[$i++] = $this->escape($value);
@@ -92,9 +91,9 @@ class Database
     }
 
     /**
-     * @param $query
-     * @return \mysqli_result
-     * @throws SqlQueryException
+     * @param string $query
+     * @return PDOStatement
+     * @throws PDOException
      */
     public function query($query)
     {
@@ -102,114 +101,60 @@ class Database
             $this->connect();
         }
 
-        $this->counter += 1;
-        $this->query = $query;
-
-        if ($this->result = mysqli_query($this->link, $query)) {
-            return $this->result;
-        }
-
-        throw $this->exception("query_error");
+        return $this->pdo->query($query);
     }
 
-    /**
-     * @param string $query
-     * @return bool
-     * @throws SqlQueryException
-     */
-    public function multiQuery($query)
+    public function statement($statement)
     {
         if (!$this->isConnected()) {
             $this->connect();
         }
 
-        $this->query = $query;
-        if ($this->result = mysqli_multi_query($this->link, $query)) {
-            return $this->result;
-        }
-
-        throw $this->exception("query_error");
+        return $this->pdo->prepare($statement);
     }
 
     /**
      * @param string $query
      * @param string $column
      * @return mixed|null
-     * @throws SqlQueryException
+     * @throws PDOException
      */
     public function getColumn($query, $column)
     {
-        $this->query = $query;
-        $result = $this->query($query);
-
-        if (!$this->numRows($result)) {
-            return null;
-        }
-
-        $row = $this->fetchArrayAssoc($result);
-        if (!isset($row[$column])) {
-            return null;
-        }
-
-        return $row[$column];
+        $statement = $this->query($query);
+        $row = $statement->fetch();
+        return array_get($row, $column);
     }
 
-    /**
-     * @param \mysqli_result $result
-     * @return int
-     * @throws SqlQueryException
-     */
-    public function numRows($result)
+    public function numRows(PDOStatement $statement)
     {
-        if (empty($result)) {
-            throw $this->exception("no_query_num_rows");
-        }
-
-        return mysqli_num_rows($result);
+        return $statement->rowCount();
     }
 
-    /**
-     * @param \mysqli_result $result
-     * @return array|null
-     * @throws SqlQueryException
-     */
-    public function fetchArrayAssoc($result)
+    public function fetchArrayAssoc(PDOStatement $statement)
     {
-        if (empty($result)) {
-            throw $this->exception("no_query_fetch_array_assoc");
-        }
-
-        return mysqli_fetch_assoc($result);
+        return $statement->fetch();
     }
 
     public function lastId()
     {
-        return mysqli_insert_id($this->link);
-    }
-
-    public function affectedRows()
-    {
-        return mysqli_affected_rows($this->link);
+        return $this->pdo->lastInsertId();
     }
 
     public function escape($str)
     {
-        return mysqli_real_escape_string($this->link, $str);
-    }
-
-    public function getLastQuery()
-    {
-        return $this->query;
+        $quote = $this->pdo->quote($str);
+        return preg_replace("/(^'|'$)/", '', $quote);
     }
 
     public function startTransaction()
     {
-        mysqli_begin_transaction($this->link);
+        $this->pdo->beginTransaction();
     }
 
     public function rollback()
     {
-        mysqli_rollback($this->link);
+        $this->pdo->rollBack();
     }
 
     public function dropAllTables()
@@ -221,7 +166,7 @@ class Database
         }
 
         $this->disableForeignKeyConstraints();
-        $this->query('drop table ' . implode(',', $tables));
+        $this->query('DROP TABLE ' . implode(',', $tables));
         $this->enableForeignKeyConstraints();
     }
 
@@ -250,25 +195,11 @@ class Database
 
     public function createDatabaseIfNotExists($database)
     {
-        $this->query("CREATE DATABASE IF NOT EXISTS $database");
-    }
-
-    /**
-     * @param string $messageId
-     * @return SqlQueryException
-     */
-    private function exception($messageId)
-    {
-        if ($this->link) {
-            $this->error = mysqli_error($this->link);
-            $this->errno = mysqli_errno($this->link);
-        }
-
-        return new SqlQueryException($messageId, $this->query, $this->error, $this->errno);
+        $this->query("CREATE DATABASE IF NOT EXISTS `$database`");
     }
 
     public function isConnected()
     {
-        return !!$this->link;
+        return $this->pdo !== null;
     }
 }

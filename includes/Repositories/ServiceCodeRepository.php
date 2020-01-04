@@ -56,14 +56,14 @@ class ServiceCodeRepository
 
     public function delete($id)
     {
-        $this->db->query(
+        $statement = $this->db->query(
             $this->db->prepare(
                 "DELETE FROM `" . TABLE_PREFIX . "service_codes` " . "WHERE `id` = '%d'",
                 [$id]
             )
         );
 
-        return $this->db->affectedRows();
+        return !!$statement->rowCount();
     }
 
     private function mapToModel(array $data)

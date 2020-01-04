@@ -1,12 +1,12 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Exceptions\SqlQueryException;
 use App\Http\Responses\ApiResponse;
 use App\Http\Services\ServerService;
 use App\Repositories\ServerRepository;
 use App\System\Auth;
 use App\Translation\TranslationManager;
+use PDOException;
 use Symfony\Component\HttpFoundation\Request;
 
 class ServerResource
@@ -55,8 +55,8 @@ class ServerResource
 
         try {
             $deleted = $serverRepository->delete($serverId);
-        } catch (SqlQueryException $e) {
-            if ($e->getErrorno() == 1451) {
+        } catch (PDOException $e) {
+            if (get_error_code($e) === 1451) {
                 return new ApiResponse(
                     "error",
                     $lang->translate('delete_server_constraint_fails'),

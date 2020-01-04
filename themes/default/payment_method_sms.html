@@ -1,12 +1,14 @@
-<div class="payment_type_wraper">
+<div class="payment_type_wrapper">
     <div class="payment_type sms header">
         {$lang->translate('payment_sms')}
     </div>
 
     <div class="payment_type sms">
         <div>
-            <strong>{$lang->translate('price')}</strong>: {{
-            $purchaseData->getTariff()->getSmsCostGross() }} {{ $settings['currency'] }}
+            <strong>{$lang->translate('price')}</strong>:
+            <span class="is-family-monospace">
+                {{ $purchaseData->getTariff()->getSmsCostGross() }} {{ $settings['currency'] }}
+            </span>
         </div>
         <br />
 
@@ -23,12 +25,14 @@
                 <tr>
                     <td class="has-text-right">{$lang->translate('sms_text')}</td>
                     <td style="width: 20px;"></td>
-                    <td class="has-text-left">{{ $smsCode }}</td>
+                    <td class="has-text-left is-family-monospace">{{ $smsCode }}</td>
                 </tr>
                 <tr>
                     <td class="has-text-right">{$lang->translate('sms_number')}</td>
                     <td></td>
-                    <td class="has-text-left">{{ $purchaseData->getTariff()->getNumber() }}</td>
+                    <td class="has-text-left is-family-monospace">
+                        {{ $purchaseData->getTariff()->getNumber() }}
+                    </td>
                 </tr>
                 <tr>
                     <td class="has-text-right">
@@ -42,7 +46,7 @@
                                     type="text"
                                     id="sms_code"
                                     name="sms_code"
-                                    class="input is-small"
+                                    class="input is-small is-family-monospace"
                                     maxlength="16"
                                 />
                             </div>

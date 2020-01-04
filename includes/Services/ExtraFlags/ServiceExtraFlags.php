@@ -1503,7 +1503,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         $row = $this->db->fetchArrayAssoc($result);
 
-        $this->db->query(
+        $statement = $this->db->query(
             $this->db->prepare(
                 "UPDATE `" .
                     TABLE_PREFIX .
@@ -1514,7 +1514,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             )
         );
 
-        if (!$this->db->affectedRows()) {
+        if (!$statement->rowCount()) {
             return [
                 'status' => "service_not_taken_over",
                 'text' => $this->lang->translate('service_not_taken_over'),

@@ -1,9 +1,9 @@
 <?php
 namespace App\Install;
 
-use App\Exceptions\SqlQueryException;
 use App\System\Application;
 use App\System\Database;
+use PDOException;
 
 class DatabaseMigration
 {
@@ -81,8 +81,9 @@ class DatabaseMigration
                     "LIMIT 1",
                 'name'
             );
-        } catch (SqlQueryException $e) {
-            if (preg_match("/Table .*ss_migrations.* doesn't exist/", $e->getError())) {
+        } catch (PDOException $e) {
+            // TODO Check shop install does work
+            if (preg_match("/Table .*ss_migrations.* doesn't exist/", $e->getMessage())) {
                 // It means that user has installed shop sms using old codebase,
                 // that is why we want to create migration table for him and also
                 // fake init migration so as not to overwrite his database

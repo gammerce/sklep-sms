@@ -3,7 +3,6 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
-use App\Repositories\PaymentPlatformRepository;
 use App\Repositories\SettingsRepository;
 use App\System\Application;
 use App\System\Auth;
@@ -20,7 +19,6 @@ class SettingsController
     public function put(
         Request $request,
         TranslationManager $translationManager,
-        PaymentPlatformRepository $paymentPlatformRepository,
         Heart $heart,
         Path $path,
         Auth $auth,
