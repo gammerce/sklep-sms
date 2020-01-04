@@ -56,15 +56,6 @@ return [
     'march' => 'Marzec',
     'may' => 'Maj',
     'minutes' => 'minut',
-    'mysqli_no_db_connection' => 'Nie można połączyć się z bazą danych!',
-    'mysqli_no_query_fetch_array' =>
-        'Nie można pozyskać tablicy, ponieważ id zapytania nie zostało podane!',
-    'mysqli_no_query_fetch_array_assoc' =>
-        'Nie można pobrać tablicy asocjacyjnej, ponieważ id zapytania nie zostało podane!',
-    'mysqli_no_query_num_rows' =>
-        'Nie można otrzymać liczby wierszy, ponieważ id zapytania nie zostało podane!',
-    'mysqli_no_server_connection' => 'Nie można utworzyć połączenia z serwerem bazy danych!',
-    'mysqli_query_error' => 'Wystąpił błąd w zapytaniu do bazy danych.',
     'name' => 'Nazwa',
     'next' => 'Dalej',
     'never' => 'Nigdy',

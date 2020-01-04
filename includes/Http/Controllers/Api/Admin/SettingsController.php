@@ -127,7 +127,7 @@ class SettingsController
             $keyLicenseToken = ",'license_password', 'license_login'";
         }
 
-        $db->query(
+        $statement = $db->query(
             $db->prepare(
                 "UPDATE `" .
                     TABLE_PREFIX .
@@ -181,7 +181,7 @@ class SettingsController
             )
         );
 
-        if ($db->affectedRows()) {
+        if ($statement->rowCount()) {
             log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('settings_admin_edit'),

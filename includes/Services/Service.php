@@ -153,7 +153,7 @@ abstract class Service
 
         $affected = 0;
         if (!empty($setData1)) {
-            $this->db->query(
+            $statement = $this->db->query(
                 "UPDATE `" .
                     TABLE_PREFIX .
                     "user_service` " .
@@ -162,11 +162,11 @@ abstract class Service
                     " " .
                     $where1
             );
-            $affected = max($affected, $this->db->affectedRows());
+            $affected = max($affected, $statement->rowCount());
         }
 
         if (!empty($setData2)) {
-            $this->db->query(
+            $statement = $this->db->query(
                 "UPDATE `" .
                     TABLE_PREFIX .
                     $this::USER_SERVICE_TABLE .
@@ -176,7 +176,7 @@ abstract class Service
                     " " .
                     $where2
             );
-            $affected = max($affected, $this->db->affectedRows());
+            $affected = max($affected, $statement->rowCount());
         }
 
         return $affected;

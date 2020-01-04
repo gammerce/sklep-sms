@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\Exceptions\SqlQueryException;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\HtmlResponse;
@@ -12,7 +11,7 @@ use App\Install\SetupManager;
 use App\System\Application;
 use App\System\Database;
 use App\System\Path;
-use App\Translation\TranslationManager;
+use PDOException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -21,14 +20,13 @@ class InstallController
     public function post(
         Request $request,
         RequirementsStore $requirementsStore,
-        TranslationManager $translationManager,
         SetupManager $setupManager,
         Path $path,
         Application $app
     ) {
         if ($setupManager->hasFailed()) {
             return new HtmlResponse(
-                'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku data/logs/install.log'
+                'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku data/logs/errors.log'
             );
         }
 
@@ -40,7 +38,6 @@ class InstallController
 
         $modules = $requirementsStore->getModules();
         $filesWithWritePermission = $requirementsStore->getFilesWithWritePermission();
-        $lang = $translationManager->user();
 
         $dbHost = $request->request->get('db_host');
         $dbPort = $request->request->get('db_port');
@@ -53,12 +50,10 @@ class InstallController
 
         try {
             $db = new Database($dbHost, $dbPort, $dbUser, $dbPassword, $dbDb);
-            $db->query("SET NAMES utf8");
+            $db->connect();
             $app->instance(Database::class, $db);
-        } catch (SqlQueryException $e) {
-            return new Response(
-                $lang->translate('mysqli_' . $e->getMessage()) . "\n\n" . $e->getError()
-            );
+        } catch (PDOException $e) {
+            return new Response($e->getMessage() . "\n\n" . $e->getCode());
         }
 
         /** @var SetupManager $setupManager */

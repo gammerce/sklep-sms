@@ -1,10 +1,9 @@
 <?php
 namespace App\Install;
 
-use App\Exceptions\SqlQueryException;
 use App\System\Application;
 use App\System\Database;
-use InvalidArgumentException;
+use PDOException;
 
 class ShopState
 {
@@ -39,31 +38,6 @@ class ShopState
             $this->requirementsStore->areFilesInCorrectState();
     }
 
-    public function getFileVersion()
-    {
-        return self::versionToInteger($this->app->version());
-    }
-
-    public function getMigrationFileVersion()
-    {
-        $migrations = $this->migrationFiles->getMigrations();
-
-        end($migrations);
-
-        return key($migrations);
-    }
-
-    public static function versionToInteger($version)
-    {
-        $exploded = explode('.', $version);
-
-        if (count($exploded) !== 3) {
-            throw new InvalidArgumentException('Invalid version');
-        }
-
-        return $exploded[0] * 10000 + $exploded[1] * 100 + $exploded[2];
-    }
-
     public static function isInstalled()
     {
         /** @var Database $db */
@@ -76,7 +50,7 @@ class ShopState
         try {
             $db->connect();
             return true;
-        } catch (SqlQueryException $e) {
+        } catch (PDOException $e) {
             return false;
         }
     }

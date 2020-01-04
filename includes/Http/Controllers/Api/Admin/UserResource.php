@@ -86,13 +86,13 @@ class UserResource
         $langShop = $translationManager->shop();
         $user = $auth->user();
 
-        $db->query(
+        $statement = $db->query(
             $db->prepare("DELETE FROM `" . TABLE_PREFIX . "users` " . "WHERE `uid` = '%d'", [
                 $userId,
             ])
         );
 
-        if ($db->affectedRows()) {
+        if ($statement->rowCount()) {
             log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('user_admin_delete'),

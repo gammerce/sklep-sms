@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Exceptions\SqlQueryException;
 use App\Http\Responses\ApiResponse;
 use App\Http\Services\ServiceService;
 use App\Repositories\ServiceRepository;
@@ -9,6 +8,7 @@ use App\Services\Interfaces\IServiceAdminManage;
 use App\System\Auth;
 use App\System\Heart;
 use App\Translation\TranslationManager;
+use PDOException;
 use Symfony\Component\HttpFoundation\Request;
 
 class ServiceResource
@@ -98,9 +98,9 @@ class ServiceResource
 
         try {
             $deleted = $serviceRepository->delete($serviceId);
-        } catch (SqlQueryException $e) {
+        } catch (PDOException $e) {
             // It is affiliated with something
-            if ($e->getErrorno() == 1451) {
+            if ($e->getCode() == 1451) {
                 return new ApiResponse(
                     "error",
                     $lang->translate('delete_service_er_row_is_referenced'),

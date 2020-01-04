@@ -56,13 +56,6 @@ return [
     'march' => 'March',
     'may' => 'May',
     'minutes' => 'minutes',
-    'mysqli_no_db_connection' => 'Could not connect to the database!',
-    'mysqli_no_query_fetch_array' => 'Could not fetch array because no query id was supplied!',
-    'mysqli_no_query_fetch_array_assoc' =>
-        'Could not fetch array assoc because no query id was supplied!',
-    'mysqli_no_query_num_rows' => 'Could not get number of rows because no query id was supplied!',
-    'mysqli_no_server_connection' => 'Could not create database connection!',
-    'mysqli_query_error' => 'Could not query database!',
     'name' => 'Name',
     'next' => 'Next',
     'never' => 'Never',
