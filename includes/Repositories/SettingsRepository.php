@@ -27,7 +27,7 @@ class SettingsRepository
             $keys[] = $this->db->prepare("'%s'", [$key]);
         }
 
-        $this->db->query(
+        $statement = $this->db->query(
             "UPDATE `" .
                 TABLE_PREFIX .
                 "settings` " .
@@ -39,6 +39,6 @@ class SettingsRepository
                 " )"
         );
 
-        return !!$this->db->affectedRows();
+        return !!$statement->rowCount();
     }
 }

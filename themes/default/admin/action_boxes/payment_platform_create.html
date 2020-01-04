@@ -1,0 +1,39 @@
+<form id="form_payment_platform_create" class="action_box">
+    <div class="service_main_info">
+        {$lang->translate('create_payment_platform')}
+    </div>
+    <table>
+        <tbody class="ftbody">
+            <tr>
+                <td>
+                    <label for="payment_module">{$lang->translate('payment_module')}</label>
+                </td>
+                <td>
+                    <div class="field">
+                        <div class="control">
+                            <div class="select is-small">
+                                <select id="payment_module" name="payment_module">
+                                    <option value=""
+                                        >{$lang->translate('choose_payment_module')}</option
+                                    >
+                                    {$paymentModules}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+
+        <tbody>
+            <tr>
+                <td colspan="2" class="line"></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" value="{$lang->translate('add')}" class="button w100" />
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</form>

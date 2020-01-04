@@ -128,11 +128,6 @@ class MigrateTransactionServices extends Migration
             //
         }
 
-        $this->db->query(
-            "DROP TABLE IF EXISTS `ss_transaction_services`"
-        );
-
-        // TODO Use data fields from transaction_services
-        // TODO Do not allow default payment platform if not set
+        $this->db->query("DROP TABLE IF EXISTS `ss_transaction_services`");
     }
 }

@@ -5,6 +5,7 @@ use App\Exceptions\UnauthorizedException;
 use App\Html\BodyRow;
 use App\Html\Cell;
 use App\Html\HeadCell;
+use App\Html\Option;
 use App\Html\Structure;
 use App\Html\Wrapper;
 use App\Models\PaymentPlatform;
@@ -72,7 +73,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
             throw new UnauthorizedException();
         }
 
-        $output = $this->getActionBoxContent($boxId, $query['id']);
+        $output = $this->getActionBoxContent($boxId, $query);
 
         return [
             'status' => 'ok',
@@ -80,26 +81,34 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
         ];
     }
 
-    private function getActionBoxContent($boxId, $paymentPlatformId)
+    private function getActionBoxContent($boxId, array $query)
     {
-        $paymentPlatform = $this->paymentPlatformRepository->getOrFail($paymentPlatformId);
+        if ($boxId === "create") {
+            $paymentModules = array_map(function ($paymentModuleId) {
+                return new Option($paymentModuleId, $paymentModuleId);
+            }, $this->heart->getPaymentModuleIds());
 
-        switch ($boxId) {
-            case "create":
-                // TODO Implement it
-                return "";
+            // TODO Display additional fields on selecting payment platform
+            // TODO Use data fields from transaction_services
+            // TODO Do not allow selecting default for server's payment platform if settings are empty
 
-            case "edit":
-                $dataFields = $this->renderDataFields($paymentPlatform);
-
-                return $this->template->render(
-                    "admin/action_boxes/payment_platform_edit",
-                    compact('paymentPlatform', 'dataFields')
-                );
-
-            default:
-                return '';
+            return $this->template->render("admin/action_boxes/payment_platform_create", [
+                'paymentModules' => implode("", $paymentModules),
+            ]);
         }
+
+        if ($boxId === "edit") {
+            $paymentPlatformId = array_get($query, 'id');
+            $paymentPlatform = $this->paymentPlatformRepository->getOrFail($paymentPlatformId);
+            $dataFields = $this->renderDataFields($paymentPlatform);
+
+            return $this->template->render(
+                "admin/action_boxes/payment_platform_edit",
+                compact('paymentPlatform', 'dataFields')
+            );
+        }
+
+        return '';
     }
 
     private function renderDataFields(PaymentPlatform $paymentPlatform)

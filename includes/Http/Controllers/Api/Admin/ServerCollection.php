@@ -24,7 +24,7 @@ class ServerCollection
         $name = $request->request->get('name');
         $ip = trim($request->request->get('ip'));
         $port = trim($request->request->get('port'));
-        $smsPlatform = $request->request->get('sms_platform');
+        $smsPlatform = $request->request->get('sms_platform') ?: null;
 
         $serverService->validateBody($request->request->all());
 

@@ -3,7 +3,6 @@ namespace App\Repositories;
 
 use App\Exceptions\EntityNotFoundException;
 use App\Models\PaymentPlatform;
-use App\Models\Server;
 use App\System\Database;
 
 class PaymentPlatformRepository
@@ -18,15 +17,13 @@ class PaymentPlatformRepository
 
     public function create($name, $module, array $data = [])
     {
-        $this->db->query(
-            $this->db->prepare(
-                "INSERT INTO `" .
-                    TABLE_PREFIX .
-                    "payment_platforms` " .
-                    "SET `name` = '%s', `module` = '%s', `data` = '%s'",
-                [$name, $module, json_encode($data)]
-            )
+        $statement = $this->db->statement(
+            "INSERT INTO `" .
+                TABLE_PREFIX .
+                "payment_platforms` " .
+                "SET `name` = ?, `module` = ?, `data` = ?"
         );
+        $statement->execute([$name, $module, json_encode($data)]);
 
         return $this->get($this->db->lastId());
     }
@@ -36,10 +33,11 @@ class PaymentPlatformRepository
      */
     public function all()
     {
-        $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "payment_platforms`");
+        $statement = $this->db->statement("SELECT * FROM `" . TABLE_PREFIX . "payment_platforms`");
+        $statement->execute();
 
         $platforms = [];
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        while ($row = $statement->fetch()) {
             $platforms[] = $this->mapToModel($row);
         }
 
@@ -49,14 +47,12 @@ class PaymentPlatformRepository
     public function get($id)
     {
         if ($id) {
-            $result = $this->db->query(
-                $this->db->prepare(
-                    "SELECT * FROM `" . TABLE_PREFIX . "payment_platforms` WHERE `id` = '%d'",
-                    [$id]
-                )
+            $statement = $this->db->statement(
+                "SELECT * FROM `" . TABLE_PREFIX . "payment_platforms` WHERE `id` = ?"
             );
+            $statement->execute([$id]);
 
-            if ($data = $this->db->fetchArrayAssoc($result)) {
+            if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
             }
         }
@@ -75,14 +71,11 @@ class PaymentPlatformRepository
 
     public function delete($id)
     {
-        $this->db->query(
-            $this->db->prepare(
-                "DELETE FROM `" . TABLE_PREFIX . "payment_platforms` " . "WHERE `id` = '%d'",
-                [$id]
-            )
+        $statement = $this->db->statement(
+            "DELETE FROM `" . TABLE_PREFIX . "payment_platforms` WHERE `id` = ?"
         );
-
-        return !!$this->db->affectedRows();
+        $statement->execute([$id]);
+        return !!$statement->rowCount();
     }
 
     public function mapToModel(array $data)

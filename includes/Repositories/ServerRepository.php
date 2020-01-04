@@ -2,7 +2,6 @@
 namespace App\Repositories;
 
 use App\Models\Server;
-use App\Models\User;
 use App\System\Database;
 
 class ServerRepository
@@ -20,10 +19,11 @@ class ServerRepository
      */
     public function all()
     {
-        $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "servers`");
+        $statement = $this->db->statement("SELECT * FROM `" . TABLE_PREFIX . "servers`");
+        $statement->execute();
 
         $servers = [];
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        while ($row = $statement->fetch()) {
             $servers[] = $this->mapToModel($row);
         }
 
@@ -33,14 +33,12 @@ class ServerRepository
     public function get($id)
     {
         if ($id) {
-            $result = $this->db->query(
-                $this->db->prepare(
-                    "SELECT * FROM `" . TABLE_PREFIX . "servers` WHERE `id` = '%d'",
-                    [$id]
-                )
+            $statement = $this->db->statement(
+                "SELECT * FROM `" . TABLE_PREFIX . "servers` WHERE `id` = ?"
             );
+            $statement->execute([$id]);
 
-            if ($data = $this->db->fetchArrayAssoc($result)) {
+            if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
             }
         }
@@ -48,17 +46,16 @@ class ServerRepository
         return null;
     }
 
-    public function create($name, $ip, $port, $smsPlatform = '')
+    public function create($name, $ip, $port, $smsPlatform = null)
     {
-        $this->db->query(
-            $this->db->prepare(
+        $this->db
+            ->statement(
                 "INSERT INTO `" .
                     TABLE_PREFIX .
                     "servers` " .
-                    "SET `name`='%s', `ip`='%s', `port`='%s', `sms_platform`='%s'",
-                [$name, $ip, $port, $smsPlatform]
+                    "SET `name` = ?, `ip` = ?, `port` = ?, `sms_platform` = ?"
             )
-        );
+            ->execute([$name, $ip, $port, $smsPlatform]);
 
         return $this->get($this->db->lastId());
     }
@@ -78,13 +75,11 @@ class ServerRepository
 
     public function delete($id)
     {
-        $this->db->query(
-            $this->db->prepare("DELETE FROM `" . TABLE_PREFIX . "servers` " . "WHERE `id` = '%d'", [
-                $id,
-            ])
+        $statement = $this->db->statement(
+            "DELETE FROM `" . TABLE_PREFIX . "servers` WHERE `id` = ?"
         );
-
-        return !!$this->db->affectedRows();
+        $statement->execute([$id]);
+        return !!$statement->rowCount();
     }
 
     private function mapToModel(array $data)

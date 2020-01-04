@@ -13,6 +13,7 @@ return [
     'change_password' => 'Change password',
     'charge_wallet' => 'Wallet Charge',
     'choose_payment' => 'Choose payment',
+    'choose_payment_module' => 'Choose payment module',
     'clear' => 'Clear',
     'contact_info' => 'You can contact us on the following ways.',
     'create_account' => 'Create account',

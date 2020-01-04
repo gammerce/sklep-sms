@@ -201,6 +201,11 @@ class Heart
         return array_key_exists($moduleId, $this->paymentModuleClasses);
     }
 
+    public function getPaymentModuleIds()
+    {
+        return array_keys($this->paymentModuleClasses);
+    }
+
     /**
      * @param PaymentPlatform $paymentPlatform
      * @return PaymentModule|null
