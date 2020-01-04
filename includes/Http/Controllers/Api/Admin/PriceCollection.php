@@ -32,7 +32,7 @@ class PriceCollection
             $price = $priceRepository->create($service, $tariff, $amount, $server);
         } catch (PDOException $e) {
             // Duplication
-            if ($e->getCode() === 1062) {
+            if (get_error_code($e) === 1062) {
                 return new ApiResponse("error", $lang->translate('create_price_duplication'), 0);
             }
 

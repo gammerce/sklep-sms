@@ -22,8 +22,6 @@ class Database
     /** @var string */
     private $port;
 
-    private $link;
-
     /** @var PDO */
     private $pdo;
 
@@ -70,8 +68,7 @@ class Database
      */
     public function selectDb($name)
     {
-        $statement = $this->pdo->prepare("USE ?");
-        $statement->execute([$name]);
+        $this->pdo->exec("USE `$name`");
     }
 
     public function close()
@@ -104,10 +101,7 @@ class Database
             $this->connect();
         }
 
-        $statement = $this->pdo->prepare($query);
-        $statement->execute();
-
-        return $statement;
+        return $this->pdo->query($query);
     }
 
     public function statement($statement)
@@ -127,14 +121,8 @@ class Database
      */
     public function getColumn($query, $column)
     {
-        if (!$this->isConnected()) {
-            $this->connect();
-        }
-
-        $statement = $this->pdo->prepare($query);
-        $statement->execute();
+        $statement = $this->query($query);
         $row = $statement->fetch();
-
         return array_get($row, $column);
     }
 
@@ -155,7 +143,8 @@ class Database
 
     public function escape($str)
     {
-        return $this->pdo->quote($str);
+        $quote = $this->pdo->quote($str);
+        return preg_replace("/(^'|'$)/", '', $quote);
     }
 
     public function startTransaction()
@@ -206,11 +195,11 @@ class Database
 
     public function createDatabaseIfNotExists($database)
     {
-        $this->pdo->prepare("CREATE DATABASE IF NOT EXISTS ?")->execute([$database]);
+        $this->query("CREATE DATABASE IF NOT EXISTS `$database`");
     }
 
     public function isConnected()
     {
-        return $this->link !== null;
+        return $this->pdo !== null;
     }
 }

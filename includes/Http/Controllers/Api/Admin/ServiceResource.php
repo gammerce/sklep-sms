@@ -100,7 +100,7 @@ class ServiceResource
             $deleted = $serviceRepository->delete($serviceId);
         } catch (PDOException $e) {
             // It is affiliated with something
-            if ($e->getCode() == 1451) {
+            if (get_error_code($e) == 1451) {
                 return new ApiResponse(
                     "error",
                     $lang->translate('delete_service_er_row_is_referenced'),

@@ -53,7 +53,7 @@ class InstallController
             $db->connect();
             $app->instance(Database::class, $db);
         } catch (PDOException $e) {
-            return new Response($e->getMessage() . "\n\n" . $e->getCode());
+            return new Response($e->getMessage());
         }
 
         /** @var SetupManager $setupManager */

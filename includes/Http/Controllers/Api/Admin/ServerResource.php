@@ -71,7 +71,7 @@ class ServerResource
                 ])
             );
         } catch (PDOException $e) {
-            if ($e->getCode() == 1451) {
+            if (get_error_code($e) === 1451) {
                 return new ApiResponse(
                     "error",
                     $lang->translate('delete_server_constraint_fails'),
