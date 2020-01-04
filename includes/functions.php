@@ -958,3 +958,8 @@ function format_warnings(array $warnings)
 
     return $output;
 }
+
+function get_error_code(PDOException $e)
+{
+    return $e->errorInfo[1];
+}

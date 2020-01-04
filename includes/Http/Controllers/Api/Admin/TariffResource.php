@@ -34,7 +34,7 @@ class TariffResource
             throw new ValidationException($warnings);
         }
 
-        $db->query(
+        $statement = $db->query(
             $db->prepare(
                 "UPDATE `" .
                     TABLE_PREFIX .
@@ -44,9 +44,8 @@ class TariffResource
                 [$provision * 100, $tariffId]
             )
         );
-        $affected = $db->affectedRows();
 
-        if ($affected || $db->affectedRows()) {
+        if ($statement->rowCount()) {
             log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('tariff_admin_edit'),
@@ -71,7 +70,7 @@ class TariffResource
         $langShop = $translationManager->shop();
         $user = $auth->user();
 
-        $db->query(
+        $statement = $db->query(
             $db->prepare(
                 "DELETE FROM `" .
                     TABLE_PREFIX .
@@ -80,7 +79,7 @@ class TariffResource
             )
         );
 
-        if ($db->affectedRows()) {
+        if ($statement->rowCount()) {
             log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('tariff_admin_delete'),

@@ -11,12 +11,11 @@ class LogResource
     {
         $lang = $translationManager->user();
 
-        $db->query(
+        $statement = $db->query(
             $db->prepare("DELETE FROM `" . TABLE_PREFIX . "logs` " . "WHERE `id` = '%d'", [$logId])
         );
 
-        // Zwróć info o prawidłowym lub błędnym usunieciu
-        if ($db->affectedRows()) {
+        if ($statement->rowCount()) {
             return new ApiResponse('ok', $lang->translate('delete_log'), 1);
         }
 

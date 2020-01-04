@@ -37,7 +37,7 @@ class TransactionServiceResource
             $arr[$key] = $request->request->get($key);
         }
 
-        $db->query(
+        $statement = $db->query(
             $db->prepare(
                 "UPDATE `" .
                     TABLE_PREFIX .
@@ -48,7 +48,7 @@ class TransactionServiceResource
             )
         );
 
-        if ($db->affectedRows()) {
+        if ($statement->rowCount()) {
             log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('payment_admin_edit'),

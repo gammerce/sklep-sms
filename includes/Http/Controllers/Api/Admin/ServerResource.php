@@ -1,12 +1,12 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Exceptions\SqlQueryException;
 use App\Http\Responses\ApiResponse;
 use App\Http\Services\ServerService;
 use App\System\Auth;
 use App\System\Database;
 use App\Translation\TranslationManager;
+use PDOException;
 use Symfony\Component\HttpFoundation\Request;
 
 class ServerResource
@@ -65,14 +65,13 @@ class ServerResource
         $user = $auth->user();
 
         try {
-            $db->query(
+            $statement = $db->query(
                 $db->prepare("DELETE FROM `" . TABLE_PREFIX . "servers` WHERE `id` = '%s'", [
                     $serverId,
                 ])
             );
-        } catch (SqlQueryException $e) {
-            if ($e->getErrorno() == 1451) {
-                // Istnieją powiązania
+        } catch (PDOException $e) {
+            if (get_error_code($e) === 1451) {
                 return new ApiResponse(
                     "error",
                     $lang->translate('delete_server_constraint_fails'),
@@ -83,7 +82,7 @@ class ServerResource
             throw $e;
         }
 
-        if ($db->affectedRows()) {
+        if ($statement->rowCount()) {
             log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('server_admin_delete'),

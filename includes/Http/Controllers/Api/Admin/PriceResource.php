@@ -29,7 +29,7 @@ class PriceResource
 
         $priceService->validateBody($request->request->all());
 
-        $db->query(
+        $statement = $db->query(
             $db->prepare(
                 "UPDATE `" .
                     TABLE_PREFIX .
@@ -40,7 +40,7 @@ class PriceResource
             )
         );
 
-        if ($db->affectedRows()) {
+        if ($statement->rowCount()) {
             log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('price_admin_edit'),
@@ -65,13 +65,13 @@ class PriceResource
         $langShop = $translationManager->shop();
         $user = $auth->user();
 
-        $db->query(
+        $statement = $db->query(
             $db->prepare("DELETE FROM `" . TABLE_PREFIX . "pricelist` WHERE `id` = '%d'", [
                 $priceId,
             ])
         );
 
-        if ($db->affectedRows()) {
+        if ($statement->rowCount()) {
             log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('price_admin_delete'),

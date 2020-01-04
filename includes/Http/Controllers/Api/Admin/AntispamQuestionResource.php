@@ -20,13 +20,13 @@ class AntispamQuestionResource
         $langShop = $translationManager->shop();
         $user = $auth->user();
 
-        $db->query(
+        $statement = $db->query(
             $db->prepare("DELETE FROM `" . TABLE_PREFIX . "antispam_questions` WHERE `id` = '%d'", [
                 $antispamQuestionId,
             ])
         );
 
-        if ($db->affectedRows()) {
+        if ($statement->rowCount()) {
             log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('question_delete'),
@@ -71,7 +71,7 @@ class AntispamQuestionResource
             throw new ValidationException($warnings);
         }
 
-        $db->query(
+        $statement = $db->query(
             $db->prepare(
                 "UPDATE `" .
                     TABLE_PREFIX .
@@ -82,7 +82,7 @@ class AntispamQuestionResource
             )
         );
 
-        if ($db->affectedRows()) {
+        if ($statement->rowCount()) {
             log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('question_edit'),

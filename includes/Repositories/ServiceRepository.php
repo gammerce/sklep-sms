@@ -100,7 +100,7 @@ class ServiceRepository
         $types,
         $flags
     ) {
-        $this->db->query(
+        $statement = $this->db->query(
             $this->db->prepare(
                 "UPDATE `" .
                     TABLE_PREFIX .
@@ -123,19 +123,19 @@ class ServiceRepository
             )
         );
 
-        return $this->db->affectedRows();
+        return !!$statement->rowCount();
     }
 
     public function delete($id)
     {
-        $this->db->query(
+        $statement = $this->db->query(
             $this->db->prepare(
                 "DELETE FROM `" . TABLE_PREFIX . "services` " . "WHERE `id` = '%s'",
                 [$id]
             )
         );
 
-        return $this->db->affectedRows();
+        return !!$statement->rowCount();
     }
 
     private function mapToModel(array $data)

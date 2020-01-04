@@ -36,7 +36,7 @@ class SetupController
 
         if ($setupManager->hasFailed()) {
             return new PlainResponse(
-                'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku data/logs/install.log'
+                'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku data/logs/errors.log'
             );
         }
 

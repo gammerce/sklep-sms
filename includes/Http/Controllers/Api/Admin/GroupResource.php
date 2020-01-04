@@ -35,7 +35,7 @@ class GroupResource
             ]);
         }
 
-        $db->query(
+        $statement = $db->query(
             $db->prepare(
                 "UPDATE `" .
                     TABLE_PREFIX .
@@ -46,7 +46,7 @@ class GroupResource
             )
         );
 
-        if ($db->affectedRows()) {
+        if ($statement->rowCount()) {
             log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('group_admin_edit'),
@@ -71,11 +71,11 @@ class GroupResource
         $langShop = $translationManager->shop();
         $user = $auth->user();
 
-        $db->query(
+        $statement = $db->query(
             $db->prepare("DELETE FROM `" . TABLE_PREFIX . "groups` WHERE `id` = '%d'", [$groupId])
         );
 
-        if ($db->affectedRows()) {
+        if ($statement->rowCount()) {
             log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('group_admin_delete'),

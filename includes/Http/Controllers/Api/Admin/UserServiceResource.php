@@ -79,19 +79,17 @@ class UserServiceResource
             );
         }
 
-        // Usunięcie usługi użytkownika
-        $db->query(
+        $statement = $db->query(
             $db->prepare("DELETE FROM `" . TABLE_PREFIX . "user_service` " . "WHERE `id` = '%d'", [
                 $userService['id'],
             ])
         );
-        $affected = $db->affectedRows();
 
         if ($serviceModule !== null) {
             $serviceModule->userServiceDeletePost($userService);
         }
 
-        if ($affected) {
+        if ($statement->rowCount()) {
             log_to_db(
                 $langShop->sprintf(
                     $langShop->translate('user_service_admin_delete'),
