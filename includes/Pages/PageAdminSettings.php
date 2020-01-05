@@ -47,7 +47,7 @@ class PageAdminSettings extends PageAdmin
                 $smsPlatforms[] = create_dom_element("option", $paymentPlatform->getName(), [
                     'value' => $paymentPlatform->getId(),
                     'selected' =>
-                        $paymentPlatform->getId() == $this->settings['sms_platform']
+                        $paymentPlatform->getId() === $this->settings->getSmsPlatformId()
                             ? "selected"
                             : "",
                 ]);
@@ -57,7 +57,7 @@ class PageAdminSettings extends PageAdmin
                 $transferPlatforms[] = create_dom_element("option", $paymentPlatform->getName(), [
                     'value' => $paymentPlatform->getId(),
                     'selected' =>
-                        $paymentPlatform->getId() == $this->settings['transfer_platform']
+                        $paymentPlatform->getId() === $this->settings->getTransferPlatformId()
                             ? "selected"
                             : "",
                 ]);

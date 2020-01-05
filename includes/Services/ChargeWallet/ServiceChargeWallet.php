@@ -51,19 +51,17 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         $smsBody = '';
         $transferBody = '';
 
-        if (strlen($this->settings['sms_platform'])) {
+        if ($this->settings->getSmsPlatformId()) {
             $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
-                $this->settings['sms_platform']
+                $this->settings->getSmsPlatformId()
             );
 
-            // Pobieramy opcję wyboru doładowania za pomocą SMS
             $optionSms = $this->template->render("services/charge_wallet/option_sms");
 
-            $smsList = "";
+            $smsList = [];
             foreach ($paymentModule->getTariffs() as $tariff) {
                 $provision = number_format($tariff->getProvision() / 100.0, 2);
-                // Przygotowuje opcje wyboru
-                $smsList .= create_dom_element(
+                $smsList[] = create_dom_element(
                     "option",
                     $this->lang->sprintf(
                         $this->lang->translate('charge_sms_option'),
@@ -78,14 +76,12 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
                 );
             }
 
-            $smsBody = $this->template->render(
-                "services/charge_wallet/sms_body",
-                compact('smsList')
-            );
+            $smsBody = $this->template->render("services/charge_wallet/sms_body", [
+                'smsList' => implode("", $smsList),
+            ]);
         }
 
-        if (strlen($this->settings['transfer_platform'])) {
-            // Pobieramy opcję wyboru doładowania za pomocą przelewu
+        if ($this->settings->getTransferPlatformId()) {
             $optionTransfer = $this->template->render("services/charge_wallet/option_transfer");
             $transferBody = $this->template->render("services/charge_wallet/transfer_body");
         }

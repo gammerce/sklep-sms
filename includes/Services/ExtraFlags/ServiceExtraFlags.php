@@ -1571,7 +1571,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     private function tariffs_for_server($serverId)
     {
         $server = $this->heart->getServer($serverId);
-        $smsPlatformId = $server->getSmsPlatformId() ?: $this->settings['sms_platform'];
+        $smsPlatformId = $server->getSmsPlatformId() ?: $this->settings->getSmsPlatformId();
         $paymentPlatform = $this->paymentPlatformRepository->get($smsPlatformId);
         $paymentModule = $paymentPlatform ? $paymentPlatform->getModuleId() : '';
 

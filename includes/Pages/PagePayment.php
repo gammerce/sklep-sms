@@ -77,7 +77,7 @@ class PagePayment extends Page
                 : "0.00";
 
         if (
-            strlen($this->settings['transfer_platform']) &&
+            $this->settings->getTransferPlatformId() &&
             $purchaseData->getPayment('cost') !== null &&
             $purchaseData->getPayment('cost') > 1 &&
             !$purchaseData->getPayment('no_transfer')

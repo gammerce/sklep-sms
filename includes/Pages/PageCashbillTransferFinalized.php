@@ -19,12 +19,12 @@ class PageCashbillTransferFinalized extends Page
     protected function content(array $query, array $body)
     {
         $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
-            $this->settings['transfer_platform']
+            $this->settings->getTransferPlatformId()
         );
 
         if (!($paymentModule instanceof Cashbill)) {
             throw new InvalidConfigException(
-                "Invalid payment platform in shop settings [{$this->settings['transfer_platform']}]."
+                "Invalid payment platform in shop settings [{$this->settings->getTransferPlatformId()}]."
             );
         }
 

@@ -71,10 +71,9 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
     {
         $user = $this->auth->user();
 
-        $paymentPlatform = $this->heart->getPaymentModuleByPlatformIdOrFail(
-            $this->settings['sms_platform']
+        $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
+            $this->settings->getSmsPlatformId()
         );
-        $paymentModuleId = $paymentPlatform ? $paymentPlatform->getModuleId() : '';
 
         // Get tariffs
         $result = $this->db->query(
@@ -91,7 +90,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                     "sms_numbers` AS sn ON sn.tariff = p.tariff AND sn.service = '%s' " .
                     "WHERE p.service = '%s' " .
                     "ORDER BY t.provision ASC",
-                [$paymentModuleId, $this->service->getId()]
+                [$paymentModule->getModuleId(), $this->service->getId()]
             )
         );
 

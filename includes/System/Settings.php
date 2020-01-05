@@ -132,7 +132,6 @@ LEFT JOIN `" .
             TABLE_PREFIX .
             "payment_code` AS pc ON bs.payment = 'service_code' AND pc.id = bs.payment_id)";
 
-        // Ustawianie strefy
         if ($this->settings['timezone']) {
             date_default_timezone_set($this->settings['timezone']);
         }
@@ -141,7 +140,7 @@ LEFT JOIN `" .
             ? $this->settings['date_format']
             : "Y-m-d H:i";
 
-        // Sprawdzanie czy taki szablon istnieje, jak nie to ustaw defaultowy
+        // Fallback to default theme if selected does not exist
         $this->settings['theme'] = file_exists($this->path->to("themes/{$this->settings['theme']}"))
             ? $this->settings['theme']
             : "default";
@@ -154,7 +153,9 @@ LEFT JOIN `" .
      */
     public function getSmsPlatformId()
     {
-        return array_get($this->settings, "sms_platform");
+        return isset($this->settings["sms_platform"])
+            ? intval($this->settings["sms_platform"])
+            : null;
     }
 
     /**
@@ -162,7 +163,9 @@ LEFT JOIN `" .
      */
     public function getTransferPlatformId()
     {
-        return array_get($this->settings, "transfer_platform");
+        return isset($this->settings["transfer_platform"])
+            ? intval($this->settings["transfer_platform"])
+            : null;
     }
 
     private function prepareValue($key, $value)

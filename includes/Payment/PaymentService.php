@@ -83,11 +83,12 @@ class PaymentService
         $paymentModule = null;
         if ($purchase->getPayment('method') == Purchase::METHOD_SMS) {
             $paymentPlatformId =
-                $purchase->getPayment('sms_platform') ?: $this->settings['sms_platform'];
+                $purchase->getPayment('sms_platform') ?: $this->settings->getSmsPlatformId();
             $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail($paymentPlatformId);
         } elseif ($purchase->getPayment('method') == Purchase::METHOD_TRANSFER) {
             $paymentPlatformId =
-                $purchase->getPayment('transfer_platform') ?: $this->settings['transfer_platform'];
+                $purchase->getPayment('transfer_platform') ?:
+                $this->settings->getTransferPlatformId();
             $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail($paymentPlatformId);
         }
 
