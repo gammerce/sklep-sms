@@ -5,13 +5,12 @@ use App\Exceptions\LicenseRequestException;
 use App\Models\Purchase;
 use App\Repositories\BoughtServiceRepository;
 use App\Repositories\PaymentPlatformRepository;
-use App\System\License;
 use App\Requesting\Response;
 use App\Services\ExtraFlags\ExtraFlagType;
+use App\System\License;
 use App\System\Settings;
 use App\Verification\PaymentModules\Gosetti;
-use App\Verification\Results\SmsSuccessResult;
-use Mockery;
+use Tests\Psr4\Concerns\PaymentModuleFactoryConcern;
 use Tests\Psr4\Concerns\RequesterConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 
@@ -21,11 +20,13 @@ use Tests\Psr4\TestCases\HttpTestCase;
 class PurchaseServiceFromServerTest extends HttpTestCase
 {
     use RequesterConcern;
+    use PaymentModuleFactoryConcern;
 
     protected function setUp()
     {
         parent::setUp();
         $this->mockRequester();
+        $this->mockPaymentModuleFactory();
     }
 
     /** @test */
@@ -117,8 +118,10 @@ class PurchaseServiceFromServerTest extends HttpTestCase
         ]);
     }
 
-    protected function mockGoSetti()
+    private function mockGoSetti()
     {
+        $this->makeVerifySmsSuccessful(Gosetti::class);
+
         $this->requesterMock
             ->shouldReceive('get')
             ->withArgs(['https://gosetti.pl/Api/SmsApiV2GetData.php'])
@@ -131,9 +134,5 @@ class PurchaseServiceFromServerTest extends HttpTestCase
                     ])
                 )
             );
-
-        $gosetti = Mockery::mock($this->app->make(Gosetti::class))->makePartial();
-        $gosetti->shouldReceive('verifySms')->andReturn(new SmsSuccessResult());
-        $this->app->instance(Gosetti::class, $gosetti);
     }
 }

@@ -39,9 +39,9 @@ class SmsPaymentService
 
     /**
      * @param SupportSms $paymentModule
-     * @param string        $code
-     * @param Tariff        $tariff
-     * @param User          $user
+     * @param string     $code
+     * @param Tariff     $tariff
+     * @param User       $user
      * @return array
      */
     public function payWithSms(SupportSms $paymentModule, $code, Tariff $tariff, User $user)
@@ -49,7 +49,6 @@ class SmsPaymentService
         $smsNumber = $tariff->getNumber();
 
         $result = $this->tryToUseSmsCode($code, $tariff);
-
         if ($result) {
             return $this->storePaymentSms($paymentModule, $result, $code, $smsNumber, $user);
         }
@@ -58,7 +57,7 @@ class SmsPaymentService
             $result = $paymentModule->verifySms($code, $smsNumber);
         } catch (BadNumberException $e) {
             if ($e->tariffId !== null) {
-                $this->addSmsCode($code, $e->tariffId, $tariff, $user);
+                $this->addSmsCodeToBeReused($code, $e->tariffId, $tariff, $user);
             }
 
             return [
@@ -67,8 +66,8 @@ class SmsPaymentService
             ];
         } catch (SmsPaymentException $e) {
             log_to_db(
-                $this->langShop->sprintf(
-                    $this->langShop->translate('bad_sms_code_used'),
+                $this->langShop->t(
+                    'bad_sms_code_used',
                     $user->getUsername(),
                     $user->getUid(),
                     $user->getLastIp(),
@@ -155,11 +154,7 @@ class SmsPaymentService
         );
 
         log_to_db(
-            $this->langShop->sprintf(
-                $this->langShop->translate('payment_remove_code_from_db'),
-                $dbCode['code'],
-                $dbCode['tariff']
-            )
+            $this->langShop->t('payment_remove_code_from_db', $dbCode['code'], $dbCode['tariff'])
         );
 
         return new SmsSuccessResult(!!$dbCode['free']);
@@ -171,9 +166,8 @@ class SmsPaymentService
      * @param Tariff $expectedTariff
      * @param User $user
      */
-    private function addSmsCode($code, $tariffId, Tariff $expectedTariff, User $user)
+    private function addSmsCodeToBeReused($code, $tariffId, Tariff $expectedTariff, User $user)
     {
-        // Dodajemy kod do listy kodów do wykorzystania
         $this->db->query(
             $this->db->prepare(
                 "INSERT INTO `" .
@@ -185,8 +179,8 @@ class SmsPaymentService
         );
 
         log_to_db(
-            $this->langShop->sprintf(
-                $this->langShop->translate('add_code_to_reuse'),
+            $this->langShop->t(
+                'add_code_to_reuse',
                 $code,
                 $tariffId,
                 $user->getUsername(),
@@ -199,16 +193,8 @@ class SmsPaymentService
 
     private function getSmsExceptionMessage(SmsPaymentException $e)
     {
-        if ($e->getMessage()) {
-            return $e->getMessage();
-        }
-
-        $text = $this->lang->translate('sms_info_' . $e->getErrorCode());
-
-        if (strlen($text)) {
-            return $text;
-        }
-
-        return $e->getErrorCode();
+        return $e->getMessage() ?:
+            $this->lang->t('sms_info_' . $e->getErrorCode()) ?:
+            $e->getErrorCode();
     }
 }

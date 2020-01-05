@@ -8,19 +8,20 @@ use App\Requesting\Response;
 use App\Services\ExtraFlags\ExtraFlagType;
 use App\System\Settings;
 use App\Verification\PaymentModules\Gosetti;
-use App\Verification\Results\SmsSuccessResult;
-use Mockery;
+use Tests\Psr4\Concerns\PaymentModuleFactoryConcern;
 use Tests\Psr4\Concerns\RequesterConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class PurchaseResourceSmsTest extends HttpTestCase
 {
     use RequesterConcern;
+    use PaymentModuleFactoryConcern;
 
     protected function setUp()
     {
         parent::setUp();
         $this->mockRequester();
+        $this->mockPaymentModuleFactory();
     }
 
     /** @test */
@@ -96,8 +97,9 @@ class PurchaseResourceSmsTest extends HttpTestCase
         $this->assertEquals(Purchase::METHOD_SMS, $boughtService->getMethod());
     }
 
-    protected function mockGoSetti()
+    private function mockGoSetti()
     {
+        $this->makeVerifySmsSuccessful(Gosetti::class);
         $this->requesterMock
             ->shouldReceive('get')
             ->withArgs(['https://gosetti.pl/Api/SmsApiV2GetData.php'])
@@ -110,9 +112,5 @@ class PurchaseResourceSmsTest extends HttpTestCase
                     ])
                 )
             );
-
-        $gosetti = Mockery::mock($this->app->make(Gosetti::class))->makePartial();
-        $gosetti->shouldReceive('verifySms')->andReturn(new SmsSuccessResult());
-        $this->app->instance(Gosetti::class, $gosetti);
     }
 }

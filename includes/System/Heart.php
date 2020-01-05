@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Pages\Page;
 use App\Pages\PageSimple;
+use App\Payment\PaymentModuleFactory;
 use App\Repositories\PaymentPlatformRepository;
 use App\Repositories\ServerRepository;
 use App\Repositories\ServiceRepository;
@@ -26,6 +27,9 @@ use Exception;
 
 class Heart
 {
+    /** @var Application */
+    private $app;
+
     /** @var Database */
     private $db;
 
@@ -46,6 +50,9 @@ class Heart
 
     /** @var PaymentPlatformRepository */
     private $paymentPlatformRepository;
+
+    /** @var PaymentModuleFactory */
+    private $paymentModuleFactory;
 
     /** @var Server[] */
     private $servers = [];
@@ -77,13 +84,15 @@ class Heart
     private $styles = [];
 
     public function __construct(
+        Application $app,
         Database $db,
         Settings $settings,
         Template $template,
         UserRepository $userRepository,
         ServiceRepository $serviceRepository,
         ServerRepository $serverRepository,
-        PaymentPlatformRepository $paymentPlatformRepository
+        PaymentPlatformRepository $paymentPlatformRepository,
+        PaymentModuleFactory $paymentModuleFactory
     ) {
         $this->db = $db;
         $this->settings = $settings;
@@ -92,6 +101,8 @@ class Heart
         $this->serviceRepository = $serviceRepository;
         $this->serverRepository = $serverRepository;
         $this->paymentPlatformRepository = $paymentPlatformRepository;
+        $this->paymentModuleFactory = $paymentModuleFactory;
+        $this->app = $app;
     }
 
     /**
@@ -131,7 +142,7 @@ class Heart
 
         $className = $this->servicesClasses[$service->getModule()]['class'];
 
-        return strlen($className) ? app()->makeWith($className, compact('service')) : null;
+        return $className ? $this->app->makeWith($className, compact('service')) : null;
     }
 
     /**
@@ -152,7 +163,7 @@ class Heart
 
         $classname = $this->servicesClasses[$moduleId]['class'];
 
-        return app()->make($classname);
+        return $this->app->make($classname);
     }
 
     public function getServiceModuleName($moduleId)
@@ -234,11 +245,11 @@ class Heart
             $paymentPlatform->getModuleId()
         );
 
-        if (!$paymentModuleClass) {
-            return null;
+        if ($paymentModuleClass) {
+            return $this->paymentModuleFactory->create($paymentModuleClass, $paymentPlatform);
         }
 
-        return app()->makeWith($paymentModuleClass, compact('paymentPlatform'));
+        return null;
     }
 
     /**
@@ -335,7 +346,9 @@ class Heart
      */
     public function getBlock($blockId)
     {
-        return $this->blockExists($blockId) ? app()->make($this->blocksClasses[$blockId]) : null;
+        return $this->blockExists($blockId)
+            ? $this->app->make($this->blocksClasses[$blockId])
+            : null;
     }
 
     //
@@ -393,13 +406,12 @@ class Heart
      */
     public function getPage($pageId, $type = "user")
     {
-        if (!$this->pageExists($pageId, $type)) {
-            return null;
+        if ($this->pageExists($pageId, $type)) {
+            $classname = $this->pagesClasses[$type][$pageId];
+            return $this->app->make($classname);
         }
 
-        $classname = $this->pagesClasses[$type][$pageId];
-
-        return app()->make($classname);
+        return null;
     }
 
     //

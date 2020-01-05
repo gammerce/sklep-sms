@@ -8,13 +8,13 @@ use PDOException;
 class DatabaseMigration
 {
     /** @var Application */
-    protected $app;
+    private $app;
 
     /** @var Database */
-    protected $db;
+    private $db;
 
     /** @var MigrationFiles */
-    protected $migrationFiles;
+    private $migrationFiles;
 
     public function __construct(Application $app, Database $db, MigrationFiles $migrationFiles)
     {
@@ -30,31 +30,33 @@ class DatabaseMigration
         }
 
         $salt = get_random_string(8);
-        $queries = [
-            $this->db->prepare(
+
+        $this->db
+            ->statement(
                 "UPDATE `" .
                     TABLE_PREFIX .
                     "settings` " .
-                    "SET `value`='%s' WHERE `key`='random_key';",
-                [get_random_string(16)]
-            ),
-            $this->db->prepare(
+                    "SET `value`= ? WHERE `key` = 'random_key'"
+            )
+            ->execute([get_random_string(16)]);
+
+        $this->db
+            ->statement(
                 "UPDATE `" .
                     TABLE_PREFIX .
                     "settings` " .
-                    "SET `value`='%s' WHERE `key`='license_password';",
-                [$token]
-            ),
-            $this->db->prepare(
+                    "SET `value` = ? WHERE `key` = 'license_password';"
+            )
+            ->execute([$token]);
+
+        $this->db
+            ->statement(
                 "INSERT INTO `" .
                     TABLE_PREFIX .
                     "users` " .
-                    "SET `username` = '%s', `password` = '%s', `salt` = '%s', `regip` = '%s', `groups` = '2', `regdate` = NOW();",
-                [$adminUsername, hash_password($adminPassword, $salt), $salt, get_ip()]
-            ),
-        ];
-
-        $this->executeQueries($queries);
+                    "SET `username` = ?, `password` = ?, `salt` = ?, `regip` = ?, `groups` = '2', `regdate` = NOW();"
+            )
+            ->execute([$adminUsername, hash_password($adminPassword, $salt), $salt, get_ip()]);
     }
 
     public function update()
@@ -97,21 +99,14 @@ class DatabaseMigration
         }
     }
 
-    protected function migrate($migration)
+    private function migrate($migration)
     {
         $path = $this->migrationFiles->getMigrationPath($migration);
         $this->executeMigration($path);
         $this->saveExecutedMigration($migration);
     }
 
-    protected function executeQueries($queries)
-    {
-        foreach ($queries as $query) {
-            $this->db->query($query);
-        }
-    }
-
-    protected function executeMigration($path)
+    private function executeMigration($path)
     {
         $classes = get_declared_classes();
         include $path;
@@ -126,13 +121,10 @@ class DatabaseMigration
         }
     }
 
-    protected function saveExecutedMigration($name)
+    private function saveExecutedMigration($name)
     {
-        $this->db->query(
-            $this->db->prepare(
-                "INSERT INTO `" . TABLE_PREFIX . "migrations` " . "SET `name` = '%s'",
-                [$name]
-            )
-        );
+        $this->db
+            ->statement("INSERT INTO `" . TABLE_PREFIX . "migrations` " . "SET `name` = ?")
+            ->execute([$name]);
     }
 }

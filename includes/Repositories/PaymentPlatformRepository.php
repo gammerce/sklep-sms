@@ -17,13 +17,14 @@ class PaymentPlatformRepository
 
     public function create($name, $module, array $data = [])
     {
-        $statement = $this->db->statement(
-            "INSERT INTO `" .
-                TABLE_PREFIX .
-                "payment_platforms` " .
-                "SET `name` = ?, `module` = ?, `data` = ?"
-        );
-        $statement->execute([$name, $module, json_encode($data)]);
+        $this->db
+            ->statement(
+                "INSERT INTO `" .
+                    TABLE_PREFIX .
+                    "payment_platforms` " .
+                    "SET `name` = ?, `module` = ?, `data` = ?"
+            )
+            ->execute([$name, $module, json_encode($data)]);
 
         return $this->get($this->db->lastId());
     }

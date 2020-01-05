@@ -24,7 +24,6 @@ use App\Http\Controllers\Api\Admin\SmsCodeCollection;
 use App\Http\Controllers\Api\Admin\SmsCodeResource;
 use App\Http\Controllers\Api\Admin\TariffCollection;
 use App\Http\Controllers\Api\Admin\TariffResource;
-use App\Http\Controllers\Api\Admin\TransactionServiceResource;
 use App\Http\Controllers\Api\Admin\UserPasswordResource;
 use App\Http\Controllers\Api\Admin\UserResource;
 use App\Http\Controllers\Api\Admin\UserServiceAddFormController;

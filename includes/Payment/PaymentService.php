@@ -192,14 +192,13 @@ class PaymentService
         }
 
         if ($purchase->getPayment('method') === Purchase::METHOD_SMS) {
-            // Sprawdzamy kod zwrotny
+            // Let's check sms code
             $result = $this->smsPaymentService->payWithSms(
                 $paymentModule,
                 $purchase->getPayment('sms_code'),
                 $purchase->getTariff(),
                 $purchase->user
             );
-            $paymentId = $result['payment_id'];
 
             if ($result['status'] !== 'ok') {
                 return [
@@ -208,29 +207,29 @@ class PaymentService
                     'positive' => false,
                 ];
             }
+
+            $paymentId = $result['payment_id'];
         }
 
         if ($purchase->getPayment('method') === Purchase::METHOD_WALLET) {
-            // Dodanie informacji o płatności z portfela
             $paymentId = $this->walletPaymentService->payWithWallet(
                 $purchase->getPayment('cost'),
                 $purchase->user
             );
 
-            // Metoda pay_wallet zwróciła błąd.
+            // pay_wallet method returned an error
             if (is_array($paymentId)) {
                 return $paymentId;
             }
         }
 
         if ($purchase->getPayment('method') === Purchase::METHOD_SERVICE_CODE) {
-            // Dodanie informacji o płatności z portfela
             $paymentId = $this->serviceCodePaymentService->payWithServiceCode(
                 $purchase,
                 $serviceModule
             );
 
-            // Funkcja pay_service_code zwróciła błąd.
+            // pay_service_code method returned an error
             if (is_array($paymentId)) {
                 return $paymentId;
             }

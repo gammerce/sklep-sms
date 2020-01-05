@@ -51,6 +51,7 @@ use App\Services\ChargeWallet\ServiceChargeWallet;
 use App\Services\ExtraFlags\ServiceExtraFlags;
 use App\Services\MybbExtraGroups\ServiceMybbExtraGroups;
 use App\Services\Other\ServiceOther;
+use App\System\Application;
 use App\System\Heart;
 use App\Verification\PaymentModules\Cashbill;
 use App\Verification\PaymentModules\Cssetti;
@@ -67,16 +68,22 @@ use App\Verification\PaymentModules\Zabijaka;
 
 class HeartServiceProvider
 {
-    public function boot(Heart $heart)
+    public function register(Application $app)
     {
-        $this->registerPaymentModules($heart);
-        $this->registerPages($heart);
-        $this->registerAdminPages($heart);
-        $this->registerBlocks($heart);
-        $this->registerServices($heart);
+        $app->singleton(Heart::class, function (Application $app) {
+            $heart = $app->build(Heart::class);
+
+            $this->registerPaymentModules($heart);
+            $this->registerPages($heart);
+            $this->registerAdminPages($heart);
+            $this->registerBlocks($heart);
+            $this->registerServices($heart);
+
+            return $heart;
+        });
     }
 
-    protected function registerPaymentModules(Heart $heart)
+    private function registerPaymentModules(Heart $heart)
     {
         $heart->registerPaymentModule(OneShotOneKill::MODULE_ID, OneShotOneKill::class);
         $heart->registerPaymentModule(Cashbill::MODULE_ID, Cashbill::class);
@@ -92,7 +99,7 @@ class HeartServiceProvider
         $heart->registerPaymentModule(Zabijaka::MODULE_ID, Zabijaka::class);
     }
 
-    protected function registerPages(Heart $heart)
+    private function registerPages(Heart $heart)
     {
         $heart->registerUserPage(
             PageCashbillTransferFinalized::PAGE_ID,
@@ -115,7 +122,7 @@ class HeartServiceProvider
         $heart->registerUserPage(PageUserOwnServices::PAGE_ID, PageUserOwnServices::class);
     }
 
-    protected function registerAdminPages(Heart $heart)
+    private function registerAdminPages(Heart $heart)
     {
         $heart->registerAdminPage(
             PageAdminAntispamQuestions::PAGE_ID,
@@ -155,7 +162,7 @@ class HeartServiceProvider
         $heart->registerAdminPage(PageAdminUsers::PAGE_ID, PageAdminUsers::class);
     }
 
-    protected function registerBlocks(Heart $heart)
+    private function registerBlocks(Heart $heart)
     {
         $heart->registerBlock('admincontent', BlockAdminContent::class);
         $heart->registerBlock('content', BlockContent::class);
@@ -165,7 +172,7 @@ class HeartServiceProvider
         $heart->registerBlock('wallet', BlockWallet::class);
     }
 
-    protected function registerServices(Heart $heart)
+    private function registerServices(Heart $heart)
     {
         $heart->registerServiceModule(
             ServiceChargeWallet::MODULE_ID,

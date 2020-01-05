@@ -2,6 +2,7 @@
 namespace Tests\Feature\Verification;
 
 use App\Requesting\Response;
+use App\System\Heart;
 use App\Verification\PaymentModules\Gosetti;
 use App\Verification\Results\SmsSuccessResult;
 use Mockery;
@@ -22,7 +23,15 @@ class GosettiTest extends TestCase
         parent::setUp();
 
         $this->mockRequester();
-        $this->gosetti = $this->app->make(Gosetti::class);
+
+        /** @var Heart $heart */
+        $heart = $this->app->make(Heart::class);
+
+        $paymentPlatform = $this->factory->paymentPlatform([
+            'module' => Gosetti::MODULE_ID,
+        ]);
+
+        $this->gosetti = $heart->getPaymentModule($paymentPlatform);
 
         $smsDataResponse = $this->loadFixture("gosetti_sms_api_v2_get_data");
         $this->requesterMock

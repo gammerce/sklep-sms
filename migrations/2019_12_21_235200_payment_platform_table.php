@@ -6,14 +6,14 @@ class PaymentPlatformTable extends Migration
 {
     public function up()
     {
-        $queries = [
+        $this->executeQueries([
             "DROP TABLE IF EXISTS `ss_payment_platforms`",
             <<<EOF
 CREATE TABLE IF NOT EXISTS `ss_payment_platforms` (
   `id`          INT(11)          NOT NULL AUTO_INCREMENT,
   `name`        VARCHAR(32)      NOT NULL DEFAULT '',
   `module`      VARCHAR(64)      NOT NULL,
-  `data`        VARCHAR(512)     NOT NULL DEFAULT ''
+  `data`        VARCHAR(512)     NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
 )
@@ -21,7 +21,6 @@ CREATE TABLE IF NOT EXISTS `ss_payment_platforms` (
   DEFAULT CHARSET = utf8;
 EOF
         ,
-        ];
-        $this->executeQueries($queries);
+        ]);
     }
 }
