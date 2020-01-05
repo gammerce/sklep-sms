@@ -25,7 +25,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('servers');
+        $this->heart->pageTitle = $this->title = $this->lang->t('servers');
         $this->paymentPlatformRepository = $paymentPlatformRepository;
     }
 
@@ -35,12 +35,10 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('name')));
-        $table->addHeadCell(
-            new Cell($this->lang->translate('ip') . ':' . $this->lang->translate('port'))
-        );
-        $table->addHeadCell(new HeadCell($this->lang->translate('version')));
+        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->t('name')));
+        $table->addHeadCell(new Cell($this->lang->t('ip') . ':' . $this->lang->t('port')));
+        $table->addHeadCell(new HeadCell($this->lang->t('version')));
 
         foreach ($this->heart->getServers() as $server) {
             $bodyRow = new BodyRow();
@@ -65,7 +63,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             $button->setParam('id', 'server_button_add');
             $button->setParam('type', 'button');
             $button->addClass('button');
-            $button->setParam('value', $this->lang->translate('add_server'));
+            $button->setParam('value', $this->lang->t('add_server'));
             $wrapper->addButton($button);
         }
 
@@ -104,22 +102,18 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                 continue;
             }
 
-            $values = create_dom_element(
-                "option",
-                $this->lang->strtoupper($this->lang->translate('no')),
-                [
-                    'value' => 0,
-                    'selected' =>
-                        isset($server) &&
-                        $this->heart->serverServiceLinked($server->getId(), $service->getId())
-                            ? ""
-                            : "selected",
-                ]
-            );
+            $values = create_dom_element("option", $this->lang->strtoupper($this->lang->t('no')), [
+                'value' => 0,
+                'selected' =>
+                    isset($server) &&
+                    $this->heart->serverServiceLinked($server->getId(), $service->getId())
+                        ? ""
+                        : "selected",
+            ]);
 
             $values .= create_dom_element(
                 "option",
-                $this->lang->strtoupper($this->lang->translate('yes')),
+                $this->lang->strtoupper($this->lang->t('yes')),
                 [
                     'value' => 1,
                     'selected' =>

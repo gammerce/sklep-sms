@@ -36,15 +36,10 @@ class ServerResource
         $serverService->updateServerServiceAffiliations($serverId, $request->request->all());
 
         log_to_db(
-            $langShop->sprintf(
-                $langShop->translate('server_admin_edit'),
-                $user->getUsername(),
-                $user->getUid(),
-                $serverId
-            )
+            $langShop->t('server_admin_edit', $user->getUsername(), $user->getUid(), $serverId)
         );
 
-        return new SuccessApiResponse($lang->translate('server_edit'));
+        return new SuccessApiResponse($lang->t('server_edit'));
     }
 
     public function delete(

@@ -18,7 +18,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('payment_log');
+        $this->heart->pageTitle = $this->title = $this->lang->t('payment_log');
     }
 
     protected function content(array $query, array $body)
@@ -67,8 +67,8 @@ class PagePaymentLog extends Page implements IBeLoggedMust
             } else {
                 $service = $heart->getService($row['service']);
                 $server = $heart->getServer($row['server']);
-                $desc = $lang->sprintf(
-                    $lang->translate('service_was_bought'),
+                $desc = $lang->t(
+                    'service_was_bought',
                     $service ? $service->getName() : '',
                     $server ? $server->getName() : ''
                 );

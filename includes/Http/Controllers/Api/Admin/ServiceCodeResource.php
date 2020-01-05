@@ -23,16 +23,16 @@ class ServiceCodeResource
 
         if ($deleted) {
             log_to_db(
-                $langShop->sprintf(
-                    $langShop->translate('code_deleted_admin'),
+                $langShop->t(
+                    'code_deleted_admin',
                     $user->getUsername(),
                     $user->getUid(),
                     $serviceCodeId
                 )
             );
-            return new SuccessApiResponse($lang->translate('code_deleted'));
+            return new SuccessApiResponse($lang->t('code_deleted'));
         }
 
-        return new ApiResponse("not_deleted", $lang->translate('code_not_deleted'), 0);
+        return new ApiResponse("not_deleted", $lang->t('code_not_deleted'), 0);
     }
 }

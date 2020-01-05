@@ -16,7 +16,7 @@ class PageAdminPaymentAdmin extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('payments_admin');
+        $this->heart->pageTitle = $this->title = $this->lang->t('payments_admin');
     }
 
     protected function content(array $query, array $body)
@@ -25,11 +25,11 @@ class PageAdminPaymentAdmin extends PageAdmin
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('admin_id')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('ip')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('platform'), "platform"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('date')));
+        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->t('admin_id')));
+        $table->addHeadCell(new HeadCell($this->lang->t('ip')));
+        $table->addHeadCell(new HeadCell($this->lang->t('platform'), "platform"));
+        $table->addHeadCell(new HeadCell($this->lang->t('date')));
 
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * " .
@@ -51,7 +51,7 @@ class PageAdminPaymentAdmin extends PageAdmin
 
             $adminname = $row['aid']
                 ? "{$row['adminname']} ({$row['aid']})"
-                : $this->lang->translate('none');
+                : $this->lang->t('none');
 
             $bodyRow->setDbId($row['id']);
             $bodyRow->addCell(new Cell($adminname));

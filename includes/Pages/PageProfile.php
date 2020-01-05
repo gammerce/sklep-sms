@@ -14,7 +14,7 @@ class PageProfile extends Page implements IBeLoggedMust
     public function __construct()
     {
         parent::__construct();
-        $this->heart->pageTitle = $this->title = $this->lang->translate('profile');
+        $this->heart->pageTitle = $this->title = $this->lang->t('profile');
         $this->auth = $this->app->make(Auth::class);
     }
 

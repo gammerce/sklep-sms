@@ -105,7 +105,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             $amount =
                 $row['amount'] != -1
                     ? $row['amount'] . " " . $this->service->getTag()
-                    : $this->lang->translate('forever');
+                    : $this->lang->t('forever');
             $provision = number_format($row['provision'] / 100, 2);
             $amounts .= $this->template->render(
                 "services/mybb_extra_groups/purchase_value",
@@ -140,7 +140,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
 
         // Tariff
         if (!$tariff) {
-            $warnings['amount'][] = $this->lang->translate('must_choose_amount');
+            $warnings['amount'][] = $this->lang->t('must_choose_amount');
         } else {
             // Wyszukiwanie usługi o konkretnej cenie
             $result = $this->db->query(
@@ -157,7 +157,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                 // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
                 return [
                     'status' => "no_option",
-                    'text' => $this->lang->translate('service_not_affordable'),
+                    'text' => $this->lang->t('service_not_affordable'),
                     'positive' => false,
                 ];
             }
@@ -167,7 +167,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
 
         // Username
         if (!strlen($data['username'])) {
-            $warnings['username'][] = $this->lang->translate('field_no_empty');
+            $warnings['username'][] = $this->lang->t('field_no_empty');
         } else {
             $this->connectMybb();
 
@@ -178,7 +178,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             );
 
             if (!$this->dbMybb->numRows($result)) {
-                $warnings['username'][] = $this->lang->translate('no_user');
+                $warnings['username'][] = $this->lang->t('no_user');
             }
         }
 
@@ -191,7 +191,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         if (!empty($warnings)) {
             return [
                 'status' => "warnings",
-                'text' => $this->lang->translate('form_wrong_filled'),
+                'text' => $this->lang->t('form_wrong_filled'),
                 'positive' => false,
                 'data' => ['warnings' => $warnings],
             ];
@@ -209,7 +209,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
 
         return [
             'status' => "ok",
-            'text' => $this->lang->translate('purchase_form_validated'),
+            'text' => $this->lang->t('purchase_form_validated'),
             'positive' => true,
             'purchase_data' => $purchaseData,
         ];
@@ -224,13 +224,13 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
      */
     public function orderDetails(Purchase $purchaseData)
     {
-        $email = $purchaseData->getEmail() ?: $this->lang->translate('none');
+        $email = $purchaseData->getEmail() ?: $this->lang->t('none');
         $username = $purchaseData->getOrder('username');
         $serviceName = $this->service->getName();
         $amount =
             $purchaseData->getOrder('amount') != -1
                 ? $purchaseData->getOrder('amount') . " " . $this->service->getTag()
-                : $this->lang->translate('forever');
+                : $this->lang->t('forever');
 
         return $this->template->render(
             "services/mybb_extra_groups/order_details",
@@ -252,8 +252,8 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         // Nie znaleziono użytkownika o takich danych jak podane podczas zakupu
         if (($mybbUser = $this->createMybbUser($purchaseData->getOrder('username'))) === null) {
             log_to_db(
-                $this->langShop->sprintf(
-                    $this->langShop->translate('mybb_purchase_no_user'),
+                $this->langShop->t(
+                    'mybb_purchase_no_user',
                     json_encode($purchaseData->getPayment())
                 )
             );
@@ -295,11 +295,11 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         $amount =
             $data['amount'] != -1
                 ? $data['amount'] . " " . $this->service->getTag()
-                : $this->lang->translate('forever');
+                : $this->lang->t('forever');
         $email = $data['email'];
         $cost = $data['cost']
             ? number_format($data['cost'] / 100.0, 2) . " " . $this->settings['currency']
-            : $this->lang->translate('none');
+            : $this->lang->t('none');
 
         if ($action == "email") {
             return $this->template->render(
@@ -325,11 +325,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
 
         if ($action == "payment_log") {
             return [
-                'text' => ($output = $this->lang->sprintf(
-                    $this->lang->translate('mybb_group_bought'),
-                    $this->service->getName(),
-                    $username
-                )),
+                'text' => $this->lang->t('mybb_group_bought', $this->service->getName(), $username),
                 'class' => "outcome",
             ];
         }
@@ -511,7 +507,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                 $warnings['amount'] = array_merge((array) $warnings['amount'], $warning);
             } else {
                 if ($body['amount'] < 0) {
-                    $warnings['amount'][] = $this->lang->translate('days_quantity_positive');
+                    $warnings['amount'][] = $this->lang->t('days_quantity_positive');
                 }
             }
         }
@@ -523,14 +519,14 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             } else {
                 $editedUser = $this->heart->getUser($body['uid']);
                 if (!$editedUser->exists()) {
-                    $warnings['uid'][] = $this->lang->translate('no_account_id');
+                    $warnings['uid'][] = $this->lang->t('no_account_id');
                 }
             }
         }
 
         // Username
         if (!strlen($body['mybb_username'])) {
-            $warnings['mybb_username'][] = $this->lang->translate('field_no_empty');
+            $warnings['mybb_username'][] = $this->lang->t('field_no_empty');
         } else {
             $this->connectMybb();
 
@@ -541,7 +537,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             );
 
             if (!$this->dbMybb->numRows($result)) {
-                $warnings['mybb_username'][] = $this->lang->translate('no_user');
+                $warnings['mybb_username'][] = $this->lang->t('no_user');
             }
         }
 
@@ -553,7 +549,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         if (!empty($warnings)) {
             return [
                 'status' => "warnings",
-                'text' => $this->lang->translate('form_wrong_filled'),
+                'text' => $this->lang->t('form_wrong_filled'),
                 'positive' => false,
                 'data' => ['warnings' => $warnings],
             ];
@@ -577,8 +573,8 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         $boughtServiceId = $this->purchase($purchaseData);
 
         log_to_db(
-            $this->langShop->sprintf(
-                $this->langShop->translate('admin_added_user_service'),
+            $this->langShop->t(
+                'admin_added_user_service',
                 $user->getUsername(),
                 $user->getUid(),
                 $boughtServiceId
@@ -587,7 +583,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
 
         return [
             'status' => "ok",
-            'text' => $this->lang->translate('service_added_correctly'),
+            'text' => $this->lang->t('service_added_correctly'),
             'positive' => true,
         ];
     }
@@ -605,7 +601,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
 
         $expire =
             $userService['expire'] == -1
-                ? $this->lang->translate('never')
+                ? $this->lang->t('never')
                 : date($this->settings['date_format'], $userService['expire']);
         $serviceName = $this->service->getName();
         $mybbUid = "$username ({$userService['mybb_uid']})";

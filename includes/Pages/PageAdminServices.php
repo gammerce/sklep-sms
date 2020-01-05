@@ -22,7 +22,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('services');
+        $this->heart->pageTitle = $this->title = $this->lang->t('services');
     }
 
     protected function content(array $query, array $body)
@@ -31,11 +31,11 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('name')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('short_description')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('description')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('order')));
+        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->t('name')));
+        $table->addHeadCell(new HeadCell($this->lang->t('short_description')));
+        $table->addHeadCell(new HeadCell($this->lang->t('description')));
+        $table->addHeadCell(new HeadCell($this->lang->t('order')));
 
         foreach ($this->heart->getServices() as $service) {
             $bodyRow = new BodyRow();
@@ -64,7 +64,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             $button->setParam('id', 'service_button_add');
             $button->setParam('type', 'button');
             $button->addClass('button');
-            $button->setParam('value', $this->lang->translate('add_service'));
+            $button->setParam('value', $this->lang->t('add_service'));
             $wrapper->addButton($button);
         }
 

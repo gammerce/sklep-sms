@@ -59,14 +59,14 @@ class SettingsController
         if (strlen($smsPaymentPlatformId)) {
             $paymentModule = $heart->getPaymentModuleByPlatformId($smsPaymentPlatformId);
             if (!($paymentModule instanceof SupportSms)) {
-                $warnings['sms_platform'][] = $lang->translate('no_sms_platform');
+                $warnings['sms_platform'][] = $lang->t('no_sms_platform');
             }
         }
 
         if (strlen($transferPaymentPlatformId)) {
             $paymentModule = $heart->getPaymentModuleByPlatformId($transferPaymentPlatformId);
             if (!($paymentModule instanceof SupportTransfer)) {
-                $warnings['transfer_platform'][] = $lang->translate('no_transfer_platform');
+                $warnings['transfer_platform'][] = $lang->t('no_transfer_platform');
             }
         }
 
@@ -87,19 +87,19 @@ class SettingsController
         }
 
         if (!in_array($cron, ["1", "0"])) {
-            $warnings['cron'][] = $lang->translate('only_yes_no');
+            $warnings['cron'][] = $lang->t('only_yes_no');
         }
 
         if (!in_array($userEditService, ["1", "0"])) {
-            $warnings['user_edit_service'][] = $lang->translate('only_yes_no');
+            $warnings['user_edit_service'][] = $lang->t('only_yes_no');
         }
 
         if (!$theme || !is_dir($path->to("themes/{$theme}")) || $theme[0] == '.') {
-            $warnings['theme'][] = $lang->translate('no_theme');
+            $warnings['theme'][] = $lang->t('no_theme');
         }
 
         if (!$language || !is_dir($path->to("translations/{$language}")) || $language[0] == '.') {
-            $warnings['language'][] = $lang->translate('no_language');
+            $warnings['language'][] = $lang->t('no_language');
         }
 
         if ($warnings) {
@@ -136,17 +136,11 @@ class SettingsController
         $updated = $settingsRepository->update($values);
 
         if ($updated) {
-            log_to_db(
-                $langShop->sprintf(
-                    $langShop->translate('settings_admin_edit'),
-                    $user->getUsername(),
-                    $user->getUid()
-                )
-            );
+            log_to_db($langShop->t('settings_admin_edit', $user->getUsername(), $user->getUid()));
 
-            return new SuccessApiResponse($lang->translate('settings_edit'));
+            return new SuccessApiResponse($lang->t('settings_edit'));
         }
 
-        return new ApiResponse("not_edited", $lang->translate('settings_no_edit'), false);
+        return new ApiResponse("not_edited", $lang->t('settings_no_edit'), false);
     }
 }

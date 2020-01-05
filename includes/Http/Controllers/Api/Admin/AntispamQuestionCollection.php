@@ -20,12 +20,12 @@ class AntispamQuestionCollection
 
         // Pytanie
         if (!$question) {
-            $warnings['question'][] = $lang->translate('field_no_empty');
+            $warnings['question'][] = $lang->t('field_no_empty');
         }
 
         // Odpowiedzi
         if (!$answers) {
-            $warnings['answers'][] = $lang->translate('field_no_empty');
+            $warnings['answers'][] = $lang->t('field_no_empty');
         }
 
         if ($warnings) {

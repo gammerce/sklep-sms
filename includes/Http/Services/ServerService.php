@@ -67,7 +67,7 @@ class ServerService
         }
 
         if (!$smsPlatformId && !$this->settings->getSmsPlatformId()) {
-            $warnings['sms_platform'][] = $this->lang->translate('no_default_sms_platform');
+            $warnings['sms_platform'][] = $this->lang->t('no_default_sms_platform');
         }
 
         if ($warnings) {

@@ -53,7 +53,7 @@ class ExtraStuffController
         switch ($action) {
             case "service_long_description":
                 $output = "";
-                $heart->pageTitle = $lang->translate('description') . ": ";
+                $heart->pageTitle = $lang->t('description') . ": ";
                 $service = $request->query->get("service");
 
                 $serviceModule = $heart->getServiceModule($service);

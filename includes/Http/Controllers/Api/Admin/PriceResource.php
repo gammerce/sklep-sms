@@ -43,17 +43,12 @@ class PriceResource
 
         if ($statement->rowCount()) {
             log_to_db(
-                $langShop->sprintf(
-                    $langShop->translate('price_admin_edit'),
-                    $user->getUsername(),
-                    $user->getUid(),
-                    $priceId
-                )
+                $langShop->t('price_admin_edit', $user->getUsername(), $user->getUid(), $priceId)
             );
-            return new SuccessApiResponse($lang->translate('price_edit'));
+            return new SuccessApiResponse($lang->t('price_edit'));
         }
 
-        return new ApiResponse("not_edited", $lang->translate('price_no_edit'), 0);
+        return new ApiResponse("not_edited", $lang->t('price_no_edit'), 0);
     }
 
     public function delete(
@@ -74,16 +69,11 @@ class PriceResource
 
         if ($statement->rowCount()) {
             log_to_db(
-                $langShop->sprintf(
-                    $langShop->translate('price_admin_delete'),
-                    $user->getUsername(),
-                    $user->getUid(),
-                    $priceId
-                )
+                $langShop->t('price_admin_delete', $user->getUsername(), $user->getUid(), $priceId)
             );
-            return new SuccessApiResponse($lang->translate('delete_price'));
+            return new SuccessApiResponse($lang->t('delete_price'));
         }
 
-        return new ApiResponse("not_deleted", $lang->translate('no_delete_price'), 0);
+        return new ApiResponse("not_deleted", $lang->t('no_delete_price'), 0);
     }
 }

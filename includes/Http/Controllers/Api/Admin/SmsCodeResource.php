@@ -27,16 +27,16 @@ class SmsCodeResource
 
         if ($statement->rowCount()) {
             log_to_db(
-                $langShop->sprintf(
-                    $langShop->translate('sms_code_admin_delete'),
+                $langShop->t§(
+                    'sms_code_admin_delete',
                     $user->getUsername(),
                     $user->getUid(),
                     $smsCodeId
                 )
             );
-            return new SuccessApiResponse($lang->translate('delete_sms_code'));
+            return new SuccessApiResponse($lang->t('delete_sms_code'));
         }
 
-        return new ApiResponse("not_deleted", $lang->translate('no_delete_sms_code'), 0);
+        return new ApiResponse("not_deleted", $lang->t('no_delete_sms_code'), 0);
     }
 }

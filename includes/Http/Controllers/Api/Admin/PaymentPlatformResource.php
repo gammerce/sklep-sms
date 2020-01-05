@@ -45,7 +45,7 @@ class PaymentPlatformResource
             )
         );
 
-        return new SuccessApiResponse($lang->translate('payment_platform_updated'));
+        return new SuccessApiResponse($lang->t('payment_platform_updated'));
     }
 
     public function delete(
@@ -66,16 +66,12 @@ class PaymentPlatformResource
             $settings->getSmsPlatformId() === $paymentPlatform->getId() ||
             $settings->getTransferPlatformId() === $paymentPlatform->getId()
         ) {
-            return new ErrorApiResponse(
-                $lang->translate('delete_payment_platform_settings_constraint')
-            );
+            return new ErrorApiResponse($lang->t('delete_payment_platform_settings_constraint'));
         }
 
         foreach ($heart->getServers() as $server) {
             if ($server->getSmsPlatformId() === $paymentPlatform->getId()) {
-                return new ErrorApiResponse(
-                    $lang->translate('delete_payment_platform_server_constraint')
-                );
+                return new ErrorApiResponse($lang->t('delete_payment_platform_server_constraint'));
             }
         }
 
@@ -90,6 +86,6 @@ class PaymentPlatformResource
             )
         );
 
-        return new SuccessApiResponse($lang->translate('payment_platform_deleted'));
+        return new SuccessApiResponse($lang->t('payment_platform_deleted'));
     }
 }

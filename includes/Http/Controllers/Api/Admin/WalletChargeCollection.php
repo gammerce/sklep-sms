@@ -34,15 +34,15 @@ class WalletChargeCollection
         } else {
             $editedUser = $heart->getUser($userId);
             if (!$editedUser->exists()) {
-                $warnings['uid'][] = $lang->translate('noaccount_id');
+                $warnings['uid'][] = $lang->t('noaccount_id');
             }
         }
 
         // Wartość Doładowania
         if (!$amount) {
-            $warnings['amount'][] = $lang->translate('no_charge_value');
+            $warnings['amount'][] = $lang->t('no_charge_value');
         } elseif (!is_numeric($amount)) {
-            $warnings['amount'][] = $lang->translate('charge_number');
+            $warnings['amount'][] = $lang->t('charge_number');
         }
 
         if ($warnings) {
@@ -51,7 +51,7 @@ class WalletChargeCollection
 
         $serviceModule = $heart->getServiceModule("charge_wallet");
         if ($serviceModule === null) {
-            return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
+            return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
         }
 
         // Zmiana wartości amount, aby stan konta nie zszedł poniżej zera
@@ -74,8 +74,8 @@ class WalletChargeCollection
         $serviceModule->purchase($purchase);
 
         log_to_db(
-            $langShop->sprintf(
-                $langShop->translate('account_charge'),
+            $langShop->t(
+                'account_charge',
                 $user->getUsername(),
                 $user->getUid(),
                 $editedUser->getUsername(),
@@ -87,8 +87,8 @@ class WalletChargeCollection
 
         return new ApiResponse(
             "charged",
-            $lang->sprintf(
-                $lang->translate('account_charge_success'),
+            $lang->t(
+                'account_charge_success',
                 $editedUser->getUsername(),
                 number_format($amount / 100.0, 2),
                 $settings['currency']

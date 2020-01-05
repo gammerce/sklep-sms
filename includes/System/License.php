@@ -85,7 +85,7 @@ class License
     public function getExpires()
     {
         if ($this->isForever()) {
-            return $this->langShop->translate('never');
+            return $this->langShop->t('never');
         }
 
         return date($this->settings['date_format'], $this->expiresAt);

@@ -49,6 +49,6 @@ class UserProfileResource
 
         $userRepository->update($user);
 
-        return new SuccessApiResponse($lang->translate('profile_edit'));
+        return new SuccessApiResponse($lang->t('profile_edit'));
     }
 }

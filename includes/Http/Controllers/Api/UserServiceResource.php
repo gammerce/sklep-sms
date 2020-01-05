@@ -26,16 +26,16 @@ class UserServiceResource
 
         // User service was not found
         if (empty($userService)) {
-            return new ApiResponse("dont_play_games", $lang->translate('dont_play_games'), 0);
+            return new ApiResponse("dont_play_games", $lang->t('dont_play_games'), 0);
         }
 
         // User is not an owner of the userService
         if ($userService['uid'] != $user->getUid()) {
-            return new ApiResponse("dont_play_games", $lang->translate('dont_play_games'), 0);
+            return new ApiResponse("dont_play_games", $lang->t('dont_play_games'), 0);
         }
 
         if (($serviceModule = $heart->getServiceModule($userService['service'])) === null) {
-            return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
+            return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
         }
 
         if (
@@ -44,7 +44,7 @@ class UserServiceResource
         ) {
             return new ApiResponse(
                 "service_cant_be_modified",
-                $lang->translate('service_cant_be_modified'),
+                $lang->t('service_cant_be_modified'),
                 0
             );
         }

@@ -117,7 +117,7 @@ class SmsPaymentService
 
         return [
             'status' => 'ok',
-            'text' => $this->lang->translate('sms_info_ok'),
+            'text' => $this->lang->t('sms_info_ok'),
             'payment_id' => $paymentId,
         ];
     }

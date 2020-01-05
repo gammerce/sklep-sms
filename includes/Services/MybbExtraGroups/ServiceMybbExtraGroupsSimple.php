@@ -92,17 +92,17 @@ abstract class ServiceMybbExtraGroupsSimple extends Service implements
 
         // Web
         if (!in_array($data['web'], ["1", "0"])) {
-            $warnings['web'][] = $this->lang->translate('only_yes_no');
+            $warnings['web'][] = $this->lang->t('only_yes_no');
         }
 
         // MyBB groups
         if (!strlen($data['mybb_groups'])) {
-            $warnings['mybb_groups'][] = $this->lang->translate('field_no_empty');
+            $warnings['mybb_groups'][] = $this->lang->t('field_no_empty');
         } else {
             $groups = explode(",", $data['mybb_groups']);
             foreach ($groups as $group) {
                 if (!my_is_integer($group)) {
-                    $warnings['mybb_groups'][] = $this->lang->translate('group_not_integer');
+                    $warnings['mybb_groups'][] = $this->lang->t('group_not_integer');
                     break;
                 }
             }
@@ -110,22 +110,22 @@ abstract class ServiceMybbExtraGroupsSimple extends Service implements
 
         // Db host
         if (!strlen($data['db_host'])) {
-            $warnings['db_host'][] = $this->lang->translate('field_no_empty');
+            $warnings['db_host'][] = $this->lang->t('field_no_empty');
         }
 
         // Db user
         if (!strlen($data['db_user'])) {
-            $warnings['db_user'][] = $this->lang->translate('field_no_empty');
+            $warnings['db_user'][] = $this->lang->t('field_no_empty');
         }
 
         // Db password
         if ($this->service === null && !strlen($data['db_password'])) {
-            $warnings['db_password'][] = $this->lang->translate('field_no_empty');
+            $warnings['db_password'][] = $this->lang->t('field_no_empty');
         }
 
         // Db name
         if (!strlen($data['db_name'])) {
-            $warnings['db_name'][] = $this->lang->translate('field_no_empty');
+            $warnings['db_name'][] = $this->lang->t('field_no_empty');
         }
 
         return $warnings;
@@ -161,7 +161,7 @@ abstract class ServiceMybbExtraGroupsSimple extends Service implements
 
     public function userServiceAdminDisplayTitleGet()
     {
-        return $this->lang->translate('mybb_groups');
+        return $this->lang->t('mybb_groups');
     }
 
     public function userServiceAdminDisplayGet(array $query, array $body)
@@ -175,11 +175,11 @@ abstract class ServiceMybbExtraGroupsSimple extends Service implements
         $wrapper->setSearch();
 
         $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('user')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('service')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('mybb_user')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('expires')));
+        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->t('user')));
+        $table->addHeadCell(new HeadCell($this->lang->t('service')));
+        $table->addHeadCell(new HeadCell($this->lang->t('mybb_user')));
+        $table->addHeadCell(new HeadCell($this->lang->t('expires')));
 
         // Wyszukujemy dane ktore spelniaja kryteria
         $where = '';
@@ -225,9 +225,7 @@ abstract class ServiceMybbExtraGroupsSimple extends Service implements
             $bodyRow->setDbId($row['id']);
             $bodyRow->addCell(
                 new Cell(
-                    $row['uid']
-                        ? $row['username'] . " ({$row['uid']})"
-                        : $this->lang->translate('none')
+                    $row['uid'] ? $row['username'] . " ({$row['uid']})" : $this->lang->t('none')
                 )
             );
             $bodyRow->addCell(new Cell($row['service']));
@@ -235,7 +233,7 @@ abstract class ServiceMybbExtraGroupsSimple extends Service implements
             $bodyRow->addCell(
                 new Cell(
                     $row['expire'] == '-1'
-                        ? $this->lang->translate('never')
+                        ? $this->lang->t('never')
                         : date($this->settings['date_format'], $row['expire'])
                 )
             );

@@ -1,15 +1,15 @@
 <form id="form_charge_wallet" class="action_box">
     <div class="service_main_info">
-        {$lang->translate('wallet_charge')}
+        {$lang->t('wallet_charge')}
     </div>
     <table>
         <tr>
-            <td>{$lang->translate('username')}</td>
+            <td>{$lang->t('username')}</td>
             <td>{{ $user->getUsername() }}</td>
         </tr>
         <tr>
             <td>
-                <label for="amount">{$lang->translate('amount')}</label>
+                <label for="amount">{$lang->t('amount')}</label>
             </td>
             <td>
                 <div class="field has-addons">
@@ -33,7 +33,7 @@
         <tr>
             <td colspan="2">
                 <input type="hidden" name="uid" value="{{ $user->getUid() }}" />
-                <input type="submit" value="{$lang->translate('charge')}" class="button w100" />
+                <input type="submit" value="{$lang->t('charge')}" class="button w100" />
             </td>
         </tr>
     </table>

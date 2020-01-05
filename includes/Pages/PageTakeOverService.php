@@ -12,7 +12,7 @@ class PageTakeOverService extends Page implements IBeLoggedMust
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('take_over_service');
+        $this->heart->pageTitle = $this->title = $this->lang->t('take_over_service');
     }
 
     protected function content(array $query, array $body)

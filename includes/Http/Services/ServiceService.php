@@ -35,7 +35,7 @@ class ServiceService
         $groups = array_get($body, 'groups', []);
 
         if (!strlen($name)) {
-            $warnings['name'][] = $this->lang->translate('no_service_name');
+            $warnings['name'][] = $this->lang->t('no_service_name');
         }
 
         if ($warning = check_for_warnings("service_description", $shortDescription)) {
@@ -47,13 +47,13 @@ class ServiceService
 
         // Kolejność
         if (!my_is_integer($order)) {
-            $warnings['order'][] = $this->lang->translate('field_integer');
+            $warnings['order'][] = $this->lang->t('field_integer');
         }
 
         // Grupy
         foreach ($groups as $group) {
             if ($this->heart->getGroup($group) === null) {
-                $warnings['groups[]'][] = $this->lang->translate('wrong_group');
+                $warnings['groups[]'][] = $this->lang->t('wrong_group');
                 break;
             }
         }

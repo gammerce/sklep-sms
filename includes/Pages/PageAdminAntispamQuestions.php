@@ -20,7 +20,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('antispam_questions');
+        $this->heart->pageTitle = $this->title = $this->lang->t('antispam_questions');
     }
 
     protected function content(array $query, array $body)
@@ -29,9 +29,9 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('question')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('answers')));
+        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->t('question')));
+        $table->addHeadCell(new HeadCell($this->lang->t('answers')));
 
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * " .
@@ -65,7 +65,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
             $button->setParam('id', 'antispam_question_button_add');
             $button->setParam('type', 'button');
             $button->addClass('button');
-            $button->setParam('value', $this->lang->translate('add_antispam_question'));
+            $button->setParam('value', $this->lang->t('add_antispam_question'));
             $wrapper->addButton($button);
         }
 

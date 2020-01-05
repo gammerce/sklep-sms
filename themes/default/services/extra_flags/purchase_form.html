@@ -10,7 +10,7 @@
                     </tbody>
                     <tbody>
                         <tr>
-                            <td>{$lang->translate('choose_type')}</td>
+                            <td>{$lang->t('choose_type')}</td>
                             <td>
                                 <ul name="type">
                                     {$types}
@@ -25,7 +25,7 @@
                     </tbody>
                     <tbody id="type_nick">
                         <tr>
-                            <td><label for="nick">{$lang->translate('nick')}</label></td>
+                            <td><label for="nick">{$lang->t('nick')}</label></td>
                             <td>
                                 <div class="field">
                                     <div class="control">
@@ -44,7 +44,7 @@
                     </tbody>
                     <tbody id="type_ip">
                         <tr>
-                            <td><label for="ip">{$lang->translate('ip')}</label></td>
+                            <td><label for="ip">{$lang->t('ip')}</label></td>
                             <td>
                                 <div class="field">
                                     <div class="control">
@@ -64,7 +64,7 @@
                     </tbody>
                     <tbody id="type_password">
                         <tr>
-                            <td><label for="password">{$lang->translate('password')}</label></td>
+                            <td><label for="password">{$lang->t('password')}</label></td>
                             <td>
                                 <div class="field">
                                     <div class="control">
@@ -83,7 +83,7 @@
                         <tr>
                             <td>
                                 <label for="password_repeat">
-                                    {$lang->translate('password_repeat')}
+                                    {$lang->t('password_repeat')}
                                 </label>
                             </td>
                             <td>
@@ -106,7 +106,7 @@
                         <tr>
                             <td>
                                 <label for="sid">
-                                    {$lang->translate('sid')}
+                                    {$lang->t('sid')}
                                 </label>
                             </td>
                             <td>
@@ -129,7 +129,7 @@
                         <tr>
                             <td>
                                 <label for="email">
-                                    {$lang->translate('email')}
+                                    {$lang->t('email')}
                                 </label>
                             </td>
                             <td>
@@ -166,7 +166,7 @@
                     <tbody>
                         <tr>
                             <td>
-                                <label for="server">{$lang->translate('server')}</label>
+                                <label for="server">{$lang->t('server')}</label>
                             </td>
                             <td>
                                 <div class="field">
@@ -174,7 +174,7 @@
                                         <div class="select is-small">
                                             <select id="server" name="server">
                                                 <option value="">
-                                                    {$lang->translate('choose_server')}
+                                                    {$lang->t('choose_server')}
                                                 </option>
                                                 {$servers}
                                             </select>
@@ -188,7 +188,7 @@
                     <tbody>
                         <tr>
                             <td>
-                                <label for="value">{$lang->translate('amount')}</label>
+                                <label for="value">{$lang->t('amount')}</label>
                             </td>
                             <td>
                                 <div class="field">
@@ -196,7 +196,7 @@
                                         <div class="select is-small">
                                             <select id="value" name="value">
                                                 <option value="">
-                                                    {$lang->translate('choose_amount')}
+                                                    {$lang->t('choose_amount')}
                                                 </option>
                                             </select>
                                         </div>
@@ -215,9 +215,9 @@
 
                 <div id="cost_wraper">
                     <div>
-                        <strong>{$lang->translate('transfer_wallet_cost')}</strong>:
+                        <strong>{$lang->t('transfer_wallet_cost')}</strong>:
                         <span id="cost_transfer"></span> {{ $settings['currency'] }}<br />
-                        <strong>{$lang->translate('sms_cost')}</strong>:
+                        <strong>{$lang->t('sms_cost')}</strong>:
                         <span id="cost_sms"></span>
                         <span id="currency_sms">{{ $settings['currency'] }}</span>
                     </div>
@@ -230,7 +230,7 @@
         <input
             type="button"
             id="go_to_payment"
-            value="{$lang->translate('go_to_payment')}"
+            value="{$lang->t('go_to_payment')}"
             class="button is-success purchase_button"
         />
     </div>

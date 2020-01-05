@@ -18,7 +18,7 @@ class PageAdminPlayersFlags extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('players_flags');
+        $this->heart->pageTitle = $this->title = $this->lang->t('players_flags');
     }
 
     protected function content(array $query, array $body)
@@ -27,14 +27,10 @@ class PageAdminPlayersFlags extends PageAdmin
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('server')));
+        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->t('server')));
         $table->addHeadCell(
-            new Cell(
-                "{$this->lang->translate('nick')}/{$this->lang->translate(
-                    'ip'
-                )}/{$this->lang->translate('sid')}"
-            )
+            new Cell("{$this->lang->t('nick')}/{$this->lang->t('ip')}/{$this->lang->t('sid')}")
         );
 
         foreach (str_split($this->flags) as $flag) {
@@ -69,7 +65,7 @@ class PageAdminPlayersFlags extends PageAdmin
                     $bodyRow->addCell(new Cell(' '));
                 } else {
                     if ($row[$flag] == -1) {
-                        $bodyRow->addCell(new Cell($this->lang->translate('never')));
+                        $bodyRow->addCell(new Cell($this->lang->t('never')));
                     } else {
                         $bodyRow->addCell(
                             new Cell(date($this->settings['date_format'], $row[$flag]))

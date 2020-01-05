@@ -65,16 +65,9 @@ class UserResource
 
         $userRepository->update($editedUser);
 
-        log_to_db(
-            $langShop->sprintf(
-                $langShop->translate('user_admin_edit'),
-                $user->getUsername(),
-                $user->getUid(),
-                $userId
-            )
-        );
+        log_to_db($langShop->t('user_admin_edit', $user->getUsername(), $user->getUid(), $userId));
 
-        return new SuccessApiResponse($lang->translate('user_edit'));
+        return new SuccessApiResponse($lang->t('user_edit'));
     }
 
     public function delete(
@@ -95,16 +88,11 @@ class UserResource
 
         if ($statement->rowCount()) {
             log_to_db(
-                $langShop->sprintf(
-                    $langShop->translate('user_admin_delete'),
-                    $user->getUsername(),
-                    $user->getUid(),
-                    $userId
-                )
+                $langShop->t('user_admin_delete', $user->getUsername(), $user->getUid(), $userId)
             );
-            return new SuccessApiResponse($lang->translate('delete_user'));
+            return new SuccessApiResponse($lang->t('delete_user'));
         }
 
-        return new ApiResponse("not_deleted", $lang->translate('no_delete_user'), 0);
+        return new ApiResponse("not_deleted", $lang->t('no_delete_user'), 0);
     }
 }

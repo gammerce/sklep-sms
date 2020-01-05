@@ -48,7 +48,7 @@ class BlockUserButtons extends Block
         if (get_privileges("acp", $user)) {
             $acpButton = create_dom_element(
                 "li",
-                create_dom_element("a", $lang->translate('acp'), [
+                create_dom_element("a", $lang->t('acp'), [
                     'href' => $url->to("/admin"),
                 ])
             );
@@ -58,7 +58,7 @@ class BlockUserButtons extends Block
         if ($heart->userCanUseService($user->getUid(), $heart->getService("charge_wallet"))) {
             $chargeWalletButton = create_dom_element(
                 "li",
-                create_dom_element("a", $lang->translate('charge_wallet'), [
+                create_dom_element("a", $lang->t('charge_wallet'), [
                     'href' => $url->to("/page/purchase?service=charge_wallet"),
                 ])
             );

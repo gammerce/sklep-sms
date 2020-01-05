@@ -1,14 +1,14 @@
 <form id="form_payment_platform_edit" class="action_box">
     <div class="service_main_info">
-        {$lang->translate('edit_payment_platform')}
+        {$lang->t('edit_payment_platform')}
     </div>
     <table>
         <tr>
-            <td>{$lang->translate('id')}</td>
+            <td>{$lang->t('id')}</td>
             <td>{{ $paymentPlatform->getId() }}</td>
         </tr>
         <tr>
-            <td>{$lang->strtoupper($lang->translate('name'))}</td>
+            <td>{$lang->strtoupper($lang->t('name'))}</td>
             <td>{{ $paymentPlatform->getName() }}</td>
         </tr>
         <tr>
@@ -21,7 +21,7 @@
         <tr>
             <td colspan="2">
                 <input type="hidden" name="id" value="{{ $paymentPlatform->getId() }}" />
-                <input type="submit" value="{$lang->translate('confirm')}" class="button w100" />
+                <input type="submit" value="{$lang->t('confirm')}" class="button w100" />
             </td>
         </tr>
     </table>

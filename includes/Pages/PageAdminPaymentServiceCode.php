@@ -16,7 +16,7 @@ class PageAdminPaymentServiceCode extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('payments_service_code');
+        $this->heart->pageTitle = $this->title = $this->lang->t('payments_service_code');
     }
 
     protected function content(array $query, array $body)
@@ -25,11 +25,11 @@ class PageAdminPaymentServiceCode extends PageAdmin
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('code')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('ip')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('platform'), "platform"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('date')));
+        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->t('code')));
+        $table->addHeadCell(new HeadCell($this->lang->t('ip')));
+        $table->addHeadCell(new HeadCell($this->lang->t('platform'), "platform"));
+        $table->addHeadCell(new HeadCell($this->lang->t('date')));
 
         $where = "";
         if (isset($query['payid'])) {

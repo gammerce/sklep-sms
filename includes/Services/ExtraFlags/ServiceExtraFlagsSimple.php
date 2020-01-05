@@ -97,21 +97,21 @@ abstract class ServiceExtraFlagsSimple extends Service implements
 
         // Web
         if (!in_array($web, ["1", "0"])) {
-            $warnings['web'][] = $this->lang->translate('only_yes_no');
+            $warnings['web'][] = $this->lang->t('only_yes_no');
         }
 
         // Flagi
         if (!strlen($flags)) {
-            $warnings['flags'][] = $this->lang->translate('field_no_empty');
+            $warnings['flags'][] = $this->lang->t('field_no_empty');
         } elseif (strlen($flags) > 25) {
-            $warnings['flags'][] = $this->lang->translate('too_many_flags');
+            $warnings['flags'][] = $this->lang->t('too_many_flags');
         } elseif (implode('', array_unique(str_split($flags))) != $flags) {
-            $warnings['flags'][] = $this->lang->translate('same_flags');
+            $warnings['flags'][] = $this->lang->t('same_flags');
         }
 
         // Typy
         if (empty($types)) {
-            $warnings['type[]'][] = $this->lang->translate('no_type_chosen');
+            $warnings['type[]'][] = $this->lang->t('no_type_chosen');
         }
 
         // Sprawdzamy, czy typy są prawidłowe
@@ -122,7 +122,7 @@ abstract class ServiceExtraFlagsSimple extends Service implements
                     (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP | ExtraFlagType::TYPE_SID)
                 )
             ) {
-                $warnings['type[]'][] = $this->lang->translate('wrong_type_chosen');
+                $warnings['type[]'][] = $this->lang->t('wrong_type_chosen');
                 break;
             }
         }
@@ -153,15 +153,15 @@ abstract class ServiceExtraFlagsSimple extends Service implements
     protected function getTypeName($value)
     {
         if ($value == ExtraFlagType::TYPE_NICK) {
-            return $this->lang->translate('nickpass');
+            return $this->lang->t('nickpass');
         }
 
         if ($value == ExtraFlagType::TYPE_IP) {
-            return $this->lang->translate('ippass');
+            return $this->lang->t('ippass');
         }
 
         if ($value == ExtraFlagType::TYPE_SID) {
-            return $this->lang->translate('sid');
+            return $this->lang->t('sid');
         }
 
         return "";
@@ -170,15 +170,15 @@ abstract class ServiceExtraFlagsSimple extends Service implements
     protected function getTypeName2($value)
     {
         if ($value == ExtraFlagType::TYPE_NICK) {
-            return $this->lang->translate('nick');
+            return $this->lang->t('nick');
         }
 
         if ($value == ExtraFlagType::TYPE_IP) {
-            return $this->lang->translate('ip');
+            return $this->lang->t('ip');
         }
 
         if ($value == ExtraFlagType::TYPE_SID) {
-            return $this->lang->translate('sid');
+            return $this->lang->t('sid');
         }
 
         return "";
@@ -189,7 +189,7 @@ abstract class ServiceExtraFlagsSimple extends Service implements
 
     public function userServiceAdminDisplayTitleGet()
     {
-        return $this->lang->translate('extra_flags');
+        return $this->lang->t('extra_flags');
     }
 
     public function userServiceAdminDisplayGet(array $query, array $body)
@@ -203,18 +203,14 @@ abstract class ServiceExtraFlagsSimple extends Service implements
         $wrapper->setSearch();
 
         $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('user')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('server')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('service')));
+        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->t('user')));
+        $table->addHeadCell(new HeadCell($this->lang->t('server')));
+        $table->addHeadCell(new HeadCell($this->lang->t('service')));
         $table->addHeadCell(
-            new HeadCell(
-                "{$this->lang->translate('nick')}/{$this->lang->translate(
-                    'ip'
-                )}/{$this->lang->translate('sid')}"
-            )
+            new HeadCell("{$this->lang->t('nick')}/{$this->lang->t('ip')}/{$this->lang->t('sid')}")
         );
-        $table->addHeadCell(new HeadCell($this->lang->translate('expires')));
+        $table->addHeadCell(new HeadCell($this->lang->t('expires')));
 
         // Wyszukujemy dane ktore spelniaja kryteria
         $where = '';
@@ -264,9 +260,7 @@ abstract class ServiceExtraFlagsSimple extends Service implements
             $bodyRow->setDbId($row['id']);
             $bodyRow->addCell(
                 new Cell(
-                    $row['uid']
-                        ? "{$row['username']} ({$row['uid']})"
-                        : $this->lang->translate('none')
+                    $row['uid'] ? "{$row['username']} ({$row['uid']})" : $this->lang->t('none')
                 )
             );
             $bodyRow->addCell(new Cell($row['server']));
@@ -275,7 +269,7 @@ abstract class ServiceExtraFlagsSimple extends Service implements
             $bodyRow->addCell(
                 new Cell(
                     $row['expire'] == '-1'
-                        ? $this->lang->translate('never')
+                        ? $this->lang->t('never')
                         : date($this->settings['date_format'], $row['expire'])
                 )
             );

@@ -50,8 +50,8 @@ class SmsCodeCollection
         );
 
         log_to_db(
-            $langShop->sprintf(
-                $langShop->translate('sms_code_admin_add'),
+            $langShop->t(
+                'sms_code_admin_add',
                 $user->getUsername(),
                 $user->getUid(),
                 $code,
@@ -59,6 +59,6 @@ class SmsCodeCollection
             )
         );
 
-        return new SuccessApiResponse($lang->translate('sms_code_add'));
+        return new SuccessApiResponse($lang->t('sms_code_add'));
     }
 }

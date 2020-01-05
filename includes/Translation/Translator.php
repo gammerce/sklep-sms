@@ -13,21 +13,21 @@ class Translator
      *
      * @var string
      */
-    protected $language;
+    private $language;
 
     /**
      * Language of loaded translations
      *
      * @var string
      */
-    protected $loadedLanguage;
+    private $loadedLanguage;
 
     /**
      * Array of language => language short
      *
      * @var array
      */
-    protected $langList = [
+    private $langList = [
         'polish' => 'pl',
         'english' => 'en',
     ];
@@ -37,7 +37,7 @@ class Translator
      *
      * @var array
      */
-    protected $translations;
+    private $translations;
 
     public function __construct($lang = 'polish')
     {
@@ -89,37 +89,6 @@ class Translator
     }
 
     /**
-     * Translate key to text
-     *
-     * @param string $key
-     *
-     * @return string
-     */
-    public function translate($key)
-    {
-        $this->load($this->getCurrentLanguage());
-
-        return array_get($this->translations, $key, $key);
-    }
-
-    /**
-     * @param $string
-     * @return string
-     */
-    public function sprintf($string)
-    {
-        // TODO Use t instead of sprintf
-        $argList = func_get_args();
-        $numArgs = count($argList);
-
-        for ($i = 1; $i < $numArgs; $i++) {
-            $string = str_replace('{' . $i . '}', $argList[$i], $string);
-        }
-
-        return $string;
-    }
-
-    /**
      * @param string $key
      * @param string ...$args
      * @return string
@@ -140,7 +109,37 @@ class Translator
         return mb_convert_case($string, MB_CASE_UPPER, "UTF-8");
     }
 
-    protected function load($language)
+    /**
+     * Translate key to text
+     *
+     * @param string $key
+     *
+     * @return string
+     */
+    private function translate($key)
+    {
+        $this->load($this->getCurrentLanguage());
+
+        return array_get($this->translations, $key, $key);
+    }
+
+    /**
+     * @param $string
+     * @return string
+     */
+    private function sprintf($string)
+    {
+        $argList = func_get_args();
+        $numArgs = count($argList);
+
+        for ($i = 1; $i < $numArgs; $i++) {
+            $string = str_replace('{' . $i . '}', $argList[$i], $string);
+        }
+
+        return $string;
+    }
+
+    private function load($language)
     {
         if ($this->loadedLanguage === $language) {
             return;

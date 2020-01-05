@@ -18,7 +18,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('user_own_services');
+        $this->heart->pageTitle = $this->title = $this->lang->t('user_own_services');
     }
 
     protected function content(array $query, array $body)
@@ -114,7 +114,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
                 $settings['user_edit_service'] &&
                 $serviceModule instanceof IServiceUserOwnServicesEdit
             ) {
-                $buttonEdit = create_dom_element("button", $lang->translate('edit'), [
+                $buttonEdit = create_dom_element("button", $lang->t('edit'), [
                     'class' => "button is-small edit_row",
                     'type' => 'button',
                 ]);
@@ -130,7 +130,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
 
         // Nie znalazło żadnych usług danego użytkownika
         if (!strlen($userOwnServices)) {
-            $userOwnServices = $lang->translate('no_data');
+            $userOwnServices = $lang->t('no_data');
         }
 
         $pagination = get_pagination(

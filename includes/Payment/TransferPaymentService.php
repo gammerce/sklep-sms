@@ -62,7 +62,7 @@ class TransferPaymentService
 
         return [
             'status' => "transfer",
-            'text' => $this->lang->translate('transfer_prepared'),
+            'text' => $this->lang->t('transfer_prepared'),
             'positive' => true,
             'data' => [
                 'data' => $paymentModule->prepareTransfer($purchase, $dataFilename),
@@ -87,12 +87,7 @@ class TransferPaymentService
             !$transferFinalize->getDataFilename() ||
             !file_exists($this->path->to('data/transfers/' . $transferFinalize->getDataFilename()))
         ) {
-            log_to_db(
-                $this->langShop->sprintf(
-                    $this->langShop->translate('transfer_no_data_file'),
-                    $transferFinalize->getOrderId()
-                )
-            );
+            log_to_db($this->langShop->t('transfer_no_data_file', $transferFinalize->getOrderId()));
 
             return false;
         }
@@ -118,8 +113,8 @@ class TransferPaymentService
 
         if (($serviceModule = $this->heart->getServiceModule($purchase->getService())) === null) {
             log_to_db(
-                $this->langShop->sprintf(
-                    $this->langShop->translate('transfer_bad_module'),
+                $this->langShop->t(
+                    'transfer_bad_module',
                     $transferFinalize->getOrderId(),
                     $purchase->getService()
                 )
@@ -130,8 +125,8 @@ class TransferPaymentService
 
         if (!($serviceModule instanceof IServicePurchase)) {
             log_to_db(
-                $this->langShop->sprintf(
-                    $this->langShop->translate('transfer_no_purchase'),
+                $this->langShop->t(
+                    'transfer_no_purchase',
                     $transferFinalize->getOrderId(),
                     $purchase->getService()
                 )
@@ -147,8 +142,8 @@ class TransferPaymentService
         $boughtServiceId = $serviceModule->purchase($purchase);
 
         log_to_db(
-            $this->langShop->sprintf(
-                $this->langShop->translate('payment_transfer_accepted'),
+            $this->langShop->t(
+                'payment_transfer_accepted',
                 $boughtServiceId,
                 $transferFinalize->getOrderId(),
                 $transferFinalize->getAmount(),

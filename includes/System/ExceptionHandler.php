@@ -56,17 +56,13 @@ class ExceptionHandler implements ExceptionHandlerContract
         }
 
         if ($e instanceof UnauthorizedException) {
-            return new ApiResponse(
-                "no_access",
-                $this->lang->translate('not_logged_or_no_perm'),
-                false
-            );
+            return new ApiResponse("no_access", $this->lang->t('not_logged_or_no_perm'), false);
         }
 
         if ($e instanceof ValidationException) {
             return new ApiResponse(
                 "warnings",
-                $this->lang->translate('form_wrong_filled'),
+                $this->lang->t('form_wrong_filled'),
                 false,
                 array_merge(
                     [
@@ -87,7 +83,7 @@ class ExceptionHandler implements ExceptionHandlerContract
         }
 
         if ($e instanceof LicenseException) {
-            return new Response($this->lang->translate('verification_error'));
+            return new Response($this->lang->t('verification_error'));
         }
 
         if ($e instanceof LicenseRequestException) {

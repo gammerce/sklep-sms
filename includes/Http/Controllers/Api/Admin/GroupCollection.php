@@ -41,12 +41,7 @@ class GroupCollection
         );
 
         log_to_db(
-            $langShop->sprintf(
-                $langShop->translate('group_admin_add'),
-                $user->getUsername(),
-                $user->getUid(),
-                $db->lastId()
-            )
+            $langShop->t('group_admin_add', $user->getUsername(), $user->getUid(), $db->lastId())
         );
         return new SuccessApiResponse($lang->t('group_add'));
     }

@@ -1,10 +1,10 @@
 <form id="form_user_edit" class="action_box">
     <div class="service_main_info">
-        {$lang->translate('edit_user')}
+        {$lang->t('edit_user')}
     </div>
     <table>
         <tr>
-            <td>{$lang->translate('id')}</td>
+            <td>{$lang->t('id')}</td>
             <td>{{ $uid }}</td>
         </tr>
         <tr>
@@ -12,7 +12,7 @@
         </tr>
         <tr>
             <td>
-                <label for="username">{$lang->strtoupper($lang->translate('username'))}</label>
+                <label for="username">{$lang->strtoupper($lang->t('username'))}</label>
             </td>
             <td>
                 <div class="field">
@@ -31,7 +31,7 @@
         </tr>
         <tr>
             <td>
-                <label for="forename">{$lang->strtoupper($lang->translate('firstname'))}</label>
+                <label for="forename">{$lang->strtoupper($lang->t('firstname'))}</label>
             </td>
             <td>
                 <div class="field">
@@ -50,7 +50,7 @@
         </tr>
         <tr>
             <td>
-                <label for="surname">{$lang->strtoupper($lang->translate('surname'))}</label>
+                <label for="surname">{$lang->strtoupper($lang->t('surname'))}</label>
             </td>
             <td>
                 <div class="field">
@@ -69,7 +69,7 @@
         </tr>
         <tr>
             <td>
-                <label for="email">{$lang->strtoupper($lang->translate('email'))}</label>
+                <label for="email">{$lang->strtoupper($lang->t('email'))}</label>
             </td>
             <td>
                 <div class="field">
@@ -88,7 +88,7 @@
         </tr>
         <tr>
             <td>
-                <label for="steam_id">{$lang->strtoupper($lang->translate('sid'))}</label>
+                <label for="steam_id">{$lang->strtoupper($lang->t('sid'))}</label>
             </td>
             <td>
                 <div class="field">
@@ -110,7 +110,7 @@
         </tr>
         <tr>
             <td>
-                <label for="groups">{$lang->strtoupper($lang->translate('groups'))}</label>
+                <label for="groups">{$lang->strtoupper($lang->t('groups'))}</label>
             </td>
             <td>
                 <div class="field">
@@ -126,7 +126,7 @@
         </tr>
         <tr>
             <td>
-                <label for="wallet">{$lang->strtoupper($lang->translate('wallet'))}</label>
+                <label for="wallet">{$lang->strtoupper($lang->t('wallet'))}</label>
             </td>
             <td style="vertical-align: middle">
                 <div class="field has-addons">
@@ -155,7 +155,7 @@
         <tr>
             <td colspan="2">
                 <input type="hidden" name="uid" value="{{ $uid }}" />
-                <input type="submit" value="{$lang->translate('edit')}" class="button w100" />
+                <input type="submit" value="{$lang->t('edit')}" class="button w100" />
             </td>
         </tr>
     </table>

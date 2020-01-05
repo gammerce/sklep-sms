@@ -1,12 +1,12 @@
 <a href="{{ $url->to('/page/register') }}">
-    <div id="register_redirect_button">{$lang->translate('register_vert')}</div>
+    <div id="register_redirect_button">{$lang->t('register_vert')}</div>
 </a>
 <table>
     <tr>
         <td class="td1">
             <form id="form_login">
                 <div class="field">
-                    <label for="login_username">{$lang->translate('username')}</label>
+                    <label for="login_username">{$lang->t('username')}</label>
                     <div class="control">
                         <input
                             type="text"
@@ -18,7 +18,7 @@
                 </div>
 
                 <div class="field">
-                    <label for="login_password">{$lang->translate('password')}</label>
+                    <label for="login_password">{$lang->t('password')}</label>
                     <div class="control">
                         <input
                             type="password"
@@ -30,15 +30,15 @@
                 </div>
 
                 <a href="{{ $url->to('/page/forgotten_password') }}">
-                    {$lang->translate('forgot_password')}
+                    {$lang->t('forgot_password')}
                 </a>
 
                 <div class="submit_wraper">
-                    <input type="submit" value="{$lang->translate('sign_in')}" class="button" />
+                    <input type="submit" value="{$lang->t('sign_in')}" class="button" />
                 </div>
                 <input type="hidden" id="form_login_reload_content" value="1" />
             </form>
         </td>
-        <td id="loginarea_roll_button">{$lang->translate('login_vert')}</td>
+        <td id="loginarea_roll_button">{$lang->t('login_vert')}</td>
     </tr>
 </table>

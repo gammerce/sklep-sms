@@ -1,11 +1,11 @@
 <form id="form_price_edit" class="action_box">
     <div class="service_main_info">
-        {$lang->translate('edit_price')}
+        {$lang->t('edit_price')}
     </div>
     <table>
         <tr>
             <td>
-                <label for="service">{$lang->strtoupper($lang->translate('service'))}</label>
+                <label for="service">{$lang->strtoupper($lang->t('service'))}</label>
             </td>
             <td>
                 <div class="field">
@@ -21,14 +21,14 @@
         </tr>
         <tr>
             <td>
-                <label for="server">{$lang->strtoupper($lang->translate('server'))}</label>
+                <label for="server">{$lang->strtoupper($lang->t('server'))}</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
                             <select id="server" name="server">
-                                <option value="-1" {$allServers}>{$lang->translate('all')}</option>
+                                <option value="-1" {$allServers}>{$lang->t('all')}</option>
                                 {$servers}
                             </select>
                         </div>
@@ -38,7 +38,7 @@
         </tr>
         <tr>
             <td>
-                <label for="tariff">{$lang->strtoupper($lang->translate('tariff'))}</label>
+                <label for="tariff">{$lang->strtoupper($lang->t('tariff'))}</label>
             </td>
             <td>
                 <div class="field">
@@ -54,7 +54,7 @@
         </tr>
         <tr>
             <td>
-                <label for="amount">{$lang->strtoupper($lang->translate('amount'))}</label>
+                <label for="amount">{$lang->strtoupper($lang->t('amount'))}</label>
             </td>
             <td>
                 <div class="field">
@@ -76,7 +76,7 @@
         <tr>
             <td colspan="2">
                 <input type="hidden" name="id" value="{{ $price['id'] }}" />
-                <input type="submit" value="{$lang->translate('edit')}" class="button w100" />
+                <input type="submit" value="{$lang->t('edit')}" class="button w100" />
             </td>
         </tr>
     </table>

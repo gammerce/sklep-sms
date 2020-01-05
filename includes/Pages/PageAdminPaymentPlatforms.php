@@ -25,7 +25,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
         parent::__construct();
 
         $this->paymentPlatformRepository = $paymentPlatformRepository;
-        $this->heart->pageTitle = $this->title = $this->lang->translate('payment_platforms');
+        $this->heart->pageTitle = $this->title = $this->lang->t('payment_platforms');
     }
 
     protected function content(array $query, array $body)
@@ -34,9 +34,9 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('name')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('module')));
+        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->t('name')));
+        $table->addHeadCell(new HeadCell($this->lang->t('module')));
 
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `" .
@@ -130,9 +130,9 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
     {
         switch ($name) {
             case 'sms_text':
-                return $this->lang->strtoupper($this->lang->translate('sms_code'));
+                return $this->lang->strtoupper($this->lang->t('sms_code'));
             case 'account_id':
-                return $this->lang->strtoupper($this->lang->translate('account_id'));
+                return $this->lang->strtoupper($this->lang->t('account_id'));
             default:
                 return $this->lang->strtoupper($name);
         }

@@ -19,7 +19,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('pricelist');
+        $this->heart->pageTitle = $this->title = $this->lang->t('pricelist');
     }
 
     protected function content(array $query, array $body)
@@ -28,11 +28,11 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('service')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('tariff')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('amount')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('server')));
+        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->t('service')));
+        $table->addHeadCell(new HeadCell($this->lang->t('tariff')));
+        $table->addHeadCell(new HeadCell($this->lang->t('amount')));
+        $table->addHeadCell(new HeadCell($this->lang->t('server')));
 
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * " .
@@ -53,7 +53,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
                 $server = $this->heart->getServer($row['server']);
                 $serverName = $server ? $server->getName() : "n/a";
             } else {
-                $serverName = $this->lang->translate('all_servers');
+                $serverName = $this->lang->t('all_servers');
             }
 
             $service = $this->heart->getService($row['service']);
@@ -77,7 +77,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
         $button->setParam('id', 'price_button_add');
         $button->setParam('type', 'button');
         $button->addClass('button');
-        $button->setParam('value', $this->lang->translate('add_price'));
+        $button->setParam('value', $this->lang->t('add_price'));
         $wrapper->addButton($button);
 
         return $wrapper->toHtml();

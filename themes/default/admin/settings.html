@@ -4,10 +4,10 @@
 
 <form id="form_settings_edit" class="columns is-multiline">
     <div class="column is-one-third">
-        <h4>{$lang->translate('license')}</h4>
+        <h4>{$lang->t('license')}</h4>
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="license_token">{$lang->translate('token')}</label>
+                <label for="license_token">{$lang->t('token')}</label>
             </div>
             <div class="field-body">
                 <div class="field">
@@ -27,11 +27,11 @@
     </div>
 
     <div class="column is-two-thirds">
-        <h4>{$lang->translate('information')}</h4>
+        <h4>{$lang->t('information')}</h4>
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="shop_name">{$lang->translate('shop_name')}</label>
+                <label for="shop_name">{$lang->t('shop_name')}</label>
             </div>
             <div class="field-body">
                 <div class="field">
@@ -51,7 +51,7 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="shop_url">{$lang->translate('shop_address')}</label>
+                <label for="shop_url">{$lang->t('shop_address')}</label>
             </div>
             <div class="field-body">
                 <div class="field">
@@ -71,7 +71,7 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="contact">{$lang->translate('contact')}</label>
+                <label for="contact">{$lang->t('contact')}</label>
             </div>
             <div class="field-body">
                 <div class="field">
@@ -91,7 +91,7 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="sender_email">{$lang->translate('auto_email')}</label>
+                <label for="sender_email">{$lang->t('auto_email')}</label>
             </div>
             <div class="field-body">
                 <div class="field">
@@ -111,7 +111,7 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="sender_email_name">{$lang->translate('email_sender_name')}</label>
+                <label for="sender_email_name">{$lang->t('email_sender_name')}</label>
             </div>
             <div class="field-body">
                 <div class="field">
@@ -132,7 +132,7 @@
         <div class="field is-horizontal">
             <div class="field-label is-small">
                 <label for="signature">
-                    {$lang->translate('signature')} <em>{$lang->translate('eg_emails')}</em>
+                    {$lang->t('signature')} <em>{$lang->t('eg_emails')}</em>
                 </label>
             </div>
             <div class="field-body">
@@ -153,18 +153,18 @@
     </div>
 
     <div class="column is-half">
-        <h4>{$lang->translate('payments')}</h4>
+        <h4>{$lang->t('payments')}</h4>
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="sms_platform">{$lang->translate('sms_payment_platform')}</label>
+                <label for="sms_platform">{$lang->t('sms_payment_platform')}</label>
             </div>
             <div class="field-body">
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
                             <select id="sms_platform" name="sms_platform">
-                                <option value="">{$lang->translate('none_such')}</option>
+                                <option value="">{$lang->t('none_such')}</option>
                                 {$smsPlatforms}
                             </select>
                         </div>
@@ -175,16 +175,14 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="transfer_platform"
-                    >{$lang->translate('transfer_payment_platform')}</label
-                >
+                <label for="transfer_platform">{$lang->t('transfer_payment_platform')}</label>
             </div>
             <div class="field-body">
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
                             <select id="transfer_platform" name="transfer_platform">
-                                <option value="">{$lang->translate('none_such')}</option>
+                                <option value="">{$lang->t('none_such')}</option>
                                 {$transferPlatforms}
                             </select>
                         </div>
@@ -196,7 +194,7 @@
         <div class="field is-horizontal">
             <div class="field-label is-small">
                 <label for="currency">
-                    {$lang->translate('transfer_payment_service')}
+                    {$lang->t('transfer_payment_service')}
                 </label>
             </div>
             <div class="field-body">
@@ -218,7 +216,7 @@
         <div class="field is-horizontal">
             <div class="field-label is-small">
                 <label for="vat">
-                    {$lang->translate('vat')}
+                    {$lang->t('vat')}
                 </label>
             </div>
             <div class="field-body">
@@ -239,12 +237,12 @@
     </div>
 
     <div class="column is-half">
-        <h4>{$lang->translate('users')}</h4>
+        <h4>{$lang->t('users')}</h4>
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
                 <label for="user_edit_service">
-                    {$lang->translate('user_service_edit')}
+                    {$lang->t('user_service_edit')}
                 </label>
             </div>
             <div class="field-body">
@@ -260,12 +258,12 @@
     </div>
 
     <div class="column is-half">
-        <h4>{$lang->translate('global')}</h4>
+        <h4>{$lang->t('global')}</h4>
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
                 <label for="language">
-                    {$lang->translate('language')}
+                    {$lang->t('language')}
                 </label>
             </div>
             <div class="field-body">
@@ -284,7 +282,7 @@
         <div class="field is-horizontal">
             <div class="field-label is-small">
                 <label for="theme">
-                    {$lang->translate('theme')}
+                    {$lang->t('theme')}
                 </label>
             </div>
             <div class="field-body">
@@ -303,7 +301,7 @@
         <div class="field is-horizontal">
             <div class="field-label is-small">
                 <label for="date_format">
-                    {$lang->translate('date_format')}
+                    {$lang->t('date_format')}
                 </label>
             </div>
             <div class="field-body">
@@ -325,7 +323,7 @@
         <div class="field is-horizontal">
             <div class="field-label is-small">
                 <label for="cron">
-                    {$lang->translate('cron_page_start')}
+                    {$lang->t('cron_page_start')}
                 </label>
             </div>
             <div class="field-body">
@@ -385,12 +383,12 @@
     </div>
 
     <div class="column is-half">
-        <h4>{$lang->translate('other')}</h4>
+        <h4>{$lang->t('other')}</h4>
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
                 <label for="delete_logs">
-                    {$lang->translate('delete_old_logs')} <em>{$lang->translate('dont_delete')}</em>
+                    {$lang->t('delete_old_logs')} <em>{$lang->t('dont_delete')}</em>
                 </label>
             </div>
             <div class="field-body">
@@ -407,7 +405,7 @@
                     </div>
                     <div class="control">
                         <a class="button is-static is-small">
-                            {$lang->translate('days')}
+                            {$lang->t('days')}
                         </a>
                     </div>
                 </div>
@@ -417,7 +415,7 @@
         <div class="field is-horizontal">
             <div class="field-label is-small">
                 <label for="row_limit">
-                    {$lang->translate('lines_per_page')}
+                    {$lang->t('lines_per_page')}
                 </label>
             </div>
             <div class="field-body">
@@ -440,11 +438,6 @@
     <div class="column is-full has-text-centered">
         <hr />
 
-        <input
-            type="submit"
-            value="{$lang->translate('save')}"
-            class="button"
-            style="width: 50%;"
-        />
+        <input type="submit" value="{$lang->t('save')}" class="button" style="width: 50%;" />
     </div>
 </form>

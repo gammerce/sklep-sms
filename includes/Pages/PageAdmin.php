@@ -10,7 +10,7 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
     public function getContent(array $query, array $body)
     {
         if (!get_privileges($this->privilege)) {
-            return $this->lang->translate('no_privileges');
+            return $this->lang->t('no_privileges');
         }
 
         // Dodajemy wszystkie skrypty

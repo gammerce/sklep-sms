@@ -16,15 +16,15 @@ class ExtraFlagType
         $lang = $translationManager->user();
 
         if ($value == self::TYPE_NICK) {
-            return $lang->translate('nickpass');
+            return $lang->t('nickpass');
         }
 
         if ($value == self::TYPE_IP) {
-            return $lang->translate('ippass');
+            return $lang->t('ippass');
         }
 
         if ($value == self::TYPE_SID) {
-            return $lang->translate('sid');
+            return $lang->t('sid');
         }
 
         return '';

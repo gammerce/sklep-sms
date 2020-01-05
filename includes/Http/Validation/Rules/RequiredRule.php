@@ -18,7 +18,7 @@ class RequiredRule implements Rule
     public function validate($attribute, $value, array $data)
     {
         if (!strlen($value)) {
-            return [$this->lang->translate('field_no_empty')];
+            return [$this->lang->t('field_no_empty')];
         }
 
         return [];

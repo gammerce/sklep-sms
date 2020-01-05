@@ -1,19 +1,19 @@
 <form id="form_user_service_add" class="action_box">
     <div class="service_main_info">
-        {$lang->translate('add_user_service')}
+        {$lang->t('add_user_service')}
     </div>
     <table>
         <tbody class="ftbody">
             <tr>
                 <td>
-                    <label for="service">{$lang->translate('service')}</label>
+                    <label for="service">{$lang->t('service')}</label>
                 </td>
                 <td>
                     <div class="field">
                         <div class="control">
                             <div class="select is-small">
                                 <select id="service" name="service">
-                                    <option value="">{$lang->translate('choose_service')}</option>
+                                    <option value="">{$lang->t('choose_service')}</option>
                                     {$services}
                                 </select>
                             </div>
@@ -28,7 +28,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <input type="submit" value="{$lang->translate('add')}" class="button w100" />
+                    <input type="submit" value="{$lang->t('add')}" class="button w100" />
                 </td>
             </tr>
         </tbody>

@@ -18,6 +18,6 @@ class LogOutController
 
         $request->getSession()->invalidate();
 
-        return new ApiResponse("logged_out", $lang->translate('logout_success'), 1);
+        return new ApiResponse("logged_out", $lang->t('logout_success'), 1);
     }
 }

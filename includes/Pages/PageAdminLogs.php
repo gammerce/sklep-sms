@@ -17,7 +17,7 @@ class PageAdminLogs extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('logs');
+        $this->heart->pageTitle = $this->title = $this->lang->t('logs');
     }
 
     protected function content(array $query, array $body)
@@ -27,9 +27,9 @@ class PageAdminLogs extends PageAdmin
         $wrapper->setSearch();
 
         $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('text')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('date')));
+        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->t('text')));
+        $table->addHeadCell(new HeadCell($this->lang->t('date')));
 
         // Wyszukujemy dane ktore spelniaja kryteria
         $where = '';

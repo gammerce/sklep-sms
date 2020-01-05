@@ -30,7 +30,7 @@ class ServiceCodeCollection
         $warnings = [];
 
         if (($serviceModule = $heart->getServiceModule($serviceId)) === null) {
-            return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
+            return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
         }
 
         // Id użytkownika
@@ -40,10 +40,10 @@ class ServiceCodeCollection
 
         // Kod
         if (!strlen($code)) {
-            $warnings['code'][] = $lang->translate('field_no_empty');
+            $warnings['code'][] = $lang->t('field_no_empty');
         } else {
             if (strlen($code) > 16) {
-                $warnings['code'][] = $lang->translate('return_code_length_warn');
+                $warnings['code'][] = $lang->t('return_code_length_warn');
             }
         }
 
@@ -80,6 +80,6 @@ class ServiceCodeCollection
             )
         );
 
-        return new SuccessApiResponse($lang->translate('code_added'));
+        return new SuccessApiResponse($lang->t('code_added'));
     }
 }

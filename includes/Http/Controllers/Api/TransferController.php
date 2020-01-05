@@ -39,8 +39,8 @@ class TransferController
 
         if ($transferFinalize->getStatus() === false) {
             log_to_db(
-                $this->langShop->sprintf(
-                    $this->langShop->translate('payment_not_accepted'),
+                $this->langShop->t(
+                    'payment_not_accepted',
                     $transferFinalize->getOrderId(),
                     $transferFinalize->getAmount(),
                     $transferFinalize->getTransferService()

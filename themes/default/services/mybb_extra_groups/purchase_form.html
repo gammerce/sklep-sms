@@ -2,7 +2,7 @@
     <div class="inputs">
         <table>
             <tr>
-                <td><label for="username">{$lang->translate('username')}</label></td>
+                <td><label for="username">{$lang->t('username')}</label></td>
                 <td>
                     <div class="field">
                         <div class="control">
@@ -18,13 +18,13 @@
                 </td>
             </tr>
             <tr>
-                <td><label for="amount">{$lang->translate('amount')}</label></td>
+                <td><label for="amount">{$lang->t('amount')}</label></td>
                 <td>
                     <div class="field">
                         <div class="control">
                             <div class="select is-small">
                                 <select id="amount" name="amount">
-                                    <option value="">{$lang->translate('choose_amount')}</option>
+                                    <option value="">{$lang->t('choose_amount')}</option>
                                     {$amounts}
                                 </select>
                             </div>
@@ -33,7 +33,7 @@
                 </td>
             </tr>
             <tr>
-                <td><label for="email">{$lang->translate('email')}</label></td>
+                <td><label for="email">{$lang->t('email')}</label></td>
                 <td>
                     <div class="field">
                         <div class="control">
@@ -53,9 +53,9 @@
 
     <div id="cost_wraper">
         <div>
-            <strong>{$lang->translate('transfer_wallet_cost')}</strong>:
-            <span id="cost_transfer"></span> {{ $settings['currency'] }}<br />
-            <strong>{$lang->translate('sms_cost')}</strong>: <span id="cost_sms"></span>
+            <strong>{$lang->t('transfer_wallet_cost')}</strong>: <span id="cost_transfer"></span> {{
+            $settings['currency'] }}<br />
+            <strong>{$lang->t('sms_cost')}</strong>: <span id="cost_sms"></span>
             <span id="currency_sms">{{ $settings['currency'] }}</span>
         </div>
     </div>
@@ -64,7 +64,7 @@
         <input
             type="button"
             id="go_to_payment"
-            value="{$lang->translate('go_to_payment')}"
+            value="{$lang->t('go_to_payment')}"
             class="button is-success purchase_button"
         />
     </div>

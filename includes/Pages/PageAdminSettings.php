@@ -19,7 +19,7 @@ class PageAdminSettings extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('settings');
+        $this->heart->pageTitle = $this->title = $this->lang->t('settings');
     }
 
     protected function content(array $query, array $body)
@@ -84,14 +84,10 @@ class PageAdminSettings extends PageAdmin
         $languagesList = [];
         foreach ($dirList as $dirName) {
             if ($dirName[0] != '.' && is_dir($path->to("translations/{$dirName}"))) {
-                $languagesList[] = create_dom_element(
-                    "option",
-                    $lang->translate('language_' . $dirName),
-                    [
-                        'value' => $dirName,
-                        'selected' => $dirName == $langShop->getCurrentLanguage() ? "selected" : "",
-                    ]
-                );
+                $languagesList[] = create_dom_element("option", $lang->t('language_' . $dirName), [
+                    'value' => $dirName,
+                    'selected' => $dirName == $langShop->getCurrentLanguage() ? "selected" : "",
+                ]);
             }
         }
 
@@ -109,13 +105,13 @@ class PageAdminSettings extends PageAdmin
 
     protected function createUserEditServiceSelect()
     {
-        $yesOption = new Option($this->lang->translate("yes"));
+        $yesOption = new Option($this->lang->t("yes"));
         $yesOption->setParam("value", "1");
         if ($this->settings["user_edit_service"]) {
             $yesOption->setParam("selected", "selected");
         }
 
-        $noOption = new Option($this->lang->translate("no"));
+        $noOption = new Option($this->lang->t("no"));
         $noOption->setParam("value", "0");
         if (!$this->settings["user_edit_service"]) {
             $noOption->setParam("selected", "selected");
@@ -132,13 +128,13 @@ class PageAdminSettings extends PageAdmin
 
     protected function createCronSelect()
     {
-        $yesOption = new Option($this->lang->translate("yes"));
+        $yesOption = new Option($this->lang->t("yes"));
         $yesOption->setParam("value", "1");
         if ($this->settings["cron_each_visit"]) {
             $yesOption->setParam("selected", "selected");
         }
 
-        $noOption = new Option($this->lang->translate("no"));
+        $noOption = new Option($this->lang->t("no"));
         $noOption->setParam("value", "0");
         if (!$this->settings["cron_each_visit"]) {
             $noOption->setParam("selected", "selected");

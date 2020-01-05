@@ -31,7 +31,7 @@ class WalletPaymentService
         if ($cost > $user->getWallet()) {
             return [
                 'status' => "no_money",
-                'text' => $this->lang->translate('not_enough_money'),
+                'text' => $this->lang->t('not_enough_money'),
                 'positive' => false,
             ];
         }

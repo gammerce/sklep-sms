@@ -139,7 +139,7 @@ function get_pagination($all, $currentPage, $script, $query, $rowLimit = 0)
     $pagination = new Div();
     $pagination->addClass("pagination is-centered");
 
-    $previousButton = new Link($lang->translate("previous"));
+    $previousButton = new Link($lang->t("previous"));
     $previousButton->addClass("pagination-previous");
     if ($currentPage - 1 < 1) {
         $previousButton->setParam("disabled", true);
@@ -150,7 +150,7 @@ function get_pagination($all, $currentPage, $script, $query, $rowLimit = 0)
         );
     }
 
-    $nextButton = new Link($lang->translate("next"));
+    $nextButton = new Link($lang->t("next"));
     $nextButton->addClass("pagination-next");
     if ($currentPage + 1 > $pagesAmount) {
         $nextButton->setParam("disabled", true);
@@ -398,9 +398,7 @@ function delete_users_old_services()
                 $userServiceDesc .= ucfirst(strtolower($key)) . ': ' . $value;
             }
 
-            log_to_db(
-                $langShop->sprintf($langShop->translate('expired_service_delete'), $userServiceDesc)
-            );
+            log_to_db($langShop->t('expired_service_delete', $userServiceDesc));
         }
     }
 
@@ -460,11 +458,11 @@ function get_platform($platform)
     $lang = $translationManager->user();
 
     if ($platform == "engine_amxx") {
-        return $lang->translate('amxx_server');
+        return $lang->t('amxx_server');
     }
 
     if ($platform == "engine_sm") {
-        return $lang->translate('sm_server');
+        return $lang->t('sm_server');
     }
 
     return $platform;
@@ -604,9 +602,7 @@ function secondsToTime($seconds)
 
     return $dtF
         ->diff($dtT)
-        ->format(
-            "%a {$lang->translate('days')} {$lang->translate('and')} %h {$lang->translate('hours')}"
-        );
+        ->format("%a {$lang->t('days')} {$lang->t('and')} %h {$lang->t('hours')}");
 }
 
 function custom_mb_str_split($string)
@@ -844,20 +840,20 @@ function check_for_warnings($type, $data)
     switch ($type) {
         case "username":
             if (strlen($data) < 2) {
-                $warnings[] = $lang->sprintf($lang->translate('field_length_min_warn'), 2);
+                $warnings[] = $lang->t('field_length_min_warn', 2);
             }
             if ($data != htmlspecialchars($data)) {
-                $warnings[] = $lang->translate('username_chars_warn');
+                $warnings[] = $lang->t('username_chars_warn');
             }
 
             break;
 
         case "nick":
             if (strlen($data) < 2) {
-                $warnings[] = $lang->sprintf($lang->translate('field_length_min_warn'), 2);
+                $warnings[] = $lang->t('field_length_min_warn', 2);
             } else {
                 if (strlen($data) > 32) {
-                    $warnings[] = $lang->sprintf($lang->translate('field_length_max_warn'), 32);
+                    $warnings[] = $lang->t('field_length_max_warn', 32);
                 }
             }
 
@@ -865,38 +861,38 @@ function check_for_warnings($type, $data)
 
         case "password":
             if (strlen($data) < 6) {
-                $warnings[] = $lang->sprintf($lang->translate('field_length_min_warn'), 6);
+                $warnings[] = $lang->t('field_length_min_warn', 6);
             }
 
             break;
 
         case "email":
             if (!filter_var($data, FILTER_VALIDATE_EMAIL)) {
-                $warnings[] = $lang->translate('wrong_email');
+                $warnings[] = $lang->t('wrong_email');
             }
 
             break;
 
         case "ip":
             if (!filter_var($data, FILTER_VALIDATE_IP)) {
-                $warnings[] = $lang->translate('wrong_ip');
+                $warnings[] = $lang->t('wrong_ip');
             }
 
             break;
 
         case "sid":
             if (!valid_steam($data) || strlen($data) > 32) {
-                $warnings[] = $lang->translate('wrong_sid');
+                $warnings[] = $lang->t('wrong_sid');
             }
 
             break;
 
         case "uid":
             if (!strlen($data)) {
-                $warnings[] = $lang->translate('field_no_empty');
+                $warnings[] = $lang->t('field_no_empty');
             } else {
                 if (!is_numeric($data)) {
-                    $warnings[] = $lang->translate('field_must_be_number');
+                    $warnings[] = $lang->t('field_must_be_number');
                 }
             }
 
@@ -904,17 +900,17 @@ function check_for_warnings($type, $data)
 
         case "service_description":
             if (strlen($data) > 28) {
-                $warnings[] = $lang->sprintf($lang->translate('field_length_max_warn'), 28);
+                $warnings[] = $lang->t('field_length_max_warn', 28);
             }
 
             break;
 
         case "sms_code":
             if (!strlen($data)) {
-                $warnings[] = $lang->translate('field_no_empty');
+                $warnings[] = $lang->t('field_no_empty');
             } else {
                 if (strlen($data) > 16) {
-                    $warnings[] = $lang->translate('return_code_length_warn');
+                    $warnings[] = $lang->t('return_code_length_warn');
                 }
             }
 
@@ -922,10 +918,10 @@ function check_for_warnings($type, $data)
 
         case "number":
             if (!strlen($data)) {
-                $warnings[] = $lang->translate('field_no_empty');
+                $warnings[] = $lang->t('field_no_empty');
             } else {
                 if (!is_numeric($data)) {
-                    $warnings[] = $lang->translate('field_must_be_number');
+                    $warnings[] = $lang->t('field_must_be_number');
                 }
             }
 

@@ -27,12 +27,12 @@ class PurchaseValidationResource
                 null ||
             !($serviceModule instanceof IServicePurchaseWeb)
         ) {
-            return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
+            return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
         }
 
         // Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
         if (!$heart->userCanUseService($user->getUid(), $serviceModule->service)) {
-            return new ApiResponse("no_permission", $lang->translate('service_no_permission'), 0);
+            return new ApiResponse("no_permission", $lang->t('service_no_permission'), 0);
         }
 
         // Przeprowadzamy walidację danych wprowadzonych w formularzu

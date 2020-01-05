@@ -59,7 +59,7 @@ class PaymentService
         if (($serviceModule = $this->heart->getServiceModule($purchase->getService())) === null) {
             return [
                 'status' => "wrong_module",
-                'text' => $this->lang->translate('bad_module'),
+                'text' => $this->lang->t('bad_module'),
                 'positive' => false,
             ];
         }
@@ -74,7 +74,7 @@ class PaymentService
         ) {
             return [
                 'status' => "wrong_method",
-                'text' => $this->lang->translate('wrong_payment_method'),
+                'text' => $this->lang->t('wrong_payment_method'),
                 'positive' => false,
             ];
         }
@@ -106,7 +106,7 @@ class PaymentService
         ) {
             return [
                 'status' => "wallet_not_logged",
-                'text' => $this->lang->translate('no_login_no_wallet'),
+                'text' => $this->lang->t('no_login_no_wallet'),
                 'positive' => false,
             ];
         }
@@ -117,7 +117,7 @@ class PaymentService
         ) {
             return [
                 'status' => "sms_unavailable",
-                'text' => $this->lang->translate('sms_unavailable'),
+                'text' => $this->lang->t('sms_unavailable'),
                 'positive' => false,
             ];
         }
@@ -128,7 +128,7 @@ class PaymentService
         ) {
             return [
                 'status' => "no_sms_option",
-                'text' => $this->lang->translate('no_sms_payment'),
+                'text' => $this->lang->t('no_sms_payment'),
                 'positive' => false,
             ];
         }
@@ -139,10 +139,7 @@ class PaymentService
         ) {
             return [
                 'status' => "too_little_for_transfer",
-                'text' => $this->lang->sprintf(
-                    $this->lang->translate('transfer_above_amount'),
-                    $this->settings['currency']
-                ),
+                'text' => $this->lang->t('transfer_above_amount', $this->settings['currency']),
                 'positive' => false,
             ];
         }
@@ -153,7 +150,7 @@ class PaymentService
         ) {
             return [
                 'status' => "transfer_unavailable",
-                'text' => $this->lang->translate('transfer_unavailable'),
+                'text' => $this->lang->t('transfer_unavailable'),
                 'positive' => false,
             ];
         }
@@ -177,7 +174,7 @@ class PaymentService
             $purchase->getPayment('method') == Purchase::METHOD_SERVICE_CODE &&
             !strlen($purchase->getPayment('service_code'))
         ) {
-            $warnings['service_code'][] = $this->lang->translate('field_no_empty');
+            $warnings['service_code'][] = $this->lang->t('field_no_empty');
         }
 
         if ($warnings) {
@@ -186,7 +183,7 @@ class PaymentService
 
             return [
                 'status' => "warnings",
-                'text' => $this->lang->translate('form_wrong_filled'),
+                'text' => $this->lang->t('form_wrong_filled'),
                 'positive' => false,
                 'data' => $warningData,
             ];
@@ -251,7 +248,7 @@ class PaymentService
 
             return [
                 'status' => "purchased",
-                'text' => $this->lang->translate('purchase_success'),
+                'text' => $this->lang->t('purchase_success'),
                 'positive' => true,
                 'data' => ['bsid' => $boughtServiceId],
             ];
@@ -259,10 +256,7 @@ class PaymentService
 
         if ($purchase->getPayment('method') == Purchase::METHOD_TRANSFER) {
             $purchase->setDesc(
-                $this->lang->sprintf(
-                    $this->lang->translate('payment_for_service'),
-                    $serviceModule->service->getName()
-                )
+                $this->lang->t('payment_for_service', $serviceModule->service->getName())
             );
 
             return $this->transferPaymentService->payWithTransfer($paymentModule, $purchase);

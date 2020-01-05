@@ -42,10 +42,7 @@ class ServiceDescriptionCreator
             // Check if permissions were assigned
             if (substr(sprintf('%o', fileperms($path)), -4) != "0777") {
                 throw new InvalidConfigException(
-                    $this->lang->sprintf(
-                        $this->lang->translate('wrong_service_description_file'),
-                        $this->settings['theme']
-                    )
+                    $this->lang->t('wrong_service_description_file', $this->settings['theme'])
                 );
             }
         }

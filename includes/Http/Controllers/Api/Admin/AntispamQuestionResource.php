@@ -60,12 +60,12 @@ class AntispamQuestionResource
 
         // Pytanie
         if (!$question) {
-            $warnings['question'][] = $lang->translate('field_no_empty');
+            $warnings['question'][] = $lang->t('field_no_empty');
         }
 
         // Odpowiedzi
         if (!$answers) {
-            $warnings['answers'][] = $lang->translate('field_no_empty');
+            $warnings['answers'][] = $lang->t('field_no_empty');
         }
 
         if ($warnings) {
@@ -85,16 +85,16 @@ class AntispamQuestionResource
 
         if ($statement->rowCount()) {
             log_to_db(
-                $langShop->sprintf(
-                    $langShop->translate('question_edit'),
+                $langShop->t(
+                    'question_edit',
                     $user->getUsername(),
                     $user->getUid(),
                     $antispamQuestionId
                 )
             );
-            return new SuccessApiResponse($lang->translate('antispam_edit'));
+            return new SuccessApiResponse($lang->t('antispam_edit'));
         }
 
-        return new ApiResponse("not_edited", $lang->translate('antispam_no_edit'), 0);
+        return new ApiResponse("not_edited", $lang->t('antispam_no_edit'), 0);
     }
 }
