@@ -108,6 +108,7 @@ class Translator
      */
     public function sprintf($string)
     {
+        // TODO Use t instead of sprintf
         $argList = func_get_args();
         $numArgs = count($argList);
 

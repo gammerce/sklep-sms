@@ -785,6 +785,7 @@ function log_to_file($file, $message, array $data = [])
 
 function log_to_db($message)
 {
+    // TODO Prepend user
     /** @var Database $db */
     $db = app()->make(Database::class);
 

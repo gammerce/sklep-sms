@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\System\Auth;
 use App\System\Database;
 use App\Translation\TranslationManager;
@@ -48,17 +49,12 @@ class GroupResource
 
         if ($statement->rowCount()) {
             log_to_db(
-                $langShop->sprintf(
-                    $langShop->translate('group_admin_edit'),
-                    $user->getUsername(),
-                    $user->getUid(),
-                    $groupId
-                )
+                $langShop->t('group_admin_edit', $user->getUsername(), $user->getUid(), $groupId)
             );
-            return new ApiResponse('ok', $lang->translate('group_edit'), 1);
+            return new SuccessApiResponse($lang->t('group_edit'));
         }
 
-        return new ApiResponse("not_edited", $lang->translate('group_no_edit'), 0);
+        return new ApiResponse("not_edited", $lang->t('group_no_edit'), 0);
     }
 
     public function delete(
@@ -77,16 +73,11 @@ class GroupResource
 
         if ($statement->rowCount()) {
             log_to_db(
-                $langShop->sprintf(
-                    $langShop->translate('group_admin_delete'),
-                    $user->getUsername(),
-                    $user->getUid(),
-                    $groupId
-                )
+                $langShop->t('group_admin_delete', $user->getUsername(), $user->getUid(), $groupId)
             );
-            return new ApiResponse('ok', $lang->translate('delete_group'), 1);
+            return new SuccessApiResponse($lang->t('delete_group'));
         }
 
-        return new ApiResponse("not_deleted", $lang->translate('no_delete_group'), 0);
+        return new ApiResponse("not_deleted", $lang->t('no_delete_group'), 0);
     }
 }

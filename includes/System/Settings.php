@@ -149,6 +149,22 @@ LEFT JOIN `" .
         $this->loaded = true;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getSmsPlatformId()
+    {
+        return array_get($this->settings, "sms_platform");
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTransferPlatformId()
+    {
+        return array_get($this->settings, "transfer_platform");
+    }
+
     private function prepareValue($key, $value)
     {
         return strlen($value) ? $value : array_get($this->settings, $key, '');

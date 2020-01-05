@@ -41,7 +41,7 @@ class MigrateTransactionServices extends Migration
         ];
 
         foreach ($this->serverRepository->all() as $server) {
-            $requiredPlatforms[] = $server->getSmsPlatform();
+            $requiredPlatforms[] = $server->getSmsPlatformId();
         }
 
         $result = $this->db->query("SELECT * FROM ss_transaction_services");

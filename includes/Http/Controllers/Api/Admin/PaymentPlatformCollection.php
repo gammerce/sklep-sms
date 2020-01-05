@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\InvalidPaymentModuleException;
 use App\Exceptions\ValidationException;
-use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\PaymentPlatformService;
 use App\Repositories\PaymentPlatformRepository;
 use App\System\Auth;
@@ -47,7 +47,7 @@ class PaymentPlatformCollection
             )
         );
 
-        return new ApiResponse('ok', $lang->translate('payment_platform_added'), true, [
+        return new SuccessApiResponse($lang->t('payment_platform_added'), [
             'data' => [
                 'id' => $paymentPlatform->getId(),
             ],

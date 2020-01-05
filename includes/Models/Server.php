@@ -63,7 +63,7 @@ class Server
         return $this->type;
     }
 
-    public function getSmsPlatform()
+    public function getSmsPlatformId()
     {
         return $this->smsPlatform;
     }

@@ -58,6 +58,10 @@ return [
     'delete_group' => 'Group removed successfully.',
     'delete_log' => 'Log removed successfully.',
     'delete_old_logs' => 'Delete logs older than',
+    'delete_payment_platform_server_constraint' =>
+        'This payment platform cannot be deleted, because it is used as server\'s payment platform.',
+    'delete_payment_platform_settings_constraint' =>
+        'This payment platform cannot be deleted, because it is used as the default payment platform.',
     'delete_price' => 'Price removed successfully.',
     'delete_server' => 'Server removed successfully.',
     'delete_server_constraint_fails' =>

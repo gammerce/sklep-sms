@@ -80,7 +80,7 @@ class PaymentPlatformResourceTest extends HttpTestCase
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertSame("warnings", $json["return_id"]);
+        $this->assertSame("error", $json["return_id"]);
         $freshPaymentPlatform = $this->paymentPlatformRepository->get(
             $this->paymentPlatform->getId()
         );
@@ -101,7 +101,7 @@ class PaymentPlatformResourceTest extends HttpTestCase
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertSame("warnings", $json["return_id"]);
+        $this->assertSame("error", $json["return_id"]);
         $freshPaymentPlatform = $this->paymentPlatformRepository->get(
             $this->paymentPlatform->getId()
         );

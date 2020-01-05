@@ -299,9 +299,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             'forever' => $price['amount'] == -1 ? true : false,
         ]);
 
-        if ($server->getSmsPlatform()) {
+        if ($server->getSmsPlatformId()) {
             $purchaseData->setPayment([
-                'sms_platform' => $server->getSmsPlatform(),
+                'sms_platform' => $server->getSmsPlatformId(),
             ]);
         }
 
@@ -1571,7 +1571,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     private function tariffs_for_server($serverId)
     {
         $server = $this->heart->getServer($serverId);
-        $smsPlatformId = $server->getSmsPlatform() ?: $this->settings['sms_platform'];
+        $smsPlatformId = $server->getSmsPlatformId() ?: $this->settings['sms_platform'];
         $paymentPlatform = $this->paymentPlatformRepository->get($smsPlatformId);
         $paymentModule = $paymentPlatform ? $paymentPlatform->getModuleId() : '';
 

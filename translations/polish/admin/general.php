@@ -58,6 +58,10 @@ return [
     'delete_group' => 'Grupa została prawidłowo usunięta.',
     'delete_log' => 'Log został prawidłowo usunięty.',
     'delete_old_logs' => 'Usuwaj logi starsze niż',
+    'delete_payment_platform_server_constraint' =>
+        'Nie można usunąć tej platformy płatności, ponieważ jest ustawiona jako platforma płatności dla serwera.',
+    'delete_payment_platform_settings_constraint' =>
+        'Nie można usunąć tej platformy płatności, ponieważ jest ustawiona jako domyślna platforma płatności.',
     'delete_price' => 'Cena została prawidłowo usunięta.',
     'delete_server' => 'Serwer został prawidłowo usunięty.',
     'delete_server_constraint_fails' =>

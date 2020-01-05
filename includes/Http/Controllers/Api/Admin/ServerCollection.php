@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\ServerService;
 use App\Repositories\ServerRepository;
 use App\System\Auth;
@@ -34,13 +34,8 @@ class ServerCollection
         $serverService->updateServerServiceAffiliations($serverId, $request->request->all());
 
         log_to_db(
-            $langShop->sprintf(
-                $langShop->translate('server_admin_add'),
-                $user->getUsername(),
-                $user->getUid(),
-                $serverId
-            )
+            $langShop->t('server_admin_add', $user->getUsername(), $user->getUid(), $serverId)
         );
-        return new ApiResponse('ok', $lang->translate('server_added'), 1);
+        return new SuccessApiResponse($lang->t('server_added'));
     }
 }
