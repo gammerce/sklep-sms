@@ -1573,7 +1573,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $server = $this->heart->getServer($serverId);
         $smsPlatformId = $server->getSmsPlatform() ?: $this->settings['sms_platform'];
         $paymentPlatform = $this->paymentPlatformRepository->get($smsPlatformId);
-        $paymentModule = $paymentPlatform ? $paymentPlatform->getModule() : '';
+        $paymentModule = $paymentPlatform ? $paymentPlatform->getModuleId() : '';
 
         // Pobieranie kwot za które można zakupić daną usługę na danym serwerze
         $result = $this->db->query(

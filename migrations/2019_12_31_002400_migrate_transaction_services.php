@@ -65,7 +65,7 @@ class MigrateTransactionServices extends Migration
                 $row["id"],
                 $data
             );
-            $paymentPlatforms[$paymentPlatform->getModule()] = $paymentPlatform;
+            $paymentPlatforms[$paymentPlatform->getModuleId()] = $paymentPlatform;
         }
 
         /** @var PaymentPlatform|null $newSmsPlatform */

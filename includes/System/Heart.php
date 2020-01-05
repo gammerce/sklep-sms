@@ -4,6 +4,7 @@ namespace App\System;
 use App\Blocks\Block;
 use App\Blocks\BlockSimple;
 use App\Exceptions\InvalidConfigException;
+use App\Exceptions\InvalidPaymentModuleException;
 use App\Models\PaymentPlatform;
 use App\Models\Server;
 use App\Models\Tariff;
@@ -20,6 +21,7 @@ use App\Services\ExtraFlags\ServiceExtraFlags;
 use App\Services\Other\ServiceOther;
 use App\Services\Service;
 use App\Verification\Abstracts\PaymentModule;
+use App\Verification\DataField;
 use Exception;
 
 class Heart
@@ -207,12 +209,30 @@ class Heart
     }
 
     /**
+     * @param string $moduleId
+     * @return DataField[]
+     */
+    public function getPaymentModuleDataFields($moduleId)
+    {
+        $className = array_get($this->paymentModuleClasses, $moduleId);
+
+        if (!$className) {
+            return $className::getDataFields();
+        }
+
+        throw new InvalidPaymentModuleException();
+    }
+
+    /**
      * @param PaymentPlatform $paymentPlatform
      * @return PaymentModule|null
      */
     public function getPaymentModule(PaymentPlatform $paymentPlatform)
     {
-        $paymentModuleClass = array_get($this->paymentModuleClasses, $paymentPlatform->getModule());
+        $paymentModuleClass = array_get(
+            $this->paymentModuleClasses,
+            $paymentPlatform->getModuleId()
+        );
 
         if (!$paymentModuleClass) {
             return null;
@@ -234,7 +254,7 @@ class Heart
         }
 
         throw new InvalidConfigException(
-            "Invalid payment module [{$paymentPlatform->getModule()}]."
+            "Invalid payment module [{$paymentPlatform->getModuleId()}]."
         );
     }
 
@@ -478,7 +498,7 @@ class Heart
      * Checks if the service can be purchased on the given server
      *
      * @param integer $serverId
-     * @param string  $serviceId
+     * @param string $serviceId
      *
      * @return boolean
      */
@@ -554,7 +574,7 @@ class Heart
     //
 
     /**
-     * @param int    $uid
+     * @param int $uid
      * @return User
      */
     public function getUser($uid)
@@ -576,7 +596,7 @@ class Heart
 
     /**
      * @param string $login
-     * @param string$password
+     * @param string $password
      * @return User
      */
     public function getUserByLogin($login, $password)

@@ -40,21 +40,20 @@ class PaymentPlatformCollectionTest extends HttpTestCase
         $paymentPlatform = $this->paymentPlatformRepository->get($json["data"]["id"]);
         $this->assertNotNull($paymentPlatform);
         $this->assertSame($name, $paymentPlatform->getName());
-        $this->assertSame($moduleId, $paymentPlatform->getModule());
+        $this->assertSame($moduleId, $paymentPlatform->getModuleId());
         $this->assertSame("example", $paymentPlatform->getData()["account_id"]);
     }
 
     /** @test */
-    public function fails_when_invalid_data()
+    public function fails_when_invalid_module_id()
     {
         // given
         $name = "My Example";
-        $moduleId = Cssetti::MODULE_ID;
 
         // when
         $response = $this->post("/api/admin/payment_platforms", [
             "name" => $name,
-            "module" => $moduleId,
+            "module" => "test",
             "data" => [],
         ]);
 

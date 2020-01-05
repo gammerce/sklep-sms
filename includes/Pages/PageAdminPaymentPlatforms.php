@@ -54,7 +54,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 
             $bodyRow->setDbId($paymentPlatform->getId());
             $bodyRow->addCell(new Cell($paymentPlatform->getName()));
-            $bodyRow->addCell(new Cell($paymentPlatform->getModule()));
+            $bodyRow->addCell(new Cell($paymentPlatform->getModuleId()));
 
             $bodyRow->setEditAction(true);
             $bodyRow->setDeleteAction(true);

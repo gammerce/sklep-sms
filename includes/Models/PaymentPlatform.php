@@ -36,7 +36,7 @@ class PaymentPlatform
     }
 
     /** @return string */
-    public function getModule()
+    public function getModuleId()
     {
         return $this->module;
     }

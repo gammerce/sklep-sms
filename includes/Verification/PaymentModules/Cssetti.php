@@ -23,6 +23,11 @@ class Cssetti extends PaymentModule implements SupportSms
     /** @var array */
     private $numbers = [];
 
+    public static function getDataFields()
+    {
+        return [new DataField("account_id")];
+    }
+
     public function verifySms($returnCode, $number)
     {
         $this->tryToFetchSmsData();
@@ -81,11 +86,6 @@ class Cssetti extends PaymentModule implements SupportSms
         $this->tryToFetchSmsData();
 
         return $this->smsCode;
-    }
-
-    public function getDataFields()
-    {
-        return [new DataField("account_id")];
     }
 
     private function getAccountId()

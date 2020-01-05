@@ -28,6 +28,19 @@ class PaymentPlatformRepository
         return $this->get($this->db->lastId());
     }
 
+    public function update($id, $name, array $data = [])
+    {
+        $this->db
+            ->statement(
+                "UPDATE `" .
+                    TABLE_PREFIX .
+                    "payment_platforms` " .
+                    "SET `name` = ?, `data` = ? " .
+                    "WHERE `id` = ?"
+            )
+            ->execute([$name, json_encode($data), $id]);
+    }
+
     /**
      * @return PaymentPlatform[]
      */

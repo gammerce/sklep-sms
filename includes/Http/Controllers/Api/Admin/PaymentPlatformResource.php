@@ -1,18 +1,46 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Exceptions\EntityNotFoundException;
 use App\Http\Responses\ApiResponse;
+use App\Http\Services\PaymentPlatformService;
 use App\Repositories\PaymentPlatformRepository;
 use App\System\Auth;
 use App\Translation\TranslationManager;
+use Symfony\Component\HttpFoundation\Request;
 
 class PaymentPlatformResource
 {
-    public function put($paymentPlatformId)
-    {
-        // TODO Implement
-        // TODO Validate data
+    public function put(
+        $paymentPlatformId,
+        Request $request,
+        Auth $auth,
+        TranslationManager $translationManager,
+        PaymentPlatformService $paymentPlatformService,
+        PaymentPlatformRepository $paymentPlatformRepository
+    ) {
+        $lang = $translationManager->user();
+        $langShop = $translationManager->shop();
+        $user = $auth->user();
+        $name = $request->request->get("name");
+        $data = $request->request->get("data") ?: [];
+
+        $paymentPlatform = $paymentPlatformRepository->getOrFail($paymentPlatformId);
+        $filteredData = $paymentPlatformService->getValidatedData(
+            $paymentPlatform->getModuleId(),
+            $data
+        );
+        $paymentPlatformRepository->update($paymentPlatform->getId(), $name, $filteredData);
+
+        log_to_db(
+            $langShop->t(
+                'log_payment_platform_updated',
+                $user->getUsername(),
+                $user->getUid(),
+                $paymentPlatform->getId()
+            )
+        );
+
+        return new ApiResponse('ok', $lang->translate('payment_platform_updated'), true);
     }
 
     public function delete(
@@ -22,11 +50,7 @@ class PaymentPlatformResource
         Auth $auth
     ) {
         // TODO Check if servers or settings are using it
-
-        $paymentPlatform = $paymentPlatformRepository->get($paymentPlatformId);
-        if (!$paymentPlatform) {
-            throw new EntityNotFoundException();
-        }
+        $paymentPlatformRepository->getOrFail($paymentPlatformId);
 
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();

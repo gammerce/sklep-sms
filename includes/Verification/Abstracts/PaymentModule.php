@@ -50,7 +50,7 @@ abstract class PaymentModule
     /**
      * @return DataField[]
      */
-    public function getDataFields()
+    public static function getDataFields()
     {
         return [];
     }

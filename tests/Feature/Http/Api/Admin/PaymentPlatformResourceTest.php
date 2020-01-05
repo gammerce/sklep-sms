@@ -49,24 +49,6 @@ class PaymentPlatformResourceTest extends HttpTestCase
     }
 
     /** @test */
-    public function cannot_update_when_invalid_data_given()
-    {
-        // given
-        $name = "My Example";
-
-        // when
-        $response = $this->post("/api/admin/payment_platforms/{$this->paymentPlatform->getId()}", [
-            "name" => $name,
-            "data" => [],
-        ]);
-
-        // then
-        $this->assertSame(200, $response->getStatusCode());
-        $json = $this->decodeJsonResponse($response);
-        $this->assertSame("warnings", $json["return_id"]);
-    }
-
-    /** @test */
     public function deletes_payment_platform()
     {
         // when
