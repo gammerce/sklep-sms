@@ -26,6 +26,7 @@ class PaymentPlatformResourceTest extends HttpTestCase
     public function updates_payment_platform()
     {
         // given
+        $this->actAs($this->factory->admin());
         $name = "My Example";
 
         // when
@@ -51,6 +52,9 @@ class PaymentPlatformResourceTest extends HttpTestCase
     /** @test */
     public function deletes_payment_platform()
     {
+        // given
+        $this->actAs($this->factory->admin());
+
         // when
         $response = $this->delete("/api/admin/payment_platforms/{$this->paymentPlatform->getId()}");
 
@@ -68,6 +72,8 @@ class PaymentPlatformResourceTest extends HttpTestCase
     public function cannot_delete_if_used_in_settings()
     {
         // given
+        $this->actAs($this->factory->admin());
+
         /** @var SettingsRepository $settingsRepository */
         $settingsRepository = $this->app->make(SettingsRepository::class);
         $settingsRepository->update([
@@ -91,6 +97,8 @@ class PaymentPlatformResourceTest extends HttpTestCase
     public function cannot_delete_if_server_uses_it()
     {
         // given
+        $this->actAs($this->factory->admin());
+
         $this->factory->server([
             "sms_platform" => $this->paymentPlatform->getId(),
         ]);

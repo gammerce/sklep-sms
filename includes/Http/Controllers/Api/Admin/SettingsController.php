@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\Repositories\SettingsRepository;
 use App\System\Application;
 use App\System\Auth;
@@ -128,10 +129,8 @@ class SettingsController
         ];
 
         if ($licenseToken) {
-            $values = [
-                'license_password' => $licenseToken,
-                'license_login' => 'license',
-            ];
+            $values['license_password'] = $licenseToken;
+            $values['license_login'] = 'license';
         }
 
         $updated = $settingsRepository->update($values);
@@ -145,9 +144,9 @@ class SettingsController
                 )
             );
 
-            return new ApiResponse('ok', $lang->translate('settings_edit'), 1);
+            return new SuccessApiResponse($lang->translate('settings_edit'));
         }
 
-        return new ApiResponse("not_edited", $lang->translate('settings_no_edit'), 0);
+        return new ApiResponse("not_edited", $lang->translate('settings_no_edit'), false);
     }
 }

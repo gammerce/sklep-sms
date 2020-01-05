@@ -227,7 +227,7 @@ class Heart
     {
         $className = array_get($this->paymentModuleClasses, $moduleId);
 
-        if (!$className) {
+        if ($className) {
             return $className::getDataFields();
         }
 

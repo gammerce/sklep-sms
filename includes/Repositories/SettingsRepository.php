@@ -31,11 +31,11 @@ class SettingsRepository
             "UPDATE `" .
                 TABLE_PREFIX .
                 "settings` " .
-                "SET value = CASE `key` " .
+                "SET `value` = CASE `key` " .
                 implode(" ", $conditions) .
-                "END " .
+                " END " .
                 "WHERE `key` IN ( " .
-                implode(" ", $keys) .
+                implode(", ", $keys) .
                 " )"
         );
 

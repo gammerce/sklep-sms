@@ -21,6 +21,7 @@ class PaymentPlatformCollectionTest extends HttpTestCase
     public function creates_payment_platform()
     {
         // given
+        $this->actAs($this->factory->admin());
         $name = "My Example";
         $moduleId = Cssetti::MODULE_ID;
 
@@ -48,6 +49,7 @@ class PaymentPlatformCollectionTest extends HttpTestCase
     public function fails_when_invalid_module_id()
     {
         // given
+        $this->actAs($this->factory->admin());
         $name = "My Example";
 
         // when
