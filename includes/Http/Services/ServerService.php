@@ -86,7 +86,7 @@ class ServerService
                 $serversServices[] = [
                     'service' => $service->getId(),
                     'server' => $serverId,
-                    'status' => (bool) $body[$service->getId()],
+                    'status' => (bool) array_get($body, $service->getId()),
                 ];
             }
         }

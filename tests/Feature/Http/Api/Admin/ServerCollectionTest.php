@@ -60,7 +60,7 @@ class ServerCollectionTest extends HttpTestCase
         ]);
 
         $settingsRepository->update([
-            "sms_platform" => $paymentPlatform,
+            "sms_platform" => $paymentPlatform->getId(),
         ]);
 
         // when
@@ -96,6 +96,6 @@ class ServerCollectionTest extends HttpTestCase
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertSame("error", $json["return_id"]);
+        $this->assertSame("warnings", $json["return_id"]);
     }
 }

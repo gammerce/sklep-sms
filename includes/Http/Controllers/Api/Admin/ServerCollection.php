@@ -37,6 +37,10 @@ class ServerCollection
             $langShop->t('server_admin_add', $user->getUsername(), $user->getUid(), $serverId)
         );
 
-        return new SuccessApiResponse($lang->t('server_added'));
+        return new SuccessApiResponse($lang->t('server_added'), [
+            "data" => [
+                "id" => $server->getId(),
+            ],
+        ]);
     }
 }
