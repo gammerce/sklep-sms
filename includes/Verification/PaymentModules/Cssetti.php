@@ -84,7 +84,6 @@ class Cssetti extends PaymentModule implements SupportSms
     public function getSmsCode()
     {
         $this->tryToFetchSmsData();
-
         return $this->smsCode;
     }
 

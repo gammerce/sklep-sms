@@ -79,11 +79,10 @@ class Gosetti extends PaymentModule implements SupportSms
     public function getSmsCode()
     {
         $this->tryToFetchSmsData();
-
         return $this->smsCode;
     }
 
-    public function getDataFields()
+    public static function getDataFields()
     {
         return [new DataField("account_id")];
     }

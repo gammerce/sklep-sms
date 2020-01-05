@@ -49,12 +49,25 @@ class Homepay extends PaymentModule implements SupportSms
         return $this->getData('sms_text');
     }
 
-    public function getDataFields()
+    public static function getDataFields()
     {
         return [
             new DataField("sms_text"),
             new DataField("api"),
-            // TODO Implement it
+            new DataField("7055"),
+            new DataField("7155"),
+            new DataField("7255"),
+            new DataField("7355"),
+            new DataField("7455"),
+            new DataField("7555"),
+            new DataField("76660"),
+            new DataField("7955"),
+            new DataField("91055"),
+            new DataField("91155"),
+            new DataField("91455"),
+            new DataField("91955"),
+            new DataField("92055"),
+            new DataField("92520"),
         ];
     }
 

@@ -148,7 +148,7 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
         return $this->getData('service');
     }
 
-    public function getDataFields()
+    public static function getDataFields()
     {
         return [new DataField("sms_text"), new DataField("key"), new DataField("service")];
     }

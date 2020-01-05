@@ -86,12 +86,12 @@ class OneShotOneKill extends PaymentModule implements SupportSms
 
     public function getSmsCode()
     {
-        return $this->getData('sms_text');
+        return 'SHOT';
     }
 
-    public function getDataFields()
+    public static function getDataFields()
     {
-        return [new DataField("api"), new DataField("sms_text")];
+        return [new DataField("api")];
     }
 
     private function getApi()

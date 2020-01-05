@@ -61,7 +61,7 @@ class Simpay extends PaymentModule implements SupportSms
         return $this->getData('sms_text');
     }
 
-    public function getDataFields()
+    public static function getDataFields()
     {
         return [
             new DataField("key"),

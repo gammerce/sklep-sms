@@ -80,12 +80,12 @@ class Hostplay extends PaymentModule implements SupportSms
 
     public function getSmsCode()
     {
-        return $this->getData('sms_text');
+        return "HOSTPLAY";
     }
 
-    public function getDataFields()
+    public static function getDataFields()
     {
-        return [new DataField("sms_text"), new DataField("user_id")];
+        return [new DataField("user_id")];
     }
 
     private function getUserId()

@@ -44,7 +44,7 @@ class Profitsms extends PaymentModule implements SupportSms
         return $this->getData('sms_text');
     }
 
-    public function getDataFields()
+    public static function getDataFields()
     {
         return [new DataField("api"), new DataField("sms_text")];
     }

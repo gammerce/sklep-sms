@@ -166,7 +166,7 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
         return $this->smsCode;
     }
 
-    public function getDataFields()
+    public static function getDataFields()
     {
         return [
             new DataField("api"),

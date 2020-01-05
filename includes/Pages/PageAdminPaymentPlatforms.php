@@ -88,9 +88,6 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
                 return new Option($paymentModuleId, $paymentModuleId);
             }, $this->heart->getPaymentModuleIds());
 
-            // TODO Display additional fields on selecting payment platform
-            // TODO Use data fields from transaction_services
-
             return $this->template->render("admin/action_boxes/payment_platform_create", [
                 'paymentModules' => implode("", $paymentModules),
             ]);

@@ -100,7 +100,7 @@ class Transferuj extends PaymentModule implements SupportTransfer
         return $response['tr_status'] == 'TRUE' && $response['tr_error'] == 'none';
     }
 
-    public function getDataFields()
+    public static function getDataFields()
     {
         return [new DataField("key"), new DataField("account_id")];
     }
