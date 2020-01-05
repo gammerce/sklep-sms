@@ -6,6 +6,7 @@ use App\Repositories\PaymentPlatformRepository;
 use App\Services\Interfaces\IServiceAvailableOnServers;
 use App\System\Database;
 use App\System\Heart;
+use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
@@ -23,16 +24,21 @@ class ServerService
     /** @var PaymentPlatformRepository */
     private $paymentPlatformRepository;
 
+    /** @var Settings */
+    private $settings;
+
     public function __construct(
         Database $db,
         TranslationManager $translationManager,
         Heart $heart,
-        PaymentPlatformRepository $paymentPlatformRepository
+        PaymentPlatformRepository $paymentPlatformRepository,
+        Settings $settings
     ) {
         $this->db = $db;
         $this->lang = $translationManager->user();
         $this->heart = $heart;
         $this->paymentPlatformRepository = $paymentPlatformRepository;
+        $this->settings = $settings;
     }
 
     public function validateBody(array $body)
@@ -40,24 +46,28 @@ class ServerService
         $name = array_get($body, 'name');
         $ip = array_get($body, 'ip');
         $port = array_get($body, 'port');
-        $smsPlatform = array_get($body, 'sms_platform');
+        $smsPlatformId = array_get($body, 'sms_platform');
 
         $warnings = [];
 
         if (!$name) {
-            $warnings['name'][] = $this->lang->translate('field_no_empty');
+            $warnings['name'][] = $this->lang->t('field_no_empty');
         }
 
         if (!$ip) {
-            $warnings['ip'][] = $this->lang->translate('field_no_empty');
+            $warnings['ip'][] = $this->lang->t('field_no_empty');
         }
 
         if (!$port) {
-            $warnings['port'][] = $this->lang->translate('field_no_empty');
+            $warnings['port'][] = $this->lang->t('field_no_empty');
         }
 
-        if ($smsPlatform && $this->paymentPlatformRepository->get($smsPlatform)) {
-            $warnings['sms_platform'][] = $this->lang->translate('no_sms_platform');
+        if ($smsPlatformId && !$this->paymentPlatformRepository->get($smsPlatformId)) {
+            $warnings['sms_platform'][] = $this->lang->t('no_sms_platform');
+        }
+
+        if (!$smsPlatformId && !$this->settings->getSmsPlatformId()) {
+            $warnings['sms_platform'][] = $this->lang->translate('no_default_sms_platform');
         }
 
         if ($warnings) {
@@ -69,28 +79,27 @@ class ServerService
     {
         $serversServices = [];
         foreach ($this->heart->getServices() as $service) {
-            // Dana usługa nie może być kupiona na serwerze
             $serviceModule = $this->heart->getServiceModule($service->getId());
-            if (!($serviceModule instanceof IServiceAvailableOnServers)) {
-                continue;
-            }
 
-            $serversServices[] = [
-                'service' => $service->getId(),
-                'server' => $serverId,
-                'status' => (bool) $body[$service->getId()],
-            ];
+            // This service can be bought on this server
+            if ($serviceModule instanceof IServiceAvailableOnServers) {
+                $serversServices[] = [
+                    'service' => $service->getId(),
+                    'server' => $serverId,
+                    'status' => (bool) $body[$service->getId()],
+                ];
+            }
         }
 
         $this->updateServersServices($serversServices);
     }
 
     /**
-     * Aktualizuje tabele servers_services
+     * Updates servers_services table
      *
      * @param $data
      */
-    private function updateServersServices($data)
+    private function updateServersServices(array $data)
     {
         $delete = [];
         $add = [];

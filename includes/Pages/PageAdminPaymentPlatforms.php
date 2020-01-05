@@ -90,7 +90,6 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 
             // TODO Display additional fields on selecting payment platform
             // TODO Use data fields from transaction_services
-            // TODO Do not allow selecting default for server's payment platform if settings are empty
 
             return $this->template->render("admin/action_boxes/payment_platform_create", [
                 'paymentModules' => implode("", $paymentModules),

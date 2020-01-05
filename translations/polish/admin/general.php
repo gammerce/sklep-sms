@@ -128,6 +128,7 @@ return [
     'no_action_box_support' => 'Strona nie wspiera action boxów.',
     'no_add_method' => 'Moduł usługi nie posiada metody dodawania usługi przez admina.',
     'no_charge_value' => 'Nie podano wartości doładowania.',
+    'no_default_sms_platform' => 'Domyślna platforma SMS nie została ustawiona.',
     'no_delete_antispamq' => 'Pytanie anty-spamowe nie zostało usunięte.',
     'no_delete_group' => 'Grupa nie została usunięta.',
     'no_delete_log' => 'Log nie został usunięty.',

@@ -46,7 +46,7 @@ class ServerRepository
         return null;
     }
 
-    public function create($name, $ip, $port, $smsPlatform = null)
+    public function create($name, $ip, $port, $smsPlatformId = null)
     {
         $this->db
             ->statement(
@@ -55,12 +55,12 @@ class ServerRepository
                     "servers` " .
                     "SET `name` = ?, `ip` = ?, `port` = ?, `sms_platform` = ?"
             )
-            ->execute([$name, $ip, $port, $smsPlatform]);
+            ->execute([$name, $ip, $port, $smsPlatformId]);
 
         return $this->get($this->db->lastId());
     }
 
-    public function update($id, $name, $ip, $port, $smsPlatform = null)
+    public function update($id, $name, $ip, $port, $smsPlatformId = null)
     {
         $this->db
             ->statement(
@@ -70,7 +70,7 @@ class ServerRepository
                     "SET `name` = ?, `ip` = ?, `port` = ?, `sms_platform` = ? " .
                     "WHERE `id` = ?"
             )
-            ->execute([$name, $ip, $port, $smsPlatform, $id]);
+            ->execute([$name, $ip, $port, $smsPlatformId, $id]);
     }
 
     public function delete($id)

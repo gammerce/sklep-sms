@@ -127,6 +127,7 @@ return [
     'no_action_box_support' => 'Page does not support action boxes.',
     'no_add_method' => 'Service module doesn\'t operate admin service adding method.',
     'no_charge_value' => 'Charge value was not supplied.',
+    'no_default_sms_platform' => 'Default sms platform has not been set.',
     'no_delete_antispamq' => 'Antispam question not removed.',
     'no_delete_group' => 'Group not removed.',
     'no_delete_log' => 'Log not removed.',

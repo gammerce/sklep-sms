@@ -24,11 +24,11 @@ class ServerCollection
         $name = $request->request->get('name');
         $ip = trim($request->request->get('ip'));
         $port = trim($request->request->get('port'));
-        $smsPlatform = $request->request->get('sms_platform') ?: null;
+        $smsPlatformId = $request->request->get('sms_platform') ?: null;
 
         $serverService->validateBody($request->request->all());
 
-        $server = $serverRepository->create($name, $ip, $port, $smsPlatform);
+        $server = $serverRepository->create($name, $ip, $port, $smsPlatformId);
         $serverId = $server->getId();
 
         $serverService->updateServerServiceAffiliations($serverId, $request->request->all());
@@ -36,6 +36,7 @@ class ServerCollection
         log_to_db(
             $langShop->t('server_admin_add', $user->getUsername(), $user->getUid(), $serverId)
         );
+
         return new SuccessApiResponse($lang->t('server_added'));
     }
 }
