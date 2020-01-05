@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\Repositories\ServiceCodeRepository;
 use App\System\Auth;
 use App\Translation\TranslationManager;
@@ -29,7 +30,7 @@ class ServiceCodeResource
                     $serviceCodeId
                 )
             );
-            return new ApiResponse('ok', $lang->translate('code_deleted'), 1);
+            return new SuccessApiResponse($lang->translate('code_deleted'));
         }
 
         return new ApiResponse("not_deleted", $lang->translate('code_not_deleted'), 0);

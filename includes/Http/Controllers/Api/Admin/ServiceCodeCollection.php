@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\Repositories\ServiceCodeRepository;
 use App\System\Auth;
 use App\System\Heart;
@@ -70,8 +71,8 @@ class ServiceCodeCollection
         );
 
         log_to_db(
-            $langShop->sprintf(
-                $langShop->translate('code_added_admin'),
+            $langShop->t(
+                'code_added_admin',
                 $user->getUsername(),
                 $user->getUid(),
                 $code,
@@ -79,6 +80,6 @@ class ServiceCodeCollection
             )
         );
 
-        return new ApiResponse('ok', $lang->translate('code_added'), 1);
+        return new SuccessApiResponse($lang->translate('code_added'));
     }
 }

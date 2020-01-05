@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\System\Auth;
 use App\System\Database;
 use App\Translation\TranslationManager;
@@ -47,17 +48,12 @@ class TariffResource
 
         if ($statement->rowCount()) {
             log_to_db(
-                $langShop->sprintf(
-                    $langShop->translate('tariff_admin_edit'),
-                    $user->getUsername(),
-                    $user->getUid(),
-                    $tariffId
-                )
+                $langShop->t('tariff_admin_edit', $user->getUsername(), $user->getUid(), $tariffId)
             );
-            return new ApiResponse('ok', $lang->translate('tariff_edit'), 1);
+            return new SuccessApiResponse($lang->t('tariff_edit'));
         }
 
-        return new ApiResponse("not_edited", $lang->translate('tariff_no_edit'), 0);
+        return new ApiResponse("not_edited", $lang->t('tariff_no_edit'), 0);
     }
 
     public function delete(
@@ -81,16 +77,16 @@ class TariffResource
 
         if ($statement->rowCount()) {
             log_to_db(
-                $langShop->sprintf(
-                    $langShop->translate('tariff_admin_delete'),
+                $langShop->t(
+                    'tariff_admin_delete',
                     $user->getUsername(),
                     $user->getUid(),
                     $tariffId
                 )
             );
-            return new ApiResponse('ok', $lang->translate('delete_tariff'), 1);
+            return new SuccessApiResponse($lang->t('delete_tariff'));
         }
 
-        return new ApiResponse("not_deleted", $lang->translate('no_delete_tariff'), 0);
+        return new ApiResponse("not_deleted", $lang->t('no_delete_tariff'), 0);
     }
 }

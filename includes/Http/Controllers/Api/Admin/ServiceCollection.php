@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\ServiceService;
 use App\Repositories\ServiceRepository;
 use App\Services\Interfaces\IServiceAdminManage;
@@ -81,7 +81,7 @@ class ServiceCollection
             )
         );
 
-        return new ApiResponse('ok', $lang->translate('service_added'), true, [
+        return new SuccessApiResponse($lang->translate('service_added'), [
             'length' => 10000,
         ]);
     }

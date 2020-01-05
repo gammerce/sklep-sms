@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\ValidationException;
-use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\System\Auth;
 use App\System\Database;
 use App\Translation\TranslationManager;
@@ -59,6 +59,6 @@ class SmsCodeCollection
             )
         );
 
-        return new ApiResponse('ok', $lang->translate('sms_code_add'), 1);
+        return new SuccessApiResponse($lang->translate('sms_code_add'));
     }
 }

@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\ValidationException;
-use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\System\Database;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,6 +42,6 @@ class AntispamQuestionCollection
             )
         );
 
-        return new ApiResponse('ok', $lang->translate('antispam_add'), 1);
+        return new SuccessApiResponse($lang->t('antispam_add'));
     }
 }

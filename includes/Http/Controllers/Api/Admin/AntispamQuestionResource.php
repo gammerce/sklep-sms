@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\System\Auth;
 use App\System\Database;
 use App\Translation\TranslationManager;
@@ -28,17 +29,17 @@ class AntispamQuestionResource
 
         if ($statement->rowCount()) {
             log_to_db(
-                $langShop->sprintf(
-                    $langShop->translate('question_delete'),
+                $langShop->t(
+                    'question_delete',
                     $user->getUsername(),
                     $user->getUid(),
                     $antispamQuestionId
                 )
             );
-            return new ApiResponse('ok', $lang->translate('delete_antispamq'), 1);
+            return new SuccessApiResponse($lang->t('delete_antispamq'));
         }
 
-        return new ApiResponse("not_deleted", $lang->translate('no_delete_antispamq'), 0);
+        return new ApiResponse("not_deleted", $lang->t('no_delete_antispamq'), 0);
     }
 
     public function put(
@@ -91,7 +92,7 @@ class AntispamQuestionResource
                     $antispamQuestionId
                 )
             );
-            return new ApiResponse('ok', $lang->translate('antispam_edit'), 1);
+            return new SuccessApiResponse($lang->translate('antispam_edit'));
         }
 
         return new ApiResponse("not_edited", $lang->translate('antispam_no_edit'), 0);

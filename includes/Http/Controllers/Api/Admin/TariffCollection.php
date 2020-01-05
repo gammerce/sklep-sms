@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\ValidationException;
-use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\System\Auth;
 use App\System\Database;
 use App\System\Heart;
@@ -63,6 +63,6 @@ class TariffCollection
             )
         );
 
-        return new ApiResponse('ok', $lang->translate('tariff_add'), 1);
+        return new SuccessApiResponse($lang->translate('tariff_add'));
     }
 }

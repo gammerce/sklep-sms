@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\Http\Validation\Rules\NumberRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\SteamIdRule;
@@ -73,7 +74,7 @@ class UserResource
             )
         );
 
-        return new ApiResponse('ok', $lang->translate('user_edit'), 1);
+        return new SuccessApiResponse($lang->translate('user_edit'));
     }
 
     public function delete(
@@ -101,7 +102,7 @@ class UserResource
                     $userId
                 )
             );
-            return new ApiResponse('ok', $lang->translate('delete_user'), 1);
+            return new SuccessApiResponse($lang->translate('delete_user'));
         }
 
         return new ApiResponse("not_deleted", $lang->translate('no_delete_user'), 0);

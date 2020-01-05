@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\ServiceService;
 use App\Repositories\ServiceRepository;
 use App\Services\Interfaces\IServiceAdminManage;
@@ -74,7 +75,7 @@ class ServiceResource
                     $serviceId
                 )
             );
-            return new ApiResponse('ok', $lang->translate('service_edit'), 1);
+            return new SuccessApiResponse($lang->translate('service_edit'));
         }
 
         return new ApiResponse("not_edited", $lang->translate('service_no_edit'), 0);
@@ -120,7 +121,7 @@ class ServiceResource
                     $serviceId
                 )
             );
-            return new ApiResponse('ok', $lang->translate('delete_service'), 1);
+            return new SuccessApiResponse($lang->translate('delete_service'));
         }
 
         return new ApiResponse("not_deleted", $lang->translate('no_delete_service'), 0);

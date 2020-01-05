@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\SteamIdRule;
 use App\Http\Validation\Rules\UniqueUsernameRule;
@@ -49,6 +49,6 @@ class UserProfileResource
 
         $userRepository->update($user);
 
-        return new ApiResponse('ok', $lang->translate('profile_edit'), 1);
+        return new SuccessApiResponse($lang->translate('profile_edit'));
     }
 }

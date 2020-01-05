@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\PriceService;
 use App\System\Auth;
 use App\System\Database;
@@ -49,7 +50,7 @@ class PriceResource
                     $priceId
                 )
             );
-            return new ApiResponse('ok', $lang->translate('price_edit'), 1);
+            return new SuccessApiResponse($lang->translate('price_edit'));
         }
 
         return new ApiResponse("not_edited", $lang->translate('price_no_edit'), 0);
@@ -80,7 +81,7 @@ class PriceResource
                     $priceId
                 )
             );
-            return new ApiResponse('ok', $lang->translate('delete_price'), 1);
+            return new SuccessApiResponse($lang->translate('delete_price'));
         }
 
         return new ApiResponse("not_deleted", $lang->translate('no_delete_price'), 0);

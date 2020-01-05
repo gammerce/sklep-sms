@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\System\Auth;
 use App\System\Database;
 use App\System\Heart;
@@ -99,7 +100,7 @@ class UserServiceResource
                 )
             );
 
-            return new ApiResponse('ok', $lang->translate('delete_service'), 1);
+            return new SuccessApiResponse($lang->translate('delete_service'));
         }
 
         return new ApiResponse("not_deleted", $lang->translate('no_delete_service'), 0);

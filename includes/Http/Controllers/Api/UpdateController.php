@@ -3,11 +3,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\HtmlResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\Install\DatabaseMigration;
 use App\Install\RequirementsStore;
 use App\Install\SetupManager;
 use App\Install\UpdateInfo;
-use Symfony\Component\HttpFoundation\Request;
 
 class UpdateController
 {
@@ -59,6 +59,6 @@ class UpdateController
         $migrator->update();
         $setupManager->finish();
 
-        return new ApiResponse('ok', "Instalacja przebiegła pomyślnie.", true);
+        return new SuccessApiResponse("Instalacja przebiegła pomyślnie.");
     }
 }
