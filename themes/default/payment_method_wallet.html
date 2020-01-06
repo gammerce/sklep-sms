@@ -3,7 +3,7 @@
         {$lang->t('payment_wallet')}
     </div>
     <div class="payment_type wallet">
-        <strong>{$lang->t('price')}</strong>: {{ $costTransfer }} {{ $settings['currency'] }}<br />
+        <strong>{$lang->t('price')}</strong>: {{ $costTransfer }} {{ $settings->getCurrency() }}<br />
         <br />
         <input
             type="button"

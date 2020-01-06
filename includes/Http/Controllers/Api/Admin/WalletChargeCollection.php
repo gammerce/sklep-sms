@@ -81,7 +81,7 @@ class WalletChargeCollection
                 $editedUser->getUsername(),
                 $editedUser->getUid(),
                 number_format($amount / 100.0, 2),
-                $settings['currency']
+                $settings->getCurrency()
             )
         );
 
@@ -91,7 +91,7 @@ class WalletChargeCollection
                 'account_charge_success',
                 $editedUser->getUsername(),
                 number_format($amount / 100.0, 2),
-                $settings['currency']
+                $settings->getCurrency()
             ),
             1
         );

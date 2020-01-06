@@ -158,7 +158,7 @@ class PageAdminMain extends PageAdmin
                 $income += $value;
             }
         }
-        $incomeText = number_format($income / 100, 2) . " " . $this->settings['currency'];
+        $incomeText = number_format($income / 100, 2) . " " . $this->settings->getCurrency();
         $bricks[] = $this->createBrick($this->lang->t('note_income', $incomeText));
 
         return implode("", $bricks);

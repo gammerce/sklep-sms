@@ -66,9 +66,9 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
                     $this->lang->t(
                         'charge_sms_option',
                         $tariff->getSmsCostGross(),
-                        $this->settings['currency'],
+                        $this->settings->getCurrency(),
                         $provision,
-                        $this->settings['currency']
+                        $this->settings->getCurrency()
                     ),
                     [
                         'value' => $tariff->getId(),
@@ -131,7 +131,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
                 if ($data['transfer_amount'] <= 1) {
                     $warnings['transfer_amount'][] = $this->lang->t(
                         'charge_amount_too_low',
-                        "1.00 " . $this->settings['currency']
+                        "1.00 " . $this->settings->getCurrency()
                     );
                 }
             }
@@ -213,8 +213,8 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
     public function purchaseInfo($action, array $data)
     {
         $cost = $data['cost'] ?: 0;
-        $data['amount'] .= ' ' . $this->settings['currency'];
-        $data['cost'] = number_format($cost / 100, 2) . ' ' . $this->settings['currency'];
+        $data['amount'] .= ' ' . $this->settings->getCurrency();
+        $data['cost'] = number_format($cost / 100, 2) . ' ' . $this->settings->getCurrency();
 
         if ($action == "web") {
             if ($data['payment'] == Purchase::METHOD_SMS) {

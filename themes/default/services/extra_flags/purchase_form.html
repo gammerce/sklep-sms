@@ -216,10 +216,10 @@
                 <div id="cost_wraper">
                     <div>
                         <strong>{$lang->t('transfer_wallet_cost')}</strong>:
-                        <span id="cost_transfer"></span> {{ $settings['currency'] }}<br />
+                        <span id="cost_transfer"></span> {{ $settings->getCurrency() }}<br />
                         <strong>{$lang->t('sms_cost')}</strong>:
                         <span id="cost_sms"></span>
-                        <span id="currency_sms">{{ $settings['currency'] }}</span>
+                        <span id="currency_sms">{{ $settings->getCurrency() }}</span>
                     </div>
                 </div>
             </td>

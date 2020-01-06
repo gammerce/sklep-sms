@@ -98,7 +98,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         foreach ($result as $row) {
             $smsCost = strlen($row['sms_number'])
                 ? number_format(
-                    (get_sms_cost($row['sms_number']) / 100) * $this->settings['vat'],
+                    (get_sms_cost($row['sms_number']) / 100) * $this->settings->getVat(),
                     2
                 )
                 : 0;
@@ -298,7 +298,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                 : $this->lang->t('forever');
         $email = $data['email'];
         $cost = $data['cost']
-            ? number_format($data['cost'] / 100.0, 2) . " " . $this->settings['currency']
+            ? number_format($data['cost'] / 100.0, 2) . " " . $this->settings->getCurrency()
             : $this->lang->t('none');
 
         if ($action == "email") {

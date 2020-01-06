@@ -86,10 +86,10 @@ class PageAdminPaymentSms extends PageAdmin
                 ? $this->lang->strtoupper($this->lang->t('yes'))
                 : $this->lang->strtoupper($this->lang->t('no'));
             $income = $row['income']
-                ? number_format($row['income'] / 100.0, 2) . " " . $this->settings['currency']
+                ? number_format($row['income'] / 100.0, 2) . " " . $this->settings->getCurrency()
                 : "";
             $cost = $row['cost']
-                ? number_format($row['cost'] / 100.0, 2) . " " . $this->settings['currency']
+                ? number_format($row['cost'] / 100.0, 2) . " " . $this->settings->getCurrency()
                 : "";
 
             $bodyRow->setDbId($row['payment_id']);

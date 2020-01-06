@@ -80,7 +80,7 @@
                             id="contact"
                             name="contact"
                             type="text"
-                            value="{{ $settings['contact'] }}"
+                            value="{{ $settings->getContact() }}"
                             class="input is-small"
                             maxlength="256"
                         />
@@ -204,7 +204,7 @@
                             id="currency"
                             name="currency"
                             type="text"
-                            value="{{ $settings['currency'] }}"
+                            value="{{ $settings->getCurrency() }}"
                             class="input is-small"
                             maxlength="256"
                         />
@@ -226,7 +226,7 @@
                             id="vat"
                             name="vat"
                             type="text"
-                            value="{{ $settings['vat'] }}"
+                            value="{{ $settings->getVat() }}"
                             class="input is-small"
                             maxlength="256"
                         />

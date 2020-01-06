@@ -139,7 +139,7 @@ class PaymentService
         ) {
             return [
                 'status' => "too_little_for_transfer",
-                'text' => $this->lang->t('transfer_above_amount', $this->settings['currency']),
+                'text' => $this->lang->t('transfer_above_amount', $this->settings->getCurrency()),
                 'positive' => false,
             ];
         }

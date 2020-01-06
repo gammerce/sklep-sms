@@ -93,7 +93,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             $bodyRow->addCell(new Cell($groups));
 
             $cell = new Cell(
-                number_format($row['wallet'] / 100.0, 2) . ' ' . $this->settings['currency']
+                number_format($row['wallet'] / 100.0, 2) . ' ' . $this->settings->getCurrency()
             );
             $cell->setParam('headers', 'wallet');
             $bodyRow->addCell($cell);

@@ -56,7 +56,7 @@ class PageAdminPaymentWallet extends PageAdmin
             }
 
             $cost = $row['cost']
-                ? number_format($row['cost'] / 100.0, 2) . " " . $this->settings['currency']
+                ? number_format($row['cost'] / 100.0, 2) . " " . $this->settings->getCurrency()
                 : "";
 
             $bodyRow->setDbId($row['payment_id']);

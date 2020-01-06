@@ -37,7 +37,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
             $provision = number_format($tariff->getProvision() / 100.0, 2);
 
             $bodyRow->setDbId($tariff->getId());
-            $bodyRow->addCell(new Cell("{$provision} {$this->settings['currency']}"));
+            $bodyRow->addCell(new Cell("{$provision} {$this->settings->getCurrency()}"));
 
             $bodyRow->setEditAction(true);
             if (!$tariff->isPredefined()) {

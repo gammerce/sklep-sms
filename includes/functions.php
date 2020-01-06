@@ -547,21 +547,6 @@ function get_sms_cost($number)
     return 0;
 }
 
-/**
- * Returns sms cost brutto by number
- *
- * @param $number
- *
- * @return float
- */
-function get_sms_cost_gross($number)
-{
-    /** @var Settings $settings */
-    $settings = app()->make(Settings::class);
-
-    return ceil(get_sms_cost($number) * $settings['vat']);
-}
-
 function hash_password($password, $salt)
 {
     return md5(md5($password) . md5($salt));

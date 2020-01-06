@@ -87,24 +87,6 @@ abstract class PaymentModule
         return array_get($this->getTariffs(), $number);
     }
 
-    /**
-     * Returns tariff by sms cost gross
-     *
-     * @param float $cost
-     *
-     * @return Tariff|null
-     */
-    public function getTariffBySmsCostGross($cost)
-    {
-        foreach ($this->getTariffs() as $tariff) {
-            if ($tariff->getSmsCostGross() == $cost) {
-                return $tariff;
-            }
-        }
-
-        return null;
-    }
-
     public function getModuleId()
     {
         return $this::MODULE_ID;

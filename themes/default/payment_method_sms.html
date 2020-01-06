@@ -7,7 +7,7 @@
         <div>
             <strong>{$lang->t('price')}</strong>:
             <span class="is-family-monospace">
-                {{ $purchaseData->getTariff()->getSmsCostGross() }} {{ $settings['currency'] }}
+                {{ $purchaseData->getTariff()->getSmsCostGross() }} {{ $settings->getCurrency() }}
             </span>
         </div>
         <br />

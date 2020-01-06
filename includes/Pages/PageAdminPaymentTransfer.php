@@ -68,7 +68,7 @@ class PageAdminPaymentTransfer extends PageAdmin
             }
 
             $income = $row['income']
-                ? number_format($row['income'] / 100.0, 2) . " " . $this->settings['currency']
+                ? number_format($row['income'] / 100.0, 2) . " " . $this->settings->getCurrency()
                 : "";
 
             $bodyRow->setDbId($row['payment_id']);

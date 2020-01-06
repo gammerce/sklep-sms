@@ -143,7 +143,7 @@ class License
                 'php_version' => PHP_VERSION,
             ],
             [
-                'Authorization' => $this->settings['license_password'],
+                'Authorization' => $this->settings->getLicenseToken(),
             ]
         );
 

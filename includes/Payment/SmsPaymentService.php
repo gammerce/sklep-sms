@@ -103,7 +103,7 @@ class SmsPaymentService
                 [
                     $code,
                     get_sms_cost($smsNumber) / 2,
-                    ceil(get_sms_cost($smsNumber) * $this->settings['vat']),
+                    ceil(get_sms_cost($smsNumber) * $this->settings->getVat()),
                     $paymentModule->getSmsCode(),
                     $smsNumber,
                     $user->getLastIp(),

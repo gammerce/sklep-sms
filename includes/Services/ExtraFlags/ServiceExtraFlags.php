@@ -614,7 +614,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 : $this->lang->t('forever');
 
         $cost = $data['cost']
-            ? number_format($data['cost'] / 100.0, 2) . " " . $this->settings['currency']
+            ? number_format($data['cost'] / 100.0, 2) . " " . $this->settings->getCurrency()
             : $this->lang->t('none');
 
         $data['income'] = number_format($data['income'] / 100.0, 2);
@@ -1594,7 +1594,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             $provision = number_format($row['provision'] / 100, 2);
             $smsCost = strlen($row['sms_number'])
                 ? number_format(
-                    (get_sms_cost($row['sms_number']) / 100) * $this->settings['vat'],
+                    (get_sms_cost($row['sms_number']) / 100) * $this->settings->getVat(),
                     2
                 )
                 : 0;
