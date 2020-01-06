@@ -14,7 +14,7 @@ class PagePricelistActionBoxEditTest extends HttpTestCase
             'server_id' => $server->getId(),
         ]);
         $admin = $this->factory->admin();
-        $this->actAs($admin);
+        $this->actingAs($admin);
 
         // when
         $response = $this->get("/api/admin/pages/pricelist/action_boxes/price_edit", [
@@ -37,7 +37,7 @@ class PagePricelistActionBoxEditTest extends HttpTestCase
             'server_id' => $server->getId(),
         ]);
         $admin = $this->factory->user();
-        $this->actAs($admin);
+        $this->actingAs($admin);
 
         // when
         $response = $this->get("/api/admin/pages/pricelist/action_boxes/price_edit", [

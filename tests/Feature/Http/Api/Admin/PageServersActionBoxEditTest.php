@@ -11,7 +11,7 @@ class PageServersActionBoxEditTest extends HttpTestCase
         // give
         $server = $this->factory->server();
         $admin = $this->factory->admin();
-        $this->actAs($admin);
+        $this->actingAs($admin);
 
         // when
         $response = $this->get("/api/admin/pages/servers/action_boxes/server_edit", [
@@ -31,7 +31,7 @@ class PageServersActionBoxEditTest extends HttpTestCase
         // give
         $server = $this->factory->server();
         $admin = $this->factory->user();
-        $this->actAs($admin);
+        $this->actingAs($admin);
 
         // when
         $response = $this->get("/api/admin/pages/servers/action_boxes/server_edit", [

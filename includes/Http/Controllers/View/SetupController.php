@@ -46,7 +46,7 @@ class SetupController
             );
         }
 
-        if (!ShopState::isInstalled()) {
+        if (!$shopState->isInstalled()) {
             return $this->install($requirementsStore, $path);
         }
 

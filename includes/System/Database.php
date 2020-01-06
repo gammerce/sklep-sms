@@ -198,6 +198,11 @@ class Database
         $this->query("CREATE DATABASE IF NOT EXISTS `$database`");
     }
 
+    public function dropDatabaseIfExists($database)
+    {
+        $this->query("DROP DATABASE IF EXISTS `$database`");
+    }
+
     public function isConnected()
     {
         return $this->pdo !== null;
