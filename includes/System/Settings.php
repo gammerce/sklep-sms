@@ -168,6 +168,38 @@ LEFT JOIN `" .
             : null;
     }
 
+    /**
+     * @return string
+     */
+    public function getCurrency()
+    {
+        return $this->settings["currency"];
+    }
+
+    /**
+     * @return string
+     */
+    public function getContact()
+    {
+        return $this->settings["contact"];
+    }
+
+    /**
+     * @return string
+     */
+    public function getVat()
+    {
+        return $this->settings["vat"];
+    }
+
+    /**
+     * @return string
+     */
+    public function getLicenseToken()
+    {
+        return $this->settings["license_password"];
+    }
+
     private function prepareValue($key, $value)
     {
         return strlen($value) ? $value : array_get($this->settings, $key, '');

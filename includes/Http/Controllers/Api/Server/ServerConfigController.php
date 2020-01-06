@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\Server;
 
 use App\Exceptions\EntityNotFoundException;
+use App\Exceptions\InvalidConfigException;
 use App\Http\Responses\ServerResponse;
 use App\Models\Server;
 use App\Models\ServerService;
@@ -11,6 +12,7 @@ use App\Repositories\ServerServiceRepository;
 use App\Repositories\UserRepository;
 use App\System\Heart;
 use App\System\Settings;
+use App\Verification\Abstracts\SupportSms;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -41,6 +43,12 @@ class ServerConfigController
         $smsPlatformId = $server->getSmsPlatformId() ?: $settings->getSmsPlatformId();
         $smsModule = $heart->getPaymentModuleByPlatformIdOrFail($smsPlatformId);
 
+        if (!($smsModule instanceof SupportSms)) {
+            throw new InvalidConfigException(
+                "Payment module does not support sms [{$smsModule->getModuleId()}]."
+            );
+        }
+
         $serverServices = $serverServiceRepository->findByServer($server->getId());
         $serviceIds = array_map(function (ServerService $serverService) {
             return $serverService->getServiceId();
@@ -54,11 +62,15 @@ class ServerConfigController
 
         return new ServerResponse([
             'id' => $server->getId(),
-            'name' => $server->getName(),
             'sms_platform_id' => $smsPlatformId,
             'sms_module_id' => $smsModule->getModuleId(),
+            'sms_text' => $smsModule->getSmsCode(),
             'services' => " " . implode(" ", $serviceIds) . " ",
             'steam_ids' => implode(";", $steamIds) . ";",
+            'currency' => $settings->getCurrency(),
+            'contact' => $settings->getContact(),
+            'vat' => $settings->getVat(),
+            'license_token' => $settings->getLicenseToken(),
         ]);
     }
 

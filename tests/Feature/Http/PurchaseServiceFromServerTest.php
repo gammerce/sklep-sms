@@ -5,13 +5,12 @@ use App\Exceptions\LicenseRequestException;
 use App\Models\Purchase;
 use App\Repositories\BoughtServiceRepository;
 use App\Repositories\PaymentPlatformRepository;
-use App\Requesting\Response;
 use App\Services\ExtraFlags\ExtraFlagType;
 use App\System\License;
 use App\System\Settings;
 use App\Verification\PaymentModules\Gosetti;
+use Tests\Psr4\Concerns\GosettiConcern;
 use Tests\Psr4\Concerns\PaymentModuleFactoryConcern;
-use Tests\Psr4\Concerns\RequesterConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 /**
@@ -19,7 +18,7 @@ use Tests\Psr4\TestCases\HttpTestCase;
  */
 class PurchaseServiceFromServerTest extends HttpTestCase
 {
-    use RequesterConcern;
+    use GosettiConcern;
     use PaymentModuleFactoryConcern;
 
     protected function setUp()
@@ -121,18 +120,6 @@ class PurchaseServiceFromServerTest extends HttpTestCase
     private function mockGoSetti()
     {
         $this->makeVerifySmsSuccessful(Gosetti::class);
-
-        $this->requesterMock
-            ->shouldReceive('get')
-            ->withArgs(['https://gosetti.pl/Api/SmsApiV2GetData.php'])
-            ->andReturn(
-                new Response(
-                    200,
-                    json_encode([
-                        'Code' => 'abc123',
-                        'Numbers' => [],
-                    ])
-                )
-            );
+        $this->mockGoSettiGetData();
     }
 }

@@ -4,11 +4,14 @@ namespace Tests\Feature\Http\Api\Server;
 use App\Models\PaymentPlatform;
 use App\Models\Server;
 use App\System\Settings;
-use App\Verification\PaymentModules\Cssetti;
+use App\Verification\PaymentModules\Gosetti;
+use Tests\Psr4\Concerns\GosettiConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class ServerConfigControllerTest extends HttpTestCase
 {
+    use GosettiConcern;
+
     /** @var PaymentPlatform */
     private $paymentPlatform;
 
@@ -19,9 +22,12 @@ class ServerConfigControllerTest extends HttpTestCase
     {
         parent::setUp();
         $this->paymentPlatform = $this->factory->paymentPlatform([
-            'module' => Cssetti::MODULE_ID,
+            'module' => Gosetti::MODULE_ID,
         ]);
         $this->server = $this->factory->server(['sms_platform' => $this->paymentPlatform->getId()]);
+
+        $this->mockRequester();
+        $this->mockGoSettiGetData();
     }
 
     /** @test */
@@ -43,11 +49,15 @@ class ServerConfigControllerTest extends HttpTestCase
         // then
         $data = [
             "id:{$this->server->getId()}",
-            "name:{$this->server->getName()}",
             "sms_platform_id:{$this->paymentPlatform->getId()}",
-            "sms_module_id:cssetti",
+            "sms_module_id:gosetti",
+            "sms_text:abc123",
             "services:  ",
             "steam_ids:;",
+            "currency:PLN",
+            "contact:",
+            "vat:1.23",
+            "license_token:abc123",
         ];
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame(implode("\n", $data), $response->getContent());
