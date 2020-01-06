@@ -241,7 +241,7 @@ return [
     'sms_code_admin_add' => 'Admin {1}({2}) dodał kod SMS. Kod: {3}, Taryfa: {4}',
     'sms_code_admin_delete' => 'Admin {1}({2}) usunął kod SMS. ID: {3}',
     'sms_codes' => 'Kody SMS do wykorzystania',
-    'sms_payment_service' => 'Serwis płatności SMS',
+    'sms_payment_platform' => 'Platforma płatności SMS',
     'sum' => 'Suma',
     'tag' => 'Tag',
     'tariff_add' => 'Taryfa została prawidłowo dodana.',
@@ -254,7 +254,7 @@ return [
     'tariffs' => 'Taryfy',
     'text' => 'Tekst',
     'theme' => 'Motyw',
-    'transfer_payment_service' => 'Serwis płatności internetowych',
+    'transfer_payment_platform' => 'Platforma płatności internetowych',
     'type_to_search' => 'Wpisz, aby wyszukać',
     'unzip_arch' =>
         'Rozpakowywujemy archiwum, a następnie kopiujemy pliki na serwer z zachowaniem hierarchii katalogów.',

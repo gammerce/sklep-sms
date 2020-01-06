@@ -5,6 +5,6 @@ class SuccessApiResponse extends ApiResponse
 {
     public function __construct($text, array $data = [])
     {
-        parent::__construct("ok", $text, false, $data);
+        parent::__construct("ok", $text, true, $data);
     }
 }

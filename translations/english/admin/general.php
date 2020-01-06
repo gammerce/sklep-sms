@@ -238,7 +238,7 @@ return [
     'sms_code_admin_add' => 'Admin {1}({2}) added SMS code. Code: {3}, Tariff: {4}',
     'sms_code_admin_delete' => 'Admin {1}({2}) removed SMS code. ID: {3}',
     'sms_codes' => 'SMS codes to be used',
-    'sms_payment_service' => 'SMS payment service',
+    'sms_payment_platform' => 'SMS payment platform',
     'sum' => 'Sum',
     'tag' => 'Tag',
     'tariff_add' => 'Tariff added successfully.',
@@ -251,7 +251,7 @@ return [
     'tariffs' => 'Tariffs',
     'text' => 'Text',
     'theme' => 'Theme',
-    'transfer_payment_service' => 'Transfer payment service',
+    'transfer_payment_platform' => 'Transfer payment platform',
     'type_to_search' => 'Type to search',
     'unzip_arch' =>
         'We unzip the archive, and then copy the files on server, keeping catalogues hierarchy.',

@@ -84,7 +84,6 @@ class DatabaseMigration
                 'name'
             );
         } catch (PDOException $e) {
-            // TODO Check shop install does work
             if (preg_match("/Table .*ss_migrations.* doesn't exist/", $e->getMessage())) {
                 // It means that user has installed shop sms using old codebase,
                 // that is why we want to create migration table for him and also
