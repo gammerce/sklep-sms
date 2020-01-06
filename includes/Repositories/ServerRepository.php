@@ -19,11 +19,10 @@ class ServerRepository
      */
     public function all()
     {
-        $statement = $this->db->statement("SELECT * FROM `" . TABLE_PREFIX . "servers`");
-        $statement->execute();
+        $statement = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "servers`");
 
         $servers = [];
-        while ($row = $statement->fetch()) {
+        foreach ($statement as $row) {
             $servers[] = $this->mapToModel($row);
         }
 

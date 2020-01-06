@@ -47,11 +47,10 @@ class PaymentPlatformRepository
      */
     public function all()
     {
-        $statement = $this->db->statement("SELECT * FROM `" . TABLE_PREFIX . "payment_platforms`");
-        $statement->execute();
+        $statement = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "payment_platforms`");
 
         $platforms = [];
-        while ($row = $statement->fetch()) {
+        foreach ($statement as $row) {
             $platforms[] = $this->mapToModel($row);
         }
 
