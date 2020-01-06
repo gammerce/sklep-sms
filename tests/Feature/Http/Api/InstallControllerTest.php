@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Feature\Http\Api;
 
+use App\Install\EnvCreator;
 use App\Install\ShopState;
 use App\System\Application;
 use App\System\Database;
@@ -32,6 +33,7 @@ class InstallControllerTest extends TestCase
             getenv('DB_PASSWORD'),
             getenv('DB_DATABASE')
         );
+        $this->mockEnvCreator();
 
         $this->db->createDatabaseIfNotExists($this->dbName);
     }
@@ -137,9 +139,16 @@ class InstallControllerTest extends TestCase
 
     private function mockShopState()
     {
-        $shopStateMock = Mockery::mock(ShopState::class);
-        $shopStateMock->shouldReceive("isUpToDate")->andReturn(false);
-        $shopStateMock->shouldReceive("isInstalled")->andReturn(false);
-        $this->app->instance(ShopState::class, $shopStateMock);
+        $shopState = Mockery::mock(ShopState::class);
+        $shopState->shouldReceive("isUpToDate")->andReturn(false);
+        $shopState->shouldReceive("isInstalled")->andReturn(false);
+        $this->app->instance(ShopState::class, $shopState);
+    }
+
+    private function mockEnvCreator()
+    {
+        $envCreator = Mockery::mock(EnvCreator::class);
+        $envCreator->shouldReceive("create")->andReturnNull();
+        $this->app->instance(EnvCreator::class, $envCreator);
     }
 }
