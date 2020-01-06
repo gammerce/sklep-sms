@@ -42,9 +42,9 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
                 get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+        $table->setDbRowsAmount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $bodyRow = new BodyRow();
 
             $bodyRow->setDbId($row['id']);
@@ -84,17 +84,11 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
                 break;
 
             case "antispam_question_edit":
-                $row = $this->db->fetchArrayAssoc(
-                    $this->db->query(
-                        $this->db->prepare(
-                            "SELECT * FROM `" .
-                                TABLE_PREFIX .
-                                "antispam_questions` " .
-                                "WHERE `id` = '%d'",
-                            [$query['id']]
-                        )
-                    )
+                $statement = $this->db->statement(
+                    "SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " . "WHERE `id` = ?"
                 );
+                $statement->execute([$query['id']]);
+                $row = $statement->fetch();
 
                 $output = $this->template->render(
                     "admin/action_boxes/antispam_question_edit",

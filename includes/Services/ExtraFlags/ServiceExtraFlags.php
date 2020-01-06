@@ -148,7 +148,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 )
             );
 
-            if (!$this->db->numRows($result)) {
+            if (!$result->rowCount()) {
                 // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
                 return [
                     'status' => "no_option",
@@ -157,7 +157,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 ];
             }
 
-            $price = $this->db->fetchArrayAssoc($result);
+            $price = $result->fetch();
         }
 
         // Typ usługi
@@ -248,7 +248,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                     }
 
                     // Sprawdzanie czy istnieje już taka usługa
-                    if ($tmpPassword = $this->db->getColumn($query, 'password')) {
+                    if ($tmpPassword = $this->db->query($query)->fetchColumn()) {
                         // TODO: Usunąć md5 w przyszłości
                         if (
                             $tmpPassword != $purchaseData->getOrder('password') &&
@@ -409,9 +409,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             )
         );
 
-        if ($this->db->numRows($result)) {
+        if ($result->rowCount()) {
             // Aktualizujemy
-            $row = $this->db->fetchArrayAssoc($result);
+            $row = $result->fetch();
             $userServiceId = $row['us_id'];
 
             $this->updateUserService(
@@ -557,7 +557,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         // Wyliczanie za jaki czas dana flaga ma wygasnąć
         $flags = [];
         $password = "";
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             // Pobranie hasła, bierzemy je tylko raz na początku
             $password = $password ? $password : $row['password'];
 
@@ -1207,9 +1207,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         );
 
         // Jeżeli istnieje usługa o identycznych danych jak te, na które będziemy zmieniać obecną usługę
-        if ($this->db->numRows($result)) {
+        if ($result->rowCount()) {
             // Pobieramy tę drugą usługę
-            $userService2 = $this->db->fetchArrayAssoc($result);
+            $userService2 = $result->fetch();
 
             if (!isset($data['uid']) && $userService['uid'] != $userService2['uid']) {
                 return [
@@ -1441,7 +1441,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 )
             );
 
-            if (!$this->db->numRows($result)) {
+            if (!$result->rowCount()) {
                 return [
                     'status' => "no_service",
                     'text' => $this->lang->t('no_user_service'),
@@ -1457,7 +1457,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
                 )
             );
 
-            if (!$this->db->numRows($result)) {
+            if (!$result->rowCount()) {
                 return [
                     'status' => "no_service",
                     'text' => $this->lang->t('no_user_service'),
@@ -1488,7 +1488,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             )
         );
 
-        if (!$this->db->numRows($result)) {
+        if (!$result->rowCount()) {
             return [
                 'status' => "no_service",
                 'text' => $this->lang->t('no_user_service'),
@@ -1496,7 +1496,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             ];
         }
 
-        $row = $this->db->fetchArrayAssoc($result);
+        $row = $result->fetch();
 
         $statement = $this->db->query(
             $this->db->prepare(
@@ -1590,7 +1590,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         );
 
         $values = '';
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $provision = number_format($row['provision'] / 100, 2);
             $smsCost = strlen($row['sms_number'])
                 ? number_format(

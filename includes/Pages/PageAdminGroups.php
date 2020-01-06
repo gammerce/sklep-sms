@@ -40,9 +40,9 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                 get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($this->db->getColumn('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
+        $table->setDbRowsAmount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $bodyRow = new BodyRow();
 
             $bodyRow->setDbId($row['id']);
@@ -84,7 +84,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                 )
             );
 
-            if (!$this->db->numRows($result)) {
+            if (!$result->rowCount()) {
                 $query['template'] = create_dom_element("form", $this->lang->t('no_such_group'), [
                     'class' => 'action_box',
                     'style' => [
@@ -93,13 +93,13 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                     ],
                 ]);
             } else {
-                $group = $this->db->fetchArrayAssoc($result);
+                $group = $result->fetch();
             }
         }
 
         $privileges = "";
         $result = $this->db->query("DESCRIBE " . TABLE_PREFIX . "groups");
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             if (in_array($row['Field'], ["id", "name"])) {
                 continue;
             }

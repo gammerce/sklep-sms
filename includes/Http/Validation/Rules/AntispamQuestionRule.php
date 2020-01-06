@@ -32,7 +32,7 @@ class AntispamQuestionRule implements Rule
             )
         );
 
-        $antispamQuestion = $this->db->fetchArrayAssoc($result);
+        $antispamQuestion = $result->fetch();
 
         if (!in_array(strtolower($asAnswer), explode(";", $antispamQuestion['answers']))) {
             return [$this->lang->t('wrong_anti_answer')];

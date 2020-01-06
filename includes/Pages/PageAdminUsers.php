@@ -71,9 +71,9 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                 get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+        $table->setDbRowsAmount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $bodyRow = new BodyRow();
 
             $row['groups'] = explode(";", $row['groups']);

@@ -130,24 +130,24 @@ class PageAdminMain extends PageAdmin
         $bricks[] = $this->createBrick(
             $this->lang->t(
                 'amount_of_users',
-                $this->db->getColumn("SELECT COUNT(*) FROM `" . TABLE_PREFIX . "users`", "COUNT(*)")
+                $this->db->query("SELECT COUNT(*) FROM `" . TABLE_PREFIX . "users`")->fetchColumn()
             )
         );
 
         // Bought service
-        $amount = $this->db->getColumn(
-            "SELECT COUNT(*) " . "FROM ({$this->settings['transactions_query']}) AS t",
-            "COUNT(*)"
-        );
+        $amount = $this->db
+            ->query("SELECT COUNT(*) " . "FROM ({$this->settings['transactions_query']}) AS t")
+            ->fetchColumn();
         $bricks[] = $this->createBrick($this->lang->t('amount_of_bought_services', $amount));
 
         // SMS
-        $amount = $this->db->getColumn(
-            "SELECT COUNT(*) AS `amount` " .
-                "FROM ({$this->settings['transactions_query']}) as t " .
-                "WHERE t.payment = 'sms' AND t.free='0'",
-            "amount"
-        );
+        $amount = $this->db
+            ->query(
+                "SELECT COUNT(*) AS `amount` " .
+                    "FROM ({$this->settings['transactions_query']}) as t " .
+                    "WHERE t.payment = 'sms' AND t.free='0'"
+            )
+            ->fetchColumn();
         $bricks[] = $this->createBrick($this->lang->t('amount_of_sent_smses', $amount));
 
         // Income

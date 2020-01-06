@@ -21,7 +21,7 @@ class GroupCollection
 
         $set = "";
         $result = $db->query("DESCRIBE " . TABLE_PREFIX . "groups");
-        while ($row = $db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             if (in_array($row['Field'], ["id", "name"])) {
                 continue;
             }

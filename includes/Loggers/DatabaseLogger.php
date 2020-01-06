@@ -14,10 +14,14 @@ class DatabaseLogger
     /** @var Translator */
     private $langShop;
 
-    public function __construct(Database $db, TranslationManager $translationManager)
+    /** @var Auth */
+    private $auth;
+
+    public function __construct(Database $db, TranslationManager $translationManager, Auth $auth)
     {
         $this->db = $db;
         $this->langShop = $translationManager->shop();
+        $this->auth = $auth;
     }
 
     public function log($key, ...$args)
@@ -28,14 +32,10 @@ class DatabaseLogger
 
     public function logWithActor($key, ...$args)
     {
-        /** @var Auth $auth */
-        $auth = app()->make(Auth::class);
-
         $message = $this->langShop->t($key, ...$args);
-        $this->storeLog($message);
 
-        if ($auth->check()) {
-            $user = $auth->user();
+        if ($this->auth->check()) {
+            $user = $this->auth->user();
             $message .= " | User: {$user->getUsername()}({$user->getUid()})";
         }
 

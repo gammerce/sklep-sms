@@ -67,7 +67,7 @@ class Settings implements ArrayAccess
     {
         // Pozyskanie ustawień sklepu
         $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "settings`");
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $this->settings[$row['key']] = $this->prepareValue($row['key'], $row['value']);
         }
 

@@ -291,9 +291,9 @@ function purchase_info($data)
         }
     }
 
-    $pbs = $db->fetchArrayAssoc(
-        $db->query("SELECT * FROM ({$settings['transactions_query']}) as t " . "WHERE {$where}")
-    );
+    $pbs = $db
+        ->query("SELECT * FROM ({$settings['transactions_query']}) as t " . "WHERE {$where}")
+        ->fetch();
 
     // Brak wynikow
     if (empty($pbs)) {
@@ -347,7 +347,7 @@ function get_users_services($conditions = '', $takeOut = true)
                 " ORDER BY us.id DESC "
         );
 
-        while ($row = $db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             unset($row['us_id']);
             $output[$row['id']] = $row;
         }

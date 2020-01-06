@@ -57,19 +57,20 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         if (!empty($moduleIds)) {
             $moduleIds = implode_esc(', ', $moduleIds);
 
-            $rowsCount = $db->getColumn(
-                $db->prepare(
-                    "SELECT COUNT(*) as `amount` FROM `" .
-                        TABLE_PREFIX .
-                        "user_service` AS us " .
-                        "INNER JOIN `" .
-                        TABLE_PREFIX .
-                        "services` AS s ON us.service = s.id " .
-                        "WHERE us.uid = '%d' AND s.module IN ({$moduleIds}) ",
-                    [$user->getUid()]
-                ),
-                'amount'
-            );
+            $rowsCount = $db
+                ->query(
+                    $db->prepare(
+                        "SELECT COUNT(*) as `amount` FROM `" .
+                            TABLE_PREFIX .
+                            "user_service` AS us " .
+                            "INNER JOIN `" .
+                            TABLE_PREFIX .
+                            "services` AS s ON us.service = s.id " .
+                            "WHERE us.uid = '%d' AND s.module IN ({$moduleIds}) ",
+                        [$user->getUid()]
+                    )
+                )
+                ->fetchColumn();
 
             $result = $db->query(
                 $db->prepare(
@@ -88,7 +89,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             );
 
             $userServiceIds = [];
-            while ($row = $db->fetchArrayAssoc($result)) {
+            foreach ($result as $row) {
                 $userServiceIds[] = $row['id'];
             }
 

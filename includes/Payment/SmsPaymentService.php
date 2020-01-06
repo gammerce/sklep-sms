@@ -139,11 +139,11 @@ class SmsPaymentService
             )
         );
 
-        if (!$this->db->numRows($result)) {
+        if (!$result->rowCount()) {
             return null;
         }
 
-        $dbCode = $this->db->fetchArrayAssoc($result);
+        $dbCode = $result->fetch();
 
         // Usuwamy kod z listy kodow do wykorzystania
         $this->db->query(

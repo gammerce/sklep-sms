@@ -46,10 +46,10 @@ class PasswordForgottenController
                     )
                 );
 
-                if (!$db->numRows($result)) {
+                if (!$result->rowCount()) {
                     $warnings['username'][] = $lang->t('nick_no_account');
                 } else {
-                    $row = $db->fetchArrayAssoc($result);
+                    $row = $result->fetch();
                 }
             }
         }
@@ -66,10 +66,10 @@ class PasswordForgottenController
                     )
                 );
 
-                if (!$db->numRows($result)) {
+                if (!$result->rowCount()) {
                     $warnings['email'][] = $lang->t('email_no_account');
                 } else {
-                    $row = $db->fetchArrayAssoc($result);
+                    $row = $result->fetch();
                 }
             }
         }

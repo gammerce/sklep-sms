@@ -113,30 +113,6 @@ class Database
         return $this->pdo->prepare($statement);
     }
 
-    /**
-     * @param string $query
-     * @param string $column
-     * @return mixed|null
-     * @throws PDOException
-     */
-    public function getColumn($query, $column)
-    {
-        $statement = $this->query($query);
-        $row = $statement->fetch();
-        return array_get($row, $column);
-    }
-
-    public function numRows(PDOStatement $statement)
-    {
-        return $statement->rowCount();
-    }
-
-    // TODO Remove usage
-    public function fetchArrayAssoc(PDOStatement $statement)
-    {
-        return $statement->fetch();
-    }
-
     public function lastId()
     {
         return $this->pdo->lastInsertId();
@@ -176,7 +152,7 @@ class Database
         $tables = [];
         $result = $this->query('SHOW FULL TABLES WHERE table_type = \'BASE TABLE\'');
 
-        while ($row = $this->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $row = (array) $row;
             $tables[] = reset($row);
         }

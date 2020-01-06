@@ -31,12 +31,12 @@ class PageResetPassword extends Page implements IBeLoggedCannot
             )
         );
 
-        if (!$this->db->numRows($result)) {
+        if (!$result->rowCount()) {
             // Nie znalazło użytkownika z takim kodem
             return $this->lang->t('wrong_reset_key');
         }
 
-        $row = $this->db->fetchArrayAssoc($result);
+        $row = $result->fetch();
         $sign = md5($row['uid'] . $this->settings['random_key']);
 
         return $this->template->render("reset_password", compact('row', 'sign'));

@@ -126,7 +126,7 @@ abstract class PaymentModule
             )
         );
 
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $tariff = new Tariff($row['id'], $row['provision'], $row['predefined'], $row['number']);
 
             $this->tariffs[$tariff->getId()] = $tariff;

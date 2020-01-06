@@ -40,7 +40,7 @@ class UniqueUsernameRule implements Rule
             )
         );
 
-        if ($this->db->numRows($result)) {
+        if ($result->rowCount()) {
             $warnings[] = $this->lang->t('nick_occupied');
         }
 

@@ -68,7 +68,7 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase, IServ
                 )
             );
 
-            if (!$this->db->numRows($result)) {
+            if (!$result->rowCount()) {
                 // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
                 return [
                     'status' => "no_option",
@@ -77,7 +77,7 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase, IServ
                 ];
             }
 
-            $price = $this->db->fetchArrayAssoc($result);
+            $price = $result->fetch();
         }
 
         // E-mail

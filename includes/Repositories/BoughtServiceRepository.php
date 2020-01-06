@@ -24,7 +24,7 @@ class BoughtServiceRepository
                 )
             );
 
-            if ($data = $this->db->fetchArrayAssoc($result)) {
+            if ($data = $result->fetch()) {
                 return $this->mapToModel($data);
             }
         }

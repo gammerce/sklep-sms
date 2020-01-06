@@ -66,7 +66,7 @@ class ServiceCodePaymentService
             )
         );
 
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             if ($serviceModule->serviceCodeValidate($purchase, $row)) {
                 $this->serviceCodeRepository->delete($row['id']);
 

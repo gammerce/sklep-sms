@@ -24,7 +24,7 @@ class ServiceRepository
         );
 
         $services = [];
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $services[] = $this->mapToModel($row);
         }
 
@@ -41,7 +41,7 @@ class ServiceRepository
                 )
             );
 
-            if ($data = $this->db->fetchArrayAssoc($result)) {
+            if ($data = $result->fetch()) {
                 return $this->mapToModel($data);
             }
         }

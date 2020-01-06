@@ -526,7 +526,7 @@ class Heart
     private function fetchServersServices()
     {
         $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "servers_services`");
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $this->serversServices[$row['server_id']][$row['service_id']] = true;
         }
         $this->serversServicesFetched = true;
@@ -570,7 +570,7 @@ class Heart
     private function fetchTariffs()
     {
         $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "tariffs`");
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $this->tariffs[$row['id']] = new Tariff(
                 $row['id'],
                 $row['provision'],
@@ -677,7 +677,7 @@ class Heart
     private function fetchGroups()
     {
         $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "groups`");
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $this->groups[$row['id']] = $row;
         }
 

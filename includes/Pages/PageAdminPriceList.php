@@ -44,9 +44,9 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
                 get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+        $table->setDbRowsAmount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $bodyRow = new BodyRow();
 
             if ($row['server'] != -1) {
@@ -96,7 +96,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
                     [$query['id']]
                 )
             );
-            $price = $this->db->fetchArrayAssoc($result);
+            $price = $result->fetch();
 
             $allServers = $price['server'] == -1 ? "selected" : "";
         }

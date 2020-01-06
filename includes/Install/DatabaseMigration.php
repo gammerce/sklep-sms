@@ -75,14 +75,15 @@ class DatabaseMigration
     public function getLastExecutedMigration()
     {
         try {
-            return $this->db->getColumn(
-                "SELECT `name` FROM `" .
-                    TABLE_PREFIX .
-                    "migrations` " .
-                    "ORDER BY id DESC " .
-                    "LIMIT 1",
-                'name'
-            );
+            return $this->db
+                ->query(
+                    "SELECT `name` FROM `" .
+                        TABLE_PREFIX .
+                        "migrations` " .
+                        "ORDER BY id DESC " .
+                        "LIMIT 1"
+                )
+                ->fetchColumn();
         } catch (PDOException $e) {
             if (preg_match("/Table .*ss_migrations.* doesn't exist/", $e->getMessage())) {
                 // It means that user has installed shop sms using old codebase,

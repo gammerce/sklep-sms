@@ -95,7 +95,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         );
 
         $amounts = "";
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $smsCost = strlen($row['sms_number'])
                 ? number_format(
                     (get_sms_cost($row['sms_number']) / 100) * $this->settings['vat'],
@@ -153,7 +153,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                 )
             );
 
-            if (!$this->db->numRows($result)) {
+            if (!$result->rowCount()) {
                 // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
                 return [
                     'status' => "no_option",
@@ -162,7 +162,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                 ];
             }
 
-            $price = $this->db->fetchArrayAssoc($result);
+            $price = $result->fetch();
         }
 
         // Username
@@ -177,7 +177,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                 ])
             );
 
-            if (!$this->dbMybb->numRows($result)) {
+            if (!$result->rowCount()) {
                 $warnings['username'][] = $this->lang->t('no_user');
             }
         }
@@ -378,7 +378,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             )
         );
 
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $row['extra_data'] = json_decode($row['extra_data'], true);
             foreach (explode(',', $row['extra_data']['mybb_groups']) as $groupId) {
                 $mybbUser->prolongShopGroup($groupId, $row['expire']);
@@ -427,9 +427,9 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             )
         );
 
-        if ($this->db->numRows($result)) {
+        if ($result->rowCount()) {
             // Aktualizujemy
-            $row = $this->db->fetchArrayAssoc($result);
+            $row = $result->fetch();
             $userServiceId = $row['us_id'];
 
             $this->updateUserService(
@@ -536,7 +536,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                 ])
             );
 
-            if (!$this->dbMybb->numRows($result)) {
+            if (!$result->rowCount()) {
                 $warnings['mybb_username'][] = $this->lang->t('no_user');
             }
         }
@@ -592,12 +592,11 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
     {
         $this->connectMybb();
 
-        $username = $this->dbMybb->getColumn(
-            $this->dbMybb->prepare("SELECT `username` FROM `mybb_users` " . "WHERE `uid` = '%d'", [
-                $userService['mybb_uid'],
-            ]),
-            'username'
+        $statement = $this->dbMybb->statement(
+            "SELECT `username` FROM `mybb_users` " . "WHERE `uid` = ?"
         );
+        $statement->execute([$userService['mybb_uid']]);
+        $username = $statement->fetchColumn();
 
         $expire =
             $userService['expire'] == -1
@@ -634,11 +633,11 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
                 "WHERE {$where}"
         );
 
-        if (!$this->dbMybb->numRows($result)) {
+        if (!$result->rowCount()) {
             return null;
         }
 
-        $rowMybb = $this->dbMybb->fetchArrayAssoc($result);
+        $rowMybb = $result->fetch();
 
         $mybbUser = new MybbUser($rowMybb['uid'], $rowMybb['usergroup']);
         $mybbUser->setMybbAddGroups(explode(",", $rowMybb['additionalgroups']));
@@ -654,7 +653,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             )
         );
 
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $mybbUser->setShopGroup($row['gid'], [
                 'expire' => $row['expire'],
                 'was_before' => $row['was_before'],
