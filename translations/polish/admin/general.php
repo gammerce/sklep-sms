@@ -106,6 +106,7 @@ return [
     'id_exist' => 'Usługa o takim ID już istnieje.',
     'income' => 'Przychód',
     'information' => 'Informacje',
+    'invalid_payment_module' => "Błędny moduł płatności",
     'language' => 'Język',
     'latest_version' => 'Najnowsza wersja',
     'license' => 'Licencja',

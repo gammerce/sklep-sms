@@ -72,8 +72,8 @@ $(document).delegate("[id^=delete_row_]", "click", function() {
     );
 
     var userServiceId = rowId.children("td[headers=id]").text();
-    var confirmInfo = "Na pewno chcesz usunąć usluge o ID: " + userServiceId + " ?";
-    if (confirm(confirmInfo) == false) {
+    var confirmText = "Na pewno chcesz usunąć usluge o ID: " + userServiceId + " ?";
+    if (confirm(confirmText) == false) {
         return;
     }
 
@@ -113,8 +113,8 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     var rowId = $(this).closest("tr");
     var userServiceId = rowId.children("td[headers=id]").text();
 
-    var confirmInfo = "Na pewno chcesz usunąć usluge o ID: " + userServiceId + " ?";
-    if (confirm(confirmInfo) == false) {
+    var confirmText = "Na pewno chcesz usunąć usluge o ID: " + userServiceId + " ?";
+    if (confirm(confirmText) == false) {
         return;
     }
 

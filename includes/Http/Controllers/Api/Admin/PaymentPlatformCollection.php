@@ -30,7 +30,7 @@ class PaymentPlatformCollection
             $filteredData = $paymentPlatformService->getValidatedData($moduleId, $data);
         } catch (InvalidPaymentModuleException $e) {
             throw new ValidationException([
-                "module" => "Invalid module ID",
+                "module" => $lang->t("invalid_payment_module"),
             ]);
         }
 

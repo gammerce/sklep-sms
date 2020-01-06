@@ -28,7 +28,6 @@ class ServerResource
         $name = $request->request->get('name');
         $ip = trim($request->request->get('ip'));
         $port = trim($request->request->get('port'));
-        // TODO Check if setting default value works
         $smsPlatform = $request->request->get('sms_platform') ?: null;
 
         $serverService->validateBody($request->request->all());

@@ -15,6 +15,8 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
+// TODO Remove Simple classes. Rename Service to ServiceModule
+
 abstract class ServiceMybbExtraGroupsSimple extends Service implements
     IServiceAdminManage,
     IServiceCreate,

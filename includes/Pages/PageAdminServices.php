@@ -42,9 +42,9 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
             $bodyRow->setDbId($service->getId());
 
-            $cell = new Cell($service->getName());
-            $cell->setParam('headers', 'name');
-            $bodyRow->addCell($cell);
+            $nameCell = new Cell($service->getName());
+            $nameCell->setParam('headers', 'name');
+            $bodyRow->addCell($nameCell);
             $bodyRow->addCell(new Cell($service->getShortDescription()));
             $bodyRow->addCell(new Cell($service->getDescription()));
             $bodyRow->addCell(new Cell($service->getOrder()));

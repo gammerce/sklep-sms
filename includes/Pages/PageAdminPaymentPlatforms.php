@@ -13,7 +13,7 @@ use App\Models\PaymentPlatform;
 use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Repositories\PaymentPlatformRepository;
 
-// TODO Action box for creating/editing model
+// TODO Action box for creating model
 
 class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 {
@@ -62,8 +62,11 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
             $paymentPlatform = $this->paymentPlatformRepository->mapToModel($row);
             $bodyRow = new BodyRow();
 
+            $nameCell = new Cell($paymentPlatform->getName());
+            $nameCell->setParam('headers', 'name');
+
             $bodyRow->setDbId($paymentPlatform->getId());
-            $bodyRow->addCell(new Cell($paymentPlatform->getName()));
+            $bodyRow->addCell($nameCell);
             $bodyRow->addCell(new Cell($this->lang->t($paymentPlatform->getModuleId())));
 
             $bodyRow->setEditAction(true);
@@ -95,7 +98,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
     {
         if ($boxId === "create") {
             $paymentModules = array_map(function ($paymentModuleId) {
-                return new Option($paymentModuleId, $this->lang->t($paymentModuleId));
+                return new Option($this->lang->t($paymentModuleId), $paymentModuleId);
             }, $this->heart->getPaymentModuleIds());
 
             return $this->template->render("admin/action_boxes/payment_platform_create", [

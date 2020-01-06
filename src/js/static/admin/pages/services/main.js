@@ -49,8 +49,8 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     var serviceId = rowId.children("td[headers=id]").text();
     var serviceName = rowId.children("td[headers=name]").text();
 
-    var confirmInfo = "Na pewno chcesz usunąć usługę:\n(" + serviceId + ") " + serviceName + " ?";
-    if (confirm(confirmInfo) == false) {
+    var confirmText = "Na pewno chcesz usunąć usługę:\n(" + serviceId + ") " + serviceName + " ?";
+    if (confirm(confirmText) == false) {
         return;
     }
 

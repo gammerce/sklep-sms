@@ -105,6 +105,7 @@ return [
     'id_exist' => 'Service with such ID does not exist.',
     'income' => 'Income',
     'information' => 'Information',
+    'invalid_payment_module' => "Invalid payment module",
     'language' => 'Language',
     'latest_version' => 'Latest version',
     'license' => 'License',
