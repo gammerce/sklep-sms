@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
-use App\System\Auth;
+use App\Loggers\DatabaseLogger;
 use App\System\Database;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,12 +14,10 @@ class GroupResource
         $groupId,
         Request $request,
         TranslationManager $translationManager,
-        Auth $auth,
-        Database $db
+        Database $db,
+        DatabaseLogger $databaseLogger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         $name = $request->request->get('name');
 
@@ -48,9 +46,7 @@ class GroupResource
         );
 
         if ($statement->rowCount()) {
-            log_to_db(
-                $langShop->t('group_admin_edit', $user->getUsername(), $user->getUid(), $groupId)
-            );
+            $databaseLogger->logWithActor('log_group_admin_edit', $groupId);
             return new SuccessApiResponse($lang->t('group_edit'));
         }
 
@@ -61,20 +57,16 @@ class GroupResource
         $groupId,
         Database $db,
         TranslationManager $translationManager,
-        Auth $auth
+        DatabaseLogger $databaseLogger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         $statement = $db->query(
             $db->prepare("DELETE FROM `" . TABLE_PREFIX . "groups` WHERE `id` = '%d'", [$groupId])
         );
 
         if ($statement->rowCount()) {
-            log_to_db(
-                $langShop->t('group_admin_delete', $user->getUsername(), $user->getUid(), $groupId)
-            );
+            $databaseLogger->logWithActor('log_group_admin_delete', $groupId);
             return new SuccessApiResponse($lang->t('delete_group'));
         }
 

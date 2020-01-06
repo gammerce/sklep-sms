@@ -6,6 +6,7 @@ use App\Html\Li;
 use App\Html\Link;
 use App\Html\Ul;
 use App\Html\UnescapedSimpleText;
+use App\Loggers\DatabaseLogger;
 use App\Models\User;
 use App\Routes\UrlGenerator;
 use App\Services\Interfaces\IServicePurchaseWeb;
@@ -779,15 +780,12 @@ function log_to_file($file, $message, array $data = [])
     file_put_contents($file, $text);
 }
 
-function log_to_db($message)
+// TODO Use database logger
+function log_to_db($key, ...$args)
 {
-    // TODO Prepend user
-    /** @var Database $db */
-    $db = app()->make(Database::class);
-
-    $db->query(
-        $db->prepare("INSERT INTO `" . TABLE_PREFIX . "logs` " . "SET `text` = '%s'", [$message])
-    );
+    /** @var DatabaseLogger $logger */
+    $logger = app()->make(DatabaseLogger::class);
+    $logger->log($key, ...$args);
 }
 
 function log_error($message, array $data = [])

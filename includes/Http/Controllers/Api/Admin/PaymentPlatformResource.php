@@ -1,13 +1,11 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Exceptions\ValidationException;
-use App\Http\Responses\ApiResponse;
 use App\Http\Responses\ErrorApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\PaymentPlatformService;
+use App\Loggers\DatabaseLogger;
 use App\Repositories\PaymentPlatformRepository;
-use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
@@ -18,14 +16,12 @@ class PaymentPlatformResource
     public function put(
         $paymentPlatformId,
         Request $request,
-        Auth $auth,
         TranslationManager $translationManager,
         PaymentPlatformService $paymentPlatformService,
-        PaymentPlatformRepository $paymentPlatformRepository
+        PaymentPlatformRepository $paymentPlatformRepository,
+        DatabaseLogger $databaseLogger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
         $name = $request->request->get("name");
         $data = $request->request->get("data") ?: [];
 
@@ -36,14 +32,7 @@ class PaymentPlatformResource
         );
         $paymentPlatformRepository->update($paymentPlatform->getId(), $name, $filteredData);
 
-        log_to_db(
-            $langShop->t(
-                'log_payment_platform_updated',
-                $user->getUsername(),
-                $user->getUid(),
-                $paymentPlatform->getId()
-            )
-        );
+        $databaseLogger->logWithActor('log_payment_platform_updated', $paymentPlatform->getId());
 
         return new SuccessApiResponse($lang->t('payment_platform_updated'));
     }
@@ -52,15 +41,13 @@ class PaymentPlatformResource
         $paymentPlatformId,
         TranslationManager $translationManager,
         PaymentPlatformRepository $paymentPlatformRepository,
-        Auth $auth,
         Settings $settings,
-        Heart $heart
+        Heart $heart,
+        DatabaseLogger $databaseLogger
     ) {
         $paymentPlatform = $paymentPlatformRepository->getOrFail($paymentPlatformId);
 
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         if (
             $settings->getSmsPlatformId() === $paymentPlatform->getId() ||
@@ -77,14 +64,7 @@ class PaymentPlatformResource
 
         $paymentPlatformRepository->delete($paymentPlatform->getId());
 
-        log_to_db(
-            $langShop->t(
-                'log_payment_platform_deleted',
-                $user->getUsername(),
-                $user->getUid(),
-                $paymentPlatformId
-            )
-        );
+        $databaseLogger->logWithActor('log_payment_platform_deleted', $paymentPlatformId);
 
         return new SuccessApiResponse($lang->t('payment_platform_deleted'));
     }

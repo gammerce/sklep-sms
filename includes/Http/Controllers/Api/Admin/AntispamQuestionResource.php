@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
-use App\System\Auth;
+use App\Loggers\DatabaseLogger;
 use App\System\Database;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,11 +15,9 @@ class AntispamQuestionResource
         $antispamQuestionId,
         Database $db,
         TranslationManager $translationManager,
-        Auth $auth
+        DatabaseLogger $databaseLogger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         $statement = $db->query(
             $db->prepare("DELETE FROM `" . TABLE_PREFIX . "antispam_questions` WHERE `id` = '%d'", [
@@ -28,14 +26,7 @@ class AntispamQuestionResource
         );
 
         if ($statement->rowCount()) {
-            log_to_db(
-                $langShop->t(
-                    'question_delete',
-                    $user->getUsername(),
-                    $user->getUid(),
-                    $antispamQuestionId
-                )
-            );
+            $databaseLogger->logWithActor('log_question_delete', $antispamQuestionId);
             return new SuccessApiResponse($lang->t('delete_antispamq'));
         }
 
@@ -46,12 +37,10 @@ class AntispamQuestionResource
         $antispamQuestionId,
         Request $request,
         Database $db,
-        TranslationManager $translationManager,
-        Auth $auth
+        DatabaseLogger $databaseLogger,
+        TranslationManager $translationManager
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         $question = $request->request->get("question");
         $answers = $request->request->get("answers");
@@ -84,14 +73,7 @@ class AntispamQuestionResource
         );
 
         if ($statement->rowCount()) {
-            log_to_db(
-                $langShop->t(
-                    'question_edit',
-                    $user->getUsername(),
-                    $user->getUid(),
-                    $antispamQuestionId
-                )
-            );
+            $databaseLogger->logWithActor('log_question_edit', $antispamQuestionId);
             return new SuccessApiResponse($lang->t('antispam_edit'));
         }
 

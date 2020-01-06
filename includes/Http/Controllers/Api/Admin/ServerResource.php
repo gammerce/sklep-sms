@@ -5,8 +5,8 @@ use App\Http\Responses\ApiResponse;
 use App\Http\Responses\ErrorApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\ServerService;
+use App\Loggers\DatabaseLogger;
 use App\Repositories\ServerRepository;
-use App\System\Auth;
 use App\Translation\TranslationManager;
 use PDOException;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,14 +16,12 @@ class ServerResource
     public function put(
         $serverId,
         Request $request,
-        Auth $auth,
         TranslationManager $translationManager,
         ServerService $serverService,
-        ServerRepository $serverRepository
+        ServerRepository $serverRepository,
+        DatabaseLogger $databaseLogger
     ) {
-        $langShop = $translationManager->shop();
         $lang = $translationManager->user();
-        $user = $auth->user();
 
         $name = $request->request->get('name');
         $ip = trim($request->request->get('ip'));
@@ -34,9 +32,7 @@ class ServerResource
         $serverRepository->update($serverId, $name, $ip, $port, $smsPlatform);
         $serverService->updateServerServiceAffiliations($serverId, $request->request->all());
 
-        log_to_db(
-            $langShop->t('server_admin_edit', $user->getUsername(), $user->getUid(), $serverId)
-        );
+        $databaseLogger->logWithActor('log_server_admin_edit', $serverId);
 
         return new SuccessApiResponse($lang->t('server_edit'));
     }
@@ -45,11 +41,9 @@ class ServerResource
         $serverId,
         TranslationManager $translationManager,
         ServerRepository $serverRepository,
-        Auth $auth
+        DatabaseLogger $databaseLogger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         try {
             $deleted = $serverRepository->delete($serverId);
@@ -62,14 +56,7 @@ class ServerResource
         }
 
         if ($deleted) {
-            log_to_db(
-                $langShop->t(
-                    'server_admin_delete',
-                    $user->getUsername(),
-                    $user->getUid(),
-                    $serverId
-                )
-            );
+            $databaseLogger->logWithActor('log_server_admin_delete', $serverId);
             return new SuccessApiResponse($lang->t('delete_server'));
         }
 

@@ -131,6 +131,7 @@ class Database
         return $statement->rowCount();
     }
 
+    // TODO Remove usage
     public function fetchArrayAssoc(PDOStatement $statement)
     {
         return $statement->fetch();

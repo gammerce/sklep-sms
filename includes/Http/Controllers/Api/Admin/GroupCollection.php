@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\SuccessApiResponse;
-use App\System\Auth;
+use App\Loggers\DatabaseLogger;
 use App\System\Database;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,12 +12,10 @@ class GroupCollection
     public function post(
         Request $request,
         TranslationManager $translationManager,
-        Auth $auth,
-        Database $db
+        Database $db,
+        DatabaseLogger $databaseLogger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         $name = $request->request->get('name');
 
@@ -40,9 +38,8 @@ class GroupCollection
             ])
         );
 
-        log_to_db(
-            $langShop->t('group_admin_add', $user->getUsername(), $user->getUid(), $db->lastId())
-        );
+        $databaseLogger->logWithActor('log_group_admin_add', $db->lastId());
+
         return new SuccessApiResponse($lang->t('group_add'));
     }
 }
