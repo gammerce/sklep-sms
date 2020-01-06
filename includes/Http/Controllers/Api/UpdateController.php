@@ -8,6 +8,7 @@ use App\Install\DatabaseMigration;
 use App\Install\RequirementsStore;
 use App\Install\SetupManager;
 use App\Install\UpdateInfo;
+use Exception;
 
 class UpdateController
 {
@@ -41,7 +42,6 @@ class UpdateController
             $modules
         );
 
-        // Nie wszystko jest git
         if (!$everythingOk) {
             return new ApiResponse(
                 "warnings",
@@ -55,9 +55,15 @@ class UpdateController
 
         // -------------------- INSTALACJA --------------------
 
-        $setupManager->start();
-        $migrator->update();
-        $setupManager->finish();
+        try {
+            $setupManager->start();
+            $migrator->update();
+        } catch (Exception $e) {
+            $setupManager->markAsFailed();
+            throw $e;
+        } finally {
+            $setupManager->finish();
+        }
 
         return new SuccessApiResponse("Instalacja przebiegła pomyślnie.");
     }

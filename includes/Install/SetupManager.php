@@ -23,7 +23,6 @@ class SetupManager
         $this->removeInProgress();
     }
 
-    // TODO It should be used in exception handler
     public function markAsFailed()
     {
         $path = $this->path->to('data/setup_error');
