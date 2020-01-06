@@ -52,23 +52,24 @@ class MigrateTransactionServices extends Migration
         foreach ($statement as $row) {
             $data = json_decode($row["data"], true);
 
-            // Do not migrate ones that are not filled
-            if (!in_array($row["id"], $requiredPlatforms)) {
-                $keysToCheck = ["account_id", "sms_text", "api", "uid", "service", "key", "email"];
-
-                foreach ($keysToCheck as $key) {
-                    if (array_key_exists($key, $data) && !strlen($data[$key])) {
-                        continue;
-                    }
-                }
-            }
-
-            $paymentPlatform = $this->paymentPlatformRepository->create(
-                $row["name"],
-                $row["id"],
-                $data
+            $filledData = array_filter(
+                $data,
+                function ($value, $key) {
+                    $keysToCheck = ["account_id", "api", "uid", "service", "key", "email"];
+                    return in_array($key, $keysToCheck) && strlen($value);
+                },
+                ARRAY_FILTER_USE_BOTH
             );
-            $paymentPlatforms[$paymentPlatform->getModuleId()] = $paymentPlatform;
+
+            // Do not migrate ones that are not filled nor required
+            if (in_array($row["id"], $requiredPlatforms) || count($filledData)) {
+                $paymentPlatform = $this->paymentPlatformRepository->create(
+                    $row["name"],
+                    $row["id"],
+                    $data
+                );
+                $paymentPlatforms[$paymentPlatform->getModuleId()] = $paymentPlatform;
+            }
         }
 
         /** @var PaymentPlatform|null $newSmsPlatform */
