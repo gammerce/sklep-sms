@@ -21,7 +21,7 @@ class ServerCollectionTest extends HttpTestCase
     public function creates_server()
     {
         // given
-        $this->actAs($this->factory->admin());
+        $this->actingAs($this->factory->admin());
 
         $paymentPlatform = $this->factory->paymentPlatform([
             'module' => Microsms::MODULE_ID,
@@ -53,7 +53,7 @@ class ServerCollectionTest extends HttpTestCase
         /** @var SettingsRepository $settingsRepository */
         $settingsRepository = $this->app->make(SettingsRepository::class);
 
-        $this->actAs($this->factory->admin());
+        $this->actingAs($this->factory->admin());
 
         $paymentPlatform = $this->factory->paymentPlatform([
             'module' => Microsms::MODULE_ID,
@@ -83,7 +83,7 @@ class ServerCollectionTest extends HttpTestCase
     public function cannot_set_default_sms_platform_if_not_set_in_settings()
     {
         // given
-        $this->actAs($this->factory->admin());
+        $this->actingAs($this->factory->admin());
 
         // when
         $response = $this->post("/api/admin/servers", [

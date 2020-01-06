@@ -5,35 +5,43 @@ use App\Install\MigrationFiles;
 use App\Models\PaymentPlatform;
 use App\Repositories\PaymentPlatformRepository;
 use App\System\Database;
-use App\System\Settings;
 
 class MigrateTransactionServices extends Migration
 {
     /** @var PaymentPlatformRepository */
     private $paymentPlatformRepository;
 
-    /** @var Settings */
-    private $settings;
-
     public function __construct(
         Database $db,
         MigrationFiles $migrationFiles,
-        PaymentPlatformRepository $paymentPlatformRepository,
-        Settings $settings
+        PaymentPlatformRepository $paymentPlatformRepository
     ) {
         parent::__construct($db, $migrationFiles);
         $this->paymentPlatformRepository = $paymentPlatformRepository;
-        $this->settings = $settings;
     }
 
     public function up()
     {
+        // Make sms_service nullable
         $this->db->query(
             "ALTER TABLE `ss_servers` MODIFY `sms_service` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_bin"
         );
 
+        $smsService = $transferService = '';
+        $statement = $this->db->query(
+            "SELECT * FROM `ss_settings` WHERE `key` IN ('sms_service', 'transfer_service')"
+        );
+        foreach ($statement as $row) {
+            if ($row['key'] === "sms_service") {
+                $smsService = $row['value'];
+            }
+            if ($row['key'] === "transfer_service") {
+                $transferService = $row['value'];
+            }
+        }
+
         $paymentPlatforms = [];
-        $requiredPlatforms = [$this->settings["sms_service"], $this->settings["transfer_service"]];
+        $requiredPlatforms = [$smsService, $transferService];
 
         $statement = $this->db->query("SELECT * FROM ss_servers");
         foreach ($statement as $row) {
@@ -64,14 +72,14 @@ class MigrateTransactionServices extends Migration
         }
 
         /** @var PaymentPlatform|null $newSmsPlatform */
-        $newSmsPlatform = array_get($paymentPlatforms, $this->settings["sms_service"]);
+        $newSmsPlatform = array_get($paymentPlatforms, $smsService);
         $newSmsPlatformId = $newSmsPlatform ? $newSmsPlatform->getId() : '';
         $this->db
             ->statement("UPDATE `ss_settings` SET `value` = ? WHERE `key` = 'sms_service'")
             ->execute([$newSmsPlatformId]);
 
         /** @var PaymentPlatform|null $newTransferPlatform */
-        $newTransferPlatform = array_get($paymentPlatforms, $this->settings["transfer_service"]);
+        $newTransferPlatform = array_get($paymentPlatforms, $transferService);
         $newTransferPlatformId = $newTransferPlatform ? $newTransferPlatform->getId() : '';
         $this->db
             ->statement("UPDATE `ss_settings` SET `value` = ? WHERE `key` = 'transfer_service'")

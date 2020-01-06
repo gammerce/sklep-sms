@@ -2,21 +2,15 @@
 namespace App\Install;
 
 use App\System\Path;
-use App\Translation\TranslationManager;
-use App\Translation\Translator;
 
 class SetupManager
 {
     /** @var Path */
     private $path;
 
-    /** @var Translator */
-    private $lang;
-
-    public function __construct(Path $path, TranslationManager $translationManager)
+    public function __construct(Path $path)
     {
         $this->path = $path;
-        $this->lang = $translationManager->user();
     }
 
     public function start()
@@ -32,7 +26,9 @@ class SetupManager
     // TODO It should be used in exception handler
     public function markAsFailed()
     {
-        file_put_contents($this->path->to('data/setup_error'), '');
+        $path = $this->path->to('data/setup_error');
+        file_put_contents($path, "");
+        chmod($path, 0777);
     }
 
     /** @return bool */
@@ -49,10 +45,12 @@ class SetupManager
 
     private function putInProgress()
     {
-        file_put_contents($this->path->to('data/setup_progress'), "");
+        $path = $this->path->to('data/setup_progress');
+        file_put_contents($path, "");
+        chmod($path, 0777);
     }
 
-    public function removeInProgress()
+    private function removeInProgress()
     {
         unlink($this->path->to('data/setup_progress'));
     }

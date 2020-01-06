@@ -9,11 +9,13 @@ use Mockery;
 use PHPUnit\Framework\TestCase;
 use Tests\Psr4\Concerns\ApplicationConcern;
 use Tests\Psr4\Concerns\MakesHttpRequests;
+use Tests\Psr4\Concerns\SetupManagerConcern;
 
 class InstallControllerTest extends TestCase
 {
     use ApplicationConcern;
     use MakesHttpRequests;
+    use SetupManagerConcern;
 
     /** @var Application */
     private $app;
@@ -34,6 +36,7 @@ class InstallControllerTest extends TestCase
             getenv('DB_DATABASE')
         );
         $this->mockEnvCreator();
+        $this->mockSetupManager();
 
         $this->db->createDatabaseIfNotExists($this->dbName);
     }

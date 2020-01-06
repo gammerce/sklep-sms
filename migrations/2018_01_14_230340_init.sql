@@ -650,10 +650,10 @@ INSERT INTO `ss_settings` (`key`, `value`) VALUES
   ('sender_email_name', ''),
   ('shop_url', ''),
   ('signature', ''),
-  ('sms_platform', ''),
+  ('sms_service', ''),
   ('theme', 'default'),
   ('timezone', 'Europe/Warsaw'),
-  ('transfer_platform', ''),
+  ('transfer_service', ''),
   ('user_edit_service', '1'),
   ('vat', '1.23'),
   ('gadugadu', '');

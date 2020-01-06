@@ -36,7 +36,6 @@ class ServiceDescriptionCreator
 
         if (!file_exists($path)) {
             file_put_contents($path, "");
-
             chmod($path, 0777);
 
             // Check if permissions were assigned
