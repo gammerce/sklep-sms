@@ -1,8 +1,6 @@
 <?php
 namespace App\Models;
 
-// TODO Add last active field
-
 class Server
 {
     const TYPE_AMXMODX = 'amxx';
@@ -29,8 +27,19 @@ class Server
     /** @var string */
     private $version;
 
-    public function __construct($id, $name, $ip, $port, $smsPlatform, $type, $version)
-    {
+    /** @var string|null */
+    private $lastActiveAt;
+
+    public function __construct(
+        $id,
+        $name,
+        $ip,
+        $port,
+        $smsPlatform,
+        $type,
+        $version,
+        $lastActiveAt
+    ) {
         $this->id = $id;
         $this->name = $name;
         $this->ip = $ip;
@@ -38,6 +47,7 @@ class Server
         $this->smsPlatform = $smsPlatform;
         $this->type = $type;
         $this->version = $version;
+        $this->lastActiveAt = $lastActiveAt;
     }
 
     public function getId()
@@ -70,11 +80,13 @@ class Server
         return $this->smsPlatform;
     }
 
-    /**
-     * @return string
-     */
     public function getVersion()
     {
         return $this->version;
+    }
+
+    public function getLastActiveAt()
+    {
+        return $this->lastActiveAt;
     }
 }

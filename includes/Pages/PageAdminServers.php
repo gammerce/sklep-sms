@@ -39,6 +39,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
         $table->addHeadCell(new HeadCell($this->lang->t('name')));
         $table->addHeadCell(new Cell($this->lang->t('ip') . ':' . $this->lang->t('port')));
         $table->addHeadCell(new HeadCell($this->lang->t('version')));
+        $table->addHeadCell(new HeadCell($this->lang->t('last_active_at')));
 
         foreach ($this->heart->getServers() as $server) {
             $bodyRow = new BodyRow();
@@ -46,7 +47,8 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             $bodyRow->setDbId($server->getId());
             $bodyRow->addCell(new Cell($server->getName()));
             $bodyRow->addCell(new Cell($server->getIp() . ':' . $server->getPort()));
-            $bodyRow->addCell(new Cell($server->getVersion()));
+            $bodyRow->addCell(new Cell($server->getVersion() ?: 'n/a'));
+            $bodyRow->addCell(new Cell($server->getLastActiveAt() ?: 'n/a'));
 
             if (get_privileges("manage_servers")) {
                 $bodyRow->setDeleteAction(true);

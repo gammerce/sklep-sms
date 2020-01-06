@@ -1,25 +1,10 @@
 <?php
 
 use App\Install\Migration;
-use App\Install\MigrationFiles;
 use App\Models\PaymentPlatform;
-use App\Repositories\PaymentPlatformRepository;
-use App\System\Database;
 
 class MigrateTransactionServices extends Migration
 {
-    /** @var PaymentPlatformRepository */
-    private $paymentPlatformRepository;
-
-    public function __construct(
-        Database $db,
-        MigrationFiles $migrationFiles,
-        PaymentPlatformRepository $paymentPlatformRepository
-    ) {
-        parent::__construct($db, $migrationFiles);
-        $this->paymentPlatformRepository = $paymentPlatformRepository;
-    }
-
     public function up()
     {
         // Make sms_service nullable
@@ -63,25 +48,27 @@ class MigrateTransactionServices extends Migration
 
             // Do not migrate ones that are not filled nor required
             if (in_array($row["id"], $requiredPlatforms) || count($filledData)) {
-                $paymentPlatform = $this->paymentPlatformRepository->create(
-                    $row["name"],
-                    $row["id"],
-                    $data
-                );
-                $paymentPlatforms[$paymentPlatform->getModuleId()] = $paymentPlatform;
+                $this->db
+                    ->statement(
+                        "INSERT INTO `" .
+                            TABLE_PREFIX .
+                            "payment_platforms` " .
+                            "SET `name` = ?, `module` = ?, `data` = ?"
+                    )
+                    ->execute([$row["name"], $row["id"], json_encode($data)]);
+
+                $paymentPlatforms[$row["id"]] = $this->db->lastId();
             }
         }
 
         /** @var PaymentPlatform|null $newSmsPlatform */
-        $newSmsPlatform = array_get($paymentPlatforms, $smsService);
-        $newSmsPlatformId = $newSmsPlatform ? $newSmsPlatform->getId() : '';
+        $newSmsPlatformId = array_get($paymentPlatforms, $smsService, '');
         $this->db
             ->statement("UPDATE `ss_settings` SET `value` = ? WHERE `key` = 'sms_service'")
             ->execute([$newSmsPlatformId]);
 
         /** @var PaymentPlatform|null $newTransferPlatform */
-        $newTransferPlatform = array_get($paymentPlatforms, $transferService);
-        $newTransferPlatformId = $newTransferPlatform ? $newTransferPlatform->getId() : '';
+        $newTransferPlatformId = array_get($paymentPlatforms, $transferService, '');
         $this->db
             ->statement("UPDATE `ss_settings` SET `value` = ? WHERE `key` = 'transfer_service'")
             ->execute([$newTransferPlatformId]);
@@ -89,8 +76,7 @@ class MigrateTransactionServices extends Migration
         $statement = $this->db->query("SELECT * FROM ss_servers");
         foreach ($statement as $row) {
             /** @var PaymentPlatform $smsPlatform */
-            $smsPlatform = array_get($paymentPlatforms, $row["sms_service"]);
-            $smsPlatformId = $smsPlatform ? $smsPlatform->getId() : null;
+            $smsPlatformId = array_get($paymentPlatforms, $row["sms_service"]);
 
             $this->db
                 ->statement("UPDATE `ss_servers` SET `sms_service` = ? WHERE `id` = ?")

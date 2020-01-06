@@ -99,7 +99,9 @@ class ServerRepository
     {
         $this->db
             ->statement(
-                "UPDATE `" . TABLE_PREFIX . "servers` SET `type` = ?, `version` = ? WHERE `id` = ?"
+                "UPDATE `" .
+                    TABLE_PREFIX .
+                    "servers` SET `type` = ?, `version` = ?, `last_active_at` = NOW() WHERE `id` = ?"
             )
             ->execute([$type, $version, $id]);
     }
@@ -113,7 +115,8 @@ class ServerRepository
             $data['port'],
             $data['sms_platform'],
             $data['type'],
-            $data['version']
+            $data['version'],
+            $data['last_active_at']
         );
     }
 }

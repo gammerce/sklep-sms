@@ -104,6 +104,7 @@ return [
     'information' => 'Information',
     'invalid_payment_module' => "Invalid payment module",
     'language' => 'Language',
+    'last_active_at' => 'Last active at',
     'latest_version' => 'Latest version',
     'license' => 'License',
     'license_error' =>

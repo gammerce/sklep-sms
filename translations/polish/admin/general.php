@@ -105,6 +105,7 @@ return [
     'information' => 'Informacje',
     'invalid_payment_module' => "Błędny moduł płatności",
     'language' => 'Język',
+    'last_active_at' => 'Ostatnia aktywność',
     'latest_version' => 'Najnowsza wersja',
     'license' => 'Licencja',
     'license_error' =>
