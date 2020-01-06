@@ -1,3 +1,7 @@
+$(document).delegate("#payment_platform_button_add", "click", function() {
+    show_action_box(currentPage, "create");
+});
+
 $(document).delegate(".table-structure .edit_row", "click", function() {
     show_action_box(currentPage, "edit", {
         id: $(this)

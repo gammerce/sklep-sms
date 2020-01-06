@@ -64,7 +64,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 
             $bodyRow->setDbId($paymentPlatform->getId());
             $bodyRow->addCell(new Cell($paymentPlatform->getName()));
-            $bodyRow->addCell(new Cell($paymentPlatform->getModuleId()));
+            $bodyRow->addCell(new Cell($this->lang->t($paymentPlatform->getModuleId())));
 
             $bodyRow->setEditAction(true);
             $bodyRow->setDeleteAction(true);
@@ -95,7 +95,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
     {
         if ($boxId === "create") {
             $paymentModules = array_map(function ($paymentModuleId) {
-                return new Option($paymentModuleId, $paymentModuleId);
+                return new Option($paymentModuleId, $this->lang->t($paymentModuleId));
             }, $this->heart->getPaymentModuleIds());
 
             return $this->template->render("admin/action_boxes/payment_platform_create", [
