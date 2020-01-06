@@ -14,18 +14,15 @@ $(document).delegate(".table-structure .edit_row", "click", function() {
 });
 
 // Change service module
-var extra_fields;
+var serviceExtraFlags;
 $(document).delegate(".action_box [name=module]", "change", function() {
-    // Brak wybranego modułu
-    if ($(this).val() == "") {
-        if (extra_fields) {
-            extra_fields.remove();
-        }
+    var moduleId = $(this).val();
 
+    if (!moduleId && serviceExtraFlags) {
+        serviceExtraFlags.remove();
         return;
     }
 
-    var moduleId = $(this).val();
     var serviceId = $(".action_box [name=id]");
 
     restRequest(
@@ -33,12 +30,12 @@ $(document).delegate(".action_box [name=module]", "change", function() {
         "/api/admin/services/" + serviceId + "/modules/" + moduleId + "/extra_fields",
         {},
         function(content) {
-            // Usuwamy dodatkowe pola
-            if (extra_fields) extra_fields.remove();
+            if (serviceExtraFlags) {
+                serviceExtraFlags.remove();
+            }
 
-            // Dodajemy content do action boxa
-            extra_fields = $(content);
-            extra_fields.insertAfter(".action_box .ftbody");
+            serviceExtraFlags = $(content);
+            serviceExtraFlags.insertAfter(".action_box .ftbody");
         }
     );
 });

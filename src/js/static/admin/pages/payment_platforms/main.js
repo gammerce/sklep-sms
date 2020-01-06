@@ -41,6 +41,27 @@ $(document).delegate("#form_payment_platform_add", "submit", function(e) {
     });
 });
 
+var formPaymentPlatformAddForm;
+$(document).delegate("#form_payment_platform_add [name=module]", "change", function() {
+    var paymentModuleId = $(this).val();
+
+    if (!paymentModuleId && formPaymentPlatformAddForm) {
+        formPaymentPlatformAddForm.remove();
+        return;
+    }
+
+    restRequest("GET", "/api/admin/payment_modules/" + paymentModuleId + "/add_form", {}, function(
+        content
+    ) {
+        if (formPaymentPlatformAddForm) {
+            formPaymentPlatformAddForm.remove();
+        }
+
+        formPaymentPlatformAddForm = $(content);
+        formPaymentPlatformAddForm.insertAfter(".action_box .ftbody");
+    });
+});
+
 // EDIT
 $(document).delegate(".table-structure .edit_row", "click", function() {
     show_action_box(currentPage, "edit", {

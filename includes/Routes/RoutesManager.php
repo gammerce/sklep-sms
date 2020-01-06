@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Admin\GroupCollection;
 use App\Http\Controllers\Api\Admin\GroupResource;
 use App\Http\Controllers\Api\Admin\LogResource;
 use App\Http\Controllers\Api\Admin\PageActionBoxResource;
+use App\Http\Controllers\Api\Admin\PaymentModuleAddFormController;
 use App\Http\Controllers\Api\Admin\PaymentPlatformCollection;
 use App\Http\Controllers\Api\Admin\PaymentPlatformResource;
 use App\Http\Controllers\Api\Admin\PriceCollection;
@@ -392,6 +393,11 @@ class RoutesManager
                 $r->delete('/api/admin/payment_platforms/{paymentPlatformId}', [
                     'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
                     'uses' => PaymentPlatformResource::class . '@delete',
+                ]);
+
+                $r->get('/api/admin/payment_modules/{paymentModuleId}/add_form', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
+                    'uses' => PaymentModuleAddFormController::class . '@get',
                 ]);
 
                 $r->put('/api/admin/settings', [

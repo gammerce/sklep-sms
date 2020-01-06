@@ -38,27 +38,25 @@ $(document).delegate("#form_user_service_add [name=forever]", "change", function
 });
 
 // Wybranie usługi podczas dodawania usługi użytkownikowi
-var extra_fields;
+var userServiceAddForm;
 $(document).delegate("#form_user_service_add [name=service]", "change", function() {
-    // Brak wybranego modułu
-    if ($(this).val() == "") {
-        // Usuwamy dodatkowe pola
-        if (extra_fields) extra_fields.remove();
+    var serviceId = $(this).val();
 
+    // Brak wybranego modułu
+    if (!serviceId && userServiceAddForm) {
+        userServiceAddForm.remove();
         return;
     }
-
-    var serviceId = $(this).val();
 
     restRequest("GET", "/api/admin/services/" + serviceId + "/user_services/add_form", {}, function(
         content
     ) {
-        // Usuwamy dodatkowe pola
-        if (extra_fields) extra_fields.remove();
+        if (userServiceAddForm) {
+            userServiceAddForm.remove();
+        }
 
-        // Dodajemy content do action boxa
-        extra_fields = $(content);
-        extra_fields.insertAfter(".action_box .ftbody");
+        userServiceAddForm = $(content);
+        userServiceAddForm.insertAfter(".action_box .ftbody");
     });
 });
 

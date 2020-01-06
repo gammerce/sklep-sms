@@ -9,11 +9,9 @@ use App\Html\Input;
 use App\Html\Option;
 use App\Html\Structure;
 use App\Html\Wrapper;
-use App\Models\PaymentPlatform;
+use App\Http\Services\DataFieldService;
 use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Repositories\PaymentPlatformRepository;
-
-// TODO Action box for creating model
 
 class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 {
@@ -23,11 +21,17 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
     /** @var PaymentPlatformRepository */
     private $paymentPlatformRepository;
 
-    public function __construct(PaymentPlatformRepository $paymentPlatformRepository)
-    {
+    /** @var DataFieldService */
+    private $dataFieldService;
+
+    public function __construct(
+        PaymentPlatformRepository $paymentPlatformRepository,
+        DataFieldService $dataFieldService
+    ) {
         parent::__construct();
 
         $this->paymentPlatformRepository = $paymentPlatformRepository;
+        $this->dataFieldService = $dataFieldService;
         $this->heart->pageTitle = $this->title = $this->lang->t('payment_platforms');
     }
 
@@ -39,7 +43,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
         $button = new Input();
         $button->setParam('id', 'payment_platform_button_add');
         $button->setParam('type', 'button');
-        $button->addClass('button is-small');
+        $button->addClass('button');
         $button->setParam('value', $this->lang->t('add_payment_platform'));
         $wrapper->addButton($button);
 
@@ -101,7 +105,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
                 return new Option($this->lang->t($paymentModuleId), $paymentModuleId);
             }, $this->heart->getPaymentModuleIds());
 
-            return $this->template->render("admin/action_boxes/payment_platform_create", [
+            return $this->template->render("admin/action_boxes/payment_platform_add", [
                 'paymentModules' => implode("", $paymentModules),
             ]);
         }
@@ -109,7 +113,10 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
         if ($boxId === "edit") {
             $paymentPlatformId = array_get($query, 'id');
             $paymentPlatform = $this->paymentPlatformRepository->getOrFail($paymentPlatformId);
-            $dataFields = $this->renderDataFields($paymentPlatform);
+            $dataFields = $this->dataFieldService->renderDataFields(
+                $paymentPlatform->getModuleId(),
+                $paymentPlatform->getData()
+            );
 
             return $this->template->render(
                 "admin/action_boxes/payment_platform_edit",
@@ -118,36 +125,5 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
         }
 
         return '';
-    }
-
-    private function renderDataFields(PaymentPlatform $paymentPlatform)
-    {
-        $paymentModule = $this->heart->getPaymentModule($paymentPlatform);
-
-        $dataFields = [];
-        foreach ($paymentModule->getDataFields() as $dataField) {
-            $text = $dataField->getName() ?: $this->getCustomDataText($dataField->getId());
-            $value = array_get($paymentPlatform->getData(), $dataField->getId());
-
-            $dataFields[] = $this->template->render("tr_name_input", [
-                "name" => $dataField->getId(),
-                "value" => $value,
-                "text" => $text,
-            ]);
-        }
-
-        return implode("", $dataFields);
-    }
-
-    private function getCustomDataText($name)
-    {
-        switch ($name) {
-            case 'sms_text':
-                return $this->lang->strtoupper($this->lang->t('sms_code'));
-            case 'account_id':
-                return $this->lang->strtoupper($this->lang->t('account_id'));
-            default:
-                return $this->lang->strtoupper($name);
-        }
     }
 }
