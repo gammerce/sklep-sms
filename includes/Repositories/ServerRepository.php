@@ -81,6 +81,29 @@ class ServerRepository
         return !!$statement->rowCount();
     }
 
+    public function findByIpPort($ip, $port)
+    {
+        if (!$ip || !$port) {
+            return null;
+        }
+
+        $statement = $this->db->statement(
+            "SELECT * FROM `" . TABLE_PREFIX . "servers` WHERE `ip` = ? AND `port` = ? LIMIT 1"
+        );
+        $statement->execute([$ip, $port]);
+        $row = $statement->fetch();
+        return $row ? $this->mapToModel($row) : null;
+    }
+
+    public function touch($id, $type, $version)
+    {
+        $this->db
+            ->statement(
+                "UPDATE `" . TABLE_PREFIX . "servers` SET `type` = ?, `version` = ? WHERE `id` = ?"
+            )
+            ->execute([$type, $version, $id]);
+    }
+
     private function mapToModel(array $data)
     {
         return new Server(

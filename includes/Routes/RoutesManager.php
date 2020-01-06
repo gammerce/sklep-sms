@@ -45,7 +45,7 @@ use App\Http\Controllers\Api\PurchaseResource;
 use App\Http\Controllers\Api\PurchaseValidationResource;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\Server\PurchaseResource as ServerPurchaseResource;
-use App\Http\Controllers\Api\Server\UsersSteamIdsController;
+use App\Http\Controllers\Api\Server\ServerConfigController;
 use App\Http\Controllers\Api\ServiceActionController;
 use App\Http\Controllers\Api\ServiceLongDescriptionResource;
 use App\Http\Controllers\Api\ServiceTakeOverController;
@@ -160,13 +160,11 @@ class RoutesManager
                     ],
                     function (RouteCollector $r) {
                         $r->post('/api/server/purchase', [
-                            'middlewares' => [BlockOnInvalidLicense::class],
                             'uses' => ServerPurchaseResource::class . '@post',
                         ]);
 
-                        $r->get('/api/server/users/steam-ids', [
-                            'middlewares' => [BlockOnInvalidLicense::class],
-                            'uses' => UsersSteamIdsController::class . '@get',
+                        $r->get('/api/server/config', [
+                            'uses' => ServerConfigController::class . '@get',
                         ]);
                     }
                 );

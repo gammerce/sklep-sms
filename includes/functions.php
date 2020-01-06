@@ -948,3 +948,14 @@ function get_error_code(PDOException $e)
 {
     return $e->errorInfo[1];
 }
+
+function semantic_to_number($version)
+{
+    $parts = explode('.', $version);
+
+    if (count($parts) < 3) {
+        return null;
+    }
+
+    return $parts[0] * 10000 + $parts[1] * 100 + $parts[2];
+}

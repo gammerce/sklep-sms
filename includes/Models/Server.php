@@ -1,6 +1,8 @@
 <?php
 namespace App\Models;
 
+// TODO Add last active field
+
 class Server
 {
     const TYPE_AMXMODX = 'amxx';
