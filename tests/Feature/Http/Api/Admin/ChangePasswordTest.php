@@ -17,7 +17,7 @@ class ChangePasswordTest extends HttpTestCase
         $admin = $this->factory->admin();
         $user = $this->factory->user();
 
-        $this->actAs($admin);
+        $this->actingAs($admin);
 
         // when
         $response = $this->put("/api/admin/users/{$user->getUid()}/password", [
