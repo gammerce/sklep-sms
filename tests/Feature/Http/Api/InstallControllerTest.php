@@ -68,6 +68,73 @@ class InstallControllerTest extends TestCase
         $this->assertSame("Instalacja przebiegła pomyślnie.", $json["text"]);
     }
 
+    /** @test */
+    public function fails_when_invalid_database_credentials_are_given()
+    {
+        // given
+        $this->mockShopState();
+
+        // when
+        $response = $this->post("/api/install", [
+            "db_host" => getenv('DB_HOST'),
+            "db_port" => getenv('DB_PORT') ?: 3306,
+            "db_user" => getenv('DB_USERNAME'),
+            "db_password" => "blahblah",
+            "db_db" => $this->dbName,
+            "license_token" => "abc123",
+            "admin_username" => "root",
+            "admin_password" => "secret",
+        ]);
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringStartsWith(
+            "SQLSTATE[HY000] [1045] Access denied",
+            $response->getContent()
+        );
+    }
+
+    /** @test */
+    public function fails_when_invalid_not_enough_data_is_given()
+    {
+        // given
+        $this->mockShopState();
+
+        // when
+        $response = $this->post("/api/install", [
+            "db_host" => getenv('DB_HOST'),
+            "db_port" => getenv('DB_PORT') ?: 3306,
+            "db_user" => getenv('DB_USERNAME'),
+            "db_password" => getenv('DB_PASSWORD'),
+            "db_db" => $this->dbName,
+        ]);
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("warnings", $json["return_id"]);
+    }
+
+    /** @test */
+    public function is_not_performed_if_shop_has_been_already_installed()
+    {
+        // when
+        $response = $this->post("/api/install", [
+            "db_host" => getenv('DB_HOST'),
+            "db_port" => getenv('DB_PORT') ?: 3306,
+            "db_user" => getenv('DB_USERNAME'),
+            "db_password" => getenv('DB_PASSWORD'),
+            "db_db" => $this->dbName,
+            "license_token" => "abc123",
+            "admin_username" => "root",
+            "admin_password" => "secret",
+        ]);
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame("Shop has been installed already.", $response->getContent());
+    }
+
     private function mockShopState()
     {
         $shopStateMock = Mockery::mock(ShopState::class);
