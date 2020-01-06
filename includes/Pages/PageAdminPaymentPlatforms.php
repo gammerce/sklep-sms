@@ -5,12 +5,15 @@ use App\Exceptions\UnauthorizedException;
 use App\Html\BodyRow;
 use App\Html\Cell;
 use App\Html\HeadCell;
+use App\Html\Input;
 use App\Html\Option;
 use App\Html\Structure;
 use App\Html\Wrapper;
 use App\Models\PaymentPlatform;
 use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Repositories\PaymentPlatformRepository;
+
+// TODO Action box for creating/editing model
 
 class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 {
@@ -32,6 +35,13 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
     {
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
+
+        $button = new Input();
+        $button->setParam('id', 'payment_platform_button_add');
+        $button->setParam('type', 'button');
+        $button->addClass('button is-small');
+        $button->setParam('value', $this->lang->t('add_payment_platform'));
+        $wrapper->addButton($button);
 
         $table = new Structure();
         $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
