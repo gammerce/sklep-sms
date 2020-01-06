@@ -10,7 +10,10 @@ class RequireNotInstalled implements MiddlewareContract
 {
     public function handle(Request $request, Application $app, $args = null)
     {
-        if (ShopState::isInstalled()) {
+        /** @var ShopState $shopState */
+        $shopState = $app->make(ShopState::class);
+
+        if ($shopState->isInstalled()) {
             return new Response('Shop has been installed already.');
         }
 

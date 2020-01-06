@@ -11,7 +11,7 @@ class SettingsControllerTest extends HttpTestCase
     {
         // given
         $admin = $this->factory->admin();
-        $this->actAs($admin);
+        $this->actingAs($admin);
 
         // when
         $response = $this->put("/api/admin/settings", [

@@ -10,7 +10,10 @@ class RequireNotInstalledOrNotUpdated implements MiddlewareContract
 {
     public function handle(Request $request, Application $app, $args = null)
     {
-        if (ShopState::isInstalled() && $app->make(ShopState::class)->isUpToDate()) {
+        /** @var ShopState $shopState */
+        $shopState = $app->make(ShopState::class);
+
+        if ($shopState->isInstalled() && $shopState->isUpToDate()) {
             return new Response('Shop is up to date');
         }
 

@@ -1,8 +1,9 @@
 <?php
-namespace Tests\Psr4\TestCases;
+namespace Tests\Psr4\Concerns;
 
 use App\Kernels\KernelContract;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 trait MakesHttpRequests
 {
@@ -39,5 +40,13 @@ trait MakesHttpRequests
         return $this->call('PUT', $uri, $query, $body, $headers);
     }
 
-    abstract protected function prepareUrlForRequest($uri);
+    protected function decodeJsonResponse(Response $response)
+    {
+        return json_decode($response->getContent(), true);
+    }
+
+    protected function prepareUrlForRequest($uri)
+    {
+        return 'http://localhost/' . ltrim($uri, "/");
+    }
 }

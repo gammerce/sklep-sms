@@ -67,27 +67,20 @@ class InstallController
 
         $warnings = [];
 
-        // Licencja ID
         if (!strlen($licenseToken)) {
             $warnings['license_token'][] = "Nie podano tokenu licencji.";
         }
 
-        // Admin nick
         if (!strlen($adminUsername)) {
             $warnings['admin_username'][] = "Nie podano nazwy dla użytkownika admin.";
         }
 
-        // Admin hasło
         if (!strlen($adminPassword)) {
             $warnings['admin_password'][] = "Nie podano hasła dla użytkownika admin.";
         }
 
         foreach ($filesWithWritePermission as $file) {
-            if (!strlen($file)) {
-                continue;
-            }
-
-            if (!is_writable($path->to($file))) {
+            if (strlen($file) && !is_writable($path->to($file))) {
                 $warnings['general'][] =
                     "Ścieżka <b>" . htmlspecialchars($file) . "</b> nie posiada praw do zapisu.";
             }

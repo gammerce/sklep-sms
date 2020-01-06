@@ -15,7 +15,7 @@ class ServiceCollectionTest extends HttpTestCase
         /** @var ServiceRepository $repository */
         $repository = $this->app->make(ServiceRepository::class);
         $admin = $this->factory->admin();
-        $this->actAs($admin);
+        $this->actingAs($admin);
 
         // when
         $response = $this->post("/api/admin/services", [
@@ -42,7 +42,7 @@ class ServiceCollectionTest extends HttpTestCase
     {
         // given
         $admin = $this->factory->admin();
-        $this->actAs($admin);
+        $this->actingAs($admin);
 
         $id = 'example';
         $this->factory->service(compact('id'));
