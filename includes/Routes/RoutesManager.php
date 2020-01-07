@@ -46,6 +46,7 @@ use App\Http\Controllers\Api\PurchaseValidationResource;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\Server\PurchaseResource as ServerPurchaseResource;
 use App\Http\Controllers\Api\Server\ServerConfigController;
+use App\Http\Controllers\Api\Server\ServiceLongDescriptionController;
 use App\Http\Controllers\Api\ServiceActionController;
 use App\Http\Controllers\Api\ServiceLongDescriptionResource;
 use App\Http\Controllers\Api\ServiceTakeOverController;
@@ -59,7 +60,6 @@ use App\Http\Controllers\Api\UserServiceBrickController;
 use App\Http\Controllers\Api\UserServiceEditFormController;
 use App\Http\Controllers\Api\UserServiceResource;
 use App\Http\Controllers\View\AdminController;
-use App\Http\Controllers\View\ExtraStuffController;
 use App\Http\Controllers\View\IndexController;
 use App\Http\Controllers\View\JsController;
 use App\Http\Controllers\View\ServerStuffController;
@@ -133,9 +133,12 @@ class RoutesManager
                     'uses' => TransferController::class . '@action',
                 ]);
 
+                /**
+                 * @deprecated
+                 */
                 $r->addRoute(['GET', 'POST'], '/extra_stuff.php', [
                     'middlewares' => [RunCron::class, BlockOnInvalidLicense::class],
-                    'uses' => ExtraStuffController::class . '@action',
+                    'uses' => ServiceLongDescriptionController::class . '@oldGet',
                 ]);
 
                 /**
@@ -152,6 +155,11 @@ class RoutesManager
                 $r->addRoute(['GET', 'POST'], '/transfer_finalize.php', [
                     'middlewares' => [BlockOnInvalidLicense::class],
                     'uses' => TransferController::class . '@oldAction',
+                ]);
+
+                $r->get('/api/server/services/{serviceId}/long_description', [
+                    'middlewares' => [BlockOnInvalidLicense::class],
+                    'uses' => ServiceLongDescriptionController::class . '@get',
                 ]);
 
                 $r->addGroup(

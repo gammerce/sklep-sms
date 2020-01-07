@@ -13,6 +13,8 @@ use App\Repositories\UserRepository;
 use App\System\Heart;
 use App\System\Settings;
 use App\Verification\Abstracts\SupportSms;
+use Symfony\Component\HttpFoundation\AcceptHeader;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -26,9 +28,10 @@ class ServerConfigController
         Heart $heart,
         Settings $settings
     ) {
+        $acceptHeader = AcceptHeader::fromString($request->headers->get('Accept'));
         $ip = $request->query->get("ip");
         $port = $request->query->get("port");
-        $type = $request->query->get("type");
+        $platform = $request->headers->get('User-Agent');
         $version = $request->query->get("version");
 
         $server = $serverRepository->findByIpPort($ip, $port);
@@ -36,7 +39,7 @@ class ServerConfigController
             throw new EntityNotFoundException();
         }
 
-        if (!$this->isVersionAcceptable($type, $version)) {
+        if (!$this->isVersionAcceptable($platform, $version)) {
             return new Response('', 402);
         }
 
@@ -58,9 +61,10 @@ class ServerConfigController
             return $user->getSteamId();
         }, $userRepository->allWithSteamId());
 
-        $serverRepository->touch($server->getId(), $type, $version);
+        // TODO Use amxmodx instead of amxx. Check engine_amxx
+        $serverRepository->touch($server->getId(), $platform, $version);
 
-        return new ServerResponse([
+        $data = [
             'id' => $server->getId(),
             'sms_platform_id' => $smsPlatformId,
             'sms_module_id' => $smsModule->getModuleId(),
@@ -71,17 +75,21 @@ class ServerConfigController
             'contact' => $settings->getContact(),
             'vat' => $settings->getVat(),
             'license_token' => $settings->getLicenseToken(),
-        ]);
+        ];
+
+        return $acceptHeader->has("application/json")
+            ? new JsonResponse($data)
+            : new ServerResponse($data);
     }
 
-    private function isVersionAcceptable($type, $version)
+    private function isVersionAcceptable($platform, $version)
     {
         $minimumVersions = [
             Server::TYPE_AMXMODX => "3.8.0",
             Server::TYPE_SOURCEMOD => "3.7.0",
         ];
 
-        $minimumVersion = array_get($minimumVersions, $type);
+        $minimumVersion = array_get($minimumVersions, $platform);
 
         return $minimumVersion &&
             semantic_to_number($minimumVersion) <= semantic_to_number($version);

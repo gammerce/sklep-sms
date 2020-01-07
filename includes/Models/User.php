@@ -95,7 +95,7 @@ class User
         $this->regIp = $regIp;
         $this->lastIp = $lastIp ?: get_ip();
         $this->resetPasswordKey = $resetPasswordKey;
-        $this->platform = $request->server->get('HTTP_USER_AGENT');
+        $this->platform = $request->headers->get('User-Agent');
 
         if ($this->groups) {
             foreach ($this->groups as $groupId) {
