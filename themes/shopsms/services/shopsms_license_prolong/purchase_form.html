@@ -5,7 +5,7 @@
     <div class="columns is-multiline">
         <div class="column is-half">
             <div class="header1">
-                <label for="amount">{$lang->translate('identifier')}</label>
+                <label for="amount">{$lang->t('identifier')}</label>
             </div>
             <div class="field">
                 <div class="control">
@@ -22,8 +22,8 @@
 
         <div class="column is-half">
             <div class="header1">
-                <label for="amount">{$lang->translate('license_prolong_time')}</label><br />
-                <span class="hint">{$lang->translate('license_price')}</span>
+                <label for="amount">{$lang->t('license_prolong_time')}</label><br />
+                <span class="hint">{$lang->t('license_price')}</span>
             </div>
             <div class="field">
                 <div class="control">
@@ -45,21 +45,21 @@
                     <img
                         src="{{ $url->to('build/images/reload.png') }}"
                         id="cost_reload"
-                        title="{$lang->translate('reload')}"
+                        title="{$lang->t('reload')}"
                         alt="reload"
                     />
-                    <span style="text-transform: uppercase;">{$lang->translate('price')}:</span>
-                    <span id="cost">{$lang->translate('none')}</span><br />
+                    <span style="text-transform: uppercase;">{$lang->t('price')}:</span>
+                    <span id="cost">{$lang->t('none')}</span><br />
                 </div>
             </div>
-            {$lang->translate('sms_payment_conditions')}
+            {$lang->t('sms_payment_conditions')}
         </div>
 
         <div class="column is-full has-text-centered">
             <input
                 type="button"
                 id="go_to_payment"
-                value="{$lang->translate('go_to_payment')}"
+                value="{$lang->t('go_to_payment')}"
                 class="button is-success purchase_button"
             />
         </div>

@@ -1,18 +1,18 @@
-{$lang->sprintf($lang->translate('service_purchased'), $e($serviceName))}<br />
+{$lang->t('service_purchased', $e($serviceName))}<br />
 <br />
-<b>{$lang->translate('identifier')}</b>: {{ $data['extra_data']['identifier'] }}<br />
+<b>{$lang->t('identifier')}</b>: {{ $data['extra_data']['identifier'] }}<br />
 <br />
 <strong style=" color: #ff0000;">Zapisz token! Nie będzie można go w przyszłości zobaczyć.</strong
 ><br />
-<b>{$lang->translate('token')}</b>: {{ $data['extra_data']['token'] }}<br />
+<b>{$lang->t('token')}</b>: {{ $data['extra_data']['token'] }}<br />
 <br />
-<b>{$lang->translate('engines')}</b>: {{ $engines }}<br />
-<b>{$lang->translate('expiration_date')}</b>: {{ $data['extra_data']['expire'] }}<br />
-<b>{$lang->translate('email')}</b>: {{ $email }}<br />
+<b>{$lang->t('engines')}</b>: {{ $engines }}<br />
+<b>{$lang->t('expiration_date')}</b>: {{ $data['extra_data']['expire'] }}<br />
+<b>{$lang->t('email')}</b>: {{ $email }}<br />
 <hr />
-{$lang->translate('script_instalation')}<a href="https://sklep-sms.pl/config" target="_blank"
-    >{$lang->translate('configuration')}</a
+{$lang->t('script_instalation')}<a href="https://sklep-sms.pl/config" target="_blank"
+    >{$lang->t('configuration')}</a
 >.<br />
-{$lang->translate('latest_script_versions')}<a href="https://sklep-sms.pl/download" target="_blank"
+{$lang->t('latest_script_versions')}<a href="https://sklep-sms.pl/download" target="_blank"
     >Download</a
 >.

@@ -1,13 +1,13 @@
-<b>{$lang->translate('service')}</b>: {{ $serviceName }}<br />
-<b>{$lang->translate('identifier')}</b>: {{ $identifier }}<br />
-<b>{$lang->translate('expire')}</b>: {{ $expire }}<br />
+<b>{$lang->t('service')}</b>: {{ $serviceName }}<br />
+<b>{$lang->t('identifier')}</b>: {{ $identifier }}<br />
+<b>{$lang->t('expire')}</b>: {{ $expire }}<br />
 <hr />
 
 <div class="shopsms_user_edit">
     <div class="table_form">
         <div class="row">
             <div class="cell">
-                <label for="email">{$lang->translate('email')}</label>
+                <label for="email">{$lang->t('email')}</label>
             </div>
             <div class="cell">
                 <div class="field">
@@ -25,7 +25,7 @@
         </div>
 
         <div class="row">
-            <div class="cell">{$lang->translate('engines')}</div>
+            <div class="cell">{$lang->t('engines')}</div>
             <div class="cell">
                 <div class="engines" name="engines">
                     <input
@@ -57,7 +57,7 @@
         </div>
 
         <div class="row">
-            <div class="cell">{$lang->translate('price_monthly')}</div>
+            <div class="cell">{$lang->t('price_monthly')}</div>
             <div class="cell">
                 <span id="cost_monthly">{{ $costMonthly }} {{ $settings['currency'] }}</span>
             </div>
@@ -69,9 +69,9 @@
         <img
             src="{{ $url->to('build/images/reload.png') }}"
             id="cost_reload"
-            title="{$lang->translate('reload')}"
+            title="{$lang->t('reload')}"
         />
-        <span style="text-transform: uppercase;">{$lang->translate('surcharge')}:</span>
+        <span style="text-transform: uppercase;">{$lang->t('surcharge')}:</span>
         <span id="cost">0.00 {{ $settings['currency'] }}</span>
     </div>
 </div>
