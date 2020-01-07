@@ -68,10 +68,13 @@ class PageAdminSettings extends PageAdmin
         $userEditServiceSelect = $this->createUserEditServiceSelect();
 
         // Available themes
-        $dirList = scandir($path->to('themes'));
+        $dirList = $this->fileSystem->scanDirectory($path->to('themes'));
         $themesList = [];
         foreach ($dirList as $dirName) {
-            if ($dirName[0] != '.' && is_dir($path->to("themes/$dirName"))) {
+            if (
+                $dirName[0] != '.' &&
+                $this->fileSystem->isDirectory($path->to("themes/$dirName"))
+            ) {
                 $themesList[] = create_dom_element("option", $dirName, [
                     'value' => $dirName,
                     'selected' => $dirName == $this->settings['theme'] ? "selected" : "",
@@ -80,10 +83,13 @@ class PageAdminSettings extends PageAdmin
         }
 
         // Available languages
-        $dirList = scandir($path->to('translations'));
+        $dirList = $this->fileSystem->scanDirectory($path->to('translations'));
         $languagesList = [];
         foreach ($dirList as $dirName) {
-            if ($dirName[0] != '.' && is_dir($path->to("translations/{$dirName}"))) {
+            if (
+                $dirName[0] != '.' &&
+                $this->fileSystem->isDirectory($path->to("translations/{$dirName}"))
+            ) {
                 $languagesList[] = create_dom_element("option", $lang->t('language_' . $dirName), [
                     'value' => $dirName,
                     'selected' => $dirName == $langShop->getCurrentLanguage() ? "selected" : "",

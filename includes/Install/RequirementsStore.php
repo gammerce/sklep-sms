@@ -73,7 +73,7 @@ class RequirementsStore
     {
         foreach ($this->getFilesWithWritePermission() as $path) {
             $fullPath = $this->path->to($path);
-            if (!is_writable($fullPath)) {
+            if (!$this->fileSystem->isWritable($fullPath)) {
                 return false;
             }
         }

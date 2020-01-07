@@ -85,7 +85,7 @@ class Translator
             !strlen($language) ||
             !isset($this->langList[$language]) ||
             $this->getCurrentLanguage() == $language ||
-            !is_dir($this->path->to("translations/" . $language))
+            !$this->fileSystem->isDirectory($this->path->to("translations/" . $language))
         ) {
             return;
         }
@@ -154,19 +154,28 @@ class Translator
 
         $filesToInclude[] = $this->path->to("translations/general.php");
 
-        foreach (scandir($this->path->to("translations/{$language}")) as $file) {
+        foreach (
+            $this->fileSystem->scanDirectory($this->path->to("translations/{$language}"))
+            as $file
+        ) {
             if (ends_at($file, ".php")) {
                 $filesToInclude[] = $this->path->to("translations/{$language}/{$file}");
             }
         }
 
-        foreach (scandir($this->path->to("translations/{$language}/admin")) as $file) {
+        foreach (
+            $this->fileSystem->scanDirectory($this->path->to("translations/{$language}/admin"))
+            as $file
+        ) {
             if (ends_at($file, ".php")) {
                 $filesToInclude[] = $this->path->to("translations/{$language}/admin/{$file}");
             }
         }
 
-        foreach (scandir($this->path->to("translations/{$language}/user")) as $file) {
+        foreach (
+            $this->fileSystem->scanDirectory($this->path->to("translations/{$language}/user"))
+            as $file
+        ) {
             if (ends_at($file, ".php")) {
                 $filesToInclude[] = $this->path->to("translations/{$language}/user/{$file}");
             }

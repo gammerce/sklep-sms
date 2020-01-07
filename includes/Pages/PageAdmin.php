@@ -16,7 +16,7 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
         // Dodajemy wszystkie skrypty
         $path = "build/js/static/admin/pages/" . $this::PAGE_ID . "/";
         if (strlen($this::PAGE_ID) && $this->fileSystem->exists($this->path->to($path))) {
-            foreach (scandir($this->path->to($path)) as $file) {
+            foreach ($this->fileSystem->scanDirectory($this->path->to($path)) as $file) {
                 if (ends_at($file, ".js")) {
                     $this->heart->scriptAdd($this->url->versioned($path . $file));
                 }
@@ -26,7 +26,7 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
         // Dodajemy wszystkie css
         $path = "build/css/static/admin/pages/" . $this::PAGE_ID . "/";
         if (strlen($this::PAGE_ID) && $this->fileSystem->exists($this->path->to($path))) {
-            foreach (scandir($this->path->to($path)) as $file) {
+            foreach ($this->fileSystem->scanDirectory($this->path->to($path)) as $file) {
                 if (ends_at($file, ".css")) {
                     $this->heart->styleAdd($this->url->versioned($path . $file));
                 }

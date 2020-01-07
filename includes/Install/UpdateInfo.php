@@ -55,7 +55,7 @@ class UpdateInfo
                 continue;
             }
 
-            if (is_writable($this->path->to($file))) {
+            if ($this->fileSystem->isWritable($this->path->to($file))) {
                 $status = "ok";
             } else {
                 $status = "bad";

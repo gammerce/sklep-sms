@@ -78,7 +78,7 @@ abstract class Page
         // Dodajemy wszystkie skrypty
         $path = "build/js/static/pages/" . $this::PAGE_ID . "/";
         if (strlen($this::PAGE_ID) && $this->fileSystem->exists($this->path->to($path))) {
-            foreach (scandir($this->path->to($path)) as $file) {
+            foreach ($this->fileSystem->scanDirectory($this->path->to($path)) as $file) {
                 if (ends_at($file, ".js")) {
                     $this->heart->scriptAdd($this->url->versioned($path . $file));
                 }
@@ -88,7 +88,7 @@ abstract class Page
         // Let's add all css
         $path = "build/css/static/pages/" . $this::PAGE_ID . "/";
         if (strlen($this::PAGE_ID) && $this->fileSystem->exists($this->path->to($path))) {
-            foreach (scandir($this->path->to($path)) as $file) {
+            foreach ($this->fileSystem->scanDirectory($this->path->to($path)) as $file) {
                 if (ends_at($file, ".css")) {
                     $this->heart->styleAdd($this->url->versioned($path . $file));
                 }

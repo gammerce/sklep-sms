@@ -63,9 +63,14 @@ class FileSystem implements FileSystemContract
         return $contents;
     }
 
-    public function isFile($file)
+    public function isFile($path)
     {
-        return is_file($file);
+        return is_file($path);
+    }
+
+    public function isDirectory($path)
+    {
+        return is_dir($path);
     }
 
     public function size($path)
@@ -90,5 +95,15 @@ class FileSystem implements FileSystemContract
     public function getPermissions($path)
     {
         return fileperms($path);
+    }
+
+    public function scanDirectory($path)
+    {
+        return scandir($path);
+    }
+
+    public function isWritable($path)
+    {
+        return is_writable($path);
     }
 }

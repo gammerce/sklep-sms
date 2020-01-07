@@ -10,6 +10,7 @@ use App\Install\RequirementsStore;
 use App\Install\SetupManager;
 use App\System\Application;
 use App\System\Database;
+use App\System\FileSystemContract;
 use App\System\Path;
 use Exception;
 use PDOException;
@@ -23,6 +24,7 @@ class InstallController
         RequirementsStore $requirementsStore,
         SetupManager $setupManager,
         Path $path,
+        FileSystemContract $fileSystem,
         Application $app
     ) {
         if ($setupManager->hasFailed()) {
@@ -81,7 +83,7 @@ class InstallController
         }
 
         foreach ($filesWithWritePermission as $file) {
-            if (strlen($file) && !is_writable($path->to($file))) {
+            if (strlen($file) && !$fileSystem->isWritable($path->to($file))) {
                 $warnings['general'][] =
                     "Ścieżka <b>" . htmlspecialchars($file) . "</b> nie posiada praw do zapisu.";
             }

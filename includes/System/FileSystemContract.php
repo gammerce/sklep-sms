@@ -60,10 +60,18 @@ interface FileSystemContract
     /**
      * Determine if the given path is a file.
      *
-     * @param  string $file
+     * @param  string $path
      * @return bool
      */
-    public function isFile($file);
+    public function isFile($path);
+
+    /**
+     * Determine if the given path is a directory.
+     *
+     * @param  string $path
+     * @return bool
+     */
+    public function isDirectory($path);
 
     /**
      * Get the file size of a given file.
@@ -93,4 +101,16 @@ interface FileSystemContract
      * @return int
      */
     public function getPermissions($path);
+
+    /**
+     * @param $path
+     * @return string[]|false
+     */
+    public function scanDirectory($path);
+
+    /**
+     * @param string $path
+     * @return bool
+     */
+    public function isWritable($path);
 }

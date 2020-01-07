@@ -10,18 +10,27 @@ class MemoryFileSystem implements FileSystemContract
 
     public function exists($path)
     {
-        return array_key_exists($path, $this->fileSystem);
+        $formattedPath = $this->formatPath($path);
+        return array_key_exists($formattedPath, $this->fileSystem);
     }
 
     public function delete($path)
     {
-        unset($this->fileSystem[$path]);
-        return true;
+        $formattedPath = $this->formatPath($path);
+
+        if ($this->exists($formattedPath)) {
+            unset($this->fileSystem[$formattedPath]);
+            return true;
+        }
+
+        return false;
     }
 
     public function makeDirectory($path, $mode = 0755, $recursive = false, $force = false)
     {
-        $this->fileSystem[$path] = [
+        $formattedPath = $this->formatPath($path);
+
+        $this->fileSystem[$formattedPath] = [
             'type' => 'd',
             'mode' => $mode,
         ];
@@ -29,7 +38,9 @@ class MemoryFileSystem implements FileSystemContract
 
     public function put($path, $contents, $lock = false)
     {
-        $this->fileSystem[$path] = [
+        $formattedPath = $this->formatPath($path);
+
+        $this->fileSystem[$formattedPath] = [
             'type' => 'f',
             'content' => $contents,
             'mode' => 0755,
@@ -38,11 +49,13 @@ class MemoryFileSystem implements FileSystemContract
 
     public function get($path, $lock = false)
     {
-        if ($this->isFile($path)) {
-            return $this->fileSystem[$path]['content'];
+        $formattedPath = $this->formatPath($path);
+
+        if ($this->isFile($formattedPath)) {
+            return $this->fileSystem[$formattedPath]['content'];
         }
 
-        throw new Exception("File does not exist at path {$path}");
+        throw new Exception("File does not exist at path {$formattedPath}");
     }
 
     public function sharedGet($path)
@@ -50,9 +63,16 @@ class MemoryFileSystem implements FileSystemContract
         return $this->get($path);
     }
 
-    public function isFile($file)
+    public function isFile($path)
     {
-        return $this->exists($file) && $this->fileSystem[$file]['type'] === 'd';
+        $formattedPath = $this->formatPath($path);
+        return $this->exists($formattedPath) && $this->fileSystem[$formattedPath]['type'] === 'f';
+    }
+
+    public function isDirectory($path)
+    {
+        $formattedPath = $this->formatPath($path);
+        return $this->exists($formattedPath) && $this->fileSystem[$formattedPath]['type'] === 'd';
     }
 
     public function size($path)
@@ -71,8 +91,10 @@ class MemoryFileSystem implements FileSystemContract
 
     public function setPermissions($path, $mode)
     {
-        if ($this->exists($path)) {
-            $this->fileSystem[$path]['mode'] = $mode;
+        $formattedPath = $this->formatPath($path);
+
+        if ($this->exists($formattedPath)) {
+            $this->fileSystem[$formattedPath]['mode'] = $mode;
             return true;
         }
 
@@ -81,6 +103,36 @@ class MemoryFileSystem implements FileSystemContract
 
     public function getPermissions($path)
     {
-        return $this->exists($path) ? $this->fileSystem[$path]['mode'] : false;
+        $formattedPath = $this->formatPath($path);
+        return $this->exists($formattedPath) ? $this->fileSystem[$formattedPath]['mode'] : false;
+    }
+
+    public function scanDirectory($path)
+    {
+        if (!$this->exists($path)) {
+            return false;
+        }
+
+        $formattedPath = $this->formatPath($path);
+
+        $output = [];
+
+        foreach (array_keys($this->fileSystem) as $key) {
+            if (starts_with($formattedPath, $key) && $this->isFile($key)) {
+                $output[] = $key;
+            }
+        }
+
+        return $output;
+    }
+
+    public function isWritable($path)
+    {
+        return $this->exists($path);
+    }
+
+    private function formatPath($path)
+    {
+        return rtrim($path, DIRECTORY_SEPARATOR);
     }
 }

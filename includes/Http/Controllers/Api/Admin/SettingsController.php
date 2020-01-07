@@ -7,6 +7,7 @@ use App\Http\Responses\SuccessApiResponse;
 use App\Repositories\SettingsRepository;
 use App\System\Application;
 use App\System\Auth;
+use App\System\FileSystemContract;
 use App\System\Heart;
 use App\System\Path;
 use App\System\Settings;
@@ -25,6 +26,7 @@ class SettingsController
         Auth $auth,
         Settings $settings,
         SettingsRepository $settingsRepository,
+        FileSystemContract $fileSystem,
         Application $app
     ) {
         $lang = $translationManager->user();
@@ -94,11 +96,19 @@ class SettingsController
             $warnings['user_edit_service'][] = $lang->t('only_yes_no');
         }
 
-        if (!$theme || !is_dir($path->to("themes/{$theme}")) || $theme[0] == '.') {
+        if (
+            !$theme ||
+            !$fileSystem->isDirectory($path->to("themes/{$theme}")) ||
+            $theme[0] == '.'
+        ) {
             $warnings['theme'][] = $lang->t('no_theme');
         }
 
-        if (!$language || !is_dir($path->to("translations/{$language}")) || $language[0] == '.') {
+        if (
+            !$language ||
+            !$fileSystem->isDirectory($path->to("translations/{$language}")) ||
+            $language[0] == '.'
+        ) {
             $warnings['language'][] = $lang->t('no_language');
         }
 
