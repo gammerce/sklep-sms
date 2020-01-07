@@ -31,7 +31,7 @@ class ServerConfigControllerTest extends HttpTestCase
     }
 
     /** @test */
-    public function list_when_no_users()
+    public function config_server_response()
     {
         // given
         /** @var Settings $settings */
@@ -66,6 +66,34 @@ class ServerConfigControllerTest extends HttpTestCase
         ];
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame(implode("\n", $data), $response->getContent());
+    }
+
+    /** @test */
+    public function config_json_response()
+    {
+        // given
+        /** @var Settings $settings */
+        $settings = $this->app->make(Settings::class);
+
+        // when
+        $response = $this->get(
+            '/api/server/config',
+            [
+                'key' => md5($settings->get("random_key")),
+                'ip' => $this->server->getIp(),
+                'port' => $this->server->getPort(),
+                'version' => '3.8.0',
+            ],
+            [
+                'Accept' => 'application/json',
+                'User-Agent' => Server::TYPE_AMXMODX,
+            ]
+        );
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("gosetti", $json["sms_module_id"]);
     }
 
     /** @test */
