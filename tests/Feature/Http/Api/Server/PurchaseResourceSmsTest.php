@@ -2,6 +2,7 @@
 namespace Tests\Feature\Http;
 
 use App\Models\Purchase;
+use App\Models\Server;
 use App\Repositories\BoughtServiceRepository;
 use App\Repositories\PaymentPlatformRepository;
 use App\Services\ExtraFlags\ExtraFlagType;
@@ -77,6 +78,9 @@ class PurchaseResourceSmsTest extends HttpTestCase
             ],
             [
                 'key' => md5($settings->get("random_key")),
+            ],
+            [
+                'User-Agent' => Server::TYPE_AMXMODX,
             ]
         );
 

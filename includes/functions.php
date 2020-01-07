@@ -470,9 +470,15 @@ function get_platform($platform)
     return $platform;
 }
 
+// TODO Remove "engine_sm" and "engine_amxx"
 function is_server_platform($platform)
 {
-    return in_array($platform, [Server::TYPE_AMXMODX, Server::TYPE_SOURCEMOD]);
+    return in_array($platform, [
+        "engine_amxx",
+        Server::TYPE_AMXMODX,
+        "engine_sm",
+        Server::TYPE_SOURCEMOD,
+    ]);
 }
 
 function get_ip(Request $request = null)

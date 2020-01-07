@@ -84,6 +84,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
             ],
             [
                 'Authorization' => $this->steamId,
+                'User-Agent' => Server::TYPE_AMXMODX,
             ]
         );
 
@@ -140,6 +141,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
             ],
             [
                 'Authorization' => $this->steamId,
+                'User-Agent' => Server::TYPE_AMXMODX,
             ]
         );
 
@@ -185,6 +187,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
             ],
             [
                 'Authorization' => $this->steamId,
+                'User-Agent' => Server::TYPE_AMXMODX,
             ]
         );
 

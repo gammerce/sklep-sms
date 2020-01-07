@@ -38,13 +38,18 @@ class ServerConfigControllerTest extends HttpTestCase
         $settings = $this->app->make(Settings::class);
 
         // when
-        $response = $this->get('/api/server/config', [
-            'key' => md5($settings->get("random_key")),
-            'ip' => $this->server->getIp(),
-            'port' => $this->server->getPort(),
-            'type' => Server::TYPE_AMXMODX,
-            'version' => '3.8.0',
-        ]);
+        $response = $this->get(
+            '/api/server/config',
+            [
+                'key' => md5($settings->get("random_key")),
+                'ip' => $this->server->getIp(),
+                'port' => $this->server->getPort(),
+                'version' => '3.8.0',
+            ],
+            [
+                'User-Agent' => Server::TYPE_AMXMODX,
+            ]
+        );
 
         // then
         $data = [
@@ -82,13 +87,18 @@ class ServerConfigControllerTest extends HttpTestCase
         ]);
 
         // when
-        $response = $this->get('api/server/config', [
-            'key' => md5($settings->get("random_key")),
-            'ip' => $this->server->getIp(),
-            'port' => $this->server->getPort(),
-            'type' => Server::TYPE_SOURCEMOD,
-            'version' => '3.7.0',
-        ]);
+        $response = $this->get(
+            'api/server/config',
+            [
+                'key' => md5($settings->get("random_key")),
+                'ip' => $this->server->getIp(),
+                'port' => $this->server->getPort(),
+                'version' => '3.7.0',
+            ],
+            [
+                'User-Agent' => Server::TYPE_SOURCEMOD,
+            ]
+        );
 
         // then
         $this->assertSame(200, $response->getStatusCode());
@@ -103,13 +113,18 @@ class ServerConfigControllerTest extends HttpTestCase
         $settings = $this->app->make(Settings::class);
 
         // when
-        $response = $this->get('/api/server/config', [
-            'key' => md5($settings->get("random_key")),
-            'ip' => $this->server->getIp(),
-            'port' => $this->server->getPort(),
-            'type' => Server::TYPE_AMXMODX,
-            'version' => '3.7.0',
-        ]);
+        $response = $this->get(
+            '/api/server/config',
+            [
+                'key' => md5($settings->get("random_key")),
+                'ip' => $this->server->getIp(),
+                'port' => $this->server->getPort(),
+                'version' => '3.7.0',
+            ],
+            [
+                'User-Agent' => Server::TYPE_AMXMODX,
+            ]
+        );
 
         // then
         $this->assertSame(402, $response->getStatusCode());
@@ -123,13 +138,18 @@ class ServerConfigControllerTest extends HttpTestCase
         $settings = $this->app->make(Settings::class);
 
         // when
-        $response = $this->get('/api/server/config', [
-            'key' => md5($settings->get("random_key")),
-            'ip' => '1.1.1.1',
-            'port' => '11111',
-            'type' => Server::TYPE_AMXMODX,
-            'version' => '3.8.0',
-        ]);
+        $response = $this->get(
+            '/api/server/config',
+            [
+                'key' => md5($settings->get("random_key")),
+                'ip' => '1.1.1.1',
+                'port' => '11111',
+                'version' => '3.8.0',
+            ],
+            [
+                'User-Agent' => Server::TYPE_AMXMODX,
+            ]
+        );
 
         // then
         $this->assertSame(404, $response->getStatusCode());
