@@ -53,7 +53,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
 
     loader.show();
     $.ajax({
-        type: "POST",
+        type: "DELETE",
         url: buildUrl("/api/admin/services/" + serviceId),
         complete: function() {
             loader.hide();
