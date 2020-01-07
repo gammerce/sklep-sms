@@ -26,7 +26,7 @@ class ServiceDescriptionCreator
         Path $path,
         Settings $settings,
         TranslationManager $translationManager,
-    FileSystemContract $fileSystem
+        FileSystemContract $fileSystem
     ) {
         $this->path = $path;
         $this->settings = $settings;

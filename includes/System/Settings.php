@@ -143,7 +143,9 @@ LEFT JOIN `" .
         $this->settings["date_format"] = $this->settings["date_format"] ?: "Y-m-d H:i";
 
         // Fallback to default theme if selected does not exist
-        $this->settings['theme'] = $this->fileSystem->exists($this->path->to("themes/{$this->settings['theme']}"))
+        $this->settings['theme'] = $this->fileSystem->exists(
+            $this->path->to("themes/{$this->settings['theme']}")
+        )
             ? $this->settings['theme']
             : "default";
 

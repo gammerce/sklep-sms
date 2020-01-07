@@ -27,7 +27,7 @@ class Template
         Settings $settings,
         TranslationManager $translationManager,
         UrlGenerator $urlGenerator,
-    FileSystemContract $fileSystem
+        FileSystemContract $fileSystem
     ) {
         $this->path = $path;
         $this->settings = $settings;
