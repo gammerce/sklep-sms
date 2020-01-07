@@ -26,7 +26,6 @@ class PurchaseResourceWalletTest extends HttpTestCase
     private $serviceId = 'vip';
     private $tariff = 2;
     private $ip = "192.0.2.1";
-    private $platform = "engine_amxx";
     private $steamId = "STEAM_1:0:22309350";
 
     protected function setUp()
@@ -76,7 +75,6 @@ class PurchaseResourceWalletTest extends HttpTestCase
                 'type' => ExtraFlagType::TYPE_SID,
                 'auth_data' => $this->steamId,
                 'ip' => $this->ip,
-                'platform' => $this->platform,
                 'tariff' => $this->tariff,
                 'method' => Purchase::METHOD_WALLET,
                 'sign' => $sign,
@@ -133,7 +131,6 @@ class PurchaseResourceWalletTest extends HttpTestCase
                 'type' => ExtraFlagType::TYPE_SID,
                 'auth_data' => $this->steamId,
                 'ip' => $this->ip,
-                'platform' => $this->platform,
                 'tariff' => $this->tariff,
                 'method' => Purchase::METHOD_WALLET,
                 'sign' => $sign,
@@ -179,7 +176,6 @@ class PurchaseResourceWalletTest extends HttpTestCase
                 'type' => ExtraFlagType::TYPE_SID,
                 'auth_data' => $this->steamId,
                 'ip' => $this->ip,
-                'platform' => $this->platform,
                 'tariff' => $this->tariff,
                 'method' => Purchase::METHOD_WALLET,
                 'sign' => $sign,

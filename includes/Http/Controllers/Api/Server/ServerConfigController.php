@@ -61,7 +61,6 @@ class ServerConfigController
             return $user->getSteamId();
         }, $userRepository->allWithSteamId());
 
-        // TODO Use amxmodx instead of amxx. Check engine_amxx
         $serverRepository->touch($server->getId(), $platform, $version);
 
         $data = [

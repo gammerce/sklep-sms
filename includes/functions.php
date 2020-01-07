@@ -7,6 +7,7 @@ use App\Html\Link;
 use App\Html\Ul;
 use App\Html\UnescapedSimpleText;
 use App\Loggers\DatabaseLogger;
+use App\Models\Server;
 use App\Models\User;
 use App\Routes\UrlGenerator;
 use App\Services\Interfaces\IServicePurchaseWeb;
@@ -458,15 +459,20 @@ function get_platform($platform)
     $translationManager = app()->make(TranslationManager::class);
     $lang = $translationManager->user();
 
-    if ($platform == "engine_amxx") {
+    if (in_array($platform, ["engine_amxx", Server::TYPE_AMXMODX])) {
         return $lang->t('amxx_server');
     }
 
-    if ($platform == "engine_sm") {
+    if (in_array($platform, ["engine_sm", Server::TYPE_SOURCEMOD])) {
         return $lang->t('sm_server');
     }
 
     return $platform;
+}
+
+function is_server_platform($platform)
+{
+    return in_array($platform, [Server::TYPE_AMXMODX, Server::TYPE_SOURCEMOD]);
 }
 
 function get_ip(Request $request = null)

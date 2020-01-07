@@ -46,7 +46,6 @@ class PurchaseServiceFromServerTest extends HttpTestCase
         $smsCode = 'ABCD12EF';
         $method = 'sms';
         $uid = 0;
-        $platform = 'engine_amxx';
 
         $paymentPlatform = $paymentPlatformRepository->create('test', Gosetti::MODULE_ID);
         $server = $this->factory->server();
@@ -76,7 +75,6 @@ class PurchaseServiceFromServerTest extends HttpTestCase
             'method' => $method,
             'tariff' => $tariff,
             'uid' => $uid,
-            'platform' => $platform,
         ];
 
         $this->mockGoSetti();

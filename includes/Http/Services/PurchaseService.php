@@ -55,13 +55,11 @@ class PurchaseService
         $password = array_get($body, 'password');
         $ip = array_get($body, 'ip');
         $method = array_get($body, 'method');
-        $platform = array_get($body, 'platform');
         $smsCode = array_get($body, 'sms_code');
         $paymentPlatformId = array_get($body, 'payment_platform');
         $tariff = array_get($body, 'tariff');
 
         $user = $this->auth->user();
-        $user->setPlatform($platform);
         $user->setLastIp($ip);
 
         $purchase = new Purchase($user);

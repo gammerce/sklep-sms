@@ -275,7 +275,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
         // E-mail
         if (
-            (strpos($purchaseData->user->getPlatform(), "engine") !== 0 ||
+            (!is_server_platform($purchaseData->user->getPlatform()) ||
                 strlen($purchaseData->getEmail())) &&
             ($warning = check_for_warnings("email", $purchaseData->getEmail()))
         ) {

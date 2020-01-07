@@ -41,7 +41,6 @@ class PurchaseResourceSmsTest extends HttpTestCase
         $authData = 'test';
         $password = 'test123';
         $smsCode = 'ABCD12EF';
-        $platform = 'engine_amxx';
         $type = ExtraFlagType::TYPE_NICK;
 
         $paymentPlatform = $paymentPlatformRepository->create("test", Gosetti::MODULE_ID);
@@ -73,7 +72,6 @@ class PurchaseResourceSmsTest extends HttpTestCase
                 'sms_code' => $smsCode,
                 'method' => Purchase::METHOD_SMS,
                 'tariff' => $tariff,
-                'platform' => $platform,
                 'ip' => "192.0.2.1",
                 'sign' => $sign,
             ],
