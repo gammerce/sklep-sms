@@ -1,21 +1,20 @@
 <?php
 namespace Tests\Feature\Http\Api;
 
-use App\Install\EnvCreator;
 use App\Install\ShopState;
 use App\System\Application;
 use App\System\Database;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Tests\Psr4\Concerns\ApplicationConcern;
+use Tests\Psr4\Concerns\FileSystemConcern;
 use Tests\Psr4\Concerns\MakesHttpRequests;
-use Tests\Psr4\Concerns\SetupManagerConcern;
 
 class InstallControllerTest extends TestCase
 {
     use ApplicationConcern;
+    use FileSystemConcern;
     use MakesHttpRequests;
-    use SetupManagerConcern;
 
     /** @var Application */
     private $app;
@@ -35,8 +34,8 @@ class InstallControllerTest extends TestCase
             getenv('DB_PASSWORD'),
             getenv('DB_DATABASE')
         );
-        $this->mockEnvCreator();
-        $this->mockSetupManager();
+        $this->mockFileSystem();
+        $this->mockShopState();
 
         $this->db->createDatabaseIfNotExists($this->dbName);
     }
@@ -51,17 +50,14 @@ class InstallControllerTest extends TestCase
     /** @test */
     public function perform_installation()
     {
-        // given
-        $this->mockShopState();
-
         // when
         $response = $this->post("/api/install", [
-            "db_host" => getenv('DB_HOST'),
-            "db_port" => getenv('DB_PORT') ?: 3306,
-            "db_user" => getenv('DB_USERNAME'),
-            "db_password" => getenv('DB_PASSWORD'),
-            "db_db" => $this->dbName,
-            "license_token" => "abc123",
+            "db_host"        => getenv('DB_HOST'),
+            "db_port"        => getenv('DB_PORT') ?: 3306,
+            "db_user"        => getenv('DB_USERNAME'),
+            "db_password"    => getenv('DB_PASSWORD'),
+            "db_db"          => $this->dbName,
+            "license_token"  => "abc123",
             "admin_username" => "root",
             "admin_password" => "secret",
         ]);
@@ -76,17 +72,14 @@ class InstallControllerTest extends TestCase
     /** @test */
     public function fails_when_invalid_database_credentials_are_given()
     {
-        // given
-        $this->mockShopState();
-
         // when
         $response = $this->post("/api/install", [
-            "db_host" => getenv('DB_HOST'),
-            "db_port" => getenv('DB_PORT') ?: 3306,
-            "db_user" => getenv('DB_USERNAME'),
-            "db_password" => "blahblah",
-            "db_db" => $this->dbName,
-            "license_token" => "abc123",
+            "db_host"        => getenv('DB_HOST'),
+            "db_port"        => getenv('DB_PORT') ?: 3306,
+            "db_user"        => getenv('DB_USERNAME'),
+            "db_password"    => "blahblah",
+            "db_db"          => $this->dbName,
+            "license_token"  => "abc123",
             "admin_username" => "root",
             "admin_password" => "secret",
         ]);
@@ -102,16 +95,13 @@ class InstallControllerTest extends TestCase
     /** @test */
     public function fails_when_invalid_not_enough_data_is_given()
     {
-        // given
-        $this->mockShopState();
-
         // when
         $response = $this->post("/api/install", [
-            "db_host" => getenv('DB_HOST'),
-            "db_port" => getenv('DB_PORT') ?: 3306,
-            "db_user" => getenv('DB_USERNAME'),
+            "db_host"     => getenv('DB_HOST'),
+            "db_port"     => getenv('DB_PORT') ?: 3306,
+            "db_user"     => getenv('DB_USERNAME'),
             "db_password" => getenv('DB_PASSWORD'),
-            "db_db" => $this->dbName,
+            "db_db"       => $this->dbName,
         ]);
 
         // then
@@ -123,14 +113,19 @@ class InstallControllerTest extends TestCase
     /** @test */
     public function is_not_performed_if_shop_has_been_already_installed()
     {
+        // given
+        $shopState = $this->app->make(ShopState::class);
+        $shopState->shouldReceive("isUpToDate")->andReturn(true);
+        $shopState->shouldReceive("isInstalled")->andReturn(true);
+
         // when
         $response = $this->post("/api/install", [
-            "db_host" => getenv('DB_HOST'),
-            "db_port" => getenv('DB_PORT') ?: 3306,
-            "db_user" => getenv('DB_USERNAME'),
-            "db_password" => getenv('DB_PASSWORD'),
-            "db_db" => $this->dbName,
-            "license_token" => "abc123",
+            "db_host"        => getenv('DB_HOST'),
+            "db_port"        => getenv('DB_PORT') ?: 3306,
+            "db_user"        => getenv('DB_USERNAME'),
+            "db_password"    => getenv('DB_PASSWORD'),
+            "db_db"          => $this->dbName,
+            "license_token"  => "abc123",
             "admin_username" => "root",
             "admin_password" => "secret",
         ]);
@@ -143,15 +138,8 @@ class InstallControllerTest extends TestCase
     private function mockShopState()
     {
         $shopState = Mockery::mock(ShopState::class);
-        $shopState->shouldReceive("isUpToDate")->andReturn(false);
-        $shopState->shouldReceive("isInstalled")->andReturn(false);
+        $shopState->shouldReceive("isUpToDate")->andReturn(false)->byDefault();
+        $shopState->shouldReceive("isInstalled")->andReturn(false)->byDefault();
         $this->app->instance(ShopState::class, $shopState);
-    }
-
-    private function mockEnvCreator()
-    {
-        $envCreator = Mockery::mock(EnvCreator::class);
-        $envCreator->shouldReceive("create")->andReturnNull();
-        $this->app->instance(EnvCreator::class, $envCreator);
     }
 }

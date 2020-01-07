@@ -108,14 +108,14 @@ class DatabaseMigration
 
     private function executeMigration($path)
     {
-        $classes = get_declared_classes();
-        include $path;
-        $diff = array_diff(get_declared_classes(), $classes);
+        $className = $this->getClassNameFromFile($path);
 
-        foreach ($diff as $class) {
-            if (is_subclass_of($class, Migration::class)) {
+        if ($className) {
+            require_once $path;
+
+            if (is_subclass_of($className, Migration::class)) {
                 /** @var Migration $migrationObject */
-                $migrationObject = $this->app->make($class);
+                $migrationObject = $this->app->make($className);
                 $migrationObject->up();
             }
         }
@@ -126,5 +126,32 @@ class DatabaseMigration
         $this->db
             ->statement("INSERT INTO `" . TABLE_PREFIX . "migrations` " . "SET `name` = ?")
             ->execute([$name]);
+    }
+
+    // https://stackoverflow.com/questions/7153000/get-class-name-from-file/44654073
+    private function getClassNameFromFile($path)
+    {
+        $fp = fopen($path, 'r');
+        $buffer = '';
+        $i = 0;
+
+        while (!feof($fp)) {
+            $buffer .= fread($fp, 512);
+            $tokens = token_get_all($buffer);
+
+            if (strpos($buffer, '{') === false) continue;
+
+            for (;$i<count($tokens);$i++) {
+                if ($tokens[$i][0] === T_CLASS) {
+                    for ($j=$i+1;$j<count($tokens);$j++) {
+                        if ($tokens[$j] === '{') {
+                            return $tokens[$i+2][1];
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 }
