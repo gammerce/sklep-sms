@@ -52,12 +52,12 @@ class InstallControllerTest extends TestCase
     {
         // when
         $response = $this->post("/api/install", [
-            "db_host"        => getenv('DB_HOST'),
-            "db_port"        => getenv('DB_PORT') ?: 3306,
-            "db_user"        => getenv('DB_USERNAME'),
-            "db_password"    => getenv('DB_PASSWORD'),
-            "db_db"          => $this->dbName,
-            "license_token"  => "abc123",
+            "db_host" => getenv('DB_HOST'),
+            "db_port" => getenv('DB_PORT') ?: 3306,
+            "db_user" => getenv('DB_USERNAME'),
+            "db_password" => getenv('DB_PASSWORD'),
+            "db_db" => $this->dbName,
+            "license_token" => "abc123",
             "admin_username" => "root",
             "admin_password" => "secret",
         ]);
@@ -74,12 +74,12 @@ class InstallControllerTest extends TestCase
     {
         // when
         $response = $this->post("/api/install", [
-            "db_host"        => getenv('DB_HOST'),
-            "db_port"        => getenv('DB_PORT') ?: 3306,
-            "db_user"        => getenv('DB_USERNAME'),
-            "db_password"    => "blahblah",
-            "db_db"          => $this->dbName,
-            "license_token"  => "abc123",
+            "db_host" => getenv('DB_HOST'),
+            "db_port" => getenv('DB_PORT') ?: 3306,
+            "db_user" => getenv('DB_USERNAME'),
+            "db_password" => "blahblah",
+            "db_db" => $this->dbName,
+            "license_token" => "abc123",
             "admin_username" => "root",
             "admin_password" => "secret",
         ]);
@@ -97,11 +97,11 @@ class InstallControllerTest extends TestCase
     {
         // when
         $response = $this->post("/api/install", [
-            "db_host"     => getenv('DB_HOST'),
-            "db_port"     => getenv('DB_PORT') ?: 3306,
-            "db_user"     => getenv('DB_USERNAME'),
+            "db_host" => getenv('DB_HOST'),
+            "db_port" => getenv('DB_PORT') ?: 3306,
+            "db_user" => getenv('DB_USERNAME'),
             "db_password" => getenv('DB_PASSWORD'),
-            "db_db"       => $this->dbName,
+            "db_db" => $this->dbName,
         ]);
 
         // then
@@ -120,12 +120,12 @@ class InstallControllerTest extends TestCase
 
         // when
         $response = $this->post("/api/install", [
-            "db_host"        => getenv('DB_HOST'),
-            "db_port"        => getenv('DB_PORT') ?: 3306,
-            "db_user"        => getenv('DB_USERNAME'),
-            "db_password"    => getenv('DB_PASSWORD'),
-            "db_db"          => $this->dbName,
-            "license_token"  => "abc123",
+            "db_host" => getenv('DB_HOST'),
+            "db_port" => getenv('DB_PORT') ?: 3306,
+            "db_user" => getenv('DB_USERNAME'),
+            "db_password" => getenv('DB_PASSWORD'),
+            "db_db" => $this->dbName,
+            "license_token" => "abc123",
             "admin_username" => "root",
             "admin_password" => "secret",
         ]);
@@ -138,8 +138,14 @@ class InstallControllerTest extends TestCase
     private function mockShopState()
     {
         $shopState = Mockery::mock(ShopState::class);
-        $shopState->shouldReceive("isUpToDate")->andReturn(false)->byDefault();
-        $shopState->shouldReceive("isInstalled")->andReturn(false)->byDefault();
+        $shopState
+            ->shouldReceive("isUpToDate")
+            ->andReturn(false)
+            ->byDefault();
+        $shopState
+            ->shouldReceive("isInstalled")
+            ->andReturn(false)
+            ->byDefault();
         $this->app->instance(ShopState::class, $shopState);
     }
 }

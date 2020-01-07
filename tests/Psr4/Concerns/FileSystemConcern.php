@@ -12,7 +12,10 @@ trait FileSystemConcern
     {
         $fileSystem = new MemoryFileSystem();
 
-        $serviceDescriptionCreator = $this->app->makeWith(ServiceDescriptionCreator::class, compact('fileSystem'));
+        $serviceDescriptionCreator = $this->app->makeWith(
+            ServiceDescriptionCreator::class,
+            compact('fileSystem')
+        );
         $this->app->instance(ServiceDescriptionCreator::class, $serviceDescriptionCreator);
 
         $envCreator = $this->app->makeWith(EnvCreator::class, compact('fileSystem'));

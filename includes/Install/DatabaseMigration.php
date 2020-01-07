@@ -139,13 +139,15 @@ class DatabaseMigration
             $buffer .= fread($fp, 512);
             $tokens = token_get_all($buffer);
 
-            if (strpos($buffer, '{') === false) continue;
+            if (strpos($buffer, '{') === false) {
+                continue;
+            }
 
-            for (;$i<count($tokens);$i++) {
+            for (; $i < count($tokens); $i++) {
                 if ($tokens[$i][0] === T_CLASS) {
-                    for ($j=$i+1;$j<count($tokens);$j++) {
+                    for ($j = $i + 1; $j < count($tokens); $j++) {
                         if ($tokens[$j] === '{') {
-                            return $tokens[$i+2][1];
+                            return $tokens[$i + 2][1];
                         }
                     }
                 }
