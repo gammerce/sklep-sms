@@ -82,10 +82,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         if ($warning = check_for_warnings("number", $body['amount'])) {
             $warnings['amount'] = array_merge((array) $warnings['amount'], $warning);
         } elseif ($body['amount'] < 30) {
-            $warnings['amount'][] = $this->lang->sprintf(
-                $this->lang->translate('value_must_be_ge_than'),
-                30
-            );
+            $warnings['amount'][] = $this->lang->t('value_must_be_ge_than', 30);
         }
 
         // Sprawdzamy czy podana licencja jest w bazie
@@ -104,14 +101,14 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         );
 
         if (!$this->db->numRows($result)) {
-            $warnings['license_data'][] = $this->lang->translate('wrong_license_data');
+            $warnings['license_data'][] = $this->lang->t('wrong_license_data');
         }
 
         // Jeżeli są jakieś błedy, to je zwróć
         if (!empty($warnings)) {
             return [
                 'status' => "warnings",
-                'text' => $this->lang->translate('form_wrong_filled'),
+                'text' => $this->lang->t('form_wrong_filled'),
                 'positive' => false,
                 'data' => ['warnings' => $warnings],
             ];
@@ -129,7 +126,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
 
         return [
             'status' => "ok",
-            'text' => $this->lang->translate('purchase_form_validated'),
+            'text' => $this->lang->t('purchase_form_validated'),
             'positive' => true,
             'purchase_data' => $purchaseData,
         ];
@@ -203,12 +200,12 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
             $userService['identifier'],
             $userService['email'],
             [
-                'expire' => date($this->settings['date_format'], $expiresAt),
+                'expire' => date($this->settings->getDateFormat(), $expiresAt),
             ]
         );
     }
 
-    public function purchaseInfo($action, $data)
+    public function purchaseInfo($action, array $data)
     {
         $data['extra_data'] = json_decode($data['extra_data'], true);
         $identifier = $data['auth_data'];
@@ -236,11 +233,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
 
         if ($action == "payment_log") {
             return [
-                'text' => $this->lang->sprintf(
-                    $this->lang->translate('license_prolonged'),
-                    $identifier,
-                    $data['amount']
-                ),
+                'text' => $this->lang->t('license_prolonged', $identifier, $data['amount']),
                 'class' => "outcome",
             ];
         }
@@ -291,7 +284,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
 
         $userService = [];
         if (!$this->db->numRows($result)) {
-            $warnings['identifier'][] = $this->lang->translate('wrong_license_data');
+            $warnings['identifier'][] = $this->lang->t('wrong_license_data');
         } else {
             $userService = $this->db->fetchArrayAssoc($result);
         }
@@ -300,13 +293,13 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         if ($warning = check_for_warnings("number", $body['amount'])) {
             $warnings['amount'] = array_merge((array) $warnings['amount'], $warning);
         } elseif ($body['amount'] < 0) {
-            $warnings['amount'][] = $this->lang->translate('days_quantity_positive');
+            $warnings['amount'][] = $this->lang->t('days_quantity_positive');
         }
 
         if (!empty($warnings)) {
             return [
                 'status' => "warnings",
-                'text' => $this->lang->translate('form_wrong_filled'),
+                'text' => $this->lang->t('form_wrong_filled'),
                 'positive' => false,
                 'data' => ['warnings' => $warnings],
             ];
@@ -330,8 +323,8 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         $boughtServiceId = $this->purchase($purchaseData);
 
         log_info(
-            $this->langShop->sprintf(
-                $this->langShop->translate('admin_added_user_service'),
+            $this->langShop->t(
+                'admin_added_user_service',
                 $user->getUsername(),
                 $user->getUid(),
                 $boughtServiceId
@@ -340,7 +333,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
 
         return [
             'status' => 'ok',
-            'text' => $this->lang->translate('service_added_correctly'),
+            'text' => $this->lang->t('service_added_correctly'),
             'positive' => true,
         ];
     }
@@ -350,8 +343,8 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         if ($action === "get_cost") {
             $cost = $this->getCost($body) * $body['amount'];
             return $cost !== null
-                ? number_format($cost / 100, 2) . " " . $this->settings['currency']
-                : $this->lang->translate('none');
+                ? number_format($cost / 100, 2) . " " . $this->settings->getCurrency()
+                : $this->lang->t('none');
         }
 
         throw new UnexpectedValueException();

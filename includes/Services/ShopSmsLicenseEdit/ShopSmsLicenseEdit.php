@@ -64,11 +64,11 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
             'identifier'
         );
 
-        $email = $purchaseData->getEmail() ?: $this->lang->translate('none');
+        $email = $purchaseData->getEmail() ?: $this->lang->t('none');
         $costMonthly =
             number_format(($purchaseData->getOrder('cost_daily') * 30) / 100, 2) .
             " " .
-            $this->settings['currency'];
+            $this->settings->getCurrency();
 
         $engines = [];
         $tmpEngines = $purchaseData->getOrder('engines');
@@ -79,7 +79,7 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
             $engines[] = "SOURCEMOD";
         }
 
-        $engines = !empty($engines) ? implode(", ", $engines) : $this->lang->translate('none');
+        $engines = !empty($engines) ? implode(", ", $engines) : $this->lang->t('none');
 
         return $this->template->render(
             "services/shopsms_license_edit/order_details",
@@ -140,7 +140,7 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
             $engines[] = "SOURCEMOD";
         }
 
-        $engines = !empty($engines) ? implode(", ", $engines) : $this->lang->translate('none');
+        $engines = !empty($engines) ? implode(", ", $engines) : $this->lang->t('none');
 
         return $this->boughtServiceService->create(
             $purchaseData->user->getUid(),
@@ -157,7 +157,7 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
         );
     }
 
-    public function purchaseInfo($action, $data)
+    public function purchaseInfo($action, array $data)
     {
         $data['extra_data'] = json_decode($data['extra_data'], true);
         $engines = $data['extra_data']['engines'];
@@ -183,10 +183,7 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
 
         if ($action == "payment_log") {
             return [
-                'text' => $this->lang->sprintf(
-                    $this->lang->translate('license_edited'),
-                    $data['auth_data']
-                ),
+                'text' => $this->lang->t('license_edited', $data['auth_data']),
                 'class' => "outcome",
             ];
         }

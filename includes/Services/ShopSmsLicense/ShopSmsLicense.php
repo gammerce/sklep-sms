@@ -37,17 +37,14 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
 
         // Wybranie przynajmniej jednego silnika gry
         if ($body['platform_amxmodx'] == "0" && $body['platform_sourcemod'] == "0") {
-            $warnings['engines'][] = $this->lang->translate('no_engine_choosen');
+            $warnings['engines'][] = $this->lang->t('no_engine_choosen');
         }
 
         // Ilość
         if ($warning = check_for_warnings("number", $body['amount'])) {
             $warnings['amount'] = array_merge((array) $warnings['amount'], $warning);
         } elseif ($body['amount'] < 30) {
-            $warnings['amount'][] = $this->lang->sprintf(
-                $this->lang->translate('value_must_be_ge_than'),
-                30
-            );
+            $warnings['amount'][] = $this->lang->t('value_must_be_ge_than', 30);
         }
 
         // E-mail
@@ -60,7 +57,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         if (!empty($warnings)) {
             return [
                 'status' => "warnings",
-                'text' => $this->lang->translate('form_wrong_filled'),
+                'text' => $this->lang->t('form_wrong_filled'),
                 'positive' => false,
                 'data' => ['warnings' => $warnings],
             ];
@@ -84,7 +81,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
 
         return [
             'status' => "ok",
-            'text' => $this->lang->translate('purchase_form_validated'),
+            'text' => $this->lang->t('purchase_form_validated'),
             'positive' => true,
             'purchase_data' => $purchaseData,
         ];
@@ -102,16 +99,16 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         }
 
         if (empty($engines)) {
-            $engines = $this->lang->translate('none');
+            $engines = $this->lang->t('none');
         } else {
             $engines = implode(", ", $engines);
         }
 
-        $email = $purchaseData->getEmail() ?: $this->lang->translate('none');
+        $email = $purchaseData->getEmail() ?: $this->lang->t('none');
         $costMonthly =
             number_format(($purchaseData->getOrder('cost_daily') * 30) / 100, 2) .
             " " .
-            $this->settings['currency'];
+            $this->settings->getCurrency();
 
         return $this->template->render(
             "services/shopsms_license/order_details",
@@ -190,7 +187,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         if (!empty($engines)) {
             $engines = implode(", ", $engines);
         } else {
-            $engines = $this->lang->translate('none');
+            $engines = $this->lang->t('none');
         }
 
         return $this->boughtServiceService->create(
@@ -207,13 +204,13 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
             [
                 'token' => $token,
                 'identifier' => $identifier,
-                'expire' => date($this->settings['date_format'], $expiresAt),
+                'expire' => date($this->settings->getDateFormat(), $expiresAt),
                 'engines' => $engines,
             ]
         );
     }
 
-    public function purchaseInfo($action, $data)
+    public function purchaseInfo($action, array $data)
     {
         $data['extra_data'] = json_decode($data['extra_data'], true);
         $engines = $data['extra_data']['engines'];
@@ -239,10 +236,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
 
         if ($action == "payment_log") {
             return [
-                'text' => $this->lang->sprintf(
-                    $this->lang->translate('license_bought'),
-                    $data['amount']
-                ),
+                'text' => $this->lang->t('license_bought', $data['amount']),
                 'class' => "outcome",
             ];
         }
@@ -282,7 +276,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
     {
         return [
             'status' => 'ok',
-            'text' => $this->lang->translate('service_added_correctly'),
+            'text' => $this->lang->t('service_added_correctly'),
             'positive' => true,
         ];
     }
@@ -294,9 +288,9 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         $identifier = $userService['identifier'];
         $expire =
             $userService['expire'] != '-1'
-                ? date($this->settings['date_format'], $userService['expire'])
-                : $this->lang->translate('never');
-        $email = $userService['email'] ?: $this->lang->translate('none');
+                ? date($this->settings->getDateFormat(), $userService['expire'])
+                : $this->lang->t('never');
+        $email = $userService['email'] ?: $this->lang->t('none');
         $costMonthly = number_format(($userService['cost_daily'] * 30) / 100, 2);
 
         // Dostępne silniki
@@ -311,7 +305,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         if (!empty($engines)) {
             $engines = implode(", ", $engines);
         } else {
-            $engines = $this->lang->translate('none');
+            $engines = $this->lang->t('none');
         }
 
         return $this->template->render(
@@ -336,8 +330,8 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         $identifier = $userService['identifier'];
         $expire =
             $userService['expire'] != '-1'
-                ? date($this->settings['date_format'], $userService['expire'])
-                : $this->lang->translate('never');
+                ? date($this->settings->getDateFormat(), $userService['expire'])
+                : $this->lang->t('never');
         $email = $userService['email'];
         $costMonthly = number_format(($userService['cost_daily'] * 30) / 100, 2);
 
@@ -367,7 +361,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
 
         // Wybranie przynajmniej jednego silnika gry
         if ($body['platform_amxmodx'] == "0" && $body['platform_sourcemod'] == '0') {
-            $warnings['engines'][] = $this->lang->translate('no_engine_choosen');
+            $warnings['engines'][] = $this->lang->t('no_engine_choosen');
         }
 
         // E-mail
@@ -390,7 +384,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         if (!empty($warnings)) {
             return [
                 'status' => "warnings",
-                'text' => $this->lang->translate('form_wrong_filled'),
+                'text' => $this->lang->t('form_wrong_filled'),
                 'positive' => false,
                 'data' => ['warnings' => $warnings],
             ];
@@ -418,7 +412,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
 
         return [
             'status' => "payment",
-            'text' => $this->lang->translate('purchase_form_validated'),
+            'text' => $this->lang->t('purchase_form_validated'),
             'positive' => true,
             'data' => [
                 'data' => $purchaseDataEncoded,
@@ -436,14 +430,14 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
     {
         // ID
         if (!strlen($body['token'])) {
-            $warnings['token'][] = $this->lang->translate('field_empty');
+            $warnings['token'][] = $this->lang->t('field_empty');
         }
 
         // Jeżeli są jakieś błedy, to je zwróć
         if (!empty($warnings)) {
             return [
                 'status' => "warnings",
-                'text' => $this->lang->translate('form_wrong_filled'),
+                'text' => $this->lang->t('form_wrong_filled'),
                 'positive' => false,
                 'data' => ['warnings' => $warnings],
             ];
@@ -454,7 +448,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         } catch (Exception $e) {
             return [
                 'status' => "no_service",
-                'text' => $this->lang->translate('no_user_service'),
+                'text' => $this->lang->t('no_user_service'),
                 'positive' => false,
             ];
         }
@@ -488,14 +482,14 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         if (!$this->db->affectedRows()) {
             return [
                 'status' => "service_not_taken_over",
-                'text' => $this->lang->translate('service_not_taken_over'),
+                'text' => $this->lang->t('service_not_taken_over'),
                 'positive' => false,
             ];
         }
 
         return [
             'status' => "ok",
-            'text' => $this->lang->translate('service_taken_over'),
+            'text' => $this->lang->t('service_taken_over'),
             'positive' => true,
         ];
     }
@@ -520,7 +514,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
     {
         if ($action === "get_cost") {
             if ($body['amount'] < 30) {
-                return $this->lang->translate('none');
+                return $this->lang->t('none');
             }
 
             return number_format(
@@ -528,7 +522,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
                 2
             ) .
                 ' ' .
-                $this->settings['currency'];
+                $this->settings->getCurrency();
         }
 
         if ($action === "get_cost_user_edit") {
@@ -537,15 +531,15 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
             $costData['surcharge'] =
                 number_format(($costData['surcharge'] * $costData['bargain']) / 100, 2) .
                 ' ' .
-                $this->settings['currency'];
+                $this->settings->getCurrency();
             $costData['cost_monthly'] =
                 number_format(($costData['cost_monthly'] * $costData['bargain']) / 100, 2) .
                 ' ' .
-                $this->settings['currency'];
+                $this->settings->getCurrency();
             $costData['cost_daily'] =
                 number_format(($costData['cost_daily'] * $costData['bargain']) / 100, 2) .
                 ' ' .
-                $this->settings['currency'];
+                $this->settings->getCurrency();
 
             return json_encode($costData);
         }

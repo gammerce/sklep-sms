@@ -64,7 +64,7 @@ class ShopSmsLicenseSimple extends Service implements IServiceUserServiceAdminDi
      */
     public function userServiceAdminDisplayTitleGet()
     {
-        return $this->lang->translate('licenses');
+        return $this->lang->t('licenses');
     }
 
     public function userServiceAdminDisplayGet(array $query, array $body)
@@ -73,13 +73,13 @@ class ShopSmsLicenseSimple extends Service implements IServiceUserServiceAdminDi
         $wrapper->setSearch();
 
         $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('user')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('service')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('identifier')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('external_license_id')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('cost_daily')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('expires')));
+        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->t('user')));
+        $table->addHeadCell(new HeadCell($this->lang->t('service')));
+        $table->addHeadCell(new HeadCell($this->lang->t('identifier')));
+        $table->addHeadCell(new HeadCell($this->lang->t('external_license_id')));
+        $table->addHeadCell(new HeadCell($this->lang->t('cost_daily')));
+        $table->addHeadCell(new HeadCell($this->lang->t('expires')));
 
         // Wyszukujemy dane ktore spelniaja kryteria
         $where = '';
@@ -133,9 +133,7 @@ class ShopSmsLicenseSimple extends Service implements IServiceUserServiceAdminDi
             $bodyRow->setDbId($row['id']);
             $bodyRow->addCell(
                 new Cell(
-                    $row['uid']
-                        ? $row['username'] . " ({$row['uid']})"
-                        : $this->lang->translate('none')
+                    $row['uid'] ? $row['username'] . " ({$row['uid']})" : $this->lang->t('none')
                 )
             );
             $bodyRow->addCell(new Cell($row['service']));
@@ -149,7 +147,7 @@ class ShopSmsLicenseSimple extends Service implements IServiceUserServiceAdminDi
             $bodyRow->addCell(
                 new Cell(
                     $row['expire'] == '-1'
-                        ? $this->lang->translate('never')
+                        ? $this->lang->t('never')
                         : date($this->settings['date_format'], $row['expire'])
                 )
             );
