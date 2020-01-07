@@ -124,7 +124,6 @@ class Translator
     private function translate($key)
     {
         $this->load($this->getCurrentLanguage());
-
         return array_get($this->translations, $key, $key);
     }
 
