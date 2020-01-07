@@ -6,6 +6,7 @@ use App\Models\TransferFinalize;
 use App\Repositories\PaymentTransferRepository;
 use App\Services\Interfaces\IServicePurchase;
 use App\System\Database;
+use App\System\FileSystemContract;
 use App\System\Heart;
 use App\System\Path;
 use App\Translation\TranslationManager;
@@ -32,12 +33,16 @@ class TransferPaymentService
     /** @var PaymentTransferRepository */
     private $paymentTransferRepository;
 
+    /** @var FileSystemContract */
+    private $fileSystem;
+
     public function __construct(
         Database $db,
         Path $path,
         Heart $heart,
         PaymentTransferRepository $paymentTransferRepository,
-        TranslationManager $translationManager
+        TranslationManager $translationManager,
+        FileSystemContract $fileSystem
     ) {
         $this->db = $db;
         $this->path = $path;
@@ -45,6 +50,7 @@ class TransferPaymentService
         $this->paymentTransferRepository = $paymentTransferRepository;
         $this->lang = $translationManager->user();
         $this->langShop = $translationManager->shop();
+        $this->fileSystem = $fileSystem;
     }
 
     /**
@@ -58,13 +64,14 @@ class TransferPaymentService
     {
         $serialized = serialize($purchase);
         $dataFilename = time() . "-" . md5($serialized);
-        file_put_contents($this->path->to('data/transfers/' . $dataFilename), $serialized);
+        $path = $this->path->to('data/transfers/' . $dataFilename);
+        $this->fileSystem->put($path, $serialized);
 
         return [
-            'status' => "transfer",
-            'text' => $this->lang->t('transfer_prepared'),
+            'status'   => "transfer",
+            'text'     => $this->lang->t('transfer_prepared'),
             'positive' => true,
-            'data' => [
+            'data'     => [
                 'data' => $paymentModule->prepareTransfer($purchase, $dataFilename),
             ],
         ];
@@ -85,7 +92,7 @@ class TransferPaymentService
 
         if (
             !$transferFinalize->getDataFilename() ||
-            !file_exists($this->path->to('data/transfers/' . $transferFinalize->getDataFilename()))
+            !$this->fileSystem->exists($this->path->to('data/transfers/' . $transferFinalize->getDataFilename()))
         ) {
             log_to_db($this->langShop->t('transfer_no_data_file', $transferFinalize->getOrderId()));
 
@@ -94,7 +101,7 @@ class TransferPaymentService
 
         /** @var Purchase $purchase */
         $purchase = unserialize(
-            file_get_contents(
+            $this->fileSystem->get(
                 $this->path->to('data/transfers/' . $transferFinalize->getDataFilename())
             )
         );
@@ -109,7 +116,7 @@ class TransferPaymentService
             $purchase->user->getLastIp(),
             $purchase->user->getPlatform()
         );
-        unlink($this->path->to('data/transfers/' . $transferFinalize->getDataFilename()));
+        $this->fileSystem->delete($this->path->to('data/transfers/' . $transferFinalize->getDataFilename()));
 
         if (($serviceModule = $this->heart->getServiceModule($purchase->getService())) === null) {
             log_to_db(
@@ -136,7 +143,7 @@ class TransferPaymentService
         }
 
         $purchase->setPayment([
-            'method' => Purchase::METHOD_TRANSFER,
+            'method'     => Purchase::METHOD_TRANSFER,
             'payment_id' => $transferFinalize->getOrderId(),
         ]);
         $boughtServiceId = $serviceModule->purchase($purchase);

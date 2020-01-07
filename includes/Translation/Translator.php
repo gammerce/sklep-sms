@@ -1,12 +1,16 @@
 <?php
 namespace App\Translation;
 
+use App\System\FileSystemContract;
 use App\System\Path;
 
 class Translator
 {
     /** @var Path */
     private $path;
+
+    /** @var FileSystemContract */
+    private $fileSystem;
 
     /**
      * Current language
@@ -42,6 +46,7 @@ class Translator
     public function __construct($lang = 'polish')
     {
         $this->path = app()->make(Path::class);
+        $this->fileSystem = app()->make(FileSystemContract::class);
         $this->setLanguage($lang);
     }
 
@@ -168,7 +173,7 @@ class Translator
         }
 
         foreach ($filesToInclude as $path) {
-            if (!file_exists($path)) {
+            if (!$this->fileSystem->exists($path)) {
                 continue;
             }
 

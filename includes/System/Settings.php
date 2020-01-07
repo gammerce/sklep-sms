@@ -14,10 +14,13 @@ class Settings implements ArrayAccess
     /** @var Path */
     private $path;
 
+    /** @var FileSystemContract */
+    private $fileSystem;
+
     /** @var bool */
     private $loaded = false;
 
-    public function __construct(Path $path, Database $database)
+    public function __construct(Path $path, Database $database, FileSystemContract $fileSystem)
     {
         $this->db = $database;
         $this->path = $path;
@@ -27,6 +30,7 @@ class Settings implements ArrayAccess
             'theme' => 'default',
             'shop_url' => '',
         ];
+        $this->fileSystem = $fileSystem;
     }
 
     public function get($key)
@@ -139,7 +143,7 @@ LEFT JOIN `" .
         $this->settings["date_format"] = $this->settings["date_format"] ?: "Y-m-d H:i";
 
         // Fallback to default theme if selected does not exist
-        $this->settings['theme'] = file_exists($this->path->to("themes/{$this->settings['theme']}"))
+        $this->settings['theme'] = $this->fileSystem->exists($this->path->to("themes/{$this->settings['theme']}"))
             ? $this->settings['theme']
             : "default";
 

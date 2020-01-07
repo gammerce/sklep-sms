@@ -1,6 +1,7 @@
 <?php
 namespace App\Install;
 
+use App\System\FileSystemContract;
 use App\System\Path;
 
 class RequirementsStore
@@ -8,9 +9,13 @@ class RequirementsStore
     /** @var Path */
     private $path;
 
-    public function __construct(Path $path)
+    /** @var FileSystemContract */
+    private $fileSystem;
+
+    public function __construct(Path $path, FileSystemContract $fileSystem)
     {
         $this->path = $path;
+        $this->fileSystem = $fileSystem;
     }
 
     public function getModules()
@@ -75,7 +80,7 @@ class RequirementsStore
 
         foreach ($this->getFilesToDelete() as $path) {
             $fullPath = $this->path->to($path);
-            if (file_exists($fullPath)) {
+            if ($this->fileSystem->exists($fullPath)) {
                 return false;
             }
         }

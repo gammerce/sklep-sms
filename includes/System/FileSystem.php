@@ -4,22 +4,13 @@ namespace App\System;
 use ErrorException;
 use Exception;
 
-// TODO Use it
-class Filesystem
+class FileSystem implements FileSystemContract
 {
-    /**
-     * @param string $path
-     * @return bool
-     */
     public function exists($path)
     {
         return file_exists($path);
     }
 
-    /**
-     * @param string $path
-     * @return bool
-     */
     public function delete($path)
     {
         try {
@@ -33,15 +24,6 @@ class Filesystem
         return true;
     }
 
-    /**
-     * Create a directory.
-     *
-     * @param  string $path
-     * @param  int    $mode
-     * @param  bool   $recursive
-     * @param  bool   $force
-     * @return bool
-     */
     public function makeDirectory($path, $mode = 0755, $recursive = false, $force = false)
     {
         if ($force) {
@@ -50,28 +32,11 @@ class Filesystem
         return mkdir($path, $mode, $recursive);
     }
 
-    /**
-     * Write the contents of a file.
-     *
-     * @param  string $path
-     * @param  string $contents
-     * @param  bool   $lock
-     * @return int
-     */
     public function put($path, $contents, $lock = false)
     {
         return file_put_contents($path, $contents, $lock ? LOCK_EX : 0);
     }
 
-    /**
-     * Get the contents of a file.
-     *
-     * @param  string $path
-     * @param  bool   $lock
-     * @return string
-     *
-     * @throws Exception
-     */
     public function get($path, $lock = false)
     {
         if ($this->isFile($path)) {
@@ -80,12 +45,6 @@ class Filesystem
         throw new Exception("File does not exist at path {$path}");
     }
 
-    /**
-     * Get contents of a file with shared access.
-     *
-     * @param  string $path
-     * @return string
-     */
     public function sharedGet($path)
     {
         $contents = '';
@@ -104,25 +63,32 @@ class Filesystem
         return $contents;
     }
 
-    /**
-     * Determine if the given path is a file.
-     *
-     * @param  string $file
-     * @return bool
-     */
     public function isFile($file)
     {
         return is_file($file);
     }
 
-    /**
-     * Get the file size of a given file.
-     *
-     * @param  string $path
-     * @return int
-     */
     public function size($path)
     {
         return filesize($path);
+    }
+
+    public function append($file, $text)
+    {
+        if ($this->exists($file) && strlen($this->get($file))) {
+            $text = $this->get($file) . "\n" . $text;
+        }
+
+        $this->put($file, $text);
+    }
+
+    public function setPermissions($path, $mode)
+    {
+        return chmod($path, $mode);
+    }
+
+    public function getPermissions($path)
+    {
+        return fileperms($path);
     }
 }

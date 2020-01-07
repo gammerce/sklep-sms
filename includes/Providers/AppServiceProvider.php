@@ -7,7 +7,8 @@ use App\System\Auth;
 use App\System\CurrentPage;
 use App\System\Database;
 use App\System\ExternalConfigProvider;
-use App\System\Filesystem;
+use App\System\FileSystem;
+use App\System\FileSystemContract;
 use App\System\License;
 use App\System\Path;
 use App\System\Settings;
@@ -19,6 +20,8 @@ class AppServiceProvider
 {
     public function register(Application $app)
     {
+        $app->bind(FileSystemContract::class, FileSystem::class);
+
         $this->registerDatabase($app);
         $this->registerCache($app);
 
@@ -50,7 +53,7 @@ class AppServiceProvider
             /** @var Path $path */
             $path = $app->make(Path::class);
 
-            return new FileCache($app->make(Filesystem::class), $path->to('data/cache'));
+            return new FileCache($app->make(FileSystemContract::class), $path->to('data/cache'));
         });
         $app->bind(CacheInterface::class, FileCache::class);
     }

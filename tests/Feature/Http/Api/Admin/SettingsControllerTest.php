@@ -35,7 +35,7 @@ class SettingsControllerTest extends HttpTestCase
         $settings->load();
         $this->assertSame("https://example.com", $settings["shop_url"]);
         $this->assertSame("abc123", $settings->getLicenseToken());
-        $this->assertSame("1.23", $settings->getVat());
+        $this->assertSame(1.23, $settings->getVat());
         $this->assertSame("20", $settings["row_limit"]);
         $this->assertSame("1", $settings["delete_logs"]);
         $this->assertSame("1", $settings["cron_each_visit"]);

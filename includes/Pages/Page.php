@@ -6,6 +6,7 @@ use App\Routes\UrlGenerator;
 use App\System\Application;
 use App\System\CurrentPage;
 use App\System\Database;
+use App\System\FileSystemContract;
 use App\System\Heart;
 use App\System\Path;
 use App\System\Settings;
@@ -45,6 +46,9 @@ abstract class Page
     /** @var Path */
     protected $path;
 
+    /** @var FileSystemContract */
+    protected $fileSystem;
+
     public function __construct()
     {
         $this->app = app();
@@ -58,6 +62,7 @@ abstract class Page
         $this->db = $this->app->make(Database::class);
         $this->url = $this->app->make(UrlGenerator::class);
         $this->path = $this->app->make(Path::class);
+        $this->fileSystem = $this->app->make(FileSystemContract::class);
     }
 
     /**
@@ -72,7 +77,7 @@ abstract class Page
     {
         // Dodajemy wszystkie skrypty
         $path = "build/js/static/pages/" . $this::PAGE_ID . "/";
-        if (strlen($this::PAGE_ID) && file_exists($this->path->to($path))) {
+        if (strlen($this::PAGE_ID) && $this->fileSystem->exists($this->path->to($path))) {
             foreach (scandir($this->path->to($path)) as $file) {
                 if (ends_at($file, ".js")) {
                     $this->heart->scriptAdd($this->url->versioned($path . $file));
@@ -82,7 +87,7 @@ abstract class Page
 
         // Let's add all css
         $path = "build/css/static/pages/" . $this::PAGE_ID . "/";
-        if (strlen($this::PAGE_ID) && file_exists($this->path->to($path))) {
+        if (strlen($this::PAGE_ID) && $this->fileSystem->exists($this->path->to($path))) {
             foreach (scandir($this->path->to($path)) as $file) {
                 if (ends_at($file, ".css")) {
                     $this->heart->styleAdd($this->url->versioned($path . $file));
@@ -101,12 +106,12 @@ abstract class Page
         ) {
             foreach ($this->heart->getServicesModules() as $moduleInfo) {
                 $path = "build/css/static/services/" . $moduleInfo['id'] . ".css";
-                if (file_exists($this->path->to($path))) {
+                if ($this->fileSystem->exists($this->path->to($path))) {
                     $this->heart->styleAdd($this->url->versioned($path));
                 }
 
                 $path = "build/js/static/services/" . $moduleInfo['id'] . ".js";
-                if (file_exists($this->path->to($path))) {
+                if ($this->fileSystem->exists($this->path->to($path))) {
                     $this->heart->scriptAdd($this->url->versioned($path));
                 }
             }

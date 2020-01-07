@@ -1,6 +1,7 @@
 <?php
 namespace App\Install;
 
+use App\System\FileSystemContract;
 use App\System\Path;
 
 class SetupManager
@@ -8,9 +9,13 @@ class SetupManager
     /** @var Path */
     private $path;
 
-    public function __construct(Path $path)
+    /** @var FileSystemContract */
+    private $fileSystem;
+
+    public function __construct(Path $path, FileSystemContract $fileSystem)
     {
         $this->path = $path;
+        $this->fileSystem = $fileSystem;
     }
 
     public function start()
@@ -26,31 +31,31 @@ class SetupManager
     public function markAsFailed()
     {
         $path = $this->path->to('data/setup_error');
-        file_put_contents($path, "");
-        chmod($path, 0777);
+        $this->fileSystem->put($path, "");
+        $this->fileSystem->setPermissions($path, 0777);
     }
 
     /** @return bool */
     public function hasFailed()
     {
-        return file_exists($this->path->to('data/setup_error'));
+        return $this->fileSystem->exists($this->path->to('data/setup_error'));
     }
 
     /** @return bool */
     public function isInProgress()
     {
-        return file_exists($this->path->to('data/setup_progress'));
+        return $this->fileSystem->exists($this->path->to('data/setup_progress'));
     }
 
     private function putInProgress()
     {
         $path = $this->path->to('data/setup_progress');
-        file_put_contents($path, "");
-        chmod($path, 0777);
+        $this->fileSystem->put($path, "");
+        $this->fileSystem->setPermissions($path, 0777);
     }
 
     private function removeInProgress()
     {
-        unlink($this->path->to('data/setup_progress'));
+        $this->fileSystem->delete($this->path->to('data/setup_progress'));
     }
 }

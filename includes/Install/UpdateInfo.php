@@ -1,6 +1,7 @@
 <?php
 namespace App\Install;
 
+use App\System\FileSystemContract;
 use App\System\Path;
 use App\System\Template;
 
@@ -12,10 +13,14 @@ class UpdateInfo
     /** @var Template */
     private $template;
 
-    public function __construct(Path $path, Template $template)
+    /** @var FileSystemContract */
+    private $fileSystem;
+
+    public function __construct(Path $path, Template $template, FileSystemContract $fileSystem)
     {
         $this->path = $path;
         $this->template = $template;
+        $this->fileSystem = $fileSystem;
     }
 
     public function updateInfo(&$everythingOk, $filesPriv, $filesDel, $modules)
@@ -77,7 +82,7 @@ class UpdateInfo
                 continue;
             }
 
-            if (!file_exists($this->path->to($file))) {
+            if (!$this->fileSystem->exists($this->path->to($file))) {
                 $status = "ok";
             } else {
                 $status = "bad";

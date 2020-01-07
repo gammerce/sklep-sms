@@ -13,6 +13,7 @@ use App\Routes\UrlGenerator;
 use App\Services\Interfaces\IServicePurchaseWeb;
 use App\System\Auth;
 use App\System\Database;
+use App\System\FileSystemContract;
 use App\System\Heart;
 use App\System\Path;
 use App\System\Settings;
@@ -767,15 +768,14 @@ function log_to_file($file, $message, array $data = [])
     /** @var Settings $settings */
     $settings = app()->make(Settings::class);
 
+    /** @var FileSystemContract $fileSystem */
+    $fileSystem = app()->make(FileSystemContract::class);
+
     $dataText = $data ? " | " . json_encode($data) : "";
     $text = date($settings->getDateFormat()) . ": " . $message . $dataText;
 
-    if (file_exists($file) && strlen(file_get_contents($file))) {
-        $text = file_get_contents($file) . "\n" . $text;
-    }
-
-    file_put_contents($file, $text);
-    chmod($file, 0777);
+    $fileSystem->append($file, $text);
+    $fileSystem->setPermissions($file, 0777);
 }
 
 // TODO Use database logger
