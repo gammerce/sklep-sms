@@ -11,30 +11,24 @@ $(document).delegate("#form_service_code_add [name=random_code]", "click", funct
 });
 
 // Selecting a service while adding service code
-var extra_fields;
+var serviceCodeAddForm;
 $(document).delegate("#form_service_code_add [name=service]", "change", function() {
-    // Brak wybranej usługi
-    if (!$(this).val().length) {
-        // Let's remove additional fields
-        if (extra_fields) {
-            extra_fields.remove();
-        }
+    var serviceId = $(this).val();
+
+    if (!serviceId && serviceCodeAddForm) {
+        serviceCodeAddForm.remove();
         return;
     }
-
-    var serviceId = $(this).val();
 
     restRequest("GET", "/api/admin/services/" + serviceId + "/service_codes/add_form", {}, function(
         content
     ) {
-        // Let's remove additional fields
-        if (extra_fields) {
-            extra_fields.remove();
+        if (serviceCodeAddForm) {
+            serviceCodeAddForm.remove();
         }
 
-        // Add content to the action box
-        extra_fields = $(content);
-        extra_fields.insertAfter(".action_box .ftbody");
+        serviceCodeAddForm = $(content);
+        serviceCodeAddForm.insertAfter(".action_box .ftbody");
     });
 });
 

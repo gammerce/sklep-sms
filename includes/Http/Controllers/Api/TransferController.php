@@ -21,16 +21,15 @@ class TransferController
     }
 
     public function action(
-        $transferService,
+        $transferPlatform,
         Request $request,
         Heart $heart,
         TransferPaymentService $transferPaymentService
     ) {
-        /** @var SupportTransfer $paymentModule */
-        $paymentModule = $heart->getPaymentModule($transferService);
+        $paymentModule = $heart->getPaymentModuleByPlatformId($transferPlatform);
 
         if (!($paymentModule instanceof SupportTransfer)) {
-            return new PlainResponse("Invalid payment module [${transferService}].");
+            return new PlainResponse("Invalid payment platform [${transferPlatform}].");
         }
 
         $transferFinalize = $paymentModule->finalizeTransfer(
@@ -40,8 +39,8 @@ class TransferController
 
         if ($transferFinalize->getStatus() === false) {
             log_to_db(
-                $this->langShop->sprintf(
-                    $this->langShop->translate('payment_not_accepted'),
+                $this->langShop->t(
+                    'payment_not_accepted',
                     $transferFinalize->getOrderId(),
                     $transferFinalize->getAmount(),
                     $transferFinalize->getTransferService()

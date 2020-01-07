@@ -83,7 +83,7 @@ class UserRepository
         );
 
         $users = [];
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $users[] = $this->mapToModel($row);
         }
 
@@ -103,7 +103,7 @@ class UserRepository
                 ])
             );
 
-            if ($data = $this->db->fetchArrayAssoc($result)) {
+            if ($data = $result->fetch()) {
                 return $this->mapToModel($data);
             }
         }
@@ -133,8 +133,8 @@ class UserRepository
             )
         );
 
-        if ($this->db->numRows($result)) {
-            $data = $this->db->fetchArrayAssoc($result);
+        if ($result->rowCount()) {
+            $data = $result->fetch();
             return $this->mapToModel($data);
         }
 
@@ -162,7 +162,7 @@ class UserRepository
             )
         );
 
-        $data = $this->db->fetchArrayAssoc($result);
+        $data = $result->fetch();
 
         return $data ? $this->mapToModel($data) : null;
     }

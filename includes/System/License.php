@@ -85,10 +85,10 @@ class License
     public function getExpires()
     {
         if ($this->isForever()) {
-            return $this->langShop->translate('never');
+            return $this->langShop->t('never');
         }
 
-        return date($this->settings['date_format'], $this->expiresAt);
+        return date($this->settings->getDateFormat(), $this->expiresAt);
     }
 
     public function getExternalId()
@@ -143,7 +143,7 @@ class License
                 'php_version' => PHP_VERSION,
             ],
             [
-                'Authorization' => $this->settings['license_password'],
+                'Authorization' => $this->settings->getLicenseToken(),
             ]
         );
 

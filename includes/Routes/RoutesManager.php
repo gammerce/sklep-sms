@@ -7,6 +7,9 @@ use App\Http\Controllers\Api\Admin\GroupCollection;
 use App\Http\Controllers\Api\Admin\GroupResource;
 use App\Http\Controllers\Api\Admin\LogResource;
 use App\Http\Controllers\Api\Admin\PageActionBoxResource;
+use App\Http\Controllers\Api\Admin\PaymentModuleAddFormController;
+use App\Http\Controllers\Api\Admin\PaymentPlatformCollection;
+use App\Http\Controllers\Api\Admin\PaymentPlatformResource;
 use App\Http\Controllers\Api\Admin\PriceCollection;
 use App\Http\Controllers\Api\Admin\PriceResource;
 use App\Http\Controllers\Api\Admin\ServerCollection;
@@ -22,7 +25,6 @@ use App\Http\Controllers\Api\Admin\SmsCodeCollection;
 use App\Http\Controllers\Api\Admin\SmsCodeResource;
 use App\Http\Controllers\Api\Admin\TariffCollection;
 use App\Http\Controllers\Api\Admin\TariffResource;
-use App\Http\Controllers\Api\Admin\TransactionServiceResource;
 use App\Http\Controllers\Api\Admin\UserPasswordResource;
 use App\Http\Controllers\Api\Admin\UserResource;
 use App\Http\Controllers\Api\Admin\UserServiceAddFormController;
@@ -43,7 +45,8 @@ use App\Http\Controllers\Api\PurchaseResource;
 use App\Http\Controllers\Api\PurchaseValidationResource;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\Server\PurchaseResource as ServerPurchaseResource;
-use App\Http\Controllers\Api\Server\UsersSteamIdsController;
+use App\Http\Controllers\Api\Server\ServerConfigController;
+use App\Http\Controllers\Api\Server\ServiceLongDescriptionController;
 use App\Http\Controllers\Api\ServiceActionController;
 use App\Http\Controllers\Api\ServiceLongDescriptionResource;
 use App\Http\Controllers\Api\ServiceTakeOverController;
@@ -57,7 +60,6 @@ use App\Http\Controllers\Api\UserServiceBrickController;
 use App\Http\Controllers\Api\UserServiceEditFormController;
 use App\Http\Controllers\Api\UserServiceResource;
 use App\Http\Controllers\View\AdminController;
-use App\Http\Controllers\View\ExtraStuffController;
 use App\Http\Controllers\View\IndexController;
 use App\Http\Controllers\View\JsController;
 use App\Http\Controllers\View\ServerStuffController;
@@ -127,13 +129,16 @@ class RoutesManager
                 ],
             ],
             function (RouteCollector $r) {
-                $r->addRoute(['GET', 'POST'], '/transfer/{transferService}', [
+                $r->addRoute(['GET', 'POST'], '/transfer/{transferPlatform}', [
                     'uses' => TransferController::class . '@action',
                 ]);
 
+                /**
+                 * @deprecated
+                 */
                 $r->addRoute(['GET', 'POST'], '/extra_stuff.php', [
                     'middlewares' => [RunCron::class, BlockOnInvalidLicense::class],
-                    'uses' => ExtraStuffController::class . '@action',
+                    'uses' => ServiceLongDescriptionController::class . '@oldGet',
                 ]);
 
                 /**
@@ -152,19 +157,22 @@ class RoutesManager
                     'uses' => TransferController::class . '@oldAction',
                 ]);
 
+                $r->get('/api/server/services/{serviceId}/long_description', [
+                    'middlewares' => [BlockOnInvalidLicense::class],
+                    'uses' => ServiceLongDescriptionController::class . '@get',
+                ]);
+
                 $r->addGroup(
                     [
                         "middlewares" => [BlockOnInvalidLicense::class, AuthorizeServer::class],
                     ],
                     function (RouteCollector $r) {
                         $r->post('/api/server/purchase', [
-                            'middlewares' => [BlockOnInvalidLicense::class],
                             'uses' => ServerPurchaseResource::class . '@post',
                         ]);
 
-                        $r->get('/api/server/users/steam-ids', [
-                            'middlewares' => [BlockOnInvalidLicense::class],
-                            'uses' => UsersSteamIdsController::class . '@get',
+                        $r->get('/api/server/config', [
+                            'uses' => ServerConfigController::class . '@get',
                         ]);
                     }
                 );
@@ -378,9 +386,24 @@ class RoutesManager
                     'uses' => SmsCodeResource::class . '@delete',
                 ]);
 
-                $r->put('/api/admin/transaction_services/{transactionServiceId}', [
+                $r->post('/api/admin/payment_platforms', [
                     'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
-                    'uses' => TransactionServiceResource::class . '@put',
+                    'uses' => PaymentPlatformCollection::class . '@post',
+                ]);
+
+                $r->put('/api/admin/payment_platforms/{paymentPlatformId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
+                    'uses' => PaymentPlatformResource::class . '@put',
+                ]);
+
+                $r->delete('/api/admin/payment_platforms/{paymentPlatformId}', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
+                    'uses' => PaymentPlatformResource::class . '@delete',
+                ]);
+
+                $r->get('/api/admin/payment_modules/{paymentModuleId}/add_form', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
+                    'uses' => PaymentModuleAddFormController::class . '@get',
                 ]);
 
                 $r->put('/api/admin/settings', [

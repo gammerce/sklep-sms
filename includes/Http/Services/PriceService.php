@@ -31,17 +31,17 @@ class PriceService
 
         // Usługa
         if ($this->heart->getService($service) === null) {
-            $warnings['service'][] = $this->lang->translate('no_such_service');
+            $warnings['service'][] = $this->lang->t('no_such_service');
         }
 
         // Serwer
         if ($server != -1 && $this->heart->getServer($server) === null) {
-            $warnings['server'][] = $this->lang->translate('no_such_server');
+            $warnings['server'][] = $this->lang->t('no_such_server');
         }
 
         // Taryfa
         if ($this->heart->getTariff($tariff) === null) {
-            $warnings['tariff'][] = $this->lang->translate('no_such_tariff');
+            $warnings['tariff'][] = $this->lang->t('no_such_tariff');
         }
 
         // Ilość

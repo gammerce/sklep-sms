@@ -1,15 +1,14 @@
 <div class="payment_type_wrapper">
     <div class="payment_type wallet header">
-        {$lang->translate('payment_wallet')}
+        {$lang->t('payment_wallet')}
     </div>
     <div class="payment_type wallet">
-        <strong>{$lang->translate('price')}</strong>: {{ $costTransfer }} {{ $settings['currency']
-        }}<br />
+        <strong>{$lang->t('price')}</strong>: {{ $costTransfer }} {{ $settings->getCurrency() }}<br />
         <br />
         <input
             type="button"
             id="pay_wallet"
-            value="{$lang->translate('pay_wallet')}"
+            value="{$lang->t('pay_wallet')}"
             class="button purchase_button"
         />
     </div>

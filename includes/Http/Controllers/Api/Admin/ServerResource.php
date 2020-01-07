@@ -2,9 +2,11 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\ApiResponse;
+use App\Http\Responses\ErrorApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\ServerService;
-use App\System\Auth;
-use App\System\Database;
+use App\Loggers\DatabaseLogger;
+use App\Repositories\ServerRepository;
 use App\Translation\TranslationManager;
 use PDOException;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,86 +16,50 @@ class ServerResource
     public function put(
         $serverId,
         Request $request,
-        Database $db,
-        Auth $auth,
         TranslationManager $translationManager,
-        ServerService $serverService
+        ServerService $serverService,
+        ServerRepository $serverRepository,
+        DatabaseLogger $databaseLogger
     ) {
-        $langShop = $translationManager->shop();
         $lang = $translationManager->user();
-        $user = $auth->user();
 
         $name = $request->request->get('name');
         $ip = trim($request->request->get('ip'));
         $port = trim($request->request->get('port'));
-        $smsService = $request->request->get('sms_service');
+        $smsPlatform = $request->request->get('sms_platform') ?: null;
 
         $serverService->validateBody($request->request->all());
-
-        $db->query(
-            $db->prepare(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "servers` " .
-                    "SET `name` = '%s', `ip` = '%s', `port` = '%s', `sms_service` = '%s' " .
-                    "WHERE `id` = '%s'",
-                [$name, $ip, $port, $smsService, $serverId]
-            )
-        );
-
+        $serverRepository->update($serverId, $name, $ip, $port, $smsPlatform);
         $serverService->updateServerServiceAffiliations($serverId, $request->request->all());
 
-        log_to_db(
-            $langShop->sprintf(
-                $langShop->translate('server_admin_edit'),
-                $user->getUsername(),
-                $user->getUid(),
-                $serverId
-            )
-        );
-        return new ApiResponse('ok', $lang->translate('server_edit'), 1);
+        $databaseLogger->logWithActor('log_server_admin_edit', $serverId);
+
+        return new SuccessApiResponse($lang->t('server_edit'));
     }
 
     public function delete(
         $serverId,
-        Database $db,
         TranslationManager $translationManager,
-        Auth $auth
+        ServerRepository $serverRepository,
+        DatabaseLogger $databaseLogger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         try {
-            $statement = $db->query(
-                $db->prepare("DELETE FROM `" . TABLE_PREFIX . "servers` WHERE `id` = '%s'", [
-                    $serverId,
-                ])
-            );
+            $deleted = $serverRepository->delete($serverId);
         } catch (PDOException $e) {
             if (get_error_code($e) === 1451) {
-                return new ApiResponse(
-                    "error",
-                    $lang->translate('delete_server_constraint_fails'),
-                    0
-                );
+                return new ErrorApiResponse($lang->t('delete_server_constraint_fails'));
             }
 
             throw $e;
         }
 
-        if ($statement->rowCount()) {
-            log_to_db(
-                $langShop->sprintf(
-                    $langShop->translate('server_admin_delete'),
-                    $user->getUsername(),
-                    $user->getUid(),
-                    $serverId
-                )
-            );
-            return new ApiResponse('ok', $lang->translate('delete_server'), 1);
+        if ($deleted) {
+            $databaseLogger->logWithActor('log_server_admin_delete', $serverId);
+            return new SuccessApiResponse($lang->t('delete_server'));
         }
 
-        return new ApiResponse("not_deleted", $lang->translate('no_delete_server'), 0);
+        return new ApiResponse("not_deleted", $lang->t('no_delete_server'), 0);
     }
 }

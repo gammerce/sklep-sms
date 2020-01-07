@@ -28,14 +28,14 @@ class PasswordResetController
 
         // Sprawdzanie hashu najwazniejszych danych
         if (!$sign || $sign != md5($uid . $settings['random_key'])) {
-            return new ApiResponse("wrong_sign", $lang->translate('wrong_sign'), 0);
+            return new ApiResponse("wrong_sign", $lang->t('wrong_sign'), 0);
         }
 
         if ($warning = check_for_warnings("password", $pass)) {
             $warnings['pass'] = array_merge((array) $warnings['pass'], $warning);
         }
         if ($pass != $passr) {
-            $warnings['pass_repeat'][] = $lang->translate('different_values');
+            $warnings['pass_repeat'][] = $lang->t('different_values');
         }
 
         if ($warnings) {
@@ -44,8 +44,8 @@ class PasswordResetController
 
         $userPasswordService->change($uid, $pass);
 
-        log_to_db($langShop->sprintf($langShop->translate('reset_pass'), $uid));
+        log_to_db($langShop->t('reset_pass', $uid));
 
-        return new ApiResponse("password_changed", $lang->translate('password_changed'), 1);
+        return new ApiResponse("password_changed", $lang->t('password_changed'), 1);
     }
 }

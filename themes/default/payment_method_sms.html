@@ -1,13 +1,13 @@
 <div class="payment_type_wrapper">
     <div class="payment_type sms header">
-        {$lang->translate('payment_sms')}
+        {$lang->t('payment_sms')}
     </div>
 
     <div class="payment_type sms">
         <div>
-            <strong>{$lang->translate('price')}</strong>:
+            <strong>{$lang->t('price')}</strong>:
             <span class="is-family-monospace">
-                {{ $purchaseData->getTariff()->getSmsCostGross() }} {{ $settings['currency'] }}
+                {{ $purchaseData->getTariff()->getSmsCostGross() }} {{ $settings->getCurrency() }}
             </span>
         </div>
         <br />
@@ -19,16 +19,16 @@
                         colspan="3"
                         style="font-weight: bold; padding-bottom: 5px; font-size: 18px;"
                     >
-                        {$lang->translate('sms_send_sms')}
+                        {$lang->t('sms_send_sms')}
                     </td>
                 </tr>
                 <tr>
-                    <td class="has-text-right">{$lang->translate('sms_text')}</td>
+                    <td class="has-text-right">{$lang->t('sms_text')}</td>
                     <td style="width: 20px;"></td>
                     <td class="has-text-left is-family-monospace">{{ $smsCode }}</td>
                 </tr>
                 <tr>
-                    <td class="has-text-right">{$lang->translate('sms_number')}</td>
+                    <td class="has-text-right">{$lang->t('sms_number')}</td>
                     <td></td>
                     <td class="has-text-left is-family-monospace">
                         {{ $purchaseData->getTariff()->getNumber() }}
@@ -36,7 +36,7 @@
                 </tr>
                 <tr>
                     <td class="has-text-right">
-                        <label for="sms_code">{$lang->translate('sms_return_code')}</label>
+                        <label for="sms_code">{$lang->t('sms_return_code')}</label>
                     </td>
                     <td></td>
                     <td class="has-text-left">
@@ -60,7 +60,7 @@
         <input
             type="button"
             id="pay_sms"
-            value="{$lang->translate('pay_sms')}"
+            value="{$lang->t('pay_sms')}"
             class="button purchase_button"
         />
     </div>

@@ -2,9 +2,11 @@
 namespace App\Http\Services;
 
 use App\Exceptions\ValidationException;
+use App\Repositories\PaymentPlatformRepository;
 use App\Services\Interfaces\IServiceAvailableOnServers;
 use App\System\Database;
 use App\System\Heart;
+use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
@@ -19,55 +21,53 @@ class ServerService
     /** @var Heart */
     private $heart;
 
-    public function __construct(Database $db, TranslationManager $translationManager, Heart $heart)
-    {
+    /** @var PaymentPlatformRepository */
+    private $paymentPlatformRepository;
+
+    /** @var Settings */
+    private $settings;
+
+    public function __construct(
+        Database $db,
+        TranslationManager $translationManager,
+        Heart $heart,
+        PaymentPlatformRepository $paymentPlatformRepository,
+        Settings $settings
+    ) {
         $this->db = $db;
         $this->lang = $translationManager->user();
         $this->heart = $heart;
+        $this->paymentPlatformRepository = $paymentPlatformRepository;
+        $this->settings = $settings;
     }
 
     public function validateBody(array $body)
     {
-        $name = $body['name'];
-        $ip = $body['ip'];
-        $port = $body['port'];
-        $smsService = $body['sms_service'];
+        $name = array_get($body, 'name');
+        $ip = array_get($body, 'ip');
+        $port = array_get($body, 'port');
+        $smsPlatformId = array_get($body, 'sms_platform');
 
         $warnings = [];
 
-        // Nazwa
         if (!$name) {
-            // Nie podano nazwy serwera
-            $warnings['name'][] = $this->lang->translate('field_no_empty');
+            $warnings['name'][] = $this->lang->t('field_no_empty');
         }
 
-        // IP
         if (!$ip) {
-            // Nie podano nazwy serwera
-            $warnings['ip'][] = $this->lang->translate('field_no_empty');
+            $warnings['ip'][] = $this->lang->t('field_no_empty');
         }
 
-        // Port
         if (!$port) {
-            // Nie podano nazwy serwera
-            $warnings['port'][] = $this->lang->translate('field_no_empty');
+            $warnings['port'][] = $this->lang->t('field_no_empty');
         }
 
-        // Serwis płatności SMS
-        if ($smsService) {
-            $result = $this->db->query(
-                $this->db->prepare(
-                    "SELECT id " .
-                        "FROM `" .
-                        TABLE_PREFIX .
-                        "transaction_services` " .
-                        "WHERE `id` = '%s' AND sms = '1'",
-                    [$smsService]
-                )
-            );
-            if (!$this->db->numRows($result)) {
-                $warnings['sms_service'][] = $this->lang->translate('no_sms_service');
-            }
+        if ($smsPlatformId && !$this->paymentPlatformRepository->get($smsPlatformId)) {
+            $warnings['sms_platform'][] = $this->lang->t('no_sms_platform');
+        }
+
+        if (!$smsPlatformId && !$this->settings->getSmsPlatformId()) {
+            $warnings['sms_platform'][] = $this->lang->t('no_default_sms_platform');
         }
 
         if ($warnings) {
@@ -79,28 +79,27 @@ class ServerService
     {
         $serversServices = [];
         foreach ($this->heart->getServices() as $service) {
-            // Dana usługa nie może być kupiona na serwerze
             $serviceModule = $this->heart->getServiceModule($service->getId());
-            if (!($serviceModule instanceof IServiceAvailableOnServers)) {
-                continue;
-            }
 
-            $serversServices[] = [
-                'service' => $service->getId(),
-                'server' => $serverId,
-                'status' => (bool) $body[$service->getId()],
-            ];
+            // This service can be bought on this server
+            if ($serviceModule instanceof IServiceAvailableOnServers) {
+                $serversServices[] = [
+                    'service' => $service->getId(),
+                    'server' => $serverId,
+                    'status' => (bool) array_get($body, $service->getId()),
+                ];
+            }
         }
 
         $this->updateServersServices($serversServices);
     }
 
     /**
-     * Aktualizuje tabele servers_services
+     * Updates servers_services table
      *
      * @param $data
      */
-    private function updateServersServices($data)
+    private function updateServersServices(array $data)
     {
         $delete = [];
         $add = [];

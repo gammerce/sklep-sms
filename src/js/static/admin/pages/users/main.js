@@ -36,7 +36,7 @@
 
         loader.show();
         $.ajax({
-            type: "POST",
+            type: "DELETE",
             url: buildUrl("/api/admin/users/" + userId),
             complete: function() {
                 loader.hide();

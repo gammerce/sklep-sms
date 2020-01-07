@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\ServiceService;
 use App\Repositories\ServiceRepository;
 use App\Services\Interfaces\IServiceAdminManage;
@@ -40,7 +41,7 @@ class ServiceResource
         $body["id"] = $serviceId;
 
         if ($serviceId !== $newId && $heart->getService($newId)) {
-            $warnings['new_id'][] = $lang->translate('id_exist');
+            $warnings['new_id'][] = $lang->t('id_exist');
         }
 
         $serviceModule = $heart->getServiceModule($serviceId);
@@ -67,17 +68,17 @@ class ServiceResource
 
         if ($updated) {
             log_to_db(
-                $langShop->sprintf(
-                    $langShop->translate('service_admin_edit'),
+                $langShop->t(
+                    'service_admin_edit',
                     $user->getUsername(),
                     $user->getUid(),
                     $serviceId
                 )
             );
-            return new ApiResponse('ok', $lang->translate('service_edit'), 1);
+            return new SuccessApiResponse($lang->t('service_edit'));
         }
 
-        return new ApiResponse("not_edited", $lang->translate('service_no_edit'), 0);
+        return new ApiResponse("not_edited", $lang->t('service_no_edit'), 0);
     }
 
     public function delete(
@@ -101,11 +102,7 @@ class ServiceResource
         } catch (PDOException $e) {
             // It is affiliated with something
             if (get_error_code($e) == 1451) {
-                return new ApiResponse(
-                    "error",
-                    $lang->translate('delete_service_er_row_is_referenced'),
-                    0
-                );
+                return new ApiResponse("error", $lang->t('delete_service_er_row_is_referenced'), 0);
             }
 
             throw $e;
@@ -113,16 +110,16 @@ class ServiceResource
 
         if ($deleted) {
             log_to_db(
-                $langShop->sprintf(
-                    $langShop->translate('service_admin_delete'),
+                $langShop->t(
+                    'service_admin_delete',
                     $user->getUsername(),
                     $user->getUid(),
                     $serviceId
                 )
             );
-            return new ApiResponse('ok', $lang->translate('delete_service'), 1);
+            return new SuccessApiResponse($lang->t('delete_service'));
         }
 
-        return new ApiResponse("not_deleted", $lang->translate('no_delete_service'), 0);
+        return new ApiResponse("not_deleted", $lang->t('no_delete_service'), 0);
     }
 }

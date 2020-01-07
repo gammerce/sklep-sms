@@ -14,7 +14,7 @@ class PagePayment extends Page
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('title_payment');
+        $this->heart->pageTitle = $this->title = $this->lang->t('title_payment');
     }
 
     protected function content(array $query, array $body)
@@ -24,7 +24,7 @@ class PagePayment extends Page
             !isset($body['sign']) ||
             $body['sign'] != md5($body['data'] . $this->settings['random_key'])
         ) {
-            return $this->lang->translate('wrong_sign');
+            return $this->lang->t('wrong_sign');
         }
 
         /** @var Purchase $purchaseData */
@@ -34,7 +34,7 @@ class PagePayment extends Page
         $purchaseData->user = $this->heart->getUser($purchaseData->user->getUid());
 
         if (!($purchaseData instanceof Purchase)) {
-            return $this->lang->translate('error_occured');
+            return $this->lang->t('error_occurred');
         }
 
         if (
@@ -42,7 +42,7 @@ class PagePayment extends Page
                 null ||
             !($serviceModule instanceof IServicePurchaseWeb)
         ) {
-            return $this->lang->translate('bad_module');
+            return $this->lang->t('bad_module');
         }
 
         // Pobieramy szczegóły zamówienia
@@ -54,12 +54,12 @@ class PagePayment extends Page
         $paymentMethods = '';
         // Sprawdzamy, czy płatność za pomocą SMS jest możliwa
         if (
-            $purchaseData->getPayment('sms_service') &&
+            $purchaseData->getPayment('sms_platform') &&
             $purchaseData->getTariff() !== null &&
             !$purchaseData->getPayment('no_sms')
         ) {
-            $paymentModule = $this->heart->getPaymentModuleOrFail(
-                $purchaseData->getPayment('sms_service')
+            $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
+                $purchaseData->getPayment('sms_platform')
             );
 
             if ($paymentModule instanceof SupportSms) {
@@ -77,7 +77,7 @@ class PagePayment extends Page
                 : "0.00";
 
         if (
-            strlen($this->settings['transfer_service']) &&
+            $this->settings->getTransferPlatformId() &&
             $purchaseData->getPayment('cost') !== null &&
             $purchaseData->getPayment('cost') > 1 &&
             !$purchaseData->getPayment('no_transfer')

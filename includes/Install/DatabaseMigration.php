@@ -8,13 +8,13 @@ use PDOException;
 class DatabaseMigration
 {
     /** @var Application */
-    protected $app;
+    private $app;
 
     /** @var Database */
-    protected $db;
+    private $db;
 
     /** @var MigrationFiles */
-    protected $migrationFiles;
+    private $migrationFiles;
 
     public function __construct(Application $app, Database $db, MigrationFiles $migrationFiles)
     {
@@ -30,31 +30,33 @@ class DatabaseMigration
         }
 
         $salt = get_random_string(8);
-        $queries = [
-            $this->db->prepare(
+
+        $this->db
+            ->statement(
                 "UPDATE `" .
                     TABLE_PREFIX .
                     "settings` " .
-                    "SET `value`='%s' WHERE `key`='random_key';",
-                [get_random_string(16)]
-            ),
-            $this->db->prepare(
+                    "SET `value`= ? WHERE `key` = 'random_key'"
+            )
+            ->execute([get_random_string(16)]);
+
+        $this->db
+            ->statement(
                 "UPDATE `" .
                     TABLE_PREFIX .
                     "settings` " .
-                    "SET `value`='%s' WHERE `key`='license_password';",
-                [$token]
-            ),
-            $this->db->prepare(
+                    "SET `value` = ? WHERE `key` = 'license_password';"
+            )
+            ->execute([$token]);
+
+        $this->db
+            ->statement(
                 "INSERT INTO `" .
                     TABLE_PREFIX .
                     "users` " .
-                    "SET `username` = '%s', `password` = '%s', `salt` = '%s', `regip` = '%s', `groups` = '2', `regdate` = NOW();",
-                [$adminUsername, hash_password($adminPassword, $salt), $salt, get_ip()]
-            ),
-        ];
-
-        $this->executeQueries($queries);
+                    "SET `username` = ?, `password` = ?, `salt` = ?, `regip` = ?, `groups` = '2', `regdate` = NOW();"
+            )
+            ->execute([$adminUsername, hash_password($adminPassword, $salt), $salt, get_ip()]);
     }
 
     public function update()
@@ -73,16 +75,16 @@ class DatabaseMigration
     public function getLastExecutedMigration()
     {
         try {
-            return $this->db->getColumn(
-                "SELECT `name` FROM `" .
-                    TABLE_PREFIX .
-                    "migrations` " .
-                    "ORDER BY id DESC " .
-                    "LIMIT 1",
-                'name'
-            );
+            return $this->db
+                ->query(
+                    "SELECT `name` FROM `" .
+                        TABLE_PREFIX .
+                        "migrations` " .
+                        "ORDER BY id DESC " .
+                        "LIMIT 1"
+                )
+                ->fetchColumn();
         } catch (PDOException $e) {
-            // TODO Check shop install does work
             if (preg_match("/Table .*ss_migrations.* doesn't exist/", $e->getMessage())) {
                 // It means that user has installed shop sms using old codebase,
                 // that is why we want to create migration table for him and also
@@ -97,42 +99,61 @@ class DatabaseMigration
         }
     }
 
-    protected function migrate($migration)
+    private function migrate($migration)
     {
         $path = $this->migrationFiles->getMigrationPath($migration);
         $this->executeMigration($path);
         $this->saveExecutedMigration($migration);
     }
 
-    protected function executeQueries($queries)
+    private function executeMigration($path)
     {
-        foreach ($queries as $query) {
-            $this->db->query($query);
-        }
-    }
+        $className = $this->getClassNameFromFile($path);
 
-    protected function executeMigration($path)
-    {
-        $classes = get_declared_classes();
-        include $path;
-        $diff = array_diff(get_declared_classes(), $classes);
+        if ($className) {
+            require_once $path;
 
-        foreach ($diff as $class) {
-            if (is_subclass_of($class, Migration::class)) {
+            if (is_subclass_of($className, Migration::class)) {
                 /** @var Migration $migrationObject */
-                $migrationObject = $this->app->make($class);
+                $migrationObject = $this->app->make($className);
                 $migrationObject->up();
             }
         }
     }
 
-    protected function saveExecutedMigration($name)
+    private function saveExecutedMigration($name)
     {
-        $this->db->query(
-            $this->db->prepare(
-                "INSERT INTO `" . TABLE_PREFIX . "migrations` " . "SET `name` = '%s'",
-                [$name]
-            )
-        );
+        $this->db
+            ->statement("INSERT INTO `" . TABLE_PREFIX . "migrations` " . "SET `name` = ?")
+            ->execute([$name]);
+    }
+
+    // https://stackoverflow.com/questions/7153000/get-class-name-from-file/44654073
+    private function getClassNameFromFile($path)
+    {
+        $fp = fopen($path, 'r');
+        $buffer = '';
+        $i = 0;
+
+        while (!feof($fp)) {
+            $buffer .= fread($fp, 512);
+            $tokens = token_get_all($buffer);
+
+            if (strpos($buffer, '{') === false) {
+                continue;
+            }
+
+            for (; $i < count($tokens); $i++) {
+                if ($tokens[$i][0] === T_CLASS) {
+                    for ($j = $i + 1; $j < count($tokens); $j++) {
+                        if ($tokens[$j] === '{') {
+                            return $tokens[$i + 2][1];
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 }

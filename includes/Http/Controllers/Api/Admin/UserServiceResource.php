@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\System\Auth;
 use App\System\Database;
 use App\System\Heart;
@@ -22,19 +23,19 @@ class UserServiceResource
 
         // Brak takiej usługi w bazie
         if (empty($userService)) {
-            return new ApiResponse("no_service", $lang->translate('no_service'), 0);
+            return new ApiResponse("no_service", $lang->t('no_service'), 0);
         }
 
         $serviceModule = $heart->getServiceModule($userService['service']);
         if ($serviceModule === null) {
-            return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
+            return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
         }
 
         // Wykonujemy metode edycji usługi użytkownika przez admina na odpowiednim module
         $returnData = $serviceModule->userServiceAdminEdit($request->request->all(), $userService);
 
         if ($returnData === false) {
-            return new ApiResponse("missing_method", $lang->translate('no_edit_method'), 0);
+            return new ApiResponse("missing_method", $lang->t('no_edit_method'), 0);
         }
 
         if ($returnData['status'] == "warnings") {
@@ -64,7 +65,7 @@ class UserServiceResource
 
         // Brak takiej usługi
         if (empty($userService)) {
-            return new ApiResponse("no_service", $lang->translate('no_service'), 0);
+            return new ApiResponse("no_service", $lang->t('no_service'), 0);
         }
 
         // Wywolujemy akcje przy usuwaniu
@@ -74,7 +75,7 @@ class UserServiceResource
         ) {
             return new ApiResponse(
                 "user_service_cannot_be_deleted",
-                $lang->translate('user_service_cannot_be_deleted'),
+                $lang->t('user_service_cannot_be_deleted'),
                 0
             );
         }
@@ -91,17 +92,17 @@ class UserServiceResource
 
         if ($statement->rowCount()) {
             log_to_db(
-                $langShop->sprintf(
-                    $langShop->translate('user_service_admin_delete'),
+                $langShop->t(
+                    'user_service_admin_delete',
                     $user->getUsername(),
                     $user->getUid(),
                     $userService['id']
                 )
             );
 
-            return new ApiResponse('ok', $lang->translate('delete_service'), 1);
+            return new SuccessApiResponse($lang->t('delete_service'));
         }
 
-        return new ApiResponse("not_deleted", $lang->translate('no_delete_service'), 0);
+        return new ApiResponse("not_deleted", $lang->t('no_delete_service'), 0);
     }
 }

@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\ValidationException;
-use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\System\Auth;
 use App\System\Database;
 use App\System\Heart;
@@ -32,7 +32,7 @@ class TariffCollection
             $warnings['id'] = array_merge((array) $warnings['id'], $warning);
         }
         if ($heart->getTariff($id) !== null) {
-            $warnings['id'][] = $lang->translate('tariff_exist');
+            $warnings['id'][] = $lang->t('tariff_exist');
         }
 
         // Prowizja
@@ -55,14 +55,9 @@ class TariffCollection
         );
 
         log_to_db(
-            $langShop->sprintf(
-                $langShop->translate('tariff_admin_add'),
-                $user->getUsername(),
-                $user->getUid(),
-                $db->lastId()
-            )
+            $langShop->t('tariff_admin_add', $user->getUsername(), $user->getUid(), $db->lastId())
         );
 
-        return new ApiResponse('ok', $lang->translate('tariff_add'), 1);
+        return new SuccessApiResponse($lang->t('tariff_add'));
     }
 }

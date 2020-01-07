@@ -59,7 +59,7 @@ class PaymentService
         if (($serviceModule = $this->heart->getServiceModule($purchase->getService())) === null) {
             return [
                 'status' => "wrong_module",
-                'text' => $this->lang->translate('bad_module'),
+                'text' => $this->lang->t('bad_module'),
                 'positive' => false,
             ];
         }
@@ -74,7 +74,7 @@ class PaymentService
         ) {
             return [
                 'status' => "wrong_method",
-                'text' => $this->lang->translate('wrong_payment_method'),
+                'text' => $this->lang->t('wrong_payment_method'),
                 'positive' => false,
             ];
         }
@@ -82,17 +82,14 @@ class PaymentService
         // Tworzymy obiekt, który będzie nam obsługiwał proces płatności
         $paymentModule = null;
         if ($purchase->getPayment('method') == Purchase::METHOD_SMS) {
-            $transactionService = if_strlen2(
-                $purchase->getPayment('sms_service'),
-                $this->settings['sms_service']
-            );
-            $paymentModule = $this->heart->getPaymentModule($transactionService);
+            $paymentPlatformId =
+                $purchase->getPayment('sms_platform') ?: $this->settings->getSmsPlatformId();
+            $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail($paymentPlatformId);
         } elseif ($purchase->getPayment('method') == Purchase::METHOD_TRANSFER) {
-            $transactionService = if_strlen2(
-                $purchase->getPayment('transfer_service'),
-                $this->settings['transfer_service']
-            );
-            $paymentModule = $this->heart->getPaymentModule($transactionService);
+            $paymentPlatformId =
+                $purchase->getPayment('transfer_platform') ?:
+                $this->settings->getTransferPlatformId();
+            $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail($paymentPlatformId);
         }
 
         // Pobieramy ile kosztuje ta usługa dla przelewu / portfela
@@ -109,7 +106,7 @@ class PaymentService
         ) {
             return [
                 'status' => "wallet_not_logged",
-                'text' => $this->lang->translate('no_login_no_wallet'),
+                'text' => $this->lang->t('no_login_no_wallet'),
                 'positive' => false,
             ];
         }
@@ -120,7 +117,7 @@ class PaymentService
         ) {
             return [
                 'status' => "sms_unavailable",
-                'text' => $this->lang->translate('sms_unavailable'),
+                'text' => $this->lang->t('sms_unavailable'),
                 'positive' => false,
             ];
         }
@@ -131,7 +128,7 @@ class PaymentService
         ) {
             return [
                 'status' => "no_sms_option",
-                'text' => $this->lang->translate('no_sms_payment'),
+                'text' => $this->lang->t('no_sms_payment'),
                 'positive' => false,
             ];
         }
@@ -142,10 +139,7 @@ class PaymentService
         ) {
             return [
                 'status' => "too_little_for_transfer",
-                'text' => $this->lang->sprintf(
-                    $this->lang->translate('transfer_above_amount'),
-                    $this->settings['currency']
-                ),
+                'text' => $this->lang->t('transfer_above_amount', $this->settings->getCurrency()),
                 'positive' => false,
             ];
         }
@@ -156,7 +150,7 @@ class PaymentService
         ) {
             return [
                 'status' => "transfer_unavailable",
-                'text' => $this->lang->translate('transfer_unavailable'),
+                'text' => $this->lang->t('transfer_unavailable'),
                 'positive' => false,
             ];
         }
@@ -180,7 +174,7 @@ class PaymentService
             $purchase->getPayment('method') == Purchase::METHOD_SERVICE_CODE &&
             !strlen($purchase->getPayment('service_code'))
         ) {
-            $warnings['service_code'][] = $this->lang->translate('field_no_empty');
+            $warnings['service_code'][] = $this->lang->t('field_no_empty');
         }
 
         if ($warnings) {
@@ -189,21 +183,20 @@ class PaymentService
 
             return [
                 'status' => "warnings",
-                'text' => $this->lang->translate('form_wrong_filled'),
+                'text' => $this->lang->t('form_wrong_filled'),
                 'positive' => false,
                 'data' => $warningData,
             ];
         }
 
         if ($purchase->getPayment('method') === Purchase::METHOD_SMS) {
-            // Sprawdzamy kod zwrotny
+            // Let's check sms code
             $result = $this->smsPaymentService->payWithSms(
                 $paymentModule,
                 $purchase->getPayment('sms_code'),
                 $purchase->getTariff(),
                 $purchase->user
             );
-            $paymentId = $result['payment_id'];
 
             if ($result['status'] !== 'ok') {
                 return [
@@ -212,29 +205,29 @@ class PaymentService
                     'positive' => false,
                 ];
             }
+
+            $paymentId = $result['payment_id'];
         }
 
         if ($purchase->getPayment('method') === Purchase::METHOD_WALLET) {
-            // Dodanie informacji o płatności z portfela
             $paymentId = $this->walletPaymentService->payWithWallet(
                 $purchase->getPayment('cost'),
                 $purchase->user
             );
 
-            // Metoda pay_wallet zwróciła błąd.
+            // pay_wallet method returned an error
             if (is_array($paymentId)) {
                 return $paymentId;
             }
         }
 
         if ($purchase->getPayment('method') === Purchase::METHOD_SERVICE_CODE) {
-            // Dodanie informacji o płatności z portfela
             $paymentId = $this->serviceCodePaymentService->payWithServiceCode(
                 $purchase,
                 $serviceModule
             );
 
-            // Funkcja pay_service_code zwróciła błąd.
+            // pay_service_code method returned an error
             if (is_array($paymentId)) {
                 return $paymentId;
             }
@@ -255,7 +248,7 @@ class PaymentService
 
             return [
                 'status' => "purchased",
-                'text' => $this->lang->translate('purchase_success'),
+                'text' => $this->lang->t('purchase_success'),
                 'positive' => true,
                 'data' => ['bsid' => $boughtServiceId],
             ];
@@ -263,10 +256,7 @@ class PaymentService
 
         if ($purchase->getPayment('method') == Purchase::METHOD_TRANSFER) {
             $purchase->setDesc(
-                $this->lang->sprintf(
-                    $this->lang->translate('payment_for_service'),
-                    $serviceModule->service->getName()
-                )
+                $this->lang->t('payment_for_service', $serviceModule->service->getName())
             );
 
             return $this->transferPaymentService->payWithTransfer($paymentModule, $purchase);

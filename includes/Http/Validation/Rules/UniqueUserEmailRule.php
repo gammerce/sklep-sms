@@ -38,8 +38,8 @@ class UniqueUserEmailRule implements Rule
             )
         );
 
-        if ($this->db->numRows($result)) {
-            return [$this->lang->translate('email_occupied')];
+        if ($result->rowCount()) {
+            return [$this->lang->t('email_occupied')];
         }
 
         return [];

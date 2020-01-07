@@ -1,10 +1,10 @@
 <form id="form_server_edit" class="action_box">
     <div class="service_main_info">
-        {$lang->translate('edit_server')}
+        {$lang->t('edit_server')}
     </div>
     <table>
         <tr>
-            <td>{$lang->translate('id')}</td>
+            <td>{$lang->t('id')}</td>
             <td>{{ $server->getId() }}</td>
         </tr>
 
@@ -14,7 +14,7 @@
 
         <tr>
             <td>
-                <label for="name">{$lang->strtoupper($lang->translate('name'))}</label>
+                <label for="name">{$lang->strtoupper($lang->t('name'))}</label>
             </td>
             <td>
                 <div class="field">
@@ -35,7 +35,7 @@
 
         <tr>
             <td>
-                <label for="ip">{$lang->translate('ip')}</label>
+                <label for="ip">{$lang->t('ip')}</label>
             </td>
             <td>
                 <div class="field">
@@ -56,7 +56,7 @@
 
         <tr>
             <td>
-                <label for="port">{$lang->strtoupper($lang->translate('port'))}</label>
+                <label for="port">{$lang->strtoupper($lang->t('port'))}</label>
             </td>
             <td>
                 <div class="field">
@@ -77,15 +77,15 @@
 
         <tr>
             <td>
-                <label for="sms_service">{$lang->translate('sms_payment_service')}</label>
+                <label for="sms_platform">{$lang->t('sms_payment_platform')}</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
-                            <select id="sms_service" name="sms_service">
-                                <option value="">{$lang->translate('default')}</option>
-                                {$smsServices}
+                            <select id="sms_platform" name="sms_platform">
+                                <option value="">{$lang->t('default')}</option>
+                                {$smsPlatforms}
                             </select>
                         </div>
                     </div>
@@ -106,7 +106,7 @@
         <tr>
             <td colspan="2">
                 <input type="hidden" name="id" value="{{ $server->getId() }}" />
-                <input type="submit" value="{$lang->translate('edit')}" class="button w100" />
+                <input type="submit" value="{$lang->t('edit')}" class="button w100" />
             </td>
         </tr>
     </table>

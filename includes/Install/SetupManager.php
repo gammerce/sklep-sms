@@ -1,22 +1,21 @@
 <?php
 namespace App\Install;
 
+use App\System\FileSystemContract;
 use App\System\Path;
-use App\Translation\TranslationManager;
-use App\Translation\Translator;
 
 class SetupManager
 {
     /** @var Path */
     private $path;
 
-    /** @var Translator */
-    private $lang;
+    /** @var FileSystemContract */
+    private $fileSystem;
 
-    public function __construct(Path $path, TranslationManager $translationManager)
+    public function __construct(Path $path, FileSystemContract $fileSystem)
     {
         $this->path = $path;
-        $this->lang = $translationManager->user();
+        $this->fileSystem = $fileSystem;
     }
 
     public function start()
@@ -29,31 +28,34 @@ class SetupManager
         $this->removeInProgress();
     }
 
-    // TODO It should be used in exception handler
     public function markAsFailed()
     {
-        file_put_contents($this->path->to('data/setup_error'), '');
+        $path = $this->path->to('data/setup_error');
+        $this->fileSystem->put($path, "");
+        $this->fileSystem->setPermissions($path, 0777);
     }
 
     /** @return bool */
     public function hasFailed()
     {
-        return file_exists($this->path->to('data/setup_error'));
+        return $this->fileSystem->exists($this->path->to('data/setup_error'));
     }
 
     /** @return bool */
     public function isInProgress()
     {
-        return file_exists($this->path->to('data/setup_progress'));
+        return $this->fileSystem->exists($this->path->to('data/setup_progress'));
     }
 
     private function putInProgress()
     {
-        file_put_contents($this->path->to('data/setup_progress'), "");
+        $path = $this->path->to('data/setup_progress');
+        $this->fileSystem->put($path, "");
+        $this->fileSystem->setPermissions($path, 0777);
     }
 
-    public function removeInProgress()
+    private function removeInProgress()
     {
-        unlink($this->path->to('data/setup_progress'));
+        $this->fileSystem->delete($this->path->to('data/setup_progress'));
     }
 }

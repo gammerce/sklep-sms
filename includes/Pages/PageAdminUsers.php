@@ -19,7 +19,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('users');
+        $this->heart->pageTitle = $this->title = $this->lang->t('users');
     }
 
     protected function content(array $query, array $body)
@@ -29,14 +29,14 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         $wrapper->setSearch();
 
         $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('username')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('firstname')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('surname')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('email')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('sid')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('groups')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('wallet')));
+        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->t('username')));
+        $table->addHeadCell(new HeadCell($this->lang->t('firstname')));
+        $table->addHeadCell(new HeadCell($this->lang->t('surname')));
+        $table->addHeadCell(new HeadCell($this->lang->t('email')));
+        $table->addHeadCell(new HeadCell($this->lang->t('sid')));
+        $table->addHeadCell(new HeadCell($this->lang->t('groups')));
+        $table->addHeadCell(new HeadCell($this->lang->t('wallet')));
 
         $where = '';
         if (isset($query['search'])) {
@@ -71,9 +71,9 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                 get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+        $table->setDbRowsAmount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $bodyRow = new BodyRow();
 
             $row['groups'] = explode(";", $row['groups']);
@@ -93,7 +93,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             $bodyRow->addCell(new Cell($groups));
 
             $cell = new Cell(
-                number_format($row['wallet'] / 100.0, 2) . ' ' . $this->settings['currency']
+                number_format($row['wallet'] / 100.0, 2) . ' ' . $this->settings->getCurrency()
             );
             $cell->setParam('headers', 'wallet');
             $bodyRow->addCell($cell);
@@ -121,7 +121,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
     {
         $button = new Link();
         $button->addClass('dropdown-item charge_wallet');
-        $button->addContent($this->lang->translate('charge'));
+        $button->addContent($this->lang->t('charge'));
         return $button;
     }
 
@@ -129,7 +129,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
     {
         $button = new Link();
         $button->addClass('dropdown-item change_password');
-        $button->addContent($this->lang->translate('change_password'));
+        $button->addContent($this->lang->t('change_password'));
         return $button;
     }
 

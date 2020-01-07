@@ -14,6 +14,7 @@ use App\Pages\PageAdminIncome;
 use App\Pages\PageAdminLogs;
 use App\Pages\PageAdminMain;
 use App\Pages\PageAdminPaymentAdmin;
+use App\Pages\PageAdminPaymentPlatforms;
 use App\Pages\PageAdminPaymentServiceCode;
 use App\Pages\PageAdminPaymentSms;
 use App\Pages\PageAdminPaymentTransfer;
@@ -26,7 +27,6 @@ use App\Pages\PageAdminServices;
 use App\Pages\PageAdminSettings;
 use App\Pages\PageAdminSmsCodes;
 use App\Pages\PageAdminTariffs;
-use App\Pages\PageAdminTransactionServices;
 use App\Pages\PageAdminUpdateServers;
 use App\Pages\PageAdminUpdateWeb;
 use App\Pages\PageAdminUsers;
@@ -51,44 +51,47 @@ use App\Services\ChargeWallet\ServiceChargeWallet;
 use App\Services\ExtraFlags\ServiceExtraFlags;
 use App\Services\MybbExtraGroups\ServiceMybbExtraGroups;
 use App\Services\Other\ServiceOther;
+use App\System\Application;
 use App\System\Heart;
-use App\Verification\Bizneshost;
-use App\Verification\Cashbill;
-use App\Verification\Cssetti;
-use App\Verification\Gosetti;
-use App\Verification\Homepay;
-use App\Verification\Hostplay;
-use App\Verification\Microsms;
-use App\Verification\Mintshost;
-use App\Verification\OneShotOneKill;
-use App\Verification\Profitsms;
-use App\Verification\Pukawka;
-use App\Verification\Simpay;
-use App\Verification\Transferuj;
-use App\Verification\Zabijaka;
+use App\Verification\PaymentModules\Cashbill;
+use App\Verification\PaymentModules\Cssetti;
+use App\Verification\PaymentModules\Gosetti;
+use App\Verification\PaymentModules\Homepay;
+use App\Verification\PaymentModules\Hostplay;
+use App\Verification\PaymentModules\Microsms;
+use App\Verification\PaymentModules\OneShotOneKill;
+use App\Verification\PaymentModules\Profitsms;
+use App\Verification\PaymentModules\Pukawka;
+use App\Verification\PaymentModules\Simpay;
+use App\Verification\PaymentModules\Transferuj;
+use App\Verification\PaymentModules\Zabijaka;
 
 class HeartServiceProvider
 {
-    public function boot(Heart $heart)
+    public function register(Application $app)
     {
-        $this->registerPaymentModules($heart);
-        $this->registerPages($heart);
-        $this->registerAdminPages($heart);
-        $this->registerBlocks($heart);
-        $this->registerServices($heart);
+        $app->singleton(Heart::class, function (Application $app) {
+            $heart = $app->build(Heart::class);
+
+            $this->registerPaymentModules($heart);
+            $this->registerPages($heart);
+            $this->registerAdminPages($heart);
+            $this->registerBlocks($heart);
+            $this->registerServices($heart);
+
+            return $heart;
+        });
     }
 
-    protected function registerPaymentModules(Heart $heart)
+    private function registerPaymentModules(Heart $heart)
     {
         $heart->registerPaymentModule(OneShotOneKill::MODULE_ID, OneShotOneKill::class);
-        $heart->registerPaymentModule(Bizneshost::MODULE_ID, Bizneshost::class);
         $heart->registerPaymentModule(Cashbill::MODULE_ID, Cashbill::class);
         $heart->registerPaymentModule(Cssetti::MODULE_ID, Cssetti::class);
         $heart->registerPaymentModule(Gosetti::MODULE_ID, Gosetti::class);
         $heart->registerPaymentModule(Homepay::MODULE_ID, Homepay::class);
         $heart->registerPaymentModule(Hostplay::MODULE_ID, Hostplay::class);
         $heart->registerPaymentModule(Microsms::MODULE_ID, Microsms::class);
-        $heart->registerPaymentModule(Mintshost::MODULE_ID, Mintshost::class);
         $heart->registerPaymentModule(Profitsms::MODULE_ID, Profitsms::class);
         $heart->registerPaymentModule(Pukawka::MODULE_ID, Pukawka::class);
         $heart->registerPaymentModule(Simpay::MODULE_ID, Simpay::class);
@@ -96,7 +99,7 @@ class HeartServiceProvider
         $heart->registerPaymentModule(Zabijaka::MODULE_ID, Zabijaka::class);
     }
 
-    protected function registerPages(Heart $heart)
+    private function registerPages(Heart $heart)
     {
         $heart->registerUserPage(
             PageCashbillTransferFinalized::PAGE_ID,
@@ -119,7 +122,7 @@ class HeartServiceProvider
         $heart->registerUserPage(PageUserOwnServices::PAGE_ID, PageUserOwnServices::class);
     }
 
-    protected function registerAdminPages(Heart $heart)
+    private function registerAdminPages(Heart $heart)
     {
         $heart->registerAdminPage(
             PageAdminAntispamQuestions::PAGE_ID,
@@ -150,8 +153,8 @@ class HeartServiceProvider
         $heart->registerAdminPage(PageAdminSmsCodes::PAGE_ID, PageAdminSmsCodes::class);
         $heart->registerAdminPage(PageAdminTariffs::PAGE_ID, PageAdminTariffs::class);
         $heart->registerAdminPage(
-            PageAdminTransactionServices::PAGE_ID,
-            PageAdminTransactionServices::class
+            PageAdminPaymentPlatforms::PAGE_ID,
+            PageAdminPaymentPlatforms::class
         );
         $heart->registerAdminPage(PageAdminUpdateServers::PAGE_ID, PageAdminUpdateServers::class);
         $heart->registerAdminPage(PageAdminUpdateWeb::PAGE_ID, PageAdminUpdateWeb::class);
@@ -159,7 +162,7 @@ class HeartServiceProvider
         $heart->registerAdminPage(PageAdminUsers::PAGE_ID, PageAdminUsers::class);
     }
 
-    protected function registerBlocks(Heart $heart)
+    private function registerBlocks(Heart $heart)
     {
         $heart->registerBlock('admincontent', BlockAdminContent::class);
         $heart->registerBlock('content', BlockContent::class);
@@ -169,7 +172,7 @@ class HeartServiceProvider
         $heart->registerBlock('wallet', BlockWallet::class);
     }
 
-    protected function registerServices(Heart $heart)
+    private function registerServices(Heart $heart)
     {
         $heart->registerServiceModule(
             ServiceChargeWallet::MODULE_ID,

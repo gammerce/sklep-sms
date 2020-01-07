@@ -11,15 +11,15 @@
                             <img
                                 class="logo"
                                 src="https://sklep-sms.pl/images/logo_simple.svg"
-                                alt="{$lang->translate('shop_sms')}"
+                                alt="{$lang->t('shop_sms')}"
                                 style="height: 60px"
                             />
                         </a>
                     </td>
                     <td class="has-text-centered">
-                        {$lang->translate('acp')} (&nbsp;v{{ $currentVersion }}&nbsp;)
+                        {$lang->t('acp')} (&nbsp;v{{ $currentVersion }}&nbsp;)
                         <div class="hint">
-                            {$lang->translate('license_expires')}: {{ $license->getExpires() }}
+                            {$lang->t('license_expires')}: {{ $license->getExpires() }}
                         </div>
                     </td>
                     <td class="has-text-right" style="width: 360px;">
@@ -28,7 +28,7 @@
                             <input type="hidden" name="action" value="logout" />
                             (
                             <a href="#" onclick="$(this).parents('form').submit()">
-                                {$lang->translate('logout')}
+                                {$lang->t('logout')}
                             </a>
                             )
                         </form>
@@ -37,45 +37,45 @@
             </table>
         </div>
         <div class="sidebar">
-            <h3>{$lang->translate('main')}</h3>
+            <h3>{$lang->t('main')}</h3>
             <ul>
                 <a href="{{ $url->to('/admin/home') }}">
-                    <li>&#8594; {$lang->translate('main_page')}</li>
+                    <li>&#8594; {$lang->t('main_page')}</li>
                 </a>
                 {$settingsLink} {$antispamQuestionsLink} {$transactionServicesLink} {$servicesLink}
                 {$serversLink} {$tariffsLink} {$pricelistLink}
             </ul>
-            <h3>{$lang->translate('users_services')}</h3>
+            <h3>{$lang->t('users_services')}</h3>
             <ul>
                 {$userServiceLink} {$playersFlagsLink}
             </ul>
-            <h3>{$lang->translate('users')}</h3>
+            <h3>{$lang->t('users')}</h3>
             <ul>
                 {$usersLink} {$groupsLink}
             </ul>
-            <h3>{$lang->translate('additions')}</h3>
+            <h3>{$lang->t('additions')}</h3>
             <ul>
                 {$incomeLink} {$serviceCodesLink} {$smsCodesLink}
             </ul>
-            <h3>{$lang->translate('logs')}</h3>
+            <h3>{$lang->t('logs')}</h3>
             <ul>
                 <a href="{{ $url->to('/admin/bought_services') }}">
-                    <li>&#8594; {$lang->translate('bought_services')}</li>
+                    <li>&#8594; {$lang->t('bought_services')}</li>
                 </a>
                 <a href="{{ $url->to('/admin/payment_sms') }}">
-                    <li>&#8594; {$lang->translate('payments_sms')}</li>
+                    <li>&#8594; {$lang->t('payments_sms')}</li>
                 </a>
                 <a href="{{ $url->to('/admin/payment_transfer') }}">
-                    <li>&#8594; {$lang->translate('payments_transfer')}</li>
+                    <li>&#8594; {$lang->t('payments_transfer')}</li>
                 </a>
                 <a href="{{ $url->to('/admin/payment_wallet') }}">
-                    <li>&#8594; {$lang->translate('payments_wallet')}</li>
+                    <li>&#8594; {$lang->t('payments_wallet')}</li>
                 </a>
                 <a href="{{ $url->to('/admin/payment_admin') }}">
-                    <li>&#8594; {$lang->translate('payments_admin')}</li>
+                    <li>&#8594; {$lang->t('payments_admin')}</li>
                 </a>
                 <a href="{{ $url->to('/admin/payment_service_code') }}">
-                    <li>&#8594; {$lang->translate('payments_service_code')}</li>
+                    <li>&#8594; {$lang->t('payments_service_code')}</li>
                 </a>
                 {$logsLink}
             </ul>

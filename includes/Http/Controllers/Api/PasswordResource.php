@@ -29,11 +29,11 @@ class PasswordResource
             $warnings['pass'] = array_merge((array) $warnings['pass'], $warning);
         }
         if ($pass != $passr) {
-            $warnings['pass_repeat'][] = $lang->translate('different_values');
+            $warnings['pass_repeat'][] = $lang->t('different_values');
         }
 
         if (hash_password($oldpass, $user->getSalt()) != $user->getPassword()) {
-            $warnings['old_pass'][] = $lang->translate('old_pass_wrong');
+            $warnings['old_pass'][] = $lang->t('old_pass_wrong');
         }
 
         if ($warnings) {
@@ -55,6 +55,6 @@ class PasswordResource
 
         log_to_db("Zmieniono hasło. ID użytkownika: {$user->getUid()}.");
 
-        return new ApiResponse("password_changed", $lang->translate('password_changed'), 1);
+        return new ApiResponse("password_changed", $lang->t('password_changed'), 1);
     }
 }

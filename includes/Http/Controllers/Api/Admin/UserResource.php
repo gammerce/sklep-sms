@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\Http\Validation\Rules\NumberRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\SteamIdRule;
@@ -64,16 +65,9 @@ class UserResource
 
         $userRepository->update($editedUser);
 
-        log_to_db(
-            $langShop->sprintf(
-                $langShop->translate('user_admin_edit'),
-                $user->getUsername(),
-                $user->getUid(),
-                $userId
-            )
-        );
+        log_to_db($langShop->t('user_admin_edit', $user->getUsername(), $user->getUid(), $userId));
 
-        return new ApiResponse('ok', $lang->translate('user_edit'), 1);
+        return new SuccessApiResponse($lang->t('user_edit'));
     }
 
     public function delete(
@@ -94,16 +88,11 @@ class UserResource
 
         if ($statement->rowCount()) {
             log_to_db(
-                $langShop->sprintf(
-                    $langShop->translate('user_admin_delete'),
-                    $user->getUsername(),
-                    $user->getUid(),
-                    $userId
-                )
+                $langShop->t('user_admin_delete', $user->getUsername(), $user->getUid(), $userId)
             );
-            return new ApiResponse('ok', $lang->translate('delete_user'), 1);
+            return new SuccessApiResponse($lang->t('delete_user'));
         }
 
-        return new ApiResponse("not_deleted", $lang->translate('no_delete_user'), 0);
+        return new ApiResponse("not_deleted", $lang->t('no_delete_user'), 0);
     }
 }

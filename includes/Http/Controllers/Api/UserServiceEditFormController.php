@@ -24,29 +24,29 @@ class UserServiceEditFormController
 
         // Użytkownik nie może edytować usługi
         if (!$settings['user_edit_service']) {
-            return new HtmlResponse($lang->translate('not_logged'));
+            return new HtmlResponse($lang->t('not_logged'));
         }
 
         $userService = get_users_services($userServiceId);
 
         if (empty($userService)) {
-            return new HtmlResponse($lang->translate('dont_play_games'));
+            return new HtmlResponse($lang->t('dont_play_games'));
         }
 
         // Dany użytkownik nie jest właścicielem usługi o danym id
         if ($userService['uid'] != $user->getUid()) {
-            return new HtmlResponse($lang->translate('dont_play_games'));
+            return new HtmlResponse($lang->t('dont_play_games'));
         }
 
         if (($serviceModule = $heart->getServiceModule($userService['service'])) === null) {
-            return new HtmlResponse($lang->translate('service_cant_be_modified'));
+            return new HtmlResponse($lang->t('service_cant_be_modified'));
         }
 
         if (
             !$settings['user_edit_service'] ||
             !($serviceModule instanceof IServiceUserOwnServicesEdit)
         ) {
-            return new HtmlResponse($lang->translate('service_cant_be_modified'));
+            return new HtmlResponse($lang->t('service_cant_be_modified'));
         }
 
         $buttons = $template->render("services/my_services_savencancel");

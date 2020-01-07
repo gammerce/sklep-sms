@@ -10,7 +10,9 @@ use App\Install\RequirementsStore;
 use App\Install\SetupManager;
 use App\System\Application;
 use App\System\Database;
+use App\System\FileSystemContract;
 use App\System\Path;
+use Exception;
 use PDOException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,6 +24,7 @@ class InstallController
         RequirementsStore $requirementsStore,
         SetupManager $setupManager,
         Path $path,
+        FileSystemContract $fileSystem,
         Application $app
     ) {
         if ($setupManager->hasFailed()) {
@@ -80,7 +83,7 @@ class InstallController
         }
 
         foreach ($filesWithWritePermission as $file) {
-            if (strlen($file) && !is_writable($path->to($file))) {
+            if (strlen($file) && !$fileSystem->isWritable($path->to($file))) {
                 $warnings['general'][] =
                     "Ścieżka <b>" . htmlspecialchars($file) . "</b> nie posiada praw do zapisu.";
             }
@@ -97,10 +100,16 @@ class InstallController
             throw new ValidationException($warnings);
         }
 
-        $setupManager->start();
-        $migrator->setup($licenseToken, $adminUsername, $adminPassword);
-        $envCreator->create($dbHost, $dbPort, $dbDb, $dbUser, $dbPassword);
-        $setupManager->finish();
+        try {
+            $setupManager->start();
+            $migrator->setup($licenseToken, $adminUsername, $adminPassword);
+            $envCreator->create($dbHost, $dbPort, $dbDb, $dbUser, $dbPassword);
+        } catch (Exception $e) {
+            $setupManager->markAsFailed();
+            throw $e;
+        } finally {
+            $setupManager->finish();
+        }
 
         return new ApiResponse("ok", "Instalacja przebiegła pomyślnie.", true);
     }

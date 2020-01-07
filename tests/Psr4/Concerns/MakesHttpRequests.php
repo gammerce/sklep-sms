@@ -40,6 +40,11 @@ trait MakesHttpRequests
         return $this->call('PUT', $uri, $query, $body, $headers);
     }
 
+    protected function delete($uri, array $query = [], array $headers = [])
+    {
+        return $this->call('DELETE', $uri, $query, [], $headers);
+    }
+
     protected function decodeJsonResponse(Response $response)
     {
         return json_decode($response->getContent(), true);

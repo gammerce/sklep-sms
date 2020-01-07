@@ -6,11 +6,14 @@ use App\Html\Li;
 use App\Html\Link;
 use App\Html\Ul;
 use App\Html\UnescapedSimpleText;
+use App\Loggers\DatabaseLogger;
+use App\Models\Server;
 use App\Models\User;
 use App\Routes\UrlGenerator;
 use App\Services\Interfaces\IServicePurchaseWeb;
 use App\System\Auth;
 use App\System\Database;
+use App\System\FileSystemContract;
 use App\System\Heart;
 use App\System\Path;
 use App\System\Settings;
@@ -139,7 +142,7 @@ function get_pagination($all, $currentPage, $script, $query, $rowLimit = 0)
     $pagination = new Div();
     $pagination->addClass("pagination is-centered");
 
-    $previousButton = new Link($lang->translate("previous"));
+    $previousButton = new Link($lang->t("previous"));
     $previousButton->addClass("pagination-previous");
     if ($currentPage - 1 < 1) {
         $previousButton->setParam("disabled", true);
@@ -150,7 +153,7 @@ function get_pagination($all, $currentPage, $script, $query, $rowLimit = 0)
         );
     }
 
-    $nextButton = new Link($lang->translate("next"));
+    $nextButton = new Link($lang->t("next"));
     $nextButton->addClass("pagination-next");
     if ($currentPage + 1 > $pagesAmount) {
         $nextButton->setParam("disabled", true);
@@ -290,9 +293,9 @@ function purchase_info($data)
         }
     }
 
-    $pbs = $db->fetchArrayAssoc(
-        $db->query("SELECT * FROM ({$settings['transactions_query']}) as t " . "WHERE {$where}")
-    );
+    $pbs = $db
+        ->query("SELECT * FROM ({$settings['transactions_query']}) as t " . "WHERE {$where}")
+        ->fetch();
 
     // Brak wynikow
     if (empty($pbs)) {
@@ -346,7 +349,7 @@ function get_users_services($conditions = '', $takeOut = true)
                 " ORDER BY us.id DESC "
         );
 
-        while ($row = $db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             unset($row['us_id']);
             $output[$row['id']] = $row;
         }
@@ -398,9 +401,7 @@ function delete_users_old_services()
                 $userServiceDesc .= ucfirst(strtolower($key)) . ': ' . $value;
             }
 
-            log_to_db(
-                $langShop->sprintf($langShop->translate('expired_service_delete'), $userServiceDesc)
-            );
+            log_to_db($langShop->t('expired_service_delete', $userServiceDesc));
         }
     }
 
@@ -459,15 +460,26 @@ function get_platform($platform)
     $translationManager = app()->make(TranslationManager::class);
     $lang = $translationManager->user();
 
-    if ($platform == "engine_amxx") {
-        return $lang->translate('amxx_server');
+    if (in_array($platform, ["engine_amxx", Server::TYPE_AMXMODX])) {
+        return $lang->t('amxx_server');
     }
 
-    if ($platform == "engine_sm") {
-        return $lang->translate('sm_server');
+    if (in_array($platform, ["engine_sm", Server::TYPE_SOURCEMOD])) {
+        return $lang->t('sm_server');
     }
 
     return $platform;
+}
+
+// TODO Remove "engine_sm" and "engine_amxx"
+function is_server_platform($platform)
+{
+    return in_array($platform, [
+        "engine_amxx",
+        Server::TYPE_AMXMODX,
+        "engine_sm",
+        Server::TYPE_SOURCEMOD,
+    ]);
 }
 
 function get_ip(Request $request = null)
@@ -516,7 +528,7 @@ function convertDate($timestamp, $format = "")
     $settings = app()->make(Settings::class);
 
     if (!strlen($format)) {
-        $format = $settings['date_format'];
+        $format = $settings->getDateFormat();
     }
 
     $date = new DateTime($timestamp);
@@ -535,32 +547,17 @@ function get_sms_cost($number)
 {
     if (strlen($number) < 4) {
         return 0;
-    } else {
-        if ($number[0] == "7") {
-            return $number[1] == "0" ? 50 : intval($number[1]) * 100;
-        } else {
-            if ($number[0] == "9") {
-                return intval($number[1] . $number[2]) * 100;
-            }
-        }
+    }
+
+    if ($number[0] == "7") {
+        return $number[1] == "0" ? 50 : intval($number[1]) * 100;
+    }
+
+    if ($number[0] == "9") {
+        return intval($number[1] . $number[2]) * 100;
     }
 
     return 0;
-}
-
-/**
- * Returns sms cost brutto by number
- *
- * @param $number
- *
- * @return float
- */
-function get_sms_cost_gross($number)
-{
-    /** @var Settings $settings */
-    $settings = app()->make(Settings::class);
-
-    return ceil(get_sms_cost($number) * $settings['vat']);
 }
 
 function hash_password($password, $salt)
@@ -604,19 +601,7 @@ function secondsToTime($seconds)
 
     return $dtF
         ->diff($dtT)
-        ->format(
-            "%a {$lang->translate('days')} {$lang->translate('and')} %h {$lang->translate('hours')}"
-        );
-}
-
-function if_strlen(&$empty, $default)
-{
-    return isset($empty) && strlen($empty) ? $empty : $default;
-}
-
-function if_strlen2($empty, $default)
-{
-    return strlen($empty) ? $empty : $default;
+        ->format("%a {$lang->t('days')} {$lang->t('and')} %h {$lang->t('hours')}");
 }
 
 function custom_mb_str_split($string)
@@ -783,24 +768,22 @@ function log_to_file($file, $message, array $data = [])
     /** @var Settings $settings */
     $settings = app()->make(Settings::class);
 
+    /** @var FileSystemContract $fileSystem */
+    $fileSystem = app()->make(FileSystemContract::class);
+
     $dataText = $data ? " | " . json_encode($data) : "";
-    $text = date($settings['date_format']) . ": " . $message . $dataText;
+    $text = date($settings->getDateFormat()) . ": " . $message . $dataText;
 
-    if (file_exists($file) && strlen(file_get_contents($file))) {
-        $text = file_get_contents($file) . "\n" . $text;
-    }
-
-    file_put_contents($file, $text);
+    $fileSystem->append($file, $text);
+    $fileSystem->setPermissions($file, 0777);
 }
 
-function log_to_db($message)
+// TODO Use database logger
+function log_to_db($key, ...$args)
 {
-    /** @var Database $db */
-    $db = app()->make(Database::class);
-
-    $db->query(
-        $db->prepare("INSERT INTO `" . TABLE_PREFIX . "logs` " . "SET `text` = '%s'", [$message])
-    );
+    /** @var DatabaseLogger $logger */
+    $logger = app()->make(DatabaseLogger::class);
+    $logger->log($key, ...$args);
 }
 
 function log_error($message, array $data = [])
@@ -853,20 +836,20 @@ function check_for_warnings($type, $data)
     switch ($type) {
         case "username":
             if (strlen($data) < 2) {
-                $warnings[] = $lang->sprintf($lang->translate('field_length_min_warn'), 2);
+                $warnings[] = $lang->t('field_length_min_warn', 2);
             }
             if ($data != htmlspecialchars($data)) {
-                $warnings[] = $lang->translate('username_chars_warn');
+                $warnings[] = $lang->t('username_chars_warn');
             }
 
             break;
 
         case "nick":
             if (strlen($data) < 2) {
-                $warnings[] = $lang->sprintf($lang->translate('field_length_min_warn'), 2);
+                $warnings[] = $lang->t('field_length_min_warn', 2);
             } else {
                 if (strlen($data) > 32) {
-                    $warnings[] = $lang->sprintf($lang->translate('field_length_max_warn'), 32);
+                    $warnings[] = $lang->t('field_length_max_warn', 32);
                 }
             }
 
@@ -874,38 +857,38 @@ function check_for_warnings($type, $data)
 
         case "password":
             if (strlen($data) < 6) {
-                $warnings[] = $lang->sprintf($lang->translate('field_length_min_warn'), 6);
+                $warnings[] = $lang->t('field_length_min_warn', 6);
             }
 
             break;
 
         case "email":
             if (!filter_var($data, FILTER_VALIDATE_EMAIL)) {
-                $warnings[] = $lang->translate('wrong_email');
+                $warnings[] = $lang->t('wrong_email');
             }
 
             break;
 
         case "ip":
             if (!filter_var($data, FILTER_VALIDATE_IP)) {
-                $warnings[] = $lang->translate('wrong_ip');
+                $warnings[] = $lang->t('wrong_ip');
             }
 
             break;
 
         case "sid":
             if (!valid_steam($data) || strlen($data) > 32) {
-                $warnings[] = $lang->translate('wrong_sid');
+                $warnings[] = $lang->t('wrong_sid');
             }
 
             break;
 
         case "uid":
             if (!strlen($data)) {
-                $warnings[] = $lang->translate('field_no_empty');
+                $warnings[] = $lang->t('field_no_empty');
             } else {
                 if (!is_numeric($data)) {
-                    $warnings[] = $lang->translate('field_must_be_number');
+                    $warnings[] = $lang->t('field_must_be_number');
                 }
             }
 
@@ -913,17 +896,17 @@ function check_for_warnings($type, $data)
 
         case "service_description":
             if (strlen($data) > 28) {
-                $warnings[] = $lang->sprintf($lang->translate('field_length_max_warn'), 28);
+                $warnings[] = $lang->t('field_length_max_warn', 28);
             }
 
             break;
 
         case "sms_code":
             if (!strlen($data)) {
-                $warnings[] = $lang->translate('field_no_empty');
+                $warnings[] = $lang->t('field_no_empty');
             } else {
                 if (strlen($data) > 16) {
-                    $warnings[] = $lang->translate('return_code_length_warn');
+                    $warnings[] = $lang->t('return_code_length_warn');
                 }
             }
 
@@ -931,10 +914,10 @@ function check_for_warnings($type, $data)
 
         case "number":
             if (!strlen($data)) {
-                $warnings[] = $lang->translate('field_no_empty');
+                $warnings[] = $lang->t('field_no_empty');
             } else {
                 if (!is_numeric($data)) {
-                    $warnings[] = $lang->translate('field_must_be_number');
+                    $warnings[] = $lang->t('field_must_be_number');
                 }
             }
 
@@ -950,7 +933,7 @@ function format_warnings(array $warnings)
 
     foreach ($warnings as $brick => $warning) {
         if ($warning) {
-            $help = new Div(implode("<br />", $warning));
+            $help = new Div(implode("<br />", (array) $warning));
             $help->addClass("form_warning help is-danger");
             $output[$brick] = $help->toHtml();
         }
@@ -962,4 +945,15 @@ function format_warnings(array $warnings)
 function get_error_code(PDOException $e)
 {
     return $e->errorInfo[1];
+}
+
+function semantic_to_number($version)
+{
+    $parts = explode('.', $version);
+
+    if (count($parts) < 3) {
+        return null;
+    }
+
+    return $parts[0] * 10000 + $parts[1] * 100 + $parts[2];
 }

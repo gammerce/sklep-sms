@@ -19,7 +19,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('groups');
+        $this->heart->pageTitle = $this->title = $this->lang->t('groups');
     }
 
     protected function content(array $query, array $body)
@@ -29,8 +29,8 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 
         $table = new Structure();
 
-        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('name')));
+        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->t('name')));
 
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `" .
@@ -40,9 +40,9 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                 get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($this->db->getColumn('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
+        $table->setDbRowsAmount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $bodyRow = new BodyRow();
 
             $bodyRow->setDbId($row['id']);
@@ -63,7 +63,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
             $button->setParam('id', 'group_button_add');
             $button->setParam('type', 'button');
             $button->addClass('button');
-            $button->setParam('value', $this->lang->translate('add_group'));
+            $button->setParam('value', $this->lang->t('add_group'));
             $wrapper->addButton($button);
         }
 
@@ -84,42 +84,34 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                 )
             );
 
-            if (!$this->db->numRows($result)) {
-                $query['template'] = create_dom_element(
-                    "form",
-                    $this->lang->translate('no_such_group'),
-                    [
-                        'class' => 'action_box',
-                        'style' => [
-                            'padding' => "20px",
-                            'color' => "white",
-                        ],
-                    ]
-                );
+            if (!$result->rowCount()) {
+                $query['template'] = create_dom_element("form", $this->lang->t('no_such_group'), [
+                    'class' => 'action_box',
+                    'style' => [
+                        'padding' => "20px",
+                        'color' => "white",
+                    ],
+                ]);
             } else {
-                $group = $this->db->fetchArrayAssoc($result);
+                $group = $result->fetch();
             }
         }
 
         $privileges = "";
         $result = $this->db->query("DESCRIBE " . TABLE_PREFIX . "groups");
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             if (in_array($row['Field'], ["id", "name"])) {
                 continue;
             }
 
-            $values = create_dom_element(
-                "option",
-                $this->lang->strtoupper($this->lang->translate('no')),
-                [
-                    'value' => 0,
-                    'selected' => isset($group) && $group[$row['Field']] ? "" : "selected",
-                ]
-            );
+            $values = create_dom_element("option", $this->lang->strtoupper($this->lang->t('no')), [
+                'value' => 0,
+                'selected' => isset($group) && $group[$row['Field']] ? "" : "selected",
+            ]);
 
             $values .= create_dom_element(
                 "option",
-                $this->lang->strtoupper($this->lang->translate('yes')),
+                $this->lang->strtoupper($this->lang->t('yes')),
                 [
                     'value' => 1,
                     'selected' => isset($group) && $group[$row['Field']] ? "selected" : "",
@@ -127,7 +119,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
             );
 
             $name = $row['Field'];
-            $text = $this->lang->translate('privilege_' . $row['Field']);
+            $text = $this->lang->t('privilege_' . $row['Field']);
 
             $privileges .= $this->template->render(
                 "tr_text_select",

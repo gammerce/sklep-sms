@@ -4,12 +4,16 @@ namespace App\System;
 use App\Blocks\Block;
 use App\Blocks\BlockSimple;
 use App\Exceptions\InvalidConfigException;
+use App\Exceptions\InvalidPaymentModuleException;
+use App\Models\PaymentPlatform;
 use App\Models\Server;
 use App\Models\Tariff;
 use App\Models\User;
 use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Pages\Page;
 use App\Pages\PageSimple;
+use App\Payment\PaymentModuleFactory;
+use App\Repositories\PaymentPlatformRepository;
 use App\Repositories\ServerRepository;
 use App\Repositories\ServiceRepository;
 use App\Repositories\UserRepository;
@@ -18,10 +22,14 @@ use App\Services\ExtraFlags\ServiceExtraFlags;
 use App\Services\Other\ServiceOther;
 use App\Services\Service;
 use App\Verification\Abstracts\PaymentModule;
+use App\Verification\DataField;
 use Exception;
 
 class Heart
 {
+    /** @var Application */
+    private $app;
+
     /** @var Database */
     private $db;
 
@@ -39,6 +47,12 @@ class Heart
 
     /** @var ServerRepository */
     private $serverRepository;
+
+    /** @var PaymentPlatformRepository */
+    private $paymentPlatformRepository;
+
+    /** @var PaymentModuleFactory */
+    private $paymentModuleFactory;
 
     /** @var Server[] */
     private $servers = [];
@@ -70,12 +84,15 @@ class Heart
     private $styles = [];
 
     public function __construct(
+        Application $app,
         Database $db,
         Settings $settings,
         Template $template,
         UserRepository $userRepository,
         ServiceRepository $serviceRepository,
-        ServerRepository $serverRepository
+        ServerRepository $serverRepository,
+        PaymentPlatformRepository $paymentPlatformRepository,
+        PaymentModuleFactory $paymentModuleFactory
     ) {
         $this->db = $db;
         $this->settings = $settings;
@@ -83,6 +100,9 @@ class Heart
         $this->userRepository = $userRepository;
         $this->serviceRepository = $serviceRepository;
         $this->serverRepository = $serverRepository;
+        $this->paymentPlatformRepository = $paymentPlatformRepository;
+        $this->paymentModuleFactory = $paymentModuleFactory;
+        $this->app = $app;
     }
 
     /**
@@ -122,7 +142,7 @@ class Heart
 
         $className = $this->servicesClasses[$service->getModule()]['class'];
 
-        return strlen($className) ? app()->makeWith($className, ['service' => $service]) : null;
+        return $className ? $this->app->makeWith($className, compact('service')) : null;
     }
 
     /**
@@ -143,7 +163,7 @@ class Heart
 
         $classname = $this->servicesClasses[$moduleId]['class'];
 
-        return app()->make($classname);
+        return $this->app->make($classname);
     }
 
     public function getServiceModuleName($moduleId)
@@ -178,41 +198,108 @@ class Heart
     // Klasy API płatności
     //
 
-    public function registerPaymentModule($id, $class)
+    public function registerPaymentModule($moduleId, $class)
     {
-        if (isset($this->paymentModuleClasses[$id])) {
-            throw new InvalidConfigException("There is a payment api with id: [$id] already.");
+        if (isset($this->paymentModuleClasses[$moduleId])) {
+            throw new InvalidConfigException(
+                "There is a payment api with id: [$moduleId] already."
+            );
         }
 
-        $this->paymentModuleClasses[$id] = $class;
+        $this->paymentModuleClasses[$moduleId] = $class;
+    }
+
+    public function hasPaymentModule($moduleId)
+    {
+        return array_key_exists($moduleId, $this->paymentModuleClasses);
+    }
+
+    public function getPaymentModuleIds()
+    {
+        return array_keys($this->paymentModuleClasses);
     }
 
     /**
-     * @param string $id
+     * @param string $moduleId
+     * @return DataField[]
+     */
+    public function getPaymentModuleDataFields($moduleId)
+    {
+        $className = array_get($this->paymentModuleClasses, $moduleId);
+
+        if ($className) {
+            return $className::getDataFields();
+        }
+
+        throw new InvalidPaymentModuleException();
+    }
+
+    /**
+     * @param PaymentPlatform $paymentPlatform
      * @return PaymentModule|null
      */
-    public function getPaymentModule($id)
+    public function getPaymentModule(PaymentPlatform $paymentPlatform)
     {
-        if (isset($this->paymentModuleClasses[$id])) {
-            return app()->make($this->paymentModuleClasses[$id]);
+        $paymentModuleClass = array_get(
+            $this->paymentModuleClasses,
+            $paymentPlatform->getModuleId()
+        );
+
+        if ($paymentModuleClass) {
+            return $this->paymentModuleFactory->create($paymentModuleClass, $paymentPlatform);
         }
 
         return null;
     }
 
     /**
-     * @param string $id
+     * @param PaymentPlatform $paymentPlatform
      * @return PaymentModule
      */
-    public function getPaymentModuleOrFail($id)
+    public function getPaymentModuleOrFail(PaymentPlatform $paymentPlatform)
     {
-        $paymentModule = $this->getPaymentModule($id);
+        $paymentModule = $this->getPaymentModule($paymentPlatform);
 
         if ($paymentModule) {
             return $paymentModule;
         }
 
-        throw new InvalidConfigException("Invalid payment module [$id].");
+        throw new InvalidConfigException(
+            "Invalid payment module [{$paymentPlatform->getModuleId()}]."
+        );
+    }
+
+    /**
+     * @param string $platformId
+     * @return PaymentModule
+     */
+    public function getPaymentModuleByPlatformIdOrFail($platformId)
+    {
+        $paymentPlatform = $this->paymentPlatformRepository->get($platformId);
+        if (!$paymentPlatform) {
+            throw new InvalidConfigException("Invalid payment platform [$platformId].");
+        }
+
+        return $this->getPaymentModuleOrFail($paymentPlatform);
+    }
+
+    /**
+     * @param string $platformId
+     * @return PaymentModule|null
+     */
+    public function getPaymentModuleByPlatformId($platformId)
+    {
+        $paymentPlatform = $this->paymentPlatformRepository->get($platformId);
+        if (!$paymentPlatform) {
+            return null;
+        }
+
+        $paymentModule = $this->getPaymentModule($paymentPlatform);
+        if (!$paymentModule) {
+            return null;
+        }
+
+        return $paymentModule;
     }
 
     //
@@ -259,7 +346,9 @@ class Heart
      */
     public function getBlock($blockId)
     {
-        return $this->blockExists($blockId) ? app()->make($this->blocksClasses[$blockId]) : null;
+        return $this->blockExists($blockId)
+            ? $this->app->make($this->blocksClasses[$blockId])
+            : null;
     }
 
     //
@@ -317,13 +406,12 @@ class Heart
      */
     public function getPage($pageId, $type = "user")
     {
-        if (!$this->pageExists($pageId, $type)) {
-            return null;
+        if ($this->pageExists($pageId, $type)) {
+            $classname = $this->pagesClasses[$type][$pageId];
+            return $this->app->make($classname);
         }
 
-        $classname = $this->pagesClasses[$type][$pageId];
-
-        return app()->make($classname);
+        return null;
     }
 
     //
@@ -422,7 +510,7 @@ class Heart
      * Checks if the service can be purchased on the given server
      *
      * @param integer $serverId
-     * @param string  $serviceId
+     * @param string $serviceId
      *
      * @return boolean
      */
@@ -438,7 +526,7 @@ class Heart
     private function fetchServersServices()
     {
         $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "servers_services`");
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $this->serversServices[$row['server_id']][$row['service_id']] = true;
         }
         $this->serversServicesFetched = true;
@@ -482,7 +570,7 @@ class Heart
     private function fetchTariffs()
     {
         $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "tariffs`");
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $this->tariffs[$row['id']] = new Tariff(
                 $row['id'],
                 $row['provision'],
@@ -498,7 +586,7 @@ class Heart
     //
 
     /**
-     * @param int    $uid
+     * @param int $uid
      * @return User
      */
     public function getUser($uid)
@@ -520,7 +608,7 @@ class Heart
 
     /**
      * @param string $login
-     * @param string$password
+     * @param string $password
      * @return User
      */
     public function getUserByLogin($login, $password)
@@ -589,7 +677,7 @@ class Heart
     private function fetchGroups()
     {
         $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "groups`");
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $this->groups[$row['id']] = $row;
         }
 

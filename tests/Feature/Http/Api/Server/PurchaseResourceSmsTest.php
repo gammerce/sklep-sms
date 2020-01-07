@@ -2,24 +2,26 @@
 namespace Tests\Feature\Http;
 
 use App\Models\Purchase;
+use App\Models\Server;
 use App\Repositories\BoughtServiceRepository;
-use App\Requesting\Response;
+use App\Repositories\PaymentPlatformRepository;
 use App\Services\ExtraFlags\ExtraFlagType;
 use App\System\Settings;
-use App\Verification\Gosetti;
-use App\Verification\Results\SmsSuccessResult;
-use Mockery;
-use Tests\Psr4\Concerns\RequesterConcern;
+use App\Verification\PaymentModules\Gosetti;
+use Tests\Psr4\Concerns\GosettiConcern;
+use Tests\Psr4\Concerns\PaymentModuleFactoryConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class PurchaseResourceSmsTest extends HttpTestCase
 {
-    use RequesterConcern;
+    use GosettiConcern;
+    use PaymentModuleFactoryConcern;
 
     protected function setUp()
     {
         parent::setUp();
         $this->mockRequester();
+        $this->mockPaymentModuleFactory();
     }
 
     /** @test */
@@ -29,18 +31,20 @@ class PurchaseResourceSmsTest extends HttpTestCase
         /** @var BoughtServiceRepository $boughtServiceRepository */
         $boughtServiceRepository = $this->app->make(BoughtServiceRepository::class);
 
+        /** @var PaymentPlatformRepository $paymentPlatformRepository */
+        $paymentPlatformRepository = $this->app->make(PaymentPlatformRepository::class);
+
         /** @var Settings $settings */
         $settings = $this->app->make(Settings::class);
 
         $serviceId = 'vip';
         $tariff = 2;
-        $transactionService = 'gosetti';
         $authData = 'test';
         $password = 'test123';
         $smsCode = 'ABCD12EF';
-        $platform = 'engine_amxx';
         $type = ExtraFlagType::TYPE_NICK;
 
+        $paymentPlatform = $paymentPlatformRepository->create("test", Gosetti::MODULE_ID);
         $server = $this->factory->server();
         $this->factory->serverService([
             'server_id' => $server->getId(),
@@ -61,7 +65,7 @@ class PurchaseResourceSmsTest extends HttpTestCase
             '/api/server/purchase',
             [
                 'service' => $serviceId,
-                'transaction_service' => $transactionService,
+                'payment_platform' => $paymentPlatform->getId(),
                 'server' => $server->getId(),
                 'type' => $type,
                 'auth_data' => $authData,
@@ -69,12 +73,14 @@ class PurchaseResourceSmsTest extends HttpTestCase
                 'sms_code' => $smsCode,
                 'method' => Purchase::METHOD_SMS,
                 'tariff' => $tariff,
-                'platform' => $platform,
                 'ip' => "192.0.2.1",
                 'sign' => $sign,
             ],
             [
                 'key' => md5($settings->get("random_key")),
+            ],
+            [
+                'User-Agent' => Server::TYPE_AMXMODX,
             ]
         );
 
@@ -92,23 +98,9 @@ class PurchaseResourceSmsTest extends HttpTestCase
         $this->assertEquals(Purchase::METHOD_SMS, $boughtService->getMethod());
     }
 
-    protected function mockGoSetti()
+    private function mockGoSetti()
     {
-        $this->requesterMock
-            ->shouldReceive('get')
-            ->withArgs(['https://gosetti.pl/Api/SmsApiV2GetData.php'])
-            ->andReturn(
-                new Response(
-                    200,
-                    json_encode([
-                        'Code' => 'abc123',
-                        'Numbers' => [],
-                    ])
-                )
-            );
-
-        $gosetti = Mockery::mock($this->app->make(Gosetti::class))->makePartial();
-        $gosetti->shouldReceive('verifySms')->andReturn(new SmsSuccessResult());
-        $this->app->instance(Gosetti::class, $gosetti);
+        $this->makeVerifySmsSuccessful(Gosetti::class);
+        $this->mockGoSettiGetData();
     }
 }

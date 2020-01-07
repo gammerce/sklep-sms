@@ -37,7 +37,7 @@ class IncomeService
 
         // Let's sum income by date (day precision) and server
         $data = [];
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $date = explode(" ", $row['timestamp'])[0];
             $serverId = $this->heart->getServer($row['server']) ? $row['server'] : 0;
 

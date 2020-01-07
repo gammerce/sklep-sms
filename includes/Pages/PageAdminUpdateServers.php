@@ -21,7 +21,7 @@ class PageAdminUpdateServers extends PageAdmin
         parent::__construct();
 
         $this->requester = $requester;
-        $this->heart->pageTitle = $this->title = $this->lang->translate('update_servers');
+        $this->heart->pageTitle = $this->title = $this->lang->t('update_servers');
         $this->version = $version;
     }
 

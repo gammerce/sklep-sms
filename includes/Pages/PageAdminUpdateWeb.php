@@ -15,7 +15,7 @@ class PageAdminUpdateWeb extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('update_web');
+        $this->heart->pageTitle = $this->title = $this->lang->t('update_web');
         $this->version = $version;
     }
 

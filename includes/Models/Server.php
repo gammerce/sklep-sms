@@ -3,8 +3,8 @@ namespace App\Models;
 
 class Server
 {
-    const TYPE_AMXMODX = 'amxx';
-    const TYPE_SOURCEMOD = 'sm';
+    const TYPE_AMXMODX = 'amxmodx';
+    const TYPE_SOURCEMOD = 'sourcemod';
 
     /** @var int */
     private $id;
@@ -22,20 +22,32 @@ class Server
     private $type;
 
     /** @var string */
-    private $smsService;
+    private $smsPlatform;
 
     /** @var string */
     private $version;
 
-    public function __construct($id, $name, $ip, $port, $smsService, $type, $version)
-    {
+    /** @var string|null */
+    private $lastActiveAt;
+
+    public function __construct(
+        $id,
+        $name,
+        $ip,
+        $port,
+        $smsPlatform,
+        $type,
+        $version,
+        $lastActiveAt
+    ) {
         $this->id = $id;
         $this->name = $name;
         $this->ip = $ip;
         $this->port = $port;
-        $this->smsService = $smsService;
+        $this->smsPlatform = $smsPlatform;
         $this->type = $type;
         $this->version = $version;
+        $this->lastActiveAt = $lastActiveAt;
     }
 
     public function getId()
@@ -63,16 +75,18 @@ class Server
         return $this->type;
     }
 
-    public function getSmsService()
+    public function getSmsPlatformId()
     {
-        return $this->smsService;
+        return $this->smsPlatform;
     }
 
-    /**
-     * @return string
-     */
     public function getVersion()
     {
         return $this->version;
+    }
+
+    public function getLastActiveAt()
+    {
+        return $this->lastActiveAt;
     }
 }

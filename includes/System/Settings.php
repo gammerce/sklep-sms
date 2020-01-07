@@ -14,10 +14,13 @@ class Settings implements ArrayAccess
     /** @var Path */
     private $path;
 
+    /** @var FileSystemContract */
+    private $fileSystem;
+
     /** @var bool */
     private $loaded = false;
 
-    public function __construct(Path $path, Database $database)
+    public function __construct(Path $path, Database $database, FileSystemContract $fileSystem)
     {
         $this->db = $database;
         $this->path = $path;
@@ -27,6 +30,7 @@ class Settings implements ArrayAccess
             'theme' => 'default',
             'shop_url' => '',
         ];
+        $this->fileSystem = $fileSystem;
     }
 
     public function get($key)
@@ -67,7 +71,7 @@ class Settings implements ArrayAccess
     {
         // Pozyskanie ustawień sklepu
         $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "settings`");
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $this->settings[$row['key']] = $this->prepareValue($row['key'], $row['value']);
         }
 
@@ -132,21 +136,80 @@ LEFT JOIN `" .
             TABLE_PREFIX .
             "payment_code` AS pc ON bs.payment = 'service_code' AND pc.id = bs.payment_id)";
 
-        // Ustawianie strefy
         if ($this->settings['timezone']) {
             date_default_timezone_set($this->settings['timezone']);
         }
 
-        $this->settings['date_format'] = strlen($this->settings['date_format'])
-            ? $this->settings['date_format']
-            : "Y-m-d H:i";
+        $this->settings["date_format"] = $this->settings["date_format"] ?: "Y-m-d H:i";
 
-        // Sprawdzanie czy taki szablon istnieje, jak nie to ustaw defaultowy
-        $this->settings['theme'] = file_exists($this->path->to("themes/{$this->settings['theme']}"))
+        // Fallback to default theme if selected does not exist
+        $this->settings['theme'] = $this->fileSystem->exists(
+            $this->path->to("themes/{$this->settings['theme']}")
+        )
             ? $this->settings['theme']
             : "default";
 
         $this->loaded = true;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSmsPlatformId()
+    {
+        return isset($this->settings["sms_platform"])
+            ? intval($this->settings["sms_platform"])
+            : null;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTransferPlatformId()
+    {
+        return isset($this->settings["transfer_platform"])
+            ? intval($this->settings["transfer_platform"])
+            : null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrency()
+    {
+        return $this->settings["currency"];
+    }
+
+    /**
+     * @return string
+     */
+    public function getContact()
+    {
+        return $this->settings["contact"];
+    }
+
+    /**
+     * @return string
+     */
+    public function getVat()
+    {
+        return floatval($this->settings["vat"]);
+    }
+
+    /**
+     * @return string
+     */
+    public function getLicenseToken()
+    {
+        return $this->settings["license_password"];
+    }
+
+    /**
+     * @return string
+     */
+    public function getDateFormat()
+    {
+        return $this->settings["date_format"];
     }
 
     private function prepareValue($key, $value)

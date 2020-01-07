@@ -11,12 +11,15 @@ use Mockery;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Tests\Psr4\Concerns\ApplicationConcern;
+use Tests\Psr4\Concerns\FileSystemConcern;
 use Tests\Psr4\Concerns\MockeryConcern;
 use Tests\Psr4\Factory;
+use Tests\Psr4\MemoryFileSystem;
 
 class TestCase extends BaseTestCase
 {
     use ApplicationConcern;
+    use FileSystemConcern;
     use MockeryConcern;
 
     /** @var Application */
@@ -42,7 +45,7 @@ class TestCase extends BaseTestCase
 
         $this->factory = $this->app->make(Factory::class);
         $this->mockLicense();
-        $this->mockDescriptionCreator();
+        $this->mockFileSystem();
 
         if ($this->mockLocale) {
             $this->mockLocale();
@@ -117,12 +120,5 @@ class TestCase extends BaseTestCase
         $localeService = Mockery::mock(LocaleService::class);
         $localeService->shouldReceive('getLocale')->andReturn('pl');
         $this->app->instance(LocaleService::class, $localeService);
-    }
-
-    protected function mockDescriptionCreator()
-    {
-        $descriptionCreator = Mockery::mock(ServiceDescriptionCreator::class);
-        $descriptionCreator->shouldReceive('create')->andReturnNull();
-        $this->app->instance(ServiceDescriptionCreator::class, $descriptionCreator);
     }
 }

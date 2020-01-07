@@ -46,10 +46,10 @@ class PasswordForgottenController
                     )
                 );
 
-                if (!$db->numRows($result)) {
-                    $warnings['username'][] = $lang->translate('nick_no_account');
+                if (!$result->rowCount()) {
+                    $warnings['username'][] = $lang->t('nick_no_account');
                 } else {
-                    $row = $db->fetchArrayAssoc($result);
+                    $row = $result->fetch();
                 }
             }
         }
@@ -66,10 +66,10 @@ class PasswordForgottenController
                     )
                 );
 
-                if (!$db->numRows($result)) {
-                    $warnings['email'][] = $lang->translate('email_no_account');
+                if (!$result->rowCount()) {
+                    $warnings['email'][] = $lang->t('email_no_account');
                 } else {
-                    $row = $db->fetchArrayAssoc($result);
+                    $row = $result->fetch();
                 }
             }
         }
@@ -103,17 +103,17 @@ class PasswordForgottenController
         );
 
         if ($ret == "not_sent") {
-            return new ApiResponse("not_sent", $lang->translate('keyreset_error'), 0);
+            return new ApiResponse("not_sent", $lang->t('keyreset_error'), 0);
         }
 
         if ($ret == "wrong_email") {
-            return new ApiResponse("wrong_sender_email", $lang->translate('wrong_email'), 0);
+            return new ApiResponse("wrong_sender_email", $lang->t('wrong_email'), 0);
         }
 
         if ($ret == "sent") {
             log_to_db(
-                $langShop->sprintf(
-                    $langShop->translate('reset_key_email'),
+                $langShop->t(
+                    'reset_key_email',
                     $editedUser->getUsername(),
                     $editedUser->getUid(),
                     $editedUser->getEmail(),
@@ -122,7 +122,7 @@ class PasswordForgottenController
                 )
             );
             $data['username'] = $editedUser->getUsername();
-            return new ApiResponse("sent", $lang->translate('email_sent'), 1, $data);
+            return new ApiResponse("sent", $lang->t('email_sent'), 1, $data);
         }
 
         throw new UnexpectedValueException("Invalid ret value");

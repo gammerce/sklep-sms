@@ -27,12 +27,12 @@ class PurchaseValidationResource
                 null ||
             !($serviceModule instanceof IServicePurchaseWeb)
         ) {
-            return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
+            return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
         }
 
         // Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
         if (!$heart->userCanUseService($user->getUid(), $serviceModule->service)) {
-            return new ApiResponse("no_permission", $lang->translate('service_no_permission'), 0);
+            return new ApiResponse("no_permission", $lang->t('service_no_permission'), 0);
         }
 
         // Przeprowadzamy walidację danych wprowadzonych w formularzu
@@ -58,19 +58,19 @@ class PurchaseValidationResource
             }
 
             if (
-                $purchase->getPayment('sms_service') === null &&
+                $purchase->getPayment('sms_platform') === null &&
                 !$purchase->getPayment("no_sms") &&
-                strlen($settings['sms_service'])
+                $settings->getSmsPlatformId()
             ) {
                 $purchase->setPayment([
-                    'sms_service' => $settings['sms_service'],
+                    'sms_platform' => $settings->getSmsPlatformId(),
                 ]);
             }
 
             // Ustawiamy taryfe z numerem
-            if ($purchase->getPayment('sms_service') !== null) {
-                $paymentModule = $heart->getPaymentModuleOrFail(
-                    $purchase->getPayment('sms_service')
+            if ($purchase->getPayment('sms_platform') !== null) {
+                $paymentModule = $heart->getPaymentModuleByPlatformIdOrFail(
+                    $purchase->getPayment('sms_platform')
                 );
                 $purchase->setTariff(
                     $paymentModule->getTariffById($purchase->getTariff()->getId())

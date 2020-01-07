@@ -3,31 +3,38 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
+use App\Repositories\SettingsRepository;
 use App\System\Application;
 use App\System\Auth;
-use App\System\Database;
+use App\System\FileSystemContract;
+use App\System\Heart;
 use App\System\Path;
 use App\System\Settings;
 use App\Translation\TranslationManager;
+use App\Verification\Abstracts\SupportSms;
+use App\Verification\Abstracts\SupportTransfer;
 use Symfony\Component\HttpFoundation\Request;
 
 class SettingsController
 {
     public function put(
         Request $request,
-        Database $db,
         TranslationManager $translationManager,
+        Heart $heart,
         Path $path,
         Auth $auth,
         Settings $settings,
+        SettingsRepository $settingsRepository,
+        FileSystemContract $fileSystem,
         Application $app
     ) {
         $lang = $translationManager->user();
         $langShop = $translationManager->shop();
         $user = $auth->user();
 
-        $smsService = $request->request->get('sms_service');
-        $transferService = $request->request->get('transfer_service');
+        $smsPaymentPlatformId = $request->request->get('sms_platform');
+        $transferPaymentPlatformId = $request->request->get('transfer_platform');
         $currency = $request->request->get('currency');
         $shopName = $request->request->get('shop_name');
         $shopUrl = $app->isDemo() ? $settings['shop_url'] : $request->request->get('shop_url');
@@ -49,35 +56,19 @@ class SettingsController
 
         $warnings = [];
 
-        if (strlen($smsService)) {
-            $result = $db->query(
-                $db->prepare(
-                    "SELECT id " .
-                        "FROM `" .
-                        TABLE_PREFIX .
-                        "transaction_services` " .
-                        "WHERE `id` = '%s' AND sms = '1'",
-                    [$smsService]
-                )
-            );
-            if (!$db->numRows($result)) {
-                $warnings['sms_service'][] = $lang->translate('no_sms_service');
+        // TODO Refactor it to use rules
+
+        if (strlen($smsPaymentPlatformId)) {
+            $paymentModule = $heart->getPaymentModuleByPlatformId($smsPaymentPlatformId);
+            if (!($paymentModule instanceof SupportSms)) {
+                $warnings['sms_platform'][] = $lang->t('no_sms_platform');
             }
         }
 
-        if (strlen($transferService)) {
-            $result = $db->query(
-                $db->prepare(
-                    "SELECT id " .
-                        "FROM `" .
-                        TABLE_PREFIX .
-                        "transaction_services` " .
-                        "WHERE `id` = '%s' AND transfer = '1'",
-                    [$transferService]
-                )
-            );
-            if (!$db->numRows($result)) {
-                $warnings['transfer_service'][] = $lang->translate('no_net_service');
+        if (strlen($transferPaymentPlatformId)) {
+            $paymentModule = $heart->getPaymentModuleByPlatformId($transferPaymentPlatformId);
+            if (!($paymentModule instanceof SupportTransfer)) {
+                $warnings['transfer_platform'][] = $lang->t('no_transfer_platform');
             }
         }
 
@@ -98,101 +89,68 @@ class SettingsController
         }
 
         if (!in_array($cron, ["1", "0"])) {
-            $warnings['cron'][] = $lang->translate('only_yes_no');
+            $warnings['cron'][] = $lang->t('only_yes_no');
         }
 
         if (!in_array($userEditService, ["1", "0"])) {
-            $warnings['user_edit_service'][] = $lang->translate('only_yes_no');
+            $warnings['user_edit_service'][] = $lang->t('only_yes_no');
         }
 
-        if (!$theme || !is_dir($path->to("themes/{$theme}")) || $theme[0] == '.') {
-            $warnings['theme'][] = $lang->translate('no_theme');
+        if (
+            !$theme ||
+            !$fileSystem->isDirectory($path->to("themes/{$theme}")) ||
+            $theme[0] == '.'
+        ) {
+            $warnings['theme'][] = $lang->t('no_theme');
         }
 
-        if (!$language || !is_dir($path->to("translations/{$language}")) || $language[0] == '.') {
-            $warnings['language'][] = $lang->translate('no_language');
+        if (
+            !$language ||
+            !$fileSystem->isDirectory($path->to("translations/{$language}")) ||
+            $language[0] == '.'
+        ) {
+            $warnings['language'][] = $lang->t('no_language');
         }
 
         if ($warnings) {
             throw new ValidationException($warnings);
         }
 
-        $setLicenseToken = "";
-        $keyLicenseToken = "";
+        $values = [
+            'sms_platform' => $smsPaymentPlatformId,
+            'transfer_platform' => $transferPaymentPlatformId,
+            'currency' => $currency,
+            'shop_name' => $shopName,
+            'shop_url' => $shopUrl,
+            'sender_email' => $senderEmail,
+            'sender_email_name' => $senderEmailName,
+            'signature' => $signature,
+            'vat' => $vat,
+            'contact' => $contact,
+            'row_limit' => $rowLimit,
+            'cron_each_visit' => $cron,
+            'user_edit_service' => $userEditService,
+            'theme' => $theme,
+            'language' => $language,
+            'date_format' => $dateFormat,
+            'delete_logs' => $deleteLogs,
+            'google_analytics' => $googleAnalytics,
+            'gadugadu' => $gadugadu,
+        ];
+
         if ($licenseToken) {
-            $setLicenseToken = $db->prepare(
-                "WHEN 'license_password' THEN '%s' WHEN 'license_login' THEN 'license' ",
-                [$licenseToken]
-            );
-            $keyLicenseToken = ",'license_password', 'license_login'";
+            $values['license_password'] = $licenseToken;
+            $values['license_login'] = 'license';
         }
 
-        $statement = $db->query(
-            $db->prepare(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "settings` " .
-                    "SET value = CASE `key` " .
-                    "WHEN 'sms_service' THEN '%s' " .
-                    "WHEN 'transfer_service' THEN '%s' " .
-                    "WHEN 'currency' THEN '%s' " .
-                    "WHEN 'shop_name' THEN '%s' " .
-                    "WHEN 'shop_url' THEN '%s' " .
-                    "WHEN 'sender_email' THEN '%s' " .
-                    "WHEN 'sender_email_name' THEN '%s' " .
-                    "WHEN 'signature' THEN '%s' " .
-                    "WHEN 'vat' THEN '%.2f' " .
-                    "WHEN 'contact' THEN '%s' " .
-                    "WHEN 'row_limit' THEN '%s' " .
-                    "WHEN 'cron_each_visit' THEN '%d' " .
-                    "WHEN 'user_edit_service' THEN '%d' " .
-                    "WHEN 'theme' THEN '%s' " .
-                    "WHEN 'language' THEN '%s' " .
-                    "WHEN 'date_format' THEN '%s' " .
-                    "WHEN 'delete_logs' THEN '%d' " .
-                    "WHEN 'google_analytics' THEN '%s' " .
-                    "WHEN 'gadugadu' THEN '%s' " .
-                    $setLicenseToken .
-                    "END " .
-                    "WHERE `key` IN ( 'sms_service','transfer_service','currency','shop_name','shop_url','sender_email','sender_email_name','signature','vat'," .
-                    "'contact','row_limit','cron_each_visit','user_edit_service','theme','language','date_format','delete_logs'," .
-                    "'google_analytics','gadugadu'{$keyLicenseToken} )",
-                [
-                    $smsService,
-                    $transferService,
-                    $currency,
-                    $shopName,
-                    $shopUrl,
-                    $senderEmail,
-                    $senderEmailName,
-                    $signature,
-                    $vat,
-                    $contact,
-                    $rowLimit,
-                    $cron,
-                    $userEditService,
-                    $theme,
-                    $language,
-                    $dateFormat,
-                    $deleteLogs,
-                    $googleAnalytics,
-                    $gadugadu,
-                ]
-            )
-        );
+        $updated = $settingsRepository->update($values);
 
-        if ($statement->rowCount()) {
-            log_to_db(
-                $langShop->sprintf(
-                    $langShop->translate('settings_admin_edit'),
-                    $user->getUsername(),
-                    $user->getUid()
-                )
-            );
+        if ($updated) {
+            log_to_db($langShop->t('settings_admin_edit', $user->getUsername(), $user->getUid()));
 
-            return new ApiResponse('ok', $lang->translate('settings_edit'), 1);
+            return new SuccessApiResponse($lang->t('settings_edit'));
         }
 
-        return new ApiResponse("not_edited", $lang->translate('settings_no_edit'), 0);
+        return new ApiResponse("not_edited", $lang->t('settings_no_edit'), false);
     }
 }

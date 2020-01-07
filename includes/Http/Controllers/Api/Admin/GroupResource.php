@@ -2,7 +2,8 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\ApiResponse;
-use App\System\Auth;
+use App\Http\Responses\SuccessApiResponse;
+use App\Loggers\DatabaseLogger;
 use App\System\Database;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,18 +14,16 @@ class GroupResource
         $groupId,
         Request $request,
         TranslationManager $translationManager,
-        Auth $auth,
-        Database $db
+        Database $db,
+        DatabaseLogger $databaseLogger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         $name = $request->request->get('name');
 
         $set = "";
         $result = $db->query("DESCRIBE " . TABLE_PREFIX . "groups");
-        while ($row = $db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             if (in_array($row['Field'], ["id", "name"])) {
                 continue;
             }
@@ -47,46 +46,30 @@ class GroupResource
         );
 
         if ($statement->rowCount()) {
-            log_to_db(
-                $langShop->sprintf(
-                    $langShop->translate('group_admin_edit'),
-                    $user->getUsername(),
-                    $user->getUid(),
-                    $groupId
-                )
-            );
-            return new ApiResponse('ok', $lang->translate('group_edit'), 1);
+            $databaseLogger->logWithActor('log_group_admin_edit', $groupId);
+            return new SuccessApiResponse($lang->t('group_edit'));
         }
 
-        return new ApiResponse("not_edited", $lang->translate('group_no_edit'), 0);
+        return new ApiResponse("not_edited", $lang->t('group_no_edit'), 0);
     }
 
     public function delete(
         $groupId,
         Database $db,
         TranslationManager $translationManager,
-        Auth $auth
+        DatabaseLogger $databaseLogger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         $statement = $db->query(
             $db->prepare("DELETE FROM `" . TABLE_PREFIX . "groups` WHERE `id` = '%d'", [$groupId])
         );
 
         if ($statement->rowCount()) {
-            log_to_db(
-                $langShop->sprintf(
-                    $langShop->translate('group_admin_delete'),
-                    $user->getUsername(),
-                    $user->getUid(),
-                    $groupId
-                )
-            );
-            return new ApiResponse('ok', $lang->translate('delete_group'), 1);
+            $databaseLogger->logWithActor('log_group_admin_delete', $groupId);
+            return new SuccessApiResponse($lang->t('delete_group'));
         }
 
-        return new ApiResponse("not_deleted", $lang->translate('no_delete_group'), 0);
+        return new ApiResponse("not_deleted", $lang->t('no_delete_group'), 0);
     }
 }

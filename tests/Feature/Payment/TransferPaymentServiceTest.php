@@ -7,6 +7,7 @@ use App\Payment\TransferPaymentService;
 use App\Repositories\PaymentTransferRepository;
 use App\System\Heart;
 use App\Verification\Abstracts\SupportTransfer;
+use App\Verification\PaymentModules\Transferuj;
 use Tests\Psr4\TestCases\TestCase;
 
 class TransferPaymentServiceTest extends TestCase
@@ -24,8 +25,12 @@ class TransferPaymentServiceTest extends TestCase
         /** @var Heart $heart */
         $heart = $this->app->make(Heart::class);
 
+        $paymentPlatform = $this->factory->paymentPlatform([
+            "module" => Transferuj::MODULE_ID,
+        ]);
+
         /** @var SupportTransfer $paymentModule */
-        $paymentModule = $heart->getPaymentModule("transferuj");
+        $paymentModule = $heart->getPaymentModuleOrFail($paymentPlatform);
 
         $serviceId = "vip";
         $serviceModule = $heart->getServiceModule($serviceId);

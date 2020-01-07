@@ -44,7 +44,7 @@ class Structure extends DOMElement
         foreach ($this->headCells as $cell) {
             $headRow->addContent($cell);
         }
-        $actions = new HeadCell($lang->translate('actions'));
+        $actions = new HeadCell($lang->t('actions'));
         $actions->setStyle('width', '4%');
         $headRow->addContent($actions);
 
@@ -59,7 +59,7 @@ class Structure extends DOMElement
 
         if ($body->isEmpty()) {
             $row = new Row();
-            $cell = new Cell($lang->translate('no_data'));
+            $cell = new Cell($lang->t('no_data'));
             $cell->setParam('colspan', '30');
             $cell->addClass("has-text-centered");
             $cell->setStyle('padding', '40px');

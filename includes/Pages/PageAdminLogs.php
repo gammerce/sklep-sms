@@ -17,7 +17,7 @@ class PageAdminLogs extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('logs');
+        $this->heart->pageTitle = $this->title = $this->lang->t('logs');
     }
 
     protected function content(array $query, array $body)
@@ -27,9 +27,9 @@ class PageAdminLogs extends PageAdmin
         $wrapper->setSearch();
 
         $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('text')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('date')));
+        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->t('text')));
+        $table->addHeadCell(new HeadCell($this->lang->t('date')));
 
         // Wyszukujemy dane ktore spelniaja kryteria
         $where = '';
@@ -52,9 +52,9 @@ class PageAdminLogs extends PageAdmin
                 get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+        $table->setDbRowsAmount($this->db->query("SELECT FOUND_ROWS()")->fetchColumn());
 
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $bodyRow = new BodyRow();
 
             $bodyRow->setDbId($row['id']);

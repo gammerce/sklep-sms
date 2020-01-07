@@ -34,7 +34,7 @@ class PageAdminIncome extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('income');
+        $this->heart->pageTitle = $this->title = $this->lang->t('income');
         $this->incomeService = $incomeService;
     }
 
@@ -86,7 +86,7 @@ class PageAdminIncome extends PageAdmin
     private function getDataset(array $labels, array $data)
     {
         $dataset = [
-            0 => $this->createDatasetEntry($this->lang->translate('other'), $this->getColor(0)),
+            0 => $this->createDatasetEntry($this->lang->t('other'), $this->getColor(0)),
         ];
 
         foreach ($this->heart->getServers() as $server) {
@@ -136,7 +136,7 @@ class PageAdminIncome extends PageAdmin
     {
         $months = '';
         for ($dayId = 1; $dayId <= 12; $dayId++) {
-            $months .= create_dom_element("option", $this->lang->translate($this->months[$dayId]), [
+            $months .= create_dom_element("option", $this->lang->t($this->months[$dayId]), [
                 'value' => str_pad($dayId, 2, 0, STR_PAD_LEFT),
                 'selected' => $month == $dayId ? "selected" : "",
             ]);

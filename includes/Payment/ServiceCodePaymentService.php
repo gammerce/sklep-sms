@@ -66,7 +66,7 @@ class ServiceCodePaymentService
             )
         );
 
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             if ($serviceModule->serviceCodeValidate($purchase, $row)) {
                 $this->serviceCodeRepository->delete($row['id']);
 
@@ -77,8 +77,8 @@ class ServiceCodePaymentService
                 );
 
                 log_to_db(
-                    $this->langShop->sprintf(
-                        $this->langShop->translate('purchase_code'),
+                    $this->langShop->t(
+                        'purchase_code',
                         $purchase->getPayment('service_code'),
                         $purchase->user->getUsername(),
                         $purchase->user->getUid(),
@@ -92,7 +92,7 @@ class ServiceCodePaymentService
 
         return [
             'status' => "wrong_service_code",
-            'text' => $this->lang->translate('bad_service_code'),
+            'text' => $this->lang->t('bad_service_code'),
             'positive' => false,
         ];
     }

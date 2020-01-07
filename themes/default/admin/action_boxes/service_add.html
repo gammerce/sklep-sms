@@ -1,13 +1,13 @@
 <form id="form_service_add" class="action_box" autocomplete="off">
     <input type="password" class="display_none" />
     <div class="service_main_info">
-        {$lang->translate('add_service')}
+        {$lang->t('add_service')}
     </div>
     <table>
         <tbody class="ftbody">
             <tr>
                 <td>
-                    <label for="id">{$lang->translate('id')}</label>
+                    <label for="id">{$lang->t('id')}</label>
                 </td>
                 <td>
                     <div class="field">
@@ -26,7 +26,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="name">{$lang->strtoupper($lang->translate('name'))}</label>
+                    <label for="name">{$lang->strtoupper($lang->t('name'))}</label>
                 </td>
                 <td>
                     <div class="field">
@@ -46,9 +46,9 @@
             <tr>
                 <td>
                     <label for="short_description"
-                        >{$lang->strtoupper($lang->translate('short_description'))}</label
+                        >{$lang->strtoupper($lang->t('short_description'))}</label
                     >
-                    <div class="hint">{$lang->translate('description_on_server')}</div>
+                    <div class="hint">{$lang->t('description_on_server')}</div>
                 </td>
                 <td>
                     <div class="field">
@@ -66,10 +66,8 @@
             </tr>
             <tr>
                 <td>
-                    <label for="description"
-                        >{$lang->strtoupper($lang->translate('description'))}</label
-                    >
-                    <div class="hint">{$lang->translate('description_on_www')}</div>
+                    <label for="description">{$lang->strtoupper($lang->t('description'))}</label>
+                    <div class="hint">{$lang->t('description_on_www')}</div>
                 </td>
                 <td>
                     <div class="field">
@@ -86,7 +84,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="tag">{$lang->strtoupper($lang->translate('tag'))}</label>
+                    <label for="tag">{$lang->strtoupper($lang->t('tag'))}</label>
                 </td>
                 <td>
                     <div class="field">
@@ -104,7 +102,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="order">{$lang->strtoupper($lang->translate('order'))}</label>
+                    <label for="order">{$lang->strtoupper($lang->t('order'))}</label>
                 </td>
                 <td>
                     <div class="field">
@@ -116,8 +114,8 @@
             </tr>
             <tr>
                 <td>
-                    <label for="groups">{$lang->strtoupper($lang->translate('groups'))}</label>
-                    <div class="hint">{$lang->translate('groups_to_buy_service')}</div>
+                    <label for="groups">{$lang->strtoupper($lang->t('groups'))}</label>
+                    <div class="hint">{$lang->t('groups_to_buy_service')}</div>
                 </td>
                 <td>
                     <div class="field">
@@ -136,15 +134,15 @@
             </tr>
             <tr>
                 <td>
-                    <label for="module">{$lang->strtoupper($lang->translate('module'))}</label>
-                    <div class="hint">{$lang->translate('module_to_operate_service')}</div>
+                    <label for="module">{$lang->strtoupper($lang->t('module'))}</label>
+                    <div class="hint">{$lang->t('module_to_operate_service')}</div>
                 </td>
                 <td>
                     <div class="field">
                         <div class="control">
                             <div class="select is-small">
                                 <select id="module" name="module">
-                                    <option value="">{$lang->translate('choose_option')}</option>
+                                    <option value="">{$lang->t('choose_option')}</option>
                                     {$servicesModules}
                                 </select>
                             </div>
@@ -159,7 +157,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <input type="submit" value="{$lang->translate('add')}" class="button w100" />
+                    <input type="submit" value="{$lang->t('add')}" class="button w100" />
                 </td>
             </tr>
         </tbody>

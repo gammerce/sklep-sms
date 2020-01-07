@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\ValidationException;
-use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\System\Auth;
 use App\System\Database;
 use App\Translation\TranslationManager;
@@ -50,8 +50,8 @@ class SmsCodeCollection
         );
 
         log_to_db(
-            $langShop->sprintf(
-                $langShop->translate('sms_code_admin_add'),
+            $langShop->t(
+                'sms_code_admin_add',
                 $user->getUsername(),
                 $user->getUid(),
                 $code,
@@ -59,6 +59,6 @@ class SmsCodeCollection
             )
         );
 
-        return new ApiResponse('ok', $lang->translate('sms_code_add'), 1);
+        return new SuccessApiResponse($lang->t('sms_code_add'));
     }
 }

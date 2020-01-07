@@ -1,10 +1,10 @@
 <form id="form_tariff_edit" class="action_box">
     <div class="service_main_info">
-        {$lang->translate('edit_tariff')}
+        {$lang->t('edit_tariff')}
     </div>
     <table>
         <tr>
-            <td>{$lang->strtoupper($lang->translate('tariff'))}</td>
+            <td>{$lang->strtoupper($lang->t('tariff'))}</td>
             <td>{{ $tariff->getId() }}</td>
         </tr>
         <tr>
@@ -13,7 +13,7 @@
         <tr>
             <td>
                 <label for="provision">
-                    {$lang->strtoupper($lang->translate('provision'))}
+                    {$lang->strtoupper($lang->t('provision'))}
                 </label>
             </td>
             <td>
@@ -30,7 +30,7 @@
                     </div>
                     <div class="control">
                         <a class="button is-static is-small">
-                            {{ $settings['currency'] }}
+                            {{ $settings->getCurrency() }}
                         </a>
                     </div>
                 </div>
@@ -42,7 +42,7 @@
         <tr>
             <td colspan="2">
                 <input type="hidden" name="id" value="{{ $tariff->getId() }}" />
-                <input type="submit" value="{$lang->translate('confirm')}" class="button w100" />
+                <input type="submit" value="{$lang->t('confirm')}" class="button w100" />
             </td>
         </tr>
     </table>

@@ -33,7 +33,7 @@ class PageAdminMain extends PageAdmin
     ) {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('main_page');
+        $this->heart->pageTitle = $this->title = $this->lang->t('main_page');
         $this->version = $version;
         $this->license = $license;
         $this->requester = $requester;
@@ -56,7 +56,7 @@ class PageAdminMain extends PageAdmin
         if (!$this->license->isValid()) {
             $settingsUrl = $this->url->to("/admin/settings");
             $notes[] = $this->createNote(
-                $this->lang->sprintf($this->lang->translate('license_error'), $settingsUrl),
+                $this->lang->t('license_error', $settingsUrl),
                 "is-danger"
             );
         }
@@ -68,8 +68,8 @@ class PageAdminMain extends PageAdmin
             $expireSeconds < self::LICENSE_EXPIRE_THRESHOLD
         ) {
             $notes[] = $this->createNote(
-                $this->lang->sprintf(
-                    $this->lang->translate('license_soon_expire'),
+                $this->lang->t(
+                    'license_soon_expire',
                     secondsToTime(strtotime($this->license->getExpires()) - time())
                 ),
                 "is-danger"
@@ -84,8 +84,8 @@ class PageAdminMain extends PageAdmin
             $updateWebLink = $this->url->to("/admin/update_web");
 
             $notes[] = $this->createNote(
-                $this->lang->sprintf(
-                    $this->lang->translate('update_available'),
+                $this->lang->t(
+                    'update_available',
                     htmlspecialchars($newestVersion),
                     $updateWebLink
                 ),
@@ -104,8 +104,8 @@ class PageAdminMain extends PageAdmin
             $updateServersLink = $this->url->to("/admin/update_servers");
 
             $notes[] = $this->createNote(
-                $this->lang->sprintf(
-                    $this->lang->translate('update_available_servers'),
+                $this->lang->t(
+                    'update_available_servers',
                     $serversCount,
                     $this->heart->getServersAmount(),
                     $updateServersLink
@@ -123,39 +123,32 @@ class PageAdminMain extends PageAdmin
 
         // Server
         $bricks[] = $this->createBrick(
-            $this->lang->sprintf(
-                $this->lang->translate('amount_of_servers'),
-                $this->heart->getServersAmount()
-            )
+            $this->lang->t('amount_of_servers', $this->heart->getServersAmount())
         );
 
         // User
         $bricks[] = $this->createBrick(
-            $this->lang->sprintf(
-                $this->lang->translate('amount_of_users'),
-                $this->db->getColumn("SELECT COUNT(*) FROM `" . TABLE_PREFIX . "users`", "COUNT(*)")
+            $this->lang->t(
+                'amount_of_users',
+                $this->db->query("SELECT COUNT(*) FROM `" . TABLE_PREFIX . "users`")->fetchColumn()
             )
         );
 
         // Bought service
-        $amount = $this->db->getColumn(
-            "SELECT COUNT(*) " . "FROM ({$this->settings['transactions_query']}) AS t",
-            "COUNT(*)"
-        );
-        $bricks[] = $this->createBrick(
-            $this->lang->sprintf($this->lang->translate('amount_of_bought_services'), $amount)
-        );
+        $amount = $this->db
+            ->query("SELECT COUNT(*) " . "FROM ({$this->settings['transactions_query']}) AS t")
+            ->fetchColumn();
+        $bricks[] = $this->createBrick($this->lang->t('amount_of_bought_services', $amount));
 
         // SMS
-        $amount = $this->db->getColumn(
-            "SELECT COUNT(*) AS `amount` " .
-                "FROM ({$this->settings['transactions_query']}) as t " .
-                "WHERE t.payment = 'sms' AND t.free='0'",
-            "amount"
-        );
-        $bricks[] = $this->createBrick(
-            $this->lang->sprintf($this->lang->translate('amount_of_sent_smses'), $amount)
-        );
+        $amount = $this->db
+            ->query(
+                "SELECT COUNT(*) AS `amount` " .
+                    "FROM ({$this->settings['transactions_query']}) as t " .
+                    "WHERE t.payment = 'sms' AND t.free='0'"
+            )
+            ->fetchColumn();
+        $bricks[] = $this->createBrick($this->lang->t('amount_of_sent_smses', $amount));
 
         // Income
         $incomeData = $this->incomeService->get(date("Y"), date("m"));
@@ -165,7 +158,7 @@ class PageAdminMain extends PageAdmin
                 $income += $value;
             }
         }
-        $incomeText = number_format($income / 100, 2) . " " . $this->settings['currency'];
+        $incomeText = number_format($income / 100, 2) . " " . $this->settings->getCurrency();
         $bricks[] = $this->createBrick($this->lang->t('note_income', $incomeText));
 
         return implode("", $bricks);

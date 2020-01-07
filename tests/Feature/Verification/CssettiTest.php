@@ -2,7 +2,8 @@
 namespace Tests\Feature\Verification;
 
 use App\Requesting\Response;
-use App\Verification\Cssetti;
+use App\System\Heart;
+use App\Verification\PaymentModules\Cssetti;
 use App\Verification\Results\SmsSuccessResult;
 use Mockery;
 use Tests\Psr4\Concerns\FixtureConcern;
@@ -22,7 +23,15 @@ class CssettiTest extends TestCase
         parent::setUp();
 
         $this->mockRequester();
-        $this->cssetti = $this->app->make(Cssetti::class);
+
+        /** @var Heart $heart */
+        $heart = $this->app->make(Heart::class);
+
+        $paymentPlatform = $this->factory->paymentPlatform([
+            'module' => Cssetti::MODULE_ID,
+        ]);
+
+        $this->cssetti = $heart->getPaymentModule($paymentPlatform);
 
         $smsDataResponse = $this->loadFixture("cssetti_sms_api_v2_get_data");
         $this->requesterMock

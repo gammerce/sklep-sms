@@ -3,14 +3,14 @@
         <div class="table_form">
             <div class="row">
                 <div class="cell">
-                    <label for="server">{$lang->translate('server')}</label>
+                    <label for="server">{$lang->t('server')}</label>
                 </div>
                 <div class="cell">
                     <div class="field">
                         <div class="control">
                             <div class="select is-small">
                                 <select id="server" name="server">
-                                    <option value="">{$lang->translate('choose_server')}</option>
+                                    <option value="">{$lang->t('choose_server')}</option>
                                     {$servers}
                                 </select>
                             </div>
@@ -21,14 +21,14 @@
 
             <div class="row">
                 <div class="cell">
-                    <label for="type">{$lang->translate('type')}</label>
+                    <label for="type">{$lang->t('type')}</label>
                 </div>
                 <div class="cell">
                     <div class="field">
                         <div class="control">
                             <div class="select is-small">
                                 <select id="type" name="type">
-                                    <option value="">{$lang->translate('choose_type')}</option>
+                                    <option value="">{$lang->t('choose_type')}</option>
                                     {$types}
                                 </select>
                             </div>
@@ -39,7 +39,7 @@
 
             <div class="row" style="display: none" data-type="nick">
                 <div class="cell">
-                    <label for="nick">{$lang->translate('nick')}</label>
+                    <label for="nick">{$lang->t('nick')}</label>
                 </div>
                 <div class="cell">
                     <div class="field">
@@ -52,7 +52,7 @@
 
             <div class="row" style="display: none" data-type="ip">
                 <div class="cell">
-                    <label for="ip">{$lang->translate('ip')}</label>
+                    <label for="ip">{$lang->t('ip')}</label>
                 </div>
                 <div class="cell">
                     <div class="field">
@@ -65,7 +65,7 @@
 
             <div class="row" style="display: none" data-type="sid">
                 <div class="cell">
-                    <label for="sid">{$lang->translate('sid')}</label>
+                    <label for="sid">{$lang->t('sid')}</label>
                 </div>
                 <div class="cell">
                     <div class="field">
@@ -78,7 +78,7 @@
 
             <div class="row" style="display: none" data-type="password">
                 <div class="cell">
-                    <label for="password">{$lang->translate('password')}</label>
+                    <label for="password">{$lang->t('password')}</label>
                 </div>
                 <div class="cell">
                     <div class="field">
@@ -100,20 +100,20 @@
         <div class="table_form">
             <div class="row">
                 <div class="cell">
-                    <label for="payment">{$lang->translate('way_of_payment')}</label>
+                    <label for="payment">{$lang->t('way_of_payment')}</label>
                 </div>
                 <div class="cell">
                     <div class="field">
                         <div class="control">
                             <div class="select is-small">
                                 <select id="payment" name="payment">
-                                    <option value="">{$lang->translate('choose_payment')}</option>
-                                    <option value="wallet">{$lang->translate('wallet')}</option>
+                                    <option value="">{$lang->t('choose_payment')}</option>
+                                    <option value="wallet">{$lang->t('wallet')}</option>
                                     <option value="sms">SMS</option>
                                     <option value="transfer"
-                                        >{$lang->translate('transfer_transfer')}</option
+                                        >{$lang->t('transfer_transfer')}</option
                                     >
-                                    <option value="admin">{$lang->translate('admin')}</option>
+                                    <option value="admin">{$lang->t('admin')}</option>
                                 </select>
                             </div>
                         </div>
@@ -123,8 +123,8 @@
 
             <div class="row" style="display: none" data-name="payment_id">
                 <div class="cell">
-                    <label for="payment_id">{$lang->translate('payment_id')}</label>
-                    <div class="hint">{$lang->translate('sms_code_transfer_id')}</div>
+                    <label for="payment_id">{$lang->t('payment_id')}</label>
+                    <div class="hint">{$lang->t('sms_code_transfer_id')}</div>
                 </div>
                 <div class="cell">
                     <div class="field">

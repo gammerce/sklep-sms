@@ -7,7 +7,7 @@ use App\System\Database;
 class ServerServiceRepository
 {
     /** @var Database */
-    protected $db;
+    private $db;
 
     public function __construct(Database $db)
     {
@@ -16,16 +16,39 @@ class ServerServiceRepository
 
     public function create($serverId, $serviceId)
     {
-        $this->db->query(
-            $this->db->prepare(
+        $this->db
+            ->statement(
                 "INSERT INTO `" .
                     TABLE_PREFIX .
                     "servers_services` " .
-                    "SET `server_id`='%d', `service_id`='%s'",
-                [$serverId, $serviceId]
+                    "SET `server_id` = ?, `service_id` = ?"
             )
-        );
+            ->execute([$serverId, $serviceId]);
 
-        return new ServerService($serverId, $serviceId);
+        return $this->mapToModel($serverId, $serviceId);
+    }
+
+    /**
+     * @param int $serverId
+     * @return ServerService[]
+     */
+    public function findByServer($serverId)
+    {
+        $statement = $this->db->statement(
+            "SELECT * FROM `" . TABLE_PREFIX . "servers_services` WHERE `server_id` = ?"
+        );
+        $statement->execute([$serverId]);
+
+        $serverServices = [];
+        foreach ($statement as $row) {
+            $serverServices[] = $this->mapToModel($row['server_id'], $row['service_id']);
+        }
+
+        return $serverServices;
+    }
+
+    private function mapToModel($serverId, $serviceId)
+    {
+        return new ServerService(intval($serverId), $serviceId);
     }
 }
