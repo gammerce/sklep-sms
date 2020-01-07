@@ -1,13 +1,14 @@
 <?php
 namespace Tests\Psr4;
 
+use App\Repositories\PaymentPlatformRepository;
 use App\Repositories\PriceRepository;
 use App\Repositories\ServerRepository;
 use App\Repositories\ServerServiceRepository;
 use App\Repositories\ServiceRepository;
 use App\Repositories\UserRepository;
 use App\Services\ExtraFlags\ServiceExtraFlags;
-use App\Verification\Cssetti;
+use App\Verification\PaymentModules\Cssetti;
 use Faker\Factory as FakerFactory;
 use Faker\Generator;
 
@@ -31,12 +32,16 @@ class Factory
     /** @var ServiceRepository */
     private $serviceRepository;
 
+    /** @var PaymentPlatformRepository */
+    private $paymentPlatformRepository;
+
     public function __construct(
         UserRepository $userRepository,
         ServerRepository $serverRepository,
         ServiceRepository $serviceRepository,
         PriceRepository $priceRepository,
-        ServerServiceRepository $serverServiceRepository
+        ServerServiceRepository $serverServiceRepository,
+        PaymentPlatformRepository $paymentPlatformRepository
     ) {
         $this->userRepository = $userRepository;
         $this->serverRepository = $serverRepository;
@@ -44,6 +49,7 @@ class Factory
         $this->serverServiceRepository = $serverServiceRepository;
         $this->serviceRepository = $serviceRepository;
         $this->faker = FakerFactory::create();
+        $this->paymentPlatformRepository = $paymentPlatformRepository;
     }
 
     public function server(array $attributes = [])
@@ -53,6 +59,7 @@ class Factory
                 'name' => $this->faker->word,
                 'ip' => $this->faker->ipv4,
                 'port' => $this->faker->numberBetween(1000, 20000),
+                'sms_platform' => null,
             ],
             $attributes
         );
@@ -60,7 +67,8 @@ class Factory
         return $this->serverRepository->create(
             $attributes['name'],
             $attributes['ip'],
-            $attributes['port']
+            $attributes['port'],
+            $attributes['sms_platform']
         );
     }
 
@@ -158,6 +166,26 @@ class Factory
             $attributes['ip'],
             $attributes['groups'],
             $attributes['wallet']
+        );
+    }
+
+    public function paymentPlatform(array $attributes = [])
+    {
+        $attributes = array_merge(
+            [
+                'name' => $this->faker->word,
+                'module' => Cssetti::MODULE_ID,
+                'data' => [
+                    "account_id" => $this->faker->uuid,
+                ],
+            ],
+            $attributes
+        );
+
+        return $this->paymentPlatformRepository->create(
+            $attributes['name'],
+            $attributes['module'],
+            $attributes['data']
         );
     }
 }

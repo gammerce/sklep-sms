@@ -32,7 +32,7 @@ class ChangeCssettiNumbers extends Migration
         $result = $this->db->query(
             "SELECT * FROM `ss_transaction_services` WHERE `id` = 'cssetti';"
         );
-        $transactionService = $this->db->fetchArrayAssoc($result);
+        $transactionService = $result->fetch();
 
         if (!$transactionService) {
             return;

@@ -1,13 +1,13 @@
 <form id="form_service_edit" class="action_box" autocomplete="off">
     <input type="password" class="display_none" />
     <div class="service_main_info">
-        {$lang->translate('edit_service')}
+        {$lang->t('edit_service')}
     </div>
     <table>
         <tbody class="ftbody">
             <tr>
                 <td>
-                    <label for="new_id">{$lang->translate('id')}</label>
+                    <label for="new_id">{$lang->t('id')}</label>
                 </td>
                 <td>
                     <div class="field">
@@ -27,7 +27,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="name">{$lang->strtoupper($lang->translate('name'))}</label>
+                    <label for="name">{$lang->strtoupper($lang->t('name'))}</label>
                 </td>
                 <td>
                     <div class="field">
@@ -48,9 +48,9 @@
             <tr>
                 <td>
                     <label for="short_description">
-                        {$lang->strtoupper($lang->translate('short_description'))}
+                        {$lang->strtoupper($lang->t('short_description'))}
                     </label>
-                    <div class="hint">{$lang->translate('description_on_server')}</div>
+                    <div class="hint">{$lang->t('description_on_server')}</div>
                 </td>
                 <td>
                     <div class="field">
@@ -70,9 +70,9 @@
             <tr>
                 <td>
                     <label for="description">
-                        {$lang->strtoupper($lang->translate('description'))}
+                        {$lang->strtoupper($lang->t('description'))}
                     </label>
-                    <div class="hint">{$lang->translate('description_on_www')}</div>
+                    <div class="hint">{$lang->t('description_on_www')}</div>
                 </td>
                 <td>
                     <div class="field">
@@ -91,7 +91,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="tag">{$lang->strtoupper($lang->translate('tag'))}</label>
+                    <label for="tag">{$lang->strtoupper($lang->t('tag'))}</label>
                 </td>
                 <td>
                     <div class="field">
@@ -110,7 +110,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="order">{$lang->strtoupper($lang->translate('order'))}</label>
+                    <label for="order">{$lang->strtoupper($lang->t('order'))}</label>
                 </td>
                 <td>
                     <div class="field">
@@ -128,8 +128,8 @@
             </tr>
             <tr>
                 <td>
-                    <label for="group">{$lang->strtoupper($lang->translate('groups'))}</label>
-                    <div class="hint">{$lang->translate('groups_to_buy_service')}</div>
+                    <label for="group">{$lang->strtoupper($lang->t('groups'))}</label>
+                    <div class="hint">{$lang->t('groups_to_buy_service')}</div>
                 </td>
                 <td>
                     <div class="field">
@@ -147,7 +147,7 @@
                 <td colspan="2" class="line"></td>
             </tr>
             <tr>
-                <td>{$lang->strtoupper($lang->translate('module'))}</td>
+                <td>{$lang->strtoupper($lang->t('module'))}</td>
                 <td>{{ $serviceModuleName }}</td>
             </tr>
         </tbody>
@@ -161,7 +161,7 @@
             <tr>
                 <td colspan="2">
                     <input type="hidden" name="id" value="{{ $service->getId() }}" />
-                    <input type="submit" value="{$lang->translate('edit')}" class="button w100" />
+                    <input type="submit" value="{$lang->t('edit')}" class="button w100" />
                 </td>
             </tr>
         </tbody>

@@ -1,7 +1,7 @@
 <tbody data-module="{{ $moduleId }}">
     <tr>
         <td>
-            <label for="uid">{$lang->translate('user_id')}</label>
+            <label for="uid">{$lang->t('user_id')}</label>
         </td>
         <td>
             <div class="field">
@@ -13,14 +13,14 @@
     </tr>
     <tr>
         <td>
-            <label for="type">{$lang->translate('type')}</label>
+            <label for="type">{$lang->t('type')}</label>
         </td>
         <td>
             <div class="field">
                 <div class="control">
                     <div class="select is-small">
                         <select id="type" name="type">
-                            <option value="">{$lang->translate('choose_type')}</option>
+                            <option value="">{$lang->t('choose_type')}</option>
                             {$types}
                         </select>
                     </div>
@@ -79,7 +79,7 @@
     </tr>
     <tr id="type_password">
         <td>
-            <label for="password">{$lang->translate('password')}</label>
+            <label for="password">{$lang->t('password')}</label>
         </td>
         <td>
             <div class="field">
@@ -118,14 +118,14 @@
     </tr>
     <tr>
         <td>
-            <label for="server">{$lang->translate('server')}</label>
+            <label for="server">{$lang->t('server')}</label>
         </td>
         <td>
             <div class="field">
                 <div class="control">
                     <div class="select is-small">
                         <select id="server" name="server">
-                            <option value="">{$lang->translate('choose_server')}</option>
+                            <option value="">{$lang->t('choose_server')}</option>
                             {$servers}
                         </select>
                     </div>
@@ -135,7 +135,7 @@
     </tr>
     <tr>
         <td>
-            <label for="amount">{$lang->translate('days_amount')}</label>
+            <label for="amount">{$lang->t('days_amount')}</label>
         </td>
         <td>
             <div class="field">
@@ -143,7 +143,7 @@
                     <input type="number" id="amount" name="amount" class="input is-small" /><br />
                     <label class="checkbox">
                         <input type="checkbox" name="forever" />
-                        {$lang->translate('forever')}
+                        {$lang->t('forever')}
                     </label>
                 </div>
             </div>

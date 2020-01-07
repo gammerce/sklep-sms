@@ -22,7 +22,7 @@ class PriceCollectionTest extends HttpTestCase
         // given
         $server = $this->factory->server();
         $admin = $this->factory->admin();
-        $this->actAs($admin);
+        $this->actingAs($admin);
 
         // when
         $response = $this->post("/api/admin/prices", [
@@ -49,7 +49,7 @@ class PriceCollectionTest extends HttpTestCase
     {
         $server = $this->factory->server();
         $admin = $this->factory->admin();
-        $this->actAs($admin);
+        $this->actingAs($admin);
 
         $body = [
             'service' => 'vip',

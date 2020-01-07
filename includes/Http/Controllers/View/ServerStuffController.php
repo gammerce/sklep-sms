@@ -4,6 +4,7 @@ namespace App\Http\Controllers\View;
 use App\Http\Responses\XmlResponse;
 use App\Http\Services\PurchaseService;
 use App\Services\Interfaces\IServicePurchaseOutside;
+use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
@@ -20,12 +21,14 @@ class ServerStuffController
         Heart $heart,
         TranslationManager $translationManager,
         Settings $settings,
-        PurchaseService $purchaseService
+        PurchaseService $purchaseService,
+        Auth $auth
     ) {
         $lang = $translationManager->user();
 
         $key = $request->query->get('key');
         $service = $request->query->get('service');
+        $platform = $request->query->get('platform');
 
         if ($key != md5($settings['random_key'])) {
             return new Response();
@@ -34,9 +37,10 @@ class ServerStuffController
         $serviceModule = $heart->getServiceModule($service);
 
         if ($serviceModule === null || !($serviceModule instanceof IServicePurchaseOutside)) {
-            return new XmlResponse("bad_module", $lang->translate('bad_module'), 0);
+            return new XmlResponse("bad_module", $lang->t('bad_module'), 0);
         }
 
+        $auth->user()->setPlatform($platform);
         $response = $purchaseService->purchase($serviceModule, $request->query->all());
 
         return new XmlResponse(

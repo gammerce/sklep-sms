@@ -11,7 +11,7 @@ class SettingsControllerTest extends HttpTestCase
     {
         // given
         $admin = $this->factory->admin();
-        $this->actAs($admin);
+        $this->actingAs($admin);
 
         // when
         $response = $this->put("/api/admin/settings", [
@@ -34,8 +34,8 @@ class SettingsControllerTest extends HttpTestCase
         $settings = $this->app->make(Settings::class);
         $settings->load();
         $this->assertSame("https://example.com", $settings["shop_url"]);
-        $this->assertSame("abc123", $settings["license_password"]);
-        $this->assertSame("1.23", $settings["vat"]);
+        $this->assertSame("abc123", $settings->getLicenseToken());
+        $this->assertSame(1.23, $settings->getVat());
         $this->assertSame("20", $settings["row_limit"]);
         $this->assertSame("1", $settings["delete_logs"]);
         $this->assertSame("1", $settings["cron_each_visit"]);

@@ -1,12 +1,12 @@
 <form id="form_service_code_add" class="action_box">
     <div class="service_main_info">
-        {$lang->translate('add_code_for_service')}
+        {$lang->t('add_code_for_service')}
     </div>
     <table>
         <tbody class="ftbody">
             <tr>
                 <td>
-                    <label for="code">{$lang->translate('code')}</label>
+                    <label for="code">{$lang->t('code')}</label>
                 </td>
                 <td>
                     <div class="field has-addons">
@@ -23,7 +23,7 @@
                             <input
                                 type="button"
                                 name="random_code"
-                                value="{$lang->translate('generate')}"
+                                value="{$lang->t('generate')}"
                                 class="button is-small"
                             />
                         </div>
@@ -32,14 +32,14 @@
             </tr>
             <tr>
                 <td>
-                    <label for="service">{$lang->translate('service')}</label>
+                    <label for="service">{$lang->t('service')}</label>
                 </td>
                 <td>
                     <div class="field">
                         <div class="control">
                             <div class="select is-small">
                                 <select id="service" name="service">
-                                    <option value="">{$lang->translate('choose_service')}</option>
+                                    <option value="">{$lang->t('choose_service')}</option>
                                     {$services}
                                 </select>
                             </div>
@@ -49,7 +49,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="uid">{$lang->translate('user_id')}</label>
+                    <label for="uid">{$lang->t('user_id')}</label>
                 </td>
                 <td>
                     <div class="field">
@@ -66,7 +66,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <input type="submit" value="{$lang->translate('add')}" class="button w100" />
+                    <input type="submit" value="{$lang->t('add')}" class="button w100" />
                 </td>
             </tr>
         </tbody>

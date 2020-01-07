@@ -28,7 +28,7 @@ class PurchaseResource
         $serviceModule = $heart->getServiceModule($request->request->get('service'));
 
         if ($serviceModule === null || !($serviceModule instanceof IServicePurchaseOutside)) {
-            return new XmlResponse("bad_module", $lang->translate('bad_module'), 0);
+            return new XmlResponse("bad_module", $lang->t('bad_module'), 0);
         }
 
         $response = $purchaseService->purchase($serviceModule, $request->request->all());

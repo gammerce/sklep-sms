@@ -16,7 +16,7 @@ class PageAdminPaymentWallet extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('payments_wallet');
+        $this->heart->pageTitle = $this->title = $this->lang->t('payments_wallet');
     }
 
     protected function content(array $query, array $body)
@@ -25,11 +25,11 @@ class PageAdminPaymentWallet extends PageAdmin
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('cost')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('ip')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('platform'), "platform"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('date')));
+        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->t('cost')));
+        $table->addHeadCell(new HeadCell($this->lang->t('ip')));
+        $table->addHeadCell(new HeadCell($this->lang->t('platform'), "platform"));
+        $table->addHeadCell(new HeadCell($this->lang->t('date')));
 
         $where = "";
         if (isset($query['payid'])) {
@@ -46,9 +46,9 @@ class PageAdminPaymentWallet extends PageAdmin
                 get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($this->db->getColumn('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
+        $table->setDbRowsAmount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $bodyRow = new BodyRow();
 
             if ($query['payid'] == $row['payment_id']) {
@@ -56,7 +56,7 @@ class PageAdminPaymentWallet extends PageAdmin
             }
 
             $cost = $row['cost']
-                ? number_format($row['cost'] / 100.0, 2) . " " . $this->settings['currency']
+                ? number_format($row['cost'] / 100.0, 2) . " " . $this->settings->getCurrency()
                 : "";
 
             $bodyRow->setDbId($row['payment_id']);

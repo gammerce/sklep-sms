@@ -26,7 +26,7 @@ class ServiceResourceTest extends HttpTestCase
         /** @var ServiceRepository $repository */
         $repository = $this->app->make(ServiceRepository::class);
         $admin = $this->factory->admin();
-        $this->actAs($admin);
+        $this->actingAs($admin);
 
         // when
         $response = $this->put("/api/admin/services/{$this->service->getId()}", [
@@ -53,7 +53,7 @@ class ServiceResourceTest extends HttpTestCase
     {
         // given
         $admin = $this->factory->admin();
-        $this->actAs($admin);
+        $this->actingAs($admin);
 
         $id = 'example';
         $this->factory->service(compact('id'));

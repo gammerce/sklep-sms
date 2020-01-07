@@ -32,17 +32,14 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         }
 
         if (!strlen($className)) {
-            return $this->lang->sprintf(
-                $this->lang->translate('no_subpage'),
-                htmlspecialchars($query['subpage'])
-            );
+            return $this->lang->t('no_subpage', htmlspecialchars($query['subpage']));
         }
 
         /** @var IServiceUserServiceAdminDisplay $serviceModule */
         $serviceModule = $this->app->make($className);
 
         $this->title =
-            $this->lang->translate('users_services') .
+            $this->lang->t('users_services') .
             ': ' .
             $serviceModule->userServiceAdminDisplayTitleGet();
         $this->heart->pageTitle = $this->title;
@@ -61,7 +58,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
             $button->setParam('id', 'user_service_button_add');
             $button->setParam('type', 'button');
             $button->addClass('button is-small');
-            $button->setParam('value', $this->lang->translate('add_service'));
+            $button->setParam('value', $this->lang->t('add_service'));
             $wrapper->addButton($button);
         }
 
@@ -106,7 +103,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
                         null ||
                     !($serviceModule instanceof IServiceUserServiceAdminEdit)
                 ) {
-                    $formData = $this->lang->translate('service_edit_unable');
+                    $formData = $this->lang->t('service_edit_unable');
                 } else {
                     $serviceModuleId = $serviceModule->getModuleId();
                     $formData = $serviceModule->userServiceAdminEditFormGet($userService);

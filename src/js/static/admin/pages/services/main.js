@@ -14,18 +14,15 @@ $(document).delegate(".table-structure .edit_row", "click", function() {
 });
 
 // Change service module
-var extra_fields;
+var serviceExtraFlags;
 $(document).delegate(".action_box [name=module]", "change", function() {
-    // Brak wybranego modułu
-    if ($(this).val() == "") {
-        if (extra_fields) {
-            extra_fields.remove();
-        }
+    var moduleId = $(this).val();
 
+    if (!moduleId && serviceExtraFlags) {
+        serviceExtraFlags.remove();
         return;
     }
 
-    var moduleId = $(this).val();
     var serviceId = $(".action_box [name=id]");
 
     restRequest(
@@ -33,12 +30,12 @@ $(document).delegate(".action_box [name=module]", "change", function() {
         "/api/admin/services/" + serviceId + "/modules/" + moduleId + "/extra_fields",
         {},
         function(content) {
-            // Usuwamy dodatkowe pola
-            if (extra_fields) extra_fields.remove();
+            if (serviceExtraFlags) {
+                serviceExtraFlags.remove();
+            }
 
-            // Dodajemy content do action boxa
-            extra_fields = $(content);
-            extra_fields.insertAfter(".action_box .ftbody");
+            serviceExtraFlags = $(content);
+            serviceExtraFlags.insertAfter(".action_box .ftbody");
         }
     );
 });
@@ -49,14 +46,14 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     var serviceId = rowId.children("td[headers=id]").text();
     var serviceName = rowId.children("td[headers=name]").text();
 
-    var confirmInfo = "Na pewno chcesz usunąć usługę:\n(" + serviceId + ") " + serviceName + " ?";
-    if (confirm(confirmInfo) == false) {
+    var confirmText = "Na pewno chcesz usunąć usługę:\n(" + serviceId + ") " + serviceName + " ?";
+    if (confirm(confirmText) == false) {
         return;
     }
 
     loader.show();
     $.ajax({
-        type: "POST",
+        type: "DELETE",
         url: buildUrl("/api/admin/services/" + serviceId),
         complete: function() {
             loader.hide();

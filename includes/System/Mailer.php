@@ -72,13 +72,7 @@ class Mailer
 
             $mail->send();
 
-            log_to_db(
-                $this->langShop->sprintf(
-                    $this->langShop->translate('email_was_sent'),
-                    $email,
-                    $text
-                )
-            );
+            log_to_db($this->langShop->t('email_was_sent', $email, $text));
 
             return "sent";
         } catch (Exception $e) {
@@ -116,9 +110,7 @@ class Mailer
             return "not_sent";
         }
 
-        log_to_db(
-            $this->langShop->sprintf($this->langShop->translate('email_was_sent'), $email, $text)
-        );
+        log_to_db($this->langShop->t('email_was_sent', $email, $text));
 
         return "sent";
     }

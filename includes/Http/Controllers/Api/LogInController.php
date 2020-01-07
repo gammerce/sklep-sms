@@ -28,16 +28,16 @@ class LogInController
         $password = $request->request->get("password");
 
         if (!$username || !$password) {
-            return new ApiResponse("no_data", $lang->translate('no_login_password'), 0);
+            return new ApiResponse("no_data", $lang->t('no_login_password'), 0);
         }
 
         $user = $heart->getUserByLogin($username, $password);
         if ($user->exists()) {
             $session->set("uid", $user->getUid());
             $activityService->update($user);
-            return new ApiResponse("logged_in", $lang->translate('login_success'), 1);
+            return new ApiResponse("logged_in", $lang->t('login_success'), 1);
         }
 
-        return new ApiResponse("not_logged", $lang->translate('bad_pass_nick'), 0);
+        return new ApiResponse("not_logged", $lang->t('bad_pass_nick'), 0);
     }
 }

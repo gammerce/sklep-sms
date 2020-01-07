@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\Repositories\ServiceCodeRepository;
 use App\System\Auth;
 use App\System\Heart;
@@ -29,7 +30,7 @@ class ServiceCodeCollection
         $warnings = [];
 
         if (($serviceModule = $heart->getServiceModule($serviceId)) === null) {
-            return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
+            return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
         }
 
         // Id użytkownika
@@ -39,10 +40,10 @@ class ServiceCodeCollection
 
         // Kod
         if (!strlen($code)) {
-            $warnings['code'][] = $lang->translate('field_no_empty');
+            $warnings['code'][] = $lang->t('field_no_empty');
         } else {
             if (strlen($code) > 16) {
-                $warnings['code'][] = $lang->translate('return_code_length_warn');
+                $warnings['code'][] = $lang->t('return_code_length_warn');
             }
         }
 
@@ -62,7 +63,7 @@ class ServiceCodeCollection
         $serviceCodeRepository->create(
             $code,
             $serviceModule->service->getId(),
-            if_strlen($uid, 0),
+            $uid ?: 0,
             array_get($codeData, 'server', 0),
             array_get($codeData, 'amount', 0),
             array_get($codeData, 'tariff', 0),
@@ -70,8 +71,8 @@ class ServiceCodeCollection
         );
 
         log_to_db(
-            $langShop->sprintf(
-                $langShop->translate('code_added_admin'),
+            $langShop->t(
+                'code_added_admin',
                 $user->getUsername(),
                 $user->getUid(),
                 $code,
@@ -79,6 +80,6 @@ class ServiceCodeCollection
             )
         );
 
-        return new ApiResponse('ok', $lang->translate('code_added'), 1);
+        return new SuccessApiResponse($lang->t('code_added'));
     }
 }

@@ -1,4 +1,4 @@
-$(document).delegate("#form-profile-update", "submit", function(e) {
+$(document).delegate("#form_profile_update", "submit", function(e) {
     e.preventDefault();
 
     loader.show();

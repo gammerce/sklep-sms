@@ -41,7 +41,7 @@ class BlockAdminContent extends Block
     public function getContent(array $query, array $body)
     {
         if (!is_logged()) {
-            return $this->lang->translate('must_be_logged_in');
+            return $this->lang->t('must_be_logged_in');
         }
 
         return $this->content($query, $body);

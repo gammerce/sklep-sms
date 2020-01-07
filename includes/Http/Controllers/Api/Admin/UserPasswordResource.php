@@ -28,6 +28,6 @@ class UserPasswordResource
 
         $userPasswordService->change($userId, $password);
 
-        return new ApiResponse("ok", $lang->translate("change_password_success"), true);
+        return new ApiResponse("ok", $lang->t("change_password_success"), true);
     }
 }

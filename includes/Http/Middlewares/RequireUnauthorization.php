@@ -19,7 +19,7 @@ class RequireUnauthorization implements MiddlewareContract
         $lang = $translationManager->user();
 
         if ($auth->check()) {
-            return new ApiResponse("logged_in", $lang->translate('logged'), 0);
+            return new ApiResponse("logged_in", $lang->t('logged'), 0);
         }
 
         return null;

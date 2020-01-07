@@ -51,24 +51,24 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         $smsBody = '';
         $transferBody = '';
 
-        if (strlen($this->settings['sms_service'])) {
-            $paymentModule = $this->heart->getPaymentModuleOrFail($this->settings['sms_service']);
+        if ($this->settings->getSmsPlatformId()) {
+            $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
+                $this->settings->getSmsPlatformId()
+            );
 
-            // Pobieramy opcję wyboru doładowania za pomocą SMS
             $optionSms = $this->template->render("services/charge_wallet/option_sms");
 
-            $smsList = "";
+            $smsList = [];
             foreach ($paymentModule->getTariffs() as $tariff) {
                 $provision = number_format($tariff->getProvision() / 100.0, 2);
-                // Przygotowuje opcje wyboru
-                $smsList .= create_dom_element(
+                $smsList[] = create_dom_element(
                     "option",
-                    $this->lang->sprintf(
-                        $this->lang->translate('charge_sms_option'),
+                    $this->lang->t(
+                        'charge_sms_option',
                         $tariff->getSmsCostGross(),
-                        $this->settings['currency'],
+                        $this->settings->getCurrency(),
                         $provision,
-                        $this->settings['currency']
+                        $this->settings->getCurrency()
                     ),
                     [
                         'value' => $tariff->getId(),
@@ -76,14 +76,12 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
                 );
             }
 
-            $smsBody = $this->template->render(
-                "services/charge_wallet/sms_body",
-                compact('smsList')
-            );
+            $smsBody = $this->template->render("services/charge_wallet/sms_body", [
+                'smsList' => implode("", $smsList),
+            ]);
         }
 
-        if (strlen($this->settings['transfer_service'])) {
-            // Pobieramy opcję wyboru doładowania za pomocą przelewu
+        if ($this->settings->getTransferPlatformId()) {
             $optionTransfer = $this->template->render("services/charge_wallet/option_transfer");
             $transferBody = $this->template->render("services/charge_wallet/transfer_body");
         }
@@ -101,7 +99,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         if (!$this->auth->check()) {
             return [
                 'status' => "no_access",
-                'text' => $this->lang->translate('not_logged_or_no_perm'),
+                'text' => $this->lang->t('not_logged_or_no_perm'),
                 'positive' => false,
             ];
         }
@@ -110,7 +108,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         if (!in_array($data['method'], [Purchase::METHOD_SMS, Purchase::METHOD_TRANSFER])) {
             return [
                 'status' => "wrong_method",
-                'text' => $this->lang->translate('wrong_charge_method'),
+                'text' => $this->lang->t('wrong_charge_method'),
                 'positive' => false,
             ];
         }
@@ -119,7 +117,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
 
         if ($data['method'] == Purchase::METHOD_SMS) {
             if (!strlen($data['tariff'])) {
-                $warnings['tariff'][] = $this->lang->translate('charge_amount_not_chosen');
+                $warnings['tariff'][] = $this->lang->t('charge_amount_not_chosen');
             }
         } else {
             if ($data['method'] == Purchase::METHOD_TRANSFER) {
@@ -131,9 +129,9 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
                     );
                 }
                 if ($data['transfer_amount'] <= 1) {
-                    $warnings['transfer_amount'][] = $this->lang->sprintf(
-                        $this->lang->translate('charge_amount_too_low'),
-                        "1.00 " . $this->settings['currency']
+                    $warnings['transfer_amount'][] = $this->lang->t(
+                        'charge_amount_too_low',
+                        "1.00 " . $this->settings->getCurrency()
                     );
                 }
             }
@@ -143,7 +141,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
         if (!empty($warnings)) {
             return [
                 'status' => "warnings",
-                'text' => $this->lang->translate('form_wrong_filled'),
+                'text' => $this->lang->t('form_wrong_filled'),
                 'positive' => false,
                 'data' => ['warnings' => $warnings],
             ];
@@ -175,7 +173,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
 
         return [
             'status' => "ok",
-            'text' => $this->lang->translate('purchase_form_validated'),
+            'text' => $this->lang->t('purchase_form_validated'),
             'positive' => true,
             'purchase_data' => $purchase,
         ];
@@ -215,15 +213,12 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
     public function purchaseInfo($action, array $data)
     {
         $cost = $data['cost'] ?: 0;
-        $data['amount'] .= ' ' . $this->settings['currency'];
-        $data['cost'] = number_format($cost / 100, 2) . ' ' . $this->settings['currency'];
+        $data['amount'] .= ' ' . $this->settings->getCurrency();
+        $data['cost'] = number_format($cost / 100, 2) . ' ' . $this->settings->getCurrency();
 
         if ($action == "web") {
             if ($data['payment'] == Purchase::METHOD_SMS) {
-                $desc = $this->lang->sprintf(
-                    $this->lang->translate('wallet_was_charged'),
-                    $data['amount']
-                );
+                $desc = $this->lang->t('wallet_was_charged', $data['amount']);
                 return $this->template->render(
                     "services/charge_wallet/web_purchase_info_sms",
                     compact('desc', 'data'),
@@ -246,10 +241,7 @@ class ServiceChargeWallet extends ServiceChargeWalletSimple implements
 
         if ($action == "payment_log") {
             return [
-                'text' => $this->lang->sprintf(
-                    $this->lang->translate('wallet_was_charged'),
-                    $data['amount']
-                ),
+                'text' => $this->lang->t('wallet_was_charged', $data['amount']),
                 'class' => "income",
             ];
         }

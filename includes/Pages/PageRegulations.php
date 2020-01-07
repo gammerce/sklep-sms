@@ -10,6 +10,6 @@ class PageRegulations extends PageSimple
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('regulations');
+        $this->heart->pageTitle = $this->title = $this->lang->t('regulations');
     }
 }

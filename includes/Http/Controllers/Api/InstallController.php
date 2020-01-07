@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\Exceptions\SqlQueryException;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\HtmlResponse;
@@ -11,8 +10,10 @@ use App\Install\RequirementsStore;
 use App\Install\SetupManager;
 use App\System\Application;
 use App\System\Database;
+use App\System\FileSystemContract;
 use App\System\Path;
-use App\Translation\TranslationManager;
+use Exception;
+use PDOException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -21,14 +22,14 @@ class InstallController
     public function post(
         Request $request,
         RequirementsStore $requirementsStore,
-        TranslationManager $translationManager,
         SetupManager $setupManager,
         Path $path,
+        FileSystemContract $fileSystem,
         Application $app
     ) {
         if ($setupManager->hasFailed()) {
             return new HtmlResponse(
-                'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku data/logs/install.log'
+                'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku data/logs/errors.log'
             );
         }
 
@@ -40,7 +41,6 @@ class InstallController
 
         $modules = $requirementsStore->getModules();
         $filesWithWritePermission = $requirementsStore->getFilesWithWritePermission();
-        $lang = $translationManager->user();
 
         $dbHost = $request->request->get('db_host');
         $dbPort = $request->request->get('db_port');
@@ -53,12 +53,10 @@ class InstallController
 
         try {
             $db = new Database($dbHost, $dbPort, $dbUser, $dbPassword, $dbDb);
-            $db->query("SET NAMES utf8");
+            $db->connect();
             $app->instance(Database::class, $db);
-        } catch (SqlQueryException $e) {
-            return new Response(
-                $lang->translate('mysqli_' . $e->getMessage()) . "\n\n" . $e->getError()
-            );
+        } catch (PDOException $e) {
+            return new Response($e->getMessage());
         }
 
         /** @var SetupManager $setupManager */
@@ -72,27 +70,20 @@ class InstallController
 
         $warnings = [];
 
-        // Licencja ID
         if (!strlen($licenseToken)) {
             $warnings['license_token'][] = "Nie podano tokenu licencji.";
         }
 
-        // Admin nick
         if (!strlen($adminUsername)) {
             $warnings['admin_username'][] = "Nie podano nazwy dla użytkownika admin.";
         }
 
-        // Admin hasło
         if (!strlen($adminPassword)) {
             $warnings['admin_password'][] = "Nie podano hasła dla użytkownika admin.";
         }
 
         foreach ($filesWithWritePermission as $file) {
-            if (!strlen($file)) {
-                continue;
-            }
-
-            if (!is_writable($path->to($file))) {
+            if (strlen($file) && !$fileSystem->isWritable($path->to($file))) {
                 $warnings['general'][] =
                     "Ścieżka <b>" . htmlspecialchars($file) . "</b> nie posiada praw do zapisu.";
             }
@@ -109,10 +100,16 @@ class InstallController
             throw new ValidationException($warnings);
         }
 
-        $setupManager->start();
-        $migrator->setup($licenseToken, $adminUsername, $adminPassword);
-        $envCreator->create($dbHost, $dbPort, $dbDb, $dbUser, $dbPassword);
-        $setupManager->finish();
+        try {
+            $setupManager->start();
+            $migrator->setup($licenseToken, $adminUsername, $adminPassword);
+            $envCreator->create($dbHost, $dbPort, $dbDb, $dbUser, $dbPassword);
+        } catch (Exception $e) {
+            $setupManager->markAsFailed();
+            throw $e;
+        } finally {
+            $setupManager->finish();
+        }
 
         return new ApiResponse("ok", "Instalacja przebiegła pomyślnie.", true);
     }

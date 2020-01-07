@@ -6,7 +6,6 @@ use App\Exceptions\InvalidConfigException;
 use App\Exceptions\LicenseException;
 use App\Exceptions\LicenseRequestException;
 use App\Exceptions\RequireInstallationException;
-use App\Exceptions\SqlQueryException;
 use App\Exceptions\UnauthorizedException;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
@@ -57,17 +56,13 @@ class ExceptionHandler implements ExceptionHandlerContract
         }
 
         if ($e instanceof UnauthorizedException) {
-            return new ApiResponse(
-                "no_access",
-                $this->lang->translate('not_logged_or_no_perm'),
-                false
-            );
+            return new ApiResponse("no_access", $this->lang->t('not_logged_or_no_perm'), false);
         }
 
         if ($e instanceof ValidationException) {
             return new ApiResponse(
                 "warnings",
-                $this->lang->translate('form_wrong_filled'),
+                $this->lang->t('form_wrong_filled'),
                 false,
                 array_merge(
                     [
@@ -88,7 +83,7 @@ class ExceptionHandler implements ExceptionHandlerContract
         }
 
         if ($e instanceof LicenseException) {
-            return new Response($this->lang->translate('verification_error'));
+            return new Response($this->lang->t('verification_error'));
         }
 
         if ($e instanceof LicenseRequestException) {
@@ -111,15 +106,10 @@ class ExceptionHandler implements ExceptionHandlerContract
         }
 
         $exceptionDetails = $this->getExceptionDetails($e);
-
         log_error(json_encode($exceptionDetails, JSON_PRETTY_PRINT));
 
         if ($this->app->bound(Raven_Client::class)) {
             $this->reportToSentry($e);
-        }
-
-        if ($e instanceof SqlQueryException) {
-            $this->reportSqlException($e);
         }
     }
 
@@ -139,15 +129,6 @@ class ExceptionHandler implements ExceptionHandlerContract
             'code' => $e->getCode(),
             'trace' => $e->getTrace(),
         ];
-    }
-
-    protected function reportSqlException(SqlQueryException $e)
-    {
-        $query = $e->getQuery();
-
-        if (strlen($query)) {
-            log_to_file($this->path->sqlLogPath(), $query);
-        }
     }
 
     protected function shouldReport(Exception $e)

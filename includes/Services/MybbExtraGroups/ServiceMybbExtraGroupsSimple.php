@@ -15,6 +15,8 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
+// TODO Remove Simple classes. Rename Service to ServiceModule
+
 abstract class ServiceMybbExtraGroupsSimple extends Service implements
     IServiceAdminManage,
     IServiceCreate,
@@ -50,20 +52,24 @@ abstract class ServiceMybbExtraGroupsSimple extends Service implements
         // WEB
         if ($this->showOnWeb()) {
             $webSelYes = "selected";
+            $webSelNo = "";
         } else {
+            $webSelYes = "";
             $webSelNo = "selected";
         }
 
-        // Jeżeli edytujemy
+        // We're in the edit mode
         if ($this->service !== null) {
             // DB
-            $dbPassword = strlen($this->service->getData()['db_password']) ? "********" : "";
-            $dbHost = $this->service->getData()['db_host'];
-            $dbUser = $this->service->getData()['db_user'];
-            $dbName = $this->service->getData()['db_name'];
+            $dbPassword = strlen(array_get($this->service->getData(), 'db_password'))
+                ? "********"
+                : "";
+            $dbHost = array_get($this->service->getData(), 'db_host');
+            $dbUser = array_get($this->service->getData(), 'db_user');
+            $dbName = array_get($this->service->getData(), 'db_name');
 
             // MyBB groups
-            $mybbGroups = $this->service->getData()['mybb_groups'];
+            $mybbGroups = array_get($this->service->getData(), 'mybb_groups');
         }
 
         return $this->template->render(
@@ -88,17 +94,17 @@ abstract class ServiceMybbExtraGroupsSimple extends Service implements
 
         // Web
         if (!in_array($data['web'], ["1", "0"])) {
-            $warnings['web'][] = $this->lang->translate('only_yes_no');
+            $warnings['web'][] = $this->lang->t('only_yes_no');
         }
 
         // MyBB groups
         if (!strlen($data['mybb_groups'])) {
-            $warnings['mybb_groups'][] = $this->lang->translate('field_no_empty');
+            $warnings['mybb_groups'][] = $this->lang->t('field_no_empty');
         } else {
             $groups = explode(",", $data['mybb_groups']);
             foreach ($groups as $group) {
                 if (!my_is_integer($group)) {
-                    $warnings['mybb_groups'][] = $this->lang->translate('group_not_integer');
+                    $warnings['mybb_groups'][] = $this->lang->t('group_not_integer');
                     break;
                 }
             }
@@ -106,22 +112,22 @@ abstract class ServiceMybbExtraGroupsSimple extends Service implements
 
         // Db host
         if (!strlen($data['db_host'])) {
-            $warnings['db_host'][] = $this->lang->translate('field_no_empty');
+            $warnings['db_host'][] = $this->lang->t('field_no_empty');
         }
 
         // Db user
         if (!strlen($data['db_user'])) {
-            $warnings['db_user'][] = $this->lang->translate('field_no_empty');
+            $warnings['db_user'][] = $this->lang->t('field_no_empty');
         }
 
         // Db password
         if ($this->service === null && !strlen($data['db_password'])) {
-            $warnings['db_password'][] = $this->lang->translate('field_no_empty');
+            $warnings['db_password'][] = $this->lang->t('field_no_empty');
         }
 
         // Db name
         if (!strlen($data['db_name'])) {
-            $warnings['db_name'][] = $this->lang->translate('field_no_empty');
+            $warnings['db_name'][] = $this->lang->t('field_no_empty');
         }
 
         return $warnings;
@@ -142,9 +148,10 @@ abstract class ServiceMybbExtraGroupsSimple extends Service implements
             'web' => $data['web'],
             'db_host' => $data['db_host'],
             'db_user' => $data['db_user'],
-            'db_password' => if_strlen(
-                $data['db_password'],
-                $this->service->getData()['db_password']
+            'db_password' => array_get(
+                $data,
+                'db_password',
+                array_get($this->service->getData(), 'db_password')
             ),
             'db_name' => $data['db_name'],
         ];
@@ -156,7 +163,7 @@ abstract class ServiceMybbExtraGroupsSimple extends Service implements
 
     public function userServiceAdminDisplayTitleGet()
     {
-        return $this->lang->translate('mybb_groups');
+        return $this->lang->t('mybb_groups');
     }
 
     public function userServiceAdminDisplayGet(array $query, array $body)
@@ -170,11 +177,11 @@ abstract class ServiceMybbExtraGroupsSimple extends Service implements
         $wrapper->setSearch();
 
         $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('user')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('service')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('mybb_user')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('expires')));
+        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->t('user')));
+        $table->addHeadCell(new HeadCell($this->lang->t('service')));
+        $table->addHeadCell(new HeadCell($this->lang->t('mybb_user')));
+        $table->addHeadCell(new HeadCell($this->lang->t('expires')));
 
         // Wyszukujemy dane ktore spelniaja kryteria
         $where = '';
@@ -212,17 +219,15 @@ abstract class ServiceMybbExtraGroupsSimple extends Service implements
                 get_row_limit($pageNumber)
         );
 
-        $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+        $table->setDbRowsAmount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $bodyRow = new BodyRow();
 
             $bodyRow->setDbId($row['id']);
             $bodyRow->addCell(
                 new Cell(
-                    $row['uid']
-                        ? $row['username'] . " ({$row['uid']})"
-                        : $this->lang->translate('none')
+                    $row['uid'] ? $row['username'] . " ({$row['uid']})" : $this->lang->t('none')
                 )
             );
             $bodyRow->addCell(new Cell($row['service']));
@@ -230,8 +235,8 @@ abstract class ServiceMybbExtraGroupsSimple extends Service implements
             $bodyRow->addCell(
                 new Cell(
                     $row['expire'] == '-1'
-                        ? $this->lang->translate('never')
-                        : date($this->settings['date_format'], $row['expire'])
+                        ? $this->lang->t('never')
+                        : date($this->settings->getDateFormat(), $row['expire'])
                 )
             );
             if (get_privileges("manage_user_services")) {

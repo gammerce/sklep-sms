@@ -70,7 +70,7 @@ class BlockOnInvalidLicense implements MiddlewareContract
             }
         }
 
-        return $this->lang->translate('verification_error');
+        return $this->lang->t('verification_error');
     }
 
     private function renderErrorPage($message)

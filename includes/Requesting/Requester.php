@@ -5,13 +5,14 @@ class Requester
 {
     /**
      * @param string $url
-     * @param array $query
-     * @param array $headers
+     * @param array  $query
+     * @param array  $headers
+     * @param int    $timeout
      * @return Response|bool
      */
-    public function get($url, array $query = [], array $headers = [])
+    public function get($url, array $query = [], array $headers = [], $timeout = 10)
     {
-        return $this->curl('GET', $url, $query, [], $headers);
+        return $this->curl('GET', $url, $query, [], $headers, $timeout);
     }
 
     /**

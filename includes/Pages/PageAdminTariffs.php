@@ -19,7 +19,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('tariffs');
+        $this->heart->pageTitle = $this->title = $this->lang->t('tariffs');
     }
 
     protected function content(array $query, array $body)
@@ -28,8 +28,8 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->translate('tariff'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('provision')));
+        $table->addHeadCell(new HeadCell($this->lang->t('tariff'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->t('provision')));
 
         foreach ($this->heart->getTariffs() as $tariff) {
             $bodyRow = new BodyRow();
@@ -37,7 +37,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
             $provision = number_format($tariff->getProvision() / 100.0, 2);
 
             $bodyRow->setDbId($tariff->getId());
-            $bodyRow->addCell(new Cell("{$provision} {$this->settings['currency']}"));
+            $bodyRow->addCell(new Cell("{$provision} {$this->settings->getCurrency()}"));
 
             $bodyRow->setEditAction(true);
             if (!$tariff->isPredefined()) {
@@ -53,7 +53,7 @@ class PageAdminTariffs extends PageAdmin implements IPageAdminActionBox
         $button->setParam('id', 'tariff_button_add');
         $button->setParam('type', 'button');
         $button->addClass('button');
-        $button->setParam('value', $this->lang->translate('add_tariff'));
+        $button->setParam('value', $this->lang->t('add_tariff'));
         $wrapper->addButton($button);
 
         return $wrapper->toHtml();

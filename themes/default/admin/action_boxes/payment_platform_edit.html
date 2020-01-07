@@ -1,0 +1,48 @@
+<form id="form_payment_platform_edit" class="action_box">
+    <div class="service_main_info">
+        {$lang->t('edit_payment_platform')}
+    </div>
+    <table>
+        <tr>
+            <td>{$lang->t('id')}</td>
+            <td>{{ $paymentPlatform->getId() }}</td>
+        </tr>
+        <tr>
+            <td>{$lang->t('payment_module')}</td>
+            <td>{{ $lang->t($paymentPlatform->getModuleId()) }}</td>
+        </tr>
+        <tr>
+            <td>
+                <label for="name">{$lang->t('name')}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            class="input is-small"
+                            maxlength="64"
+                            value="{{ $paymentPlatform->getName() }}"
+                            required
+                        />
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="line"></td>
+        </tr>
+        {$dataFields}
+        <tr>
+            <td colspan="2" class="line"></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="hidden" name="id" value="{{ $paymentPlatform->getId() }}" />
+                <input type="submit" value="{$lang->t('confirm')}" class="button w100" />
+            </td>
+        </tr>
+    </table>
+</form>

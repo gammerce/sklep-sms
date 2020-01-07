@@ -37,7 +37,7 @@ class LocaleService
         }
 
         $ip = get_ip();
-        $response = $this->requester->get("http://ipinfo.io/{$ip}/json");
+        $response = $this->requester->get("https://ipinfo.io/{$ip}/json", [], [], 2);
 
         if ($response && $response->isOk()) {
             $details = $response->json();

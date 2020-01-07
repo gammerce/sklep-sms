@@ -51,11 +51,11 @@ class BlockContent extends Block
         }
 
         if ($this->page instanceof IBeLoggedMust && !is_logged()) {
-            return $this->lang->translate('must_be_logged_in');
+            return $this->lang->t('must_be_logged_in');
         }
 
         if ($this->page instanceof IBeLoggedCannot && is_logged()) {
-            return $this->lang->translate('must_be_logged_out');
+            return $this->lang->t('must_be_logged_out');
         }
 
         return $this->content($query, $body);

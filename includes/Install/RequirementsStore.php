@@ -1,6 +1,7 @@
 <?php
 namespace App\Install;
 
+use App\System\FileSystemContract;
 use App\System\Path;
 
 class RequirementsStore
@@ -8,9 +9,13 @@ class RequirementsStore
     /** @var Path */
     private $path;
 
-    public function __construct(Path $path)
+    /** @var FileSystemContract */
+    private $fileSystem;
+
+    public function __construct(Path $path, FileSystemContract $fileSystem)
     {
         $this->path = $path;
+        $this->fileSystem = $fileSystem;
     }
 
     public function getModules()
@@ -18,7 +23,7 @@ class RequirementsStore
         return [
             [
                 'text' => "PHP v5.6.0 lub wyższa",
-                'value' => PHP_VERSION_ID >= 50600,
+                'value' => semantic_to_number(PHP_VERSION) >= 50600,
                 'must-be' => false,
             ],
 
@@ -68,14 +73,14 @@ class RequirementsStore
     {
         foreach ($this->getFilesWithWritePermission() as $path) {
             $fullPath = $this->path->to($path);
-            if (!is_writable($fullPath)) {
+            if (!$this->fileSystem->isWritable($fullPath)) {
                 return false;
             }
         }
 
         foreach ($this->getFilesToDelete() as $path) {
             $fullPath = $this->path->to($path);
-            if (file_exists($fullPath)) {
+            if ($this->fileSystem->exists($fullPath)) {
                 return false;
             }
         }

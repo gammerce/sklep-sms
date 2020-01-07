@@ -34,9 +34,7 @@ class Kernel implements KernelContract
         } catch (Exception $e) {
             /** @var ExceptionHandlerContract $handler */
             $handler = $this->app->make(ExceptionHandlerContract::class);
-
             $handler->report($e);
-
             return $handler->render($request, $e);
         } catch (Throwable $e) {
             /** @var ExceptionHandlerContract $handler */

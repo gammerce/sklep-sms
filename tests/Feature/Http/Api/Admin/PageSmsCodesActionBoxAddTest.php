@@ -10,7 +10,7 @@ class PageSmsCodesActionBoxAddTest extends HttpTestCase
     {
         // give
         $admin = $this->factory->admin();
-        $this->actAs($admin);
+        $this->actingAs($admin);
 
         // when
         $response = $this->get("/api/admin/pages/sms_codes/action_boxes/sms_code_add");
@@ -27,7 +27,7 @@ class PageSmsCodesActionBoxAddTest extends HttpTestCase
     {
         // give
         $admin = $this->factory->user();
-        $this->actAs($admin);
+        $this->actingAs($admin);
 
         // when
         $response = $this->get("/api/admin/pages/sms_codes/action_boxes/sms_code_add");

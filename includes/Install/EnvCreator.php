@@ -1,6 +1,7 @@
 <?php
 namespace App\Install;
 
+use App\System\FileSystemContract;
 use App\System\Path;
 
 class EnvCreator
@@ -8,20 +9,24 @@ class EnvCreator
     /** @var Path */
     private $path;
 
-    public function __construct(Path $path)
+    /** @var FileSystemContract */
+    private $fileSystem;
+
+    public function __construct(Path $path, FileSystemContract $fileSystem)
     {
         $this->path = $path;
+        $this->fileSystem = $fileSystem;
     }
 
     public function create($host, $port, $db, $user, $password)
     {
-        $path = $this->path();
-
-        file_put_contents($path, $this->getContent($host, $port, $db, $user, $password));
-        chmod($path, 0777);
+        $path = $this->path->to('confidential/.env');
+        $content = $this->getContent($host, $port, $db, $user, $password);
+        $this->fileSystem->put($path, $content);
+        $this->fileSystem->setPermissions($path, 0777);
     }
 
-    protected function getContent($host, $port, $db, $user, $password)
+    private function getContent($host, $port, $db, $user, $password)
     {
         return "DB_HOST=$host" .
             PHP_EOL .
@@ -33,10 +38,5 @@ class EnvCreator
             PHP_EOL .
             "DB_PASSWORD=$password" .
             PHP_EOL;
-    }
-
-    protected function path()
-    {
-        return $this->path->to('confidential/.env');
     }
 }

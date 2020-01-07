@@ -1,11 +1,11 @@
 <form id="form_server_add" class="action_box">
     <div class="service_main_info">
-        {$lang->translate('add_server')}
+        {$lang->t('add_server')}
     </div>
     <table>
         <tr>
             <td>
-                <label for="name">{$lang->strtoupper($lang->translate('name'))}</label>
+                <label for="name">{$lang->strtoupper($lang->t('name'))}</label>
             </td>
             <td>
                 <div class="field">
@@ -25,7 +25,7 @@
 
         <tr>
             <td>
-                <label for="ip">{$lang->translate('ip')}</label>
+                <label for="ip">{$lang->t('ip')}</label>
             </td>
             <td>
                 <div class="field">
@@ -45,7 +45,7 @@
 
         <tr>
             <td>
-                <label for="port">{$lang->strtoupper($lang->translate('port'))}</label>
+                <label for="port">{$lang->strtoupper($lang->t('port'))}</label>
             </td>
             <td>
                 <div class="field">
@@ -65,15 +65,15 @@
 
         <tr>
             <td>
-                <label for="sms_service">{$lang->translate('sms_payment_service')}</label>
+                <label for="sms_platform">{$lang->t('sms_payment_platform')}</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
-                            <select id="sms_service" name="sms_service">
-                                <option value="">{$lang->translate('default')}</option>
-                                {$smsServices}
+                            <select id="sms_platform" name="sms_platform">
+                                <option value="">{$lang->t('default')}</option>
+                                {$smsPlatforms}
                             </select>
                         </div>
                     </div>
@@ -93,7 +93,7 @@
 
         <tr>
             <td colspan="2">
-                <input type="submit" value="{$lang->translate('add')}" class="button w100" />
+                <input type="submit" value="{$lang->t('add')}" class="button w100" />
             </td>
         </tr>
     </table>

@@ -32,7 +32,7 @@ return [
     'edited_user_service' => 'Prawidłowo wyedytowano usługę.',
     'email' => 'Adres e-mail',
     'email_was_sent' => 'Wysłano e-maila na adres: {1} o treści: {2}',
-    'error_occured' => 'Wystąpił błąd.',
+    'error_occurred' => 'Wystąpił błąd.',
     'expired_service_delete' => 'AUTOMAT: Usunięto wygasłą usługę użytkownika. {1}',
     'february' => 'Luty',
     'field_length_max_warn' => 'Pole może się składać z co najwyżej {1} znaków.',
@@ -56,15 +56,6 @@ return [
     'march' => 'Marzec',
     'may' => 'Maj',
     'minutes' => 'minut',
-    'mysqli_no_db_connection' => 'Nie można połączyć się z bazą danych!',
-    'mysqli_no_query_fetch_array' =>
-        'Nie można pozyskać tablicy, ponieważ id zapytania nie zostało podane!',
-    'mysqli_no_query_fetch_array_assoc' =>
-        'Nie można pobrać tablicy asocjacyjnej, ponieważ id zapytania nie zostało podane!',
-    'mysqli_no_query_num_rows' =>
-        'Nie można otrzymać liczby wierszy, ponieważ id zapytania nie zostało podane!',
-    'mysqli_no_server_connection' => 'Nie można utworzyć połączenia z serwerem bazy danych!',
-    'mysqli_query_error' => 'Wystąpił błąd w zapytaniu do bazy danych.',
     'name' => 'Nazwa',
     'next' => 'Dalej',
     'never' => 'Nigdy',

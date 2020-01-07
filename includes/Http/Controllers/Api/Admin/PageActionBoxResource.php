@@ -19,19 +19,15 @@ class PageActionBoxResource
         $lang = $translationManager->user();
 
         if (!isset($pageId) || !isset($actionBoxId)) {
-            return new ApiResponse("no_data", $lang->translate('not_all_data'), 0);
+            return new ApiResponse("no_data", $lang->t('not_all_data'), 0);
         }
 
         if (($page = $heart->getPage($pageId, "admin")) === null) {
-            return new ApiResponse("wrong_page", $lang->translate('wrong_page_id'), 0);
+            return new ApiResponse("wrong_page", $lang->t('wrong_page_id'), 0);
         }
 
         if (!($page instanceof IPageAdminActionBox)) {
-            return new ApiResponse(
-                "page_no_action_box",
-                $lang->translate('no_action_box_support'),
-                0
-            );
+            return new ApiResponse("page_no_action_box", $lang->t('no_action_box_support'), 0);
         }
 
         $actionBox = $page->getActionBox($actionBoxId, $request->query->all());

@@ -12,6 +12,6 @@ class PageChangePassword extends PageSimple implements IBeLoggedMust
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('change_password');
+        $this->heart->pageTitle = $this->title = $this->lang->t('change_password');
     }
 }

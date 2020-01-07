@@ -16,7 +16,7 @@ class PageAdminPaymentSms extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('payments_sms');
+        $this->heart->pageTitle = $this->title = $this->lang->t('payments_sms');
     }
 
     protected function content(array $query, array $body)
@@ -25,16 +25,16 @@ class PageAdminPaymentSms extends PageAdmin
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('content')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('number')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('sms_return_code')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('income')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('cost')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('free_of_charge')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('ip')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('platform'), "platform"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('date')));
+        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->t('content')));
+        $table->addHeadCell(new HeadCell($this->lang->t('number')));
+        $table->addHeadCell(new HeadCell($this->lang->t('sms_return_code')));
+        $table->addHeadCell(new HeadCell($this->lang->t('income')));
+        $table->addHeadCell(new HeadCell($this->lang->t('cost')));
+        $table->addHeadCell(new HeadCell($this->lang->t('free_of_charge')));
+        $table->addHeadCell(new HeadCell($this->lang->t('ip')));
+        $table->addHeadCell(new HeadCell($this->lang->t('platform'), "platform"));
+        $table->addHeadCell(new HeadCell($this->lang->t('date')));
 
         $where = "( t.payment = 'sms' ) ";
 
@@ -73,9 +73,9 @@ class PageAdminPaymentSms extends PageAdmin
                 get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($this->db->getColumn('SELECT FOUND_ROWS()', 'FOUND_ROWS()'));
+        $table->setDbRowsAmount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $bodyRow = new BodyRow();
 
             if ($query['payid'] == $row['payment_id']) {
@@ -83,13 +83,13 @@ class PageAdminPaymentSms extends PageAdmin
             }
 
             $free = $row['free']
-                ? $this->lang->strtoupper($this->lang->translate('yes'))
-                : $this->lang->strtoupper($this->lang->translate('no'));
+                ? $this->lang->strtoupper($this->lang->t('yes'))
+                : $this->lang->strtoupper($this->lang->t('no'));
             $income = $row['income']
-                ? number_format($row['income'] / 100.0, 2) . " " . $this->settings['currency']
+                ? number_format($row['income'] / 100.0, 2) . " " . $this->settings->getCurrency()
                 : "";
             $cost = $row['cost']
-                ? number_format($row['cost'] / 100.0, 2) . " " . $this->settings['currency']
+                ? number_format($row['cost'] / 100.0, 2) . " " . $this->settings->getCurrency()
                 : "";
 
             $bodyRow->setDbId($row['payment_id']);

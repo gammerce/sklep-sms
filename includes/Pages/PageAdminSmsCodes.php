@@ -19,7 +19,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('sms_codes');
+        $this->heart->pageTitle = $this->title = $this->lang->t('sms_codes');
     }
 
     protected function content(array $query, array $body)
@@ -28,9 +28,9 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->translate('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->translate('sms_code')));
-        $table->addHeadCell(new HeadCell($this->lang->translate('tariff')));
+        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->t('sms_code')));
+        $table->addHeadCell(new HeadCell($this->lang->t('tariff')));
 
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * " .
@@ -42,9 +42,9 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
                 get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($this->db->getColumn("SELECT FOUND_ROWS()", "FOUND_ROWS()"));
+        $table->setDbRowsAmount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $bodyRow = new BodyRow();
 
             $bodyRow->setDbId($row['id']);
@@ -65,7 +65,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
             $button->setParam('id', 'sms_code_button_add');
             $button->setParam('type', 'button');
             $button->addClass('button');
-            $button->setParam('value', $this->lang->translate('add_code'));
+            $button->setParam('value', $this->lang->t('add_code'));
             $wrapper->addButton($button);
         }
 

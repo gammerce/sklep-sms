@@ -43,19 +43,19 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase, IServ
         // Serwer
         $server = null;
         if (!strlen($purchaseData->getOrder('server'))) {
-            $warnings['server'][] = $this->lang->translate('must_choose_server');
+            $warnings['server'][] = $this->lang->t('must_choose_server');
         } else {
             // Sprawdzanie czy serwer o danym id istnieje w bazie
             $server = $this->heart->getServer($purchaseData->getOrder('server'));
             if (!$this->heart->serverServiceLinked($server->getId(), $this->service->getId())) {
-                $warnings['server'][] = $this->lang->translate('chosen_incorrect_server');
+                $warnings['server'][] = $this->lang->t('chosen_incorrect_server');
             }
         }
 
         // Wartość usługi
         $price = [];
         if (!strlen($purchaseData->getTariff())) {
-            $warnings['value'][] = $this->lang->translate('must_choose_amount');
+            $warnings['value'][] = $this->lang->t('must_choose_amount');
         } else {
             // Wyszukiwanie usługi o konkretnej cenie
             $result = $this->db->query(
@@ -68,16 +68,16 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase, IServ
                 )
             );
 
-            if (!$this->db->numRows($result)) {
+            if (!$result->rowCount()) {
                 // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
                 return [
                     'status' => "no_option",
-                    'text' => $this->lang->translate('service_not_affordable'),
+                    'text' => $this->lang->t('service_not_affordable'),
                     'positive' => false,
                 ];
             }
 
-            $price = $this->db->fetchArrayAssoc($result);
+            $price = $result->fetch();
         }
 
         // E-mail
@@ -92,7 +92,7 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase, IServ
         if (!empty($warnings)) {
             return [
                 'status' => "warnings",
-                'text' => $this->lang->translate('form_wrong_filled'),
+                'text' => $this->lang->t('form_wrong_filled'),
                 'positive' => false,
                 'data' => ['warnings' => $warnings],
             ];
@@ -109,7 +109,7 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase, IServ
 
         return [
             'status' => "ok",
-            'text' => $this->lang->translate('purchase_form_validated'),
+            'text' => $this->lang->t('purchase_form_validated'),
             'positive' => true,
             'purchase_data' => $purchaseData,
         ];

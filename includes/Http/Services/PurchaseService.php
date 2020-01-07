@@ -3,6 +3,7 @@ namespace App\Http\Services;
 
 use App\Models\Purchase;
 use App\Payment\PaymentService;
+use App\Repositories\PaymentPlatformRepository;
 use App\Repositories\UserRepository;
 use App\Services\Service;
 use App\System\Auth;
@@ -27,18 +28,23 @@ class PurchaseService
     /** * @var Auth */
     private $auth;
 
+    /** @var PaymentPlatformRepository */
+    private $paymentPlatformRepository;
+
     public function __construct(
         TranslationManager $translationManager,
         PaymentService $paymentService,
         Heart $heart,
         Auth $auth,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        PaymentPlatformRepository $paymentPlatformRepository
     ) {
         $this->lang = $translationManager->user();
         $this->paymentService = $paymentService;
         $this->userRepository = $userRepository;
         $this->heart = $heart;
         $this->auth = $auth;
+        $this->paymentPlatformRepository = $paymentPlatformRepository;
     }
 
     public function purchase(Service $serviceModule, array $body)
@@ -49,13 +55,11 @@ class PurchaseService
         $password = array_get($body, 'password');
         $ip = array_get($body, 'ip');
         $method = array_get($body, 'method');
-        $platform = array_get($body, 'platform');
         $smsCode = array_get($body, 'sms_code');
-        $transactionService = array_get($body, 'transaction_service');
+        $paymentPlatformId = array_get($body, 'payment_platform');
         $tariff = array_get($body, 'tariff');
 
         $user = $this->auth->user();
-        $user->setPlatform($platform);
         $user->setLastIp($ip);
 
         $purchase = new Purchase($user);
@@ -72,14 +76,14 @@ class PurchaseService
         $purchase->setPayment([
             'method' => $method,
             'sms_code' => $smsCode,
-            'sms_service' => $transactionService,
+            'sms_platform' => $paymentPlatformId,
         ]);
 
         $purchase->setTariff($this->heart->getTariff($tariff));
 
-        if ($purchase->getPayment('sms_service')) {
-            $paymentModule = $this->heart->getPaymentModuleOrFail(
-                $purchase->getPayment('sms_service')
+        if ($purchase->getPayment('sms_platform')) {
+            $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
+                $purchase->getPayment('sms_platform')
             );
             $purchase->setTariff($paymentModule->getTariffById($tariff));
         }
@@ -113,7 +117,7 @@ class PurchaseService
         $purchase->setPayment([
             'method' => $method,
             'sms_code' => $smsCode,
-            'sms_service' => $transactionService,
+            'sms_platform' => $paymentPlatformId,
         ]);
 
         $returnPayment = $this->paymentService->makePayment($purchase);

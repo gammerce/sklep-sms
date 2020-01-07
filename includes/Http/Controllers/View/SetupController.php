@@ -8,6 +8,7 @@ use App\Install\RequirementsStore;
 use App\Install\SetupManager;
 use App\Install\ShopState;
 use App\Install\UpdateInfo;
+use App\System\FileSystemContract;
 use App\System\Path;
 use App\System\Template;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,6 +29,7 @@ class SetupController
         UpdateInfo $updateInfo,
         RequirementsStore $requirementsStore,
         SetupManager $setupManager,
+        FileSystemContract $fileSystem,
         Path $path
     ) {
         if ($oldShop->hasConfigFile()) {
@@ -36,7 +38,7 @@ class SetupController
 
         if ($setupManager->hasFailed()) {
             return new PlainResponse(
-                'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku data/logs/install.log'
+                'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku data/logs/errors.log'
             );
         }
 
@@ -46,8 +48,8 @@ class SetupController
             );
         }
 
-        if (!ShopState::isInstalled()) {
-            return $this->install($requirementsStore, $path);
+        if (!$shopState->isInstalled()) {
+            return $this->install($requirementsStore, $path, $fileSystem);
         }
 
         if (!$shopState->isUpToDate()) {
@@ -57,8 +59,11 @@ class SetupController
         return new Response("Sklep nie wymaga aktualizacji.");
     }
 
-    protected function install(RequirementsStore $requirementsStore, Path $path)
-    {
+    private function install(
+        RequirementsStore $requirementsStore,
+        Path $path,
+        FileSystemContract $fileSystem
+    ) {
         $modules = $requirementsStore->getModules();
         $filesWithWritePermission = $requirementsStore->getFilesWithWritePermission();
 
@@ -72,7 +77,7 @@ class SetupController
                 continue;
             }
 
-            if (is_writable($path->to($file))) {
+            if ($fileSystem->isWritable($path->to($file))) {
                 $privilege = "ok";
             } else {
                 $privilege = "bad";
@@ -106,7 +111,7 @@ class SetupController
         return new Response($output);
     }
 
-    protected function update(UpdateInfo $updateInfo, RequirementsStore $requirementsStore)
+    private function update(UpdateInfo $updateInfo, RequirementsStore $requirementsStore)
     {
         $modules = [];
         $filesWithWritePermission = $requirementsStore->getFilesWithWritePermission();

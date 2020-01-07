@@ -10,14 +10,10 @@ class IsUpToDate implements MiddlewareContract
 {
     public function handle(Request $request, Application $app, $args = null)
     {
-        if (!ShopState::isInstalled()) {
-            return new RedirectResponse('/setup');
-        }
-
         /** @var ShopState $shopState */
         $shopState = $app->make(ShopState::class);
 
-        if (!$shopState->isUpToDate()) {
+        if (!$shopState->isInstalled() || !$shopState->isUpToDate()) {
             return new RedirectResponse('/setup');
         }
 

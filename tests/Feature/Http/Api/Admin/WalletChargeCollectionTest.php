@@ -17,7 +17,7 @@ class WalletChargeCollectionTest extends HttpTestCase
         ]);
 
         $admin = $this->factory->admin();
-        $this->actAs($admin);
+        $this->actingAs($admin);
 
         // when
         $response = $this->post("/api/admin/users/{$user->getUid()}/wallet/charge", [

@@ -90,12 +90,11 @@ class BoughtServiceService
 
         $service = $this->heart->getService($serviceId);
         $server = $this->heart->getServer($serverId);
-        $amount =
-            $amount != -1 ? "{$amount} {$service->getTag()}" : $this->lang->translate('forever');
+        $amount = $amount != -1 ? "{$amount} {$service->getTag()}" : $this->lang->t('forever');
 
         log_to_db(
-            $this->langShop->sprintf(
-                $this->langShop->translate('bought_service_info'),
+            $this->langShop->t(
+                'bought_service_info',
                 $serviceId,
                 $authData,
                 $amount,
@@ -114,7 +113,7 @@ class BoughtServiceService
     private function sendEmail($service, $authData, $email, BoughtService $boughtService)
     {
         if (!strlen($email)) {
-            return $this->lang->translate('none');
+            return $this->lang->t('none');
         }
 
         $message = purchase_info([
@@ -123,13 +122,13 @@ class BoughtServiceService
         ]);
 
         if (!strlen($message)) {
-            return $this->lang->translate('none');
+            return $this->lang->t('none');
         }
 
         $title =
             $service == 'charge_wallet'
-                ? $this->lang->translate('charge_wallet')
-                : $this->lang->translate('purchase');
+                ? $this->lang->t('charge_wallet')
+                : $this->lang->t('purchase');
 
         $ret = $this->mailer->send($email, $authData, $title, $message);
 

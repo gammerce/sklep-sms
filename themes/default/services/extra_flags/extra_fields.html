@@ -2,7 +2,7 @@
     <tr>
         <td>
             <label for="web">WEB</label>
-            <div class="hint">{$lang->translate('if_displayed_in_shop')}</div>
+            <div class="hint">{$lang->t('if_displayed_in_shop')}</div>
         </td>
         <td>
             <div class="field">
@@ -10,10 +10,10 @@
                     <div class="select is-small">
                         <select id="web" name="web">
                             <option value="0" {$webSelNo}>
-                                {$lang->strtoupper($lang->translate('no'))}
+                                {$lang->strtoupper($lang->t('no'))}
                             </option>
                             <option value="1" {$webSelYes}>
-                                {$lang->strtoupper($lang->translate('yes'))}
+                                {$lang->strtoupper($lang->t('yes'))}
                             </option>
                         </select>
                     </div>
@@ -23,7 +23,7 @@
     </tr>
     <tr>
         <td>
-            <label for="type">{$lang->strtoupper($lang->translate('types'))}</label>
+            <label for="type">{$lang->strtoupper($lang->t('types'))}</label>
         </td>
         <td>
             <div class="field">
@@ -39,7 +39,7 @@
     </tr>
     <tr>
         <td>
-            <label for="flags">{$lang->strtoupper($lang->translate('flags'))}</label>
+            <label for="flags">{$lang->strtoupper($lang->t('flags'))}</label>
         </td>
         <td>
             <div class="field">

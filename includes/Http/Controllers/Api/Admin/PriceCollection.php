@@ -1,12 +1,13 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Exceptions\SqlQueryException;
-use App\Http\Responses\ApiResponse;
+use App\Http\Responses\ErrorApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\PriceService;
 use App\Repositories\PriceRepository;
 use App\System\Auth;
 use App\Translation\TranslationManager;
+use PDOException;
 use Symfony\Component\HttpFoundation\Request;
 
 class PriceCollection
@@ -30,10 +31,10 @@ class PriceCollection
 
         try {
             $price = $priceRepository->create($service, $tariff, $amount, $server);
-        } catch (SqlQueryException $e) {
+        } catch (PDOException $e) {
             // Duplication
-            if ($e->getErrorno() === 1062) {
-                return new ApiResponse("error", $lang->translate('create_price_duplication'), 0);
+            if (get_error_code($e) === 1062) {
+                return new ErrorApiResponse($lang->t('create_price_duplication'));
             }
 
             throw $e;
@@ -43,7 +44,7 @@ class PriceCollection
             "Admin {$user->getUsername()}({$user->getUid()}) dodał cenę. ID: " . $price->getId()
         );
 
-        return new ApiResponse('ok', $lang->translate('price_add'), 1, [
+        return new SuccessApiResponse($lang->t('price_add'), [
             'data' => [
                 'id' => $price->getId(),
             ],

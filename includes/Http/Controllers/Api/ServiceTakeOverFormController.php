@@ -16,7 +16,7 @@ class ServiceTakeOverFormController
             ($serviceModule = $heart->getServiceModule($service)) === null ||
             !($serviceModule instanceof IServiceTakeOver)
         ) {
-            return new PlainResponse($lang->translate('bad_module'));
+            return new PlainResponse($lang->t('bad_module'));
         }
 
         return new PlainResponse($serviceModule->serviceTakeOverFormGet());

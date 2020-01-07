@@ -1,6 +1,6 @@
 <form id="form_group_edit" class="action_box">
     <div class="service_main_info">
-        {$lang->translate('edit_group')}
+        {$lang->t('edit_group')}
     </div>
     <table>
         <tr>
@@ -13,7 +13,7 @@
         <tr>
             <td>
                 <label for="name">
-                    {$lang->strtoupper($lang->translate('name'))}
+                    {$lang->strtoupper($lang->t('name'))}
                 </label>
             </td>
             <td>
@@ -41,7 +41,7 @@
         <tr>
             <td colspan="2">
                 <input type="hidden" name="id" value="{{ $group['id'] }}" />
-                <input type="submit" value="{$lang->translate('edit')}" class="button w100" />
+                <input type="submit" value="{$lang->t('edit')}" class="button w100" />
             </td>
         </tr>
     </table>

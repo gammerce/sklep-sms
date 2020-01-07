@@ -22,7 +22,7 @@ class ServiceActionController
             ($serviceModule = $heart->getServiceModule($service)) === null ||
             !($serviceModule instanceof IServiceActionExecute)
         ) {
-            return new PlainResponse($lang->translate('bad_module'));
+            return new PlainResponse($lang->t('bad_module'));
         }
 
         return new PlainResponse($serviceModule->actionExecute($action, $request->request->all()));

@@ -16,9 +16,9 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     var rowId = $(this).closest("tr");
     var serverId = rowId.children("td[headers=id]").text();
     var serverName = rowId.children("td[headers=name]").text();
-    var confirmInfo = "Na pewno chcesz usunąć serwer:\n(" + serverId + ") " + serverName + " ?";
+    var confirmText = "Na pewno chcesz usunąć serwer:\n(" + serverId + ") " + serverName + " ?";
 
-    if (confirm(confirmInfo) == false) {
+    if (confirm(confirmText) == false) {
         return;
     }
 

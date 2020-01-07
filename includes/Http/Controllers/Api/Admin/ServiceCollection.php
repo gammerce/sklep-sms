@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\ServiceService;
 use App\Repositories\ServiceRepository;
 use App\Services\Interfaces\IServiceAdminManage;
@@ -36,19 +36,19 @@ class ServiceCollection
         $warnings = [];
 
         if (($serviceModule = $heart->getEmptyServiceModule($module)) === null) {
-            $warnings['module'][] = $lang->translate('wrong_module');
+            $warnings['module'][] = $lang->t('wrong_module');
         }
 
         if (!strlen($id)) {
-            $warnings['id'][] = $lang->translate('no_service_id');
+            $warnings['id'][] = $lang->t('no_service_id');
         }
 
         if (strlen($id) > 16) {
-            $warnings['id'][] = $lang->translate('long_service_id');
+            $warnings['id'][] = $lang->t('long_service_id');
         }
 
         if ($heart->getService($id) !== null) {
-            $warnings['id'][] = $lang->translate('id_exist');
+            $warnings['id'][] = $lang->t('id_exist');
         }
 
         $serviceService->validateBody($request->request->all(), $warnings, $serviceModule);
@@ -72,16 +72,9 @@ class ServiceCollection
             array_get($additionalData, "flags", '')
         );
 
-        log_to_db(
-            $langShop->sprintf(
-                $langShop->translate('service_admin_add'),
-                $user->getUsername(),
-                $user->getUid(),
-                $id
-            )
-        );
+        log_to_db($langShop->t('service_admin_add', $user->getUsername(), $user->getUid(), $id));
 
-        return new ApiResponse('ok', $lang->translate('service_added'), true, [
+        return new SuccessApiResponse($lang->t('service_added'), [
             'length' => 10000,
         ]);
     }

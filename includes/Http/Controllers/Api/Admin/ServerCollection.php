@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\ServerService;
+use App\Loggers\DatabaseLogger;
 use App\Repositories\ServerRepository;
-use App\System\Auth;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -12,35 +12,30 @@ class ServerCollection
 {
     public function post(
         Request $request,
-        Auth $auth,
         TranslationManager $translationManager,
         ServerRepository $serverRepository,
-        ServerService $serverService
+        ServerService $serverService,
+        DatabaseLogger $databaseLogger
     ) {
-        $langShop = $translationManager->shop();
         $lang = $translationManager->user();
-        $user = $auth->user();
 
         $name = $request->request->get('name');
         $ip = trim($request->request->get('ip'));
         $port = trim($request->request->get('port'));
-        $smsService = $request->request->get('sms_service');
+        $smsPlatformId = $request->request->get('sms_platform') ?: null;
 
         $serverService->validateBody($request->request->all());
 
-        $server = $serverRepository->create($name, $ip, $port, $smsService);
+        $server = $serverRepository->create($name, $ip, $port, $smsPlatformId);
         $serverId = $server->getId();
-
         $serverService->updateServerServiceAffiliations($serverId, $request->request->all());
 
-        log_to_db(
-            $langShop->sprintf(
-                $langShop->translate('server_admin_add'),
-                $user->getUsername(),
-                $user->getUid(),
-                $serverId
-            )
-        );
-        return new ApiResponse('ok', $lang->translate('server_added'), 1);
+        $databaseLogger->logWithActor('log_server_admin_add', $serverId);
+
+        return new SuccessApiResponse($lang->t('server_added'), [
+            "data" => [
+                "id" => $server->getId(),
+            ],
+        ]);
     }
 }

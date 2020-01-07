@@ -5,17 +5,23 @@ use App\Services\ExtraFlags\ServiceDescriptionCreator;
 use App\System\Application;
 use App\System\Database;
 use App\System\License;
-use App\Translation\LocaleService;
 use App\System\Settings;
+use App\Translation\LocaleService;
 use Mockery;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
+use Tests\Psr4\Concerns\ApplicationConcern;
+use Tests\Psr4\Concerns\FileSystemConcern;
+use Tests\Psr4\Concerns\MockeryConcern;
 use Tests\Psr4\Factory;
+use Tests\Psr4\MemoryFileSystem;
 
 class TestCase extends BaseTestCase
 {
+    use ApplicationConcern;
+    use FileSystemConcern;
+    use MockeryConcern;
+
     /** @var Application */
     protected $app;
 
@@ -25,11 +31,11 @@ class TestCase extends BaseTestCase
     /** @var Factory */
     protected $factory;
 
-    /** @var array */
-    protected $afterApplicationCreatedCallbacks = [];
-
     /** @var boolean */
     protected $mockLocale = true;
+
+    /** @var array */
+    private $afterApplicationCreatedCallbacks = [];
 
     protected function setUp()
     {
@@ -39,7 +45,7 @@ class TestCase extends BaseTestCase
 
         $this->factory = $this->app->make(Factory::class);
         $this->mockLicense();
-        $this->mockDescriptionCreator();
+        $this->mockFileSystem();
 
         if ($this->mockLocale) {
             $this->mockLocale();
@@ -79,29 +85,13 @@ class TestCase extends BaseTestCase
                 $request->getSession()->invalidate();
             }
 
-            $this->app->flush();
-            $this->app = null;
+            $this->tearDownApplication($this->app);
         }
 
-        if (class_exists('Mockery')) {
-            if ($container = Mockery::getContainer()) {
-                $this->addToAssertionCount($container->mockery_getExpectationCount());
-            }
-
-            Mockery::close();
-        }
+        $this->closeMockery();
     }
 
-    protected function createApplication()
-    {
-        $app = require __DIR__ . '/../../../bootstrap/app.php';
-        $app->singleton(Session::class, function () {
-            return new Session(new MockArraySessionStorage());
-        });
-        return $app;
-    }
-
-    public function afterApplicationCreated(callable $callback)
+    protected function afterApplicationCreated(callable $callback)
     {
         $this->afterApplicationCreatedCallbacks[] = $callback;
     }
@@ -130,12 +120,5 @@ class TestCase extends BaseTestCase
         $localeService = Mockery::mock(LocaleService::class);
         $localeService->shouldReceive('getLocale')->andReturn('pl');
         $this->app->instance(LocaleService::class, $localeService);
-    }
-
-    protected function mockDescriptionCreator()
-    {
-        $descriptionCreator = Mockery::mock(ServiceDescriptionCreator::class);
-        $descriptionCreator->shouldReceive('create')->andReturnNull();
-        $this->app->instance(ServiceDescriptionCreator::class, $descriptionCreator);
     }
 }

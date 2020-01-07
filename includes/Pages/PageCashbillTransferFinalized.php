@@ -1,8 +1,9 @@
 <?php
 namespace App\Pages;
 
+use App\Exceptions\InvalidConfigException;
 use App\Models\Purchase;
-use App\Verification\Cashbill;
+use App\Verification\PaymentModules\Cashbill;
 
 class PageCashbillTransferFinalized extends Page
 {
@@ -12,24 +13,31 @@ class PageCashbillTransferFinalized extends Page
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('transfer_finalized');
+        $this->heart->pageTitle = $this->title = $this->lang->t('transfer_finalized');
     }
 
     protected function content(array $query, array $body)
     {
-        /** @var Cashbill $paymentModule */
-        $paymentModule = $this->heart->getPaymentModuleOrFail($this->settings['transfer_service']);
+        $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
+            $this->settings->getTransferPlatformId()
+        );
+
+        if (!($paymentModule instanceof Cashbill)) {
+            throw new InvalidConfigException(
+                "Invalid payment platform in shop settings [{$this->settings->getTransferPlatformId()}]."
+            );
+        }
 
         if (
             $paymentModule->checkSign($query, $paymentModule->getKey(), $query['sign']) &&
             $query['service'] != $paymentModule->getService()
         ) {
-            return $this->lang->translate('transfer_unverified');
+            return $this->lang->t('transfer_unverified');
         }
 
         // prawidlowa sygnatura, w zaleznosci od statusu odpowiednia informacja dla klienta
         if (strtoupper($query['status']) != 'OK') {
-            return $this->lang->translate('transfer_error');
+            return $this->lang->t('transfer_error');
         }
 
         return purchase_info([

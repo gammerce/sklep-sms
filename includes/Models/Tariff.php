@@ -80,7 +80,7 @@ class Tariff
         $settings = app()->make(Settings::class);
 
         return (float) number_format(
-            (get_sms_cost($this->getNumber()) * $settings['vat']) / 100.0,
+            (get_sms_cost($this->getNumber()) * $settings->getVat()) / 100.0,
             2
         );
     }

@@ -22,7 +22,7 @@ class ConfirmedRule implements Rule
         }
 
         if ($value !== array_get($data, "{$attribute}_repeat")) {
-            return [$this->lang->translate('different_values')];
+            return [$this->lang->t('different_values')];
         }
 
         return [];

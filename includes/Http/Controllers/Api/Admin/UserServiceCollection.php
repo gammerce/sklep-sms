@@ -21,7 +21,7 @@ class UserServiceCollection
             ($serviceModule = $heart->getServiceModule($serviceId)) === null ||
             !($serviceModule instanceof IServiceUserServiceAdminAdd)
         ) {
-            return new ApiResponse("wrong_module", $lang->translate('bad_module'), 0);
+            return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
         }
 
         $returnData = $serviceModule->userServiceAdminAdd($request->request->all());

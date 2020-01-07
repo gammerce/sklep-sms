@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\System\Database;
 use App\Translation\TranslationManager;
 
@@ -11,15 +12,14 @@ class LogResource
     {
         $lang = $translationManager->user();
 
-        $db->query(
+        $statement = $db->query(
             $db->prepare("DELETE FROM `" . TABLE_PREFIX . "logs` " . "WHERE `id` = '%d'", [$logId])
         );
 
-        // Zwróć info o prawidłowym lub błędnym usunieciu
-        if ($db->affectedRows()) {
-            return new ApiResponse('ok', $lang->translate('delete_log'), 1);
+        if ($statement->rowCount()) {
+            return new SuccessApiResponse($lang->t('delete_log'));
         }
 
-        return new ApiResponse("not_deleted", $lang->translate('no_delete_log'), 0);
+        return new ApiResponse("not_deleted", $lang->t('no_delete_log'), 0);
     }
 }

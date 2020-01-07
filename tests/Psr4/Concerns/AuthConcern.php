@@ -1,8 +1,8 @@
 <?php
 namespace Tests\Psr4\Concerns;
 
-use App\System\Auth;
 use App\Models\User;
+use App\System\Auth;
 
 trait AuthConcern
 {
@@ -10,7 +10,6 @@ trait AuthConcern
     {
         /** @var Auth $auth */
         $auth = $this->app->make(Auth::class);
-
         $auth->setUser($user);
     }
 }

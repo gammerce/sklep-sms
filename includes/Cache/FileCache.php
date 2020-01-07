@@ -1,19 +1,19 @@
 <?php
 namespace App\Cache;
 
-use App\System\Filesystem;
+use App\System\FileSystemContract;
 use Exception;
 use Psr\SimpleCache\CacheInterface;
 
 class FileCache implements CacheInterface
 {
     /** @var string */
-    protected $directory;
+    private $directory;
 
-    /** @var Filesystem */
-    protected $files;
+    /** @var FileSystemContract */
+    private $files;
 
-    public function __construct(Filesystem $files, $directory)
+    public function __construct(FileSystemContract $files, $directory)
     {
         $this->files = $files;
         $this->directory = $directory;

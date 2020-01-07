@@ -25,20 +25,20 @@ class UserServiceBrickController
 
         // Brak takiej usługi w bazie
         if (empty($userService)) {
-            return new HtmlResponse($lang->translate('dont_play_games'));
+            return new HtmlResponse($lang->t('dont_play_games'));
         }
 
         // Dany użytkownik nie jest właścicielem usługi o danym id
         if ($userService['uid'] != $user->getUid()) {
-            return new HtmlResponse($lang->translate('dont_play_games'));
+            return new HtmlResponse($lang->t('dont_play_games'));
         }
 
         if (($serviceModule = $heart->getServiceModule($userService['service'])) === null) {
-            return new HtmlResponse($lang->translate('service_not_displayed'));
+            return new HtmlResponse($lang->t('service_not_displayed'));
         }
 
         if (!($serviceModule instanceof IServiceUserOwnServices)) {
-            return new HtmlResponse($lang->translate('service_not_displayed'));
+            return new HtmlResponse($lang->t('service_not_displayed'));
         }
 
         $buttonEdit = "";
@@ -46,7 +46,7 @@ class UserServiceBrickController
             $settings['user_edit_service'] &&
             $serviceModule instanceof IServiceUserOwnServicesEdit
         ) {
-            $buttonEdit = create_dom_element("button", $lang->translate('edit'), [
+            $buttonEdit = create_dom_element("button", $lang->t('edit'), [
                 'class' => "button is-small edit_row",
                 'type' => 'button',
             ]);

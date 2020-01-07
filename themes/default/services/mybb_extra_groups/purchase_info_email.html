@@ -1,10 +1,10 @@
-{$lang->sprintf($lang->translate('just_purchased'), $e($username))}<br />
+{$lang->t('just_purchased', $e($username))}<br />
 <br />
-<strong>{$lang->translate('service')}:</strong> {{ $serviceName }}<br />
-<strong>{$lang->translate('amount')}:</strong> {{ $amount }}<br />
-<strong>{$lang->translate('mybb_user')}</strong>: {{ $username }}<br />
+<strong>{$lang->t('service')}:</strong> {{ $serviceName }}<br />
+<strong>{$lang->t('amount')}:</strong> {{ $amount }}<br />
+<strong>{$lang->t('mybb_user')}</strong>: {{ $username }}<br />
 <br />
-<strong>{$lang->translate('price')}</strong>: {{ $cost }}<br />
+<strong>{$lang->t('price')}</strong>: {{ $cost }}<br />
 <br />
-{$lang->translate('regards')},<br />
+{$lang->t('regards')},<br />
 {{ $settings['signature'] }}

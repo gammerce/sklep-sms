@@ -12,7 +12,7 @@ class PageRegister extends Page implements IBeLoggedCannot
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->translate('register');
+        $this->heart->pageTitle = $this->title = $this->lang->t('register');
     }
 
     protected function content(array $query, array $body)
@@ -21,15 +21,15 @@ class PageRegister extends Page implements IBeLoggedCannot
         $request = $this->app->make(Request::class);
         $session = $request->getSession();
 
-        $antispamQuestion = $this->db->fetchArrayAssoc(
-            $this->db->query(
+        $antispamQuestion = $this->db
+            ->query(
                 "SELECT * FROM `" .
                     TABLE_PREFIX .
                     "antispam_questions` " .
                     "ORDER BY RAND() " .
                     "LIMIT 1"
             )
-        );
+            ->fetch();
         $session->set("asid", $antispamQuestion['id']);
 
         return $this->template->render("register", compact('antispamQuestion'));

@@ -47,21 +47,21 @@ class RegisterController
 
         // Get new antispam question
         $data = [];
-        $antispamQuestion = $db->fetchArrayAssoc(
-            $db->query(
+        $antispamQuestion = $db
+            ->query(
                 "SELECT * FROM `" .
                     TABLE_PREFIX .
                     "antispam_questions` " .
                     "ORDER BY RAND() " .
                     "LIMIT 1"
             )
-        );
+            ->fetch();
         $data['antispam']['question'] = $antispamQuestion['question'];
         $data['antispam']['id'] = $antispamQuestion['id'];
 
         // Is antispam question correct
         if (!$session->has("asid") || $asId != $session->get("asid")) {
-            return new ApiResponse("wrong_sign", $lang->translate('wrong_sign'), 0, $data);
+            return new ApiResponse("wrong_sign", $lang->t('wrong_sign'), 0, $data);
         }
 
         // Let's store antispam question id in session
@@ -105,14 +105,14 @@ class RegisterController
         );
 
         log_to_db(
-            $langShop->sprintf(
-                $langShop->translate('new_account'),
+            $langShop->t(
+                'new_account',
                 $createdUser->getUid(),
                 $createdUser->getUsername(),
                 $createdUser->getRegIp()
             )
         );
 
-        return new ApiResponse("registered", $lang->translate('register_success'), 1, $data);
+        return new ApiResponse("registered", $lang->t('register_success'), 1, $data);
     }
 }

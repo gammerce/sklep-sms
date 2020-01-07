@@ -94,7 +94,7 @@ $(document).delegate("#form_price_edit", "submit", function(e) {
 
     loader.show();
     $.ajax({
-        type: "POST",
+        type: "PUT",
         url: buildUrl("/api/admin/prices/" + priceId),
         data: $(this).serialize(),
         complete: function() {

@@ -10,7 +10,7 @@ class PageServiceCodesActionBoxAddTest extends HttpTestCase
     {
         // give
         $admin = $this->factory->admin();
-        $this->actAs($admin);
+        $this->actingAs($admin);
 
         // when
         $response = $this->get("/api/admin/pages/service_codes/action_boxes/code_add");
@@ -27,7 +27,7 @@ class PageServiceCodesActionBoxAddTest extends HttpTestCase
     {
         // give
         $admin = $this->factory->user();
-        $this->actAs($admin);
+        $this->actingAs($admin);
 
         // when
         $response = $this->get("/api/admin/pages/service_codes/action_boxes/service_code_add");

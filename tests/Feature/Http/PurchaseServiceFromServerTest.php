@@ -4,14 +4,13 @@ namespace Tests\Feature\Http;
 use App\Exceptions\LicenseRequestException;
 use App\Models\Purchase;
 use App\Repositories\BoughtServiceRepository;
-use App\System\License;
-use App\Requesting\Response;
+use App\Repositories\PaymentPlatformRepository;
 use App\Services\ExtraFlags\ExtraFlagType;
+use App\System\License;
 use App\System\Settings;
-use App\Verification\Gosetti;
-use App\Verification\Results\SmsSuccessResult;
-use Mockery;
-use Tests\Psr4\Concerns\RequesterConcern;
+use App\Verification\PaymentModules\Gosetti;
+use Tests\Psr4\Concerns\GosettiConcern;
+use Tests\Psr4\Concerns\PaymentModuleFactoryConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 /**
@@ -19,12 +18,14 @@ use Tests\Psr4\TestCases\HttpTestCase;
  */
 class PurchaseServiceFromServerTest extends HttpTestCase
 {
-    use RequesterConcern;
+    use GosettiConcern;
+    use PaymentModuleFactoryConcern;
 
     protected function setUp()
     {
         parent::setUp();
         $this->mockRequester();
+        $this->mockPaymentModuleFactory();
     }
 
     /** @test */
@@ -34,9 +35,11 @@ class PurchaseServiceFromServerTest extends HttpTestCase
         /** @var BoughtServiceRepository $boughtServiceRepository */
         $boughtServiceRepository = $this->app->make(BoughtServiceRepository::class);
 
+        /** @var PaymentPlatformRepository $paymentPlatformRepository */
+        $paymentPlatformRepository = $this->app->make(PaymentPlatformRepository::class);
+
         $serviceId = 'vip';
         $tariff = 2;
-        $transactionService = 'gosetti';
         $type = ExtraFlagType::TYPE_NICK;
         $authData = 'test';
         $password = 'test123';
@@ -45,6 +48,7 @@ class PurchaseServiceFromServerTest extends HttpTestCase
         $uid = 0;
         $platform = 'engine_amxx';
 
+        $paymentPlatform = $paymentPlatformRepository->create('test', Gosetti::MODULE_ID);
         $server = $this->factory->server();
         $this->factory->serverService([
             'server_id' => $server->getId(),
@@ -63,7 +67,7 @@ class PurchaseServiceFromServerTest extends HttpTestCase
             'key' => md5($settings->get('random_key')),
             'action' => 'purchase_service',
             'service' => $serviceId,
-            'transaction_service' => $transactionService,
+            'payment_platform' => $paymentPlatform->getId(),
             'server' => $server->getId(),
             'type' => $type,
             'auth_data' => $authData,
@@ -113,23 +117,9 @@ class PurchaseServiceFromServerTest extends HttpTestCase
         ]);
     }
 
-    protected function mockGoSetti()
+    private function mockGoSetti()
     {
-        $this->requesterMock
-            ->shouldReceive('get')
-            ->withArgs(['https://gosetti.pl/Api/SmsApiV2GetData.php'])
-            ->andReturn(
-                new Response(
-                    200,
-                    json_encode([
-                        'Code' => 'abc123',
-                        'Numbers' => [],
-                    ])
-                )
-            );
-
-        $gosetti = Mockery::mock($this->app->make(Gosetti::class))->makePartial();
-        $gosetti->shouldReceive('verifySms')->andReturn(new SmsSuccessResult());
-        $this->app->instance(Gosetti::class, $gosetti);
+        $this->makeVerifySmsSuccessful(Gosetti::class);
+        $this->mockGoSettiGetData();
     }
 }

@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\ApiResponse;
+use App\Http\Responses\SuccessApiResponse;
 use App\Repositories\ServiceCodeRepository;
 use App\System\Auth;
 use App\Translation\TranslationManager;
@@ -22,16 +23,16 @@ class ServiceCodeResource
 
         if ($deleted) {
             log_to_db(
-                $langShop->sprintf(
-                    $langShop->translate('code_deleted_admin'),
+                $langShop->t(
+                    'code_deleted_admin',
                     $user->getUsername(),
                     $user->getUid(),
                     $serviceCodeId
                 )
             );
-            return new ApiResponse('ok', $lang->translate('code_deleted'), 1);
+            return new SuccessApiResponse($lang->t('code_deleted'));
         }
 
-        return new ApiResponse("not_deleted", $lang->translate('code_not_deleted'), 0);
+        return new ApiResponse("not_deleted", $lang->t('code_not_deleted'), 0);
     }
 }

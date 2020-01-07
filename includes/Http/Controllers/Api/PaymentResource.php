@@ -21,7 +21,7 @@ class PaymentResource
         $lang = $translationManager->user();
 
         if (!$this->isCorrectlySigned($request, $settings['random_key'])) {
-            return new ApiResponse("wrong_sign", $lang->translate('wrong_sign'), 0);
+            return new ApiResponse("wrong_sign", $lang->t('wrong_sign'), 0);
         }
 
         /** @var Purchase $purchase */

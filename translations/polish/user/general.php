@@ -13,6 +13,7 @@ return [
     'change_password' => 'Zmiana hasła',
     'charge_wallet' => 'Doładowanie Portfela',
     'choose_payment' => 'Wybierz płatność',
+    'choose_payment_module' => 'Wybierz moduł płatności',
     'clear' => 'Wyczyść',
     'contact_info' => 'Możesz się z nami skontaktować na jeden z poniższych sposobów.',
     'create_account' => 'Załóż Konto',

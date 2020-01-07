@@ -1,81 +1,99 @@
 <?php
 namespace App\Verification\Abstracts;
 
-use App\Exceptions\InvalidConfigException;
+use App\Models\PaymentPlatform;
 use App\Models\Tariff;
 use App\Requesting\Requester;
 use App\System\Database;
-use App\Translation\TranslationManager;
-use App\Translation\Translator;
+use App\Verification\DataField;
 
 abstract class PaymentModule
 {
     const MODULE_ID = '';
 
-    /** @var Database */
-    protected $db;
-
     /** @var Requester */
     protected $requester;
 
-    /** @var Translator */
-    protected $langShop;
+    /** @var Database */
+    private $db;
 
-    /** @var  string */
-    protected $name;
-
-    /**
-     * Data from columns: data & data_hidden
-     *
-     * @var array
-     */
-    protected $data = [];
+    /** @var PaymentPlatform */
+    private $paymentPlatform;
 
     /** @var Tariff[] */
-    protected $tariffs = [];
+    private $tariffs = [];
+
+    /** @var bool */
+    private $areTariffsFetched = false;
 
     public function __construct(
         Database $database,
         Requester $requester,
-        TranslationManager $translationManager
+        PaymentPlatform $paymentPlatform
     ) {
         $this->db = $database;
         $this->requester = $requester;
-        $this->langShop = $translationManager->shop();
+        $this->paymentPlatform = $paymentPlatform;
+    }
 
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT `name`, `data`, `data_hidden`, `sms`, `transfer` " .
-                    "FROM `" .
-                    TABLE_PREFIX .
-                    "transaction_services` " .
-                    "WHERE `id` = '%s' ",
-                [$this->getModuleId()]
-            )
-        );
+    /**
+     * @param mixed $key
+     * @return mixed
+     */
+    public function getData($key = null)
+    {
+        $data = $this->paymentPlatform->getData();
 
-        if (!$this->db->numRows($result)) {
-            $className = get_class($this);
-            throw new InvalidConfigException(
-                "An error occured in class: [$className] constructor. There is no [{$this->getModuleId()}] payment service in database."
-            );
+        return $key ? array_get($data, $key) : $data;
+    }
+
+    /**
+     * @return DataField[]
+     */
+    public static function getDataFields()
+    {
+        return [];
+    }
+
+    /**
+     * @return Tariff[]
+     */
+    public function getTariffs()
+    {
+        if (!$this->areTariffsFetched) {
+            $this->fetchTariffs();
         }
 
-        $row = $this->db->fetchArrayAssoc($result);
+        return array_unique($this->tariffs);
+    }
 
-        $this->name = $row['name'];
+    /**
+     * @param int $tariffId
+     *
+     * @return Tariff|null
+     */
+    public function getTariffById($tariffId)
+    {
+        return array_get($this->getTariffs(), $tariffId);
+    }
 
-        $data = (array) json_decode($row['data'], true);
-        foreach ($data as $key => $value) {
-            $this->data[$key] = $value;
-        }
+    /**
+     * @param string $number
+     *
+     * @return Tariff|null
+     */
+    public function getTariffByNumber($number)
+    {
+        return array_get($this->getTariffs(), $number);
+    }
 
-        $dataHidden = (array) json_decode($row['data_hidden'], true);
-        foreach ($dataHidden as $key => $value) {
-            $this->data[$key] = $value;
-        }
+    public function getModuleId()
+    {
+        return $this::MODULE_ID;
+    }
 
-        // Pozyskujemy taryfy
+    private function fetchTariffs()
+    {
         $result = $this->db->query(
             $this->db->prepare(
                 "SELECT t.id, t.provision, t.predefined, sn.number " .
@@ -90,7 +108,7 @@ abstract class PaymentModule
             )
         );
 
-        while ($row = $this->db->fetchArrayAssoc($result)) {
+        foreach ($result as $row) {
             $tariff = new Tariff($row['id'], $row['provision'], $row['predefined'], $row['number']);
 
             $this->tariffs[$tariff->getId()] = $tariff;
@@ -99,64 +117,7 @@ abstract class PaymentModule
                 $this->tariffs[$tariff->getNumber()] = $tariff;
             }
         }
-    }
 
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param int $tariffId
-     *
-     * @return Tariff|null
-     */
-    public function getTariffById($tariffId)
-    {
-        return array_get($this->tariffs, $tariffId);
-    }
-
-    /**
-     * @param string $number
-     *
-     * @return Tariff|null
-     */
-    public function getTariffByNumber($number)
-    {
-        return array_get($this->tariffs, $number);
-    }
-
-    /**
-     * Returns tariff by sms cost brutto
-     *
-     * @param float $cost
-     *
-     * @return Tariff|null
-     */
-    public function getTariffBySmsCostBrutto($cost)
-    {
-        foreach ($this->tariffs as $tariff) {
-            if ($tariff->getSmsCostGross() == $cost) {
-                return $tariff;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @return Tariff[]
-     */
-    public function getTariffs()
-    {
-        return array_unique($this->tariffs);
-    }
-
-    public function getModuleId()
-    {
-        return $this::MODULE_ID;
+        $this->areTariffsFetched = true;
     }
 }

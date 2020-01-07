@@ -9,7 +9,7 @@
         </tr>
         <tr>
             <td>
-                <label for="uid">{$lang->translate('user_id')}</label>
+                <label for="uid">{$lang->t('user_id')}</label>
             </td>
             <td>
                 <div class="field">
@@ -28,7 +28,7 @@
         </tr>
         <tr>
             <td>
-                <label for="type">{$lang->translate('type')}</label>
+                <label for="type">{$lang->t('type')}</label>
             </td>
             <td>
                 <div class="field">
@@ -112,7 +112,7 @@
     <tbody id="type_password" style="{{ $styles['password'] }}">
         <tr>
             <td>
-                <label for="password">{$lang->translate('password')}</label>
+                <label for="password">{$lang->t('password')}</label>
             </td>
             <td>
                 <div class="field">
@@ -137,7 +137,7 @@
         </tr>
         <tr>
             <td>
-                <label for="service">{$lang->translate('service')}</label>
+                <label for="service">{$lang->t('service')}</label>
             </td>
             <td>
                 <div class="field">
@@ -153,7 +153,7 @@
         </tr>
         <tr>
             <td>
-                <label for="server">{$lang->translate('server')}</label>
+                <label for="server">{$lang->t('server')}</label>
             </td>
             <td>
                 <div class="field">
@@ -169,7 +169,7 @@
         </tr>
         <tr>
             <td>
-                <label for="expire">{$lang->translate('expires')}</label>
+                <label for="expire">{$lang->t('expires')}</label>
             </td>
             <td>
                 <div class="field">
@@ -187,14 +187,14 @@
                 </div>
                 <label class="checkbox">
                     <input type="checkbox" name="forever" {$checked} />
-                    {$lang->translate('forever')}
+                    {$lang->t('forever')}
                 </label>
             </td>
         </tr>
         <tr>
             <td colspan="2">
                 <input type="hidden" name="id" value="{{ $userService['id'] }}" />
-                <input type="submit" value="{$lang->translate('edit')}" class="button w100" />
+                <input type="submit" value="{$lang->t('edit')}" class="button w100" />
             </td>
         </tr>
     </tbody>

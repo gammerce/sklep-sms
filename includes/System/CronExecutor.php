@@ -12,11 +12,19 @@ class CronExecutor
     /** @var Path */
     private $path;
 
-    public function __construct(Database $db, Settings $settings, Path $path)
-    {
+    /** @var FileSystemContract */
+    private $fileSystem;
+
+    public function __construct(
+        Database $db,
+        Settings $settings,
+        Path $path,
+        FileSystemContract $fileSystem
+    ) {
         $this->db = $db;
         $this->settings = $settings;
         $this->path = $path;
+        $this->fileSystem = $fileSystem;
     }
 
     public function run()
@@ -39,10 +47,10 @@ class CronExecutor
 
         // Remove files older than 30 days from data/transfers
         $path = $this->path->to('data/transfers');
-        foreach (scandir($path) as $file) {
+        foreach ($this->fileSystem->scanDirectory($path) as $file) {
             $filepath = rtrim($path, "/") . "/" . ltrim($file, "/");
             if (filectime($filepath) < time() - 60 * 60 * 24 * 30) {
-                unlink($filepath);
+                $this->fileSystem->delete($filepath);
             }
         }
         unset($path);
