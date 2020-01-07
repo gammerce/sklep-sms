@@ -270,7 +270,7 @@ abstract class ServiceExtraFlagsSimple extends Service implements
                 new Cell(
                     $row['expire'] == '-1'
                         ? $this->lang->t('never')
-                        : date($this->settings['date_format'], $row['expire'])
+                        : date($this->settings->getDateFormat(), $row['expire'])
                 )
             );
             if (get_privileges("manage_user_services")) {

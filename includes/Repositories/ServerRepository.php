@@ -3,15 +3,21 @@ namespace App\Repositories;
 
 use App\Models\Server;
 use App\System\Database;
+use App\System\Settings;
+use DateTime;
 
 class ServerRepository
 {
     /** @var Database */
-    protected $db;
+    private $db;
 
-    public function __construct(Database $db)
+    /** @var Settings */
+    private $settings;
+
+    public function __construct(Database $db, Settings $settings)
     {
         $this->db = $db;
+        $this->settings = $settings;
     }
 
     /**
@@ -19,7 +25,11 @@ class ServerRepository
      */
     public function all()
     {
-        $statement = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "servers`");
+        $statement = $this->db->query(
+            "SELECT *, UNIX_TIMESTAMP(`last_active_at`) AS `last_active_at` FROM `" .
+                TABLE_PREFIX .
+                "servers`"
+        );
 
         $servers = [];
         foreach ($statement as $row) {
@@ -33,7 +43,9 @@ class ServerRepository
     {
         if ($id) {
             $statement = $this->db->statement(
-                "SELECT * FROM `" . TABLE_PREFIX . "servers` WHERE `id` = ?"
+                "SELECT *, UNIX_TIMESTAMP(`last_active_at`) FROM `" .
+                    TABLE_PREFIX .
+                    "servers` WHERE `id` = ?"
             );
             $statement->execute([$id]);
 
@@ -88,7 +100,9 @@ class ServerRepository
         }
 
         $statement = $this->db->statement(
-            "SELECT * FROM `" . TABLE_PREFIX . "servers` WHERE `ip` = ? AND `port` = ? LIMIT 1"
+            "SELECT *, UNIX_TIMESTAMP(`last_active_at`) AS `last_active_at` FROM `" .
+                TABLE_PREFIX .
+                "servers` WHERE `ip` = ? AND `port` = ? LIMIT 1"
         );
         $statement->execute([$ip, $port]);
         $row = $statement->fetch();
@@ -117,6 +131,8 @@ class ServerRepository
             $data['type'],
             $data['version'],
             $data['last_active_at']
+                ? date($this->settings->getDateFormat(), $data['last_active_at'])
+                : null
         );
     }
 }

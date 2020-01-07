@@ -88,7 +88,7 @@ class License
             return $this->langShop->t('never');
         }
 
-        return date($this->settings['date_format'], $this->expiresAt);
+        return date($this->settings->getDateFormat(), $this->expiresAt);
     }
 
     public function getExternalId()

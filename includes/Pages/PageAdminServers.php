@@ -37,7 +37,8 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
         $table = new Structure();
         $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
         $table->addHeadCell(new HeadCell($this->lang->t('name')));
-        $table->addHeadCell(new Cell($this->lang->t('ip') . ':' . $this->lang->t('port')));
+        $table->addHeadCell(new HeadCell($this->lang->t('ip') . ':' . $this->lang->t('port')));
+        $table->addHeadCell(new HeadCell($this->lang->t('platform')));
         $table->addHeadCell(new HeadCell($this->lang->t('version')));
         $table->addHeadCell(new HeadCell($this->lang->t('last_active_at')));
 
@@ -47,6 +48,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             $bodyRow->setDbId($server->getId());
             $bodyRow->addCell(new Cell($server->getName()));
             $bodyRow->addCell(new Cell($server->getIp() . ':' . $server->getPort()));
+            $bodyRow->addCell(new Cell($server->getType() ?: 'n/a'));
             $bodyRow->addCell(new Cell($server->getVersion() ?: 'n/a'));
             $bodyRow->addCell(new Cell($server->getLastActiveAt() ?: 'n/a'));
 

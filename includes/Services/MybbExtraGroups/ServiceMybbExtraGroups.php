@@ -601,7 +601,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         $expire =
             $userService['expire'] == -1
                 ? $this->lang->t('never')
-                : date($this->settings['date_format'], $userService['expire']);
+                : date($this->settings->getDateFormat(), $userService['expire']);
         $serviceName = $this->service->getName();
         $mybbUid = "$username ({$userService['mybb_uid']})";
 

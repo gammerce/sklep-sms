@@ -850,7 +850,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
             $disabled = "disabled";
             $userService['expire'] = "";
         } else {
-            $userService['expire'] = date($this->settings['date_format'], $userService['expire']);
+            $userService['expire'] = date($this->settings->getDateFormat(), $userService['expire']);
         }
 
         return $this->template->render(
@@ -1075,7 +1075,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $serviceInfo['expire'] =
             $userService['expire'] == -1
                 ? $this->lang->t('never')
-                : date($this->settings['date_format'], $userService['expire']);
+                : date($this->settings->getDateFormat(), $userService['expire']);
 
         // Usługa
         $serviceInfo['service'] = $this->service->getName();
@@ -1091,7 +1091,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $serviceInfo['expire'] =
             $userService['expire'] == -1
                 ? $this->lang->t('never')
-                : date($this->settings['date_format'], $userService['expire']);
+                : date($this->settings->getDateFormat(), $userService['expire']);
         $server = $this->heart->getServer($userService['server']);
         $serviceInfo['server'] = $server->getName();
         $serviceInfo['service'] = $this->service->getName();

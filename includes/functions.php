@@ -527,7 +527,7 @@ function convertDate($timestamp, $format = "")
     $settings = app()->make(Settings::class);
 
     if (!strlen($format)) {
-        $format = $settings['date_format'];
+        $format = $settings->getDateFormat();
     }
 
     $date = new DateTime($timestamp);
@@ -768,13 +768,14 @@ function log_to_file($file, $message, array $data = [])
     $settings = app()->make(Settings::class);
 
     $dataText = $data ? " | " . json_encode($data) : "";
-    $text = date($settings['date_format']) . ": " . $message . $dataText;
+    $text = date($settings->getDateFormat()) . ": " . $message . $dataText;
 
     if (file_exists($file) && strlen(file_get_contents($file))) {
         $text = file_get_contents($file) . "\n" . $text;
     }
 
     file_put_contents($file, $text);
+    chmod($file, 0777);
 }
 
 // TODO Use database logger

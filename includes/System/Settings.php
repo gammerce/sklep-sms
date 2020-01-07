@@ -136,9 +136,7 @@ LEFT JOIN `" .
             date_default_timezone_set($this->settings['timezone']);
         }
 
-        $this->settings['date_format'] = strlen($this->settings['date_format'])
-            ? $this->settings['date_format']
-            : "Y-m-d H:i";
+        $this->settings["date_format"] = $this->settings["date_format"] ?: "Y-m-d H:i";
 
         // Fallback to default theme if selected does not exist
         $this->settings['theme'] = file_exists($this->path->to("themes/{$this->settings['theme']}"))
@@ -189,7 +187,7 @@ LEFT JOIN `" .
      */
     public function getVat()
     {
-        return $this->settings["vat"];
+        return floatval($this->settings["vat"]);
     }
 
     /**
@@ -198,6 +196,14 @@ LEFT JOIN `" .
     public function getLicenseToken()
     {
         return $this->settings["license_password"];
+    }
+
+    /**
+     * @return string
+     */
+    public function getDateFormat()
+    {
+        return $this->settings["date_format"];
     }
 
     private function prepareValue($key, $value)
