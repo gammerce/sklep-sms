@@ -48,6 +48,8 @@ class LicenseServiceProvider
                 "Przedłużenie Licencji Sklep-SMS",
                 ShopSmsLicenseProlong::class
             );
+
+            return $heart;
         });
     }
 }
