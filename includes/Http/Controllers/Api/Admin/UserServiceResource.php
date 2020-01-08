@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Loggers\DatabaseLogger;
-use App\System\Auth;
 use App\System\Database;
 use App\System\Heart;
 use App\Translation\TranslationManager;

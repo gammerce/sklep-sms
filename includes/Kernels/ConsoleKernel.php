@@ -2,7 +2,6 @@
 namespace App\Kernels;
 
 use App\System\Application;
-use PDO;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Tests\Psr4\DatabaseSetup;

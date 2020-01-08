@@ -61,8 +61,7 @@ use App\Http\Controllers\Api\UserServiceEditFormController;
 use App\Http\Controllers\Api\UserServiceResource;
 use App\Http\Controllers\View\AdminController;
 use App\Http\Controllers\View\IndexController;
-use App\Http\Controllers\View\JsController;
-use App\Http\Controllers\View\ServerStuffController;
+use App\Http\Controllers\View\LanguageJsController;
 use App\Http\Controllers\View\SetupController;
 use App\Http\Middlewares\AuthorizeServer;
 use App\Http\Middlewares\BlockOnInvalidLicense;
@@ -86,6 +85,7 @@ use App\System\Application;
 use FastRoute\Dispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use UnexpectedValueException;
 use function FastRoute\simpleDispatcher;
 
 class RoutesManager
@@ -100,8 +100,8 @@ class RoutesManager
 
     private function defineRoutes(RouteCollector $r)
     {
-        $r->get('/js.php', [
-            'uses' => JsController::class . '@get',
+        $r->get('/lang.js', [
+            'uses' => LanguageJsController::class . '@get',
         ]);
 
         /**
@@ -131,22 +131,6 @@ class RoutesManager
             function (RouteCollector $r) {
                 $r->addRoute(['GET', 'POST'], '/transfer/{transferPlatform}', [
                     'uses' => TransferController::class . '@action',
-                ]);
-
-                /**
-                 * @deprecated
-                 */
-                $r->addRoute(['GET', 'POST'], '/extra_stuff.php', [
-                    'middlewares' => [RunCron::class, BlockOnInvalidLicense::class],
-                    'uses' => ServiceLongDescriptionController::class . '@oldGet',
-                ]);
-
-                /**
-                 * @deprecated
-                 */
-                $r->addRoute(['GET', 'POST'], '/servers_stuff.php', [
-                    'middlewares' => [BlockOnInvalidLicense::class],
-                    'uses' => ServerStuffController::class . '@action',
                 ]);
 
                 /**
@@ -514,6 +498,9 @@ class RoutesManager
                     'uses' => TemplateResource::class . '@get',
                 ]);
 
+                /**
+                 * @deprecated
+                 */
                 $r->addRoute(['GET', 'POST'], '/admin.php', [
                     'middlewares' => [RunCron::class],
                     'uses' => AdminController::class . '@oldAction',
@@ -559,6 +546,8 @@ class RoutesManager
                 return new Response('', 405);
             case Dispatcher::FOUND:
                 return $this->handleFoundRoute($routeInfo, $request);
+            default:
+                throw new UnexpectedValueException("Unexpected branch");
         }
     }
 

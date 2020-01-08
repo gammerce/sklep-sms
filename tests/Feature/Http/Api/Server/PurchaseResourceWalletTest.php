@@ -1,11 +1,13 @@
 <?php
 namespace Tests\Feature\Http\Api\Server;
 
+use App\Exceptions\LicenseRequestException;
 use App\Models\Purchase;
 use App\Models\Server;
 use App\Repositories\BoughtServiceRepository;
 use App\Repositories\UserRepository;
 use App\Services\ExtraFlags\ExtraFlagType;
+use App\System\License;
 use App\System\Settings;
 use Tests\Psr4\TestCases\HttpTestCase;
 
@@ -197,5 +199,60 @@ class PurchaseResourceWalletTest extends HttpTestCase
             "#<return_value>wallet_not_logged</return_value><text>Nie można zapłacić portfelem, gdy nie jesteś zalogowany.</text><positive>0</positive>#",
             $response->getContent()
         );
+    }
+
+    /** @test */
+    public function cannot_make_a_purchase_if_license_is_invalid()
+    {
+        // given
+        $license = $this->app->make(License::class);
+        $license->shouldReceive('isValid')->andReturn(false);
+        $license->shouldReceive('getLoadingException')->andReturn(new LicenseRequestException());
+
+        // given
+        $user = $this->factory->user([
+            "steam_id" => $this->steamId,
+            "wallet" => 10000,
+        ]);
+
+        $sign = md5(
+            implode("#", [
+                ExtraFlagType::TYPE_SID,
+                $this->steamId,
+                "",
+                $this->settings->get("random_key"),
+            ])
+        );
+
+        // when
+        $response = $this->post(
+            '/api/server/purchase',
+            [
+                'server' => $this->server->getId(),
+                'service' => $this->serviceId,
+                'type' => ExtraFlagType::TYPE_SID,
+                'auth_data' => $this->steamId,
+                'ip' => $this->ip,
+                'tariff' => $this->tariff,
+                'method' => Purchase::METHOD_WALLET,
+                'sign' => $sign,
+            ],
+            [
+                'key' => md5($this->settings->get("random_key")),
+            ],
+            [
+                'Authorization' => $this->steamId,
+                'User-Agent' => Server::TYPE_AMXMODX,
+            ]
+        );
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $json = json_decode($response->getContent(), true);
+        $this->assertEquals($json, [
+            "message" => "Coś poszło nie tak podczas łączenia się z serwerem weryfikacyjnym.",
+        ]);
+        $freshUser = $this->userRepository->get($user->getUid());
+        $this->assertEquals(10000, $freshUser->getWallet());
     }
 }

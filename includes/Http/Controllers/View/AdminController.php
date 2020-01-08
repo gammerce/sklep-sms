@@ -41,6 +41,9 @@ class AdminController
         );
     }
 
+    /**
+     * @deprecated
+     */
     public function oldAction(
         Request $request,
         Application $app,
