@@ -1,8 +1,6 @@
 <?php
 
 return [
-    'admin_added_user_service' => 'Admin {1}({2}) dodał użytkownikowi usługę. ID zakupu: {3}',
-    'admin_edited_user_service' => 'Admin {1}({2}) wyedytował usługę użytkownika. ID: {3}',
     'choose_server_for_service' => 'Musisz wybrać serwer na który chcesz dodać daną usługę.',
     'chosen_incorrect_server' =>
         'Coś jest nie tak, wybrany serwer nie istnieje w bazie lub danej usługi nie można wykupić na tym serwerze.',
@@ -17,6 +15,9 @@ return [
     'if_displayed_in_shop' => 'Czy ma być wyświetlane <br/>w sklepie internetowym.',
     'just_purchased' => 'Witaj {1},<br/>
 przed chwilą dokonałeś/aś zakupu w naszym sklepie.',
+    'log_user_service_added' => 'Dodano użytkownikowi usługę. ID zakupu: {1}',
+    'log_user_service_edited' => 'Wyedytowano usługę użytkownika. ID: {1}',
+    'log_user_edited_service' => 'Użytkownik wyedytował swoją usługę. ID: {1}',
     'must_choose_amount' => 'Musisz wybrać ilość / okres trwania usługi.',
     'must_choose_quantity' => 'Musisz wybrać ilość.',
     'must_choose_server' => 'Musisz wybrać serwer na który chcesz wykupić daną usługę.',
@@ -35,7 +36,6 @@ przed chwilą dokonałeś/aś zakupu w naszym sklepie.',
     'too_many_flags' => 'Wprowadzono zbyt dużo flag. Maksymalna ilość to 25.',
     'transfer_wallet_cost' => 'Koszt Przelew / Portfel',
     'types' => 'Typy',
-    'user_edited_service' => 'Użytkownik {1}({2}) wyedytował swoją usługę. ID: {3}',
     'wrong_date_format' => 'Błędny format daty.',
     'wrong_service_description_file' => 'Plik z opisem usługi nie został prawidłowo utworzony. <br />
 Prawdopodobnie folder <strong>themes/{1}/services/</strong> nie ma uprawnień do zapisu.',

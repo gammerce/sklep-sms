@@ -28,6 +28,7 @@ return [
     'go_to_payment' => 'Proceed to payment',
     'got_code' => 'I\'ve got code!',
     'keyreset_error' => 'An error occurred while sending e-mail with password reset link.',
+    'log_password_changed' => 'User has changed their password.',
     'login_success' => 'Logging in successful.',
     'login_vert' => 'L<br />O<br />G<br /><br />I<br />N',
     'logout_success' => 'Logging out successful.',

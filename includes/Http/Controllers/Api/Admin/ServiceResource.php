@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\ServiceService;
+use App\Loggers\DatabaseLogger;
 use App\Repositories\ServiceRepository;
 use App\Services\Interfaces\IServiceAdminManage;
-use App\System\Auth;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use PDOException;
@@ -18,14 +18,12 @@ class ServiceResource
         $serviceId,
         Request $request,
         TranslationManager $translationManager,
-        Auth $auth,
         Heart $heart,
         ServiceService $serviceService,
-        ServiceRepository $serviceRepository
+        ServiceRepository $serviceRepository,
+        DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         $newId = $request->request->get('new_id');
         $name = $request->request->get('name');
@@ -67,14 +65,7 @@ class ServiceResource
         );
 
         if ($updated) {
-            log_to_db(
-                $langShop->t(
-                    'service_admin_edit',
-                    $user->getUsername(),
-                    $user->getUid(),
-                    $serviceId
-                )
-            );
+            $logger->logWithActor('log_service_edited', $serviceId);
             return new SuccessApiResponse($lang->t('service_edit'));
         }
 
@@ -85,12 +76,10 @@ class ServiceResource
         $serviceId,
         TranslationManager $translationManager,
         ServiceRepository $serviceRepository,
-        Auth $auth,
-        Heart $heart
+        Heart $heart,
+        DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         $serviceModule = $heart->getServiceModule($serviceId);
         if ($serviceModule !== null) {
@@ -109,14 +98,7 @@ class ServiceResource
         }
 
         if ($deleted) {
-            log_to_db(
-                $langShop->t(
-                    'service_admin_delete',
-                    $user->getUsername(),
-                    $user->getUid(),
-                    $serviceId
-                )
-            );
+            $logger->logWithActor('log_service_deleted', $serviceId);
             return new SuccessApiResponse($lang->t('delete_service'));
         }
 

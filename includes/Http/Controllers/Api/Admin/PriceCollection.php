@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Responses\ErrorApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\PriceService;
+use App\Loggers\DatabaseLogger;
 use App\Repositories\PriceRepository;
-use App\System\Auth;
 use App\Translation\TranslationManager;
 use PDOException;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,12 +15,11 @@ class PriceCollection
     public function post(
         Request $request,
         TranslationManager $translationManager,
-        Auth $auth,
         PriceService $priceService,
-        PriceRepository $priceRepository
+        PriceRepository $priceRepository,
+        DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
-        $user = $auth->user();
 
         $service = $request->request->get('service');
         $server = $request->request->get('server');
@@ -40,9 +39,7 @@ class PriceCollection
             throw $e;
         }
 
-        log_to_db(
-            "Admin {$user->getUsername()}({$user->getUid()}) dodał cenę. ID: " . $price->getId()
-        );
+        $logger->logWithActor("log_price_added", $price->getId());
 
         return new SuccessApiResponse($lang->t('price_add'), [
             'data' => [

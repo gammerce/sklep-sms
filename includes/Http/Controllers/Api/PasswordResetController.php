@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
+use App\Loggers\DatabaseLogger;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\User\UserPasswordService;
@@ -14,10 +15,10 @@ class PasswordResetController
         Request $request,
         TranslationManager $translationManager,
         Settings $settings,
-        UserPasswordService $userPasswordService
+        UserPasswordService $userPasswordService,
+        DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
 
         $warnings = [];
 
@@ -44,7 +45,7 @@ class PasswordResetController
 
         $userPasswordService->change($uid, $pass);
 
-        log_to_db($langShop->t('reset_pass', $uid));
+        $logger->log('reset_pass', $uid);
 
         return new ApiResponse("password_changed", $lang->t('password_changed'), 1);
     }

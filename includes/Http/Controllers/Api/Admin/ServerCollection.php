@@ -30,7 +30,7 @@ class ServerCollection
         $serverId = $server->getId();
         $serverService->updateServerServiceAffiliations($serverId, $request->request->all());
 
-        $databaseLogger->logWithActor('log_server_admin_add', $serverId);
+        $databaseLogger->logWithActor('log_server_added', $serverId);
 
         return new SuccessApiResponse($lang->t('server_added'), [
             "data" => [

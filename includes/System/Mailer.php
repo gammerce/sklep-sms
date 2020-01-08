@@ -1,30 +1,26 @@
 <?php
 namespace App\System;
 
-use App\Translation\TranslationManager;
-use App\Translation\Translator;
+use App\Loggers\DatabaseLogger;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
 class Mailer
 {
     /** @var array */
-    protected $config;
+    private $config;
 
     /** @var Settings */
-    protected $settings;
+    private $settings;
 
-    /** @var Translator */
-    protected $langShop;
+    /** @var DatabaseLogger */
+    private $logger;
 
-    public function __construct(
-        Settings $settings,
-        TranslationManager $translationManager,
-        array $config = []
-    ) {
+    public function __construct(Settings $settings, DatabaseLogger $logger, array $config = [])
+    {
         $this->settings = $settings;
         $this->config = $config;
-        $this->langShop = $translationManager->shop();
+        $this->logger = $logger;
     }
 
     public function send($email, $name, $subject, $text)
@@ -72,7 +68,7 @@ class Mailer
 
             $mail->send();
 
-            log_to_db($this->langShop->t('email_was_sent', $email, $text));
+            $this->logger->log('email_was_sent', $email, $text);
 
             return "sent";
         } catch (Exception $e) {
@@ -110,7 +106,7 @@ class Mailer
             return "not_sent";
         }
 
-        log_to_db($this->langShop->t('email_was_sent', $email, $text));
+        $this->logger->log('email_was_sent', $email, $text);
 
         return "sent";
     }
