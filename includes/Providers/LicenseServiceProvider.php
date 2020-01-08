@@ -26,10 +26,7 @@ class LicenseServiceProvider
             $licenseSecret = getenv('LICENSE_SECRET');
             return $app->makeWith(LicenseServerService::class, compact('url', 'licenseSecret'));
         });
-    }
 
-    public function boot(Application $app)
-    {
         $app->extend(Heart::class, function (Heart $heart) {
             $heart->registerServiceModule(
                 "shopsms_license",
