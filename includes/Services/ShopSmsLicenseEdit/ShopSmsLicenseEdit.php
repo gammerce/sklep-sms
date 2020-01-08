@@ -52,17 +52,15 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
 
     public function orderDetails(Purchase $purchaseData)
     {
-        $identifier = $this->db->getColumn(
-            $this->db->prepare(
-                "SELECT `identifier` FROM `" .
-                    TABLE_PREFIX .
-                    $this::USER_SERVICE_TABLE .
-                    "` " .
-                    "WHERE `us_id` = '%d'",
-                [$purchaseData->getOrder('user_service_id')]
-            ),
-            'identifier'
+        $statement = $this->db->statement(
+            "SELECT `identifier` FROM `" .
+                TABLE_PREFIX .
+                $this::USER_SERVICE_TABLE .
+                "` " .
+                "WHERE `us_id` = '%d'"
         );
+        $statement->execute([$purchaseData->getOrder('user_service_id')]);
+        $identifier = $statement->fetchColumn();
 
         $email = $purchaseData->getEmail() ?: $this->lang->t('none');
         $costMonthly =

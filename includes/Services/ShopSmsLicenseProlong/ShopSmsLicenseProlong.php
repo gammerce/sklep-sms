@@ -356,17 +356,15 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
             return null;
         }
 
-        $costDaily = $this->db->getColumn(
-            $this->db->prepare(
-                "SELECT `cost_daily` FROM `" .
-                    TABLE_PREFIX .
-                    $this::USER_SERVICE_TABLE .
-                    "` " .
-                    "WHERE `identifier` = '%s'",
-                [$body['identifier']]
-            ),
-            "cost_daily"
+        $statement = $this->db->statement(
+            "SELECT `cost_daily` FROM `" .
+                TABLE_PREFIX .
+                $this::USER_SERVICE_TABLE .
+                "` " .
+                "WHERE `identifier` = ?"
         );
+        $statement->execute([$body['identifier']]);
+        $costDaily = $statement->fetchColumn();
 
         if ($costDaily === null) {
             return null;
