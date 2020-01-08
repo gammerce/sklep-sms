@@ -157,17 +157,26 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="sms_platform">{$lang->t('sms_payment_platform')}</label>
+                <label for="sms_platform">{$lang->t('default_sms_payment_platform')}</label>
             </div>
             <div class="field-body">
-                <div class="field">
+                <div class="field is-grouped">
                     <div class="control">
                         <div class="select is-small">
                             <select id="sms_platform" name="sms_platform">
-                                <option value="">{$lang->t('none_such')}</option>
+                                <option value="">{$lang->t('none')}</option>
                                 {$smsPlatforms}
                             </select>
                         </div>
+                    </div>
+
+                    <div class="control">
+                        <a
+                            class="button is-small"
+                            href="{{ $url->to('/admin/payment_platforms') }}"
+                        >
+                            {{ $lang->t('create') }}
+                        </a>
                     </div>
                 </div>
             </div>
@@ -175,17 +184,28 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="transfer_platform">{$lang->t('transfer_payment_platform')}</label>
+                <label for="transfer_platform"
+                    >{$lang->t('default_transfer_payment_platform')}</label
+                >
             </div>
             <div class="field-body">
-                <div class="field">
+                <div class="field is-grouped">
                     <div class="control">
                         <div class="select is-small">
                             <select id="transfer_platform" name="transfer_platform">
-                                <option value="">{$lang->t('none_such')}</option>
+                                <option value="">{$lang->t('none')}</option>
                                 {$transferPlatforms}
                             </select>
                         </div>
+                    </div>
+
+                    <div class="control">
+                        <a
+                            class="button is-small"
+                            href="{{ $url->to('/admin/payment_platforms') }}"
+                        >
+                            {{ $lang->t('create') }}
+                        </a>
                     </div>
                 </div>
             </div>
