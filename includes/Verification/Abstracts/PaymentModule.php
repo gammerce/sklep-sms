@@ -18,7 +18,7 @@ abstract class PaymentModule
     private $db;
 
     /** @var PaymentPlatform */
-    private $paymentPlatform;
+    protected $paymentPlatform;
 
     /** @var Tariff[] */
     private $tariffs = [];

@@ -43,7 +43,7 @@ class Transferuj extends PaymentModule implements SupportTransfer
 
     public function prepareTransfer(Purchase $purchase, $dataFilename)
     {
-        // Zamieniamy grosze na złotówki
+        // Cast grosze to złotówki
         $cost = round($purchase->getPayment('cost') / 100, 2);
 
         return [
@@ -59,7 +59,7 @@ class Transferuj extends PaymentModule implements SupportTransfer
             'email' => $purchase->getEmail(),
             'pow_url' => $this->url->to("page/transferuj_ok"),
             'pow_url_blad' => $this->url->to("page/transferuj_bad"),
-            'wyn_url' => $this->url->to("transfer/transferuj"),
+            'wyn_url' => $this->url->to("transfer/{$this->paymentPlatform->getId()}"),
         ];
     }
 
