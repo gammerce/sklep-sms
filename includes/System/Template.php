@@ -22,6 +22,9 @@ class Template
     /** @var FileSystemContract */
     private $fileSystem;
 
+    /** @var array */
+    private $cachedTemplates = [];
+
     public function __construct(
         Path $path,
         Settings $settings,
@@ -54,42 +57,47 @@ class Template
      */
     private function getTemplate($title, $eslashes = true, $htmlcomments = true)
     {
-        $path = $this->resolvePath($title);
-
-        if (!$path) {
-            return false;
+        if (!array_key_exists($title, $this->cachedTemplates)) {
+            $path = $this->resolvePath($title);
+            $this->cachedTemplates[$title] = $path
+                ? $this->readTemplate($path, $title, $htmlcomments, $eslashes)
+                : false;
         }
 
-        return $this->readTemplate($path, $title, $htmlcomments, $eslashes);
+        return $this->cachedTemplates[$title];
     }
 
     private function resolvePath($title)
     {
-        if (strlen($this->lang->getCurrentLanguageShort())) {
-            $filename = $title . "." . $this->lang->getCurrentLanguageShort();
-            $path = $this->path->to("themes/{$this->settings['theme']}/{$filename}.html");
+        foreach ($this->getPossiblePaths($title) as $path) {
             if ($this->fileSystem->exists($path)) {
                 return $path;
             }
-
-            $path = $this->path->to("themes/default/{$filename}.html");
-            if ($this->fileSystem->exists($path)) {
-                return $path;
-            }
-        }
-
-        $filename = $title;
-        $path = $this->path->to("themes/{$this->settings['theme']}/{$filename}.html");
-        if ($this->fileSystem->exists($path)) {
-            return $path;
-        }
-
-        $path = $this->path->to("themes/default/{$filename}.html");
-        if ($this->fileSystem->exists($path)) {
-            return $path;
         }
 
         return null;
+    }
+
+    private function getPossiblePaths($title)
+    {
+        $theme = $this->settings['theme'];
+        $language = $this->lang->getCurrentLanguageShort();
+
+        $paths = [];
+
+        if (strlen($language)) {
+            $paths[] = "themes/$theme/$title.$language";
+            $paths[] = "themes/$theme/$title.$language.html";
+            $paths[] = "themes/default/$title.$language";
+            $paths[] = "themes/default/$title.$language.html";
+        }
+
+        $paths[] = "themes/$theme/$title";
+        $paths[] = "themes/$theme/$title.html";
+        $paths[] = "themes/default/$title";
+        $paths[] = "themes/default/$title.html";
+
+        return $paths;
     }
 
     private function readTemplate($path, $title, $htmlcomments, $eslashes)
