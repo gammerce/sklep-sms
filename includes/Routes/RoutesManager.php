@@ -101,6 +101,7 @@ class RoutesManager
     private function defineRoutes(RouteCollector $r)
     {
         $r->get('/lang.js', [
+            'middlewares' => [LoadSettings::class],
             'uses' => LanguageJsController::class . '@get',
         ]);
 
