@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
+use App\Loggers\DatabaseLogger;
 use App\Routes\UrlGenerator;
 use App\System\Database;
 use App\System\Heart;
@@ -21,10 +22,10 @@ class PasswordForgottenController
         Heart $heart,
         UrlGenerator $url,
         Template $template,
-        Mailer $mailer
+        Mailer $mailer,
+        DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
 
         $warnings = [];
 
@@ -111,15 +112,13 @@ class PasswordForgottenController
         }
 
         if ($ret == "sent") {
-            log_to_db(
-                $langShop->t(
-                    'reset_key_email',
-                    $editedUser->getUsername(),
-                    $editedUser->getUid(),
-                    $editedUser->getEmail(),
-                    $username,
-                    $email
-                )
+            $logger->log(
+                'reset_key_email',
+                $editedUser->getUsername(),
+                $editedUser->getUid(),
+                $editedUser->getEmail(),
+                $username,
+                $email
             );
             $data['username'] = $editedUser->getUsername();
             return new ApiResponse("sent", $lang->t('email_sent'), 1, $data);

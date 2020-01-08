@@ -32,7 +32,7 @@ class PaymentPlatformResource
         );
         $paymentPlatformRepository->update($paymentPlatform->getId(), $name, $filteredData);
 
-        $databaseLogger->logWithActor('log_payment_platform_updated', $paymentPlatform->getId());
+        $databaseLogger->logWithActor('log_payment_platform_edited', $paymentPlatform->getId());
 
         return new SuccessApiResponse($lang->t('payment_platform_updated'));
     }

@@ -2,6 +2,7 @@
 namespace App\Services\ExtraFlags;
 
 use App\Exceptions\UnauthorizedException;
+use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Payment\BoughtServiceService;
@@ -45,6 +46,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     /** @var PaymentPlatformRepository */
     private $paymentPlatformRepository;
 
+    /** @var DatabaseLogger */
+    private $logger;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -53,6 +57,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $this->heart = $this->app->make(Heart::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
         $this->paymentPlatformRepository = $this->app->make(PaymentPlatformRepository::class);
+        $this->logger = $this->app->make(DatabaseLogger::class);
     }
 
     public function purchaseFormGet(array $query)
@@ -766,14 +771,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $purchaseData->setEmail($data['email']);
         $boughtServiceId = $this->purchase($purchaseData);
 
-        log_to_db(
-            $this->langShop->t(
-                'admin_added_user_service',
-                $user->getUsername(),
-                $user->getUid(),
-                $boughtServiceId
-            )
-        );
+        $this->logger->logWithActor('log_user_service_added', $boughtServiceId);
 
         return [
             'status' => "ok",
@@ -878,7 +876,6 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     //
     public function userServiceAdminEdit($data, $userService)
     {
-        $user = $this->auth->user();
         $warnings = [];
 
         // Pobieramy auth_data
@@ -910,14 +907,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $editReturn = $this->userServiceEdit($userService, $data);
 
         if ($editReturn['status'] == 'ok') {
-            log_to_db(
-                $this->langShop->t(
-                    'admin_edited_user_service',
-                    $user->getUsername(),
-                    $user->getUid(),
-                    $userService['id']
-                )
-            );
+            $this->logger->logWithActor('log_user_service_edited', $userService['id']);
         }
 
         return $editReturn;
@@ -1107,7 +1097,6 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
 
     public function userOwnServiceEdit(array $data, $userService)
     {
-        $user = $this->auth->user();
         $warnings = [];
 
         // Pobieramy auth_data
@@ -1140,14 +1129,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         ]);
 
         if ($editReturn['status'] == 'ok') {
-            log_to_db(
-                $this->langShop->t(
-                    'user_edited_service',
-                    $user->getUsername(),
-                    $user->getUid(),
-                    $userService['id']
-                )
-            );
+            $this->logger->logWithActor('log_user_edited_service', $userService['id']);
         }
 
         return $editReturn;

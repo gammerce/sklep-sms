@@ -3,9 +3,9 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\ServiceService;
+use App\Loggers\DatabaseLogger;
 use App\Repositories\ServiceRepository;
 use App\Services\Interfaces\IServiceAdminManage;
-use App\System\Auth;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,14 +15,12 @@ class ServiceCollection
     public function post(
         Request $request,
         TranslationManager $translationManager,
-        Auth $auth,
         Heart $heart,
         ServiceService $serviceService,
-        ServiceRepository $serviceRepository
+        ServiceRepository $serviceRepository,
+        DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         $id = $request->request->get('id');
         $name = $request->request->get('name');
@@ -72,7 +70,7 @@ class ServiceCollection
             array_get($additionalData, "flags", '')
         );
 
-        log_to_db($langShop->t('service_admin_add', $user->getUsername(), $user->getUid(), $id));
+        $logger->logWithActor('log_service_added', $id);
 
         return new SuccessApiResponse($lang->t('service_added'), [
             'length' => 10000,

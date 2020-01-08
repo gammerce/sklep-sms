@@ -2,6 +2,7 @@
 namespace App\Services\MybbExtraGroups;
 
 use App\Exceptions\InvalidConfigException;
+use App\Loggers\DatabaseLogger;
 use App\Models\MybbUser;
 use App\Models\Purchase;
 use App\Models\Service;
@@ -13,8 +14,6 @@ use App\Services\Interfaces\IServiceUserServiceAdminAdd;
 use App\System\Auth;
 use App\System\Database;
 use App\System\Heart;
-use App\Translation\TranslationManager;
-use App\Translation\Translator;
 use PDOException;
 
 class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
@@ -34,9 +33,6 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
     /** @var Database */
     private $dbMybb = null;
 
-    /** @var Translator */
-    private $langShop;
-
     /** @var Auth */
     private $auth;
 
@@ -46,16 +42,17 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
     /** @var BoughtServiceService */
     private $boughtServiceService;
 
+    /** @var DatabaseLogger */
+    private $logger;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
 
-        /** @var TranslationManager $translationManager */
-        $translationManager = $this->app->make(TranslationManager::class);
-        $this->langShop = $translationManager->shop();
         $this->auth = $this->app->make(Auth::class);
         $this->heart = $this->app->make(Heart::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
+        $this->logger = $this->app->make(DatabaseLogger::class);
 
         $serviceData = $this->service ? $this->service->getData() : null;
         if (isset($serviceData['mybb_groups'])) {
@@ -251,12 +248,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
     {
         // Nie znaleziono użytkownika o takich danych jak podane podczas zakupu
         if (($mybbUser = $this->createMybbUser($purchaseData->getOrder('username'))) === null) {
-            log_to_db(
-                $this->langShop->t(
-                    'mybb_purchase_no_user',
-                    json_encode($purchaseData->getPayment())
-                )
-            );
+            $this->logger->log('mybb_purchase_no_user', json_encode($purchaseData->getPayment()));
             die("Critical error occurred");
         }
 
@@ -572,13 +564,11 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         $purchaseData->setEmail($body['email']);
         $boughtServiceId = $this->purchase($purchaseData);
 
-        log_to_db(
-            $this->langShop->t(
-                'admin_added_user_service',
-                $user->getUsername(),
-                $user->getUid(),
-                $boughtServiceId
-            )
+        $this->logger->logWithActor(
+            'log_user_service_added',
+            $user->getUsername(),
+            $user->getUid(),
+            $boughtServiceId
         );
 
         return [

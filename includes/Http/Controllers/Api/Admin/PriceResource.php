@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\PriceService;
-use App\System\Auth;
+use App\Loggers\DatabaseLogger;
 use App\System\Database;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,13 +15,11 @@ class PriceResource
         $priceId,
         Request $request,
         TranslationManager $translationManager,
-        Auth $auth,
         PriceService $priceService,
-        Database $db
+        Database $db,
+        DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         $service = $request->request->get('service');
         $server = $request->request->get('server');
@@ -42,9 +40,7 @@ class PriceResource
         );
 
         if ($statement->rowCount()) {
-            log_to_db(
-                $langShop->t('price_admin_edit', $user->getUsername(), $user->getUid(), $priceId)
-            );
+            $logger->logWithActor('log_price_edited', $priceId);
             return new SuccessApiResponse($lang->t('price_edit'));
         }
 
@@ -55,11 +51,9 @@ class PriceResource
         $priceId,
         Database $db,
         TranslationManager $translationManager,
-        Auth $auth
+        DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         $statement = $db->query(
             $db->prepare("DELETE FROM `" . TABLE_PREFIX . "pricelist` WHERE `id` = '%d'", [
@@ -68,9 +62,7 @@ class PriceResource
         );
 
         if ($statement->rowCount()) {
-            log_to_db(
-                $langShop->t('price_admin_delete', $user->getUsername(), $user->getUid(), $priceId)
-            );
+            $logger->logWithActor('log_price_deleted', $priceId);
             return new SuccessApiResponse($lang->t('delete_price'));
         }
 

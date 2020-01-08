@@ -26,7 +26,7 @@ class AntispamQuestionResource
         );
 
         if ($statement->rowCount()) {
-            $databaseLogger->logWithActor('log_question_delete', $antispamQuestionId);
+            $databaseLogger->logWithActor('log_question_deleted', $antispamQuestionId);
             return new SuccessApiResponse($lang->t('delete_antispamq'));
         }
 
@@ -73,7 +73,7 @@ class AntispamQuestionResource
         );
 
         if ($statement->rowCount()) {
-            $databaseLogger->logWithActor('log_question_edit', $antispamQuestionId);
+            $databaseLogger->logWithActor('log_question_edited', $antispamQuestionId);
             return new SuccessApiResponse($lang->t('antispam_edit'));
         }
 

@@ -38,7 +38,7 @@ class GroupCollection
             ])
         );
 
-        $databaseLogger->logWithActor('log_group_admin_add', $db->lastId());
+        $databaseLogger->logWithActor('log_group_added', $db->lastId());
 
         return new SuccessApiResponse($lang->t('group_add'));
     }

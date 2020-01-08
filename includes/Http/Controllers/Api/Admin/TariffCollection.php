@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\ValidationException;
 use App\Http\Responses\SuccessApiResponse;
-use App\System\Auth;
+use App\Loggers\DatabaseLogger;
 use App\System\Database;
 use App\System\Heart;
 use App\Translation\TranslationManager;
@@ -15,12 +15,10 @@ class TariffCollection
         Request $request,
         Database $db,
         TranslationManager $translationManager,
-        Auth $auth,
-        Heart $heart
+        Heart $heart,
+        DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         $id = $request->request->get("id");
         $provision = $request->request->get("provision");
@@ -54,9 +52,7 @@ class TariffCollection
             )
         );
 
-        log_to_db(
-            $langShop->t('tariff_admin_add', $user->getUsername(), $user->getUid(), $db->lastId())
-        );
+        $logger->logWithActor('log_tariff_added', $db->lastId());
 
         return new SuccessApiResponse($lang->t('tariff_add'));
     }

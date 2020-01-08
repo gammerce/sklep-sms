@@ -32,7 +32,7 @@ class ServerResource
         $serverRepository->update($serverId, $name, $ip, $port, $smsPlatform);
         $serverService->updateServerServiceAffiliations($serverId, $request->request->all());
 
-        $databaseLogger->logWithActor('log_server_admin_edit', $serverId);
+        $databaseLogger->logWithActor('log_server_edited', $serverId);
 
         return new SuccessApiResponse($lang->t('server_edit'));
     }
@@ -56,7 +56,7 @@ class ServerResource
         }
 
         if ($deleted) {
-            $databaseLogger->logWithActor('log_server_admin_delete', $serverId);
+            $databaseLogger->logWithActor('log_server_deleted', $serverId);
             return new SuccessApiResponse($lang->t('delete_server'));
         }
 

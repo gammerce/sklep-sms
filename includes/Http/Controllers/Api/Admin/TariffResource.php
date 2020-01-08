@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
-use App\System\Auth;
+use App\Loggers\DatabaseLogger;
 use App\System\Database;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,11 +16,9 @@ class TariffResource
         Request $request,
         Database $db,
         TranslationManager $translationManager,
-        Auth $auth
+        DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         $provision = $request->request->get('provision');
 
@@ -47,9 +45,7 @@ class TariffResource
         );
 
         if ($statement->rowCount()) {
-            log_to_db(
-                $langShop->t('tariff_admin_edit', $user->getUsername(), $user->getUid(), $tariffId)
-            );
+            $logger->logWithActor('log_tariff_edited', $tariffId);
             return new SuccessApiResponse($lang->t('tariff_edit'));
         }
 
@@ -60,11 +56,9 @@ class TariffResource
         $tariffId,
         Database $db,
         TranslationManager $translationManager,
-        Auth $auth
+        DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         $statement = $db->query(
             $db->prepare(
@@ -76,14 +70,7 @@ class TariffResource
         );
 
         if ($statement->rowCount()) {
-            log_to_db(
-                $langShop->t(
-                    'tariff_admin_delete',
-                    $user->getUsername(),
-                    $user->getUid(),
-                    $tariffId
-                )
-            );
+            $logger->logWithActor('log_tariff_deleted', $tariffId);
             return new SuccessApiResponse($lang->t('delete_tariff'));
         }
 

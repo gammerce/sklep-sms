@@ -10,8 +10,8 @@ use App\Http\Validation\Rules\UniqueUserEmailRule;
 use App\Http\Validation\Rules\UniqueUsernameRule;
 use App\Http\Validation\Rules\UserGroupsRule;
 use App\Http\Validation\Validator;
+use App\Loggers\DatabaseLogger;
 use App\Repositories\UserRepository;
-use App\System\Auth;
 use App\System\Database;
 use App\System\Heart;
 use App\Translation\TranslationManager;
@@ -25,15 +25,13 @@ class UserResource
         TranslationManager $translationManager,
         Heart $heart,
         UserRepository $userRepository,
-        Auth $auth,
         RequiredRule $requiredRule,
         UniqueUsernameRule $uniqueUsernameRule,
         UniqueUserEmailRule $uniqueUserEmailRule,
-        UserGroupsRule $userGroupsRule
+        UserGroupsRule $userGroupsRule,
+        DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         $editedUser = $heart->getUser($userId);
 
@@ -65,7 +63,7 @@ class UserResource
 
         $userRepository->update($editedUser);
 
-        log_to_db($langShop->t('user_admin_edit', $user->getUsername(), $user->getUid(), $userId));
+        $logger->logWithActor('log_user_edited', $userId);
 
         return new SuccessApiResponse($lang->t('user_edit'));
     }
@@ -74,11 +72,9 @@ class UserResource
         $userId,
         Database $db,
         TranslationManager $translationManager,
-        Auth $auth
+        DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         $statement = $db->query(
             $db->prepare("DELETE FROM `" . TABLE_PREFIX . "users` " . "WHERE `uid` = '%d'", [
@@ -87,9 +83,7 @@ class UserResource
         );
 
         if ($statement->rowCount()) {
-            log_to_db(
-                $langShop->t('user_admin_delete', $user->getUsername(), $user->getUid(), $userId)
-            );
+            $logger->logWithActor('log_user_deleted', $userId);
             return new SuccessApiResponse($lang->t('delete_user'));
         }
 

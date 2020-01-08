@@ -12,6 +12,7 @@ use App\Http\Validation\Rules\SteamIdRule;
 use App\Http\Validation\Rules\UniqueUserEmailRule;
 use App\Http\Validation\Rules\UniqueUsernameRule;
 use App\Http\Validation\Validator;
+use App\Loggers\DatabaseLogger;
 use App\Repositories\UserRepository;
 use App\System\Database;
 use App\Translation\TranslationManager;
@@ -28,11 +29,11 @@ class RegisterController
         RequiredRule $requiredRule,
         ConfirmedRule $confirmedRule,
         UniqueUserEmailRule $uniqueUserEmailRule,
-        AntispamQuestionRule $antispamQuestionRule
+        AntispamQuestionRule $antispamQuestionRule,
+        DatabaseLogger $logger
     ) {
         $session = $request->getSession();
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
 
         $username = trim($request->request->get('username'));
         $password = $request->request->get('password');
@@ -104,13 +105,11 @@ class RegisterController
             0
         );
 
-        log_to_db(
-            $langShop->t(
-                'new_account',
-                $createdUser->getUid(),
-                $createdUser->getUsername(),
-                $createdUser->getRegIp()
-            )
+        $logger->log(
+            'new_account',
+            $createdUser->getUid(),
+            $createdUser->getUsername(),
+            $createdUser->getRegIp()
         );
 
         return new ApiResponse("registered", $lang->t('register_success'), 1, $data);

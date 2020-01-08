@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\ValidationException;
 use App\Http\Responses\SuccessApiResponse;
-use App\System\Auth;
+use App\Loggers\DatabaseLogger;
 use App\System\Database;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,11 +14,9 @@ class SmsCodeCollection
         Request $request,
         Database $db,
         TranslationManager $translationManager,
-        Auth $auth
+        DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         $tariff = $request->request->get("tariff");
         $code = $request->request->get("code");
@@ -49,15 +47,7 @@ class SmsCodeCollection
             )
         );
 
-        log_to_db(
-            $langShop->t(
-                'sms_code_admin_add',
-                $user->getUsername(),
-                $user->getUid(),
-                $code,
-                $tariff
-            )
-        );
+        $logger->logWithActor('log_sms_code_added', $code, $tariff);
 
         return new SuccessApiResponse($lang->t('sms_code_add'));
     }

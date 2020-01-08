@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
+use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
 use App\System\Auth;
 use App\System\Heart;
@@ -18,10 +19,10 @@ class WalletChargeCollection
         Heart $heart,
         TranslationManager $translationManager,
         Auth $auth,
-        Settings $settings
+        Settings $settings,
+        DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
         $user = $auth->user();
 
         $amount = intval($request->request->get('amount')) * 100;
@@ -73,16 +74,12 @@ class WalletChargeCollection
 
         $serviceModule->purchase($purchase);
 
-        log_to_db(
-            $langShop->t(
-                'account_charge',
-                $user->getUsername(),
-                $user->getUid(),
-                $editedUser->getUsername(),
-                $editedUser->getUid(),
-                number_format($amount / 100.0, 2),
-                $settings->getCurrency()
-            )
+        $logger->logWithActor(
+            'log_account_charged',
+            $editedUser->getUsername(),
+            $editedUser->getUid(),
+            number_format($amount / 100.0, 2),
+            $settings->getCurrency()
         );
 
         return new ApiResponse(

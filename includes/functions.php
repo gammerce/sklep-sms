@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Get the available container instance.
  *
  * @param string $abstract
- * @param array  $parameters
+ * @param array $parameters
  * @return mixed|\Illuminate\Container\Container|\App\System\Application
  */
 function app($abstract = null, array $parameters = [])
@@ -40,7 +40,7 @@ function app($abstract = null, array $parameters = [])
 /**
  * Zwraca treść danego bloku
  *
- * @param string  $blockId
+ * @param string $blockId
  * @param Request $request
  * @return string
  */
@@ -187,7 +187,7 @@ function is_logged()
 
 /**
  * @param string $privilege
- * @param User   $user
+ * @param User $user
  *
  * @return bool
  */
@@ -313,7 +313,7 @@ function purchase_info($data)
  * Pozyskuje z bazy wszystkie usługi użytkowników
  *
  * @param string|int $conditions Jezeli jest tylko jeden element w tablicy, to zwroci ten element zamiast tablicy
- * @param bool       $takeOut
+ * @param bool $takeOut
  *
  * @return array
  */
@@ -365,15 +365,14 @@ function get_users_services($conditions = '', $takeOut = true)
 
 function delete_users_old_services()
 {
-    /** @var TranslationManager $translationManager */
-    $translationManager = app()->make(TranslationManager::class);
-    $langShop = $translationManager->shop();
-
     /** @var Database $db */
     $db = app()->make(Database::class);
 
     /** @var Heart $heart */
     $heart = app()->make(Heart::class);
+
+    /** @var DatabaseLogger $logger */
+    $logger = app()->make(DatabaseLogger::class);
 
     // Usunięcie przestarzałych usług użytkownika
     // Pierwsze pobieramy te, które usuniemy
@@ -401,7 +400,7 @@ function delete_users_old_services()
                 $userServiceDesc .= ucfirst(strtolower($key)) . ': ' . $value;
             }
 
-            log_to_db($langShop->t('expired_service_delete', $userServiceDesc));
+            $logger->log('expired_service_delete', $userServiceDesc);
         }
     }
 
@@ -518,7 +517,7 @@ function get_ip(Request $request = null)
  * Zwraca datę w odpowiednim formacie
  *
  * @param integer|string $timestamp
- * @param string         $format
+ * @param string $format
  *
  * @return string
  */
@@ -742,7 +741,7 @@ function my_is_integer($val)
 
 /**
  * @param string $glue
- * @param array  $stack
+ * @param array $stack
  *
  * @return string
  */
@@ -776,14 +775,6 @@ function log_to_file($file, $message, array $data = [])
 
     $fileSystem->append($file, $text);
     $fileSystem->setPermissions($file, 0777);
-}
-
-// TODO Use database logger
-function log_to_db($key, ...$args)
-{
-    /** @var DatabaseLogger $logger */
-    $logger = app()->make(DatabaseLogger::class);
-    $logger->log($key, ...$args);
 }
 
 function log_error($message, array $data = [])

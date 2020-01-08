@@ -1,6 +1,7 @@
 <?php
 namespace App\Payment;
 
+use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
 use App\Repositories\PaymentCodeRespository;
 use App\Repositories\ServiceCodeRepository;
@@ -14,9 +15,6 @@ class ServiceCodePaymentService
     /** @var Translator */
     private $lang;
 
-    /** @var Translator */
-    private $langShop;
-
     /** @var Database */
     private $db;
 
@@ -24,19 +22,23 @@ class ServiceCodePaymentService
     private $serviceCodeRepository;
 
     /** @var PaymentCodeRespository */
-    private $paymentCodeRespository;
+    private $paymentCodeRepository;
+
+    /** @var DatabaseLogger */
+    private $logger;
 
     public function __construct(
         TranslationManager $translationManager,
         Database $db,
         ServiceCodeRepository $serviceCodeRepository,
-        PaymentCodeRespository $paymentCodeRespository
+        PaymentCodeRespository $paymentCodeRepository,
+        DatabaseLogger $logger
     ) {
         $this->lang = $translationManager->user();
-        $this->langShop = $translationManager->shop();
         $this->db = $db;
         $this->serviceCodeRepository = $serviceCodeRepository;
-        $this->paymentCodeRespository = $paymentCodeRespository;
+        $this->paymentCodeRepository = $paymentCodeRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -70,20 +72,18 @@ class ServiceCodePaymentService
             if ($serviceModule->serviceCodeValidate($purchase, $row)) {
                 $this->serviceCodeRepository->delete($row['id']);
 
-                $paymentCode = $this->paymentCodeRespository->create(
+                $paymentCode = $this->paymentCodeRepository->create(
                     $purchase->getPayment('service_code'),
                     $purchase->user->getLastIp(),
                     $purchase->user->getPlatform()
                 );
 
-                log_to_db(
-                    $this->langShop->t(
-                        'purchase_code',
-                        $purchase->getPayment('service_code'),
-                        $purchase->user->getUsername(),
-                        $purchase->user->getUid(),
-                        $paymentCode->getId()
-                    )
+                $this->logger->log(
+                    'purchase_code',
+                    $purchase->getPayment('service_code'),
+                    $purchase->user->getUsername(),
+                    $purchase->user->getUid(),
+                    $paymentCode->getId()
                 );
 
                 return $paymentCode->getId();

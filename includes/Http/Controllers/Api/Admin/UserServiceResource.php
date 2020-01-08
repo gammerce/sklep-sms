@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
+use App\Loggers\DatabaseLogger;
 use App\System\Auth;
 use App\System\Database;
 use App\System\Heart;
@@ -55,11 +56,9 @@ class UserServiceResource
         Database $db,
         Heart $heart,
         TranslationManager $translationManager,
-        Auth $auth
+        DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         $userService = get_users_services($userServiceId);
 
@@ -91,14 +90,7 @@ class UserServiceResource
         }
 
         if ($statement->rowCount()) {
-            log_to_db(
-                $langShop->t(
-                    'user_service_admin_delete',
-                    $user->getUsername(),
-                    $user->getUid(),
-                    $userService['id']
-                )
-            );
+            $logger->logWithActor('log_user_service_deleted', $userService['id']);
 
             return new SuccessApiResponse($lang->t('delete_service'));
         }

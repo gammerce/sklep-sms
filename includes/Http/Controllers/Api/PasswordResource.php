@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
+use App\Loggers\DatabaseLogger;
 use App\System\Auth;
 use App\System\Database;
 use App\Translation\TranslationManager;
@@ -14,7 +15,8 @@ class PasswordResource
         Request $request,
         TranslationManager $translationManager,
         Auth $auth,
-        Database $db
+        Database $db,
+        DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
         $user = $auth->user();
@@ -53,7 +55,7 @@ class PasswordResource
             )
         );
 
-        log_to_db("Zmieniono hasło. ID użytkownika: {$user->getUid()}.");
+        $logger->logWithActor("log_password_changed");
 
         return new ApiResponse("password_changed", $lang->t('password_changed'), 1);
     }

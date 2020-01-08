@@ -29,6 +29,7 @@ return [
     'go_to_payment' => 'Przejdź do płatności',
     'got_code' => 'Mam kod!',
     'keyreset_error' => 'Wystąpił błąd podczas wysyłania e-maila z linkiem do zresetowania hasła.',
+    'log_password_changed' => 'Użytkownik zmienił swoje hasło.',
     'login_success' => 'Logowanie przebiegło bez większych trudności.',
     'login_vert' => 'Z<br />A<br />L<br />O<br />G<br />U<br />J',
     'logout_success' => 'Wylogowywanie przebiegło bez większych trudności.',

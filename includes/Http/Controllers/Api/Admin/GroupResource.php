@@ -46,7 +46,7 @@ class GroupResource
         );
 
         if ($statement->rowCount()) {
-            $databaseLogger->logWithActor('log_group_admin_edit', $groupId);
+            $databaseLogger->logWithActor('log_group_edited', $groupId);
             return new SuccessApiResponse($lang->t('group_edit'));
         }
 
@@ -66,7 +66,7 @@ class GroupResource
         );
 
         if ($statement->rowCount()) {
-            $databaseLogger->logWithActor('log_group_admin_delete', $groupId);
+            $databaseLogger->logWithActor('log_group_deleted', $groupId);
             return new SuccessApiResponse($lang->t('delete_group'));
         }
 
