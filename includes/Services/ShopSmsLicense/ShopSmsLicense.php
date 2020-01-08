@@ -464,11 +464,11 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
             )
         );
 
-        $row = $this->db->fetchArrayAssoc($result);
+        $row = $result->fetch();
         $userServiceId = $row['us_id'];
 
         $user = $this->auth->user();
-        $this->db->query(
+        $statement = $this->db->query(
             $this->db->prepare(
                 "UPDATE `" .
                     TABLE_PREFIX .
@@ -479,7 +479,7 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
             )
         );
 
-        if (!$this->db->affectedRows()) {
+        if (!$statement->rowCount()) {
             return [
                 'status' => "service_not_taken_over",
                 'text' => $this->lang->t('service_not_taken_over'),
@@ -558,11 +558,11 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
                 )
             );
 
-            if (!$this->db->numRows($result)) {
+            if (!$result->rowCount()) {
                 return 'Invalid identifier';
             }
 
-            $row = $this->db->fetchArrayAssoc($result);
+            $row = $result->fetch();
             $externalLicenseId = $row['external_license_id'];
 
             try {

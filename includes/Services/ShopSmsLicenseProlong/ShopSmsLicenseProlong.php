@@ -101,7 +101,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
             )
         );
 
-        if (!$this->db->numRows($result)) {
+        if (!$result->rowCount()) {
             $warnings['license_data'][] = $this->lang->t('wrong_license_data');
         }
 
@@ -164,7 +164,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
             )
         );
 
-        $userService = $this->db->fetchArrayAssoc($result);
+        $userService = $result->fetch();
 
         $lifetime = $purchaseData->getOrder('amount') * 24 * 60 * 60;
         $result = $this->licenseServerService->prolong(
@@ -284,10 +284,10 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         );
 
         $userService = [];
-        if (!$this->db->numRows($result)) {
+        if (!$result->rowCount()) {
             $warnings['identifier'][] = $this->lang->t('wrong_license_data');
         } else {
-            $userService = $this->db->fetchArrayAssoc($result);
+            $userService = $result->fetch();
         }
 
         // Amount

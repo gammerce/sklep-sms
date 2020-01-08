@@ -57,7 +57,7 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
                 TABLE_PREFIX .
                 $this::USER_SERVICE_TABLE .
                 "` " .
-                "WHERE `us_id` = '%d'"
+                "WHERE `us_id` = ?"
         );
         $statement->execute([$purchaseData->getOrder('user_service_id')]);
         $identifier = $statement->fetchColumn();
