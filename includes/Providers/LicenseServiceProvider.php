@@ -21,7 +21,7 @@ class LicenseServiceProvider
             return $app->makeWith(Mailer::class, compact('config'));
         });
 
-        $app->bind(LicenseServerService::class, function () use ($app) {
+        $app->bind(LicenseServerService::class, function (Application $app) {
             $url = 'https://license.sklep-sms.pl';
             $licenseSecret = getenv('LICENSE_SECRET');
             return $app->makeWith(LicenseServerService::class, compact('url', 'licenseSecret'));
