@@ -29,19 +29,19 @@ class LicenseServiceProvider
 
         $app->extend(Heart::class, function (Heart $heart) {
             $heart->registerServiceModule(
-                "shopsms_license",
+                ShopSmsLicense::MODULE_ID,
                 "Licencja Sklep-SMS",
                 ShopSmsLicense::class
             );
 
             $heart->registerServiceModule(
-                "shopsms_license_edit",
+                ShopSmsLicenseEdit::MODULE_ID,
                 "Edycja Licencji Sklep-SMS",
                 ShopSmsLicenseEdit::class
             );
 
             $heart->registerServiceModule(
-                "shopsms_license_prolong",
+                ShopSmsLicenseProlong::MODULE_ID,
                 "Przedłużenie Licencji Sklep-SMS",
                 ShopSmsLicenseProlong::class
             );
