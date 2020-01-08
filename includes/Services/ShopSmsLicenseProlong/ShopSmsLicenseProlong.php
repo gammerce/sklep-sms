@@ -1,6 +1,7 @@
 <?php
 namespace App\Services\ShopSmsLicenseProlong;
 
+use App\Loggers\DatabaseLogger;
 use App\Models\Service;
 use App\Payment\BoughtServiceService;
 use App\System\Auth;
@@ -26,9 +27,6 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
     /** @var Translator */
     protected $lang;
 
-    /** @var Translator */
-    protected $langShop;
-
     /** @var Settings */
     protected $settings;
 
@@ -44,6 +42,9 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
     /** @var BoughtServiceService */
     protected $boughtServiceService;
 
+    /** @var DatabaseLogger */
+    protected $logger;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -51,12 +52,12 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
-        $this->langShop = $translationManager->shop();
         $this->settings = $this->app->make(Settings::class);
         $this->auth = $this->app->make(Auth::class);
         $this->heart = $this->app->make(Heart::class);
         $this->licenseServerService = $this->app->make(LicenseServerService::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
+        $this->logger = $this->app->make(DatabaseLogger::class);
     }
 
     // Formularz pokazywany podczas zakupu licencji
@@ -322,14 +323,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         ]);
         $boughtServiceId = $this->purchase($purchaseData);
 
-        log_info(
-            $this->langShop->t(
-                'admin_added_user_service',
-                $user->getUsername(),
-                $user->getUid(),
-                $boughtServiceId
-            )
-        );
+        $this->logger->logWithActor('log_user_service_added', $boughtServiceId);
 
         return [
             'status' => 'ok',
