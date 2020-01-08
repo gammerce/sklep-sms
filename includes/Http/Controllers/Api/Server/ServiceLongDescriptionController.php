@@ -60,28 +60,4 @@ class ServiceLongDescriptionController
 
         return new HtmlResponse($output);
     }
-
-    /**
-     * @deprecated
-     */
-    public function oldGet(
-        Request $request,
-        Template $template,
-        Heart $heart,
-        CurrentPage $currentPage,
-        TranslationManager $translationManager,
-        UrlGenerator $url,
-        License $license
-    ) {
-        return $this->get(
-            $request->query->get("service"),
-            $request,
-            $template,
-            $heart,
-            $currentPage,
-            $translationManager,
-            $url,
-            $license
-        );
-    }
 }
