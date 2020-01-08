@@ -1,6 +1,7 @@
 <?php
 namespace App\Payment;
 
+use App\Loggers\DatabaseLogger;
 use App\Models\BoughtService;
 use App\Repositories\BoughtServiceRepository;
 use App\System\Database;
@@ -23,25 +24,26 @@ class BoughtServiceService
     /** @var Translator */
     private $lang;
 
-    /** @var Translator */
-    private $langShop;
-
     /** @var BoughtServiceRepository */
     private $boughtServiceRepository;
+
+    /** @var DatabaseLogger */
+    private $logger;
 
     public function __construct(
         Database $db,
         TranslationManager $translationManager,
         Heart $heart,
         Mailer $mailer,
-        BoughtServiceRepository $boughtServiceRepository
+        BoughtServiceRepository $boughtServiceRepository,
+        DatabaseLogger $logger
     ) {
         $this->db = $db;
         $this->heart = $heart;
         $this->mailer = $mailer;
         $this->lang = $translationManager->user();
-        $this->langShop = $translationManager->shop();
         $this->boughtServiceRepository = $boughtServiceRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -92,19 +94,17 @@ class BoughtServiceService
         $server = $this->heart->getServer($serverId);
         $amount = $amount != -1 ? "{$amount} {$service->getTag()}" : $this->lang->t('forever');
 
-        log_to_db(
-            $this->langShop->t(
-                'bought_service_info',
-                $serviceId,
-                $authData,
-                $amount,
-                $server ? $server->getName() : '',
-                $paymentId,
-                $returnMessage,
-                $userName,
-                $uid,
-                $ip
-            )
+        $this->logger->log(
+            'bought_service_info',
+            $serviceId,
+            $authData,
+            $amount,
+            $server ? $server->getName() : '',
+            $paymentId,
+            $returnMessage,
+            $userName,
+            $uid,
+            $ip
         );
 
         return $boughtService->getId();

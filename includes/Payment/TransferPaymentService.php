@@ -1,6 +1,7 @@
 <?php
 namespace App\Payment;
 
+use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
 use App\Models\TransferFinalize;
 use App\Repositories\PaymentTransferRepository;
@@ -27,14 +28,14 @@ class TransferPaymentService
     /** @var Translator */
     private $lang;
 
-    /** @var Translator */
-    private $langShop;
-
     /** @var PaymentTransferRepository */
     private $paymentTransferRepository;
 
     /** @var FileSystemContract */
     private $fileSystem;
+
+    /** @var DatabaseLogger */
+    private $logger;
 
     public function __construct(
         Database $db,
@@ -42,15 +43,16 @@ class TransferPaymentService
         Heart $heart,
         PaymentTransferRepository $paymentTransferRepository,
         TranslationManager $translationManager,
-        FileSystemContract $fileSystem
+        FileSystemContract $fileSystem,
+        DatabaseLogger $logger
     ) {
         $this->db = $db;
         $this->path = $path;
         $this->heart = $heart;
         $this->paymentTransferRepository = $paymentTransferRepository;
         $this->lang = $translationManager->user();
-        $this->langShop = $translationManager->shop();
         $this->fileSystem = $fileSystem;
+        $this->logger = $logger;
     }
 
     /**
@@ -96,8 +98,7 @@ class TransferPaymentService
                 $this->path->to('data/transfers/' . $transferFinalize->getDataFilename())
             )
         ) {
-            log_to_db($this->langShop->t('transfer_no_data_file', $transferFinalize->getOrderId()));
-
+            $this->logger->log('transfer_no_data_file', $transferFinalize->getOrderId());
             return false;
         }
 
@@ -123,24 +124,20 @@ class TransferPaymentService
         );
 
         if (($serviceModule = $this->heart->getServiceModule($purchase->getService())) === null) {
-            log_to_db(
-                $this->langShop->t(
-                    'transfer_bad_module',
-                    $transferFinalize->getOrderId(),
-                    $purchase->getService()
-                )
+            $this->logger->log(
+                'transfer_bad_module',
+                $transferFinalize->getOrderId(),
+                $purchase->getService()
             );
 
             return false;
         }
 
         if (!($serviceModule instanceof IServicePurchase)) {
-            log_to_db(
-                $this->langShop->t(
-                    'transfer_no_purchase',
-                    $transferFinalize->getOrderId(),
-                    $purchase->getService()
-                )
+            $this->logger->log(
+                'transfer_no_purchase',
+                $transferFinalize->getOrderId(),
+                $purchase->getService()
             );
 
             return false;
@@ -152,17 +149,15 @@ class TransferPaymentService
         ]);
         $boughtServiceId = $serviceModule->purchase($purchase);
 
-        log_to_db(
-            $this->langShop->t(
-                'payment_transfer_accepted',
-                $boughtServiceId,
-                $transferFinalize->getOrderId(),
-                $transferFinalize->getAmount(),
-                $transferFinalize->getTransferService(),
-                $purchase->user->getUsername(),
-                $purchase->user->getUid(),
-                $purchase->user->getLastIp()
-            )
+        $this->logger->log(
+            'payment_transfer_accepted',
+            $boughtServiceId,
+            $transferFinalize->getOrderId(),
+            $transferFinalize->getAmount(),
+            $transferFinalize->getTransferService(),
+            $purchase->user->getUsername(),
+            $purchase->user->getUid(),
+            $purchase->user->getLastIp()
         );
 
         return true;

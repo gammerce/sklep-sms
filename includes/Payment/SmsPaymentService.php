@@ -1,6 +1,7 @@
 <?php
 namespace App\Payment;
 
+use App\Loggers\DatabaseLogger;
 use App\Models\Tariff;
 use App\Models\User;
 use App\System\Database;
@@ -20,21 +21,22 @@ class SmsPaymentService
     /** @var Translator */
     private $lang;
 
-    /** @var Translator */
-    private $langShop;
-
     /** @var Database */
     private $db;
+
+    /** @var DatabaseLogger */
+    private $logger;
 
     public function __construct(
         TranslationManager $translationManager,
         Settings $settings,
-        Database $db
+        Database $db,
+        DatabaseLogger $logger
     ) {
         $this->settings = $settings;
         $this->lang = $translationManager->user();
-        $this->langShop = $translationManager->shop();
         $this->db = $db;
+        $this->logger = $logger;
     }
 
     /**
@@ -65,17 +67,15 @@ class SmsPaymentService
                 "text" => $this->getSmsExceptionMessage($e),
             ];
         } catch (SmsPaymentException $e) {
-            log_to_db(
-                $this->langShop->t(
-                    'bad_sms_code_used',
-                    $user->getUsername(),
-                    $user->getUid(),
-                    $user->getLastIp(),
-                    $code,
-                    $paymentModule->getSmsCode(),
-                    $smsNumber,
-                    $e->getErrorCode()
-                )
+            $this->logger->log(
+                'bad_sms_code_used',
+                $user->getUsername(),
+                $user->getUid(),
+                $user->getLastIp(),
+                $code,
+                $paymentModule->getSmsCode(),
+                $smsNumber,
+                $e->getErrorCode()
             );
 
             return [
@@ -153,9 +153,7 @@ class SmsPaymentService
             )
         );
 
-        log_to_db(
-            $this->langShop->t('payment_remove_code_from_db', $dbCode['code'], $dbCode['tariff'])
-        );
+        $this->logger->log('payment_remove_code_from_db', $dbCode['code'], $dbCode['tariff']);
 
         return new SmsSuccessResult(!!$dbCode['free']);
     }
@@ -178,16 +176,14 @@ class SmsPaymentService
             )
         );
 
-        log_to_db(
-            $this->langShop->t(
-                'add_code_to_reuse',
-                $code,
-                $tariffId,
-                $user->getUsername(),
-                $user->getUid(),
-                $user->getLastIp(),
-                $expectedTariff->getId()
-            )
+        $this->logger->log(
+            'add_code_to_reuse',
+            $code,
+            $tariffId,
+            $user->getUsername(),
+            $user->getUid(),
+            $user->getLastIp(),
+            $expectedTariff->getId()
         );
     }
 

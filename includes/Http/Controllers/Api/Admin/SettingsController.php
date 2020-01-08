@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
+use App\Loggers\DatabaseLogger;
 use App\Repositories\SettingsRepository;
 use App\System\Application;
-use App\System\Auth;
 use App\System\FileSystemContract;
 use App\System\Heart;
 use App\System\Path;
@@ -23,15 +23,13 @@ class SettingsController
         TranslationManager $translationManager,
         Heart $heart,
         Path $path,
-        Auth $auth,
         Settings $settings,
         SettingsRepository $settingsRepository,
         FileSystemContract $fileSystem,
+        DatabaseLogger $logger,
         Application $app
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         $smsPaymentPlatformId = $request->request->get('sms_platform');
         $transferPaymentPlatformId = $request->request->get('transfer_platform');
@@ -146,8 +144,7 @@ class SettingsController
         $updated = $settingsRepository->update($values);
 
         if ($updated) {
-            log_to_db($langShop->t('settings_admin_edit', $user->getUsername(), $user->getUid()));
-
+            $logger->logWithActor('log_settings_edited');
             return new SuccessApiResponse($lang->t('settings_edit'));
         }
 

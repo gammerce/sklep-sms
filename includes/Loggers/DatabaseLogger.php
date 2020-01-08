@@ -36,7 +36,7 @@ class DatabaseLogger
 
         if ($this->auth->check()) {
             $user = $this->auth->user();
-            $message .= " | User: {$user->getUsername()}({$user->getUid()})";
+            $message .= " | User: {$user->getUsername()}({$user->getUid()})({$user->getLastIp()})";
         }
 
         $this->storeLog($message);

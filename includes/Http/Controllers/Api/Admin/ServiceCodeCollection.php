@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
+use App\Loggers\DatabaseLogger;
 use App\Repositories\ServiceCodeRepository;
-use App\System\Auth;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,11 +18,9 @@ class ServiceCodeCollection
         TranslationManager $translationManager,
         ServiceCodeRepository $serviceCodeRepository,
         Heart $heart,
-        Auth $auth
+        DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
-        $langShop = $translationManager->shop();
-        $user = $auth->user();
 
         $uid = $request->request->get("uid");
         $code = $request->request->get("code");
@@ -70,15 +68,7 @@ class ServiceCodeCollection
             $codeData['data']
         );
 
-        log_to_db(
-            $langShop->t(
-                'code_added_admin',
-                $user->getUsername(),
-                $user->getUid(),
-                $code,
-                $serviceModule->service->getId()
-            )
-        );
+        $logger->logWithActor('log_code_added', $code, $serviceModule->service->getId());
 
         return new SuccessApiResponse($lang->t('code_added'));
     }

@@ -1,7 +1,6 @@
 <?php
 namespace App\Services\ExtraFlags;
 
-use App\Exceptions\InvalidConfigException;
 use App\Html\BodyRow;
 use App\Html\Cell;
 use App\Html\HeadCell;
@@ -30,9 +29,6 @@ abstract class ServiceExtraFlagsSimple extends Service implements
     /** @var Translator */
     protected $lang;
 
-    /** @var Translator */
-    protected $langShop;
-
     /** @var Settings */
     protected $settings;
 
@@ -49,7 +45,6 @@ abstract class ServiceExtraFlagsSimple extends Service implements
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
-        $this->langShop = $translationManager->shop();
         $this->settings = $this->app->make(Settings::class);
         $this->path = $this->app->make(Path::class);
         $this->serviceDescriptionCreator = $this->app->make(ServiceDescriptionCreator::class);
