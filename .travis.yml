@@ -58,7 +58,6 @@ before_deploy:
     themes/ \
     vendor/ \
     .htaccess \
-    cron.php \
     favicon.png \
     index.php \
     README.md

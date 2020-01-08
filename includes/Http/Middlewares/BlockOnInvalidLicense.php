@@ -42,13 +42,7 @@ class BlockOnInvalidLicense implements MiddlewareContract
             $e = $license->getLoadingException();
             $message = $this->getMessageFromInvalidResponse($e->response);
 
-            $jsonScripts = ["extra_stuff.php", "servers_stuff.php"];
-            $executedScript = trim($request->getPathInfo(), "/");
-
-            if (
-                in_array($executedScript, $jsonScripts) ||
-                starts_with($request->getPathInfo(), "/api")
-            ) {
+            if (starts_with($request->getPathInfo(), "/api")) {
                 return new JsonResponse(compact('message'));
             }
 
