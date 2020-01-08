@@ -9,6 +9,7 @@ use App\System\Database;
 use App\System\ExternalConfigProvider;
 use App\System\FileSystem;
 use App\System\FileSystemContract;
+use App\System\Heart;
 use App\System\License;
 use App\System\Path;
 use App\System\Settings;
@@ -26,6 +27,7 @@ class AppServiceProvider
         $this->registerCache($app);
 
         $app->singleton(Session::class);
+        $app->singleton(Heart::class);
         $app->singleton(Auth::class);
         $app->singleton(Settings::class);
         $app->singleton(CurrentPage::class);
