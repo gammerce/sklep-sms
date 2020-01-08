@@ -2,12 +2,15 @@
 namespace App\Providers;
 
 use App\LicenseServerService;
+use App\Loggers\DatabaseLogger;
+use App\Requesting\Requester;
 use App\Services\ShopSmsLicense\ShopSmsLicense;
 use App\Services\ShopSmsLicenseEdit\ShopSmsLicenseEdit;
 use App\Services\ShopSmsLicenseProlong\ShopSmsLicenseProlong;
 use App\System\Application;
 use App\System\Heart;
 use App\System\Mailer;
+use App\System\Settings;
 
 class LicenseServiceProvider
 {
@@ -18,13 +21,17 @@ class LicenseServiceProvider
                 'Host' => getenv('MAIL_HOST'),
                 'Password' => getenv('MAIL_PASSWORD'),
             ];
-            return $app->makeWith(Mailer::class, compact('config'));
+            return new Mailer(
+                $app->make(Settings::class),
+                $app->make(DatabaseLogger::class),
+                $config
+            );
         });
 
         $app->bind(LicenseServerService::class, function (Application $app) {
             $url = 'https://license.sklep-sms.pl';
             $licenseSecret = getenv('LICENSE_SECRET');
-            return $app->makeWith(LicenseServerService::class, compact('url', 'licenseSecret'));
+            return new LicenseServerService($url, $licenseSecret, $app->make(Requester::class));
         });
 
         $app->extend(Heart::class, function (Heart $heart) {
