@@ -70,9 +70,7 @@ class HeartServiceProvider
 {
     public function register(Application $app)
     {
-        $app->singleton(Heart::class, function (Application $app) {
-            $heart = $app->build(Heart::class);
-
+        $app->extend(Heart::class, function (Heart $heart) {
             $this->registerPaymentModules($heart);
             $this->registerPages($heart);
             $this->registerAdminPages($heart);
