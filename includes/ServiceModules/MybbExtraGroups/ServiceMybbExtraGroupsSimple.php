@@ -10,7 +10,7 @@ use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\ServiceModules\Service;
-use App\System\CurrentPage;
+use App\View\CurrentPage;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;

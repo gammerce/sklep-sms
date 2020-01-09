@@ -4,7 +4,7 @@ namespace App\View\Pages;
 use App\View\Html\I_ToHtml;
 use App\Routes\UrlGenerator;
 use App\System\Application;
-use App\System\CurrentPage;
+use App\View\CurrentPage;
 use App\System\Database;
 use App\System\FileSystemContract;
 use App\System\Heart;

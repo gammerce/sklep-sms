@@ -1,5 +1,5 @@
 <?php
-namespace App\System;
+namespace App\View;
 
 use Symfony\Component\HttpFoundation\Request;
 
@@ -10,14 +10,14 @@ class CurrentPage
      *
      * @var int
      */
-    protected $pageNumber;
+    private $pageNumber;
 
     /**
      * Page ID
      *
      * @var string
      */
-    protected $pid;
+    private $pid;
 
     public function __construct(Request $request)
     {
@@ -45,14 +45,14 @@ class CurrentPage
         return $this->pid;
     }
 
-    protected function resolvePageNumber(Request $request)
+    private function resolvePageNumber(Request $request)
     {
         $pageNumber = intval($request->get('page', 1));
 
         return max($pageNumber, 1);
     }
 
-    protected function resolvePid(Request $request)
+    private function resolvePid(Request $request)
     {
         return $request->get('pid', 'home');
     }

@@ -363,69 +363,6 @@ function get_users_services($conditions = '', $takeOut = true)
     return $takeOut && count($output) == 1 ? $output[0] : $output;
 }
 
-function delete_users_old_services()
-{
-    /** @var Database $db */
-    $db = app()->make(Database::class);
-
-    /** @var Heart $heart */
-    $heart = app()->make(Heart::class);
-
-    /** @var DatabaseLogger $logger */
-    $logger = app()->make(DatabaseLogger::class);
-
-    // Usunięcie przestarzałych usług użytkownika
-    // Pierwsze pobieramy te, które usuniemy
-    // Potem wywolujemy akcje na module, potem je usuwamy, a następnie wywołujemy akcje na module
-
-    $deleteIds = $usersServices = [];
-    foreach (
-        get_users_services("WHERE `expire` != '-1' AND `expire` < UNIX_TIMESTAMP()")
-        as $userService
-    ) {
-        if (($serviceModule = $heart->getServiceModule($userService['service'])) === null) {
-            continue;
-        }
-
-        if ($serviceModule->userServiceDelete($userService, 'task')) {
-            $deleteIds[] = $userService['id'];
-            $usersServices[] = $userService;
-
-            $userServiceDesc = '';
-            foreach ($userService as $key => $value) {
-                if (strlen($userServiceDesc)) {
-                    $userServiceDesc .= ' ; ';
-                }
-
-                $userServiceDesc .= ucfirst(strtolower($key)) . ': ' . $value;
-            }
-
-            $logger->log('expired_service_delete', $userServiceDesc);
-        }
-    }
-
-    // Usuwamy usugi ktre zwróciły true
-    if (!empty($deleteIds)) {
-        $db->query(
-            "DELETE FROM `" .
-                TABLE_PREFIX .
-                "user_service` " .
-                "WHERE `id` IN (" .
-                implode(", ", $deleteIds) .
-                ")"
-        );
-    }
-
-    // Wywołujemy akcje po usunieciu
-    foreach ($usersServices as $userService) {
-        if (($serviceModule = $heart->getServiceModule($userService['service'])) === null) {
-            continue;
-        }
-
-        $serviceModule->userServiceDeletePost($userService);
-    }
-}
-
 function create_dom_element($name, $content = "", $data = [])
 {
     $element = new DOMElement($content);

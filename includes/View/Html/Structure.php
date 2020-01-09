@@ -1,7 +1,7 @@
 <?php
 namespace App\View\Html;
 
-use App\System\CurrentPage;
+use App\View\CurrentPage;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 

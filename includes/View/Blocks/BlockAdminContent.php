@@ -1,7 +1,7 @@
 <?php
 namespace App\View\Blocks;
 
-use App\System\CurrentPage;
+use App\View\CurrentPage;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;

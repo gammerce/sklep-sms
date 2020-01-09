@@ -4,7 +4,7 @@ namespace App\Providers;
 use App\Cache\FileCache;
 use App\System\Application;
 use App\System\Auth;
-use App\System\CurrentPage;
+use App\View\CurrentPage;
 use App\System\Database;
 use App\System\ExternalConfigProvider;
 use App\System\FileSystem;

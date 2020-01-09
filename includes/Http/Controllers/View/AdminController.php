@@ -4,7 +4,7 @@ namespace App\Http\Controllers\View;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\System\Application;
 use App\System\Auth;
-use App\System\CurrentPage;
+use App\View\CurrentPage;
 use App\System\Heart;
 use App\System\License;
 use App\System\Template;

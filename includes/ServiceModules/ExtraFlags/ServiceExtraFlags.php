@@ -18,6 +18,7 @@ use App\ServiceModules\Interfaces\IServiceUserOwnServices;
 use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminEdit;
+use App\Services\ExpiredUserServiceService;
 use App\System\Auth;
 use App\System\Heart;
 
@@ -49,6 +50,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     /** @var DatabaseLogger */
     private $logger;
 
+    /** @var ExpiredUserServiceService */
+    private $expiredUserServiceService;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -58,6 +62,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
         $this->paymentPlatformRepository = $this->app->make(PaymentPlatformRepository::class);
         $this->logger = $this->app->make(DatabaseLogger::class);
+        $this->expiredUserServiceService = $this->app->make(ExpiredUserServiceService::class);
     }
 
     public function purchaseFormGet(array $query)
@@ -395,7 +400,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $authData = trim($authData);
 
         // Usunięcie przestarzałych usług gracza
-        delete_users_old_services();
+        $this->expiredUserServiceService->deleteExpiredUserServices();
 
         // Usunięcie przestarzałych flag graczy
         // Tak jakby co
