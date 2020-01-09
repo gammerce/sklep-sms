@@ -21,7 +21,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
     /** @var UserServiceService */
     private $userServiceService;
 
-    public function __construct(        UserServiceService $userServiceService)
+    public function __construct(UserServiceService $userServiceService)
     {
         parent::__construct();
         $this->userServiceService = $userServiceService;

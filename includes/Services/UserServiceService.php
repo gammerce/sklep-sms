@@ -42,14 +42,14 @@ class UserServiceService
 
             $result = $this->db->query(
                 "SELECT us.*, m.*, UNIX_TIMESTAMP() AS `now` FROM `" .
-                TABLE_PREFIX .
-                "user_service` AS us " .
-                "INNER JOIN `" .
-                TABLE_PREFIX .
-                $table .
-                "` AS m ON m.us_id = us.id " .
-                $conditions .
-                " ORDER BY us.id DESC "
+                    TABLE_PREFIX .
+                    "user_service` AS us " .
+                    "INNER JOIN `" .
+                    TABLE_PREFIX .
+                    $table .
+                    "` AS m ON m.us_id = us.id " .
+                    $conditions .
+                    " ORDER BY us.id DESC "
             );
 
             foreach ($result as $row) {

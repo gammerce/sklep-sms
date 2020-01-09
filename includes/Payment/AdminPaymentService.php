@@ -24,9 +24,9 @@ class AdminPaymentService
         $this->db->query(
             $this->db->prepare(
                 "INSERT INTO `" .
-                TABLE_PREFIX .
-                "payment_admin` (`aid`, `ip`, `platform`) " .
-                "VALUES ('%d', '%s', '%s')",
+                    TABLE_PREFIX .
+                    "payment_admin` (`aid`, `ip`, `platform`) " .
+                    "VALUES ('%d', '%s', '%s')",
                 [$admin->getUid(), $admin->getLastIp(), $admin->getPlatform()]
             )
         );

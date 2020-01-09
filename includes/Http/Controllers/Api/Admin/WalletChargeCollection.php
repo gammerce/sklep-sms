@@ -22,7 +22,7 @@ class WalletChargeCollection
         Auth $auth,
         Settings $settings,
         DatabaseLogger $logger,
-    AdminPaymentService $adminPaymentService
+        AdminPaymentService $adminPaymentService
     ) {
         $lang = $translationManager->user();
         $user = $auth->user();

@@ -2,7 +2,6 @@
 
 use App\Models\Server;
 use App\Models\User;
-use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\System\Auth;
 use App\System\Database;
 use App\System\Heart;
@@ -43,9 +42,7 @@ function get_content($blockId, Request $request)
     $heart = app()->make(Heart::class);
 
     if ($block = $heart->getBlock($blockId)) {
-        $query = $request->query->all();
-        $body = $request->request->all();
-        return $block->getContentEnveloped($query, $body);
+        return $block->getContentEnveloped($request->query->all(), $request->request->all());
     }
 
     return "";
@@ -124,56 +121,6 @@ function get_privileges($privilege, $user = null)
     }
 
     return $user->hasPrivilege($privilege);
-}
-
-//
-// $data:
-// 	purchase_id - id zakupu
-// 	payment - metoda płatności
-// 	payment_id - id płatności
-// 	action - jak sformatowac dane
-//
-function purchase_info($data)
-{
-    /** @var Database $db */
-    $db = app()->make(Database::class);
-
-    /** @var Heart $heart */
-    $heart = app()->make(Heart::class);
-
-    /** @var Settings $settings */
-    $settings = app()->make(Settings::class);
-
-    // Wyszukujemy po id zakupu
-    if (isset($data['purchase_id'])) {
-        $where = $db->prepare("t.id = '%d'", [$data['purchase_id']]);
-    }
-    // Wyszukujemy po id płatności
-    else {
-        if (isset($data['payment']) && isset($data['payment_id'])) {
-            $where = $db->prepare("t.payment = '%s' AND t.payment_id = '%s'", [
-                $data['payment'],
-                $data['payment_id'],
-            ]);
-        } else {
-            return "";
-        }
-    }
-
-    $pbs = $db
-        ->query("SELECT * FROM ({$settings['transactions_query']}) as t " . "WHERE {$where}")
-        ->fetch();
-
-    // Brak wynikow
-    if (empty($pbs)) {
-        return "Brak zakupu w bazie.";
-    }
-
-    $serviceModule = $heart->getServiceModule($pbs['service']);
-
-    return $serviceModule !== null && $serviceModule instanceof IServicePurchaseWeb
-        ? $serviceModule->purchaseInfo($data['action'], $pbs)
-        : "";
 }
 
 function create_dom_element($name, $content = "", $data = [])

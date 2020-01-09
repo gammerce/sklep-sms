@@ -19,8 +19,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
     /** @var UserServiceService */
     private $userServiceService;
 
-    public function __construct(        UserServiceService $userServiceService
-    )
+    public function __construct(UserServiceService $userServiceService)
     {
         parent::__construct();
 
@@ -110,7 +109,9 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
 
         $userOwnServices = '';
         foreach ($usersServices as $userService) {
-            if (($serviceModule = $this->heart->getServiceModule($userService['service'])) === null) {
+            if (
+                ($serviceModule = $this->heart->getServiceModule($userService['service'])) === null
+            ) {
                 continue;
             }
 
