@@ -16,11 +16,15 @@ class ExpiredUserServiceService
     /** @var DatabaseLogger */
     private $logger;
 
-    public function __construct(Database $db, Heart $heart, DatabaseLogger $logger)
+    /** @var UserServiceService */
+    private $userServiceService;
+
+    public function __construct(Database $db, Heart $heart, DatabaseLogger $logger,         UserServiceService $userServiceService)
     {
         $this->db = $db;
         $this->heart = $heart;
         $this->logger = $logger;
+        $this->userServiceService = $userServiceService;
     }
 
     public function deleteExpiredUserServices()
@@ -31,7 +35,7 @@ class ExpiredUserServiceService
 
         $deleteIds = $usersServices = [];
         foreach (
-            get_users_services("WHERE `expire` != '-1' AND `expire` < UNIX_TIMESTAMP()")
+            $this->userServiceService->find("WHERE `expire` != '-1' AND `expire` < UNIX_TIMESTAMP()")
             as $userService
         ) {
             if (

@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages;
 
+use App\Services\UserServiceService;
 use App\View\Interfaces\IBeLoggedMust;
 use App\ServiceModules\Interfaces\IServiceUserOwnServices;
 use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
@@ -15,18 +16,20 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
 {
     const PAGE_ID = 'user_own_services';
 
-    public function __construct()
+    /** @var UserServiceService */
+    private $userServiceService;
+
+    public function __construct(        UserServiceService $userServiceService
+    )
     {
         parent::__construct();
 
+        $this->userServiceService = $userServiceService;
         $this->heart->pageTitle = $this->title = $this->lang->t('user_own_services');
     }
 
     protected function content(array $query, array $body)
     {
-        $heart = $this->heart;
-        $lang = $this->lang;
-
         /** @var Auth $auth */
         $auth = $this->app->make(Auth::class);
         $user = $auth->user();
@@ -98,7 +101,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             }
 
             if (!empty($userServiceIds)) {
-                $usersServices = get_users_services(
+                $usersServices = $this->userServiceService->find(
                     "WHERE us.id IN (" . implode(', ', $userServiceIds) . ")",
                     false
                 );
@@ -107,7 +110,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
 
         $userOwnServices = '';
         foreach ($usersServices as $userService) {
-            if (($serviceModule = $heart->getServiceModule($userService['service'])) === null) {
+            if (($serviceModule = $this->heart->getServiceModule($userService['service'])) === null) {
                 continue;
             }
 
@@ -119,7 +122,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
                 $settings['user_edit_service'] &&
                 $serviceModule instanceof IServiceUserOwnServicesEdit
             ) {
-                $buttonEdit = create_dom_element("button", $lang->t('edit'), [
+                $buttonEdit = create_dom_element("button", $this->lang->t('edit'), [
                     'class' => "button is-small edit_row",
                     'type' => 'button',
                 ]);
@@ -135,7 +138,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
 
         // Nie znalazło żadnych usług danego użytkownika
         if (!strlen($userOwnServices)) {
-            $userOwnServices = $lang->t('no_data');
+            $userOwnServices = $this->lang->t('no_data');
         }
 
         $paginationContent = $pagination->getPagination(

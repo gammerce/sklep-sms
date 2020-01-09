@@ -176,60 +176,6 @@ function purchase_info($data)
         : "";
 }
 
-/**
- * Pozyskuje z bazy wszystkie usługi użytkowników
- *
- * @param string|int $conditions Jezeli jest tylko jeden element w tablicy, to zwroci ten element zamiast tablicy
- * @param bool $takeOut
- *
- * @return array
- */
-function get_users_services($conditions = '', $takeOut = true)
-{
-    /** @var Database $db */
-    $db = app()->make(Database::class);
-
-    /** @var Heart $heart */
-    $heart = app()->make(Heart::class);
-
-    if (my_is_integer($conditions)) {
-        $conditions = "WHERE `id` = " . intval($conditions);
-    }
-
-    $output = $usedTable = [];
-    // Niestety dla każdego modułu musimy wykonać osobne zapytanie :-(
-    foreach ($heart->getServicesModules() as $serviceModuleData) {
-        $table = $serviceModuleData['class']::USER_SERVICE_TABLE;
-        if (!strlen($table) || array_key_exists($table, $usedTable)) {
-            continue;
-        }
-
-        $result = $db->query(
-            "SELECT us.*, m.*, UNIX_TIMESTAMP() AS `now` FROM `" .
-                TABLE_PREFIX .
-                "user_service` AS us " .
-                "INNER JOIN `" .
-                TABLE_PREFIX .
-                $table .
-                "` AS m ON m.us_id = us.id " .
-                $conditions .
-                " ORDER BY us.id DESC "
-        );
-
-        foreach ($result as $row) {
-            unset($row['us_id']);
-            $output[$row['id']] = $row;
-        }
-
-        $usedTable[$table] = true;
-    }
-
-    ksort($output);
-    $output = array_reverse($output);
-
-    return $takeOut && count($output) == 1 ? $output[0] : $output;
-}
-
 function create_dom_element($name, $content = "", $data = [])
 {
     $element = new DOMElement($content);

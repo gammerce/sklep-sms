@@ -2,6 +2,7 @@
 namespace App\View\Pages;
 
 use App\Exceptions\UnauthorizedException;
+use App\Services\UserServiceService;
 use App\View\Html\Div;
 use App\View\Html\Input;
 use App\View\Html\Option;
@@ -16,6 +17,15 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = 'user_service';
     protected $privilege = 'view_user_services';
+
+    /** @var UserServiceService */
+    private $userServiceService;
+
+    public function __construct(        UserServiceService $userServiceService)
+    {
+        parent::__construct();
+        $this->userServiceService = $userServiceService;
+    }
 
     protected function content(array $query, array $body)
     {
@@ -95,7 +105,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
                 break;
 
             case "user_service_edit":
-                $userService = get_users_services($query['id']);
+                $userService = $this->userServiceService->find($query['id']);
 
                 if (
                     empty($userService) ||
