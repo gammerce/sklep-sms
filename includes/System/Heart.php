@@ -20,7 +20,7 @@ use App\Repositories\UserRepository;
 use App\ServiceModules\ChargeWallet\ServiceChargeWallet;
 use App\ServiceModules\ExtraFlags\ServiceExtraFlags;
 use App\ServiceModules\Other\ServiceOther;
-use App\ServiceModules\Service;
+use App\ServiceModules\ServiceModule;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\DataField;
 use Exception;
@@ -128,7 +128,7 @@ class Heart
      * Get service module with service included
      *
      * @param string $serviceId Service identifier from ss_services
-     * @return null|Service|ServiceChargeWallet|ServiceExtraFlags|ServiceOther
+     * @return null|ServiceModule|ServiceChargeWallet|ServiceExtraFlags|ServiceOther
      */
     public function getServiceModule($serviceId)
     {
@@ -149,7 +149,7 @@ class Heart
      * Get service module without service included
      *
      * @param $moduleId
-     * @return Service|null
+     * @return ServiceModule|null
      */
     public function getEmptyServiceModule($moduleId)
     {

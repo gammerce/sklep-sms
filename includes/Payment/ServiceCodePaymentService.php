@@ -5,7 +5,7 @@ use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
 use App\Repositories\PaymentCodeRespository;
 use App\Repositories\ServiceCodeRepository;
-use App\ServiceModules\Service;
+use App\ServiceModules\ServiceModule;
 use App\System\Database;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -43,10 +43,10 @@ class ServiceCodePaymentService
 
     /**
      * @param Purchase $purchase
-     * @param Service  $serviceModule
+     * @param ServiceModule  $serviceModule
      * @return array|int
      */
-    public function payWithServiceCode(Purchase $purchase, Service $serviceModule)
+    public function payWithServiceCode(Purchase $purchase, ServiceModule $serviceModule)
     {
         $result = $this->db->query(
             $this->db->prepare(

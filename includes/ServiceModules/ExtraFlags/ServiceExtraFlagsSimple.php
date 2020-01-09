@@ -10,14 +10,14 @@ use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceAvailableOnServers;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
-use App\ServiceModules\Service;
+use App\ServiceModules\ServiceModule;
 use App\View\CurrentPage;
 use App\System\Path;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
-abstract class ServiceExtraFlagsSimple extends Service implements
+abstract class ServiceExtraFlagsSimple extends ServiceModule implements
     IServiceAdminManage,
     IServiceCreate,
     IServiceAvailableOnServers,

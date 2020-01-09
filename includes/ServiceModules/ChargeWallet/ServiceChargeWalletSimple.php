@@ -2,9 +2,9 @@
 namespace App\ServiceModules\ChargeWallet;
 
 use App\View\Interfaces\IBeLoggedMust;
-use App\ServiceModules\Service;
+use App\ServiceModules\ServiceModule;
 
-abstract class ServiceChargeWalletSimple extends Service implements IBeLoggedMust
+abstract class ServiceChargeWalletSimple extends ServiceModule implements IBeLoggedMust
 {
     const MODULE_ID = "charge_wallet";
 }

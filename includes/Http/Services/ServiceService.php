@@ -3,7 +3,7 @@ namespace App\Http\Services;
 
 use App\Exceptions\ValidationException;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
-use App\ServiceModules\Service;
+use App\ServiceModules\ServiceModule;
 use App\System\Database;
 use App\System\Heart;
 use App\Translation\TranslationManager;
@@ -27,7 +27,7 @@ class ServiceService
         $this->db = $db;
     }
 
-    public function validateBody(array $body, array $warnings, Service $serviceModule = null)
+    public function validateBody(array $body, array $warnings, ServiceModule $serviceModule = null)
     {
         $name = array_get($body, 'name');
         $shortDescription = array_get($body, 'short_description');

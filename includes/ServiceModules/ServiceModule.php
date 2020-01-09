@@ -5,7 +5,7 @@ use App\System\Application;
 use App\System\Database;
 use App\System\Template;
 
-abstract class Service
+abstract class ServiceModule
 {
     /**
      * Module identifier defined by inheriting class

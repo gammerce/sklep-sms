@@ -4,14 +4,20 @@ namespace App\ServiceModules\Other;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Payment\BoughtServiceService;
+use App\ServiceModules\Interfaces\IServiceAdminManage;
+use App\ServiceModules\Interfaces\IServiceAvailableOnServers;
+use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseOutside;
+use App\ServiceModules\ServiceModule;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
-class ServiceOther extends ServiceOtherSimple implements IServicePurchase, IServicePurchaseOutside
+class ServiceOther extends ServiceModule implements IServicePurchase, IServicePurchaseOutside,     IServiceCreate, IServiceAdminManage, IServiceAvailableOnServers
 {
+    const MODULE_ID = "other";
+
     /** @var Heart */
     private $heart;
 
@@ -129,5 +135,20 @@ class ServiceOther extends ServiceOtherSimple implements IServicePurchase, IServ
             $purchaseData->getOrder('auth_data'),
             $purchaseData->getEmail()
         );
+    }
+
+    public function serviceAdminManagePost(array $data)
+    {
+        return [];
+    }
+
+    public function serviceAdminExtraFieldsGet()
+    {
+        return '';
+    }
+
+    public function serviceAdminManagePre(array $data)
+    {
+        return [];
     }
 }
