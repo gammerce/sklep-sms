@@ -10,8 +10,8 @@ use App\Html\Structure;
 use App\Html\UnescapedSimpleText;
 use App\Html\Wrapper;
 use App\Pages\Interfaces\IPageAdminActionBox;
-use App\Services\Interfaces\IServiceAdminManage;
-use App\Services\Interfaces\IServiceCreate;
+use App\ServiceModules\Interfaces\IServiceAdminManage;
+use App\ServiceModules\Interfaces\IServiceCreate;
 
 class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 {

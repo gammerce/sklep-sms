@@ -9,7 +9,7 @@ use App\Html\Input;
 use App\Html\Structure;
 use App\Html\Wrapper;
 use App\Pages\Interfaces\IPageAdminActionBox;
-use App\Services\Interfaces\IServiceServiceCodeAdminManage;
+use App\ServiceModules\Interfaces\IServiceServiceCodeAdminManage;
 
 class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 {

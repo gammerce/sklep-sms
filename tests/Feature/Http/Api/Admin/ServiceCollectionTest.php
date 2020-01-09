@@ -2,8 +2,8 @@
 namespace Tests\Feature\Http\Api\Admin;
 
 use App\Repositories\ServiceRepository;
-use App\Services\ExtraFlags\ExtraFlagType;
-use App\Services\ExtraFlags\ServiceExtraFlags;
+use App\ServiceModules\ExtraFlags\ExtraFlagType;
+use App\ServiceModules\ExtraFlags\ServiceExtraFlags;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class ServiceCollectionTest extends HttpTestCase

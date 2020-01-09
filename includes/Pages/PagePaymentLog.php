@@ -3,7 +3,7 @@ namespace App\Pages;
 
 use App\Html\UnescapedSimpleText;
 use App\Interfaces\IBeLoggedMust;
-use App\Services\Interfaces\IServicePurchaseWeb;
+use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\System\Auth;
 use App\System\Database;
 use App\System\Settings;

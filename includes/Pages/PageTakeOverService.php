@@ -2,7 +2,7 @@
 namespace App\Pages;
 
 use App\Interfaces\IBeLoggedMust;
-use App\Services\Interfaces\IServiceTakeOver;
+use App\ServiceModules\Interfaces\IServiceTakeOver;
 
 class PageTakeOverService extends Page implements IBeLoggedMust
 {

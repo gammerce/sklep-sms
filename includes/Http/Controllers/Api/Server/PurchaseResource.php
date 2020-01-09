@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Api\Server;
 
 use App\Http\Responses\XmlResponse;
 use App\Http\Services\PurchaseService;
-use App\Services\Interfaces\IServicePurchaseOutside;
+use App\ServiceModules\Interfaces\IServicePurchaseOutside;
 use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;

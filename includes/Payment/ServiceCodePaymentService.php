@@ -5,7 +5,7 @@ use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
 use App\Repositories\PaymentCodeRespository;
 use App\Repositories\ServiceCodeRepository;
-use App\Services\Service;
+use App\ServiceModules\Service;
 use App\System\Database;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;

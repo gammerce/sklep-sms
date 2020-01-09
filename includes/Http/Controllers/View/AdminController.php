@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers\View;
 
-use App\Services\Interfaces\IServiceUserServiceAdminDisplay;
+use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\System\Application;
 use App\System\Auth;
 use App\System\CurrentPage;

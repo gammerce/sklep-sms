@@ -8,7 +8,7 @@ use App\Html\Link;
 use App\Html\Structure;
 use App\Html\UnescapedSimpleText;
 use App\Html\Wrapper;
-use App\Services\ExtraFlags\ExtraFlagType;
+use App\ServiceModules\ExtraFlags\ExtraFlagType;
 
 class PageAdminBoughtServices extends PageAdmin
 {

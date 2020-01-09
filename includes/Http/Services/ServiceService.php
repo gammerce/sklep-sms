@@ -2,8 +2,8 @@
 namespace App\Http\Services;
 
 use App\Exceptions\ValidationException;
-use App\Services\Interfaces\IServiceAdminManage;
-use App\Services\Service;
+use App\ServiceModules\Interfaces\IServiceAdminManage;
+use App\ServiceModules\Service;
 use App\System\Database;
 use App\System\Heart;
 use App\Translation\TranslationManager;

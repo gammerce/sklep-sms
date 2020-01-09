@@ -5,7 +5,7 @@ use App\Models\Purchase;
 use App\Payment\PaymentService;
 use App\Repositories\PaymentPlatformRepository;
 use App\Repositories\UserRepository;
-use App\Services\Service;
+use App\ServiceModules\Service;
 use App\System\Auth;
 use App\System\Heart;
 use App\Translation\TranslationManager;

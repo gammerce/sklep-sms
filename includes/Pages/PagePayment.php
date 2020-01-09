@@ -2,8 +2,8 @@
 namespace App\Pages;
 
 use App\Models\Purchase;
-use App\Services\Interfaces\IServicePurchaseWeb;
-use App\Services\Interfaces\IServiceServiceCode;
+use App\ServiceModules\Interfaces\IServicePurchaseWeb;
+use App\ServiceModules\Interfaces\IServiceServiceCode;
 use App\Verification\Abstracts\SupportSms;
 
 class PagePayment extends Page

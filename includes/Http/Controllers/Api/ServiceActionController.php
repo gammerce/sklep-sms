@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Responses\PlainResponse;
-use App\Services\Interfaces\IServiceActionExecute;
+use App\ServiceModules\Interfaces\IServiceActionExecute;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;

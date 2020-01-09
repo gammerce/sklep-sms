@@ -2,8 +2,8 @@
 namespace App\Pages;
 
 use App\Interfaces\IBeLoggedMust;
-use App\Services\Interfaces\IServiceUserOwnServices;
-use App\Services\Interfaces\IServiceUserOwnServicesEdit;
+use App\ServiceModules\Interfaces\IServiceUserOwnServices;
+use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\System\Auth;
 use App\System\Database;
 use App\System\Settings;

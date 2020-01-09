@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Responses\ApiResponse;
-use App\Services\Interfaces\IServiceUserOwnServicesEdit;
+use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;

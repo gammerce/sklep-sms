@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\PlainResponse;
-use App\Services\Interfaces\IServiceServiceCodeAdminManage;
+use App\ServiceModules\Interfaces\IServiceServiceCodeAdminManage;
 use App\System\Heart;
 
 class ServiceCodeAddFormController

@@ -2,7 +2,7 @@
 namespace App\Pages;
 
 use App\Interfaces\IBeLoggedMust;
-use App\Services\Interfaces\IServicePurchaseWeb;
+use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\System\Auth;
 
 class PagePurchase extends Page

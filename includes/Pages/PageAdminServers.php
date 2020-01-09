@@ -10,7 +10,7 @@ use App\Html\Structure;
 use App\Html\Wrapper;
 use App\Pages\Interfaces\IPageAdminActionBox;
 use App\Repositories\PaymentPlatformRepository;
-use App\Services\Interfaces\IServiceAvailableOnServers;
+use App\ServiceModules\Interfaces\IServiceAvailableOnServers;
 use App\Verification\Abstracts\SupportSms;
 
 class PageAdminServers extends PageAdmin implements IPageAdminActionBox

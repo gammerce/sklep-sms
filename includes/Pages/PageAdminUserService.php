@@ -8,9 +8,9 @@ use App\Html\Option;
 use App\Html\Select;
 use App\Html\Wrapper;
 use App\Pages\Interfaces\IPageAdminActionBox;
-use App\Services\Interfaces\IServiceUserServiceAdminAdd;
-use App\Services\Interfaces\IServiceUserServiceAdminDisplay;
-use App\Services\Interfaces\IServiceUserServiceAdminEdit;
+use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
+use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
+use App\ServiceModules\Interfaces\IServiceUserServiceAdminEdit;
 
 class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 {
