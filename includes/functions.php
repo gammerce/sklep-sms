@@ -1,23 +1,16 @@
 <?php
 
-use App\View\Html\Div;
-use App\View\Html\DOMElement;
-use App\View\Html\Li;
-use App\View\Html\Link;
-use App\View\Html\Ul;
-use App\View\Html\UnescapedSimpleText;
-use App\Loggers\DatabaseLogger;
 use App\Models\Server;
 use App\Models\User;
-use App\Routes\UrlGenerator;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\System\Auth;
 use App\System\Database;
-use App\System\FileSystemContract;
 use App\System\Heart;
-use App\System\Path;
 use App\System\Settings;
 use App\Translation\TranslationManager;
+use App\View\Html\Div;
+use App\View\Html\DOMElement;
+use App\View\Html\UnescapedSimpleText;
 use Illuminate\Container\Container;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -66,109 +59,6 @@ function get_row_limit($page, $rowLimit = 0)
     $rowLimit = $rowLimit ? $rowLimit : $settings['row_limit'];
 
     return ($page - 1) * $rowLimit . "," . $rowLimit;
-}
-
-function get_pagination($all, $currentPage, $script, $query, $rowLimit = 0)
-{
-    /** @var Settings $settings */
-    $settings = app()->make(Settings::class);
-
-    /** @var UrlGenerator $url */
-    $url = app()->make(UrlGenerator::class);
-
-    /** @var TranslationManager $translationManager */
-    $translationManager = app()->make(TranslationManager::class);
-
-    $lang = $translationManager->user();
-
-    $rowLimit = $rowLimit ? $rowLimit : $settings['row_limit'];
-
-    // Wszystkich elementow jest mniej niz wymagana ilsoc na jednej stronie
-    if ($all <= $rowLimit) {
-        return null;
-    }
-
-    // Pobieramy ilosc stron
-    $pagesAmount = floor(max($all - 1, 0) / $rowLimit) + 1;
-
-    // Poprawiamy obecna strone, gdyby byla bledna
-    if ($currentPage > $pagesAmount) {
-        $currentPage = -1;
-    }
-
-    $paginationList = new Ul();
-    $paginationList->addClass("pagination-list");
-
-    $lp = 2;
-    for ($i = 1, $dots = false; $i <= $pagesAmount; ++$i) {
-        if ($i != 1 && $i != $pagesAmount && ($i < $currentPage - $lp || $i > $currentPage + $lp)) {
-            if (!$dots) {
-                if ($i < $currentPage - $lp) {
-                    $href = $url->to(
-                        $script,
-                        array_merge($query, ["page" => round((1 + $currentPage - $lp) / 2)])
-                    );
-                } elseif ($i > $currentPage + $lp) {
-                    $href = $url->to(
-                        $script,
-                        array_merge($query, [
-                            "page" => round(($currentPage + $lp + $pagesAmount) / 2),
-                        ])
-                    );
-                }
-
-                $paginationLink = new Link("...");
-                $paginationLink->addClass("pagination-link");
-                $paginationLink->setParam("href", $href);
-                $paginationList->addContent(new Li($paginationLink));
-
-                $dots = true;
-            }
-            continue;
-        }
-
-        $href = $url->to($script, array_merge($query, ["page" => $i]));
-        $paginationLink = new Link($i);
-        $paginationLink->addClass("pagination-link");
-        if ($currentPage == $i) {
-            $paginationLink->addClass("is-current");
-        }
-        $paginationLink->setParam("href", $href);
-        $paginationList->addContent(new Li($paginationLink));
-
-        $dots = false;
-    }
-
-    $pagination = new Div();
-    $pagination->addClass("pagination is-centered");
-
-    $previousButton = new Link($lang->t("previous"));
-    $previousButton->addClass("pagination-previous");
-    if ($currentPage - 1 < 1) {
-        $previousButton->setParam("disabled", true);
-    } else {
-        $previousButton->setParam(
-            "href",
-            $url->to($script, array_merge($query, ["page" => $currentPage - 1]))
-        );
-    }
-
-    $nextButton = new Link($lang->t("next"));
-    $nextButton->addClass("pagination-next");
-    if ($currentPage + 1 > $pagesAmount) {
-        $nextButton->setParam("disabled", true);
-    } else {
-        $nextButton->setParam(
-            "href",
-            $url->to($script, array_merge($query, ["page" => $currentPage + 1]))
-        );
-    }
-
-    $pagination->addContent($previousButton);
-    $pagination->addContent($nextButton);
-    $pagination->addContent($paginationList);
-
-    return $pagination;
 }
 
 /* User functions */
@@ -691,35 +581,6 @@ function implode_esc($glue, $stack)
     }
 
     return $output;
-}
-
-function log_to_file($file, $message, array $data = [])
-{
-    /** @var Settings $settings */
-    $settings = app()->make(Settings::class);
-
-    /** @var FileSystemContract $fileSystem */
-    $fileSystem = app()->make(FileSystemContract::class);
-
-    $dataText = $data ? " | " . json_encode($data) : "";
-    $text = date($settings->getDateFormat()) . ": " . $message . $dataText;
-
-    $fileSystem->append($file, $text);
-    $fileSystem->setPermissions($file, 0777);
-}
-
-function log_error($message, array $data = [])
-{
-    /** @var Path $path */
-    $path = app()->make(Path::class);
-    log_to_file($path->errorLogPath(), $message, $data);
-}
-
-function log_info($message, array $data = [])
-{
-    /** @var Path $path */
-    $path = app()->make(Path::class);
-    log_to_file($path->infoLogPath(), $message, $data);
 }
 
 function array_get($array, $key, $default = null)

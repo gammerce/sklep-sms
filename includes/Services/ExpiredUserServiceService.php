@@ -34,7 +34,9 @@ class ExpiredUserServiceService
             get_users_services("WHERE `expire` != '-1' AND `expire` < UNIX_TIMESTAMP()")
             as $userService
         ) {
-            if (($serviceModule = $this->heart->getServiceModule($userService['service'])) === null) {
+            if (
+                ($serviceModule = $this->heart->getServiceModule($userService['service'])) === null
+            ) {
                 continue;
             }
 
@@ -59,17 +61,19 @@ class ExpiredUserServiceService
         if (!empty($deleteIds)) {
             $this->db->query(
                 "DELETE FROM `" .
-                TABLE_PREFIX .
-                "user_service` " .
-                "WHERE `id` IN (" .
-                implode(", ", $deleteIds) .
-                ")"
+                    TABLE_PREFIX .
+                    "user_service` " .
+                    "WHERE `id` IN (" .
+                    implode(", ", $deleteIds) .
+                    ")"
             );
         }
 
         // Wywołujemy akcje po usunieciu
         foreach ($usersServices as $userService) {
-            if (($serviceModule = $this->heart->getServiceModule($userService['service'])) === null) {
+            if (
+                ($serviceModule = $this->heart->getServiceModule($userService['service'])) === null
+            ) {
                 continue;
             }
 

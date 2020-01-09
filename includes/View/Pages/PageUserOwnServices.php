@@ -8,6 +8,7 @@ use App\System\Auth;
 use App\System\Database;
 use App\System\Settings;
 use App\System\Template;
+use App\View\Pagination;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageUserOwnServices extends Page implements IBeLoggedMust
@@ -41,6 +42,9 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
 
         /** @var Request $request */
         $request = $this->app->make(Request::class);
+
+        /** @var Pagination $pagination */
+        $pagination = $this->app->make(Pagination::class);
 
         // Ktore moduly wspieraja usługi użytkowników
         $modules = array_filter($this->heart->getServicesModules(), function ($module) {
@@ -134,18 +138,18 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             $userOwnServices = $lang->t('no_data');
         }
 
-        $pagination = get_pagination(
+        $paginationContent = $pagination->getPagination(
             $rowsCount,
             $this->currentPage->getPageNumber(),
             $request->getPathInfo(),
             $query,
             4
         );
-        $paginationClass = $pagination ? "" : "display_none";
+        $paginationClass = $paginationContent ? "" : "display_none";
 
         return $template->render(
             "user_own_services",
-            compact('userOwnServices', 'paginationClass', 'pagination')
+            compact('userOwnServices', 'paginationClass', 'paginationContent')
         );
     }
 }

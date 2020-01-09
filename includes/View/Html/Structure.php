@@ -3,6 +3,7 @@ namespace App\View\Html;
 
 use App\View\CurrentPage;
 use App\Translation\TranslationManager;
+use App\View\Pagination;
 use Symfony\Component\HttpFoundation\Request;
 
 class Structure extends DOMElement
@@ -117,27 +118,31 @@ class Structure extends DOMElement
     {
         /** @var CurrentPage $currentPage */
         $currentPage = app()->make(CurrentPage::class);
+
         /** @var Request $request */
         $request = app()->make(Request::class);
+
+        /** @var Pagination $pagination */
+        $pagination = app()->make(Pagination::class);
 
         $pageNumber = $currentPage->getPageNumber();
         $this->dbRowsAmount = intval($amount);
 
-        $pagination = get_pagination(
+        $paginationContent = $pagination->getPagination(
             $this->dbRowsAmount,
             $pageNumber,
             $request->getPathInfo(),
             $request->query->all()
         );
 
-        if ($pagination) {
+        if ($paginationContent) {
             $this->foot = new DOMElement();
             $this->foot->setName('tfoot');
             $this->foot->addClass('display_tfoot');
 
             $row = new Row();
 
-            $cell = new Cell($pagination);
+            $cell = new Cell($paginationContent);
             $cell->setParam('colspan', '31');
 
             $row->addContent($cell);

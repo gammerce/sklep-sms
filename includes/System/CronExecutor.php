@@ -25,7 +25,7 @@ class CronExecutor
         Settings $settings,
         Path $path,
         FileSystemContract $fileSystem,
-    ExpiredUserServiceService $expiredServiceService
+        ExpiredUserServiceService $expiredServiceService
     ) {
         $this->db = $db;
         $this->settings = $settings;

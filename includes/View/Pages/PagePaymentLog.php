@@ -8,6 +8,7 @@ use App\System\Auth;
 use App\System\Database;
 use App\System\Settings;
 use App\System\Template;
+use App\View\Pagination;
 use Symfony\Component\HttpFoundation\Request;
 
 class PagePaymentLog extends Page implements IBeLoggedMust
@@ -41,6 +42,9 @@ class PagePaymentLog extends Page implements IBeLoggedMust
 
         /** @var Request $request */
         $request = $this->app->make(Request::class);
+
+        /** @var Pagination $pagination */
+        $pagination = $this->app->make(Pagination::class);
 
         $result = $db->query(
             $db->prepare(
@@ -88,18 +92,18 @@ class PagePaymentLog extends Page implements IBeLoggedMust
             );
         }
 
-        $pagination = get_pagination(
+        $paginationContent = $pagination->getPagination(
             $rowsCount,
             $this->currentPage->getPageNumber(),
             $request->getPathInfo(),
             $query,
             10
         );
-        $paginationClass = $pagination ? "" : "display_none";
+        $paginationClass = $paginationContent ? "" : "display_none";
 
         return $template->render(
             "payment_log",
-            compact('paymentLogs', 'paginationClass', 'pagination')
+            compact('paymentLogs', 'paginationClass', 'paginationContent')
         );
     }
 }
