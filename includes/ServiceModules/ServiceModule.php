@@ -1,6 +1,7 @@
 <?php
 namespace App\ServiceModules;
 
+use App\Models\Service;
 use App\System\Application;
 use App\System\Database;
 use App\System\Template;
@@ -17,7 +18,7 @@ abstract class ServiceModule
      */
     const USER_SERVICE_TABLE = '';
 
-    /** @var \App\Models\Service|null */
+    /** @var Service|null */
     public $service;
 
     /** @var Application */
@@ -29,7 +30,7 @@ abstract class ServiceModule
     /** @var Database */
     protected $db;
 
-    public function __construct(\App\Models\Service $service = null)
+    public function __construct(Service $service = null)
     {
         $this->app = app();
         $this->template = $this->app->make(Template::class);
