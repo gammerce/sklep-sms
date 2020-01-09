@@ -5,6 +5,7 @@ use App\Exceptions\UnauthorizedException;
 use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
 use App\Models\Service;
+use App\Payment\AdminPaymentService;
 use App\Payment\BoughtServiceService;
 use App\Repositories\PaymentPlatformRepository;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
@@ -53,6 +54,9 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
     /** @var ExpiredUserServiceService */
     private $expiredUserServiceService;
 
+    /** @var AdminPaymentService */
+    private $adminPaymentService;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -63,6 +67,7 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         $this->paymentPlatformRepository = $this->app->make(PaymentPlatformRepository::class);
         $this->logger = $this->app->make(DatabaseLogger::class);
         $this->expiredUserServiceService = $this->app->make(ExpiredUserServiceService::class);
+        $this->adminPaymentService = $this->app->make(AdminPaymentService::class);
     }
 
     public function purchaseFormGet(array $query)
@@ -755,10 +760,10 @@ class ServiceExtraFlags extends ServiceExtraFlagsSimple implements
         //
         // Dodajemy usługę
 
-        // Dodawanie informacji o płatności
-        $paymentId = pay_by_admin($user);
+        $paymentId = $this->adminPaymentService->payByAdmin($user);
 
-        $purchaseUser = $this->heart->getUser($data['uid']); // Pobieramy dane o użytkowniku na które jego wykupiona usługa
+        // Pobieramy dane o użytkowniku na które jego wykupiona usługa
+        $purchaseUser = $this->heart->getUser($data['uid']);
         $purchaseData = new Purchase($purchaseUser);
         $purchaseData->setService($this->service->getId());
         $purchaseData->setPayment([

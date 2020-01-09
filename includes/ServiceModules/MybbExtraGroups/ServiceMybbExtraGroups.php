@@ -6,6 +6,7 @@ use App\Loggers\DatabaseLogger;
 use App\Models\MybbUser;
 use App\Models\Purchase;
 use App\Models\Service;
+use App\Payment\AdminPaymentService;
 use App\Payment\BoughtServiceService;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
@@ -42,6 +43,9 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
     /** @var BoughtServiceService */
     private $boughtServiceService;
 
+    /** @var AdminPaymentService */
+    private $adminPaymentService;
+
     /** @var DatabaseLogger */
     private $logger;
 
@@ -53,6 +57,7 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
         $this->heart = $this->app->make(Heart::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
         $this->logger = $this->app->make(DatabaseLogger::class);
+        $this->adminPaymentService = $this->app->make(AdminPaymentService::class);
 
         $serviceData = $this->service ? $this->service->getData() : null;
         if (isset($serviceData['mybb_groups'])) {
@@ -547,8 +552,8 @@ class ServiceMybbExtraGroups extends ServiceMybbExtraGroupsSimple implements
             ];
         }
 
-        // Dodawanie informacji o płatności
-        $paymentId = pay_by_admin($user);
+        // Add payment info
+        $paymentId = $this->adminPaymentService->payByAdmin($user);
 
         $purchaseData = new Purchase($this->heart->getUser($body['uid']));
         $purchaseData->setService($this->service->getId());

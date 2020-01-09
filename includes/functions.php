@@ -126,29 +126,6 @@ function get_privileges($privilege, $user = null)
     return $user->hasPrivilege($privilege);
 }
 
-/**
- * @param User $userAdmin
- * @return int|string
- */
-function pay_by_admin($userAdmin)
-{
-    /** @var Database $db */
-    $db = app()->make(Database::class);
-
-    // Dodawanie informacji o płatności
-    $db->query(
-        $db->prepare(
-            "INSERT INTO `" .
-                TABLE_PREFIX .
-                "payment_admin` (`aid`, `ip`, `platform`) " .
-                "VALUES ('%d', '%s', '%s')",
-            [$userAdmin->getUid(), $userAdmin->getLastIp(), $userAdmin->getPlatform()]
-        )
-    );
-
-    return $db->lastId();
-}
-
 //
 // $data:
 // 	purchase_id - id zakupu

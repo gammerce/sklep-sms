@@ -1,5 +1,6 @@
 * Removed log_info
 * Removed log_error
+* Removed get_pagination
 * Moved App/Blocks
 * Moved App/Html
 * Moved App/Interfaces
