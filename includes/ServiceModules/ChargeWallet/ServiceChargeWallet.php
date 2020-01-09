@@ -6,16 +6,21 @@ use App\Models\Service;
 use App\Payment\BoughtServiceService;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
+use App\ServiceModules\ServiceModule;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use App\View\Interfaces\IBeLoggedMust;
 
-class ServiceChargeWallet extends ServiceChargeWalletSimple implements
+class ServiceChargeWallet extends ServiceModule implements
     IServicePurchase,
-    IServicePurchaseWeb
+    IServicePurchaseWeb,
+    IBeLoggedMust
 {
+    const MODULE_ID = "charge_wallet";
+
     /** @var Auth */
     private $auth;
 
