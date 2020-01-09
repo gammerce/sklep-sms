@@ -38,7 +38,7 @@ use App\View\Html\HeadCell;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 
-class ServiceExtraFlags extends ServiceModule implements
+class ExtraFlagsServiceModule extends ServiceModule implements
     IServiceAdminManage,
     IServiceCreate,
     IServiceAvailableOnServers,
@@ -1248,6 +1248,8 @@ class ServiceExtraFlags extends ServiceModule implements
                 'data' => ['warnings' => $warnings],
             ];
         }
+
+        return null;
     }
 
     public function userServiceDeletePost($userService)

@@ -30,7 +30,7 @@ use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use PDOException;
 
-class ServiceMybbExtraGroups extends ServiceModule implements
+class MybbExtraGroupsServiceModule extends ServiceModule implements
     IServiceAdminManage,
     IServiceCreate,
     IServiceUserServiceAdminDisplay,

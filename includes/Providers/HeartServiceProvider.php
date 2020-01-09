@@ -47,10 +47,10 @@ use App\View\Pages\PageTakeOverService;
 use App\View\Pages\PageTransferujBad;
 use App\View\Pages\PageTransferujOk;
 use App\View\Pages\PageUserOwnServices;
-use App\ServiceModules\ChargeWallet\ServiceChargeWallet;
-use App\ServiceModules\ExtraFlags\ServiceExtraFlags;
-use App\ServiceModules\MybbExtraGroups\ServiceMybbExtraGroups;
-use App\ServiceModules\Other\ServiceOther;
+use App\ServiceModules\ChargeWallet\ChargeWalletServiceModule;
+use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
+use App\ServiceModules\MybbExtraGroups\MybbExtraGroupsServiceModule;
+use App\ServiceModules\Other\OtherServiceModule;
 use App\System\Application;
 use App\System\Heart;
 use App\Verification\PaymentModules\Cashbill;
@@ -173,23 +173,27 @@ class HeartServiceProvider
     private function registerServices(Heart $heart)
     {
         $heart->registerServiceModule(
-            ServiceChargeWallet::MODULE_ID,
+            ChargeWalletServiceModule::MODULE_ID,
             'Doładowanie Portfela',
-            ServiceChargeWallet::class
+            ChargeWalletServiceModule::class
         );
 
         $heart->registerServiceModule(
-            ServiceExtraFlags::MODULE_ID,
+            ExtraFlagsServiceModule::MODULE_ID,
             'Dodatkowe Uprawnienia / Flagi',
-            ServiceExtraFlags::class
+            ExtraFlagsServiceModule::class
         );
 
         $heart->registerServiceModule(
-            ServiceMybbExtraGroups::MODULE_ID,
+            MybbExtraGroupsServiceModule::MODULE_ID,
             'Dodatkowe Grupy (MyBB)',
-            ServiceMybbExtraGroups::class
+            MybbExtraGroupsServiceModule::class
         );
 
-        $heart->registerServiceModule(ServiceOther::MODULE_ID, 'Inne', ServiceOther::class);
+        $heart->registerServiceModule(
+            OtherServiceModule::MODULE_ID,
+            'Inne',
+            OtherServiceModule::class
+        );
     }
 }

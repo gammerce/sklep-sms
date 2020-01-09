@@ -14,7 +14,7 @@ use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Interfaces\IBeLoggedMust;
 
-class ServiceChargeWallet extends ServiceModule implements
+class ChargeWalletServiceModule extends ServiceModule implements
     IServicePurchase,
     IServicePurchaseWeb,
     IBeLoggedMust

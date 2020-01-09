@@ -17,9 +17,9 @@ use App\Repositories\PaymentPlatformRepository;
 use App\Repositories\ServerRepository;
 use App\Repositories\ServiceRepository;
 use App\Repositories\UserRepository;
-use App\ServiceModules\ChargeWallet\ServiceChargeWallet;
-use App\ServiceModules\ExtraFlags\ServiceExtraFlags;
-use App\ServiceModules\Other\ServiceOther;
+use App\ServiceModules\ChargeWallet\ChargeWalletServiceModule;
+use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
+use App\ServiceModules\Other\OtherServiceModule;
 use App\ServiceModules\ServiceModule;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\DataField;
@@ -128,7 +128,7 @@ class Heart
      * Get service module with service included
      *
      * @param string $serviceId Service identifier from ss_services
-     * @return null|ServiceModule|ServiceChargeWallet|ServiceExtraFlags|ServiceOther
+     * @return null|ServiceModule|ChargeWalletServiceModule|ExtraFlagsServiceModule|OtherServiceModule
      */
     public function getServiceModule($serviceId)
     {

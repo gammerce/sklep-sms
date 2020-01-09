@@ -14,7 +14,7 @@ use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
-class ServiceOther extends ServiceModule implements
+class OtherServiceModule extends ServiceModule implements
     IServicePurchase,
     IServicePurchaseOutside,
     IServiceCreate,
