@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\Server;
 
-use App\Html\UnescapedSimpleText;
+use App\View\Html\UnescapedSimpleText;
 use App\Http\Responses\HtmlResponse;
 use App\Routes\UrlGenerator;
 use App\System\CurrentPage;

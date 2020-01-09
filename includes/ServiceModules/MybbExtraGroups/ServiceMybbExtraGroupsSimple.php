@@ -1,11 +1,11 @@
 <?php
 namespace App\ServiceModules\MybbExtraGroups;
 
-use App\Html\BodyRow;
-use App\Html\Cell;
-use App\Html\HeadCell;
-use App\Html\Structure;
-use App\Html\Wrapper;
+use App\View\Html\BodyRow;
+use App\View\Html\Cell;
+use App\View\Html\HeadCell;
+use App\View\Html\Structure;
+use App\View\Html\Wrapper;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;

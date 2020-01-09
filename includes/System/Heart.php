@@ -1,17 +1,17 @@
 <?php
 namespace App\System;
 
-use App\Blocks\Block;
-use App\Blocks\BlockSimple;
+use App\View\Blocks\Block;
+use App\View\Blocks\BlockSimple;
 use App\Exceptions\InvalidConfigException;
 use App\Exceptions\InvalidPaymentModuleException;
 use App\Models\PaymentPlatform;
 use App\Models\Server;
 use App\Models\Tariff;
 use App\Models\User;
-use App\Pages\Interfaces\IPageAdminActionBox;
-use App\Pages\Page;
-use App\Pages\PageSimple;
+use App\View\Pages\Interfaces\IPageAdminActionBox;
+use App\View\Pages\Page;
+use App\View\Pages\PageSimple;
 use App\Payment\PaymentModuleFactory;
 use App\Repositories\PaymentPlatformRepository;
 use App\Repositories\ServerRepository;

@@ -1,11 +1,11 @@
 <?php
 
-use App\Html\Div;
-use App\Html\DOMElement;
-use App\Html\Li;
-use App\Html\Link;
-use App\Html\Ul;
-use App\Html\UnescapedSimpleText;
+use App\View\Html\Div;
+use App\View\Html\DOMElement;
+use App\View\Html\Li;
+use App\View\Html\Link;
+use App\View\Html\Ul;
+use App\View\Html\UnescapedSimpleText;
 use App\Loggers\DatabaseLogger;
 use App\Models\Server;
 use App\Models\User;
