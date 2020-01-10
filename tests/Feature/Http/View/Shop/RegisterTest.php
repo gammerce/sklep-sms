@@ -8,10 +8,8 @@ class RegisterTest extends HttpTestCase
     /** @test */
     public function it_loads()
     {
-        // given
-
         // when
-        $response = $this->get('/', ['pid' => 'register']);
+        $response = $this->get('/page/register');
 
         // then
         $this->assertSame(200, $response->getStatusCode());

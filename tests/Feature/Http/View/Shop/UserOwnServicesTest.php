@@ -16,7 +16,7 @@ class UserOwnServicesTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/', ['pid' => 'user_own_services']);
+        $response = $this->get('/page/user_own_services');
 
         // then
         $this->assertSame(200, $response->getStatusCode());
@@ -27,7 +27,7 @@ class UserOwnServicesTest extends HttpTestCase
     public function requires_being_logged()
     {
         // when
-        $response = $this->get('/', ['pid' => 'user_own_services']);
+        $response = $this->get('/page/user_own_services');
 
         // then
         $this->assertSame(200, $response->getStatusCode());

@@ -16,7 +16,7 @@ class ChangePasswordTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/', ['pid' => 'change_password']);
+        $response = $this->get('/page/change_password');
 
         // then
         $this->assertSame(200, $response->getStatusCode());
@@ -29,7 +29,7 @@ class ChangePasswordTest extends HttpTestCase
         // given
 
         // when
-        $response = $this->get('/', ['pid' => 'change_password']);
+        $response = $this->get('/page/change_password');
 
         // then
         $this->assertSame(200, $response->getStatusCode());
