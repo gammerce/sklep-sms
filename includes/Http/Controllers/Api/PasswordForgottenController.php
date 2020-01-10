@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
 use App\Loggers\DatabaseLogger;
-use App\Routes\UrlGenerator;
+use App\Routing\UrlGenerator;
 use App\System\Database;
 use App\System\Heart;
 use App\System\Mailer;

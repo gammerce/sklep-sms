@@ -1,5 +1,5 @@
 <?php
-namespace App\Routes;
+namespace App\Routing;
 
 use App\Http\Controllers\Api\Admin\AntispamQuestionCollection;
 use App\Http\Controllers\Api\Admin\AntispamQuestionResource;

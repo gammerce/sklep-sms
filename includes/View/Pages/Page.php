@@ -2,7 +2,7 @@
 namespace App\View\Pages;
 
 use App\View\Html\I_ToHtml;
-use App\Routes\UrlGenerator;
+use App\Routing\UrlGenerator;
 use App\System\Application;
 use App\View\CurrentPage;
 use App\System\Database;

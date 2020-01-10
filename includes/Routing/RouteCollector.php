@@ -1,5 +1,5 @@
 <?php
-namespace App\Routes;
+namespace App\Routing;
 
 use FastRoute\RouteCollector as BaseRouteCollector;
 

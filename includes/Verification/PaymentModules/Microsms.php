@@ -6,7 +6,7 @@ use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Models\TransferFinalize;
 use App\Requesting\Requester;
-use App\Routes\UrlGenerator;
+use App\Routing\UrlGenerator;
 use App\System\Database;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;

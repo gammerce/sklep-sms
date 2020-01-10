@@ -3,7 +3,7 @@ namespace App\View\Blocks;
 
 use App\View\Html\UnescapedSimpleText;
 use App\View\Interfaces\IBeLoggedMust;
-use App\Routes\UrlGenerator;
+use App\Routing\UrlGenerator;
 use App\System\Auth;
 use App\System\Template;
 

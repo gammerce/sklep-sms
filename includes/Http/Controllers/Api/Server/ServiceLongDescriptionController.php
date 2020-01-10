@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Api\Server;
 
 use App\View\Html\UnescapedSimpleText;
 use App\Http\Responses\HtmlResponse;
-use App\Routes\UrlGenerator;
+use App\Routing\UrlGenerator;
 use App\View\CurrentPage;
 use App\System\Heart;
 use App\System\License;

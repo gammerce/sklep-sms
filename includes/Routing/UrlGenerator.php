@@ -1,5 +1,5 @@
 <?php
-namespace App\Routes;
+namespace App\Routing;
 
 use App\System\Application;
 use App\System\Settings;

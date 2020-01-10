@@ -1,7 +1,7 @@
 <?php
 namespace App\View\Blocks;
 
-use App\Routes\UrlGenerator;
+use App\Routing\UrlGenerator;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\Template;
