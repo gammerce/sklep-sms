@@ -181,7 +181,8 @@ return [
     'number_of_bought_services' => 'Użytkownicy zakupili łączenie <strong>{1}</strong> usług.',
     'number_of_sent_smses' => 'W sumie klienci sklepu wysłali aż <strong>{1}</strong> SMSow.',
     'number_of_servers' => 'W sklepie dodanych jest <strong>{1}</strong> serwerów.',
-    'number_of_transfers' => 'W sumie klienci sklepu wykonali <strong>{1}</strong> płatności internetowych.',
+    'number_of_transfers' =>
+        'W sumie klienci sklepu wykonali <strong>{1}</strong> płatności internetowych.',
     'number_of_users' => 'Dotychczas zarejestrowało się <strong>{1}</strong> użytkowników.',
     'order' => 'Kolejność',
     'other' => 'Inne',

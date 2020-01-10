@@ -17,14 +17,12 @@ class PaymentTransferRepository
     public function get($id)
     {
         if ($id) {
-            $result = $this->db->query(
-                $this->db->prepare(
-                    "SELECT * FROM `" . TABLE_PREFIX . "payment_transfer` WHERE `id` = '%s'",
-                    [$id]
-                )
+            $statement = $this->db->statement(
+                "SELECT * FROM `" . TABLE_PREFIX . "payment_transfer` WHERE `id` = ?"
             );
+            $statement->execute([$id]);
 
-            if ($data = $result->fetch()) {
+            if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
             }
         }
@@ -32,29 +30,29 @@ class PaymentTransferRepository
         return null;
     }
 
-    public function create($id, $income, $transferService, $ip, $platform)
+    public function create($id, $income, $transferService, $ip, $platform, $free)
     {
-        $this->db->query(
-            $this->db->prepare(
+        $this->db
+            ->statement(
                 "INSERT INTO `" .
                     TABLE_PREFIX .
                     "payment_transfer` " .
-                    "SET `id` = '%s', `income` = '%d', `transfer_service` = '%s', `ip` = '%s', `platform` = '%s' ",
-                [$id, $income, $transferService, $ip, $platform]
+                    "SET `id` = ?, `income` = ?, `transfer_service` = ?, `ip` = ?, `platform` = ?, `free` = ? "
             )
-        );
+            ->execute([$id, $income, $transferService, $ip, $platform, $free]);
 
-        return $this->get($this->db->lastId());
+        return $this->get($id);
     }
 
     private function mapToModel(array $data)
     {
         return new PaymentTransfer(
             $data["id"],
-            $data["income"],
+            intval($data["income"]),
             $data["transfer_service"],
             $data["ip"],
-            $data["platform"]
+            $data["platform"],
+            boolval($data["free"])
         );
     }
 }

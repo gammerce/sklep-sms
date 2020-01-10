@@ -1,7 +1,6 @@
 <?php
 namespace App\Models;
 
-// TODO Use marking transfer as a test
 class TransferFinalize
 {
     /**
@@ -150,6 +149,7 @@ class TransferFinalize
         $this->output = (string) $output;
     }
 
+    // TODO Use it
     public function markAsTest()
     {
         $this->test = true;
