@@ -99,7 +99,7 @@ u2.username AS `adminname`,
 ps.code AS `sms_code`,
 ps.text AS `sms_text`,
 ps.number AS `sms_number`,
-IFNULL(ps.free,0) AS `free`,
+IFNULL(ps.free, IFNULL(pt.free, 0)) AS `free`,
 pc.code AS `service_code`,
 bs.timestamp AS `timestamp`
 FROM `" .
