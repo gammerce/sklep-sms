@@ -10,3 +10,4 @@
 * Moved App/Services to App/ServiceModules
 * class Service to ServiceModule
 * Removed simple service class
+* /cron?key= to /api/cron

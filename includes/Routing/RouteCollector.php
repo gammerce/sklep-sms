@@ -44,11 +44,13 @@ class RouteCollector extends BaseRouteCollector
 
     public function redirect($from, $to, $status = 302)
     {
-        $this->get($from, function () use ($to, $status) {
-            /** @var UrlGenerator $url */
-            $url = app()->make(UrlGenerator::class);
-            return new RedirectResponse($url->to($to), $status);
-        });
+        $this->get($from, [
+            'uses' => function () use ($to, $status) {
+                /** @var UrlGenerator $url */
+                $url = app()->make(UrlGenerator::class);
+                return new RedirectResponse($url->to($to), $status);
+            },
+        ]);
     }
 
     public function redirectPermanent($from, $to)

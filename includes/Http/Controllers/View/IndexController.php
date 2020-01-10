@@ -1,17 +1,19 @@
 <?php
 namespace App\Http\Controllers\View;
 
+use App\Routing\UrlGenerator;
 use App\View\CurrentPage;
 use App\System\Heart;
 use App\System\License;
 use App\System\Template;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class IndexController
 {
-    public function action(
-        $pageId,
+    public function get(
+        $pageId = null,
         Request $request,
         Heart $heart,
         License $license,
@@ -19,16 +21,7 @@ class IndexController
         Template $template
     ) {
         $currentPage->setPid($pageId);
-        return $this->oldAction($request, $heart, $license, $currentPage, $template);
-    }
 
-    public function oldAction(
-        Request $request,
-        Heart $heart,
-        License $license,
-        CurrentPage $currentPage,
-        Template $template
-    ) {
         if (!$heart->pageExists($currentPage->getPid())) {
             $currentPage->setPid('home');
         }
@@ -66,5 +59,22 @@ class IndexController
         );
 
         return new Response($output);
+    }
+
+    /**
+     * @deprecated
+     */
+    public function oldGet(Request $request, UrlGenerator $url)
+    {
+        $path = "/";
+
+        $query = $request->query->all();
+
+        if (array_key_exists("pid", $query)) {
+            $path .= "/page/{$query["pid"]}";
+            unset($query["pid"]);
+        }
+
+        return new RedirectResponse($url->to($path, $query), 301);
     }
 }

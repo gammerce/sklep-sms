@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\View;
 
+use App\Routing\UrlGenerator;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\System\Application;
 use App\System\Auth;
@@ -9,12 +10,13 @@ use App\System\Heart;
 use App\System\License;
 use App\System\Template;
 use App\Translation\TranslationManager;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class AdminController
 {
-    public function action(
+    public function get(
         $pageId = null,
         Request $request,
         Application $app,
@@ -29,31 +31,6 @@ class AdminController
             $currentPage->setPid($pageId);
         }
 
-        return $this->oldAction(
-            $request,
-            $app,
-            $heart,
-            $auth,
-            $license,
-            $currentPage,
-            $template,
-            $translationManager
-        );
-    }
-
-    /**
-     * @deprecated
-     */
-    public function oldAction(
-        Request $request,
-        Application $app,
-        Heart $heart,
-        Auth $auth,
-        License $license,
-        CurrentPage $currentPage,
-        Template $template,
-        TranslationManager $translationManager
-    ) {
         $session = $request->getSession();
         $user = $auth->user();
         $lang = $translationManager->user();
@@ -222,5 +199,22 @@ class AdminController
                 )
             )
         );
+    }
+
+    /**
+     * @deprecated
+     */
+    public function oldGet(Request $request, UrlGenerator $url)
+    {
+        $path = "/admin";
+
+        $query = $request->query->all();
+
+        if (array_key_exists("pid", $query)) {
+            $path .= "/{$query["pid"]}";
+            unset($query["pid"]);
+        }
+
+        return new RedirectResponse($url->to($path, $query), 301);
     }
 }

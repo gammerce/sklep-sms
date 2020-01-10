@@ -100,25 +100,37 @@ class RoutesManager
 
     private function defineRoutes(RouteCollector $r)
     {
-        $r->get('/lang.js', [
-            'middlewares' => [LoadSettings::class],
-            'uses' => LanguageJsController::class . '@get',
+        /**
+         * @deprecated
+         */
+        $r->addRoute(['GET', 'POST'], '/admin.php', [
+            'uses' => AdminController::class . '@oldGet',
         ]);
 
         /**
          * @deprecated
          */
-        $r->get('/cron.php', [
-            'middlewares' => [IsUpToDate::class, LoadSettings::class, ValidateLicense::class],
-            'uses' => CronController::class . '@get',
+        $r->addRoute(['GET', 'POST'], '/index.php', [
+            'middlewares' => [RunCron::class],
+            'uses' => IndexController::class . '@oldGet',
         ]);
 
-        $r->get('/cron', [
-            'middlewares' => [IsUpToDate::class, LoadSettings::class, ValidateLicense::class],
-            'uses' => CronController::class . '@get',
+        /**
+         * @deprecated
+         */
+        $r->redirectPermanent('/cron.php', '/api/cron');
+
+        /**
+         * @deprecated
+         */
+        $r->redirectPermanent('/cron', '/api/cron');
+
+        $r->get('/lang.js', [
+            'middlewares' => [LoadSettings::class],
+            'uses' => LanguageJsController::class . '@get',
         ]);
 
-        $r->get('/cron', [
+        $r->get('/api/cron', [
             'middlewares' => [IsUpToDate::class, LoadSettings::class, ValidateLicense::class],
             'uses' => CronController::class . '@get',
         ]);
@@ -172,19 +184,9 @@ class RoutesManager
                         "middlewares" => [BlockOnInvalidLicense::class, UpdateUserActivity::class],
                     ],
                     function (RouteCollector $r) {
-                        $r->addRoute(['GET', 'POST'], '/', [
+                        $r->addRoute(['GET', 'POST'], '/[page/{pageId}]', [
                             'middlewares' => [RunCron::class],
-                            'uses' => IndexController::class . '@oldAction',
-                        ]);
-
-                        $r->addRoute(['GET', 'POST'], '/page/{pageId}', [
-                            'middlewares' => [RunCron::class],
-                            'uses' => IndexController::class . '@action',
-                        ]);
-
-                        $r->addRoute(['GET', 'POST'], '/index.php', [
-                            'middlewares' => [RunCron::class],
-                            'uses' => IndexController::class . '@oldAction',
+                            'uses' => IndexController::class . '@get',
                         ]);
 
                         $r->post('/api/register', [
@@ -298,7 +300,7 @@ class RoutesManager
             function (RouteCollector $r) {
                 $r->addRoute(['GET', 'POST'], '/admin[/{pageId}]', [
                     'middlewares' => [RunCron::class],
-                    'uses' => AdminController::class . '@action',
+                    'uses' => AdminController::class . '@get',
                 ]);
 
                 $r->put('/api/admin/users/{userId}/password', [
@@ -502,14 +504,6 @@ class RoutesManager
 
                 $r->get('/api/admin/templates/{name}', [
                     'uses' => TemplateResource::class . '@get',
-                ]);
-
-                /**
-                 * @deprecated
-                 */
-                $r->addRoute(['GET', 'POST'], '/admin.php', [
-                    'middlewares' => [RunCron::class],
-                    'uses' => AdminController::class . '@oldAction',
                 ]);
             }
         );
