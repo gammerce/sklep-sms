@@ -1,12 +1,10 @@
 <?php
 namespace App\Http\Controllers\View;
 
-use App\Routing\UrlGenerator;
-use App\View\CurrentPage;
 use App\System\Heart;
 use App\System\License;
 use App\System\Template;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use App\View\CurrentPage;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -59,22 +57,5 @@ class IndexController
         );
 
         return new Response($output);
-    }
-
-    /**
-     * @deprecated
-     */
-    public function oldGet(Request $request, UrlGenerator $url)
-    {
-        $path = "/";
-
-        $query = $request->query->all();
-
-        if (array_key_exists("pid", $query)) {
-            $path .= "/page/{$query["pid"]}";
-            unset($query["pid"]);
-        }
-
-        return new RedirectResponse($url->to($path, $query), 301);
     }
 }
