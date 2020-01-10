@@ -1,32 +1,40 @@
 <?php
-namespace App\Services\ShopSmsLicenseEdit;
+namespace App\ServiceModules\ShopSmsLicenseEdit;
 
-use App\LicenseServerService;
+use App\Services\LicenseServerService;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Payment\BoughtServiceService;
-use App\Services\Interfaces\IServicePurchase;
-use App\Services\Interfaces\IServicePurchaseWeb;
+use App\ServiceModules\Interfaces\IServicePurchase;
+use App\ServiceModules\Interfaces\IServicePurchaseWeb;
+use App\ServiceModules\ServiceModule;
+use App\Services\UserServiceService;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use UnexpectedValueException;
 
-class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
+class LicenseEditServiceModule extends ServiceModule implements
     IServicePurchase,
     IServicePurchaseWeb
 {
+    const MODULE_ID = "shopsms_license_edit";
+    const USER_SERVICE_TABLE = "user_service_shopsms_license";
+
     /** @var Translator */
-    protected $lang;
+    private $lang;
 
     /** @var Settings */
-    protected $settings;
+    private $settings;
 
     /** @var LicenseServerService */
-    protected $licenseServerService;
+    private $licenseServerService;
 
     /** @var BoughtServiceService */
-    protected $boughtServiceService;
+    private $boughtServiceService;
+
+    /** @var UserServiceService */
+    private $userServiceService;
 
     public function __construct(Service $service = null)
     {
@@ -38,6 +46,7 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
         $this->settings = $this->app->make(Settings::class);
         $this->licenseServerService = $this->app->make(LicenseServerService::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
+        $this->userServiceService = $this->app->make(UserServiceService::class);
     }
 
     public function purchaseFormGet(array $query)
@@ -91,7 +100,7 @@ class ShopSmsLicenseEdit extends ShopSmsLicenseEditSimple implements
 
     public function purchase(Purchase $purchaseData)
     {
-        $userService = get_users_services($purchaseData->getOrder('user_service_id'));
+        $userService = $this->userServiceService->find($purchaseData->getOrder('user_service_id'));
         $tmpEngines = $purchaseData->getOrder('engines');
 
         $this->licenseServerService->updatePlatforms(

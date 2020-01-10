@@ -1,49 +1,57 @@
 <?php
-namespace App\Services\ShopSmsLicenseProlong;
+namespace App\ServiceModules\ShopSmsLicenseProlong;
 
 use App\Loggers\DatabaseLogger;
 use App\Models\Service;
+use App\Payment\AdminPaymentService;
 use App\Payment\BoughtServiceService;
+use App\ServiceModules\ServiceModule;
 use App\System\Auth;
 use App\System\Heart;
-use App\LicenseServerService;
+use App\Services\LicenseServerService;
 use App\Models\Purchase;
-use App\Services\Interfaces\IServiceActionExecute;
-use App\Services\Interfaces\IServicePurchase;
-use App\Services\Interfaces\IServicePurchaseWeb;
-use App\Services\Interfaces\IServiceUserServiceAdminAdd;
+use App\ServiceModules\Interfaces\IServiceActionExecute;
+use App\ServiceModules\Interfaces\IServicePurchase;
+use App\ServiceModules\Interfaces\IServicePurchaseWeb;
+use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 
-class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
+class LicenseProlongServiceModule extends ServiceModule implements
     IServicePurchase,
     IServicePurchaseWeb,
     IServiceActionExecute,
     IServiceUserServiceAdminAdd
 {
+    const MODULE_ID = "shopsms_license_prolong";
+    const USER_SERVICE_TABLE = "user_service_shopsms_license";
+
     /** @var Translator */
-    protected $lang;
+    private $lang;
 
     /** @var Settings */
-    protected $settings;
+    private $settings;
 
     /** @var Auth */
-    protected $auth;
+    private $auth;
 
     /** @var Heart */
-    protected $heart;
+    private $heart;
 
     /** @var LicenseServerService */
-    protected $licenseServerService;
+    private $licenseServerService;
 
     /** @var BoughtServiceService */
-    protected $boughtServiceService;
+    private $boughtServiceService;
+
+    /** @var AdminPaymentService */
+    private $adminPaymentService;
 
     /** @var DatabaseLogger */
-    protected $logger;
+    private $logger;
 
     public function __construct(Service $service = null)
     {
@@ -57,6 +65,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
         $this->heart = $this->app->make(Heart::class);
         $this->licenseServerService = $this->app->make(LicenseServerService::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
+        $this->adminPaymentService = $this->app->make(AdminPaymentService::class);
         $this->logger = $this->app->make(DatabaseLogger::class);
     }
 
@@ -308,8 +317,7 @@ class ShopSmsLicenseProlong extends ShopSmsLicenseProlongSimple implements
 
         $user = $this->auth->user();
 
-        // Dodawanie informacji o płatności
-        $paymentId = pay_by_admin($user);
+        $paymentId = $this->adminPaymentService->payByAdmin($user);
 
         $purchaseData = new Purchase($this->heart->getUser($userService['uid']));
         $purchaseData->setService($this->service->getId());

@@ -1,18 +1,35 @@
 <?php
-namespace App\Services\ShopSmsLicense;
+namespace App\ServiceModules\ShopSmsLicense;
 
+use App\Services\LicenseServerService;
 use App\Models\Purchase;
-use App\Services\Interfaces\IServiceActionExecute;
-use App\Services\Interfaces\IServicePurchase;
-use App\Services\Interfaces\IServicePurchaseWeb;
-use App\Services\Interfaces\IServiceTakeOver;
-use App\Services\Interfaces\IServiceUserOwnServices;
-use App\Services\Interfaces\IServiceUserOwnServicesEdit;
-use App\Services\Interfaces\IServiceUserServiceAdminAdd;
+use App\Models\Service;
+use App\Payment\BoughtServiceService;
+use App\ServiceModules\Interfaces\IServiceActionExecute;
+use App\ServiceModules\Interfaces\IServicePurchase;
+use App\ServiceModules\Interfaces\IServicePurchaseWeb;
+use App\ServiceModules\Interfaces\IServiceTakeOver;
+use App\ServiceModules\Interfaces\IServiceUserOwnServices;
+use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
+use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
+use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
+use App\ServiceModules\ServiceModule;
+use App\Services\UserServiceService;
+use App\System\Auth;
+use App\System\Settings;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
+use App\View\CurrentPage;
+use App\View\Html\BodyRow;
+use App\View\Html\Cell;
+use App\View\Html\HeadCell;
+use App\View\Html\Structure;
+use App\View\Html\Wrapper;
 use Exception;
 use UnexpectedValueException;
 
-class ShopSmsLicense extends ShopSmsLicenseSimple implements
+class LicenseServiceModule extends ServiceModule implements
+    IServiceUserServiceAdminDisplay,
     IServicePurchase,
     IServicePurchaseWeb,
     IServiceActionExecute,
@@ -21,6 +38,151 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
     IServiceUserOwnServicesEdit,
     IServiceUserServiceAdminAdd
 {
+    const MODULE_ID = "shopsms_license";
+    const USER_SERVICE_TABLE = "user_service_shopsms_license";
+    // Kwoty za dzień w groszach
+    const COST_SHOP_PER_DAY = 40;
+    const COST_ENGINE_PER_DAY = 20;
+
+    /** @var Translator */
+    private $lang;
+
+    /** @var Settings */
+    private $settings;
+
+    /** @var Auth */
+    private $auth;
+
+    /** @var BoughtServiceService */
+    private $boughtServiceService;
+
+    /** @var CurrentPage */
+    private $currentPage;
+
+    /** @var LicenseServerService */
+    private $licenseServerService;
+
+    /** @var UserServiceService */
+    private $userServiceService;
+
+    public function __construct(Service $service = null)
+    {
+        parent::__construct($service);
+
+        /** @var TranslationManager $translationManager */
+        $translationManager = $this->app->make(TranslationManager::class);
+        $this->lang = $translationManager->user();
+        $this->settings = $this->app->make(Settings::class);
+        $this->auth = $this->app->make(Auth::class);
+        $this->auth = $this->app->make(Auth::class);
+        $this->currentPage = $this->app->make(CurrentPage::class);
+        $this->licenseServerService = $this->app->make(LicenseServerService::class);
+        $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
+        $this->userServiceService = $this->app->make(UserServiceService::class);
+    }
+
+    public function userServiceAdminDisplayTitleGet()
+    {
+        return $this->lang->t('licenses');
+    }
+
+    public function userServiceAdminDisplayGet(array $query, array $body)
+    {
+        $wrapper = new Wrapper();
+        $wrapper->setSearch();
+
+        $table = new Structure();
+        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->t('user')));
+        $table->addHeadCell(new HeadCell($this->lang->t('service')));
+        $table->addHeadCell(new HeadCell($this->lang->t('identifier')));
+        $table->addHeadCell(new HeadCell($this->lang->t('external_license_id')));
+        $table->addHeadCell(new HeadCell($this->lang->t('cost_daily')));
+        $table->addHeadCell(new HeadCell($this->lang->t('expires')));
+
+        // Wyszukujemy dane ktore spelniaja kryteria
+        $where = '';
+        if (isset($query['search'])) {
+            searchWhere(
+                [
+                    "us.id",
+                    "us.uid",
+                    "u.username",
+                    "s.name",
+                    "m.external_license_id",
+                    "m.identifier",
+                    'm.cost_daily',
+                ],
+                urldecode($query['search']),
+                $where
+            );
+        }
+        // Jezeli jest jakis where, to dodajemy WHERE
+        if (strlen($where)) {
+            $where = "WHERE " . $where . ' ';
+        }
+
+        $result = $this->db->query(
+            "SELECT SQL_CALC_FOUND_ROWS us.id, us.uid, u.username, s.id AS `service_id`, " .
+                "s.name AS `service`, us.expire, m.identifier, m.external_license_id, m.cost_daily " .
+                "FROM `" .
+                TABLE_PREFIX .
+                "user_service` AS us " .
+                "INNER JOIN `" .
+                TABLE_PREFIX .
+                $this::USER_SERVICE_TABLE .
+                "` AS m ON m.us_id = us.id " .
+                "LEFT JOIN `" .
+                TABLE_PREFIX .
+                "services` AS s ON s.id = m.service " .
+                "LEFT JOIN `" .
+                TABLE_PREFIX .
+                "users` AS u ON u.uid = us.uid " .
+                $where .
+                "ORDER BY us.id DESC " .
+                "LIMIT " .
+                get_row_limit($this->currentPage->getPageNumber())
+        );
+
+        $table->setDbRowsAmount($this->db->query("SELECT FOUND_ROWS()")->fetchColumn());
+
+        foreach ($result as $row) {
+            $bodyRow = new BodyRow();
+
+            $bodyRow->setDbId($row['id']);
+            $bodyRow->addCell(
+                new Cell(
+                    $row['uid'] ? $row['username'] . " ({$row['uid']})" : $this->lang->t('none')
+                )
+            );
+            $bodyRow->addCell(new Cell($row['service']));
+            $bodyRow->addCell(new Cell($row['identifier']));
+            $bodyRow->addCell(new Cell($row['external_license_id']));
+            $bodyRow->addCell(
+                new Cell(
+                    number_format($row['cost_daily'] / 100, 2) . ' ' . $this->settings['currency']
+                )
+            );
+            $bodyRow->addCell(
+                new Cell(
+                    $row['expire'] == '-1'
+                        ? $this->lang->t('never')
+                        : date($this->settings['date_format'], $row['expire'])
+                )
+            );
+            if (get_privileges("manage_user_services")) {
+                $bodyRow->setDeleteAction(true);
+                $bodyRow->setEditAction(false);
+            }
+
+            $table->addBodyRow($bodyRow);
+        }
+
+        $wrapper->setTable($table);
+
+        return $wrapper;
+    }
+
     public function purchaseFormGet(array $query)
     {
         return $this->template->render("services/shopsms_license/purchase_form", [
@@ -526,7 +688,10 @@ class ShopSmsLicense extends ShopSmsLicenseSimple implements
         }
 
         if ($action === "get_cost_user_edit") {
-            $costData = $this->getCostUserEdit($body, get_users_services($body['user_service_id']));
+            $costData = $this->getCostUserEdit(
+                $body,
+                $this->userServiceService->find($body['user_service_id'])
+            );
 
             $costData['surcharge'] =
                 number_format(($costData['surcharge'] * $costData['bargain']) / 100, 2) .

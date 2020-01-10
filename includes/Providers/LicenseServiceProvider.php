@@ -1,12 +1,12 @@
 <?php
 namespace App\Providers;
 
-use App\LicenseServerService;
+use App\Services\LicenseServerService;
 use App\Loggers\DatabaseLogger;
 use App\Requesting\Requester;
-use App\Services\ShopSmsLicense\ShopSmsLicense;
-use App\Services\ShopSmsLicenseEdit\ShopSmsLicenseEdit;
-use App\Services\ShopSmsLicenseProlong\ShopSmsLicenseProlong;
+use App\ServiceModules\ShopSmsLicense\LicenseServiceModule;
+use App\ServiceModules\ShopSmsLicenseEdit\LicenseEditServiceModule;
+use App\ServiceModules\ShopSmsLicenseProlong\LicenseProlongServiceModule;
 use App\System\Application;
 use App\System\Heart;
 use App\System\Mailer;
@@ -36,21 +36,21 @@ class LicenseServiceProvider
 
         $app->extend(Heart::class, function (Heart $heart) {
             $heart->registerServiceModule(
-                ShopSmsLicense::MODULE_ID,
+                LicenseServiceModule::MODULE_ID,
                 "Licencja Sklep-SMS",
-                ShopSmsLicense::class
+                LicenseServiceModule::class
             );
 
             $heart->registerServiceModule(
-                ShopSmsLicenseEdit::MODULE_ID,
+                LicenseEditServiceModule::MODULE_ID,
                 "Edycja Licencji Sklep-SMS",
-                ShopSmsLicenseEdit::class
+                LicenseEditServiceModule::class
             );
 
             $heart->registerServiceModule(
-                ShopSmsLicenseProlong::MODULE_ID,
+                LicenseProlongServiceModule::MODULE_ID,
                 "Przedłużenie Licencji Sklep-SMS",
-                ShopSmsLicenseProlong::class
+                LicenseProlongServiceModule::class
             );
 
             return $heart;
