@@ -1790,7 +1790,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
      *
      * @return string
      */
-    private function tariffs_for_server($serverId)
+    private function tariffsForServer($serverId)
     {
         $server = $this->heart->getServer($serverId);
         $smsPlatformId = $server->getSmsPlatformId() ?: $this->settings->getSmsPlatformId();
@@ -1847,7 +1847,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     {
         switch ($action) {
             case "tariffs_for_server":
-                return $this->tariffs_for_server((int) $data['server']);
+                return $this->tariffsForServer((int) $data['server']);
             case "servers_for_service":
                 return $this->serversForService((int) $data['server']);
             default:
