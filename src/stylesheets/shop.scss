@@ -306,3 +306,16 @@ dl.form {
         padding: 1rem 1rem 2rem;
     }
 }
+
+.error-content {
+    padding-top: 4rem;
+    text-align: center;
+
+    .title {
+        color: $white-bis;
+    }
+
+    .subtitle {
+        color: $white-ter;
+    }
+}

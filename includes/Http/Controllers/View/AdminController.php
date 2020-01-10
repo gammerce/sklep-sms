@@ -1,15 +1,17 @@
 <?php
 namespace App\Http\Controllers\View;
 
+use App\Exceptions\EntityNotFoundException;
 use App\Routing\UrlGenerator;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\System\Application;
 use App\System\Auth;
-use App\View\CurrentPage;
 use App\System\Heart;
 use App\System\License;
 use App\System\Template;
 use App\Translation\TranslationManager;
+use App\View\CurrentPage;
+use App\View\Renders\BlockRenderer;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 class AdminController
 {
     public function action(
-        $pageId = null,
+        $pageId = 'home',
         Request $request,
         Application $app,
         Heart $heart,
@@ -25,25 +27,20 @@ class AdminController
         License $license,
         CurrentPage $currentPage,
         Template $template,
-        TranslationManager $translationManager
+        TranslationManager $translationManager,
+        BlockRenderer $blockRenderer
     ) {
-        if ($currentPage->getPid() !== "login") {
-            $currentPage->setPid($pageId);
+        if ($currentPage->getPid() !== "login" && !$heart->pageExists($pageId, "admin")) {
+            throw new EntityNotFoundException();
         }
+
+        $currentPage->setPid($pageId);
 
         $session = $request->getSession();
         $user = $auth->user();
         $lang = $translationManager->user();
 
-        if (
-            $currentPage->getPid() !== "login" &&
-            !$heart->pageExists($currentPage->getPid(), 'admin')
-        ) {
-            $currentPage->setPid('home');
-        }
-
-        // Uzytkownik nie jest zalogowany
-        if ($currentPage->getPid() == "login") {
+        if ($currentPage->getPid() === "login") {
             $heart->pageTitle = "Login";
 
             $warning = "";
@@ -72,7 +69,7 @@ class AdminController
             );
         }
 
-        $content = get_content("admincontent", $request);
+        $content = $blockRenderer->render("admincontent", $request);
 
         // Pobranie przycisków do sidebaru
         if (get_privileges("view_player_flags")) {

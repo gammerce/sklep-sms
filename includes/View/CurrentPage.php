@@ -22,7 +22,6 @@ class CurrentPage
     public function __construct(Request $request)
     {
         $this->pageNumber = $this->resolvePageNumber($request);
-        $this->pid = $this->resolvePid($request);
     }
 
     public function setPageNumber($pageNumber)
@@ -50,10 +49,5 @@ class CurrentPage
         $pageNumber = intval($request->get('page', 1));
 
         return max($pageNumber, 1);
-    }
-
-    private function resolvePid(Request $request)
-    {
-        return $request->get('pid', 'home');
     }
 }

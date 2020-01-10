@@ -391,7 +391,7 @@ class Heart
      *
      * @return bool
      */
-    public function pageExists($pageId, $type = "user")
+    public function pageExists($pageId, $type)
     {
         return isset($this->pagesClasses[$type][$pageId]);
     }

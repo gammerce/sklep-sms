@@ -59,8 +59,18 @@ hr,
     margin: auto auto;
 }
 
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .w100 {
     width: 100%;
+}
+
+.h100 {
+    height: 100%;
 }
 
 .display_none {

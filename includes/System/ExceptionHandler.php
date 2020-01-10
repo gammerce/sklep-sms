@@ -8,11 +8,13 @@ use App\Exceptions\LicenseRequestException;
 use App\Exceptions\RequireInstallationException;
 use App\Exceptions\UnauthorizedException;
 use App\Exceptions\ValidationException;
+use App\Http\RequestHelper;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\PlainResponse;
 use App\Loggers\FileLogger;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use App\View\Renders\ErrorRenderer;
 use Exception;
 use Raven_Client;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,11 +30,11 @@ class ExceptionHandler implements ExceptionHandlerContract
     /** @var Translator */
     private $lang;
 
-    /** @var Path */
-    private $path;
-
     /** @var FileLogger */
     private $fileLogger;
+
+    /** @var ErrorRenderer */
+    private $errorRenderer;
 
     private $dontReport = [
         EntityNotFoundException::class,
@@ -45,20 +47,20 @@ class ExceptionHandler implements ExceptionHandlerContract
 
     public function __construct(
         Application $app,
-        Path $path,
         TranslationManager $translationManager,
-        FileLogger $logger
+        FileLogger $logger,
+        ErrorRenderer $errorRenderer
     ) {
         $this->app = $app;
         $this->lang = $translationManager->user();
-        $this->path = $path;
         $this->fileLogger = $logger;
+        $this->errorRenderer = $errorRenderer;
     }
 
     public function render(Request $request, Exception $e)
     {
         if ($e instanceof EntityNotFoundException) {
-            return new Response($e->getMessage(), 404);
+            return $this->renderError(404, $e, $request);
         }
 
         if ($e instanceof UnauthorizedException) {
@@ -100,9 +102,7 @@ class ExceptionHandler implements ExceptionHandlerContract
             return new PlainResponse($e->getMessage());
         }
 
-        return new PlainResponse(
-            'Coś się popsuło. Więcej informacji znajdziesz w pliku data/logs/errors.log'
-        );
+        return $this->renderError(500, $e, $request);
     }
 
     public function report(Exception $e)
@@ -146,5 +146,17 @@ class ExceptionHandler implements ExceptionHandlerContract
         }
 
         return true;
+    }
+
+    private function renderError($errorId, Exception $e, Request $request)
+    {
+        $requestHelper = new RequestHelper($request);
+
+        if ($requestHelper->expectsJson()) {
+            return new Response($e->getMessage(), $errorId);
+        }
+
+        $output = $this->errorRenderer->render("$errorId", $request);
+        return new Response($output, $errorId);
     }
 }
