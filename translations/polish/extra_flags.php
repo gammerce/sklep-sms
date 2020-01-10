@@ -37,7 +37,5 @@ przed chwilą dokonałeś/aś zakupu w naszym sklepie.',
     'transfer_wallet_cost' => 'Koszt Przelew / Portfel',
     'types' => 'Typy',
     'wrong_date_format' => 'Błędny format daty.',
-    'wrong_service_description_file' => 'Plik z opisem usługi nie został prawidłowo utworzony. <br />
-Prawdopodobnie folder <strong>themes/{1}/services/</strong> nie ma uprawnień do zapisu.',
     'wrong_type_chosen' => 'Wybrano błędny typ.',
 ];

@@ -1,7 +1,6 @@
 <?php
 namespace Tests\Psr4\TestCases;
 
-use App\ServiceModules\ExtraFlags\ServiceDescriptionCreator;
 use App\System\Application;
 use App\System\Database;
 use App\System\License;
@@ -14,7 +13,6 @@ use Tests\Psr4\Concerns\ApplicationConcern;
 use Tests\Psr4\Concerns\FileSystemConcern;
 use Tests\Psr4\Concerns\MockeryConcern;
 use Tests\Psr4\Factory;
-use Tests\Psr4\MemoryFileSystem;
 
 class TestCase extends BaseTestCase
 {

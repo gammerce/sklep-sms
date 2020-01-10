@@ -80,7 +80,7 @@ class Template
 
     private function getPossiblePaths($title)
     {
-        $theme = $this->settings['theme'];
+        $theme = $this->settings->getTheme();
         $language = $this->lang->getCurrentLanguageShort();
 
         $paths = [];

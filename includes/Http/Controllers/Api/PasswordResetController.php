@@ -28,7 +28,7 @@ class PasswordResetController
         $passr = $request->request->get('pass_repeat');
 
         // Sprawdzanie hashu najwazniejszych danych
-        if (!$sign || $sign != md5($uid . $settings['random_key'])) {
+        if (!$sign || $sign != md5($uid . $settings->getSecret())) {
             return new ApiResponse("wrong_sign", $lang->t('wrong_sign'), 0);
         }
 

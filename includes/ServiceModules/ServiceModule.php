@@ -2,6 +2,7 @@
 namespace App\ServiceModules;
 
 use App\Models\Service;
+use App\Services\ServiceDescriptionService;
 use App\System\Application;
 use App\System\Database;
 use App\System\Template;
@@ -30,12 +31,16 @@ abstract class ServiceModule
     /** @var Database */
     protected $db;
 
+    /** @var ServiceDescriptionService */
+    protected $serviceDescriptionService;
+
     public function __construct(Service $service = null)
     {
+        $this->service = $service;
         $this->app = app();
         $this->template = $this->app->make(Template::class);
         $this->db = $this->app->make(Database::class);
-        $this->service = $service;
+        $this->serviceDescriptionService = $this->app->make(ServiceDescriptionService::class);
     }
 
     /**
@@ -91,8 +96,8 @@ abstract class ServiceModule
      */
     public function descriptionLongGet()
     {
-        $file = "services/" . escape_filename($this->service->getId()) . "_desc";
-        return $this->template->render($file, [], true, false);
+        $templatePath = $this->serviceDescriptionService->getTemplatePath($this->service->getId());
+        return $this->template->render($templatePath, [], true, false);
     }
 
     public function descriptionShortGet()

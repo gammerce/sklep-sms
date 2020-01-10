@@ -77,7 +77,7 @@ class PageAdminSettings extends PageAdmin
             ) {
                 $themesList[] = create_dom_element("option", $dirName, [
                     'value' => $dirName,
-                    'selected' => $dirName == $this->settings['theme'] ? "selected" : "",
+                    'selected' => $dirName == $this->settings->getTheme() ? "selected" : "",
                 ]);
             }
         }

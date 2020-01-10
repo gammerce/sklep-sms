@@ -19,10 +19,10 @@ class PagePayment extends Page
 
     protected function content(array $query, array $body)
     {
-        // Sprawdzanie hashu danych przesłanych przez formularz
+        // Check form sign
         if (
             !isset($body['sign']) ||
-            $body['sign'] != md5($body['data'] . $this->settings['random_key'])
+            $body['sign'] != md5($body['data'] . $this->settings->getSecret())
         ) {
             return $this->lang->t('wrong_sign');
         }
@@ -45,14 +45,10 @@ class PagePayment extends Page
             return $this->lang->t('bad_module');
         }
 
-        // Pobieramy szczegóły zamówienia
         $orderDetails = $serviceModule->orderDetails($purchaseData);
 
-        //
-        // Pobieramy sposoby płatności
-
         $paymentMethods = '';
-        // Sprawdzamy, czy płatność za pomocą SMS jest możliwa
+        // Check if it's possible to pay using SMS
         if (
             $purchaseData->getPayment('sms_platform') &&
             $purchaseData->getTariff() !== null &&
