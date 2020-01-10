@@ -126,7 +126,7 @@ class Structure extends DOMElement
         $pagination = app()->make(Pagination::class);
 
         $pageNumber = $currentPage->getPageNumber();
-        $this->dbRowsAmount = intval($amount);
+        $this->dbRowsAmount = (int) $amount;
 
         $paginationContent = $pagination->getPagination(
             $this->dbRowsAmount,

@@ -146,7 +146,7 @@ LEFT JOIN `" .
      */
     public function getSmsPlatformId()
     {
-        return isset($this->data["sms_platform"]) ? intval($this->data["sms_platform"]) : null;
+        return isset($this->data["sms_platform"]) ? (int) $this->data["sms_platform"] : null;
     }
 
     /**
@@ -155,7 +155,7 @@ LEFT JOIN `" .
     public function getTransferPlatformId()
     {
         return isset($this->data["transfer_platform"])
-            ? intval($this->data["transfer_platform"])
+            ? (int) $this->data["transfer_platform"]
             : null;
     }
 
@@ -180,7 +180,7 @@ LEFT JOIN `" .
      */
     public function getVat()
     {
-        return floatval($this->data["vat"]);
+        return (float) $this->data["vat"];
     }
 
     /**

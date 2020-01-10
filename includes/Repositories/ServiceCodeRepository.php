@@ -69,12 +69,12 @@ class ServiceCodeRepository
     private function mapToModel(array $data)
     {
         return new ServiceCode(
-            intval($data['id']),
+            (int) $data['id'],
             $data['code'],
             $data['service'],
-            intval($data['server']),
-            intval($data['tariff']),
-            intval($data['uid']),
+            (int) $data['server'],
+            (int) $data['tariff'],
+            (int) $data['uid'],
             $data['amount'],
             $data['data'],
             $data['timestamp']

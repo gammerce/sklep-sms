@@ -11,7 +11,7 @@ class UnescapedSimpleText implements I_ToHtml
      */
     public function __construct($text)
     {
-        $this->text = strval($text);
+        $this->text = (string) $text;
     }
 
     public function toHtml()

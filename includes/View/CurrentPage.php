@@ -46,8 +46,7 @@ class CurrentPage
 
     private function resolvePageNumber(Request $request)
     {
-        $pageNumber = intval($request->get('page', 1));
-
+        $pageNumber = (int) $request->get('page', 1);
         return max($pageNumber, 1);
     }
 }

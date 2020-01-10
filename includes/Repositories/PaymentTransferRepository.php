@@ -48,11 +48,11 @@ class PaymentTransferRepository
     {
         return new PaymentTransfer(
             $data["id"],
-            intval($data["income"]),
+            (int) $data["income"],
             $data["transfer_service"],
             $data["ip"],
             $data["platform"],
-            boolval($data["free"])
+            (bool) $data["free"]
         );
     }
 }

@@ -1847,9 +1847,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     {
         switch ($action) {
             case "tariffs_for_server":
-                return $this->tariffs_for_server(intval($data['server']));
+                return $this->tariffs_for_server((int) $data['server']);
             case "servers_for_service":
-                return $this->serversForService(intval($data['server']));
+                return $this->serversForService((int) $data['server']);
             default:
                 return '';
         }
