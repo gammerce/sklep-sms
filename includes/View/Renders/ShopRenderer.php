@@ -58,7 +58,6 @@ class ShopRenderer
                 "content",
                 "googleAnalytics",
                 "header",
-                "heart",
                 "loggedInfo",
                 "pageTitle",
                 "servicesButtons",
