@@ -51,7 +51,7 @@ class TransferFinalize
      *
      * @var boolean
      */
-    private $test = false;
+    private $testMode = false;
 
     /**
      * @return boolean
@@ -154,6 +154,14 @@ class TransferFinalize
      */
     public function setTestMode($value)
     {
-        $this->test = (bool) $value;
+        $this->testMode = (bool) $value;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTestMode()
+    {
+        return $this->testMode;
     }
 }
