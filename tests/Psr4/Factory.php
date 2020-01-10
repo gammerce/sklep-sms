@@ -7,7 +7,7 @@ use App\Repositories\ServerRepository;
 use App\Repositories\ServerServiceRepository;
 use App\Repositories\ServiceRepository;
 use App\Repositories\UserRepository;
-use App\Services\ExtraFlags\ServiceExtraFlags;
+use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
 use App\Verification\PaymentModules\Cssetti;
 use Faker\Factory as FakerFactory;
 use Faker\Generator;
@@ -81,7 +81,7 @@ class Factory
                 'short_description' => $this->faker->word,
                 'description' => $this->faker->sentence,
                 'tag' => $this->faker->word,
-                'module' => ServiceExtraFlags::MODULE_ID,
+                'module' => ExtraFlagsServiceModule::MODULE_ID,
                 'groups' => [],
                 'order' => 1,
             ],

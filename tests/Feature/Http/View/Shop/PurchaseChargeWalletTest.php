@@ -16,7 +16,7 @@ class PurchaseChargeWalletTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/', ['pid' => 'purchase', 'service' => 'charge_wallet']);
+        $response = $this->get('/page/purchase', ['service' => 'charge_wallet']);
 
         // then
         $this->assertSame(200, $response->getStatusCode());
@@ -29,7 +29,7 @@ class PurchaseChargeWalletTest extends HttpTestCase
         // given
 
         // when
-        $response = $this->get('/', ['pid' => 'purchase', 'service' => 'charge_wallet']);
+        $response = $this->get('/page/purchase', ['service' => 'charge_wallet']);
 
         // then
         $this->assertSame(200, $response->getStatusCode());

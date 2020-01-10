@@ -1,7 +1,7 @@
 <?php
 namespace App\System;
 
-use App\Routes\UrlGenerator;
+use App\Routing\UrlGenerator;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
@@ -80,7 +80,7 @@ class Template
 
     private function getPossiblePaths($title)
     {
-        $theme = $this->settings['theme'];
+        $theme = $this->settings->getTheme();
         $language = $this->lang->getCurrentLanguageShort();
 
         $paths = [];

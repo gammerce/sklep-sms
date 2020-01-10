@@ -10,6 +10,7 @@ use App\Exceptions\UnauthorizedException;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\PlainResponse;
+use App\Loggers\FileLogger;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use Exception;
@@ -30,6 +31,9 @@ class ExceptionHandler implements ExceptionHandlerContract
     /** @var Path */
     private $path;
 
+    /** @var FileLogger */
+    private $fileLogger;
+
     private $dontReport = [
         EntityNotFoundException::class,
         InvalidConfigException::class,
@@ -42,11 +46,13 @@ class ExceptionHandler implements ExceptionHandlerContract
     public function __construct(
         Application $app,
         Path $path,
-        TranslationManager $translationManager
+        TranslationManager $translationManager,
+        FileLogger $logger
     ) {
         $this->app = $app;
         $this->lang = $translationManager->user();
         $this->path = $path;
+        $this->fileLogger = $logger;
     }
 
     public function render(Request $request, Exception $e)
@@ -106,7 +112,7 @@ class ExceptionHandler implements ExceptionHandlerContract
         }
 
         $exceptionDetails = $this->getExceptionDetails($e);
-        log_error(json_encode($exceptionDetails, JSON_PRETTY_PRINT));
+        $this->fileLogger->error(json_encode($exceptionDetails, JSON_PRETTY_PRINT));
 
         if ($this->app->bound(Raven_Client::class)) {
             $this->reportToSentry($e);

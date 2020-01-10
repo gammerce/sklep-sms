@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\PlainResponse;
-use App\Services\Interfaces\IServiceAdminManage;
+use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\System\Heart;
 
 class ServiceModuleExtraFieldsController

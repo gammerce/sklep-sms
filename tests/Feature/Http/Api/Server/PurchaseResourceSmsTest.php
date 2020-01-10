@@ -5,7 +5,7 @@ use App\Models\Purchase;
 use App\Models\Server;
 use App\Repositories\BoughtServiceRepository;
 use App\Repositories\PaymentPlatformRepository;
-use App\Services\ExtraFlags\ExtraFlagType;
+use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\System\Settings;
 use App\Verification\PaymentModules\Gosetti;
 use Tests\Psr4\Concerns\GosettiConcern;

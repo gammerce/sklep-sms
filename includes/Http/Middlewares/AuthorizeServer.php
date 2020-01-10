@@ -23,7 +23,7 @@ class AuthorizeServer implements MiddlewareContract
 
         $key = $request->query->get("key");
 
-        if ($key !== md5($settings['random_key'])) {
+        if ($key !== md5($settings->getSecret())) {
             return new Response("Invalid key", 400);
         }
 

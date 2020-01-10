@@ -1,23 +1,15 @@
 <?php
 
-use App\Html\Div;
-use App\Html\DOMElement;
-use App\Html\Li;
-use App\Html\Link;
-use App\Html\Ul;
-use App\Html\UnescapedSimpleText;
-use App\Loggers\DatabaseLogger;
 use App\Models\Server;
 use App\Models\User;
-use App\Routes\UrlGenerator;
-use App\Services\Interfaces\IServicePurchaseWeb;
 use App\System\Auth;
 use App\System\Database;
-use App\System\FileSystemContract;
 use App\System\Heart;
-use App\System\Path;
 use App\System\Settings;
 use App\Translation\TranslationManager;
+use App\View\Html\Div;
+use App\View\Html\DOMElement;
+use App\View\Html\UnescapedSimpleText;
 use Illuminate\Container\Container;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -50,9 +42,7 @@ function get_content($blockId, Request $request)
     $heart = app()->make(Heart::class);
 
     if ($block = $heart->getBlock($blockId)) {
-        $query = $request->query->all();
-        $body = $request->request->all();
-        return $block->getContentEnveloped($query, $body);
+        return $block->getContentEnveloped($request->query->all(), $request->request->all());
     }
 
     return "";
@@ -66,109 +56,6 @@ function get_row_limit($page, $rowLimit = 0)
     $rowLimit = $rowLimit ? $rowLimit : $settings['row_limit'];
 
     return ($page - 1) * $rowLimit . "," . $rowLimit;
-}
-
-function get_pagination($all, $currentPage, $script, $query, $rowLimit = 0)
-{
-    /** @var Settings $settings */
-    $settings = app()->make(Settings::class);
-
-    /** @var UrlGenerator $url */
-    $url = app()->make(UrlGenerator::class);
-
-    /** @var TranslationManager $translationManager */
-    $translationManager = app()->make(TranslationManager::class);
-
-    $lang = $translationManager->user();
-
-    $rowLimit = $rowLimit ? $rowLimit : $settings['row_limit'];
-
-    // Wszystkich elementow jest mniej niz wymagana ilsoc na jednej stronie
-    if ($all <= $rowLimit) {
-        return null;
-    }
-
-    // Pobieramy ilosc stron
-    $pagesAmount = floor(max($all - 1, 0) / $rowLimit) + 1;
-
-    // Poprawiamy obecna strone, gdyby byla bledna
-    if ($currentPage > $pagesAmount) {
-        $currentPage = -1;
-    }
-
-    $paginationList = new Ul();
-    $paginationList->addClass("pagination-list");
-
-    $lp = 2;
-    for ($i = 1, $dots = false; $i <= $pagesAmount; ++$i) {
-        if ($i != 1 && $i != $pagesAmount && ($i < $currentPage - $lp || $i > $currentPage + $lp)) {
-            if (!$dots) {
-                if ($i < $currentPage - $lp) {
-                    $href = $url->to(
-                        $script,
-                        array_merge($query, ["page" => round((1 + $currentPage - $lp) / 2)])
-                    );
-                } elseif ($i > $currentPage + $lp) {
-                    $href = $url->to(
-                        $script,
-                        array_merge($query, [
-                            "page" => round(($currentPage + $lp + $pagesAmount) / 2),
-                        ])
-                    );
-                }
-
-                $paginationLink = new Link("...");
-                $paginationLink->addClass("pagination-link");
-                $paginationLink->setParam("href", $href);
-                $paginationList->addContent(new Li($paginationLink));
-
-                $dots = true;
-            }
-            continue;
-        }
-
-        $href = $url->to($script, array_merge($query, ["page" => $i]));
-        $paginationLink = new Link($i);
-        $paginationLink->addClass("pagination-link");
-        if ($currentPage == $i) {
-            $paginationLink->addClass("is-current");
-        }
-        $paginationLink->setParam("href", $href);
-        $paginationList->addContent(new Li($paginationLink));
-
-        $dots = false;
-    }
-
-    $pagination = new Div();
-    $pagination->addClass("pagination is-centered");
-
-    $previousButton = new Link($lang->t("previous"));
-    $previousButton->addClass("pagination-previous");
-    if ($currentPage - 1 < 1) {
-        $previousButton->setParam("disabled", true);
-    } else {
-        $previousButton->setParam(
-            "href",
-            $url->to($script, array_merge($query, ["page" => $currentPage - 1]))
-        );
-    }
-
-    $nextButton = new Link($lang->t("next"));
-    $nextButton->addClass("pagination-next");
-    if ($currentPage + 1 > $pagesAmount) {
-        $nextButton->setParam("disabled", true);
-    } else {
-        $nextButton->setParam(
-            "href",
-            $url->to($script, array_merge($query, ["page" => $currentPage + 1]))
-        );
-    }
-
-    $pagination->addContent($previousButton);
-    $pagination->addContent($nextButton);
-    $pagination->addContent($paginationList);
-
-    return $pagination;
 }
 
 /* User functions */
@@ -234,196 +121,6 @@ function get_privileges($privilege, $user = null)
     }
 
     return $user->hasPrivilege($privilege);
-}
-
-/**
- * @param User $userAdmin
- * @return int|string
- */
-function pay_by_admin($userAdmin)
-{
-    /** @var Database $db */
-    $db = app()->make(Database::class);
-
-    // Dodawanie informacji o płatności
-    $db->query(
-        $db->prepare(
-            "INSERT INTO `" .
-                TABLE_PREFIX .
-                "payment_admin` (`aid`, `ip`, `platform`) " .
-                "VALUES ('%d', '%s', '%s')",
-            [$userAdmin->getUid(), $userAdmin->getLastIp(), $userAdmin->getPlatform()]
-        )
-    );
-
-    return $db->lastId();
-}
-
-//
-// $data:
-// 	purchase_id - id zakupu
-// 	payment - metoda płatności
-// 	payment_id - id płatności
-// 	action - jak sformatowac dane
-//
-function purchase_info($data)
-{
-    /** @var Database $db */
-    $db = app()->make(Database::class);
-
-    /** @var Heart $heart */
-    $heart = app()->make(Heart::class);
-
-    /** @var Settings $settings */
-    $settings = app()->make(Settings::class);
-
-    // Wyszukujemy po id zakupu
-    if (isset($data['purchase_id'])) {
-        $where = $db->prepare("t.id = '%d'", [$data['purchase_id']]);
-    }
-    // Wyszukujemy po id płatności
-    else {
-        if (isset($data['payment']) && isset($data['payment_id'])) {
-            $where = $db->prepare("t.payment = '%s' AND t.payment_id = '%s'", [
-                $data['payment'],
-                $data['payment_id'],
-            ]);
-        } else {
-            return "";
-        }
-    }
-
-    $pbs = $db
-        ->query("SELECT * FROM ({$settings['transactions_query']}) as t " . "WHERE {$where}")
-        ->fetch();
-
-    // Brak wynikow
-    if (empty($pbs)) {
-        return "Brak zakupu w bazie.";
-    }
-
-    $serviceModule = $heart->getServiceModule($pbs['service']);
-
-    return $serviceModule !== null && $serviceModule instanceof IServicePurchaseWeb
-        ? $serviceModule->purchaseInfo($data['action'], $pbs)
-        : "";
-}
-
-/**
- * Pozyskuje z bazy wszystkie usługi użytkowników
- *
- * @param string|int $conditions Jezeli jest tylko jeden element w tablicy, to zwroci ten element zamiast tablicy
- * @param bool $takeOut
- *
- * @return array
- */
-function get_users_services($conditions = '', $takeOut = true)
-{
-    /** @var Database $db */
-    $db = app()->make(Database::class);
-
-    /** @var Heart $heart */
-    $heart = app()->make(Heart::class);
-
-    if (my_is_integer($conditions)) {
-        $conditions = "WHERE `id` = " . intval($conditions);
-    }
-
-    $output = $usedTable = [];
-    // Niestety dla każdego modułu musimy wykonać osobne zapytanie :-(
-    foreach ($heart->getServicesModules() as $serviceModuleData) {
-        $table = $serviceModuleData['class']::USER_SERVICE_TABLE;
-        if (!strlen($table) || array_key_exists($table, $usedTable)) {
-            continue;
-        }
-
-        $result = $db->query(
-            "SELECT us.*, m.*, UNIX_TIMESTAMP() AS `now` FROM `" .
-                TABLE_PREFIX .
-                "user_service` AS us " .
-                "INNER JOIN `" .
-                TABLE_PREFIX .
-                $table .
-                "` AS m ON m.us_id = us.id " .
-                $conditions .
-                " ORDER BY us.id DESC "
-        );
-
-        foreach ($result as $row) {
-            unset($row['us_id']);
-            $output[$row['id']] = $row;
-        }
-
-        $usedTable[$table] = true;
-    }
-
-    ksort($output);
-    $output = array_reverse($output);
-
-    return $takeOut && count($output) == 1 ? $output[0] : $output;
-}
-
-function delete_users_old_services()
-{
-    /** @var Database $db */
-    $db = app()->make(Database::class);
-
-    /** @var Heart $heart */
-    $heart = app()->make(Heart::class);
-
-    /** @var DatabaseLogger $logger */
-    $logger = app()->make(DatabaseLogger::class);
-
-    // Usunięcie przestarzałych usług użytkownika
-    // Pierwsze pobieramy te, które usuniemy
-    // Potem wywolujemy akcje na module, potem je usuwamy, a następnie wywołujemy akcje na module
-
-    $deleteIds = $usersServices = [];
-    foreach (
-        get_users_services("WHERE `expire` != '-1' AND `expire` < UNIX_TIMESTAMP()")
-        as $userService
-    ) {
-        if (($serviceModule = $heart->getServiceModule($userService['service'])) === null) {
-            continue;
-        }
-
-        if ($serviceModule->userServiceDelete($userService, 'task')) {
-            $deleteIds[] = $userService['id'];
-            $usersServices[] = $userService;
-
-            $userServiceDesc = '';
-            foreach ($userService as $key => $value) {
-                if (strlen($userServiceDesc)) {
-                    $userServiceDesc .= ' ; ';
-                }
-
-                $userServiceDesc .= ucfirst(strtolower($key)) . ': ' . $value;
-            }
-
-            $logger->log('expired_service_delete', $userServiceDesc);
-        }
-    }
-
-    // Usuwamy usugi ktre zwróciły true
-    if (!empty($deleteIds)) {
-        $db->query(
-            "DELETE FROM `" .
-                TABLE_PREFIX .
-                "user_service` " .
-                "WHERE `id` IN (" .
-                implode(", ", $deleteIds) .
-                ")"
-        );
-    }
-
-    // Wywołujemy akcje po usunieciu
-    foreach ($usersServices as $userService) {
-        if (($serviceModule = $heart->getServiceModule($userService['service'])) === null) {
-            continue;
-        }
-
-        $serviceModule->userServiceDeletePost($userService);
-    }
 }
 
 function create_dom_element($name, $content = "", $data = [])
@@ -754,35 +451,6 @@ function implode_esc($glue, $stack)
     }
 
     return $output;
-}
-
-function log_to_file($file, $message, array $data = [])
-{
-    /** @var Settings $settings */
-    $settings = app()->make(Settings::class);
-
-    /** @var FileSystemContract $fileSystem */
-    $fileSystem = app()->make(FileSystemContract::class);
-
-    $dataText = $data ? " | " . json_encode($data) : "";
-    $text = date($settings->getDateFormat()) . ": " . $message . $dataText;
-
-    $fileSystem->append($file, $text);
-    $fileSystem->setPermissions($file, 0777);
-}
-
-function log_error($message, array $data = [])
-{
-    /** @var Path $path */
-    $path = app()->make(Path::class);
-    log_to_file($path->errorLogPath(), $message, $data);
-}
-
-function log_info($message, array $data = [])
-{
-    /** @var Path $path */
-    $path = app()->make(Path::class);
-    log_to_file($path->infoLogPath(), $message, $data);
 }
 
 function array_get($array, $key, $default = null)

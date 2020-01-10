@@ -2,8 +2,8 @@
 namespace Tests\Feature\Http\Api\Admin;
 
 use App\Repositories\ServiceRepository;
-use App\Services\ExtraFlags\ExtraFlagType;
-use App\Services\ExtraFlags\ServiceExtraFlags;
+use App\ServiceModules\ExtraFlags\ExtraFlagType;
+use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class ServiceCollectionTest extends HttpTestCase
@@ -21,7 +21,7 @@ class ServiceCollectionTest extends HttpTestCase
         $response = $this->post("/api/admin/services", [
             'id' => 'example',
             'name' => 'My Example',
-            'module' => ServiceExtraFlags::MODULE_ID,
+            'module' => ExtraFlagsServiceModule::MODULE_ID,
             'order' => 1,
             'web' => 1,
             'flags' => 'a',
@@ -34,7 +34,7 @@ class ServiceCollectionTest extends HttpTestCase
         $this->assertSame("ok", $json["return_id"]);
         $service = $repository->get("example");
         $this->assertSame("My Example", $service->getName());
-        $this->assertSame(ServiceExtraFlags::MODULE_ID, $service->getModule());
+        $this->assertSame(ExtraFlagsServiceModule::MODULE_ID, $service->getModule());
     }
 
     /** @test */
@@ -51,7 +51,7 @@ class ServiceCollectionTest extends HttpTestCase
         $response = $this->post("/api/admin/services", [
             'id' => $id,
             'name' => 'My Example',
-            'module' => ServiceExtraFlags::MODULE_ID,
+            'module' => ExtraFlagsServiceModule::MODULE_ID,
             'order' => 1,
             'web' => 1,
             'flags' => 'a',

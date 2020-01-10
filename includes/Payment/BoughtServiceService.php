@@ -27,6 +27,9 @@ class BoughtServiceService
     /** @var BoughtServiceRepository */
     private $boughtServiceRepository;
 
+    /** @var PurchaseInformation */
+    private $purchaseInformation;
+
     /** @var DatabaseLogger */
     private $logger;
 
@@ -36,6 +39,7 @@ class BoughtServiceService
         Heart $heart,
         Mailer $mailer,
         BoughtServiceRepository $boughtServiceRepository,
+        PurchaseInformation $purchaseInformation,
         DatabaseLogger $logger
     ) {
         $this->db = $db;
@@ -44,6 +48,7 @@ class BoughtServiceService
         $this->lang = $translationManager->user();
         $this->boughtServiceRepository = $boughtServiceRepository;
         $this->logger = $logger;
+        $this->purchaseInformation = $purchaseInformation;
     }
 
     /**
@@ -116,7 +121,7 @@ class BoughtServiceService
             return $this->lang->t('none');
         }
 
-        $message = purchase_info([
+        $message = $this->purchaseInformation->get([
             'purchase_id' => $boughtService->getId(),
             'action' => "email",
         ]);

@@ -6,7 +6,7 @@ use ArrayAccess;
 class Settings implements ArrayAccess
 {
     /** @var array */
-    private $settings;
+    private $data;
 
     /** @var Database */
     private $db;
@@ -25,7 +25,7 @@ class Settings implements ArrayAccess
         $this->db = $database;
         $this->path = $path;
 
-        $this->settings = [
+        $this->data = [
             'date_format' => 'Y-m-d H:i',
             'theme' => 'default',
             'shop_url' => '',
@@ -40,22 +40,22 @@ class Settings implements ArrayAccess
 
     public function offsetExists($offset)
     {
-        return isset($this->settings[$offset]);
+        return isset($this->data[$offset]);
     }
 
     public function offsetGet($offset)
     {
-        return $this->settings[$offset];
+        return $this->data[$offset];
     }
 
     public function offsetSet($offset, $value)
     {
-        $this->settings[$offset] = $value;
+        $this->data[$offset] = $value;
     }
 
     public function offsetUnset($offset)
     {
-        unset($this->settings[$offset]);
+        unset($this->data[$offset]);
     }
 
     public function loadIfNotLoaded()
@@ -69,25 +69,16 @@ class Settings implements ArrayAccess
 
     public function load()
     {
-        // Pozyskanie ustawień sklepu
         $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "settings`");
         foreach ($result as $row) {
-            $this->settings[$row['key']] = $this->prepareValue($row['key'], $row['value']);
+            $this->data[$row['key']] = $this->prepareValue($row['key'], $row['value']);
         }
 
-        // Poprawiamy adres URL sklepu
-        if (strlen($this->settings['shop_url'])) {
-            if (
-                strpos($this->settings['shop_url'], "http://") !== 0 &&
-                strpos($this->settings['shop_url'], "https://") !== 0
-            ) {
-                $this->settings['shop_url'] = "http://" . $this->settings['shop_url'];
-            }
-
-            $this->settings['shop_url'] = rtrim($this->settings['shop_url'], "/");
+        if (strlen($this->data['shop_url'])) {
+            $this->data['shop_url'] = $this->formatShopUrl($this->data['shop_url']);
         }
 
-        $this->settings['transactions_query'] =
+        $this->data['transactions_query'] =
             "(SELECT bs.id AS `id`,
 bs.uid AS `uid`,
 u.username AS `username`,
@@ -136,17 +127,15 @@ LEFT JOIN `" .
             TABLE_PREFIX .
             "payment_code` AS pc ON bs.payment = 'service_code' AND pc.id = bs.payment_id)";
 
-        if ($this->settings['timezone']) {
-            date_default_timezone_set($this->settings['timezone']);
+        if ($this->data['timezone']) {
+            date_default_timezone_set($this->data['timezone']);
         }
 
-        $this->settings["date_format"] = $this->settings["date_format"] ?: "Y-m-d H:i";
-
         // Fallback to default theme if selected does not exist
-        $this->settings['theme'] = $this->fileSystem->exists(
-            $this->path->to("themes/{$this->settings['theme']}")
+        $this->data['theme'] = $this->fileSystem->exists(
+            $this->path->to("themes/{$this->data['theme']}")
         )
-            ? $this->settings['theme']
+            ? $this->data['theme']
             : "default";
 
         $this->loaded = true;
@@ -157,9 +146,7 @@ LEFT JOIN `" .
      */
     public function getSmsPlatformId()
     {
-        return isset($this->settings["sms_platform"])
-            ? intval($this->settings["sms_platform"])
-            : null;
+        return isset($this->data["sms_platform"]) ? intval($this->data["sms_platform"]) : null;
     }
 
     /**
@@ -167,8 +154,8 @@ LEFT JOIN `" .
      */
     public function getTransferPlatformId()
     {
-        return isset($this->settings["transfer_platform"])
-            ? intval($this->settings["transfer_platform"])
+        return isset($this->data["transfer_platform"])
+            ? intval($this->data["transfer_platform"])
             : null;
     }
 
@@ -177,7 +164,7 @@ LEFT JOIN `" .
      */
     public function getCurrency()
     {
-        return $this->settings["currency"];
+        return $this->data["currency"];
     }
 
     /**
@@ -185,7 +172,7 @@ LEFT JOIN `" .
      */
     public function getContact()
     {
-        return $this->settings["contact"];
+        return $this->data["contact"];
     }
 
     /**
@@ -193,7 +180,7 @@ LEFT JOIN `" .
      */
     public function getVat()
     {
-        return floatval($this->settings["vat"]);
+        return floatval($this->data["vat"]);
     }
 
     /**
@@ -201,7 +188,7 @@ LEFT JOIN `" .
      */
     public function getLicenseToken()
     {
-        return $this->settings["license_password"];
+        return $this->data["license_password"];
     }
 
     /**
@@ -209,11 +196,36 @@ LEFT JOIN `" .
      */
     public function getDateFormat()
     {
-        return $this->settings["date_format"];
+        return $this->data["date_format"];
+    }
+
+    /**
+     * @return string
+     */
+    public function getTheme()
+    {
+        return $this->data["theme"];
+    }
+
+    /**
+     * @return string
+     */
+    public function getSecret()
+    {
+        return $this->data["random_key"];
+    }
+
+    private function formatShopUrl($url)
+    {
+        if (!starts_with($url, "http://") && !starts_with($url, "https://")) {
+            $url = "http://" . $url;
+        }
+
+        return rtrim($url, "/");
     }
 
     private function prepareValue($key, $value)
     {
-        return strlen($value) ? $value : array_get($this->settings, $key, '');
+        return strlen($value) ? $value : array_get($this->data, $key, '');
     }
 }

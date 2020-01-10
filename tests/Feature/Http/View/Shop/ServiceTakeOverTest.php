@@ -16,7 +16,7 @@ class ServiceTakeOverTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/', ['pid' => 'service_take_over']);
+        $response = $this->get('/page/service_take_over');
 
         // then
         $this->assertSame(200, $response->getStatusCode());
@@ -29,7 +29,7 @@ class ServiceTakeOverTest extends HttpTestCase
         // given
 
         // when
-        $response = $this->get('/', ['pid' => 'service_take_over']);
+        $response = $this->get('/page/service_take_over');
 
         // then
         $this->assertSame(200, $response->getStatusCode());

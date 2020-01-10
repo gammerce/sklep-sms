@@ -20,7 +20,7 @@ class PaymentResource
     ) {
         $lang = $translationManager->user();
 
-        if (!$this->isCorrectlySigned($request, $settings['random_key'])) {
+        if (!$this->isCorrectlySigned($request, $settings->getSecret())) {
             return new ApiResponse("wrong_sign", $lang->t('wrong_sign'), 0);
         }
 

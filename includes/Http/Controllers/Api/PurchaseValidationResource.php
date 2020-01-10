@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Responses\ApiResponse;
 use App\Models\Purchase;
-use App\Services\Interfaces\IServicePurchaseWeb;
+use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;
@@ -85,7 +85,7 @@ class PurchaseValidationResource
             $returnData['data'] = [
                 'length' => 8000,
                 'data' => $purchaseEncoded,
-                'sign' => md5($purchaseEncoded . $settings['random_key']),
+                'sign' => md5($purchaseEncoded . $settings->getSecret()),
             ];
         }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Loggers\DatabaseLogger;
+use App\Services\UserServiceService;
 use App\System\Database;
 use App\System\Heart;
 use App\Translation\TranslationManager;
@@ -15,11 +16,12 @@ class UserServiceResource
         $userServiceId,
         Request $request,
         TranslationManager $translationManager,
-        Heart $heart
+        Heart $heart,
+        UserServiceService $userServiceService
     ) {
         $lang = $translationManager->user();
 
-        $userService = get_users_services($userServiceId);
+        $userService = $userServiceService->find($userServiceId);
 
         // Brak takiej usługi w bazie
         if (empty($userService)) {
@@ -55,11 +57,12 @@ class UserServiceResource
         Database $db,
         Heart $heart,
         TranslationManager $translationManager,
-        DatabaseLogger $logger
+        DatabaseLogger $logger,
+        UserServiceService $userServiceService
     ) {
         $lang = $translationManager->user();
 
-        $userService = get_users_services($userServiceId);
+        $userService = $userServiceService->find($userServiceId);
 
         // Brak takiej usługi
         if (empty($userService)) {

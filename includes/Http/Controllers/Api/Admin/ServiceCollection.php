@@ -5,7 +5,7 @@ use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\ServiceService;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\ServiceRepository;
-use App\Services\Interfaces\IServiceAdminManage;
+use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;

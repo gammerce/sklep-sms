@@ -1,11 +1,12 @@
 <?php
 namespace App\Verification\PaymentModules;
 
+use App\Loggers\FileLogger;
 use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Models\TransferFinalize;
 use App\Requesting\Requester;
-use App\Routes\UrlGenerator;
+use App\Routing\UrlGenerator;
 use App\System\Database;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
@@ -42,11 +43,15 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
     /** @var string */
     private $hash;
 
+    /** @var FileLogger */
+    private $fileLogger;
+
     public function __construct(
         Database $database,
         Requester $requester,
         UrlGenerator $urlGenerator,
-        PaymentPlatform $paymentPlatform
+        PaymentPlatform $paymentPlatform,
+        FileLogger $fileLogger
     ) {
         parent::__construct($database, $requester, $paymentPlatform);
 
@@ -57,6 +62,7 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
         $this->serviceId = $this->getData('service_id');
         $this->shopId = $this->getData('shop_id');
         $this->hash = $this->getData('hash');
+        $this->fileLogger = $fileLogger;
     }
 
     public function verifySms($returnCode, $number)
@@ -79,7 +85,7 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
         $content = $response->json();
 
         if (strlen(array_get($content, 'error'))) {
-            log_error(
+            $this->fileLogger->error(
                 "Kod błędu: {$content['error']['errorCode']} - {$content['error']['message']}"
             );
             throw new UnknownErrorException();
@@ -92,7 +98,7 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
                 throw new BadCodeException();
             }
 
-            log_error("Kod błędu: $errorCode - {$content['data']['message']}");
+            $this->fileLogger->error("Kod błędu: $errorCode - {$content['data']['message']}");
             throw new UnknownErrorException();
         }
 

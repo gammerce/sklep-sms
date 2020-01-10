@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Controllers\Api\Server;
 
-use App\Html\UnescapedSimpleText;
+use App\View\Html\UnescapedSimpleText;
 use App\Http\Responses\HtmlResponse;
-use App\Routes\UrlGenerator;
-use App\System\CurrentPage;
+use App\Routing\UrlGenerator;
+use App\View\CurrentPage;
 use App\System\Heart;
 use App\System\License;
 use App\System\Template;

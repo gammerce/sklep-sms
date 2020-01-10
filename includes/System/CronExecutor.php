@@ -1,6 +1,8 @@
 <?php
 namespace App\System;
 
+use App\Services\ExpiredUserServiceService;
+
 class CronExecutor
 {
     /** @var Database */
@@ -15,22 +17,27 @@ class CronExecutor
     /** @var FileSystemContract */
     private $fileSystem;
 
+    /** @var ExpiredUserServiceService */
+    private $expiredUserServiceService;
+
     public function __construct(
         Database $db,
         Settings $settings,
         Path $path,
-        FileSystemContract $fileSystem
+        FileSystemContract $fileSystem,
+        ExpiredUserServiceService $expiredServiceService
     ) {
         $this->db = $db;
         $this->settings = $settings;
         $this->path = $path;
         $this->fileSystem = $fileSystem;
+        $this->expiredUserServiceService = $expiredServiceService;
     }
 
     public function run()
     {
         // Usuwamy przestarzałe usługi użytkowników
-        delete_users_old_services();
+        $this->expiredUserServiceService->deleteExpiredUserServices();
 
         // Usuwamy przestarzałe logi
         if (intval($this->settings['delete_logs']) != 0) {

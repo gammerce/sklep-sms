@@ -3,7 +3,7 @@ namespace App\Http\Services;
 
 use App\Exceptions\ValidationException;
 use App\Repositories\PaymentPlatformRepository;
-use App\Services\Interfaces\IServiceAvailableOnServers;
+use App\ServiceModules\Interfaces\IServiceAvailableOnServers;
 use App\System\Database;
 use App\System\Heart;
 use App\System\Settings;
