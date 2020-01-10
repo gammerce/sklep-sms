@@ -103,15 +103,14 @@ class RoutesManager
         /**
          * @deprecated
          */
-        $r->addRoute(['GET', 'POST'], '/admin.php', [
+        $r->get('/admin.php', [
             'uses' => AdminController::class . '@oldGet',
         ]);
 
         /**
          * @deprecated
          */
-        $r->addRoute(['GET', 'POST'], '/index.php', [
-            'middlewares' => [RunCron::class],
+        $r->get('/index.php', [
             'uses' => IndexController::class . '@oldGet',
         ]);
 
@@ -186,7 +185,7 @@ class RoutesManager
                     function (RouteCollector $r) {
                         $r->addRoute(['GET', 'POST'], '/[page/{pageId}]', [
                             'middlewares' => [RunCron::class],
-                            'uses' => IndexController::class . '@get',
+                            'uses' => IndexController::class . '@action',
                         ]);
 
                         $r->post('/api/register', [
@@ -300,7 +299,7 @@ class RoutesManager
             function (RouteCollector $r) {
                 $r->addRoute(['GET', 'POST'], '/admin[/{pageId}]', [
                     'middlewares' => [RunCron::class],
-                    'uses' => AdminController::class . '@get',
+                    'uses' => AdminController::class . '@action',
                 ]);
 
                 $r->put('/api/admin/users/{userId}/password', [

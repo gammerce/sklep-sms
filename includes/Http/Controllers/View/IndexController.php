@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class IndexController
 {
-    public function get(
+    public function action(
         $pageId = null,
         Request $request,
         Heart $heart,
