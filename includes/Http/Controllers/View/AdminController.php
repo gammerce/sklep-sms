@@ -30,11 +30,13 @@ class AdminController
         TranslationManager $translationManager,
         BlockRenderer $blockRenderer
     ) {
-        if ($currentPage->getPid() !== "login" && !$heart->pageExists($pageId, "admin")) {
-            throw new EntityNotFoundException();
-        }
+        if ($currentPage->getPid() !== "login") {
+            if (!$heart->pageExists($pageId, "admin")) {
+                throw new EntityNotFoundException();
+            }
 
-        $currentPage->setPid($pageId);
+            $currentPage->setPid($pageId);
+        }
 
         $session = $request->getSession();
         $user = $auth->user();
