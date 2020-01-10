@@ -118,6 +118,11 @@ class RoutesManager
             'uses' => CronController::class . '@get',
         ]);
 
+        $r->get('/cron', [
+            'middlewares' => [IsUpToDate::class, LoadSettings::class, ValidateLicense::class],
+            'uses' => CronController::class . '@get',
+        ]);
+
         $r->addGroup(
             [
                 "middlewares" => [
