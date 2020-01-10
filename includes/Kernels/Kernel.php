@@ -1,7 +1,7 @@
 <?php
 namespace App\Kernels;
 
-use App\Routes\RoutesManager;
+use App\Routing\RoutesManager;
 use App\System\Application;
 use App\System\ExceptionHandlerContract;
 use Exception;

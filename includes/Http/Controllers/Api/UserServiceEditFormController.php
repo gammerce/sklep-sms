@@ -2,7 +2,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Responses\HtmlResponse;
-use App\Services\Interfaces\IServiceUserOwnServicesEdit;
+use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
+use App\Services\UserServiceService;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;
@@ -17,7 +18,8 @@ class UserServiceEditFormController
         Settings $settings,
         Auth $auth,
         Heart $heart,
-        Template $template
+        Template $template,
+        UserServiceService $userServiceService
     ) {
         $lang = $translationManager->user();
         $user = $auth->user();
@@ -27,7 +29,7 @@ class UserServiceEditFormController
             return new HtmlResponse($lang->t('not_logged'));
         }
 
-        $userService = get_users_services($userServiceId);
+        $userService = $userServiceService->find($userServiceId);
 
         if (empty($userService)) {
             return new HtmlResponse($lang->t('dont_play_games'));

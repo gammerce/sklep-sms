@@ -6,7 +6,7 @@ use App\Models\Purchase;
 use App\Models\Server;
 use App\Repositories\BoughtServiceRepository;
 use App\Repositories\UserRepository;
-use App\Services\ExtraFlags\ExtraFlagType;
+use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\System\License;
 use App\System\Settings;
 use Tests\Psr4\TestCases\HttpTestCase;

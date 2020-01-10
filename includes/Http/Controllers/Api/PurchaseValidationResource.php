@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Responses\ApiResponse;
 use App\Models\Purchase;
-use App\Services\Interfaces\IServicePurchaseWeb;
+use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;

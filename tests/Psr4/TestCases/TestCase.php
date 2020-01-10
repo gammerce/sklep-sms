@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Psr4\TestCases;
 
-use App\Services\ExtraFlags\ServiceDescriptionCreator;
+use App\ServiceModules\ExtraFlags\ServiceDescriptionCreator;
 use App\System\Application;
 use App\System\Database;
 use App\System\License;

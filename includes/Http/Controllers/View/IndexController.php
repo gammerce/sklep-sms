@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers\View;
 
-use App\System\CurrentPage;
+use App\View\CurrentPage;
 use App\System\Heart;
 use App\System\License;
 use App\System\Template;

@@ -5,7 +5,7 @@ use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
 use App\Models\TransferFinalize;
 use App\Repositories\PaymentTransferRepository;
-use App\Services\Interfaces\IServicePurchase;
+use App\ServiceModules\Interfaces\IServicePurchase;
 use App\System\Database;
 use App\System\FileSystemContract;
 use App\System\Heart;

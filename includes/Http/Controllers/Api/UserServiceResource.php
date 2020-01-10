@@ -2,7 +2,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Responses\ApiResponse;
-use App\Services\Interfaces\IServiceUserOwnServicesEdit;
+use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
+use App\Services\UserServiceService;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;
@@ -17,12 +18,13 @@ class UserServiceResource
         TranslationManager $translationManager,
         Heart $heart,
         Auth $auth,
-        Settings $settings
+        Settings $settings,
+        UserServiceService $userServiceService
     ) {
         $lang = $translationManager->user();
         $user = $auth->user();
 
-        $userService = get_users_services($userServiceId);
+        $userService = $userServiceService->find($userServiceId);
 
         // User service was not found
         if (empty($userService)) {

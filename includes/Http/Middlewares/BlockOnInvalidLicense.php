@@ -2,7 +2,7 @@
 namespace App\Http\Middlewares;
 
 use App\Requesting\Response as CustomResponse;
-use App\Routes\UrlGenerator;
+use App\Routing\UrlGenerator;
 use App\System\Application;
 use App\System\License;
 use App\System\Template;

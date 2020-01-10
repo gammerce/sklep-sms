@@ -1,26 +1,26 @@
 <?php
 namespace App\System;
 
-use App\Blocks\Block;
-use App\Blocks\BlockSimple;
+use App\View\Blocks\Block;
+use App\View\Blocks\BlockSimple;
 use App\Exceptions\InvalidConfigException;
 use App\Exceptions\InvalidPaymentModuleException;
 use App\Models\PaymentPlatform;
 use App\Models\Server;
 use App\Models\Tariff;
 use App\Models\User;
-use App\Pages\Interfaces\IPageAdminActionBox;
-use App\Pages\Page;
-use App\Pages\PageSimple;
+use App\View\Pages\Interfaces\IPageAdminActionBox;
+use App\View\Pages\Page;
+use App\View\Pages\PageSimple;
 use App\Payment\PaymentModuleFactory;
 use App\Repositories\PaymentPlatformRepository;
 use App\Repositories\ServerRepository;
 use App\Repositories\ServiceRepository;
 use App\Repositories\UserRepository;
-use App\Services\ChargeWallet\ServiceChargeWallet;
-use App\Services\ExtraFlags\ServiceExtraFlags;
-use App\Services\Other\ServiceOther;
-use App\Services\Service;
+use App\ServiceModules\ChargeWallet\ChargeWalletServiceModule;
+use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
+use App\ServiceModules\Other\OtherServiceModule;
+use App\ServiceModules\ServiceModule;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\DataField;
 use Exception;
@@ -128,7 +128,7 @@ class Heart
      * Get service module with service included
      *
      * @param string $serviceId Service identifier from ss_services
-     * @return null|Service|ServiceChargeWallet|ServiceExtraFlags|ServiceOther
+     * @return null|ServiceModule|ChargeWalletServiceModule|ExtraFlagsServiceModule|OtherServiceModule
      */
     public function getServiceModule($serviceId)
     {
@@ -149,7 +149,7 @@ class Heart
      * Get service module without service included
      *
      * @param $moduleId
-     * @return Service|null
+     * @return ServiceModule|null
      */
     public function getEmptyServiceModule($moduleId)
     {

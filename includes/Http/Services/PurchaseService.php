@@ -5,7 +5,7 @@ use App\Models\Purchase;
 use App\Payment\PaymentService;
 use App\Repositories\PaymentPlatformRepository;
 use App\Repositories\UserRepository;
-use App\Services\Service;
+use App\ServiceModules\ServiceModule;
 use App\System\Auth;
 use App\System\Heart;
 use App\Translation\TranslationManager;
@@ -47,7 +47,7 @@ class PurchaseService
         $this->paymentPlatformRepository = $paymentPlatformRepository;
     }
 
-    public function purchase(Service $serviceModule, array $body)
+    public function purchase(ServiceModule $serviceModule, array $body)
     {
         $server = array_get($body, 'server');
         $type = array_get($body, 'type');

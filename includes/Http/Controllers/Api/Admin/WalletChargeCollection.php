@@ -5,6 +5,7 @@ use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
 use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
+use App\Payment\AdminPaymentService;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;
@@ -20,7 +21,8 @@ class WalletChargeCollection
         TranslationManager $translationManager,
         Auth $auth,
         Settings $settings,
-        DatabaseLogger $logger
+        DatabaseLogger $logger,
+        AdminPaymentService $adminPaymentService
     ) {
         $lang = $translationManager->user();
         $user = $auth->user();
@@ -59,7 +61,7 @@ class WalletChargeCollection
         $amount = max($amount, -$editedUser->getWallet());
 
         // Dodawanie informacji o płatności do bazy
-        $paymentId = pay_by_admin($user);
+        $paymentId = $adminPaymentService->payByAdmin($user);
 
         // Kupujemy usługę
         $purchase = new Purchase($editedUser);

@@ -1,7 +1,7 @@
 <?php
 namespace App\System;
 
-use App\Routes\UrlGenerator;
+use App\Routing\UrlGenerator;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 

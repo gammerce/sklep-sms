@@ -10,7 +10,7 @@ class Auth
     private $heart;
 
     /** @var User */
-    protected $user;
+    private $user;
 
     public function __construct(Heart $heart)
     {

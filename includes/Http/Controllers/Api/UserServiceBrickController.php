@@ -2,8 +2,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Responses\HtmlResponse;
-use App\Services\Interfaces\IServiceUserOwnServices;
-use App\Services\Interfaces\IServiceUserOwnServicesEdit;
+use App\ServiceModules\Interfaces\IServiceUserOwnServices;
+use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
+use App\Services\UserServiceService;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;
@@ -16,12 +17,13 @@ class UserServiceBrickController
         TranslationManager $translationManager,
         Auth $auth,
         Settings $settings,
-        Heart $heart
+        Heart $heart,
+        UserServiceService $userServiceService
     ) {
         $lang = $translationManager->user();
         $user = $auth->user();
 
-        $userService = get_users_services($userServiceId);
+        $userService = $userServiceService->find($userServiceId);
 
         // Brak takiej usługi w bazie
         if (empty($userService)) {
