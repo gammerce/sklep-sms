@@ -445,7 +445,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                             [
                                 ExtraFlagType::TYPE_NICK,
                                 $purchaseData->getOrder('auth_data'),
-                                $server->getId(),
+                                isset($server) ? $server->getId() : 0,
                             ]
                         );
                     }
@@ -471,7 +471,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                                 [
                                     ExtraFlagType::TYPE_IP,
                                     $purchaseData->getOrder('auth_data'),
-                                    $server->getId(),
+                                    isset($server) ? $server->getId() : 0,
                                 ]
                             );
                         }
