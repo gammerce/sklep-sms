@@ -1,14 +1,13 @@
 <?php
-namespace App\ServiceModules\ExtraFlags;
+namespace App\Services;
 
-use App\Exceptions\InvalidConfigException;
 use App\System\FileSystemContract;
 use App\System\Path;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
-class ServiceDescriptionCreator
+class ServiceDescriptionService
 {
     /** @var Path */
     private $path;
@@ -34,22 +33,21 @@ class ServiceDescriptionCreator
         $this->fileSystem = $fileSystem;
     }
 
-    public function create($name)
+    public function create($serviceId)
     {
         $path = $this->path->to(
-            "themes/{$this->settings['theme']}/services/" . escape_filename($name) . "_desc.html"
+            "themes/{$this->settings->getTheme()}/{$this->getTemplatePath($serviceId)}"
         );
 
         if (!$this->fileSystem->exists($path)) {
             $this->fileSystem->put($path, "");
             $this->fileSystem->setPermissions($path, 0777);
-
-            // Check if permissions were assigned
-            if (substr(sprintf('%o', $this->fileSystem->getPermissions($path)), -4) != "0777") {
-                throw new InvalidConfigException(
-                    $this->lang->t('wrong_service_description_file', $this->settings['theme'])
-                );
-            }
         }
+    }
+
+    public function getTemplatePath($serviceId)
+    {
+        $escapedName = escape_filename($serviceId);
+        return "/services/{$escapedName}_desc.html";
     }
 }

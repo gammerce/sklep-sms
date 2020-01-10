@@ -1,17 +1,17 @@
 <?php
 namespace App\Http\Controllers\View;
 
-use App\View\CurrentPage;
 use App\System\Heart;
 use App\System\License;
 use App\System\Template;
+use App\View\CurrentPage;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class IndexController
 {
     public function action(
-        $pageId,
+        $pageId = null,
         Request $request,
         Heart $heart,
         License $license,
@@ -19,16 +19,7 @@ class IndexController
         Template $template
     ) {
         $currentPage->setPid($pageId);
-        return $this->oldAction($request, $heart, $license, $currentPage, $template);
-    }
 
-    public function oldAction(
-        Request $request,
-        Heart $heart,
-        License $license,
-        CurrentPage $currentPage,
-        Template $template
-    ) {
         if (!$heart->pageExists($currentPage->getPid())) {
             $currentPage->setPid('home');
         }

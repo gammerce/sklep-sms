@@ -11,7 +11,7 @@ class ContactTest extends HttpTestCase
         // given
 
         // when
-        $response = $this->get('/', ['pid' => 'contact']);
+        $response = $this->get('/page/contact');
 
         // then
         $this->assertSame(200, $response->getStatusCode());

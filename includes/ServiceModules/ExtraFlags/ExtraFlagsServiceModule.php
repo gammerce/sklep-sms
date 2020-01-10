@@ -67,9 +67,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     /** @var Path */
     private $path;
 
-    /** @var ServiceDescriptionCreator */
-    private $serviceDescriptionCreator;
-
     /** @var Heart */
     private $heart;
 
@@ -107,7 +104,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $this->lang = $translationManager->user();
         $this->settings = $this->app->make(Settings::class);
         $this->path = $this->app->make(Path::class);
-        $this->serviceDescriptionCreator = $this->app->make(ServiceDescriptionCreator::class);
     }
 
     public function serviceAdminExtraFieldsGet()
@@ -196,7 +192,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $extraData = $this->service ? $this->service->getData() : [];
         $extraData['web'] = $data['web'];
 
-        $this->serviceDescriptionCreator->create($data['id']);
+        $this->serviceDescriptionService->create($data['id']);
 
         return [
             'types' => $types,

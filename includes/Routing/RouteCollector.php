@@ -2,6 +2,7 @@
 namespace App\Routing;
 
 use FastRoute\RouteCollector as BaseRouteCollector;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class RouteCollector extends BaseRouteCollector
 {
@@ -39,5 +40,21 @@ class RouteCollector extends BaseRouteCollector
             array_get($handler, "middlewares", [])
         );
         parent::addRoute($httpMethod, $route, $handler);
+    }
+
+    public function redirect($from, $to, $status = 302)
+    {
+        $this->get($from, [
+            'uses' => function () use ($to, $status) {
+                /** @var UrlGenerator $url */
+                $url = app()->make(UrlGenerator::class);
+                return new RedirectResponse($url->to($to), $status);
+            },
+        ]);
+    }
+
+    public function redirectPermanent($from, $to)
+    {
+        $this->redirect($from, $to, 301);
     }
 }

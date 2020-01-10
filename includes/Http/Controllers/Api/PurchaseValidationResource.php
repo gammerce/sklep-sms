@@ -85,7 +85,7 @@ class PurchaseValidationResource
             $returnData['data'] = [
                 'length' => 8000,
                 'data' => $purchaseEncoded,
-                'sign' => md5($purchaseEncoded . $settings['random_key']),
+                'sign' => md5($purchaseEncoded . $settings->getSecret()),
             ];
         }
 

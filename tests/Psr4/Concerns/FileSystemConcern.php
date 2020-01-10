@@ -3,7 +3,7 @@ namespace Tests\Psr4\Concerns;
 
 use App\Install\EnvCreator;
 use App\Install\SetupManager;
-use App\ServiceModules\ExtraFlags\ServiceDescriptionCreator;
+use App\Services\ServiceDescriptionService;
 use Tests\Psr4\MemoryFileSystem;
 
 trait FileSystemConcern
@@ -12,11 +12,11 @@ trait FileSystemConcern
     {
         $fileSystem = new MemoryFileSystem();
 
-        $serviceDescriptionCreator = $this->app->makeWith(
-            ServiceDescriptionCreator::class,
+        $serviceDescriptionService = $this->app->makeWith(
+            ServiceDescriptionService::class,
             compact('fileSystem')
         );
-        $this->app->instance(ServiceDescriptionCreator::class, $serviceDescriptionCreator);
+        $this->app->instance(ServiceDescriptionService::class, $serviceDescriptionService);
 
         $envCreator = $this->app->makeWith(EnvCreator::class, compact('fileSystem'));
         $this->app->instance(EnvCreator::class, $envCreator);
