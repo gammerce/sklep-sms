@@ -50,11 +50,11 @@ class PriceRepository
     private function mapToModel(array $data)
     {
         return new PriceList(
-            intval($data['id']),
+            (int) $data['id'],
             $data['service'],
-            intval($data['tariff']),
-            intval($data['amount']),
-            intval($data['server'])
+            (int) $data['tariff'],
+            (int) $data['amount'],
+            (int) $data['server']
         );
     }
 }

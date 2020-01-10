@@ -73,7 +73,7 @@ class BodyRow extends Row
      */
     public function setDbId($dbId)
     {
-        $this->dbId = strval($dbId);
+        $this->dbId = (string) $dbId;
 
         // Dodajemy kolumne z id
         $cell = new Cell($this->dbId);

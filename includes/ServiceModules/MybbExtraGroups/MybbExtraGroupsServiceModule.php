@@ -581,7 +581,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
     public function userServiceDeletePost($userService)
     {
-        $mybbUser = $this->createMybbUser(intval($userService['mybb_uid']));
+        $mybbUser = $this->createMybbUser((int) $userService['mybb_uid']);
 
         // Usuwamy wszystkie shopGroups oraz z mybbGroups te grupy, które maja was_before = false
         foreach ($mybbUser->getShopGroup() as $gid => $groupData) {

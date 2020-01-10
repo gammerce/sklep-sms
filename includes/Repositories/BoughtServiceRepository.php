@@ -70,7 +70,7 @@ class BoughtServiceRepository
     private function mapToModel(array $data)
     {
         return new BoughtService(
-            intval($data['id']),
+            (int) $data['id'],
             $data['uid'],
             $data['payment'],
             $data['payment_id'],

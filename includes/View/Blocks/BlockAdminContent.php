@@ -49,10 +49,7 @@ class BlockAdminContent extends Block
 
     protected function content(array $query, array $body)
     {
-        if (($page = $this->heart->getPage($this->page->getPid(), "admin")) === null) {
-            return null;
-        }
-
-        return $page->getContent($query, $body);
+        $page = $this->heart->getPage($this->page->getPid(), "admin");
+        return $page ? $page->getContent($query, $body) : null;
     }
 }

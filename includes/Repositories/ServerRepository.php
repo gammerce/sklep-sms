@@ -122,7 +122,7 @@ class ServerRepository
     private function mapToModel(array $data)
     {
         return new Server(
-            intval($data['id']),
+            (int) $data['id'],
             $data['name'],
             $data['ip'],
             $data['port'],

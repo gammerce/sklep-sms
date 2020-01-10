@@ -4,7 +4,6 @@ use App\Models\Server;
 use App\Models\User;
 use App\System\Auth;
 use App\System\Database;
-use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\View\Html\Div;
@@ -27,25 +26,6 @@ function app($abstract = null, array $parameters = [])
     }
 
     return Container::getInstance()->makeWith($abstract, $parameters);
-}
-
-/**
- * Zwraca treść danego bloku
- *
- * @param string $blockId
- * @param Request $request
- * @return string
- */
-function get_content($blockId, Request $request)
-{
-    /** @var Heart $heart */
-    $heart = app()->make(Heart::class);
-
-    if ($block = $heart->getBlock($blockId)) {
-        return $block->getContentEnveloped($request->query->all(), $request->request->all());
-    }
-
-    return "";
 }
 
 function get_row_limit($page, $rowLimit = 0)

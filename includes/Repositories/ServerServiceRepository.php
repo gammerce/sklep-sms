@@ -49,6 +49,6 @@ class ServerServiceRepository
 
     private function mapToModel($serverId, $serviceId)
     {
-        return new ServerService(intval($serverId), $serviceId);
+        return new ServerService((int) $serverId, $serviceId);
     }
 }
