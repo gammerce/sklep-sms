@@ -22,6 +22,8 @@ class CurrentPage
     public function __construct(Request $request)
     {
         $this->pageNumber = $this->resolvePageNumber($request);
+        // Some API requests pass pid. That's why we resolve it
+        $this->pid = $this->resolvePid($request);
     }
 
     public function setPageNumber($pageNumber)
@@ -48,5 +50,10 @@ class CurrentPage
     {
         $pageNumber = (int) $request->get('page', 1);
         return max($pageNumber, 1);
+    }
+
+    private function resolvePid(Request $request)
+    {
+        return $request->get('pid', 'home');
     }
 }
