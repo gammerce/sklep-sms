@@ -40,7 +40,7 @@ class Simpay extends PaymentModule implements SupportSms
         }
 
         if (isset($content['error'][0]) && is_array($content['error'][0])) {
-            switch (intval($content['error'][0]['error_code'])) {
+            switch ((int) $content['error'][0]['error_code']) {
                 case 103:
                 case 104:
                     throw new WrongCredentialsException();

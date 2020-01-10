@@ -1,6 +1,7 @@
 <?php
 namespace App\Routing;
 
+use App\Exceptions\EntityNotFoundException;
 use App\Http\Controllers\Api\Admin\AntispamQuestionCollection;
 use App\Http\Controllers\Api\Admin\AntispamQuestionResource;
 use App\Http\Controllers\Api\Admin\GroupCollection;
@@ -533,7 +534,7 @@ class RoutesManager
     {
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
-                return new Response('', 404);
+                throw new EntityNotFoundException();
             case Dispatcher::METHOD_NOT_ALLOWED:
                 return new Response('', 405);
             case Dispatcher::FOUND:

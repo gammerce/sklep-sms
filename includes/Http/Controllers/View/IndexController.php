@@ -1,60 +1,32 @@
 <?php
 namespace App\Http\Controllers\View;
 
+use App\Exceptions\EntityNotFoundException;
 use App\System\Heart;
-use App\System\License;
-use App\System\Template;
 use App\View\CurrentPage;
+use App\View\Renders\BlockRenderer;
+use App\View\Renders\ShopRenderer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class IndexController
 {
     public function action(
-        $pageId = null,
+        $pageId = 'home',
         Request $request,
         Heart $heart,
-        License $license,
         CurrentPage $currentPage,
-        Template $template
+        ShopRenderer $shopRenderer,
+        BlockRenderer $blockRenderer
     ) {
-        $currentPage->setPid($pageId);
-
-        if (!$heart->pageExists($currentPage->getPid())) {
-            $currentPage->setPid('home');
+        if (!$heart->pageExists($pageId, "user")) {
+            throw new EntityNotFoundException();
         }
 
-        // Pobranie miejsca logowania
-        $loggedInfo = get_content("logged_info", $request);
+        $currentPage->setPid($pageId);
 
-        // Pobranie portfela
-        $wallet = get_content("wallet", $request);
-
-        // Pobranie zawartości
-        $content = get_content("content", $request);
-
-        // Pobranie przycisków usług
-        $servicesButtons = get_content("services_buttons", $request);
-
-        // Pobranie przycisków użytkownika
-        $userButtons = get_content("user_buttons", $request);
-
-        // Pobranie headera
-        $header = $template->render("header", compact('currentPage', 'heart', 'license'));
-
-        // Pobranie ostatecznego szablonu
-        $output = $template->render(
-            "index",
-            compact(
-                "header",
-                "heart",
-                "loggedInfo",
-                "wallet",
-                "servicesButtons",
-                "content",
-                "userButtons"
-            )
-        );
+        $content = $blockRenderer->render("content", $request);
+        $output = $shopRenderer->render($content, $heart->pageTitle, $request);
 
         return new Response($output);
     }

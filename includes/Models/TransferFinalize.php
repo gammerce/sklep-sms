@@ -1,7 +1,6 @@
 <?php
 namespace App\Models;
 
-// TODO Use marking transfer as a test
 class TransferFinalize
 {
     /**
@@ -52,7 +51,7 @@ class TransferFinalize
      *
      * @var boolean
      */
-    private $test = false;
+    private $testMode = false;
 
     /**
      * @return boolean
@@ -150,13 +149,19 @@ class TransferFinalize
         $this->output = (string) $output;
     }
 
-    public function markAsTest()
+    /**
+     * @param bool $value
+     */
+    public function setTestMode($value)
     {
-        $this->test = true;
+        $this->testMode = (bool) $value;
     }
 
-    public function isTest()
+    /**
+     * @return bool
+     */
+    public function isTestMode()
     {
-        return $this->test;
+        return $this->testMode;
     }
 }

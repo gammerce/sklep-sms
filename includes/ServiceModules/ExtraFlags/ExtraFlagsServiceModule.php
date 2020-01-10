@@ -445,7 +445,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                             [
                                 ExtraFlagType::TYPE_NICK,
                                 $purchaseData->getOrder('auth_data'),
-                                $server->getId(),
+                                isset($server) ? $server->getId() : 0,
                             ]
                         );
                     }
@@ -471,7 +471,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                                 [
                                     ExtraFlagType::TYPE_IP,
                                     $purchaseData->getOrder('auth_data'),
-                                    $server->getId(),
+                                    isset($server) ? $server->getId() : 0,
                                 ]
                             );
                         }
@@ -1847,9 +1847,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     {
         switch ($action) {
             case "tariffs_for_server":
-                return $this->tariffsForServer(intval($data['server']));
+                return $this->tariffsForServer((int) $data['server']);
             case "servers_for_service":
-                return $this->serversForService(intval($data['server']));
+                return $this->serversForService((int) $data['server']);
             default:
                 return '';
         }

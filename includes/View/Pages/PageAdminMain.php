@@ -123,13 +123,13 @@ class PageAdminMain extends PageAdmin
 
         // Server
         $bricks[] = $this->createBrick(
-            $this->lang->t('amount_of_servers', $this->heart->getServersAmount())
+            $this->lang->t('number_of_servers', $this->heart->getServersAmount())
         );
 
         // User
         $bricks[] = $this->createBrick(
             $this->lang->t(
-                'amount_of_users',
+                'number_of_users',
                 $this->db->query("SELECT COUNT(*) FROM `" . TABLE_PREFIX . "users`")->fetchColumn()
             )
         );
@@ -138,7 +138,7 @@ class PageAdminMain extends PageAdmin
         $amount = $this->db
             ->query("SELECT COUNT(*) " . "FROM ({$this->settings['transactions_query']}) AS t")
             ->fetchColumn();
-        $bricks[] = $this->createBrick($this->lang->t('amount_of_bought_services', $amount));
+        $bricks[] = $this->createBrick($this->lang->t('number_of_bought_services', $amount));
 
         // SMS
         $amount = $this->db
@@ -148,7 +148,17 @@ class PageAdminMain extends PageAdmin
                     "WHERE t.payment = 'sms' AND t.free='0'"
             )
             ->fetchColumn();
-        $bricks[] = $this->createBrick($this->lang->t('amount_of_sent_smses', $amount));
+        $bricks[] = $this->createBrick($this->lang->t('number_of_sent_smses', $amount));
+
+        // Transfer
+        $amount = $this->db
+            ->query(
+                "SELECT COUNT(*) AS `amount` " .
+                    "FROM ({$this->settings['transactions_query']}) as t " .
+                    "WHERE t.payment = 'transfer' AND t.free='0'"
+            )
+            ->fetchColumn();
+        $bricks[] = $this->createBrick($this->lang->t('number_of_transfers', $amount));
 
         // Income
         $incomeData = $this->incomeService->get(date("Y"), date("m"));

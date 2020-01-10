@@ -24,8 +24,8 @@ class MybbUser
      */
     public function __construct($uid, $mybbUserGroup)
     {
-        $this->uid = intval($uid);
-        $this->mybbUserGroup = intval($mybbUserGroup);
+        $this->uid = (int) $uid;
+        $this->mybbUserGroup = (int) $mybbUserGroup;
     }
 
     public function getUid()
@@ -43,8 +43,8 @@ class MybbUser
             return;
         }
 
-        $group['expire'] = intval($group['expire']);
-        $this->shopGroups[intval($groupId)] = $group;
+        $group['expire'] = (int) $group['expire'];
+        $this->shopGroups[(int) $groupId] = $group;
 
         // To nie jest grupa przydzielona przez MyBB, wiec usunmy ja stamtąd
         if (!$group['was_before']) {
@@ -69,7 +69,7 @@ class MybbUser
             ]);
         }
 
-        $this->shopGroups[$groupId]['expire'] += intval($seconds);
+        $this->shopGroups[$groupId]['expire'] += (int) $seconds;
     }
 
     /**
@@ -119,13 +119,13 @@ class MybbUser
             }
 
             if (
-                isset($this->shopGroups[intval($groupId)]) &&
-                !$this->shopGroups[intval($groupId)]['was_before']
+                isset($this->shopGroups[(int) $groupId]) &&
+                !$this->shopGroups[(int) $groupId]['was_before']
             ) {
                 continue;
             }
 
-            $this->mybbAddGroups[] = intval($groupId);
+            $this->mybbAddGroups[] = (int) $groupId;
         }
     }
 
@@ -160,6 +160,6 @@ class MybbUser
      */
     public function setMybbDisplayGroup($mybbDisplayGroup)
     {
-        $this->mybbDisplayGroup = intval($mybbDisplayGroup);
+        $this->mybbDisplayGroup = (int) $mybbDisplayGroup;
     }
 }

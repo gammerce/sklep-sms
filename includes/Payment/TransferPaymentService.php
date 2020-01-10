@@ -117,7 +117,8 @@ class TransferPaymentService
             $purchase->getPayment('cost'),
             $transferFinalize->getTransferService(),
             $purchase->user->getLastIp(),
-            $purchase->user->getPlatform()
+            $purchase->user->getPlatform(),
+            $transferFinalize->isTestMode()
         );
         $this->fileSystem->delete(
             $this->path->to('data/transfers/' . $transferFinalize->getDataFilename())

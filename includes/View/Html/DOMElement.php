@@ -123,7 +123,7 @@ class DOMElement implements I_ToHtml
     public function addClass($value)
     {
         if (empty($this->params['class'])) {
-            $this->params['class'] = strval($value);
+            $this->params['class'] = (string) $value;
         } else {
             $this->params['class'] .= " $value";
         }
@@ -135,7 +135,7 @@ class DOMElement implements I_ToHtml
      */
     public function setStyle($key, $value)
     {
-        $this->params['style'][$key] = strval($value);
+        $this->params['style'][$key] = (string) $value;
     }
 
     /**
@@ -149,7 +149,7 @@ class DOMElement implements I_ToHtml
     /** @param string $name */
     public function setName($name)
     {
-        $this->name = strval($name);
+        $this->name = (string) $name;
     }
 
     public function __toString()

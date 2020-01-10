@@ -51,7 +51,11 @@ class ServiceLongDescriptionController
         }
 
         $heart->styleAdd($url->versioned("build/css/static/extra_stuff/long_desc.css"));
-        $header = $template->render("header", compact('currentPage', 'heart', 'license'));
+        $pageTitle = $heart->pageTitle;
+        $header = $template->render(
+            "header",
+            compact('currentPage', 'heart', 'license', 'pageTitle')
+        );
 
         $output = create_dom_element("html", [
             create_dom_element("head", new UnescapedSimpleText($header)),

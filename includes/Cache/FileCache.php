@@ -79,7 +79,7 @@ class FileCache implements CacheInterface
      * @param  string $path
      * @return void
      */
-    protected function ensureCacheDirectoryExists($path)
+    private function ensureCacheDirectoryExists($path)
     {
         if (!$this->files->exists(dirname($path))) {
             $this->files->makeDirectory(dirname($path), 0777, true, true);
@@ -92,7 +92,7 @@ class FileCache implements CacheInterface
      * @param  string $key
      * @return array|null
      */
-    protected function getPayload($key)
+    private function getPayload($key)
     {
         $path = $this->path($key);
 
@@ -123,12 +123,7 @@ class FileCache implements CacheInterface
         return compact('data', 'time');
     }
 
-    protected function emptyPayload()
-    {
-        return ['data' => null, 'time' => null];
-    }
-
-    protected function path($key)
+    private function path($key)
     {
         $parts = array_slice(str_split($hash = sha1($key), 2), 0, 2);
 

@@ -98,7 +98,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
         );
 
         preg_match("#<bsid>(\d+)</bsid>#", $response->getContent(), $matches);
-        $boughtServiceId = intval($matches[1]);
+        $boughtServiceId = (int) $matches[1];
         $boughtService = $this->boughtServiceRepository->get($boughtServiceId);
         $this->assertNotNull($boughtService);
         $this->assertEquals(Purchase::METHOD_WALLET, $boughtService->getMethod());

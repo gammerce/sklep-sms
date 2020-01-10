@@ -18,13 +18,17 @@ class PaymentTransfer
     /** @var string */
     private $platform;
 
-    public function __construct($id, $income, $transferService, $ip, $platform)
+    /** @var bool */
+    private $free;
+
+    public function __construct($id, $income, $transferService, $ip, $platform, $free)
     {
         $this->id = $id;
         $this->income = $income;
         $this->transferService = $transferService;
         $this->ip = $ip;
         $this->platform = $platform;
+        $this->free = $free;
     }
 
     /**
@@ -65,5 +69,13 @@ class PaymentTransfer
     public function getPlatform()
     {
         return $this->platform;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFree()
+    {
+        return $this->free;
     }
 }

@@ -170,7 +170,7 @@ class UserRepository
     private function mapToModel(array $data)
     {
         return new User(
-            intval($data['uid']),
+            (int) $data['uid'],
             $data['username'],
             $data['password'],
             $data['salt'],
@@ -181,7 +181,7 @@ class UserRepository
             explode(';', $data['groups']),
             $data['regdate'],
             $data['lastactiv'],
-            intval($data['wallet']),
+            (int) $data['wallet'],
             $data['regip'],
             $data['lastip'],
             $data['reset_password_key']

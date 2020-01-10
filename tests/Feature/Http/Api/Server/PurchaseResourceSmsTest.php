@@ -92,7 +92,7 @@ class PurchaseResourceSmsTest extends HttpTestCase
         );
 
         preg_match("#<bsid>(\d+)</bsid>#", $response->getContent(), $matches);
-        $boughtServiceId = intval($matches[1]);
+        $boughtServiceId = (int) $matches[1];
         $boughtService = $boughtServiceRepository->get($boughtServiceId);
         $this->assertNotNull($boughtService);
         $this->assertEquals(Purchase::METHOD_SMS, $boughtService->getMethod());
