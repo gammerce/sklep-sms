@@ -22,14 +22,18 @@ class RequirementsStore
     {
         return [
             [
-                'text' => "PHP v5.6.0 lub wyższa",
+                'text' => "PHP v5.6.0 lub wyżej",
                 'value' => semantic_to_number(PHP_VERSION) >= 50600,
                 'must-be' => false,
             ],
-
             [
-                'text' => "Moduł cURL",
-                'value' => function_exists('curl_version'),
+                'text' => "Moduł CURL",
+                'value' => extension_loaded('curl'),
+                'must-be' => true,
+            ],
+            [
+                'text' => "Moduł PDO",
+                'value' => extension_loaded('pdo') && extension_loaded('pdo_mysql'),
                 'must-be' => true,
             ],
         ];
