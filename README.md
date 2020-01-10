@@ -5,11 +5,8 @@ Sklep SMS ułatwia zarabianie realnych pieniędzy na własnych serwerach gier!
 ## Demo - wersja live
 Dostępna jest pod adresem: https://demo.sklep-sms.pl
 
-## Instalacja
-Instrukcję instalacji krok po kroku można znaleźć tutaj: https://sklep-sms.pl/config
-
 ## Licencja
-W celu zakupu licencji należy udać się pod adres: https://sklep.sklep-sms.pl
+Zakupu licencji można dokonać pod adresem: https://sklep.sklep-sms.pl
 
-## Społeczność
-Dostępne jest także forum dla społeczności klientów sklepu: https://forum.sklep-sms.pl
+## Instalacja
+Instrukcja instalacji krok po kroku: https://sklep-sms.pl/config
