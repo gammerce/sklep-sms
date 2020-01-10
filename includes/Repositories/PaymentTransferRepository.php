@@ -39,7 +39,7 @@ class PaymentTransferRepository
                     "payment_transfer` " .
                     "SET `id` = ?, `income` = ?, `transfer_service` = ?, `ip` = ?, `platform` = ?, `free` = ? "
             )
-            ->execute([$id, $income, $transferService, $ip, $platform, $free]);
+            ->execute([$id, $income, $transferService, $ip, $platform, $free ? 1 : 0]);
 
         return $this->get($id);
     }
