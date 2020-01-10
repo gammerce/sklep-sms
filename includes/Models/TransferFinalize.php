@@ -149,14 +149,11 @@ class TransferFinalize
         $this->output = (string) $output;
     }
 
-    // TODO Use it
-    public function markAsTest()
+    /**
+     * @param bool $value
+     */
+    public function setTestMode($value)
     {
-        $this->test = true;
-    }
-
-    public function isTest()
-    {
-        return $this->test;
+        $this->test = (bool) $value;
     }
 }

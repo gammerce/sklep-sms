@@ -71,10 +71,11 @@ class Transferuj extends PaymentModule implements SupportTransfer
             $transferFinalize->setStatus(true);
         }
 
-        $transferFinalize->setOrderId($body['tr_id']);
-        $transferFinalize->setAmount($body['tr_amount']);
-        $transferFinalize->setDataFilename($body['tr_crc']);
-        $transferFinalize->setTransferService($body['id']);
+        $transferFinalize->setOrderId(array_get($body, 'tr_id'));
+        $transferFinalize->setAmount(array_get($body, 'tr_amount'));
+        $transferFinalize->setDataFilename(array_get($body, 'tr_crc'));
+        $transferFinalize->setTransferService(array_get($body, 'id'));
+        $transferFinalize->setTestMode(array_get($body, 'test_mode'));
         $transferFinalize->setOutput('TRUE');
 
         return $transferFinalize;
@@ -87,17 +88,18 @@ class Transferuj extends PaymentModule implements SupportTransfer
         }
 
         $isMd5Valid = $this->isMd5Valid(
-            $response['md5sum'],
-            number_format($response['tr_amount'], 2, '.', ''),
-            $response['tr_crc'],
-            $response['tr_id']
+            array_get($response, 'md5sum'),
+            number_format(array_get($response, 'tr_amount'), 2, '.', ''),
+            array_get($response, 'tr_crc'),
+            array_get($response, 'tr_id')
         );
 
         if (!$isMd5Valid) {
             return false;
         }
 
-        return $response['tr_status'] == 'TRUE' && $response['tr_error'] == 'none';
+        return array_get($response, 'tr_status') == 'TRUE' &&
+            array_get($response, 'tr_error') == 'none';
     }
 
     public static function getDataFields()
