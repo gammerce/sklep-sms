@@ -2,6 +2,7 @@
 namespace App\View\Pages;
 
 use App\Exceptions\UnauthorizedException;
+use App\Repositories\PricelistRepository;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -15,11 +16,15 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
     const PAGE_ID = 'pricelist';
     protected $privilege = 'manage_settings';
 
-    public function __construct()
+    /** @var PricelistRepository */
+    private $priceRepository;
+
+    public function __construct(PricelistRepository $priceRepository)
     {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->t('pricelist');
+        $this->priceRepository = $priceRepository;
     }
 
     protected function content(array $query, array $body)
@@ -90,15 +95,8 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
         }
 
         if ($boxId == "price_edit") {
-            $result = $this->db->query(
-                $this->db->prepare(
-                    "SELECT * FROM `" . TABLE_PREFIX . "pricelist` " . "WHERE `id` = '%d'",
-                    [$query['id']]
-                )
-            );
-            $price = $result->fetch();
-
-            $allServers = $price['server'] == -1 ? "selected" : "";
+            $price = $this->priceRepository->getOrFail($query['id']);
+            $allServers = $price->getServer() == -1 ? "selected" : "";
         }
 
         // Pobranie usług

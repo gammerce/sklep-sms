@@ -1,6 +1,7 @@
 <?php
 namespace App\Repositories;
 
+use App\Exceptions\EntityNotFoundException;
 use App\Models\Price;
 use App\System\Database;
 
@@ -28,6 +29,15 @@ class PriceRepository
         }
 
         return null;
+    }
+
+    public function getOrFail($id)
+    {
+        if ($paymentPlatform = $this->get($id)) {
+            return $paymentPlatform;
+        }
+
+        throw new EntityNotFoundException();
     }
 
     public function create($service, $server, $smsPrice, $transferPrice, $quantity)
