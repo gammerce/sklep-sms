@@ -4,7 +4,7 @@ namespace Tests\Feature\Payment;
 use App\Models\Purchase;
 use App\Models\User;
 use App\Payment\ServiceCodePaymentService;
-use App\Repositories\PaymentCodeRespository;
+use App\Repositories\PaymentCodeRepository;
 use App\Repositories\ServiceCodeRepository;
 use App\System\Heart;
 use Tests\Psr4\TestCases\TestCase;
@@ -21,8 +21,8 @@ class ServiceCodePaymentServiceTest extends TestCase
         /** @var Heart $heart */
         $heart = $this->app->make(Heart::class);
 
-        /** @var PaymentCodeRespository $paymentCodeRespository */
-        $paymentCodeRespository = $this->app->make(PaymentCodeRespository::class);
+        /** @var PaymentCodeRepository $paymentCodeRepository */
+        $paymentCodeRepository = $this->app->make(PaymentCodeRepository::class);
 
         /** @var ServiceCodeRepository $serviceCodeRepository */
         $serviceCodeRepository = $this->app->make(ServiceCodeRepository::class);
@@ -47,7 +47,7 @@ class ServiceCodePaymentServiceTest extends TestCase
 
         // then
         $this->assertInternalType("int", $paymentCodeId);
-        $paymentCode = $paymentCodeRespository->get($paymentCodeId);
+        $paymentCode = $paymentCodeRepository->get($paymentCodeId);
         $this->assertNotNull($paymentCode);
         $this->assertEquals($serviceCode->getCode(), $paymentCode->getCode());
 

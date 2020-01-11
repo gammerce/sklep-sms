@@ -26,13 +26,14 @@ class UserRepository
         $wallet = 0
     ) {
         $salt = get_random_string(8);
-        $this->db->statement(
-            "INSERT INTO `" .
-            TABLE_PREFIX .
-            "users` (`username`, `password`, `salt`, `email`, `forename`, `surname`, `regip`, `groups`, `wallet`, `steam_id`, `regdate`) " .
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())"
-        )->execute(
-            [
+        $this->db
+            ->statement(
+                "INSERT INTO `" .
+                    TABLE_PREFIX .
+                    "users` (`username`, `password`, `salt`, `email`, `forename`, `surname`, `regip`, `groups`, `wallet`, `steam_id`, `regdate`) " .
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())"
+            )
+            ->execute([
                 $username,
                 hash_password($password, $salt),
                 $salt,
@@ -43,22 +44,22 @@ class UserRepository
                 $groups,
                 $wallet,
                 $steamId,
-            ]
-        );
+            ]);
 
         return $this->get($this->db->lastId());
     }
 
     public function update(User $user)
     {
-        $this->db->statement(
-            "UPDATE `" .
-            TABLE_PREFIX .
-            "users` " .
-            "SET `username` = ?, `forename` = ?, `surname` = ?, `email` = ?, `groups` = ?, `wallet` = ?, `steam_id` = ? " .
-            "WHERE `uid` = ?"
-        )->execute(
-            [
+        $this->db
+            ->statement(
+                "UPDATE `" .
+                    TABLE_PREFIX .
+                    "users` " .
+                    "SET `username` = ?, `forename` = ?, `surname` = ?, `email` = ?, `groups` = ?, `wallet` = ?, `steam_id` = ? " .
+                    "WHERE `uid` = ?"
+            )
+            ->execute([
                 $user->getUsername(),
                 $user->getForename(),
                 $user->getSurname(),
@@ -67,8 +68,7 @@ class UserRepository
                 $user->getWallet(),
                 $user->getSteamId(),
                 $user->getUid(),
-            ]
-        );
+            ]);
     }
 
     /**
@@ -95,7 +95,9 @@ class UserRepository
     public function get($id)
     {
         if ($id) {
-            $statement = $this->db->statement("SELECT * FROM `" . TABLE_PREFIX . "users` WHERE `uid` = ?");
+            $statement = $this->db->statement(
+                "SELECT * FROM `" . TABLE_PREFIX . "users` WHERE `uid` = ?"
+            );
             $statement->execute([$id]);
 
             if ($data = $statement->fetch()) {
@@ -120,13 +122,9 @@ class UserRepository
         $steamIdSuffix = preg_replace("/^STEAM_[01]/", "", $steamId);
 
         $statement = $this->db->statement(
-            "SELECT * FROM `" .
-            TABLE_PREFIX .
-            "users` WHERE `steam_id` IN (?, ?)"
+            "SELECT * FROM `" . TABLE_PREFIX . "users` WHERE `steam_id` IN (?, ?)"
         );
-        $statement->execute(
-            ["STEAM_0{$steamIdSuffix}", "STEAM_1{$steamIdSuffix}"]
-        );
+        $statement->execute(["STEAM_0{$steamIdSuffix}", "STEAM_1{$steamIdSuffix}"]);
 
         $data = $statement->fetch();
         return $data ? $this->mapToModel($data) : null;
@@ -145,9 +143,9 @@ class UserRepository
 
         $statement = $this->db->statement(
             "SELECT * FROM `" .
-            TABLE_PREFIX .
-            "users` " .
-            "WHERE (`username` = ? OR `email` = ?) AND `password` = md5(CONCAT(md5(?), md5(`salt`)))"
+                TABLE_PREFIX .
+                "users` " .
+                "WHERE (`username` = ? OR `email` = ?) AND `password` = md5(CONCAT(md5(?), md5(`salt`)))"
         );
         $statement->execute([$emailOrUsername, $emailOrUsername, $password]);
 
@@ -159,7 +157,7 @@ class UserRepository
     private function mapToModel(array $data)
     {
         return new User(
-            (int)$data['uid'],
+            (int) $data['uid'],
             $data['username'],
             $data['password'],
             $data['salt'],
@@ -170,7 +168,7 @@ class UserRepository
             explode(';', $data['groups']),
             $data['regdate'],
             $data['lastactiv'],
-            (int)$data['wallet'],
+            (int) $data['wallet'],
             $data['regip'],
             $data['lastip'],
             $data['reset_password_key']

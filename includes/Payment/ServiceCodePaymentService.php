@@ -3,7 +3,7 @@ namespace App\Payment;
 
 use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
-use App\Repositories\PaymentCodeRespository;
+use App\Repositories\PaymentCodeRepository;
 use App\Repositories\ServiceCodeRepository;
 use App\ServiceModules\ServiceModule;
 use App\System\Database;
@@ -21,7 +21,7 @@ class ServiceCodePaymentService
     /** @var ServiceCodeRepository */
     private $serviceCodeRepository;
 
-    /** @var PaymentCodeRespository */
+    /** @var PaymentCodeRepository */
     private $paymentCodeRepository;
 
     /** @var DatabaseLogger */
@@ -31,7 +31,7 @@ class ServiceCodePaymentService
         TranslationManager $translationManager,
         Database $db,
         ServiceCodeRepository $serviceCodeRepository,
-        PaymentCodeRespository $paymentCodeRepository,
+        PaymentCodeRepository $paymentCodeRepository,
         DatabaseLogger $logger
     ) {
         $this->lang = $translationManager->user();

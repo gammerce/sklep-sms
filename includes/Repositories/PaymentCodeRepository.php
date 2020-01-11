@@ -4,7 +4,7 @@ namespace App\Repositories;
 use App\Models\PaymentCode;
 use App\System\Database;
 
-class PaymentCodeRespository
+class PaymentCodeRepository
 {
     /** @var Database */
     private $db;
@@ -16,15 +16,14 @@ class PaymentCodeRespository
 
     public function create($code, $ip, $platform)
     {
-        $this->db->query(
-            $this->db->prepare(
+        $this->db
+            ->statement(
                 "INSERT INTO `" .
                     TABLE_PREFIX .
                     "payment_code` " .
-                    "SET `code` = '%s', `ip` = '%s', `platform` = '%s'",
-                [$code, $ip, $platform]
+                    "SET `code` = ?, `ip` = ?, `platform` = ?"
             )
-        );
+            ->execute([$code, $ip, $platform]);
 
         return $this->get($this->db->lastId());
     }
@@ -32,14 +31,12 @@ class PaymentCodeRespository
     public function get($id)
     {
         if ($id) {
-            $result = $this->db->query(
-                $this->db->prepare(
-                    "SELECT * FROM `" . TABLE_PREFIX . "payment_code` WHERE `id` = '%d'",
-                    [$id]
-                )
+            $statement = $this->db->statement(
+                "SELECT * FROM `" . TABLE_PREFIX . "payment_code` WHERE `id` = ?"
             );
+            $statement->execute([$id]);
 
-            if ($data = $result->fetch()) {
+            if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
             }
         }
