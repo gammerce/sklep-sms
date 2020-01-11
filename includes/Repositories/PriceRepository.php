@@ -17,14 +17,12 @@ class PriceRepository
     public function get($id)
     {
         if ($id) {
-            $result = $this->db->query(
-                $this->db->prepare(
-                    "SELECT * FROM `" . TABLE_PREFIX . "pricelist` WHERE `id` = '%d'",
-                    [$id]
-                )
+            $statement = $this->db->statement(
+                "SELECT * FROM `" . TABLE_PREFIX . "pricelist` WHERE `id` = ?"
             );
+            $statement->execute([$id]);
 
-            if ($data = $result->fetch()) {
+            if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
             }
         }
@@ -34,15 +32,14 @@ class PriceRepository
 
     public function create($service, $tariff, $amount, $server)
     {
-        $this->db->query(
-            $this->db->prepare(
+        $this->db
+            ->statement(
                 "INSERT INTO `" .
                     TABLE_PREFIX .
                     "pricelist` (`service`, `tariff`, `amount`, `server`) " .
-                    "VALUES( '%s', '%d', '%d', '%d' )",
-                [$service, $tariff, $amount, $server]
+                    "VALUES ( ?, ?, ?, ? )"
             )
-        );
+            ->execute([$service, $tariff, $amount, $server]);
 
         return $this->get($this->db->lastId());
     }

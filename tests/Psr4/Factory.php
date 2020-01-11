@@ -148,7 +148,7 @@ class Factory
                 'email' => $this->faker->email,
                 'forename' => $this->faker->firstName,
                 'surname' => $this->faker->lastName,
-                'steam_id' => null,
+                'steam_id' => '',
                 'ip' => $this->faker->ipv4,
                 'groups' => '1',
                 'wallet' => 0,

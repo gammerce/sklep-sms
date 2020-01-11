@@ -26,51 +26,49 @@ class UserRepository
         $wallet = 0
     ) {
         $salt = get_random_string(8);
-        $this->db->query(
-            $this->db->prepare(
+        $this->db
+            ->statement(
                 "INSERT INTO `" .
                     TABLE_PREFIX .
                     "users` (`username`, `password`, `salt`, `email`, `forename`, `surname`, `regip`, `groups`, `wallet`, `steam_id`, `regdate`) " .
-                    "VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%d','%s',NOW())",
-                [
-                    $username,
-                    hash_password($password, $salt),
-                    $salt,
-                    $email,
-                    $forename,
-                    $surname,
-                    $ip,
-                    $groups,
-                    $wallet,
-                    $steamId,
-                ]
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())"
             )
-        );
+            ->execute([
+                $username,
+                hash_password($password, $salt),
+                $salt,
+                $email,
+                $forename,
+                $surname,
+                $ip,
+                $groups,
+                $wallet,
+                $steamId,
+            ]);
 
         return $this->get($this->db->lastId());
     }
 
     public function update(User $user)
     {
-        $this->db->query(
-            $this->db->prepare(
+        $this->db
+            ->statement(
                 "UPDATE `" .
                     TABLE_PREFIX .
                     "users` " .
-                    "SET `username` = '%s', `forename` = '%s', `surname` = '%s', `email` = '%s', `groups` = '%s', `wallet` = '%d', `steam_id` = '%s' " .
-                    "WHERE `uid` = '%d'",
-                [
-                    $user->getUsername(),
-                    $user->getForename(),
-                    $user->getSurname(),
-                    $user->getEmail(),
-                    implode(";", $user->getGroups()),
-                    $user->getWallet(),
-                    $user->getSteamId(),
-                    $user->getUid(),
-                ]
+                    "SET `username` = ?, `forename` = ?, `surname` = ?, `email` = ?, `groups` = ?, `wallet` = ?, `steam_id` = ? " .
+                    "WHERE `uid` = ?"
             )
-        );
+            ->execute([
+                $user->getUsername(),
+                $user->getForename(),
+                $user->getSurname(),
+                $user->getEmail(),
+                implode(";", $user->getGroups()),
+                $user->getWallet(),
+                $user->getSteamId(),
+                $user->getUid(),
+            ]);
     }
 
     /**
@@ -97,13 +95,12 @@ class UserRepository
     public function get($id)
     {
         if ($id) {
-            $result = $this->db->query(
-                $this->db->prepare("SELECT * FROM `" . TABLE_PREFIX . "users` WHERE `uid` = '%d'", [
-                    $id,
-                ])
+            $statement = $this->db->statement(
+                "SELECT * FROM `" . TABLE_PREFIX . "users` WHERE `uid` = ?"
             );
+            $statement->execute([$id]);
 
-            if ($data = $result->fetch()) {
+            if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
             }
         }
@@ -124,21 +121,13 @@ class UserRepository
         // SID can start with STEAM_0 or STEAM_1. They are used interchangeably.
         $steamIdSuffix = preg_replace("/^STEAM_[01]/", "", $steamId);
 
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT * FROM `" .
-                    TABLE_PREFIX .
-                    "users` WHERE `steam_id` IN ('STEAM_0%s', 'STEAM_1%s')",
-                [$steamIdSuffix, $steamIdSuffix]
-            )
+        $statement = $this->db->statement(
+            "SELECT * FROM `" . TABLE_PREFIX . "users` WHERE `steam_id` IN (?, ?)"
         );
+        $statement->execute(["STEAM_0{$steamIdSuffix}", "STEAM_1{$steamIdSuffix}"]);
 
-        if ($result->rowCount()) {
-            $data = $result->fetch();
-            return $this->mapToModel($data);
-        }
-
-        return null;
+        $data = $statement->fetch();
+        return $data ? $this->mapToModel($data) : null;
     }
 
     /**
@@ -152,17 +141,15 @@ class UserRepository
             return null;
         }
 
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT * FROM `" .
-                    TABLE_PREFIX .
-                    "users` " .
-                    "WHERE (`username` = '%s' OR `email` = '%s') AND `password` = md5(CONCAT(md5('%s'), md5(`salt`)))",
-                [$emailOrUsername, $emailOrUsername, $password]
-            )
+        $statement = $this->db->statement(
+            "SELECT * FROM `" .
+                TABLE_PREFIX .
+                "users` " .
+                "WHERE (`username` = ? OR `email` = ?) AND `password` = md5(CONCAT(md5(?), md5(`salt`)))"
         );
+        $statement->execute([$emailOrUsername, $emailOrUsername, $password]);
 
-        $data = $result->fetch();
+        $data = $statement->fetch();
 
         return $data ? $this->mapToModel($data) : null;
     }

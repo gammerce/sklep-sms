@@ -34,14 +34,12 @@ class ServiceRepository
     public function get($id)
     {
         if ($id) {
-            $result = $this->db->query(
-                $this->db->prepare(
-                    "SELECT * FROM `" . TABLE_PREFIX . "services` WHERE `id` = '%s'",
-                    [$id]
-                )
+            $statement = $this->db->statement(
+                "SELECT * FROM `" . TABLE_PREFIX . "services` WHERE `id` = ?"
             );
+            $statement->execute([$id]);
 
-            if ($data = $result->fetch()) {
+            if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
             }
         }
@@ -62,27 +60,27 @@ class ServiceRepository
         $types = 0,
         $flags = ''
     ) {
-        $this->db->query(
-            $this->db->prepare(
+        $this->db
+            ->statement(
                 "INSERT INTO `" .
                     TABLE_PREFIX .
                     "services` " .
-                    "SET `id`='%s', `name`='%s', `short_description`='%s', `description`='%s', `tag`='%s', `module`='%s', `groups`='%s', `order` = '%d', `data`='%s', `types`='%d', `flags`='%s'",
-                [
-                    $id,
-                    $name,
-                    $shortDescription,
-                    $description,
-                    $tag,
-                    $module,
-                    implode(";", $groups),
-                    $order,
-                    json_encode($data),
-                    $types,
-                    $flags,
-                ]
+                    "SET `id` = ?, `name` = ?, `short_description` = ?, `description` = ?, `tag` = ?, " .
+                    "`module` = ?, `groups` = ?, `order` = ?, `data` = ?, `types` = ?, `flags` = ?"
             )
-        );
+            ->execute([
+                $id,
+                $name,
+                $shortDescription ?: '',
+                $description ?: '',
+                $tag ?: '',
+                $module,
+                implode(";", $groups),
+                $order,
+                json_encode($data),
+                $types,
+                $flags,
+            ]);
 
         return $this->get($id);
     }
@@ -100,40 +98,37 @@ class ServiceRepository
         $types,
         $flags
     ) {
-        $statement = $this->db->query(
-            $this->db->prepare(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "services` " .
-                    "SET `id`='%s', `name`='%s', `short_description`='%s', `description`='%s', `tag`='%s', `groups`='%s', `order` = '%d', `data`='%s', `types`='%d', `flags`='%s' " .
-                    "WHERE `id` = '%s'",
-                [
-                    $newId,
-                    $name,
-                    $shortDescription,
-                    $description,
-                    $tag,
-                    implode(";", $groups),
-                    $order,
-                    json_encode($data),
-                    $types,
-                    $flags,
-                    $id,
-                ]
-            )
+        $statement = $this->db->statement(
+            "UPDATE `" .
+                TABLE_PREFIX .
+                "services` " .
+                "SET `id` = ?, `name` = ?, `short_description` = ?, `description` = ?, `tag` = ?, " .
+                "`groups` = ?, `order` = ?, `data` = ?, `types` = ?, `flags` = ? " .
+                "WHERE `id` = ?"
         );
+        $statement->execute([
+            $newId,
+            $name,
+            $shortDescription ?: '',
+            $description ?: '',
+            $tag ?: '',
+            implode(";", $groups),
+            $order,
+            json_encode($data),
+            $types,
+            $flags,
+            $id,
+        ]);
 
         return !!$statement->rowCount();
     }
 
     public function delete($id)
     {
-        $statement = $this->db->query(
-            $this->db->prepare(
-                "DELETE FROM `" . TABLE_PREFIX . "services` " . "WHERE `id` = '%s'",
-                [$id]
-            )
+        $statement = $this->db->statement(
+            "DELETE FROM `" . TABLE_PREFIX . "services` " . "WHERE `id` = ?"
         );
+        $statement->execute([$id]);
 
         return !!$statement->rowCount();
     }

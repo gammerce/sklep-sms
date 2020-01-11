@@ -17,14 +17,12 @@ class BoughtServiceRepository
     public function get($id)
     {
         if ($id) {
-            $result = $this->db->query(
-                $this->db->prepare(
-                    "SELECT * FROM `" . TABLE_PREFIX . "bought_services` WHERE `id` = '%d'",
-                    [$id]
-                )
+            $statement = $this->db->statement(
+                "SELECT * FROM `" . TABLE_PREFIX . "bought_services` WHERE `id` = ?"
             );
+            $statement->execute([$id]);
 
-            if ($data = $result->fetch()) {
+            if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
             }
         }
@@ -43,26 +41,25 @@ class BoughtServiceRepository
         $email,
         $extraData = []
     ) {
-        $this->db->query(
-            $this->db->prepare(
+        $this->db
+            ->statement(
                 "INSERT INTO `" .
                     TABLE_PREFIX .
                     "bought_services` " .
-                    "SET `uid` = '%d', `payment` = '%s', `payment_id` = '%s', `service` = '%s', " .
-                    "`server` = '%d', `amount` = '%s', `auth_data` = '%s', `email` = '%s', `extra_data` = '%s'",
-                [
-                    $uid,
-                    $method,
-                    $paymentId,
-                    $service,
-                    $server,
-                    $amount,
-                    $authData,
-                    $email,
-                    json_encode($extraData),
-                ]
+                    "SET `uid` = ?, `payment` = ?, `payment_id` = ?, `service` = ?, " .
+                    "`server` = ?, `amount` = ?, `auth_data` = ?, `email` = ?, `extra_data` = ?"
             )
-        );
+            ->execute([
+                $uid ?: 0,
+                $method,
+                $paymentId,
+                $service,
+                $server,
+                $amount ?: 0,
+                $authData ?: '',
+                $email ?: '',
+                json_encode($extraData),
+            ]);
 
         return $this->get($this->db->lastId());
     }

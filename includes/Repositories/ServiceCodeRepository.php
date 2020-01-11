@@ -23,15 +23,14 @@ class ServiceCodeRepository
         $tariff = 0,
         $data = ""
     ) {
-        $this->db->query(
-            $this->db->prepare(
+        $this->db
+            ->statement(
                 "INSERT INTO `" .
                     TABLE_PREFIX .
                     "service_codes` " .
-                    "SET `code` = '%s', `service` = '%s', `uid` = '%d', `server` = '%d', `amount` = '%d', `tariff` = '%d', `data` = '%s'",
-                [$code, $serviceId, $uid, $serverId, $amount, $tariff, $data]
+                    "SET `code` = ?, `service` = ?, `uid` = ?, `server` = ?, `amount` = ?, `tariff` = ?, `data` = ?"
             )
-        );
+            ->execute([$code, $serviceId, $uid, $serverId, $amount, $tariff, $data]);
 
         return $this->get($this->db->lastId());
     }
@@ -39,14 +38,12 @@ class ServiceCodeRepository
     public function get($id)
     {
         if ($id) {
-            $result = $this->db->query(
-                $this->db->prepare(
-                    "SELECT * FROM `" . TABLE_PREFIX . "service_codes` WHERE `id` = '%d'",
-                    [$id]
-                )
+            $statement = $this->db->statement(
+                "SELECT * FROM `" . TABLE_PREFIX . "service_codes` WHERE `id` = ?"
             );
+            $statement->execute([$id]);
 
-            if ($data = $result->fetch()) {
+            if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
             }
         }
@@ -56,12 +53,10 @@ class ServiceCodeRepository
 
     public function delete($id)
     {
-        $statement = $this->db->query(
-            $this->db->prepare(
-                "DELETE FROM `" . TABLE_PREFIX . "service_codes` " . "WHERE `id` = '%d'",
-                [$id]
-            )
+        $statement = $this->db->statement(
+            "DELETE FROM `" . TABLE_PREFIX . "service_codes` WHERE `id` = ?"
         );
+        $statement->execute([$id]);
 
         return !!$statement->rowCount();
     }
