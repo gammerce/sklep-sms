@@ -1,19 +1,19 @@
 <?php
 namespace Tests\Feature\Http\Api\Admin;
 
-use App\Repositories\PriceRepository;
+use App\Repositories\PricelistRepository;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class PriceCollectionTest extends HttpTestCase
 {
-    /** @var PriceRepository */
+    /** @var PricelistRepository */
     private $priceRepository;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->priceRepository = $this->app->make(PriceRepository::class);
+        $this->priceRepository = $this->app->make(PricelistRepository::class);
     }
 
     /** @test */

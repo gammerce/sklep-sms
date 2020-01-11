@@ -2,6 +2,7 @@
 namespace Tests\Psr4;
 
 use App\Repositories\PaymentPlatformRepository;
+use App\Repositories\PricelistRepository;
 use App\Repositories\PriceRepository;
 use App\Repositories\ServerRepository;
 use App\Repositories\ServerServiceRepository;
@@ -23,8 +24,8 @@ class Factory
     /** @var ServerRepository */
     private $serverRepository;
 
-    /** @var PriceRepository */
-    private $priceRepository;
+    /** @var PricelistRepository */
+    private $pricelistRepository;
 
     /** @var ServerServiceRepository */
     private $serverServiceRepository;
@@ -35,21 +36,26 @@ class Factory
     /** @var PaymentPlatformRepository */
     private $paymentPlatformRepository;
 
+    /** @var PriceRepository */
+    private $priceRepository;
+
     public function __construct(
         UserRepository $userRepository,
         ServerRepository $serverRepository,
         ServiceRepository $serviceRepository,
+        PricelistRepository $pricelistRepository,
         PriceRepository $priceRepository,
         ServerServiceRepository $serverServiceRepository,
         PaymentPlatformRepository $paymentPlatformRepository
     ) {
+        $this->faker = FakerFactory::create();
         $this->userRepository = $userRepository;
         $this->serverRepository = $serverRepository;
-        $this->priceRepository = $priceRepository;
+        $this->pricelistRepository = $pricelistRepository;
         $this->serverServiceRepository = $serverServiceRepository;
         $this->serviceRepository = $serviceRepository;
-        $this->faker = FakerFactory::create();
         $this->paymentPlatformRepository = $paymentPlatformRepository;
+        $this->priceRepository = $priceRepository;
     }
 
     public function server(array $attributes = [])
@@ -115,7 +121,7 @@ class Factory
         );
     }
 
-    public function price(array $attributes = [])
+    public function pricelist(array $attributes = [])
     {
         $attributes = array_merge(
             [
@@ -126,11 +132,33 @@ class Factory
             $attributes
         );
 
-        return $this->priceRepository->create(
+        return $this->pricelistRepository->create(
             $attributes['service_id'],
             $attributes['tariff'],
             $attributes['amount'],
             $attributes['server_id']
+        );
+    }
+
+    public function price(array $attributes = [])
+    {
+        $attributes = array_merge(
+            [
+                'service_id' => 'vip',
+                'server_id' => null,
+                'sms_price' => 10,
+                'transfer_price' => null,
+                'quantity' => $this->faker->numberBetween(1, 100),
+            ],
+            $attributes
+        );
+
+        return $this->priceRepository->create(
+            $attributes['service_id'],
+            $attributes['server_id'],
+            $attributes['sms_price'],
+            $attributes['transfer_price'],
+            $attributes['quantity']
         );
     }
 

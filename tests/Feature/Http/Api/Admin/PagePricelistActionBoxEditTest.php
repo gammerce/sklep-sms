@@ -10,7 +10,7 @@ class PagePricelistActionBoxEditTest extends HttpTestCase
     {
         // give
         $server = $this->factory->server();
-        $price = $this->factory->price([
+        $price = $this->factory->pricelist([
             'server_id' => $server->getId(),
         ]);
         $admin = $this->factory->admin();
@@ -33,7 +33,7 @@ class PagePricelistActionBoxEditTest extends HttpTestCase
     {
         // give
         $server = $this->factory->server();
-        $price = $this->factory->price([
+        $price = $this->factory->pricelist([
             'server_id' => $server->getId(),
         ]);
         $admin = $this->factory->user();

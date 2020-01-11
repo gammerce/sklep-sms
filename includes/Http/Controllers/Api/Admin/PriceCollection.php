@@ -5,7 +5,7 @@ use App\Http\Responses\ErrorApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\PriceService;
 use App\Loggers\DatabaseLogger;
-use App\Repositories\PriceRepository;
+use App\Repositories\PricelistRepository;
 use App\Translation\TranslationManager;
 use PDOException;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +16,7 @@ class PriceCollection
         Request $request,
         TranslationManager $translationManager,
         PriceService $priceService,
-        PriceRepository $priceRepository,
+        PricelistRepository $priceRepository,
         DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();

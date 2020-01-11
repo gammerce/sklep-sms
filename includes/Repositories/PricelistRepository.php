@@ -1,10 +1,10 @@
 <?php
 namespace App\Repositories;
 
-use App\Models\Price;
+use App\Models\PriceList;
 use App\System\Database;
 
-class PriceRepository
+class PricelistRepository
 {
     /** @var Database */
     private $db;
@@ -18,7 +18,7 @@ class PriceRepository
     {
         if ($id) {
             $statement = $this->db->statement(
-                "SELECT * FROM `" . TABLE_PREFIX . "prices` WHERE `id` = ?"
+                "SELECT * FROM `" . TABLE_PREFIX . "pricelist` WHERE `id` = ?"
             );
             $statement->execute([$id]);
 
@@ -30,29 +30,28 @@ class PriceRepository
         return null;
     }
 
-    public function create($service, $server, $smsPrice, $transferPrice, $quantity)
+    public function create($service, $tariff, $amount, $server)
     {
         $this->db
             ->statement(
                 "INSERT INTO `" .
                     TABLE_PREFIX .
-                    "prices` (`service`, `server`, `sms_price`, `transfer_price`, `quantity`) " .
-                    "VALUES ( ?, ?, ?, ?, ? )"
+                    "pricelist` (`service`, `tariff`, `amount`, `server`) " .
+                    "VALUES ( ?, ?, ?, ? )"
             )
-            ->execute([$service, $server, $smsPrice, $transferPrice, $quantity]);
+            ->execute([$service, $tariff, $amount, $server]);
 
         return $this->get($this->db->lastId());
     }
 
     private function mapToModel(array $data)
     {
-        return new Price(
+        return new PriceList(
             (int) $data['id'],
             $data['service'],
-            $data['server'] !== null ? (int) $data['server'] : null,
-            $data['sms_price'] !== null ? (int) $data['sms_price'] : null,
-            $data['transfer_price'] !== null ? (int) $data['transfer_price'] : null,
-            (int) $data['quantity']
+            (int) $data['tariff'],
+            (int) $data['amount'],
+            (int) $data['server']
         );
     }
 }
