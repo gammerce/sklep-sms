@@ -21,13 +21,17 @@ class SettingsRepository
 
         $conditions = [];
         $keys = [];
+        $params = [];
 
         foreach ($values as $key => $value) {
-            $conditions[] = $this->db->prepare("WHEN '%s' THEN '%s'", [$key, $value]);
-            $keys[] = $this->db->prepare("'%s'", [$key]);
+            $conditions[] = "WHEN ? THEN ?";
+            $params[] = $key;
+            $params[] = $value;
+            $keys[] = '?';
+            $params[] = $key;
         }
 
-        $statement = $this->db->query(
+        $statement = $this->db->statement(
             "UPDATE `" .
                 TABLE_PREFIX .
                 "settings` " .
@@ -38,6 +42,7 @@ class SettingsRepository
                 implode(", ", $keys) .
                 " )"
         );
+        $statement->execute($params);
 
         return !!$statement->rowCount();
     }
