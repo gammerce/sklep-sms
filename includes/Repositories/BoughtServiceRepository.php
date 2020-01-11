@@ -50,14 +50,14 @@ class BoughtServiceRepository
                     "`server` = ?, `amount` = ?, `auth_data` = ?, `email` = ?, `extra_data` = ?"
             )
             ->execute([
-                $uid,
+                $uid ?: 0,
                 $method,
                 $paymentId,
                 $service,
                 $server,
-                $amount,
-                $authData,
-                $email,
+                $amount ?: 0,
+                $authData ?: '',
+                $email ?: '',
                 json_encode($extraData),
             ]);
 

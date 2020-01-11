@@ -27,6 +27,9 @@ class SettingsRepository
             $conditions[] = "WHEN ? THEN ?";
             $params[] = $key;
             $params[] = $value;
+        }
+
+        foreach (array_keys($values) as $key) {
             $keys[] = '?';
             $params[] = $key;
         }

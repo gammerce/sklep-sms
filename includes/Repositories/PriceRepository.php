@@ -32,14 +32,14 @@ class PriceRepository
 
     public function create($service, $tariff, $amount, $server)
     {
-            $this->db->statement(
+        $this->db
+            ->statement(
                 "INSERT INTO `" .
                     TABLE_PREFIX .
                     "pricelist` (`service`, `tariff`, `amount`, `server`) " .
                     "VALUES ( ?, ?, ?, ? )"
-            )->execute(
-                [$service, $tariff, $amount, $server]
-            );
+            )
+            ->execute([$service, $tariff, $amount, $server]);
 
         return $this->get($this->db->lastId());
     }
