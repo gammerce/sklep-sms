@@ -3,6 +3,8 @@ namespace App\Repositories;
 
 use App\Exceptions\EntityNotFoundException;
 use App\Models\Price;
+use App\Models\Server;
+use App\Models\Service;
 use App\System\Database;
 
 class PriceRepository
@@ -52,6 +54,18 @@ class PriceRepository
             ->execute([$service, $server, $smsPrice, $transferPrice, $quantity]);
 
         return $this->get($this->db->lastId());
+    }
+
+    public function findByServiceServerAndSmsPrice(Service $service, Server $server, $smsPrice)
+    {
+        $statement = $this->db->statement(
+            "SELECT * FROM `" . TABLE_PREFIX . "prices` " .
+            "WHERE `service` = ? AND (`server` = ? OR `server` IS NULL) AND `sms_price` = ?"
+        );
+        $statement->execute([$service->getId(), $server->getId(), $smsPrice]);
+        $data = $statement->fetch();
+
+        return $data ? $this->mapToModel($data) : null;
     }
 
     private function mapToModel(array $data)

@@ -60,4 +60,9 @@ class Price
     {
         return $this->quantity;
     }
+
+    public function isForever()
+    {
+        return $this->quantity === null;
+    }
 }

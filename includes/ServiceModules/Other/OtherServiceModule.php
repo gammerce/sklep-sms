@@ -4,6 +4,7 @@ namespace App\ServiceModules\Other;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Payment\BoughtServiceService;
+use App\Repositories\PriceRepository;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceAvailableOnServers;
 use App\ServiceModules\Interfaces\IServiceCreate;
@@ -32,12 +33,16 @@ class OtherServiceModule extends ServiceModule implements
     /** @var BoughtServiceService */
     private $boughtServiceService;
 
+    /** @var PriceRepository */
+    private $priceRepository;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
 
         $this->heart = $this->app->make(Heart::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
+        $this->priceRepository = $this->app->make(PriceRepository::class);
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
@@ -64,7 +69,6 @@ class OtherServiceModule extends ServiceModule implements
         }
 
         // Wartość usługi
-        $price = [];
         if (!strlen($purchaseData->getTariff())) {
             $warnings['value'][] = $this->lang->t('must_choose_amount');
         } else {
@@ -88,7 +92,18 @@ class OtherServiceModule extends ServiceModule implements
                 ];
             }
 
-            $price = $result->fetch();
+            // TODO Use smsPrice instead of tariff
+            $price = $this->priceRepository->findByServiceServerAndSmsPrice(
+                $this->service, $server, $purchaseData->getTariff()
+            );
+
+            if (!$price) {
+                return [
+                    'status' => "no_option",
+                    'text' => $this->lang->t('service_not_affordable'),
+                    'positive' => false,
+                ];
+            }
         }
 
         // E-mail
@@ -100,7 +115,7 @@ class OtherServiceModule extends ServiceModule implements
         }
 
         // Jeżeli są jakieś błedy, to je zwróć
-        if (!empty($warnings)) {
+        if ($warnings) {
             return [
                 'status' => "warnings",
                 'text' => $this->lang->t('form_wrong_filled'),
@@ -110,8 +125,8 @@ class OtherServiceModule extends ServiceModule implements
         }
 
         $purchaseData->setOrder([
-            'amount' => $price['amount'],
-            'forever' => $price['amount'] == -1 ? true : false,
+            'amount' => $price->getQuantity(),
+            'forever' => $price->isForever(),
         ]);
 
         $purchaseData->setPayment([

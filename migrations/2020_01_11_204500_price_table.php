@@ -35,3 +35,6 @@ EOF
         ]);
     }
 }
+
+// TODO Add unique keys
+// TODO Make quantity nullable
