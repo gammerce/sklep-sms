@@ -8,6 +8,7 @@ $(document).delegate("#form_purchase [name=amount]", "change", function() {
         return;
     }
 
+    // TODO Change it
     var values = $(this)
         .val()
         .split(";");

@@ -15,6 +15,7 @@ return [
     'cancel' => 'Anuluj',
     'choose_amount' => 'Wybierz ilość',
     'choose_option' => 'Wybierz opcję',
+    'choose_quantity' => 'Wybierz ilość',
     'choose_server' => 'Wybierz serwer',
     'choose_service' => 'Wybierz usługę',
     'choose_type' => 'Wybierz rodzaj',

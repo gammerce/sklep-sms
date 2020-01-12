@@ -1,1 +1,7 @@
-<option value="{{ $provision }};{{ $smsCost }};{{ $row['tariff'] }}">{{ $amount }}</option>
+<option
+    value="{{ $priceId }}"
+    data-sms-price="{{ $smsPrice }}"
+    data-transfer-price="{{ $transferPrice }}"
+>
+  {{ $quantity }}
+</option>

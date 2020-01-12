@@ -4,10 +4,12 @@ namespace App\ServiceModules\MybbExtraGroups;
 use App\Exceptions\InvalidConfigException;
 use App\Loggers\DatabaseLogger;
 use App\Models\MybbUser;
+use App\Models\Price;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Payment\AdminPaymentService;
 use App\Payment\BoughtServiceService;
+use App\Repositories\PriceRepository;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServicePurchase;
@@ -71,6 +73,9 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     /** @var AdminPaymentService */
     private $adminPaymentService;
 
+    /** @var PriceRepository */
+    private $priceRepository;
+
     /** @var DatabaseLogger */
     private $logger;
 
@@ -83,6 +88,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
         $this->logger = $this->app->make(DatabaseLogger::class);
         $this->adminPaymentService = $this->app->make(AdminPaymentService::class);
+        $this->priceRepository = $this->app->make(PriceRepository::class);
         $this->settings = $this->app->make(Settings::class);
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
@@ -311,49 +317,49 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             $this->settings->getSmsPlatformId()
         );
 
-        // Get tariffs
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT sn.number AS `sms_number`, t.provision AS `provision`, t.id AS `tariff`, p.amount AS `amount` " .
-                    "FROM `" .
-                    TABLE_PREFIX .
-                    "pricelist` AS p " .
-                    "INNER JOIN `" .
-                    TABLE_PREFIX .
-                    "tariffs` AS t ON t.id = p.tariff " .
-                    "LEFT JOIN `" .
-                    TABLE_PREFIX .
-                    "sms_numbers` AS sn ON sn.tariff = p.tariff AND sn.service = '%s' " .
-                    "WHERE p.service = '%s' " .
-                    "ORDER BY t.provision ASC",
-                [$paymentModule->getModuleId(), $this->service->getId()]
-            )
-        );
+        // TODO Remove sms numbers from database or change tariff to sms_price
+        // TODO Filter out prices that does not match sms/transfer platform
 
-        $amounts = "";
-        foreach ($result as $row) {
-            $smsCost = strlen($row['sms_number'])
-                ? number_format(
-                    (get_sms_cost($row['sms_number']) / 100) * $this->settings->getVat(),
-                    2
-                )
-                : 0;
-            $amount =
-                $row['amount'] != -1
-                    ? $row['amount'] . " " . $this->service->getTag()
-                    : $this->lang->t('forever');
-            $provision = number_format($row['provision'] / 100, 2);
-            $amounts .= $this->template->render(
-                "services/mybb_extra_groups/purchase_value",
-                compact('provision', 'smsCost', 'row', 'amount'),
-                true,
-                false
-            );
+        $statement = $this->db->statement(
+            "SELECT p.* " .
+                "FROM `" .
+                TABLE_PREFIX .
+                "prices` AS p " .
+                "WHERE p.service = ? " .
+                "ORDER BY p.sms_price ASC"
+        );
+        $statement->execute([$paymentModule->getModuleId(), $this->service->getId()]);
+
+        $quantities = "";
+        foreach ($statement as $row) {
+            $price = $this->priceRepository->mapToModel($row);
+            $quantities .= $this->renderPurchaseValue($price);
         }
 
         return $this->template->render(
             "services/mybb_extra_groups/purchase_form",
-            compact('amounts', 'user') + ['serviceId' => $this->service->getId()]
+            compact('quantities', 'user') + ['serviceId' => $this->service->getId()]
+        );
+    }
+
+    private function renderPurchaseValue(Price $price)
+    {
+        $smsPrice = $price->getSmsPrice() !== null
+            ? number_format($price->getSmsPrice() / 100 * $this->settings->getVat(), 2)
+            : 0;
+
+        $transferPrice = $price->getTransferPrice() !== null
+            ? number_format($price->getTransferPrice() / 100 * $this->settings->getVat(), 2)
+            : 0;
+
+        $quantity =
+            $price->isForever()
+                ? $this->lang->t('forever')
+                : $price->getQuantity() . " " . $this->service->getTag();
+
+        return $this->template->renderNoComments(
+            "services/mybb_extra_groups/purchase_value",
+            compact('priceId', 'quantity', 'smsPrice', 'transferPrice')
         );
     }
 

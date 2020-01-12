@@ -12,10 +12,18 @@ class Price
     /** @var int|null */
     private $server;
 
-    /** @var int */
+    /**
+     * Price in grosze
+     *
+     * @var int
+     */
     private $smsPrice;
 
-    /** @var int */
+    /**
+     * Price in grosze
+     *
+     * @var int
+     */
     private $transferPrice;
 
     /** @var int */

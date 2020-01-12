@@ -94,7 +94,7 @@ class PriceRepository
         return !!$statement->rowCount();
     }
 
-    private function mapToModel(array $data)
+    public function mapToModel(array $data)
     {
         return new Price(
             (int) $data['id'],

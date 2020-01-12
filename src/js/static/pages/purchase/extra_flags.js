@@ -27,6 +27,7 @@ $(document).delegate("#form_purchase [name=value]", "change", function() {
         return;
     }
 
+    // TODO Change it
     var values = $(this)
         .val()
         .split(";");

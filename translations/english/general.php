@@ -15,6 +15,7 @@ return [
     'cancel' => 'Cancel',
     'choose_amount' => 'Choose amount',
     'choose_option' => 'Choose option',
+    'choose_quantity' => 'Choose quantity',
     'choose_server' => 'Choose server',
     'choose_service' => 'Choose service',
     'choose_type' => 'Choose type',
