@@ -29,6 +29,7 @@ class PageAdminPriceList extends PageAdmin implements IPageAdminActionBox
 
     protected function content(array $query, array $body)
     {
+        // TODO Use prices instead of pricelist
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
 

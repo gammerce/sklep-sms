@@ -72,29 +72,11 @@ class OtherServiceModule extends ServiceModule implements
         if (!strlen($purchaseData->getTariff())) {
             $warnings['value'][] = $this->lang->t('must_choose_amount');
         } else {
-            // Wyszukiwanie usługi o konkretnej cenie
-            $result = $this->db->query(
-                $this->db->prepare(
-                    "SELECT * FROM `" .
-                        TABLE_PREFIX .
-                        "pricelist` " .
-                        "WHERE `service` = '%s' AND `tariff` = '%d' AND ( `server` = '%d' OR `server` = '-1' )",
-                    [$this->service->getId(), $purchaseData->getTariff(), $server->getId()]
-                )
-            );
-
-            if (!$result->rowCount()) {
-                // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
-                return [
-                    'status' => "no_option",
-                    'text' => $this->lang->t('service_not_affordable'),
-                    'positive' => false,
-                ];
-            }
-
             // TODO Use smsPrice instead of tariff
             $price = $this->priceRepository->findByServiceServerAndSmsPrice(
-                $this->service, $server, $purchaseData->getTariff()
+                $this->service,
+                $server,
+                $purchaseData->getTariff()
             );
 
             if (!$price) {

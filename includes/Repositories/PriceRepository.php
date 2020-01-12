@@ -59,13 +59,39 @@ class PriceRepository
     public function findByServiceServerAndSmsPrice(Service $service, Server $server, $smsPrice)
     {
         $statement = $this->db->statement(
-            "SELECT * FROM `" . TABLE_PREFIX . "prices` " .
-            "WHERE `service` = ? AND (`server` = ? OR `server` IS NULL) AND `sms_price` = ?"
+            "SELECT * FROM `" .
+                TABLE_PREFIX .
+                "prices` " .
+                "WHERE `service` = ? AND (`server` = ? OR `server` IS NULL) AND `sms_price` = ?"
         );
         $statement->execute([$service->getId(), $server->getId(), $smsPrice]);
         $data = $statement->fetch();
 
         return $data ? $this->mapToModel($data) : null;
+    }
+
+    public function update($id, $service, $server, $smsPrice, $transferPrice, $quantity)
+    {
+        $statement = $this->db->statement(
+            "UPDATE `" .
+                TABLE_PREFIX .
+                "prices` " .
+                "SET `service` = ?, `server` = ?, `sms_price` = ?, `transfer_price` = ?, `quantity` = ? " .
+                "WHERE `id` = ?"
+        );
+        $statement->execute([$service, $server, $smsPrice, $transferPrice, $quantity, $id]);
+
+        return !!$statement->rowCount();
+    }
+
+    public function delete($id)
+    {
+        $statement = $this->db->statement(
+            "DELETE FROM `" . TABLE_PREFIX . "prices` WHERE `id` = ?"
+        );
+        $statement->execute([$id]);
+
+        return !!$statement->rowCount();
     }
 
     private function mapToModel(array $data)

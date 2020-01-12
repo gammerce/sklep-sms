@@ -89,6 +89,7 @@ class ServerRepository
             "DELETE FROM `" . TABLE_PREFIX . "servers` WHERE `id` = ?"
         );
         $statement->execute([$id]);
+
         return !!$statement->rowCount();
     }
 
@@ -105,6 +106,7 @@ class ServerRepository
         );
         $statement->execute([$ip, $port]);
         $row = $statement->fetch();
+
         return $row ? $this->mapToModel($row) : null;
     }
 

@@ -15,9 +15,11 @@ CREATE TABLE IF NOT EXISTS `ss_prices` (
   `server`          INT(11),
   `sms_price`       INT(11),
   `transfer_price`  INT(11),
-  `quantity`        INT(11)     NOT NULL,
+  `quantity`        INT(11),
   PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`)
+  UNIQUE KEY `id` (`id`),
+  UNIQUE KEY `service_server_sms_quantity` (`service`, `server`, `sms_price`, `quantity`),
+  UNIQUE KEY `service_server_transfer_quantity` (`service`, `server`, `transfer_price`, `quantity`)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
@@ -35,6 +37,3 @@ EOF
         ]);
     }
 }
-
-// TODO Add unique keys
-// TODO Make quantity nullable

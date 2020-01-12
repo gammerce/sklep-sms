@@ -5,7 +5,7 @@ use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\PriceService;
 use App\Loggers\DatabaseLogger;
-use App\System\Database;
+use App\Repositories\PriceRepository;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -16,30 +16,29 @@ class PriceResource
         Request $request,
         TranslationManager $translationManager,
         PriceService $priceService,
-        Database $db,
+        PriceRepository $priceRepository,
         DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
 
-        $service = $request->request->get('service');
-        $server = $request->request->get('server');
-        $tariff = $request->request->get('tariff');
-        $amount = $request->request->get('amount');
+        $serviceId = $request->request->get('service');
+        $serverId = $request->request->get('server');
+        $smsPrice = $request->request->get('sms_price');
+        $transferPrice = $request->request->get('transfer_price');
+        $quantity = $request->request->get('quantity');
 
         $priceService->validateBody($request->request->all());
 
-        $statement = $db->query(
-            $db->prepare(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "pricelist` " .
-                    "SET `service` = '%s', `tariff` = '%d', `amount` = '%d', `server` = '%d' " .
-                    "WHERE `id` = '%d'",
-                [$service, $tariff, $amount, $server, $priceId]
-            )
+        $updated = $priceRepository->update(
+            $priceId,
+            $serviceId,
+            $serverId,
+            $smsPrice,
+            $transferPrice,
+            $quantity
         );
 
-        if ($statement->rowCount()) {
+        if ($updated) {
             $logger->logWithActor('log_price_edited', $priceId);
             return new SuccessApiResponse($lang->t('price_edit'));
         }
@@ -49,19 +48,15 @@ class PriceResource
 
     public function delete(
         $priceId,
-        Database $db,
+        PriceRepository $priceRepository,
         TranslationManager $translationManager,
         DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
 
-        $statement = $db->query(
-            $db->prepare("DELETE FROM `" . TABLE_PREFIX . "pricelist` WHERE `id` = '%d'", [
-                $priceId,
-            ])
-        );
+        $deleted = $priceRepository->delete($priceId);
 
-        if ($statement->rowCount()) {
+        if ($deleted) {
             $logger->logWithActor('log_price_deleted', $priceId);
             return new SuccessApiResponse($lang->t('delete_price'));
         }
