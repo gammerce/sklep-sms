@@ -13,7 +13,7 @@ interface IServiceServiceCodeAdminManage
      *
      * @return array 'key' (DOM element name) => 'value'
      */
-    public function serviceCodeAdminAddValidate($body);
+    public function serviceCodeAdminAddValidate(array $body);
 
     /**
      * Metoda powinna zwrócić dodatkowe pola do uzupełnienia przez admina
@@ -27,7 +27,7 @@ interface IServiceServiceCodeAdminManage
      * Metoda powinna zwrócić tablicę z danymi które zostaną dodane do bazy wraz z kodem na usługę
      * można założyć że dane są już prawidłowo zweryfikowane przez metodę service_code_admin_add_validate
      *
-     * @param $data
+     * @param $body
      *
      * @return array (
      *        'server'    - int,
@@ -36,5 +36,5 @@ interface IServiceServiceCodeAdminManage
      *        'data'        - string
      * )
      */
-    public function serviceCodeAdminAddInsert($data);
+    public function serviceCodeAdminAddInsert(array $body);
 }

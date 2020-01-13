@@ -274,7 +274,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 get_row_limit($pageNumber)
         );
 
-        $table->setDbRowsAmount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
+        $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
         foreach ($result as $row) {
             $bodyRow = new BodyRow();
@@ -1834,24 +1834,24 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
     }
 
-    public function serviceCodeAdminAddValidate($data)
+    public function serviceCodeAdminAddValidate(array $body)
     {
         $warnings = [];
 
         // Serwer
-        if (!strlen($data['server'])) {
+        if (!strlen($body['server'])) {
             $warnings['server'][] = $this->lang->t('have_to_choose_server');
         }
         // Wyszukiwanie serwera o danym id
-        elseif (($server = $this->heart->getServer($data['server'])) === null) {
+        elseif (($server = $this->heart->getServer($body['server'])) === null) {
             $warnings['server'][] = $this->lang->t('no_server_id');
         }
 
         // TODO Refactor it
         // Taryfa
-        $tariff = explode(';', $data['amount']);
+        $tariff = explode(';', $body['amount']);
         $tariff = $tariff[2];
-        if (!strlen($data['amount'])) {
+        if (!strlen($body['amount'])) {
             $warnings['amount'][] = $this->lang->t('must_choose_quantity');
         } elseif ($this->heart->getTariff($tariff) === null) {
             $warnings['amount'][] = $this->lang->t('no_such_sms_price');
@@ -1860,14 +1860,15 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         return $warnings;
     }
 
-    public function serviceCodeAdminAddInsert($data)
+    public function serviceCodeAdminAddInsert(array $body)
     {
-        $tariff = explode(';', $data['amount']);
+        // TODO Refactor it
+        $tariff = explode(';', $body['amount']);
         $tariff = $tariff[2];
 
         return [
             'tariff' => $tariff,
-            'server' => $data['server'],
+            'server' => $body['server'],
         ];
     }
 

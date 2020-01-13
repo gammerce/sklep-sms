@@ -61,16 +61,15 @@ class ServiceCodeRepository
         return !!$statement->rowCount();
     }
 
-    private function mapToModel(array $data)
+    public function mapToModel(array $data)
     {
         return new ServiceCode(
             (int) $data['id'],
             $data['code'],
             $data['service'],
             (int) $data['server'],
-            (int) $data['tariff'],
+            (int) $data['price'],
             (int) $data['uid'],
-            $data['amount'],
             $data['data'],
             $data['timestamp']
         );

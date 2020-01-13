@@ -26,7 +26,7 @@ class Structure extends DOMElement
      *
      * @var int
      */
-    private $dbRowsAmount;
+    private $dbRowsCount;
 
     /** @var DOMElement */
     public $foot = null;
@@ -106,15 +106,15 @@ class Structure extends DOMElement
     /**
      * @return int
      */
-    public function getDbRowsAmount()
+    public function getDbRowsCount()
     {
-        return $this->dbRowsAmount;
+        return $this->dbRowsCount;
     }
 
     /**
-     * @param int $amount
+     * @param int $count
      */
-    public function setDbRowsAmount($amount)
+    public function setDbRowsCount($count)
     {
         /** @var CurrentPage $currentPage */
         $currentPage = app()->make(CurrentPage::class);
@@ -126,10 +126,10 @@ class Structure extends DOMElement
         $pagination = app()->make(Pagination::class);
 
         $pageNumber = $currentPage->getPageNumber();
-        $this->dbRowsAmount = (int) $amount;
+        $this->dbRowsCount = (int) $count;
 
         $paginationContent = $pagination->getPagination(
-            $this->dbRowsAmount,
+            $this->dbRowsCount,
             $pageNumber,
             $request->getPathInfo(),
             $request->query->all()

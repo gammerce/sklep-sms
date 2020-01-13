@@ -12,42 +12,30 @@ class ServiceCode
     /** @var string */
     private $service;
 
-    /** @var int */
+    /** @var int|null */
     private $server;
 
-    /** @var int|float */
-    private $tariff;
-
     /** @var int */
+    private $price;
+
+    /** @var int|null */
     private $uid;
 
-    /** @var int */
-    private $amount;
-
+    // TODO Maybe remove it
     /** @var string */
     private $data;
 
     /** @var int */
     private $timestamp;
 
-    public function __construct(
-        $id,
-        $code,
-        $service,
-        $server,
-        $tariff,
-        $uid,
-        $amount,
-        $data,
-        $timestamp
-    ) {
+    public function __construct($id, $code, $service, $server, $price, $uid, $data, $timestamp)
+    {
         $this->id = $id;
         $this->code = $code;
         $this->service = $service;
         $this->server = $server;
-        $this->tariff = $tariff;
+        $this->price = $price;
         $this->uid = $uid;
-        $this->amount = $amount;
         $this->data = $data;
         $this->timestamp = $timestamp;
     }
@@ -71,7 +59,7 @@ class ServiceCode
     /**
      * @return string
      */
-    public function getService()
+    public function getServiceId()
     {
         return $this->service;
     }
@@ -79,7 +67,7 @@ class ServiceCode
     /**
      * @return int
      */
-    public function getServer()
+    public function getServerId()
     {
         return $this->server;
     }
@@ -87,9 +75,9 @@ class ServiceCode
     /**
      * @return int
      */
-    public function getTariff()
+    public function getPriceId()
     {
-        return $this->tariff;
+        return $this->price;
     }
 
     /**
@@ -98,14 +86,6 @@ class ServiceCode
     public function getUid()
     {
         return $this->uid;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAmount()
-    {
-        return $this->amount;
     }
 
     /**
