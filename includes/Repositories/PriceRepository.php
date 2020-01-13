@@ -56,34 +56,21 @@ class PriceRepository
         return $this->get($this->db->lastId());
     }
 
-    public function findByServiceServerAndSmsPrice(Service $service, Server $server, $smsPrice)
-    {
-        $statement = $this->db->statement(
-            "SELECT * FROM `" .
-                TABLE_PREFIX .
-                "prices` " .
-                "WHERE `service` = ? AND (`server` = ? OR `server` IS NULL) AND `sms_price` = ?"
-        );
-        $statement->execute([$service->getId(), $server->getId(), $smsPrice]);
-        $data = $statement->fetch();
-
-        return $data ? $this->mapToModel($data) : null;
-    }
-
     /**
      * @param Service $service
+     * @param Server|null $server
      * @return Price[]
      */
-    public function findByService(Service $service)
+    public function findByServiceServer(Service $service, Server $server = null)
     {
         $statement = $this->db->statement(
             "SELECT * FROM `" .
                 TABLE_PREFIX .
                 "prices` " .
-                "WHERE `service` = ? " .
+                "WHERE `service` = ? AND (`server` = ? OR `server` IS NULL) " .
                 "ORDER BY `quantity` ASC"
         );
-        $statement->execute([$service->getId()]);
+        $statement->execute([$service->getId(), $server ? $server->getId() : null]);
 
         $prices = [];
         foreach ($statement as $row) {

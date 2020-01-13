@@ -30,6 +30,7 @@ use App\View\Html\Cell;
 use App\View\Html\HeadCell;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
+use App\View\Renders\PurchasePriceRenderer;
 use PDOException;
 
 class MybbExtraGroupsServiceModule extends ServiceModule implements
@@ -76,6 +77,9 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     /** @var PurchasePriceService */
     private $purchasePriceService;
 
+    /** @var PurchasePriceRenderer */
+    private $purchasePriceRenderer;
+
     /** @var PriceRepository */
     private $priceRepository;
 
@@ -92,6 +96,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $this->logger = $this->app->make(DatabaseLogger::class);
         $this->adminPaymentService = $this->app->make(AdminPaymentService::class);
         $this->purchasePriceService = $this->app->make(PurchasePriceService::class);
+        $this->purchasePriceRenderer = $this->app->make(PurchasePriceRenderer::class);
         $this->priceRepository = $this->app->make(PriceRepository::class);
         $this->settings = $this->app->make(Settings::class);
         /** @var TranslationManager $translationManager */
@@ -317,39 +322,13 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     {
         $user = $this->auth->user();
 
-        $quantities = "";
-        $prices = $this->purchasePriceService->getServicePrices($this->service);
-
-        foreach ($prices as $price) {
-            $quantities .= $this->renderPurchaseQuantity($price);
-        }
+        $quantities = array_map(function (array $price) {
+            return $this->purchasePriceRenderer->render($price, $this->service);
+        }, $this->purchasePriceService->getServicePrices($this->service));
 
         return $this->template->render(
             "services/mybb_extra_groups/purchase_form",
             compact('quantities', 'user') + ['serviceId' => $this->service->getId()]
-        );
-    }
-
-    private function renderPurchaseQuantity(array $price)
-    {
-        $smsPrice =
-            $price['sms_price'] !== null
-                ? number_format(($price['sms_price'] / 100) * $this->settings->getVat(), 2)
-                : null;
-
-        $transferPrice =
-            $price['transfer_price'] !== null
-                ? number_format(($price['transfer_price'] / 100) * $this->settings->getVat(), 2)
-                : null;
-
-        $quantity =
-            $price['quantity'] === null
-                ? $this->lang->t('forever')
-                : $price['quantity'] . " " . $this->service->getTag();
-
-        return $this->template->renderNoComments(
-            "services/mybb_extra_groups/purchase_quantity",
-            compact('priceId', 'quantity', 'smsPrice', 'transferPrice')
         );
     }
 

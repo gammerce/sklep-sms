@@ -27,57 +27,46 @@ class PagePayment extends Page
             return $this->lang->t('wrong_sign');
         }
 
-        /** @var Purchase $purchaseData */
-        $purchaseData = unserialize(base64_decode($body['data']));
+        /** @var Purchase $purchase */
+        $purchase = unserialize(base64_decode($body['data']));
 
         // Fix: Refresh user to avoid bugs linked with user wallet
-        $purchaseData->user = $this->heart->getUser($purchaseData->user->getUid());
+        $purchase->user = $this->heart->getUser($purchase->user->getUid());
 
-        if (!($purchaseData instanceof Purchase)) {
+        if (!($purchase instanceof Purchase)) {
             return $this->lang->t('error_occurred');
         }
 
         if (
-            ($serviceModule = $this->heart->getServiceModule($purchaseData->getService())) ===
-                null ||
+            ($serviceModule = $this->heart->getServiceModule($purchase->getService())) === null ||
             !($serviceModule instanceof IServicePurchaseWeb)
         ) {
             return $this->lang->t('bad_module');
         }
 
-        $orderDetails = $serviceModule->orderDetails($purchaseData);
+        $orderDetails = $serviceModule->orderDetails($purchase);
 
         $paymentMethods = '';
-        // Check if it's possible to pay using SMS
-        if (
-            $purchaseData->getPayment('sms_platform') &&
-            $purchaseData->getTariff() !== null &&
-            !$purchaseData->getPayment('no_sms')
-        ) {
+        if ($this->isSmsAvailable($purchase)) {
             $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
-                $purchaseData->getPayment('sms_platform')
+                $purchase->getPayment('sms_platform')
             );
 
             if ($paymentModule instanceof SupportSms) {
                 $smsCode = $paymentModule->getSmsCode();
                 $paymentMethods .= $this->template->render(
                     'payment_method_sms',
-                    compact('purchaseData', 'smsCode')
+                    compact('purchase', 'smsCode')
                 );
             }
         }
 
         $costTransfer =
-            $purchaseData->getPayment('cost') !== null
-                ? number_format($purchaseData->getPayment('cost') / 100.0, 2)
+            $purchase->getPayment('cost') !== null
+                ? number_format($purchase->getPayment('cost') / 100.0, 2)
                 : "0.00";
 
-        if (
-            $this->settings->getTransferPlatformId() &&
-            $purchaseData->getPayment('cost') !== null &&
-            $purchaseData->getPayment('cost') > 1 &&
-            !$purchaseData->getPayment('no_transfer')
-        ) {
+        if ($this->isTransferAvailable($purchase)) {
             $paymentMethods .= $this->template->render(
                 "payment_method_transfer",
                 compact('costTransfer')
@@ -86,8 +75,8 @@ class PagePayment extends Page
 
         if (
             is_logged() &&
-            $purchaseData->getPayment('cost') !== null &&
-            !$purchaseData->getPayment('no_wallet')
+            $purchase->getPayment('cost') !== null &&
+            !$purchase->getPayment('no_wallet')
         ) {
             $paymentMethods .= $this->template->render(
                 "payment_method_wallet",
@@ -95,10 +84,7 @@ class PagePayment extends Page
             );
         }
 
-        if (
-            !$purchaseData->getPayment('no_code') &&
-            $serviceModule instanceof IServiceServiceCode
-        ) {
+        if (!$purchase->getPayment('no_code') && $serviceModule instanceof IServiceServiceCode) {
             $paymentMethods .= $this->template->render("payment_method_code");
         }
 
@@ -109,5 +95,24 @@ class PagePayment extends Page
             "payment_form",
             compact('orderDetails', 'paymentMethods', 'purchaseData', 'purchaseSign')
         );
+    }
+
+    private function isSmsAvailable(Purchase $purchase)
+    {
+        return $purchase->getPayment('sms_platform') &&
+            $purchase->getPrice() &&
+            $purchase->getPrice()->hasSmsPrice() &&
+            !$purchase->getPayment('no_sms');
+    }
+
+    private function isTransferAvailable(Purchase $purchase)
+    {
+        return // TODO Ensure below is required
+            $this->settings->getTransferPlatformId() &&
+                $purchase->getPayment('cost') !== null &&
+                $purchase->getPayment('cost') > 1 &&
+                $purchase->getPrice() &&
+                $purchase->getPrice()->hasTransferPrice() &&
+                !$purchase->getPayment('no_transfer');
     }
 }

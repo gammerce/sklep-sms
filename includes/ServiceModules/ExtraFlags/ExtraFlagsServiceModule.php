@@ -7,7 +7,7 @@ use App\Models\Purchase;
 use App\Models\Service;
 use App\Payment\AdminPaymentService;
 use App\Payment\BoughtServiceService;
-use App\Repositories\PaymentPlatformRepository;
+use App\Payment\PurchasePriceService;
 use App\Repositories\PriceRepository;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
@@ -28,7 +28,6 @@ use App\ServiceModules\ServiceModule;
 use App\Services\ExpiredUserServiceService;
 use App\System\Auth;
 use App\System\Heart;
-use App\System\Path;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -38,6 +37,7 @@ use App\View\Html\Cell;
 use App\View\Html\HeadCell;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
+use App\View\Renders\PurchasePriceRenderer;
 
 class ExtraFlagsServiceModule extends ServiceModule implements
     IServiceAdminManage,
@@ -65,9 +65,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     /** @var Settings */
     private $settings;
 
-    /** @var Path */
-    private $path;
-
     /** @var Heart */
     private $heart;
 
@@ -76,9 +73,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     /** @var BoughtServiceService */
     private $boughtServiceService;
-
-    /** @var PaymentPlatformRepository */
-    private $paymentPlatformRepository;
 
     /** @var DatabaseLogger */
     private $logger;
@@ -92,6 +86,12 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     /** @var PriceRepository */
     private $priceRepository;
 
+    /** @var PurchasePriceService */
+    private $purchasePriceService;
+
+    /** @var PurchasePriceRenderer */
+    private $purchasePriceRenderer;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -99,16 +99,16 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $this->auth = $this->app->make(Auth::class);
         $this->heart = $this->app->make(Heart::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
-        $this->paymentPlatformRepository = $this->app->make(PaymentPlatformRepository::class);
         $this->logger = $this->app->make(DatabaseLogger::class);
         $this->expiredUserServiceService = $this->app->make(ExpiredUserServiceService::class);
         $this->adminPaymentService = $this->app->make(AdminPaymentService::class);
         $this->priceRepository = $this->app->make(PriceRepository::class);
+        $this->purchasePriceService = $this->app->make(PurchasePriceService::class);
+        $this->purchasePriceRenderer = $this->app->make(PurchasePriceRenderer::class);
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
         $this->settings = $this->app->make(Settings::class);
-        $this->path = $this->app->make(Path::class);
     }
 
     public function serviceAdminExtraFieldsGet()
@@ -1784,53 +1784,14 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     private function tariffsForServer($serverId)
     {
         $server = $this->heart->getServer($serverId);
-        $smsPlatformId = $server->getSmsPlatformId() ?: $this->settings->getSmsPlatformId();
-        $paymentPlatform = $this->paymentPlatformRepository->get($smsPlatformId);
-        $paymentModule = $paymentPlatform ? $paymentPlatform->getModuleId() : '';
 
-        // Pobieranie kwot za które można zakupić daną usługę na danym serwerze
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT sn.number AS `sms_number`, t.provision AS `provision`, t.id AS `tariff`, p.amount AS `amount` " .
-                    "FROM `" .
-                    TABLE_PREFIX .
-                    "pricelist` AS p " .
-                    "INNER JOIN `" .
-                    TABLE_PREFIX .
-                    "tariffs` AS t ON t.id = p.tariff " .
-                    "LEFT JOIN `" .
-                    TABLE_PREFIX .
-                    "sms_numbers` AS sn ON sn.tariff = p.tariff AND sn.service = '%s' " .
-                    "WHERE p.service = '%s' AND ( p.server = '%d' OR p.server = '-1' ) " .
-                    "ORDER BY t.provision ASC",
-                [$paymentModule, $this->service->getId(), $serverId]
-            )
-        );
-
-        $values = '';
-        foreach ($result as $row) {
-            $provision = number_format($row['provision'] / 100, 2);
-            $smsCost = strlen($row['sms_number'])
-                ? number_format(
-                    (get_sms_cost($row['sms_number']) / 100) * $this->settings->getVat(),
-                    2
-                )
-                : 0;
-            $amount =
-                $row['amount'] != -1
-                    ? "{$row['amount']} {$this->service->getTag()}"
-                    : $this->lang->t('forever');
-            $values .= $this->template->render(
-                "services/extra_flags/purchase_value",
-                compact('provision', 'smsCost', 'row', 'amount'),
-                true,
-                false
-            );
-        }
+        $quantities = array_map(function (array $price) {
+            return $this->purchasePriceRenderer->render($price, $this->service);
+        }, $this->purchasePriceService->getServicePrices($this->service, $server));
 
         return $this->template->render(
-            "services/extra_flags/tariffs_for_server",
-            compact('values')
+            "services/extra_flags/prices_for_server",
+            compact('quantities')
         );
     }
 

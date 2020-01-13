@@ -1,6 +1,7 @@
 <?php
 namespace App\Payment;
 
+use App\Models\Server;
 use App\Models\Service;
 use App\Models\SmsNumber;
 use App\Repositories\PriceRepository;
@@ -34,22 +35,21 @@ class PurchasePriceService
         $this->priceRepository = $priceRepository;
     }
 
-    public function getServicePrices(Service $service)
+    public function getServicePrices(Service $service, Server $server = null)
     {
         $output = [];
 
-        $smsModule = $this->heart->getPaymentModuleByPlatformId(
-            $this->settings->getSmsPlatformId()
-        );
-        $transferModule = $this->heart->getPaymentModuleByPlatformId(
-            $this->settings->getTransferPlatformId()
-        );
+        $smsPlatformId =
+            $server ? $server->getSmsPlatformId() : null ?: $this->settings->getSmsPlatformId();
+        $transferPlatformId = $this->settings->getTransferPlatformId();
+        $smsModule = $this->heart->getPaymentModuleByPlatformId($smsPlatformId);
+        $transferModule = $this->heart->getPaymentModuleByPlatformId($transferPlatformId);
 
         $availableSmsPrices = array_map(function (SmsNumber $smsNumber) {
             return $smsNumber->getPrice();
         }, $this->smsNumberRepository->findByPaymentModule($smsModule->getModuleId()));
 
-        $prices = $this->priceRepository->findByService($service);
+        $prices = $this->priceRepository->findByServiceServer($service, $server);
         foreach ($prices as $price) {
             $item = [
                 'quantity' => $price->getQuantity(),

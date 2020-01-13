@@ -57,7 +57,6 @@ class OtherServiceModule extends ServiceModule implements
         $warnings = [];
 
         // Serwer
-        $server = null;
         if (!strlen($purchaseData->getOrder('server'))) {
             $warnings['server'][] = $this->lang->t('must_choose_server');
         } else {
@@ -69,23 +68,19 @@ class OtherServiceModule extends ServiceModule implements
         }
 
         // Wartość usługi
-        if (!strlen($purchaseData->getTariff())) {
-            $warnings['value'][] = $this->lang->t('must_choose_quantity');
-        } else {
-            // TODO Use smsPrice instead of tariff
-            $price = $this->priceRepository->findByServiceServerAndSmsPrice(
-                $this->service,
-                $server,
-                $purchaseData->getTariff()
-            );
-
-            if (!$price) {
-                return [
-                    'status' => "no_option",
-                    'text' => $this->lang->t('service_not_affordable'),
-                    'positive' => false,
-                ];
-            }
+        $price = $purchaseData->getPrice();
+        if (!$price) {
+            // TODO Replace 'value' with 'price_id' everywhere
+            $warnings['price_id'][] = $this->lang->t('must_choose_quantity');
+        } elseif (
+            !$price->concernService($this->service) ||
+            (isset($server) && !$price->concernServer($server))
+        ) {
+            return [
+                'status' => "no_option",
+                'text' => $this->lang->t('service_not_affordable'),
+                'positive' => false,
+            ];
         }
 
         // E-mail
@@ -101,7 +96,7 @@ class OtherServiceModule extends ServiceModule implements
                 'status' => "warnings",
                 'text' => $this->lang->t('form_wrong_filled'),
                 'positive' => false,
-                'data' => ['warnings' => $warnings],
+                'data' => compact('warnings'),
             ];
         }
 
