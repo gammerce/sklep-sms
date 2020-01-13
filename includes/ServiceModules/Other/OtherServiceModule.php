@@ -96,7 +96,6 @@ class OtherServiceModule extends ServiceModule implements
             $warnings['email'] = array_merge((array) $warnings['email'], $warning);
         }
 
-        // Jeżeli są jakieś błedy, to je zwróć
         if ($warnings) {
             return [
                 'status' => "warnings",

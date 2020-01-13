@@ -79,9 +79,24 @@ class Price
         return $this->quantity;
     }
 
-    // TODO Are you sure we need forever price?
+    // TODO Are we sure we need forever price?
     public function isForever()
     {
         return $this->quantity === null;
+    }
+
+    public function isForEveryServer()
+    {
+        return $this->server === null;
+    }
+
+    public function concernServer(Server $server)
+    {
+        return $this->isForEveryServer() || $this->getServerId() === $server->getId();
+    }
+
+    public function concernService(Service $service)
+    {
+        return $this->getServiceId() === $service->getId();
     }
 }

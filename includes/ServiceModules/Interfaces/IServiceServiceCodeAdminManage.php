@@ -30,9 +30,9 @@ interface IServiceServiceCodeAdminManage
      * @param $data
      *
      * @return array (
-     *        'server'    - integer,
+     *        'server'    - int,
      *        'amount'    - double,
-     *        'tariff'    - integer,
+     *        'tariff'    - int,
      *        'data'        - string
      * )
      */

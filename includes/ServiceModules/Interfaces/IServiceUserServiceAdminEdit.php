@@ -18,7 +18,7 @@ interface IServiceUserServiceAdminEdit
      *  'text' => treść wiadomości
      *  'positive' => czy udało się wyedytować usługę
      */
-    public function userServiceAdminEdit($body, $userService);
+    public function userServiceAdminEdit(array $body, $userService);
 
     /**
      * Metoda powinna zwrócić dodatkowe pola usługi

@@ -31,7 +31,7 @@ interface IServicePurchaseWeb extends IServicePurchase
      *  [data => array('warnings' => array())]
      *  [purchase_data => Entity_Purchase dane zakupu]
      */
-    public function purchaseFormValidate($body);
+    public function purchaseFormValidate(array $body);
 
     /**
      * Metoda zwraca szczegóły zamówienia, wyświetlane podczas zakupu usługi, przed płatnością.

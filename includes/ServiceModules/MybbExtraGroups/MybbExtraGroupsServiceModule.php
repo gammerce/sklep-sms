@@ -9,6 +9,7 @@ use App\Models\Service;
 use App\Payment\AdminPaymentService;
 use App\Payment\BoughtServiceService;
 use App\Payment\PurchasePriceService;
+use App\Repositories\PriceRepository;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServicePurchase;
@@ -75,6 +76,9 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     /** @var PurchasePriceService */
     private $purchasePriceService;
 
+    /** @var PriceRepository */
+    private $priceRepository;
+
     /** @var DatabaseLogger */
     private $logger;
 
@@ -88,6 +92,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $this->logger = $this->app->make(DatabaseLogger::class);
         $this->adminPaymentService = $this->app->make(AdminPaymentService::class);
         $this->purchasePriceService = $this->app->make(PurchasePriceService::class);
+        $this->priceRepository = $this->app->make(PriceRepository::class);
         $this->settings = $this->app->make(Settings::class);
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
@@ -348,49 +353,36 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         );
     }
 
-    public function purchaseFormValidate($data)
+    public function purchaseFormValidate(array $body)
     {
-        // Amount
-        $amount = explode(';', $data['amount']); // Wyłuskujemy taryfę
-        $tariff = $amount[2];
+        $priceId = array_get($body, "price_id");
+
         $warnings = [];
 
         // Tariff
-        if (!$tariff) {
-            $warnings['amount'][] = $this->lang->t('must_choose_quantity');
+        if (!$priceId) {
+            $warnings['price_id'][] = $this->lang->t('must_choose_quantity');
         } else {
-            // Wyszukiwanie usługi o konkretnej cenie
-            $result = $this->db->query(
-                $this->db->prepare(
-                    "SELECT * FROM `" .
-                        TABLE_PREFIX .
-                        "pricelist` " .
-                        "WHERE `service` = '%s' AND `tariff` = '%d'",
-                    [$this->service->getId(), $tariff]
-                )
-            );
+            $price = $this->priceRepository->get($priceId);
 
-            if (!$result->rowCount()) {
-                // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
+            if (!$price || $price->getServiceId() !== $this->service->getId()) {
                 return [
                     'status' => "no_option",
                     'text' => $this->lang->t('service_not_affordable'),
                     'positive' => false,
                 ];
             }
-
-            $price = $result->fetch();
         }
 
         // Username
-        if (!strlen($data['username'])) {
+        if (!strlen($body['username'])) {
             $warnings['username'][] = $this->lang->t('field_no_empty');
         } else {
             $this->connectMybb();
 
             $result = $this->dbMybb->query(
                 $this->dbMybb->prepare("SELECT 1 FROM `mybb_users` " . "WHERE `username` = '%s'", [
-                    $data['username'],
+                    $body['username'],
                 ])
             );
 
@@ -400,12 +392,11 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         }
 
         // E-mail
-        if ($warning = check_for_warnings("email", $data['email'])) {
+        if ($warning = check_for_warnings("email", $body['email'])) {
             $warnings['email'] = array_merge((array) $warnings['email'], $warning);
         }
 
-        // Jeżeli są jakieś błedy, to je zwróć
-        if (!empty($warnings)) {
+        if ($warnings) {
             return [
                 'status' => "warnings",
                 'text' => $this->lang->t('form_wrong_filled'),
@@ -417,12 +408,13 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $purchaseData = new Purchase($this->auth->user());
         $purchaseData->setService($this->service->getId());
         $purchaseData->setOrder([
-            'username' => $data['username'],
-            'amount' => $price['amount'],
-            'forever' => $price['amount'] == -1 ? true : false,
+            'username' => $body['username'],
+            // TODO Replace amount with quantity
+            'amount' => $price->getQuantity(),
+            'forever' => $price->isForever(),
         ]);
-        $purchaseData->setEmail($data['email']);
-        $purchaseData->setTariff($this->heart->getTariff($tariff));
+        $purchaseData->setEmail($body['email']);
+        $purchaseData->setPrice($price);
 
         return [
             'status' => "ok",
@@ -693,7 +685,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         );
     }
 
-    public function userServiceAdminAdd($body)
+    public function userServiceAdminAdd(array $body)
     {
         $user = $this->auth->user();
 

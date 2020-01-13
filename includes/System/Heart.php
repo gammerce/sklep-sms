@@ -509,7 +509,7 @@ class Heart
     /**
      * Checks if the service can be purchased on the given server
      *
-     * @param integer $serverId
+     * @param int $serverId
      * @param string $serviceId
      *
      * @return boolean
@@ -549,6 +549,7 @@ class Heart
     }
 
     /**
+     * @deprecated
      * @param int $id
      *
      * @return Tariff | null

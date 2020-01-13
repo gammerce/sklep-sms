@@ -28,8 +28,14 @@ class Purchase
     /** @var User */
     public $user;
 
-    /** @var Tariff */
+    /**
+     * @deprecated
+     * @var Tariff
+     */
     private $tariff = null;
+
+    /** @var Price|null */
+    private $price = null;
 
     /** @var string */
     private $email = null;
@@ -66,11 +72,17 @@ class Purchase
     }
 
     /**
+     * @deprecated
      * @param Tariff $tariff
      */
     public function setTariff($tariff)
     {
         $this->tariff = $tariff;
+    }
+
+    public function setPrice(Price $price = null)
+    {
+        $this->price = $price;
     }
 
     public function setEmail($email)
@@ -119,11 +131,20 @@ class Purchase
     }
 
     /**
+     * @deprecated
      * @return Tariff
      */
     public function getTariff()
     {
         return $this->tariff;
+    }
+
+    /**
+     * @return Price|null
+     */
+    public function getPrice()
+    {
+        return $this->price;
     }
 
     /**

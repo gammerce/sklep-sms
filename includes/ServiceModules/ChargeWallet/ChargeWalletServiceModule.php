@@ -99,7 +99,7 @@ class ChargeWalletServiceModule extends ServiceModule implements
         );
     }
 
-    public function purchaseFormValidate($data)
+    public function purchaseFormValidate(array $body)
     {
         if (!$this->auth->check()) {
             return [
@@ -110,7 +110,7 @@ class ChargeWalletServiceModule extends ServiceModule implements
         }
 
         // Są tylko dwie metody doładowania portfela
-        if (!in_array($data['method'], [Purchase::METHOD_SMS, Purchase::METHOD_TRANSFER])) {
+        if (!in_array($body['method'], [Purchase::METHOD_SMS, Purchase::METHOD_TRANSFER])) {
             return [
                 'status' => "wrong_method",
                 'text' => $this->lang->t('wrong_charge_method'),
@@ -120,30 +120,27 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
         $warnings = [];
 
-        if ($data['method'] == Purchase::METHOD_SMS) {
-            if (!strlen($data['tariff'])) {
+        if ($body['method'] == Purchase::METHOD_SMS) {
+            if (!strlen($body['tariff'])) {
                 $warnings['tariff'][] = $this->lang->t('charge_amount_not_chosen');
             }
-        } else {
-            if ($data['method'] == Purchase::METHOD_TRANSFER) {
-                // Kwota doładowania
-                if ($warning = check_for_warnings("number", $data['transfer_amount'])) {
-                    $warnings['transfer_amount'] = array_merge(
-                        (array) $warnings['transfer_amount'],
-                        $warning
-                    );
-                }
-                if ($data['transfer_amount'] <= 1) {
-                    $warnings['transfer_amount'][] = $this->lang->t(
-                        'charge_amount_too_low',
-                        "1.00 " . $this->settings->getCurrency()
-                    );
-                }
+        } elseif ($body['method'] == Purchase::METHOD_TRANSFER) {
+            // Kwota doładowania
+            if ($warning = check_for_warnings("number", $body['transfer_amount'])) {
+                $warnings['transfer_amount'] = array_merge(
+                    (array) $warnings['transfer_amount'],
+                    $warning
+                );
+            }
+            if ($body['transfer_amount'] <= 1) {
+                $warnings['transfer_amount'][] = $this->lang->t(
+                    'charge_amount_too_low',
+                    "1.00 " . $this->settings->getCurrency()
+                );
             }
         }
 
-        // Jeżeli są jakieś błedy, to je zwróć
-        if (!empty($warnings)) {
+        if ($warnings) {
             return [
                 'status' => "warnings",
                 'text' => $this->lang->t('form_wrong_filled'),
@@ -154,25 +151,26 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
         $purchase = new Purchase($this->auth->user());
         $purchase->setService($this->service->getId());
-        $purchase->setTariff($this->heart->getTariff($data['tariff']));
+        // TODO Replace all setTariff
+        $purchase->setTariff($this->heart->getTariff($body['tariff']));
         $purchase->setPayment([
             'no_wallet' => true,
         ]);
 
-        if ($data['method'] == Purchase::METHOD_SMS) {
+        if ($body['method'] == Purchase::METHOD_SMS) {
             $purchase->setPayment([
                 'no_transfer' => true,
             ]);
             $purchase->setOrder([
-                'amount' => $this->heart->getTariff($data['tariff'])->getProvision(),
+                'amount' => $this->heart->getTariff($body['tariff'])->getProvision(),
             ]);
-        } elseif ($data['method'] == Purchase::METHOD_TRANSFER) {
+        } elseif ($body['method'] == Purchase::METHOD_TRANSFER) {
             $purchase->setPayment([
-                'cost' => $data['transfer_amount'] * 100,
+                'cost' => $body['transfer_amount'] * 100,
                 'no_sms' => true,
             ]);
             $purchase->setOrder([
-                'amount' => $data['transfer_amount'] * 100,
+                'amount' => $body['transfer_amount'] * 100,
             ]);
         }
 

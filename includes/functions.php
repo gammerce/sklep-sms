@@ -187,7 +187,7 @@ function get_ip(Request $request = null)
 /**
  * Zwraca datę w odpowiednim formacie
  *
- * @param integer|string $timestamp
+ * @param int|string $timestamp
  * @param string $format
  *
  * @return string
