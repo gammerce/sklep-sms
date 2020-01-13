@@ -59,9 +59,19 @@ class Price
         return $this->smsPrice;
     }
 
+    public function hasSmsPrice()
+    {
+        return $this->smsPrice !== null;
+    }
+
     public function getTransferPrice()
     {
         return $this->transferPrice;
+    }
+
+    public function hasTransferPrice()
+    {
+        return $this->transferPrice !== null;
     }
 
     public function getQuantity()
@@ -69,6 +79,7 @@ class Price
         return $this->quantity;
     }
 
+    // TODO Are you sure we need forever price?
     public function isForever()
     {
         return $this->quantity === null;

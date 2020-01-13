@@ -22,7 +22,9 @@ class PriceRepositoryTest extends TestCase
         $this->assertSame("vip", $price->getServiceId());
         $this->assertSame($server->getId(), $price->getServerId());
         $this->assertSame(1, $price->getSmsPrice());
+        $this->assertTrue($price->hasSmsPrice());
         $this->assertSame(10, $price->getTransferPrice());
+        $this->assertTrue($price->hasTransferPrice());
         $this->assertSame(100, $price->getQuantity());
     }
 
@@ -53,6 +55,7 @@ class PriceRepositoryTest extends TestCase
         // then
         $this->assertNull($price->getServerId());
         $this->assertNull($price->getTransferPrice());
+        $this->assertFalse($price->hasTransferPrice());
         $this->assertSame(2, $price->getSmsPrice());
     }
 
@@ -69,6 +72,7 @@ class PriceRepositoryTest extends TestCase
         // then
         $this->assertNull($price->getServerId());
         $this->assertNull($price->getSmsPrice());
+        $this->assertFalse($price->hasSmsPrice());
         $this->assertSame(10, $price->getTransferPrice());
     }
 }

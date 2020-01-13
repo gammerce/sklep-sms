@@ -70,6 +70,29 @@ class PriceRepository
         return $data ? $this->mapToModel($data) : null;
     }
 
+    /**
+     * @param Service $service
+     * @return Price[]
+     */
+    public function findByService(Service $service)
+    {
+        $statement = $this->db->statement(
+            "SELECT * FROM `" .
+                TABLE_PREFIX .
+                "prices` " .
+                "WHERE `service` = ? " .
+                "ORDER BY `quantity` ASC"
+        );
+        $statement->execute([$service->getId()]);
+
+        $prices = [];
+        foreach ($statement as $row) {
+            $prices[] = $this->mapToModel($row);
+        }
+
+        return $prices;
+    }
+
     public function update($id, $service, $server, $smsPrice, $transferPrice, $quantity)
     {
         $statement = $this->db->statement(
@@ -94,7 +117,7 @@ class PriceRepository
         return !!$statement->rowCount();
     }
 
-    public function mapToModel(array $data)
+    private function mapToModel(array $data)
     {
         return new Price(
             (int) $data['id'],

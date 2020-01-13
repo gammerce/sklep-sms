@@ -70,7 +70,7 @@ class OtherServiceModule extends ServiceModule implements
 
         // Wartość usługi
         if (!strlen($purchaseData->getTariff())) {
-            $warnings['value'][] = $this->lang->t('must_choose_amount');
+            $warnings['value'][] = $this->lang->t('must_choose_quantity');
         } else {
             // TODO Use smsPrice instead of tariff
             $price = $this->priceRepository->findByServiceServerAndSmsPrice(

@@ -383,7 +383,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         // Wartość usługi
         if (!$purchaseData->getTariff()) {
-            $warnings['value'][] = $this->lang->t('must_choose_amount');
+            $warnings['value'][] = $this->lang->t('must_choose_quantity');
         } else {
             // Wyszukiwanie usługi o konkretnej cenie
             $result = $this->db->query(

@@ -207,7 +207,7 @@ function convertDate($timestamp, $format = "")
 }
 
 /**
- * Returns sms cost netto by number
+ * Returns sms cost net by number
  *
  * @param string $number
  *

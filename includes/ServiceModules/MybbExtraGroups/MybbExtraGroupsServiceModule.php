@@ -4,12 +4,11 @@ namespace App\ServiceModules\MybbExtraGroups;
 use App\Exceptions\InvalidConfigException;
 use App\Loggers\DatabaseLogger;
 use App\Models\MybbUser;
-use App\Models\Price;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Payment\AdminPaymentService;
 use App\Payment\BoughtServiceService;
-use App\Repositories\PriceRepository;
+use App\Payment\PurchasePriceService;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServicePurchase;
@@ -73,8 +72,8 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     /** @var AdminPaymentService */
     private $adminPaymentService;
 
-    /** @var PriceRepository */
-    private $priceRepository;
+    /** @var PurchasePriceService */
+    private $purchasePriceService;
 
     /** @var DatabaseLogger */
     private $logger;
@@ -88,7 +87,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
         $this->logger = $this->app->make(DatabaseLogger::class);
         $this->adminPaymentService = $this->app->make(AdminPaymentService::class);
-        $this->priceRepository = $this->app->make(PriceRepository::class);
+        $this->purchasePriceService = $this->app->make(PurchasePriceService::class);
         $this->settings = $this->app->make(Settings::class);
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
@@ -313,27 +312,11 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     {
         $user = $this->auth->user();
 
-        $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
-            $this->settings->getSmsPlatformId()
-        );
-
-        // TODO Remove sms numbers from database or change tariff to sms_price
-        // TODO Filter out prices that does not match sms/transfer platform
-
-        $statement = $this->db->statement(
-            "SELECT p.* " .
-                "FROM `" .
-                TABLE_PREFIX .
-                "prices` AS p " .
-                "WHERE p.service = ? " .
-                "ORDER BY p.sms_price ASC"
-        );
-        $statement->execute([$paymentModule->getModuleId(), $this->service->getId()]);
-
         $quantities = "";
-        foreach ($statement as $row) {
-            $price = $this->priceRepository->mapToModel($row);
-            $quantities .= $this->renderPurchaseValue($price);
+        $prices = $this->purchasePriceService->getServicePrices($this->service);
+
+        foreach ($prices as $price) {
+            $quantities .= $this->renderPurchaseQuantity($price);
         }
 
         return $this->template->render(
@@ -342,37 +325,29 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         );
     }
 
-    private function renderPurchaseValue(Price $price)
+    private function renderPurchaseQuantity(array $price)
     {
-        $smsPrice = $price->getSmsPrice() !== null
-            ? number_format($price->getSmsPrice() / 100 * $this->settings->getVat(), 2)
-            : 0;
+        $smsPrice =
+            $price['sms_price'] !== null
+                ? number_format(($price['sms_price'] / 100) * $this->settings->getVat(), 2)
+                : null;
 
-        $transferPrice = $price->getTransferPrice() !== null
-            ? number_format($price->getTransferPrice() / 100 * $this->settings->getVat(), 2)
-            : 0;
+        $transferPrice =
+            $price['transfer_price'] !== null
+                ? number_format(($price['transfer_price'] / 100) * $this->settings->getVat(), 2)
+                : null;
 
         $quantity =
-            $price->isForever()
+            $price['quantity'] === null
                 ? $this->lang->t('forever')
-                : $price->getQuantity() . " " . $this->service->getTag();
+                : $price['quantity'] . " " . $this->service->getTag();
 
         return $this->template->renderNoComments(
-            "services/mybb_extra_groups/purchase_value",
+            "services/mybb_extra_groups/purchase_quantity",
             compact('priceId', 'quantity', 'smsPrice', 'transferPrice')
         );
     }
 
-    /**
-     * Metoda wywoływana, gdy użytkownik wprowadzi dane w formularzu zakupu
-     * i trzeba sprawdzić, czy są one prawidłowe
-     *
-     * @param array $data
-     *
-     * @return array        'status'    => id wiadomości,
-     *                        'text'        => treść wiadomości
-     *                        'positive'    => czy udało się przeprowadzić zakup czy nie
-     */
     public function purchaseFormValidate($data)
     {
         // Amount
@@ -382,7 +357,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         // Tariff
         if (!$tariff) {
-            $warnings['amount'][] = $this->lang->t('must_choose_amount');
+            $warnings['amount'][] = $this->lang->t('must_choose_quantity');
         } else {
             // Wyszukiwanie usługi o konkretnej cenie
             $result = $this->db->query(
@@ -457,13 +432,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         ];
     }
 
-    /**
-     * Metoda zwraca szczegóły zamówienia, wyświetlane podczas zakupu usługi, przed płatnością.
-     *
-     * @param Purchase $purchaseData
-     *
-     * @return string        Szczegóły zamówienia
-     */
     public function orderDetails(Purchase $purchaseData)
     {
         $email = $purchaseData->getEmail() ?: $this->lang->t('none');
@@ -482,13 +450,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         );
     }
 
-    /**
-     * Metoda wywoływana, gdy usługa została prawidłowo zakupiona
-     *
-     * @param Purchase $purchaseData
-     *
-     * @return integer        value returned by function addBoughtServiceInfo
-     */
     public function purchase(Purchase $purchaseData)
     {
         // Nie znaleziono użytkownika o takich danych jak podane podczas zakupu
