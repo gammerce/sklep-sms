@@ -82,6 +82,7 @@ return [
     'payment_remove_code_from_db' =>
         'Code was removed from the list of codes to be used. Code: {1} Tariff: {2}',
     'previous' => 'Previous',
+    'quantity' => 'Quantity',
     'question' => 'Question',
     'regards' => 'Regards',
     'return_code_length_warn' => 'Given return code is a little bit too long.',

@@ -26,7 +26,7 @@ class Price
      */
     private $transferPrice;
 
-    /** @var int */
+    /** @var int|null */
     private $quantity;
 
     public function __construct($id, $serviceId, $serverId, $smsPrice, $transferPrice, $quantity)

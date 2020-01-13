@@ -40,29 +40,30 @@
         </tr>
         <tr>
             <td>
-                <label for="tariff">{$lang->strtoupper($lang->t('tariff'))}</label>
+                <label for="sms_price">{$lang->strtoupper($lang->t('sms_price'))}</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
-                            <select id="tariff" name="tariff">
-                                <option value="">{$lang->t('choose_tariff')}</option>
-                                {$tariffs}
+                            <select id="sms_price" name="sms_price">
+                                <option value="">{$lang->t('choose_sms_price')}</option>
+                                {$smsPrices}
                             </select>
                         </div>
                     </div>
                 </div>
             </td>
         </tr>
+        // TODO Transfer price
         <tr>
             <td>
-                <label for="amount">{$lang->strtoupper($lang->t('amount'))}</label>
+                <label for="quantity">{$lang->strtoupper($lang->t('quantity'))}</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
-                        <input type="number" id="amount" name="amount" class="input is-small" />
+                        <input type="number" id="quantity" name="quantity" class="input is-small" />
                     </div>
                 </div>
             </td>

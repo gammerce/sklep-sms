@@ -25,6 +25,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 
     protected function content(array $query, array $body)
     {
+        // TODO Remove pricelist
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
 

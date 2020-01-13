@@ -104,7 +104,7 @@ class PriceRepository
         return !!$statement->rowCount();
     }
 
-    private function mapToModel(array $data)
+    public function mapToModel(array $data)
     {
         return new Price(
             (int) $data['id'],
@@ -112,7 +112,7 @@ class PriceRepository
             $data['server'] !== null ? (int) $data['server'] : null,
             $data['sms_price'] !== null ? (int) $data['sms_price'] : null,
             $data['transfer_price'] !== null ? (int) $data['transfer_price'] : null,
-            (int) $data['quantity']
+            $data['quantity'] !== null ? (int) $data['quantity'] : null
         );
     }
 }

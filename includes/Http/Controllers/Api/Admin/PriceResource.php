@@ -21,8 +21,8 @@ class PriceResource
     ) {
         $lang = $translationManager->user();
 
-        $serviceId = $request->request->get('service');
-        $serverId = $request->request->get('server');
+        $serviceId = $request->request->get('service_id');
+        $serverId = $request->request->get('server_id');
         $smsPrice = $request->request->get('sms_price');
         $transferPrice = $request->request->get('transfer_price');
         $quantity = $request->request->get('quantity');

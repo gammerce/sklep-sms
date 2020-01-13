@@ -1847,13 +1847,14 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $warnings['server'][] = $this->lang->t('no_server_id');
         }
 
+        // TODO Refactor it
         // Taryfa
         $tariff = explode(';', $data['amount']);
         $tariff = $tariff[2];
         if (!strlen($data['amount'])) {
             $warnings['amount'][] = $this->lang->t('must_choose_quantity');
         } elseif ($this->heart->getTariff($tariff) === null) {
-            $warnings['amount'][] = $this->lang->t('no_such_tariff');
+            $warnings['amount'][] = $this->lang->t('no_such_sms_price');
         }
 
         return $warnings;

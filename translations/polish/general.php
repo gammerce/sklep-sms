@@ -82,6 +82,7 @@ return [
     'payment_remove_code_from_db' =>
         'Usunięto kod z tabeli kodów do wykorzystania. Kod: {1} Taryfa: {2}',
     'previous' => 'Wcześniej',
+    'quantity' => 'Ilość',
     'question' => 'Pytanie',
     'regards' => 'Pozdrawiamy',
     'return_code_length_warn' => 'Wprowadzony kod zwrotny jest nieco przydługaśny.',

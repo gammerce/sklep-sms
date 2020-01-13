@@ -43,8 +43,9 @@ class PurchaseResourceWalletTest extends HttpTestCase
             'server_id' => $this->server->getId(),
             'service_id' => $this->serviceId,
         ]);
-        $this->factory->pricelist([
+        $this->factory->price([
             'service_id' => $this->serviceId,
+            // TODO Change it
             'tariff' => $this->tariff,
             'server_id' => $this->server->getId(),
         ]);

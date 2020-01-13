@@ -1,19 +1,19 @@
 <?php
 namespace Tests\Feature\Http\Api\Admin;
 
-use App\Repositories\PricelistRepository;
+use App\Repositories\PriceRepository;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class PriceCollectionTest extends HttpTestCase
 {
-    /** @var PricelistRepository */
+    /** @var PriceRepository */
     private $priceRepository;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->priceRepository = $this->app->make(PricelistRepository::class);
+        $this->priceRepository = $this->app->make(PriceRepository::class);
     }
 
     /** @test */
@@ -26,10 +26,10 @@ class PriceCollectionTest extends HttpTestCase
 
         // when
         $response = $this->post("/api/admin/prices", [
-            'service' => 'vip',
-            'server' => $server->getId(),
-            'tariff' => 2,
-            'amount' => 20,
+            'service_id' => 'vip',
+            'server_id' => $server->getId(),
+            'sms_price' => 200,
+            'quantity' => 20,
         ]);
 
         // then
@@ -38,10 +38,10 @@ class PriceCollectionTest extends HttpTestCase
         $this->assertSame("ok", $json["return_id"]);
         $price = $this->priceRepository->get($json['data']['id']);
         $this->assertNotNull($price);
-        $this->assertSame(2, $price->getTariff());
-        $this->assertSame(20, $price->getAmount());
-        $this->assertSame($server->getId(), $price->getServer());
-        $this->assertSame('vip', $price->getService());
+        $this->assertSame(200, $price->getSmsPrice());
+        $this->assertSame(20, $price->getQuantity());
+        $this->assertSame($server->getId(), $price->getServerId());
+        $this->assertSame('vip', $price->getServiceId());
     }
 
     /** @test */
@@ -52,10 +52,10 @@ class PriceCollectionTest extends HttpTestCase
         $this->actingAs($admin);
 
         $body = [
-            'service' => 'vip',
-            'server' => $server->getId(),
-            'tariff' => 2,
-            'amount' => 20,
+            'service_id' => 'vip',
+            'server_id' => $server->getId(),
+            'sms_price' => 200,
+            'quantity' => 20,
         ];
 
         $this->post("/api/admin/prices", $body);
@@ -67,6 +67,6 @@ class PriceCollectionTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertSame("error", $json["return_id"]);
-        $this->assertSame("Istnieje już cena dla tego serwera i tej taryfy.", $json["text"]);
+        $this->assertSame("Istnieje już cena dla tego serwera i tej ilości.", $json["text"]);
     }
 }

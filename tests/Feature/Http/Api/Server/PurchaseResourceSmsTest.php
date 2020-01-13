@@ -50,8 +50,9 @@ class PurchaseResourceSmsTest extends HttpTestCase
             'server_id' => $server->getId(),
             'service_id' => $serviceId,
         ]);
-        $this->factory->pricelist([
+        $this->factory->price([
             'service_id' => $serviceId,
+            // TODO Change it
             'tariff' => $tariff,
             'server_id' => $server->getId(),
         ]);

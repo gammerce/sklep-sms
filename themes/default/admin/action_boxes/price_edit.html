@@ -38,14 +38,14 @@
         </tr>
         <tr>
             <td>
-                <label for="tariff">{$lang->strtoupper($lang->t('tariff'))}</label>
+                <label for="sms_price">{$lang->strtoupper($lang->t('sms_price'))}</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
-                            <select id="tariff" name="tariff">
-                                {$tariffs}
+                            <select id="sms_price" name="sms_price">
+                                {$smsPrices}
                             </select>
                         </div>
                     </div>
@@ -54,17 +54,17 @@
         </tr>
         <tr>
             <td>
-                <label for="amount">{$lang->strtoupper($lang->t('amount'))}</label>
+                <label for="quantity">{$lang->strtoupper($lang->t('quantity'))}</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
                         <input
                             type="number"
-                            id="amount"
-                            name="amount"
+                            id="quantity"
+                            name="quantity"
                             class="input is-small"
-                            value="{{ $price['amount'] }}"
+                            value="{{ $price->getQuantity() }}"
                         />
                     </div>
                 </div>
@@ -75,7 +75,7 @@
         </tr>
         <tr>
             <td colspan="2">
-                <input type="hidden" name="id" value="{{ $price['id'] }}" />
+                <input type="hidden" name="id" value="{{ $price->getId() }}" />
                 <input type="submit" value="{$lang->t('edit')}" class="button w100" />
             </td>
         </tr>

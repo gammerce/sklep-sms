@@ -94,6 +94,7 @@ abstract class PaymentModule
 
     private function fetchTariffs()
     {
+        // TODO Use sms number repository or internal methods
         $result = $this->db->query(
             $this->db->prepare(
                 "SELECT t.id, t.provision, t.predefined, sn.number " .

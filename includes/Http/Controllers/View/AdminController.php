@@ -117,9 +117,9 @@ class AdminController
             $tariffsLink = $template->render("admin/page_link", compact('pid', 'name'));
 
             // Cennik
-            $pid = "pricelist";
+            $pid = "pricing";
             $name = $lang->t($pid);
-            $pricelistLink = $template->render("admin/page_link", compact('pid', 'name'));
+            $pricingLink = $template->render("admin/page_link", compact('pid', 'name'));
         }
         if (get_privileges("view_users")) {
             $pid = "users";
@@ -184,7 +184,7 @@ class AdminController
                     'servicesLink',
                     'serversLink',
                     'tariffsLink',
-                    'pricelistLink',
+                    'pricingLink',
                     'userServiceLink',
                     'playersFlagsLink',
                     'usersLink',

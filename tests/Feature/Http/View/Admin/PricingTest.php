@@ -4,7 +4,7 @@ namespace Tests\Feature\Http\View\Admin;
 use Tests\Psr4\Concerns\AuthConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 
-class PricelistTest extends HttpTestCase
+class PricingTest extends HttpTestCase
 {
     use AuthConcern;
 
@@ -16,7 +16,7 @@ class PricelistTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/admin/pricelist');
+        $response = $this->get('/admin/pricing');
 
         // then
         $this->assertSame(200, $response->getStatusCode());

@@ -20,7 +20,7 @@ use App\View\Pages\PageAdminPaymentSms;
 use App\View\Pages\PageAdminPaymentTransfer;
 use App\View\Pages\PageAdminPaymentWallet;
 use App\View\Pages\PageAdminPlayersFlags;
-use App\View\Pages\PageAdminPriceList;
+use App\View\Pages\PageAdminPricing;
 use App\View\Pages\PageAdminServers;
 use App\View\Pages\PageAdminServiceCodes;
 use App\View\Pages\PageAdminServices;
@@ -143,7 +143,7 @@ class HeartServiceProvider
         );
         $heart->registerAdminPage(PageAdminPaymentWallet::PAGE_ID, PageAdminPaymentWallet::class);
         $heart->registerAdminPage(PageAdminPlayersFlags::PAGE_ID, PageAdminPlayersFlags::class);
-        $heart->registerAdminPage(PageAdminPriceList::PAGE_ID, PageAdminPriceList::class);
+        $heart->registerAdminPage(PageAdminPricing::PAGE_ID, PageAdminPricing::class);
         $heart->registerAdminPage(PageAdminServers::PAGE_ID, PageAdminServers::class);
         $heart->registerAdminPage(PageAdminServiceCodes::PAGE_ID, PageAdminServiceCodes::class);
         $heart->registerAdminPage(PageAdminServices::PAGE_ID, PageAdminServices::class);

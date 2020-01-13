@@ -5,7 +5,7 @@ use App\Http\Responses\ErrorApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\PriceService;
 use App\Loggers\DatabaseLogger;
-use App\Repositories\PricelistRepository;
+use App\Repositories\PriceRepository;
 use App\Translation\TranslationManager;
 use PDOException;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,20 +16,27 @@ class PriceCollection
         Request $request,
         TranslationManager $translationManager,
         PriceService $priceService,
-        PricelistRepository $priceRepository,
+        PriceRepository $priceRepository,
         DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
 
-        $service = $request->request->get('service');
-        $server = $request->request->get('server');
-        $tariff = $request->request->get('tariff');
-        $amount = $request->request->get('amount');
+        $serviceId = $request->request->get('service_id');
+        $serverId = $request->request->get('server_id');
+        $smsPrice = $request->request->get('sms_price');
+        $transferPrice = $request->request->get('transfer_price');
+        $quantity = $request->request->get('quantity');
 
         $priceService->validateBody($request->request->all());
 
         try {
-            $price = $priceRepository->create($service, $tariff, $amount, $server);
+            $price = $priceRepository->create(
+                $serviceId,
+                $serverId,
+                $smsPrice,
+                $transferPrice,
+                $quantity
+            );
         } catch (PDOException $e) {
             // Duplication
             if (get_error_code($e) === 1062) {
