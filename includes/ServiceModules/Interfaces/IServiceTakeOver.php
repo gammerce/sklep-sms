@@ -24,5 +24,5 @@ interface IServiceTakeOver
      * text => treść wiadomości
      * positive => czy udało się przejąć usługę
      */
-    public function serviceTakeOver($body);
+    public function serviceTakeOver(array $body);
 }

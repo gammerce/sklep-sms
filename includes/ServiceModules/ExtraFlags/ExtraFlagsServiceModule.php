@@ -1577,66 +1577,66 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
     }
 
-    public function serviceTakeOver($data)
+    public function serviceTakeOver(array $body)
     {
         $user = $this->auth->user();
 
         // Serwer
-        if (!strlen($data['server'])) {
+        if (!strlen($body['server'])) {
             $warnings['server'][] = $this->lang->t('field_no_empty');
         }
 
         // Typ
-        if (!strlen($data['type'])) {
+        if (!strlen($body['type'])) {
             $warnings['type'][] = $this->lang->t('field_no_empty');
         }
 
-        switch ($data['type']) {
+        switch ($body['type']) {
             case "1":
                 // Nick
-                if (!strlen($data['nick'])) {
+                if (!strlen($body['nick'])) {
                     $warnings['nick'][] = $this->lang->t('field_no_empty');
                 }
 
                 // Hasło
-                if (!strlen($data['password'])) {
+                if (!strlen($body['password'])) {
                     $warnings['password'][] = $this->lang->t('field_no_empty');
                 }
 
-                $authData = $data['nick'];
+                $authData = $body['nick'];
                 break;
 
             case "2":
                 // IP
-                if (!strlen($data['ip'])) {
+                if (!strlen($body['ip'])) {
                     $warnings['ip'][] = $this->lang->t('field_no_empty');
                 }
 
                 // Hasło
-                if (!strlen($data['password'])) {
+                if (!strlen($body['password'])) {
                     $warnings['password'][] = $this->lang->t('field_no_empty');
                 }
 
-                $authData = $data['ip'];
+                $authData = $body['ip'];
                 break;
 
             case "4":
                 // SID
-                if (!strlen($data['sid'])) {
+                if (!strlen($body['sid'])) {
                     $warnings['sid'][] = $this->lang->t('field_no_empty');
                 }
 
-                $authData = $data['sid'];
+                $authData = $body['sid'];
                 break;
         }
 
         // Płatność
-        if (!strlen($data['payment'])) {
+        if (!strlen($body['payment'])) {
             $warnings['payment'][] = $this->lang->t('field_no_empty');
         }
 
-        if (in_array($data['payment'], [Purchase::METHOD_SMS, Purchase::METHOD_TRANSFER])) {
-            if (!strlen($data['payment_id'])) {
+        if (in_array($body['payment'], [Purchase::METHOD_SMS, Purchase::METHOD_TRANSFER])) {
+            if (!strlen($body['payment_id'])) {
                 $warnings['payment_id'][] = $this->lang->t('field_no_empty');
             }
         }
@@ -1650,12 +1650,12 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ];
         }
 
-        if ($data['payment'] == Purchase::METHOD_TRANSFER) {
+        if ($body['payment'] == Purchase::METHOD_TRANSFER) {
             $result = $this->db->query(
                 $this->db->prepare(
                     "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
                         "WHERE t.payment = 'transfer' AND t.payment_id = '%s' AND `service` = '%s' AND `server` = '%d' AND `auth_data` = '%s'",
-                    [$data['payment_id'], $this->service->getId(), $data['server'], $authData]
+                    [$body['payment_id'], $this->service->getId(), $body['server'], $authData]
                 )
             );
 
@@ -1666,12 +1666,12 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                     'positive' => false,
                 ];
             }
-        } elseif ($data['payment'] == Purchase::METHOD_SMS) {
+        } elseif ($body['payment'] == Purchase::METHOD_SMS) {
             $result = $this->db->query(
                 $this->db->prepare(
                     "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
                         "WHERE t.payment = 'sms' AND t.sms_code = '%s' AND `service` = '%s' AND `server` = '%d' AND `auth_data` = '%s'",
-                    [$data['payment_id'], $this->service->getId(), $data['server'], $authData]
+                    [$body['payment_id'], $this->service->getId(), $body['server'], $authData]
                 )
             );
 
@@ -1697,11 +1697,11 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                     "WHERE us.service = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND ( `password` = '%s' OR `password` = '%s' )",
                 [
                     $this->service->getId(),
-                    $data['server'],
-                    $data['type'],
+                    $body['server'],
+                    $body['type'],
                     $authData,
-                    $data['password'],
-                    md5($data['password']),
+                    $body['password'],
+                    md5($body['password']),
                 ]
             )
         );

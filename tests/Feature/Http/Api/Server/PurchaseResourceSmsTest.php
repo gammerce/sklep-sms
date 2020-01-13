@@ -38,7 +38,6 @@ class PurchaseResourceSmsTest extends HttpTestCase
         $settings = $this->app->make(Settings::class);
 
         $serviceId = 'vip';
-        $tariff = 2;
         $authData = 'test';
         $password = 'test123';
         $smsCode = 'ABCD12EF';
@@ -50,10 +49,8 @@ class PurchaseResourceSmsTest extends HttpTestCase
             'server_id' => $server->getId(),
             'service_id' => $serviceId,
         ]);
-        $this->factory->price([
+        $price = $this->factory->price([
             'service_id' => $serviceId,
-            // TODO Change it
-            'tariff' => $tariff,
             'server_id' => $server->getId(),
         ]);
 
@@ -65,15 +62,15 @@ class PurchaseResourceSmsTest extends HttpTestCase
         $response = $this->post(
             '/api/server/purchase',
             [
-                'service' => $serviceId,
-                'payment_platform' => $paymentPlatform->getId(),
-                'server' => $server->getId(),
+                'service_id' => $serviceId,
+                'payment_platform_id' => $paymentPlatform->getId(),
+                'server_id' => $server->getId(),
                 'type' => $type,
                 'auth_data' => $authData,
                 'password' => $password,
                 'sms_code' => $smsCode,
                 'method' => Purchase::METHOD_SMS,
-                'tariff' => $tariff,
+                'price_id' => $price->getId(),
                 'ip' => "192.0.2.1",
                 'sign' => $sign,
             ],

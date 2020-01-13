@@ -3,24 +3,16 @@ namespace App\Http\Services;
 
 use App\Models\Purchase;
 use App\Payment\PaymentService;
-use App\Repositories\PaymentPlatformRepository;
-use App\Repositories\UserRepository;
+use App\Repositories\PriceRepository;
 use App\ServiceModules\ServiceModule;
+use App\Services\PaymentModulePriceService;
 use App\System\Auth;
 use App\System\Heart;
-use App\Translation\TranslationManager;
-use App\Translation\Translator;
 
 class PurchaseService
 {
-    /** @var Translator */
-    private $lang;
-
     /** @var PaymentService */
     private $paymentService;
-
-    /** @var UserRepository */
-    private $userRepository;
 
     /** @var Heart */
     private $heart;
@@ -28,45 +20,48 @@ class PurchaseService
     /** * @var Auth */
     private $auth;
 
-    /** @var PaymentPlatformRepository */
-    private $paymentPlatformRepository;
+    /** @var PriceRepository */
+    private $priceRepository;
+
+    /** @var PaymentModulePriceService */
+    private $paymentModulePriceService;
 
     public function __construct(
-        TranslationManager $translationManager,
         PaymentService $paymentService,
         Heart $heart,
         Auth $auth,
-        UserRepository $userRepository,
-        PaymentPlatformRepository $paymentPlatformRepository
+        PriceRepository $priceRepository,
+        PaymentModulePriceService $paymentModulePriceService
     ) {
-        $this->lang = $translationManager->user();
         $this->paymentService = $paymentService;
-        $this->userRepository = $userRepository;
         $this->heart = $heart;
         $this->auth = $auth;
-        $this->paymentPlatformRepository = $paymentPlatformRepository;
+        $this->priceRepository = $priceRepository;
+        $this->paymentModulePriceService = $paymentModulePriceService;
     }
 
     public function purchase(ServiceModule $serviceModule, array $body)
     {
-        $server = array_get($body, 'server');
+        $serverId = array_get($body, 'server_id');
         $type = array_get($body, 'type');
         $authData = array_get($body, 'auth_data');
         $password = array_get($body, 'password');
         $ip = array_get($body, 'ip');
         $method = array_get($body, 'method');
         $smsCode = array_get($body, 'sms_code');
-        $paymentPlatformId = array_get($body, 'payment_platform');
-        $tariff = array_get($body, 'tariff');
+        $paymentPlatformId = array_get($body, 'payment_platform_id');
+        $priceId = array_get($body, 'price_id');
 
         $user = $this->auth->user();
         $user->setLastIp($ip);
+
+        $price = $this->priceRepository->get($priceId);
 
         $purchase = new Purchase($user);
         $purchase->setService($serviceModule->service->getId());
 
         $purchase->setOrder([
-            'server' => $server,
+            'server' => $serverId,
             'type' => $type,
             'auth_data' => $authData,
             'password' => $password,
@@ -79,13 +74,17 @@ class PurchaseService
             'sms_platform' => $paymentPlatformId,
         ]);
 
-        $purchase->setTariff($this->heart->getTariff($tariff));
+        $purchase->setPrice($price);
 
+        // Remove price if it is not supported by this sms_platform
         if ($purchase->getPayment('sms_platform')) {
             $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
                 $purchase->getPayment('sms_platform')
             );
-            $purchase->setTariff($paymentModule->getTariffById($tariff));
+
+            if (!$this->paymentModulePriceService->isPriceAvailable($price, $paymentModule)) {
+                $purchase->setPrice(null);
+            }
         }
 
         $returnValidation = $serviceModule->purchaseDataValidate($purchase);
