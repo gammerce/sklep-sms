@@ -22,19 +22,4 @@ interface IServiceServiceCodeAdminManage
      * @return string
      */
     public function serviceCodeAdminAddFormGet();
-
-    /**
-     * Metoda powinna zwrócić tablicę z danymi które zostaną dodane do bazy wraz z kodem na usługę
-     * można założyć że dane są już prawidłowo zweryfikowane przez metodę service_code_admin_add_validate
-     *
-     * @param $body
-     *
-     * @return array (
-     *        'server'    - int,
-     *        'amount'    - double,
-     *        'tariff'    - int,
-     *        'data'        - string
-     * )
-     */
-    public function serviceCodeAdminAddInsert(array $body);
 }

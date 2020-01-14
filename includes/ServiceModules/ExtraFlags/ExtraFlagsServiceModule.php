@@ -1860,18 +1860,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         return $warnings;
     }
 
-    public function serviceCodeAdminAddInsert(array $body)
-    {
-        // TODO Refactor it
-        $tariff = explode(';', $body['amount']);
-        $tariff = $tariff[2];
-
-        return [
-            'tariff' => $tariff,
-            'server' => $body['server'],
-        ];
-    }
-
     /**
      * Get value depending on the type
      *

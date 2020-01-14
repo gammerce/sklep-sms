@@ -79,7 +79,6 @@ class Price
         return $this->quantity;
     }
 
-    // TODO Are we sure we need forever price?
     public function isForever()
     {
         return $this->quantity === null;

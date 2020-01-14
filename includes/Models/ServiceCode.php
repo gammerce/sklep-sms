@@ -21,14 +21,10 @@ class ServiceCode
     /** @var int|null */
     private $uid;
 
-    // TODO Maybe remove it
-    /** @var string */
-    private $data;
-
     /** @var int */
     private $timestamp;
 
-    public function __construct($id, $code, $service, $server, $price, $uid, $data, $timestamp)
+    public function __construct($id, $code, $service, $price, $server, $uid, $timestamp)
     {
         $this->id = $id;
         $this->code = $code;
@@ -36,7 +32,6 @@ class ServiceCode
         $this->server = $server;
         $this->price = $price;
         $this->uid = $uid;
-        $this->data = $data;
         $this->timestamp = $timestamp;
     }
 
@@ -86,14 +81,6 @@ class ServiceCode
     public function getUid()
     {
         return $this->uid;
-    }
-
-    /**
-     * @return string
-     */
-    public function getData()
-    {
-        return $this->data;
     }
 
     /**

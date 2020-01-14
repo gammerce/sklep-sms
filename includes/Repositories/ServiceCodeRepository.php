@@ -14,23 +14,16 @@ class ServiceCodeRepository
         $this->db = $db;
     }
 
-    public function create(
-        $code,
-        $serviceId,
-        $uid = 0,
-        $serverId = 0,
-        $amount = 0,
-        $tariff = 0,
-        $data = ""
-    ) {
+    public function create($code, $serviceId, $priceId, $serverId = null, $uid = null)
+    {
         $this->db
             ->statement(
                 "INSERT INTO `" .
                     TABLE_PREFIX .
                     "service_codes` " .
-                    "SET `code` = ?, `service` = ?, `uid` = ?, `server` = ?, `amount` = ?, `tariff` = ?, `data` = ?"
+                    "SET `code` = ?, `service` = ?, `price` = ?, `server` = ?, `uid` = ?"
             )
-            ->execute([$code, $serviceId, $uid, $serverId, $amount, $tariff, $data]);
+            ->execute([$code, $serviceId, $priceId, $serverId, $uid]);
 
         return $this->get($this->db->lastId());
     }
@@ -67,10 +60,9 @@ class ServiceCodeRepository
             (int) $data['id'],
             $data['code'],
             $data['service'],
-            (int) $data['server'],
             (int) $data['price'],
+            (int) $data['server'],
             (int) $data['uid'],
-            $data['data'],
             $data['timestamp']
         );
     }

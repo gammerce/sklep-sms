@@ -10,6 +10,7 @@ class ModifyServiceCodeTable extends Migration
             "ALTER TABLE `ss_payment_admin` MODIFY `uid` INT(11)",
             "ALTER TABLE `ss_payment_admin` MODIFY `server` INT(11)",
             "ALTER TABLE `ss_payment_admin` DROP COLUMN `amount`",
+            "ALTER TABLE `ss_payment_admin` DROP COLUMN `data`",
             "ALTER TABLE `ss_payment_admin` ADD COLUMN `price` INT(11)",
             "UPDATE `ss_payment_admin` SET `uid` = NULL WHERE `uid` = 0",
             "UPDATE `ss_payment_admin` SET `server` = NULL WHERE `server` = 0",
