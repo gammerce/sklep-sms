@@ -36,10 +36,10 @@ class ServiceCodePaymentServiceTest extends TestCase
 
         $purchase = new Purchase(new User());
         $purchase->setPayment([
-            'service_code' => $serviceCode->getCode(),
+            Purchase::PAYMENT_SERVICE_CODE => $serviceCode->getCode(),
         ]);
         $purchase->setOrder([
-            'server' => 'blah',
+            Purchase::ORDER_SERVER => 'blah',
         ]);
         $purchase->setPrice($price);
         $purchase->setService($serviceModule->service->getId());

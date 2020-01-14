@@ -50,12 +50,12 @@ class PurchaseValidationResource
             }
 
             if (
-                $purchase->getPayment('sms_platform') === null &&
+                $purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM) === null &&
                 !$purchase->getPayment(Purchase::PAYMENT_SMS_DISABLED) &&
                 $settings->getSmsPlatformId()
             ) {
                 $purchase->setPayment([
-                    'sms_platform' => $settings->getSmsPlatformId(),
+                    Purchase::PAYMENT_SMS_PLATFORM => $settings->getSmsPlatformId(),
                 ]);
             }
 

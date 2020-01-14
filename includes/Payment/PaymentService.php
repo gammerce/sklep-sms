@@ -71,7 +71,7 @@ class PaymentService
         }
 
         if (
-            !in_array($purchase->getPayment('method'), [
+            !in_array($purchase->getPayment(Purchase::PAYMENT_METHOD), [
                 Purchase::METHOD_SMS,
                 Purchase::METHOD_TRANSFER,
                 Purchase::METHOD_WALLET,
@@ -87,20 +87,21 @@ class PaymentService
 
         // Tworzymy obiekt, który będzie nam obsługiwał proces płatności
         $paymentModule = null;
-        if ($purchase->getPayment('method') === Purchase::METHOD_SMS) {
+        if ($purchase->getPayment(Purchase::PAYMENT_METHOD) === Purchase::METHOD_SMS) {
             $paymentPlatformId =
-                $purchase->getPayment('sms_platform') ?: $this->settings->getSmsPlatformId();
+                $purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM) ?:
+                $this->settings->getSmsPlatformId();
             $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail($paymentPlatformId);
-        } elseif ($purchase->getPayment('method') === Purchase::METHOD_TRANSFER) {
+        } elseif ($purchase->getPayment(Purchase::PAYMENT_METHOD) === Purchase::METHOD_TRANSFER) {
             $paymentPlatformId =
-                $purchase->getPayment('transfer_platform') ?:
+                $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PLATFORM) ?:
                 $this->settings->getTransferPlatformId();
             $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail($paymentPlatformId);
         }
 
         // Metoda płatności
         if (
-            $purchase->getPayment('method') == Purchase::METHOD_WALLET &&
+            $purchase->getPayment(Purchase::PAYMENT_METHOD) == Purchase::METHOD_WALLET &&
             !$purchase->user->exists()
         ) {
             return [
@@ -111,7 +112,7 @@ class PaymentService
         }
 
         if (
-            $purchase->getPayment('method') == Purchase::METHOD_SMS &&
+            $purchase->getPayment(Purchase::PAYMENT_METHOD) == Purchase::METHOD_SMS &&
             !($paymentModule instanceof SupportSms)
         ) {
             return [
@@ -122,7 +123,7 @@ class PaymentService
         }
 
         if (
-            $purchase->getPayment('method') == Purchase::METHOD_SMS &&
+            $purchase->getPayment(Purchase::PAYMENT_METHOD) == Purchase::METHOD_SMS &&
             $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE) === null
         ) {
             return [
@@ -133,7 +134,7 @@ class PaymentService
         }
 
         if (
-            $purchase->getPayment('method') == Purchase::METHOD_TRANSFER &&
+            $purchase->getPayment(Purchase::PAYMENT_METHOD) == Purchase::METHOD_TRANSFER &&
             $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE) <= 100
         ) {
             return [
@@ -144,7 +145,7 @@ class PaymentService
         }
 
         if (
-            $purchase->getPayment('method') == Purchase::METHOD_TRANSFER &&
+            $purchase->getPayment(Purchase::PAYMENT_METHOD) == Purchase::METHOD_TRANSFER &&
             !($paymentModule instanceof SupportTransfer)
         ) {
             return [
@@ -158,20 +159,23 @@ class PaymentService
 
         // Kod SMS
         $purchase->setPayment([
-            'sms_code' => trim($purchase->getPayment('sms_code')),
+            Purchase::PAYMENT_SMS_CODE => trim($purchase->getPayment(Purchase::PAYMENT_SMS_CODE)),
         ]);
 
         if (
-            $purchase->getPayment('method') == Purchase::METHOD_SMS &&
-            ($warning = check_for_warnings("sms_code", $purchase->getPayment('sms_code')))
+            $purchase->getPayment(Purchase::PAYMENT_METHOD) == Purchase::METHOD_SMS &&
+            ($warning = check_for_warnings(
+                "sms_code",
+                $purchase->getPayment(Purchase::PAYMENT_SMS_CODE)
+            ))
         ) {
             $warnings['sms_code'] = array_merge((array) $warnings['sms_code'], $warning);
         }
 
         // Kod na usługę
         if (
-            $purchase->getPayment('method') == Purchase::METHOD_SERVICE_CODE &&
-            !strlen($purchase->getPayment('service_code'))
+            $purchase->getPayment(Purchase::PAYMENT_METHOD) == Purchase::METHOD_SERVICE_CODE &&
+            !strlen($purchase->getPayment(Purchase::PAYMENT_SERVICE_CODE))
         ) {
             $warnings['service_code'][] = $this->lang->t('field_no_empty');
         }
@@ -188,11 +192,11 @@ class PaymentService
             ];
         }
 
-        if ($purchase->getPayment('method') === Purchase::METHOD_SMS) {
+        if ($purchase->getPayment(Purchase::PAYMENT_METHOD) === Purchase::METHOD_SMS) {
             // Let's check sms code
             $result = $this->smsPaymentService->payWithSms(
                 $paymentModule,
-                $purchase->getPayment('sms_code'),
+                $purchase->getPayment(Purchase::PAYMENT_SMS_CODE),
                 $this->smsPriceService->getNumber(
                     $purchase->getPrice()->getSmsPrice(),
                     $paymentModule
@@ -211,7 +215,7 @@ class PaymentService
             $paymentId = $result['payment_id'];
         }
 
-        if ($purchase->getPayment('method') === Purchase::METHOD_WALLET) {
+        if ($purchase->getPayment(Purchase::PAYMENT_METHOD) === Purchase::METHOD_WALLET) {
             $paymentId = $this->walletPaymentService->payWithWallet(
                 $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE),
                 $purchase->user
@@ -223,7 +227,7 @@ class PaymentService
             }
         }
 
-        if ($purchase->getPayment('method') === Purchase::METHOD_SERVICE_CODE) {
+        if ($purchase->getPayment(Purchase::PAYMENT_METHOD) === Purchase::METHOD_SERVICE_CODE) {
             $paymentId = $this->serviceCodePaymentService->payWithServiceCode(
                 $purchase,
                 $serviceModule
@@ -236,7 +240,7 @@ class PaymentService
         }
 
         if (
-            in_array($purchase->getPayment('method'), [
+            in_array($purchase->getPayment(Purchase::PAYMENT_METHOD), [
                 Purchase::METHOD_WALLET,
                 Purchase::METHOD_SMS,
                 Purchase::METHOD_SERVICE_CODE,
@@ -244,7 +248,7 @@ class PaymentService
         ) {
             // Dokonujemy zakupu usługi
             $purchase->setPayment([
-                'payment_id' => $paymentId,
+                Purchase::PAYMENT_PAYMENT_ID => $paymentId,
             ]);
             $boughtServiceId = $serviceModule->purchase($purchase);
 
@@ -256,7 +260,7 @@ class PaymentService
             ];
         }
 
-        if ($purchase->getPayment('method') == Purchase::METHOD_TRANSFER) {
+        if ($purchase->getPayment(Purchase::PAYMENT_METHOD) == Purchase::METHOD_TRANSFER) {
             $purchase->setDesc(
                 $this->lang->t('payment_for_service', $serviceModule->service->getName())
             );

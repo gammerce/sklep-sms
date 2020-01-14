@@ -354,7 +354,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $purchase = new Purchase($this->auth->user());
         $purchase->setOrder([
-            'server' => $body['server'],
+            Purchase::ORDER_SERVER => $body['server'],
             'type' => $body['type'],
             'auth_data' => trim($authData),
             'password' => $body['password'],
@@ -375,11 +375,11 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $warnings = [];
 
         // Serwer
-        if (!strlen($purchase->getOrder('server'))) {
+        if (!strlen($purchase->getOrder(Purchase::ORDER_SERVER))) {
             $warnings['server'][] = $this->lang->t('must_choose_server');
         } else {
             // Sprawdzanie czy serwer o danym id istnieje w bazie
-            $server = $this->heart->getServer($purchase->getOrder('server'));
+            $server = $this->heart->getServer($purchase->getOrder(Purchase::ORDER_SERVER));
 
             if (!$this->heart->serverServiceLinked($server->getId(), $this->service->getId())) {
                 $warnings['server'][] = $this->lang->t('chosen_incorrect_server');
@@ -507,7 +507,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         if ($server->getSmsPlatformId()) {
             $purchase->setPayment([
-                'sms_platform' => $server->getSmsPlatformId(),
+                Purchase::PAYMENT_SMS_PLATFORM => $server->getSmsPlatformId(),
             ]);
         }
 
@@ -521,7 +521,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function orderDetails(Purchase $purchase)
     {
-        $server = $this->heart->getServer($purchase->getOrder('server'));
+        $server = $this->heart->getServer($purchase->getOrder(Purchase::ORDER_SERVER));
         $typeName = $this->getTypeName2($purchase->getOrder('type'));
 
         $password = '';
@@ -564,7 +564,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $purchase->getOrder('auth_data'),
             $purchase->getOrder('password'),
             $purchase->getOrder(Purchase::ORDER_QUANTITY),
-            $purchase->getOrder('server'),
+            $purchase->getOrder(Purchase::ORDER_SERVER),
             $purchase->getOrder(Purchase::ORDER_FOREVER)
         );
 
@@ -572,10 +572,10 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $purchase->user->getUid(),
             $purchase->user->getUsername(),
             $purchase->user->getLastIp(),
-            $purchase->getPayment('method'),
-            $purchase->getPayment('payment_id'),
+            $purchase->getPayment(Purchase::PAYMENT_METHOD),
+            $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
             $this->service->getId(),
-            $purchase->getOrder('server'),
+            $purchase->getOrder(Purchase::ORDER_SERVER),
             $purchase->getOrder(Purchase::ORDER_QUANTITY),
             $purchase->getOrder('auth_data'),
             $purchase->getEmail(),
@@ -956,11 +956,11 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $purchase = new Purchase($purchaseUser);
         $purchase->setService($this->service->getId());
         $purchase->setPayment([
-            'method' => "admin",
-            'payment_id' => $paymentId,
+            Purchase::PAYMENT_METHOD => "admin",
+            Purchase::PAYMENT_PAYMENT_ID => $paymentId,
         ]);
         $purchase->setOrder([
-            'server' => $body['server'],
+            Purchase::ORDER_SERVER => $body['server'],
             'type' => $body['type'],
             'auth_data' => trim($body['auth_data']),
             'password' => $body['password'],

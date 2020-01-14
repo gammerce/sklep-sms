@@ -146,8 +146,8 @@ class TransferPaymentService
         }
 
         $purchase->setPayment([
-            'method' => Purchase::METHOD_TRANSFER,
-            'payment_id' => $transferFinalize->getOrderId(),
+            Purchase::PAYMENT_METHOD => Purchase::METHOD_TRANSFER,
+            Purchase::PAYMENT_PAYMENT_ID => $transferFinalize->getOrderId(),
         ]);
         $boughtServiceId = $serviceModule->purchase($purchase);
 

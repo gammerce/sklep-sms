@@ -62,7 +62,7 @@ class PurchaseService
         $purchase->setService($serviceModule->service->getId());
 
         $purchase->setOrder([
-            'server' => $serverId,
+            Purchase::ORDER_SERVER => $serverId,
             'type' => $type,
             'auth_data' => $authData,
             'password' => $password,
@@ -70,9 +70,9 @@ class PurchaseService
         ]);
 
         $purchase->setPayment([
-            'method' => $method,
-            'sms_code' => $smsCode,
-            'sms_platform' => $paymentPlatformId,
+            Purchase::PAYMENT_METHOD => $method,
+            Purchase::PAYMENT_SMS_CODE => $smsCode,
+            Purchase::PAYMENT_SMS_PLATFORM => $paymentPlatformId,
         ]);
 
         if ($this->isPriceAvailable($price, $purchase)) {
@@ -106,9 +106,9 @@ class PurchaseService
         /** @var Purchase $purchase */
         $purchase = $returnValidation['purchase_data'];
         $purchase->setPayment([
-            'method' => $method,
-            'sms_code' => $smsCode,
-            'sms_platform' => $paymentPlatformId,
+            Purchase::PAYMENT_METHOD => $method,
+            Purchase::PAYMENT_SMS_CODE => $smsCode,
+            Purchase::PAYMENT_SMS_PLATFORM => $paymentPlatformId,
         ]);
 
         $returnPayment = $this->paymentService->makePayment($purchase);
@@ -140,9 +140,9 @@ class PurchaseService
 
     private function isPriceAvailable(Price $price, Purchase $purchase)
     {
-        if ($purchase->getPayment('sms_platform')) {
+        if ($purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM)) {
             $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
-                $purchase->getPayment('sms_platform')
+                $purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM)
             );
 
             if (!$this->smsPriceService->isPriceAvailable($price->getSmsPrice(), $paymentModule)) {

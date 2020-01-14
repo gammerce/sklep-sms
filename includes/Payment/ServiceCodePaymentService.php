@@ -59,10 +59,10 @@ class ServiceCodePaymentService
                 "AND (`uid` IS NULL OR `uid` = ?)"
         );
         $statement->execute([
-            $purchase->getPayment('service_code'),
+            $purchase->getPayment(Purchase::PAYMENT_SERVICE_CODE),
             $purchase->getService(),
             $purchase->getPrice()->getId(),
-            $purchase->getOrder('server'),
+            $purchase->getOrder(Purchase::ORDER_SERVER),
             $purchase->user->getUid(),
         ]);
 
@@ -73,14 +73,14 @@ class ServiceCodePaymentService
                 $this->serviceCodeRepository->delete($serviceCode->getId());
 
                 $paymentCode = $this->paymentCodeRepository->create(
-                    $purchase->getPayment('service_code'),
+                    $purchase->getPayment(Purchase::PAYMENT_SERVICE_CODE),
                     $purchase->user->getLastIp(),
                     $purchase->user->getPlatform()
                 );
 
                 $this->logger->log(
                     'purchase_code',
-                    $purchase->getPayment('service_code'),
+                    $purchase->getPayment(Purchase::PAYMENT_SERVICE_CODE),
                     $purchase->user->getUsername(),
                     $purchase->user->getUid(),
                     $paymentCode->getId()

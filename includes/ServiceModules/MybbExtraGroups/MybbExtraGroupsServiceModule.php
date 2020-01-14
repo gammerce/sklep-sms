@@ -445,8 +445,8 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             $purchase->user->getUid(),
             $purchase->user->getUsername(),
             $purchase->user->getLastIp(),
-            $purchase->getPayment('method'),
-            $purchase->getPayment('payment_id'),
+            $purchase->getPayment(Purchase::PAYMENT_METHOD),
+            $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
             $this->service->getId(),
             0,
             $purchase->getOrder(Purchase::ORDER_QUANTITY),
@@ -731,8 +731,8 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $purchase = new Purchase($this->heart->getUser($body['uid']));
         $purchase->setService($this->service->getId());
         $purchase->setPayment([
-            'method' => "admin",
-            'payment_id' => $paymentId,
+            Purchase::PAYMENT_METHOD => "admin",
+            Purchase::PAYMENT_PAYMENT_ID => $paymentId,
         ]);
         $purchase->setOrder([
             'username' => $body['mybb_username'],

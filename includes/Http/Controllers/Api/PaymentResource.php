@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Responses\ApiResponse;
+use App\Models\Purchase;
 use App\Payment\PaymentService;
 use App\Payment\PurchaseSerializer;
 use App\System\Settings;
@@ -29,9 +30,9 @@ class PaymentResource
 
         // Add payment details
         $purchase->setPayment([
-            'method' => $request->request->get('method'),
-            'sms_code' => $request->request->get('sms_code'),
-            'service_code' => $request->request->get('service_code'),
+            Purchase::PAYMENT_METHOD => $request->request->get('method'),
+            Purchase::PAYMENT_SMS_CODE => $request->request->get('sms_code'),
+            Purchase::PAYMENT_SERVICE_CODE => $request->request->get('service_code'),
         ]);
 
         $returnPayment = $paymentService->makePayment($purchase);

@@ -65,8 +65,8 @@ class WalletChargeCollection
         // Kupujemy usługę
         $purchase = new Purchase($editedUser);
         $purchase->setPayment([
-            'method' => "admin",
-            'payment_id' => $paymentId,
+            Purchase::PAYMENT_METHOD => "admin",
+            Purchase::PAYMENT_PAYMENT_ID => $paymentId,
         ]);
         $purchase->setOrder([
             Purchase::ORDER_QUANTITY => $quantity,

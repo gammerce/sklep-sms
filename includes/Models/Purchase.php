@@ -14,8 +14,16 @@ class Purchase
     const PAYMENT_TRANSFER_DISABLED = "no_transfer";
     const PAYMENT_WALLET_DISABLED = "no_wallet";
     const PAYMENT_SERVICE_CODE_DISABLED = "no_code";
+    const PAYMENT_METHOD = "method";
+    const PAYMENT_PAYMENT_ID = "payment_id";
+    const PAYMENT_SERVICE_CODE = "service_code";
+    const PAYMENT_SMS_CODE = "sms_code";
+    const PAYMENT_SMS_PLATFORM = "sms_platform";
+    const PAYMENT_TRANSFER_PLATFORM = "transfer_platform";
+
     const ORDER_QUANTITY = "quantity";
     const ORDER_FOREVER = "forever";
+    const ORDER_SERVER = "server";
 
     /**
      * ID of row from ss_services table

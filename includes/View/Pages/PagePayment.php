@@ -58,7 +58,7 @@ class PagePayment extends Page
         }
 
         $smsPaymentModule = $this->heart->getPaymentModuleByPlatformId(
-            $purchase->getPayment('sms_platform')
+            $purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM)
         );
 
         $transferPrice = $this->priceTextService->getTransferText(
@@ -113,7 +113,7 @@ class PagePayment extends Page
 
     private function isSmsAvailable(Purchase $purchase, PaymentModule $paymentModule = null)
     {
-        return $purchase->getPayment('sms_platform') &&
+        return $purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM) &&
             $purchase->getPrice() &&
             $purchase->getPrice()->hasSmsPrice() &&
             $paymentModule instanceof SupportSms &&
