@@ -167,7 +167,7 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
         if ($body['method'] == Purchase::METHOD_SMS) {
             $purchase->setPayment([
-                'no_transfer' => true,
+                Purchase::PAYMENT_TRANSFER_DISABLED => true,
             ]);
             $purchase->setOrder([
                 Purchase::ORDER_QUANTITY => get_sms_provision($smsPrice),
@@ -175,10 +175,9 @@ class ChargeWalletServiceModule extends ServiceModule implements
         } elseif ($body['method'] == Purchase::METHOD_TRANSFER) {
             $purchase->setPayment([
                 Purchase::PAYMENT_TRANSFER_PRICE => $transferPrice * 100,
-                'no_sms' => true,
+                Purchase::PAYMENT_SMS_DISABLED => true,
             ]);
             $purchase->setOrder([
-                // TODO Replace amount with quantity
                 Purchase::ORDER_QUANTITY => $transferPrice * 100,
             ]);
         }

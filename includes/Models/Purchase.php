@@ -1,9 +1,6 @@
 <?php
 namespace App\Models;
 
-/**
- * Obiekty tej klasy są używane podczas przeprowadzania zakupu
- */
 class Purchase
 {
     const METHOD_SMS = "sms";
@@ -12,6 +9,8 @@ class Purchase
     const METHOD_WALLET = "wallet";
 
     const PAYMENT_TRANSFER_PRICE = "transfer_price";
+    const PAYMENT_SMS_DISABLED = "no_sms";
+    const PAYMENT_TRANSFER_DISABLED = "no_transfer";
     const ORDER_QUANTITY = "quantity";
     const ORDER_FOREVER = "forever";
 

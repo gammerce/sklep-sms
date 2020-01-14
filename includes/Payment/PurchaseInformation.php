@@ -31,22 +31,20 @@ class PurchaseInformation
     // 	payment_id - id płatności
     // 	action - jak sformatowac dane
     //
-    public function get($data)
+    public function get(array $data)
     {
         // Wyszukujemy po id zakupu
         if (isset($data['purchase_id'])) {
             $where = $this->db->prepare("t.id = '%d'", [$data['purchase_id']]);
         }
         // Wyszukujemy po id płatności
-        else {
-            if (isset($data['payment']) && isset($data['payment_id'])) {
+        elseif (isset($data['payment']) && isset($data['payment_id'])) {
                 $where = $this->db->prepare("t.payment = '%s' AND t.payment_id = '%s'", [
                     $data['payment'],
                     $data['payment_id'],
                 ]);
-            } else {
-                return "";
-            }
+        } else {
+            return "";
         }
 
         $pbs = $this->db
@@ -55,8 +53,7 @@ class PurchaseInformation
             )
             ->fetch();
 
-        // Brak wynikow
-        if (empty($pbs)) {
+        if (!$pbs) {
             return "Brak zakupu w bazie.";
         }
 

@@ -102,7 +102,7 @@ class PagePayment extends Page
         return $purchase->getPayment('sms_platform') &&
             $purchase->getPrice() &&
             $purchase->getPrice()->hasSmsPrice() &&
-            !$purchase->getPayment('no_sms');
+            !$purchase->getPayment(Purchase::PAYMENT_SMS_DISABLED);
     }
 
     private function isTransferAvailable(Purchase $purchase)
@@ -113,6 +113,6 @@ class PagePayment extends Page
                 $purchase->getPayment('cost') > 1 &&
                 $purchase->getPrice() &&
                 $purchase->getPrice()->hasTransferPrice() &&
-                !$purchase->getPayment('no_transfer');
+                !$purchase->getPayment(Purchase::PAYMENT_TRANSFER_DISABLED);
     }
 }

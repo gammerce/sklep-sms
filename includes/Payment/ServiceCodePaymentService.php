@@ -48,29 +48,31 @@ class ServiceCodePaymentService
      */
     public function payWithServiceCode(Purchase $purchase, ServiceModule $serviceModule)
     {
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT * FROM `" .
-                    TABLE_PREFIX .
-                    "service_codes` " .
-                    "WHERE `code` = '%s' " .
-                    "AND `service` = '%s' " .
-                    "AND (`server` = '0' OR `server` = '%s') " .
-                    "AND (`tariff` = '0' OR `tariff` = '%d') " .
-                    "AND (`uid` = '0' OR `uid` = '%s')",
-                [
-                    $purchase->getPayment('service_code'),
-                    $purchase->getService(),
-                    $purchase->getOrder('server'),
-                    $purchase->getTariff(),
-                    $purchase->user->getUid(),
-                ]
-            )
+        $statement = $this->db->statement(
+            "SELECT * FROM `" .
+                TABLE_PREFIX .
+                "service_codes` " .
+                "WHERE `code` = ? " .
+                "AND `service` = ? " .
+                "AND `price` = ? " .
+                "AND (`server` IS NULL OR `server` = ?) " .
+                "AND (`uid` IS NULL OR `uid` = ?)"
+        );
+        $statement->execute(
+            [
+                $purchase->getPayment('service_code'),
+                $purchase->getService(),
+                $purchase->getPrice()->getId(),
+                $purchase->getOrder('server'),
+                $purchase->user->getUid(),
+            ]
         );
 
-        foreach ($result as $row) {
-            if ($serviceModule->serviceCodeValidate($purchase, $row)) {
-                $this->serviceCodeRepository->delete($row['id']);
+        foreach ($statement as $row) {
+            $serviceCode = $this->serviceCodeRepository->mapToModel($row);
+
+            if ($serviceModule->serviceCodeValidate($purchase, $serviceCode)) {
+                $this->serviceCodeRepository->delete($serviceCode->getId());
 
                 $paymentCode = $this->paymentCodeRepository->create(
                     $purchase->getPayment('service_code'),

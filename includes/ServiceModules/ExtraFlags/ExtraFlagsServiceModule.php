@@ -5,6 +5,7 @@ use App\Exceptions\UnauthorizedException;
 use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
 use App\Models\Service;
+use App\Models\ServiceCode;
 use App\Payment\AdminPaymentService;
 use App\Payment\BoughtServiceService;
 use App\Payment\PurchasePriceService;
@@ -1793,7 +1794,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
     }
 
-    public function serviceCodeValidate(Purchase $purchase, $code)
+    public function serviceCodeValidate(Purchase $purchase, ServiceCode $serviceCode)
     {
         return true;
     }

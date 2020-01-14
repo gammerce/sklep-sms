@@ -31,18 +31,17 @@ class PriceService
     public function validateBody(array $body)
     {
         $serviceId = array_get($body, 'service_id');
-        $serverId = array_get($body, 'server');
+        $serverId = array_get($body, 'server_id');
         $smsPrice = array_get($body, 'sms_price');
         $quantity = array_get($body, 'quantity');
 
         $warnings = [];
 
-        if ($this->heart->getService($serviceId) === null) {
+        if (!$this->heart->getService($serviceId)) {
             $warnings['service_id'][] = $this->lang->t('no_such_service');
         }
 
-        // TODO Replace all -1
-        if ($serverId != -1 && $this->heart->getServer($serverId) === null) {
+        if ($serverId && !$this->heart->getServer($serverId)) {
             $warnings['server_id'][] = $this->lang->t('no_such_server');
         }
 
