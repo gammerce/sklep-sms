@@ -39,10 +39,10 @@ class PurchaseInformation
         }
         // Wyszukujemy po id płatności
         elseif (isset($data['payment']) && isset($data['payment_id'])) {
-                $where = $this->db->prepare("t.payment = '%s' AND t.payment_id = '%s'", [
-                    $data['payment'],
-                    $data['payment_id'],
-                ]);
+            $where = $this->db->prepare("t.payment = '%s' AND t.payment_id = '%s'", [
+                $data['payment'],
+                $data['payment_id'],
+            ]);
         } else {
             return "";
         }

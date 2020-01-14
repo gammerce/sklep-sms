@@ -15,7 +15,7 @@ class PaymentResource
         TranslationManager $translationManager,
         Settings $settings,
         PaymentService $paymentService,
-    PurchaseSerializer $purchaseSerializer
+        PurchaseSerializer $purchaseSerializer
     ) {
         $lang = $translationManager->user();
 

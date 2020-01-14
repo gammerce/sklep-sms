@@ -50,6 +50,10 @@ class PurchaseSerializer
         return $purchase;
     }
 
+    /**
+     * @param $content
+     * @return Purchase|null
+     */
     public function deserializeAndDecode($content)
     {
         $purchase = unserialize(base64_decode($content));

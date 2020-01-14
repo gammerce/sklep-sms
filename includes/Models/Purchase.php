@@ -11,6 +11,8 @@ class Purchase
     const PAYMENT_TRANSFER_PRICE = "transfer_price";
     const PAYMENT_SMS_DISABLED = "no_sms";
     const PAYMENT_TRANSFER_DISABLED = "no_transfer";
+    const PAYMENT_WALLET_DISABLED = "no_wallet";
+    const PAYMENT_SERVICE_CODE_DISABLED = "no_code";
     const ORDER_QUANTITY = "quantity";
     const ORDER_FOREVER = "forever";
 

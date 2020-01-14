@@ -19,7 +19,7 @@ class PurchaseValidationResource
         TranslationManager $translationManager,
         Auth $auth,
         Settings $settings,
-    PurchaseSerializer $purchaseSerializer
+        PurchaseSerializer $purchaseSerializer
     ) {
         $lang = $translationManager->user();
         $user = $auth->user();

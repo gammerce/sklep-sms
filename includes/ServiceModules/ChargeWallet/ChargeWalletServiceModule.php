@@ -8,6 +8,7 @@ use App\Repositories\SmsPriceRepository;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\ServiceModule;
+use App\Services\SmsPriceService;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;
@@ -40,6 +41,9 @@ class ChargeWalletServiceModule extends ServiceModule implements
     /** @var SmsPriceRepository */
     private $smsPriceRepository;
 
+    /** @var SmsPriceService */
+    private $smsPriceService;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -52,6 +56,7 @@ class ChargeWalletServiceModule extends ServiceModule implements
         $this->settings = $this->app->make(Settings::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
         $this->smsPriceRepository = $this->app->make(SmsPriceRepository::class);
+        $this->smsPriceService = $this->app->make(SmsPriceService::class);
     }
 
     public function purchaseFormGet(array $query)
@@ -130,7 +135,7 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
         if ($body['method'] == Purchase::METHOD_SMS) {
             if (!$smsPrice || !$this->smsPriceRepository->exists($smsPrice)) {
-                $warnings['price_id'][] = $this->lang->t('charge_amount_not_chosen');
+                $warnings['sms_price'][] = $this->lang->t('charge_amount_not_chosen');
             }
         } elseif ($body['method'] == Purchase::METHOD_TRANSFER) {
             if ($warning = check_for_warnings("number", $transferPrice)) {
@@ -162,7 +167,7 @@ class ChargeWalletServiceModule extends ServiceModule implements
         // TODO Replace all setTariff
         // TODO Check charging wallet cause no price is set here
         $purchase->setPayment([
-            'no_wallet' => true,
+            Purchase::PAYMENT_WALLET_DISABLED => true,
         ]);
 
         if ($body['method'] == Purchase::METHOD_SMS) {
@@ -170,7 +175,7 @@ class ChargeWalletServiceModule extends ServiceModule implements
                 Purchase::PAYMENT_TRANSFER_DISABLED => true,
             ]);
             $purchase->setOrder([
-                Purchase::ORDER_QUANTITY => get_sms_provision($smsPrice),
+                Purchase::ORDER_QUANTITY => $this->smsPriceService->getProvision($smsPrice, null),
             ]);
         } elseif ($body['method'] == Purchase::METHOD_TRANSFER) {
             $purchase->setPayment([

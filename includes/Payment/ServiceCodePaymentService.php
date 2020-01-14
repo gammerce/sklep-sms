@@ -58,15 +58,13 @@ class ServiceCodePaymentService
                 "AND (`server` IS NULL OR `server` = ?) " .
                 "AND (`uid` IS NULL OR `uid` = ?)"
         );
-        $statement->execute(
-            [
-                $purchase->getPayment('service_code'),
-                $purchase->getService(),
-                $purchase->getPrice()->getId(),
-                $purchase->getOrder('server'),
-                $purchase->user->getUid(),
-            ]
-        );
+        $statement->execute([
+            $purchase->getPayment('service_code'),
+            $purchase->getService(),
+            $purchase->getPrice()->getId(),
+            $purchase->getOrder('server'),
+            $purchase->user->getUid(),
+        ]);
 
         foreach ($statement as $row) {
             $serviceCode = $this->serviceCodeRepository->mapToModel($row);

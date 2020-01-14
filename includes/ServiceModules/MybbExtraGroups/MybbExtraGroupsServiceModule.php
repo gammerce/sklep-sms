@@ -407,10 +407,9 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $email = $purchase->getEmail() ?: $this->lang->t('none');
         $username = $purchase->getOrder('username');
         $serviceName = $this->service->getName();
-        $amount =
-            $purchase->getOrder(Purchase::ORDER_FOREVER)
-                ? $this->lang->t('forever')
-                : $purchase->getOrder(Purchase::ORDER_QUANTITY) . " " . $this->service->getTag();
+        $amount = $purchase->getOrder(Purchase::ORDER_FOREVER)
+            ? $this->lang->t('forever')
+            : $purchase->getOrder(Purchase::ORDER_QUANTITY) . " " . $this->service->getTag();
 
         return $this->template->render(
             "services/mybb_extra_groups/order_details",

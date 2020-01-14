@@ -5,7 +5,7 @@ use App\Models\Purchase;
 use App\Payment\PaymentService;
 use App\Repositories\PriceRepository;
 use App\ServiceModules\ServiceModule;
-use App\Services\PaymentModulePriceService;
+use App\Services\SmsPriceService;
 use App\System\Auth;
 use App\System\Heart;
 
@@ -23,21 +23,21 @@ class PurchaseService
     /** @var PriceRepository */
     private $priceRepository;
 
-    /** @var PaymentModulePriceService */
-    private $paymentModulePriceService;
+    /** @var SmsPriceService */
+    private $smsPriceService;
 
     public function __construct(
         PaymentService $paymentService,
         Heart $heart,
         Auth $auth,
         PriceRepository $priceRepository,
-        PaymentModulePriceService $paymentModulePriceService
+        SmsPriceService $smsPriceService
     ) {
         $this->paymentService = $paymentService;
         $this->heart = $heart;
         $this->auth = $auth;
         $this->priceRepository = $priceRepository;
-        $this->paymentModulePriceService = $paymentModulePriceService;
+        $this->smsPriceService = $smsPriceService;
     }
 
     public function purchase(ServiceModule $serviceModule, array $body)
@@ -82,7 +82,7 @@ class PurchaseService
                 $purchase->getPayment('sms_platform')
             );
 
-            if (!$this->paymentModulePriceService->isPriceAvailable($price, $paymentModule)) {
+            if (!$this->smsPriceService->isPriceAvailable($price->getSmsPrice(), $paymentModule)) {
                 $purchase->setPrice(null);
             }
         }
