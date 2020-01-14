@@ -2,6 +2,7 @@
 namespace App\Payment;
 
 use App\Loggers\DatabaseLogger;
+use App\Models\Price;
 use App\Models\Tariff;
 use App\Models\User;
 use App\System\Database;
@@ -42,12 +43,15 @@ class SmsPaymentService
     /**
      * @param SupportSms $paymentModule
      * @param string     $code
-     * @param Tariff     $tariff
+     * @param Price     $price
      * @param User       $user
      * @return array
      */
-    public function payWithSms(SupportSms $paymentModule, $code, Tariff $tariff, User $user)
+    public function payWithSms(SupportSms $paymentModule, $code, Price $price, User $user)
     {
+        // TODO Fix it
+        $price->getSmsPrice();
+
         $smsNumber = $tariff->getNumber();
 
         $result = $this->tryToUseSmsCode($code, $tariff);

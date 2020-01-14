@@ -37,6 +37,9 @@ class TransferPaymentService
     /** @var DatabaseLogger */
     private $logger;
 
+    /** @var PurchaseSerializer */
+    private $purchaseSerializer;
+
     public function __construct(
         Database $db,
         Path $path,
@@ -44,6 +47,7 @@ class TransferPaymentService
         PaymentTransferRepository $paymentTransferRepository,
         TranslationManager $translationManager,
         FileSystemContract $fileSystem,
+        PurchaseSerializer $purchaseSerializer,
         DatabaseLogger $logger
     ) {
         $this->db = $db;
@@ -53,6 +57,7 @@ class TransferPaymentService
         $this->lang = $translationManager->user();
         $this->fileSystem = $fileSystem;
         $this->logger = $logger;
+        $this->purchaseSerializer = $purchaseSerializer;
     }
 
     /**
@@ -64,7 +69,7 @@ class TransferPaymentService
      */
     public function payWithTransfer(SupportTransfer $paymentModule, Purchase $purchase)
     {
-        $serialized = serialize($purchase);
+        $serialized = $this->purchaseSerializer->serialize($purchase);
         $dataFilename = time() . "-" . md5($serialized);
         $path = $this->path->to('data/transfers/' . $dataFilename);
         $this->fileSystem->put($path, $serialized);
@@ -102,15 +107,11 @@ class TransferPaymentService
             return false;
         }
 
-        /** @var Purchase $purchase */
-        $purchase = unserialize(
+        $purchase = $this->purchaseSerializer->deserialize(
             $this->fileSystem->get(
                 $this->path->to('data/transfers/' . $transferFinalize->getDataFilename())
             )
         );
-
-        // Fix: Refresh user to avoid bugs linked with user wallet
-        $purchase->user = $this->heart->getUser($purchase->user->getUid());
 
         $this->paymentTransferRepository->create(
             $transferFinalize->getOrderId(),

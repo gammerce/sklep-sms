@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Responses\ApiResponse;
 use App\Models\Purchase;
+use App\Payment\PurchaseSerializer;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\System\Auth;
 use App\System\Heart;
@@ -17,7 +18,8 @@ class PurchaseValidationResource
         Heart $heart,
         TranslationManager $translationManager,
         Auth $auth,
-        Settings $settings
+        Settings $settings,
+    PurchaseSerializer $purchaseSerializer
     ) {
         $lang = $translationManager->user();
         $user = $auth->user();
@@ -81,7 +83,7 @@ class PurchaseValidationResource
                 $purchase->setEmail($user->getEmail());
             }
 
-            $purchaseEncoded = base64_encode(serialize($purchase));
+            $purchaseEncoded = $purchaseSerializer->serializeAndEncode($purchase);
             $returnData['data'] = [
                 'length' => 8000,
                 'data' => $purchaseEncoded,

@@ -2,6 +2,7 @@
 namespace App\View\Pages;
 
 use App\Models\Purchase;
+use App\Payment\PurchaseSerializer;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\Interfaces\IServiceServiceCode;
 use App\Verification\Abstracts\SupportSms;
@@ -10,10 +11,14 @@ class PagePayment extends Page
 {
     const PAGE_ID = 'payment';
 
-    public function __construct()
+    /** @var PurchaseSerializer */
+    private $purchaseSerializer;
+
+    public function __construct(PurchaseSerializer $purchaseSerializer)
     {
         parent::__construct();
 
+        $this->purchaseSerializer = $purchaseSerializer;
         $this->heart->pageTitle = $this->title = $this->lang->t('title_payment');
     }
 
@@ -27,20 +32,13 @@ class PagePayment extends Page
             return $this->lang->t('wrong_sign');
         }
 
-        /** @var Purchase $purchase */
-        $purchase = unserialize(base64_decode($body['data']));
-
-        // Fix: Refresh user to avoid bugs linked with user wallet
-        $purchase->user = $this->heart->getUser($purchase->user->getUid());
-
-        if (!($purchase instanceof Purchase)) {
+        $purchase = $this->purchaseSerializer->deserializeAndDecode($body['data']);
+        if (!$purchase) {
             return $this->lang->t('error_occurred');
         }
 
-        if (
-            ($serviceModule = $this->heart->getServiceModule($purchase->getService())) === null ||
-            !($serviceModule instanceof IServicePurchaseWeb)
-        ) {
+        $serviceModule = $this->heart->getServiceModule($purchase->getService());
+        if (!($serviceModule instanceof IServicePurchaseWeb)) {
             return $this->lang->t('bad_module');
         }
 
