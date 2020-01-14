@@ -7,18 +7,23 @@ class ModifyServiceCodeTable extends Migration
     public function up()
     {
         $this->executeQueries([
-            "ALTER TABLE `ss_payment_admin` MODIFY `uid` INT(11)",
-            "ALTER TABLE `ss_payment_admin` MODIFY `server` INT(11)",
-            "ALTER TABLE `ss_payment_admin` DROP COLUMN `amount`",
-            "ALTER TABLE `ss_payment_admin` DROP COLUMN `data`",
-            "ALTER TABLE `ss_payment_admin` ADD COLUMN `price` INT(11)",
-            "UPDATE `ss_payment_admin` SET `uid` = NULL WHERE `uid` = 0",
-            "UPDATE `ss_payment_admin` SET `server` = NULL WHERE `server` = 0",
+            "ALTER TABLE `ss_service_codes` MODIFY `uid` INT(11)",
+            "ALTER TABLE `ss_service_codes` MODIFY `server` INT(11)",
+            "ALTER TABLE `ss_service_codes` DROP COLUMN `amount`",
+            "ALTER TABLE `ss_service_codes` DROP COLUMN `data`",
+            "ALTER TABLE `ss_service_codes` ADD COLUMN `price` INT(11)",
+
+            "UPDATE `ss_service_codes` SET `uid` = NULL WHERE `uid` = 0",
+            "UPDATE `ss_service_codes` SET `server` = NULL WHERE `server` = 0",
         ]);
 
-        // TODO Migrate tariffs to prices
-        // TODO Add foreign keys
+        // TODO Migrate tariffs into prices
 
-        $this->db->query("ALTER TABLE `ss_payment_admin` MODIFY `price` INT(11) NOT NULL");
+        $this->executeQueries([
+            "ALTER TABLE `ss_service_codes` MODIFY `price` INT(11) NOT NULL",
+            "ALTER TABLE `ss_service_codes` DROP COLUMN `tariff`",
+        ]);
+
+        // TODO Add foreign keys for server, price and uid
     }
 }
