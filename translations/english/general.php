@@ -80,7 +80,7 @@ return [
     'payment_bad_type' => 'Error in Payment class constructor. Payment type not allowed.',
     'payment_id' => 'Payment ID',
     'payment_remove_code_from_db' =>
-        'Code was removed from the list of codes to be used. Code: {1} Tariff: {2}',
+        'Code was removed from the list of codes to be used. Code: {1} SMS price: {2}',
     'previous' => 'Previous',
     'quantity' => 'Quantity',
     'question' => 'Question',

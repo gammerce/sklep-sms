@@ -2,6 +2,7 @@
 namespace App\Payment;
 
 use App\Models\Purchase;
+use App\Services\SmsPriceService;
 use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
@@ -33,12 +34,16 @@ class PaymentService
     /** @var WalletPaymentService */
     private $walletPaymentService;
 
+    /** @var SmsPriceService */
+    private $smsPriceService;
+
     public function __construct(
         Heart $heart,
         TranslationManager $translationManager,
         Settings $settings,
         TransferPaymentService $transferPaymentService,
         SmsPaymentService $smsPaymentService,
+        SmsPriceService $smsPriceService,
         ServiceCodePaymentService $serviceCodePaymentService,
         WalletPaymentService $walletPaymentService
     ) {
@@ -49,6 +54,7 @@ class PaymentService
         $this->smsPaymentService = $smsPaymentService;
         $this->serviceCodePaymentService = $serviceCodePaymentService;
         $this->walletPaymentService = $walletPaymentService;
+        $this->smsPriceService = $smsPriceService;
     }
 
     public function makePayment(Purchase $purchase)
@@ -195,7 +201,10 @@ class PaymentService
             $result = $this->smsPaymentService->payWithSms(
                 $paymentModule,
                 $purchase->getPayment('sms_code'),
-                $purchase->getTariff(),
+                $this->smsPriceService->getNumber(
+                    $purchase->getPrice()->getSmsPrice(),
+                    $paymentModule
+                ),
                 $purchase->user
             );
 

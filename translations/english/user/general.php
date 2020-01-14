@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'add_code_to_reuse' => 'Code was added to the list of codes to be used. Code: {1} Tariff: {2}." .
-	"An attempt to use it by {3}({4})({5}) with service purchase, tariff: {6}.',
+    'add_code_to_reuse' => 'Code was added to the list of codes to be used. Code: {1} SMS price: {2}." .
+	"An attempt to use it by {3}({4})({5}), expected SMS Price: {6}.',
     'admin' => 'Admin',
     'answer' => 'Answer',
     'antispam_question' => 'Antispam question',

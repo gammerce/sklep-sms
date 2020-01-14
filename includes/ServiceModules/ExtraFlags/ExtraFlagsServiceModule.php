@@ -409,99 +409,79 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $purchase->getOrder('type') != ExtraFlagType::TYPE_SID
         ) {
             $warnings['type'][] = $this->lang->t('must_choose_type');
-        } else {
-            if (!($this->service->getTypes() & $purchase->getOrder('type'))) {
-                $warnings['type'][] = $this->lang->t('chosen_incorrect_type');
-            } else {
-                if (
-                    $purchase->getOrder('type') &
-                    (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)
-                ) {
-                    // Nick
-                    if ($purchase->getOrder('type') == ExtraFlagType::TYPE_NICK) {
-                        if (
-                            $warning = check_for_warnings("nick", $purchase->getOrder('auth_data'))
-                        ) {
-                            $warnings['nick'] = array_merge((array) $warnings['nick'], $warning);
-                        }
-
-                        // Sprawdzanie czy istnieje już taka usługa
-                        $query = $this->db->prepare(
-                            "SELECT `password` FROM `" .
-                                TABLE_PREFIX .
-                                $this::USER_SERVICE_TABLE .
-                                "` " .
-                                "WHERE `type` = '%d' AND `auth_data` = '%s' AND `server` = '%d'",
-                            [
-                                ExtraFlagType::TYPE_NICK,
-                                $purchase->getOrder('auth_data'),
-                                isset($server) ? $server->getId() : 0,
-                            ]
-                        );
-                    }
-                    // IP
-                    else {
-                        if ($purchase->getOrder('type') == ExtraFlagType::TYPE_IP) {
-                            if (
-                                $warning = check_for_warnings(
-                                    "ip",
-                                    $purchase->getOrder('auth_data')
-                                )
-                            ) {
-                                $warnings['ip'] = array_merge((array) $warnings['ip'], $warning);
-                            }
-
-                            // Sprawdzanie czy istnieje już taka usługa
-                            $query = $this->db->prepare(
-                                "SELECT `password` FROM `" .
-                                    TABLE_PREFIX .
-                                    $this::USER_SERVICE_TABLE .
-                                    "` " .
-                                    "WHERE `type` = '%d' AND `auth_data` = '%s' AND `server` = '%d'",
-                                [
-                                    ExtraFlagType::TYPE_IP,
-                                    $purchase->getOrder('auth_data'),
-                                    isset($server) ? $server->getId() : 0,
-                                ]
-                            );
-                        }
-                    }
-
-                    // Hasło
-                    if (
-                        $warning = check_for_warnings("password", $purchase->getOrder('password'))
-                    ) {
-                        $warnings['password'] = array_merge(
-                            (array) $warnings['password'],
-                            $warning
-                        );
-                    }
-                    if ($purchase->getOrder('password') != $purchase->getOrder('passwordr')) {
-                        $warnings['password_repeat'][] = $this->lang->t('passwords_not_match');
-                    }
-
-                    // Sprawdzanie czy istnieje już taka usługa
-                    if ($tmpPassword = $this->db->query($query)->fetchColumn()) {
-                        // TODO: Usunąć md5 w przyszłości
-                        if (
-                            $tmpPassword != $purchase->getOrder('password') &&
-                            $tmpPassword != md5($purchase->getOrder('password'))
-                        ) {
-                            $warnings['password'][] = $this->lang->t(
-                                'existing_service_has_different_password'
-                            );
-                        }
-                    }
-
-                    unset($tmpPassword);
+        } elseif (!($this->service->getTypes() & $purchase->getOrder('type'))) {
+            $warnings['type'][] = $this->lang->t('chosen_incorrect_type');
+        } elseif (
+            $purchase->getOrder('type') &
+            (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)
+        ) {
+            // Nick
+            if ($purchase->getOrder('type') == ExtraFlagType::TYPE_NICK) {
+                if ($warning = check_for_warnings("nick", $purchase->getOrder('auth_data'))) {
+                    $warnings['nick'] = array_merge((array) $warnings['nick'], $warning);
                 }
-                // SteamID
-                else {
-                    if ($warning = check_for_warnings("sid", $purchase->getOrder('auth_data'))) {
-                        $warnings['sid'] = array_merge((array) $warnings['sid'], $warning);
-                    }
+
+                // Sprawdzanie czy istnieje już taka usługa
+                $query = $this->db->prepare(
+                    "SELECT `password` FROM `" .
+                        TABLE_PREFIX .
+                        $this::USER_SERVICE_TABLE .
+                        "` " .
+                        "WHERE `type` = '%d' AND `auth_data` = '%s' AND `server` = '%d'",
+                    [
+                        ExtraFlagType::TYPE_NICK,
+                        $purchase->getOrder('auth_data'),
+                        isset($server) ? $server->getId() : 0,
+                    ]
+                );
+            }
+            // IP
+            elseif ($purchase->getOrder('type') == ExtraFlagType::TYPE_IP) {
+                if ($warning = check_for_warnings("ip", $purchase->getOrder('auth_data'))) {
+                    $warnings['ip'] = array_merge((array) $warnings['ip'], $warning);
+                }
+
+                // Sprawdzanie czy istnieje już taka usługa
+                $query = $this->db->prepare(
+                    "SELECT `password` FROM `" .
+                        TABLE_PREFIX .
+                        $this::USER_SERVICE_TABLE .
+                        "` " .
+                        "WHERE `type` = '%d' AND `auth_data` = '%s' AND `server` = '%d'",
+                    [
+                        ExtraFlagType::TYPE_IP,
+                        $purchase->getOrder('auth_data'),
+                        isset($server) ? $server->getId() : 0,
+                    ]
+                );
+            }
+
+            // Hasło
+            if ($warning = check_for_warnings("password", $purchase->getOrder('password'))) {
+                $warnings['password'] = array_merge((array) $warnings['password'], $warning);
+            }
+            if ($purchase->getOrder('password') != $purchase->getOrder('passwordr')) {
+                $warnings['password_repeat'][] = $this->lang->t('passwords_not_match');
+            }
+
+            // Sprawdzanie czy istnieje już taka usługa
+            if ($tmpPassword = $this->db->query($query)->fetchColumn()) {
+                // TODO: Usunąć md5 w przyszłości
+                if (
+                    $tmpPassword != $purchase->getOrder('password') &&
+                    $tmpPassword != md5($purchase->getOrder('password'))
+                ) {
+                    $warnings['password'][] = $this->lang->t(
+                        'existing_service_has_different_password'
+                    );
                 }
             }
+
+            unset($tmpPassword);
+        }
+        // SteamID
+        elseif ($warning = check_for_warnings("sid", $purchase->getOrder('auth_data'))) {
+            $warnings['sid'] = array_merge((array) $warnings['sid'], $warning);
         }
 
         // E-mail

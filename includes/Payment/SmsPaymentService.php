@@ -2,9 +2,9 @@
 namespace App\Payment;
 
 use App\Loggers\DatabaseLogger;
-use App\Models\Price;
-use App\Models\Tariff;
+use App\Models\SmsNumber;
 use App\Models\User;
+use App\Services\SmsPriceService;
 use App\System\Database;
 use App\System\Settings;
 use App\Translation\TranslationManager;
@@ -28,42 +28,42 @@ class SmsPaymentService
     /** @var DatabaseLogger */
     private $logger;
 
+    /** @var SmsPriceService */
+    private $smsPriceService;
+
     public function __construct(
         TranslationManager $translationManager,
         Settings $settings,
         Database $db,
+        SmsPriceService $smsPriceService,
         DatabaseLogger $logger
     ) {
         $this->settings = $settings;
         $this->lang = $translationManager->user();
         $this->db = $db;
         $this->logger = $logger;
+        $this->smsPriceService = $smsPriceService;
     }
 
     /**
      * @param SupportSms $paymentModule
      * @param string     $code
-     * @param Price     $price
+     * @param SmsNumber  $smsNumber
      * @param User       $user
      * @return array
      */
-    public function payWithSms(SupportSms $paymentModule, $code, Price $price, User $user)
+    public function payWithSms(SupportSms $paymentModule, $code, SmsNumber $smsNumber, User $user)
     {
-        // TODO Fix it
-        $price->getSmsPrice();
-
-        $smsNumber = $tariff->getNumber();
-
-        $result = $this->tryToUseSmsCode($code, $tariff);
+        $result = $this->tryToUseSmsCode($code, $smsNumber->getPrice());
         if ($result) {
             return $this->storePaymentSms($paymentModule, $result, $code, $smsNumber, $user);
         }
 
         try {
-            $result = $paymentModule->verifySms($code, $smsNumber);
+            $result = $paymentModule->verifySms($code, $smsNumber->getSmsNumber());
         } catch (BadNumberException $e) {
-            if ($e->tariffId !== null) {
-                $this->addSmsCodeToBeReused($code, $e->tariffId, $tariff, $user);
+            if ($e->smsPrice !== null) {
+                $this->addSmsCodeToBeReused($code, $e->smsPrice, $smsNumber->getPrice(), $user);
             }
 
             return [
@@ -78,7 +78,7 @@ class SmsPaymentService
                 $user->getLastIp(),
                 $code,
                 $paymentModule->getSmsCode(),
-                $smsNumber,
+                $smsNumber->getSmsNumber(),
                 $e->getErrorCode()
             );
 
@@ -95,27 +95,26 @@ class SmsPaymentService
         SupportSms $paymentModule,
         SmsSuccessResult $result,
         $code,
-        $smsNumber,
+        SmsNumber $smsNumber,
         User $user
     ) {
-        $this->db->query(
-            $this->db->prepare(
+        $this->db
+            ->statement(
                 "INSERT INTO `" .
                     TABLE_PREFIX .
                     "payment_sms` (`code`, `income`, `cost`, `text`, `number`, `ip`, `platform`, `free`) " .
-                    "VALUES ('%s','%d','%d','%s','%s','%s','%s','%d')",
-                [
-                    $code,
-                    get_sms_cost($smsNumber) / 2,
-                    ceil(get_sms_cost($smsNumber) * $this->settings->getVat()),
-                    $paymentModule->getSmsCode(),
-                    $smsNumber,
-                    $user->getLastIp(),
-                    $user->getPlatform(),
-                    $result->free,
-                ]
+                    "VALUES (?,?,?,?,?,?,?,?)"
             )
-        );
+            ->execute([
+                $code,
+                $this->smsPriceService->getProvision($smsNumber->getPrice(), $paymentModule),
+                $this->smsPriceService->getGross($smsNumber->getPrice()),
+                $paymentModule->getSmsCode(),
+                $smsNumber->getSmsNumber(),
+                $user->getLastIp(),
+                $user->getPlatform(),
+                $result->free,
+            ]);
 
         $paymentId = $this->db->lastId();
 
@@ -128,66 +127,62 @@ class SmsPaymentService
 
     /**
      * @param string $smsCode
-     * @param Tariff $tariff
+     * @param int $smsPrice
      * @return SmsSuccessResult|null
      */
-    private function tryToUseSmsCode($smsCode, Tariff $tariff)
+    private function tryToUseSmsCode($smsCode, $smsPrice)
     {
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT * FROM `" .
-                    TABLE_PREFIX .
-                    "sms_codes` " .
-                    "WHERE `code` = '%s' AND `tariff` = '%d'",
-                [$smsCode, $tariff->getId()]
-            )
+        // TODO Migration changing tariff to sms_price
+        // TODO Write test
+        $statement = $this->db->statement(
+            "SELECT * FROM `" .
+                TABLE_PREFIX .
+                "sms_codes` " .
+                "WHERE `code` = ? AND `sms_price` = ?"
         );
+        $statement->execute([$smsCode, $smsPrice]);
 
-        if (!$result->rowCount()) {
+        if (!$statement->rowCount()) {
             return null;
         }
 
-        $dbCode = $result->fetch();
+        $dbSmsCode = $statement->fetch();
 
-        // Usuwamy kod z listy kodow do wykorzystania
-        $this->db->query(
-            $this->db->prepare(
-                "DELETE FROM `" . TABLE_PREFIX . "sms_codes` " . "WHERE `id` = '%d'",
-                [$dbCode['id']]
-            )
+        $statement = $this->db->statement(
+            "DELETE FROM `" . TABLE_PREFIX . "sms_codes` WHERE `id` = ?"
         );
+        $statement->execute([$dbSmsCode['id']]);
 
-        $this->logger->log('payment_remove_code_from_db', $dbCode['code'], $dbCode['tariff']);
+        $this->logger->log('payment_remove_code_from_db', $smsCode, $smsPrice);
 
-        return new SmsSuccessResult(!!$dbCode['free']);
+        return new SmsSuccessResult(!!$dbSmsCode['free']);
     }
 
     /**
      * @param string $code
-     * @param int $tariffId
-     * @param Tariff $expectedTariff
+     * @param int $smsPrice
+     * @param int $expectedSmsPrice
      * @param User $user
      */
-    private function addSmsCodeToBeReused($code, $tariffId, Tariff $expectedTariff, User $user)
+    private function addSmsCodeToBeReused($code, $smsPrice, $expectedSmsPrice, User $user)
     {
-        $this->db->query(
-            $this->db->prepare(
+        $this->db
+            ->statement(
                 "INSERT INTO `" .
                     TABLE_PREFIX .
                     "sms_codes` " .
-                    "SET `code` = '%s', `tariff` = '%d', `free` = '0'",
-                [$code, $tariffId]
+                    "SET `code` = ?, `sms_price` = ?, `free` = '0'"
             )
-        );
+            ->execute([$code, $smsPrice]);
 
         $this->logger->log(
             'add_code_to_reuse',
             $code,
-            $tariffId,
+            $smsPrice,
             $user->getUsername(),
             $user->getUid(),
             $user->getLastIp(),
-            $expectedTariff->getId()
+            $expectedSmsPrice
         );
     }
 

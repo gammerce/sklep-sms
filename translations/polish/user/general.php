@@ -2,7 +2,7 @@
 
 return [
     'add_code_to_reuse' =>
-        'Dodano kod do tabeli kodów do wykorzystania. Kod: {1} Taryfa: {2} Próba użycia go przez {3}({4})({5}) przy zakupie usługi o taryfie: {6}.',
+        'Dodano kod do tabeli kodów do wykorzystania. Kod: {1} Kwota SMS: {2} Próba użycia go przez {3}({4})({5}), oczekiwana kwota SMS: {6}.',
     'admin' => 'Admin',
     'answer' => 'Odpowiedź',
     'antispam_question' => 'Pytanie Antyspamowe',
