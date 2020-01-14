@@ -56,7 +56,6 @@ class OtherServiceModule extends ServiceModule implements
     {
         $warnings = [];
 
-        // Serwer
         if (!strlen($purchase->getOrder('server'))) {
             $warnings['server'][] = $this->lang->t('must_choose_server');
         } else {
@@ -67,7 +66,6 @@ class OtherServiceModule extends ServiceModule implements
             }
         }
 
-        // Wartość usługi
         $price = $purchase->getPrice();
         if (!$price) {
             // TODO Replace 'value' with 'price_id' everywhere
@@ -99,15 +97,6 @@ class OtherServiceModule extends ServiceModule implements
                 'data' => compact('warnings'),
             ];
         }
-
-        $purchase->setOrder([
-            Purchase::ORDER_QUANTITY => $price->getQuantity(),
-            Purchase::ORDER_FOREVER => $price->isForever(),
-        ]);
-
-        $purchase->setPayment([
-            Purchase::PAYMENT_TRANSFER_PRICE => $purchase->getPrice()->getTransferPrice(),
-        ]);
 
         return [
             'status' => "ok",

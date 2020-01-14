@@ -504,10 +504,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         // TODO Replace all amounts
         // TODO Remove all tariffs
-        $purchase->setOrder([
-            Purchase::ORDER_QUANTITY => $price->getQuantity(),
-            Purchase::ORDER_FOREVER => $price->isForever(),
-        ]);
 
         if ($server->getSmsPlatformId()) {
             $purchase->setPayment([

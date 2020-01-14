@@ -172,6 +172,7 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
         if ($body['method'] == Purchase::METHOD_SMS) {
             $purchase->setPayment([
+                Purchase::PAYMENT_SMS_PRICE => $smsPrice,
                 Purchase::PAYMENT_TRANSFER_DISABLED => true,
             ]);
             $purchase->setOrder([

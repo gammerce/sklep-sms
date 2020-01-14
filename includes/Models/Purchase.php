@@ -8,6 +8,7 @@ class Purchase
     const METHOD_SERVICE_CODE = "service_code";
     const METHOD_WALLET = "wallet";
 
+    const PAYMENT_SMS_PRICE = "sms_price";
     const PAYMENT_TRANSFER_PRICE = "transfer_price";
     const PAYMENT_SMS_DISABLED = "no_sms";
     const PAYMENT_TRANSFER_DISABLED = "no_transfer";
@@ -85,9 +86,17 @@ class Purchase
         $this->tariff = $tariff;
     }
 
-    public function setPrice(Price $price = null)
+    public function setPrice(Price $price)
     {
         $this->price = $price;
+        $this->setPayment([
+            Purchase::PAYMENT_SMS_PRICE => $price->getSmsPrice(),
+            Purchase::PAYMENT_TRANSFER_PRICE => $price->getTransferPrice(),
+        ]);
+        $this->setOrder([
+            Purchase::ORDER_QUANTITY => $price->getQuantity(),
+            Purchase::ORDER_FOREVER => $price->isForever(),
+        ]);
     }
 
     public function setEmail($email)

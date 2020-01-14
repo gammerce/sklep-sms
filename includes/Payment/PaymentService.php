@@ -87,21 +87,15 @@ class PaymentService
 
         // Tworzymy obiekt, który będzie nam obsługiwał proces płatności
         $paymentModule = null;
-        if ($purchase->getPayment('method') == Purchase::METHOD_SMS) {
+        if ($purchase->getPayment('method') === Purchase::METHOD_SMS) {
             $paymentPlatformId =
                 $purchase->getPayment('sms_platform') ?: $this->settings->getSmsPlatformId();
             $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail($paymentPlatformId);
-        } elseif ($purchase->getPayment('method') == Purchase::METHOD_TRANSFER) {
+        } elseif ($purchase->getPayment('method') === Purchase::METHOD_TRANSFER) {
             $paymentPlatformId =
                 $purchase->getPayment('transfer_platform') ?:
                 $this->settings->getTransferPlatformId();
             $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail($paymentPlatformId);
-        }
-
-        if (!$purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE)) {
-            $purchase->setPayment([
-                Purchase::PAYMENT_TRANSFER_PRICE => $purchase->getPrice()->getTransferPrice(),
-            ]);
         }
 
         // Metoda płatności

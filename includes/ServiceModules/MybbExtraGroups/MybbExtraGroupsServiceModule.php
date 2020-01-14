@@ -388,8 +388,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $purchase->setService($this->service->getId());
         $purchase->setOrder([
             'username' => $body['username'],
-            Purchase::ORDER_QUANTITY => $price->getQuantity(),
-            Purchase::ORDER_FOREVER => $price->isForever(),
         ]);
         $purchase->setEmail($body['email']);
         $purchase->setPrice($price);

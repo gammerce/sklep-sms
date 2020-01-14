@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Services;
 
+use App\Models\Price;
 use App\Models\Purchase;
 use App\Payment\PaymentService;
 use App\Repositories\PriceRepository;
@@ -74,17 +75,8 @@ class PurchaseService
             'sms_platform' => $paymentPlatformId,
         ]);
 
-        $purchase->setPrice($price);
-
-        // Remove price if it is not supported by this sms_platform
-        if ($purchase->getPayment('sms_platform')) {
-            $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
-                $purchase->getPayment('sms_platform')
-            );
-
-            if (!$this->smsPriceService->isPriceAvailable($price->getSmsPrice(), $paymentModule)) {
-                $purchase->setPrice(null);
-            }
+        if ($this->isPriceAvailable($price, $purchase)) {
+            $purchase->setPrice($price);
         }
 
         $returnValidation = $serviceModule->purchaseDataValidate($purchase);
@@ -144,5 +136,20 @@ class PurchaseService
             "positive" => $returnPayment['positive'],
             "extraData" => $extraData,
         ];
+    }
+
+    private function isPriceAvailable(Price $price, Purchase $purchase)
+    {
+        if ($purchase->getPayment('sms_platform')) {
+            $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
+                $purchase->getPayment('sms_platform')
+            );
+
+            if (!$this->smsPriceService->isPriceAvailable($price->getSmsPrice(), $paymentModule)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
