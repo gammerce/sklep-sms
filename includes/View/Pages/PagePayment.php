@@ -69,7 +69,10 @@ class PagePayment extends Page
 
         $paymentMethods = '';
 
-        if ($this->isSmsAvailable($purchase, $smsPaymentModule)) {
+        if (
+            $this->isSmsAvailable($purchase, $smsPaymentModule) &&
+            $smsPaymentModule instanceof SupportSms
+        ) {
             $smsCode = $smsPaymentModule->getSmsCode();
             $smsNumber = $this->smsPriceService->getNumber(
                 $purchase->getPrice()->getSmsPrice(),

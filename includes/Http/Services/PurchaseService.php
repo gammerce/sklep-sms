@@ -9,6 +9,7 @@ use App\ServiceModules\ServiceModule;
 use App\Services\SmsPriceService;
 use App\System\Auth;
 use App\System\Heart;
+use App\Verification\Abstracts\SupportSms;
 
 class PurchaseService
 {
@@ -144,6 +145,10 @@ class PurchaseService
             $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
                 $purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM)
             );
+
+            if (!($paymentModule instanceof SupportSms)) {
+                return false;
+            }
 
             if (!$this->smsPriceService->isPriceAvailable($price->getSmsPrice(), $paymentModule)) {
                 return false;

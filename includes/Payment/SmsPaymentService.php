@@ -60,7 +60,7 @@ class SmsPaymentService
         }
 
         try {
-            $result = $paymentModule->verifySms($code, $smsNumber->getSmsNumber());
+            $result = $paymentModule->verifySms($code, $smsNumber->getNumber());
         } catch (BadNumberException $e) {
             if ($e->smsPrice !== null) {
                 $this->addSmsCodeToBeReused($code, $e->smsPrice, $smsNumber->getPrice(), $user);
@@ -78,7 +78,7 @@ class SmsPaymentService
                 $user->getLastIp(),
                 $code,
                 $paymentModule->getSmsCode(),
-                $smsNumber->getSmsNumber(),
+                $smsNumber->getNumber(),
                 $e->getErrorCode()
             );
 
@@ -110,7 +110,7 @@ class SmsPaymentService
                 $this->smsPriceService->getProvision($smsNumber->getPrice(), $paymentModule),
                 $this->smsPriceService->getGross($smsNumber->getPrice()),
                 $paymentModule->getSmsCode(),
-                $smsNumber->getSmsNumber(),
+                $smsNumber->getNumber(),
                 $user->getLastIp(),
                 $user->getPlatform(),
                 $result->free,

@@ -6,29 +6,29 @@ class SmsNumber
     /** @var string */
     private $smsNumber;
 
-    /** @var string */
-    private $paymentModuleId;
+    /** @var int */
+    private $provision;
 
-    public function __construct($smsNumber, $paymentModuleId)
+    public function __construct($smsNumber, $provision = null)
     {
         $this->smsNumber = $smsNumber;
-        $this->paymentModuleId = $paymentModuleId;
+        $this->provision = $provision ?: get_sms_provision($smsNumber);
     }
 
     /**
      * @return string
      */
-    public function getSmsNumber()
+    public function getNumber()
     {
         return $this->smsNumber;
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getPaymentModuleId()
+    public function getProvision()
     {
-        return $this->paymentModuleId;
+        return $this->provision;
     }
 
     /**

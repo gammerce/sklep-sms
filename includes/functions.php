@@ -233,12 +233,12 @@ function get_sms_cost($number)
 /**
  * Returns sms provision from given net price
  *
- * @param int $price
+ * @param int $smsPrice
  * @return int
  */
-function get_sms_provision($price)
+function get_sms_provision($smsPrice)
 {
-    return (int) ($price / 2);
+    return (int) ceil(get_sms_cost($smsPrice) / 2);
 }
 
 function hash_password($password, $salt)

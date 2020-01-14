@@ -502,9 +502,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ];
         }
 
-        // TODO Replace all amounts
-        // TODO Remove all tariffs
-
         if ($server->getSmsPlatformId()) {
             $purchase->setPayment([
                 Purchase::PAYMENT_SMS_PLATFORM => $server->getSmsPlatformId(),

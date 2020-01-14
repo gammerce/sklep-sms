@@ -164,7 +164,6 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
         $purchase = new Purchase($this->auth->user());
         $purchase->setService($this->service->getId());
-        // TODO Replace all setTariff
         // TODO Check charging wallet cause no price is set here
         $purchase->setPayment([
             Purchase::PAYMENT_WALLET_DISABLED => true,
