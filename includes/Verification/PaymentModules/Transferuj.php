@@ -43,8 +43,7 @@ class Transferuj extends PaymentModule implements SupportTransfer
 
     public function prepareTransfer(Purchase $purchase, $dataFilename)
     {
-        // Cast grosze to złotówki
-        $cost = round($purchase->getPayment('cost') / 100, 2);
+        $cost = round($purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE) / 100, 2);
 
         return [
             'url' => 'https://secure.transferuj.pl',

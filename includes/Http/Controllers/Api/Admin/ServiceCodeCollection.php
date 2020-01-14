@@ -5,6 +5,7 @@ use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Loggers\DatabaseLogger;
+use App\Repositories\PriceRepository;
 use App\Repositories\ServiceCodeRepository;
 use App\System\Heart;
 use App\Translation\TranslationManager;
@@ -17,19 +18,23 @@ class ServiceCodeCollection
         Request $request,
         TranslationManager $translationManager,
         ServiceCodeRepository $serviceCodeRepository,
+        PriceRepository $priceRepository,
         Heart $heart,
         DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
 
-        $uid = $request->request->get("uid") ?: null;
         $code = $request->request->get("code");
         $priceId = $request->request->get("price_id");
-        $serverId = $request->request->get("server_id");
+        $uid = $request->request->get("uid") ?: null;
+        $serverId = $request->request->get("server_id") ?: null;
 
         $warnings = [];
 
-        if (($serviceModule = $heart->getServiceModule($serviceId)) === null) {
+        $price = $priceRepository->get($priceId);
+        $serviceModule = $heart->getServiceModule($serviceId);
+
+        if (!$serviceModule) {
             return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
         }
 
@@ -43,10 +48,16 @@ class ServiceCodeCollection
             $warnings['code'][] = $lang->t('return_code_length_warn');
         }
 
-        $warnings = array_merge(
-            (array) $warnings,
-            (array) $serviceModule->serviceCodeAdminAddValidate($request->request->all())
-        );
+        if ($serverId) {
+            $server = $heart->getServer($serverId);
+            if (!$server) {
+                $warnings['server'][] = $lang->t('no_server_id');
+            }
+        }
+
+        if (!$price) {
+            $warnings['price_id'][] = $lang->t('no_such_sms_price');
+        }
 
         if ($warnings) {
             throw new ValidationException($warnings);

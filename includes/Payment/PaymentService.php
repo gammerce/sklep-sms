@@ -54,9 +54,9 @@ class PaymentService
     public function makePayment(Purchase $purchase)
     {
         $warnings = [];
+        $serviceModule = $this->heart->getServiceModule($purchase->getService());
 
-        // Tworzymy obiekt usługi którą kupujemy
-        if (($serviceModule = $this->heart->getServiceModule($purchase->getService())) === null) {
+        if (!$serviceModule) {
             return [
                 'status' => "wrong_module",
                 'text' => $this->lang->t('bad_module'),
@@ -92,10 +92,9 @@ class PaymentService
             $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail($paymentPlatformId);
         }
 
-        // Pobieramy ile kosztuje ta usługa dla przelewu / portfela
-        if ($purchase->getPayment('cost') === null) {
+        if (!$purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE)) {
             $purchase->setPayment([
-                'cost' => $purchase->getTariff()->getProvision(),
+                Purchase::PAYMENT_TRANSFER_PRICE => $purchase->getPrice()->getTransferPrice(),
             ]);
         }
 
@@ -133,9 +132,11 @@ class PaymentService
             ];
         }
 
+        // TODO Treat Purchase::PAYMENT_TRANSFER_PRICE as grosze instead of zloty
+
         if (
             $purchase->getPayment('method') == Purchase::METHOD_TRANSFER &&
-            $purchase->getPayment('cost') <= 1
+            $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE) <= 100
         ) {
             return [
                 'status' => "too_little_for_transfer",
@@ -211,7 +212,7 @@ class PaymentService
 
         if ($purchase->getPayment('method') === Purchase::METHOD_WALLET) {
             $paymentId = $this->walletPaymentService->payWithWallet(
-                $purchase->getPayment('cost'),
+                $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE),
                 $purchase->user
             );
 

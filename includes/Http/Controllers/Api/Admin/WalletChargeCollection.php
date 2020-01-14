@@ -27,7 +27,7 @@ class WalletChargeCollection
         $lang = $translationManager->user();
         $user = $auth->user();
 
-        $amount = intval($request->request->get('amount')) * 100;
+        $quantity = intval($request->request->get('quantity')) * 100;
 
         $warnings = [];
 
@@ -41,11 +41,10 @@ class WalletChargeCollection
             }
         }
 
-        // Wartość Doładowania
-        if (!$amount) {
-            $warnings['amount'][] = $lang->t('no_charge_value');
-        } elseif (!is_numeric($amount)) {
-            $warnings['amount'][] = $lang->t('charge_number');
+        if (!$quantity) {
+            $warnings['quantity'][] = $lang->t('no_charge_value');
+        } elseif (!is_numeric($quantity)) {
+            $warnings['quantity'][] = $lang->t('charge_number');
         }
 
         if ($warnings) {
@@ -57,8 +56,8 @@ class WalletChargeCollection
             return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
         }
 
-        // Zmiana wartości amount, aby stan konta nie zszedł poniżej zera
-        $amount = max($amount, -$editedUser->getWallet());
+        // Zmiana wartości quantity, aby stan konta nie zszedł poniżej zera
+        $quantity = max($quantity, -$editedUser->getWallet());
 
         // Dodawanie informacji o płatności do bazy
         $paymentId = $adminPaymentService->payByAdmin($user);
@@ -70,7 +69,7 @@ class WalletChargeCollection
             'payment_id' => $paymentId,
         ]);
         $purchase->setOrder([
-            'amount' => $amount,
+            Purchase::ORDER_QUANTITY => $quantity,
         ]);
         $purchase->setEmail($editedUser->getEmail());
 
@@ -80,7 +79,7 @@ class WalletChargeCollection
             'log_account_charged',
             $editedUser->getUsername(),
             $editedUser->getUid(),
-            number_format($amount / 100.0, 2),
+            number_format($quantity / 100.0, 2),
             $settings->getCurrency()
         );
 
@@ -89,7 +88,7 @@ class WalletChargeCollection
             $lang->t(
                 'account_charge_success',
                 $editedUser->getUsername(),
-                number_format($amount / 100.0, 2),
+                number_format($quantity / 100.0, 2),
                 $settings->getCurrency()
             ),
             1

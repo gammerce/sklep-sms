@@ -57,8 +57,7 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
      */
     public function prepareTransfer(Purchase $purchase, $dataFilename)
     {
-        // Zamieniamy grosze na złotówki
-        $cost = round($purchase->getPayment('cost') / 100, 2);
+        $cost = round($purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE) / 100, 2);
 
         return [
             'url' => 'https://pay.cashbill.pl/form/pay.php',

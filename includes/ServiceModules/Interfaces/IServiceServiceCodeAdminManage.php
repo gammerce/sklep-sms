@@ -6,15 +6,7 @@ namespace App\ServiceModules\Interfaces;
  */
 interface IServiceServiceCodeAdminManage
 {
-    /**
-     * Metoda sprawdza dane formularza podczas dodawania kodu na usługę w PA
-     *
-     * @param array $body
-     *
-     * @return array 'key' (DOM element name) => 'value'
-     */
-    public function serviceCodeAdminAddValidate(array $body);
-
+    // TODO Remove that method
     /**
      * Metoda powinna zwrócić dodatkowe pola do uzupełnienia przez admina
      * podczas dodawania kodu na usługę

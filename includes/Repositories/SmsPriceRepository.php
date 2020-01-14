@@ -10,4 +10,9 @@ class SmsPriceRepository
     {
         return $this->prices;
     }
+
+    public function exists($price)
+    {
+        return in_array($price, $this->all(), true);
+    }
 }

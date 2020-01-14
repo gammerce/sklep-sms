@@ -47,13 +47,13 @@ class PurchaseValidationResource
             /** @var Purchase $purchase */
             $purchase = $returnData['purchase_data'];
 
-            if ($purchase->getService() === null) {
+            if (!$purchase->getService()) {
                 $purchase->setService($serviceModule->service->getId());
             }
 
-            if (!$purchase->getPayment('cost') && $purchase->getTariff() !== null) {
+            if (!$purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE) && $purchase->getPrice()) {
                 $purchase->setPayment([
-                    'cost' => $purchase->getTariff()->getProvision(),
+                    Purchase::PAYMENT_TRANSFER_PRICE => $purchase->getPrice()->getTransferPrice(),
                 ]);
             }
 

@@ -11,10 +11,10 @@ interface IServiceServiceCode
     /**
      * Sprawdza czy dany zakup może być zrealizowany ( opłacony ) przez dany kod na usługę
      *
-     * @param Purchase $purchaseData
+     * @param Purchase $purchase
      * @param array    $code
      *
      * @return bool
      */
-    public function serviceCodeValidate(Purchase $purchaseData, $code);
+    public function serviceCodeValidate(Purchase $purchase, $code);
 }

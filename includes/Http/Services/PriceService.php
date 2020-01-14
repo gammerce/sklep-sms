@@ -41,11 +41,12 @@ class PriceService
             $warnings['service_id'][] = $this->lang->t('no_such_service');
         }
 
+        // TODO Replace all -1
         if ($serverId != -1 && $this->heart->getServer($serverId) === null) {
             $warnings['server_id'][] = $this->lang->t('no_such_server');
         }
 
-        if (in_array($smsPrice, $this->smsPriceRepository->all(), true)) {
+        if (!$this->smsPriceRepository->exists($smsPrice)) {
             $warnings['sms_price'][] = $this->lang->t('no_such_sms_price');
         }
 

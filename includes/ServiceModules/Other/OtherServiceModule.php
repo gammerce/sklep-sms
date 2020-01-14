@@ -49,26 +49,26 @@ class OtherServiceModule extends ServiceModule implements
     }
 
     /**
-     * @param Purchase $purchaseData
+     * @param Purchase $purchase
      * @return array
      */
-    public function purchaseDataValidate(Purchase $purchaseData)
+    public function purchaseDataValidate(Purchase $purchase)
     {
         $warnings = [];
 
         // Serwer
-        if (!strlen($purchaseData->getOrder('server'))) {
+        if (!strlen($purchase->getOrder('server'))) {
             $warnings['server'][] = $this->lang->t('must_choose_server');
         } else {
             // Sprawdzanie czy serwer o danym id istnieje w bazie
-            $server = $this->heart->getServer($purchaseData->getOrder('server'));
+            $server = $this->heart->getServer($purchase->getOrder('server'));
             if (!$this->heart->serverServiceLinked($server->getId(), $this->service->getId())) {
                 $warnings['server'][] = $this->lang->t('chosen_incorrect_server');
             }
         }
 
         // Wartość usługi
-        $price = $purchaseData->getPrice();
+        $price = $purchase->getPrice();
         if (!$price) {
             // TODO Replace 'value' with 'price_id' everywhere
             $warnings['price_id'][] = $this->lang->t('must_choose_quantity');
@@ -85,8 +85,8 @@ class OtherServiceModule extends ServiceModule implements
 
         // E-mail
         if (
-            strlen($purchaseData->getEmail()) &&
-            ($warning = check_for_warnings("email", $purchaseData->getEmail()))
+            strlen($purchase->getEmail()) &&
+            ($warning = check_for_warnings("email", $purchase->getEmail()))
         ) {
             $warnings['email'] = array_merge((array) $warnings['email'], $warning);
         }
@@ -100,36 +100,36 @@ class OtherServiceModule extends ServiceModule implements
             ];
         }
 
-        $purchaseData->setOrder([
-            'amount' => $price->getQuantity(),
-            'forever' => $price->isForever(),
+        $purchase->setOrder([
+            Purchase::ORDER_QUANTITY => $price->getQuantity(),
+            Purchase::ORDER_FOREVER => $price->isForever(),
         ]);
 
-        $purchaseData->setPayment([
-            'cost' => $purchaseData->getTariff()->getProvision(),
+        $purchase->setPayment([
+            Purchase::PAYMENT_TRANSFER_PRICE => $purchase->getPrice()->getTransferPrice(),
         ]);
 
         return [
             'status' => "ok",
             'text' => $this->lang->t('purchase_form_validated'),
             'positive' => true,
-            'purchase_data' => $purchaseData,
+            'purchase_data' => $purchase,
         ];
     }
 
-    public function purchase(Purchase $purchaseData)
+    public function purchase(Purchase $purchase)
     {
         return $this->boughtServiceService->create(
-            $purchaseData->user->getUid(),
-            $purchaseData->user->getUsername(),
-            $purchaseData->user->getLastIp(),
-            $purchaseData->getPayment('method'),
-            $purchaseData->getPayment('payment_id'),
+            $purchase->user->getUid(),
+            $purchase->user->getUsername(),
+            $purchase->user->getLastIp(),
+            $purchase->getPayment('method'),
+            $purchase->getPayment('payment_id'),
             $this->service->getId(),
-            $purchaseData->getOrder('server'),
-            $purchaseData->getOrder('amount'),
-            $purchaseData->getOrder('auth_data'),
-            $purchaseData->getEmail()
+            $purchase->getOrder('server'),
+            $purchase->getOrder(Purchase::ORDER_QUANTITY),
+            $purchase->getOrder('auth_data'),
+            $purchase->getEmail()
         );
     }
 

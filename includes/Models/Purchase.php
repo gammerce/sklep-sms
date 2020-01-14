@@ -11,6 +11,10 @@ class Purchase
     const METHOD_SERVICE_CODE = "service_code";
     const METHOD_WALLET = "wallet";
 
+    const PAYMENT_TRANSFER_PRICE = "transfer_price";
+    const ORDER_QUANTITY = "quantity";
+    const ORDER_FOREVER = "forever";
+
     /**
      * ID of row from ss_services table
      *

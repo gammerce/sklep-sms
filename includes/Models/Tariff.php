@@ -3,6 +3,9 @@ namespace App\Models;
 
 use App\System\Settings;
 
+/**
+ * @deprecated
+ */
 class Tariff
 {
     /** @var int */

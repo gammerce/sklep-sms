@@ -11,7 +11,6 @@ return [
     'extra_flags' => 'Dodatkowe flagi',
     'flags' => 'Flagi',
     'forbidden_purchase_type' => 'Wybrano niedozwolony typ zakupu.',
-    'have_to_choose_server' => 'Musisz wybrać serwer.',
     'if_displayed_in_shop' => 'Czy ma być wyświetlane <br/>w sklepie internetowym.',
     'just_purchased' => 'Witaj {1},<br/>
 przed chwilą dokonałeś/aś zakupu w naszym sklepie.',

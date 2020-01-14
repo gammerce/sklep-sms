@@ -384,33 +384,32 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             ];
         }
 
-        $purchaseData = new Purchase($this->auth->user());
-        $purchaseData->setService($this->service->getId());
-        $purchaseData->setOrder([
+        $purchase = new Purchase($this->auth->user());
+        $purchase->setService($this->service->getId());
+        $purchase->setOrder([
             'username' => $body['username'],
-            // TODO Replace amount with quantity
-            'amount' => $price->getQuantity(),
-            'forever' => $price->isForever(),
+            Purchase::ORDER_QUANTITY => $price->getQuantity(),
+            Purchase::ORDER_FOREVER => $price->isForever(),
         ]);
-        $purchaseData->setEmail($body['email']);
-        $purchaseData->setPrice($price);
+        $purchase->setEmail($body['email']);
+        $purchase->setPrice($price);
 
         return [
             'status' => "ok",
             'text' => $this->lang->t('purchase_form_validated'),
             'positive' => true,
-            'purchase_data' => $purchaseData,
+            'purchase_data' => $purchase,
         ];
     }
 
-    public function orderDetails(Purchase $purchaseData)
+    public function orderDetails(Purchase $purchase)
     {
-        $email = $purchaseData->getEmail() ?: $this->lang->t('none');
-        $username = $purchaseData->getOrder('username');
+        $email = $purchase->getEmail() ?: $this->lang->t('none');
+        $username = $purchase->getOrder('username');
         $serviceName = $this->service->getName();
         $amount =
-            $purchaseData->getOrder('amount') != -1
-                ? $purchaseData->getOrder('amount') . " " . $this->service->getTag()
+            $purchase->getOrder(Purchase::ORDER_QUANTITY) != -1
+                ? $purchase->getOrder(Purchase::ORDER_QUANTITY) . " " . $this->service->getTag()
                 : $this->lang->t('forever');
 
         return $this->template->render(
@@ -421,36 +420,41 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         );
     }
 
-    public function purchase(Purchase $purchaseData)
+    public function purchase(Purchase $purchase)
     {
+        $mybbUser = $this->createMybbUser($purchase->getOrder('username'));
+
         // Nie znaleziono użytkownika o takich danych jak podane podczas zakupu
-        if (($mybbUser = $this->createMybbUser($purchaseData->getOrder('username'))) === null) {
-            $this->logger->log('mybb_purchase_no_user', json_encode($purchaseData->getPayment()));
+        if (!$mybbUser) {
+            $this->logger->log('mybb_purchase_no_user', json_encode($purchase->getPayment()));
             die("Critical error occurred");
         }
 
         $this->userServiceAdd(
-            $purchaseData->user->getUid(),
+            $purchase->user->getUid(),
             $mybbUser->getUid(),
-            $purchaseData->getOrder('amount'),
-            $purchaseData->getOrder('forever')
+            $purchase->getOrder(Purchase::ORDER_QUANTITY),
+            $purchase->getOrder(Purchase::ORDER_FOREVER)
         );
         foreach ($this->groups as $group) {
-            $mybbUser->prolongShopGroup($group, $purchaseData->getOrder('amount') * 24 * 60 * 60);
+            $mybbUser->prolongShopGroup(
+                $group,
+                $purchase->getOrder(Purchase::ORDER_QUANTITY) * 24 * 60 * 60
+            );
         }
         $this->saveMybbUser($mybbUser);
 
         return $this->boughtServiceService->create(
-            $purchaseData->user->getUid(),
-            $purchaseData->user->getUsername(),
-            $purchaseData->user->getLastIp(),
-            $purchaseData->getPayment('method'),
-            $purchaseData->getPayment('payment_id'),
+            $purchase->user->getUid(),
+            $purchase->user->getUsername(),
+            $purchase->user->getLastIp(),
+            $purchase->getPayment('method'),
+            $purchase->getPayment('payment_id'),
             $this->service->getId(),
             0,
-            $purchaseData->getOrder('amount'),
-            $purchaseData->getOrder('username') . " ({$mybbUser->getUid()})",
-            $purchaseData->getEmail(),
+            $purchase->getOrder(Purchase::ORDER_QUANTITY),
+            $purchase->getOrder('username') . " ({$mybbUser->getUid()})",
+            $purchase->getEmail(),
             [
                 'uid' => $mybbUser->getUid(),
                 'groups' => implode(',', $this->groups),
@@ -727,19 +731,19 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         // Add payment info
         $paymentId = $this->adminPaymentService->payByAdmin($user);
 
-        $purchaseData = new Purchase($this->heart->getUser($body['uid']));
-        $purchaseData->setService($this->service->getId());
-        $purchaseData->setPayment([
+        $purchase = new Purchase($this->heart->getUser($body['uid']));
+        $purchase->setService($this->service->getId());
+        $purchase->setPayment([
             'method' => "admin",
             'payment_id' => $paymentId,
         ]);
-        $purchaseData->setOrder([
+        $purchase->setOrder([
             'username' => $body['mybb_username'],
-            'amount' => $body['amount'],
-            'forever' => (bool) $body['forever'],
+            Purchase::ORDER_QUANTITY => $body['amount'],
+            Purchase::ORDER_FOREVER => (bool) $body['forever'],
         ]);
-        $purchaseData->setEmail($body['email']);
-        $boughtServiceId = $this->purchase($purchaseData);
+        $purchase->setEmail($body['email']);
+        $boughtServiceId = $this->purchase($purchase);
 
         $this->logger->logWithActor(
             'log_user_service_added',

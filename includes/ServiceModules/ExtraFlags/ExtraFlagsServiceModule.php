@@ -366,19 +366,19 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     }
 
     /**
-     * @param Purchase $purchaseData
+     * @param Purchase $purchase
      * @return array
      */
-    public function purchaseDataValidate(Purchase $purchaseData)
+    public function purchaseDataValidate(Purchase $purchase)
     {
         $warnings = [];
 
         // Serwer
-        if (!strlen($purchaseData->getOrder('server'))) {
+        if (!strlen($purchase->getOrder('server'))) {
             $warnings['server'][] = $this->lang->t('must_choose_server');
         } else {
             // Sprawdzanie czy serwer o danym id istnieje w bazie
-            $server = $this->heart->getServer($purchaseData->getOrder('server'));
+            $server = $this->heart->getServer($purchase->getOrder('server'));
 
             if (!$this->heart->serverServiceLinked($server->getId(), $this->service->getId())) {
                 $warnings['server'][] = $this->lang->t('chosen_incorrect_server');
@@ -386,7 +386,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
 
         // Wartość usługi
-        $price = $purchaseData->getPrice();
+        $price = $purchase->getPrice();
         if (!$price) {
             $warnings['price_id'][] = $this->lang->t('must_choose_quantity');
         } elseif (
@@ -403,26 +403,23 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         // Typ usługi
         // Mogą być tylko 3 rodzaje typu
         if (
-            $purchaseData->getOrder('type') != ExtraFlagType::TYPE_NICK &&
-            $purchaseData->getOrder('type') != ExtraFlagType::TYPE_IP &&
-            $purchaseData->getOrder('type') != ExtraFlagType::TYPE_SID
+            $purchase->getOrder('type') != ExtraFlagType::TYPE_NICK &&
+            $purchase->getOrder('type') != ExtraFlagType::TYPE_IP &&
+            $purchase->getOrder('type') != ExtraFlagType::TYPE_SID
         ) {
             $warnings['type'][] = $this->lang->t('must_choose_type');
         } else {
-            if (!($this->service->getTypes() & $purchaseData->getOrder('type'))) {
+            if (!($this->service->getTypes() & $purchase->getOrder('type'))) {
                 $warnings['type'][] = $this->lang->t('chosen_incorrect_type');
             } else {
                 if (
-                    $purchaseData->getOrder('type') &
+                    $purchase->getOrder('type') &
                     (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)
                 ) {
                     // Nick
-                    if ($purchaseData->getOrder('type') == ExtraFlagType::TYPE_NICK) {
+                    if ($purchase->getOrder('type') == ExtraFlagType::TYPE_NICK) {
                         if (
-                            $warning = check_for_warnings(
-                                "nick",
-                                $purchaseData->getOrder('auth_data')
-                            )
+                            $warning = check_for_warnings("nick", $purchase->getOrder('auth_data'))
                         ) {
                             $warnings['nick'] = array_merge((array) $warnings['nick'], $warning);
                         }
@@ -436,18 +433,18 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                                 "WHERE `type` = '%d' AND `auth_data` = '%s' AND `server` = '%d'",
                             [
                                 ExtraFlagType::TYPE_NICK,
-                                $purchaseData->getOrder('auth_data'),
+                                $purchase->getOrder('auth_data'),
                                 isset($server) ? $server->getId() : 0,
                             ]
                         );
                     }
                     // IP
                     else {
-                        if ($purchaseData->getOrder('type') == ExtraFlagType::TYPE_IP) {
+                        if ($purchase->getOrder('type') == ExtraFlagType::TYPE_IP) {
                             if (
                                 $warning = check_for_warnings(
                                     "ip",
-                                    $purchaseData->getOrder('auth_data')
+                                    $purchase->getOrder('auth_data')
                                 )
                             ) {
                                 $warnings['ip'] = array_merge((array) $warnings['ip'], $warning);
@@ -462,7 +459,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                                     "WHERE `type` = '%d' AND `auth_data` = '%s' AND `server` = '%d'",
                                 [
                                     ExtraFlagType::TYPE_IP,
-                                    $purchaseData->getOrder('auth_data'),
+                                    $purchase->getOrder('auth_data'),
                                     isset($server) ? $server->getId() : 0,
                                 ]
                             );
@@ -471,19 +468,14 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
                     // Hasło
                     if (
-                        $warning = check_for_warnings(
-                            "password",
-                            $purchaseData->getOrder('password')
-                        )
+                        $warning = check_for_warnings("password", $purchase->getOrder('password'))
                     ) {
                         $warnings['password'] = array_merge(
                             (array) $warnings['password'],
                             $warning
                         );
                     }
-                    if (
-                        $purchaseData->getOrder('password') != $purchaseData->getOrder('passwordr')
-                    ) {
+                    if ($purchase->getOrder('password') != $purchase->getOrder('passwordr')) {
                         $warnings['password_repeat'][] = $this->lang->t('passwords_not_match');
                     }
 
@@ -491,8 +483,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                     if ($tmpPassword = $this->db->query($query)->fetchColumn()) {
                         // TODO: Usunąć md5 w przyszłości
                         if (
-                            $tmpPassword != $purchaseData->getOrder('password') &&
-                            $tmpPassword != md5($purchaseData->getOrder('password'))
+                            $tmpPassword != $purchase->getOrder('password') &&
+                            $tmpPassword != md5($purchase->getOrder('password'))
                         ) {
                             $warnings['password'][] = $this->lang->t(
                                 'existing_service_has_different_password'
@@ -504,9 +496,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 }
                 // SteamID
                 else {
-                    if (
-                        $warning = check_for_warnings("sid", $purchaseData->getOrder('auth_data'))
-                    ) {
+                    if ($warning = check_for_warnings("sid", $purchase->getOrder('auth_data'))) {
                         $warnings['sid'] = array_merge((array) $warnings['sid'], $warning);
                     }
                 }
@@ -515,9 +505,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         // E-mail
         if (
-            (!is_server_platform($purchaseData->user->getPlatform()) ||
-                strlen($purchaseData->getEmail())) &&
-            ($warning = check_for_warnings("email", $purchaseData->getEmail()))
+            (!is_server_platform($purchase->user->getPlatform()) ||
+                strlen($purchase->getEmail())) &&
+            ($warning = check_for_warnings("email", $purchase->getEmail()))
         ) {
             $warnings['email'] = array_merge((array) $warnings['email'], $warning);
         }
@@ -533,13 +523,13 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         // TODO Replace all amounts
         // TODO Remove all tariffs
-        $purchaseData->setOrder([
-            'amount' => $price->getQuantity(),
-            'forever' => $price->isForever(),
+        $purchase->setOrder([
+            Purchase::ORDER_QUANTITY => $price->getQuantity(),
+            Purchase::ORDER_FOREVER => $price->isForever(),
         ]);
 
         if ($server->getSmsPlatformId()) {
-            $purchaseData->setPayment([
+            $purchase->setPayment([
                 'sms_platform' => $server->getSmsPlatformId(),
             ]);
         }
@@ -548,30 +538,30 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             'status' => "ok",
             'text' => $this->lang->t('purchase_form_validated'),
             'positive' => true,
-            'purchase_data' => $purchaseData,
+            'purchase_data' => $purchase,
         ];
     }
 
-    public function orderDetails(Purchase $purchaseData)
+    public function orderDetails(Purchase $purchase)
     {
-        $server = $this->heart->getServer($purchaseData->getOrder('server'));
-        $typeName = $this->getTypeName2($purchaseData->getOrder('type'));
+        $server = $this->heart->getServer($purchase->getOrder('server'));
+        $typeName = $this->getTypeName2($purchase->getOrder('type'));
 
         $password = '';
-        if (strlen($purchaseData->getOrder('password'))) {
+        if (strlen($purchase->getOrder('password'))) {
             $password =
                 "<strong>{$this->lang->t('password')}</strong>: " .
-                htmlspecialchars($purchaseData->getOrder('password')) .
+                htmlspecialchars($purchase->getOrder('password')) .
                 "<br />";
         }
 
-        $email = $purchaseData->getEmail() ?: $this->lang->t('none');
-        $authData = $purchaseData->getOrder('auth_data');
+        $email = $purchase->getEmail() ?: $this->lang->t('none');
+        $authData = $purchase->getOrder('auth_data');
         $serviceName = $this->service->getName();
         $serverName = $server->getName();
-        $amount = !$purchaseData->getOrder('forever')
-            ? $purchaseData->getOrder('amount') . " " . $this->service->getTag()
-            : $this->lang->t('forever');
+        $amount = $purchase->getOrder(Purchase::ORDER_FOREVER)
+            ? $this->lang->t('forever')
+            : $purchase->getOrder(Purchase::ORDER_QUANTITY) . " " . $this->service->getTag();
 
         return $this->template->render(
             "services/extra_flags/order_details",
@@ -589,32 +579,32 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
     }
 
-    public function purchase(Purchase $purchaseData)
+    public function purchase(Purchase $purchase)
     {
         $this->addPlayerFlags(
-            $purchaseData->user->getUid(),
-            $purchaseData->getOrder('type'),
-            $purchaseData->getOrder('auth_data'),
-            $purchaseData->getOrder('password'),
-            $purchaseData->getOrder('amount'),
-            $purchaseData->getOrder('server'),
-            $purchaseData->getOrder('forever')
+            $purchase->user->getUid(),
+            $purchase->getOrder('type'),
+            $purchase->getOrder('auth_data'),
+            $purchase->getOrder('password'),
+            $purchase->getOrder(Purchase::ORDER_QUANTITY),
+            $purchase->getOrder('server'),
+            $purchase->getOrder(Purchase::ORDER_FOREVER)
         );
 
         return $this->boughtServiceService->create(
-            $purchaseData->user->getUid(),
-            $purchaseData->user->getUsername(),
-            $purchaseData->user->getLastIp(),
-            $purchaseData->getPayment('method'),
-            $purchaseData->getPayment('payment_id'),
+            $purchase->user->getUid(),
+            $purchase->user->getUsername(),
+            $purchase->user->getLastIp(),
+            $purchase->getPayment('method'),
+            $purchase->getPayment('payment_id'),
             $this->service->getId(),
-            $purchaseData->getOrder('server'),
-            $purchaseData->getOrder('amount'),
-            $purchaseData->getOrder('auth_data'),
-            $purchaseData->getEmail(),
+            $purchase->getOrder('server'),
+            $purchase->getOrder(Purchase::ORDER_QUANTITY),
+            $purchase->getOrder('auth_data'),
+            $purchase->getEmail(),
             [
-                'type' => $purchaseData->getOrder('type'),
-                'password' => $purchaseData->getOrder('password'),
+                'type' => $purchase->getOrder('type'),
+                'password' => $purchase->getOrder('password'),
             ]
         );
     }
@@ -919,7 +909,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             }
         }
 
-        // Pobieramy listę serwerów
         $servers = "";
         foreach ($this->heart->getServers() as $id => $server) {
             if (!$this->heart->serverServiceLinked($id, $this->service->getId())) {
@@ -963,10 +952,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         if (!$body['forever']) {
             if ($warning = check_for_warnings("number", $body['amount'])) {
                 $warnings['amount'] = array_merge((array) $warnings['amount'], $warning);
-            } else {
-                if ($body['amount'] < 0) {
-                    $warnings['amount'][] = $this->lang->t('days_quantity_positive');
-                }
+            } elseif ($body['amount'] < 0) {
+                $warnings['amount'][] = $this->lang->t('days_quantity_positive');
             }
         }
 
@@ -978,8 +965,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         // Sprawdzamy poprawność wprowadzonych danych
         $verifyData = $this->verifyUserServiceData($body, $warnings);
 
-        // Jeżeli są jakieś błędy, to je zwracamy
-        if (!empty($verifyData)) {
+        if ($verifyData) {
             return $verifyData;
         }
 
@@ -990,22 +976,22 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         // Pobieramy dane o użytkowniku na które jego wykupiona usługa
         $purchaseUser = $this->heart->getUser($body['uid']);
-        $purchaseData = new Purchase($purchaseUser);
-        $purchaseData->setService($this->service->getId());
-        $purchaseData->setPayment([
+        $purchase = new Purchase($purchaseUser);
+        $purchase->setService($this->service->getId());
+        $purchase->setPayment([
             'method' => "admin",
             'payment_id' => $paymentId,
         ]);
-        $purchaseData->setOrder([
+        $purchase->setOrder([
             'server' => $body['server'],
             'type' => $body['type'],
             'auth_data' => trim($body['auth_data']),
             'password' => $body['password'],
-            'amount' => $body['amount'],
-            'forever' => (bool) $body['forever'],
+            Purchase::ORDER_QUANTITY => $body['amount'],
+            Purchase::ORDER_FOREVER => (bool) $body['forever'],
         ]);
-        $purchaseData->setEmail($body['email']);
-        $boughtServiceId = $this->purchase($purchaseData);
+        $purchase->setEmail($body['email']);
+        $boughtServiceId = $this->purchase($purchase);
 
         $this->logger->logWithActor('log_user_service_added', $boughtServiceId);
 
@@ -1807,14 +1793,13 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
     }
 
-    public function serviceCodeValidate(Purchase $purchaseData, $code)
+    public function serviceCodeValidate(Purchase $purchase, $code)
     {
         return true;
     }
 
     public function serviceCodeAdminAddFormGet()
     {
-        // Pobieramy listę serwerów
         $servers = "";
         foreach ($this->heart->getServers() as $id => $server) {
             if (!$this->heart->serverServiceLinked($id, $this->service->getId())) {
@@ -1832,32 +1817,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             true,
             false
         );
-    }
-
-    public function serviceCodeAdminAddValidate(array $body)
-    {
-        $warnings = [];
-
-        // Serwer
-        if (!strlen($body['server'])) {
-            $warnings['server'][] = $this->lang->t('have_to_choose_server');
-        }
-        // Wyszukiwanie serwera o danym id
-        elseif (($server = $this->heart->getServer($body['server'])) === null) {
-            $warnings['server'][] = $this->lang->t('no_server_id');
-        }
-
-        // TODO Refactor it
-        // Taryfa
-        $tariff = explode(';', $body['amount']);
-        $tariff = $tariff[2];
-        if (!strlen($body['amount'])) {
-            $warnings['amount'][] = $this->lang->t('must_choose_quantity');
-        } elseif ($this->heart->getTariff($tariff) === null) {
-            $warnings['amount'][] = $this->lang->t('no_such_sms_price');
-        }
-
-        return $warnings;
     }
 
     /**
