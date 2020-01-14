@@ -35,6 +35,10 @@ class TransferPaymentServiceTest extends TestCase
         $serviceId = "vip";
         $serviceModule = $heart->getServiceModule($serviceId);
         $server = $this->factory->server();
+        $price = $this->factory->price([
+            'service_id' => $serviceId,
+            'server_id' => $server->getId(),
+        ]);
 
         $purchase = new Purchase(new User());
         $purchase->setPayment([
@@ -43,7 +47,7 @@ class TransferPaymentServiceTest extends TestCase
         $purchase->setOrder([
             'server' => $server->getId(),
         ]);
-        $purchase->setTariff($heart->getTariff(2));
+        $purchase->setPrice($price);
         $purchase->setService($serviceModule->service->getId());
         $purchase->setDesc("Description");
 

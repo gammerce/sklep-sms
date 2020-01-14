@@ -29,8 +29,10 @@ class ServiceCodePaymentServiceTest extends TestCase
 
         $serviceId = "vip";
         $serviceModule = $heart->getServiceModule($serviceId);
-
-        $serviceCode = $serviceCodeRepository->create("ABC123", $serviceId);
+        $price = $this->factory->price([
+            'service_id' => $serviceId,
+        ]);
+        $serviceCode = $serviceCodeRepository->create("ABC123", $serviceId, $price->getId());
 
         $purchase = new Purchase(new User());
         $purchase->setPayment([
@@ -39,7 +41,7 @@ class ServiceCodePaymentServiceTest extends TestCase
         $purchase->setOrder([
             'server' => 'blah',
         ]);
-        $purchase->setTariff($heart->getTariff(2));
+        $purchase->setPrice($price);
         $purchase->setService($serviceModule->service->getId());
 
         // when

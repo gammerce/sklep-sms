@@ -34,12 +34,6 @@ class Purchase
     /** @var User */
     public $user;
 
-    /**
-     * @deprecated
-     * @var Tariff
-     */
-    private $tariff = null;
-
     /** @var Price|null */
     private $price = null;
 
@@ -75,15 +69,6 @@ class Purchase
         foreach ($order as $key => $value) {
             $this->order[$key] = $value;
         }
-    }
-
-    /**
-     * @deprecated
-     * @param Tariff $tariff
-     */
-    public function setTariff($tariff)
-    {
-        $this->tariff = $tariff;
     }
 
     public function setPrice(Price $price)
@@ -142,15 +127,6 @@ class Purchase
         }
 
         return array_get($this->payment, $key);
-    }
-
-    /**
-     * @deprecated
-     * @return Tariff
-     */
-    public function getTariff()
-    {
-        return $this->tariff;
     }
 
     /**

@@ -123,7 +123,7 @@ class PaymentService
 
         if (
             $purchase->getPayment('method') == Purchase::METHOD_SMS &&
-            $purchase->getTariff() === null
+            $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE) === null
         ) {
             return [
                 'status' => "no_sms_option",
@@ -131,8 +131,6 @@ class PaymentService
                 'positive' => false,
             ];
         }
-
-        // TODO Treat Purchase::PAYMENT_TRANSFER_PRICE as grosze instead of zloty
 
         if (
             $purchase->getPayment('method') == Purchase::METHOD_TRANSFER &&

@@ -121,7 +121,7 @@ class Factory
             [
                 'service_id' => 'vip',
                 'server_id' => null,
-                'sms_price' => 10,
+                'sms_price' => 100,
                 'transfer_price' => null,
                 'quantity' => $this->faker->numberBetween(1, 100),
             ],
