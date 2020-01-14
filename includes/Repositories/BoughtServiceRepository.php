@@ -54,7 +54,7 @@ class BoughtServiceRepository
                 $method,
                 $paymentId,
                 $service,
-                $server,
+                $server ?: 0,
                 $amount ?: 0,
                 $authData ?: '',
                 $email ?: '',

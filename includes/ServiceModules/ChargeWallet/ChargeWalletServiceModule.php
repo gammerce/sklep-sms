@@ -164,7 +164,6 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
         $purchase = new Purchase($this->auth->user());
         $purchase->setService($this->service->getId());
-        // TODO Check charging wallet cause no price is set here
         // TODO Write charge sms / transfer tests
         $purchase->setPayment([
             Purchase::PAYMENT_WALLET_DISABLED => true,
@@ -279,15 +278,14 @@ class ChargeWalletServiceModule extends ServiceModule implements
      */
     private function chargeWallet($uid, $amount)
     {
-        $this->db->query(
-            $this->db->prepare(
+        $this->db
+            ->statement(
                 "UPDATE `" .
                     TABLE_PREFIX .
                     "users` " .
-                    "SET `wallet` = `wallet` + '%d' " .
-                    "WHERE `uid` = '%d'",
-                [$amount, $uid]
+                    "SET `wallet` = `wallet` + ? " .
+                    "WHERE `uid` = ?"
             )
-        );
+            ->execute([$amount, $uid]);
     }
 }
