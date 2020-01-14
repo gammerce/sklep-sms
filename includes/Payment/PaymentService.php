@@ -198,7 +198,7 @@ class PaymentService
                 $paymentModule,
                 $purchase->getPayment(Purchase::PAYMENT_SMS_CODE),
                 $this->smsPriceService->getNumber(
-                    $purchase->getPrice()->getSmsPrice(),
+                    $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE),
                     $paymentModule
                 ),
                 $purchase->user

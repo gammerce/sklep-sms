@@ -75,11 +75,11 @@ class PagePayment extends Page
         ) {
             $smsCode = $smsPaymentModule->getSmsCode();
             $smsNumber = $this->smsPriceService->getNumber(
-                $purchase->getPrice()->getSmsPrice(),
+                $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE),
                 $smsPaymentModule
             );
             $priceGross = $this->priceTextService->getSmsGrossText(
-                $purchase->getPrice()->getSmsPrice()
+                $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE)
             );
             $paymentMethods .= $this->template->render(
                 'payment_method_sms',
@@ -117,8 +117,7 @@ class PagePayment extends Page
     private function isSmsAvailable(Purchase $purchase, PaymentModule $paymentModule = null)
     {
         return $purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM) &&
-            $purchase->getPrice() &&
-            $purchase->getPrice()->hasSmsPrice() &&
+            $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE) !== null &&
             $paymentModule instanceof SupportSms &&
             !$purchase->getPayment(Purchase::PAYMENT_SMS_DISABLED);
     }

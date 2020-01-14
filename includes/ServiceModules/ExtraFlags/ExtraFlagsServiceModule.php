@@ -374,11 +374,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     {
         $warnings = [];
 
-        // Serwer
         if (!strlen($purchase->getOrder(Purchase::ORDER_SERVER))) {
             $warnings['server'][] = $this->lang->t('must_choose_server');
         } else {
-            // Sprawdzanie czy serwer o danym id istnieje w bazie
             $server = $this->heart->getServer($purchase->getOrder(Purchase::ORDER_SERVER));
 
             if (!$this->heart->serverServiceLinked($server->getId(), $this->service->getId())) {
@@ -386,7 +384,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             }
         }
 
-        // Wartość usługi
         $price = $purchase->getPrice();
         if (!$price) {
             $warnings['price_id'][] = $this->lang->t('must_choose_quantity');
