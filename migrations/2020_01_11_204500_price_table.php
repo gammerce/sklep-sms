@@ -12,9 +12,9 @@ class PriceTable extends Migration
 CREATE TABLE IF NOT EXISTS `ss_prices` (
   `id`              INT(11)     NOT NULL AUTO_INCREMENT,
   `service`         VARCHAR(16) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `server`          INT(11),
-  `sms_price`       INT(11),
-  `transfer_price`  INT(11),
+  `server`          INT(11) DEFAULT NULL,
+  `sms_price`       INT(11) DEFAULT NULL,
+  `transfer_price`  INT(11) DEFAULT NULL,
   `quantity`        INT(11),
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
@@ -35,5 +35,15 @@ ALTER TABLE `ss_prices`
 EOF
         ,
         ]);
+
+        foreach ($this->db->query("SELECT * FROM ss_pricelist") as $row) {
+            // TODO Finish it
+            $this->db->statement(
+                <<<EOF
+INSERT INTO ss_prices (`service`, `server`, `sms_price`, `transfer_price`, `quantity`)
+VALUES ()
+EOF
+            );
+        }
     }
 }
