@@ -4,7 +4,26 @@ namespace App\Repositories;
 class SmsPriceRepository
 {
     // TODO Add the rest
-    private $prices = [50, 100];
+    private $prices = [
+        50,
+        100,
+        200,
+        300,
+        400,
+        500,
+        600,
+        700,
+        800,
+        900,
+        1000,
+        1100,
+        1400,
+        1600,
+        1900,
+        2000,
+        2500,
+        2600,
+    ];
 
     public function all()
     {

@@ -1,6 +1,7 @@
 <?php
 namespace App\Install;
 
+use App\Loggers\FileLogger;
 use App\System\Database;
 use InvalidArgumentException;
 
@@ -12,10 +13,17 @@ abstract class Migration
     /** @var MigrationFiles */
     protected $migrationFiles;
 
-    public function __construct(Database $db, MigrationFiles $migrationFiles)
-    {
+    /** @var FileLogger */
+    protected $fileLogger;
+
+    public function __construct(
+        Database $db,
+        MigrationFiles $migrationFiles,
+        FileLogger $fileLogger
+    ) {
         $this->db = $db;
         $this->migrationFiles = $migrationFiles;
+        $this->fileLogger = $fileLogger;
     }
 
     abstract public function up();
