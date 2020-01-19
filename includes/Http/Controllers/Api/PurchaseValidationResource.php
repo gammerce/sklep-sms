@@ -35,16 +35,16 @@ class PurchaseValidationResource
             return new ApiResponse("no_permission", $lang->t('service_no_permission'), 0);
         }
 
-        $returnData = $serviceModule->purchaseFormValidate($request->request->all());
+        $purchase = new Purchase($auth->user());
+        $returnData = $serviceModule->purchaseFormValidate($purchase, $request->request->all());
+
+        // TODO Validate if selected price allows transfer / sms payment
 
         if ($returnData['status'] == "warnings") {
             $returnData["data"]["warnings"] = format_warnings($returnData["data"]["warnings"]);
         } else {
             //
             // Uzupełniamy brakujące dane
-            /** @var Purchase $purchase */
-            $purchase = $returnData['purchase_data'];
-
             if (!$purchase->getService()) {
                 $purchase->setService($serviceModule->service->getId());
             }

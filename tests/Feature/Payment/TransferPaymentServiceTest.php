@@ -38,12 +38,10 @@ class TransferPaymentServiceTest extends TestCase
         $price = $this->factory->price([
             'service_id' => $serviceId,
             'server_id' => $server->getId(),
+            'transfer_price' => 190,
         ]);
 
         $purchase = new Purchase(new User());
-        $purchase->setPayment([
-            Purchase::PAYMENT_TRANSFER_PRICE => 2000,
-        ]);
         $purchase->setOrder([
             Purchase::ORDER_SERVER => $server->getId(),
         ]);

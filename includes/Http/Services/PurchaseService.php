@@ -104,8 +104,6 @@ class PurchaseService
             ];
         }
 
-        /** @var Purchase $purchase */
-        $purchase = $returnValidation['purchase_data'];
         $purchase->setPayment([
             Purchase::PAYMENT_METHOD => $method,
             Purchase::PAYMENT_SMS_CODE => $smsCode,

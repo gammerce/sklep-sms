@@ -3,6 +3,7 @@ namespace App\Models;
 
 class Purchase
 {
+    const METHOD_ADMIN = "admin";
     const METHOD_SMS = "sms";
     const METHOD_TRANSFER = "transfer";
     const METHOD_SERVICE_CODE = "service_code";

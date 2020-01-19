@@ -344,14 +344,12 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
     }
 
-    public function purchaseFormValidate(array $body)
+    public function purchaseFormValidate(Purchase $purchase, array $body)
     {
         $priceId = array_get($body, "price_id");
         $authData = $this->getAuthData($body);
-
         $price = $this->priceRepository->get($priceId);
 
-        $purchase = new Purchase($this->auth->user());
         $purchase->setOrder([
             Purchase::ORDER_SERVER => $body['server'],
             'type' => $body['type'],
@@ -508,7 +506,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             'status' => "ok",
             'text' => $this->lang->t('purchase_form_validated'),
             'positive' => true,
-            'purchase_data' => $purchase,
         ];
     }
 
@@ -949,7 +946,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $purchase = new Purchase($purchaseUser);
         $purchase->setService($this->service->getId());
         $purchase->setPayment([
-            Purchase::PAYMENT_METHOD => "admin",
+            Purchase::PAYMENT_METHOD => Purchase::METHOD_ADMIN,
             Purchase::PAYMENT_PAYMENT_ID => $paymentId,
         ]);
         $purchase->setOrder([

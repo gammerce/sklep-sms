@@ -21,7 +21,6 @@ interface IServicePurchaseOutside extends IServicePurchase
      *  text => string treść wiadomości
      *  positive => bool czy udało się przeprowadzić zakup czy nie
      *  [data => array('warnings' => array())]
-     *  [purchase_data => Entity_Purchase dane zakupu]
      */
     public function purchaseDataValidate(Purchase $purchase);
 }

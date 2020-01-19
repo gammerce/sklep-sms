@@ -22,6 +22,7 @@ interface IServicePurchaseWeb extends IServicePurchase
      * Metoda wywoływana, gdy użytkownik wprowadzi dane w formularzu zakupu
      * i trzeba sprawdzić, czy są one prawidłowe
      *
+     * @param Purchase $purchase
      * @param array $body
      *
      * @return array
@@ -29,9 +30,8 @@ interface IServicePurchaseWeb extends IServicePurchase
      *  text => string treść wiadomości
      *  positive => bool czy udało się przeprowadzić zakup czy nie
      *  [data => array('warnings' => array())]
-     *  [purchase_data => Entity_Purchase dane zakupu]
      */
-    public function purchaseFormValidate(array $body);
+    public function purchaseFormValidate(Purchase $purchase, array $body);
 
     /**
      * Metoda zwraca szczegóły zamówienia, wyświetlane podczas zakupu usługi, przed płatnością.

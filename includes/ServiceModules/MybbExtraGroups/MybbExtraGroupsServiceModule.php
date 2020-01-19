@@ -332,7 +332,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         );
     }
 
-    public function purchaseFormValidate(array $body)
+    public function purchaseFormValidate(Purchase $purchase, array $body)
     {
         $priceId = array_get($body, "price_id");
 
@@ -381,7 +381,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             ];
         }
 
-        $purchase = new Purchase($this->auth->user());
         $purchase->setService($this->service->getId());
         $purchase->setOrder([
             'username' => $body['username'],
@@ -393,7 +392,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             'status' => "ok",
             'text' => $this->lang->t('purchase_form_validated'),
             'positive' => true,
-            'purchase_data' => $purchase,
         ];
     }
 
@@ -728,7 +726,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $purchase = new Purchase($this->heart->getUser($body['uid']));
         $purchase->setService($this->service->getId());
         $purchase->setPayment([
-            Purchase::PAYMENT_METHOD => "admin",
+            Purchase::PAYMENT_METHOD => Purchase::METHOD_ADMIN,
             Purchase::PAYMENT_PAYMENT_ID => $paymentId,
         ]);
         $purchase->setOrder([

@@ -102,7 +102,6 @@ class OtherServiceModule extends ServiceModule implements
             'status' => "ok",
             'text' => $this->lang->t('purchase_form_validated'),
             'positive' => true,
-            'purchase_data' => $purchase,
         ];
     }
 
