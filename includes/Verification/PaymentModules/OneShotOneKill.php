@@ -1,6 +1,7 @@
 <?php
 namespace App\Verification\PaymentModules;
 
+use App\Models\SmsNumber;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\DataField;
@@ -36,6 +37,33 @@ class OneShotOneKill extends PaymentModule implements SupportSms
         '16.25' => '92555',
     ];
 
+    public static function getDataFields()
+    {
+        return [new DataField("api")];
+    }
+
+    public static function getSmsNumbers()
+    {
+        return [
+            new SmsNumber("7136"),
+            new SmsNumber("7255"),
+            new SmsNumber("7355"),
+            new SmsNumber("7455"),
+            new SmsNumber("7555"),
+            new SmsNumber("7636"),
+            new SmsNumber("77464"),
+            new SmsNumber("78464"),
+            new SmsNumber("7936"),
+            new SmsNumber("91055"),
+            new SmsNumber("91155"),
+            new SmsNumber("91455"),
+            new SmsNumber("91664"),
+            new SmsNumber("91955"),
+            new SmsNumber("92055"),
+            new SmsNumber("92555"),
+        ];
+    }
+
     public function verifySms($returnCode, $number)
     {
         $response = $this->requester->get('http://www.1shot1kill.pl/api', [
@@ -62,7 +90,7 @@ class OneShotOneKill extends PaymentModule implements SupportSms
                     return new SmsSuccessResult();
                 }
 
-                throw new BadNumberException($this->getTariffByNumber($responseNumber)->getId());
+                throw new BadNumberException(get_sms_cost($responseNumber));
 
             case 'fail':
                 throw new BadCodeException();
@@ -87,11 +115,6 @@ class OneShotOneKill extends PaymentModule implements SupportSms
     public function getSmsCode()
     {
         return 'SHOT';
-    }
-
-    public static function getDataFields()
-    {
-        return [new DataField("api")];
     }
 
     private function getApi()

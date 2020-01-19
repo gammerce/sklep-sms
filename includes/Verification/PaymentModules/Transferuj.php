@@ -41,6 +41,16 @@ class Transferuj extends PaymentModule implements SupportTransfer
         $this->accountId = $this->getData('account_id');
     }
 
+    public static function getDataFields()
+    {
+        return [new DataField("key"), new DataField("account_id")];
+    }
+
+    public static function getSmsNumbers()
+    {
+        return [];
+    }
+
     public function prepareTransfer(Purchase $purchase, $dataFilename)
     {
         $cost = round($purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE) / 100, 2);
@@ -99,11 +109,6 @@ class Transferuj extends PaymentModule implements SupportTransfer
 
         return array_get($response, 'tr_status') == 'TRUE' &&
             array_get($response, 'tr_error') == 'none';
-    }
-
-    public static function getDataFields()
-    {
-        return [new DataField("key"), new DataField("account_id")];
     }
 
     private function isMd5Valid($md5sum, $transactionAmount, $crc, $transactionId)

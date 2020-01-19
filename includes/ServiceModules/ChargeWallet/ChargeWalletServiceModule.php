@@ -8,12 +8,14 @@ use App\Repositories\SmsPriceRepository;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\ServiceModule;
+use App\Services\PriceTextService;
 use App\Services\SmsPriceService;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use App\Verification\Abstracts\SupportSms;
 use App\View\Interfaces\IBeLoggedMust;
 
 class ChargeWalletServiceModule extends ServiceModule implements
@@ -44,6 +46,9 @@ class ChargeWalletServiceModule extends ServiceModule implements
     /** @var SmsPriceService */
     private $smsPriceService;
 
+    /** @var PriceTextService */
+    private $priceTextService;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -57,6 +62,7 @@ class ChargeWalletServiceModule extends ServiceModule implements
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
         $this->smsPriceRepository = $this->app->make(SmsPriceRepository::class);
         $this->smsPriceService = $this->app->make(SmsPriceService::class);
+        $this->priceTextService = $this->app->make(PriceTextService::class);
     }
 
     public function purchaseFormGet(array $query)
@@ -67,33 +73,35 @@ class ChargeWalletServiceModule extends ServiceModule implements
         $transferBody = '';
 
         if ($this->settings->getSmsPlatformId()) {
-            $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
+            $paymentModule = $this->heart->getPaymentModuleByPlatformId(
                 $this->settings->getSmsPlatformId()
             );
 
-            $optionSms = $this->template->render("services/charge_wallet/option_sms");
+            if ($paymentModule instanceof SupportSms) {
+                $optionSms = $this->template->render("services/charge_wallet/option_sms");
 
-            $smsList = [];
-            foreach ($paymentModule->getTariffs() as $tariff) {
-                $provision = number_format($tariff->getProvision() / 100.0, 2);
-                $smsList[] = create_dom_element(
-                    "option",
-                    $this->lang->t(
-                        'charge_sms_option',
-                        $tariff->getSmsCostGross(),
-                        $this->settings->getCurrency(),
-                        $provision,
-                        $this->settings->getCurrency()
-                    ),
-                    [
-                        'value' => $tariff->getId(),
-                    ]
-                );
+                $smsList = [];
+                foreach ($paymentModule::getSmsNumbers() as $smsNumber) {
+                    $provision = number_format($smsNumber->getProvision() / 100.0, 2);
+                    $smsList[] = create_dom_element(
+                        "option",
+                        $this->lang->t(
+                            'charge_sms_option',
+                            $this->priceTextService->getSmsGrossText($smsNumber->getPrice()),
+                            $this->settings->getCurrency(),
+                            $provision,
+                            $this->settings->getCurrency()
+                        ),
+                        [
+                            'value' => $smsNumber->getPrice(),
+                        ]
+                    );
+                }
+
+                $smsBody = $this->template->render("services/charge_wallet/sms_body", [
+                    'smsList' => implode("", $smsList),
+                ]);
             }
-
-            $smsBody = $this->template->render("services/charge_wallet/sms_body", [
-                'smsList' => implode("", $smsList),
-            ]);
         }
 
         if ($this->settings->getTransferPlatformId()) {

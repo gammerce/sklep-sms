@@ -4,6 +4,7 @@ namespace App\Verification\PaymentModules;
 use App\Loggers\FileLogger;
 use App\Models\PaymentPlatform;
 use App\Models\Purchase;
+use App\Models\SmsNumber;
 use App\Models\TransferFinalize;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
@@ -63,6 +64,34 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
         $this->shopId = $this->getData('shop_id');
         $this->hash = $this->getData('hash');
         $this->fileLogger = $fileLogger;
+    }
+
+    public static function getDataFields()
+    {
+        return [
+            new DataField("api"),
+            new DataField("sms_text"),
+            new DataField("service_id"),
+            new DataField("shop_id"),
+            new DataField("hash"),
+        ];
+    }
+
+    public static function getSmsNumbers()
+    {
+        return [
+            new SmsNumber("71480"),
+            new SmsNumber("72480"),
+            new SmsNumber("73480"),
+            new SmsNumber("74480"),
+            new SmsNumber("75480"),
+            new SmsNumber("76480"),
+            new SmsNumber("79480"),
+            new SmsNumber("91400"),
+            new SmsNumber("91900"),
+            new SmsNumber("92022"),
+            new SmsNumber("92521"),
+        ];
     }
 
     public function verifySms($returnCode, $number)
@@ -171,16 +200,5 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
     public function getSmsCode()
     {
         return $this->smsCode;
-    }
-
-    public static function getDataFields()
-    {
-        return [
-            new DataField("api"),
-            new DataField("sms_text"),
-            new DataField("service_id"),
-            new DataField("shop_id"),
-            new DataField("hash"),
-        ];
     }
 }

@@ -6,6 +6,8 @@ class PriceTable extends Migration
 {
     public function up()
     {
+        $this->db->query("DROP TABLE IF EXISTS `ss_sms_numbers`");
+
         $this->executeQueries([
             "DROP TABLE IF EXISTS `ss_prices`",
             <<<EOF

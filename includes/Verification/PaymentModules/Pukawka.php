@@ -1,6 +1,7 @@
 <?php
 namespace App\Verification\PaymentModules;
 
+use App\Models\SmsNumber;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\DataField;
@@ -15,7 +16,29 @@ use App\Verification\Results\SmsSuccessResult;
 class Pukawka extends PaymentModule implements SupportSms
 {
     const MODULE_ID = "pukawka";
+
     private $rates = [];
+
+    public static function getDataFields()
+    {
+        return [new DataField("api")];
+    }
+
+    public static function getSmsNumbers()
+    {
+        return [
+            new SmsNumber("71480"),
+            new SmsNumber("72480"),
+            new SmsNumber("73480"),
+            new SmsNumber("74480"),
+            new SmsNumber("75480"),
+            new SmsNumber("76480"),
+            new SmsNumber("79480"),
+            new SmsNumber("91400"),
+            new SmsNumber("91900"),
+            new SmsNumber("92550"),
+        ];
+    }
 
     public function verifySms($returnCode, $number)
     {
@@ -53,10 +76,7 @@ class Pukawka extends PaymentModule implements SupportSms
                         return new SmsSuccessResult();
                     }
 
-                    $tariff = $this->getTariffByNumber($s['numer']);
-                    $tariffId = $tariff !== null ? $tariff->getId() : null;
-
-                    throw new BadNumberException($tariffId);
+                    throw new BadNumberException(get_sms_cost($s['numer']));
                 }
 
                 throw new UnknownErrorException();
@@ -71,11 +91,6 @@ class Pukawka extends PaymentModule implements SupportSms
     public function getSmsCode()
     {
         return "PUKAWKA";
-    }
-
-    public static function getDataFields()
-    {
-        return [new DataField("api")];
     }
 
     private function getApi()
