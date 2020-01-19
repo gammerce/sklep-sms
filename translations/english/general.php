@@ -13,7 +13,6 @@ return [
     'bought_service_info' =>
         'Service was purchased {1}. Data: {2} Qunatity: {3} Server: {4} Transaction ID: {5}. Email: {6} {7}({8})({9})',
     'cancel' => 'Cancel',
-    'choose_amount' => 'Choose amount',
     'choose_option' => 'Choose option',
     'choose_quantity' => 'Choose quantity',
     'choose_server' => 'Choose server',

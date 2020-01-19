@@ -79,8 +79,12 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
             $service = $this->heart->getService($price->getServiceId());
             $serviceName = $service ? "{$service->getName()} ( {$service->getId()} )" : "n/a";
             $quantity = $price->isForever() ? $this->lang->t("forever") : $price->getQuantity();
-            $smsPrice = $price->hasSmsPrice() ? $price->getSmsPrice() : "n/a";
-            $transferPrice = $price->hasTransferPrice() ? $price->getTransferPrice() : "n/a";
+            $smsPrice = $price->hasSmsPrice()
+                ? $this->priceTextService->getSmsGrossText($price->getSmsPrice())
+                : "n/a";
+            $transferPrice = $price->hasTransferPrice()
+                ? $this->priceTextService->getTransferText($price->getTransferPrice())
+                : "n/a";
 
             $bodyRow->setDbId($price->getId());
             $bodyRow->addCell(new Cell($serviceName));
@@ -146,7 +150,7 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
         foreach ($this->smsPriceRepository->all() as $smsPrice) {
             $smsPrices .= create_dom_element(
                 "option",
-                $this->priceTextService->getSmsText($smsPrice),
+                $this->priceTextService->getSmsGrossText($smsPrice),
                 [
                     'value' => $smsPrice,
                     'selected' =>

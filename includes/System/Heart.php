@@ -128,7 +128,9 @@ class Heart
      */
     public function getServiceModule($serviceId)
     {
-        if (($service = $this->getService($serviceId)) === null) {
+        $service = $this->getService($serviceId);
+
+        if (!$service) {
             return null;
         }
 

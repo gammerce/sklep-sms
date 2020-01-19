@@ -18,7 +18,6 @@ use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseOutside;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\Interfaces\IServiceServiceCode;
-use App\ServiceModules\Interfaces\IServiceServiceCodeAdminManage;
 use App\ServiceModules\Interfaces\IServiceTakeOver;
 use App\ServiceModules\Interfaces\IServiceUserOwnServices;
 use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
@@ -54,8 +53,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     IServiceUserOwnServices,
     IServiceUserOwnServicesEdit,
     IServiceTakeOver,
-    IServiceServiceCode,
-    IServiceServiceCodeAdminManage
+    IServiceServiceCode
 {
     const MODULE_ID = "extra_flags";
     const USER_SERVICE_TABLE = "user_service_extra_flags";
@@ -1766,27 +1764,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             default:
                 return '';
         }
-    }
-
-    public function serviceCodeAdminAddFormGet()
-    {
-        $servers = "";
-        foreach ($this->heart->getServers() as $id => $server) {
-            if (!$this->heart->serverServiceLinked($id, $this->service->getId())) {
-                continue;
-            }
-
-            $servers .= create_dom_element("option", $server->getName(), [
-                'value' => $server->getId(),
-            ]);
-        }
-
-        return $this->template->render(
-            "services/extra_flags/service_code_admin_add",
-            compact('servers') + ['moduleId' => $this->getModuleId()],
-            true,
-            false
-        );
     }
 
     /**

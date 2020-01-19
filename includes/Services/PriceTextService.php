@@ -27,26 +27,10 @@ class PriceTextService
     public function getSmsGrossText($price)
     {
         return $price !== null
-            ? number_format(($price / 100) * $this->settings->getVat(), 2)
+            ? number_format(($price / 100) * $this->settings->getVat(), 2) .
+                    " " .
+                    $this->settings->getCurrency()
             : null;
-    }
-
-    /**
-     * @param int|null $price
-     * @return string
-     */
-    public function getSmsNetText($price)
-    {
-        return $price !== null ? number_format($price / 100, 2) : null;
-    }
-
-    /**
-     * @param int|null $price
-     * @return string
-     */
-    public function getSmsText($price)
-    {
-        return "{$this->getSmsNetText($price)} + VAT ({$this->getSmsGrossText($price)})";
     }
 
     /**
@@ -55,7 +39,9 @@ class PriceTextService
      */
     public function getTransferText($price)
     {
-        return $price !== null ? number_format($price / 100, 2) : null;
+        return $price !== null
+            ? number_format($price / 100, 2) . " " . $this->settings->getCurrency()
+            : null;
     }
 
     /**

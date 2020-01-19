@@ -69,7 +69,7 @@ class PurchasePriceService
             }
 
             if ($item['sms_price'] !== null || $item['transfer_price'] !== null) {
-                $output[] = $price;
+                $output[] = $item;
             }
         }
 

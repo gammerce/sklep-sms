@@ -10,7 +10,6 @@ use App\View\Html\Input;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\Interfaces\IPageAdminActionBox;
-use App\ServiceModules\Interfaces\IServiceServiceCodeAdminManage;
 
 class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 {
@@ -108,23 +107,16 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 
         switch ($boxId) {
             case "code_add":
-                $services = "";
+                $services = [];
                 foreach ($this->heart->getServices() as $id => $service) {
-                    $serviceModule = $this->heart->getServiceModule($id);
-
-                    if (!($serviceModule instanceof IServiceServiceCodeAdminManage)) {
-                        continue;
-                    }
-
-                    $services .= create_dom_element("option", $service->getName(), [
+                    $services[] = create_dom_element("option", $service->getName(), [
                         'value' => $service->getId(),
                     ]);
                 }
 
-                $output = $this->template->render(
-                    "admin/action_boxes/service_code_add",
-                    compact('services')
-                );
+                $output = $this->template->render("admin/action_boxes/service_code_add", [
+                    'services' => implode("", $services),
+                ]);
                 break;
 
             default:

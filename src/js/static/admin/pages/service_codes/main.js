@@ -108,3 +108,29 @@ $(document).delegate("#form_service_code_add", "submit", function(e) {
         error: handleErrorResponse,
     });
 });
+
+// Change server
+$(document).delegate("#form_service_code_add [name=server]", "change", function() {
+    var form = $(this).closest("form");
+
+    if (!$(this).val().length) {
+        form.find("[name=quantity]")
+            .children()
+            .not("[value='']")
+            .remove();
+        return;
+    }
+
+    var serviceId = form.find("[name=service]").val();
+
+    restRequest(
+        "POST",
+        "/api/services/" + serviceId + "/actions/prices_for_server",
+        {
+            server: $(this).val(),
+        },
+        function(html) {
+            form.find("[name=quantity]").html(html);
+        }
+    );
+});
