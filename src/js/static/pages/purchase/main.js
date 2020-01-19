@@ -57,3 +57,36 @@ $(document).delegate("#show_service_desc", "click", function() {
         error: handleErrorResponse,
     });
 });
+
+$(document).delegate("#form_purchase [name=quantity]", "change", function() {
+    var form = $(this).closest("form");
+
+    if ($(this).val().length) {
+        form.find("#cost_wrapper").slideDown("slow");
+    }
+    else {
+        form.find("#cost_wrapper").slideUp("slow");
+        return;
+    }
+
+    var transferPrice = $(this).data("transfer-price");
+    var smsPrice = $(this).data("sms-price");
+
+    if (transferPrice) {
+        form.find("#cost_transfer").text(transferPrice);
+        form.find("#cost_transfer").parent().show();
+    } else {
+        form.find("#cost_transfer").text("");
+        form.find("#cost_transfer").parent().hide();
+        form.find("#currency_transfer").hide();
+    }
+
+    if (smsPrice) {
+        form.find("#cost_sms").text(smsPrice);
+        form.find("#cost_sms").parent().show();
+    } else {
+        form.find("#cost_sms").text("");
+        form.find("#cost_sms").parent().hide();
+        form.find("#currency_sms").hide();
+    }
+});

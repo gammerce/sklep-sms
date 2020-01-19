@@ -213,20 +213,25 @@
                     </tbody>
                 </table>
 
-                <div id="cost_wraper">
+                <div id="cost_wrapper">
                     <div>
-                        <strong>{$lang->t('transfer_wallet_cost')}</strong>:
-                        <span id="cost_transfer"></span> {{ $settings->getCurrency() }}<br />
-                        <strong>{$lang->t('sms_cost')}</strong>:
-                        <span id="cost_sms"></span>
-                        <span id="currency_sms">{{ $settings->getCurrency() }}</span>
+                        <span>
+                            <strong>{$lang->t('transfer_wallet_cost')}</strong>:
+                            <span id="cost_transfer"></span> <span>{{ $settings->getCurrency() }}</span>
+                        </span>
+                        <br />
+                        <span>
+                            <strong>{$lang->t('sms_cost')}</strong>:
+                            <span id="cost_sms"></span>
+                            <span>{{ $settings->getCurrency() }}</span>
+                        </span>
                     </div>
                 </div>
             </td>
         </tr>
     </table>
 
-    <div class="purchase_button_wraper">
+    <div class="purchase_button_wrapper">
         <input
             type="button"
             id="go_to_payment"

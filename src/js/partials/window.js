@@ -38,11 +38,11 @@ window.action_box = {
 
     create: function() {
         action_box.element = $("<div>", {
-            class: "action_box_wraper",
+            class: "action_box_wrapper",
         }).hide();
 
         action_box.box = $("<div>", {
-            class: "action_box_wraper2",
+            class: "action_box_wrapper2",
         }).hide();
         action_box.element.prepend(action_box.box);
 

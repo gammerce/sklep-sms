@@ -8,14 +8,14 @@
     text-align: left;
 }
 
-#cost_wraper {
+#cost_wrapper {
     width: 100%;
     margin: 20px 0 40px 0;
     text-align: center;
     display: none;
 }
 
-#cost_wraper div {
+#cost_wrapper div {
     display: inline-block;
     text-align: left;
 }
