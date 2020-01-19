@@ -4,9 +4,9 @@ namespace App\Payment;
 use App\Loggers\DatabaseLogger;
 use App\Models\SmsNumber;
 use App\Models\User;
+use App\Repositories\SmsCodeRepository;
 use App\Services\SmsPriceService;
 use App\System\Database;
-use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportSms;
@@ -16,9 +16,6 @@ use App\Verification\Results\SmsSuccessResult;
 
 class SmsPaymentService
 {
-    /** @var Settings */
-    private $settings;
-
     /** @var Translator */
     private $lang;
 
@@ -31,18 +28,21 @@ class SmsPaymentService
     /** @var SmsPriceService */
     private $smsPriceService;
 
+    /** @var SmsCodeRepository */
+    private $smsCodeRepository;
+
     public function __construct(
         TranslationManager $translationManager,
-        Settings $settings,
         Database $db,
         SmsPriceService $smsPriceService,
+        SmsCodeRepository $smsCodeRepository,
         DatabaseLogger $logger
     ) {
-        $this->settings = $settings;
         $this->lang = $translationManager->user();
         $this->db = $db;
         $this->logger = $logger;
         $this->smsPriceService = $smsPriceService;
+        $this->smsCodeRepository = $smsCodeRepository;
     }
 
     /**
@@ -126,36 +126,23 @@ class SmsPaymentService
     }
 
     /**
-     * @param string $smsCode
+     * @param string $code
      * @param int $smsPrice
      * @return SmsSuccessResult|null
      */
-    private function tryToUseSmsCode($smsCode, $smsPrice)
+    private function tryToUseSmsCode($code, $smsPrice)
     {
-        // TODO Migration changing tariff to sms_price
         // TODO Write test
-        $statement = $this->db->statement(
-            "SELECT * FROM `" .
-                TABLE_PREFIX .
-                "sms_codes` " .
-                "WHERE `code` = ? AND `sms_price` = ?"
-        );
-        $statement->execute([$smsCode, $smsPrice]);
+        $smsCode = $this->smsCodeRepository->findByCodeAndPrice($code, $smsPrice);
 
-        if (!$statement->rowCount()) {
+        if (!$smsCode) {
             return null;
         }
 
-        $dbSmsCode = $statement->fetch();
+        $this->smsCodeRepository->delete($smsCode->getId());
+        $this->logger->log('payment_remove_code_from_db', $code, $smsPrice);
 
-        $statement = $this->db->statement(
-            "DELETE FROM `" . TABLE_PREFIX . "sms_codes` WHERE `id` = ?"
-        );
-        $statement->execute([$dbSmsCode['id']]);
-
-        $this->logger->log('payment_remove_code_from_db', $smsCode, $smsPrice);
-
-        return new SmsSuccessResult(!!$dbSmsCode['free']);
+        return new SmsSuccessResult($smsCode->isFree());
     }
 
     /**
@@ -166,14 +153,7 @@ class SmsPaymentService
      */
     private function addSmsCodeToBeReused($code, $smsPrice, $expectedSmsPrice, User $user)
     {
-        $this->db
-            ->statement(
-                "INSERT INTO `" .
-                    TABLE_PREFIX .
-                    "sms_codes` " .
-                    "SET `code` = ?, `sms_price` = ?, `free` = '0'"
-            )
-            ->execute([$code, $smsPrice]);
+        $this->smsCodeRepository->create($code, $smsPrice, false);
 
         $this->logger->log(
             'add_code_to_reuse',

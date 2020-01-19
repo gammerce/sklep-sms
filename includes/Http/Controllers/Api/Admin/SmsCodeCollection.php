@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\SuccessApiResponse;
 use App\Loggers\DatabaseLogger;
-use App\System\Database;
+use App\Repositories\SmsCodeRepository;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -12,23 +12,21 @@ class SmsCodeCollection
 {
     public function post(
         Request $request,
-        Database $db,
         TranslationManager $translationManager,
+        SmsCodeRepository $smsCodeRepository,
         DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
 
-        $tariff = $request->request->get("tariff");
+        $smsPrice = $request->request->get("sms_price");
         $code = $request->request->get("code");
 
         $warnings = [];
 
-        // Taryfa
-        if ($warning = check_for_warnings("number", $tariff)) {
-            $warnings['tariff'] = array_merge((array) $warnings['tariff'], $warning);
+        if ($warning = check_for_warnings("number", $smsPrice)) {
+            $warnings['sms_price'] = array_merge((array) $warnings['sms_price'], $warning);
         }
 
-        // Kod SMS
         if ($warning = check_for_warnings("sms_code", $code)) {
             $warnings['code'] = array_merge((array) $warnings['code'], $warning);
         }
@@ -37,17 +35,8 @@ class SmsCodeCollection
             throw new ValidationException($warnings);
         }
 
-        $db->query(
-            $db->prepare(
-                "INSERT INTO `" .
-                    TABLE_PREFIX .
-                    "sms_codes` (`code`, `tariff`) " .
-                    "VALUES( '%s', '%d' )",
-                [$lang->strtoupper($code), $tariff]
-            )
-        );
-
-        $logger->logWithActor('log_sms_code_added', $code, $tariff);
+        $smsCodeRepository->create($lang->strtoupper($code), $smsPrice, true);
+        $logger->logWithActor('log_sms_code_added', $code, $smsPrice);
 
         return new SuccessApiResponse($lang->t('sms_code_add'));
     }
