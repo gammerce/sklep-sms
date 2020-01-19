@@ -85,18 +85,17 @@ class PaymentService
             ];
         }
 
-        // Tworzymy obiekt, który będzie nam obsługiwał proces płatności
         $paymentModule = null;
         if ($purchase->getPayment(Purchase::PAYMENT_METHOD) === Purchase::METHOD_SMS) {
             $paymentPlatformId =
                 $purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM) ?:
                 $this->settings->getSmsPlatformId();
-            $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail($paymentPlatformId);
+            $paymentModule = $this->heart->getPaymentModuleByPlatformId($paymentPlatformId);
         } elseif ($purchase->getPayment(Purchase::PAYMENT_METHOD) === Purchase::METHOD_TRANSFER) {
             $paymentPlatformId =
                 $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PLATFORM) ?:
                 $this->settings->getTransferPlatformId();
-            $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail($paymentPlatformId);
+            $paymentModule = $this->heart->getPaymentModuleByPlatformId($paymentPlatformId);
         }
 
         // Metoda płatności

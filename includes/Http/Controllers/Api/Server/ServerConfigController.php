@@ -44,7 +44,7 @@ class ServerConfigController
         }
 
         $smsPlatformId = $server->getSmsPlatformId() ?: $settings->getSmsPlatformId();
-        $smsModule = $heart->getPaymentModuleByPlatformIdOrFail($smsPlatformId);
+        $smsModule = $heart->getPaymentModuleByPlatformId($smsPlatformId);
 
         if (!($smsModule instanceof SupportSms)) {
             throw new InvalidConfigException(

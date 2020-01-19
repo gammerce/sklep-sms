@@ -142,7 +142,7 @@ class PurchaseService
     private function isPriceAvailable(Price $price, Purchase $purchase)
     {
         if ($purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM)) {
-            $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
+            $paymentModule = $this->heart->getPaymentModuleByPlatformId(
                 $purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM)
             );
 

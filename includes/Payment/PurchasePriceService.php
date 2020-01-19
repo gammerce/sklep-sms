@@ -8,6 +8,7 @@ use App\Repositories\PriceRepository;
 use App\Repositories\SmsNumberRepository;
 use App\System\Heart;
 use App\System\Settings;
+use App\Verification\Abstracts\SupportSms;
 
 class PurchasePriceService
 {
@@ -45,9 +46,13 @@ class PurchasePriceService
         $smsModule = $this->heart->getPaymentModuleByPlatformId($smsPlatformId);
         $transferModule = $this->heart->getPaymentModuleByPlatformId($transferPlatformId);
 
-        $availableSmsPrices = array_map(function (SmsNumber $smsNumber) {
-            return $smsNumber->getPrice();
-        }, $this->smsNumberRepository->findByPaymentModule($smsModule->getModuleId()));
+        if ($smsModule instanceof SupportSms) {
+            $availableSmsPrices = array_map(function (SmsNumber $smsNumber) {
+                return $smsNumber->getPrice();
+            }, $smsModule::getSmsNumbers());
+        } else {
+            $availableSmsPrices = [];
+        }
 
         $prices = $this->priceRepository->findByServiceServer($service, $server);
         foreach ($prices as $price) {

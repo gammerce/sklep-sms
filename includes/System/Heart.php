@@ -267,20 +267,6 @@ class Heart
 
     /**
      * @param string $platformId
-     * @return PaymentModule
-     */
-    public function getPaymentModuleByPlatformIdOrFail($platformId)
-    {
-        $paymentPlatform = $this->paymentPlatformRepository->get($platformId);
-        if (!$paymentPlatform) {
-            throw new InvalidConfigException("Invalid payment platform [$platformId].");
-        }
-
-        return $this->getPaymentModuleOrFail($paymentPlatform);
-    }
-
-    /**
-     * @param string $platformId
      * @return PaymentModule|null
      */
     public function getPaymentModuleByPlatformId($platformId)
