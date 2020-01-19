@@ -175,11 +175,11 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
 
     private function isPaymentValid(array $body)
     {
-        if ($body['status'] != true) {
+        if (array_get($body, 'status') != true) {
             return false;
         }
 
-        if ($body['userid'] != $this->userId) {
+        if (array_get($body, 'userid') != $this->userId) {
             return false;
         }
 

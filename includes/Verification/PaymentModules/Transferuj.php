@@ -84,13 +84,13 @@ class Transferuj extends PaymentModule implements SupportTransfer
         $transferFinalize->setAmount(array_get($body, 'tr_amount'));
         $transferFinalize->setDataFilename(array_get($body, 'tr_crc'));
         $transferFinalize->setTransferService(array_get($body, 'id'));
-        $transferFinalize->setTestMode(array_get($body, 'test_mode'));
+        $transferFinalize->setTestMode(array_get($body, 'test_mode', false));
         $transferFinalize->setOutput('TRUE');
 
         return $transferFinalize;
     }
 
-    public function isPaymentValid($response)
+    private function isPaymentValid($response)
     {
         if (empty($response)) {
             return false;

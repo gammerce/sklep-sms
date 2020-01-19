@@ -179,7 +179,7 @@ class Factory
                 'name' => $this->faker->word,
                 'module' => Cssetti::MODULE_ID,
                 'data' => [
-                    "account_id" => $this->faker->uuid,
+                    "account_id" => "5b2f-30ea-b814-3585710",
                 ],
             ],
             $attributes
