@@ -132,7 +132,6 @@ class SmsPaymentService
      */
     private function tryToUseSmsCode($code, $smsPrice)
     {
-        // TODO Write test
         $smsCode = $this->smsCodeRepository->findByCodeAndPrice($code, $smsPrice);
 
         if (!$smsCode) {
