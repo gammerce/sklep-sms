@@ -238,7 +238,7 @@ function get_sms_cost($number)
  */
 function get_sms_provision($smsPrice)
 {
-    return (int) ceil(get_sms_cost($smsPrice) / 2);
+    return (int) ceil($smsPrice / 2);
 }
 
 function hash_password($password, $salt)

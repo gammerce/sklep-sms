@@ -172,7 +172,6 @@ class ChargeWalletServiceModule extends ServiceModule implements
         }
 
         $purchase->setService($this->service->getId());
-        // TODO Write charge sms / transfer tests
         $purchase->setPayment([
             Purchase::PAYMENT_WALLET_DISABLED => true,
         ]);

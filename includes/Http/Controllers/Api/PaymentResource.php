@@ -38,10 +38,10 @@ class PaymentResource
         $returnPayment = $paymentService->makePayment($purchase);
 
         return new ApiResponse(
-            $returnPayment['status'],
-            $returnPayment['text'],
-            $returnPayment['positive'],
-            $returnPayment['data']
+            array_get($returnPayment, 'status'),
+            array_get($returnPayment, 'text'),
+            array_get($returnPayment, 'positive'),
+            array_get($returnPayment, 'data')
         );
     }
 

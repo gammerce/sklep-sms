@@ -12,7 +12,7 @@ class SmsNumber
     public function __construct($smsNumber, $provision = null)
     {
         $this->smsNumber = $smsNumber;
-        $this->provision = $provision ?: get_sms_provision($smsNumber);
+        $this->provision = $provision ?: get_sms_provision(get_sms_cost($smsNumber));
     }
 
     /**

@@ -39,7 +39,7 @@ class PaymentServiceTest extends TestCase
             "module" => Pukawka::MODULE_ID,
         ]);
 
-        $serviceId = "vip";
+        $serviceId = "cod_exp_transfer";
         $server = $this->factory->server();
         $price = $this->factory->price([
             'service_id' => $serviceId,

@@ -16,8 +16,6 @@ use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
-// TODO Write tests
-
 class OtherServiceModule extends ServiceModule implements
     IServicePurchase,
     IServicePurchaseOutside,
