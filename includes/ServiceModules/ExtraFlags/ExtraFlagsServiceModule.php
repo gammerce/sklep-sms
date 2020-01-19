@@ -8,6 +8,7 @@ use App\Models\Service;
 use App\Payment\AdminPaymentService;
 use App\Payment\BoughtServiceService;
 use App\Payment\PurchasePriceService;
+use App\Payment\PurchaseValidationService;
 use App\Repositories\PriceRepository;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
@@ -92,6 +93,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     /** @var PurchasePriceRenderer */
     private $purchasePriceRenderer;
 
+    /** @var PurchaseValidationService */
+    private $purchaseValidationService;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -105,6 +109,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $this->priceRepository = $this->app->make(PriceRepository::class);
         $this->purchasePriceService = $this->app->make(PurchasePriceService::class);
         $this->purchasePriceRenderer = $this->app->make(PurchasePriceRenderer::class);
+        $this->purchaseValidationService = $this->app->make(PurchaseValidationService::class);
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
@@ -347,18 +352,24 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     public function purchaseFormValidate(Purchase $purchase, array $body)
     {
         $priceId = array_get($body, "price_id");
-        $authData = $this->getAuthData($body);
+        $serverId = array_get($body, "server_id");
+        $type = array_get($body, "type");
+        $password = array_get($body, "password");
+        $passwordRepeat = array_get($body, "password_repeat");
+        $email = array_get($body, "email");
+
+        $authData = trim($this->getAuthData($body));
         $price = $this->priceRepository->get($priceId);
 
         $purchase->setOrder([
-            Purchase::ORDER_SERVER => $body['server'],
-            'type' => $body['type'],
-            'auth_data' => trim($authData),
-            'password' => $body['password'],
-            'passwordr' => $body['password_repeat'],
+            Purchase::ORDER_SERVER => $serverId,
+            'type' => $type,
+            'auth_data' => $authData,
+            'password' => $password,
+            'passwordr' => $passwordRepeat,
         ]);
+        $purchase->setEmail($email);
         $purchase->setPrice($price);
-        $purchase->setEmail($body['email']);
 
         return $this->purchaseDataValidate($purchase);
     }
@@ -376,18 +387,22 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         } else {
             $server = $this->heart->getServer($purchase->getOrder(Purchase::ORDER_SERVER));
 
-            if (!$this->heart->serverServiceLinked($server->getId(), $this->service->getId())) {
+            if (
+                !$server ||
+                !$this->heart->serverServiceLinked($server->getId(), $this->service->getId())
+            ) {
                 $warnings['server'][] = $this->lang->t('chosen_incorrect_server');
+            } elseif ($server->getSmsPlatformId()) {
+                $purchase->setPayment([
+                    Purchase::PAYMENT_SMS_PLATFORM => $server->getSmsPlatformId(),
+                ]);
             }
         }
 
         $price = $purchase->getPrice();
         if (!$price) {
             $warnings['price_id'][] = $this->lang->t('must_choose_quantity');
-        } elseif (
-            !$price->concernService($this->service) ||
-            (isset($server) && !$price->concernServer($server))
-        ) {
+        } elseif (!$this->purchaseValidationService->isPriceAvailable($price, $purchase)) {
             return [
                 'status' => "no_option",
                 'text' => $this->lang->t('service_not_affordable'),
@@ -494,12 +509,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 'positive' => false,
                 'data' => ['warnings' => $warnings],
             ];
-        }
-
-        if ($server->getSmsPlatformId()) {
-            $purchase->setPayment([
-                Purchase::PAYMENT_SMS_PLATFORM => $server->getSmsPlatformId(),
-            ]);
         }
 
         return [

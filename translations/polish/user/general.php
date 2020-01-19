@@ -43,8 +43,6 @@ return [
     'no_login_password' =>
         'No niestety, ale bez podania nazwy użytkownika oraz loginu, nie zalogujesz się.',
     'no_reset_key' => 'Nie podano kodu resetowania hasła.',
-    'no_sms_payment' =>
-        'Nie można zapłacić SMSem za tę ilość usługi. Wybierz inny sposób płatności.',
     'not_enough_money' =>
         'Bida! Nie masz wystarczającej ilości kasy w portfelu. Doładuj portfel ;-)',
     'old_pass_wrong' => 'Stare hasło jest nieprawidłowe.',
@@ -62,6 +60,8 @@ return [
     'pay_wallet' => 'Płacę z Portfela',
     'payment_for_service' => 'Płatność za usługę: {1}',
     'payment_log' => 'Historia płatności',
+    'payment_method_unavailable' =>
+        'Nie można zapłacić tą metodą za tę ilość usługi. Wybierz inny sposób płatności.',
     'payment_not_accepted' => 'Nieudana autoryzacja transakcji: {1} Kwota: {2} Usługa: {3}',
     'payment_sms' => 'Płatność SMS',
     'payment_transfer' => 'Płatność przelew',

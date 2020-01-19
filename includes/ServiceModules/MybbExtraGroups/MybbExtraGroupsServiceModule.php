@@ -9,6 +9,7 @@ use App\Models\Service;
 use App\Payment\AdminPaymentService;
 use App\Payment\BoughtServiceService;
 use App\Payment\PurchasePriceService;
+use App\Payment\PurchaseValidationService;
 use App\Repositories\PriceRepository;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
@@ -83,6 +84,9 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     /** @var PriceRepository */
     private $priceRepository;
 
+    /** @var PurchaseValidationService */
+    private $purchaseValidationService;
+
     /** @var DatabaseLogger */
     private $logger;
 
@@ -97,6 +101,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $this->adminPaymentService = $this->app->make(AdminPaymentService::class);
         $this->purchasePriceService = $this->app->make(PurchasePriceService::class);
         $this->purchasePriceRenderer = $this->app->make(PurchasePriceRenderer::class);
+        $this->purchaseValidationService = $this->app->make(PurchaseValidationService::class);
         $this->priceRepository = $this->app->make(PriceRepository::class);
         $this->settings = $this->app->make(Settings::class);
         /** @var TranslationManager $translationManager */
@@ -343,7 +348,11 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         } else {
             $price = $this->priceRepository->get($priceId);
 
-            if (!$price || $price->getServiceId() !== $this->service->getId()) {
+            if (
+                !$price ||
+                $price->getServiceId() !== $this->service->getId() ||
+                $this->purchaseValidationService->isPriceAvailable($price, $purchase)
+            ) {
                 return [
                     'status' => "no_option",
                     'text' => $this->lang->t('service_not_affordable'),
@@ -381,7 +390,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             ];
         }
 
-        $purchase->setService($this->service->getId());
         $purchase->setOrder([
             'username' => $body['username'],
         ]);

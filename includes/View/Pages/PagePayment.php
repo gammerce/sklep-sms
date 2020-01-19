@@ -119,12 +119,16 @@ class PagePayment extends Page
         return $purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM) &&
             $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE) !== null &&
             $paymentModule instanceof SupportSms &&
-            !$purchase->getPayment(Purchase::PAYMENT_SMS_DISABLED);
+            !$purchase->getPayment(Purchase::PAYMENT_SMS_DISABLED) &&
+            $this->smsPriceService->isPriceAvailable(
+                $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE),
+                $paymentModule
+            );
     }
 
     private function isTransferAvailable(Purchase $purchase)
     {
-        return $this->settings->getTransferPlatformId() &&
+        return $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PLATFORM) &&
             $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE) !== null &&
             $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE) > 1 &&
             !$purchase->getPayment(Purchase::PAYMENT_TRANSFER_DISABLED);

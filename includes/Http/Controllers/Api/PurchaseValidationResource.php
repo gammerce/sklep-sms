@@ -35,34 +35,30 @@ class PurchaseValidationResource
             return new ApiResponse("no_permission", $lang->t('service_no_permission'), 0);
         }
 
-        $purchase = new Purchase($auth->user());
-        $returnData = $serviceModule->purchaseFormValidate($purchase, $request->request->all());
+        $purchase = new Purchase($user);
+        $purchase->setService($serviceModule->service->getId());
 
-        // TODO Validate if selected price allows transfer / sms payment
+        if ($user->getEmail()) {
+            $purchase->setEmail($user->getEmail());
+        }
+
+        if ($settings->getSmsPlatformId()) {
+            $purchase->setPayment([
+                Purchase::PAYMENT_SMS_PLATFORM => $settings->getSmsPlatformId(),
+            ]);
+        }
+
+        if ($settings->getTransferPlatformId()) {
+            $purchase->setPayment([
+                Purchase::PAYMENT_TRANSFER_PLATFORM => $settings->getTransferPlatformId(),
+            ]);
+        }
+
+        $returnData = $serviceModule->purchaseFormValidate($purchase, $request->request->all());
 
         if ($returnData['status'] == "warnings") {
             $returnData["data"]["warnings"] = format_warnings($returnData["data"]["warnings"]);
         } else {
-            //
-            // Uzupełniamy brakujące dane
-            if (!$purchase->getService()) {
-                $purchase->setService($serviceModule->service->getId());
-            }
-
-            if (
-                $purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM) === null &&
-                !$purchase->getPayment(Purchase::PAYMENT_SMS_DISABLED) &&
-                $settings->getSmsPlatformId()
-            ) {
-                $purchase->setPayment([
-                    Purchase::PAYMENT_SMS_PLATFORM => $settings->getSmsPlatformId(),
-                ]);
-            }
-
-            if ($purchase->getEmail() === null && strlen($user->getEmail())) {
-                $purchase->setEmail($user->getEmail());
-            }
-
             $purchaseEncoded = $purchaseSerializer->serializeAndEncode($purchase);
             $returnData['data'] = [
                 'length' => 8000,

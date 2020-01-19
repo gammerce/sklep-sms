@@ -89,13 +89,13 @@ class Price
         return $this->server === null;
     }
 
-    public function concernServer(Server $server)
+    public function concernServer($serverId)
     {
-        return $this->isForEveryServer() || $this->getServerId() === $server->getId();
+        return $this->isForEveryServer() || $this->getServerId() === $serverId;
     }
 
-    public function concernService(Service $service)
+    public function concernService($serviceId)
     {
-        return $this->getServiceId() === $service->getId();
+        return $this->getServiceId() === $serviceId;
     }
 }

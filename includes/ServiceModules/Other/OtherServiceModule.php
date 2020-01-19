@@ -4,6 +4,7 @@ namespace App\ServiceModules\Other;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Payment\BoughtServiceService;
+use App\Payment\PurchaseValidationService;
 use App\Repositories\PriceRepository;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceAvailableOnServers;
@@ -36,6 +37,9 @@ class OtherServiceModule extends ServiceModule implements
     /** @var PriceRepository */
     private $priceRepository;
 
+    /** @var PurchaseValidationService */
+    private $purchaseValidationService;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -43,6 +47,7 @@ class OtherServiceModule extends ServiceModule implements
         $this->heart = $this->app->make(Heart::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
         $this->priceRepository = $this->app->make(PriceRepository::class);
+        $this->purchaseValidationService = $this->app->make(purchaseValidationService::class);
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
@@ -70,10 +75,7 @@ class OtherServiceModule extends ServiceModule implements
         if (!$price) {
             // TODO Replace 'value' with 'price_id' everywhere
             $warnings['price_id'][] = $this->lang->t('must_choose_quantity');
-        } elseif (
-            !$price->concernService($this->service) ||
-            (isset($server) && !$price->concernServer($server))
-        ) {
+        } elseif (!$this->purchaseValidationService->isPriceAvailable($price, $purchase)) {
             return [
                 'status' => "no_option",
                 'text' => $this->lang->t('service_not_affordable'),

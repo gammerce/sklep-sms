@@ -43,7 +43,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
         $table->addHeadCell(new HeadCell($this->lang->t('date_of_creation')));
 
         $result = $this->db->query(
-            "SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.name AS `service`, srv.name AS `server`, sc.price, u.username, u.uid, sc.data, sc.timestamp " .
+            "SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.name AS `service`, srv.name AS `server`, sc.price, u.username, u.uid, sc.timestamp " .
                 "FROM `" .
                 TABLE_PREFIX .
                 "service_codes` AS sc " .

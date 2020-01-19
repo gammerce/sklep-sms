@@ -68,6 +68,6 @@ class TransferPaymentServiceTest extends TestCase
         $this->assertTrue($result);
         $paymentTransfer = $paymentTransferRepository->get($transferFinalize->getOrderId());
         $this->assertNotNull($paymentTransfer);
-        $this->assertEquals(2000, $paymentTransfer->getIncome());
+        $this->assertEquals(190, $paymentTransfer->getIncome());
     }
 }

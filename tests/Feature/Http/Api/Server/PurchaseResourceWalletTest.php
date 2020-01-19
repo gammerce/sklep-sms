@@ -49,6 +49,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
         $this->price = $this->factory->price([
             'service_id' => $this->serviceId,
             'server_id' => $this->server->getId(),
+            'transfer_price' => 100,
         ]);
     }
 
@@ -106,7 +107,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
         $this->assertEquals(Purchase::METHOD_WALLET, $boughtService->getMethod());
 
         $freshUser = $this->userRepository->get($user->getUid());
-        $this->assertEquals(9860, $freshUser->getWallet());
+        $this->assertEquals(9900, $freshUser->getWallet());
     }
 
     /** @test */
@@ -115,7 +116,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
         // given
         $user = $this->factory->user([
             "steam_id" => $this->steamId,
-            "wallet" => 100,
+            "wallet" => 99,
         ]);
 
         $sign = md5(
@@ -157,7 +158,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
         );
 
         $freshUser = $this->userRepository->get($user->getUid());
-        $this->assertEquals(100, $freshUser->getWallet());
+        $this->assertEquals(99, $freshUser->getWallet());
     }
 
     /** @test */

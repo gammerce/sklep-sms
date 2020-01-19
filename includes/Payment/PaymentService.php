@@ -87,15 +87,13 @@ class PaymentService
 
         $paymentModule = null;
         if ($purchase->getPayment(Purchase::PAYMENT_METHOD) === Purchase::METHOD_SMS) {
-            $paymentPlatformId =
-                $purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM) ?:
-                $this->settings->getSmsPlatformId();
-            $paymentModule = $this->heart->getPaymentModuleByPlatformId($paymentPlatformId);
+            $paymentModule = $this->heart->getPaymentModuleByPlatformId(
+                $purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM)
+            );
         } elseif ($purchase->getPayment(Purchase::PAYMENT_METHOD) === Purchase::METHOD_TRANSFER) {
-            $paymentPlatformId =
-                $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PLATFORM) ?:
-                $this->settings->getTransferPlatformId();
-            $paymentModule = $this->heart->getPaymentModuleByPlatformId($paymentPlatformId);
+            $paymentModule = $this->heart->getPaymentModuleByPlatformId(
+                $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PLATFORM)
+            );
         }
 
         // Metoda płatności
@@ -126,8 +124,22 @@ class PaymentService
             $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE) === null
         ) {
             return [
-                'status' => "no_sms_option",
-                'text' => $this->lang->t('no_sms_payment'),
+                'status' => "no_sms_price",
+                'text' => $this->lang->t('payment_method_unavailable'),
+                'positive' => false,
+            ];
+        }
+
+        if (
+            in_array($purchase->getPayment(Purchase::PAYMENT_METHOD), [
+                Purchase::METHOD_TRANSFER,
+                Purchase::METHOD_WALLET,
+            ]) &&
+            $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE) === null
+        ) {
+            return [
+                'status' => "no_transfer_price",
+                'text' => $this->lang->t('payment_method_unavailable'),
                 'positive' => false,
             ];
         }
@@ -220,7 +232,6 @@ class PaymentService
                 $purchase->user
             );
 
-            // pay_wallet method returned an error
             if (is_array($paymentId)) {
                 return $paymentId;
             }
@@ -229,7 +240,6 @@ class PaymentService
         if ($purchase->getPayment(Purchase::PAYMENT_METHOD) === Purchase::METHOD_SERVICE_CODE) {
             $paymentId = $this->serviceCodePaymentService->payWithServiceCode($purchase);
 
-            // pay_service_code method returned an error
             if (is_array($paymentId)) {
                 return $paymentId;
             }

@@ -73,7 +73,7 @@ class Purchase
         $this->service = (string) $service;
     }
 
-    public function setOrder($order)
+    public function setOrder(array $order)
     {
         foreach ($order as $key => $value) {
             $this->order[$key] = $value;
@@ -98,7 +98,7 @@ class Purchase
         $this->email = (string) $email;
     }
 
-    public function setPayment($payment)
+    public function setPayment(array $payment)
     {
         foreach ($payment as $key => $value) {
             $this->payment[$key] = $value;

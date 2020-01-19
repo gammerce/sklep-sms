@@ -42,8 +42,6 @@ return [
     'no_login_password' =>
         'Unfortunately, without providing nickname and login, you can\'t log in.',
     'no_reset_key' => 'No reset key was given.',
-    'no_sms_payment' =>
-        'You can\'t pay by SMS for service quantity. Choose another payment method.',
     'not_enough_money' => 'Ups! You don\'t have enough money in wallet. Charge wallet ;-)',
     'old_pass_wrong' => 'Old password is incorrect.',
     'optional_data' => 'Optional data',
@@ -60,6 +58,8 @@ return [
     'pay_wallet' => 'Pay by wallet',
     'payment_for_service' => 'Payment for service: {1}',
     'payment_log' => 'Payment log',
+    'payment_method_unavailable' =>
+        'You can\'t use that payment method for that quantity. Choose another payment method.',
     'payment_not_accepted' => 'Transaction authorization failure: {1} Amount: {2} Service: {3}',
     'payment_sms' => 'SMS payment',
     'payment_transfer' => 'Transfer payment',

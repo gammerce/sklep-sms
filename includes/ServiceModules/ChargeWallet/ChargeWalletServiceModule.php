@@ -119,7 +119,7 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
     public function purchaseFormValidate(Purchase $purchase, array $body)
     {
-        $method = $body['method'];
+        $method = array_get($body, 'method');
         $smsPrice = array_get($body, 'sms_price');
         $transferPrice = array_get($body, 'transfer_price');
 
