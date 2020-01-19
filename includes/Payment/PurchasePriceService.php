@@ -31,8 +31,11 @@ class PurchasePriceService
     {
         $output = [];
 
-        $smsPlatformId =
-            $server ? $server->getSmsPlatformId() : null ?: $this->settings->getSmsPlatformId();
+        if ($server && $server->getSmsPlatformId()) {
+            $smsPlatformId = $server->getSmsPlatformId();
+        } else {
+            $smsPlatformId = $this->settings->getSmsPlatformId();
+        }
         $transferPlatformId = $this->settings->getTransferPlatformId();
         $smsModule = $this->heart->getPaymentModuleByPlatformId($smsPlatformId);
         $transferModule = $this->heart->getPaymentModuleByPlatformId($transferPlatformId);
