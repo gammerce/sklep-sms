@@ -1748,10 +1748,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             return $this->purchasePriceRenderer->render($price, $this->service);
         }, $this->purchasePriceService->getServicePrices($this->service, $server));
 
-        return $this->template->render(
-            "services/extra_flags/prices_for_server",
-            compact('quantities')
-        );
+        return $this->template->render("services/extra_flags/prices_for_server", [
+            'quantities' => implode("", $quantities),
+        ]);
     }
 
     public function actionExecute($action, $data)

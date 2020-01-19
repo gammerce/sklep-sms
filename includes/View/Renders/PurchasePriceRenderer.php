@@ -36,6 +36,7 @@ class PurchasePriceRenderer
 
     public function render(array $price, Service $service)
     {
+        $priceId = $price['id'];
         $smsPrice = $this->priceTextService->getSmsGrossText($price['sms_price']);
         $transferPrice = $this->priceTextService->getTransferText($price['transfer_price']);
         $quantity = $this->priceTextService->getQuantityText($price['quantity'], $service);

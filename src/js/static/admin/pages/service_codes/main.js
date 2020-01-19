@@ -12,7 +12,7 @@ $(document).delegate("#form_service_code_add [name=random_code]", "click", funct
 
 // Selecting a service while adding service code
 var serviceCodeAddForm;
-$(document).delegate("#form_service_code_add [name=service]", "change", function() {
+$(document).delegate("#form_service_code_add [name=service_id]", "change", function() {
     var serviceId = $(this).val();
 
     if (!serviceId && serviceCodeAddForm) {
@@ -73,7 +73,7 @@ $(document).delegate("#form_service_code_add", "submit", function(e) {
     e.preventDefault();
 
     var serviceId = $(this)
-        .find("[name=service]")
+        .find("[name=service_id]")
         .val();
 
     loader.show();
@@ -110,18 +110,18 @@ $(document).delegate("#form_service_code_add", "submit", function(e) {
 });
 
 // Change server
-$(document).delegate("#form_service_code_add [name=server]", "change", function() {
+$(document).delegate("#form_service_code_add [name=server_id]", "change", function() {
     var form = $(this).closest("form");
 
     if (!$(this).val().length) {
-        form.find("[name=quantity]")
+        form.find("[name=price_id]")
             .children()
             .not("[value='']")
             .remove();
         return;
     }
 
-    var serviceId = form.find("[name=service]").val();
+    var serviceId = form.find("[name=service_id]").val();
 
     restRequest(
         "POST",
@@ -130,7 +130,7 @@ $(document).delegate("#form_service_code_add [name=server]", "change", function(
             server: $(this).val(),
         },
         function(html) {
-            form.find("[name=quantity]").html(html);
+            form.find("[name=price_id]").html(html);
         }
     );
 });

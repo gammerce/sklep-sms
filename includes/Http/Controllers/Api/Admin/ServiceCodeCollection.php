@@ -56,7 +56,8 @@ class ServiceCodeCollection
         }
 
         if (!$price) {
-            $warnings['price_id'][] = $lang->t('no_such_sms_price');
+            // TODO Change translation
+            $warnings['price_id'][] = $lang->t('invalid_price');
         }
 
         if ($warnings) {

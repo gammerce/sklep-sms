@@ -168,9 +168,19 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
                 break;
 
             case "price_edit":
+                $transferPrice = $price->hasTransferPrice()
+                    ? $price->getTransferPrice() / 100
+                    : null;
                 $output = $this->template->render(
                     "admin/action_boxes/price_edit",
-                    compact('services', 'servers', 'smsPrices', 'price', 'allServers')
+                    compact(
+                        'services',
+                        'servers',
+                        'smsPrices',
+                        'price',
+                        'transferPrice',
+                        'allServers'
+                    )
                 );
                 break;
 

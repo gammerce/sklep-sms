@@ -51,6 +51,7 @@ class PurchasePriceService
         $prices = $this->priceRepository->findByServiceServer($service, $server);
         foreach ($prices as $price) {
             $item = [
+                'id' => $price->getId(),
                 'quantity' => $price->getQuantity(),
                 'sms_price' => null,
                 'transfer_price' => null,

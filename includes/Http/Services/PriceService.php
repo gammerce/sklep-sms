@@ -32,8 +32,19 @@ class PriceService
     {
         $serviceId = array_get($body, 'service_id');
         $serverId = array_get($body, 'server_id');
-        $smsPrice = array_get($body, 'sms_price');
         $quantity = array_get($body, 'quantity');
+
+        if (strlen(array_get($body, 'sms_price'))) {
+            $smsPrice = (int) array_get($body, 'sms_price');
+        } else {
+            $smsPrice = null;
+        }
+
+        if (strlen(array_get($body, 'transfer_price'))) {
+            $transferPrice = array_get($body, 'transfer_price') * 100;
+        } else {
+            $transferPrice = null;
+        }
 
         $warnings = [];
 
@@ -41,12 +52,16 @@ class PriceService
             $warnings['service_id'][] = $this->lang->t('no_such_service');
         }
 
-        if ($serverId && !$this->heart->getServer($serverId)) {
+        if (strlen($serverId) && !$this->heart->getServer($serverId)) {
             $warnings['server_id'][] = $this->lang->t('no_such_server');
         }
 
-        if (!$this->smsPriceRepository->exists($smsPrice)) {
-            $warnings['sms_price'][] = $this->lang->t('no_such_sms_price');
+        if (strlen($smsPrice) && !$this->smsPriceRepository->exists($smsPrice)) {
+            $warnings['sms_price'][] = $this->lang->t('invalid_price');
+        }
+
+        if (strlen($transferPrice) && $transferPrice < 1) {
+            $warnings['transfer_price'][] = $this->lang->t('invalid_price');
         }
 
         if ($warning = check_for_warnings("number", $quantity)) {

@@ -22,10 +22,20 @@ class PriceResource
         $lang = $translationManager->user();
 
         $serviceId = $request->request->get('service_id');
-        $serverId = $request->request->get('server_id');
-        $smsPrice = $request->request->get('sms_price');
-        $transferPrice = $request->request->get('transfer_price');
-        $quantity = $request->request->get('quantity');
+        $serverId = $request->request->get('server_id') ?: null;
+        $quantity = $request->request->get('quantity') ?: null;
+
+        if (strlen($request->request->get('sms_price'))) {
+            $smsPrice = (int) $request->request->get('sms_price');
+        } else {
+            $smsPrice = null;
+        }
+
+        if (strlen($request->request->get('transfer_price'))) {
+            $transferPrice = $request->request->get('transfer_price') * 100;
+        } else {
+            $transferPrice = null;
+        }
 
         $priceService->validateBody($request->request->all());
 
