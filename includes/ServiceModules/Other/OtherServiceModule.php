@@ -16,6 +16,8 @@ use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
+// TODO Write tests
+
 class OtherServiceModule extends ServiceModule implements
     IServicePurchase,
     IServicePurchaseOutside,
@@ -73,7 +75,6 @@ class OtherServiceModule extends ServiceModule implements
 
         $price = $purchase->getPrice();
         if (!$price) {
-            // TODO Replace 'value' with 'price_id' everywhere
             $warnings['price_id'][] = $this->lang->t('must_choose_quantity');
         } elseif (!$this->purchaseValidationService->isPriceAvailable($price, $purchase)) {
             return [

@@ -113,7 +113,7 @@ class SmsPaymentService
                 $smsNumber->getNumber(),
                 $user->getLastIp(),
                 $user->getPlatform(),
-                $result->free,
+                $result->free ? 1 : 0,
             ]);
 
         $paymentId = $this->db->lastId();
