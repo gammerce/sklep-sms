@@ -255,6 +255,7 @@ return [
     'text' => 'Tekst',
     'theme' => 'Motyw',
     'transfer_payment_platform' => 'Platforma płatności internetowych',
+    'transfer_price' => 'Kwota przelewu',
     'type_to_search' => 'Wpisz, aby wyszukać',
     'unzip_arch' =>
         'Rozpakowywujemy archiwum, a następnie kopiujemy pliki na serwer z zachowaniem hierarchii katalogów.',

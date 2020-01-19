@@ -20,6 +20,7 @@
                 </div>
             </td>
         </tr>
+
         <tr>
             <td>
                 <label for="server">{$lang->strtoupper($lang->t('server'))}</label>
@@ -38,6 +39,20 @@
                 </div>
             </td>
         </tr>
+
+        <tr>
+            <td>
+                <label for="quantity">{$lang->strtoupper($lang->t('quantity'))}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <input type="number" id="quantity" name="quantity" class="input is-small" />
+                    </div>
+                </div>
+            </td>
+        </tr>
+
         <tr>
             <td>
                 <label for="sms_price">{$lang->strtoupper($lang->t('sms_price'))}</label>
@@ -55,15 +70,21 @@
                 </div>
             </td>
         </tr>
-        // TODO Transfer price
+
         <tr>
             <td>
-                <label for="quantity">{$lang->strtoupper($lang->t('quantity'))}</label>
+                <label for="transfer_price">{$lang->strtoupper($lang->t('transfer_price'))}</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
-                        <input type="number" id="quantity" name="quantity" class="input is-small" />
+                        <input
+                            type="number"
+                            id="transfer_price"
+                            name="transfer_price"
+                            class="input is-small"
+                            min="0"
+                        />
                     </div>
                 </div>
             </td>

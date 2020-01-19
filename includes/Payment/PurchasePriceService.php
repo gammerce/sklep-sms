@@ -5,7 +5,6 @@ use App\Models\Server;
 use App\Models\Service;
 use App\Models\SmsNumber;
 use App\Repositories\PriceRepository;
-use App\Repositories\SmsNumberRepository;
 use App\System\Heart;
 use App\System\Settings;
 use App\Verification\Abstracts\SupportSms;
@@ -18,21 +17,13 @@ class PurchasePriceService
     /** @var Heart */
     private $heart;
 
-    /** @var SmsNumberRepository */
-    private $smsNumberRepository;
-
     /** @var PriceRepository */
     private $priceRepository;
 
-    public function __construct(
-        Settings $settings,
-        Heart $heart,
-        SmsNumberRepository $smsNumberRepository,
-        PriceRepository $priceRepository
-    ) {
+    public function __construct(Settings $settings, Heart $heart, PriceRepository $priceRepository)
+    {
         $this->settings = $settings;
         $this->heart = $heart;
-        $this->smsNumberRepository = $smsNumberRepository;
         $this->priceRepository = $priceRepository;
     }
 
