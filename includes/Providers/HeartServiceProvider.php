@@ -1,6 +1,24 @@
 <?php
 namespace App\Providers;
 
+use App\ServiceModules\ChargeWallet\ChargeWalletServiceModule;
+use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
+use App\ServiceModules\MybbExtraGroups\MybbExtraGroupsServiceModule;
+use App\ServiceModules\Other\OtherServiceModule;
+use App\System\Application;
+use App\System\Heart;
+use App\Verification\PaymentModules\Cashbill;
+use App\Verification\PaymentModules\Cssetti;
+use App\Verification\PaymentModules\Gosetti;
+use App\Verification\PaymentModules\Homepay;
+use App\Verification\PaymentModules\Hostplay;
+use App\Verification\PaymentModules\Microsms;
+use App\Verification\PaymentModules\OneShotOneKill;
+use App\Verification\PaymentModules\Profitsms;
+use App\Verification\PaymentModules\Pukawka;
+use App\Verification\PaymentModules\Simpay;
+use App\Verification\PaymentModules\Transferuj;
+use App\Verification\PaymentModules\Zabijaka;
 use App\View\Blocks\BlockAdminContent;
 use App\View\Blocks\BlockContent;
 use App\View\Blocks\BlockLoggedInfo;
@@ -26,7 +44,6 @@ use App\View\Pages\PageAdminServiceCodes;
 use App\View\Pages\PageAdminServices;
 use App\View\Pages\PageAdminSettings;
 use App\View\Pages\PageAdminSmsCodes;
-use App\View\Pages\PageAdminTariffs;
 use App\View\Pages\PageAdminUpdateServers;
 use App\View\Pages\PageAdminUpdateWeb;
 use App\View\Pages\PageAdminUsers;
@@ -47,24 +64,6 @@ use App\View\Pages\PageTakeOverService;
 use App\View\Pages\PageTransferujBad;
 use App\View\Pages\PageTransferujOk;
 use App\View\Pages\PageUserOwnServices;
-use App\ServiceModules\ChargeWallet\ChargeWalletServiceModule;
-use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
-use App\ServiceModules\MybbExtraGroups\MybbExtraGroupsServiceModule;
-use App\ServiceModules\Other\OtherServiceModule;
-use App\System\Application;
-use App\System\Heart;
-use App\Verification\PaymentModules\Cashbill;
-use App\Verification\PaymentModules\Cssetti;
-use App\Verification\PaymentModules\Gosetti;
-use App\Verification\PaymentModules\Homepay;
-use App\Verification\PaymentModules\Hostplay;
-use App\Verification\PaymentModules\Microsms;
-use App\Verification\PaymentModules\OneShotOneKill;
-use App\Verification\PaymentModules\Profitsms;
-use App\Verification\PaymentModules\Pukawka;
-use App\Verification\PaymentModules\Simpay;
-use App\Verification\PaymentModules\Transferuj;
-use App\Verification\PaymentModules\Zabijaka;
 
 class HeartServiceProvider
 {
@@ -149,7 +148,6 @@ class HeartServiceProvider
         $heart->registerAdminPage(PageAdminServices::PAGE_ID, PageAdminServices::class);
         $heart->registerAdminPage(PageAdminSettings::PAGE_ID, PageAdminSettings::class);
         $heart->registerAdminPage(PageAdminSmsCodes::PAGE_ID, PageAdminSmsCodes::class);
-        $heart->registerAdminPage(PageAdminTariffs::PAGE_ID, PageAdminTariffs::class);
         $heart->registerAdminPage(
             PageAdminPaymentPlatforms::PAGE_ID,
             PageAdminPaymentPlatforms::class

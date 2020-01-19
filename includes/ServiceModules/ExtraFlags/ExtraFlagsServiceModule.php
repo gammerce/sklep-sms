@@ -5,7 +5,6 @@ use App\Exceptions\UnauthorizedException;
 use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
 use App\Models\Service;
-use App\Models\ServiceCode;
 use App\Payment\AdminPaymentService;
 use App\Payment\BoughtServiceService;
 use App\Payment\PurchasePriceService;
@@ -1732,13 +1731,12 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     }
 
     /**
-     * Funkcja zwraca listę dostępnych taryf danej usługi na danym serwerze
+     * Get available prices for given server
      *
      * @param int $serverId
-     *
      * @return string
      */
-    private function tariffsForServer($serverId)
+    private function pricesForServer($serverId)
     {
         $server = $this->heart->getServer($serverId);
 
@@ -1755,18 +1753,13 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     public function actionExecute($action, $data)
     {
         switch ($action) {
-            case "tariffs_for_server":
-                return $this->tariffsForServer((int) $data['server']);
+            case "prices_for_server":
+                return $this->pricesForServer((int) $data['server']);
             case "servers_for_service":
                 return $this->serversForService((int) $data['server']);
             default:
                 return '';
         }
-    }
-
-    public function serviceCodeValidate(Purchase $purchase, ServiceCode $serviceCode)
-    {
-        return true;
     }
 
     public function serviceCodeAdminAddFormGet()

@@ -24,8 +24,6 @@ use App\Http\Controllers\Api\Admin\ServiceResource;
 use App\Http\Controllers\Api\Admin\SettingsController;
 use App\Http\Controllers\Api\Admin\SmsCodeCollection;
 use App\Http\Controllers\Api\Admin\SmsCodeResource;
-use App\Http\Controllers\Api\Admin\TariffCollection;
-use App\Http\Controllers\Api\Admin\TariffResource;
 use App\Http\Controllers\Api\Admin\UserPasswordResource;
 use App\Http\Controllers\Api\Admin\UserResource;
 use App\Http\Controllers\Api\Admin\UserServiceAddFormController;
@@ -474,21 +472,6 @@ class RoutesManager
                 $r->delete('/api/admin/services/{serviceId}', [
                     'middlewares' => [[RequireAuthorization::class, "manage_services"]],
                     'uses' => ServiceResource::class . '@delete',
-                ]);
-
-                $r->post('/api/admin/tariffs', [
-                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
-                    'uses' => TariffCollection::class . '@post',
-                ]);
-
-                $r->put('/api/admin/tariffs/{tariffId}', [
-                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
-                    'uses' => TariffResource::class . '@put',
-                ]);
-
-                $r->delete('/api/admin/tariffs/{tariffId}', [
-                    'middlewares' => [[RequireAuthorization::class, "manage_settings"]],
-                    'uses' => TariffResource::class . '@delete',
                 ]);
 
                 $r->get('/api/admin/bricks/{bricks}', [

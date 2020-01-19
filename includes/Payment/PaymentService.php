@@ -228,10 +228,7 @@ class PaymentService
         }
 
         if ($purchase->getPayment(Purchase::PAYMENT_METHOD) === Purchase::METHOD_SERVICE_CODE) {
-            $paymentId = $this->serviceCodePaymentService->payWithServiceCode(
-                $purchase,
-                $serviceModule
-            );
+            $paymentId = $this->serviceCodePaymentService->payWithServiceCode($purchase);
 
             // pay_service_code method returned an error
             if (is_array($paymentId)) {
@@ -246,7 +243,6 @@ class PaymentService
                 Purchase::METHOD_SERVICE_CODE,
             ])
         ) {
-            // Dokonujemy zakupu usługi
             $purchase->setPayment([
                 Purchase::PAYMENT_PAYMENT_ID => $paymentId,
             ]);

@@ -1,10 +1,8 @@
 <?php
 namespace App\Verification\Exceptions;
 
-// TODO Replace tariff id
-
 /**
- * Given sms code was valid but not for a given tariff
+ * Given sms code was valid but not for a sms price
  * e.g. somebody sent sms to cheaper a number
  */
 class BadNumberException extends SmsPaymentException

@@ -99,7 +99,6 @@ return [
     'sms_return_code' => 'Kod zwrotny',
     'sth_went_wrong' => 'Coś poszło nie tak :/',
     'surname' => 'Nazwisko',
-    'tariff' => 'Taryfa',
     'token' => 'Token',
     'type' => 'Typ',
     'user' => 'Użytkownik',

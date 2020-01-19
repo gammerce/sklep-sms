@@ -111,11 +111,6 @@ class AdminController
             $name = $lang->t($pid);
             $transactionServicesLink = $template->render("admin/page_link", compact('pid', 'name'));
 
-            // Taryfy
-            $pid = "tariffs";
-            $name = $lang->t($pid);
-            $tariffsLink = $template->render("admin/page_link", compact('pid', 'name'));
-
             // Cennik
             $pid = "pricing";
             $name = $lang->t($pid);
@@ -183,7 +178,6 @@ class AdminController
                     'transactionServicesLink',
                     'servicesLink',
                     'serversLink',
-                    'tariffsLink',
                     'pricingLink',
                     'userServiceLink',
                     'playersFlagsLink',

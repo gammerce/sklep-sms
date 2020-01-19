@@ -68,7 +68,7 @@ class SmsCodeRepository
         return !!$statement->rowCount();
     }
 
-    private function mapToModel(array $data)
+    public function mapToModel(array $data)
     {
         return new SmsCode($data['id'], $data['code'], $data['sms_price'], $data['free']);
     }

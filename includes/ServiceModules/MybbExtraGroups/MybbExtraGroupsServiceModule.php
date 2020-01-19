@@ -338,7 +338,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         $warnings = [];
 
-        // Tariff
         if (!$priceId) {
             $warnings['price_id'][] = $this->lang->t('must_choose_quantity');
         } else {
@@ -353,7 +352,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             }
         }
 
-        // Username
         if (!strlen($body['username'])) {
             $warnings['username'][] = $this->lang->t('field_no_empty');
         } else {
@@ -370,7 +368,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             }
         }
 
-        // E-mail
         if ($warning = check_for_warnings("email", $body['email'])) {
             $warnings['email'] = array_merge((array) $warnings['email'], $warning);
         }

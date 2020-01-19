@@ -45,7 +45,7 @@ class ServiceCodePaymentServiceTest extends TestCase
         $purchase->setService($serviceModule->service->getId());
 
         // when
-        $paymentCodeId = $service->payWithServiceCode($purchase, $serviceModule);
+        $paymentCodeId = $service->payWithServiceCode($purchase);
 
         // then
         $this->assertInternalType("int", $paymentCodeId);

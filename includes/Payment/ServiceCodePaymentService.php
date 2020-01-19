@@ -5,7 +5,6 @@ use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
 use App\Repositories\PaymentCodeRepository;
 use App\Repositories\ServiceCodeRepository;
-use App\ServiceModules\ServiceModule;
 use App\System\Database;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -43,10 +42,9 @@ class ServiceCodePaymentService
 
     /**
      * @param Purchase $purchase
-     * @param ServiceModule  $serviceModule
      * @return array|int
      */
-    public function payWithServiceCode(Purchase $purchase, ServiceModule $serviceModule)
+    public function payWithServiceCode(Purchase $purchase)
     {
         $statement = $this->db->statement(
             "SELECT * FROM `" .
@@ -69,25 +67,23 @@ class ServiceCodePaymentService
         foreach ($statement as $row) {
             $serviceCode = $this->serviceCodeRepository->mapToModel($row);
 
-            if ($serviceModule->serviceCodeValidate($purchase, $serviceCode)) {
-                $this->serviceCodeRepository->delete($serviceCode->getId());
+            $this->serviceCodeRepository->delete($serviceCode->getId());
 
-                $paymentCode = $this->paymentCodeRepository->create(
-                    $purchase->getPayment(Purchase::PAYMENT_SERVICE_CODE),
-                    $purchase->user->getLastIp(),
-                    $purchase->user->getPlatform()
-                );
+            $paymentCode = $this->paymentCodeRepository->create(
+                $purchase->getPayment(Purchase::PAYMENT_SERVICE_CODE),
+                $purchase->user->getLastIp(),
+                $purchase->user->getPlatform()
+            );
 
-                $this->logger->log(
-                    'purchase_code',
-                    $purchase->getPayment(Purchase::PAYMENT_SERVICE_CODE),
-                    $purchase->user->getUsername(),
-                    $purchase->user->getUid(),
-                    $paymentCode->getId()
-                );
+            $this->logger->log(
+                'purchase_code',
+                $purchase->getPayment(Purchase::PAYMENT_SERVICE_CODE),
+                $purchase->user->getUsername(),
+                $purchase->user->getUid(),
+                $paymentCode->getId()
+            );
 
-                return $paymentCode->getId();
-            }
+            return $paymentCode->getId();
         }
 
         return [
