@@ -71,26 +71,22 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
                     "services` AS s ON us.service = s.id " .
                     "WHERE us.uid = ? AND s.module IN ({$moduleIds}) "
             );
-            $statement->execute(
-                [$user->getUid()]
-            );
+            $statement->execute([$user->getUid()]);
             $rowsCount = $statement->fetchColumn();
 
-                $statement = $db->statement(
-                    "SELECT us.id FROM `" .
-                        TABLE_PREFIX .
-                        "user_service` AS us " .
-                        "INNER JOIN `" .
-                        TABLE_PREFIX .
-                        "services` AS s ON us.service = s.id " .
-                        "WHERE us.uid = ? AND s.module IN ({$moduleIds}) " .
-                        "ORDER BY us.id DESC " .
-                        "LIMIT " .
-                        get_row_limit($this->currentPage->getPageNumber(), 4)
-                );
-                $statement->execute(
-                    [$user->getUid()]
-                );
+            $statement = $db->statement(
+                "SELECT us.id FROM `" .
+                    TABLE_PREFIX .
+                    "user_service` AS us " .
+                    "INNER JOIN `" .
+                    TABLE_PREFIX .
+                    "services` AS s ON us.service = s.id " .
+                    "WHERE us.uid = ? AND s.module IN ({$moduleIds}) " .
+                    "ORDER BY us.id DESC " .
+                    "LIMIT " .
+                    get_row_limit($this->currentPage->getPageNumber(), 4)
+            );
+            $statement->execute([$user->getUid()]);
 
             $userServiceIds = [];
             foreach ($statement as $row) {
@@ -127,7 +123,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
                 'content' => $serviceModule->userOwnServiceInfoGet(
                     $userService,
                     isset($buttonEdit) ? $buttonEdit : ''
-                )
+                ),
             ]);
         }
 

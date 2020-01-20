@@ -33,7 +33,7 @@ return [
     'change_password_success' => "Hasło zostało zmienione",
     'charge' => 'Doładuj',
     'charge_number' => 'Wartość doładowania musi być liczbą.',
-    'choose_sms_price' => 'Wybierz kwotę SMSa',
+    'choose_sms_price' => 'Wybierz koszt SMSa',
     'code' => 'Kod',
     'code_added' => 'Kod na usługę został prawidłowo dodany.',
     'code_deleted' => 'Kod na usługę został prawidłowo usunięty.',

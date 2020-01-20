@@ -127,11 +127,12 @@ hr,
 
     .delete {
         position: absolute;
-        top: .25rem;
-        right: .25rem;
+        top: 0.25rem;
+        right: 0.25rem;
         padding: 0 2px;
 
-        &:after, &:before {
+        &:after,
+        &:before {
             background-color: $danger;
         }
     }
@@ -194,11 +195,12 @@ hr,
 
     .delete {
         position: absolute;
-        top: .25rem;
-        right: .25rem;
+        top: 0.25rem;
+        right: 0.25rem;
         padding: 0 2px;
 
-        &:after, &:before {
+        &:after,
+        &:before {
             background-color: $danger;
         }
     }

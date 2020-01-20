@@ -31,9 +31,7 @@ class IncomeService
                 "WHERE t.free = '0' AND IFNULL(t.income,'') != '' AND t.payment != 'wallet' AND t.timestamp LIKE ? " .
                 "ORDER BY t.timestamp ASC"
         );
-        $statement->execute(
-            ["$year-$month-%"]
-        );
+        $statement->execute(["$year-$month-%"]);
 
         // Let's sum income by date (day precision) and server
         $data = [];
@@ -57,10 +55,12 @@ class IncomeService
 
     public function getWholeIncome()
     {
-        return $this->db->query(
-            "SELECT SUM(t.income) " .
-            "FROM ({$this->settings['transactions_query']}) as t " .
-            "WHERE t.free = '0' AND t.payment != 'wallet' "
-        )->fetchColumn();
+        return $this->db
+            ->query(
+                "SELECT SUM(t.income) " .
+                    "FROM ({$this->settings['transactions_query']}) as t " .
+                    "WHERE t.free = '0' AND t.payment != 'wallet' "
+            )
+            ->fetchColumn();
     }
 }

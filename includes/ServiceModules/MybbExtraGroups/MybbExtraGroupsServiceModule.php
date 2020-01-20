@@ -340,6 +340,8 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     public function purchaseFormValidate(Purchase $purchase, array $body)
     {
         $priceId = array_get($body, "price_id");
+        $userName = array_get($body, 'username');
+        $email = array_get($body, 'email');
 
         $warnings = [];
 
@@ -361,14 +363,14 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             }
         }
 
-        if (!strlen($body['username'])) {
+        if (!strlen($userName)) {
             $warnings['username'][] = $this->lang->t('field_no_empty');
         } else {
             $this->connectMybb();
 
             $result = $this->dbMybb->query(
                 $this->dbMybb->prepare("SELECT 1 FROM `mybb_users` " . "WHERE `username` = '%s'", [
-                    $body['username'],
+                    $userName,
                 ])
             );
 
@@ -377,7 +379,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             }
         }
 
-        if ($warning = check_for_warnings("email", $body['email'])) {
+        if ($warning = check_for_warnings("email", $email)) {
             $warnings['email'] = array_merge((array) $warnings['email'], $warning);
         }
 
@@ -391,9 +393,9 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         }
 
         $purchase->setOrder([
-            'username' => $body['username'],
+            'username' => $userName,
         ]);
-        $purchase->setEmail($body['email']);
+        $purchase->setEmail($email);
         $purchase->setPrice($price);
 
         return [
@@ -671,26 +673,31 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     public function userServiceAdminAdd(array $body)
     {
         $user = $this->auth->user();
+        $forever = (bool) array_get($body, 'forever');
+        $amount = array_get($body, 'amount');
+        $uid = array_get($body, 'uid');
+        $mybbUserName = array_get($body, 'mybb_username');
+        $email = array_get($body, 'email');
 
         $warnings = [];
 
         // Amount
-        if (!$body['forever']) {
-            if ($warning = check_for_warnings("number", $body['amount'])) {
+        if (!$forever) {
+            if ($warning = check_for_warnings("number", $amount)) {
                 $warnings['amount'] = array_merge((array) $warnings['amount'], $warning);
             } else {
-                if ($body['amount'] < 0) {
+                if ($amount < 0) {
                     $warnings['amount'][] = $this->lang->t('days_quantity_positive');
                 }
             }
         }
 
         // ID użytkownika
-        if (strlen($body['uid'])) {
-            if ($warning = check_for_warnings('uid', $body['uid'])) {
+        if (strlen($uid)) {
+            if ($warning = check_for_warnings('uid', $uid)) {
                 $warnings['uid'] = array_merge((array) $warnings['uid'], $warning);
             } else {
-                $editedUser = $this->heart->getUser($body['uid']);
+                $editedUser = $this->heart->getUser($uid);
                 if (!$editedUser->exists()) {
                     $warnings['uid'][] = $this->lang->t('no_account_id');
                 }
@@ -698,14 +705,14 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         }
 
         // Username
-        if (!strlen($body['mybb_username'])) {
+        if (!strlen($mybbUserName)) {
             $warnings['mybb_username'][] = $this->lang->t('field_no_empty');
         } else {
             $this->connectMybb();
 
             $result = $this->dbMybb->query(
                 $this->dbMybb->prepare("SELECT 1 FROM `mybb_users` " . "WHERE `username` = '%s'", [
-                    $body['mybb_username'],
+                    $mybbUserName,
                 ])
             );
 
@@ -715,7 +722,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         }
 
         // E-mail
-        if (strlen($body['email']) && ($warning = check_for_warnings("email", $body['email']))) {
+        if (strlen($email) && ($warning = check_for_warnings("email", $email))) {
             $warnings['email'] = array_merge((array) $warnings['email'], $warning);
         }
 
@@ -731,18 +738,18 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         // Add payment info
         $paymentId = $this->adminPaymentService->payByAdmin($user);
 
-        $purchase = new Purchase($this->heart->getUser($body['uid']));
+        $purchase = new Purchase($this->heart->getUser($uid));
         $purchase->setService($this->service->getId());
         $purchase->setPayment([
             Purchase::PAYMENT_METHOD => Purchase::METHOD_ADMIN,
             Purchase::PAYMENT_PAYMENT_ID => $paymentId,
         ]);
         $purchase->setOrder([
-            'username' => $body['mybb_username'],
-            Purchase::ORDER_QUANTITY => $body['amount'],
-            Purchase::ORDER_FOREVER => (bool) $body['forever'],
+            'username' => $mybbUserName,
+            Purchase::ORDER_QUANTITY => $amount,
+            Purchase::ORDER_FOREVER => (bool) $forever,
         ]);
-        $purchase->setEmail($body['email']);
+        $purchase->setEmail($email);
         $boughtServiceId = $this->purchase($purchase);
 
         $this->logger->logWithActor(

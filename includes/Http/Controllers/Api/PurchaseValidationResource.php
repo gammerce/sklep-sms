@@ -24,7 +24,8 @@ class PurchaseValidationResource
         $lang = $translationManager->user();
         $user = $auth->user();
 
-        $serviceModule = $heart->getServiceModule($request->request->get('service'));
+        $serviceId = $request->request->get('service_id');
+        $serviceModule = $heart->getServiceModule($serviceId);
 
         if (!($serviceModule instanceof IServicePurchaseWeb)) {
             return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);

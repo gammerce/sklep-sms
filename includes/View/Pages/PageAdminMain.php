@@ -34,7 +34,7 @@ class PageAdminMain extends PageAdmin
         License $license,
         Requester $requester,
         IncomeService $incomeService,
-    PriceTextService $priceTextService
+        PriceTextService $priceTextService
     ) {
         parent::__construct();
 
@@ -178,7 +178,9 @@ class PageAdminMain extends PageAdmin
         $bricks[] = $this->createBrick($this->lang->t('note_income', $incomeText));
 
         // Whole income
-        $wholeIncomeText = $this->priceTextService->getPriceText($this->incomeService->getWholeIncome());
+        $wholeIncomeText = $this->priceTextService->getPriceText(
+            $this->incomeService->getWholeIncome()
+        );
         $bricks[] = $this->createBrick($this->lang->t('note_whole_income', $wholeIncomeText));
 
         return implode("", $bricks);

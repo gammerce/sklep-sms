@@ -1,22 +1,21 @@
 // Click on edit service
 $(document).delegate("#user_own_services .edit_row", "click", function() {
-    var rowId = $(this).parents("form:first");
-    var userServiceId = rowId.data("row");
+    var row = $(this).closest("form");
+    var card = row.closest(".card");
+    var userServiceId = row.data("row");
 
     restRequest("GET", "/api/user_services/" + userServiceId + "/edit_form", {}, function(html) {
-        rowId.html(html);
-        rowId.parents(".brick:first").addClass("active");
+        row.html(html);
+        card.addClass("active");
 
-        // Dodajemy event, aby powróciło do poprzedniego stanu po kliknięciu "Anuluj"
-        rowId.find(".cancel").click({ row_id: rowId }, function(e) {
-            var rowId = e.data.row_id;
-            var userServiceId = rowId.data("row");
+        row.find(".cancel").click(function() {
+            var userServiceId = row.data("row");
 
             restRequest("GET", "/api/user_services/" + userServiceId + "/brick", {}, function(
                 html
             ) {
-                rowId.html(html);
-                rowId.parents(".brick:first").removeClass("active");
+                row.html(html);
+                card.removeClass("active");
             });
         });
     });

@@ -73,18 +73,17 @@ class PagePayment extends Page
             $this->isSmsAvailable($purchase, $smsPaymentModule) &&
             $smsPaymentModule instanceof SupportSms
         ) {
-            $smsCode = $smsPaymentModule->getSmsCode();
             $smsNumber = $this->smsPriceService->getNumber(
                 $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE),
                 $smsPaymentModule
             );
-            $priceGross = $this->priceTextService->getPriceGrossText(
-                $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE)
-            );
-            $paymentMethods .= $this->template->render(
-                'payment_method_sms',
-                compact('priceGross', 'smsCode', 'smsNumber')
-            );
+            $paymentMethods .= $this->template->render('payment_method_sms', [
+                'priceGross' => $this->priceTextService->getPriceGrossText(
+                    $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE)
+                ),
+                'smsCode' => $smsPaymentModule->getSmsCode(),
+                'smsNumber' => $smsNumber ? $smsNumber->getNumber() : null,
+            ]);
         }
 
         if ($this->isTransferAvailable($purchase)) {

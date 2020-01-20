@@ -68,8 +68,12 @@ $(document).delegate("#form_purchase [name=price_id]", "change", function() {
         return;
     }
 
-    var transferPrice = $(this).find("option:selected").data("transfer-price");
-    var smsPrice = $(this).find("option:selected").data("sms-price");
+    var transferPrice = $(this)
+        .find("option:selected")
+        .data("transfer-price");
+    var smsPrice = $(this)
+        .find("option:selected")
+        .data("sms-price");
 
     if (transferPrice) {
         form.find("#cost_transfer").text(transferPrice);
