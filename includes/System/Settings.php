@@ -176,7 +176,7 @@ LEFT JOIN `" .
     }
 
     /**
-     * @return string
+     * @return float
      */
     public function getVat()
     {
