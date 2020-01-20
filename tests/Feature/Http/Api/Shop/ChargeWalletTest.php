@@ -42,7 +42,7 @@ class ChargeWalletTest extends HttpTestCase
         $this->actingAs($user);
 
         $validationResponse = $this->post('/api/purchase/validation', [
-            'service' => ChargeWalletServiceModule::MODULE_ID,
+            'service_id' => ChargeWalletServiceModule::MODULE_ID,
             'method' => Purchase::METHOD_TRANSFER,
             'transfer_price' => 2.5,
         ]);
@@ -92,7 +92,7 @@ class ChargeWalletTest extends HttpTestCase
         $this->actingAs($user);
 
         $validationResponse = $this->post('/api/purchase/validation', [
-            'service' => ChargeWalletServiceModule::MODULE_ID,
+            'service_id' => ChargeWalletServiceModule::MODULE_ID,
             'method' => Purchase::METHOD_SMS,
             'sms_price' => 500,
         ]);
