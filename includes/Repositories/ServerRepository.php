@@ -126,7 +126,7 @@ class ServerRepository
             $data['name'],
             $data['ip'],
             $data['port'],
-            $data['sms_platform'],
+            $data['sms_platform'] !== null ? (int) $data['sms_platform'] : null,
             $data['type'],
             $data['version'],
             $data['last_active_at']

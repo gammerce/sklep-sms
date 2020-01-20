@@ -94,6 +94,9 @@ class ServerConfigControllerTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertSame("gosetti", $json["sms_module_id"]);
+        $this->assertSame($this->paymentPlatform->getId(), $json["sms_platform_id"]);
+        $this->assertSame($settings->getVat(), $json["vat"]);
+        $this->assertSame("abc123", $json["license_token"]);
     }
 
     /** @test */

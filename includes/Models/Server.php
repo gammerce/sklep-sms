@@ -21,7 +21,7 @@ class Server
     /** @var string */
     private $type;
 
-    /** @var string */
+    /** @var int */
     private $smsPlatform;
 
     /** @var string */
