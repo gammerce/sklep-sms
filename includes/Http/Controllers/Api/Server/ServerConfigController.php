@@ -6,6 +6,7 @@ use App\Exceptions\InvalidConfigException;
 use App\Http\Responses\ServerResponse;
 use App\Models\Server;
 use App\Models\ServerService;
+use App\Models\SmsNumber;
 use App\Models\User;
 use App\Repositories\ServerRepository;
 use App\Repositories\ServerServiceRepository;
@@ -48,9 +49,13 @@ class ServerConfigController
 
         if (!($smsModule instanceof SupportSms)) {
             throw new InvalidConfigException(
-                "Payment module does not support sms [{$smsModule->getModuleId()}]."
+                "Payment platform does not support sms payments [$smsPlatformId]."
             );
         }
+
+        $smsNumbers = array_map(function (SmsNumber $smsNumber) {
+            return $smsNumber->getNumber() . "," . $smsNumber->getPrice();
+        }, $smsModule::getSmsNumbers());
 
         $serverServices = $serverServiceRepository->findByServer($server->getId());
         $serviceIds = array_map(function (ServerService $serverService) {
@@ -65,6 +70,7 @@ class ServerConfigController
 
         $data = [
             'id' => $server->getId(),
+            'license_token' => $settings->getLicenseToken(),
             'sms_platform_id' => $smsPlatformId,
             'sms_module_id' => $smsModule->getModuleId(),
             'sms_text' => $smsModule->getSmsCode(),
@@ -73,7 +79,7 @@ class ServerConfigController
             'currency' => $settings->getCurrency(),
             'contact' => $settings->getContact(),
             'vat' => $settings->getVat(),
-            'license_token' => $settings->getLicenseToken(),
+            'sms_numbers' => implode(";", $smsNumbers),
         ];
 
         return $acceptHeader->has("application/json")

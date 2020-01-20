@@ -21,7 +21,9 @@ class TransferController
         $paymentModule = $heart->getPaymentModuleByPlatformId($transferPlatform);
 
         if (!($paymentModule instanceof SupportTransfer)) {
-            return new PlainResponse("Invalid payment platform [${transferPlatform}].");
+            return new PlainResponse(
+                "Payment platform does not support transfer payments [${transferPlatform}]."
+            );
         }
 
         $transferFinalize = $paymentModule->finalizeTransfer(
