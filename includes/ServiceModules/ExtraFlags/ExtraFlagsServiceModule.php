@@ -1275,19 +1275,18 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userOwnServiceInfoGet($userService, $buttonEdit)
     {
-        $serviceInfo['expire'] =
-            $userService['expire'] == -1
-                ? $this->lang->t('never')
-                : date($this->settings->getDateFormat(), $userService['expire']);
         $server = $this->heart->getServer($userService['server']);
-        $serviceInfo['server'] = $server->getName();
-        $serviceInfo['service'] = $this->service->getName();
-        $serviceInfo['type'] = $this->getTypeName2($userService['type']);
 
         return $this->template->render(
             "services/extra_flags/user_own_service",
             compact('userService', 'buttonEdit', 'serviceInfo') + [
+                'authData' => $userService['auth_data'],
+                'userServiceId' => $userService['id'],
+                'expire' => $userService['expire'] == -1 ? $this->lang->t('never') : convertDate($userService['expire']),
                 'moduleId' => $this->getModuleId(),
+                'serverName' => $server->getName(),
+                'serviceName' => $this->service->getName(),
+                'type' => $this->getTypeName2($userService['type']),
             ]
         );
     }
@@ -1541,8 +1540,10 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     {
         $user = $this->auth->user();
 
+        $server = array_get($body, 'server_id');
+
         // Serwer
-        if (!strlen($body['server'])) {
+        if (!strlen($server)) {
             $warnings['server'][] = $this->lang->t('field_no_empty');
         }
 
@@ -1615,7 +1616,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 $this->db->prepare(
                     "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
                         "WHERE t.payment = 'transfer' AND t.payment_id = '%s' AND `service` = '%s' AND `server` = '%d' AND `auth_data` = '%s'",
-                    [$body['payment_id'], $this->service->getId(), $body['server'], $authData]
+                    [$body['payment_id'], $this->service->getId(), $server, $authData]
                 )
             );
 
@@ -1631,7 +1632,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 $this->db->prepare(
                     "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
                         "WHERE t.payment = 'sms' AND t.sms_code = '%s' AND `service` = '%s' AND `server` = '%d' AND `auth_data` = '%s'",
-                    [$body['payment_id'], $this->service->getId(), $body['server'], $authData]
+                    [$body['payment_id'], $this->service->getId(), $server, $authData]
                 )
             );
 
@@ -1657,7 +1658,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                     "WHERE us.service = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND ( `password` = '%s' OR `password` = '%s' )",
                 [
                     $this->service->getId(),
-                    $body['server'],
+                    $server,
                     $body['type'],
                     $authData,
                     $body['password'],

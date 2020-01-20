@@ -56,7 +56,6 @@ class ServiceCodeCollection
         }
 
         if (!$price) {
-            // TODO Change translation
             $warnings['price_id'][] = $lang->t('invalid_price');
         }
 

@@ -1,0 +1,11 @@
+#user_own_services {
+  .card {
+    color: #ccc;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  .card.active {
+    border-style: solid;
+    border-width: 1px;
+  }
+}

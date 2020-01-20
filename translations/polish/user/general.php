@@ -101,7 +101,6 @@ W kolejnym etapie, zostanie do Ciebie wysłany e-mail z linkiem do zresetowania 
     'sign_up_info' => 'Twoje konto zostało prawidłowo zarejestrowane na adres email: {1}.<br/>
 Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
     'site_not_exists' => 'Strona nie istnieje.',
-    'sms_cost' => 'Koszt SMS',
     'sms_info_bad_code' => 'Wprowadzono błędny kod zwrotny.',
     'sms_info_bad_number' =>
         'Kod jest dobry, lecz niestety został uzyskany poprzez wysłanie SMSa na inny numer.',

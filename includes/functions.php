@@ -201,7 +201,11 @@ function convertDate($timestamp, $format = "")
         $format = $settings->getDateFormat();
     }
 
-    $date = new DateTime($timestamp);
+    if (my_is_integer($timestamp)) {
+        $date = new DateTime("@$timestamp");
+    } else {
+        $date = new DateTime($timestamp);
+    }
 
     return $date->format($format);
 }

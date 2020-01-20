@@ -61,7 +61,7 @@ class PagePayment extends Page
             $purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM)
         );
 
-        $transferPrice = $this->priceTextService->getTransferText(
+        $transferPrice = $this->priceTextService->getPriceText(
             $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE)
         );
 
@@ -78,7 +78,7 @@ class PagePayment extends Page
                 $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE),
                 $smsPaymentModule
             );
-            $priceGross = $this->priceTextService->getSmsGrossText(
+            $priceGross = $this->priceTextService->getPriceGrossText(
                 $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE)
             );
             $paymentMethods .= $this->template->render(

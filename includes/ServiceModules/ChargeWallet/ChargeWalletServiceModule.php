@@ -87,7 +87,7 @@ class ChargeWalletServiceModule extends ServiceModule implements
                         "option",
                         $this->lang->t(
                             'charge_sms_option',
-                            $this->priceTextService->getSmsGrossText($smsNumber->getPrice()),
+                            $this->priceTextService->getPriceGrossText($smsNumber->getPrice()),
                             $this->settings->getCurrency(),
                             $provision,
                             $this->settings->getCurrency()

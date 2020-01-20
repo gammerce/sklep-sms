@@ -42,7 +42,7 @@ $(document).delegate("#go_to_payment", "click", function() {
 
 // Show service long description
 $(document).delegate("#show_service_desc", "click", function() {
-    var serviceId = $("#form_purchase [name=service]").val();
+    var serviceId = $("#form_purchase [name=service_id]").val();
 
     loader.show();
     $.ajax({
@@ -58,7 +58,7 @@ $(document).delegate("#show_service_desc", "click", function() {
     });
 });
 
-$(document).delegate("#form_purchase [name=quantity]", "change", function() {
+$(document).delegate("#form_purchase [name=price_id]", "change", function() {
     var form = $(this).closest("form");
 
     if ($(this).val().length) {
@@ -68,8 +68,8 @@ $(document).delegate("#form_purchase [name=quantity]", "change", function() {
         return;
     }
 
-    var transferPrice = $(this).data("transfer-price");
-    var smsPrice = $(this).data("sms-price");
+    var transferPrice = $(this).find("option:selected").data("transfer-price");
+    var smsPrice = $(this).find("option:selected").data("sms-price");
 
     if (transferPrice) {
         form.find("#cost_transfer").text(transferPrice);
@@ -81,7 +81,6 @@ $(document).delegate("#form_purchase [name=quantity]", "change", function() {
         form.find("#cost_transfer")
             .parent()
             .hide();
-        form.find("#currency_transfer").hide();
     }
 
     if (smsPrice) {
@@ -94,6 +93,5 @@ $(document).delegate("#form_purchase [name=quantity]", "change", function() {
         form.find("#cost_sms")
             .parent()
             .hide();
-        form.find("#currency_sms").hide();
     }
 });

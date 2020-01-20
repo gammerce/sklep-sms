@@ -24,7 +24,7 @@ class PriceTextService
      * @param int|null $price
      * @return string
      */
-    public function getSmsGrossText($price)
+    public function getPriceGrossText($price)
     {
         return $price !== null
             ? number_format(($price / 100) * $this->settings->getVat(), 2) .
@@ -37,7 +37,7 @@ class PriceTextService
      * @param int|null $price
      * @return string
      */
-    public function getTransferText($price)
+    public function getPriceText($price)
     {
         return $price !== null
             ? number_format($price / 100, 2) . " " . $this->settings->getCurrency()

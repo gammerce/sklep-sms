@@ -69,7 +69,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
             $bodyRow->setDbId($smsCode->getId());
             $bodyRow->addCell(new Cell($smsCode->getCode()));
             $bodyRow->addCell(
-                new Cell($this->priceTextService->getSmsGrossText($smsCode->getSmsPrice()))
+                new Cell($this->priceTextService->getPriceGrossText($smsCode->getSmsPrice()))
             );
 
             if (get_privileges('manage_sms_codes')) {
@@ -105,7 +105,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
                 foreach ($this->smsPriceRepository->all() as $smsPrice) {
                     $smsPrices .= create_dom_element(
                         "option",
-                        $this->priceTextService->getSmsGrossText($smsPrice),
+                        $this->priceTextService->getPriceGrossText($smsPrice),
                         [
                             'value' => $smsPrice,
                         ]

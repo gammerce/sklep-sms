@@ -17,11 +17,9 @@ class ServiceTakeOverController
         TranslationManager $translationManager
     ) {
         $lang = $translationManager->user();
+        $serviceModule = $heart->getServiceModule($service);
 
-        if (
-            ($serviceModule = $heart->getServiceModule($service)) === null ||
-            !($serviceModule instanceof IServiceTakeOver)
-        ) {
+        if (!($serviceModule instanceof IServiceTakeOver)) {
             return new PlainResponse($lang->t('bad_module'));
         }
 

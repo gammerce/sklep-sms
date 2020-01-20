@@ -1,12 +1,13 @@
 <?php
 namespace App\View\Pages;
 
-use App\View\Html\UnescapedSimpleText;
 use App\Http\Services\IncomeService;
 use App\Models\Server;
 use App\Requesting\Requester;
+use App\Services\PriceTextService;
 use App\System\License;
 use App\System\Version;
+use App\View\Html\UnescapedSimpleText;
 
 class PageAdminMain extends PageAdmin
 {
@@ -25,11 +26,15 @@ class PageAdminMain extends PageAdmin
     /** @var IncomeService */
     private $incomeService;
 
+    /** @var PriceTextService */
+    private $priceTextService;
+
     public function __construct(
         Version $version,
         License $license,
         Requester $requester,
-        IncomeService $incomeService
+        IncomeService $incomeService,
+    PriceTextService $priceTextService
     ) {
         parent::__construct();
 
@@ -38,6 +43,7 @@ class PageAdminMain extends PageAdmin
         $this->license = $license;
         $this->requester = $requester;
         $this->incomeService = $incomeService;
+        $this->priceTextService = $priceTextService;
     }
 
     protected function content(array $query, array $body)
@@ -168,8 +174,12 @@ class PageAdminMain extends PageAdmin
                 $income += $value;
             }
         }
-        $incomeText = number_format($income / 100, 2) . " " . $this->settings->getCurrency();
+        $incomeText = $this->priceTextService->getPriceText($income);
         $bricks[] = $this->createBrick($this->lang->t('note_income', $incomeText));
+
+        // Whole income
+        $wholeIncomeText = $this->priceTextService->getPriceText($this->incomeService->getWholeIncome());
+        $bricks[] = $this->createBrick($this->lang->t('note_whole_income', $wholeIncomeText));
 
         return implode("", $bricks);
     }
@@ -206,8 +216,8 @@ class PageAdminMain extends PageAdmin
         ]);
     }
 
-    private function createBrick($text)
+    private function createBrick($content)
     {
-        return create_brick($text, "brick_pa_main");
+        return $this->template->render("admin/brick_card", compact('content'));
     }
 }

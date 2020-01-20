@@ -1,11 +1,10 @@
 jQuery(document).ready(function($) {
-    // Aby żadna opcja nie była zaznaczona w przypadku użycia "cofnij"
+    // So as no option is selected when somebody returned to the previous page
     $("#form_purchase")
         .find("#purchase_value")
         .val("0");
 });
 
-// Zmiana typu zakupu
 $(document).delegate("#form_purchase input[name=type]", "change", function() {
     var form = $(this).closest("form");
 
@@ -17,20 +16,19 @@ $(document).delegate("#form_purchase input[name=type]", "change", function() {
     if ($(this).val() == "1" || $(this).val() == "2") form.find("#type_password").show();
 });
 
-// Zmiana serwera
-$(document).delegate("#form_purchase [name=server]", "change", function() {
+$(document).delegate("#form_purchase [name=server_id]", "change", function() {
     var form = $(this).closest("form");
 
     form.find("#cost_wrapper").slideUp();
     if ($(this).val() == "") {
-        form.find("[name=quantity]")
+        form.find("[name=price_id]")
             .children()
             .not("[value='']")
             .remove();
         return;
     }
 
-    var serviceId = form.find("[name=service]").val();
+    var serviceId = form.find("[name=service_id]").val();
 
     restRequest(
         "POST",
@@ -39,7 +37,7 @@ $(document).delegate("#form_purchase [name=server]", "change", function() {
             server: $(this).val(),
         },
         function(html) {
-            form.find("[name=quantity]").html(html);
+            form.find("[name=price_id]").html(html);
         }
     );
 });

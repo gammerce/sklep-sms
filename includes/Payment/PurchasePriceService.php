@@ -36,9 +36,7 @@ class PurchasePriceService
         } else {
             $smsPlatformId = $this->settings->getSmsPlatformId();
         }
-        $transferPlatformId = $this->settings->getTransferPlatformId();
         $smsModule = $this->heart->getPaymentModuleByPlatformId($smsPlatformId);
-        $transferModule = $this->heart->getPaymentModuleByPlatformId($transferPlatformId);
 
         if ($smsModule instanceof SupportSms) {
             $availableSmsPrices = array_map(function (SmsNumber $smsNumber) {
@@ -57,7 +55,7 @@ class PurchasePriceService
                 'transfer_price' => null,
             ];
 
-            if ($transferModule && $price->hasTransferPrice()) {
+            if ($price->hasTransferPrice()) {
                 $item['transfer_price'] = $price->getTransferPrice();
             }
 

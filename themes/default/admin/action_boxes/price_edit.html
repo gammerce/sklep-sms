@@ -78,7 +78,7 @@
                 <label for="transfer_price">{$lang->strtoupper($lang->t('transfer_price'))}</label>
             </td>
             <td>
-                <div class="field">
+                <div class="field has-addons">
                     <div class="control">
                         <input
                             type="number"
@@ -89,6 +89,11 @@
                             step="0.01"
                             value="{{ $transferPrice }}"
                         />
+                    </div>
+                    <div class="control">
+                        <a class="button is-static is-small">
+                            {{ $settings->getCurrency() }}
+                        </a>
                     </div>
                 </div>
             </td>

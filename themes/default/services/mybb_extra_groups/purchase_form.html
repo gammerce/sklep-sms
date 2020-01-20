@@ -53,10 +53,15 @@
 
     <div id="cost_wrapper">
         <div>
-            <strong>{$lang->t('transfer_wallet_cost')}</strong>: <span id="cost_transfer"></span> {{
-            $settings->getCurrency() }}<br />
-            <strong>{$lang->t('sms_cost')}</strong>: <span id="cost_sms"></span>
-            <span id="currency_sms">{{ $settings->getCurrency() }}</span>
+            <span>
+                <strong>{$lang->t('transfer_price')}</strong>:
+                <span id="cost_transfer"></span>
+            </span>
+            <br />
+            <span>
+                <strong>{$lang->t('sms_price')}</strong>:
+                <span id="cost_sms"></span>
+            </span>
         </div>
     </div>
 
@@ -68,5 +73,5 @@
             class="button is-success purchase_button"
         />
     </div>
-    <input type="hidden" name="service" value="{{ $serviceId }}" />
+    <input type="hidden" name="service_id" value="{{ $serviceId }}" />
 </form>
