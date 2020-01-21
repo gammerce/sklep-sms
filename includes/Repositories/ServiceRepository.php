@@ -47,6 +47,21 @@ class ServiceRepository
         return null;
     }
 
+    public function findMany(array $ids)
+    {
+        $keys = implode(",", array_fill(0, count($ids), "?"));
+        $statement = $this->db->statement(
+            "SELECT * FROM `ss_services` WHERE `id` IN ({$keys}) ORDER BY `order` ASC"
+        );
+        $statement->execute($ids);
+
+        return collect($statement)
+            ->map(function (array $row) {
+                return $this->mapToModel($row);
+            })
+            ->toArray();
+    }
+
     public function create(
         $id,
         $name,

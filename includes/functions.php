@@ -2,6 +2,7 @@
 
 use App\Models\Server;
 use App\Models\User;
+use App\Support\Collection;
 use App\System\Auth;
 use App\System\Database;
 use App\System\Settings;
@@ -604,4 +605,9 @@ function semantic_to_number($version)
     }
 
     return $parts[0] * 10000 + $parts[1] * 100 + $parts[2];
+}
+
+function collect($items)
+{
+    return new Collection($items);
 }

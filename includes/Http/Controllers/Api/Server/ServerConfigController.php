@@ -4,13 +4,14 @@ namespace App\Http\Controllers\Api\Server;
 use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\InvalidConfigException;
 use App\Http\Responses\ServerResponse;
+use App\Models\Price;
 use App\Models\Server;
-use App\Models\ServerService;
+use App\Models\Service;
 use App\Models\SmsNumber;
 use App\Models\User;
 use App\Repositories\ServerRepository;
-use App\Repositories\ServerServiceRepository;
 use App\Repositories\UserRepository;
+use App\Services\ServerDataService;
 use App\System\Heart;
 use App\System\Settings;
 use App\Verification\Abstracts\SupportSms;
@@ -25,7 +26,7 @@ class ServerConfigController
         Request $request,
         UserRepository $userRepository,
         ServerRepository $serverRepository,
-        ServerServiceRepository $serverServiceRepository,
+        ServerDataService $serverDataService,
         Heart $heart,
         Settings $settings
     ) {
@@ -53,18 +54,52 @@ class ServerConfigController
             );
         }
 
-        $smsNumbers = array_map(function (SmsNumber $smsNumber) {
-            return $smsNumber->getNumber() . "," . $smsNumber->getPrice();
-        }, $smsModule::getSmsNumbers());
+        $smsNumbers = $smsModule::getSmsNumbers();
+        $services = $serverDataService->findServices($server->getId());
+        $serviceIds = collect($services)
+            ->map(function (Service $service) {
+                return $service->getId();
+            })
+            ->toArray();
+        $prices = $serverDataService->findPrices($serviceIds, $server);
 
-        $serverServices = $serverServiceRepository->findByServer($server->getId());
-        $serviceIds = array_map(function (ServerService $serverService) {
-            return $serverService->getServiceId();
-        }, $serverServices);
+        $serviceItems = collect($services)
+            ->map(function (Service $service) {
+                return [
+                    'i' => $service->getId(),
+                    'n' => $service->getName(),
+                    's' => $service->getShortDescription(),
+                    'ta' => $service->getTag(),
+                    'f' => $service->getFlags(),
+                    'ty' => $service->getTypes(),
+                ];
+            })
+            ->toArray();
 
-        $steamIds = array_map(function (User $user) {
-            return $user->getSteamId();
-        }, $userRepository->allWithSteamId());
+        $priceItems = collect($prices)
+            ->map(function (Price $price) {
+                return [
+                    's' => $price->getServiceId(),
+                    'p' => $price->getSmsPrice(),
+                    'q' => $price->getQuantity(),
+                ];
+            })
+            ->toArray();
+
+        $smsNumberItems = collect($smsNumbers)
+            ->map(function (SmsNumber $smsNumber) {
+                return [
+                    'n' => $smsNumber->getNumber(),
+                    'p' => $smsNumber->getPrice(),
+                ];
+            })
+            ->toArray();
+
+        $steamIds = collect($userRepository->allWithSteamId())
+            ->map(function (User $user) {
+                return $user->getSteamId();
+            })
+            ->toArray();
 
         $serverRepository->touch($server->getId(), $platform, $version);
 
@@ -72,14 +107,15 @@ class ServerConfigController
             'id' => $server->getId(),
             'license_token' => $settings->getLicenseToken(),
             'sms_platform_id' => $smsPlatformId,
-            'sms_module_id' => $smsModule->getModuleId(),
             'sms_text' => $smsModule->getSmsCode(),
             'services' => " " . implode(" ", $serviceIds) . " ",
             'steam_ids' => implode(";", $steamIds) . ";",
             'currency' => $settings->getCurrency(),
             'contact' => $settings->getContact(),
             'vat' => $settings->getVat(),
-            'sms_numbers' => implode(";", $smsNumbers),
+            'sn' => $smsNumberItems,
+            'se' => $serviceItems,
+            'pr' => $priceItems,
         ];
 
         return $acceptHeader->has("application/json")
