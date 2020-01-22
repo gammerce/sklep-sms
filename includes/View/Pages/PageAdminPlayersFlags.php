@@ -30,7 +30,7 @@ class PageAdminPlayersFlags extends PageAdmin
         $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
         $table->addHeadCell(new HeadCell($this->lang->t('server')));
         $table->addHeadCell(
-            new Cell("{$this->lang->t('nick')}/{$this->lang->t('ip')}/{$this->lang->t('sid')}")
+            new HeadCell("{$this->lang->t('nick')}/{$this->lang->t('ip')}/{$this->lang->t('sid')}")
         );
 
         foreach (str_split($this->flags) as $flag) {

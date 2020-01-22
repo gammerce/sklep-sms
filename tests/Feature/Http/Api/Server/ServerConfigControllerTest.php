@@ -42,7 +42,7 @@ class ServerConfigControllerTest extends HttpTestCase
             'service_id' => 'vip',
         ]);
 
-        $this->factory->price([
+        $price = $this->factory->price([
             'service_id' => 'vip',
             'sms_price' => 200,
             'quantity' => 10,
@@ -84,6 +84,19 @@ class ServerConfigControllerTest extends HttpTestCase
             "sn.8:91900",
             "sn.9:92022",
             "sn.10:92521",
+            "se.c:1",
+            "se.0.i:vip",
+            "se.0.n:VIP",
+            "se.0.d:",
+            "se.0.ta:dni",
+            "se.0.f:t",
+            "se.0.ty:7",
+            "pr.c:1",
+            "pr.0.i:{$price->getId()}",
+            "pr.0.s:vip",
+            "pr.0.p:200",
+            "pr.0.q:10",
+
         ];
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame(implode("\n", $data), $response->getContent());
