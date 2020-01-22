@@ -61,7 +61,7 @@ return [
     'payment_for_service' => 'Płatność za usługę: {1}',
     'payment_log' => 'Historia płatności',
     'payment_method_unavailable' =>
-        'Nie można zapłacić tą metodą za tę ilość usługi. Wybierz inny sposób płatności.',
+        'Nie można zapłacić tą metodą płatności za tę ilość usługi. Wybierz inny sposób płatności.',
     'payment_not_accepted' => 'Nieudana autoryzacja transakcji: {1} Kwota: {2} Usługa: {3}',
     'payment_sms' => 'Płatność SMS',
     'payment_transfer' => 'Płatność przelew',

@@ -68,7 +68,7 @@ class ServerConfigController
                 return [
                     'i' => $service->getId(),
                     'n' => $service->getName(),
-                    's' => $service->getShortDescription(),
+                    'd' => $service->getShortDescription(),
                     'ta' => $service->getTag(),
                     'f' => $service->getFlags(),
                     'ty' => $service->getTypes(),
@@ -82,7 +82,8 @@ class ServerConfigController
                     'i' => $price->getId(),
                     's' => $price->getServiceId(),
                     'p' => $price->getSmsPrice(),
-                    'q' => $price->getQuantity(),
+                    // Replace null with -1 cause it's easier to handle it by plugins
+                    'q' => $price->getQuantity() !== null ? $price->getQuantity() : -1,
                 ];
             })
             ->toArray();

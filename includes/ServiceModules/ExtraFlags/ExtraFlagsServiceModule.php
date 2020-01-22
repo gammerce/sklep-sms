@@ -533,14 +533,14 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $authData = $purchase->getOrder('auth_data');
         $serviceName = $this->service->getName();
         $serverName = $server->getName();
-        $amount = $purchase->getOrder(Purchase::ORDER_FOREVER)
+        $quantity = $purchase->getOrder(Purchase::ORDER_FOREVER)
             ? $this->lang->t('forever')
             : $purchase->getOrder(Purchase::ORDER_QUANTITY) . " " . $this->service->getTag();
 
         return $this->template->render(
             "services/extra_flags/order_details",
             compact(
-                'amount',
+                'quantity',
                 'typeName',
                 'authData',
                 'password',
@@ -782,8 +782,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         // Formowanie flag do zapytania
         $set = '';
-        foreach ($flags as $flag => $amount) {
-            $set .= $this->db->prepare(", `%s` = '%d'", [$flag, $amount]);
+        foreach ($flags as $flag => $quantity) {
+            $set .= $this->db->prepare(", `%s` = '%d'", [$flag, $quantity]);
         }
 
         // Dodanie flag
@@ -914,7 +914,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $type = array_get($body, 'type');
         $password = array_get($body, 'password');
         $forever = (bool) array_get($body, 'forever');
-        $amount = array_get($body, 'amount');
+        $quantity = array_get($body, 'quantity');
         $serverId = array_get($body, 'server_id');
         $email = array_get($body, 'email');
         $uid = array_get($body, 'uid');
@@ -929,12 +929,11 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $warnings['password'] = array_merge((array) $warnings['password'], $warning);
         }
 
-        // Amount
         if (!$forever) {
-            if ($warning = check_for_warnings("number", $amount)) {
-                $warnings['amount'] = array_merge((array) $warnings['amount'], $warning);
-            } elseif ($amount < 0) {
-                $warnings['amount'][] = $this->lang->t('days_quantity_positive');
+            if ($warning = check_for_warnings("number", $quantity)) {
+                $warnings['quantity'] = array_merge((array) $warnings['quantity'], $warning);
+            } elseif ($quantity < 0) {
+                $warnings['quantity'][] = $this->lang->t('days_quantity_positive');
             }
         }
 
@@ -968,7 +967,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             'type' => $type,
             'auth_data' => $authData,
             'password' => $password,
-            Purchase::ORDER_QUANTITY => $amount,
+            Purchase::ORDER_QUANTITY => $quantity,
             Purchase::ORDER_FOREVER => $forever,
         ]);
         $purchase->setEmail($email);

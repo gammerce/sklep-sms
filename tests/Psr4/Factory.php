@@ -104,7 +104,7 @@ class Factory
     {
         $attributes = array_merge(
             [
-                'service_id' => 'gosetti',
+                'service_id' => 'vip',
             ],
             $attributes
         );

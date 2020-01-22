@@ -59,7 +59,7 @@ class PurchaseInformation
 
         $serviceModule = $this->heart->getServiceModule($pbs['service']);
 
-        return $serviceModule !== null && $serviceModule instanceof IServicePurchaseWeb
+        return $serviceModule instanceof IServicePurchaseWeb
             ? $serviceModule->purchaseInfo($data['action'], $pbs)
             : "";
     }

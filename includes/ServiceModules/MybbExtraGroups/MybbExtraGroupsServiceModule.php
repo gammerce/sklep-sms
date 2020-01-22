@@ -410,13 +410,13 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $email = $purchase->getEmail() ?: $this->lang->t('none');
         $username = $purchase->getOrder('username');
         $serviceName = $this->service->getName();
-        $amount = $purchase->getOrder(Purchase::ORDER_FOREVER)
+        $quantity = $purchase->getOrder(Purchase::ORDER_FOREVER)
             ? $this->lang->t('forever')
             : $purchase->getOrder(Purchase::ORDER_QUANTITY) . " " . $this->service->getTag();
 
         return $this->template->render(
             "services/mybb_extra_groups/order_details",
-            compact('amount', 'username', 'email', 'serviceName'),
+            compact('quantity', 'username', 'email', 'serviceName'),
             true,
             false
         );
@@ -674,21 +674,18 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     {
         $user = $this->auth->user();
         $forever = (bool) array_get($body, 'forever');
-        $amount = array_get($body, 'amount');
+        $quantity = array_get($body, 'quantity');
         $uid = array_get($body, 'uid');
         $mybbUserName = array_get($body, 'mybb_username');
         $email = array_get($body, 'email');
 
         $warnings = [];
 
-        // Amount
         if (!$forever) {
-            if ($warning = check_for_warnings("number", $amount)) {
-                $warnings['amount'] = array_merge((array) $warnings['amount'], $warning);
-            } else {
-                if ($amount < 0) {
-                    $warnings['amount'][] = $this->lang->t('days_quantity_positive');
-                }
+            if ($warning = check_for_warnings("number", $quantity)) {
+                $warnings['quantity'] = array_merge((array) $warnings['quantity'], $warning);
+            } elseif ($quantity < 0) {
+                $warnings['quantity'][] = $this->lang->t('days_quantity_positive');
             }
         }
 
@@ -746,7 +743,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         ]);
         $purchase->setOrder([
             'username' => $mybbUserName,
-            Purchase::ORDER_QUANTITY => $amount,
+            Purchase::ORDER_QUANTITY => $quantity,
             Purchase::ORDER_FOREVER => (bool) $forever,
         ]);
         $purchase->setEmail($email);

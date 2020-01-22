@@ -37,6 +37,17 @@ class ServerConfigControllerTest extends HttpTestCase
         /** @var Settings $settings */
         $settings = $this->app->make(Settings::class);
 
+        $this->factory->serverService([
+            'server_id' => $this->server->getId(),
+            'service_id' => 'vip',
+        ]);
+
+        $this->factory->price([
+            'service_id' => 'vip',
+            'sms_price' => 200,
+            'quantity' => 10,
+        ]);
+
         // when
         $response = $this->get(
             '/api/server/config',

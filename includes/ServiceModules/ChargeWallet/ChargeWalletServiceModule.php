@@ -203,13 +203,11 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
     public function orderDetails(Purchase $purchase)
     {
-        $amount = number_format($purchase->getOrder(Purchase::ORDER_QUANTITY) / 100, 2);
+        $quantity = number_format($purchase->getOrder(Purchase::ORDER_QUANTITY) / 100, 2);
 
-        return $this->template->render(
+        return $this->template->renderNoComments(
             "services/charge_wallet/order_details",
-            compact('amount'),
-            true,
-            false
+            compact('quantity')
         );
     }
 
@@ -280,9 +278,9 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
     /**
      * @param int $uid
-     * @param int $amount
+     * @param int $quantity
      */
-    private function chargeWallet($uid, $amount)
+    private function chargeWallet($uid, $quantity)
     {
         $this->db
             ->statement(
@@ -292,6 +290,6 @@ class ChargeWalletServiceModule extends ServiceModule implements
                     "SET `wallet` = `wallet` + ? " .
                     "WHERE `uid` = ?"
             )
-            ->execute([$amount, $uid]);
+            ->execute([$quantity, $uid]);
     }
 }
