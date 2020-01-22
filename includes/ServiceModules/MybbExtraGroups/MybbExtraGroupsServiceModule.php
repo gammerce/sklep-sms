@@ -674,7 +674,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     {
         $user = $this->auth->user();
         $forever = (bool) array_get($body, 'forever');
-        $quantity = array_get($body, 'quantity');
+        $quantity = as_int(array_get($body, 'quantity'));
         $uid = array_get($body, 'uid');
         $mybbUserName = array_get($body, 'mybb_username');
         $email = array_get($body, 'email');

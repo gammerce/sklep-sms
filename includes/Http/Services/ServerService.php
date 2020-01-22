@@ -46,7 +46,7 @@ class ServerService
         $name = array_get($body, 'name');
         $ip = array_get($body, 'ip');
         $port = array_get($body, 'port');
-        $smsPlatformId = array_get($body, 'sms_platform');
+        $smsPlatformId = as_int(array_get($body, 'sms_platform'));
 
         $warnings = [];
 

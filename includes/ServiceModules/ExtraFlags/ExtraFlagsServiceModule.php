@@ -349,12 +349,12 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function purchaseFormValidate(Purchase $purchase, array $body)
     {
-        $priceId = array_get($body, "price_id");
-        $serverId = array_get($body, "server_id");
-        $type = array_get($body, "type");
-        $password = array_get($body, "password");
-        $passwordRepeat = array_get($body, "password_repeat");
-        $email = array_get($body, "email");
+        $priceId = as_int(array_get($body, 'price_id'));
+        $serverId = as_int(array_get($body, 'server_id'));
+        $type = as_int(array_get($body, 'type'));
+        $password = array_get($body, 'password');
+        $passwordRepeat = array_get($body, 'password_repeat');
+        $email = array_get($body, 'email');
 
         $authData = $this->getAuthData($body);
         $price = $this->priceRepository->get($priceId);
@@ -911,13 +911,13 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $body['auth_data'] = trim($this->getAuthData($body));
         $authData = array_get($body, 'auth_data');
-        $type = array_get($body, 'type');
+        $type = as_int(array_get($body, 'type'));
         $password = array_get($body, 'password');
         $forever = (bool) array_get($body, 'forever');
-        $quantity = array_get($body, 'quantity');
-        $serverId = array_get($body, 'server_id');
+        $quantity = as_int(array_get($body, 'quantity'));
+        $serverId = as_int(array_get($body, 'server_id'));
         $email = array_get($body, 'email');
-        $uid = array_get($body, 'uid');
+        $uid = as_int(array_get($body, 'uid'));
 
         $warnings = [];
 
@@ -1084,7 +1084,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $forever = (bool) array_get($body, 'forever');
         $expire = array_get($body, 'expire');
         $password = array_get($body, 'password');
-        $type = array_get($body, 'type');
+        $type = as_int(array_get($body, 'type'));
 
         // Expire
         if (!$forever && ($expire = strtotime($expire)) === false) {
@@ -1309,7 +1309,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $body['auth_data'] = $this->getAuthData($body);
         $password = array_get($body, 'password');
-        $type = array_get($body, 'type');
+        $type = as_int(array_get($body, 'type'));
         $authData = array_get($body, 'auth_data');
 
         // Sprawdzamy, czy ustawiono hasło, gdy hasła nie ma w bazie i dana usługa wymaga hasła
@@ -1554,19 +1554,19 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     {
         $user = $this->auth->user();
 
-        $server = array_get($body, 'server_id');
-        $type = array_get($body, 'type');
+        $serverId = as_int(array_get($body, 'server_id'));
+        $type = as_int(array_get($body, 'type'));
         $nick = array_get($body, 'nick');
         $ip = array_get($body, 'ip');
         $password = array_get($body, 'password');
         $steamId = array_get($body, 'sid');
-        $paymentMethod = array_get($body, 'payment');
+        $paymentMethod = array_get($body, 'payment_method');
         $paymentId = array_get($body, 'payment_id');
 
         $warnings = [];
 
         // Serwer
-        if (!strlen($server)) {
+        if (!strlen($serverId)) {
             $warnings['server_id'][] = $this->lang->t('field_no_empty');
         }
 
@@ -1576,8 +1576,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
 
         switch ($type) {
-            case "1":
-                // Nick
+            case ExtraFlagType::TYPE_NICK:
                 if (!strlen($nick)) {
                     $warnings['nick'][] = $this->lang->t('field_no_empty');
                 }
@@ -1590,7 +1589,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 $authData = $nick;
                 break;
 
-            case "2":
+            case ExtraFlagType::TYPE_IP:
                 // IP
                 if (!strlen($ip)) {
                     $warnings['ip'][] = $this->lang->t('field_no_empty');
@@ -1604,7 +1603,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 $authData = $ip;
                 break;
 
-            case "4":
+            case ExtraFlagType::TYPE_SID:
                 // SID
                 if (!strlen($steamId)) {
                     $warnings['sid'][] = $this->lang->t('field_no_empty');
@@ -1614,15 +1613,12 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 break;
         }
 
-        // Płatność
-        if (!strlen($paymentMethod)) {
-            $warnings['payment'][] = $this->lang->t('field_no_empty');
+        if (!in_array($paymentMethod, [Purchase::METHOD_SMS, Purchase::METHOD_TRANSFER])) {
+            $warnings['payment_method'][] = $this->lang->t('field_no_empty');
         }
 
-        if (in_array($paymentMethod, [Purchase::METHOD_SMS, Purchase::METHOD_TRANSFER])) {
-            if (!strlen($paymentId)) {
-                $warnings['payment_id'][] = $this->lang->t('field_no_empty');
-            }
+        if (!strlen($paymentId)) {
+            $warnings['payment_id'][] = $this->lang->t('field_no_empty');
         }
 
         if ($warnings) {
@@ -1639,7 +1635,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 $this->db->prepare(
                     "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
                         "WHERE t.payment = 'transfer' AND t.payment_id = '%s' AND `service` = '%s' AND `server` = '%d' AND `auth_data` = '%s'",
-                    [$paymentId, $this->service->getId(), $server, $authData]
+                    [$paymentId, $this->service->getId(), $serverId, $authData]
                 )
             );
 
@@ -1655,7 +1651,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 $this->db->prepare(
                     "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
                         "WHERE t.payment = 'sms' AND t.sms_code = '%s' AND `service` = '%s' AND `server` = '%d' AND `auth_data` = '%s'",
-                    [$paymentId, $this->service->getId(), $server, $authData]
+                    [$paymentId, $this->service->getId(), $serverId, $authData]
                 )
             );
 
@@ -1677,7 +1673,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                     $this::USER_SERVICE_TABLE .
                     "` AS usef ON us.id = usef.us_id " .
                     "WHERE us.service = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND ( `password` = '%s' OR `password` = '%s' )",
-                [$this->service->getId(), $server, $type, $authData, $password, md5($password)]
+                [$this->service->getId(), $serverId, $type, $authData, $password, md5($password)]
             )
         );
 
@@ -1701,14 +1697,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 [$user->getUid(), $row['id']]
             )
         );
-
-        if (!$statement->rowCount()) {
-            return [
-                'status' => "service_not_taken_over",
-                'text' => $this->lang->t('service_not_taken_over'),
-                'positive' => false,
-            ];
-        }
 
         return [
             'status' => "ok",

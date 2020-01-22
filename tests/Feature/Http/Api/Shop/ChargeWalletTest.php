@@ -107,6 +107,6 @@ class ChargeWalletTest extends HttpTestCase
         ]);
         $this->assertSame(200, $response->getStatusCode());
         $freshUser = $this->userRepository->get($user->getUid());
-        $this->assertSame(250, $freshUser->getWallet());
+        $this->assertSame(326, $freshUser->getWallet());
     }
 }

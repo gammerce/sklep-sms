@@ -92,7 +92,7 @@ class SmsPaymentService
     }
 
     private function storePaymentSms(
-        SupportSms $paymentModule,
+        SupportSms $smsPaymentModule,
         SmsSuccessResult $result,
         $code,
         SmsNumber $smsNumber,
@@ -107,9 +107,9 @@ class SmsPaymentService
             )
             ->execute([
                 $code,
-                $this->smsPriceService->getProvision($smsNumber->getPrice(), $paymentModule),
+                $this->smsPriceService->getProvision($smsNumber->getPrice(), $smsPaymentModule),
                 $this->smsPriceService->getGross($smsNumber->getPrice()),
-                $paymentModule->getSmsCode(),
+                $smsPaymentModule->getSmsCode(),
                 $smsNumber->getNumber(),
                 $user->getLastIp(),
                 $user->getPlatform(),

@@ -30,7 +30,7 @@ class TransferPaymentServiceTest extends TestCase
         ]);
 
         /** @var SupportTransfer $paymentModule */
-        $paymentModule = $heart->getPaymentModuleOrFail($paymentPlatform);
+        $paymentModule = $heart->getPaymentModule($paymentPlatform);
 
         $serviceId = "vip";
         $serviceModule = $heart->getServiceModule($serviceId);

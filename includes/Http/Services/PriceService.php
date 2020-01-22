@@ -31,14 +31,9 @@ class PriceService
     public function validateBody(array $body)
     {
         $serviceId = array_get($body, 'service_id');
-        $serverId = array_get($body, 'server_id');
-        $quantity = array_get($body, 'quantity');
-
-        if (strlen(array_get($body, 'sms_price'))) {
-            $smsPrice = (int) array_get($body, 'sms_price');
-        } else {
-            $smsPrice = null;
-        }
+        $serverId = as_int(array_get($body, 'server_id'));
+        $quantity = as_int(array_get($body, 'quantity'));
+        $smsPrice = as_int(array_get($body, 'sms_price'));
 
         if (strlen(array_get($body, 'transfer_price'))) {
             $transferPrice = array_get($body, 'transfer_price') * 100;

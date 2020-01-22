@@ -120,7 +120,7 @@ class ChargeWalletServiceModule extends ServiceModule implements
     public function purchaseFormValidate(Purchase $purchase, array $body)
     {
         $method = array_get($body, 'method');
-        $smsPrice = array_get($body, 'sms_price');
+        $smsPrice = as_int(array_get($body, 'sms_price'));
         $transferPrice = array_get($body, 'transfer_price');
 
         if (!$this->auth->check()) {
@@ -177,13 +177,22 @@ class ChargeWalletServiceModule extends ServiceModule implements
         ]);
 
         if ($method == Purchase::METHOD_SMS) {
-            $purchase->setPayment([
-                Purchase::PAYMENT_SMS_PRICE => $smsPrice,
-                Purchase::PAYMENT_TRANSFER_DISABLED => true,
-            ]);
-            $purchase->setOrder([
-                Purchase::ORDER_QUANTITY => $this->smsPriceService->getProvision($smsPrice, null),
-            ]);
+            $smsPaymentModule = $this->heart->getPaymentModuleByPlatformId(
+                $purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM)
+            );
+
+            if ($smsPaymentModule instanceof SupportSms) {
+                $purchase->setPayment([
+                    Purchase::PAYMENT_SMS_PRICE => $smsPrice,
+                    Purchase::PAYMENT_TRANSFER_DISABLED => true,
+                ]);
+                $purchase->setOrder([
+                    Purchase::ORDER_QUANTITY => $this->smsPriceService->getProvision(
+                        $smsPrice,
+                        $smsPaymentModule
+                    ),
+                ]);
+            }
         } elseif ($method == Purchase::METHOD_TRANSFER) {
             $purchase->setPayment([
                 Purchase::PAYMENT_TRANSFER_PRICE => $transferPrice * 100,
@@ -241,20 +250,16 @@ class ChargeWalletServiceModule extends ServiceModule implements
         if ($action == "web") {
             if ($data['payment'] == Purchase::METHOD_SMS) {
                 $desc = $this->lang->t('wallet_was_charged', $data['amount']);
-                return $this->template->render(
+                return $this->template->renderNoComments(
                     "services/charge_wallet/web_purchase_info_sms",
-                    compact('desc', 'data'),
-                    true,
-                    false
+                    compact('desc', 'data')
                 );
             }
 
             if ($data['payment'] == Purchase::METHOD_TRANSFER) {
-                return $this->template->render(
+                return $this->template->renderNoComments(
                     "services/charge_wallet/web_purchase_info_transfer",
-                    compact('data'),
-                    true,
-                    false
+                    compact('data')
                 );
             }
 

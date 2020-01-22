@@ -94,6 +94,7 @@ At the next step, an e-mail with a link to restore password will be send to you.
         'Service cannot be displayed, because its module does not provide such functionality.',
     'service_takeover' =>
         '<strong>Service takeover</strong> is to assign specific, time-bound service to your account. Usually used when buying service while not logged in.',
+    'service_taken_over' => 'Service has been taken over.',
     'service_was_bought' => 'Service {1} was purchased on server {2}',
     'show_more' => 'Show more',
     'sign_up_info' => 'Your account has been registered successfully, e-mail: {1}.<br/>

@@ -56,15 +56,13 @@ class SmsPriceService
      * @param SupportSms|null $paymentModule
      * @return int
      */
-    public function getProvision($smsPrice, SupportSms $paymentModule = null)
+    public function getProvision($smsPrice, SupportSms $paymentModule)
     {
-        if ($paymentModule) {
-            $smsNumbers = $paymentModule::getSmsNumbers();
+        $smsNumbers = $paymentModule::getSmsNumbers();
 
-            foreach ($smsNumbers as $smsNumber) {
-                if ($smsNumber->getPrice() === $smsPrice) {
-                    return $smsNumber->getProvision();
-                }
+        foreach ($smsNumbers as $smsNumber) {
+            if ($smsNumber->getPrice() === $smsPrice) {
+                return $smsNumber->getProvision();
             }
         }
 

@@ -96,6 +96,7 @@ W kolejnym etapie, zostanie do Ciebie wysłany e-mail z linkiem do zresetowania 
         'Usługa nie może zostać wyświetlona, ponieważ jej moduł nie zapewnia takiej funkcjonalności.',
     'service_takeover' => '<strong>Przejęcie usługi</strong> służy do przypisania konkretnej, czasowej usługi do swojego konta. Zazwyczaj używane,
 	gdy zakupiliśmy usługę nie będąc zalogowani.',
+    'service_taken_over' => 'Usługa została przejęta.',
     'service_was_bought' => 'Zakupiono usługę {1} na serwerze {2}',
     'show_more' => 'Pokaż więcej',
     'sign_up_info' => 'Twoje konto zostało prawidłowo zarejestrowane na adres email: {1}.<br/>

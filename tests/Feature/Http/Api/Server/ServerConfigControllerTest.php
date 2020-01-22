@@ -96,7 +96,6 @@ class ServerConfigControllerTest extends HttpTestCase
             "pr.0.s:vip",
             "pr.0.p:200",
             "pr.0.q:10",
-
         ];
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame(implode("\n", $data), $response->getContent());

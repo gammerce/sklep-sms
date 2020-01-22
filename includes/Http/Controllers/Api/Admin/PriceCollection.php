@@ -22,14 +22,9 @@ class PriceCollection
         $lang = $translationManager->user();
 
         $serviceId = $request->request->get('service_id');
-        $serverId = $request->request->get('server_id') ?: null;
-        $quantity = $request->request->get('quantity') ?: null;
-
-        if (strlen($request->request->get('sms_price'))) {
-            $smsPrice = (int) $request->request->get('sms_price');
-        } else {
-            $smsPrice = null;
-        }
+        $serverId = as_int($request->request->get('server_id'));
+        $quantity = as_int($request->request->get('quantity'));
+        $smsPrice = as_int($request->request->get('sms_price'));
 
         if (strlen($request->request->get('transfer_price'))) {
             $transferPrice = $request->request->get('transfer_price') * 100;

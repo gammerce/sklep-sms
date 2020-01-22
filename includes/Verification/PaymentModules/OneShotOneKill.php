@@ -25,8 +25,12 @@ class OneShotOneKill extends PaymentModule implements SupportSms
     /** @var FileLogger */
     private $fileLogger;
 
-    public function __construct(Database $database, Requester $requester, PaymentPlatform $paymentPlatform, FileLogger $fileLogger)
-    {
+    public function __construct(
+        Database $database,
+        Requester $requester,
+        PaymentPlatform $paymentPlatform,
+        FileLogger $fileLogger
+    ) {
         parent::__construct($database, $requester, $paymentPlatform);
         $this->fileLogger = $fileLogger;
     }
@@ -39,22 +43,22 @@ class OneShotOneKill extends PaymentModule implements SupportSms
     public static function getSmsNumbers()
     {
         return [
-            new SmsNumber("7136",65),
-            new SmsNumber("7255",130),
-            new SmsNumber("7355",195),
-            new SmsNumber("7455",260),
-            new SmsNumber("7555",325),
-            new SmsNumber("7636",390),
-            new SmsNumber("77464",455),
-            new SmsNumber("78464",520),
-            new SmsNumber("7936",585),
-            new SmsNumber("91055",650),
-            new SmsNumber("91155",715),
-            new SmsNumber("91455",910),
-            new SmsNumber("91664",1040),
-            new SmsNumber("91955",1235),
-            new SmsNumber("92055",1300),
-            new SmsNumber("92555",1625),
+            new SmsNumber("7136", 65),
+            new SmsNumber("7255", 130),
+            new SmsNumber("7355", 195),
+            new SmsNumber("7455", 260),
+            new SmsNumber("7555", 325),
+            new SmsNumber("7636", 390),
+            new SmsNumber("77464", 455),
+            new SmsNumber("78464", 520),
+            new SmsNumber("7936", 585),
+            new SmsNumber("91055", 650),
+            new SmsNumber("91155", 715),
+            new SmsNumber("91455", 910),
+            new SmsNumber("91664", 1040),
+            new SmsNumber("91955", 1235),
+            new SmsNumber("92055", 1300),
+            new SmsNumber("92555", 1625),
         ];
     }
 
@@ -76,7 +80,7 @@ class OneShotOneKill extends PaymentModule implements SupportSms
             throw new ServerErrorException();
         }
 
-        $responseNumber = $this->getSmsNumberByPrice((int)($content['amount'] * 100));
+        $responseNumber = $this->getSmsNumberByPrice((int) ($content['amount'] * 100));
 
         if ($responseNumber === null) {
             $this->fileLogger->error("1s1k invalid amount [{$content['amount']}]");
