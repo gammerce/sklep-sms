@@ -75,12 +75,12 @@ class PurchaseResourceWalletTest extends HttpTestCase
         $response = $this->post(
             '/api/server/purchase',
             [
-                'server_id' => $this->server->getId(),
-                'service_id' => $this->serviceId,
-                'type' => ExtraFlagType::TYPE_SID,
+                'server_id' => (string) $this->server->getId(),
+                'service_id' => (string) $this->serviceId,
+                'type' => (string) ExtraFlagType::TYPE_SID,
                 'auth_data' => $this->steamId,
                 'ip' => $this->ip,
-                'price_id' => $this->price->getId(),
+                'price_id' => (string) $this->price->getId(),
                 'method' => Purchase::METHOD_WALLET,
                 'sign' => $sign,
             ],

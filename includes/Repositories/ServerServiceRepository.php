@@ -49,6 +49,6 @@ class ServerServiceRepository
 
     public function mapToModel($serverId, $serviceId)
     {
-        return new ServerService((int) $serverId, $serviceId);
+        return new ServerService(as_int($serverId), $serviceId);
     }
 }

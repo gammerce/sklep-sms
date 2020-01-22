@@ -30,15 +30,15 @@ class PurchaseService
 
     public function purchase(ServiceModule $serviceModule, array $body)
     {
-        $serverId = array_get($body, 'server_id');
-        $type = array_get($body, 'type');
+        $serverId = as_int(array_get($body, 'server_id'));
+        $type = as_int(array_get($body, 'type'));
         $authData = array_get($body, 'auth_data');
         $password = array_get($body, 'password');
         $ip = array_get($body, 'ip');
         $method = array_get($body, 'method');
         $smsCode = array_get($body, 'sms_code');
-        $paymentPlatformId = array_get($body, 'payment_platform_id');
-        $priceId = array_get($body, 'price_id');
+        $paymentPlatformId = as_int(array_get($body, 'payment_platform_id'));
+        $priceId = as_int(array_get($body, 'price_id'));
 
         $price = $this->priceRepository->get($priceId);
 

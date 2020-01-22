@@ -34,7 +34,7 @@ $(document).delegate("#form_purchase [name=server_id]", "change", function() {
         "POST",
         "/api/services/" + serviceId + "/actions/prices_for_server",
         {
-            server: $(this).val(),
+            server_id: $(this).val(),
         },
         function(html) {
             form.find("[name=price_id]").html(html);

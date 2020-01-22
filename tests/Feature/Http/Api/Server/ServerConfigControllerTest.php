@@ -54,15 +54,25 @@ class ServerConfigControllerTest extends HttpTestCase
         // then
         $data = [
             "id:{$this->server->getId()}",
+            "license_token:abc123",
             "sms_platform_id:{$this->paymentPlatform->getId()}",
-            "sms_module_id:gosetti",
             "sms_text:abc123",
-            "services:  ",
             "steam_ids:;",
             "currency:PLN",
             "contact:",
             "vat:1.23",
-            "license_token:abc123",
+            "sn.c:11",
+            "sn.0:71480",
+            "sn.1:72480",
+            "sn.2:73480",
+            "sn.3:74480",
+            "sn.4:75480",
+            "sn.5:76480",
+            "sn.6:79480",
+            "sn.7:91400",
+            "sn.8:91900",
+            "sn.9:92022",
+            "sn.10:92521",
         ];
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame(implode("\n", $data), $response->getContent());
@@ -93,7 +103,6 @@ class ServerConfigControllerTest extends HttpTestCase
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertSame("gosetti", $json["sms_module_id"]);
         $this->assertSame($this->paymentPlatform->getId(), $json["sms_platform_id"]);
         $this->assertSame($settings->getVat(), $json["vat"]);
         $this->assertSame("abc123", $json["license_token"]);

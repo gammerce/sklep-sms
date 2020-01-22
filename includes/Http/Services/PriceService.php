@@ -64,7 +64,7 @@ class PriceService
             $warnings['transfer_price'][] = $this->lang->t('invalid_price');
         }
 
-        if ($warning = check_for_warnings("number", $quantity)) {
+        if ($quantity && ($warning = check_for_warnings("number", $quantity))) {
             $warnings['quantity'] = array_merge((array) $warnings['quantity'], $warning);
         }
 

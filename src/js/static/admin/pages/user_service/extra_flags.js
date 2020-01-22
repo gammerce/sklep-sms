@@ -40,7 +40,7 @@ $(document).delegate("#form_user_service_edit [name=service_id]", "change", func
         "POST",
         "/api/services/" + serviceId + "/actions/servers_for_service",
         {
-            server: module.find("[name=server_id]").val(),
+            server_id: module.find("[name=server_id]").val(),
         },
         function(html) {
             module.find("[name=server_id]").html(html);

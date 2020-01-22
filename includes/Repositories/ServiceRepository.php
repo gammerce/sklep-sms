@@ -49,6 +49,10 @@ class ServiceRepository
 
     public function findMany(array $ids)
     {
+        if (!$ids) {
+            return [];
+        }
+
         $keys = implode(",", array_fill(0, count($ids), "?"));
         $statement = $this->db->statement(
             "SELECT * FROM `ss_services` WHERE `id` IN ({$keys}) ORDER BY `order` ASC"

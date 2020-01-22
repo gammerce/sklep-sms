@@ -46,6 +46,6 @@ class PaymentCodeRepository
 
     private function mapToModel(array $data)
     {
-        return new PaymentCode((int) $data['id'], $data['code'], $data['ip'], $data['platform']);
+        return new PaymentCode(as_int($data['id']), $data['code'], $data['ip'], $data['platform']);
     }
 }

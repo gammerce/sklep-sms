@@ -611,3 +611,21 @@ function collect($items)
 {
     return new Collection($items);
 }
+
+function is_list(array $array)
+{
+    return ctype_digit(implode('', array_keys($array)));
+}
+
+/**
+ * @param mixed $value
+ * @return int|null
+ */
+function as_int($value)
+{
+    if ($value === null || $value === "") {
+        return null;
+    }
+
+    return (int) $value;
+}

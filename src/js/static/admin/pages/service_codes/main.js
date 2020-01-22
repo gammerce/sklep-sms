@@ -127,7 +127,7 @@ $(document).delegate("#form_service_code_add [name=server_id]", "change", functi
         "POST",
         "/api/services/" + serviceId + "/actions/prices_for_server",
         {
-            server: $(this).val(),
+            server_id: $(this).val(),
         },
         function(html) {
             form.find("[name=price_id]").html(html);

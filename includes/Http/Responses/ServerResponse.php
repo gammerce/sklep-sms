@@ -19,6 +19,10 @@ class ServerResponse extends Response
     {
         $output = [];
 
+        if (is_list($data)) {
+            $output[] = $this->createEntry("$prefix.c", count($data));
+        }
+
         foreach ($data as $key => $value) {
             $valueKey = "$prefix.$key";
 
@@ -27,13 +31,18 @@ class ServerResponse extends Response
                     $output[] = $item;
                 }
             } else {
-                $trimmedValueKey = ltrim($valueKey, ".");
-                $escapedValueKey = str_replace("\n", " ", $trimmedValueKey);
-                $escapedValue = str_replace("\n", " ", $value);
-                $output[] = "$escapedValueKey:$escapedValue";
+                $output[] = $this->createEntry($valueKey, $value);
             }
         }
 
         return $output;
+    }
+
+    private function createEntry($key, $value)
+    {
+        $trimmedKey = ltrim($key, ".");
+        $escapedKey = str_replace("\n", " ", $trimmedKey);
+        $escapedValue = str_replace("\n", " ", $value);
+        return "$escapedKey:$escapedValue";
     }
 }

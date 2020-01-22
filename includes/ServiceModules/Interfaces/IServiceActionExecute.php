@@ -11,5 +11,5 @@ interface IServiceActionExecute
      *
      * @return string
      */
-    public function actionExecute($action, $body);
+    public function actionExecute($action, array $body);
 }

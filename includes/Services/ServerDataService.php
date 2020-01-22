@@ -43,6 +43,10 @@ class ServerDataService
      */
     public function findPrices(array $serviceIds, Server $server)
     {
+        if (!$serviceIds) {
+            return [];
+        }
+
         $keys = implode(",", array_fill(0, count($serviceIds), "?"));
 
         $statement = $this->db->statement(

@@ -124,11 +124,11 @@ class ServerRepository
     private function mapToModel(array $data)
     {
         return new Server(
-            (int) $data['id'],
+            as_int($data['id']),
             $data['name'],
             $data['ip'],
             $data['port'],
-            $data['sms_platform'] !== null ? (int) $data['sms_platform'] : null,
+            as_int($data['sms_platform']),
             $data['type'],
             $data['version'],
             $data['last_active_at']

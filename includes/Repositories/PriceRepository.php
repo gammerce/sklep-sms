@@ -107,12 +107,12 @@ class PriceRepository
     public function mapToModel(array $data)
     {
         return new Price(
-            (int) $data['id'],
+            as_int($data['id']),
             $data['service'],
-            $data['server'] !== null ? (int) $data['server'] : null,
-            $data['sms_price'] !== null ? (int) $data['sms_price'] : null,
-            $data['transfer_price'] !== null ? (int) $data['transfer_price'] : null,
-            $data['quantity'] !== null ? (int) $data['quantity'] : null
+            as_int($data['server']),
+            as_int($data['sms_price']),
+            as_int($data['transfer_price']),
+            as_int($data['quantity'])
         );
     }
 }

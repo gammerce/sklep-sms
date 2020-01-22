@@ -1769,13 +1769,13 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         ]);
     }
 
-    public function actionExecute($action, $data)
+    public function actionExecute($action, array $body)
     {
         switch ($action) {
             case "prices_for_server":
-                return $this->pricesForServer((int) $data['server']);
+                return $this->pricesForServer((int) $body['server_id']);
             case "servers_for_service":
-                return $this->serversForService((int) $data['server']);
+                return $this->serversForService((int) $body['server_id']);
             default:
                 return '';
         }
