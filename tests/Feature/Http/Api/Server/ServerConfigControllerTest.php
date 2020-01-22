@@ -44,7 +44,7 @@ class ServerConfigControllerTest extends HttpTestCase
                 'key' => md5($settings->get("random_key")),
                 'ip' => $this->server->getIp(),
                 'port' => $this->server->getPort(),
-                'version' => '3.8.0',
+                'version' => '3.9.0',
             ],
             [
                 'User-Agent' => Server::TYPE_AMXMODX,
@@ -92,7 +92,7 @@ class ServerConfigControllerTest extends HttpTestCase
                 'key' => md5($settings->get("random_key")),
                 'ip' => $this->server->getIp(),
                 'port' => $this->server->getPort(),
-                'version' => '3.8.0',
+                'version' => '3.9.0',
             ],
             [
                 'Accept' => 'application/json',
@@ -133,7 +133,7 @@ class ServerConfigControllerTest extends HttpTestCase
                 'key' => md5($settings->get("random_key")),
                 'ip' => $this->server->getIp(),
                 'port' => $this->server->getPort(),
-                'version' => '3.7.0',
+                'version' => '3.8.0',
             ],
             [
                 'User-Agent' => Server::TYPE_SOURCEMOD,
@@ -184,7 +184,7 @@ class ServerConfigControllerTest extends HttpTestCase
                 'key' => md5($settings->get("random_key")),
                 'ip' => '1.1.1.1',
                 'port' => '11111',
-                'version' => '3.8.0',
+                'version' => '3.9.0',
             ],
             [
                 'User-Agent' => Server::TYPE_AMXMODX,

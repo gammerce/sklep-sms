@@ -123,8 +123,8 @@ class ServerConfigController
     private function isVersionAcceptable($platform, $version)
     {
         $minimumVersions = [
-            Server::TYPE_AMXMODX => "3.8.0",
-            Server::TYPE_SOURCEMOD => "3.7.0",
+            Server::TYPE_AMXMODX => "3.9.0",
+            Server::TYPE_SOURCEMOD => "3.8.0",
         ];
 
         $minimumVersion = array_get($minimumVersions, $platform);
