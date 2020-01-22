@@ -79,6 +79,7 @@ class ServerConfigController
         $priceItems = collect($prices)
             ->map(function (Price $price) {
                 return [
+                    'i' => $price->getId(),
                     's' => $price->getServiceId(),
                     'p' => $price->getSmsPrice(),
                     'q' => $price->getQuantity(),
@@ -88,10 +89,7 @@ class ServerConfigController
 
         $smsNumberItems = collect($smsNumbers)
             ->map(function (SmsNumber $smsNumber) {
-                return [
-                    'n' => $smsNumber->getNumber(),
-                    'p' => $smsNumber->getPrice(),
-                ];
+                return $smsNumber->getNumber();
             })
             ->toArray();
 
@@ -108,7 +106,6 @@ class ServerConfigController
             'license_token' => $settings->getLicenseToken(),
             'sms_platform_id' => $smsPlatformId,
             'sms_text' => $smsModule->getSmsCode(),
-            'services' => " " . implode(" ", $serviceIds) . " ",
             'steam_ids' => implode(";", $steamIds) . ";",
             'currency' => $settings->getCurrency(),
             'contact' => $settings->getContact(),
