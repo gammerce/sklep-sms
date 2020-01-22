@@ -1,7 +1,11 @@
 <?php
 namespace App\Verification\PaymentModules;
 
+use App\Loggers\FileLogger;
+use App\Models\PaymentPlatform;
 use App\Models\SmsNumber;
+use App\Requesting\Requester;
+use App\System\Database;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\DataField;
@@ -18,24 +22,14 @@ class OneShotOneKill extends PaymentModule implements SupportSms
 {
     const MODULE_ID = "1s1k";
 
-    private $rates = [
-        '0.65' => '7136',
-        '1.30' => '7255',
-        '1.95' => '7355',
-        '2.60' => '7455',
-        '3.25' => '7555',
-        '3.90' => '7636',
-        '4.55' => '77464',
-        '5.20' => '78464',
-        '5.85' => '7936',
-        '6.50' => '91055',
-        '7.15' => '91155',
-        '9.10' => '91455',
-        '10.40' => '91664',
-        '12.35' => '91955',
-        '13.00' => '92055',
-        '16.25' => '92555',
-    ];
+    /** @var FileLogger */
+    private $fileLogger;
+
+    public function __construct(Database $database, Requester $requester, PaymentPlatform $paymentPlatform, FileLogger $fileLogger)
+    {
+        parent::__construct($database, $requester, $paymentPlatform);
+        $this->fileLogger = $fileLogger;
+    }
 
     public static function getDataFields()
     {
@@ -45,22 +39,22 @@ class OneShotOneKill extends PaymentModule implements SupportSms
     public static function getSmsNumbers()
     {
         return [
-            new SmsNumber("7136"),
-            new SmsNumber("7255"),
-            new SmsNumber("7355"),
-            new SmsNumber("7455"),
-            new SmsNumber("7555"),
-            new SmsNumber("7636"),
-            new SmsNumber("77464"),
-            new SmsNumber("78464"),
-            new SmsNumber("7936"),
-            new SmsNumber("91055"),
-            new SmsNumber("91155"),
-            new SmsNumber("91455"),
-            new SmsNumber("91664"),
-            new SmsNumber("91955"),
-            new SmsNumber("92055"),
-            new SmsNumber("92555"),
+            new SmsNumber("7136",65),
+            new SmsNumber("7255",130),
+            new SmsNumber("7355",195),
+            new SmsNumber("7455",260),
+            new SmsNumber("7555",325),
+            new SmsNumber("7636",390),
+            new SmsNumber("77464",455),
+            new SmsNumber("78464",520),
+            new SmsNumber("7936",585),
+            new SmsNumber("91055",650),
+            new SmsNumber("91155",715),
+            new SmsNumber("91455",910),
+            new SmsNumber("91664",1040),
+            new SmsNumber("91955",1235),
+            new SmsNumber("92055",1300),
+            new SmsNumber("92555",1625),
         ];
     }
 
@@ -82,7 +76,12 @@ class OneShotOneKill extends PaymentModule implements SupportSms
             throw new ServerErrorException();
         }
 
-        $responseNumber = $this->rates[number_format(floatval($content['amount']), 2)];
+        $responseNumber = $this->getSmsNumberByPrice((int)($content['amount'] * 100));
+
+        if ($responseNumber === null) {
+            $this->fileLogger->error("1s1k invalid amount [{$content['amount']}]");
+            throw new ServerErrorException();
+        }
 
         switch ($content['status']) {
             case 'ok':
@@ -120,5 +119,16 @@ class OneShotOneKill extends PaymentModule implements SupportSms
     private function getApi()
     {
         return $this->getData('api');
+    }
+
+    private function getSmsNumberByPrice($price)
+    {
+        foreach (OneShotOneKill::getSmsNumbers() as $smsNumber) {
+            if ($smsNumber->getPrice() === $price) {
+                return $smsNumber->getNumber();
+            }
+        }
+
+        return null;
     }
 }

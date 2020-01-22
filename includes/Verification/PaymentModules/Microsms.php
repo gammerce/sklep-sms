@@ -80,17 +80,17 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
     public static function getSmsNumbers()
     {
         return [
-            new SmsNumber("71480"),
-            new SmsNumber("72480"),
-            new SmsNumber("73480"),
-            new SmsNumber("74480"),
-            new SmsNumber("75480"),
-            new SmsNumber("76480"),
-            new SmsNumber("79480"),
-            new SmsNumber("91400"),
-            new SmsNumber("91900"),
-            new SmsNumber("92022"),
-            new SmsNumber("92521"),
+            new SmsNumber("71480", 48),
+            new SmsNumber("72480", 96),
+            new SmsNumber("73480", 144),
+            new SmsNumber("74480", 192),
+            new SmsNumber("75480", 240),
+            new SmsNumber("76480", 288),
+            new SmsNumber("79480", 432),
+            new SmsNumber("91400", 672),
+            new SmsNumber("91900", 912),
+            new SmsNumber("92022", 960),
+            new SmsNumber("92521", 1200),
         ];
     }
 

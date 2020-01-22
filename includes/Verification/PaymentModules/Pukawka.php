@@ -27,16 +27,16 @@ class Pukawka extends PaymentModule implements SupportSms
     public static function getSmsNumbers()
     {
         return [
-            new SmsNumber("71480"),
-            new SmsNumber("72480"),
-            new SmsNumber("73480"),
-            new SmsNumber("74480"),
-            new SmsNumber("75480"),
-            new SmsNumber("76480"),
-            new SmsNumber("79480"),
-            new SmsNumber("91400"),
-            new SmsNumber("91900"),
-            new SmsNumber("92550"),
+            new SmsNumber("71480", 65),
+            new SmsNumber("72480", 130),
+            new SmsNumber("73480", 196),
+            new SmsNumber("74480", 261),
+            new SmsNumber("75480", 326),
+            new SmsNumber("76480", 391),
+            new SmsNumber("79480", 587),
+            new SmsNumber("91400", 913),
+            new SmsNumber("91900", 1239),
+            new SmsNumber("92550", 1630),
         ];
     }
 
