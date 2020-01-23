@@ -27,7 +27,6 @@ class WalletPaymentService
      */
     public function payWithWallet($cost, $user)
     {
-        // Sprawdzanie, czy jest wystarczająca ilość kasy w portfelu
         if ($cost > $user->getWallet()) {
             return [
                 'status' => "no_money",
@@ -36,19 +35,16 @@ class WalletPaymentService
             ];
         }
 
-        // Zabieramy kasę z portfela
         $this->chargeWallet($user->getUid(), -$cost);
 
-        // Dodajemy informacje o płatności portfelem
-        $this->db->query(
-            $this->db->prepare(
+        $this->db
+            ->statement(
                 "INSERT INTO `" .
                     TABLE_PREFIX .
                     "payment_wallet` " .
-                    "SET `cost` = '%d', `ip` = '%s', `platform` = '%s'",
-                [$cost, $user->getLastIp(), $user->getPlatform()]
+                    "SET `cost` = ?, `ip` = ?, `platform` = ?"
             )
-        );
+            ->execute([$cost, $user->getLastIp(), $user->getPlatform()]);
 
         return $this->db->lastId();
     }
@@ -59,15 +55,14 @@ class WalletPaymentService
      */
     private function chargeWallet($uid, $amount)
     {
-        $this->db->query(
-            $this->db->prepare(
+        $this->db
+            ->statement(
                 "UPDATE `" .
                     TABLE_PREFIX .
                     "users` " .
-                    "SET `wallet` = `wallet` + '%d' " .
-                    "WHERE `uid` = '%d'",
-                [$amount, $uid]
+                    "SET `wallet` = `wallet` + ? " .
+                    "WHERE `uid` = ?"
             )
-        );
+            ->execute([$amount, $uid]);
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'add_code_to_reuse' => 'Code was added to the list of codes to be used. Code: {1} Tariff: {2}." .
-	"An attempt to use it by {3}({4})({5}) with service purchase, tariff: {6}.',
+    'add_code_to_reuse' => 'Code was added to the list of codes to be used. Code: {1} SMS price: {2}." .
+	"An attempt to use it by {3}({4})({5}), expected SMS Price: {6}.',
     'admin' => 'Admin',
     'answer' => 'Answer',
     'antispam_question' => 'Antispam question',
@@ -42,8 +42,6 @@ return [
     'no_login_password' =>
         'Unfortunately, without providing nickname and login, you can\'t log in.',
     'no_reset_key' => 'No reset key was given.',
-    'no_sms_payment' =>
-        'You can\'t pay by SMS for service quantity. Choose another payment method.',
     'not_enough_money' => 'Ups! You don\'t have enough money in wallet. Charge wallet ;-)',
     'old_pass_wrong' => 'Old password is incorrect.',
     'optional_data' => 'Optional data',
@@ -60,6 +58,8 @@ return [
     'pay_wallet' => 'Pay by wallet',
     'payment_for_service' => 'Payment for service: {1}',
     'payment_log' => 'Payment log',
+    'payment_method_unavailable' =>
+        'You can\'t use that payment method for that quantity. Choose another payment method.',
     'payment_not_accepted' => 'Transaction authorization failure: {1} Amount: {2} Service: {3}',
     'payment_sms' => 'SMS payment',
     'payment_transfer' => 'Transfer payment',
@@ -94,13 +94,13 @@ At the next step, an e-mail with a link to restore password will be send to you.
         'Service cannot be displayed, because its module does not provide such functionality.',
     'service_takeover' =>
         '<strong>Service takeover</strong> is to assign specific, time-bound service to your account. Usually used when buying service while not logged in.',
+    'service_taken_over' => 'Service has been taken over.',
     'service_was_bought' => 'Service {1} was purchased on server {2}',
     'show_more' => 'Show more',
     'sign_up_info' => 'Your account has been registered successfully, e-mail: {1}.<br/>
 You can now profit from many add-ons.',
     'site_not_exists' => 'Site does not exist.',
-    'sms_cost' => 'SMS cost',
-    'sms_info_bad_code' => 'Given return code is just incorrect.',
+    'sms_info_bad_code' => 'Given return code is incorrect.',
     'sms_info_bad_number' =>
         'Code is OK, but unfortunately obtained by sending SMS on different number.',
     'sms_info_external_error' => 'Unknown error occurred on the API side.',

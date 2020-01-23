@@ -60,7 +60,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
                 get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
+        $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
         foreach ($result as $row) {
             $paymentPlatform = $this->paymentPlatformRepository->mapToModel($row);

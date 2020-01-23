@@ -2,7 +2,7 @@
     <tbody>
         <tr>
             <td>ID</td>
-            <td>{{ $userService['id'] }}</td>
+            <td>{{ $userServiceId }}</td>
         </tr>
         <tr>
             <td colspan="2" class="line"></td>
@@ -18,7 +18,7 @@
                             type="text"
                             id="uid"
                             name="uid"
-                            value="{{ $userService['uid'] }}"
+                            value="{{ $userServiceUid }}"
                             class="input is-small"
                             required
                         />
@@ -137,13 +137,13 @@
         </tr>
         <tr>
             <td>
-                <label for="service">{$lang->t('service')}</label>
+                <label for="service_id">{$lang->t('service')}</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
-                            <select id="service" name="service">
+                            <select id="service_id" name="service_id">
                                 {$services}
                             </select>
                         </div>
@@ -153,13 +153,13 @@
         </tr>
         <tr>
             <td>
-                <label for="server">{$lang->t('server')}</label>
+                <label for="server_id">{$lang->t('server')}</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
-                            <select id="server" name="server">
+                            <select id="server_id" name="server_id">
                                 {$servers}
                             </select>
                         </div>
@@ -179,7 +179,7 @@
                             id="expire"
                             name="expire"
                             class="input is-small"
-                            value="{{ $userService['expire'] }}"
+                            value="{{ $userServiceExpire }}"
                             autocomplete="off"
                             {$disabled}
                         />
@@ -193,7 +193,7 @@
         </tr>
         <tr>
             <td colspan="2">
-                <input type="hidden" name="id" value="{{ $userService['id'] }}" />
+                <input type="hidden" name="id" value="{{ $userServiceId }}" />
                 <input type="submit" value="{$lang->t('edit')}" class="button w100" />
             </td>
         </tr>

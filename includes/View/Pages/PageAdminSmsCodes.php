@@ -2,6 +2,9 @@
 namespace App\View\Pages;
 
 use App\Exceptions\UnauthorizedException;
+use App\Repositories\SmsCodeRepository;
+use App\Repositories\SmsPriceRepository;
+use App\Services\PriceTextService;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -15,11 +18,26 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
     const PAGE_ID = 'sms_codes';
     protected $privilege = 'view_sms_codes';
 
-    public function __construct()
-    {
+    /** @var SmsPriceRepository */
+    private $smsPriceRepository;
+
+    /** @var PriceTextService */
+    private $priceTextService;
+
+    /** @var SmsCodeRepository */
+    private $smsCodeRepository;
+
+    public function __construct(
+        SmsPriceRepository $smsPriceRepository,
+        SmsCodeRepository $smsCodeRepository,
+        PriceTextService $priceTextService
+    ) {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->t('sms_codes');
+        $this->smsPriceRepository = $smsPriceRepository;
+        $this->priceTextService = $priceTextService;
+        $this->smsCodeRepository = $smsCodeRepository;
     }
 
     protected function content(array $query, array $body)
@@ -30,7 +48,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
         $table = new Structure();
         $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
         $table->addHeadCell(new HeadCell($this->lang->t('sms_code')));
-        $table->addHeadCell(new HeadCell($this->lang->t('tariff')));
+        $table->addHeadCell(new HeadCell($this->lang->t('sms_price')));
 
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * " .
@@ -42,14 +60,17 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
                 get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
+        $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
         foreach ($result as $row) {
+            $smsCode = $this->smsCodeRepository->mapToModel($row);
             $bodyRow = new BodyRow();
 
-            $bodyRow->setDbId($row['id']);
-            $bodyRow->addCell(new Cell($row['code']));
-            $bodyRow->addCell(new Cell($row['tariff']));
+            $bodyRow->setDbId($smsCode->getId());
+            $bodyRow->addCell(new Cell($smsCode->getCode()));
+            $bodyRow->addCell(
+                new Cell($this->priceTextService->getPriceGrossText($smsCode->getSmsPrice()))
+            );
 
             if (get_privileges('manage_sms_codes')) {
                 $bodyRow->setDeleteAction(true);
@@ -80,16 +101,20 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 
         switch ($boxId) {
             case "sms_code_add":
-                $tariffs = "";
-                foreach ($this->heart->getTariffs() as $tariff) {
-                    $tariffs .= create_dom_element("option", $tariff->getId(), [
-                        'value' => $tariff->getId(),
-                    ]);
+                $smsPrices = "";
+                foreach ($this->smsPriceRepository->all() as $smsPrice) {
+                    $smsPrices .= create_dom_element(
+                        "option",
+                        $this->priceTextService->getPriceGrossText($smsPrice),
+                        [
+                            'value' => $smsPrice,
+                        ]
+                    );
                 }
 
                 $output = $this->template->render(
                     "admin/action_boxes/sms_code_add",
-                    compact('tariffs')
+                    compact('smsPrices')
                 );
                 break;
 

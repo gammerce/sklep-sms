@@ -1,6 +1,7 @@
 <?php
 namespace App\Verification\PaymentModules;
 
+use App\Models\SmsNumber;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\DataField;
@@ -26,6 +27,22 @@ class Cssetti extends PaymentModule implements SupportSms
     public static function getDataFields()
     {
         return [new DataField("account_id")];
+    }
+
+    public static function getSmsNumbers()
+    {
+        return [
+            new SmsNumber("71480"),
+            new SmsNumber("72480"),
+            new SmsNumber("73480"),
+            new SmsNumber("74480"),
+            new SmsNumber("75480"),
+            new SmsNumber("76480"),
+            new SmsNumber("79480"),
+            new SmsNumber("91400"),
+            new SmsNumber("91900"),
+            new SmsNumber("92521"),
+        ];
     }
 
     public function verifySms($returnCode, $number)
@@ -69,10 +86,7 @@ class Cssetti extends PaymentModule implements SupportSms
             }
 
             if ($expectedNumber != $number) {
-                $tariff = $this->getTariffByNumber($expectedNumber);
-                $tariffId = $tariff ? $tariff->getId() : null;
-
-                throw new BadNumberException($tariffId);
+                throw new BadNumberException(get_sms_cost($expectedNumber));
             }
 
             return new SmsSuccessResult();

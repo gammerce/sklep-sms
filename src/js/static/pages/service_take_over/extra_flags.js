@@ -11,7 +11,7 @@ $(document).delegate("#form_service_take_over [name=type]", "change", function()
     if ($(this).val() == "1" || $(this).val() == "2") module.find("[data-type='password']").show();
 });
 
-$(document).delegate("#form_service_take_over [name=payment]", "change", function() {
+$(document).delegate("#form_service_take_over [name=payment_method]", "change", function() {
     var module;
     if (!(module = service_module_act_can("extra_flags", $(this)))) return;
 

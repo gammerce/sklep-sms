@@ -1,11 +1,17 @@
 <?php
 namespace App\Verification\Abstracts;
 
+use App\Models\SmsNumber;
 use App\Verification\Exceptions\SmsPaymentException;
 use App\Verification\Results\SmsSuccessResult;
 
 interface SupportSms
 {
+    /**
+     * @return SmsNumber[]
+     */
+    public static function getSmsNumbers();
+
     /**
      * Weryfikacja kodu zwrotnego otrzymanego poprzez wyslanie SMSa na dany numer
      *

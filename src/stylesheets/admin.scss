@@ -201,3 +201,17 @@ h4 {
         border-left: 1px solid #898989;
     }
 }
+
+.bricks {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+
+    .card {
+        background: $white-ter;
+        min-width: 200px;
+        min-height: 100px;
+        font-size: 1.5rem;
+        margin-right: 1rem;
+    }
+}

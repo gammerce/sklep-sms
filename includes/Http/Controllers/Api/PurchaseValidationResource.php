@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Responses\ApiResponse;
 use App\Models\Purchase;
+use App\Payment\PurchaseSerializer;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\System\Auth;
 use App\System\Heart;
@@ -17,71 +18,49 @@ class PurchaseValidationResource
         Heart $heart,
         TranslationManager $translationManager,
         Auth $auth,
-        Settings $settings
+        Settings $settings,
+        PurchaseSerializer $purchaseSerializer
     ) {
         $lang = $translationManager->user();
         $user = $auth->user();
 
-        if (
-            ($serviceModule = $heart->getServiceModule($request->request->get('service'))) ===
-                null ||
-            !($serviceModule instanceof IServicePurchaseWeb)
-        ) {
+        $serviceId = $request->request->get('service_id');
+        $serviceModule = $heart->getServiceModule($serviceId);
+
+        if (!($serviceModule instanceof IServicePurchaseWeb)) {
             return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
         }
 
-        // Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
+        // User does not belong to the group that allows to purchase that service
         if (!$heart->userCanUseService($user->getUid(), $serviceModule->service)) {
             return new ApiResponse("no_permission", $lang->t('service_no_permission'), 0);
         }
 
-        // Przeprowadzamy walidację danych wprowadzonych w formularzu
-        $returnData = $serviceModule->purchaseFormValidate($request->request->all());
+        $purchase = new Purchase($user);
+        $purchase->setService($serviceModule->service->getId());
 
-        // Przerabiamy ostrzeżenia, aby lepiej wyglądały
+        if ($user->getEmail()) {
+            $purchase->setEmail($user->getEmail());
+        }
+
+        if ($settings->getSmsPlatformId()) {
+            $purchase->setPayment([
+                Purchase::PAYMENT_SMS_PLATFORM => $settings->getSmsPlatformId(),
+            ]);
+        }
+
+        if ($settings->getTransferPlatformId()) {
+            $purchase->setPayment([
+                Purchase::PAYMENT_TRANSFER_PLATFORM => $settings->getTransferPlatformId(),
+            ]);
+        }
+
+        $returnData = $serviceModule->purchaseFormValidate($purchase, $request->request->all());
+
         if ($returnData['status'] == "warnings") {
             $returnData["data"]["warnings"] = format_warnings($returnData["data"]["warnings"]);
         } else {
-            //
-            // Uzupełniamy brakujące dane
-            /** @var Purchase $purchase */
-            $purchase = $returnData['purchase_data'];
-
-            if ($purchase->getService() === null) {
-                $purchase->setService($serviceModule->service->getId());
-            }
-
-            if (!$purchase->getPayment('cost') && $purchase->getTariff() !== null) {
-                $purchase->setPayment([
-                    'cost' => $purchase->getTariff()->getProvision(),
-                ]);
-            }
-
-            if (
-                $purchase->getPayment('sms_platform') === null &&
-                !$purchase->getPayment("no_sms") &&
-                $settings->getSmsPlatformId()
-            ) {
-                $purchase->setPayment([
-                    'sms_platform' => $settings->getSmsPlatformId(),
-                ]);
-            }
-
-            // Ustawiamy taryfe z numerem
-            if ($purchase->getPayment('sms_platform') !== null) {
-                $paymentModule = $heart->getPaymentModuleByPlatformIdOrFail(
-                    $purchase->getPayment('sms_platform')
-                );
-                $purchase->setTariff(
-                    $paymentModule->getTariffById($purchase->getTariff()->getId())
-                );
-            }
-
-            if ($purchase->getEmail() === null && strlen($user->getEmail())) {
-                $purchase->setEmail($user->getEmail());
-            }
-
-            $purchaseEncoded = base64_encode(serialize($purchase));
+            $purchaseEncoded = $purchaseSerializer->serializeAndEncode($purchase);
             $returnData['data'] = [
                 'length' => 8000,
                 'data' => $purchaseEncoded,

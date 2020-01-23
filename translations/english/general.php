@@ -13,8 +13,8 @@ return [
     'bought_service_info' =>
         'Service was purchased {1}. Data: {2} Qunatity: {3} Server: {4} Transaction ID: {5}. Email: {6} {7}({8})({9})',
     'cancel' => 'Cancel',
-    'choose_amount' => 'Choose amount',
     'choose_option' => 'Choose option',
+    'choose_quantity' => 'Choose quantity',
     'choose_server' => 'Choose server',
     'choose_service' => 'Choose service',
     'choose_type' => 'Choose type',
@@ -79,8 +79,9 @@ return [
     'payment_bad_type' => 'Error in Payment class constructor. Payment type not allowed.',
     'payment_id' => 'Payment ID',
     'payment_remove_code_from_db' =>
-        'Code was removed from the list of codes to be used. Code: {1} Tariff: {2}',
+        'Code was removed from the list of codes to be used. Code: {1} SMS price: {2}',
     'previous' => 'Previous',
+    'quantity' => 'Quantity',
     'question' => 'Question',
     'regards' => 'Regards',
     'return_code_length_warn' => 'Given return code is a little bit too long.',
@@ -97,7 +98,6 @@ return [
     'sms_return_code' => 'Return code',
     'sth_went_wrong' => 'Something went wrong :/',
     'surname' => 'Surname',
-    'tariff' => 'Tariff',
     'token' => 'Token',
     'type' => 'Type',
     'user' => 'User',

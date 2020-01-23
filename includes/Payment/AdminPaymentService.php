@@ -20,16 +20,14 @@ class AdminPaymentService
      */
     public function payByAdmin(User $admin)
     {
-        // Dodawanie informacji o płatności
-        $this->db->query(
-            $this->db->prepare(
+        $this->db
+            ->statement(
                 "INSERT INTO `" .
                     TABLE_PREFIX .
                     "payment_admin` (`aid`, `ip`, `platform`) " .
-                    "VALUES ('%d', '%s', '%s')",
-                [$admin->getUid(), $admin->getLastIp(), $admin->getPlatform()]
+                    "VALUES (?, ?, ?)"
             )
-        );
+            ->execute([$admin->getUid(), $admin->getLastIp(), $admin->getPlatform()]);
 
         return $this->db->lastId();
     }

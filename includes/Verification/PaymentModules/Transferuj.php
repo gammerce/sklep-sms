@@ -41,10 +41,19 @@ class Transferuj extends PaymentModule implements SupportTransfer
         $this->accountId = $this->getData('account_id');
     }
 
+    public static function getDataFields()
+    {
+        return [new DataField("key"), new DataField("account_id")];
+    }
+
+    public static function getSmsNumbers()
+    {
+        return [];
+    }
+
     public function prepareTransfer(Purchase $purchase, $dataFilename)
     {
-        // Cast grosze to złotówki
-        $cost = round($purchase->getPayment('cost') / 100, 2);
+        $cost = round($purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE) / 100, 2);
 
         return [
             'url' => 'https://secure.transferuj.pl',
@@ -75,13 +84,13 @@ class Transferuj extends PaymentModule implements SupportTransfer
         $transferFinalize->setAmount(array_get($body, 'tr_amount'));
         $transferFinalize->setDataFilename(array_get($body, 'tr_crc'));
         $transferFinalize->setTransferService(array_get($body, 'id'));
-        $transferFinalize->setTestMode(array_get($body, 'test_mode'));
+        $transferFinalize->setTestMode(array_get($body, 'test_mode', false));
         $transferFinalize->setOutput('TRUE');
 
         return $transferFinalize;
     }
 
-    public function isPaymentValid($response)
+    private function isPaymentValid($response)
     {
         if (empty($response)) {
             return false;
@@ -100,11 +109,6 @@ class Transferuj extends PaymentModule implements SupportTransfer
 
         return array_get($response, 'tr_status') == 'TRUE' &&
             array_get($response, 'tr_error') == 'none';
-    }
-
-    public static function getDataFields()
-    {
-        return [new DataField("key"), new DataField("account_id")];
     }
 
     private function isMd5Valid($md5sum, $transactionAmount, $crc, $transactionId)

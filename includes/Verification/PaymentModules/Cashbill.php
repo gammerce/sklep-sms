@@ -2,6 +2,7 @@
 namespace App\Verification\PaymentModules;
 
 use App\Models\Purchase;
+use App\Models\SmsNumber;
 use App\Models\TransferFinalize;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
@@ -15,6 +16,29 @@ use App\Verification\Results\SmsSuccessResult;
 class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
 {
     const MODULE_ID = "cashbill";
+
+    public static function getDataFields()
+    {
+        return [new DataField("sms_text"), new DataField("key"), new DataField("service")];
+    }
+
+    public static function getSmsNumbers()
+    {
+        return [
+            new SmsNumber("70567"),
+            new SmsNumber("71480"),
+            new SmsNumber("72480"),
+            new SmsNumber("73480"),
+            new SmsNumber("74480"),
+            new SmsNumber("75480"),
+            new SmsNumber("76480"),
+            new SmsNumber("79480"),
+            new SmsNumber("91400"),
+            new SmsNumber("91900"),
+            new SmsNumber("92022"),
+            new SmsNumber("92550"),
+        ];
+    }
 
     public function verifySms($returnCode, $number)
     {
@@ -41,7 +65,7 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
             }
 
             if ($number !== $bramka) {
-                throw new BadNumberException($this->getTariffByNumber($bramka)->getId());
+                throw new BadNumberException(get_sms_cost($bramka));
             }
 
             return new SmsSuccessResult();
@@ -57,8 +81,7 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
      */
     public function prepareTransfer(Purchase $purchase, $dataFilename)
     {
-        // Zamieniamy grosze na złotówki
-        $cost = round($purchase->getPayment('cost') / 100, 2);
+        $cost = round($purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE) / 100, 2);
 
         return [
             'url' => 'https://pay.cashbill.pl/form/pay.php',
@@ -146,10 +169,5 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
     public function getService()
     {
         return $this->getData('service');
-    }
-
-    public static function getDataFields()
-    {
-        return [new DataField("sms_text"), new DataField("key"), new DataField("service")];
     }
 }

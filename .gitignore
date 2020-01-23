@@ -14,3 +14,4 @@
 !/data/transfers/.gitkeep
 /data/setup_error
 /data/setup_progress
+test.http

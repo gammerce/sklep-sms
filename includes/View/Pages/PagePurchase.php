@@ -23,15 +23,16 @@ class PagePurchase extends Page
 
     protected function content(array $query, array $body)
     {
-        $heart = $this->heart;
-        $lang = $this->lang;
-
         /** @var Auth $auth */
         $auth = $this->app->make(Auth::class);
         $user = $auth->user();
 
-        if (($serviceModule = $heart->getServiceModule($query['service'])) === null) {
-            return $lang->t('site_not_exists');
+        $serviceId = $query['service'];
+
+        $serviceModule = $this->heart->getServiceModule($serviceId);
+
+        if (!$serviceModule) {
+            return $this->lang->t('site_not_exists');
         }
 
         // Dodajemy wszystkie skrypty
@@ -39,12 +40,12 @@ class PagePurchase extends Page
             $path = "build/js/static/pages/" . $this::PAGE_ID . "/";
             $pathFile = $path . "main.js";
             if ($this->fileSystem->exists($this->path->to($pathFile))) {
-                $heart->scriptAdd($this->url->versioned($pathFile));
+                $this->heart->scriptAdd($this->url->versioned($pathFile));
             }
 
             $pathFile = $path . $serviceModule->getModuleId() . ".js";
             if ($this->fileSystem->exists($this->path->to($pathFile))) {
-                $heart->scriptAdd($this->url->versioned($pathFile));
+                $this->heart->scriptAdd($this->url->versioned($pathFile));
             }
         }
 
@@ -53,48 +54,48 @@ class PagePurchase extends Page
             $path = "build/css/static/pages/" . $this::PAGE_ID . "/";
             $pathFile = $path . "main.css";
             if ($this->fileSystem->exists($this->path->to($pathFile))) {
-                $heart->styleAdd($this->url->versioned($pathFile));
+                $this->heart->styleAdd($this->url->versioned($pathFile));
             }
 
             $pathFile = $path . $serviceModule->getModuleId() . ".css";
             if ($this->fileSystem->exists($this->path->to($pathFile))) {
-                $heart->styleAdd($this->url->versioned($pathFile));
+                $this->heart->styleAdd($this->url->versioned($pathFile));
             }
         }
 
         // Globalne jsy cssy konkretnych modułów usług
-        foreach ($heart->getServicesModules() as $moduleInfo) {
+        foreach ($this->heart->getServicesModules() as $moduleInfo) {
             if ($moduleInfo['id'] == $serviceModule->getModuleId()) {
                 $path = "build/css/static/services/" . $moduleInfo['id'] . ".css";
                 if ($this->fileSystem->exists($this->path->to($path))) {
-                    $heart->styleAdd($this->url->versioned($path));
+                    $this->heart->styleAdd($this->url->versioned($path));
                 }
 
                 $path = "build/js/static/services/" . $moduleInfo['id'] . ".js";
                 if ($this->fileSystem->exists($this->path->to($path))) {
-                    $heart->scriptAdd($this->url->versioned($path));
+                    $this->heart->scriptAdd($this->url->versioned($path));
                 }
 
                 break;
             }
         }
 
-        $heart->pageTitle .= " - " . $serviceModule->service->getName();
+        $this->heart->pageTitle .= " - " . $serviceModule->service->getName();
 
         // Sprawdzamy, czy usluga wymaga, by użytkownik był zalogowany
         // Jeżeli wymaga, to to sprawdzamy
         if ($serviceModule instanceof IBeLoggedMust && !$auth->check()) {
-            return $lang->t('must_be_logged_in');
+            return $this->lang->t('must_be_logged_in');
         }
 
         // Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
-        if (!$heart->userCanUseService($user->getUid(), $serviceModule->service)) {
-            return $lang->t('service_no_permission');
+        if (!$this->heart->userCanUseService($user->getUid(), $serviceModule->service)) {
+            return $this->lang->t('service_no_permission');
         }
 
         // Nie ma formularza zakupu, to tak jakby strona nie istniała
         if (!($serviceModule instanceof IServicePurchaseWeb)) {
-            return $lang->t('site_not_exists');
+            return $this->lang->t('site_not_exists');
         }
 
         // Dodajemy długi opis

@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS `ss_payment_admin`;
 CREATE TABLE IF NOT EXISTS `ss_payment_admin` (
   `id`       INT(11)     NOT NULL AUTO_INCREMENT,
   `aid`      INT(11)     NOT NULL,
-  `ip`       VARCHAR(16) NOT NULL DEFAULT '',
+  `ip`       VARCHAR(64) NOT NULL DEFAULT '',
   `platform` TEXT        NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),

@@ -14,14 +14,13 @@ interface IServicePurchaseOutside extends IServicePurchase
      * Metoda która sprawdza poprawność wprowadzonych danych zakupu,
      * wywoływana gdy zakup został przeprowadzony z zewnątrz, nie przez formularz na stronie WWW.
      *
-     * @param Purchase $purchaseData
+     * @param Purchase $purchase
      *
      * @return array
      *  status => string id wiadomości,
      *  text => string treść wiadomości
      *  positive => bool czy udało się przeprowadzić zakup czy nie
      *  [data => array('warnings' => array())]
-     *  [purchase_data => Entity_Purchase dane zakupu]
      */
-    public function purchaseDataValidate(Purchase $purchaseData);
+    public function purchaseDataValidate(Purchase $purchase);
 }

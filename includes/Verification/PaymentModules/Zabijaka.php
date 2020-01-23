@@ -1,6 +1,7 @@
 <?php
 namespace App\Verification\PaymentModules;
 
+use App\Models\SmsNumber;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\DataField;
@@ -13,6 +14,27 @@ use App\Verification\Results\SmsSuccessResult;
 class Zabijaka extends PaymentModule implements SupportSms
 {
     const MODULE_ID = "zabijaka";
+
+    public static function getDataFields()
+    {
+        return [new DataField("api")];
+    }
+
+    public static function getSmsNumbers()
+    {
+        return [
+            new SmsNumber("71480"),
+            new SmsNumber("72480"),
+            new SmsNumber("73480"),
+            new SmsNumber("74480"),
+            new SmsNumber("75480"),
+            new SmsNumber("76480"),
+            new SmsNumber("79480"),
+            new SmsNumber("91400"),
+            new SmsNumber("91900"),
+            new SmsNumber("92550"),
+        ];
+    }
 
     public function verifySms($returnCode, $number)
     {
@@ -50,11 +72,6 @@ class Zabijaka extends PaymentModule implements SupportSms
     public function getSmsCode()
     {
         return "AG.ZABIJAKA";
-    }
-
-    public static function getDataFields()
-    {
-        return [new DataField("api")];
     }
 
     private function getApi()

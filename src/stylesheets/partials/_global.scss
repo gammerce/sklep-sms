@@ -92,7 +92,7 @@ hr,
     font-weight: normal;
 }
 
-.action_box_wraper {
+.action_box_wrapper {
     position: fixed;
     z-index: 100;
     top: 0;
@@ -103,7 +103,7 @@ hr,
     background: rgba(255, 255, 255, 0.3);
 }
 
-.action_box_wraper2 {
+.action_box_wrapper2 {
     position: fixed;
     z-index: 101;
     top: 50%;
@@ -124,44 +124,41 @@ hr,
     min-width: 200px;
     margin-top: 20px;
     color: #fff;
-}
 
-.action_box .exit {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 0 2px;
-    color: #ff0000;
-    text-shadow: 1px 1px 1px #000;
-    cursor: pointer;
-}
+    .delete {
+        position: absolute;
+        top: 0.25rem;
+        right: 0.25rem;
+        padding: 0 2px;
 
-.action_box .exit:hover {
-    color: #fff;
-    text-shadow: 0 0 10px #ff0000;
-}
+        &:after,
+        &:before {
+            background-color: $danger;
+        }
+    }
 
-.action_box .h2 {
-    padding: 6px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid #346bc0;
-    font-size: 17px;
-    color: #fff;
-    text-shadow: 2px 2px 2px #000;
-}
+    .h2 {
+        padding: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid #346bc0;
+        font-size: 17px;
+        color: #fff;
+        text-shadow: 2px 2px 2px #000;
+    }
 
-.action_box > table {
-    border-spacing: 10px;
-    width: 100%;
-}
+    > table {
+        border-spacing: 10px;
+        width: 100%;
+    }
 
-.action_box table td {
-    color: #fff;
-    padding: 0;
-}
+    table td {
+        color: #fff;
+        padding: 0;
+    }
 
-.action_box td:nth-child(2) {
-    color: #ccc;
+    td:nth-child(2) {
+        color: #ccc;
+    }
 }
 
 /* Opisy usług */
@@ -195,22 +192,23 @@ hr,
     font-size: 18px;
 
     padding: 18px;
-}
 
-.window_info .exit {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 0 6px;
-    color: #ff0000;
-    text-shadow: 1px 1px 1px #000;
-    cursor: pointer;
-    font-size: 26px;
-}
+    .delete {
+        position: absolute;
+        top: 0.25rem;
+        right: 0.25rem;
+        padding: 0 2px;
 
-.window_info .exit:hover {
-    color: #fff;
-    text-shadow: 0 0 10px #ff0000;
+        &:after,
+        &:before {
+            background-color: $danger;
+        }
+    }
+
+    .description_content {
+        overflow: auto;
+        height: calc(100% - 100px);
+    }
 }
 
 /*.window_info */
@@ -220,11 +218,6 @@ hr,
     color: #fff;
     font-size: 22px;
     margin-bottom: 20px;
-}
-
-.window_info .description_content {
-    overflow: auto;
-    height: calc(100% - 100px);
 }
 
 .button.edit_row {
@@ -276,4 +269,8 @@ hr,
 
 .action-buttons {
     margin-top: 2rem;
+}
+
+.card.gapped {
+    margin-bottom: 1rem;
 }

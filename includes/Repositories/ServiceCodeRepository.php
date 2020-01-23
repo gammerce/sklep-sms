@@ -14,24 +14,16 @@ class ServiceCodeRepository
         $this->db = $db;
     }
 
-    public function create(
-        $code,
-        $serviceId,
-        $uid = 0,
-        $serverId = 0,
-        $amount = 0,
-        $tariff = 0,
-        $data = ""
-    ) {
-        $this->db->query(
-            $this->db->prepare(
+    public function create($code, $serviceId, $priceId, $serverId = null, $uid = null)
+    {
+        $this->db
+            ->statement(
                 "INSERT INTO `" .
                     TABLE_PREFIX .
                     "service_codes` " .
-                    "SET `code` = '%s', `service` = '%s', `uid` = '%d', `server` = '%d', `amount` = '%d', `tariff` = '%d', `data` = '%s'",
-                [$code, $serviceId, $uid, $serverId, $amount, $tariff, $data]
+                    "SET `code` = ?, `service` = ?, `price` = ?, `server` = ?, `uid` = ?"
             )
-        );
+            ->execute([$code, $serviceId, $priceId, $serverId, $uid]);
 
         return $this->get($this->db->lastId());
     }
@@ -39,14 +31,12 @@ class ServiceCodeRepository
     public function get($id)
     {
         if ($id) {
-            $result = $this->db->query(
-                $this->db->prepare(
-                    "SELECT * FROM `" . TABLE_PREFIX . "service_codes` WHERE `id` = '%d'",
-                    [$id]
-                )
+            $statement = $this->db->statement(
+                "SELECT * FROM `" . TABLE_PREFIX . "service_codes` WHERE `id` = ?"
             );
+            $statement->execute([$id]);
 
-            if ($data = $result->fetch()) {
+            if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
             }
         }
@@ -56,27 +46,23 @@ class ServiceCodeRepository
 
     public function delete($id)
     {
-        $statement = $this->db->query(
-            $this->db->prepare(
-                "DELETE FROM `" . TABLE_PREFIX . "service_codes` " . "WHERE `id` = '%d'",
-                [$id]
-            )
+        $statement = $this->db->statement(
+            "DELETE FROM `" . TABLE_PREFIX . "service_codes` WHERE `id` = ?"
         );
+        $statement->execute([$id]);
 
         return !!$statement->rowCount();
     }
 
-    private function mapToModel(array $data)
+    public function mapToModel(array $data)
     {
         return new ServiceCode(
-            (int) $data['id'],
+            as_int($data['id']),
             $data['code'],
             $data['service'],
-            (int) $data['server'],
-            (int) $data['tariff'],
-            (int) $data['uid'],
-            $data['amount'],
-            $data['data'],
+            as_int($data['price']),
+            as_int($data['server']),
+            as_int($data['uid']),
             $data['timestamp']
         );
     }

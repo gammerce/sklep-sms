@@ -2,6 +2,7 @@
 namespace App\View\Pages;
 
 use App\Exceptions\UnauthorizedException;
+use App\Repositories\ServiceCodeRepository;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -9,18 +10,21 @@ use App\View\Html\Input;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\Interfaces\IPageAdminActionBox;
-use App\ServiceModules\Interfaces\IServiceServiceCodeAdminManage;
 
 class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = 'service_codes';
     protected $privilege = 'view_service_codes';
 
-    public function __construct()
+    /** @var ServiceCodeRepository */
+    private $serviceCodeRepository;
+
+    public function __construct(ServiceCodeRepository $serviceCodeRepository)
     {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->t('service_codes');
+        $this->serviceCodeRepository = $serviceCodeRepository;
     }
 
     protected function content(array $query, array $body)
@@ -33,13 +37,12 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
         $table->addHeadCell(new HeadCell($this->lang->t('code')));
         $table->addHeadCell(new HeadCell($this->lang->t('service')));
         $table->addHeadCell(new HeadCell($this->lang->t('server')));
-        $table->addHeadCell(new HeadCell($this->lang->t('amount')));
+        $table->addHeadCell(new HeadCell($this->lang->t('quantity')));
         $table->addHeadCell(new HeadCell($this->lang->t('user')));
         $table->addHeadCell(new HeadCell($this->lang->t('date_of_creation')));
 
         $result = $this->db->query(
-            "SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.name AS `service`, srv.name AS `server`, sc.tariff, pl.amount AS `tariff_amount`,
-			u.username, u.uid, sc.amount, sc.data, sc.timestamp, s.tag " .
+            "SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.name AS `service`, srv.name AS `server`, sc.price, u.username, u.uid, sc.timestamp " .
                 "FROM `" .
                 TABLE_PREFIX .
                 "service_codes` AS sc " .
@@ -52,15 +55,11 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
                 "LEFT JOIN `" .
                 TABLE_PREFIX .
                 "users` AS u ON sc.uid = u.uid " .
-                "LEFT JOIN `" .
-                TABLE_PREFIX .
-                "pricelist` AS pl ON sc.tariff = pl.tariff AND sc.service = pl.service
-			AND (pl.server = '-1' OR sc.server = pl.server) " .
                 "LIMIT " .
                 get_row_limit($this->currentPage->getPageNumber())
         );
 
-        $table->setDbRowsAmount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
+        $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
         foreach ($result as $row) {
             $bodyRow = new BodyRow();
@@ -69,25 +68,13 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
                 ? $row['username'] . " ({$row['uid']})"
                 : $this->lang->t('none');
 
-            if ($row['tariff_amount']) {
-                $amount = $row['tariff_amount'] . ' ' . $row['tag'];
-            } else {
-                if ($row['tariff']) {
-                    $amount = $this->lang->t('tariff') . ': ' . $row['tariff'];
-                } else {
-                    if ($row['amount']) {
-                        $amount = $row['amount'];
-                    } else {
-                        $amount = $this->lang->t('none');
-                    }
-                }
-            }
+            $quantity = "{$this->lang->t('price')} #{$row['price']}";
 
             $bodyRow->setDbId($row['id']);
             $bodyRow->addCell(new Cell($row['code']));
             $bodyRow->addCell(new Cell($row['service']));
             $bodyRow->addCell(new Cell($row['server']));
-            $bodyRow->addCell(new Cell($amount));
+            $bodyRow->addCell(new Cell($quantity));
             $bodyRow->addCell(new Cell($username));
             $bodyRow->addCell(new Cell(convertDate($row['timestamp'])));
 
@@ -120,25 +107,16 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 
         switch ($boxId) {
             case "code_add":
-                // Pobranie usług
-                $services = "";
+                $services = [];
                 foreach ($this->heart->getServices() as $id => $service) {
-                    if (
-                        ($serviceModule = $this->heart->getServiceModule($id)) === null ||
-                        !($serviceModule instanceof IServiceServiceCodeAdminManage)
-                    ) {
-                        continue;
-                    }
-
-                    $services .= create_dom_element("option", $service->getName(), [
+                    $services[] = create_dom_element("option", $service->getName(), [
                         'value' => $service->getId(),
                     ]);
                 }
 
-                $output = $this->template->render(
-                    "admin/action_boxes/service_code_add",
-                    compact('services')
-                );
+                $output = $this->template->render("admin/action_boxes/service_code_add", [
+                    'services' => implode("", $services),
+                ]);
                 break;
 
             default:

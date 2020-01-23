@@ -23,7 +23,7 @@ class PageCashbillTransferFinalized extends Page
 
     protected function content(array $query, array $body)
     {
-        $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
+        $paymentModule = $this->heart->getPaymentModuleByPlatformId(
             $this->settings->getTransferPlatformId()
         );
 

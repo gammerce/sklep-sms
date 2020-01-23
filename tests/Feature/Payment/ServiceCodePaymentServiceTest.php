@@ -4,7 +4,7 @@ namespace Tests\Feature\Payment;
 use App\Models\Purchase;
 use App\Models\User;
 use App\Payment\ServiceCodePaymentService;
-use App\Repositories\PaymentCodeRespository;
+use App\Repositories\PaymentCodeRepository;
 use App\Repositories\ServiceCodeRepository;
 use App\System\Heart;
 use Tests\Psr4\TestCases\TestCase;
@@ -21,33 +21,35 @@ class ServiceCodePaymentServiceTest extends TestCase
         /** @var Heart $heart */
         $heart = $this->app->make(Heart::class);
 
-        /** @var PaymentCodeRespository $paymentCodeRespository */
-        $paymentCodeRespository = $this->app->make(PaymentCodeRespository::class);
+        /** @var PaymentCodeRepository $paymentCodeRepository */
+        $paymentCodeRepository = $this->app->make(PaymentCodeRepository::class);
 
         /** @var ServiceCodeRepository $serviceCodeRepository */
         $serviceCodeRepository = $this->app->make(ServiceCodeRepository::class);
 
         $serviceId = "vip";
         $serviceModule = $heart->getServiceModule($serviceId);
-
-        $serviceCode = $serviceCodeRepository->create("ABC123", $serviceId);
+        $price = $this->factory->price([
+            'service_id' => $serviceId,
+        ]);
+        $serviceCode = $serviceCodeRepository->create("ABC123", $serviceId, $price->getId());
 
         $purchase = new Purchase(new User());
         $purchase->setPayment([
-            'service_code' => $serviceCode->getCode(),
+            Purchase::PAYMENT_SERVICE_CODE => $serviceCode->getCode(),
         ]);
         $purchase->setOrder([
-            'server' => 'blah',
+            Purchase::ORDER_SERVER => 'blah',
         ]);
-        $purchase->setTariff($heart->getTariff(2));
+        $purchase->setPrice($price);
         $purchase->setService($serviceModule->service->getId());
 
         // when
-        $paymentCodeId = $service->payWithServiceCode($purchase, $serviceModule);
+        $paymentCodeId = $service->payWithServiceCode($purchase);
 
         // then
         $this->assertInternalType("int", $paymentCodeId);
-        $paymentCode = $paymentCodeRespository->get($paymentCodeId);
+        $paymentCode = $paymentCodeRepository->get($paymentCodeId);
         $this->assertNotNull($paymentCode);
         $this->assertEquals($serviceCode->getCode(), $paymentCode->getCode());
 

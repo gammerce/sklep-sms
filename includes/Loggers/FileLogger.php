@@ -25,12 +25,17 @@ class FileLogger
 
     public function error($message, array $data = [])
     {
-        $this->log($this->path->errorLogPath(), $message, $data);
+        $this->log($this->path->to('data/logs/errors.log'), $message, $data);
     }
 
     public function info($message, array $data = [])
     {
-        $this->log($this->path->infoLogPath(), $message, $data);
+        $this->log($this->path->to('data/logs/info.log'), $message, $data);
+    }
+
+    public function install($message, array $data = [])
+    {
+        $this->log($this->path->to('data/logs/install.log'), $message, $data);
     }
 
     private function log($file, $message, array $data = [])

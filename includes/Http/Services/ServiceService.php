@@ -31,7 +31,7 @@ class ServiceService
     {
         $name = array_get($body, 'name');
         $shortDescription = array_get($body, 'short_description');
-        $order = array_get($body, 'order');
+        $order = as_int(array_get($body, 'order'));
         $groups = array_get($body, 'groups', []);
 
         if (!strlen($name)) {

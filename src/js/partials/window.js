@@ -11,8 +11,7 @@ window.window_info = {
         }).hide();
 
         window_info.exit = $("<div>", {
-            class: "exit",
-            html: "X",
+            class: "delete is-large",
         });
         window_info.element.prepend(window_info.exit);
 
@@ -38,11 +37,11 @@ window.action_box = {
 
     create: function() {
         action_box.element = $("<div>", {
-            class: "action_box_wraper",
+            class: "action_box_wrapper",
         }).hide();
 
         action_box.box = $("<div>", {
-            class: "action_box_wraper2",
+            class: "action_box_wrapper2",
         }).hide();
         action_box.element.prepend(action_box.box);
 
@@ -57,8 +56,7 @@ window.action_box = {
         action_box.box.html(content);
 
         action_box.exit = $("<div>", {
-            class: "exit",
-            html: "X",
+            class: "delete is-medium",
         });
         action_box.box.children(".action_box").prepend(action_box.exit);
 

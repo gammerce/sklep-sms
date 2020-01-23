@@ -17,7 +17,7 @@ interface IServiceUserServiceAdminAdd
      *  text => treść wiadomości
      *  positive => czy udało się dodać usługę
      */
-    public function userServiceAdminAdd($body);
+    public function userServiceAdminAdd(array $body);
 
     /**
      * Metoda powinna zwrócić dodatkowe pola do uzupełnienia przez admina

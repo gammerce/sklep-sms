@@ -39,7 +39,7 @@ $(document).delegate("#form_user_service_add [name=forever]", "change", function
 
 // Wybranie usługi podczas dodawania usługi użytkownikowi
 var userServiceAddForm;
-$(document).delegate("#form_user_service_add [name=service]", "change", function() {
+$(document).delegate("#form_user_service_add [name=service_id]", "change", function() {
     var serviceId = $(this).val();
 
     // Brak wybranego modułu
@@ -153,7 +153,7 @@ $(document).delegate("#form_user_service_add", "submit", function(e) {
     e.preventDefault();
 
     var serviceId = $(this)
-        .find("[name=service]")
+        .find("[name=service_id]")
         .val();
 
     loader.show();

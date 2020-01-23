@@ -36,7 +36,7 @@ class ServiceResource
         $warnings = [];
         $body = $request->request->all();
         // For backward compatibility. Some service modules use that field.
-        $body["id"] = $serviceId;
+        $body['id'] = $serviceId;
 
         if ($serviceId !== $newId && $heart->getService($newId)) {
             $warnings['new_id'][] = $lang->t('id_exist');

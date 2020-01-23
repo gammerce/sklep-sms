@@ -54,13 +54,13 @@ class BoughtServiceService
     /**
      * Add information about purchasing a service
      *
-     * @param integer $uid
+     * @param int $uid
      * @param string $userName
      * @param string $ip
      * @param string $method
      * @param string $paymentId
      * @param string $serviceId
-     * @param integer $serverId
+     * @param int $serverId
      * @param string $amount
      * @param string $authData
      * @param string $email

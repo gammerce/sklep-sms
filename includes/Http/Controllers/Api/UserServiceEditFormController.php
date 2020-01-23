@@ -29,25 +29,19 @@ class UserServiceEditFormController
             return new HtmlResponse($lang->t('not_logged'));
         }
 
-        $userService = $userServiceService->find($userServiceId);
+        $userService = $userServiceService->findOne($userServiceId);
 
-        if (empty($userService)) {
+        if (!$userService) {
             return new HtmlResponse($lang->t('dont_play_games'));
         }
 
         // Dany użytkownik nie jest właścicielem usługi o danym id
-        if ($userService['uid'] != $user->getUid()) {
+        if ($userService->getUid() !== $user->getUid()) {
             return new HtmlResponse($lang->t('dont_play_games'));
         }
 
-        if (($serviceModule = $heart->getServiceModule($userService['service'])) === null) {
-            return new HtmlResponse($lang->t('service_cant_be_modified'));
-        }
-
-        if (
-            !$settings['user_edit_service'] ||
-            !($serviceModule instanceof IServiceUserOwnServicesEdit)
-        ) {
+        $serviceModule = $heart->getServiceModule($userService->getServiceId());
+        if (!($serviceModule instanceof IServiceUserOwnServicesEdit)) {
             return new HtmlResponse($lang->t('service_cant_be_modified'));
         }
 

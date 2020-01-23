@@ -2,6 +2,7 @@
 namespace App\Http\Services;
 
 use App\Exceptions\ValidationException;
+use App\Repositories\SmsPriceRepository;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -14,39 +15,52 @@ class PriceService
     /** @var Translator */
     private $lang;
 
-    public function __construct(Heart $heart, TranslationManager $translationManager)
-    {
+    /** @var SmsPriceRepository */
+    private $smsPriceRepository;
+
+    public function __construct(
+        Heart $heart,
+        SmsPriceRepository $smsPriceRepository,
+        TranslationManager $translationManager
+    ) {
         $this->heart = $heart;
+        $this->smsPriceRepository = $smsPriceRepository;
         $this->lang = $translationManager->user();
     }
 
     public function validateBody(array $body)
     {
-        $service = $body['service'];
-        $server = $body['server'];
-        $tariff = $body['tariff'];
-        $amount = $body['amount'];
+        $serviceId = array_get($body, 'service_id');
+        $serverId = as_int(array_get($body, 'server_id'));
+        $quantity = as_int(array_get($body, 'quantity'));
+        $smsPrice = as_int(array_get($body, 'sms_price'));
+
+        if (strlen(array_get($body, 'transfer_price'))) {
+            $transferPrice = array_get($body, 'transfer_price') * 100;
+        } else {
+            $transferPrice = null;
+        }
 
         $warnings = [];
 
-        // Usługa
-        if ($this->heart->getService($service) === null) {
-            $warnings['service'][] = $this->lang->t('no_such_service');
+        if (!$this->heart->getService($serviceId)) {
+            $warnings['service_id'][] = $this->lang->t('no_such_service');
         }
 
-        // Serwer
-        if ($server != -1 && $this->heart->getServer($server) === null) {
-            $warnings['server'][] = $this->lang->t('no_such_server');
+        if (strlen($serverId) && !$this->heart->getServer($serverId)) {
+            $warnings['server_id'][] = $this->lang->t('no_such_server');
         }
 
-        // Taryfa
-        if ($this->heart->getTariff($tariff) === null) {
-            $warnings['tariff'][] = $this->lang->t('no_such_tariff');
+        if (strlen($smsPrice) && !$this->smsPriceRepository->exists($smsPrice)) {
+            $warnings['sms_price'][] = $this->lang->t('invalid_price');
         }
 
-        // Ilość
-        if ($warning = check_for_warnings("number", $amount)) {
-            $warnings['amount'] = array_merge((array) $warnings['amount'], $warning);
+        if (strlen($transferPrice) && $transferPrice < 1) {
+            $warnings['transfer_price'][] = $this->lang->t('invalid_price');
+        }
+
+        if ($quantity && ($warning = check_for_warnings("number", $quantity))) {
+            $warnings['quantity'] = array_merge((array) $warnings['quantity'], $warning);
         }
 
         if ($warnings) {

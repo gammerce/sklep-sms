@@ -79,16 +79,9 @@ class PagePaymentLog extends Page implements IBeLoggedMust
                 $class = "outcome";
             }
 
-            $paymentLogBrick = $template->render(
+            $paymentLogs .= $template->render(
                 "payment_log_brick",
-                compact('date', 'cost', 'desc')
-            );
-            $paymentLogs .= create_dom_element(
-                "div",
-                new UnescapedSimpleText($paymentLogBrick),
-                $data = [
-                    'class' => "brick " . $class,
-                ]
+                compact('class', 'date', 'cost', 'desc')
             );
         }
 

@@ -21,15 +21,27 @@ class PriceCollection
     ) {
         $lang = $translationManager->user();
 
-        $service = $request->request->get('service');
-        $server = $request->request->get('server');
-        $tariff = $request->request->get('tariff');
-        $amount = $request->request->get('amount');
+        $serviceId = $request->request->get('service_id');
+        $serverId = as_int($request->request->get('server_id'));
+        $quantity = as_int($request->request->get('quantity'));
+        $smsPrice = as_int($request->request->get('sms_price'));
+
+        if (strlen($request->request->get('transfer_price'))) {
+            $transferPrice = $request->request->get('transfer_price') * 100;
+        } else {
+            $transferPrice = null;
+        }
 
         $priceService->validateBody($request->request->all());
 
         try {
-            $price = $priceRepository->create($service, $tariff, $amount, $server);
+            $price = $priceRepository->create(
+                $serviceId,
+                $serverId,
+                $smsPrice,
+                $transferPrice,
+                $quantity
+            );
         } catch (PDOException $e) {
             // Duplication
             if (get_error_code($e) === 1062) {

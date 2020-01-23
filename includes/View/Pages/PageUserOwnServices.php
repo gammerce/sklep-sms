@@ -48,7 +48,6 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         /** @var Pagination $pagination */
         $pagination = $this->app->make(Pagination::class);
 
-        // Ktore moduly wspieraja usługi użytkowników
         $modules = array_filter($this->heart->getServicesModules(), function ($module) {
             return in_array(IServiceUserOwnServices::class, class_implements($module["class"]));
         });
@@ -60,60 +59,50 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
 
         $usersServices = [];
         $rowsCount = 0;
-        if (!empty($moduleIds)) {
+        if ($moduleIds) {
             $moduleIds = implode_esc(', ', $moduleIds);
 
-            $rowsCount = $db
-                ->query(
-                    $db->prepare(
-                        "SELECT COUNT(*) as `amount` FROM `" .
-                            TABLE_PREFIX .
-                            "user_service` AS us " .
-                            "INNER JOIN `" .
-                            TABLE_PREFIX .
-                            "services` AS s ON us.service = s.id " .
-                            "WHERE us.uid = '%d' AND s.module IN ({$moduleIds}) ",
-                        [$user->getUid()]
-                    )
-                )
-                ->fetchColumn();
-
-            $result = $db->query(
-                $db->prepare(
-                    "SELECT us.id FROM `" .
-                        TABLE_PREFIX .
-                        "user_service` AS us " .
-                        "INNER JOIN `" .
-                        TABLE_PREFIX .
-                        "services` AS s ON us.service = s.id " .
-                        "WHERE us.uid = '%d' AND s.module IN ({$moduleIds}) " .
-                        "ORDER BY us.id DESC " .
-                        "LIMIT " .
-                        get_row_limit($this->currentPage->getPageNumber(), 4),
-                    [$user->getUid()]
-                )
+            $statement = $db->statement(
+                "SELECT COUNT(*) FROM `" .
+                    TABLE_PREFIX .
+                    "user_service` AS us " .
+                    "INNER JOIN `" .
+                    TABLE_PREFIX .
+                    "services` AS s ON us.service = s.id " .
+                    "WHERE us.uid = ? AND s.module IN ({$moduleIds}) "
             );
+            $statement->execute([$user->getUid()]);
+            $rowsCount = $statement->fetchColumn();
+
+            $statement = $db->statement(
+                "SELECT us.id FROM `" .
+                    TABLE_PREFIX .
+                    "user_service` AS us " .
+                    "INNER JOIN `" .
+                    TABLE_PREFIX .
+                    "services` AS s ON us.service = s.id " .
+                    "WHERE us.uid = ? AND s.module IN ({$moduleIds}) " .
+                    "ORDER BY us.id DESC " .
+                    "LIMIT " .
+                    get_row_limit($this->currentPage->getPageNumber(), 4)
+            );
+            $statement->execute([$user->getUid()]);
 
             $userServiceIds = [];
-            foreach ($result as $row) {
+            foreach ($statement as $row) {
                 $userServiceIds[] = $row['id'];
             }
 
-            if (!empty($userServiceIds)) {
+            if ($userServiceIds) {
                 $usersServices = $this->userServiceService->find(
-                    "WHERE us.id IN (" . implode(', ', $userServiceIds) . ")",
-                    false
+                    "WHERE us.id IN (" . implode(', ', $userServiceIds) . ")"
                 );
             }
         }
 
         $userOwnServices = '';
         foreach ($usersServices as $userService) {
-            if (
-                ($serviceModule = $this->heart->getServiceModule($userService['service'])) === null
-            ) {
-                continue;
-            }
+            $serviceModule = $this->heart->getServiceModule($userService->getServiceId());
 
             if (!($serviceModule instanceof IServiceUserOwnServices)) {
                 continue;
@@ -129,15 +118,14 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
                 ]);
             }
 
-            $userOwnServices .= create_brick(
-                $serviceModule->userOwnServiceInfoGet(
+            $userOwnServices .= $this->template->render("admin/brick_card", [
+                'content' => $serviceModule->userOwnServiceInfoGet(
                     $userService,
                     isset($buttonEdit) ? $buttonEdit : ''
-                )
-            );
+                ),
+            ]);
         }
 
-        // Nie znalazło żadnych usług danego użytkownika
         if (!strlen($userOwnServices)) {
             $userOwnServices = $this->lang->t('no_data');
         }

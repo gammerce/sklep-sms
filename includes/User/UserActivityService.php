@@ -20,15 +20,14 @@ class UserActivityService
             return;
         }
 
-        $this->db->query(
-            $this->db->prepare(
+        $this->db
+            ->statement(
                 "UPDATE `" .
                     TABLE_PREFIX .
                     "users` " .
-                    "SET `lastactiv` = NOW(), `lastip` = '%s' " .
-                    "WHERE `uid` = '%d'",
-                [$user->getLastIp(), $user->getUid()]
+                    "SET `lastactiv` = NOW(), `lastip` = ? " .
+                    "WHERE `uid` = ?"
             )
-        );
+            ->execute([$user->getLastIp(), $user->getUid()]);
     }
 }

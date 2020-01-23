@@ -46,7 +46,7 @@ class ServerService
         $name = array_get($body, 'name');
         $ip = array_get($body, 'ip');
         $port = array_get($body, 'port');
-        $smsPlatformId = array_get($body, 'sms_platform');
+        $smsPlatformId = as_int(array_get($body, 'sms_platform'));
 
         $warnings = [];
 
@@ -84,8 +84,8 @@ class ServerService
             // This service can be bought on this server
             if ($serviceModule instanceof IServiceAvailableOnServers) {
                 $serversServices[] = [
-                    'service' => $service->getId(),
-                    'server' => $serverId,
+                    'service_id' => $service->getId(),
+                    'server_id' => $serverId,
                     'status' => (bool) array_get($body, $service->getId()),
                 ];
             }
@@ -103,13 +103,16 @@ class ServerService
     {
         $delete = [];
         $add = [];
-        foreach ($data as $arr) {
-            if ($arr['status']) {
-                $add[] = $this->db->prepare("('%d', '%s')", [$arr['server'], $arr['service']]);
+        foreach ($data as $item) {
+            if ($item['status']) {
+                $add[] = $this->db->prepare("('%d', '%s')", [
+                    $item['server_id'],
+                    $item['service_id'],
+                ]);
             } else {
                 $delete[] = $this->db->prepare("(`server_id` = '%d' AND `service_id` = '%s')", [
-                    $arr['server'],
-                    $arr['service'],
+                    $item['server_id'],
+                    $item['service_id'],
                 ]);
             }
         }

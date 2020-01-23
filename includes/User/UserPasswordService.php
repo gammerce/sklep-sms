@@ -21,15 +21,14 @@ class UserPasswordService
     {
         $salt = get_random_string(8);
 
-        $this->db->query(
-            $this->db->prepare(
+        $this->db
+            ->statement(
                 "UPDATE `" .
                     TABLE_PREFIX .
                     "users` " .
-                    "SET `password` = '%s', `salt` = '%s', `reset_password_key` = '' " .
-                    "WHERE `uid` = '%d'",
-                [hash_password($password, $salt), $salt, $uid]
+                    "SET `password` = ?, `salt` = ?, `reset_password_key` = '' " .
+                    "WHERE `uid` = ?"
             )
-        );
+            ->execute([hash_password($password, $salt), $salt, $uid]);
     }
 }

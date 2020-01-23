@@ -11,9 +11,9 @@ interface IServicePurchase
     /**
      * Metoda wywoływana, gdy usługa została prawidłowo zakupiona
      *
-     * @param Purchase $purchaseData
+     * @param Purchase $purchase
      *
-     * @return integer        value returned by function addBoughtServiceInfo
+     * @return int        value returned by function addBoughtServiceInfo
      */
-    public function purchase(Purchase $purchaseData);
+    public function purchase(Purchase $purchase);
 }

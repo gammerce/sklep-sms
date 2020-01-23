@@ -1,4 +1,4 @@
-$(document).delegate("#form_service_take_over [name=service]", "change", function() {
+$(document).delegate("#form_service_take_over [name=service_id]", "change", function() {
     if ($(this).val() == "") {
         $("#form_service_take_over")
             .find(".extra_data")
@@ -23,7 +23,7 @@ $(document).delegate("#form_service_take_over", "submit", function(e) {
     loader.show();
 
     var serviceId = $(this)
-        .find("[name=service]")
+        .find("[name=service_id]")
         .val();
 
     $.ajax({

@@ -4,26 +4,22 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Loggers\DatabaseLogger;
-use App\System\Database;
+use App\Repositories\SmsCodeRepository;
 use App\Translation\TranslationManager;
 
 class SmsCodeResource
 {
     public function delete(
         $smsCodeId,
-        Database $db,
         TranslationManager $translationManager,
+        SmsCodeRepository $smsCodeRepository,
         DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
 
-        $statement = $db->query(
-            $db->prepare("DELETE FROM `" . TABLE_PREFIX . "sms_codes` WHERE `id` = '%d'", [
-                $smsCodeId,
-            ])
-        );
+        $deleted = $smsCodeRepository->delete($smsCodeId);
 
-        if ($statement->rowCount()) {
+        if ($deleted) {
             $logger->logWithActor('log_sms_code_deleted', $smsCodeId);
             return new SuccessApiResponse($lang->t('delete_sms_code'));
         }

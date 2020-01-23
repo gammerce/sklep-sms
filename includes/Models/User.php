@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class User
 {
-    /** @var integer */
+    /** @var int */
     private $uid;
 
     /** @var string */
@@ -39,7 +39,7 @@ class User
     /** @var string */
     private $lastActive;
 
-    /** @var integer */
+    /** @var int */
     private $wallet;
 
     /** @var string */
@@ -102,7 +102,7 @@ class User
                 $privileges = $heart->getGroupPrivileges($groupId);
                 foreach ($privileges as $privilege => $value) {
                     if (strlen($privilege)) {
-                        $this->privileges[$privilege] = $value ? true : false;
+                        $this->privileges[$privilege] = !!$value;
                     }
                 }
             }
@@ -111,7 +111,7 @@ class User
 
     public function exists()
     {
-        return $this->getUid() ? true : false;
+        return !!$this->getUid();
     }
 
     /**

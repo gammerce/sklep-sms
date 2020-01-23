@@ -11,7 +11,7 @@ use Illuminate\Container\Container;
 
 class Application extends Container
 {
-    const VERSION = '3.10.0';
+    const VERSION = '3.11.0';
 
     private $providers = [
         AppServiceProvider::class,

@@ -12,7 +12,6 @@ use App\Http\Validation\Rules\UserGroupsRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\UserRepository;
-use App\System\Database;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -70,19 +69,15 @@ class UserResource
 
     public function delete(
         $userId,
-        Database $db,
+        UserRepository $userRepository,
         TranslationManager $translationManager,
         DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
 
-        $statement = $db->query(
-            $db->prepare("DELETE FROM `" . TABLE_PREFIX . "users` " . "WHERE `uid` = '%d'", [
-                $userId,
-            ])
-        );
+        $deleted = $userRepository->delete($userId);
 
-        if ($statement->rowCount()) {
+        if ($deleted) {
             $logger->logWithActor('log_user_deleted', $userId);
             return new SuccessApiResponse($lang->t('delete_user'));
         }

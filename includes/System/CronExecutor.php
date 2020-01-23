@@ -36,20 +36,18 @@ class CronExecutor
 
     public function run()
     {
-        // Usuwamy przestarzałe usługi użytkowników
         $this->expiredUserServiceService->deleteExpiredUserServices();
 
-        // Usuwamy przestarzałe logi
+        // Remove old logs
         if (intval($this->settings['delete_logs']) != 0) {
-            $this->db->query(
-                $this->db->prepare(
+            $this->db
+                ->statement(
                     "DELETE FROM `" .
                         TABLE_PREFIX .
                         "logs` " .
-                        "WHERE `timestamp` < DATE_SUB(NOW(), INTERVAL '%d' DAY)",
-                    [$this->settings['delete_logs']]
+                        "WHERE `timestamp` < DATE_SUB(NOW(), INTERVAL ? DAY)"
                 )
-            );
+                ->execute([$this->settings['delete_logs']]);
         }
 
         // Remove files older than 30 days from data/transfers

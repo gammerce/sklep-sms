@@ -46,6 +46,11 @@ class Template
         return $this->evalTemplate($compiled, $data);
     }
 
+    public function renderNoComments($templateName, array $data = [])
+    {
+        return $this->render($templateName, $data, true, false);
+    }
+
     /**
      * Pobranie szablonu.
      *
