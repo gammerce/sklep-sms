@@ -45,6 +45,20 @@ abstract class ServiceModule
     }
 
     /**
+     * @param array $data
+     * @return UserService
+     */
+    public function mapToUserService(array $data)
+    {
+        return new UserService(
+            as_int($data['id']),
+            $data['service'],
+            as_int($data['uid']),
+            as_int($data['expire'])
+        );
+    }
+
+    /**
      * Metoda wywoływana, gdy usługa jest usuwana.
      *
      * @param int $serviceId ID usługi

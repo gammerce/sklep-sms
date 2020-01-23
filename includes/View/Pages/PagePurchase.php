@@ -63,21 +63,14 @@ class PagePurchase extends Page
             }
         }
 
-        // Globalne jsy cssy konkretnych modułów usług
-        foreach ($this->heart->getServicesModules() as $moduleInfo) {
-            if ($moduleInfo['id'] == $serviceModule->getModuleId()) {
-                $path = "build/css/static/services/" . $moduleInfo['id'] . ".css";
-                if ($this->fileSystem->exists($this->path->to($path))) {
-                    $this->heart->styleAdd($this->url->versioned($path));
-                }
+        $path = "build/css/static/services/{$serviceModule->getModuleId()}.css";
+        if ($this->fileSystem->exists($this->path->to($path))) {
+            $this->heart->styleAdd($this->url->versioned($path));
+        }
 
-                $path = "build/js/static/services/" . $moduleInfo['id'] . ".js";
-                if ($this->fileSystem->exists($this->path->to($path))) {
-                    $this->heart->scriptAdd($this->url->versioned($path));
-                }
-
-                break;
-            }
+        $path = "build/js/static/services/{$serviceModule->getModuleId()}.js";
+        if ($this->fileSystem->exists($this->path->to($path))) {
+            $this->heart->scriptAdd($this->url->versioned($path));
         }
 
         $this->heart->pageTitle .= " - " . $serviceModule->service->getName();

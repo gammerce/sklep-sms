@@ -29,24 +29,20 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 
     protected function content(array $query, array $body)
     {
-        $className = '';
-        foreach ($this->heart->getServicesModules() as $module) {
-            $class = $module['class'];
+        $serviceModule = null;
+        foreach ($this->heart->getEmptyServiceModules() as $item) {
             if (
-                in_array(IServiceUserServiceAdminDisplay::class, class_implements($class)) &&
-                $module['id'] == $query['subpage']
+                $item instanceof IServiceUserServiceAdminDisplay &&
+                $item->getModuleId() == $query['subpage']
             ) {
-                $className = $class;
+                $serviceModule = $item;
                 break;
             }
         }
 
-        if (!strlen($className)) {
+        if (!$serviceModule) {
             return $this->lang->t('no_subpage', htmlspecialchars($query['subpage']));
         }
-
-        /** @var IServiceUserServiceAdminDisplay $serviceModule */
-        $serviceModule = $this->app->make($className);
 
         $this->title =
             $this->lang->t('users_services') .
@@ -141,20 +137,17 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         $selectWrapper->addClass("select is-small");
         $selectWrapper->addContent($button);
 
-        foreach ($this->heart->getServicesModules() as $serviceModuleData) {
-            if (
-                !in_array(
-                    IServiceUserServiceAdminDisplay::class,
-                    class_implements($serviceModuleData['class'])
-                )
-            ) {
+        foreach ($this->heart->getEmptyServiceModules() as $serviceModule) {
+            if (!($serviceModule instanceof IServiceUserServiceAdminDisplay)) {
                 continue;
             }
 
-            $option = new Option($serviceModuleData['name']);
-            $option->setParam('value', $serviceModuleData['id']);
+            $option = new Option(
+                $this->heart->getServiceModuleName($serviceModule->getModuleId()),
+                $serviceModule->getModuleId()
+            );
 
-            if ($serviceModuleData['id'] == $subpage) {
+            if ($serviceModule->getModuleId() == $subpage) {
                 $option->setParam('selected', 'selected');
             }
 

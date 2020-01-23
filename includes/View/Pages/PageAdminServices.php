@@ -98,16 +98,18 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
         // Pobranie dostępnych modułów usług
         elseif ($boxId == "service_add") {
             $servicesModules = "";
-            foreach ($this->heart->getServicesModules() as $module) {
-                // Sprawdzamy czy dany moduł zezwala na tworzenie nowych usług, które będzie obsługiwał
-                $serviceModule = $this->heart->getEmptyServiceModule($module['id']);
+            foreach ($this->heart->getEmptyServiceModules() as $serviceModule) {
                 if (!($serviceModule instanceof IServiceCreate)) {
                     continue;
                 }
 
-                $servicesModules .= create_dom_element("option", $module['name'], [
-                    'value' => $module['id'],
-                ]);
+                $servicesModules .= create_dom_element(
+                    "option",
+                    $this->heart->getServiceModuleName($serviceModule->getModuleId()),
+                    [
+                        'value' => $serviceModule->getModuleId(),
+                    ]
+                );
             }
         }
 
