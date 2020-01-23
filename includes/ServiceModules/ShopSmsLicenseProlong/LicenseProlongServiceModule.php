@@ -3,19 +3,18 @@ namespace App\ServiceModules\ShopSmsLicenseProlong;
 
 use App\Loggers\DatabaseLogger;
 use App\Models\LicenseUserService;
+use App\Models\Purchase;
 use App\Models\Service;
 use App\Payment\AdminPaymentService;
 use App\Payment\BoughtServiceService;
-use App\Repositories\UserServiceRepository;
-use App\ServiceModules\ServiceModule;
-use App\System\Auth;
-use App\System\Heart;
-use App\Services\LicenseServerService;
-use App\Models\Purchase;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
+use App\ServiceModules\ServiceModule;
+use App\Services\LicenseServerService;
+use App\System\Auth;
+use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -147,15 +146,13 @@ class LicenseProlongServiceModule extends ServiceModule implements
         }
 
         $purchase->setOrder([
-            'amount' => $body['amount'],
+            Purchase::ORDER_QUANTITY => $body['amount'],
             'identifier' => $identifier,
         ]);
         $purchase->setPayment([
-            'cost' => $this->getCost($body) * $body['amount'],
-            'no_sms' => true,
+            Purchase::PAYMENT_TRANSFER_PRICE => $this->getCost($body) * $body['amount'],
+            Purchase::PAYMENT_SMS_DISABLED => true,
         ]);
-
-        // TODO Change purchase fields
 
         return [
             'status' => "ok",
@@ -171,7 +168,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         return $this->template->renderNoComments(
             "services/shopsms_license_prolong/order_details",
             compact('identifier') + [
-                'quantity' => $purchase->getOrder('amount'),
+                'quantity' => $purchase->getOrder(Purchase::ORDER_QUANTITY),
                 'serviceName' => $this->service->getName(),
                 'serviceTag' => $this->service->getTag(),
             ]
@@ -197,7 +194,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         $data = $result->fetch();
         $userService = $this->mapToUserService($data);
 
-        $lifetime = $purchase->getOrder('amount') * 24 * 60 * 60;
+        $lifetime = $purchase->getOrder(Purchase::ORDER_QUANTITY) * 24 * 60 * 60;
         $result = $this->licenseServerService->prolong(
             $userService->getExternalLicenseId(),
             $lifetime
@@ -224,11 +221,11 @@ class LicenseProlongServiceModule extends ServiceModule implements
             $purchase->user->getUid(),
             $purchase->user->getUsername(),
             $purchase->user->getLastIp(),
-            $purchase->getPayment('method'),
-            $purchase->getPayment('payment_id'),
+            $purchase->getPayment(Purchase::PAYMENT_METHOD),
+            $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
             $this->service->getId(),
             0,
-            $purchase->getOrder('amount'),
+            $purchase->getOrder(Purchase::ORDER_QUANTITY),
             $userService->getIdentifier(),
             $userService->getEmail(),
             [
@@ -349,7 +346,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         ]);
         $purchase->setOrder([
             'identifier' => $body['identifier'],
-            'amount' => $body['amount'],
+            Purchase::ORDER_QUANTITY => $body['amount'],
         ]);
         $boughtServiceId = $this->purchase($purchase);
 

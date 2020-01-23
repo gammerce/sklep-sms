@@ -254,7 +254,7 @@ class LicenseServiceModule extends ServiceModule implements
 
         $costDaily = $this->getCostDaily($body);
         $purchase->setOrder([
-            'amount' => $body['amount'],
+            Purchase::ORDER_QUANTITY => $body['amount'],
             'engines' => [
                 'amxx' => $body['platform_amxmodx'],
                 'sm' => $body['platform_sourcemod'],
@@ -263,8 +263,8 @@ class LicenseServiceModule extends ServiceModule implements
         ]);
         $purchase->setEmail($body['email']);
         $purchase->setPayment([
-            'cost' => $this->getCost($costDaily, $body['amount'], true),
-            'no_sms' => true,
+            Purchase::PAYMENT_TRANSFER_PRICE => $this->getCost($costDaily, $body['amount'], true),
+            Purchase::PAYMENT_SMS_DISABLED => true,
         ]);
 
         return [
@@ -380,8 +380,8 @@ class LicenseServiceModule extends ServiceModule implements
             $purchase->user->getUid(),
             $purchase->user->getUsername(),
             $purchase->user->getLastIp(),
-            $purchase->getPayment('method'),
-            $purchase->getPayment('payment_id'),
+            $purchase->getPayment(Purchase::PAYMENT_METHOD),
+            $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
             $this->service->getId(),
             0,
             $purchase->getOrder('amount'),
@@ -590,8 +590,8 @@ class LicenseServiceModule extends ServiceModule implements
             ],
         ]);
         $purchase->setPayment([
-            'cost' => $costData['surcharge'] * $costData['bargain'],
-            'no_sms' => true,
+            Purchase::PAYMENT_TRANSFER_PRICE => $costData['surcharge'] * $costData['bargain'],
+            Purchase::PAYMENT_SMS_DISABLED => true,
         ]);
         $purchase->setEmail($body['email']);
 
