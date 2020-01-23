@@ -17,9 +17,7 @@ class BoughtServiceRepository
     public function get($id)
     {
         if ($id) {
-            $statement = $this->db->statement(
-                "SELECT * FROM `" . TABLE_PREFIX . "bought_services` WHERE `id` = ?"
-            );
+            $statement = $this->db->statement("SELECT * FROM `ss_bought_services` WHERE `id` = ?");
             $statement->execute([$id]);
 
             if ($data = $statement->fetch()) {
@@ -43,9 +41,7 @@ class BoughtServiceRepository
     ) {
         $this->db
             ->statement(
-                "INSERT INTO `" .
-                    TABLE_PREFIX .
-                    "bought_services` " .
+                "INSERT INTO `ss_bought_services` " .
                     "SET `uid` = ?, `payment` = ?, `payment_id` = ?, `service` = ?, " .
                     "`server` = ?, `amount` = ?, `auth_data` = ?, `email` = ?, `extra_data` = ?"
             )

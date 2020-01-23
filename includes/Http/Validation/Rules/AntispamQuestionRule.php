@@ -26,10 +26,9 @@ class AntispamQuestionRule implements Rule
         $asAnswer = $data["as_answer"];
 
         $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " . "WHERE `id` = '%d'",
-                [$asId]
-            )
+            $this->db->prepare("SELECT * FROM `ss_antispam_questions` " . "WHERE `id` = '%d'", [
+                $asId,
+            ])
         );
 
         $antispamQuestion = $result->fetch();

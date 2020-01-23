@@ -49,7 +49,7 @@ class UserServiceService
             $result = $this->db->query(
                 "SELECT * " .
                     "FROM `ss_user_service` AS us " .
-                    "INNER JOIN `ss_$table` AS m ON m.us_id = us.id " .
+                    "INNER JOIN `$table` AS m ON m.us_id = us.id " .
                     $conditions .
                     " ORDER BY us.id DESC "
             );

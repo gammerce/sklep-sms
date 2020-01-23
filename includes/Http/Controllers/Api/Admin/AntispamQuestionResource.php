@@ -20,7 +20,7 @@ class AntispamQuestionResource
         $lang = $translationManager->user();
 
         $statement = $db->query(
-            $db->prepare("DELETE FROM `" . TABLE_PREFIX . "antispam_questions` WHERE `id` = '%d'", [
+            $db->prepare("DELETE FROM `ss_antispam_questions` WHERE `id` = '%d'", [
                 $antispamQuestionId,
             ])
         );
@@ -63,9 +63,7 @@ class AntispamQuestionResource
 
         $statement = $db->query(
             $db->prepare(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "antispam_questions` " .
+                "UPDATE `ss_antispam_questions` " .
                     "SET `question` = '%s', `answers` = '%s' " .
                     "WHERE `id` = '%d'",
                 [$question, $answers, $antispamQuestionId]

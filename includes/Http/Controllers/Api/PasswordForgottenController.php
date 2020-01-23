@@ -54,10 +54,7 @@ class PasswordForgottenController
             }
             if (strlen($email)) {
                 $result = $db->query(
-                    $db->prepare(
-                        "SELECT `uid` FROM `" . TABLE_PREFIX . "users` " . "WHERE `email` = '%s'",
-                        [$email]
-                    )
+                    $db->prepare("SELECT `uid` FROM `ss_users` " . "WHERE `email` = '%s'", [$email])
                 );
 
                 if (!$result->rowCount()) {
@@ -78,11 +75,7 @@ class PasswordForgottenController
         $key = get_random_string(32);
         $db->query(
             $db->prepare(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "users` " .
-                    "SET `reset_password_key`='%s' " .
-                    "WHERE `uid`='%d'",
+                "UPDATE `ss_users` " . "SET `reset_password_key`='%s' " . "WHERE `uid`='%d'",
                 [$key, $editedUser->getUid()]
             )
         );

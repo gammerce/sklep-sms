@@ -13,7 +13,7 @@ class LogResource
         $lang = $translationManager->user();
 
         $statement = $db->query(
-            $db->prepare("DELETE FROM `" . TABLE_PREFIX . "logs` " . "WHERE `id` = '%d'", [$logId])
+            $db->prepare("DELETE FROM `ss_logs` " . "WHERE `id` = '%d'", [$logId])
         );
 
         if ($statement->rowCount()) {

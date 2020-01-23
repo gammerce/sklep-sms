@@ -38,9 +38,7 @@ class PageAdminPlayersFlags extends PageAdmin
         }
 
         $result = $this->db->query(
-            "SELECT SQL_CALC_FOUND_ROWS * FROM `" .
-                TABLE_PREFIX .
-                "players_flags` " .
+            "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_players_flags` " .
                 "ORDER BY `id` DESC " .
                 "LIMIT " .
                 get_row_limit($this->currentPage->getPageNumber())

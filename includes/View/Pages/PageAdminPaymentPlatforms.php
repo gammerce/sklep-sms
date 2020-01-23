@@ -53,9 +53,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
         $table->addHeadCell(new HeadCell($this->lang->t('module')));
 
         $result = $this->db->query(
-            "SELECT SQL_CALC_FOUND_ROWS * FROM `" .
-                TABLE_PREFIX .
-                "payment_platforms` " .
+            "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_payment_platforms` " .
                 "LIMIT " .
                 get_row_limit($this->currentPage->getPageNumber())
         );

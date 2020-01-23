@@ -49,13 +49,7 @@ class RegisterController
         // Get new antispam question
         $data = [];
         $antispamQuestion = $db
-            ->query(
-                "SELECT * FROM `" .
-                    TABLE_PREFIX .
-                    "antispam_questions` " .
-                    "ORDER BY RAND() " .
-                    "LIMIT 1"
-            )
+            ->query("SELECT * FROM `ss_antispam_questions` " . "ORDER BY RAND() " . "LIMIT 1")
             ->fetch();
         $data['antispam']['question'] = $antispamQuestion['question'];
         $data['antispam']['id'] = $antispamQuestion['id'];

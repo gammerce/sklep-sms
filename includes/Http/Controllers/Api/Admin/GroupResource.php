@@ -22,7 +22,7 @@ class GroupResource
         $name = $request->request->get('name');
 
         $set = "";
-        $result = $db->query("DESCRIBE " . TABLE_PREFIX . "groups");
+        $result = $db->query("DESCRIBE ss_groups");
         foreach ($result as $row) {
             if (in_array($row['Field'], ["id", "name"])) {
                 continue;
@@ -35,14 +35,10 @@ class GroupResource
         }
 
         $statement = $db->query(
-            $db->prepare(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "groups` " .
-                    "SET `name` = '%s'{$set} " .
-                    "WHERE `id` = '%d'",
-                [$name, $groupId]
-            )
+            $db->prepare("UPDATE `ss_groups` " . "SET `name` = '%s'{$set} " . "WHERE `id` = '%d'", [
+                $name,
+                $groupId,
+            ])
         );
 
         if ($statement->rowCount()) {
@@ -62,7 +58,7 @@ class GroupResource
         $lang = $translationManager->user();
 
         $statement = $db->query(
-            $db->prepare("DELETE FROM `" . TABLE_PREFIX . "groups` WHERE `id` = '%d'", [$groupId])
+            $db->prepare("DELETE FROM `ss_groups` WHERE `id` = '%d'", [$groupId])
         );
 
         if ($statement->rowCount()) {

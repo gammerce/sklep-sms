@@ -33,9 +33,7 @@ class UniqueUsernameRule implements Rule
 
         $result = $this->db->query(
             $this->db->prepare(
-                "SELECT `uid` FROM `" .
-                    TABLE_PREFIX .
-                    "users` WHERE `username` = '%s' AND `uid` != '%d'",
+                "SELECT `uid` FROM `ss_users` WHERE `username` = '%s' AND `uid` != '%d'",
                 [$value, $this->userId]
             )
         );

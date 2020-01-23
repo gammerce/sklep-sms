@@ -35,9 +35,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
 
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * " .
-                "FROM `" .
-                TABLE_PREFIX .
-                "antispam_questions` " .
+                "FROM `ss_antispam_questions` " .
                 "LIMIT " .
                 get_row_limit($this->currentPage->getPageNumber())
         );
@@ -85,7 +83,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
 
             case "antispam_question_edit":
                 $statement = $this->db->statement(
-                    "SELECT * FROM `" . TABLE_PREFIX . "antispam_questions` " . "WHERE `id` = ?"
+                    "SELECT * FROM `ss_antispam_questions` " . "WHERE `id` = ?"
                 );
                 $statement->execute([$query['id']]);
                 $row = $statement->fetch();

@@ -45,14 +45,11 @@ class PasswordResource
         $salt = get_random_string(8);
 
         $db->query(
-            $db->prepare(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "users` " .
-                    "SET password='%s', salt='%s'" .
-                    "WHERE uid='%d'",
-                [hash_password($pass, $salt), $salt, $user->getUid()]
-            )
+            $db->prepare("UPDATE `ss_users` " . "SET password='%s', salt='%s'" . "WHERE uid='%d'", [
+                hash_password($pass, $salt),
+                $salt,
+                $user->getUid(),
+            ])
         );
 
         $logger->logWithActor("log_password_changed");

@@ -17,9 +17,7 @@ class SmsCodeRepository
     public function get($id)
     {
         if ($id) {
-            $statement = $this->db->statement(
-                "SELECT * FROM `" . TABLE_PREFIX . "sms_codes` WHERE `id` = ?"
-            );
+            $statement = $this->db->statement("SELECT * FROM `ss_sms_codes` WHERE `id` = ?");
             $statement->execute([$id]);
 
             if ($data = $statement->fetch()) {
@@ -33,7 +31,7 @@ class SmsCodeRepository
     public function findByCodeAndPrice($code, $smsPrice)
     {
         $statement = $this->db->statement(
-            "SELECT * FROM `" . TABLE_PREFIX . "sms_codes` WHERE `code` = ? AND `sms_price` = ?"
+            "SELECT * FROM `ss_sms_codes` WHERE `code` = ? AND `sms_price` = ?"
         );
         $statement->execute([$code, $smsPrice]);
 
@@ -48,10 +46,7 @@ class SmsCodeRepository
     {
         $this->db
             ->statement(
-                "INSERT INTO `" .
-                    TABLE_PREFIX .
-                    "sms_codes` " .
-                    "SET `code` = ?, `sms_price` = ?, `free` = ?"
+                "INSERT INTO `ss_sms_codes` " . "SET `code` = ?, `sms_price` = ?, `free` = ?"
             )
             ->execute([$code, $smsPrice, $free ? 1 : 0]);
 
@@ -60,9 +55,7 @@ class SmsCodeRepository
 
     public function delete($id)
     {
-        $statement = $this->db->statement(
-            "DELETE FROM `" . TABLE_PREFIX . "sms_codes` " . "WHERE `id` = ?"
-        );
+        $statement = $this->db->statement("DELETE FROM `ss_sms_codes` WHERE `id` = ?");
         $statement->execute([$id]);
 
         return !!$statement->rowCount();

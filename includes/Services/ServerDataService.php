@@ -50,9 +50,7 @@ class ServerDataService
         $keys = implode(",", array_fill(0, count($serviceIds), "?"));
 
         $statement = $this->db->statement(
-            "SELECT * FROM `" .
-                TABLE_PREFIX .
-                "prices` " .
+            "SELECT * FROM `ss_prices` " .
                 "WHERE (`server` = ? OR `server` IS NULL) AND `sms_price` IS NOT NULL AND `service` IN ({$keys}) " .
                 "ORDER BY `service` ASC, `quantity` ASC"
         );

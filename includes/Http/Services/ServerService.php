@@ -119,9 +119,7 @@ class ServerService
 
         if (!empty($add)) {
             $this->db->query(
-                "INSERT IGNORE INTO `" .
-                    TABLE_PREFIX .
-                    "servers_services` (`server_id`, `service_id`) " .
+                "INSERT IGNORE INTO `ss_servers_services` (`server_id`, `service_id`) " .
                     "VALUES " .
                     implode(", ", $add)
             );
@@ -129,11 +127,7 @@ class ServerService
 
         if (!empty($delete)) {
             $this->db->query(
-                "DELETE FROM `" .
-                    TABLE_PREFIX .
-                    "servers_services` " .
-                    "WHERE " .
-                    implode(" OR ", $delete)
+                "DELETE FROM `ss_servers_services` " . "WHERE " . implode(" OR ", $delete)
             );
         }
     }

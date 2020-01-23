@@ -60,7 +60,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     IServiceServiceCode
 {
     const MODULE_ID = "extra_flags";
-    const USER_SERVICE_TABLE = "user_service_extra_flags";
+    const USER_SERVICE_TABLE = "ss_user_service_extra_flags";
 
     /** @var Translator */
     private $lang;
@@ -281,22 +281,13 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             "SELECT SQL_CALC_FOUND_ROWS us.id AS `id`, us.uid AS `uid`, u.username AS `username`, " .
                 "srv.name AS `server`, s.id AS `service_id`, s.name AS `service`, " .
                 "usef.type AS `type`, usef.auth_data AS `auth_data`, us.expire AS `expire` " .
-                "FROM `" .
-                TABLE_PREFIX .
-                "user_service` AS us " .
+                "FROM `ss_user_service` AS us " .
                 "INNER JOIN `" .
-                TABLE_PREFIX .
                 $this::USER_SERVICE_TABLE .
                 "` AS usef ON usef.us_id = us.id " .
-                "LEFT JOIN `" .
-                TABLE_PREFIX .
-                "services` AS s ON s.id = usef.service " .
-                "LEFT JOIN `" .
-                TABLE_PREFIX .
-                "servers` AS srv ON srv.id = usef.server " .
-                "LEFT JOIN `" .
-                TABLE_PREFIX .
-                "users` AS u ON u.uid = us.uid " .
+                "LEFT JOIN `ss_services` AS s ON s.id = usef.service " .
+                "LEFT JOIN `ss_servers` AS srv ON srv.id = usef.server " .
+                "LEFT JOIN `ss_users` AS u ON u.uid = us.uid " .
                 $where .
                 "ORDER BY us.id DESC " .
                 "LIMIT " .
@@ -457,7 +448,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 // Sprawdzanie czy istnieje już taka usługa
                 $query = $this->db->prepare(
                     "SELECT `password` FROM `" .
-                        TABLE_PREFIX .
                         $this::USER_SERVICE_TABLE .
                         "` " .
                         "WHERE `type` = '%d' AND `auth_data` = '%s' AND `server` = '%d'",
@@ -477,7 +467,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 // Sprawdzanie czy istnieje już taka usługa
                 $query = $this->db->prepare(
                     "SELECT `password` FROM `" .
-                        TABLE_PREFIX .
                         $this::USER_SERVICE_TABLE .
                         "` " .
                         "WHERE `type` = '%d' AND `auth_data` = '%s' AND `server` = '%d'",
@@ -632,7 +621,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $result = $this->db->query(
             $this->db->prepare(
                 "SELECT `us_id` FROM `" .
-                    TABLE_PREFIX .
                     $this::USER_SERVICE_TABLE .
                     "` " .
                     "WHERE `service` = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s'",
@@ -683,7 +671,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $this->db->query(
             $this->db->prepare(
                 "UPDATE `" .
-                    TABLE_PREFIX .
                     $this::USER_SERVICE_TABLE .
                     "` " .
                     "SET `password` = '%s' " .
@@ -699,9 +686,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     private function deleteOldFlags()
     {
         $this->db->query(
-            "DELETE FROM `" .
-                TABLE_PREFIX .
-                "players_flags` " .
+            "DELETE FROM `ss_players_flags` " .
                 "WHERE (`a` < UNIX_TIMESTAMP() AND `a` != '-1') " .
                 "AND (`b` < UNIX_TIMESTAMP() AND `b` != '-1') " .
                 "AND (`c` < UNIX_TIMESTAMP() AND `c` != '-1') " .
@@ -743,9 +728,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         // Ponieważ za chwilę będziemy je tworzyć na nowo
         $this->db->query(
             $this->db->prepare(
-                "DELETE FROM `" .
-                    TABLE_PREFIX .
-                    "players_flags` " .
+                "DELETE FROM `ss_players_flags` " .
                     "WHERE `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s'",
                 [$serverId, $type, $authData]
             )
@@ -754,11 +737,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         // Pobieranie wszystkich usług na konkretne dane
         $result = $this->db->query(
             $this->db->prepare(
-                "SELECT * FROM `" .
-                    TABLE_PREFIX .
-                    "user_service` AS us " .
+                "SELECT * FROM `ss_user_service` AS us " .
                     "INNER JOIN `" .
-                    TABLE_PREFIX .
                     $this::USER_SERVICE_TABLE .
                     "` AS usef ON us.id = usef.us_id " .
                     "WHERE `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND ( `expire` > UNIX_TIMESTAMP() OR `expire` = -1 )",
@@ -797,9 +777,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         if (strlen($set)) {
             $this->db->query(
                 $this->db->prepare(
-                    "INSERT INTO `" .
-                        TABLE_PREFIX .
-                        "players_flags` " .
+                    "INSERT INTO `ss_players_flags` " .
                         "SET `server` = '%d', `type` = '%d', `auth_data` = '%s', `password` = '%s'{$set}",
                     [$serverId, $type, $authData, $password]
                 )
@@ -1406,11 +1384,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         // Sprawdzenie czy nie ma już takiej usługi
         $result = $this->db->query(
             $this->db->prepare(
-                "SELECT * FROM `" .
-                    TABLE_PREFIX .
-                    "user_service` AS us " .
+                "SELECT * FROM `ss_user_service` AS us " .
                     "INNER JOIN `" .
-                    TABLE_PREFIX .
                     $this::USER_SERVICE_TABLE .
                     "` AS usef ON us.id = usef.us_id " .
                     "WHERE us.service = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND `id` != '%d'",
@@ -1501,7 +1476,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $this->db->query(
                 $this->db->prepare(
                     "UPDATE `" .
-                        TABLE_PREFIX .
                         $this::USER_SERVICE_TABLE .
                         "` " .
                         "SET `password` = '%s' " .
@@ -1692,7 +1666,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $this->db->prepare(
                 "SELECT `id` FROM `ss_user_service` AS us " .
                     "INNER JOIN `" .
-                    TABLE_PREFIX .
                     $this::USER_SERVICE_TABLE .
                     "` AS usef ON us.id = usef.us_id " .
                     "WHERE us.service = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND ( `password` = '%s' OR `password` = '%s' )",

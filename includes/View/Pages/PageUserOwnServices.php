@@ -64,24 +64,16 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             $moduleIds = implode_esc(', ', $moduleIds);
 
             $statement = $db->statement(
-                "SELECT COUNT(*) FROM `" .
-                    TABLE_PREFIX .
-                    "user_service` AS us " .
-                    "INNER JOIN `" .
-                    TABLE_PREFIX .
-                    "services` AS s ON us.service = s.id " .
+                "SELECT COUNT(*) FROM `ss_user_service` AS us " .
+                    "INNER JOIN `ss_services` AS s ON us.service = s.id " .
                     "WHERE us.uid = ? AND s.module IN ({$moduleIds}) "
             );
             $statement->execute([$user->getUid()]);
             $rowsCount = $statement->fetchColumn();
 
             $statement = $db->statement(
-                "SELECT us.id FROM `" .
-                    TABLE_PREFIX .
-                    "user_service` AS us " .
-                    "INNER JOIN `" .
-                    TABLE_PREFIX .
-                    "services` AS s ON us.service = s.id " .
+                "SELECT us.id FROM `ss_user_service` AS us " .
+                    "INNER JOIN `ss_services` AS s ON us.service = s.id " .
                     "WHERE us.uid = ? AND s.module IN ({$moduleIds}) " .
                     "ORDER BY us.id DESC " .
                     "LIMIT " .

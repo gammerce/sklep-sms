@@ -34,10 +34,7 @@ class AntispamQuestionCollection
 
         $db->query(
             $db->prepare(
-                "INSERT INTO `" .
-                    TABLE_PREFIX .
-                    "antispam_questions` ( question, answers ) " .
-                    "VALUES ('%s','%s')",
+                "INSERT INTO `ss_antispam_questions` ( question, answers ) " . "VALUES ('%s','%s')",
                 [$question, $answers]
             )
         );
