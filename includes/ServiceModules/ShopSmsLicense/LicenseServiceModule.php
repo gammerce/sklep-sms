@@ -42,7 +42,7 @@ class LicenseServiceModule extends ServiceModule implements
     IServiceUserServiceAdminAdd
 {
     const MODULE_ID = "shopsms_license";
-    const USER_SERVICE_TABLE = "user_service_shopsms_license";
+    const USER_SERVICE_TABLE = "ss_user_service_shopsms_license";
     // Kwoty za dzień w groszach
     const COST_SHOP_PER_DAY = 40;
     const COST_ENGINE_PER_DAY = 20;
@@ -152,19 +152,12 @@ class LicenseServiceModule extends ServiceModule implements
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS us.id, us.uid, u.username, s.id AS `service_id`, " .
                 "s.name AS `service`, us.expire, m.identifier, m.external_license_id, m.cost_daily " .
-                "FROM `" .
-                TABLE_PREFIX .
-                "user_service` AS us " .
+                "FROM `ss_user_service` AS us " .
                 "INNER JOIN `" .
-                TABLE_PREFIX .
                 $this::USER_SERVICE_TABLE .
                 "` AS m ON m.us_id = us.id " .
-                "LEFT JOIN `" .
-                TABLE_PREFIX .
-                "services` AS s ON s.id = m.service " .
-                "LEFT JOIN `" .
-                TABLE_PREFIX .
-                "users` AS u ON u.uid = us.uid " .
+                "LEFT JOIN `ss_services` AS s ON s.id = m.service " .
+                "LEFT JOIN `ss_users` AS u ON u.uid = us.uid " .
                 $where .
                 "ORDER BY us.id DESC " .
                 "LIMIT " .
@@ -325,9 +318,7 @@ class LicenseServiceModule extends ServiceModule implements
         // Dodajemy usługę użytkownika do bazy sklepu
         $this->db->query(
             $this->db->prepare(
-                "INSERT INTO `" .
-                    TABLE_PREFIX .
-                    "user_service` " .
+                "INSERT INTO `ss_user_service` " .
                     "SET `uid` = '%d', `service` = '%s', `expire` = '%d'",
                 [$purchase->user->getUid(), $this->service->getId(), $expiresAt]
             )
@@ -337,7 +328,6 @@ class LicenseServiceModule extends ServiceModule implements
         $this->db->query(
             $this->db->prepare(
                 "INSERT INTO `" .
-                    TABLE_PREFIX .
                     $this::USER_SERVICE_TABLE .
                     "` " .
                     "SET `us_id` = '%d', " .
@@ -643,7 +633,6 @@ class LicenseServiceModule extends ServiceModule implements
         $result = $this->db->query(
             $this->db->prepare(
                 "SELECT `us_id` FROM `" .
-                    TABLE_PREFIX .
                     $this::USER_SERVICE_TABLE .
                     "` " .
                     "WHERE `service` = '%s' AND `external_license_id` = '%s'",
@@ -657,9 +646,7 @@ class LicenseServiceModule extends ServiceModule implements
         $user = $this->auth->user();
         $statement = $this->db->query(
             $this->db->prepare(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "user_service` " .
+                "UPDATE `ss_user_service` " .
                     "SET `uid` = '%d' " .
                     "WHERE `id` = '%d'",
                 [$user->getUid(), $userServiceId]
@@ -743,7 +730,6 @@ class LicenseServiceModule extends ServiceModule implements
             $result = $this->db->query(
                 $this->db->prepare(
                     "SELECT `external_license_id` FROM `" .
-                        TABLE_PREFIX .
                         $this::USER_SERVICE_TABLE .
                         "` " .
                         "WHERE `identifier` = '%s'",

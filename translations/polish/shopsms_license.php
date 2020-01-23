@@ -27,11 +27,8 @@ return [
     'price_per_option' =>
         '( wybranie jednej opcji jest darmowe, każda kolejna to koszt 5&nbsp;PLN/msc )',
     'license_duration' => 'Podaj na jaki okres chcesz zakupić licencję.',
-    'license_price' => '( Powyżej <b>364 dni</b>, płacisz tylko <u><b>82%</b></u> ceny, a powyżej <b>729 dni</b>
-                    <u><b>62%</b></u> ceny )',
+    'license_price' => '( Powyżej <b>364 dni</b>, płacisz tylko <u><b>80%</b></u> ceny )',
     'give_email' => 'Podaj swój adres e-mail.',
-    'sms_payment_conditions' =>
-        'Płatność SMS możliwa jedynie poprzez założenie konta i doładowanie portfela.',
     'shopsms_purchase' => 'Witaj,<br/>
 przed chwilą dokonałeś/aś zakupu licencji Sklepu SMS. Gratuluję świetnego wyboru! ;)',
     'license_data' => 'Dane licencji',

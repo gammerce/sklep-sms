@@ -28,7 +28,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
     IServiceUserServiceAdminAdd
 {
     const MODULE_ID = "shopsms_license_prolong";
-    const USER_SERVICE_TABLE = "user_service_shopsms_license";
+    const USER_SERVICE_TABLE = "ss_user_service_shopsms_license";
 
     /** @var Translator */
     private $lang;
@@ -119,11 +119,8 @@ class LicenseProlongServiceModule extends ServiceModule implements
         // Sprawdzamy czy podana licencja jest w bazie
         $result = $this->db->query(
             $this->db->prepare(
-                "SELECT 1 FROM `" .
-                    TABLE_PREFIX .
-                    "user_service` AS us " .
+                "SELECT 1 FROM `ss_user_service` AS us " .
                     "INNER JOIN `" .
-                    TABLE_PREFIX .
                     $this::USER_SERVICE_TABLE .
                     "` AS m ON m.us_id = us.id " .
                     "WHERE m.identifier = '%s' AND us.expire != '-1'",
@@ -179,11 +176,8 @@ class LicenseProlongServiceModule extends ServiceModule implements
     {
         $result = $this->db->query(
             $this->db->prepare(
-                "SELECT * FROM `" .
-                    TABLE_PREFIX .
-                    "user_service` AS us " .
+                "SELECT * FROM `ss_user_service` AS us " .
                     "INNER JOIN `" .
-                    TABLE_PREFIX .
                     $this::USER_SERVICE_TABLE .
                     "` AS m ON m.us_id = us.id " .
                     "WHERE m.identifier = '%s'",
@@ -204,9 +198,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         // Aktualizujemy informacje o licencji w sklepie
         $this->db->query(
             $this->db->prepare(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "user_service` " .
+                "UPDATE `ss_user_service` " .
                     "SET `uid` = %s, `expire` = '%d'" .
                     "WHERE `id` = '%d'",
                 [
@@ -299,11 +291,8 @@ class LicenseProlongServiceModule extends ServiceModule implements
         // License name
         $result = $this->db->query(
             $this->db->prepare(
-                "SELECT * FROM `" .
-                    TABLE_PREFIX .
-                    "user_service` AS us " .
+                "SELECT * FROM `ss_user_service` AS us " .
                     "INNER JOIN `" .
-                    TABLE_PREFIX .
                     $this::USER_SERVICE_TABLE .
                     "` AS m ON m.us_id = us.id " .
                     "WHERE m.identifier = '%s' AND us.expire != '-1'",
@@ -385,7 +374,6 @@ class LicenseProlongServiceModule extends ServiceModule implements
 
         $statement = $this->db->statement(
             "SELECT `cost_daily` FROM `" .
-                TABLE_PREFIX .
                 $this::USER_SERVICE_TABLE .
                 "` " .
                 "WHERE `identifier` = ?"
@@ -402,10 +390,6 @@ class LicenseProlongServiceModule extends ServiceModule implements
 
     private function getBargain($daysAmount)
     {
-        if ($daysAmount >= 730) {
-            return 0.6;
-        }
-
         if ($daysAmount >= 365) {
             return 0.8;
         }

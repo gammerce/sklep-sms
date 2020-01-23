@@ -29,8 +29,6 @@ return [
     'license_price' => '( Above <b>364 days</b>, you pay only <u><b>82%</b></u> of the price, and above <b>729 days</b>
                     <u><b>62%</b></u> of the price )',
     'give_email' => 'Give your e-mail.',
-    'sms_payment_conditions' =>
-        'SMS payment is only possible after creating account and charging wallet.',
     'shopsms_purchase' => 'Hello,<br/>
 you have just purchased SMS Shop License. Great choice! ;)',
     'license_data' => 'License data',

@@ -20,7 +20,7 @@ class LicenseEditServiceModule extends ServiceModule implements
     IServicePurchaseWeb
 {
     const MODULE_ID = "shopsms_license_edit";
-    const USER_SERVICE_TABLE = "user_service_shopsms_license";
+    const USER_SERVICE_TABLE = "ss_user_service_shopsms_license";
 
     /** @var Translator */
     private $lang;
@@ -64,7 +64,6 @@ class LicenseEditServiceModule extends ServiceModule implements
     {
         $statement = $this->db->statement(
             "SELECT `identifier` FROM `" .
-                TABLE_PREFIX .
                 $this::USER_SERVICE_TABLE .
                 "` " .
                 "WHERE `us_id` = ?"
