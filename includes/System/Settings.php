@@ -69,7 +69,7 @@ class Settings implements ArrayAccess
 
     public function load()
     {
-        $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "settings`");
+        $result = $this->db->query("SELECT * FROM `ss_settings`");
         foreach ($result as $row) {
             $this->data[$row['key']] = $this->prepareValue($row['key'], $row['value']);
         }
@@ -78,8 +78,7 @@ class Settings implements ArrayAccess
             $this->data['shop_url'] = $this->formatShopUrl($this->data['shop_url']);
         }
 
-        $this->data['transactions_query'] =
-            "(SELECT bs.id AS `id`,
+        $this->data['transactions_query'] = "(SELECT bs.id AS `id`,
 bs.uid AS `uid`,
 u.username AS `username`,
 bs.payment AS `payment`,
@@ -102,30 +101,14 @@ ps.number AS `sms_number`,
 IFNULL(ps.free, IFNULL(pt.free, 0)) AS `free`,
 pc.code AS `service_code`,
 bs.timestamp AS `timestamp`
-FROM `" .
-            TABLE_PREFIX .
-            "bought_services` AS bs
-LEFT JOIN `" .
-            TABLE_PREFIX .
-            "users` AS u ON u.uid = bs.uid
-LEFT JOIN `" .
-            TABLE_PREFIX .
-            "payment_admin` AS pa ON bs.payment = 'admin' AND pa.id = bs.payment_id
-LEFT JOIN `" .
-            TABLE_PREFIX .
-            "users` AS u2 ON u2.uid = pa.aid
-LEFT JOIN `" .
-            TABLE_PREFIX .
-            "payment_sms` AS ps ON bs.payment = 'sms' AND ps.id = bs.payment_id
-LEFT JOIN `" .
-            TABLE_PREFIX .
-            "payment_transfer` AS pt ON bs.payment = 'transfer' AND pt.id = bs.payment_id
-LEFT JOIN `" .
-            TABLE_PREFIX .
-            "payment_wallet` AS pw ON bs.payment = 'wallet' AND pw.id = bs.payment_id
-LEFT JOIN `" .
-            TABLE_PREFIX .
-            "payment_code` AS pc ON bs.payment = 'service_code' AND pc.id = bs.payment_id)";
+FROM `ss_bought_services` AS bs
+LEFT JOIN `ss_users` AS u ON u.uid = bs.uid
+LEFT JOIN `ss_payment_admin` AS pa ON bs.payment = 'admin' AND pa.id = bs.payment_id
+LEFT JOIN `ss_users` AS u2 ON u2.uid = pa.aid
+LEFT JOIN `ss_payment_sms` AS ps ON bs.payment = 'sms' AND ps.id = bs.payment_id
+LEFT JOIN `ss_payment_transfer` AS pt ON bs.payment = 'transfer' AND pt.id = bs.payment_id
+LEFT JOIN `ss_payment_wallet` AS pw ON bs.payment = 'wallet' AND pw.id = bs.payment_id
+LEFT JOIN `ss_payment_code` AS pc ON bs.payment = 'service_code' AND pc.id = bs.payment_id)";
 
         if ($this->data['timezone']) {
             date_default_timezone_set($this->data['timezone']);

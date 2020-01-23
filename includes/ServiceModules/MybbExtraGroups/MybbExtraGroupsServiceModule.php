@@ -47,7 +47,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     IServiceUserOwnServices
 {
     const MODULE_ID = "mybb_extra_groups";
-    const USER_SERVICE_TABLE = "user_service_mybb_extra_groups";
+    const USER_SERVICE_TABLE = "ss_user_service_mybb_extra_groups";
 
     /** @var array */
     private $groups = [];
@@ -289,19 +289,12 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS us.id, us.uid, u.username, " .
                 "s.id AS `service_id`, s.name AS `service`, us.expire, usmeg.mybb_uid " .
-                "FROM `" .
-                TABLE_PREFIX .
-                "user_service` AS us " .
+                "FROM `ss_user_service` AS us " .
                 "INNER JOIN `" .
-                TABLE_PREFIX .
                 $this::USER_SERVICE_TABLE .
                 "` AS usmeg ON usmeg.us_id = us.id " .
-                "LEFT JOIN `" .
-                TABLE_PREFIX .
-                "services` AS s ON s.id = usmeg.service " .
-                "LEFT JOIN `" .
-                TABLE_PREFIX .
-                "users` AS u ON u.uid = us.uid " .
+                "LEFT JOIN `ss_services` AS s ON s.id = usmeg.service " .
+                "LEFT JOIN `ss_users` AS u ON u.uid = us.uid " .
                 $where .
                 "ORDER BY us.id DESC " .
                 "LIMIT " .
@@ -560,16 +553,11 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         // Dodajemy uzytkownikowi grupy na podstawie USER_SERVICE_TABLE
         $result = $this->db->query(
             $this->db->prepare(
-                "SELECT us.expire - UNIX_TIMESTAMP() AS `expire`, s.data AS `extra_data` FROM `" .
-                    TABLE_PREFIX .
-                    "user_service` AS us " .
+                "SELECT us.expire - UNIX_TIMESTAMP() AS `expire`, s.data AS `extra_data` FROM `ss_user_service` AS us " .
                     "INNER JOIN `" .
-                    TABLE_PREFIX .
                     $this::USER_SERVICE_TABLE .
                     "` AS m ON us.id = m.us_id " .
-                    "INNER JOIN `" .
-                    TABLE_PREFIX .
-                    "services` AS s ON us.service = s.id " .
+                    "INNER JOIN `ss_services` AS s ON us.service = s.id " .
                     "WHERE m.mybb_uid = '%d'",
                 [$userService->getMybbUid()]
             )
@@ -616,7 +604,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $result = $this->db->query(
             $this->db->prepare(
                 "SELECT `us_id` FROM `" .
-                    TABLE_PREFIX .
                     $this::USER_SERVICE_TABLE .
                     "` " .
                     "WHERE `service` = '%s' AND `mybb_uid` = '%d'",
@@ -654,9 +641,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             // Wstawiamy
             $this->db->query(
                 $this->db->prepare(
-                    "INSERT INTO `" .
-                        TABLE_PREFIX .
-                        "user_service` (`uid`, `service`, `expire`) " .
+                    "INSERT INTO `ss_user_service` (`uid`, `service`, `expire`) " .
                         "VALUES ('%d', '%s', IF('%d' = '1', '-1', UNIX_TIMESTAMP() + '%d')) ",
                     [$uid, $this->service->getId(), $forever, $days * 24 * 60 * 60]
                 )
@@ -666,7 +651,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             $this->db->query(
                 $this->db->prepare(
                     "INSERT INTO `" .
-                        TABLE_PREFIX .
                         $this::USER_SERVICE_TABLE .
                         "` (`us_id`, `service`, `mybb_uid`) " .
                         "VALUES ('%d', '%s', '%d')",
@@ -846,9 +830,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         $result = $this->db->query(
             $this->db->prepare(
-                "SELECT `gid`, UNIX_TIMESTAMP(`expire`) - UNIX_TIMESTAMP() AS `expire`, `was_before` FROM `" .
-                    TABLE_PREFIX .
-                    "mybb_user_group` " .
+                "SELECT `gid`, UNIX_TIMESTAMP(`expire`) - UNIX_TIMESTAMP() AS `expire`, `was_before` FROM `ss_mybb_user_group` " .
                     "WHERE `uid` = '%d'",
                 [$rowMybb['uid']]
             )
@@ -874,10 +856,9 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $this->connectMybb();
 
         $this->db->query(
-            $this->db->prepare(
-                "DELETE FROM `" . TABLE_PREFIX . "mybb_user_group` " . "WHERE `uid` = '%d'",
-                [$mybbUser->getUid()]
-            )
+            $this->db->prepare("DELETE FROM `ss_mybb_user_group` " . "WHERE `uid` = '%d'", [
+                $mybbUser->getUid(),
+            ])
         );
 
         $values = [];
@@ -890,9 +871,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         if (!empty($values)) {
             $this->db->query(
-                "INSERT INTO `" .
-                    TABLE_PREFIX .
-                    "mybb_user_group` (`uid`, `gid`, `expire`, `was_before`) " .
+                "INSERT INTO `ss_mybb_user_group` (`uid`, `gid`, `expire`, `was_before`) " .
                     "VALUES " .
                     implode(", ", $values)
             );

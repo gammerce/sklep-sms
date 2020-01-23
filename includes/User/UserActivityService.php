@@ -22,11 +22,7 @@ class UserActivityService
 
         $this->db
             ->statement(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "users` " .
-                    "SET `lastactiv` = NOW(), `lastip` = ? " .
-                    "WHERE `uid` = ?"
+                "UPDATE `ss_users` " . "SET `lastactiv` = NOW(), `lastip` = ? " . "WHERE `uid` = ?"
             )
             ->execute([$user->getLastIp(), $user->getUid()]);
     }

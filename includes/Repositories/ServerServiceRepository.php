@@ -18,10 +18,7 @@ class ServerServiceRepository
     {
         $this->db
             ->statement(
-                "INSERT INTO `" .
-                    TABLE_PREFIX .
-                    "servers_services` " .
-                    "SET `server_id` = ?, `service_id` = ?"
+                "INSERT INTO `ss_servers_services` " . "SET `server_id` = ?, `service_id` = ?"
             )
             ->execute([$serverId, $serviceId]);
 
@@ -35,7 +32,7 @@ class ServerServiceRepository
     public function findByServer($serverId)
     {
         $statement = $this->db->statement(
-            "SELECT * FROM `" . TABLE_PREFIX . "servers_services` WHERE `server_id` = ?"
+            "SELECT * FROM `ss_servers_services` WHERE `server_id` = ?"
         );
         $statement->execute([$serverId]);
 

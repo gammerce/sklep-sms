@@ -481,7 +481,7 @@ class Heart
 
     private function fetchServersServices()
     {
-        $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "servers_services`");
+        $result = $this->db->query("SELECT * FROM `ss_servers_services`");
         foreach ($result as $row) {
             $this->serversServices[$row['server_id']][$row['service_id']] = true;
         }
@@ -571,7 +571,7 @@ class Heart
 
     private function fetchGroups()
     {
-        $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "groups`");
+        $result = $this->db->query("SELECT * FROM `ss_groups`");
         foreach ($result as $row) {
             $this->groups[$row['id']] = $row;
         }

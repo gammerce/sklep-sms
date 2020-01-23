@@ -20,9 +20,7 @@ class PriceRepository
     public function get($id)
     {
         if ($id) {
-            $statement = $this->db->statement(
-                "SELECT * FROM `" . TABLE_PREFIX . "prices` WHERE `id` = ?"
-            );
+            $statement = $this->db->statement("SELECT * FROM `ss_prices` WHERE `id` = ?");
             $statement->execute([$id]);
 
             if ($data = $statement->fetch()) {
@@ -46,9 +44,7 @@ class PriceRepository
     {
         $this->db
             ->statement(
-                "INSERT INTO `" .
-                    TABLE_PREFIX .
-                    "prices` (`service`, `server`, `sms_price`, `transfer_price`, `quantity`) " .
+                "INSERT INTO `ss_prices` (`service`, `server`, `sms_price`, `transfer_price`, `quantity`) " .
                     "VALUES ( ?, ?, ?, ?, ? )"
             )
             ->execute([$service, $server, $smsPrice, $transferPrice, $quantity]);
@@ -64,9 +60,7 @@ class PriceRepository
     public function findByServiceServer(Service $service, Server $server = null)
     {
         $statement = $this->db->statement(
-            "SELECT * FROM `" .
-                TABLE_PREFIX .
-                "prices` " .
+            "SELECT * FROM `ss_prices` " .
                 "WHERE `service` = ? AND (`server` = ? OR `server` IS NULL) " .
                 "ORDER BY `quantity` ASC"
         );
@@ -83,9 +77,7 @@ class PriceRepository
     public function update($id, $service, $server, $smsPrice, $transferPrice, $quantity)
     {
         $statement = $this->db->statement(
-            "UPDATE `" .
-                TABLE_PREFIX .
-                "prices` " .
+            "UPDATE `ss_prices` " .
                 "SET `service` = ?, `server` = ?, `sms_price` = ?, `transfer_price` = ?, `quantity` = ? " .
                 "WHERE `id` = ?"
         );
@@ -96,9 +88,7 @@ class PriceRepository
 
     public function delete($id)
     {
-        $statement = $this->db->statement(
-            "DELETE FROM `" . TABLE_PREFIX . "prices` WHERE `id` = ?"
-        );
+        $statement = $this->db->statement("DELETE FROM `ss_prices` WHERE `id` = ?");
         $statement->execute([$id]);
 
         return !!$statement->rowCount();

@@ -25,9 +25,7 @@ class ServerRepository
     public function all()
     {
         $statement = $this->db->query(
-            "SELECT *, UNIX_TIMESTAMP(`last_active_at`) AS `last_active_at` FROM `" .
-                TABLE_PREFIX .
-                "servers`"
+            "SELECT *, UNIX_TIMESTAMP(`last_active_at`) AS `last_active_at` FROM `ss_servers`"
         );
 
         $servers = [];
@@ -42,9 +40,7 @@ class ServerRepository
     {
         if ($id) {
             $statement = $this->db->statement(
-                "SELECT *, UNIX_TIMESTAMP(`last_active_at`) FROM `" .
-                    TABLE_PREFIX .
-                    "servers` WHERE `id` = ?"
+                "SELECT *, UNIX_TIMESTAMP(`last_active_at`) FROM `ss_servers` WHERE `id` = ?"
             );
             $statement->execute([$id]);
 
@@ -60,9 +56,7 @@ class ServerRepository
     {
         $this->db
             ->statement(
-                "INSERT INTO `" .
-                    TABLE_PREFIX .
-                    "servers` " .
+                "INSERT INTO `ss_servers` " .
                     "SET `name` = ?, `ip` = ?, `port` = ?, `sms_platform` = ?"
             )
             ->execute([$name, $ip, $port, $smsPlatformId]);
@@ -74,9 +68,7 @@ class ServerRepository
     {
         $this->db
             ->statement(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "servers` " .
+                "UPDATE `ss_servers` " .
                     "SET `name` = ?, `ip` = ?, `port` = ?, `sms_platform` = ? " .
                     "WHERE `id` = ?"
             )
@@ -85,9 +77,7 @@ class ServerRepository
 
     public function delete($id)
     {
-        $statement = $this->db->statement(
-            "DELETE FROM `" . TABLE_PREFIX . "servers` WHERE `id` = ?"
-        );
+        $statement = $this->db->statement("DELETE FROM `ss_servers` WHERE `id` = ?");
         $statement->execute([$id]);
 
         return !!$statement->rowCount();
@@ -100,9 +90,7 @@ class ServerRepository
         }
 
         $statement = $this->db->statement(
-            "SELECT *, UNIX_TIMESTAMP(`last_active_at`) AS `last_active_at` FROM `" .
-                TABLE_PREFIX .
-                "servers` WHERE `ip` = ? AND `port` = ? LIMIT 1"
+            "SELECT *, UNIX_TIMESTAMP(`last_active_at`) AS `last_active_at` FROM `ss_servers` WHERE `ip` = ? AND `port` = ? LIMIT 1"
         );
         $statement->execute([$ip, $port]);
         $row = $statement->fetch();
@@ -114,9 +102,7 @@ class ServerRepository
     {
         $this->db
             ->statement(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "servers` SET `type` = ?, `version` = ?, `last_active_at` = NOW() WHERE `id` = ?"
+                "UPDATE `ss_servers` SET `type` = ?, `version` = ?, `last_active_at` = NOW() WHERE `id` = ?"
             )
             ->execute([$type, $version, $id]);
     }

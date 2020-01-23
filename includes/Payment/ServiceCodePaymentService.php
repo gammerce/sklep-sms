@@ -47,9 +47,7 @@ class ServiceCodePaymentService
     public function payWithServiceCode(Purchase $purchase)
     {
         $statement = $this->db->statement(
-            "SELECT * FROM `" .
-                TABLE_PREFIX .
-                "service_codes` " .
+            "SELECT * FROM `ss_service_codes` " .
                 "WHERE `code` = ? " .
                 "AND `service` = ? " .
                 "AND `price` = ? " .

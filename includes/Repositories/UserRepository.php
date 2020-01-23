@@ -28,9 +28,7 @@ class UserRepository
         $salt = get_random_string(8);
         $this->db
             ->statement(
-                "INSERT INTO `" .
-                    TABLE_PREFIX .
-                    "users` (`username`, `password`, `salt`, `email`, `forename`, `surname`, `regip`, `groups`, `wallet`, `steam_id`, `regdate`) " .
+                "INSERT INTO `ss_users` (`username`, `password`, `salt`, `email`, `forename`, `surname`, `regip`, `groups`, `wallet`, `steam_id`, `regdate`) " .
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())"
             )
             ->execute([
@@ -53,9 +51,7 @@ class UserRepository
     {
         $this->db
             ->statement(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "users` " .
+                "UPDATE `ss_users` " .
                     "SET `username` = ?, `forename` = ?, `surname` = ?, `email` = ?, `groups` = ?, `wallet` = ?, `steam_id` = ? " .
                     "WHERE `uid` = ?"
             )
@@ -76,9 +72,7 @@ class UserRepository
      */
     public function allWithSteamId()
     {
-        $result = $this->db->query(
-            "SELECT * FROM `" . TABLE_PREFIX . "users` WHERE `steam_id` != ''"
-        );
+        $result = $this->db->query("SELECT * FROM `ss_users` WHERE `steam_id` != ''");
 
         $users = [];
         foreach ($result as $row) {
@@ -95,9 +89,7 @@ class UserRepository
     public function get($id)
     {
         if ($id) {
-            $statement = $this->db->statement(
-                "SELECT * FROM `" . TABLE_PREFIX . "users` WHERE `uid` = ?"
-            );
+            $statement = $this->db->statement("SELECT * FROM `ss_users` WHERE `uid` = ?");
             $statement->execute([$id]);
 
             if ($data = $statement->fetch()) {
@@ -121,10 +113,42 @@ class UserRepository
         // SID can start with STEAM_0 or STEAM_1. They are used interchangeably.
         $steamIdSuffix = preg_replace("/^STEAM_[01]/", "", $steamId);
 
-        $statement = $this->db->statement(
-            "SELECT * FROM `" . TABLE_PREFIX . "users` WHERE `steam_id` IN (?, ?)"
-        );
+        $statement = $this->db->statement("SELECT * FROM `ss_users` WHERE `steam_id` IN (?, ?)");
         $statement->execute(["STEAM_0{$steamIdSuffix}", "STEAM_1{$steamIdSuffix}"]);
+
+        $data = $statement->fetch();
+        return $data ? $this->mapToModel($data) : null;
+    }
+
+    /**
+     * @param string $username
+     * @return User|null
+     */
+    public function findByUsername($username)
+    {
+        if (!strlen($username)) {
+            return null;
+        }
+
+        $statement = $this->db->statement("SELECT * FROM `ss_users` WHERE `username` = ?");
+        $statement->execute([$username]);
+
+        $data = $statement->fetch();
+        return $data ? $this->mapToModel($data) : null;
+    }
+
+    /**
+     * @param string $email
+     * @return User|null
+     */
+    public function findByEmail($email)
+    {
+        if (!strlen($email)) {
+            return null;
+        }
+
+        $statement = $this->db->statement("SELECT * FROM `ss_users` WHERE `email` = ?");
+        $statement->execute([$email]);
 
         $data = $statement->fetch();
         return $data ? $this->mapToModel($data) : null;
@@ -142,16 +166,32 @@ class UserRepository
         }
 
         $statement = $this->db->statement(
-            "SELECT * FROM `" .
-                TABLE_PREFIX .
-                "users` " .
+            "SELECT * FROM `ss_users` " .
                 "WHERE (`username` = ? OR `email` = ?) AND `password` = md5(CONCAT(md5(?), md5(`salt`)))"
         );
         $statement->execute([$emailOrUsername, $emailOrUsername, $password]);
 
         $data = $statement->fetch();
-
         return $data ? $this->mapToModel($data) : null;
+    }
+
+    public function createResetPasswordKey($uid)
+    {
+        $key = get_random_string(32);
+        $this->db
+            ->statement("UPDATE `ss_users` " . "SET `reset_password_key` = ? WHERE `uid` = ?")
+            ->execute([$key, $uid]);
+
+        return $key;
+    }
+
+    public function updatePassword($uid, $password)
+    {
+        $salt = get_random_string(8);
+
+        $this->db
+            ->statement("UPDATE `ss_users` SET password = ?, salt = ? WHERE uid = ?")
+            ->execute([hash_password($password, $salt), $salt, $uid]);
     }
 
     public function delete($id)

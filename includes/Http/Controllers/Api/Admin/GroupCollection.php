@@ -20,7 +20,7 @@ class GroupCollection
         $name = $request->request->get('name');
 
         $set = "";
-        $result = $db->query("DESCRIBE " . TABLE_PREFIX . "groups");
+        $result = $db->query("DESCRIBE ss_groups");
         foreach ($result as $row) {
             if (in_array($row['Field'], ["id", "name"])) {
                 continue;
@@ -32,11 +32,7 @@ class GroupCollection
             ]);
         }
 
-        $db->query(
-            $db->prepare("INSERT INTO `" . TABLE_PREFIX . "groups` " . "SET `name` = '%s'{$set}", [
-                $name,
-            ])
-        );
+        $db->query($db->prepare("INSERT INTO `ss_groups` " . "SET `name` = '%s'{$set}", [$name]));
 
         $databaseLogger->logWithActor('log_group_added', $db->lastId());
 

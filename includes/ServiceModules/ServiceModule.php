@@ -175,27 +175,15 @@ abstract class ServiceModule
         $affected = 0;
         if (!empty($setData1)) {
             $statement = $this->db->query(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "user_service` " .
-                    "SET " .
-                    implode(', ', $setData1) .
-                    " " .
-                    $where1
+                "UPDATE `ss_user_service` " . "SET " . implode(', ', $setData1) . " " . $where1
             );
             $affected = max($affected, $statement->rowCount());
         }
 
         if (!empty($setData2)) {
+            $table = $this::USER_SERVICE_TABLE;
             $statement = $this->db->query(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    $this::USER_SERVICE_TABLE .
-                    "` " .
-                    "SET " .
-                    implode(', ', $setData2) .
-                    " " .
-                    $where2
+                "UPDATE `$table` " . "SET " . implode(', ', $setData2) . " " . $where2
             );
             $affected = max($affected, $statement->rowCount());
         }

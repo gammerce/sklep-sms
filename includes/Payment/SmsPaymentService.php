@@ -100,9 +100,7 @@ class SmsPaymentService
     ) {
         $this->db
             ->statement(
-                "INSERT INTO `" .
-                    TABLE_PREFIX .
-                    "payment_sms` (`code`, `income`, `cost`, `text`, `number`, `ip`, `platform`, `free`) " .
+                "INSERT INTO `ss_payment_sms` (`code`, `income`, `cost`, `text`, `number`, `ip`, `platform`, `free`) " .
                     "VALUES (?,?,?,?,?,?,?,?)"
             )
             ->execute([

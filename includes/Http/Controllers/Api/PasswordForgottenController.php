@@ -4,9 +4,8 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
 use App\Loggers\DatabaseLogger;
+use App\Repositories\UserRepository;
 use App\Routing\UrlGenerator;
-use App\System\Database;
-use App\System\Heart;
 use App\System\Mailer;
 use App\System\Template;
 use App\Translation\TranslationManager;
@@ -18,8 +17,7 @@ class PasswordForgottenController
     public function post(
         Request $request,
         TranslationManager $translationManager,
-        Database $db,
-        Heart $heart,
+        UserRepository $userRepository,
         UrlGenerator $url,
         Template $template,
         Mailer $mailer,
@@ -37,13 +35,10 @@ class PasswordForgottenController
                 $warnings['username'] = array_merge((array) $warnings['username'], $warning);
             }
             if (strlen($username)) {
-                $result = $db->statement("SELECT `uid` FROM `ss_users` WHERE `username` = ?");
-                $result->execute([$username]);
+                $editedUser = $userRepository->findByUsername($username);
 
-                if (!$result->rowCount()) {
+                if (!$editedUser) {
                     $warnings['username'][] = $lang->t('nick_no_account');
-                } else {
-                    $row = $result->fetch();
                 }
             }
         }
@@ -53,17 +48,10 @@ class PasswordForgottenController
                 $warnings['email'] = array_merge((array) $warnings['email'], $warning);
             }
             if (strlen($email)) {
-                $result = $db->query(
-                    $db->prepare(
-                        "SELECT `uid` FROM `" . TABLE_PREFIX . "users` " . "WHERE `email` = '%s'",
-                        [$email]
-                    )
-                );
+                $editedUser = $userRepository->findByEmail($email);
 
-                if (!$result->rowCount()) {
+                if (!$editedUser) {
                     $warnings['email'][] = $lang->t('email_no_account');
-                } else {
-                    $row = $result->fetch();
                 }
             }
         }
@@ -72,22 +60,9 @@ class PasswordForgottenController
             throw new ValidationException($warnings);
         }
 
-        // Pobranie danych użytkownika
-        $editedUser = $heart->getUser($row['uid']);
+        $code = $userRepository->createResetPasswordKey($editedUser->getUid());
 
-        $key = get_random_string(32);
-        $db->query(
-            $db->prepare(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "users` " .
-                    "SET `reset_password_key`='%s' " .
-                    "WHERE `uid`='%d'",
-                [$key, $editedUser->getUid()]
-            )
-        );
-
-        $link = $url->to("/page/reset_password?code=" . urlencode($key));
+        $link = $url->to("/page/reset_password?code=" . urlencode($code));
         $text = $template->render("emails/forgotten_password", compact('editedUser', 'link'));
         $ret = $mailer->send(
             $editedUser->getEmail(),

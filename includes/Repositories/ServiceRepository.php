@@ -19,9 +19,7 @@ class ServiceRepository
      */
     public function all()
     {
-        $result = $this->db->query(
-            "SELECT * FROM `" . TABLE_PREFIX . "services` ORDER BY `order` ASC"
-        );
+        $result = $this->db->query("SELECT * FROM `ss_services` ORDER BY `order` ASC");
 
         $services = [];
         foreach ($result as $row) {
@@ -34,9 +32,7 @@ class ServiceRepository
     public function get($id)
     {
         if ($id) {
-            $statement = $this->db->statement(
-                "SELECT * FROM `" . TABLE_PREFIX . "services` WHERE `id` = ?"
-            );
+            $statement = $this->db->statement("SELECT * FROM `ss_services` WHERE `id` = ?");
             $statement->execute([$id]);
 
             if ($data = $statement->fetch()) {
@@ -81,9 +77,7 @@ class ServiceRepository
     ) {
         $this->db
             ->statement(
-                "INSERT INTO `" .
-                    TABLE_PREFIX .
-                    "services` " .
+                "INSERT INTO `ss_services` " .
                     "SET `id` = ?, `name` = ?, `short_description` = ?, `description` = ?, `tag` = ?, " .
                     "`module` = ?, `groups` = ?, `order` = ?, `data` = ?, `types` = ?, `flags` = ?"
             )
@@ -118,9 +112,7 @@ class ServiceRepository
         $flags
     ) {
         $statement = $this->db->statement(
-            "UPDATE `" .
-                TABLE_PREFIX .
-                "services` " .
+            "UPDATE `ss_services` " .
                 "SET `id` = ?, `name` = ?, `short_description` = ?, `description` = ?, `tag` = ?, " .
                 "`groups` = ?, `order` = ?, `data` = ?, `types` = ?, `flags` = ? " .
                 "WHERE `id` = ?"
@@ -144,9 +136,7 @@ class ServiceRepository
 
     public function delete($id)
     {
-        $statement = $this->db->statement(
-            "DELETE FROM `" . TABLE_PREFIX . "services` " . "WHERE `id` = ?"
-        );
+        $statement = $this->db->statement("DELETE FROM `ss_services` " . "WHERE `id` = ?");
         $statement->execute([$id]);
 
         return !!$statement->rowCount();

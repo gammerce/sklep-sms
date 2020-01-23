@@ -22,13 +22,7 @@ class PageRegister extends Page implements IBeLoggedCannot
         $session = $request->getSession();
 
         $antispamQuestion = $this->db
-            ->query(
-                "SELECT * FROM `" .
-                    TABLE_PREFIX .
-                    "antispam_questions` " .
-                    "ORDER BY RAND() " .
-                    "LIMIT 1"
-            )
+            ->query("SELECT * FROM `ss_antispam_questions` " . "ORDER BY RAND() " . "LIMIT 1")
             ->fetch();
         $session->set("asid", $antispamQuestion['id']);
 

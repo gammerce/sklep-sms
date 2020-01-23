@@ -43,9 +43,7 @@ class PageAdminLogs extends PageAdmin
         }
 
         $result = $this->db->query(
-            "SELECT SQL_CALC_FOUND_ROWS * FROM `" .
-                TABLE_PREFIX .
-                "logs` " .
+            "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_logs` " .
                 $where .
                 "ORDER BY `id` DESC " .
                 "LIMIT " .

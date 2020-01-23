@@ -43,18 +43,10 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.name AS `service`, srv.name AS `server`, sc.price, u.username, u.uid, sc.timestamp " .
-                "FROM `" .
-                TABLE_PREFIX .
-                "service_codes` AS sc " .
-                "LEFT JOIN `" .
-                TABLE_PREFIX .
-                "services` AS s ON sc.service = s.id " .
-                "LEFT JOIN `" .
-                TABLE_PREFIX .
-                "servers` AS srv ON sc.server = srv.id " .
-                "LEFT JOIN `" .
-                TABLE_PREFIX .
-                "users` AS u ON sc.uid = u.uid " .
+                "FROM `ss_service_codes` AS sc " .
+                "LEFT JOIN `ss_services` AS s ON sc.service = s.id " .
+                "LEFT JOIN `ss_servers` AS srv ON sc.server = srv.id " .
+                "LEFT JOIN `ss_users` AS u ON sc.uid = u.uid " .
                 "LIMIT " .
                 get_row_limit($this->currentPage->getPageNumber())
         );

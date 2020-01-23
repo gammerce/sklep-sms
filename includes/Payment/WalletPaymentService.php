@@ -39,10 +39,7 @@ class WalletPaymentService
 
         $this->db
             ->statement(
-                "INSERT INTO `" .
-                    TABLE_PREFIX .
-                    "payment_wallet` " .
-                    "SET `cost` = ?, `ip` = ?, `platform` = ?"
+                "INSERT INTO `ss_payment_wallet` " . "SET `cost` = ?, `ip` = ?, `platform` = ?"
             )
             ->execute([$cost, $user->getLastIp(), $user->getPlatform()]);
 
@@ -56,13 +53,7 @@ class WalletPaymentService
     private function chargeWallet($uid, $amount)
     {
         $this->db
-            ->statement(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "users` " .
-                    "SET `wallet` = `wallet` + ? " .
-                    "WHERE `uid` = ?"
-            )
+            ->statement("UPDATE `ss_users` " . "SET `wallet` = `wallet` + ? " . "WHERE `uid` = ?")
             ->execute([$amount, $uid]);
     }
 }
