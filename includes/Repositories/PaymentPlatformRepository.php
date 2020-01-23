@@ -19,10 +19,7 @@ class PaymentPlatformRepository
     {
         $this->db
             ->statement(
-                "INSERT INTO `" .
-                    TABLE_PREFIX .
-                    "payment_platforms` " .
-                    "SET `name` = ?, `module` = ?, `data` = ?"
+                "INSERT INTO `ss_payment_platforms` " . "SET `name` = ?, `module` = ?, `data` = ?"
             )
             ->execute([$name, $module, json_encode($data)]);
 
@@ -33,11 +30,7 @@ class PaymentPlatformRepository
     {
         $this->db
             ->statement(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "payment_platforms` " .
-                    "SET `name` = ?, `data` = ? " .
-                    "WHERE `id` = ?"
+                "UPDATE `ss_payment_platforms` " . "SET `name` = ?, `data` = ? " . "WHERE `id` = ?"
             )
             ->execute([$name, json_encode($data), $id]);
     }
@@ -47,7 +40,7 @@ class PaymentPlatformRepository
      */
     public function all()
     {
-        $statement = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "payment_platforms`");
+        $statement = $this->db->query("SELECT * FROM `ss_payment_platforms`");
 
         $platforms = [];
         foreach ($statement as $row) {
@@ -61,7 +54,7 @@ class PaymentPlatformRepository
     {
         if ($id) {
             $statement = $this->db->statement(
-                "SELECT * FROM `" . TABLE_PREFIX . "payment_platforms` WHERE `id` = ?"
+                "SELECT * FROM `ss_payment_platforms` WHERE `id` = ?"
             );
             $statement->execute([$id]);
 
@@ -84,9 +77,7 @@ class PaymentPlatformRepository
 
     public function delete($id)
     {
-        $statement = $this->db->statement(
-            "DELETE FROM `" . TABLE_PREFIX . "payment_platforms` WHERE `id` = ?"
-        );
+        $statement = $this->db->statement("DELETE FROM `ss_payment_platforms` WHERE `id` = ?");
         $statement->execute([$id]);
         return !!$statement->rowCount();
     }

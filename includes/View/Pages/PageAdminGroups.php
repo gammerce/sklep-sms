@@ -33,9 +33,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
         $table->addHeadCell(new HeadCell($this->lang->t('name')));
 
         $result = $this->db->query(
-            "SELECT SQL_CALC_FOUND_ROWS * FROM `" .
-                TABLE_PREFIX .
-                "groups` " .
+            "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_groups` " .
                 "LIMIT " .
                 get_row_limit($this->currentPage->getPageNumber())
         );
@@ -78,10 +76,9 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 
         if ($boxId == "group_edit") {
             $result = $this->db->query(
-                $this->db->prepare(
-                    "SELECT * FROM `" . TABLE_PREFIX . "groups` " . "WHERE `id` = '%d'",
-                    [$query['id']]
-                )
+                $this->db->prepare("SELECT * FROM `ss_groups` " . "WHERE `id` = '%d'", [
+                    $query['id'],
+                ])
             );
 
             if (!$result->rowCount()) {
@@ -98,7 +95,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
         }
 
         $privileges = "";
-        $result = $this->db->query("DESCRIBE " . TABLE_PREFIX . "groups");
+        $result = $this->db->query("DESCRIBE ss_groups");
         foreach ($result as $row) {
             if (in_array($row['Field'], ["id", "name"])) {
                 continue;

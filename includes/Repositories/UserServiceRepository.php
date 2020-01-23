@@ -33,7 +33,7 @@ class UserServiceRepository
         $statement->execute([$uid ?: 0, $serviceId, $forever, $days * 24 * 60 * 60]);
         $userServiceId = $this->db->lastId();
 
-        $table = "ss_" . ExtraFlagsServiceModule::USER_SERVICE_TABLE;
+        $table = ExtraFlagsServiceModule::USER_SERVICE_TABLE;
         $statement = $this->db->statement(
             "INSERT INTO `$table` (`us_id`, `server`, `service`, `type`, `auth_data`, `password`) " .
                 "VALUES (?, ?, ?, ?, ?, ?)"

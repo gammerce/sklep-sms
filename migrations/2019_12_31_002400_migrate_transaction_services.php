@@ -50,9 +50,7 @@ class MigrateTransactionServices extends Migration
             if (in_array($row["id"], $requiredPlatforms) || count($filledData)) {
                 $this->db
                     ->statement(
-                        "INSERT INTO `" .
-                            TABLE_PREFIX .
-                            "payment_platforms` " .
+                        "INSERT INTO `ss_payment_platforms` " .
                             "SET `name` = ?, `module` = ?, `data` = ?"
                     )
                     ->execute([$row["name"], $row["id"], json_encode($data)]);

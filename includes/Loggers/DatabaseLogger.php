@@ -44,8 +44,6 @@ class DatabaseLogger
 
     private function storeLog($message)
     {
-        $this->db
-            ->statement("INSERT INTO `" . TABLE_PREFIX . "logs` SET `text` = ?")
-            ->execute([$message]);
+        $this->db->statement("INSERT INTO `ss_logs` SET `text` = ?")->execute([$message]);
     }
 }

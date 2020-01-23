@@ -52,9 +52,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS * " .
-                "FROM `" .
-                TABLE_PREFIX .
-                "sms_codes` " .
+                "FROM `ss_sms_codes` " .
                 "WHERE `free` = '1' " .
                 "LIMIT " .
                 get_row_limit($this->currentPage->getPageNumber())

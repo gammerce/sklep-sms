@@ -288,13 +288,7 @@ class ChargeWalletServiceModule extends ServiceModule implements
     private function chargeWallet($uid, $quantity)
     {
         $this->db
-            ->statement(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "users` " .
-                    "SET `wallet` = `wallet` + ? " .
-                    "WHERE `uid` = ?"
-            )
+            ->statement("UPDATE `ss_users` " . "SET `wallet` = `wallet` + ? " . "WHERE `uid` = ?")
             ->execute([$quantity, $uid]);
     }
 }

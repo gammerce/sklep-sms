@@ -32,28 +32,18 @@ class DatabaseMigration
         $salt = get_random_string(8);
 
         $this->db
-            ->statement(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "settings` " .
-                    "SET `value`= ? WHERE `key` = 'random_key'"
-            )
+            ->statement("UPDATE `ss_settings` " . "SET `value`= ? WHERE `key` = 'random_key'")
             ->execute([get_random_string(16)]);
 
         $this->db
             ->statement(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "settings` " .
-                    "SET `value` = ? WHERE `key` = 'license_password';"
+                "UPDATE `ss_settings` " . "SET `value` = ? WHERE `key` = 'license_password';"
             )
             ->execute([$token]);
 
         $this->db
             ->statement(
-                "INSERT INTO `" .
-                    TABLE_PREFIX .
-                    "users` " .
+                "INSERT INTO `ss_users` " .
                     "SET `username` = ?, `password` = ?, `salt` = ?, `regip` = ?, `groups` = '2', `regdate` = NOW();"
             )
             ->execute([$adminUsername, hash_password($adminPassword, $salt), $salt, get_ip()]);
@@ -76,13 +66,7 @@ class DatabaseMigration
     {
         try {
             return $this->db
-                ->query(
-                    "SELECT `name` FROM `" .
-                        TABLE_PREFIX .
-                        "migrations` " .
-                        "ORDER BY id DESC " .
-                        "LIMIT 1"
-                )
+                ->query("SELECT `name` FROM `ss_migrations` " . "ORDER BY id DESC " . "LIMIT 1")
                 ->fetchColumn();
         } catch (PDOException $e) {
             if (preg_match("/Table .*ss_migrations.* doesn't exist/", $e->getMessage())) {
@@ -123,9 +107,7 @@ class DatabaseMigration
 
     private function saveExecutedMigration($name)
     {
-        $this->db
-            ->statement("INSERT INTO `" . TABLE_PREFIX . "migrations` " . "SET `name` = ?")
-            ->execute([$name]);
+        $this->db->statement("INSERT INTO `ss_migrations` " . "SET `name` = ?")->execute([$name]);
     }
 
     // https://stackoverflow.com/questions/7153000/get-class-name-from-file/44654073

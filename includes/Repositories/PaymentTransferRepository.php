@@ -17,9 +17,7 @@ class PaymentTransferRepository
     public function get($id)
     {
         if ($id) {
-            $statement = $this->db->statement(
-                "SELECT * FROM `" . TABLE_PREFIX . "payment_transfer` WHERE `id` = ?"
-            );
+            $statement = $this->db->statement("SELECT * FROM `ss_payment_transfer` WHERE `id` = ?");
             $statement->execute([$id]);
 
             if ($data = $statement->fetch()) {
@@ -34,9 +32,7 @@ class PaymentTransferRepository
     {
         $this->db
             ->statement(
-                "INSERT INTO `" .
-                    TABLE_PREFIX .
-                    "payment_transfer` " .
+                "INSERT INTO `ss_payment_transfer` " .
                     "SET `id` = ?, `income` = ?, `transfer_service` = ?, `ip` = ?, `platform` = ?, `free` = ? "
             )
             ->execute([$id, $income, $transferService, $ip, $platform, $free ? 1 : 0]);

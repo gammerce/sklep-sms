@@ -35,9 +35,7 @@ class SettingsRepository
         }
 
         $statement = $this->db->statement(
-            "UPDATE `" .
-                TABLE_PREFIX .
-                "settings` " .
+            "UPDATE `ss_settings` " .
                 "SET `value` = CASE `key` " .
                 implode(" ", $conditions) .
                 " END " .

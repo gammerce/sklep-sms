@@ -18,10 +18,7 @@ class PaymentCodeRepository
     {
         $this->db
             ->statement(
-                "INSERT INTO `" .
-                    TABLE_PREFIX .
-                    "payment_code` " .
-                    "SET `code` = ?, `ip` = ?, `platform` = ?"
+                "INSERT INTO `ss_payment_code` " . "SET `code` = ?, `ip` = ?, `platform` = ?"
             )
             ->execute([$code, $ip, $platform]);
 
@@ -31,9 +28,7 @@ class PaymentCodeRepository
     public function get($id)
     {
         if ($id) {
-            $statement = $this->db->statement(
-                "SELECT * FROM `" . TABLE_PREFIX . "payment_code` WHERE `id` = ?"
-            );
+            $statement = $this->db->statement("SELECT * FROM `ss_payment_code` WHERE `id` = ?");
             $statement->execute([$id]);
 
             if ($data = $statement->fetch()) {

@@ -23,9 +23,7 @@ class UserPasswordService
 
         $this->db
             ->statement(
-                "UPDATE `" .
-                    TABLE_PREFIX .
-                    "users` " .
+                "UPDATE `ss_users` " .
                     "SET `password` = ?, `salt` = ?, `reset_password_key` = '' " .
                     "WHERE `uid` = ?"
             )

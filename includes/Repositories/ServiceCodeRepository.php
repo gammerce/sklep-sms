@@ -18,9 +18,7 @@ class ServiceCodeRepository
     {
         $this->db
             ->statement(
-                "INSERT INTO `" .
-                    TABLE_PREFIX .
-                    "service_codes` " .
+                "INSERT INTO `ss_service_codes` " .
                     "SET `code` = ?, `service` = ?, `price` = ?, `server` = ?, `uid` = ?"
             )
             ->execute([$code, $serviceId, $priceId, $serverId, $uid]);
@@ -31,9 +29,7 @@ class ServiceCodeRepository
     public function get($id)
     {
         if ($id) {
-            $statement = $this->db->statement(
-                "SELECT * FROM `" . TABLE_PREFIX . "service_codes` WHERE `id` = ?"
-            );
+            $statement = $this->db->statement("SELECT * FROM `ss_service_codes` WHERE `id` = ?");
             $statement->execute([$id]);
 
             if ($data = $statement->fetch()) {
@@ -46,9 +42,7 @@ class ServiceCodeRepository
 
     public function delete($id)
     {
-        $statement = $this->db->statement(
-            "DELETE FROM `" . TABLE_PREFIX . "service_codes` WHERE `id` = ?"
-        );
+        $statement = $this->db->statement("DELETE FROM `ss_service_codes` WHERE `id` = ?");
         $statement->execute([$id]);
 
         return !!$statement->rowCount();
