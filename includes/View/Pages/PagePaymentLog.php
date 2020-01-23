@@ -1,13 +1,12 @@
 <?php
 namespace App\View\Pages;
 
-use App\View\Html\UnescapedSimpleText;
-use App\View\Interfaces\IBeLoggedMust;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\System\Auth;
 use App\System\Database;
 use App\System\Settings;
 use App\System\Template;
+use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pagination;
 use Symfony\Component\HttpFoundation\Request;
 
