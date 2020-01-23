@@ -1,9 +1,7 @@
 <?php
 namespace App\System;
 
-use App\Providers\AppServiceProvider;
-use App\Providers\HeartServiceProvider;
-use App\Providers\SentryServiceProvider;
+use DirectoryIterator;
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidPathException;
 use Illuminate\Container\Container;
@@ -12,11 +10,8 @@ class Application extends Container
 {
     const VERSION = '3.11.0';
 
-    private $providers = [
-        AppServiceProvider::class,
-        HeartServiceProvider::class,
-        SentryServiceProvider::class,
-    ];
+    /** @var array */
+    private $providers = [];
 
     /** @var string */
     private $basePath;
@@ -38,7 +33,7 @@ class Application extends Container
         return self::VERSION;
     }
 
-    protected function registerBindings()
+    private function registerBindings()
     {
         $this->instance(Container::class, $this);
         $this->instance(Application::class, $this);
@@ -47,14 +42,14 @@ class Application extends Container
         });
     }
 
-    protected function bootstrap()
+    private function bootstrap()
     {
         $this->loadEnvironmentVariables();
         $this->registerServiceProviders();
         $this->bootServiceProviders();
     }
 
-    protected function loadEnvironmentVariables()
+    private function loadEnvironmentVariables()
     {
         /** @var Path $path */
         $path = $this->make(Path::class);
@@ -66,18 +61,18 @@ class Application extends Container
         }
     }
 
-    protected function registerServiceProviders()
+    private function registerServiceProviders()
     {
-        foreach ($this->providers as $provider) {
+        foreach ($this->getProviders() as $provider) {
             if (method_exists($provider, 'register')) {
                 $this->call("$provider@register");
             }
         }
     }
 
-    protected function bootServiceProviders()
+    private function bootServiceProviders()
     {
-        foreach ($this->providers as $provider) {
+        foreach ($this->getProviders() as $provider) {
             if (method_exists($provider, 'boot')) {
                 $this->call("$provider@boot");
             }
@@ -102,7 +97,6 @@ class Application extends Container
     public function isDebug()
     {
         $debug = getenv('APP_DEBUG');
-
         return $debug === '1' || $debug === 'true' || $debug === 1;
     }
 
@@ -114,5 +108,23 @@ class Application extends Container
     public function isDemo()
     {
         return getenv('APP_ENV') === 'demo';
+    }
+
+    private function getProviders()
+    {
+        if (!$this->providers) {
+            /** @var Path $path */
+            $path = $this->make(Path::class);
+
+            $dir = new DirectoryIterator($path->to("/includes/Providers"));
+            foreach ($dir as $fileInfo) {
+                if (ends_at($fileInfo->getFilename(), '.php')) {
+                    $fileName = $fileInfo->getBasename('.php');
+                    $this->providers[] = "App\\Providers\\{$fileName}";
+                }
+            }
+        }
+
+        return $this->providers;
     }
 }
