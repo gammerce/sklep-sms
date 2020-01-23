@@ -46,7 +46,7 @@ abstract class ServiceModule
     /**
      * Metoda wywoływana, gdy usługa jest usuwana.
      *
-     * @param integer $serviceId ID usługi
+     * @param int $serviceId ID usługi
      */
     public function serviceDelete($serviceId)
     {

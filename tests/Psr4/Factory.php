@@ -23,9 +23,6 @@ class Factory
     /** @var ServerRepository */
     private $serverRepository;
 
-    /** @var PriceRepository */
-    private $priceRepository;
-
     /** @var ServerServiceRepository */
     private $serverServiceRepository;
 
@@ -35,6 +32,9 @@ class Factory
     /** @var PaymentPlatformRepository */
     private $paymentPlatformRepository;
 
+    /** @var PriceRepository */
+    private $priceRepository;
+
     public function __construct(
         UserRepository $userRepository,
         ServerRepository $serverRepository,
@@ -43,13 +43,13 @@ class Factory
         ServerServiceRepository $serverServiceRepository,
         PaymentPlatformRepository $paymentPlatformRepository
     ) {
+        $this->faker = FakerFactory::create();
         $this->userRepository = $userRepository;
         $this->serverRepository = $serverRepository;
-        $this->priceRepository = $priceRepository;
         $this->serverServiceRepository = $serverServiceRepository;
         $this->serviceRepository = $serviceRepository;
-        $this->faker = FakerFactory::create();
         $this->paymentPlatformRepository = $paymentPlatformRepository;
+        $this->priceRepository = $priceRepository;
     }
 
     public function server(array $attributes = [])
@@ -104,7 +104,7 @@ class Factory
     {
         $attributes = array_merge(
             [
-                'service_id' => 'gosetti',
+                'service_id' => 'vip',
             ],
             $attributes
         );
@@ -120,17 +120,20 @@ class Factory
         $attributes = array_merge(
             [
                 'service_id' => 'vip',
-                'tariff' => 2,
-                'amount' => $this->faker->numberBetween(1, 100),
+                'server_id' => null,
+                'sms_price' => 100,
+                'transfer_price' => null,
+                'quantity' => $this->faker->numberBetween(1, 100),
             ],
             $attributes
         );
 
         return $this->priceRepository->create(
             $attributes['service_id'],
-            $attributes['tariff'],
-            $attributes['amount'],
-            $attributes['server_id']
+            $attributes['server_id'],
+            $attributes['sms_price'],
+            $attributes['transfer_price'],
+            $attributes['quantity']
         );
     }
 
@@ -176,7 +179,7 @@ class Factory
                 'name' => $this->faker->word,
                 'module' => Cssetti::MODULE_ID,
                 'data' => [
-                    "account_id" => $this->faker->uuid,
+                    "account_id" => "5b2f-30ea-b814-3585710",
                 ],
             ],
             $attributes

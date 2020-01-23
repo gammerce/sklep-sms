@@ -21,7 +21,7 @@ class WalletChargeCollectionTest extends HttpTestCase
 
         // when
         $response = $this->post("/api/admin/users/{$user->getUid()}/wallet/charge", [
-            "amount" => 1,
+            "quantity" => 1,
         ]);
 
         // then

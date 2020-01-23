@@ -18,14 +18,14 @@
                 </td>
             </tr>
             <tr>
-                <td><label for="amount">{$lang->t('amount')}</label></td>
+                <td><label for="price_id">{$lang->t('quantity')}</label></td>
                 <td>
                     <div class="field">
                         <div class="control">
                             <div class="select is-small">
-                                <select id="amount" name="amount">
-                                    <option value="">{$lang->t('choose_amount')}</option>
-                                    {$amounts}
+                                <select id="price_id" name="price_id">
+                                    <option value="">{$lang->t('choose_quantity')}</option>
+                                    {$quantities}
                                 </select>
                             </div>
                         </div>
@@ -51,16 +51,21 @@
         </table>
     </div>
 
-    <div id="cost_wraper">
+    <div id="cost_wrapper">
         <div>
-            <strong>{$lang->t('transfer_wallet_cost')}</strong>: <span id="cost_transfer"></span> {{
-            $settings->getCurrency() }}<br />
-            <strong>{$lang->t('sms_cost')}</strong>: <span id="cost_sms"></span>
-            <span id="currency_sms">{{ $settings->getCurrency() }}</span>
+            <span>
+                <strong>{$lang->t('transfer_price')}</strong>:
+                <span id="cost_transfer"></span>
+            </span>
+            <br />
+            <span>
+                <strong>{$lang->t('sms_price')}</strong>:
+                <span id="cost_sms"></span>
+            </span>
         </div>
     </div>
 
-    <div class="purchase_button_wraper">
+    <div class="purchase_button_wrapper">
         <input
             type="button"
             id="go_to_payment"
@@ -68,5 +73,5 @@
             class="button is-success purchase_button"
         />
     </div>
-    <input type="hidden" name="service" value="{{ $serviceId }}" />
+    <input type="hidden" name="service_id" value="{{ $serviceId }}" />
 </form>

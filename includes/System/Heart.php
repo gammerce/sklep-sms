@@ -1,17 +1,11 @@
 <?php
 namespace App\System;
 
-use App\View\Blocks\Block;
-use App\View\Blocks\BlockSimple;
 use App\Exceptions\InvalidConfigException;
 use App\Exceptions\InvalidPaymentModuleException;
 use App\Models\PaymentPlatform;
 use App\Models\Server;
-use App\Models\Tariff;
 use App\Models\User;
-use App\View\Pages\Interfaces\IPageAdminActionBox;
-use App\View\Pages\Page;
-use App\View\Pages\PageSimple;
 use App\Payment\PaymentModuleFactory;
 use App\Repositories\PaymentPlatformRepository;
 use App\Repositories\ServerRepository;
@@ -23,6 +17,11 @@ use App\ServiceModules\Other\OtherServiceModule;
 use App\ServiceModules\ServiceModule;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\DataField;
+use App\View\Blocks\Block;
+use App\View\Blocks\BlockSimple;
+use App\View\Pages\Interfaces\IPageAdminActionBox;
+use App\View\Pages\Page;
+use App\View\Pages\PageSimple;
 use Exception;
 
 class Heart
@@ -65,9 +64,6 @@ class Heart
     private $serversServices = [];
     private $serversServicesFetched = false;
 
-    /** @var Tariff[] */
-    private $tariffs = [];
-    private $tariffsFetched = false;
     public $pageTitle;
     private $servicesClasses = [];
 
@@ -132,7 +128,9 @@ class Heart
      */
     public function getServiceModule($serviceId)
     {
-        if (($service = $this->getService($serviceId)) === null) {
+        $service = $this->getService($serviceId);
+
+        if (!$service) {
             return null;
         }
 
@@ -250,37 +248,6 @@ class Heart
         }
 
         return null;
-    }
-
-    /**
-     * @param PaymentPlatform $paymentPlatform
-     * @return PaymentModule
-     */
-    public function getPaymentModuleOrFail(PaymentPlatform $paymentPlatform)
-    {
-        $paymentModule = $this->getPaymentModule($paymentPlatform);
-
-        if ($paymentModule) {
-            return $paymentModule;
-        }
-
-        throw new InvalidConfigException(
-            "Invalid payment module [{$paymentPlatform->getModuleId()}]."
-        );
-    }
-
-    /**
-     * @param string $platformId
-     * @return PaymentModule
-     */
-    public function getPaymentModuleByPlatformIdOrFail($platformId)
-    {
-        $paymentPlatform = $this->paymentPlatformRepository->get($platformId);
-        if (!$paymentPlatform) {
-            throw new InvalidConfigException("Invalid payment platform [$platformId].");
-        }
-
-        return $this->getPaymentModuleOrFail($paymentPlatform);
     }
 
     /**
@@ -509,7 +476,7 @@ class Heart
     /**
      * Checks if the service can be purchased on the given server
      *
-     * @param integer $serverId
+     * @param int $serverId
      * @param string $serviceId
      *
      * @return boolean
@@ -530,55 +497,6 @@ class Heart
             $this->serversServices[$row['server_id']][$row['service_id']] = true;
         }
         $this->serversServicesFetched = true;
-    }
-
-    //
-    // TARRIFS
-    //
-
-    /**
-     * @return Tariff[]
-     */
-    public function getTariffs()
-    {
-        if (!$this->tariffsFetched) {
-            $this->fetchTariffs();
-        }
-
-        return $this->tariffs;
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return Tariff | null
-     */
-    public function getTariff($id)
-    {
-        if (!$this->tariffsFetched) {
-            $this->fetchTariffs();
-        }
-
-        return array_get($this->tariffs, $id, null);
-    }
-
-    public function getTariffsAmount()
-    {
-        return count($this->tariffs);
-    }
-
-    private function fetchTariffs()
-    {
-        $result = $this->db->query("SELECT * FROM `" . TABLE_PREFIX . "tariffs`");
-        foreach ($result as $row) {
-            $this->tariffs[$row['id']] = new Tariff(
-                $row['id'],
-                $row['provision'],
-                $row['predefined']
-            );
-        }
-
-        $this->tariffsFetched = true;
     }
 
     //

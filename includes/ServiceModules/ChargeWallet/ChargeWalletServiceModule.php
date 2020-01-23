@@ -4,14 +4,18 @@ namespace App\ServiceModules\ChargeWallet;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Payment\BoughtServiceService;
+use App\Repositories\SmsPriceRepository;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\ServiceModule;
+use App\Services\PriceTextService;
+use App\Services\SmsPriceService;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use App\Verification\Abstracts\SupportSms;
 use App\View\Interfaces\IBeLoggedMust;
 
 class ChargeWalletServiceModule extends ServiceModule implements
@@ -36,6 +40,15 @@ class ChargeWalletServiceModule extends ServiceModule implements
     /** @var BoughtServiceService */
     private $boughtServiceService;
 
+    /** @var SmsPriceRepository */
+    private $smsPriceRepository;
+
+    /** @var SmsPriceService */
+    private $smsPriceService;
+
+    /** @var PriceTextService */
+    private $priceTextService;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -47,6 +60,9 @@ class ChargeWalletServiceModule extends ServiceModule implements
         $this->heart = $this->app->make(Heart::class);
         $this->settings = $this->app->make(Settings::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
+        $this->smsPriceRepository = $this->app->make(SmsPriceRepository::class);
+        $this->smsPriceService = $this->app->make(SmsPriceService::class);
+        $this->priceTextService = $this->app->make(PriceTextService::class);
     }
 
     public function purchaseFormGet(array $query)
@@ -57,33 +73,35 @@ class ChargeWalletServiceModule extends ServiceModule implements
         $transferBody = '';
 
         if ($this->settings->getSmsPlatformId()) {
-            $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
+            $paymentModule = $this->heart->getPaymentModuleByPlatformId(
                 $this->settings->getSmsPlatformId()
             );
 
-            $optionSms = $this->template->render("services/charge_wallet/option_sms");
+            if ($paymentModule instanceof SupportSms) {
+                $optionSms = $this->template->render("services/charge_wallet/option_sms");
 
-            $smsList = [];
-            foreach ($paymentModule->getTariffs() as $tariff) {
-                $provision = number_format($tariff->getProvision() / 100.0, 2);
-                $smsList[] = create_dom_element(
-                    "option",
-                    $this->lang->t(
-                        'charge_sms_option',
-                        $tariff->getSmsCostGross(),
-                        $this->settings->getCurrency(),
-                        $provision,
-                        $this->settings->getCurrency()
-                    ),
-                    [
-                        'value' => $tariff->getId(),
-                    ]
-                );
+                $smsList = [];
+                foreach ($paymentModule::getSmsNumbers() as $smsNumber) {
+                    $provision = number_format($smsNumber->getProvision() / 100.0, 2);
+                    $smsList[] = create_dom_element(
+                        "option",
+                        $this->lang->t(
+                            'charge_sms_option',
+                            $this->priceTextService->getPriceGrossText($smsNumber->getPrice()),
+                            $this->settings->getCurrency(),
+                            $provision,
+                            $this->settings->getCurrency()
+                        ),
+                        [
+                            'value' => $smsNumber->getPrice(),
+                        ]
+                    );
+                }
+
+                $smsBody = $this->template->render("services/charge_wallet/sms_body", [
+                    'smsList' => implode("", $smsList),
+                ]);
             }
-
-            $smsBody = $this->template->render("services/charge_wallet/sms_body", [
-                'smsList' => implode("", $smsList),
-            ]);
         }
 
         if ($this->settings->getTransferPlatformId()) {
@@ -99,8 +117,12 @@ class ChargeWalletServiceModule extends ServiceModule implements
         );
     }
 
-    public function purchaseFormValidate($data)
+    public function purchaseFormValidate(Purchase $purchase, array $body)
     {
+        $method = array_get($body, 'method');
+        $smsPrice = as_int(array_get($body, 'sms_price'));
+        $transferPrice = array_get($body, 'transfer_price');
+
         if (!$this->auth->check()) {
             return [
                 'status' => "no_access",
@@ -109,8 +131,8 @@ class ChargeWalletServiceModule extends ServiceModule implements
             ];
         }
 
-        // Są tylko dwie metody doładowania portfela
-        if (!in_array($data['method'], [Purchase::METHOD_SMS, Purchase::METHOD_TRANSFER])) {
+        // There are only two allowed ways to charge wallet
+        if (!in_array($method, [Purchase::METHOD_SMS, Purchase::METHOD_TRANSFER])) {
             return [
                 'status' => "wrong_method",
                 'text' => $this->lang->t('wrong_charge_method'),
@@ -120,30 +142,27 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
         $warnings = [];
 
-        if ($data['method'] == Purchase::METHOD_SMS) {
-            if (!strlen($data['tariff'])) {
-                $warnings['tariff'][] = $this->lang->t('charge_amount_not_chosen');
+        if ($method == Purchase::METHOD_SMS) {
+            if (!$smsPrice || !$this->smsPriceRepository->exists($smsPrice)) {
+                $warnings['sms_price'][] = $this->lang->t('charge_amount_not_chosen');
             }
-        } else {
-            if ($data['method'] == Purchase::METHOD_TRANSFER) {
-                // Kwota doładowania
-                if ($warning = check_for_warnings("number", $data['transfer_amount'])) {
-                    $warnings['transfer_amount'] = array_merge(
-                        (array) $warnings['transfer_amount'],
-                        $warning
-                    );
-                }
-                if ($data['transfer_amount'] <= 1) {
-                    $warnings['transfer_amount'][] = $this->lang->t(
-                        'charge_amount_too_low',
-                        "1.00 " . $this->settings->getCurrency()
-                    );
-                }
+        } elseif ($method == Purchase::METHOD_TRANSFER) {
+            if ($warning = check_for_warnings("number", $transferPrice)) {
+                $warnings['transfer_price'] = array_merge(
+                    (array) $warnings['transfer_price'],
+                    $warning
+                );
+            }
+
+            if ($transferPrice <= 1) {
+                $warnings['transfer_price'][] = $this->lang->t(
+                    'charge_amount_too_low',
+                    "1.00 " . $this->settings->getCurrency()
+                );
             }
         }
 
-        // Jeżeli są jakieś błedy, to je zwróć
-        if (!empty($warnings)) {
+        if ($warnings) {
             return [
                 'status' => "warnings",
                 'text' => $this->lang->t('form_wrong_filled'),
@@ -152,27 +171,35 @@ class ChargeWalletServiceModule extends ServiceModule implements
             ];
         }
 
-        $purchase = new Purchase($this->auth->user());
         $purchase->setService($this->service->getId());
-        $purchase->setTariff($this->heart->getTariff($data['tariff']));
         $purchase->setPayment([
-            'no_wallet' => true,
+            Purchase::PAYMENT_WALLET_DISABLED => true,
         ]);
 
-        if ($data['method'] == Purchase::METHOD_SMS) {
+        if ($method == Purchase::METHOD_SMS) {
+            $smsPaymentModule = $this->heart->getPaymentModuleByPlatformId(
+                $purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM)
+            );
+
+            if ($smsPaymentModule instanceof SupportSms) {
+                $purchase->setPayment([
+                    Purchase::PAYMENT_SMS_PRICE => $smsPrice,
+                    Purchase::PAYMENT_TRANSFER_DISABLED => true,
+                ]);
+                $purchase->setOrder([
+                    Purchase::ORDER_QUANTITY => $this->smsPriceService->getProvision(
+                        $smsPrice,
+                        $smsPaymentModule
+                    ),
+                ]);
+            }
+        } elseif ($method == Purchase::METHOD_TRANSFER) {
             $purchase->setPayment([
-                'no_transfer' => true,
+                Purchase::PAYMENT_TRANSFER_PRICE => $transferPrice * 100,
+                Purchase::PAYMENT_SMS_DISABLED => true,
             ]);
             $purchase->setOrder([
-                'amount' => $this->heart->getTariff($data['tariff'])->getProvision(),
-            ]);
-        } elseif ($data['method'] == Purchase::METHOD_TRANSFER) {
-            $purchase->setPayment([
-                'cost' => $data['transfer_amount'] * 100,
-                'no_sms' => true,
-            ]);
-            $purchase->setOrder([
-                'amount' => $data['transfer_amount'] * 100,
+                Purchase::ORDER_QUANTITY => $transferPrice * 100,
             ]);
         }
 
@@ -180,38 +207,37 @@ class ChargeWalletServiceModule extends ServiceModule implements
             'status' => "ok",
             'text' => $this->lang->t('purchase_form_validated'),
             'positive' => true,
-            'purchase_data' => $purchase,
         ];
     }
 
-    public function orderDetails(Purchase $purchaseData)
+    public function orderDetails(Purchase $purchase)
     {
-        $amount = number_format($purchaseData->getOrder('amount') / 100, 2);
+        $quantity = number_format($purchase->getOrder(Purchase::ORDER_QUANTITY) / 100, 2);
 
-        return $this->template->render(
+        return $this->template->renderNoComments(
             "services/charge_wallet/order_details",
-            compact('amount'),
-            true,
-            false
+            compact('quantity')
         );
     }
 
-    public function purchase(Purchase $purchaseData)
+    public function purchase(Purchase $purchase)
     {
-        // Aktualizacja stanu portfela
-        $this->chargeWallet($purchaseData->user->getUid(), $purchaseData->getOrder('amount'));
+        $this->chargeWallet(
+            $purchase->user->getUid(),
+            $purchase->getOrder(Purchase::ORDER_QUANTITY)
+        );
 
         return $this->boughtServiceService->create(
-            $purchaseData->user->getUid(),
-            $purchaseData->user->getUsername(),
-            $purchaseData->user->getLastIp(),
-            $purchaseData->getPayment('method'),
-            $purchaseData->getPayment('payment_id'),
+            $purchase->user->getUid(),
+            $purchase->user->getUsername(),
+            $purchase->user->getLastIp(),
+            $purchase->getPayment(Purchase::PAYMENT_METHOD),
+            $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
             $this->service->getId(),
             0,
-            number_format($purchaseData->getOrder('amount') / 100, 2),
-            $purchaseData->user->getUsername(),
-            $purchaseData->getEmail()
+            number_format($purchase->getOrder(Purchase::ORDER_QUANTITY) / 100, 2),
+            $purchase->user->getUsername(),
+            $purchase->getEmail()
         );
     }
 
@@ -224,20 +250,16 @@ class ChargeWalletServiceModule extends ServiceModule implements
         if ($action == "web") {
             if ($data['payment'] == Purchase::METHOD_SMS) {
                 $desc = $this->lang->t('wallet_was_charged', $data['amount']);
-                return $this->template->render(
+                return $this->template->renderNoComments(
                     "services/charge_wallet/web_purchase_info_sms",
-                    compact('desc', 'data'),
-                    true,
-                    false
+                    compact('desc', 'data')
                 );
             }
 
             if ($data['payment'] == Purchase::METHOD_TRANSFER) {
-                return $this->template->render(
+                return $this->template->renderNoComments(
                     "services/charge_wallet/web_purchase_info_transfer",
-                    compact('data'),
-                    true,
-                    false
+                    compact('data')
                 );
             }
 
@@ -261,19 +283,18 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
     /**
      * @param int $uid
-     * @param int $amount
+     * @param int $quantity
      */
-    private function chargeWallet($uid, $amount)
+    private function chargeWallet($uid, $quantity)
     {
-        $this->db->query(
-            $this->db->prepare(
+        $this->db
+            ->statement(
                 "UPDATE `" .
                     TABLE_PREFIX .
                     "users` " .
-                    "SET `wallet` = `wallet` + '%d' " .
-                    "WHERE `uid` = '%d'",
-                [$amount, $uid]
+                    "SET `wallet` = `wallet` + ? " .
+                    "WHERE `uid` = ?"
             )
-        );
+            ->execute([$quantity, $uid]);
     }
 }

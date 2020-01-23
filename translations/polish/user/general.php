@@ -2,7 +2,7 @@
 
 return [
     'add_code_to_reuse' =>
-        'Dodano kod do tabeli kodów do wykorzystania. Kod: {1} Taryfa: {2} Próba użycia go przez {3}({4})({5}) przy zakupie usługi o taryfie: {6}.',
+        'Dodano kod do tabeli kodów do wykorzystania. Kod: {1} Kwota SMS: {2} Próba użycia go przez {3}({4})({5}), oczekiwana kwota SMS: {6}.',
     'admin' => 'Admin',
     'answer' => 'Odpowiedź',
     'antispam_question' => 'Pytanie Antyspamowe',
@@ -43,8 +43,6 @@ return [
     'no_login_password' =>
         'No niestety, ale bez podania nazwy użytkownika oraz loginu, nie zalogujesz się.',
     'no_reset_key' => 'Nie podano kodu resetowania hasła.',
-    'no_sms_payment' =>
-        'Nie można zapłacić SMSem za tę ilość usługi. Wybierz inny sposób płatności.',
     'not_enough_money' =>
         'Bida! Nie masz wystarczającej ilości kasy w portfelu. Doładuj portfel ;-)',
     'old_pass_wrong' => 'Stare hasło jest nieprawidłowe.',
@@ -62,6 +60,8 @@ return [
     'pay_wallet' => 'Płacę z Portfela',
     'payment_for_service' => 'Płatność za usługę: {1}',
     'payment_log' => 'Historia płatności',
+    'payment_method_unavailable' =>
+        'Nie można zapłacić tą metodą płatności za tę ilość usługi. Wybierz inny sposób płatności.',
     'payment_not_accepted' => 'Nieudana autoryzacja transakcji: {1} Kwota: {2} Usługa: {3}',
     'payment_sms' => 'Płatność SMS',
     'payment_transfer' => 'Płatność przelew',
@@ -96,12 +96,12 @@ W kolejnym etapie, zostanie do Ciebie wysłany e-mail z linkiem do zresetowania 
         'Usługa nie może zostać wyświetlona, ponieważ jej moduł nie zapewnia takiej funkcjonalności.',
     'service_takeover' => '<strong>Przejęcie usługi</strong> służy do przypisania konkretnej, czasowej usługi do swojego konta. Zazwyczaj używane,
 	gdy zakupiliśmy usługę nie będąc zalogowani.',
+    'service_taken_over' => 'Usługa została przejęta.',
     'service_was_bought' => 'Zakupiono usługę {1} na serwerze {2}',
     'show_more' => 'Pokaż więcej',
     'sign_up_info' => 'Twoje konto zostało prawidłowo zarejestrowane na adres email: {1}.<br/>
 Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
     'site_not_exists' => 'Strona nie istnieje.',
-    'sms_cost' => 'Koszt SMS',
     'sms_info_bad_code' => 'Wprowadzono błędny kod zwrotny.',
     'sms_info_bad_number' =>
         'Kod jest dobry, lecz niestety został uzyskany poprzez wysłanie SMSa na inny numer.',

@@ -1,10 +1,10 @@
-<form class="row" data-module="{{ $moduleId }}" data-row="{{ $userService['id'] }}">
+<form class="row" data-module="{{ $moduleId }}" data-row="{{ $userServiceId }}">
     <div class="fright">
         {$buttonEdit}
     </div>
-    <strong>{$lang->t('service')}</strong>: {{ $serviceInfo['service'] }}<br />
-    <strong>{{ $serviceInfo['type'] }}</strong>: {{ $serviceInfo['auth_data'] }}<br />
-    <strong>{$lang->t('server')}</strong>: {{ $serviceInfo['server'] }}<br />
+    <strong>{{ $lang->t('service') }}</strong>: {{ $serviceName }}<br />
+    <strong>{{ $type }}</strong>: {{ $authData }}<br />
+    <strong>{{ $lang->t('server') }}</strong>: {{ $serverName }}<br />
     <br />
-    <strong>{$lang->t('expire')}</strong>: {{ $serviceInfo['expire'] }}
+    <strong>{{ $lang->t('expire') }}</strong>: {{ $expire }}
 </form>

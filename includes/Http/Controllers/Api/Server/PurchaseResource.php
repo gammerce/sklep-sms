@@ -25,7 +25,7 @@ class PurchaseResource
             return new Response("Invalid body sign");
         }
 
-        $serviceModule = $heart->getServiceModule($request->request->get('service'));
+        $serviceModule = $heart->getServiceModule($request->request->get('service_id'));
 
         if ($serviceModule === null || !($serviceModule instanceof IServicePurchaseOutside)) {
             return new XmlResponse("bad_module", $lang->t('bad_module'), 0);

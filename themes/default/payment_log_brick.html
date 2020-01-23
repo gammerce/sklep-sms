@@ -1,3 +1,7 @@
-<div class="fright"><strong>{$lang->t('date')}</strong>: {{ $date }}</div>
-<strong>{$lang->t('price')}</strong>: {{ $cost }}<br />
-<strong>{$lang->t('description')}</strong>: {{ $desc }}
+<div class="card gapped {{ $class }}">
+    <div class="card-content">
+        <div class="fright"><strong>{$lang->t('date')}</strong>: {{ $date }}</div>
+        <strong>{$lang->t('price')}</strong>: {{ $cost }}<br />
+        <strong>{$lang->t('description')}</strong>: {{ $desc }}
+    </div>
+</div>

@@ -1,6 +1,7 @@
 <?php
 namespace App\Verification\PaymentModules;
 
+use App\Models\SmsNumber;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\DataField;
@@ -14,8 +15,7 @@ class Hostplay extends PaymentModule implements SupportSms
 {
     const MODULE_ID = "hostplay";
 
-    /** @var array */
-    protected $ratesNumber = [
+    private $ratesNumber = [
         '0.34' => '7055',
         '0.67' => '7155',
         '1.35' => '7255',
@@ -31,6 +31,31 @@ class Hostplay extends PaymentModule implements SupportSms
         '13.53' => '92055',
         '16.91' => '92555',
     ];
+
+    public static function getDataFields()
+    {
+        return [new DataField("user_id")];
+    }
+
+    public static function getSmsNumbers()
+    {
+        return [
+            new SmsNumber("7055"),
+            new SmsNumber("7155"),
+            new SmsNumber("7255"),
+            new SmsNumber("7355"),
+            new SmsNumber("7455"),
+            new SmsNumber("7555"),
+            new SmsNumber("76660"),
+            new SmsNumber("7955"),
+            new SmsNumber("91055"),
+            new SmsNumber("91155"),
+            new SmsNumber("91455"),
+            new SmsNumber("91955"),
+            new SmsNumber("92055"),
+            new SmsNumber("92555"),
+        ];
+    }
 
     public function verifySms($returnCode, $number)
     {
@@ -53,8 +78,7 @@ class Hostplay extends PaymentModule implements SupportSms
                 return new SmsSuccessResult();
             }
 
-            $tariffId = $this->getTariffByNumber($responseNumber)->getId();
-            throw new BadNumberException($tariffId);
+            throw new BadNumberException(get_sms_cost($responseNumber));
         }
 
         if (strtoupper($content['status']) === 'FAIL') {
@@ -81,11 +105,6 @@ class Hostplay extends PaymentModule implements SupportSms
     public function getSmsCode()
     {
         return "HOSTPLAY";
-    }
-
-    public static function getDataFields()
-    {
-        return [new DataField("user_id")];
     }
 
     private function getUserId()

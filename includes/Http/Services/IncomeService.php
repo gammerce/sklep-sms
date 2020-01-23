@@ -25,19 +25,17 @@ class IncomeService
 
     public function get($year, $month)
     {
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT t.income, t.timestamp, t.server " .
-                    "FROM ({$this->settings['transactions_query']}) as t " .
-                    "WHERE t.free = '0' AND IFNULL(t.income,'') != '' AND t.payment != 'wallet' AND t.timestamp LIKE '%s-%s-%%' " .
-                    "ORDER BY t.timestamp ASC",
-                [$year, $month]
-            )
+        $statement = $this->db->statement(
+            "SELECT t.income, t.timestamp, t.server " .
+                "FROM ({$this->settings['transactions_query']}) as t " .
+                "WHERE t.free = '0' AND IFNULL(t.income,'') != '' AND t.payment != 'wallet' AND t.timestamp LIKE ? " .
+                "ORDER BY t.timestamp ASC"
         );
+        $statement->execute(["$year-$month-%"]);
 
         // Let's sum income by date (day precision) and server
         $data = [];
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
             $date = explode(" ", $row['timestamp'])[0];
             $serverId = $this->heart->getServer($row['server']) ? $row['server'] : 0;
 
@@ -53,5 +51,16 @@ class IncomeService
         }
 
         return $data;
+    }
+
+    public function getWholeIncome()
+    {
+        return $this->db
+            ->query(
+                "SELECT SUM(t.income) " .
+                    "FROM ({$this->settings['transactions_query']}) as t " .
+                    "WHERE t.free = '0' AND t.payment != 'wallet' "
+            )
+            ->fetchColumn();
     }
 }

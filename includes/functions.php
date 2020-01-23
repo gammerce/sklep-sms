@@ -2,6 +2,7 @@
 
 use App\Models\Server;
 use App\Models\User;
+use App\Support\Collection;
 use App\System\Auth;
 use App\System\Database;
 use App\System\Settings;
@@ -187,7 +188,7 @@ function get_ip(Request $request = null)
 /**
  * Zwraca datę w odpowiednim formacie
  *
- * @param integer|string $timestamp
+ * @param int|string $timestamp
  * @param string $format
  *
  * @return string
@@ -201,13 +202,17 @@ function convertDate($timestamp, $format = "")
         $format = $settings->getDateFormat();
     }
 
-    $date = new DateTime($timestamp);
+    if (my_is_integer($timestamp)) {
+        $date = new DateTime("@$timestamp");
+    } else {
+        $date = new DateTime($timestamp);
+    }
 
     return $date->format($format);
 }
 
 /**
- * Returns sms cost netto by number
+ * Returns sms cost net by number
  *
  * @param string $number
  *
@@ -228,6 +233,17 @@ function get_sms_cost($number)
     }
 
     return 0;
+}
+
+/**
+ * Returns sms provision from given net price
+ *
+ * @param int $smsPrice
+ * @return int
+ */
+function get_sms_provision($smsPrice)
+{
+    return (int) ceil($smsPrice / 2);
 }
 
 function hash_password($password, $salt)
@@ -589,4 +605,27 @@ function semantic_to_number($version)
     }
 
     return $parts[0] * 10000 + $parts[1] * 100 + $parts[2];
+}
+
+function collect($items)
+{
+    return new Collection($items);
+}
+
+function is_list(array $array)
+{
+    return ctype_digit(implode('', array_keys($array)));
+}
+
+/**
+ * @param mixed $value
+ * @return int|null
+ */
+function as_int($value)
+{
+    if ($value === null || $value === "") {
+        return null;
+    }
+
+    return (int) $value;
 }

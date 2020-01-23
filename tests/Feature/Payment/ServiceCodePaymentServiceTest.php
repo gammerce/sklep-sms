@@ -29,21 +29,23 @@ class ServiceCodePaymentServiceTest extends TestCase
 
         $serviceId = "vip";
         $serviceModule = $heart->getServiceModule($serviceId);
-
-        $serviceCode = $serviceCodeRepository->create("ABC123", $serviceId);
+        $price = $this->factory->price([
+            'service_id' => $serviceId,
+        ]);
+        $serviceCode = $serviceCodeRepository->create("ABC123", $serviceId, $price->getId());
 
         $purchase = new Purchase(new User());
         $purchase->setPayment([
-            'service_code' => $serviceCode->getCode(),
+            Purchase::PAYMENT_SERVICE_CODE => $serviceCode->getCode(),
         ]);
         $purchase->setOrder([
-            'server' => 'blah',
+            Purchase::ORDER_SERVER => 'blah',
         ]);
-        $purchase->setTariff($heart->getTariff(2));
+        $purchase->setPrice($price);
         $purchase->setService($serviceModule->service->getId());
 
         // when
-        $paymentCodeId = $service->payWithServiceCode($purchase, $serviceModule);
+        $paymentCodeId = $service->payWithServiceCode($purchase);
 
         // then
         $this->assertInternalType("int", $paymentCodeId);

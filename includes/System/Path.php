@@ -4,7 +4,7 @@ namespace App\System;
 class Path
 {
     /** @var string */
-    protected $basePath;
+    private $basePath;
 
     public function __construct($basePath)
     {
@@ -18,20 +18,5 @@ class Path
         }
 
         return $this->basePath . DIRECTORY_SEPARATOR . ltrim($path, "/");
-    }
-
-    public function sqlLogPath()
-    {
-        return $this->to('data/logs/sql.log');
-    }
-
-    public function errorLogPath()
-    {
-        return $this->to('data/logs/errors.log');
-    }
-
-    public function infoLogPath()
-    {
-        return $this->to('data/logs/info.log');
     }
 }

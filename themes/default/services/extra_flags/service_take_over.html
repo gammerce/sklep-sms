@@ -3,13 +3,13 @@
         <div class="table_form">
             <div class="row">
                 <div class="cell">
-                    <label for="server">{$lang->t('server')}</label>
+                    <label for="server_id">{$lang->t('server')}</label>
                 </div>
                 <div class="cell">
                     <div class="field">
                         <div class="control">
                             <div class="select is-small">
-                                <select id="server" name="server">
+                                <select id="server_id" name="server_id">
                                     <option value="">{$lang->t('choose_server')}</option>
                                     {$servers}
                                 </select>
@@ -100,20 +100,18 @@
         <div class="table_form">
             <div class="row">
                 <div class="cell">
-                    <label for="payment">{$lang->t('way_of_payment')}</label>
+                    <label for="payment_method">{$lang->t('way_of_payment')}</label>
                 </div>
                 <div class="cell">
                     <div class="field">
                         <div class="control">
                             <div class="select is-small">
-                                <select id="payment" name="payment">
+                                <select id="payment_method" name="payment_method">
                                     <option value="">{$lang->t('choose_payment')}</option>
-                                    <option value="wallet">{$lang->t('wallet')}</option>
                                     <option value="sms">SMS</option>
-                                    <option value="transfer"
-                                        >{$lang->t('transfer_transfer')}</option
-                                    >
-                                    <option value="admin">{$lang->t('admin')}</option>
+                                    <option value="transfer">
+                                        {$lang->t('transfer_transfer')}
+                                    </option>
                                 </select>
                             </div>
                         </div>

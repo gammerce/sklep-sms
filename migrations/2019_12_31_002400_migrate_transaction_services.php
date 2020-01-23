@@ -75,9 +75,7 @@ class MigrateTransactionServices extends Migration
 
         $statement = $this->db->query("SELECT * FROM ss_servers");
         foreach ($statement as $row) {
-            /** @var PaymentPlatform $smsPlatform */
             $smsPlatformId = array_get($paymentPlatforms, $row["sms_service"]);
-
             $this->db
                 ->statement("UPDATE `ss_servers` SET `sms_service` = ? WHERE `id` = ?")
                 ->execute([$smsPlatformId, $row["id"]]);

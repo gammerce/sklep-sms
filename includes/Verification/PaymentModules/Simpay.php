@@ -1,6 +1,7 @@
 <?php
 namespace App\Verification\PaymentModules;
 
+use App\Models\SmsNumber;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\DataField;
@@ -14,6 +15,39 @@ use App\Verification\Results\SmsSuccessResult;
 class Simpay extends PaymentModule implements SupportSms
 {
     const MODULE_ID = "simpay";
+
+    public static function getDataFields()
+    {
+        return [
+            new DataField("key"),
+            new DataField("secret"),
+            new DataField("service_id"),
+            new DataField("sms_text"),
+        ];
+    }
+
+    public static function getSmsNumbers()
+    {
+        return [
+            new SmsNumber("7136"),
+            new SmsNumber("7255"),
+            new SmsNumber("7355"),
+            new SmsNumber("7455"),
+            new SmsNumber("7555"),
+            new SmsNumber("7636"),
+            new SmsNumber("77464"),
+            new SmsNumber("78464"),
+            new SmsNumber("7936"),
+            new SmsNumber("91055"),
+            new SmsNumber("91155"),
+            new SmsNumber("91455"),
+            new SmsNumber("91664"),
+            new SmsNumber("91955"),
+            new SmsNumber("92055"),
+            new SmsNumber("92555"),
+            new SmsNumber("7055"),
+        ];
+    }
 
     public function verifySms($returnCode, $number)
     {
@@ -59,16 +93,6 @@ class Simpay extends PaymentModule implements SupportSms
     public function getSmsCode()
     {
         return $this->getData('sms_text');
-    }
-
-    public static function getDataFields()
-    {
-        return [
-            new DataField("key"),
-            new DataField("secret"),
-            new DataField("service_id"),
-            new DataField("sms_text"),
-        ];
     }
 
     private function getKey()

@@ -157,7 +157,7 @@ class UserRepository
     private function mapToModel(array $data)
     {
         return new User(
-            (int) $data['uid'],
+            as_int($data['uid']),
             $data['username'],
             $data['password'],
             $data['salt'],

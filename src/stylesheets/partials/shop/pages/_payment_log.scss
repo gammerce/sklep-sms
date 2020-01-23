@@ -1,0 +1,23 @@
+#payment_logs {
+    .card {
+        color: #ccc;
+    }
+
+    .income {
+        cursor: pointer;
+        background-color: rgba(0, 255, 0, 0.2) !important;
+    }
+
+    .income:hover {
+        background-color: rgba(0, 255, 0, 0.4) !important;
+    }
+
+    .outcome {
+        cursor: pointer;
+        background-color: rgba(255, 0, 0, 0.2) !important;
+    }
+
+    .outcome:hover {
+        background-color: rgba(255, 0, 0, 0.4) !important;
+    }
+}

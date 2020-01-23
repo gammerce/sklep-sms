@@ -13,8 +13,8 @@ return [
     'bought_service_info' =>
         'Zakupiono usługę {1}. Dane: {2} Ilość: {3} Serwer: {4} ID transakcji: {5}. Email: {6} {7}({8})({9})',
     'cancel' => 'Anuluj',
-    'choose_amount' => 'Wybierz ilość',
     'choose_option' => 'Wybierz opcję',
+    'choose_quantity' => 'Wybierz ilość',
     'choose_server' => 'Wybierz serwer',
     'choose_service' => 'Wybierz usługę',
     'choose_type' => 'Wybierz rodzaj',
@@ -79,8 +79,9 @@ return [
     'payment_bad_type' => 'Błąd w konstruktorze klasy Payment. Niedozwolony typ płatności.',
     'payment_id' => 'ID płatności',
     'payment_remove_code_from_db' =>
-        'Usunięto kod z tabeli kodów do wykorzystania. Kod: {1} Taryfa: {2}',
+        'Usunięto kod z tabeli kodów do wykorzystania. Kod: {1} Kwota SMS: {2}',
     'previous' => 'Wcześniej',
+    'quantity' => 'Ilość',
     'question' => 'Pytanie',
     'regards' => 'Pozdrawiamy',
     'return_code_length_warn' => 'Wprowadzony kod zwrotny jest nieco przydługaśny.',
@@ -97,7 +98,6 @@ return [
     'sms_return_code' => 'Kod zwrotny',
     'sth_went_wrong' => 'Coś poszło nie tak :/',
     'surname' => 'Nazwisko',
-    'tariff' => 'Taryfa',
     'token' => 'Token',
     'type' => 'Typ',
     'user' => 'Użytkownik',

@@ -37,6 +37,17 @@ class ServerConfigControllerTest extends HttpTestCase
         /** @var Settings $settings */
         $settings = $this->app->make(Settings::class);
 
+        $this->factory->serverService([
+            'server_id' => $this->server->getId(),
+            'service_id' => 'vip',
+        ]);
+
+        $price = $this->factory->price([
+            'service_id' => 'vip',
+            'sms_price' => 200,
+            'quantity' => 10,
+        ]);
+
         // when
         $response = $this->get(
             '/api/server/config',
@@ -44,7 +55,7 @@ class ServerConfigControllerTest extends HttpTestCase
                 'key' => md5($settings->get("random_key")),
                 'ip' => $this->server->getIp(),
                 'port' => $this->server->getPort(),
-                'version' => '3.8.0',
+                'version' => '3.9.0',
             ],
             [
                 'User-Agent' => Server::TYPE_AMXMODX,
@@ -54,15 +65,37 @@ class ServerConfigControllerTest extends HttpTestCase
         // then
         $data = [
             "id:{$this->server->getId()}",
+            "license_token:abc123",
             "sms_platform_id:{$this->paymentPlatform->getId()}",
-            "sms_module_id:gosetti",
             "sms_text:abc123",
-            "services:  ",
             "steam_ids:;",
             "currency:PLN",
             "contact:",
             "vat:1.23",
-            "license_token:abc123",
+            "sn.c:11",
+            "sn.0:71480",
+            "sn.1:72480",
+            "sn.2:73480",
+            "sn.3:74480",
+            "sn.4:75480",
+            "sn.5:76480",
+            "sn.6:79480",
+            "sn.7:91400",
+            "sn.8:91900",
+            "sn.9:92022",
+            "sn.10:92521",
+            "se.c:1",
+            "se.0.i:vip",
+            "se.0.n:VIP",
+            "se.0.d:",
+            "se.0.ta:dni",
+            "se.0.f:t",
+            "se.0.ty:7",
+            "pr.c:1",
+            "pr.0.i:{$price->getId()}",
+            "pr.0.s:vip",
+            "pr.0.p:200",
+            "pr.0.q:10",
         ];
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame(implode("\n", $data), $response->getContent());
@@ -82,7 +115,7 @@ class ServerConfigControllerTest extends HttpTestCase
                 'key' => md5($settings->get("random_key")),
                 'ip' => $this->server->getIp(),
                 'port' => $this->server->getPort(),
-                'version' => '3.8.0',
+                'version' => '3.9.0',
             ],
             [
                 'Accept' => 'application/json',
@@ -93,7 +126,6 @@ class ServerConfigControllerTest extends HttpTestCase
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertSame("gosetti", $json["sms_module_id"]);
         $this->assertSame($this->paymentPlatform->getId(), $json["sms_platform_id"]);
         $this->assertSame($settings->getVat(), $json["vat"]);
         $this->assertSame("abc123", $json["license_token"]);
@@ -124,7 +156,7 @@ class ServerConfigControllerTest extends HttpTestCase
                 'key' => md5($settings->get("random_key")),
                 'ip' => $this->server->getIp(),
                 'port' => $this->server->getPort(),
-                'version' => '3.7.0',
+                'version' => '3.8.0',
             ],
             [
                 'User-Agent' => Server::TYPE_SOURCEMOD,
@@ -175,7 +207,7 @@ class ServerConfigControllerTest extends HttpTestCase
                 'key' => md5($settings->get("random_key")),
                 'ip' => '1.1.1.1',
                 'port' => '11111',
-                'version' => '3.8.0',
+                'version' => '3.9.0',
             ],
             [
                 'User-Agent' => Server::TYPE_AMXMODX,

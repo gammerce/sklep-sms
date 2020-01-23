@@ -54,7 +54,7 @@ class BoughtServiceRepository
                 $method,
                 $paymentId,
                 $service,
-                $server,
+                $server ?: 0,
                 $amount ?: 0,
                 $authData ?: '',
                 $email ?: '',
@@ -67,7 +67,7 @@ class BoughtServiceRepository
     private function mapToModel(array $data)
     {
         return new BoughtService(
-            (int) $data['id'],
+            as_int($data['id']),
             $data['uid'],
             $data['payment'],
             $data['payment_id'],

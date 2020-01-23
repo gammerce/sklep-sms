@@ -4,6 +4,7 @@ namespace App\Verification\PaymentModules;
 use App\Loggers\FileLogger;
 use App\Models\PaymentPlatform;
 use App\Models\Purchase;
+use App\Models\SmsNumber;
 use App\Models\TransferFinalize;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
@@ -65,6 +66,34 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
         $this->fileLogger = $fileLogger;
     }
 
+    public static function getDataFields()
+    {
+        return [
+            new DataField("api"),
+            new DataField("sms_text"),
+            new DataField("service_id"),
+            new DataField("shop_id"),
+            new DataField("hash"),
+        ];
+    }
+
+    public static function getSmsNumbers()
+    {
+        return [
+            new SmsNumber("71480", 48),
+            new SmsNumber("72480", 96),
+            new SmsNumber("73480", 144),
+            new SmsNumber("74480", 192),
+            new SmsNumber("75480", 240),
+            new SmsNumber("76480", 288),
+            new SmsNumber("79480", 432),
+            new SmsNumber("91400", 672),
+            new SmsNumber("91900", 912),
+            new SmsNumber("92022", 960),
+            new SmsNumber("92521", 1200),
+        ];
+    }
+
     public function verifySms($returnCode, $number)
     {
         $response = $this->requester->get("https://microsms.pl/api/v2/index.php", [
@@ -111,7 +140,7 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
 
     public function prepareTransfer(Purchase $purchase, $dataFilename)
     {
-        $cost = round($purchase->getPayment('cost') / 100, 2);
+        $cost = round($purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE) / 100, 2);
         $signature = hash('sha256', $this->shopId . $this->hash . $cost);
 
         return [
@@ -146,11 +175,11 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
 
     private function isPaymentValid(array $body)
     {
-        if ($body['status'] != true) {
+        if (array_get($body, 'status') != true) {
             return false;
         }
 
-        if ($body['userid'] != $this->userId) {
+        if (array_get($body, 'userid') != $this->userId) {
             return false;
         }
 
@@ -171,16 +200,5 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
     public function getSmsCode()
     {
         return $this->smsCode;
-    }
-
-    public static function getDataFields()
-    {
-        return [
-            new DataField("api"),
-            new DataField("sms_text"),
-            new DataField("service_id"),
-            new DataField("shop_id"),
-            new DataField("hash"),
-        ];
     }
 }

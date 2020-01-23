@@ -21,13 +21,13 @@ $(document).delegate("#form_user_service_add [name=type]", "change", function() 
 //
 
 // Zmiana usługi przy edycji
-$(document).delegate("#form_user_service_edit [name=service]", "change", function() {
+$(document).delegate("#form_user_service_edit [name=service_id]", "change", function() {
     var module;
     if (!(module = service_module_act_can("extra_flags", $(this)))) return;
 
     if (!$(this).val().length) {
         module
-            .find("[name=server]")
+            .find("[name=server_id]")
             .children()
             .not("[value='']")
             .remove();
@@ -40,10 +40,10 @@ $(document).delegate("#form_user_service_edit [name=service]", "change", functio
         "POST",
         "/api/services/" + serviceId + "/actions/servers_for_service",
         {
-            server: module.find("[name=server]").val(),
+            server_id: module.find("[name=server_id]").val(),
         },
         function(html) {
-            module.find("[name=server]").html(html);
+            module.find("[name=server_id]").html(html);
         }
     );
 });

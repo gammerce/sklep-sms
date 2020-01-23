@@ -5,7 +5,6 @@ use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
 use App\Repositories\PaymentCodeRepository;
 use App\Repositories\ServiceCodeRepository;
-use App\ServiceModules\ServiceModule;
 use App\System\Database;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -43,51 +42,48 @@ class ServiceCodePaymentService
 
     /**
      * @param Purchase $purchase
-     * @param ServiceModule  $serviceModule
      * @return array|int
      */
-    public function payWithServiceCode(Purchase $purchase, ServiceModule $serviceModule)
+    public function payWithServiceCode(Purchase $purchase)
     {
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT * FROM `" .
-                    TABLE_PREFIX .
-                    "service_codes` " .
-                    "WHERE `code` = '%s' " .
-                    "AND `service` = '%s' " .
-                    "AND (`server` = '0' OR `server` = '%s') " .
-                    "AND (`tariff` = '0' OR `tariff` = '%d') " .
-                    "AND (`uid` = '0' OR `uid` = '%s')",
-                [
-                    $purchase->getPayment('service_code'),
-                    $purchase->getService(),
-                    $purchase->getOrder('server'),
-                    $purchase->getTariff(),
-                    $purchase->user->getUid(),
-                ]
-            )
+        $statement = $this->db->statement(
+            "SELECT * FROM `" .
+                TABLE_PREFIX .
+                "service_codes` " .
+                "WHERE `code` = ? " .
+                "AND `service` = ? " .
+                "AND `price` = ? " .
+                "AND (`server` IS NULL OR `server` = ?) " .
+                "AND (`uid` IS NULL OR `uid` = ?)"
         );
+        $statement->execute([
+            $purchase->getPayment(Purchase::PAYMENT_SERVICE_CODE),
+            $purchase->getService(),
+            $purchase->getPrice()->getId(),
+            $purchase->getOrder(Purchase::ORDER_SERVER),
+            $purchase->user->getUid(),
+        ]);
 
-        foreach ($result as $row) {
-            if ($serviceModule->serviceCodeValidate($purchase, $row)) {
-                $this->serviceCodeRepository->delete($row['id']);
+        foreach ($statement as $row) {
+            $serviceCode = $this->serviceCodeRepository->mapToModel($row);
 
-                $paymentCode = $this->paymentCodeRepository->create(
-                    $purchase->getPayment('service_code'),
-                    $purchase->user->getLastIp(),
-                    $purchase->user->getPlatform()
-                );
+            $this->serviceCodeRepository->delete($serviceCode->getId());
 
-                $this->logger->log(
-                    'purchase_code',
-                    $purchase->getPayment('service_code'),
-                    $purchase->user->getUsername(),
-                    $purchase->user->getUid(),
-                    $paymentCode->getId()
-                );
+            $paymentCode = $this->paymentCodeRepository->create(
+                $purchase->getPayment(Purchase::PAYMENT_SERVICE_CODE),
+                $purchase->user->getLastIp(),
+                $purchase->user->getPlatform()
+            );
 
-                return $paymentCode->getId();
-            }
+            $this->logger->log(
+                'purchase_code',
+                $purchase->getPayment(Purchase::PAYMENT_SERVICE_CODE),
+                $purchase->user->getUsername(),
+                $purchase->user->getUid(),
+                $paymentCode->getId()
+            );
+
+            return $paymentCode->getId();
         }
 
         return [

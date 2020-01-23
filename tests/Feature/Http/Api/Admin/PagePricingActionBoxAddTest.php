@@ -3,7 +3,7 @@ namespace Tests\Feature\Http\Api\Admin;
 
 use Tests\Psr4\TestCases\HttpTestCase;
 
-class PageTariffsActionBoxAddTest extends HttpTestCase
+class PagePricingActionBoxAddTest extends HttpTestCase
 {
     /** @test */
     public function get_add_box()
@@ -13,13 +13,13 @@ class PageTariffsActionBoxAddTest extends HttpTestCase
         $this->actingAs($admin);
 
         // when
-        $response = $this->get("/api/admin/pages/tariffs/action_boxes/tariff_add");
+        $response = $this->get("/api/admin/pages/pricing/action_boxes/price_add");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals('ok', $json['return_id']);
-        $this->assertContains("Dodaj taryfę", $json['template']);
+        $this->assertContains("Dodaj cenę", $json['template']);
     }
 
     /** @test */
@@ -30,7 +30,7 @@ class PageTariffsActionBoxAddTest extends HttpTestCase
         $this->actingAs($admin);
 
         // when
-        $response = $this->get("/api/admin/pages/tariffs/action_boxes/tariff_add");
+        $response = $this->get("/api/admin/pages/pricing/action_boxes/price_add");
 
         // then
         $this->assertSame(200, $response->getStatusCode());

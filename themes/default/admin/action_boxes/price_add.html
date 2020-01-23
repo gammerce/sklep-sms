@@ -5,13 +5,13 @@
     <table>
         <tr>
             <td>
-                <label for="service">{$lang->strtoupper($lang->t('service'))}</label>
+                <label for="service_id">{$lang->strtoupper($lang->t('service'))}</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
-                            <select id="service" name="service">
+                            <select id="service_id" name="service_id">
                                 <option value="">{$lang->t('choose_service')}</option>
                                 {$services}
                             </select>
@@ -20,17 +20,17 @@
                 </div>
             </td>
         </tr>
+
         <tr>
             <td>
-                <label for="server">{$lang->strtoupper($lang->t('server'))}</label>
+                <label for="server_id">{$lang->strtoupper($lang->t('server'))}</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
-                            <select id="server" name="server">
-                                <option value="">{$lang->t('choose_server')}</option>
-                                <option value="-1">{$lang->t('all')}</option>
+                            <select id="server_id" name="server_id">
+                                <option value="">{$lang->t('all')}</option>
                                 {$servers}
                             </select>
                         </div>
@@ -38,31 +38,58 @@
                 </div>
             </td>
         </tr>
+
         <tr>
             <td>
-                <label for="tariff">{$lang->strtoupper($lang->t('tariff'))}</label>
+                <label for="quantity">{$lang->strtoupper($lang->t('quantity'))}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <input type="number" id="quantity" name="quantity" class="input is-small" />
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <label for="sms_price">{$lang->strtoupper($lang->t('sms_price'))}</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
-                            <select id="tariff" name="tariff">
-                                <option value="">{$lang->t('choose_tariff')}</option>
-                                {$tariffs}
+                            <select id="sms_price" name="sms_price">
+                                <option value="">{$lang->t('choose_sms_price')}</option>
+                                {$smsPrices}
                             </select>
                         </div>
                     </div>
                 </div>
             </td>
         </tr>
+
         <tr>
             <td>
-                <label for="amount">{$lang->strtoupper($lang->t('amount'))}</label>
+                <label for="transfer_price">{$lang->strtoupper($lang->t('transfer_price'))}</label>
             </td>
             <td>
-                <div class="field">
+                <div class="field has-addons">
                     <div class="control">
-                        <input type="number" id="amount" name="amount" class="input is-small" />
+                        <input
+                            type="number"
+                            id="transfer_price"
+                            name="transfer_price"
+                            class="input is-small"
+                            min="0"
+                            step="0.01"
+                        />
+                    </div>
+                    <div class="control">
+                        <a class="button is-static is-small">
+                            {{ $settings->getCurrency() }}
+                        </a>
                     </div>
                 </div>
             </td>

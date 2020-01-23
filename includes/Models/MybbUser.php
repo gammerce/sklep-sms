@@ -53,8 +53,8 @@ class MybbUser
     }
 
     /**
-     * @param integer $groupId
-     * @param integer $seconds
+     * @param int $groupId
+     * @param int $seconds
      */
     public function prolongShopGroup($groupId, $seconds)
     {

@@ -8,6 +8,9 @@ use App\Models\Purchase;
 use App\Models\Service;
 use App\Payment\AdminPaymentService;
 use App\Payment\BoughtServiceService;
+use App\Payment\PurchasePriceService;
+use App\Payment\PurchaseValidationService;
+use App\Repositories\PriceRepository;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServicePurchase;
@@ -28,6 +31,7 @@ use App\View\Html\Cell;
 use App\View\Html\HeadCell;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
+use App\View\Renders\PurchasePriceRenderer;
 use PDOException;
 
 class MybbExtraGroupsServiceModule extends ServiceModule implements
@@ -71,6 +75,18 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     /** @var AdminPaymentService */
     private $adminPaymentService;
 
+    /** @var PurchasePriceService */
+    private $purchasePriceService;
+
+    /** @var PurchasePriceRenderer */
+    private $purchasePriceRenderer;
+
+    /** @var PriceRepository */
+    private $priceRepository;
+
+    /** @var PurchaseValidationService */
+    private $purchaseValidationService;
+
     /** @var DatabaseLogger */
     private $logger;
 
@@ -83,6 +99,10 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
         $this->logger = $this->app->make(DatabaseLogger::class);
         $this->adminPaymentService = $this->app->make(AdminPaymentService::class);
+        $this->purchasePriceService = $this->app->make(PurchasePriceService::class);
+        $this->purchasePriceRenderer = $this->app->make(PurchasePriceRenderer::class);
+        $this->purchaseValidationService = $this->app->make(PurchaseValidationService::class);
+        $this->priceRepository = $this->app->make(PriceRepository::class);
         $this->settings = $this->app->make(Settings::class);
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
@@ -270,7 +290,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
                 get_row_limit($pageNumber)
         );
 
-        $table->setDbRowsAmount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
+        $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
         foreach ($result as $row) {
             $bodyRow = new BodyRow();
@@ -307,109 +327,50 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     {
         $user = $this->auth->user();
 
-        $paymentModule = $this->heart->getPaymentModuleByPlatformIdOrFail(
-            $this->settings->getSmsPlatformId()
-        );
-
-        // Get tariffs
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT sn.number AS `sms_number`, t.provision AS `provision`, t.id AS `tariff`, p.amount AS `amount` " .
-                    "FROM `" .
-                    TABLE_PREFIX .
-                    "pricelist` AS p " .
-                    "INNER JOIN `" .
-                    TABLE_PREFIX .
-                    "tariffs` AS t ON t.id = p.tariff " .
-                    "LEFT JOIN `" .
-                    TABLE_PREFIX .
-                    "sms_numbers` AS sn ON sn.tariff = p.tariff AND sn.service = '%s' " .
-                    "WHERE p.service = '%s' " .
-                    "ORDER BY t.provision ASC",
-                [$paymentModule->getModuleId(), $this->service->getId()]
-            )
-        );
-
-        $amounts = "";
-        foreach ($result as $row) {
-            $smsCost = strlen($row['sms_number'])
-                ? number_format(
-                    (get_sms_cost($row['sms_number']) / 100) * $this->settings->getVat(),
-                    2
-                )
-                : 0;
-            $amount =
-                $row['amount'] != -1
-                    ? $row['amount'] . " " . $this->service->getTag()
-                    : $this->lang->t('forever');
-            $provision = number_format($row['provision'] / 100, 2);
-            $amounts .= $this->template->render(
-                "services/mybb_extra_groups/purchase_value",
-                compact('provision', 'smsCost', 'row', 'amount'),
-                true,
-                false
-            );
-        }
+        $quantities = array_map(function (array $price) {
+            return $this->purchasePriceRenderer->render($price, $this->service);
+        }, $this->purchasePriceService->getServicePrices($this->service));
 
         return $this->template->render(
             "services/mybb_extra_groups/purchase_form",
-            compact('amounts', 'user') + ['serviceId' => $this->service->getId()]
+            compact('quantities', 'user') + ['serviceId' => $this->service->getId()]
         );
     }
 
-    /**
-     * Metoda wywoływana, gdy użytkownik wprowadzi dane w formularzu zakupu
-     * i trzeba sprawdzić, czy są one prawidłowe
-     *
-     * @param array $data
-     *
-     * @return array        'status'    => id wiadomości,
-     *                        'text'        => treść wiadomości
-     *                        'positive'    => czy udało się przeprowadzić zakup czy nie
-     */
-    public function purchaseFormValidate($data)
+    public function purchaseFormValidate(Purchase $purchase, array $body)
     {
-        // Amount
-        $amount = explode(';', $data['amount']); // Wyłuskujemy taryfę
-        $tariff = $amount[2];
+        $priceId = array_get($body, "price_id");
+        $userName = array_get($body, 'username');
+        $email = array_get($body, 'email');
+
         $warnings = [];
 
-        // Tariff
-        if (!$tariff) {
-            $warnings['amount'][] = $this->lang->t('must_choose_amount');
+        if (!$priceId) {
+            $warnings['price_id'][] = $this->lang->t('must_choose_quantity');
         } else {
-            // Wyszukiwanie usługi o konkretnej cenie
-            $result = $this->db->query(
-                $this->db->prepare(
-                    "SELECT * FROM `" .
-                        TABLE_PREFIX .
-                        "pricelist` " .
-                        "WHERE `service` = '%s' AND `tariff` = '%d'",
-                    [$this->service->getId(), $tariff]
-                )
-            );
+            $price = $this->priceRepository->get($priceId);
 
-            if (!$result->rowCount()) {
-                // Brak takiej opcji w bazie ( ktoś coś edytował w htmlu strony )
+            if (
+                !$price ||
+                $price->getServiceId() !== $this->service->getId() ||
+                $this->purchaseValidationService->isPriceAvailable($price, $purchase)
+            ) {
                 return [
                     'status' => "no_option",
                     'text' => $this->lang->t('service_not_affordable'),
                     'positive' => false,
                 ];
             }
-
-            $price = $result->fetch();
         }
 
-        // Username
-        if (!strlen($data['username'])) {
+        if (!strlen($userName)) {
             $warnings['username'][] = $this->lang->t('field_no_empty');
         } else {
             $this->connectMybb();
 
             $result = $this->dbMybb->query(
                 $this->dbMybb->prepare("SELECT 1 FROM `mybb_users` " . "WHERE `username` = '%s'", [
-                    $data['username'],
+                    $userName,
                 ])
             );
 
@@ -418,13 +379,11 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             }
         }
 
-        // E-mail
-        if ($warning = check_for_warnings("email", $data['email'])) {
+        if ($warning = check_for_warnings("email", $email)) {
             $warnings['email'] = array_merge((array) $warnings['email'], $warning);
         }
 
-        // Jeżeli są jakieś błedy, to je zwróć
-        if (!empty($warnings)) {
+        if ($warnings) {
             return [
                 'status' => "warnings",
                 'text' => $this->lang->t('form_wrong_filled'),
@@ -433,86 +392,71 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             ];
         }
 
-        $purchaseData = new Purchase($this->auth->user());
-        $purchaseData->setService($this->service->getId());
-        $purchaseData->setOrder([
-            'username' => $data['username'],
-            'amount' => $price['amount'],
-            'forever' => $price['amount'] == -1 ? true : false,
+        $purchase->setOrder([
+            'username' => $userName,
         ]);
-        $purchaseData->setEmail($data['email']);
-        $purchaseData->setTariff($this->heart->getTariff($tariff));
+        $purchase->setEmail($email);
+        $purchase->setPrice($price);
 
         return [
             'status' => "ok",
             'text' => $this->lang->t('purchase_form_validated'),
             'positive' => true,
-            'purchase_data' => $purchaseData,
         ];
     }
 
-    /**
-     * Metoda zwraca szczegóły zamówienia, wyświetlane podczas zakupu usługi, przed płatnością.
-     *
-     * @param Purchase $purchaseData
-     *
-     * @return string        Szczegóły zamówienia
-     */
-    public function orderDetails(Purchase $purchaseData)
+    public function orderDetails(Purchase $purchase)
     {
-        $email = $purchaseData->getEmail() ?: $this->lang->t('none');
-        $username = $purchaseData->getOrder('username');
+        $email = $purchase->getEmail() ?: $this->lang->t('none');
+        $username = $purchase->getOrder('username');
         $serviceName = $this->service->getName();
-        $amount =
-            $purchaseData->getOrder('amount') != -1
-                ? $purchaseData->getOrder('amount') . " " . $this->service->getTag()
-                : $this->lang->t('forever');
+        $quantity = $purchase->getOrder(Purchase::ORDER_FOREVER)
+            ? $this->lang->t('forever')
+            : $purchase->getOrder(Purchase::ORDER_QUANTITY) . " " . $this->service->getTag();
 
         return $this->template->render(
             "services/mybb_extra_groups/order_details",
-            compact('amount', 'username', 'email', 'serviceName'),
+            compact('quantity', 'username', 'email', 'serviceName'),
             true,
             false
         );
     }
 
-    /**
-     * Metoda wywoływana, gdy usługa została prawidłowo zakupiona
-     *
-     * @param Purchase $purchaseData
-     *
-     * @return integer        value returned by function addBoughtServiceInfo
-     */
-    public function purchase(Purchase $purchaseData)
+    public function purchase(Purchase $purchase)
     {
+        $mybbUser = $this->createMybbUser($purchase->getOrder('username'));
+
         // Nie znaleziono użytkownika o takich danych jak podane podczas zakupu
-        if (($mybbUser = $this->createMybbUser($purchaseData->getOrder('username'))) === null) {
-            $this->logger->log('mybb_purchase_no_user', json_encode($purchaseData->getPayment()));
+        if (!$mybbUser) {
+            $this->logger->log('mybb_purchase_no_user', json_encode($purchase->getPayment()));
             die("Critical error occurred");
         }
 
         $this->userServiceAdd(
-            $purchaseData->user->getUid(),
+            $purchase->user->getUid(),
             $mybbUser->getUid(),
-            $purchaseData->getOrder('amount'),
-            $purchaseData->getOrder('forever')
+            $purchase->getOrder(Purchase::ORDER_QUANTITY),
+            $purchase->getOrder(Purchase::ORDER_FOREVER)
         );
         foreach ($this->groups as $group) {
-            $mybbUser->prolongShopGroup($group, $purchaseData->getOrder('amount') * 24 * 60 * 60);
+            $mybbUser->prolongShopGroup(
+                $group,
+                $purchase->getOrder(Purchase::ORDER_QUANTITY) * 24 * 60 * 60
+            );
         }
         $this->saveMybbUser($mybbUser);
 
         return $this->boughtServiceService->create(
-            $purchaseData->user->getUid(),
-            $purchaseData->user->getUsername(),
-            $purchaseData->user->getLastIp(),
-            $purchaseData->getPayment('method'),
-            $purchaseData->getPayment('payment_id'),
+            $purchase->user->getUid(),
+            $purchase->user->getUsername(),
+            $purchase->user->getLastIp(),
+            $purchase->getPayment(Purchase::PAYMENT_METHOD),
+            $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
             $this->service->getId(),
             0,
-            $purchaseData->getOrder('amount'),
-            $purchaseData->getOrder('username') . " ({$mybbUser->getUid()})",
-            $purchaseData->getEmail(),
+            $purchase->getOrder(Purchase::ORDER_QUANTITY),
+            $purchase->getOrder('username') . " ({$mybbUser->getUid()})",
+            $purchase->getEmail(),
             [
                 'uid' => $mybbUser->getUid(),
                 'groups' => implode(',', $this->groups),
@@ -726,29 +670,31 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         );
     }
 
-    public function userServiceAdminAdd($body)
+    public function userServiceAdminAdd(array $body)
     {
         $user = $this->auth->user();
+        $forever = (bool) array_get($body, 'forever');
+        $quantity = as_int(array_get($body, 'quantity'));
+        $uid = array_get($body, 'uid');
+        $mybbUserName = array_get($body, 'mybb_username');
+        $email = array_get($body, 'email');
 
         $warnings = [];
 
-        // Amount
-        if (!$body['forever']) {
-            if ($warning = check_for_warnings("number", $body['amount'])) {
-                $warnings['amount'] = array_merge((array) $warnings['amount'], $warning);
-            } else {
-                if ($body['amount'] < 0) {
-                    $warnings['amount'][] = $this->lang->t('days_quantity_positive');
-                }
+        if (!$forever) {
+            if ($warning = check_for_warnings("number", $quantity)) {
+                $warnings['quantity'] = array_merge((array) $warnings['quantity'], $warning);
+            } elseif ($quantity < 0) {
+                $warnings['quantity'][] = $this->lang->t('days_quantity_positive');
             }
         }
 
         // ID użytkownika
-        if (strlen($body['uid'])) {
-            if ($warning = check_for_warnings('uid', $body['uid'])) {
+        if (strlen($uid)) {
+            if ($warning = check_for_warnings('uid', $uid)) {
                 $warnings['uid'] = array_merge((array) $warnings['uid'], $warning);
             } else {
-                $editedUser = $this->heart->getUser($body['uid']);
+                $editedUser = $this->heart->getUser($uid);
                 if (!$editedUser->exists()) {
                     $warnings['uid'][] = $this->lang->t('no_account_id');
                 }
@@ -756,14 +702,14 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         }
 
         // Username
-        if (!strlen($body['mybb_username'])) {
+        if (!strlen($mybbUserName)) {
             $warnings['mybb_username'][] = $this->lang->t('field_no_empty');
         } else {
             $this->connectMybb();
 
             $result = $this->dbMybb->query(
                 $this->dbMybb->prepare("SELECT 1 FROM `mybb_users` " . "WHERE `username` = '%s'", [
-                    $body['mybb_username'],
+                    $mybbUserName,
                 ])
             );
 
@@ -773,7 +719,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         }
 
         // E-mail
-        if (strlen($body['email']) && ($warning = check_for_warnings("email", $body['email']))) {
+        if (strlen($email) && ($warning = check_for_warnings("email", $email))) {
             $warnings['email'] = array_merge((array) $warnings['email'], $warning);
         }
 
@@ -789,19 +735,19 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         // Add payment info
         $paymentId = $this->adminPaymentService->payByAdmin($user);
 
-        $purchaseData = new Purchase($this->heart->getUser($body['uid']));
-        $purchaseData->setService($this->service->getId());
-        $purchaseData->setPayment([
-            'method' => "admin",
-            'payment_id' => $paymentId,
+        $purchase = new Purchase($this->heart->getUser($uid));
+        $purchase->setService($this->service->getId());
+        $purchase->setPayment([
+            Purchase::PAYMENT_METHOD => Purchase::METHOD_ADMIN,
+            Purchase::PAYMENT_PAYMENT_ID => $paymentId,
         ]);
-        $purchaseData->setOrder([
-            'username' => $body['mybb_username'],
-            'amount' => $body['amount'],
-            'forever' => (bool) $body['forever'],
+        $purchase->setOrder([
+            'username' => $mybbUserName,
+            Purchase::ORDER_QUANTITY => $quantity,
+            Purchase::ORDER_FOREVER => (bool) $forever,
         ]);
-        $purchaseData->setEmail($body['email']);
-        $boughtServiceId = $this->purchase($purchaseData);
+        $purchase->setEmail($email);
+        $boughtServiceId = $this->purchase($purchase);
 
         $this->logger->logWithActor(
             'log_user_service_added',

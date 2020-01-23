@@ -1,11 +1,10 @@
 jQuery(document).ready(function($) {
-    // Aby żadna opcja nie była zaznaczona w przypadku użycia "cofnij"
+    // So as no option is selected when somebody returned to the previous page
     $("#form_purchase")
         .find("#purchase_value")
         .val("0");
 });
 
-// Zmiana typu zakupu
 $(document).delegate("#form_purchase input[name=type]", "change", function() {
     var form = $(this).closest("form");
 
@@ -17,52 +16,28 @@ $(document).delegate("#form_purchase input[name=type]", "change", function() {
     if ($(this).val() == "1" || $(this).val() == "2") form.find("#type_password").show();
 });
 
-// Zmiana wartości zakupu
-$(document).delegate("#form_purchase [name=value]", "change", function() {
+$(document).delegate("#form_purchase [name=server_id]", "change", function() {
     var form = $(this).closest("form");
 
-    if ($(this).val().length) form.find("#cost_wraper").slideDown("slow");
-    else {
-        form.find("#cost_wraper").slideUp("slow");
-        return;
-    }
-
-    var values = $(this)
-        .val()
-        .split(";");
-    form.find("#cost_transfer").text(parseFloat(values[0]).toFixed(2));
-    if (values[1] != "0") {
-        form.find("#cost_sms").text(parseFloat(values[1]).toFixed(2));
-        form.find("#currency_sms").show();
-    } else {
-        form.find("#cost_sms").text(lang["none"]);
-        form.find("#currency_sms").hide();
-    }
-});
-
-// Zmiana serwera
-$(document).delegate("#form_purchase [name=server]", "change", function() {
-    var form = $(this).closest("form");
-
-    form.find("#cost_wraper").slideUp();
+    form.find("#cost_wrapper").slideUp();
     if ($(this).val() == "") {
-        form.find("[name=value]")
+        form.find("[name=price_id]")
             .children()
             .not("[value='']")
             .remove();
         return;
     }
 
-    var serviceId = form.find("[name=service]").val();
+    var serviceId = form.find("[name=service_id]").val();
 
     restRequest(
         "POST",
-        "/api/services/" + serviceId + "/actions/tariffs_for_server",
+        "/api/services/" + serviceId + "/actions/prices_for_server",
         {
-            server: $(this).val(),
+            server_id: $(this).val(),
         },
         function(html) {
-            form.find("[name=value]").html(html);
+            form.find("[name=price_id]").html(html);
         }
     );
 });

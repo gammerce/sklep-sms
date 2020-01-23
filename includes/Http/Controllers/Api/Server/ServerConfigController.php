@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Api\Server;
 use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\InvalidConfigException;
 use App\Http\Responses\ServerResponse;
+use App\Models\Price;
 use App\Models\Server;
-use App\Models\ServerService;
+use App\Models\Service;
+use App\Models\SmsNumber;
 use App\Models\User;
 use App\Repositories\ServerRepository;
-use App\Repositories\ServerServiceRepository;
 use App\Repositories\UserRepository;
+use App\Services\ServerDataService;
 use App\System\Heart;
 use App\System\Settings;
 use App\Verification\Abstracts\SupportSms;
@@ -24,7 +26,7 @@ class ServerConfigController
         Request $request,
         UserRepository $userRepository,
         ServerRepository $serverRepository,
-        ServerServiceRepository $serverServiceRepository,
+        ServerDataService $serverDataService,
         Heart $heart,
         Settings $settings
     ) {
@@ -44,36 +46,74 @@ class ServerConfigController
         }
 
         $smsPlatformId = $server->getSmsPlatformId() ?: $settings->getSmsPlatformId();
-        $smsModule = $heart->getPaymentModuleByPlatformIdOrFail($smsPlatformId);
+        $smsModule = $heart->getPaymentModuleByPlatformId($smsPlatformId);
 
         if (!($smsModule instanceof SupportSms)) {
             throw new InvalidConfigException(
-                "Payment module does not support sms [{$smsModule->getModuleId()}]."
+                "Payment platform does not support sms payments [$smsPlatformId]."
             );
         }
 
-        $serverServices = $serverServiceRepository->findByServer($server->getId());
-        $serviceIds = array_map(function (ServerService $serverService) {
-            return $serverService->getServiceId();
-        }, $serverServices);
+        $smsNumbers = $smsModule::getSmsNumbers();
+        $services = $serverDataService->findServices($server->getId());
+        $serviceIds = collect($services)
+            ->map(function (Service $service) {
+                return $service->getId();
+            })
+            ->toArray();
+        $prices = $serverDataService->findPrices($serviceIds, $server);
 
-        $steamIds = array_map(function (User $user) {
-            return $user->getSteamId();
-        }, $userRepository->allWithSteamId());
+        $serviceItems = collect($services)
+            ->map(function (Service $service) {
+                return [
+                    'i' => $service->getId(),
+                    'n' => $service->getName(),
+                    'd' => $service->getShortDescription(),
+                    'ta' => $service->getTag(),
+                    'f' => $service->getFlags(),
+                    'ty' => $service->getTypes(),
+                ];
+            })
+            ->toArray();
+
+        $priceItems = collect($prices)
+            ->map(function (Price $price) {
+                return [
+                    'i' => $price->getId(),
+                    's' => $price->getServiceId(),
+                    'p' => $price->getSmsPrice(),
+                    // Replace null with -1 cause it's easier to handle it by plugins
+                    'q' => $price->getQuantity() !== null ? $price->getQuantity() : -1,
+                ];
+            })
+            ->toArray();
+
+        $smsNumberItems = collect($smsNumbers)
+            ->map(function (SmsNumber $smsNumber) {
+                return $smsNumber->getNumber();
+            })
+            ->toArray();
+
+        $steamIds = collect($userRepository->allWithSteamId())
+            ->map(function (User $user) {
+                return $user->getSteamId();
+            })
+            ->toArray();
 
         $serverRepository->touch($server->getId(), $platform, $version);
 
         $data = [
             'id' => $server->getId(),
+            'license_token' => $settings->getLicenseToken(),
             'sms_platform_id' => $smsPlatformId,
-            'sms_module_id' => $smsModule->getModuleId(),
             'sms_text' => $smsModule->getSmsCode(),
-            'services' => " " . implode(" ", $serviceIds) . " ",
             'steam_ids' => implode(";", $steamIds) . ";",
             'currency' => $settings->getCurrency(),
             'contact' => $settings->getContact(),
             'vat' => $settings->getVat(),
-            'license_token' => $settings->getLicenseToken(),
+            'sn' => $smsNumberItems,
+            'se' => $serviceItems,
+            'pr' => $priceItems,
         ];
 
         return $acceptHeader->has("application/json")
@@ -84,8 +124,8 @@ class ServerConfigController
     private function isVersionAcceptable($platform, $version)
     {
         $minimumVersions = [
-            Server::TYPE_AMXMODX => "3.8.0",
-            Server::TYPE_SOURCEMOD => "3.7.0",
+            Server::TYPE_AMXMODX => "3.9.0",
+            Server::TYPE_SOURCEMOD => "3.8.0",
         ];
 
         $minimumVersion = array_get($minimumVersions, $platform);

@@ -30,20 +30,22 @@ class TransferPaymentServiceTest extends TestCase
         ]);
 
         /** @var SupportTransfer $paymentModule */
-        $paymentModule = $heart->getPaymentModuleOrFail($paymentPlatform);
+        $paymentModule = $heart->getPaymentModule($paymentPlatform);
 
         $serviceId = "vip";
         $serviceModule = $heart->getServiceModule($serviceId);
         $server = $this->factory->server();
+        $price = $this->factory->price([
+            'service_id' => $serviceId,
+            'server_id' => $server->getId(),
+            'transfer_price' => 190,
+        ]);
 
         $purchase = new Purchase(new User());
-        $purchase->setPayment([
-            "cost" => 2000,
-        ]);
         $purchase->setOrder([
-            'server' => $server->getId(),
+            Purchase::ORDER_SERVER => $server->getId(),
         ]);
-        $purchase->setTariff($heart->getTariff(2));
+        $purchase->setPrice($price);
         $purchase->setService($serviceModule->service->getId());
         $purchase->setDesc("Description");
 
@@ -66,6 +68,6 @@ class TransferPaymentServiceTest extends TestCase
         $this->assertTrue($result);
         $paymentTransfer = $paymentTransferRepository->get($transferFinalize->getOrderId());
         $this->assertNotNull($paymentTransfer);
-        $this->assertEquals(2000, $paymentTransfer->getIncome());
+        $this->assertEquals(190, $paymentTransfer->getIncome());
     }
 }

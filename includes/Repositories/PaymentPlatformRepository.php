@@ -94,7 +94,7 @@ class PaymentPlatformRepository
     public function mapToModel(array $data)
     {
         return new PaymentPlatform(
-            (int) $data['id'],
+            as_int($data['id']),
             $data['name'],
             $data['module'],
             json_decode($data['data'], true)

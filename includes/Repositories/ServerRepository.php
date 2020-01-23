@@ -89,6 +89,7 @@ class ServerRepository
             "DELETE FROM `" . TABLE_PREFIX . "servers` WHERE `id` = ?"
         );
         $statement->execute([$id]);
+
         return !!$statement->rowCount();
     }
 
@@ -105,6 +106,7 @@ class ServerRepository
         );
         $statement->execute([$ip, $port]);
         $row = $statement->fetch();
+
         return $row ? $this->mapToModel($row) : null;
     }
 
@@ -122,11 +124,11 @@ class ServerRepository
     private function mapToModel(array $data)
     {
         return new Server(
-            (int) $data['id'],
+            as_int($data['id']),
             $data['name'],
             $data['ip'],
             $data['port'],
-            $data['sms_platform'] !== null ? (int) $data['sms_platform'] : null,
+            as_int($data['sms_platform']),
             $data['type'],
             $data['version'],
             $data['last_active_at']
