@@ -21,14 +21,13 @@ class UserServiceResource
     ) {
         $lang = $translationManager->user();
 
-        $userService = $userServiceService->find($userServiceId);
+        $userService = $userServiceService->findOne($userServiceId);
 
-        // Brak takiej usługi w bazie
-        if (empty($userService)) {
+        if (!$userService) {
             return new ApiResponse("no_service", $lang->t('no_service'), 0);
         }
 
-        $serviceModule = $heart->getServiceModule($userService['service']);
+        $serviceModule = $heart->getServiceModule($userService->getServiceId());
         if ($serviceModule === null) {
             return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
         }

@@ -1,6 +1,10 @@
 <?php
 namespace App\Services;
 
+use App\Models\UserService;
+use App\Repositories\UserServiceRepository;
+use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
+use App\ServiceModules\MybbExtraGroups\MybbExtraGroupsServiceModule;
 use App\System\Database;
 use App\System\Heart;
 
@@ -12,57 +16,67 @@ class UserServiceService
     /** @var Database */
     private $db;
 
-    public function __construct(Heart $heart, Database $db)
+    /** @var UserServiceRepository */
+    private $userServiceRepository;
+
+    public function __construct(Heart $heart, Database $db, UserServiceRepository $userServiceRepository)
     {
         $this->heart = $heart;
         $this->db = $db;
+        $this->userServiceRepository = $userServiceRepository;
     }
 
+    // TODO Refactor all usages
     /**
-     * Pozyskuje z bazy wszystkie usługi użytkowników
-     *
-     * @param string|int $conditions Jezeli jest tylko jeden element w tablicy, to zwroci ten element zamiast tablicy
-     * @param bool $takeOut
-     *
-     * @return array
+     * @param string|int $conditions
+     * @return UserService[]
      */
-    public function find($conditions = '', $takeOut = true)
+    public function find($conditions = '')
     {
         if (my_is_integer($conditions)) {
             $conditions = "WHERE `id` = " . intval($conditions);
         }
 
-        $output = $usedTable = [];
-        // Niestety dla każdego modułu musimy wykonać osobne zapytanie :-(
+        $output = [];
+
         foreach ($this->heart->getServicesModules() as $serviceModuleData) {
-            $table = $serviceModuleData['class']::USER_SERVICE_TABLE;
-            if (!strlen($table) || array_key_exists($table, $usedTable)) {
+            $className = $serviceModuleData['class'];
+            $table = $className::USER_SERVICE_TABLE;
+
+            if (!strlen($table)) {
                 continue;
             }
 
             $result = $this->db->query(
-                "SELECT us.*, m.*, UNIX_TIMESTAMP() AS `now` FROM `" .
-                    TABLE_PREFIX .
-                    "user_service` AS us " .
-                    "INNER JOIN `" .
-                    TABLE_PREFIX .
-                    $table .
-                    "` AS m ON m.us_id = us.id " .
+                "SELECT us.*, m.*, UNIX_TIMESTAMP() AS `now` " .
+                    "FROM ss_user_service` AS us " .
+                    "INNER JOIN `ss_$table` AS m ON m.us_id = us.id " .
                     $conditions .
                     " ORDER BY us.id DESC "
             );
 
             foreach ($result as $row) {
-                unset($row['us_id']);
-                $output[$row['id']] = $row;
+                if ($className === ExtraFlagsServiceModule::class) {
+                    $output[$row['id']] = $this->userServiceRepository->mapToExtraFlags($row);
+                } elseif ($className === MybbExtraGroupsServiceModule::class) {
+                    $output[$row['id']] = $this->userServiceRepository->mapToMybbExtraGroups($row);
+                }
             }
-
-            $usedTable[$table] = true;
         }
 
         ksort($output);
         $output = array_reverse($output);
 
-        return $takeOut && count($output) == 1 ? $output[0] : $output;
+        return $output;
+    }
+
+    /**
+     * @param string $conditions
+     * @return UserService|null
+     */
+    public function findOne($conditions = '')
+    {
+        $userServices = $this->find($conditions);
+        return $userServices ? $userServices[0] : null;
     }
 }
