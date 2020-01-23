@@ -293,7 +293,7 @@ class LicenseServiceModule extends ServiceModule implements
         return $this->template->renderNoComments(
             "services/shopsms_license/order_details",
             compact('engines', 'costMonthly', 'email') + [
-                'quantity' => $purchase->getOrder('amount'),
+                'quantity' => $purchase->getOrder(Purchase::ORDER_QUANTITY),
                 'serviceName' => $this->service->getName(),
                 'serviceTag' => $this->service->getTag(),
             ]
@@ -303,7 +303,7 @@ class LicenseServiceModule extends ServiceModule implements
     public function purchase(Purchase $purchase)
     {
         $tmpEngines = $purchase->getOrder('engines');
-        $lifetime = $purchase->getOrder('amount') * 24 * 60 * 60;
+        $lifetime = $purchase->getOrder(Purchase::ORDER_QUANTITY) * 24 * 60 * 60;
 
         $result = $this->licenseServerService->create(
             $lifetime,
@@ -374,7 +374,7 @@ class LicenseServiceModule extends ServiceModule implements
             $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
             $this->service->getId(),
             0,
-            $purchase->getOrder('amount'),
+            $purchase->getOrder(Purchase::ORDER_QUANTITY),
             $identifier,
             $purchase->getEmail(),
             [
