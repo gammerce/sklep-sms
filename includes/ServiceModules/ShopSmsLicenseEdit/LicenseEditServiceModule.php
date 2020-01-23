@@ -1,6 +1,7 @@
 <?php
 namespace App\ServiceModules\ShopSmsLicenseEdit;
 
+use App\Models\LicenseUserService;
 use App\Services\LicenseServerService;
 use App\Models\Purchase;
 use App\Models\Service;
@@ -54,12 +55,12 @@ class LicenseEditServiceModule extends ServiceModule implements
         //
     }
 
-    public function purchaseFormValidate($data)
+    public function purchaseFormValidate(Purchase $purchase, array $body)
     {
         //
     }
 
-    public function orderDetails(Purchase $purchaseData)
+    public function orderDetails(Purchase $purchase)
     {
         $statement = $this->db->statement(
             "SELECT `identifier` FROM `" .
@@ -68,17 +69,17 @@ class LicenseEditServiceModule extends ServiceModule implements
                 "` " .
                 "WHERE `us_id` = ?"
         );
-        $statement->execute([$purchaseData->getOrder('user_service_id')]);
+        $statement->execute([$purchase->getOrder('user_service_id')]);
         $identifier = $statement->fetchColumn();
 
-        $email = $purchaseData->getEmail() ?: $this->lang->t('none');
+        $email = $purchase->getEmail() ?: $this->lang->t('none');
         $costMonthly =
-            number_format(($purchaseData->getOrder('cost_daily') * 30) / 100, 2) .
+            number_format(($purchase->getOrder('cost_daily') * 30) / 100, 2) .
             " " .
             $this->settings->getCurrency();
 
         $engines = [];
-        $tmpEngines = $purchaseData->getOrder('engines');
+        $tmpEngines = $purchase->getOrder('engines');
         if ($tmpEngines['amxx']) {
             $engines[] = "AMX Mod X";
         }
@@ -98,13 +99,17 @@ class LicenseEditServiceModule extends ServiceModule implements
         );
     }
 
-    public function purchase(Purchase $purchaseData)
+    public function purchase(Purchase $purchase)
     {
-        $userService = $this->userServiceService->find($purchaseData->getOrder('user_service_id'));
-        $tmpEngines = $purchaseData->getOrder('engines');
+        $userService = $this->userServiceService->findOne($purchase->getOrder('user_service_id'));
+        $tmpEngines = $purchase->getOrder('engines');
+
+        if (!($userService instanceof LicenseUserService)) {
+            throw new UnexpectedValueException();
+        }
 
         $this->licenseServerService->updatePlatforms(
-            $userService['external_license_id'],
+            $userService->getExternalLicenseId(),
             $tmpEngines['amxx'],
             $tmpEngines['sm']
         );
@@ -114,12 +119,12 @@ class LicenseEditServiceModule extends ServiceModule implements
             [
                 'column' => 'cost_daily',
                 'value' => "'%d'",
-                'data' => [$purchaseData->getOrder('cost_daily')],
+                'data' => [$purchase->getOrder('cost_daily')],
             ],
             [
                 'column' => 'email',
                 'value' => "'%s'",
-                'data' => [$purchaseData->getEmail()],
+                'data' => [$purchase->getEmail()],
             ],
             [
                 'column' => 'platform_amxmodx',
@@ -134,8 +139,8 @@ class LicenseEditServiceModule extends ServiceModule implements
         ];
         $this->updateUserService(
             $updateData,
-            $purchaseData->getOrder('user_service_id'),
-            $purchaseData->getOrder('user_service_id')
+            $purchase->getOrder('user_service_id'),
+            $purchase->getOrder('user_service_id')
         );
 
         // Dodanie informacji o zakupie usługi
@@ -150,16 +155,16 @@ class LicenseEditServiceModule extends ServiceModule implements
         $engines = !empty($engines) ? implode(", ", $engines) : $this->lang->t('none');
 
         return $this->boughtServiceService->create(
-            $purchaseData->user->getUid(),
-            $purchaseData->user->getUsername(),
-            $purchaseData->user->getLastIp(),
-            $purchaseData->getPayment('method'),
-            $purchaseData->getPayment('payment_id'),
+            $purchase->user->getUid(),
+            $purchase->user->getUsername(),
+            $purchase->user->getLastIp(),
+            $purchase->getPayment('method'),
+            $purchase->getPayment('payment_id'),
             $this->service->getId(),
             0,
             0,
-            $userService['identifier'],
-            $purchaseData->getEmail(),
+            $userService->getIdentifier(),
+            $purchase->getEmail(),
             ['engines' => $engines]
         );
     }

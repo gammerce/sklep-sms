@@ -2,9 +2,11 @@
 namespace App\ServiceModules\ShopSmsLicenseProlong;
 
 use App\Loggers\DatabaseLogger;
+use App\Models\LicenseUserService;
 use App\Models\Service;
 use App\Payment\AdminPaymentService;
 use App\Payment\BoughtServiceService;
+use App\Repositories\UserServiceRepository;
 use App\ServiceModules\ServiceModule;
 use App\System\Auth;
 use App\System\Heart;
@@ -50,6 +52,9 @@ class LicenseProlongServiceModule extends ServiceModule implements
     /** @var AdminPaymentService */
     private $adminPaymentService;
 
+    /** @var UserServiceRepository */
+    private $userServiceRepository;
+
     /** @var DatabaseLogger */
     private $logger;
 
@@ -66,7 +71,28 @@ class LicenseProlongServiceModule extends ServiceModule implements
         $this->licenseServerService = $this->app->make(LicenseServerService::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
         $this->adminPaymentService = $this->app->make(AdminPaymentService::class);
+        $this->userServiceRepository = $this->app->make(UserServiceRepository::class);
         $this->logger = $this->app->make(DatabaseLogger::class);
+    }
+
+    /**
+     * @param array $data
+     * @return LicenseUserService
+     */
+    public function mapToUserService(array $data)
+    {
+        return new LicenseUserService(
+            as_int($data['id']),
+            $data['service'],
+            as_int($data['uid']),
+            as_int($data['expire']),
+            $data['identifier'],
+            $data['external_license_id'],
+            $data['email'],
+            as_int($data['cost_daily']),
+            (bool) $data['platform_amxmodx'],
+            (bool) $data['platform_sourcemod']
+        );
     }
 
     // Formularz pokazywany podczas zakupu licencji
@@ -83,7 +109,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         ]);
     }
 
-    public function purchaseFormValidate($body)
+    public function purchaseFormValidate(Purchase $purchase, array $body)
     {
         $identifier = $body['identifier'];
         $warnings = [];
@@ -115,7 +141,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         }
 
         // Jeżeli są jakieś błedy, to je zwróć
-        if (!empty($warnings)) {
+        if ($warnings) {
             return [
                 'status' => "warnings",
                 'text' => $this->lang->t('form_wrong_filled'),
@@ -124,40 +150,39 @@ class LicenseProlongServiceModule extends ServiceModule implements
             ];
         }
 
-        $purchaseData = new Purchase($this->auth->user());
-        $purchaseData->setOrder([
+        $purchase->setOrder([
             'amount' => $body['amount'],
             'identifier' => $identifier,
         ]);
-        $purchaseData->setPayment([
+        $purchase->setPayment([
             'cost' => $this->getCost($body) * $body['amount'],
             'no_sms' => true,
         ]);
+
+        // TODO Change purchase fields
 
         return [
             'status' => "ok",
             'text' => $this->lang->t('purchase_form_validated'),
             'positive' => true,
-            'purchase_data' => $purchaseData,
         ];
     }
 
-    public function orderDetails(Purchase $purchaseData)
+    public function orderDetails(Purchase $purchase)
     {
-        $identifier = $purchaseData->getOrder('identifier');
+        $identifier = $purchase->getOrder('identifier');
 
-        return $this->template->render(
+        return $this->template->renderNoComments(
             "services/shopsms_license_prolong/order_details",
-            compact('purchaseData', 'identifier') + [
+            compact('identifier') + [
+                'quantity' => $purchase->getOrder('amount'),
                 'serviceName' => $this->service->getName(),
                 'serviceTag' => $this->service->getTag(),
-            ],
-            true,
-            false
+            ]
         );
     }
 
-    public function purchase(Purchase $purchaseData)
+    public function purchase(Purchase $purchase)
     {
         $result = $this->db->query(
             $this->db->prepare(
@@ -169,15 +194,16 @@ class LicenseProlongServiceModule extends ServiceModule implements
                     $this::USER_SERVICE_TABLE .
                     "` AS m ON m.us_id = us.id " .
                     "WHERE m.identifier = '%s'",
-                [$purchaseData->getOrder('identifier')]
+                [$purchase->getOrder('identifier')]
             )
         );
 
-        $userService = $result->fetch();
+        $data = $result->fetch();
+        $userService = $this->mapToUserService($data);
 
-        $lifetime = $purchaseData->getOrder('amount') * 24 * 60 * 60;
+        $lifetime = $purchase->getOrder('amount') * 24 * 60 * 60;
         $result = $this->licenseServerService->prolong(
-            $userService['external_license_id'],
+            $userService->getExternalLicenseId(),
             $lifetime
         );
         $expiresAt = $result['expires_at'];
@@ -191,26 +217,26 @@ class LicenseProlongServiceModule extends ServiceModule implements
                     "SET `uid` = %s, `expire` = '%d'" .
                     "WHERE `id` = '%d'",
                 [
-                    $purchaseData->user->getUid() != 0 ? $purchaseData->user->getUid() : '`uid`',
+                    $purchase->user->getUid() != 0 ? $purchase->user->getUid() : '`uid`',
                     $expiresAt,
-                    $userService['us_id'],
+                    $userService->getId(),
                 ]
             )
         );
 
         return $this->boughtServiceService->create(
-            $purchaseData->user->getUid(),
-            $purchaseData->user->getUsername(),
-            $purchaseData->user->getLastIp(),
-            $purchaseData->getPayment('method'),
-            $purchaseData->getPayment('payment_id'),
+            $purchase->user->getUid(),
+            $purchase->user->getUsername(),
+            $purchase->user->getLastIp(),
+            $purchase->getPayment('method'),
+            $purchase->getPayment('payment_id'),
             $this->service->getId(),
             0,
-            $purchaseData->getOrder('amount'),
-            $userService['identifier'],
-            $userService['email'],
+            $purchase->getOrder('amount'),
+            $userService->getIdentifier(),
+            $userService->getEmail(),
             [
-                'expire' => date($this->settings->getDateFormat(), $expiresAt),
+                'expire' => convertDate($expiresAt),
             ]
         );
     }
@@ -273,7 +299,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
      *  text => treść wiadomości
      *  positive => czy udało się dodać usługę
      */
-    public function userServiceAdminAdd($body)
+    public function userServiceAdminAdd(array $body)
     {
         $warnings = [];
 
@@ -292,11 +318,11 @@ class LicenseProlongServiceModule extends ServiceModule implements
             )
         );
 
-        $userService = [];
+        $userService = null;
         if (!$result->rowCount()) {
             $warnings['identifier'][] = $this->lang->t('wrong_license_data');
         } else {
-            $userService = $result->fetch();
+            $userService = $this->mapToUserService($result->fetch());
         }
 
         // Amount
@@ -319,17 +345,17 @@ class LicenseProlongServiceModule extends ServiceModule implements
 
         $paymentId = $this->adminPaymentService->payByAdmin($user);
 
-        $purchaseData = new Purchase($this->heart->getUser($userService['uid']));
-        $purchaseData->setService($this->service->getId());
-        $purchaseData->setPayment([
+        $purchase = new Purchase($this->heart->getUser($userService->getUid()));
+        $purchase->setService($this->service->getId());
+        $purchase->setPayment([
             'method' => 'admin',
             'payment_id' => $paymentId,
         ]);
-        $purchaseData->setOrder([
+        $purchase->setOrder([
             'identifier' => $body['identifier'],
             'amount' => $body['amount'],
         ]);
-        $boughtServiceId = $this->purchase($purchaseData);
+        $boughtServiceId = $this->purchase($purchase);
 
         $this->logger->logWithActor('log_user_service_added', $boughtServiceId);
 
@@ -340,7 +366,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         ];
     }
 
-    public function actionExecute($action, $body)
+    public function actionExecute($action, array $body)
     {
         if ($action === "get_cost") {
             $cost = $this->getCost($body) * $body['amount'];
