@@ -63,10 +63,7 @@ class LicenseEditServiceModule extends ServiceModule implements
     public function orderDetails(Purchase $purchase)
     {
         $statement = $this->db->statement(
-            "SELECT `identifier` FROM `" .
-                $this::USER_SERVICE_TABLE .
-                "` " .
-                "WHERE `us_id` = ?"
+            "SELECT `identifier` FROM `" . $this::USER_SERVICE_TABLE . "` " . "WHERE `us_id` = ?"
         );
         $statement->execute([$purchase->getOrder('user_service_id')]);
         $identifier = $statement->fetchColumn();
