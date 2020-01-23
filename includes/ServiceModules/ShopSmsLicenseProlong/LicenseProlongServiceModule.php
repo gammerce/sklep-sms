@@ -52,9 +52,6 @@ class LicenseProlongServiceModule extends ServiceModule implements
     /** @var AdminPaymentService */
     private $adminPaymentService;
 
-    /** @var UserServiceRepository */
-    private $userServiceRepository;
-
     /** @var DatabaseLogger */
     private $logger;
 
@@ -71,7 +68,6 @@ class LicenseProlongServiceModule extends ServiceModule implements
         $this->licenseServerService = $this->app->make(LicenseServerService::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
         $this->adminPaymentService = $this->app->make(AdminPaymentService::class);
-        $this->userServiceRepository = $this->app->make(UserServiceRepository::class);
         $this->logger = $this->app->make(DatabaseLogger::class);
     }
 

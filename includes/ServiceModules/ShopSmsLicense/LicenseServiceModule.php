@@ -3,6 +3,7 @@ namespace App\ServiceModules\ShopSmsLicense;
 
 use App\Models\LicenseUserService;
 use App\Models\UserService;
+use App\Payment\PurchaseSerializer;
 use App\Services\LicenseServerService;
 use App\Models\Purchase;
 use App\Models\Service;
@@ -67,6 +68,9 @@ class LicenseServiceModule extends ServiceModule implements
     /** @var UserServiceService */
     private $userServiceService;
 
+    /** @var PurchaseSerializer */
+    private $purchaseSerializer;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -81,6 +85,7 @@ class LicenseServiceModule extends ServiceModule implements
         $this->licenseServerService = $this->app->make(LicenseServerService::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
         $this->userServiceService = $this->app->make(UserServiceService::class);
+        $this->purchaseSerializer = $this->app->make(PurchaseSerializer::class);
     }
 
     /**
@@ -590,16 +595,15 @@ class LicenseServiceModule extends ServiceModule implements
         ]);
         $purchase->setEmail($body['email']);
 
-        // TODO Use class
-        $purchaseDataEncoded = base64_encode(serialize($purchase));
+        $purchaseData = $this->purchaseSerializer->serializeAndEncode($purchase);
 
         return [
             'status' => "payment",
             'text' => $this->lang->t('purchase_form_validated'),
             'positive' => true,
             'data' => [
-                'data' => $purchaseDataEncoded,
-                'sign' => md5($purchaseDataEncoded . $this->settings['random_key']),
+                'data' => $purchaseData,
+                'sign' => md5($purchaseData . $this->settings['random_key']),
             ],
         ];
     }
