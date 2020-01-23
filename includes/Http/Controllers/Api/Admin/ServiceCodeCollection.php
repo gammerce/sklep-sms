@@ -51,7 +51,7 @@ class ServiceCodeCollection
         if ($serverId) {
             $server = $heart->getServer($serverId);
             if (!$server) {
-                $warnings['server'][] = $lang->t('no_server_id');
+                $warnings['server_id'][] = $lang->t('no_server_id');
             }
         }
 

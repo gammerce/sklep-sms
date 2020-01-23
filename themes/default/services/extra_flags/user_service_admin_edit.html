@@ -2,7 +2,7 @@
     <tbody>
         <tr>
             <td>ID</td>
-            <td>{{ $userService['id'] }}</td>
+            <td>{{ $userServiceId }}</td>
         </tr>
         <tr>
             <td colspan="2" class="line"></td>
@@ -18,7 +18,7 @@
                             type="text"
                             id="uid"
                             name="uid"
-                            value="{{ $userService['uid'] }}"
+                            value="{{ $userServiceUid }}"
                             class="input is-small"
                             required
                         />
@@ -179,7 +179,7 @@
                             id="expire"
                             name="expire"
                             class="input is-small"
-                            value="{{ $userService['expire'] }}"
+                            value="{{ $userServiceExpire }}"
                             autocomplete="off"
                             {$disabled}
                         />
@@ -193,7 +193,7 @@
         </tr>
         <tr>
             <td colspan="2">
-                <input type="hidden" name="id" value="{{ $userService['id'] }}" />
+                <input type="hidden" name="id" value="{{ $userServiceId }}" />
                 <input type="submit" value="{$lang->t('edit')}" class="button w100" />
             </td>
         </tr>

@@ -19,14 +19,16 @@ class UserServiceService
     /** @var UserServiceRepository */
     private $userServiceRepository;
 
-    public function __construct(Heart $heart, Database $db, UserServiceRepository $userServiceRepository)
-    {
+    public function __construct(
+        Heart $heart,
+        Database $db,
+        UserServiceRepository $userServiceRepository
+    ) {
         $this->heart = $heart;
         $this->db = $db;
         $this->userServiceRepository = $userServiceRepository;
     }
 
-    // TODO Refactor all usages
     /**
      * @param string|int $conditions
      * @return UserService[]
@@ -48,8 +50,8 @@ class UserServiceService
             }
 
             $result = $this->db->query(
-                "SELECT us.*, m.*, UNIX_TIMESTAMP() AS `now` " .
-                    "FROM ss_user_service` AS us " .
+                "SELECT * " .
+                    "FROM `ss_user_service` AS us " .
                     "INNER JOIN `ss_$table` AS m ON m.us_id = us.id " .
                     $conditions .
                     " ORDER BY us.id DESC "

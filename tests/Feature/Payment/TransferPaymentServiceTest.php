@@ -5,6 +5,7 @@ use App\Models\Purchase;
 use App\Models\User;
 use App\Payment\TransferPaymentService;
 use App\Repositories\PaymentTransferRepository;
+use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\System\Heart;
 use App\Verification\Abstracts\SupportTransfer;
 use App\Verification\PaymentModules\Transferuj;
@@ -44,6 +45,7 @@ class TransferPaymentServiceTest extends TestCase
         $purchase = new Purchase(new User());
         $purchase->setOrder([
             Purchase::ORDER_SERVER => $server->getId(),
+            'type' => ExtraFlagType::TYPE_SID,
         ]);
         $purchase->setPrice($price);
         $purchase->setService($serviceModule->service->getId());

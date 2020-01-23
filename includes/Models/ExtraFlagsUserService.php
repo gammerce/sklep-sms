@@ -16,9 +16,15 @@ class ExtraFlagsUserService extends UserService
     private $password;
 
     public function __construct(
-        $id, $serviceId, $uid, $expire,    $serverId, $type, $authData, $password
-    )
-    {
+        $id,
+        $serviceId,
+        $uid,
+        $expire,
+        $serverId,
+        $type,
+        $authData,
+        $password
+    ) {
         parent::__construct($id, $serviceId, $uid, $expire);
 
         $this->serverId = $serverId;

@@ -54,4 +54,12 @@ class UserService
     {
         return $this->expire;
     }
+
+    /**
+     * @return bool
+     */
+    public function isForever()
+    {
+        return $this->expire === -1;
+    }
 }

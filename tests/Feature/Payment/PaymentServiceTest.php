@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Payment\PaymentService;
 use App\Repositories\BoughtServiceRepository;
 use App\Repositories\SmsCodeRepository;
+use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\Verification\PaymentModules\Pukawka;
 use Tests\Psr4\Concerns\PaymentModuleFactoryConcern;
 use Tests\Psr4\TestCases\TestCase;
@@ -51,6 +52,7 @@ class PaymentServiceTest extends TestCase
         $purchase = new Purchase(new User());
         $purchase->setOrder([
             Purchase::ORDER_SERVER => $server->getId(),
+            'type' => ExtraFlagType::TYPE_SID,
         ]);
         $purchase->setPrice($price);
         $purchase->setService($serviceId);
@@ -96,6 +98,7 @@ class PaymentServiceTest extends TestCase
         $purchase = new Purchase(new User());
         $purchase->setOrder([
             Purchase::ORDER_SERVER => $server->getId(),
+            'type' => ExtraFlagType::TYPE_SID,
         ]);
         $purchase->setPrice($price);
         $purchase->setService($serviceId);

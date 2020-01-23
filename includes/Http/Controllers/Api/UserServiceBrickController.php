@@ -23,22 +23,18 @@ class UserServiceBrickController
         $lang = $translationManager->user();
         $user = $auth->user();
 
-        $userService = $userServiceService->find($userServiceId);
+        $userService = $userServiceService->findOne($userServiceId);
 
-        // Brak takiej usługi w bazie
-        if (empty($userService)) {
+        if (!$userService) {
             return new HtmlResponse($lang->t('dont_play_games'));
         }
 
         // Dany użytkownik nie jest właścicielem usługi o danym id
-        if ($userService['uid'] != $user->getUid()) {
+        if ($userService->getUid() !== $user->getUid()) {
             return new HtmlResponse($lang->t('dont_play_games'));
         }
 
-        if (($serviceModule = $heart->getServiceModule($userService['service'])) === null) {
-            return new HtmlResponse($lang->t('service_not_displayed'));
-        }
-
+        $serviceModule = $heart->getServiceModule($userService->getServiceId());
         if (!($serviceModule instanceof IServiceUserOwnServices)) {
             return new HtmlResponse($lang->t('service_not_displayed'));
         }

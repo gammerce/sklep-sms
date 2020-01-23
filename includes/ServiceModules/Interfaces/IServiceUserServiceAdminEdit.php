@@ -1,6 +1,8 @@
 <?php
 namespace App\ServiceModules\Interfaces;
 
+use App\Models\UserService;
+
 /**
  * Obsługa edycji usług użytkownika w PA
  */
@@ -11,22 +13,22 @@ interface IServiceUserServiceAdminEdit
      * i gdy wszystko jest okej, to ją edytuje.
      *
      * @param array $body
-     * @param array $userService Obecne dane edytowanej usługi
+     * @param UserService $userService Obecne dane edytowanej usługi
      *
      * @return array
      *  'status' => id wiadomości,
      *  'text' => treść wiadomości
      *  'positive' => czy udało się wyedytować usługę
      */
-    public function userServiceAdminEdit(array $body, $userService);
+    public function userServiceAdminEdit(array $body, UserService $userService);
 
     /**
      * Metoda powinna zwrócić dodatkowe pola usługi
      * podczas jej edycji w PA
      *
-     * @param array $userService - dane edytowanej usługi
+     * @param UserService $userService
      *
      * @return string
      */
-    public function userServiceAdminEditFormGet($userService);
+    public function userServiceAdminEditFormGet(UserService $userService);
 }

@@ -3,9 +3,11 @@ namespace App\ServiceModules\MybbExtraGroups;
 
 use App\Exceptions\InvalidConfigException;
 use App\Loggers\DatabaseLogger;
+use App\Models\MybbExtraGroupsUserService;
 use App\Models\MybbUser;
 use App\Models\Purchase;
 use App\Models\Service;
+use App\Models\UserService;
 use App\Payment\AdminPaymentService;
 use App\Payment\BoughtServiceService;
 use App\Payment\PurchasePriceService;
@@ -33,6 +35,7 @@ use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Renders\PurchasePriceRenderer;
 use PDOException;
+use UnexpectedValueException;
 
 class MybbExtraGroupsServiceModule extends ServiceModule implements
     IServiceAdminManage,
@@ -424,7 +427,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
     public function purchase(Purchase $purchase)
     {
-        $mybbUser = $this->createMybbUser($purchase->getOrder('username'));
+        $mybbUser = $this->findMybbUser($purchase->getOrder('username'));
 
         // Nie znaleziono użytkownika o takich danych jak podane podczas zakupu
         if (!$mybbUser) {
@@ -508,7 +511,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         return '';
     }
 
-    public function userServiceDelete($userService, $who)
+    public function userServiceDelete(UserService $userService, $who)
     {
         try {
             $this->connectMybb();
@@ -523,9 +526,13 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         return true;
     }
 
-    public function userServiceDeletePost($userService)
+    public function userServiceDeletePost(UserService $userService)
     {
-        $mybbUser = $this->createMybbUser((int) $userService['mybb_uid']);
+        if (!($userService instanceof MybbExtraGroupsUserService)) {
+            throw new UnexpectedValueException();
+        }
+
+        $mybbUser = $this->findMybbUser($userService->getMybbUid());
 
         // Usuwamy wszystkie shopGroups oraz z mybbGroups te grupy, które maja was_before = false
         foreach ($mybbUser->getShopGroup() as $gid => $groupData) {
@@ -549,7 +556,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
                     TABLE_PREFIX .
                     "services` AS s ON us.service = s.id " .
                     "WHERE m.mybb_uid = '%d'",
-                [$userService['mybb_uid']]
+                [$userService->getMybbUid()]
             )
         );
 
@@ -763,27 +770,31 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         ];
     }
 
-    public function userOwnServiceInfoGet($userService, $buttonEdit)
+    public function userOwnServiceInfoGet(UserService $userService, $buttonEdit)
     {
+        if (!($userService instanceof MybbExtraGroupsUserService)) {
+            throw new UnexpectedValueException();
+        }
+
         $this->connectMybb();
 
         $statement = $this->dbMybb->statement(
             "SELECT `username` FROM `mybb_users` " . "WHERE `uid` = ?"
         );
-        $statement->execute([$userService['mybb_uid']]);
+        $statement->execute([$userService->getMybbUid()]);
         $username = $statement->fetchColumn();
 
-        $expire =
-            $userService['expire'] == -1
-                ? $this->lang->t('never')
-                : date($this->settings->getDateFormat(), $userService['expire']);
-        $serviceName = $this->service->getName();
-        $mybbUid = "$username ({$userService['mybb_uid']})";
+        $expire = $userService->isForever()
+            ? $this->lang->t('never')
+            : convertDate($userService->getExpire());
+        $mybbUid = "$username ({$userService->getMybbUid()})";
 
         return $this->template->render(
             "services/mybb_extra_groups/user_own_service",
-            compact('userService', 'serviceName', 'mybbUid', 'expire') + [
+            compact('mybbUid', 'expire') + [
                 'moduleId' => $this->getModuleId(),
+                'serviceName' => $this->service->getName(),
+                'userServiceId' => $userService->getId(),
             ]
         );
     }
@@ -792,7 +803,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
      * @param string|int $userId Int - by uid, String - by username
      * @return null|MybbUser
      */
-    private function createMybbUser($userId)
+    private function findMybbUser($userId)
     {
         $this->connectMybb();
 

@@ -6,9 +6,7 @@ class MybbExtraGroupsUserService extends UserService
     /** @var int */
     private $mybbUid;
 
-    public function __construct(
-        $id, $serviceId, $uid, $expire, $mybbUid
-    )
+    public function __construct($id, $serviceId, $uid, $expire, $mybbUid)
     {
         parent::__construct($id, $serviceId, $uid, $expire);
 

@@ -62,12 +62,12 @@ class OtherServiceModule extends ServiceModule implements
         $warnings = [];
 
         if (!strlen($purchase->getOrder(Purchase::ORDER_SERVER))) {
-            $warnings['server'][] = $this->lang->t('must_choose_server');
+            $warnings['server_id'][] = $this->lang->t('must_choose_server');
         } else {
             // Sprawdzanie czy serwer o danym id istnieje w bazie
             $server = $this->heart->getServer($purchase->getOrder(Purchase::ORDER_SERVER));
             if (!$this->heart->serverServiceLinked($server->getId(), $this->service->getId())) {
-                $warnings['server'][] = $this->lang->t('chosen_incorrect_server');
+                $warnings['server_id'][] = $this->lang->t('chosen_incorrect_server');
             }
         }
 
