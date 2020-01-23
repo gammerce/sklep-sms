@@ -5,6 +5,7 @@ use App\Exceptions\InvalidConfigException;
 use App\Exceptions\InvalidPaymentModuleException;
 use App\Models\PaymentPlatform;
 use App\Models\Server;
+use App\Models\Service;
 use App\Models\User;
 use App\Payment\PaymentModuleFactory;
 use App\Repositories\PaymentPlatformRepository;
@@ -57,7 +58,7 @@ class Heart
     private $servers = [];
     private $serversFetched = false;
 
-    /** @var \App\Models\Service[] */
+    /** @var Service[] */
     private $services = [];
     private $servicesFetched = false;
 
@@ -174,21 +175,14 @@ class Heart
     }
 
     /**
-     * Zwraca wszystkie zarejestrowane moduły usług
-     *
-     * @return array
+     * @return ServiceModule[]
      */
-    public function getServicesModules()
+    public function getEmptyServiceModules()
     {
         $modules = [];
-        foreach ($this->servicesClasses as $id => $data) {
-            $modules[] = [
-                'id' => $id,
-                'name' => $data['name'],
-                'class' => $data['class'],
-            ];
+        foreach (array_keys($this->servicesClasses) as $moduleId) {
+            $modules[] = $this->getEmptyServiceModule($moduleId);
         }
-
         return $modules;
     }
 
@@ -205,11 +199,6 @@ class Heart
         }
 
         $this->paymentModuleClasses[$moduleId] = $class;
-    }
-
-    public function hasPaymentModule($moduleId)
-    {
-        return array_key_exists($moduleId, $this->paymentModuleClasses);
     }
 
     public function getPaymentModuleIds()
@@ -388,7 +377,7 @@ class Heart
     /**
      * Returns purchasable services
      *
-     * @return \App\Models\Service[]
+     * @return Service[]
      */
     public function getServices()
     {
@@ -402,7 +391,7 @@ class Heart
     /**
      * @param $serviceId
      *
-     * @return \App\Models\Service | null
+     * @return Service | null
      */
     public function getService($serviceId)
     {
@@ -422,7 +411,7 @@ class Heart
         $this->servicesFetched = true;
     }
 
-    public function userCanUseService($uid, \App\Models\Service $service)
+    public function userCanUseService($uid, Service $service)
     {
         $user = $this->getUser($uid);
         $combined = array_intersect($service->getGroups(), $user->getGroups());
@@ -541,13 +530,6 @@ class Heart
         return new User();
     }
 
-    public function hasUserGroup($uid, $gid)
-    {
-        $user = $this->getUser($uid);
-
-        return in_array($gid, $user->getGroups());
-    }
-
     //
     // Groups
     //
@@ -585,11 +567,6 @@ class Heart
         }
 
         return null;
-    }
-
-    public function getGroupsAmount()
-    {
-        return count($this->groups);
     }
 
     private function fetchGroups()

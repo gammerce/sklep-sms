@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages;
 
+use App\ServiceModules\ServiceModule;
 use App\Services\UserServiceService;
 use App\View\Interfaces\IBeLoggedMust;
 use App\ServiceModules\Interfaces\IServiceUserOwnServices;
@@ -48,14 +49,14 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         /** @var Pagination $pagination */
         $pagination = $this->app->make(Pagination::class);
 
-        $modules = array_filter($this->heart->getServicesModules(), function ($module) {
-            return in_array(IServiceUserOwnServices::class, class_implements($module["class"]));
-        });
-
-        $moduleIds = [];
-        foreach ($modules as $module) {
-            $moduleIds[] = $module["id"];
-        }
+        $moduleIds = collect($this->heart->getEmptyServiceModules())
+            ->filter(function (ServiceModule $serviceModule) {
+                return $serviceModule instanceof IServiceUserOwnServices;
+            })
+            ->map(function (ServiceModule $serviceModule) {
+                return $serviceModule->getModuleId();
+            })
+            ->toArray();
 
         $usersServices = [];
         $rowsCount = 0;

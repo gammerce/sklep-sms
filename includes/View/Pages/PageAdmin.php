@@ -35,13 +35,13 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
 
         // Globalne jsy cssy konkretnych modułów usług
         if (in_array($this::PAGE_ID, ["service_codes", "services", "user_service"])) {
-            foreach ($this->heart->getServicesModules() as $moduleInfo) {
-                $path = "build/css/static/services/" . $moduleInfo['id'] . ".css";
+            foreach ($this->heart->getEmptyServiceModules() as $serviceModule) {
+                $path = "build/css/static/services/{$serviceModule->getModuleId()}.css";
                 if ($this->fileSystem->exists($this->path->to($path))) {
                     $this->heart->styleAdd($this->url->versioned($path));
                 }
 
-                $path = "build/js/static/services/" . $moduleInfo['id'] . ".js";
+                $path = "build/js/static/services/{$serviceModule->getModuleId()}.js";
                 if ($this->fileSystem->exists($this->path->to($path))) {
                     $this->heart->scriptAdd($this->url->versioned($path));
                 }

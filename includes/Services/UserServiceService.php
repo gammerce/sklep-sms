@@ -3,8 +3,6 @@ namespace App\Services;
 
 use App\Models\UserService;
 use App\Repositories\UserServiceRepository;
-use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
-use App\ServiceModules\MybbExtraGroups\MybbExtraGroupsServiceModule;
 use App\System\Database;
 use App\System\Heart;
 
@@ -41,9 +39,8 @@ class UserServiceService
 
         $output = [];
 
-        foreach ($this->heart->getServicesModules() as $serviceModuleData) {
-            $className = $serviceModuleData['class'];
-            $table = $className::USER_SERVICE_TABLE;
+        foreach ($this->heart->getEmptyServiceModules() as $serviceModule) {
+            $table = $serviceModule::USER_SERVICE_TABLE;
 
             if (!strlen($table)) {
                 continue;
@@ -58,11 +55,7 @@ class UserServiceService
             );
 
             foreach ($result as $row) {
-                if ($className === ExtraFlagsServiceModule::class) {
-                    $output[$row['id']] = $this->userServiceRepository->mapToExtraFlags($row);
-                } elseif ($className === MybbExtraGroupsServiceModule::class) {
-                    $output[$row['id']] = $this->userServiceRepository->mapToMybbExtraGroups($row);
-                }
+                $output[$row['id']] = $serviceModule->mapToUserService($row);
             }
         }
 

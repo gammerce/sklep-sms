@@ -81,14 +81,9 @@ class AdminController
         }
         if (get_privileges("view_user_services")) {
             $pid = '';
-            foreach ($heart->getServicesModules() as $moduleData) {
-                if (
-                    in_array(
-                        IServiceUserServiceAdminDisplay::class,
-                        class_implements($moduleData['class'])
-                    )
-                ) {
-                    $pid = "user_service?subpage=" . urlencode($moduleData['id']);
+            foreach ($heart->getEmptyServiceModules() as $serviceModule) {
+                if ($serviceModule instanceof IServiceUserServiceAdminDisplay) {
+                    $pid = "user_service?subpage=" . urlencode($serviceModule->getModuleId());
                     break;
                 }
             }

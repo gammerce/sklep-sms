@@ -121,6 +121,21 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $this->dbName = array_get($serviceData, 'db_name', '');
     }
 
+    /**
+     * @param array $data
+     * @return MybbExtraGroupsUserService
+     */
+    public function mapToUserService(array $data)
+    {
+        return new MybbExtraGroupsUserService(
+            as_int($data['id']),
+            $data['service'],
+            as_int($data['uid']),
+            as_int($data['expire']),
+            as_int($data['mybb_uid'])
+        );
+    }
+
     public function serviceAdminExtraFieldsGet()
     {
         // WEB
