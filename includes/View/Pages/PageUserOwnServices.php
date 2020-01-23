@@ -93,17 +93,16 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
                 $userServiceIds[] = $row['id'];
             }
 
-            if (!empty($userServiceIds)) {
+            if ($userServiceIds) {
                 $usersServices = $this->userServiceService->find(
-                    "WHERE us.id IN (" . implode(', ', $userServiceIds) . ")",
-                    false
+                    "WHERE us.id IN (" . implode(', ', $userServiceIds) . ")"
                 );
             }
         }
 
         $userOwnServices = '';
         foreach ($usersServices as $userService) {
-            $serviceModule = $this->heart->getServiceModule($userService['service']);
+            $serviceModule = $this->heart->getServiceModule($userService->getServiceId());
 
             if (!($serviceModule instanceof IServiceUserOwnServices)) {
                 continue;

@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Loggers\DatabaseLogger;
+use App\Repositories\UserServiceRepository;
 use App\Services\UserServiceService;
-use App\System\Database;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,19 +21,16 @@ class UserServiceResource
     ) {
         $lang = $translationManager->user();
 
-        $userService = $userServiceService->find($userServiceId);
-
-        // Brak takiej usługi w bazie
-        if (empty($userService)) {
+        $userService = $userServiceService->findOne($userServiceId);
+        if (!$userService) {
             return new ApiResponse("no_service", $lang->t('no_service'), 0);
         }
 
-        $serviceModule = $heart->getServiceModule($userService['service']);
-        if ($serviceModule === null) {
+        $serviceModule = $heart->getServiceModule($userService->getServiceId());
+        if (!$serviceModule) {
             return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
         }
 
-        // Wykonujemy metode edycji usługi użytkownika przez admina na odpowiednim module
         $returnData = $serviceModule->userServiceAdminEdit($request->request->all(), $userService);
 
         if ($returnData === false) {
@@ -54,26 +51,21 @@ class UserServiceResource
 
     public function delete(
         $userServiceId,
-        Database $db,
         Heart $heart,
         TranslationManager $translationManager,
         DatabaseLogger $logger,
-        UserServiceService $userServiceService
+        UserServiceService $userServiceService,
+        UserServiceRepository $userServiceRepository
     ) {
         $lang = $translationManager->user();
 
-        $userService = $userServiceService->find($userServiceId);
-
-        // Brak takiej usługi
-        if (empty($userService)) {
+        $userService = $userServiceService->findOne($userServiceId);
+        if (!$userService) {
             return new ApiResponse("no_service", $lang->t('no_service'), 0);
         }
 
-        // Wywolujemy akcje przy usuwaniu
-        if (
-            ($serviceModule = $heart->getServiceModule($userService['service'])) !== null &&
-            !$serviceModule->userServiceDelete($userService, 'admin')
-        ) {
+        $serviceModule = $heart->getServiceModule($userService->getServiceId());
+        if ($serviceModule && !$serviceModule->userServiceDelete($userService, 'admin')) {
             return new ApiResponse(
                 "user_service_cannot_be_deleted",
                 $lang->t('user_service_cannot_be_deleted'),
@@ -81,19 +73,14 @@ class UserServiceResource
             );
         }
 
-        $statement = $db->query(
-            $db->prepare("DELETE FROM `" . TABLE_PREFIX . "user_service` " . "WHERE `id` = '%d'", [
-                $userService['id'],
-            ])
-        );
+        $deleted = $userServiceRepository->delete($userService->getId());
 
-        if ($serviceModule !== null) {
+        if ($serviceModule) {
             $serviceModule->userServiceDeletePost($userService);
         }
 
-        if ($statement->rowCount()) {
-            $logger->logWithActor('log_user_service_deleted', $userService['id']);
-
+        if ($deleted) {
+            $logger->logWithActor('log_user_service_deleted', $userService->getId());
             return new SuccessApiResponse($lang->t('delete_service'));
         }
 

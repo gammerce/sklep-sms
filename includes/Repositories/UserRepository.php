@@ -154,6 +154,14 @@ class UserRepository
         return $data ? $this->mapToModel($data) : null;
     }
 
+    public function delete($id)
+    {
+        $statement = $this->db->statement("DELETE FROM `ss_users` WHERE `uid` = ?");
+        $statement->execute([$id]);
+
+        return !!$statement->rowCount();
+    }
+
     private function mapToModel(array $data)
     {
         return new User(

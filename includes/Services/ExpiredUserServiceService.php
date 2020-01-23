@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Loggers\DatabaseLogger;
+use App\Repositories\UserServiceRepository;
 use App\System\Database;
 use App\System\Heart;
 
@@ -19,16 +20,21 @@ class ExpiredUserServiceService
     /** @var UserServiceService */
     private $userServiceService;
 
+    /** @var UserServiceRepository */
+    private $userServiceRepository;
+
     public function __construct(
         Database $db,
         Heart $heart,
         DatabaseLogger $logger,
-        UserServiceService $userServiceService
+        UserServiceService $userServiceService,
+        UserServiceRepository $userServiceRepository
     ) {
         $this->db = $db;
         $this->heart = $heart;
         $this->logger = $logger;
         $this->userServiceService = $userServiceService;
+        $this->userServiceRepository = $userServiceRepository;
     }
 
     public function deleteExpiredUserServices()
@@ -44,50 +50,29 @@ class ExpiredUserServiceService
             )
             as $userService
         ) {
-            if (
-                ($serviceModule = $this->heart->getServiceModule($userService['service'])) === null
-            ) {
+            $serviceModule = $this->heart->getServiceModule($userService->getServiceId());
+            if (!$serviceModule) {
                 continue;
             }
 
             if ($serviceModule->userServiceDelete($userService, 'task')) {
-                $deleteIds[] = $userService['id'];
+                $deleteIds[] = $userService->getId();
                 $usersServices[] = $userService;
 
-                $userServiceDesc = '';
-                foreach ($userService as $key => $value) {
-                    if (strlen($userServiceDesc)) {
-                        $userServiceDesc .= ' ; ';
-                    }
-
-                    $userServiceDesc .= ucfirst(strtolower($key)) . ': ' . $value;
-                }
-
-                $this->logger->log('expired_service_delete', $userServiceDesc);
+                $this->logger->log(
+                    'expired_service_delete',
+                    "id: {$userService->getId()}, service_id: {$userService->getServiceId()}, uid: {$userService->getUid()}"
+                );
             }
         }
 
-        // Usuwamy usugi ktre zwróciły true
-        if (!empty($deleteIds)) {
-            $this->db->query(
-                "DELETE FROM `" .
-                    TABLE_PREFIX .
-                    "user_service` " .
-                    "WHERE `id` IN (" .
-                    implode(", ", $deleteIds) .
-                    ")"
-            );
-        }
+        $this->userServiceRepository->deleteMany($deleteIds);
 
-        // Wywołujemy akcje po usunieciu
         foreach ($usersServices as $userService) {
-            if (
-                ($serviceModule = $this->heart->getServiceModule($userService['service'])) === null
-            ) {
-                continue;
+            $serviceModule = $this->heart->getServiceModule($userService->getServiceId());
+            if ($serviceModule) {
+                $serviceModule->userServiceDeletePost($userService);
             }
-
-            $serviceModule->userServiceDeletePost($userService);
         }
     }
 }

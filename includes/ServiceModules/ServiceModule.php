@@ -2,6 +2,7 @@
 namespace App\ServiceModules;
 
 use App\Models\Service;
+use App\Models\UserService;
 use App\Services\ServiceDescriptionService;
 use App\System\Application;
 use App\System\Database;
@@ -56,12 +57,12 @@ abstract class ServiceModule
     /**
      * Metoda wywoływana przy usuwaniu usługi użytkownika.
      *
-     * @param array  $userService Dane o usłudze z bazy danych
+     * @param UserService  $userService
      * @param string $who Kto wywołał akcję ( admin, task )
      *
      * @return bool
      */
-    public function userServiceDelete($userService, $who)
+    public function userServiceDelete(UserService $userService, $who)
     {
         return true;
     }
@@ -69,9 +70,9 @@ abstract class ServiceModule
     /**
      * Metoda wywoływana po usunięciu usługi użytkownika.
      *
-     * @param array $userService Dane o usłudze z bazy danych
+     * @param UserService $userService
      */
-    public function userServiceDeletePost($userService)
+    public function userServiceDeletePost(UserService $userService)
     {
     }
 

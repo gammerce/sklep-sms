@@ -24,19 +24,18 @@ class UserServiceResource
         $lang = $translationManager->user();
         $user = $auth->user();
 
-        $userService = $userServiceService->find($userServiceId);
+        $userService = $userServiceService->findOne($userServiceId);
 
-        // User service was not found
-        if (empty($userService)) {
+        if (!$userService) {
             return new ApiResponse("dont_play_games", $lang->t('dont_play_games'), 0);
         }
 
-        // User is not an owner of the userService
-        if ($userService['uid'] != $user->getUid()) {
+        if ($userService->getUid() !== $user->getUid()) {
             return new ApiResponse("dont_play_games", $lang->t('dont_play_games'), 0);
         }
 
-        if (($serviceModule = $heart->getServiceModule($userService['service'])) === null) {
+        $serviceModule = $heart->getServiceModule($userService->getServiceId());
+        if (!$serviceModule) {
             return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
         }
 

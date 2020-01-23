@@ -37,15 +37,8 @@ class PasswordForgottenController
                 $warnings['username'] = array_merge((array) $warnings['username'], $warning);
             }
             if (strlen($username)) {
-                $result = $db->query(
-                    $db->prepare(
-                        "SELECT `uid` FROM `" .
-                            TABLE_PREFIX .
-                            "users` " .
-                            "WHERE `username` = '%s'",
-                        [$username]
-                    )
-                );
+                $result = $db->statement("SELECT `uid` FROM `ss_users` WHERE `username` = ?");
+                $result->execute([$username]);
 
                 if (!$result->rowCount()) {
                     $warnings['username'][] = $lang->t('nick_no_account');

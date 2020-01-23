@@ -68,11 +68,11 @@ class BoughtServiceRepository
     {
         return new BoughtService(
             as_int($data['id']),
-            $data['uid'],
+            as_int($data['uid']),
             $data['payment'],
             $data['payment_id'],
             $data['service'],
-            $data['server'],
+            as_int($data['server']),
             $data['amount'],
             $data['auth_data'],
             $data['email'],
