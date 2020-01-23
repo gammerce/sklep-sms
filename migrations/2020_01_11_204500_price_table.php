@@ -119,6 +119,8 @@ EOF
         } catch (PDOException $e) {
             $this->fileLogger->install("Add service_codes FK error. {$e->getMessage()}");
         }
+
+        $this->db->query("DROP TABLE IF EXISTS `ss_tariffs`");
     }
 
     private function tariffToSmsPrice($tariff)

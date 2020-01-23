@@ -19,12 +19,10 @@ class MigrationFiles
         $migrations = [];
         $dir = new DirectoryIterator($this->buildPath(""));
 
-        foreach ($dir as $fileinfo) {
-            if (!preg_match("/^.+\.php$/", $fileinfo->getFilename())) {
-                continue;
+        foreach ($dir as $fileInfo) {
+            if (ends_at($fileInfo->getFilename(), ".php")) {
+                $migrations[] = $fileInfo->getBasename('.php');
             }
-
-            $migrations[] = $fileinfo->getBasename('.php');
         }
 
         sort($migrations);
