@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
 use App\Loggers\DatabaseLogger;
+use App\Repositories\UserRepository;
 use App\System\Auth;
-use App\System\Database;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -15,7 +15,7 @@ class PasswordResource
         Request $request,
         TranslationManager $translationManager,
         Auth $auth,
-        Database $db,
+        UserRepository $userRepository,
         DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
@@ -42,16 +42,7 @@ class PasswordResource
             throw new ValidationException($warnings);
         }
 
-        $salt = get_random_string(8);
-
-        $db->query(
-            $db->prepare("UPDATE `ss_users` " . "SET password='%s', salt='%s'" . "WHERE uid='%d'", [
-                hash_password($pass, $salt),
-                $salt,
-                $user->getUid(),
-            ])
-        );
-
+        $userRepository->updatePassword($user->getUid(), $pass);
         $logger->logWithActor("log_password_changed");
 
         return new ApiResponse("password_changed", $lang->t('password_changed'), 1);

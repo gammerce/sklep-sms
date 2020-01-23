@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Loggers\DatabaseLogger;
+use App\Repositories\GroupRepository;
 use App\System\Database;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,17 +52,15 @@ class GroupResource
 
     public function delete(
         $groupId,
-        Database $db,
+        GroupRepository $groupRepository,
         TranslationManager $translationManager,
         DatabaseLogger $databaseLogger
     ) {
         $lang = $translationManager->user();
 
-        $statement = $db->query(
-            $db->prepare("DELETE FROM `ss_groups` WHERE `id` = '%d'", [$groupId])
-        );
+        $deleted = $groupRepository->delete($groupId);
 
-        if ($statement->rowCount()) {
+        if ($deleted) {
             $databaseLogger->logWithActor('log_group_deleted', $groupId);
             return new SuccessApiResponse($lang->t('delete_group'));
         }

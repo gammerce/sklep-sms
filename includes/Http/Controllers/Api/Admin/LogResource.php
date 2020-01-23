@@ -3,20 +3,21 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
-use App\System\Database;
+use App\Repositories\LogRepository;
 use App\Translation\TranslationManager;
 
 class LogResource
 {
-    public function delete($logId, Database $db, TranslationManager $translationManager)
-    {
+    public function delete(
+        $logId,
+        LogRepository $repository,
+        TranslationManager $translationManager
+    ) {
         $lang = $translationManager->user();
 
-        $statement = $db->query(
-            $db->prepare("DELETE FROM `ss_logs` " . "WHERE `id` = '%d'", [$logId])
-        );
+        $deleted = $repository->delete($logId);
 
-        if ($statement->rowCount()) {
+        if ($deleted) {
             return new SuccessApiResponse($lang->t('delete_log'));
         }
 

@@ -3,14 +3,17 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\ValidationException;
 use App\Http\Responses\SuccessApiResponse;
-use App\System\Database;
+use App\Repositories\AntispamQuestionRepository;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class AntispamQuestionCollection
 {
-    public function post(Request $request, Database $db, TranslationManager $translationManager)
-    {
+    public function post(
+        Request $request,
+        TranslationManager $translationManager,
+        AntispamQuestionRepository $repository
+    ) {
         $lang = $translationManager->user();
 
         $question = $request->request->get("question");
@@ -32,12 +35,7 @@ class AntispamQuestionCollection
             throw new ValidationException($warnings);
         }
 
-        $db->query(
-            $db->prepare(
-                "INSERT INTO `ss_antispam_questions` ( question, answers ) " . "VALUES ('%s','%s')",
-                [$question, $answers]
-            )
-        );
+        $repository->create($question, $answers);
 
         return new SuccessApiResponse($lang->t('antispam_add'));
     }

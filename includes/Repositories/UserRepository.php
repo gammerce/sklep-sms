@@ -121,6 +121,40 @@ class UserRepository
     }
 
     /**
+     * @param string $username
+     * @return User|null
+     */
+    public function findByUsername($username)
+    {
+        if (!strlen($username)) {
+            return null;
+        }
+
+        $statement = $this->db->statement("SELECT * FROM `ss_users` WHERE `username` = ?");
+        $statement->execute([$username]);
+
+        $data = $statement->fetch();
+        return $data ? $this->mapToModel($data) : null;
+    }
+
+    /**
+     * @param string $email
+     * @return User|null
+     */
+    public function findByEmail($email)
+    {
+        if (!strlen($email)) {
+            return null;
+        }
+
+        $statement = $this->db->statement("SELECT * FROM `ss_users` WHERE `email` = ?");
+        $statement->execute([$email]);
+
+        $data = $statement->fetch();
+        return $data ? $this->mapToModel($data) : null;
+    }
+
+    /**
      * @param string $emailOrUsername
      * @param string $password
      * @return User|null
@@ -138,8 +172,26 @@ class UserRepository
         $statement->execute([$emailOrUsername, $emailOrUsername, $password]);
 
         $data = $statement->fetch();
-
         return $data ? $this->mapToModel($data) : null;
+    }
+
+    public function createResetPasswordKey($uid)
+    {
+        $key = get_random_string(32);
+        $this->db
+            ->statement("UPDATE `ss_users` " . "SET `reset_password_key` = ? WHERE `uid` = ?")
+            ->execute([$key, $uid]);
+
+        return $key;
+    }
+
+    public function updatePassword($uid, $password)
+    {
+        $salt = get_random_string(8);
+
+        $this->db
+            ->statement("UPDATE `ss_users` SET password = ?, salt = ? WHERE uid = ?")
+            ->execute([hash_password($password, $salt), $salt, $uid]);
     }
 
     public function delete($id)

@@ -13,8 +13,8 @@ use App\Http\Validation\Rules\UniqueUserEmailRule;
 use App\Http\Validation\Rules\UniqueUsernameRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
+use App\Repositories\AntispamQuestionRepository;
 use App\Repositories\UserRepository;
-use App\System\Database;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -23,13 +23,13 @@ class RegisterController
     public function post(
         Request $request,
         TranslationManager $translationManager,
-        Database $db,
         UserRepository $userRepository,
         UniqueUsernameRule $uniqueUsernameRule,
         RequiredRule $requiredRule,
         ConfirmedRule $confirmedRule,
         UniqueUserEmailRule $uniqueUserEmailRule,
         AntispamQuestionRule $antispamQuestionRule,
+        AntispamQuestionRepository $antispamQuestionRepository,
         DatabaseLogger $logger
     ) {
         $session = $request->getSession();
@@ -48,11 +48,9 @@ class RegisterController
 
         // Get new antispam question
         $data = [];
-        $antispamQuestion = $db
-            ->query("SELECT * FROM `ss_antispam_questions` " . "ORDER BY RAND() " . "LIMIT 1")
-            ->fetch();
-        $data['antispam']['question'] = $antispamQuestion['question'];
-        $data['antispam']['id'] = $antispamQuestion['id'];
+        $antispamQuestion = $antispamQuestionRepository->findRandom();
+        $data['antispam']['question'] = $antispamQuestion->getQuestion();
+        $data['antispam']['id'] = $antispamQuestion->getId();
 
         // Is antispam question correct
         if (!$session->has("asid") || $asId != $session->get("asid")) {
@@ -60,7 +58,7 @@ class RegisterController
         }
 
         // Let's store antispam question id in session
-        $session->set("asid", $antispamQuestion['id']);
+        $session->set("asid", $antispamQuestion->getId());
 
         $validator = new Validator(
             [
