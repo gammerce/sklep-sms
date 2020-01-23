@@ -1,8 +1,6 @@
 <?php
 namespace App\Repositories;
 
-use App\Models\ExtraFlagsUserService;
-use App\Models\MybbExtraGroupsUserService;
 use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
 use App\System\Database;
 
