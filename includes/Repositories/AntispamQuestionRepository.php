@@ -14,6 +14,22 @@ class AntispamQuestionRepository
         $this->db = $db;
     }
 
+    public function get($id)
+    {
+        if ($id) {
+            $statement = $this->db->statement(
+                "SELECT * FROM `ss_antispam_questions` WHERE `id` = ?"
+            );
+            $statement->execute([$id]);
+
+            if ($data = $statement->fetch()) {
+                return $this->mapToModel($data);
+            }
+        }
+
+        return null;
+    }
+
     public function findRandom()
     {
         $data = $this->db
@@ -52,6 +68,6 @@ class AntispamQuestionRepository
 
     public function mapToModel(array $data)
     {
-        return new AntispamQuestion($data['id'], $data['question'], $data['answers']);
+        return new AntispamQuestion($data['id'], $data['question'], explode(";", $data['answers']));
     }
 }

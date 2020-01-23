@@ -9,7 +9,7 @@ class AntispamQuestion
     /** @var string */
     private $question;
 
-    /** @var string */
+    /** @var array */
     private $answers;
 
     public function __construct($id, $question, $answers)
@@ -36,7 +36,7 @@ class AntispamQuestion
     }
 
     /**
-     * @return string
+     * @return array
      */
     public function getAnswers()
     {
