@@ -49,7 +49,7 @@ function set_cost() {
         data[element.name] = element.value;
     });
 
-    var serviceId = $("#form_purchase [name=service]").val();
+    var serviceId = $("#form_purchase [name=service_id]").val();
 
     restRequest("POST", "/api/services/" + serviceId + "/actions/get_cost", data, function(html) {
         $(".shopsms_license_purchase #cost").html(html);

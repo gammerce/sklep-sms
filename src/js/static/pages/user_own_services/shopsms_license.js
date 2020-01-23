@@ -82,7 +82,7 @@ function ss_user_edit_set_cost(form) {
     });
     data["user_service_id"] = form.data("row");
 
-    var serviceId = form.find("[name=service]").val();
+    var serviceId = form.find("[name=service_id]").val();
 
     restRequest(
         "POST",

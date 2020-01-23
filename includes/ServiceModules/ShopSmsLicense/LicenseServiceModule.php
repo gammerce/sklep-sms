@@ -647,7 +647,7 @@ class LicenseServiceModule extends ServiceModule implements
                     $this::USER_SERVICE_TABLE .
                     "` " .
                     "WHERE `service` = '%s' AND `external_license_id` = '%s'",
-                [$body['service'], $response['id']]
+                [$body['service_id'], $response['id']]
             )
         );
 
