@@ -2,8 +2,10 @@
 namespace App\Http\Services;
 
 use App\Exceptions\ValidationException;
+use App\Models\Service;
 use App\Repositories\PaymentPlatformRepository;
 use App\ServiceModules\Interfaces\IServiceAvailableOnServers;
+use App\Services\ServerServiceService;
 use App\System\Database;
 use App\System\Heart;
 use App\System\Settings;
@@ -27,11 +29,15 @@ class ServerService
     /** @var Settings */
     private $settings;
 
+    /** @var ServerServiceService */
+    private $serverServiceService;
+
     public function __construct(
         Database $db,
         TranslationManager $translationManager,
         Heart $heart,
         PaymentPlatformRepository $paymentPlatformRepository,
+        ServerServiceService $serverServiceService,
         Settings $settings
     ) {
         $this->db = $db;
@@ -39,6 +45,7 @@ class ServerService
         $this->heart = $heart;
         $this->paymentPlatformRepository = $paymentPlatformRepository;
         $this->settings = $settings;
+        $this->serverServiceService = $serverServiceService;
     }
 
     public function validateBody(array $body)
@@ -77,58 +84,21 @@ class ServerService
 
     public function updateServerServiceAffiliations($serverId, array $body)
     {
-        $serversServices = [];
-        foreach ($this->heart->getServices() as $service) {
-            $serviceModule = $this->heart->getServiceModule($service->getId());
-
-            // This service can be bought on this server
-            if ($serviceModule instanceof IServiceAvailableOnServers) {
-                $serversServices[] = [
+        $serversServices = collect($this->heart->getServices())
+            ->filter(function (Service $service) {
+                // This service can be bought on this server
+                return $this->heart->getServiceModule($service->getId()) instanceof
+                    IServiceAvailableOnServers;
+            })
+            ->map(function (Service $service) use ($serverId, $body) {
+                return [
                     'service_id' => $service->getId(),
                     'server_id' => $serverId,
-                    'status' => (bool) array_get($body, $service->getId()),
+                    'connect' => (bool) array_get($body, $service->getId()),
                 ];
-            }
-        }
+            })
+            ->all();
 
-        $this->updateServersServices($serversServices);
-    }
-
-    /**
-     * Updates servers_services table
-     *
-     * @param $data
-     */
-    private function updateServersServices(array $data)
-    {
-        $delete = [];
-        $add = [];
-        foreach ($data as $item) {
-            if ($item['status']) {
-                $add[] = $this->db->prepare("('%d', '%s')", [
-                    $item['server_id'],
-                    $item['service_id'],
-                ]);
-            } else {
-                $delete[] = $this->db->prepare("(`server_id` = '%d' AND `service_id` = '%s')", [
-                    $item['server_id'],
-                    $item['service_id'],
-                ]);
-            }
-        }
-
-        if (!empty($add)) {
-            $this->db->query(
-                "INSERT IGNORE INTO `ss_servers_services` (`server_id`, `service_id`) " .
-                    "VALUES " .
-                    implode(", ", $add)
-            );
-        }
-
-        if (!empty($delete)) {
-            $this->db->query(
-                "DELETE FROM `ss_servers_services` " . "WHERE " . implode(" OR ", $delete)
-            );
-        }
+        $this->serverServiceService->updateAffiliations($serversServices);
     }
 }

@@ -60,7 +60,7 @@ class ServerDataService
             ->map(function (array $row) {
                 return $this->priceRepository->mapToModel($row);
             })
-            ->toArray();
+            ->all();
     }
 
     /**
@@ -73,7 +73,7 @@ class ServerDataService
             ->map(function (ServerService $serverService) {
                 return $serverService->getServiceId();
             })
-            ->toArray();
+            ->all();
 
         return $this->serviceRepository->findMany($serviceIds);
     }

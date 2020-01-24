@@ -785,7 +785,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         $expire = $userService->isForever()
             ? $this->lang->t('never')
-            : convertDate($userService->getExpire());
+            : convert_date($userService->getExpire());
         $mybbUid = "$username ({$userService->getMybbUid()})";
 
         return $this->template->render(

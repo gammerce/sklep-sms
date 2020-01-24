@@ -1039,7 +1039,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $checked = "checked";
             $disabled = "disabled";
         } else {
-            $userServiceExpire = convertDate($userService->getExpire());
+            $userServiceExpire = convert_date($userService->getExpire());
         }
 
         return $this->template->renderNoComments(
@@ -1270,7 +1270,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         // Wygasa
         $serviceInfo['expire'] = $userService->isForever()
             ? $this->lang->t('never')
-            : convertDate($userService->getExpire());
+            : convert_date($userService->getExpire());
 
         // Usługa
         $serviceInfo['service'] = $this->service->getName();
@@ -1295,7 +1295,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             'userServiceId' => $userService->getId(),
             'expire' => $userService->isForever()
                 ? $this->lang->t('never')
-                : convertDate($userService->getExpire()),
+                : convert_date($userService->getExpire()),
             'moduleId' => $this->getModuleId(),
             'serverName' => $server->getName(),
             'serviceName' => $this->service->getName(),

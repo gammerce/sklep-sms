@@ -107,7 +107,7 @@ class PageAdminPaymentSms extends PageAdmin
             $cell->addContent($div);
             $bodyRow->addCell($cell);
 
-            $bodyRow->addCell(new Cell(convertDate($row['timestamp'])));
+            $bodyRow->addCell(new Cell(convert_date($row['timestamp'])));
 
             $table->addBodyRow($bodyRow);
         }

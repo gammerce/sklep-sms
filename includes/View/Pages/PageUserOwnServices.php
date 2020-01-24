@@ -55,40 +55,44 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             })
             ->map(function (ServiceModule $serviceModule) {
                 return $serviceModule->getModuleId();
-            })
-            ->toArray();
+            });
 
         $usersServices = [];
         $rowsCount = 0;
-        if ($moduleIds) {
-            $moduleIds = implode_esc(', ', $moduleIds);
+        if ($moduleIds->isPopulated()) {
+            $keys = $moduleIds
+                ->map(function () {
+                    return "?";
+                })
+                ->join(", ");
 
             $statement = $db->statement(
                 "SELECT COUNT(*) FROM `ss_user_service` AS us " .
                     "INNER JOIN `ss_services` AS s ON us.service = s.id " .
-                    "WHERE us.uid = ? AND s.module IN ({$moduleIds}) "
+                    "WHERE us.uid = ? AND s.module IN ({$keys}) "
             );
-            $statement->execute([$user->getUid()]);
+            $statement->execute(array_merge([$user->getUid()], $moduleIds->all()));
             $rowsCount = $statement->fetchColumn();
 
             $statement = $db->statement(
                 "SELECT us.id FROM `ss_user_service` AS us " .
                     "INNER JOIN `ss_services` AS s ON us.service = s.id " .
-                    "WHERE us.uid = ? AND s.module IN ({$moduleIds}) " .
+                    "WHERE us.uid = ? AND s.module IN ({$keys}) " .
                     "ORDER BY us.id DESC " .
                     "LIMIT " .
                     get_row_limit($this->currentPage->getPageNumber(), 4)
             );
-            $statement->execute([$user->getUid()]);
+            $statement->execute(array_merge([$user->getUid()], $moduleIds->all()));
 
-            $userServiceIds = [];
-            foreach ($statement as $row) {
-                $userServiceIds[] = $row['id'];
-            }
+            $userServiceIds = collect($statement)
+                ->map(function (array $row) {
+                    return $row['id'];
+                })
+                ->join(", ");
 
             if ($userServiceIds) {
                 $usersServices = $this->userServiceService->find(
-                    "WHERE us.id IN (" . implode(', ', $userServiceIds) . ")"
+                    "WHERE us.id IN ({$userServiceIds})"
                 );
             }
         }

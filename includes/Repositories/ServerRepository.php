@@ -28,12 +28,11 @@ class ServerRepository
             "SELECT *, UNIX_TIMESTAMP(`last_active_at`) AS `last_active_at` FROM `ss_servers`"
         );
 
-        $servers = [];
-        foreach ($statement as $row) {
-            $servers[] = $this->mapToModel($row);
-        }
-
-        return $servers;
+        return collect($statement)
+            ->map(function (array $row) {
+                return $this->mapToModel($row);
+            })
+            ->all();
     }
 
     public function get($id)

@@ -1,6 +1,7 @@
 <?php
 namespace App\Repositories;
 
+use App\Models\Server;
 use App\Models\ServerService;
 use App\System\Database;
 
@@ -14,15 +15,30 @@ class ServerServiceRepository
         $this->db = $db;
     }
 
+    /**
+     * @return Server[]
+     */
+    public function all()
+    {
+        $statement = $this->db->query("SELECT * FROM `ss_servers_services`");
+
+        return collect($statement)
+            ->map(function (array $row) {
+                return $this->mapToModel($row);
+            })
+            ->all();
+    }
+
     public function create($serverId, $serviceId)
     {
         $this->db
-            ->statement(
-                "INSERT INTO `ss_servers_services` " . "SET `server_id` = ?, `service_id` = ?"
-            )
+            ->statement("INSERT INTO `ss_servers_services` SET `server_id` = ?, `service_id` = ?")
             ->execute([$serverId, $serviceId]);
 
-        return $this->mapToModel($serverId, $serviceId);
+        return $this->mapToModel([
+            'server_id' => $serverId,
+            'service_id' => $serviceId,
+        ]);
     }
 
     /**
@@ -36,16 +52,15 @@ class ServerServiceRepository
         );
         $statement->execute([$serverId]);
 
-        $serverServices = [];
-        foreach ($statement as $row) {
-            $serverServices[] = $this->mapToModel($row['server_id'], $row['service_id']);
-        }
-
-        return $serverServices;
+        return collect($statement)
+            ->map(function (array $row) {
+                return $this->mapToModel($row);
+            })
+            ->all();
     }
 
-    public function mapToModel($serverId, $serviceId)
+    public function mapToModel(array $data)
     {
-        return new ServerService(as_int($serverId), $serviceId);
+        return new ServerService(as_int($data['server_id']), $data['service_id']);
     }
 }

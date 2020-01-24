@@ -36,7 +36,7 @@ class LocaleService
             return $request->cookies->get('language');
         }
 
-        $ip = get_ip();
+        $ip = get_ip($request);
         $response = $this->requester->get("https://ipinfo.io/{$ip}/json", [], [], 2);
 
         if ($response && $response->isOk()) {

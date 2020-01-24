@@ -42,12 +42,11 @@ class PaymentPlatformRepository
     {
         $statement = $this->db->query("SELECT * FROM `ss_payment_platforms`");
 
-        $platforms = [];
-        foreach ($statement as $row) {
-            $platforms[] = $this->mapToModel($row);
-        }
-
-        return $platforms;
+        return collect($statement)
+            ->map(function (array $row) {
+                return $this->mapToModel($row);
+            })
+            ->all();
     }
 
     public function get($id)

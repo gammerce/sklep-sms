@@ -63,7 +63,7 @@ class PageAdminLogs extends PageAdmin
             $cell->addContent($div);
             $bodyRow->addCell($cell);
 
-            $cell = new Cell(convertDate($row['timestamp']));
+            $cell = new Cell(convert_date($row['timestamp']));
             $cell->setParam('headers', 'date');
             $bodyRow->addCell($cell);
 

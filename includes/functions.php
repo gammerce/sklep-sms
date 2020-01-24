@@ -9,7 +9,6 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\View\Html\Div;
 use App\View\Html\DOMElement;
-use App\View\Html\UnescapedSimpleText;
 use Illuminate\Container\Container;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -116,21 +115,6 @@ function create_dom_element($name, $content = "", $data = [])
     return $element;
 }
 
-function create_brick($text, $class = "", $alpha = 0.2)
-{
-    $brickR = rand(0, 255);
-    $brickG = rand(0, 255);
-    $brickB = rand(0, 255);
-
-    return create_dom_element("div", new UnescapedSimpleText($text), [
-        'class' => "notification" . ($class ? " {$class}" : ""),
-        'style' => [
-            'border-color' => "rgb({$brickR},{$brickG},{$brickB})",
-            'background-color' => "rgba({$brickR},{$brickG},{$brickB},{$alpha})",
-        ],
-    ]);
-}
-
 function get_platform($platform)
 {
     /** @var TranslationManager $translationManager */
@@ -193,7 +177,7 @@ function get_ip(Request $request = null)
  *
  * @return string
  */
-function convertDate($timestamp, $format = "")
+function convert_date($timestamp, $format = "")
 {
     /** @var Settings $settings */
     $settings = app()->make(Settings::class);
@@ -271,12 +255,12 @@ function get_random_string($length)
     return $finalRand;
 }
 
-function valid_steam($steamid)
+function is_steamid_valid($steamid)
 {
     return preg_match('/\bSTEAM_([0-9]{1}):([0-9]{1}):([0-9])+$/', $steamid) ? '1' : '0';
 }
 
-function secondsToTime($seconds)
+function seconds_to_time($seconds)
 {
     /** @var TranslationManager $translationManager */
     $translationManager = app()->make(TranslationManager::class);
@@ -426,29 +410,6 @@ function my_is_integer($val)
     return strlen($val) && trim($val) === strval(intval($val));
 }
 
-/**
- * @param string $glue
- * @param array $stack
- *
- * @return string
- */
-function implode_esc($glue, $stack)
-{
-    /** @var Database $db */
-    $db = app()->make(Database::class);
-
-    $output = '';
-    foreach ($stack as $value) {
-        if (strlen($output)) {
-            $output .= $glue;
-        }
-
-        $output .= $db->prepare("'%s'", [$value]);
-    }
-
-    return $output;
-}
-
 function array_get($array, $key, $default = null)
 {
     return isset($array[$key]) ? $array[$key] : $default;
@@ -526,7 +487,7 @@ function check_for_warnings($type, $data)
             break;
 
         case "sid":
-            if (!valid_steam($data) || strlen($data) > 32) {
+            if (!is_steamid_valid($data) || strlen($data) > 32) {
                 $warnings[] = $lang->t('wrong_sid');
             }
 

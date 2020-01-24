@@ -59,7 +59,7 @@ class ServiceRepository
             ->map(function (array $row) {
                 return $this->mapToModel($row);
             })
-            ->toArray();
+            ->all();
     }
 
     public function create(

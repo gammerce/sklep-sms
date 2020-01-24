@@ -60,7 +60,7 @@ class ServerConfigController
             ->map(function (Service $service) {
                 return $service->getId();
             })
-            ->toArray();
+            ->all();
         $prices = $serverDataService->findPrices($serviceIds, $server);
 
         $serviceItems = collect($services)
@@ -74,7 +74,7 @@ class ServerConfigController
                     'ty' => $service->getTypes(),
                 ];
             })
-            ->toArray();
+            ->all();
 
         $priceItems = collect($prices)
             ->map(function (Price $price) {
@@ -86,19 +86,19 @@ class ServerConfigController
                     'q' => $price->getQuantity() !== null ? $price->getQuantity() : -1,
                 ];
             })
-            ->toArray();
+            ->all();
 
         $smsNumberItems = collect($smsNumbers)
             ->map(function (SmsNumber $smsNumber) {
                 return $smsNumber->getNumber();
             })
-            ->toArray();
+            ->all();
 
         $steamIds = collect($userRepository->allWithSteamId())
             ->map(function (User $user) {
                 return $user->getSteamId();
             })
-            ->toArray();
+            ->all();
 
         $serverRepository->touch($server->getId(), $platform, $version);
 
