@@ -610,6 +610,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $forever = false
     ) {
         $authData = trim($authData);
+        $password = strlen($password) ? $password : '';
 
         // Usunięcie przestarzałych usług gracza
         $this->expiredUserServiceService->deleteExpiredUserServices();
