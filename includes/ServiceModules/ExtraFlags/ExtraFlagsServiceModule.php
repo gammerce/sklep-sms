@@ -1143,21 +1143,18 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 }
                 // IP
                 elseif (
-                        $data['type'] == ExtraFlagType::TYPE_IP &&
-                        ($warning = check_for_warnings("ip", $data['auth_data']))
-                    ) {
-                        $warnings['ip'] = array_merge((array) $warnings['ip'], $warning);
-                    }
+                    $data['type'] == ExtraFlagType::TYPE_IP &&
+                    ($warning = check_for_warnings("ip", $data['auth_data']))
+                ) {
+                    $warnings['ip'] = array_merge((array) $warnings['ip'], $warning);
+                }
 
                 // Hasło
                 if (
                     strlen($data['password']) &&
                     ($warning = check_for_warnings("password", $data['password']))
                 ) {
-                    $warnings['password'] = array_merge(
-                        (array) $warnings['password'],
-                        $warning
-                    );
+                    $warnings['password'] = array_merge((array) $warnings['password'], $warning);
                 }
             }
             // SteamID
