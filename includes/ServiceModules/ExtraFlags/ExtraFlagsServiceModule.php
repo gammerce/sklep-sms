@@ -620,19 +620,14 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         // Dodajemy usługę gracza do listy usług
         // Jeżeli już istnieje dokładnie taka sama, to ją przedłużamy
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT `us_id` FROM `" .
-                    $this::USER_SERVICE_TABLE .
-                    "` " .
-                    "WHERE `service` = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s'",
-                [$this->service->getId(), $serverId, $type, $authData]
-            )
+        $statement = $this->db->statement(
+            "SELECT * FROM `{$this->getUserServiceTable()}` " .
+                "WHERE `service` = ? AND `server` = ? AND `type` = ? AND `auth_data` = ?"
         );
+        $statement->execute([$this->service->getId(), $serverId, $type, $authData]);
 
-        if ($result->rowCount()) {
-            // Aktualizujemy
-            $row = $result->fetch();
+        if ($statement->rowCount()) {
+            $row = $statement->fetch();
             $userServiceId = $row['us_id'];
 
             $this->updateUserService(
@@ -670,16 +665,13 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
 
         // Ustawiamy jednakowe hasła dla wszystkich usług tego gracza na tym serwerze
-        $this->db->query(
-            $this->db->prepare(
-                "UPDATE `" .
-                    $this::USER_SERVICE_TABLE .
-                    "` " .
-                    "SET `password` = '%s' " .
-                    "WHERE `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s'",
-                [$password, $serverId, $type, $authData]
+        $this->db
+            ->statement(
+                "UPDATE `{$this->getUserServiceTable()}` " .
+                    "SET `password` = ? " .
+                    "WHERE `server` = ? AND `type` = ? AND `auth_data` = ?"
             )
-        );
+            ->execute([$password, $serverId, $type, $authData]);
 
         // Przeliczamy flagi gracza, ponieważ dodaliśmy nową usługę
         $this->recalculatePlayerFlags($serverId, $type, $authData);
@@ -1108,14 +1100,20 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     // Weryfikacja danych przy dodawaniu i przy edycji usługi gracza
     // Zebrane w jednej funkcji, aby nie mnożyć kodu
     //
-    private function verifyUserServiceData($data, $warnings, $server = true)
+    private function verifyUserServiceData(array $data, array $warnings, $server = true)
     {
+        $uid = array_get($data, 'uid');
+        $type = array_get($data, 'type');
+        $authData = array_get($data, 'auth_data');
+        $password = array_get($data, 'password');
+        $serverId = array_get($data, 'server_id');
+
         // ID użytkownika
-        if ($data['uid']) {
-            if ($warning = check_for_warnings("uid", $data['uid'])) {
+        if ($uid) {
+            if ($warning = check_for_warnings("uid", $uid)) {
                 $warnings['uid'] = array_merge((array) $warnings['uid'], $warning);
             } else {
-                $editedUser = $this->heart->getUser($data['uid']);
+                $editedUser = $this->heart->getUser($uid);
                 if (!$editedUser->exists()) {
                     $warnings['uid'][] = $this->lang->t('no_account_id');
                 }
@@ -1125,51 +1123,48 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         // Typ usługi
         // Mogą być tylko 3 rodzaje typu
         if (
-            $data['type'] != ExtraFlagType::TYPE_NICK &&
-            $data['type'] != ExtraFlagType::TYPE_IP &&
-            $data['type'] != ExtraFlagType::TYPE_SID
+            $type != ExtraFlagType::TYPE_NICK &&
+            $type != ExtraFlagType::TYPE_IP &&
+            $type != ExtraFlagType::TYPE_SID
         ) {
             $warnings['type'][] = $this->lang->t('must_choose_service_type');
         } else {
-            if (!($this->service->getTypes() & $data['type'])) {
+            if (!($this->service->getTypes() & $type)) {
                 $warnings['type'][] = $this->lang->t('forbidden_purchase_type');
-            } elseif ($data['type'] & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)) {
+            } elseif ($type & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)) {
                 // Nick
                 if (
-                    $data['type'] == ExtraFlagType::TYPE_NICK &&
-                    ($warning = check_for_warnings("nick", $data['auth_data']))
+                    $type == ExtraFlagType::TYPE_NICK &&
+                    ($warning = check_for_warnings("nick", $authData))
                 ) {
                     $warnings['nick'] = array_merge((array) $warnings['nick'], $warning);
                 }
                 // IP
                 elseif (
-                    $data['type'] == ExtraFlagType::TYPE_IP &&
-                    ($warning = check_for_warnings("ip", $data['auth_data']))
+                    $type == ExtraFlagType::TYPE_IP &&
+                    ($warning = check_for_warnings("ip", $authData))
                 ) {
                     $warnings['ip'] = array_merge((array) $warnings['ip'], $warning);
                 }
 
                 // Hasło
-                if (
-                    strlen($data['password']) &&
-                    ($warning = check_for_warnings("password", $data['password']))
-                ) {
+                if (strlen($password) && ($warning = check_for_warnings("password", $password))) {
                     $warnings['password'] = array_merge((array) $warnings['password'], $warning);
                 }
             }
             // SteamID
-            elseif ($warning = check_for_warnings("sid", $data['auth_data'])) {
+            elseif ($warning = check_for_warnings("sid", $authData)) {
                 $warnings['sid'] = array_merge((array) $warnings['sid'], $warning);
             }
         }
 
         // Server
         if ($server) {
-            if (!strlen($data['server_id'])) {
+            if (!strlen($serverId)) {
                 $warnings['server_id'][] = $this->lang->t('choose_server_for_service');
             }
             // Wyszukiwanie serwera o danym id
-            elseif (($server = $this->heart->getServer($data['server_id'])) === null) {
+            elseif (($server = $this->heart->getServer($serverId)) === null) {
                 $warnings['server_id'][] = $this->lang->t('no_server_id');
             }
         }
@@ -1337,7 +1332,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     // ----------------------------------------------------------------------------------
     // ### Dodatkowe funkcje przydatne przy zarządzaniu usługami użytkowników
 
-    private function userServiceEdit(ExtraFlagsUserService $userService, $data)
+    private function userServiceEdit(ExtraFlagsUserService $userService, array $data)
     {
         $set = [];
         // Dodanie hasła do zapytania

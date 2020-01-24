@@ -125,7 +125,7 @@ CREATE TABLE IF NOT EXISTS `ss_user_service_extra_flags` (
               COLLATE utf8_bin NOT NULL,
   `server`    INT(11)          NOT NULL,
   `type`      INT(11)          NOT NULL,
-  `auth_data` VARCHAR(64)      NOT NULL,
+  `auth_data` VARCHAR(64)      CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `password`  VARCHAR(64)
               CHARACTER SET utf8
               COLLATE utf8_bin NOT NULL,
@@ -464,7 +464,7 @@ CREATE TABLE IF NOT EXISTS `ss_bought_services` (
                COLLATE utf8_bin NOT NULL,
   `server`     INT(11)          NOT NULL,
   `amount`     VARCHAR(32)      NOT NULL DEFAULT '',
-  `auth_data`  VARCHAR(64)      NOT NULL DEFAULT '',
+  `auth_data`  VARCHAR(64)      CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL DEFAULT '',
   `email`      VARCHAR(128)     NOT NULL DEFAULT '',
   `extra_data` VARCHAR(256)     NOT NULL DEFAULT '',
   `timestamp`  TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -568,7 +568,7 @@ CREATE TABLE IF NOT EXISTS `ss_players_flags` (
   `id`        INT(11)          NOT NULL AUTO_INCREMENT,
   `server`    INT(11)          NOT NULL,
   `type`      INT(11)          NOT NULL DEFAULT '0',
-  `auth_data` VARCHAR(32)      NOT NULL,
+  `auth_data` VARCHAR(64)      CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `password`  VARCHAR(34)
               CHARACTER SET utf8
               COLLATE utf8_bin NOT NULL,

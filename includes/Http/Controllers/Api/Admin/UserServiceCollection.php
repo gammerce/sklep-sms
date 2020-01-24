@@ -26,16 +26,15 @@ class UserServiceCollection
 
         $returnData = $serviceModule->userServiceAdminAdd($request->request->all());
 
-        // Przerabiamy ostrzeżenia, aby lepiej wyglądały
-        if ($returnData['status'] == "warnings") {
+        if ($returnData["status"] === "warnings") {
             $returnData["data"]["warnings"] = format_warnings($returnData["data"]["warnings"]);
         }
 
         return new ApiResponse(
-            $returnData['status'],
-            $returnData['text'],
-            $returnData['positive'],
-            $returnData['data']
+            array_get($returnData, 'status'),
+            array_get($returnData, 'text'),
+            array_get($returnData, 'positive'),
+            array_get($returnData, 'data')
         );
     }
 }
