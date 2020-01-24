@@ -52,7 +52,7 @@ class UserServiceCollectionTest extends HttpTestCase
         $this->assertSame('abc123', $userService->getPassword());
         $this->assertSame($server->getId(), $userService->getServerId());
         $this->assertSame(0, $userService->getUid());
-        $this->assertSame(time() + 5 * 24 * 60 * 60, $userService->getExpire());
+        $this->assertAlmostSameTimestamp(time() + 5 * 24 * 60 * 60, $userService->getExpire());
     }
 
     /** @test */
@@ -80,7 +80,7 @@ class UserServiceCollectionTest extends HttpTestCase
         // then
         $userServices = $this->userServiceService->find();
         $this->assertCount(1, $userServices);
-        $this->assertSame(time() + 11 * 24 * 60 * 60, $userServices[0]->getExpire());
+        $this->assertAlmostSameTimestamp(time() + 11 * 24 * 60 * 60, $userServices[0]->getExpire());
     }
 
     /** @test */
@@ -108,7 +108,7 @@ class UserServiceCollectionTest extends HttpTestCase
         // then
         $userServices = $this->userServiceService->find();
         $this->assertCount(2, $userServices);
-        $this->assertSame(time() + 6 * 24 * 60 * 60, $userServices[0]->getExpire());
-        $this->assertSame(time() + 5 * 24 * 60 * 60, $userServices[1]->getExpire());
+        $this->assertAlmostSameTimestamp(time() + 6 * 24 * 60 * 60, $userServices[0]->getExpire());
+        $this->assertAlmostSameTimestamp(time() + 5 * 24 * 60 * 60, $userServices[1]->getExpire());
     }
 }

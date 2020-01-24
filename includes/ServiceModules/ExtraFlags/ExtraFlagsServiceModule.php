@@ -162,13 +162,11 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         // czyli kiedy edytujemy, a nie dodajemy usługę
         $flags = $this->service ? $this->service->getFlags() : "";
 
-        return $this->template->render(
+        return $this->template->renderNoComments(
             "services/extra_flags/extra_fields",
             compact('webSelNo', 'webSelYes', 'types', 'flags') + [
                 'moduleId' => $this->getModuleId(),
-            ],
-            true,
-            false
+            ]
         );
     }
 
@@ -554,7 +552,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ? $this->lang->t('forever')
             : $purchase->getOrder(Purchase::ORDER_QUANTITY) . " " . $this->service->getTag();
 
-        return $this->template->render(
+        return $this->template->renderNoComments(
             "services/extra_flags/order_details",
             compact(
                 'quantity',
@@ -564,9 +562,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 'email',
                 'serviceName',
                 'serverName'
-            ),
-            true,
-            false
+            )
         );
     }
 
@@ -610,6 +606,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $forever = false
     ) {
         $authData = trim($authData);
+        $password = strlen($password) ? $password : '';
 
         // Usunięcie przestarzałych usług gracza
         $this->expiredUserServiceService->deleteExpiredUserServices();
@@ -810,26 +807,22 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
 
         if ($action == "email") {
-            return $this->template->render(
+            return $this->template->renderNoComments(
                 "services/extra_flags/purchase_info_email",
                 compact('data', 'amount', 'password', 'setinfo') + [
                     'serviceName' => $this->service->getName(),
                     'serverName' => $server->getName(),
-                ],
-                true,
-                false
+                ]
             );
         }
 
         if ($action == "web") {
-            return $this->template->render(
+            return $this->template->renderNoComments(
                 "services/extra_flags/purchase_info_web",
                 compact('cost', 'amount', 'data', 'password', 'setinfo') + [
                     'serviceName' => $this->service->getName(),
                     'serverName' => $server->getName(),
-                ],
-                true,
-                false
+                ]
             );
         }
 
@@ -873,11 +866,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ]);
         }
 
-        return $this->template->render(
+        return $this->template->renderNoComments(
             "services/extra_flags/user_service_admin_add",
-            compact('types', 'servers') + ['moduleId' => $this->getModuleId()],
-            true,
-            false
+            compact('types', 'servers') + ['moduleId' => $this->getModuleId()]
         );
     }
 

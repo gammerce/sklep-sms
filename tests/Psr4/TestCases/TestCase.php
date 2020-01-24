@@ -119,4 +119,10 @@ class TestCase extends BaseTestCase
         $localeService->shouldReceive('getLocale')->andReturn('pl');
         $this->app->instance(LocaleService::class, $localeService);
     }
+
+    protected function assertAlmostSameTimestamp($expected, $value)
+    {
+        $this->assertLessThanOrEqual($expected + 2, $value);
+        $this->assertGreaterThanOrEqual($expected - 2, $value);
+    }
 }
