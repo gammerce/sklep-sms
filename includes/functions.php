@@ -9,6 +9,8 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\View\Html\Div;
 use App\View\Html\DOMElement;
+use App\View\Html\Li;
+use App\View\Html\Ul;
 use Illuminate\Container\Container;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -543,7 +545,13 @@ function format_warnings(array $warnings)
 
     foreach ($warnings as $brick => $warning) {
         if ($warning) {
-            $help = new Div(implode("<br />", (array) $warning));
+            $items = collect($warning)
+                ->map(function ($text) {
+                    return new Li($text);
+                })
+                ->all();
+
+            $help = new Ul($items);
             $help->addClass("form_warning help is-danger");
             $output[$brick] = $help->toHtml();
         }

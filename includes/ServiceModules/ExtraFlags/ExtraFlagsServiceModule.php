@@ -384,7 +384,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             'passwordr' => $passwordRepeat,
         ]);
         $purchase->setEmail($email);
-        $purchase->setPrice($price);
+        if ($price) {
+            $purchase->setPrice($price);
+        }
 
         return $this->purchaseDataValidate($purchase);
     }
@@ -906,14 +908,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $warnings = [];
 
-        // Sprawdzamy hasło, jeżeli podano nick albo ip
-        if (
-            $type & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP) &&
-            ($warning = check_for_warnings("password", $password))
-        ) {
-            $warnings['password'] = array_merge((array) $warnings['password'], $warning);
-        }
-
         if (!$forever) {
             if ($warning = check_for_warnings("number", $quantity)) {
                 $warnings['quantity'] = array_merge((array) $warnings['quantity'], $warning);
@@ -1139,42 +1133,36 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         } else {
             if (!($this->service->getTypes() & $data['type'])) {
                 $warnings['type'][] = $this->lang->t('forbidden_purchase_type');
-            } else {
-                if ($data['type'] & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)) {
-                    // Nick
-                    if (
-                        $data['type'] == ExtraFlagType::TYPE_NICK &&
-                        ($warning = check_for_warnings("nick", $data['auth_data']))
+            } elseif ($data['type'] & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)) {
+                // Nick
+                if (
+                    $data['type'] == ExtraFlagType::TYPE_NICK &&
+                    ($warning = check_for_warnings("nick", $data['auth_data']))
+                ) {
+                    $warnings['nick'] = array_merge((array) $warnings['nick'], $warning);
+                }
+                // IP
+                elseif (
+                        $data['type'] == ExtraFlagType::TYPE_IP &&
+                        ($warning = check_for_warnings("ip", $data['auth_data']))
                     ) {
-                        $warnings['nick'] = array_merge((array) $warnings['nick'], $warning);
-                    }
-                    // IP
-                    else {
-                        if (
-                            $data['type'] == ExtraFlagType::TYPE_IP &&
-                            ($warning = check_for_warnings("ip", $data['auth_data']))
-                        ) {
-                            $warnings['ip'] = array_merge((array) $warnings['ip'], $warning);
-                        }
+                        $warnings['ip'] = array_merge((array) $warnings['ip'], $warning);
                     }
 
-                    // Hasło
-                    if (
-                        strlen($data['password']) &&
-                        ($warning = check_for_warnings("password", $data['password']))
-                    ) {
-                        $warnings['password'] = array_merge(
-                            (array) $warnings['password'],
-                            $warning
-                        );
-                    }
+                // Hasło
+                if (
+                    strlen($data['password']) &&
+                    ($warning = check_for_warnings("password", $data['password']))
+                ) {
+                    $warnings['password'] = array_merge(
+                        (array) $warnings['password'],
+                        $warning
+                    );
                 }
-                // SteamID
-                else {
-                    if ($warning = check_for_warnings("sid", $data['auth_data'])) {
-                        $warnings['sid'] = array_merge((array) $warnings['sid'], $warning);
-                    }
-                }
+            }
+            // SteamID
+            elseif ($warning = check_for_warnings("sid", $data['auth_data'])) {
+                $warnings['sid'] = array_merge((array) $warnings['sid'], $warning);
             }
         }
 

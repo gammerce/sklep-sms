@@ -16,7 +16,7 @@ class Collection implements ArrayAccess, Arrayable, Countable
         if ($items instanceof Traversable) {
             $this->items = iterator_to_array($items);
         } else {
-            $this->items = $items;
+            $this->items = (array) $items;
         }
     }
 

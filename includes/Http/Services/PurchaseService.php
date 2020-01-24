@@ -62,7 +62,9 @@ class PurchaseService
             Purchase::PAYMENT_SMS_PLATFORM => $paymentPlatformId,
         ]);
 
-        $purchase->setPrice($price);
+        if ($price) {
+            $purchase->setPrice($price);
+        }
 
         $returnValidation = $serviceModule->purchaseDataValidate($purchase);
 
