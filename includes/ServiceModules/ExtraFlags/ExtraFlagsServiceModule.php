@@ -2,6 +2,7 @@
 namespace App\ServiceModules\ExtraFlags;
 
 use App\Exceptions\UnauthorizedException;
+use App\Http\Validation\WarningBag;
 use App\Loggers\DatabaseLogger;
 use App\Models\ExtraFlagsUserService;
 use App\Models\Purchase;
@@ -395,10 +396,10 @@ class ExtraFlagsServiceModule extends ServiceModule implements
      */
     public function purchaseDataValidate(Purchase $purchase)
     {
-        $warnings = [];
+        $warnings = new WarningBag();
 
         if (!strlen($purchase->getOrder(Purchase::ORDER_SERVER))) {
-            $warnings['server_id'][] = $this->lang->t('must_choose_server');
+            $warnings->add('server_id', $this->lang->t('must_choose_server'));
         } else {
             $server = $this->heart->getServer($purchase->getOrder(Purchase::ORDER_SERVER));
 
@@ -406,7 +407,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 !$server ||
                 !$this->heart->serverServiceLinked($server->getId(), $this->service->getId())
             ) {
-                $warnings['server_id'][] = $this->lang->t('chosen_incorrect_server');
+                $warnings->add('server_id', $this->lang->t('chosen_incorrect_server'));
             } elseif ($server->getSmsPlatformId()) {
                 $purchase->setPayment([
                     Purchase::PAYMENT_SMS_PLATFORM => $server->getSmsPlatformId(),
@@ -416,7 +417,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $price = $purchase->getPrice();
         if (!$price) {
-            $warnings['price_id'][] = $this->lang->t('must_choose_quantity');
+            $warnings->add('price_id', $this->lang->t('must_choose_quantity'));
         } elseif (!$this->purchaseValidationService->isPriceAvailable($price, $purchase)) {
             return [
                 'status' => "no_option",
@@ -432,9 +433,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $purchase->getOrder('type') != ExtraFlagType::TYPE_IP &&
             $purchase->getOrder('type') != ExtraFlagType::TYPE_SID
         ) {
-            $warnings['type'][] = $this->lang->t('must_choose_type');
+            $warnings->add('type', $this->lang->t('must_choose_type'));
         } elseif (!($this->service->getTypes() & $purchase->getOrder('type'))) {
-            $warnings['type'][] = $this->lang->t('chosen_incorrect_type');
+            $warnings->add('type', $this->lang->t('chosen_incorrect_type'));
         } elseif (
             $purchase->getOrder('type') &
             (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)
@@ -442,7 +443,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             // Nick
             if ($purchase->getOrder('type') == ExtraFlagType::TYPE_NICK) {
                 if ($warning = check_for_warnings("nick", $purchase->getOrder('auth_data'))) {
-                    $warnings['nick'] = array_merge((array) $warnings['nick'], $warning);
+                    $warnings->add('nick', $warning);
                 }
 
                 // Sprawdzanie czy istnieje już taka usługa
@@ -461,7 +462,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             // IP
             elseif ($purchase->getOrder('type') == ExtraFlagType::TYPE_IP) {
                 if ($warning = check_for_warnings("ip", $purchase->getOrder('auth_data'))) {
-                    $warnings['ip'] = array_merge((array) $warnings['ip'], $warning);
+                    $warnings->add('ip', $warning);
                 }
 
                 // Sprawdzanie czy istnieje już taka usługa
@@ -480,10 +481,10 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
             // Hasło
             if ($warning = check_for_warnings("password", $purchase->getOrder('password'))) {
-                $warnings['password'] = array_merge((array) $warnings['password'], $warning);
+                $warnings->add('password', $warning);
             }
             if ($purchase->getOrder('password') != $purchase->getOrder('passwordr')) {
-                $warnings['password_repeat'][] = $this->lang->t('passwords_not_match');
+                $warnings->add('password_repeat', $this->lang->t('passwords_not_match'));
             }
 
             // Sprawdzanie czy istnieje już taka usługa
@@ -493,9 +494,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                     $tmpPassword != $purchase->getOrder('password') &&
                     $tmpPassword != md5($purchase->getOrder('password'))
                 ) {
-                    $warnings['password'][] = $this->lang->t(
-                        'existing_service_has_different_password'
-                    );
+                    $warnings->add('password', $this->lang->t('existing_service_has_different_password'));
                 }
             }
 
@@ -503,7 +502,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
         // SteamID
         elseif ($warning = check_for_warnings("sid", $purchase->getOrder('auth_data'))) {
-            $warnings['sid'] = array_merge((array) $warnings['sid'], $warning);
+            $warnings->add('sid', $warning);
         }
 
         // E-mail
@@ -512,15 +511,15 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 strlen($purchase->getEmail())) &&
             ($warning = check_for_warnings("email", $purchase->getEmail()))
         ) {
-            $warnings['email'] = array_merge((array) $warnings['email'], $warning);
+            $warnings->add('email', $warning);
         }
 
-        if ($warnings) {
+        if ($warnings->isPopulated()) {
             return [
                 'status' => "warnings",
                 'text' => $this->lang->t('form_wrong_filled'),
                 'positive' => false,
-                'data' => ['warnings' => $warnings],
+                'data' => ['warnings' => $warnings->all()],
             ];
         }
 

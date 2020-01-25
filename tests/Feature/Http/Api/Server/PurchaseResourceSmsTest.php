@@ -1,6 +1,8 @@
 <?php
 namespace Tests\Feature\Http;
 
+use App\Models\PaymentPlatform;
+use App\Models\Price;
 use App\Models\Purchase;
 use App\Models\Server;
 use App\Repositories\BoughtServiceRepository;
@@ -17,11 +19,40 @@ class PurchaseResourceSmsTest extends HttpTestCase
     use GosettiConcern;
     use PaymentModuleFactoryConcern;
 
+    /** @var PaymentPlatform */
+    private $paymentPlatform;
+
+    /** @var Server */
+    private $server;
+
+    /** @var Price */
+    private $price;
+
+    /** @var string */
+    private $serviceId = 'vip';
+
     protected function setUp()
     {
         parent::setUp();
         $this->mockRequester();
         $this->mockPaymentModuleFactory();
+        $this->makeVerifySmsSuccessful(Gosetti::class);
+        $this->mockGoSettiGetData();
+
+        /** @var PaymentPlatformRepository $paymentPlatformRepository */
+        $paymentPlatformRepository = $this->app->make(PaymentPlatformRepository::class);
+
+        $this->paymentPlatform = $paymentPlatformRepository->create("test", Gosetti::MODULE_ID);
+
+        $this->server = $this->factory->server();
+        $this->factory->serverService([
+            'server_id' => $this->server->getId(),
+            'service_id' => $this->serviceId,
+        ]);
+        $this->price = $this->factory->price([
+            'service_id' => $this->serviceId,
+            'server_id' => $this->server->getId(),
+        ]);
     }
 
     /** @test */
@@ -31,46 +62,29 @@ class PurchaseResourceSmsTest extends HttpTestCase
         /** @var BoughtServiceRepository $boughtServiceRepository */
         $boughtServiceRepository = $this->app->make(BoughtServiceRepository::class);
 
-        /** @var PaymentPlatformRepository $paymentPlatformRepository */
-        $paymentPlatformRepository = $this->app->make(PaymentPlatformRepository::class);
-
         /** @var Settings $settings */
         $settings = $this->app->make(Settings::class);
 
-        $serviceId = 'vip';
         $authData = 'test';
         $password = 'test123';
         $smsCode = 'ABCD12EF';
         $type = ExtraFlagType::TYPE_NICK;
 
-        $paymentPlatform = $paymentPlatformRepository->create("test", Gosetti::MODULE_ID);
-        $server = $this->factory->server();
-        $this->factory->serverService([
-            'server_id' => $server->getId(),
-            'service_id' => $serviceId,
-        ]);
-        $price = $this->factory->price([
-            'service_id' => $serviceId,
-            'server_id' => $server->getId(),
-        ]);
-
         $sign = md5(implode("#", [$type, $authData, $smsCode, $settings->get("random_key")]));
-
-        $this->mockGoSetti();
 
         // when
         $response = $this->post(
             '/api/server/purchase',
             [
-                'service_id' => $serviceId,
-                'payment_platform_id' => (string) $paymentPlatform->getId(),
-                'server_id' => (string) $server->getId(),
-                'type' => (string) $type,
+                'service_id' => $this->serviceId,
+                'payment_platform_id' => $this->paymentPlatform->getId(),
+                'server_id' => $this->server->getId(),
+                'type' => $type,
                 'auth_data' => $authData,
                 'password' => $password,
                 'sms_code' => $smsCode,
                 'method' => Purchase::METHOD_SMS,
-                'price_id' => (string) $price->getId(),
+                'price_id' => $this->price->getId(),
                 'ip' => "192.0.2.1",
                 'sign' => $sign,
             ],
@@ -90,15 +104,53 @@ class PurchaseResourceSmsTest extends HttpTestCase
         );
 
         preg_match("#<bsid>(\d+)</bsid>#", $response->getContent(), $matches);
-        $boughtServiceId = (int) $matches[1];
+        $boughtServiceId = $matches[1];
         $boughtService = $boughtServiceRepository->get($boughtServiceId);
         $this->assertNotNull($boughtService);
         $this->assertEquals(Purchase::METHOD_SMS, $boughtService->getMethod());
     }
 
-    private function mockGoSetti()
+    /** @test */
+    public function fails_with_invalid_data_passes()
     {
-        $this->makeVerifySmsSuccessful(Gosetti::class);
-        $this->mockGoSettiGetData();
+        // given
+        /** @var Settings $settings */
+        $settings = $this->app->make(Settings::class);
+
+        $authData = 'a';
+        $smsCode = 'ABCD12EF';
+        $type = ExtraFlagType::TYPE_NICK;
+
+        $sign = md5(implode("#", [$type, $authData, $smsCode, $settings->get("random_key")]));
+
+        // when
+        $response = $this->post(
+            '/api/server/purchase',
+            [
+                'service_id' => $this->serviceId,
+                'payment_platform_id' => $this->paymentPlatform->getId(),
+                'server_id' => $this->server->getId(),
+                'type' => $type,
+                'auth_data' => $authData,
+                'sms_code' => $smsCode,
+                'method' => Purchase::METHOD_SMS,
+                'price_id' => $this->price->getId(),
+                'email' => 'a',
+                'sign' => $sign,
+            ],
+            [
+                'key' => md5($settings->get("random_key")),
+            ],
+            [
+                'User-Agent' => Server::TYPE_AMXMODX,
+            ]
+        );
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(
+            "<return_value>warnings</return_value><text>Nie wszystkie pola formularza zostały prawidłowo wypełnione.</text><positive>0</positive><warnings><strong>nick</strong><br />Pole musi się składać z co najmniej 2 znaków.<br /><strong>password</strong><br />Pole musi się składać z co najmniej 6 znaków.<br /></warnings>",
+            $response->getContent()
+        );
     }
 }

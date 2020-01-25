@@ -69,18 +69,16 @@ class PurchaseService
         $returnValidation = $serviceModule->purchaseDataValidate($purchase);
 
         if ($returnValidation['status'] !== "ok") {
-            $extraData = '';
-            if ($returnValidation["data"]["warnings"]) {
-                $warnings = '';
-                foreach ($returnValidation["data"]["warnings"] as $what => $warning) {
-                    $warnings .=
-                        "<strong>{$what}</strong><br />" . implode("<br />", $warning) . "<br />";
-                }
+            $data = array_get($returnValidation, 'data', []);
+            $warnings = array_get($data, 'warnings', []);
 
-                if (strlen($warnings)) {
-                    $extraData .= "<warnings>{$warnings}</warnings>";
-                }
-            }
+            $warningsText = collect($warnings)
+                ->map(function ($warning, $key) {
+                    return "<strong>{$key}</strong><br />" . implode("<br />", $warning) . "<br />";
+                })
+                ->join();
+
+            $extraData = $warningsText ? "<warnings>$warningsText</warnings>" : '';
 
             return [
                 "status" => $returnValidation['status'],

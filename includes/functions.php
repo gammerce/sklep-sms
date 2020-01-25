@@ -7,7 +7,6 @@ use App\System\Auth;
 use App\System\Database;
 use App\System\Settings;
 use App\Translation\TranslationManager;
-use App\View\Html\Div;
 use App\View\Html\DOMElement;
 use App\View\Html\Li;
 use App\View\Html\Ul;
@@ -626,4 +625,11 @@ function get_class_from_file($path)
     }
 
     return null;
+}
+
+if (!function_exists('is_iterable')) {
+    function is_iterable($value)
+    {
+        return is_array($value) || $value instanceof Traversable;
+    }
 }

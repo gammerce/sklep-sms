@@ -28,7 +28,13 @@ class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Countable
      */
     public function map(callable $callback)
     {
-        return new Collection(array_map($callback, $this->items));
+        $result = [];
+
+        foreach ($this->items as $key => $value) {
+            $result[] = $callback($value, $key);
+        }
+
+        return new Collection($result);
     }
 
     /**
