@@ -2,11 +2,13 @@
 namespace App\Support;
 
 use ArrayAccess;
+use ArrayIterator;
 use Countable;
 use Illuminate\Contracts\Support\Arrayable;
+use IteratorAggregate;
 use Traversable;
 
-class Collection implements ArrayAccess, Arrayable, Countable
+class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Countable
 {
     /** @var array */
     private $items;
@@ -134,5 +136,10 @@ class Collection implements ArrayAccess, Arrayable, Countable
     public function isPopulated()
     {
         return !$this->isEmpty();
+    }
+
+    public function getIterator()
+    {
+        return new ArrayIterator($this->items);
     }
 }
