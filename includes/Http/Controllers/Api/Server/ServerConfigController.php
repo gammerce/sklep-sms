@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Api\Server;
 
 use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\InvalidConfigException;
-use App\Http\Responses\ServerResponse;
+use App\Http\Responses\AssocResponse;
 use App\Models\Price;
 use App\Models\Server;
 use App\Models\Service;
@@ -63,42 +63,36 @@ class ServerConfigController
             ->all();
         $prices = $serverDataService->findPrices($serviceIds, $server);
 
-        $serviceItems = collect($services)
-            ->map(function (Service $service) {
-                return [
-                    'i' => $service->getId(),
-                    'n' => $service->getName(),
-                    'd' => $service->getShortDescription(),
-                    'ta' => $service->getTag(),
-                    'f' => $service->getFlags(),
-                    'ty' => $service->getTypes(),
-                ];
-            })
-            ->all();
+        $serviceItems = collect($services)->map(function (Service $service) {
+            return [
+                'i' => $service->getId(),
+                'n' => $service->getName(),
+                'd' => $service->getShortDescription(),
+                'ta' => $service->getTag(),
+                'f' => $service->getFlags(),
+                'ty' => $service->getTypes(),
+            ];
+        });
 
-        $priceItems = collect($prices)
-            ->map(function (Price $price) {
-                return [
-                    'i' => $price->getId(),
-                    's' => $price->getServiceId(),
-                    'p' => $price->getSmsPrice(),
-                    // Replace null with -1 cause it's easier to handle it by plugins
-                    'q' => $price->getQuantity() !== null ? $price->getQuantity() : -1,
-                ];
-            })
-            ->all();
+        $priceItems = collect($prices)->map(function (Price $price) {
+            return [
+                'i' => $price->getId(),
+                's' => $price->getServiceId(),
+                'p' => $price->getSmsPrice(),
+                // Replace null with -1 cause it's easier to handle it by plugins
+                'q' => $price->getQuantity() !== null ? $price->getQuantity() : -1,
+            ];
+        });
 
-        $smsNumberItems = collect($smsNumbers)
-            ->map(function (SmsNumber $smsNumber) {
-                return $smsNumber->getNumber();
-            })
-            ->all();
+        $smsNumberItems = collect($smsNumbers)->map(function (SmsNumber $smsNumber) {
+            return $smsNumber->getNumber();
+        });
 
         $steamIds = collect($userRepository->allWithSteamId())
             ->map(function (User $user) {
                 return $user->getSteamId();
             })
-            ->all();
+            ->join(";");
 
         $serverRepository->touch($server->getId(), $platform, $version);
 
@@ -107,18 +101,18 @@ class ServerConfigController
             'license_token' => $settings->getLicenseToken(),
             'sms_platform_id' => $smsPlatformId,
             'sms_text' => $smsModule->getSmsCode(),
-            'steam_ids' => implode(";", $steamIds) . ";",
+            'steam_ids' => "$steamIds;",
             'currency' => $settings->getCurrency(),
             'contact' => $settings->getContact(),
             'vat' => $settings->getVat(),
-            'sn' => $smsNumberItems,
-            'se' => $serviceItems,
-            'pr' => $priceItems,
+            'sn' => $smsNumberItems->all(),
+            'se' => $serviceItems->all(),
+            'pr' => $priceItems->all(),
         ];
 
         return $acceptHeader->has("application/json")
             ? new JsonResponse($data)
-            : new ServerResponse($data);
+            : new AssocResponse($data);
     }
 
     private function isVersionAcceptable($platform, $version)

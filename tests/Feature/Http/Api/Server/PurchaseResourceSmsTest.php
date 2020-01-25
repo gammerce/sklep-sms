@@ -111,6 +111,56 @@ class PurchaseResourceSmsTest extends HttpTestCase
     }
 
     /** @test */
+    public function purchase_using_sms_accept_application_assoc()
+    {
+        // given
+        /** @var Settings $settings */
+        $settings = $this->app->make(Settings::class);
+
+        $authData = 'test';
+        $password = 'test123';
+        $smsCode = 'ABCD12EF';
+        $type = ExtraFlagType::TYPE_NICK;
+
+        $sign = md5(implode("#", [$type, $authData, $smsCode, $settings->get("random_key")]));
+
+        // when
+        $response = $this->post(
+            '/api/server/purchase',
+            [
+                'service_id' => $this->serviceId,
+                'payment_platform_id' => $this->paymentPlatform->getId(),
+                'server_id' => $this->server->getId(),
+                'type' => $type,
+                'auth_data' => $authData,
+                'password' => $password,
+                'sms_code' => $smsCode,
+                'method' => Purchase::METHOD_SMS,
+                'price_id' => $this->price->getId(),
+                'ip' => "192.0.2.1",
+                'sign' => $sign,
+            ],
+            [
+                'key' => md5($settings->get("random_key")),
+            ],
+            [
+                'Accept' => 'application/assoc',
+                'User-Agent' => Server::TYPE_AMXMODX,
+            ]
+        );
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $data = implode("\n", [
+            'status:purchased',
+            'text:Usługa została prawidłowo zakupiona.',
+            'positive:1',
+            'bsid:\d+',
+        ]);
+        $this->assertRegExp("#^$data$#", $response->getContent());
+    }
+
+    /** @test */
     public function fails_with_invalid_data_passes()
     {
         // given

@@ -69,16 +69,16 @@ class PurchaseService
         $returnValidation = $serviceModule->purchaseDataValidate($purchase);
 
         if ($returnValidation['status'] !== "ok") {
-            $data = array_get($returnValidation, 'data', []);
-            $warnings = array_get($data, 'warnings', []);
+            $extraData = [];
 
-            $warningsText = collect($warnings)
-                ->map(function ($warning, $key) {
-                    return "<strong>{$key}</strong><br />" . implode("<br />", $warning) . "<br />";
-                })
-                ->join();
-
-            $extraData = $warningsText ? "<warnings>$warningsText</warnings>" : '';
+            if (isset($returnValidation["data"]["warnings"])) {
+                $extraData['warnings'] = collect($returnValidation["data"]["warnings"])
+                    ->map(function ($warning, $key) {
+                        $text = implode("<br />", $warning);
+                        return "<strong>{$key}</strong><br />{$text}<br />";
+                    })
+                    ->join();
+            }
 
             return [
                 "status" => $returnValidation['status'],
@@ -90,21 +90,18 @@ class PurchaseService
 
         $returnPayment = $this->paymentService->makePayment($purchase);
 
-        $extraData = "";
+        $extraData = [];
 
         if (isset($returnPayment['data']['bsid'])) {
-            $extraData .= "<bsid>{$returnPayment['data']['bsid']}</bsid>";
+            $extraData['bsid'] = $returnPayment['data']['bsid'];
         }
 
-        if (isset($returnPayment["data"]["warnings"])) {
-            $warnings = "";
-            foreach ($returnPayment["data"]["warnings"] as $what => $text) {
-                $warnings .= "<strong>{$what}</strong><br />{$text}<br />";
-            }
-
-            if (strlen($warnings)) {
-                $extraData .= "<warnings>{$warnings}</warnings>";
-            }
+        if (isset($returnPayment['data']['warnings'])) {
+            $extraData['warnings'] = collect($returnPayment['data']['warnings'])
+                ->map(function ($warning, $key) {
+                    return "<strong>{$key}</strong><br />{$warning}<br />";
+                })
+                ->join();
         }
 
         return [
