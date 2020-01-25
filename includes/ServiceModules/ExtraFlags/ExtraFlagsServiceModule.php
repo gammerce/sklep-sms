@@ -494,7 +494,10 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                     $tmpPassword != $purchase->getOrder('password') &&
                     $tmpPassword != md5($purchase->getOrder('password'))
                 ) {
-                    $warnings->add('password', $this->lang->t('existing_service_has_different_password'));
+                    $warnings->add(
+                        'password',
+                        $this->lang->t('existing_service_has_different_password')
+                    );
                 }
             }
 
