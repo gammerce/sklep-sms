@@ -13,8 +13,8 @@ trait MakesHttpRequests
         $kernel = $this->app->make(KernelContract::class);
 
         $request = Request::create($this->prepareUrlForRequest($uri), $method);
-        $request->query->replace($query);
-        $request->request->replace($body);
+        $request->query->replace($this->castValuesToString($query));
+        $request->request->replace($this->castValuesToString($body));
         foreach ($headers as $key => $value) {
             $request->headers->set($key, $value);
         }
@@ -53,5 +53,16 @@ trait MakesHttpRequests
     protected function prepareUrlForRequest($uri)
     {
         return 'http://localhost/' . ltrim($uri, "/");
+    }
+
+    private function castValuesToString(array $data)
+    {
+        $output = [];
+
+        foreach ($data as $key => $value) {
+            $output[$key] = $value;
+        }
+
+        return $output;
     }
 }

@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase as BaseTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Tests\Psr4\Concerns\ApplicationConcern;
 use Tests\Psr4\Concerns\FileSystemConcern;
+use Tests\Psr4\Concerns\MailerConcern;
 use Tests\Psr4\Concerns\MockeryConcern;
 use Tests\Psr4\Factory;
 
@@ -18,6 +19,7 @@ class TestCase extends BaseTestCase
 {
     use ApplicationConcern;
     use FileSystemConcern;
+    use MailerConcern;
     use MockeryConcern;
 
     /** @var Application */
@@ -44,6 +46,7 @@ class TestCase extends BaseTestCase
         $this->factory = $this->app->make(Factory::class);
         $this->mockLicense();
         $this->mockFileSystem();
+        $this->mockMailer();
 
         if ($this->mockLocale) {
             $this->mockLocale();
@@ -118,5 +121,11 @@ class TestCase extends BaseTestCase
         $localeService = Mockery::mock(LocaleService::class);
         $localeService->shouldReceive('getLocale')->andReturn('pl');
         $this->app->instance(LocaleService::class, $localeService);
+    }
+
+    protected function assertAlmostSameTimestamp($expected, $value)
+    {
+        $this->assertLessThanOrEqual($expected + 2, $value);
+        $this->assertGreaterThanOrEqual($expected - 2, $value);
     }
 }

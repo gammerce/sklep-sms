@@ -9,10 +9,14 @@ class UserService
     /** @var string */
     private $serviceId;
 
-    /** @var int */
+    /** @var int|null */
     private $uid;
 
-    /** @var int */
+    /**
+     * Timestamp or -1 when forever
+     *
+     * @var int
+     */
     private $expire;
 
     public function __construct($id, $serviceId, $uid, $expire)
@@ -40,7 +44,7 @@ class UserService
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getUid()
     {

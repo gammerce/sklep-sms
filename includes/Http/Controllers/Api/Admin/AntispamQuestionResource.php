@@ -5,7 +5,7 @@ use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Loggers\DatabaseLogger;
-use App\Repositories\AntispamQuestionRepository;
+use App\Repositories\AntiSpamQuestionRepository;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -13,7 +13,7 @@ class AntispamQuestionResource
 {
     public function delete(
         $antispamQuestionId,
-        AntispamQuestionRepository $repository,
+        AntiSpamQuestionRepository $repository,
         TranslationManager $translationManager,
         DatabaseLogger $databaseLogger
     ) {
@@ -32,7 +32,7 @@ class AntispamQuestionResource
     public function put(
         $antispamQuestionId,
         Request $request,
-        AntispamQuestionRepository $repository,
+        AntiSpamQuestionRepository $repository,
         DatabaseLogger $databaseLogger,
         TranslationManager $translationManager
     ) {

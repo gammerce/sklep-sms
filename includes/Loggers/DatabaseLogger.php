@@ -1,33 +1,36 @@
 <?php
 namespace App\Loggers;
 
+use App\Repositories\LogRepository;
 use App\System\Auth;
-use App\System\Database;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
 class DatabaseLogger
 {
-    /** * @var Database */
-    private $db;
-
     /** @var Translator */
     private $langShop;
 
     /** @var Auth */
     private $auth;
 
-    public function __construct(Database $db, TranslationManager $translationManager, Auth $auth)
-    {
-        $this->db = $db;
+    /** @var LogRepository */
+    private $logRepository;
+
+    public function __construct(
+        LogRepository $logRepository,
+        TranslationManager $translationManager,
+        Auth $auth
+    ) {
         $this->langShop = $translationManager->shop();
         $this->auth = $auth;
+        $this->logRepository = $logRepository;
     }
 
     public function log($key, ...$args)
     {
         $message = $this->langShop->t($key, ...$args);
-        $this->storeLog($message);
+        $this->logRepository->create($message);
     }
 
     public function logWithActor($key, ...$args)
@@ -39,11 +42,6 @@ class DatabaseLogger
             $message .= " | User: {$user->getUsername()}({$user->getUid()})({$user->getLastIp()})";
         }
 
-        $this->storeLog($message);
-    }
-
-    private function storeLog($message)
-    {
-        $this->db->statement("INSERT INTO `ss_logs` SET `text` = ?")->execute([$message]);
+        $this->logRepository->create($message);
     }
 }

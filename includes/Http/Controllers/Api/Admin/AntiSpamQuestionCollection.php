@@ -3,32 +3,31 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\ValidationException;
 use App\Http\Responses\SuccessApiResponse;
-use App\Repositories\AntispamQuestionRepository;
+use App\Http\Validation\WarningBag;
+use App\Repositories\AntiSpamQuestionRepository;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
-class AntispamQuestionCollection
+class AntiSpamQuestionCollection
 {
     public function post(
         Request $request,
         TranslationManager $translationManager,
-        AntispamQuestionRepository $repository
+        AntiSpamQuestionRepository $repository
     ) {
         $lang = $translationManager->user();
 
         $question = $request->request->get("question");
         $answers = $request->request->get("answers");
 
-        $warnings = [];
+        $warnings = new WarningBag();
 
-        // Pytanie
         if (!$question) {
-            $warnings['question'][] = $lang->t('field_no_empty');
+            $warnings->add('question', $lang->t('field_no_empty'));
         }
 
-        // Odpowiedzi
         if (!$answers) {
-            $warnings['answers'][] = $lang->t('field_no_empty');
+            $warnings->add('answers', $lang->t('field_no_empty'));
         }
 
         if ($warnings) {

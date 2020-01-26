@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
-use App\Http\Validation\Rules\AntispamQuestionRule;
+use App\Http\Validation\Rules\AntiSpamQuestionRule;
 use App\Http\Validation\Rules\ConfirmedRule;
 use App\Http\Validation\Rules\EmailRule;
 use App\Http\Validation\Rules\PasswordRule;
@@ -13,7 +13,7 @@ use App\Http\Validation\Rules\UniqueUserEmailRule;
 use App\Http\Validation\Rules\UniqueUsernameRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
-use App\Repositories\AntispamQuestionRepository;
+use App\Repositories\AntiSpamQuestionRepository;
 use App\Repositories\UserRepository;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,8 +28,8 @@ class RegisterController
         RequiredRule $requiredRule,
         ConfirmedRule $confirmedRule,
         UniqueUserEmailRule $uniqueUserEmailRule,
-        AntispamQuestionRule $antispamQuestionRule,
-        AntispamQuestionRepository $antispamQuestionRepository,
+        AntiSpamQuestionRule $antispamQuestionRule,
+        AntiSpamQuestionRepository $antispamQuestionRepository,
         DatabaseLogger $logger
     ) {
         $session = $request->getSession();

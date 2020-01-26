@@ -36,14 +36,7 @@ class UserServiceRepository
             "INSERT INTO `$table` (`us_id`, `server`, `service`, `type`, `auth_data`, `password`) " .
                 "VALUES (?, ?, ?, ?, ?, ?)"
         );
-        $statement->execute([
-            $userServiceId,
-            $serverId,
-            $serviceId,
-            $type,
-            $authData,
-            $password ?: '',
-        ]);
+        $statement->execute([$userServiceId, $serverId, $serviceId, $type, $authData, $password]);
     }
 
     public function delete($id)

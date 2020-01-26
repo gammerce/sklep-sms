@@ -3,7 +3,7 @@ namespace App\Http\Responses;
 
 use Symfony\Component\HttpFoundation\Response;
 
-class ServerResponse extends Response
+class AssocResponse extends Response
 {
     public function __construct(array $data)
     {

@@ -4,7 +4,7 @@ namespace Tests\Feature\Http\View\Admin;
 use Tests\Psr4\Concerns\AuthConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 
-class AntispamQuestionsTest extends HttpTestCase
+class AntiSpamQuestionsTest extends HttpTestCase
 {
     use AuthConcern;
 
@@ -12,8 +12,7 @@ class AntispamQuestionsTest extends HttpTestCase
     public function it_loads()
     {
         // given
-        $user = $this->factory->admin();
-        $this->actingAs($user);
+        $this->actingAs($this->factory->admin());
 
         // when
         $response = $this->get('/admin/antispam_questions');

@@ -32,7 +32,7 @@ class Mailer
         return $this->simpleSend($email, $name, $subject, $text);
     }
 
-    public function signedSend($email, $name, $subject, $text)
+    private function signedSend($email, $name, $subject, $text)
     {
         ////////// USTAWIENIA //////////
         $email = filter_var($email, FILTER_VALIDATE_EMAIL); // Adres e-mail adresata
@@ -76,7 +76,7 @@ class Mailer
         }
     }
 
-    public function simpleSend($email, $name, $subject, $text)
+    private function simpleSend($email, $name, $subject, $text)
     {
         /** @var Settings $settings */
         $settings = app()->make(Settings::class);

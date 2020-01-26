@@ -12,8 +12,8 @@ class LogsTest extends HttpTestCase
     public function it_loads()
     {
         // given
-        $user = $this->factory->admin();
-        $this->actingAs($user);
+        $this->actingAs($this->factory->admin());
+        $this->factory->log();
 
         // when
         $response = $this->get('/admin/logs');

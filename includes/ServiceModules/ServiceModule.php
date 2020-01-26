@@ -190,4 +190,9 @@ abstract class ServiceModule
 
         return $affected;
     }
+
+    protected function getUserServiceTable()
+    {
+        return $this::USER_SERVICE_TABLE;
+    }
 }

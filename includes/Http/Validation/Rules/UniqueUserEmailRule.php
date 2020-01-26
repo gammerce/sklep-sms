@@ -29,14 +29,12 @@ class UniqueUserEmailRule implements Rule
             return [];
         }
 
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT `uid` FROM `ss_users` WHERE `email` = '%s' AND `uid` != '%d'",
-                [$value, $this->userId]
-            )
+        $statement = $this->db->statement(
+            "SELECT `uid` FROM `ss_users` WHERE `email` = ? AND `uid` != ?"
         );
+        $statement->execute([$value, $this->userId]);
 
-        if ($result->rowCount()) {
+        if ($statement->rowCount()) {
             return [$this->lang->t('email_occupied')];
         }
 

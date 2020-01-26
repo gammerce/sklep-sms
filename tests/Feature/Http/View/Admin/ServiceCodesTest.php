@@ -12,8 +12,13 @@ class ServiceCodesTest extends HttpTestCase
     public function it_loads()
     {
         // given
-        $user = $this->factory->admin();
-        $this->actingAs($user);
+        $this->actingAs($this->factory->admin());
+        $this->factory->serviceCode([
+            'price_id' => $this->factory->price()->getId(),
+        ]);
+        $this->factory->serviceCode([
+            'price_id' => $this->factory->price()->getId(),
+        ]);
 
         // when
         $response = $this->get('/admin/service_codes');

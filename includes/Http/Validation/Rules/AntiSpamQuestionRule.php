@@ -2,24 +2,24 @@
 namespace App\Http\Validation\Rules;
 
 use App\Http\Validation\Rule;
-use App\Repositories\AntispamQuestionRepository;
+use App\Repositories\AntiSpamQuestionRepository;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
-class AntispamQuestionRule implements Rule
+class AntiSpamQuestionRule implements Rule
 {
     /** @var Translator */
     private $lang;
 
-    /** * @var AntispamQuestionRepository */
-    private $antispamQuestionRepository;
+    /** * @var AntiSpamQuestionRepository */
+    private $antiSpamQuestionRepository;
 
     public function __construct(
-        AntispamQuestionRepository $antispamQuestionRepository,
+        AntiSpamQuestionRepository $antiSpamQuestionRepository,
         TranslationManager $translationManager
     ) {
         $this->lang = $translationManager->user();
-        $this->antispamQuestionRepository = $antispamQuestionRepository;
+        $this->antiSpamQuestionRepository = $antiSpamQuestionRepository;
     }
 
     public function validate($attribute, $value, array $data)
@@ -27,9 +27,9 @@ class AntispamQuestionRule implements Rule
         $asId = $data["as_id"];
         $asAnswer = $data["as_answer"];
 
-        $antispamQuestion = $this->antispamQuestionRepository->get($asId);
+        $antiSpamQuestion = $this->antiSpamQuestionRepository->get($asId);
 
-        if (!in_array(strtolower($asAnswer), $antispamQuestion->getAnswers())) {
+        if (!in_array(strtolower($asAnswer), $antiSpamQuestion->getAnswers())) {
             return [$this->lang->t('wrong_anti_answer')];
         }
 

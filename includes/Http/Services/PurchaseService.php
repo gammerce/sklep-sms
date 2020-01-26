@@ -39,6 +39,7 @@ class PurchaseService
         $smsCode = array_get($body, 'sms_code');
         $paymentPlatformId = as_int(array_get($body, 'payment_platform_id'));
         $priceId = as_int(array_get($body, 'price_id'));
+        $email = array_get($body, 'email');
 
         $price = $this->priceRepository->get($priceId);
 
@@ -48,6 +49,7 @@ class PurchaseService
         $purchase = new Purchase($user);
         $purchase->setService($serviceModule->service->getId());
 
+        $purchase->setEmail($email);
         $purchase->setOrder([
             Purchase::ORDER_SERVER => $serverId,
             'type' => $type,
@@ -62,22 +64,22 @@ class PurchaseService
             Purchase::PAYMENT_SMS_PLATFORM => $paymentPlatformId,
         ]);
 
-        $purchase->setPrice($price);
+        if ($price) {
+            $purchase->setPrice($price);
+        }
 
         $returnValidation = $serviceModule->purchaseDataValidate($purchase);
 
         if ($returnValidation['status'] !== "ok") {
-            $extraData = '';
-            if ($returnValidation["data"]["warnings"]) {
-                $warnings = '';
-                foreach ($returnValidation["data"]["warnings"] as $what => $warning) {
-                    $warnings .=
-                        "<strong>{$what}</strong><br />" . implode("<br />", $warning) . "<br />";
-                }
+            $extraData = [];
 
-                if (strlen($warnings)) {
-                    $extraData .= "<warnings>{$warnings}</warnings>";
-                }
+            if (isset($returnValidation["data"]["warnings"])) {
+                $extraData['warnings'] = collect($returnValidation["data"]["warnings"])
+                    ->map(function ($warning, $key) {
+                        $text = implode("<br />", $warning);
+                        return "<strong>{$key}</strong><br />{$text}<br />";
+                    })
+                    ->join();
             }
 
             return [
@@ -90,21 +92,18 @@ class PurchaseService
 
         $returnPayment = $this->paymentService->makePayment($purchase);
 
-        $extraData = "";
+        $extraData = [];
 
         if (isset($returnPayment['data']['bsid'])) {
-            $extraData .= "<bsid>{$returnPayment['data']['bsid']}</bsid>";
+            $extraData['bsid'] = $returnPayment['data']['bsid'];
         }
 
-        if (isset($returnPayment["data"]["warnings"])) {
-            $warnings = "";
-            foreach ($returnPayment["data"]["warnings"] as $what => $text) {
-                $warnings .= "<strong>{$what}</strong><br />{$text}<br />";
-            }
-
-            if (strlen($warnings)) {
-                $extraData .= "<warnings>{$warnings}</warnings>";
-            }
+        if (isset($returnPayment['data']['warnings'])) {
+            $extraData['warnings'] = collect($returnPayment['data']['warnings'])
+                ->map(function ($warning, $key) {
+                    return "<strong>{$key}</strong><br />{$warning}<br />";
+                })
+                ->join();
         }
 
         return [

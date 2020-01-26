@@ -138,7 +138,7 @@ class PageAdminBoughtServices extends PageAdmin
             $bodyRow->addCell(new Cell($row['email']));
             $bodyRow->addCell(new Cell($row['ip']));
 
-            $cell = new Cell(convertDate($row['timestamp']));
+            $cell = new Cell(convert_date($row['timestamp']));
             $cell->setParam('headers', 'date');
             $bodyRow->addCell($cell);
 

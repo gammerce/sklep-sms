@@ -161,7 +161,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             $mybbGroups = array_get($this->service->getData(), 'mybb_groups');
         }
 
-        return $this->template->render(
+        return $this->template->renderNoComments(
             "services/mybb_extra_groups/extra_fields",
             compact(
                 'webSelNo',
@@ -171,9 +171,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
                 'dbUser',
                 'dbPassword',
                 'dbName'
-            ) + ['moduleId' => $this->getModuleId()],
-            true,
-            false
+            ) + ['moduleId' => $this->getModuleId()]
         );
     }
 
@@ -486,24 +484,20 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             : $this->lang->t('none');
 
         if ($action == "email") {
-            return $this->template->render(
+            return $this->template->renderNoComments(
                 "services/mybb_extra_groups/purchase_info_email",
                 compact('username', 'amount', 'cost') + [
                     'serviceName' => $this->service->getName(),
-                ],
-                true,
-                false
+                ]
             );
         }
 
         if ($action == "web") {
-            return $this->template->render(
+            return $this->template->renderNoComments(
                 "services/mybb_extra_groups/purchase_info_web",
                 compact('cost', 'username', 'amount', 'email') + [
                     'serviceName' => $this->service->getName(),
-                ],
-                true,
-                false
+                ]
             );
         }
 
@@ -666,11 +660,9 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
      */
     public function userServiceAdminAddFormGet()
     {
-        return $this->template->render(
+        return $this->template->renderNoComments(
             "services/mybb_extra_groups/user_service_admin_add",
-            ['moduleId' => $this->getModuleId()],
-            true,
-            false
+            ['moduleId' => $this->getModuleId()]
         );
     }
 
@@ -783,7 +775,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         $expire = $userService->isForever()
             ? $this->lang->t('never')
-            : convertDate($userService->getExpire());
+            : convert_date($userService->getExpire());
         $mybbUid = "$username ({$userService->getMybbUid()})";
 
         return $this->template->render(

@@ -2,18 +2,25 @@
 namespace Tests\Feature\Http\View\Admin;
 
 use Tests\Psr4\Concerns\AuthConcern;
+use Tests\Psr4\Concerns\MakePurchaseConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class IncomeTest extends HttpTestCase
 {
     use AuthConcern;
+    use MakePurchaseConcern;
+
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->createRandomPurchase();
+    }
 
     /** @test */
     public function it_loads()
     {
         // given
-        $user = $this->factory->admin();
-        $this->actingAs($user);
+        $this->actingAs($this->factory->admin());
 
         // when
         $response = $this->get('/admin/income');

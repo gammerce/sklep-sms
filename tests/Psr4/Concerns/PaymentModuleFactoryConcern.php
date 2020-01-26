@@ -14,7 +14,7 @@ trait PaymentModuleFactoryConcern
 
     public function mockPaymentModuleFactory()
     {
-        $this->paymentModuleFactoryMock = \Mockery::mock(PaymentModuleFactory::class);
+        $this->paymentModuleFactoryMock = Mockery::mock(PaymentModuleFactory::class);
         $this->app->instance(PaymentModuleFactory::class, $this->paymentModuleFactoryMock);
     }
 

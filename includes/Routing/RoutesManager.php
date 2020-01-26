@@ -2,7 +2,7 @@
 namespace App\Routing;
 
 use App\Exceptions\EntityNotFoundException;
-use App\Http\Controllers\Api\Admin\AntispamQuestionCollection;
+use App\Http\Controllers\Api\Admin\AntiSpamQuestionCollection;
 use App\Http\Controllers\Api\Admin\AntispamQuestionResource;
 use App\Http\Controllers\Api\Admin\GroupCollection;
 use App\Http\Controllers\Api\Admin\GroupResource;
@@ -416,7 +416,7 @@ class RoutesManager
 
                 $r->post('/api/admin/antispam_questions', [
                     'middlewares' => [[RequireAuthorization::class, "manage_antispam_questions"]],
-                    'uses' => AntispamQuestionCollection::class . '@post',
+                    'uses' => AntiSpamQuestionCollection::class . '@post',
                 ]);
 
                 $r->put('/api/admin/antispam_questions/{antispamQuestionId}', [

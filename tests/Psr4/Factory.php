@@ -1,11 +1,14 @@
 <?php
 namespace Tests\Psr4;
 
+use App\Repositories\LogRepository;
 use App\Repositories\PaymentPlatformRepository;
 use App\Repositories\PriceRepository;
 use App\Repositories\ServerRepository;
 use App\Repositories\ServerServiceRepository;
+use App\Repositories\ServiceCodeRepository;
 use App\Repositories\ServiceRepository;
+use App\Repositories\SmsCodeRepository;
 use App\Repositories\UserRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
 use App\Verification\PaymentModules\Cssetti;
@@ -32,8 +35,17 @@ class Factory
     /** @var PaymentPlatformRepository */
     private $paymentPlatformRepository;
 
+    /** @var ServiceCodeRepository */
+    private $serviceCodeRepository;
+
     /** @var PriceRepository */
     private $priceRepository;
+
+    /** @var LogRepository */
+    private $logRepository;
+
+    /** @var SmsCodeRepository */
+    private $smsCodeRepository;
 
     public function __construct(
         UserRepository $userRepository,
@@ -41,7 +53,10 @@ class Factory
         ServiceRepository $serviceRepository,
         PriceRepository $priceRepository,
         ServerServiceRepository $serverServiceRepository,
-        PaymentPlatformRepository $paymentPlatformRepository
+        PaymentPlatformRepository $paymentPlatformRepository,
+        ServiceCodeRepository $serviceCodeRepository,
+        LogRepository $logRepository,
+        SmsCodeRepository $smsCodeRepository
     ) {
         $this->faker = FakerFactory::create();
         $this->userRepository = $userRepository;
@@ -50,6 +65,9 @@ class Factory
         $this->serviceRepository = $serviceRepository;
         $this->paymentPlatformRepository = $paymentPlatformRepository;
         $this->priceRepository = $priceRepository;
+        $this->serviceCodeRepository = $serviceCodeRepository;
+        $this->logRepository = $logRepository;
+        $this->smsCodeRepository = $smsCodeRepository;
     }
 
     public function server(array $attributes = [])
@@ -59,7 +77,7 @@ class Factory
                 'name' => $this->faker->word,
                 'ip' => $this->faker->ipv4,
                 'port' => $this->faker->numberBetween(1000, 20000),
-                'sms_platform' => null,
+                'sms_platform_id' => null,
             ],
             $attributes
         );
@@ -68,7 +86,7 @@ class Factory
             $attributes['name'],
             $attributes['ip'],
             $attributes['port'],
-            $attributes['sms_platform']
+            $attributes['sms_platform_id']
         );
     }
 
@@ -189,6 +207,57 @@ class Factory
             $attributes['name'],
             $attributes['module'],
             $attributes['data']
+        );
+    }
+
+    public function serviceCode(array $attributes = [])
+    {
+        $attributes = array_merge(
+            [
+                'code' => $this->faker->word,
+                'service_id' => 'vip',
+                'server_id' => null,
+                'uid' => null,
+            ],
+            $attributes
+        );
+
+        return $this->serviceCodeRepository->create(
+            $attributes['code'],
+            $attributes['service_id'],
+            $attributes['price_id'],
+            $attributes['server_id'],
+            $attributes['uid']
+        );
+    }
+
+    public function log(array $attributes = [])
+    {
+        $attributes = array_merge(
+            [
+                'text' => $this->faker->sentence,
+            ],
+            $attributes
+        );
+
+        $this->logRepository->create($attributes['text']);
+    }
+
+    public function smsCode(array $attributes = [])
+    {
+        $attributes = array_merge(
+            [
+                'code' => $this->faker->word,
+                'sms_price' => 100,
+                'free' => false,
+            ],
+            $attributes
+        );
+
+        $this->smsCodeRepository->create(
+            $attributes['code'],
+            $attributes['sms_price'],
+            $attributes['free']
         );
     }
 }

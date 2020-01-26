@@ -12,8 +12,20 @@ class SmsCodesTest extends HttpTestCase
     public function it_loads()
     {
         // given
-        $user = $this->factory->admin();
-        $this->actingAs($user);
+        $this->actingAs($this->factory->admin());
+
+        for ($i = 0; $i < 10; ++$i) {
+            $this->factory->smsCode([
+                'free' => false,
+            ]);
+        }
+
+        for ($i = 0; $i < 16; ++$i) {
+            $this->factory->smsCode([
+                'sms_price' => 500,
+                'free' => true,
+            ]);
+        }
 
         // when
         $response = $this->get('/admin/sms_codes');
