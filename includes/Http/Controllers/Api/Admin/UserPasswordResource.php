@@ -13,7 +13,6 @@ class UserPasswordResource
         $userId,
         Request $request,
         UserRepository $userRepository,
-        UserRepository $userRepository,
         TranslationManager $translationManager
     ) {
         $lang = $translationManager->user();
