@@ -2,10 +2,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Responses\ApiResponse;
+use App\Repositories\UserRepository;
 use App\System\Auth;
 use App\System\Heart;
 use App\Translation\TranslationManager;
-use App\User\UserActivityService;
 use Symfony\Component\HttpFoundation\Request;
 
 class LogInController
@@ -13,7 +13,7 @@ class LogInController
     public function post(
         Request $request,
         TranslationManager $translationManager,
-        UserActivityService $activityService,
+        UserRepository $userRepository,
         Heart $heart,
         Auth $auth
     ) {
@@ -34,7 +34,7 @@ class LogInController
         $user = $heart->getUserByLogin($username, $password);
         if ($user->exists()) {
             $session->set("uid", $user->getUid());
-            $activityService->update($user);
+            $userRepository->touch($user);
             return new ApiResponse("logged_in", $lang->t('login_success'), 1);
         }
 

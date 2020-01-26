@@ -1,9 +1,9 @@
 <?php
 namespace App\Http\Middlewares;
 
+use App\Repositories\UserRepository;
 use App\System\Application;
 use App\System\Auth;
-use App\User\UserActivityService;
 use Symfony\Component\HttpFoundation\Request;
 
 class UpdateUserActivity implements MiddlewareContract
@@ -13,12 +13,15 @@ class UpdateUserActivity implements MiddlewareContract
         /** @var Auth $auth */
         $auth = $app->make(Auth::class);
 
-        /** @var UserActivityService $activityService */
-        $activityService = $app->make(UserActivityService::class);
+        /** @var UserRepository $userRepository */
+        $userRepository = $app->make(UserRepository::class);
 
         $user = $auth->user();
         $user->setLastIp(get_ip($request));
-        $activityService->update($user);
+
+        if ($user->exists()) {
+            $userRepository->touch($user);
+        }
 
         return null;
     }

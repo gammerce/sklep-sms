@@ -187,11 +187,25 @@ class UserRepository
 
     public function updatePassword($uid, $password)
     {
+        if (is_demo() && as_int($uid) === 1) {
+            // Do not allow to modify admin's password in demo version
+            return;
+        }
+
         $salt = get_random_string(8);
 
         $this->db
-            ->statement("UPDATE `ss_users` SET password = ?, salt = ? WHERE uid = ?")
+            ->statement(
+                "UPDATE `ss_users` SET `password` = ?, `salt` = ?, `reset_password_key` = '' WHERE `uid` = ?"
+            )
             ->execute([hash_password($password, $salt), $salt, $uid]);
+    }
+
+    public function touch(User $user)
+    {
+        $this->db
+            ->statement("UPDATE `ss_users` SET `lastactiv` = NOW(), `lastip` = ? WHERE `uid` = ?")
+            ->execute([$user->getLastIp(), $user->getUid()]);
     }
 
     public function delete($id)

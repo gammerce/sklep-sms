@@ -35,14 +35,14 @@ class SettingsController
         $transferPaymentPlatformId = $request->request->get('transfer_platform');
         $currency = $request->request->get('currency');
         $shopName = $request->request->get('shop_name');
-        $shopUrl = $app->isDemo() ? $settings['shop_url'] : $request->request->get('shop_url');
+        $shopUrl = is_demo() ? $settings['shop_url'] : $request->request->get('shop_url');
         $senderEmail = $request->request->get('sender_email');
         $senderEmailName = $request->request->get('sender_email_name');
         $signature = $request->request->get('signature');
         $vat = $request->request->get('vat');
         $contact = $request->request->get('contact');
         $rowLimit = $request->request->get('row_limit');
-        $licenseToken = $app->isDemo() ? null : $request->request->get('license_token');
+        $licenseToken = is_demo() ? null : $request->request->get('license_token');
         $cron = $request->request->get('cron');
         $language = escape_filename($request->request->get('language'));
         $theme = escape_filename($request->request->get('theme'));

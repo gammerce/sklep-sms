@@ -85,7 +85,7 @@ class ExceptionHandler implements ExceptionHandlerContract
             return new RedirectResponse('/setup');
         }
 
-        if ($this->app->isDebug()) {
+        if (is_debug()) {
             $exceptionDetails = $this->getExceptionDetails($e);
             return new JsonResponse($exceptionDetails);
         }
