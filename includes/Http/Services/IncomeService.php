@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Services;
 
-use App\System\Database;
+use App\Support\Database;
 use App\System\Heart;
 use App\System\Settings;
 

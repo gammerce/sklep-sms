@@ -2,7 +2,7 @@
 namespace App\Install;
 
 use App\Loggers\FileLogger;
-use App\System\Database;
+use App\Support\Database;
 use InvalidArgumentException;
 
 abstract class Migration

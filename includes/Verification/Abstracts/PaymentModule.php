@@ -3,7 +3,7 @@ namespace App\Verification\Abstracts;
 
 use App\Models\PaymentPlatform;
 use App\Requesting\Requester;
-use App\System\Database;
+use App\Support\Database;
 use App\Verification\DataField;
 
 abstract class PaymentModule

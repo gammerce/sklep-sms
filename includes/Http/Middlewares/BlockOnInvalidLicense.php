@@ -5,7 +5,7 @@ use App\Requesting\Response as CustomResponse;
 use App\Routing\UrlGenerator;
 use App\System\Application;
 use App\System\License;
-use App\System\Template;
+use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use Symfony\Component\HttpFoundation\JsonResponse;

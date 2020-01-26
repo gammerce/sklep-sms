@@ -4,9 +4,9 @@ namespace App\Payment;
 use App\Loggers\DatabaseLogger;
 use App\Models\BoughtService;
 use App\Repositories\BoughtServiceRepository;
-use App\System\Database;
+use App\Support\Database;
 use App\System\Heart;
-use App\System\Mailer;
+use App\Support\Mailer;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 

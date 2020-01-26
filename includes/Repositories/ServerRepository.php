@@ -2,7 +2,7 @@
 namespace App\Repositories;
 
 use App\Models\Server;
-use App\System\Database;
+use App\Support\Database;
 use App\System\Settings;
 
 class ServerRepository

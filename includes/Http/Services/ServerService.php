@@ -6,7 +6,7 @@ use App\Models\Service;
 use App\Repositories\PaymentPlatformRepository;
 use App\ServiceModules\Interfaces\IServiceAvailableOnServers;
 use App\Services\ServerServiceService;
-use App\System\Database;
+use App\Support\Database;
 use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;

@@ -5,7 +5,7 @@ use App\View\Html\Option;
 use App\View\Html\Select;
 use App\Repositories\PaymentPlatformRepository;
 use App\System\Heart;
-use App\System\Path;
+use App\Support\Path;
 use App\Translation\TranslationManager;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;

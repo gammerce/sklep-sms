@@ -1,9 +1,9 @@
 <?php
 namespace App\Install;
 
-use App\System\FileSystemContract;
-use App\System\Path;
-use App\System\Template;
+use App\Support\FileSystemContract;
+use App\Support\Path;
+use App\Support\Template;
 
 class UpdateInfo
 {

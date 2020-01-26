@@ -1,7 +1,7 @@
 <?php
 namespace App\Cache;
 
-use App\System\FileSystemContract;
+use App\Support\FileSystemContract;
 use Exception;
 use Psr\SimpleCache\CacheInterface;
 

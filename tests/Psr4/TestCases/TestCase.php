@@ -2,7 +2,7 @@
 namespace Tests\Psr4\TestCases;
 
 use App\System\Application;
-use App\System\Database;
+use App\Support\Database;
 use App\System\License;
 use App\System\Settings;
 use App\Translation\LocaleService;

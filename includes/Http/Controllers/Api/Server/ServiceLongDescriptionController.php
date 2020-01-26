@@ -7,7 +7,7 @@ use App\Routing\UrlGenerator;
 use App\View\CurrentPage;
 use App\System\Heart;
 use App\System\License;
-use App\System\Template;
+use App\Support\Template;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 

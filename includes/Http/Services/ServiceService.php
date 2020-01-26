@@ -4,7 +4,7 @@ namespace App\Http\Services;
 use App\Exceptions\ValidationException;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\ServiceModule;
-use App\System\Database;
+use App\Support\Database;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;

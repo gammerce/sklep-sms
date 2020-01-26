@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Psr4\Concerns;
 
-use App\System\Path;
+use App\Support\Path;
 
 trait FixtureConcern
 {

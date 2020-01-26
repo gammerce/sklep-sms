@@ -5,12 +5,12 @@ use App\View\Html\I_ToHtml;
 use App\Routing\UrlGenerator;
 use App\System\Application;
 use App\View\CurrentPage;
-use App\System\Database;
-use App\System\FileSystemContract;
+use App\Support\Database;
+use App\Support\FileSystemContract;
 use App\System\Heart;
-use App\System\Path;
+use App\Support\Path;
 use App\System\Settings;
-use App\System\Template;
+use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 

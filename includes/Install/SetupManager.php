@@ -1,8 +1,8 @@
 <?php
 namespace App\Install;
 
-use App\System\FileSystemContract;
-use App\System\Path;
+use App\Support\FileSystemContract;
+use App\Support\Path;
 
 class SetupManager
 {

@@ -1,7 +1,7 @@
 <?php
 namespace App\Services;
 
-use App\System\Database;
+use App\Support\Database;
 
 class ServerServiceService
 {

@@ -1,6 +1,7 @@
 <?php
 namespace App\System;
 
+use App\Support\Path;
 use DirectoryIterator;
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidPathException;

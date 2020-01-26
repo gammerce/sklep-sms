@@ -8,7 +8,7 @@ use App\System\Application;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\License;
-use App\System\Template;
+use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\View\CurrentPage;
 use App\View\Renders\BlockRenderer;

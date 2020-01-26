@@ -2,7 +2,7 @@
 namespace App\Repositories;
 
 use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
-use App\System\Database;
+use App\Support\Database;
 
 class UserServiceRepository
 {

@@ -2,7 +2,7 @@
 namespace App\Payment;
 
 use App\Models\User;
-use App\System\Database;
+use App\Support\Database;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 

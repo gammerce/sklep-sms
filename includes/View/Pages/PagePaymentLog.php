@@ -3,9 +3,9 @@ namespace App\View\Pages;
 
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\System\Auth;
-use App\System\Database;
+use App\Support\Database;
 use App\System\Settings;
-use App\System\Template;
+use App\Support\Template;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pagination;
 use Symfony\Component\HttpFoundation\Request;

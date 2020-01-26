@@ -3,7 +3,7 @@ namespace App\Repositories;
 
 use App\Exceptions\EntityNotFoundException;
 use App\Models\PaymentPlatform;
-use App\System\Database;
+use App\Support\Database;
 
 class PaymentPlatformRepository
 {

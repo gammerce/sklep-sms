@@ -2,7 +2,7 @@
 namespace App\Repositories;
 
 use App\Models\BoughtService;
-use App\System\Database;
+use App\Support\Database;
 
 class BoughtServiceRepository
 {

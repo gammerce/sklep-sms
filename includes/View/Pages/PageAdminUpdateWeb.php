@@ -1,7 +1,7 @@
 <?php
 namespace App\View\Pages;
 
-use App\System\Version;
+use App\Support\Version;
 
 class PageAdminUpdateWeb extends PageAdmin
 {

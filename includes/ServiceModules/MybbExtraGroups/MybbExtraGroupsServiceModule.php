@@ -22,7 +22,7 @@ use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\ServiceModules\ServiceModule;
 use App\System\Auth;
-use App\System\Database;
+use App\Support\Database;
 use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;

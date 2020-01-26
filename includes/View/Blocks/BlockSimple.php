@@ -2,7 +2,7 @@
 namespace App\View\Blocks;
 
 use App\System\Auth;
-use App\System\Template;
+use App\Support\Template;
 use Exception;
 
 abstract class BlockSimple extends Block

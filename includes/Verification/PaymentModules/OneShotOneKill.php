@@ -5,7 +5,7 @@ use App\Loggers\FileLogger;
 use App\Models\PaymentPlatform;
 use App\Models\SmsNumber;
 use App\Requesting\Requester;
-use App\System\Database;
+use App\Support\Database;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\DataField;

@@ -4,7 +4,7 @@ namespace App\View\Blocks;
 use App\Routing\UrlGenerator;
 use App\System\Auth;
 use App\System\Heart;
-use App\System\Template;
+use App\Support\Template;
 use App\Translation\TranslationManager;
 
 class BlockUserButtons extends Block

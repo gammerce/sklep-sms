@@ -2,7 +2,7 @@
 namespace App\Install;
 
 use App\System\Application;
-use App\System\Database;
+use App\Support\Database;
 use PDOException;
 
 class DatabaseMigration

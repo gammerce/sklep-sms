@@ -6,7 +6,7 @@ use App\Models\SmsNumber;
 use App\Models\User;
 use App\Repositories\SmsCodeRepository;
 use App\Services\SmsPriceService;
-use App\System\Database;
+use App\Support\Database;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportSms;

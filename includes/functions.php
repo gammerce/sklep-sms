@@ -4,7 +4,7 @@ use App\Models\Server;
 use App\Models\User;
 use App\Support\Collection;
 use App\System\Auth;
-use App\System\Database;
+use App\Support\Database;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\View\Html\DOMElement;
