@@ -15,8 +15,6 @@ class HomepageTest extends HttpTestCase
     protected function setUp()
     {
         parent::setUp();
-
-        $this->factory->server();
         $this->createRandomPurchase();
     }
 

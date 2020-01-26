@@ -39,6 +39,7 @@ class PurchaseService
         $smsCode = array_get($body, 'sms_code');
         $paymentPlatformId = as_int(array_get($body, 'payment_platform_id'));
         $priceId = as_int(array_get($body, 'price_id'));
+        $email = array_get($body, 'email');
 
         $price = $this->priceRepository->get($priceId);
 
@@ -48,6 +49,7 @@ class PurchaseService
         $purchase = new Purchase($user);
         $purchase->setService($serviceModule->service->getId());
 
+        $purchase->setEmail($email);
         $purchase->setOrder([
             Purchase::ORDER_SERVER => $serverId,
             'type' => $type,

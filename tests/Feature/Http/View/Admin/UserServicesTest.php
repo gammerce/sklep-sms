@@ -10,12 +10,17 @@ class UserServicesTest extends HttpTestCase
     use AuthConcern;
     use MakePurchaseConcern;
 
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->createRandomPurchase();
+    }
+
     /** @test */
     public function it_loads()
     {
         // given
         $this->actingAs($this->factory->admin());
-        $this->createRandomPurchase();
 
         // when
         $response = $this->get('/admin/user_service', ['subpage' => 'extra_flags']);

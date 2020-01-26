@@ -9,6 +9,7 @@ use App\Models\Server;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\System\Heart;
 use App\Verification\PaymentModules\Cssetti;
+use UnexpectedValueException;
 
 trait MakePurchaseConcern
 {
@@ -53,9 +54,14 @@ trait MakePurchaseConcern
             'sms_code' => "mycode",
             'method' => Purchase::METHOD_SMS,
             'ip' => "192.0.2.1",
+            'email' => 'example@abc.pl',
         ];
 
         $serviceModule = $heart->getServiceModule('vip');
-        $purchaseService->purchase($serviceModule, $attributes);
+        $result = $purchaseService->purchase($serviceModule, $attributes);
+
+        if ($result['status'] !== 'purchased') {
+            throw new UnexpectedValueException();
+        }
     }
 }

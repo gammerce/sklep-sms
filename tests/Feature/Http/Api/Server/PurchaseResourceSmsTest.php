@@ -185,7 +185,6 @@ class PurchaseResourceSmsTest extends HttpTestCase
                 'sms_code' => $smsCode,
                 'method' => Purchase::METHOD_SMS,
                 'price_id' => $this->price->getId(),
-                'email' => 'a',
                 'sign' => $sign,
             ],
             [
