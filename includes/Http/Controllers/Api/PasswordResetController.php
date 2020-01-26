@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
 use App\Loggers\DatabaseLogger;
+use App\Repositories\UserRepository;
 use App\System\Settings;
 use App\Translation\TranslationManager;
-use App\User\UserPasswordService;
 use Symfony\Component\HttpFoundation\Request;
 
 class PasswordResetController
@@ -15,7 +15,7 @@ class PasswordResetController
         Request $request,
         TranslationManager $translationManager,
         Settings $settings,
-        UserPasswordService $userPasswordService,
+        UserRepository $userRepository,
         DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
@@ -43,7 +43,7 @@ class PasswordResetController
             throw new ValidationException($warnings);
         }
 
-        $userPasswordService->change($uid, $pass);
+        $userRepository->updatePassword($uid, $pass);
 
         $logger->log('reset_pass', $uid);
 

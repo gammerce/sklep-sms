@@ -190,8 +190,17 @@ class UserRepository
         $salt = get_random_string(8);
 
         $this->db
-            ->statement("UPDATE `ss_users` SET password = ?, salt = ? WHERE uid = ?")
+            ->statement(
+                "UPDATE `ss_users` SET `password` = ?, `salt` = ?, `reset_password_key` = '' WHERE `uid` = ?"
+            )
             ->execute([hash_password($password, $salt), $salt, $uid]);
+    }
+
+    public function touch(User $user)
+    {
+        $this->db
+            ->statement("UPDATE `ss_users` SET `lastactiv` = NOW(), `lastip` = ? WHERE `uid` = ?")
+            ->execute([$user->getLastIp(), $user->getUid()]);
     }
 
     public function delete($id)
