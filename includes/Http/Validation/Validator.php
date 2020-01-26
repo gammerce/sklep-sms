@@ -19,35 +19,56 @@ class Validator
 
     public function validate()
     {
-        $result = [];
+        $warnings = new WarningBag();
 
         foreach ($this->rules as $attribute => $rules) {
             /** @var Rule $rule */
             foreach ($rules as $rule) {
-                $warnings = $rule->validate(
+                $result = $rule->validate(
                     $attribute,
                     array_get($this->data, $attribute),
                     $this->data
                 );
 
-                if ($warnings) {
-                    $result[$attribute] = array_merge(
-                        array_get($result, $attribute, []),
-                        $warnings
-                    );
+                if ($result) {
+                    $warnings->add($attribute, $result);
                 }
             }
         }
 
-        return $result;
+        return $warnings;
     }
 
     public function validateOrFail()
     {
         $warnings = $this->validate();
 
-        if ($warnings) {
+        if ($warnings->isPopulated()) {
             throw new ValidationException($warnings);
         }
+
+        return $this->validated();
+    }
+
+    public function validateOrFailWith(array $data)
+    {
+        $warnings = $this->validate();
+
+        if ($warnings->isPopulated()) {
+            throw new ValidationException($warnings, $data);
+        }
+
+        return $this->validated();
+    }
+
+    public function validated()
+    {
+        return collect(array_keys($this->rules))
+            ->flatMap(function ($attribute) {
+                return [
+                    $attribute => array_get($this->data, $attribute),
+                ];
+            })
+            ->all();
     }
 }

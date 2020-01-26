@@ -15,12 +15,14 @@ class UniqueUsernameRule implements Rule
     private $lang;
 
     /** @var int */
-    private $userId = 0;
+    private $exceptUserId;
 
-    public function __construct(Database $db, TranslationManager $translationManager)
+    public function __construct($exceptUserId = null)
     {
-        $this->db = $db;
+        $this->db = app()->make(Database::class);
+        $translationManager = app()->make(TranslationManager::class);
         $this->lang = $translationManager->user();
+        $this->exceptUserId = $exceptUserId;
     }
 
     public function validate($attribute, $value, array $data)
@@ -34,7 +36,7 @@ class UniqueUsernameRule implements Rule
         $statement = $this->db->statement(
             "SELECT `uid` FROM `ss_users` WHERE `username` = ? AND `uid` != ?"
         );
-        $statement->execute([$value, $this->userId]);
+        $statement->execute([$value, $this->exceptUserId]);
 
         if ($statement->rowCount()) {
             $warnings[] = $this->lang->t('nick_occupied');
@@ -44,12 +46,12 @@ class UniqueUsernameRule implements Rule
     }
 
     /**
-     * @param int $userId
+     * @param int $exceptUserId
      * @return $this
      */
-    public function setUserId($userId)
+    public function setExceptUserId($exceptUserId)
     {
-        $this->userId = $userId;
+        $this->exceptUserId = $exceptUserId;
         return $this;
     }
 }

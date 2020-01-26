@@ -24,41 +24,28 @@ class UserResource
         TranslationManager $translationManager,
         Heart $heart,
         UserRepository $userRepository,
-        RequiredRule $requiredRule,
-        UniqueUsernameRule $uniqueUsernameRule,
-        UniqueUserEmailRule $uniqueUserEmailRule,
-        UserGroupsRule $userGroupsRule,
         DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
-
         $editedUser = $heart->getUser($userId);
 
-        $username = $request->request->get('username');
-        $forename = $request->request->get('forename');
-        $surname = $request->request->get('surname');
-        $email = $request->request->get('email');
-        $steamId = $request->request->get('steam_id');
-        $groups = $request->request->get('groups');
-        $wallet = $request->request->get('wallet');
-
         $validator = new Validator($request->request->all(), [
-            "username" => [$requiredRule, $uniqueUsernameRule->setUserId($editedUser->getUid())],
-            "email" => [$requiredRule, $uniqueUserEmailRule->setUserId($editedUser->getUid())],
+            "username" => [new RequiredRule(), new UniqueUsernameRule($editedUser->getUid())],
+            "email" => [new RequiredRule(), new UniqueUserEmailRule($editedUser->getUid())],
             "steam_id" => [new SteamIdRule()],
             "wallet" => [new NumberRule()],
-            "groups" => [$userGroupsRule],
+            "groups" => [new UserGroupsRule()],
         ]);
 
-        $validator->validateOrFail();
+        $validated = $validator->validateOrFail();
 
-        $editedUser->setUsername($username);
-        $editedUser->setForename($forename);
-        $editedUser->setSurname($surname);
-        $editedUser->setEmail($email);
-        $editedUser->setSteamId($steamId);
-        $editedUser->setGroups($groups);
-        $editedUser->setWallet(ceil($wallet * 100));
+        $editedUser->setUsername($validated['username']);
+        $editedUser->setForename($validated['forename']);
+        $editedUser->setSurname($validated['surname']);
+        $editedUser->setEmail($validated['email']);
+        $editedUser->setSteamId($validated['steam_id']);
+        $editedUser->setGroups($validated['groups']);
+        $editedUser->setWallet(ceil($validated['wallet'] * 100));
 
         $userRepository->update($editedUser);
 

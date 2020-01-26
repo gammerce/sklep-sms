@@ -10,8 +10,9 @@ class RequiredRule implements Rule
     /** @var Translator */
     private $lang;
 
-    public function __construct(TranslationManager $translationManager)
+    public function __construct()
     {
+        $translationManager = app()->make(TranslationManager::class);
         $this->lang = $translationManager->user();
     }
 

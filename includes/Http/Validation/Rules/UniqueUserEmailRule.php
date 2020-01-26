@@ -15,12 +15,14 @@ class UniqueUserEmailRule implements Rule
     private $lang;
 
     /** @var int */
-    private $userId = 0;
+    private $exceptUserId;
 
-    public function __construct(Database $db, TranslationManager $translationManager)
+    public function __construct($exceptUserId = null)
     {
-        $this->db = $db;
+        $this->db = app()->make(Database::class);
+        $translationManager = app()->make(TranslationManager::class);
         $this->lang = $translationManager->user();
+        $this->exceptUserId = $exceptUserId;
     }
 
     public function validate($attribute, $value, array $data)
@@ -32,22 +34,12 @@ class UniqueUserEmailRule implements Rule
         $statement = $this->db->statement(
             "SELECT `uid` FROM `ss_users` WHERE `email` = ? AND `uid` != ?"
         );
-        $statement->execute([$value, $this->userId]);
+        $statement->execute([$value, $this->exceptUserId]);
 
         if ($statement->rowCount()) {
             return [$this->lang->t('email_occupied')];
         }
 
         return [];
-    }
-
-    /**
-     * @param int $userId
-     * @return $this
-     */
-    public function setUserId($userId)
-    {
-        $this->userId = $userId;
-        return $this;
     }
 }
