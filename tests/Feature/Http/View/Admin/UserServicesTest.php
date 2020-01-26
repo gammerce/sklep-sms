@@ -2,18 +2,20 @@
 namespace Tests\Feature\Http\View\Admin;
 
 use Tests\Psr4\Concerns\AuthConcern;
+use Tests\Psr4\Concerns\MakePurchaseConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class UserServicesTest extends HttpTestCase
 {
     use AuthConcern;
+    use MakePurchaseConcern;
 
     /** @test */
     public function it_loads()
     {
         // given
-        $user = $this->factory->admin();
-        $this->actingAs($user);
+        $this->actingAs($this->factory->admin());
+        $this->createRandomPurchase();
 
         // when
         $response = $this->get('/admin/user_service', ['subpage' => 'extra_flags']);

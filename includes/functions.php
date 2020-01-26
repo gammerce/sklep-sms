@@ -61,15 +61,10 @@ function is_logged()
  */
 function get_privileges($privilege, $user = null)
 {
-    // Jeżeli nie podano użytkownika
-    if ($user === null) {
+    if (!$user) {
         /** @var Auth $auth */
         $auth = app()->make(Auth::class);
         $user = $auth->user();
-    }
-
-    if ($user === null) {
-        return false;
     }
 
     $adminPrivileges = [

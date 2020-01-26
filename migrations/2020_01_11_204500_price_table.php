@@ -52,7 +52,7 @@ EOF
                 $this->db
                     ->statement(
                         <<<EOF
-INSERT INTO ss_prices (`service`, `server`, `sms_price`, `transfer_price`, `quantity`)
+INSERT INTO `ss_prices` (`service`, `server`, `sms_price`, `transfer_price`, `quantity`)
 VALUES (?, ?, ?, ?, ?)
 EOF
                     )

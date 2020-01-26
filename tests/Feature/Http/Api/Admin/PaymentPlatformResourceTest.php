@@ -101,7 +101,7 @@ class PaymentPlatformResourceTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         $this->factory->server([
-            "sms_platform" => $this->paymentPlatform->getId(),
+            "sms_platform_id" => $this->paymentPlatform->getId(),
         ]);
 
         // when

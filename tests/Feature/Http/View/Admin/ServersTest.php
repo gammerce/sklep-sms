@@ -12,8 +12,9 @@ class ServersTest extends HttpTestCase
     public function it_loads()
     {
         // given
-        $user = $this->factory->admin();
-        $this->actingAs($user);
+        $this->actingAs($this->factory->admin());
+        $this->factory->server();
+        $this->factory->server();
 
         // when
         $response = $this->get('/admin/servers');

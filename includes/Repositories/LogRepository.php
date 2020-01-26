@@ -20,4 +20,9 @@ class LogRepository
 
         return !!$statement->rowCount();
     }
+
+    public function create($message)
+    {
+        $this->db->statement("INSERT INTO `ss_logs` SET `text` = ?")->execute([$message]);
+    }
 }
