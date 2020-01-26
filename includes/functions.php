@@ -628,3 +628,19 @@ if (!function_exists('is_iterable')) {
         return is_array($value) || $value instanceof Traversable;
     }
 }
+
+function is_debug()
+{
+    $debug = getenv('APP_DEBUG');
+    return $debug === '1' || $debug === 'true' || $debug === 1;
+}
+
+function is_testing()
+{
+    return getenv('APP_ENV') === 'testing';
+}
+
+function is_demo()
+{
+    return getenv('APP_ENV') === 'demo';
+}

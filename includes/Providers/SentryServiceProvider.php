@@ -9,7 +9,7 @@ class SentryServiceProvider
 {
     public function register(Application $app, ExternalConfigProvider $configProvider)
     {
-        if ($app->isTesting()) {
+        if (is_testing()) {
             return;
         }
 

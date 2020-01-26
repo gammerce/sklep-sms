@@ -94,22 +94,6 @@ class Application extends Container
         return $this->isAdminSession;
     }
 
-    public function isDebug()
-    {
-        $debug = getenv('APP_DEBUG');
-        return $debug === '1' || $debug === 'true' || $debug === 1;
-    }
-
-    public function isTesting()
-    {
-        return getenv('APP_ENV') === 'testing';
-    }
-
-    public function isDemo()
-    {
-        return getenv('APP_ENV') === 'demo';
-    }
-
     private function getProviders()
     {
         if (!$this->providers) {

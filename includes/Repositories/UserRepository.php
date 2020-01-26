@@ -187,6 +187,11 @@ class UserRepository
 
     public function updatePassword($uid, $password)
     {
+        if (is_demo() && as_int($uid) === 1) {
+            // Do not allow to modify admin's password in demo version
+            return;
+        }
+
         $salt = get_random_string(8);
 
         $this->db
