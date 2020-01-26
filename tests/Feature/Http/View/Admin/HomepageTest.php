@@ -4,18 +4,25 @@ namespace Tests\Feature\Http\View\Admin;
 use App\Exceptions\LicenseRequestException;
 use App\System\License;
 use Tests\Psr4\Concerns\AuthConcern;
+use Tests\Psr4\Concerns\MakePurchaseConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class HomepageTest extends HttpTestCase
 {
     use AuthConcern;
+    use MakePurchaseConcern;
+
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->createRandomPurchase();
+    }
 
     /** @test */
     public function it_loads()
     {
         // given
-        $user = $this->factory->admin();
-        $this->actingAs($user);
+        $this->actingAs($this->factory->admin());
 
         // when
         $response = $this->get('/admin');
@@ -34,8 +41,7 @@ class HomepageTest extends HttpTestCase
         $license->shouldReceive('isValid')->andReturn(false);
         $license->shouldReceive('getLoadingException')->andReturn(new LicenseRequestException());
 
-        $user = $this->factory->admin();
-        $this->actingAs($user);
+        $this->actingAs($this->factory->admin());
 
         // when
         $response = $this->get('/admin');
@@ -48,8 +54,6 @@ class HomepageTest extends HttpTestCase
     /** @test */
     public function it_requires_login_when_not_logged()
     {
-        // given
-
         // when
         $response = $this->get('/admin');
 

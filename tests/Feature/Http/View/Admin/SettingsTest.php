@@ -12,8 +12,7 @@ class SettingsTest extends HttpTestCase
     public function it_loads()
     {
         // given
-        $user = $this->factory->admin();
-        $this->actingAs($user);
+        $this->actingAs($this->factory->admin());
 
         // when
         $response = $this->get('/admin/settings');

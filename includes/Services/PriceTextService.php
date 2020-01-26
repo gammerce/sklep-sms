@@ -27,7 +27,7 @@ class PriceTextService
     public function getPriceGrossText($price)
     {
         return $price !== null
-            ? number_format(($price / 100) * $this->settings->getVat(), 2) .
+            ? number_format(($price / 100.0) * $this->settings->getVat(), 2) .
                     " " .
                     $this->settings->getCurrency()
             : null;
@@ -40,7 +40,7 @@ class PriceTextService
     public function getPriceText($price)
     {
         return $price !== null
-            ? number_format($price / 100, 2) . " " . $this->settings->getCurrency()
+            ? number_format($price / 100.0, 2) . " " . $this->settings->getCurrency()
             : null;
     }
 

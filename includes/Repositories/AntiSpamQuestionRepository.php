@@ -1,10 +1,10 @@
 <?php
 namespace App\Repositories;
 
-use App\Models\AntispamQuestion;
+use App\Models\AntiSpamQuestion;
 use App\System\Database;
 
-class AntispamQuestionRepository
+class AntiSpamQuestionRepository
 {
     /** @var Database */
     private $db;
@@ -68,6 +68,6 @@ class AntispamQuestionRepository
 
     public function mapToModel(array $data)
     {
-        return new AntispamQuestion($data['id'], $data['question'], explode(";", $data['answers']));
+        return new AntiSpamQuestion($data['id'], $data['question'], explode(";", $data['answers']));
     }
 }

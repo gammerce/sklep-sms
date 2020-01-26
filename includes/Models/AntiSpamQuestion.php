@@ -1,7 +1,7 @@
 <?php
 namespace App\Models;
 
-class AntispamQuestion
+class AntiSpamQuestion
 {
     /** @var int */
     private $id;

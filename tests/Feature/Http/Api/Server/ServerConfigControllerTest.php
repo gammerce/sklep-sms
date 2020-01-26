@@ -24,7 +24,9 @@ class ServerConfigControllerTest extends HttpTestCase
         $this->paymentPlatform = $this->factory->paymentPlatform([
             'module' => Gosetti::MODULE_ID,
         ]);
-        $this->server = $this->factory->server(['sms_platform' => $this->paymentPlatform->getId()]);
+        $this->server = $this->factory->server([
+            'sms_platform_id' => $this->paymentPlatform->getId(),
+        ]);
 
         $this->mockRequester();
         $this->mockGoSettiGetData();

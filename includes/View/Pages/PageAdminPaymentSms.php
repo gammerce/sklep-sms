@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages;
 
+use App\Services\PriceTextService;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\Div;
@@ -12,15 +13,22 @@ class PageAdminPaymentSms extends PageAdmin
 {
     const PAGE_ID = 'payment_sms';
 
-    public function __construct()
+    /** @var PriceTextService */
+    private $priceTextService;
+
+    public function __construct(PriceTextService $priceTextService)
     {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->t('payments_sms');
+        $this->priceTextService = $priceTextService;
     }
 
     protected function content(array $query, array $body)
     {
+        $payId = array_get($query, 'payid');
+        $search = array_get($query, 'search');
+
         $wrapper = new Wrapper();
         $wrapper->setTitle($this->title);
 
@@ -39,24 +47,24 @@ class PageAdminPaymentSms extends PageAdmin
         $where = "( t.payment = 'sms' ) ";
 
         // Wyszukujemy platnosci o konkretnym ID
-        if (isset($query['payid'])) {
+        if (strlen($payId)) {
             if (strlen($where)) {
                 $where .= " AND ";
             }
 
-            $where .= $this->db->prepare("( t.payment_id = '%s' ) ", [$query['payid']]);
+            $where .= $this->db->prepare("( t.payment_id = '%s' ) ", [$payId]);
         }
         // Wyszukujemy dane ktore spelniaja kryteria
-        elseif (isset($query['search'])) {
+        elseif (strlen($search)) {
             searchWhere(
                 ["t.payment_id", "t.sms_text", "t.sms_code", "t.sms_number"],
-                $query['search'],
+                $search,
                 $where
             );
         }
 
-        if (isset($query['payid'])) {
-            $where .= $this->db->prepare(" AND `payment_id` = '%d' ", [$query['payid']]);
+        if (strlen($payId)) {
+            $where .= $this->db->prepare(" AND `payment_id` = '%d' ", [$payId]);
         }
 
         // Jezeli jest jakis where, to dodajemy WHERE
@@ -78,19 +86,16 @@ class PageAdminPaymentSms extends PageAdmin
         foreach ($result as $row) {
             $bodyRow = new BodyRow();
 
-            if ($query['payid'] == $row['payment_id']) {
+            if ($payId == $row['payment_id']) {
                 $bodyRow->addClass('highlighted');
             }
 
             $free = $row['free']
                 ? $this->lang->strtoupper($this->lang->t('yes'))
                 : $this->lang->strtoupper($this->lang->t('no'));
-            $income = $row['income']
-                ? number_format($row['income'] / 100.0, 2) . " " . $this->settings->getCurrency()
-                : "";
-            $cost = $row['cost']
-                ? number_format($row['cost'] / 100.0, 2) . " " . $this->settings->getCurrency()
-                : "";
+
+            $income = $this->priceTextService->getPriceText($row['income']);
+            $cost = $this->priceTextService->getPriceText($row['cost']);
 
             $bodyRow->setDbId($row['payment_id']);
             $bodyRow->addCell(new Cell($row['sms_text']));
