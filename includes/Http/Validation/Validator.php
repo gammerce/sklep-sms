@@ -2,6 +2,7 @@
 namespace App\Http\Validation;
 
 use App\Exceptions\ValidationException;
+use App\Http\Validation\Rules\RequiredRule;
 
 class Validator
 {
@@ -24,14 +25,14 @@ class Validator
         foreach ($this->rules as $attribute => $rules) {
             /** @var Rule $rule */
             foreach ($rules as $rule) {
-                $result = $rule->validate(
-                    $attribute,
-                    array_get($this->data, $attribute),
-                    $this->data
-                );
+                $value = array_get($this->data, $attribute);
 
-                if ($result) {
-                    $warnings->add($attribute, $result);
+                if ($rule instanceof RequiredRule || strlen($value)) {
+                    $result = $rule->validate($attribute, $value, $this->data);
+
+                    if ($result) {
+                        $warnings->add($attribute, $result);
+                    }
                 }
             }
         }
