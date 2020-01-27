@@ -1,6 +1,7 @@
 <?php
 namespace App\Http;
 
+use App\Models\Server;
 use Symfony\Component\HttpFoundation\AcceptHeader;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -42,5 +43,14 @@ class RequestHelper
     public function getAcceptableContentTypes()
     {
         return array_keys(AcceptHeader::fromString($this->request->headers->get('Accept'))->all());
+    }
+
+    public function isFromServer()
+    {
+        return in_array(
+            $this->request->headers->get("User-Agent"),
+            [Server::TYPE_AMXMODX, Server::TYPE_SOURCEMOD],
+            true
+        );
     }
 }

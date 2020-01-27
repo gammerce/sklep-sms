@@ -6,8 +6,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ServerResponseFactory
 {
-    public function create(AcceptHeader $acceptHeader, $status, $text, $positive, array $data = [])
-    {
+    public function create(
+        AcceptHeader $acceptHeader,
+        $status,
+        $text,
+        $positive,
+        array $data = [],
+        $statusCode = 200
+    ) {
         if ($acceptHeader->has("application/json")) {
             return new JsonResponse(
                 array_merge(
@@ -17,7 +23,8 @@ class ServerResponseFactory
                         'positive' => !!$positive,
                     ],
                     $data
-                )
+                ),
+                $statusCode
             );
         }
 
@@ -30,7 +37,8 @@ class ServerResponseFactory
                         'positive' => $positive ? 1 : 0,
                     ],
                     $data
-                )
+                ),
+                $statusCode
             );
         }
 
@@ -42,7 +50,8 @@ class ServerResponseFactory
                     'positive' => $positive ? 1 : 0,
                 ],
                 $data
-            )
+            ),
+            $statusCode
         );
     }
 }

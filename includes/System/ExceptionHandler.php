@@ -10,17 +10,19 @@ use App\Exceptions\UnauthorizedException;
 use App\Exceptions\ValidationException;
 use App\Http\RequestHelper;
 use App\Http\Responses\ApiResponse;
+use App\Http\Responses\HtmlResponse;
 use App\Http\Responses\PlainResponse;
+use App\Http\Responses\ServerResponseFactory;
 use App\Loggers\FileLogger;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Renders\ErrorRenderer;
 use Exception;
 use Raven_Client;
+use Symfony\Component\HttpFoundation\AcceptHeader;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class ExceptionHandler implements ExceptionHandlerContract
 {
@@ -36,6 +38,9 @@ class ExceptionHandler implements ExceptionHandlerContract
     /** @var ErrorRenderer */
     private $errorRenderer;
 
+    /** @var ServerResponseFactory */
+    private $serverResponseFactory;
+
     private $dontReport = [
         EntityNotFoundException::class,
         InvalidConfigException::class,
@@ -49,12 +54,14 @@ class ExceptionHandler implements ExceptionHandlerContract
         Application $app,
         TranslationManager $translationManager,
         FileLogger $logger,
-        ErrorRenderer $errorRenderer
+        ErrorRenderer $errorRenderer,
+        ServerResponseFactory $serverResponseFactory
     ) {
         $this->app = $app;
         $this->lang = $translationManager->user();
         $this->fileLogger = $logger;
         $this->errorRenderer = $errorRenderer;
+        $this->serverResponseFactory = $serverResponseFactory;
     }
 
     public function render(Request $request, Exception $e)
@@ -91,11 +98,11 @@ class ExceptionHandler implements ExceptionHandlerContract
         }
 
         if ($e instanceof LicenseException) {
-            return new Response($this->lang->t('verification_error'));
+            return new PlainResponse($this->lang->t('verification_error'));
         }
 
         if ($e instanceof LicenseRequestException) {
-            return new Response($e->getMessage());
+            return new PlainResponse($e->getMessage());
         }
 
         if ($e instanceof InvalidConfigException) {
@@ -148,15 +155,27 @@ class ExceptionHandler implements ExceptionHandlerContract
         return true;
     }
 
-    private function renderError($errorId, Exception $e, Request $request)
+    private function renderError($status, Exception $e, Request $request)
     {
         $requestHelper = new RequestHelper($request);
 
-        if ($requestHelper->expectsJson()) {
-            return new Response($e->getMessage(), $errorId);
+        if ($requestHelper->isFromServer()) {
+            $acceptHeader = AcceptHeader::fromString($request->headers->get('Accept'));
+            return $this->serverResponseFactory->create(
+                $acceptHeader,
+                'error',
+                $e->getMessage(),
+                false,
+                [],
+                $status
+            );
         }
 
-        $output = $this->errorRenderer->render("$errorId", $request);
-        return new Response($output, $errorId);
+        if ($requestHelper->expectsJson()) {
+            return new ApiResponse('error', $e->getMessage(), false, [], $status);
+        }
+
+        $output = $this->errorRenderer->render("$status", $request);
+        return new HtmlResponse($output, $status);
     }
 }

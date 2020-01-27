@@ -5,13 +5,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AssocResponse extends Response
 {
-    public function __construct(array $data)
+    public function __construct(array $data, $status = 200)
     {
         $items = $this->formatArray("", $data);
         $content = implode("\n", $items);
 
-        parent::__construct($content, 200, [
-            "Content-type" => 'text/plain; charset="UTF-8"',
+        parent::__construct($content, $status, [
+            "Content-type" => 'application/assoc',
         ]);
     }
 
