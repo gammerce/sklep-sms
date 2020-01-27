@@ -5,7 +5,6 @@ use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\InvalidConfigException;
 use App\Exceptions\LicenseException;
 use App\Exceptions\LicenseRequestException;
-use App\Exceptions\RequireInstallationException;
 use App\Exceptions\UnauthorizedException;
 use App\Exceptions\ValidationException;
 use App\Http\RequestHelper;
@@ -14,7 +13,6 @@ use App\Http\Responses\HtmlResponse;
 use App\Http\Responses\PlainResponse;
 use App\Http\Responses\ServerResponseFactory;
 use App\Loggers\FileLogger;
-use App\Routing\UrlGenerator;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Renders\ErrorRenderer;
@@ -22,7 +20,6 @@ use Exception;
 use Raven_Client;
 use Symfony\Component\HttpFoundation\AcceptHeader;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class ExceptionHandler implements ExceptionHandlerContract
@@ -42,14 +39,10 @@ class ExceptionHandler implements ExceptionHandlerContract
     /** @var ServerResponseFactory */
     private $serverResponseFactory;
 
-    /** @var UrlGenerator */
-    private $url;
-
     private $dontReport = [
         EntityNotFoundException::class,
         InvalidConfigException::class,
         LicenseException::class,
-        RequireInstallationException::class,
         UnauthorizedException::class,
         ValidationException::class,
     ];
@@ -59,7 +52,6 @@ class ExceptionHandler implements ExceptionHandlerContract
         TranslationManager $translationManager,
         FileLogger $logger,
         ErrorRenderer $errorRenderer,
-        UrlGenerator $urlGenerator,
         ServerResponseFactory $serverResponseFactory
     ) {
         $this->app = $app;
@@ -67,7 +59,6 @@ class ExceptionHandler implements ExceptionHandlerContract
         $this->fileLogger = $logger;
         $this->errorRenderer = $errorRenderer;
         $this->serverResponseFactory = $serverResponseFactory;
-        $this->url = $urlGenerator;
     }
 
     public function render(Request $request, Exception $e)
@@ -92,10 +83,6 @@ class ExceptionHandler implements ExceptionHandlerContract
                     $e->data
                 )
             );
-        }
-
-        if ($e instanceof RequireInstallationException) {
-            return new RedirectResponse($this->url->to('/setup'));
         }
 
         if (is_debug()) {

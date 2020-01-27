@@ -117,7 +117,7 @@ class RoutesManager
         $r->redirectPermanent('/cron', '/api/cron');
 
         $r->get('/lang.js', [
-            'middlewares' => [LoadSettings::class],
+            'middlewares' => [IsUpToDate::class, LoadSettings::class],
             'uses' => LanguageJsController::class . '@get',
         ]);
 
@@ -515,6 +515,8 @@ class RoutesManager
 
     private function handleDispatcherResponse($routeInfo, Request $request)
     {
+        // TODO If shop is not up to date, then always return Redirect
+
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
                 throw new EntityNotFoundException();
