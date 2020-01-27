@@ -21,7 +21,7 @@ class UrlGenerator
 
     public function to($path, array $query = [])
     {
-        $url = rtrim($this->getShopUrl(), '/') . '/' . trim($path, "/");
+        $url = rtrim($this->getShopUrl(), '/') . '/' . trim($path, '/');
 
         if (!empty($query)) {
             $queryString = http_build_query($query);
@@ -51,6 +51,6 @@ class UrlGenerator
         /** @var Request $request */
         $request = $this->app->make(Request::class);
 
-        return $request->getSchemeAndHttpHost();
+        return $request->getUriForPath("");
     }
 }
