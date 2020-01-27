@@ -9,7 +9,7 @@ use App\ServiceModules\ShopSmsLicenseEdit\LicenseEditServiceModule;
 use App\ServiceModules\ShopSmsLicenseProlong\LicenseProlongServiceModule;
 use App\System\Application;
 use App\System\Heart;
-use App\System\Mailer;
+use App\Support\Mailer;
 use App\System\Settings;
 
 class LicenseServiceProvider
