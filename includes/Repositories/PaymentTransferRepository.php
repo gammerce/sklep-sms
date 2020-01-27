@@ -2,7 +2,7 @@
 namespace App\Repositories;
 
 use App\Models\PaymentTransfer;
-use App\System\Database;
+use App\Support\Database;
 
 class PaymentTransferRepository
 {

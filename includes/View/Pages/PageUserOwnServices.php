@@ -7,9 +7,9 @@ use App\View\Interfaces\IBeLoggedMust;
 use App\ServiceModules\Interfaces\IServiceUserOwnServices;
 use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\System\Auth;
-use App\System\Database;
+use App\Support\Database;
 use App\System\Settings;
-use App\System\Template;
+use App\Support\Template;
 use App\View\Pagination;
 use Symfony\Component\HttpFoundation\Request;
 

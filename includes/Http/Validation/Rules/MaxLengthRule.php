@@ -5,21 +5,25 @@ use App\Http\Validation\Rule;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
-class RequiredRule implements Rule
+class MaxLengthRule implements Rule
 {
+    /** @var int */
+    private $length;
+
     /** @var Translator */
     private $lang;
 
-    public function __construct()
+    public function __construct($length)
     {
+        $this->length = $length;
         $translationManager = app()->make(TranslationManager::class);
         $this->lang = $translationManager->user();
     }
 
     public function validate($attribute, $value, array $data)
     {
-        if (!strlen($value)) {
-            return [$this->lang->t('field_no_empty')];
+        if (strlen($value) > $this->length) {
+            return [$this->lang->t('max_length')];
         }
 
         return [];

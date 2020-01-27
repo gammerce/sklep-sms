@@ -1,7 +1,7 @@
 <?php
 namespace App\Install;
 
-use App\System\Path;
+use App\Support\Path;
 use DirectoryIterator;
 
 class MigrationFiles

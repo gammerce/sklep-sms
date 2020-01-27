@@ -1,6 +1,9 @@
 <?php
 namespace App\System;
 
+use App\Support\Database;
+use App\Support\FileSystemContract;
+use App\Support\Path;
 use ArrayAccess;
 
 class Settings implements ArrayAccess
@@ -16,9 +19,6 @@ class Settings implements ArrayAccess
 
     /** @var FileSystemContract */
     private $fileSystem;
-
-    /** @var bool */
-    private $loaded = false;
 
     public function __construct(Path $path, Database $database, FileSystemContract $fileSystem)
     {
@@ -56,15 +56,6 @@ class Settings implements ArrayAccess
     public function offsetUnset($offset)
     {
         unset($this->data[$offset]);
-    }
-
-    public function loadIfNotLoaded()
-    {
-        if ($this->loaded) {
-            return;
-        }
-
-        $this->load();
     }
 
     public function load()
@@ -120,8 +111,6 @@ LEFT JOIN `ss_payment_code` AS pc ON bs.payment = 'service_code' AND pc.id = bs.
         )
             ? $this->data['theme']
             : "default";
-
-        $this->loaded = true;
     }
 
     /**

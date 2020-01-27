@@ -16,6 +16,8 @@ use App\ServiceModules\ChargeWallet\ChargeWalletServiceModule;
 use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
 use App\ServiceModules\Other\OtherServiceModule;
 use App\ServiceModules\ServiceModule;
+use App\Support\Database;
+use App\Support\Template;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\DataField;
 use App\View\Blocks\Block;

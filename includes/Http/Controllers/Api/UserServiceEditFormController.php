@@ -7,7 +7,7 @@ use App\Services\UserServiceService;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;
-use App\System\Template;
+use App\Support\Template;
 use App\Translation\TranslationManager;
 
 class UserServiceEditFormController

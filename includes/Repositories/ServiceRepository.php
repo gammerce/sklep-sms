@@ -2,7 +2,7 @@
 namespace App\Repositories;
 
 use App\Models\Service;
-use App\System\Database;
+use App\Support\Database;
 
 class ServiceRepository
 {

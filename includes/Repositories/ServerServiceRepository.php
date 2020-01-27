@@ -3,7 +3,7 @@ namespace App\Repositories;
 
 use App\Models\Server;
 use App\Models\ServerService;
-use App\System\Database;
+use App\Support\Database;
 
 class ServerServiceRepository
 {

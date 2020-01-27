@@ -6,7 +6,7 @@ use App\Models\Server;
 use App\Requesting\Requester;
 use App\Services\PriceTextService;
 use App\System\License;
-use App\System\Version;
+use App\Support\Version;
 use App\View\Html\UnescapedSimpleText;
 
 class PageAdminMain extends PageAdmin

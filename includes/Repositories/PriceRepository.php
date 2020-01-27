@@ -5,7 +5,7 @@ use App\Exceptions\EntityNotFoundException;
 use App\Models\Price;
 use App\Models\Server;
 use App\Models\Service;
-use App\System\Database;
+use App\Support\Database;
 
 class PriceRepository
 {

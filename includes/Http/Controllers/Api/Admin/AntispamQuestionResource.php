@@ -1,9 +1,10 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
+use App\Http\Validation\Rules\RequiredRule;
+use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\AntiSpamQuestionRepository;
 use App\Translation\TranslationManager;
@@ -38,26 +39,18 @@ class AntispamQuestionResource
     ) {
         $lang = $translationManager->user();
 
-        $question = $request->request->get("question");
-        $answers = $request->request->get("answers");
+        $validator = new Validator($request->request->all(), [
+            "question" => [new RequiredRule()],
+            "answers" => [new RequiredRule()],
+        ]);
 
-        $warnings = [];
+        $validated = $validator->validateOrFail();
 
-        // Pytanie
-        if (!$question) {
-            $warnings['question'][] = $lang->t('field_no_empty');
-        }
-
-        // Odpowiedzi
-        if (!$answers) {
-            $warnings['answers'][] = $lang->t('field_no_empty');
-        }
-
-        if ($warnings) {
-            throw new ValidationException($warnings);
-        }
-
-        $updated = $repository->update($antispamQuestionId, $question, $answers);
+        $updated = $repository->update(
+            $antispamQuestionId,
+            $validated['question'],
+            $validated['answers']
+        );
 
         if ($updated) {
             $databaseLogger->logWithActor('log_question_edited', $antispamQuestionId);

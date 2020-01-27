@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Psr4;
 
-use App\System\FileSystemContract;
+use App\Support\FileSystemContract;
 use Exception;
 
 class MemoryFileSystem implements FileSystemContract

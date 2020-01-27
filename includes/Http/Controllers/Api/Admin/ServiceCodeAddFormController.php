@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\PlainResponse;
 use App\System\Heart;
-use App\System\Template;
+use App\Support\Template;
 
 class ServiceCodeAddFormController
 {

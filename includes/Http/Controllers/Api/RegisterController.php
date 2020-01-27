@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
 use App\Http\Validation\Rules\AntiSpamQuestionRule;
 use App\Http\Validation\Rules\ConfirmedRule;
@@ -24,27 +23,13 @@ class RegisterController
         Request $request,
         TranslationManager $translationManager,
         UserRepository $userRepository,
-        UniqueUsernameRule $uniqueUsernameRule,
-        RequiredRule $requiredRule,
-        ConfirmedRule $confirmedRule,
-        UniqueUserEmailRule $uniqueUserEmailRule,
-        AntiSpamQuestionRule $antispamQuestionRule,
         AntiSpamQuestionRepository $antispamQuestionRepository,
         DatabaseLogger $logger
     ) {
         $session = $request->getSession();
         $lang = $translationManager->user();
 
-        $username = trim($request->request->get('username'));
-        $password = $request->request->get('password');
-        $passwordRepeat = $request->request->get('password_repeat');
-        $email = trim($request->request->get('email'));
-        $emailRepeat = trim($request->request->get('email_repeat'));
-        $forename = trim($request->request->get('forename'));
-        $surname = trim($request->request->get('surname'));
-        $steamId = trim($request->request->get('steam_id'));
-        $asId = $request->request->get('as_id');
-        $asAnswer = $request->request->get('as_answer');
+        $antispamQuestionId = $request->request->get('as_id');
 
         // Get new antispam question
         $data = [];
@@ -53,7 +38,7 @@ class RegisterController
         $data['antispam']['id'] = $antispamQuestion->getId();
 
         // Is antispam question correct
-        if (!$session->has("asid") || $asId != $session->get("asid")) {
+        if (!$session->has("asid") || $antispamQuestionId != $session->get("asid")) {
             return new ApiResponse("wrong_sign", $lang->t('wrong_sign'), 0, $data);
         }
 
@@ -62,36 +47,42 @@ class RegisterController
 
         $validator = new Validator(
             [
-                "username" => $username,
-                "password" => $password,
-                "password_repeat" => $passwordRepeat,
-                "email" => $email,
-                "email_repeat" => $emailRepeat,
-                "steam_id" => $steamId,
-                "as_answer" => $asAnswer,
-                "as_id" => $asId,
+                "username" => trim($request->request->get('username')),
+                "password" => $request->request->get('password'),
+                "password_repeat" => $request->request->get('password_repeat'),
+                "email" => trim($request->request->get('email')),
+                "email_repeat" => trim($request->request->get('email_repeat')),
+                "forename" => trim($request->request->get('forename')),
+                "surname" => trim($request->request->get('surname')),
+                "steam_id" => trim($request->request->get('steam_id')),
+                "as_answer" => $request->request->get('as_answer'),
+                "as_id" => $antispamQuestionId,
             ],
             [
-                "username" => [$requiredRule, $uniqueUsernameRule],
-                "password" => [$requiredRule, $confirmedRule, new PasswordRule()],
-                "email" => [$requiredRule, $confirmedRule, new EmailRule(), $uniqueUserEmailRule],
+                "username" => [new RequiredRule(), new UniqueUsernameRule()],
+                "password" => [new RequiredRule(), new ConfirmedRule(), new PasswordRule()],
+                "email" => [
+                    new RequiredRule(),
+                    new ConfirmedRule(),
+                    new EmailRule(),
+                    new UniqueUserEmailRule(),
+                ],
+                "forename" => [],
+                "surname" => [],
                 "steam_id" => [new SteamIdRule()],
-                "as_answer" => [$antispamQuestionRule],
+                "as_answer" => [new AntiSpamQuestionRule()],
             ]
         );
 
-        $warnings = $validator->validate();
-        if ($warnings) {
-            throw new ValidationException($warnings, $data);
-        }
+        $validated = $validator->validateOrFailWith($data);
 
         $createdUser = $userRepository->create(
-            $username,
-            $password,
-            $email,
-            $forename,
-            $surname,
-            $steamId,
+            $validated['username'],
+            $validated['password'],
+            $validated['email'],
+            $validated['forename'],
+            $validated['surname'],
+            $validated['steam_id'],
             get_ip($request),
             '1',
             0

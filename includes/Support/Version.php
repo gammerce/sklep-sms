@@ -1,12 +1,12 @@
 <?php
-namespace App\System;
+namespace App\Support;
 
 use App\Requesting\Requester;
 
 class Version
 {
     /** @var Requester */
-    protected $requester;
+    private $requester;
 
     public function __construct(Requester $requester)
     {

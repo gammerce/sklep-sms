@@ -3,7 +3,7 @@ namespace Tests\Feature\Http\Api;
 
 use App\Install\ShopState;
 use App\System\Application;
-use App\System\Database;
+use App\Support\Database;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Tests\Psr4\Concerns\ApplicationConcern;

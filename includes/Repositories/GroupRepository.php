@@ -1,7 +1,7 @@
 <?php
 namespace App\Repositories;
 
-use App\System\Database;
+use App\Support\Database;
 
 class GroupRepository
 {

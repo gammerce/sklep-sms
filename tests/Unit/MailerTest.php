@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Unit;
 
-use App\System\Mailer;
+use App\Support\Mailer;
 use Tests\Psr4\TestCases\TestCase;
 
 class MailerTest extends TestCase

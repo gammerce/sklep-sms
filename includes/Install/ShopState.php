@@ -1,7 +1,7 @@
 <?php
 namespace App\Install;
 
-use App\System\Database;
+use App\Support\Database;
 use PDOException;
 
 class ShopState

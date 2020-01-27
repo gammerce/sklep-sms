@@ -3,7 +3,7 @@ namespace App\Services;
 
 use App\Models\UserService;
 use App\Repositories\UserServiceRepository;
-use App\System\Database;
+use App\Support\Database;
 use App\System\Heart;
 
 class UserServiceService

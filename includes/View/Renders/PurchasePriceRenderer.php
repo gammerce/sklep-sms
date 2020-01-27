@@ -4,7 +4,7 @@ namespace App\View\Renders;
 use App\Models\Service;
 use App\Services\PriceTextService;
 use App\System\Settings;
-use App\System\Template;
+use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 

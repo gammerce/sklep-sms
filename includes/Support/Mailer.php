@@ -1,7 +1,8 @@
 <?php
-namespace App\System;
+namespace App\Support;
 
 use App\Loggers\DatabaseLogger;
+use App\System\Settings;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 

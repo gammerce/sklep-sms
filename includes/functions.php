@@ -4,7 +4,7 @@ use App\Models\Server;
 use App\Models\User;
 use App\Support\Collection;
 use App\System\Auth;
-use App\System\Database;
+use App\Support\Database;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\View\Html\DOMElement;
@@ -503,17 +503,6 @@ function check_for_warnings($type, $data)
         case "service_description":
             if (strlen($data) > 28) {
                 $warnings[] = $lang->t('field_length_max_warn', 28);
-            }
-
-            break;
-
-        case "sms_code":
-            if (!strlen($data)) {
-                $warnings[] = $lang->t('field_no_empty');
-            } else {
-                if (strlen($data) > 16) {
-                    $warnings[] = $lang->t('return_code_length_warn');
-                }
             }
 
             break;

@@ -22,7 +22,8 @@ class PageActionBoxResource
             return new ApiResponse("no_data", $lang->t('not_all_data'), 0);
         }
 
-        if (($page = $heart->getPage($pageId, "admin")) === null) {
+        $page = $heart->getPage($pageId, "admin");
+        if (!$page) {
             return new ApiResponse("wrong_page", $lang->t('wrong_page_id'), 0);
         }
 

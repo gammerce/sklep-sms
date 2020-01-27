@@ -1,8 +1,12 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
+use App\Http\Validation\Rules\ConfirmedRule;
+use App\Http\Validation\Rules\PasswordRule;
+use App\Http\Validation\Rules\RequiredRule;
+use App\Http\Validation\Rules\UserPasswordRule;
+use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\UserRepository;
 use App\System\Auth;
@@ -21,28 +25,14 @@ class PasswordResource
         $lang = $translationManager->user();
         $user = $auth->user();
 
-        $warnings = [];
+        $validator = new Validator($request->request->all(), [
+            'old_pass' => [new RequiredRule(), new UserPasswordRule($user)],
+            'pass' => [new RequiredRule(), new PasswordRule(), new ConfirmedRule()],
+        ]);
 
-        $oldpass = $request->request->get('old_pass');
-        $pass = $request->request->get('pass');
-        $passr = $request->request->get('pass_repeat');
+        $validated = $validator->validateOrFail();
 
-        if ($warning = check_for_warnings("password", $pass)) {
-            $warnings['pass'] = array_merge((array) $warnings['pass'], $warning);
-        }
-        if ($pass != $passr) {
-            $warnings['pass_repeat'][] = $lang->t('different_values');
-        }
-
-        if (hash_password($oldpass, $user->getSalt()) != $user->getPassword()) {
-            $warnings['old_pass'][] = $lang->t('old_pass_wrong');
-        }
-
-        if ($warnings) {
-            throw new ValidationException($warnings);
-        }
-
-        $userRepository->updatePassword($user->getUid(), $pass);
+        $userRepository->updatePassword($user->getUid(), $validated['pass']);
         $logger->logWithActor("log_password_changed");
 
         return new ApiResponse("password_changed", $lang->t('password_changed'), 1);

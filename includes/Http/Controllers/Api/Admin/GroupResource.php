@@ -5,7 +5,7 @@ use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\GroupRepository;
-use App\System\Database;
+use App\Support\Database;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 

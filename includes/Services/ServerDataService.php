@@ -8,7 +8,7 @@ use App\Models\Service;
 use App\Repositories\PriceRepository;
 use App\Repositories\ServerServiceRepository;
 use App\Repositories\ServiceRepository;
-use App\System\Database;
+use App\Support\Database;
 
 class ServerDataService
 {

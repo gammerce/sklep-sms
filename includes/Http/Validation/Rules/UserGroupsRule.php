@@ -14,9 +14,11 @@ class UserGroupsRule implements Rule
     /** @var Translator */
     private $lang;
 
-    public function __construct(Heart $heart, TranslationManager $translationManager)
+    public function __construct()
     {
-        $this->heart = $heart;
+        $this->heart = app()->make(Heart::class);
+        /** @var TranslationManager $translationManager */
+        $translationManager = app()->make(TranslationManager::class);
         $this->lang = $translationManager->user();
     }
 

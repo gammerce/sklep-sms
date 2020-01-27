@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Psr4\Concerns;
 
-use App\System\Mailer;
+use App\Support\Mailer;
 
 trait MailerConcern
 {

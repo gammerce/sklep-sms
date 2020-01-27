@@ -17,35 +17,32 @@ class UserProfileResource
         Request $request,
         TranslationManager $translationManager,
         UserRepository $userRepository,
-        Auth $auth,
-        UniqueUsernameRule $uniqueUsernameRule,
-        RequiredRule $requiredRule
+        Auth $auth
     ) {
         $lang = $translationManager->user();
         $user = $auth->user();
 
-        $username = trim($request->request->get('username'));
-        $forename = trim($request->request->get('forename'));
-        $surname = trim($request->request->get('surname'));
-        $steamId = trim($request->request->get('steam_id'));
-
         $validator = new Validator(
             [
-                "username" => $username,
-                "steam_id" => $steamId,
+                "username" => trim($request->request->get('username')),
+                "forename" => trim($request->request->get('forename')),
+                "surname" => trim($request->request->get('surname')),
+                "steam_id" => trim($request->request->get('steam_id')),
             ],
             [
-                "username" => [$requiredRule, $uniqueUsernameRule->setUserId($user->getUid())],
+                "username" => [new RequiredRule(), new UniqueUsernameRule($user->getUid())],
+                "forename" => [],
+                "surname" => [],
                 "steam_id" => [new SteamIdRule()],
             ]
         );
 
-        $validator->validateOrFail();
+        $validated = $validator->validateOrFail();
 
-        $user->setUsername($username);
-        $user->setForename($forename);
-        $user->setSurname($surname);
-        $user->setSteamId($steamId);
+        $user->setUsername($validated['username']);
+        $user->setForename($validated['forename']);
+        $user->setSurname($validated['surname']);
+        $user->setSteamId($validated['steam_id']);
 
         $userRepository->update($user);
 

@@ -1,15 +1,13 @@
 <?php
-namespace App\System;
+namespace App\Support;
 
 use App\Routing\UrlGenerator;
+use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
 class Template
 {
-    /** @var Path */
-    private $path;
-
     /** @var Settings */
     private $settings;
 
@@ -26,13 +24,11 @@ class Template
     private $cachedTemplates = [];
 
     public function __construct(
-        Path $path,
         Settings $settings,
         TranslationManager $translationManager,
         UrlGenerator $urlGenerator,
         FileSystemContract $fileSystem
     ) {
-        $this->path = $path;
         $this->settings = $settings;
         $this->lang = $translationManager->user();
         $this->urlGenerator = $urlGenerator;

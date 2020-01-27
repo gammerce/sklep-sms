@@ -14,12 +14,11 @@ class AntiSpamQuestionRule implements Rule
     /** * @var AntiSpamQuestionRepository */
     private $antiSpamQuestionRepository;
 
-    public function __construct(
-        AntiSpamQuestionRepository $antiSpamQuestionRepository,
-        TranslationManager $translationManager
-    ) {
+    public function __construct()
+    {
+        $translationManager = app()->make(TranslationManager::class);
         $this->lang = $translationManager->user();
-        $this->antiSpamQuestionRepository = $antiSpamQuestionRepository;
+        $this->antiSpamQuestionRepository = app()->make(AntiSpamQuestionRepository::class);
     }
 
     public function validate($attribute, $value, array $data)

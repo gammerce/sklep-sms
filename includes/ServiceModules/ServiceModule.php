@@ -5,8 +5,8 @@ use App\Models\Service;
 use App\Models\UserService;
 use App\Services\ServiceDescriptionService;
 use App\System\Application;
-use App\System\Database;
-use App\System\Template;
+use App\Support\Database;
+use App\Support\Template;
 
 abstract class ServiceModule
 {

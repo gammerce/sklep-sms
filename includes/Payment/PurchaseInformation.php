@@ -2,7 +2,7 @@
 namespace App\Payment;
 
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
-use App\System\Database;
+use App\Support\Database;
 use App\System\Heart;
 use App\System\Settings;
 

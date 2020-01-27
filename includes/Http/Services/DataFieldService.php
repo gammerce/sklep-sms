@@ -2,7 +2,7 @@
 namespace App\Http\Services;
 
 use App\System\Heart;
-use App\System\Template;
+use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 

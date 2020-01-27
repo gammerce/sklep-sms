@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Unit\Application;
 
-use App\System\Path;
+use App\Support\Path;
 use Tests\Psr4\TestCases\TestCase;
 
 class PathTest extends TestCase
