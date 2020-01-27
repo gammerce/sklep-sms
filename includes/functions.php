@@ -3,6 +3,7 @@
 use App\Models\Server;
 use App\Models\User;
 use App\Support\Collection;
+use App\System\Application;
 use App\System\Auth;
 use App\Support\Database;
 use App\System\Settings;
@@ -18,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @param string $abstract
  * @param array $parameters
- * @return mixed|\Illuminate\Container\Container|\App\System\Application
+ * @return mixed|Container|Application
  */
 function app($abstract = null, array $parameters = [])
 {
@@ -253,7 +254,7 @@ function get_random_string($length)
 
 function is_steamid_valid($steamid)
 {
-    return preg_match('/\bSTEAM_([0-9]{1}):([0-9]{1}):([0-9])+$/', $steamid) ? '1' : '0';
+    return preg_match('/\bSTEAM_([0-9]):([0-9]):([0-9])+$/', $steamid) ? '1' : '0';
 }
 
 function seconds_to_time($seconds)

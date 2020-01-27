@@ -1,10 +1,13 @@
 <?php
 namespace App\Http\Validation;
 
+use ArrayAccess;
 use ArrayIterator;
+use Countable;
 use Illuminate\Contracts\Support\Arrayable;
+use IteratorAggregate;
 
-class WarningBag implements \ArrayAccess, \Countable, \IteratorAggregate, Arrayable
+class WarningBag implements ArrayAccess, Countable, IteratorAggregate, Arrayable
 {
     /** @var array */
     private $warnings = [];
