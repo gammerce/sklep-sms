@@ -29,6 +29,7 @@ class Simpay extends PaymentModule implements SupportSms
     public static function getSmsNumbers()
     {
         return [
+            new SmsNumber("7055"),
             new SmsNumber("7136"),
             new SmsNumber("7255"),
             new SmsNumber("7355"),
@@ -45,7 +46,6 @@ class Simpay extends PaymentModule implements SupportSms
             new SmsNumber("91955"),
             new SmsNumber("92055"),
             new SmsNumber("92555"),
-            new SmsNumber("7055"),
         ];
     }
 

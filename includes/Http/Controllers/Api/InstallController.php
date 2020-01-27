@@ -3,15 +3,15 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
-use App\Http\Responses\HtmlResponse;
+use App\Http\Responses\PlainResponse;
 use App\Install\DatabaseMigration;
 use App\Install\EnvCreator;
 use App\Install\RequirementsStore;
 use App\Install\SetupManager;
-use App\System\Application;
 use App\Support\Database;
 use App\Support\FileSystemContract;
 use App\Support\Path;
+use App\System\Application;
 use Exception;
 use PDOException;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,13 +28,13 @@ class InstallController
         Application $app
     ) {
         if ($setupManager->hasFailed()) {
-            return new HtmlResponse(
+            return new PlainResponse(
                 'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku data/logs/errors.log'
             );
         }
 
         if ($setupManager->isInProgress()) {
-            return new HtmlResponse(
+            return new PlainResponse(
                 "Instalacja/Aktualizacja trwa, lub została błędnie przeprowadzona. Usuń plik data/setup_progress, aby przeprowadzić ją ponownie."
             );
         }

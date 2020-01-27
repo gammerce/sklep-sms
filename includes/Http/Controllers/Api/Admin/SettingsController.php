@@ -6,10 +6,9 @@ use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\SettingsRepository;
-use App\System\Application;
 use App\Support\FileSystemContract;
-use App\System\Heart;
 use App\Support\Path;
+use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Verification\Abstracts\SupportSms;
@@ -26,8 +25,7 @@ class SettingsController
         Settings $settings,
         SettingsRepository $settingsRepository,
         FileSystemContract $fileSystem,
-        DatabaseLogger $logger,
-        Application $app
+        DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
 

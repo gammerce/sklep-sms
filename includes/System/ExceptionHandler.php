@@ -5,7 +5,6 @@ use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\InvalidConfigException;
 use App\Exceptions\LicenseException;
 use App\Exceptions\LicenseRequestException;
-use App\Exceptions\RequireInstallationException;
 use App\Exceptions\UnauthorizedException;
 use App\Exceptions\ValidationException;
 use App\Http\RequestHelper;
@@ -21,7 +20,6 @@ use Exception;
 use Raven_Client;
 use Symfony\Component\HttpFoundation\AcceptHeader;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class ExceptionHandler implements ExceptionHandlerContract
@@ -45,7 +43,6 @@ class ExceptionHandler implements ExceptionHandlerContract
         EntityNotFoundException::class,
         InvalidConfigException::class,
         LicenseException::class,
-        RequireInstallationException::class,
         UnauthorizedException::class,
         ValidationException::class,
     ];
@@ -86,10 +83,6 @@ class ExceptionHandler implements ExceptionHandlerContract
                     $e->data
                 )
             );
-        }
-
-        if ($e instanceof RequireInstallationException) {
-            return new RedirectResponse('/setup');
         }
 
         if (is_debug()) {
