@@ -14,6 +14,7 @@ use App\Http\Responses\HtmlResponse;
 use App\Http\Responses\PlainResponse;
 use App\Http\Responses\ServerResponseFactory;
 use App\Loggers\FileLogger;
+use App\Routing\UrlGenerator;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Renders\ErrorRenderer;
@@ -41,6 +42,9 @@ class ExceptionHandler implements ExceptionHandlerContract
     /** @var ServerResponseFactory */
     private $serverResponseFactory;
 
+    /** @var UrlGenerator */
+    private $url;
+
     private $dontReport = [
         EntityNotFoundException::class,
         InvalidConfigException::class,
@@ -55,6 +59,7 @@ class ExceptionHandler implements ExceptionHandlerContract
         TranslationManager $translationManager,
         FileLogger $logger,
         ErrorRenderer $errorRenderer,
+        UrlGenerator $urlGenerator,
         ServerResponseFactory $serverResponseFactory
     ) {
         $this->app = $app;
@@ -62,6 +67,7 @@ class ExceptionHandler implements ExceptionHandlerContract
         $this->fileLogger = $logger;
         $this->errorRenderer = $errorRenderer;
         $this->serverResponseFactory = $serverResponseFactory;
+        $this->url = $urlGenerator;
     }
 
     public function render(Request $request, Exception $e)
@@ -89,7 +95,7 @@ class ExceptionHandler implements ExceptionHandlerContract
         }
 
         if ($e instanceof RequireInstallationException) {
-            return new RedirectResponse('/setup');
+            return new RedirectResponse($this->url->to('/setup'));
         }
 
         if (is_debug()) {
