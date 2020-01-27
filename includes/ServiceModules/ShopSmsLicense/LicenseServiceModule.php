@@ -466,7 +466,7 @@ class LicenseServiceModule extends ServiceModule implements
         $identifier = $userService->getIdentifier();
         $expire = $userService->isForever()
             ? $this->lang->t('never')
-            : convertDate($userService->getExpire());
+            : convert_date($userService->getExpire());
         $email = $userService->getEmail() ?: $this->lang->t('none');
         $costMonthly = number_format(($userService->getCostDaily() * 30) / 100, 2);
 
@@ -504,7 +504,7 @@ class LicenseServiceModule extends ServiceModule implements
         $identifier = $userService->getIdentifier();
         $expire = $userService->isForever()
             ? $this->lang->t('never')
-            : convertDate($userService->getExpire());
+            : convert_date($userService->getExpire());
         $email = $userService->getEmail();
         $costMonthly = number_format(($userService->getCostDaily() * 30) / 100, 2);
 

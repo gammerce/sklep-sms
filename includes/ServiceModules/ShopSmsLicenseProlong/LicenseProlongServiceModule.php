@@ -221,7 +221,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
             $userService->getIdentifier(),
             $userService->getEmail(),
             [
-                'expire' => convertDate($expiresAt),
+                'expire' => convert_date($expiresAt),
             ]
         );
     }
