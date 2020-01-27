@@ -507,17 +507,6 @@ function check_for_warnings($type, $data)
 
             break;
 
-        case "sms_code":
-            if (!strlen($data)) {
-                $warnings[] = $lang->t('field_no_empty');
-            } else {
-                if (strlen($data) > 16) {
-                    $warnings[] = $lang->t('return_code_length_warn');
-                }
-            }
-
-            break;
-
         case "number":
             if (!strlen($data)) {
                 $warnings[] = $lang->t('field_no_empty');

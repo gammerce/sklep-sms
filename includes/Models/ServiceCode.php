@@ -21,7 +21,7 @@ class ServiceCode
     /** @var int|null */
     private $uid;
 
-    /** @var int */
+    /** @var string */
     private $timestamp;
 
     public function __construct($id, $code, $service, $price, $server, $uid, $timestamp)
@@ -84,7 +84,7 @@ class ServiceCode
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getTimestamp()
     {

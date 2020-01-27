@@ -2,24 +2,29 @@
 namespace App\Http\Validation\Rules;
 
 use App\Http\Validation\Rule;
+use App\Repositories\PriceRepository;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
-class ConfirmedRule implements Rule
+class PriceExistsRule implements Rule
 {
+    /** @var PriceRepository */
+    private $priceRepository;
+
     /** @var Translator */
     private $lang;
 
     public function __construct()
     {
+        $this->priceRepository = app()->make(PriceRepository::class);
         $translationManager = app()->make(TranslationManager::class);
         $this->lang = $translationManager->user();
     }
 
     public function validate($attribute, $value, array $data)
     {
-        if ($value !== array_get($data, "{$attribute}_repeat")) {
-            return [$this->lang->t('different_values')];
+        if (!$this->priceRepository->get($value)) {
+            return [$this->lang->t('invalid_price')];
         }
 
         return [];

@@ -1,11 +1,15 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
+use App\Http\Validation\Rules\MaxLengthRule;
+use App\Http\Validation\Rules\PriceExistsRule;
+use App\Http\Validation\Rules\RequiredRule;
+use App\Http\Validation\Rules\ServerExistsRule;
+use App\Http\Validation\Rules\UserExistsRule;
+use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
-use App\Repositories\PriceRepository;
 use App\Repositories\ServiceCodeRepository;
 use App\System\Heart;
 use App\Translation\TranslationManager;
@@ -18,61 +22,45 @@ class ServiceCodeCollection
         Request $request,
         TranslationManager $translationManager,
         ServiceCodeRepository $serviceCodeRepository,
-        PriceRepository $priceRepository,
         Heart $heart,
         DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
 
-        $code = $request->request->get("code");
-        $priceId = $request->request->get("price_id");
-        $uid = $request->request->get("uid") ?: null;
-        $serverId = $request->request->get("server_id") ?: null;
-
-        $warnings = [];
-
-        $price = $priceRepository->get($priceId);
-        $serviceModule = $heart->getServiceModule($serviceId);
-
-        if (!$serviceModule) {
+        if (!$heart->getServiceModule($serviceId)) {
             return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
         }
 
-        if (strlen($uid) && ($warning = check_for_warnings("uid", $uid))) {
-            $warnings['uid'] = array_merge((array) $warnings['uid'], $warning);
-        }
-
-        if (!strlen($code)) {
-            $warnings['code'][] = $lang->t('field_no_empty');
-        } elseif (strlen($code) > 16) {
-            $warnings['code'][] = $lang->t('return_code_length_warn');
-        }
-
-        if ($serverId) {
-            $server = $heart->getServer($serverId);
-            if (!$server) {
-                $warnings['server_id'][] = $lang->t('no_server_id');
-            }
-        }
-
-        if (!$price) {
-            $warnings['price_id'][] = $lang->t('invalid_price');
-        }
-
-        if ($warnings) {
-            throw new ValidationException($warnings);
-        }
-
-        $serviceCodeRepository->create(
-            $code,
-            $serviceModule->service->getId(),
-            $priceId,
-            $serverId,
-            $uid
+        $validator = new Validator(
+            [
+                'code' => $request->request->get("code"),
+                'price_id' => $request->request->get("price_id"),
+                'uid' => $request->request->get("uid") ?: null,
+                'server_id' => $request->request->get("server_id") ?: null,
+            ],
+            [
+                'code' => [new RequiredRule(), new MaxLengthRule(16)],
+                'price_id' => [new RequiredRule(), new PriceExistsRule()],
+                'uid' => [new UserExistsRule()],
+                'server_id' => [new ServerExistsRule()],
+            ]
         );
 
-        $logger->logWithActor('log_code_added', $code, $serviceModule->service->getId());
+        $validated = $validator->validateOrFail();
 
-        return new SuccessApiResponse($lang->t('code_added'));
+        $code = $validated["code"];
+        $priceId = $validated["price_id"];
+        $uid = $validated["uid"];
+        $serverId = $validated["server_id"];
+
+        $serviceCode = $serviceCodeRepository->create($code, $serviceId, $priceId, $serverId, $uid);
+
+        $logger->logWithActor('log_code_added', $code, $serviceId);
+
+        return new SuccessApiResponse($lang->t('code_added'), [
+            'data' => [
+                'id' => $serviceCode->getId(),
+            ],
+        ]);
     }
 }

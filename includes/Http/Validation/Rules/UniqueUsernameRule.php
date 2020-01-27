@@ -27,10 +27,6 @@ class UniqueUsernameRule implements Rule
 
     public function validate($attribute, $value, array $data)
     {
-        if (!strlen($value)) {
-            return [];
-        }
-
         $warnings = check_for_warnings("username", $value);
 
         $statement = $this->db->statement(
@@ -43,15 +39,5 @@ class UniqueUsernameRule implements Rule
         }
 
         return $warnings;
-    }
-
-    /**
-     * @param int $exceptUserId
-     * @return $this
-     */
-    public function setExceptUserId($exceptUserId)
-    {
-        $this->exceptUserId = $exceptUserId;
-        return $this;
     }
 }

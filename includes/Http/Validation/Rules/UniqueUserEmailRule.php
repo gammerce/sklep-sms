@@ -27,10 +27,6 @@ class UniqueUserEmailRule implements Rule
 
     public function validate($attribute, $value, array $data)
     {
-        if (!strlen($value)) {
-            return [];
-        }
-
         $statement = $this->db->statement(
             "SELECT `uid` FROM `ss_users` WHERE `email` = ? AND `uid` != ?"
         );
