@@ -1,8 +1,11 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Exceptions\ValidationException;
 use App\Http\Responses\SuccessApiResponse;
+use App\Http\Validation\Rules\MaxLengthRule;
+use App\Http\Validation\Rules\NumberRule;
+use App\Http\Validation\Rules\RequiredRule;
+use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\SmsCodeRepository;
 use App\Translation\TranslationManager;
@@ -18,22 +21,15 @@ class SmsCodeCollection
     ) {
         $lang = $translationManager->user();
 
-        $smsPrice = $request->request->get("sms_price");
-        $code = $request->request->get("code");
+        $validator = new Validator($request->request->all(), [
+            'code' => [new RequiredRule(), new MaxLengthRule(16)],
+            'sms_price' => [new RequiredRule(), new NumberRule()],
+        ]);
 
-        $warnings = [];
+        $validated = $validator->validateOrFail();
 
-        if ($warning = check_for_warnings("number", $smsPrice)) {
-            $warnings['sms_price'] = array_merge((array) $warnings['sms_price'], $warning);
-        }
-
-        if ($warning = check_for_warnings("sms_code", $code)) {
-            $warnings['code'] = array_merge((array) $warnings['code'], $warning);
-        }
-
-        if ($warnings) {
-            throw new ValidationException($warnings);
-        }
+        $code = $validated['code'];
+        $smsPrice = $validated['sms_price'];
 
         $smsCodeRepository->create($lang->strtoupper($code), $smsPrice, true);
         $logger->logWithActor('log_sms_code_added', $code, $smsPrice);

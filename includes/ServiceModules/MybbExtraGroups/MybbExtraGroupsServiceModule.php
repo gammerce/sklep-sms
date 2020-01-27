@@ -687,7 +687,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         // ID użytkownika
         if (strlen($uid)) {
-            if ($warning = check_for_warnings('uid', $uid)) {
+            if ($warning = check_for_warnings("uid", $uid)) {
                 $warnings['uid'] = array_merge((array) $warnings['uid'], $warning);
             } else {
                 $editedUser = $this->heart->getUser($uid);

@@ -12,7 +12,6 @@ class PriceCollectionTest extends HttpTestCase
     protected function setUp()
     {
         parent::setUp();
-
         $this->priceRepository = $this->app->make(PriceRepository::class);
     }
 
@@ -21,8 +20,7 @@ class PriceCollectionTest extends HttpTestCase
     {
         // given
         $server = $this->factory->server();
-        $admin = $this->factory->admin();
-        $this->actingAs($admin);
+        $this->actingAs($this->factory->admin());
 
         // when
         $response = $this->post("/api/admin/prices", [
@@ -48,8 +46,7 @@ class PriceCollectionTest extends HttpTestCase
     public function cannot_create_twice_the_same_price()
     {
         $server = $this->factory->server();
-        $admin = $this->factory->admin();
-        $this->actingAs($admin);
+        $this->actingAs($this->factory->admin());
 
         $body = [
             'service_id' => 'vip',
