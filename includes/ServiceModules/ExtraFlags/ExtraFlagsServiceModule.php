@@ -409,7 +409,11 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                     new ConfirmedRule(),
                     new ExtraFlagPasswordRule(),
                 ],
-                'price_id' => [new PriceExistsRule(), new PriceAvailableRule($this->service)],
+                'price_id' => [
+                    new RequiredRule(),
+                    new PriceExistsRule(),
+                    new PriceAvailableRule($this->service),
+                ],
                 'server_id' => [
                     new RequiredRule(),
                     new ServerExistsRule(),
