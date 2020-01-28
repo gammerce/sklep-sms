@@ -17,24 +17,17 @@ class UserServiceCollection
     ) {
         $lang = $translationManager->user();
 
-        if (
-            ($serviceModule = $heart->getServiceModule($serviceId)) === null ||
-            !($serviceModule instanceof IServiceUserServiceAdminAdd)
-        ) {
+        $serviceModule = $heart->getServiceModule($serviceId);
+        if (!($serviceModule instanceof IServiceUserServiceAdminAdd)) {
             return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
         }
 
-        $returnData = $serviceModule->userServiceAdminAdd($request->request->all());
+        $serviceModule->userServiceAdminAdd($request->request->all());
 
-        if ($returnData["status"] === "warnings") {
-            $returnData["data"]["warnings"] = format_warnings($returnData["data"]["warnings"]);
-        }
-
-        return new ApiResponse(
-            array_get($returnData, 'status'),
-            array_get($returnData, 'text'),
-            array_get($returnData, 'positive'),
-            array_get($returnData, 'data')
-        );
+        return [
+            'status' => "ok",
+            'text' => $lang->t('service_added_correctly'),
+            'positive' => true,
+        ];
     }
 }

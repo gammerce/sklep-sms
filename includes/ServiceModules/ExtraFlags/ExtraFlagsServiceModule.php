@@ -9,6 +9,8 @@ use App\Http\Validation\Rules\ExtraFlagPasswordRule;
 use App\Http\Validation\Rules\ExtraFlagTypeListRule;
 use App\Http\Validation\Rules\ExtraFlagTypeRule;
 use App\Http\Validation\Rules\MaxLengthRule;
+use App\Http\Validation\Rules\MinValueRule;
+use App\Http\Validation\Rules\NumberRule;
 use App\Http\Validation\Rules\PasswordRule;
 use App\Http\Validation\Rules\PriceAvailableRule;
 use App\Http\Validation\Rules\PriceExistsRule;
@@ -17,6 +19,7 @@ use App\Http\Validation\Rules\ServerExistsRule;
 use App\Http\Validation\Rules\ServerLinkedToServiceRule;
 use App\Http\Validation\Rules\ServiceTypesRule;
 use App\Http\Validation\Rules\UniqueFlagsRule;
+use App\Http\Validation\Rules\UserExistsRule;
 use App\Http\Validation\Rules\YesNoRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
@@ -769,76 +772,46 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
     }
 
-    //
-    // Funkcja dodawania usługi przez PA
-    //
     public function userServiceAdminAdd(array $body)
     {
-        $user = $this->auth->user();
-
-        $body['auth_data'] = trim($this->getAuthData($body));
-        $authData = array_get($body, 'auth_data');
-        $type = as_int(array_get($body, 'type'));
-        $password = array_get($body, 'password');
         $forever = (bool) array_get($body, 'forever');
-        $quantity = as_int(array_get($body, 'quantity'));
-        $serverId = as_int(array_get($body, 'server_id'));
-        $email = array_get($body, 'email');
-        $uid = as_int(array_get($body, 'uid'));
 
-        $warnings = [];
+        $validator = new Validator(
+            array_merge($body, [
+                'quantity' => as_int(array_get($body, 'quantity')),
+            ]),
+            [
+                'email' => [new EmailRule()],
+                'quantity' => $forever
+                    ? []
+                    : [new RequiredRule(), new NumberRule(), new MinValueRule(0)],
+            ]
+        );
+        $this->verifyUserServiceData($validator);
+        $validated = $validator->validateOrFail();
 
-        if (!$forever) {
-            if ($warning = check_for_warnings("number", $quantity)) {
-                $warnings['quantity'] = array_merge((array) $warnings['quantity'], $warning);
-            } elseif ($quantity < 0) {
-                $warnings['quantity'][] = $this->lang->t('days_quantity_positive');
-            }
-        }
+        $admin = $this->auth->user();
+        $paymentId = $this->adminPaymentService->payByAdmin($admin);
 
-        // E-mail
-        if (strlen($email) && ($warning = check_for_warnings("email", $email))) {
-            $warnings['email'] = array_merge((array) $warnings['email'], $warning);
-        }
-
-        // Sprawdzamy poprawność wprowadzonych danych
-        $verifyData = $this->verifyUserServiceData($body, $warnings);
-
-        if ($verifyData) {
-            return $verifyData;
-        }
-
-        //
-        // Dodajemy usługę
-
-        $paymentId = $this->adminPaymentService->payByAdmin($user);
-
-        // Pobieramy dane o użytkowniku na które jego wykupiona usługa
-        $purchaseUser = $this->heart->getUser($uid);
-        $purchase = new Purchase($purchaseUser);
+        $purchasingUser = $this->heart->getUser($validated['uid']);
+        $purchase = new Purchase($purchasingUser);
         $purchase->setService($this->service->getId());
         $purchase->setPayment([
             Purchase::PAYMENT_METHOD => Purchase::METHOD_ADMIN,
             Purchase::PAYMENT_PAYMENT_ID => $paymentId,
         ]);
         $purchase->setOrder([
-            Purchase::ORDER_SERVER => $serverId,
-            'type' => $type,
-            'auth_data' => $authData,
-            'password' => $password,
-            Purchase::ORDER_QUANTITY => $quantity,
+            Purchase::ORDER_SERVER => $validated['server_id'],
+            'type' => $validated['type'],
+            'auth_data' => $validated['auth_data'],
+            'password' => $validated['password'],
+            Purchase::ORDER_QUANTITY => $validated['quantity'],
             Purchase::ORDER_FOREVER => $forever,
         ]);
-        $purchase->setEmail($email);
+        $purchase->setEmail($validated['email']);
         $boughtServiceId = $this->purchase($purchase);
 
         $this->logger->logWithActor('log_user_service_added', $boughtServiceId);
-
-        return [
-            'status' => "ok",
-            'text' => $this->lang->t('service_added_correctly'),
-            'positive' => true,
-        ];
     }
 
     public function userServiceAdminEditFormGet(UserService $userService)
@@ -984,89 +957,35 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         return $editReturn;
     }
 
-    //
-    // Weryfikacja danych przy dodawaniu i przy edycji usługi gracza
-    // Zebrane w jednej funkcji, aby nie mnożyć kodu
-    //
-    private function verifyUserServiceData(array $data, array $warnings, $server = true)
+    private function verifyUserServiceData(Validator $validator, $withServer = true)
     {
-        $uid = array_get($data, 'uid');
-        $type = array_get($data, 'type');
-        $authData = array_get($data, 'auth_data');
-        $password = array_get($data, 'password');
-        $serverId = array_get($data, 'server_id');
+        // TODO Modify frontend forms
 
-        // ID użytkownika
-        if ($uid) {
-            if ($warning = check_for_warnings("uid", $uid)) {
-                $warnings['uid'] = array_merge((array) $warnings['uid'], $warning);
-            } else {
-                $editedUser = $this->heart->getUser($uid);
-                if (!$editedUser->exists()) {
-                    $warnings['uid'][] = $this->lang->t('no_account_id');
-                }
-            }
-        }
+        $type = $validator->getData('type');
 
-        // Typ usługi
-        // Mogą być tylko 3 rodzaje typu
-        if (
-            $type != ExtraFlagType::TYPE_NICK &&
-            $type != ExtraFlagType::TYPE_IP &&
-            $type != ExtraFlagType::TYPE_SID
-        ) {
-            $warnings['type'][] = $this->lang->t('must_choose_service_type');
-        } else {
-            if (!($this->service->getTypes() & $type)) {
-                $warnings['type'][] = $this->lang->t('forbidden_purchase_type');
-            } elseif ($type & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)) {
-                // Nick
-                if (
-                    $type == ExtraFlagType::TYPE_NICK &&
-                    ($warning = check_for_warnings("nick", $authData))
-                ) {
-                    $warnings['nick'] = array_merge((array) $warnings['nick'], $warning);
-                }
-                // IP
-                elseif (
-                    $type == ExtraFlagType::TYPE_IP &&
-                    ($warning = check_for_warnings("ip", $authData))
-                ) {
-                    $warnings['ip'] = array_merge((array) $warnings['ip'], $warning);
-                }
+        $validator->extendData([
+            'auth_data' => trim($validator->getData('auth_data')),
+            'server_id' => as_int($validator->getData('server_id')),
+            'type' => as_int($validator->getData('type')),
+            'uid' => as_int($validator->getData('uid')),
+        ]);
 
-                // Hasło
-                if (strlen($password) && ($warning = check_for_warnings("password", $password))) {
-                    $warnings['password'] = array_merge((array) $warnings['password'], $warning);
-                }
-            }
-            // SteamID
-            elseif ($warning = check_for_warnings("sid", $authData)) {
-                $warnings['sid'] = array_merge((array) $warnings['sid'], $warning);
-            }
-        }
-
-        // Server
-        if ($server) {
-            if (!strlen($serverId)) {
-                $warnings['server_id'][] = $this->lang->t('choose_server_for_service');
-            }
-            // Wyszukiwanie serwera o danym id
-            elseif (($server = $this->heart->getServer($serverId)) === null) {
-                $warnings['server_id'][] = $this->lang->t('no_server_id');
-            }
-        }
-
-        if ($warnings) {
-            return [
-                'status' => "warnings",
-                'text' => $this->lang->t('form_wrong_filled'),
-                'positive' => false,
-                'data' => ['warnings' => $warnings],
-            ];
-        }
-
-        return null;
+        $validator->extendRules([
+            'auth_data' => [new RequiredRule(), new ExtraFlagAuthDataRule()],
+            'password' => [
+                $type & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)
+                    ? new RequiredRule()
+                    : null,
+                new PasswordRule(),
+            ],
+            'server_id' => $withServer ? [new RequiredRule(), new ServerExistsRule()] : [],
+            'type' => [
+                new RequiredRule(),
+                new ExtraFlagTypeRule(),
+                new ServiceTypesRule($this->settings),
+            ],
+            'uid' => [new UserExistsRule()],
+        ]);
     }
 
     public function userServiceDeletePost(UserService $userService)
