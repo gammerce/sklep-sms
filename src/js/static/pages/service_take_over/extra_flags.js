@@ -1,14 +1,20 @@
 $(document).delegate("#form_service_take_over [name=type]", "change", function() {
-    var module;
-    if (!(module = service_module_act_can("extra_flags", $(this)))) return;
+    var module = service_module_act_can("extra_flags", $(this));
+    if (!module) {
+        return;
+    }
 
-    module.find("[data-type='nick']").hide();
-    module.find("[data-type='ip']").hide();
-    module.find("[data-type='sid']").hide();
-    module.find("[data-type='nick']").hide();
-    module.find("[data-type='password']").hide();
-    module.find("[data-type='" + get_type_name($(this).val()) + "']").show();
-    if ($(this).val() == "1" || $(this).val() == "2") module.find("[data-type='password']").show();
+    var currentType = $(this).val();
+
+    hideAndDisable(module.find("[data-type='nick']"));
+    hideAndDisable(module.find("[data-type='ip']"));
+    hideAndDisable(module.find("[data-type='sid']"));
+    hideAndDisable(module.find("[data-type='password']"));
+    showAndEnable(module.find("[data-type='" + get_type_name(currentType) + "']"));
+
+    if (currentType == "1" || currentType == "2") {
+        showAndEnable(module.find("[data-type='password']"));
+    }
 });
 
 $(document).delegate("#form_service_take_over [name=payment_method]", "change", function() {

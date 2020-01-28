@@ -952,7 +952,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     private function verifyUserServiceData(Validator $validator)
     {
-        // TODO Modify frontend forms
         $validator->extendData([
             'auth_data' => trim($validator->getData('auth_data')),
             'type' => as_int($validator->getData('type')),
@@ -1284,6 +1283,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function serviceTakeOver(array $body)
     {
+        // TODO Write tests
+
         $user = $this->auth->user();
 
         $serverId = as_int(array_get($body, 'server_id'));
@@ -1294,6 +1295,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $steamId = array_get($body, 'sid');
         $paymentMethod = array_get($body, 'payment_method');
         $paymentId = array_get($body, 'payment_id');
+
+        // TODO Refactor it
 
         $warnings = [];
 

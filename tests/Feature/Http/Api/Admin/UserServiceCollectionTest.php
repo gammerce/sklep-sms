@@ -16,7 +16,6 @@ class UserServiceCollectionTest extends HttpTestCase
         parent::setUp();
 
         $this->userServiceService = $this->app->make(UserServiceService::class);
-
         $this->actingAs($this->factory->admin());
     }
 

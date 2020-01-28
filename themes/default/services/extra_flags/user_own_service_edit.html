@@ -32,10 +32,11 @@ $serviceInfo['service'] }}<br />
                     <input
                         type="text"
                         id="nick"
-                        name="nick"
+                        name="auth_data"
                         class="input is-small"
                         maxlength="32"
                         value="{{ $serviceInfo['player_nick'] }}"
+                        disabled
                     />
                 </div>
             </div>
@@ -52,10 +53,11 @@ $serviceInfo['service'] }}<br />
                     <input
                         type="text"
                         id="ip"
-                        name="ip"
+                        name="auth_data"
                         class="input is-small"
                         maxlength="21"
                         value="{{ $serviceInfo['player_ip'] }}"
+                        disabled
                     />
                 </div>
             </div>
@@ -72,10 +74,11 @@ $serviceInfo['service'] }}<br />
                     <input
                         type="text"
                         id="sid"
-                        name="sid"
+                        name="auth_data"
                         class="input is-small"
                         maxlength="32"
                         value="{{ $serviceInfo['player_sid'] }}"
+                        disabled
                     />
                 </div>
             </div>
@@ -96,6 +99,7 @@ $serviceInfo['service'] }}<br />
                         class="input is-small"
                         maxlength="32"
                         placeholder="{{ $serviceInfo['password'] }}"
+                        disabled
                     />
                 </div>
             </div>

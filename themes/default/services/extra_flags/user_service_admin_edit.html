@@ -54,11 +54,12 @@
                         <input
                             type="text"
                             id="nick"
-                            name="nick"
+                            name="auth_data"
                             class="input is-small"
                             maxlength="32"
                             value="{{ $nick }}"
                             autocomplete="off"
+                            disabled
                         />
                     </div>
                 </div>
@@ -76,11 +77,12 @@
                         <input
                             type="text"
                             id="ip"
-                            name="ip"
+                            name="auth_data"
                             class="input is-small"
                             maxlength="21"
                             value="{{ $ip }}"
                             autocomplete="off"
+                            disabled
                         />
                     </div>
                 </div>
@@ -98,11 +100,12 @@
                         <input
                             type="text"
                             id="sid"
-                            name="sid"
+                            name="auth_data"
                             class="input is-small"
                             maxlength="32"
                             value="{{ $sid }}"
                             autocomplete="off"
+                            disabled
                         />
                     </div>
                 </div>
@@ -125,6 +128,7 @@
                             maxlength="32"
                             placeholder="{{ $password }}"
                             autocomplete="off"
+                            disabled
                         />
                     </div>
                 </div>
