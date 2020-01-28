@@ -1,4 +1,4 @@
-jQuery(document).ready(function($) {
+$(document).ready(function($) {
     // So as no option is selected when somebody returned to the previous page
     $("#form_purchase")
         .find("#purchase_value")
@@ -7,13 +7,17 @@ jQuery(document).ready(function($) {
 
 $(document).delegate("#form_purchase input[name=type]", "change", function() {
     var form = $(this).closest("form");
+    var currentType = $(this).val();
 
-    form.find("#type_nick").hide();
-    form.find("#type_ip").hide();
-    form.find("#type_sid").hide();
-    form.find("#type_password").hide();
-    form.find("#type_" + get_type_name($(this).val())).show();
-    if ($(this).val() == "1" || $(this).val() == "2") form.find("#type_password").show();
+    hideAndDisable(form.find("#type_nick"));
+    hideAndDisable(form.find("#type_ip"));
+    hideAndDisable(form.find("#type_sid"));
+    hideAndDisable(form.find("#type_password"));
+    showAndEnable(form.find("#type_" + get_type_name(currentType)));
+
+    if (currentType == "1" || currentType == "2") {
+        showAndEnable(form.find("#type_password"));
+    }
 });
 
 $(document).delegate("#form_purchase [name=server_id]", "change", function() {
