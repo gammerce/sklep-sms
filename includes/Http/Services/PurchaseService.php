@@ -45,7 +45,7 @@ class PurchaseService
 
         $serverId = as_int(array_get($body, 'server_id'));
         $type = as_int(array_get($body, 'type'));
-        $authData = array_get($body, 'auth_data');
+        $authData = trim(array_get($body, 'auth_data'));
         $password = array_get($body, 'password');
         $ip = array_get($body, 'ip');
         $method = array_get($body, 'method');

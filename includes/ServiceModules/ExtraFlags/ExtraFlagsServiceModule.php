@@ -7,9 +7,11 @@ use App\Http\Validation\Rules\ConfirmedRule;
 use App\Http\Validation\Rules\DateTimeRule;
 use App\Http\Validation\Rules\EmailRule;
 use App\Http\Validation\Rules\ExtraFlagAuthDataRule;
+use App\Http\Validation\Rules\ExtraFlagPasswordDiffersRule;
 use App\Http\Validation\Rules\ExtraFlagPasswordRule;
 use App\Http\Validation\Rules\ExtraFlagTypeListRule;
 use App\Http\Validation\Rules\ExtraFlagTypeRule;
+use App\Http\Validation\Rules\InArrayRule;
 use App\Http\Validation\Rules\MaxLengthRule;
 use App\Http\Validation\Rules\MinValueRule;
 use App\Http\Validation\Rules\NumberRule;
@@ -355,7 +357,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $priceId = as_int(array_get($body, 'price_id'));
         $serverId = as_int(array_get($body, 'server_id'));
         $type = as_int(array_get($body, 'type'));
-        $authData = array_get($body, 'auth_data');
+        $authData = trim(array_get($body, 'auth_data'));
         $password = array_get($body, 'password');
         $passwordRepeat = array_get($body, 'password_repeat');
         $email = array_get($body, 'email');
@@ -382,7 +384,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     {
         $server = $this->heart->getServer($purchase->getOrder(Purchase::ORDER_SERVER));
         $price = $purchase->getPrice();
-        $type = $purchase->getOrder('type');
 
         if ($server && $server->getSmsPlatformId()) {
             $purchase->setPayment([
@@ -398,7 +399,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 'email' => $purchase->getEmail(),
                 'price_id' => $price ? $price->getId() : null,
                 'server_id' => $purchase->getOrder(Purchase::ORDER_SERVER),
-                'type' => $type,
+                'type' => $purchase->getOrder('type'),
             ],
             [
                 'auth_data' => [new RequiredRule(), new ExtraFlagAuthDataRule()],
@@ -407,12 +408,10 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                     new EmailRule(),
                 ],
                 'password' => [
-                    $type & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)
-                        ? new RequiredRule()
-                        : null,
+                    new ExtraFlagPasswordRule(),
                     new PasswordRule(),
                     new ConfirmedRule(),
-                    new ExtraFlagPasswordRule(),
+                    new ExtraFlagPasswordDiffersRule(),
                 ],
                 'price_id' => [
                     new RequiredRule(),
@@ -777,7 +776,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     public function userServiceAdminAdd(array $body)
     {
         $forever = (bool) array_get($body, 'forever');
-        $type = as_int(array_get($body, 'type'));
 
         $validator = new Validator(
             array_merge($body, [
@@ -786,11 +784,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ]),
             [
                 'email' => [new EmailRule()],
-                'password' => [
-                    $type & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)
-                        ? new RequiredRule()
-                        : null,
-                ],
+                'password' => [new ExtraFlagPasswordRule()],
                 'quantity' => $forever
                     ? []
                     : [new RequiredRule(), new NumberRule(), new MinValueRule(0)],
@@ -1286,84 +1280,31 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         // TODO Write tests
 
         $user = $this->auth->user();
+        $validator = new Validator(
+            array_merge($body, [
+                'auth_data' => trim(array_get($body, 'server_id')),
+                'server_id' => as_int(array_get($body, 'server_id')),
+                'type' => as_int(array_get($body, 'type')),
+            ]),
+            [
+                'auth_data' => [new RequiredRule(), new ExtraFlagAuthDataRule()],
+                'password' => [new ExtraFlagPasswordRule()],
+                'payment_method' => [
+                    new InArrayRule([Purchase::METHOD_SMS, Purchase::METHOD_TRANSFER]),
+                ],
+                'payment_id' => [new RequiredRule()],
+                'server_id' => [new RequiredRule()],
+                'type' => [new RequiredRule(), new ExtraFlagTypeRule()],
+            ]
+        );
 
-        $serverId = as_int(array_get($body, 'server_id'));
-        $type = as_int(array_get($body, 'type'));
-        $nick = array_get($body, 'nick');
-        $ip = array_get($body, 'ip');
-        $password = array_get($body, 'password');
-        $steamId = array_get($body, 'sid');
-        $paymentMethod = array_get($body, 'payment_method');
-        $paymentId = array_get($body, 'payment_id');
-
-        // TODO Refactor it
-
-        $warnings = [];
-
-        // Serwer
-        if (!strlen($serverId)) {
-            $warnings['server_id'][] = $this->lang->t('field_no_empty');
-        }
-
-        // Typ
-        if (!strlen($type)) {
-            $warnings['type'][] = $this->lang->t('field_no_empty');
-        }
-
-        switch ($type) {
-            case ExtraFlagType::TYPE_NICK:
-                if (!strlen($nick)) {
-                    $warnings['nick'][] = $this->lang->t('field_no_empty');
-                }
-
-                // Hasło
-                if (!strlen($password)) {
-                    $warnings['password'][] = $this->lang->t('field_no_empty');
-                }
-
-                $authData = $nick;
-                break;
-
-            case ExtraFlagType::TYPE_IP:
-                // IP
-                if (!strlen($ip)) {
-                    $warnings['ip'][] = $this->lang->t('field_no_empty');
-                }
-
-                // Hasło
-                if (!strlen($password)) {
-                    $warnings['password'][] = $this->lang->t('field_no_empty');
-                }
-
-                $authData = $ip;
-                break;
-
-            case ExtraFlagType::TYPE_SID:
-                // SID
-                if (!strlen($steamId)) {
-                    $warnings['sid'][] = $this->lang->t('field_no_empty');
-                }
-
-                $authData = $steamId;
-                break;
-        }
-
-        if (!in_array($paymentMethod, [Purchase::METHOD_SMS, Purchase::METHOD_TRANSFER])) {
-            $warnings['payment_method'][] = $this->lang->t('field_no_empty');
-        }
-
-        if (!strlen($paymentId)) {
-            $warnings['payment_id'][] = $this->lang->t('field_no_empty');
-        }
-
-        if ($warnings) {
-            return [
-                'status' => "warnings",
-                'text' => $this->lang->t('form_wrong_filled'),
-                'positive' => false,
-                'data' => ['warnings' => $warnings],
-            ];
-        }
+        $validated = $validator->validateOrFail();
+        $paymentMethod = $validated['payment_method'];
+        $paymentId = $validated['payment_id'];
+        $serverId = $validated['server_id'];
+        $authData = $validated['auth_data'];
+        $type = $validated['type'];
+        $password = $validated['password'];
 
         if ($paymentMethod == Purchase::METHOD_TRANSFER) {
             $result = $this->db->query(
@@ -1420,7 +1361,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
 
         $row = $result->fetch();
-
         $this->userServiceRepository->updateUid($row['id'], $user->getUid());
 
         return [
@@ -1491,31 +1431,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             default:
                 return '';
         }
-    }
-
-    /**
-     * Get value depending on the type
-     *
-     * @param array $data
-     * @return string|null
-     */
-    private function getAuthData(array $data)
-    {
-        $type = array_get($data, 'type');
-
-        if ($type == ExtraFlagType::TYPE_NICK) {
-            return trim(array_get($data, 'nick'));
-        }
-
-        if ($type == ExtraFlagType::TYPE_IP) {
-            return trim(array_get($data, 'ip'));
-        }
-
-        if ($type == ExtraFlagType::TYPE_SID) {
-            return trim(array_get($data, 'sid'));
-        }
-
-        return null;
     }
 
     private function getTypeName($value)
