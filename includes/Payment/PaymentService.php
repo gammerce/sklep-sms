@@ -177,11 +177,16 @@ class PaymentService
             ],
             [
                 'service_code' => [
-                    $purchase->getPayment(Purchase::PAYMENT_METHOD) === Purchase::METHOD_SERVICE_CODE ? new RequiredRule() : null
+                    $purchase->getPayment(Purchase::PAYMENT_METHOD) ===
+                    Purchase::METHOD_SERVICE_CODE
+                        ? new RequiredRule()
+                        : null,
                 ],
                 'sms_code' => [
-                    $purchase->getPayment(Purchase::PAYMENT_METHOD) === Purchase::METHOD_SMS ? new RequiredRule() : null,
-                    new MaxLengthRule(16)
+                    $purchase->getPayment(Purchase::PAYMENT_METHOD) === Purchase::METHOD_SMS
+                        ? new RequiredRule()
+                        : null,
+                    new MaxLengthRule(16),
                 ],
             ]
         );

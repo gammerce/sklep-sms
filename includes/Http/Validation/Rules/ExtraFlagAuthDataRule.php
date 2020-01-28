@@ -21,12 +21,10 @@ class ExtraFlagAuthDataRule extends BaseRule implements EmptyRule
 
     public function validate($attribute, $value, array $data)
     {
-// Typ usługi
+        return [];
+        // Typ usługi
         // Mogą być tylko 3 rodzaje typu
-        if (
-            $purchase->getOrder('type') &
-            (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)
-        ) {
+        if ($purchase->getOrder('type') & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)) {
             // Nick
             if ($purchase->getOrder('type') == ExtraFlagType::TYPE_NICK) {
                 if ($warning = check_for_warnings("nick", $purchase->getOrder('auth_data'))) {
@@ -36,9 +34,9 @@ class ExtraFlagAuthDataRule extends BaseRule implements EmptyRule
                 // Sprawdzanie czy istnieje już taka usługa
                 $query = $this->db->prepare(
                     "SELECT `password` FROM `" .
-                    $this::USER_SERVICE_TABLE .
-                    "` " .
-                    "WHERE `type` = '%d' AND `auth_data` = '%s' AND `server` = '%d'",
+                        $this::USER_SERVICE_TABLE .
+                        "` " .
+                        "WHERE `type` = '%d' AND `auth_data` = '%s' AND `server` = '%d'",
                     [
                         ExtraFlagType::TYPE_NICK,
                         $purchase->getOrder('auth_data'),
@@ -55,9 +53,9 @@ class ExtraFlagAuthDataRule extends BaseRule implements EmptyRule
                 // Sprawdzanie czy istnieje już taka usługa
                 $query = $this->db->prepare(
                     "SELECT `password` FROM `" .
-                    $this::USER_SERVICE_TABLE .
-                    "` " .
-                    "WHERE `type` = '%d' AND `auth_data` = '%s' AND `server` = '%d'",
+                        $this::USER_SERVICE_TABLE .
+                        "` " .
+                        "WHERE `type` = '%d' AND `auth_data` = '%s' AND `server` = '%d'",
                     [
                         ExtraFlagType::TYPE_IP,
                         $purchase->getOrder('auth_data'),

@@ -73,7 +73,11 @@ class OtherServiceModule extends ServiceModule implements
             [
                 'email' => [new EmailRule()],
                 'price_id' => [new PriceExistsRule(), new PriceAvailableRule($this->service)],
-                'server_id' => [new RequiredRule(), new ServerExistsRule(), new ServerLinkedToServiceRule($this->service)],
+                'server_id' => [
+                    new RequiredRule(),
+                    new ServerExistsRule(),
+                    new ServerLinkedToServiceRule($this->service),
+                ],
             ]
         );
     }

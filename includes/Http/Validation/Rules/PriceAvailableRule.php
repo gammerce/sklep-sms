@@ -31,7 +31,10 @@ class PriceAvailableRule extends BaseRule
         $serviceId = $this->service->getId();
         $serverId = array_get($data, 'server_id');
 
-        if (!$price || !$this->purchaseValidationService->isPriceAvailable2($price, $serviceId, $serverId)) {
+        if (
+            !$price ||
+            !$this->purchaseValidationService->isPriceAvailable2($price, $serviceId, $serverId)
+        ) {
             return [$this->lang->t('service_not_affordable')];
         }
 

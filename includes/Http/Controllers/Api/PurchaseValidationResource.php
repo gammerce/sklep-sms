@@ -58,15 +58,10 @@ class PurchaseValidationResource
         $serviceModule->purchaseFormValidate($purchase, $request->request->all());
         $purchaseEncoded = $purchaseSerializer->serializeAndEncode($purchase);
 
-        return new ApiResponse(
-            "ok",
-            $lang->t('purchase_form_validated'),
-            true,
-            [
-                'length' => 8000,
-                'data' => $purchaseEncoded,
-                'sign' => md5($purchaseEncoded . $settings->getSecret()),
-            ]
-        );
+        return new ApiResponse("ok", $lang->t('purchase_form_validated'), true, [
+            'length' => 8000,
+            'data' => $purchaseEncoded,
+            'sign' => md5($purchaseEncoded . $settings->getSecret()),
+        ]);
     }
 }
