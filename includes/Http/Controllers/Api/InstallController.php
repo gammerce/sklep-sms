@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\PlainResponse;
+use App\Http\Validation\Rules\RequiredRule;
+use App\Http\Validation\Validator;
 use App\Install\DatabaseMigration;
 use App\Install\EnvCreator;
 use App\Install\RequirementsStore;
@@ -22,6 +24,7 @@ class InstallController
     public function post(
         Request $request,
         RequirementsStore $requirementsStore,
+        EnvCreator $envCreator,
         SetupManager $setupManager,
         Path $path,
         FileSystemContract $fileSystem,
@@ -39,17 +42,48 @@ class InstallController
             );
         }
 
-        $modules = $requirementsStore->getModules();
-        $filesWithWritePermission = $requirementsStore->getFilesWithWritePermission();
+        $validator = new Validator($request->request->all(), [
+            'admin_password' => [new RequiredRule()],
+            'admin_username' => [new RequiredRule()],
+            'license_token' => [new RequiredRule()],
+            'db_host' => [],
+            'db_port' => [],
+            'db_user' => [],
+            'db_password' => [],
+            'db_db' => [],
+        ]);
 
-        $dbHost = $request->request->get('db_host');
-        $dbPort = $request->request->get('db_port');
-        $dbUser = $request->request->get('db_user');
-        $dbPassword = $request->request->get('db_password');
-        $dbDb = $request->request->get('db_db');
-        $licenseToken = $request->request->get('license_token');
-        $adminUsername = $request->request->get('admin_username');
-        $adminPassword = $request->request->get('admin_password');
+        $warnings = $validator->validate();
+
+        foreach ($requirementsStore->getFilesWithWritePermission() as $file) {
+            if (strlen($file) && !$fileSystem->isWritable($path->to($file))) {
+                $warnings->add(
+                    'general',
+                    "Ścieżka <b>" . htmlspecialchars($file) . "</b> nie posiada praw do zapisu."
+                );
+            }
+        }
+
+        foreach ($requirementsStore->getModules() as $module) {
+            if (!$module['value'] && $module['must-be']) {
+                $warnings->add(
+                    'general',
+                    "Wymaganie: <b>{$module['text']}</b> nie jest spełnione."
+                );
+            }
+        }
+
+        if ($warnings->isPopulated()) {
+            throw new ValidationException($warnings);
+        }
+
+        $validated = $validator->validated();
+
+        $dbHost = $validated['db_host'];
+        $dbPort = $validated['db_port'];
+        $dbUser = $validated['db_user'];
+        $dbPassword = $validated['db_password'];
+        $dbDb = $validated['db_db'];
 
         try {
             $db = new Database($dbHost, $dbPort, $dbUser, $dbPassword, $dbDb);
@@ -59,50 +93,16 @@ class InstallController
             return new Response($e->getMessage());
         }
 
-        /** @var SetupManager $setupManager */
-        $setupManager = $app->make(SetupManager::class);
-
         /** @var DatabaseMigration $migrator */
         $migrator = $app->make(DatabaseMigration::class);
 
-        /** @var EnvCreator $envCreator */
-        $envCreator = $app->make(EnvCreator::class);
-
-        $warnings = [];
-
-        if (!strlen($licenseToken)) {
-            $warnings['license_token'][] = "Nie podano tokenu licencji.";
-        }
-
-        if (!strlen($adminUsername)) {
-            $warnings['admin_username'][] = "Nie podano nazwy dla użytkownika admin.";
-        }
-
-        if (!strlen($adminPassword)) {
-            $warnings['admin_password'][] = "Nie podano hasła dla użytkownika admin.";
-        }
-
-        foreach ($filesWithWritePermission as $file) {
-            if (strlen($file) && !$fileSystem->isWritable($path->to($file))) {
-                $warnings['general'][] =
-                    "Ścieżka <b>" . htmlspecialchars($file) . "</b> nie posiada praw do zapisu.";
-            }
-        }
-
-        // Sprawdzamy ustawienia modułuów
-        foreach ($modules as $module) {
-            if (!$module['value'] && $module['must-be']) {
-                $warnings['general'][] = "Wymaganie: <b>{$module['text']}</b> nie jest spełnione.";
-            }
-        }
-
-        if ($warnings) {
-            throw new ValidationException($warnings);
-        }
-
         try {
             $setupManager->start();
-            $migrator->setup($licenseToken, $adminUsername, $adminPassword);
+            $migrator->setup(
+                $validated['license_token'],
+                $validated['admin_username'],
+                $validated['admin_password']
+            );
             $envCreator->create($dbHost, $dbPort, $dbDb, $dbUser, $dbPassword);
         } catch (Exception $e) {
             $setupManager->markAsFailed();
