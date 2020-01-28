@@ -18,11 +18,10 @@ return [
     'contact_info' => 'Możesz się z nami skontaktować na jeden z poniższych sposobów.',
     'create_account' => 'Załóż Konto',
     'different_values' => 'Podane wartości różnią się.',
-    'email_no_account' => 'Podany e-mail nie jest przypisany do żadnego konta.',
     'email_occupied' => 'Podany e-mail jest już zajęty.',
     'email_repeat' => 'Powtórz adres e-mail',
     'email_sent' =>
-        'E-mail wraz z linkiem do zresetowania hasła został wysłany na Twoją skrzynkę pocztową.',
+        'Jeżeli podane dane są prawidłowe, to e-mail wraz z linkiem do zresetowania hasła został właśnie wysłany na Twoją skrzynkę pocztową.',
     'expire' => 'Wygasa',
     'forgot_password' => 'Nie pamiętam hasła',
     'forgotten_password' => 'Odzyskanie hasła',
@@ -37,7 +36,6 @@ return [
     'must_be_logged_out' => 'Nie możesz przeglądać tej strony. Jesteś zalogowany/a.',
     'my_services' => 'Moje usługi',
     'new_account' => 'Założono nowe konto. ID: {1} Nazwa Użytkownika: {2}, IP: {3}',
-    'nick_no_account' => 'Podana nazwa użytkownika nie jest przypisana do żadnego konta.',
     'nick_occupied' => 'Podana nazwa użytkownika jest już zajęta.',
     'no_login_no_wallet' => 'Nie można zapłacić portfelem, gdy nie jesteś zalogowany.',
     'no_login_password' =>
@@ -84,7 +82,7 @@ return [
     'required_data' => 'Wymagane dane',
     'reset_key_email' =>
         'Wysłano e-maila z kodem do zresetowania hasła. Użytkownik: {1}({2}) E-mail: {3} Dane formularza. Nazwa użytkownika: {4} E-mail: {5}',
-    'reset_link_sent' => 'e-mail wraz z linkiem do zresetowania hasła został wysłany na Twoją skrzynkę pocztową.<br/>
+    'reset_link_sent' => 'Jeżeli podane dane są prawidłowe, to e-mail wraz z linkiem do zresetowania hasła został wysłany na Twoją skrzynkę pocztową.<br/>
 Postępuj zgodnie ze wskazówkami zawartymi w e-mailu.',
     'reset_pass' => 'Zresetowano hasło. ID Użytkownika: {1}.',
     'reset_password' => 'Zresetuj hasło',

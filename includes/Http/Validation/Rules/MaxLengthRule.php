@@ -1,23 +1,17 @@
 <?php
 namespace App\Http\Validation\Rules;
 
-use App\Http\Validation\Rule;
-use App\Translation\TranslationManager;
-use App\Translation\Translator;
+use App\Http\Validation\BaseRule;
 
-class MaxLengthRule implements Rule
+class MaxLengthRule extends BaseRule
 {
     /** @var int */
     private $length;
 
-    /** @var Translator */
-    private $lang;
-
-    public function __construct($length)
+    public function __construct($value)
     {
-        $this->length = $length;
-        $translationManager = app()->make(TranslationManager::class);
-        $this->lang = $translationManager->user();
+        parent::__construct();
+        $this->length = $value;
     }
 
     public function validate($attribute, $value, array $data)

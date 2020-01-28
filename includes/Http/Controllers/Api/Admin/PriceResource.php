@@ -21,26 +21,16 @@ class PriceResource
     ) {
         $lang = $translationManager->user();
 
-        $serviceId = $request->request->get('service_id');
-        $serverId = as_int($request->request->get('server_id'));
-        $quantity = as_int($request->request->get('quantity'));
-        $smsPrice = as_int($request->request->get('sms_price'));
-
-        if (strlen($request->request->get('transfer_price'))) {
-            $transferPrice = $request->request->get('transfer_price') * 100;
-        } else {
-            $transferPrice = null;
-        }
-
-        $priceService->validateBody($request->request->all());
+        $validator = $priceService->createValidator($request->request->all());
+        $validated = $validator->validateOrFail();
 
         $updated = $priceRepository->update(
             $priceId,
-            $serviceId,
-            $serverId,
-            $smsPrice,
-            $transferPrice,
-            $quantity
+            $validated['service_id'],
+            $validated['server_id'],
+            $validated['sms_price'],
+            $validated['transfer_price'],
+            $validated['quantity']
         );
 
         if ($updated) {

@@ -1,8 +1,10 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
+use App\Http\Validation\Rules\EmailRule;
+use App\Http\Validation\Rules\UsernameRule;
+use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\UserRepository;
 use App\Routing\UrlGenerator;
@@ -25,39 +27,24 @@ class PasswordForgottenController
     ) {
         $lang = $translationManager->user();
 
-        $warnings = [];
+        $validator = new Validator(
+            [
+                'username' => trim($request->request->get('username')),
+                'email' => trim($request->request->get('email')),
+            ],
+            [
+                'username' => [new UsernameRule()],
+                'email' => [new EmailRule()],
+            ]
+        );
 
-        $username = trim($request->request->get('username'));
-        $email = trim($request->request->get('email'));
+        $validated = $validator->validateOrFail();
 
-        if ($username || (!$username && !$email)) {
-            if ($warning = check_for_warnings("username", $username)) {
-                $warnings['username'] = array_merge((array) $warnings['username'], $warning);
-            }
-            if (strlen($username)) {
-                $editedUser = $userRepository->findByUsername($username);
-
-                if (!$editedUser) {
-                    $warnings['username'][] = $lang->t('nick_no_account');
-                }
-            }
-        }
-
-        if (!strlen($username)) {
-            if ($warning = check_for_warnings("email", $email)) {
-                $warnings['email'] = array_merge((array) $warnings['email'], $warning);
-            }
-            if (strlen($email)) {
-                $editedUser = $userRepository->findByEmail($email);
-
-                if (!$editedUser) {
-                    $warnings['email'][] = $lang->t('email_no_account');
-                }
-            }
-        }
-
-        if ($warnings) {
-            throw new ValidationException($warnings);
+        $editedUser =
+            $userRepository->findByEmail($validated['email']) ?:
+            $userRepository->findByUsername($validated['username']);
+        if (!$editedUser) {
+            return new ApiResponse("sent", $lang->t('email_sent'), 1);
         }
 
         $code = $userRepository->createResetPasswordKey($editedUser->getUid());
@@ -71,25 +58,24 @@ class PasswordForgottenController
             $text
         );
 
-        if ($ret == "not_sent") {
+        if ($ret === "not_sent") {
             return new ApiResponse("not_sent", $lang->t('keyreset_error'), 0);
         }
 
-        if ($ret == "wrong_email") {
+        if ($ret === "wrong_email") {
             return new ApiResponse("wrong_sender_email", $lang->t('wrong_email'), 0);
         }
 
-        if ($ret == "sent") {
+        if ($ret === "sent") {
             $logger->log(
                 'reset_key_email',
                 $editedUser->getUsername(),
                 $editedUser->getUid(),
                 $editedUser->getEmail(),
-                $username,
-                $email
+                $validated['username'],
+                $validated['email']
             );
-            $data['username'] = $editedUser->getUsername();
-            return new ApiResponse("sent", $lang->t('email_sent'), 1, $data);
+            return new ApiResponse("sent", $lang->t('email_sent'), 1);
         }
 
         throw new UnexpectedValueException("Invalid ret value");

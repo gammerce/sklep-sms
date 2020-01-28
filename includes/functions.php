@@ -501,13 +501,6 @@ function check_for_warnings($type, $data)
 
             break;
 
-        case "service_description":
-            if (strlen($data) > 28) {
-                $warnings[] = $lang->t('field_length_max_warn', 28);
-            }
-
-            break;
-
         case "number":
             if (!strlen($data)) {
                 $warnings[] = $lang->t('field_no_empty');
@@ -633,4 +626,13 @@ function is_testing()
 function is_demo()
 {
     return getenv('APP_ENV') === 'demo';
+}
+
+function has_value($value)
+{
+    if (is_array($value) || is_object($value)) {
+        return !!$value;
+    }
+
+    return strlen($value);
 }

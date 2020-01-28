@@ -1,24 +1,18 @@
 <?php
 namespace App\Http\Validation\Rules;
 
-use App\Http\Validation\Rule;
+use App\Http\Validation\BaseRule;
 use App\Repositories\PriceRepository;
-use App\Translation\TranslationManager;
-use App\Translation\Translator;
 
-class PriceExistsRule implements Rule
+class PriceExistsRule extends BaseRule
 {
     /** @var PriceRepository */
     private $priceRepository;
 
-    /** @var Translator */
-    private $lang;
-
     public function __construct()
     {
+        parent::__construct();
         $this->priceRepository = app()->make(PriceRepository::class);
-        $translationManager = app()->make(TranslationManager::class);
-        $this->lang = $translationManager->user();
     }
 
     public function validate($attribute, $value, array $data)

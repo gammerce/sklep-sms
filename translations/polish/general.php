@@ -56,6 +56,7 @@ return [
     'march' => 'Marzec',
     'max_length' => 'Wartość nie może być dłuższa niż {1} znaków.',
     'may' => 'Maj',
+    'min_value' => 'Wartość nie może być mniejsza niż {1}.',
     'minutes' => 'minut',
     'name' => 'Nazwa',
     'next' => 'Dalej',

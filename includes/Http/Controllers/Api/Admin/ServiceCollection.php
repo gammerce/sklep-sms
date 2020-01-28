@@ -3,6 +3,11 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\ServiceService;
+use App\Http\Validation\Rules\MaxLengthRule;
+use App\Http\Validation\Rules\RequiredRule;
+use App\Http\Validation\Rules\ServiceModuleExistsRule;
+use App\Http\Validation\Rules\ServiceNotExistsRule;
+use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\ServiceRepository;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
@@ -22,55 +27,36 @@ class ServiceCollection
     ) {
         $lang = $translationManager->user();
 
-        $id = $request->request->get('id');
-        $name = $request->request->get('name');
-        $shortDescription = $request->request->get('short_description');
-        $order = trim($request->request->get('order'));
-        $description = $request->request->get('description');
-        $tag = $request->request->get('tag');
         $module = $request->request->get('module');
-        $groups = $request->request->get('groups', []);
+        $serviceModule = $heart->getEmptyServiceModule($module);
 
-        $warnings = [];
-
-        if (($serviceModule = $heart->getEmptyServiceModule($module)) === null) {
-            $warnings['module'][] = $lang->t('wrong_module');
-        }
-
-        if (!strlen($id)) {
-            $warnings['id'][] = $lang->t('no_service_id');
-        }
-
-        if (strlen($id) > 16) {
-            $warnings['id'][] = $lang->t('long_service_id');
-        }
-
-        if ($heart->getService($id) !== null) {
-            $warnings['id'][] = $lang->t('id_exist');
-        }
-
-        $serviceService->validateBody($request->request->all(), $warnings, $serviceModule);
+        $validator = new Validator($request->request->all(), [
+            'id' => [new RequiredRule(), new MaxLengthRule(16), new ServiceNotExistsRule()],
+            'module' => [new RequiredRule(), new ServiceModuleExistsRule()],
+        ]);
+        $validator = $serviceService->extendValidator($validator, $serviceModule);
+        $validated = $validator->validateOrFail();
 
         $additionalData =
             $serviceModule instanceof IServiceAdminManage
-                ? $serviceModule->serviceAdminManagePost($request->request->all())
+                ? $serviceModule->serviceAdminManagePost($validated)
                 : [];
 
         $serviceRepository->create(
-            $id,
-            $name,
-            $shortDescription,
-            $description,
-            $tag,
-            $module,
-            $groups,
-            $order,
+            $validated['id'],
+            $validated['name'],
+            $validated['short_description'],
+            $validated['description'],
+            $validated['tag'],
+            $serviceModule->getModuleId(),
+            $validated['groups'],
+            $validated['order'],
             array_get($additionalData, "data", []),
             array_get($additionalData, "types", 0),
             array_get($additionalData, "flags", '')
         );
 
-        $logger->logWithActor('log_service_added', $id);
+        $logger->logWithActor('log_service_added', $validated['id']);
 
         return new SuccessApiResponse($lang->t('service_added'), [
             'length' => 10000,

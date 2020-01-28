@@ -2,6 +2,10 @@
 namespace App\ServiceModules\MybbExtraGroups;
 
 use App\Exceptions\InvalidConfigException;
+use App\Http\Validation\Rules\IntegerCommaSeparatedListRule;
+use App\Http\Validation\Rules\RequiredRule;
+use App\Http\Validation\Rules\YesNoRule;
+use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Models\MybbExtraGroupsUserService;
 use App\Models\MybbUser;
@@ -175,54 +179,21 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         );
     }
 
-    public function serviceAdminManagePre(array $data)
+    public function serviceAdminManagePre(Validator $validator)
     {
-        $warnings = [];
-
-        // Web
-        if (!in_array($data['web'], ["1", "0"])) {
-            $warnings['web'][] = $this->lang->t('only_yes_no');
-        }
-
-        // MyBB groups
-        if (!strlen($data['mybb_groups'])) {
-            $warnings['mybb_groups'][] = $this->lang->t('field_no_empty');
-        } else {
-            $groups = explode(",", $data['mybb_groups']);
-            foreach ($groups as $group) {
-                if (!my_is_integer($group)) {
-                    $warnings['mybb_groups'][] = $this->lang->t('group_not_integer');
-                    break;
-                }
-            }
-        }
-
-        // Db host
-        if (!strlen($data['db_host'])) {
-            $warnings['db_host'][] = $this->lang->t('field_no_empty');
-        }
-
-        // Db user
-        if (!strlen($data['db_user'])) {
-            $warnings['db_user'][] = $this->lang->t('field_no_empty');
-        }
-
-        // Db password
-        if ($this->service === null && !strlen($data['db_password'])) {
-            $warnings['db_password'][] = $this->lang->t('field_no_empty');
-        }
-
-        // Db name
-        if (!strlen($data['db_name'])) {
-            $warnings['db_name'][] = $this->lang->t('field_no_empty');
-        }
-
-        return $warnings;
+        $validator->extendRules([
+            'db_host' => [new RequiredRule()],
+            'db_user' => [new RequiredRule()],
+            'db_password' => [],
+            'db_name' => [new RequiredRule()],
+            'mybb_groups' => [new RequiredRule(), new IntegerCommaSeparatedListRule()],
+            'web' => [new RequiredRule(), new YesNoRule()],
+        ]);
     }
 
-    public function serviceAdminManagePost(array $data)
+    public function serviceAdminManagePost(array $body)
     {
-        $mybbGroups = explode(",", $data['mybb_groups']);
+        $mybbGroups = explode(",", $body['mybb_groups']);
         foreach ($mybbGroups as $key => $group) {
             $mybbGroups[$key] = trim($group);
             if (!strlen($mybbGroups[$key])) {
@@ -232,15 +203,15 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         $extraData = [
             'mybb_groups' => implode(",", $mybbGroups),
-            'web' => $data['web'],
-            'db_host' => $data['db_host'],
-            'db_user' => $data['db_user'],
+            'web' => $body['web'],
+            'db_host' => $body['db_host'],
+            'db_user' => $body['db_user'],
             'db_password' => array_get(
-                $data,
+                $body,
                 'db_password',
                 array_get($this->service->getData(), 'db_password')
             ),
-            'db_name' => $data['db_name'],
+            'db_name' => $body['db_name'],
         ];
 
         return [

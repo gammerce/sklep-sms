@@ -23,15 +23,17 @@ class ServerResource
     ) {
         $lang = $translationManager->user();
 
-        $name = $request->request->get('name');
-        $ip = trim($request->request->get('ip'));
-        $port = trim($request->request->get('port'));
-        $smsPlatform = $request->request->get('sms_platform') ?: null;
+        $validator = $serverService->createValidator($request->request->all());
+        $validated = $validator->validateOrFail();
 
-        $serverService->validateBody($request->request->all());
-        $serverRepository->update($serverId, $name, $ip, $port, $smsPlatform);
+        $serverRepository->update(
+            $serverId,
+            $validated['name'],
+            $validated['ip'],
+            $validated['port'],
+            $validated['sms_platform']
+        );
         $serverService->updateServerServiceAffiliations($serverId, $request->request->all());
-
         $databaseLogger->logWithActor('log_server_edited', $serverId);
 
         return new SuccessApiResponse($lang->t('server_edit'));

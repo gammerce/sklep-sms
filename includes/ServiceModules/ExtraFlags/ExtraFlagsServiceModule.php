@@ -2,6 +2,12 @@
 namespace App\ServiceModules\ExtraFlags;
 
 use App\Exceptions\UnauthorizedException;
+use App\Http\Validation\Rules\ExtraFlagTypeListRule;
+use App\Http\Validation\Rules\MaxLengthRule;
+use App\Http\Validation\Rules\RequiredRule;
+use App\Http\Validation\Rules\UniqueFlagsRule;
+use App\Http\Validation\Rules\YesNoRule;
+use App\Http\Validation\Validator;
 use App\Http\Validation\WarningBag;
 use App\Loggers\DatabaseLogger;
 use App\Models\ExtraFlagsUserService;
@@ -171,66 +177,32 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
     }
 
-    public function serviceAdminManagePre(array $data)
+    public function serviceAdminManagePre(Validator $validator)
     {
-        $warnings = [];
-
-        $web = array_get($data, 'web');
-        $flags = array_get($data, 'flags');
-        $types = array_get($data, 'type', []);
-
-        // Web
-        if (!in_array($web, ["1", "0"])) {
-            $warnings['web'][] = $this->lang->t('only_yes_no');
-        }
-
-        // Flagi
-        if (!strlen($flags)) {
-            $warnings['flags'][] = $this->lang->t('field_no_empty');
-        } elseif (strlen($flags) > 25) {
-            $warnings['flags'][] = $this->lang->t('too_many_flags');
-        } elseif (implode('', array_unique(str_split($flags))) != $flags) {
-            $warnings['flags'][] = $this->lang->t('same_flags');
-        }
-
-        // Typy
-        if (empty($types)) {
-            $warnings['type[]'][] = $this->lang->t('no_type_chosen');
-        }
-
-        // Sprawdzamy, czy typy są prawidłowe
-        foreach ($types as $type) {
-            if (
-                !(
-                    $type &
-                    (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP | ExtraFlagType::TYPE_SID)
-                )
-            ) {
-                $warnings['type[]'][] = $this->lang->t('wrong_type_chosen');
-                break;
-            }
-        }
-
-        return $warnings;
+        $validator->extendRules([
+            'flags' => [new RequiredRule(), new MaxLengthRule(25), new UniqueFlagsRule()],
+            'type' => [new RequiredRule(), new ExtraFlagTypeListRule()],
+            'web' => [new RequiredRule(), new YesNoRule()],
+        ]);
     }
 
-    public function serviceAdminManagePost(array $data)
+    public function serviceAdminManagePost(array $body)
     {
         // Przygotowujemy do zapisu ( suma bitowa ), które typy zostały wybrane
         $types = 0;
-        foreach ($data['type'] as $type) {
+        foreach ($body['type'] as $type) {
             $types |= $type;
         }
 
-        $extraData = $this->service ? $this->service->getData() : [];
-        $extraData['web'] = $data['web'];
+        $data = $this->service ? $this->service->getData() : [];
+        $data['web'] = $body['web'];
 
-        $this->serviceDescriptionService->create($data['id']);
+        $this->serviceDescriptionService->create($body['id']);
 
         return [
             'types' => $types,
-            'flags' => $data['flags'],
-            'data' => $extraData,
+            'flags' => $body['flags'],
+            'data' => $data,
         ];
     }
 
