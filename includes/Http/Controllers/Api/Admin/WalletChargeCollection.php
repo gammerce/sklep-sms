@@ -1,8 +1,11 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
+use App\Http\Validation\Rules\NumberRule;
+use App\Http\Validation\Rules\RequiredRule;
+use App\Http\Validation\Rules\UserExistsRule;
+use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
 use App\Payment\AdminPaymentService;
@@ -27,34 +30,25 @@ class WalletChargeCollection
         $lang = $translationManager->user();
         $user = $auth->user();
 
-        $quantity = intval($request->request->get('quantity')) * 100;
+        $validator = new Validator(
+            array_merge($request->request->all(), [
+                'uid' => $userId,
+            ]),
+            [
+                'uid' => [new RequiredRule(), new UserExistsRule()],
+                'quantity' => [new RequiredRule(), new NumberRule()],
+            ]
+        );
 
-        $warnings = [];
-
-        // ID użytkownika
-        if ($warning = check_for_warnings("uid", $userId)) {
-            $warnings['uid'] = array_merge((array) $warnings['uid'], $warning);
-        } else {
-            $editedUser = $heart->getUser($userId);
-            if (!$editedUser->exists()) {
-                $warnings['uid'][] = $lang->t('noaccount_id');
-            }
-        }
-
-        if (!$quantity) {
-            $warnings['quantity'][] = $lang->t('no_charge_value');
-        } elseif (!is_numeric($quantity)) {
-            $warnings['quantity'][] = $lang->t('charge_number');
-        }
-
-        if ($warnings) {
-            throw new ValidationException($warnings);
-        }
+        $validated = $validator->validateOrFail();
 
         $serviceModule = $heart->getServiceModule("charge_wallet");
-        if ($serviceModule === null) {
+        if (!$serviceModule) {
             return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
         }
+
+        $editedUser = $heart->getUser($userId);
+        $quantity = $validated['quantity'] * 100;
 
         // Zmiana wartości quantity, aby stan konta nie zszedł poniżej zera
         $quantity = max($quantity, -$editedUser->getWallet());
