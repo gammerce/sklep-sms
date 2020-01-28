@@ -22,11 +22,10 @@ class Validator
         $warnings = new WarningBag();
 
         foreach ($this->rules as $attribute => $rules) {
-            /** @var Rule $rule */
             foreach ($rules as $rule) {
                 $value = array_get($this->data, $attribute);
 
-                if ($rule instanceof EmptyRule || has_value($value)) {
+                if ($rule instanceof Rule && ($rule instanceof EmptyRule || has_value($value))) {
                     $result = $rule->validate($attribute, $value, $this->data);
 
                     if ($result) {

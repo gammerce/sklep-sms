@@ -55,24 +55,18 @@ class PurchaseValidationResource
             ]);
         }
 
-        $returnData = $serviceModule->purchaseFormValidate($purchase, $request->request->all());
+        $serviceModule->purchaseFormValidate($purchase, $request->request->all());
+        $purchaseEncoded = $purchaseSerializer->serializeAndEncode($purchase);
 
-        if ($returnData['status'] == "warnings") {
-            $returnData["data"]["warnings"] = format_warnings($returnData["data"]["warnings"]);
-        } else {
-            $purchaseEncoded = $purchaseSerializer->serializeAndEncode($purchase);
-            $returnData['data'] = [
+        return new ApiResponse(
+            "ok",
+            $lang->t('purchase_form_validated'),
+            true,
+            [
                 'length' => 8000,
                 'data' => $purchaseEncoded,
                 'sign' => md5($purchaseEncoded . $settings->getSecret()),
-            ];
-        }
-
-        return new ApiResponse(
-            $returnData['status'],
-            $returnData['text'],
-            $returnData['positive'],
-            $returnData['data']
+            ]
         );
     }
 }

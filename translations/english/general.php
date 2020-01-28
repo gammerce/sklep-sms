@@ -56,7 +56,7 @@ return [
     'march' => 'March',
     'max_length' => 'Value cannot be more than {1} characters long.',
     'may' => 'May',
-    'min_value' => 'Value cannot be lower than {1}.',
+    'min_value' => 'Value has to be greater or equal {1}.',
     'minutes' => 'minutes',
     'name' => 'Name',
     'next' => 'Next',

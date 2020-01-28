@@ -31,8 +31,8 @@ class PaymentResource
         // Add payment details
         $purchase->setPayment([
             Purchase::PAYMENT_METHOD => $request->request->get('method'),
-            Purchase::PAYMENT_SMS_CODE => $request->request->get('sms_code'),
-            Purchase::PAYMENT_SERVICE_CODE => $request->request->get('service_code'),
+            Purchase::PAYMENT_SMS_CODE => trim($request->request->get('sms_code')),
+            Purchase::PAYMENT_SERVICE_CODE => trim($request->request->get('service_code')),
         ]);
 
         $returnPayment = $paymentService->makePayment($purchase);
