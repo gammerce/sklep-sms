@@ -2,7 +2,11 @@
 namespace App\ServiceModules\MybbExtraGroups;
 
 use App\Exceptions\InvalidConfigException;
+use App\Http\Validation\Rules\EmailRule;
 use App\Http\Validation\Rules\IntegerCommaSeparatedListRule;
+use App\Http\Validation\Rules\MybbUserExistsRule;
+use App\Http\Validation\Rules\PriceAvailableRule;
+use App\Http\Validation\Rules\PriceExistsRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\YesNoRule;
 use App\Http\Validation\Validator;
@@ -319,71 +323,32 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
     public function purchaseFormValidate(Purchase $purchase, array $body)
     {
-        // TODO Return Validator
-        $priceId = array_get($body, "price_id");
-        $userName = array_get($body, 'username');
-        $email = array_get($body, 'email');
+        $this->connectMybb();
 
-        $warnings = [];
+        $validator = new Validator(
+            [
+                'email' => array_get($body, 'email'),
+                'price_id' => array_get($body, "price_id"),
+                'username' => array_get($body, 'username'),
+            ],
+            [
+                'email' => [new RequiredRule(), new EmailRule()],
+                'price_id' => [
+                    new RequiredRule(),
+                    new PriceExistsRule(),
+                    new PriceAvailableRule($this->service),
+                ],
+                'username' => [new RequiredRule(), new MybbUserExistsRule($this->dbMybb)],
+            ]
+        );
 
-        if (!$priceId) {
-            $warnings['price_id'][] = $this->lang->t('must_choose_quantity');
-        } else {
-            $price = $this->priceRepository->get($priceId);
-
-            if (
-                !$price ||
-                $price->getServiceId() !== $this->service->getId() ||
-                $this->purchaseValidationService->isPriceAvailable($price, $purchase)
-            ) {
-                return [
-                    'status' => "no_option",
-                    'text' => $this->lang->t('service_not_affordable'),
-                    'positive' => false,
-                ];
-            }
-        }
-
-        if (!strlen($userName)) {
-            $warnings['username'][] = $this->lang->t('field_no_empty');
-        } else {
-            $this->connectMybb();
-
-            $result = $this->dbMybb->query(
-                $this->dbMybb->prepare("SELECT 1 FROM `mybb_users` " . "WHERE `username` = '%s'", [
-                    $userName,
-                ])
-            );
-
-            if (!$result->rowCount()) {
-                $warnings['username'][] = $this->lang->t('no_user');
-            }
-        }
-
-        if ($warning = check_for_warnings("email", $email)) {
-            $warnings['email'] = array_merge((array) $warnings['email'], $warning);
-        }
-
-        if ($warnings) {
-            return [
-                'status' => "warnings",
-                'text' => $this->lang->t('form_wrong_filled'),
-                'positive' => false,
-                'data' => ['warnings' => $warnings],
-            ];
-        }
+        $validated = $validator->validateOrFail();
 
         $purchase->setOrder([
-            'username' => $userName,
+            'username' => $validated['username'],
         ]);
-        $purchase->setEmail($email);
-        $purchase->setPrice($price);
-
-        return [
-            'status' => "ok",
-            'text' => $this->lang->t('purchase_form_validated'),
-            'positive' => true,
-        ];
+        $purchase->setEmail($validated['email']);
+        $purchase->setPrice($this->priceRepository->get($validated['price_id']));
     }
 
     public function orderDetails(Purchase $purchase)

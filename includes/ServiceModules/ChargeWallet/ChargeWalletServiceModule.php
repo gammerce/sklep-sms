@@ -136,12 +136,18 @@ class ChargeWalletServiceModule extends ServiceModule implements
             [
                 'method' => $method,
                 'sms_price' => as_int(array_get($body, 'sms_price')),
-                'transfer_price' => as_int(array_get($body, 'transfer_price')),
+                'transfer_price' => as_float(array_get($body, 'transfer_price')),
             ],
             [
                 'method' => [new InArrayRule([Purchase::METHOD_SMS, Purchase::METHOD_TRANSFER])],
-                'sms_price' => $method === Purchase::METHOD_SMS ? [new RequiredRule(), new SmsPriceExistsRule()] : [],
-                'transfer_price' => $method === Purchase::METHOD_TRANSFER ? [new RequiredRule(), new NumberRule(), new MinValueRule(1.01)] : [],
+                'sms_price' =>
+                    $method === Purchase::METHOD_SMS
+                        ? [new RequiredRule(), new SmsPriceExistsRule()]
+                        : [],
+                'transfer_price' =>
+                    $method === Purchase::METHOD_TRANSFER
+                        ? [new RequiredRule(), new NumberRule(), new MinValueRule(1.01)]
+                        : [],
             ]
         );
         $validated = $validator->validateOrFail();

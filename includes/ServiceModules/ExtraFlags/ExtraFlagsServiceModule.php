@@ -354,6 +354,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $authData = $this->getAuthData($body);
         $price = $this->priceRepository->get($priceId);
 
+        $purchase->setEmail($email);
         $purchase->setOrder([
             Purchase::ORDER_SERVER => $serverId,
             'type' => $type,
@@ -361,7 +362,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             'password' => $password,
             'passwordr' => $passwordRepeat,
         ]);
-        $purchase->setEmail($email);
         if ($price) {
             $purchase->setPrice($price);
         }
@@ -394,11 +394,19 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 'auth_data' => [new ExtraFlagAuthDataRule()],
                 'email' => [
                     is_server_platform($purchase->user->getPlatform()) ? null : new RequiredRule(),
-                    new EmailRule()
+                    new EmailRule(),
                 ],
                 'price_id' => [new PriceExistsRule(), new PriceAvailableRule($this->service)],
-                'server_id' => [new RequiredRule(), new ServerExistsRule(), new ServerLinkedToServiceRule($this->service)],
-                'type' => [new RequiredRule(), new ExtraFlagTypeRule(), new ServiceTypesRule($this->service)],
+                'server_id' => [
+                    new RequiredRule(),
+                    new ServerExistsRule(),
+                    new ServerLinkedToServiceRule($this->service),
+                ],
+                'type' => [
+                    new RequiredRule(),
+                    new ExtraFlagTypeRule(),
+                    new ServiceTypesRule($this->service),
+                ],
             ]
         );
     }
