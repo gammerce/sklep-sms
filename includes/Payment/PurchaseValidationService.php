@@ -11,4 +11,9 @@ class PurchaseValidationService
         return $price->concernService($purchase->getService()) &&
             $price->concernServer($purchase->getOrder(Purchase::ORDER_SERVER));
     }
+
+    public function isPriceAvailable2(Price $price, $serviceId, $serverId)
+    {
+        return $price->concernService($serviceId) && $price->concernServer($serverId);
+    }
 }

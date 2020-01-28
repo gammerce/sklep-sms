@@ -2,13 +2,20 @@
 namespace App\ServiceModules\ExtraFlags;
 
 use App\Exceptions\UnauthorizedException;
+use App\Http\Validation\Rules\EmailRule;
+use App\Http\Validation\Rules\ExtraFlagAuthDataRule;
 use App\Http\Validation\Rules\ExtraFlagTypeListRule;
+use App\Http\Validation\Rules\ExtraFlagTypeRule;
 use App\Http\Validation\Rules\MaxLengthRule;
+use App\Http\Validation\Rules\PriceAvailableRule;
+use App\Http\Validation\Rules\PriceExistsRule;
 use App\Http\Validation\Rules\RequiredRule;
+use App\Http\Validation\Rules\ServerExistsRule;
+use App\Http\Validation\Rules\ServerLinkedToServiceRule;
+use App\Http\Validation\Rules\ServiceTypesRule;
 use App\Http\Validation\Rules\UniqueFlagsRule;
 use App\Http\Validation\Rules\YesNoRule;
 use App\Http\Validation\Validator;
-use App\Http\Validation\WarningBag;
 use App\Loggers\DatabaseLogger;
 use App\Models\ExtraFlagsUserService;
 use App\Models\Purchase;
@@ -359,150 +366,41 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $purchase->setPrice($price);
         }
 
-        return $this->purchaseDataValidate($purchase);
+        $validator = $this->purchaseDataValidate($purchase);
+        $validator->validateOrFail();
     }
 
-    /**
-     * @param Purchase $purchase
-     * @return array
-     */
     public function purchaseDataValidate(Purchase $purchase)
     {
-        $warnings = new WarningBag();
-
-        if (!strlen($purchase->getOrder(Purchase::ORDER_SERVER))) {
-            $warnings->add('server_id', $this->lang->t('must_choose_server'));
-        } else {
-            $server = $this->heart->getServer($purchase->getOrder(Purchase::ORDER_SERVER));
-
-            if (
-                !$server ||
-                !$this->heart->serverServiceLinked($server->getId(), $this->service->getId())
-            ) {
-                $warnings->add('server_id', $this->lang->t('chosen_incorrect_server'));
-            } elseif ($server->getSmsPlatformId()) {
-                $purchase->setPayment([
-                    Purchase::PAYMENT_SMS_PLATFORM => $server->getSmsPlatformId(),
-                ]);
-            }
-        }
-
+        $server = $this->heart->getServer($purchase->getOrder(Purchase::ORDER_SERVER));
         $price = $purchase->getPrice();
-        if (!$price) {
-            $warnings->add('price_id', $this->lang->t('must_choose_quantity'));
-        } elseif (!$this->purchaseValidationService->isPriceAvailable($price, $purchase)) {
-            return [
-                'status' => "no_option",
-                'text' => $this->lang->t('service_not_affordable'),
-                'positive' => false,
-            ];
+
+        if ($server && $server->getSmsPlatformId()) {
+            $purchase->setPayment([
+                Purchase::PAYMENT_SMS_PLATFORM => $server->getSmsPlatformId(),
+            ]);
         }
 
-        // Typ usługi
-        // Mogą być tylko 3 rodzaje typu
-        if (
-            $purchase->getOrder('type') != ExtraFlagType::TYPE_NICK &&
-            $purchase->getOrder('type') != ExtraFlagType::TYPE_IP &&
-            $purchase->getOrder('type') != ExtraFlagType::TYPE_SID
-        ) {
-            $warnings->add('type', $this->lang->t('must_choose_type'));
-        } elseif (!($this->service->getTypes() & $purchase->getOrder('type'))) {
-            $warnings->add('type', $this->lang->t('chosen_incorrect_type'));
-        } elseif (
-            $purchase->getOrder('type') &
-            (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)
-        ) {
-            // Nick
-            if ($purchase->getOrder('type') == ExtraFlagType::TYPE_NICK) {
-                if ($warning = check_for_warnings("nick", $purchase->getOrder('auth_data'))) {
-                    $warnings->add('nick', $warning);
-                }
-
-                // Sprawdzanie czy istnieje już taka usługa
-                $query = $this->db->prepare(
-                    "SELECT `password` FROM `" .
-                        $this::USER_SERVICE_TABLE .
-                        "` " .
-                        "WHERE `type` = '%d' AND `auth_data` = '%s' AND `server` = '%d'",
-                    [
-                        ExtraFlagType::TYPE_NICK,
-                        $purchase->getOrder('auth_data'),
-                        isset($server) ? $server->getId() : 0,
-                    ]
-                );
-            }
-            // IP
-            elseif ($purchase->getOrder('type') == ExtraFlagType::TYPE_IP) {
-                if ($warning = check_for_warnings("ip", $purchase->getOrder('auth_data'))) {
-                    $warnings->add('ip', $warning);
-                }
-
-                // Sprawdzanie czy istnieje już taka usługa
-                $query = $this->db->prepare(
-                    "SELECT `password` FROM `" .
-                        $this::USER_SERVICE_TABLE .
-                        "` " .
-                        "WHERE `type` = '%d' AND `auth_data` = '%s' AND `server` = '%d'",
-                    [
-                        ExtraFlagType::TYPE_IP,
-                        $purchase->getOrder('auth_data'),
-                        isset($server) ? $server->getId() : 0,
-                    ]
-                );
-            }
-
-            // Hasło
-            if ($warning = check_for_warnings("password", $purchase->getOrder('password'))) {
-                $warnings->add('password', $warning);
-            }
-            if ($purchase->getOrder('password') != $purchase->getOrder('passwordr')) {
-                $warnings->add('password_repeat', $this->lang->t('passwords_not_match'));
-            }
-
-            // Sprawdzanie czy istnieje już taka usługa
-            if ($tmpPassword = $this->db->query($query)->fetchColumn()) {
-                // TODO: Usunąć md5 w przyszłości
-                if (
-                    $tmpPassword != $purchase->getOrder('password') &&
-                    $tmpPassword != md5($purchase->getOrder('password'))
-                ) {
-                    $warnings->add(
-                        'password',
-                        $this->lang->t('existing_service_has_different_password')
-                    );
-                }
-            }
-
-            unset($tmpPassword);
-        }
-        // SteamID
-        elseif ($warning = check_for_warnings("sid", $purchase->getOrder('auth_data'))) {
-            $warnings->add('sid', $warning);
-        }
-
-        // E-mail
-        if (
-            (!is_server_platform($purchase->user->getPlatform()) ||
-                strlen($purchase->getEmail())) &&
-            ($warning = check_for_warnings("email", $purchase->getEmail()))
-        ) {
-            $warnings->add('email', $warning);
-        }
-
-        if ($warnings->isPopulated()) {
-            return [
-                'status' => "warnings",
-                'text' => $this->lang->t('form_wrong_filled'),
-                'positive' => false,
-                'data' => ['warnings' => $warnings->all()],
-            ];
-        }
-
-        return [
-            'status' => "ok",
-            'text' => $this->lang->t('purchase_form_validated'),
-            'positive' => true,
-        ];
+        return new Validator(
+            [
+                // TODO Handle it somehow
+                'auth_data' => '',
+                'email' => $purchase->getEmail(),
+                'price_id' => $price ? $price->getId() : null,
+                'server_id' => $purchase->getOrder(Purchase::ORDER_SERVER),
+                'type' => $purchase->getOrder('type'),
+            ],
+            [
+                'auth_data' => [new ExtraFlagAuthDataRule()],
+                'email' => [
+                    is_server_platform($purchase->user->getPlatform()) ? null : new RequiredRule(),
+                    new EmailRule()
+                ],
+                'price_id' => [new PriceExistsRule(), new PriceAvailableRule($this->service)],
+                'server_id' => [new RequiredRule(), new ServerExistsRule(), new ServerLinkedToServiceRule($this->service)],
+                'type' => [new RequiredRule(), new ExtraFlagTypeRule(), new ServiceTypesRule($this->service)],
+            ]
+        );
     }
 
     public function orderDetails(Purchase $purchase)

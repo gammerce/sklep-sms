@@ -319,6 +319,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
     public function purchaseFormValidate(Purchase $purchase, array $body)
     {
+        // TODO Return Validator
         $priceId = array_get($body, "price_id");
         $userName = array_get($body, 'username');
         $email = array_get($body, 'email');

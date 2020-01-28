@@ -1,6 +1,13 @@
 <?php
 namespace App\ServiceModules\ChargeWallet;
 
+use App\Exceptions\UnauthorizedException;
+use App\Http\Validation\Rules\InArrayRule;
+use App\Http\Validation\Rules\MinValueRule;
+use App\Http\Validation\Rules\NumberRule;
+use App\Http\Validation\Rules\RequiredRule;
+use App\Http\Validation\Rules\SmsPriceExistsRule;
+use App\Http\Validation\Validator;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Payment\BoughtServiceService;
@@ -120,56 +127,26 @@ class ChargeWalletServiceModule extends ServiceModule implements
     public function purchaseFormValidate(Purchase $purchase, array $body)
     {
         $method = array_get($body, 'method');
-        $smsPrice = as_int(array_get($body, 'sms_price'));
-        $transferPrice = array_get($body, 'transfer_price');
 
         if (!$this->auth->check()) {
-            return [
-                'status' => "no_access",
-                'text' => $this->lang->t('not_logged_or_no_perm'),
-                'positive' => false,
-            ];
+            throw new UnauthorizedException();
         }
 
-        // There are only two allowed ways to charge wallet
-        if (!in_array($method, [Purchase::METHOD_SMS, Purchase::METHOD_TRANSFER])) {
-            return [
-                'status' => "wrong_method",
-                'text' => $this->lang->t('wrong_charge_method'),
-                'positive' => false,
-            ];
-        }
-
-        $warnings = [];
-
-        if ($method == Purchase::METHOD_SMS) {
-            if (!$smsPrice || !$this->smsPriceRepository->exists($smsPrice)) {
-                $warnings['sms_price'][] = $this->lang->t('charge_amount_not_chosen');
-            }
-        } elseif ($method == Purchase::METHOD_TRANSFER) {
-            if ($warning = check_for_warnings("number", $transferPrice)) {
-                $warnings['transfer_price'] = array_merge(
-                    (array) $warnings['transfer_price'],
-                    $warning
-                );
-            }
-
-            if ($transferPrice <= 1) {
-                $warnings['transfer_price'][] = $this->lang->t(
-                    'charge_amount_too_low',
-                    "1.00 " . $this->settings->getCurrency()
-                );
-            }
-        }
-
-        if ($warnings) {
-            return [
-                'status' => "warnings",
-                'text' => $this->lang->t('form_wrong_filled'),
-                'positive' => false,
-                'data' => ['warnings' => $warnings],
-            ];
-        }
+        $validator = new Validator(
+            [
+                'method' => $method,
+                'sms_price' => as_int(array_get($body, 'sms_price')),
+                'transfer_price' => as_int(array_get($body, 'transfer_price')),
+            ],
+            [
+                'method' => [new InArrayRule([Purchase::METHOD_SMS, Purchase::METHOD_TRANSFER])],
+                'sms_price' => $method === Purchase::METHOD_SMS ? [new RequiredRule(), new SmsPriceExistsRule()] : [],
+                'transfer_price' => $method === Purchase::METHOD_TRANSFER ? [new RequiredRule(), new NumberRule(), new MinValueRule(1.01)] : [],
+            ]
+        );
+        $validated = $validator->validateOrFail();
+        $smsPrice = $validated['sms_price'];
+        $transferPrice = $validated['transfer_price'];
 
         $purchase->setService($this->service->getId());
         $purchase->setPayment([
@@ -202,12 +179,6 @@ class ChargeWalletServiceModule extends ServiceModule implements
                 Purchase::ORDER_QUANTITY => $transferPrice * 100,
             ]);
         }
-
-        return [
-            'status' => "ok",
-            'text' => $this->lang->t('purchase_form_validated'),
-            'positive' => true,
-        ];
     }
 
     public function orderDetails(Purchase $purchase)
