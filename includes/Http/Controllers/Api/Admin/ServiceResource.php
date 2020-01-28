@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\ServiceService;
+use App\Http\Validation\Rules\RequiredRule;
+use App\Http\Validation\Rules\ServiceNotExistsRule;
+use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\ServiceRepository;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
@@ -25,40 +28,36 @@ class ServiceResource
     ) {
         $lang = $translationManager->user();
 
-        $newId = $request->request->get('new_id');
-        $name = $request->request->get('name');
-        $shortDescription = $request->request->get('short_description');
-        $order = $request->request->get('order');
-        $description = $request->request->get('description');
-        $tag = $request->request->get('tag');
-        $groups = $request->request->get('groups', []);
-
-        $warnings = [];
-        $body = $request->request->all();
-        // For backward compatibility. Some service modules use that field.
-        $body['id'] = $serviceId;
-
-        if ($serviceId !== $newId && $heart->getService($newId)) {
-            $warnings['new_id'][] = $lang->t('id_exist');
-        }
+        $validator = new Validator(
+            array_merge($request->request->all(), [
+                // For backward compatibility. Some service modules use that field.
+                'id' => $serviceId,
+            ]),
+            [
+                'id' => [],
+                'new_id' => [new RequiredRule(), new ServiceNotExistsRule($serviceId)],
+            ]
+        );
 
         $serviceModule = $heart->getServiceModule($serviceId);
-        $serviceService->validateBody($body, $warnings, $serviceModule);
+        $serviceService->extendValidator($validator, $serviceModule);
+
+        $validated = $validator->validateOrFail();
 
         $additionalData =
             $serviceModule instanceof IServiceAdminManage
-                ? $serviceModule->serviceAdminManagePost($body)
+                ? $serviceModule->serviceAdminManagePost($validated)
                 : [];
 
         $updated = $serviceRepository->update(
             $serviceId,
-            $newId,
-            $name,
-            $shortDescription,
-            $description,
-            $tag,
-            $groups,
-            $order,
+            $validated['new_id'],
+            $validated['name'],
+            $validated['short_description'],
+            $validated['description'],
+            $validated['tag'],
+            $validated['groups'],
+            $validated['order'],
             array_get($additionalData, "data", []),
             array_get($additionalData, "types", 0),
             array_get($additionalData, "flags", '')

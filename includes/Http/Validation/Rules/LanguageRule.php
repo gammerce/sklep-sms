@@ -23,7 +23,7 @@ class LanguageRule extends BaseRule
     public function validate($attribute, $value, array $data)
     {
         if (
-            !$this->fileSystem->isDirectory($this->path->to("translations/$value}")) ||
+            !$this->fileSystem->isDirectory($this->path->to("translations/$value")) ||
             $value[0] === '.'
         ) {
             return [$this->lang->t('no_language')];

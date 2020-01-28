@@ -23,7 +23,7 @@ class ThemeRule extends BaseRule
     public function validate($attribute, $value, array $data)
     {
         if (
-            !$this->fileSystem->isDirectory($this->path->to("themes/$value}")) ||
+            !$this->fileSystem->isDirectory($this->path->to("themes/$value")) ||
             $value[0] === '.'
         ) {
             return [$this->lang->t('no_theme')];

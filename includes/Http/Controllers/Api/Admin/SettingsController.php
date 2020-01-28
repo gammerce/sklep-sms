@@ -102,8 +102,8 @@ class SettingsController
             'vat' => $validated['vat'],
         ];
 
-        if ($validated['license_password']) {
-            $values['license_password'] = $validated['license_password'];
+        if ($validated['license_token']) {
+            $values['license_password'] = $validated['license_token'];
             $values['license_login'] = 'license';
         }
 

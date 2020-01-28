@@ -27,7 +27,7 @@ class Validator
             foreach ($rules as $rule) {
                 $value = array_get($this->data, $attribute);
 
-                if ($rule instanceof RequiredRule || strlen($value)) {
+                if ($rule instanceof RequiredRule || has_value($value)) {
                     $result = $rule->validate($attribute, $value, $this->data);
 
                     if ($result) {
@@ -71,5 +71,20 @@ class Validator
                 ];
             })
             ->all();
+    }
+
+    public function extendRules(array $rules)
+    {
+        $this->rules = array_merge_recursive($this->rules, $rules);
+    }
+
+    public function extendData(array $data)
+    {
+        $this->data = array_merge($this->data, $data);
+    }
+
+    public function getData($attribute)
+    {
+        return array_get($this->data, $attribute);
     }
 }

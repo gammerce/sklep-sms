@@ -1,27 +1,12 @@
 <?php
 namespace App\Http\Validation\Rules;
 
-use App\Http\Validation\Rule;
-use App\Translation\TranslationManager;
-use App\Translation\Translator;
+use App\Http\Validation\BaseRule;
 
-class RequiredRule implements Rule
+class RequiredRule extends BaseRule
 {
-    /** @var Translator */
-    private $lang;
-
-    public function __construct()
-    {
-        $translationManager = app()->make(TranslationManager::class);
-        $this->lang = $translationManager->user();
-    }
-
     public function validate($attribute, $value, array $data)
     {
-        if (!strlen($value)) {
-            return [$this->lang->t('field_no_empty')];
-        }
-
-        return [];
+        return has_value($value) ? [] : [$this->lang->t('field_no_empty')];
     }
 }

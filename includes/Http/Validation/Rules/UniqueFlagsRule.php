@@ -3,12 +3,12 @@ namespace App\Http\Validation\Rules;
 
 use App\Http\Validation\BaseRule;
 
-class ConfirmedRule extends BaseRule
+class UniqueFlagsRule extends BaseRule
 {
     public function validate($attribute, $value, array $data)
     {
-        if ($value !== array_get($data, "{$attribute}_repeat")) {
-            return [$this->lang->t('different_values')];
+        if (implode('', array_unique(str_split($value))) !== $value) {
+            return [$this->lang->t('same_flags')];
         }
 
         return [];

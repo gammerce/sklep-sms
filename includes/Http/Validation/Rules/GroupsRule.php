@@ -4,7 +4,7 @@ namespace App\Http\Validation\Rules;
 use App\Http\Validation\BaseRule;
 use App\System\Heart;
 
-class UserGroupsRule extends BaseRule
+class GroupsRule extends BaseRule
 {
     /** @var Heart */
     private $heart;
@@ -21,8 +21,8 @@ class UserGroupsRule extends BaseRule
             return ["Invalid type"];
         }
 
-        foreach ($value as $gid) {
-            if ($this->heart->getGroup($gid) === null) {
+        foreach ($value as $group) {
+            if (!$this->heart->getGroup($group)) {
                 return [$this->lang->t('wrong_group')];
             }
         }

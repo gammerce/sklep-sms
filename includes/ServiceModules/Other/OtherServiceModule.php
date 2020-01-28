@@ -1,6 +1,7 @@
 <?php
 namespace App\ServiceModules\Other;
 
+use App\Http\Validation\Validator;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Payment\BoughtServiceService;
@@ -122,7 +123,7 @@ class OtherServiceModule extends ServiceModule implements
         );
     }
 
-    public function serviceAdminManagePost(array $data)
+    public function serviceAdminManagePost(array $body)
     {
         return [];
     }
@@ -132,8 +133,8 @@ class OtherServiceModule extends ServiceModule implements
         return '';
     }
 
-    public function serviceAdminManagePre(array $data)
+    public function serviceAdminManagePre(Validator $validator)
     {
-        return [];
+        //
     }
 }

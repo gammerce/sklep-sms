@@ -4,7 +4,7 @@ namespace App\Http\Validation\Rules;
 use App\Http\Validation\BaseRule;
 use App\System\Heart;
 
-class UserGroupsRule extends BaseRule
+class ServiceModuleExistsRule extends BaseRule
 {
     /** @var Heart */
     private $heart;
@@ -17,14 +17,10 @@ class UserGroupsRule extends BaseRule
 
     public function validate($attribute, $value, array $data)
     {
-        if (!is_array($value)) {
-            return ["Invalid type"];
-        }
+        $serviceModule = $this->heart->getEmptyServiceModule($value);
 
-        foreach ($value as $gid) {
-            if ($this->heart->getGroup($gid) === null) {
-                return [$this->lang->t('wrong_group')];
-            }
+        if (!$serviceModule) {
+            return [$this->lang->t('wrong_module')];
         }
 
         return [];

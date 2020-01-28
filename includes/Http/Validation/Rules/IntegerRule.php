@@ -2,13 +2,14 @@
 namespace App\Http\Validation\Rules;
 
 use App\Http\Validation\BaseRule;
+use App\Http\Validation\Rule;
 
-class ConfirmedRule extends BaseRule
+class IntegerRule extends BaseRule
 {
     public function validate($attribute, $value, array $data)
     {
-        if ($value !== array_get($data, "{$attribute}_repeat")) {
-            return [$this->lang->t('different_values')];
+        if (!my_is_integer($value)) {
+            return [$this->lang->t('field_integer')];
         }
 
         return [];
