@@ -2,7 +2,9 @@
 namespace App\ServiceModules\ExtraFlags;
 
 use App\Exceptions\UnauthorizedException;
+use App\Exceptions\ValidationException;
 use App\Http\Validation\Rules\ConfirmedRule;
+use App\Http\Validation\Rules\DateTimeRule;
 use App\Http\Validation\Rules\EmailRule;
 use App\Http\Validation\Rules\ExtraFlagAuthDataRule;
 use App\Http\Validation\Rules\ExtraFlagPasswordRule;
@@ -775,16 +777,24 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     public function userServiceAdminAdd(array $body)
     {
         $forever = (bool) array_get($body, 'forever');
+        $type = as_int(array_get($body, 'type'));
 
         $validator = new Validator(
             array_merge($body, [
                 'quantity' => as_int(array_get($body, 'quantity')),
+                'server_id' => as_int(array_get($body, 'server_id')),
             ]),
             [
                 'email' => [new EmailRule()],
+                'password' => [
+                    $type & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)
+                        ? new RequiredRule()
+                        : null,
+                ],
                 'quantity' => $forever
                     ? []
                     : [new RequiredRule(), new NumberRule(), new MinValueRule(0)],
+                'server_id' => [new RequiredRule(), new ServerExistsRule()],
             ]
         );
         $this->verifyUserServiceData($validator);
@@ -917,72 +927,45 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             throw new UnexpectedValueException();
         }
 
-        $warnings = [];
-
-        $body['auth_data'] = $this->getAuthData($body);
         $forever = (bool) array_get($body, 'forever');
-        $expire = array_get($body, 'expire');
-        $password = array_get($body, 'password');
-        $type = as_int(array_get($body, 'type'));
 
-        // Expire
-        if (!$forever && ($expire = strtotime($expire)) === false) {
-            $warnings['expire'][] = $this->lang->t('wrong_date_format');
-        }
-        // Sprawdzamy, czy ustawiono hasło, gdy hasła nie ma w bazie i dana usługa wymaga hasła
-        if (
-            !strlen($password) &&
-            $type & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP) &&
-            !strlen($userService->getPassword())
-        ) {
-            $warnings['password'][] = $this->lang->t('field_no_empty');
-        }
+        $validator = new Validator(
+            array_merge($body, [
+                'server_id' => as_int(array_get($body, 'server_id')),
+            ]),
+            [
+                'expire' => $forever ? [] : [new RequiredRule(), new DateTimeRule()],
+                'server_id' => [new RequiredRule(), new ServerExistsRule()],
+            ]
+        );
+        $this->verifyUserServiceData($validator);
 
-        // Sprawdzamy poprawność wprowadzonych danych
-        $verifyData = $this->verifyUserServiceData($body, $warnings);
+        $validated = $validator->validateOrFail();
+        $result = $this->userServiceEdit($userService, $validated);
 
-        // Jeżeli są jakieś błędy, to je zwracamy
-        if (!empty($verifyData)) {
-            return $verifyData;
-        }
-
-        //
-        // Aktualizujemy usługę
-        $editReturn = $this->userServiceEdit($userService, $body);
-
-        if ($editReturn['status'] == 'ok') {
+        if ($result) {
             $this->logger->logWithActor('log_user_service_edited', $userService->getId());
         }
 
-        return $editReturn;
+        return $result;
     }
 
-    private function verifyUserServiceData(Validator $validator, $withServer = true)
+    private function verifyUserServiceData(Validator $validator)
     {
         // TODO Modify frontend forms
-
-        $type = $validator->getData('type');
-
         $validator->extendData([
             'auth_data' => trim($validator->getData('auth_data')),
-            'server_id' => as_int($validator->getData('server_id')),
             'type' => as_int($validator->getData('type')),
             'uid' => as_int($validator->getData('uid')),
         ]);
 
         $validator->extendRules([
             'auth_data' => [new RequiredRule(), new ExtraFlagAuthDataRule()],
-            'password' => [
-                $type & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)
-                    ? new RequiredRule()
-                    : null,
-                new PasswordRule(),
-            ],
-            'server_id' => $withServer ? [new RequiredRule(), new ServerExistsRule()] : [],
+            'password' => [],
             'type' => [
                 new RequiredRule(),
                 new ExtraFlagTypeRule(),
-                new ServiceTypesRule($this->settings),
+                new ServiceTypesRule($this->service),
             ],
             'uid' => [new UserExistsRule()],
         ]);
@@ -1096,53 +1079,30 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             throw new UnexpectedValueException();
         }
 
-        $warnings = [];
+        $validator = new Validator($body, []);
+        $this->verifyUserServiceData($validator);
 
-        $body['auth_data'] = $this->getAuthData($body);
-        $password = array_get($body, 'password');
-        $type = as_int(array_get($body, 'type'));
-        $authData = array_get($body, 'auth_data');
+        $validated = $validator->validateOrFail();
+        $result = $this->userServiceEdit($userService, $validated);
 
-        // Sprawdzamy, czy ustawiono hasło, gdy hasła nie ma w bazie i dana usługa wymaga hasła
-        if (
-            !strlen($password) &&
-            $type & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP) &&
-            !strlen($userService->getPassword())
-        ) {
-            $warnings['password'][] = $this->lang->t('field_no_empty');
-        }
-
-        // Sprawdzamy poprawność wprowadzonych danych
-        $verifyData = $this->verifyUserServiceData($body, $warnings, false);
-
-        // Jeżeli są jakieś błędy, to je zwracamy
-        if (!empty($verifyData)) {
-            return $verifyData;
-        }
-
-        //
-        // Aktualizujemy usługę
-
-        $editReturn = $this->userServiceEdit($userService, [
-            'type' => $type,
-            'auth_data' => $authData,
-            'password' => $password,
-        ]);
-
-        if ($editReturn['status'] == 'ok') {
+        if ($result) {
             $this->logger->logWithActor('log_user_edited_service', $userService->getId());
         }
 
-        return $editReturn;
+        return $result;
     }
 
     // ----------------------------------------------------------------------------------
     // ### Dodatkowe funkcje przydatne przy zarządzaniu usługami użytkowników
 
+    /**
+     * @param ExtraFlagsUserService $userService
+     * @param array                 $data
+     * @return bool
+     */
     private function userServiceEdit(ExtraFlagsUserService $userService, array $data)
     {
         $set = [];
-        // Dodanie hasła do zapytania
         if (strlen($data['password'])) {
             $set[] = [
                 'column' => 'password',
@@ -1151,7 +1111,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ];
         }
 
-        // Dodajemy uid do zapytania
         if (isset($data['uid'])) {
             $set[] = [
                 'column' => 'uid',
@@ -1160,7 +1119,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ];
         }
 
-        // Dodajemy expire na zawsze
         if ($data['forever']) {
             $set[] = [
                 'column' => 'expire',
@@ -1191,11 +1149,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $userService2 = $result->fetch();
 
             if (!isset($data['uid']) && $userService->getUid() != $userService2['uid']) {
-                return [
-                    'status' => "service_exists",
-                    'text' => $this->lang->t('service_isnt_yours'),
-                    'positive' => false,
-                ];
+                throw new ValidationException([
+                    'auth_data' => [$this->lang->t('service_isnt_yours')],
+                ]);
             }
 
             $this->userServiceRepository->delete($userService->getId());
@@ -1279,11 +1235,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         // Przelicz flagi tylko wtedy, gdy coś się zmieniło
         if (!$affected) {
-            return [
-                'status' => "not_edited",
-                'text' => $this->lang->t('not_edited_user_service'),
-                'positive' => false,
-            ];
+            return false;
         }
 
         // Odśwież flagi gracza ( przed zmiana danych )
@@ -1300,11 +1252,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             array_get($data, 'auth_data', $userService->getAuthData())
         );
 
-        return [
-            'status' => 'ok',
-            'text' => $this->lang->t('edited_user_service'),
-            'positive' => true,
-        ];
+        return true;
     }
 
     public function serviceTakeOverFormGet()

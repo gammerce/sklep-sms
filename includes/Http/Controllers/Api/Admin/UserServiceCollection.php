@@ -24,10 +24,6 @@ class UserServiceCollection
 
         $serviceModule->userServiceAdminAdd($request->request->all());
 
-        return [
-            'status' => "ok",
-            'text' => $lang->t('service_added_correctly'),
-            'positive' => true,
-        ];
+        return new ApiResponse("ok", $lang->t('service_added_correctly'), true);
     }
 }

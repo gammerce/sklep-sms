@@ -10,6 +10,8 @@ use App\System\Heart;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
+// TODO Write tests
+
 class UserServiceResource
 {
     public function put(
@@ -31,22 +33,13 @@ class UserServiceResource
             return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
         }
 
-        $returnData = $serviceModule->userServiceAdminEdit($request->request->all(), $userService);
+        $result = $serviceModule->userServiceAdminEdit($request->request->all(), $userService);
 
-        if ($returnData === false) {
-            return new ApiResponse("missing_method", $lang->t('no_edit_method'), 0);
+        if (!$result) {
+            return new ApiResponse('not_edited', $lang->t('not_edited_user_service'), false);
         }
 
-        if ($returnData['status'] == "warnings") {
-            $returnData["data"]["warnings"] = format_warnings($returnData["data"]["warnings"]);
-        }
-
-        return new ApiResponse(
-            $returnData['status'],
-            $returnData['text'],
-            $returnData['positive'],
-            $returnData['data']
-        );
+        return new ApiResponse('ok', $lang->t('edited_user_service'), true);
     }
 
     public function delete(

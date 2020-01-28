@@ -10,6 +10,8 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
+// TODO Write tests
+
 class UserServiceResource
 {
     public function put(
@@ -50,22 +52,13 @@ class UserServiceResource
             );
         }
 
-        $returnData = $serviceModule->userOwnServiceEdit(
+        $serviceModule->userOwnServiceEdit(
             array_merge($request->request->all(), [
                 "id" => $userServiceId,
             ]),
             $userService
         );
 
-        if ($returnData['status'] == "warnings") {
-            $returnData["data"]["warnings"] = format_warnings($returnData["data"]["warnings"]);
-        }
-
-        return new ApiResponse(
-            $returnData['status'],
-            $returnData['text'],
-            $returnData['positive'],
-            $returnData['data']
-        );
+        return new ApiResponse('ok', $lang->t('edited_user_service'), true);
     }
 }

@@ -14,11 +14,7 @@ interface IServiceUserServiceAdminEdit
      *
      * @param array $body
      * @param UserService $userService Obecne dane edytowanej usługi
-     *
-     * @return array
-     *  'status' => id wiadomości,
-     *  'text' => treść wiadomości
-     *  'positive' => czy udało się wyedytować usługę
+     * @return bool
      */
     public function userServiceAdminEdit(array $body, UserService $userService);
 
