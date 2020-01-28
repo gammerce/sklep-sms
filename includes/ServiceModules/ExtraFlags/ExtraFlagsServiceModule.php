@@ -2,11 +2,14 @@
 namespace App\ServiceModules\ExtraFlags;
 
 use App\Exceptions\UnauthorizedException;
+use App\Http\Validation\Rules\ConfirmedRule;
 use App\Http\Validation\Rules\EmailRule;
 use App\Http\Validation\Rules\ExtraFlagAuthDataRule;
+use App\Http\Validation\Rules\ExtraFlagPasswordRule;
 use App\Http\Validation\Rules\ExtraFlagTypeListRule;
 use App\Http\Validation\Rules\ExtraFlagTypeRule;
 use App\Http\Validation\Rules\MaxLengthRule;
+use App\Http\Validation\Rules\PasswordRule;
 use App\Http\Validation\Rules\PriceAvailableRule;
 use App\Http\Validation\Rules\PriceExistsRule;
 use App\Http\Validation\Rules\RequiredRule;
@@ -347,11 +350,11 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $priceId = as_int(array_get($body, 'price_id'));
         $serverId = as_int(array_get($body, 'server_id'));
         $type = as_int(array_get($body, 'type'));
+        $authData = array_get($body, 'auth_data');
         $password = array_get($body, 'password');
         $passwordRepeat = array_get($body, 'password_repeat');
         $email = array_get($body, 'email');
 
-        $authData = $this->getAuthData($body);
         $price = $this->priceRepository->get($priceId);
 
         $purchase->setEmail($email);
@@ -374,6 +377,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     {
         $server = $this->heart->getServer($purchase->getOrder(Purchase::ORDER_SERVER));
         $price = $purchase->getPrice();
+        $type = $purchase->getOrder('type');
 
         if ($server && $server->getSmsPlatformId()) {
             $purchase->setPayment([
@@ -383,18 +387,27 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         return new Validator(
             [
-                // TODO Handle it somehow
-                'auth_data' => '',
+                'auth_data' => $purchase->getOrder('auth_data'),
+                'password' => $purchase->getOrder('password'),
+                'password_repeat' => $purchase->getOrder('passwordr'),
                 'email' => $purchase->getEmail(),
                 'price_id' => $price ? $price->getId() : null,
                 'server_id' => $purchase->getOrder(Purchase::ORDER_SERVER),
-                'type' => $purchase->getOrder('type'),
+                'type' => $type,
             ],
             [
-                'auth_data' => [new ExtraFlagAuthDataRule()],
+                'auth_data' => [new RequiredRule(), new ExtraFlagAuthDataRule()],
                 'email' => [
                     is_server_platform($purchase->user->getPlatform()) ? null : new RequiredRule(),
                     new EmailRule(),
+                ],
+                'password' => [
+                    $type & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)
+                        ? new RequiredRule()
+                        : null,
+                    new PasswordRule(),
+                    new ConfirmedRule(),
+                    new ExtraFlagPasswordRule(),
                 ],
                 'price_id' => [new PriceExistsRule(), new PriceAvailableRule($this->service)],
                 'server_id' => [
