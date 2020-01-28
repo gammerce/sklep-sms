@@ -28,7 +28,8 @@ class AdminController
         CurrentPage $currentPage,
         Template $template,
         TranslationManager $translationManager,
-        BlockRenderer $blockRenderer
+        BlockRenderer $blockRenderer,
+        UrlGenerator $url
     ) {
         if ($currentPage->getPid() !== "login") {
             if (!$heart->pageExists($pageId, "admin")) {
@@ -57,15 +58,9 @@ class AdminController
                 $session->remove("info");
             }
 
-            // Pobranie headera
             $header = $template->render("admin/header", compact('currentPage', 'heart'));
+            $action = $url->to("/admin", $request->query->all());
 
-            $action = rtrim(
-                $request->getPathInfo() . "?" . http_build_query($request->query->all()),
-                "?"
-            );
-
-            // Pobranie szablonu logowania
             return new Response(
                 $template->render("admin/login", compact('header', 'warning', 'action'))
             );
