@@ -11,8 +11,6 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
-// TODO Write tests for extra flags sms
-
 class PurchaseValidationResource
 {
     public function post(
