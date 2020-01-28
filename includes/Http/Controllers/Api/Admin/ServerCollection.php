@@ -19,17 +19,17 @@ class ServerCollection
     ) {
         $lang = $translationManager->user();
 
-        $name = $request->request->get('name');
-        $ip = trim($request->request->get('ip'));
-        $port = trim($request->request->get('port'));
-        $smsPlatformId = $request->request->get('sms_platform') ?: null;
+        $validator = $serverService->createValidator($request->request->all());
+        $validated = $validator->validateOrFail();
 
-        $serverService->validateBody($request->request->all());
-
-        $server = $serverRepository->create($name, $ip, $port, $smsPlatformId);
+        $server = $serverRepository->create(
+            $validated['name'],
+            $validated['ip'],
+            $validated['port'],
+            $validated['sms_platform']
+        );
         $serverId = $server->getId();
         $serverService->updateServerServiceAffiliations($serverId, $request->request->all());
-
         $databaseLogger->logWithActor('log_server_added', $serverId);
 
         return new SuccessApiResponse($lang->t('server_added'), [

@@ -20,13 +20,12 @@ class PriceService
         }
 
         return new Validator(
-            [
-                'service_id' => array_get($body, 'service_id'),
+            array_merge($body, [
                 'server_id' => as_int(array_get($body, 'server_id')),
                 'sms_price' => as_int(array_get($body, 'sms_price')),
                 'transfer_price' => $transferPrice,
                 'quantity' => as_int(array_get($body, 'quantity')),
-            ],
+            ]),
             [
                 'service_id' => [new RequiredRule(), new ServiceExistsRule()],
                 'server_id' => [new ServerExistsRule()],
