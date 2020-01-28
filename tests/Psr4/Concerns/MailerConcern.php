@@ -8,7 +8,10 @@ trait MailerConcern
     public function mockMailer()
     {
         $mailer = \Mockery::mock(Mailer::class);
-        $mailer->shouldReceive("send")->andReturn("sent");
+        $mailer
+            ->shouldReceive("send")
+            ->andReturn("sent")
+            ->byDefault();
         $this->app->instance(Mailer::class, $mailer);
     }
 }

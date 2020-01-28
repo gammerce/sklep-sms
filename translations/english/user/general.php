@@ -18,10 +18,10 @@ return [
     'contact_info' => 'You can contact us on the following ways.',
     'create_account' => 'Create account',
     'different_values' => 'Given values are different.',
-    'email_no_account' => 'Given e-mail is not assigned to any account.',
     'email_occupied' => 'Given e-mail is already taken.',
     'email_repeat' => 'Repeat e-mail',
-    'email_sent' => 'E-mail password reset link has been sent to your mailbox.',
+    'email_sent' =>
+        'If given credentials are correct, than e-mail with password reset link has been sent to your mailbox.',
     'expire' => 'Expires',
     'forgot_password' => 'I don\'t remeber password',
     'forgotten_password' => 'Password recovery',
@@ -36,7 +36,6 @@ return [
     'must_be_logged_out' => 'You cannot browse this page. You\'re logged in.',
     'my_services' => 'My services',
     'new_account' => 'Create new account. ID: {1} User name: {2}, IP: {3}',
-    'nick_no_account' => 'Given nickname is not assigned to any account.',
     'nick_occupied' => 'Given nickname is already taken.',
     'no_login_no_wallet' => 'You can\'t pay by wallet when not logged in.',
     'no_login_password' =>
@@ -82,7 +81,7 @@ return [
     'required_data' => 'Required data',
     'reset_key_email' =>
         'E-mail with password reset key has been sent. User: {1}({2}) E-mail: {3} Form data. User name: {4} E-mail: {5}',
-    'reset_link_sent' => 'e-mail with link to reset password has been sent to your e-mail box.<br/>
+    'reset_link_sent' => 'If given credentials are correct, than e-mail with link to reset password has been sent to your e-mail box.<br/>
 Follow the directions in the e-mail.',
     'reset_pass' => 'Password has been reset. User ID: {1}.',
     'reset_password' => 'Reset password',
