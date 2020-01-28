@@ -3,21 +3,21 @@ namespace App\Http\Validation\Rules;
 
 use App\Http\Validation\BaseRule;
 
-class MaxLengthRule extends BaseRule
+class MinValueRule extends BaseRule
 {
     /** @var int */
-    private $length;
+    private $value;
 
     public function __construct($value)
     {
         parent::__construct();
-        $this->length = $value;
+        $this->value = $value;
     }
 
     public function validate($attribute, $value, array $data)
     {
-        if (strlen($value) > $this->length) {
-            return [$this->lang->t('max_length')];
+        if (as_int($value) < $this->value) {
+            return [$this->lang->t('min_value')];
         }
 
         return [];

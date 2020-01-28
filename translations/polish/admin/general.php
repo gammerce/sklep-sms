@@ -157,7 +157,6 @@ return [
     'no_sms_platform' => 'Brak platformy płatności SMS o takim ID.',
     'no_subpage' => 'Brak podstrony o ID: {1}',
     'no_such_group' => 'Nie istnieje grupa o takim ID.',
-    'no_such_server' => 'Taki serwer nie istnieje.',
     'no_such_service' => 'Taka usługa nie istnieje.',
     'no_theme' => 'Podany motyw nie istnieje',
     'no_transfer_platform' => 'Brak platformy płatności internetowej o takim ID.',

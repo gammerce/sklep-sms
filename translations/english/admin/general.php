@@ -154,7 +154,6 @@ return [
     'no_sms_platform' => 'No SMS payment platform with such ID.',
     'no_subpage' => 'There is no subpage with ID: {1}',
     'no_such_group' => 'Group with such ID does not exist.',
-    'no_such_server' => 'Such server does not exist.',
     'no_such_service' => 'Such service does not exist.',
     'no_theme' => 'Given theme does not exist',
     'no_transfer_platform' => 'No transfer payment platform with such ID.',
