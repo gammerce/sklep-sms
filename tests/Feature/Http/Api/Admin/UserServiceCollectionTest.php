@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Feature\Http\Api\Admin;
 
-use App\Models\ExtraFlagsUserService;
+use App\ServiceModules\ExtraFlags\ExtraFlagUserService;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\Services\UserServiceService;
 use Tests\Psr4\TestCases\HttpTestCase;
@@ -16,7 +16,6 @@ class UserServiceCollectionTest extends HttpTestCase
         parent::setUp();
 
         $this->userServiceService = $this->app->make(UserServiceService::class);
-
         $this->actingAs($this->factory->admin());
     }
 
@@ -29,7 +28,7 @@ class UserServiceCollectionTest extends HttpTestCase
         // when
         $response = $this->post("/api/admin/services/vip/user_services", [
             'type' => (string) ExtraFlagType::TYPE_NICK,
-            'nick' => 'michal',
+            'auth_data' => 'michal',
             'password' => 'abc123',
             'quantity' => '5',
             'server_id' => $server->getId(),
@@ -44,7 +43,7 @@ class UserServiceCollectionTest extends HttpTestCase
         $userServices = $this->userServiceService->find();
         $this->assertCount(1, $userServices);
 
-        /** @var ExtraFlagsUserService $userService */
+        /** @var ExtraFlagUserService $userService */
         $userService = $userServices[0];
         $this->assertSame('vip', $userService->getServiceId());
         $this->assertSame(ExtraFlagType::TYPE_NICK, $userService->getType());
@@ -64,14 +63,14 @@ class UserServiceCollectionTest extends HttpTestCase
         // when
         $this->post("/api/admin/services/vip/user_services", [
             'type' => (string) ExtraFlagType::TYPE_NICK,
-            'nick' => 'michal',
+            'auth_data' => 'michal',
             'password' => 'abc123',
             'quantity' => '5',
             'server_id' => $server->getId(),
         ]);
         $this->post("/api/admin/services/vip/user_services", [
             'type' => (string) ExtraFlagType::TYPE_NICK,
-            'nick' => 'michal',
+            'auth_data' => 'michal',
             'password' => 'abc123',
             'quantity' => '6',
             'server_id' => $server->getId(),
@@ -92,14 +91,14 @@ class UserServiceCollectionTest extends HttpTestCase
         // when
         $this->post("/api/admin/services/vip/user_services", [
             'type' => (string) ExtraFlagType::TYPE_NICK,
-            'nick' => 'michass',
+            'auth_data' => 'michass',
             'password' => 'abc123',
             'quantity' => '5',
             'server_id' => $server->getId(),
         ]);
         $this->post("/api/admin/services/vip/user_services", [
             'type' => (string) ExtraFlagType::TYPE_NICK,
-            'nick' => 'michaśś',
+            'auth_data' => 'michaśś',
             'password' => 'abc123',
             'quantity' => '6',
             'server_id' => $server->getId(),

@@ -69,8 +69,8 @@ class PaymentServiceTest extends TestCase
         $this->assertSame("purchased", $payResult["status"]);
         $boughtService = $this->boughtServiceRepository->get($payResult["data"]["bsid"]);
         $this->assertNotNull($boughtService);
-        $this->assertSame($server->getId(), $boughtService->getServer());
-        $this->assertSame($serviceId, $boughtService->getService());
+        $this->assertSame($server->getId(), $boughtService->getServerId());
+        $this->assertSame($serviceId, $boughtService->getServiceId());
         $this->assertSame(0, $boughtService->getUid());
         $this->assertSame(Purchase::METHOD_SMS, $boughtService->getMethod());
         $this->assertEquals(20, $boughtService->getAmount());

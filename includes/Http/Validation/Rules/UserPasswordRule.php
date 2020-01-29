@@ -1,24 +1,17 @@
 <?php
 namespace App\Http\Validation\Rules;
 
-use App\Http\Validation\Rule;
+use App\Http\Validation\BaseRule;
 use App\Models\User;
-use App\Translation\TranslationManager;
-use App\Translation\Translator;
 
-class UserPasswordRule implements Rule
+class UserPasswordRule extends BaseRule
 {
-    /** @var Translator */
-    private $lang;
-
     /** @var User */
     private $user;
 
     public function __construct(User $user)
     {
-        /** @var TranslationManager $translationManager */
-        $translationManager = app()->make(TranslationManager::class);
-        $this->lang = $translationManager->user();
+        parent::__construct();
         $this->user = $user;
     }
 

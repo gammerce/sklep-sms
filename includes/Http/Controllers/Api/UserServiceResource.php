@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\EntityNotFoundException;
+use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\ApiResponse;
 use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\Services\UserServiceService;
@@ -25,18 +27,17 @@ class UserServiceResource
         $user = $auth->user();
 
         $userService = $userServiceService->findOne($userServiceId);
-
         if (!$userService) {
-            return new ApiResponse("dont_play_games", $lang->t('dont_play_games'), 0);
+            throw new EntityNotFoundException();
         }
 
         if ($userService->getUid() !== $user->getUid()) {
-            return new ApiResponse("dont_play_games", $lang->t('dont_play_games'), 0);
+            throw new EntityNotFoundException();
         }
 
         $serviceModule = $heart->getServiceModule($userService->getServiceId());
         if (!$serviceModule) {
-            return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
+            throw new InvalidServiceModuleException();
         }
 
         if (
@@ -46,26 +47,17 @@ class UserServiceResource
             return new ApiResponse(
                 "service_cant_be_modified",
                 $lang->t('service_cant_be_modified'),
-                0
+                false
             );
         }
 
-        $returnData = $serviceModule->userOwnServiceEdit(
+        $serviceModule->userOwnServiceEdit(
             array_merge($request->request->all(), [
                 "id" => $userServiceId,
             ]),
             $userService
         );
 
-        if ($returnData['status'] == "warnings") {
-            $returnData["data"]["warnings"] = format_warnings($returnData["data"]["warnings"]);
-        }
-
-        return new ApiResponse(
-            $returnData['status'],
-            $returnData['text'],
-            $returnData['positive'],
-            $returnData['data']
-        );
+        return new ApiResponse('ok', $lang->t('edited_user_service'), true);
     }
 }

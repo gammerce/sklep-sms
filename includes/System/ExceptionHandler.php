@@ -3,6 +3,7 @@ namespace App\System;
 
 use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\InvalidConfigException;
+use App\Exceptions\InvalidServiceModuleException;
 use App\Exceptions\LicenseException;
 use App\Exceptions\LicenseRequestException;
 use App\Exceptions\UnauthorizedException;
@@ -15,6 +16,8 @@ use App\Http\Responses\ServerResponseFactory;
 use App\Loggers\FileLogger;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use App\View\Html\Li;
+use App\View\Html\Ul;
 use App\View\Renders\ErrorRenderer;
 use Exception;
 use Raven_Client;
@@ -71,6 +74,10 @@ class ExceptionHandler implements ExceptionHandlerContract
             return new ApiResponse("no_access", $this->lang->t('not_logged_or_no_perm'), false);
         }
 
+        if ($e instanceof InvalidServiceModuleException) {
+            return new ApiResponse("wrong_module", $this->lang->t('bad_module'), false);
+        }
+
         if ($e instanceof ValidationException) {
             return new ApiResponse(
                 "warnings",
@@ -78,7 +85,7 @@ class ExceptionHandler implements ExceptionHandlerContract
                 false,
                 array_merge(
                     [
-                        "warnings" => format_warnings($e->warnings),
+                        "warnings" => $this->formatWarnings($e->warnings),
                     ],
                     $e->data
                 )
@@ -87,7 +94,10 @@ class ExceptionHandler implements ExceptionHandlerContract
 
         if (is_debug()) {
             $exceptionDetails = $this->getExceptionDetails($e);
-            return new JsonResponse($exceptionDetails);
+            return new JsonResponse([
+                'return_id' => 'stack_trace',
+                'stack_trace' => $exceptionDetails,
+            ]);
         }
 
         if ($e instanceof LicenseException) {
@@ -119,14 +129,14 @@ class ExceptionHandler implements ExceptionHandlerContract
         }
     }
 
-    protected function reportToSentry(Exception $e)
+    private function reportToSentry(Exception $e)
     {
         /** @var Raven_Client $client */
         $client = $this->app->make(Raven_Client::class);
         $client->captureException($e);
     }
 
-    protected function getExceptionDetails(Exception $e)
+    private function getExceptionDetails(Exception $e)
     {
         return [
             'message' => $e->getMessage(),
@@ -137,7 +147,7 @@ class ExceptionHandler implements ExceptionHandlerContract
         ];
     }
 
-    protected function shouldReport(Exception $e)
+    private function shouldReport(Exception $e)
     {
         foreach ($this->dontReport as $type) {
             if ($e instanceof $type) {
@@ -170,5 +180,26 @@ class ExceptionHandler implements ExceptionHandlerContract
 
         $output = $this->errorRenderer->render("$status", $request);
         return new HtmlResponse($output, $status);
+    }
+
+    public function formatWarnings(array $warnings)
+    {
+        $output = [];
+
+        foreach ($warnings as $brick => $warning) {
+            if ($warning) {
+                $items = collect($warning)
+                    ->map(function ($text) {
+                        return new Li($text);
+                    })
+                    ->all();
+
+                $help = new Ul($items);
+                $help->addClass("form_warning help is-danger");
+                $output[$brick] = $help->toHtml();
+            }
+        }
+
+        return $output;
     }
 }

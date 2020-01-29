@@ -1,12 +1,16 @@
 <?php
 namespace App\Http\Validation\Rules;
 
-use App\Http\Validation\Rule;
+use App\Http\Validation\BaseRule;
 
-class NumberRule implements Rule
+class NumberRule extends BaseRule
 {
     public function validate($attribute, $value, array $data)
     {
-        return check_for_warnings("number", $value);
+        if (!is_numeric($value)) {
+            return [$this->lang->t('field_must_be_number')];
+        }
+
+        return [];
     }
 }

@@ -3,14 +3,12 @@
 use App\Models\Server;
 use App\Models\User;
 use App\Support\Collection;
+use App\Support\Database;
 use App\System\Application;
 use App\System\Auth;
-use App\Support\Database;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\View\Html\DOMElement;
-use App\View\Html\Li;
-use App\View\Html\Ul;
 use Illuminate\Container\Container;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -189,6 +187,8 @@ function convert_date($timestamp, $format = "")
         $date = new DateTime($timestamp);
     }
 
+    $date->setTimezone(new DateTimeZone($settings->getTimeZone()));
+
     return $date->format($format);
 }
 
@@ -252,9 +252,13 @@ function get_random_string($length)
     return $finalRand;
 }
 
-function is_steamid_valid($steamid)
+/**
+ * @param string $steamId
+ * @return string
+ */
+function is_steam_id_valid($steamId)
 {
-    return preg_match('/\bSTEAM_([0-9]):([0-9]):([0-9])+$/', $steamid) ? '1' : '0';
+    return !!preg_match('/\bSTEAM_([0-9]):([0-9]):([0-9])+$/', $steamId);
 }
 
 function seconds_to_time($seconds)
@@ -425,125 +429,6 @@ function captureRequest()
     return $request;
 }
 
-/**
- * Sprawdza czy podane dane są prawidłowe dla danego typu
- *
- * @param string $type
- * @param        $data
- *
- * @return array
- */
-function check_for_warnings($type, $data)
-{
-    /** @var TranslationManager $translationManager */
-    $translationManager = app()->make(TranslationManager::class);
-    $lang = $translationManager->user();
-
-    $warnings = [];
-    switch ($type) {
-        case "username":
-            if (strlen($data) < 2) {
-                $warnings[] = $lang->t('field_length_min_warn', 2);
-            }
-            if ($data != htmlspecialchars($data)) {
-                $warnings[] = $lang->t('username_chars_warn');
-            }
-
-            break;
-
-        case "nick":
-            if (strlen($data) < 2) {
-                $warnings[] = $lang->t('field_length_min_warn', 2);
-            } else {
-                if (strlen($data) > 32) {
-                    $warnings[] = $lang->t('field_length_max_warn', 32);
-                }
-            }
-
-            break;
-
-        case "password":
-            if (strlen($data) < 6) {
-                $warnings[] = $lang->t('field_length_min_warn', 6);
-            }
-
-            break;
-
-        case "email":
-            if (!filter_var($data, FILTER_VALIDATE_EMAIL)) {
-                $warnings[] = $lang->t('wrong_email');
-            }
-
-            break;
-
-        case "ip":
-            if (!filter_var($data, FILTER_VALIDATE_IP)) {
-                $warnings[] = $lang->t('wrong_ip');
-            }
-
-            break;
-
-        case "sid":
-            if (!is_steamid_valid($data) || strlen($data) > 32) {
-                $warnings[] = $lang->t('wrong_sid');
-            }
-
-            break;
-
-        case "uid":
-            if (!strlen($data)) {
-                $warnings[] = $lang->t('field_no_empty');
-            } else {
-                if (!is_numeric($data)) {
-                    $warnings[] = $lang->t('field_must_be_number');
-                }
-            }
-
-            break;
-
-        case "service_description":
-            if (strlen($data) > 28) {
-                $warnings[] = $lang->t('field_length_max_warn', 28);
-            }
-
-            break;
-
-        case "number":
-            if (!strlen($data)) {
-                $warnings[] = $lang->t('field_no_empty');
-            } else {
-                if (!is_numeric($data)) {
-                    $warnings[] = $lang->t('field_must_be_number');
-                }
-            }
-
-            break;
-    }
-
-    return $warnings;
-}
-
-function format_warnings(array $warnings)
-{
-    $output = [];
-
-    foreach ($warnings as $brick => $warning) {
-        if ($warning) {
-            $items = collect($warning)
-                ->map(function ($text) {
-                    return new Li($text);
-                })
-                ->all();
-
-            $help = new Ul($items);
-            $help->addClass("form_warning help is-danger");
-            $output[$brick] = $help->toHtml();
-        }
-    }
-
-    return $output;
-}
-
 function get_error_code(PDOException $e)
 {
     return $e->errorInfo[1];
@@ -611,6 +496,19 @@ function as_int($value)
     return (int) $value;
 }
 
+/**
+ * @param mixed $value
+ * @return float|null
+ */
+function as_float($value)
+{
+    if ($value === null || $value === "") {
+        return null;
+    }
+
+    return (float) $value;
+}
+
 // https://stackoverflow.com/questions/7153000/get-class-name-from-file/44654073
 function get_class_from_file($path)
 {
@@ -661,4 +559,13 @@ function is_testing()
 function is_demo()
 {
     return getenv('APP_ENV') === 'demo';
+}
+
+function has_value($value)
+{
+    if (is_array($value) || is_object($value)) {
+        return !!$value;
+    }
+
+    return strlen($value);
 }

@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\Server;
 
+use App\Exceptions\ValidationException;
 use App\Http\Responses\ServerResponseFactory;
 use App\Http\Services\PurchaseService;
 use App\ServiceModules\Interfaces\IServicePurchaseOutside;
@@ -43,14 +44,26 @@ class PurchaseResource
             );
         }
 
-        $response = $purchaseService->purchase($serviceModule, $request->request->all());
+        try {
+            $response = $purchaseService->purchase($serviceModule, $request->request->all());
+        } catch (ValidationException $e) {
+            return $responseFactory->create(
+                $acceptHeader,
+                "warnings",
+                $lang->t('form_wrong_filled'),
+                false,
+                [
+                    'warnings' => $this->formatWarnings($e->warnings),
+                ]
+            );
+        }
 
         return $responseFactory->create(
             $acceptHeader,
             array_get($response, 'status'),
             array_get($response, 'text'),
             array_get($response, 'positive'),
-            (array) array_get($response, 'extraData', [])
+            (array) array_get($response, 'data', [])
         );
     }
 
@@ -64,5 +77,15 @@ class PurchaseResource
         $calculatedSign = md5(implode("#", [$type, $authData, $smsCode, $secret]));
 
         return $sign === $calculatedSign;
+    }
+
+    private function formatWarnings(array $warnings)
+    {
+        return collect($warnings)
+            ->map(function ($warning, $key) {
+                $text = implode("<br />", $warning);
+                return "<strong>{$key}</strong><br />{$text}<br />";
+            })
+            ->join();
     }
 }

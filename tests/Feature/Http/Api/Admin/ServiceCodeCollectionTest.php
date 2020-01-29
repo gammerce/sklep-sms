@@ -16,7 +16,7 @@ class ServiceCodeCollectionTest extends HttpTestCase
     }
 
     /** @test */
-    public function creates_price()
+    public function creates_service_code()
     {
         // given
         $server = $this->factory->server();

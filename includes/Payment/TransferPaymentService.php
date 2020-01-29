@@ -125,7 +125,8 @@ class TransferPaymentService
             $this->path->to('data/transfers/' . $transferFinalize->getDataFilename())
         );
 
-        if (($serviceModule = $this->heart->getServiceModule($purchase->getService())) === null) {
+        $serviceModule = $this->heart->getServiceModule($purchase->getService());
+        if (!$serviceModule) {
             $this->logger->log(
                 'transfer_bad_module',
                 $transferFinalize->getOrderId(),

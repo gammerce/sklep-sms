@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\ApiResponse;
 use App\Models\Purchase;
 use App\Payment\PurchaseSerializer;
@@ -28,7 +29,7 @@ class PurchaseValidationResource
         $serviceModule = $heart->getServiceModule($serviceId);
 
         if (!($serviceModule instanceof IServicePurchaseWeb)) {
-            return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
+            throw new InvalidServiceModuleException();
         }
 
         // User does not belong to the group that allows to purchase that service
@@ -55,24 +56,13 @@ class PurchaseValidationResource
             ]);
         }
 
-        $returnData = $serviceModule->purchaseFormValidate($purchase, $request->request->all());
+        $serviceModule->purchaseFormValidate($purchase, $request->request->all());
+        $purchaseEncoded = $purchaseSerializer->serializeAndEncode($purchase);
 
-        if ($returnData['status'] == "warnings") {
-            $returnData["data"]["warnings"] = format_warnings($returnData["data"]["warnings"]);
-        } else {
-            $purchaseEncoded = $purchaseSerializer->serializeAndEncode($purchase);
-            $returnData['data'] = [
-                'length' => 8000,
-                'data' => $purchaseEncoded,
-                'sign' => md5($purchaseEncoded . $settings->getSecret()),
-            ];
-        }
-
-        return new ApiResponse(
-            $returnData['status'],
-            $returnData['text'],
-            $returnData['positive'],
-            $returnData['data']
-        );
+        return new ApiResponse("ok", $lang->t('purchase_form_validated'), true, [
+            'length' => 8000,
+            'data' => $purchaseEncoded,
+            'sign' => md5($purchaseEncoded . $settings->getSecret()),
+        ]);
     }
 }

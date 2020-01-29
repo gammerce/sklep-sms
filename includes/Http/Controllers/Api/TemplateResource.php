@@ -12,7 +12,6 @@ class TemplateResource
     public function get($name, Request $request, Template $template, Heart $heart)
     {
         $templateName = escape_filename($name);
-        $username = $request->query->get('username');
         $email = $request->query->get('email');
         $editedUser = null;
 
@@ -27,7 +26,7 @@ class TemplateResource
         $data = [
             'template' => $template->render(
                 "jsonhttp/" . $templateName,
-                compact('username', 'email', 'editedUser')
+                compact('email', 'editedUser')
             ),
         ];
 

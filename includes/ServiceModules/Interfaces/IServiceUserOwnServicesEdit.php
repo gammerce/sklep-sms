@@ -22,11 +22,8 @@ interface IServiceUserOwnServicesEdit
      * i gdy wszystko jest okej, to ją edytuje.
      *
      * @param array $body
-     * @param UserService $userService Obecne dane edytowanej usługi
-     *
-     * @return array        'status'    => id wiadomości,
-     *                        'text'        => treść wiadomości
-     *                        'positive'    => czy udało się wyedytować usługę
+     * @param UserService $userService
+     * @return bool
      */
     public function userOwnServiceEdit(array $body, UserService $userService);
 }

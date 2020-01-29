@@ -1,23 +1,17 @@
 <?php
 namespace App\Http\Validation\Rules;
 
-use App\Http\Validation\Rule;
+use App\Http\Validation\BaseRule;
 use App\Repositories\AntiSpamQuestionRepository;
-use App\Translation\TranslationManager;
-use App\Translation\Translator;
 
-class AntiSpamQuestionRule implements Rule
+class AntiSpamQuestionRule extends BaseRule
 {
-    /** @var Translator */
-    private $lang;
-
-    /** * @var AntiSpamQuestionRepository */
+    /** @var AntiSpamQuestionRepository */
     private $antiSpamQuestionRepository;
 
     public function __construct()
     {
-        $translationManager = app()->make(TranslationManager::class);
-        $this->lang = $translationManager->user();
+        parent::__construct();
         $this->antiSpamQuestionRepository = app()->make(AntiSpamQuestionRepository::class);
     }
 

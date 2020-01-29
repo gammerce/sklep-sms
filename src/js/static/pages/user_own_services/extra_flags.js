@@ -1,13 +1,18 @@
-//Zmiana typu usługi
 $(document).delegate("#user_own_services .row [name=type]", "change", function() {
-    var module;
-    if (!(module = service_module_act_can("extra_flags", $(this)))) return;
+    var module = service_module_act_can("extra_flags", $(this));
+    if (!module) {
+        return;
+    }
 
-    module.find(".type_nick").hide();
-    module.find(".type_ip").hide();
-    module.find(".type_sid").hide();
-    module.find(".type_password").hide();
-    module.find(".type_" + get_type_name($(this).val())).show();
+    var currentType = $(this).val();
 
-    if ($(this).val() == "1" || $(this).val() == "2") module.find(".type_password").show();
+    hideAndDisable(module.find(".type_nick"));
+    hideAndDisable(module.find(".type_ip"));
+    hideAndDisable(module.find(".type_sid"));
+    hideAndDisable(module.find(".type_password"));
+    showAndEnable(module.find(".type_" + get_type_name(currentType)));
+
+    if (currentType == "1" || currentType == "2") {
+        showAndEnable(module.find(".type_password"));
+    }
 });

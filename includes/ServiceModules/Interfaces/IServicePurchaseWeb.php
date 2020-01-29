@@ -24,12 +24,6 @@ interface IServicePurchaseWeb extends IServicePurchase
      *
      * @param Purchase $purchase
      * @param array $body
-     *
-     * @return array
-     *  status => string id wiadomości,
-     *  text => string treść wiadomości
-     *  positive => bool czy udało się przeprowadzić zakup czy nie
-     *  [data => array('warnings' => array())]
      */
     public function purchaseFormValidate(Purchase $purchase, array $body);
 

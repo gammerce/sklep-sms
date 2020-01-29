@@ -7,18 +7,15 @@ use Raven_Client;
 
 class SentryServiceProvider
 {
-    public function register(Application $app, ExternalConfigProvider $configProvider)
+    public function register(Application $app)
     {
-        if (is_testing()) {
-            return;
-        }
+        if (!is_testing() && class_exists(Raven_Client::class)) {
+            $app->singleton(Raven_Client::class, function (Application $app) {
+                /** @var ExternalConfigProvider $configProvider */
+                $configProvider = $app->make(ExternalConfigProvider::class);
 
-        $dsn = getenv('SENTRY_DSN') ?: $configProvider->sentryDSN();
-
-        if (class_exists(Raven_Client::class) && strlen($dsn)) {
-            $app->singleton(Raven_Client::class, function () use ($dsn, $app) {
                 return new Raven_Client([
-                    'dsn' => $dsn,
+                    'dsn' => getenv('SENTRY_DSN') ?: $configProvider->sentryDSN(),
                     'release' => $app->version(),
                 ]);
             });

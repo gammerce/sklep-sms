@@ -182,6 +182,7 @@ class PurchaseResourceSmsTest extends HttpTestCase
                 'server_id' => $this->server->getId(),
                 'type' => $type,
                 'auth_data' => $authData,
+                'password' => '1',
                 'sms_code' => $smsCode,
                 'method' => Purchase::METHOD_SMS,
                 'price_id' => $this->price->getId(),
@@ -198,7 +199,7 @@ class PurchaseResourceSmsTest extends HttpTestCase
         // then
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame(
-            "<return_value>warnings</return_value><text>Nie wszystkie pola formularza zostały prawidłowo wypełnione.</text><positive>0</positive><warnings><strong>nick</strong><br />Pole musi się składać z co najmniej 2 znaków.<br /><strong>password</strong><br />Pole musi się składać z co najmniej 6 znaków.<br /></warnings>",
+            "<return_value>warnings</return_value><text>Nie wszystkie pola formularza zostały prawidłowo wypełnione.</text><positive>0</positive><warnings><strong>auth_data</strong><br />Pole musi się składać z co najmniej 2 znaków.<br /><strong>password</strong><br />Pole musi się składać z co najmniej 6 znaków.<br /></warnings>",
             $response->getContent()
         );
     }

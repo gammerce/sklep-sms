@@ -1,6 +1,7 @@
 <?php
 namespace App\ServiceModules\Interfaces;
 
+use App\Http\Validation\Validator;
 use App\Models\Purchase;
 
 /**
@@ -15,12 +16,7 @@ interface IServicePurchaseOutside extends IServicePurchase
      * wywoływana gdy zakup został przeprowadzony z zewnątrz, nie przez formularz na stronie WWW.
      *
      * @param Purchase $purchase
-     *
-     * @return array
-     *  status => string id wiadomości,
-     *  text => string treść wiadomości
-     *  positive => bool czy udało się przeprowadzić zakup czy nie
-     *  [data => array('warnings' => array())]
+     * @return Validator
      */
     public function purchaseDataValidate(Purchase $purchase);
 }

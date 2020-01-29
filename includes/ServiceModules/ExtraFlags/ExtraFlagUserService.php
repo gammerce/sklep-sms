@@ -1,7 +1,9 @@
 <?php
-namespace App\Models;
+namespace App\ServiceModules\ExtraFlags;
 
-class ExtraFlagsUserService extends UserService
+use App\Models\UserService;
+
+class ExtraFlagUserService extends UserService
 {
     /** @var int */
     private $serverId;

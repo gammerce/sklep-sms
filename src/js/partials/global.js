@@ -1,3 +1,7 @@
+$(document).delegate(".dropdown", "click", function() {
+    $(this).toggleClass("is-active");
+});
+
 window.restRequest = function(method, path, data, onSuccessFunction) {
     onSuccessFunction =
         typeof onSuccessFunction !== "undefined" ? onSuccessFunction : function() {};
@@ -85,6 +89,12 @@ document.addEventListener("click", function(e) {
     }
 });
 
-$(document).delegate(".dropdown", "click", function() {
-    $(this).toggleClass("is-active");
-});
+window.hideAndDisable = function(node) {
+    node.hide();
+    node.find("input").prop("disabled", true);
+};
+
+window.showAndEnable = function(node) {
+    node.show();
+    node.find("input").prop("disabled", false);
+};

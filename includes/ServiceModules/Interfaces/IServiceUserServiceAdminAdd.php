@@ -11,11 +11,6 @@ interface IServiceUserServiceAdminAdd
      * i gdy wszystko jest okej, to ją dodaje.
      *
      * @param array $body
-     *
-     * @return array
-     *  status => id wiadomości
-     *  text => treść wiadomości
-     *  positive => czy udało się dodać usługę
      */
     public function userServiceAdminAdd(array $body);
 

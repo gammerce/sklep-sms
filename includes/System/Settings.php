@@ -27,8 +27,43 @@ class Settings implements ArrayAccess
 
         $this->data = [
             'date_format' => 'Y-m-d H:i',
-            'theme' => 'default',
             'shop_url' => '',
+            'theme' => 'default',
+            'timezone' => 'Europe/Warsaw',
+            'transactions_query' => <<<EOF
+(SELECT bs.id AS `id`,
+bs.uid AS `uid`,
+u.username AS `username`,
+bs.payment AS `payment`,
+bs.payment_id AS `payment_id`,
+bs.service AS `service`,
+bs.server AS `server`,
+bs.amount AS `amount`,
+bs.auth_data AS `auth_data`,
+bs.email AS `email`,
+bs.extra_data AS `extra_data`,
+CONCAT_WS('', pa.ip, ps.ip, pt.ip, pw.ip, pc.ip) AS `ip`,
+CONCAT_WS('', pa.platform, ps.platform, pt.platform, pw.platform, pc.platform) AS `platform`,
+CONCAT_WS('', ps.income, pt.income) AS `income`,
+CONCAT_WS('', ps.cost, pt.income, pw.cost) AS `cost`,
+pa.aid AS `aid`,
+u2.username AS `adminname`,
+ps.code AS `sms_code`,
+ps.text AS `sms_text`,
+ps.number AS `sms_number`,
+IFNULL(ps.free, IFNULL(pt.free, 0)) AS `free`,
+pc.code AS `service_code`,
+bs.timestamp AS `timestamp`
+FROM `ss_bought_services` AS bs
+LEFT JOIN `ss_users` AS u ON u.uid = bs.uid
+LEFT JOIN `ss_payment_admin` AS pa ON bs.payment = 'admin' AND pa.id = bs.payment_id
+LEFT JOIN `ss_users` AS u2 ON u2.uid = pa.aid
+LEFT JOIN `ss_payment_sms` AS ps ON bs.payment = 'sms' AND ps.id = bs.payment_id
+LEFT JOIN `ss_payment_transfer` AS pt ON bs.payment = 'transfer' AND pt.id = bs.payment_id
+LEFT JOIN `ss_payment_wallet` AS pw ON bs.payment = 'wallet' AND pw.id = bs.payment_id
+LEFT JOIN `ss_payment_code` AS pc ON bs.payment = 'service_code' AND pc.id = bs.payment_id)
+EOF
+        ,
         ];
         $this->fileSystem = $fileSystem;
     }
@@ -69,48 +104,12 @@ class Settings implements ArrayAccess
             $this->data['shop_url'] = $this->formatShopUrl($this->data['shop_url']);
         }
 
-        $this->data['transactions_query'] = "(SELECT bs.id AS `id`,
-bs.uid AS `uid`,
-u.username AS `username`,
-bs.payment AS `payment`,
-bs.payment_id AS `payment_id`,
-bs.service AS `service`,
-bs.server AS `server`,
-bs.amount AS `amount`,
-bs.auth_data AS `auth_data`,
-bs.email AS `email`,
-bs.extra_data AS `extra_data`,
-CONCAT_WS('', pa.ip, ps.ip, pt.ip, pw.ip, pc.ip) AS `ip`,
-CONCAT_WS('', pa.platform, ps.platform, pt.platform, pw.platform, pc.platform) AS `platform`,
-CONCAT_WS('', ps.income, pt.income) AS `income`,
-CONCAT_WS('', ps.cost, pt.income, pw.cost) AS `cost`,
-pa.aid AS `aid`,
-u2.username AS `adminname`,
-ps.code AS `sms_code`,
-ps.text AS `sms_text`,
-ps.number AS `sms_number`,
-IFNULL(ps.free, IFNULL(pt.free, 0)) AS `free`,
-pc.code AS `service_code`,
-bs.timestamp AS `timestamp`
-FROM `ss_bought_services` AS bs
-LEFT JOIN `ss_users` AS u ON u.uid = bs.uid
-LEFT JOIN `ss_payment_admin` AS pa ON bs.payment = 'admin' AND pa.id = bs.payment_id
-LEFT JOIN `ss_users` AS u2 ON u2.uid = pa.aid
-LEFT JOIN `ss_payment_sms` AS ps ON bs.payment = 'sms' AND ps.id = bs.payment_id
-LEFT JOIN `ss_payment_transfer` AS pt ON bs.payment = 'transfer' AND pt.id = bs.payment_id
-LEFT JOIN `ss_payment_wallet` AS pw ON bs.payment = 'wallet' AND pw.id = bs.payment_id
-LEFT JOIN `ss_payment_code` AS pc ON bs.payment = 'service_code' AND pc.id = bs.payment_id)";
-
-        if ($this->data['timezone']) {
-            date_default_timezone_set($this->data['timezone']);
+        // Fallback to default theme if selected does not exist
+        if (!$this->fileSystem->exists($this->path->to("themes/{$this->data['theme']}"))) {
+            $this->data['theme'] = "default";
         }
 
-        // Fallback to default theme if selected does not exist
-        $this->data['theme'] = $this->fileSystem->exists(
-            $this->path->to("themes/{$this->data['theme']}")
-        )
-            ? $this->data['theme']
-            : "default";
+        date_default_timezone_set($this->data['timezone']);
     }
 
     /**
@@ -185,6 +184,14 @@ LEFT JOIN `ss_payment_code` AS pc ON bs.payment = 'service_code' AND pc.id = bs.
     public function getSecret()
     {
         return $this->data["random_key"];
+    }
+
+    /**
+     * @return string
+     */
+    public function getTimeZone()
+    {
+        return $this->data['timezone'];
     }
 
     private function formatShopUrl($url)

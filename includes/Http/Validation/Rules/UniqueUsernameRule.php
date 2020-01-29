@@ -1,33 +1,35 @@
 <?php
 namespace App\Http\Validation\Rules;
 
-use App\Http\Validation\Rule;
+use App\Http\Validation\BaseRule;
 use App\Support\Database;
-use App\Translation\TranslationManager;
-use App\Translation\Translator;
 
-class UniqueUsernameRule implements Rule
+class UniqueUsernameRule extends BaseRule
 {
     /** @var Database */
     private $db;
-
-    /** @var Translator */
-    private $lang;
 
     /** @var int */
     private $exceptUserId;
 
     public function __construct($exceptUserId = null)
     {
+        parent::__construct();
         $this->db = app()->make(Database::class);
-        $translationManager = app()->make(TranslationManager::class);
-        $this->lang = $translationManager->user();
         $this->exceptUserId = $exceptUserId;
     }
 
     public function validate($attribute, $value, array $data)
     {
-        $warnings = check_for_warnings("username", $value);
+        $warnings = [];
+
+        if (strlen($value) < 2) {
+            $warnings[] = $this->lang->t('field_length_min_warn', 2);
+        }
+
+        if ($value !== htmlspecialchars($value)) {
+            $warnings[] = $this->lang->t('username_chars_warn');
+        }
 
         $statement = $this->db->statement(
             "SELECT `uid` FROM `ss_users` WHERE `username` = ? AND `uid` != ?"

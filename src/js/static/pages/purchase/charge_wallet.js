@@ -1,4 +1,4 @@
-jQuery(document).ready(function($) {
+$(document).ready(function($) {
     var form = $("#form_purchase");
 
     // Aby żadna opcja nie była zaznaczona w przypadku użycia "cofnij"

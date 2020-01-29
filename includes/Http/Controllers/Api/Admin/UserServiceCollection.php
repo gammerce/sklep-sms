@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\ApiResponse;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\System\Heart;
@@ -17,24 +18,13 @@ class UserServiceCollection
     ) {
         $lang = $translationManager->user();
 
-        if (
-            ($serviceModule = $heart->getServiceModule($serviceId)) === null ||
-            !($serviceModule instanceof IServiceUserServiceAdminAdd)
-        ) {
-            return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
+        $serviceModule = $heart->getServiceModule($serviceId);
+        if (!($serviceModule instanceof IServiceUserServiceAdminAdd)) {
+            throw new InvalidServiceModuleException();
         }
 
-        $returnData = $serviceModule->userServiceAdminAdd($request->request->all());
+        $serviceModule->userServiceAdminAdd($request->request->all());
 
-        if ($returnData["status"] === "warnings") {
-            $returnData["data"]["warnings"] = format_warnings($returnData["data"]["warnings"]);
-        }
-
-        return new ApiResponse(
-            array_get($returnData, 'status'),
-            array_get($returnData, 'text'),
-            array_get($returnData, 'positive'),
-            array_get($returnData, 'data')
-        );
+        return new ApiResponse("ok", $lang->t('service_added_correctly'), true);
     }
 }
