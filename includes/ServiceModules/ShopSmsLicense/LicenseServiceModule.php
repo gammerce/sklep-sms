@@ -71,6 +71,9 @@ class LicenseServiceModule extends ServiceModule implements
     /** @var PurchaseSerializer */
     private $purchaseSerializer;
 
+    /** @var LicenseUserServiceRepository */
+    private $licenseUserServiceRepository;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -86,6 +89,7 @@ class LicenseServiceModule extends ServiceModule implements
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
         $this->userServiceService = $this->app->make(UserServiceService::class);
         $this->purchaseSerializer = $this->app->make(PurchaseSerializer::class);
+        $this->licenseUserServiceRepository = $this->app->make(LicenseUserServiceRepository::class);
     }
 
     /**
@@ -94,18 +98,7 @@ class LicenseServiceModule extends ServiceModule implements
      */
     public function mapToUserService(array $data)
     {
-        return new LicenseUserService(
-            as_int($data['id']),
-            $data['service'],
-            as_int($data['uid']),
-            as_int($data['expire']),
-            $data['identifier'],
-            $data['external_license_id'],
-            $data['email'],
-            as_int($data['cost_daily']),
-            (bool) $data['platform_amxmodx'],
-            (bool) $data['platform_sourcemod']
-        );
+        return $this->licenseUserServiceRepository->mapToModel($data);
     }
 
     public function userServiceAdminDisplayTitleGet()
