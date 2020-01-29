@@ -1289,12 +1289,11 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function serviceTakeOver(array $body)
     {
-        // TODO Write tests
-
         $user = $this->auth->user();
         $validator = new Validator(
             array_merge($body, [
                 'auth_data' => trim(array_get($body, 'auth_data')),
+                'password' => array_get($body, 'password') ?: "",
                 'server_id' => as_int(array_get($body, 'server_id')),
                 'type' => as_int(array_get($body, 'type')),
             ]),
@@ -1319,15 +1318,13 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $password = $validated['password'];
 
         if ($paymentMethod == Purchase::METHOD_TRANSFER) {
-            $result = $this->db->query(
-                $this->db->prepare(
-                    "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
-                        "WHERE t.payment = 'transfer' AND t.payment_id = '%s' AND `service` = '%s' AND `server` = '%d' AND `auth_data` = '%s'",
-                    [$paymentId, $this->service->getId(), $serverId, $authData]
-                )
+            $statement = $this->db->prepare(
+                "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
+                    "WHERE t.payment = 'transfer' AND t.payment_id = ? AND `service` = ? AND `server` = ? AND `auth_data` = ?"
             );
+            $statement->execute([$paymentId, $this->service->getId(), $serverId, $authData]);
 
-            if (!$result->rowCount()) {
+            if (!$statement->rowCount()) {
                 return [
                     'status' => "no_service",
                     'text' => $this->lang->t('no_user_service'),
@@ -1335,15 +1332,13 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 ];
             }
         } elseif ($paymentMethod == Purchase::METHOD_SMS) {
-            $result = $this->db->query(
-                $this->db->prepare(
-                    "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
-                        "WHERE t.payment = 'sms' AND t.sms_code = '%s' AND `service` = '%s' AND `server` = '%d' AND `auth_data` = '%s'",
-                    [$paymentId, $this->service->getId(), $serverId, $authData]
-                )
+            $statement = $this->db->statement(
+                "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
+                    "WHERE t.payment = 'sms' AND t.sms_code = ? AND `service` = ? AND `server` = ? AND `auth_data` = ?"
             );
+            $statement->execute([$paymentId, $this->service->getId(), $serverId, $authData]);
 
-            if (!$result->rowCount()) {
+            if (!$statement->rowCount()) {
                 return [
                     'status' => "no_service",
                     'text' => $this->lang->t('no_user_service'),
@@ -1354,16 +1349,21 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         // TODO: Usunac md5
         $table = $this::USER_SERVICE_TABLE;
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT `id` FROM `ss_user_service` AS us " .
-                    "INNER JOIN `$table` AS usef ON us.id = usef.us_id " .
-                    "WHERE us.service = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND ( `password` = '%s' OR `password` = '%s' )",
-                [$this->service->getId(), $serverId, $type, $authData, $password, md5($password)]
-            )
+        $statement = $this->db->statement(
+            "SELECT `id` FROM `ss_user_service` AS us " .
+                "INNER JOIN `$table` AS usef ON us.id = usef.us_id " .
+                "WHERE us.service = ? AND `server` = ? AND `type` = ? AND `auth_data` = ? AND ( `password` = ? OR `password` = ? )"
         );
+        $statement->execute([
+            $this->service->getId(),
+            $serverId,
+            $type,
+            $authData,
+            $password,
+            md5($password),
+        ]);
 
-        if (!$result->rowCount()) {
+        if (!$statement->rowCount()) {
             return [
                 'status' => "no_service",
                 'text' => $this->lang->t('no_user_service'),
@@ -1371,7 +1371,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ];
         }
 
-        $row = $result->fetch();
+        $row = $statement->fetch();
         $this->userServiceRepository->updateUid($row['id'], $user->getUid());
 
         return [
