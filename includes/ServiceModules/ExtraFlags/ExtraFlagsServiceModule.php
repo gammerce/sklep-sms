@@ -614,30 +614,26 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         // Usuwanie danych z bazy players_flags
         // Ponieważ za chwilę będziemy je tworzyć na nowo
-        $this->db->query(
-            $this->db->prepare(
+        $this->db
+            ->statement(
                 "DELETE FROM `ss_players_flags` " .
-                    "WHERE `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s'",
-                [$serverId, $type, $authData]
+                    "WHERE `server` = ? AND `type` = ? AND `auth_data` = ?"
             )
-        );
+            ->execute([$serverId, $type, $authData]);
 
         // Pobieranie wszystkich usług na konkretne dane
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT * FROM `ss_user_service` AS us " .
-                    "INNER JOIN `" .
-                    $this::USER_SERVICE_TABLE .
-                    "` AS usef ON us.id = usef.us_id " .
-                    "WHERE `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND ( `expire` > UNIX_TIMESTAMP() OR `expire` = -1 )",
-                [$serverId, $type, $authData]
-            )
+        $table = $this::USER_SERVICE_TABLE;
+        $statement = $this->db->statement(
+            "SELECT * FROM `ss_user_service` AS us " .
+                "INNER JOIN `$table` AS usef ON us.id = usef.us_id " .
+                "WHERE `server` = ? AND `type` = ? AND `auth_data` = ? AND ( `expire` > UNIX_TIMESTAMP() OR `expire` = -1 )"
         );
+        $statement->execute([$serverId, $type, $authData]);
 
         // Wyliczanie za jaki czas dana flaga ma wygasnąć
         $flags = [];
         $password = "";
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
             // Pobranie hasła, bierzemy je tylko raz na początku
             $password = $password ? $password : $row['password'];
 
@@ -1132,26 +1128,23 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
 
         // Sprawdzenie czy nie ma już takiej usługi
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT * FROM `ss_user_service` AS us " .
-                    "INNER JOIN `" .
-                    $this::USER_SERVICE_TABLE .
-                    "` AS usef ON us.id = usef.us_id " .
-                    "WHERE us.service = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND `id` != '%d'",
-                [
-                    $this->service->getId(),
-                    array_get($data, 'server', $userService->getServerId()),
-                    array_get($data, 'type', $userService->getType()),
-                    array_get($data, 'auth_data', $userService->getAuthData()),
-                    $userService->getId(),
-                ]
-            )
+        $table = $this::USER_SERVICE_TABLE;
+        $statement = $this->db->statement(
+            "SELECT * FROM `ss_user_service` AS us " .
+                "INNER JOIN `$table` AS usef ON us.id = usef.us_id " .
+                "WHERE us.service = ? AND `server` = ? AND `type` = ? AND `auth_data` = ? AND `id` != ?"
         );
+        $statement->execute([
+            $this->service->getId(),
+            array_get($data, 'server', $userService->getServerId()),
+            array_get($data, 'type', $userService->getType()),
+            array_get($data, 'auth_data', $userService->getAuthData()),
+            $userService->getId(),
+        ]);
 
         // Jeżeli istnieje usługa o identycznych danych jak te, na które będziemy zmieniać obecną usługę
-        if ($result->rowCount()) {
-            $userService2 = $result->fetch();
+        if ($statement->rowCount()) {
+            $userService2 = $statement->fetch();
 
             if (!isset($data['uid']) && $userService->getUid() != $userService2['uid']) {
                 throw new ValidationException([
@@ -1221,21 +1214,19 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         // Ustaw jednakowe hasła
         // żeby potem nie było problemów z różnymi hasłami
         if (strlen($data['password'])) {
-            $this->db->query(
-                $this->db->prepare(
-                    "UPDATE `" .
-                        $this::USER_SERVICE_TABLE .
-                        "` " .
-                        "SET `password` = '%s' " .
-                        "WHERE `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s'",
-                    [
-                        $data['password'],
-                        array_get($data, 'server_id', $userService->getServerId()),
-                        array_get($data, 'type', $userService->getType()),
-                        array_get($data, 'auth_data', $userService->getAuthData()),
-                    ]
+            $table = $this::USER_SERVICE_TABLE;
+            $this->db
+                ->statement(
+                    "UPDATE `$table` " .
+                        "SET `password` = ? " .
+                        "WHERE `server` = ? AND `type` = ? AND `auth_data` = ?"
                 )
-            );
+                ->execute([
+                    $data['password'],
+                    array_get($data, 'server_id', $userService->getServerId()),
+                    array_get($data, 'type', $userService->getType()),
+                    array_get($data, 'auth_data', $userService->getAuthData()),
+                ]);
         }
 
         // Przelicz flagi tylko wtedy, gdy coś się zmieniło
@@ -1318,7 +1309,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $password = $validated['password'];
 
         if ($paymentMethod == Purchase::METHOD_TRANSFER) {
-            $statement = $this->db->prepare(
+            $statement = $this->db->statement(
                 "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
                     "WHERE t.payment = 'transfer' AND t.payment_id = ? AND `service` = ? AND `server` = ? AND `auth_data` = ?"
             );
