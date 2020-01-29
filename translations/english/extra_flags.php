@@ -4,7 +4,6 @@ return [
     'chosen_incorrect_server' =>
         'Something is wrong, chosen server does not exist or specific service cannot be purchased on this server.',
     'chosen_incorrect_type' => 'Chosen type of purchase not allowed.',
-    'days_quantity_positive' => 'Days quantity must be positive.',
     'existing_service_has_different_password' =>
         'Service purchased by (nick/ip) already exists but it has different password.',
     'extra_flags' => 'Extra flags',

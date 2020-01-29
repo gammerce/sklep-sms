@@ -4,7 +4,6 @@ return [
     'chosen_incorrect_server' =>
         'Coś jest nie tak, wybrany serwer nie istnieje w bazie lub danej usługi nie można wykupić na tym serwerze.',
     'chosen_incorrect_type' => 'Wybrano niedozwolony typ zakupu.',
-    'days_quantity_positive' => 'Ilość dni musi być nieujemna.',
     'existing_service_has_different_password' =>
         'Istnieje już usługa wykupiona na te dane (nick/ip) lecz posiada inne hasło.',
     'extra_flags' => 'Dodatkowe flagi',
