@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Validation\Rules;
+namespace App\ServiceModules\ExtraFlags\Rules;
 
 use App\Http\Validation\BaseRule;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;

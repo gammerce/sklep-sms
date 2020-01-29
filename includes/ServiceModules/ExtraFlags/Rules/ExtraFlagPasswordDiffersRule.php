@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Validation\Rules;
+namespace App\ServiceModules\ExtraFlags\Rules;
 
 use App\Http\Validation\BaseRule;
 use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
@@ -21,12 +21,13 @@ class ExtraFlagPasswordDiffersRule extends BaseRule
         $table = ExtraFlagsServiceModule::USER_SERVICE_TABLE;
         $type = array_get($data, 'type');
         $serverId = array_get($data, 'server_id');
+        $authData = array_get($data, 'auth_data');
 
         $statement = $this->db->statement(
             "SELECT `password` FROM `$table` " .
                 "WHERE `type` = ? AND `auth_data` = ? AND `server` = ?"
         );
-        $statement->execute([$type, $value, $serverId]);
+        $statement->execute([$type, $authData, $serverId]);
         $existingPassword = $statement->fetchColumn();
 
         // TODO: Usunąć md5 w przyszłości

@@ -11,6 +11,8 @@ use App\Repositories\ServiceRepository;
 use App\Repositories\SmsCodeRepository;
 use App\Repositories\UserRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
+use App\ServiceModules\ExtraFlags\ExtraFlagType;
+use App\ServiceModules\ExtraFlags\ExtraFlagUserServiceRepository;
 use App\Verification\PaymentModules\Cssetti;
 use Faker\Factory as FakerFactory;
 use Faker\Generator;
@@ -47,6 +49,9 @@ class Factory
     /** @var SmsCodeRepository */
     private $smsCodeRepository;
 
+    /** @var ExtraFlagUserServiceRepository */
+    private $extraFlagUserServiceRepository;
+
     public function __construct(
         UserRepository $userRepository,
         ServerRepository $serverRepository,
@@ -56,7 +61,8 @@ class Factory
         PaymentPlatformRepository $paymentPlatformRepository,
         ServiceCodeRepository $serviceCodeRepository,
         LogRepository $logRepository,
-        SmsCodeRepository $smsCodeRepository
+        SmsCodeRepository $smsCodeRepository,
+        ExtraFlagUserServiceRepository $extraFlagUserServiceRepository
     ) {
         $this->faker = FakerFactory::create();
         $this->userRepository = $userRepository;
@@ -68,6 +74,7 @@ class Factory
         $this->serviceCodeRepository = $serviceCodeRepository;
         $this->logRepository = $logRepository;
         $this->smsCodeRepository = $smsCodeRepository;
+        $this->extraFlagUserServiceRepository = $extraFlagUserServiceRepository;
     }
 
     public function server(array $attributes = [])
@@ -258,6 +265,34 @@ class Factory
             $attributes['code'],
             $attributes['sms_price'],
             $attributes['free']
+        );
+    }
+
+    public function extraFlagUserService(array $attributes = [])
+    {
+        $attributes = array_merge(
+            [
+                'service_id' => 'vip',
+                'uid' => null,
+                'forever' => false,
+                'days' => 35,
+                'server_id' => null,
+                'type' => ExtraFlagType::TYPE_NICK,
+                'auth_data' => 'my_nickname',
+                'password' => 'pokll12',
+            ],
+            $attributes
+        );
+
+        return $this->extraFlagUserServiceRepository->create(
+            $attributes['service_id'],
+            $attributes['uid'],
+            $attributes['forever'],
+            $attributes['days'],
+            $attributes['server_id'],
+            $attributes['type'],
+            $attributes['auth_data'],
+            $attributes['password']
         );
     }
 }

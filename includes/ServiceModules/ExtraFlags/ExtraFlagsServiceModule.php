@@ -6,11 +6,6 @@ use App\Exceptions\ValidationException;
 use App\Http\Validation\Rules\ConfirmedRule;
 use App\Http\Validation\Rules\DateTimeRule;
 use App\Http\Validation\Rules\EmailRule;
-use App\Http\Validation\Rules\ExtraFlagAuthDataRule;
-use App\Http\Validation\Rules\ExtraFlagPasswordDiffersRule;
-use App\Http\Validation\Rules\ExtraFlagPasswordRule;
-use App\Http\Validation\Rules\ExtraFlagTypeListRule;
-use App\Http\Validation\Rules\ExtraFlagTypeRule;
 use App\Http\Validation\Rules\InArrayRule;
 use App\Http\Validation\Rules\MaxLengthRule;
 use App\Http\Validation\Rules\MinValueRule;
@@ -21,13 +16,11 @@ use App\Http\Validation\Rules\PriceExistsRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\ServerExistsRule;
 use App\Http\Validation\Rules\ServerLinkedToServiceRule;
-use App\Http\Validation\Rules\ServiceTypesRule;
 use App\Http\Validation\Rules\UniqueFlagsRule;
 use App\Http\Validation\Rules\UserExistsRule;
 use App\Http\Validation\Rules\YesNoRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
-use App\Models\ExtraFlagsUserService;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Models\UserService;
@@ -37,6 +30,12 @@ use App\Payment\PurchasePriceService;
 use App\Payment\PurchaseValidationService;
 use App\Repositories\PriceRepository;
 use App\Repositories\UserServiceRepository;
+use App\ServiceModules\ExtraFlags\Rules\ExtraFlagAuthDataRule;
+use App\ServiceModules\ExtraFlags\Rules\ExtraFlagPasswordDiffersRule;
+use App\ServiceModules\ExtraFlags\Rules\ExtraFlagPasswordRule;
+use App\ServiceModules\ExtraFlags\Rules\ExtraFlagServiceTypesRule;
+use App\ServiceModules\ExtraFlags\Rules\ExtraFlagTypeListRule;
+use App\ServiceModules\ExtraFlags\Rules\ExtraFlagTypeRule;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceAvailableOnServers;
@@ -125,6 +124,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     /** @var UserServiceRepository */
     private $userServiceRepository;
 
+    /** @var ExtraFlagUserServiceRepository */
+    private $extraFlagUserServiceRepository;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -139,6 +141,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $this->purchasePriceService = $this->app->make(PurchasePriceService::class);
         $this->purchasePriceRenderer = $this->app->make(PurchasePriceRenderer::class);
         $this->purchaseValidationService = $this->app->make(PurchaseValidationService::class);
+        $this->extraFlagUserServiceRepository = $this->app->make(
+            ExtraFlagUserServiceRepository::class
+        );
         $this->userServiceRepository = $this->app->make(UserServiceRepository::class);
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
@@ -148,20 +153,11 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     /**
      * @param array $data
-     * @return ExtraFlagsUserService
+     * @return ExtraFlagUserService
      */
     public function mapToUserService(array $data)
     {
-        return new ExtraFlagsUserService(
-            as_int($data['id']),
-            $data['service'],
-            as_int($data['uid']),
-            as_int($data['expire']),
-            as_int($data['server']),
-            as_int($data['type']),
-            $data['auth_data'],
-            $data['password']
-        );
+        return $this->extraFlagUserServiceRepository->mapToModel($data);
     }
 
     public function serviceAdminExtraFieldsGet()
@@ -426,7 +422,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 'type' => [
                     new RequiredRule(),
                     new ExtraFlagTypeRule(),
-                    new ServiceTypesRule($this->service),
+                    new ExtraFlagServiceTypesRule($this->service),
                 ],
             ]
         );
@@ -550,7 +546,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 $userServiceId
             );
         } else {
-            $this->userServiceRepository->createExtraFlags(
+            $this->extraFlagUserServiceRepository->create(
                 $this->service->getId(),
                 $uid,
                 $forever,
@@ -781,6 +777,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             array_merge($body, [
                 'quantity' => as_int(array_get($body, 'quantity')),
                 'server_id' => as_int(array_get($body, 'server_id')),
+                'uid' => as_int(array_get($body, 'uid')),
             ]),
             [
                 'email' => [new EmailRule()],
@@ -789,6 +786,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                     ? []
                     : [new RequiredRule(), new NumberRule(), new MinValueRule(0)],
                 'server_id' => [new RequiredRule(), new ServerExistsRule()],
+                'uid' => [new UserExistsRule()],
             ]
         );
         $this->verifyUserServiceData($validator);
@@ -820,7 +818,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userServiceAdminEditFormGet(UserService $userService)
     {
-        if (!($userService instanceof ExtraFlagsUserService)) {
+        if (!($userService instanceof ExtraFlagUserService)) {
             throw new UnexpectedValueException();
         }
 
@@ -917,7 +915,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userServiceAdminEdit(array $body, UserService $userService)
     {
-        if (!($userService instanceof ExtraFlagsUserService)) {
+        if (!($userService instanceof ExtraFlagUserService)) {
             throw new UnexpectedValueException();
         }
 
@@ -926,10 +924,12 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $validator = new Validator(
             array_merge($body, [
                 'server_id' => as_int(array_get($body, 'server_id')),
+                'uid' => as_int(array_get($body, 'uid')),
             ]),
             [
                 'expire' => $forever ? [] : [new RequiredRule(), new DateTimeRule()],
                 'server_id' => [new RequiredRule(), new ServerExistsRule()],
+                'uid' => [new UserExistsRule()],
             ]
         );
         $this->verifyUserServiceData($validator);
@@ -949,7 +949,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $validator->extendData([
             'auth_data' => trim($validator->getData('auth_data')),
             'type' => as_int($validator->getData('type')),
-            'uid' => as_int($validator->getData('uid')),
         ]);
 
         $validator->extendRules([
@@ -958,15 +957,14 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             'type' => [
                 new RequiredRule(),
                 new ExtraFlagTypeRule(),
-                new ServiceTypesRule($this->service),
+                new ExtraFlagServiceTypesRule($this->service),
             ],
-            'uid' => [new UserExistsRule()],
         ]);
     }
 
     public function userServiceDeletePost(UserService $userService)
     {
-        if (!($userService instanceof ExtraFlagsUserService)) {
+        if (!($userService instanceof ExtraFlagUserService)) {
             throw new UnexpectedValueException();
         }
 
@@ -983,7 +981,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userOwnServiceEditFormGet(UserService $userService)
     {
-        if (!($userService instanceof ExtraFlagsUserService)) {
+        if (!($userService instanceof ExtraFlagUserService)) {
             throw new UnexpectedValueException();
         }
 
@@ -1046,7 +1044,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userOwnServiceInfoGet(UserService $userService, $buttonEdit)
     {
-        if (!($userService instanceof ExtraFlagsUserService)) {
+        if (!($userService instanceof ExtraFlagUserService)) {
             throw new UnexpectedValueException();
         }
 
@@ -1068,11 +1066,17 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userOwnServiceEdit(array $body, UserService $userService)
     {
-        if (!($userService instanceof ExtraFlagsUserService)) {
+        if (!($userService instanceof ExtraFlagUserService)) {
             throw new UnexpectedValueException();
         }
 
-        $validator = new Validator($body, []);
+        $validator = new Validator($body, [
+            'password' => [
+                new ExtraFlagPasswordRule(),
+                new PasswordRule(),
+                new ExtraFlagPasswordDiffersRule(),
+            ],
+        ]);
         $this->verifyUserServiceData($validator);
 
         $validated = $validator->validateOrFail();
@@ -1089,12 +1093,15 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     // ### Dodatkowe funkcje przydatne przy zarządzaniu usługami użytkowników
 
     /**
-     * @param ExtraFlagsUserService $userService
-     * @param array                 $data
+     * @param ExtraFlagUserService $userService
+     * @param array                $data
      * @return bool
      */
-    private function userServiceEdit(ExtraFlagsUserService $userService, array $data)
+    private function userServiceEdit(ExtraFlagUserService $userService, array $data)
     {
+        $forever = array_get($data, 'forever');
+        $expire = array_get($data, 'expire');
+
         $set = [];
         if (strlen($data['password'])) {
             $set[] = [
@@ -1112,7 +1119,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ];
         }
 
-        if ($data['forever']) {
+        if ($forever) {
             $set[] = [
                 'column' => 'expire',
                 'value' => "-1",
@@ -1150,7 +1157,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $this->userServiceRepository->delete($userService->getId());
 
             // Dodajemy expire
-            if (!$data['forever'] && isset($data['expire'])) {
+            if (!$forever && $expire) {
                 $set[] = [
                     'column' => 'expire',
                     'value' => "( `expire` - UNIX_TIMESTAMP() + '%d' )",
@@ -1167,7 +1174,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 'data' => [$this->service->getId()],
             ];
 
-            if (!$data['forever'] && isset($data['expire'])) {
+            if (!$forever && $expire) {
                 $set[] = [
                     'column' => 'expire',
                     'value' => "'%d'",

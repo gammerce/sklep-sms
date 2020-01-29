@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\EntityNotFoundException;
 use App\Http\Responses\ApiResponse;
 use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\Services\UserServiceService;
@@ -9,8 +10,6 @@ use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
-
-// TODO Write tests
 
 class UserServiceResource
 {
@@ -27,18 +26,17 @@ class UserServiceResource
         $user = $auth->user();
 
         $userService = $userServiceService->findOne($userServiceId);
-
         if (!$userService) {
-            return new ApiResponse("dont_play_games", $lang->t('dont_play_games'), 0);
+            throw new EntityNotFoundException();
         }
 
         if ($userService->getUid() !== $user->getUid()) {
-            return new ApiResponse("dont_play_games", $lang->t('dont_play_games'), 0);
+            throw new EntityNotFoundException();
         }
 
         $serviceModule = $heart->getServiceModule($userService->getServiceId());
         if (!$serviceModule) {
-            return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
+            return new ApiResponse("wrong_module", $lang->t('bad_module'), false);
         }
 
         if (
@@ -48,7 +46,7 @@ class UserServiceResource
             return new ApiResponse(
                 "service_cant_be_modified",
                 $lang->t('service_cant_be_modified'),
-                0
+                false
             );
         }
 

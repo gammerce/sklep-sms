@@ -1,10 +1,10 @@
 <?php
-namespace App\Http\Validation\Rules;
+namespace App\ServiceModules\ExtraFlags\Rules;
 
 use App\Http\Validation\BaseRule;
 use App\Models\Service;
 
-class ServiceTypesRule extends BaseRule
+class ExtraFlagServiceTypesRule extends BaseRule
 {
     /** @var Service */
     private $service;

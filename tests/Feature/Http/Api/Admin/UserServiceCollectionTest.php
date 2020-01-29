@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Feature\Http\Api\Admin;
 
-use App\Models\ExtraFlagsUserService;
+use App\ServiceModules\ExtraFlags\ExtraFlagUserService;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\Services\UserServiceService;
 use Tests\Psr4\TestCases\HttpTestCase;
@@ -43,7 +43,7 @@ class UserServiceCollectionTest extends HttpTestCase
         $userServices = $this->userServiceService->find();
         $this->assertCount(1, $userServices);
 
-        /** @var ExtraFlagsUserService $userService */
+        /** @var ExtraFlagUserService $userService */
         $userService = $userServices[0];
         $this->assertSame('vip', $userService->getServiceId());
         $this->assertSame(ExtraFlagType::TYPE_NICK, $userService->getType());
