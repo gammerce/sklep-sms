@@ -21,7 +21,15 @@ class UniqueUsernameRule extends BaseRule
 
     public function validate($attribute, $value, array $data)
     {
-        $warnings = check_for_warnings("username", $value);
+        $warnings = [];
+
+        if (strlen($value) < 2) {
+            $warnings[] = $this->lang->t('field_length_min_warn', 2);
+        }
+
+        if ($value !== htmlspecialchars($value)) {
+            $warnings[] = $this->lang->t('username_chars_warn');
+        }
 
         $statement = $this->db->statement(
             "SELECT `uid` FROM `ss_users` WHERE `username` = ? AND `uid` != ?"

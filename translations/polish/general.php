@@ -54,7 +54,6 @@ return [
     'logout' => 'Wyloguj',
     'main_page' => 'Strona główna',
     'march' => 'Marzec',
-    'max_length' => 'Wartość nie może być dłuższa niż {1} znaków.',
     'may' => 'Maj',
     'min_value' => 'Wartość musi być większa lub równa {1}.',
     'minutes' => 'minut',

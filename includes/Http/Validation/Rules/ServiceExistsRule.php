@@ -2,7 +2,6 @@
 namespace App\Http\Validation\Rules;
 
 use App\Http\Validation\BaseRule;
-use App\Repositories\ServerRepository;
 use App\Repositories\ServiceRepository;
 
 class ServiceExistsRule extends BaseRule

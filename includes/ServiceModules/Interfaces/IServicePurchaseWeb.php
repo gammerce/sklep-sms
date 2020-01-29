@@ -1,7 +1,6 @@
 <?php
 namespace App\ServiceModules\Interfaces;
 
-use App\Http\Validation\Validator;
 use App\Models\Purchase;
 
 /**

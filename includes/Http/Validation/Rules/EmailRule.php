@@ -1,12 +1,16 @@
 <?php
 namespace App\Http\Validation\Rules;
 
-use App\Http\Validation\Rule;
+use App\Http\Validation\BaseRule;
 
-class EmailRule implements Rule
+class EmailRule extends BaseRule
 {
     public function validate($attribute, $value, array $data)
     {
-        return check_for_warnings("email", $value);
+        if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+            return [$this->lang->t('wrong_email')];
+        }
+
+        return [];
     }
 }

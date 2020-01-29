@@ -1,7 +1,6 @@
 <?php
 namespace App\Repositories;
 
-use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
 use App\Support\Database;
 
 class UserServiceRepository
