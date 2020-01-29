@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Http\Validation\Rules\MaxLengthRule;
 use App\Http\Validation\Rules\PriceExistsRule;
@@ -11,7 +10,6 @@ use App\Http\Validation\Rules\UserExistsRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\ServiceCodeRepository;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -22,14 +20,9 @@ class ServiceCodeCollection
         Request $request,
         TranslationManager $translationManager,
         ServiceCodeRepository $serviceCodeRepository,
-        Heart $heart,
         DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
-
-        if (!$heart->getServiceModule($serviceId)) {
-            return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
-        }
 
         $validator = new Validator(
             [

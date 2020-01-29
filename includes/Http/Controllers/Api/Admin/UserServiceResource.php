@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Exceptions\EntityNotFoundException;
+use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Loggers\DatabaseLogger;
@@ -25,16 +27,15 @@ class UserServiceResource
 
         $userService = $userServiceService->findOne($userServiceId);
         if (!$userService) {
-            return new ApiResponse("no_service", $lang->t('no_service'), 0);
+            throw new EntityNotFoundException();
         }
 
         $serviceModule = $heart->getServiceModule($userService->getServiceId());
         if (!$serviceModule) {
-            return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
+            throw new InvalidServiceModuleException();
         }
 
         $result = $serviceModule->userServiceAdminEdit($request->request->all(), $userService);
-
         if (!$result) {
             return new ApiResponse('not_edited', $lang->t('not_edited_user_service'), false);
         }

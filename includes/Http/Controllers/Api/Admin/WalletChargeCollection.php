@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\ApiResponse;
 use App\Http\Validation\Rules\NumberRule;
 use App\Http\Validation\Rules\RequiredRule;
@@ -44,7 +45,7 @@ class WalletChargeCollection
 
         $serviceModule = $heart->getServiceModule("charge_wallet");
         if (!$serviceModule) {
-            return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
+            throw new InvalidServiceModuleException();
         }
 
         $editedUser = $heart->getUser($userId);

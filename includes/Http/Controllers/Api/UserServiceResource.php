@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Exceptions\EntityNotFoundException;
+use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\ApiResponse;
 use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\Services\UserServiceService;
@@ -36,7 +37,7 @@ class UserServiceResource
 
         $serviceModule = $heart->getServiceModule($userService->getServiceId());
         if (!$serviceModule) {
-            return new ApiResponse("wrong_module", $lang->t('bad_module'), false);
+            throw new InvalidServiceModuleException();
         }
 
         if (

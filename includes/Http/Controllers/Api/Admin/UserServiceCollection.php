@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\ApiResponse;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\System\Heart;
@@ -19,7 +20,7 @@ class UserServiceCollection
 
         $serviceModule = $heart->getServiceModule($serviceId);
         if (!($serviceModule instanceof IServiceUserServiceAdminAdd)) {
-            return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
+            throw new InvalidServiceModuleException();
         }
 
         $serviceModule->userServiceAdminAdd($request->request->all());

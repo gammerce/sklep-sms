@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\ApiResponse;
 use App\Models\Purchase;
 use App\Payment\PurchaseSerializer;
@@ -28,7 +29,7 @@ class PurchaseValidationResource
         $serviceModule = $heart->getServiceModule($serviceId);
 
         if (!($serviceModule instanceof IServicePurchaseWeb)) {
-            return new ApiResponse("wrong_module", $lang->t('bad_module'), 0);
+            throw new InvalidServiceModuleException();
         }
 
         // User does not belong to the group that allows to purchase that service
