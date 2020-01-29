@@ -988,7 +988,18 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         // Dodajemy typ uslugi, (1<<2) ostatni typ
         $serviceInfo = [];
-        $styles['nick'] = $styles['ip'] = $styles['sid'] = $styles['password'] = "display: none";
+        $styles = [
+            "nick" => "display: none",
+            "ip" => "display: none",
+            "sid" => "display: none",
+            "password" => "display: none",
+        ];
+        $disabled = [
+            "nick" => "disabled",
+            "ip" => "disabled",
+            "sid" => "disabled",
+            "password" => "disabled",
+        ];
         for ($i = 0, $optionId = 1; $i < 3; $optionId = 1 << ++$i) {
             // Kiedy dana usługa nie wspiera danego typu i wykupiona usługa nie ma tego typu
             if (!($this->service->getTypes() & $optionId) && $optionId != $userService->getType()) {
@@ -1005,16 +1016,19 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                     case ExtraFlagType::TYPE_NICK:
                         $serviceInfo['player_nick'] = $userService->getAuthData();
                         $styles['nick'] = $styles['password'] = "display: table-row";
+                        $disabled['nick'] = $disabled['password'] = "";
                         break;
 
                     case ExtraFlagType::TYPE_IP:
                         $serviceInfo['player_ip'] = $userService->getAuthData();
                         $styles['ip'] = $styles['password'] = "display: table-row";
+                        $disabled['ip'] = $disabled['password'] = "";
                         break;
 
                     case ExtraFlagType::TYPE_SID:
                         $serviceInfo['player_sid'] = $userService->getAuthData();
                         $styles['sid'] = "display: table-row";
+                        $disabled['sid'] = "";
                         break;
                 }
             }

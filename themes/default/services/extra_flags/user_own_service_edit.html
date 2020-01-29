@@ -29,15 +29,8 @@ $serviceInfo['service'] }}<br />
         <div class="cell">
             <div class="field">
                 <div class="control">
-                    <input
-                        type="text"
-                        id="nick"
-                        name="auth_data"
-                        class="input is-small"
-                        maxlength="32"
-                        value="{{ $serviceInfo['player_nick'] }}"
-                        disabled
-                    />
+                    <input type="text" id="nick" name="auth_data" class="input is-small"
+                    maxlength="32" value="{{ $serviceInfo['player_nick'] }}" {$disabled['nick']} />
                 </div>
             </div>
         </div>
@@ -57,7 +50,7 @@ $serviceInfo['service'] }}<br />
                         class="input is-small"
                         maxlength="21"
                         value="{{ $serviceInfo['player_ip'] }}"
-                        disabled
+                        {$disabled['ip']}
                     />
                 </div>
             </div>
@@ -78,7 +71,7 @@ $serviceInfo['service'] }}<br />
                         class="input is-small"
                         maxlength="32"
                         value="{{ $serviceInfo['player_sid'] }}"
-                        disabled
+                        {$disabled['sid']}
                     />
                 </div>
             </div>
@@ -99,7 +92,7 @@ $serviceInfo['service'] }}<br />
                         class="input is-small"
                         maxlength="32"
                         placeholder="{{ $serviceInfo['password'] }}"
-                        disabled
+                        {$disabled['password']}
                     />
                 </div>
             </div>
