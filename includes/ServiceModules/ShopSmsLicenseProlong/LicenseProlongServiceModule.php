@@ -110,7 +110,6 @@ class LicenseProlongServiceModule extends ServiceModule implements
 
     public function purchaseFormValidate(Purchase $purchase, array $body)
     {
-        // TODO Remove value_must_be_ge_than
         $validator = new Validator($body, [
             'amount' => [new RequiredRule(), new IntegerRule(), new MinValueRule(30)],
             'identifier' => [new RequiredRule(), new LicenseProlongableRule()],
@@ -237,7 +236,6 @@ class LicenseProlongServiceModule extends ServiceModule implements
 
     public function userServiceAdminAdd(array $body)
     {
-        // TODO Remove days_quantity_positive
         $validator = new Validator($body, [
             'amount' => [new RequiredRule(), new NumberRule(), new MinValueRule(0)],
             'identifier' => [new RequiredRule(), new LicenseProlongableRule()],

@@ -488,7 +488,6 @@ class LicenseServiceModule extends ServiceModule implements
         );
     }
 
-    // TODO Allow returning arrays
     public function userOwnServiceEdit(array $body, UserService $userService)
     {
         if (!($userService instanceof LicenseUserService)) {
