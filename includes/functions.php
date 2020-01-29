@@ -189,6 +189,8 @@ function convert_date($timestamp, $format = "")
         $date = new DateTime($timestamp);
     }
 
+    $date->setTimezone(new DateTimeZone($settings->getTimeZone()));
+
     return $date->format($format);
 }
 

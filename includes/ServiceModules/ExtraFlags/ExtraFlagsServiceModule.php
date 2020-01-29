@@ -935,6 +935,10 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $this->verifyUserServiceData($validator);
 
         $validated = $validator->validateOrFail();
+        // We need to convert date since it is accepted as a strin value.
+        // DateTimeRule protects us from unparsable string
+        $validated["expire"] = $forever ? null : strtotime($validated["expire"]);
+
         $result = $this->userServiceEdit($userService, $validated);
 
         if ($result) {

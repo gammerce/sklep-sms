@@ -12,8 +12,6 @@ use App\System\Heart;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
-// TODO Write tests
-
 class UserServiceResource
 {
     public function put(
