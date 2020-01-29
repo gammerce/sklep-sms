@@ -3,6 +3,7 @@ namespace App\System;
 
 use App\Providers\AppServiceProvider;
 use App\Providers\HeartServiceProvider;
+use App\Providers\LicenseServiceProvider;
 use App\Providers\SentryServiceProvider;
 use App\Support\Path;
 use DirectoryIterator;
@@ -17,6 +18,7 @@ class Application extends Container
     /** @var array */
     private $providers = [
         AppServiceProvider::class,
+        LicenseServiceProvider::class,
         HeartServiceProvider::class,
         SentryServiceProvider::class,
     ];
