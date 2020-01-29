@@ -1,13 +1,18 @@
 <?php
 namespace App\ServiceModules\ShopSmsLicense;
 
+use App\Http\Validation\Rules\EmailRule;
+use App\Http\Validation\Rules\IntegerRule;
+use App\Http\Validation\Rules\MinValueRule;
+use App\Http\Validation\Rules\PasswordRule;
+use App\Http\Validation\Rules\RequiredRule;
+use App\Http\Validation\Validator;
 use App\Models\LicenseUserService;
-use App\Models\UserService;
-use App\Payment\PurchaseSerializer;
-use App\Services\LicenseServerService;
 use App\Models\Purchase;
 use App\Models\Service;
+use App\Models\UserService;
 use App\Payment\BoughtServiceService;
+use App\Payment\PurchaseSerializer;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
@@ -17,6 +22,8 @@ use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\ServiceModules\ServiceModule;
+use App\ServiceModules\ShopSmsLicense\Rules\LicenseEnginesRule;
+use App\Services\LicenseServerService;
 use App\Services\UserServiceService;
 use App\System\Auth;
 use App\System\Settings;
@@ -142,13 +149,12 @@ class LicenseServiceModule extends ServiceModule implements
             $where = "WHERE " . $where . ' ';
         }
 
+        $tableName = $this::USER_SERVICE_TABLE;
         $result = $this->db->query(
             "SELECT SQL_CALC_FOUND_ROWS us.id, us.uid, u.username, s.id AS `service_id`, " .
                 "s.name AS `service`, us.expire, m.identifier, m.external_license_id, m.cost_daily " .
                 "FROM `ss_user_service` AS us " .
-                "INNER JOIN `" .
-                $this::USER_SERVICE_TABLE .
-                "` AS m ON m.us_id = us.id " .
+                "INNER JOIN `$tableName` AS m ON m.us_id = us.id " .
                 "LEFT JOIN `ss_services` AS s ON s.id = m.service " .
                 "LEFT JOIN `ss_users` AS u ON u.uid = us.uid " .
                 $where .
@@ -208,56 +214,39 @@ class LicenseServiceModule extends ServiceModule implements
 
     public function purchaseFormValidate(Purchase $purchase, array $body)
     {
-        $warnings = [];
+        $validator = new Validator(
+            array_merge($body, [
+                'email' => trim(array_get($body, 'email')),
+            ]),
+            [
+                'amount' => [new RequiredRule(), new IntegerRule(), new MinValueRule(30)],
+                'email' => [new RequiredRule(), new EmailRule()],
+                'engines' => [new LicenseEnginesRule()],
+                'platform_amxmodx' => [],
+                'platform_sourcemod' => [],
+            ]
+        );
 
-        // Wybranie przynajmniej jednego silnika gry
-        if ($body['platform_amxmodx'] == "0" && $body['platform_sourcemod'] == "0") {
-            $warnings['engines'][] = $this->lang->t('no_engine_choosen');
-        }
+        $validated = $validator->validateOrFail();
 
-        // Ilość
-        if ($warning = check_for_warnings("number", $body['amount'])) {
-            $warnings['amount'] = array_merge((array) $warnings['amount'], $warning);
-        } elseif ($body['amount'] < 30) {
-            $warnings['amount'][] = $this->lang->t('value_must_be_ge_than', 30);
-        }
-
-        // E-mail
-        $body['email'] = trim($body['email']);
-        if ($warning = check_for_warnings("email", $body['email'])) {
-            $warnings['email'] = array_merge((array) $warnings['email'], $warning);
-        }
-
-        // Jeżeli są jakieś błedy, to je zwróć
-        if (!empty($warnings)) {
-            return [
-                'status' => "warnings",
-                'text' => $this->lang->t('form_wrong_filled'),
-                'positive' => false,
-                'data' => ['warnings' => $warnings],
-            ];
-        }
-
-        $costDaily = $this->getCostDaily($body);
+        $costDaily = $this->getCostDaily($validated);
         $purchase->setOrder([
-            Purchase::ORDER_QUANTITY => $body['amount'],
+            Purchase::ORDER_QUANTITY => $validated['amount'],
             'engines' => [
-                'amxx' => $body['platform_amxmodx'],
-                'sm' => $body['platform_sourcemod'],
+                'amxx' => $validated['platform_amxmodx'],
+                'sm' => $validated['platform_sourcemod'],
             ],
             'cost_daily' => $costDaily,
         ]);
-        $purchase->setEmail($body['email']);
+        $purchase->setEmail($validated['email']);
         $purchase->setPayment([
-            Purchase::PAYMENT_TRANSFER_PRICE => $this->getCost($costDaily, $body['amount'], true),
+            Purchase::PAYMENT_TRANSFER_PRICE => $this->getCost(
+                $costDaily,
+                $validated['amount'],
+                true
+            ),
             Purchase::PAYMENT_SMS_DISABLED => true,
         ]);
-
-        return [
-            'status' => "ok",
-            'text' => $this->lang->t('purchase_form_validated'),
-            'positive' => true,
-        ];
     }
 
     public function orderDetails(Purchase $purchase)
@@ -309,40 +298,34 @@ class LicenseServiceModule extends ServiceModule implements
         $identifier = generateUUID4();
 
         // Dodajemy usługę użytkownika do bazy sklepu
-        $this->db->query(
-            $this->db->prepare(
-                "INSERT INTO `ss_user_service` " .
-                    "SET `uid` = '%d', `service` = '%s', `expire` = '%d'",
-                [$purchase->user->getUid(), $this->service->getId(), $expiresAt]
-            )
-        );
+        $this->db
+            ->statement("INSERT INTO `ss_user_service` SET `uid` = ?, `service` = ?, `expire` = ?")
+            ->execute([$purchase->user->getUid(), $this->service->getId(), $expiresAt]);
         $userServiceId = $this->db->lastId();
 
-        $this->db->query(
-            $this->db->prepare(
-                "INSERT INTO `" .
-                    $this::USER_SERVICE_TABLE .
-                    "` " .
-                    "SET `us_id` = '%d', " .
-                    "`service` = '%s', " .
-                    "`identifier` = '%s', " .
-                    "`external_license_id` = '%d', " .
-                    "`cost_daily` = '%s', " .
-                    "`email` = '%s', " .
-                    "`platform_amxmodx` = '%d', " .
-                    "`platform_sourcemod` = '%d'",
-                [
-                    $userServiceId,
-                    $this->service->getId(),
-                    $identifier,
-                    $externalLicenseId,
-                    $purchase->getOrder('cost_daily'),
-                    $purchase->getEmail(),
-                    $tmpEngines['amxx'],
-                    $tmpEngines['sm'],
-                ]
+        $table = $this::USER_SERVICE_TABLE;
+        $this->db
+            ->statement(
+                "INSERT INTO `$table` SET " .
+                    "`us_id` = ?, " .
+                    "`service` = ?, " .
+                    "`identifier` = ?, " .
+                    "`external_license_id` = ?, " .
+                    "`cost_daily` = ?, " .
+                    "`email` = ?, " .
+                    "`platform_amxmodx` = ?, " .
+                    "`platform_sourcemod` = ?"
             )
-        );
+            ->execute([
+                $userServiceId,
+                $this->service->getId(),
+                $identifier,
+                $externalLicenseId,
+                $purchase->getOrder('cost_daily'),
+                $purchase->getEmail(),
+                $tmpEngines['amxx'],
+                $tmpEngines['sm'],
+            ]);
 
         // Dodanie informacji o zakupie usługi
         $engines = [];
@@ -413,12 +396,6 @@ class LicenseServiceModule extends ServiceModule implements
         throw new UnexpectedValueException();
     }
 
-    /**
-     * Metoda powinna zwrócić dodatkowe pola do uzupełnienia przez admina
-     * podczas dodawania usługi użytkownikowi
-     *
-     * @return string
-     */
     public function userServiceAdminAddFormGet()
     {
         return $this->template->renderNoComments(
@@ -429,16 +406,6 @@ class LicenseServiceModule extends ServiceModule implements
         );
     }
 
-    /**
-     * Metoda sprawdza dane formularza podczas dodawania użytkownikowi usługi w PA
-     * i gdy wszystko jest okej, to ją dodaje.
-     *
-     * @param array $body Dane $_POST
-     * @return array
-     *  status => id wiadomości
-     *  text => treść wiadomości
-     *  positive => czy udało się dodać usługę
-     */
     public function userServiceAdminAdd(array $body)
     {
         return [
@@ -521,62 +488,48 @@ class LicenseServiceModule extends ServiceModule implements
         );
     }
 
+    // TODO Allow returning arrays
     public function userOwnServiceEdit(array $body, UserService $userService)
     {
         if (!($userService instanceof LicenseUserService)) {
             throw new UnexpectedValueException();
         }
 
-        $warnings = [];
+        $validator = new Validator(
+            array_merge($body, [
+                'email' => array_get($body, 'email'),
+            ]),
+            [
+                'id' => [],
+                'email' => [new RequiredRule(), new EmailRule()],
+                'engines' => [new LicenseEnginesRule()],
+                'password' => [new PasswordRule()],
+                'platform_amxmodx' => [],
+                'platform_sourcemod' => [],
+            ]
+        );
 
-        // Wybranie przynajmniej jednego silnika gry
-        if ($body['platform_amxmodx'] == "0" && $body['platform_sourcemod'] == '0') {
-            $warnings['engines'][] = $this->lang->t('no_engine_choosen');
-        }
+        $validated = $validator->validateOrFail();
 
-        // E-mail
-        $body['email'] = trim($body['email']);
-        if ($warning = check_for_warnings("email", $body['email'])) {
-            $warnings['email'] = array_merge((array) $warnings['email'], $warning);
-        }
-
-        // Hasło
-        if (
-            strlen($body['password']) &&
-            ($warning = check_for_warnings("password", $body['password']))
-        ) {
-            $warnings['password'] = array_merge((array) $warnings['password'], $warning);
-        }
-
-        $costData = $this->getCostUserEdit($body, $userService);
-
-        // Jeżeli są jakieś błedy, to je zwróć
-        if (!empty($warnings)) {
-            return [
-                'status' => "warnings",
-                'text' => $this->lang->t('form_wrong_filled'),
-                'positive' => false,
-                'data' => ['warnings' => $warnings],
-            ];
-        }
+        $costData = $this->getCostUserEdit($validated, $userService);
 
         $purchase = new Purchase($this->auth->user());
         $purchase->setService('ss_license_edit');
         $purchase->setOrder([
-            'user_service_id' => $body['id'],
+            'user_service_id' => $validated['id'],
             'cost_daily' => $costData['cost_daily'],
             'bargain' => $costData['bargain'],
-            'password' => $body['password'],
+            'password' => $validated['password'],
             'engines' => [
-                'amxx' => $body['platform_amxmodx'],
-                'sm' => $body['platform_sourcemod'],
+                'amxx' => $validated['platform_amxmodx'],
+                'sm' => $validated['platform_sourcemod'],
             ],
         ]);
         $purchase->setPayment([
             Purchase::PAYMENT_TRANSFER_PRICE => $costData['surcharge'] * $costData['bargain'],
             Purchase::PAYMENT_SMS_DISABLED => true,
         ]);
-        $purchase->setEmail($body['email']);
+        $purchase->setEmail($validated['email']);
 
         $purchaseData = $this->purchaseSerializer->serializeAndEncode($purchase);
 
@@ -598,23 +551,15 @@ class LicenseServiceModule extends ServiceModule implements
 
     public function serviceTakeOver(array $body)
     {
-        // ID
-        if (!strlen($body['token'])) {
-            $warnings['token'][] = $this->lang->t('field_empty');
-        }
+        $validator = new Validator($body, [
+            'service_id' => [new RequiredRule()],
+            'token' => [new RequiredRule()],
+        ]);
 
-        // Jeżeli są jakieś błedy, to je zwróć
-        if (!empty($warnings)) {
-            return [
-                'status' => "warnings",
-                'text' => $this->lang->t('form_wrong_filled'),
-                'positive' => false,
-                'data' => ['warnings' => $warnings],
-            ];
-        }
+        $validated = $validator->validateOrFail();
 
         try {
-            $response = $this->licenseServerService->getByToken($body['token']);
+            $response = $this->licenseServerService->getByToken($validated['token']);
         } catch (Exception $e) {
             return [
                 'status' => "no_service",
@@ -623,26 +568,18 @@ class LicenseServiceModule extends ServiceModule implements
             ];
         }
 
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT `us_id` FROM `" .
-                    $this::USER_SERVICE_TABLE .
-                    "` " .
-                    "WHERE `service` = '%s' AND `external_license_id` = '%s'",
-                [$body['service_id'], $response['id']]
-            )
+        $table = $this::USER_SERVICE_TABLE;
+        $statement = $this->db->statement(
+            "SELECT `us_id` FROM `$table` WHERE `service` = ? AND `external_license_id` = ?"
         );
+        $statement->execute([$validated['service_id'], $response['id']]);
 
-        $row = $result->fetch();
+        $row = $statement->fetch();
         $userServiceId = $row['us_id'];
 
         $user = $this->auth->user();
-        $statement = $this->db->query(
-            $this->db->prepare(
-                "UPDATE `ss_user_service` " . "SET `uid` = '%d' " . "WHERE `id` = '%d'",
-                [$user->getUid(), $userServiceId]
-            )
-        );
+        $statement = $this->db->statement("UPDATE `ss_user_service` SET `uid` = ? WHERE `id` = ?");
+        $statement->execute([$user->getUid(), $userServiceId]);
 
         if (!$statement->rowCount()) {
             return [
@@ -716,23 +653,19 @@ class LicenseServiceModule extends ServiceModule implements
         }
 
         if ($action === "regenerate_token") {
-            $identifier = $body['identifier'];
+            $identifier = array_get($body, 'identifier');
 
-            $result = $this->db->query(
-                $this->db->prepare(
-                    "SELECT `external_license_id` FROM `" .
-                        $this::USER_SERVICE_TABLE .
-                        "` " .
-                        "WHERE `identifier` = '%s'",
-                    [$identifier]
-                )
+            $table = $this::USER_SERVICE_TABLE;
+            $statement = $this->db->statement(
+                "SELECT `external_license_id` FROM `$table` WHERE `identifier` = ?"
             );
+            $statement->execute([$identifier]);
 
-            if (!$result->rowCount()) {
+            if (!$statement->rowCount()) {
                 return 'Invalid identifier';
             }
 
-            $row = $result->fetch();
+            $row = $statement->fetch();
             $externalLicenseId = $row['external_license_id'];
 
             try {
@@ -757,7 +690,7 @@ class LicenseServiceModule extends ServiceModule implements
     /**
      * Zwraca koszt zakupu licencji
      *
-     * @param array $body Dane $_POST formularza zakupu
+     * @param array $body
      * @return int|null
      */
     private function getCostDaily(array $body)
@@ -831,10 +764,6 @@ class LicenseServiceModule extends ServiceModule implements
 
     private function getBargain($daysCount)
     {
-        if ($daysCount >= 730) {
-            return 0.6;
-        }
-
         if ($daysCount >= 365) {
             return 0.8;
         }

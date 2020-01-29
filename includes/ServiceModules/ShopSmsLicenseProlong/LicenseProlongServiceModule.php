@@ -1,6 +1,7 @@
 <?php
 namespace App\ServiceModules\ShopSmsLicenseProlong;
 
+use App\Http\Validation\Rules\IntegerRule;
 use App\Http\Validation\Rules\MinValueRule;
 use App\Http\Validation\Rules\NumberRule;
 use App\Http\Validation\Rules\RequiredRule;
@@ -111,7 +112,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
     {
         // TODO Remove value_must_be_ge_than
         $validator = new Validator($body, [
-            'amount' => [new RequiredRule(), new NumberRule()],
+            'amount' => [new RequiredRule(), new IntegerRule(), new MinValueRule(30)],
             'identifier' => [new RequiredRule(), new LicenseProlongableRule()],
         ]);
         $validated = $validator->validateOrFail();
@@ -128,12 +129,6 @@ class LicenseProlongServiceModule extends ServiceModule implements
             Purchase::PAYMENT_TRANSFER_PRICE => $transferPrice,
             Purchase::PAYMENT_SMS_DISABLED => true,
         ]);
-
-        return [
-            'status' => "ok",
-            'text' => $this->lang->t('purchase_form_validated'),
-            'positive' => true,
-        ];
     }
 
     public function orderDetails(Purchase $purchase)
