@@ -148,7 +148,6 @@ return [
     'no_delete_service' => 'Service not removed.',
     'no_delete_sms_code' => 'SMS code not removed.',
     'no_delete_user' => 'User not removed.',
-    'no_edit_method' => 'Service module doesn\'t operate admin player\'s service editing method.',
     'no_language' => 'Given language does not exist',
     'no_service_chosen' => 'No service chosen.',
     'no_sms_platform' => 'No SMS payment platform with such ID.',

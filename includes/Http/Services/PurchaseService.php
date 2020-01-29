@@ -1,11 +1,14 @@
 <?php
 namespace App\Http\Services;
 
+use App\Exceptions\ValidationException;
 use App\Models\Purchase;
 use App\Payment\PaymentService;
 use App\Repositories\PriceRepository;
+use App\ServiceModules\Interfaces\IServicePurchaseOutside;
 use App\ServiceModules\ServiceModule;
 use App\System\Auth;
+use UnexpectedValueException;
 
 class PurchaseService
 {
@@ -28,18 +31,28 @@ class PurchaseService
         $this->priceRepository = $priceRepository;
     }
 
+    /**
+     * @param ServiceModule $serviceModule
+     * @param array         $body
+     * @return array
+     * @throws ValidationException
+     */
     public function purchase(ServiceModule $serviceModule, array $body)
     {
+        if (!($serviceModule instanceof IServicePurchaseOutside)) {
+            throw new UnexpectedValueException();
+        }
+
         $serverId = as_int(array_get($body, 'server_id'));
         $type = as_int(array_get($body, 'type'));
-        $authData = array_get($body, 'auth_data');
+        $authData = trim(array_get($body, 'auth_data'));
         $password = array_get($body, 'password');
         $ip = array_get($body, 'ip');
         $method = array_get($body, 'method');
-        $smsCode = array_get($body, 'sms_code');
+        $smsCode = trim(array_get($body, 'sms_code'));
         $paymentPlatformId = as_int(array_get($body, 'payment_platform_id'));
         $priceId = as_int(array_get($body, 'price_id'));
-        $email = array_get($body, 'email');
+        $email = trim(array_get($body, 'email'));
 
         $price = $this->priceRepository->get($priceId);
 
@@ -68,49 +81,9 @@ class PurchaseService
             $purchase->setPrice($price);
         }
 
-        $returnValidation = $serviceModule->purchaseDataValidate($purchase);
+        $validator = $serviceModule->purchaseDataValidate($purchase);
+        $validator->validateOrFail();
 
-        if ($returnValidation['status'] !== "ok") {
-            $extraData = [];
-
-            if (isset($returnValidation["data"]["warnings"])) {
-                $extraData['warnings'] = collect($returnValidation["data"]["warnings"])
-                    ->map(function ($warning, $key) {
-                        $text = implode("<br />", $warning);
-                        return "<strong>{$key}</strong><br />{$text}<br />";
-                    })
-                    ->join();
-            }
-
-            return [
-                "status" => $returnValidation['status'],
-                "text" => $returnValidation['text'],
-                "positive" => $returnValidation['positive'],
-                "extraData" => $extraData,
-            ];
-        }
-
-        $returnPayment = $this->paymentService->makePayment($purchase);
-
-        $extraData = [];
-
-        if (isset($returnPayment['data']['bsid'])) {
-            $extraData['bsid'] = $returnPayment['data']['bsid'];
-        }
-
-        if (isset($returnPayment['data']['warnings'])) {
-            $extraData['warnings'] = collect($returnPayment['data']['warnings'])
-                ->map(function ($warning, $key) {
-                    return "<strong>{$key}</strong><br />{$warning}<br />";
-                })
-                ->join();
-        }
-
-        return [
-            "status" => $returnPayment['status'],
-            "text" => $returnPayment['text'],
-            "positive" => $returnPayment['positive'],
-            "extraData" => $extraData,
-        ];
+        return $this->paymentService->makePayment($purchase);
     }
 }

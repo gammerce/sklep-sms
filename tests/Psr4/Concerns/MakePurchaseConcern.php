@@ -6,6 +6,7 @@ use App\Models\PaymentPlatform;
 use App\Models\Price;
 use App\Models\Purchase;
 use App\Models\Server;
+use App\Repositories\BoughtServiceRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\System\Heart;
 use App\Verification\PaymentModules\Cssetti;
@@ -15,7 +16,7 @@ trait MakePurchaseConcern
 {
     use PaymentModuleFactoryConcern;
 
-    protected function createRandomPurchase()
+    protected function createRandomPurchase(array $attributes = [])
     {
         $this->mockPaymentModuleFactory();
         $this->makeVerifySmsSuccessful(Cssetti::class);
@@ -25,6 +26,9 @@ trait MakePurchaseConcern
 
         /** @var PurchaseService $purchaseService */
         $purchaseService = $this->app->make(PurchaseService::class);
+
+        /** @var BoughtServiceRepository $boughtServiceRepository */
+        $boughtServiceRepository = $this->app->make(BoughtServiceRepository::class);
 
         /** @var PaymentPlatform $paymentPlatform */
         $paymentPlatform = $this->factory->paymentPlatform([
@@ -44,18 +48,21 @@ trait MakePurchaseConcern
             'service_id' => 'vip',
         ]);
 
-        $attributes = [
-            'payment_platform_id' => $paymentPlatform->getId(),
-            'server_id' => $server->getId(),
-            'price_id' => $price->getId(),
-            'type' => ExtraFlagType::TYPE_NICK,
-            'auth_data' => "example",
-            'password' => "anc123",
-            'sms_code' => "mycode",
-            'method' => Purchase::METHOD_SMS,
-            'ip' => "192.0.2.1",
-            'email' => 'example@abc.pl',
-        ];
+        $attributes = array_merge(
+            [
+                'payment_platform_id' => $paymentPlatform->getId(),
+                'server_id' => $server->getId(),
+                'price_id' => $price->getId(),
+                'type' => ExtraFlagType::TYPE_NICK,
+                'auth_data' => "example",
+                'password' => "anc123",
+                'sms_code' => "mycode",
+                'method' => Purchase::METHOD_SMS,
+                'ip' => "192.0.2.1",
+                'email' => 'example@abc.pl',
+            ],
+            $attributes
+        );
 
         $serviceModule = $heart->getServiceModule('vip');
         $result = $purchaseService->purchase($serviceModule, $attributes);
@@ -63,5 +70,7 @@ trait MakePurchaseConcern
         if ($result['status'] !== 'purchased') {
             throw new UnexpectedValueException();
         }
+
+        return $boughtServiceRepository->get($result["data"]["bsid"]);
     }
 }

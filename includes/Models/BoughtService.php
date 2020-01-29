@@ -82,13 +82,13 @@ class BoughtService
     }
 
     /** @return string */
-    public function getService()
+    public function getServiceId()
     {
         return $this->service;
     }
 
     /** @return int */
-    public function getServer()
+    public function getServerId()
     {
         return $this->server;
     }

@@ -2,8 +2,15 @@
 namespace App\ServiceModules\MybbExtraGroups;
 
 use App\Exceptions\InvalidConfigException;
+use App\Http\Validation\Rules\EmailRule;
 use App\Http\Validation\Rules\IntegerCommaSeparatedListRule;
+use App\Http\Validation\Rules\MinValueRule;
+use App\Http\Validation\Rules\MybbUserExistsRule;
+use App\Http\Validation\Rules\NumberRule;
+use App\Http\Validation\Rules\PriceAvailableRule;
+use App\Http\Validation\Rules\PriceExistsRule;
 use App\Http\Validation\Rules\RequiredRule;
+use App\Http\Validation\Rules\UserExistsRule;
 use App\Http\Validation\Rules\YesNoRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
@@ -25,8 +32,8 @@ use App\ServiceModules\Interfaces\IServiceUserOwnServices;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\ServiceModules\ServiceModule;
-use App\System\Auth;
 use App\Support\Database;
+use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
@@ -319,70 +326,32 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
     public function purchaseFormValidate(Purchase $purchase, array $body)
     {
-        $priceId = array_get($body, "price_id");
-        $userName = array_get($body, 'username');
-        $email = array_get($body, 'email');
+        $this->connectMybb();
 
-        $warnings = [];
+        $validator = new Validator(
+            [
+                'email' => array_get($body, 'email'),
+                'price_id' => array_get($body, "price_id"),
+                'username' => array_get($body, 'username'),
+            ],
+            [
+                'email' => [new RequiredRule(), new EmailRule()],
+                'price_id' => [
+                    new RequiredRule(),
+                    new PriceExistsRule(),
+                    new PriceAvailableRule($this->service),
+                ],
+                'username' => [new RequiredRule(), new MybbUserExistsRule($this->dbMybb)],
+            ]
+        );
 
-        if (!$priceId) {
-            $warnings['price_id'][] = $this->lang->t('must_choose_quantity');
-        } else {
-            $price = $this->priceRepository->get($priceId);
-
-            if (
-                !$price ||
-                $price->getServiceId() !== $this->service->getId() ||
-                $this->purchaseValidationService->isPriceAvailable($price, $purchase)
-            ) {
-                return [
-                    'status' => "no_option",
-                    'text' => $this->lang->t('service_not_affordable'),
-                    'positive' => false,
-                ];
-            }
-        }
-
-        if (!strlen($userName)) {
-            $warnings['username'][] = $this->lang->t('field_no_empty');
-        } else {
-            $this->connectMybb();
-
-            $result = $this->dbMybb->query(
-                $this->dbMybb->prepare("SELECT 1 FROM `mybb_users` " . "WHERE `username` = '%s'", [
-                    $userName,
-                ])
-            );
-
-            if (!$result->rowCount()) {
-                $warnings['username'][] = $this->lang->t('no_user');
-            }
-        }
-
-        if ($warning = check_for_warnings("email", $email)) {
-            $warnings['email'] = array_merge((array) $warnings['email'], $warning);
-        }
-
-        if ($warnings) {
-            return [
-                'status' => "warnings",
-                'text' => $this->lang->t('form_wrong_filled'),
-                'positive' => false,
-                'data' => ['warnings' => $warnings],
-            ];
-        }
+        $validated = $validator->validateOrFail();
 
         $purchase->setOrder([
-            'username' => $userName,
+            'username' => $validated['username'],
         ]);
-        $purchase->setEmail($email);
-        $purchase->setPrice($price);
-
-        return [
-            'status' => "ok",
-            'text' => $this->lang->t('purchase_form_validated'),
-            'positive' => true,
-        ];
+        $purchase->setEmail($validated['email']);
+        $purchase->setPrice($this->priceRepository->get($validated['price_id']));
     }
 
     public function orderDetails(Purchase $purchase)
@@ -641,79 +610,40 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     {
         $user = $this->auth->user();
         $forever = (bool) array_get($body, 'forever');
-        $quantity = as_int(array_get($body, 'quantity'));
-        $uid = array_get($body, 'uid');
-        $mybbUserName = array_get($body, 'mybb_username');
-        $email = array_get($body, 'email');
 
-        $warnings = [];
+        $this->connectMybb();
 
-        if (!$forever) {
-            if ($warning = check_for_warnings("number", $quantity)) {
-                $warnings['quantity'] = array_merge((array) $warnings['quantity'], $warning);
-            } elseif ($quantity < 0) {
-                $warnings['quantity'][] = $this->lang->t('days_quantity_positive');
-            }
-        }
+        $validator = new Validator(
+            array_merge($body, [
+                'quantity' => as_int(array_get($body, 'quantity')),
+            ]),
+            [
+                'quantity' => $forever
+                    ? []
+                    : [new RequiredRule(), new NumberRule(), new MinValueRule(0)],
+                'uid' => [new UserExistsRule()],
+                'mybb_username' => [new RequiredRule(), new MybbUserExistsRule($this->dbMybb)],
+                'email' => [new EmailRule()],
+            ]
+        );
 
-        // ID użytkownika
-        if (strlen($uid)) {
-            if ($warning = check_for_warnings("uid", $uid)) {
-                $warnings['uid'] = array_merge((array) $warnings['uid'], $warning);
-            } else {
-                $editedUser = $this->heart->getUser($uid);
-                if (!$editedUser->exists()) {
-                    $warnings['uid'][] = $this->lang->t('no_account_id');
-                }
-            }
-        }
-
-        // Username
-        if (!strlen($mybbUserName)) {
-            $warnings['mybb_username'][] = $this->lang->t('field_no_empty');
-        } else {
-            $this->connectMybb();
-
-            $result = $this->dbMybb->query(
-                $this->dbMybb->prepare("SELECT 1 FROM `mybb_users` " . "WHERE `username` = '%s'", [
-                    $mybbUserName,
-                ])
-            );
-
-            if (!$result->rowCount()) {
-                $warnings['mybb_username'][] = $this->lang->t('no_user');
-            }
-        }
-
-        // E-mail
-        if (strlen($email) && ($warning = check_for_warnings("email", $email))) {
-            $warnings['email'] = array_merge((array) $warnings['email'], $warning);
-        }
-
-        if (!empty($warnings)) {
-            return [
-                'status' => "warnings",
-                'text' => $this->lang->t('form_wrong_filled'),
-                'positive' => false,
-                'data' => ['warnings' => $warnings],
-            ];
-        }
+        $validated = $validator->validateOrFail();
 
         // Add payment info
         $paymentId = $this->adminPaymentService->payByAdmin($user);
 
-        $purchase = new Purchase($this->heart->getUser($uid));
+        $purchase = new Purchase($this->heart->getUser($validated['uid']));
         $purchase->setService($this->service->getId());
         $purchase->setPayment([
             Purchase::PAYMENT_METHOD => Purchase::METHOD_ADMIN,
             Purchase::PAYMENT_PAYMENT_ID => $paymentId,
         ]);
         $purchase->setOrder([
-            'username' => $mybbUserName,
-            Purchase::ORDER_QUANTITY => $quantity,
-            Purchase::ORDER_FOREVER => (bool) $forever,
+            'username' => $validated['mybb_username'],
+            Purchase::ORDER_QUANTITY => $validated['quantity'],
+            Purchase::ORDER_FOREVER => $forever,
         ]);
-        $purchase->setEmail($email);
+        $purchase->setEmail($validated['email']);
         $boughtServiceId = $this->purchase($purchase);
 
         $this->logger->logWithActor(
@@ -722,12 +652,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             $user->getUid(),
             $boughtServiceId
         );
-
-        return [
-            'status' => "ok",
-            'text' => $this->lang->t('service_added_correctly'),
-            'positive' => true,
-        ];
     }
 
     public function userOwnServiceInfoGet(UserService $userService, $buttonEdit)

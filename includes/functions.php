@@ -189,6 +189,8 @@ function convert_date($timestamp, $format = "")
         $date = new DateTime($timestamp);
     }
 
+    $date->setTimezone(new DateTimeZone($settings->getTimeZone()));
+
     return $date->format($format);
 }
 
@@ -574,6 +576,19 @@ function as_int($value)
     }
 
     return (int) $value;
+}
+
+/**
+ * @param mixed $value
+ * @return float|null
+ */
+function as_float($value)
+{
+    if ($value === null || $value === "") {
+        return null;
+    }
+
+    return (float) $value;
 }
 
 // https://stackoverflow.com/questions/7153000/get-class-name-from-file/44654073

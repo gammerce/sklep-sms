@@ -2,15 +2,25 @@
 namespace App\ServiceModules\ExtraFlags;
 
 use App\Exceptions\UnauthorizedException;
-use App\Http\Validation\Rules\ExtraFlagTypeListRule;
+use App\Exceptions\ValidationException;
+use App\Http\Validation\Rules\ConfirmedRule;
+use App\Http\Validation\Rules\DateTimeRule;
+use App\Http\Validation\Rules\EmailRule;
+use App\Http\Validation\Rules\InArrayRule;
 use App\Http\Validation\Rules\MaxLengthRule;
+use App\Http\Validation\Rules\MinValueRule;
+use App\Http\Validation\Rules\NumberRule;
+use App\Http\Validation\Rules\PasswordRule;
+use App\Http\Validation\Rules\PriceAvailableRule;
+use App\Http\Validation\Rules\PriceExistsRule;
 use App\Http\Validation\Rules\RequiredRule;
+use App\Http\Validation\Rules\ServerExistsRule;
+use App\Http\Validation\Rules\ServerLinkedToServiceRule;
 use App\Http\Validation\Rules\UniqueFlagsRule;
+use App\Http\Validation\Rules\UserExistsRule;
 use App\Http\Validation\Rules\YesNoRule;
 use App\Http\Validation\Validator;
-use App\Http\Validation\WarningBag;
 use App\Loggers\DatabaseLogger;
-use App\Models\ExtraFlagsUserService;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Models\UserService;
@@ -20,6 +30,12 @@ use App\Payment\PurchasePriceService;
 use App\Payment\PurchaseValidationService;
 use App\Repositories\PriceRepository;
 use App\Repositories\UserServiceRepository;
+use App\ServiceModules\ExtraFlags\Rules\ExtraFlagAuthDataRule;
+use App\ServiceModules\ExtraFlags\Rules\ExtraFlagPasswordDiffersRule;
+use App\ServiceModules\ExtraFlags\Rules\ExtraFlagPasswordRule;
+use App\ServiceModules\ExtraFlags\Rules\ExtraFlagServiceTypesRule;
+use App\ServiceModules\ExtraFlags\Rules\ExtraFlagTypeListRule;
+use App\ServiceModules\ExtraFlags\Rules\ExtraFlagTypeRule;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceAvailableOnServers;
@@ -108,6 +124,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     /** @var UserServiceRepository */
     private $userServiceRepository;
 
+    /** @var ExtraFlagUserServiceRepository */
+    private $extraFlagUserServiceRepository;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -122,6 +141,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $this->purchasePriceService = $this->app->make(PurchasePriceService::class);
         $this->purchasePriceRenderer = $this->app->make(PurchasePriceRenderer::class);
         $this->purchaseValidationService = $this->app->make(PurchaseValidationService::class);
+        $this->extraFlagUserServiceRepository = $this->app->make(
+            ExtraFlagUserServiceRepository::class
+        );
         $this->userServiceRepository = $this->app->make(UserServiceRepository::class);
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
@@ -131,20 +153,11 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     /**
      * @param array $data
-     * @return ExtraFlagsUserService
+     * @return ExtraFlagUserService
      */
     public function mapToUserService(array $data)
     {
-        return new ExtraFlagsUserService(
-            as_int($data['id']),
-            $data['service'],
-            as_int($data['uid']),
-            as_int($data['expire']),
-            as_int($data['server']),
-            as_int($data['type']),
-            $data['auth_data'],
-            $data['password']
-        );
+        return $this->extraFlagUserServiceRepository->mapToModel($data);
     }
 
     public function serviceAdminExtraFieldsGet()
@@ -340,13 +353,14 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $priceId = as_int(array_get($body, 'price_id'));
         $serverId = as_int(array_get($body, 'server_id'));
         $type = as_int(array_get($body, 'type'));
+        $authData = trim(array_get($body, 'auth_data'));
         $password = array_get($body, 'password');
         $passwordRepeat = array_get($body, 'password_repeat');
         $email = array_get($body, 'email');
 
-        $authData = $this->getAuthData($body);
         $price = $this->priceRepository->get($priceId);
 
+        $purchase->setEmail($email);
         $purchase->setOrder([
             Purchase::ORDER_SERVER => $serverId,
             'type' => $type,
@@ -354,155 +368,64 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             'password' => $password,
             'passwordr' => $passwordRepeat,
         ]);
-        $purchase->setEmail($email);
         if ($price) {
             $purchase->setPrice($price);
         }
 
-        return $this->purchaseDataValidate($purchase);
+        $validator = $this->purchaseDataValidate($purchase);
+        $validator->validateOrFail();
     }
 
-    /**
-     * @param Purchase $purchase
-     * @return array
-     */
     public function purchaseDataValidate(Purchase $purchase)
     {
-        $warnings = new WarningBag();
-
-        if (!strlen($purchase->getOrder(Purchase::ORDER_SERVER))) {
-            $warnings->add('server_id', $this->lang->t('must_choose_server'));
-        } else {
-            $server = $this->heart->getServer($purchase->getOrder(Purchase::ORDER_SERVER));
-
-            if (
-                !$server ||
-                !$this->heart->serverServiceLinked($server->getId(), $this->service->getId())
-            ) {
-                $warnings->add('server_id', $this->lang->t('chosen_incorrect_server'));
-            } elseif ($server->getSmsPlatformId()) {
-                $purchase->setPayment([
-                    Purchase::PAYMENT_SMS_PLATFORM => $server->getSmsPlatformId(),
-                ]);
-            }
-        }
-
+        $server = $this->heart->getServer($purchase->getOrder(Purchase::ORDER_SERVER));
         $price = $purchase->getPrice();
-        if (!$price) {
-            $warnings->add('price_id', $this->lang->t('must_choose_quantity'));
-        } elseif (!$this->purchaseValidationService->isPriceAvailable($price, $purchase)) {
-            return [
-                'status' => "no_option",
-                'text' => $this->lang->t('service_not_affordable'),
-                'positive' => false,
-            ];
+
+        if ($server && $server->getSmsPlatformId()) {
+            $purchase->setPayment([
+                Purchase::PAYMENT_SMS_PLATFORM => $server->getSmsPlatformId(),
+            ]);
         }
 
-        // Typ usługi
-        // Mogą być tylko 3 rodzaje typu
-        if (
-            $purchase->getOrder('type') != ExtraFlagType::TYPE_NICK &&
-            $purchase->getOrder('type') != ExtraFlagType::TYPE_IP &&
-            $purchase->getOrder('type') != ExtraFlagType::TYPE_SID
-        ) {
-            $warnings->add('type', $this->lang->t('must_choose_type'));
-        } elseif (!($this->service->getTypes() & $purchase->getOrder('type'))) {
-            $warnings->add('type', $this->lang->t('chosen_incorrect_type'));
-        } elseif (
-            $purchase->getOrder('type') &
-            (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)
-        ) {
-            // Nick
-            if ($purchase->getOrder('type') == ExtraFlagType::TYPE_NICK) {
-                if ($warning = check_for_warnings("nick", $purchase->getOrder('auth_data'))) {
-                    $warnings->add('nick', $warning);
-                }
-
-                // Sprawdzanie czy istnieje już taka usługa
-                $query = $this->db->prepare(
-                    "SELECT `password` FROM `" .
-                        $this::USER_SERVICE_TABLE .
-                        "` " .
-                        "WHERE `type` = '%d' AND `auth_data` = '%s' AND `server` = '%d'",
-                    [
-                        ExtraFlagType::TYPE_NICK,
-                        $purchase->getOrder('auth_data'),
-                        isset($server) ? $server->getId() : 0,
-                    ]
-                );
-            }
-            // IP
-            elseif ($purchase->getOrder('type') == ExtraFlagType::TYPE_IP) {
-                if ($warning = check_for_warnings("ip", $purchase->getOrder('auth_data'))) {
-                    $warnings->add('ip', $warning);
-                }
-
-                // Sprawdzanie czy istnieje już taka usługa
-                $query = $this->db->prepare(
-                    "SELECT `password` FROM `" .
-                        $this::USER_SERVICE_TABLE .
-                        "` " .
-                        "WHERE `type` = '%d' AND `auth_data` = '%s' AND `server` = '%d'",
-                    [
-                        ExtraFlagType::TYPE_IP,
-                        $purchase->getOrder('auth_data'),
-                        isset($server) ? $server->getId() : 0,
-                    ]
-                );
-            }
-
-            // Hasło
-            if ($warning = check_for_warnings("password", $purchase->getOrder('password'))) {
-                $warnings->add('password', $warning);
-            }
-            if ($purchase->getOrder('password') != $purchase->getOrder('passwordr')) {
-                $warnings->add('password_repeat', $this->lang->t('passwords_not_match'));
-            }
-
-            // Sprawdzanie czy istnieje już taka usługa
-            if ($tmpPassword = $this->db->query($query)->fetchColumn()) {
-                // TODO: Usunąć md5 w przyszłości
-                if (
-                    $tmpPassword != $purchase->getOrder('password') &&
-                    $tmpPassword != md5($purchase->getOrder('password'))
-                ) {
-                    $warnings->add(
-                        'password',
-                        $this->lang->t('existing_service_has_different_password')
-                    );
-                }
-            }
-
-            unset($tmpPassword);
-        }
-        // SteamID
-        elseif ($warning = check_for_warnings("sid", $purchase->getOrder('auth_data'))) {
-            $warnings->add('sid', $warning);
-        }
-
-        // E-mail
-        if (
-            (!is_server_platform($purchase->user->getPlatform()) ||
-                strlen($purchase->getEmail())) &&
-            ($warning = check_for_warnings("email", $purchase->getEmail()))
-        ) {
-            $warnings->add('email', $warning);
-        }
-
-        if ($warnings->isPopulated()) {
-            return [
-                'status' => "warnings",
-                'text' => $this->lang->t('form_wrong_filled'),
-                'positive' => false,
-                'data' => ['warnings' => $warnings->all()],
-            ];
-        }
-
-        return [
-            'status' => "ok",
-            'text' => $this->lang->t('purchase_form_validated'),
-            'positive' => true,
-        ];
+        return new Validator(
+            [
+                'auth_data' => $purchase->getOrder('auth_data'),
+                'password' => $purchase->getOrder('password'),
+                'password_repeat' => $purchase->getOrder('passwordr'),
+                'email' => $purchase->getEmail(),
+                'price_id' => $price ? $price->getId() : null,
+                'server_id' => $purchase->getOrder(Purchase::ORDER_SERVER),
+                'type' => $purchase->getOrder('type'),
+            ],
+            [
+                'auth_data' => [new RequiredRule(), new ExtraFlagAuthDataRule()],
+                'email' => [
+                    is_server_platform($purchase->user->getPlatform()) ? null : new RequiredRule(),
+                    new EmailRule(),
+                ],
+                'password' => [
+                    new ExtraFlagPasswordRule(),
+                    new PasswordRule(),
+                    new ConfirmedRule(),
+                    new ExtraFlagPasswordDiffersRule(),
+                ],
+                'price_id' => [
+                    new RequiredRule(),
+                    new PriceExistsRule(),
+                    new PriceAvailableRule($this->service),
+                ],
+                'server_id' => [
+                    new RequiredRule(),
+                    new ServerExistsRule(),
+                    new ServerLinkedToServiceRule($this->service),
+                ],
+                'type' => [
+                    new RequiredRule(),
+                    new ExtraFlagTypeRule(),
+                    new ExtraFlagServiceTypesRule($this->service),
+                ],
+            ]
+        );
     }
 
     public function orderDetails(Purchase $purchase)
@@ -623,7 +546,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 $userServiceId
             );
         } else {
-            $this->userServiceRepository->createExtraFlags(
+            $this->extraFlagUserServiceRepository->create(
                 $this->service->getId(),
                 $uid,
                 $forever,
@@ -691,30 +614,26 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         // Usuwanie danych z bazy players_flags
         // Ponieważ za chwilę będziemy je tworzyć na nowo
-        $this->db->query(
-            $this->db->prepare(
+        $this->db
+            ->statement(
                 "DELETE FROM `ss_players_flags` " .
-                    "WHERE `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s'",
-                [$serverId, $type, $authData]
+                    "WHERE `server` = ? AND `type` = ? AND `auth_data` = ?"
             )
-        );
+            ->execute([$serverId, $type, $authData]);
 
         // Pobieranie wszystkich usług na konkretne dane
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT * FROM `ss_user_service` AS us " .
-                    "INNER JOIN `" .
-                    $this::USER_SERVICE_TABLE .
-                    "` AS usef ON us.id = usef.us_id " .
-                    "WHERE `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND ( `expire` > UNIX_TIMESTAMP() OR `expire` = -1 )",
-                [$serverId, $type, $authData]
-            )
+        $table = $this::USER_SERVICE_TABLE;
+        $statement = $this->db->statement(
+            "SELECT * FROM `ss_user_service` AS us " .
+                "INNER JOIN `$table` AS usef ON us.id = usef.us_id " .
+                "WHERE `server` = ? AND `type` = ? AND `auth_data` = ? AND ( `expire` > UNIX_TIMESTAMP() OR `expire` = -1 )"
         );
+        $statement->execute([$serverId, $type, $authData]);
 
         // Wyliczanie za jaki czas dana flaga ma wygasnąć
         $flags = [];
         $password = "";
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
             // Pobranie hasła, bierzemy je tylko raz na początku
             $password = $password ? $password : $row['password'];
 
@@ -776,6 +695,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $server = $this->heart->getServer($data['server']);
 
+        $setinfo = "";
         if ($data['extra_data']['type'] & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)) {
             $setinfo = $this->lang->t('type_setinfo', $data['extra_data']['password']);
         }
@@ -846,81 +766,58 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
     }
 
-    //
-    // Funkcja dodawania usługi przez PA
-    //
     public function userServiceAdminAdd(array $body)
     {
-        $user = $this->auth->user();
-
-        $body['auth_data'] = trim($this->getAuthData($body));
-        $authData = array_get($body, 'auth_data');
-        $type = as_int(array_get($body, 'type'));
-        $password = array_get($body, 'password');
         $forever = (bool) array_get($body, 'forever');
-        $quantity = as_int(array_get($body, 'quantity'));
-        $serverId = as_int(array_get($body, 'server_id'));
-        $email = array_get($body, 'email');
-        $uid = as_int(array_get($body, 'uid'));
 
-        $warnings = [];
+        $validator = new Validator(
+            array_merge($body, [
+                'forever' => $forever,
+                'quantity' => as_int(array_get($body, 'quantity')),
+                'server_id' => as_int(array_get($body, 'server_id')),
+                'uid' => as_int(array_get($body, 'uid')),
+            ]),
+            [
+                'email' => [new EmailRule()],
+                'forever' => [],
+                'password' => [new ExtraFlagPasswordRule()],
+                'quantity' => $forever
+                    ? []
+                    : [new RequiredRule(), new NumberRule(), new MinValueRule(0)],
+                'server_id' => [new RequiredRule(), new ServerExistsRule()],
+                'uid' => [new UserExistsRule()],
+            ]
+        );
+        $this->verifyUserServiceData($validator);
+        $validated = $validator->validateOrFail();
 
-        if (!$forever) {
-            if ($warning = check_for_warnings("number", $quantity)) {
-                $warnings['quantity'] = array_merge((array) $warnings['quantity'], $warning);
-            } elseif ($quantity < 0) {
-                $warnings['quantity'][] = $this->lang->t('days_quantity_positive');
-            }
-        }
+        $admin = $this->auth->user();
+        $paymentId = $this->adminPaymentService->payByAdmin($admin);
 
-        // E-mail
-        if (strlen($email) && ($warning = check_for_warnings("email", $email))) {
-            $warnings['email'] = array_merge((array) $warnings['email'], $warning);
-        }
-
-        // Sprawdzamy poprawność wprowadzonych danych
-        $verifyData = $this->verifyUserServiceData($body, $warnings);
-
-        if ($verifyData) {
-            return $verifyData;
-        }
-
-        //
-        // Dodajemy usługę
-
-        $paymentId = $this->adminPaymentService->payByAdmin($user);
-
-        // Pobieramy dane o użytkowniku na które jego wykupiona usługa
-        $purchaseUser = $this->heart->getUser($uid);
-        $purchase = new Purchase($purchaseUser);
+        $purchasingUser = $this->heart->getUser($validated['uid']);
+        $purchase = new Purchase($purchasingUser);
         $purchase->setService($this->service->getId());
         $purchase->setPayment([
             Purchase::PAYMENT_METHOD => Purchase::METHOD_ADMIN,
             Purchase::PAYMENT_PAYMENT_ID => $paymentId,
         ]);
         $purchase->setOrder([
-            Purchase::ORDER_SERVER => $serverId,
-            'type' => $type,
-            'auth_data' => $authData,
-            'password' => $password,
-            Purchase::ORDER_QUANTITY => $quantity,
+            Purchase::ORDER_SERVER => $validated['server_id'],
+            'type' => $validated['type'],
+            'auth_data' => $validated['auth_data'],
+            'password' => $validated['password'],
+            Purchase::ORDER_QUANTITY => $validated['quantity'],
             Purchase::ORDER_FOREVER => $forever,
         ]);
-        $purchase->setEmail($email);
+        $purchase->setEmail($validated['email']);
         $boughtServiceId = $this->purchase($purchase);
 
         $this->logger->logWithActor('log_user_service_added', $boughtServiceId);
-
-        return [
-            'status' => "ok",
-            'text' => $this->lang->t('service_added_correctly'),
-            'positive' => true,
-        ];
     }
 
     public function userServiceAdminEditFormGet(UserService $userService)
     {
-        if (!($userService instanceof ExtraFlagsUserService)) {
+        if (!($userService instanceof ExtraFlagUserService)) {
             throw new UnexpectedValueException();
         }
 
@@ -955,15 +852,37 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             }
         }
 
+        $styles = [
+            "nick" => "",
+            "ip" => "",
+            "sid" => "",
+            "password" => "",
+        ];
+
+        $disabled = [
+            "nick" => "disabled",
+            "ip" => "disabled",
+            "sid" => "disabled",
+            "password" => "disabled",
+            "expire" => "",
+        ];
+
+        $checked = [
+            "forever" => "",
+        ];
+
         if ($userService->getType() === ExtraFlagType::TYPE_NICK) {
             $nick = $userService->getAuthData();
             $styles['nick'] = $styles['password'] = "display: table-row-group";
+            $disabled['nick'] = $disabled['password'] = "";
         } elseif ($userService->getType() == ExtraFlagType::TYPE_IP) {
             $ip = $userService->getAuthData();
             $styles['ip'] = $styles['password'] = "display: table-row-group";
+            $disabled['ip'] = $disabled['password'] = "";
         } elseif ($userService->getType() == ExtraFlagType::TYPE_SID) {
             $sid = $userService->getAuthData();
             $styles['sid'] = "display: table-row-group";
+            $disabled['sid'] = "";
         }
 
         // Pobranie serwerów
@@ -987,8 +906,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         // Zamiana daty
         $userServiceExpire = '';
         if ($userService->isForever()) {
-            $checked = "checked";
-            $disabled = "disabled";
+            $checked['forever'] = "checked";
+            $disabled['expire'] = "disabled";
         } else {
             $userServiceExpire = convert_date($userService->getExpire());
         }
@@ -1010,145 +929,69 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ) + [
                 'moduleId' => $this->getModuleId(),
                 'userServiceId' => $userService->getId(),
-                'userServiceUid' => $userService->getUid(),
+                'userServiceUid' => $userService->getUid() ?: "",
             ]
         );
     }
 
     public function userServiceAdminEdit(array $body, UserService $userService)
     {
-        if (!($userService instanceof ExtraFlagsUserService)) {
+        if (!($userService instanceof ExtraFlagUserService)) {
             throw new UnexpectedValueException();
         }
 
-        $warnings = [];
-
-        $body['auth_data'] = $this->getAuthData($body);
         $forever = (bool) array_get($body, 'forever');
-        $expire = array_get($body, 'expire');
-        $password = array_get($body, 'password');
-        $type = as_int(array_get($body, 'type'));
 
-        // Expire
-        if (!$forever && ($expire = strtotime($expire)) === false) {
-            $warnings['expire'][] = $this->lang->t('wrong_date_format');
-        }
-        // Sprawdzamy, czy ustawiono hasło, gdy hasła nie ma w bazie i dana usługa wymaga hasła
-        if (
-            !strlen($password) &&
-            $type & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP) &&
-            !strlen($userService->getPassword())
-        ) {
-            $warnings['password'][] = $this->lang->t('field_no_empty');
-        }
+        $validator = new Validator(
+            array_merge($body, [
+                'forever' => $forever,
+                'server_id' => as_int(array_get($body, 'server_id')),
+                'uid' => as_int(array_get($body, 'uid')),
+            ]),
+            [
+                'forever' => [],
+                'expire' => $forever ? [] : [new RequiredRule(), new DateTimeRule()],
+                'server_id' => [new RequiredRule(), new ServerExistsRule()],
+                'uid' => [new UserExistsRule()],
+            ]
+        );
+        $this->verifyUserServiceData($validator);
 
-        // Sprawdzamy poprawność wprowadzonych danych
-        $verifyData = $this->verifyUserServiceData($body, $warnings);
+        $validated = $validator->validateOrFail();
+        // We need to convert date since it is accepted as a strin value.
+        // DateTimeRule protects us from unparsable string
+        $validated["expire"] = $forever ? null : strtotime($validated["expire"]);
 
-        // Jeżeli są jakieś błędy, to je zwracamy
-        if (!empty($verifyData)) {
-            return $verifyData;
-        }
+        $result = $this->userServiceEdit($userService, $validated);
 
-        //
-        // Aktualizujemy usługę
-        $editReturn = $this->userServiceEdit($userService, $body);
-
-        if ($editReturn['status'] == 'ok') {
+        if ($result) {
             $this->logger->logWithActor('log_user_service_edited', $userService->getId());
         }
 
-        return $editReturn;
+        return $result;
     }
 
-    //
-    // Weryfikacja danych przy dodawaniu i przy edycji usługi gracza
-    // Zebrane w jednej funkcji, aby nie mnożyć kodu
-    //
-    private function verifyUserServiceData(array $data, array $warnings, $server = true)
+    private function verifyUserServiceData(Validator $validator)
     {
-        $uid = array_get($data, 'uid');
-        $type = array_get($data, 'type');
-        $authData = array_get($data, 'auth_data');
-        $password = array_get($data, 'password');
-        $serverId = array_get($data, 'server_id');
+        $validator->extendData([
+            'auth_data' => trim($validator->getData('auth_data')),
+            'type' => as_int($validator->getData('type')),
+        ]);
 
-        // ID użytkownika
-        if ($uid) {
-            if ($warning = check_for_warnings("uid", $uid)) {
-                $warnings['uid'] = array_merge((array) $warnings['uid'], $warning);
-            } else {
-                $editedUser = $this->heart->getUser($uid);
-                if (!$editedUser->exists()) {
-                    $warnings['uid'][] = $this->lang->t('no_account_id');
-                }
-            }
-        }
-
-        // Typ usługi
-        // Mogą być tylko 3 rodzaje typu
-        if (
-            $type != ExtraFlagType::TYPE_NICK &&
-            $type != ExtraFlagType::TYPE_IP &&
-            $type != ExtraFlagType::TYPE_SID
-        ) {
-            $warnings['type'][] = $this->lang->t('must_choose_service_type');
-        } else {
-            if (!($this->service->getTypes() & $type)) {
-                $warnings['type'][] = $this->lang->t('forbidden_purchase_type');
-            } elseif ($type & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)) {
-                // Nick
-                if (
-                    $type == ExtraFlagType::TYPE_NICK &&
-                    ($warning = check_for_warnings("nick", $authData))
-                ) {
-                    $warnings['nick'] = array_merge((array) $warnings['nick'], $warning);
-                }
-                // IP
-                elseif (
-                    $type == ExtraFlagType::TYPE_IP &&
-                    ($warning = check_for_warnings("ip", $authData))
-                ) {
-                    $warnings['ip'] = array_merge((array) $warnings['ip'], $warning);
-                }
-
-                // Hasło
-                if (strlen($password) && ($warning = check_for_warnings("password", $password))) {
-                    $warnings['password'] = array_merge((array) $warnings['password'], $warning);
-                }
-            }
-            // SteamID
-            elseif ($warning = check_for_warnings("sid", $authData)) {
-                $warnings['sid'] = array_merge((array) $warnings['sid'], $warning);
-            }
-        }
-
-        // Server
-        if ($server) {
-            if (!strlen($serverId)) {
-                $warnings['server_id'][] = $this->lang->t('choose_server_for_service');
-            }
-            // Wyszukiwanie serwera o danym id
-            elseif (($server = $this->heart->getServer($serverId)) === null) {
-                $warnings['server_id'][] = $this->lang->t('no_server_id');
-            }
-        }
-
-        if ($warnings) {
-            return [
-                'status' => "warnings",
-                'text' => $this->lang->t('form_wrong_filled'),
-                'positive' => false,
-                'data' => ['warnings' => $warnings],
-            ];
-        }
-
-        return null;
+        $validator->extendRules([
+            'auth_data' => [new RequiredRule(), new ExtraFlagAuthDataRule()],
+            'password' => [],
+            'type' => [
+                new RequiredRule(),
+                new ExtraFlagTypeRule(),
+                new ExtraFlagServiceTypesRule($this->service),
+            ],
+        ]);
     }
 
     public function userServiceDeletePost(UserService $userService)
     {
-        if (!($userService instanceof ExtraFlagsUserService)) {
+        if (!($userService instanceof ExtraFlagUserService)) {
             throw new UnexpectedValueException();
         }
 
@@ -1165,13 +1008,24 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userOwnServiceEditFormGet(UserService $userService)
     {
-        if (!($userService instanceof ExtraFlagsUserService)) {
+        if (!($userService instanceof ExtraFlagUserService)) {
             throw new UnexpectedValueException();
         }
 
         // Dodajemy typ uslugi, (1<<2) ostatni typ
         $serviceInfo = [];
-        $styles['nick'] = $styles['ip'] = $styles['sid'] = $styles['password'] = "display: none";
+        $styles = [
+            "nick" => "display: none",
+            "ip" => "display: none",
+            "sid" => "display: none",
+            "password" => "display: none",
+        ];
+        $disabled = [
+            "nick" => "disabled",
+            "ip" => "disabled",
+            "sid" => "disabled",
+            "password" => "disabled",
+        ];
         for ($i = 0, $optionId = 1; $i < 3; $optionId = 1 << ++$i) {
             // Kiedy dana usługa nie wspiera danego typu i wykupiona usługa nie ma tego typu
             if (!($this->service->getTypes() & $optionId) && $optionId != $userService->getType()) {
@@ -1188,16 +1042,19 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                     case ExtraFlagType::TYPE_NICK:
                         $serviceInfo['player_nick'] = $userService->getAuthData();
                         $styles['nick'] = $styles['password'] = "display: table-row";
+                        $disabled['nick'] = $disabled['password'] = "";
                         break;
 
                     case ExtraFlagType::TYPE_IP:
                         $serviceInfo['player_ip'] = $userService->getAuthData();
                         $styles['ip'] = $styles['password'] = "display: table-row";
+                        $disabled['ip'] = $disabled['password'] = "";
                         break;
 
                     case ExtraFlagType::TYPE_SID:
                         $serviceInfo['player_sid'] = $userService->getAuthData();
                         $styles['sid'] = "display: table-row";
+                        $disabled['sid'] = "";
                         break;
                 }
             }
@@ -1228,7 +1085,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userOwnServiceInfoGet(UserService $userService, $buttonEdit)
     {
-        if (!($userService instanceof ExtraFlagsUserService)) {
+        if (!($userService instanceof ExtraFlagUserService)) {
             throw new UnexpectedValueException();
         }
 
@@ -1250,57 +1107,43 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userOwnServiceEdit(array $body, UserService $userService)
     {
-        if (!($userService instanceof ExtraFlagsUserService)) {
+        if (!($userService instanceof ExtraFlagUserService)) {
             throw new UnexpectedValueException();
         }
 
-        $warnings = [];
-
-        $body['auth_data'] = $this->getAuthData($body);
-        $password = array_get($body, 'password');
-        $type = as_int(array_get($body, 'type'));
-        $authData = array_get($body, 'auth_data');
-
-        // Sprawdzamy, czy ustawiono hasło, gdy hasła nie ma w bazie i dana usługa wymaga hasła
-        if (
-            !strlen($password) &&
-            $type & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP) &&
-            !strlen($userService->getPassword())
-        ) {
-            $warnings['password'][] = $this->lang->t('field_no_empty');
-        }
-
-        // Sprawdzamy poprawność wprowadzonych danych
-        $verifyData = $this->verifyUserServiceData($body, $warnings, false);
-
-        // Jeżeli są jakieś błędy, to je zwracamy
-        if (!empty($verifyData)) {
-            return $verifyData;
-        }
-
-        //
-        // Aktualizujemy usługę
-
-        $editReturn = $this->userServiceEdit($userService, [
-            'type' => $type,
-            'auth_data' => $authData,
-            'password' => $password,
+        $validator = new Validator($body, [
+            'password' => [
+                new ExtraFlagPasswordRule(),
+                new PasswordRule(),
+                new ExtraFlagPasswordDiffersRule(),
+            ],
         ]);
+        $this->verifyUserServiceData($validator);
 
-        if ($editReturn['status'] == 'ok') {
+        $validated = $validator->validateOrFail();
+        $result = $this->userServiceEdit($userService, $validated);
+
+        if ($result) {
             $this->logger->logWithActor('log_user_edited_service', $userService->getId());
         }
 
-        return $editReturn;
+        return $result;
     }
 
     // ----------------------------------------------------------------------------------
     // ### Dodatkowe funkcje przydatne przy zarządzaniu usługami użytkowników
 
-    private function userServiceEdit(ExtraFlagsUserService $userService, array $data)
+    /**
+     * @param ExtraFlagUserService $userService
+     * @param array                $data
+     * @return bool
+     */
+    private function userServiceEdit(ExtraFlagUserService $userService, array $data)
     {
+        $forever = array_get($data, 'forever');
+        $expire = array_get($data, 'expire');
+
         $set = [];
-        // Dodanie hasła do zapytania
         if (strlen($data['password'])) {
             $set[] = [
                 'column' => 'password',
@@ -1309,8 +1152,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ];
         }
 
-        // Dodajemy uid do zapytania
-        if (isset($data['uid'])) {
+        if (array_key_exists('uid', $data)) {
             $set[] = [
                 'column' => 'uid',
                 'value' => "'%d'",
@@ -1318,8 +1160,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ];
         }
 
-        // Dodajemy expire na zawsze
-        if ($data['forever']) {
+        if ($forever) {
             $set[] = [
                 'column' => 'expire',
                 'value' => "-1",
@@ -1327,39 +1168,34 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
 
         // Sprawdzenie czy nie ma już takiej usługi
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT * FROM `ss_user_service` AS us " .
-                    "INNER JOIN `" .
-                    $this::USER_SERVICE_TABLE .
-                    "` AS usef ON us.id = usef.us_id " .
-                    "WHERE us.service = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND `id` != '%d'",
-                [
-                    $this->service->getId(),
-                    array_get($data, 'server', $userService->getServerId()),
-                    array_get($data, 'type', $userService->getType()),
-                    array_get($data, 'auth_data', $userService->getAuthData()),
-                    $userService->getId(),
-                ]
-            )
+        $table = $this::USER_SERVICE_TABLE;
+        $statement = $this->db->statement(
+            "SELECT * FROM `ss_user_service` AS us " .
+                "INNER JOIN `$table` AS usef ON us.id = usef.us_id " .
+                "WHERE us.service = ? AND `server` = ? AND `type` = ? AND `auth_data` = ? AND `id` != ?"
         );
+        $statement->execute([
+            $this->service->getId(),
+            array_get($data, 'server', $userService->getServerId()),
+            array_get($data, 'type', $userService->getType()),
+            array_get($data, 'auth_data', $userService->getAuthData()),
+            $userService->getId(),
+        ]);
 
         // Jeżeli istnieje usługa o identycznych danych jak te, na które będziemy zmieniać obecną usługę
-        if ($result->rowCount()) {
-            $userService2 = $result->fetch();
+        if ($statement->rowCount()) {
+            $userService2 = $statement->fetch();
 
-            if (!isset($data['uid']) && $userService->getUid() != $userService2['uid']) {
-                return [
-                    'status' => "service_exists",
-                    'text' => $this->lang->t('service_isnt_yours'),
-                    'positive' => false,
-                ];
+            if (!array_key_exists('uid', $data) && $userService->getUid() != $userService2['uid']) {
+                throw new ValidationException([
+                    'auth_data' => [$this->lang->t('service_isnt_yours')],
+                ]);
             }
 
             $this->userServiceRepository->delete($userService->getId());
 
             // Dodajemy expire
-            if (!$data['forever'] && isset($data['expire'])) {
+            if (!$forever && $expire) {
                 $set[] = [
                     'column' => 'expire',
                     'value' => "( `expire` - UNIX_TIMESTAMP() + '%d' )",
@@ -1376,7 +1212,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 'data' => [$this->service->getId()],
             ];
 
-            if (!$data['forever'] && isset($data['expire'])) {
+            if (!$forever && $expire) {
                 $set[] = [
                     'column' => 'expire',
                     'value' => "'%d'",
@@ -1418,30 +1254,24 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         // Ustaw jednakowe hasła
         // żeby potem nie było problemów z różnymi hasłami
         if (strlen($data['password'])) {
-            $this->db->query(
-                $this->db->prepare(
-                    "UPDATE `" .
-                        $this::USER_SERVICE_TABLE .
-                        "` " .
-                        "SET `password` = '%s' " .
-                        "WHERE `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s'",
-                    [
-                        $data['password'],
-                        array_get($data, 'server_id', $userService->getServerId()),
-                        array_get($data, 'type', $userService->getType()),
-                        array_get($data, 'auth_data', $userService->getAuthData()),
-                    ]
+            $table = $this::USER_SERVICE_TABLE;
+            $this->db
+                ->statement(
+                    "UPDATE `$table` " .
+                        "SET `password` = ? " .
+                        "WHERE `server` = ? AND `type` = ? AND `auth_data` = ?"
                 )
-            );
+                ->execute([
+                    $data['password'],
+                    array_get($data, 'server_id', $userService->getServerId()),
+                    array_get($data, 'type', $userService->getType()),
+                    array_get($data, 'auth_data', $userService->getAuthData()),
+                ]);
         }
 
         // Przelicz flagi tylko wtedy, gdy coś się zmieniło
         if (!$affected) {
-            return [
-                'status' => "not_edited",
-                'text' => $this->lang->t('not_edited_user_service'),
-                'positive' => false,
-            ];
+            return false;
         }
 
         // Odśwież flagi gracza ( przed zmiana danych )
@@ -1458,11 +1288,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             array_get($data, 'auth_data', $userService->getAuthData())
         );
 
-        return [
-            'status' => 'ok',
-            'text' => $this->lang->t('edited_user_service'),
-            'positive' => true,
-        ];
+        return true;
     }
 
     public function serviceTakeOverFormGet()
@@ -1495,93 +1321,41 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     public function serviceTakeOver(array $body)
     {
         $user = $this->auth->user();
+        $validator = new Validator(
+            array_merge($body, [
+                'auth_data' => trim(array_get($body, 'auth_data')),
+                'password' => array_get($body, 'password') ?: "",
+                'server_id' => as_int(array_get($body, 'server_id')),
+                'type' => as_int(array_get($body, 'type')),
+            ]),
+            [
+                'auth_data' => [new RequiredRule(), new ExtraFlagAuthDataRule()],
+                'password' => [new ExtraFlagPasswordRule()],
+                'payment_method' => [
+                    new InArrayRule([Purchase::METHOD_SMS, Purchase::METHOD_TRANSFER]),
+                ],
+                'payment_id' => [new RequiredRule()],
+                'server_id' => [new RequiredRule()],
+                'type' => [new RequiredRule(), new ExtraFlagTypeRule()],
+            ]
+        );
 
-        $serverId = as_int(array_get($body, 'server_id'));
-        $type = as_int(array_get($body, 'type'));
-        $nick = array_get($body, 'nick');
-        $ip = array_get($body, 'ip');
-        $password = array_get($body, 'password');
-        $steamId = array_get($body, 'sid');
-        $paymentMethod = array_get($body, 'payment_method');
-        $paymentId = array_get($body, 'payment_id');
-
-        $warnings = [];
-
-        // Serwer
-        if (!strlen($serverId)) {
-            $warnings['server_id'][] = $this->lang->t('field_no_empty');
-        }
-
-        // Typ
-        if (!strlen($type)) {
-            $warnings['type'][] = $this->lang->t('field_no_empty');
-        }
-
-        switch ($type) {
-            case ExtraFlagType::TYPE_NICK:
-                if (!strlen($nick)) {
-                    $warnings['nick'][] = $this->lang->t('field_no_empty');
-                }
-
-                // Hasło
-                if (!strlen($password)) {
-                    $warnings['password'][] = $this->lang->t('field_no_empty');
-                }
-
-                $authData = $nick;
-                break;
-
-            case ExtraFlagType::TYPE_IP:
-                // IP
-                if (!strlen($ip)) {
-                    $warnings['ip'][] = $this->lang->t('field_no_empty');
-                }
-
-                // Hasło
-                if (!strlen($password)) {
-                    $warnings['password'][] = $this->lang->t('field_no_empty');
-                }
-
-                $authData = $ip;
-                break;
-
-            case ExtraFlagType::TYPE_SID:
-                // SID
-                if (!strlen($steamId)) {
-                    $warnings['sid'][] = $this->lang->t('field_no_empty');
-                }
-
-                $authData = $steamId;
-                break;
-        }
-
-        if (!in_array($paymentMethod, [Purchase::METHOD_SMS, Purchase::METHOD_TRANSFER])) {
-            $warnings['payment_method'][] = $this->lang->t('field_no_empty');
-        }
-
-        if (!strlen($paymentId)) {
-            $warnings['payment_id'][] = $this->lang->t('field_no_empty');
-        }
-
-        if ($warnings) {
-            return [
-                'status' => "warnings",
-                'text' => $this->lang->t('form_wrong_filled'),
-                'positive' => false,
-                'data' => ['warnings' => $warnings],
-            ];
-        }
+        $validated = $validator->validateOrFail();
+        $paymentMethod = $validated['payment_method'];
+        $paymentId = $validated['payment_id'];
+        $serverId = $validated['server_id'];
+        $authData = $validated['auth_data'];
+        $type = $validated['type'];
+        $password = $validated['password'];
 
         if ($paymentMethod == Purchase::METHOD_TRANSFER) {
-            $result = $this->db->query(
-                $this->db->prepare(
-                    "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
-                        "WHERE t.payment = 'transfer' AND t.payment_id = '%s' AND `service` = '%s' AND `server` = '%d' AND `auth_data` = '%s'",
-                    [$paymentId, $this->service->getId(), $serverId, $authData]
-                )
+            $statement = $this->db->statement(
+                "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
+                    "WHERE t.payment = 'transfer' AND t.payment_id = ? AND `service` = ? AND `server` = ? AND `auth_data` = ?"
             );
+            $statement->execute([$paymentId, $this->service->getId(), $serverId, $authData]);
 
-            if (!$result->rowCount()) {
+            if (!$statement->rowCount()) {
                 return [
                     'status' => "no_service",
                     'text' => $this->lang->t('no_user_service'),
@@ -1589,15 +1363,13 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 ];
             }
         } elseif ($paymentMethod == Purchase::METHOD_SMS) {
-            $result = $this->db->query(
-                $this->db->prepare(
-                    "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
-                        "WHERE t.payment = 'sms' AND t.sms_code = '%s' AND `service` = '%s' AND `server` = '%d' AND `auth_data` = '%s'",
-                    [$paymentId, $this->service->getId(), $serverId, $authData]
-                )
+            $statement = $this->db->statement(
+                "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
+                    "WHERE t.payment = 'sms' AND t.sms_code = ? AND `service` = ? AND `server` = ? AND `auth_data` = ?"
             );
+            $statement->execute([$paymentId, $this->service->getId(), $serverId, $authData]);
 
-            if (!$result->rowCount()) {
+            if (!$statement->rowCount()) {
                 return [
                     'status' => "no_service",
                     'text' => $this->lang->t('no_user_service'),
@@ -1607,18 +1379,22 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
 
         // TODO: Usunac md5
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT `id` FROM `ss_user_service` AS us " .
-                    "INNER JOIN `" .
-                    $this::USER_SERVICE_TABLE .
-                    "` AS usef ON us.id = usef.us_id " .
-                    "WHERE us.service = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND ( `password` = '%s' OR `password` = '%s' )",
-                [$this->service->getId(), $serverId, $type, $authData, $password, md5($password)]
-            )
+        $table = $this::USER_SERVICE_TABLE;
+        $statement = $this->db->statement(
+            "SELECT `id` FROM `ss_user_service` AS us " .
+                "INNER JOIN `$table` AS usef ON us.id = usef.us_id " .
+                "WHERE us.service = ? AND `server` = ? AND `type` = ? AND `auth_data` = ? AND ( `password` = ? OR `password` = ? )"
         );
+        $statement->execute([
+            $this->service->getId(),
+            $serverId,
+            $type,
+            $authData,
+            $password,
+            md5($password),
+        ]);
 
-        if (!$result->rowCount()) {
+        if (!$statement->rowCount()) {
             return [
                 'status' => "no_service",
                 'text' => $this->lang->t('no_user_service'),
@@ -1626,8 +1402,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ];
         }
 
-        $row = $result->fetch();
-
+        $row = $statement->fetch();
         $this->userServiceRepository->updateUid($row['id'], $user->getUid());
 
         return [
@@ -1698,31 +1473,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             default:
                 return '';
         }
-    }
-
-    /**
-     * Get value depending on the type
-     *
-     * @param array $data
-     * @return string|null
-     */
-    private function getAuthData(array $data)
-    {
-        $type = array_get($data, 'type');
-
-        if ($type == ExtraFlagType::TYPE_NICK) {
-            return trim(array_get($data, 'nick'));
-        }
-
-        if ($type == ExtraFlagType::TYPE_IP) {
-            return trim(array_get($data, 'ip'));
-        }
-
-        if ($type == ExtraFlagType::TYPE_SID) {
-            return trim(array_get($data, 'sid'));
-        }
-
-        return null;
     }
 
     private function getTypeName($value)

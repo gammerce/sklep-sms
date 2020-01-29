@@ -1,6 +1,12 @@
 <?php
 namespace App\ServiceModules\Other;
 
+use App\Http\Validation\Rules\EmailRule;
+use App\Http\Validation\Rules\PriceAvailableRule;
+use App\Http\Validation\Rules\PriceExistsRule;
+use App\Http\Validation\Rules\RequiredRule;
+use App\Http\Validation\Rules\ServerExistsRule;
+use App\Http\Validation\Rules\ServerLinkedToServiceRule;
 use App\Http\Validation\Validator;
 use App\Models\Purchase;
 use App\Models\Service;
@@ -54,57 +60,26 @@ class OtherServiceModule extends ServiceModule implements
         $this->lang = $translationManager->user();
     }
 
-    /**
-     * @param Purchase $purchase
-     * @return array
-     */
     public function purchaseDataValidate(Purchase $purchase)
     {
-        $warnings = [];
-
-        if (!strlen($purchase->getOrder(Purchase::ORDER_SERVER))) {
-            $warnings['server_id'][] = $this->lang->t('must_choose_server');
-        } else {
-            // Sprawdzanie czy serwer o danym id istnieje w bazie
-            $server = $this->heart->getServer($purchase->getOrder(Purchase::ORDER_SERVER));
-            if (!$this->heart->serverServiceLinked($server->getId(), $this->service->getId())) {
-                $warnings['server_id'][] = $this->lang->t('chosen_incorrect_server');
-            }
-        }
-
         $price = $purchase->getPrice();
-        if (!$price) {
-            $warnings['price_id'][] = $this->lang->t('must_choose_quantity');
-        } elseif (!$this->purchaseValidationService->isPriceAvailable($price, $purchase)) {
-            return [
-                'status' => "no_option",
-                'text' => $this->lang->t('service_not_affordable'),
-                'positive' => false,
-            ];
-        }
 
-        // E-mail
-        if (
-            strlen($purchase->getEmail()) &&
-            ($warning = check_for_warnings("email", $purchase->getEmail()))
-        ) {
-            $warnings['email'] = array_merge((array) $warnings['email'], $warning);
-        }
-
-        if ($warnings) {
-            return [
-                'status' => "warnings",
-                'text' => $this->lang->t('form_wrong_filled'),
-                'positive' => false,
-                'data' => compact('warnings'),
-            ];
-        }
-
-        return [
-            'status' => "ok",
-            'text' => $this->lang->t('purchase_form_validated'),
-            'positive' => true,
-        ];
+        return new Validator(
+            [
+                'email' => [$purchase->getEmail()],
+                'price_id' => [$price ? $price->getId() : null],
+                'server_id' => [$purchase->getOrder(Purchase::ORDER_SERVER)],
+            ],
+            [
+                'email' => [new EmailRule()],
+                'price_id' => [new PriceExistsRule(), new PriceAvailableRule($this->service)],
+                'server_id' => [
+                    new RequiredRule(),
+                    new ServerExistsRule(),
+                    new ServerLinkedToServiceRule($this->service),
+                ],
+            ]
+        );
     }
 
     public function purchase(Purchase $purchase)

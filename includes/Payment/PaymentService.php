@@ -1,6 +1,9 @@
 <?php
 namespace App\Payment;
 
+use App\Http\Validation\Rules\MaxLengthRule;
+use App\Http\Validation\Rules\RequiredRule;
+use App\Http\Validation\Validator;
 use App\Models\Purchase;
 use App\Services\SmsPriceService;
 use App\System\Heart;
@@ -59,7 +62,6 @@ class PaymentService
 
     public function makePayment(Purchase $purchase)
     {
-        $warnings = [];
         $serviceModule = $this->heart->getServiceModule($purchase->getService());
 
         if (!$serviceModule) {
@@ -168,40 +170,27 @@ class PaymentService
 
         $paymentId = null;
 
-        // Kod SMS
-        $purchase->setPayment([
-            Purchase::PAYMENT_SMS_CODE => trim($purchase->getPayment(Purchase::PAYMENT_SMS_CODE)),
-        ]);
-
-        if (
-            $purchase->getPayment(Purchase::PAYMENT_METHOD) == Purchase::METHOD_SMS &&
-            ($warning = check_for_warnings(
-                "sms_code",
-                $purchase->getPayment(Purchase::PAYMENT_SMS_CODE)
-            ))
-        ) {
-            $warnings['sms_code'] = array_merge((array) $warnings['sms_code'], $warning);
-        }
-
-        // Kod na usługę
-        if (
-            $purchase->getPayment(Purchase::PAYMENT_METHOD) == Purchase::METHOD_SERVICE_CODE &&
-            !strlen($purchase->getPayment(Purchase::PAYMENT_SERVICE_CODE))
-        ) {
-            $warnings['service_code'][] = $this->lang->t('field_no_empty');
-        }
-
-        if ($warnings) {
-            $warningData = [];
-            $warningData['warnings'] = format_warnings($warnings);
-
-            return [
-                'status' => "warnings",
-                'text' => $this->lang->t('form_wrong_filled'),
-                'positive' => false,
-                'data' => $warningData,
-            ];
-        }
+        $validator = new Validator(
+            [
+                'service_code' => $purchase->getPayment(Purchase::PAYMENT_SERVICE_CODE),
+                'sms_code' => $purchase->getPayment(Purchase::PAYMENT_SMS_CODE),
+            ],
+            [
+                'service_code' => [
+                    $purchase->getPayment(Purchase::PAYMENT_METHOD) ===
+                    Purchase::METHOD_SERVICE_CODE
+                        ? new RequiredRule()
+                        : null,
+                ],
+                'sms_code' => [
+                    $purchase->getPayment(Purchase::PAYMENT_METHOD) === Purchase::METHOD_SMS
+                        ? new RequiredRule()
+                        : null,
+                    new MaxLengthRule(16),
+                ],
+            ]
+        );
+        $validator->validateOrFail();
 
         if ($purchase->getPayment(Purchase::PAYMENT_METHOD) === Purchase::METHOD_SMS) {
             // Let's check sms code

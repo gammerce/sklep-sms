@@ -150,8 +150,6 @@ return [
     'no_delete_service' => 'Usługa nie została usunięta.',
     'no_delete_sms_code' => 'Kod SMS nie został usunięty.',
     'no_delete_user' => 'Użytkownik nie został usunięty.',
-    'no_edit_method' =>
-        'Moduł usługi nie posiada możliwości edycji usługi użytkownika przez admina.',
     'no_language' => 'Podany język nie istnieje',
     'no_service_chosen' => 'Nie wybrano usługi.',
     'no_sms_platform' => 'Brak platformy płatności SMS o takim ID.',

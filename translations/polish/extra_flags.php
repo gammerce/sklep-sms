@@ -1,7 +1,6 @@
 <?php
 
 return [
-    'choose_server_for_service' => 'Musisz wybrać serwer na który chcesz dodać daną usługę.',
     'chosen_incorrect_server' =>
         'Coś jest nie tak, wybrany serwer nie istnieje w bazie lub danej usługi nie można wykupić na tym serwerze.',
     'chosen_incorrect_type' => 'Wybrano niedozwolony typ zakupu.',
@@ -10,21 +9,15 @@ return [
         'Istnieje już usługa wykupiona na te dane (nick/ip) lecz posiada inne hasło.',
     'extra_flags' => 'Dodatkowe flagi',
     'flags' => 'Flagi',
-    'forbidden_purchase_type' => 'Wybrano niedozwolony typ zakupu.',
     'if_displayed_in_shop' => 'Czy ma być wyświetlane <br/>w sklepie internetowym.',
     'just_purchased' => 'Witaj {1},<br/>
 przed chwilą dokonałeś/aś zakupu w naszym sklepie.',
     'log_user_service_added' => 'Dodano użytkownikowi usługę. ID zakupu: {1}',
     'log_user_service_edited' => 'Wyedytowano usługę użytkownika. ID: {1}',
     'log_user_edited_service' => 'Użytkownik wyedytował swoją usługę. ID: {1}',
-    'must_choose_quantity' => 'Musisz wybrać ilość.',
-    'must_choose_server' => 'Musisz wybrać serwer na który chcesz wykupić daną usługę.',
-    'must_choose_service_type' => 'Musisz wybrać typ usługi.',
-    'must_choose_type' => 'Musisz wybrać typ zakupu.',
     'no_account_id' => 'Podane ID użytkownika nie jest przypisane do żadnego konta.',
     'no_server_id' => 'Brak serwera o takim ID.',
     'no_user_service' => 'Nie ma usługi z takimi danymi.',
-    'passwords_not_match' => 'Podane hasła nie są takie same.',
     'same_flags' => 'Niektóre flagi są wpisane więcej niż jeden raz.',
     'service_added_correctly' => 'Prawidłowo dodano usługę użytkownikowi.',
     'service_bought' => 'Zakupiono prawidłowo usługę',

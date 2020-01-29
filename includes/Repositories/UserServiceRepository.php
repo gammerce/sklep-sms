@@ -14,31 +14,6 @@ class UserServiceRepository
         $this->db = $db;
     }
 
-    public function createExtraFlags(
-        $serviceId,
-        $uid,
-        $forever,
-        $days,
-        $serverId,
-        $type,
-        $authData,
-        $password
-    ) {
-        $statement = $this->db->statement(
-            "INSERT INTO `ss_user_service` (`uid`, `service`, `expire`) " .
-                "VALUES (?, ?, IF(? = '1', '-1', UNIX_TIMESTAMP() + ?)) "
-        );
-        $statement->execute([$uid ?: 0, $serviceId, $forever, $days * 24 * 60 * 60]);
-        $userServiceId = $this->db->lastId();
-
-        $table = ExtraFlagsServiceModule::USER_SERVICE_TABLE;
-        $statement = $this->db->statement(
-            "INSERT INTO `$table` (`us_id`, `server`, `service`, `type`, `auth_data`, `password`) " .
-                "VALUES (?, ?, ?, ?, ?, ?)"
-        );
-        $statement->execute([$userServiceId, $serverId, $serviceId, $type, $authData, $password]);
-    }
-
     public function delete($id)
     {
         $statement = $this->db->statement("DELETE FROM `ss_user_service` WHERE `id` = ?");
@@ -62,9 +37,7 @@ class UserServiceRepository
 
     public function updateUid($id, $uid)
     {
-        $statement = $this->db->statement(
-            "UPDATE `ss_user_service` " . "SET `uid` = ? " . "WHERE `id` = ?"
-        );
+        $statement = $this->db->statement("UPDATE `ss_user_service` SET `uid` = ? WHERE `id` = ?");
         $statement->execute([$uid, $id]);
 
         return !!$statement->rowCount();

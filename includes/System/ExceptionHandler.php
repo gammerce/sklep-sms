@@ -3,6 +3,7 @@ namespace App\System;
 
 use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\InvalidConfigException;
+use App\Exceptions\InvalidServiceModuleException;
 use App\Exceptions\LicenseException;
 use App\Exceptions\LicenseRequestException;
 use App\Exceptions\UnauthorizedException;
@@ -71,6 +72,10 @@ class ExceptionHandler implements ExceptionHandlerContract
             return new ApiResponse("no_access", $this->lang->t('not_logged_or_no_perm'), false);
         }
 
+        if ($e instanceof InvalidServiceModuleException) {
+            return new ApiResponse("wrong_module", $this->lang->t('bad_module'), false);
+        }
+
         if ($e instanceof ValidationException) {
             return new ApiResponse(
                 "warnings",
@@ -87,7 +92,10 @@ class ExceptionHandler implements ExceptionHandlerContract
 
         if (is_debug()) {
             $exceptionDetails = $this->getExceptionDetails($e);
-            return new JsonResponse($exceptionDetails);
+            return new JsonResponse([
+                'return_id' => 'stack_trace',
+                'stack_trace' => $exceptionDetails,
+            ]);
         }
 
         if ($e instanceof LicenseException) {
