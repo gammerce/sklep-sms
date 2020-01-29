@@ -1,6 +1,9 @@
 <?php
 namespace App\System;
 
+use App\Providers\AppServiceProvider;
+use App\Providers\HeartServiceProvider;
+use App\Providers\SentryServiceProvider;
 use App\Support\Path;
 use DirectoryIterator;
 use Dotenv\Dotenv;
@@ -12,7 +15,11 @@ class Application extends Container
     const VERSION = '3.11.3';
 
     /** @var array */
-    private $providers = [];
+    private $providers = [
+        AppServiceProvider::class,
+        HeartServiceProvider::class,
+        SentryServiceProvider::class,
+    ];
 
     /** @var string */
     private $basePath;
@@ -46,6 +53,7 @@ class Application extends Container
     private function bootstrap()
     {
         $this->loadEnvironmentVariables();
+        $this->getProviders();
         $this->registerServiceProviders();
         $this->bootServiceProviders();
     }
@@ -64,7 +72,7 @@ class Application extends Container
 
     private function registerServiceProviders()
     {
-        foreach ($this->getProviders() as $provider) {
+        foreach ($this->providers as $provider) {
             if (method_exists($provider, 'register')) {
                 $this->call("$provider@register");
             }
@@ -73,7 +81,7 @@ class Application extends Container
 
     private function bootServiceProviders()
     {
-        foreach ($this->getProviders() as $provider) {
+        foreach ($this->providers as $provider) {
             if (method_exists($provider, 'boot')) {
                 $this->call("$provider@boot");
             }
@@ -105,7 +113,11 @@ class Application extends Container
             foreach ($dir as $fileInfo) {
                 if (ends_at($fileInfo->getFilename(), '.php')) {
                     $fileName = $fileInfo->getBasename('.php');
-                    $this->providers[] = "App\\Providers\\{$fileName}";
+                    $providerClassName = "App\\Providers\\{$fileName}";
+
+                    if (!in_array($providerClassName, $this->providers)) {
+                        $this->providers[] = $providerClassName;
+                    }
                 }
             }
         }
