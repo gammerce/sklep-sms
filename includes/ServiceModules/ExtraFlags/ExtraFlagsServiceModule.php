@@ -772,12 +772,14 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $validator = new Validator(
             array_merge($body, [
+                'forever' => $forever,
                 'quantity' => as_int(array_get($body, 'quantity')),
                 'server_id' => as_int(array_get($body, 'server_id')),
                 'uid' => as_int(array_get($body, 'uid')),
             ]),
             [
                 'email' => [new EmailRule()],
+                'forever' => [],
                 'password' => [new ExtraFlagPasswordRule()],
                 'quantity' => $forever
                     ? []
@@ -850,15 +852,37 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             }
         }
 
+        $styles = [
+            "nick" => "",
+            "ip" => "",
+            "sid" => "",
+            "password" => "",
+        ];
+
+        $disabled = [
+            "nick" => "disabled",
+            "ip" => "disabled",
+            "sid" => "disabled",
+            "password" => "disabled",
+            "expire" => "",
+        ];
+
+        $checked = [
+            "forever" => "",
+        ];
+
         if ($userService->getType() === ExtraFlagType::TYPE_NICK) {
             $nick = $userService->getAuthData();
             $styles['nick'] = $styles['password'] = "display: table-row-group";
+            $disabled['nick'] = $disabled['password'] = "";
         } elseif ($userService->getType() == ExtraFlagType::TYPE_IP) {
             $ip = $userService->getAuthData();
             $styles['ip'] = $styles['password'] = "display: table-row-group";
+            $disabled['ip'] = $disabled['password'] = "";
         } elseif ($userService->getType() == ExtraFlagType::TYPE_SID) {
             $sid = $userService->getAuthData();
             $styles['sid'] = "display: table-row-group";
+            $disabled['sid'] = "";
         }
 
         // Pobranie serwerów
@@ -882,8 +906,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         // Zamiana daty
         $userServiceExpire = '';
         if ($userService->isForever()) {
-            $checked = "checked";
-            $disabled = "disabled";
+            $checked['forever'] = "checked";
+            $disabled['expire'] = "disabled";
         } else {
             $userServiceExpire = convert_date($userService->getExpire());
         }
@@ -905,7 +929,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ) + [
                 'moduleId' => $this->getModuleId(),
                 'userServiceId' => $userService->getId(),
-                'userServiceUid' => $userService->getUid(),
+                'userServiceUid' => $userService->getUid() ?: "",
             ]
         );
     }
@@ -920,10 +944,12 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $validator = new Validator(
             array_merge($body, [
+                'forever' => $forever,
                 'server_id' => as_int(array_get($body, 'server_id')),
                 'uid' => as_int(array_get($body, 'uid')),
             ]),
             [
+                'forever' => [],
                 'expire' => $forever ? [] : [new RequiredRule(), new DateTimeRule()],
                 'server_id' => [new RequiredRule(), new ServerExistsRule()],
                 'uid' => [new UserExistsRule()],
@@ -1126,7 +1152,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ];
         }
 
-        if (isset($data['uid'])) {
+        if (array_key_exists('uid', $data)) {
             $set[] = [
                 'column' => 'uid',
                 'value' => "'%d'",
@@ -1160,7 +1186,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         if ($statement->rowCount()) {
             $userService2 = $statement->fetch();
 
-            if (!isset($data['uid']) && $userService->getUid() != $userService2['uid']) {
+            if (!array_key_exists('uid', $data) && $userService->getUid() != $userService2['uid']) {
                 throw new ValidationException([
                     'auth_data' => [$this->lang->t('service_isnt_yours')],
                 ]);

@@ -54,7 +54,14 @@ $(document).delegate("#form_user_service_edit [name=service_id]", "change", func
     );
 });
 
-// Ustawienie na zawsze przy edycji
+$(document).delegate("#form_user_service_add [name=forever]", "change", function() {
+    var module;
+    if (!(module = service_module_act_can("extra_flags", $(this)))) return;
+
+    if ($(this).prop("checked")) module.find("[name=quantity]").prop("disabled", true);
+    else module.find("[name=quantity]").prop("disabled", false);
+});
+
 $(document).delegate("#form_user_service_edit [name=forever]", "change", function() {
     var module;
     if (!(module = service_module_act_can("extra_flags", $(this)))) return;

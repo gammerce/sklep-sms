@@ -20,7 +20,6 @@
                             name="uid"
                             value="{{ $userServiceUid }}"
                             class="input is-small"
-                            required
                         />
                     </div>
                 </div>
@@ -51,16 +50,8 @@
             <td>
                 <div class="field">
                     <div class="control">
-                        <input
-                            type="text"
-                            id="nick"
-                            name="auth_data"
-                            class="input is-small"
-                            maxlength="32"
-                            value="{{ $nick }}"
-                            autocomplete="off"
-                            disabled
-                        />
+                        <input type="text" id="nick" name="auth_data" class="input is-small"
+                        maxlength="32" value="{{ $nick }}" autocomplete="off" {$disabled['nick']} />
                     </div>
                 </div>
             </td>
@@ -74,16 +65,8 @@
             <td>
                 <div class="field">
                     <div class="control">
-                        <input
-                            type="text"
-                            id="ip"
-                            name="auth_data"
-                            class="input is-small"
-                            maxlength="21"
-                            value="{{ $ip }}"
-                            autocomplete="off"
-                            disabled
-                        />
+                        <input type="text" id="ip" name="auth_data" class="input is-small"
+                        maxlength="21" value="{{ $ip }}" autocomplete="off" {$disabled['ip']} />
                     </div>
                 </div>
             </td>
@@ -97,16 +80,8 @@
             <td>
                 <div class="field">
                     <div class="control">
-                        <input
-                            type="text"
-                            id="sid"
-                            name="auth_data"
-                            class="input is-small"
-                            maxlength="32"
-                            value="{{ $sid }}"
-                            autocomplete="off"
-                            disabled
-                        />
+                        <input type="text" id="sid" name="auth_data" class="input is-small"
+                        maxlength="32" value="{{ $sid }}" autocomplete="off" {$disabled['sid']} />
                     </div>
                 </div>
             </td>
@@ -120,16 +95,9 @@
             <td>
                 <div class="field">
                     <div class="control">
-                        <input
-                            type="text"
-                            id="password"
-                            name="password"
-                            class="input is-small"
-                            maxlength="32"
-                            placeholder="{{ $password }}"
-                            autocomplete="off"
-                            disabled
-                        />
+                        <input type="text" id="password" name="password" class="input is-small"
+                        maxlength="32" placeholder="{{ $password }}" autocomplete="off"
+                        {$disabled['password']} />
                     </div>
                 </div>
             </td>
@@ -178,19 +146,12 @@
             <td>
                 <div class="field">
                     <div class="control">
-                        <input
-                            type="text"
-                            id="expire"
-                            name="expire"
-                            class="input is-small"
-                            value="{{ $userServiceExpire }}"
-                            autocomplete="off"
-                            {$disabled}
-                        />
+                        <input type="text" id="expire" name="expire" class="input is-small"
+                        value="{{ $userServiceExpire }}" autocomplete="off" {$disabled['expire']} />
                     </div>
                 </div>
                 <label class="checkbox">
-                    <input type="checkbox" name="forever" {$checked} />
+                    <input type="checkbox" name="forever" {$checked['forever']} />
                     {$lang->t('forever')}
                 </label>
             </td>

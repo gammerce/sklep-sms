@@ -43,15 +43,8 @@ $serviceInfo['service'] }}<br />
         <div class="cell">
             <div class="field">
                 <div class="control">
-                    <input
-                        type="text"
-                        id="ip"
-                        name="auth_data"
-                        class="input is-small"
-                        maxlength="21"
-                        value="{{ $serviceInfo['player_ip'] }}"
-                        {$disabled['ip']}
-                    />
+                    <input type="text" id="ip" name="auth_data" class="input is-small"
+                    maxlength="21" value="{{ $serviceInfo['player_ip'] }}" {$disabled['ip']} />
                 </div>
             </div>
         </div>
@@ -64,15 +57,8 @@ $serviceInfo['service'] }}<br />
         <div class="cell">
             <div class="field">
                 <div class="control">
-                    <input
-                        type="text"
-                        id="sid"
-                        name="auth_data"
-                        class="input is-small"
-                        maxlength="32"
-                        value="{{ $serviceInfo['player_sid'] }}"
-                        {$disabled['sid']}
-                    />
+                    <input type="text" id="sid" name="auth_data" class="input is-small"
+                    maxlength="32" value="{{ $serviceInfo['player_sid'] }}" {$disabled['sid']} />
                 </div>
             </div>
         </div>
@@ -85,15 +71,9 @@ $serviceInfo['service'] }}<br />
         <div class="cell">
             <div class="field">
                 <div class="control">
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        class="input is-small"
-                        maxlength="32"
-                        placeholder="{{ $serviceInfo['password'] }}"
-                        {$disabled['password']}
-                    />
+                    <input type="password" id="password" name="password" class="input is-small"
+                    maxlength="32" placeholder="{{ $serviceInfo['password'] }}"
+                    {$disabled['password']} />
                 </div>
             </div>
         </div>

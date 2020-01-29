@@ -52,6 +52,33 @@ class UserServiceResourceTest extends HttpTestCase
     }
 
     /** @test */
+    public function makes_user_service_last_forever()
+    {
+        // given
+        $this->actingAs($this->factory->admin());
+
+        $server = $this->factory->server();
+        $userService = $this->factory->extraFlagUserService([
+            'server_id' => $server->getId(),
+        ]);
+
+        // when
+        $response = $this->put("/api/admin/user_services/{$userService->getId()}", [
+            'auth_data' => 'STEAM_1:1:21984552',
+            'type' => ExtraFlagType::TYPE_SID,
+            'forever' => 'on',
+            'server_id' => $server->getId(),
+        ]);
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("ok", $json["return_id"]);
+        $freshUserService = $this->extraFlagUserServiceRepository->get($userService->getId());
+        $this->assertSame(-1, $freshUserService->getExpire());
+    }
+
+    /** @test */
     public function fails_when_invalid_data_is_passed()
     {
         // given
