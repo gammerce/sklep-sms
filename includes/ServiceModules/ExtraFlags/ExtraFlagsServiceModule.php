@@ -699,6 +699,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $server = $this->heart->getServer($data['server']);
 
+        $setinfo = "";
         if ($data['extra_data']['type'] & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)) {
             $setinfo = $this->lang->t('type_setinfo', $data['extra_data']['password']);
         }
@@ -1293,7 +1294,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $user = $this->auth->user();
         $validator = new Validator(
             array_merge($body, [
-                'auth_data' => trim(array_get($body, 'server_id')),
+                'auth_data' => trim(array_get($body, 'auth_data')),
                 'server_id' => as_int(array_get($body, 'server_id')),
                 'type' => as_int(array_get($body, 'type')),
             ]),
@@ -1352,12 +1353,11 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
 
         // TODO: Usunac md5
+        $table = $this::USER_SERVICE_TABLE;
         $result = $this->db->query(
             $this->db->prepare(
                 "SELECT `id` FROM `ss_user_service` AS us " .
-                    "INNER JOIN `" .
-                    $this::USER_SERVICE_TABLE .
-                    "` AS usef ON us.id = usef.us_id " .
+                    "INNER JOIN `$table` AS usef ON us.id = usef.us_id " .
                     "WHERE us.service = '%s' AND `server` = '%d' AND `type` = '%d' AND `auth_data` = '%s' AND ( `password` = '%s' OR `password` = '%s' )",
                 [$this->service->getId(), $serverId, $type, $authData, $password, md5($password)]
             )

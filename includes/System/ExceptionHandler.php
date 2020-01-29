@@ -92,7 +92,10 @@ class ExceptionHandler implements ExceptionHandlerContract
 
         if (is_debug()) {
             $exceptionDetails = $this->getExceptionDetails($e);
-            return new JsonResponse($exceptionDetails);
+            return new JsonResponse([
+                'return_id' => 'stack_trace',
+                'stack_trace' => $exceptionDetails,
+            ]);
         }
 
         if ($e instanceof LicenseException) {

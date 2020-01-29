@@ -47,7 +47,11 @@ trait MakesHttpRequests
 
     protected function decodeJsonResponse(Response $response)
     {
-        return json_decode($response->getContent(), true);
+        $decoded = json_decode($response->getContent(), true);
+        if (array_get($decoded, "return_id") === "stack_trace") {
+            var_dump($decoded['stack_trace']);
+        }
+        return $decoded;
     }
 
     protected function prepareUrlForRequest($uri)
