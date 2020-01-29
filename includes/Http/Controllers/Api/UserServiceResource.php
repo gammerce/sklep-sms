@@ -51,12 +51,21 @@ class UserServiceResource
             );
         }
 
-        $serviceModule->userOwnServiceEdit(
+        $result = $serviceModule->userOwnServiceEdit(
             array_merge($request->request->all(), [
                 "id" => $userServiceId,
             ]),
             $userService
         );
+
+        if (is_array($result)) {
+            return new ApiResponse(
+                array_get($result, "status"),
+                array_get($result, "text"),
+                array_get($result, "positive"),
+                array_get($result, "data", [])
+            );
+        }
 
         return new ApiResponse('ok', $lang->t('edited_user_service'), true);
     }

@@ -23,7 +23,7 @@ interface IServiceUserOwnServicesEdit
      *
      * @param array $body
      * @param UserService $userService
-     * @return bool
+     * @return bool|array
      */
     public function userOwnServiceEdit(array $body, UserService $userService);
 }
