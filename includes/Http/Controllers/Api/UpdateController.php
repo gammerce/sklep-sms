@@ -53,8 +53,6 @@ class UpdateController
             );
         }
 
-        // -------------------- INSTALACJA --------------------
-
         try {
             $setupManager->start();
             $migrator->update();
