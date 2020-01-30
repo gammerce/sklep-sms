@@ -19,7 +19,7 @@ class ServiceActionControllerTest extends HttpTestCase
             'server_id' => $this->server->getId(),
         ]);
         $this->factory->price([
-            'service_id' => 'vippro'
+            'service_id' => 'vippro',
         ]);
     }
 
