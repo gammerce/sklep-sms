@@ -44,7 +44,7 @@ $(document).delegate("#form_user_service_edit [name=service_id]", "change", func
 
     restRequest(
         "POST",
-        "/api/services/" + serviceId + "/actions/servers_for_service",
+        "/api/admin/services/" + serviceId + "/actions/servers_for_service",
         {
             server_id: module.find("[name=server_id]").val(),
         },

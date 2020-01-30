@@ -481,6 +481,10 @@ class RoutesManager
                 $r->get('/api/admin/templates/{name}', [
                     'uses' => TemplateResource::class . '@get',
                 ]);
+
+                $r->post('/api/admin/services/{service}/actions/{action}', [
+                    'uses' => ServiceActionController::class . '@post',
+                ]);
             }
         );
 
