@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Responses\SuccessApiResponse;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\SteamIdRule;
+use App\Http\Validation\Rules\UniqueSteamIdRule;
 use App\Http\Validation\Rules\UniqueUsernameRule;
+use App\Http\Validation\Rules\UsernameRule;
 use App\Http\Validation\Validator;
 use App\Repositories\UserRepository;
 use App\System\Auth;
@@ -30,10 +32,14 @@ class UserProfileResource
                 "steam_id" => trim($request->request->get('steam_id')),
             ],
             [
-                "username" => [new RequiredRule(), new UniqueUsernameRule($user->getUid())],
+                "username" => [
+                    new RequiredRule(),
+                    new UsernameRule(),
+                    new UniqueUsernameRule($user->getUid()),
+                ],
                 "forename" => [],
                 "surname" => [],
-                "steam_id" => [new SteamIdRule()],
+                "steam_id" => [new SteamIdRule(), new UniqueSteamIdRule($user->getUid())],
             ]
         );
 
