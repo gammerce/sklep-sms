@@ -67,10 +67,6 @@ class SetupController
         $modules = $requirementsStore->getModules();
         $filesWithWritePermission = $requirementsStore->getFilesWithWritePermission();
 
-        // #########################################
-        // ##########    Wyświetl dane    ##########
-        // #########################################
-
         $filesPrivileges = '';
         foreach ($filesWithWritePermission as $file) {
             if ($file == "") {
@@ -102,7 +98,6 @@ class SetupController
 
         $notifyHttpServer = $this->generateHttpServerNotification();
 
-        // Pobranie ostatecznego szablonu
         $output = $this->template->render(
             'setup/install/index',
             compact('notifyHttpServer', 'filesPrivileges', 'serverModules')
@@ -129,7 +124,6 @@ class SetupController
 
         $notifyHttpServer = $this->generateHttpServerNotification();
 
-        // Pobranie ostatecznego szablonu
         $output = $this->template->render(
             'setup/update/index',
             compact('notifyHttpServer', 'filesModulesStatus', 'class')
@@ -140,7 +134,7 @@ class SetupController
 
     protected function generateHttpServerNotification()
     {
-        if (str_contains(strtolower($_SERVER["SERVER_SOFTWARE"]), 'apache')) {
+        if (str_contains(strtolower(array_get($_SERVER, "SERVER_SOFTWARE")), 'apache')) {
             return '';
         }
 
