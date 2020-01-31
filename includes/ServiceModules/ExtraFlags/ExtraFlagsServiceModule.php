@@ -961,8 +961,13 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             throw new UnexpectedValueException();
         }
 
-        // Dodajemy typ uslugi, (1<<2) ostatni typ
-        $serviceInfo = [];
+        $serviceInfo = [
+            "types" => "",
+            "player_nick" => "",
+            "player_ip" => "",
+            "player_sid" => "",
+            "password" => "",
+        ];
         $styles = [
             "nick" => "display: none",
             "ip" => "display: none",
@@ -975,6 +980,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             "sid" => "disabled",
             "password" => "disabled",
         ];
+
+        // Dodajemy typ uslugi, (1<<2) ostatni typ
         for ($i = 0, $optionId = 1; $i < 3; $optionId = 1 << ++$i) {
             // Kiedy dana usługa nie wspiera danego typu i wykupiona usługa nie ma tego typu
             if (!($this->service->getTypes() & $optionId) && $optionId != $userService->getType()) {
@@ -1009,26 +1016,22 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             }
         }
 
-        // Hasło
         if (strlen($userService->getPassword()) && $userService->getPassword() != md5("")) {
             $serviceInfo['password'] = "********";
         }
 
-        // Serwer
         $server = $this->heart->getServer($userService->getServerId());
         $serviceInfo['server'] = $server->getName();
 
-        // Wygasa
         $serviceInfo['expire'] = $userService->isForever()
             ? $this->lang->t('never')
             : convert_date($userService->getExpire());
 
-        // Usługa
         $serviceInfo['service'] = $this->service->getName();
 
         return $this->template->render(
             "services/extra_flags/user_own_service_edit",
-            compact('serviceInfo', 'styles')
+            compact('serviceInfo', 'disabled', 'styles')
         );
     }
 
