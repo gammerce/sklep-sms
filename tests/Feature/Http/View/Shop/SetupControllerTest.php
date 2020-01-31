@@ -35,7 +35,7 @@ class SetupControllerTest extends HttpTestCase
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame("Shop is up to date", $response->getContent());
+        $this->assertSame("Sklep nie wymaga aktualizacji.", $response->getContent());
     }
 
     /** @test */
@@ -94,17 +94,20 @@ class SetupControllerTest extends HttpTestCase
     {
         $this->shopState->shouldReceive("isInstalled")->andReturnTrue();
         $this->shopState->shouldReceive("isUpToDate")->andReturnTrue();
+        $this->shopState->shouldReceive("requiresAction")->andReturnTrue();
     }
 
     private function markAsNotInstalled()
     {
         $this->shopState->shouldReceive("isInstalled")->andReturnFalse();
         $this->shopState->shouldReceive("isUpToDate")->andReturnFalse();
+        $this->shopState->shouldReceive("requiresAction")->andReturnFalse();
     }
 
     private function markAsNotUpToDate()
     {
         $this->shopState->shouldReceive("isInstalled")->andReturnTrue();
         $this->shopState->shouldReceive("isUpToDate")->andReturnFalse();
+        $this->shopState->shouldReceive("requiresAction")->andReturnTrue();
     }
 }

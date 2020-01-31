@@ -3,7 +3,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ApiResponse;
-use App\Http\Responses\PlainResponse;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Validator;
 use App\Install\DatabaseMigration;
@@ -30,18 +29,6 @@ class InstallController
         FileSystemContract $fileSystem,
         Application $app
     ) {
-        if ($setupManager->hasFailed()) {
-            return new PlainResponse(
-                'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku data/logs/errors.log'
-            );
-        }
-
-        if ($setupManager->isInProgress()) {
-            return new PlainResponse(
-                "Instalacja/Aktualizacja trwa, lub została błędnie przeprowadzona. Usuń plik data/setup_progress, aby przeprowadzić ją ponownie."
-            );
-        }
-
         $validator = new Validator($request->request->all(), [
             'admin_password' => [new RequiredRule()],
             'admin_username' => [new RequiredRule()],

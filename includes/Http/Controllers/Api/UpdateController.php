@@ -2,7 +2,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Responses\ApiResponse;
-use App\Http\Responses\PlainResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Install\DatabaseMigration;
 use App\Install\RequirementsStore;
@@ -18,18 +17,6 @@ class UpdateController
         UpdateInfo $updateInfo,
         RequirementsStore $requirementsStore
     ) {
-        if ($setupManager->hasFailed()) {
-            return new PlainResponse(
-                'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku data/logs/errors.log'
-            );
-        }
-
-        if ($setupManager->isInProgress()) {
-            return new PlainResponse(
-                "Instalacja/Aktualizacja trwa, lub została błędnie przeprowadzona. Usuń plik data/setup_progress, aby przeprowadzić ją ponownie."
-            );
-        }
-
         $modules = [];
         $filesWithWritePermission = $requirementsStore->getFilesWithWritePermission();
         $filesToDelete = $requirementsStore->getFilesToDelete();

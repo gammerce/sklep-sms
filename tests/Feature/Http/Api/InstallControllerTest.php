@@ -146,6 +146,10 @@ class InstallControllerTest extends TestCase
             ->shouldReceive("isInstalled")
             ->andReturn(false)
             ->byDefault();
+        $shopState
+            ->shouldReceive("requiresAction")
+            ->andReturn(false)
+            ->byDefault();
         $this->app->instance(ShopState::class, $shopState);
     }
 }
