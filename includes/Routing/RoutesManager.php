@@ -593,6 +593,6 @@ class RoutesManager
     private function shouldRedirectToSetup(array $routeInfo)
     {
         return $this->shopState->requiresAction() &&
-            array_get($routeInfo, "type") === RoutesManager::TYPE_INSTALL;
+            array_get($routeInfo[1], "type") !== RoutesManager::TYPE_INSTALL;
     }
 }
