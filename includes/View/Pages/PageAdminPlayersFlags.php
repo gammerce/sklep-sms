@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages;
 
+use App\ServiceModules\ExtraFlags\PlayerFlag;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -11,8 +12,6 @@ class PageAdminPlayersFlags extends PageAdmin
 {
     const PAGE_ID = 'players_flags';
     protected $privilege = 'view_player_flags';
-
-    protected $flags = 'abcdefghijklmnopqrstuyvwxz';
 
     public function __construct()
     {
@@ -33,7 +32,7 @@ class PageAdminPlayersFlags extends PageAdmin
             new HeadCell("{$this->lang->t('nick')}/{$this->lang->t('ip')}/{$this->lang->t('sid')}")
         );
 
-        foreach (str_split($this->flags) as $flag) {
+        foreach (PlayerFlag::FLAGS as $flag) {
             $table->addHeadCell(new HeadCell($flag));
         }
 
@@ -58,7 +57,7 @@ class PageAdminPlayersFlags extends PageAdmin
             $bodyRow->addCell(new Cell($serverName));
             $bodyRow->addCell(new Cell($row['auth_data']));
 
-            foreach (str_split($this->flags) as $flag) {
+            foreach (PlayerFlag::FLAGS as $flag) {
                 if (!$row[$flag]) {
                     $bodyRow->addCell(new Cell(' '));
                 } else {
