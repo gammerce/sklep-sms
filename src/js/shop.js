@@ -227,7 +227,7 @@ $(document).delegate("#language_choice img", "click", function() {
         .attr("id")
         .replace("language_", "");
 
-    restRequest("PUT", "/api/session/language", false, { language: langClicked }, function() {
+    restRequest("PUT", "/api/session/language", { language: langClicked }, function() {
         location.reload();
     });
 });
