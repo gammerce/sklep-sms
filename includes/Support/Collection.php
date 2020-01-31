@@ -41,6 +41,21 @@ class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Countable
      * @param callable $callback
      * @return Collection
      */
+    public function mapWithKeys(callable $callback)
+    {
+        $result = [];
+
+        foreach ($this->items as $key => $value) {
+            $result[$key] = $callback($value, $key);
+        }
+
+        return new Collection($result);
+    }
+
+    /**
+     * @param callable $callback
+     * @return Collection
+     */
     public function flatMap(callable $callback)
     {
         return $this->map($callback)->collapse();
@@ -52,7 +67,7 @@ class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Countable
      */
     public function filter(callable $callback)
     {
-        return new Collection(array_filter($this->items, $callback));
+        return new Collection(array_filter($this->items, $callback, ARRAY_FILTER_USE_BOTH));
     }
 
     /**
@@ -73,6 +88,22 @@ class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Countable
         }
 
         return new Collection($results);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function keys()
+    {
+        return new Collection(array_keys($this->items));
+    }
+
+    /**
+     * @return Collection
+     */
+    public function values()
+    {
+        return new Collection(array_values($this->items));
     }
 
     /**

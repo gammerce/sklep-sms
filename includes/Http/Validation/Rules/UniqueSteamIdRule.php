@@ -4,7 +4,7 @@ namespace App\Http\Validation\Rules;
 use App\Http\Validation\BaseRule;
 use App\Repositories\UserRepository;
 
-class UniqueUsernameRule extends BaseRule
+class UniqueSteamIdRule extends BaseRule
 {
     /** @var UserRepository */
     private $userRepository;
@@ -21,10 +21,10 @@ class UniqueUsernameRule extends BaseRule
 
     public function validate($attribute, $value, array $data)
     {
-        $user = $this->userRepository->findByUsername($value);
+        $user = $this->userRepository->findBySteamId($value);
 
         if ($user && $user->getUid() !== $this->exceptUserId) {
-            return [$this->lang->t('nick_occupied')];
+            return [$this->lang->t("steam_id_occupied")];
         }
 
         return [];

@@ -30,6 +30,11 @@ class ShopState
         $this->db = $db;
     }
 
+    public function requiresAction()
+    {
+        return !$this->isInstalled() || !$this->isUpToDate();
+    }
+
     public function isUpToDate()
     {
         return $this->databaseMigration->getLastExecutedMigration() ===

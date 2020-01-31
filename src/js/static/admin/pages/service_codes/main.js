@@ -125,7 +125,7 @@ $(document).delegate("#form_service_code_add [name=server_id]", "change", functi
 
     restRequest(
         "POST",
-        "/api/services/" + serviceId + "/actions/prices_for_server",
+        "/api/admin/services/" + serviceId + "/actions/prices_for_server",
         {
             server_id: $(this).val(),
         },

@@ -9,6 +9,7 @@ use App\Http\Validation\Rules\SteamIdRule;
 use App\Http\Validation\Rules\UniqueUserEmailRule;
 use App\Http\Validation\Rules\UniqueUsernameRule;
 use App\Http\Validation\Rules\UserGroupsRule;
+use App\Http\Validation\Rules\UsernameRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\UserRepository;
@@ -30,7 +31,11 @@ class UserResource
         $editedUser = $heart->getUser($userId);
 
         $validator = new Validator($request->request->all(), [
-            "username" => [new RequiredRule(), new UniqueUsernameRule($editedUser->getUid())],
+            "username" => [
+                new RequiredRule(),
+                new UsernameRule(),
+                new UniqueUsernameRule($editedUser->getUid()),
+            ],
             "email" => [new RequiredRule(), new UniqueUserEmailRule($editedUser->getUid())],
             "steam_id" => [new SteamIdRule()],
             "wallet" => [new NumberRule()],

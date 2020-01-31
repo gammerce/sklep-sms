@@ -10,6 +10,7 @@ use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\SteamIdRule;
 use App\Http\Validation\Rules\UniqueUserEmailRule;
 use App\Http\Validation\Rules\UniqueUsernameRule;
+use App\Http\Validation\Rules\UsernameRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\AntiSpamQuestionRepository;
@@ -59,7 +60,7 @@ class RegisterController
                 "as_id" => $antispamQuestionId,
             ],
             [
-                "username" => [new RequiredRule(), new UniqueUsernameRule()],
+                "username" => [new RequiredRule(), new UsernameRule(), new UniqueUsernameRule()],
                 "password" => [new RequiredRule(), new ConfirmedRule(), new PasswordRule()],
                 "email" => [
                     new RequiredRule(),
