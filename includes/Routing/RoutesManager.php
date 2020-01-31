@@ -64,7 +64,6 @@ use App\Http\Controllers\View\LanguageJsController;
 use App\Http\Controllers\View\SetupController;
 use App\Http\Middlewares\AuthorizeServer;
 use App\Http\Middlewares\BlockOnInvalidLicense;
-use App\Http\Middlewares\IsUpToDate;
 use App\Http\Middlewares\LoadSettings;
 use App\Http\Middlewares\ManageAdminAuthentication;
 use App\Http\Middlewares\ManageAuthentication;
@@ -72,16 +71,18 @@ use App\Http\Middlewares\MiddlewareContract;
 use App\Http\Middlewares\RequireAuthorization;
 use App\Http\Middlewares\RequireInstalledAndNotUpdated;
 use App\Http\Middlewares\RequireNotInstalled;
-use App\Http\Middlewares\RequireNotInstalledOrNotUpdated;
 use App\Http\Middlewares\RequireUnauthorization;
 use App\Http\Middlewares\RunCron;
 use App\Http\Middlewares\SetAdminSession;
 use App\Http\Middlewares\SetLanguage;
+use App\Http\Middlewares\SetupAvailable;
 use App\Http\Middlewares\SetUserSession;
 use App\Http\Middlewares\UpdateUserActivity;
 use App\Http\Middlewares\ValidateLicense;
+use App\Install\ShopState;
 use App\System\Application;
 use FastRoute\Dispatcher;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use UnexpectedValueException;
@@ -89,12 +90,22 @@ use function FastRoute\simpleDispatcher;
 
 class RoutesManager
 {
+    const TYPE_INSTALL = "install";
+
     /** @var Application */
     private $app;
 
-    public function __construct(Application $app)
+    /** @var UrlGenerator */
+    private $url;
+
+    /** @var ShopState */
+    private $shopState;
+
+    public function __construct(Application $app, UrlGenerator $url, ShopState $shopState)
     {
         $this->app = $app;
+        $this->url = $url;
+        $this->shopState = $shopState;
     }
 
     private function defineRoutes(RouteCollector $r)
@@ -117,12 +128,12 @@ class RoutesManager
         $r->redirectPermanent('/cron', '/api/cron');
 
         $r->get('/lang.js', [
-            'middlewares' => [IsUpToDate::class, LoadSettings::class],
+            'middlewares' => [LoadSettings::class],
             'uses' => LanguageJsController::class . '@get',
         ]);
 
         $r->get('/api/cron', [
-            'middlewares' => [IsUpToDate::class, LoadSettings::class, ValidateLicense::class],
+            'middlewares' => [LoadSettings::class, ValidateLicense::class],
             'uses' => CronController::class . '@get',
         ]);
 
@@ -130,7 +141,6 @@ class RoutesManager
             [
                 "middlewares" => [
                     SetUserSession::class,
-                    IsUpToDate::class,
                     LoadSettings::class,
                     SetLanguage::class,
                     ManageAuthentication::class,
@@ -280,7 +290,6 @@ class RoutesManager
             [
                 "middlewares" => [
                     SetAdminSession::class,
-                    IsUpToDate::class,
                     LoadSettings::class,
                     SetLanguage::class,
                     ManageAdminAuthentication::class,
@@ -488,20 +497,27 @@ class RoutesManager
             }
         );
 
-        $r->get("/setup", [
-            'middlewares' => [RequireNotInstalledOrNotUpdated::class],
-            'uses' => SetupController::class . "@get",
-        ]);
+        $r->addGroup(
+            [
+                'type' => RoutesManager::TYPE_INSTALL,
+            ],
+            function (RouteCollector $r) {
+                $r->get("/setup", [
+                    'middlewares' => [SetupAvailable::class],
+                    'uses' => SetupController::class . "@get",
+                ]);
 
-        $r->post("/api/install", [
-            'middlewares' => [RequireNotInstalled::class],
-            'uses' => InstallController::class . "@post",
-        ]);
+                $r->post("/api/install", [
+                    'middlewares' => [SetupAvailable::class, RequireNotInstalled::class],
+                    'uses' => InstallController::class . "@post",
+                ]);
 
-        $r->post("/api/update", [
-            'middlewares' => [RequireInstalledAndNotUpdated::class],
-            'uses' => UpdateController::class . "@post",
-        ]);
+                $r->post("/api/update", [
+                    'middlewares' => [SetupAvailable::class, RequireInstalledAndNotUpdated::class],
+                    'uses' => UpdateController::class . "@post",
+                ]);
+            }
+        );
     }
 
     /**
@@ -519,7 +535,9 @@ class RoutesManager
 
     private function handleDispatcherResponse($routeInfo, Request $request)
     {
-        // TODO If shop is not up to date, then always return Redirect
+        if ($this->shouldRedirectToSetup($routeInfo)) {
+            return new RedirectResponse($this->url->to('/setup'));
+        }
 
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
@@ -570,5 +588,11 @@ class RoutesManager
                 "routeCollector" => RouteCollector::class,
             ]
         );
+    }
+
+    private function shouldRedirectToSetup(array $routeInfo)
+    {
+        return $this->shopState->requiresAction() &&
+            array_get($routeInfo, "type") === RoutesManager::TYPE_INSTALL;
     }
 }
