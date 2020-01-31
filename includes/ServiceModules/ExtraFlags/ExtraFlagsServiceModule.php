@@ -127,6 +127,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     /** @var ExtraFlagUserServiceRepository */
     private $extraFlagUserServiceRepository;
 
+    /** @var PlayerFlagRepository */
+    private $playerFlagRepository;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -145,6 +148,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ExtraFlagUserServiceRepository::class
         );
         $this->userServiceRepository = $this->app->make(UserServiceRepository::class);
+        $this->playerFlagRepository = $this->app->make(PlayerFlagRepository::class);
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
@@ -510,7 +514,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         // Usunięcie przestarzałych flag graczy
         // Tak jakby co
-        $this->deleteOldFlags();
+        $this->playerFlagRepository->deleteOldFlags();
 
         // Dodajemy usługę gracza do listy usług
         // Jeżeli już istnieje dokładnie taka sama, to ją przedłużamy
@@ -571,39 +575,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $this->recalculatePlayerFlags($serverId, $type, $authData);
     }
 
-    private function deleteOldFlags()
-    {
-        $this->db->query(
-            "DELETE FROM `ss_players_flags` " .
-                "WHERE (`a` < UNIX_TIMESTAMP() AND `a` != '-1') " .
-                "AND (`b` < UNIX_TIMESTAMP() AND `b` != '-1') " .
-                "AND (`c` < UNIX_TIMESTAMP() AND `c` != '-1') " .
-                "AND (`d` < UNIX_TIMESTAMP() AND `d` != '-1') " .
-                "AND (`e` < UNIX_TIMESTAMP() AND `e` != '-1') " .
-                "AND (`f` < UNIX_TIMESTAMP() AND `f` != '-1') " .
-                "AND (`g` < UNIX_TIMESTAMP() AND `g` != '-1') " .
-                "AND (`h` < UNIX_TIMESTAMP() AND `h` != '-1') " .
-                "AND (`i` < UNIX_TIMESTAMP() AND `i` != '-1') " .
-                "AND (`j` < UNIX_TIMESTAMP() AND `j` != '-1') " .
-                "AND (`k` < UNIX_TIMESTAMP() AND `k` != '-1') " .
-                "AND (`l` < UNIX_TIMESTAMP() AND `l` != '-1') " .
-                "AND (`m` < UNIX_TIMESTAMP() AND `m` != '-1') " .
-                "AND (`n` < UNIX_TIMESTAMP() AND `n` != '-1') " .
-                "AND (`o` < UNIX_TIMESTAMP() AND `o` != '-1') " .
-                "AND (`p` < UNIX_TIMESTAMP() AND `p` != '-1') " .
-                "AND (`q` < UNIX_TIMESTAMP() AND `q` != '-1') " .
-                "AND (`r` < UNIX_TIMESTAMP() AND `r` != '-1') " .
-                "AND (`s` < UNIX_TIMESTAMP() AND `s` != '-1') " .
-                "AND (`t` < UNIX_TIMESTAMP() AND `t` != '-1') " .
-                "AND (`u` < UNIX_TIMESTAMP() AND `u` != '-1') " .
-                "AND (`v` < UNIX_TIMESTAMP() AND `v` != '-1') " .
-                "AND (`w` < UNIX_TIMESTAMP() AND `w` != '-1') " .
-                "AND (`x` < UNIX_TIMESTAMP() AND `x` != '-1') " .
-                "AND (`y` < UNIX_TIMESTAMP() AND `y` != '-1') " .
-                "AND (`z` < UNIX_TIMESTAMP() AND `z` != '-1')"
-        );
-    }
-
     private function recalculatePlayerFlags($serverId, $type, $authData)
     {
         // Musi byc podany typ, bo inaczej nam wywali wszystkie usługi bez typu
@@ -612,14 +583,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             return;
         }
 
-        // Usuwanie danych z bazy players_flags
-        // Ponieważ za chwilę będziemy je tworzyć na nowo
-        $this->db
-            ->statement(
-                "DELETE FROM `ss_players_flags` " .
-                    "WHERE `server` = ? AND `type` = ? AND `auth_data` = ?"
-            )
-            ->execute([$serverId, $type, $authData]);
+        // Usuwanie dane, ponieważ za chwilę będziemy je tworzyć na nowo
+        $this->playerFlagRepository->deleteByCredentials($serverId, $type, $authData);
 
         // Pobieranie wszystkich usług na konkretne dane
         $table = $this::USER_SERVICE_TABLE;
@@ -639,33 +604,17 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
             $service = $this->heart->getService($row['service']);
             $serviceFlags = $service->getFlags();
-            for ($i = 0; $i < strlen($serviceFlags); ++$i) {
+            foreach (str_split($serviceFlags) as $flag) {
                 // Bierzemy maksa, ponieważ inaczej robią się problemy.
                 // A tak to jak wygaśnie jakaś usługa, to wykona się cron, usunie ją i przeliczy flagi jeszcze raz
                 // I znowu weźmie maksa
                 // Czyli stan w tabeli players flags nie jest do końca odzwierciedleniem rzeczywistości :)
-                $flags[$serviceFlags[$i]] = $this->maxMinus(
-                    array_get($flags, $serviceFlags[$i]),
-                    $row['expire']
-                );
+                $flags[$flag] = $this->maxMinus(array_get($flags, $flag), $row['expire']);
             }
         }
 
-        // Formowanie flag do zapytania
-        $set = '';
-        foreach ($flags as $flag => $quantity) {
-            $set .= $this->db->prepare(", `%s` = '%d'", [$flag, $quantity]);
-        }
-
-        // Dodanie flag
-        if (strlen($set)) {
-            $this->db->query(
-                $this->db->prepare(
-                    "INSERT INTO `ss_players_flags` " .
-                        "SET `server` = '%d', `type` = '%d', `auth_data` = '%s', `password` = '%s'{$set}",
-                    [$serverId, $type, $authData, $password]
-                )
-            );
+        if ($flags) {
+            $this->playerFlagRepository->create($serverId, $type, $authData, $password, $flags);
         }
     }
 
@@ -1141,22 +1090,39 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     private function userServiceEdit(ExtraFlagUserService $userService, array $data)
     {
         $forever = array_get($data, 'forever');
-        $expire = array_get($data, 'expire');
+        $expire = as_int(array_get($data, 'expire', $userService->getExpire()));
+        $type = as_int(array_get($data, 'type', $userService->getType()));
+        $authData = array_get($data, 'auth_data', $userService->getAuthData());
+        $serverId = as_int(array_get($data, 'server', $userService->getServerId()));
+        $uid = as_int(array_get($data, 'uid'));
+        $shouldUidBeUpdated = array_key_exists('uid', $data);
+
+        // Type is changed to SteamID from non-sid
+        if (
+            $type === ExtraFlagType::TYPE_SID &&
+            $userService->getType() !== ExtraFlagType::TYPE_SID
+        ) {
+            $password = array_get($data, 'password', "");
+            $shouldPasswordBeUpdated = true;
+        } else {
+            $password = array_get($data, 'password');
+            $shouldPasswordBeUpdated = !!strlen($password);
+        }
 
         $set = [];
-        if (strlen($data['password'])) {
+        if ($shouldPasswordBeUpdated) {
             $set[] = [
                 'column' => 'password',
                 'value' => "'%s'",
-                'data' => [$data['password']],
+                'data' => [$password],
             ];
         }
 
-        if (array_key_exists('uid', $data)) {
+        if ($shouldUidBeUpdated) {
             $set[] = [
                 'column' => 'uid',
                 'value' => "'%d'",
-                'data' => [$data['uid']],
+                'data' => [$uid],
             ];
         }
 
@@ -1176,17 +1142,20 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
         $statement->execute([
             $this->service->getId(),
-            array_get($data, 'server', $userService->getServerId()),
-            array_get($data, 'type', $userService->getType()),
-            array_get($data, 'auth_data', $userService->getAuthData()),
+            $serverId,
+            $type,
+            $authData,
             $userService->getId(),
         ]);
+        $existingUserService = $statement->fetch();
 
-        // Jeżeli istnieje usługa o identycznych danych jak te, na które będziemy zmieniać obecną usługę
-        if ($statement->rowCount()) {
-            $userService2 = $statement->fetch();
+        if ($existingUserService) {
+            // Since $shouldUidBeUpdated is false we can assume that it is action done via ACP
+            // not by "user own service edit"
+            $canManageThisUserService =
+                !$shouldUidBeUpdated && $userService->getUid() != $existingUserService['uid'];
 
-            if (!array_key_exists('uid', $data) && $userService->getUid() != $userService2['uid']) {
+            if ($canManageThisUserService) {
                 throw new ValidationException([
                     'auth_data' => [$this->lang->t('service_isnt_yours')],
                 ]);
@@ -1195,16 +1164,20 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $this->userServiceRepository->delete($userService->getId());
 
             // Dodajemy expire
-            if (!$forever && $expire) {
+            if (!$forever) {
                 $set[] = [
                     'column' => 'expire',
                     'value' => "( `expire` - UNIX_TIMESTAMP() + '%d' )",
-                    'data' => [array_get($data, 'expire', $userService->getExpire())],
+                    'data' => [$expire],
                 ];
             }
 
             // Aktualizujemy usługę, która już istnieje w bazie i ma takie same dane jak nasze nowe
-            $affected = $this->updateUserService($set, $userService2['id'], $userService2['id']);
+            $affected = $this->updateUserService(
+                $set,
+                $existingUserService['id'],
+                $existingUserService['id']
+            );
         } else {
             $set[] = [
                 'column' => 'service',
@@ -1212,37 +1185,31 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 'data' => [$this->service->getId()],
             ];
 
-            if (!$forever && $expire) {
+            if (!$forever) {
                 $set[] = [
                     'column' => 'expire',
                     'value' => "'%d'",
-                    'data' => [$data['expire']],
+                    'data' => [$expire],
                 ];
             }
 
-            if (isset($data['server_id'])) {
-                $set[] = [
-                    'column' => 'server',
-                    'value' => "'%d'",
-                    'data' => [$data['server_id']],
-                ];
-            }
+            $set[] = [
+                'column' => 'server',
+                'value' => "'%d'",
+                'data' => [$serverId],
+            ];
 
-            if (isset($data['type'])) {
-                $set[] = [
-                    'column' => 'type',
-                    'value' => "'%d'",
-                    'data' => [$data['type']],
-                ];
-            }
+            $set[] = [
+                'column' => 'type',
+                'value' => "'%d'",
+                'data' => [$type],
+            ];
 
-            if (isset($data['auth_data'])) {
-                $set[] = [
-                    'column' => 'auth_data',
-                    'value' => "'%s'",
-                    'data' => [$data['auth_data']],
-                ];
-            }
+            $set[] = [
+                'column' => 'auth_data',
+                'value' => "'%s'",
+                'data' => [$authData],
+            ];
 
             $affected = $this->updateUserService(
                 $set,
@@ -1251,9 +1218,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             );
         }
 
-        // Ustaw jednakowe hasła
-        // żeby potem nie było problemów z różnymi hasłami
-        if (strlen($data['password'])) {
+        // Ustaw jednakowe hasła, żeby potem nie było problemów z różnymi hasłami
+        if ($shouldPasswordBeUpdated) {
             $table = $this::USER_SERVICE_TABLE;
             $this->db
                 ->statement(
@@ -1261,12 +1227,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                         "SET `password` = ? " .
                         "WHERE `server` = ? AND `type` = ? AND `auth_data` = ?"
                 )
-                ->execute([
-                    $data['password'],
-                    array_get($data, 'server_id', $userService->getServerId()),
-                    array_get($data, 'type', $userService->getType()),
-                    array_get($data, 'auth_data', $userService->getAuthData()),
-                ]);
+                ->execute([$password, $serverId, $type, $authData]);
         }
 
         // Przelicz flagi tylko wtedy, gdy coś się zmieniło
@@ -1282,11 +1243,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
 
         // Odśwież flagi gracza ( już po edycji )
-        $this->recalculatePlayerFlags(
-            array_get($data, 'server', $userService->getServerId()),
-            array_get($data, 'type', $userService->getType()),
-            array_get($data, 'auth_data', $userService->getAuthData())
-        );
+        $this->recalculatePlayerFlags($serverId, $type, $authData);
 
         return true;
     }

@@ -28,7 +28,9 @@ class UserServiceResource
             throw new EntityNotFoundException();
         }
 
-        $serviceModule = $heart->getServiceModule($userService->getServiceId());
+        $serviceId = $request->request->get('service_id', $userService->getServiceId());
+
+        $serviceModule = $heart->getServiceModule($serviceId);
         if (!$serviceModule) {
             throw new InvalidServiceModuleException();
         }
