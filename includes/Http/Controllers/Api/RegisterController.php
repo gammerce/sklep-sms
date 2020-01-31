@@ -8,6 +8,7 @@ use App\Http\Validation\Rules\EmailRule;
 use App\Http\Validation\Rules\PasswordRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\SteamIdRule;
+use App\Http\Validation\Rules\UniqueSteamIdRule;
 use App\Http\Validation\Rules\UniqueUserEmailRule;
 use App\Http\Validation\Rules\UniqueUsernameRule;
 use App\Http\Validation\Rules\UsernameRule;
@@ -24,7 +25,7 @@ class RegisterController
         Request $request,
         TranslationManager $translationManager,
         UserRepository $userRepository,
-        AntiSpamQuestionRepository $antispamQuestionRepository,
+        AntiSpamQuestionRepository $antiSpamQuestionRepository,
         DatabaseLogger $logger
     ) {
         $session = $request->getSession();
@@ -34,7 +35,7 @@ class RegisterController
 
         // Get new antispam question
         $data = [];
-        $antispamQuestion = $antispamQuestionRepository->findRandom();
+        $antispamQuestion = $antiSpamQuestionRepository->findRandom();
         $data['antispam']['question'] = $antispamQuestion->getQuestion();
         $data['antispam']['id'] = $antispamQuestion->getId();
 
@@ -70,7 +71,7 @@ class RegisterController
                 ],
                 "forename" => [],
                 "surname" => [],
-                "steam_id" => [new SteamIdRule()],
+                "steam_id" => [new SteamIdRule(), new UniqueSteamIdRule()],
                 "as_answer" => [new AntiSpamQuestionRule()],
             ]
         );
