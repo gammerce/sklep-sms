@@ -124,7 +124,6 @@ class ServerConfigController
 
         $minimumVersion = array_get($minimumVersions, $platform);
 
-        return $minimumVersion &&
-            semantic_to_number($minimumVersion) <= semantic_to_number($version);
+        return $minimumVersion && version_compare($version, $minimumVersion) >= 0;
     }
 }
