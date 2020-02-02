@@ -55,13 +55,13 @@ class ServerConfigController
         }
 
         $smsNumbers = $smsModule::getSmsNumbers();
-        $services = $serverDataService->findServices($server->getId());
+        $services = $serverDataService->getServices($server->getId());
         $serviceIds = collect($services)
             ->map(function (Service $service) {
                 return $service->getId();
             })
             ->all();
-        $prices = $serverDataService->findPrices($serviceIds, $server);
+        $prices = $serverDataService->getPrices($serviceIds, $server);
 
         $serviceItems = collect($services)->map(function (Service $service) {
             return [

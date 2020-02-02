@@ -296,13 +296,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $bodyRow->addCell(new Cell($row['server']));
             $bodyRow->addCell(new Cell($row['service']));
             $bodyRow->addCell(new Cell($row['auth_data']));
-            $bodyRow->addCell(
-                new Cell(
-                    $row['expire'] == '-1'
-                        ? $this->lang->t('never')
-                        : date($this->settings->getDateFormat(), $row['expire'])
-                )
-            );
+            $bodyRow->addCell(new Cell(convert_expire($row['expire'])));
             if (get_privileges("manage_user_services")) {
                 $bodyRow->setDeleteAction();
                 $bodyRow->setEditAction();
@@ -1022,11 +1016,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $server = $this->heart->getServer($userService->getServerId());
         $serviceInfo['server'] = $server->getName();
-
-        $serviceInfo['expire'] = $userService->isForever()
-            ? $this->lang->t('never')
-            : convert_date($userService->getExpire());
-
+        $serviceInfo['expire'] = convert_expire($userService->getExpire());
         $serviceInfo['service'] = $this->service->getName();
 
         return $this->template->render(
@@ -1047,9 +1037,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             'buttonEdit' => $buttonEdit,
             'authData' => $userService->getAuthData(),
             'userServiceId' => $userService->getId(),
-            'expire' => $userService->isForever()
-                ? $this->lang->t('never')
-                : convert_date($userService->getExpire()),
+            'expire' => convert_expire($userService->getExpire()),
             'moduleId' => $this->getModuleId(),
             'serverName' => $server->getName(),
             'serviceName' => $this->service->getName(),

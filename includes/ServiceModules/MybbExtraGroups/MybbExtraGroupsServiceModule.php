@@ -290,13 +290,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             );
             $bodyRow->addCell(new Cell($row['service']));
             $bodyRow->addCell(new Cell($row['mybb_uid']));
-            $bodyRow->addCell(
-                new Cell(
-                    $row['expire'] == '-1'
-                        ? $this->lang->t('never')
-                        : date($this->settings->getDateFormat(), $row['expire'])
-                )
-            );
+            $bodyRow->addCell(new Cell(convert_expire($row['expire'])));
             if (get_privileges("manage_user_services")) {
                 $bodyRow->setDeleteAction(true);
                 $bodyRow->setEditAction(false);
@@ -668,9 +662,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $statement->execute([$userService->getMybbUid()]);
         $username = $statement->fetchColumn();
 
-        $expire = $userService->isForever()
-            ? $this->lang->t('never')
-            : convert_date($userService->getExpire());
+        $expire = convert_expire($userService->getExpire());
         $mybbUid = "$username ({$userService->getMybbUid()})";
 
         return $this->template->render(
