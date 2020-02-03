@@ -8,6 +8,8 @@ use App\Models\Service;
 use App\Repositories\PriceRepository;
 use App\Repositories\ServerServiceRepository;
 use App\Repositories\ServiceRepository;
+use App\ServiceModules\ExtraFlags\PlayerFlag;
+use App\ServiceModules\ExtraFlags\PlayerFlagRepository;
 use App\Support\Database;
 
 class ServerDataService
@@ -24,16 +26,21 @@ class ServerDataService
     /** @var ServiceRepository */
     private $serviceRepository;
 
+    /** @var PlayerFlagRepository */
+    private $playerFlagRepository;
+
     public function __construct(
         Database $db,
         PriceRepository $priceRepository,
         ServiceRepository $serviceRepository,
-        ServerServiceRepository $serverServiceRepository
+        ServerServiceRepository $serverServiceRepository,
+        PlayerFlagRepository $playerFlagRepository
     ) {
         $this->db = $db;
         $this->priceRepository = $priceRepository;
         $this->serverServiceRepository = $serverServiceRepository;
         $this->serviceRepository = $serviceRepository;
+        $this->playerFlagRepository = $playerFlagRepository;
     }
 
     /**
@@ -84,7 +91,7 @@ class ServerDataService
      */
     public function getPlayersFlags($serverId)
     {
-        // TODO Use it
+        // ORDER BY is very important for binary search in plugins code
         $statement = $this->db->statement(
             <<<EOF
 SELECT f.type, f.auth_data, f.password, 
@@ -122,6 +129,25 @@ EOF
         );
         $statement->execute([$serverId]);
 
-        return $statement->fetchAll();
+        return collect($statement)
+            ->map(function (array $data) {
+                $flags = collect($data)
+                    ->filter(function ($value, $key) {
+                        return in_array($key, PlayerFlag::FLAGS, true);
+                    })
+                    ->filter(function ($value) {
+                        return !!$value;
+                    })
+                    ->keys()
+                    ->join();
+
+                return [
+                    'type' => $data['type'],
+                    'auth_data' => $data['auth_data'],
+                    'password' => $data['password'],
+                    'flags' => $flags,
+                ];
+            })
+            ->all();
     }
 }

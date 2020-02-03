@@ -116,7 +116,7 @@ class PlayerFlagRepository
         );
     }
 
-    private function mapToModel(array $data)
+    public function mapToModel(array $data)
     {
         $flags = collect($data)
             ->filter(function ($value, $key) {

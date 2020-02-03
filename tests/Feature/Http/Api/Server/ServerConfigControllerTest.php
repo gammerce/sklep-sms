@@ -3,6 +3,8 @@ namespace Tests\Feature\Http\Api\Server;
 
 use App\Models\PaymentPlatform;
 use App\Models\Server;
+use App\ServiceModules\ExtraFlags\ExtraFlagType;
+use App\ServiceModules\ExtraFlags\PlayerFlagService;
 use App\System\Settings;
 use App\Verification\PaymentModules\Gosetti;
 use Tests\Psr4\Concerns\GosettiConcern;
@@ -11,6 +13,9 @@ use Tests\Psr4\TestCases\HttpTestCase;
 class ServerConfigControllerTest extends HttpTestCase
 {
     use GosettiConcern;
+
+    /** @var Settings */
+    private $settings;
 
     /** @var PaymentPlatform */
     private $paymentPlatform;
@@ -21,6 +26,9 @@ class ServerConfigControllerTest extends HttpTestCase
     protected function setUp()
     {
         parent::setUp();
+
+        $this->settings = $this->app->make(Settings::class);
+
         $this->paymentPlatform = $this->factory->paymentPlatform([
             'module' => Gosetti::MODULE_ID,
         ]);
@@ -36,9 +44,6 @@ class ServerConfigControllerTest extends HttpTestCase
     public function config_server_response()
     {
         // given
-        /** @var Settings $settings */
-        $settings = $this->app->make(Settings::class);
-
         $this->factory->serverService([
             'server_id' => $this->server->getId(),
             'service_id' => 'vip',
@@ -54,7 +59,7 @@ class ServerConfigControllerTest extends HttpTestCase
         $response = $this->get(
             '/api/server/config',
             [
-                'key' => md5($settings->get("random_key")),
+                'key' => md5($this->settings->get("random_key")),
                 'ip' => $this->server->getIp(),
                 'port' => $this->server->getPort(),
                 'version' => '3.9.0',
@@ -107,14 +112,11 @@ class ServerConfigControllerTest extends HttpTestCase
     public function config_json_response()
     {
         // given
-        /** @var Settings $settings */
-        $settings = $this->app->make(Settings::class);
-
         // when
         $response = $this->get(
             '/api/server/config',
             [
-                'key' => md5($settings->get("random_key")),
+                'key' => md5($this->settings->get("random_key")),
                 'ip' => $this->server->getIp(),
                 'port' => $this->server->getPort(),
                 'version' => '3.9.0',
@@ -129,7 +131,7 @@ class ServerConfigControllerTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertSame($this->paymentPlatform->getId(), $json["sms_platform_id"]);
-        $this->assertSame($settings->getVat(), $json["vat"]);
+        $this->assertSame($this->settings->getVat(), $json["vat"]);
         $this->assertSame("abc123", $json["license_token"]);
     }
 
@@ -137,9 +139,6 @@ class ServerConfigControllerTest extends HttpTestCase
     public function lists_users_steam_ids()
     {
         // given
-        /** @var Settings $settings */
-        $settings = $this->app->make(Settings::class);
-
         $this->factory->user([
             "steam_id" => "STEAM_1",
         ]);
@@ -155,7 +154,7 @@ class ServerConfigControllerTest extends HttpTestCase
         $response = $this->get(
             'api/server/config',
             [
-                'key' => md5($settings->get("random_key")),
+                'key' => md5($this->settings->get("random_key")),
                 'ip' => $this->server->getIp(),
                 'port' => $this->server->getPort(),
                 'version' => '3.8.0',
@@ -173,15 +172,11 @@ class ServerConfigControllerTest extends HttpTestCase
     /** @test */
     public function returns_402_if_invalid_version()
     {
-        // given
-        /** @var Settings $settings */
-        $settings = $this->app->make(Settings::class);
-
         // when
         $response = $this->get(
             '/api/server/config',
             [
-                'key' => md5($settings->get("random_key")),
+                'key' => md5($this->settings->get("random_key")),
                 'ip' => $this->server->getIp(),
                 'port' => $this->server->getPort(),
                 'version' => '3.7.0',
@@ -198,15 +193,11 @@ class ServerConfigControllerTest extends HttpTestCase
     /** @test */
     public function returns_404_if_invalid_ip_port()
     {
-        // given
-        /** @var Settings $settings */
-        $settings = $this->app->make(Settings::class);
-
         // when
         $response = $this->get(
             '/api/server/config',
             [
-                'key' => md5($settings->get("random_key")),
+                'key' => md5($this->settings->get("random_key")),
                 'ip' => '1.1.1.1',
                 'port' => '11111',
                 'version' => '3.9.0',
@@ -218,5 +209,53 @@ class ServerConfigControllerTest extends HttpTestCase
 
         // then
         $this->assertSame(404, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function with_player_flags()
+    {
+        // given
+        /** @var PlayerFlagService $playerFlagService */
+        $playerFlagService = $this->app->make(PlayerFlagService::class);
+
+        $userService = $this->factory->extraFlagUserService([
+            'server_id' => $this->server->getId(),
+        ]);
+        $playerFlagService->recalculatePlayerFlags(
+            $this->server->getId(),
+            $userService->getType(),
+            $userService->getAuthData()
+        );
+
+        // when
+        $response = $this->get(
+            '/api/server/config',
+            [
+                'key' => md5($this->settings->get("random_key")),
+                'ip' => $this->server->getIp(),
+                'port' => $this->server->getPort(),
+                'version' => '3.9.0',
+                'player_flags' => '1',
+            ],
+            [
+                'Accept' => 'application/json',
+                'User-Agent' => Server::TYPE_AMXMODX,
+            ]
+        );
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame(
+            [
+                [
+                    't' => ExtraFlagType::TYPE_NICK,
+                    'a' => 'my_nickname',
+                    'p' => 'pokll12',
+                    'f' => 't',
+                ],
+            ],
+            $json["pf"]
+        );
     }
 }

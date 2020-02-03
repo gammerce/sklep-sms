@@ -27,7 +27,6 @@ use App\Models\UserService;
 use App\Payment\AdminPaymentService;
 use App\Payment\BoughtServiceService;
 use App\Payment\PurchasePriceService;
-use App\Payment\PurchaseValidationService;
 use App\Repositories\PriceRepository;
 use App\Repositories\UserServiceRepository;
 use App\ServiceModules\ExtraFlags\Rules\ExtraFlagAuthDataRule;
@@ -118,9 +117,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     /** @var PurchasePriceRenderer */
     private $purchasePriceRenderer;
 
-    /** @var PurchaseValidationService */
-    private $purchaseValidationService;
-
     /** @var UserServiceRepository */
     private $userServiceRepository;
 
@@ -129,6 +125,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     /** @var PlayerFlagRepository */
     private $playerFlagRepository;
+
+    /** @var PlayerFlagService */
+    private $playerFlagService;
 
     public function __construct(Service $service = null)
     {
@@ -143,12 +142,12 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $this->priceRepository = $this->app->make(PriceRepository::class);
         $this->purchasePriceService = $this->app->make(PurchasePriceService::class);
         $this->purchasePriceRenderer = $this->app->make(PurchasePriceRenderer::class);
-        $this->purchaseValidationService = $this->app->make(PurchaseValidationService::class);
         $this->extraFlagUserServiceRepository = $this->app->make(
             ExtraFlagUserServiceRepository::class
         );
         $this->userServiceRepository = $this->app->make(UserServiceRepository::class);
         $this->playerFlagRepository = $this->app->make(PlayerFlagRepository::class);
+        $this->playerFlagService = $this->app->make(PlayerFlagService::class);
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
@@ -566,50 +565,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ->execute([$password, $serverId, $type, $authData]);
 
         // Przeliczamy flagi gracza, ponieważ dodaliśmy nową usługę
-        $this->recalculatePlayerFlags($serverId, $type, $authData);
-    }
-
-    private function recalculatePlayerFlags($serverId, $type, $authData)
-    {
-        // Musi byc podany typ, bo inaczej nam wywali wszystkie usługi bez typu
-        // Bez serwera oraz auth_data, skrypt po prostu nic nie zrobi
-        if (!$type) {
-            return;
-        }
-
-        // Usuwanie dane, ponieważ za chwilę będziemy je tworzyć na nowo
-        $this->playerFlagRepository->deleteByCredentials($serverId, $type, $authData);
-
-        // Pobieranie wszystkich usług na konkretne dane
-        $table = $this::USER_SERVICE_TABLE;
-        $statement = $this->db->statement(
-            "SELECT * FROM `ss_user_service` AS us " .
-                "INNER JOIN `$table` AS usef ON us.id = usef.us_id " .
-                "WHERE `server` = ? AND `type` = ? AND `auth_data` = ? AND ( `expire` > UNIX_TIMESTAMP() OR `expire` = -1 )"
-        );
-        $statement->execute([$serverId, $type, $authData]);
-
-        // Wyliczanie za jaki czas dana flaga ma wygasnąć
-        $flags = [];
-        $password = "";
-        foreach ($statement as $row) {
-            // Pobranie hasła, bierzemy je tylko raz na początku
-            $password = $password ? $password : $row['password'];
-
-            $service = $this->heart->getService($row['service']);
-            $serviceFlags = $service->getFlags();
-            foreach (str_split($serviceFlags) as $flag) {
-                // Bierzemy maksa, ponieważ inaczej robią się problemy.
-                // A tak to jak wygaśnie jakaś usługa, to wykona się cron, usunie ją i przeliczy flagi jeszcze raz
-                // I znowu weźmie maksa
-                // Czyli stan w tabeli players flags nie jest do końca odzwierciedleniem rzeczywistości :)
-                $flags[$flag] = $this->maxMinus(array_get($flags, $flag), $row['expire']);
-            }
-        }
-
-        if ($flags) {
-            $this->playerFlagRepository->create($serverId, $type, $authData, $password, $flags);
-        }
+        $this->playerFlagService->recalculatePlayerFlags($serverId, $type, $authData);
     }
 
     public function purchaseInfo($action, array $data)
@@ -939,7 +895,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
 
         // Odśwież flagi gracza
-        $this->recalculatePlayerFlags(
+        $this->playerFlagService->recalculatePlayerFlags(
             $userService->getServerId(),
             $userService->getType(),
             $userService->getAuthData()
@@ -1227,14 +1183,14 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
 
         // Odśwież flagi gracza ( przed zmiana danych )
-        $this->recalculatePlayerFlags(
+        $this->playerFlagService->recalculatePlayerFlags(
             $userService->getServerId(),
             $userService->getType(),
             $userService->getAuthData()
         );
 
         // Odśwież flagi gracza ( już po edycji )
-        $this->recalculatePlayerFlags($serverId, $type, $authData);
+        $this->playerFlagService->recalculatePlayerFlags($serverId, $type, $authData);
 
         return true;
     }
@@ -1455,14 +1411,5 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
 
         return "";
-    }
-
-    private function maxMinus($a, $b)
-    {
-        if ($a == -1 || $b == -1) {
-            return -1;
-        }
-
-        return max($a, $b);
     }
 }

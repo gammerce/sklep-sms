@@ -33,7 +33,7 @@ class PriceAvailableRule extends BaseRule
 
         if (
             !$price ||
-            !$this->purchaseValidationService->isPriceAvailable2($price, $serviceId, $serverId)
+            !$this->purchaseValidationService->isPriceAvailable($price, $serviceId, $serverId)
         ) {
             return [$this->lang->t('service_not_affordable')];
         }
