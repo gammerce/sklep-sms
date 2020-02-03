@@ -1,6 +1,7 @@
 <?php
 namespace App\Repositories;
 
+use App\ServiceModules\ServiceModule;
 use App\Support\Database;
 
 class UserServiceRepository
@@ -48,6 +49,52 @@ class UserServiceRepository
         $statement->execute($ids);
 
         return !!$statement->rowCount();
+    }
+
+    public function update($id, array $data)
+    {
+        $params = collect($data)
+            ->keys()
+            ->map(function ($key) {
+                return "`$key` = ?";
+            })
+            ->join(", ");
+
+        $values = array_values($data);
+
+        $statement = $this->db->statement("UPDATE `ss_user_service` SET {$params} WHERE `id` = ?");
+        $statement->execute(array_merge($values, [$id]));
+
+        return $statement->rowCount();
+    }
+
+    public function updateWithModule(ServiceModule $serviceModule, $id, array $data)
+    {
+        $baseData = collect($data)->filter(function ($value, $key) {
+            return in_array($key, ['uid', 'service', 'expire'], true);
+        });
+
+        $moduleData = collect($data)->filter(function ($value, $key) {
+            return !in_array($key, ['uid', 'expire'], true);
+        });
+
+        $affected = $this->update($id, $baseData->all());
+
+        if ($moduleData) {
+            $params = $moduleData
+                ->keys()
+                ->map(function ($key) {
+                    return "`$key` = ?";
+                })
+                ->join(", ");
+
+            $table = $serviceModule::USER_SERVICE_TABLE;
+            $statement = $this->db->statement("UPDATE `$table` SET {$params} WHERE `us_id` = ?");
+            $statement->execute(array_merge($moduleData->values()->all(), [$id]));
+            $affected = max($affected, $statement->rowCount());
+        }
+
+        return $affected;
     }
 
     public function updateUid($id, $uid)

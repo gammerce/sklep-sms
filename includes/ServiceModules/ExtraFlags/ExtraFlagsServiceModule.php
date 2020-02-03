@@ -515,27 +515,17 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $row = $statement->fetch();
             $userServiceId = $row['us_id'];
 
-            $this->updateUserService(
-                [
-                    [
-                        'column' => 'uid',
-                        'value' => "'%d'",
-                        'data' => [$uid],
-                    ],
-                    [
-                        'column' => 'password',
-                        'value' => "'%s'",
-                        'data' => [$password],
-                    ],
-                    [
-                        'column' => 'expire',
-                        'value' => "IF('%d' = '1', -1, `expire` + '%d')",
-                        'data' => [$forever, $days * 24 * 60 * 60],
-                    ],
-                ],
-                $userServiceId,
-                $userServiceId
-            );
+//            [
+//                'column' => 'expire',
+//                'value' => "IF('%d' = '1', -1, `expire` + '%d')",
+//                'data' => [$forever, $days * 24 * 60 * 60],
+//            ],
+
+            $this->userServiceRepository->updateWithModule($this, $userServiceId, [
+                'uid' => $uid,
+                'password' => $password,
+                'expire' => "expire" + $days * 24 * 60 * 60 // TODO Fix it
+            ]);
         } else {
             $this->extraFlagUserServiceRepository->create(
                 $this->service->getId(),
