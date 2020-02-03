@@ -23,7 +23,7 @@ class RequirementsStore
         return [
             [
                 'text' => "PHP v5.6.0 lub wyżej",
-                'value' => semantic_to_number(PHP_VERSION) >= 50600,
+                'value' => version_compare(PHP_VERSION, "5.6.0") >= 0,
                 'must-be' => false,
             ],
             [

@@ -9,7 +9,7 @@ class UniqueSteamIdRule extends BaseRule
     /** @var UserRepository */
     private $userRepository;
 
-    /** @var int */
+    /** @var int|null */
     private $exceptUserId;
 
     public function __construct($exceptUserId = null)

@@ -45,7 +45,7 @@ class CronExecutor
         if (intval($this->settings['delete_logs']) != 0) {
             $this->db
                 ->statement(
-                    "DELETE FROM `ss_logs` " . "WHERE `timestamp` < DATE_SUB(NOW(), INTERVAL ? DAY)"
+                    "DELETE FROM `ss_logs` WHERE `timestamp` < DATE_SUB(NOW(), INTERVAL ? DAY)"
                 )
                 ->execute([$this->settings['delete_logs']]);
         }

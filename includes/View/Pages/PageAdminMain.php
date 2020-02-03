@@ -83,10 +83,10 @@ class PageAdminMain extends PageAdmin
         }
 
         $newestVersion = $this->version->getNewestWeb();
-        $newestAmxxVersion = $this->version->getNewestAmxmodx();
+        $newestAmxXVersion = $this->version->getNewestAmxmodx();
         $newestSmVersion = $this->version->getNewestSourcemod();
 
-        if ($this->app->version() !== $newestVersion) {
+        if (version_compare($this->app->version(), $newestVersion) < 0) {
             $updateWebLink = $this->url->to("/admin/update_web");
 
             $notes[] = $this->createNote(
@@ -101,7 +101,7 @@ class PageAdminMain extends PageAdmin
 
         $serversCount = 0;
         foreach ($this->heart->getServers() as $server) {
-            if (!$this->isServerNewest($server, $newestAmxxVersion, $newestSmVersion)) {
+            if (!$this->isServerNewest($server, $newestAmxXVersion, $newestSmVersion)) {
                 $serversCount += 1;
             }
         }
@@ -142,7 +142,7 @@ class PageAdminMain extends PageAdmin
 
         // Bought service
         $amount = $this->db
-            ->query("SELECT COUNT(*) " . "FROM ({$this->settings['transactions_query']}) AS t")
+            ->query("SELECT COUNT(*) FROM ({$this->settings['transactions_query']}) AS t")
             ->fetchColumn();
         $bricks[] = $this->createBrick($this->lang->t('number_of_bought_services', $amount));
 
