@@ -45,9 +45,7 @@ class SmsCodeRepository
     public function create($code, $smsPrice, $free)
     {
         $this->db
-            ->statement(
-                "INSERT INTO `ss_sms_codes` " . "SET `code` = ?, `sms_price` = ?, `free` = ?"
-            )
+            ->statement("INSERT INTO `ss_sms_codes` SET `code` = ?, `sms_price` = ?, `free` = ?")
             ->execute([$code, $smsPrice, $free ? 1 : 0]);
 
         return $this->get($this->db->lastId());

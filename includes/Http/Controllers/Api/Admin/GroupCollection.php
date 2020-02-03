@@ -32,7 +32,7 @@ class GroupCollection
             ]);
         }
 
-        $db->query($db->prepare("INSERT INTO `ss_groups` " . "SET `name` = '%s'{$set}", [$name]));
+        $db->query($db->prepare("INSERT INTO `ss_groups` SET `name` = '%s'{$set}", [$name]));
 
         $databaseLogger->logWithActor('log_group_added', $db->lastId());
 

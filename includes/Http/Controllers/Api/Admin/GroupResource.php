@@ -36,7 +36,7 @@ class GroupResource
         }
 
         $statement = $db->query(
-            $db->prepare("UPDATE `ss_groups` " . "SET `name` = '%s'{$set} " . "WHERE `id` = '%d'", [
+            $db->prepare("UPDATE `ss_groups` SET `name` = '%s'{$set} WHERE `id` = '%d'", [
                 $name,
                 $groupId,
             ])

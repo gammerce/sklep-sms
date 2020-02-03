@@ -21,7 +21,7 @@ class PageResetPassword extends Page implements IBeLoggedCannot
         }
 
         $statement = $this->db->statement(
-            "SELECT `uid` FROM `ss_users` " . "WHERE `reset_password_key` = ?"
+            "SELECT `uid` FROM `ss_users` WHERE `reset_password_key` = ?"
         );
         $statement->execute([$query['code']]);
 
