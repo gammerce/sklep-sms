@@ -13,6 +13,7 @@ use App\Models\Service;
 use App\Models\UserService;
 use App\Payment\BoughtServiceService;
 use App\Payment\PurchaseSerializer;
+use App\Repositories\UserServiceRepository;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
@@ -103,6 +104,9 @@ class LicenseServiceModule extends ServiceModule implements
     /** @var UserServiceService */
     private $userServiceService;
 
+    /** @var UserServiceRepository */
+    private $userServiceRepository;
+
     /** @var PurchaseSerializer */
     private $purchaseSerializer;
 
@@ -123,6 +127,7 @@ class LicenseServiceModule extends ServiceModule implements
         $this->licenseServerService = $this->app->make(LicenseServerService::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
         $this->userServiceService = $this->app->make(UserServiceService::class);
+        $this->userServiceRepository = $this->app->make(UserServiceRepository::class);
         $this->purchaseSerializer = $this->app->make(PurchaseSerializer::class);
         $this->licenseUserServiceRepository = $this->app->make(LicenseUserServiceRepository::class);
     }
@@ -326,10 +331,11 @@ class LicenseServiceModule extends ServiceModule implements
         $identifier = generateUUID4();
 
         // Dodajemy usługę użytkownika do bazy sklepu
-        $this->db
-            ->statement("INSERT INTO `ss_user_service` SET `uid` = ?, `service` = ?, `expire` = ?")
-            ->execute([$purchase->user->getUid(), $this->service->getId(), $expiresAt]);
-        $userServiceId = $this->db->lastId();
+        $userServiceId = $this->userServiceRepository->createFixedExpire(
+            $this->service->getId(),
+            $expiresAt,
+            $purchase->user->getUid()
+        );
 
         $table = $this::USER_SERVICE_TABLE;
         $this->db
