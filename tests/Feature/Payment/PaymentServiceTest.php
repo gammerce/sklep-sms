@@ -117,4 +117,45 @@ class PaymentServiceTest extends TestCase
         $this->assertNotNull($boughtService);
         $this->assertNull($smsCodeRepository->get($smsCode->getId()));
     }
+
+    /** @test */
+    public function purchase_forever()
+    {
+        // given
+        $paymentPlatform = $this->factory->paymentPlatform([
+            "module" => Pukawka::MODULE_ID,
+        ]);
+
+        $serviceId = "vip";
+        $server = $this->factory->server();
+        $price = $this->factory->price([
+            'service_id' => $serviceId,
+            'sms_price' => 100,
+            'quantity' => null,
+        ]);
+
+        $purchase = new Purchase(new User());
+        $purchase->setOrder([
+            Purchase::ORDER_SERVER => $server->getId(),
+            'type' => ExtraFlagType::TYPE_SID,
+            'auth_data' => 'STEAM_1:0:22309350',
+        ]);
+        $purchase->setPrice($price);
+        $purchase->setService($serviceId);
+        $purchase->setPayment([
+            Purchase::PAYMENT_SMS_PLATFORM => $paymentPlatform->getId(),
+            Purchase::PAYMENT_SMS_CODE => "abcd1234",
+            Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
+        ]);
+
+        // when
+        $payResult = $this->paymentService->makePayment($purchase);
+
+        // then
+        $this->assertSame("purchased", $payResult["status"]);
+        $boughtService = $this->boughtServiceRepository->get($payResult["data"]["bsid"]);
+        $this->assertNotNull($boughtService);
+        $this->assertEquals(-1, $boughtService->getAmount());
+        $this->assertSame('STEAM_1:0:22309350', $boughtService->getAuthData());
+    }
 }

@@ -123,9 +123,9 @@ class UserServiceResourceTest extends HttpTestCase
 
         // when
         $response = $this->put("/api/admin/user_services/{$userService->getId()}", [
-            'auth_data' => 'my_nick',
             'type' => ExtraFlagType::TYPE_NICK,
-            'expire' => convert_date($userService->getExpire()),
+            'auth_data' => 'my_nick',
+            'expire' => convert_date($userService->getExpire() + 2),
             'server_id' => $server->getId(),
         ]);
 
