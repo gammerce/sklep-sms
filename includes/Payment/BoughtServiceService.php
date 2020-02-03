@@ -61,7 +61,7 @@ class BoughtServiceService
      * @param string $paymentId
      * @param string $serviceId
      * @param int $serverId
-     * @param string $quantity
+     * @param int|null $quantity
      * @param string $authData
      * @param string $email
      * @param array $extraData
@@ -81,13 +81,15 @@ class BoughtServiceService
         $email,
         $extraData = []
     ) {
+        $forever = $quantity === null;
+
         $boughtService = $this->boughtServiceRepository->create(
             $uid,
             $method,
             $paymentId,
             $serviceId,
             $serverId,
-            $quantity,
+            $forever ? -1 : $quantity,
             $authData,
             $email,
             $extraData
@@ -97,8 +99,7 @@ class BoughtServiceService
 
         $service = $this->heart->getService($serviceId);
         $server = $this->heart->getServer($serverId);
-        $quantity =
-            $quantity !== null ? "{$quantity} {$service->getTag()}" : $this->lang->t('forever');
+        $quantity = $forever ? $this->lang->t('forever') : "{$quantity} {$service->getTag()}";
 
         $this->logger->log(
             'bought_service_info',
