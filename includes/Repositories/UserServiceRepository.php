@@ -13,6 +13,22 @@ class UserServiceRepository
         $this->db = $db;
     }
 
+    /**
+     * @param string $serviceId
+     * @param int|null $seconds
+     * @param int|null $uid
+     * @return string
+     */
+    public function create($serviceId, $seconds, $uid)
+    {
+        $statement = $this->db->statement(
+            "INSERT INTO `ss_user_service` (`service`, `expire`, `uid`) " .
+                "VALUES (?, IF(? IS NULL, '-1', UNIX_TIMESTAMP() + ?), ?)"
+        );
+        $statement->execute([$serviceId, $seconds, $seconds, $uid ?: 0]);
+        return $this->db->lastId();
+    }
+
     public function delete($id)
     {
         $statement = $this->db->statement("DELETE FROM `ss_user_service` WHERE `id` = ?");

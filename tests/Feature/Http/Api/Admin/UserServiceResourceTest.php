@@ -4,6 +4,7 @@ namespace Tests\Feature\Http\Api\Admin;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\ServiceModules\ExtraFlags\ExtraFlagUserServiceRepository;
 use App\ServiceModules\ExtraFlags\PlayerFlagRepository;
+use App\Support\Database;
 use Tests\Psr4\Concerns\PlayerFlagConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 

@@ -442,9 +442,10 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $authData = $purchase->getOrder('auth_data');
         $serviceName = $this->service->getName();
         $serverName = $server->getName();
-        $quantity = $purchase->getOrder(Purchase::ORDER_FOREVER)
-            ? $this->lang->t('forever')
-            : $purchase->getOrder(Purchase::ORDER_QUANTITY) . " " . $this->service->getTag();
+        $quantity =
+            $purchase->getOrder(Purchase::ORDER_QUANTITY) === null
+                ? $this->lang->t('forever')
+                : $purchase->getOrder(Purchase::ORDER_QUANTITY) . " " . $this->service->getTag();
 
         return $this->template->renderNoComments(
             "services/extra_flags/order_details",
@@ -468,8 +469,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $purchase->getOrder('auth_data'),
             $purchase->getOrder('password'),
             $purchase->getOrder(Purchase::ORDER_QUANTITY),
-            $purchase->getOrder(Purchase::ORDER_SERVER),
-            $purchase->getOrder(Purchase::ORDER_FOREVER)
+            $purchase->getOrder(Purchase::ORDER_SERVER)
         );
 
         return $this->boughtServiceService->create(
@@ -490,15 +490,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
     }
 
-    private function addPlayerFlags(
-        $uid,
-        $type,
-        $authData,
-        $password,
-        $days,
-        $serverId,
-        $forever = false
-    ) {
+    private function addPlayerFlags($uid, $type, $authData, $password, $days, $serverId)
+    {
+        $forever = $days === null;
         $authData = trim($authData);
         $password = strlen($password) ? $password : '';
 
@@ -546,8 +540,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $this->extraFlagUserServiceRepository->create(
                 $this->service->getId(),
                 $uid,
-                $forever,
-                $days,
+                $forever ? null : $days * 24 * 60 * 60,
                 $serverId,
                 $type,
                 $authData,
@@ -671,14 +664,12 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $validator = new Validator(
             array_merge($body, [
-                'forever' => $forever,
                 'quantity' => as_int(array_get($body, 'quantity')),
                 'server_id' => as_int(array_get($body, 'server_id')),
                 'uid' => as_int(array_get($body, 'uid')),
             ]),
             [
                 'email' => [new EmailRule()],
-                'forever' => [],
                 'password' => [new ExtraFlagPasswordRule()],
                 'quantity' => $forever
                     ? []
@@ -705,8 +696,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             'type' => $validated['type'],
             'auth_data' => $validated['auth_data'],
             'password' => $validated['password'],
-            Purchase::ORDER_QUANTITY => $validated['quantity'],
-            Purchase::ORDER_FOREVER => $forever,
+            Purchase::ORDER_QUANTITY => $forever ? null : $validated['quantity'],
         ]);
         $purchase->setEmail($validated['email']);
         $boughtServiceId = $this->purchase($purchase);
@@ -843,12 +833,10 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $validator = new Validator(
             array_merge($body, [
-                'forever' => $forever,
                 'server_id' => as_int(array_get($body, 'server_id')),
                 'uid' => as_int(array_get($body, 'uid')),
             ]),
             [
-                'forever' => [],
                 'expire' => $forever ? [] : [new RequiredRule(), new DateTimeRule()],
                 'server_id' => [new RequiredRule(), new ServerExistsRule()],
                 'uid' => [new UserExistsRule()],
@@ -1036,7 +1024,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
      */
     private function userServiceEdit(ExtraFlagUserService $userService, array $data)
     {
-        $forever = array_get($data, 'forever');
+        $forever = array_get($data, 'expire') === null;
         $expire = as_int(array_get($data, 'expire', $userService->getExpire()));
         $type = as_int(array_get($data, 'type', $userService->getType()));
         $authData = array_get($data, 'auth_data', $userService->getAuthData());

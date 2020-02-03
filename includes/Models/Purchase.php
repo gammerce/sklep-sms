@@ -23,7 +23,6 @@ class Purchase
     const PAYMENT_TRANSFER_PLATFORM = "transfer_platform";
 
     const ORDER_QUANTITY = "quantity";
-    const ORDER_FOREVER = "forever";
     const ORDER_SERVER = "server";
 
     /**
@@ -89,7 +88,6 @@ class Purchase
         ]);
         $this->setOrder([
             Purchase::ORDER_QUANTITY => $price->getQuantity(),
-            Purchase::ORDER_FOREVER => $price->isForever(),
         ]);
     }
 

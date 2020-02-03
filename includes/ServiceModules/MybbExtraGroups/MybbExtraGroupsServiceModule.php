@@ -24,6 +24,7 @@ use App\Payment\BoughtServiceService;
 use App\Payment\PurchasePriceService;
 use App\Payment\PurchaseValidationService;
 use App\Repositories\PriceRepository;
+use App\Repositories\UserServiceRepository;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServicePurchase;
@@ -101,6 +102,9 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     /** @var PurchaseValidationService */
     private $purchaseValidationService;
 
+    /** @var UserServiceRepository */
+    private $userServiceRepository;
+
     /** @var DatabaseLogger */
     private $logger;
 
@@ -117,6 +121,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $this->purchasePriceRenderer = $this->app->make(PurchasePriceRenderer::class);
         $this->purchaseValidationService = $this->app->make(PurchaseValidationService::class);
         $this->priceRepository = $this->app->make(PriceRepository::class);
+        $this->userServiceRepository = $this->app->make(UserServiceRepository::class);
         $this->settings = $this->app->make(Settings::class);
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
@@ -353,9 +358,10 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $email = $purchase->getEmail() ?: $this->lang->t('none');
         $username = $purchase->getOrder('username');
         $serviceName = $this->service->getName();
-        $quantity = $purchase->getOrder(Purchase::ORDER_FOREVER)
-            ? $this->lang->t('forever')
-            : $purchase->getOrder(Purchase::ORDER_QUANTITY) . " " . $this->service->getTag();
+        $quantity =
+            $purchase->getOrder(Purchase::ORDER_QUANTITY) === null
+                ? $this->lang->t('forever')
+                : $purchase->getOrder(Purchase::ORDER_QUANTITY) . " " . $this->service->getTag();
 
         return $this->template->renderNoComments(
             "services/mybb_extra_groups/order_details",
@@ -376,8 +382,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $this->userServiceAdd(
             $purchase->user->getUid(),
             $mybbUser->getUid(),
-            $purchase->getOrder(Purchase::ORDER_QUANTITY),
-            $purchase->getOrder(Purchase::ORDER_FOREVER)
+            $purchase->getOrder(Purchase::ORDER_QUANTITY)
         );
         foreach ($this->groups as $group) {
             $mybbUser->prolongShopGroup(
@@ -477,19 +482,16 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $mybbUser->removeShopGroup();
 
         // Dodajemy uzytkownikowi grupy na podstawie USER_SERVICE_TABLE
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT us.expire - UNIX_TIMESTAMP() AS `expire`, s.data AS `extra_data` FROM `ss_user_service` AS us " .
-                    "INNER JOIN `" .
-                    $this::USER_SERVICE_TABLE .
-                    "` AS m ON us.id = m.us_id " .
-                    "INNER JOIN `ss_services` AS s ON us.service = s.id " .
-                    "WHERE m.mybb_uid = '%d'",
-                [$userService->getMybbUid()]
-            )
+        $table = $this::USER_SERVICE_TABLE;
+        $statement = $this->db->statement(
+            "SELECT us.expire - UNIX_TIMESTAMP() AS `expire`, s.data AS `extra_data` FROM `ss_user_service` AS us " .
+                "INNER JOIN `$table` AS m ON us.id = m.us_id " .
+                "INNER JOIN `ss_services` AS s ON us.service = s.id " .
+                "WHERE m.mybb_uid = ?"
         );
+        $statement->execute([$userService->getMybbUid()]);
 
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
             $row['extra_data'] = json_decode($row['extra_data'], true);
             foreach (explode(',', $row['extra_data']['mybb_groups']) as $groupId) {
                 $mybbUser->prolongShopGroup($groupId, $row['expire']);
@@ -518,28 +520,24 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     /**
      * Dodaje graczowi usłguę
      *
-     * @param $uid
-     * @param $mybbUid
-     * @param $days
-     * @param $forever
+     * @param int|null $uid
+     * @param int $mybbUid
+     * @param int|null $days
      */
-    private function userServiceAdd($uid, $mybbUid, $days, $forever)
+    private function userServiceAdd($uid, $mybbUid, $days)
     {
+        $forever = $days === null;
+
         // Dodajemy usługę gracza do listy usług
         // Jeżeli już istnieje dokładnie taka sama, to ją przedłużamy
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT `us_id` FROM `" .
-                    $this::USER_SERVICE_TABLE .
-                    "` " .
-                    "WHERE `service` = '%s' AND `mybb_uid` = '%d'",
-                [$this->service->getId(), $mybbUid]
-            )
+        $table = $this::USER_SERVICE_TABLE;
+        $statement = $this->db->statement(
+            "SELECT `us_id` FROM `$table` WHERE `service` = ? AND `mybb_uid` = ?"
         );
+        $statement->execute([$this->service->getId(), $mybbUid]);
 
-        if ($result->rowCount()) {
-            // Aktualizujemy
-            $row = $result->fetch();
+        if ($statement->rowCount()) {
+            $row = $statement->fetch();
             $userServiceId = $row['us_id'];
 
             $this->updateUserService(
@@ -564,25 +562,17 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
                 $userServiceId
             );
         } else {
-            // Wstawiamy
-            $this->db->query(
-                $this->db->prepare(
-                    "INSERT INTO `ss_user_service` (`uid`, `service`, `expire`) " .
-                        "VALUES ('%d', '%s', IF('%d' = '1', '-1', UNIX_TIMESTAMP() + '%d')) ",
-                    [$uid, $this->service->getId(), $forever, $days * 24 * 60 * 60]
-                )
+            $userServiceId = $this->userServiceRepository->create(
+                $this->service->getId(),
+                $forever ? null : $days * 24 * 60 * 60,
+                $uid
             );
-            $userServiceId = $this->db->lastId();
 
-            $this->db->query(
-                $this->db->prepare(
-                    "INSERT INTO `" .
-                        $this::USER_SERVICE_TABLE .
-                        "` (`us_id`, `service`, `mybb_uid`) " .
-                        "VALUES ('%d', '%s', '%d')",
-                    [$userServiceId, $this->service->getId(), $mybbUid]
+            $this->db
+                ->statement(
+                    "INSERT INTO `$table` (`us_id`, `service`, `mybb_uid`) VALUES (?, ?, ?)"
                 )
-            );
+                ->execute([$userServiceId, $this->service->getId(), $mybbUid]);
         }
     }
 
@@ -634,8 +624,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         ]);
         $purchase->setOrder([
             'username' => $validated['mybb_username'],
-            Purchase::ORDER_QUANTITY => $validated['quantity'],
-            Purchase::ORDER_FOREVER => $forever,
+            Purchase::ORDER_QUANTITY => $forever ? null : $validated['quantity'],
         ]);
         $purchase->setEmail($validated['email']);
         $boughtServiceId = $this->purchase($purchase);
@@ -689,31 +678,29 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             $where = $this->dbMybb->prepare("`username` = '%s'", [$userId]);
         }
 
-        $result = $this->dbMybb->query(
+        $statement = $this->dbMybb->query(
             "SELECT `uid`, `additionalgroups`, `displaygroup`, `usergroup` " .
                 "FROM `mybb_users` " .
                 "WHERE {$where}"
         );
 
-        if (!$result->rowCount()) {
+        if (!$statement->rowCount()) {
             return null;
         }
 
-        $rowMybb = $result->fetch();
+        $rowMybb = $statement->fetch();
 
         $mybbUser = new MybbUser($rowMybb['uid'], $rowMybb['usergroup']);
         $mybbUser->setMybbAddGroups(explode(",", $rowMybb['additionalgroups']));
         $mybbUser->setMybbDisplayGroup($rowMybb['displaygroup']);
 
-        $result = $this->db->query(
-            $this->db->prepare(
-                "SELECT `gid`, UNIX_TIMESTAMP(`expire`) - UNIX_TIMESTAMP() AS `expire`, `was_before` FROM `ss_mybb_user_group` " .
-                    "WHERE `uid` = '%d'",
-                [$rowMybb['uid']]
-            )
+        $statement = $this->db->statement(
+            "SELECT `gid`, UNIX_TIMESTAMP(`expire`) - UNIX_TIMESTAMP() AS `expire`, `was_before` FROM `ss_mybb_user_group` " .
+                "WHERE `uid` = ?"
         );
+        $statement->execute([$rowMybb['uid']]);
 
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
             $mybbUser->setShopGroup($row['gid'], [
                 'expire' => $row['expire'],
                 'was_before' => $row['was_before'],
@@ -732,11 +719,9 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     {
         $this->connectMybb();
 
-        $this->db->query(
-            $this->db->prepare("DELETE FROM `ss_mybb_user_group` WHERE `uid` = '%d'", [
-                $mybbUser->getUid(),
-            ])
-        );
+        $this->db
+            ->statement("DELETE FROM `ss_mybb_user_group` WHERE `uid` = ?")
+            ->execute([$mybbUser->getUid()]);
 
         $values = [];
         foreach ($mybbUser->getShopGroup() as $gid => $groupData) {
@@ -758,14 +743,17 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             array_merge(array_keys($mybbUser->getShopGroup()), $mybbUser->getMybbAddGroups())
         );
 
-        $this->dbMybb->query(
-            $this->dbMybb->prepare(
+        $this->dbMybb
+            ->statement(
                 "UPDATE `mybb_users` " .
-                    "SET `additionalgroups` = '%s', `displaygroup` = '%d' " .
-                    "WHERE `uid` = '%d'",
-                [implode(',', $addgroups), $mybbUser->getMybbDisplayGroup(), $mybbUser->getUid()]
+                    "SET `additionalgroups` = ?, `displaygroup` = ? " .
+                    "WHERE `uid` = ?"
             )
-        );
+            ->execute([
+                implode(',', $addgroups),
+                $mybbUser->getMybbDisplayGroup(),
+                $mybbUser->getUid(),
+            ]);
     }
 
     /**
