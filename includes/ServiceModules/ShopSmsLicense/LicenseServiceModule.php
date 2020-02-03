@@ -38,6 +38,34 @@ use App\View\Html\Wrapper;
 use Exception;
 use UnexpectedValueException;
 
+// https://stackoverflow.com/a/2040279
+function generateUUID4()
+{
+    return sprintf(
+        '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+        // 32 bits for "time_low"
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff),
+
+        // 16 bits for "time_mid"
+        mt_rand(0, 0xffff),
+
+        // 16 bits for "time_hi_and_version",
+        // four most significant bits holds version number 4
+        mt_rand(0, 0x0fff) | 0x4000,
+
+        // 16 bits, 8 bits for "clk_seq_hi_res",
+        // 8 bits for "clk_seq_low",
+        // two most significant bits holds zero and one for variant DCE1.1
+        mt_rand(0, 0x3fff) | 0x8000,
+
+        // 48 bits for "node"
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff)
+    );
+}
+
 class LicenseServiceModule extends ServiceModule implements
     IServiceUserServiceAdminDisplay,
     IServicePurchase,
@@ -368,21 +396,17 @@ class LicenseServiceModule extends ServiceModule implements
         $engines = $data['extra_data']['engines'];
 
         if ($action == "email") {
-            return $this->template->render(
+            return $this->template->renderNoComments(
                 "services/shopsms_license/purchase_info_email",
-                compact('data', 'engines'),
-                true,
-                false
+                compact('data', 'engines')
             );
         }
 
         if ($action == "web") {
             $email = $data['email'];
-            return $this->template->render(
+            return $this->template->renderNoComments(
                 "services/shopsms_license/purchase_info_web",
-                compact('data', 'engines', 'email') + ['serviceName' => $this->service->getName()],
-                true,
-                false
+                compact('data', 'engines', 'email') + ['serviceName' => $this->service->getName()]
             );
         }
 

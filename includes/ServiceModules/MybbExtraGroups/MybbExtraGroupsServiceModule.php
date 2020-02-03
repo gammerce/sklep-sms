@@ -290,13 +290,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             );
             $bodyRow->addCell(new Cell($row['service']));
             $bodyRow->addCell(new Cell($row['mybb_uid']));
-            $bodyRow->addCell(
-                new Cell(
-                    $row['expire'] == '-1'
-                        ? $this->lang->t('never')
-                        : date($this->settings->getDateFormat(), $row['expire'])
-                )
-            );
+            $bodyRow->addCell(new Cell(convert_expire($row['expire'])));
             if (get_privileges("manage_user_services")) {
                 $bodyRow->setDeleteAction(true);
                 $bodyRow->setEditAction(false);
@@ -663,14 +657,12 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $this->connectMybb();
 
         $statement = $this->dbMybb->statement(
-            "SELECT `username` FROM `mybb_users` " . "WHERE `uid` = ?"
+            "SELECT `username` FROM `mybb_users` WHERE `uid` = ?"
         );
         $statement->execute([$userService->getMybbUid()]);
         $username = $statement->fetchColumn();
 
-        $expire = $userService->isForever()
-            ? $this->lang->t('never')
-            : convert_date($userService->getExpire());
+        $expire = convert_expire($userService->getExpire());
         $mybbUid = "$username ({$userService->getMybbUid()})";
 
         return $this->template->render(
@@ -741,7 +733,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $this->connectMybb();
 
         $this->db->query(
-            $this->db->prepare("DELETE FROM `ss_mybb_user_group` " . "WHERE `uid` = '%d'", [
+            $this->db->prepare("DELETE FROM `ss_mybb_user_group` WHERE `uid` = '%d'", [
                 $mybbUser->getUid(),
             ])
         );

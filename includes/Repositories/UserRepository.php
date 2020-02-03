@@ -179,7 +179,7 @@ class UserRepository
     {
         $key = get_random_string(32);
         $this->db
-            ->statement("UPDATE `ss_users` " . "SET `reset_password_key` = ? WHERE `uid` = ?")
+            ->statement("UPDATE `ss_users` SET `reset_password_key` = ? WHERE `uid` = ?")
             ->execute([$key, $uid]);
 
         return $key;

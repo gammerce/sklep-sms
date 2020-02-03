@@ -32,10 +32,15 @@ class GroupCollection
             ]);
         }
 
-        $db->query($db->prepare("INSERT INTO `ss_groups` " . "SET `name` = '%s'{$set}", [$name]));
+        $db->query($db->prepare("INSERT INTO `ss_groups` SET `name` = '%s'{$set}", [$name]));
+        $groupId = $db->lastId();
 
-        $databaseLogger->logWithActor('log_group_added', $db->lastId());
+        $databaseLogger->logWithActor('log_group_added', $groupId);
 
-        return new SuccessApiResponse($lang->t('group_add'));
+        return new SuccessApiResponse($lang->t('group_add'), [
+            "data" => [
+                "id" => $groupId,
+            ],
+        ]);
     }
 }

@@ -32,13 +32,11 @@ class DatabaseMigration
         $salt = get_random_string(8);
 
         $this->db
-            ->statement("UPDATE `ss_settings` " . "SET `value`= ? WHERE `key` = 'random_key'")
+            ->statement("UPDATE `ss_settings` SET `value`= ? WHERE `key` = 'random_key'")
             ->execute([get_random_string(16)]);
 
         $this->db
-            ->statement(
-                "UPDATE `ss_settings` " . "SET `value` = ? WHERE `key` = 'license_password';"
-            )
+            ->statement("UPDATE `ss_settings` SET `value` = ? WHERE `key` = 'license_password';")
             ->execute([$token]);
 
         $this->db
@@ -66,7 +64,7 @@ class DatabaseMigration
     {
         try {
             return $this->db
-                ->query("SELECT `name` FROM `ss_migrations` " . "ORDER BY id DESC " . "LIMIT 1")
+                ->query("SELECT `name` FROM `ss_migrations` ORDER BY id DESC LIMIT 1")
                 ->fetchColumn();
         } catch (PDOException $e) {
             if (preg_match("/Table .*ss_migrations.* doesn't exist/", $e->getMessage())) {
@@ -107,6 +105,6 @@ class DatabaseMigration
 
     private function saveExecutedMigration($name)
     {
-        $this->db->statement("INSERT INTO `ss_migrations` " . "SET `name` = ?")->execute([$name]);
+        $this->db->statement("INSERT INTO `ss_migrations` SET `name` = ?")->execute([$name]);
     }
 }

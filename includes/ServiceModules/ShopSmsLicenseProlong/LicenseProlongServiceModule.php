@@ -192,23 +192,19 @@ class LicenseProlongServiceModule extends ServiceModule implements
         $identifier = $data['auth_data'];
 
         if ($action == "email") {
-            return $this->template->render(
+            return $this->template->renderNoComments(
                 "services/shopsms_license_prolong/purchase_info_email",
-                compact('identifier', 'data'),
-                true,
-                false
+                compact('identifier', 'data')
             );
         }
 
         if ($action == "web") {
-            return $this->template->render(
+            return $this->template->renderNoComments(
                 "services/shopsms_license_prolong/purchase_info_web",
                 [
                     'serviceName' => $this->service->getName(),
                     'data' => $data,
-                ],
-                true,
-                false
+                ]
             );
         }
 
@@ -224,13 +220,11 @@ class LicenseProlongServiceModule extends ServiceModule implements
 
     public function userServiceAdminAddFormGet()
     {
-        return $this->template->render(
+        return $this->template->renderNoComments(
             "services/shopsms_license_prolong/user_service_admin_add",
             [
                 'moduleId' => $this->getModuleId(),
-            ],
-            true,
-            false
+            ]
         );
     }
 

@@ -75,13 +75,10 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
         }
 
         if ($boxId == "group_edit") {
-            $result = $this->db->query(
-                $this->db->prepare("SELECT * FROM `ss_groups` " . "WHERE `id` = '%d'", [
-                    $query['id'],
-                ])
-            );
+            $statement = $this->db->statement("SELECT * FROM `ss_groups` WHERE `id` = ?");
+            $statement->execute([$query['id']]);
 
-            if (!$result->rowCount()) {
+            if (!$statement->rowCount()) {
                 $query['template'] = create_dom_element("form", $this->lang->t('no_such_group'), [
                     'class' => 'action_box',
                     'style' => [
@@ -90,13 +87,13 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                     ],
                 ]);
             } else {
-                $group = $result->fetch();
+                $group = $statement->fetch();
             }
         }
 
         $privileges = "";
-        $result = $this->db->query("DESCRIBE ss_groups");
-        foreach ($result as $row) {
+        $statement = $this->db->query("DESCRIBE ss_groups");
+        foreach ($statement as $row) {
             if (in_array($row['Field'], ["id", "name"])) {
                 continue;
             }

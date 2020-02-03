@@ -28,12 +28,12 @@ class MigrateTransactionServices extends Migration
         $paymentPlatforms = [];
         $requiredPlatforms = [$smsService, $transferService];
 
-        $statement = $this->db->query("SELECT * FROM ss_servers");
+        $statement = $this->db->query("SELECT * FROM `ss_servers`");
         foreach ($statement as $row) {
             $requiredPlatforms[] = $row['sms_service'];
         }
 
-        $statement = $this->db->query("SELECT * FROM ss_transaction_services");
+        $statement = $this->db->query("SELECT * FROM `ss_transaction_services`");
         foreach ($statement as $row) {
             $data = json_decode($row["data"], true);
 

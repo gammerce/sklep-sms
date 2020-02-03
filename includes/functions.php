@@ -193,6 +193,22 @@ function convert_date($timestamp, $format = "")
 }
 
 /**
+ * @param int $timestamp
+ * @return string
+ */
+function convert_expire($timestamp)
+{
+    /** @var TranslationManager $translationManager */
+    $translationManager = app()->make(TranslationManager::class);
+    $lang = $translationManager->user();
+    if ($timestamp === -1) {
+        return $lang->t("never");
+    }
+
+    return convert_date($timestamp);
+}
+
+/**
  * Returns sms cost net by number
  *
  * @param string $number
@@ -432,45 +448,6 @@ function captureRequest()
 function get_error_code(PDOException $e)
 {
     return $e->errorInfo[1];
-}
-
-function semantic_to_number($version)
-{
-    $parts = explode('.', $version);
-
-    if (count($parts) < 3) {
-        return null;
-    }
-
-    return $parts[0] * 10000 + $parts[1] * 100 + $parts[2];
-}
-
-// https://stackoverflow.com/a/2040279
-function generateUUID4()
-{
-    return sprintf(
-        '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-        // 32 bits for "time_low"
-        mt_rand(0, 0xffff),
-        mt_rand(0, 0xffff),
-
-        // 16 bits for "time_mid"
-        mt_rand(0, 0xffff),
-
-        // 16 bits for "time_hi_and_version",
-        // four most significant bits holds version number 4
-        mt_rand(0, 0x0fff) | 0x4000,
-
-        // 16 bits, 8 bits for "clk_seq_hi_res",
-        // 8 bits for "clk_seq_low",
-        // two most significant bits holds zero and one for variant DCE1.1
-        mt_rand(0, 0x3fff) | 0x8000,
-
-        // 48 bits for "node"
-        mt_rand(0, 0xffff),
-        mt_rand(0, 0xffff),
-        mt_rand(0, 0xffff)
-    );
 }
 
 function collect($items)

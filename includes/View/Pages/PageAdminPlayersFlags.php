@@ -48,7 +48,6 @@ class PageAdminPlayersFlags extends PageAdmin
         foreach ($result as $row) {
             $bodyRow = new BodyRow();
 
-            // Pozyskanie danych serwera
             $tempServer = $this->heart->getServer($row['server']);
             $serverName = $tempServer->getName();
             unset($tempServer);
@@ -61,13 +60,7 @@ class PageAdminPlayersFlags extends PageAdmin
                 if (!$row[$flag]) {
                     $bodyRow->addCell(new Cell(' '));
                 } else {
-                    if ($row[$flag] == -1) {
-                        $bodyRow->addCell(new Cell($this->lang->t('never')));
-                    } else {
-                        $bodyRow->addCell(
-                            new Cell(date($this->settings->getDateFormat(), $row[$flag]))
-                        );
-                    }
+                    $bodyRow->addCell(new Cell(convert_expire($row[$flag])));
                 }
             }
 

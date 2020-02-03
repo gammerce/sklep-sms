@@ -48,9 +48,7 @@ class PurchaseInformation
         }
 
         $pbs = $this->db
-            ->query(
-                "SELECT * FROM ({$this->settings['transactions_query']}) as t " . "WHERE {$where}"
-            )
+            ->query("SELECT * FROM ({$this->settings['transactions_query']}) as t WHERE {$where}")
             ->fetch();
 
         if (!$pbs) {

@@ -136,7 +136,7 @@ class ServiceRepository
 
     public function delete($id)
     {
-        $statement = $this->db->statement("DELETE FROM `ss_services` " . "WHERE `id` = ?");
+        $statement = $this->db->statement("DELETE FROM `ss_services` WHERE `id` = ?");
         $statement->execute([$id]);
 
         return !!$statement->rowCount();

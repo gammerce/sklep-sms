@@ -84,13 +84,11 @@ class LicenseEditServiceModule extends ServiceModule implements
 
         $engines = !empty($engines) ? implode(", ", $engines) : $this->lang->t('none');
 
-        return $this->template->render(
+        return $this->template->renderNoComments(
             "services/shopsms_license_edit/order_details",
             compact('identifier', 'engines', 'costMonthly', 'email') + [
                 'serviceName' => $this->service->getName(),
-            ],
-            true,
-            false
+            ]
         );
     }
 
@@ -170,21 +168,17 @@ class LicenseEditServiceModule extends ServiceModule implements
         $engines = $data['extra_data']['engines'];
 
         if ($action == "email") {
-            return $this->template->render(
+            return $this->template->renderNoComments(
                 "services/shopsms_license_edit/purchase_info_email",
-                compact('data', 'engines'),
-                true,
-                false
+                compact('data', 'engines')
             );
         }
 
         if ($action == "web") {
             $email = $data['email'];
-            return $this->template->render(
+            return $this->template->renderNoComments(
                 "services/shopsms_license_edit/purchase_info_web",
-                compact('data', 'email', 'engines'),
-                true,
-                false
+                compact('data', 'email', 'engines')
             );
         }
 

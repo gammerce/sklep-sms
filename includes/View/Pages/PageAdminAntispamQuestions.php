@@ -83,7 +83,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
 
             case "antispam_question_edit":
                 $statement = $this->db->statement(
-                    "SELECT * FROM `ss_antispam_questions` " . "WHERE `id` = ?"
+                    "SELECT * FROM `ss_antispam_questions` WHERE `id` = ?"
                 );
                 $statement->execute([$query['id']]);
                 $row = $statement->fetch();
