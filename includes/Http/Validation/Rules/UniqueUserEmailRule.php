@@ -2,31 +2,28 @@
 namespace App\Http\Validation\Rules;
 
 use App\Http\Validation\BaseRule;
-use App\Support\Database;
+use App\Repositories\UserRepository;
 
 class UniqueUserEmailRule extends BaseRule
 {
-    /** @var Database */
-    private $db;
+    /** @var UserRepository */
+    private $userRepository;
 
-    /** @var int */
+    /** @var int|null */
     private $exceptUserId;
 
     public function __construct($exceptUserId = null)
     {
         parent::__construct();
-        $this->db = app()->make(Database::class);
+        $this->userRepository = app()->make(UserRepository::class);
         $this->exceptUserId = $exceptUserId;
     }
 
     public function validate($attribute, $value, array $data)
     {
-        $statement = $this->db->statement(
-            "SELECT `uid` FROM `ss_users` WHERE `email` = ? AND `uid` != ?"
-        );
-        $statement->execute([$value, $this->exceptUserId]);
+        $user = $this->userRepository->findByEmail($value);
 
-        if ($statement->rowCount()) {
+        if ($user && $user->getUid() !== $this->exceptUserId) {
             return [$this->lang->t('email_occupied')];
         }
 

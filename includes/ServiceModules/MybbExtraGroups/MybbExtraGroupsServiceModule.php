@@ -663,7 +663,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $this->connectMybb();
 
         $statement = $this->dbMybb->statement(
-            "SELECT `username` FROM `mybb_users` " . "WHERE `uid` = ?"
+            "SELECT `username` FROM `mybb_users` WHERE `uid` = ?"
         );
         $statement->execute([$userService->getMybbUid()]);
         $username = $statement->fetchColumn();
@@ -741,7 +741,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $this->connectMybb();
 
         $this->db->query(
-            $this->db->prepare("DELETE FROM `ss_mybb_user_group` " . "WHERE `uid` = '%d'", [
+            $this->db->prepare("DELETE FROM `ss_mybb_user_group` WHERE `uid` = '%d'", [
                 $mybbUser->getUid(),
             ])
         );

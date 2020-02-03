@@ -21,9 +21,7 @@ class AdminPaymentService
     public function payByAdmin(User $admin)
     {
         $this->db
-            ->statement(
-                "INSERT INTO `ss_payment_admin` (`aid`, `ip`, `platform`) " . "VALUES (?, ?, ?)"
-            )
+            ->statement("INSERT INTO `ss_payment_admin` (`aid`, `ip`, `platform`) VALUES (?, ?, ?)")
             ->execute([$admin->getUid(), $admin->getLastIp(), $admin->getPlatform()]);
 
         return $this->db->lastId();

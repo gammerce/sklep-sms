@@ -17,9 +17,7 @@ class PaymentCodeRepository
     public function create($code, $ip, $platform)
     {
         $this->db
-            ->statement(
-                "INSERT INTO `ss_payment_code` " . "SET `code` = ?, `ip` = ?, `platform` = ?"
-            )
+            ->statement("INSERT INTO `ss_payment_code` SET `code` = ?, `ip` = ?, `platform` = ?")
             ->execute([$code, $ip, $platform]);
 
         return $this->get($this->db->lastId());

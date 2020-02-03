@@ -142,7 +142,7 @@ class PageAdminMain extends PageAdmin
 
         // Bought service
         $amount = $this->db
-            ->query("SELECT COUNT(*) " . "FROM ({$this->settings['transactions_query']}) AS t")
+            ->query("SELECT COUNT(*) FROM ({$this->settings['transactions_query']}) AS t")
             ->fetchColumn();
         $bricks[] = $this->createBrick($this->lang->t('number_of_bought_services', $amount));
 

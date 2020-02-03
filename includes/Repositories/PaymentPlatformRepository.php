@@ -19,7 +19,7 @@ class PaymentPlatformRepository
     {
         $this->db
             ->statement(
-                "INSERT INTO `ss_payment_platforms` " . "SET `name` = ?, `module` = ?, `data` = ?"
+                "INSERT INTO `ss_payment_platforms` SET `name` = ?, `module` = ?, `data` = ?"
             )
             ->execute([$name, $module, json_encode($data)]);
 
@@ -29,9 +29,7 @@ class PaymentPlatformRepository
     public function update($id, $name, array $data = [])
     {
         $this->db
-            ->statement(
-                "UPDATE `ss_payment_platforms` " . "SET `name` = ?, `data` = ? " . "WHERE `id` = ?"
-            )
+            ->statement("UPDATE `ss_payment_platforms` SET `name` = ?, `data` = ? WHERE `id` = ?")
             ->execute([$name, json_encode($data), $id]);
     }
 
