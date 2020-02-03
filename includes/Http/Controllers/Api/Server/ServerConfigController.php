@@ -33,8 +33,9 @@ class ServerConfigController
         $acceptHeader = AcceptHeader::fromString($request->headers->get('Accept'));
         $ip = $request->query->get("ip");
         $port = $request->query->get("port");
-        $platform = $request->headers->get('User-Agent');
         $version = $request->query->get("version");
+        $withPlayerFlags = $request->query->get("player_flags") === "1";
+        $platform = $request->headers->get('User-Agent');
 
         $server = $serverRepository->findByIpPort($ip, $port);
         if (!$server) {
@@ -55,13 +56,13 @@ class ServerConfigController
         }
 
         $smsNumbers = $smsModule::getSmsNumbers();
-        $services = $serverDataService->findServices($server->getId());
+        $services = $serverDataService->getServices($server->getId());
         $serviceIds = collect($services)
             ->map(function (Service $service) {
                 return $service->getId();
             })
             ->all();
-        $prices = $serverDataService->findPrices($serviceIds, $server);
+        $prices = $serverDataService->getPrices($serviceIds, $server);
 
         $serviceItems = collect($services)->map(function (Service $service) {
             return [
@@ -83,6 +84,18 @@ class ServerConfigController
                 'q' => $price->getQuantity() !== null ? $price->getQuantity() : -1,
             ];
         });
+
+        if ($withPlayerFlags) {
+            $playersFlags = $serverDataService->getPlayersFlags($server->getId());
+            $playerFlagItems = collect($playersFlags)->map(function (array $item) {
+                return [
+                    't' => $item['type'],
+                    'a' => $item['auth_data'],
+                    'p' => $item['password'],
+                    'f' => $item['flags'],
+                ];
+            });
+        }
 
         $smsNumberItems = collect($smsNumbers)->map(function (SmsNumber $smsNumber) {
             return $smsNumber->getNumber();
@@ -109,6 +122,10 @@ class ServerConfigController
             'se' => $serviceItems->all(),
             'pr' => $priceItems->all(),
         ];
+
+        if (isset($playerFlagItems)) {
+            $data['pf'] = $playerFlagItems->all();
+        }
 
         return $acceptHeader->has("application/json")
             ? new JsonResponse($data)

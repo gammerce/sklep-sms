@@ -193,6 +193,22 @@ function convert_date($timestamp, $format = "")
 }
 
 /**
+ * @param int $timestamp
+ * @return string
+ */
+function convert_expire($timestamp)
+{
+    /** @var TranslationManager $translationManager */
+    $translationManager = app()->make(TranslationManager::class);
+    $lang = $translationManager->user();
+    if ($timestamp === -1) {
+        return $lang->t("never");
+    }
+
+    return convert_date($timestamp);
+}
+
+/**
  * Returns sms cost net by number
  *
  * @param string $number

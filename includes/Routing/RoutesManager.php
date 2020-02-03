@@ -46,6 +46,7 @@ use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\Server\PurchaseResource as ServerPurchaseResource;
 use App\Http\Controllers\Api\Server\ServerConfigController;
 use App\Http\Controllers\Api\Server\ServiceLongDescriptionController;
+use App\Http\Controllers\Api\Server\UserServiceCollection as ServerUserServiceCollection;
 use App\Http\Controllers\Api\ServiceActionController;
 use App\Http\Controllers\Api\ServiceLongDescriptionResource;
 use App\Http\Controllers\Api\ServiceTakeOverController;
@@ -176,6 +177,10 @@ class RoutesManager
 
                         $r->get('/api/server/config', [
                             'uses' => ServerConfigController::class . '@get',
+                        ]);
+
+                        $r->get('/api/server/user_services', [
+                            'uses' => ServerUserServiceCollection::class . '@get',
                         ]);
                     }
                 );
