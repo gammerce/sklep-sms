@@ -61,7 +61,7 @@ class BoughtServiceService
      * @param string $paymentId
      * @param string $serviceId
      * @param int $serverId
-     * @param string $amount
+     * @param string $quantity
      * @param string $authData
      * @param string $email
      * @param array $extraData
@@ -76,7 +76,7 @@ class BoughtServiceService
         $paymentId,
         $serviceId,
         $serverId,
-        $amount,
+        $quantity,
         $authData,
         $email,
         $extraData = []
@@ -87,7 +87,7 @@ class BoughtServiceService
             $paymentId,
             $serviceId,
             $serverId,
-            $amount,
+            $quantity,
             $authData,
             $email,
             $extraData
@@ -97,13 +97,14 @@ class BoughtServiceService
 
         $service = $this->heart->getService($serviceId);
         $server = $this->heart->getServer($serverId);
-        $amount = $amount != -1 ? "{$amount} {$service->getTag()}" : $this->lang->t('forever');
+        $quantity =
+            $quantity !== null ? "{$quantity} {$service->getTag()}" : $this->lang->t('forever');
 
         $this->logger->log(
             'bought_service_info',
             $serviceId,
             $authData,
-            $amount,
+            $quantity,
             $server ? $server->getName() : '',
             $paymentId,
             $returnMessage,

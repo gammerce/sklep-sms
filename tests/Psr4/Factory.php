@@ -274,8 +274,7 @@ class Factory
             [
                 'service_id' => 'vip',
                 'uid' => null,
-                'forever' => false,
-                'days' => 35,
+                'seconds' => 35 * 24 * 60 * 60,
                 'server_id' => null,
                 'type' => ExtraFlagType::TYPE_NICK,
                 'auth_data' => 'my_nickname',
@@ -287,8 +286,7 @@ class Factory
         return $this->extraFlagUserServiceRepository->create(
             $attributes['service_id'],
             $attributes['uid'],
-            $attributes['forever'],
-            $attributes['days'],
+            $attributes['seconds'],
             $attributes['server_id'],
             $attributes['type'],
             $attributes['auth_data'],

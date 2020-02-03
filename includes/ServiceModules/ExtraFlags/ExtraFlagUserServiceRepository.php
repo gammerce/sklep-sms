@@ -1,6 +1,7 @@
 <?php
 namespace App\ServiceModules\ExtraFlags;
 
+use App\Repositories\UserServiceRepository;
 use App\Support\Database;
 
 class ExtraFlagUserServiceRepository
@@ -8,27 +9,18 @@ class ExtraFlagUserServiceRepository
     /** @var Database */
     private $db;
 
-    public function __construct(Database $db)
+    /** @var UserServiceRepository */
+    private $userServiceRepository;
+
+    public function __construct(Database $db, UserServiceRepository $userServiceRepository)
     {
         $this->db = $db;
+        $this->userServiceRepository = $userServiceRepository;
     }
 
-    public function create(
-        $serviceId,
-        $uid,
-        $forever,
-        $days,
-        $serverId,
-        $type,
-        $authData,
-        $password
-    ) {
-        $statement = $this->db->statement(
-            "INSERT INTO `ss_user_service` (`uid`, `service`, `expire`) " .
-                "VALUES (?, ?, IF(? = '1', '-1', UNIX_TIMESTAMP() + ?)) "
-        );
-        $statement->execute([$uid ?: 0, $serviceId, $forever, $days * 24 * 60 * 60]);
-        $userServiceId = $this->db->lastId();
+    public function create($serviceId, $uid, $seconds, $serverId, $type, $authData, $password)
+    {
+        $userServiceId = $this->userServiceRepository->create($serviceId, $seconds, $uid);
 
         $table = ExtraFlagsServiceModule::USER_SERVICE_TABLE;
         $statement = $this->db->statement(

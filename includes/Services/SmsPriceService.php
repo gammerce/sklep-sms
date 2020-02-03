@@ -53,7 +53,7 @@ class SmsPriceService
 
     /**
      * @param int $smsPrice
-     * @param SupportSms|null $paymentModule
+     * @param SupportSms $paymentModule
      * @return int
      */
     public function getProvision($smsPrice, SupportSms $paymentModule)
