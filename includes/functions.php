@@ -1,5 +1,6 @@
 <?php
 
+use App\Loggers\FileLogger;
 use App\Models\Server;
 use App\Models\User;
 use App\Support\Collection;
@@ -457,6 +458,10 @@ function collect($items)
 
 function is_list(array $array)
 {
+    if (empty($array)) {
+        return true;
+    }
+
     return ctype_digit(implode('', array_keys($array)));
 }
 
@@ -545,4 +550,11 @@ function has_value($value)
     }
 
     return strlen($value);
+}
+
+function log_info($text, array $data = [])
+{
+    /** @var FileLogger $logger */
+    $logger = app()->make(FileLogger::class);
+    $logger->info($text, $data);
 }

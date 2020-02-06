@@ -125,7 +125,7 @@ class TestCase extends BaseTestCase
 
     protected function assertAlmostSameTimestamp($expected, $value)
     {
-        $this->assertLessThanOrEqual($expected + 2, $value);
-        $this->assertGreaterThanOrEqual($expected - 2, $value);
+        $this->assertLessThanOrEqual($expected + 5, $value);
+        $this->assertGreaterThanOrEqual($expected - 5, $value);
     }
 }

@@ -13,6 +13,9 @@ class UrlGenerator
     /** @var Application */
     private $app;
 
+    /** @var string|null */
+    private $version;
+
     public function __construct(Settings $settings, Application $app)
     {
         $this->settings = $settings;
@@ -36,10 +39,10 @@ class UrlGenerator
         $url = $this->to($path);
 
         if (str_contains($url, '?')) {
-            return $url . "&version={$this->app->version()}";
+            return $url . "&v={$this->getVersion()}";
         }
 
-        return $url . "?version={$this->app->version()}";
+        return $url . "?v={$this->getVersion()}";
     }
 
     public function getShopUrl()
@@ -52,5 +55,15 @@ class UrlGenerator
         $request = $this->app->make(Request::class);
 
         return $request->getUriForPath("");
+    }
+
+    private function getVersion()
+    {
+        if (!$this->version) {
+            $version = hash("sha256", $this->settings->getSecret() . "#" . $this->app->version());
+            $this->version = substr($version, 0, 7);
+        }
+
+        return $this->version;
     }
 }
