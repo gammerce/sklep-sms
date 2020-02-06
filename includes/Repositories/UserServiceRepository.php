@@ -3,6 +3,7 @@ namespace App\Repositories;
 
 use App\ServiceModules\ServiceModule;
 use App\Support\Database;
+use App\Support\Expression;
 
 class UserServiceRepository
 {
@@ -54,13 +55,21 @@ class UserServiceRepository
     public function update($id, array $data)
     {
         $params = collect($data)
-            ->keys()
-            ->map(function ($key) {
+            ->map(function ($value, $key) {
+                if ($value instanceof Expression) {
+                    return "`$key` = $value";
+                }
+
                 return "`$key` = ?";
             })
             ->join(", ");
 
-        $values = array_values($data);
+        $values = collect($data)
+            ->values()
+            ->filter(function ($value) {
+                return !($value instanceof Expression);
+            })
+            ->all();
 
         $statement = $this->db->statement("UPDATE `ss_user_service` SET {$params} WHERE `id` = ?");
         $statement->execute(array_merge($values, [$id]));
@@ -82,15 +91,25 @@ class UserServiceRepository
 
         if ($moduleData) {
             $params = $moduleData
-                ->keys()
-                ->map(function ($key) {
+                ->map(function ($value, $key) {
+                    if ($value instanceof Expression) {
+                        return "`$key` = $value";
+                    }
+
                     return "`$key` = ?";
                 })
                 ->join(", ");
 
+            $values = $moduleData
+                ->values()
+                ->filter(function ($value) {
+                    return !($value instanceof Expression);
+                })
+                ->all();
+
             $table = $serviceModule::USER_SERVICE_TABLE;
             $statement = $this->db->statement("UPDATE `$table` SET {$params} WHERE `us_id` = ?");
-            $statement->execute(array_merge($moduleData->values()->all(), [$id]));
+            $statement->execute(array_merge($values, [$id]));
             $affected = max($affected, $statement->rowCount());
         }
 

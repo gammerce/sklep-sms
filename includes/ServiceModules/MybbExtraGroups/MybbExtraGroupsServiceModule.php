@@ -34,6 +34,7 @@ use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\ServiceModules\ServiceModule;
 use App\Support\Database;
+use App\Support\Expression;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;
@@ -539,28 +540,13 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         if ($statement->rowCount()) {
             $row = $statement->fetch();
             $userServiceId = $row['us_id'];
+            $seconds = $days * 24 * 60 * 60;
 
-            $this->updateUserService(
-                [
-                    [
-                        'column' => 'uid',
-                        'value' => "'%d'",
-                        'data' => [$uid],
-                    ],
-                    [
-                        'column' => 'mybb_uid',
-                        'value' => "'%d'",
-                        'data' => [$mybbUid],
-                    ],
-                    [
-                        'column' => 'expire',
-                        'value' => "IF('%d' = '1', -1, `expire` + '%d')",
-                        'data' => [$forever, $days * 24 * 60 * 60],
-                    ],
-                ],
-                $userServiceId,
-                $userServiceId
-            );
+            $this->userServiceRepository->updateWithModule($this, $userServiceId, [
+                'uid' => $uid,
+                'mybb_uid' => $mybbUid,
+                'expire' => $forever ? -1 : new Expression("`expire` + $seconds"),
+            ]);
         } else {
             $userServiceId = $this->userServiceRepository->create(
                 $this->service->getId(),
