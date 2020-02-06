@@ -545,7 +545,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             $this->userServiceRepository->updateWithModule($this, $userServiceId, [
                 'uid' => $uid,
                 'mybb_uid' => $mybbUid,
-                'expire' => $forever ? -1 : new Expression("`expire` + $seconds"),
+                'expire' => $forever ? null : new Expression("`expire` + $seconds"),
             ]);
         } else {
             $userServiceId = $this->userServiceRepository->create(

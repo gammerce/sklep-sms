@@ -520,7 +520,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $this->userServiceRepository->updateWithModule($this, $userServiceId, [
                 'uid' => $uid,
                 'password' => $password,
-                'expire' => $forever ? -1 : new Expression("`expire` + $seconds"),
+                'expire' => $forever ? null : new Expression("`expire` + $seconds"),
             ]);
         } else {
             $this->extraFlagUserServiceRepository->create(

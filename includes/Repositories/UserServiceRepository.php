@@ -54,6 +54,14 @@ class UserServiceRepository
 
     public function update($id, array $data)
     {
+        if (array_key_exists('uid', $data) && $data['uid'] === null) {
+            $data['uid'] = 0;
+        }
+
+        if (array_key_exists('expire', $data) && $data['expire'] === null) {
+            $data['expire'] = -1;
+        }
+
         $params = collect($data)
             ->map(function ($value, $key) {
                 if ($value instanceof Expression) {
