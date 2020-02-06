@@ -20,7 +20,6 @@ class ServerResponseFactory
                     [
                         'status' => $status,
                         'text' => $text,
-                        'positive' => !!$positive,
                     ],
                     $data
                 ),
@@ -34,7 +33,6 @@ class ServerResponseFactory
                     [
                         'status' => $status,
                         'text' => $text,
-                        'positive' => $positive ? 1 : 0,
                     ],
                     $data
                 ),

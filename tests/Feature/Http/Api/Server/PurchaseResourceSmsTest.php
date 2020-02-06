@@ -154,7 +154,6 @@ class PurchaseResourceSmsTest extends HttpTestCase
         $data = implode("\n", [
             'status:purchased',
             'text:Usługa została prawidłowo zakupiona.',
-            'positive:1',
             'bsid:\d+',
         ]);
         $this->assertRegExp("#^$data$#", $response->getContent());
