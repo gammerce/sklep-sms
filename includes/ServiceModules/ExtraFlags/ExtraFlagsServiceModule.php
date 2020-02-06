@@ -515,14 +515,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         if ($statement->rowCount()) {
             $row = $statement->fetch();
             $userServiceId = $row['us_id'];
-
-            //            [
-            //                'column' => 'expire',
-            //                'value' => "IF('%d' = '1', -1, `expire` + '%d')",
-            //                'data' => [$forever, $days * 24 * 60 * 60],
-            //            ],
-
             $seconds = $days * 24 * 60 * 60;
+
             $this->userServiceRepository->updateWithModule($this, $userServiceId, [
                 'uid' => $uid,
                 'password' => $password,
