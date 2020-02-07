@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\UnauthorizedException;
 use App\Http\Responses\PlainResponse;
 use App\Services\PriceTextService;
-use App\System\Heart;
 use App\Support\Template;
+use App\System\Heart;
 use Symfony\Component\HttpFoundation\Request;
 
 class TemplateResource

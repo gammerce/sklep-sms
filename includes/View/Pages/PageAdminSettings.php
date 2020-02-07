@@ -1,14 +1,14 @@
 <?php
 namespace App\View\Pages;
 
-use App\View\Html\Option;
-use App\View\Html\Select;
 use App\Repositories\PaymentPlatformRepository;
-use App\System\Heart;
 use App\Support\Path;
+use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
+use App\View\Html\Option;
+use App\View\Html\Select;
 
 class PageAdminSettings extends PageAdmin
 {

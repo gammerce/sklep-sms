@@ -2,6 +2,8 @@
 namespace App\View\Pages;
 
 use App\Exceptions\UnauthorizedException;
+use App\Http\Services\DataFieldService;
+use App\Repositories\PaymentPlatformRepository;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -9,9 +11,7 @@ use App\View\Html\Input;
 use App\View\Html\Option;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
-use App\Http\Services\DataFieldService;
 use App\View\Pages\Interfaces\IPageAdminActionBox;
-use App\Repositories\PaymentPlatformRepository;
 
 class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 {

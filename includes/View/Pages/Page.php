@@ -1,18 +1,18 @@
 <?php
 namespace App\View\Pages;
 
-use App\View\Html\I_ToHtml;
 use App\Routing\UrlGenerator;
-use App\System\Application;
-use App\View\CurrentPage;
 use App\Support\Database;
 use App\Support\FileSystemContract;
-use App\System\Heart;
 use App\Support\Path;
-use App\System\Settings;
 use App\Support\Template;
+use App\System\Application;
+use App\System\Heart;
+use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use App\View\CurrentPage;
+use App\View\Html\I_ToHtml;
 
 abstract class Page
 {

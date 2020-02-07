@@ -2,9 +2,9 @@
 namespace App\View\Blocks;
 
 use App\Routing\UrlGenerator;
+use App\Support\Template;
 use App\System\Auth;
 use App\System\Heart;
-use App\Support\Template;
 
 class BlockServicesButtons extends Block
 {

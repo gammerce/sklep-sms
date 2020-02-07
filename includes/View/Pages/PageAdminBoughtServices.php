@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages;
 
+use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -8,7 +9,6 @@ use App\View\Html\Link;
 use App\View\Html\Structure;
 use App\View\Html\UnescapedSimpleText;
 use App\View\Html\Wrapper;
-use App\ServiceModules\ExtraFlags\ExtraFlagType;
 
 class PageAdminBoughtServices extends PageAdmin
 {

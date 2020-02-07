@@ -2,6 +2,9 @@
 namespace App\View\Pages;
 
 use App\Exceptions\UnauthorizedException;
+use App\Repositories\PaymentPlatformRepository;
+use App\ServiceModules\Interfaces\IServiceAvailableOnServers;
+use App\Verification\Abstracts\SupportSms;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -9,9 +12,6 @@ use App\View\Html\Input;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\Interfaces\IPageAdminActionBox;
-use App\Repositories\PaymentPlatformRepository;
-use App\ServiceModules\Interfaces\IServiceAvailableOnServers;
-use App\Verification\Abstracts\SupportSms;
 
 class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 {
