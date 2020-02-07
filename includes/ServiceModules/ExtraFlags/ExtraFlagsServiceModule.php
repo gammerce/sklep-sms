@@ -51,6 +51,7 @@ use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminEdit;
 use App\ServiceModules\ServiceModule;
 use App\Services\ExpiredUserServiceService;
+use App\Support\Expression;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;
@@ -514,28 +515,13 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         if ($statement->rowCount()) {
             $row = $statement->fetch();
             $userServiceId = $row['us_id'];
+            $seconds = $days * 24 * 60 * 60;
 
-            $this->updateUserService(
-                [
-                    [
-                        'column' => 'uid',
-                        'value' => "'%d'",
-                        'data' => [$uid],
-                    ],
-                    [
-                        'column' => 'password',
-                        'value' => "'%s'",
-                        'data' => [$password],
-                    ],
-                    [
-                        'column' => 'expire',
-                        'value' => "IF('%d' = '1', -1, `expire` + '%d')",
-                        'data' => [$forever, $days * 24 * 60 * 60],
-                    ],
-                ],
-                $userServiceId,
-                $userServiceId
-            );
+            $this->userServiceRepository->updateWithModule($this, $userServiceId, [
+                'uid' => $uid,
+                'password' => $password,
+                'expire' => $forever ? null : new Expression("`expire` + $seconds"),
+            ]);
         } else {
             $this->extraFlagUserServiceRepository->create(
                 $this->service->getId(),
@@ -1045,27 +1031,17 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
 
         $set = [];
+
         if ($shouldPasswordBeUpdated) {
-            $set[] = [
-                'column' => 'password',
-                'value' => "'%s'",
-                'data' => [$password],
-            ];
+            $set['password'] = $password;
         }
 
         if ($shouldUidBeUpdated) {
-            $set[] = [
-                'column' => 'uid',
-                'value' => "'%d'",
-                'data' => [$uid],
-            ];
+            $set['uid'] = $uid;
         }
 
         if ($forever) {
-            $set[] = [
-                'column' => 'expire',
-                'value' => "-1",
-            ];
+            $set['expire'] = -1;
         }
 
         // Sprawdzenie czy nie ma już takiej usługi
@@ -1100,56 +1076,29 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
             // Dodajemy expire
             if (!$forever) {
-                $set[] = [
-                    'column' => 'expire',
-                    'value' => "( `expire` - UNIX_TIMESTAMP() + '%d' )",
-                    'data' => [$expire],
-                ];
+                $set['expire'] = new Expression("( `expire` - UNIX_TIMESTAMP() + $expire )");
             }
 
             // Aktualizujemy usługę, która już istnieje w bazie i ma takie same dane jak nasze nowe
-            $affected = $this->updateUserService(
-                $set,
+            $affected = $this->userServiceRepository->updateWithModule(
+                $this,
                 $existingUserService['id'],
-                $existingUserService['id']
+                $set
             );
         } else {
-            $set[] = [
-                'column' => 'service',
-                'value' => "'%s'",
-                'data' => [$this->service->getId()],
-            ];
+            $set['service'] = $this->service->getId();
+            $set['server'] = $serverId;
+            $set['type'] = $type;
+            $set['auth_data'] = $authData;
 
             if (!$forever) {
-                $set[] = [
-                    'column' => 'expire',
-                    'value' => "'%d'",
-                    'data' => [$expire],
-                ];
+                $set['expire'] = $expire;
             }
 
-            $set[] = [
-                'column' => 'server',
-                'value' => "'%d'",
-                'data' => [$serverId],
-            ];
-
-            $set[] = [
-                'column' => 'type',
-                'value' => "'%d'",
-                'data' => [$type],
-            ];
-
-            $set[] = [
-                'column' => 'auth_data',
-                'value' => "'%s'",
-                'data' => [$authData],
-            ];
-
-            $affected = $this->updateUserService(
-                $set,
+            $affected = $this->userServiceRepository->updateWithModule(
+                $this,
                 $userService->getId(),
-                $userService->getId()
+                $set
             );
         }
 

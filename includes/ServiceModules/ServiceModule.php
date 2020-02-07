@@ -88,6 +88,7 @@ abstract class ServiceModule
      */
     public function userServiceDeletePost(UserService $userService)
     {
+        //
     }
 
     /**
@@ -123,72 +124,6 @@ abstract class ServiceModule
     public function getModuleId()
     {
         return $this::MODULE_ID;
-    }
-
-    /**
-     * Aktualizuje usługę gracza
-     *
-     * @param array  $set (column, value, data)
-     * @param string $where1 Where dla update na tabeli user_service
-     * @param string $where2 Where dla update na tabeli modułu
-     *
-     * @return int Ilosc wierszy które zostały zaktualizowane
-     */
-    protected function updateUserService($set, $where1, $where2)
-    {
-        $setData1 = $setData2 = $whereData = $whereData2 = [];
-
-        foreach ($set as $data) {
-            $setData = $this->db->prepare(
-                "`{$data['column']}` = {$data['value']}",
-                array_get($data, 'data', [])
-            );
-
-            if (in_array($data['column'], ['uid', 'service', 'expire'])) {
-                $setData1[] = $setData;
-            } else {
-                $setData2[] = $setData;
-            }
-
-            // Service jest w obu tabelach
-            if ($data['column'] == 'service') {
-                $setData2[] = $setData;
-            }
-        }
-
-        if (my_is_integer($where1)) {
-            $where1 = "WHERE `id` = {$where1}";
-        } else {
-            if (strlen($where1)) {
-                $where1 = "WHERE {$where1}";
-            }
-        }
-
-        if (my_is_integer($where2)) {
-            $where2 = "WHERE `us_id` = {$where2}";
-        } else {
-            if (strlen($where2)) {
-                $where2 = "WHERE {$where2}";
-            }
-        }
-
-        $affected = 0;
-        if (!empty($setData1)) {
-            $statement = $this->db->query(
-                "UPDATE `ss_user_service` SET " . implode(', ', $setData1) . " " . $where1
-            );
-            $affected = max($affected, $statement->rowCount());
-        }
-
-        if (!empty($setData2)) {
-            $table = $this::USER_SERVICE_TABLE;
-            $statement = $this->db->query(
-                "UPDATE `$table` SET " . implode(', ', $setData2) . " " . $where2
-            );
-            $affected = max($affected, $statement->rowCount());
-        }
-
-        return $affected;
     }
 
     protected function getUserServiceTable()

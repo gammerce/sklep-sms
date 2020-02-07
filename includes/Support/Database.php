@@ -180,6 +180,14 @@ class Database
         $this->query("DROP DATABASE IF EXISTS `$database`");
     }
 
+    /**
+     * @return int
+     */
+    public function getNow()
+    {
+        return $this->query("SELECT UNIX_TIMESTAMP(NOW())")->fetchColumn();
+    }
+
     public function isConnected()
     {
         return $this->pdo !== null;

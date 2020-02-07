@@ -1,7 +1,9 @@
 <?php
 namespace App\Repositories;
 
+use App\ServiceModules\ServiceModule;
 use App\Support\Database;
+use App\Support\Expression;
 
 class UserServiceRepository
 {
@@ -48,6 +50,78 @@ class UserServiceRepository
         $statement->execute($ids);
 
         return !!$statement->rowCount();
+    }
+
+    public function update($id, array $data)
+    {
+        if (array_key_exists('uid', $data) && $data['uid'] === null) {
+            $data['uid'] = 0;
+        }
+
+        if (array_key_exists('expire', $data) && $data['expire'] === null) {
+            $data['expire'] = -1;
+        }
+
+        $params = collect($data)
+            ->map(function ($value, $key) {
+                if ($value instanceof Expression) {
+                    return "`$key` = $value";
+                }
+
+                return "`$key` = ?";
+            })
+            ->join(", ");
+
+        $values = collect($data)
+            ->values()
+            ->filter(function ($value) {
+                return !($value instanceof Expression);
+            })
+            ->all();
+
+        $statement = $this->db->statement("UPDATE `ss_user_service` SET {$params} WHERE `id` = ?");
+        $statement->execute(array_merge($values, [$id]));
+
+        return $statement->rowCount();
+    }
+
+    public function updateWithModule(ServiceModule $serviceModule, $id, array $data)
+    {
+        $baseData = collect($data)->filter(function ($value, $key) {
+            return in_array($key, ['uid', 'service', 'expire'], true);
+        });
+
+        $moduleData = collect($data)->filter(function ($value, $key) {
+            return !in_array($key, ['uid', 'expire'], true);
+        });
+
+        $affected = $this->update($id, $baseData->all());
+
+        if ($moduleData) {
+            $params = $moduleData
+                ->map(function ($value, $key) {
+                    if ($value instanceof Expression) {
+                        return "`$key` = $value";
+                    }
+
+                    return "`$key` = ?";
+                })
+                ->join(", ");
+
+            $values = $moduleData
+                ->values()
+                ->filter(function ($value) {
+                    return !($value instanceof Expression);
+                })
+                ->all();
+
+            $table = $serviceModule::USER_SERVICE_TABLE;
+            $statement = $this->db->statement("UPDATE `$table` SET {$params} WHERE `us_id` = ?");
+            $statement->execute(array_merge($values, [$id]));
+            $affected = max($affected, $statement->rowCount());
+        }
+
+        return $affected;
     }
 
     public function updateUid($id, $uid)

@@ -253,11 +253,6 @@ class ChargeWalletServiceModule extends ServiceModule implements
         return '';
     }
 
-    public function descriptionShortGet()
-    {
-        return $this->service->getDescription();
-    }
-
     /**
      * @param int $uid
      * @param int $quantity
