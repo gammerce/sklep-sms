@@ -50,20 +50,18 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         /** @var Pagination $pagination */
         $pagination = $this->app->make(Pagination::class);
 
-        $result = $db->query(
-            $db->prepare(
-                "SELECT SQL_CALC_FOUND_ROWS * FROM ({$settings['transactions_query']}) as t " .
-                    "WHERE t.uid = '%d' " .
-                    "ORDER BY t.timestamp DESC " .
-                    "LIMIT " .
-                    get_row_limit($this->currentPage->getPageNumber(), 10),
-                [$user->getUid()]
-            )
+        $statement = $db->statement(
+            "SELECT SQL_CALC_FOUND_ROWS * FROM ({$settings['transactions_query']}) as t " .
+                "WHERE t.uid = ? " .
+                "ORDER BY t.timestamp DESC " .
+                "LIMIT " .
+                get_row_limit($this->currentPage->getPageNumber(), 10)
         );
+        $statement->execute([$user->getUid()]);
         $rowsCount = $db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $paymentLogs = "";
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
             $date = $row['timestamp'];
             $cost = $this->priceTextService->getPriceText($row['cost']);
 
