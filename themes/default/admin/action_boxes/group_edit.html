@@ -5,7 +5,7 @@
     <table>
         <tr>
             <td>ID</td>
-            <td>{{ $group['id'] }}</td>
+            <td>{{ $group->getId() }}</td>
         </tr>
         <tr>
             <td colspan="2" class="line"></td>
@@ -24,7 +24,7 @@
                             id="name"
                             name="name"
                             class="input is-small"
-                            value="{{ $group['name'] }}"
+                            value="{{ $group->getName() }}"
                             required
                         />
                     </div>
@@ -40,7 +40,7 @@
         </tr>
         <tr>
             <td colspan="2">
-                <input type="hidden" name="id" value="{{ $group['id'] }}" />
+                <input type="hidden" name="id" value="{{ $group->getId() }}" />
                 <input type="submit" value="{$lang->t('edit')}" class="button w100" />
             </td>
         </tr>

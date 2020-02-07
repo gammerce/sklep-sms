@@ -3,21 +3,23 @@ namespace App\System;
 
 use App\Exceptions\InvalidConfigException;
 use App\Exceptions\InvalidPaymentModuleException;
+use App\Models\Group;
 use App\Models\PaymentPlatform;
 use App\Models\Server;
+use App\Models\ServerService;
 use App\Models\Service;
 use App\Models\User;
 use App\Payment\PaymentModuleFactory;
+use App\Repositories\GroupRepository;
 use App\Repositories\PaymentPlatformRepository;
 use App\Repositories\ServerRepository;
+use App\Repositories\ServerServiceRepository;
 use App\Repositories\ServiceRepository;
 use App\Repositories\UserRepository;
 use App\ServiceModules\ChargeWallet\ChargeWalletServiceModule;
 use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
 use App\ServiceModules\Other\OtherServiceModule;
 use App\ServiceModules\ServiceModule;
-use App\Support\Database;
-use App\Support\Template;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\DataField;
 use App\View\Blocks\Block;
@@ -29,17 +31,10 @@ use Exception;
 
 class Heart
 {
+    public $pageTitle;
+
     /** @var Application */
     private $app;
-
-    /** @var Database */
-    private $db;
-
-    /** @var Settings */
-    private $settings;
-
-    /** @var Template */
-    private $template;
 
     /** @var UserRepository */
     private $userRepository;
@@ -50,8 +45,14 @@ class Heart
     /** @var ServerRepository */
     private $serverRepository;
 
+    /** @var GroupRepository */
+    private $groupRepository;
+
     /** @var PaymentPlatformRepository */
     private $paymentPlatformRepository;
+
+    /** @var ServerServiceRepository */
+    private $serverServiceRepository;
 
     /** @var PaymentModuleFactory */
     private $paymentModuleFactory;
@@ -60,14 +61,21 @@ class Heart
     private $servers = [];
     private $serversFetched = false;
 
+    /** @var Group[] */
+    private $groups = [];
+    private $groupsFetched = false;
+
     /** @var Service[] */
     private $services = [];
     private $servicesFetched = false;
 
+    /** @var ServerService[] */
     private $serversServices = [];
     private $serversServicesFetched = false;
 
-    public $pageTitle;
+    /** @var User[] */
+    private $users = [];
+
     private $servicesClasses = [];
 
     private $paymentModuleClasses = [];
@@ -75,33 +83,27 @@ class Heart
     private $pagesClasses = [];
     private $blocksClasses = [];
 
-    /** @var User[] */
-    private $users = [];
-    private $groups = [];
-    private $groupsFetched = false;
     private $scripts = [];
     private $styles = [];
 
     public function __construct(
         Application $app,
-        Database $db,
-        Settings $settings,
-        Template $template,
         UserRepository $userRepository,
         ServiceRepository $serviceRepository,
         ServerRepository $serverRepository,
+        GroupRepository $groupRepository,
         PaymentPlatformRepository $paymentPlatformRepository,
+        ServerServiceRepository $serverServiceRepository,
         PaymentModuleFactory $paymentModuleFactory
     ) {
-        $this->db = $db;
-        $this->settings = $settings;
-        $this->template = $template;
         $this->userRepository = $userRepository;
         $this->serviceRepository = $serviceRepository;
         $this->serverRepository = $serverRepository;
+        $this->groupRepository = $groupRepository;
         $this->paymentPlatformRepository = $paymentPlatformRepository;
         $this->paymentModuleFactory = $paymentModuleFactory;
         $this->app = $app;
+        $this->serverServiceRepository = $serverServiceRepository;
     }
 
     /**
@@ -413,7 +415,7 @@ class Heart
         $this->servicesFetched = true;
     }
 
-    public function userCanUseService($uid, Service $service)
+    public function canUserUseService($uid, Service $service)
     {
         $user = $this->getUser($uid);
         $combined = array_intersect($service->getGroups(), $user->getGroups());
@@ -483,10 +485,12 @@ class Heart
 
     private function fetchServersServices()
     {
-        $result = $this->db->query("SELECT * FROM `ss_servers_services`");
-        foreach ($result as $row) {
-            $this->serversServices[$row['server_id']][$row['service_id']] = true;
+        foreach ($this->serverServiceRepository->all() as $serverService) {
+            $this->serversServices[$serverService->getServerId()][
+                $serverService->getServiceId()
+            ] = true;
         }
+
         $this->serversServicesFetched = true;
     }
 
@@ -536,6 +540,9 @@ class Heart
     // Groups
     //
 
+    /**
+     * @return Group[]
+     */
     public function getGroups()
     {
         if (!$this->groupsFetched) {
@@ -545,6 +552,10 @@ class Heart
         return $this->groups;
     }
 
+    /**
+     * @param $id
+     * @return Group|null
+     */
     public function getGroup($id)
     {
         if (!$this->groupsFetched) {
@@ -554,28 +565,10 @@ class Heart
         return array_get($this->groups, $id, null);
     }
 
-    public function getGroupPrivileges($id)
-    {
-        if (!$this->groupsFetched) {
-            $this->fetchGroups();
-        }
-
-        if (isset($this->groups[$id])) {
-            $group = $this->groups[$id];
-            unset($group['id']);
-            unset($group['name']);
-
-            return $group;
-        }
-
-        return null;
-    }
-
     private function fetchGroups()
     {
-        $result = $this->db->query("SELECT * FROM `ss_groups`");
-        foreach ($result as $row) {
-            $this->groups[$row['id']] = $row;
+        foreach ($this->groupRepository->all() as $group) {
+            $this->groups[$group->getId()] = $group;
         }
 
         $this->groupsFetched = true;
@@ -586,7 +579,7 @@ class Heart
      *
      * @param string $path
      */
-    public function scriptAdd($path)
+    public function addScript($path)
     {
         if (!in_array($path, $this->scripts)) {
             $this->scripts[] = $path;
@@ -598,37 +591,28 @@ class Heart
      *
      * @param string $path
      */
-    public function styleAdd($path)
+    public function addStyle($path)
     {
         if (!in_array($path, $this->styles)) {
             $this->styles[] = $path;
         }
     }
 
-    public function scriptsGet()
+    public function getScripts()
     {
-        $output = [];
-        foreach ($this->scripts as $script) {
-            $output[] = "<script type=\"text/javascript\" src=\"{$script}\"></script>";
-        }
-
-        return implode("\n", $output);
+        return collect($this->scripts)
+            ->map(function ($path) {
+                return "<script type=\"text/javascript\" src=\"{$path}\"></script>";
+            })
+            ->join("\n");
     }
 
-    public function stylesGet()
+    public function getStyles()
     {
-        $output = [];
-        foreach ($this->styles as $style) {
-            $output[] = "<link href=\"{$style}\" rel=\"stylesheet\" />";
-        }
-
-        return implode("\n", $output);
-    }
-
-    public function getGoogleAnalytics()
-    {
-        return strlen($this->settings['google_analytics'])
-            ? $this->template->render('google_analytics', ['settings' => $this->settings])
-            : '';
+        return collect($this->styles)
+            ->map(function ($path) {
+                return "<link href=\"{$path}\" rel=\"stylesheet\" />";
+            })
+            ->join("\n");
     }
 }

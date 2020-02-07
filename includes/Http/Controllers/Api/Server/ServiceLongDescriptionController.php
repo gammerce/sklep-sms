@@ -50,12 +50,14 @@ class ServiceLongDescriptionController
             $heart->pageTitle .= $serviceModule->service->getName();
         }
 
-        $heart->styleAdd($url->versioned("build/css/static/extra_stuff/long_desc.css"));
-        $pageTitle = $heart->pageTitle;
-        $header = $template->render(
-            "header",
-            compact('currentPage', 'heart', 'license', 'pageTitle')
-        );
+        $heart->addStyle($url->versioned("build/css/static/extra_stuff/long_desc.css"));
+        $header = $template->render("header", [
+            'currentPageId' => $currentPage->getPid(),
+            'license' => $license,
+            'pageTitle' => $heart->pageTitle,
+            'scripts' => $heart->getScripts(),
+            'styles' => $heart->getStyles(),
+        ]);
 
         $output = create_dom_element("html", [
             create_dom_element("head", new UnescapedSimpleText($header)),

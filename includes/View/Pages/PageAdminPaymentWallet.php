@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages;
 
+use App\Services\PriceTextService;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\Div;
@@ -12,11 +13,15 @@ class PageAdminPaymentWallet extends PageAdmin
 {
     const PAGE_ID = 'payment_wallet';
 
-    public function __construct()
+    /** @var PriceTextService */
+    private $priceTextService;
+
+    public function __construct(PriceTextService $priceTextService)
     {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->t('payments_wallet');
+        $this->priceTextService = $priceTextService;
     }
 
     protected function content(array $query, array $body)
@@ -55,9 +60,7 @@ class PageAdminPaymentWallet extends PageAdmin
                 $bodyRow->addClass('highlighted');
             }
 
-            $cost = $row['cost']
-                ? number_format($row['cost'] / 100.0, 2) . " " . $this->settings->getCurrency()
-                : "";
+            $cost = $this->priceTextService->getPriceText($row['cost']);
 
             $bodyRow->setDbId($row['payment_id']);
             $bodyRow->addCell(new Cell($cost));

@@ -116,10 +116,10 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
         // Grupy
         $groups = "";
         foreach ($this->heart->getGroups() as $group) {
-            $groups .= create_dom_element("option", "{$group['name']} ( {$group['id']} )", [
-                'value' => $group['id'],
+            $groups .= create_dom_element("option", "{$group->getName()} ( {$group->getId()} )", [
+                'value' => $group->getId(),
                 'selected' =>
-                    isset($service) && in_array($group['id'], $service->getGroups())
+                    isset($service) && in_array($group->getId(), $service->getGroups())
                         ? "selected"
                         : "",
             ]);

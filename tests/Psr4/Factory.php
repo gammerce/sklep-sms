@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Psr4;
 
+use App\Repositories\GroupRepository;
 use App\Repositories\LogRepository;
 use App\Repositories\PaymentPlatformRepository;
 use App\Repositories\PriceRepository;
@@ -52,6 +53,9 @@ class Factory
     /** @var ExtraFlagUserServiceRepository */
     private $extraFlagUserServiceRepository;
 
+    /** @var GroupRepository */
+    private $groupRepository;
+
     public function __construct(
         UserRepository $userRepository,
         ServerRepository $serverRepository,
@@ -62,7 +66,8 @@ class Factory
         ServiceCodeRepository $serviceCodeRepository,
         LogRepository $logRepository,
         SmsCodeRepository $smsCodeRepository,
-        ExtraFlagUserServiceRepository $extraFlagUserServiceRepository
+        ExtraFlagUserServiceRepository $extraFlagUserServiceRepository,
+        GroupRepository $groupRepository
     ) {
         $this->faker = FakerFactory::create();
         $this->userRepository = $userRepository;
@@ -75,6 +80,7 @@ class Factory
         $this->logRepository = $logRepository;
         $this->smsCodeRepository = $smsCodeRepository;
         $this->extraFlagUserServiceRepository = $extraFlagUserServiceRepository;
+        $this->groupRepository = $groupRepository;
     }
 
     public function server(array $attributes = [])
@@ -292,5 +298,17 @@ class Factory
             $attributes['auth_data'],
             $attributes['password']
         );
+    }
+
+    public function group(array $attributes = [])
+    {
+        $attributes = array_merge(
+            [
+                'name' => $this->faker->word,
+            ],
+            $attributes
+        );
+
+        return $this->groupRepository->create($attributes['name'], $attributes);
     }
 }

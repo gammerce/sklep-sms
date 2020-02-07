@@ -40,7 +40,7 @@ class PageAdminIncome extends PageAdmin
 
     protected function content(array $query, array $body)
     {
-        $this->heart->scriptAdd("https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js");
+        $this->heart->addScript("https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js");
 
         $queryYear = array_get($query, 'year', date("Y"));
         $queryMonth = array_get($query, 'month', date("m"));

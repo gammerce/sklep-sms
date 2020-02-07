@@ -2,6 +2,7 @@
 namespace App\View\Pages;
 
 use App\Exceptions\UnauthorizedException;
+use App\Repositories\GroupRepository;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -15,11 +16,15 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
     const PAGE_ID = 'groups';
     protected $privilege = 'view_groups';
 
-    public function __construct()
+    /** @var GroupRepository */
+    private $groupRepository;
+
+    public function __construct(GroupRepository $groupRepository)
     {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->t('groups');
+        $this->groupRepository = $groupRepository;
     }
 
     protected function content(array $query, array $body)
@@ -75,32 +80,31 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
         }
 
         if ($boxId == "group_edit") {
-            $statement = $this->db->statement("SELECT * FROM `ss_groups` WHERE `id` = ?");
-            $statement->execute([$query['id']]);
+            $group = $this->groupRepository->get($query['id']);
 
-            if (!$statement->rowCount()) {
-                $query['template'] = create_dom_element("form", $this->lang->t('no_such_group'), [
-                    'class' => 'action_box',
-                    'style' => [
-                        'padding' => "20px",
-                        'color' => "white",
-                    ],
-                ]);
-            } else {
-                $group = $statement->fetch();
+            if (!$group) {
+                return [
+                    'status' => 'ok',
+                    'template' => create_dom_element("form", $this->lang->t('no_such_group'), [
+                        'class' => 'action_box',
+                        'style' => [
+                            'padding' => "20px",
+                            'color' => "white",
+                        ],
+                    ]),
+                ];
             }
         }
 
         $privileges = "";
-        $statement = $this->db->query("DESCRIBE ss_groups");
-        foreach ($statement as $row) {
-            if (in_array($row['Field'], ["id", "name"])) {
+        foreach ($this->groupRepository->getFields() as $fieldName) {
+            if (in_array($fieldName, ["id", "name"])) {
                 continue;
             }
 
             $values = create_dom_element("option", $this->lang->strtoupper($this->lang->t('no')), [
                 'value' => 0,
-                'selected' => isset($group) && $group[$row['Field']] ? "" : "selected",
+                'selected' => isset($group) && $group->hasPermission($fieldName) ? "" : "selected",
             ]);
 
             $values .= create_dom_element(
@@ -108,17 +112,16 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                 $this->lang->strtoupper($this->lang->t('yes')),
                 [
                     'value' => 1,
-                    'selected' => isset($group) && $group[$row['Field']] ? "selected" : "",
+                    'selected' =>
+                        isset($group) && $group->hasPermission($fieldName) ? "selected" : "",
                 ]
             );
 
-            $name = $row['Field'];
-            $text = $this->lang->t('privilege_' . $row['Field']);
-
-            $privileges .= $this->template->render(
-                "tr_text_select",
-                compact('name', 'text', 'values')
-            );
+            $privileges .= $this->template->render("tr_text_select", [
+                "name" => $fieldName,
+                "text" => $this->lang->t('privilege_' . $fieldName),
+                "values" => $values,
+            ]);
         }
 
         switch ($boxId) {

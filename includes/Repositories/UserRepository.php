@@ -216,7 +216,7 @@ class UserRepository
         return !!$statement->rowCount();
     }
 
-    private function mapToModel(array $data)
+    public function mapToModel(array $data)
     {
         return new User(
             as_int($data['uid']),

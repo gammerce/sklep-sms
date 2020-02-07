@@ -58,7 +58,7 @@ class AdminController
                 $session->remove("info");
             }
 
-            $header = $template->render("admin/header", compact('currentPage', 'heart'));
+            $header = $this->renderHeader($heart, $currentPage, $template);
             $action = $url->to("/admin", $request->query->all());
 
             return new Response(
@@ -150,12 +150,9 @@ class AdminController
             $logsLink = $template->render("admin/page_link", compact('pid', 'name'));
         }
 
-        // Pobranie headera
-        $header = $template->render("admin/header", compact('currentPage', 'heart'));
-
+        $header = $this->renderHeader($heart, $currentPage, $template);
         $currentVersion = $app->version();
 
-        // Pobranie ostatecznego szablonu
         return new Response(
             $template->render(
                 "admin/index",
@@ -199,5 +196,15 @@ class AdminController
         }
 
         return new RedirectResponse($url->to($path, $query), 301);
+    }
+
+    private function renderHeader(Heart $heart, CurrentPage $currentPage, Template $template)
+    {
+        return $template->render("admin/header", [
+            'currentPageId' => $currentPage->getPid(),
+            'pageTitle' => $heart->pageTitle,
+            'scripts' => $heart->getScripts(),
+            'styles' => $heart->getStyles(),
+        ]);
     }
 }

@@ -2,6 +2,7 @@
 namespace App\View\Pages;
 
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
+use App\Services\PriceTextService;
 use App\System\Auth;
 use App\Support\Database;
 use App\System\Settings;
@@ -14,11 +15,15 @@ class PagePaymentLog extends Page implements IBeLoggedMust
 {
     const PAGE_ID = 'payment_log';
 
-    public function __construct()
+    /** @var PriceTextService */
+    private $priceTextService;
+
+    public function __construct(PriceTextService $priceTextService)
     {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->t('payment_log');
+        $this->priceTextService = $priceTextService;
     }
 
     protected function content(array $query, array $body)
@@ -60,7 +65,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         $paymentLogs = "";
         foreach ($result as $row) {
             $date = $row['timestamp'];
-            $cost = number_format($row['cost'] / 100.0, 2) . " " . $settings->getCurrency();
+            $cost = $this->priceTextService->getPriceText($row['cost']);
 
             $serviceModule = $heart->getServiceModule($row['service']);
             if ($serviceModule instanceof IServicePurchaseWeb) {

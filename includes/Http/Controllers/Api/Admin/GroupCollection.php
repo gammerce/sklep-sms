@@ -27,13 +27,13 @@ class GroupCollection
             })
             ->all();
 
-        $groupId = $groupRepository->create($name, $set);
+        $group = $groupRepository->create($name, $set);
 
-        $databaseLogger->logWithActor('log_group_added', $groupId);
+        $databaseLogger->logWithActor('log_group_added', $group->getId());
 
         return new SuccessApiResponse($lang->t('group_add'), [
             "data" => [
-                "id" => $groupId,
+                "id" => $group->getId(),
             ],
         ]);
     }

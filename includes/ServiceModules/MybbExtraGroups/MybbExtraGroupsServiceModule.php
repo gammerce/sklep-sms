@@ -33,6 +33,7 @@ use App\ServiceModules\Interfaces\IServiceUserOwnServices;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\ServiceModules\ServiceModule;
+use App\Services\PriceTextService;
 use App\Support\Database;
 use App\Support\Expression;
 use App\System\Auth;
@@ -106,6 +107,9 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     /** @var UserServiceRepository */
     private $userServiceRepository;
 
+    /** @var PriceTextService */
+    private $priceTextService;
+
     /** @var DatabaseLogger */
     private $logger;
 
@@ -123,6 +127,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $this->purchaseValidationService = $this->app->make(PurchaseValidationService::class);
         $this->priceRepository = $this->app->make(PriceRepository::class);
         $this->userServiceRepository = $this->app->make(UserServiceRepository::class);
+        $this->priceTextService = $this->app->make(PriceTextService::class);
         $this->settings = $this->app->make(Settings::class);
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
@@ -420,7 +425,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
                 : $this->lang->t('forever');
         $email = $data['email'];
         $cost = $data['cost']
-            ? number_format($data['cost'] / 100.0, 2) . " " . $this->settings->getCurrency()
+            ? $this->priceTextService->getPriceText($data['cost'])
             : $this->lang->t('none');
 
         if ($action == "email") {

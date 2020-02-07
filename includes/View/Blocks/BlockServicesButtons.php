@@ -42,7 +42,7 @@ class BlockServicesButtons extends Block
                 continue;
             }
 
-            if (!$heart->userCanUseService($user->getUid(), $service)) {
+            if (!$heart->canUserUseService($user->getUid(), $service)) {
                 continue;
             }
 

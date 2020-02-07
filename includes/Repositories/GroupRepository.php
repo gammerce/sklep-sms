@@ -1,6 +1,7 @@
 <?php
 namespace App\Repositories;
 
+use App\Models\Group;
 use App\Support\Database;
 
 class GroupRepository
@@ -24,6 +25,34 @@ class GroupRepository
             ->all();
     }
 
+    /**
+     * @return Group[]
+     */
+    public function all()
+    {
+        $statement = $this->db->query("SELECT * FROM `ss_groups`");
+
+        return collect($statement)
+            ->map(function (array $row) {
+                return $this->mapToModel($row);
+            })
+            ->all();
+    }
+
+    public function get($id)
+    {
+        if ($id) {
+            $statement = $this->db->statement("SELECT * FROM `ss_groups` WHERE `id` = ?");
+            $statement->execute([$id]);
+
+            if ($data = $statement->fetch()) {
+                return $this->mapToModel($data);
+            }
+        }
+
+        return null;
+    }
+
     public function delete($id)
     {
         $statement = $this->db->statement("DELETE FROM `ss_groups` WHERE `id` = ?");
@@ -42,7 +71,7 @@ class GroupRepository
         $statement = $this->db->statement("INSERT INTO `ss_groups` SET {$params}");
         $statement->execute($values);
 
-        return $this->db->lastId();
+        return $this->get($this->db->lastId());
     }
 
     public function update($id, array $data)
@@ -58,5 +87,19 @@ class GroupRepository
         $statement->execute(array_merge($values, [$id]));
 
         return !!$statement->rowCount();
+    }
+
+    private function mapToModel(array $data)
+    {
+        $permissions = collect($data)
+            ->filter(function ($value, $key) {
+                return !in_array($key, ["id", "name"], true);
+            })
+            ->mapWithKeys(function ($value) {
+                return !!$value;
+            })
+            ->all();
+
+        return new Group(as_int($data['id']), $data['name'], $permissions);
     }
 }

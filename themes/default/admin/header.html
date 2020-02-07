@@ -1,6 +1,6 @@
 <meta http-equiv="Content-Type" content="text/plain" charset="UTF-8" />
 <title>
-    {$lang->t('acp_short')}: {{ $heart->pageTitle }} - {$lang->t('shop_sms')}
+    {$lang->t('acp_short')}: {{ $pageTitle }} - {$lang->t('shop_sms')}
 </title>
 
 <script
@@ -13,10 +13,10 @@
 <script type="text/javascript">
     var language = "{{ $lang->getCurrentLanguage() }}";
     var baseUrl = "{{ $url->to('/') }}";
-    var currentPage = "{{ $currentPage->getPid() }}";
+    var currentPage = "{{ $currentPageId }}";
 </script>
-{$heart->scriptsGet()}
+{$scripts}
 
 <link href="{{ $url->versioned('build/css/admin.css') }}" rel="stylesheet" />
 <link rel="shortcut icon" href="{{ $url->to('favicon.png') }}" />
-{$heart->stylesGet()}
+{$styles}
