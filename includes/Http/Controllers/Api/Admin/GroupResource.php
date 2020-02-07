@@ -5,7 +5,6 @@ use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\GroupRepository;
-use App\Support\Database;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -14,35 +13,26 @@ class GroupResource
     public function put(
         $groupId,
         Request $request,
+        GroupRepository $groupRepository,
         TranslationManager $translationManager,
-        Database $db,
         DatabaseLogger $databaseLogger
     ) {
         $lang = $translationManager->user();
-
         $name = $request->request->get('name');
 
-        $set = "";
-        $result = $db->query("DESCRIBE ss_groups");
-        foreach ($result as $row) {
-            if (in_array($row['Field'], ["id", "name"])) {
-                continue;
-            }
+        $set = collect($groupRepository->getFields())
+            ->filter(function ($fieldName) {
+                return !in_array($fieldName, ["id", "name"], true);
+            })
+            ->flatMap(function ($fieldName) use ($request) {
+                return [$fieldName => $request->request->get($fieldName) ?: 0];
+            })
+            ->extend(compact("name"))
+            ->all();
 
-            $set .= $db->prepare(", `%s`='%d'", [
-                $row['Field'],
-                $request->request->get($row['Field']),
-            ]);
-        }
+        $updated = $groupRepository->update($groupId, $set);
 
-        $statement = $db->query(
-            $db->prepare("UPDATE `ss_groups` SET `name` = '%s'{$set} WHERE `id` = '%d'", [
-                $name,
-                $groupId,
-            ])
-        );
-
-        if ($statement->rowCount()) {
+        if ($updated) {
             $databaseLogger->logWithActor('log_group_edited', $groupId);
             return new SuccessApiResponse($lang->t('group_edit'));
         }

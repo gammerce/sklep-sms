@@ -3,7 +3,6 @@ namespace App\Repositories;
 
 use App\ServiceModules\ServiceModule;
 use App\Support\Database;
-use App\Support\Expression;
 
 class UserServiceRepository
 {
@@ -62,22 +61,8 @@ class UserServiceRepository
             $data['expire'] = -1;
         }
 
-        $params = collect($data)
-            ->map(function ($value, $key) {
-                if ($value instanceof Expression) {
-                    return "`$key` = $value";
-                }
-
-                return "`$key` = ?";
-            })
-            ->join(", ");
-
-        $values = collect($data)
-            ->values()
-            ->filter(function ($value) {
-                return !($value instanceof Expression);
-            })
-            ->all();
+        $params = map_to_params($data);
+        $values = map_to_values($data);
 
         $statement = $this->db->statement("UPDATE `ss_user_service` SET {$params} WHERE `id` = ?");
         $statement->execute(array_merge($values, [$id]));
@@ -98,22 +83,8 @@ class UserServiceRepository
         $affected = $this->update($id, $baseData->all());
 
         if ($moduleData) {
-            $params = $moduleData
-                ->map(function ($value, $key) {
-                    if ($value instanceof Expression) {
-                        return "`$key` = $value";
-                    }
-
-                    return "`$key` = ?";
-                })
-                ->join(", ");
-
-            $values = $moduleData
-                ->values()
-                ->filter(function ($value) {
-                    return !($value instanceof Expression);
-                })
-                ->all();
+            $params = map_to_params($moduleData);
+            $values = map_to_values($moduleData);
 
             $table = $serviceModule::USER_SERVICE_TABLE;
             $statement = $this->db->statement("UPDATE `$table` SET {$params} WHERE `us_id` = ?");
