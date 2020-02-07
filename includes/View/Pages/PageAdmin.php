@@ -18,7 +18,7 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
         if (strlen($this::PAGE_ID) && $this->fileSystem->exists($this->path->to($path))) {
             foreach ($this->fileSystem->scanDirectory($this->path->to($path)) as $file) {
                 if (ends_at($file, ".js")) {
-                    $this->heart->scriptAdd($this->url->versioned($path . $file));
+                    $this->heart->addScript($this->url->versioned($path . $file));
                 }
             }
         }
@@ -28,7 +28,7 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
         if (strlen($this::PAGE_ID) && $this->fileSystem->exists($this->path->to($path))) {
             foreach ($this->fileSystem->scanDirectory($this->path->to($path)) as $file) {
                 if (ends_at($file, ".css")) {
-                    $this->heart->styleAdd($this->url->versioned($path . $file));
+                    $this->heart->addStyle($this->url->versioned($path . $file));
                 }
             }
         }
@@ -38,12 +38,12 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
             foreach ($this->heart->getEmptyServiceModules() as $serviceModule) {
                 $path = "build/css/static/services/{$serviceModule->getModuleId()}.css";
                 if ($this->fileSystem->exists($this->path->to($path))) {
-                    $this->heart->styleAdd($this->url->versioned($path));
+                    $this->heart->addStyle($this->url->versioned($path));
                 }
 
                 $path = "build/js/static/services/{$serviceModule->getModuleId()}.js";
                 if ($this->fileSystem->exists($this->path->to($path))) {
-                    $this->heart->scriptAdd($this->url->versioned($path));
+                    $this->heart->addScript($this->url->versioned($path));
                 }
             }
         }

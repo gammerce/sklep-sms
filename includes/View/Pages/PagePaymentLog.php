@@ -2,10 +2,11 @@
 namespace App\View\Pages;
 
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
-use App\System\Auth;
+use App\Services\PriceTextService;
 use App\Support\Database;
-use App\System\Settings;
 use App\Support\Template;
+use App\System\Auth;
+use App\System\Settings;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pagination;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,11 +15,15 @@ class PagePaymentLog extends Page implements IBeLoggedMust
 {
     const PAGE_ID = 'payment_log';
 
-    public function __construct()
+    /** @var PriceTextService */
+    private $priceTextService;
+
+    public function __construct(PriceTextService $priceTextService)
     {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->t('payment_log');
+        $this->priceTextService = $priceTextService;
     }
 
     protected function content(array $query, array $body)
@@ -45,22 +50,20 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         /** @var Pagination $pagination */
         $pagination = $this->app->make(Pagination::class);
 
-        $result = $db->query(
-            $db->prepare(
-                "SELECT SQL_CALC_FOUND_ROWS * FROM ({$settings['transactions_query']}) as t " .
-                    "WHERE t.uid = '%d' " .
-                    "ORDER BY t.timestamp DESC " .
-                    "LIMIT " .
-                    get_row_limit($this->currentPage->getPageNumber(), 10),
-                [$user->getUid()]
-            )
+        $statement = $db->statement(
+            "SELECT SQL_CALC_FOUND_ROWS * FROM ({$settings['transactions_query']}) as t " .
+                "WHERE t.uid = ? " .
+                "ORDER BY t.timestamp DESC " .
+                "LIMIT " .
+                get_row_limit($this->currentPage->getPageNumber(), 10)
         );
+        $statement->execute([$user->getUid()]);
         $rowsCount = $db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $paymentLogs = "";
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
             $date = $row['timestamp'];
-            $cost = number_format($row['cost'] / 100.0, 2) . " " . $settings->getCurrency();
+            $cost = $this->priceTextService->getPriceText($row['cost']);
 
             $serviceModule = $heart->getServiceModule($row['service']);
             if ($serviceModule instanceof IServicePurchaseWeb) {

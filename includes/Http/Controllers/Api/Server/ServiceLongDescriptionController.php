@@ -1,14 +1,14 @@
 <?php
 namespace App\Http\Controllers\Api\Server;
 
-use App\View\Html\UnescapedSimpleText;
 use App\Http\Responses\HtmlResponse;
 use App\Routing\UrlGenerator;
-use App\View\CurrentPage;
+use App\Support\Template;
 use App\System\Heart;
 use App\System\License;
-use App\Support\Template;
 use App\Translation\TranslationManager;
+use App\View\CurrentPage;
+use App\View\Html\UnescapedSimpleText;
 use Symfony\Component\HttpFoundation\Request;
 
 class ServiceLongDescriptionController
@@ -50,12 +50,14 @@ class ServiceLongDescriptionController
             $heart->pageTitle .= $serviceModule->service->getName();
         }
 
-        $heart->styleAdd($url->versioned("build/css/static/extra_stuff/long_desc.css"));
-        $pageTitle = $heart->pageTitle;
-        $header = $template->render(
-            "header",
-            compact('currentPage', 'heart', 'license', 'pageTitle')
-        );
+        $heart->addStyle($url->versioned("build/css/static/extra_stuff/long_desc.css"));
+        $header = $template->render("header", [
+            'currentPageId' => $currentPage->getPid(),
+            'license' => $license,
+            'pageTitle' => $heart->pageTitle,
+            'scripts' => $heart->getScripts(),
+            'styles' => $heart->getStyles(),
+        ]);
 
         $output = create_dom_element("html", [
             create_dom_element("head", new UnescapedSimpleText($header)),

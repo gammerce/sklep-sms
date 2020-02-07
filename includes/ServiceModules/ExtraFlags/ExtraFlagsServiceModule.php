@@ -51,6 +51,7 @@ use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminEdit;
 use App\ServiceModules\ServiceModule;
 use App\Services\ExpiredUserServiceService;
+use App\Services\PriceTextService;
 use App\Support\Expression;
 use App\System\Auth;
 use App\System\Heart;
@@ -130,6 +131,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     /** @var PlayerFlagService */
     private $playerFlagService;
 
+    /** @var PriceTextService */
+    private $priceTextService;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -149,6 +153,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $this->userServiceRepository = $this->app->make(UserServiceRepository::class);
         $this->playerFlagRepository = $this->app->make(PlayerFlagRepository::class);
         $this->playerFlagService = $this->app->make(PlayerFlagService::class);
+        $this->priceTextService = $this->app->make(PriceTextService::class);
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
@@ -566,7 +571,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 : $this->lang->t('forever');
 
         $cost = $data['cost']
-            ? number_format($data['cost'] / 100.0, 2) . " " . $this->settings->getCurrency()
+            ? $this->priceTextService->getPriceText($data['cost'])
             : $this->lang->t('none');
 
         $data['income'] = number_format($data['income'] / 100.0, 2);

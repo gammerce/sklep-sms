@@ -21,8 +21,8 @@ class GroupsRule extends BaseRule
             return ["Invalid type"];
         }
 
-        foreach ($value as $group) {
-            if (!$this->heart->getGroup($group)) {
+        foreach ($value as $groupId) {
+            if (!$this->heart->getGroup($groupId)) {
                 return [$this->lang->t('wrong_group')];
             }
         }

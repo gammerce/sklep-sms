@@ -3,9 +3,9 @@ namespace App\Http\Middlewares;
 
 use App\Requesting\Response as CustomResponse;
 use App\Routing\UrlGenerator;
+use App\Support\Template;
 use App\System\Application;
 use App\System\License;
-use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use Symfony\Component\HttpFoundation\JsonResponse;

@@ -1,8 +1,8 @@
 <?php
 namespace App\View\Pages;
 
-use App\View\Interfaces\IBeLoggedMust;
 use App\ServiceModules\Interfaces\IServiceTakeOver;
+use App\View\Interfaces\IBeLoggedMust;
 
 class PageTakeOverService extends Page implements IBeLoggedMust
 {

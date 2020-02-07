@@ -222,7 +222,7 @@ class ChargeWalletServiceModule extends ServiceModule implements
     {
         $cost = $data['cost'] ?: 0;
         $data['amount'] .= ' ' . $this->settings->getCurrency();
-        $data['cost'] = number_format($cost / 100, 2) . ' ' . $this->settings->getCurrency();
+        $data['cost'] = $this->priceTextService->getPriceText($cost);
 
         if ($action == "web") {
             if ($data['payment'] == Purchase::METHOD_SMS) {

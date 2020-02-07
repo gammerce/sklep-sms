@@ -1,8 +1,8 @@
 <?php
 namespace App\Install;
 
-use App\System\Application;
 use App\Support\Database;
+use App\System\Application;
 use PDOException;
 
 class DatabaseMigration

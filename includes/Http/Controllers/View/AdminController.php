@@ -4,11 +4,11 @@ namespace App\Http\Controllers\View;
 use App\Exceptions\EntityNotFoundException;
 use App\Routing\UrlGenerator;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
+use App\Support\Template;
 use App\System\Application;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\License;
-use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\View\CurrentPage;
 use App\View\Renders\BlockRenderer;
@@ -58,7 +58,7 @@ class AdminController
                 $session->remove("info");
             }
 
-            $header = $template->render("admin/header", compact('currentPage', 'heart'));
+            $header = $this->renderHeader($heart, $currentPage, $template);
             $action = $url->to("/admin", $request->query->all());
 
             return new Response(
@@ -150,12 +150,9 @@ class AdminController
             $logsLink = $template->render("admin/page_link", compact('pid', 'name'));
         }
 
-        // Pobranie headera
-        $header = $template->render("admin/header", compact('currentPage', 'heart'));
-
+        $header = $this->renderHeader($heart, $currentPage, $template);
         $currentVersion = $app->version();
 
-        // Pobranie ostatecznego szablonu
         return new Response(
             $template->render(
                 "admin/index",
@@ -199,5 +196,15 @@ class AdminController
         }
 
         return new RedirectResponse($url->to($path, $query), 301);
+    }
+
+    private function renderHeader(Heart $heart, CurrentPage $currentPage, Template $template)
+    {
+        return $template->render("admin/header", [
+            'currentPageId' => $currentPage->getPid(),
+            'pageTitle' => $heart->pageTitle,
+            'scripts' => $heart->getScripts(),
+            'styles' => $heart->getStyles(),
+        ]);
     }
 }

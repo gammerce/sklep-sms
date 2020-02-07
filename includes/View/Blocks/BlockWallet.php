@@ -1,11 +1,11 @@
 <?php
 namespace App\View\Blocks;
 
+use App\Routing\UrlGenerator;
+use App\Support\Template;
+use App\System\Auth;
 use App\View\Html\UnescapedSimpleText;
 use App\View\Interfaces\IBeLoggedMust;
-use App\Routing\UrlGenerator;
-use App\System\Auth;
-use App\Support\Template;
 
 class BlockWallet extends Block implements IBeLoggedMust
 {

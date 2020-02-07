@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages;
 
+use App\Services\PriceTextService;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\Div;
@@ -12,11 +13,15 @@ class PageAdminPaymentTransfer extends PageAdmin
 {
     const PAGE_ID = 'payment_transfer';
 
-    public function __construct()
+    /** @var PriceTextService */
+    private $priceTextService;
+
+    public function __construct(PriceTextService $priceTextService)
     {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->t('payments_transfer');
+        $this->priceTextService = $priceTextService;
     }
 
     protected function content(array $query, array $body)
@@ -67,9 +72,7 @@ class PageAdminPaymentTransfer extends PageAdmin
                 $bodyRow->addClass('highlighted');
             }
 
-            $income = $row['income']
-                ? number_format($row['income'] / 100.0, 2) . " " . $this->settings->getCurrency()
-                : "";
+            $income = $this->priceTextService->getPriceText($row['income']);
 
             $bodyRow->setDbId($row['payment_id']);
             $bodyRow->addCell(new Cell($income));

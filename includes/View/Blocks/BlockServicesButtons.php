@@ -2,9 +2,9 @@
 namespace App\View\Blocks;
 
 use App\Routing\UrlGenerator;
+use App\Support\Template;
 use App\System\Auth;
 use App\System\Heart;
-use App\Support\Template;
 
 class BlockServicesButtons extends Block
 {
@@ -42,7 +42,7 @@ class BlockServicesButtons extends Block
                 continue;
             }
 
-            if (!$heart->userCanUseService($user->getUid(), $service)) {
+            if (!$heart->canUserUseService($user->getUid(), $service)) {
                 continue;
             }
 

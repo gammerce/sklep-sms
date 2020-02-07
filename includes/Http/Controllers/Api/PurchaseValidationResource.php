@@ -33,7 +33,7 @@ class PurchaseValidationResource
         }
 
         // User does not belong to the group that allows to purchase that service
-        if (!$heart->userCanUseService($user->getUid(), $serviceModule->service)) {
+        if (!$heart->canUserUseService($user->getUid(), $serviceModule->service)) {
             return new ApiResponse("no_permission", $lang->t('service_no_permission'), 0);
         }
 

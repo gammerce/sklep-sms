@@ -5,6 +5,7 @@ use App\Models\Server;
 use App\Models\User;
 use App\Support\Collection;
 use App\Support\Database;
+use App\Support\Expression;
 use App\System\Application;
 use App\System\Auth;
 use App\System\Settings;
@@ -557,4 +558,36 @@ function log_info($text, array $data = [])
     /** @var FileLogger $logger */
     $logger = app()->make(FileLogger::class);
     $logger->info($text, $data);
+}
+
+function map_to_params($data)
+{
+    return collect($data)
+        ->map(function ($value, $key) {
+            if ($value instanceof Expression) {
+                return "`$key` = $value";
+            }
+
+            return "`$key` = ?";
+        })
+        ->join(", ");
+}
+
+function map_to_values($data)
+{
+    return collect($data)
+        ->filter(function ($value) {
+            return !($value instanceof Expression);
+        })
+        ->values()
+        ->all();
+}
+
+function to_array($items)
+{
+    if ($items instanceof Traversable) {
+        return iterator_to_array($items);
+    }
+
+    return (array) $items;
 }

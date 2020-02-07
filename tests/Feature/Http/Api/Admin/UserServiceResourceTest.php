@@ -4,7 +4,6 @@ namespace Tests\Feature\Http\Api\Admin;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\ServiceModules\ExtraFlags\ExtraFlagUserServiceRepository;
 use App\ServiceModules\ExtraFlags\PlayerFlagRepository;
-use App\Support\Database;
 use Tests\Psr4\Concerns\PlayerFlagConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 
@@ -124,7 +123,7 @@ class UserServiceResourceTest extends HttpTestCase
         // when
         $response = $this->put("/api/admin/user_services/{$userService->getId()}", [
             'type' => ExtraFlagType::TYPE_NICK,
-            'auth_data' => 'my_nick',
+            'auth_data' => 'my_nick2',
             'expire' => convert_date($userService->getExpire() + 2),
             'server_id' => $server->getId(),
         ]);
@@ -138,7 +137,7 @@ class UserServiceResourceTest extends HttpTestCase
         $playerFlag = $this->playerFlagRepository->getByCredentials(
             $server->getId(),
             ExtraFlagType::TYPE_NICK,
-            'my_nick'
+            'my_nick2'
         );
         $this->assertSame("my_password", $playerFlag->getPassword());
     }

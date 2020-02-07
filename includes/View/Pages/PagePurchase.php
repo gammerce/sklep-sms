@@ -1,9 +1,9 @@
 <?php
 namespace App\View\Pages;
 
-use App\View\Interfaces\IBeLoggedMust;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\System\Auth;
+use App\View\Interfaces\IBeLoggedMust;
 
 class PagePurchase extends Page
 {
@@ -40,12 +40,12 @@ class PagePurchase extends Page
             $path = "build/js/static/pages/" . $this::PAGE_ID . "/";
             $pathFile = $path . "main.js";
             if ($this->fileSystem->exists($this->path->to($pathFile))) {
-                $this->heart->scriptAdd($this->url->versioned($pathFile));
+                $this->heart->addScript($this->url->versioned($pathFile));
             }
 
             $pathFile = $path . $serviceModule->getModuleId() . ".js";
             if ($this->fileSystem->exists($this->path->to($pathFile))) {
-                $this->heart->scriptAdd($this->url->versioned($pathFile));
+                $this->heart->addScript($this->url->versioned($pathFile));
             }
         }
 
@@ -54,23 +54,23 @@ class PagePurchase extends Page
             $path = "build/css/static/pages/" . $this::PAGE_ID . "/";
             $pathFile = $path . "main.css";
             if ($this->fileSystem->exists($this->path->to($pathFile))) {
-                $this->heart->styleAdd($this->url->versioned($pathFile));
+                $this->heart->addStyle($this->url->versioned($pathFile));
             }
 
             $pathFile = $path . $serviceModule->getModuleId() . ".css";
             if ($this->fileSystem->exists($this->path->to($pathFile))) {
-                $this->heart->styleAdd($this->url->versioned($pathFile));
+                $this->heart->addStyle($this->url->versioned($pathFile));
             }
         }
 
         $path = "build/css/static/services/{$serviceModule->getModuleId()}.css";
         if ($this->fileSystem->exists($this->path->to($path))) {
-            $this->heart->styleAdd($this->url->versioned($path));
+            $this->heart->addStyle($this->url->versioned($path));
         }
 
         $path = "build/js/static/services/{$serviceModule->getModuleId()}.js";
         if ($this->fileSystem->exists($this->path->to($path))) {
-            $this->heart->scriptAdd($this->url->versioned($path));
+            $this->heart->addScript($this->url->versioned($path));
         }
 
         $this->heart->pageTitle .= " - " . $serviceModule->service->getName();
@@ -82,7 +82,7 @@ class PagePurchase extends Page
         }
 
         // Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
-        if (!$this->heart->userCanUseService($user->getUid(), $serviceModule->service)) {
+        if (!$this->heart->canUserUseService($user->getUid(), $serviceModule->service)) {
             return $this->lang->t('service_no_permission');
         }
 

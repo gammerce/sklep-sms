@@ -2,6 +2,9 @@
 namespace App\View\Pages;
 
 use App\Exceptions\UnauthorizedException;
+use App\Models\Group;
+use App\Repositories\UserRepository;
+use App\Services\PriceTextService;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -15,11 +18,19 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
     const PAGE_ID = 'users';
     protected $privilege = 'view_users';
 
-    public function __construct()
+    /** @var UserRepository */
+    private $userRepository;
+
+    /** @var PriceTextService */
+    private $priceTextService;
+
+    public function __construct(UserRepository $userRepository, PriceTextService $priceTextService)
     {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->t('users');
+        $this->userRepository = $userRepository;
+        $this->priceTextService = $priceTextService;
     }
 
     protected function content(array $query, array $body)
@@ -56,13 +67,12 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             );
         }
 
-        // Jezeli jest jakis where, to dodajemy WHERE
         if (strlen($where)) {
             $where = 'WHERE ' . $where . ' ';
         }
 
         $result = $this->db->query(
-            "SELECT SQL_CALC_FOUND_ROWS `uid`, `username`, `forename`, `surname`, `email`, `steam_id`, `groups`, `wallet` " .
+            "SELECT SQL_CALC_FOUND_ROWS * " .
                 "FROM `ss_users` " .
                 $where .
                 "LIMIT " .
@@ -72,27 +82,30 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
         foreach ($result as $row) {
+            $user = $this->userRepository->mapToModel($row);
             $bodyRow = new BodyRow();
 
-            $row['groups'] = explode(";", $row['groups']);
-            $groups = [];
-            foreach ($row['groups'] as $gid) {
-                $group = $this->heart->getGroup($gid);
-                $groups[] = "{$group['name']} ({$group['id']})";
-            }
-            $groups = implode("; ", $groups);
+            $groups = collect($user->getGroups())
+                ->map(function ($groupId) {
+                    return $this->heart->getGroup($groupId);
+                })
+                ->filter(function ($group) {
+                    return !!$group;
+                })
+                ->map(function (Group $group) {
+                    return "{$group->getName()} ({$group->getId()})";
+                })
+                ->join("; ");
 
-            $bodyRow->setDbId($row['uid']);
-            $bodyRow->addCell(new Cell($row['username']));
-            $bodyRow->addCell(new Cell($row['forename']));
-            $bodyRow->addCell(new Cell($row['surname']));
-            $bodyRow->addCell(new Cell($row['email']));
-            $bodyRow->addCell(new Cell($row['steam_id']));
+            $bodyRow->setDbId($user->getUid());
+            $bodyRow->addCell(new Cell($user->getUsername()));
+            $bodyRow->addCell(new Cell($user->getForename()));
+            $bodyRow->addCell(new Cell($user->getSurname()));
+            $bodyRow->addCell(new Cell($user->getEmail()));
+            $bodyRow->addCell(new Cell($user->getSteamId()));
             $bodyRow->addCell(new Cell($groups));
 
-            $cell = new Cell(
-                number_format($row['wallet'] / 100.0, 2) . ' ' . $this->settings->getCurrency()
-            );
+            $cell = new Cell($this->priceTextService->getPriceText($user->getWallet()));
             $cell->setParam('headers', 'wallet');
             $bodyRow->addCell($cell);
 
@@ -143,10 +156,16 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
                 $groups = '';
                 foreach ($this->heart->getGroups() as $group) {
-                    $groups .= create_dom_element("option", "{$group['name']} ( {$group['id']} )", [
-                        'value' => $group['id'],
-                        'selected' => in_array($group['id'], $user->getGroups()) ? "selected" : "",
-                    ]);
+                    $groups .= create_dom_element(
+                        "option",
+                        "{$group->getName()} ( {$group->getId()} )",
+                        [
+                            'value' => $group->getId(),
+                            'selected' => in_array($group->getId(), $user->getGroups())
+                                ? "selected"
+                                : "",
+                        ]
+                    );
                 }
 
                 $output = $this->template->render("admin/action_boxes/user_edit", [
@@ -156,7 +175,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                     "forename" => $user->getForename(),
                     "steamId" => $user->getSteamId(),
                     "uid" => $user->getUid(),
-                    "wallet" => $user->getWallet(true),
+                    "wallet" => number_format($user->getWallet() / 100.0, 2),
                     "groups" => $groups,
                 ]);
                 break;

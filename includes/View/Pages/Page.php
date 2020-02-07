@@ -1,18 +1,18 @@
 <?php
 namespace App\View\Pages;
 
-use App\View\Html\I_ToHtml;
 use App\Routing\UrlGenerator;
-use App\System\Application;
-use App\View\CurrentPage;
 use App\Support\Database;
 use App\Support\FileSystemContract;
-use App\System\Heart;
 use App\Support\Path;
-use App\System\Settings;
 use App\Support\Template;
+use App\System\Application;
+use App\System\Heart;
+use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use App\View\CurrentPage;
+use App\View\Html\I_ToHtml;
 
 abstract class Page
 {
@@ -80,7 +80,7 @@ abstract class Page
         if (strlen($this::PAGE_ID) && $this->fileSystem->exists($this->path->to($path))) {
             foreach ($this->fileSystem->scanDirectory($this->path->to($path)) as $file) {
                 if (ends_at($file, ".js")) {
-                    $this->heart->scriptAdd($this->url->versioned($path . $file));
+                    $this->heart->addScript($this->url->versioned($path . $file));
                 }
             }
         }
@@ -90,7 +90,7 @@ abstract class Page
         if (strlen($this::PAGE_ID) && $this->fileSystem->exists($this->path->to($path))) {
             foreach ($this->fileSystem->scanDirectory($this->path->to($path)) as $file) {
                 if (ends_at($file, ".css")) {
-                    $this->heart->styleAdd($this->url->versioned($path . $file));
+                    $this->heart->addStyle($this->url->versioned($path . $file));
                 }
             }
         }
@@ -107,12 +107,12 @@ abstract class Page
             foreach ($this->heart->getEmptyServiceModules() as $serviceModule) {
                 $path = "build/css/static/services/{$serviceModule->getModuleId()}.css";
                 if ($this->fileSystem->exists($this->path->to($path))) {
-                    $this->heart->styleAdd($this->url->versioned($path));
+                    $this->heart->addStyle($this->url->versioned($path));
                 }
 
                 $path = "build/js/static/services/{$serviceModule->getModuleId()}.js";
                 if ($this->fileSystem->exists($this->path->to($path))) {
-                    $this->heart->scriptAdd($this->url->versioned($path));
+                    $this->heart->addScript($this->url->versioned($path));
                 }
             }
         }

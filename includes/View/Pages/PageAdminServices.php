@@ -2,6 +2,8 @@
 namespace App\View\Pages;
 
 use App\Exceptions\UnauthorizedException;
+use App\ServiceModules\Interfaces\IServiceAdminManage;
+use App\ServiceModules\Interfaces\IServiceCreate;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -10,8 +12,6 @@ use App\View\Html\Structure;
 use App\View\Html\UnescapedSimpleText;
 use App\View\Html\Wrapper;
 use App\View\Pages\Interfaces\IPageAdminActionBox;
-use App\ServiceModules\Interfaces\IServiceAdminManage;
-use App\ServiceModules\Interfaces\IServiceCreate;
 
 class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 {
@@ -116,10 +116,10 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
         // Grupy
         $groups = "";
         foreach ($this->heart->getGroups() as $group) {
-            $groups .= create_dom_element("option", "{$group['name']} ( {$group['id']} )", [
-                'value' => $group['id'],
+            $groups .= create_dom_element("option", "{$group->getName()} ( {$group->getId()} )", [
+                'value' => $group->getId(),
                 'selected' =>
-                    isset($service) && in_array($group['id'], $service->getGroups())
+                    isset($service) && in_array($group->getId(), $service->getGroups())
                         ? "selected"
                         : "",
             ]);

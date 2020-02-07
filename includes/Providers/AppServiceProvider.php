@@ -2,18 +2,18 @@
 namespace App\Providers;
 
 use App\Cache\FileCache;
-use App\System\Application;
-use App\System\Auth;
-use App\View\CurrentPage;
 use App\Support\Database;
-use App\System\ExternalConfigProvider;
 use App\Support\FileSystem;
 use App\Support\FileSystemContract;
+use App\Support\Path;
+use App\System\Application;
+use App\System\Auth;
+use App\System\ExternalConfigProvider;
 use App\System\Heart;
 use App\System\License;
-use App\Support\Path;
 use App\System\Settings;
 use App\Translation\TranslationManager;
+use App\View\CurrentPage;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 

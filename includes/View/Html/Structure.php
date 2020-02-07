@@ -1,8 +1,8 @@
 <?php
 namespace App\View\Html;
 
-use App\View\CurrentPage;
 use App\Translation\TranslationManager;
+use App\View\CurrentPage;
 use App\View\Pagination;
 use Symfony\Component\HttpFoundation\Request;
 

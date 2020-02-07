@@ -99,9 +99,10 @@ class User
 
         if ($this->groups) {
             foreach ($this->groups as $groupId) {
-                $privileges = $heart->getGroupPrivileges($groupId);
-                foreach ($privileges as $privilege => $value) {
-                    if (strlen($privilege)) {
+                $group = $heart->getGroup($groupId);
+
+                if ($group) {
+                    foreach ($group->getPermissions() as $privilege => $value) {
                         $this->privileges[$privilege] = !!$value;
                     }
                 }
@@ -234,6 +235,7 @@ class User
         return $this->lastActive;
     }
 
+    // TODO Remove $divide
     /**
      * @param bool $divide
      *
