@@ -138,7 +138,7 @@ class UserServiceResourceTest extends HttpTestCase
         $playerFlag = $this->playerFlagRepository->getByCredentials(
             $server->getId(),
             ExtraFlagType::TYPE_NICK,
-            'my_nick'
+            'my_nick2'
         );
         $this->assertSame("my_password", $playerFlag->getPassword());
     }
