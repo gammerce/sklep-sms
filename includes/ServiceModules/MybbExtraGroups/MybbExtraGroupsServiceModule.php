@@ -36,6 +36,7 @@ use App\ServiceModules\ServiceModule;
 use App\Services\PriceTextService;
 use App\Support\Database;
 use App\Support\Expression;
+use App\Support\QueryParticle;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;
@@ -663,17 +664,20 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     {
         $this->connectMybb();
 
+        $queryParticle = new QueryParticle();
+
         if (is_integer($userId)) {
-            $where = "`uid` = {$userId}";
+            $queryParticle->add("`uid` = ?", [$userId]);
         } else {
-            $where = $this->dbMybb->prepare("`username` = '%s'", [$userId]);
+            $queryParticle->add("`username` = ?", [$userId]);
         }
 
-        $statement = $this->dbMybb->query(
+        $statement = $this->dbMybb->statement(
             "SELECT `uid`, `additionalgroups`, `displaygroup`, `usergroup` " .
                 "FROM `mybb_users` " .
-                "WHERE {$where}"
+                "WHERE {$queryParticle}"
         );
+        $statement->execute($queryParticle->params());
 
         if (!$statement->rowCount()) {
             return null;

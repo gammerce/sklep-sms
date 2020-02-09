@@ -452,7 +452,7 @@ function get_error_code(PDOException $e)
     return $e->errorInfo[1];
 }
 
-function collect($items)
+function collect($items = [])
 {
     return new Collection($items);
 }
