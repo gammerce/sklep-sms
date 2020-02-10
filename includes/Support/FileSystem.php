@@ -106,4 +106,9 @@ class FileSystem implements FileSystemContract
     {
         return is_writable($path);
     }
+
+    public function lastChangedAt($path)
+    {
+        return filectime($path);
+    }
 }

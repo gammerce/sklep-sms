@@ -131,6 +131,11 @@ class MemoryFileSystem implements FileSystemContract
         return $this->exists($path);
     }
 
+    public function lastChangedAt($path)
+    {
+        return time();
+    }
+
     private function formatPath($path)
     {
         return rtrim($path, DIRECTORY_SEPARATOR);
