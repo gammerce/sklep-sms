@@ -583,7 +583,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         if ($action === "email") {
             return $this->template->renderNoComments(
                 "services/extra_flags/purchase_info_email",
-                compact('data', 'quantity', 'password', 'setinfo') + [
+                compact('quantity', 'password', 'setinfo') + [
                     'authData' => $transaction->getAuthData(),
                     'typeName' => $this->getTypeName2($transaction->getExtraDatum('type')),
                     'serviceName' => $this->service->getName(),
