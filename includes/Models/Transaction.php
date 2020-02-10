@@ -308,7 +308,6 @@ class Transaction
     }
 
     /**
-     * TODO Change it to int
      * @return string
      */
     public function getTimestamp()
