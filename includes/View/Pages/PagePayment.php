@@ -8,6 +8,7 @@ use App\ServiceModules\Interfaces\IServiceServiceCode;
 use App\ServiceModules\ServiceModule;
 use App\Services\PriceTextService;
 use App\Services\SmsPriceService;
+use App\System\Settings;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 
@@ -24,10 +25,14 @@ class PagePayment extends Page
     /** @var SmsPriceService */
     private $smsPriceService;
 
+    /** @var Settings */
+    private $settings;
+
     public function __construct(
         PurchaseSerializer $purchaseSerializer,
         PriceTextService $priceTextService,
-        SmsPriceService $smsPriceService
+        SmsPriceService $smsPriceService,
+        Settings $settings
     ) {
         parent::__construct();
 
@@ -35,6 +40,7 @@ class PagePayment extends Page
         $this->priceTextService = $priceTextService;
         $this->heart->pageTitle = $this->title = $this->lang->t('title_payment');
         $this->smsPriceService = $smsPriceService;
+        $this->settings = $settings;
     }
 
     protected function content(array $query, array $body)

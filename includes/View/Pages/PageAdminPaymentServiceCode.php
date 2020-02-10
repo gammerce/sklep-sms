@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages;
 
+use App\Repositories\TransactionRepository;
 use App\Support\QueryParticle;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
@@ -13,11 +14,15 @@ class PageAdminPaymentServiceCode extends PageAdmin
 {
     const PAGE_ID = 'payment_service_code';
 
-    public function __construct()
+    /** @var TransactionRepository */
+    private $transactionRepository;
+
+    public function __construct(TransactionRepository $transactionRepository)
     {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->t('payments_service_code');
+        $this->transactionRepository = $transactionRepository;
     }
 
     protected function content(array $query, array $body)
@@ -40,7 +45,7 @@ class PageAdminPaymentServiceCode extends PageAdmin
 
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
-                "FROM ({$this->settings['transactions_query']}) as t " .
+                "FROM ({$this->transactionRepository->getQuery()}) as t " .
                 "WHERE t.payment = 'service_code' $queryParticle" .
                 "ORDER BY t.timestamp DESC " .
                 "LIMIT ?"
@@ -54,23 +59,24 @@ class PageAdminPaymentServiceCode extends PageAdmin
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
         foreach ($statement as $row) {
+            $transaction = $this->transactionRepository->mapToModel($row);
             $bodyRow = new BodyRow();
 
-            if ($query['payid'] == $row['payment_id']) {
+            if ($query['payid'] == $transaction->getPaymentId()) {
                 $bodyRow->addClass('highlighted');
             }
 
-            $bodyRow->setDbId($row['payment_id']);
-            $bodyRow->addCell(new Cell($row['service_code']));
-            $bodyRow->addCell(new Cell($row['ip']));
+            $bodyRow->setDbId($transaction->getPaymentId());
+            $bodyRow->addCell(new Cell($transaction->getServiceCode()));
+            $bodyRow->addCell(new Cell($transaction->getIp()));
 
             $cell = new Cell();
-            $div = new Div(get_platform($row['platform']));
+            $div = new Div(get_platform($transaction->getPlatform()));
             $div->addClass('one_line');
             $cell->addContent($div);
             $bodyRow->addCell($cell);
 
-            $bodyRow->addCell(new Cell(convert_date($row['timestamp'])));
+            $bodyRow->addCell(new Cell(convert_date($transaction->getTimestamp())));
 
             $table->addBodyRow($bodyRow);
         }

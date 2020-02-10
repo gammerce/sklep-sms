@@ -10,7 +10,7 @@ class Transaction
     private $userId;
 
     /** @var string */
-    private $username;
+    private $userName;
 
     /** @var string */
     private $paymentMethod;
@@ -52,7 +52,7 @@ class Transaction
     private $adminId;
 
     /** @var string */
-    private $adminname;
+    private $adminName;
 
     /** @var string */
     private $smsCode;
@@ -75,7 +75,7 @@ class Transaction
     public function __construct(
         $id,
         $userId,
-        $username,
+        $userName,
         $paymentMethod,
         $paymentId,
         $serviceId,
@@ -89,7 +89,7 @@ class Transaction
         $income,
         $cost,
         $adminId,
-        $adminname,
+        $adminName,
         $smsCode,
         $smsText,
         $smsNumber,
@@ -99,7 +99,7 @@ class Transaction
     ) {
         $this->id = $id;
         $this->userId = $userId;
-        $this->username = $username;
+        $this->userName = $userName;
         $this->paymentMethod = $paymentMethod;
         $this->paymentId = $paymentId;
         $this->serviceId = $serviceId;
@@ -113,7 +113,7 @@ class Transaction
         $this->income = $income;
         $this->cost = $cost;
         $this->adminId = $adminId;
-        $this->adminname = $adminname;
+        $this->adminName = $adminName;
         $this->smsCode = $smsCode;
         $this->smsText = $smsText;
         $this->smsNumber = $smsNumber;
@@ -141,9 +141,9 @@ class Transaction
     /**
      * @return string
      */
-    public function getUsername()
+    public function getUserName()
     {
-        return $this->username;
+        return $this->userName;
     }
 
     /**
@@ -262,9 +262,9 @@ class Transaction
     /**
      * @return string
      */
-    public function getAdminname()
+    public function getAdminName()
     {
-        return $this->adminname;
+        return $this->adminName;
     }
 
     /**
@@ -308,6 +308,7 @@ class Transaction
     }
 
     /**
+     * TODO Change it to int
      * @return string
      */
     public function getTimestamp()

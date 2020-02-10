@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages;
 
+use App\Repositories\TransactionRepository;
 use App\Services\PriceTextService;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
@@ -16,12 +17,18 @@ class PageAdminPaymentWallet extends PageAdmin
     /** @var PriceTextService */
     private $priceTextService;
 
-    public function __construct(PriceTextService $priceTextService)
-    {
+    /** @var TransactionRepository */
+    private $transactionRepository;
+
+    public function __construct(
+        PriceTextService $priceTextService,
+        TransactionRepository $transactionRepository
+    ) {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->t('payments_wallet');
         $this->priceTextService = $priceTextService;
+        $this->transactionRepository = $transactionRepository;
     }
 
     protected function content(array $query, array $body)
@@ -43,7 +50,7 @@ class PageAdminPaymentWallet extends PageAdmin
 
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
-                "FROM ({$this->settings['transactions_query']}) as t " .
+                "FROM ({$this->transactionRepository->getQuery()}) as t " .
                 "WHERE t.payment = 'wallet' " .
                 $where .
                 "ORDER BY t.timestamp DESC " .
@@ -54,25 +61,26 @@ class PageAdminPaymentWallet extends PageAdmin
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
         foreach ($statement as $row) {
+            $transaction = $this->transactionRepository->mapToModel($row);
             $bodyRow = new BodyRow();
 
-            if ($query['payid'] == $row['payment_id']) {
+            if ($query['payid'] == $transaction->getPaymentId()) {
                 $bodyRow->addClass('highlighted');
             }
 
-            $cost = $this->priceTextService->getPriceText($row['cost']);
-
-            $bodyRow->setDbId($row['payment_id']);
-            $bodyRow->addCell(new Cell($cost));
-            $bodyRow->addCell(new Cell($row['ip']));
+            $bodyRow->setDbId($transaction->getPaymentId());
+            $bodyRow->addCell(
+                new Cell($this->priceTextService->getPriceText($transaction->getCost()))
+            );
+            $bodyRow->addCell(new Cell($transaction->getIp()));
 
             $cell = new Cell();
-            $div = new Div(get_platform($row['platform']));
+            $div = new Div(get_platform($transaction->getPlatform()));
             $div->addClass('one_line');
             $cell->addContent($div);
             $bodyRow->addCell($cell);
 
-            $bodyRow->addCell(new Cell(convert_date($row['timestamp'])));
+            $bodyRow->addCell(new Cell(convert_date($transaction->getTimestamp())));
 
             $table->addBodyRow($bodyRow);
         }

@@ -2,8 +2,7 @@
 namespace App\View\Pages;
 
 use App\Repositories\PaymentPlatformRepository;
-use App\Support\Path;
-use App\System\Heart;
+use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
@@ -15,33 +14,33 @@ class PageAdminSettings extends PageAdmin
     const PAGE_ID = 'settings';
     protected $privilege = 'manage_settings';
 
-    public function __construct()
-    {
+    /** @var Settings */
+    private $settings;
+
+    /** @var PaymentPlatformRepository */
+    private $paymentPlatformRepository;
+
+    public function __construct(
+        Settings $settings,
+        PaymentPlatformRepository $paymentPlatformRepository
+    ) {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->t('settings');
+        $this->settings = $settings;
+        $this->paymentPlatformRepository = $paymentPlatformRepository;
     }
 
     protected function content(array $query, array $body)
     {
-        /** @var PaymentPlatformRepository $paymentPlatformRepository */
-        $paymentPlatformRepository = $this->app->make(PaymentPlatformRepository::class);
-
-        /** @var Heart $heart */
-        $heart = $this->app->make(Heart::class);
-
-        /** @var Path $path */
-        $path = $this->app->make(Path::class);
-
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
-        $lang = $this->lang;
         $langShop = $translationManager->shop();
 
         $smsPlatforms = [];
         $transferPlatforms = [];
-        foreach ($paymentPlatformRepository->all() as $paymentPlatform) {
-            $paymentModule = $heart->getPaymentModule($paymentPlatform);
+        foreach ($this->paymentPlatformRepository->all() as $paymentPlatform) {
+            $paymentModule = $this->heart->getPaymentModule($paymentPlatform);
 
             if ($paymentModule instanceof SupportSms) {
                 $smsPlatforms[] = create_dom_element("option", $paymentPlatform->getName(), [
@@ -68,12 +67,12 @@ class PageAdminSettings extends PageAdmin
         $userEditServiceSelect = $this->createUserEditServiceSelect();
 
         // Available themes
-        $dirList = $this->fileSystem->scanDirectory($path->to('themes'));
+        $dirList = $this->fileSystem->scanDirectory($this->path->to('themes'));
         $themesList = [];
         foreach ($dirList as $dirName) {
             if (
                 $dirName[0] != '.' &&
-                $this->fileSystem->isDirectory($path->to("themes/$dirName"))
+                $this->fileSystem->isDirectory($this->path->to("themes/$dirName"))
             ) {
                 $themesList[] = create_dom_element("option", $dirName, [
                     'value' => $dirName,
@@ -83,17 +82,21 @@ class PageAdminSettings extends PageAdmin
         }
 
         // Available languages
-        $dirList = $this->fileSystem->scanDirectory($path->to('translations'));
+        $dirList = $this->fileSystem->scanDirectory($this->path->to('translations'));
         $languagesList = [];
         foreach ($dirList as $dirName) {
             if (
                 $dirName[0] != '.' &&
-                $this->fileSystem->isDirectory($path->to("translations/{$dirName}"))
+                $this->fileSystem->isDirectory($this->path->to("translations/{$dirName}"))
             ) {
-                $languagesList[] = create_dom_element("option", $lang->t('language_' . $dirName), [
-                    'value' => $dirName,
-                    'selected' => $dirName == $langShop->getCurrentLanguage() ? "selected" : "",
-                ]);
+                $languagesList[] = create_dom_element(
+                    "option",
+                    $this->lang->t('language_' . $dirName),
+                    [
+                        'value' => $dirName,
+                        'selected' => $dirName == $langShop->getCurrentLanguage() ? "selected" : "",
+                    ]
+                );
             }
         }
 

@@ -3,6 +3,7 @@ namespace App\View\Pages;
 
 use App\Http\Services\IncomeService;
 use App\Models\Server;
+use App\Repositories\TransactionRepository;
 use App\Requesting\Requester;
 use App\Services\PriceTextService;
 use App\Support\Version;
@@ -29,12 +30,16 @@ class PageAdminMain extends PageAdmin
     /** @var PriceTextService */
     private $priceTextService;
 
+    /** @var TransactionRepository */
+    private $transactionRepository;
+
     public function __construct(
         Version $version,
         License $license,
         Requester $requester,
         IncomeService $incomeService,
-        PriceTextService $priceTextService
+        PriceTextService $priceTextService,
+        TransactionRepository $transactionRepository
     ) {
         parent::__construct();
 
@@ -44,6 +49,7 @@ class PageAdminMain extends PageAdmin
         $this->requester = $requester;
         $this->incomeService = $incomeService;
         $this->priceTextService = $priceTextService;
+        $this->transactionRepository = $transactionRepository;
     }
 
     protected function content(array $query, array $body)
@@ -141,30 +147,30 @@ class PageAdminMain extends PageAdmin
         );
 
         // Bought service
-        $amount = $this->db
-            ->query("SELECT COUNT(*) FROM ({$this->settings['transactions_query']}) AS t")
+        $quantity = $this->db
+            ->query("SELECT COUNT(*) FROM ({$this->transactionRepository->getQuery()}) AS t")
             ->fetchColumn();
-        $bricks[] = $this->createBrick($this->lang->t('number_of_bought_services', $amount));
+        $bricks[] = $this->createBrick($this->lang->t('number_of_bought_services', $quantity));
 
         // SMS
-        $amount = $this->db
+        $quantity = $this->db
             ->query(
-                "SELECT COUNT(*) AS `amount` " .
-                    "FROM ({$this->settings['transactions_query']}) as t " .
+                "SELECT COUNT(*) " .
+                    "FROM ({$this->transactionRepository->getQuery()}) as t " .
                     "WHERE t.payment = 'sms' AND t.free='0'"
             )
             ->fetchColumn();
-        $bricks[] = $this->createBrick($this->lang->t('number_of_sent_smses', $amount));
+        $bricks[] = $this->createBrick($this->lang->t('number_of_sent_smses', $quantity));
 
         // Transfer
-        $amount = $this->db
+        $quantity = $this->db
             ->query(
-                "SELECT COUNT(*) AS `amount` " .
-                    "FROM ({$this->settings['transactions_query']}) as t " .
+                "SELECT COUNT(*) " .
+                    "FROM ({$this->transactionRepository->getQuery()}) as t " .
                     "WHERE t.payment = 'transfer' AND t.free='0'"
             )
             ->fetchColumn();
-        $bricks[] = $this->createBrick($this->lang->t('number_of_transfers', $amount));
+        $bricks[] = $this->createBrick($this->lang->t('number_of_transfers', $quantity));
 
         // Income
         $incomeData = $this->incomeService->get(date("Y"), date("m"));

@@ -4,8 +4,6 @@ namespace App\View\Pages;
 use App\Repositories\TransactionRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\Services\PriceTextService;
-use App\Support\Database;
-use App\Support\Template;
 use App\System\Auth;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pagination;
@@ -18,31 +16,25 @@ class PagePaymentLog extends Page implements IBeLoggedMust
     /** @var PriceTextService */
     private $priceTextService;
 
-    public function __construct(PriceTextService $priceTextService)
-    {
+    /** @var TransactionRepository */
+    private $transactionRepository;
+
+    public function __construct(
+        PriceTextService $priceTextService,
+        TransactionRepository $transactionRepository
+    ) {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->t('payment_log');
         $this->priceTextService = $priceTextService;
+        $this->transactionRepository = $transactionRepository;
     }
 
     protected function content(array $query, array $body)
     {
-        $heart = $this->heart;
-        $lang = $this->lang;
-
         /** @var Auth $auth */
         $auth = $this->app->make(Auth::class);
         $user = $auth->user();
-
-        /** @var Template $template */
-        $template = $this->app->make(Template::class);
-
-        /** @var Database $db */
-        $db = $this->app->make(Database::class);
-
-        /** @var TransactionRepository $transactionRepository */
-        $transactionRepository = $this->app->make(TransactionRepository::class);
 
         /** @var Request $request */
         $request = $this->app->make(Request::class);
@@ -50,8 +42,8 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         /** @var Pagination $pagination */
         $pagination = $this->app->make(Pagination::class);
 
-        $statement = $db->statement(
-            "SELECT SQL_CALC_FOUND_ROWS * FROM ({$transactionRepository->getQuery()}) as t " .
+        $statement = $this->db->statement(
+            "SELECT SQL_CALC_FOUND_ROWS * FROM ({$this->transactionRepository->getQuery()}) as t " .
                 "WHERE t.uid = ? " .
                 "ORDER BY t.timestamp DESC " .
                 "LIMIT ?"
@@ -60,23 +52,23 @@ class PagePaymentLog extends Page implements IBeLoggedMust
             $user->getUid(),
             get_row_limit($this->currentPage->getPageNumber(), 10),
         ]);
-        $rowsCount = $db->query("SELECT FOUND_ROWS()")->fetchColumn();
+        $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $paymentLogs = "";
         foreach ($statement as $row) {
-            $transaction = $transactionRepository->mapToModel($row);
+            $transaction = $this->transactionRepository->mapToModel($row);
             $date = $transaction->getTimestamp();
             $cost = $this->priceTextService->getPriceText($transaction->getCost());
 
-            $serviceModule = $heart->getServiceModule($transaction->getServiceId());
+            $serviceModule = $this->heart->getServiceModule($transaction->getServiceId());
             if ($serviceModule instanceof IServicePurchaseWeb) {
                 $logInfo = $serviceModule->purchaseInfo("payment_log", $transaction);
                 $desc = $logInfo['text'];
                 $class = $logInfo['class'];
             } else {
-                $service = $heart->getService($transaction->getServiceId());
-                $server = $heart->getServer($transaction->getServerId());
-                $desc = $lang->t(
+                $service = $this->heart->getService($transaction->getServiceId());
+                $server = $this->heart->getServer($transaction->getServerId());
+                $desc = $this->lang->t(
                     'service_was_bought',
                     $service ? $service->getName() : '',
                     $server ? $server->getName() : ''
@@ -84,7 +76,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
                 $class = "outcome";
             }
 
-            $paymentLogs .= $template->render(
+            $paymentLogs .= $this->template->render(
                 "payment_log_brick",
                 compact('class', 'date', 'cost', 'desc')
             );
@@ -99,7 +91,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         );
         $paginationClass = $paginationContent ? "" : "display_none";
 
-        return $template->render(
+        return $this->template->render(
             "payment_log",
             compact('paymentLogs', 'paginationClass', 'paginationContent')
         );

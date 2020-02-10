@@ -5,8 +5,6 @@ use App\ServiceModules\Interfaces\IServiceUserOwnServices;
 use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\ServiceModules\ServiceModule;
 use App\Services\UserServiceService;
-use App\Support\Database;
-use App\Support\Template;
 use App\System\Auth;
 use App\System\Settings;
 use App\View\Interfaces\IBeLoggedMust;
@@ -20,12 +18,16 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
     /** @var UserServiceService */
     private $userServiceService;
 
-    public function __construct(UserServiceService $userServiceService)
+    /** @var Settings */
+    private $settings;
+
+    public function __construct(UserServiceService $userServiceService, Settings $settings)
     {
         parent::__construct();
 
         $this->userServiceService = $userServiceService;
         $this->heart->pageTitle = $this->title = $this->lang->t('user_own_services');
+        $this->settings = $settings;
     }
 
     protected function content(array $query, array $body)
@@ -33,15 +35,6 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         /** @var Auth $auth */
         $auth = $this->app->make(Auth::class);
         $user = $auth->user();
-
-        /** @var Template $template */
-        $template = $this->app->make(Template::class);
-
-        /** @var Settings $settings */
-        $settings = $this->app->make(Settings::class);
-
-        /** @var Database $db */
-        $db = $this->app->make(Database::class);
 
         /** @var Request $request */
         $request = $this->app->make(Request::class);
@@ -66,7 +59,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
                 })
                 ->join(", ");
 
-            $statement = $db->statement(
+            $statement = $this->db->statement(
                 "SELECT COUNT(*) FROM `ss_user_service` AS us " .
                     "INNER JOIN `ss_services` AS s ON us.service = s.id " .
                     "WHERE us.uid = ? AND s.module IN ({$keys}) "
@@ -74,7 +67,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             $statement->execute(array_merge([$user->getUid()], $moduleIds->all()));
             $rowsCount = $statement->fetchColumn();
 
-            $statement = $db->statement(
+            $statement = $this->db->statement(
                 "SELECT us.id FROM `ss_user_service` AS us " .
                     "INNER JOIN `ss_services` AS s ON us.service = s.id " .
                     "WHERE us.uid = ? AND s.module IN ({$keys}) " .
@@ -109,7 +102,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             }
 
             if (
-                $settings['user_edit_service'] &&
+                $this->settings['user_edit_service'] &&
                 $serviceModule instanceof IServiceUserOwnServicesEdit
             ) {
                 $buttonEdit = create_dom_element("button", $this->lang->t('edit'), [
@@ -139,7 +132,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         );
         $paginationClass = $paginationContent ? "" : "display_none";
 
-        return $template->render(
+        return $this->template->render(
             "user_own_services",
             compact('userOwnServices', 'paginationClass', 'paginationContent')
         );

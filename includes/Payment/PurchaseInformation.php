@@ -53,7 +53,6 @@ class PurchaseInformation
             return "";
         }
 
-        // TODO Extract transactions_query from settings
         // TODO Remove usage of prepare
 
         $statement = $this->db->statement(

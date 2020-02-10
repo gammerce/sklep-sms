@@ -29,6 +29,7 @@ use App\Payment\AdminPaymentService;
 use App\Payment\BoughtServiceService;
 use App\Payment\PurchasePriceService;
 use App\Repositories\PriceRepository;
+use App\Repositories\TransactionRepository;
 use App\Repositories\UserServiceRepository;
 use App\ServiceModules\ExtraFlags\Rules\ExtraFlagAuthDataRule;
 use App\ServiceModules\ExtraFlags\Rules\ExtraFlagPasswordDiffersRule;
@@ -56,7 +57,6 @@ use App\Services\PriceTextService;
 use App\Support\Expression;
 use App\System\Auth;
 use App\System\Heart;
-use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\CurrentPage;
@@ -89,9 +89,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     /** @var Translator */
     private $lang;
-
-    /** @var Settings */
-    private $settings;
 
     /** @var Heart */
     private $heart;
@@ -129,6 +126,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     /** @var PlayerFlagRepository */
     private $playerFlagRepository;
 
+    /** @var TransactionRepository */
+    private $transactionRepository;
+
     /** @var PlayerFlagService */
     private $playerFlagService;
 
@@ -153,12 +153,12 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
         $this->userServiceRepository = $this->app->make(UserServiceRepository::class);
         $this->playerFlagRepository = $this->app->make(PlayerFlagRepository::class);
+        $this->transactionRepository = $this->app->make(TransactionRepository::class);
         $this->playerFlagService = $this->app->make(PlayerFlagService::class);
         $this->priceTextService = $this->app->make(PriceTextService::class);
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
-        $this->settings = $this->app->make(Settings::class);
     }
 
     /**
@@ -1198,7 +1198,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         if ($paymentMethod == Purchase::METHOD_TRANSFER) {
             $statement = $this->db->statement(
-                "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
+                "SELECT * FROM ({$this->transactionRepository->getQuery()}) as t " .
                     "WHERE t.payment = 'transfer' AND t.payment_id = ? AND `service` = ? AND `server` = ? AND `auth_data` = ?"
             );
             $statement->execute([$paymentId, $this->service->getId(), $serverId, $authData]);
@@ -1212,7 +1212,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             }
         } elseif ($paymentMethod == Purchase::METHOD_SMS) {
             $statement = $this->db->statement(
-                "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
+                "SELECT * FROM ({$this->transactionRepository->getQuery()}) as t " .
                     "WHERE t.payment = 'sms' AND t.sms_code = ? AND `service` = ? AND `server` = ? AND `auth_data` = ?"
             );
             $statement->execute([$paymentId, $this->service->getId(), $serverId, $authData]);
@@ -1227,10 +1227,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
 
         // TODO: Usunac md5
-        $table = $this::USER_SERVICE_TABLE;
         $statement = $this->db->statement(
             "SELECT `id` FROM `ss_user_service` AS us " .
-                "INNER JOIN `$table` AS usef ON us.id = usef.us_id " .
+                "INNER JOIN `{$this->getUserServiceTable()}` AS usef ON us.id = usef.us_id " .
                 "WHERE us.service = ? AND `server` = ? AND `type` = ? AND `auth_data` = ? AND ( `password` = ? OR `password` = ? )"
         );
         $statement->execute([
