@@ -10,6 +10,7 @@ use App\Http\Validation\Rules\SmsPriceExistsRule;
 use App\Http\Validation\Validator;
 use App\Models\Purchase;
 use App\Models\Service;
+use App\Models\Transaction;
 use App\Payment\BoughtServiceService;
 use App\Repositories\SmsPriceRepository;
 use App\ServiceModules\Interfaces\IServicePurchase;
@@ -218,34 +219,40 @@ class ChargeWalletServiceModule extends ServiceModule implements
         );
     }
 
-    public function purchaseInfo($action, array $data)
+    public function purchaseInfo($action, Transaction $transaction)
     {
-        $cost = $data['cost'] ?: 0;
-        $data['amount'] .= ' ' . $this->settings->getCurrency();
-        $data['cost'] = $this->priceTextService->getPriceText($cost);
+        $quantity = $transaction->getQuantity() . ' ' . $this->settings->getCurrency();
 
-        if ($action == "web") {
-            if ($data['payment'] == Purchase::METHOD_SMS) {
-                $desc = $this->lang->t('wallet_was_charged', $data['amount']);
+        if ($action === "web") {
+            if ($transaction->getPaymentMethod() === Purchase::METHOD_SMS) {
+                $desc = $this->lang->t('wallet_was_charged', $quantity);
                 return $this->template->renderNoComments(
                     "services/charge_wallet/web_purchase_info_sms",
-                    compact('desc', 'data')
+                    [
+                        'desc' => $desc,
+                        'smsNumber' => $transaction->getSmsNumber(),
+                        'smsText' => $transaction->getSmsText(),
+                        'smsCode' => $transaction->getSmsCode(),
+                        'cost' => $this->priceTextService->getPriceText(
+                            $transaction->getCost() ?: 0
+                        ),
+                    ]
                 );
             }
 
-            if ($data['payment'] == Purchase::METHOD_TRANSFER) {
+            if ($transaction->getPaymentMethod() === Purchase::METHOD_TRANSFER) {
                 return $this->template->renderNoComments(
                     "services/charge_wallet/web_purchase_info_transfer",
-                    compact('data')
+                    compact('quantity')
                 );
             }
 
             return '';
         }
 
-        if ($action == "payment_log") {
+        if ($action === "payment_log") {
             return [
-                'text' => $this->lang->t('wallet_was_charged', $data['amount']),
+                'text' => $this->lang->t('wallet_was_charged', $quantity),
                 'class' => "income",
             ];
         }

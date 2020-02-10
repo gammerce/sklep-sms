@@ -1,6 +1,8 @@
 <?php
 namespace App\View\Pages;
 
+use App\Repositories\TransactionRepository;
+use App\Support\QueryParticle;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\Div;
@@ -12,11 +14,15 @@ class PageAdminPaymentServiceCode extends PageAdmin
 {
     const PAGE_ID = 'payment_service_code';
 
-    public function __construct()
+    /** @var TransactionRepository */
+    private $transactionRepository;
+
+    public function __construct(TransactionRepository $transactionRepository)
     {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->t('payments_service_code');
+        $this->transactionRepository = $transactionRepository;
     }
 
     protected function content(array $query, array $body)
@@ -31,41 +37,47 @@ class PageAdminPaymentServiceCode extends PageAdmin
         $table->addHeadCell(new HeadCell($this->lang->t('platform'), "platform"));
         $table->addHeadCell(new HeadCell($this->lang->t('date')));
 
-        $where = "";
+        $queryParticle = new QueryParticle();
+
         if (isset($query['payid'])) {
-            $where .= $this->db->prepare(" AND `payment_id` = '%d' ", [$query['payid']]);
+            $queryParticle->add(" AND `payment_id` = ? ", [$query['payid']]);
         }
 
-        $result = $this->db->query(
+        $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
-                "FROM ({$this->settings['transactions_query']}) as t " .
-                "WHERE t.payment = 'service_code' " .
-                $where .
+                "FROM ({$this->transactionRepository->getQuery()}) as t " .
+                "WHERE t.payment = 'service_code' $queryParticle" .
                 "ORDER BY t.timestamp DESC " .
-                "LIMIT " .
+                "LIMIT ?, ?"
+        );
+        $statement->execute(
+            array_merge(
+                $queryParticle->params(),
                 get_row_limit($this->currentPage->getPageNumber())
+            )
         );
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
+            $transaction = $this->transactionRepository->mapToModel($row);
             $bodyRow = new BodyRow();
 
-            if ($query['payid'] == $row['payment_id']) {
+            if ($query['payid'] == $transaction->getPaymentId()) {
                 $bodyRow->addClass('highlighted');
             }
 
-            $bodyRow->setDbId($row['payment_id']);
-            $bodyRow->addCell(new Cell($row['service_code']));
-            $bodyRow->addCell(new Cell($row['ip']));
+            $bodyRow->setDbId($transaction->getPaymentId());
+            $bodyRow->addCell(new Cell($transaction->getServiceCode()));
+            $bodyRow->addCell(new Cell($transaction->getIp()));
 
             $cell = new Cell();
-            $div = new Div(get_platform($row['platform']));
+            $div = new Div(get_platform($transaction->getPlatform()));
             $div->addClass('one_line');
             $cell->addContent($div);
             $bodyRow->addCell($cell);
 
-            $bodyRow->addCell(new Cell(convert_date($row['timestamp'])));
+            $bodyRow->addCell(new Cell(convert_date($transaction->getTimestamp())));
 
             $table->addBodyRow($bodyRow);
         }

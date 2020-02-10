@@ -23,11 +23,13 @@ use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
 use App\Models\Service;
+use App\Models\Transaction;
 use App\Models\UserService;
 use App\Payment\AdminPaymentService;
 use App\Payment\BoughtServiceService;
 use App\Payment\PurchasePriceService;
 use App\Repositories\PriceRepository;
+use App\Repositories\TransactionRepository;
 use App\Repositories\UserServiceRepository;
 use App\ServiceModules\ExtraFlags\Rules\ExtraFlagAuthDataRule;
 use App\ServiceModules\ExtraFlags\Rules\ExtraFlagPasswordDiffersRule;
@@ -53,9 +55,9 @@ use App\ServiceModules\ServiceModule;
 use App\Services\ExpiredUserServiceService;
 use App\Services\PriceTextService;
 use App\Support\Expression;
+use App\Support\QueryParticle;
 use App\System\Auth;
 use App\System\Heart;
-use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\CurrentPage;
@@ -88,9 +90,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     /** @var Translator */
     private $lang;
-
-    /** @var Settings */
-    private $settings;
 
     /** @var Heart */
     private $heart;
@@ -128,6 +127,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     /** @var PlayerFlagRepository */
     private $playerFlagRepository;
 
+    /** @var TransactionRepository */
+    private $transactionRepository;
+
     /** @var PlayerFlagService */
     private $playerFlagService;
 
@@ -152,12 +154,12 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
         $this->userServiceRepository = $this->app->make(UserServiceRepository::class);
         $this->playerFlagRepository = $this->app->make(PlayerFlagRepository::class);
+        $this->transactionRepository = $this->app->make(TransactionRepository::class);
         $this->playerFlagService = $this->app->make(PlayerFlagService::class);
         $this->priceTextService = $this->app->make(PriceTextService::class);
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
-        $this->settings = $this->app->make(Settings::class);
     }
 
     /**
@@ -256,40 +258,37 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
         $table->addHeadCell(new HeadCell($this->lang->t('expires')));
 
-        // Wyszukujemy dane ktore spelniaja kryteria
-        $where = '';
+        $queryParticle = new QueryParticle();
+
         if (isset($query['search'])) {
-            searchWhere(
-                ["us.id", "us.uid", "u.username", "srv.name", "s.name", "usef.auth_data"],
-                $query['search'],
-                $where
+            $queryParticle->extend(
+                create_search_query(
+                    ["us.id", "us.uid", "u.username", "srv.name", "s.name", "usef.auth_data"],
+                    $query['search']
+                )
             );
         }
-        // Jezeli jest jakis where, to dodajemy WHERE
-        if (strlen($where)) {
-            $where = "WHERE " . $where . ' ';
-        }
 
-        $result = $this->db->query(
+        $where = $queryParticle->isEmpty() ? "" : "WHERE {$queryParticle} ";
+
+        $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS us.id AS `id`, us.uid AS `uid`, u.username AS `username`, " .
                 "srv.name AS `server`, s.id AS `service_id`, s.name AS `service`, " .
                 "usef.type AS `type`, usef.auth_data AS `auth_data`, us.expire AS `expire` " .
                 "FROM `ss_user_service` AS us " .
-                "INNER JOIN `" .
-                $this::USER_SERVICE_TABLE .
-                "` AS usef ON usef.us_id = us.id " .
+                "INNER JOIN `{$this->getUserServiceTable()}` AS usef ON usef.us_id = us.id " .
                 "LEFT JOIN `ss_services` AS s ON s.id = usef.service " .
                 "LEFT JOIN `ss_servers` AS srv ON srv.id = usef.server " .
                 "LEFT JOIN `ss_users` AS u ON u.uid = us.uid " .
                 $where .
                 "ORDER BY us.id DESC " .
-                "LIMIT " .
-                get_row_limit($pageNumber)
+                "LIMIT ?, ?"
         );
+        $statement->execute(array_merge($queryParticle->params(), get_row_limit($pageNumber)));
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
             $bodyRow = new BodyRow();
 
             $bodyRow->setDbId($row['id']);
@@ -552,64 +551,67 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $this->playerFlagService->recalculatePlayerFlags($serverId, $type, $authData);
     }
 
-    public function purchaseInfo($action, array $data)
+    public function purchaseInfo($action, Transaction $transaction)
     {
-        $data['extra_data'] = json_decode($data['extra_data'], true);
-        $data['extra_data']['type_name'] = $this->getTypeName2($data['extra_data']['type']);
-
-        $password = '';
-        if (strlen($data['extra_data']['password'])) {
+        $password = "";
+        if (strlen($transaction->getExtraDatum('password'))) {
             $password =
                 "<strong>{$this->lang->t('password')}</strong>: " .
-                htmlspecialchars($data['extra_data']['password']) .
+                htmlspecialchars($transaction->getExtraDatum('password')) .
                 "<br />";
         }
 
-        $amount =
-            $data['amount'] != -1
-                ? "{$data['amount']} {$this->service->getTag()}"
+        $quantity =
+            $transaction->getQuantity() != -1
+                ? "{$transaction->getQuantity()} {$this->service->getTag()}"
                 : $this->lang->t('forever');
 
-        $cost = $data['cost']
-            ? $this->priceTextService->getPriceText($data['cost'])
+        $cost = $transaction->getCost()
+            ? $this->priceTextService->getPriceText($transaction->getCost())
             : $this->lang->t('none');
 
-        $data['income'] = number_format($data['income'] / 100.0, 2);
-
-        $server = $this->heart->getServer($data['server']);
+        $server = $this->heart->getServer($transaction->getServerId());
 
         $setinfo = "";
-        if ($data['extra_data']['type'] & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)) {
-            $setinfo = $this->lang->t('type_setinfo', $data['extra_data']['password']);
+        if (
+            $transaction->getExtraDatum('type') &
+            (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)
+        ) {
+            $setinfo = $this->lang->t('type_setinfo', $transaction->getExtraDatum('password'));
         }
 
-        if ($action == "email") {
+        if ($action === "email") {
             return $this->template->renderNoComments(
                 "services/extra_flags/purchase_info_email",
-                compact('data', 'amount', 'password', 'setinfo') + [
+                compact('quantity', 'password', 'setinfo') + [
+                    'authData' => $transaction->getAuthData(),
+                    'typeName' => $this->getTypeName2($transaction->getExtraDatum('type')),
                     'serviceName' => $this->service->getName(),
-                    'serverName' => $server->getName(),
+                    'serverName' => $server ? $server->getName() : 'n/a',
                 ]
             );
         }
 
-        if ($action == "web") {
+        if ($action === "web") {
             return $this->template->renderNoComments(
                 "services/extra_flags/purchase_info_web",
-                compact('cost', 'amount', 'data', 'password', 'setinfo') + [
+                compact('cost', 'quantity', 'password', 'setinfo') + [
+                    'authData' => $transaction->getAuthData(),
+                    'email' => $transaction->getEmail(),
+                    'typeName' => $this->getTypeName2($transaction->getExtraDatum('type')),
                     'serviceName' => $this->service->getName(),
-                    'serverName' => $server->getName(),
+                    'serverName' => $server ? $server->getName() : 'n/a',
                 ]
             );
         }
 
-        if ($action == "payment_log") {
+        if ($action === "payment_log") {
             return [
-                'text' => ($output = $this->lang->t(
+                'text' => $this->lang->t(
                     'service_was_bought',
                     $this->service->getName(),
                     $server->getName()
-                )),
+                ),
                 'class' => "outcome",
             ];
         }
@@ -1196,7 +1198,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         if ($paymentMethod == Purchase::METHOD_TRANSFER) {
             $statement = $this->db->statement(
-                "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
+                "SELECT * FROM ({$this->transactionRepository->getQuery()}) as t " .
                     "WHERE t.payment = 'transfer' AND t.payment_id = ? AND `service` = ? AND `server` = ? AND `auth_data` = ?"
             );
             $statement->execute([$paymentId, $this->service->getId(), $serverId, $authData]);
@@ -1210,7 +1212,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             }
         } elseif ($paymentMethod == Purchase::METHOD_SMS) {
             $statement = $this->db->statement(
-                "SELECT * FROM ({$this->settings['transactions_query']}) as t " .
+                "SELECT * FROM ({$this->transactionRepository->getQuery()}) as t " .
                     "WHERE t.payment = 'sms' AND t.sms_code = ? AND `service` = ? AND `server` = ? AND `auth_data` = ?"
             );
             $statement->execute([$paymentId, $this->service->getId(), $serverId, $authData]);
@@ -1225,10 +1227,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
 
         // TODO: Usunac md5
-        $table = $this::USER_SERVICE_TABLE;
         $statement = $this->db->statement(
             "SELECT `id` FROM `ss_user_service` AS us " .
-                "INNER JOIN `$table` AS usef ON us.id = usef.us_id " .
+                "INNER JOIN `{$this->getUserServiceTable()}` AS usef ON us.id = usef.us_id " .
                 "WHERE us.service = ? AND `server` = ? AND `type` = ? AND `auth_data` = ? AND ( `password` = ? OR `password` = ? )"
         );
         $statement->execute([

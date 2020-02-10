@@ -4,8 +4,8 @@ use App\Loggers\FileLogger;
 use App\Models\Server;
 use App\Models\User;
 use App\Support\Collection;
-use App\Support\Database;
 use App\Support\Expression;
+use App\Support\QueryParticle;
 use App\System\Application;
 use App\System\Auth;
 use App\System\Settings;
@@ -30,14 +30,17 @@ function app($abstract = null, array $parameters = [])
     return Container::getInstance()->makeWith($abstract, $parameters);
 }
 
+/**
+ * @param int $page
+ * @param int $rowLimit
+ * @return int[]
+ */
 function get_row_limit($page, $rowLimit = 0)
 {
     /** @var Settings $settings */
     $settings = app()->make(Settings::class);
-
-    $rowLimit = $rowLimit ? $rowLimit : $settings['row_limit'];
-
-    return ($page - 1) * $rowLimit . "," . $rowLimit;
+    $rowLimit = $rowLimit ?: $settings['row_limit'];
+    return [($page - 1) * $rowLimit, $rowLimit];
 }
 
 /* User functions */
@@ -298,26 +301,32 @@ function custom_mb_str_split($string)
     return preg_split('/(?<!^)(?!$)/u', $string);
 }
 
-function searchWhere($searchIds, $search, &$where)
+/**
+ * @param string[] $columns
+ * @param string $search
+ * @return QueryParticle|null
+ */
+function create_search_query($columns, $search)
 {
-    /** @var Database $db */
-    $db = app()->make(Database::class);
-
-    $searchWhere = [];
-    $searchLike = $db->escape('%' . implode('%', custom_mb_str_split($search)) . '%');
-
-    foreach ($searchIds as $searchId) {
-        $searchWhere[] = "{$searchId} LIKE '{$searchLike}'";
+    if (!$columns) {
+        return null;
     }
 
-    if (!empty($searchWhere)) {
-        $searchWhere = implode(" OR ", $searchWhere);
-        if (strlen($where)) {
-            $where .= " AND ";
-        }
+    $searchLike = '%' . implode('%', custom_mb_str_split($search)) . '%';
 
-        $where .= "( {$searchWhere} )";
+    $params = [];
+    $values = [];
+
+    foreach ($columns as $searchId) {
+        $params[] = "{$searchId} LIKE ?";
+        $values[] = $searchLike;
     }
+
+    $queryParticle = new QueryParticle();
+    $query = implode(" OR ", $params);
+    $queryParticle->add("( $query )", $values);
+
+    return $queryParticle;
 }
 
 // ip_in_range
@@ -452,7 +461,7 @@ function get_error_code(PDOException $e)
     return $e->errorInfo[1];
 }
 
-function collect($items)
+function collect($items = [])
 {
     return new Collection($items);
 }

@@ -37,15 +37,14 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
         $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
         $table->addHeadCell(new HeadCell($this->lang->t('name')));
 
-        $result = $this->db->query(
-            "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_groups` " .
-                "LIMIT " .
-                get_row_limit($this->currentPage->getPageNumber())
+        $statement = $this->db->statement(
+            "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_groups` LIMIT ?, ?"
         );
+        $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
             $bodyRow = new BodyRow();
 
             $bodyRow->setDbId($row['id']);

@@ -8,7 +8,6 @@ use App\Support\Path;
 use App\Support\Template;
 use App\System\Application;
 use App\System\Heart;
-use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\CurrentPage;
@@ -24,9 +23,6 @@ abstract class Page
 
     /** @var Heart */
     protected $heart;
-
-    /** @var Settings */
-    protected $settings;
 
     /** @var CurrentPage */
     protected $currentPage;
@@ -56,7 +52,6 @@ abstract class Page
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
         $this->heart = $this->app->make(Heart::class);
-        $this->settings = $this->app->make(Settings::class);
         $this->currentPage = $this->app->make(CurrentPage::class);
         $this->template = $this->app->make(Template::class);
         $this->db = $this->app->make(Database::class);
@@ -75,7 +70,6 @@ abstract class Page
      */
     public function getContent(array $query, array $body)
     {
-        // Dodajemy wszystkie skrypty
         $path = "build/js/static/pages/" . $this::PAGE_ID . "/";
         if (strlen($this::PAGE_ID) && $this->fileSystem->exists($this->path->to($path))) {
             foreach ($this->fileSystem->scanDirectory($this->path->to($path)) as $file) {
@@ -85,7 +79,6 @@ abstract class Page
             }
         }
 
-        // Let's add all css
         $path = "build/css/static/pages/" . $this::PAGE_ID . "/";
         if (strlen($this::PAGE_ID) && $this->fileSystem->exists($this->path->to($path))) {
             foreach ($this->fileSystem->scanDirectory($this->path->to($path)) as $file) {
@@ -95,7 +88,6 @@ abstract class Page
             }
         }
 
-        // Globalne jsy cssy konkretnych modułów usług
         if (
             in_array($this::PAGE_ID, [
                 "purchase",

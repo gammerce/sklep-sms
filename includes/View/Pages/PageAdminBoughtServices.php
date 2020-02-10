@@ -1,7 +1,9 @@
 <?php
 namespace App\View\Pages;
 
+use App\Repositories\TransactionRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
+use App\Support\QueryParticle;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -14,11 +16,15 @@ class PageAdminBoughtServices extends PageAdmin
 {
     const PAGE_ID = 'bought_services';
 
-    public function __construct()
+    /** @var TransactionRepository */
+    private $transactionRepository;
+
+    public function __construct(TransactionRepository $transactionRepository)
     {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->t('bought_services');
+        $this->transactionRepository = $transactionRepository;
     }
 
     protected function content(array $query, array $body)
@@ -43,62 +49,62 @@ class PageAdminBoughtServices extends PageAdmin
         $table->addHeadCell(new HeadCell($this->lang->t('ip')));
         $table->addHeadCell(new HeadCell($this->lang->t('date')));
 
-        // Wyszukujemy dane ktore spelniaja kryteria
-        $where = '';
+        $queryParticle = new QueryParticle();
 
         if (isset($query['search'])) {
-            searchWhere(
-                [
-                    "t.id",
-                    "t.payment",
-                    "t.payment_id",
-                    "t.uid",
-                    "t.ip",
-                    "t.email",
-                    "t.auth_data",
-                    "CAST(t.timestamp as CHAR)",
-                ],
-                $query['search'],
-                $where
+            $queryParticle->extend(
+                create_search_query(
+                    [
+                        "t.id",
+                        "t.payment",
+                        "t.payment_id",
+                        "t.uid",
+                        "t.ip",
+                        "t.email",
+                        "t.auth_data",
+                        "CAST(t.timestamp as CHAR)",
+                    ],
+                    $query['search']
+                )
             );
         }
 
-        // Jezeli jest jakis where, to dodajemy WHERE
-        if (strlen($where)) {
-            $where = "WHERE " . $where . ' ';
-        }
+        $where = $queryParticle->isEmpty() ? "" : "WHERE {$queryParticle} ";
 
-        $result = $this->db->query(
+        $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
-                "FROM ({$this->settings['transactions_query']}) as t " .
+                "FROM ({$this->transactionRepository->getQuery()}) as t " .
                 $where .
                 "ORDER BY t.timestamp DESC " .
-                "LIMIT " .
+                "LIMIT ?, ?"
+        );
+        $statement->execute(
+            array_merge(
+                $queryParticle->params(),
                 get_row_limit($this->currentPage->getPageNumber())
+            )
         );
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
+            $transaction = $this->transactionRepository->mapToModel($row);
             $bodyRow = new BodyRow();
 
-            // Pobranie danych o usłudze, która została kupiona
-            $service = $this->heart->getService($row['service']);
+            $service = $this->heart->getService($transaction->getServiceId());
+            $server = $this->heart->getServer($transaction->getServerId());
 
-            // Pobranie danych o serwerze na ktorym zostala wykupiona usługa
-            $server = $this->heart->getServer($row['server']);
+            $username = $transaction->getUserId()
+                ? "{$transaction->getUserName()} ({$transaction->getUserId()})"
+                : $this->lang->t('none');
 
-            $username = $row['uid'] ? "{$row['username']} ({$row['uid']})" : $this->lang->t('none');
-
-            // Przerobienie ilosci
-            $amount =
-                $row['amount'] != -1
-                    ? $row['amount'] . ' ' . ($service ? $service->getTag() : '')
+            $quantity =
+                $transaction->getQuantity() != -1
+                    ? $transaction->getQuantity() . ' ' . ($service ? $service->getTag() : '')
                     : $this->lang->t('forever');
 
-            $row['extra_data'] = json_decode($row['extra_data'], true);
             $extraData = [];
-            foreach ($row['extra_data'] as $key => $value) {
+            foreach ($transaction->getExtraData() as $key => $value) {
                 if (!strlen($value)) {
                     continue;
                 }
@@ -119,26 +125,28 @@ class PageAdminBoughtServices extends PageAdmin
             $paymentLink->addClass("dropdown-item");
             $paymentLink->setParam(
                 'href',
-                $this->url->to("/admin/payment_{$row['payment']}?payid={$row['payment_id']}")
+                $this->url->to(
+                    "/admin/payment_{$transaction->getPaymentMethod()}?payid={$transaction->getPaymentId()}"
+                )
             );
             $paymentLink->setParam('target', '_blank');
             $paymentLink->addContent($this->lang->t('see_payment'));
 
             $bodyRow->addAction($paymentLink);
 
-            $bodyRow->setDbId($row['id']);
-            $bodyRow->addCell(new Cell($row['payment']));
-            $bodyRow->addCell(new Cell($row['payment_id']));
+            $bodyRow->setDbId($transaction->getId());
+            $bodyRow->addCell(new Cell($transaction->getPaymentMethod()));
+            $bodyRow->addCell(new Cell($transaction->getPaymentId()));
             $bodyRow->addCell(new Cell($username));
             $bodyRow->addCell(new Cell($server ? $server->getName() : $this->lang->t('none')));
             $bodyRow->addCell(new Cell($service ? $service->getName() : $this->lang->t('none')));
-            $bodyRow->addCell(new Cell($amount));
-            $bodyRow->addCell(new Cell($row['auth_data']));
+            $bodyRow->addCell(new Cell($quantity));
+            $bodyRow->addCell(new Cell($transaction->getAuthData()));
             $bodyRow->addCell(new Cell(new UnescapedSimpleText($extraData)));
-            $bodyRow->addCell(new Cell($row['email']));
-            $bodyRow->addCell(new Cell($row['ip']));
+            $bodyRow->addCell(new Cell($transaction->getEmail()));
+            $bodyRow->addCell(new Cell($transaction->getIp()));
 
-            $cell = new Cell(convert_date($row['timestamp']));
+            $cell = new Cell(convert_date($transaction->getTimestamp()));
             $cell->setParam('headers', 'date');
             $bodyRow->addCell($cell);
 

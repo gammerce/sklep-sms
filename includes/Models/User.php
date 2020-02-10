@@ -235,15 +235,12 @@ class User
         return $this->lastActive;
     }
 
-    // TODO Remove $divide
     /**
-     * @param bool $divide
-     *
      * @return int
      */
-    public function getWallet($divide = false)
+    public function getWallet()
     {
-        return $divide ? number_format($this->wallet / 100.0, 2) : $this->wallet;
+        return $this->wallet;
     }
 
     /**

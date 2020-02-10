@@ -13,7 +13,7 @@ class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Countable
     /** @var array */
     private $items;
 
-    public function __construct($items)
+    public function __construct($items = [])
     {
         $this->items = to_array($items);
     }
@@ -84,6 +84,15 @@ class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Countable
         }
 
         return new Collection($results);
+    }
+
+    /**
+     * @param mixed $item
+     * @return Collection
+     */
+    public function push($item)
+    {
+        return new Collection(array_merge($this->items, [$item]));
     }
 
     /**

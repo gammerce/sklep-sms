@@ -113,4 +113,10 @@ interface FileSystemContract
      * @return bool
      */
     public function isWritable($path);
+
+    /**
+     * @param string $path
+     * @return int|false
+     */
+    public function lastChangedAt($path);
 }

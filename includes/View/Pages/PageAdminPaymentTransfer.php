@@ -1,7 +1,9 @@
 <?php
 namespace App\View\Pages;
 
+use App\Repositories\TransactionRepository;
 use App\Services\PriceTextService;
+use App\Support\QueryParticle;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\Div;
@@ -16,12 +18,18 @@ class PageAdminPaymentTransfer extends PageAdmin
     /** @var PriceTextService */
     private $priceTextService;
 
-    public function __construct(PriceTextService $priceTextService)
-    {
+    /** @var TransactionRepository */
+    private $transactionRepository;
+
+    public function __construct(
+        PriceTextService $priceTextService,
+        TransactionRepository $transactionRepository
+    ) {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->t('payments_transfer');
         $this->priceTextService = $priceTextService;
+        $this->transactionRepository = $transactionRepository;
     }
 
     protected function content(array $query, array $body)
@@ -37,54 +45,56 @@ class PageAdminPaymentTransfer extends PageAdmin
         $table->addHeadCell(new HeadCell($this->lang->t('platform'), "platform"));
         $table->addHeadCell(new HeadCell($this->lang->t('date')));
 
-        $where = "( t.payment = 'transfer' ) ";
+        $queryParticle = new QueryParticle();
+        $queryParticle->add("( t.payment = 'transfer' )");
 
-        // Wyszukujemy dane ktore spelniaja kryteria
         if (isset($query['search'])) {
-            searchWhere(["t.payment_id", "t.income", "t.ip"], $query['search'], $where);
+            $queryParticle->extend(
+                create_search_query(["t.payment_id", "t.income", "t.ip"], $query['search'])
+            );
         }
 
         if (isset($query['payid'])) {
-            $where .= $this->db->prepare(" AND `payment_id` = '%s' ", [$query['payid']]);
+            $queryParticle->add("AND `payment_id` = ?", [$query['payid']]);
         }
 
-        // Jezeli jest jakis where, to dodajemy WHERE
-        if (strlen($where)) {
-            $where = "WHERE " . $where . " ";
-        }
-
-        // Wykonujemy zapytanie
-        $result = $this->db->query(
+        $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
-                "FROM ({$this->settings['transactions_query']}) as t " .
-                $where .
+                "FROM ({$this->transactionRepository->getQuery()}) as t " .
+                "WHERE $queryParticle " .
                 "ORDER BY t.timestamp DESC " .
-                "LIMIT " .
+                "LIMIT ?, ?"
+        );
+        $statement->execute(
+            array_merge(
+                $queryParticle->params(),
                 get_row_limit($this->currentPage->getPageNumber())
+            )
         );
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
+            $transaction = $this->transactionRepository->mapToModel($row);
             $bodyRow = new BodyRow();
 
-            if ($query['payid'] == $row['payment_id']) {
+            if ($query['payid'] == $transaction->getPaymentId()) {
                 $bodyRow->addClass('highlighted');
             }
 
-            $income = $this->priceTextService->getPriceText($row['income']);
+            $income = $this->priceTextService->getPriceText($transaction->getIncome());
 
-            $bodyRow->setDbId($row['payment_id']);
+            $bodyRow->setDbId($transaction->getPaymentId());
             $bodyRow->addCell(new Cell($income));
-            $bodyRow->addCell(new Cell($row['ip']));
+            $bodyRow->addCell(new Cell($transaction->getIp()));
 
             $cell = new Cell();
-            $div = new Div(get_platform($row['platform']));
+            $div = new Div(get_platform($transaction->getPlatform()));
             $div->addClass('one_line');
             $cell->addContent($div);
             $bodyRow->addCell($cell);
 
-            $bodyRow->addCell(new Cell(convert_date($row['timestamp'])));
+            $bodyRow->addCell(new Cell(convert_date($transaction->getTimestamp())));
 
             $table->addBodyRow($bodyRow);
         }
