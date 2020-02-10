@@ -53,19 +53,18 @@ class PageAdminPaymentTransfer extends PageAdmin
             $where = "WHERE " . $where . " ";
         }
 
-        // Wykonujemy zapytanie
-        $result = $this->db->query(
+        $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
                 "FROM ({$this->settings['transactions_query']}) as t " .
                 $where .
                 "ORDER BY t.timestamp DESC " .
-                "LIMIT " .
-                get_row_limit($this->currentPage->getPageNumber())
+                "LIMIT ?"
         );
+        $statement->execute([get_row_limit($this->currentPage->getPageNumber())]);
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
             $bodyRow = new BodyRow();
 
             if ($query['payid'] == $row['payment_id']) {

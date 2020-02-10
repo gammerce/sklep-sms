@@ -71,17 +71,17 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             $where = 'WHERE ' . $where . ' ';
         }
 
-        $result = $this->db->query(
+        $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
                 "FROM `ss_users` " .
                 $where .
-                "LIMIT " .
-                get_row_limit($this->currentPage->getPageNumber())
+                "LIMIT ?"
         );
+        $statement->execute([get_row_limit($this->currentPage->getPageNumber())]);
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
             $user = $this->userRepository->mapToModel($row);
             $bodyRow = new BodyRow();
 

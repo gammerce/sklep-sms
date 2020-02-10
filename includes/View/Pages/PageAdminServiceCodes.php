@@ -41,19 +41,19 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
         $table->addHeadCell(new HeadCell($this->lang->t('user')));
         $table->addHeadCell(new HeadCell($this->lang->t('date_of_creation')));
 
-        $result = $this->db->query(
+        $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.name AS `service`, srv.name AS `server`, sc.price, u.username, u.uid, sc.timestamp " .
                 "FROM `ss_service_codes` AS sc " .
                 "LEFT JOIN `ss_services` AS s ON sc.service = s.id " .
                 "LEFT JOIN `ss_servers` AS srv ON sc.server = srv.id " .
                 "LEFT JOIN `ss_users` AS u ON sc.uid = u.uid " .
-                "LIMIT " .
-                get_row_limit($this->currentPage->getPageNumber())
+                "LIMIT ?"
         );
+        $statement->execute([get_row_limit($this->currentPage->getPageNumber())]);
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
             $bodyRow = new BodyRow();
 
             $username = $row['uid']

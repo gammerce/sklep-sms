@@ -248,8 +248,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         /** @var CurrentPage $currentPage */
         $currentPage = $this->app->make(CurrentPage::class);
 
-        $pageNumber = $currentPage->getPageNumber();
-
         $wrapper = new Wrapper();
         $wrapper->setSearch();
 
@@ -274,24 +272,22 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             $where = "WHERE " . $where . ' ';
         }
 
-        $result = $this->db->query(
+        $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS us.id, us.uid, u.username, " .
                 "s.id AS `service_id`, s.name AS `service`, us.expire, usmeg.mybb_uid " .
                 "FROM `ss_user_service` AS us " .
-                "INNER JOIN `" .
-                $this::USER_SERVICE_TABLE .
-                "` AS usmeg ON usmeg.us_id = us.id " .
+                "INNER JOIN `{$this->getUserServiceTable()}` AS usmeg ON usmeg.us_id = us.id " .
                 "LEFT JOIN `ss_services` AS s ON s.id = usmeg.service " .
                 "LEFT JOIN `ss_users` AS u ON u.uid = us.uid " .
                 $where .
                 "ORDER BY us.id DESC " .
-                "LIMIT " .
-                get_row_limit($pageNumber)
+                "LIMIT ?"
         );
+        $statement->execute([get_row_limit($currentPage->getPageNumber())]);
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
             $bodyRow = new BodyRow();
 
             $bodyRow->setDbId($row['id']);
@@ -718,20 +714,22 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             ->statement("DELETE FROM `ss_mybb_user_group` WHERE `uid` = ?")
             ->execute([$mybbUser->getUid()]);
 
-        $values = [];
+        $queryParticle = new QueryParticle();
+
         foreach ($mybbUser->getShopGroup() as $gid => $groupData) {
-            $values[] = $this->db->prepare(
-                "('%d', '%d', FROM_UNIXTIME(UNIX_TIMESTAMP() + %d), '%d')",
+            $queryParticle->add(
+                "(?, ?, FROM_UNIXTIME(UNIX_TIMESTAMP() + ?), ?)",
                 [$mybbUser->getUid(), $gid, $groupData['expire'], $groupData['was_before']]
             );
         }
 
         if (!empty($values)) {
-            $this->db->query(
+            $this->db
+                ->statement(
                 "INSERT INTO `ss_mybb_user_group` (`uid`, `gid`, `expire`, `was_before`) " .
-                    "VALUES " .
-                    implode(", ", $values)
-            );
+                        "VALUES {$queryParticle->text(', ')}"
+                )
+                ->execute($queryParticle->params());
         }
 
         $addgroups = array_unique(

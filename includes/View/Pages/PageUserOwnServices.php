@@ -79,10 +79,9 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
                     "INNER JOIN `ss_services` AS s ON us.service = s.id " .
                     "WHERE us.uid = ? AND s.module IN ({$keys}) " .
                     "ORDER BY us.id DESC " .
-                    "LIMIT " .
-                    get_row_limit($this->currentPage->getPageNumber(), 4)
+                    "LIMIT ?"
             );
-            $statement->execute(array_merge([$user->getUid()], $moduleIds->all()));
+            $statement->execute(array_merge([$user->getUid()], $moduleIds->all(), [get_row_limit($this->currentPage->getPageNumber(), 4)]));
 
             $userServiceIds = collect($statement)
                 ->map(function (array $row) {

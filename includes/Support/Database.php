@@ -76,6 +76,9 @@ class Database
         $this->pdo = null;
     }
 
+    /**
+     * @deprecated
+     */
     public function prepare($query, $values)
     {
         if (!$this->isConnected()) {
@@ -118,6 +121,9 @@ class Database
         return $this->pdo->lastInsertId();
     }
 
+    /**
+     * @deprecated
+     */
     public function escape($str)
     {
         $quote = $this->pdo->quote($str);

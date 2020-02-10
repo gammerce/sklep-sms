@@ -54,10 +54,9 @@ class PagePaymentLog extends Page implements IBeLoggedMust
             "SELECT SQL_CALC_FOUND_ROWS * FROM ({$settings['transactions_query']}) as t " .
                 "WHERE t.uid = ? " .
                 "ORDER BY t.timestamp DESC " .
-                "LIMIT " .
-                get_row_limit($this->currentPage->getPageNumber(), 10)
+                "LIMIT ?"
         );
-        $statement->execute([$user->getUid()]);
+        $statement->execute([$user->getUid(), get_row_limit($this->currentPage->getPageNumber(), 10)]);
         $rowsCount = $db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $paymentLogs = "";

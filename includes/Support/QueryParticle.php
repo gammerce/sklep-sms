@@ -20,11 +20,12 @@ class QueryParticle
     }
 
     /**
+     * @param string $glue
      * @return string
      */
-    public function text()
+    public function text($glue = " ")
     {
-        return implode(" ", $this->particles);
+        return implode($glue, $this->particles);
     }
 
     /**

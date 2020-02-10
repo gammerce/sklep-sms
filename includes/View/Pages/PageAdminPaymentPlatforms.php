@@ -52,15 +52,15 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
         $table->addHeadCell(new HeadCell($this->lang->t('name')));
         $table->addHeadCell(new HeadCell($this->lang->t('module')));
 
-        $result = $this->db->query(
+        $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_payment_platforms` " .
-                "LIMIT " .
-                get_row_limit($this->currentPage->getPageNumber())
+                "LIMIT ?"
         );
+        $statement->execute([get_row_limit($this->currentPage->getPageNumber())]);
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
             $paymentPlatform = $this->paymentPlatformRepository->mapToModel($row);
             $bodyRow = new BodyRow();
 

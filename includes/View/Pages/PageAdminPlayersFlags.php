@@ -36,16 +36,16 @@ class PageAdminPlayersFlags extends PageAdmin
             $table->addHeadCell(new HeadCell($flag));
         }
 
-        $result = $this->db->query(
+        $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_players_flags` " .
                 "ORDER BY `id` DESC " .
-                "LIMIT " .
-                get_row_limit($this->currentPage->getPageNumber())
+                "LIMIT ?"
         );
+        $statement->execute([get_row_limit($this->currentPage->getPageNumber())]);
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
             $bodyRow = new BodyRow();
 
             $tempServer = $this->heart->getServer($row['server']);

@@ -50,17 +50,17 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
         $table->addHeadCell(new HeadCell($this->lang->t('sms_code')));
         $table->addHeadCell(new HeadCell($this->lang->t('sms_price')));
 
-        $result = $this->db->query(
+        $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
                 "FROM `ss_sms_codes` " .
                 "WHERE `free` = '1' " .
-                "LIMIT " .
-                get_row_limit($this->currentPage->getPageNumber())
+                "LIMIT ?"
         );
+        $statement->execute([get_row_limit($this->currentPage->getPageNumber())]);
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
             $smsCode = $this->smsCodeRepository->mapToModel($row);
             $bodyRow = new BodyRow();
 

@@ -31,18 +31,18 @@ class PageAdminPaymentAdmin extends PageAdmin
         $table->addHeadCell(new HeadCell($this->lang->t('platform'), "platform"));
         $table->addHeadCell(new HeadCell($this->lang->t('date')));
 
-        $result = $this->db->query(
+        $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
                 "FROM ({$this->settings['transactions_query']}) as t " .
                 "WHERE t.payment = 'admin' " .
                 "ORDER BY t.timestamp DESC " .
-                "LIMIT " .
-                get_row_limit($this->currentPage->getPageNumber())
+                "LIMIT ?"
         );
+        $statement->execute([get_row_limit($this->currentPage->getPageNumber())]);
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
             $bodyRow = new BodyRow();
 
             if ($query['payid'] == $row['payment_id']) {

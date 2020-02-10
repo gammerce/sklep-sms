@@ -298,6 +298,7 @@ function custom_mb_str_split($string)
     return preg_split('/(?<!^)(?!$)/u', $string);
 }
 
+// TODO Refactor it
 function searchWhere($searchIds, $search, &$where)
 {
     /** @var Database $db */

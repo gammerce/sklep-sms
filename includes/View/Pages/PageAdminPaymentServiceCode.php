@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages;
 
+use App\Support\QueryParticle;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\Div;
@@ -31,24 +32,26 @@ class PageAdminPaymentServiceCode extends PageAdmin
         $table->addHeadCell(new HeadCell($this->lang->t('platform'), "platform"));
         $table->addHeadCell(new HeadCell($this->lang->t('date')));
 
-        $where = "";
+        $queryParticle = new QueryParticle();
+
         if (isset($query['payid'])) {
-            $where .= $this->db->prepare(" AND `payment_id` = '%d' ", [$query['payid']]);
+            $queryParticle->add(
+                " AND `payment_id` = ? ", [$query['payid']]
+            );
         }
 
-        $result = $this->db->query(
+        $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
                 "FROM ({$this->settings['transactions_query']}) as t " .
-                "WHERE t.payment = 'service_code' " .
-                $where .
+                "WHERE t.payment = 'service_code' $queryParticle" .
                 "ORDER BY t.timestamp DESC " .
-                "LIMIT " .
-                get_row_limit($this->currentPage->getPageNumber())
+                "LIMIT ?"
         );
+        $statement->execute(array_merge($queryParticle->params(), [get_row_limit($this->currentPage->getPageNumber())]));
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
             $bodyRow = new BodyRow();
 
             if ($query['payid'] == $row['payment_id']) {

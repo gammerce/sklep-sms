@@ -270,26 +270,24 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $where = "WHERE " . $where . ' ';
         }
 
-        $result = $this->db->query(
+        $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS us.id AS `id`, us.uid AS `uid`, u.username AS `username`, " .
                 "srv.name AS `server`, s.id AS `service_id`, s.name AS `service`, " .
                 "usef.type AS `type`, usef.auth_data AS `auth_data`, us.expire AS `expire` " .
                 "FROM `ss_user_service` AS us " .
-                "INNER JOIN `" .
-                $this::USER_SERVICE_TABLE .
-                "` AS usef ON usef.us_id = us.id " .
+                "INNER JOIN `{$this->getUserServiceTable()}` AS usef ON usef.us_id = us.id " .
                 "LEFT JOIN `ss_services` AS s ON s.id = usef.service " .
                 "LEFT JOIN `ss_servers` AS srv ON srv.id = usef.server " .
                 "LEFT JOIN `ss_users` AS u ON u.uid = us.uid " .
                 $where .
                 "ORDER BY us.id DESC " .
-                "LIMIT " .
-                get_row_limit($pageNumber)
+                "LIMIT ?"
         );
+        $statement->execute([get_row_limit($pageNumber)]);
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
             $bodyRow = new BodyRow();
 
             $bodyRow->setDbId($row['id']);
