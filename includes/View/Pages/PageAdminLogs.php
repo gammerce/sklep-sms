@@ -45,12 +45,13 @@ class PageAdminLogs extends PageAdmin
         $where = $queryParticle->isEmpty() ? "" : "WHERE {$queryParticle}";
 
         $statement = $this->db->statement(
-            "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_logs` {$where} ORDER BY `id` DESC LIMIT ?"
+            "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_logs` {$where} ORDER BY `id` DESC LIMIT ?, ?"
         );
         $statement->execute(
-            array_merge($queryParticle->params(), [
-                get_row_limit($this->currentPage->getPageNumber()),
-            ])
+            array_merge(
+                $queryParticle->params(),
+                get_row_limit($this->currentPage->getPageNumber())
+            )
         );
 
         $table->setDbRowsCount($this->db->query("SELECT FOUND_ROWS()")->fetchColumn());

@@ -52,7 +52,7 @@ EOF;
             as_float($data['amount']),
             $data['auth_data'],
             $data['email'],
-            json_decode($data['extra_data']),
+            json_decode($data['extra_data'], true),
             $data['ip'],
             $data['platform'],
             as_int($data['income']),

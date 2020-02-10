@@ -23,7 +23,7 @@ class BoughtServicesTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->get('/admin/bought_services');
+        $response = $this->get('/admin/bought_services?query=a');
 
         // then
         $this->assertSame(200, $response->getStatusCode());

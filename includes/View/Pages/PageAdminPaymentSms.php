@@ -71,12 +71,13 @@ class PageAdminPaymentSms extends PageAdmin
                 "FROM ({$this->transactionRepository->getQuery()}) as t " .
                 "WHERE {$queryParticle} " .
                 "ORDER BY t.timestamp DESC " .
-                "LIMIT ?"
+                "LIMIT ?, ?"
         );
         $statement->execute(
-            array_merge($queryParticle->params(), [
-                get_row_limit($this->currentPage->getPageNumber()),
-            ])
+            array_merge(
+                $queryParticle->params(),
+                get_row_limit($this->currentPage->getPageNumber())
+            )
         );
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());

@@ -47,9 +47,9 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
                 "LEFT JOIN `ss_services` AS s ON sc.service = s.id " .
                 "LEFT JOIN `ss_servers` AS srv ON sc.server = srv.id " .
                 "LEFT JOIN `ss_users` AS u ON sc.uid = u.uid " .
-                "LIMIT ?"
+                "LIMIT ?, ?"
         );
-        $statement->execute([get_row_limit($this->currentPage->getPageNumber())]);
+        $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 

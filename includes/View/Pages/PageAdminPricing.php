@@ -57,9 +57,9 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
             "SELECT SQL_CALC_FOUND_ROWS * " .
                 "FROM `ss_prices` " .
                 "ORDER BY `service`, `server`, `quantity` " .
-                "LIMIT ?"
+                "LIMIT ?, ?"
         );
-        $statement->execute([get_row_limit($this->currentPage->getPageNumber())]);
+        $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 

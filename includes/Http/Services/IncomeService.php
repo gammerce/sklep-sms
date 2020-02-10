@@ -29,7 +29,7 @@ class IncomeService
     public function get($year, $month)
     {
         $statement = $this->db->statement(
-            "SELECT t.income, t.timestamp, t.server " .
+            "SELECT * " .
                 "FROM ({$this->transactionRepository->getQuery()}) as t " .
                 "WHERE t.free = '0' AND IFNULL(t.income,'') != '' AND t.payment != 'wallet' AND t.timestamp LIKE ? " .
                 "ORDER BY t.timestamp ASC"

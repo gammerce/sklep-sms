@@ -38,9 +38,9 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
         $table->addHeadCell(new HeadCell($this->lang->t('name')));
 
         $statement = $this->db->statement(
-            "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_groups` " . "LIMIT ?"
+            "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_groups` LIMIT ?, ?"
         );
-        $statement->execute([get_row_limit($this->currentPage->getPageNumber())]);
+        $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 

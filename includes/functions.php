@@ -30,14 +30,17 @@ function app($abstract = null, array $parameters = [])
     return Container::getInstance()->makeWith($abstract, $parameters);
 }
 
+/**
+ * @param int $page
+ * @param int $rowLimit
+ * @return int[]
+ */
 function get_row_limit($page, $rowLimit = 0)
 {
     /** @var Settings $settings */
     $settings = app()->make(Settings::class);
-
-    $rowLimit = $rowLimit ? $rowLimit : $settings['row_limit'];
-
-    return ($page - 1) * $rowLimit . "," . $rowLimit;
+    $rowLimit = $rowLimit ?: $settings['row_limit'];
+    return [($page - 1) * $rowLimit, $rowLimit];
 }
 
 /* User functions */

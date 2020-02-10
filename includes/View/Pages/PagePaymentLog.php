@@ -46,12 +46,11 @@ class PagePaymentLog extends Page implements IBeLoggedMust
             "SELECT SQL_CALC_FOUND_ROWS * FROM ({$this->transactionRepository->getQuery()}) as t " .
                 "WHERE t.uid = ? " .
                 "ORDER BY t.timestamp DESC " .
-                "LIMIT ?"
+                "LIMIT ?, ?"
         );
-        $statement->execute([
-            $user->getUid(),
-            get_row_limit($this->currentPage->getPageNumber(), 10),
-        ]);
+        $statement->execute(
+            array_merge([$user->getUid()], get_row_limit($this->currentPage->getPageNumber(), 10))
+        );
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $paymentLogs = "";

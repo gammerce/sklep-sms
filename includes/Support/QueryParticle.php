@@ -26,7 +26,7 @@ class QueryParticle
 
     public function isEmpty()
     {
-        return !!$this->particles;
+        return !$this->particles;
     }
 
     /**

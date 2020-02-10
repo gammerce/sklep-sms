@@ -54,9 +54,9 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
             "SELECT SQL_CALC_FOUND_ROWS * " .
                 "FROM `ss_sms_codes` " .
                 "WHERE `free` = '1' " .
-                "LIMIT ?"
+                "LIMIT ?, ?"
         );
-        $statement->execute([get_row_limit($this->currentPage->getPageNumber())]);
+        $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 

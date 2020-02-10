@@ -41,9 +41,9 @@ class PageAdminPaymentAdmin extends PageAdmin
                 "FROM ({$this->transactionRepository->getQuery()}) as t " .
                 "WHERE t.payment = 'admin' " .
                 "ORDER BY t.timestamp DESC " .
-                "LIMIT ?"
+                "LIMIT ?, ?"
         );
-        $statement->execute([get_row_limit($this->currentPage->getPageNumber())]);
+        $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 

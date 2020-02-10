@@ -281,10 +281,10 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
                 "LEFT JOIN `ss_users` AS u ON u.uid = us.uid " .
                 $where .
                 "ORDER BY us.id DESC " .
-                "LIMIT ?"
+                "LIMIT ?, ?"
         );
         $statement->execute(
-            array_merge($queryParticle->params(), [get_row_limit($currentPage->getPageNumber())])
+            array_merge($queryParticle->params(), get_row_limit($currentPage->getPageNumber()))
         );
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
