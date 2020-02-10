@@ -4,8 +4,8 @@ use App\Loggers\FileLogger;
 use App\Models\Server;
 use App\Models\User;
 use App\Support\Collection;
-use App\Support\Database;
 use App\Support\Expression;
+use App\Support\QueryParticle;
 use App\System\Application;
 use App\System\Auth;
 use App\System\Settings;
@@ -298,27 +298,32 @@ function custom_mb_str_split($string)
     return preg_split('/(?<!^)(?!$)/u', $string);
 }
 
-// TODO Refactor it
-function searchWhere($searchIds, $search, &$where)
+/**
+ * @param string[] $columns
+ * @param string $search
+ * @return QueryParticle|null
+ */
+function create_search_query($columns, $search)
 {
-    /** @var Database $db */
-    $db = app()->make(Database::class);
-
-    $searchWhere = [];
-    $searchLike = $db->escape('%' . implode('%', custom_mb_str_split($search)) . '%');
-
-    foreach ($searchIds as $searchId) {
-        $searchWhere[] = "{$searchId} LIKE '{$searchLike}'";
+    if (!$columns) {
+        return null;
     }
 
-    if (!empty($searchWhere)) {
-        $searchWhere = implode(" OR ", $searchWhere);
-        if (strlen($where)) {
-            $where .= " AND ";
-        }
+    $searchLike = '%' . implode('%', custom_mb_str_split($search)) . '%';
 
-        $where .= "( {$searchWhere} )";
+    $params = [];
+    $values = [];
+
+    foreach ($columns as $searchId) {
+        $params[] = "{$searchId} LIKE ?";
+        $values[] = $searchLike;
     }
+
+    $queryParticle = new QueryParticle();
+    $query = implode(" OR ", $params);
+    $queryParticle->add("( $query )", $values);
+
+    return $queryParticle;
 }
 
 // ip_in_range

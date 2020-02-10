@@ -55,6 +55,7 @@ use App\ServiceModules\ServiceModule;
 use App\Services\ExpiredUserServiceService;
 use App\Services\PriceTextService;
 use App\Support\Expression;
+use App\Support\QueryParticle;
 use App\System\Auth;
 use App\System\Heart;
 use App\Translation\TranslationManager;
@@ -257,19 +258,18 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
         $table->addHeadCell(new HeadCell($this->lang->t('expires')));
 
-        // Wyszukujemy dane ktore spelniaja kryteria
-        $where = '';
+        $queryParticle = new QueryParticle();
+
         if (isset($query['search'])) {
-            searchWhere(
-                ["us.id", "us.uid", "u.username", "srv.name", "s.name", "usef.auth_data"],
-                $query['search'],
-                $where
+            $queryParticle->extend(
+                create_search_query(
+                    ["us.id", "us.uid", "u.username", "srv.name", "s.name", "usef.auth_data"],
+                    $query['search']
+                )
             );
         }
-        // Jezeli jest jakis where, to dodajemy WHERE
-        if (strlen($where)) {
-            $where = "WHERE " . $where . ' ';
-        }
+
+        $where = $queryParticle->isEmpty() ? "" : "WHERE {$queryParticle} ";
 
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS us.id AS `id`, us.uid AS `uid`, u.username AS `username`, " .
@@ -284,7 +284,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 "ORDER BY us.id DESC " .
                 "LIMIT ?"
         );
-        $statement->execute([get_row_limit($pageNumber)]);
+        $statement->execute(array_merge($queryParticle->params(), [get_row_limit($pageNumber)]));
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 

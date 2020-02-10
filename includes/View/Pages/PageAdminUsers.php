@@ -5,6 +5,7 @@ use App\Exceptions\UnauthorizedException;
 use App\Models\Group;
 use App\Repositories\UserRepository;
 use App\Services\PriceTextService;
+use App\Support\QueryParticle;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -49,32 +50,36 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         $table->addHeadCell(new HeadCell($this->lang->t('groups')));
         $table->addHeadCell(new HeadCell($this->lang->t('wallet')));
 
-        $where = '';
+        $queryParticle = new QueryParticle();
+
         if (isset($query['search'])) {
-            searchWhere(
-                [
-                    "`uid`",
-                    "`username`",
-                    "`forename`",
-                    "`surname`",
-                    "`email`",
-                    "`steam_id`",
-                    "`groups`",
-                    "`wallet`",
-                ],
-                $query['search'],
-                $where
+            $queryParticle->extend(
+                create_search_query(
+                    [
+                        "`uid`",
+                        "`username`",
+                        "`forename`",
+                        "`surname`",
+                        "`email`",
+                        "`steam_id`",
+                        "`groups`",
+                        "`wallet`",
+                    ],
+                    $query['search']
+                )
             );
         }
 
-        if (strlen($where)) {
-            $where = 'WHERE ' . $where . ' ';
-        }
+        $where = $queryParticle->isEmpty() ? "" : "WHERE {$queryParticle}";
 
         $statement = $this->db->statement(
-            "SELECT SQL_CALC_FOUND_ROWS * " . "FROM `ss_users` " . $where . "LIMIT ?"
+            "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_users` {$where} LIMIT ?"
         );
-        $statement->execute([get_row_limit($this->currentPage->getPageNumber())]);
+        $statement->execute(
+            array_merge($queryParticle->params(), [
+                get_row_limit($this->currentPage->getPageNumber()),
+            ])
+        );
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 

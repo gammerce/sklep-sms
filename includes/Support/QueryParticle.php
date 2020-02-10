@@ -19,6 +19,16 @@ class QueryParticle
         $this->params = array_merge($this->params, $params);
     }
 
+    public function extend(QueryParticle $particle)
+    {
+        $this->add($particle->text(), $particle->params());
+    }
+
+    public function isEmpty()
+    {
+        return !!$this->particles;
+    }
+
     /**
      * @param string $glue
      * @return string

@@ -259,19 +259,18 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $table->addHeadCell(new HeadCell($this->lang->t('mybb_user')));
         $table->addHeadCell(new HeadCell($this->lang->t('expires')));
 
-        // Wyszukujemy dane ktore spelniaja kryteria
-        $where = '';
+        $queryParticle = new QueryParticle();
+
         if (isset($query['search'])) {
-            searchWhere(
-                ["us.id", "us.uid", "u.username", "s.name", "usmeg.mybb_uid"],
-                $query['search'],
-                $where
+            $queryParticle->extend(
+                create_search_query(
+                    ["us.id", "us.uid", "u.username", "s.name", "usmeg.mybb_uid"],
+                    $query['search']
+                )
             );
         }
-        // Jezeli jest jakis where, to dodajemy WHERE
-        if (strlen($where)) {
-            $where = "WHERE " . $where . ' ';
-        }
+
+        $where = $queryParticle->isEmpty() ? "" : "WHERE {$queryParticle} ";
 
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS us.id, us.uid, u.username, " .
@@ -284,8 +283,9 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
                 "ORDER BY us.id DESC " .
                 "LIMIT ?"
         );
-        $statement->execute([get_row_limit($currentPage->getPageNumber())]);
-
+        $statement->execute(
+            array_merge($queryParticle->params(), [get_row_limit($currentPage->getPageNumber())])
+        );
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
         foreach ($statement as $row) {

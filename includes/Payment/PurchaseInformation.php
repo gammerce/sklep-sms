@@ -53,8 +53,6 @@ class PurchaseInformation
             return "";
         }
 
-        // TODO Remove usage of prepare
-
         $statement = $this->db->statement(
             "SELECT * FROM ({$this->transactionRepository->getQuery()}) as t WHERE {$queryParticle}"
         );

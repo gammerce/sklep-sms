@@ -3,6 +3,7 @@ namespace App\View\Pages;
 
 use App\Repositories\TransactionRepository;
 use App\Services\PriceTextService;
+use App\Support\QueryParticle;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\Div;
@@ -43,20 +44,25 @@ class PageAdminPaymentWallet extends PageAdmin
         $table->addHeadCell(new HeadCell($this->lang->t('platform'), "platform"));
         $table->addHeadCell(new HeadCell($this->lang->t('date')));
 
-        $where = "";
+        $queryParticle = new QueryParticle();
+        $queryParticle->add("t.payment = 'wallet'");
+
         if (isset($query['payid'])) {
-            $where .= $this->db->prepare(" AND `payment_id` = '%d' ", [$query['payid']]);
+            $queryParticle->add("AND `payment_id` = ?", [$query['payid']]);
         }
 
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
                 "FROM ({$this->transactionRepository->getQuery()}) as t " .
-                "WHERE t.payment = 'wallet' " .
-                $where .
+                "WHERE {$queryParticle} " .
                 "ORDER BY t.timestamp DESC " .
                 "LIMIT ?"
         );
-        $statement->execute([get_row_limit($this->currentPage->getPageNumber())]);
+        $statement->execute(
+            array_merge($queryParticle->params(), [
+                get_row_limit($this->currentPage->getPageNumber()),
+            ])
+        );
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 

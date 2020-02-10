@@ -3,6 +3,7 @@ namespace App\View\Pages;
 
 use App\Repositories\TransactionRepository;
 use App\Services\PriceTextService;
+use App\Support\QueryParticle;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\Div;
@@ -51,42 +52,32 @@ class PageAdminPaymentSms extends PageAdmin
         $table->addHeadCell(new HeadCell($this->lang->t('platform'), "platform"));
         $table->addHeadCell(new HeadCell($this->lang->t('date')));
 
-        $where = "( t.payment = 'sms' ) ";
+        $queryParticle = new QueryParticle();
+        $queryParticle->add("( t.payment = 'sms' )");
 
-        // Wyszukujemy platnosci o konkretnym ID
         if (strlen($payId)) {
-            if (strlen($where)) {
-                $where .= " AND ";
-            }
-
-            $where .= $this->db->prepare("( t.payment_id = '%s' ) ", [$payId]);
-        }
-        // Wyszukujemy dane ktore spelniaja kryteria
-        elseif (strlen($search)) {
-            searchWhere(
-                ["t.payment_id", "t.sms_text", "t.sms_code", "t.sms_number"],
-                $search,
-                $where
+            $queryParticle->add("AND ( t.payment_id = ? )", [$payId]);
+        } elseif (strlen($search)) {
+            $queryParticle->extend(
+                create_search_query(
+                    ["t.payment_id", "t.sms_text", "t.sms_code", "t.sms_number"],
+                    $search
+                )
             );
-        }
-
-        if (strlen($payId)) {
-            $where .= $this->db->prepare(" AND `payment_id` = '%d' ", [$payId]);
-        }
-
-        // Jezeli jest jakis where, to dodajemy WHERE
-        if (strlen($where)) {
-            $where = "WHERE " . $where . " ";
         }
 
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
                 "FROM ({$this->transactionRepository->getQuery()}) as t " .
-                $where .
+                "WHERE {$queryParticle} " .
                 "ORDER BY t.timestamp DESC " .
                 "LIMIT ?"
         );
-        $statement->execute([get_row_limit($this->currentPage->getPageNumber())]);
+        $statement->execute(
+            array_merge($queryParticle->params(), [
+                get_row_limit($this->currentPage->getPageNumber()),
+            ])
+        );
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 

@@ -3,6 +3,7 @@ namespace App\View\Pages;
 
 use App\Repositories\TransactionRepository;
 use App\Services\PriceTextService;
+use App\Support\QueryParticle;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\Div;
@@ -44,30 +45,31 @@ class PageAdminPaymentTransfer extends PageAdmin
         $table->addHeadCell(new HeadCell($this->lang->t('platform'), "platform"));
         $table->addHeadCell(new HeadCell($this->lang->t('date')));
 
-        $where = "( t.payment = 'transfer' ) ";
+        $queryParticle = new QueryParticle();
+        $queryParticle->add("( t.payment = 'transfer' )");
 
-        // Wyszukujemy dane ktore spelniaja kryteria
         if (isset($query['search'])) {
-            searchWhere(["t.payment_id", "t.income", "t.ip"], $query['search'], $where);
+            $queryParticle->extend(
+                create_search_query(["t.payment_id", "t.income", "t.ip"], $query['search'])
+            );
         }
 
         if (isset($query['payid'])) {
-            $where .= $this->db->prepare(" AND `payment_id` = '%s' ", [$query['payid']]);
-        }
-
-        // Jezeli jest jakis where, to dodajemy WHERE
-        if (strlen($where)) {
-            $where = "WHERE " . $where . " ";
+            $queryParticle->add("AND `payment_id` = ?", [$query['payid']]);
         }
 
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
                 "FROM ({$this->transactionRepository->getQuery()}) as t " .
-                $where .
+                "WHERE $queryParticle " .
                 "ORDER BY t.timestamp DESC " .
                 "LIMIT ?"
         );
-        $statement->execute([get_row_limit($this->currentPage->getPageNumber())]);
+        $statement->execute(
+            array_merge($queryParticle->params(), [
+                get_row_limit($this->currentPage->getPageNumber()),
+            ])
+        );
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 

@@ -77,23 +77,6 @@ class Database
     }
 
     /**
-     * @deprecated
-     */
-    public function prepare($query, $values)
-    {
-        if (!$this->isConnected()) {
-            $this->connect();
-        }
-
-        $i = 0;
-        foreach ($values as $value) {
-            $values[$i++] = $this->escape($value);
-        }
-
-        return vsprintf($query, $values);
-    }
-
-    /**
      * @param string $query
      * @return PDOStatement
      * @throws PDOException
@@ -119,15 +102,6 @@ class Database
     public function lastId()
     {
         return $this->pdo->lastInsertId();
-    }
-
-    /**
-     * @deprecated
-     */
-    public function escape($str)
-    {
-        $quote = $this->pdo->quote($str);
-        return preg_replace("/(^'|'$)/", '', $quote);
     }
 
     public function startTransaction()
