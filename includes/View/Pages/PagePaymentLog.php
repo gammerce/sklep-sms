@@ -1,12 +1,12 @@
 <?php
 namespace App\View\Pages;
 
+use App\Repositories\TransactionRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\Services\PriceTextService;
 use App\Support\Database;
 use App\Support\Template;
 use App\System\Auth;
-use App\System\Settings;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pagination;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,11 +38,11 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         /** @var Template $template */
         $template = $this->app->make(Template::class);
 
-        /** @var Settings $settings */
-        $settings = $this->app->make(Settings::class);
-
         /** @var Database $db */
         $db = $this->app->make(Database::class);
+
+        /** @var TransactionRepository $transactionRepository */
+        $transactionRepository = $this->app->make(TransactionRepository::class);
 
         /** @var Request $request */
         $request = $this->app->make(Request::class);
@@ -51,27 +51,31 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         $pagination = $this->app->make(Pagination::class);
 
         $statement = $db->statement(
-            "SELECT SQL_CALC_FOUND_ROWS * FROM ({$settings['transactions_query']}) as t " .
+            "SELECT SQL_CALC_FOUND_ROWS * FROM ({$transactionRepository->getQuery()}) as t " .
                 "WHERE t.uid = ? " .
                 "ORDER BY t.timestamp DESC " .
                 "LIMIT ?"
         );
-        $statement->execute([$user->getUid(), get_row_limit($this->currentPage->getPageNumber(), 10)]);
+        $statement->execute([
+            $user->getUid(),
+            get_row_limit($this->currentPage->getPageNumber(), 10),
+        ]);
         $rowsCount = $db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $paymentLogs = "";
         foreach ($statement as $row) {
-            $date = $row['timestamp'];
-            $cost = $this->priceTextService->getPriceText($row['cost']);
+            $transaction = $transactionRepository->mapToModel($row);
+            $date = $transaction->getTimestamp();
+            $cost = $this->priceTextService->getPriceText($transaction->getCost());
 
-            $serviceModule = $heart->getServiceModule($row['service']);
+            $serviceModule = $heart->getServiceModule($transaction->getServiceId());
             if ($serviceModule instanceof IServicePurchaseWeb) {
-                $logInfo = $serviceModule->purchaseInfo("payment_log", $row);
+                $logInfo = $serviceModule->purchaseInfo("payment_log", $transaction);
                 $desc = $logInfo['text'];
                 $class = $logInfo['class'];
             } else {
-                $service = $heart->getService($row['service']);
-                $server = $heart->getServer($row['server']);
+                $service = $heart->getService($transaction->getServiceId());
+                $server = $heart->getServer($transaction->getServerId());
                 $desc = $lang->t(
                     'service_was_bought',
                     $service ? $service->getName() : '',

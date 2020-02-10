@@ -81,7 +81,11 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
                     "ORDER BY us.id DESC " .
                     "LIMIT ?"
             );
-            $statement->execute(array_merge([$user->getUid()], $moduleIds->all(), [get_row_limit($this->currentPage->getPageNumber(), 4)]));
+            $statement->execute(
+                array_merge([$user->getUid()], $moduleIds->all(), [
+                    get_row_limit($this->currentPage->getPageNumber(), 4),
+                ])
+            );
 
             $userServiceIds = collect($statement)
                 ->map(function (array $row) {

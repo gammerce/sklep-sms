@@ -72,10 +72,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         }
 
         $statement = $this->db->statement(
-            "SELECT SQL_CALC_FOUND_ROWS * " .
-                "FROM `ss_users` " .
-                $where .
-                "LIMIT ?"
+            "SELECT SQL_CALC_FOUND_ROWS * " . "FROM `ss_users` " . $where . "LIMIT ?"
         );
         $statement->execute([get_row_limit($this->currentPage->getPageNumber())]);
 

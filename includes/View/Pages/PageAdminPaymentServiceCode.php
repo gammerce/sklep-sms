@@ -35,9 +35,7 @@ class PageAdminPaymentServiceCode extends PageAdmin
         $queryParticle = new QueryParticle();
 
         if (isset($query['payid'])) {
-            $queryParticle->add(
-                " AND `payment_id` = ? ", [$query['payid']]
-            );
+            $queryParticle->add(" AND `payment_id` = ? ", [$query['payid']]);
         }
 
         $statement = $this->db->statement(
@@ -47,7 +45,11 @@ class PageAdminPaymentServiceCode extends PageAdmin
                 "ORDER BY t.timestamp DESC " .
                 "LIMIT ?"
         );
-        $statement->execute(array_merge($queryParticle->params(), [get_row_limit($this->currentPage->getPageNumber())]));
+        $statement->execute(
+            array_merge($queryParticle->params(), [
+                get_row_limit($this->currentPage->getPageNumber()),
+            ])
+        );
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 

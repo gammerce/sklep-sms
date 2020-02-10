@@ -30,6 +30,7 @@ class Settings implements ArrayAccess
             'shop_url' => '',
             'theme' => 'default',
             'timezone' => 'Europe/Warsaw',
+            // TODO Remove it
             'transactions_query' => <<<EOF
 (SELECT bs.id AS `id`,
 bs.uid AS `uid`,

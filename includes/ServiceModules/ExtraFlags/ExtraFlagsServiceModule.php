@@ -23,6 +23,7 @@ use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
 use App\Models\Service;
+use App\Models\Transaction;
 use App\Models\UserService;
 use App\Payment\AdminPaymentService;
 use App\Payment\BoughtServiceService;
@@ -550,64 +551,67 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $this->playerFlagService->recalculatePlayerFlags($serverId, $type, $authData);
     }
 
-    public function purchaseInfo($action, array $data)
+    public function purchaseInfo($action, Transaction $transaction)
     {
-        $data['extra_data'] = json_decode($data['extra_data'], true);
-        $data['extra_data']['type_name'] = $this->getTypeName2($data['extra_data']['type']);
-
-        $password = '';
-        if (strlen($data['extra_data']['password'])) {
+        $password = "";
+        if (strlen($transaction->getExtraDatum('password'))) {
             $password =
                 "<strong>{$this->lang->t('password')}</strong>: " .
-                htmlspecialchars($data['extra_data']['password']) .
+                htmlspecialchars($transaction->getExtraDatum('password')) .
                 "<br />";
         }
 
-        $amount =
-            $data['amount'] != -1
-                ? "{$data['amount']} {$this->service->getTag()}"
+        $quantity =
+            $transaction->getQuantity() != -1
+                ? "{$transaction->getQuantity()} {$this->service->getTag()}"
                 : $this->lang->t('forever');
 
-        $cost = $data['cost']
-            ? $this->priceTextService->getPriceText($data['cost'])
+        $cost = $transaction->getCost()
+            ? $this->priceTextService->getPriceText($transaction->getCost())
             : $this->lang->t('none');
 
-        $data['income'] = number_format($data['income'] / 100.0, 2);
-
-        $server = $this->heart->getServer($data['server']);
+        $server = $this->heart->getServer($transaction->getServerId());
 
         $setinfo = "";
-        if ($data['extra_data']['type'] & (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)) {
-            $setinfo = $this->lang->t('type_setinfo', $data['extra_data']['password']);
+        if (
+            $transaction->getExtraDatum('type') &
+            (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)
+        ) {
+            $setinfo = $this->lang->t('type_setinfo', $transaction->getExtraDatum('password'));
         }
 
-        if ($action == "email") {
+        if ($action === "email") {
             return $this->template->renderNoComments(
                 "services/extra_flags/purchase_info_email",
-                compact('data', 'amount', 'password', 'setinfo') + [
+                compact('data', 'quantity', 'password', 'setinfo') + [
+                    'authData' => $transaction->getAuthData(),
+                    'typeName' => $this->getTypeName2($transaction->getExtraDatum('type')),
                     'serviceName' => $this->service->getName(),
-                    'serverName' => $server->getName(),
+                    'serverName' => $server ? $server->getName() : 'n/a',
                 ]
             );
         }
 
-        if ($action == "web") {
+        if ($action === "web") {
             return $this->template->renderNoComments(
                 "services/extra_flags/purchase_info_web",
-                compact('cost', 'amount', 'data', 'password', 'setinfo') + [
+                compact('cost', 'quantity', 'password', 'setinfo') + [
+                    'authData' => $transaction->getAuthData(),
+                    'email' => $transaction->getEmail(),
+                    'typeName' => $this->getTypeName2($transaction->getExtraDatum('type')),
                     'serviceName' => $this->service->getName(),
-                    'serverName' => $server->getName(),
+                    'serverName' => $server ? $server->getName() : 'n/a',
                 ]
             );
         }
 
-        if ($action == "payment_log") {
+        if ($action === "payment_log") {
             return [
-                'text' => ($output = $this->lang->t(
+                'text' => $this->lang->t(
                     'service_was_bought',
                     $this->service->getName(),
                     $server->getName()
-                )),
+                ),
                 'class' => "outcome",
             ];
         }

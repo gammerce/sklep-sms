@@ -1,28 +1,31 @@
 <?php
 namespace App\Payment;
 
+use App\Repositories\TransactionRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\Support\Database;
 use App\Support\QueryParticle;
 use App\System\Heart;
-use App\System\Settings;
 
 class PurchaseInformation
 {
     /** @var Database */
     private $db;
 
-    /** @var Settings */
-    private $settings;
-
     /** @var Heart */
     private $heart;
 
-    public function __construct(Database $db, Settings $settings, Heart $heart)
-    {
+    /** @var TransactionRepository */
+    private $transactionRepository;
+
+    public function __construct(
+        Database $db,
+        Heart $heart,
+        TransactionRepository $transactionRepository
+    ) {
         $this->db = $db;
-        $this->settings = $settings;
         $this->heart = $heart;
+        $this->transactionRepository = $transactionRepository;
     }
 
     //
@@ -42,30 +45,32 @@ class PurchaseInformation
         }
         // Wyszukujemy po id płatności
         elseif (isset($data['payment']) && isset($data['payment_id'])) {
-            $queryParticle->add(
-                "t.payment = ? AND t.payment_id = ?",
-                [$data['payment'], $data['payment_id']]
-            );
+            $queryParticle->add("t.payment = ? AND t.payment_id = ?", [
+                $data['payment'],
+                $data['payment_id'],
+            ]);
         } else {
             return "";
         }
 
         // TODO Extract transactions_query from settings
         // TODO Remove usage of prepare
-        // TODO Create model for transactions_query
 
-        $statement = $this->db->statement("SELECT * FROM ({$this->settings['transactions_query']}) as t WHERE {$queryParticle}");
+        $statement = $this->db->statement(
+            "SELECT * FROM ({$this->transactionRepository->getQuery()}) as t WHERE {$queryParticle}"
+        );
         $statement->execute($queryParticle->params());
-        $pbs = $statement->fetch();
 
-        if (!$pbs) {
+        if (!$statement->rowCount()) {
             return "Brak zakupu w bazie.";
         }
 
-        $serviceModule = $this->heart->getServiceModule($pbs['service']);
+        $transaction = $this->transactionRepository->mapToModel($statement->fetch());
+
+        $serviceModule = $this->heart->getServiceModule($transaction->getServiceId());
 
         return $serviceModule instanceof IServicePurchaseWeb
-            ? $serviceModule->purchaseInfo($data['action'], $pbs)
+            ? $serviceModule->purchaseInfo($data['action'], $transaction)
             : "";
     }
 }
