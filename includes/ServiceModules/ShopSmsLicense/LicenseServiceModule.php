@@ -322,10 +322,9 @@ class LicenseServiceModule extends ServiceModule implements
             $purchase->user->getUid()
         );
 
-        $table = $this::USER_SERVICE_TABLE;
         $this->db
             ->statement(
-                "INSERT INTO `$table` SET " .
+                "INSERT INTO `{$this->getUserServiceTable()}` SET " .
                     "`us_id` = ?, " .
                     "`service` = ?, " .
                     "`identifier` = ?, " .
@@ -562,9 +561,8 @@ class LicenseServiceModule extends ServiceModule implements
             ];
         }
 
-        $table = $this::USER_SERVICE_TABLE;
         $statement = $this->db->statement(
-            "SELECT `us_id` FROM `$table` WHERE `service` = ? AND `external_license_id` = ?"
+            "SELECT `us_id` FROM `{$this->getUserServiceTable()}` WHERE `service` = ? AND `external_license_id` = ?"
         );
         $statement->execute([$validated['service_id'], $response['id']]);
 
@@ -642,9 +640,8 @@ class LicenseServiceModule extends ServiceModule implements
         if ($action === "regenerate_token") {
             $identifier = array_get($body, 'identifier');
 
-            $table = $this::USER_SERVICE_TABLE;
             $statement = $this->db->statement(
-                "SELECT `external_license_id` FROM `$table` WHERE `identifier` = ?"
+                "SELECT `external_license_id` FROM `{$this->getUserServiceTable()}` WHERE `identifier` = ?"
             );
             $statement->execute([$identifier]);
 

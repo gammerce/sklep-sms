@@ -10,6 +10,7 @@ use App\Loggers\DatabaseLogger;
 use App\Models\LicenseUserService;
 use App\Models\Purchase;
 use App\Models\Service;
+use App\Models\Transaction;
 use App\Payment\AdminPaymentService;
 use App\Payment\BoughtServiceService;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
@@ -22,8 +23,6 @@ use App\ServiceModules\ShopSmsLicense\Rules\LicenseProlongableRule;
 use App\Services\LicenseServerService;
 use App\Services\PriceTextService;
 use App\System\Auth;
-use App\System\Heart;
-use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,14 +40,8 @@ class LicenseProlongServiceModule extends ServiceModule implements
     /** @var Translator */
     private $lang;
 
-    /** @var Settings */
-    private $settings;
-
     /** @var Auth */
     private $auth;
-
-    /** @var Heart */
-    private $heart;
 
     /** @var LicenseServerService */
     private $licenseServerService;
@@ -75,9 +68,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
-        $this->settings = $this->app->make(Settings::class);
         $this->auth = $this->app->make(Auth::class);
-        $this->heart = $this->app->make(Heart::class);
         $this->licenseServerService = $this->app->make(LicenseServerService::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
         $this->adminPaymentService = $this->app->make(AdminPaymentService::class);
@@ -132,11 +123,10 @@ class LicenseProlongServiceModule extends ServiceModule implements
 
     public function orderDetails(Purchase $purchase)
     {
-        $identifier = $purchase->getOrder('identifier');
-
         return $this->template->renderNoComments(
             "services/shopsms_license_prolong/order_details",
             compact('identifier') + [
+                'identifier' => $purchase->getOrder('identifier'),
                 'quantity' => $purchase->getOrder(Purchase::ORDER_QUANTITY),
                 'serviceName' => $this->service->getName(),
                 'serviceTag' => $this->service->getTag(),
@@ -146,10 +136,9 @@ class LicenseProlongServiceModule extends ServiceModule implements
 
     public function purchase(Purchase $purchase)
     {
-        $table = $this::USER_SERVICE_TABLE;
         $statement = $this->db->statement(
             "SELECT * FROM `ss_user_service` AS us " .
-                "INNER JOIN `$table` AS m ON m.us_id = us.id " .
+                "INNER JOIN `{$this->getUserServiceTable()}` AS m ON m.us_id = us.id " .
                 "WHERE m.identifier = ?"
         );
         $statement->execute([$purchase->getOrder('identifier')]);
@@ -186,31 +175,38 @@ class LicenseProlongServiceModule extends ServiceModule implements
         );
     }
 
-    public function purchaseInfo($action, array $data)
+    public function purchaseInfo($action, Transaction $transaction)
     {
-        $data['extra_data'] = json_decode($data['extra_data'], true);
-        $identifier = $data['auth_data'];
+        $identifier = $transaction->getAuthData();
 
-        if ($action == "email") {
+        if ($action === "email") {
             return $this->template->renderNoComments(
                 "services/shopsms_license_prolong/purchase_info_email",
-                compact('identifier', 'data')
-            );
-        }
-
-        if ($action == "web") {
-            return $this->template->renderNoComments(
-                "services/shopsms_license_prolong/purchase_info_web",
                 [
-                    'serviceName' => $this->service->getName(),
-                    'data' => $data,
+                    'expire' => $transaction->getExtraDatum('expire'),
+                    'identifier' => $identifier,
                 ]
             );
         }
 
-        if ($action == "payment_log") {
+        if ($action === "web") {
+            return $this->template->renderNoComments(
+                "services/shopsms_license_prolong/purchase_info_web",
+                [
+                    'expire' => $transaction->getExtraDatum('expire'),
+                    'identifier' => $identifier,
+                    'serviceName' => $this->service->getName(),
+                ]
+            );
+        }
+
+        if ($action === "payment_log") {
             return [
-                'text' => $this->lang->t('license_prolonged', $identifier, $data['amount']),
+                'text' => $this->lang->t(
+                    'license_prolonged',
+                    $identifier,
+                    $transaction->getQuantity()
+                ),
                 'class' => "outcome",
             ];
         }
@@ -264,8 +260,8 @@ class LicenseProlongServiceModule extends ServiceModule implements
     public function actionExecute($action, array $body)
     {
         if ($action === "get_cost") {
-            $amount = $body['amount'];
-            $identifier = $body['identifier'];
+            $amount = array_get($body, 'amount');
+            $identifier = array_get($body, 'identifier');
             $cost = $this->getCost($identifier, $amount) * $amount;
 
             return $this->priceTextService->getPriceText($cost) ?: $this->lang->t('none');
@@ -287,9 +283,8 @@ class LicenseProlongServiceModule extends ServiceModule implements
             return null;
         }
 
-        $table = $this::USER_SERVICE_TABLE;
         $statement = $this->db->statement(
-            "SELECT `cost_daily` FROM `$table` WHERE `identifier` = ?"
+            "SELECT `cost_daily` FROM `{$this->getUserServiceTable()}` WHERE `identifier` = ?"
         );
         $statement->execute([$identifier]);
         $costDaily = $statement->fetchColumn();
