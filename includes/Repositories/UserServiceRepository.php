@@ -53,6 +53,10 @@ class UserServiceRepository
 
     public function update($id, array $data)
     {
+        if (!$data) {
+            return 0;
+        }
+
         if (array_key_exists('uid', $data) && $data['uid'] === null) {
             $data['uid'] = 0;
         }
