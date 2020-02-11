@@ -1,7 +1,6 @@
 <?php
 namespace App\Repositories;
 
-use App\Models\Server;
 use App\Models\ServerService;
 use App\Support\Database;
 
@@ -16,7 +15,7 @@ class ServerServiceRepository
     }
 
     /**
-     * @return Server[]
+     * @return ServerService[]
      */
     public function all()
     {

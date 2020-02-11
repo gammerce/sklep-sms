@@ -99,9 +99,10 @@ class User
 
         if ($this->groups) {
             foreach ($this->groups as $groupId) {
-                $privileges = $heart->getGroupPrivileges($groupId);
-                foreach ($privileges as $privilege => $value) {
-                    if (strlen($privilege)) {
+                $group = $heart->getGroup($groupId);
+
+                if ($group) {
+                    foreach ($group->getPermissions() as $privilege => $value) {
                         $this->privileges[$privilege] = !!$value;
                     }
                 }
@@ -235,13 +236,11 @@ class User
     }
 
     /**
-     * @param bool $divide
-     *
      * @return int
      */
-    public function getWallet($divide = false)
+    public function getWallet()
     {
-        return $divide ? number_format($this->wallet / 100.0, 2) : $this->wallet;
+        return $this->wallet;
     }
 
     /**

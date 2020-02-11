@@ -19,14 +19,13 @@ class ServiceRepository
      */
     public function all()
     {
-        $result = $this->db->query("SELECT * FROM `ss_services` ORDER BY `order` ASC");
+        $statement = $this->db->query("SELECT * FROM `ss_services` ORDER BY `order` ASC");
 
-        $services = [];
-        foreach ($result as $row) {
-            $services[] = $this->mapToModel($row);
-        }
-
-        return $services;
+        return collect($statement)
+            ->map(function (array $row) {
+                return $this->mapToModel($row);
+            })
+            ->all();
     }
 
     public function get($id)

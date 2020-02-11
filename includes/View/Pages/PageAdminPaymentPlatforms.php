@@ -2,6 +2,8 @@
 namespace App\View\Pages;
 
 use App\Exceptions\UnauthorizedException;
+use App\Http\Services\DataFieldService;
+use App\Repositories\PaymentPlatformRepository;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -9,9 +11,7 @@ use App\View\Html\Input;
 use App\View\Html\Option;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
-use App\Http\Services\DataFieldService;
 use App\View\Pages\Interfaces\IPageAdminActionBox;
-use App\Repositories\PaymentPlatformRepository;
 
 class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 {
@@ -52,15 +52,14 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
         $table->addHeadCell(new HeadCell($this->lang->t('name')));
         $table->addHeadCell(new HeadCell($this->lang->t('module')));
 
-        $result = $this->db->query(
-            "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_payment_platforms` " .
-                "LIMIT " .
-                get_row_limit($this->currentPage->getPageNumber())
+        $statement = $this->db->statement(
+            "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_payment_platforms` LIMIT ?, ?"
         );
+        $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
 
         $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
 
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
             $paymentPlatform = $this->paymentPlatformRepository->mapToModel($row);
             $bodyRow = new BodyRow();
 

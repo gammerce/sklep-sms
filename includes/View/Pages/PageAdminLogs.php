@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages;
 
+use App\Support\QueryParticle;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\Div;
@@ -31,28 +32,31 @@ class PageAdminLogs extends PageAdmin
         $table->addHeadCell(new HeadCell($this->lang->t('text')));
         $table->addHeadCell(new HeadCell($this->lang->t('date')));
 
-        // Wyszukujemy dane ktore spelniaja kryteria
-        $where = '';
+        $queryParticle = new QueryParticle();
         if (isset($query['search'])) {
-            searchWhere(["`id`", "`text`", "CAST(`timestamp` as CHAR)"], $query['search'], $where);
+            $queryParticle->extend(
+                create_search_query(
+                    ["`id`", "`text`", "CAST(`timestamp` as CHAR)"],
+                    $query['search']
+                )
+            );
         }
 
-        // Jezeli jest jakis where, to dodajemy WHERE
-        if (strlen($where)) {
-            $where = "WHERE " . $where . " ";
-        }
+        $where = $queryParticle->isEmpty() ? "" : "WHERE {$queryParticle}";
 
-        $result = $this->db->query(
-            "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_logs` " .
-                $where .
-                "ORDER BY `id` DESC " .
-                "LIMIT " .
+        $statement = $this->db->statement(
+            "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_logs` {$where} ORDER BY `id` DESC LIMIT ?, ?"
+        );
+        $statement->execute(
+            array_merge(
+                $queryParticle->params(),
                 get_row_limit($this->currentPage->getPageNumber())
+            )
         );
 
         $table->setDbRowsCount($this->db->query("SELECT FOUND_ROWS()")->fetchColumn());
 
-        foreach ($result as $row) {
+        foreach ($statement as $row) {
             $bodyRow = new BodyRow();
 
             $bodyRow->setDbId($row['id']);

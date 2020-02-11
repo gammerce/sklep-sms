@@ -53,8 +53,12 @@ class CronExecutor
         // Remove files older than 30 days from data/transfers
         $path = $this->path->to('data/transfers');
         foreach ($this->fileSystem->scanDirectory($path) as $file) {
+            if (starts_with($file, ".")) {
+                continue;
+            }
+
             $filepath = rtrim($path, "/") . "/" . ltrim($file, "/");
-            if (filectime($filepath) < time() - 60 * 60 * 24 * 30) {
+            if ($this->fileSystem->lastChangedAt($filepath) < time() - 60 * 60 * 24 * 30) {
                 $this->fileSystem->delete($filepath);
             }
         }

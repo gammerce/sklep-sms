@@ -2,8 +2,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Responses\HtmlResponse;
-use App\View\Pages\PageAdminIncome;
 use App\System\Auth;
+use App\View\Pages\PageAdminIncome;
 use Symfony\Component\HttpFoundation\Request;
 
 class IncomeController

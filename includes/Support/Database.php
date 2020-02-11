@@ -76,20 +76,6 @@ class Database
         $this->pdo = null;
     }
 
-    public function prepare($query, $values)
-    {
-        if (!$this->isConnected()) {
-            $this->connect();
-        }
-
-        $i = 0;
-        foreach ($values as $value) {
-            $values[$i++] = $this->escape($value);
-        }
-
-        return vsprintf($query, $values);
-    }
-
     /**
      * @param string $query
      * @return PDOStatement
@@ -116,12 +102,6 @@ class Database
     public function lastId()
     {
         return $this->pdo->lastInsertId();
-    }
-
-    public function escape($str)
-    {
-        $quote = $this->pdo->quote($str);
-        return preg_replace("/(^'|'$)/", '', $quote);
     }
 
     public function startTransaction()
@@ -178,6 +158,14 @@ class Database
     public function dropDatabaseIfExists($database)
     {
         $this->query("DROP DATABASE IF EXISTS `$database`");
+    }
+
+    /**
+     * @return int
+     */
+    public function getNow()
+    {
+        return $this->query("SELECT UNIX_TIMESTAMP(NOW())")->fetchColumn();
     }
 
     public function isConnected()

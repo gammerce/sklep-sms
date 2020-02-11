@@ -1,17 +1,22 @@
 <?php
 namespace App\View\Pages;
 
+use App\System\Settings;
 use App\View\Interfaces\IBeLoggedCannot;
 
 class PageResetPassword extends Page implements IBeLoggedCannot
 {
     const PAGE_ID = 'reset_password';
 
-    public function __construct()
+    /** @var Settings */
+    private $settings;
+
+    public function __construct(Settings $settings)
     {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->t('reset_password');
+        $this->settings = $settings;
     }
 
     protected function content(array $query, array $body)

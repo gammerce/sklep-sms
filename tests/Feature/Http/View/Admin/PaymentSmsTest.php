@@ -23,7 +23,7 @@ class PaymentSmsTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->get('/admin/payment_sms');
+        $response = $this->get('/admin/payment_sms?search=a');
 
         // then
         $this->assertSame(200, $response->getStatusCode());

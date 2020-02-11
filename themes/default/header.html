@@ -12,10 +12,10 @@
     var f = "{$license->getFooter()}";
     var language = "{{ $lang->getCurrentLanguage() }}";
     var baseUrl = "{{ $url->to('/') }}";
-    var currentPage = "{{ $currentPage->getPid() }}";
+    var currentPage = "{{ $currentPageId }}";
 </script>
-{$heart->scriptsGet()}
+{$scripts}
 
 <link href="{{ $url->versioned('build/css/shop.css') }}" rel="stylesheet" />
 <link rel="shortcut icon" href="{{ $url->to('favicon.png') }}" />
-{$heart->stylesGet()}
+{$styles}

@@ -2,6 +2,9 @@
 namespace App\View\Pages;
 
 use App\Exceptions\UnauthorizedException;
+use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
+use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
+use App\ServiceModules\Interfaces\IServiceUserServiceAdminEdit;
 use App\Services\UserServiceService;
 use App\View\Html\Div;
 use App\View\Html\Input;
@@ -9,9 +12,6 @@ use App\View\Html\Option;
 use App\View\Html\Select;
 use App\View\Html\Wrapper;
 use App\View\Pages\Interfaces\IPageAdminActionBox;
-use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
-use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
-use App\ServiceModules\Interfaces\IServiceUserServiceAdminEdit;
 
 class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 {

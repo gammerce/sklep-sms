@@ -110,30 +110,28 @@ class Purchase
 
     /**
      * @param string $key
-     *
      * @return mixed
      */
-    public function getOrder($key = null)
+    public function getOrder($key)
     {
-        if ($key === null) {
-            return $this->order;
-        }
-
         return array_get($this->order, $key);
     }
 
     /**
-     * @param string|null $key
-     *
+     * @param string $key
      * @return mixed
      */
-    public function getPayment($key = null)
+    public function getPayment($key)
     {
-        if ($key === null) {
-            return $this->payment;
-        }
-
         return array_get($this->payment, $key);
+    }
+
+    /**
+     * @return array
+     */
+    public function getPaymentList()
+    {
+        return $this->payment;
     }
 
     /**

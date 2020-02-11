@@ -1,18 +1,17 @@
 <?php
 namespace App\View\Pages;
 
-use App\View\Html\I_ToHtml;
 use App\Routing\UrlGenerator;
-use App\System\Application;
-use App\View\CurrentPage;
 use App\Support\Database;
 use App\Support\FileSystemContract;
-use App\System\Heart;
 use App\Support\Path;
-use App\System\Settings;
 use App\Support\Template;
+use App\System\Application;
+use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use App\View\CurrentPage;
+use App\View\Html\I_ToHtml;
 
 abstract class Page
 {
@@ -24,9 +23,6 @@ abstract class Page
 
     /** @var Heart */
     protected $heart;
-
-    /** @var Settings */
-    protected $settings;
 
     /** @var CurrentPage */
     protected $currentPage;
@@ -56,7 +52,6 @@ abstract class Page
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
         $this->heart = $this->app->make(Heart::class);
-        $this->settings = $this->app->make(Settings::class);
         $this->currentPage = $this->app->make(CurrentPage::class);
         $this->template = $this->app->make(Template::class);
         $this->db = $this->app->make(Database::class);
@@ -75,27 +70,24 @@ abstract class Page
      */
     public function getContent(array $query, array $body)
     {
-        // Dodajemy wszystkie skrypty
         $path = "build/js/static/pages/" . $this::PAGE_ID . "/";
         if (strlen($this::PAGE_ID) && $this->fileSystem->exists($this->path->to($path))) {
             foreach ($this->fileSystem->scanDirectory($this->path->to($path)) as $file) {
                 if (ends_at($file, ".js")) {
-                    $this->heart->scriptAdd($this->url->versioned($path . $file));
+                    $this->heart->addScript($this->url->versioned($path . $file));
                 }
             }
         }
 
-        // Let's add all css
         $path = "build/css/static/pages/" . $this::PAGE_ID . "/";
         if (strlen($this::PAGE_ID) && $this->fileSystem->exists($this->path->to($path))) {
             foreach ($this->fileSystem->scanDirectory($this->path->to($path)) as $file) {
                 if (ends_at($file, ".css")) {
-                    $this->heart->styleAdd($this->url->versioned($path . $file));
+                    $this->heart->addStyle($this->url->versioned($path . $file));
                 }
             }
         }
 
-        // Globalne jsy cssy konkretnych modułów usług
         if (
             in_array($this::PAGE_ID, [
                 "purchase",
@@ -107,12 +99,12 @@ abstract class Page
             foreach ($this->heart->getEmptyServiceModules() as $serviceModule) {
                 $path = "build/css/static/services/{$serviceModule->getModuleId()}.css";
                 if ($this->fileSystem->exists($this->path->to($path))) {
-                    $this->heart->styleAdd($this->url->versioned($path));
+                    $this->heart->addStyle($this->url->versioned($path));
                 }
 
                 $path = "build/js/static/services/{$serviceModule->getModuleId()}.js";
                 if ($this->fileSystem->exists($this->path->to($path))) {
-                    $this->heart->scriptAdd($this->url->versioned($path));
+                    $this->heart->addScript($this->url->versioned($path));
                 }
             }
         }

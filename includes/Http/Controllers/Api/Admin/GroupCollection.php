@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\SuccessApiResponse;
 use App\Loggers\DatabaseLogger;
-use App\Support\Database;
+use App\Repositories\GroupRepository;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -12,34 +12,28 @@ class GroupCollection
     public function post(
         Request $request,
         TranslationManager $translationManager,
-        Database $db,
+        GroupRepository $groupRepository,
         DatabaseLogger $databaseLogger
     ) {
         $lang = $translationManager->user();
-
         $name = $request->request->get('name');
 
-        $set = "";
-        $result = $db->query("DESCRIBE ss_groups");
-        foreach ($result as $row) {
-            if (in_array($row['Field'], ["id", "name"])) {
-                continue;
-            }
+        $set = collect($groupRepository->getFields())
+            ->filter(function ($fieldName) {
+                return !in_array($fieldName, ["id", "name"], true);
+            })
+            ->flatMap(function ($fieldName) use ($request) {
+                return [$fieldName => $request->request->get($fieldName) ?: 0];
+            })
+            ->all();
 
-            $set .= $db->prepare(", `%s`='%d'", [
-                $row['Field'],
-                $request->request->get($row['Field']),
-            ]);
-        }
+        $group = $groupRepository->create($name, $set);
 
-        $db->query($db->prepare("INSERT INTO `ss_groups` SET `name` = '%s'{$set}", [$name]));
-        $groupId = $db->lastId();
-
-        $databaseLogger->logWithActor('log_group_added', $groupId);
+        $databaseLogger->logWithActor('log_group_added', $group->getId());
 
         return new SuccessApiResponse($lang->t('group_add'), [
             "data" => [
-                "id" => $groupId,
+                "id" => $group->getId(),
             ],
         ]);
     }

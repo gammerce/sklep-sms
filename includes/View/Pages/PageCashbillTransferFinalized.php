@@ -4,6 +4,7 @@ namespace App\View\Pages;
 use App\Exceptions\InvalidConfigException;
 use App\Models\Purchase;
 use App\Payment\PurchaseInformation;
+use App\System\Settings;
 use App\Verification\PaymentModules\Cashbill;
 
 class PageCashbillTransferFinalized extends Page
@@ -13,12 +14,16 @@ class PageCashbillTransferFinalized extends Page
     /** @var PurchaseInformation */
     private $purchaseInformation;
 
-    public function __construct(PurchaseInformation $purchaseInformation)
+    /** @var Settings */
+    private $settings;
+
+    public function __construct(PurchaseInformation $purchaseInformation, Settings $settings)
     {
         parent::__construct();
 
         $this->purchaseInformation = $purchaseInformation;
         $this->heart->pageTitle = $this->title = $this->lang->t('transfer_finalized');
+        $this->settings = $settings;
     }
 
     protected function content(array $query, array $body)

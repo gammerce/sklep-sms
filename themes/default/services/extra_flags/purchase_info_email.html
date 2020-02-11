@@ -1,10 +1,10 @@
-{{ $lang->t('just_purchased', $e($data['auth_data'])) }}<br />
+{{ $lang->t('just_purchased', $e($authData)) }}<br />
 <br />
 <strong>{$lang->t('service')}:</strong> {{ $serviceName }}<br />
-<strong>{$lang->t('amount')}:</strong> {{ $amount }}<br />
+<strong>{$lang->t('quantity')}:</strong> {{ $quantity }}<br />
 <strong>{$lang->t('server')}:</strong> {{ $serverName }}<br />
 <br />
-<strong>{{ $data['extra_data']['type_name'] }}:</strong> {{ $data['auth_data'] }}<br />
+<strong>{{ $typeName }}:</strong> {{ $authData }}<br />
 {$password}
 <br />
 {{ $setinfo }}<br />

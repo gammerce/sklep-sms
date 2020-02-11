@@ -2,9 +2,9 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\ApiResponse;
-use App\View\Pages\Interfaces\IPageAdminActionBox;
 use App\System\Heart;
 use App\Translation\TranslationManager;
+use App\View\Pages\Interfaces\IPageAdminActionBox;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageActionBoxResource

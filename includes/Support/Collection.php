@@ -13,13 +13,9 @@ class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Countable
     /** @var array */
     private $items;
 
-    public function __construct($items)
+    public function __construct($items = [])
     {
-        if ($items instanceof Traversable) {
-            $this->items = iterator_to_array($items);
-        } else {
-            $this->items = (array) $items;
-        }
+        $this->items = to_array($items);
     }
 
     /**
@@ -31,7 +27,7 @@ class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Countable
         $result = [];
 
         foreach ($this->items as $key => $value) {
-            $result[] = $callback($value, $key);
+            $result[] = call_user_func($callback, $value, $key);
         }
 
         return new Collection($result);
@@ -46,7 +42,7 @@ class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Countable
         $result = [];
 
         foreach ($this->items as $key => $value) {
-            $result[$key] = $callback($value, $key);
+            $result[$key] = call_user_func($callback, $value, $key);
         }
 
         return new Collection($result);
@@ -88,6 +84,24 @@ class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Countable
         }
 
         return new Collection($results);
+    }
+
+    /**
+     * @param mixed $item
+     * @return Collection
+     */
+    public function push($item)
+    {
+        return new Collection(array_merge($this->items, [$item]));
+    }
+
+    /**
+     * @param array|Traversable $data
+     * @return Collection
+     */
+    public function extend($data)
+    {
+        return new Collection(array_merge($this->items, to_array($data)));
     }
 
     /**

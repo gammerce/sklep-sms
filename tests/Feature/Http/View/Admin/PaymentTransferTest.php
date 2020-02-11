@@ -15,7 +15,7 @@ class PaymentTransferTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->get('/admin/payment_transfer');
+        $response = $this->get('/admin/payment_transfer?search=a');
 
         // then
         $this->assertSame(200, $response->getStatusCode());
