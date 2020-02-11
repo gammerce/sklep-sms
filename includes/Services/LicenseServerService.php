@@ -24,19 +24,19 @@ class LicenseServerService
 
     /**
      * @param int $lifetime
-     * @param bool $hasAmxmodx
-     * @param bool $hasSourcemod
+     * @param bool $hasAmxModX
+     * @param bool $hasSourceMod
      * @return array ['id', 'token', 'expires_at']
      * @throws Exception
      */
-    public function create($lifetime, $hasAmxmodx, $hasSourcemod)
+    public function create($lifetime, $hasAmxModX, $hasSourceMod)
     {
         $response = $this->requester->post(
             $this->buildUrl('/v1/licenses'),
             [
                 'lifetime' => $lifetime,
-                'platform_amxmodx' => $hasAmxmodx,
-                'platform_sourcemod' => $hasSourcemod,
+                'platform_amxmodx' => $hasAmxModX,
+                'platform_sourcemod' => $hasSourceMod,
             ],
             [
                 'Authorization' => $this->licenseSecret,
