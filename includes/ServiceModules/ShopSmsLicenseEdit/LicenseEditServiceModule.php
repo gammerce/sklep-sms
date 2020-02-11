@@ -2,6 +2,9 @@
 namespace App\ServiceModules\ShopSmsLicenseEdit;
 
 use App\Models\LicenseUserService;
+use App\Models\Transaction;
+use App\Repositories\UserServiceRepository;
+use App\ServiceModules\ShopSmsLicense\EngineService;
 use App\Services\LicenseServerService;
 use App\Models\Purchase;
 use App\Models\Service;
@@ -9,6 +12,7 @@ use App\Payment\BoughtServiceService;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\ServiceModule;
+use App\Services\PriceTextService;
 use App\Services\UserServiceService;
 use App\System\Settings;
 use App\Translation\TranslationManager;
@@ -25,9 +29,6 @@ class LicenseEditServiceModule extends ServiceModule implements
     /** @var Translator */
     private $lang;
 
-    /** @var Settings */
-    private $settings;
-
     /** @var LicenseServerService */
     private $licenseServerService;
 
@@ -37,6 +38,15 @@ class LicenseEditServiceModule extends ServiceModule implements
     /** @var UserServiceService */
     private $userServiceService;
 
+    /** @var PriceTextService */
+    private $priceTextService;
+
+    /** @var EngineService */
+    private $engineService;
+
+    /** @var UserServiceRepository */
+    private $userServiceRepository;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -44,10 +54,12 @@ class LicenseEditServiceModule extends ServiceModule implements
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
-        $this->settings = $this->app->make(Settings::class);
         $this->licenseServerService = $this->app->make(LicenseServerService::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
         $this->userServiceService = $this->app->make(UserServiceService::class);
+        $this->priceTextService = $this->app->make(PriceTextService::class);
+        $this->engineService = $this->app->make(EngineService::class);
+        $this->userServiceRepository = $this->app->make(UserServiceRepository::class);
     }
 
     public function purchaseFormGet(array $query)
@@ -62,40 +74,27 @@ class LicenseEditServiceModule extends ServiceModule implements
 
     public function orderDetails(Purchase $purchase)
     {
-        $table = $this::USER_SERVICE_TABLE;
-        $statement = $this->db->statement("SELECT `identifier` FROM `$table` WHERE `us_id` = ?");
+        $statement = $this->db->statement(
+            "SELECT `identifier` FROM `{$this->getUserServiceTable()}` WHERE `us_id` = ?"
+        );
         $statement->execute([$purchase->getOrder('user_service_id')]);
         $identifier = $statement->fetchColumn();
 
-        $email = $purchase->getEmail() ?: $this->lang->t('none');
-        $costMonthly =
-            number_format(($purchase->getOrder('cost_daily') * 30) / 100, 2) .
-            " " .
-            $this->settings->getCurrency();
-
-        $engines = [];
-        $tmpEngines = $purchase->getOrder('engines');
-        if ($tmpEngines['amxx']) {
-            $engines[] = "AMX Mod X";
-        }
-        if ($tmpEngines['sm']) {
-            $engines[] = "SOURCEMOD";
-        }
-
-        $engines = !empty($engines) ? implode(", ", $engines) : $this->lang->t('none');
-
-        return $this->template->renderNoComments(
-            "services/shopsms_license_edit/order_details",
-            compact('identifier', 'engines', 'costMonthly', 'email') + [
-                'serviceName' => $this->service->getName(),
-            ]
-        );
+        return $this->template->renderNoComments("services/shopsms_license_edit/order_details", [
+            'costMonthly' => $this->priceTextService->getPriceText(
+                $purchase->getOrder('cost_daily') * 30
+            ),
+            'email' => $purchase->getEmail() ?: $this->lang->t('none'),
+            'engines' => $this->engineService->formatOrderEngines($purchase->getOrder('engines')),
+            'identifier' => $identifier,
+            'serviceName' => $this->service->getName(),
+        ]);
     }
 
     public function purchase(Purchase $purchase)
     {
         $userService = $this->userServiceService->findOne($purchase->getOrder('user_service_id'));
-        $tmpEngines = $purchase->getOrder('engines');
+        $engines = $purchase->getOrder('engines');
 
         if (!($userService instanceof LicenseUserService)) {
             throw new UnexpectedValueException();
@@ -103,49 +102,20 @@ class LicenseEditServiceModule extends ServiceModule implements
 
         $this->licenseServerService->updatePlatforms(
             $userService->getExternalLicenseId(),
-            $tmpEngines['amxx'],
-            $tmpEngines['sm']
+            $engines['amxx'],
+            $engines['sm']
         );
 
-        // Aktualizujemy dane licencji w liscie uslug graczy
-        $updateData = [
-            [
-                'column' => 'cost_daily',
-                'value' => "'%d'",
-                'data' => [$purchase->getOrder('cost_daily')],
-            ],
-            [
-                'column' => 'email',
-                'value' => "'%s'",
-                'data' => [$purchase->getEmail()],
-            ],
-            [
-                'column' => 'platform_amxmodx',
-                'value' => "'%d'",
-                'data' => [$tmpEngines['amxx']],
-            ],
-            [
-                'column' => 'platform_sourcemod',
-                'value' => "'%d'",
-                'data' => [$tmpEngines['sm']],
-            ],
-        ];
-        $this->updateUserService(
-            $updateData,
+        $this->userServiceRepository->updateWithModule(
+            $this,
             $purchase->getOrder('user_service_id'),
-            $purchase->getOrder('user_service_id')
+            [
+                'cost_daily' => $purchase->getOrder('cost_daily'),
+                'email' => $purchase->getEmail(),
+                'platform_amxmodx' => $engines['amxx'],
+                'platform_sourcemod' => $engines['sm'],
+            ]
         );
-
-        // Dodanie informacji o zakupie usługi
-        $engines = [];
-        if ($tmpEngines['amxx']) {
-            $engines[] = "AMX Mod X";
-        }
-        if ($tmpEngines['sm']) {
-            $engines[] = "SOURCEMOD";
-        }
-
-        $engines = !empty($engines) ? implode(", ", $engines) : $this->lang->t('none');
 
         return $this->boughtServiceService->create(
             $purchase->user->getUid(),
@@ -158,33 +128,38 @@ class LicenseEditServiceModule extends ServiceModule implements
             0,
             $userService->getIdentifier(),
             $purchase->getEmail(),
-            ['engines' => $engines]
+            ['engines' => $this->engineService->formatOrderEngines($engines)]
         );
     }
 
-    public function purchaseInfo($action, array $data)
+    public function purchaseInfo($action, Transaction $transaction)
     {
-        $data['extra_data'] = json_decode($data['extra_data'], true);
-        $engines = $data['extra_data']['engines'];
+        $engines = $transaction->getExtraDatum('engines');
 
-        if ($action == "email") {
+        if ($action === "email") {
             return $this->template->renderNoComments(
                 "services/shopsms_license_edit/purchase_info_email",
-                compact('data', 'engines')
+                [
+                    'authData' => $transaction->getAuthData(),
+                    'engines' => $engines,
+                ]
             );
         }
 
-        if ($action == "web") {
-            $email = $data['email'];
+        if ($action === "web") {
             return $this->template->renderNoComments(
                 "services/shopsms_license_edit/purchase_info_web",
-                compact('data', 'email', 'engines')
+                [
+                    'authData' => $transaction->getAuthData(),
+                    'email' => $transaction->getEmail(),
+                    'engines' => $engines,
+                ]
             );
         }
 
-        if ($action == "payment_log") {
+        if ($action === "payment_log") {
             return [
-                'text' => $this->lang->t('license_edited', $data['auth_data']),
+                'text' => $this->lang->t('license_edited', $transaction->getAuthData()),
                 'class' => "outcome",
             ];
         }

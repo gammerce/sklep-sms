@@ -119,6 +119,9 @@ class LicenseServiceModule extends ServiceModule implements
     /** @var PriceTextService */
     private $priceTextService;
 
+    /** @var EngineService */
+    private $engineService;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -128,7 +131,6 @@ class LicenseServiceModule extends ServiceModule implements
         $this->lang = $translationManager->user();
         $this->settings = $this->app->make(Settings::class);
         $this->auth = $this->app->make(Auth::class);
-        $this->auth = $this->app->make(Auth::class);
         $this->currentPage = $this->app->make(CurrentPage::class);
         $this->licenseServerService = $this->app->make(LicenseServerService::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
@@ -137,6 +139,7 @@ class LicenseServiceModule extends ServiceModule implements
         $this->purchaseSerializer = $this->app->make(PurchaseSerializer::class);
         $this->licenseUserServiceRepository = $this->app->make(LicenseUserServiceRepository::class);
         $this->priceTextService = $this->app->make(PriceTextService::class);
+        $this->engineService = $this->app->make(EngineService::class);
     }
 
     /**
@@ -290,7 +293,7 @@ class LicenseServiceModule extends ServiceModule implements
                 $purchase->getOrder('cost_daily') * 30
             ),
             'email' => $purchase->getEmail() ?: $this->lang->t('none'),
-            'engines' => $this->formatOrderEngines($purchase->getOrder('engines')),
+            'engines' => $this->engineService->formatOrderEngines($purchase->getOrder('engines')),
             'quantity' => $purchase->getOrder(Purchase::ORDER_QUANTITY),
             'serviceName' => $this->service->getName(),
             'serviceTag' => $this->service->getTag(),
@@ -357,8 +360,8 @@ class LicenseServiceModule extends ServiceModule implements
             [
                 'token' => $token,
                 'identifier' => $identifier,
-                'expire' => date($this->settings->getDateFormat(), $expiresAt),
-                'engines' => $this->formatOrderEngines($engines),
+                'expire' => convert_date($expiresAt),
+                'engines' => $this->engineService->formatOrderEngines($engines),
             ]
         );
     }
@@ -441,7 +444,7 @@ class LicenseServiceModule extends ServiceModule implements
                 $userService->getCostDaily() * 30
             ),
             'email' => $userService->getEmail() ?: $this->lang->t('none'),
-            'engines' => $this->formatEngines($engines),
+            'engines' => $this->engineService->formatEngines($engines),
             'expire' => convert_expire($userService->getExpire()),
             'identifier' => $userService->getIdentifier(),
             'moduleId' => $this->getModuleId(),
@@ -530,7 +533,7 @@ class LicenseServiceModule extends ServiceModule implements
             'positive' => true,
             'data' => [
                 'data' => $purchaseData,
-                'sign' => md5($purchaseData . $this->settings['random_key']),
+                'sign' => md5($purchaseData . $this->settings->getSecret()),
             ],
         ];
     }
@@ -758,29 +761,5 @@ class LicenseServiceModule extends ServiceModule implements
     public function showOnWeb()
     {
         return true;
-    }
-
-    private function formatOrderEngines(array $engines)
-    {
-        $output = [];
-
-        if (array_get($engines, 'amxx')) {
-            $output[] = "AMX Mod X";
-        }
-
-        if (array_get($engines, 'sm')) {
-            $output[] = "SOURCEMOD";
-        }
-
-        return $this->formatEngines($output);
-    }
-
-    private function formatEngines(array $engines)
-    {
-        if ($engines) {
-            return implode(", ", $engines);
-        }
-
-        return $this->lang->t('none');
     }
 }

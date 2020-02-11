@@ -52,18 +52,18 @@ class LicenseServerService
 
     /**
      * @param int $licenseId
-     * @param bool $hasAmxmodx
-     * @param bool $hasSourcemod
+     * @param bool $hasAmxModX
+     * @param bool $hasSourceMod
      * @return array ['expires_at']
      * @throws Exception
      */
-    public function updatePlatforms($licenseId, $hasAmxmodx, $hasSourcemod)
+    public function updatePlatforms($licenseId, $hasAmxModX, $hasSourceMod)
     {
         $response = $this->requester->patch(
             $this->buildUrl("/v1/licenses/${licenseId}"),
             [
-                'platform_amxmodx' => $hasAmxmodx,
-                'platform_sourcemod' => $hasSourcemod,
+                'platform_amxmodx' => $hasAmxModX,
+                'platform_sourcemod' => $hasSourceMod,
             ],
             [
                 'Authorization' => $this->licenseSecret,
