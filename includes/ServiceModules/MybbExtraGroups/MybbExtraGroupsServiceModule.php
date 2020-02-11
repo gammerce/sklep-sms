@@ -379,7 +379,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         // Nie znaleziono użytkownika o takich danych jak podane podczas zakupu
         if (!$mybbUser) {
-            $this->logger->log('mybb_purchase_no_user', json_encode($purchase->getPayment()));
+            $this->logger->log('mybb_purchase_no_user', json_encode($purchase->getPaymentList()));
             die("Critical error occurred");
         }
 

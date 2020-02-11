@@ -16,17 +16,11 @@ use App\Repositories\ServerRepository;
 use App\Repositories\ServerServiceRepository;
 use App\Repositories\ServiceRepository;
 use App\Repositories\UserRepository;
-use App\ServiceModules\ChargeWallet\ChargeWalletServiceModule;
-use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
-use App\ServiceModules\Other\OtherServiceModule;
 use App\ServiceModules\ServiceModule;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\DataField;
 use App\View\Blocks\Block;
-use App\View\Blocks\BlockSimple;
-use App\View\Pages\Interfaces\IPageAdminActionBox;
 use App\View\Pages\Page;
-use App\View\Pages\PageSimple;
 use Exception;
 
 class Heart
@@ -129,7 +123,7 @@ class Heart
      * Get service module with service included
      *
      * @param string $serviceId Service identifier from ss_services
-     * @return null|ServiceModule|ChargeWalletServiceModule|ExtraFlagsServiceModule|OtherServiceModule
+     * @return ServiceModule|null
      */
     public function getServiceModule($serviceId)
     {
@@ -289,7 +283,6 @@ class Heart
      * Sprawdza czy dany blok istnieje
      *
      * @param string $blockId
-     *
      * @return bool
      */
     public function blockExists($blockId)
@@ -301,8 +294,7 @@ class Heart
      * Zwraca obiekt bloku
      *
      * @param string $blockId
-     *
-     * @return null|Block|BlockSimple
+     * @return Block|null
      */
     public function getBlock($blockId)
     {
@@ -362,7 +354,7 @@ class Heart
      * @param string $pageId
      * @param string $type
      *
-     * @return null|Page|PageSimple|IPageAdminActionBox
+     * @return Page|null
      */
     public function getPage($pageId, $type = "user")
     {
@@ -395,7 +387,7 @@ class Heart
     /**
      * @param $serviceId
      *
-     * @return Service | null
+     * @return Service|null
      */
     public function getService($serviceId)
     {
@@ -441,7 +433,7 @@ class Heart
 
     /**
      * @param int $id
-     * @return Server
+     * @return Server|null
      */
     public function getServer($id)
     {

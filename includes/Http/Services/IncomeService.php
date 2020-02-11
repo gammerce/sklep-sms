@@ -66,6 +66,7 @@ class IncomeService
                     "FROM ({$this->transactionRepository->getQuery()}) as t " .
                     "WHERE t.free = '0' AND t.payment != 'wallet' "
             )
-            ->fetchColumn();
+            ->fetchColumn() ?:
+            0;
     }
 }

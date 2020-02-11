@@ -24,7 +24,10 @@ class ServerLinkedToServiceRule extends BaseRule
     {
         $server = $this->heart->getServer($value);
 
-        if (!$this->heart->serverServiceLinked($server->getId(), $this->service->getId())) {
+        if (
+            !$server ||
+            !$this->heart->serverServiceLinked($server->getId(), $this->service->getId())
+        ) {
             return [$this->lang->t('chosen_incorrect_server')];
         }
 
