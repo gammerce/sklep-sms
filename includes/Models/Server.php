@@ -21,7 +21,7 @@ class Server
     /** @var string */
     private $type;
 
-    /** @var int */
+    /** @var int|null */
     private $smsPlatform;
 
     /** @var string */
@@ -29,6 +29,9 @@ class Server
 
     /** @var string|null */
     private $lastActiveAt;
+
+    /** @var string|null */
+    private $token;
 
     public function __construct(
         $id,
@@ -38,7 +41,8 @@ class Server
         $smsPlatform,
         $type,
         $version,
-        $lastActiveAt
+        $lastActiveAt,
+        $token
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -48,6 +52,7 @@ class Server
         $this->type = $type;
         $this->version = $version;
         $this->lastActiveAt = $lastActiveAt;
+        $this->token = $token;
     }
 
     public function getId()
@@ -88,5 +93,10 @@ class Server
     public function getLastActiveAt()
     {
         return $this->lastActiveAt;
+    }
+
+    public function getToken()
+    {
+        return $this->token;
     }
 }

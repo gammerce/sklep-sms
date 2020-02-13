@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Middlewares;
 
+use App\Repositories\ServerRepository;
 use App\Repositories\UserRepository;
 use App\System\Application;
 use App\System\Auth;
@@ -18,13 +19,20 @@ class AuthorizeServer implements MiddlewareContract
         /** @var UserRepository $userRepository */
         $userRepository = $app->make(UserRepository::class);
 
+        /** @var ServerRepository $serverRepository */
+        $serverRepository = $app->make(ServerRepository::class);
+
         /** @var Auth $auth */
         $auth = $app->make(Auth::class);
 
+        // TODO Remove authorization by key
         $key = $request->query->get("key");
+        $token = $request->query->get("token");
 
-        if ($key !== md5($settings->getSecret())) {
-            return new Response("Invalid key", 400);
+        $server = $serverRepository->findByToken($token);
+
+        if (!$server && $key !== md5($settings->getSecret())) {
+            return new Response("Server not authorized", 400);
         }
 
         $steamId = $request->headers->get("Authorization");

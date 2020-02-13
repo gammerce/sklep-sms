@@ -51,14 +51,27 @@ class ServerRepository
         return null;
     }
 
+    public function findByToken($token)
+    {
+        $statement = $this->db->statement(
+            "SELECT *, UNIX_TIMESTAMP(`last_active_at`) FROM `ss_servers` WHERE `token` = ?"
+        );
+        $statement->execute([$token]);
+        $data = $statement->fetch();
+
+        return $data ? $this->mapToModel($data) : null;
+    }
+
     public function create($name, $ip, $port, $smsPlatformId = null)
     {
+        $token = $this->generateToken();
+
         $this->db
             ->statement(
                 "INSERT INTO `ss_servers` " .
-                    "SET `name` = ?, `ip` = ?, `port` = ?, `sms_platform` = ?"
+                    "SET `name` = ?, `ip` = ?, `port` = ?, `sms_platform` = ?, `token` = ?"
             )
-            ->execute([$name, $ip, $port, $smsPlatformId]);
+            ->execute([$name, $ip, $port, $smsPlatformId, $token]);
 
         return $this->get($this->db->lastId());
     }
@@ -106,6 +119,21 @@ class ServerRepository
             ->execute([$type, $version, $id]);
     }
 
+    /**
+     * @param int $id
+     * @return string
+     */
+    public function regenerateToken($id)
+    {
+        $token = $this->generateToken();
+
+        $this->db
+            ->statement("UPDATE `ss_servers` SET `token` = ? WHERE `id` = ?")
+            ->execute([$token, $id]);
+
+        return $token;
+    }
+
     private function mapToModel(array $data)
     {
         return new Server(
@@ -116,9 +144,16 @@ class ServerRepository
             as_int($data['sms_platform']),
             $data['type'],
             $data['version'],
-            $data['last_active_at']
-                ? date($this->settings->getDateFormat(), $data['last_active_at'])
-                : null
+            convert_date($data['last_active_at']),
+            $data['token']
         );
+    }
+
+    /**
+     * @return string
+     */
+    private function generateToken()
+    {
+        return substr(hash("sha256", uniqid()), 0, 32);
     }
 }
