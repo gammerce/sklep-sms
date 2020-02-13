@@ -32,16 +32,16 @@ class UserRepository
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())"
             )
             ->execute([
-                $username,
+                (string) $username,
                 hash_password($password, $salt),
                 $salt,
-                $email,
-                $forename,
-                $surname,
-                $ip,
+                (string) $email,
+                (string) $forename,
+                (string) $surname,
+                (string) $ip,
                 $groups,
-                $wallet,
-                $steamId,
+                (int) $wallet,
+                (string) $steamId,
             ]);
 
         return $this->get($this->db->lastId());
@@ -56,13 +56,13 @@ class UserRepository
                     "WHERE `uid` = ?"
             )
             ->execute([
-                $user->getUsername(),
-                $user->getForename(),
-                $user->getSurname(),
-                $user->getEmail(),
+                (string) $user->getUsername(),
+                (string) $user->getForename(),
+                (string) $user->getSurname(),
+                (string) $user->getEmail(),
                 implode(";", $user->getGroups()),
-                $user->getWallet(),
-                $user->getSteamId(),
+                (int) $user->getWallet(),
+                (string) $user->getSteamId(),
                 $user->getUid(),
             ]);
     }
