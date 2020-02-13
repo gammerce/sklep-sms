@@ -44,6 +44,7 @@ use App\Http\Controllers\Api\PaymentResource;
 use App\Http\Controllers\Api\PurchaseResource;
 use App\Http\Controllers\Api\PurchaseValidationResource;
 use App\Http\Controllers\Api\RegisterController;
+use App\Http\Controllers\Api\Server\PlayerFlagCollection;
 use App\Http\Controllers\Api\Server\PurchaseResource as ServerPurchaseResource;
 use App\Http\Controllers\Api\Server\ServerConfigController;
 use App\Http\Controllers\Api\Server\ServiceLongDescriptionController;
@@ -145,7 +146,7 @@ class RoutesManager
                     LoadSettings::class,
                     SetLanguage::class,
                     ValidateLicense::class,
-                    BlockOnInvalidLicense::class
+                    BlockOnInvalidLicense::class,
                 ],
             ],
             function (RouteCollector $r) {
@@ -164,6 +165,10 @@ class RoutesManager
 
                         $r->get('/api/server/config', [
                             'uses' => ServerConfigController::class . '@get',
+                        ]);
+
+                        $r->get('/api/server/player_flags', [
+                            'uses' => PlayerFlagCollection::class . '@get',
                         ]);
 
                         $r->get('/api/server/user_services', [

@@ -60,7 +60,8 @@ class PurchaseResource
 
         if ($server) {
             $body["server_id"] = $server->getId();
-            $body["payment_platform_id"] = $server->getSmsPlatformId() ?: $settings->getSmsPlatformId();
+            $body["payment_platform_id"] =
+                $server->getSmsPlatformId() ?: $settings->getSmsPlatformId();
         }
 
         try {

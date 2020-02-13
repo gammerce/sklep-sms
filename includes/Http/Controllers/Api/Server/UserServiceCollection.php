@@ -17,7 +17,9 @@ class UserServiceCollection
         $nick = $request->query->get("nick");
         $ip = $request->query->get("ip");
         $steamId = $request->query->get("steam_id");
-        $serverId = $serverAuth->check() ? $serverAuth->server() : $request->query->get("server_id");
+        $serverId = $serverAuth->check()
+            ? $serverAuth->server()
+            : $request->query->get("server_id");
 
         $statement = $db->statement(
             <<<EOF
