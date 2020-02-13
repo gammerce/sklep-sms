@@ -91,7 +91,7 @@ class ServiceRepository
                 $order,
                 json_encode($data),
                 $types,
-                $flags,
+                strtolower($flags),
             ]);
 
         return $this->get($id);
@@ -126,7 +126,7 @@ class ServiceRepository
             $order,
             json_encode($data),
             $types,
-            $flags,
+            strtolower($flags),
             $id,
         ]);
 
@@ -152,7 +152,7 @@ class ServiceRepository
             $data['tag'],
             $data['module'],
             $data['groups'] ? explode(";", $data['groups']) : [],
-            $data['flags'],
+            strtolower($data['flags']),
             $data['order'],
             json_decode($data['data'], true)
         );
