@@ -124,6 +124,7 @@ return [
     'log_server_added' => 'Server has been added. ID: {1}',
     'log_server_deleted' => 'Server has been deleted. ID: {1}',
     'log_server_edited' => 'Server has been edited. ID: {1}',
+    'log_server_token_regenerated' => 'Server token has been regenerated. ID: {1}',
     'log_service_added' => 'Service has been added. ID: {1}',
     'log_service_deleted' => 'Service has been deleted. ID: {1}',
     'log_service_edited' => 'Service has been edited. ID: {1}',
@@ -217,6 +218,7 @@ return [
     'separated' => '( separated with semicolon \';\' )',
     'server_added' => 'Server added successfully.',
     'server_edit' => 'Server edited successfully.',
+    'server_token_regenerated' => 'Server token has been regenerated.',
     'servers' => 'Servers',
     'service_added' => 'Service added successfully.<br />Set service prices in tab <strong>Pricing</strong><br />
 	Whereas in tab <strong>Servers</strong> set servers on which you can buy this service.<br />',

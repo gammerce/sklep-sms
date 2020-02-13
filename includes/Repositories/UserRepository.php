@@ -41,7 +41,7 @@ class UserRepository
                 (string) $ip,
                 $groups,
                 (int) $wallet,
-                (string) $steamId,
+                $steamId ?: null,
             ]);
 
         return $this->get($this->db->lastId());
@@ -62,7 +62,7 @@ class UserRepository
                 (string) $user->getEmail(),
                 implode(";", $user->getGroups()),
                 (int) $user->getWallet(),
-                (string) $user->getSteamId(),
+                $user->getSteamId() ?: null,
                 $user->getUid(),
             ]);
     }
@@ -72,14 +72,12 @@ class UserRepository
      */
     public function allWithSteamId()
     {
-        $result = $this->db->query("SELECT * FROM `ss_users` WHERE `steam_id` != ''");
-
-        $users = [];
-        foreach ($result as $row) {
-            $users[] = $this->mapToModel($row);
-        }
-
-        return $users;
+        $statement = $this->db->query("SELECT * FROM `ss_users` WHERE `steam_id` IS NOT NULL");
+        return collect($statement)
+            ->map(function (array $row) {
+                return $this->mapToModel($row);
+            })
+            ->all();
     }
 
     /**

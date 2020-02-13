@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\Admin\PriceCollection;
 use App\Http\Controllers\Api\Admin\PriceResource;
 use App\Http\Controllers\Api\Admin\ServerCollection;
 use App\Http\Controllers\Api\Admin\ServerResource;
+use App\Http\Controllers\Api\Admin\ServerTokenController;
 use App\Http\Controllers\Api\Admin\ServiceCodeAddFormController;
 use App\Http\Controllers\Api\Admin\ServiceCodeCollection;
 use App\Http\Controllers\Api\Admin\ServiceCodeResource;
@@ -473,6 +474,11 @@ class RoutesManager
                     'uses' => ServerResource::class . '@delete',
                 ]);
 
+                $r->post('/api/admin/servers/{serverId}/token', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_servers"]],
+                    'uses' => ServerTokenController::class . '@post',
+                ]);
+
                 $r->post('/api/admin/services', [
                     'middlewares' => [[RequireAuthorization::class, "manage_services"]],
                     'uses' => ServiceCollection::class . '@post',
@@ -597,7 +603,7 @@ class RoutesManager
 
     private function shouldRedirectToSetup(array $routeInfo)
     {
-        return $this->shopState->requiresAction() &&
-            array_get($routeInfo[1], "type") !== RoutesManager::TYPE_INSTALL;
+        return array_get($routeInfo[1], "type") !== RoutesManager::TYPE_INSTALL &&
+            $this->shopState->requiresAction();
     }
 }

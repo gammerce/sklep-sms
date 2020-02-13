@@ -125,6 +125,7 @@ return [
     'log_server_added' => 'Dodano serwer. ID: {1}',
     'log_server_deleted' => 'Usunięto serwer. ID: {1}',
     'log_server_edited' => 'Wyedytowano serwer. ID: {1}',
+    'log_server_token_regenerated' => 'Token sewera został zregenerowany. ID: {1}',
     'log_service_added' => 'Dodano usługę. ID: {1}',
     'log_service_deleted' => 'Usunięto usługę. ID: {1}',
     'log_service_edited' => 'Wyedytowano usługę. ID: {1}',
@@ -221,6 +222,7 @@ return [
     'separated' => '( oddzielone średnikiem \';\' )',
     'server_added' => 'Serwer został prawidłowo dodany.',
     'server_edit' => 'Serwer został prawidłowo wyedytowany.',
+    'server_token_regenerated' => 'Token serwera został wygenerowany ponownie.',
     'servers' => 'Serwery',
     'service_added' => 'Usługa została prawidłowo dodana.<br />Ustaw teraz ceny usługi w zakładce <strong>Cennik</strong><br />
 		Natomiast w zakładce <strong>Serwery</strong> ustal na których serwerach będzie można tę usługę zakupić.<br />',
