@@ -5,6 +5,7 @@ use App\Repositories\ServerRepository;
 use App\Repositories\UserRepository;
 use App\System\Application;
 use App\System\Auth;
+use App\System\ServerAuth;
 use App\System\Settings;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,19 +26,28 @@ class AuthorizeServer implements MiddlewareContract
         /** @var Auth $auth */
         $auth = $app->make(Auth::class);
 
-        // TODO Remove authorization by key
+        /** @var ServerAuth $serverAuth */
+        $serverAuth = $app->make(ServerAuth::class);
+
         $key = $request->query->get("key");
         $token = $request->query->get("token");
+        $steamId = $request->headers->get("Authorization");
 
-        $server = $serverRepository->findByToken($token);
+        if ($token) {
+            $server = $serverRepository->findByToken($token);
 
-        if (!$server && $key !== md5($settings->getSecret())) {
-            return new Response("Server not authorized", 400);
+            if (!$server) {
+                return new Response("Server unauthorized", 400);
+            }
+
+            $serverAuth->setServer($server);
+        }
+        // TODO Remove authorization by key
+        elseif ($key !== md5($settings->getSecret())) {
+            return new Response("Server unauthorized", 400);
         }
 
-        $steamId = $request->headers->get("Authorization");
         $user = $userRepository->findBySteamId($steamId);
-
         if ($user) {
             $auth->setUser($user);
         }

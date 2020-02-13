@@ -212,6 +212,25 @@ class ServerConfigControllerTest extends HttpTestCase
     }
 
     /** @test */
+    public function returns_400_if_invalid_token()
+    {
+        // when
+        $response = $this->get(
+            '/api/server/config',
+            [
+                'token' => "asd",
+                'version' => '3.9.0',
+            ],
+            [
+                'User-Agent' => Server::TYPE_AMXMODX,
+            ]
+        );
+
+        // then
+        $this->assertSame(400, $response->getStatusCode());
+    }
+
+    /** @test */
     public function with_player_flags()
     {
         // given
