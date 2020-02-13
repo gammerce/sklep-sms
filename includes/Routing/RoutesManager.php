@@ -142,6 +142,41 @@ class RoutesManager
         $r->addGroup(
             [
                 "middlewares" => [
+                    LoadSettings::class,
+                    SetLanguage::class,
+                    ValidateLicense::class,
+                    BlockOnInvalidLicense::class
+                ],
+            ],
+            function (RouteCollector $r) {
+                $r->get('/api/server/services/{serviceId}/long_description', [
+                    'uses' => ServiceLongDescriptionController::class . '@get',
+                ]);
+
+                $r->addGroup(
+                    [
+                        "middlewares" => [AuthorizeServer::class],
+                    ],
+                    function (RouteCollector $r) {
+                        $r->post('/api/server/purchase', [
+                            'uses' => ServerPurchaseResource::class . '@post',
+                        ]);
+
+                        $r->get('/api/server/config', [
+                            'uses' => ServerConfigController::class . '@get',
+                        ]);
+
+                        $r->get('/api/server/user_services', [
+                            'uses' => ServerUserServiceCollection::class . '@get',
+                        ]);
+                    }
+                );
+            }
+        );
+
+        $r->addGroup(
+            [
+                "middlewares" => [
                     SetUserSession::class,
                     LoadSettings::class,
                     SetLanguage::class,
@@ -161,30 +196,6 @@ class RoutesManager
                     'middlewares' => [BlockOnInvalidLicense::class],
                     'uses' => TransferController::class . '@oldAction',
                 ]);
-
-                $r->get('/api/server/services/{serviceId}/long_description', [
-                    'middlewares' => [BlockOnInvalidLicense::class],
-                    'uses' => ServiceLongDescriptionController::class . '@get',
-                ]);
-
-                $r->addGroup(
-                    [
-                        "middlewares" => [BlockOnInvalidLicense::class, AuthorizeServer::class],
-                    ],
-                    function (RouteCollector $r) {
-                        $r->post('/api/server/purchase', [
-                            'uses' => ServerPurchaseResource::class . '@post',
-                        ]);
-
-                        $r->get('/api/server/config', [
-                            'uses' => ServerConfigController::class . '@get',
-                        ]);
-
-                        $r->get('/api/server/user_services', [
-                            'uses' => ServerUserServiceCollection::class . '@get',
-                        ]);
-                    }
-                );
 
                 $r->addGroup(
                     [

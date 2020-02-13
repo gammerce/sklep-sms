@@ -11,6 +11,7 @@ use App\System\Auth;
 use App\System\ExternalConfigProvider;
 use App\System\Heart;
 use App\System\License;
+use App\System\ServerAuth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\View\CurrentPage;
@@ -29,6 +30,7 @@ class AppServiceProvider
         $app->singleton(Session::class);
         $app->singleton(Heart::class);
         $app->singleton(Auth::class);
+        $app->singleton(ServerAuth::class);
         $app->singleton(Settings::class);
         $app->singleton(CurrentPage::class);
         $app->singleton(License::class);
